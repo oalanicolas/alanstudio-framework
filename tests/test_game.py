@@ -137,9 +137,9 @@ class HarnessTest(unittest.TestCase):
             game.context(self.project, "polish")
 
     def test_every_recognized_engine_has_a_platform_pack_loaded_after_the_recipe(self):
-        for marker, kind in game.ENGINE_MARKERS:
-            with self.subTest(kind=kind):
-                project = self.root / f"p-{kind}"
+        for index, (marker, kind) in enumerate(game.ENGINE_MARKERS):
+            with self.subTest(kind=kind, marker=marker):
+                project = self.root / f"p-{index}-{kind}"
                 project.mkdir()
                 (project / marker.replace("*", "Jogo")).parent.mkdir(parents=True, exist_ok=True)
                 (project / marker.replace("*", "Jogo")).write_text("{}")
@@ -151,6 +151,21 @@ class HarnessTest(unittest.TestCase):
                 names = [Path(p).name for p in result["read_next"]]
                 self.assertEqual(names[names.index("lifecycle.md") + 1], f"{game.PLATFORM_PACKS[kind]}.md")
         self.assertEqual(set(game.PLATFORM_PACKS), {kind for _, kind in game.ENGINE_MARKERS})
+
+    def test_engine_marker_wins_over_ecosystem_manifest_it_ships_with(self):
+        for files, kind in (
+            (("Jogo.rmmzproject", "package.json", "index.html"), "rpgmaker"),  # RPG Maker MZ traz NW.js
+            (("ProjectSettings/ProjectVersion.txt", "Assembly-CSharp.csproj", "Jogo.sln"), "unity"),  # Unity gera .csproj
+            (("project.godot", "Jogo.csproj", "Jogo.sln"), "godot"),  # Godot C#
+            (("default.project.json", "package.json"), "roblox"),
+            (("Jogo.csproj", "CMakeLists.txt"), "dotnet"),
+        ):
+            with self.subTest(kind=kind):
+                project = self.root / f"mixed-{kind}"
+                for name in files:
+                    (project / name).parent.mkdir(parents=True, exist_ok=True)
+                    (project / name).write_text("{}")
+                self.assertEqual(game.identify(project), kind)
 
     def test_project_without_marker_gets_agnostic_core_and_no_platform_pack(self):
         result = game.context(self.project, "mechanics", studies_root=self.root / "absent")
@@ -169,7 +184,7 @@ class HarnessTest(unittest.TestCase):
                 self.assertTrue(Path(result["packs"]["genre"]["pack"]).is_file())
                 self.assertEqual(result["packs"]["genre"]["available"], list(game.GENRES))
         with self.assertRaisesRegex(ValueError, "gênero desconhecido"):
-            game.context(self.project, "feel", genre="fighting")
+            game.context(self.project, "feel", genre="metroidvania")
         run = subprocess.run([sys.executable, str(SCRIPT), "context", str(self.project), "--genre", "racing", "--root", str(self.root)], capture_output=True, text=True)
         self.assertEqual(run.returncode, 0, run.stderr)
         self.assertEqual(Path(json.loads(run.stdout)["packs"]["genre"]["pack"]).name, "racing.md")
@@ -186,7 +201,11 @@ class HarnessTest(unittest.TestCase):
         self.assertIn("--genre", genre["basis"])
         self.assertFalse(any("genres" in Path(p).parts for p in result["read_next"]))
         self.assertEqual(game.suggest_genres([{"value": "RPG tático por turnos"}]), ["turn-based", "rpg"])
+        self.assertEqual(game.suggest_genres([{"value": "Roguelike de cartas (deckbuilder)"}]), ["deckbuilder", "roguelike"])
+        self.assertEqual(game.suggest_genres([{"value": "Survival horror em primeira pessoa"}]), ["horror", "survival-crafting"])
         self.assertEqual(game.suggest_genres([{"value": "sem correspondência"}]), [])
+        for genre in game.GENRES:  # o nome do gênero é sempre uma pista para ele mesmo
+            self.assertIn(genre, game.suggest_genres([{"value": genre.replace("-", " ")}]))
 
     def test_cargo_project_exposes_conventional_targets_and_verify_runs_them(self):
         (self.project / "Cargo.toml").write_text("[package]\nname = \"jogo\"\n")

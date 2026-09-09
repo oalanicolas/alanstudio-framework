@@ -53,29 +53,62 @@ REFERENCES = ("process", "quality", "preproduction", "project-audit", "game-desi
 PLATFORM_PACKS = {
     "package.json": "web", "static-web": "web", "unity": "unity", "godot": "godot", "unreal": "unreal",
     "defold": "defold", "gamemaker": "gamemaker", "cargo": "cargo", "python": "python", "lua": "lua",
+    "construct": "construct", "rpgmaker": "rpgmaker", "renpy": "renpy", "roblox": "roblox", "pico8": "pico8",
+    "haxe": "haxe", "flutter": "flutter", "dotnet": "dotnet", "cpp": "cpp",
 }
-GENRES = ("narrative", "platformer", "shooter", "racing", "turn-based", "puzzle", "simulation", "rpg", "roguelike")
+GENRES = (
+    "narrative", "adventure", "platformer", "action-adventure", "shooter", "fighting", "stealth", "horror",
+    "racing", "sports", "rhythm", "turn-based", "deckbuilder", "strategy", "tower-defense", "puzzle",
+    "simulation", "survival-crafting", "rpg", "roguelike", "multiplayer-competitive", "idle", "casual",
+)
 GENRE_KEYWORDS = {
     "narrative": ("narrativ", "conto", "visual novel", "interactive fiction", "aventura textual", "historia interativa"),
+    "adventure": ("point and click", "point n click", "aventura grafica", "adventure", "escape room"),
     "platformer": ("plataforma", "platformer", "metroidvania"),
+    "action-adventure": ("acao aventura", "action adventure", "mundo aberto", "open world", "zelda", "soulslike", "hack and slash", "beat em up"),
     "shooter": ("fps", "tps", "shooter", "tiro", "shoot em up", "shmup"),
+    "fighting": ("luta", "fighting", "versus"),
+    "stealth": ("stealth", "furtiv", "infiltra"),
+    "horror": ("horror", "terror", "survival horror"),
     "racing": ("corrida", "racing", "kart", "drift"),
-    "turn-based": ("turno", "turn based", "tabuleiro", "board game", "cartas", "card game", "tatico", "tactics"),
+    "sports": ("esporte", "sports", "futebol", "football", "basquete", "skate", "golf", "tenis"),
+    "rhythm": ("ritmo", "rhythm", "musica", "music game", "dance"),
+    "turn-based": ("turno", "turn based", "tabuleiro", "board game", "tatico", "tactics", "xcom"),
+    "deckbuilder": ("deckbuild", "card battler", "cartas", "card game", "baralho", "tcg", "ccg"),
+    "strategy": ("estrategia", "strategy", "rts", "4x", "grand strategy"),
+    "tower-defense": ("tower defense", "defesa de torre"),
     "puzzle": ("puzzle", "quebra cabeca", "logica", "match 3"),
     "simulation": ("simula", "fabrica", "factory", "gestao", "management", "tycoon", "city builder", "automacao"),
+    "survival-crafting": ("survival", "sobreviv", "crafting", "sandbox", "minecraft", "colonia"),
     "rpg": ("rpg", "jrpg", "arpg", "crpg"),
     "roguelike": ("roguelike", "roguelite", "run based", "permadeath"),
+    "multiplayer-competitive": ("moba", "battle royale", "hero shooter", "arena", "competitiv", "esports", "pvp"),
+    "idle": ("idle", "clicker", "incremental"),
+    "casual": ("casual", "hypercasual", "hyper casual", "party game", "minigame"),
 }
 GENRE_FIELD = re.compile(r"^\s*(?:[-*]\s+)?(?:g[eê]nero(?: do jogo)?|genre)\s*:\s*(.+?)\s*$", re.IGNORECASE)
-# Ordem importa: manifestos web primeiro, engines nativas depois, marcadores genéricos por último.
+# Ordem importa: engines com marcador próprio primeiro (RPG Maker MZ e outras também trazem package.json),
+# depois manifestos de ecossistema, por último marcadores genéricos.
 ENGINE_MARKERS = (
-    ("package.json", "package.json"),
     ("ProjectSettings/ProjectVersion.txt", "unity"),
     ("project.godot", "godot"),
     ("*.uproject", "unreal"),
     ("game.project", "defold"),
     ("*.yyp", "gamemaker"),
+    ("*.c3proj", "construct"),
+    ("*.rmmzproject", "rpgmaker"),
+    ("*.rpgproject", "rpgmaker"),
+    ("game/options.rpy", "renpy"),
+    ("default.project.json", "roblox"),
+    ("*.p8", "pico8"),
+    ("Project.xml", "haxe"),
+    ("*.hxml", "haxe"),
+    ("pubspec.yaml", "flutter"),
+    ("*.sln", "dotnet"),
+    ("*.csproj", "dotnet"),
+    ("package.json", "package.json"),
     ("Cargo.toml", "cargo"),
+    ("CMakeLists.txt", "cpp"),
     ("pyproject.toml", "python"),
     ("main.lua", "lua"),
     ("index.html", "static-web"),
@@ -99,6 +132,7 @@ SKIP = {
     "Assets", "Library", "Temp", "Logs", "UserSettings",  # Unity
     "Binaries", "Intermediate", "Saved", "DerivedDataCache", "Content", "Plugins",  # Unreal
     "target", "__pycache__",  # Cargo / Python
+    "bin", "obj", "export", "cmake-build-debug", "cmake-build-release",  # .NET / Haxe / CMake
 }
 FOCUS_STUDIES = {
     "create": (
