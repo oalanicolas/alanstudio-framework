@@ -980,6 +980,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "kind=null": "sem entrypoint",
             "areas.not_located": "área não localizada",
             "playable.unplayed": "ciclo jogável ainda sem partida",
+            "cycle.craft": "segundo ciclo de look, chuva e voz",
             "audio.roles": "papéis de áudio vazios",
             "feel.unobserved": "feel ainda sem observação",
             "playtest.unstructured": "achado sem forma",
@@ -1463,6 +1464,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("content.inline", bases)
         self.assertNotIn("ship.unpacked", bases)
         self.assertNotIn("playtest.unstructured", bases)
+        self.assertNotIn("cycle.craft", bases)
         direction = game.art_reading(destination)
         self.assertTrue(direction["declared"])
         self.assertTrue(direction["bible_current"])
@@ -2554,6 +2556,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(guided["cycle"])
         self.assertNotIn("verb", guided["steps"][1])
         self.assertEqual(len(guided["steps"]), 3)
+        self.assertNotIn("look", report["then"])
+        self.assertNotIn("table", report["then"])
+        self.assertNotIn("sfx", report["then"])
+
+    def test_start_names_craft_tools_in_then_without_playing(self):
+        destination = self.root / "segundo ciclo"
+        report = game.start_project(destination, "canvas-arcade")
+        self.assertIn("--from", report["then"]["look"])
+        self.assertIn("dusk", report["then"]["look"])
+        self.assertIn("--as", report["then"]["look"])
+        self.assertIn("--from", report["then"]["table"])
+        self.assertIn("spawn", report["then"]["table"])
+        self.assertIn("--from", report["then"]["sfx"])
+        self.assertIn("dash", report["then"]["sfx"])
+        self.assertFalse(report["noted"])
+        self.assertNotIn("noite", report["prompt"])
+        self.assertNotIn("densa", report["prompt"])
+        guided = game.guide_cycle(destination, "canvas-arcade")
+        self.assertEqual(len(guided["steps"]), 3)
+        self.assertIn("look", guided["then"])
+        self.assertIn("table", guided["then"])
+        self.assertIn("sfx", guided["then"])
+        self.assertFalse(guided["noted"])
+
+    def test_start_points_at_craft_after_a_note(self):
+        destination = self.root / "depois do recibo"
+        game.start_project(destination, "canvas-arcade")
+        game.note_observation(destination, "Ana", "o verbo pesa no guarda")
+        report = game.start_project(destination, "canvas-arcade")
+        self.assertTrue(report["noted"])
+        self.assertFalse(report["created"])
+        self.assertFalse(report["executed"])
+        self.assertIn("noite", report["prompt"])
+        self.assertIn("densa", report["prompt"])
+        self.assertIn("brighter", report["prompt"])
+        self.assertIn("não pinta", report["prompt"])
+        self.assertNotIn("O jogo não foi aberto", report["prompt"])
+        guided = game.guide_cycle(destination, "canvas-arcade")
+        self.assertEqual(len(guided["steps"]), 3)
+        self.assertTrue(guided["noted"])
+        self.assertIn("look", guided["then"])
+        self.assertIn("note", guided["steps"][2]["command"])
+        nxt = game.next_step(destination)
+        self.assertEqual(nxt["proposal"]["basis"], "cycle.craft")
+        self.assertTrue(nxt["signals"]["cycle_craft"])
+        self.assertFalse(nxt["signals"]["playable_unplayed"])
+        self.assertIn("look", nxt["proposal"]["commands"][0])
+        self.assertIn("table", nxt["proposal"]["commands"][1])
+        self.assertIn("sfx", nxt["proposal"]["commands"][2])
+        palettes = json.loads((destination / "data/palettes.json").read_text(encoding="utf-8"))
+        palettes["palettes"]["noite"] = dict(palettes["palettes"]["dusk"])
+        (destination / "data/palettes.json").write_text(
+            json.dumps(palettes, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        after = game.next_step(destination)
+        bases = [item["basis"] for item in self.proposals(after)]
+        self.assertNotIn("cycle.craft", bases)
+        self.assertFalse(after["signals"]["cycle_craft"])
 
     def test_init_seeds_the_idea_and_still_calls_the_brief_a_draft(self):
         destination = self.root / "com-ideia"

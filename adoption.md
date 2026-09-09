@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.55 — O segundo ciclo nomeia look, chuva e voz
+
+O caminho ideia→jogo parava no `note`. Look, chuva e voz já
+nasciam no disco (`look --from`, `table --from`, `sfx --from`) e
+ninguém no `start` ou no `next` as apontava depois do recibo.
+`then` as nomeia quando o projeto declara as ferramentas; depois
+de um `note`, o prompt e o `next` (`cycle.craft`) as apontam.
+Look, chuva ou voz deslocada no disco encerra o ramo. `consistent`,
+`enough` e `heard` continuam falsos. Só `release` fica no piso.
+
+O que 0.9.55 não afirma: o harness não pintou, não choveu e não
+ouviu. Ninguém de fora produziu no piso.
+
 ## 0.9.54 — O impacto deixa rastro
 
 Squash, câmera e rumble já marcavam o contato. No campo o verbo

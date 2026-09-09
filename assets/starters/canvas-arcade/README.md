@@ -19,7 +19,9 @@ npm run serve      # abre em http://localhost:8080
 
 `?look=dusk` troca a paleta e `?spawn=dusk` troca a chuva, sem recomeçar
 o projeto. O `start` do harness nomeia as duas queries quando o manifesto
-as declara.
+as declara. Depois de um `note`, `start` e `next` apontam
+`look --from`, `table --from` e `sfx --from` — o segundo ciclo. Ferramenta
+no disco não é alguém de fora nem mix ouvido.
 
 Módulos ES não carregam por `file://`, então abrir `index.html` direto no
 navegador não funciona; o servidor local existe só por isso.

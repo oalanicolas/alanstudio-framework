@@ -2643,12 +2643,113 @@ def note_command(project):
     return harness_command("note", project, "--author", "NOME", "--note", "o que o verbo sentiu")
 
 
+# Exemplos coláveis do segundo ciclo. Os nomes não existem no starter:
+# nascer `noite` / `densa` ou deslocar `dash` é o que o `next` deixa de
+# apontar quando o disco já tem um look, uma chuva ou uma voz deslocada.
+CRAFT_EXAMPLES = {
+    "look": ("noite", "--from", "dusk", "--as", "warmer"),
+    "table": ("densa", "--from", "spawn", "--as", "denser"),
+    "sfx": ("--from", "dash", "--as", "brighter"),
+}
+STARTER_LOOKS = frozenset({"normal", "contrast", "dusk"})
+STARTER_TABLES = frozenset({"copy", "palettes", "spawn", "dusk"})
+CRAFT_LABELS = {"look": "Look", "table": "Chuva", "sfx": "Voz"}
+
+
+def project_run_command(project, manager, name, extra=()):
+    argv = [manager, "run", name]
+    if extra:
+        argv.append("--")
+        argv.extend(extra)
+    body = " ".join(shlex.quote(str(part)) for part in argv)
+    return f"cd {shlex.quote(str(project))} && {body}"
+
+
+def craft_commands(project):
+    project = Path(project)
+    if not project.is_dir():
+        return {}
+    try:
+        scripts, manager = project_commands(project)
+    except (OSError, ValueError):
+        return {}
+    if not manager:
+        return {}
+    found = {}
+    for name, extra in CRAFT_EXAMPLES.items():
+        if name in scripts:
+            found[name] = project_run_command(project, manager, name, extra)
+    return found
+
+
+def cycle_crafted(project):
+    project = Path(project)
+    palettes = project / "data/palettes.json"
+    if palettes.is_file() and not palettes.is_symlink():
+        try:
+            data = json.loads(palettes.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            data = None
+        mapping = data.get("palettes") if isinstance(data, dict) else None
+        if isinstance(mapping, dict) and set(mapping) - STARTER_LOOKS:
+            return True
+    folder = project / "data"
+    if folder.is_dir() and not folder.is_symlink():
+        try:
+            entries = list(folder.iterdir())
+        except OSError:
+            entries = []
+        for path in entries:
+            if path.is_symlink() or not path.is_file() or path.suffix != ".json":
+                continue
+            if path.stem not in STARTER_TABLES:
+                return True
+    sources = project / "public/sfx/sources.json"
+    if sources.is_file() and not sources.is_symlink():
+        try:
+            data = json.loads(sources.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            data = None
+        files = data.get("files") if isinstance(data, dict) else None
+        if isinstance(files, list):
+            for item in files:
+                note = item.get("note") if isinstance(item, dict) else None
+                if isinstance(note, str) and "intenção" in note:
+                    return True
+    return False
+
+
 def cycle_then(project, play):
-    return {
+    then = {
         "play": play,
         "note": note_command(project),
         "lost": harness_command("next", project, "--focus", "feel"),
     }
+    then.update(craft_commands(project))
+    return then
+
+
+def cycle_prompt(play, then, cycle, noted=False):
+    if not play:
+        return (
+            "Sem comando de abrir: identifique o entrypoint e rode `next`. "
+            "O harness não executa o jogo."
+        )
+    craft = [key for key in CRAFT_EXAMPLES if then.get(key)]
+    if noted and craft:
+        parts = ["O ciclo já tem um recibo."]
+        for key in craft:
+            parts.append(f"{CRAFT_LABELS[key]}: {then[key]}.")
+        parts.append("O harness não pinta, não chove e não ouve.")
+        parts.append(f"`next` só se você não sabe o que falta: {then['lost']}.")
+        return " ".join(parts)
+    how = cycle_line(cycle)
+    return (
+        f"O jogo não foi aberto. Cole e rode: {play}. "
+        + (f"{how} " if how else "")
+        + f"Depois de uma partida, no harness: {then['note']}. "
+        "`next` só se o ciclo já correu e você não sabe o que falta."
+    )
 
 
 def fresh_starter_cycle(project, missing, play):
@@ -2976,7 +3077,7 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
     play = play_command(destination, scripts, manager)
     then = cycle_then(destination, play)
     cycle = starter_cycle(chosen)
-    how = cycle_line(cycle)
+    noted = bool(observation_receipts(destination))
     return {
         "schema_version": 1,
         "project": str(destination),
@@ -2990,15 +3091,8 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
         "init": init_report,
         "next": proposal,
         "then": then,
-        "prompt": (
-            f"O jogo não foi aberto. Cole e rode: {play}. "
-            + (f"{how} " if how else "")
-            + f"Depois de uma partida, no harness: {then['note']}. "
-            "`next` só se o ciclo já correu e você não sabe o que falta."
-        ) if play else (
-            "Sem comando de abrir: identifique o entrypoint e rode `next`. "
-            "O harness não executa o jogo."
-        ),
+        "noted": noted,
+        "prompt": cycle_prompt(play, then, cycle, noted),
         "executed": False,
         "scope": (
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
@@ -3006,7 +3100,10 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
             "as teclas, o prompt as nomeia — inclusive o cluster de uma mão, "
             "o toque, o controle e as queries de look e chuva, se o starter as declara. Não "
             "executa o jogo. Depois de uma "
-            "partida, o próximo comando do harness é `note`, não `next`. Não "
+            "partida, o próximo comando do harness é `note`, não `next`. "
+            "`then` já nomeia look, chuva e voz se o projeto declara essas "
+            "ferramentas; depois de um recibo, o prompt as aponta. Ferramenta "
+            "no disco não é alguém de fora nem mix ouvido. Não "
             "instala dependências e não avalia a proposta. `--idea` entra no "
             "brief como frase e, se houver `data/copy.json`, na tela do "
             "primeiro ciclo. O brief continua rascunho. A frase na tela não "
@@ -3072,6 +3169,7 @@ def guide_cycle(destination=None, starter=None, idea=None):
         "exists": exists,
         "cycle": cycle,
         "then": then,
+        "noted": bool(exists and observation_receipts(dest)),
         "steps": [
             {
                 "n": 1,
@@ -3089,10 +3187,12 @@ def guide_cycle(destination=None, starter=None, idea=None):
         ],
         "scope": (
             "Três passos ideia→ciclo: start, jogar, note. Se o starter declara "
-            "o verbo e as teclas, o passo 2 as nomeia. `next` fica para quando "
-            "o ciclo já correu e você não sabe o que falta. Não cria o "
-            "projeto, não abre o jogo e não avalia a proposta. Passos 2 e 3 "
-            "permanecem `executed` falsos mesmo quando o destino já existe."
+            "o verbo e as teclas, o passo 2 as nomeia. `then` nomeia look, "
+            "chuva e voz quando o projeto declara essas ferramentas. `next` "
+            "fica para quando o ciclo já correu e você não sabe o que falta. "
+            "Não cria o projeto, não abre o jogo e não avalia a proposta. "
+            "Passos 2 e 3 permanecem `executed` falsos mesmo quando o destino "
+            "já existe."
         ),
     }
 
@@ -3320,7 +3420,8 @@ def next_step(project, focus="create", studies_root=None):
             "areas.not_located",
         )
     play = play_command(project, payload["scripts"], payload["package_manager"])
-    fresh = fresh_starter_cycle(project, missing, play)
+    noted = bool(observation_receipts(project))
+    fresh = fresh_starter_cycle(project, missing, play) and not noted
     if fresh:
         propose(
             "Abrir o ciclo do starter e escrever o que a proposta muda no verbo",
@@ -3330,6 +3431,19 @@ def next_step(project, focus="create", studies_root=None):
             "esta proposta muda no verbo — ou a lacuna, se ainda não souber.",
             [play, harness_command("next", project, "--focus", "feel")],
             "playable.unplayed",
+        )
+    craft_cmds = craft_commands(project)
+    wants_craft = bool(noted and craft_cmds and not cycle_crafted(project))
+    if wants_craft:
+        propose(
+            "Deslocar o look, a chuva ou a voz com as ferramentas que o projeto já declara",
+            "O ciclo já tem um recibo. Look, chuva e voz novos não pedem o schema "
+            "de cabeça. Ferramenta no disco não é alguém de fora nem mix ouvido. "
+            "O harness não pinta, não chove e não ouve.",
+            "Nasceu um look, uma chuva ou uma voz deslocada — ou a lacuna está "
+            "escrita. consistent, enough e heard continuam pendentes.",
+            [craft_cmds[key] for key in CRAFT_EXAMPLES if key in craft_cmds],
+            "cycle.craft",
         )
     roles = roles_reading(project)
     if roles["empty"]:
@@ -3687,6 +3801,7 @@ def next_step(project, focus="create", studies_root=None):
             "origins_undeclared": origins["undeclared"],
             "origins_contradicts_licensing": origins["contradicts_licensing"],
             "playable_unplayed": fresh,
+            "cycle_craft": wants_craft,
             "audio_roles_empty": roles["empty"],
             "feel_unobserved": feel["unobserved"],
             "playtest_unstructured": playtest["unstructured"],

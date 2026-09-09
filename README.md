@@ -54,7 +54,7 @@ Com starter (REUSE de infraestrutura já testada):
 python3 scripts/game.py start /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
 ```
 
-O JSON devolve `play` (o comando que **abre** o jogo), `then.note` (o próximo comando do harness **depois** de uma partida) e, se o starter declara, `cycle` (verbo, teclas, cluster de uma mão, toque, controle e as queries de look e chuva). Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta e `?spawn=dusk` troca a chuva — as duas sem recomeçar o projeto.
+O JSON devolve `play` (o comando que **abre** o jogo), `then.note` (o próximo comando do harness **depois** de uma partida) e, se o starter declara, `cycle` (verbo, teclas, cluster de uma mão, toque, controle e as queries de look e chuva). Se o projeto declara as ferramentas, `then` também nomeia `look`, `table` e `sfx`. Depois de um recibo de observação, o prompt aponta esses três em vez de repetir só o primeiro ciclo. Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta e `?spawn=dusk` troca a chuva — as duas sem recomeçar o projeto. Ferramenta no disco não é alguém de fora nem mix ouvido.
 
 `guide` (também sem subcomando: `python3 scripts/game.py`) mapeia os três passos — start → jogar → `note` — sem executar nenhum:
 
@@ -97,6 +97,7 @@ onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
+→ segundo ciclo de look, chuva e voz
 → papéis de áudio vazios → feel ainda sem observação → achado sem forma →
 acessibilidade sem opção
 → save sem versão → orçamento ausente → direção de arte ausente → conteúdo
@@ -104,7 +105,10 @@ ainda no código → empacotar ainda sem passo → rascunho → documento sem ve
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
 recibo → gate → ofício → barra. Depois de um `init` fresco — nove áreas com
 candidato, seis ainda rascunho (o art-bible do starter já vem vigente), e um script que abre o jogo — a primeira proposta
-é jogar o ciclo, não preencher os templates. O verbo mudo vem em seguida: papéis
+é jogar o ciclo, não preencher os templates. Depois do recibo, se o projeto
+declara `look`/`table`/`sfx` e ainda não nasceu look, chuva ou voz deslocada,
+o `next` aponta o segundo ciclo de look, chuva e voz — ferramenta no disco
+não é alguém de fora. O verbo mudo vem em seguida: papéis
 declarados sem arquivo. Depois, se o código nomeia perdão e hitstop e ninguém
 registrou uma observação no projeto, o `next` pede esse recibo — constante
 nomeada não é peso percebido. Depois do recibo, se o achado não nomeia

@@ -12,7 +12,8 @@ falha com o número; campo obrigatório falha com o nome da mesa.
 `--from dusk` copia a forma que o starter já consome (`?spawn=` /
 `settings.spawnProfile`). `--as denser|calmer|brief` desloca os knobs
 e deixa a chuva distinta. `npm run session -- --spawn <nome>` traça
-essa chuva. `dusk` é a segunda chuva, não volume — `enough` é sempre
+essa chuva. Depois de um `note`, `start` e `next` apontam `table --from`.
+`dusk` é a segunda chuva, não volume — `enough` é sempre
 falso. Alguém de fora ainda não produziu no piso.
 
 Leia o formato atual, sua carga em runtime e os consumidores. Procure definição ou

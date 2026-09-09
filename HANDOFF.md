@@ -13,7 +13,7 @@ com o que o próprio projeto declarou, zero dígitos nos rótulos. `observed` e
 **Primeiro ciclo:** `guide` (também sem subcomando) mapeia start →
 jogar → note sem executar. `start` cria o projeto e devolve `play` +
 `then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo,
-as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look e chuva. `next` só entra em `then.lost`. Depois de um `init` fresco,
+as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look e chuva. Se o projeto declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt e o `next` (`cycle.craft`) as apontam. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
 `next` ainda propõe `playable.unplayed` se você estiver perdido. O
 starter ensina mover, coletar e guardar no campo; o art-bible vigente
 não é reescrito. `--idea` entra no brief e, se houver `data/copy.json`,

@@ -13,7 +13,9 @@ papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
 em `public/sfx`. `roles --fill` sugere um candidato do acervo; `--apply`
 copia para `public/sfx/<papel>` com recibo. O starter `canvas-arcade`
 já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
-mixer. Arquivo ausente é lacuna do verbo, não silêncio deliberado;
+mixer. `sfx --from` / `--as` desloca a voz no papel que o mixer já toca;
+depois de um `note`, `start` e `next` apontam esse comando.
+Arquivo ausente é lacuna do verbo, não silêncio deliberado;
 `heard` é sempre falso. Sem `shared/sfx`, a sugestão de `--fill` vem
 vazia — isso não autoriza improvisar licença.
 
