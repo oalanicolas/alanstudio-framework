@@ -57,6 +57,14 @@ pequeno, e o release pretende `shippable`. Declarar a etapa não concede o degra
 
 ## Etapas, significado e prontidão
 
+Cada linha **Pronto para…** abaixo é o critério de saída da etapa, e é dela que
+os [gates](gates.md) são extraídos: um gate por linha, com os critérios
+enumerados. Isso muda o que a frase faz — ela deixa de ser só orientação de
+leitura e passa a ser recusável, com `gate <projeto>` lendo o que o projeto
+declara cumprir. Nenhum comando concede passagem, e as três saídas de um gate são
+passar, cortar escopo e abandonar. A terceira já aparece explícita na etapa `poc`
+e vale para todas.
+
 ### `brief` — Game Brief
 
 Visão curta: jogador, fantasia, sensação, pilares, verbo central, plataformas,

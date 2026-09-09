@@ -64,6 +64,14 @@ evidência, preservando a direção do usuário e a qualidade visual aprovada.
    declaração e relata em `problems` dimensão fora das dez, degrau fora dos cinco
    e alvo que não é o seguinte. Nunca confere o jogo: tabela bem formada e
    otimista sai de lá intacta.
+   **Gate é outra coisa: a barra descreve, o gate recusa.** [Os dez](references/gates.md)
+   formalizam as linhas “Pronto para…” do ciclo. Ao pedir a próxima permissão,
+   declare uma linha por critério com `met`/`unmet`/`waived` e o que sustenta o
+   estado; `gate <projeto>` lê. Critério sem linha é pendente, nunca cumprido.
+   **As três saídas são passar, cortar escopo e abandonar** — proponha a terceira
+   quando ela for a honesta, em vez de empurrar escopo morto para frente. Dispensa
+   exige motivo escrito, e quatro critérios não se dispensam. Nenhum comando
+   concede passagem: `granted` é sempre falso.
 4. **REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes
    pertinentes. `doctor` lista os starters disponíveis; começar por um deles é
    REUSE, escrever um loop do zero é CREATE. Se o laboratório tiver `shared/sfx`,

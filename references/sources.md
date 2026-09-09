@@ -88,6 +88,40 @@ nas dimensões `performance` e `audio_mix` são pontos de partida a confirmar no
 dispositivo alvo, não constantes verificadas. Trate a escada como linguagem
 compartilhada para observar, não como aferição.
 
+## Gates de produção (0.9)
+
+Os dez gates de [gates.md](gates.md) têm procedência interna e verificável: cada
+critério é extraído de uma linha `**Pronto para…**` que já estava escrita em
+[preproduction.md](preproduction.md), uma por etapa. Nada ali foi inventado na
+passagem, e um teste do harness exige que cada gate continue apontando para a
+prosa de origem. A regra de quais critérios **não** são dispensáveis também não é
+escolha do harness: são os quatro em que a prosa da etapa não deixa terceira
+opção, com a frase citada na tabela do próprio `gates.md`.
+
+O que **não** vem de dentro é a estrutura de três saídas — passar, cortar escopo,
+abandonar. Ela vem de uma única fonte, e é preciso dizer o que essa fonte é:
+
+| Fonte | O que é | O que sustenta |
+| --- | --- | --- |
+| [20 Game Dev Tips](https://youtu.be/fqb9MfRqK9I) | Vídeo de um desenvolvedor indie, patrocinado, dirigido a iniciantes, sem citação de estudo ou dado | Que praticantes tratam abandonar como decisão legítima, e que decidir cedo é melhor que decidir tarde |
+
+Isso é **conselho de praticante**, não evidência. Sustenta “há quem defenda isso e
+por quê”; não sustenta “isso funciona”. Peguei dela uma coisa só: a legitimação de
+abandonar como saída de gate, que o ciclo já tinha na etapa `poc` (“continuar,
+ajustar ou abandonar”) e que passou a valer nas dez. A generalização é julgamento
+editorial deste estúdio, apoiada numa coerência interna, não na autoridade do
+vídeo.
+
+O que recusei da mesma fonte, para não dar a impressão de que absorvi o material
+inteiro: o limiar de “80% pronto, então termine” é número sem origem, e não entrou
+em critério nenhum. “Sua engine não importa” contradiz a receita de arquitetura
+deste repositório e é simplificação para iniciante. Os conselhos sobre sorte,
+dinheiro e tutoriais não são critério de avanço de nada. E cerca de metade do
+vídeo descreve práticas que este framework já tinha — feel antes de conteúdo,
+prototipar antes de decidir, documento de design, consistência de estilo, reusar
+o que existe, definir público e sensação pretendida —, o que serve como
+convergência independente, não como fonte nova.
+
 ## Starter `canvas-arcade` (0.9)
 
 Escrito neste repositório, sem dependências de terceiros. `mulberry32`, em
