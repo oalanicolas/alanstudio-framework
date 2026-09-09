@@ -975,6 +975,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "continuity.sources": "continuidade",
             "scripts": "validadores",
             "gates.problems": "linha de gate malformada",
+            "gates.value": "pergunta de valor",
             "gates.pending": "critério pendente",
             "production_bar.problems": "linha de degrau malformada",
             "production_bar.undeclared": "dimensão sem linha",
@@ -1514,8 +1515,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
                 self.assertIn(spec["stage"], game.STAGES)
                 keys = [item[0] for item in spec["criteria"]]
                 self.assertEqual(len(keys), len(set(keys)))
-                for _, label, _ in spec["criteria"]:
+                for _, label, _, kind in spec["criteria"]:
                     self.assertTrue(label[0].isupper(), label)
+                    self.assertIn(kind, game.GATE_KINDS)
         # A ordem dos gates é a do ciclo, não alfabética: um gate guarda a
         # permissão seguinte, e a sequência é o que dá sentido a "o próximo".
         self.assertEqual(
@@ -1538,7 +1540,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
 
     def test_a_gate_holds_only_when_every_criterion_has_a_line(self):
         rows = {}
-        for key, _, waivable in game.GATES["scale"]["criteria"]:
+        for key, _, _, _ in game.GATES["scale"]["criteria"]:
             rows[("scale", key)] = ("met", f"evidência declarada para {key}")
         self.declare_gate(rows)
         entrega = game.gate_reading(self.project, "scale")["gates"][0]
@@ -1553,7 +1555,12 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     # teste com pessoa não se registra onde houve simulação, e origem de referência
     # é declarada ou a ausência é explícita. Dispensar esses é recusado.
     def test_the_four_criteria_the_prose_leaves_no_way_around_cannot_be_waived(self):
-        forbidden = [(gate, key) for gate, spec in game.GATES.items() for key, _, waivable in spec["criteria"] if not waivable]
+        forbidden = [
+            (gate, key)
+            for gate, spec in game.GATES.items()
+            for key, _, waivable, kind in spec["criteria"]
+            if not waivable and kind == "readiness"
+        ]
         self.assertEqual(
             forbidden,
             [("design", "reference_origin"), ("implement", "user_requirements"),
@@ -1567,6 +1574,92 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
                 state = {item["key"]: item["state"] for item in report["gates"][0]["criteria"]}[key]
                 self.assertEqual(state, "undeclared")
                 document.unlink()
+
+    # Dispensar é deixar de cumprir o que incide; um critério que nunca incidiu
+    # não tem o que dispensar. Sem estado próprio, o segundo virava o primeiro, e
+    # a conta de dispensas — que existe para doer — inflava com linhas inócuas.
+    def test_out_of_scope_leaves_the_count_of_waivers_alone(self):
+        self.declare_gate({
+            ("deliver", "save_migration"): ("out_of_scope", "jogo sem save — Alan, 2026-09-08"),
+            ("deliver", "rollback"): ("waived", "primeira publicação, nada a reverter — Alan"),
+        })
+        entrega = game.gate_reading(self.project, "deliver")["gates"][0]
+        self.assertEqual(entrega["out_of_scope"], ["save_migration"])
+        self.assertEqual(entrega["waived"], ["rollback"])
+        self.assertNotIn("save_migration", entrega["pending"])
+
+    def test_out_of_scope_without_a_reason_is_a_criterion_quietly_deleted(self):
+        self.declare_gate({("deliver", "save_migration"): ("out_of_scope", "")})
+        report = game.gate_reading(self.project, "deliver")
+        self.assertEqual([item["reason"] for item in report["problems"]], ["scope_without_reason"])
+        self.assertIn("save_migration", report["gates"][0]["pending"])
+
+    # Alegar que o critério não incide é a mesma remoção que dispensá-lo, com
+    # outro nome: onde a prosa não deixa terceira opção, não deixa a quarta.
+    def test_what_cannot_be_waived_cannot_be_declared_outside_the_scope_either(self):
+        untouchable = [(gate, key) for gate, spec in game.GATES.items()
+                       for key, _, waivable, _ in spec["criteria"] if not waivable]
+        self.assertEqual(len(untouchable), 7)
+        for gate, key in untouchable:
+            with self.subTest(gate=gate, criterion=key):
+                document = self.declare_gate({(gate, key): ("out_of_scope", "não se aplica aqui")})
+                report = game.gate_reading(self.project, gate)
+                self.assertEqual([item["reason"] for item in report["problems"]], ["always_applies"])
+                self.assertIn(key, report["gates"][0]["pending"])
+                document.unlink()
+
+    def test_a_line_that_disagrees_with_out_of_scope_prevails_over_it(self):
+        self.declare_gate({("deliver", "save_migration"): ("out_of_scope", "jogo sem save")})
+        self.declare_gate({("deliver", "save_migration"): ("unmet", "tem save, e não migra")}, path="docs/qa.md")
+        report = game.gate_reading(self.project, "deliver")
+        state = {item["key"]: item["state"] for item in report["gates"][0]["criteria"]}["save_migration"]
+        self.assertEqual(state, "unmet")
+        self.assertEqual([item["reason"] for item in report["problems"]], ["conflicting_state"])
+
+    # Cooper separa "o trabalho está feito?" de "isto ainda vale o que custa?": a
+    # primeira falha devolve para a etapa anterior, a segunda mata o escopo. Os dez
+    # gates nasceram todos da primeira, e a pergunta de valor ficava só na saída
+    # `abandonar`, dependendo de alguém levantá-la.
+    def test_the_value_question_exists_as_criterion_and_admits_no_third_option(self):
+        value = [(gate, key) for gate, spec in game.GATES.items()
+                 for key, _, waivable, kind in spec["criteria"] if kind == "must_meet"]
+        self.assertEqual(
+            value,
+            [("close", "decision"), ("implement", "worth_building"), ("scale", "worth_scaling")],
+        )
+        for gate, key in value:
+            with self.subTest(gate=gate, criterion=key):
+                criterion = dict((item[0], item) for item in game.GATES[gate]["criteria"])[key]
+                # Um "No" em must-meet decide sozinho: não há compensação por
+                # outro critério estar ótimo, então não há dispensa.
+                self.assertFalse(criterion[2])
+        entrega = game.gate_reading(self.project, "scale")["gates"][0]
+        self.assertEqual(entrega["value_pending"], ["worth_scaling"])
+        self.assertIn("must_meet", [item["kind"] for item in entrega["criteria"]])
+
+    def test_next_asks_whether_it_is_worth_it_before_asking_for_more_work(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        self.foundation_document()
+        rows = {("scale", key): ("met", f"evidência de {key}")
+                for key, _, _, _ in game.GATES["scale"]["criteria"]}
+        rows[("scale", "regressions")] = ("unmet", "duas regressões abertas")
+        rows[("scale", "worth_scaling")] = ("unmet", "custo de ampliar não estimado")
+        self.declare_gate(rows)
+        proposals = self.proposals(game.next_step(self.project, "vertical-slice"))
+        proposal = next(item for item in proposals if item["basis"] == "gates.value")
+        self.assertIn("worth_scaling", proposal["action"])
+        self.assertIn("vale o que custa", proposal["why"])
+        self.assertIn("abandonar", proposal["why"])
+        # A pendência de trabalho continua existindo; ela só não vem primeiro.
+        self.assertNotIn("gates.pending", [item["basis"] for item in proposals])
+        # Responder a pergunta de valor não é acrescentar linha: é reescrever a
+        # que estava lá, senão as duas discordam e o conflito vem antes de tudo.
+        self.foundation_document()
+        rows[("scale", "worth_scaling")] = ("met", "custo estimado em 4 dias de agente, cabe — Alan")
+        self.declare_gate(rows)
+        seguinte = self.proposals(game.next_step(self.project, "vertical-slice"))
+        proposal = next(item for item in seguinte if item["basis"] == "gates.pending")
+        self.assertIn("regressions", proposal["action"])
 
     def test_a_waiver_without_a_reason_is_a_criterion_quietly_deleted(self):
         self.declare_gate({("deliver", "save_migration"): ("waived", "")})
@@ -1609,7 +1702,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         # Sem nenhuma linha de gate, nenhum gate está sendo pedido.
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "release"))]
         self.assertNotIn("gates.pending", bases)
-        rows = {("deliver", key): ("met", f"evidência de {key}") for key, _, _ in game.GATES["deliver"]["criteria"]}
+        rows = {("deliver", key): ("met", f"evidência de {key}") for key, _, _, _ in game.GATES["deliver"]["criteria"]}
         rows[("deliver", "foreign_machine")] = ("unmet", "só rodou na máquina de dev")
         self.declare_gate(rows)
         result = game.next_step(self.project, "release")

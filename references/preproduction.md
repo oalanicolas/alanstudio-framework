@@ -65,6 +65,11 @@ declara cumprir. Nenhum comando concede passagem, e as três saídas de um gate 
 passar, cortar escopo e abandonar. A terceira já aparece explícita na etapa `poc`
 e vale para todas.
 
+As linhas de prontidão perguntam se o trabalho está feito. Três critérios dos
+gates perguntam outra coisa — se o recorte ainda vale o que custa — e um deles é
+a decisão que a `poc` já pedia. Os outros dois não vêm daqui: entram em
+`implement` e `scale` por procedência externa, declarada em [gates.md](gates.md).
+
 ### `brief` — Game Brief
 
 Visão curta: jogador, fantasia, sensação, pilares, verbo central, plataformas,

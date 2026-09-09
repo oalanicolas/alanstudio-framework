@@ -164,16 +164,28 @@ estrutura de três saídas tem apoio formal em Robert G. Cooper (Go / Recycle / 
 do método Stage-Gate), em artigos do próprio autor e na *Wiley International
 Encyclopedia of Marketing* — literatura de gestão de produto, não conselho de
 praticante. O mesmo vale para `waived` e os quatro não dispensáveis, que reproduzem
-a distinção must-meet × should-meet, e para `held_by_declaration`, que corresponde
+a assimetria de Cooper entre critério que mata sozinho e critério negociável, e
+para `held_by_declaration`, que corresponde
 ao asterisco com que a Microsoft separa requisito de requisito testado nos Xbox
 Requirements públicos. Essas escolhas foram feitas aqui sem conhecer as fontes;
 convergência nessa ordem é evidência melhor que citação posterior, e a ordem está
 declarada.
 
-Segundo, **nomear lacunas** — entre elas a ausência de um estado “fora de escopo”
-distinto de dispensa, e o fato de os dez gates serem quase todos readiness check,
-sem critério que force a pergunta de valor. Ficam em `gates-research.md` como
-observação de pesquisa, não como mudança feita.
+Segundo, **nomear lacunas**. Duas foram fechadas depois, e o que entrou por elas é
+a única parte dos gates que não tem procedência interna. Cooper separa três tipos
+de critério, e o segundo faltava aqui: `readiness` pergunta se o trabalho está
+feito, `must_meet` pergunta se ainda vale o que custa, e a segunda pergunta
+existia só como a saída `abandonar`, dependendo de alguém levantá-la. Dos três
+critérios `must_meet` que passaram a existir, um — `close.decision` — já estava na
+prosa do ciclo; os outros dois, `implement.worth_building` e `scale.worth_scaling`,
+**vêm de Cooper e estão declarados como acréscimo** na tabela de `gates.md`. O
+terceiro tipo de Cooper, *should-meet*, não foi implementado: scorecard existe para
+ordenar projetos entre si, e um gate a mais sem função é o que ele mesmo chama de
+burocracia. A outra lacuna era o estado `out_of_scope`, cuja forma vem dos XAGs
+(perguntas de escopo antes do critério) e da TRC histórica (“Applicable”). As
+lacunas que **continuam abertas** estão em `gates-research.md` §8.2 e repetidas nos
+limites de `gates.md`: entregáveis fixados na saída do gate anterior, e a evidência
+não distinguir log de comando de alguém que olhou.
 
 Terceiro, e mais importante para o que este repositório pode afirmar: **o
 levantamento confirma que não existe definição canônica dos marcos de produção de

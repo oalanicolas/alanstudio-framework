@@ -62,8 +62,10 @@ validadores do starter onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → rascunho → documento sem versão
-vigente → continuidade → validadores → gate → barra. O gate tem dois ramos: linha
-de gate malformada e critério pendente. A barra tem quatro, na ordem: linha de
+vigente → continuidade → validadores → gate → barra. O gate tem três ramos: linha
+de gate malformada, pergunta de valor e critério pendente — nessa ordem, porque
+terminar o que talvez não devesse existir é o desperdício que um gate existe para
+interromper. A barra tem quatro, na ordem: linha de
 degrau malformada, dimensão sem linha, duas linhas em conflito e — só então —
 subir a dimensão mais baixa. Num projeto sem tabela, portanto, a última proposta
 é declarar os degraus, não subir um deles. Devolve
@@ -168,14 +170,23 @@ O projeto declara uma linha por critério, em `README.md`, `docs/qa.md`,
 | --- | --- | --- | --- |
 | `deliver` | `runbook` | `met` | Ana construiu do zero em 2026-09-02, log em /tmp/qa-07 |
 | `deliver` | `foreign_machine` | `unmet` | só rodou na máquina de dev |
-| `deliver` | `save_migration` | `waived` | sem versão anterior publicada — Alan, 2026-09-05 |
+| `deliver` | `save_migration` | `out_of_scope` | jogo sem save — Alan, 2026-09-05 |
 ```
 
 **As três saídas de um gate são passar, cortar escopo e abandonar.** A terceira é
 a que costuma faltar: abandonar não é falha do gate, é uma das respostas dele — o
 ciclo já dizia isso na etapa `poc`, e aqui vale para todas. Um processo que só
 admite “passou” e “ainda não” empurra escopo morto para frente até ele custar
-caro demais para matar.
+caro demais para matar. As três correspondem a Go / Recycle / Kill do método
+stage-gate, e a correspondência foi encontrada depois, não copiada antes
+([levantamento](references/gates-research.md)).
+
+**Um critério pergunta uma de duas coisas, e a diferença muda quem responde.**
+`readiness` pergunta se o trabalho está feito, e falhar devolve para a etapa
+anterior. `must_meet` pergunta se isto ainda vale o que custa, e falhar mata o
+escopo — não se resolve trabalhando mais. Três critérios são desse tipo
+(`close.decision`, `implement.worth_building`, `scale.worth_scaling`) e `next`
+pergunta o valor antes de pedir mais trabalho no mesmo gate.
 
 Dispensa é estado de primeira classe, porque produção real dispensa requisito com
 assinatura — mas exige motivo escrito, senão é o critério apagado da lista.
@@ -183,7 +194,14 @@ assinatura — mas exige motivo escrito, senão é o critério apagado da lista.
 da etapa não deixa terceira opção (licença desconhecida bloqueia a entrega;
 prioridade não remove exigência explícita do usuário; teste com pessoa não se
 registra onde houve só simulação; origem de referência é declarada ou a ausência
-é explícita).
+é explícita). Os três `must_meet` também recusam dispensa, por outro motivo: um
+“No” num must-meet decide sozinho, sem compensação.
+
+**`out_of_scope` não é dispensa.** Dispensar é deixar de cumprir o que incide, e
+um jogo sem save não “dispensa” a migração de save. Contar os dois juntos
+inflaria a conta de dispensas justamente onde ela deveria doer, então o estado é
+separado, exige motivo escrito igual, e é recusado nos sete critérios que sempre
+incidem.
 
 Critério sem linha conta como **pendente**, nunca como cumprido: silêncio não é
 aprovação. `met` sem nada escrito ao lado é recusado. Duas linhas discordantes

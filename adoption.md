@@ -11,12 +11,21 @@ Quatro lacunas entre o que o framework prometia e o que entregava.
 passar. Os dez [gates](references/gates.md) formalizam as linhas “Pronto para…”
 que já estavam no ciclo criativo — 38 critérios extraídos da prosa, não
 inventados, com um teste exigindo que cada gate continue apontando para a linha
-de origem. O projeto declara `met`/`unmet`/`waived` por critério com o que
-sustenta o estado, e `gate` lê. Critério sem linha é pendente: silêncio não é
-aprovação. As três saídas são passar, cortar escopo e **abandonar** — a terceira
-o ciclo já tinha na etapa `poc`, e passou a valer nas dez. Dispensa exige motivo
-escrito; quatro critérios não se dispensam, porque a prosa da etapa não deixa
-terceira opção. `granted` é sempre falso.
+de origem. O projeto declara `met`/`unmet`/`waived`/`out_of_scope` por critério
+com o que sustenta o estado, e `gate` lê. Critério sem linha é pendente: silêncio
+não é aprovação. As três saídas são passar, cortar escopo e **abandonar** — a
+terceira o ciclo já tinha na etapa `poc`, e passou a valer nas dez. Dispensa exige
+motivo escrito; quatro critérios não se dispensam, porque a prosa da etapa não
+deixa terceira opção. `granted` é sempre falso.
+
+Depois, um [levantamento de fontes](references/gates-research.md) mostrou duas
+coisas que faltavam. Os dez gates perguntavam só “o trabalho está feito?”, e a
+pergunta de valor — “isto ainda vale o que custa?” — existia apenas como a saída
+`abandonar`, dependendo de alguém levantá-la: agora três critérios a fazem, e
+`next` a coloca antes de pedir mais trabalho no mesmo gate. E um critério que
+nunca incidiu só podia virar dispensa, inflando a conta que existe para doer:
+`out_of_scope` é estado separado, com motivo escrito e recusado onde o critério
+sempre incide.
 
 **Chegar.** O laboratório onde este harness roda normalmente já tem jogos, e o
 primeiro movimento nele é revisar o que existe. `discover` devolvia caminho e

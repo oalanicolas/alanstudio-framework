@@ -66,12 +66,16 @@ evidência, preservando a direção do usuário e a qualidade visual aprovada.
    otimista sai de lá intacta.
    **Gate é outra coisa: a barra descreve, o gate recusa.** [Os dez](references/gates.md)
    formalizam as linhas “Pronto para…” do ciclo. Ao pedir a próxima permissão,
-   declare uma linha por critério com `met`/`unmet`/`waived` e o que sustenta o
-   estado; `gate <projeto>` lê. Critério sem linha é pendente, nunca cumprido.
+   declare uma linha por critério com `met`/`unmet`/`waived`/`out_of_scope` e o
+   que sustenta o estado; `gate <projeto>` lê. Critério sem linha é pendente,
+   nunca cumprido.
    **As três saídas são passar, cortar escopo e abandonar** — proponha a terceira
    quando ela for a honesta, em vez de empurrar escopo morto para frente. Dispensa
-   exige motivo escrito, e quatro critérios não se dispensam. Nenhum comando
-   concede passagem: `granted` é sempre falso.
+   exige motivo escrito, e quatro critérios não se dispensam. `out_of_scope` não é
+   dispensa: é o critério que nunca incidiu, e não entra na conta das dispensas.
+   Três critérios são `must_meet` — perguntam se ainda vale o que custa, não se o
+   trabalho está feito, e pendência neles não se resolve trabalhando mais. Nenhum
+   comando concede passagem: `granted` é sempre falso.
 4. **REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes
    pertinentes. `doctor` lista os starters disponíveis; começar por um deles é
    REUSE, escrever um loop do zero é CREATE. Se o laboratório tiver `shared/sfx`,
