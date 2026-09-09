@@ -52,6 +52,17 @@ A receita [architecture](../recipes/architecture.md) adapta processo transversal
 observado no Architect AIOX, sem copiar o runtime, o roteador de engines nem a
 hierarquia de agentes. Estudo e hashes ficam no laboratório.
 
+## Produção (0.9)
+
+As receitas [production](../recipes/production.md) e [feel](../recipes/feel.md) e os
+templates `production-plan`, `milestone` e `game-design` não vêm de uma nova extração
+de repositório. Usam vocabulário corrente da indústria — marcos first playable, alpha,
+beta e gold; orçamentos de quadro/memória/carregamento; lentes por disciplina;
+princípios de animação e feedback — adaptados aos limites deste harness. Cada estúdio
+e plataforma define os detalhes; o plano de cada jogo registra a definição adotada.
+Requisitos de loja, console e acessibilidade devem ser consultados na fonte oficial
+da plataforma; o framework não os reproduz nem certifica.
+
 ## Áudio
 
 O acervo `shared/sfx` é do laboratório, não deste repositório. O harness expõe

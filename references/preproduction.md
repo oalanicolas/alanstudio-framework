@@ -21,10 +21,14 @@ mesmo quando arquivos antigos cobrem nominalmente as nove áreas. Use o evento
 
 **Ajuste localizado:** atualize decisão, requisito e caso de QA no registro existente.
 Não reinicie a pré-produção. **Jogo pequeno:** um `game-design.md` pode reunir brief,
-GDD, requisitos, decisões técnicas e experimentos. Use os templates como perguntas,
-sem duplicar a mesma informação em nove arquivos. **Projeto com sistemas/equipe
-maiores:** separe os documentos que têm responsabilidade e ritmo de atualização
-distintos. Linke suas fontes canônicas, mantendo IDs estáveis.
+GDD, requisitos, decisões técnicas e experimentos; o template
+[`game-design`](../assets/templates/game-design.md) traz as nove áreas em um documento,
+com seções que o scanner reconhece quando preenchidas. Use os templates como
+perguntas, sem duplicar a mesma informação em nove arquivos. **Projeto com
+sistemas/equipe maiores:** separe os documentos que têm responsabilidade e ritmo de
+atualização distintos. Linke suas fontes canônicas, mantendo IDs estáveis, e mantenha
+um [plano de produção](../assets/templates/production-plan.md) como fonte única de
+marco, orçamentos e riscos.
 
 Ao iniciar, resolva o pedido, artefatos atuais e referência aprovada. Extraia o que
 já foi decidido; identifique hipóteses e lacunas. Pergunte somente por decisão
@@ -34,7 +38,7 @@ o trabalho autorizado. Não invente aprovação, público observado ou resultado
 ## Fluxo com retorno
 
 **Game Brief → GDD + MDA ↔ protótipo/PoC + playtest → PRD/TDD → vertical slice →
-produção/MVP → QA e aprendizado.**
+produção/MVP → QA e aprendizado → marcos de produção até o acabamento.**
 
 Essa é uma orientação de dependências, não uma esteira rígida. Requisitos conhecidos
 podem ser escritos antes do protótipo. Uma PoC técnica pode anteceder o GDD. QA
@@ -147,6 +151,20 @@ quando adequado; preserve a qualidade aprovada e o que o usuário exigiu. Entreg
 um MVP não prova que sua hipótese de valor foi validada.
 [Template](../assets/templates/mvp.md).
 
+### `production-plan` e `milestone` — Produção até o acabamento
+
+Depois que a vertical slice demonstra a experiência, a produção prova que ela
+sobrevive à escala, ao tempo e à plataforma. O [plano de produção](../assets/templates/production-plan.md)
+mantém marcos como gates de evidência (first playable → vertical slice → alpha →
+beta → gold → live), orçamentos medidos, pipeline de conteúdo e riscos; a
+[revisão de marco](../assets/templates/milestone.md) lê a evidência por lente de
+disciplina e registra quem declarou a passagem. Receita: [produção](../recipes/production.md).
+
+**Pronto para declarar um marco:** cada critério do gate tem evidência ligada, os
+orçamentos foram medidos na plataforma alvo e os bloqueadores passaram por triagem.
+O comando `context --stage production-plan` seleciona receita e template; não mede,
+não promove e não certifica.
+
 ### `qa` — Quality Assurance e playtest
 
 QA acompanha requisitos e riscos; playtest observa compreensão, decisões, controle
@@ -199,4 +217,4 @@ As revisões desta página dependem de execução e julgamento do agente/pessoa,
 limites declarados. Exemplo completo sem criar documentos paralelos:
 [estudo aplicado a Era Uma Vez](../examples/era-uma-vez-preproduction.md).
 
-Referências usadas e limites de adaptação: [fontes](sources.md#pré-produção-ampliada).
+Referências usadas e limites de adaptação: [fontes](sources.md#pré-produção-e-checagem).

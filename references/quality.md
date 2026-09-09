@@ -46,6 +46,28 @@ definidas. Teste o que sobrevive a cada transição: score, timers, entidades, s
 inputs, progresso e conexões. Jogo narrativo precisa respeitar histórico e save;
 multiplayer precisa explicitar quem pode agir e quem decide o resultado.
 
+## Acabamento e estabilidade
+
+O que separa um recorte que funciona de um jogo no acabamento pretendido é
+observável por disciplina, na plataforma alvo, em movimento e ao longo do tempo:
+
+- **Feel:** latência entrada → resposta medida; a ação central é legível sem ajuda.
+  Ver [feel](../recipes/feel.md).
+- **Orçamentos:** tempo de quadro (p50/p99), memória, carregamento e tamanho medidos
+  com ferramenta, cena e data; desvio só com aprovação registrada.
+- **Estabilidade:** soak, reinício repetido, saves inválidos e antigos, perda de foco,
+  desconexão e atualização sobre instalação existente, no build exportado.
+- **Acesso e localização:** contraste, forma além da cor, foco, toque, movimento
+  reduzido, remapeamento, legendas; textos fora do código e fontes com cobertura, ou a
+  decisão explícita de um idioma. Consulte as diretrizes da plataforma na fonte oficial.
+- **Consistência de conteúdo:** o último asset produzido pertence ao mesmo jogo que o
+  primeiro; a receita do design system foi seguida e validada.
+- **Proveniência completa:** créditos e licenças de tudo que embarca no build.
+
+Esses critérios entram no [plano de produção](../assets/templates/production-plan.md)
+e são revisados por marco ([produção](../recipes/production.md)). O harness não os
+mede; pessoa e agente medem, registram e declaram a passagem com a prova ligada.
+
 ## Protocolo de observação
 
 Para cada critério afetado registre no local de QA existente:

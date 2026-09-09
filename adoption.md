@@ -1,7 +1,40 @@
 # Adoção — Alan Studios Framework
 
-Histórico das versões 0.1–0.8. Recibos brutos de execução e o acervo sonoro
+Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
+
+## 0.9 — Caminho fácil e produção até o acabamento
+
+Revisão do que o framework se propõe (criar jogos com IA com evidência, até a
+qualidade aprovada) contra o que entregava até 0.8. Lacunas encontradas:
+
+- **Os comandos documentados não rodavam.** Todo exemplo do README e da skill passava
+  `--root` depois do subcomando; o argparse só aceitava antes. Corrigido: `--root` em
+  qualquer posição.
+- **`context` ignorava `--root` para o acervo sonoro** e consultava o diretório atual.
+  Corrigido.
+- **Não havia autodiagnóstico.** `doctor` confere Python, integridade dos arquivos do
+  framework, raiz, projetos, estudos, sfx e git, e indica o próximo comando.
+- **A pré-produção recomendava um `game-design.md` único para jogos pequenos, mas não
+  havia template.** O template `game-design` reúne as nove áreas e, preenchido, é
+  reconhecido pelo scan como cobertura completa (teste garante).
+- **A descoberta só via package.json, Unity, Godot e HTML.** Agora reconhece Unreal,
+  Defold, GameMaker, Cargo, Python e Love2D, e ignora pastas de build das engines.
+- **O processo terminava no MVP.** Não havia marcos de produção, orçamentos, pipeline
+  de conteúdo, estabilidade, acessibilidade ou localização. A receita `production`
+  define marcos como gates de evidência (first playable → vertical slice → alpha →
+  beta → gold → live), lentes de disciplina e orçamentos medidos; os templates
+  `production-plan` e `milestone` mantêm o estado; `quality.md` ganhou a barra de
+  acabamento.
+- **Feel não tinha receita.** `feel` trata latência, animação, câmera, tempo, efeitos,
+  som e haptics como camadas medidas e observadas, registradas no design system do jogo.
+- **A skill era um bloco denso.** Reorganizada em caminho rápido e sete passos, sem
+  remover regras.
+
+O que 0.9 não afirma: “AAA” é padrão de acabamento observável, não orçamento nem
+equipe; nenhum comando mede performance, executa soak, promove marco, certifica
+requisito de plataforma ou aprova arte. Os termos de marco seguem uso corrente da
+indústria; cada jogo registra a definição adotada.
 
 ## 0.8 — Arquitetura proporcional
 

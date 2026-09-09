@@ -61,6 +61,10 @@ gênero. Resolva primeiro a incerteza que pode invalidar a experiência. Use val
 existentes como ponto de partida, não como constantes universais. Transforme uma
 variável relevante por vez quando precisar atribuir causa a um resultado.
 
+Quando a fatia já demonstrou a experiência e o trabalho passa a ser escala, acabamento
+e estabilidade, siga a [receita de produção](../recipes/production.md): marcos como
+gates de evidência, orçamentos medidos e lentes de disciplina no plano de produção.
+
 Preserve separação entre regra, apresentação e conteúdo **onde ela já existe**.
 Não converta todos os jogos para um ECS, schema, relógio ou servidor comum. Ferramentas
 compartilhadas recebem projeto/cenário por parâmetro; nomes de armas e carros pertencem

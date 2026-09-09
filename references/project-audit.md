@@ -177,7 +177,8 @@ os registros afetados, sem repetir a pré-produção inteira.
    `--script doctor`; `--command` recebe executável e argumentos separados, como
    `--command npm run doctor`, nunca a cadeia inteira em um argumento entre aspas.
 7. **Organizar:** REUSE primeiro, ADAPT no canônico, CREATE apenas onde falta.
-   Atualize documentos existentes; se compacto, seções de um único documento bastam.
+   Atualize documentos existentes; se compacto, seções de um único documento bastam —
+   o template [game-design](../assets/templates/game-design.md) reúne as nove áreas.
    Use [GDD](../assets/templates/gdd.md), [MDA](../assets/templates/mda.md),
    [TDD](../assets/templates/tdd.md), [design system / Art Bible](../assets/templates/art-bible.md),
    [Devlog](../assets/templates/devlog.md) e [QA](../assets/templates/qa.md) como apoio.
