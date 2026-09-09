@@ -46,7 +46,8 @@ Implementação concreta: `tools/budget.mjs` do starter `canvas-arcade` mede a
 simulação e o `draw` num canvas stub, por percentil, não por média, e declara
 no próprio resultado que não cobre compositor, áudio, carregamento nem o
 dispositivo alvo. A chuva compacta o array vivo e reusa um poço de
-entidades — o orçamento relata esse reuso, sem teto e sem aprovação.
+entidades; o evento volta ao poço no passo seguinte e o telegraph
+reusa um buffer — o orçamento relata esse reuso, sem teto e sem aprovação.
 O laço de passo fixo em `src/core/loop.js` é o que torna
 a medição da simulação comparável entre execuções. `npm run size` relata
 os bytes de `dist/` sem teto.

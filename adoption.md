@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.32 — Evento e telegraph sem array novo
+
+O passo seguinte ao poço da chuva ainda alocava `{ type }` por verbo e
+um `filter` por quadro no aviso do trilho. O evento volta ao poço no
+passo seguinte, sem campo do verbo anterior; o telegraph reusa um
+buffer. `createRng` no spawn ainda aloca. `performance` permanece
+`playable`. Só `release` fica no piso.
+
+O que 0.9.32 não afirma: o harness não mediu quadro no aparelho e
+reuso não é estabilidade no dispositivo.
+
 ## 0.9.31 — Poço da chuva, sem quadro medido
 
 Cada tick deixava um array novo de sobreviventes e um objeto novo no

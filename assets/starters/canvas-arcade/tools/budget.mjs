@@ -8,7 +8,7 @@
 //
 // Uso: node tools/budget.mjs [--runs 20] [--seed 7]
 
-import { advance, createState, entityPoolStats, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
+import { advance, createState, entityPoolStats, eventPoolStats, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
 import { createRenderer } from "../src/game/render.js";
 import { fingerprint } from "../src/core/hash.js";
 import { createRng } from "../src/core/rng.js";
@@ -66,6 +66,7 @@ const presents = [];
 let prints = new Set();
 let totalSteps = 0;
 const poolStart = entityPoolStats();
+const eventStart = eventPoolStats();
 
 const renderer = createRenderer(stubCanvas(), { devicePixelRatio: 1 });
 renderer.resize(640, 360);
@@ -105,6 +106,7 @@ const percentile = (list) => {
 const simulation = percentile(samples);
 const presentation = percentile(presents);
 const pool = entityPoolStats();
+const events = eventPoolStats();
 const report = {
   runs,
   ticks_per_run: CONFIG.runTicks,
@@ -119,6 +121,12 @@ const report = {
     acquired: pool.acquired - poolStart.acquired,
     released: pool.released - poolStart.released,
     idle: pool.idle,
+  },
+  event_pool: {
+    created: events.created - eventStart.created,
+    acquired: events.acquired - eventStart.acquired,
+    released: events.released - eventStart.released,
+    idle: events.idle,
   },
   scope:
     "Simulação + draw() num canvas stub. Não mede compositor, áudio, " +

@@ -115,6 +115,45 @@ function releaseEntity(entity) {
   entityPool.push(entity);
 }
 
+const eventPool = [];
+const eventCounts = { created: 0, acquired: 0, released: 0 };
+const approachingScratch = [];
+
+export function eventPoolStats() {
+  return {
+    idle: eventPool.length,
+    created: eventCounts.created,
+    acquired: eventCounts.acquired,
+    released: eventCounts.released,
+  };
+}
+
+function recycleEvents(state) {
+  for (let index = 0; index < state.events.length; index += 1) {
+    eventCounts.released += 1;
+    eventPool.push(state.events[index]);
+  }
+  state.events.length = 0;
+}
+
+function emit(state, type, extra) {
+  eventCounts.acquired += 1;
+  let event = eventPool.pop();
+  if (event === undefined) {
+    eventCounts.created += 1;
+    event = { type };
+  } else {
+    event.type = type;
+    for (const key of Object.keys(event)) {
+      if (key !== "type" && (extra === undefined || !(key in extra))) delete event[key];
+    }
+  }
+  if (extra) {
+    for (const key of Object.keys(extra)) event[key] = extra[key];
+  }
+  state.events.push(event);
+}
+
 function rain(state) {
   return state.spawn ?? CONFIG.spawn;
 }
@@ -170,9 +209,10 @@ export function remainingTicks(state) {
 // Avança exatamente um passo de simulação. Muta e devolve o mesmo estado: o loop
 // de jogo roda isto muitas vezes por segundo e alocar um estado novo por passo
 // produz coleta de lixo perceptível como engasgo. A chuva compacta o array vivo
-// e reusa objetos do poço; evento e telegraph ainda alocam.
+// e reusa o poço; o evento volta ao poço no passo seguinte; o telegraph
+// reusa um buffer. createRng no spawn ainda aloca.
 export function advance(state, intent = neutralIntent()) {
-  state.events.length = 0;
+  recycleEvents(state);
   if (state.phase !== "playing") {
     return state;
   }
@@ -217,7 +257,7 @@ export function advance(state, intent = neutralIntent()) {
     player.squash = CONFIG.feel.squashDash;
     if (intent.move !== 0) player.dir = intent.move;
     punch(state, CONFIG.feel.punchDashX * player.dir, 0);
-    state.events.push({ type: "dash" });
+    emit(state, "dash");
   }
 
   movePlayer(state, intent);
@@ -237,7 +277,7 @@ export function advance(state, intent = neutralIntent()) {
 
   if (state.tick >= CONFIG.runTicks) {
     state.phase = "over";
-    state.events.push({ type: "over", score: state.score, unbanked: state.chain });
+    emit(state, "over", { score: state.score, unbanked: state.chain });
   }
   return state;
 }
@@ -287,7 +327,7 @@ function bank(state, intent) {
   state.shake += CONFIG.feel.bankShake;
   punch(state, 0, CONFIG.feel.punchBankY);
   state.recoverUntil = state.tick + rain(state).recoveryTicks;
-  state.events.push({ type: "bank", chain, gain });
+  emit(state, "bank", { chain, gain });
 }
 
 function spawn(state) {
@@ -336,7 +376,7 @@ function resolveEntities(state) {
         continue;
       }
       if (invulnerable) {
-        state.events.push({ type: "graze" });
+        emit(state, "graze");
         releaseEntity(entity);
         continue;
       }
@@ -347,7 +387,7 @@ function resolveEntities(state) {
     if (entity.y > FIELD.height + 8) {
       if (entity.kind === "orb") {
         state.stats.missed += 1;
-        state.events.push({ type: "missed" });
+        emit(state, "missed");
       }
       releaseEntity(entity);
       continue;
@@ -366,7 +406,7 @@ function collect(state) {
   state.shake += CONFIG.feel.collectShake;
   state.player.squash = CONFIG.feel.squashCollect;
   punch(state, 0, CONFIG.feel.punchCollectY);
-  state.events.push({ type: "collect", chain: state.chain });
+  emit(state, "collect", { chain: state.chain });
 }
 
 function hit(state) {
@@ -379,16 +419,23 @@ function hit(state) {
   state.shake += CONFIG.feel.hitShake;
   state.flash = CONFIG.feel.flashHit;
   punch(state, 0, CONFIG.feel.punchHitY);
-  state.events.push({ type: "hit", lost });
+  emit(state, "hit", { lost });
 }
 
 export function approaching(state) {
   const reach = CONFIG.feel.telegraphReach;
   const band = CONFIG.collect.reachY;
-  return state.entities.filter((entity) => {
+  let write = 0;
+  for (let index = 0; index < state.entities.length; index += 1) {
+    const entity = state.entities[index];
     const gap = PLAYER_Y - entity.y;
-    return gap > band && gap <= reach;
-  });
+    if (gap > band && gap <= reach) {
+      approachingScratch[write] = entity;
+      write += 1;
+    }
+  }
+  approachingScratch.length = write;
+  return approachingScratch;
 }
 
 function punch(state, x, y) {

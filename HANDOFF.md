@@ -35,8 +35,9 @@ recuperação do dash.
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
 só levanta quando falta a declaração. O starter expõe assistência,
 `uiScale`, preset de uma mão e `docs/access.md`; `pagehide` descarrega
-o save. A chuva compacta o array vivo e reusa o poço; `npm run budget`
-cronometra simulação e `draw` no stub e relata o reuso.
+o save. A chuva compacta o array vivo e reusa o poço; evento e
+telegraph também reusam; `npm run budget` cronometra simulação e
+`draw` no stub e relata o reuso.
 
 **Arte, conteúdo, empacotar:** `art`, `content` e `ship` leem paleta ou
 art-bible vigente, dado fora do código e passo de build/export.

@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, createState, entityPoolStats, neutralIntent, CONFIG, PLAYER_Y } from "../src/game/rules.js";
+import { advance, approaching, createState, entityPoolStats, eventPoolStats, neutralIntent, CONFIG, PLAYER_Y } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -129,8 +129,27 @@ test("a ameaça marca o trilho antes do contato e some na faixa", () => {
   const near = approaching(state);
   assert.equal(near.length, 1);
   assert.equal(near[0].id, 1);
+  assert.equal(approaching(state), near, "o telegraph reusa o buffer; consumir antes do próximo quadro");
   state.entities[0].y = PLAYER_Y;
   assert.equal(approaching(state).length, 0, "na faixa de coleta o aviso já é o próprio orbe");
+});
+
+test("evento reusado não carrega campo do verbo anterior", () => {
+  const state = createState(1);
+  state.chain = 4;
+  state.spawnTimer = 999;
+  advance(state, { move: 0, dash: false, bank: true });
+  assert.deepEqual(state.events[0], { type: "bank", chain: 4, gain: 16 });
+  const before = eventPoolStats();
+  while (state.hitstop > 0 || state.bankLock > 0) {
+    advance(state, neutralIntent());
+  }
+  advance(state, { move: 1, dash: true, bank: false });
+  const dash = state.events.find((event) => event.type === "dash");
+  assert.deepEqual(dash, { type: "dash" });
+  assert.equal("chain" in dash, false);
+  assert.equal("gain" in dash, false);
+  assert.equal(eventPoolStats().created, before.created, "reusar o evento não cria outro objeto");
 });
 
 test("o pedido de guardar sobrevive ao hitstop da coleta", () => {

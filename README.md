@@ -373,7 +373,7 @@ movimento. Expõe `pause`, `reset`, `seed`, `observe`, `act`, `advance`, `captur
 e `dispose`, e **exercita** as oito em testes headless (`npm test`) — com uma
 ressalva: `capture` só na guarda de ausência de tela, porque `toDataURL` não
 existe em headless. A chuva compacta o array vivo e reusa um poço de
-entidades. Também tem `npm run budget` para o orçamento de simulação e do draw num
+entidades; evento e telegraph também reusam. Também tem `npm run budget` para o orçamento de simulação e do draw num
 canvas stub — relata o reuso, sem teto — e `npm run size` para os bytes de `dist/`. O
 README do starter declara em que degrau cada dimensão está, incluindo as que
 ainda não subiram.
