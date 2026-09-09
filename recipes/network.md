@@ -17,6 +17,7 @@ de acordo com o jogo. Reutilize o ambiente existente antes de criar um servidor.
 Separe contrato testado de capacidade presumida; nem toda interface sequencial
 suporta execução paralela.
 
-Referências de estudo: boardgame.io `RE-BGIO-005/009` e PettingZoo `RE-PZ-004/005/010`.
-O estudo externo não demonstra a segurança ou o comportamento de rede do jogo
-em edição. [Fontes](../references/sources.md).
+Referências no laboratório: testes de rede do Distrito Rabisco e estudos em `swipe/`.
+boardgame.io `RE-BGIO-005/009` e PettingZoo `RE-PZ-004/005/010`
+([fontes](../references/sources.md)). O estudo externo não demonstra a segurança
+ou o comportamento de rede do jogo em edição.

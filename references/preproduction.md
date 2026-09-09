@@ -4,6 +4,19 @@ Use ao conceber um jogo, definir uma expansão ou revisar sua direção. A unida
 de trabalho continua sendo uma mudança jogável e verificável. Estes artefatos
 organizam decisões; a existência de documentos não comprova qualidade do jogo.
 
+Em qualquer pedido sobre um jogo, comece pelo `context`: a checagem `foundation`
+é automática, mesmo em ajustes localizados. Ao encontrar lacunas, avise e inicie a
+[documentação automática](project-audit.md), sem pedir consentimento. A reconstrução
+de um jogo existente segue aquele roteiro; não exige
+reiniciar seu ciclo criativo nem preencher documentos sem evidência. O design system do jogo (Art Bible) e o
+Devlog complementam este ciclo quando o conteúdo ainda não tem registro canônico.
+Todo jogo identificável precisa da instância; o arquivo separado é opcional se outro
+canônico cobrir as seções. O contrato do estúdio está no
+[design system do jogo](game-design-system.md).
+Direção aprovada durante criação/evolução exige sincronizar a base no mesmo turno,
+mesmo quando arquivos antigos cobrem nominalmente as nove áreas. Use o evento
+`direction-approved` no `context`; registro de imagem isolado não encerra esse passo.
+
 ## Escolher a profundidade
 
 **Ajuste localizado:** atualize decisão, requisito e caso de QA no registro existente.
@@ -104,6 +117,10 @@ contratos, estado, integração, recursos e plano de verificação.
 decisões cobrem os requisitos do recorte e riscos sem prova viraram PoCs explícitas.
 Não imponha uma engine ou API universal. Decisão relevante pode usar um **ADR**,
 registro de decisão arquitetural, se o projeto já adota esse formato.
+`context --stage tdd` inclui a [receita de arquitetura](../recipes/architecture.md):
+contexto por tarefa, análise de consumidores, alternativas, reversibilidade,
+contraprova e passagem para a primeira fatia. A profundidade acompanha o alcance e
+a incerteza; alteração pequena não precisa de um novo documento.
 [Template](../assets/templates/tdd.md).
 
 ### `vertical-slice` — Vertical slice
@@ -163,6 +180,11 @@ critério de aceite e prova. Após mudança, atualize primeiro a decisão canôn
 marque a evidência afetada como desatualizada. Retome pelo último resultado, falha e
 próxima ação, sem descartar decisões já aceitas. Preserve hipóteses rejeitadas e custos
 observados para evitar repetir tentativas improdutivas.
+
+Ao concluir a entrega, selecione uma próxima ação, explique por que vem primeiro e
+o que comprova seu término; registre-a na fonte atual. “Continue” retoma esse ponto
+após conferir o estado real. Siga [continuidade e retomada](process.md#continuidade-e-retomada),
+sem apresentar todas as PoCs como se fossem uma única tarefa nem recomeçar o ciclo.
 
 ## Ferramentas e limites reais
 

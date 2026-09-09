@@ -24,6 +24,9 @@ Adapte o teste que já existe; crie um controle novo somente se o caso exigir e 
 capacidade não estiver disponível. Observação de estado deve conter o necessário
 à tarefa, sem transportar memória interna ilimitada para a IA a cada quadro.
 
-Referências de estudo: Phaser `RE-PHASER-005..010`, Excalibur `RE-EXCAL-004/007`, Godot
+Referências no laboratório: ciclo do Distrito Rabisco, verificador Unity de
+protótipo e ambientes de estudo em `swipe/`. Ausência desses arquivos neste
+repositório não invalida a receita.
+Phaser `RE-PHASER-005..010`, Excalibur `RE-EXCAL-004/007`, Godot
 `RE-DODGE-002/003/010` e PettingZoo `RE-PZ-002/005/007` fornecem precedentes
 distintos, incluindo callbacks que sobrevivem e seed ignorada. [Fontes](../references/sources.md).

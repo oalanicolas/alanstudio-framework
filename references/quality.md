@@ -16,8 +16,10 @@ Entrada, movimento e câmera sustentam o verbo central. Observe resposta, contin
 orientação, precisão e recuperação de erro. Movimento bom com mouse pode falhar no
 toque; cancelar um gesto, perder foco e reconectar um controle são cenários próprios.
 Som, animação, luz, efeitos e interface devem tornar causa e consequência perceptíveis
-sem esconder a ação. Verifique também silêncio, contraste e formas além da cor quando
-forem necessários para interpretar o estado.
+sem esconder a ação. Efeito novo sai de `shared/sfx` no laboratório, se existir; o
+piso é gravação licenciada, não 8-bit, chiptune, jsfxr nem Kenney arcade. Verifique
+também silêncio, contraste e formas além da cor quando forem necessários para
+interpretar o estado.
 
 ## Ritmo, aprendizado e domínio
 
@@ -33,7 +35,9 @@ Escala, câmera, silhuetas, materiais, iluminação e áudio formam uma direçã
 Landmarks ajudam orientação; ameaças e caminhos precisam ser legíveis em movimento.
 A versão visual aprovada é o piso. Não diminua detalhes, sombras, reflexos, animação
 ou efeitos para atingir FPS. Investigue implementações mais eficientes e registre
-custo quando a expansão visual exigir mais recursos.
+custo quando a expansão visual exigir mais recursos. O
+[design system do jogo](game-design-system.md) é o contrato operacional dessa
+direção: tokens, famílias, feel e receita de conteúdo novo, não só o moodboard.
 
 ## Estado e confiança
 
@@ -57,6 +61,7 @@ Para cada critério afetado registre no local de QA existente:
 - **Conclusão:** critério atendido, regressão ou pendência. Não declare aprovação
   do usuário quando só houve avaliação do agente.
 
-Origens: direção explícita do usuário, acervo do laboratório e os recortes
-listados em [sources.md](sources.md). Os estudos são referências históricas;
-suas medições não foram repetidas só por entrarem neste roteiro.
+Origens: o [playground](https://games.alanicolas.com/), os recortes em
+[sources.md](sources.md) e a direção de qualidade deste repositório. Os estudos
+são referências históricas; suas medições não foram repetidas só por entrarem
+neste roteiro.

@@ -1,4 +1,4 @@
-# Alan Studios Framework · 0.3
+# Alan Studios Framework · 0.8
 
 Harness thin para criar e evoluir games com IA. Compartilha conceitos, processo,
 seleção de contexto e evidência. Cada jogo continua usando sua engine, suas regras,
@@ -10,7 +10,7 @@ Executor para macOS/Linux, Python 3.10+; biblioteca padrão, sem instalação de
 dependências. Testes do harness usam também Node/npm quando exercitam
 `package.json`.
 
-Playground: [games.alanicolas.com](https://games.alanicolas.com/framework)
+Playground: [games.alanicolas.com/framework](https://games.alanicolas.com/framework)
 
 ## Começar
 
@@ -29,35 +29,65 @@ Na raiz deste repositório:
 ```sh
 python3 scripts/game.py discover --root /caminho/do/laboratorio
 python3 scripts/game.py context /caminho/do/jogo --focus create --root /caminho/do/laboratorio
-python3 scripts/game.py context /caminho/do/jogo --focus lifecycle --root /caminho/do/laboratorio
+python3 scripts/game.py scan /caminho/do/jogo --root /caminho/do/laboratorio
+python3 scripts/game.py context /caminho/do/jogo --focus architecture --stage tdd --root /caminho/do/laboratorio
 ```
 
 O contexto entrega caminhos para leitura, registros já existentes, catálogos de
-estudo (se um diretório irmão `Games-Frameworks` existir, ou
-`GAMES_FRAMEWORKS_ROOT`) e menções locais de pause/reset/seed em arquivos de
-inspeção. Não executa nada, não lê o acervo inteiro para dentro do prompt e não
-declara capacidade comprovada a partir de um token ou do nome da engine.
-`mentioned` não é `verified`.
+estudo (se um irmão `Games-Frameworks` existir, ou `GAMES_FRAMEWORKS_ROOT`),
+menções locais de pause/reset/seed e `foundation` (nove áreas documentais).
+Não executa o jogo. `mentioned` não é `verified`. `candidate_found` não prova
+suficiência, atualidade nem aprovação.
 
 Descoberta percorre até três níveis, reconhece `package.json`, HTML, Godot e
-Unity e para na raiz de cada projeto.
+Unity e para na raiz de cada projeto. `shared/` não entra como jogo.
+
+## Checagem e continuidade
+
+Todo `context` já corre `scan`. Também existe sozinho:
+
+```sh
+python3 scripts/game.py scan /caminho/do/jogo --root /caminho/do/laboratorio
+```
+
+Nove áreas: Brief/PRD; GDD; MDA; arquitetura/TDD; design system / Art Bible;
+Devlog; QA/playtest; como executar; origem de código e assets. Um documento
+pode cobrir várias. O scanner só lê nomes, títulos e campos; não segue symlink
+nem escreve arquivo.
+
+Se faltar base, `foundation.audit.required` pede ao agente **avisar e documentar
+sem esperar um segundo pedido**. Restrição explícita na conversa continua valendo.
+O scanner não executa a auditoria (`audit.executed: false`).
+
+Eventos de conversa, interpretados pelo agente — o comando não concede aprovação:
+
+```sh
+python3 scripts/game.py context /caminho/do/jogo --focus visual --event direction-approved --root /caminho/do/laboratorio
+python3 scripts/game.py context /caminho/do/jogo --focus mechanics --event resume --root /caminho/do/laboratorio
+```
+
+`direction-approved` sincroniza a base mínima no mesmo turno. `resume` localiza
+fontes de continuidade; o agente resolve o próximo passo. O harness deixa
+`next_step: null` e `executed: false`.
 
 ## Processo
 
 [Pré-produção](references/preproduction.md): Game Brief → GDD/MDA ↔ protótipo/PoC
 e playtest → PRD/TDD → vertical slice → produção/MVP → QA. Orientação de
 dependências, não esteira rígida. Um jogo pequeno pode reunir essas decisões em
-um documento. Os nove templates existem; o harness carrega só a etapa pedida.
+um documento.
+
+Nove templates do ciclo: brief, mda, gdd, poc, prd, tdd, vertical-slice, mvp, qa.
+Três complementos: `art-bible`, `devlog`, `audit`.
 
 ```sh
-python3 scripts/game.py context /caminho/do/jogo --focus content --stage gdd
+python3 scripts/game.py context /caminho/do/jogo --focus content --stage gdd --root /caminho/do/laboratorio
 python3 scripts/game.py template brief --project meu-jogo
-python3 scripts/game.py template prd --project meu-jogo --output /tmp/meu-jogo-prd.md
+python3 scripts/game.py template art-bible --project meu-jogo --output /tmp/meu-jogo-art.md
 ```
 
-Etapas: `brief`, `mda`, `gdd`, `poc`, `prd`, `tdd`, `vertical-slice`, `mvp`, `qa`.
 Sem `--output`, `template` só imprime. Com ele, cria um rascunho novo e recusa
-sobrescrita, inclusive de symlinks.
+sobrescrita, inclusive de symlinks. Gerar `template audit` não executa auditoria.
 
 **REUSE → ADAPT → CREATE.** CREATE só entra com lacuna explícita.
 O [contrato JSON](assets/work.example.json) formaliza uma decisão nova;
@@ -67,9 +97,25 @@ O [contrato JSON](assets/work.example.json) formaliza uma decisão nova;
 python3 scripts/game.py check-plan caminho/do/trabalho.json --root /caminho/do/laboratorio
 ```
 
-Receitas por foco: [criar](recipes/create.md), [mecânicas](recipes/mechanics.md),
+Receitas: [criar](recipes/create.md), [mecânicas](recipes/mechanics.md),
 [ciclo de vida](recipes/lifecycle.md), [conteúdo](recipes/content.md),
-[visual](recipes/visual.md), [rede](recipes/network.md).
+[visual](recipes/visual.md), [rede](recipes/network.md),
+[arquitetura](recipes/architecture.md). `--focus architecture` ou `--stage tdd`
+carrega a receita de arquitetura. A skill aplica quando a mudança afeta
+contratos ou responsabilidades; o CLI só seleciona referências.
+
+## Áudio (opcional)
+
+Se o laboratório tiver `shared/sfx` na raiz passada em `--root`:
+
+```sh
+python3 scripts/game.py sfx search passos --root /caminho/do/laboratorio
+python3 scripts/game.py sfx copy ID --to /caminho/do/jogo/public/sfx --root /caminho/do/laboratorio
+```
+
+Sem esse acervo, o catálogo vem vazio. Piso: gravação licenciada ou design
+contemporâneo. 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.
+Este repositório **não inclui** os arquivos de som.
 
 ## Verificar
 
@@ -77,22 +123,20 @@ Inspecione os scripts retornados por `context`. Escolha os validadores e a ordem
 do próprio jogo.
 
 ```sh
-python3 scripts/game.py verify /caminho/do/jogo --script test --output /tmp/jogo-qa-01
-python3 scripts/game.py verify /caminho/do/jogo --output /tmp/jogo-qa-01 --command python3 tools/verify.py
+python3 scripts/game.py verify /caminho/do/jogo --script test --output /tmp/jogo-qa-01 --root /caminho/do/laboratorio
+python3 scripts/game.py verify /caminho/do/jogo --output /tmp/jogo-qa-01 --root /caminho/do/laboratorio --command python3 tools/verify.py
 ```
 
-`--command` vai por último, com o executável e os argumentos. Não há shell
-implícito. Cada execução cria uma pasta inédita com logs, hashes, código de
-saída e HEAD/status Git. Destino existente é recusado. Build verde não prova
-arte, reinício, rede nem que o jogo é divertido. `experience_status` continua
-`not_assessed` mesmo com testes verdes.
+`--command` vai por último. Não há shell implícito. Cada execução cria uma pasta
+inédita. Destino existente é recusado. Build verde não prova arte, reinício, rede
+nem que o jogo é divertido. `experience_status` continua `not_assessed`.
 
 ## Três camadas
 
 - **IA:** interpreta a intenção, consulta fontes e propõe a mudança. Não depende
   de um fornecedor.
-- **Harness:** recorta o contexto, valida a forma do contrato e corre os
-  comandos escolhidos com recibo.
+- **Harness:** recorta o contexto, varre a base, valida a forma do contrato e
+  corre os comandos escolhidos com recibo.
 - **Memória:** brief, decisões, estudos e evidência ficam nos locais canônicos
   de cada jogo.
 
@@ -106,10 +150,12 @@ Os oito frameworks externos foram estudados em recortes; seus testes não foram
 executados. Os conceitos são adaptações desses estudos, não garantias universais.
 Mapa: [sources.md](references/sources.md).
 
+Recibos brutos de execução e o acervo sonoro ficam no laboratório.
+
 ## Testes
 
 ```sh
 python3 -m unittest discover -s tests -v
 ```
 
-Histórico das versões 0.1–0.3: [adoção](adoption.md).
+Histórico 0.1–0.8: [adoção](adoption.md).

@@ -31,7 +31,7 @@ inteiro.
 Nenhuma regra foi copiada como mecânica obrigatória para todos os gêneros.
 `context --focus` lista os catálogos deste mapa que existirem no irmão.
 
-## Pré-produção ampliada
+## Pré-produção e checagem
 
 Na versão 0.2, leitura adicional dos templates no mesmo commit BMad
 `2486f5f5f3b8870baa6cee4615a870c0330f441c`. Não foi uma nova extração Code
@@ -39,14 +39,23 @@ Anatomist nem execução dos workflows BMad.
 
 - Game Brief, GDD, PRD, arquitetura e playtest do módulo BMad, adaptados aos
   templates em [assets/templates](../assets/templates).
-- [MDA, artigo original](https://www.cs.northwestern.edu/~hunicke/MDA.pdf):
-  mecânicas, dinâmicas e experiência estética. A ficha de hipótese/contraprova
-  é aplicação nossa, não uma garantia do artigo.
-- [GDD na Unity](https://learn.unity.com/tutorial/664b276cedbc2a4d7b2e4f10?version=2022.3)
-  e [PRD na Atlassian](https://www.atlassian.com/agile/product-management/requirements/).
+- [MDA, artigo original](https://www.cs.northwestern.edu/~hunicke/MDA.pdf).
+- Distinção varredura × inspeção profunda, adaptada do fluxo document-project
+  do BMad, no [roteiro de auditoria](project-audit.md).
 
 Os templates foram redigidos em português. Não importam a hierarquia de agentes,
 instalação, publicação ou cerimônias BMad.
+
+## Arquitetura (0.8)
+
+A receita [architecture](../recipes/architecture.md) adapta processo transversal
+observado no Architect AIOX, sem copiar o runtime, o roteador de engines nem a
+hierarquia de agentes. Estudo e hashes ficam no laboratório.
+
+## Áudio
+
+O acervo `shared/sfx` é do laboratório, não deste repositório. O harness expõe
+`sfx search` / `sfx copy` quando essa pasta existir na raiz de `--root`.
 
 ## Playground
 

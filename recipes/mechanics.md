@@ -19,6 +19,7 @@ Para ajuste de dificuldade ou economia, registre situação inicial, comportamen
 observado e variável alterada. Compare alternativas sob o mesmo cenário. Não deduza
 equilíbrio da ausência de exceções ou de uma partida vencida pela própria IA.
 
-Referências de estudo: boardgame.io `RE-BGIO-003`, `RE-BGIO-006`, `RE-BGIO-011`.
+Referências: testes de Era Uma Vez e simulação de Brasa-Pista no laboratório;
+boardgame.io `RE-BGIO-003`, `RE-BGIO-006`, `RE-BGIO-011`
+([fonte](https://github.com/boardgameio/boardgame.io)).
 As regras externas descrevem aquele fluxo; não obrigam outros gêneros a usar turnos.
-[Fontes](../references/sources.md).

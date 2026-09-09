@@ -2,9 +2,18 @@
 
 Entrada: referência aprovada, diferença percebida e percurso/câmera de comparação.
 
-Leia a direção do usuário e os aprendizados de performance do próprio jogo.
+Leia [a qualidade](../references/quality.md) e os aprendizados de performance
+do laboratório, quando existirem.
 Reutilize materiais, modelos, efeitos, tokens e métodos coerentes com essa direção;
-adapte seus consumidores antes de criar variantes paralelas.
+adapte seus consumidores antes de criar variantes paralelas. A instância canônica
+é o design system do jogo (Art Bible); o contrato do estúdio está no
+[design system do jogo](../references/game-design-system.md).
+
+Quando o usuário aprovar uma referência durante criação/evolução, use `context
+<projeto> --focus visual --event direction-approved` e sincronize a base documental
+conforme [o roteiro](../references/project-audit.md#aprovação-de-direção-materializar-e-continuar).
+Salvar a imagem e anunciar o que será construído deixa esse trabalho pendente.
+Registre o alcance da aprovação; requisitos ou arquitetura ainda propostos mantêm esse estado.
 
 Capture o antes em condições equivalentes: versão, resolução, dispositivo, entrada,
 iluminação e trecho em movimento. Localize o gargalo pelo caminho real antes de
@@ -24,5 +33,6 @@ Registre efeito visual, custo e hipóteses descartadas. Teste técnico não apro
 Sem comparação suficiente, declare a lacuna; não redefina uma versão degradada como
 novo piso. Não marque aprovação do usuário a partir da opinião da IA.
 
-Excalibur `RE-EXCAL-020/021` descreve infraestrutura de teste visual, não um
-critério universal de qualidade artística. [Fontes](../references/sources.md).
+Fontes históricas no laboratório: estudos de FPS, corrida e demos visuais.
+Excalibur `RE-EXCAL-020/021` descreve infraestrutura de teste visual, não um critério
+universal de qualidade artística ([fonte](https://github.com/excaliburjs/Excalibur)).
