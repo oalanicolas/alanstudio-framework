@@ -365,3 +365,26 @@ Os templates Games foram redigidos em português e adaptados aos executores loca
 Não importam a hierarquia de agentes, instalação, publicação ou cerimônias BMad.
 PoC, vertical slice e MVP recebem critérios distintos no [ciclo criativo](preproduction.md);
 profundidade e evidência acompanham a tarefa, sem nove arquivos obrigatórios.
+
+## Aprendizados de aplicações
+
+Extração dos registros do laboratório em setembro de 2026: workflow de criação
+com IA e rodadas de Fenda Arcana, Bebê Geleia (web/HDRP), Rabisco, Brasa-Pista,
+Satisfactory Blueprint, Megarealista, Guerra dos Rabiscos e Forja Lendária.
+Os relatos incluem contraprovas e correções de interpretações anteriores.
+
+- [Workflow](creative-workflow.md): intenção, materialização, QA e decisão num ciclo.
+- [Performance](../recipes/performance.md): comparação causal, custo, invalidação e física.
+- [Web](../packs/platforms/web.md): carregador, instâncias, passes e medição real.
+- [Unity](../packs/platforms/unity.md): persistência, variantes, paridade e serialização.
+- [Conteúdo](../recipes/content.md) e [áudio](../recipes/audio.md): contratos de assets,
+  transporte íntegro, relógio da simulação e memória decodificada.
+- [Gestão de módulos](workspace-binding.md#módulos): extração por commit, links,
+  seleção por manifesto, preservação de trabalho e política de publicação.
+
+As generalizações são pontos de aplicação condicionados ao contrato e à versão do
+projeto. Não comprovam ganhos em outros jogos, não tornam fornecedores obrigatórios
+e não substituem observar o consumidor final. Os números, arquivos brutos e
+aprovações específicas ficam nos registros do jogo; o framework não depende de
+acesso ao laboratório para usar as orientações. Revisão futura incorpora a
+contraprova à fonte canônica conforme [o procedimento](learning.md).

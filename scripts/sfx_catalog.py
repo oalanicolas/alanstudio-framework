@@ -1,33 +1,31 @@
 """Entrada do harness para o acervo em shared/sfx, se existir no laboratório."""
 from pathlib import Path
 import json
-import os
 import shlex
 
 import audio
 
 
 def default_workspace():
-    configured = os.environ.get("GAMES_WORKSPACE_ROOT")
-    if configured:
-        return Path(configured).expanduser().resolve()
-    here = Path(__file__).resolve()
-    if here.parents[1].name == "framework" and (here.parents[2] / "AGENTS.md").is_file():
-        return here.parents[2]
-    return Path.cwd()
+    return audio.default_workspace()
 
 
 DEFAULT_ROOT = default_workspace()
 CATALOG_RELATIVE = Path("shared/sfx")
 LICENSES = tuple(audio.LICENSES)
 QUALITY_BAR = {
-    "required": ["gravação licenciada ou design sonoro contemporâneo com origem",
+    "required": ["origem e licença compatíveis com o uso; direção sonora definida pelo projeto",
                  "arquivo íntegro e decodificável, sem perda adicional na biblioteca",
                  "ouvir o candidato no contexto do jogo"],
-    "rejected": ["8-bit", "chiptune", "jsfxr", "sfxr", "bfxr", "bipes retrô",
-                 "Kenney arcade como padrão do estúdio"],
+    "rejected": [],
     "note": "Triagem documental/técnica não é aprovação artística; preserve a mixagem do jogo.",
 }
+
+
+def quality_bar(root=None):
+    policy = audio.audio_policy(root)
+    return {**QUALITY_BAR, "rejected": [*policy["excluded_terms"], *policy["excluded_authors"]],
+            "policy": policy}
 
 
 def catalog_dir(root=None):
@@ -43,7 +41,7 @@ def studio_assets(root=None):
     catalog = load_catalog(root)
     return {"sfx": {
         "catalog": str(base / "catalog.json"), "guide": str(base / "README.md"),
-        "exists": (base / "catalog.json").is_file(),
+        "exists": (base / "catalog.json").is_file(), "policy": audio.audio_policy(root),
         "file_count": len(catalog["sounds"]), "updated": catalog.get("updated"),
         "rule": "Busque em shared/sfx antes de baixar som; ouça e exporte com créditos.",
     }}
@@ -67,7 +65,7 @@ def search_catalog(query, root=None, limit=40):
 def copy_entry(entry_id, destination, root=None, sources=None):
     base = catalog_dir(root)
     item = audio.select(load_catalog(root)["sounds"], [entry_id])[0]
-    payload = audio.export_payload([item], base)
+    payload = audio.export_payload([item], base, audio.audio_policy(root))
     name = item["id"] + Path(item["file"]).suffix
     destination = Path(destination).resolve()
     if destination.is_relative_to(base.resolve()) or base.resolve().is_relative_to(destination):
@@ -120,7 +118,7 @@ def summarize(root=None):
         "file_count": len(catalog["sounds"]),
         "total_bytes": sum(s["bytes"] for s in catalog["sounds"]),
         "originals": sum(s.get("edition") == "original" for s in catalog["sounds"]),
-        "updated": catalog.get("updated"), "quality_bar": QUALITY_BAR,
+        "updated": catalog.get("updated"), "quality_bar": quality_bar(root),
         "categories": [{"title": name, "count": count} for name, count in sorted(groups.items())],
         "search": f"{command} search TERMO",
         "listen": f"{command} serve",
@@ -129,7 +127,7 @@ def summarize(root=None):
 
 
 def verify_catalog(root=None):
-    result = audio.check(catalog_dir(root))
+    result = audio.check(catalog_dir(root), policy=audio.audio_policy(root))
     return {"ok": result["ok"], "problems": result["errors"],
             "file_count": result["sounds"], "warnings": result["warnings"]}
 
@@ -138,7 +136,7 @@ def serve_catalog(root=None, port=8766):
     from functools import partial
 
     server = audio.ThreadingHTTPServer(("127.0.0.1", port),
-                                      partial(audio.CatalogHandler, root=catalog_dir(root)))
+                                      partial(audio.CatalogHandler, root=catalog_dir(root), policy=audio.audio_policy(root)))
     print(f"http://127.0.0.1:{port}/", flush=True)
     try:
         server.serve_forever()

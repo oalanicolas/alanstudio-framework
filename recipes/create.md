@@ -5,6 +5,9 @@ Se algo foi omitido, assuma a opção coerente com o acervo e registre; só inte
 por decisão indispensável. O destino de um jogo novo deve ser novo; continuação usa
 o projeto atual.
 
+O [workflow de criação com IA](../references/creative-workflow.md) organiza intenção,
+construção, teste e decisão no mesmo ciclo, do primeiro experimento à publicação.
+
 O caminho curto está em [ambição](../references/ambition.md): um ciclo jogável
 na primeira sessão, depois feel e áudio do verbo, depois receita de conteúdo.
 Não gere todos os templates antes de experimentar. Nove arquivos vazios não

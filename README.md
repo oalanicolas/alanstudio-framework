@@ -428,8 +428,9 @@ python3 scripts/game.py sfx search passos --root /caminho/do/laboratorio
 python3 scripts/game.py sfx copy ID --to /caminho/do/jogo/public/sfx --root /caminho/do/laboratorio
 ```
 
-Sem esse acervo, o catálogo vem vazio. Piso: gravação licenciada ou design
-contemporâneo. 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.
+Sem esse acervo, o catálogo vem vazio. A origem e a licença continuam obrigatórias.
+Estilos, fornecedores excluídos e piso técnico são [configuração do workspace](references/workspace-binding.md#áudio),
+preservando a direção sonora de cada jogo.
 Este repositório **não inclui** os arquivos de som.
 
 ## Verificar

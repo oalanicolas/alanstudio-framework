@@ -8,7 +8,7 @@ import sys
 
 workspace = Path(__file__).resolve().parents[2]
 core = workspace / "framework/core"
-script = core / "scripts/game.py"
+script = core / "scripts" / Path(__file__).name
 if not script.is_file():
     raise SystemExit(
         f"Framework compartilhado ausente: {core}. "

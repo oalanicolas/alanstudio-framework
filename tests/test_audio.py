@@ -4,6 +4,7 @@ import importlib.util
 import io
 import json
 from pathlib import Path
+import sys
 import tempfile
 import threading
 import unittest
@@ -13,7 +14,9 @@ from urllib.request import Request, urlopen
 import zipfile
 
 
-spec = importlib.util.spec_from_file_location("audio_catalog", Path(__file__).parents[1] / "scripts/audio.py")
+SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
+sys.path.insert(0, str(SCRIPTS))
+spec = importlib.util.spec_from_file_location("audio_catalog", SCRIPTS / "audio.py")
 audio = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(audio)
 
@@ -89,12 +92,17 @@ class AudioCatalogTests(unittest.TestCase):
         self.assertEqual(audio.search(sounds, "madeira metal"), [])
         self.assertEqual(audio.search(sounds, license_id="CC0-1.0"), [])
 
-    def test_retro_and_unlicensed_input_rejected(self):
-        for key, value in [("style", "chiptune"), ("title", "8-bit click")]:
+    def test_style_is_a_local_policy_and_license_remains_required(self):
+        policy = {"allowed_styles": ["recorded"], "excluded_terms": ["8-bit"], "excluded_authors": ["Kenney"]}
+        for key, value in [("style", "chiptune"), ("title", "8-bit click"), ("author", "Kenney")]:
             item = copy.deepcopy(self.item)
-            item[key] = value
+            if key == "author":
+                item["sources"][0][key] = value
+            else:
+                item[key] = value
+            audio.validate_metadata(item)
             with self.assertRaises(ValueError):
-                audio.validate_metadata(item)
+                audio.validate_metadata(item, policy)
         item = copy.deepcopy(self.item)
         item["sources"][0]["license"] = "unknown"
         with self.assertRaisesRegex(ValueError, "licença"):

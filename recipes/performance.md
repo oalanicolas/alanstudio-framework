@@ -48,3 +48,52 @@ em ambiente frio, comparação visual em movimento confirmando que o acabamento
 sobreviveu, e o consumo após um ciclo completo de montar e descartar. Degraus:
 [barra de acabamento](../references/production-bar.md#performance--estabilidade-não-média).
 Direção visual e câmera continuam em [visual](visual.md).
+
+## Comparações que permitem concluir alguma coisa
+
+Aprendizados de aplicações reais, com [origem e limites](../references/sources.md#aprendizados-de-aplicações):
+
+- Identifique o build servido, backend gráfico, dispositivo, visibilidade da página,
+  dimensões do buffer, DPR e escala interna. Tamanho CSS igual não garante pixels
+  iguais; renderização por software e HMR concorrente mudam o ensaio.
+- Compare câmera, semente, relógio, vento, física e estado de aquecimento equivalentes.
+  Preserve amostras brutas e configuração. Uma captura diferente pode revelar uma
+  abertura ou um efeito que a fixture geométrica não cobre.
+- Nomeie a grandeza medida: simulação isolada, duração de callback, intervalo de RAF,
+  CPU, GPU, carregamento e tempo de captura/exportação são medidas diferentes.
+  Leituras GPU, escrita de PNG e tempo simulado alteram a própria execução.
+- Separe bytes transferidos, buffers decodificados, heap, recursos GPU e memória total.
+  Contador de objetos ou heap JavaScript sozinho não mede PCM nem VRAM. Remover
+  referências e desconectar áudio não demonstram coleta imediata pelo sistema.
+- Faça contraprovas que deveriam falhar: trocar a variante, zerar o dado suspeito,
+  desativar o diagnóstico ou comparar reconstrução completa com atualização parcial.
+  Uma ferramenta de medição também pode desenhar na cena e falsificar seu resultado.
+- Ganho na média não demonstra redução de engasgos. Custos de build, compilação
+  aquecida e serialização não são FPS. Uma melhoria visual pode aumentar o custo;
+  registre ambos sem chamar a correção artística de otimização.
+
+## Eliminar trabalho preservando o contrato
+
+- Rejeite candidatos impossíveis antes de cálculos caros, usando limites conservadores.
+  Em física, considere pesos extrapolados, projeções anteriores e mudança de massa.
+  Mantenha ordem e precisão aritmética quando a paridade exigir e compare também o estado privado
+  de recuperação. Um grande ganho no caso rejeitado não é ganho equivalente no solver ativo.
+- Atualize derivadas caras quando seus dados mudarem. Um checksum calculado por quadro
+  pode pertencer ao evento de criação/alteração do mundo. Valide que o resultado e seus
+  consumidores continuam iguais, inclusive nas bordas entre regiões.
+- Cache precisa declarar invalidação por movimento, deformação em shader, ancestrais,
+  criação e remoção. Cenas dinâmicas não viram estáticas porque a matriz local ficou igual.
+- Agrupamento excessivo pode anular o culling. Compare grupos espaciais, instâncias e
+  custo por passagem; menos chamadas de desenho não garantem menos trabalho total.
+- Copiar um mapa grande ou compor estático/dinâmico pode custar mais que redesenhar
+  o conteúdo visível. Conte transferências, sincronização e submissões efetivas.
+- Subdividir apenas a integração de movimento pode reduzir dependência da taxa de
+  quadros. Não repetir eventos de borda, decisões de IA nem relógios de rede por subpasso.
+  Meça o aumento de consultas físicas em taxas baixas.
+- Grave trajetórias na precisão necessária e meça erro de posição/orientação antes
+  de reduzir frequência. Escolha armazenamento e retenção conforme o contrato; uma
+  falha de gravação deve preservar o registro anterior. Bytes menores não provam fidelidade.
+
+Os detalhes de carregador, sombras e migração ficam nos packages de
+[web](../packs/platforms/web.md) e [Unity](../packs/platforms/unity.md).
+Uma adaptação em outra versão precisa repetir a contraprova, não herdar o resultado.

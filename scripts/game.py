@@ -22,13 +22,7 @@ FRAMEWORK = Path(__file__).resolve().parents[1]
 
 
 def default_root():
-    configured = os.environ.get("GAMES_WORKSPACE_ROOT")
-    if configured:
-        return Path(configured).expanduser().resolve()
-    parent = FRAMEWORK.parent
-    if FRAMEWORK.name == "framework" and (parent / "AGENTS.md").is_file():
-        return parent
-    return Path.cwd()
+    return workspace.default_root()
 
 
 def default_studies_root(root=None):
@@ -46,6 +40,7 @@ _SCRIPTS = Path(__file__).resolve().parent
 if str(_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS))
 import sfx_catalog
+import workspace
 
 ROOT = default_root()
 STUDIES_ROOT = default_studies_root(ROOT)
@@ -1228,12 +1223,8 @@ def workspace_module(project, root=None):
     root = Path(root).resolve()
     if not (root / "workspace.json").is_file():
         return None
-    manifest = read_json(root / "workspace.json")
-    if not isinstance(manifest, dict) or manifest.get("version") != 1 or not isinstance(manifest.get("modules"), list):
-        raise ValueError("workspace.json precisa declarar version 1 e uma lista modules")
+    manifest = workspace.load_manifest(root, resolve_urls=False)
     for module in manifest["modules"]:
-        if not isinstance(module, dict) or not all(isinstance(module.get(key), str) and module[key] for key in ("id", "path")):
-            raise ValueError("Módulo precisa de id e path textuais")
         relative = PurePosixPath(module["path"])
         target = (root / relative).resolve()
         if relative.is_absolute() or ".." in relative.parts or not target.is_relative_to(root):
@@ -1242,7 +1233,7 @@ def workspace_module(project, root=None):
             return {
                 "id": module["id"], "path": module["path"],
                 "state": "present" if (target / ".git").exists() else "not_downloaded",
-                "get_command": shlex.join(["python3", str(root / "framework/scripts/workspace.py"),
+                "get_command": shlex.join(["python3", str(FRAMEWORK / "scripts/workspace.py"),
                                             "--root", str(root), "get", module["id"]]),
             }
     return None
@@ -1255,9 +1246,7 @@ def workspace_profile(root):
     result = {"root": str(root), "config": None, "context_files": [], "missing": []}
     if not config.is_file():
         return result
-    data = read_json(config)
-    if not isinstance(data, dict) or data.get("version") != 1:
-        raise ValueError("framework/config.json precisa declarar version 1")
+    data = workspace.load_config(root)
     files = data.get("context_files", [])
     if not isinstance(files, list) or not all(isinstance(name, str) and name for name in files):
         raise ValueError("context_files precisa ser uma lista de caminhos")
@@ -1388,7 +1377,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "studies lista catálogos do foco se existirem no irmão Games-Frameworks; ausência não é evidência negativa.",
             "capabilities.mentioned é só token em arquivo de inspeção. Não prova pause, reset, seed nem determinismo.",
             "capabilities.unknown significa não localizado na lista fixa de arquivos de inspeção, não capacidade ausente; rastreie o entrypoint e os consumidores na auditoria.",
-            "Áudio novo: busque em shared/sfx (`sfx search`) antes de baixar. Piso de gravação licenciada; 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.",
+            "Áudio novo: busque em shared/sfx (`sfx search`) antes de baixar. Direção sonora é do projeto; restrições locais estão em studio_assets.sfx.policy. Origem e licença continuam obrigatórias.",
             "Feel e áudio são focos próprios (`--focus feel`, `--focus audio`). Sem observação em movimento, experience_status permanece not_assessed; scaffold não é vertical slice.",
             "“AAA” neste harness é piso de acabamento da slice, não tier de publisher. Sem feel sincronizado, pacing e repeatability, não use o adjetivo.",
             "Checklist: ver finish no JSON. Jam observa core_groups; produto/AA soma product_groups; promise_groups só se prometidos. `template aaa` não certifica; N/A exige motivo.",
@@ -2396,8 +2385,9 @@ def main():
             emit(record(resolve(args.project, root), args.kind, args.author, args.note, parse_fields(args.field), args.attach, args.output.absolute()))
         elif args.action == "sfx":
             if (root / "workspace.json").is_file() and not (sfx_catalog.catalog_dir(root) / "catalog.json").is_file():
-                raise ValueError("Acervo sfx não baixado. Execute "
-                                 "python3 framework/scripts/workspace.py get sfx antes de consultar sons.")
+                command = shlex.join(["python3", str(FRAMEWORK / "scripts/workspace.py"),
+                                      "--root", str(root), "get", "sfx"])
+                raise ValueError(f"Acervo sfx não baixado. Execute {command} antes de consultar sons.")
             if args.sfx_action in (None, "summary"):
                 emit(sfx_catalog.summarize(root))
             elif args.sfx_action == "search":

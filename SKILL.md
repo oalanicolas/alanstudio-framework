@@ -95,8 +95,8 @@ se informada; sem ela, o limite é concluir o recorte. Retomada preserva prazo v
 3. **REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes pertinentes.
    `doctor` lista os starters disponíveis; começar por um deles é REUSE, escrever um
    loop do zero é CREATE. Se o laboratório tiver `shared/sfx`, use `sfx search` antes
-   de baixar som. Sem 8-bit,
-   chiptune, jsfxr ou Kenney arcade como padrão. Leia candidatos e consumidores.
+   de baixar som. A direção sonora e as restrições locais estão no projeto e em
+   `studio_assets.sfx.policy`; o núcleo não escolhe o estilo. Leia candidatos e consumidores.
    CREATE exige lacuna explícita. Para trabalho novo sem registro, use
    [o contrato](assets/work.example.json); `check-plan` valida a estrutura, não o mérito.
 4. **Arquitetura e fatia jogável.** Ligue intenção/GDD → requisitos/aceite → decisões
@@ -123,6 +123,8 @@ se informada; sem ela, o limite é concluir o recorte. Retomada preserva prazo v
    continua `not_assessed` até haver observação em movimento.
 6. **Comparar, registrar, continuar.** Confira pedido, artefato, prova e continuidade
    pela [revisão de entrega](references/delivery.md), no registro já existente.
+   Extraia [aprendizados transferíveis](references/learning.md) para o framework;
+   mantenha preferências, decisões do jogo e provas da aplicação no workspace.
    Compare antes/depois em condições equivalentes
    e em movimento quando houver efeito visual. Corrija regressões, registre decisões e
    hipóteses descartadas, cumpra `continuity.before_close` e

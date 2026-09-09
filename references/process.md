@@ -9,6 +9,7 @@ O ciclo de trabalho é: **definir → materializar → testar e jogar → decidi
 Protótipo e código compartilham o loop; arte, áudio e comportamento o abastecem.
 QA ocorre em toda rodada. Os passos operacionais abaixo detalham esse ciclo;
 sua numeração não corresponde à dos quatro passos do mapa conceitual.
+O [workflow de criação](creative-workflow.md) detalha esse mapa e o papel do criador.
 
 Após definir o próximo recorte, gere automaticamente o [prompt de continuidade](gauntlet.md)
 em linguagem comum, sem exigir vocabulário do framework. A execução repete este
@@ -141,6 +142,13 @@ Declare mudança, partes herdadas/adaptadas/criadas, comandos/resultados, observ
 da experiência e lacunas. Conclusão da IA é uma alegação sustentada por evidência.
 Registre tentativas descartadas, motivo das decisões e como reproduzir a comparação
 no registro existente. Performance tem registro próprio no laboratório, quando existir.
+
+Antes de encerrar, se houve aprendizado transferível, aplique [a extração](learning.md):
+registre a regra, suas condições e sua contraprova na receita, package, checklist ou
+ferramenta canônica do framework. O registro local conserva o caso e suas evidências.
+Preferências do criador e decisões do jogo continuam locais. Aprendizado reutilizável
+não pode existir somente no Devlog do jogo; uma hipótese ainda sem prova mantém esse
+estado explícito, sem virar recomendação universal.
 
 ## Continuidade e retomada
 

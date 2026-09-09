@@ -57,3 +57,40 @@ versão do editor declarada. Não substitui AGENTS nem a documentação oficial.
 
 Núcleo: [ciclo de vida](../../recipes/lifecycle.md), [conteúdo](../../recipes/content.md),
 [arquitetura](../../recipes/architecture.md), [produção](../../recipes/production.md).
+
+## Aprendizados de migração e fidelidade
+
+Derivados de migrações observadas em HDRP no laboratório em setembro de 2026.
+São pontos de investigação para a versão instalada, não promessa de equivalência
+entre engines. [Origem e limites](../../references/sources.md#aprendizados-de-aplicações).
+
+- Confira configuração serializada, cena reaberta e player. Componentes vivos no
+  Editor não comprovam que subassets, referências de lightmap ou materiais foram
+  persistidos. Teste perda de vínculo e reconstrução a partir da fonte canônica.
+- Variantes e keywords precisam existir no build, inclusive nas contraprovas.
+  Referências serializadas e o procedimento de atualização do pipeline devem ser
+  verificados antes de atribuir transparência quebrada à arte. Limpar keywords
+  indiscriminadamente também pode mudar o resultado.
+- Na paridade de render, confronte tonemapping, exposição, orientação HDR, luz ambiente
+  difusa, reflexos, resolução efetiva de sombras e filtragem. Alterar albedo para
+  esconder uma fonte de iluminação duplicada mascara a causa.
+- Valide o receptor final, não só a textura intermediária: pontos, normais, faces do
+  material e regiões influenciadas. Um buffer com energia positiva pode não produzir
+  a sombra esperada na imagem. Compare seleção de faces e amostragem equivalentes.
+- Reflexo planar exige plano, orientação, influência, resolução e mip corretos.
+  Intensidade maior não corrige projeção errada. Preserve valores HDR ao reorientar.
+- Malhas deformadas na CPU precisam fornecer história por vértice quando o pipeline
+  temporal a utiliza. Teste movimento, repouso e várias atualizações no mesmo quadro.
+  Vetores de câmera não substituem deformação local; registre custo de arrays e envio.
+- Isole shaders/passagens de diagnóstico do desenho normal e confirme a leitura de
+  pixels no espaço correto. Zero na entrada deve produzir a contraprova prevista.
+- Ao migrar física, preserve escala, unidades, gravidade por domínio, regras de
+  repouso e condições iniciais efetivas. Compare trajetórias e ciclo completo de contato;
+  posições parecidas em um instante não provam a mesma recuperação.
+- Para assets gerados muito grandes, investigue serialização binária por asset antes
+  de mudar a configuração global. Compare hashes dos buffers, bounds e identidade
+  das referências após salvar, reimportar e reaplicar. Tempo de desserialização não
+  é custo de GPU; preserve a prova de que o conteúdo permaneceu idêntico.
+
+As verificações acima complementam os testes do jogo e as comparações em movimento.
+Sucesso numérico não substitui correspondência visual nem aprovação artística.

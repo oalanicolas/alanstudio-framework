@@ -67,7 +67,7 @@ não aplicável ao jogo registra o motivo.
 - **Arte e animação:** silhueta, materiais, luz e leitura em movimento seguem o design
   system do jogo? Animação sustenta o verbo (antecipação, impacto, recuperação)?
 - **Áudio:** mixagem por camadas, prioridade de sons, silêncio intencional, música
-  reagindo ao estado; piso de gravação licenciada, não 8-bit por padrão.
+  reagindo ao estado; direção sonora do projeto e proveniência respeitadas.
 - **Feel:** latência entrada → resposta, hitstop, câmera, partículas, haptics; ver a
   [receita de feel](feel.md).
 - **UX/UI e acesso:** contraste, forma além da cor, foco e navegação por controle,

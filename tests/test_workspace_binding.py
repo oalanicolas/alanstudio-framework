@@ -1,4 +1,5 @@
 import json
+import hashlib
 import os
 from pathlib import Path
 import shlex
@@ -23,6 +24,8 @@ class WorkspaceBindingTest(unittest.TestCase):
         self.scripts.mkdir(parents=True)
         self.launcher = self.scripts / "game.py"
         shutil.copy2(CORE / "assets/workspace/game.py", self.launcher)
+        for name in ("workspace.py", "split_workspace.py", "audio.py", "sfx_catalog.py"):
+            (self.scripts / name).symlink_to("game.py")
         (self.framework / "core").symlink_to(CORE, target_is_directory=True)
         self.project = self.workspace / "games/demo"
         self.project.mkdir(parents=True)
@@ -125,6 +128,62 @@ class WorkspaceBindingTest(unittest.TestCase):
         result = self.run_cli("context", "games/demo")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("fora do workspace", result.stderr)
+
+    def test_module_entrypoint_uses_local_manifest_from_another_directory(self):
+        (self.workspace / "workspace.json").write_text(json.dumps({
+            "version": 1, "repository": "https://github.com/another-studio/lab.git",
+            "modules": [{"id": "demo", "path": "games/demo", "repository": "game-demo"}],
+        }))
+        result = self.run_cli("list", script=self.scripts / "workspace.py")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("demo → games/demo", result.stdout)
+        result = self.run_cli("--help", script=self.scripts / "split_workspace.py")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("--source", result.stdout)
+
+    def test_two_workspaces_keep_opposite_audio_policies_with_the_same_core(self):
+        data = b"deterministic fixture; not an audition"
+        sha = hashlib.sha256(data).hexdigest()
+        item = {"id": "retro-tone", "title": "8-bit tone", "category": "UI", "style": "chiptune",
+                "tags": ["retro"], "processing": "Original fixture", "bytes": len(data),
+                "sha256": sha, "file": f"files/{sha}.wav",
+                "technical": {"sample_rate": 22050, "bits_per_sample": 8, "duration": 1, "warnings": []},
+                "sources": [{"title": "Fixture", "author": "Kenney", "url": "https://example.invalid/fixture", "license": "CC0-1.0"}]}
+        other = self.base / "another-studio"
+        for root in (self.workspace, other):
+            catalog = root / "shared/sfx"
+            (catalog / "files").mkdir(parents=True)
+            (catalog / item["file"]).write_bytes(data)
+            (catalog / "catalog.json").write_text(json.dumps({"schema_version": 1, "sounds": [item]}))
+        config = json.loads((self.framework / "config.json").read_text())
+        config["audio"] = {"allowed_styles": ["recorded"], "excluded_terms": ["8-bit"],
+                           "excluded_authors": ["Kenney"], "min_sample_rate": 44100, "min_bits_per_sample": 16}
+        (self.framework / "config.json").write_text(json.dumps(config))
+        for action in (("sfx", "verify"), ("check",)):
+            script = self.launcher if action[0] == "sfx" else self.scripts / "audio.py"
+            rejected = self.run_cli(*action, script=script)
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            accepted = self.run_cli("--root", other, *action, script=script)
+            self.assertEqual(accepted.returncode, 0, accepted.stderr)
+            self.assertTrue(json.loads(accepted.stdout)["ok"])
+        rejected_copy = self.run_cli("sfx", "copy", "retro-tone", "--to", self.base / "export")
+        self.assertNotEqual(rejected_copy.returncode, 0)
+        self.assertFalse((self.base / "export").exists())
+        accepted_copy = self.run_cli("--root", other, "sfx", "copy", "retro-tone", "--to", self.base / "export")
+        self.assertEqual(accepted_copy.returncode, 0, accepted_copy.stderr)
+        self.assertEqual((self.base / "export/retro-tone.wav").read_bytes(), data)
+        local = json.loads(self.run_cli("sfx", "summary").stdout)
+        neutral = json.loads(self.run_cli("--root", other, "sfx", "summary").stdout)
+        self.assertIn("Kenney", local["quality_bar"]["rejected"])
+        self.assertEqual(neutral["quality_bar"]["rejected"], [])
+
+    def test_invalid_audio_policy_is_rejected_without_writing_a_catalog(self):
+        for policy in ({"excluded_authors": "someone"}, {"min_sample_rate": -1},
+                       {"unknown_preference": True}):
+            (self.framework / "config.json").write_text(json.dumps({"version": 1, "audio": policy}))
+            result = self.run_cli("sfx", "summary")
+            self.assertNotEqual(result.returncode, 0)
+            self.assertFalse((self.workspace / "shared").exists())
 
 
 if __name__ == "__main__":

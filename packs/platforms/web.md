@@ -60,3 +60,39 @@ AGENTS, `package.json` nem a documentação oficial dos navegadores e biblioteca
 
 Núcleo: [ciclo de vida](../../recipes/lifecycle.md), [visual](../../recipes/visual.md),
 [feel](../../recipes/feel.md), [produção](../../recipes/production.md).
+
+## Aprendizados de renderização e medição
+
+Extraídos de casos WebGL/WebGPU de setembro de 2026; confirmar no carregador e no
+backend instalado. [Origem](../../references/sources.md#aprendizados-de-aplicações).
+
+- Inspecione os objetos após o carregamento. Nomes normalizados, adaptadores de canvas
+  e formatos de textura podem diferir do arquivo exportado. Teste com o carregador
+  real, contando aberturas e verificando pixels/alpha/energia das texturas resultantes.
+- Em portais, cubra todas as aberturas, incluindo portas e frestas; confira a câmera
+  refletida e planos oblíquos. A visibilidade da imagem não define quais objetos
+  precisam projetar sombra. Cada passagem pode exigir sua própria lista visível.
+- Ao compactar instâncias, preserve identidade, matriz, semente de animação e quantidade.
+  Passagens que reescrevem listas precisam de buffers independentes; compartilhar
+  vértices não implica compartilhar o buffer mutável de instâncias.
+- Use margens de deformação coerentes com escala e domínio mundial. Vento em shader
+  invalida sombras e bounds mesmo sem mudança da transformação do objeto.
+- Ao separar estático/dinâmico, confirme a filtragem equivalente da profundidade.
+  Combinar dois resultados filtrados não é automaticamente filtrar um único mapa
+  composto. Meça cópias, preenchimento e submissões no backend real.
+- Para arma em primeira pessoa, um buffer próprio pode evitar recorte por paredes,
+  mas precisa compor profundidade e acabamento do jogo. Compare em espaço livre e
+  perto da parede; contabilize textura, profundidade, desenho e redimensionamento.
+- Confira DPR e projeção em shaders de partículas. Resolução nativa do renderer não
+  basta se o tamanho do ponto ignora esses fatores. Teste distâncias, FOV e densidades.
+- Clone de material não comprova independência do grafo de nós/uniforms. Rastreie
+  compartilhamento e o construtor real do bundle antes de alterar um recurso herdado.
+  Variar intensidade mantendo o conjunto de luzes estável é candidato a medir.
+- Uma falha HTTP/cache antes da criação do renderer não demonstra falta de suporte
+  gráfico. Isole cache do bundler e use build estável para comparar; registre o backend.
+- Métricas RAF e de callback não comprovam quadros apresentados pela GPU. Compare
+  também dimensões internas e escala da página; ferramentas e HMR podem alterar ambas.
+
+Persistência, pausa e descarte dos buffers de animação/áudio seguem as receitas de
+[conteúdo](../../recipes/content.md), [áudio](../../recipes/audio.md) e
+[performance](../../recipes/performance.md).

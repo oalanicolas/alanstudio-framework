@@ -30,5 +30,38 @@ Prova: recurso correto carregado no cenário real, comportamento preservado, cam
 alternativo e referência visual quando afetada. Arquivo gerado ou importado não
 comprova que está sendo consumido.
 
+## Aprendizados de produção e transporte de assets
+
+[Origem dos casos](../references/sources.md#aprendizados-de-aplicações). Aplicar
+conforme o contrato do consumidor e repetir a prova no projeto de destino.
+
+- Separe resolução do master, pixels por metro e escala física. Mais resolução não
+  exige mudar dimensões no mundo. Meça a superfície e a geometria avaliadas, não
+  apenas origem ou bounds; projeção, portas, pivôs e conexões precisam continuar iguais.
+- Textura repetível exige bordas e iluminação compatíveis. Ruído não periódico,
+  faces laterais e gradientes próprios de cada tile podem produzir emendas mesmo
+  em alta resolução. A solução depende da composição, não só do filtro.
+- Escalar um módulo inteiro pode deformar ferragens e sombras. Repetições montadas
+  antes do render e faixas disjuntas são alternativas quando preservam oclusão e
+  densidade. Escolha cortes pela silhueta projetada na câmera real, inclusive fora da grade.
+- Misturar imagens com alpha reduzido pode mudar opacidade. Compare composição
+  pré-multiplicada, orientação e estado térmico nas implementações de destino.
+- Em cenas de geração, limitar objetos vivos ao necessário evita trabalho alheio à
+  exportação. Preserve o arquivo autoral e diferencie tempo de preparação, render e IO.
+- Para limites de arquivo, considere dividir transporte mantendo os payloads originais
+  e conferir a remontagem por hash. Limite de hospedagem não exige reduzir quadros,
+  resolução ou duração. Tamanho codificado não mede custo decodificado ou GPU.
+- Animação de máquinas e efeitos deve seguir o relógio e o trabalho da simulação:
+  pausa, bloqueio, save e retomada precisam escolher a mesma pose. Um animador autônomo
+  de imagem pode quebrar esse contrato. Teste também o caminho de compatibilidade.
+- Reutilize canvas/texturas e feche imagens/decodificadores quando apropriado. Meça
+  montagem, aquecimento e descarte repetidos; histórico de HMR não isola vazamento.
+- Preserve assets não afetados e suas referências. Um refinamento estático não exige
+  regenerar bancos animados intactos. Compare manifestos e inventário distribuído
+  separadamente antes de afirmar aumento ou redução de download.
+- Variação de material não substitui detalhe funcional de forma, e distribuir mais
+  módulos não prova composição natural. Observe repetição, escala e leitura no jogo;
+  uma mudança artística não deve ser anunciada como otimização técnica.
+
 Referências: Era Uma Vez no playground, troca de assets em protótipo Unity, Ink `RE-INK-004/007/009`
 e LDtk `RE-LDTK-005/006/010` ([fontes](../references/sources.md)).

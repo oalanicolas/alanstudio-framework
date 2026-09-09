@@ -72,8 +72,8 @@ não só o utilitário. Um tween genérico sem dono não é feel reutilizável.
   estranho. Explicite a lacuna; crie só o elo que falta.
 
 Não importe um “juice pack” universal. Feel copiado de outro jogo sem ADAPT
-e proveniência dilui a instância. 8-bit, bounce cartoon ou screen-shake
-contínuo não são o padrão; o padrão é a referência aprovada deste jogo.
+e proveniência dilui a instância. O estilo, a intensidade e a continuidade dos
+efeitos seguem a referência aprovada deste jogo.
 
 ## 4. Ajustar uma variável por vez
 

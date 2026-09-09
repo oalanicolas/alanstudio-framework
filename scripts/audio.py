@@ -10,7 +10,6 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import io
 import json
 import math
-import os
 from pathlib import Path
 import re
 import shutil
@@ -19,16 +18,11 @@ import sys
 import unicodedata
 from urllib.parse import parse_qs, unquote, urlsplit
 import zipfile
+import workspace
 
 
 def default_workspace():
-    configured = os.environ.get("GAMES_WORKSPACE_ROOT")
-    if configured:
-        return Path(configured).expanduser().resolve()
-    here = Path(__file__).resolve()
-    if here.parents[1].name == "framework" and (here.parents[2] / "AGENTS.md").is_file():
-        return here.parents[2]
-    return Path.cwd()
+    return workspace.default_root()
 
 
 WORKSPACE = default_workspace()
@@ -37,8 +31,31 @@ LICENSES = {
     "CC0-1.0": "https://creativecommons.org/publicdomain/zero/1.0/",
     "CC-BY-4.0": "https://creativecommons.org/licenses/by/4.0/",
 }
-STYLES = {"recorded", "designed-modern", "instrumental"}
 EXTENSIONS = {".wav", ".ogg", ".mp3", ".flac", ".m4a"}
+
+
+def normalize_policy(data=None):
+    if data is None:
+        data = {}
+    if not isinstance(data, dict):
+        raise ValueError("audio precisa ser um objeto de preferências")
+    result = {"allowed_styles": [], "excluded_terms": [], "excluded_authors": [],
+              "min_sample_rate": 1, "min_bits_per_sample": 0}
+    if set(data) - result.keys():
+        raise ValueError("Campo desconhecido na política de áudio")
+    result.update(data)
+    for key in ("allowed_styles", "excluded_terms", "excluded_authors"):
+        if not isinstance(result[key], list) or not all(isinstance(v, str) and v.strip() for v in result[key]):
+            raise ValueError(f"audio.{key} precisa ser uma lista de textos")
+    for key, minimum in (("min_sample_rate", 1), ("min_bits_per_sample", 0)):
+        if type(result[key]) is not int or result[key] < minimum:
+            raise ValueError(f"audio.{key} precisa ser inteiro maior ou igual a {minimum}")
+    return result
+
+
+def audio_policy(root=None):
+    config = workspace.load_config(default_workspace() if root is None else root)
+    return normalize_policy(config.get("audio"))
 
 
 def read_json(path):
@@ -75,20 +92,23 @@ def load_catalog(root=LIBRARY):
     return data
 
 
-def validate_metadata(item):
+def validate_metadata(item, policy=None):
+    policy = normalize_policy(policy)
     if not re.fullmatch(r"[a-z0-9][a-z0-9._-]{2,95}", item.get("id", "")):
         raise ValueError("ID inválido: use 3–96 letras minúsculas, números, ponto, _ ou -")
     for key in ("title", "category", "processing"):
         if not isinstance(item.get(key), str) or not item[key].strip():
             raise ValueError(f"{item['id']}: falta {key}")
-    if item.get("style") not in STYLES:
-        raise ValueError(f"{item['id']}: estilo não aceito; sem 8-bit ou retrô")
+    if not isinstance(item.get("style"), str) or not item["style"].strip():
+        raise ValueError(f"{item['id']}: falta estilo sonoro")
+    if policy["allowed_styles"] and item["style"] not in policy["allowed_styles"]:
+        raise ValueError(f"{item['id']}: estilo não aceito pela política local")
     if (not isinstance(item.get("tags"), list) or not item["tags"]
             or any(not isinstance(t, str) or not t.strip() for t in item["tags"])):
         raise ValueError(f"{item['id']}: tags obrigatórias")
-    if re.search(r"8[- ]?bit|chiptune|bitcrush|sfxr|beep|bleep", fold(" ".join(
-            [item["title"], *item["tags"]]))):
-        raise ValueError(f"{item['id']}: estética incompatível com a biblioteca")
+    description = fold(" ".join([item["title"], *item["tags"]]))
+    if any(fold(term) in description for term in policy["excluded_terms"]):
+        raise ValueError(f"{item['id']}: estética incompatível com a política local")
     sources = item.get("sources")
     if not isinstance(sources, list) or not sources:
         raise ValueError(f"{item['id']}: procedência obrigatória")
@@ -98,8 +118,8 @@ def validate_metadata(item):
                 raise ValueError(f"{item['id']}: origem sem {key}")
         if source["license"] not in LICENSES:
             raise ValueError(f"{item['id']}: licença não suportada: {source['license']}")
-        if "kenney" in source["author"].lower():
-            raise ValueError(f"{item['id']}: Kenney não é o piso de áudio novo do estúdio")
+        if any(fold(author) in fold(source["author"]) for author in policy["excluded_authors"]):
+            raise ValueError(f"{item['id']}: autor excluído pela política local")
         if urlsplit(source["url"]).scheme not in {"https", "http"}:
             raise ValueError(f"{item['id']}: URL de origem inválida")
 
@@ -116,7 +136,8 @@ def audio_tool(name):
     raise ValueError(f"{name} funcional necessário para importar/verificar áudio")
 
 
-def inspect_audio(path):
+def inspect_audio(path, policy=None):
+    policy = normalize_policy(policy)
     probe = subprocess.run([
         audio_tool("ffprobe"), "-v", "error", "-select_streams", "a:0", "-show_streams",
         "-show_format", "-of", "json", str(path),
@@ -127,8 +148,8 @@ def inspect_audio(path):
     stream = info["streams"][0]
     rate = int(stream["sample_rate"])
     bits = int(stream.get("bits_per_sample", 0))
-    if rate < 44100 or (bits and bits < 16):
-        raise ValueError(f"{path.name}: abaixo do piso de entrada (44,1 kHz / PCM 16-bit)")
+    if rate < policy["min_sample_rate"] or (bits and bits < policy["min_bits_per_sample"]):
+        raise ValueError(f"{path.name}: abaixo do piso de entrada configurado")
     decoded = subprocess.run([
         audio_tool("ffmpeg"), "-v", "error", "-xerror", "-i", str(path), "-map", "0:a:0",
         "-f", "f32le", "-acodec", "pcm_f32le", "-",
@@ -160,10 +181,10 @@ def inspect_audio(path):
     }
 
 
-def prepare_import(path, metadata):
+def prepare_import(path, metadata, policy=None):
     item = dict(metadata)
     item.pop("local_path", None)
-    validate_metadata(item)
+    validate_metadata(item, policy)
     if path.suffix.lower() not in EXTENSIONS:
         raise ValueError(f"Formato não suportado: {path.suffix}")
     data = path.read_bytes()
@@ -172,7 +193,7 @@ def prepare_import(path, metadata):
         raise ValueError(f"{item['id']}: arquivo mudou desde a seleção")
     item.pop("expected_sha256", None)
     item.update(sha256=sha, bytes=len(data), file=f"files/{sha}{path.suffix.lower()}",
-                technical=inspect_audio(path),
+                technical=inspect_audio(path, policy),
                 review="Triagem documental e técnica; ouvir no contexto do jogo")
     return item, data
 
@@ -245,13 +266,13 @@ def select(sounds, ids):
     return sorted({lookup[key]["id"]: lookup[key] for key in ids}.values(), key=lambda s: s["id"])
 
 
-def export_payload(items, root=LIBRARY):
+def export_payload(items, root=LIBRARY, policy=None):
     payload, entries = {}, []
     credits = ["Áudio — acervo compartilhado Games", "",
                "Incorporar os créditos CC BY à tela/página de créditos do jogo.",
                "A exportação preserva os bytes disponíveis, sem processamento adicional.", ""]
     for item in items:
-        validate_metadata(item)
+        validate_metadata(item, policy)
         data = inside(root, item["file"]).read_bytes()
         if digest(data) != item["sha256"]:
             raise ValueError(f"Integridade inválida: {item['id']}")
@@ -272,11 +293,11 @@ def export_payload(items, root=LIBRARY):
     return payload
 
 
-def export_files(items, destination, root=LIBRARY):
+def export_files(items, destination, root=LIBRARY, policy=None):
     destination = destination.resolve()
     if destination.is_relative_to(root.resolve()) or root.resolve().is_relative_to(destination):
         raise ValueError("Exporte em uma pasta de assets separada do acervo")
-    payload = export_payload(items, root)
+    payload = export_payload(items, root, policy)
     if destination.exists():
         if not destination.is_dir():
             raise ValueError("Destino não é uma pasta")
@@ -293,7 +314,8 @@ def export_files(items, destination, root=LIBRARY):
     return {"files": len(items), "status": "exported", "destination": str(destination)}
 
 
-def check(root=LIBRARY, decode=False):
+def check(root=LIBRARY, decode=False, policy=None):
+    policy = normalize_policy(policy)
     sounds = load_catalog(root)["sounds"]
     if not sounds:
         raise ValueError("Catálogo vazio")
@@ -301,7 +323,7 @@ def check(root=LIBRARY, decode=False):
     errors, warnings = [], []
     for item in sounds:
         try:
-            validate_metadata(item)
+            validate_metadata(item, policy)
             for key in [item["id"], *item.get("aliases", [])]:
                 if key in ids:
                     raise ValueError(f"ID/alias duplicado: {key}")
@@ -315,8 +337,10 @@ def check(root=LIBRARY, decode=False):
             data = path.read_bytes()
             if digest(data) != item["sha256"] or len(data) != item["bytes"]:
                 raise ValueError(f"Integridade inválida: {item['id']}")
-            measured = inspect_audio(path) if decode else item["technical"]
-            if measured["sample_rate"] < 44100 or measured["duration"] <= 0:
+            measured = inspect_audio(path, policy) if decode else item["technical"]
+            bits = measured.get("bits_per_sample")
+            if (measured["sample_rate"] < policy["min_sample_rate"] or measured["duration"] <= 0
+                    or (bits and bits < policy["min_bits_per_sample"])):
                 raise ValueError(f"Metadados técnicos inválidos: {item['id']}")
             if decode and measured != item["technical"]:
                 raise ValueError(f"Medição divergente: {item['id']}")
@@ -328,8 +352,9 @@ def check(root=LIBRARY, decode=False):
 
 
 class CatalogHandler(BaseHTTPRequestHandler):
-    def __init__(self, *args, root=LIBRARY, **kwargs):
+    def __init__(self, *args, root=LIBRARY, policy=None, **kwargs):
         self.root = root
+        self.policy = normalize_policy(policy)
         super().__init__(*args, **kwargs)
 
     def log_message(self, *_):
@@ -366,7 +391,7 @@ class CatalogHandler(BaseHTTPRequestHandler):
             elif path == "/export":
                 ids = parse_qs(url.query).get("ids", [""])[0].split(",")
                 selected = select(load_catalog(self.root)["sounds"], ids)
-                payload = export_payload(selected, self.root)
+                payload = export_payload(selected, self.root, self.policy)
                 output = io.BytesIO()
                 with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_STORED) as archive:
                     for name, content in payload.items():
@@ -413,6 +438,7 @@ class CatalogHandler(BaseHTTPRequestHandler):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", type=Path, default=WORKSPACE)
     commands = parser.add_subparsers(dest="command", required=True)
     search_parser = commands.add_parser("search", help="Buscar sem acessar a rede")
     search_parser.add_argument("query", nargs="?", default="")
@@ -431,7 +457,10 @@ def main():
     commands.add_parser("serve").add_argument("--port", type=int, default=8766)
     args = parser.parse_args()
     try:
-        catalog = load_catalog()
+        root = args.root.resolve()
+        library = root / "shared/sfx"
+        policy = audio_policy(root)
+        catalog = load_catalog(library)
         if args.command == "search":
             result = search(catalog["sounds"], args.query, args.category, args.license)
             if not args.json:
@@ -443,21 +472,21 @@ def main():
         elif args.command == "info":
             result = select(catalog["sounds"], [args.id])[0]
         elif args.command == "check":
-            result = check(decode=args.decode)
+            result = check(library, decode=args.decode, policy=policy)
         elif args.command == "export":
-            result = export_files(select(catalog["sounds"], args.ids), args.to)
+            result = export_files(select(catalog["sounds"], args.ids), args.to, library, policy)
         elif args.command == "import":
-            result = save_imports([prepare_import(args.file, read_json(args.metadata))])
+            result = save_imports([prepare_import(args.file, read_json(args.metadata), policy)], library)
         elif args.command == "seed":
-            selection = read_json(LIBRARY / "selection.json")
+            selection = read_json(library / "selection.json")
             with ThreadPoolExecutor(max_workers=4) as workers:
                 prepared = list(workers.map(lambda s: prepare_import(
-                    inside(WORKSPACE, s["local_path"]), s), selection["sounds"]))
-            result = save_imports(prepared)
+                    inside(root, s["local_path"]), s, policy), selection["sounds"]))
+            result = save_imports(prepared, library)
         elif args.command == "serve":
             if not catalog["sounds"]:
                 raise ValueError("Catálogo vazio")
-            server = ThreadingHTTPServer(("127.0.0.1", args.port), partial(CatalogHandler, root=LIBRARY))
+            server = ThreadingHTTPServer(("127.0.0.1", args.port), partial(CatalogHandler, root=library, policy=policy))
             print(f"Acervo sonoro: http://127.0.0.1:{args.port}", flush=True)
             try:
                 server.serve_forever()
