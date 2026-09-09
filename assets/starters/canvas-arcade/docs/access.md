@@ -18,6 +18,6 @@ Declaração vigente. Opção no código não é sessão observada.
 - Contraste medido no dispositivo e em movimento — `npm run contrast` amostra pixels do stub após `draw()` e relata o par sem limiar; o aparelho alvo não foi observado
 - Jogo completável com uma só mão, observado
 - Sessão com cada modo ativo, observada
-- Leitura em escala de cinza no dispositivo alvo, observada
+- Leitura em escala de cinza no dispositivo alvo, observada — `npm run contrast` relata pixels que só o orbe ou só o estilhaço pintam com a mesma tinta no stub; o aparelho não foi observado
 
 Esta página não sobe o degrau. Ela impede de fingir que o recorte é completo.

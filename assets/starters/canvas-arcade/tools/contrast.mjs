@@ -86,7 +86,11 @@ function drawScene(settings, extra = {}) {
     state,
     { paused: false, alpha: 0, steps: 1 },
     settings,
-    { captions: extra.captions ?? [{ text: "orbe", count: 1 }], best: 18, hint: "bank" },
+    {
+      captions: extra.captions ?? [{ text: "orbe", count: 1 }],
+      best: extra.best === undefined ? 18 : extra.best,
+      hint: extra.hint === undefined ? "bank" : extra.hint,
+    },
   );
   return canvas;
 }
@@ -126,11 +130,73 @@ const scenes = [
   sampleScene("playing.flash", {}, { flash: true }),
 ];
 
+const SAME_INK = "#9a9a9a";
+
+function grayPalette(source) {
+  const next = { ...source };
+  next.orb = SAME_INK;
+  next.shard = SAME_INK;
+  return next;
+}
+
+function inkSet(canvas, cx, cy, reach) {
+  const field = canvas.sample(cx, cy + reach + 2);
+  const marks = new Set();
+  if (!field) return marks;
+  for (let y = cy - reach; y <= cy + reach; y += 1) {
+    for (let x = cx - reach; x <= cx + reach; x += 1) {
+      const pixel = canvas.sample(x, y);
+      if (!pixel) continue;
+      const delta =
+        Math.abs(pixel.r - field.r) + Math.abs(pixel.g - field.g) + Math.abs(pixel.b - field.b);
+      if (delta > 12) marks.add(`${x},${y}`);
+    }
+  }
+  return marks;
+}
+
+function shapeMask(kind) {
+  const state = createState(3);
+  state.player.x = 24;
+  state.entities = [{ id: 1, kind, x: FIELD_CENTER, y: 90, vy: 0 }];
+  const canvas = drawScene(
+    { palette: grayPalette(PALETTES.normal) },
+    { state, captions: [], hint: null, best: null },
+  );
+  return inkSet(canvas, FIELD_CENTER, 90, 12);
+}
+
+const orbInk = shapeMask("orb");
+const shardInk = shapeMask("shard");
+let shared = 0;
+let onlyOrb = 0;
+for (const mark of orbInk) {
+  if (shardInk.has(mark)) shared += 1;
+  else onlyOrb += 1;
+}
+let onlyShard = 0;
+for (const mark of shardInk) {
+  if (!orbInk.has(mark)) onlyShard += 1;
+}
+
+const shapes = {
+  same_ink: SAME_INK,
+  orb_ink: orbInk.size,
+  shard_ink: shardInk.size,
+  shared,
+  only_orb: onlyOrb,
+  only_shard: onlyShard,
+  masks_differ: onlyOrb > 0 && onlyShard > 0,
+  measured: false,
+};
+
 console.log(JSON.stringify({
   pairs: tokens,
   scenes,
+  shapes,
   scope:
     "Pares hex e pixels do stub após draw() numa cena montada. " +
-    "fillText é retângulo da cor, não glifo. Sem limiar, sem aprovação, " +
-    "sem dispositivo, sem movimento contínuo.",
+    "fillText é retângulo da cor, não glifo. Em cinza, orbe e estilhaço " +
+    "usam a mesma tinta; o stub conta pixels que só um deles pinta. " +
+    "Sem limiar, sem aprovação, sem dispositivo, sem movimento contínuo.",
 }, null, 2));

@@ -34,7 +34,7 @@ npm run budget     # custo da simulação e do draw num canvas stub
 npm run peak       # pico de cada WAV no disco; não é mix ouvido
 npm run mix        # soma as vozes de uma partida simulada; não é mix ouvido
 npm run probe      # dispara o buffer declarado; não é peso percebido
-npm run contrast   # pares hex + pixels do stub após draw(); não é dispositivo
+npm run contrast   # pares hex + pixels do stub após draw(); em cinza, forma sem cor; não é dispositivo
 npm run session    # partida simulada → totais e curva; `--spawn` escolhe a chuva; não é sessão observada
 npm run size       # bytes de dist/; sem teto e sem aprovação
 npm run build      # copia a árvore jogável para dist/; não prova outra máquina
@@ -108,7 +108,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | Dimensão | Degrau | Critério do degrau seguinte |
 | --- | --- | --- |
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor/câmera distintos; a ameaça marca o trilho, a recuperação do dash muda a silhueta e o erro acende o campo; `npm run probe` conta os buffers, não o peso percebido |
-| `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — a sequência de quadros no stub cobre o HUD; `npm run contrast` amostra a cena montada no stub; o dispositivo alvo ainda não foi observado |
+| `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — a sequência de quadros no stub cobre o HUD; `npm run contrast` amostra a cena montada e, em cinza, pixels que só o orbe ou só o estilhaço pintam; o dispositivo alvo ainda não foi observado |
 | `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; a paleta é mesa em `data/palettes.json`; `consistent` é falso |
 | `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — o palco tem folga, a cama ocupa o barramento de música e o mixer limita o master; `npm run mix` soma cama e vozes na simulação, não no dispositivo; loudness percebido não foi medido |
 | `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; a sessão relata never_banked e erro repetido na simulação; a curva com quem nunca viu o jogo continua pendente |

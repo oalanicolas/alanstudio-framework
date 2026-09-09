@@ -1,8 +1,9 @@
 # Design system — Canvas Arcade
 
 Primitivas por decisão, não placeholder. Orbe e estilhaço se separam por
-**forma** (círculo com anel versus losango), não só por cor: o jogo
-continua legível em escala de cinza. Paletas canônicas em
+**forma** (círculo com anel versus losango), não só por cor. O stub
+distingue as duas silhuetas com a mesma tinta; o dispositivo alvo
+não foi observado. Paletas canônicas em
 `data/palettes.json` (`normal` e `contrast`); o desenho consome
 `PALETTES` via `src/game/tables.js`.
 

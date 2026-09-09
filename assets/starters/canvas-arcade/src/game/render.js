@@ -1,8 +1,8 @@
 // Apresentação. Não decide regra e não altera o estado.
 //
 // Legibilidade antes de estilo: orbe e estilhaço têm **formas** diferentes, não
-// só cores diferentes, então o jogo continua jogável em escala de cinza e para
-// quem não distingue as duas cores. Tremor e piscada respeitam redução de
+// só cores diferentes. O stub distingue as silhuetas com a mesma tinta; o
+// dispositivo não foi observado. Tremor e piscada respeitam redução de
 // movimento — o sinal de causa migra para uma forma estática, não desaparece.
 
 import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching } from "./rules.js";
@@ -35,7 +35,12 @@ export function createRenderer(canvas, options = {}) {
 
   function draw(state, frame = {}, settings = {}, extra = {}) {
     const lines = bindLines(copy, settings.bindings ?? DEFAULT_BINDINGS);
-    const palette = settings.highContrast ? PALETTES.contrast : PALETTES.normal;
+    const palette =
+      settings.palette && typeof settings.palette.field === "string"
+        ? settings.palette
+        : settings.highContrast
+          ? PALETTES.contrast
+          : PALETTES.normal;
     const reduced = Boolean(settings.reducedMotion);
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.fillStyle = palette.background;

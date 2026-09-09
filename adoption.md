@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.43 — Orbe e estilhaço se separam sem a cor
+
+A art-bible dizia que o jogo continuava legível em cinza. Nada
+contava os pixels. `contrast` agora pinta os dois com a mesma tinta
+e relata o que só o círculo ou só o losango cobre. `verified`
+continua falso. `legibility` permanece `playable`: máscara no stub
+não é leitura no aparelho. Só `release` fica no piso.
+
+O que 0.9.43 não afirma: o harness não viu o jogo em movimento no
+dispositivo e não importou limiar de contraste.
+
 ## 0.9.42 — A paleta sai do render e vira mesa
 
 Trocar o look exigia abrir `render.js`. Os tokens moram em

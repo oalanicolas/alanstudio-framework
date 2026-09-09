@@ -22,7 +22,7 @@ const PLATE_EDGE_COLORS = new Set(Object.values(PALETTES).map((palette) => palet
 // algum retângulo" seria sempre verdadeiro. Cada retângulo guarda a cor com
 // que foi pintado, e só os da cor de placa contam.
 function recordingCanvas() {
-  const calls = { rects: [], edges: [], texts: [], order: [] };
+  const calls = { rects: [], edges: [], texts: [], order: [], arcs: 0, lineTos: 0 };
   let font = "8px system-ui";
   let align = "left";
   let pending = null;
@@ -41,8 +41,11 @@ function recordingCanvas() {
     },
     closePath() {},
     moveTo() {},
-    lineTo() {},
+    lineTo() {
+      calls.lineTos += 1;
+    },
     arc() {
+      calls.arcs += 1;
       calls.order.push("entidade");
     },
     ellipse() {},
@@ -353,6 +356,17 @@ test("em sequência de quadros o HUD continua coberto e as entidades passam por 
     assert.ok(frame.edges.length > 0, "borda da placa some no movimento");
   }
   assert.ok(framesWithEntities > 20, "a sequência precisa ter chuva, não só o campo vazio");
+});
+
+test("orbe e estilhaço usam primitivas diferentes, não só cores diferentes", () => {
+  const orb = createState(1);
+  orb.entities = [{ id: 1, kind: "orb", x: 80, y: 70, vy: 0 }];
+  const shard = createState(1);
+  shard.entities = [{ id: 1, kind: "shard", x: 80, y: 70, vy: 0 }];
+  const paintedOrb = paint(orb);
+  const paintedShard = paint(shard);
+  assert.ok(paintedOrb.arcs > paintedShard.arcs, "o orbe precisa do círculo; o estilhaço não");
+  assert.ok(paintedShard.lineTos > paintedOrb.lineTos, "o estilhaço precisa do losango; o orbe não");
 });
 
 test("a câmera por verbo desloca o campo e some com redução de movimento", () => {

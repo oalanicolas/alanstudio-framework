@@ -55,5 +55,13 @@ test("o contraste relata pares hex sem importar limiar nem aprovar", async () =>
   assert.notEqual(flashOrb, tokenOrb, "o flash muda o par orbe/campo; o token hex não vê isso");
   assert.match(report.scope, /Sem limiar/);
   assert.match(report.scope, /cena montada/);
+  assert.match(report.scope, /mesma tinta/);
+  assert.equal(report.shapes.measured, false);
+  assert.equal(report.shapes.same_ink, "#9a9a9a");
+  assert.ok(report.shapes.orb_ink > 0);
+  assert.ok(report.shapes.shard_ink > 0);
+  assert.ok(report.shapes.only_orb > 0, "o círculo precisa pintar pixels que o losango não pinta");
+  assert.ok(report.shapes.only_shard > 0, "o losango precisa pintar pixels que o círculo não pinta");
+  assert.equal(report.shapes.masks_differ, true);
   assert.doesNotMatch(stdout, /4\.5\s*:\s*1|WCAG|aprovado|verified/);
 });

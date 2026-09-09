@@ -48,7 +48,8 @@ movimento em `src/core/settings.js`, herda a preferência do sistema, preenche
 `{pause}`, `{reset}` e `{bank}` em `copy.json` com as teclas vivas, desenha formas
 distintas além da cor em `src/game/render.js` e mantém legenda equivalente para
 toda informação sonora em `src/game/audio.js`. `npm run contrast` amostra
-pixels do stub depois do `draw()` além dos pares hex — relata, não aprova,
+pixels do stub depois do `draw()` além dos pares hex e, em cinza, conta
+o que só o orbe ou só o estilhaço pinta — relata, não aprova,
 e não substitui o dispositivo.
 
 Prova: uma sessão completa com cada modo ativado, o jogo terminado sem áudio,
