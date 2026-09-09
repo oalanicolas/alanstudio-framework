@@ -27,6 +27,11 @@ um papel sem arquivo — depois da partida, antes dos rascunhos.
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
 só levanta quando falta a declaração.
 
+**Arte, conteúdo, empacotar:** `art`, `content` e `ship` leem paleta ou
+art-bible vigente, dado fora do código e passo de build/export. 
+`consistent`/`enough`/`shipped` são sempre falsos. O starter declara
+paleta e admite as outras duas lacunas.
+
 Esta árvore reúne produção, pacotes e memória persistente do PR #2 com os
 critérios observáveis, perguntas de valor e regras de escopo do PR #3.
 A integração preserva o trabalho de ambas as branches, inclusive os commits de

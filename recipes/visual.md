@@ -2,6 +2,10 @@
 
 Entrada: referência aprovada, diferença percebida e percurso/câmera de comparação.
 
+O harness lê paleta e art-bible vigentes com `art <projeto>`. Paleta no
+código não é direção consistente — `consistent` é sempre falso. Rascunho
+do `init` não conta. Sem declaração, `next` propõe `art.missing`.
+
 Leia [a qualidade](../references/quality.md) e os aprendizados de performance
 do laboratório, quando existirem.
 Reutilize materiais, modelos, efeitos, tokens e métodos coerentes com essa direção;

@@ -126,6 +126,12 @@ class HarnessTest(unittest.TestCase):
         self.assertEqual(found["corrida-lunar"]["validators"], ["test", "build"])
         self.assertEqual(found["era-uma-vez"]["validators"], [])
         self.assertEqual(found["ideia-do-farol"]["kind"], "static-web")
+        # Manifesto com `build` já declarou o passo; HTML estático não espera
+        # empacotar; os três ainda têm o conteúdo no código.
+        self.assertFalse(found["corrida-lunar"]["ship_unpacked"])
+        self.assertFalse(found["ideia-do-farol"]["ship_unpacked"])
+        self.assertTrue(found["ideia-do-farol"]["content_inline"])
+        self.assertFalse(found["ideia-do-farol"]["art_declared"])
 
     def test_the_review_reads_the_bar_of_each_game_without_assigning_one(self):
         madura, _, _ = self.studio()
@@ -976,6 +982,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "access.missing": "acessibilidade sem opção",
             "save.unversioned": "save sem versão",
             "performance.unbudgeted": "orçamento ausente",
+            "art.missing": "direção de arte ausente",
+            "content.inline": "conteúdo ainda no código",
+            "ship.unpacked": "empacotar ainda sem passo",
             "areas.draft_only": "rascunho",
             "areas.historical_or_reference_only": "documento sem versão vigente",
             "continuity.sources": "continuidade",
@@ -1424,6 +1433,13 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("access.missing", bases)
         self.assertNotIn("save.unversioned", bases)
         self.assertNotIn("performance.unbudgeted", bases)
+        self.assertNotIn("art.missing", bases)
+        self.assertIn("content.inline", bases)
+        self.assertIn("ship.unpacked", bases)
+        direction = game.art_reading(destination)
+        self.assertTrue(direction["declared"])
+        self.assertTrue(direction["bible_draft"])
+        self.assertFalse(direction["consistent"])
         # O projeto herda a tabela do starter, então a barra já tem piso e a
         # proposta nomeia a dimensão em vez de listar as dez.
         self.assertIn("production_bar.floor", bases)
@@ -1442,6 +1458,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(after["signals"]["feel_unobserved"])
         after_bases = [item["basis"] for item in after["alternatives"]]
         self.assertIn("feel.unobserved", after_bases)
+        self.assertIn("content.inline", after_bases)
+        self.assertIn("ship.unpacked", after_bases)
         self.assertIn("areas.draft_only", after_bases)
 
     def test_next_names_missing_access_before_the_bar_on_a_bare_canvas(self):
@@ -1456,6 +1474,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(result["proposal"]["basis"], "access.missing")
         self.assertFalse(game.access_reading(self.project)["declared"])
         bases = [item["basis"] for item in result["alternatives"]]
+        self.assertIn("art.missing", bases)
+        self.assertIn("content.inline", bases)
+        self.assertNotIn("ship.unpacked", bases)
         self.assertIn("production_bar.undeclared", bases)
         self.assertEqual(result["signals"]["production_bar_undeclared"], list(game.BAR_DIMENSIONS))
         self.assertIsNone(result["signals"]["production_bar_floor"])
@@ -1994,6 +2015,109 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "performance"))]
         self.assertIn("performance.unbudgeted", bases)
 
+    def test_art_content_and_ship_read_the_starter_without_claiming_proof(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        art = game.art_reading(starter)
+        inventory = game.content_reading(starter)
+        pack = game.ship_reading(starter)
+        self.assertTrue(art["declared"])
+        self.assertFalse(art["missing"])
+        self.assertFalse(art["consistent"])
+        self.assertEqual({item["key"] for item in art["palettes"]}, {"normal", "contrast"})
+        self.assertIsNone(art["bible"])
+        self.assertFalse(art["bible_current"])
+        self.assertFalse(art["bible_draft"])
+        self.assertFalse(inventory["external"])
+        self.assertTrue(inventory["inline"])
+        self.assertFalse(inventory["enough"])
+        self.assertTrue(pack["expected"])
+        self.assertTrue(pack["unpacked"])
+        self.assertFalse(pack["shipped"])
+
+    def test_art_names_a_canvas_without_palette_or_bible(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        report = game.art_reading(self.project)
+        self.assertFalse(report["declared"])
+        self.assertTrue(report["missing"])
+        self.assertFalse(report["consistent"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "visual"))]
+        self.assertIn("art.missing", bases)
+
+    def test_a_draft_art_bible_does_not_count_as_direction(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "docs").mkdir()
+        (self.project / "docs/art-bible.md").write_text("# Design system\n\n- Paleta: [preencher]\n")
+        report = game.art_reading(self.project)
+        self.assertTrue(report["bible_draft"])
+        self.assertFalse(report["bible_current"])
+        self.assertFalse(report["declared"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "visual"))]
+        self.assertIn("art.missing", bases)
+
+    def test_a_current_art_bible_counts_as_declared_direction(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "docs").mkdir()
+        (self.project / "docs/art-bible.md").write_text(
+            "# Design system\n\nPrimitivas azuis e laranja; escala 1x no canvas.\n"
+        )
+        report = game.art_reading(self.project)
+        self.assertTrue(report["declared"])
+        self.assertTrue(report["bible_current"])
+        self.assertFalse(report["missing"])
+        self.assertFalse(report["consistent"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "visual"))]
+        self.assertNotIn("art.missing", bases)
+
+    def test_art_does_not_treat_a_nested_object_as_another_palette(self):
+        (self.project / "theme.js").write_text(
+            "export const PALETTES = {\n"
+            "  normal: { field: '#171b26', glow: { color: '#fff' } },\n"
+            "  contrast: { field: '#000' },\n"
+            "}\n"
+        )
+        report = game.art_reading(self.project)
+        self.assertEqual([item["key"] for item in report["palettes"]], ["normal", "contrast"])
+
+    def test_content_names_data_files_as_external(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "data").mkdir()
+        (self.project / "data/waves.json").write_text("[]\n")
+        report = game.content_reading(self.project)
+        self.assertTrue(report["external"])
+        self.assertFalse(report["inline"])
+        self.assertFalse(report["enough"])
+        self.assertEqual(report["files"], ["data/waves.json"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project))]
+        self.assertNotIn("content.inline", bases)
+
+    def test_ship_names_a_package_without_a_pack_step(self):
+        self.package()
+        self.foundation_document()
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        report = game.ship_reading(self.project)
+        self.assertTrue(report["expected"])
+        self.assertTrue(report["unpacked"])
+        self.assertFalse(report["shipped"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "release"))]
+        self.assertIn("ship.unpacked", bases)
+        (self.project / "docs").mkdir(exist_ok=True)
+        (self.project / "docs/release.md").write_text(
+            "# Release\n\nExport: npm run build. Artefato em dist/.\n"
+        )
+        after = game.ship_reading(self.project)
+        self.assertFalse(after["unpacked"])
+        self.assertTrue(after["release_current"])
+        self.assertFalse(after["shipped"])
+
+    def test_ship_stays_silent_on_html_without_a_manifest(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        report = game.ship_reading(self.project)
+        self.assertFalse(report["expected"])
+        self.assertFalse(report["unpacked"])
+        self.assertFalse(report["shipped"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project))]
+        self.assertNotIn("ship.unpacked", bases)
+
     def test_next_only_raises_craft_for_a_gate_the_project_asked_for(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         self.foundation_document()
@@ -2161,6 +2285,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         (self.project / "settings.js").write_text(
             "export const settings = { highContrast: false, reducedMotion: false, captions: true, bindings: {} }\n"
         )
+        (self.project / "palettes.js").write_text(
+            "export const PALETTES = { normal: { field: '#171b26' }, contrast: { field: '#000' } }\n"
+        )
+        (self.project / "data").mkdir()
+        (self.project / "data/waves.json").write_text("[]\n")
         (self.project / "AGENTS.md").write_text("# Jogo\nRodar: abrir index.html.\n")
         self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS} | {"audio_mix": ("prototype", "playable")})
         result = game.next_step(self.project, "feel")
@@ -2619,6 +2748,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         (self.project / "settings.js").write_text(
             "export const settings = { highContrast: false, reducedMotion: false, captions: true, bindings: {} }\n"
         )
+        (self.project / "palettes.js").write_text(
+            "export const PALETTES = { normal: { field: '#171b26' }, contrast: { field: '#000' } }\n"
+        )
+        (self.project / "data").mkdir()
+        (self.project / "data/waves.json").write_text("[]\n")
         result = game.next_step(self.project, "feel")
         self.assertEqual(result["proposal"]["basis"], "agent_context.not_located")
         self.assertEqual(result["signals"]["agent_context"], "not_located")

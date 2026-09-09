@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.11 — Arte, conteúdo e empacotar no disco
+
+Três dimensões AAA que a barra já nomeava e o harness não lia: `art`
+(`const PALETTES`, tokens.json, art-bible vigente), `content` (data/levels
+ou .ldtk/.tmx/.ink) e `ship` (script build/export, docs/release.md vigente
+ou CI). `consistent`/`enough`/`shipped` são sempre `false`. `next` propõe
+`art.missing`, `content.inline` e `ship.unpacked` depois do orçamento e
+antes dos rascunhos. O starter declara paleta; conteúdo ainda mora no
+código e não há passo de export — um `init` fresco ganha essas duas
+tarefas nas alternativas, não na primeira proposta.
+
+O que 0.9.11 não afirma: o harness não compara silhueta, não conta itens
+e não executa o export. HTML sem manifesto não dispara `ship.unpacked`.
+
 ## 0.9.10 — Alcance, save e orçamento no disco
 
 Três dimensões AAA que o starter já implementa e o harness não lia:

@@ -49,7 +49,11 @@ problema, porque ninguém sabe o que estava dentro dela.
 Implementação concreta a adaptar: o starter `canvas-arcade` não tem dependências
 e serve por `tools/serve.mjs`, o que torna o clone limpo trivial de reproduzir —
 e também significa que o passo de export ainda não existe ali. Esse é justamente o
-primeiro trabalho de release em um projeto derivado dele.
+primeiro trabalho de release em um projeto derivado dele. O harness lê essa
+ausência com `ship <projeto>` (script `build`/`export`, `docs/release.md`
+vigente ou CI). Script presente não é artefato entregue — `shipped` é
+sempre falso. Sem o passo, `next` propõe `ship.unpacked`. HTML estático
+sem manifesto já é o artefato e não dispara esse ramo.
 
 Prova: build a partir de clone limpo, execução do artefato exportado em máquina
 que não é a de desenvolvimento, primeira execução sem estado anterior, medição de

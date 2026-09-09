@@ -185,6 +185,12 @@ que permite rodar a partida headless, repetir um replay a partir de uma seed e
 comparar duas execuções. `src/core/input.js` reduz teclado, ponteiro e gamepad a
 uma intenção — as regras nunca veem eventos.
 
+A paleta vive em `src/game/render.js` (`PALETTES`). O harness a lê; consistência
+em movimento continua pendente. O conteúdo da chuva ainda mora nas regras, não
+em `data/` — é a lacuna que a barra chama de `content_scale: prototype`. Não
+há script de `build` nem `docs/release.md`: `npm run serve` abre o jogo na
+máquina de quem construiu, e isso não é entregar.
+
 `src/main.js` implementa `pause`, `resume`, `reset`, `seed`, `observe`, `act`,
 `advance`, `capture` e `dispose`. Esses nomes são o vocabulário de inspeção do
 harness; aqui `tests/lifecycle.test.mjs` e `tests/determinism.test.mjs` os

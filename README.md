@@ -34,7 +34,9 @@ python3 scripts/game.py next /caminho/do/laboratorio/um-dos-jogos --focus feel
 para retomar e onde, o piso de acabamento que o projeto declara e quantas
 dimensões ainda não têm linha, quais validadores existem, quantos papéis de
 áudio estão declarados e vazios, se o feel tem constante e recibo de
-observação, e se alcance, save e orçamento estão declarados no código. É essa diferença que
+observação, se alcance, save e orçamento estão declarados no código, se a
+direção de arte aparece no disco, se o conteúdo saiu do código e se existe
+passo de empacotar. É essa diferença que
 uma listagem de caminho e tipo apagava — três jogos em estados incomparáveis saíam
 iguais. `--plain` volta ao caminho e tipo, sem ler documento nenhum.
 
@@ -84,7 +86,8 @@ onde houver Node.
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
 → papéis de áudio vazios → feel ainda sem observação → acessibilidade sem opção
-→ save sem versão → orçamento ausente → rascunho → documento sem versão
+→ save sem versão → orçamento ausente → direção de arte ausente → conteúdo
+ainda no código → empacotar ainda sem passo → rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
 recibo → gate → ofício → barra. Depois de um `init` fresco — nove áreas com
 candidato, sete ainda rascunho, e um script que abre o jogo — a primeira proposta
@@ -92,7 +95,9 @@ candidato, sete ainda rascunho, e um script que abre o jogo — a primeira propo
 declarados sem arquivo. Depois, se o código nomeia perdão e hitstop e ninguém
 registrou uma observação no projeto, o `next` pede esse recibo — constante
 nomeada não é peso percebido. Sem opção de alcance no código, sem versão de
-save ou sem artefato de orçamento, esses ramos vêm antes dos rascunhos. O gate tem três ramos: linha
+save ou sem artefato de orçamento, esses ramos vêm antes dos rascunhos. Sem
+paleta ou art-bible vigente, com conteúdo só no código, ou com manifesto e
+nenhum passo de empacotar, esses ramos também vêm antes dos rascunhos. O gate tem três ramos: linha
 de gate malformada, pergunta de valor e critério pendente — nessa ordem, porque
 terminar o que talvez não devesse existir é o desperdício que um gate existe para
 interromper. O ofício tem dois: linha de ofício malformada e checklist pendente.
@@ -528,6 +533,27 @@ PROGRESS_SCHEMA/migrate; `trusted` é sempre `false`. `budget` procura script
 `budget`/`bench`, `tools/budget.*` ou `record --kind budget`; `measured` é
 sempre `false`. O starter declara os três; um canvas sem opção de alcance
 recebe `access.missing` antes da barra.
+
+## Arte, conteúdo e empacotar
+
+Três dimensões que separam protótipo de produto, no mesmo formato: o que o
+disco declara, não o que alguém aprovou.
+
+```sh
+python3 scripts/game.py art /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py content /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py ship /caminho/do/laboratorio/meu-jogo
+```
+
+`art` procura `const PALETTES`, tokens.json e `docs/art-bible.md` vigente.
+`consistent` é sempre `false`. Rascunho do `init` não conta. `content`
+procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
+`enough` é sempre `false`. `ship` procura script `build`/`export`/`package`/
+`release`, `docs/release.md` vigente ou CI. `shipped` é sempre `false`.
+HTML estático sem manifesto já é o artefato; manifesto sem passo de
+empacotar recebe `ship.unpacked`. O starter declara paleta, admite conteúdo
+no código e serve sem export — `content.inline` e `ship.unpacked` entram no
+`next` depois do orçamento e antes dos rascunhos.
 
 ## Verificar
 

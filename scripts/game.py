@@ -427,6 +427,9 @@ STARTER_MANIFEST = "starter.json"
 STARTER_FIELDS = ("project", "project_slug", "project_title", "project_path", "framework_path")
 INIT_DOCUMENTS = ("brief", "gdd", "mda", "tdd", "art-bible", "devlog", "qa")
 INIT_TEXT_SUFFIXES = {".md", ".txt", ".html", ".css", ".js", ".mjs", ".json", ".svg"}
+# Marcador que o `init` deixa nos templates. Um documento com ele não é
+# decisão vigente — nem art-bible, nem release, nem brief.
+DRAFT_MARKERS = re.compile(r"\{\{|\[preencher|status[^\n]{0,30}(rascunho|draft)", re.IGNORECASE)
 CAPABILITY_TOKENS = {
     "pause": ("pause", "paused"),
     "reset": ("reset", "restart"),
@@ -545,6 +548,9 @@ def review(root, limit=REVIEW_LIMIT):
         access_report = access_reading(path)
         persist_report = save_reading(path)
         perf_report = budget_reading(path)
+        art_report = art_reading(path)
+        content_report = content_reading(path)
+        ship_report = ship_reading(path)
         reviewed.append(dict(
             entry,
             areas_located=len(located),
@@ -565,6 +571,10 @@ def review(root, limit=REVIEW_LIMIT):
             access_declared=access_report["declared"],
             save_unversioned=persist_report["unversioned"],
             performance_unbudgeted=perf_report["unbudgeted"],
+            art_declared=art_report["declared"],
+            content_files=len(content_report["files"]),
+            content_inline=content_report["inline"],
+            ship_unpacked=ship_report["unpacked"],
         ))
     return {
         "schema_version": 1,
@@ -1461,6 +1471,250 @@ def budget_reading(project):
     }
 
 
+# Direção de arte, conteúdo em escala e o passo de empacotar: o starter já
+# declara paleta, admite conteúdo no código e serve sem export. Até aqui o
+# harness só via a tabela da barra. Os três leitores abaixo perguntam o que
+# o disco tem — não se a paleta é consistente, se o conteúdo basta ou se
+# alguém recebeu um build.
+PALETTES_OPEN = re.compile(r"(?:export\s+)?const\s+PALETTES?\s*=\s*\{")
+PALETTE_KEY = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*\{")
+ART_MANIFESTS = (
+    "palettes.json", "tokens.json", "art-tokens.json", "design-tokens.json",
+    "docs/palettes.json", "docs/tokens.json",
+)
+ART_BIBLE = "docs/art-bible.md"
+CONTENT_DIRS = ("data", "content", "levels", "maps", "tables")
+CONTENT_SUFFIXES = {".json", ".ldtk", ".tmx", ".csv", ".ink"}
+CONTENT_LOOSE_SUFFIXES = {".ldtk", ".tmx", ".ink"}
+SHIP_WORDS = ("build", "export", "dist", "package", "release")
+SHIP_CI = (".gitlab-ci.yml", ".circleci/config.yml", "azure-pipelines.yml")
+SHIP_RELEASE = "docs/release.md"
+
+
+def document_is_current(path):
+    if not path.is_file() or path.is_symlink():
+        return False
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+    return not DRAFT_MARKERS.search(text)
+
+
+def _palette_names_from_code(text):
+    start = PALETTES_OPEN.search(text)
+    if not start:
+        return None
+    names = []
+    depth = 1
+    for line in text[start.end():].splitlines():
+        stripped = line.strip()
+        match = PALETTE_KEY.match(stripped)
+        # Só a chave no nível da paleta. Objeto numa linha dentro de `normal`
+        # (`glow: { color: "#fff" }`) não vira uma paleta nova.
+        if match and depth == 1:
+            names.append(match.group(1))
+        depth += stripped.count("{") - stripped.count("}")
+        if depth <= 0:
+            break
+    return names
+
+
+def _palette_names_from_manifest(path):
+    try:
+        data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    if isinstance(data, dict):
+        palettes = data.get("palettes")
+        if isinstance(palettes, dict):
+            return [key for key in palettes if isinstance(key, str)]
+        return [key for key in data if key != "schema_version" and isinstance(key, str)]
+    if isinstance(data, list):
+        return [item for item in data if isinstance(item, str) and item.strip()]
+    return []
+
+
+def art_reading(project):
+    project = Path(project)
+    palettes = []
+    sources = []
+    found_const = False
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        names = _palette_names_from_code(text)
+        if names is None:
+            continue
+        found_const = True
+        sources.append(relative)
+        for name in names:
+            if name not in {item["key"] for item in palettes}:
+                palettes.append({"key": name, "source": relative})
+    manifests = []
+    for relative in ART_MANIFESTS:
+        path = project / relative
+        if not path.is_file() or path.is_symlink():
+            continue
+        names = _palette_names_from_manifest(path)
+        manifests.append(relative)
+        sources.append(relative)
+        for name in names:
+            if name not in {item["key"] for item in palettes}:
+                palettes.append({"key": name, "source": relative})
+    bible = project / ART_BIBLE
+    bible_present = bible.is_file() and not bible.is_symlink()
+    bible_current = document_is_current(bible)
+    declared = bool(found_const or manifests or bible_current)
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "palettes": palettes,
+        "manifests": manifests,
+        "sources": sources[:8],
+        "bible": ART_BIBLE if bible_present else None,
+        "bible_current": bible_current,
+        "bible_draft": bible_present and not bible_current,
+        "declared": declared,
+        "missing": not declared,
+        "consistent": False,
+        "guide": str(FRAMEWORK / "recipes/visual.md"),
+        "rule": (
+            "Paleta no código ou art-bible vigente é direção declarada, não "
+            "direção consistente. Moodboard e rascunho do `init` não contam."
+        ),
+        "scope": (
+            "Procura `const PALETTES`, tokens.json e docs/art-bible.md sem "
+            "marcador de rascunho. Não compara silhueta, não mede contraste "
+            "e não aprova estilo. `consistent` é sempre falso."
+        ),
+    }
+
+
+def content_files(project):
+    found = []
+    seen = set()
+
+    def add(relative):
+        if relative not in seen:
+            seen.add(relative)
+            found.append(relative)
+
+    for folder in CONTENT_DIRS:
+        root = project / folder
+        if not root.is_dir() or root.is_symlink():
+            continue
+        pending = [(root, 0)]
+        while pending:
+            directory, depth = pending.pop(0)
+            try:
+                entries = sorted(directory.iterdir(), key=lambda item: item.name)
+            except OSError:
+                continue
+            for path in entries:
+                if path.name.startswith(".") or path.name in ROLE_WALK_SKIP:
+                    continue
+                if path.is_symlink():
+                    continue
+                if path.is_dir():
+                    if depth < 3:
+                        pending.append((path, depth + 1))
+                    continue
+                if path.suffix.casefold() in CONTENT_SUFFIXES:
+                    add(path.relative_to(project).as_posix())
+    for relative, _ in walk_project_files(project, CONTENT_LOOSE_SUFFIXES):
+        add(relative)
+    return found
+
+
+def content_reading(project):
+    project = Path(project)
+    files = content_files(project)
+    kind = identify(project) if project.is_dir() else None
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "kind": kind,
+        "files": files[:24],
+        "external": bool(files),
+        "inline": bool(kind) and not files,
+        "enough": False,
+        "guide": str(FRAMEWORK / "recipes/content.md"),
+        "rule": (
+            "Conteúdo no código não escala. Arquivo em data/levels não é "
+            "volume suficiente nem consumidor comprovado."
+        ),
+        "scope": (
+            "Procura .json/.csv em data/, content/, levels/, maps/, tables/ e "
+            ".ldtk/.tmx/.ink em qualquer pasta do projeto. Não carrega o "
+            "formato e não conta itens. `enough` é sempre falso."
+        ),
+    }
+
+
+def ship_ci(project):
+    found = []
+    workflows = project / ".github" / "workflows"
+    if workflows.is_dir() and not workflows.is_symlink():
+        try:
+            entries = sorted(workflows.iterdir(), key=lambda item: item.name)
+        except OSError:
+            entries = []
+        for path in entries:
+            if path.is_symlink() or not path.is_file():
+                continue
+            if path.suffix.casefold() in {".yml", ".yaml"}:
+                found.append(path.relative_to(project).as_posix())
+    for relative in SHIP_CI:
+        path = project / relative
+        if path.is_file() and not path.is_symlink():
+            found.append(relative)
+    return found
+
+
+def ship_reading(project):
+    project = Path(project)
+    try:
+        scripts, _ = project_commands(project)
+    except (OSError, ValueError):
+        scripts = {}
+    named = []
+    for name in scripts:
+        for word in SHIP_WORDS:
+            if name == word or name.startswith(f"{word}:") or name.startswith(f"{word}-"):
+                if name not in named:
+                    named.append(name)
+    ci = ship_ci(project)
+    release = project / SHIP_RELEASE
+    release_current = document_is_current(release)
+    expected = (project / "package.json").is_file() or (project / "Cargo.toml").is_file()
+    declared = bool(named or ci or release_current)
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "expected": expected,
+        "scripts": named,
+        "ci": ci,
+        "release": SHIP_RELEASE if release.is_file() and not release.is_symlink() else None,
+        "release_current": release_current,
+        "declared": declared,
+        "unpacked": expected and not declared,
+        "shipped": False,
+        "guide": str(FRAMEWORK / "recipes/release.md"),
+        "rule": (
+            "Script de build não é artefato que outra pessoa executou. HTML "
+            "estático sem manifesto já é o artefato; manifesto sem passo de "
+            "empacotar é o que este leitor nomeia."
+        ),
+        "scope": (
+            "Procura script build/export/dist/package/release, docs/release.md "
+            "vigente e CI. Não executa o export, não instala o artefato e não "
+            "autoriza publicar. `shipped` é sempre falso."
+        ),
+    }
+
+
 # `scan` lê documentos e, de propósito, não entra em textures/fonts/models/videos.
 # É exatamente aí que mora o asset embarcado. O gate `deliver.licensing` recusa
 # dispensa e, até este comando, ninguém lia o disco: uma linha otimista fechava
@@ -2168,7 +2422,6 @@ def fresh_starter_cycle(project, missing, play):
     docs = project / "docs"
     if not docs.is_dir() or docs.is_symlink():
         return False
-    marker = re.compile(r"\{\{|\[preencher|status[^\n]{0,30}(rascunho|draft)", re.IGNORECASE)
     drafted = 0
     for stage in INIT_DOCUMENTS:
         path = docs / f"{stage}.md"
@@ -2178,7 +2431,7 @@ def fresh_starter_cycle(project, missing, play):
             text = path.read_text(encoding="utf-8", errors="replace")
         except OSError:
             return False
-        if not marker.search(text):
+        if not DRAFT_MARKERS.search(text):
             return False
         drafted += 1
     return drafted == len(INIT_DOCUMENTS)
@@ -2732,6 +2985,43 @@ def next_step(project, focus="create", studies_root=None):
             [harness_command("budget", project)],
             "performance.unbudgeted",
         )
+    art = art_reading(project)
+    if payload["kind"] and not art["declared"]:
+        propose(
+            "Declarar a direção de arte no código (PALETTES) ou num art-bible vigente",
+            "O jogo já tem ponto de entrada e nenhuma paleta, token ou art-bible "
+            "vigente aparece no disco. Rascunho do `init` não é direção. O "
+            "harness não compara silhueta e não aprova estilo.",
+            "Existe `const PALETTES`, um tokens.json ou docs/art-bible.md sem "
+            "marcador de rascunho — a consistência em movimento continua pendente.",
+            [harness_command("art", project)],
+            "art.missing",
+        )
+    inventory = content_reading(project)
+    if inventory["inline"]:
+        propose(
+            "Extrair o conteúdo do código para dado (data/, levels/ ou .ldtk/.tmx/.ink)",
+            "O verbo já tem ponto de entrada e o conteúdo ainda mora no código. "
+            "Conteúdo no código não escala. O harness não carrega o formato e "
+            "não conta itens.",
+            "Há arquivo em data/, content/, levels/, maps/ ou tables/, ou um "
+            ".ldtk/.tmx/.ink no projeto — volume e consumo continuam pendentes.",
+            [harness_command("content", project)],
+            "content.inline",
+        )
+    pack = ship_reading(project)
+    if pack["unpacked"]:
+        propose(
+            "Declarar o passo que empacota o jogo (script build/export ou docs/release.md)",
+            "Há manifesto de execução e nenhum passo de build, export, release "
+            "vigente ou CI. Servir na máquina de quem construiu não é entregar. "
+            "O harness não executa o export e não autoriza publicar.",
+            "Existe script `build`/`export`/`package`/`release`, um "
+            "docs/release.md vigente ou um workflow de CI — o artefato em "
+            "outra máquina continua pendente.",
+            [harness_command("ship", project)],
+            "ship.unpacked",
+        )
     if drafts:
         propose(
             "Substituir rascunho por decisão em: " + labels(drafts),
@@ -2962,6 +3252,9 @@ def next_step(project, focus="create", studies_root=None):
             "access_missing": access["missing"] if payload["kind"] else [],
             "save_unversioned": persist["unversioned"],
             "performance_unbudgeted": perf["unbudgeted"],
+            "art_missing": bool(payload["kind"]) and not art["declared"],
+            "content_inline": inventory["inline"],
+            "ship_unpacked": pack["unpacked"],
             "craft_pending": [
                 key for key, spec in CRAFT_CHECKS.items()
                 if spec["gate"] in gates["declared"]
@@ -3247,6 +3540,21 @@ def main():
         help="artefato de orçamento que o projeto declara, sem medir",
     )
     budget_cmd.add_argument("project")
+    art_cmd = commands.add_parser(
+        "art", parents=[common],
+        help="paleta, tokens e art-bible vigentes, sem aprovar estilo",
+    )
+    art_cmd.add_argument("project")
+    content_cmd = commands.add_parser(
+        "content", parents=[common],
+        help="conteúdo fora do código (data/levels ou .ldtk/.tmx/.ink), sem contar volume",
+    )
+    content_cmd.add_argument("project")
+    ship_cmd = commands.add_parser(
+        "ship", parents=[common],
+        help="passo de empacotar que o projeto declara, sem exportar nem publicar",
+    )
+    ship_cmd.add_argument("project")
     ctx = commands.add_parser("context", parents=[common])
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
@@ -3322,6 +3630,12 @@ def main():
             emit(save_reading(resolve(args.project, root)))
         elif args.action == "budget":
             emit(budget_reading(resolve(args.project, root)))
+        elif args.action == "art":
+            emit(art_reading(resolve(args.project, root)))
+        elif args.action == "content":
+            emit(content_reading(resolve(args.project, root)))
+        elif args.action == "ship":
+            emit(ship_reading(resolve(args.project, root)))
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":

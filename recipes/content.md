@@ -2,6 +2,11 @@
 
 Entrada: nível, história, entidade ou recurso visual/sonoro a adicionar ou substituir.
 
+O harness lê se o conteúdo saiu do código com `content <projeto>` (`data/`,
+`levels/`, `.ldtk`/`.tmx`/`.ink`). Arquivo de dados não é volume
+suficiente — `enough` é sempre falso. Sem arquivo, `next` propõe
+`content.inline`.
+
 Leia o formato atual, sua carga em runtime e os consumidores. Procure definição ou
 slot substituível antes de duplicar lógica. Preserve identidade, escala, pivot,
 colisões, animações e referências ao trocar arte. Som novo: consulte
