@@ -109,7 +109,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada, perda de foco — além do teste de dado inválido |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
 | `accessibility` | `slice` | `shippable`: contraste verificado por medição e opções de dificuldade ou assistência |
-| `content_scale` | `playable` | `slice`: receita do próximo item da família com o mesmo carregador — hoje são a chuva e o texto do HUD |
+| `content_scale` | `slice` | `shippable`: conteúdo tem identidade estável, migração e validação; ausente ou inválido falha de forma legível — mesa desconhecida e campo obrigatório já falham; não há migração de formato |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `npm run build` existe e ninguém o correu fora daqui |
 
 **Leitura honesta: este projeto é um protótipo**, porque duas dimensões estão
@@ -178,7 +178,7 @@ src/game/     regras, apresentação, mixagem, mesas, carga de sfx e ensino do c
 src/main.js   montagem e contrato de ciclo de vida
 data/         conteúdo separado da regra (chuva, HUD e avisos)
 docs/         art-bible vigente — o init não o reescreve
-tools/        servidor local, medição de orçamento e export
+tools/        servidor, orçamento, export e nascer mesa
 tests/        regras, determinismo, ciclo de vida, save, mixagem, ensino, export
 ```
 
@@ -190,10 +190,12 @@ uma intenção — as regras nunca veem eventos.
 A paleta vive em `src/game/render.js` (`PALETTES`) e o contrato está em
 `docs/art-bible.md`. O harness lê os dois; consistência em movimento
 continua pendente. Chuva e texto do HUD passam por `src/game/tables.js`.
-Duas mesas não são uma família. `public/sfx/<papel>` entra no mixer
-quando o arquivo existe; copiar sem consumidor deixava o jogo mudo.
-`npm run build` copia a árvore jogável para `dist/`; isso não é outra
-pessoa tendo jogado o artefato.
+`npm run table -- <nome>` nasce a próxima mesa no mesmo carregador; o
+custo fixo é o comando, o variável é o consumidor. Duas mesas mais a
+receita não são volume. `public/sfx/<papel>` entra no mixer quando o
+arquivo existe; copiar sem consumidor deixava o jogo mudo. `npm run
+build` copia a árvore jogável para `dist/`; isso não é outra pessoa
+tendo jogado o artefato.
 
 `src/main.js` implementa `pause`, `resume`, `reset`, `seed`, `observe`, `act`,
 `advance`, `capture` e `dispose`. Esses nomes são o vocabulário de inspeção do

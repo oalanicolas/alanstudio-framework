@@ -8,7 +8,8 @@
     "test": "node --test",
     "serve": "node tools/serve.mjs",
     "budget": "node tools/budget.mjs",
-    "build": "node tools/export.mjs"
+    "build": "node tools/export.mjs",
+    "table": "node tools/new-table.mjs"
   },
   "engines": {
     "node": ">=20"

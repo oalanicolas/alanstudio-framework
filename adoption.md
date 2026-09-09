@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.15 — Receita e ferramenta para a próxima mesa
+
+O starter nasce uma mesa com `npm run table -- <nome>`: JSON novo e
+registro no mesmo `loadTable`. Campo obrigatório ausente falha com o
+nome da mesa e do campo. `content_scale` sobe a `slice`. `enough`
+continua falso — receita não é volume, e não há migração de formato.
+
+O que 0.9.15 não afirma: o harness não carregou a mesa nova nem mediu
+o custo de um item produzido por alguém de fora.
+
 ## 0.9.14 — Primeiro ciclo no jogo e art-bible vigente
 
 O starter ensina mover, coletar e guardar no próprio campo; o aviso some

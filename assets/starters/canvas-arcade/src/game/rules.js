@@ -8,7 +8,17 @@
 // da partida é perdida.
 
 import { createRng } from "../core/rng.js";
-import { spawn as spawnTable } from "./tables.js";
+import { requireFields } from "./tables.js";
+
+const spawnTable = requireFields("spawn", [
+  "intervalTicks",
+  "minIntervalTicks",
+  "rampTicks",
+  "hazardChanceStart",
+  "hazardChanceEnd",
+  "fallSpeedMin",
+  "fallSpeedMax",
+]);
 
 export const TICK_HZ = 60;
 export const FIELD = { width: 320, height: 180 };
