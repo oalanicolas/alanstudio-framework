@@ -34,7 +34,8 @@ python3 scripts/game.py next /caminho/do/laboratorio/um-dos-jogos --focus feel
 para retomar e onde, o piso de acabamento que o projeto declara e quantas
 dimensões ainda não têm linha, quais validadores existem, quantos papéis de
 áudio estão declarados e vazios, se o feel tem constante e recibo de
-observação, se alcance, save e orçamento estão declarados no código, se a
+observação, se o achado de playtest tem forma, se alcance, save e orçamento
+estão declarados no código, se a
 direção de arte aparece no disco, se o conteúdo saiu do código e se existe
 passo de empacotar. É essa diferença que
 uma listagem de caminho e tipo apagava — três jogos em estados incomparáveis saíam
@@ -85,7 +86,8 @@ onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
-→ papéis de áudio vazios → feel ainda sem observação → acessibilidade sem opção
+→ papéis de áudio vazios → feel ainda sem observação → achado sem forma →
+acessibilidade sem opção
 → save sem versão → orçamento ausente → direção de arte ausente → conteúdo
 ainda no código → empacotar ainda sem passo → rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
@@ -94,7 +96,9 @@ candidato, sete ainda rascunho, e um script que abre o jogo — a primeira propo
 é jogar o ciclo, não preencher os templates. O verbo mudo vem em seguida: papéis
 declarados sem arquivo. Depois, se o código nomeia perdão e hitstop e ninguém
 registrou uma observação no projeto, o `next` pede esse recibo — constante
-nomeada não é peso percebido. Sem opção de alcance no código, sem versão de
+nomeada não é peso percebido. Depois do recibo, se o achado não nomeia
+problema, evidência, hipótese e medição, o `next` pede a forma — nota de
+partida não é métrica. Sem opção de alcance no código, sem versão de
 save ou sem artefato de orçamento, esses ramos vêm antes dos rascunhos. Sem
 paleta ou art-bible vigente, com conteúdo só no código, ou com manifesto e
 nenhum passo de empacotar, esses ramos também vêm antes dos rascunhos. O gate tem três ramos: linha
@@ -551,9 +555,24 @@ procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 `enough` é sempre `false`. `ship` procura script `build`/`export`/`package`/
 `release`, `docs/release.md` vigente ou CI. `shipped` é sempre `false`.
 HTML estático sem manifesto já é o artefato; manifesto sem passo de
-empacotar recebe `ship.unpacked`. O starter declara paleta, admite conteúdo
-no código e serve sem export — `content.inline` e `ship.unpacked` entram no
-`next` depois do orçamento e antes dos rascunhos.
+empacotar recebe `ship.unpacked`. O starter declara paleta, extrai a chuva
+para `data/spawn.json` e empacota com `npm run build` — uma mesa e um
+export na máquina de quem construiu não são escala nem entrega.
+
+## Playtest
+
+Observação sem os quatro campos é impressão. `playtest` lê se o disco tem
+problema, evidência, hipótese e medição — num documento ou no próprio
+recibo:
+
+```sh
+python3 scripts/game.py playtest /caminho/do/laboratorio/meu-jogo
+```
+
+`observed` é sempre `false`. `next` propõe `playtest.unstructured` quando
+há recibo de observação (ou um `docs/qa.md` vigente) e o achado ainda não
+tem forma. A tabela de ofício que *descreve* o formato não conta como
+achado. O harness não assiste à sessão e não conta jogadores.
 
 ## Verificar
 

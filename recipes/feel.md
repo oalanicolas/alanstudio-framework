@@ -3,6 +3,11 @@
 Entrada: verbo central, referência de sensação (aprovada ou proposta) e a
 diferença percebida entre intenção e resposta atual.
 
+Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
+disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
+impressão — `next` propõe `playtest.unstructured`. `observed` é sempre
+falso: o harness não assiste à sessão.
+
 Feel é o intervalo entre o input e a certeza de que o mundo respondeu.
 Swink: controle em tempo real, espaço simulado, polish. Jam e piso de
 acabamento se separam aqui com mais frequência do que na escolha da engine.

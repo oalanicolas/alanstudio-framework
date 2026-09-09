@@ -979,6 +979,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "playable.unplayed": "ciclo jogável ainda sem partida",
             "audio.roles": "papéis de áudio vazios",
             "feel.unobserved": "feel ainda sem observação",
+            "playtest.unstructured": "achado sem forma",
             "access.missing": "acessibilidade sem opção",
             "save.unversioned": "save sem versão",
             "performance.unbudgeted": "orçamento ausente",
@@ -1434,8 +1435,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("save.unversioned", bases)
         self.assertNotIn("performance.unbudgeted", bases)
         self.assertNotIn("art.missing", bases)
-        self.assertIn("content.inline", bases)
-        self.assertIn("ship.unpacked", bases)
+        self.assertNotIn("content.inline", bases)
+        self.assertNotIn("ship.unpacked", bases)
+        self.assertNotIn("playtest.unstructured", bases)
         direction = game.art_reading(destination)
         self.assertTrue(direction["declared"])
         self.assertTrue(direction["bible_draft"])
@@ -1458,8 +1460,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(after["signals"]["feel_unobserved"])
         after_bases = [item["basis"] for item in after["alternatives"]]
         self.assertIn("feel.unobserved", after_bases)
-        self.assertIn("content.inline", after_bases)
-        self.assertIn("ship.unpacked", after_bases)
+        self.assertNotIn("content.inline", after_bases)
+        self.assertNotIn("ship.unpacked", after_bases)
+        self.assertNotIn("playtest.unstructured", after_bases)
         self.assertIn("areas.draft_only", after_bases)
 
     def test_next_names_missing_access_before_the_bar_on_a_bare_canvas(self):
@@ -1973,6 +1976,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["observations"][0]["path"], "qa/partida-1/record.json")
         bases = [item["basis"] for item in self.proposals(game.next_step(destination))]
         self.assertNotIn("feel.unobserved", bases)
+        self.assertIn("playtest.unstructured", bases)
 
     def test_access_save_and_budget_read_the_starter_without_claiming_proof(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
@@ -2027,12 +2031,19 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(art["bible"])
         self.assertFalse(art["bible_current"])
         self.assertFalse(art["bible_draft"])
-        self.assertFalse(inventory["external"])
-        self.assertTrue(inventory["inline"])
+        self.assertTrue(inventory["external"])
+        self.assertFalse(inventory["inline"])
         self.assertFalse(inventory["enough"])
+        self.assertIn("data/spawn.json", inventory["files"])
         self.assertTrue(pack["expected"])
-        self.assertTrue(pack["unpacked"])
+        self.assertFalse(pack["unpacked"])
+        self.assertIn("build", pack["scripts"])
         self.assertFalse(pack["shipped"])
+        session = game.playtest_reading(starter)
+        self.assertFalse(session["expected"])
+        self.assertFalse(session["structured"])
+        self.assertFalse(session["unstructured"])
+        self.assertFalse(session["observed"])
 
     def test_art_names_a_canvas_without_palette_or_bible(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
@@ -2108,6 +2119,59 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(after["unpacked"])
         self.assertTrue(after["release_current"])
         self.assertFalse(after["shipped"])
+
+    def test_playtest_names_an_observation_without_the_four_fields(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        receipt = self.project / "qa" / "partida"
+        receipt.mkdir(parents=True)
+        (receipt / "record.json").write_text(json.dumps({
+            "kind": "observation",
+            "author": "Ana",
+            "note": "o dash ainda não tem peso",
+            "fields": {"scenario": "primeira partida", "role": "human"},
+        }), encoding="utf-8")
+        report = game.playtest_reading(self.project)
+        self.assertTrue(report["expected"])
+        self.assertTrue(report["unstructured"])
+        self.assertFalse(report["structured"])
+        self.assertFalse(report["observed"])
+        proposal = next(
+            item for item in self.proposals(game.next_step(self.project, "feel"))
+            if item["basis"] == "playtest.unstructured"
+        )
+        self.assertIn("problema", proposal["action"])
+
+    def test_a_structured_finding_is_form_not_an_observed_session(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "docs").mkdir()
+        (self.project / "docs/qa.md").write_text(
+            "# Playtest\n\n"
+            "- Problema: o dash não comunica o contato.\n"
+            "- Evidência: três sessões, o jogador pergunta se atravessou.\n"
+            "- Hipótese: o hitstop de 2 ticks some no movimento.\n"
+            "- Medição: repetir o graze com hitstop 5 e 2 no mesmo recorte.\n",
+            encoding="utf-8",
+        )
+        report = game.playtest_reading(self.project)
+        self.assertTrue(report["qa_current"])
+        self.assertTrue(report["structured"])
+        self.assertFalse(report["unstructured"])
+        self.assertFalse(report["observed"])
+        self.assertEqual(report["findings"], ["docs/qa.md"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "feel"))]
+        self.assertNotIn("playtest.unstructured", bases)
+
+    def test_the_craft_table_that_names_the_format_is_not_a_finding(self):
+        (self.project / "README.md").write_text(
+            "| Check | Estado | Evidência |\n"
+            "| `playtest_finding` | `unmet` | nenhum achado no formato "
+            "problema/evidência/hipótese/medição — starter |\n",
+            encoding="utf-8",
+        )
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        report = game.playtest_reading(self.project)
+        self.assertFalse(report["structured"])
+        self.assertEqual(report["findings"], [])
 
     def test_ship_stays_silent_on_html_without_a_manifest(self):
         (self.project / "index.html").write_text("<canvas></canvas>")

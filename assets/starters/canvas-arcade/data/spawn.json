@@ -1,0 +1,9 @@
+{
+  "intervalTicks": 22,
+  "minIntervalTicks": 11,
+  "rampTicks": 900,
+  "hazardChanceStart": 0.26,
+  "hazardChanceEnd": 0.54,
+  "fallSpeedMin": 1.1,
+  "fallSpeedMax": 2.0
+}

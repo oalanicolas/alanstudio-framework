@@ -28,9 +28,14 @@ código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
 só levanta quando falta a declaração.
 
 **Arte, conteúdo, empacotar:** `art`, `content` e `ship` leem paleta ou
-art-bible vigente, dado fora do código e passo de build/export. 
+art-bible vigente, dado fora do código e passo de build/export.
 `consistent`/`enough`/`shipped` são sempre falsos. O starter declara
-paleta e admite as outras duas lacunas.
+paleta, extrai a chuva para `data/spawn.json` e empacota com `npm run
+build`.
+
+**Playtest:** `playtest` lê o formato problema/evidência/hipótese/medição.
+`observed` é sempre falso. Nota de partida sem os quatro campos vira
+`playtest.unstructured`.
 
 Esta árvore reúne produção, pacotes e memória persistente do PR #2 com os
 critérios observáveis, perguntas de valor e regras de escopo do PR #3.

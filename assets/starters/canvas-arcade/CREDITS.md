@@ -7,7 +7,7 @@ atribuir licença ou autoria pela localização de um arquivo.
 
 | Parte | Origem | Condição de uso |
 | --- | --- | --- |
-| `src/`, `tools/`, `tests/`, `index.html` | Starter `canvas-arcade` do Alan Studios Framework, adaptado neste projeto | Mesma licença do framework de origem |
+| `src/`, `tools/`, `tests/`, `data/`, `index.html` | Starter `canvas-arcade` do Alan Studios Framework, adaptado neste projeto | Mesma licença do framework de origem |
 | Dependências de terceiros | Nenhuma | — |
 
 O gerador pseudoaleatório em `src/core/rng.js` implementa `mulberry32`, algoritmo

@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.12 — Conteúdo fora do código, export e achado de playtest
+
+O starter extrai a chuva para `data/spawn.json` e passa a ter `npm run
+build` (`tools/export.mjs` → `dist/`). `content` e `ship` deixam de
+apontar essas duas lacunas no `init` fresco: o dado existe, o passo
+existe. Uma mesa não é escala; copiar a árvore não é outra máquina
+tendo jogado. `playtest` lê o formato problema/evidência/hipótese/medição.
+`observed` é sempre `false`. `next` propõe `playtest.unstructured` quando
+há observação (ou qa.md vigente) sem os quatro campos. A linha da tabela
+de ofício que descreve o formato não conta.
+
+O que 0.9.12 não afirma: o harness não carrega o JSON no jogo, não
+executa o export e não assiste ao playtest.
+
 ## 0.9.11 — Arte, conteúdo e empacotar no disco
 
 Três dimensões AAA que a barra já nomeava e o harness não lia: `art`

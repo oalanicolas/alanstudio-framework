@@ -8,6 +8,7 @@
 // da partida é perdida.
 
 import { createRng } from "../core/rng.js";
+import spawnTable from "../../data/spawn.json" with { type: "json" };
 
 export const TICK_HZ = 60;
 export const FIELD = { width: 320, height: 180 };
@@ -32,15 +33,9 @@ export const CONFIG = {
     reachY: 8,
   },
   hazard: { radius: 6 },
-  spawn: {
-    intervalTicks: 22,
-    minIntervalTicks: 11,
-    rampTicks: 900,
-    hazardChanceStart: 0.26,
-    hazardChanceEnd: 0.54,
-    fallSpeedMin: 1.1,
-    fallSpeedMax: 2.0,
-  },
+  // A chuva é conteúdo: cadência, mistura e velocidade moram em data/spawn.json,
+  // não nesta regra. Alterar o dado não exige republicar o verbo.
+  spawn: spawnTable,
   feel: {
     collectHitstopTicks: 2, // contato do acerto
     bankHitstopTicks: 3, // peso da decisão de guardar

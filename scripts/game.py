@@ -551,6 +551,7 @@ def review(root, limit=REVIEW_LIMIT):
         art_report = art_reading(path)
         content_report = content_reading(path)
         ship_report = ship_reading(path)
+        playtest_report = playtest_reading(path)
         reviewed.append(dict(
             entry,
             areas_located=len(located),
@@ -575,6 +576,8 @@ def review(root, limit=REVIEW_LIMIT):
             content_files=len(content_report["files"]),
             content_inline=content_report["inline"],
             ship_unpacked=ship_report["unpacked"],
+            playtest_expected=playtest_report["expected"],
+            playtest_structured=playtest_report["structured"],
         ))
     return {
         "schema_version": 1,
@@ -1711,6 +1714,107 @@ def ship_reading(project):
             "Procura script build/export/dist/package/release, docs/release.md "
             "vigente e CI. Não executa o export, não instala o artefato e não "
             "autoriza publicar. `shipped` é sempre falso."
+        ),
+    }
+
+
+# Playtest com métricas: a tabela de ofício já pede problema, evidência,
+# hipótese e medição. Até aqui o harness só via se o projeto declarava o
+# checklist. Uma observação solta ("o dash não tem peso") não é achado.
+# O leitor abaixo pergunta se a forma está no disco — não se alguém jogou.
+FINDING_FIELDS = re.compile(
+    r"(?is)(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:problema|problem)\*?\*?\s*[:—]"
+    r".{2,400}?"
+    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:evid[eê]ncia|evidence)\*?\*?\s*[:—]"
+    r".{2,400}?"
+    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:hip[oó]tese|hypothesis)\*?\*?\s*[:—]"
+    r".{2,400}?"
+    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:medi[cç][aã]o|measurement)\*?\*?\s*[:—]"
+)
+FINDING_TABLE = re.compile(
+    r"(?i)\|\s*(?:problema|problem)\s*\|\s*(?:evid[eê]ncia|evidence)\s*\|\s*"
+    r"(?:hip[oó]tese|hypothesis)\s*\|\s*(?:medi[cç][aã]o|measurement)\s*\|"
+)
+FINDING_FIELD_KEYS = {
+    "problem": {"problem", "problema"},
+    "evidence": {"evidence", "evidencia"},
+    "hypothesis": {"hypothesis", "hipotese"},
+    "measurement": {"measurement", "medicao", "metrica"},
+}
+
+
+def fold_key(value):
+    return "".join(
+        char for char in unicodedata.normalize("NFKD", str(value).casefold())
+        if not unicodedata.combining(char)
+    )
+
+
+def fields_have_finding(fields):
+    if not isinstance(fields, dict):
+        return False
+    present = {fold_key(key) for key, value in fields.items() if nonempty(str(value or ""))}
+    return all(names & present for names in FINDING_FIELD_KEYS.values())
+
+
+def playtest_findings(project):
+    found = []
+    seen = set()
+
+    def add(relative):
+        if relative not in seen:
+            seen.add(relative)
+            found.append(relative)
+
+    for relative, text in walk_project_files(project, {".md", ".txt"}):
+        if FINDING_TABLE.search(text) or FINDING_FIELDS.search(text):
+            add(relative)
+    for item in observation_receipts(project):
+        path = project / item["path"]
+        try:
+            data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        fields = data.get("fields") or {}
+        blob = "\n".join(
+            str(value) for value in (data.get("note"), *fields.values()) if value
+        )
+        if fields_have_finding(fields) or FINDING_TABLE.search(blob) or FINDING_FIELDS.search(blob):
+            add(item["path"])
+    return found
+
+
+def playtest_reading(project):
+    project = Path(project)
+    observations = observation_receipts(project)
+    findings = playtest_findings(project)
+    qa = project / "docs/qa.md"
+    qa_current = document_is_current(qa)
+    expected = bool(observations) or qa_current
+    structured = bool(findings)
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "observations": [item["path"] for item in observations],
+        "findings": findings,
+        "qa_current": qa_current,
+        "expected": expected,
+        "structured": structured,
+        "unstructured": expected and not structured,
+        "observed": False,
+        "guide": str(FRAMEWORK / "recipes/feel.md"),
+        "rule": (
+            "Recibo de observação sem problema, evidência, hipótese e medição "
+            "é impressão. Os quatro no disco não são playtest observado."
+        ),
+        "scope": (
+            "Procura os quatro campos num documento ou num record de "
+            "observação, e se docs/qa.md deixou de ser rascunho. Não assiste "
+            "a sessão, não conta jogadores e não atribui causa. `observed` é "
+            "sempre falso."
         ),
     }
 
@@ -2949,6 +3053,22 @@ def next_step(project, focus="create", studies_root=None):
             ],
             "feel.unobserved",
         )
+    playtest = playtest_reading(project)
+    if playtest["unstructured"]:
+        propose(
+            "Escrever o achado de playtest no formato problema, evidência, hipótese e medição",
+            "Há observação (ou um qa.md vigente) e nenhum achado com os quatro "
+            "campos. Nota de partida não é métrica. O harness não assistiu à "
+            "sessão e não conta jogadores.",
+            "Um documento ou o próprio recibo nomeia problema, evidência, "
+            "hipótese e medição — a causa e o tamanho do efeito continuam "
+            "pendentes.",
+            [
+                harness_command("playtest", project),
+                harness_command("feel", project),
+            ],
+            "playtest.unstructured",
+        )
     access = access_reading(project)
     if payload["kind"] and not access["declared"]:
         propose(
@@ -3249,6 +3369,7 @@ def next_step(project, focus="create", studies_root=None):
             "playable_unplayed": fresh,
             "audio_roles_empty": roles["empty"],
             "feel_unobserved": feel["unobserved"],
+            "playtest_unstructured": playtest["unstructured"],
             "access_missing": access["missing"] if payload["kind"] else [],
             "save_unversioned": persist["unversioned"],
             "performance_unbudgeted": perf["unbudgeted"],
@@ -3555,6 +3676,11 @@ def main():
         help="passo de empacotar que o projeto declara, sem exportar nem publicar",
     )
     ship_cmd.add_argument("project")
+    playtest_cmd = commands.add_parser(
+        "playtest", parents=[common],
+        help="achado de playtest no formato problema/evidência/hipótese/medição, sem assistir",
+    )
+    playtest_cmd.add_argument("project")
     ctx = commands.add_parser("context", parents=[common])
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
@@ -3636,6 +3762,8 @@ def main():
             emit(content_reading(resolve(args.project, root)))
         elif args.action == "ship":
             emit(ship_reading(resolve(args.project, root)))
+        elif args.action == "playtest":
+            emit(playtest_reading(resolve(args.project, root)))
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":

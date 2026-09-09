@@ -29,8 +29,9 @@ já criado, `starter.json` não existe: ele é metadado do starter, não do jogo
 ## Como verificar
 
 ```sh
-npm test           # regras, determinismo, ciclo de vida, save e mixagem
+npm test           # regras, determinismo, ciclo de vida, save, mixagem e export
 npm run budget     # custo da simulação, por percentil, sem apresentação
+npm run build      # copia a árvore jogável para dist/; não prova outra máquina
 ```
 
 Com recibo, a partir da raiz do framework — o caminho é este starter, não `.`,
@@ -109,8 +110,8 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada, perda de foco — além do teste de dado inválido |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
 | `accessibility` | `slice` | `shippable`: contraste verificado por medição e opções de dificuldade ou assistência |
-| `content_scale` | `prototype` | `playable`: conteúdo como dado, separado da regra e fora do código |
-| `release` | `prototype` | `playable`: build ou export que outra pessoa execute a partir do runbook |
+| `content_scale` | `prototype` | `playable`: mais de uma mesa com o mesmo carregador — hoje só a chuva saiu do código |
+| `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `npm run build` existe e ninguém o correu fora daqui |
 
 **Leitura honesta: este projeto é um protótipo**, porque cinco dimensões estão
 nesse degrau. Nenhuma quantidade de acabamento visual muda essa leitura antes
@@ -176,8 +177,9 @@ inferior, onde nascia, ela caía sobre o jogador e sobre o rótulo do dash:
 src/core/     laço de passo fixo, entrada, RNG, impressão, armazenamento, save, preferências
 src/game/     regras puras, apresentação, mixagem
 src/main.js   montagem e contrato de ciclo de vida
-tools/        servidor local e medição de orçamento
-tests/        regras, determinismo, ciclo de vida, save, mixagem
+data/         conteúdo separado da regra (hoje: a chuva)
+tools/        servidor local, medição de orçamento e export
+tests/        regras, determinismo, ciclo de vida, save, mixagem, export
 ```
 
 `src/game/rules.js` não conhece DOM, relógio nem aleatoriedade externa: é isso
@@ -186,10 +188,10 @@ comparar duas execuções. `src/core/input.js` reduz teclado, ponteiro e gamepad
 uma intenção — as regras nunca veem eventos.
 
 A paleta vive em `src/game/render.js` (`PALETTES`). O harness a lê; consistência
-em movimento continua pendente. O conteúdo da chuva ainda mora nas regras, não
-em `data/` — é a lacuna que a barra chama de `content_scale: prototype`. Não
-há script de `build` nem `docs/release.md`: `npm run serve` abre o jogo na
-máquina de quem construiu, e isso não é entregar.
+em movimento continua pendente. A chuva mora em `data/spawn.json`: alterar a
+cadência não exige republicar o verbo. Uma mesa não é conteúdo em escala.
+`npm run build` copia a árvore jogável para `dist/`; isso não é outra pessoa
+tendo jogado o artefato.
 
 `src/main.js` implementa `pause`, `resume`, `reset`, `seed`, `observe`, `act`,
 `advance`, `capture` e `dispose`. Esses nomes são o vocabulário de inspeção do
