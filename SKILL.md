@@ -22,7 +22,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
 | Jogo novo | Destino inexistente e engine web: `start <novo> --starter <starter> --idea "<fantasia>"` (REUSE; aponta o comando que abre o ciclo, não o executa). Sem `start`: `init` e depois `next --focus feel`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
 | Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
-| O verbo funciona mas não convence | `context <projeto> --focus feel` e depois `--focus audio` |
+| O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, registre a partida (`record --kind observation`). Depois `roles` e `context --focus audio` |
 | “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
 | Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
 | “continue” / “vamos avançar” | `context <projeto> --focus <foco> --event resume` e leia `continuity.sources`, preservando o foco da tarefa |
@@ -146,6 +146,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    **`roles <projeto>`** lê os papéis de áudio que o código declara e os
    arquivos que os preenchem. `heard` é sempre falso. Papel vazio entra no
    `next` como `audio.roles` — o verbo mudo não espera os sete templates.
+   **`feel <projeto>`** lê constantes de perdão/hitstop no `CONFIG` e o
+   recibo de observação no disco. `felt` é sempre falso. Sem recibo, `next`
+   propõe `feel.unobserved`.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

@@ -972,6 +972,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "areas.not_located": "área não localizada",
             "playable.unplayed": "ciclo jogável ainda sem partida",
             "audio.roles": "papéis de áudio vazios",
+            "feel.unobserved": "feel ainda sem observação",
             "areas.draft_only": "rascunho",
             "areas.historical_or_reference_only": "documento sem versão vigente",
             "continuity.sources": "continuidade",
@@ -1414,6 +1415,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bases = [item["basis"] for item in result["alternatives"]]
         self.assertNotIn("areas.not_located", bases)
         self.assertIn("audio.roles", bases)
+        self.assertIn("feel.unobserved", bases)
         self.assertIn("areas.draft_only", bases)
         self.assertIn("scripts", bases)
         # O projeto herda a tabela do starter, então a barra já tem piso e a
@@ -1431,7 +1433,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(after["proposal"]["basis"], "audio.roles")
         self.assertFalse(after["signals"]["playable_unplayed"])
         self.assertIn("dash", after["signals"]["audio_roles_empty"])
-        self.assertIn("areas.draft_only", [item["basis"] for item in after["alternatives"]])
+        self.assertTrue(after["signals"]["feel_unobserved"])
+        after_bases = [item["basis"] for item in after["alternatives"]]
+        self.assertIn("feel.unobserved", after_bases)
+        self.assertIn("areas.draft_only", after_bases)
 
     def test_next_falls_back_to_the_production_bar_when_nothing_is_missing(self):
         self.foundation_document()
@@ -1904,6 +1909,40 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("dash", report["empty"])
         self.assertIn("hit", report["empty"])
         self.assertFalse(report["heard"])
+
+    def test_feel_reads_named_constants_and_never_claims_to_have_felt_them(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.feel_reading(starter)
+        self.assertFalse(report["felt"])
+        self.assertTrue(report["unobserved"])
+        keys = [item["key"] for item in report["constants"]]
+        self.assertIn("player.dashBufferTicks", keys)
+        self.assertIn("player.invulnTicks", keys)
+        self.assertIn("feel.hitHitstopTicks", keys)
+        self.assertIn("src/game/rules.js", report["sources"])
+        self.assertEqual(report["observations"], [])
+        empty = game.feel_reading(self.project)
+        self.assertEqual(empty["constants"], [])
+        self.assertFalse(empty["unobserved"])
+        self.assertFalse(empty["felt"])
+
+    def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
+        destination = self.root / "com-observacao"
+        game.init(destination, "canvas-arcade")
+        receipt = destination / "qa" / "partida-1"
+        receipt.mkdir(parents=True)
+        (receipt / "record.json").write_text(json.dumps({
+            "kind": "observation",
+            "author": "Ana",
+            "note": "o dash ainda não tem peso",
+            "fields": {"scenario": "primeira partida", "role": "human"},
+        }), encoding="utf-8")
+        report = game.feel_reading(destination)
+        self.assertFalse(report["felt"])
+        self.assertFalse(report["unobserved"])
+        self.assertEqual(report["observations"][0]["path"], "qa/partida-1/record.json")
+        bases = [item["basis"] for item in self.proposals(game.next_step(destination))]
+        self.assertNotIn("feel.unobserved", bases)
 
     def test_next_only_raises_craft_for_a_gate_the_project_asked_for(self):
         (self.project / "index.html").write_text("<canvas></canvas>")

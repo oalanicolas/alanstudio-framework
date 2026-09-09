@@ -19,6 +19,10 @@ O harness não executa o jogo.
 `heard` é sempre falso. `next` propõe `audio.roles` quando o verbo dispara
 um papel sem arquivo — depois da partida, antes dos rascunhos.
 
+**Feel (`feel`):** lê `const CONFIG` (perdão, graça, hitstop) e
+`record.json` de observação. `felt` é sempre falso. `next` propõe
+`feel.unobserved` quando há constante e não há recibo.
+
 Esta árvore reúne produção, pacotes e memória persistente do PR #2 com os
 critérios observáveis, perguntas de valor e regras de escopo do PR #3.
 A integração preserva o trabalho de ambas as branches, inclusive os commits de

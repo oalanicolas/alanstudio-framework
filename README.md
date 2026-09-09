@@ -32,8 +32,9 @@ python3 scripts/game.py next /caminho/do/laboratorio/um-dos-jogos --focus feel
 `discover` lê cada jogo da raiz e devolve o que os distingue: quantas das nove
 áreas mínimas têm candidato, quantas estão em rascunho, se há um passo registrado
 para retomar e onde, o piso de acabamento que o projeto declara e quantas
-dimensões ainda não têm linha, quais validadores existem, e quantos papéis de
-áudio estão declarados e vazios. É essa diferença que
+dimensões ainda não têm linha, quais validadores existem, quantos papéis de
+áudio estão declarados e vazios, e se o feel tem constante e recibo de
+observação. É essa diferença que
 uma listagem de caminho e tipo apagava — três jogos em estados incomparáveis saíam
 iguais. `--plain` volta ao caminho e tipo, sem ler documento nenhum.
 
@@ -82,12 +83,14 @@ onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
-→ papéis de áudio vazios → rascunho → documento sem versão
+→ papéis de áudio vazios → feel ainda sem observação → rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
 recibo → gate → ofício → barra. Depois de um `init` fresco — nove áreas com
 candidato, sete ainda rascunho, e um script que abre o jogo — a primeira proposta
 é jogar o ciclo, não preencher os templates. O verbo mudo vem em seguida: papéis
-declarados sem arquivo. O gate tem três ramos: linha
+declarados sem arquivo. Depois, se o código nomeia perdão e hitstop e ninguém
+registrou uma observação no projeto, o `next` pede esse recibo — constante
+nomeada não é peso percebido. O gate tem três ramos: linha
 de gate malformada, pergunta de valor e critério pendente — nessa ordem, porque
 terminar o que talvez não devesse existir é o desperdício que um gate existe para
 interromper. O ofício tem dois: linha de ofício malformada e checklist pendente.
@@ -492,6 +495,19 @@ python3 scripts/game.py sfx copy ID --to /caminho/do/jogo/public/sfx --root /cam
 Sem esse acervo, o catálogo vem vazio. Piso: gravação licenciada ou design
 contemporâneo. 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.
 Este repositório **não inclui** os arquivos de som.
+
+## Feel
+
+O starter nomeia perdão, graça e hitstop no `CONFIG`. Constante nomeada não é
+peso percebido. `feel` lê as constantes e procura um `record.json` de
+observação no projeto:
+
+```sh
+python3 scripts/game.py feel /caminho/do/laboratorio/meu-jogo
+```
+
+`felt` é sempre `false`. `next` propõe `feel.unobserved` quando há constante
+e não há recibo. O harness não joga e não atribui peso.
 
 ## Verificar
 

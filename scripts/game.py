@@ -541,6 +541,7 @@ def review(root, limit=REVIEW_LIMIT):
             scripts = []
         origins = origins_reading(path)
         roles = roles_reading(path, root)
+        feel_report = feel_reading(path)
         reviewed.append(dict(
             entry,
             areas_located=len(located),
@@ -556,6 +557,8 @@ def review(root, limit=REVIEW_LIMIT):
             origins_undeclared=len(origins["undeclared"]),
             audio_roles=len(roles["roles"]),
             audio_roles_empty=len(roles["empty"]),
+            feel_constants=len(feel_report["constants"]),
+            feel_observations=len(feel_report["observations"]),
         ))
     return {
         "schema_version": 1,
@@ -1126,6 +1129,165 @@ def roles_reading(project, root=None):
             "public/sfx e equivalentes. Não toca o som, não valida mixagem e não "
             "aprova estética. `heard` e `approved` são sempre falsos: arquivo "
             "presente não é mixagem ouvida."
+        ),
+    }
+
+
+# Feel: o starter nomeia perdão, graça e hitstop no CONFIG. Até aqui o harness
+# só via a tabela de ofício, não as constantes. A pergunta é estreita — o
+# projeto declara janelas de feel, e alguém registrou uma observação no disco?
+# O harness não joga e não atribui peso.
+CONFIG_OPEN = re.compile(r"(?:export\s+)?const\s+CONFIG\s*=\s*\{")
+CONFIG_NESTED = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*\{")
+CONFIG_LEAF = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*(-?[\d.]+)\s*,?\s*(?://\s*(.*))?")
+FEEL_KEY = re.compile(
+    r"(buffer|invuln|pad|reach|lock|hitstop|shake|squash|grace|forgiv|cooldown|recovery|dashticks)",
+    re.IGNORECASE,
+)
+FEEL_NOTE = re.compile(r"(perd[aã]o|gra[cç]a|contato|peso|feel|juice)", re.IGNORECASE)
+
+
+def _feel_constants_from_code(text):
+    start = CONFIG_OPEN.search(text)
+    if not start:
+        return []
+    constants = []
+    stack = []
+    depth = 1
+    for line in text[start.end():].splitlines():
+        stripped = line.strip()
+        opens = stripped.count("{")
+        closes = stripped.count("}")
+        nested = CONFIG_NESTED.match(stripped)
+        leaf = CONFIG_LEAF.match(stripped)
+        if nested:
+            stack.append(nested.group(1))
+            if closes >= opens and stack:
+                stack.pop()
+        elif leaf and stack:
+            name, value, note = leaf.group(1), leaf.group(2), (leaf.group(3) or "").strip()
+            if stack[0] == "feel" or FEEL_KEY.search(name) or FEEL_NOTE.search(note):
+                constants.append({
+                    "key": ".".join([*stack, name]),
+                    "declared": value,
+                    "note": note or None,
+                })
+        elif stripped.startswith("}") and stack:
+            stack.pop()
+        depth += opens - closes
+        if depth <= 0:
+            break
+    return constants
+
+
+def declared_feel_constants(project, max_files=80, max_bytes=64000):
+    found = []
+    sources = []
+    seen = set()
+    pending = [(project, 0)] if project.is_dir() else []
+    inspected = 0
+    while pending and inspected < max_files:
+        directory, depth = pending.pop(0)
+        try:
+            entries = sorted(directory.iterdir(), key=lambda item: item.name)
+        except OSError:
+            continue
+        for path in entries:
+            if inspected >= max_files:
+                break
+            if path.name.startswith(".") or path.name in ROLE_WALK_SKIP:
+                continue
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                if depth >= 4:
+                    continue
+                pending.append((path, depth + 1))
+                continue
+            if path.suffix.casefold() not in ROLE_CODE_SUFFIXES:
+                continue
+            inspected += 1
+            try:
+                if path.stat().st_size > max_bytes:
+                    continue
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            constants = _feel_constants_from_code(text)
+            if not constants:
+                continue
+            relative = path.relative_to(project).as_posix()
+            for item in constants:
+                if item["key"] in seen:
+                    continue
+                seen.add(item["key"])
+                found.append(dict(item, source=relative))
+            sources.append(relative)
+    return found, sources
+
+
+def observation_receipts(project, max_files=80):
+    found = []
+    pending = [(project, 0)] if project.is_dir() else []
+    inspected = 0
+    while pending and inspected < max_files:
+        directory, depth = pending.pop(0)
+        try:
+            entries = sorted(directory.iterdir(), key=lambda item: item.name)
+        except OSError:
+            continue
+        for path in entries:
+            if inspected >= max_files:
+                break
+            if path.name.startswith(".") or path.name in ROLE_WALK_SKIP:
+                continue
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                if depth >= 4:
+                    continue
+                pending.append((path, depth + 1))
+                continue
+            if path.name != "record.json":
+                continue
+            inspected += 1
+            try:
+                data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            if not isinstance(data, dict) or data.get("kind") != "observation":
+                continue
+            found.append({
+                "path": path.relative_to(project).as_posix(),
+                "author": data.get("author"),
+                "note": data.get("note"),
+            })
+    return found
+
+
+def feel_reading(project):
+    project = Path(project)
+    constants, sources = declared_feel_constants(project)
+    observations = observation_receipts(project)
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "constants": constants,
+        "sources": sources,
+        "observations": observations,
+        "unobserved": bool(constants) and not observations,
+        "felt": False,
+        "guide": str(FRAMEWORK / "recipes/feel.md"),
+        "rule": (
+            "Constante nomeada não é peso percebido. Recibo de observação no "
+            "projeto é o que o harness consegue ver; ele não joga."
+        ),
+        "scope": (
+            "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash) e "
+            "`record.json` com kind=observation. Não executa o jogo, não mede "
+            "latência e não atribui degrau. `felt` é sempre falso: tabela de "
+            "constantes e recibo otimista saem intactos."
         ),
     }
 
@@ -2344,6 +2506,27 @@ def next_step(project, focus="create", studies_root=None):
             commands,
             "audio.roles",
         )
+    feel = feel_reading(project)
+    if feel["unobserved"]:
+        sample = ", ".join(f"`{item['key']}`" for item in feel["constants"][:4])
+        extra = " e mais" if len(feel["constants"]) > 4 else ""
+        propose(
+            f"Registrar o que o verbo sentiu numa partida ({sample}{extra})",
+            "Há constantes de feel no código e nenhum recibo de observação no "
+            "projeto. Constante nomeada não é peso percebido. O harness não joga.",
+            "Existe um `record --kind observation` sob o projeto, com cenário, "
+            "role e o que mudou (ou não) no verbo — ou a lacuna, se ainda não souber.",
+            [
+                harness_command("feel", project),
+                harness_command(
+                    "record", project, "--kind", "observation",
+                    "--author", "NOME", "--note", "o que o verbo sentiu",
+                    "--field", "scenario=primeira partida", "--field", "role=human",
+                    "--output", "CAMINHO_NOVO",
+                ),
+            ],
+            "feel.unobserved",
+        )
     if drafts:
         propose(
             "Substituir rascunho por decisão em: " + labels(drafts),
@@ -2570,6 +2753,7 @@ def next_step(project, focus="create", studies_root=None):
             "origins_contradicts_licensing": origins["contradicts_licensing"],
             "playable_unplayed": fresh,
             "audio_roles_empty": roles["empty"],
+            "feel_unobserved": feel["unobserved"],
             "craft_pending": [
                 key for key, spec in CRAFT_CHECKS.items()
                 if spec["gate"] in gates["declared"]
@@ -2835,6 +3019,11 @@ def main():
         help="papéis de áudio que o projeto declara e os arquivos que os preenchem",
     )
     roles_cmd.add_argument("project")
+    feel_cmd = commands.add_parser(
+        "feel", parents=[common],
+        help="constantes de feel que o projeto declara e o recibo de observação no disco",
+    )
+    feel_cmd.add_argument("project")
     ctx = commands.add_parser("context", parents=[common])
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
@@ -2902,6 +3091,8 @@ def main():
             emit(craft_reading(resolve(args.project, root), args.gate))
         elif args.action == "roles":
             emit(roles_reading(resolve(args.project, root), root))
+        elif args.action == "feel":
+            emit(feel_reading(resolve(args.project, root)))
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":

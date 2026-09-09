@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.9 — Feel declarado e observação no disco
+
+O starter nomeia perdão, graça e hitstop no `CONFIG`; o harness só via a
+tabela de ofício. `feel` lê as constantes e procura `record.json` com
+`kind=observation` no projeto. `felt` é sempre `false`. `next` propõe
+`feel.unobserved` depois dos papéis de áudio e antes dos rascunhos:
+constante nomeada não é peso percebido. `discover` conta constantes e
+recibos por jogo.
+
+O que 0.9.9 não afirma: o harness não joga, não mede latência e não
+atribui degrau. Recibo otimista sai intacto.
+
 ## 0.9.8 — Papéis de áudio no disco
 
 O starter declara seis papéis do verbo e os deixa vazios; o harness não lia
