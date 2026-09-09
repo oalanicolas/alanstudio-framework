@@ -3,13 +3,16 @@
 
 Cada voz é seno ou ruído filtrado com envelope. Quadrada, dente e jsfxr
 ficam de fora: o piso do estúdio recusa essa estética como padrão.
-O arquivo é original deste starter (CC0-1.0). O harness não ouve o resultado.
+`--from` reescreve um papel que o mixer já toca; `--as` desloca a voz
+sem pedir a receita de cabeça. O arquivo é original deste starter
+(CC0-1.0). O harness não ouve o resultado.
 """
 from __future__ import annotations
 
 import json
 import math
 import struct
+import sys
 import wave
 from pathlib import Path
 
@@ -17,6 +20,11 @@ RATE = 44100
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "public" / "sfx"
 ROLES = ("dash", "graze", "collect", "bank", "hit", "over", "bed")
+INTENTS = {
+    "brighter": "sobe o tom e abre o brilho",
+    "darker": "desce o tom e fecha o grave",
+    "tighter": "encurta a cauda",
+}
 
 
 def clamp(value: float) -> int:
@@ -138,6 +146,12 @@ VOICES = {
 }
 
 
+def normalize(samples: list[float]) -> list[float]:
+    peak = max((abs(sample) for sample in samples), default=1.0)
+    scale = 0.86 / peak if peak else 0.0
+    return [sample * scale for sample in samples]
+
+
 def design(name: str) -> list[float]:
     seconds, voice, hp, lp = VOICES[name]
     samples = render(seconds, voice)
@@ -145,9 +159,24 @@ def design(name: str) -> list[float]:
         samples = highpass(samples, hp)
     if lp is not None:
         samples = lowpass(samples, lp)
-    peak = max((abs(sample) for sample in samples), default=1.0)
-    scale = 0.86 / peak if peak else 0.0
-    return [sample * scale for sample in samples]
+    return normalize(samples)
+
+
+def apply_intent(samples: list[float], intent: str | None) -> list[float]:
+    if not intent:
+        return samples
+    if intent == "brighter":
+        return normalize(highpass(detune(samples, 1.18), 0.55))
+    if intent == "darker":
+        return normalize(lowpass(detune(samples, 0.84), 0.22))
+    if intent == "tighter":
+        cut = max(8, int(len(samples) * 0.62))
+        out = list(samples[:cut])
+        fade = max(1, int(len(out) * 0.12))
+        for index in range(fade):
+            out[-fade + index] *= index / fade
+        return normalize(out)
+    return samples
 
 
 def detune(samples: list[float], factor: float) -> list[float]:
@@ -163,22 +192,38 @@ def detune(samples: list[float], factor: float) -> list[float]:
     return out
 
 
-def credits_text(name: str) -> str:
+def credits_text(name: str, intent: str | None = None) -> str:
     role = name[:-2] if name.endswith("-b") else name
     kind = "variante para evitar fadiga" if name.endswith("-b") else "design original"
+    shift = f" Intenção {intent}: {INTENTS[intent]}." if intent and intent in INTENTS else ""
     return (
         f"{name}.wav — {kind} do starter Canvas Arcade, 2026-09-09.\n"
         "Gerado por tools/design-sfx.py. Autor: Alan Studios Framework. "
         "Licença: CC0-1.0. Sem samples de terceiros, sem jsfxr, sem Kenney, "
-        "sem chiptune.\n"
+        f"sem chiptune.{shift}\n"
         f"Consumidor: src/game/audio.js (papel `{role}`) via src/game/sfx.js.\n"
     )
 
 
-def write_receipts(names: list[str]) -> None:
+def write_receipts(names: list[str], merge: bool = False, intent: str | None = None) -> None:
     records = []
+    if merge and (OUT / "sources.json").is_file():
+        try:
+            previous = json.loads((OUT / "sources.json").read_text(encoding="utf-8"))
+            kept = previous.get("files") if isinstance(previous, dict) else None
+            if isinstance(kept, list):
+                skip = set(names)
+                records = [
+                    item for item in kept
+                    if isinstance(item, dict) and item.get("key") not in skip
+                ]
+        except (OSError, json.JSONDecodeError, TypeError):
+            records = []
+    note = "design contemporâneo original; não é gravação de campo"
+    if intent and intent in INTENTS:
+        note = f"{note}; intenção {intent}"
     for name in names:
-        (OUT / f"{name}.credits.txt").write_text(credits_text(name), encoding="utf-8")
+        (OUT / f"{name}.credits.txt").write_text(credits_text(name, intent), encoding="utf-8")
         records.append({
             "src": f"{name}.wav",
             "key": name,
@@ -186,7 +231,7 @@ def write_receipts(names: list[str]) -> None:
             "author": "Alan Studios Framework",
             "license": "CC0-1.0",
             "origin": "tools/design-sfx.py",
-            "note": "design contemporâneo original; não é gravação de campo",
+            "note": note,
         })
     (OUT / "sources.json").write_text(
         json.dumps({"schema_version": 1, "files": records}, ensure_ascii=False, indent=2) + "\n",
@@ -194,15 +239,59 @@ def write_receipts(names: list[str]) -> None:
     )
 
 
-def main() -> None:
+def parse_args(argv: list[str]) -> tuple[str | None, str | None]:
+    role = None
+    intent = None
+    index = 0
+    while index < len(argv):
+        flag = argv[index]
+        if flag == "--from" and index + 1 < len(argv):
+            role = argv[index + 1].strip()
+            index += 2
+            continue
+        if flag == "--as" and index + 1 < len(argv):
+            intent = argv[index + 1].strip()
+            index += 2
+            continue
+        print(
+            "uso: python3 tools/design-sfx.py [--from <papel>] [--as brighter|darker|tighter]",
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
+    return role or None, intent or None
+
+
+def write_role(name: str, intent: str | None = None) -> list[str]:
+    samples = apply_intent(design(name), intent)
+    write_wav(OUT / f"{name}.wav", samples)
+    write_wav(OUT / f"{name}-b.wav", detune(samples, 1.07))
+    return [name, f"{name}-b"]
+
+
+def main(argv: list[str] | None = None) -> None:
+    role, intent = parse_args(sys.argv[1:] if argv is None else argv)
+    if intent and not role:
+        print("--as precisa de --from: a intenção desloca um papel que o mixer já toca.", file=sys.stderr)
+        raise SystemExit(2)
+    if role and role not in ROLES:
+        print(f"só --from de papel: {role} não é voz do verbo.", file=sys.stderr)
+        raise SystemExit(2)
+    if intent and intent not in INTENTS:
+        print(f"intenção desconhecida: {intent}. use {'|'.join(INTENTS)}.", file=sys.stderr)
+        raise SystemExit(2)
     OUT.mkdir(parents=True, exist_ok=True)
+    targets = (role,) if role else ROLES
     names = []
-    for name in ROLES:
-        samples = design(name)
-        write_wav(OUT / f"{name}.wav", samples)
-        write_wav(OUT / f"{name}-b.wav", detune(samples, 1.07))
-        names.extend([name, f"{name}-b"])
-    write_receipts(names)
+    for name in targets:
+        names.extend(write_role(name, intent))
+    write_receipts(names, merge=bool(role), intent=intent)
+    if role:
+        print(f"papel {role}: public/sfx/{role}.wav")
+        if intent:
+            print(f"intenção {intent} a partir de {role}: {INTENTS[intent]}.")
+        else:
+            print(f"cópia de {role}: a voz é a mesma até alguém deslocar.")
+        return
     print(f"{len(names)} arquivos em {OUT}")
 
 

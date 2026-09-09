@@ -14,6 +14,7 @@ npm run table -- <nome> --from spawn
 npm run table -- <nome> --from dusk --as denser
 npm run session -- --spawn <nome>
 npm run look -- <nome> --from dusk --as warmer
+npm run sfx -- --from dash --as brighter
 ```
 
 `--from` copia um perfil de chuva que já existe (`spawn` ou `dusk`).
@@ -30,6 +31,10 @@ idêntica até alguém editar. Intenção não é look aprovado.
 A partida lê `?spawn=<nome>` ou `settings.spawnProfile`. `dusk` já é o
 segundo perfil: prática mais curta, chuva mais densa. Intenção nomeada
 não é chuva melhor nem alguém de fora no piso.
+
+`npm run sfx -- --from dash --as brighter|darker|tighter` reescreve
+um papel que o mixer já toca. `--as` precisa de `--from`. Sem `--from`
+o banco inteiro nasce de novo. Intenção não é mix ouvido.
 
 Campo obrigatório se declara com `requireFields("spawn", [...])`. Mesa
 desconhecida ou campo ausente falha com o nome do que faltou, não com

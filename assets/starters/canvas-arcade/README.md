@@ -114,7 +114,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor/câmera e rumble distintos; a ameaça marca o trilho, a recuperação do dash muda a silhueta e o erro acende o campo; `npm run probe` conta os buffers, não o peso percebido; o harness não segurou o controle |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — a sequência de quadros no stub cobre o HUD; `npm run contrast` amostra a cena montada e, em cinza, pixels que só o orbe ou só o estilhaço pintam; o dispositivo alvo ainda não foi observado |
 | `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; a paleta é mesa e `dusk` é o segundo look (`?look=` / `settings.look`); `look --from` / `--as` nasce o próximo; `consistent` é falso |
-| `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — o palco tem folga, a cama ocupa o barramento de música e o mixer limita o master; `npm run mix` soma cama e vozes na simulação, não no dispositivo; loudness percebido não foi medido |
+| `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — o palco tem folga, a cama ocupa o barramento de música e o mixer limita o master; `sfx --from` / `--as` nasce a próxima voz no papel que o mixer já toca; `npm run mix` soma cama e vozes na simulação, não no dispositivo; loudness percebido não foi medido; `heard` é falso |
 | `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; a sessão relata never_banked e erro repetido na simulação; a curva com quem nunca viu o jogo continua pendente |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; cada tick compacta a chuva no mesmo array e reusa o poço; evento, telegraph e o gerador da chuva também reusam; `npm run budget` cronometra a cena `playing.run` (simulação + `draw` num canvas stub) e relata o reuso — não o compositor nem o dispositivo alvo |
@@ -183,7 +183,7 @@ src/main.js   montagem e contrato de ciclo de vida
 data/         conteúdo separado da regra (chuva, HUD, avisos e paleta)
 docs/         art-bible vigente — o init não o reescreve
 public/sfx/   design original dos papéis do verbo e da cama, com recibo
-tools/        servidor, orçamento, mix, sessão, tamanho, export, nascer mesa, nascer look e gerar sfx
+tools/        servidor, orçamento, mix, sessão, tamanho, export, nascer mesa, nascer look e nascer voz
 tests/        regras, determinismo, ciclo de vida, save, mixagem, ensino, export
 ```
 
@@ -205,7 +205,7 @@ essa chuva. Sem `--from`, o custo variável continua sendo ligar a regra.
 `dusk` já é a segunda chuva e o segundo look — o nome é compartilhado,
 as mesas não. `npm run look -- <nome> --from dusk --as warmer` nasce o
 próximo look no mesmo consumidor. Ferramenta que desloca knobs ou
-tokens não é volume, direção consistente nem alguém de fora no piso. Os papéis do verbo e a cama em `public/sfx` entram no mixer;
+tokens não é volume, direção consistente nem alguém de fora no piso. `npm run sfx -- --from dash --as brighter` desloca a voz no papel que o mixer já toca; sem `--from` o banco inteiro nasce de novo. Intenção não é mix ouvido. Os papéis do verbo e a cama em `public/sfx` entram no mixer;
 `heard` continua falso. `npm run build` copia a árvore jogável para
 `dist/`; isso não é outra pessoa tendo jogado o artefato.
 

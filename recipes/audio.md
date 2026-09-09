@@ -113,7 +113,9 @@ starter `canvas-arcade` inclui design original em `public/sfx`.
 `src/game/audio.js` do starter `canvas-arcade` traz barramentos, prioridade, ducking,
 limite de vozes, rodízio de variantes e legenda. Os papéis do verbo e a
 cama (`bed`, loop no barramento de música) têm design original e variante
-(`-b`) em `public/sfx`. `npm run peak` relata o pico do
+(`-b`) em `public/sfx`. `npm run sfx -- --from dash --as brighter`
+desloca a voz no papel que o mixer já toca; `--as` precisa de `--from`.
+`npm run peak` relata o pico do
 arquivo; `npm run mix` soma as vozes de uma partida simulada com o mesmo
 palco, folga e ducking do mixer. Nenhum dos dois é mix ouvido. `heard` continua falso. Toda
 informação sonora precisa de equivalente visual — requisito de

@@ -26,7 +26,8 @@ não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta e
 já traz design original e variante (`-b`) nos papéis do verbo e na cama
 e carrega no mixer. A cama entra em loop no barramento de música.
 `npm run mix` soma cama e vozes na partida simulada com o mesmo palco
-e folga do mixer. `heard` é sempre falso.
+e folga do mixer. `sfx --from` / `--as` desloca a voz no papel que o
+mixer já toca. `heard` é sempre falso.
 
 **Feel (`feel`):** lê `const CONFIG` (perdão, graça, hitstop, punch,
 telegraph, flash, rumble) e `record.json` de observação. `note` grava o recibo

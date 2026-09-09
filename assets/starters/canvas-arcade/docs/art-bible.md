@@ -38,6 +38,8 @@ e cabe neste recorte.
    (ou `--from dusk`) e, se a chuva não for um clone, `--as denser|calmer|brief`.
    Confira com `npm run session -- --spawn <nome>`. Outro dado:
    `npm run table -- <nome>` e ligue o consumidor.
+6. Se o item for voz, nasça com `npm run sfx -- --from dash --as brighter|darker|tighter`.
+   `--as` precisa de `--from`. Intenção não é mix ouvido.
 
 Isto é a receita, não a prova de que alguém de fora a cumpriu.
 

@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.53 — A próxima voz nasce como o look
+
+O banco de sfx só nascia inteiro. Para deslocar um papel era preciso
+editar o Python. `sfx --from` reescreve a voz que o mixer já toca;
+`--as brighter|darker|tighter` desloca tom e cauda. Sem `--from` o
+banco inteiro continua o caminho. `heard` continua falso.
+`audio_mix` permanece `slice`: ferramenta no disco não é mix ouvido.
+Só `release` fica no piso.
+
+O que 0.9.53 não afirma: o harness não ouviu a voz e ninguém de fora
+produziu no piso.
+
 ## 0.9.52 — O artefato declara como se serve
 
 O `dist/` já saía servível. Quem recebia a pasta ainda podia achar
