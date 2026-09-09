@@ -23,13 +23,22 @@ uso, versão e o consumidor no código.
 
 ## Áudio
 
-Nenhum arquivo embarcado. Os seis papéis sonoros estão declarados e vazios em
-`src/game/audio.js`. O piso do estúdio é gravação licenciada ou design
-contemporâneo — 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.
+| Parte | Origem | Condição de uso |
+| --- | --- | --- |
+| `public/sfx/dash.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/graze.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/collect.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/bank.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/hit.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/over.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 
-Ao copiar do acervo compartilhado, `sfx copy` grava `sources.json` e um arquivo
-de créditos ao lado do som; mantenha os dois e referencie-os nesta seção.
-Reuso não concede licença nova.
+Recibo por arquivo em `public/sfx/<papel>.credits.txt` e lista em
+`public/sfx/sources.json`. Sem samples de terceiros. O harness não
+valida a licença — só vê o recibo.
+
+Ao copiar do acervo compartilhado, `sfx copy` grava `sources.json` e um
+arquivo de créditos ao lado do som; mantenha os dois e referencie-os
+nesta seção. Reuso não concede licença nova.
 
 ## Tipografia
 

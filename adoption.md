@@ -3,6 +3,27 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.18 — Runbook vigente, medição de sessão e contraste sem limiar
+
+`docs/release.md` já nasce vigente: como exportar e servir o `dist/`.
+`shipped` continua falso. A partida encerrada guarda `lastRun` no
+progresso — forma para o campo de medição de um achado, não playtest
+observado. `npm run contrast` relata luminância relativa dos pares hex
+sem importar 4,5:1 e sem aprovar.
+
+O que 0.9.18 não afirma: outra máquina não jogou o artefato, o harness
+não assistiu à sessão e o contraste em movimento não foi observado.
+
+## 0.9.17 — Design sonoro original nos seis papéis
+
+O starter embarca `public/sfx/<papel>.wav` gerado por
+`tools/design-sfx.py`: seno e ruído filtrado, CC0-1.0, recibo ao lado.
+`audio_mix` sobe a `playable`. Um arquivo por papel ainda não é
+variação; `heard` continua falso. Só `release` permanece no piso.
+
+O que 0.9.17 não afirma: o harness não ouviu, não aprovou a mixagem e
+não substituiu o acervo do laboratório.
+
 ## 0.9.16 — Assistência que não esconde conteúdo
 
 O starter ganha a opção `assist`: alcance de coleta maior, chuva mais

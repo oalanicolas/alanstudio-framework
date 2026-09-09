@@ -296,7 +296,8 @@ comprovada não é.
 Escrito neste repositório, sem dependências de terceiros. `mulberry32`, em
 `src/core/rng.js`, é algoritmo de domínio público amplamente publicado; o
 embaralhamento de bits em `src/core/hash.js` pertence à mesma família. O starter
-não embarca imagem, som nem fonte — proveniência completa em
+não embarca imagem nem fonte. O som dos seis papéis é design original
+em `public/sfx` (CC0-1.0, `tools/design-sfx.py`) — proveniência completa em
 [CREDITS.md](../assets/starters/canvas-arcade/CREDITS.md).
 
 Seus testes rodam neste repositório e exercitam o ciclo de vida, o determinismo e

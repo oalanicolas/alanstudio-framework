@@ -9,7 +9,9 @@
     "serve": "node tools/serve.mjs",
     "budget": "node tools/budget.mjs",
     "build": "node tools/export.mjs",
-    "table": "node tools/new-table.mjs"
+    "table": "node tools/new-table.mjs",
+    "sfx": "python3 tools/design-sfx.py",
+    "contrast": "node tools/contrast.mjs"
   },
   "engines": {
     "node": ">=20"

@@ -104,17 +104,17 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — falta o som, e o perdão de entrada precisa ser medido, não só anotado |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — o que existe hoje é medição de placa, borda e faixa em quadro estático |
 | `art_direction` | `playable` | `slice`: a mesma linguagem em movimento, na resolução alvo — hoje a decisão está no art-bible e ainda não foi observada em sessão |
-| `audio_mix` | `prototype` | `playable`: som licenciado nas ações centrais, com origem registrada — os seis papéis estão declarados e vazios |
+| `audio_mix` | `playable` | `slice`: mixagem com variação para evitar fadiga — barramento, prioridade e ducking já existem; um arquivo por papel ainda não varia |
 | `pacing` | `playable` | `slice`: o aviso some depois da primeira decisão e não tapa o verbo — some após guardar; ainda não foi observado em sessão |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada, perda de foco — além do teste de dado inválido |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
-| `accessibility` | `slice` | `shippable`: contraste verificado por medição — assistência existe (alcance e chuva, sem esconder conteúdo); contraste ainda não foi medido |
+| `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena — `npm run contrast` relata pares hex sem limiar; assistência existe; movimento ainda não foi observado |
 | `content_scale` | `slice` | `shippable`: conteúdo tem identidade estável, migração e validação; ausente ou inválido falha de forma legível — mesa desconhecida e campo obrigatório já falham; não há migração de formato |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `npm run build` existe e ninguém o correu fora daqui |
 
-**Leitura honesta: este projeto é um protótipo**, porque duas dimensões estão
+**Leitura honesta: este projeto é um protótipo**, porque uma dimensão está
 nesse degrau. Nenhuma quantidade de acabamento visual muda essa leitura antes
-delas subirem.
+dela subir.
 
 ## Ofício declarado
 
@@ -148,27 +148,20 @@ geométrica não é teste de percepção**, e é exatamente essa a distância en
 
 ## Som
 
-O starter **não embarca arquivos de áudio**. `src/game/audio.js` traz a mixagem
-— barramentos, prioridade, ducking, legenda — com os seis papéis declarados e
-vazios. `audioGaps()`, exposto em `src/main.js`, transforma isso em lacuna
-observável: a página a exibe e `tests/lifecycle.test.mjs` a confere. O piso do estúdio
-é gravação licenciada ou design contemporâneo; sintetizar bipes aqui escolheria
-a estética errada por conveniência.
+Os seis papéis têm design original em `public/sfx/<papel>.wav` (CC0-1.0,
+`tools/design-sfx.py`): seno e ruído filtrado, sem quadrada, sem jsfxr,
+sem Kenney. Origem em `public/sfx/sources.json` e nos sidecars
+`.credits.txt`. `src/game/audio.js` traz a mixagem — barramentos,
+prioridade, ducking, legenda. `heard` continua falso: arquivo no disco
+não é mixagem ouvida. Um arquivo por papel ainda não é variação.
 
-Para preencher, a partir da raiz do framework:
-
-```sh
-python3 scripts/game.py roles <projeto> --fill --root <laboratorio>
-python3 scripts/game.py roles <projeto> --fill --apply --root <laboratorio>
-```
-
-Toda informação sonora já tem legenda equivalente: o jogo é completável com o
-áudio desligado, e precisa continuar sendo. Enquanto os papéis estão vazios, a
-legenda **é** a informação sonora, então ela tem faixa própria — encostada à
-direita, abaixo do relógio, posicionada a partir dos retângulos que o HUD
-reserva — e junta repetições consecutivas em uma linha com contagem. No centro
-inferior, onde nascia, ela caía sobre o jogador e sobre o rótulo do dash:
-`tests/render.test.mjs` mede isso em vez de confiar no olho.
+Toda informação sonora já tem legenda equivalente: o jogo é completável
+com o áudio desligado, e precisa continuar sendo. A legenda tem faixa
+própria — encostada à direita, abaixo do relógio, posicionada a partir
+dos retângulos que o HUD reserva — e junta repetições consecutivas em
+uma linha com contagem. No centro inferior, onde nascia, ela caía sobre
+o jogador e sobre o rótulo do dash: `tests/render.test.mjs` mede isso
+em vez de confiar no olho.
 
 ## Estrutura
 
@@ -178,7 +171,8 @@ src/game/     regras, apresentação, mixagem, mesas, carga de sfx e ensino do c
 src/main.js   montagem e contrato de ciclo de vida
 data/         conteúdo separado da regra (chuva, HUD e avisos)
 docs/         art-bible vigente — o init não o reescreve
-tools/        servidor, orçamento, export e nascer mesa
+public/sfx/   design original dos seis papéis, com recibo
+tools/        servidor, orçamento, export, nascer mesa e gerar sfx
 tests/        regras, determinismo, ciclo de vida, save, mixagem, ensino, export
 ```
 
@@ -192,10 +186,9 @@ A paleta vive em `src/game/render.js` (`PALETTES`) e o contrato está em
 continua pendente. Chuva e texto do HUD passam por `src/game/tables.js`.
 `npm run table -- <nome>` nasce a próxima mesa no mesmo carregador; o
 custo fixo é o comando, o variável é o consumidor. Duas mesas mais a
-receita não são volume. `public/sfx/<papel>` entra no mixer quando o
-arquivo existe; copiar sem consumidor deixava o jogo mudo. `npm run
-build` copia a árvore jogável para `dist/`; isso não é outra pessoa
-tendo jogado o artefato.
+receita não são volume. Os seis papéis em `public/sfx` entram no mixer;
+`heard` continua falso. `npm run build` copia a árvore jogável para
+`dist/`; isso não é outra pessoa tendo jogado o artefato.
 
 `src/main.js` implementa `pause`, `resume`, `reset`, `seed`, `observe`, `act`,
 `advance`, `capture` e `dispose`. Esses nomes são o vocabulário de inspeção do

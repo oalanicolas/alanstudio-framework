@@ -995,10 +995,11 @@ def craft_reading(project, gate=None):
     }
 
 
-# Papéis de áudio: o starter declara SOUNDS e deixa os slots vazios de propósito.
-# Mixagem AAA não é pasta cheia — é cada papel do verbo ter arquivo ou silêncio
-# deliberado (papel removido). O harness só vê declaração e arquivo no disco.
-# Não ouve, não aprova estética e não confunde arquivo presente com mixagem boa.
+# Papéis de áudio: o starter declara SOUNDS e, neste recorte, já traz
+# arquivo por papel. Mixagem AAA não é pasta cheia — é cada papel do
+# verbo ter arquivo ou silêncio deliberado (papel removido). O harness
+# só vê declaração e arquivo no disco. Não ouve, não aprova estética e
+# não confunde arquivo presente com mixagem boa.
 ROLE_FOLDERS = ("public/sfx", "assets/sfx", "sfx", "audio", "public/audio")
 ROLE_EXTENSIONS = {".wav", ".ogg", ".mp3", ".flac", ".m4a", ".webm"}
 SOUNDS_OPEN = re.compile(r"(?:export\s+)?const\s+SOUNDS\s*=\s*\{")

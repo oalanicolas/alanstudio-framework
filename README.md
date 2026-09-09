@@ -487,9 +487,9 @@ Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
 
 ## Áudio
 
-O starter declara os papéis do verbo (`const SOUNDS`) e os deixa vazios. Isso
-não é silêncio deliberado — é lacuna. `roles` lê a declaração e cruza com
-arquivos em `public/sfx` (e equivalentes):
+O starter declara os papéis do verbo (`const SOUNDS`) e já traz design
+original em `public/sfx/<papel>.wav`. `roles` lê a declaração e cruza com
+arquivos em `public/sfx` (e equivalentes). Papel vazio continua lacuna:
 
 ```sh
 python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo

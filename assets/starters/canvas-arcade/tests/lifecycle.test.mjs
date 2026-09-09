@@ -154,7 +154,7 @@ test("a lacuna de áudio é declarada em vez de silenciosa", () => {
   const { game } = harness();
   const gaps = game.audioGaps();
   assert.ok(gaps.declared.includes("collect"));
-  assert.deepEqual(gaps.registered, [], "o starter não embarca som");
+  assert.deepEqual(gaps.registered, [], "sem canvas o loader não busca arquivo");
   game.dispose();
 });
 
@@ -166,6 +166,8 @@ test("uma partida completa é registrada no progresso persistido", () => {
   assert.equal(game.progress.runs, 1);
   assert.equal(game.progress.best, state.score);
   assert.equal(JSON.parse(storage.get("progress")).runs, 1);
+  assert.equal(game.lastRun.score, state.score);
+  assert.equal(game.lastRun.ticks, state.tick);
   game.dispose();
 });
 

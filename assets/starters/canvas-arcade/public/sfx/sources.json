@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "src": "dash.wav",
+      "key": "dash",
+      "title": "Canvas Arcade / dash",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "graze.wav",
+      "key": "graze",
+      "title": "Canvas Arcade / graze",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "collect.wav",
+      "key": "collect",
+      "title": "Canvas Arcade / collect",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "bank.wav",
+      "key": "bank",
+      "title": "Canvas Arcade / bank",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "hit.wav",
+      "key": "hit",
+      "title": "Canvas Arcade / hit",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "over.wav",
+      "key": "over",
+      "title": "Canvas Arcade / over",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
+    }
+  ]
+}

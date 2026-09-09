@@ -24,6 +24,7 @@ async function serveFrom(name) {
   await cp(join(STARTER, "index.html"), join(project, "index.html"));
   await cp(join(STARTER, "src"), join(project, "src"), { recursive: true });
   await cp(join(STARTER, "data"), join(project, "data"), { recursive: true });
+  await cp(join(STARTER, "public"), join(project, "public"), { recursive: true });
   const child = spawn(process.execPath, ["tools/serve.mjs"], {
     cwd: project,
     env: { ...process.env, PORT: "0" },
@@ -59,6 +60,11 @@ for (const name of ["farol", "Farol do Sul"]) {
       assert.equal(spawn.status, 200);
       assert.equal(spawn.headers.get("content-type"), "application/json; charset=utf-8");
       assert.ok(Number.isFinite((await spawn.json()).intervalTicks));
+
+      const sound = await fetch(`http://localhost:${server.port}/public/sfx/dash.wav`);
+      assert.equal(sound.status, 200);
+      const bytes = Buffer.from(await sound.arrayBuffer());
+      assert.equal(bytes.subarray(0, 4).toString("ascii"), "RIFF");
 
       const escape = await fetch(`http://localhost:${server.port}/../../etc/passwd`);
       assert.ok(escape.status === 403 || escape.status === 404, "caminho fora do projeto não pode vazar");

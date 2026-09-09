@@ -1,6 +1,7 @@
-// O starter não embarca som. O que precisa estar provado é a mixagem: que a
-// ausência é declarada, que a legenda cobre a informação sonora e que, sob
-// pressão, o som que desaparece é o menos importante — não o aviso.
+// O que precisa estar provado é a mixagem: que a ausência ainda é
+// declarada quando o buffer falta, que a legenda cobre a informação
+// sonora e que, sob pressão, o som que desaparece é o menos
+// importante — não o aviso. Arquivo no disco não entra neste arquivo.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";

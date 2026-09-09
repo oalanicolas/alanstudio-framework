@@ -3,9 +3,14 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { createAudio, SOUNDS } from "../src/game/audio.js";
 import { loadRoleFiles } from "../src/game/sfx.js";
+
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
 
 test("carrega o arquivo do papel e o registra no mixer", async () => {
   const audio = createAudio({ createContext: () => null });
@@ -21,6 +26,17 @@ test("carrega o arquivo do papel e o registra no mixer", async () => {
   const gaps = audio.missing();
   assert.deepEqual(gaps.registered, ["dash"]);
   assert.ok(gaps.declared.includes("hit"));
+});
+
+test("os seis papéis têm WAV original no disco, não um stub", async () => {
+  for (const id of Object.keys(SOUNDS)) {
+    const bytes = await readFile(join(ROOT, "public/sfx", `${id}.wav`));
+    assert.equal(bytes.subarray(0, 4).toString("ascii"), "RIFF", id);
+    assert.ok(bytes.length > 1000, `${id} curto demais para ser design`);
+    const credits = await readFile(join(ROOT, "public/sfx", `${id}.credits.txt`), "utf8");
+    assert.match(credits, /CC0-1.0/);
+    assert.match(credits, /design-sfx/);
+  }
 });
 
 test("404 não inventa buffer e não quebra o restante dos papéis", async () => {

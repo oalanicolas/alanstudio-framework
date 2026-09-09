@@ -12,9 +12,10 @@ e Kenney arcade não são o padrão.
 papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
 em `public/sfx`. `roles --fill` sugere um candidato do acervo; `--apply`
 copia para `public/sfx/<papel>` com recibo. O starter `canvas-arcade`
-carrega esse arquivo no mixer. Arquivo ausente é lacuna do verbo, não
-silêncio deliberado; `heard` é sempre falso. Sem `shared/sfx`, a sugestão
-vem vazia — isso não autoriza improvisar licença.
+já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
+mixer. Arquivo ausente é lacuna do verbo, não silêncio deliberado;
+`heard` é sempre falso. Sem `shared/sfx`, a sugestão de `--fill` vem
+vazia — isso não autoriza improvisar licença.
 
 ## 1. Nomear a camada
 
@@ -104,14 +105,14 @@ aprovação do usuário. Sem referência sonora, a lacuna permanece explícita.
 Origem: piso de áudio do [README](../README.md),
 [qualidade](../references/quality.md),
 [ambição](../references/ambition.md) e catálogo `shared/sfx` do laboratório.
-Este repositório não inclui os arquivos de som.
+O acervo `shared/sfx` do laboratório não vive neste repositório. O
+starter `canvas-arcade` inclui design original em `public/sfx`.
 
 ## Implementação de referência e degraus
 
 `src/game/audio.js` do starter `canvas-arcade` traz barramentos, prioridade, ducking,
-limite de vozes e legenda, com os seis papéis sonoros declarados e **vazios**. O acesso
-`audioGaps()`, exposto em `src/main.js`, transforma essa ausência em lacuna observável
-pela interface e pelos testes, em vez de escondê-la atrás de bipes sintetizados. Toda
+limite de vozes e legenda. Os seis papéis têm design original em `public/sfx`.
+`heard` continua falso. Toda
 informação sonora precisa de equivalente visual — requisito de
 [acessibilidade](accessibility.md), não recurso extra. Degraus da dimensão `audio_mix`:
 [barra de acabamento](../references/production-bar.md#audio_mix--mixagem-não-arquivos).

@@ -1332,7 +1332,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     def test_the_starter_reading_counts_the_dimensions_that_are_really_at_the_floor(self):
         escrito = {1: "uma", 2: "duas", 3: "três", 4: "quatro", 5: "cinco", 6: "seis", 7: "sete"}
         row = re.compile(r"^\| `(\w+)` \| `(\w+)` \| `(\w+)`:", re.MULTILINE)
-        leitura = re.compile(r"este projeto é um (\w+)\*\*, porque (\w+) dimensões")
+        leitura = re.compile(r"este projeto é um (\w+)\*\*, porque (\w+) dimens")
         for name in game.starters():
             readme = (Path(game.STARTERS_ROOT) / name / "README.md").read_text(encoding="utf-8")
             tiers = [tier for _, tier, _ in row.findall(readme)]
@@ -1429,7 +1429,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("test", result["signals"]["scripts"])
         bases = [item["basis"] for item in result["alternatives"]]
         self.assertNotIn("areas.not_located", bases)
-        self.assertIn("audio.roles", bases)
+        self.assertNotIn("audio.roles", bases)
         self.assertIn("feel.unobserved", bases)
         self.assertIn("areas.draft_only", bases)
         self.assertIn("scripts", bases)
@@ -1458,12 +1458,12 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             encoding="utf-8",
         )
         after = game.next_step(destination)
-        self.assertEqual(after["proposal"]["basis"], "audio.roles")
+        self.assertEqual(after["proposal"]["basis"], "feel.unobserved")
         self.assertFalse(after["signals"]["playable_unplayed"])
-        self.assertIn("dash", after["signals"]["audio_roles_empty"])
+        self.assertEqual(after["signals"]["audio_roles_empty"], [])
         self.assertTrue(after["signals"]["feel_unobserved"])
         after_bases = [item["basis"] for item in after["alternatives"]]
-        self.assertIn("feel.unobserved", after_bases)
+        self.assertNotIn("audio.roles", after_bases)
         self.assertNotIn("content.inline", after_bases)
         self.assertNotIn("ship.unpacked", after_bases)
         self.assertNotIn("playtest.unstructured", after_bases)
@@ -1927,7 +1927,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["heard"])
         self.assertFalse(report["approved"])
         self.assertEqual([item["id"] for item in report["roles"]], ["dash", "graze", "collect", "bank", "hit", "over"])
-        self.assertEqual(report["empty"], [item["id"] for item in report["roles"]])
+        self.assertEqual(report["empty"], [])
+        self.assertTrue(all(item["state"] == "present" for item in report["roles"]))
         self.assertIn("src/game/audio.js", report["sources"])
         empty = game.roles_reading(self.project)
         self.assertEqual(empty["roles"], [])
@@ -1937,8 +1938,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         destination = self.root / "com-som"
         game.init(destination, "canvas-arcade")
         target = destination / "public/sfx"
-        target.mkdir(parents=True)
-        (target / "dash.wav").write_bytes(b"RIFF")
+        (target / "hit.wav").unlink()
         report = game.roles_reading(destination)
         dash = next(item for item in report["roles"] if item["id"] == "dash")
         self.assertEqual(dash["state"], "present")
@@ -1950,6 +1950,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     def test_roles_fill_suggests_from_the_catalog_and_apply_copies_as_the_role_name(self):
         destination = self.root / "com-acervo"
         game.init(destination, "canvas-arcade")
+        for path in (destination / "public/sfx").iterdir():
+            if path.is_file():
+                path.unlink()
         payload = b"RIFF" + b"\x00" * 24
         library = self.root / "shared/sfx"
         library.mkdir(parents=True)
@@ -1993,6 +1996,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     def test_roles_fill_without_a_catalog_does_not_invent_a_sound(self):
         destination = self.root / "sem-acervo"
         game.init(destination, "canvas-arcade")
+        for path in (destination / "public/sfx").iterdir():
+            if path.is_file():
+                path.unlink()
         report = game.roles_fill(destination, self.root)
         self.assertFalse(report["catalog_exists"])
         self.assertTrue(all(item["match"] is None for item in report["suggestions"]))
@@ -2100,6 +2106,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(pack["expected"])
         self.assertFalse(pack["unpacked"])
         self.assertIn("build", pack["scripts"])
+        self.assertEqual(pack["release"], "docs/release.md")
+        self.assertTrue(pack["release_current"])
         self.assertFalse(pack["shipped"])
         session = game.playtest_reading(starter)
         self.assertFalse(session["expected"])

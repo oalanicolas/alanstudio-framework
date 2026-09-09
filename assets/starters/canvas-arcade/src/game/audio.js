@@ -1,16 +1,14 @@
 // Mixagem: barramentos, prioridade, ducking e legenda.
 //
-// Este starter **não embarca arquivos de som**. O piso do estúdio é gravação
-// licenciada ou design contemporâneo — 8-bit, chiptune, jsfxr e Kenney arcade
-// não são o padrão — então sintetizar bipes aqui seria escolher a estética
-// errada por conveniência. Em vez disso os slots ficam declarados e vazios, e
-// `missing()` transforma a ausência em uma lacuna observável.
+// Os seis papéis têm design original em `public/sfx/<papel>.wav`:
+// seno e ruído filtrado, gerados por tools/design-sfx.py.
+// 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão — esses
+// arquivos não usam nenhum dos quatro. Arquivo no disco não é mixagem
+// ouvida: `heard` no harness continua falso.
 //
-// Para preencher, a partir da raiz do framework:
-//   python3 scripts/game.py roles <projeto> --fill
-//   python3 scripts/game.py roles <projeto> --fill --apply --root <laboratorio>
-// O jogo carrega `public/sfx/<papel>.wav` (ou .ogg/.mp3) no mixer. Sem esse
-// consumidor, arquivo no disco e jogo mudo eram a mesma coisa.
+// O jogo carrega o arquivo no mixer. Sem esse consumidor, arquivo no
+// disco e jogo mudo eram a mesma coisa. `missing()` ainda lista o
+// papel se o decode falhar ou o fetch 404.
 //
 // Toda informação sonora tem legenda equivalente: o jogo precisa ser
 // completável com o áudio desligado.

@@ -122,6 +122,8 @@ test("recordRun mantém os máximos e conta a partida", () => {
   assert.equal(next.bestChain, 9);
   assert.equal(next.runs, 3);
   assert.equal(next.lastSeed, 3);
+  assert.equal(next.lastRun.score, 40);
+  assert.equal(next.lastRun.bestChain, 9);
 });
 
 test("preferências recusam valor fora de faixa e campo desconhecido", () => {

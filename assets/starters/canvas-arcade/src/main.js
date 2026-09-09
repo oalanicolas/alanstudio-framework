@@ -9,7 +9,7 @@
 import { createLoop } from "./core/loop.js";
 import { createInput } from "./core/input.js";
 import { browserStorage } from "./core/storage.js";
-import { loadProgress, recordRun, saveProgress } from "./core/save.js";
+import { loadProgress, recordRun, saveProgress, summarizeRun } from "./core/save.js";
 import { detectEnvironment, loadSettings, normalizeSettings, saveSettings } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { createAudio } from "./game/audio.js";
@@ -30,6 +30,7 @@ export function createGame(options = {}) {
   let state = createState(options.seed ?? randomSeed(), { assist: settings.assist });
   let queued = neutralIntent();
   let recorded = false;
+  let lastRun = progress.lastRun ?? null;
   let disposed = false;
 
   const input = options.input ?? createInput({ target: eventTarget, surface: canvas, bindings: settings.bindings });
@@ -75,6 +76,7 @@ export function createGame(options = {}) {
     }
     if (state.phase === "over" && !recorded) {
       recorded = true;
+      lastRun = summarizeRun(state);
       progress = recordRun(progress, state);
       saveProgress(storage, progress, progressLoad);
     }
@@ -177,6 +179,9 @@ export function createGame(options = {}) {
     },
     get progress() {
       return { ...progress, status: progressLoad.status, notes: progressLoad.notes };
+    },
+    get lastRun() {
+      return lastRun ? { ...lastRun } : null;
     },
     get settings() {
       return settings;

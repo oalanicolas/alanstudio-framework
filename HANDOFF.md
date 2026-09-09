@@ -18,7 +18,8 @@ rascunho. O harness não executa o jogo.
 
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
 `--fill` sugere o acervo; `--apply` copia com o nome do papel. O starter
-carrega o arquivo no mixer. `heard` é sempre falso.
+já traz design original nos seis papéis e carrega no mixer. `heard` é
+sempre falso.
 
 **Feel (`feel`):** lê `const CONFIG` (perdão, graça, hitstop) e
 `record.json` de observação. `felt` é sempre falso. `next` propõe
@@ -37,7 +38,8 @@ paleta, extrai a chuva, nasce mesa com `npm run table` e empacota com
 
 **Playtest:** `playtest` lê o formato problema/evidência/hipótese/medição.
 `observed` é sempre falso. Nota de partida sem os quatro campos vira
-`playtest.unstructured`.
+`playtest.unstructured`. O starter guarda `lastRun` como candidato à
+medição. `docs/release.md` vigente não torna `shipped` verdadeiro.
 
 Esta árvore reúne produção, pacotes e memória persistente do PR #2 com os
 critérios observáveis, perguntas de valor e regras de escopo do PR #3.
