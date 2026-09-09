@@ -7,7 +7,10 @@
 
 import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ } from "./rules.js";
 
-const PALETTES = {
+// Exportadas para terem consumidor além do desenho: é assim que um teste
+// distingue a placa do HUD do preenchimento do campo, e é o gancho para o
+// design system do jogo quando ele passar de moodboard a token.
+export const PALETTES = {
   normal: {
     background: "#10131a",
     field: "#171b26",
@@ -18,6 +21,7 @@ const PALETTES = {
     text: "#e7ebf3",
     muted: "#8a93a6",
     danger: "#ff5d5d",
+    plate: "rgba(7,9,13,0.86)",
   },
   contrast: {
     background: "#000000",
@@ -29,6 +33,7 @@ const PALETTES = {
     text: "#ffffff",
     muted: "#c9c9c9",
     danger: "#ff2b2b",
+    plate: "rgba(0,0,0,0.9)",
   },
 };
 
@@ -140,26 +145,54 @@ export function createRenderer(canvas, options = {}) {
     }
   }
 
+  // Texto do HUD sobre o campo fica ilegível quando um orbe passa atrás dele:
+  // ordem de desenho garante que o texto vença os pixels, não que ele seja
+  // lido. A placa devolve o contraste sem escurecer a cena inteira.
+  function plate(target, palette, x, y, width, height) {
+    target.fillStyle = palette.plate;
+    if (typeof target.roundRect !== "function") {
+      target.fillRect(x - 3, y - 2.5, width + 6, height + 5);
+      return;
+    }
+    target.beginPath();
+    target.roundRect(x - 3, y - 2.5, width + 6, height + 5, 3);
+    target.fill();
+  }
+
   function drawHud(target, palette, state, settings, extra) {
     const size = 8 * (settings.uiScale ?? 1);
     target.font = `${size}px system-ui, sans-serif`;
     target.textBaseline = "top";
-    target.fillStyle = palette.text;
-    target.fillText(`Pontos ${state.score}`, 6, 5);
-    target.fillStyle = state.chain > 0 ? palette.chain : palette.muted;
-    target.fillText(`Corrente ${state.chain}${state.chain > 0 ? ` → ${state.chain * state.chain}` : ""}`, 6, 5 + size + 2);
+    const second = 5 + size + 2;
+    const chain = `Corrente ${state.chain}${state.chain > 0 ? ` → ${state.chain * state.chain}` : ""}`;
+    const score = `Pontos ${state.score}`;
     const seconds = Math.ceil(remainingTicks(state) / TICK_HZ);
-    target.fillStyle = seconds <= 10 ? palette.danger : palette.muted;
+    const best = extra.best === undefined ? null : `Recorde ${extra.best}`;
+    const width = (text) => target.measureText(text).width;
+
+    target.textAlign = "left";
+    plate(target, palette, 6, 5, Math.max(width(score), width(chain)), second + size - 5);
+    target.fillStyle = palette.text;
+    target.fillText(score, 6, 5);
+    target.fillStyle = state.chain > 0 ? palette.chain : palette.muted;
+    target.fillText(chain, 6, second);
+
+    const rightWidth = Math.max(width(`${seconds}s`), best ? width(best) : 0);
+    plate(target, palette, FIELD.width - 6 - rightWidth, 5, rightWidth, best ? second + size - 5 : size);
     target.textAlign = "right";
+    target.fillStyle = seconds <= 10 ? palette.danger : palette.muted;
     target.fillText(`${seconds}s`, FIELD.width - 6, 5);
-    if (extra.best !== undefined) {
+    if (best) {
       target.fillStyle = palette.muted;
-      target.fillText(`Recorde ${extra.best}`, FIELD.width - 6, 5 + size + 2);
+      target.fillText(best, FIELD.width - 6, second);
     }
+
     target.textAlign = "left";
     const ready = state.player.dashCooldown === 0 && state.player.dashRecovery === 0 && state.bankLock === 0;
+    const dash = ready ? "Dash pronto" : "Dash recarregando";
+    plate(target, palette, 6, FIELD.height - size - 5, width(dash), size);
     target.fillStyle = ready ? palette.orb : palette.muted;
-    target.fillText(ready ? "Dash pronto" : "Dash recarregando", 6, FIELD.height - size - 5);
+    target.fillText(dash, 6, FIELD.height - size - 5);
   }
 
   function drawOverlay(target, palette, title, hint) {
