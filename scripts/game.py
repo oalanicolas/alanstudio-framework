@@ -178,6 +178,24 @@ def package_commands(project):
     return scripts, manager
 
 
+CARGO_TARGETS = ("check", "build", "test")
+
+
+def project_commands(project):
+    """Comandos declarados pelo projeto: scripts de package.json ou alvos convencionais do Cargo.
+
+    Retorna ({nome: {"body", "argv"}}, executor). argv None significa executor ambíguo.
+    Só entram comandos determinísticos a partir do manifesto; engines sem CLI padronizada
+    (Unity, Godot, Unreal) continuam via --command explícito.
+    """
+    if (project / "package.json").is_file():
+        scripts, manager = package_commands(project)
+        return {name: {"body": body, "argv": [manager, "run", name] if manager else None} for name, body in scripts.items()}, manager
+    if (project / "Cargo.toml").is_file():
+        return {name: {"body": f"cargo {name}", "argv": ["cargo", name]} for name in CARGO_TARGETS}, "cargo"
+    return {}, None
+
+
 def studies_for(focus, studies_root):
     if focus not in FOCUS_STUDIES:
         return []
@@ -485,7 +503,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         raise ValueError("projeto precisa ser um diretório")
     metadata_issues = []
     try:
-        scripts, manager = package_commands(project)
+        scripts, manager = project_commands(project)
     except (OSError, ValueError, RecursionError) as error:
         scripts, manager = {}, None
         metadata_issues.append({"path": "package.json", "reason": str(error)})
@@ -502,7 +520,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         "source_index": str(FRAMEWORK / "references/sources.md"),
         "package_manager": manager,
         "metadata_issues": metadata_issues,
-        "scripts": {name: {"body": body, "argv": [manager, "run", name] if manager else None} for name, body in scripts.items()},
+        "scripts": scripts,
         "capabilities": mention_capabilities(project), "foundation": foundation,
         "continuity": {
             "status": "sources_found" if foundation["continuity_sources"] else "not_located",
@@ -669,12 +687,13 @@ def verify(project, scripts, command, output, timeout):
         raise ValueError("timeout precisa ser positivo")
     if bool(scripts) == bool(command):
         raise ValueError("use --script (repetível) OU --command com argv explícito")
-    declared, manager = package_commands(project)
+    declared, _ = project_commands(project)
     commands = []
     for name in scripts:
-        if not manager or name not in declared or not re.fullmatch(r"[A-Za-z0-9_][A-Za-z0-9_.:-]*", name):
+        entry = declared.get(name) if re.fullmatch(r"[A-Za-z0-9_][A-Za-z0-9_.:-]*", name) else None
+        if not entry or not entry["argv"]:
             raise ValueError(f"script ausente/inválido ou gerenciador ambíguo: {name}")
-        commands.append([manager, "run", name])
+        commands.append(entry["argv"])
     if command:
         commands.append(command)
     if output.exists() or output.is_symlink():
@@ -722,6 +741,14 @@ def build_parser():
     run.add_argument("--timeout", type=float, default=300)
     run.add_argument("--script", action="append", default=[])
     run.add_argument("--command", nargs=argparse.REMAINDER)
+    rec = commands.add_parser("record", parents=[common], help="recibo de observação, orçamento medido ou decisão de marco")
+    rec.add_argument("project")
+    rec.add_argument("--kind", choices=tuple(RECORD_KINDS), required=True)
+    rec.add_argument("--author", required=True, help="quem assina o registro")
+    rec.add_argument("--note", required=True, help="fato observado ou decisão, antes da interpretação")
+    rec.add_argument("--field", action="append", default=[], metavar="CHAVE=VALOR", help="campos do tipo; repetível")
+    rec.add_argument("--attach", action="append", default=[], metavar="ARQUIVO", help="evidência existente (vídeo, log, captura); repetível")
+    rec.add_argument("--output", type=Path, required=True)
     sfx = commands.add_parser("sfx", parents=[common], help="catálogo compartilhado de efeitos sonoros")
     sfx_cmd = sfx.add_subparsers(dest="sfx_action")
     sfx_cmd.add_parser("summary", parents=[common])
@@ -736,6 +763,63 @@ def build_parser():
     sfx_serve = sfx_cmd.add_parser("serve", parents=[common])
     sfx_serve.add_argument("--port", type=int, default=8766)
     return parser
+
+
+RECORD_KINDS = {
+    "observation": {"required": ("scenario", "role"), "enum": {"role": ("human", "agent")}},
+    "budget": {"required": ("metric", "value", "unit", "platform", "tool"), "enum": {}},
+    "milestone": {"required": ("milestone", "decision", "declared_by", "role"), "enum": {"decision": ("declared", "denied", "deferred"), "role": ("human", "agent")}},
+}
+
+
+def parse_fields(pairs):
+    fields = {}
+    for pair in pairs:
+        key, separator, value = pair.partition("=")
+        if not separator or not key.strip():
+            raise ValueError(f"campo precisa ter a forma chave=valor: {pair}")
+        fields[key.strip()] = value.strip()
+    return fields
+
+
+def record(project, kind, author, note, fields, attachments, output):
+    """Recibo de evidência declarada (observação, orçamento medido ou decisão de marco), ligado à versão do projeto."""
+    if not project.is_dir():
+        raise ValueError("projeto ausente")
+    if kind not in RECORD_KINDS:
+        raise ValueError("tipo de registro desconhecido")
+    if not nonempty(author) or not nonempty(note):
+        raise ValueError("author e note precisam de texto")
+    spec = RECORD_KINDS[kind]
+    missing = [key for key in spec["required"] if not nonempty(fields.get(key))]
+    if missing:
+        raise ValueError(f"{kind} exige campos: {', '.join(missing)}")
+    for key, allowed in spec["enum"].items():
+        if fields[key] not in allowed:
+            raise ValueError(f"{key} deve ser um de: {', '.join(allowed)}")
+    if kind == "budget":
+        try:
+            fields["value"] = float(fields["value"])
+        except ValueError:
+            raise ValueError("value precisa ser numérico") from None
+    files = []
+    for item in attachments:
+        path = Path(item)
+        if path.is_symlink() or not path.is_file():
+            raise ValueError(f"anexo inexistente ou symlink: {item}")
+        data = path.read_bytes()
+        files.append({"path": str(path.resolve()), "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+    if output.exists() or output.is_symlink():
+        raise ValueError("destino de evidência existente; escolha um novo")
+    report = {
+        "schema_version": 1, "kind": kind, "project": str(project), "recorded_at": datetime.now(timezone.utc).isoformat(),
+        "version": git_version(project), "author": author, "note": note, "fields": fields, "attachments": files,
+        "status": "declared",
+        "scope": "Registro declarado por quem assina; o harness não valida o conteúdo, não mede e não aprova. role=agent é avaliação do agente, não aprovação do usuário.",
+    }
+    output.mkdir(parents=True, exist_ok=False)
+    (output / "record.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return report
 
 
 def main():
@@ -762,6 +846,8 @@ def main():
             errors = check_plan(read_json(args.plan), root)
             emit({"contract_valid": not errors, "errors": errors, "scope": "Estrutura e existência dos candidatos; busca, adequação e qualidade exigem revisão."})
             return int(bool(errors))
+        elif args.action == "record":
+            emit(record(resolve(args.project, root), args.kind, args.author, args.note, parse_fields(args.field), args.attach, args.output.absolute()))
         elif args.action == "sfx":
             if args.sfx_action in (None, "summary"):
                 emit(sfx_catalog.summarize(root))

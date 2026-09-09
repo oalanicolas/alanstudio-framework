@@ -136,6 +136,70 @@ class HarnessTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "foco desconhecido"):
             game.context(self.project, "polish")
 
+    def test_cargo_project_exposes_conventional_targets_and_verify_runs_them(self):
+        (self.project / "Cargo.toml").write_text("[package]\nname = \"jogo\"\n")
+        result = game.context(self.project, "mechanics", studies_root=self.root / "absent")
+        self.assertEqual(result["kind"], "cargo")
+        self.assertEqual(result["package_manager"], "cargo")
+        self.assertEqual(result["scripts"]["test"], {"body": "cargo test", "argv": ["cargo", "test"]})
+        self.assertEqual(set(result["scripts"]), set(game.CARGO_TARGETS))
+        with self.assertRaisesRegex(ValueError, "ausente"):
+            game.verify(self.project, ["publish"], None, self.root / "evidence", 5)
+        report = game.verify(self.project, ["check"], None, self.root / "evidence", 30)
+        self.assertEqual(report["commands"][0]["argv"], ["cargo", "check"])
+        self.assertIn(report["technical_status"], ("passed", "failed"))
+        self.assertEqual(report["experience_status"], "not_assessed")
+        self.assertTrue((self.root / "evidence/01.log").is_file())
+
+    def test_record_writes_linked_evidence_receipt_without_approving(self):
+        capture = self.root / "playtest.mp4"
+        capture.write_bytes(b"video")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human", "device=iPad"])
+        report = game.record(self.project, "observation", "Alan", "A pessoa marcou a trilha e voltou sem ajuda.", fields, [str(capture)], self.root / "obs-01")
+        self.assertEqual(report["status"], "declared")
+        self.assertEqual(report["fields"]["role"], "human")
+        self.assertEqual(report["attachments"][0]["sha256"], game.hashlib.sha256(b"video").hexdigest())
+        self.assertIn("version", report)
+        self.assertEqual(game.read_json(self.root / "obs-01/record.json"), report)
+        self.assertNotIn("approved", json.dumps(report).casefold())
+        with self.assertRaisesRegex(ValueError, "existente"):
+            game.record(self.project, "observation", "Alan", "de novo", fields, [], self.root / "obs-01")
+        self.assertEqual(sorted(p.name for p in (self.root / "obs-01").iterdir()), ["record.json"])
+
+    def test_record_requires_kind_specific_fields_and_numeric_budget(self):
+        with self.assertRaisesRegex(ValueError, "exige campos: metric, value"):
+            game.record(self.project, "budget", "Alan", "medido", {"unit": "ms", "platform": "web", "tool": "devtools"}, [], self.root / "b")
+        with self.assertRaisesRegex(ValueError, "numérico"):
+            game.record(self.project, "budget", "Alan", "medido", {"metric": "frame_p99", "value": "rápido", "unit": "ms", "platform": "web", "tool": "devtools"}, [], self.root / "b")
+        report = game.record(self.project, "budget", "Alan", "cena da fábrica, 60 s", {"metric": "frame_p99", "value": "14.2", "unit": "ms", "platform": "web", "tool": "devtools"}, [], self.root / "b")
+        self.assertEqual(report["fields"]["value"], 14.2)
+        with self.assertRaisesRegex(ValueError, "role deve ser um de"):
+            game.record(self.project, "milestone", "bot", "alpha", {"milestone": "alpha", "decision": "declared", "declared_by": "bot", "role": "robot"}, [], self.root / "m")
+        with self.assertRaisesRegex(ValueError, "decision deve ser um de"):
+            game.record(self.project, "milestone", "Alan", "alpha", {"milestone": "alpha", "decision": "approved", "declared_by": "Alan", "role": "human"}, [], self.root / "m")
+        with self.assertRaisesRegex(ValueError, "desconhecido"):
+            game.record(self.project, "release", "Alan", "x", {}, [], self.root / "r")
+        with self.assertRaisesRegex(ValueError, "anexo"):
+            game.record(self.project, "budget", "Alan", "x", {"metric": "m", "value": "1", "unit": "ms", "platform": "web", "tool": "t"}, [str(self.root / "absent.mp4")], self.root / "a")
+        with self.assertRaisesRegex(ValueError, "chave=valor"):
+            game.parse_fields(["semigual"])
+        self.assertFalse((self.root / "m").exists())
+        self.assertFalse((self.root / "a").exists())
+
+    def test_record_cli_declares_milestone_and_refuses_repository_text_as_approval(self):
+        argv = [sys.executable, str(SCRIPT), "record", str(self.project), "--kind", "milestone", "--author", "Alan", "--note", "Critérios do alpha com evidência ligada.",
+                "--field", "milestone=alpha", "--field", "decision=declared", "--field", "declared_by=Alan", "--field", "role=human", "--output", str(self.root / "alpha"), "--root", str(self.root)]
+        run = subprocess.run(argv, capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["kind"], "milestone")
+        self.assertEqual(report["fields"]["decision"], "declared")
+        self.assertIn("não aprova", report["scope"])
+        failed = subprocess.run(argv[:-4] + ["--output", str(self.root / "alpha2"), "--field", "role=agent", "--field", "decision=approved"], capture_output=True, text=True)
+        self.assertEqual(failed.returncode, 1)
+        self.assertNotIn("Traceback", failed.stderr)
+        self.assertFalse((self.root / "alpha2").exists())
+
     def test_context_loads_selected_recipe_and_never_executes_declared_script(self):
         self.package(scripts={"test": "touch should-not-exist"})
         (self.root / "AGENTS.md").write_text("root")
