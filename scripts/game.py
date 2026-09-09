@@ -1037,10 +1037,12 @@ def doctor(root):
         + (" · AGENTS.md presente" if (root / "AGENTS.md").is_file() else ""),
         # Dizer "passe --root" a quem acabou de passar --root é instrução circular:
         # a ação que falta é criar o diretório, ou apontar para outro.
+        # `mkdir -p` cria caminho aninhado, então ausência do pai não muda a ação.
+        # Só quando o caminho existe e não é pasta é que criar não é a saída.
         None if root.is_dir() else (
-            f"mkdir -p {shlex.quote(str(root))}"
-            if root.parent.is_dir() and not root.exists()
-            else f"O caminho {root} não é um diretório; aponte --root para o laboratório de jogos."
+            f"O caminho {root} existe e não é um diretório; aponte --root para o laboratório de jogos."
+            if root.exists()
+            else f"mkdir -p {shlex.quote(str(root))}"
         ),
     )
     library = root / "shared/sfx"

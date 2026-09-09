@@ -936,20 +936,23 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     # Dizer "passe --root" a quem acabou de passar --root é instrução circular:
     # a ação que falta é criar o diretório.
     def test_doctor_asks_for_the_directory_instead_of_the_flag_it_already_got(self):
-        missing = self.root / "laboratório novo"
-        check = {item["name"]: item for item in game.doctor(missing)["checks"]}["root"]
-        self.assertEqual(check["status"], "missing")
-        self.assertEqual(shlex.split(check["fix"]), ["mkdir", "-p", str(missing)])
-        run = subprocess.run(["/bin/sh", "-c", check["fix"]], capture_output=True, text=True)
-        self.assertEqual(run.returncode, 0, run.stderr)
-        self.assertEqual({item["name"]: item for item in game.doctor(missing)["checks"]}["root"]["status"], "ok")
+        # Aninhado de propósito: `mkdir -p` cria o caminho inteiro, então a
+        # ausência do pai não muda qual é a ação que falta.
+        for missing in (self.root / "laboratório novo", self.root / "prova final/lab"):
+            with self.subTest(missing=missing):
+                check = {item["name"]: item for item in game.doctor(missing)["checks"]}["root"]
+                self.assertEqual(check["status"], "missing")
+                self.assertEqual(shlex.split(check["fix"]), ["mkdir", "-p", str(missing)])
+                run = subprocess.run(["/bin/sh", "-c", check["fix"]], capture_output=True, text=True)
+                self.assertEqual(run.returncode, 0, run.stderr)
+                self.assertEqual({item["name"]: item for item in game.doctor(missing)["checks"]}["root"]["status"], "ok")
 
     def test_doctor_says_what_is_wrong_when_the_root_is_not_a_directory(self):
         intruder = self.root / "arquivo.txt"
         intruder.write_text("não sou pasta", encoding="utf-8")
         check = {item["name"]: item for item in game.doctor(intruder)["checks"]}["root"]
         self.assertNotIn("mkdir", check["fix"])
-        self.assertIn("não é um diretório", check["fix"])
+        self.assertIn("existe e não é um diretório", check["fix"])
 
     def test_next_never_proposes_a_server_as_a_validator(self):
         self.assertEqual(game.validators(["serve", "test", "budget"]), ["test", "budget"])
