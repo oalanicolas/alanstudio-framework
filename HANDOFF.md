@@ -47,7 +47,7 @@ cluster) e `docs/access.md`. O canvas confirma o mapa do controle
 ou do toque quando essa superfície falou por último. `npm run contrast`
 amostra pixels do stub após `draw()` e, em cinza, o que só
 o orbe ou só o estilhaço pinta. `pagehide` descarrega
-o save. A chuva compacta o array vivo e reusa o poço; evento,
+o save. A chuva compacta o array vivo e reusa o poço; evento, rastro,
 telegraph e o gerador da chuva também reusam; `npm run budget`
 cronometra a cena `playing.run` (simulação e `draw` no stub) e
 relata o reuso.
