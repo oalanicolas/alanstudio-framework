@@ -408,6 +408,10 @@ test("o aviso do primeiro ciclo cabe na placa e some depois de guardar", () => {
   assert.equal(aviso.length, 1, `esperava o aviso de mover: ${JSON.stringify(inicial.texts.map((i) => i.text))}`);
   assert.ok(covered(aviso[0], inicial.plates), "aviso sem placa é texto solto no campo");
   assert.ok(aviso[0].bottom < PLAYER_Y - 6, `aviso desce até a faixa do jogador: ${aviso[0].bottom}`);
+  const seeded = hudTexts(createState(1), {}, { hint: "fantasy", fantasy: "guardar a corrente ou continuar" });
+  const frase = seeded.texts.filter((item) => item.text.includes("guardar a corrente"));
+  assert.equal(frase.length, 1, `esperava a fantasia na tela: ${JSON.stringify(seeded.texts.map((i) => i.text))}`);
+  assert.ok(covered(frase[0], seeded.plates), "fantasia sem placa é texto solto no campo");
   const depois = hudTexts(createState(1), {}, { hint: null });
   assert.equal(
     depois.texts.filter((item) => /Mova|orbe|Guarde/.test(item.text)).length,

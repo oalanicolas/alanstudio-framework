@@ -15,8 +15,9 @@ jogar → note sem executar. `start` cria o projeto e devolve `play` +
 `then.note`. `next` só entra em `then.lost`. Depois de um `init` fresco,
 `next` ainda propõe `playable.unplayed` se você estiver perdido. O
 starter ensina mover, coletar e guardar no campo; o art-bible vigente
-não é reescrito. `--idea` entra no brief como frase; o brief continua
-rascunho. O harness não executa o jogo.
+não é reescrito. `--idea` entra no brief e, se houver `data/copy.json`,
+na tela do primeiro ciclo. O brief continua rascunho. A frase na tela
+não muda o verbo. O harness não executa o jogo.
 
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
 `--fill` sugere o acervo; `--apply` copia com o nome do papel. O starter

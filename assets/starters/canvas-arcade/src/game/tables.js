@@ -6,8 +6,9 @@
 //
 // Perfil de chuva é o consumidor que já existe: `dusk` e qualquer mesa
 // com a forma de spawn entram por `?spawn=<nome>` ou settings.spawnProfile.
-// `npm run table -- <nome> --from spawn` copia essa forma. Copy e mesas
-// genéricas continuam sem consumidor automático.
+// `npm run table -- <nome> --from spawn` copia essa forma. `copy.fantasy`
+// tem consumidor: o coach do primeiro ciclo. Mesas genéricas continuam
+// sem consumidor automático.
 //
 // Toda mesa tem schema: formato antigo (sem campo) vira o vigente;
 // schema futuro falha com o número, não com undefined no meio do tick.
@@ -18,7 +19,7 @@ import copyRaw from "../../data/copy.json" with { type: "json" };
 import duskRaw from "../../data/dusk.json" with { type: "json" };
 
 export const SPAWN_SCHEMA = 2;
-export const COPY_SCHEMA = 1;
+export const COPY_SCHEMA = 2;
 export const SPAWN_FIELDS = [
   "intervalTicks",
   "minIntervalTicks",
@@ -41,6 +42,7 @@ export const SPAWN_CORE_FIELDS = [
   "fallSpeedMax",
 ];
 export const COPY_FIELDS = [
+  "fantasy",
   "paused",
   "resume",
   "over",
@@ -93,8 +95,17 @@ export function looksLikeSpawn(raw) {
   return SPAWN_CORE_FIELDS.every((field) => raw[field] !== undefined);
 }
 
+export function migrateCopy(raw) {
+  const table = migrateTable("copy", raw, COPY_SCHEMA);
+  return {
+    ...table,
+    schema: COPY_SCHEMA,
+    fantasy: typeof table.fantasy === "string" ? table.fantasy : "",
+  };
+}
+
 const spawn = migrateSpawn(spawnRaw);
-const copy = migrateTable("copy", copyRaw, COPY_SCHEMA, COPY_FIELDS);
+const copy = migrateCopy(copyRaw);
 const dusk = migrateSpawn(duskRaw, "dusk");
 
 const TABLES = { spawn, copy, dusk };

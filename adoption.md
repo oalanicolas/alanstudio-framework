@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.34 — A ideia chega na tela do primeiro ciclo
+
+`--idea` só escrevia no brief: a partida continuava o mesmo jogo
+mudo. A frase entra em `data/copy.json` e o coach a mostra antes do
+movimento. Sem brief (`--no-docs`) a superfície ainda recebe a
+frase. O brief continua rascunho. A frase na tela não muda o verbo.
+`executed` permanece falso. Só `release` fica no piso.
+
+O que 0.9.34 não afirma: o harness não abriu o jogo e a fantasia não
+foi jogada nem avaliada.
+
 ## 0.9.33 — Contraste em cena no stub, sem limiar
 
 `npm run contrast` deixava de ver o que o token hex não cobre: placa

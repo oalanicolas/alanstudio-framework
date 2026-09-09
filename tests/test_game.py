@@ -1377,6 +1377,27 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse((bare / "docs/brief.md").exists())
         self.assertTrue((bare / "src/game/rules.js").is_file())
 
+    def test_init_without_docs_still_puts_the_idea_on_the_playable_surface(self):
+        destination = self.root / "ideia-na-tela"
+        created = game.init(destination, "canvas-arcade", idea="atravessar estilhaços", documents=False)
+        self.assertIsNone(created["brief"])
+        self.assertEqual(created["surface"], "data/copy.json")
+        self.assertFalse((destination / "docs/brief.md").exists())
+        self.assertEqual(
+            json.loads((destination / "data/copy.json").read_text(encoding="utf-8"))["fantasy"],
+            "atravessar estilhaços",
+        )
+
+    def test_long_idea_fits_the_surface_and_keeps_the_full_phrase_in_the_brief(self):
+        destination = self.root / "frase-longa"
+        phrase = "atravessar " + ("estilhaços " * 12) + "e guardar"
+        created = game.init(destination, "canvas-arcade", idea=phrase)
+        copy = json.loads((destination / "data/copy.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(copy["fantasy"]), game.SURFACE_IDEA_LIMIT)
+        self.assertTrue(copy["fantasy"].endswith("..."))
+        self.assertIn(phrase, (destination / "docs/brief.md").read_text(encoding="utf-8"))
+        self.assertEqual(created["surface"], "data/copy.json")
+
     def test_init_neither_installs_dependencies_nor_touches_the_starter(self):
         starter_before = {path.relative_to(game.FRAMEWORK): path.stat().st_mtime_ns for path in (game.FRAMEWORK / "assets/starters").rglob("*")}
         destination = self.root / "jogo-limpo"
@@ -2381,6 +2402,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue((destination / "index.html").is_file())
         self.assertIn("guardar a corrente ou continuar", (destination / "docs/brief.md").read_text(encoding="utf-8"))
         self.assertIn("[preencher]", (destination / "docs/brief.md").read_text(encoding="utf-8"))
+        self.assertEqual(report["surface"], "data/copy.json")
+        copy = json.loads((destination / "data/copy.json").read_text(encoding="utf-8"))
+        self.assertEqual(copy["fantasy"], "guardar a corrente ou continuar")
+        self.assertGreaterEqual(copy["schema"], 2)
         self.assertIn("serve", report["play"])
         self.assertEqual(report["then"]["play"], report["play"])
         self.assertIn("note", report["then"]["note"])
@@ -2444,8 +2469,13 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         created = game.init(destination, "canvas-arcade", idea="atravessar estilhaços")
         brief = (destination / "docs/brief.md").read_text(encoding="utf-8")
         self.assertEqual(created["brief"], "docs/brief.md")
+        self.assertEqual(created["surface"], "data/copy.json")
         self.assertIn("atravessar estilhaços", brief)
         self.assertIn("[preencher]", brief)
+        self.assertEqual(
+            json.loads((destination / "data/copy.json").read_text(encoding="utf-8"))["fantasy"],
+            "atravessar estilhaços",
+        )
         self.assertEqual(created["document_status"], "draft")
         self.assertEqual(game.scan(destination)["areas"]["vision"]["status"], "draft_only")
         self.assertNotIn("docs/art-bible.md", created["documents"])

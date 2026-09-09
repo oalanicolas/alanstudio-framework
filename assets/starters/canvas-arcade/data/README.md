@@ -2,7 +2,8 @@
 
 Uma mesa nova entra pelo mesmo carregador. O custo conhecido do próximo
 item de chuva é **o comando** — o jogo já consome qualquer mesa com a
-forma de `spawn`. Copy e mesas genéricas ainda pedem consumidor.
+forma de `spawn`. `copy.fantasy` alimenta o aviso do primeiro ciclo.
+Mesas genéricas ainda pedem consumidor.
 
 ```sh
 npm run table -- <nome> --from spawn

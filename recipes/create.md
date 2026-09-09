@@ -35,8 +35,9 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
 1. Consulte o [playground](https://games.alanicolas.com/) e o acervo local.
    Identifique uma família compatível. Procure código, contratos e conteúdo
    reutilizável.    Sem destino no disco, o candidato local é um starter: `start <destino>
-   --starter <starter> --idea "<fantasia>"` monta o projeto e devolve o
-   comando que abre o jogo. `init` faz a mesma cópia sem apontar o ciclo.
+   --starter <starter> --idea "<fantasia>"` monta o projeto, põe a frase
+   na tela do primeiro ciclo e devolve o comando que abre o jogo. A
+   frase não muda o verbo. `init` faz a mesma cópia sem apontar o ciclo.
    O projeto nasce com laço de passo fixo, save versionado, entrada
    abstraída e testes que já rodam.
    Partir dele é REUSE; recomeçar essa infraestrutura é CREATE e pede lacuna

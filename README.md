@@ -54,7 +54,7 @@ Com starter (REUSE de infraestrutura já testada):
 python3 scripts/game.py start /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
 ```
 
-O JSON devolve `play` (o comando que **abre** o jogo) e `then.note` (o próximo comando do harness **depois** de uma partida). Não executa o jogo. `--idea` entra no brief como frase; o brief continua rascunho.
+O JSON devolve `play` (o comando que **abre** o jogo) e `then.note` (o próximo comando do harness **depois** de uma partida). Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo.
 
 `guide` (também sem subcomando: `python3 scripts/game.py`) mapeia os três passos — start → jogar → `note` — sem executar nenhum:
 
@@ -88,7 +88,8 @@ Os seis rascunhos mais o art-bible cobrem sete das nove áreas mínimas que
 CREDITS do starter, então depois do `init` as nove têm candidato. Com
 `--no-docs`, o art-bible permanece e os rascunhos não são criados; README,
 CREDITS e art-bible cobrem três áreas. `--idea` escreve a frase da fantasia
-no brief; o brief continua rascunho. Os demais templates do ciclo entram depois, com `template`, quando a
+no brief e em `data/copy.json`; o brief continua rascunho e a frase na tela
+não muda o verbo. Os demais templates do ciclo entram depois, com `template`, quando a
 etapa chegar. Não instala dependências, não toca no starter de origem e recusa
 destino ocupado. `scan` reconhece o resultado no mesmo turno; o primeiro comando
 que `init` aponta é o que serve o jogo, e `verify` roda os validadores do starter

@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  loadTable, loadSpawn, listSpawnProfiles, looksLikeSpawn, migrateSpawn, migrateTable,
+  loadTable, loadSpawn, listSpawnProfiles, looksLikeSpawn, migrateCopy, migrateSpawn, migrateTable,
   requireFields, resolveSpawnName, TABLES,
   SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS,
 } from "../src/game/tables.js";
@@ -45,11 +45,12 @@ test("spawn sem schema migra; schema futuro falha com o número", () => {
 });
 
 test("copy sem schema migra; schema futuro e campo ausente falham com o nome", () => {
-  const old = migrateTable("copy", { paused: "Pausado" }, COPY_SCHEMA);
+  const old = migrateCopy({ paused: "Pausado" });
   assert.equal(old.schema, COPY_SCHEMA);
+  assert.equal(old.fantasy, "");
   assert.throws(() => migrateTable("copy", { schema: 4 }, COPY_SCHEMA), /mesa copy schema 4 não suportado/);
   assert.throws(
     () => migrateTable("copy", { schema: 1 }, COPY_SCHEMA, COPY_FIELDS),
-    /mesa copy sem paused/,
+    /mesa copy sem fantasy/,
   );
 });

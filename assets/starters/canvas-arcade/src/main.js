@@ -16,7 +16,7 @@ import { createAudio } from "./game/audio.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { advance as advanceRules, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
-import { resolveSpawnName } from "./game/tables.js";
+import { copy, resolveSpawnName } from "./game/tables.js";
 import { coachHint } from "./game/coach.js";
 
 function readSpawnQuery(options) {
@@ -105,7 +105,7 @@ export function createGame(options = {}) {
     renderer.draw(state, frame, settings, {
       captions: audio.captions(),
       best: progress.best,
-      hint: coachHint(state),
+      hint: coachHint(state, copy),
     });
   }
 

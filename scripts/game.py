@@ -2668,13 +2668,13 @@ def fresh_starter_cycle(project, missing, play):
     return drafted == len(FRESH_DRAFTS)
 
 
-def seed_idea(project, idea):
-    if not nonempty(idea):
-        return None
-    path = project / "docs/brief.md"
+SURFACE_IDEA_LIMIT = 72
+
+
+def seed_brief_idea(project, phrase):
+    path = Path(project) / "docs/brief.md"
     if not path.is_file() or path.is_symlink():
         return None
-    phrase = idea.strip()
     text = path.read_text(encoding="utf-8")
     if BRIEF_IDEA_MARKER in text:
         text = text.replace(BRIEF_IDEA_MARKER, phrase, 1)
@@ -2682,6 +2682,35 @@ def seed_idea(project, idea):
         text = text.replace("## Visão e jogador", f"## Visão e jogador\n\n- Fantasia em uma frase: {phrase}.", 1)
     path.write_text(text, encoding="utf-8")
     return "docs/brief.md"
+
+
+def seed_copy_fantasy(project, phrase):
+    path = Path(project) / "data/copy.json"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    surface = phrase if len(phrase) <= SURFACE_IDEA_LIMIT else f"{phrase[: SURFACE_IDEA_LIMIT - 3].rstrip()}..."
+    data["fantasy"] = surface
+    schema = data.get("schema")
+    if not isinstance(schema, int) or schema < 2:
+        data["schema"] = 2
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return "data/copy.json"
+
+
+def seed_idea(project, idea):
+    if not nonempty(idea):
+        return {"brief": None, "surface": None}
+    phrase = idea.strip()
+    return {
+        "brief": seed_brief_idea(project, phrase),
+        "surface": seed_copy_fantasy(project, phrase),
+    }
 
 
 def validators(names):
@@ -2834,7 +2863,7 @@ def init(destination, starter, title=None, documents=True, idea=None):
         if not (destination / "AGENTS.md").exists():
             template("agents", destination, destination / "AGENTS.md")
             drafts.append("AGENTS.md")
-    seeded = seed_idea(destination, idea)
+    planted = seed_idea(destination, idea)
     scripts, manager = package_commands(destination)
     play = play_command(destination, {name: {"argv": [manager, "run", name]} for name in scripts} if manager else scripts, manager)
     commands = []
@@ -2851,7 +2880,8 @@ def init(destination, starter, title=None, documents=True, idea=None):
         "documents": drafts,
         "document_status": "draft",
         "idea": idea.strip() if nonempty(idea) else None,
-        "brief": seeded,
+        "brief": planted["brief"],
+        "surface": planted["surface"],
         "substitutions": applied,
         "read_next": [
             str(FRAMEWORK / "references/production-bar.md"),
@@ -2863,7 +2893,9 @@ def init(destination, starter, title=None, documents=True, idea=None):
             "Copiou o starter, trocou os valores que `starter.json` declara e criou rascunhos a partir dos "
             "templates. O ciclo já abre: o primeiro comando apontado é o que serve o jogo, não o que preenche "
             "os rascunhos. Documento vigente que o starter já trouxe (art-bible) não é reescrito. "
-            "`scan` ainda reporta `draft_only` nas áreas sem decisão. `--idea` entra no brief como frase, e o brief continua rascunho. O starter é material de "
+            "`scan` ainda reporta `draft_only` nas áreas sem decisão. `--idea` entra no brief como frase "
+            "e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. "
+            "A frase na tela não muda o verbo. O starter é material de "
             "ADAPT, não uma engine nem uma base aprovada; o comando não executa o jogo, não instala "
             "dependências e não avalia a proposta."
         ),
@@ -2875,7 +2907,7 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
     chosen = starter or (available[0] if available else None)
     created = False
     init_report = None
-    seeded = None
+    planted = {"brief": None, "surface": None}
     if not destination.exists() or (
         destination.is_dir() and not destination.is_symlink() and not any(destination.iterdir())
     ):
@@ -2883,11 +2915,11 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
             raise ValueError("nenhum starter disponível neste repositório")
         init_report = init(destination, chosen, title, documents, idea)
         created = True
-        seeded = init_report.get("brief")
+        planted = {"brief": init_report.get("brief"), "surface": init_report.get("surface")}
     elif destination.exists() and not destination.is_dir():
         raise ValueError("destino existente; escolha um caminho novo")
     elif nonempty(idea):
-        seeded = seed_idea(destination, idea)
+        planted = seed_idea(destination, idea)
     proposal = next_step(destination, "feel")
     try:
         scripts, manager = project_commands(destination)
@@ -2901,7 +2933,8 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
         "created": created,
         "starter": init_report["starter"] if init_report else None,
         "idea": idea.strip() if nonempty(idea) else None,
-        "brief": seeded,
+        "brief": planted["brief"],
+        "surface": planted["surface"],
         "play": play,
         "init": init_report,
         "next": proposal,
@@ -2920,7 +2953,9 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
             "aponta o comando que abre o jogo. Depois de uma partida, o próximo "
             "comando do harness é `note`, não `next`. Não executa o jogo, não "
             "instala dependências e não avalia a proposta. `--idea` entra no "
-            "brief como frase, e o brief continua rascunho."
+            "brief como frase e, se houver `data/copy.json`, na tela do "
+            "primeiro ciclo. O brief continua rascunho. A frase na tela não "
+            "muda o verbo."
         ),
     }
 
@@ -3848,7 +3883,7 @@ def main():
     start.add_argument("project")
     start.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
     start.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
-    start.add_argument("--idea", help="frase da fantasia; entra no brief como rascunho, não como decisão")
+    start.add_argument("--idea", help="frase da fantasia; entra no brief e na tela do primeiro ciclo, sem mudar o verbo")
     start.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
     begin = commands.add_parser(
         "start", parents=[common],
@@ -3857,7 +3892,7 @@ def main():
     begin.add_argument("project")
     begin.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
     begin.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
-    begin.add_argument("--idea", help="frase da fantasia; entra no brief como rascunho, não como decisão")
+    begin.add_argument("--idea", help="frase da fantasia; entra no brief e na tela do primeiro ciclo, sem mudar o verbo")
     begin.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
     guided = commands.add_parser(
         "guide",

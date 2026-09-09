@@ -103,7 +103,7 @@ export function createRenderer(canvas, options = {}) {
     }
     drawPlayer(context, palette, state, reduced);
     const reserved = drawHud(context, palette, state, settings, extra);
-    drawCoach(context, palette, extra.hint, reserved, settings);
+    drawCoach(context, palette, extra.hint, reserved, settings, extra);
     if (settings.captions !== false) {
       drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
     }
@@ -271,9 +271,9 @@ export function createRenderer(canvas, options = {}) {
     return { score: scoreBox, timer: timerBox, dash: dashBox };
   }
 
-  function drawCoach(target, palette, hint, reserved, settings) {
-    if (!hint || !copy[`hint_${hint}`]) return;
-    const text = copy[`hint_${hint}`];
+  function drawCoach(target, palette, hint, reserved, settings, extra = {}) {
+    const text = hint === "fantasy" ? (extra.fantasy || copy.fantasy) : copy[`hint_${hint}`];
+    if (!hint || !text) return;
     const size = 7 * (settings.uiScale ?? 1);
     target.font = `${size}px system-ui, sans-serif`;
     target.textBaseline = "top";
