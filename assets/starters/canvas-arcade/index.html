@@ -86,6 +86,12 @@
         <label><input type="checkbox" id="captions" /> <span>Legendas de som</span></label>
         <label><input type="checkbox" id="assist" /> <span>Assistência (alcance maior, chuva mais lenta)</span></label>
         <label><input type="checkbox" id="oneHand" /> <span>Uma mão (cluster direito)</span></label>
+        <label><span>Chuva</span>
+          <select id="spawnProfile" aria-label="Perfil de chuva">
+            <option value="spawn">Padrão</option>
+            <option value="dusk">Crepúsculo</option>
+          </select>
+        </label>
         <label><span>Escala da interface</span><input type="range" id="uiScale" min="0.75" max="2" step="0.05" /></label>
         <label><span>Volume geral</span><input type="range" id="master" min="0" max="1" step="0.05" /></label>
         <label><span>Efeitos</span><input type="range" id="sfx" min="0" max="1" step="0.05" /></label>
@@ -98,15 +104,26 @@
     <script type="module" src="./src/main.js"></script>
     <script type="module">
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
+      import { listSpawnProfiles } from "./src/game/tables.js";
       const game = window.__game;
       if (game) {
         const toggles = ["reducedMotion", "highContrast", "captions", "assist"];
         const buses = ["master", "sfx", "music", "ui"];
+        const spawnLabels = { spawn: "Padrão", dusk: "Crepúsculo" };
+        const spawnSelect = document.getElementById("spawnProfile");
+        spawnSelect.replaceChildren();
+        for (const name of listSpawnProfiles()) {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = spawnLabels[name] ?? name;
+          spawnSelect.appendChild(option);
+        }
         const sync = () => {
           const settings = game.settings;
           for (const name of toggles) document.getElementById(name).checked = settings[name];
           document.getElementById("oneHand").checked = settings.oneHand;
           document.getElementById("uiScale").value = settings.uiScale;
+          spawnSelect.value = settings.spawnProfile;
           for (const bus of buses) document.getElementById(bus).value = settings.buses[bus];
         };
         for (const name of toggles) {
@@ -122,6 +139,9 @@
         });
         document.getElementById("uiScale").addEventListener("input", (event) => {
           game.updateSettings({ uiScale: Number(event.target.value) });
+        });
+        spawnSelect.addEventListener("change", (event) => {
+          game.updateSettings({ spawnProfile: event.target.value });
         });
         for (const bus of buses) {
           document.getElementById(bus).addEventListener("input", (event) => {

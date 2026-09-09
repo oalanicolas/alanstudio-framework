@@ -12,8 +12,8 @@ import { pathToFileURL, fileURLToPath } from "node:url";
 
 const STARTER = fileURLToPath(new URL("..", import.meta.url));
 
-async function runTable(project, name) {
-  const child = spawn(process.execPath, ["tools/new-table.mjs", name], {
+async function runTable(project, name, extra = []) {
+  const child = spawn(process.execPath, ["tools/new-table.mjs", name, ...extra], {
     cwd: project,
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -48,8 +48,19 @@ test("o comando registra a mesa no mesmo carregador", async () => {
     assert.match(again.stderr, /já existe/);
     const reserved = await runTable(project, "spawn");
     assert.equal(reserved.code, 2);
+    const duskReserved = await runTable(project, "dusk");
+    assert.equal(duskReserved.code, 2);
     const invalid = await runTable(project, "Tempo-1");
     assert.equal(invalid.code, 2);
+    const copied = await runTable(project, "storm", ["--from", "spawn"]);
+    assert.equal(copied.code, 0, copied.stderr);
+    assert.match(copied.stdout, /\?spawn=storm/);
+    const { loadSpawn, listSpawnProfiles } = await import(`${pathToFileURL(join(project, "src/game/tables.js")).href}?t=2`);
+    assert.equal(loadSpawn("storm").intervalTicks, 22);
+    assert.ok(listSpawnProfiles().includes("storm"));
+    const wrongFrom = await runTable(project, "gale", ["--from", "copy"]);
+    assert.equal(wrongFrom.code, 2);
+    assert.match(wrongFrom.stderr, /só --from spawn/);
   } finally {
     await rm(base, { recursive: true, force: true });
   }

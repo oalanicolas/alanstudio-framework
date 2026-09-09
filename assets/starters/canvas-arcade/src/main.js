@@ -16,7 +16,19 @@ import { createAudio } from "./game/audio.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { advance as advanceRules, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
+import { resolveSpawnName } from "./game/tables.js";
 import { coachHint } from "./game/coach.js";
+
+function readSpawnQuery(options) {
+  const raw = options.query
+    ?? (typeof location !== "undefined" && typeof location.search === "string" ? location.search : "");
+  if (!raw) return null;
+  const search = raw.startsWith("?") ? raw.slice(1) : raw;
+  const value = new URLSearchParams(search).get("spawn");
+  if (!value) return null;
+  const name = resolveSpawnName(value);
+  return name === value ? name : null;
+}
 
 export function createGame(options = {}) {
   const canvas = options.canvas ?? null;
@@ -25,9 +37,13 @@ export function createGame(options = {}) {
   const eventTarget = options.eventTarget ?? (typeof window !== "undefined" ? window : null);
 
   let settings = loadSettings(storage, environment).settings;
+  const querySpawn = readSpawnQuery(options);
+  if (querySpawn) {
+    settings = normalizeSettings({ ...settings, spawnProfile: querySpawn }, environment, settings);
+  }
   const progressLoad = loadProgress(storage);
   let progress = progressLoad.progress;
-  let state = createState(options.seed ?? randomSeed(), { assist: settings.assist });
+  let state = createState(options.seed ?? randomSeed(), matchOptions(settings));
   let queued = neutralIntent();
   let recorded = false;
   let lastRun = progress.lastRun ?? null;
@@ -144,7 +160,7 @@ export function createGame(options = {}) {
       return loop.paused;
     },
     reset(seed = state.seed) {
-      state = createState(seed, { assist: settings.assist });
+      state = createState(seed, matchOptions(settings));
       queued = neutralIntent();
       recorded = false;
       loop.resume();
@@ -217,10 +233,15 @@ export function createGame(options = {}) {
       return settings;
     },
     updateSettings(patch) {
+      const previousSpawn = settings.spawnProfile;
       settings = normalizeSettings({ ...settings, ...patch }, environment, settings);
       state.assist = settings.assist;
       audio.applySettings(settings);
       for (const [action, codes] of Object.entries(settings.bindings)) input.rebind(action, codes);
+      if (settings.spawnProfile !== previousSpawn) {
+        state = createState(state.seed, matchOptions(settings));
+        recorded = false;
+      }
       saveSettings(storage, settings);
       return settings;
     },
@@ -233,6 +254,13 @@ export function createGame(options = {}) {
 
 // A seed escolhida ao abrir o jogo é aleatória; a partida a partir dela é
 // determinística. As duas afirmações são diferentes e as duas importam.
+function matchOptions(settings) {
+  return {
+    assist: settings.assist,
+    spawnProfile: resolveSpawnName(settings.spawnProfile),
+  };
+}
+
 function randomSeed() {
   return Math.floor(Math.random() * 0xffffffff) >>> 0;
 }

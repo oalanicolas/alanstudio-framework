@@ -171,6 +171,14 @@ test("um campo inválido preserva o valor atual, não o padrão", () => {
   assert.equal(settings.uiScale, 1.5);
 });
 
+test("o perfil de chuva é preferência persistida, não um modo escondido", () => {
+  const settings = normalizeSettings({ spawnProfile: "dusk" });
+  assert.equal(settings.spawnProfile, "dusk");
+  assert.equal(normalizeSettings({ spawnProfile: "Tempo-1" }).spawnProfile, "spawn");
+  assert.equal(normalizeSettings({ spawnProfile: 3 }).spawnProfile, "spawn");
+  assert.equal(defaultSettings({}).spawnProfile, "spawn");
+});
+
 test("o preset de uma mão usa o cluster direito sem colidir", () => {
   const codes = Object.values(ONE_HAND_BINDINGS).flat();
   assert.deepEqual(

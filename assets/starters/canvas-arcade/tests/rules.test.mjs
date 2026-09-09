@@ -265,3 +265,32 @@ test("o hitstop congela o mundo sem congelar a leitura da entrada", () => {
   assert.equal(state.player.x, before, "o mundo não se move durante o congelamento");
   assert.ok(state.player.dashBuffer > 0, "o pedido feito no congelamento não é engolido");
 });
+
+test("o perfil dusk muda a chuva sem republicar o verbo", () => {
+  const calm = createState(7);
+  const late = createState(7, { spawnProfile: "dusk" });
+  assert.equal(calm.spawnProfile, "spawn");
+  assert.equal(late.spawnProfile, "dusk");
+  assert.equal(calm.spawn.intervalTicks, 22);
+  assert.equal(late.spawn.intervalTicks, 16);
+  assert.equal(calm.spawnTimer, 22);
+  assert.equal(late.spawnTimer, 16);
+  while (calm.tick < 80) advance(calm, neutralIntent());
+  while (late.tick < 80) advance(late, neutralIntent());
+  assert.notEqual(calm.nextId, late.nextId, "intervalo distinto nasce quantidade distinta");
+  assert.ok(late.spawn.practiceTicks < calm.spawn.practiceTicks);
+  const calmKinds = new Set();
+  const lateKinds = new Set();
+  const calmPractice = createState(11);
+  const latePractice = createState(11, { spawnProfile: "dusk" });
+  while (calmPractice.tick < 120) {
+    advance(calmPractice, neutralIntent());
+    for (const entity of calmPractice.entities) calmKinds.add(entity.kind);
+  }
+  while (latePractice.tick < 400 && !lateKinds.has("shard")) {
+    advance(latePractice, neutralIntent());
+    for (const entity of latePractice.entities) lateKinds.add(entity.kind);
+  }
+  assert.equal(calmKinds.has("shard"), false, "o padrão ainda está em prática aos 120");
+  assert.equal(lateKinds.has("shard"), true, "crepúsculo encerra a prática aos 90");
+});

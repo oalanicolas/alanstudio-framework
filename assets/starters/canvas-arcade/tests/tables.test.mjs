@@ -2,17 +2,31 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  loadTable, migrateSpawn, migrateTable, requireFields, TABLES,
+  loadTable, loadSpawn, listSpawnProfiles, looksLikeSpawn, migrateSpawn, migrateTable,
+  requireFields, resolveSpawnName, TABLES,
   SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS,
 } from "../src/game/tables.js";
 
-test("as duas mesas passam pelo mesmo carregador", () => {
-  assert.deepEqual(Object.keys(TABLES).sort(), ["copy", "spawn"]);
+test("as mesas passam pelo mesmo carregador", () => {
+  assert.deepEqual(Object.keys(TABLES).sort(), ["copy", "dusk", "spawn"]);
   assert.equal(loadTable("spawn").intervalTicks, 22);
   assert.equal(loadTable("spawn").schema, SPAWN_SCHEMA);
+  assert.equal(loadTable("dusk").intervalTicks, 16);
   assert.equal(loadTable("copy").chain, "Corrente");
   assert.equal(loadTable("copy").schema, COPY_SCHEMA);
   assert.throws(() => loadTable("inventada"), /mesa desconhecida/);
+});
+
+test("só mesa com forma de chuva entra na família jogável", () => {
+  assert.deepEqual(listSpawnProfiles(), ["dusk", "spawn"]);
+  assert.equal(loadSpawn("dusk").intervalTicks, 16);
+  assert.equal(loadSpawn("dusk").practiceTicks, 90);
+  assert.equal(resolveSpawnName("dusk"), "dusk");
+  assert.equal(resolveSpawnName("copy"), "spawn");
+  assert.equal(resolveSpawnName("inventada"), "spawn");
+  assert.equal(looksLikeSpawn(loadTable("copy")), false);
+  assert.throws(() => loadSpawn("copy"), /não é perfil de chuva/);
+  assert.throws(() => loadSpawn("inventada"), /não é perfil de chuva/);
 });
 
 test("campo obrigatório ausente falha com o nome da mesa e do campo", () => {

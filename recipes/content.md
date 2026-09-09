@@ -8,8 +8,9 @@ suficiente — `enough` é sempre falso. Sem arquivo, `next` propõe
 `content.inline`. O starter `canvas-arcade` carrega `data/spawn.json` e `data/copy.json`
 pelo mesmo `migrateTable`. Formato antigo vira schema 1; schema futuro
 falha com o número; campo obrigatório falha com o nome da mesa.
-`npm run table -- <nome>` já nasce com schema. Contrato da família não
-é volume — `enough` é sempre falso.
+`npm run table -- <nome>` já nasce com schema. `--from spawn` copia a
+forma que o starter já consome (`?spawn=` / `settings.spawnProfile`).
+`dusk` é a segunda chuva, não volume — `enough` é sempre falso.
 
 Leia o formato atual, sua carga em runtime e os consumidores. Procure definição ou
 slot substituível antes de duplicar lógica. Preserve identidade, escala, pivot,

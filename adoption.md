@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.27 — Segunda chuva com o mesmo consumidor
+
+`dusk` é um perfil de spawn distinto (prática mais curta, intervalo
+menor). A partida lê `state.spawn`, não só `CONFIG.spawn`.
+`?spawn=dusk` e `settings.spawnProfile` escolhem a mesa; trocar o perfil
+recomeça a partida. `npm run table -- <nome> --from spawn` copia a forma
+que o jogo já consome. Mesa genérica continua sem consumidor.
+`content_scale` permanece `shippable`: duas chuvas não são volume e
+ninguém de fora produziu no piso. `enough` continua falso. Só `release`
+fica no piso.
+
+O que 0.9.27 não afirma: o harness não carregou a mesa no dispositivo,
+não cronometrou um autor de fora e não conta itens.
+
 ## 0.9.26 — Folga no palco de ganho
 
 A soma da 0.9.25 passou de 1.0 porque o palco usava o teto do arquivo

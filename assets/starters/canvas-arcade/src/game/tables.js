@@ -4,12 +4,18 @@
 // escreve o JSON com schema e registra o nome abaixo. Alterar um JSON
 // não republica o verbo. Sem consumidor a mesa existe e o jogo não muda.
 //
+// Perfil de chuva é o consumidor que já existe: `dusk` e qualquer mesa
+// com a forma de spawn entram por `?spawn=<nome>` ou settings.spawnProfile.
+// `npm run table -- <nome> --from spawn` copia essa forma. Copy e mesas
+// genéricas continuam sem consumidor automático.
+//
 // Toda mesa tem schema: formato antigo (sem campo) vira o vigente;
 // schema futuro falha com o número, não com undefined no meio do tick.
 // Spawn 2 acrescenta prática e recuperação; ausentes ganham o padrão.
 
 import spawnRaw from "../../data/spawn.json" with { type: "json" };
 import copyRaw from "../../data/copy.json" with { type: "json" };
+import duskRaw from "../../data/dusk.json" with { type: "json" };
 
 export const SPAWN_SCHEMA = 2;
 export const COPY_SCHEMA = 1;
@@ -24,6 +30,15 @@ export const SPAWN_FIELDS = [
   "practiceTicks",
   "recoveryTicks",
   "recoveryIntervalScale",
+];
+export const SPAWN_CORE_FIELDS = [
+  "intervalTicks",
+  "minIntervalTicks",
+  "rampTicks",
+  "hazardChanceStart",
+  "hazardChanceEnd",
+  "fallSpeedMin",
+  "fallSpeedMax",
 ];
 export const COPY_FIELDS = [
   "paused",
@@ -60,8 +75,8 @@ export function migrateTable(name, raw, schema, fields = []) {
   return table;
 }
 
-export function migrateSpawn(raw) {
-  const table = migrateTable("spawn", raw, SPAWN_SCHEMA);
+export function migrateSpawn(raw, name = "spawn") {
+  const table = migrateTable(name, raw, SPAWN_SCHEMA);
   return {
     ...table,
     schema: SPAWN_SCHEMA,
@@ -73,10 +88,16 @@ export function migrateSpawn(raw) {
   };
 }
 
+export function looksLikeSpawn(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return false;
+  return SPAWN_CORE_FIELDS.every((field) => raw[field] !== undefined);
+}
+
 const spawn = migrateSpawn(spawnRaw);
 const copy = migrateTable("copy", copyRaw, COPY_SCHEMA, COPY_FIELDS);
+const dusk = migrateSpawn(duskRaw, "dusk");
 
-const TABLES = { spawn, copy };
+const TABLES = { spawn, copy, dusk };
 
 export function loadTable(name) {
   if (!(name in TABLES)) {
@@ -94,4 +115,23 @@ export function requireFields(name, fields) {
   return table;
 }
 
-export { spawn, copy, TABLES };
+export function resolveSpawnName(name) {
+  if (typeof name === "string" && name in TABLES && looksLikeSpawn(TABLES[name])) {
+    return name;
+  }
+  return "spawn";
+}
+
+export function listSpawnProfiles() {
+  return Object.keys(TABLES).filter((key) => looksLikeSpawn(TABLES[key])).sort();
+}
+
+export function loadSpawn(name) {
+  const resolved = resolveSpawnName(name);
+  if (typeof name === "string" && name && name !== resolved) {
+    throw new Error(`mesa ${name} não é perfil de chuva`);
+  }
+  return migrateSpawn(TABLES[resolved], resolved);
+}
+
+export { spawn, copy, dusk, TABLES };

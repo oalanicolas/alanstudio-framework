@@ -113,7 +113,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` cronometra simulação e `draw` num canvas stub — não o compositor nem o dispositivo alvo |
 | `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena — `docs/access.md` declara o que o recorte não atende; `uiScale` e o preset de uma mão têm consumidor; sessão com uma mão ainda não foi observada |
-| `content_scale` | `shippable` | `flagship`: a ferramenta é boa o bastante para alguém de fora produzir no piso — spawn e copy migram e validam; `npm run table` já nasce com schema; `enough` é falso |
+| `content_scale` | `shippable` | `flagship`: a ferramenta é boa o bastante para alguém de fora produzir no piso — `dusk` é a segunda chuva e o jogo a consome por `?spawn=` / `settings.spawnProfile`; `npm run table -- <nome> --from spawn` copia a forma; `enough` é falso |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `dist/VERSION.json` nomeia a versão; ninguém correu o artefato fora daqui |
 
 **Leitura honesta: este projeto é um protótipo**, porque uma dimensão está
@@ -189,9 +189,10 @@ uma intenção — as regras nunca veem eventos.
 A paleta vive em `src/game/render.js` (`PALETTES`) e o contrato está em
 `docs/art-bible.md`. O harness lê os dois; consistência em movimento
 continua pendente. Chuva e texto do HUD passam por `src/game/tables.js`.
-`npm run table -- <nome>` nasce a próxima mesa no mesmo carregador; o
-custo fixo é o comando, o variável é o consumidor. Duas mesas mais a
-receita não são volume. Os seis papéis em `public/sfx` entram no mixer;
+`npm run table -- <nome> --from spawn` nasce a próxima chuva no mesmo
+carregador e no mesmo consumidor (`?spawn=` / `settings.spawnProfile`).
+Sem `--from`, o custo variável continua sendo ligar a regra. `dusk` já
+é a segunda chuva; isso não é volume nem alguém de fora no piso. Os seis papéis em `public/sfx` entram no mixer;
 `heard` continua falso. `npm run build` copia a árvore jogável para
 `dist/`; isso não é outra pessoa tendo jogado o artefato.
 

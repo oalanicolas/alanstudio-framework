@@ -8,7 +8,7 @@
 // da partida é perdida.
 
 import { createRng } from "../core/rng.js";
-import { requireFields, SPAWN_FIELDS } from "./tables.js";
+import { loadSpawn, requireFields, resolveSpawnName, SPAWN_FIELDS } from "./tables.js";
 
 const spawnTable = requireFields("spawn", SPAWN_FIELDS);
 
@@ -72,12 +72,20 @@ export const CONFIG = {
 const clamp = (value, min, max) => (value < min ? min : value > max ? max : value);
 const lerp = (from, to, amount) => from + (to - from) * amount;
 
+function rain(state) {
+  return state.spawn ?? CONFIG.spawn;
+}
+
 export function createState(seed = 1, options = {}) {
   const rng = createRng(seed);
+  const spawnProfile = resolveSpawnName(options.spawnProfile);
+  const spawn = { ...loadSpawn(spawnProfile) };
   return {
     version: 1,
     seed,
     assist: Boolean(options.assist),
+    spawnProfile,
+    spawn,
     rngState: rng.state,
     tick: 0,
     phase: "playing",
@@ -88,7 +96,7 @@ export function createState(seed = 1, options = {}) {
     camera: { x: 0, y: 0 },
     bankLock: 0,
     bankBuffer: 0,
-    spawnTimer: CONFIG.spawn.intervalTicks,
+    spawnTimer: spawn.intervalTicks,
     recoverUntil: 0,
     nextId: 1,
     player: {
@@ -231,28 +239,29 @@ function bank(state, intent) {
   state.hitstop = CONFIG.feel.bankHitstopTicks;
   state.shake += CONFIG.feel.bankShake;
   punch(state, 0, CONFIG.feel.punchBankY);
-  state.recoverUntil = state.tick + CONFIG.spawn.recoveryTicks;
+  state.recoverUntil = state.tick + rain(state).recoveryTicks;
   state.events.push({ type: "bank", chain, gain });
 }
 
 function spawn(state) {
+  const table = rain(state);
   state.spawnTimer -= 1;
   if (state.spawnTimer > 0) return;
-  const progress = Math.min(1, state.tick / CONFIG.spawn.rampTicks);
+  const progress = Math.min(1, state.tick / table.rampTicks);
   const recovering = state.tick < state.recoverUntil;
-  const intervalScale = recovering ? CONFIG.spawn.recoveryIntervalScale : 1;
+  const intervalScale = recovering ? table.recoveryIntervalScale : 1;
   state.spawnTimer = Math.round(
-    lerp(CONFIG.spawn.intervalTicks, CONFIG.spawn.minIntervalTicks, progress) * intervalScale,
+    lerp(table.intervalTicks, table.minIntervalTicks, progress) * intervalScale,
   );
   const rng = createRng(state.seed, state.rngState);
-  const practicing = state.tick < CONFIG.spawn.practiceTicks;
+  const practicing = state.tick < table.practiceTicks;
   const hazardChance = practicing
     ? 0
-    : lerp(CONFIG.spawn.hazardChanceStart, CONFIG.spawn.hazardChanceEnd, progress);
+    : lerp(table.hazardChanceStart, table.hazardChanceEnd, progress);
   const kind = rng.next() < hazardChance ? "shard" : "orb";
   const x = rng.range(14, FIELD.width - 14);
   const fall = state.assist ? CONFIG.assist.fallSpeedScale : 1;
-  const vy = rng.range(CONFIG.spawn.fallSpeedMin, CONFIG.spawn.fallSpeedMax) * (1 + progress * 0.35) * fall;
+  const vy = rng.range(table.fallSpeedMin, table.fallSpeedMax) * (1 + progress * 0.35) * fall;
   state.rngState = rng.state;
   state.entities.push({ id: state.nextId, kind, x, y: -8, vy });
   state.nextId += 1;

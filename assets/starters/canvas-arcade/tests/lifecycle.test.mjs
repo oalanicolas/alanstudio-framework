@@ -210,6 +210,39 @@ test("perda de foco pausa e descarrega", () => {
   game.dispose();
 });
 
+test("trocar o perfil de chuva recomeça a partida com a mesa nova", () => {
+  const { game, storage } = harness();
+  game.advance(40);
+  assert.equal(game.observe().spawnProfile, "spawn");
+  assert.ok(game.observe().tick > 0);
+  game.updateSettings({ spawnProfile: "dusk" });
+  const after = game.observe();
+  assert.equal(after.tick, 0, "outra chuva é outra partida");
+  assert.equal(after.spawnProfile, "dusk");
+  assert.equal(after.spawn.intervalTicks, 16);
+  assert.equal(game.settings.spawnProfile, "dusk");
+  assert.equal(JSON.parse(storage.get("settings")).spawnProfile, "dusk");
+  const reopened = createGame({ seed: 5, eventTarget: recordingTarget(), storage });
+  assert.equal(reopened.observe().spawnProfile, "dusk");
+  reopened.dispose();
+  game.dispose();
+});
+
+test("a query escolhe o perfil de chuva sem inventar mesa", () => {
+  const { game } = harness({ query: "?spawn=dusk" });
+  assert.equal(game.observe().spawnProfile, "dusk");
+  assert.equal(game.settings.spawnProfile, "dusk");
+  const ignored = createGame({
+    seed: 5,
+    query: "?spawn=inventada",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(ignored.observe().spawnProfile, "spawn");
+  ignored.dispose();
+  game.dispose();
+});
+
 test("remapear uma ação persiste e recusa uma lista vazia", () => {
   const { game, storage } = harness();
   game.updateSettings({ bindings: { ...game.settings.bindings, dash: ["KeyZ"] } });

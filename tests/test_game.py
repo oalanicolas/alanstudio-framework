@@ -2140,6 +2140,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(inventory["enough"])
         self.assertIn("data/spawn.json", inventory["files"])
         self.assertIn("data/copy.json", inventory["files"])
+        self.assertIn("data/dusk.json", inventory["files"])
         self.assertTrue(pack["expected"])
         self.assertFalse(pack["unpacked"])
         self.assertIn("build", pack["scripts"])

@@ -5,7 +5,8 @@
 // menos movimento não deveria precisar pedir de novo aqui.
 //
 // Uma opção só existe quando tem consumidor: cada campo abaixo é lido em
-// `render.js`, `audio.js`, `input.js` ou `rules.js`.
+// `render.js`, `audio.js`, `input.js` ou `rules.js`. `spawnProfile` escolhe
+// a mesa de chuva; nome desconhecido cai no padrão na hora de criar a partida.
 
 import { readJson, writeJson } from "./storage.js";
 
@@ -44,6 +45,7 @@ export function defaultSettings(environment = {}) {
     assist: false,
     oneHand: false,
     uiScale: 1,
+    spawnProfile: "spawn",
     buses: structuredCloneish(DEFAULT_BUSES),
     bindings: structuredCloneish(DEFAULT_BINDINGS),
   };
@@ -85,6 +87,10 @@ export function normalizeSettings(raw, environment = {}, base = defaultSettings(
     assist: typeof raw.assist === "boolean" ? raw.assist : base.assist,
     oneHand: typeof raw.oneHand === "boolean" ? raw.oneHand : base.oneHand,
     uiScale: Number.isFinite(raw.uiScale) ? Math.min(2, Math.max(0.75, raw.uiScale)) : base.uiScale,
+    spawnProfile:
+      typeof raw.spawnProfile === "string" && /^[a-z][a-z0-9]{0,31}$/.test(raw.spawnProfile)
+        ? raw.spawnProfile
+        : base.spawnProfile,
     buses,
     bindings,
   };

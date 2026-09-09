@@ -60,6 +60,9 @@ for (const name of ["farol", "Farol do Sul"]) {
       assert.equal(spawn.status, 200);
       assert.equal(spawn.headers.get("content-type"), "application/json; charset=utf-8");
       assert.ok(Number.isFinite((await spawn.json()).intervalTicks));
+      const dusk = await fetch(`http://localhost:${server.port}/data/dusk.json`);
+      assert.equal(dusk.status, 200);
+      assert.equal((await dusk.json()).intervalTicks, 16);
 
       const sound = await fetch(`http://localhost:${server.port}/public/sfx/dash.wav`);
       assert.equal(sound.status, 200);
