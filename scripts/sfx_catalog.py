@@ -28,7 +28,9 @@ QUALITY_BAR = {
 EMPTY_NEXT = (
     "Acervo vazio. O starter já fala em public/sfx; desloque com "
     "npm run sfx -- --from <papel> --as brighter. sfx serve não ouve "
-    "o que não existe. Procure fora só depois de constatar uma lacuna no papel."
+    "o que não existe. Para crescer o acervo, sfx import ARQUIVO "
+    "--metadata JSON (ffmpeg); importar não é ouvir. Procure fora só "
+    "depois de constatar uma lacuna no papel."
 )
 LISTEN_NEXT = (
     "Ouça com sfx serve; copie com sfx copy ID --to PASTA. "
@@ -37,6 +39,15 @@ LISTEN_NEXT = (
 MISS_NEXT = (
     "Nenhum id neste termo. O acervo existe: mude o termo ou ouça com sfx serve. "
     "Procure fora só após constatar uma lacuna."
+)
+IMPORT_NEXT = (
+    "Importar não é mix ouvido. Ouça no jogo, no papel. "
+    "ffmpeg decodifica; sem ele o import recusa. "
+    "sfx serve só depois de haver acervo."
+)
+SEED_MISSING = (
+    "selection.json ausente. Seed só importa arquivos locais já selecionados. "
+    "Sem seleção, o starter já fala em public/sfx."
 )
 
 
@@ -143,8 +154,37 @@ def summarize(root=None):
         "search": "python3 scripts/game.py sfx search TERMO",
         "listen": None if empty else "python3 scripts/game.py sfx serve",
         "copy": "python3 scripts/game.py sfx copy ID --to PASTA",
+        "import": "python3 scripts/game.py sfx import ARQUIVO --metadata JSON",
+        "seed": "python3 scripts/game.py sfx seed",
         "next": EMPTY_NEXT if empty else LISTEN_NEXT,
     }
+
+
+def import_entry(file, metadata, root=None):
+    prepared = audio.prepare_import(Path(file), audio.read_json(metadata))
+    result = audio.save_imports([prepared], catalog_dir(root))
+    result.update(heard=False, next=IMPORT_NEXT)
+    return result
+
+
+def seed_catalog(root=None):
+    workspace = Path(root or DEFAULT_ROOT)
+    selection_path = workspace / CATALOG_RELATIVE / "selection.json"
+    if not selection_path.is_file():
+        raise ValueError(SEED_MISSING)
+    selection = audio.read_json(selection_path)
+    sounds = selection.get("sounds")
+    if not isinstance(sounds, list) or not sounds:
+        raise ValueError("selection.json sem sons")
+    prepared = []
+    for item in sounds:
+        local = item.get("local_path")
+        if not isinstance(local, str) or not local.strip():
+            raise ValueError("cada som da seleção precisa de local_path")
+        prepared.append(audio.prepare_import(audio.inside(workspace, local), item))
+    result = audio.save_imports(prepared, catalog_dir(root))
+    result.update(heard=False, next=IMPORT_NEXT)
+    return result
 
 
 def verify_catalog(root=None):

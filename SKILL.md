@@ -78,7 +78,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `doctor` lista os starters disponíveis; começar por um deles é REUSE, escrever um
    loop do zero é CREATE. Se o laboratório tiver `shared/sfx` com sons, use
    `sfx search` antes de baixar. Sem acervo, o starter já fala em
-   `public/sfx`; `sfx serve` recusa catálogo vazio. Sem 8-bit,
+   `public/sfx`; `sfx serve` recusa catálogo vazio. Crescer o acervo é
+   `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx seed` lê
+   `selection.json` local. Importar não é ouvir. Sem 8-bit,
    chiptune, jsfxr ou Kenney arcade como padrão. Leia candidatos e consumidores.
    CREATE exige lacuna explícita. Para trabalho novo sem registro, use
    [o contrato](assets/work.example.json); `check-plan` valida a estrutura, não o mérito.
@@ -165,8 +167,10 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    continua rascunho. A frase na tela não muda o verbo.
    **`roles <projeto>`** lê os papéis de áudio que o código declara e os
    arquivos que os preenchem. `--fill` sugere o acervo; `--apply` copia
-   com o nome do papel. `heard` é sempre falso. Papel vazio entra no
-   `next` como `audio.roles` — o verbo mudo não espera os rascunhos.
+   com o nome do papel. Crescer o acervo é `sfx import` / `sfx seed`
+   (ffmpeg); importar não é ouvir. `heard` é sempre falso. Papel vazio
+   entra no `next` como `audio.roles` — o verbo mudo não espera os
+   rascunhos.
    **`feel <projeto>`** lê constantes de perdão/hitstop/câmera no `CONFIG` e o
    recibo de observação no disco. `felt` é sempre falso. Sem recibo, `next`
    propõe `feel.unobserved` e aponta `note`.

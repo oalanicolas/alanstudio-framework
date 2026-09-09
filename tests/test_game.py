@@ -2066,6 +2066,121 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotEqual(serve.returncode, 0)
         self.assertIn("vazio", serve.stderr.casefold())
+        self.assertIn("sfx import", summary["import"])
+        self.assertIn("sfx seed", summary["seed"])
+
+    def test_sfx_import_grows_the_catalog_without_claiming_to_hear_it(self):
+        fake = {
+            "sample_rate": 44100, "duration": 0.2, "channels": 1,
+            "codec": "pcm_s16le", "bits_per_sample": 16, "bit_rate": 705600,
+            "peak_dbfs": -6, "rms_dbfs": -18, "waveform": [0], "warnings": [],
+        }
+        original = game.sfx_catalog.audio.inspect_audio
+        game.sfx_catalog.audio.inspect_audio = lambda path: fake
+        self.addCleanup(lambda: setattr(game.sfx_catalog.audio, "inspect_audio", original))
+        payload = b"RIFF" + b"\x00" * 24
+        source = self.root / "passo.wav"
+        source.write_bytes(payload)
+        metadata = {
+            "id": "passo-madeira-01",
+            "title": "Passo em madeira",
+            "category": "Passos",
+            "tags": ["pé", "madeira"],
+            "style": "recorded",
+            "processing": "Corte do original; sem conversão adicional.",
+            "sources": [{
+                "title": "Original Footstep",
+                "author": "Autora",
+                "url": "https://example.com/source",
+                "license": "CC-BY-4.0",
+            }],
+        }
+        meta_path = self.root / "passo.json"
+        meta_path.write_text(json.dumps(metadata), encoding="utf-8")
+        report = game.sfx_catalog.import_entry(source, meta_path, self.root)
+        self.assertEqual(report["added"], 1)
+        self.assertFalse(report["heard"])
+        self.assertNotIn("Ouça com sfx serve", report["next"])
+        self.assertIn("não é mix", report["next"].casefold())
+        catalog = json.loads((self.root / "shared/sfx/catalog.json").read_text(encoding="utf-8"))
+        self.assertEqual(catalog["sounds"][0]["id"], "passo-madeira-01")
+        self.assertTrue((self.root / "shared/sfx" / catalog["sounds"][0]["file"]).is_file())
+
+    def test_sfx_import_rejects_retro_before_writing_the_catalog(self):
+        source = self.root / "bleep.wav"
+        source.write_bytes(b"RIFF")
+        meta_path = self.root / "bleep.json"
+        meta_path.write_text(json.dumps({
+            "id": "bleep-01",
+            "title": "8-bit click",
+            "category": "UI",
+            "tags": ["click"],
+            "style": "recorded",
+            "processing": "none",
+            "sources": [{
+                "title": "Click",
+                "author": "Autora",
+                "url": "https://example.com/click",
+                "license": "CC0-1.0",
+            }],
+        }), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "estética"):
+            game.sfx_catalog.import_entry(source, meta_path, self.root)
+        self.assertFalse((self.root / "shared/sfx/catalog.json").exists())
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "import", str(source),
+             "--metadata", str(meta_path), "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertNotEqual(run.returncode, 0)
+        self.assertIn("estética", run.stderr.casefold())
+
+    def test_sfx_seed_without_selection_does_not_pretend_there_is_an_archive(self):
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "seed", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertNotEqual(run.returncode, 0)
+        self.assertIn("selection.json", run.stderr.casefold())
+        self.assertIn("public/sfx", run.stderr)
+        self.assertNotIn("Ouça com sfx serve", run.stderr)
+
+    def test_sfx_seed_imports_local_selection_without_claiming_to_hear_it(self):
+        fake = {
+            "sample_rate": 44100, "duration": 0.2, "channels": 1,
+            "codec": "pcm_s16le", "bits_per_sample": 16, "bit_rate": 705600,
+            "peak_dbfs": -6, "rms_dbfs": -18, "waveform": [0], "warnings": [],
+        }
+        original = game.sfx_catalog.audio.inspect_audio
+        game.sfx_catalog.audio.inspect_audio = lambda path: fake
+        self.addCleanup(lambda: setattr(game.sfx_catalog.audio, "inspect_audio", original))
+        payload = b"RIFF" + b"\x00" * 24
+        inbox = self.root / "inbox"
+        inbox.mkdir()
+        (inbox / "passo.wav").write_bytes(payload)
+        library = self.root / "shared/sfx"
+        library.mkdir(parents=True)
+        (library / "selection.json").write_text(json.dumps({
+            "sounds": [{
+                "id": "passo-madeira-01",
+                "title": "Passo em madeira",
+                "category": "Passos",
+                "tags": ["pé", "madeira"],
+                "style": "recorded",
+                "processing": "Corte do original; sem conversão adicional.",
+                "local_path": "inbox/passo.wav",
+                "sources": [{
+                    "title": "Original Footstep",
+                    "author": "Autora",
+                    "url": "https://example.com/source",
+                    "license": "CC-BY-4.0",
+                }],
+            }],
+        }), encoding="utf-8")
+        report = game.sfx_catalog.seed_catalog(self.root)
+        self.assertEqual(report["added"], 1)
+        self.assertFalse(report["heard"])
+        self.assertNotIn("Ouça com sfx serve", report["next"])
 
     def test_feel_reads_named_constants_and_never_claims_to_have_felt_them(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
@@ -2085,6 +2200,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("feel.chainPips", keys)
         self.assertIn("feel.chainRateStep", keys)
         self.assertIn("feel.squashLand", keys)
+        self.assertIn("feel.depositAimX", keys)
         self.assertIn("src/game/rules.js", report["sources"])
         self.assertEqual(report["observations"], [])
         empty = game.feel_reading(self.project)

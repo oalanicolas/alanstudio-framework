@@ -24,7 +24,9 @@ não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta e
 
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
 `--fill` sugere o acervo; `--apply` copia com o nome do papel. Sem
-acervo a busca aponta o starter e `sfx serve` recusa. O starter
+acervo a busca aponta o starter e `sfx serve` recusa. Crescer o
+acervo é `sfx import` / `sfx seed` (ffmpeg); importar não é ouvir.
+O starter
 já traz design original e variante (`-b`) nos papéis do verbo e na cama
 e carrega no mixer. A cama entra em loop no barramento de música.
 `npm run mix` soma cama e vozes na partida simulada com o mesmo palco
@@ -41,7 +43,8 @@ marca a ameaça no trilho, distingue a
 recuperação do dash, aterrissa o avanço com squash e rastro próprios,
 pulsa o controle no impacto, deixa um rastro
 por verbo e põe a corrente em órbita no corpo. No erro os pips
-quebram para fora, não somem. O pulso some na pausa e no descarte.
+quebram para fora; na guarda eles voam para o placar. O pulso some
+na pausa e no descarte.
 
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`

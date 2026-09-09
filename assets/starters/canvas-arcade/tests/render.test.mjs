@@ -499,6 +499,22 @@ test("o flash do erro some com redução de movimento", () => {
   assert.equal(still, true, "com menos movimento o sinal vira contorno, não some");
 });
 
+test("o depósito da corrente pinta os pips a caminho do placar", () => {
+  const state = createState(1);
+  state.motes = [
+    { kind: "deposit", x: 40, y: 80, sx: 40, sy: 80, vx: 0, vy: 0, life: 8 },
+    { kind: "deposit", x: 90, y: 80, sx: 90, sy: 80, vx: 0, vy: 0, life: 8 },
+  ];
+  const flying = paint(state);
+  const pips = flying.rects.filter(
+    (rect) => rect.style === PALETTES.normal.chain && Math.abs(rect.width - CONFIG.feel.chainPipSize) < 0.01,
+  );
+  assert.ok(pips.length >= 2, `esperava os pips depositados na tinta da corrente: ${JSON.stringify(flying.rects.map((rect) => [rect.width, rect.style]))}`);
+  const still = paint(state, { reducedMotion: true });
+  const marks = still.rects.filter((rect) => rect.style === PALETTES.normal.chain && rect.width === 2);
+  assert.ok(marks.length >= 2, "com menos movimento o depósito vira marca, não some");
+});
+
 test("a quebra da corrente pinta os pips que o corpo perdeu", () => {
   const state = createState(1);
   state.motes = [

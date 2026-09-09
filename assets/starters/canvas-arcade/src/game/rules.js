@@ -86,6 +86,8 @@ export const CONFIG = {
     chainPipSize: 2.8,
     chainRateStep: 0.06, // cada elo sobe o tom da coleta e da guarda
     chainRateMax: 1.48, // teto: a conta continua no HUD
+    depositAimX: 28, // placa da pontuação; o pip voa para o placar, não some
+    depositAimY: 14,
   },
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
@@ -500,6 +502,7 @@ function bank(state, intent) {
   state.score += gain;
   state.stats.banked += gain;
   state.stats.banks += 1;
+  depositChain(state, chain);
   state.chain = 0;
   state.bankBuffer = 0;
   state.bankLock = CONFIG.bank.lockTicks;
@@ -601,6 +604,28 @@ function shatterChain(state, lost) {
     const pip = chainPipAt(index, count, x, y, tick, false);
     const angle = tick * CONFIG.feel.chainSpin + (index * Math.PI * 2) / count;
     state.motes.push(acquireMote("break", pip.x, pip.y, Math.cos(angle) * 1.8, Math.sin(angle) * 1.8, life));
+  }
+}
+
+function depositChain(state, committed) {
+  const count = chainPipCount(committed);
+  if (count <= 0) return;
+  const life = CONFIG.feel.moteLife;
+  const x = state.player.x;
+  const y = PLAYER_Y;
+  const tick = Number.isFinite(state.tick) ? state.tick : 0;
+  const aimX = CONFIG.feel.depositAimX;
+  const aimY = CONFIG.feel.depositAimY;
+  for (let index = 0; index < count; index += 1) {
+    const pip = chainPipAt(index, count, x, y, tick, false);
+    state.motes.push(acquireMote(
+      "deposit",
+      pip.x,
+      pip.y,
+      (aimX - pip.x) / life,
+      (aimY - pip.y) / life,
+      life,
+    ));
   }
 }
 

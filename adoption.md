@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.64 — A corrente também se guarda
+
+Os pips orbitavam a aposta e sumiam na guarda. Guardar 1 e guardar 8
+eram o mesmo quadro: o rastro do corpo caía e a órbita apagava.
+A decisão leva os pips ao placar; o teto da órbita também é o teto
+do depósito. Sem corrente o guardar não inventa pip. `sfx import` e
+`sfx seed` passam a nascer o acervo pelo CLI do harness (ffmpeg);
+importar não é ouvir. `felt` e `heard` continuam falsos. `feel`
+permanece `playable`: depósito no stub não é peso percebido. Só
+`release` fica no piso.
+
+O que 0.9.64 não afirma: o harness não guardou a corrente, não
+importou um acervo de laboratório e ninguém ouviu o mix.
+
 ## 0.9.63 — O convite para quem nunca viu
 
 A curva com outsider era um degrau sem ferramenta. `playtest --invite`

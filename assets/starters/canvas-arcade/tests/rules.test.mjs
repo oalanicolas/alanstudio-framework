@@ -69,6 +69,39 @@ test("sem corrente o erro não inventa pip quebrado; o teto da órbita vale na q
   );
 });
 
+test("guardar deposita os pips no placar, não some com a aposta", () => {
+  const state = createState(1);
+  state.chain = 5;
+  advance(state, { move: 0, dash: false, bank: true });
+  const deposits = state.motes.filter((mote) => mote.kind === "deposit");
+  assert.equal(deposits.length, 5, "a corrente voa para o placar, não some");
+  const aimX = CONFIG.feel.depositAimX;
+  const aimY = CONFIG.feel.depositAimY;
+  assert.ok(
+    deposits.every((mote) => {
+      const endX = mote.x + mote.vx * mote.life;
+      const endY = mote.y + mote.vy * mote.life;
+      return Math.abs(endX - aimX) < 0.01 && Math.abs(endY - aimY) < 0.01;
+    }),
+    "cada pip chega no placar",
+  );
+  assert.ok(deposits.every((mote) => mote.vy < 0), "o placar fica acima do corpo");
+});
+
+test("sem corrente o guardar não inventa depósito; o teto da órbita vale na guarda", () => {
+  const empty = createState(1);
+  advance(empty, { move: 0, dash: false, bank: true });
+  assert.equal(empty.motes.filter((mote) => mote.kind === "deposit").length, 0);
+  const packed = createState(1);
+  packed.chain = 12;
+  advance(packed, { move: 0, dash: false, bank: true });
+  assert.equal(
+    packed.motes.filter((mote) => mote.kind === "deposit").length,
+    CONFIG.feel.chainPips,
+    "o teto dos pips também é o teto do depósito",
+  );
+});
+
 test("a graça impede perder duas correntes seguidas", () => {
   const state = createState(2);
   state.chain = 5;
@@ -173,7 +206,8 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   assert.equal(struck.flash, CONFIG.feel.flashHit * CONFIG.feel.flashDecay);
   assert.equal(dash.motes.length, CONFIG.feel.moteDash, "dash precisa deixar rastro");
   assert.equal(collected.motes.length, CONFIG.feel.moteCollect, "coleta precisa deixar rastro");
-  assert.equal(banked.motes.length, CONFIG.feel.moteBank, "guardar precisa deixar rastro");
+  const bankBurst = banked.motes.filter((mote) => mote.kind === "bank");
+  assert.equal(bankBurst.length, CONFIG.feel.moteBank, "guardar precisa deixar rastro");
   assert.equal(struck.motes.length, CONFIG.feel.moteHit, "o erro precisa espalhar mais");
   const motes = [
     CONFIG.feel.moteDash,
@@ -187,8 +221,9 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   assert.equal(CONFIG.feel.chainPips, 8);
   assert.ok(CONFIG.feel.chainOrbit > CONFIG.player.halfWidth, "a órbita precisa caber fora do corpo");
   assert.ok(CONFIG.feel.chainSpin > 0);
+  assert.ok(CONFIG.feel.depositAimY < PLAYER_Y, "o placar fica acima do corpo");
   assert.ok(collected.motes.every((mote) => mote.vy < 0), "coleta sobe");
-  assert.ok(banked.motes.every((mote) => mote.vy > 0), "guardar confirma para baixo");
+  assert.ok(bankBurst.every((mote) => mote.vy > 0), "guardar confirma para baixo");
 });
 
 test("a corrente no corpo conta o que o HUD já sabe, com teto", () => {

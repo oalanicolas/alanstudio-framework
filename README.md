@@ -528,11 +528,21 @@ python3 scripts/game.py sfx copy ID --to /caminho/do/jogo/public/sfx --root /cam
 ```
 
 Sem esse acervo, `sfx search` devolve vazio e `sfx serve` recusa — não
-há o que ouvir. O primeiro ciclo já tem voz no starter
-(`public/sfx/<papel>.wav`). `shared/sfx` é ADAPT, não pré-requisito.
-Piso: gravação licenciada ou design contemporâneo. 8-bit, chiptune,
-jsfxr e Kenney arcade não são o padrão. Este repositório **não inclui**
-o acervo `shared/sfx` do laboratório.
+há o que ouvir. Crescer o acervo é arquivo local com recibo:
+
+```sh
+python3 scripts/game.py sfx import /caminho/do.wav --metadata /caminho/meta.json --root /caminho/do/laboratorio
+python3 scripts/game.py sfx seed --root /caminho/do/laboratorio
+```
+
+`sfx import` exige ffmpeg e um JSON com id, título, categoria, estilo,
+tags, processamento e fontes (licença CC0 ou CC-BY). `sfx seed` lê
+`shared/sfx/selection.json` com `local_path` já no disco. Sem seleção,
+o seed recusa. Importar não é mix ouvido. O primeiro ciclo já tem voz
+no starter (`public/sfx/<papel>.wav`). `shared/sfx` é ADAPT, não
+pré-requisito. Piso: gravação licenciada ou design contemporâneo.
+8-bit, chiptune, jsfxr e Kenney arcade não são o padrão. Este
+repositório **não inclui** o acervo `shared/sfx` do laboratório.
 
 ## Feel
 
