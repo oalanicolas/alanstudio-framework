@@ -88,6 +88,36 @@ test("guardar deposita os pips no placar, não some com a aposta", () => {
   assert.ok(deposits.every((mote) => mote.vy < 0), "o placar fica acima do corpo");
 });
 
+test("a coleta leva o orbe ao slot da órbita, não some com o contato", () => {
+  const state = createState(5);
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  const joins = state.motes.filter((mote) => mote.kind === "join");
+  assert.equal(joins.length, 1, "o primeiro elo voa para a órbita");
+  const dest = chainPipAt(0, 1, state.player.x, PLAYER_Y, state.tick, false);
+  assert.ok(
+    joins.every((mote) => {
+      const endX = mote.x + mote.vx * mote.life;
+      const endY = mote.y + mote.vy * mote.life;
+      return Math.abs(endX - dest.x) < 0.01 && Math.abs(endY - dest.y) < 0.01;
+    }),
+    "o orbe chega no slot do pip",
+  );
+});
+
+test("o teto da órbita não inventa um nono pip na coleta", () => {
+  const packed = createState(5);
+  packed.chain = CONFIG.feel.chainPips;
+  packed.entities = [orb(packed.player.x, PLAYER_Y)];
+  advance(packed, neutralIntent());
+  assert.equal(packed.chain, CONFIG.feel.chainPips + 1);
+  assert.equal(
+    packed.motes.filter((mote) => mote.kind === "join").length,
+    0,
+    "o teto dos pips também é o teto da entrada",
+  );
+});
+
 test("sem corrente o guardar não inventa depósito; o teto da órbita vale na guarda", () => {
   const empty = createState(1);
   advance(empty, { move: 0, dash: false, bank: true });
@@ -151,6 +181,11 @@ test("o dash atravessa o estilhaço sem perder a corrente", () => {
   advance(state, { move: 1, dash: false, bank: false });
   assert.equal(state.chain, 2);
   assert.ok(state.events.some((event) => event.type === "graze"));
+  assert.equal(
+    state.motes.filter((mote) => mote.kind === "graze").length,
+    CONFIG.feel.moteGraze,
+    "o raspo precisa riscar o campo",
+  );
 });
 
 test("cada verbo tem sinal próprio de partida e contato", () => {
@@ -205,7 +240,8 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   assert.equal(collected.flash, 0, "coleta não acende o campo como se fosse o erro");
   assert.equal(struck.flash, CONFIG.feel.flashHit * CONFIG.feel.flashDecay);
   assert.equal(dash.motes.length, CONFIG.feel.moteDash, "dash precisa deixar rastro");
-  assert.equal(collected.motes.length, CONFIG.feel.moteCollect, "coleta precisa deixar rastro");
+  const collectBurst = collected.motes.filter((mote) => mote.kind === "collect");
+  assert.equal(collectBurst.length, CONFIG.feel.moteCollect, "coleta precisa deixar rastro");
   const bankBurst = banked.motes.filter((mote) => mote.kind === "bank");
   assert.equal(bankBurst.length, CONFIG.feel.moteBank, "guardar precisa deixar rastro");
   assert.equal(struck.motes.length, CONFIG.feel.moteHit, "o erro precisa espalhar mais");
@@ -213,16 +249,17 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
     CONFIG.feel.moteDash,
     CONFIG.feel.moteLand,
     CONFIG.feel.moteCollect,
+    CONFIG.feel.moteGraze,
     CONFIG.feel.moteBank,
     CONFIG.feel.moteHit,
     CONFIG.feel.moteOver,
   ];
-  assert.equal(new Set(motes).size, 6, "rastro repetido não distingue o verbo");
+  assert.equal(new Set(motes).size, 7, "rastro repetido não distingue o verbo");
   assert.equal(CONFIG.feel.chainPips, 8);
   assert.ok(CONFIG.feel.chainOrbit > CONFIG.player.halfWidth, "a órbita precisa caber fora do corpo");
   assert.ok(CONFIG.feel.chainSpin > 0);
   assert.ok(CONFIG.feel.depositAimY < PLAYER_Y, "o placar fica acima do corpo");
-  assert.ok(collected.motes.every((mote) => mote.vy < 0), "coleta sobe");
+  assert.ok(collectBurst.every((mote) => mote.vy < 0), "coleta sobe");
   assert.ok(bankBurst.every((mote) => mote.vy > 0), "guardar confirma para baixo");
 });
 
@@ -401,7 +438,11 @@ test("o rastro volta ao poço quando a vida acaba", () => {
   const state = createState(5);
   state.entities = [orb(state.player.x, PLAYER_Y)];
   advance(state, neutralIntent());
-  assert.equal(state.motes.length, CONFIG.feel.moteCollect);
+  assert.equal(
+    state.motes.filter((mote) => mote.kind === "collect").length,
+    CONFIG.feel.moteCollect,
+  );
+  assert.equal(state.motes.filter((mote) => mote.kind === "join").length, 1);
   const born = state.motes[0];
   const before = motePoolStats();
   for (let index = 0; index < CONFIG.feel.moteLife; index += 1) {

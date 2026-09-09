@@ -499,6 +499,36 @@ test("o flash do erro some com redução de movimento", () => {
   assert.equal(still, true, "com menos movimento o sinal vira contorno, não some");
 });
 
+test("a entrada da corrente pinta o orbe a caminho da órbita", () => {
+  const state = createState(1);
+  state.motes = [
+    { kind: "join", x: 40, y: 80, sx: 40, sy: 80, vx: 0, vy: 0, life: 8 },
+    { kind: "join", x: 90, y: 80, sx: 90, sy: 80, vx: 0, vy: 0, life: 8 },
+  ];
+  const flying = paint(state);
+  const pips = flying.rects.filter(
+    (rect) => rect.style === PALETTES.normal.orb && Math.abs(rect.width - CONFIG.feel.chainPipSize) < 0.01,
+  );
+  assert.ok(pips.length >= 2, `esperava os pips nascendo na tinta do orbe: ${JSON.stringify(flying.rects.map((rect) => [rect.width, rect.style]))}`);
+  const still = paint(state, { reducedMotion: true });
+  const marks = still.rects.filter((rect) => rect.style === PALETTES.normal.orb && rect.width === 2);
+  assert.ok(marks.length >= 2, "com menos movimento a entrada vira marca, não some");
+});
+
+test("o raspo pinta o estilhaço que passou", () => {
+  const state = createState(1);
+  state.motes = [
+    { kind: "graze", x: 40, y: 80, sx: 40, sy: 80, vx: 0, vy: 0, life: 8 },
+    { kind: "graze", x: 90, y: 80, sx: 90, sy: 80, vx: 0, vy: 0, life: 8 },
+  ];
+  const flying = paint(state);
+  const sparks = flying.rects.filter((rect) => rect.style === PALETTES.normal.danger && rect.width < 5);
+  assert.ok(sparks.length >= 2, `esperava o raspo na tinta do perigo: ${JSON.stringify(flying.rects.map((rect) => [rect.width, rect.style]))}`);
+  const still = paint(state, { reducedMotion: true });
+  const marks = still.rects.filter((rect) => rect.style === PALETTES.normal.danger && rect.width === 2);
+  assert.ok(marks.length >= 2, "com menos movimento o raspo vira marca, não some");
+});
+
 test("o depósito da corrente pinta os pips a caminho do placar", () => {
   const state = createState(1);
   state.motes = [

@@ -76,6 +76,7 @@ export const CONFIG = {
     moteDash: 3, // rastro curto na partida
     moteLand: 2, // puff curto de término; menor que a partida
     moteCollect: 5, // contato do acerto
+    moteGraze: 6, // o raspo risca; mais que a coleta, menos que guardar
     moteBank: 7, // peso da decisão
     moteHit: 9, // o erro espalha mais
     moteOver: 4, // fim
@@ -197,6 +198,7 @@ const MOTE_COUNTS = {
   dash: "moteDash",
   land: "moteLand",
   collect: "moteCollect",
+  graze: "moteGraze",
   bank: "moteBank",
   hit: "moteHit",
   over: "moteOver",
@@ -263,6 +265,9 @@ function burst(state, kind) {
     } else if (kind === "collect") {
       vx = unit * 1.4;
       vy = -1.8 - Math.abs(unit) * 0.3;
+    } else if (kind === "graze") {
+      vx = dir * (2.2 + Math.abs(unit) * 0.4);
+      vy = unit * 1.6;
     } else if (kind === "bank") {
       vx = unit * 1.2;
       vy = 1.6 + Math.abs(unit) * 0.4;
@@ -555,7 +560,7 @@ function resolveEntities(state) {
       Math.abs(entity.y - PLAYER_Y) < reachY && Math.abs(entity.x - player.x) < reach;
     if (touching) {
       if (entity.kind === "orb") {
-        collect(state);
+        collect(state, entity.x, entity.y);
         releaseEntity(entity);
         continue;
       }
@@ -582,7 +587,8 @@ function resolveEntities(state) {
   entities.length = write;
 }
 
-function collect(state) {
+function collect(state, fromX, fromY) {
+  const before = chainPipCount(state.chain);
   state.chain += 1;
   state.stats.collected += 1;
   if (state.chain > state.stats.bestChain) state.stats.bestChain = state.chain;
@@ -590,7 +596,26 @@ function collect(state) {
   state.shake += CONFIG.feel.collectShake;
   state.player.squash = CONFIG.feel.squashCollect;
   punch(state, 0, CONFIG.feel.punchCollectY);
+  joinChain(state, before, fromX, fromY);
   emit(state, "collect", { chain: state.chain });
+}
+
+function joinChain(state, before, fromX, fromY) {
+  const after = chainPipCount(state.chain);
+  if (after <= before) return;
+  const life = CONFIG.feel.moteLife;
+  const x = Number.isFinite(fromX) ? fromX : state.player.x;
+  const y = Number.isFinite(fromY) ? fromY : PLAYER_Y;
+  const tick = Number.isFinite(state.tick) ? state.tick : 0;
+  const dest = chainPipAt(after - 1, after, state.player.x, PLAYER_Y, tick, false);
+  state.motes.push(acquireMote(
+    "join",
+    x,
+    y,
+    (dest.x - x) / life,
+    (dest.y - y) / life,
+    life,
+  ));
 }
 
 function shatterChain(state, lost) {

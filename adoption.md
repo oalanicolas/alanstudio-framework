@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.65 — A coleta também entra no corpo
+
+A coleta era squash, rastro para cima e o pip aparecia. Guardar 1 e
+guardar 8 já voavam; coletar 1 e coletar 8 nasciam no lugar. O
+contato leva o orbe ao slot novo; o teto da órbita não inventa um
+nono. O raspo — o verbo de habilidade — deixa rastro próprio e
+continua sem pulso no controle. `felt` continua falso. `feel`
+permanece `playable`: entrada no stub não é peso percebido. Só
+`release` fica no piso.
+
+O que 0.9.65 não afirma: o harness não coletou o orbe e o raspo
+não aprova o feel.
+
 ## 0.9.64 — A corrente também se guarda
 
 Os pips orbitavam a aposta e sumiam na guarda. Guardar 1 e guardar 8

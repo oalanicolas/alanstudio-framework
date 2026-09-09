@@ -2201,6 +2201,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("feel.chainRateStep", keys)
         self.assertIn("feel.squashLand", keys)
         self.assertIn("feel.depositAimX", keys)
+        self.assertIn("feel.moteGraze", keys)
         self.assertIn("src/game/rules.js", report["sources"])
         self.assertEqual(report["observations"], [])
         empty = game.feel_reading(self.project)
