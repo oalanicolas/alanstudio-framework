@@ -72,8 +72,8 @@ certifica tokens, consumidores nem aprovação artística.
 - **Onde estamos:** o contrato do estúdio existe; as instâncias continuam no documento
   canônico de cada jogo, com profundidade desigual.
 - **Próximo passo:** ao trabalhar num jogo identificável, preencher ou recuperar a
-  instância dele — tokens com consumidor, feel do verbo, mix da consequência e
-  uma receita de conteúdo novo.
+  instância dele — tokens com consumidor, feel do verbo sincronizado no impacto,
+  mix da consequência e uma receita de conteúdo novo (repeatability).
 - **Por que agora:** sem isso, arte e UI novas improvisam e o piso aprovado não se
   reproduz.
 - **Pronto quando:** as nove áreas acima têm fato, hipótese ou lacuna com próxima ação,

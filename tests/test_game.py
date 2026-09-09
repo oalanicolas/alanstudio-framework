@@ -75,6 +75,7 @@ class HarnessTest(unittest.TestCase):
                 self.assertIn("project-audit.md", names)
                 self.assertTrue(all(Path(p).is_file() for p in result["read_next"]))
                 self.assertIn("Feel e áudio são focos próprios", " ".join(result["limits"]))
+                self.assertIn("piso de acabamento da slice, não tier de publisher", " ".join(result["limits"]))
         create = game.context(self.project, "create", studies_root=self.root / "absent")
         self.assertIn("ambition.md", [Path(p).name for p in create["read_next"]])
         self.assertIn("preproduction.md", [Path(p).name for p in create["read_next"]])

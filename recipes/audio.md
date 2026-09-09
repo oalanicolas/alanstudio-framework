@@ -47,7 +47,11 @@ Para o verbo ou a transição em pauta:
    duplicado indicam recurso sobrevivente.
 
 Feel e áudio se confirmam: [feel](feel.md) descreve o impacto; esta receita
-garante que ele se ouve e se cala na hora certa.
+garante que ele se ouve e se cala na hora certa. O one-shot de impacto
+dispara no **mesmo frame** do hit-pause e do flash. Som atrasado não “pesa”
+o golpe — denuncia a costura. Som é o juice de maior retorno por esforço;
+verbo mudo continua sendo o defeito mais barato de corrigir e o mais caro
+de deixar.
 
 ## 3. REUSE → ADAPT → CREATE
 

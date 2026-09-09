@@ -3,6 +3,15 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.1 — Tier de mercado ≠ piso de acabamento
+
+Pesquisa de 2026-09-09 dobrada em [ambição](references/ambition.md) e
+[sources](references/sources.md#aaa-tier-e-piso-09). AAA de publisher é
+rótulo financeiro (sem certificação). O harness usa “AAA” só como piso da
+slice. Escala de produto ambicioso passa a **AA / Triple-I**. Barras novas:
+sincronia no frame do impacto, pacing/latência, repeatability da slice.
+Nenhum orçamento citado vira meta.
+
 ## 0.9 — Facilidade e piso AAA operacional
 
 Caminho curto na skill e em [criar](recipes/create.md): primeira sessão chega a

@@ -5,9 +5,10 @@ seleção de contexto e evidência. Cada jogo continua usando sua engine, suas r
 seus assets e seus validadores.
 
 Fácil de começar: um pedido vira um ciclo jogável, sem nove templates vazios.
-Difícil de rebaixar: feel, áudio e receita de conteúdo fazem parte do recorte,
-não de um “polimento depois”. AAA, aqui, é o acabamento pretendido demonstrado
-numa fatia — não um motor, um orçamento nem uma nota automática.
+Difícil de rebaixar: feel, áudio, pacing e receita de conteúdo fazem parte do
+recorte, não de um “polimento depois”. “AAA” aqui é só o piso de acabamento da
+slice — não tier de publisher, orçamento nem adjetivo de trailer. O alvo
+honesto com IA é AA / Triple-I nesse piso.
 
 Não é um motor. Não publica sozinho. Não mede diversão.
 
@@ -158,7 +159,8 @@ nem que o jogo é divertido. `experience_status` continua `not_assessed`.
 
 Não há engine comum, API universal de ações, avaliação automática de diversão
 ou publicação automática. “AAA” neste texto é piso de acabamento da slice, não
-certificado de mercado. Os jogos do [playground](https://games.alanicolas.com/)
+tier de publisher nem certificado de mercado. O alvo honesto com IA é
+AA / Triple-I nesse piso. Os jogos do [playground](https://games.alanicolas.com/)
 continuam com a própria engine; este harness não reivindica tê-los produzido.
 
 Os oito frameworks externos foram estudados em recortes; seus testes não foram

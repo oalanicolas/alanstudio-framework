@@ -21,9 +21,10 @@ turno, conforme
 Cubra as nove áreas com conteúdo ou lacunas explícitas, em documentos proporcionais
 ao projeto, e prossiga com o recorte solicitado. O usuário não precisa pedir essa base.
 
-Declare a **escala** no brief: jam/conto, produto ou AAA-shaped. A escala governa
-quantidade de artefatos e de conteúdo. O piso do verbo — decisão, feel, áudio da
-consequência — não é opcional em nenhuma delas.
+Declare a **escala** no brief: jam/conto, produto ou AA / Triple-I (piso de
+acabamento). A escala governa quantidade de artefatos e de conteúdo. O piso
+do verbo — decisão, feel sincronizado, áudio da consequência, pacing — não é
+opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
 
 ## Primeira sessão
 
@@ -49,10 +50,12 @@ A escada: fantasia → ciclo → feel → áudio → receita de conteúdo → ve
 slice no piso → produção sem diluir. PoC reduz incerteza; scaffold mostra
 estrutura; slice mostra experiência no acabamento pretendido.
 
-Em escala AAA-shaped, feel, mix, luz, animação e a receita do próximo item
-são requisitos do recorte, não “polimento depois”. Reduza quantidade de
-conteúdo; não reduza o piso aprovado. Se a slice não demonstra que outro
-trecho nasce no mesmo padrão, ainda não está pronta para ampliar.
+Em escala AA / Triple-I, feel, mix, luz, animação, pacing e a receita do
+próximo item são requisitos do recorte, não “polimento depois”. Reduza
+quantidade de conteúdo; não reduza o piso aprovado. Se a slice não demonstra
+repeatability — outro trecho nasce no mesmo padrão, sem heroísmo — ainda
+não está pronta para ampliar. Isso é piso de acabamento, não tier de
+publisher.
 
 Pontos de partida a **examinar**, não bases aprovadas automaticamente:
 
@@ -72,4 +75,5 @@ textuais não são uma garantia de execução. [Fonte](../references/sources.md)
 Concluir o pedido exige conteúdo distintivo, cenário real e QA. Scaffold ou
 cópia que inicia continua sendo ponto de partida. Esta receita não copia nem
 publica projetos por si. Não chame o recorte de AAA se as barras da escala
-não foram demonstradas na slice.
+— feel sincronizado, mix, pacing, repeatability — não foram demonstradas na
+slice.

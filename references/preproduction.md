@@ -24,8 +24,9 @@ Não reinicie a pré-produção. **Jogo pequeno / jam / conto:** um `game-design
 reunir brief, GDD, requisitos, decisões técnicas e experimentos. Use os templates
 como perguntas, sem duplicar a mesma informação em nove arquivos. **Produto:**
 separe os documentos que têm responsabilidade e ritmo de atualização distintos.
-**AAA-shaped:** os mesmos artefatos; feel, áudio, luz, animação e receita de
-conteúdo entram como requisitos do recorte, não como fase posterior de polimento.
+**AA / Triple-I (piso de acabamento):** os mesmos artefatos; feel, áudio, luz,
+animação, pacing e receita de conteúdo entram como requisitos do recorte, não
+como fase posterior de polimento. Não é tier de publisher.
 Linke fontes canônicas e mantenha IDs estáveis.
 
 A escala vive no brief. Ela muda quantidade de documentos e de conteúdo, não o
@@ -135,12 +136,16 @@ acabamento pretendido. Demonstra a experiência e a capacidade de produzir mais
 conteúdo nesse padrão. Entrada: recorte e decisões de design/implementação.
 
 **Pronto para ampliar:** cenário jogável e repetível, integrações verificadas,
-comparação em movimento e regressões resolvidas. Feel do verbo e mix da
-consequência fazem parte do acabamento, não de um recorte futuro. A slice
-precisa demonstrar que outro trecho nasce no mesmo padrão (receita de conteúdo,
-custo observado). Cobertura parcial e avaliação do agente permanecem distintas
-de aprovação do usuário. Placeholders podem servir a uma PoC; não certificam o
-acabamento da vertical slice. Scaffold com HUD bonito também não.
+comparação em movimento e regressões resolvidas. Feel do verbo (sincronizado
+no impacto), mix e pacing do trecho fazem parte do acabamento, não de um
+recorte futuro. A slice precisa demonstrar **repeatability**: outro trecho
+nasce no mesmo padrão, pela receita, sem intervenção excepcional, com custo
+observado. Quatro eixos: valor para o jogador, viabilidade técnica, produção
+repetível, clareza do produto. Forte num eixo não compensa vermelho noutro.
+Cobertura parcial e avaliação do agente permanecem distintas de aprovação do
+usuário. Placeholders podem servir a uma PoC; não certificam o acabamento da
+vertical slice. Scaffold com HUD bonito, ou slice “hand-tuned” que ignora o
+pipeline, também não.
 [Template](../assets/templates/vertical-slice.md).
 
 ### `mvp` — Minimum Viable Product

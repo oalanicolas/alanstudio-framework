@@ -6,9 +6,10 @@ description: Criar, evoluir, depurar e verificar jogos com IA, partindo do acerv
 # Game Dev
 
 Use em qualquer engine. O objetivo é uma experiência jogável no **acabamento
-pretendido**, com evidência — fácil de começar, difícil de rebaixar. AAA aqui
-é o piso do recorte (verbo, feel, áudio, mundo, receita de conteúdo), não um
-motor nem uma nota automática.
+pretendido**, com evidência — fácil de começar, difícil de rebaixar. “AAA”
+neste framework é só o piso da slice (verbo, feel sincronizado, áudio, pacing,
+mundo, receita repetível). Não é tier de publisher, orçamento nem adjetivo
+de trailer. O alvo honesto com IA é AA / Triple-I nesse piso.
 
 Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`,
 `feel`, `network`, `architecture`.
@@ -30,8 +31,10 @@ Não gere nove templates. Não peça o usuário para conhecer o harness.
 5. Compare em movimento. Diga uma próxima ação com prova. Título e cores
    novos não demonstram experiência nova.
 
-Escala no brief: jam/conto, produto ou AAA-shaped. A escala muda quantidade
-de documentos, não o piso do verbo. Detalhe: [criar](recipes/create.md).
+Escala no brief: jam/conto, produto ou AA / Triple-I (piso de acabamento).
+A escala muda quantidade de documentos, não o piso do verbo. Não chame o
+build de AAA. Detalhe: [criar](recipes/create.md),
+[ambição](references/ambition.md).
 
 ## Jogo existente e continuidade
 
@@ -87,8 +90,9 @@ registre decisões e hipóteses descartadas, cumpra `continuity.before_close`
 e `documentation.before_close`. Não promova scaffold a slice nem slice a
 jogo concluído. Não publique nem delegue sem autorização aplicável.
 
-Não chame o recorte de AAA se a slice não demonstra as barras da escala
-escolhida. [Ambição](references/ambition.md).
+Não chame o recorte de AAA — nem de “quase AAA” — se a slice não demonstra
+as barras da escala (incluindo pacing, sincronia do impacto e repeatability).
+[Ambição](references/ambition.md).
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

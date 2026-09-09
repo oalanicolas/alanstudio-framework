@@ -21,8 +21,9 @@ Fontes canônicas: [GDD, PRD, TDD e experimentos anteriores].
 - Preservações: [qualidades aprovadas que precisam sobreviver ao recorte].
 - Receita de conteúdo: [o próximo item da família nasce como? custo observado].
 - Reuso/adaptação/criação: [fontes e consumidores; o que de fato foi produzido].
-- Escala declarada: [jam / produto / AAA-shaped]. Scaffold ou HUD isolado não
-  certificam a slice.
+- Escala declarada: [jam / produto / AA–Triple-I]. Scaffold ou HUD isolado não
+  certificam a slice. “AAA” só após as barras abaixo, e mesmo assim significa
+  piso de acabamento, não tier de publisher.
 
 ## Prova de integração e experiência
 
@@ -32,9 +33,19 @@ Fontes canônicas: [GDD, PRD, TDD e experimentos anteriores].
 - Resultados e evidências: não executados.
 - Regressões/pendências: [o que impede avaliar o trecho como representativo].
 
+## Repeatability
+
+- Outro trecho nasce pela receita, sem heroísmo? [sim / não / lacuna; custo observado].
+- Valor para o jogador: [o ciclo ainda vale a segunda sessão? evidência].
+- Viabilidade técnica: [pacing, input, build/export do trecho; limites].
+- Produção repetível: [pipeline real usado, não atalho da slice].
+- Clareza do produto: [a pessoa entende a fantasia sem o brief?].
+- Vermelho num eixo não é compensado por verde noutro.
+
 ## Decisão de ampliar
 
 - O recorte demonstra o padrão de experiência/acabamento pretendido? [evidência e autor do julgamento].
+- Feel/áudio sincronizados no impacto e pacing estável no trecho? [observação].
 - O processo para produzir outro trecho está compreendido? [custo observado e dificuldade].
 - Limites: [o que esse recorte ainda não prova sobre o jogo completo].
 - Próxima fatia: [resultado, requisitos, dependências e prova].

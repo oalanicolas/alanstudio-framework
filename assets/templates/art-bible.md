@@ -60,4 +60,5 @@ existentes. Jogo sem HUD registra essa escolha, sem inventar biblioteca de UI.]
 - Lacunas: [visual, som, feel, mix, acesso, origem ou consumo ainda não demonstrados].
 - Decisão REUSE/ADAPT/CREATE e próximo passo: [fontes, motivo e alcance].
 - Performance: [custo observado e hipótese de eficiência; sem degradar o piso aprovado].
-- Escala: [jam / produto / AAA-shaped; a slice precisa demonstrar o piso escolhido].
+- Escala: [jam / produto / AA–Triple-I; a slice precisa demonstrar o piso escolhido].
+  “AAA” não é adjetivo do build.

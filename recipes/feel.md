@@ -3,9 +3,11 @@
 Entrada: verbo central, referência de sensação (aprovada ou proposta) e a
 diferença percebida entre intenção e resposta atual.
 
-Feel é o intervalo entre o input e a certeza de que o mundo respondeu. AAA
-e jam se separam aqui com mais frequência do que na escolha da engine. Sem
-feel, o ciclo pode estar correto e o jogo parecer vazio.
+Feel é o intervalo entre o input e a certeza de que o mundo respondeu.
+Swink: controle em tempo real, espaço simulado, polish. Jam e piso de
+acabamento se separam aqui com mais frequência do que na escolha da engine.
+Sem feel, o ciclo pode estar correto e o jogo parecer vazio. Sem sincronia,
+o juice vira ruído.
 
 Leia o verbo no GDD, os tokens de tempo/câmera/áudio no
 [design system](../references/game-design-system.md) e o
@@ -44,7 +46,9 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
 5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.
    Duração proporcional à importância; impacto de coleta não pode parecer
-   golpe mortal, e o contrário também.
+   golpe mortal, e o contrário também. Visual, áudio e pause de hit disparam
+   no **mesmo frame** do contato. Alguns milissegundos de atraso fazem o
+   cérebro registrar dois eventos, não um peso.
 6. **Câmera** — punch, lookahead, aterrissagem, oclusão, recuperação. A
    câmera confirma a ação sem enjoar nem esconder o próximo risco.
 7. **Áudio** — ataque, corpo, impacto, cauda e silêncio. Sem camada que
@@ -88,7 +92,9 @@ Evite:
 
 A qualidade aprovada é o piso. Não corte feel para ganhar FPS; investigue
 implementação mais barata que preserve a percepção (menos overdraw, mesmo
-punch).
+punch). Antes de negociar fidelidade gráfica, observe latência de input e
+spikes de frametime no mesmo trecho: stutter quebra o feel com mais força
+do que um preset mais baixo.
 
 ## 5. Provar em movimento
 
@@ -102,6 +108,7 @@ esperada, condição equivalente e julgamento (agente ou pessoa, sem
 confundir). Sem referência aprovada, registre que o piso ainda é proposta.
 
 Fontes de método: [qualidade](../references/quality.md),
-[ambição](../references/ambition.md), Art Bible do jogo. Estudos de
-câmera/tempo no laboratório, quando existirem, são precedentes — não um
+[ambição](../references/ambition.md), Art Bible do jogo, Swink / *Juice it
+or lose it* no [mapa](../references/sources.md#aaa-tier-e-piso-09). Estudos
+de câmera/tempo no laboratório, quando existirem, são precedentes — não um
 kit de juice obrigatório.
