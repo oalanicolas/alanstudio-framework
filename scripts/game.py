@@ -219,16 +219,26 @@ FOCUS_DIMENSIONS = {
 # ausência explícita, que já traz a própria saída. Nos demais, dispensar é decisão
 # de quem assina, com motivo e autor, em vez de eu decidir por todo mundo o que é
 # negociável.
+#
+# O quarto campo é `kind`, e vem de fora: Cooper separa `readiness` ("o trabalho
+# está feito?", falhar devolve para a etapa anterior) de `must_meet` ("isto ainda
+# vale o que custa?", falhar mata o escopo). Os dez gates nasceram todos readiness,
+# e a pergunta de valor existia só como a saída `abandonar`, que dependia de
+# alguém levantá-la. Os três `must_meet` abaixo a fazem: `close.decision` já estava
+# na prosa do ciclo, e os dois de custo entram nos dois gates que comprometem
+# produção — a procedência deles está em references/gates-research.md, §2.2.
+# Um `must_meet` não é dispensável, porque um "No" decide sozinho e não há
+# compensação por outro critério estar ótimo.
 GATES = {
     "design": {
         "asks": "desenhar e experimentar",
         "stage": "brief",
         "readiness": "Pronto para desenhar/experimentar",
         "criteria": (
-            ("match", "Uma partida curta pode ser descrita do início ao fim", True),
-            ("feeling", "A sensação pretendida está escrita, não implícita", True),
-            ("uncertainty", "A maior incerteza a aprender primeiro está nomeada", True),
-            ("reference_origin", "Cada referência visual tem origem e autoridade declaradas, ou ausência explícita", False),
+            ("match", "Uma partida curta pode ser descrita do início ao fim", True, "readiness"),
+            ("feeling", "A sensação pretendida está escrita, não implícita", True, "readiness"),
+            ("uncertainty", "A maior incerteza a aprender primeiro está nomeada", True, "readiness"),
+            ("reference_origin", "Cada referência visual tem origem e autoridade declaradas, ou ausência explícita", False, "readiness"),
         ),
     },
     "test": {
@@ -236,9 +246,9 @@ GATES = {
         "stage": "mda",
         "readiness": "Pronto para testar",
         "criteria": (
-            ("chain", "Cada hipótese liga regra → comportamento → experiência", True),
-            ("distinguishing", "Existe uma situação observável que distingue a hipótese da alternativa", True),
-            ("refutation", "A observação capaz de contradizer a hipótese está definida", True),
+            ("chain", "Cada hipótese liga regra → comportamento → experiência", True, "readiness"),
+            ("distinguishing", "Existe uma situação observável que distingue a hipótese da alternativa", True, "readiness"),
+            ("refutation", "A observação capaz de contradizer a hipótese está definida", True, "readiness"),
         ),
     },
     "prototype": {
@@ -246,9 +256,9 @@ GATES = {
         "stage": "gdd",
         "readiness": "Pronto para prototipar",
         "criteria": (
-            ("verbs", "O que o jogador faz, quais alternativas tem e o que acontece está descrito", True),
-            ("end_and_restart", "Como a partida termina e reinicia está descrito", True),
-            ("pillars", "Cada pilar resolve uma escolha concreta, não um adjetivo", True),
+            ("verbs", "O que o jogador faz, quais alternativas tem e o que acontece está descrito", True, "readiness"),
+            ("end_and_restart", "Como a partida termina e reinicia está descrito", True, "readiness"),
+            ("pillars", "Cada pilar resolve uma escolha concreta, não um adjetivo", True, "readiness"),
         ),
     },
     "close": {
@@ -256,10 +266,12 @@ GATES = {
         "stage": "poc",
         "readiness": "Pronto para encerrar",
         "criteria": (
-            ("verdict", "O resultado distingue a hipótese, ou o motivo da inconclusão está escrito", True),
-            ("conditions", "As condições da observação estão registradas", True),
-            ("decision", "A decisão está registrada: continuar, ajustar ou abandonar", True),
-            ("effort_limit", "O limite de esforço foi definido antes do experimento", True),
+            ("verdict", "O resultado distingue a hipótese, ou o motivo da inconclusão está escrito", True, "readiness"),
+            ("conditions", "As condições da observação estão registradas", True, "readiness"),
+            # A pergunta de valor que o ciclo já fazia num lugar só. Dispensá-la
+            # seria dispensar a decisão, isto é, seguir por inércia.
+            ("decision", "A decisão está registrada: continuar, ajustar ou abandonar", False, "must_meet"),
+            ("effort_limit", "O limite de esforço foi definido antes do experimento", True, "readiness"),
         ),
     },
     "implement": {
@@ -267,9 +279,10 @@ GATES = {
         "stage": "prd",
         "readiness": "Pronto para implementar o recorte",
         "criteria": (
-            ("acceptance", "Cada requisito necessário tem condição, resultado esperado e método de verificação", True),
-            ("dependencies", "Dependências e lacunas que podem mudar o escopo estão resolvidas ou delimitam um experimento", True),
-            ("user_requirements", "Nenhuma exigência explícita do usuário foi removida por prioridade", False),
+            ("acceptance", "Cada requisito necessário tem condição, resultado esperado e método de verificação", True, "readiness"),
+            ("dependencies", "Dependências e lacunas que podem mudar o escopo estão resolvidas ou delimitam um experimento", True, "readiness"),
+            ("user_requirements", "Nenhuma exigência explícita do usuário foi removida por prioridade", False, "readiness"),
+            ("worth_building", "O que custa construir o recorte está estimado, e o recorte ainda vale esse custo", False, "must_meet"),
         ),
     },
     "build": {
@@ -277,9 +290,9 @@ GATES = {
         "stage": "tdd",
         "readiness": "Pronto para construir",
         "criteria": (
-            ("consumers", "Caminhos canônicos e consumidores afetados foram lidos", True),
-            ("coverage", "As decisões cobrem os requisitos do recorte", True),
-            ("risk_to_poc", "Risco sem prova virou PoC explícita", True),
+            ("consumers", "Caminhos canônicos e consumidores afetados foram lidos", True, "readiness"),
+            ("coverage", "As decisões cobrem os requisitos do recorte", True, "readiness"),
+            ("risk_to_poc", "Risco sem prova virou PoC explícita", True, "readiness"),
         ),
     },
     "scale": {
@@ -287,11 +300,12 @@ GATES = {
         "stage": "vertical-slice",
         "readiness": "Pronto para ampliar",
         "criteria": (
-            ("repeatable", "O cenário é jogável e repetível", True),
-            ("integrations", "As integrações foram verificadas com recibo", True),
-            ("in_motion", "A comparação foi feita em movimento, não em quadro estático", True),
-            ("regressions", "As regressões encontradas foram resolvidas", True),
-            ("no_placeholder", "Nenhum placeholder está contado como acabamento", True),
+            ("repeatable", "O cenário é jogável e repetível", True, "readiness"),
+            ("integrations", "As integrações foram verificadas com recibo", True, "readiness"),
+            ("in_motion", "A comparação foi feita em movimento, não em quadro estático", True, "readiness"),
+            ("regressions", "As regressões encontradas foram resolvidas", True, "readiness"),
+            ("no_placeholder", "Nenhum placeholder está contado como acabamento", True, "readiness"),
+            ("worth_scaling", "O que custa ampliar está estimado, e a fatia pronta justifica pagar esse custo", False, "must_meet"),
         ),
     },
     "evaluate": {
@@ -299,10 +313,10 @@ GATES = {
         "stage": "mvp",
         "readiness": "Pronto para avaliar a entrega",
         "criteria": (
-            ("full_cycle", "O ciclo do jogo está completo, do início ao fim", True),
-            ("essentials", "Os requisitos essenciais estão atendidos", True),
-            ("access", "Existe acesso ao jogo para quem vai observar", True),
-            ("observation", "O método de observação está definido", True),
+            ("full_cycle", "O ciclo do jogo está completo, do início ao fim", True, "readiness"),
+            ("essentials", "Os requisitos essenciais estão atendidos", True, "readiness"),
+            ("access", "Existe acesso ao jogo para quem vai observar", True, "readiness"),
+            ("observation", "O método de observação está definido", True, "readiness"),
         ),
     },
     "conclude": {
@@ -310,10 +324,10 @@ GATES = {
         "stage": "qa",
         "readiness": "Pronto para concluir o escopo",
         "criteria": (
-            ("evidence", "Cada critério aplicável tem evidência correspondente", True),
-            ("retested", "Falhas relevantes foram resolvidas e retestadas", True),
-            ("declared_gaps", "As lacunas restantes estão explícitas", True),
-            ("human_vs_agent", "Teste com pessoa não está registrado onde houve só simulação ou avaliação do agente", False),
+            ("evidence", "Cada critério aplicável tem evidência correspondente", True, "readiness"),
+            ("retested", "Falhas relevantes foram resolvidas e retestadas", True, "readiness"),
+            ("declared_gaps", "As lacunas restantes estão explícitas", True, "readiness"),
+            ("human_vs_agent", "Teste com pessoa não está registrado onde houve só simulação ou avaliação do agente", False, "readiness"),
         ),
     },
     "deliver": {
@@ -321,17 +335,23 @@ GATES = {
         "stage": "release",
         "readiness": "Pronto para entregar",
         "criteria": (
-            ("runbook", "Outra pessoa constrói a partir do runbook", True),
-            ("foreign_machine", "O artefato roda em máquina que não é a de desenvolvimento", True),
-            ("save_migration", "Save migra da versão anterior", True),
-            # A prosa é explícita: licença desconhecida bloqueia a entrega. Esse é o
-            # único critério que o framework declara como não dispensável.
-            ("licensing", "Nenhum recurso embarcado tem licença desconhecida", False),
-            ("rollback", "Existe procedimento de reversão", True),
+            ("runbook", "Outra pessoa constrói a partir do runbook", True, "readiness"),
+            ("foreign_machine", "O artefato roda em máquina que não é a de desenvolvimento", True, "readiness"),
+            ("save_migration", "Save migra da versão anterior", True, "readiness"),
+            # A prosa é explícita: licença desconhecida bloqueia a entrega.
+            ("licensing", "Nenhum recurso embarcado tem licença desconhecida", False, "readiness"),
+            ("rollback", "Existe procedimento de reversão", True, "readiness"),
         ),
     },
 }
-GATE_STATES = ("met", "unmet", "waived")
+# `out_of_scope` não é dispensa e existe para não ser confundida com ela: dispensar
+# é deixar de cumprir o que incide, e um critério que nunca incidiu não tem o que
+# dispensar. Contar os dois juntos inflaria a conta de dispensas justamente onde
+# ela deveria doer. A forma vem dos XAGs, que decidem aplicabilidade com perguntas
+# de escopo antes de cobrar qualquer coisa, e da TRC histórica, que marcava seção
+# como "Applicable" — references/gates-research.md, §3.4 e §4.2.
+GATE_STATES = ("met", "unmet", "waived", "out_of_scope")
+GATE_KINDS = ("readiness", "must_meet")
 
 STAGE_TIERS = {
     "brief": "prototype", "mda": "prototype", "poc": "prototype",
@@ -628,17 +648,24 @@ def gate_declaration(project):
             if not known_gate:
                 problems.append({"source": source, "reason": "unknown_gate", "found": gate})
                 continue
-            keys = [key for key, _, _ in GATES[gate]["criteria"]]
+            keys = [item[0] for item in GATES[gate]["criteria"]]
             if criterion not in keys:
                 problems.append({"source": source, "reason": "unknown_criterion", "gate": gate, "found": criterion})
                 continue
             if not known_state:
                 problems.append({"source": source, "reason": "unknown_state", "gate": gate, "found": state})
                 continue
-            waivable = dict((key, allowed) for key, _, allowed in GATES[gate]["criteria"])[criterion]
+            waivable = dict((item[0], item[2]) for item in GATES[gate]["criteria"])[criterion]
             if state == "waived" and not waivable:
                 problems.append({
                     "source": source, "reason": "not_waivable", "gate": gate, "found": criterion,
+                })
+                continue
+            # Um critério que a prosa não deixa dispensar também não sai da conta
+            # por escopo: seria a mesma remoção com outro nome.
+            if state == "out_of_scope" and not waivable:
+                problems.append({
+                    "source": source, "reason": "always_applies", "gate": gate, "found": criterion,
                 })
                 continue
             # Dispensa sem motivo escrito é dispensa sem autor: o que sobra é um
@@ -646,13 +673,18 @@ def gate_declaration(project):
             if state == "waived" and not note:
                 problems.append({"source": source, "reason": "waiver_without_reason", "gate": gate, "found": criterion})
                 continue
+            if state == "out_of_scope" and not note:
+                problems.append({"source": source, "reason": "scope_without_reason", "gate": gate, "found": criterion})
+                continue
             if state == "met" and not note:
                 problems.append({"source": source, "reason": "met_without_evidence", "gate": gate, "found": criterion})
                 continue
             previous = declared.setdefault(gate, {}).get(criterion)
             # Duas linhas discordantes não se resolvem por precedência, como na
-            # barra: a mais fraca vale, e o conflito fica visível.
-            rank = {"unmet": 0, "waived": 1, "met": 2}
+            # barra: a mais fraca vale, e o conflito fica visível. `out_of_scope` é
+            # a mais permissiva das quatro, porque tira o critério da conta em vez
+            # de responder a ele, então qualquer linha que discorde dela prevalece.
+            rank = {"unmet": 0, "waived": 1, "met": 2, "out_of_scope": 3}
             entry = {"state": state, "note": note or None, "source": source}
             if previous is None or rank[state] < rank[previous["state"]]:
                 declared[gate][criterion] = entry
@@ -674,12 +706,13 @@ def gate_reading(project, gate=None):
         spec = GATES[key]
         rows = declaration["declared"].get(key, {})
         criteria = []
-        for criterion, label, waivable in spec["criteria"]:
+        for criterion, label, waivable, kind in spec["criteria"]:
             row = rows.get(criterion)
             criteria.append({
                 "key": criterion,
                 "criterion": label,
                 "waivable": waivable,
+                "kind": kind,
                 "state": row["state"] if row else "undeclared",
                 "evidence": row["note"] if row else None,
                 "source": row["source"] if row else None,
@@ -694,6 +727,14 @@ def gate_reading(project, gate=None):
             "criteria": criteria,
             "pending": pending,
             "waived": waived,
+            "out_of_scope": [item["key"] for item in criteria if item["state"] == "out_of_scope"],
+            # A pergunta de valor separada da pergunta de trabalho: pendência de
+            # readiness devolve para a etapa anterior, pendência de must-meet é
+            # candidata a abandono. Quem responde não é o mesmo, nem a resposta.
+            "value_pending": [
+                item["key"] for item in criteria
+                if item["kind"] == "must_meet" and item["state"] in ("undeclared", "unmet")
+            ],
             # Não é "passou". É o que a declaração do projeto sustenta hoje.
             "held_by_declaration": not pending,
         })
@@ -708,14 +749,17 @@ def gate_reading(project, gate=None):
         "guide": str(FRAMEWORK / "references/gates.md"),
         "rule": (
             "Um gate recusa avanço enquanto um critério estiver pendente. Passar, cortar escopo e abandonar "
-            "são as três saídas legítimas — abandonar não é falha do gate, é uma das respostas dele."
+            "são as três saídas legítimas — abandonar não é falha do gate, é uma das respostas dele. "
+            "Critério de `readiness` pendente diz que falta trabalho; `must_meet` pendente pergunta se "
+            "isto ainda vale o que custa, e é a essa pergunta que abandonar responde."
         ),
         "scope": (
             "Lê a declaração do próprio projeto e confere só a forma dela, relatando em `problems`: gate "
-            "desconhecido, critério que não pertence ao gate, estado fora de met/unmet/waived, dispensa de "
-            "critério que a prosa não deixa dispensar, dispensa ou met sem nada escrito ao lado, e duas linhas "
-            "discordantes. Não observa o jogo, não executa nada e **não concede passagem**: "
-            "`held_by_declaration` diz que o projeto afirma cumprir, não que alguém conferiu."
+            "desconhecido, critério que não pertence ao gate, estado fora de met/unmet/waived/out_of_scope, "
+            "dispensa ou saída de escopo de critério que a prosa não deixa dispensar, met/waived/out_of_scope "
+            "sem nada escrito ao lado, e duas linhas discordantes. Não observa o jogo, não executa nada e "
+            "**não concede passagem**: `held_by_declaration` diz que o projeto afirma cumprir, não que alguém "
+            "conferiu."
         ),
     }
 
@@ -1666,8 +1710,8 @@ def next_step(project, focus="create", studies_root=None):
             + ", ".join(f"{item['source']} ({item['reason']})" for item in gates["problems"][:4]),
             "Linha malformada não entra na leitura, e o critério que ela pretendia declarar continua pendente. "
             "Dispensa sem motivo escrito é critério apagado da lista, que é justamente o que um gate impede.",
-            "Cada linha nomeia um dos dez gates, um critério dele, um estado entre met/unmet/waived e o que "
-            "sustenta o estado.",
+            "Cada linha nomeia um dos dez gates, um critério dele, um estado entre "
+            "met/unmet/waived/out_of_scope e o que sustenta o estado.",
             [harness_command("gate", project)],
             "gates.problems",
         )
@@ -1676,20 +1720,36 @@ def next_step(project, focus="create", studies_root=None):
         live = [item for item in reading["gates"] if item["key"] in gates["declared"]]
         blocked = next((item for item in live if item["pending"]), None)
         if blocked:
-            first = blocked["pending"][0]
-            criterion = next(item for item in blocked["criteria"] if item["key"] == first)
-            propose(
-                f"Resolver o critério `{first}` do gate `{blocked['key']}`: {criterion['criterion']}",
-                f"O gate `{blocked['key']}` pede {blocked['asks']} e recusa enquanto "
-                f"{len(blocked['pending'])} critério(s) estiver(em) pendente(s). "
-                + ("Este não é dispensável: a etapa não deixa terceira opção."
-                   if not criterion["waivable"] else
-                   "Cortar escopo e abandonar também são saídas legítimas deste gate."),
-                f"A linha do critério sai de `undeclared`/`unmet` com o que sustenta o estado ao lado, "
-                f"ou é dispensada com motivo e autor.",
-                [harness_command("gate", project, "--gate", blocked["key"])],
-                "gates.pending",
-            )
+            criteria = dict((item["key"], item) for item in blocked["criteria"])
+            # A pergunta de valor vem antes da de trabalho quando as duas estão
+            # abertas no mesmo gate: terminar o que talvez não devesse existir é o
+            # desperdício que um gate existe para interromper.
+            if blocked["value_pending"]:
+                first = blocked["value_pending"][0]
+                propose(
+                    f"Responder `{first}` no gate `{blocked['key']}`: {criteria[first]['criterion']}",
+                    "Este critério não pergunta se o trabalho está feito, e sim se ainda vale o que custa. "
+                    "Pendência aqui não se resolve trabalhando mais, e ele não é dispensável: as saídas são "
+                    "passar com a estimativa escrita, cortar escopo até caber, ou abandonar.",
+                    "O custo está estimado por escrito, e a linha do critério diz qual das três saídas foi "
+                    "escolhida, com autor.",
+                    [harness_command("gate", project, "--gate", blocked["key"])],
+                    "gates.value",
+                )
+            else:
+                first = blocked["pending"][0]
+                propose(
+                    f"Resolver o critério `{first}` do gate `{blocked['key']}`: {criteria[first]['criterion']}",
+                    f"O gate `{blocked['key']}` pede {blocked['asks']} e recusa enquanto "
+                    f"{len(blocked['pending'])} critério(s) estiver(em) pendente(s). "
+                    + ("Este não é dispensável: a etapa não deixa terceira opção."
+                       if not criteria[first]["waivable"] else
+                       "Cortar escopo e abandonar também são saídas legítimas deste gate."),
+                    "A linha do critério sai de `undeclared`/`unmet` com o que sustenta o estado ao lado, "
+                    "ou é dispensada com motivo e autor.",
+                    [harness_command("gate", project, "--gate", blocked["key"])],
+                    "gates.pending",
+                )
 
     bar = payload["production_bar"]
     dimensions = [item["key"] for item in bar["dimensions"]]

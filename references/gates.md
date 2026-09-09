@@ -33,6 +33,39 @@ A ordem é a do ciclo, não alfabética, porque um gate guarda a permissão segu
 e a sequência é o que dá sentido a “o próximo”. O ciclo tem retorno: reprovar em
 `scale` devolve para `build`, e isso é uso normal, não fracasso do processo.
 
+## Dois tipos de critério, e o terceiro que não está aqui
+
+Os dez gates nasceram todos do mesmo tipo de pergunta: *o trabalho está feito?*
+Isso não é um gate — é uma lista de entrega com nome pomposo. A distinção vem de
+Robert G. Cooper, autor do método stage-gate, e está levantada com fonte primária
+em [gates-research.md](gates-research.md), §2.2. Ele separa **três**:
+
+| Tipo | Pergunta | Falhar significa |
+| --- | --- | --- |
+| `readiness` | O trabalho está feito? | Voltar para a etapa anterior e continuar |
+| `must_meet` | Isto ainda vale o que custa? | Matar o escopo |
+| *should-meet* | Este projeto é melhor que aquele? | Nada: pontua, ordena, não bloqueia |
+
+Colapsar os três é o erro estrutural típico. Aqui, cada critério declara o seu
+tipo, e três são `must_meet`:
+
+| Gate · critério | De onde vem |
+| --- | --- |
+| `close` · `decision` | Da prosa do ciclo: a `poc` fecha com “continuar, ajustar ou abandonar” |
+| `implement` · `worth_building` | De Cooper — não estava na prosa, e está declarado como acréscimo |
+| `scale` · `worth_scaling` | De Cooper, no gate que compromete a produção inteira |
+
+Um `must_meet` **não é dispensável**: em Cooper, um único “No” decide, sem média e
+sem compensação por outro critério estar ótimo. E `next` pergunta o valor antes de
+pedir mais trabalho no mesmo gate — terminar o que talvez não devesse existir é o
+desperdício que um gate existe para interromper.
+
+O terceiro tipo, *should-meet*, **não está implementado**, e por um motivo:
+scorecard existe para ordenar projetos entre si, e transformar um should-meet em
+bloqueio é erro de categoria. Num laboratório com vários jogos isso faria sentido
+algum dia; hoje não há, e um gate a mais sem função seria o que Cooper chama de
+burocracia — trabalho que não agrega valor.
+
 ## As três saídas
 
 Um gate com critério pendente tem três respostas legítimas, e a terceira é a que
@@ -61,7 +94,9 @@ classe — mas ele exige **motivo escrito**. Dispensa sem motivo é o critério
 apagado da lista, que é justamente o que um gate existe para impedir.
 
 Quatro critérios não são dispensáveis, e não por escolha do harness: a prosa da
-etapa não deixa terceira opção.
+etapa não deixa terceira opção. São quatro, e não sete: os três `must_meet` também
+recusam dispensa, mas por outro motivo — não é a prosa que os fecha, é o que um
+must-meet é.
 
 | Gate · critério | O que a etapa diz |
 | --- | --- |
@@ -73,6 +108,24 @@ etapa não deixa terceira opção.
 Tentar dispensar um desses sai como problema de forma, e o critério volta a
 contar como pendente.
 
+## Fora de escopo não é dispensa
+
+Dispensar é deixar de cumprir o que incide. Um critério que **nunca incidiu** não
+tem o que dispensar — um jogo sem save não “dispensa” a migração de save. Sem
+estado próprio, o segundo caso virava o primeiro, e a conta de dispensas, que
+existe justamente para doer, inflava com linhas inócuas.
+
+`out_of_scope` é esse estado. Ele exige motivo escrito pelo mesmo motivo que a
+dispensa exige, sai contado em `out_of_scope` e não em `waived`, e é recusado nos
+sete critérios que não se dispensam: alegar que não incide é a mesma remoção com
+outro nome. Numa discordância entre documentos ele é o mais permissivo dos
+quatro estados — qualquer linha que discorde dele prevalece, porque ele tira o
+critério da conta em vez de responder a ele.
+
+A forma vem de fora: os XAGs decidem aplicabilidade com perguntas de escopo antes
+de cobrar qualquer coisa, e a TRC histórica marcava seção como “Applicable”
+([gates-research.md](gates-research.md), §3.4 e §4.2). Escopo antes de critério.
+
 ## Como declarar, para o harness ler
 
 Uma tabela em `README.md`, `docs/qa.md`, `docs/devlog.md`, `docs/release.md` ou
@@ -83,10 +136,11 @@ Uma tabela em `README.md`, `docs/qa.md`, `docs/devlog.md`, `docs/release.md` ou
 | --- | --- | --- | --- |
 | `deliver` | `runbook` | `met` | Ana construiu do zero em 2026-09-02, log em /tmp/qa-07 |
 | `deliver` | `foreign_machine` | `unmet` | só rodou na máquina de dev |
-| `deliver` | `save_migration` | `waived` | sem versão anterior publicada — Alan, 2026-09-05 |
+| `deliver` | `save_migration` | `out_of_scope` | jogo sem save — Alan, 2026-09-05 |
+| `deliver` | `rollback` | `waived` | primeira publicação, nada a reverter — Alan, 2026-09-05 |
 ```
 
-Estados: `met`, `unmet`, `waived`. A última coluna é o que sustenta o estado —
+Estados: `met`, `unmet`, `waived`, `out_of_scope`. A última coluna é o que sustenta o estado —
 quem observou, quando, e onde está o recibo. `met` sem nada escrito ao lado é
 recusado, pelo mesmo motivo que a dispensa sem motivo: um estado sem lastro é
 uma linha que só serve para fechar a tabela.
@@ -97,16 +151,17 @@ Duas linhas discordantes sobre o mesmo critério não se resolvem por precedênc
 o estado mais fraco vale e o conflito fica listado.
 
 `next` propõe resolver o critério pendente do primeiro gate **declarado** que
-tenha algum. Um gate que o projeto não mencionou não está sendo pedido, e listar
-os dez num projeto que declarou um transformaria a recusa em ruído.
+tenha algum, e a pergunta de valor daquele gate vem antes da de trabalho. Um gate
+que o projeto não mencionou não está sendo pedido, e listar os dez num projeto que
+declarou um transformaria a recusa em ruído.
 
 ## Limites
 
 O harness confere a **forma** da declaração e relata em `problems`: gate
-desconhecido, critério que não pertence ao gate, estado fora dos três, dispensa
-do que não se dispensa, `met` ou `waived` sem nada escrito, e linhas
-discordantes. Ele não observa o jogo, não executa nada e **não concede
-passagem**.
+desconhecido, critério que não pertence ao gate, estado fora dos quatro, dispensa
+ou saída de escopo do que sempre incide, `met`/`waived`/`out_of_scope` sem nada
+escrito, e linhas discordantes. Ele não observa o jogo, não executa nada e **não
+concede passagem**.
 
 O campo se chama `held_by_declaration`, não `passed`, de propósito: ele diz que o
 projeto afirma cumprir todos os critérios, não que alguém conferiu. Uma tabela
@@ -117,3 +172,19 @@ que for comando.
 Um gate cumprido não diz que o jogo é bom. Ele diz que uma condição de avanço
 específica tem lastro declarado. Acabamento é a barra; diversão não é nem uma
 coisa nem outra, e nada neste repositório mede isso.
+
+E o mais importante: **não há evidência de que gates melhorem o jogo entregue.**
+O levantamento em [gates-research.md](gates-research.md) §6.22 procurou e não
+achou avaliação empírica nenhuma, para jogos. A prática é difundida e, em
+plataforma, contratualmente obrigatória; o Google diz textualmente que até o elo
+entre cobertura de teste e defeitos é “an open research question”. Disciplina
+explícita é a alegação que se sustenta aqui. Eficácia comprovada, não.
+
+Duas coisas que a literatura oferece e estes gates ainda **não** têm, nomeadas
+para não passarem por decisão: em Cooper, os entregáveis de um gate são fixados
+na saída do gate anterior, para que a expectativa não seja renegociada na hora da
+avaliação — aqui os critérios são fixos por etapa, e nunca há o momento de
+combinar o que este projeto específico vai precisar trazer. E a coluna de
+evidência não distingue “lastro é log de comando” de “lastro é alguém que olhou”,
+embora a diferença seja exatamente a que a Microsoft marca com asterisco nos
+próprios requisitos.

@@ -40,6 +40,44 @@ não “nada relevante existe”. Preencher esses focos exigiria novos recortes 
 mesmo rigor; inventar citações para emparelhar a lista seria o oposto do que este
 mapa existe para fazer.
 
+## Critérios observáveis (pesquisa externa, 0.9)
+
+O levantamento em
+[observable-criteria-research.md](observable-criteria-research.md) é de outra
+natureza e **não preenche os focos vazios acima**. Ele não é extração de código:
+é busca por fontes publicadas — normas, documentação de fornecedor, artigos
+revisados por pares, código-fonte de jogos publicados — que sustentem números
+para game feel, consistência de arte, orçamento de performance, legibilidade de
+interface e metodologia de playtest.
+
+O resultado é assimétrico, e isso está dito lá dentro: safe area de TV, contraste
+e tamanho de fonte têm norma ou documentação de plataforma atrás; orçamento de
+draw calls, tamanho de paleta e limiar de latência universal não têm nada. A
+seção final lista explicitamente os números que **não** podem ser citados como
+fato estabelecido, com o motivo de cada um.
+
+**Nenhum limiar de lá foi promovido** para a [barra](production-bar.md) nem para
+os [gates](gates.md). Levantar a fonte e calibrar contra uma amostra de jogos são
+passos diferentes, e só o primeiro foi dado — nenhum degrau passou a exigir 16 ms,
+4,5:1 ou 93%.
+
+Duas coisas que **não** são limiar entraram, e é justo dizer quais. A primeira é
+um método: a regra de parada de playtest, do RITE (Medlock et al., 2002, fonte
+primária), que substitui a pergunta “quantas pessoas?” por “o que encerra a
+rodada?”. Ela entrou no [roteiro de observação](quality.md) e no template de QA.
+A segunda é uma correção: o “cinco usuários” foi recusado por leitura do artigo
+original, que conclui outra coisa, e a recusa está escrita onde alguém iria
+procurar o número. Junto delas, a barra ganhou uma seção sobre o que se pode
+conferir **sem** importar número — conformidade com o que o próprio projeto
+declarou —, que é o formato de critério que não depende de nenhuma fonte externa
+estar certa.
+
+A heurística de triagem que sobrou do levantamento e vale para qualquer fonte
+futura: **fonte séria declara de onde tirou o número.** A EBU diz de qual medição
+de overscan saíram os 3,5%; a Unity chama o próprio 35% de “a general tip”. Um
+número com casa decimal e sem origem não é mais preciso, é menos honesto — e o
+levantamento nomeia os domínios em que isso apareceu.
+
 ## Pré-produção e checagem
 
 Na versão 0.2, leitura adicional dos templates no mesmo commit BMad
@@ -213,16 +251,28 @@ estrutura de três saídas tem apoio formal em Robert G. Cooper (Go / Recycle / 
 do método Stage-Gate), em artigos do próprio autor e na *Wiley International
 Encyclopedia of Marketing* — literatura de gestão de produto, não conselho de
 praticante. O mesmo vale para `waived` e os quatro não dispensáveis, que reproduzem
-a distinção must-meet × should-meet, e para `held_by_declaration`, que corresponde
+a assimetria de Cooper entre critério que mata sozinho e critério negociável, e
+para `held_by_declaration`, que corresponde
 ao asterisco com que a Microsoft separa requisito de requisito testado nos Xbox
 Requirements públicos. Essas escolhas foram feitas aqui sem conhecer as fontes;
 convergência nessa ordem é evidência melhor que citação posterior, e a ordem está
 declarada.
 
-Segundo, **nomear lacunas** — entre elas a ausência de um estado “fora de escopo”
-distinto de dispensa, e o fato de os dez gates serem quase todos readiness check,
-sem critério que force a pergunta de valor. Ficam em `gates-research.md` como
-observação de pesquisa, não como mudança feita.
+Segundo, **nomear lacunas**. Duas foram fechadas depois, e o que entrou por elas é
+a única parte dos gates que não tem procedência interna. Cooper separa três tipos
+de critério, e o segundo faltava aqui: `readiness` pergunta se o trabalho está
+feito, `must_meet` pergunta se ainda vale o que custa, e a segunda pergunta
+existia só como a saída `abandonar`, dependendo de alguém levantá-la. Dos três
+critérios `must_meet` que passaram a existir, um — `close.decision` — já estava na
+prosa do ciclo; os outros dois, `implement.worth_building` e `scale.worth_scaling`,
+**vêm de Cooper e estão declarados como acréscimo** na tabela de `gates.md`. O
+terceiro tipo de Cooper, *should-meet*, não foi implementado: scorecard existe para
+ordenar projetos entre si, e um gate a mais sem função é o que ele mesmo chama de
+burocracia. A outra lacuna era o estado `out_of_scope`, cuja forma vem dos XAGs
+(perguntas de escopo antes do critério) e da TRC histórica (“Applicable”). As
+lacunas que **continuam abertas** estão em `gates-research.md` §8.2 e repetidas nos
+limites de `gates.md`: entregáveis fixados na saída do gate anterior, e a evidência
+não distinguir log de comando de alguém que olhou.
 
 Terceiro, e mais importante para o que este repositório pode afirmar: **o
 levantamento confirma que não existe definição canônica dos marcos de produção de
