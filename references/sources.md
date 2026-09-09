@@ -75,6 +75,13 @@ síntese redigida neste repositório a partir de três origens, e é honesto sep
 - **Julgamento editorial deste estúdio** sobre o que o jogador percebe primeiro,
   em especial a regra do mínimo entre dimensões.
 
+O formato de declaração que `bar` lê — tabela em Markdown, uma linha por dimensão
+— também não vem de fora: ele foi extraído da tabela que o README do starter já
+tinha escrita à mão, e o comando passou a ler o que já existia em vez de pedir um
+arquivo novo. Nenhuma das dez dimensões ganhou limiar numérico nessa passagem: o
+que o harness confere é a forma da linha, e a escada continua sem calibração
+contra uma amostra de jogos publicados.
+
 Nenhum degrau foi calibrado contra uma amostra de jogos publicados, e nenhuma
 medição foi repetida para produzir esta escada. Os limites numéricos que aparecem
 nas dimensões `performance` e `audio_mix` são pontos de partida a confirmar no
