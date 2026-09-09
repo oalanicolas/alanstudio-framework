@@ -520,16 +520,19 @@ de uma partida simulada; isso também não é mix ouvida. Primeiro resultado da
 busca não é mixagem. Silêncio deliberado é o papel fora da declaração, não
 o slot sem arquivo.
 
-Se o laboratório tiver `shared/sfx` na raiz passada em `--root`:
+Se o laboratório tiver `shared/sfx` **com sons** na raiz passada em `--root`:
 
 ```sh
 python3 scripts/game.py sfx search passos --root /caminho/do/laboratorio
 python3 scripts/game.py sfx copy ID --to /caminho/do/jogo/public/sfx --root /caminho/do/laboratorio
 ```
 
-Sem esse acervo, o catálogo vem vazio. Piso: gravação licenciada ou design
-contemporâneo. 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.
-Este repositório **não inclui** os arquivos de som.
+Sem esse acervo, `sfx search` devolve vazio e `sfx serve` recusa — não
+há o que ouvir. O primeiro ciclo já tem voz no starter
+(`public/sfx/<papel>.wav`). `shared/sfx` é ADAPT, não pré-requisito.
+Piso: gravação licenciada ou design contemporâneo. 8-bit, chiptune,
+jsfxr e Kenney arcade não são o padrão. Este repositório **não inclui**
+o acervo `shared/sfx` do laboratório.
 
 ## Feel
 

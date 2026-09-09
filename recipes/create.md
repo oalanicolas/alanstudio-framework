@@ -43,8 +43,8 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    O projeto nasce com laço de passo fixo, save versionado, entrada
    abstraída e testes que já rodam.
    Partir dele é REUSE; recomeçar essa infraestrutura é CREATE e pede lacuna
-   explícita. Som: se o laboratório tiver `shared/sfx`, use `sfx search` antes de
-   qualquer download. Explique REUSE, ADAPT ou CREATE antes de produzir novos
+   explícita. Som: se o laboratório tiver `shared/sfx` com sons, use `sfx search`
+   antes de baixar. Sem acervo, o starter já fala em `public/sfx`. Explique REUSE, ADAPT ou CREATE antes de produzir novos
    sistemas.
 2. Construa um ciclo jogável com uma decisão característica. Defina entrada,
    objetivo percebido, consequência, término e repetição. Título e cores novos

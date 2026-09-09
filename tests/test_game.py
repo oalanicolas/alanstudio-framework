@@ -2038,6 +2038,33 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("--fill", commands[0])
         self.assertTrue(all("--apply" not in command for command in commands))
 
+    def test_sfx_search_on_empty_catalog_does_not_pretend_you_can_listen(self):
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "search", "passos", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["count"], 0)
+        self.assertTrue(report["empty"])
+        self.assertEqual(report["matches"], [])
+        self.assertNotIn("Ouça com sfx serve", report["next"])
+        self.assertIn("vazio", report["next"].casefold())
+        self.assertIn("public/sfx", report["next"])
+        summary = json.loads(subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "summary", "--root", str(self.root)],
+            capture_output=True, text=True,
+        ).stdout)
+        self.assertTrue(summary["empty"])
+        self.assertIsNone(summary["listen"])
+        self.assertIn("vazio", summary["next"].casefold())
+        serve = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "serve", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertNotEqual(serve.returncode, 0)
+        self.assertIn("vazio", serve.stderr.casefold())
+
     def test_feel_reads_named_constants_and_never_claims_to_have_felt_them(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.feel_reading(starter)

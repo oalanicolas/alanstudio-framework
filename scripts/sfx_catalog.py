@@ -25,6 +25,20 @@ QUALITY_BAR = {
     "note": "Triagem documental/técnica não é aprovação artística; preserve a mixagem do jogo.",
 }
 
+EMPTY_NEXT = (
+    "Acervo vazio. O starter já fala em public/sfx; desloque com "
+    "npm run sfx -- --from <papel> --as brighter. sfx serve não ouve "
+    "o que não existe. Procure fora só depois de constatar uma lacuna no papel."
+)
+LISTEN_NEXT = (
+    "Ouça com sfx serve; copie com sfx copy ID --to PASTA. "
+    "Procure fora só após constatar uma lacuna."
+)
+MISS_NEXT = (
+    "Nenhum id neste termo. O acervo existe: mude o termo ou ouça com sfx serve. "
+    "Procure fora só após constatar uma lacuna."
+)
+
 
 def catalog_dir(root=None):
     return Path(root or DEFAULT_ROOT) / CATALOG_RELATIVE
@@ -41,22 +55,25 @@ def studio_assets(root=None):
         "catalog": str(base / "catalog.json"), "guide": str(base / "README.md"),
         "exists": (base / "catalog.json").is_file(),
         "file_count": len(catalog["sounds"]), "updated": catalog.get("updated"),
-        "rule": "Busque em shared/sfx antes de baixar som; ouça e exporte com créditos.",
+        "rule": "shared/sfx é ADAPT. Sem acervo o catálogo vem vazio; o starter já fala em public/sfx.",
     }}
 
 
 def search_catalog(query, root=None, limit=40):
     if not query.strip() or limit < 1:
         raise ValueError("Busca vazia ou limite inválido")
-    matches = audio.search(load_catalog(root)["sounds"], query)[:limit]
+    sounds = load_catalog(root)["sounds"]
+    matches = audio.search(sounds, query)[:limit]
+    empty = len(sounds) == 0
     return {
         "query": query, "count": len(matches),
+        "empty": empty,
         "matches": [{"id": s["id"], "aliases": s.get("aliases", []), "src": s["file"],
                      "title": s["title"], "category": s["category"], "tags": s["tags"],
                      "licenses": sorted({x["license"] for x in s["sources"]}),
                      "authors": sorted({x["author"] for x in s["sources"]})} for s in matches],
         "rule": QUALITY_BAR["note"],
-        "next": "Ouça com sfx serve; copie com sfx copy ID --to PASTA. Procure fora só após constatar uma lacuna.",
+        "next": EMPTY_NEXT if empty else (LISTEN_NEXT if matches else MISS_NEXT),
     }
 
 
@@ -113,17 +130,20 @@ def summarize(root=None):
     groups = {}
     for item in catalog["sounds"]:
         groups[item["category"]] = groups.get(item["category"], 0) + 1
+    empty = len(catalog["sounds"]) == 0
     return {
         "catalog": str(catalog_dir(root) / "catalog.json"),
         "guide": str(catalog_dir(root) / "README.md"),
         "file_count": len(catalog["sounds"]),
+        "empty": empty,
         "total_bytes": sum(s["bytes"] for s in catalog["sounds"]),
         "originals": sum(s.get("edition") == "original" for s in catalog["sounds"]),
         "updated": catalog.get("updated"), "quality_bar": QUALITY_BAR,
         "categories": [{"title": name, "count": count} for name, count in sorted(groups.items())],
         "search": "python3 scripts/game.py sfx search TERMO",
-        "listen": "python3 scripts/game.py sfx serve",
+        "listen": None if empty else "python3 scripts/game.py sfx serve",
         "copy": "python3 scripts/game.py sfx copy ID --to PASTA",
+        "next": EMPTY_NEXT if empty else LISTEN_NEXT,
     }
 
 
@@ -136,6 +156,8 @@ def verify_catalog(root=None):
 def serve_catalog(root=None, port=8766):
     from functools import partial
 
+    if not load_catalog(root)["sounds"]:
+        raise ValueError("Catálogo vazio")
     server = audio.ThreadingHTTPServer(("127.0.0.1", port),
                                       partial(audio.CatalogHandler, root=catalog_dir(root)))
     print(f"http://127.0.0.1:{port}/", flush=True)

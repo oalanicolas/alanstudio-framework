@@ -36,8 +36,9 @@ referência e pela diferença percebida. Defina a prova de parada antes de ampli
 ## 2. REUSE → ADAPT → CREATE
 
 Busque primeiro no próprio jogo; depois em jogos parecidos e nos estudos pertinentes.
-Para efeito sonoro novo, se o laboratório tiver `shared/sfx`, busque com
-`python3 scripts/game.py sfx search <termo>` antes de baixar. Leia a implementação
+Para efeito sonoro novo, se o laboratório tiver `shared/sfx` com sons, busque com
+`python3 scripts/game.py sfx search <termo>` antes de baixar. Sem acervo, o
+starter já fala em `public/sfx`. Leia a implementação
 **e um consumidor real**. Registre comando/resultado da busca, candidato e adequação.
 A busca é delimitada à necessidade, não uma auditoria de tudo.
 

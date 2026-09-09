@@ -18,7 +18,9 @@ mixer. Coleta e guarda sobem de tom com a corrente; o erro não herda.
 depois de um `note`, `start` e `next` apontam esse comando.
 Arquivo ausente é lacuna do verbo, não silêncio deliberado;
 `heard` é sempre falso. Sem `shared/sfx`, a sugestão de `--fill` vem
-vazia — isso não autoriza improvisar licença.
+vazia, `sfx search` aponta o starter e `sfx serve` recusa — isso não
+autoriza improvisar licença. O acervo compartilhado é ADAPT, não o
+primeiro ciclo.
 
 ## 1. Nomear a camada
 

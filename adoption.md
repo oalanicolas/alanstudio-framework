@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.61 — O acervo vazio não finge ouvido
+
+`sfx search` convidava a ouvir um catálogo sem sons. `sfx serve` subia
+a UI vazia. O README dizia que este repositório não inclui arquivo de
+som — e o starter já traz `public/sfx`. Sem acervo, a busca aponta o
+starter e o serve recusa. `shared/sfx` é ADAPT. `heard` continua falso.
+`audio_mix` permanece `slice`. Só `release` fica no piso.
+
+O que 0.9.61 não afirma: o harness não ouviu o starter e ninguém
+aprovou o mix.
+
 ## 0.9.60 — O dash também aterrissa
 
 A partida alongava e o campo mudava de cor na recuperação. O término

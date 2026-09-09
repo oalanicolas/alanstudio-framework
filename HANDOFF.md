@@ -23,7 +23,8 @@ não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta e
 `?spawn=dusk` troca a chuva. O harness não executa o jogo.
 
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
-`--fill` sugere o acervo; `--apply` copia com o nome do papel. O starter
+`--fill` sugere o acervo; `--apply` copia com o nome do papel. Sem
+acervo a busca aponta o starter e `sfx serve` recusa. O starter
 já traz design original e variante (`-b`) nos papéis do verbo e na cama
 e carrega no mixer. A cama entra em loop no barramento de música.
 `npm run mix` soma cama e vozes na partida simulada com o mesmo palco

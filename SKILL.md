@@ -76,8 +76,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    turno, mesmo com nove candidatos encontrados.
 3. **REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes pertinentes.
    `doctor` lista os starters disponíveis; começar por um deles é REUSE, escrever um
-   loop do zero é CREATE. Se o laboratório tiver `shared/sfx`, use `sfx search` antes
-   de baixar som. Sem 8-bit,
+   loop do zero é CREATE. Se o laboratório tiver `shared/sfx` com sons, use
+   `sfx search` antes de baixar. Sem acervo, o starter já fala em
+   `public/sfx`; `sfx serve` recusa catálogo vazio. Sem 8-bit,
    chiptune, jsfxr ou Kenney arcade como padrão. Leia candidatos e consumidores.
    CREATE exige lacuna explícita. Para trabalho novo sem registro, use
    [o contrato](assets/work.example.json); `check-plan` valida a estrutura, não o mérito.
