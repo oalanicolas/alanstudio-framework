@@ -29,15 +29,45 @@ decisões ou domínio, não apenas aumentar números. Meça comportamentos obser
 (hesitação, erro repetido, abandono, estratégia), sem confundir tempo de sessão com
 diversão. Um playtest curto bem observado vale mais que uma nota inventada.
 
-## Mundo e direção visual
+## Feel da ação
 
-Escala, câmera, silhuetas, materiais, iluminação e áudio formam uma direção coerente.
-Landmarks ajudam orientação; ameaças e caminhos precisam ser legíveis em movimento.
-A versão visual aprovada é o piso. Não diminua detalhes, sombras, reflexos, animação
-ou efeitos para atingir FPS. Investigue implementações mais eficientes e registre
-custo quando a expansão visual exigir mais recursos. O
+A ação central precisa de peso, timing e recuperação. Antecipação, impacto
+(hitstop, squash, partículas, rumble, stinger) e câmera confirmam o verbo.
+Flash, hit-pause, shake, partícula e áudio disparam no **mesmo frame** do
+contato; dessincronia vira dois eventos. Juice que esconde a consequência é
+regressão. Ajuste um elo por vez e compare em movimento. Screenshot não
+comprova feel. Receita: [feel](../recipes/feel.md).
+
+## Mix e silêncio
+
+O jogador ouve causa e efeito. Camadas (ação, ambiente, música, UI) têm
+prioridade; pause/reinício não deixam voz fantasma. Silêncio é design, não
+arquivo ausente. Piso: gravação licenciada ou direção contemporânea explícita
+— 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão. Receita:
+[áudio](../recipes/audio.md).
+
+## Mundo, luz e animação
+
+Escala, câmera, silhuetas, materiais, iluminação e animação formam uma direção
+coerente. Landmarks ajudam orientação; ameaças e caminhos precisam ser
+legíveis em movimento. Antecipação e follow-through da animação pertencem ao
+verbo, não só à “beleza”. A versão visual aprovada é o piso. Não diminua
+detalhes, sombras, reflexos, animação ou efeitos para atingir FPS. Investigue
+implementações mais eficientes e registre custo quando a expansão visual
+exigir mais recursos. O
 [design system do jogo](game-design-system.md) é o contrato operacional dessa
 direção: tokens, famílias, feel e receita de conteúdo novo, não só o moodboard.
+
+## Primeiro minuto e acesso
+
+A primeira ação ensina o verbo. Mural de texto que bloqueia o jogo não é
+onboarding. Contraste, forma além da cor, foco, alvos de toque e movimento
+reduzido entram quando o recorte os exige — não como anexo depois do “polimento”.
+
+O primeiro minuto também denuncia **latência e pacing**. Spike de frametime
+quebra suavidade e desempenho percebido com mais força do que baixar um
+preset de textura. Observe input, frame e câmera no trecho real antes de
+discutir fidelidade gráfica. Não corte o piso aprovado para “ganhar FPS”.
 
 ## Estado e confiança
 
@@ -45,6 +75,16 @@ Iniciar, jogar, pausar, perder, ganhar, reiniciar e sair precisam ter consequên
 definidas. Teste o que sobrevive a cada transição: score, timers, entidades, som,
 inputs, progresso e conexões. Jogo narrativo precisa respeitar histórico e save;
 multiplayer precisa explicitar quem pode agir e quem decide o resultado.
+
+## Piso da escala, não nota
+
+Jam, produto e AA / Triple-I compartilham o piso do verbo e diferem na
+quantidade de conteúdo e de artefatos. “AAA” neste texto é piso de
+acabamento, não tier de publisher. Não chame o recorte de AAA — nem de
+“quase AAA” — se a vertical slice não demonstra as barras (feel sincronizado,
+mix, pacing, mundo, repeatability). Contrato: [ambição](ambition.md).
+Scaffold demonstra estrutura; slice demonstra experiência e que outro trecho
+nasce sem heroísmo. Confundi-los é declarar vitória cedo demais.
 
 ## Protocolo de observação
 
@@ -60,6 +100,10 @@ Para cada critério afetado registre no local de QA existente:
   problemas e julgamento/autor. Screenshot isolada não comprova animação nem controle.
 - **Conclusão:** critério atendido, regressão ou pendência. Não declare aprovação
   do usuário quando só houve avaliação do agente.
+
+Instrumento: [checklist de piso](aaa-checklist.md). O `context` diz o perfil
+em `finish` (núcleo / produto / promessa). `--stage aaa` só imprime o
+rascunho inteiro. Não some itens para uma nota.
 
 Origens: o [playground](https://games.alanicolas.com/), os recortes em
 [sources.md](sources.md) e a direção de qualidade deste repositório. Os estudos

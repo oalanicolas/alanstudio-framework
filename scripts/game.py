@@ -42,8 +42,8 @@ import sfx_catalog
 
 ROOT = default_root()
 STUDIES_ROOT = default_studies_root(ROOT)
-FOCI = ("create", "mechanics", "lifecycle", "content", "visual", "network", "architecture")
-STAGES = ("brief", "mda", "gdd", "poc", "prd", "tdd", "vertical-slice", "mvp", "qa", "art-bible", "devlog", "audit")
+FOCI = ("create", "mechanics", "lifecycle", "content", "visual", "audio", "feel", "network", "architecture")
+STAGES = ("brief", "mda", "gdd", "poc", "prd", "tdd", "vertical-slice", "mvp", "qa", "art-bible", "devlog", "audit", "aaa")
 EVENTS = ("task", "direction-approved", "resume")
 CONTINUITY_PATTERN = r"\b(continuidade|continuity|retomada|proxim[ao]s? (passos?|acoes|acao|tarefas?)|next steps?)\b"
 CONTINUITY_FILES = {"production plan", "plano de producao", "roadmap", "backlog", "state", "decisions", "devlog"}
@@ -54,11 +54,15 @@ FOUNDATION_AREAS = (
     ("architecture", "Arquitetura atual / TDD", r"\b(tdd|arquitetura|architecture|technical design|contratos tecnicos)\b"),
     ("art_direction", "Design system do jogo / Art Bible", r"^design$|\b(art bible|art-bible|art direction|design system|design-system|game design system|direcao de arte|direcao visual|direcao audiovisual|style guide|visual style|feel bible)\b"),
     ("decisions", "Decisões e histórico / Devlog", r"\b(devlog|decision log|decisions|decisoes|changelog|aprendizados|historico de decisoes|adr)\b"),
-    ("qa", "QA e playtest", r"\b(qa|playtest|test plan|verification|verificacao|validacao|plano de testes)\b"),
+    ("qa", "QA e playtest", r"\b(qa|playtest|test plan|verification|verificacao|validacao|plano de testes|checklist de piso|piso de acabamento|chk-\d)\b"),
     ("runbook", "Como executar e verificar", r"\b(runbook|getting started|setup|instalacao|executar|rodar|desenvolvimento|development|jogar|build|package)\b"),
     ("provenance", "Origem de código e assets", r"\b(licenses?|licences?|licencas?|copying|authors|sources|proveniencia|provenance|creditos|credits|asset sources)\b"),
 )
 CAPABILITIES = ("pause", "reset", "seed", "observe", "act", "advance", "capture", "dispose")
+FINISH_CORE = ("CHK-0", "CHK-1", "CHK-2", "CHK-4", "CHK-5", "CHK-6", "CHK-11")
+FINISH_PRODUCT = ("CHK-3", "CHK-7", "CHK-8", "CHK-10", "CHK-14", "CHK-15")
+FINISH_PROMISE = ("CHK-9", "CHK-12", "CHK-13")
+FINISH_MARKET = ("CHK-16",)
 SKIP = {"node_modules", "dist", "build", "docs", "framework", "squads", "public", "assets", "Assets", "Library", "Temp", "outputs", "shared"}
 FOCUS_STUDIES = {
     "create": (
@@ -456,8 +460,17 @@ def context(project, focus, stage=None, studies_root=None, event="task"):
         references.append(FRAMEWORK / "recipes/architecture.md")
     if stage or focus == "create":
         references.append(FRAMEWORK / "references/preproduction.md")
-    if focus in ("create", "visual") or stage == "art-bible":
+    if focus in ("create", "visual", "audio", "feel") or stage in ("art-bible", "aaa"):
         references.append(FRAMEWORK / "references/game-design-system.md")
+    if focus in ("create", "audio", "feel") or stage in ("brief", "vertical-slice", "aaa"):
+        references.append(FRAMEWORK / "references/ambition.md")
+    if focus in ("create", "feel", "audio") or stage in ("aaa", "vertical-slice", "qa"):
+        references.append(FRAMEWORK / "references/aaa-checklist.md")
+    if stage == "aaa":
+        for extra in ("feel", "audio"):
+            path = FRAMEWORK / f"recipes/{extra}.md"
+            if path not in references:
+                references.append(path)
     if stage:
         references.append(FRAMEWORK / f"assets/templates/{stage}.md")
     if document_minimum or stage in ("art-bible", "devlog"):
@@ -490,6 +503,17 @@ def context(project, focus, stage=None, studies_root=None, event="task"):
             "before_close": "Registrar conteúdo e fontes nos documentos canônicos; cobrir cada área mínima com decisão/fato ou lacuna e próxima ação. Referência salva e templates vazios não concluem a documentação.",
             "scope": "O agente executa a ação e respeita restrições atuais do usuário. O comando não escreve documentos, concede aprovação ou certifica sua suficiência.",
         },
+        "finish": {
+            "guide": str(FRAMEWORK / "references/aaa-checklist.md"),
+            "template": str(FRAMEWORK / "assets/templates/aaa.md"),
+            "core_groups": list(FINISH_CORE),
+            "product_groups": list(FINISH_PRODUCT),
+            "promise_groups": list(FINISH_PROMISE),
+            "market_groups": list(FINISH_MARKET),
+            "action": "observe_core_on_slice" if stage in ("aaa", "vertical-slice", "qa") or focus in ("feel", "audio") else "defer_until_playable_cycle",
+            "executed": False,
+            "scope": "Núcleo em qualquer escala após um ciclo jogável. Produto/AA soma product_groups. Promessa só se o brief prometeu. Mercado (CHK-16) nunca reprova jam. Completar o template não certifica. O comando não observa o jogo.",
+        },
         "studio_assets": sfx_catalog.studio_assets(),
         "limits": [
             "Ponteiros não comprovam leitura; scripts declarados não comprovam execução.",
@@ -500,6 +524,9 @@ def context(project, focus, stage=None, studies_root=None, event="task"):
             "capabilities.mentioned é só token em arquivo de inspeção. Não prova pause, reset, seed nem determinismo.",
             "capabilities.unknown significa não localizado na lista fixa de arquivos de inspeção, não capacidade ausente; rastreie o entrypoint e os consumidores na auditoria.",
             "Áudio novo: busque em shared/sfx (`sfx search`) antes de baixar. Piso de gravação licenciada; 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.",
+            "Feel e áudio são focos próprios (`--focus feel`, `--focus audio`). Sem observação em movimento, experience_status permanece not_assessed; scaffold não é vertical slice.",
+            "“AAA” neste harness é piso de acabamento da slice, não tier de publisher. Sem feel sincronizado, pacing e repeatability, não use o adjetivo.",
+            "Checklist: ver finish no JSON. Jam observa core_groups; produto/AA soma product_groups; promise_groups só se prometidos. `template aaa` não certifica; N/A exige motivo.",
         ],
     }
 

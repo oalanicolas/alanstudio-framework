@@ -25,10 +25,12 @@ Adapte seções ao gênero; registre por que uma dimensão material não se apli
 - Reuso: [candidato, consumidor, decisão e lacuna].
 - Situação para experimentar: [cenário, variante e observação desejada].
 
-## Controles, câmera e legibilidade
+## Controles, câmera e feel
 
 [Verbo central por dispositivo, resposta, orientação, enquadramento, cancelamento,
-perda de foco e necessidades de acesso. Explicite diferenças entre entradas.]
+perda de foco e necessidades de acesso. Explicite diferenças entre entradas.
+Cadeia de feel: intenção → input → antecipação → corpo → impacto → câmera →
+áudio → recuperação. O que confirma o verbo e o que seria juice que o esconde.]
 
 ## Ritmo, progressão e equilíbrio
 
@@ -45,8 +47,14 @@ ou documento narrativo apenas quando o volume justificar.]
 ## Direção visual e sonora
 
 [Referências, origem/aprovação, silhuetas, escala, materiais, iluminação, efeitos,
-animação, música e feedback pertinentes. Defina a comparação em movimento e preserve
-a qualidade aprovada. Uma bíblia de arte pode ser separada se necessária.]
+animação, música e feedback pertinentes. Mix: camadas, ducking, interrupção e
+silêncio. Defina a comparação em movimento e preserve a qualidade aprovada.
+Uma bíblia de arte pode ser separada se necessária.]
+
+## Primeiro minuto
+
+[Como a primeira ação ensina o verbo. O que a pessoa faz antes de ler. O que
+não será um mural de texto. Acesso: contraste, forma além da cor, toque.]
 
 ## Estado e persistência
 

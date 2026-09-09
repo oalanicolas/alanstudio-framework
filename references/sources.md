@@ -52,10 +52,56 @@ A receita [architecture](../recipes/architecture.md) adapta processo transversal
 observado no Architect AIOX, sem copiar o runtime, o roteador de engines nem a
 hierarquia de agentes. Estudo e hashes ficam no laboratório.
 
-## Áudio
+## Feel, áudio e ambição (0.9)
+
+As receitas [feel](../recipes/feel.md) e [áudio](../recipes/audio.md) e o
+contrato [ambição](ambition.md) sistematizam o piso de acabamento já implícito
+em qualidade, Art Bible e no playground. Não extraem um kit universal de juice
+nem um motor de mix. Não há recorte externo promovido a testado para esses
+focos; `studies` permanece vazio até existir catálogo pertinente.
+
+## AAA: tier e piso (0.9)
+
+Leitura de 9 de setembro de 2026. Nenhum teste desses textos foi executado
+neste repositório. Orçamentos e headcounts são contexto de mercado, não meta
+do harness.
+
+**Tier de mercado (o rótulo financeiro):**
+
+- [AAA (video game industry)](https://en.wikipedia.org/wiki/AAA_(video_game_industry))
+  — publisher médio/grande, orçamento e marketing; origem em nota de crédito;
+  AA / Triple-I / AAAA como termos vizinhos sem certificação.
+- [Bernevega & Gekker, *Games and Culture*](https://doi.org/10.1177/15554120211014151)
+  — AAA como mercadoria de maior aposta, não como grau criativo.
+- [Video Game Canon — What is a AAA game?](https://www.videogamecanon.com/adventurelog/what-is-a-aaa-game/)
+  — história do empréstimo da nota de crédito.
+- CMA do Reino Unido (2023), citada na Wikipedia: média ~US$ 200 mi para AAA
+  greenlitados a 2024–25. Números de *Call of Duty* / *GTA V* são reportagem,
+  não medição nossa.
+
+**Piso de acabamento (o que o jogador percebe):**
+
+- Steve Swink, *Game Feel* — controle em tempo real, espaço simulado, polish.
+  [Verbete](https://en.wikipedia.org/wiki/Game_feel).
+- Jonasson & Purho, [Juice it or lose it](https://www.youtube.com/watch?v=Fy0aCDmgnxg)
+  (GDC) — som como juice de maior retorno; efeitos que não mudam a regra.
+- Tokey et al., i3D 2026 — spike de frametime domina suavidade e pontuação
+  num FPS; fidelidade gráfica muda a nota visual, pouco o desempenho.
+  [Página](https://web.cs.wpi.edu/~claypool/papers/frame-stutter-graphics-i3d-26/).
+- Vertical slice como trava de qualidade → tempo de asset → headcount: prática
+  de pipeline (publisher gates). Repeatability: outro trecho sem heroísmo.
+
+Blogs de estúdio/agência de 2025–26 (orçamento, AA vs AAA, consistência visual)
+informaram o vocabulário contemporâneo; não foram promovidos a regra testada.
+O harness adapta o **piso** e recusa o **tier** como objetivo. O instrumento
+preenchível é o [checklist](aaa-checklist.md) (`--stage aaa`); não é um
+score nem uma extração testada desses textos.
+
+## Áudio (catálogo)
 
 O acervo `shared/sfx` é do laboratório, não deste repositório. O harness expõe
 `sfx search` / `sfx copy` quando essa pasta existir na raiz de `--root`.
+A receita de áudio orienta mix e interrupção; o catálogo só localiza arquivos.
 
 ## Playground
 

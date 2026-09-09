@@ -8,8 +8,10 @@ Em qualquer pedido sobre um jogo, comece pelo `context`: a checagem `foundation`
 é automática, mesmo em ajustes localizados. Ao encontrar lacunas, avise e inicie a
 [documentação automática](project-audit.md), sem pedir consentimento. A reconstrução
 de um jogo existente segue aquele roteiro; não exige
-reiniciar seu ciclo criativo nem preencher documentos sem evidência. O design system do jogo (Art Bible) e o
-Devlog complementam este ciclo quando o conteúdo ainda não tem registro canônico.
+reiniciar seu ciclo criativo nem preencher documentos sem evidência. O design system do jogo (Art Bible), o Devlog e o
+[checklist de piso](aaa-checklist.md) (`aaa`) complementam este ciclo quando
+o conteúdo ainda não tem registro canônico. O checklist observa o acabamento
+da fatia; não substitui GDD nem certifica publisher.
 Todo jogo identificável precisa da instância; o arquivo separado é opcional se outro
 canônico cobrir as seções. O contrato do estúdio está no
 [design system do jogo](game-design-system.md).
@@ -20,11 +22,17 @@ mesmo quando arquivos antigos cobrem nominalmente as nove áreas. Use o evento
 ## Escolher a profundidade
 
 **Ajuste localizado:** atualize decisão, requisito e caso de QA no registro existente.
-Não reinicie a pré-produção. **Jogo pequeno:** um `game-design.md` pode reunir brief,
-GDD, requisitos, decisões técnicas e experimentos. Use os templates como perguntas,
-sem duplicar a mesma informação em nove arquivos. **Projeto com sistemas/equipe
-maiores:** separe os documentos que têm responsabilidade e ritmo de atualização
-distintos. Linke suas fontes canônicas, mantendo IDs estáveis.
+Não reinicie a pré-produção. **Jogo pequeno / jam / conto:** um `game-design.md` pode
+reunir brief, GDD, requisitos, decisões técnicas e experimentos. Use os templates
+como perguntas, sem duplicar a mesma informação em nove arquivos. **Produto:**
+separe os documentos que têm responsabilidade e ritmo de atualização distintos.
+**AA / Triple-I (piso de acabamento):** os mesmos artefatos; feel, áudio, luz,
+animação, pacing e receita de conteúdo entram como requisitos do recorte, não
+como fase posterior de polimento. Não é tier de publisher.
+Linke fontes canônicas e mantenha IDs estáveis.
+
+A escala vive no brief. Ela muda quantidade de documentos e de conteúdo, não o
+piso do verbo. Contrato: [ambição](ambition.md).
 
 Ao iniciar, resolva o pedido, artefatos atuais e referência aprovada. Extraia o que
 já foi decidido; identifique hipóteses e lacunas. Pergunte somente por decisão
@@ -130,9 +138,16 @@ acabamento pretendido. Demonstra a experiência e a capacidade de produzir mais
 conteúdo nesse padrão. Entrada: recorte e decisões de design/implementação.
 
 **Pronto para ampliar:** cenário jogável e repetível, integrações verificadas,
-comparação em movimento e regressões resolvidas. Cobertura parcial e avaliação do
-agente permanecem distintas de aprovação do usuário. Placeholders podem servir a
-uma PoC; não certificam o acabamento da vertical slice.
+comparação em movimento e regressões resolvidas. Feel do verbo (sincronizado
+no impacto), mix e pacing do trecho fazem parte do acabamento, não de um
+recorte futuro. A slice precisa demonstrar **repeatability**: outro trecho
+nasce no mesmo padrão, pela receita, sem intervenção excepcional, com custo
+observado. Quatro eixos: valor para o jogador, viabilidade técnica, produção
+repetível, clareza do produto. Forte num eixo não compensa vermelho noutro.
+Cobertura parcial e avaliação do agente permanecem distintas de aprovação do
+usuário. Placeholders podem servir a uma PoC; não certificam o acabamento da
+vertical slice. Scaffold com HUD bonito, ou slice “hand-tuned” que ignora o
+pipeline, também não.
 [Template](../assets/templates/vertical-slice.md).
 
 ### `mvp` — Minimum Viable Product
@@ -190,7 +205,11 @@ sem apresentar todas as PoCs como se fossem uma única tarefa nem recomeçar o c
 
 `context <projeto> --stage gdd` adiciona guia e template GDD aos caminhos selecionados.
 `template gdd --project <projeto>` imprime o rascunho; `--output <arquivo-novo>` o
-salva recusando destino existente. A escolha e leitura do documento canônico são
+salva recusando destino existente. `--stage vertical-slice` e `--stage qa` carregam a
+[guia do piso](aaa-checklist.md). `--stage aaa` / `template aaa` materializa
+o rascunho inteiro; preencher linhas não certifica o jogo. Observe o perfil
+em `finish` (núcleo / produto / promessa).
+A escolha e leitura do documento canônico são
 responsabilidade do agente. O comando não preenche design, revisa mérito ou cria um jogo.
 
 `check-plan` continua validando o registro de reuso; não é validador semântico de

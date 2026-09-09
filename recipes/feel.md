@@ -1,0 +1,114 @@
+# Feel da ação
+
+Entrada: verbo central, referência de sensação (aprovada ou proposta) e a
+diferença percebida entre intenção e resposta atual.
+
+Feel é o intervalo entre o input e a certeza de que o mundo respondeu.
+Swink: controle em tempo real, espaço simulado, polish. Jam e piso de
+acabamento se separam aqui com mais frequência do que na escolha da engine.
+Sem feel, o ciclo pode estar correto e o jogo parecer vazio. Sem sincronia,
+o juice vira ruído.
+
+Leia o verbo no GDD, os tokens de tempo/câmera/áudio no
+[design system](../references/game-design-system.md) e o
+[piso](../references/quality.md). `context --focus feel` seleciona esta
+receita. O usuário não precisa pedir “ative o juice”.
+
+## 1. Isolar o verbo
+
+Descreva **uma** ação: o que o jogador faz, o que o estado muda, o que os
+olhos e os ouvidos deveriam confirmar. Se várias ações competem, comece
+pela que o brief chama de central.
+
+Separe:
+
+- **Regra** — a ação é legal, o estado muda, a recusa existe.
+- **Apresentação** — a mudança é perceptível.
+- **Feel** — a percepção tem peso, timing e recuperação.
+
+Corrigir a regra não substitui o feel. Animar demais não substitui a regra.
+Se a ação ainda não existe, volte a [criar](create.md) ou a
+[mecânicas](mechanics.md); esta receita assume um ciclo jogável.
+
+## 2. Cadeia perceptível
+
+Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
+(ou deveria ter). Nomes abaixo são vocabulário de inspeção, não uma API.
+
+1. **Intenção** — o jogador sabe que pode agir? Ameaça e oportunidade são
+   legíveis antes do input.
+2. **Input** — latência, deadzone, buffer, cancelamento, perda de foco,
+   toque versus gamepad versus mouse. O mesmo verbo pode falhar numa entrada
+   e funcionar em outra.
+3. **Antecipação** — frames ou pose que prometem o golpe/pulo/disparo antes
+   do impacto. Sem ela, a ação chega “de graça” ou atrasada demais.
+4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
+   ou cursor. A silhueta muda o bastante para ser lida em movimento.
+5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.
+   Duração proporcional à importância; impacto de coleta não pode parecer
+   golpe mortal, e o contrário também. Visual, áudio e pause de hit disparam
+   no **mesmo frame** do contato. Alguns milissegundos de atraso fazem o
+   cérebro registrar dois eventos, não um peso.
+6. **Câmera** — punch, lookahead, aterrissagem, oclusão, recuperação. A
+   câmera confirma a ação sem enjoar nem esconder o próximo risco.
+7. **Áudio** — ataque, corpo, impacto, cauda e silêncio. Sem camada que
+   marque o verbo, o feel fica visual-only; use [áudio](audio.md).
+8. **Recuperação** — o jogador volta ao controle num tempo justo. Recovery
+   invisível ou infinito quebra confiança.
+
+Registre o elo fraco antes de adicionar mais partículas. Três efeitos no
+impacto não compensam input que ignora o botão.
+
+## 3. REUSE → ADAPT → CREATE
+
+Procure o feel já existente no jogo: hitstop, easing, impulse de câmera,
+envelope de som, rumble. Leia o **consumidor** (o golpe, o pulo, o clique),
+não só o utilitário. Um tween genérico sem dono não é feel reutilizável.
+
+- **REUSE:** o envelope atual atende com outros parâmetros.
+- **ADAPT:** estenda o canônico (mesmo hitstop, outra curva) e preserve quem
+  já o consome.
+- **CREATE:** nenhuma cadeia existente cobre o verbo sem acoplamento
+  estranho. Explicite a lacuna; crie só o elo que falta.
+
+Não importe um “juice pack” universal. Feel copiado de outro jogo sem ADAPT
+e proveniência dilui a instância. 8-bit, bounce cartoon ou screen-shake
+contínuo não são o padrão; o padrão é a referência aprovada deste jogo.
+
+## 4. Ajustar uma variável por vez
+
+Feel é causal. Altere duração, escala ou intensidade de **um** elo e
+compare nas mesmas condições: versão, resolução, entrada, trecho, seed
+quando demonstrada. Valores iniciais do acervo são ponto de partida, não
+constantes universais.
+
+Evite:
+
+- Juice que atrasa o próximo input além do que o ritmo pede.
+- Câmera que combate o jogador ou esconde a ameaça.
+- Hitstop em toda interação até o tempo parecer quebrado.
+- Partículas que tapam a silhueta da consequência.
+- Compensar regra injusta com feedback “gostoso”.
+
+A qualidade aprovada é o piso. Não corte feel para ganhar FPS; investigue
+implementação mais barata que preserve a percepção (menos overdraw, mesmo
+punch). Antes de negociar fidelidade gráfica, observe latência de input e
+spikes de frametime no mesmo trecho: stutter quebra o feel com mais força
+do que um preset mais baixo.
+
+## 5. Provar em movimento
+
+Screenshot não comprova feel. Compare o antes/depois no percurso real.
+Observe também pause, perda de foco, reinício e troca de entrada: um
+hitstop que sobrevive à pausa ou um rumble que não morre no descarte é
+regressão de [ciclo de vida](lifecycle.md).
+
+No QA, um caso de feel declara: ação, elo sob teste, duração/escala
+esperada, condição equivalente e julgamento (agente ou pessoa, sem
+confundir). Sem referência aprovada, registre que o piso ainda é proposta.
+
+Fontes de método: [qualidade](../references/quality.md),
+[ambição](../references/ambition.md), Art Bible do jogo, Swink / *Juice it
+or lose it* no [mapa](../references/sources.md#aaa-tier-e-piso-09). Estudos
+de câmera/tempo no laboratório, quando existirem, são precedentes — não um
+kit de juice obrigatório.

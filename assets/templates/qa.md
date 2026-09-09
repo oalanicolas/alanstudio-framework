@@ -19,6 +19,16 @@ Versão/arquivos, ambiente e referência: [localizadores e limites de identifica
 - Resultado: não executado.
 - Evidência e versão: [log/estado/captura e limite do que comprovam].
 
+## Caso de feel / áudio — QA-002
+
+- Elo ou camada: [impacto, câmera, ducking, interrupção, silêncio, pacing…].
+- Condição equivalente: [versão, entrada, trecho; mute on/off quando couber].
+- Esperado percebido: [duração, peso, prioridade; flash/hit-pause/áudio no mesmo
+  frame; sem screenshot isolada].
+- Pacing: [latência e spikes de frametime no trecho; não negociar o piso por FPS].
+- Resultado: não executado.
+- Julgamento: [agente ou pessoa; não confundir].
+
 ## Playtest — PLAY-001
 
 - Hipótese: [compreensão, decisão, controle, ritmo ou experiência].
@@ -38,6 +48,12 @@ Versão/arquivos, ambiente e referência: [localizadores e limites de identifica
 - Causa investigada e correção: [menor alteração que resolve; preservações].
 - Reteste: [caso, nova versão e resultado observado].
 - Comparação visual: [antes/depois em movimento; avaliação técnica não substitui julgamento].
+
+## Ligação ao piso
+
+- Perfil `finish`: [núcleo · +produto · +promessas].
+- IDs CHK observados / em aberto: [ligar a QA-00x / PLAY-00x].
+- O adjetivo “AAA” continua bloqueado se o núcleo material estiver aberto.
 
 ## Conclusão do escopo
 
