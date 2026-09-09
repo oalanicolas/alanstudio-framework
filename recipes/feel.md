@@ -36,6 +36,11 @@ Ligue cada sinal ao verbo do GDD e ao design system do jogo, na seção de feel.
 sinal que não corresponde a mudança de estado ensina errado e prejudica a
 [legibilidade](../references/production-bar.md).
 
+Implementação concreta para ler antes de escrever a sua: o starter
+`canvas-arcade` reúne o perdão de entrada em `CONFIG`, em `src/game/rules.js` —
+buffer de dash, graça após dano, alcance de coleta maior que o desenho — cada
+valor com o motivo ao lado, e separa entrada de regra em `src/core/input.js`.
+
 Prova: clipe em movimento antes e depois nas mesmas condições, contagem de quadros
 entre entrada e primeira resposta, repetição da ação por um minuto sem objetivo, e
 o mesmo teste em cada dispositivo de entrada suportado. Teste automatizado confirma

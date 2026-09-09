@@ -668,17 +668,21 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual((self.root / "evidence/01.log").read_text().strip(), literal)
         self.assertFalse((self.project / "injected").exists())
 
-    def test_verify_records_a_declared_capability_only_when_the_run_passes(self):
+    def test_verify_records_a_declared_capability_as_a_claim_never_as_verification(self):
         ok = game.verify(self.project, [], [sys.executable, "-c", "pass"], self.root / "ok", 30, ["pause", "reset", "pause"])
         self.assertEqual(list(ok["capabilities"]), ["pause", "reset"])
-        self.assertEqual(ok["capabilities"]["pause"]["status"], "demonstrated")
+        # Um comando vazio passa e mesmo assim a capacidade sai como alegação: o
+        # harness não sabe se os comandos exercitam pause, e não pode fingir que sabe.
+        self.assertEqual(ok["capabilities"]["pause"]["status"], "claimed")
+        self.assertNotIn("verified", json.dumps(ok["capabilities"]))
         self.assertEqual(ok["capabilities"]["pause"]["claimed_by"], "operator")
         self.assertEqual(ok["capabilities"]["pause"]["logs"], ["01.log"])
         self.assertIn("não confere que eles a exercitam", ok["capabilities_scope"])
         self.assertEqual(ok["experience_status"], "not_assessed")
         broken = game.verify(self.project, [], [sys.executable, "-c", "raise SystemExit(3)"], self.root / "falha", 30, ["seed"])
         self.assertEqual(broken["technical_status"], "failed")
-        self.assertEqual(broken["capabilities"]["seed"]["status"], "not_demonstrated")
+        self.assertEqual(broken["capabilities"]["seed"]["status"], "unsupported")
+        self.assertFalse(broken["capabilities"]["seed"]["commands_passed"])
         saved = json.loads((self.root / "falha/verification.json").read_text())
         self.assertEqual(saved["capabilities"], broken["capabilities"])
 
@@ -774,6 +778,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(set(game.STAGE_TIERS.values()) <= set(game.BAR_TIERS))
         for dimensions in game.FOCUS_DIMENSIONS.values():
             self.assertTrue(set(dimensions) <= set(game.BAR_DIMENSIONS))
+
+    def test_documentation_names_the_same_capabilities_and_studies_the_code_has(self):
+        # A auditoria encontrou a skill citando quatro capacidades e "determinismo",
+        # que não existe no conjunto. Documento e constante precisam andar juntos.
+        for name in ("SKILL.md", "README.md"):
+            text = (game.FRAMEWORK / name).read_text(encoding="utf-8")
+            missing = [item for item in game.CAPABILITIES if item not in text]
+            self.assertEqual(missing, [], f"{name} não cita: {missing}")
+        sources = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
+        for focus in game.FOCI:
+            marker = f"`{focus}`"
+            with self.subTest(focus=focus):
+                self.assertIn(marker, sources, f"sources.md não declara a cobertura de estudos de {focus}")
+        empty = [focus for focus in game.FOCI if focus not in game.FOCUS_STUDIES]
+        self.assertTrue(empty, "se todo foco tiver catálogo, a ressalva em sources.md perde o objeto")
+        self.assertIn("vem\nvazio", sources.replace("\r", ""))
+
+    def test_no_command_ever_emits_verified_as_a_status(self):
+        # O invariante é estrutural, não lexical: nada que o harness devolve pode
+        # dizer "verified". Nenhum comando executa o jogo, então nada pode afirmá-lo.
+        self.package()
+        destination = self.root / "projeto-do-invariante"
+        game.init(destination, "canvas-arcade")
+        payloads = [
+            game.doctor(self.root),
+            game.scan(destination),
+            game.next_step(destination, "lifecycle"),
+            game.context(destination, "lifecycle", "vertical-slice"),
+            game.verify(destination, [], [sys.executable, "-c", "pass"], self.root / "prova", 30, list(game.CAPABILITIES)),
+        ]
+        def statuses(node):
+            if isinstance(node, dict):
+                for key, value in node.items():
+                    if key == "status" and isinstance(value, str):
+                        yield value
+                    yield from statuses(value)
+            elif isinstance(node, list):
+                for value in node:
+                    yield from statuses(value)
+
+        observed = {value for payload in payloads for value in statuses(payload)}
+        self.assertNotIn("verified", observed)
+        self.assertTrue({"mentioned", "claimed"} <= observed, observed)
 
     def test_framework_documentation_has_no_broken_internal_link(self):
         # Os starters ficam de fora porque seus documentos ainda têm marcadores;

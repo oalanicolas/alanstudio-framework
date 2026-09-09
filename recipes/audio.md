@@ -39,6 +39,11 @@ Toda informação sonora precisa de equivalente visual — é requisito de
 é obrigatória: origem, crédito e condição de uso, registrados junto ao asset.
 Reuso não concede licença nova.
 
+Implementação concreta: `src/game/audio.js` do starter `canvas-arcade` traz
+barramentos, prioridade, ducking, limite de vozes e legenda, com os seis papéis
+sonoros declarados e **vazios** — `audioGaps()` transforma a ausência em lacuna
+observável, em vez de escondê-la atrás de bipes sintetizados.
+
 Prova: cena densa com um evento crítico audível, medição de pico e volume
 percebido, sessão longa verificando fadiga do som mais repetido, jogo completável
 com o áudio desligado, e a proveniência de tudo que foi embarcado. Degraus:

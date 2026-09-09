@@ -38,6 +38,11 @@ Confirme onde a prova vale. Editor não é build exportado; máquina de desenvol
 quente não é máquina do jogador fria. Aquecimento, cache e ferramentas de perfil
 alteram o próprio resultado que estão medindo.
 
+Implementação concreta: `tools/budget.mjs` do starter `canvas-arcade` mede a
+simulação por percentil, não por média, e declara no próprio resultado que não
+cobre render, áudio, carregamento nem o dispositivo alvo. O laço de passo fixo em
+`src/core/loop.js` é o que torna essa medição comparável entre execuções.
+
 Prova: distribuição de tempo de quadro na cena de pior caso, primeiro carregamento
 em ambiente frio, comparação visual em movimento confirmando que o acabamento
 sobreviveu, e o consumo após um ciclo completo de montar e descartar. Degraus:

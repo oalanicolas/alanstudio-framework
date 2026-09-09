@@ -35,11 +35,11 @@ python3 scripts/game.py verify . --script test --output /tmp/qa-01 \
   --proves act --proves advance --proves capture --proves dispose
 ```
 
-`--proves` registra no recibo quais capacidades a execução se propõe a demonstrar.
-Aqui a declaração se sustenta porque `tests/lifecycle.test.mjs` e
-`tests/determinism.test.mjs` exercitam exatamente essas oito. Em um projeto
-adaptado, só declare o que os seus testes cobrirem: o harness confere o resultado
-dos comandos, não a cobertura deles.
+`--proves` anexa ao recibo a alegação de que a execução exercita essas capacidades,
+com autor, argv e log. Aqui a alegação se sustenta porque `tests/lifecycle.test.mjs`
+e `tests/determinism.test.mjs` cobrem exatamente essas oito — não porque o harness
+tenha conferido. Em um projeto adaptado, só declare o que os seus testes cobrirem:
+o recibo sai como `claimed`, nunca como verificado.
 
 Recibo verde comprova os comandos executados. Não comprova arte, ritmo,
 diversão nem que o jogo é bom.

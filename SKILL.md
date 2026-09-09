@@ -71,10 +71,12 @@ evidência, preservando a direção do usuário e a qualidade visual aprovada.
    registra comandos explícitos e logs. Build verde não comprova diversão,
    arte, reinício, rede, direitos de assets nem aprovação humana. Capacidade
    desconhecida permanece desconhecida até ser demonstrada — e `context` só sabe
-   dizer `mentioned`, porque lê arquivos sem executá-los. Quando os testes do
-   projeto de fato exercitarem pause, reset, seed ou determinismo, declare no
-   recibo com `verify --proves <capacidade>`. A declaração é sua, não do
-   repositório; declare só o que os comandos cobrirem.
+   dizer `mentioned` sobre as oito capacidades conhecidas (pause, reset, seed,
+   observe, act, advance, capture, dispose), porque lê arquivos sem executá-los.
+   Quando os testes do projeto de fato exercitarem alguma delas, anexe a alegação
+   ao recibo com `verify --proves <capacidade>`: ela sai como `claimed`, com autor,
+   argv e log, nunca como verificada. A afirmação é sua, não do repositório;
+   declare só o que os comandos cobrirem.
 7. Compare antes/depois em condições equivalentes e em movimento quando houver
    efeito visual. Corrija regressões, registre decisões e hipóteses descartadas,
    cumpra `continuity.before_close` e `documentation.before_close`. Não promova

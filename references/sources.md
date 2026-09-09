@@ -31,6 +31,15 @@ inteiro.
 Nenhuma regra foi copiada como mecânica obrigatória para todos os gêneros.
 `context --focus` lista os catálogos deste mapa que existirem no irmão.
 
+**A cobertura não é uniforme, e isso não é acidente.** Só seis focos têm catálogo:
+`create`, `mechanics`, `lifecycle`, `content`, `visual` e `network` — os que
+correspondem aos recortes efetivamente estudados. Em `architecture`, `feel`,
+`performance`, `accessibility`, `audio`, `persistence` e `release`, `studies` vem
+vazio, porque não houve extração para eles. Vazio aqui significa **não estudado**,
+não “nada relevante existe”. Preencher esses focos exigiria novos recortes com o
+mesmo rigor; inventar citações para emparelhar a lista seria o oposto do que este
+mapa existe para fazer.
+
 ## Pré-produção e checagem
 
 Na versão 0.2, leitura adicional dos templates no mesmo commit BMad

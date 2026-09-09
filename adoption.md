@@ -10,27 +10,28 @@ Duas lacunas entre o que o framework prometia e o que entregava.
 **Começar.** Até 0.8 o harness sabia ler um jogo existente e não sabia criar um.
 `doctor` observa ambiente, integridade e os atalhos de skill do host — vigente,
 desatualizado, ausente — sem escrever nada. `init` monta um projeto a partir de um
-starter do acervo, substitui os marcadores e gera os documentos do ciclo como
-rascunho declarado; não instala dependências e não toca no starter de origem.
+starter do acervo, substitui os marcadores e gera como rascunho declarado os sete
+documentos que cobrem as áreas mínimas; não instala dependências e não toca no
+starter de origem.
 `next` deriva uma proposta ordenada do estado no disco. `--root` passa a ser
 aceito antes e depois do subcomando, como a documentação já afirmava.
 
 **Acabar.** A [barra de acabamento](references/production-bar.md) nomeia cinco
-degraus em dez dimensões de ofício, com a observação que comprova cada degrau, e
+degraus em dez dimensões de ofício, com a observação que sustenta cada degrau, e
 chega em todo `context` pelo campo `production_bar`. Seis receitas novas — feel,
 performance, acessibilidade, áudio, persistência, release — e a etapa `release`
 fecham o ciclo. O starter `canvas-arcade` existe para que o passo REUSE tenha um
 candidato real: loop de passo fixo, RNG semeado, save versionado com migração,
-mixer com legendas e um contrato de ciclo de vida **provado** por testes headless,
-em vez de mencionado.
+mixer com legendas e um contrato de ciclo de vida exercitado por testes headless,
+em vez de apenas mencionado.
 
-**Sair de “mencionado”.** `context` lê arquivos e por isso só sabia dizer
-`mentioned` sobre pause, reset, seed e determinismo — `verified` era estado
-inalcançável, enquanto a barra exige determinismo demonstrado. `verify --proves
-<capacidade>` registra no recibo, com comandos e logs, o que a execução se propõe
-a demonstrar. A declaração é de quem executa; nenhum arquivo do repositório
-seleciona capacidade, e o harness confere o resultado dos comandos, não a
-cobertura deles.
+**Alegação com recibo.** `context` lê arquivos e por isso só sabe dizer
+`mentioned` sobre as oito capacidades conhecidas. `verify --proves <capacidade>`
+**não** as promove a verificadas — o harness não sabe se um comando exercita
+pause. O que ele acrescenta é uma alegação com autor, data, argv e log: `claimed`
+com recibo verde, `unsupported` quando a execução falha. A afirmação deixa de sumir
+na prosa e passa a ser contestável. Nenhum arquivo do repositório seleciona
+capacidade.
 
 O que 0.9 **não** afirma: nenhum comando atribui um degrau da barra, e a escada não
 foi calibrada contra uma amostra de jogos publicados — é linguagem para observar,

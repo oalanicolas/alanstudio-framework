@@ -21,6 +21,11 @@ otimizar. Medição serve para escolher uma implementação melhor preservando a
 jogabilidade. Não corte sombras, reflexos, transparência, textura, detalhes ou
 animação como solução automática de FPS.
 
+Trabalho dedicado a orçamento de quadro, pior percentil, engasgo de carregamento e
+custo por ciclo de vida tem receita própria: [performance](performance.md), por
+`--focus performance`. Aqui o piso é o inverso — a qualidade visual aprovada não é
+moeda de troca por número.
+
 Na câmera, observe antecipação de curvas/ameaças, oclusão do jogador, estabilidade,
 escala e transição. No mundo, compare silhueta, materiais, luz, sombras, efeitos e
 coerência em movimento, não apenas a melhor screenshot.

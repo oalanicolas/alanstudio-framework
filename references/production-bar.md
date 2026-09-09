@@ -46,7 +46,9 @@ deliberadamente em `slice` e estar correto; o erro é chamá-lo de publicável.
 
 ## As dez dimensões
 
-Cada dimensão tem uma pergunta, os degraus e a observação que comprova o degrau.
+Cada dimensão tem uma pergunta, os degraus e a observação que sustenta o degrau.
+Sustenta, não comprova: quem observa é uma pessoa ou o agente, e o degrau vale o
+que valem a condição e o autor declarados junto dele.
 Selecione as dimensões pertinentes ao pedido; um jogo sem áudio registra a escolha
 em vez de fingir o degrau.
 
@@ -144,9 +146,10 @@ entre tempo de sessão e interesse. Piso: [qualidade](quality.md).
 - `flagship`: o jogador nunca pensa no assunto.
 
 Prova: ciclo de transições, migração entre versões de save, interrupção forçada.
-Um teste que exercite pause, reset, seed ou determinismo pode ser registrado com
-`verify --proves <capacidade>`, que anexa comandos e logs ao recibo. O recibo
-sustenta a declaração; ele não a substitui.
+Determinismo não é uma capacidade nomeada pelo harness; o que um teste de
+determinismo exercita são `seed`, `advance` e `observe`, e essas podem ser anexadas
+ao recibo com `verify --proves <capacidade>`. O recibo guarda a alegação com autor,
+argv e log — ele a torna contestável, não verdadeira.
 Receitas: [lifecycle](../recipes/lifecycle.md) e [persistence](../recipes/persistence.md).
 
 ### `performance` — estabilidade, não média
@@ -219,7 +222,11 @@ a de desenvolvimento. Receita: [release](../recipes/release.md).
 
 1. `context` já devolve, em `production_bar`, as dimensões pertinentes ao foco e à
    etapa, com o degrau que aquela etapa pretende atingir. Não é um diagnóstico:
-   é a seleção do que precisa ser observado neste trabalho.
+   é a seleção do que precisa ser observado neste trabalho. `brief`, `mda` e `poc`
+   pretendem `prototype`; `gdd`, `prd` e `tdd`, `playable`; `vertical-slice` e
+   `art-bible`, `slice`; `mvp`, `qa` e `release`, `shippable`. `devlog` e `audit`
+   devolvem `tier_target: null` de propósito — registrar e auditar não pretendem
+   degrau nenhum.
 2. Antes de subir uma dimensão que já está alta, procure a mais baixa entre as
    pertinentes. Registre o degrau observado e a evidência no QA ou no Devlog.
 3. Ao declarar um degrau, declare também a condição: dispositivo, versão, cena e

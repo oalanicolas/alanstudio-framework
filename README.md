@@ -24,10 +24,12 @@ python3 scripts/game.py next /caminho/do/laboratorio/meu-jogo --focus feel
 atalhos de skill do host — vigente, desatualizado ou ausente. Não escreve nada;
 sinaliza bloqueio pelo código de saída.
 
-`init` copia um starter, substitui os marcadores e cria os documentos do ciclo em
-`docs/` como **rascunho declarado**. Não instala dependências, não toca no starter
-de origem e recusa destino ocupado. O resultado é reconhecido por `scan` e
-provável por `verify` no mesmo turno.
+`init` copia um starter, substitui os marcadores e cria em `docs/` os sete
+documentos que cobrem as áreas mínimas — brief, gdd, mda, tdd, art-bible, devlog e
+qa — como **rascunho declarado**. Os demais templates do ciclo entram depois, com
+`template`, quando a etapa chegar. Não instala dependências, não toca no starter de
+origem e recusa destino ocupado. `scan` reconhece o resultado no mesmo turno, e
+`verify` roda os validadores do starter onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → rascunho → documento sem versão
@@ -191,17 +193,20 @@ python3 scripts/game.py verify /caminho/do/jogo --output /tmp/jogo-qa-01 --root 
 inédita. Destino existente é recusado. Build verde não prova arte, reinício, rede
 nem que o jogo é divertido. `experience_status` continua `not_assessed`.
 
-`context` só consegue dizer `mentioned` sobre pause, reset, seed e as demais
-capacidades: ele lê arquivos, não executa nada. `--proves` fecha esse beco.
+`context` só sabe dizer `mentioned` sobre as oito capacidades conhecidas — pause,
+reset, seed, observe, act, advance, capture, dispose — porque lê arquivos sem
+executá-los. `--proves` **não** promove nenhuma delas a verificada; o harness não
+tem como saber se um comando exercita pause.
 
 ```sh
 python3 scripts/game.py verify /caminho/do/jogo --script test --output /tmp/jogo-qa-02 --proves pause --proves reset --proves seed
 ```
 
-O recibo passa a registrar cada capacidade declarada como `demonstrated` ou
-`not_demonstrated`, com os comandos e os logs anexados. A declaração é de **quem
-executa**, nunca do repositório: nenhum arquivo do projeto seleciona capacidade,
-e o harness confere que os comandos passaram, não que eles exercitam aquilo.
+O que ele acrescenta é uma alegação com autor, data, argv e log: `claimed` quando
+os comandos passaram, `unsupported` quando falharam. Em vez de sumir na prosa, a
+afirmação fica anexada a um recibo e pode ser contestada por quem ler. A declaração
+é de **quem executa**, nunca do repositório: nenhum arquivo do projeto seleciona
+capacidade, e `claimed` continua não sendo `verified`.
 
 ## Três camadas
 

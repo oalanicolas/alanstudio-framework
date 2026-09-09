@@ -4,10 +4,12 @@ Entrada: transição ou estado que precisa ser criado, reproduzido ou encerrado.
 
 Antes de abstrair, localize os caminhos reais de início, atualização, render,
 eventos, áudio, pausa, término, reinício e descarte. Declare o que é controlável e
-o que permanece desconhecido. Os nomes `pause`, `reset`, `observe`, `act`, `advance`, `capture`
-e `dispose` são vocabulário de inspeção; não uma API implementada pelo harness.
-`context --focus lifecycle` lista catálogos do foco e menções nesses arquivos,
-sem promover token a capacidade verificada.
+o que permanece desconhecido. Os oito nomes `pause`, `reset`, `seed`, `observe`,
+`act`, `advance`, `capture` e `dispose` são vocabulário de inspeção; não uma API
+implementada pelo harness. `context --focus lifecycle` lista catálogos do foco e
+menções nesses arquivos, sem promover token a capacidade verificada. Quando um
+teste do projeto exercitar um deles, `verify --proves <nome>` anexa a alegação ao
+recibo, com autor, argv e log — `claimed`, nunca `verified`.
 
 Examine separadamente:
 

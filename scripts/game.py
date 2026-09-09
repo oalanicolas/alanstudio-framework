@@ -1013,23 +1013,26 @@ def verify(project, scripts, command, output, timeout, proves=()):
             break
     passed = all(item["exit_code"] == 0 for item in report["commands"]) and len(report["commands"]) == len(commands)
     report.update(technical_status="passed" if passed else "failed", finished_at=datetime.now(timezone.utc).isoformat())
-    # `context` só consegue dizer `mentioned`: ele lê arquivos, não executa nada.
-    # Sem este registro, `verified` seria um estado inalcançável, e a barra pede
-    # determinismo demonstrado, não presumido. O recibo prova que os comandos
-    # passaram; que eles exercitem a capacidade é afirmação de quem executou.
+    # `context` só sabe dizer `mentioned`: ele lê arquivos, não executa nada. Este
+    # bloco não promove nada a verificado — o harness não tem como saber se os
+    # comandos exercitam a capacidade. O que ele acrescenta é uma afirmação com
+    # autor, data, argv e log: em vez de sumir na prosa, a alegação fica anexada
+    # a um recibo e pode ser contestada por quem ler.
     report["capabilities"] = {
         name: {
-            "status": "demonstrated" if passed else "not_demonstrated",
+            "status": "claimed" if passed else "unsupported",
+            "commands_passed": passed,
             "by": [item["argv"] for item in report["commands"]],
             "logs": [item["log"] for item in report["commands"]],
             "claimed_by": "operator",
-            "limit": "O recibo cobre o resultado dos comandos, não a cobertura deles sobre a capacidade.",
+            "limit": "Alegação de quem executou, apoiada em recibo verde. Recibo verde não é cobertura da capacidade.",
         }
         for name in claimed
     }
     report["capabilities_scope"] = (
-        "Capacidade só aparece aqui porque quem executou a declarou em --proves. O harness confere que a "
-        "capacidade existe no conjunto conhecido e que os comandos passaram; não confere que eles a exercitam."
+        "Capacidade só aparece aqui porque quem executou a declarou em --proves. O harness confere que o nome "
+        "pertence ao conjunto conhecido e que os comandos passaram; não confere que eles a exercitam. "
+        "`claimed` é alegação registrada, não verificação: continua valendo que mentioned não é verified."
     )
     receipt.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     return report

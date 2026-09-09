@@ -46,6 +46,11 @@ Registre a versão entregue, o conteúdo dela, o que ficou de fora e as lacunas
 conhecidas. Uma entrega sem essa nota impede diagnosticar o primeiro relato de
 problema, porque ninguém sabe o que estava dentro dela.
 
+Implementação concreta a adaptar: o starter `canvas-arcade` não tem dependências
+e serve por `tools/serve.mjs`, o que torna o clone limpo trivial de reproduzir —
+e também significa que o passo de export ainda não existe ali. Esse é justamente o
+primeiro trabalho de release em um projeto derivado dele.
+
 Prova: build a partir de clone limpo, execução do artefato exportado em máquina
 que não é a de desenvolvimento, primeira execução sem estado anterior, medição de
 tamanho e tempo de carga, e a lista de proveniência do que foi embarcado. `verify`

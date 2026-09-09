@@ -35,6 +35,11 @@ Não declare cobertura que não observou. Verificação automática de contraste
 e não substitui uma sessão com o modo ativo. Uma lacuna registrada com motivo vale
 mais que uma lista de recursos não testados.
 
+Implementação concreta: o starter `canvas-arcade` guarda remapeamento e redução de
+movimento em `src/core/settings.js`, herda a preferência do sistema, desenha formas
+distintas além da cor em `src/game/render.js` e mantém legenda equivalente para
+toda informação sonora em `src/game/audio.js`.
+
 Prova: uma sessão completa com cada modo ativado, o jogo terminado sem áudio,
 verificação de contraste na cena de pior caso, remapeamento aplicado e
 persistido entre execuções, e a declaração explícita do que o jogo ainda não

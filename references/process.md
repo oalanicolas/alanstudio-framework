@@ -87,11 +87,12 @@ alternativas nas mesmas condições e use revisão independente quando autorizad
 proporcional; registre divergências que mudem a escolha. Não faça média entre arte,
 correção e diversão para compensar regressões.
 
-`context` só sabe dizer `mentioned` sobre pause, reset, seed e determinismo, porque
-lê arquivos sem executá-los. Quando os testes do projeto realmente exercitarem uma
-dessas capacidades, registre no recibo com `verify --proves <capacidade>`. A
-declaração é de quem executa, e o recibo cobre o resultado dos comandos, não a
-cobertura deles.
+`context` só sabe dizer `mentioned` sobre as oito capacidades conhecidas — pause,
+reset, seed, observe, act, advance, capture, dispose — porque lê arquivos sem
+executá-los. Quando os testes do projeto realmente exercitarem uma delas, anexe a
+alegação ao recibo com `verify --proves <capacidade>`. Ela sai como `claimed`, com
+autor, argv e log; o recibo cobre o resultado dos comandos, não a cobertura deles,
+e `claimed` não é `verified`.
 
 ## 5. Encerrar e aprender
 
