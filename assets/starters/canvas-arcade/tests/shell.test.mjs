@@ -167,6 +167,71 @@ test("o preset de uma mão avança no cluster direito", () => {
   game.dispose();
 });
 
+test("o preset de uma mão guarda no cluster direito", () => {
+  const { game, frame, hold, release } = shell();
+  game.updateSettings({ oneHand: true, bindings: ONE_HAND_BINDINGS });
+  game.start();
+  frame();
+  let collected = false;
+  for (let index = 0; index < 600 && !collected; index += 1) {
+    const snap = game.observe();
+    const orb = snap.entities.find((entity) => entity.kind === "orb");
+    if (orb) {
+      const delta = orb.x - snap.player.x;
+      if (delta < -1) {
+        release("KeyL");
+        hold("KeyJ");
+      } else if (delta > 1) {
+        release("KeyJ");
+        hold("KeyL");
+      } else {
+        release("KeyJ");
+        release("KeyL");
+      }
+    }
+    frame();
+    collected = game.observe().chain > 0;
+  }
+  assert.ok(collected, "J/L precisa alcançar o orbe: sem coleta o verbo de uma mão não fecha");
+  release("KeyJ");
+  release("KeyL");
+  hold("ArrowDown");
+  frame();
+  assert.equal(game.observe().stats.banks, 0, "seta não guarda no preset");
+  release("ArrowDown");
+  hold("KeyK");
+  for (let index = 0; index < 10; index += 1) frame();
+  assert.ok(game.observe().stats.banks >= 1, "K precisa guardar");
+  game.dispose();
+});
+
+test("o preset de uma mão pausa e reinicia no cluster direito", () => {
+  const { game, frame, hold, release } = shell();
+  game.updateSettings({ oneHand: true, bindings: ONE_HAND_BINDINGS });
+  game.start();
+  frame();
+  frame(400);
+  assert.ok(game.observe().tick > 0);
+  hold("Escape");
+  frame();
+  assert.equal(game.paused, false, "Escape não pausa no preset");
+  release("Escape");
+  hold("KeyP");
+  frame();
+  assert.equal(game.paused, true, "P precisa pausar");
+  release("KeyP");
+  hold("KeyR");
+  frame();
+  assert.equal(game.paused, true, "R não reinicia no preset");
+  assert.ok(game.observe().tick > 0);
+  release("KeyR");
+  hold("KeyO");
+  frame();
+  assert.equal(game.paused, false, "O precisa sair da pausa");
+  assert.equal(game.observe().tick, 0, "O precisa reiniciar");
+  game.dispose();
+});
+
 test("dispose para de responder ao teclado", () => {
   const { game, press, frame } = shell();
   game.start();

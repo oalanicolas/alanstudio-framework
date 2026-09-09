@@ -6,7 +6,8 @@
     "verb": "coletar orbes e guardar a corrente antes do estilhaço",
     "move": "A/D ou setas",
     "dash": "Espaço ou K",
-    "bank": "S ou J"
+    "bank": "S ou J",
+    "hand": "IJKL + P/O"
   },
   "substitutions": [
     {

@@ -2786,7 +2786,7 @@ def starter_manifest(starter):
     return manifest
 
 
-CYCLE_KEYS = ("verb", "move", "dash", "bank")
+CYCLE_KEYS = ("verb", "move", "dash", "bank", "hand")
 
 
 def starter_cycle(starter):
@@ -2817,6 +2817,8 @@ def cycle_line(cycle):
         parts.append(f"Avançar {cycle['dash']}.")
     if cycle.get("bank"):
         parts.append(f"Guardar {cycle['bank']}.")
+    if cycle.get("hand"):
+        parts.append(f"Uma mão: {cycle['hand']}.")
     return " ".join(parts)
 
 
@@ -2993,7 +2995,8 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
         "scope": (
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
             "aponta o comando que abre o jogo. Se o starter declara o verbo e "
-            "as teclas, o prompt as nomeia — não executa o jogo. Depois de uma "
+            "as teclas, o prompt as nomeia — inclusive o cluster de uma mão, "
+            "se o starter o declara. Não executa o jogo. Depois de uma "
             "partida, o próximo comando do harness é `note`, não `next`. Não "
             "instala dependências e não avalia a proposta. `--idea` entra no "
             "brief como frase e, se houver `data/copy.json`, na tela do "
@@ -3045,7 +3048,9 @@ def guide_cycle(destination=None, starter=None, idea=None):
     }
     if cycle:
         play_step["verb"] = cycle["verb"]
-        play_step["controls"] = {key: cycle[key] for key in ("move", "dash", "bank") if key in cycle}
+        play_step["controls"] = {
+            key: cycle[key] for key in ("move", "dash", "bank", "hand") if key in cycle
+        }
     return {
         "schema_version": 1,
         "command": "guide",
