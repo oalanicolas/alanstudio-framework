@@ -1000,6 +1000,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("starter_manifest", report["blocking"])
         self.assertFalse(report["ready"])
 
+    # A tabela do starter é a única declaração de degrau que o repositório
+    # publica. Escrita em prosa livre, ela derivava: linhas citavam o critério de
+    # dois degraus acima como se fosse a tarefa seguinte.
+    def test_the_starter_declares_a_tier_for_every_dimension_the_bar_names(self):
+        row = re.compile(r"^\| `(\w+)` \| `(\w+)` \| `(\w+)`: (.+?) \|$", re.MULTILINE)
+        for name in game.starters():
+            readme = (Path(game.STARTERS_ROOT) / name / "README.md").read_text(encoding="utf-8")
+            rows = row.findall(readme)
+            self.assertEqual([item[0] for item in rows], list(game.BAR_DIMENSIONS), name)
+            for dimension, tier, target, gap in rows:
+                self.assertIn(tier, game.BAR_TIERS, dimension)
+                self.assertIn(target, game.BAR_TIERS, dimension)
+                # O critério tem de ser o do degrau imediatamente seguinte:
+                # apontar dois acima transforma a tarefa em aspiração.
+                self.assertEqual(
+                    game.BAR_TIERS.index(target), game.BAR_TIERS.index(tier) + 1,
+                    f"{name}/{dimension}: declara `{tier}` e mira `{target}`",
+                )
+                self.assertGreater(len(gap.strip()), 20, f"{name}/{dimension}: lacuna sem conteúdo")
+
+    # O degrau percebido é o mínimo entre as dimensões, não a média. A frase de
+    # leitura honesta conta quantas dimensões estão no piso, e essa contagem
+    # envelhece calada quando alguém sobe uma linha da tabela.
+    def test_the_starter_reading_counts_the_dimensions_that_are_really_at_the_floor(self):
+        escrito = {1: "uma", 2: "duas", 3: "três", 4: "quatro", 5: "cinco", 6: "seis", 7: "sete"}
+        row = re.compile(r"^\| `(\w+)` \| `(\w+)` \|", re.MULTILINE)
+        leitura = re.compile(r"este projeto é um (\w+)\*\*, porque (\w+) dimensões")
+        for name in game.starters():
+            readme = (Path(game.STARTERS_ROOT) / name / "README.md").read_text(encoding="utf-8")
+            tiers = [tier for _, tier in row.findall(readme)]
+            self.assertTrue(tiers, name)
+            lowest = min(tiers, key=game.BAR_TIERS.index)
+            found = leitura.search(readme)
+            self.assertIsNotNone(found, f"{name}: sem frase de leitura honesta")
+            self.assertEqual(found.group(2), escrito[tiers.count(lowest)], f"{name}: contagem fora da tabela")
+            self.assertEqual(game.BAR_TIERS[game.BAR_TIERS.index(lowest)], lowest)
+            self.assertIn(found.group(1), ("protótipo", "jogável", "fatia", "publicável", "carro-chefe"), name)
+
     # Uma troca cujo resultado contém o valor da próxima cascatearia. Passo único,
     # do valor mais longo para o mais curto, é o que impede.
     def test_a_replacement_never_feeds_the_next_one(self):

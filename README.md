@@ -24,12 +24,13 @@ python3 scripts/game.py next /caminho/do/laboratorio/meu-jogo --focus feel
 atalhos de skill do host — vigente, desatualizado ou ausente. Não escreve nada;
 sinaliza bloqueio pelo código de saída.
 
-`init` copia um starter, substitui os marcadores e cria em `docs/` os sete
-documentos que cobrem as áreas mínimas — brief, gdd, mda, tdd, art-bible, devlog e
-qa — como **rascunho declarado**. Os demais templates do ciclo entram depois, com
-`template`, quando a etapa chegar. Não instala dependências, não toca no starter de
-origem e recusa destino ocupado. `scan` reconhece o resultado no mesmo turno, e
-`verify` roda os validadores do starter onde houver Node.
+`init` copia um starter, troca pelo nome do projeto os valores que o
+`starter.json` dele declara e cria em `docs/` os sete documentos que cobrem as
+áreas mínimas — brief, gdd, mda, tdd, art-bible, devlog e qa — como **rascunho
+declarado**. Os demais templates do ciclo entram depois, com `template`, quando a
+etapa chegar. Não instala dependências, não toca no starter de origem e recusa
+destino ocupado. `scan` reconhece o resultado no mesmo turno, e `verify` roda os
+validadores do starter onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → rascunho → documento sem versão
@@ -96,9 +97,18 @@ hash de estado, abstração de entrada (teclado, ponteiro, gamepad, remapeável)
 mixer com barramentos/ducking/limite de vozes/legendas, save versionado com
 migração e escrita atômica, e renderizador com alto contraste e redução de
 movimento. Expõe `pause`, `reset`, `seed`, `observe`, `act`, `advance`, `capture`
-e `dispose` — e **prova cada uma** em 59 testes headless (`npm test`), além de
+e `dispose` — e **prova cada uma** em testes headless (`npm test`), além de
 `npm run budget` para o orçamento de simulação. O README do starter declara em
 que degrau cada dimensão está, incluindo as que ainda não subiram.
+
+Um starter é referência **executável**: `cd assets/starters/canvas-arcade && npm
+run serve` abre o jogo antes de qualquer `init`. É por isso que os arquivos
+carregam valores reais em vez de `{{TOKEN}}` — um token no `<title>` apareceria na
+aba do navegador — e por isso que cada starter tem um `starter.json` dizendo quais
+valores `init` troca e em quais arquivos. O escopo por arquivo é o que impede uma
+troca de nome de alcançar um import ou um caminho relativo que só se parece com o
+nome. Manifesto fora de sincronia com os arquivos é bloqueio em `doctor` e recusa
+em `init`, antes de qualquer cópia.
 
 ## Checagem e continuidade
 

@@ -20,6 +20,12 @@ npm run serve      # abre em http://localhost:8080
 Módulos ES não carregam por `file://`, então abrir `index.html` direto no
 navegador não funciona; o servidor local existe só por isso.
 
+Como starter, esta pasta serve e abre antes de qualquer `init`: os arquivos
+carregam valores reais, não marcadores. `starter.json` declara quais deles `init`
+troca pelo nome do projeto — e em quais arquivos, para que uma troca de nome não
+alcance um import ou um caminho relativo que só se parece com ele. Em um projeto
+já criado, `starter.json` não existe: ele é metadado do starter, não do jogo.
+
 ## Como verificar
 
 ```sh
@@ -75,20 +81,23 @@ Pela [barra de acabamento](../../../references/production-bar.md), o degrau
 percebido de um jogo é o **mínimo** entre suas dimensões. Este starter começa
 assim, e a coluna “o que falta” é o mapa das próximas tarefas:
 
-| Dimensão | Degrau | O que falta para o próximo |
-| --- | --- | --- |
-| `feel` | jogável | som de contato e observação em movimento |
-| `legibility` | jogável | leitura confirmada em cena cheia, no dispositivo alvo |
-| `art_direction` | protótipo | design system preenchido, com tokens que têm consumidor |
-| `audio_mix` | protótipo | os seis papéis sonoros declarados ainda estão vazios |
-| `pacing` | protótipo | playtest com alguém que nunca viu o jogo |
-| `state_trust` | fatia | interrupção abrupta real, além do teste de dado inválido |
-| `performance` | jogável | orçamento de quadro medido na plataforma alvo |
-| `accessibility` | fatia | contraste verificado e opções de dificuldade |
-| `content_scale` | protótipo | conteúdo como dado, fora do código |
-| `release` | protótipo | build exportável verificado fora desta máquina |
+Cada linha nomeia o critério do degrau **imediatamente** seguinte, não o de um
+degrau distante: é isso que a torna uma tarefa em vez de uma aspiração.
 
-**Leitura honesta: este projeto é um protótipo**, porque quatro dimensões estão
+| Dimensão | Degrau | Critério do degrau seguinte |
+| --- | --- | --- |
+| `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — falta o som, e o perdão de entrada precisa ser medido, não só anotado |
+| `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — o que existe hoje é medição de placa e faixa em quadro estático |
+| `art_direction` | `prototype` | `playable`: escala, pivot e linguagem consistentes por decisão registrada; hoje são primitivas que se assumem placeholder |
+| `audio_mix` | `prototype` | `playable`: som licenciado nas ações centrais, com origem registrada — os seis papéis estão declarados e vazios |
+| `pacing` | `prototype` | `playable`: o primeiro ciclo ensinar a ação sem depender da tabela de comandos da página |
+| `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada, perda de foco — além do teste de dado inválido |
+| `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
+| `accessibility` | `slice` | `shippable`: contraste verificado por medição e opções de dificuldade ou assistência |
+| `content_scale` | `prototype` | `playable`: conteúdo como dado, separado da regra e fora do código |
+| `release` | `prototype` | `playable`: build ou export que outra pessoa execute a partir do runbook |
+
+**Leitura honesta: este projeto é um protótipo**, porque cinco dimensões estão
 nesse degrau. Nenhuma quantidade de acabamento visual muda essa leitura antes
 delas subirem.
 
@@ -109,7 +118,12 @@ python3 scripts/game.py sfx copy <id> --to <projeto>/public/sfx --root <laborato
 ```
 
 Toda informação sonora já tem legenda equivalente: o jogo é completável com o
-áudio desligado, e precisa continuar sendo.
+áudio desligado, e precisa continuar sendo. Enquanto os papéis estão vazios, a
+legenda **é** a informação sonora, então ela tem faixa própria — encostada à
+direita, abaixo do relógio, posicionada a partir dos retângulos que o HUD
+reserva — e junta repetições consecutivas em uma linha com contagem. No centro
+inferior, onde nascia, ela caía sobre o jogador e sobre o rótulo do dash:
+`tests/render.test.mjs` mede isso em vez de confiar no olho.
 
 ## Estrutura
 

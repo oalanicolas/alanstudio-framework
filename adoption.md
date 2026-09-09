@@ -10,9 +10,11 @@ Duas lacunas entre o que o framework prometia e o que entregava.
 **Começar.** Até 0.8 o harness sabia ler um jogo existente e não sabia criar um.
 `doctor` observa ambiente, integridade e os atalhos de skill do host — vigente,
 desatualizado, ausente — sem escrever nada. `init` monta um projeto a partir de um
-starter do acervo, substitui os marcadores e gera como rascunho declarado os sete
-documentos que cobrem as áreas mínimas; não instala dependências e não toca no
-starter de origem.
+starter do acervo, troca os valores que o `starter.json` dele declara e gera como
+rascunho declarado os sete documentos que cobrem as áreas mínimas; não instala
+dependências e não toca no starter de origem. Um starter carrega valores reais em
+vez de marcadores porque ele é referência executável: serve e abre antes de
+qualquer `init`.
 `next` deriva uma proposta ordenada do estado no disco. `--root` passa a ser
 aceito antes e depois do subcomando, como a documentação já afirmava.
 
