@@ -8,7 +8,7 @@
 //
 // Uso: node tools/budget.mjs [--runs 20] [--seed 7]
 
-import { advance, createState, entityPoolStats, eventPoolStats, rngPoolStats, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
+import { advance, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
 import { createRenderer } from "../src/game/render.js";
 import { fingerprint } from "../src/core/hash.js";
 import { createRng } from "../src/core/rng.js";
@@ -67,6 +67,7 @@ let prints = new Set();
 let totalSteps = 0;
 const poolStart = entityPoolStats();
 const eventStart = eventPoolStats();
+const moteStart = motePoolStats();
 const rngStart = rngPoolStats();
 
 const renderer = createRenderer(stubCanvas(), { devicePixelRatio: 1 });
@@ -108,6 +109,7 @@ const simulation = percentile(samples);
 const presentation = percentile(presents);
 const pool = entityPoolStats();
 const events = eventPoolStats();
+const motes = motePoolStats();
 const rng = rngPoolStats();
 const report = {
   runs,
@@ -134,6 +136,12 @@ const report = {
     acquired: events.acquired - eventStart.acquired,
     released: events.released - eventStart.released,
     idle: events.idle,
+  },
+  mote_pool: {
+    created: motes.created - moteStart.created,
+    acquired: motes.acquired - moteStart.acquired,
+    released: motes.released - moteStart.released,
+    idle: motes.idle,
   },
   rng: {
     created: rng.created,

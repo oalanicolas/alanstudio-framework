@@ -29,6 +29,8 @@ test("o orçamento relata simulação e desenho sem aprovar quadro", async () =>
   assert.ok(report.entity_pool.acquired > report.entity_pool.created);
   assert.ok(Number.isFinite(report.event_pool.created));
   assert.ok(report.event_pool.acquired > report.event_pool.created);
+  assert.ok(Number.isFinite(report.mote_pool.created));
+  assert.ok(report.mote_pool.acquired > report.mote_pool.created);
   assert.equal(report.scene.name, "playing.run");
   assert.equal(report.scene.draw, "stub");
   assert.equal(report.scene.ticks, report.ticks_per_run);

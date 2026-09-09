@@ -451,6 +451,20 @@ test("o flash do erro some com redução de movimento", () => {
   assert.equal(still, true, "com menos movimento o sinal vira contorno, não some");
 });
 
+test("o rastro do impacto aparece e com menos movimento vira marca", () => {
+  const state = createState(5);
+  state.motes = [
+    { kind: "collect", x: 40, y: 80, sx: 40, sy: 80, vx: 0, vy: 0, life: 8 },
+    { kind: "hit", x: 90, y: 80, sx: 90, sy: 80, vx: 0, vy: 0, life: 8 },
+  ];
+  const flying = paint(state);
+  const sparks = flying.rects.filter((rect) => rect.width < 5 && rect.height < 5);
+  assert.ok(sparks.length >= 2, `esperava o rastro no campo: ${JSON.stringify(flying.rects.map((rect) => [rect.width, rect.style]))}`);
+  const still = paint(state, { reducedMotion: true });
+  const marks = still.rects.filter((rect) => rect.width === 2 && rect.height === 2);
+  assert.ok(marks.length >= 2, "com menos movimento o rastro vira marca, não some");
+});
+
 test("o aviso do primeiro ciclo cabe na placa e some depois de guardar", () => {
   const inicial = hudTexts(createState(1), {}, { hint: "move" });
   const aviso = inicial.texts.filter((item) => item.text.includes("Mova pela faixa"));

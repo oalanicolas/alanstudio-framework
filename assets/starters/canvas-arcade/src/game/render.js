@@ -80,6 +80,7 @@ export function createRenderer(canvas, options = {}) {
       else drawShard(context, palette, entity);
     }
     drawPlayer(context, palette, state, reduced);
+    drawMotes(context, palette, state, reduced);
     const reserved = drawHud(context, palette, state, settings, extra, lines);
     drawCoach(context, palette, extra.hint, reserved, settings, extra, lines);
     if (settings.captions !== false) {
@@ -143,6 +144,31 @@ export function createRenderer(canvas, options = {}) {
       target.stroke();
     }
     target.globalAlpha = 1;
+  }
+
+  function moteFill(palette, kind) {
+    if (kind === "collect") return palette.orb;
+    if (kind === "bank") return palette.chain;
+    if (kind === "hit" || kind === "over") return palette.danger;
+    return palette.player;
+  }
+
+  function drawMotes(target, palette, state, reduced) {
+    const motes = state.motes;
+    if (!motes || !motes.length) return;
+    for (const mote of motes) {
+      const x = reduced ? mote.sx : mote.x;
+      const y = reduced ? mote.sy : mote.y;
+      target.fillStyle = moteFill(palette, mote.kind);
+      if (reduced) {
+        target.fillRect(x - 1, y - 1, 2, 2);
+      } else if (mote.kind === "hit") {
+        target.fillRect(x - 1.6, y - 0.6, 3.2, 1.2);
+        target.fillRect(x - 0.6, y - 1.6, 1.2, 3.2);
+      } else {
+        target.fillRect(x - 1.2, y - 1.2, 2.4, 2.4);
+      }
+    }
   }
 
   function drawPlayer(target, palette, state, reduced) {

@@ -69,6 +69,12 @@ export const CONFIG = {
     rumbleBank: 0.40,
     rumbleHit: 0.74,
     rumbleOver: 0.52,
+    moteDash: 3, // rastro curto na partida
+    moteCollect: 5, // contato do acerto
+    moteBank: 7, // peso da decisão
+    moteHit: 9, // o erro espalha mais
+    moteOver: 4, // fim
+    moteLife: 14,
   },
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
@@ -152,6 +158,107 @@ export function eventPoolStats() {
   };
 }
 
+const motePool = [];
+const moteCounts = { created: 0, acquired: 0, released: 0 };
+const MOTE_COUNTS = {
+  dash: "moteDash",
+  collect: "moteCollect",
+  bank: "moteBank",
+  hit: "moteHit",
+  over: "moteOver",
+};
+
+export function motePoolStats() {
+  return {
+    idle: motePool.length,
+    created: moteCounts.created,
+    acquired: moteCounts.acquired,
+    released: moteCounts.released,
+  };
+}
+
+function acquireMote(kind, x, y, vx, vy, life) {
+  moteCounts.acquired += 1;
+  const mote = motePool.pop();
+  if (mote === undefined) {
+    moteCounts.created += 1;
+    return { kind, x, y, sx: x, sy: y, vx, vy, life };
+  }
+  mote.kind = kind;
+  mote.x = x;
+  mote.y = y;
+  mote.sx = x;
+  mote.sy = y;
+  mote.vx = vx;
+  mote.vy = vy;
+  mote.life = life;
+  return mote;
+}
+
+function releaseMote(mote) {
+  moteCounts.released += 1;
+  mote.kind = "";
+  mote.x = 0;
+  mote.y = 0;
+  mote.sx = 0;
+  mote.sy = 0;
+  mote.vx = 0;
+  mote.vy = 0;
+  mote.life = 0;
+  motePool.push(mote);
+}
+
+function burst(state, kind) {
+  const key = MOTE_COUNTS[kind];
+  if (!key) return;
+  const count = CONFIG.feel[key];
+  const life = CONFIG.feel.moteLife;
+  const x = state.player.x;
+  const y = PLAYER_Y;
+  const dir = state.player.dir || 1;
+  for (let index = 0; index < count; index += 1) {
+    const unit = count === 1 ? 0 : index / (count - 1) - 0.5;
+    let vx = 0;
+    let vy = 0;
+    if (kind === "dash") {
+      vx = dir * (1.6 + Math.abs(unit) * 0.4);
+      vy = unit * 1.1;
+    } else if (kind === "collect") {
+      vx = unit * 1.4;
+      vy = -1.8 - Math.abs(unit) * 0.3;
+    } else if (kind === "bank") {
+      vx = unit * 1.2;
+      vy = 1.6 + Math.abs(unit) * 0.4;
+    } else if (kind === "hit") {
+      vx = Math.cos(index * 0.7) * 2.2;
+      vy = Math.sin(index * 0.7) * 2.2;
+    } else {
+      vx = unit * 0.6;
+      vy = 0.5 + Math.abs(unit) * 0.2;
+    }
+    state.motes.push(acquireMote(kind, x, y, vx, vy, life));
+  }
+}
+
+function decayMotes(state) {
+  const motes = state.motes;
+  if (!motes || !motes.length) return;
+  let write = 0;
+  for (let index = 0; index < motes.length; index += 1) {
+    const mote = motes[index];
+    mote.life -= 1;
+    mote.x += mote.vx;
+    mote.y += mote.vy;
+    if (mote.life > 0) {
+      motes[write] = mote;
+      write += 1;
+    } else {
+      releaseMote(mote);
+    }
+  }
+  motes.length = write;
+}
+
 function recycleEvents(state) {
   for (let index = 0; index < state.events.length; index += 1) {
     eventCounts.released += 1;
@@ -176,6 +283,7 @@ function emit(state, type, extra) {
     for (const key of Object.keys(extra)) event[key] = extra[key];
   }
   state.events.push(event);
+  burst(state, type);
 }
 
 function rain(state) {
@@ -217,6 +325,7 @@ export function createState(seed = 1, options = {}) {
       squash: 0,
     },
     entities: [],
+    motes: [],
     stats: { collected: 0, missed: 0, hits: 0, banks: 0, bestChain: 0, banked: 0 },
     events: [],
   };
@@ -234,10 +343,13 @@ export function remainingTicks(state) {
 // de jogo roda isto muitas vezes por segundo e alocar um estado novo por passo
 // produz coleta de lixo perceptível como engasgo. A chuva compacta o array vivo
 // e reusa o poço; o evento volta ao poço no passo seguinte; o telegraph
-// reusa um buffer. O gerador da chuva reusa o mesmo objeto.
+// reusa um buffer; o rastro do impacto reusa o poço de motes. O gerador
+// da chuva reusa o mesmo objeto.
 export function advance(state, intent = neutralIntent()) {
   recycleEvents(state);
+  if (!state.motes) state.motes = [];
   if (state.phase !== "playing") {
+    decayMotes(state);
     return state;
   }
   state.tick += 1;
@@ -263,6 +375,7 @@ export function advance(state, intent = neutralIntent()) {
     state.shake *= CONFIG.feel.shakeDecay;
     decayFlash(state);
     decayCamera(state);
+    decayMotes(state);
     return state;
   }
 
@@ -303,6 +416,7 @@ export function advance(state, intent = neutralIntent()) {
     state.phase = "over";
     emit(state, "over", { score: state.score, unbanked: state.chain });
   }
+  decayMotes(state);
   return state;
 }
 

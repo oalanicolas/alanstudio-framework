@@ -35,8 +35,8 @@ curto. `felt` é sempre falso. `next` propõe `feel.unobserved` quando há
 constante e não há recibo. O starter bufferiza guardar no hitstop,
 desloca a câmera por verbo, achata o corpo numa medida por verbo,
 marca a ameaça no trilho, distingue a
-recuperação do dash e pulsa o controle no impacto. O pulso some na
-pausa e no descarte.
+recuperação do dash, pulsa o controle no impacto e deixa um rastro
+por verbo. O pulso some na pausa e no descarte.
 
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`

@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.54 — O impacto deixa rastro
+
+Squash, câmera e rumble já marcavam o contato. No campo o verbo
+sumia no quadro seguinte. Cada verbo solta um estilhaço com
+contagem e direção próprias; o poço reusa o mote; com menos
+movimento o rastro vira marca. `felt` continua falso. `feel`
+permanece `playable`: rastro no stub não é peso percebido. Só
+`release` fica no piso.
+
+O que 0.9.54 não afirma: o harness não jogou e o rastro não
+aprova o feel.
+
 ## 0.9.53 — A próxima voz nasce como o look
 
 O banco de sfx só nascia inteiro. Para deslocar um papel era preciso

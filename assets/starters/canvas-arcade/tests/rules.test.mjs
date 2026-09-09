@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, createState, entityPoolStats, eventPoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y } from "../src/game/rules.js";
+import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -125,6 +125,20 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   assert.ok(Math.abs(struck.camera.y) > Math.abs(collected.camera.y), "o erro desloca mais que a coleta");
   assert.equal(collected.flash, 0, "coleta não acende o campo como se fosse o erro");
   assert.equal(struck.flash, CONFIG.feel.flashHit * CONFIG.feel.flashDecay);
+  assert.equal(dash.motes.length, CONFIG.feel.moteDash, "dash precisa deixar rastro");
+  assert.equal(collected.motes.length, CONFIG.feel.moteCollect, "coleta precisa deixar rastro");
+  assert.equal(banked.motes.length, CONFIG.feel.moteBank, "guardar precisa deixar rastro");
+  assert.equal(struck.motes.length, CONFIG.feel.moteHit, "o erro precisa espalhar mais");
+  const motes = [
+    CONFIG.feel.moteDash,
+    CONFIG.feel.moteCollect,
+    CONFIG.feel.moteBank,
+    CONFIG.feel.moteHit,
+    CONFIG.feel.moteOver,
+  ];
+  assert.equal(new Set(motes).size, 5, "rastro repetido não distingue o verbo");
+  assert.ok(collected.motes.every((mote) => mote.vy < 0), "coleta sobe");
+  assert.ok(banked.motes.every((mote) => mote.vy > 0), "guardar confirma para baixo");
 });
 
 test("a ameaça marca o trilho antes do contato e some na faixa", () => {
@@ -281,6 +295,24 @@ test("resolver a chuva compacta o mesmo array e não troca a lista", () => {
   advance(state, neutralIntent());
   assert.equal(state.entities, entities, "um array novo por tick é o churn que o poço evita");
   assert.equal(state.entities.length, 0);
+});
+
+test("o rastro volta ao poço quando a vida acaba", () => {
+  const state = createState(5);
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.equal(state.motes.length, CONFIG.feel.moteCollect);
+  const born = state.motes[0];
+  const before = motePoolStats();
+  for (let index = 0; index < CONFIG.feel.moteLife; index += 1) {
+    advance(state, neutralIntent());
+  }
+  assert.equal(state.motes.length, 0, "a vida do rastro precisa acabar");
+  assert.ok(motePoolStats().released > before.released);
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.ok(state.motes.includes(born), "o poço devolve o mesmo mote");
+  assert.equal(motePoolStats().created, before.created, "reusar o rastro não cria outro objeto");
 });
 
 test("entidade morta volta ao poço e o próximo spawn a reusa", () => {
