@@ -73,6 +73,17 @@ com recibo verde, `unsupported` quando a execução falha. A afirmação deixa d
 na prosa e passa a ser contestável. Nenhum arquivo do repositório seleciona
 capacidade.
 
+A escada quase não cita número, e isso era decisão sem justificativa escrita. Um
+[levantamento](references/observable-criteria-research.md) foi buscar os limiares
+que se poderia importar e achou o oposto do esperado: o safe title que todo mundo
+usa foi substituído em 2009, o “100 ms” de latência vem de um artigo de 1968 sobre
+teclas de terminal que já se contradiz no próprio parágrafo, e o “cinco usuários”
+de playtest sai de um artigo que conclui dezesseis. Nenhum limiar entrou; o que
+entrou foi um mapa de onde existe norma, onde existe página de fornecedor e onde
+não existe fonte — e uma regra de parada de playtest, que substitui a pergunta
+“quantas pessoas?” por “o que encerra a rodada?”. Um teste novo mantém os
+cinquenta critérios da barra livres de dígito.
+
 O que 0.9 **não** afirma: nenhum comando atribui um degrau da barra, e a escada não
 foi calibrada contra uma amostra de jogos publicados — é linguagem para observar,
 não aferição. `init` cria rascunho, e rascunho não é decisão documentada. `next`
