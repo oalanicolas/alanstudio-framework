@@ -43,9 +43,11 @@ export const CONFIG = {
     bankHitstopTicks: 3, // peso da decisão de guardar
     hitHitstopTicks: 5, // o erro precisa doer mais que o acerto
     collectShake: 0.12,
+    bankShake: 0.28,
     hitShake: 1,
     shakeDecay: 0.86,
     squashCollect: 0.22,
+    squashDash: 0.34, // partida do dash: alonga na direção, não achata
     squashDecay: 0.82,
   },
   bank: {
@@ -141,6 +143,7 @@ export function advance(state, intent = neutralIntent()) {
   if (canDash && player.dashBuffer > 0) {
     player.dashTicks = CONFIG.player.dashTicks;
     player.dashBuffer = 0;
+    player.squash = CONFIG.feel.squashDash;
     if (intent.move !== 0) player.dir = intent.move;
     state.events.push({ type: "dash" });
   }
@@ -202,6 +205,7 @@ function bank(state, intent) {
   state.chain = 0;
   state.bankLock = CONFIG.bank.lockTicks;
   state.hitstop = CONFIG.feel.bankHitstopTicks;
+  state.shake += CONFIG.feel.bankShake;
   state.events.push({ type: "bank", chain, gain });
 }
 

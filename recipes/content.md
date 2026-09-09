@@ -6,10 +6,10 @@ O harness lê se o conteúdo saiu do código com `content <projeto>` (`data/`,
 `levels/`, `.ldtk`/`.tmx`/`.ink`). Arquivo de dados não é volume
 suficiente — `enough` é sempre falso. Sem arquivo, `next` propõe
 `content.inline`. O starter `canvas-arcade` carrega `data/spawn.json` e `data/copy.json`
-pelo mesmo `loadTable`. Spawn declara `schema` e migra o formato antigo;
-schema futuro falha com o número. `npm run table -- <nome>` cria o JSON e
-registra a mesa; `requireFields` falha com o nome do campo ausente.
-Uma mesa migrada não é a família — `enough` é sempre falso.
+pelo mesmo `migrateTable`. Formato antigo vira schema 1; schema futuro
+falha com o número; campo obrigatório falha com o nome da mesa.
+`npm run table -- <nome>` já nasce com schema. Contrato da família não
+é volume — `enough` é sempre falso.
 
 Leia o formato atual, sua carga em runtime e os consumidores. Procure definição ou
 slot substituível antes de duplicar lógica. Preserve identidade, escala, pivot,

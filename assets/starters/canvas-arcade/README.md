@@ -101,15 +101,15 @@ junto a condição: dispositivo, versão, cena e quem observou.
 
 | Dimensão | Degrau | Critério do degrau seguinte |
 | --- | --- | --- |
-| `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — falta o som, e o perdão de entrada precisa ser medido, não só anotado |
+| `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor distintos e som; o perdão de entrada está declarado, não medido |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — o que existe hoje é medição de placa, borda e faixa em quadro estático |
-| `art_direction` | `playable` | `slice`: a mesma linguagem em movimento, na resolução alvo — hoje a decisão está no art-bible e ainda não foi observada em sessão |
+| `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; `consistent` é falso |
 | `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — barramento, prioridade, ducking e variação (`<papel>-b.wav`) já existem; loudness não foi medido |
 | `pacing` | `playable` | `slice`: o aviso some depois da primeira decisão e não tapa o verbo — some após guardar; ainda não foi observado em sessão |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada, perda de foco — além do teste de dado inválido |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
 | `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena — `npm run contrast` relata pares hex sem limiar; assistência existe; movimento ainda não foi observado |
-| `content_scale` | `slice` | `shippable`: conteúdo tem identidade estável, migração e validação; ausente ou inválido falha de forma legível — spawn já migra o schema antigo e recusa o futuro; copy ainda não tem contrato; receita de uma mesa não é a família |
+| `content_scale` | `shippable` | `flagship`: a ferramenta é boa o bastante para alguém de fora produzir no piso — spawn e copy migram e validam; `npm run table` já nasce com schema; `enough` é falso |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `npm run build` existe e ninguém o correu fora daqui |
 
 **Leitura honesta: este projeto é um protótipo**, porque uma dimensão está

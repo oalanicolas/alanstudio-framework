@@ -75,6 +75,44 @@ test("o dash atravessa o estilhaço sem perder a corrente", () => {
   assert.ok(state.events.some((event) => event.type === "graze"));
 });
 
+test("cada verbo tem sinal próprio de partida e contato", () => {
+  const fade = CONFIG.feel.squashDecay;
+  const tremor = CONFIG.feel.shakeDecay;
+  const dash = createState(3);
+  advance(dash, { move: 1, dash: true, bank: false });
+  assert.equal(dash.player.squash, CONFIG.feel.squashDash * fade);
+  assert.equal(dash.hitstop, 0);
+
+  const collected = createState(5);
+  collected.entities = [orb(collected.player.x, PLAYER_Y)];
+  advance(collected, neutralIntent());
+  assert.equal(collected.hitstop, CONFIG.feel.collectHitstopTicks);
+  assert.equal(collected.player.squash, CONFIG.feel.squashCollect * fade);
+  assert.equal(collected.shake, CONFIG.feel.collectShake * tremor);
+
+  const banked = createState(1);
+  banked.chain = 3;
+  advance(banked, { move: 0, dash: false, bank: true });
+  assert.equal(banked.hitstop, CONFIG.feel.bankHitstopTicks);
+  assert.equal(banked.shake, CONFIG.feel.bankShake * tremor);
+
+  const struck = createState(2);
+  struck.entities = [shard(struck.player.x, PLAYER_Y - 1)];
+  advance(struck, neutralIntent());
+  assert.equal(struck.hitstop, CONFIG.feel.hitHitstopTicks);
+  assert.equal(struck.shake, CONFIG.feel.hitShake * tremor);
+
+  const stops = [
+    CONFIG.feel.collectHitstopTicks,
+    CONFIG.feel.bankHitstopTicks,
+    CONFIG.feel.hitHitstopTicks,
+  ];
+  assert.equal(new Set(stops).size, 3, "hitstop repetido não distingue o verbo");
+  assert.notEqual(CONFIG.feel.squashDash, CONFIG.feel.squashCollect);
+  assert.notEqual(CONFIG.feel.collectShake, CONFIG.feel.hitShake);
+  assert.notEqual(CONFIG.feel.bankShake, CONFIG.feel.collectShake);
+});
+
 test("o pedido de dash é guardado e dispara quando recarrega", () => {
   const state = createState(4);
   state.player.dashCooldown = 3;

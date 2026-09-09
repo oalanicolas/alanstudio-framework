@@ -23,8 +23,9 @@ já traz design original e variante (`-b`) nos seis papéis e carrega no
 mixer em rodízio. `heard` é sempre falso.
 
 **Feel (`feel`):** lê `const CONFIG` (perdão, graça, hitstop) e
-`record.json` de observação. `felt` é sempre falso. `next` propõe
-`feel.unobserved` quando há constante e não há recibo.
+`record.json` de observação. `note` grava o recibo curto. `felt` é
+sempre falso. `next` propõe `feel.unobserved` quando há constante e
+não há recibo.
 
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`

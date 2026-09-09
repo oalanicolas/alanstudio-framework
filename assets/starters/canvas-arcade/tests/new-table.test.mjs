@@ -38,9 +38,9 @@ test("o comando registra a mesa no mesmo carregador", async () => {
     assert.equal(created.code, 0, created.stderr);
     assert.match(created.stdout, /loadTable\("timing"\)/);
     const body = await readFile(join(project, "data/timing.json"), "utf8");
-    assert.equal(body, "{}\n");
+    assert.equal(body, "{\n  \"schema\": 1\n}\n");
     const { loadTable, TABLES } = await import(`${pathToFileURL(join(project, "src/game/tables.js")).href}?t=1`);
-    assert.deepEqual(loadTable("timing"), {});
+    assert.equal(loadTable("timing").schema, 1);
     assert.ok("timing" in TABLES);
     assert.equal(loadTable("spawn").intervalTicks, 22);
     const again = await runTable(project, "timing");

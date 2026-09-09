@@ -3166,16 +3166,12 @@ def next_step(project, focus="create", studies_root=None):
             f"Registrar o que o verbo sentiu numa partida ({sample}{extra})",
             "Há constantes de feel no código e nenhum recibo de observação no "
             "projeto. Constante nomeada não é peso percebido. O harness não joga.",
-            "Existe um `record --kind observation` sob o projeto, com cenário, "
-            "role e o que mudou (ou não) no verbo — ou a lacuna, se ainda não souber.",
+            "Existe um `note` (ou `record --kind observation`) sob o projeto, "
+            "com cenário, role e o que mudou (ou não) no verbo — ou a lacuna, "
+            "se ainda não souber.",
             [
                 harness_command("feel", project),
-                harness_command(
-                    "record", project, "--kind", "observation",
-                    "--author", "NOME", "--note", "o que o verbo sentiu",
-                    "--field", "scenario=primeira partida", "--field", "role=human",
-                    "--output", "CAMINHO_NOVO",
-                ),
+                harness_command("note", project, "--author", "NOME", "--note", "o que o verbo sentiu"),
             ],
             "feel.unobserved",
         )
@@ -3706,6 +3702,21 @@ def record(project, kind, author, note, fields, attachments, output):
     return report
 
 
+def note_observation(project, author, note, fields=None, output=None, role="human", scenario="primeira partida"):
+    project = Path(project)
+    payload = dict(fields or {})
+    if nonempty(scenario) and not nonempty(payload.get("scenario")):
+        payload["scenario"] = scenario
+    if nonempty(role) and not nonempty(payload.get("role")):
+        payload["role"] = role
+    dest = Path(output) if output else project / "docs" / "playtest" / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    report = record(project, "observation", author, note, payload, [], dest)
+    report["command"] = "note"
+    report["felt"] = False
+    report["observed"] = False
+    return report
+
+
 def main():
     # `--root` é aceito antes e depois do subcomando. A documentação sempre o
     # escreveu depois, e argparse só o aceitava antes: cada exemplo com `--root`
@@ -3850,6 +3861,18 @@ def main():
     rec.add_argument("--field", action="append", default=[], help="chave=valor; campos obrigatórios variam por tipo")
     rec.add_argument("--attach", action="append", default=[], help="arquivo anexado por caminho; o recibo guarda o SHA-256")
     rec.add_argument("--output", type=Path, required=True)
+    noted = commands.add_parser(
+        "note",
+        parents=[common],
+        help="recibo curto de observação: o que o verbo sentiu, sem jogar",
+    )
+    noted.add_argument("project")
+    noted.add_argument("--author", required=True)
+    noted.add_argument("--note", required=True)
+    noted.add_argument("--role", choices=("human", "agent"), default="human")
+    noted.add_argument("--scenario", default="primeira partida")
+    noted.add_argument("--field", action="append", default=[], help="chave=valor extra; problema/evidência/hipótese/medição fecham o achado")
+    noted.add_argument("--output", type=Path, help="pasta nova; por omissão, docs/playtest/<utc>")
     sfx = commands.add_parser("sfx", parents=[common], help="catálogo compartilhado de efeitos sonoros")
     sfx_cmd = sfx.add_subparsers(dest="sfx_action")
     sfx_cmd.add_parser("summary", parents=[common])
@@ -3927,6 +3950,11 @@ def main():
             errors = check_plan(read_json(args.plan), root)
             emit({"contract_valid": not errors, "errors": errors, "scope": "Estrutura e existência dos candidatos; busca, adequação e qualidade exigem revisão."})
             return int(bool(errors))
+        elif args.action == "note":
+            emit(note_observation(
+                resolve(args.project, root), args.author, args.note,
+                parse_fields(args.field), args.output, args.role, args.scenario,
+            ))
         elif args.action == "record":
             emit(record(resolve(args.project, root), args.kind, args.author, args.note, parse_fields(args.field), args.attach, args.output.absolute()))
         elif args.action == "sfx":

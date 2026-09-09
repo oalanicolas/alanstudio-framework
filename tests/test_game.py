@@ -930,6 +930,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.scan(destination),
             game.next_step(destination, "lifecycle"),
             game.guide_cycle(destination, "canvas-arcade"),
+            game.note_observation(destination, "Ana", "o verbo respondeu"),
             game.context(destination, "lifecycle", "vertical-slice"),
             game.verify(destination, [], [sys.executable, "-c", "pass"], self.root / "prova", 30, list(game.CAPABILITIES)),
         ]
@@ -2045,6 +2046,37 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bases = [item["basis"] for item in self.proposals(game.next_step(destination))]
         self.assertNotIn("feel.unobserved", bases)
         self.assertIn("playtest.unstructured", bases)
+
+    def test_note_writes_an_observation_without_claiming_to_have_felt_it(self):
+        destination = self.root / "com-nota"
+        game.init(destination, "canvas-arcade")
+        commands = next(
+            item["commands"] for item in self.proposals(game.next_step(destination))
+            if item["basis"] == "feel.unobserved"
+        )
+        self.assertTrue(any(" note " in command for command in commands))
+        report = game.note_observation(destination, "Ana", "o dash atravessou e a corrente ficou")
+        self.assertEqual(report["kind"], "observation")
+        self.assertEqual(report["status"], "declared")
+        self.assertEqual(report["fields"]["scenario"], "primeira partida")
+        self.assertEqual(report["fields"]["role"], "human")
+        self.assertFalse(report["felt"])
+        self.assertFalse(report["observed"])
+        self.assertTrue((destination / "docs/playtest").is_dir())
+        after = game.feel_reading(destination)
+        self.assertFalse(after["unobserved"])
+        self.assertFalse(after["felt"])
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "note", str(destination),
+             "--author", "Ana", "--note", "segunda passagem",
+             "--output", str(destination / "docs/playtest/segunda"),
+             "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        payload = json.loads(run.stdout)
+        self.assertFalse(payload["felt"])
+        self.assertEqual(payload["fields"]["scenario"], "primeira partida")
 
     def test_access_save_and_budget_read_the_starter_without_claiming_proof(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"

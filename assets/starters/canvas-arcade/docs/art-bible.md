@@ -20,6 +20,16 @@ Escala: 1 unidade = 1 pixel lógico em `FIELD` 320×180. Pivot do jogador no
 centro da faixa (`PLAYER_Y`). Sem asset de mundo: a linguagem é geométrica
 e cabe neste recorte.
 
+## Receita de um primitivo novo
+
+1. Escolha **forma**, não só cor — o par orbe/estilhaço é o piso.
+2. Acrescente o token em `PALETTES.normal` e `PALETTES.contrast`.
+3. Desenhe o consumidor em `src/game/render.js`.
+4. Registre a linha nesta tabela e a origem em `CREDITS.md`.
+5. Se o item for dado, nasça a mesa com `npm run table -- <nome>`.
+
+Isto é a receita, não a prova de que alguém de fora a cumpriu.
+
 ## O que isto não afirma
 
 Consistência em movimento ainda não foi observada. Moodboard não substitui

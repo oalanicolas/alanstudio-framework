@@ -22,7 +22,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
 | Jogo novo | Destino inexistente e engine web: `guide [<novo>] --idea "<fantasia>"` devolve start → jogar → next sem executar. Depois `start <novo> --starter <starter> --idea "<fantasia>"` (REUSE; aponta o comando que abre o ciclo, não o executa). Sem `start`: `init` e depois `next --focus feel`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
 | Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
-| O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, registre a partida (`record --kind observation`). Depois `roles` e `context --focus audio` |
+| O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, `note <projeto> --author … --note "o que o verbo sentiu"`. Depois `roles` e `context --focus audio` |
 | Paleta, conteúdo no código ou jogo só na máquina de quem construiu | `art` / `content` / `ship` <projeto>; `consistent`/`enough`/`shipped` ficam `false` |
 | Observou uma partida e só tem uma nota | `playtest <projeto>`; se `unstructured`, escreva problema, evidência, hipótese e medição |
 | “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
@@ -156,7 +156,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `next` como `audio.roles` — o verbo mudo não espera os rascunhos.
    **`feel <projeto>`** lê constantes de perdão/hitstop no `CONFIG` e o
    recibo de observação no disco. `felt` é sempre falso. Sem recibo, `next`
-   propõe `feel.unobserved`.
+   propõe `feel.unobserved` e aponta `note`.
+   **`note <projeto>`** grava o recibo curto (cenário e papel por omissão)
+   em `docs/playtest/<utc>/`. Não joga e não sente.
    **`access` / `save` / `budget`** leem opção de alcance, versão de save e
    artefato de orçamento. `verified`/`trusted`/`measured` são sempre falsos.
    Falta no disco entra no `next` antes dos rascunhos.

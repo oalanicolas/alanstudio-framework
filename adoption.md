@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.20 — Recibo curto, contrato da família e receita de arte
+
+`note` grava a observação depois da primeira partida sem a linha longa
+do `record`. `felt` e `observed` continuam falsos. Toda mesa do starter
+passa pelo mesmo `migrateTable`; `npm run table` já nasce com schema.
+`content_scale` sobe a `shippable`. O art-bible ganha a receita do
+próximo primitivo; `art_direction` sobe a `slice`. `consistent` e
+`enough` continuam falsos. Dash e guardar passam a ter squash e tremor
+próprios — sinal no código, não peso medido. `feel` permanece
+`playable`. Só `release` fica no piso.
+
+O que 0.9.20 não afirma: o harness não jogou, não aprovou a direção em
+movimento e ninguém de fora produziu no piso.
+
 ## 0.9.19 — Variação no mix, schema da mesa e o mapa ideia→ciclo
 
 Cada papel ganha `public/sfx/<papel>-b.wav`: o mixer alterna as

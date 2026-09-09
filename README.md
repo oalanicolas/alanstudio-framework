@@ -524,10 +524,13 @@ observação no projeto:
 
 ```sh
 python3 scripts/game.py feel /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py note /caminho/do/laboratorio/meu-jogo --author "NOME" --note "o que o verbo sentiu"
 ```
 
-`felt` é sempre `false`. `next` propõe `feel.unobserved` quando há constante
-e não há recibo. O harness não joga e não atribui peso.
+`note` grava o recibo de observação em `docs/playtest/<utc>/` com cenário e
+papel por omissão. Não joga. `felt` é sempre `false`. `next` propõe
+`feel.unobserved` quando há constante e não há recibo; o comando que ele
+aponta é o `note`. O harness não atribui peso.
 
 ## Alcance, save e orçamento
 
