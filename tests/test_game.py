@@ -2167,6 +2167,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("data/spawn.json", inventory["files"])
         self.assertIn("data/copy.json", inventory["files"])
         self.assertIn("data/dusk.json", inventory["files"])
+        self.assertIn("data/palettes.json", inventory["files"])
         self.assertTrue(pack["expected"])
         self.assertFalse(pack["unpacked"])
         self.assertIn("build", pack["scripts"])
@@ -2216,6 +2217,18 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["consistent"])
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "visual"))]
         self.assertNotIn("art.missing", bases)
+
+    def test_art_reads_a_palette_table_in_data(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "data").mkdir()
+        (self.project / "data/palettes.json").write_text(
+            '{"schema": 1, "palettes": {"dusk": {"field": "#100"}}}\n'
+        )
+        report = game.art_reading(self.project)
+        self.assertTrue(report["declared"])
+        self.assertEqual([item["key"] for item in report["palettes"]], ["dusk"])
+        self.assertIn("data/palettes.json", report["manifests"])
+        self.assertFalse(report["consistent"])
 
     def test_art_does_not_treat_a_nested_object_as_another_palette(self):
         (self.project / "theme.js").write_text(

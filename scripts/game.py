@@ -1542,6 +1542,7 @@ PALETTE_KEY = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*\{")
 ART_MANIFESTS = (
     "palettes.json", "tokens.json", "art-tokens.json", "design-tokens.json",
     "docs/palettes.json", "docs/tokens.json",
+    "data/palettes.json", "data/tokens.json",
 )
 ART_BIBLE = "docs/art-bible.md"
 CONTENT_DIRS = ("data", "content", "levels", "maps", "tables")
@@ -1668,7 +1669,7 @@ def art_reading(project):
             "direção consistente. Moodboard e rascunho do `init` não contam."
         ),
         "scope": (
-            "Procura `const PALETTES`, tokens.json e docs/art-bible.md sem "
+            "Procura `const PALETTES`, tokens.json, data/palettes.json e docs/art-bible.md sem "
             "marcador de rascunho. Não compara silhueta, não mede contraste "
             "e não aprova estilo. `consistent` é sempre falso."
         ),
@@ -3415,7 +3416,7 @@ def next_step(project, focus="create", studies_root=None):
             "O jogo já tem ponto de entrada e nenhuma paleta, token ou art-bible "
             "vigente aparece no disco. Rascunho do `init` não é direção. O "
             "harness não compara silhueta e não aprova estilo.",
-            "Existe `const PALETTES`, um tokens.json ou docs/art-bible.md sem "
+            "Existe `const PALETTES`, um tokens.json, data/palettes.json ou docs/art-bible.md sem "
             "marcador de rascunho — a consistência em movimento continua pendente.",
             [harness_command("art", project)],
             "art.missing",

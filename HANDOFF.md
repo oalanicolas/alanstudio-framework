@@ -49,7 +49,7 @@ relata o reuso.
 **Arte, conteúdo, empacotar:** `art`, `content` e `ship` leem paleta ou
 art-bible vigente, dado fora do código e passo de build/export.
 `consistent`/`enough`/`shipped` são sempre falsos. O starter declara
-paleta, extrai a chuva (`spawn` e `dusk`), nasce mesa com `npm run table`
+paleta em `data/palettes.json`, extrai a chuva (`spawn` e `dusk`), nasce mesa com `npm run table`
 (`--from spawn|dusk --as` já entra no consumidor; `session --spawn`
 traça) e empacota com `npm run build`.
 `ship` relata `dist/VERSION.json` quando existe; `npm run size` relata

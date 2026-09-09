@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "palettes": {
+    "normal": {
+      "background": "#10131a",
+      "field": "#171b26",
+      "player": "#f2f4f8",
+      "orb": "#4ea8ff",
+      "shard": "#ff8a3d",
+      "chain": "#ffd166",
+      "text": "#e7ebf3",
+      "muted": "#8a93a6",
+      "danger": "#ff5d5d",
+      "plate": "rgba(7,9,13,0.86)",
+      "plateEdge": "rgba(231,235,243,0.22)"
+    },
+    "contrast": {
+      "background": "#000000",
+      "field": "#000000",
+      "player": "#ffffff",
+      "orb": "#00d2ff",
+      "shard": "#ff6a00",
+      "chain": "#ffe600",
+      "text": "#ffffff",
+      "muted": "#c9c9c9",
+      "danger": "#ff2b2b",
+      "plate": "rgba(0,0,0,0.9)",
+      "plateEdge": "#ffffff"
+    }
+  }
+}

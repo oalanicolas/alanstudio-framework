@@ -50,6 +50,8 @@ test("o comando registra a mesa no mesmo carregador", async () => {
     assert.equal(reserved.code, 2);
     const duskReserved = await runTable(project, "dusk");
     assert.equal(duskReserved.code, 2);
+    const paletteReserved = await runTable(project, "palettes");
+    assert.equal(paletteReserved.code, 2);
     const invalid = await runTable(project, "Tempo-1");
     assert.equal(invalid.code, 2);
     const copied = await runTable(project, "storm", ["--from", "spawn"]);

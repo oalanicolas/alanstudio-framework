@@ -3,17 +3,20 @@ import assert from "node:assert/strict";
 
 import {
   applySpawnIntent, loadTable, loadSpawn, listSpawnIntents, listSpawnProfiles, looksLikeSpawn,
-  migrateCopy, migrateSpawn, migrateTable, requireFields, resolveSpawnName, spawnRecord, TABLES,
-  SPAWN_FIELDS, SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS, SPAWN_INTENTS,
+  migrateCopy, migratePalettes, migrateSpawn, migrateTable, requireFields, resolveSpawnName, spawnRecord, TABLES,
+  SPAWN_FIELDS, SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS, PALETTE_SCHEMA, PALETTE_FIELDS, SPAWN_INTENTS, PALETTES,
 } from "../src/game/tables.js";
 
 test("as mesas passam pelo mesmo carregador", () => {
-  assert.deepEqual(Object.keys(TABLES).sort(), ["copy", "dusk", "spawn"]);
+  assert.deepEqual(Object.keys(TABLES).sort(), ["copy", "dusk", "palettes", "spawn"]);
   assert.equal(loadTable("spawn").intervalTicks, 22);
   assert.equal(loadTable("spawn").schema, SPAWN_SCHEMA);
   assert.equal(loadTable("dusk").intervalTicks, 16);
   assert.equal(loadTable("copy").chain, "Corrente");
   assert.equal(loadTable("copy").schema, COPY_SCHEMA);
+  assert.equal(loadTable("palettes").schema, PALETTE_SCHEMA);
+  assert.equal(loadTable("palettes").palettes.normal.field, "#171b26");
+  assert.equal(PALETTES.contrast.plateEdge, "#ffffff");
   assert.throws(() => loadTable("inventada"), /mesa desconhecida/);
 });
 
@@ -25,6 +28,8 @@ test("só mesa com forma de chuva entra na família jogável", () => {
   assert.equal(resolveSpawnName("copy"), "spawn");
   assert.equal(resolveSpawnName("inventada"), "spawn");
   assert.equal(looksLikeSpawn(loadTable("copy")), false);
+  assert.equal(looksLikeSpawn(loadTable("palettes")), false);
+  assert.equal(resolveSpawnName("palettes"), "spawn");
   assert.throws(() => loadSpawn("copy"), /não é perfil de chuva/);
   assert.throws(() => loadSpawn("inventada"), /não é perfil de chuva/);
 });
@@ -73,4 +78,21 @@ test("copy sem schema migra; schema futuro e campo ausente falham com o nome", (
     () => migrateTable("copy", { schema: 1 }, COPY_SCHEMA, COPY_FIELDS),
     /mesa copy sem fantasy/,
   );
+});
+
+test("paleta sem contraste ou sem token falha com o nome", () => {
+  const ok = migratePalettes({
+    palettes: {
+      normal: Object.fromEntries(PALETTE_FIELDS.map((field) => [field, "#111"])),
+      contrast: Object.fromEntries(PALETTE_FIELDS.map((field) => [field, "#fff"])),
+    },
+  });
+  assert.equal(ok.schema, PALETTE_SCHEMA);
+  assert.equal(ok.palettes.normal.field, "#111");
+  assert.throws(() => migratePalettes({ palettes: { normal: ok.palettes.normal } }), /mesa palettes sem contrast/);
+  assert.throws(
+    () => migratePalettes({ palettes: { normal: ok.palettes.normal, contrast: { field: "#000" } } }),
+    /mesa palettes.contrast sem/,
+  );
+  assert.throws(() => migratePalettes({ schema: 4 }), /mesa palettes schema 4 não suportado/);
 });

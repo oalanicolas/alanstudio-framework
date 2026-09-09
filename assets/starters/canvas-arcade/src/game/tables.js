@@ -10,8 +10,9 @@
 // aplica uma intenção nomeada e deixa a chuva distinta. `copy.fantasy`
 // tem consumidor: o coach do primeiro ciclo. `resume`, `restart` e
 // `hint_bank` reservam o lugar da tecla; o desenho preenche com o
-// remapeamento vigente. Mesas genéricas continuam sem consumidor
-// automático.
+// remapeamento vigente. `palettes` tem consumidor: o desenho lê
+// `PALETTES` daqui, não uma constante no render. Mesas genéricas
+// continuam sem consumidor automático.
 //
 // Toda mesa tem schema: formato antigo (sem campo) vira o vigente;
 // schema futuro falha com o número, não com undefined no meio do tick.
@@ -20,9 +21,11 @@
 import spawnRaw from "../../data/spawn.json" with { type: "json" };
 import copyRaw from "../../data/copy.json" with { type: "json" };
 import duskRaw from "../../data/dusk.json" with { type: "json" };
+import palettesRaw from "../../data/palettes.json" with { type: "json" };
 
 export const SPAWN_SCHEMA = 2;
 export const COPY_SCHEMA = 2;
+export const PALETTE_SCHEMA = 1;
 export const SPAWN_FIELDS = [
   "intervalTicks",
   "minIntervalTicks",
@@ -162,11 +165,53 @@ export function migrateCopy(raw) {
   };
 }
 
+export const PALETTE_FIELDS = [
+  "background",
+  "field",
+  "player",
+  "orb",
+  "shard",
+  "chain",
+  "text",
+  "muted",
+  "danger",
+  "plate",
+  "plateEdge",
+];
+
+export const PALETTE_REQUIRED = ["normal", "contrast"];
+
+export function migratePalettes(raw) {
+  const table = migrateTable("palettes", raw, PALETTE_SCHEMA);
+  const pack = table.palettes;
+  if (!pack || typeof pack !== "object" || Array.isArray(pack)) {
+    throw new Error("mesa palettes sem palettes");
+  }
+  for (const name of PALETTE_REQUIRED) {
+    if (pack[name] === undefined) {
+      throw new Error(`mesa palettes sem ${name}`);
+    }
+  }
+  for (const name of Object.keys(pack)) {
+    const entry = pack[name];
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      throw new Error(`mesa palettes.${name} ilegível`);
+    }
+    const missing = PALETTE_FIELDS.filter((field) => entry[field] === undefined);
+    if (missing.length) {
+      throw new Error(`mesa palettes.${name} sem ${missing.join(", ")}`);
+    }
+  }
+  return { schema: PALETTE_SCHEMA, palettes: pack };
+}
+
 const spawn = migrateSpawn(spawnRaw);
 const copy = migrateCopy(copyRaw);
 const dusk = migrateSpawn(duskRaw, "dusk");
+const palettes = migratePalettes(palettesRaw);
+export const PALETTES = palettes.palettes;
 
-const TABLES = { spawn, copy, dusk };
+const TABLES = { spawn, copy, dusk, palettes };
 
 export function loadTable(name) {
   if (!(name in TABLES)) {
@@ -203,4 +248,4 @@ export function loadSpawn(name) {
   return migrateSpawn(TABLES[resolved], resolved);
 }
 
-export { spawn, copy, dusk, TABLES };
+export { spawn, copy, dusk, palettes, TABLES };

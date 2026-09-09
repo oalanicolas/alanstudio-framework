@@ -6,44 +6,14 @@
 // movimento — o sinal de causa migra para uma forma estática, não desaparece.
 
 import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching } from "./rules.js";
-import { copy } from "./tables.js";
+import { copy, PALETTES } from "./tables.js";
 import { bindLines } from "../core/keys.js";
 import { DEFAULT_BINDINGS } from "../core/settings.js";
 
-// Exportadas para terem consumidor além do desenho: é assim que um teste
-// distingue a placa do HUD do preenchimento do campo, e é o gancho para o
-// design system do jogo quando ele passar de moodboard a token.
-export const PALETTES = {
-  normal: {
-    background: "#10131a",
-    field: "#171b26",
-    player: "#f2f4f8",
-    orb: "#4ea8ff",
-    shard: "#ff8a3d",
-    chain: "#ffd166",
-    text: "#e7ebf3",
-    muted: "#8a93a6",
-    danger: "#ff5d5d",
-    plate: "rgba(7,9,13,0.86)",
-    plateEdge: "rgba(231,235,243,0.22)",
-  },
-  contrast: {
-    background: "#000000",
-    field: "#000000",
-    player: "#ffffff",
-    orb: "#00d2ff",
-    shard: "#ff6a00",
-    chain: "#ffe600",
-    text: "#ffffff",
-    muted: "#c9c9c9",
-    danger: "#ff2b2b",
-    // Campo preto e placa preta: aqui o preenchimento não tem como separar nada,
-    // e quem separa é a borda. Ela é branca e opaca porque em alto contraste
-    // separar é o objetivo, não a discrição.
-    plate: "rgba(0,0,0,0.9)",
-    plateEdge: "#ffffff",
-  },
-};
+// Reexporta a mesa: o token mora em data/palettes.json. Quem não
+// desenhou o render troca o look sem republicar o verbo. `consistent`
+// continua falso — JSON no disco não é comparação em movimento.
+export { PALETTES };
 
 export function createRenderer(canvas, options = {}) {
   const context = canvas.getContext("2d", { alpha: false });

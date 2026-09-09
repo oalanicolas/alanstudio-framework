@@ -575,14 +575,15 @@ python3 scripts/game.py content /caminho/do/laboratorio/meu-jogo
 python3 scripts/game.py ship /caminho/do/laboratorio/meu-jogo
 ```
 
-`art` procura `const PALETTES`, tokens.json e `docs/art-bible.md` vigente.
+`art` procura `const PALETTES`, tokens.json, `data/palettes.json` e `docs/art-bible.md` vigente.
 `consistent` é sempre `false`. Rascunho do `init` não conta. `content`
 procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 `enough` é sempre `false`. `ship` procura script `build`/`export`/`package`/
 `release`, `docs/release.md` vigente ou CI. Se `dist/VERSION.json`
 existe, relata nome e versão. `shipped` é sempre `false`.
 HTML estático sem manifesto já é o artefato; manifesto sem passo de
-empacotar recebe `ship.unpacked`. O starter declara paleta, extrai a chuva
+empacotar recebe `ship.unpacked`. O starter declara paleta em
+`data/palettes.json`, extrai a chuva
 para `data/spawn.json` e `data/dusk.json`, escolhe o perfil por `?spawn=`,
 nasce a próxima com `table --from` / `--as` e `session --spawn`, e
 empacota com `npm run build` — ferramenta que desloca knobs e um export

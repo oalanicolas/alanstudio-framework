@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.42 — A paleta sai do render e vira mesa
+
+Trocar o look exigia abrir `render.js`. Os tokens moram em
+`data/palettes.json`; o desenho só consome. `art` lê a mesa em
+`data/`. Forma nova ainda pede consumidor. `consistent` continua
+falso. `art_direction` permanece `slice`: JSON no disco não é
+alguém de fora no piso nem comparação em movimento. Só `release`
+fica no piso.
+
+O que 0.9.42 não afirma: ninguém de fora produziu e o harness não
+comparou o look em movimento.
+
 ## 0.9.41 — Guardar e o erro achatam o corpo
 
 A barra dizia que os quatro verbos tinham squash próprio. Coleta e

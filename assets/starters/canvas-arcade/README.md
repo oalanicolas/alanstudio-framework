@@ -109,7 +109,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | --- | --- | --- |
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor/câmera distintos; a ameaça marca o trilho, a recuperação do dash muda a silhueta e o erro acende o campo; `npm run probe` conta os buffers, não o peso percebido |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — a sequência de quadros no stub cobre o HUD; `npm run contrast` amostra a cena montada no stub; o dispositivo alvo ainda não foi observado |
-| `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; `consistent` é falso |
+| `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; a paleta é mesa em `data/palettes.json`; `consistent` é falso |
 | `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — o palco tem folga, a cama ocupa o barramento de música e o mixer limita o master; `npm run mix` soma cama e vozes na simulação, não no dispositivo; loudness percebido não foi medido |
 | `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; a sessão relata never_banked e erro repetido na simulação; a curva com quem nunca viu o jogo continua pendente |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
@@ -134,7 +134,7 @@ falso — a linha é afirmação de quem escreveu.
 | `canvas_scale` | `met` | FIELD em src/game/rules.js; canvas em index.html; o resize em render.js usa a escala calculada quando a divisão não é inteira — starter |
 | `forgiveness` | `met` | dashBufferTicks, bank.bufferTicks, invulnTicks, collect.pad e collect.reachY em CONFIG, src/game/rules.js, unidade em ticks — starter |
 | `percentile_def` | `met` | tools/budget.mjs declara o percentil por definição, não por apelido — starter |
-| `palette` | `met` | tokens em docs/art-bible.md; consumidores PALETTES.normal e PALETTES.contrast em src/game/render.js — starter |
+| `palette` | `met` | tokens em docs/art-bible.md e data/palettes.json; o desenho consome PALETTES via tables.js — starter |
 | `style_factor` | `out_of_scope` | sem assets de mundo de estilo; só primitivas — starter |
 | `budget_delta` | `unmet` | npm run budget cronometra simulação e draw no stub; comparação com o build anterior ainda não existe — starter |
 | `playtest_stop` | `unmet` | regra de parada ainda não escrita — starter |
@@ -176,7 +176,7 @@ em vez de confiar no olho.
 src/core/     laço de passo fixo, entrada, RNG, impressão, armazenamento, save, preferências, rótulo das teclas vivas
 src/game/     regras, apresentação, mixagem, mesas, carga de sfx e ensino do ciclo
 src/main.js   montagem e contrato de ciclo de vida
-data/         conteúdo separado da regra (chuva, HUD e avisos)
+data/         conteúdo separado da regra (chuva, HUD, avisos e paleta)
 docs/         art-bible vigente — o init não o reescreve
 public/sfx/   design original dos papéis do verbo e da cama, com recibo
 tools/        servidor, orçamento, mix, sessão, tamanho, export, nascer mesa e gerar sfx
@@ -188,9 +188,9 @@ que permite rodar a partida headless, repetir um replay a partir de uma seed e
 comparar duas execuções. `src/core/input.js` reduz teclado, ponteiro e gamepad a
 uma intenção — as regras nunca veem eventos.
 
-A paleta vive em `src/game/render.js` (`PALETTES`) e o contrato está em
-`docs/art-bible.md`. O harness lê os dois; consistência em movimento
-continua pendente. Chuva e texto do HUD passam por `src/game/tables.js`.
+A paleta vive em `data/palettes.json` e o contrato está em
+`docs/art-bible.md`. O desenho consome `PALETTES` via `tables.js`.
+O harness lê os dois; consistência em movimento continua pendente. Chuva e texto do HUD passam por `src/game/tables.js`.
 `npm run table -- <nome> --from spawn --as denser` nasce a próxima chuva
 no mesmo carregador e no mesmo consumidor (`?spawn=` /
 `settings.spawnProfile`). `--from dusk` parte da chuva densa; sem `--as`
