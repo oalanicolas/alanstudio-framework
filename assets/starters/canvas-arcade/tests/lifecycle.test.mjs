@@ -183,6 +183,33 @@ test("preferências e progresso vivem em chaves separadas", () => {
   reopened.dispose();
 });
 
+test("esconder a página descarrega o progresso e pausa", () => {
+  const storage = memoryStorage();
+  const { game, target } = harness({ storage });
+  game.updateSettings({ assist: true });
+  storage.remove("settings");
+  const hide = target.listeners.find((entry) => entry.type === "pagehide");
+  assert.ok(hide, "pagehide precisa de ouvinte");
+  hide.handler();
+  assert.equal(JSON.parse(storage.get("settings")).assist, true);
+  assert.equal(game.paused, false, "pagehide descarrega sem pausar — a pausa é do hidden");
+  game.flush();
+  game.dispose();
+});
+
+test("perda de foco pausa e descarrega", () => {
+  const storage = memoryStorage();
+  const { game, target } = harness({ storage });
+  game.updateSettings({ captions: false });
+  storage.remove("settings");
+  const change = target.listeners.find((entry) => entry.type === "visibilitychange");
+  assert.ok(change);
+  change.handler();
+  assert.equal(game.paused, true);
+  assert.equal(JSON.parse(storage.get("settings")).captions, false);
+  game.dispose();
+});
+
 test("remapear uma ação persiste e recusa uma lista vazia", () => {
   const { game, storage } = harness();
   game.updateSettings({ bindings: { ...game.settings.bindings, dash: ["KeyZ"] } });

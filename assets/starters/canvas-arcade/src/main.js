@@ -98,10 +98,31 @@ export function createGame(options = {}) {
     else loop.pause();
   }
 
+  function flush() {
+    saveProgress(storage, progress, progressLoad);
+    saveSettings(storage, settings);
+    return { progress: { ...progress }, settings };
+  }
+
   const onVisibility = () => {
-    if (typeof document !== "undefined" && document.hidden) loop.pause();
+    const hidden = typeof document === "undefined" || document.hidden;
+    if (hidden) {
+      flush();
+      loop.pause();
+    }
   };
-  if (eventTarget && typeof document !== "undefined" && typeof document.addEventListener === "function") {
+  const onPageHide = () => {
+    flush();
+  };
+  if (eventTarget && typeof eventTarget.addEventListener === "function") {
+    eventTarget.addEventListener("pagehide", onPageHide);
+    eventTarget.addEventListener("visibilitychange", onVisibility);
+  }
+  if (
+    typeof document !== "undefined"
+    && document !== eventTarget
+    && typeof document.addEventListener === "function"
+  ) {
     document.addEventListener("visibilitychange", onVisibility);
   }
 
@@ -162,7 +183,15 @@ export function createGame(options = {}) {
       loop.dispose();
       input.dispose();
       audio.dispose();
-      if (typeof document !== "undefined" && typeof document.removeEventListener === "function") {
+      if (eventTarget && typeof eventTarget.removeEventListener === "function") {
+        eventTarget.removeEventListener("pagehide", onPageHide);
+        eventTarget.removeEventListener("visibilitychange", onVisibility);
+      }
+      if (
+        typeof document !== "undefined"
+        && document !== eventTarget
+        && typeof document.removeEventListener === "function"
+      ) {
         document.removeEventListener("visibilitychange", onVisibility);
       }
       return true;
@@ -183,6 +212,7 @@ export function createGame(options = {}) {
     get lastRun() {
       return lastRun ? { ...lastRun } : null;
     },
+    flush,
     get settings() {
       return settings;
     },

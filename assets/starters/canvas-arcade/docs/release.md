@@ -11,7 +11,9 @@ npm run build
 ```
 
 A árvore jogável sai em `dist/`. Sem testes, sem orçamento, sem o
-art-bible. `CREDITS.md` e `public/sfx` entram no artefato.
+art-bible. `CREDITS.md`, `public/sfx` e `VERSION.json` entram no
+artefato. `VERSION.json` nomeia a versão e o HEAD; não prova outra
+máquina nem reprodução bit a bit.
 
 ## Servir o artefato
 
@@ -26,6 +28,6 @@ seguindo estes dois blocos numa máquina que não é a de desenvolvimento.
 
 ## O que falta para o degrau seguinte
 
-Build reproduzível a partir de uma versão declarada, e verificação no
-artefato — não no servidor de desenvolvimento. Este arquivo não
-substitui essa prova.
+Outra pessoa seguir os dois blocos acima numa máquina que não é a de
+desenvolvimento. `VERSION.json` e o teste que serve o `dist/` não
+substituem essa prova. `shipped` continua falso.

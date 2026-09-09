@@ -2086,6 +2086,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(access["declared"])
         self.assertFalse(access["verified"])
         self.assertEqual(access["missing"], [])
+        self.assertIn("ui_scale", [item["key"] for item in access["options"]])
         self.assertTrue(persist["used"])
         self.assertTrue(persist["versioned"])
         self.assertFalse(persist["unversioned"])

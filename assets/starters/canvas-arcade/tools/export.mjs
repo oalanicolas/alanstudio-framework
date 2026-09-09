@@ -5,6 +5,7 @@
 // autoriza publicar. O harness lê a existência deste passo; `shipped` continua
 // falso.
 
+import { execFileSync } from "node:child_process";
 import { cp, mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -56,6 +57,28 @@ node tools/serve.mjs
 Módulos ES não carregam por \`file://\`. Servir esta pasta é o que a torna
 jogável. Este README não afirma que outra máquina já executou o artefato.
 `,
+);
+
+function gitHead() {
+  try {
+    return execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
+  } catch {
+    return null;
+  }
+}
+
+await writeFile(
+  join(DIST, "VERSION.json"),
+  `${JSON.stringify(
+    {
+      name: pack.name,
+      version: pack.version,
+      git_head: gitHead(),
+      scope: "Identidade do artefato. Não prova outra máquina nem reprodução bit a bit.",
+    },
+    null,
+    2,
+  )}\n`,
 );
 
 console.log(`Artefato em ${DIST}`);

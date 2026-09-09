@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.22 — Artefato com identidade e save na interrupção
+
+O export grava `dist/VERSION.json` (versão e HEAD). `shipped` continua
+falso. Esconder a página ou `pagehide` descarrega progresso e
+preferência. `state_trust` permanece `slice`: aba fechada de verdade
+não foi observada. `docs/access.md` declara o que o recorte não
+atende; `uiScale` entra na leitura de `access`. `verified` continua
+falso. Só `release` fica no piso.
+
+O que 0.9.22 não afirma: outra máquina não jogou o artefato e o
+harness não fechou a aba.
+
 ## 0.9.21 — Prática antes do risco, pico sem limiar e o harness sem subcomando
 
 A chuva começa só com orbes (`practiceTicks`) e guardar alonga o

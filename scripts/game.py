@@ -1372,6 +1372,7 @@ A11Y_OPTIONS = {
     "reduced_motion": re.compile(r"reducedMotion|reduced-motion|prefersReducedMotion"),
     "captions": re.compile(r"\bcaptions\b|captionLimit|\blegendas?\b"),
     "remap": re.compile(r"\bbindings\b|remap|rebind"),
+    "ui_scale": re.compile(r"uiScale|ui-scale|interfaceScale"),
 }
 PERSIST_USE = re.compile(
     r"localStorage|sessionStorage|indexedDB|saveProgress|loadProgress|PROGRESS_KEY|SETTINGS_KEY"
@@ -1437,9 +1438,9 @@ def access_reading(project):
             "consumidor também não é alcance."
         ),
         "scope": (
-            "Procura highContrast, reducedMotion, captions e remapeamento no "
-            "código. Não mede contraste, não joga com o modo ativo e não "
-            "aprova alcance. `verified` é sempre falso."
+            "Procura highContrast, reducedMotion, captions, remapeamento e "
+            "uiScale no código. Não mede contraste, não joga com o modo "
+            "ativo e não aprova alcance. `verified` é sempre falso."
         ),
     }
 

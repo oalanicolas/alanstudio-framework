@@ -30,8 +30,8 @@ não há recibo.
 
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
-só levanta quando falta a declaração. O starter expõe assistência que
-não esconde conteúdo; o leitor ainda não a cobra.
+só levanta quando falta a declaração. O starter expõe assistência,
+`uiScale` e `docs/access.md`; `pagehide` descarrega o save.
 
 **Arte, conteúdo, empacotar:** `art`, `content` e `ship` leem paleta ou
 art-bible vigente, dado fora do código e passo de build/export.

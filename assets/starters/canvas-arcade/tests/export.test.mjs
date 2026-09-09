@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { cp, mkdtemp, rm } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { once } from "node:events";
 import { tmpdir } from "node:os";
@@ -32,6 +32,9 @@ test("o export copia o jogo e deixa de fora o que só serve para desenvolver", a
     assert.ok(existsSync(join(dist, "public/sfx/dash-b.wav")), "o artefato leva a variante");
     assert.ok(existsSync(join(dist, "tools/serve.mjs")));
     assert.ok(existsSync(join(dist, "package.json")));
+    const version = JSON.parse(await readFile(join(dist, "VERSION.json"), "utf8"));
+    assert.equal(version.version, "0.1.0");
+    assert.match(version.scope, /Não prova/);
     assert.equal(existsSync(join(dist, "tests")), false, "teste não embarca");
     assert.equal(existsSync(join(dist, "tools/budget.mjs")), false, "orçamento não embarca");
     assert.equal(existsSync(join(dist, "tools/export.mjs")), false, "o export não se copia");

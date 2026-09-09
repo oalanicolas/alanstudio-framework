@@ -11,6 +11,9 @@ O ciclo criativo do framework terminava em QA, e essa lacuna produz um padrão
 conhecido: um jogo que funciona na máquina de quem construiu e falha em qualquer
 outra. Release é a etapa que converte “funciona aqui” em “funciona para alguém”.
 
+O starter `canvas-arcade` grava `dist/VERSION.json` no export: versão e
+HEAD. Identidade do artefato não é outra máquina. `shipped` é sempre falso.
+
 Verifique o artefato, não o ambiente de desenvolvimento. Editor, servidor de
 desenvolvimento e build de depuração têm caminhos, permissões, recursos e tempos
 diferentes do export. Um teste no editor não demonstra o jogo exportado.

@@ -108,11 +108,11 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; `consistent` é falso |
 | `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — `npm run peak` relata o pico do arquivo, não do mix em cena; loudness percebido não foi medido |
 | `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; abandono e erro repetido ainda não foram investigados |
-| `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada, perda de foco — além do teste de dado inválido |
+| `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
-| `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena — `npm run contrast` relata pares hex sem limiar; assistência existe; movimento ainda não foi observado |
+| `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena — `docs/access.md` declara o que o recorte não atende; `uiScale` tem consumidor; movimento ainda não foi observado |
 | `content_scale` | `shippable` | `flagship`: a ferramenta é boa o bastante para alguém de fora produzir no piso — spawn e copy migram e validam; `npm run table` já nasce com schema; `enough` é falso |
-| `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `npm run build` existe e ninguém o correu fora daqui |
+| `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `dist/VERSION.json` nomeia a versão; ninguém correu o artefato fora daqui |
 
 **Leitura honesta: este projeto é um protótipo**, porque uma dimensão está
 nesse degrau. Nenhuma quantidade de acabamento visual muda essa leitura antes
