@@ -77,6 +77,45 @@ test("legenda desligada não produz legenda", () => {
   assert.deepEqual(audio.captions(), []);
 });
 
+// Uma rajada de eventos iguais gerava uma linha por evento; três "orbe
+// coletado" tomavam a faixa inteira e empurravam para fora a legenda do dano,
+// que é justamente a que muda a decisão do jogador.
+test("evento repetido em sequência vira uma linha com contagem", () => {
+  const { audio, tick } = build();
+  audio.play("collect");
+  tick(60);
+  audio.play("collect");
+  tick(60);
+  audio.play("collect");
+  const juntas = audio.captions();
+  assert.equal(juntas.length, 1);
+  assert.equal(juntas[0].count, 3);
+  assert.equal(juntas[0].text, SOUNDS.collect.caption);
+});
+
+test("evento diferente no meio da rajada não é absorvido pela contagem", () => {
+  const { audio, tick } = build();
+  audio.play("collect");
+  tick(30);
+  audio.play("hit");
+  tick(30);
+  audio.play("collect");
+  assert.deepEqual(
+    audio.captions().map((entry) => [entry.id, entry.count]),
+    [["collect", 1], ["hit", 1], ["collect", 1]],
+  );
+});
+
+test("a contagem só soma o que ainda está na janela de leitura", () => {
+  const { audio, tick } = build();
+  audio.play("collect");
+  tick(2700);
+  audio.play("collect");
+  const juntas = audio.captions();
+  assert.equal(juntas.length, 1, "a primeira linha já tinha expirado");
+  assert.equal(juntas[0].count, 1);
+});
+
 test("a legenda expira em vez de acumular na tela", () => {
   const { audio, tick } = build();
   audio.play("collect");

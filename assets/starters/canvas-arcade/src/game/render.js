@@ -81,7 +81,10 @@ export function createRenderer(canvas, options = {}) {
       else drawShard(context, palette, entity);
     }
     drawPlayer(context, palette, state, reduced);
-    drawHud(context, palette, state, settings, extra);
+    const reserved = drawHud(context, palette, state, settings, extra);
+    if (settings.captions !== false) {
+      drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
+    }
     if (frame.paused) drawOverlay(context, palette, "Pausado", "Continuar: Esc ou P");
     else if (state.phase === "over") {
       drawOverlay(
@@ -91,7 +94,6 @@ export function createRenderer(canvas, options = {}) {
         state.stats.bestChain ? `Maior corrente: ${state.stats.bestChain} · reiniciar: R` : "Reiniciar: R",
       );
     }
-    if (settings.captions !== false) drawCaptions(context, palette, extra.captions ?? []);
   }
 
   function drawOrb(target, palette, entity) {
@@ -149,16 +151,21 @@ export function createRenderer(canvas, options = {}) {
   // ordem de desenho garante que o texto vença os pixels, não que ele seja
   // lido. A placa devolve o contraste sem escurecer a cena inteira.
   function plate(target, palette, x, y, width, height) {
+    const box = { x: x - 3, y: y - 2.5, width: width + 6, height: height + 5 };
     target.fillStyle = palette.plate;
     if (typeof target.roundRect !== "function") {
-      target.fillRect(x - 3, y - 2.5, width + 6, height + 5);
-      return;
+      target.fillRect(box.x, box.y, box.width, box.height);
+      return box;
     }
     target.beginPath();
-    target.roundRect(x - 3, y - 2.5, width + 6, height + 5, 3);
+    target.roundRect(box.x, box.y, box.width, box.height, 3);
     target.fill();
+    return box;
   }
 
+  // Devolve os retângulos que reservou. É deles que a faixa de legenda tira a
+  // sua posição, em vez de repetir os números do HUD e sair de sincronia na
+  // primeira vez que alguém mexer na escala da interface.
   function drawHud(target, palette, state, settings, extra) {
     const size = 8 * (settings.uiScale ?? 1);
     target.font = `${size}px system-ui, sans-serif`;
@@ -171,14 +178,14 @@ export function createRenderer(canvas, options = {}) {
     const width = (text) => target.measureText(text).width;
 
     target.textAlign = "left";
-    plate(target, palette, 6, 5, Math.max(width(score), width(chain)), second + size - 5);
+    const scoreBox = plate(target, palette, 6, 5, Math.max(width(score), width(chain)), second + size - 5);
     target.fillStyle = palette.text;
     target.fillText(score, 6, 5);
     target.fillStyle = state.chain > 0 ? palette.chain : palette.muted;
     target.fillText(chain, 6, second);
 
     const rightWidth = Math.max(width(`${seconds}s`), best ? width(best) : 0);
-    plate(target, palette, FIELD.width - 6 - rightWidth, 5, rightWidth, best ? second + size - 5 : size);
+    const timerBox = plate(target, palette, FIELD.width - 6 - rightWidth, 5, rightWidth, best ? second + size - 5 : size);
     target.textAlign = "right";
     target.fillStyle = seconds <= 10 ? palette.danger : palette.muted;
     target.fillText(`${seconds}s`, FIELD.width - 6, 5);
@@ -190,9 +197,10 @@ export function createRenderer(canvas, options = {}) {
     target.textAlign = "left";
     const ready = state.player.dashCooldown === 0 && state.player.dashRecovery === 0 && state.bankLock === 0;
     const dash = ready ? "Dash pronto" : "Dash recarregando";
-    plate(target, palette, 6, FIELD.height - size - 5, width(dash), size);
+    const dashBox = plate(target, palette, 6, FIELD.height - size - 5, width(dash), size);
     target.fillStyle = ready ? palette.orb : palette.muted;
     target.fillText(dash, 6, FIELD.height - size - 5);
+    return { score: scoreBox, timer: timerBox, dash: dashBox };
   }
 
   function drawOverlay(target, palette, title, hint) {
@@ -208,18 +216,25 @@ export function createRenderer(canvas, options = {}) {
     target.textAlign = "left";
   }
 
-  function drawCaptions(target, palette, captions) {
+  // A legenda tem faixa própria, encostada à direita e logo abaixo do relógio.
+  // No centro inferior ela caía exatamente sobre o jogador e sobre o rótulo do
+  // dash: com o áudio desligado a informação existia e não era lida.
+  function drawCaptions(target, palette, captions, reserved, settings) {
     if (!captions.length) return;
-    target.font = "7px system-ui, sans-serif";
-    target.textAlign = "center";
-    let line = FIELD.height - 16;
-    for (const caption of captions.slice(-3)) {
-      const width = target.measureText(caption.text).width + 8;
-      target.fillStyle = "rgba(0,0,0,0.72)";
-      target.fillRect(FIELD.width / 2 - width / 2, line - 1, width, 9);
+    const size = 7 * (settings.uiScale ?? 1);
+    target.font = `${size}px system-ui, sans-serif`;
+    target.textBaseline = "top";
+    target.textAlign = "right";
+    const right = FIELD.width - 6;
+    let line = reserved.timer.y + reserved.timer.height + 4;
+    // Mais recente no topo: a linha que acabou de nascer é a que se procura.
+    for (const caption of captions.slice(-3).reverse()) {
+      const text = caption.count > 1 ? `${caption.text} ×${caption.count}` : caption.text;
+      const width = target.measureText(text).width;
+      plate(target, palette, right - width, line, width, size);
       target.fillStyle = palette.text;
-      target.fillText(caption.text, FIELD.width / 2, line);
-      line -= 10;
+      target.fillText(text, right, line);
+      line += size + 4;
     }
     target.textAlign = "left";
   }

@@ -9,7 +9,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { createRenderer, PALETTES } from "../src/game/render.js";
-import { createState, advance, CONFIG } from "../src/game/rules.js";
+import { createState, advance, CONFIG, FIELD, PLAYER_Y } from "../src/game/rules.js";
 
 const PLATE_COLORS = new Set(Object.values(PALETTES).map((palette) => palette.plate));
 
@@ -105,6 +105,19 @@ function hudTexts(state, settings = {}, extra = { best: 0 }) {
   return { texts: recorder.calls.texts, plates: recorder.plates(), order: recorder.calls.order };
 }
 
+function overlap(a, b) {
+  return (
+    a.x < b.x + b.width - 0.01 &&
+    b.x < a.x + a.width - 0.01 &&
+    a.y < b.y + b.height - 0.01 &&
+    b.y < a.y + a.height - 0.01
+  );
+}
+
+function boxOf(text) {
+  return { x: text.left, y: text.top, width: text.right - text.left, height: text.bottom - text.top };
+}
+
 function covered(text, plates) {
   return plates.some(
     (plate) =>
@@ -170,6 +183,71 @@ test("a placa acompanha o texto quando ele cresce durante a partida", () => {
   for (const text of depois.texts.filter((item) => item.text.includes("Corrente"))) {
     assert.ok(covered(text, depois.plates), `"${text.text}" ficou fora da placa`);
   }
+});
+
+// A legenda é a única cópia da informação sonora quando o áudio está desligado,
+// então uma legenda ilegível é o mesmo que não ter legenda. Ela caía no centro
+// inferior, exatamente sobre o jogador e sobre o rótulo do dash.
+const RAJADA = [
+  { id: "collect", text: "orbe coletado", count: 3 },
+  { id: "hit", text: "atingido: corrente perdida", count: 1 },
+  { id: "dash", text: "avanço", count: 2 },
+];
+
+function withCaptions(captions, settings = {}, extra = { best: 98765 }) {
+  const calls = hudTexts(longState(), settings, { ...extra, captions });
+  const legenda = calls.texts.filter((item) => captions.some((entry) => item.text.startsWith(entry.text)));
+  const hud = calls.texts.filter((item) => /Pontos|Corrente |Recorde|Dash|^\d+s$/.test(item.text));
+  return { ...calls, legenda, hud };
+}
+
+test("a legenda não ocupa os pixels de nenhum grupo do HUD", () => {
+  const { legenda, hud, plates } = withCaptions(RAJADA);
+  assert.equal(legenda.length, 3, `esperava três linhas de legenda: ${JSON.stringify(legenda.map((i) => i.text))}`);
+  const hudPlates = plates.filter((plate) => hud.some((text) => covered(text, [plate])));
+  assert.ok(hudPlates.length >= 3, "o HUD precisa das suas três placas para o teste valer");
+  for (const text of legenda) {
+    for (const box of hudPlates) {
+      assert.ok(!overlap(boxOf(text), box), `"${text.text}" invade uma placa do HUD: ${JSON.stringify(box)}`);
+    }
+    for (const outro of hud) {
+      assert.ok(!overlap(boxOf(text), boxOf(outro)), `"${text.text}" colide com "${outro.text}"`);
+    }
+  }
+});
+
+test("a legenda não cobre a faixa do jogador nem a base do campo", () => {
+  for (const settings of [{}, { uiScale: 1.6 }, { highContrast: true }]) {
+    const { legenda } = withCaptions(RAJADA, settings);
+    for (const text of legenda) {
+      assert.ok(
+        text.bottom < PLAYER_Y - 6,
+        `"${text.text}" desce até ${text.bottom}, dentro da faixa do jogador (${PLAYER_Y - 6})`,
+      );
+      assert.ok(text.right <= FIELD.width - 6 + 0.01 && text.left >= 0, `"${text.text}" sai do campo`);
+    }
+  }
+});
+
+test("cada linha de legenda cabe na sua própria placa", () => {
+  const { legenda, plates } = withCaptions(RAJADA);
+  for (const text of legenda) {
+    assert.ok(covered(text, plates), `"${text.text}" vaza da placa: ${JSON.stringify(text)}`);
+  }
+});
+
+test("repetição em rajada aparece com contagem em vez de linha repetida", () => {
+  const { legenda } = withCaptions(RAJADA);
+  const textos = legenda.map((item) => item.text);
+  assert.deepEqual(new Set(textos).size, textos.length, `linha repetida na faixa: ${JSON.stringify(textos)}`);
+  assert.ok(textos.includes("orbe coletado ×3"), `faltou a contagem: ${JSON.stringify(textos)}`);
+  assert.ok(textos.includes("atingido: corrente perdida"), "contagem 1 não leva sufixo");
+});
+
+test("o teste sabe reprovar: no centro inferior a legenda cairia sobre o jogador", () => {
+  const antiga = { x: FIELD.width / 2 - 30, y: FIELD.height - 17, width: 60, height: 9 };
+  const jogador = { x: 0, y: PLAYER_Y - 6, width: FIELD.width, height: 24 };
+  assert.ok(overlap(antiga, jogador), "o detector de colisão precisa acusar a posição antiga");
 });
 
 test("o HUD é desenhado depois das entidades, nunca antes", () => {

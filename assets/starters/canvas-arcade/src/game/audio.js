@@ -26,7 +26,7 @@ export const SOUNDS = {
 
 export function createAudio(options = {}) {
   const maxVoices = options.maxVoices ?? 6;
-  const captionLimit = options.captionLimit ?? 4;
+  const captionLimit = options.captionLimit ?? 8;
   const now = options.now ?? (() => Date.now());
   const createContext = options.createContext ?? defaultContext;
 
@@ -132,9 +132,23 @@ export function createAudio(options = {}) {
       settings = next;
       applyBusLevels();
     },
+    // Rajada de eventos iguais — três orbes em meio segundo — é uma linha com
+    // contagem, não três linhas idênticas. Sem juntar, a repetição toma a faixa
+    // inteira e empurra para fora a legenda que mudaria a decisão do jogador.
     captions(maxAgeMs = 2600) {
       const time = now();
-      return captions.filter((entry) => time - entry.at < maxAgeMs);
+      const merged = [];
+      for (const entry of captions) {
+        if (time - entry.at >= maxAgeMs) continue;
+        const last = merged[merged.length - 1];
+        if (last && last.id === entry.id) {
+          last.count += 1;
+          last.at = entry.at;
+          continue;
+        }
+        merged.push({ ...entry, count: 1 });
+      }
+      return merged;
     },
     // Lacuna observável: quais papéis sonoros o jogo pede e ainda não tem.
     missing() {
