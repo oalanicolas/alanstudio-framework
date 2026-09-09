@@ -358,6 +358,17 @@ test("em sequência de quadros o HUD continua coberto e as entidades passam por 
   assert.ok(framesWithEntities > 20, "a sequência precisa ter chuva, não só o campo vazio");
 });
 
+test("o look dusk pinta o campo diferente do padrão e cede ao alto contraste", () => {
+  const state = createState(1);
+  const fieldOf = (calls) => calls.rects.find((rect) => rect.width === FIELD.width && rect.height === FIELD.height);
+  const normal = fieldOf(paint(state));
+  const dusk = fieldOf(paint(state, { look: "dusk" }));
+  const contrast = fieldOf(paint(state, { look: "dusk", highContrast: true }));
+  assert.ok(normal && dusk && contrast, "o campo precisa ter sido pintado");
+  assert.notEqual(dusk.style, normal.style, "dusk precisa ser outro look, não o padrão");
+  assert.equal(contrast.style, PALETTES.contrast.field, "alto contraste vence o look");
+});
+
 test("orbe e estilhaço usam primitivas diferentes, não só cores diferentes", () => {
   const orb = createState(1);
   orb.entities = [{ id: 1, kind: "orb", x: 80, y: 70, vy: 0 }];

@@ -26,6 +26,19 @@
       "danger": "#ff2b2b",
       "plate": "rgba(0,0,0,0.9)",
       "plateEdge": "#ffffff"
+    },
+    "dusk": {
+      "background": "#1a1210",
+      "field": "#241816",
+      "player": "#f6efe6",
+      "orb": "#ffb35a",
+      "shard": "#c45c6a",
+      "chain": "#f0c36a",
+      "text": "#f3e6d8",
+      "muted": "#a89080",
+      "danger": "#ff6b5a",
+      "plate": "rgba(18,10,8,0.88)",
+      "plateEdge": "rgba(243,230,216,0.24)"
     }
   }
 }

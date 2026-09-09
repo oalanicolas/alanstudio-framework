@@ -109,7 +109,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | --- | --- | --- |
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor/câmera distintos; a ameaça marca o trilho, a recuperação do dash muda a silhueta e o erro acende o campo; `npm run probe` conta os buffers, não o peso percebido |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — a sequência de quadros no stub cobre o HUD; `npm run contrast` amostra a cena montada e, em cinza, pixels que só o orbe ou só o estilhaço pintam; o dispositivo alvo ainda não foi observado |
-| `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; a paleta é mesa em `data/palettes.json`; `consistent` é falso |
+| `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; a paleta é mesa e `dusk` é o segundo look (`?look=` / `settings.look`); `consistent` é falso |
 | `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — o palco tem folga, a cama ocupa o barramento de música e o mixer limita o master; `npm run mix` soma cama e vozes na simulação, não no dispositivo; loudness percebido não foi medido |
 | `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; a sessão relata never_banked e erro repetido na simulação; a curva com quem nunca viu o jogo continua pendente |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
@@ -190,14 +190,17 @@ uma intenção — as regras nunca veem eventos.
 
 A paleta vive em `data/palettes.json` e o contrato está em
 `docs/art-bible.md`. O desenho consome `PALETTES` via `tables.js`.
-O harness lê os dois; consistência em movimento continua pendente. Chuva e texto do HUD passam por `src/game/tables.js`.
+`?look=` / `settings.look` escolhem `normal` ou `dusk`; alto contraste
+vence o look. O harness lê os dois; consistência em movimento continua
+pendente. Chuva e texto do HUD passam por `src/game/tables.js`.
 `npm run table -- <nome> --from spawn --as denser` nasce a próxima chuva
 no mesmo carregador e no mesmo consumidor (`?spawn=` /
 `settings.spawnProfile`). `--from dusk` parte da chuva densa; sem `--as`
 a cópia é idêntica nos knobs. `npm run session -- --spawn <nome>` traça
 essa chuva. Sem `--from`, o custo variável continua sendo ligar a regra.
-`dusk` já é a segunda chuva; ferramenta que desloca knobs não é volume
-nem alguém de fora no piso. Os papéis do verbo e a cama em `public/sfx` entram no mixer;
+`dusk` já é a segunda chuva e o segundo look — o nome é compartilhado,
+as mesas não. Ferramenta que desloca knobs não é volume nem alguém de
+fora no piso. Os papéis do verbo e a cama em `public/sfx` entram no mixer;
 `heard` continua falso. `npm run build` copia a árvore jogável para
 `dist/`; isso não é outra pessoa tendo jogado o artefato.
 

@@ -4,8 +4,9 @@ Primitivas por decisão, não placeholder. Orbe e estilhaço se separam por
 **forma** (círculo com anel versus losango), não só por cor. O stub
 distingue as duas silhuetas com a mesma tinta; o dispositivo alvo
 não foi observado. Paletas canônicas em
-`data/palettes.json` (`normal` e `contrast`); o desenho consome
-`PALETTES` via `src/game/tables.js`.
+`data/palettes.json` (`normal`, `contrast` e `dusk`); o desenho consome
+`PALETTES` via `src/game/tables.js`. `look` escolhe `normal` ou `dusk`;
+`contrast` continua sendo o modo de alcance.
 
 ## Tokens
 
@@ -25,8 +26,10 @@ e cabe neste recorte.
 ## Receita de um primitivo novo
 
 1. Escolha **forma**, não só cor — o par orbe/estilhaço é o piso.
-2. Acrescente o token em `data/palettes.json` (`normal` e `contrast`).
-   Trocar só a cor não exige abrir `render.js`.
+2. Acrescente o token em `data/palettes.json` (`normal`, `contrast` e
+   cada look de arte). Trocar só a cor não exige abrir `render.js`.
+   Um look novo entra na mesa e o jogo o consome por `?look=` /
+   `settings.look` — `dusk` já é o segundo.
 3. Se o item for forma nova, desenhe o consumidor em `src/game/render.js`.
 4. Registre a linha nesta tabela e a origem em `CREDITS.md`.
 5. Se o item for chuva, nasça com `npm run table -- <nome> --from spawn`

@@ -179,6 +179,14 @@ test("o perfil de chuva é preferência persistida, não um modo escondido", () 
   assert.equal(defaultSettings({}).spawnProfile, "spawn");
 });
 
+test("o look de arte é preferência persistida, não um modo escondido", () => {
+  const settings = normalizeSettings({ look: "dusk" });
+  assert.equal(settings.look, "dusk");
+  assert.equal(normalizeSettings({ look: "Tempo-1" }).look, "normal");
+  assert.equal(normalizeSettings({ look: 3 }).look, "normal");
+  assert.equal(defaultSettings({}).look, "normal");
+});
+
 test("o preset de uma mão usa o cluster direito sem colidir", () => {
   const codes = Object.values(ONE_HAND_BINDINGS).flat();
   assert.deepEqual(

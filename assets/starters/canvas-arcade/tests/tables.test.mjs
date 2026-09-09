@@ -2,7 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  applySpawnIntent, loadTable, loadSpawn, listSpawnIntents, listSpawnProfiles, looksLikeSpawn,
+  applySpawnIntent, loadTable, loadSpawn, listLooks, listSpawnIntents, listSpawnProfiles, looksLikeSpawn,
+  resolveLookName,
   migrateCopy, migratePalettes, migrateSpawn, migrateTable, requireFields, resolveSpawnName, spawnRecord, TABLES,
   SPAWN_FIELDS, SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS, PALETTE_SCHEMA, PALETTE_FIELDS, SPAWN_INTENTS, PALETTES,
 } from "../src/game/tables.js";
@@ -17,6 +18,11 @@ test("as mesas passam pelo mesmo carregador", () => {
   assert.equal(loadTable("palettes").schema, PALETTE_SCHEMA);
   assert.equal(loadTable("palettes").palettes.normal.field, "#171b26");
   assert.equal(PALETTES.contrast.plateEdge, "#ffffff");
+  assert.equal(PALETTES.dusk.field, "#241816");
+  assert.deepEqual(listLooks(), ["dusk", "normal"]);
+  assert.equal(resolveLookName("dusk"), "dusk");
+  assert.equal(resolveLookName("contrast"), "normal");
+  assert.equal(resolveLookName("inventada"), "normal");
   assert.throws(() => loadTable("inventada"), /mesa desconhecida/);
 });
 

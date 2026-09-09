@@ -4,7 +4,9 @@ Uma mesa nova entra pelo mesmo carregador. O custo conhecido do próximo
 item de chuva é **o comando** — o jogo já consome qualquer mesa com a
 forma de `spawn`. `copy.fantasy` alimenta o aviso do primeiro ciclo.
 `palettes` alimenta o desenho: trocar um token não exige abrir
-`render.js`. Mesas genéricas ainda pedem consumidor.
+`render.js`. O look `dusk` mora nessa mesa; `?look=` / `settings.look`
+o consomem. `dusk` na chuva é outra mesa (`dusk.json`) e outro
+consumidor (`?spawn=`). Mesas genéricas ainda pedem consumidor.
 
 ```sh
 npm run table -- <nome> --from spawn

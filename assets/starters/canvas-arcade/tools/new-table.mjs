@@ -31,6 +31,7 @@ const RESERVED = new Set([
   "loadspawn", "listspawnprofiles", "resolvespawnname", "lookslikespawn", "default",
   "applyspawnintent", "spawnrecord", "listspawnintents",
   "palettes", "migratepalettes", "palettefields",
+  "listlooks", "resolvelookname", "look",
 ]);
 const intents = listSpawnIntents();
 

@@ -16,18 +16,26 @@ import { createAudio } from "./game/audio.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { advance as advanceRules, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
-import { copy, resolveSpawnName } from "./game/tables.js";
+import { copy, resolveLookName, resolveSpawnName } from "./game/tables.js";
 import { coachHint } from "./game/coach.js";
 
-function readSpawnQuery(options) {
+function readQueryName(options, key, resolve) {
   const raw = options.query
     ?? (typeof location !== "undefined" && typeof location.search === "string" ? location.search : "");
   if (!raw) return null;
   const search = raw.startsWith("?") ? raw.slice(1) : raw;
-  const value = new URLSearchParams(search).get("spawn");
+  const value = new URLSearchParams(search).get(key);
   if (!value) return null;
-  const name = resolveSpawnName(value);
+  const name = resolve(value);
   return name === value ? name : null;
+}
+
+function readSpawnQuery(options) {
+  return readQueryName(options, "spawn", resolveSpawnName);
+}
+
+function readLookQuery(options) {
+  return readQueryName(options, "look", resolveLookName);
 }
 
 export function createGame(options = {}) {
@@ -38,8 +46,17 @@ export function createGame(options = {}) {
 
   let settings = loadSettings(storage, environment).settings;
   const querySpawn = readSpawnQuery(options);
-  if (querySpawn) {
-    settings = normalizeSettings({ ...settings, spawnProfile: querySpawn }, environment, settings);
+  const queryLook = readLookQuery(options);
+  if (querySpawn || queryLook) {
+    settings = normalizeSettings(
+      {
+        ...settings,
+        ...(querySpawn ? { spawnProfile: querySpawn } : {}),
+        ...(queryLook ? { look: queryLook } : {}),
+      },
+      environment,
+      settings,
+    );
   }
   const progressLoad = loadProgress(storage);
   let progress = progressLoad.progress;

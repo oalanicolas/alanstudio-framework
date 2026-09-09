@@ -2157,7 +2157,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(art["declared"])
         self.assertFalse(art["missing"])
         self.assertFalse(art["consistent"])
-        self.assertEqual({item["key"] for item in art["palettes"]}, {"normal", "contrast"})
+        self.assertEqual({item["key"] for item in art["palettes"]}, {"normal", "contrast", "dusk"})
         self.assertEqual(art["bible"], "docs/art-bible.md")
         self.assertTrue(art["bible_current"])
         self.assertFalse(art["bible_draft"])

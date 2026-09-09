@@ -6,7 +6,7 @@
 // movimento — o sinal de causa migra para uma forma estática, não desaparece.
 
 import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching } from "./rules.js";
-import { copy, PALETTES } from "./tables.js";
+import { copy, PALETTES, resolveLookName } from "./tables.js";
 import { bindLines } from "../core/keys.js";
 import { DEFAULT_BINDINGS } from "../core/settings.js";
 
@@ -40,7 +40,7 @@ export function createRenderer(canvas, options = {}) {
         ? settings.palette
         : settings.highContrast
           ? PALETTES.contrast
-          : PALETTES.normal;
+          : PALETTES[resolveLookName(settings.look)];
     const reduced = Boolean(settings.reducedMotion);
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.fillStyle = palette.background;

@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.44 — O look dusk entra como a chuva
+
+A paleta era mesa, mas o jogo só pintava `normal` e `contrast`.
+`dusk` é o segundo look; `?look=` e `settings.look` o consomem.
+Alto contraste continua vencendo o look. `consistent` continua
+falso. `art_direction` permanece `slice`: look no disco não é
+alguém de fora nem comparação em movimento. Só `release` fica
+no piso.
+
+O que 0.9.44 não afirma: ninguém de fora produziu e o harness não
+comparou o look em movimento.
+
 ## 0.9.43 — Orbe e estilhaço se separam sem a cor
 
 A art-bible dizia que o jogo continuava legível em cinza. Nada

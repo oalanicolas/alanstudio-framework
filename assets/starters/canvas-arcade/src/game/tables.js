@@ -11,8 +11,10 @@
 // tem consumidor: o coach do primeiro ciclo. `resume`, `restart` e
 // `hint_bank` reservam o lugar da tecla; o desenho preenche com o
 // remapeamento vigente. `palettes` tem consumidor: o desenho lê
-// `PALETTES` daqui, não uma constante no render. Mesas genéricas
-// continuam sem consumidor automático.
+// `PALETTES` daqui, não uma constante no render. `look` escolhe um
+// look de arte (`normal`, `dusk`); `contrast` é o modo de alcance,
+// não um look. `dusk` na chuva e `dusk` no look compartilham o nome
+// e não a mesa. Mesas genéricas continuam sem consumidor automático.
 //
 // Toda mesa tem schema: formato antigo (sem campo) vira o vigente;
 // schema futuro falha com o número, não com undefined no meio do tick.
@@ -227,6 +229,19 @@ export function requireFields(name, fields) {
     throw new Error(`mesa ${name} sem ${missing.join(", ")}`);
   }
   return table;
+}
+
+export function listLooks() {
+  return Object.keys(PALETTES)
+    .filter((name) => name !== "contrast")
+    .sort();
+}
+
+export function resolveLookName(name) {
+  if (typeof name === "string" && name !== "contrast" && name in PALETTES) {
+    return name;
+  }
+  return "normal";
 }
 
 export function resolveSpawnName(name) {

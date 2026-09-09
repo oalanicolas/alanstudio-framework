@@ -228,6 +228,34 @@ test("trocar o perfil de chuva recomeça a partida com a mesa nova", () => {
   game.dispose();
 });
 
+test("trocar o look não recomeça a partida", () => {
+  const { game, storage } = harness();
+  game.advance(40);
+  const tick = game.observe().tick;
+  game.updateSettings({ look: "dusk" });
+  assert.equal(game.observe().tick, tick, "look é apresentação, não outra partida");
+  assert.equal(game.settings.look, "dusk");
+  assert.equal(JSON.parse(storage.get("settings")).look, "dusk");
+  const reopened = createGame({ seed: 5, eventTarget: recordingTarget(), storage });
+  assert.equal(reopened.settings.look, "dusk");
+  reopened.dispose();
+  game.dispose();
+});
+
+test("a query escolhe o look sem inventar mesa", () => {
+  const { game } = harness({ query: "?look=dusk" });
+  assert.equal(game.settings.look, "dusk");
+  const ignored = createGame({
+    seed: 5,
+    query: "?look=inventada",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(ignored.settings.look, "normal");
+  ignored.dispose();
+  game.dispose();
+});
+
 test("a query escolhe o perfil de chuva sem inventar mesa", () => {
   const { game } = harness({ query: "?spawn=dusk" });
   assert.equal(game.observe().spawnProfile, "dusk");

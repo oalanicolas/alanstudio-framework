@@ -18,7 +18,8 @@ as teclas. `next` só entra em `then.lost`. Depois de um `init` fresco,
 starter ensina mover, coletar e guardar no campo; o art-bible vigente
 não é reescrito. `--idea` entra no brief e, se houver `data/copy.json`,
 na tela do primeiro ciclo. O brief continua rascunho. A frase na tela
-não muda o verbo. O harness não executa o jogo.
+não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta e
+`?spawn=dusk` troca a chuva. O harness não executa o jogo.
 
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
 `--fill` sugere o acervo; `--apply` copia com o nome do papel. O starter
@@ -50,7 +51,8 @@ relata o reuso.
 **Arte, conteúdo, empacotar:** `art`, `content` e `ship` leem paleta ou
 art-bible vigente, dado fora do código e passo de build/export.
 `consistent`/`enough`/`shipped` são sempre falsos. O starter declara
-paleta em `data/palettes.json`, extrai a chuva (`spawn` e `dusk`), nasce mesa com `npm run table`
+paleta em `data/palettes.json` (look `dusk` por `?look=` / `settings.look`;
+`contrast` é alcance, não look), extrai a chuva (`spawn` e `dusk`), nasce mesa com `npm run table`
 (`--from spawn|dusk --as` já entra no consumidor; `session --spawn`
 traça) e empacota com `npm run build`.
 `ship` relata `dist/VERSION.json` quando existe; `npm run size` relata

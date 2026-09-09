@@ -6,7 +6,9 @@
 //
 // Uma opção só existe quando tem consumidor: cada campo abaixo é lido em
 // `render.js`, `audio.js`, `input.js` ou `rules.js`. `spawnProfile` escolhe
-// a mesa de chuva; nome desconhecido cai no padrão na hora de criar a partida.
+// a mesa de chuva; `look` escolhe o look de arte. Nome desconhecido cai
+// no padrão. `contrast` não é look: alto contraste continua sendo o modo
+// de alcance.
 
 import { readJson, writeJson } from "./storage.js";
 
@@ -46,6 +48,7 @@ export function defaultSettings(environment = {}) {
     oneHand: false,
     uiScale: 1,
     spawnProfile: "spawn",
+    look: "normal",
     buses: structuredCloneish(DEFAULT_BUSES),
     bindings: structuredCloneish(DEFAULT_BINDINGS),
   };
@@ -91,6 +94,10 @@ export function normalizeSettings(raw, environment = {}, base = defaultSettings(
       typeof raw.spawnProfile === "string" && /^[a-z][a-z0-9]{0,31}$/.test(raw.spawnProfile)
         ? raw.spawnProfile
         : base.spawnProfile,
+    look:
+      typeof raw.look === "string" && /^[a-z][a-z0-9]{0,31}$/.test(raw.look)
+        ? raw.look
+        : base.look,
     buses,
     bindings,
   };

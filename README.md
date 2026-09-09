@@ -54,7 +54,7 @@ Com starter (REUSE de infraestrutura já testada):
 python3 scripts/game.py start /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
 ```
 
-O JSON devolve `play` (o comando que **abre** o jogo), `then.note` (o próximo comando do harness **depois** de uma partida) e, se o starter declara, `cycle` (verbo e teclas). Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo.
+O JSON devolve `play` (o comando que **abre** o jogo), `then.note` (o próximo comando do harness **depois** de uma partida) e, se o starter declara, `cycle` (verbo e teclas). Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta e `?spawn=dusk` troca a chuva — as duas sem recomeçar o projeto.
 
 `guide` (também sem subcomando: `python3 scripts/game.py`) mapeia os três passos — start → jogar → `note` — sem executar nenhum:
 
@@ -583,11 +583,13 @@ procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 existe, relata nome e versão. `shipped` é sempre `false`.
 HTML estático sem manifesto já é o artefato; manifesto sem passo de
 empacotar recebe `ship.unpacked`. O starter declara paleta em
-`data/palettes.json`, extrai a chuva
+`data/palettes.json`, escolhe o look por `?look=` / `settings.look`
+(`dusk` já é o segundo; `contrast` é alcance, não look), extrai a chuva
 para `data/spawn.json` e `data/dusk.json`, escolhe o perfil por `?spawn=`,
 nasce a próxima com `table --from` / `--as` e `session --spawn`, e
-empacota com `npm run build` — ferramenta que desloca knobs e um export
-na máquina de quem construiu não são escala nem entrega.
+empacota com `npm run build` — look no disco, ferramenta que desloca knobs
+e um export na máquina de quem construiu não são direção consistente,
+escala nem entrega.
 
 ## Playtest
 
