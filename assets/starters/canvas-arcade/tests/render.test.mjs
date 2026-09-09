@@ -12,6 +12,7 @@ import { createRenderer, PALETTES } from "../src/game/render.js";
 import { createState, advance, CONFIG, FIELD, PLAYER_Y } from "../src/game/rules.js";
 
 const PLATE_COLORS = new Set(Object.values(PALETTES).map((palette) => palette.plate));
+const PLATE_EDGE_COLORS = new Set(Object.values(PALETTES).map((palette) => palette.plateEdge));
 
 // Largura proporcional ao texto, como em qualquer fonte real: o que o teste
 // verifica é que a placa mede a mesma string que o `fillText` desenha.
@@ -20,13 +21,14 @@ const PLATE_COLORS = new Set(Object.values(PALETTES).map((palette) => palette.pl
 // algum retângulo" seria sempre verdadeiro. Cada retângulo guarda a cor com
 // que foi pintado, e só os da cor de placa contam.
 function recordingCanvas() {
-  const calls = { rects: [], texts: [], order: [] };
+  const calls = { rects: [], edges: [], texts: [], order: [] };
   let font = "8px system-ui";
   let align = "left";
   let pending = null;
   const size = () => Number.parseFloat(font) || 8;
   const measure = (text) => text.length * size() * 0.62;
   const commit = (rect) => calls.rects.push({ ...rect, style: context.fillStyle });
+  const commitEdge = (rect) => calls.edges.push({ ...rect, style: context.strokeStyle });
   const context = {
     setTransform() {},
     save() {},
@@ -42,7 +44,10 @@ function recordingCanvas() {
     },
     ellipse() {},
     quadraticCurveTo() {},
-    stroke() {},
+    stroke() {
+      if (pending) commitEdge(pending);
+      pending = null;
+    },
     fill() {
       if (pending) commit(pending);
       pending = null;
@@ -53,7 +58,9 @@ function recordingCanvas() {
     roundRect(x, y, width, height) {
       pending = { x, y, width, height };
     },
-    strokeRect() {},
+    strokeRect(x, y, width, height) {
+      commitEdge({ x, y, width, height });
+    },
     clearRect() {},
     rect() {},
     createLinearGradient: () => ({ addColorStop() {} }),
@@ -88,6 +95,7 @@ function recordingCanvas() {
   return {
     calls,
     plates: () => calls.rects.filter((rect) => PLATE_COLORS.has(rect.style)),
+    edges: () => calls.edges.filter((rect) => PLATE_EDGE_COLORS.has(rect.style)),
     canvas: {
       width: 360,
       height: 640,
@@ -102,7 +110,12 @@ function hudTexts(state, settings = {}, extra = { best: 0 }) {
   const renderer = createRenderer(recorder.canvas, { devicePixelRatio: 1 });
   renderer.resize(360, 640);
   renderer.draw(state, { paused: false, alpha: 0, steps: 1 }, settings, extra);
-  return { texts: recorder.calls.texts, plates: recorder.plates(), order: recorder.calls.order };
+  return {
+    texts: recorder.calls.texts,
+    plates: recorder.plates(),
+    edges: recorder.edges(),
+    order: recorder.calls.order,
+  };
 }
 
 function overlap(a, b) {
@@ -158,8 +171,70 @@ for (const [nome, state, settings, extra] of [
         `"${text.text}" vaza da placa: ${JSON.stringify(text)} contra ${JSON.stringify(calls.plates)}`,
       );
     }
+    // Cobrir não é a mesma coisa que se ver. Cada placa precisa da sua borda,
+    // senão ela oclui a cena e ninguém percebe onde a interface começa.
+    assert.equal(
+      calls.edges.length,
+      calls.plates.length,
+      `placa sem borda: ${calls.plates.length} placas, ${calls.edges.length} bordas`,
+    );
   });
 }
+
+// A seta do HUD promete o que guardar a corrente vale. Com corrente 1 ela saía
+// como "Corrente 1 → 1": conta certa, informação nenhuma, e um revisor de vídeo
+// leu isso como bug de lógica. Ela só aparece quando há ganho a mostrar.
+test("a seta da corrente só aparece quando guardar rende mais que a corrente", () => {
+  const chainText = (chain) => {
+    const state = createState(2);
+    state.chain = chain;
+    const calls = hudTexts(state);
+    return calls.texts.find((item) => item.text.startsWith("Corrente")).text;
+  };
+  assert.equal(chainText(0), "Corrente 0");
+  assert.equal(chainText(1), "Corrente 1");
+  assert.equal(chainText(2), "Corrente 2 → 4");
+  assert.equal(chainText(7), "Corrente 7 → 49");
+});
+
+// Dois revisores independentes olharam o vídeo, viram os orbes desaparecerem
+// atrás do texto e ainda assim relataram que não havia placa nenhuma. Estavam
+// certos sobre o que importa: preenchida com rgba(7,9,13,0.86) sobre o campo
+// #171b26, a placa resolve em algo próximo de #0a0c10 — diferença que a
+// compressão de vídeo apaga. Em alto contraste era pior: campo preto e placa
+// preta são a mesma cor, então a placa não existia visualmente.
+test("a placa se distingue do campo em toda paleta, não só o cobre", () => {
+  const distance = (a, b) => Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]);
+  const rgb = (color) => {
+    const hex = /^#([0-9a-f]{6})$/i.exec(color);
+    if (hex) return [0, 2, 4].map((at) => Number.parseInt(hex[1].slice(at, at + 2), 16));
+    const parts = /rgba?\(([^)]+)\)/.exec(color)[1].split(",").map(Number);
+    return parts.slice(0, 3);
+  };
+  // A placa translúcida é composta sobre o campo antes de ser comparada: o que
+  // o olho vê é a mistura, não a cor declarada.
+  const over = (color, base) => {
+    const parts = /rgba\(([^)]+)\)/.exec(color);
+    if (!parts) return rgb(color);
+    const [r, g, b, alpha = 1] = parts[1].split(",").map(Number);
+    return [r, g, b].map((channel, at) => channel * alpha + base[at] * (1 - alpha));
+  };
+
+  for (const [name, palette] of Object.entries(PALETTES)) {
+    const field = rgb(palette.field);
+    const surface = over(palette.plate, field);
+    const edge = over(palette.plateEdge, surface);
+    assert.ok(
+      palette.plateEdge,
+      `a paleta ${name} não declara plateEdge, e sem borda a placa depende só do preenchimento`,
+    );
+    // A borda é o traço que sobrevive à compressão e ao campo da mesma cor.
+    assert.ok(
+      distance(edge, field) > 60,
+      `em ${name} a borda (${edge.map(Math.round)}) não se separa do campo (${field}): distância ${Math.round(distance(edge, field))}`,
+    );
+  }
+});
 
 test("o teste sabe reprovar: sem placa, o texto do HUD fica descoberto", () => {
   const calls = hudTexts(createState(1));

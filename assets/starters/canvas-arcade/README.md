@@ -100,7 +100,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | Dimensão | Degrau | Critério do degrau seguinte |
 | --- | --- | --- |
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — falta o som, e o perdão de entrada precisa ser medido, não só anotado |
-| `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — o que existe hoje é medição de placa e faixa em quadro estático |
+| `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — o que existe hoje é medição de placa, borda e faixa em quadro estático |
 | `art_direction` | `prototype` | `playable`: escala, pivot e linguagem consistentes por decisão registrada; hoje são primitivas que se assumem placeholder |
 | `audio_mix` | `prototype` | `playable`: som licenciado nas ações centrais, com origem registrada — os seis papéis estão declarados e vazios |
 | `pacing` | `prototype` | `playable`: o primeiro ciclo ensinar a ação sem depender da tabela de comandos da página |
@@ -113,6 +113,17 @@ junto a condição: dispositivo, versão, cena e quem observou.
 **Leitura honesta: este projeto é um protótipo**, porque cinco dimensões estão
 nesse degrau. Nenhuma quantidade de acabamento visual muda essa leitura antes
 delas subirem.
+
+Por que `legibility` não é `slice`, com um caso concreto: as placas do HUD
+existiam, os testes provavam que cobriam cada linha de texto, e os orbes
+realmente desapareciam atrás delas. Ainda assim, dois revisores que assistiram ao
+vídeo relataram que não havia placa nenhuma — e estavam certos no que importa.
+Preenchida com `rgba(7,9,13,0.86)` sobre o campo `#171b26`, a placa resolvia em
+algo perto de `#0a0c10`: diferença real que a compressão apaga. Em alto
+contraste, campo preto e placa preta eram a mesma cor, então ela era invisível por
+construção. A correção foi dar borda à placa; a lição é que **teste de cobertura
+geométrica não é teste de percepção**, e é exatamente essa a distância entre
+`playable` e `slice` nesta dimensão.
 
 ## Som
 

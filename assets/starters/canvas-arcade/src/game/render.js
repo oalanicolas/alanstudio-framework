@@ -22,6 +22,7 @@ export const PALETTES = {
     muted: "#8a93a6",
     danger: "#ff5d5d",
     plate: "rgba(7,9,13,0.86)",
+    plateEdge: "rgba(231,235,243,0.22)",
   },
   contrast: {
     background: "#000000",
@@ -33,7 +34,11 @@ export const PALETTES = {
     text: "#ffffff",
     muted: "#c9c9c9",
     danger: "#ff2b2b",
+    // Campo preto e placa preta: aqui o preenchimento não tem como separar nada,
+    // e quem separa é a borda. Ela é branca e opaca porque em alto contraste
+    // separar é o objetivo, não a discrição.
     plate: "rgba(0,0,0,0.9)",
+    plateEdge: "#ffffff",
   },
 };
 
@@ -150,16 +155,33 @@ export function createRenderer(canvas, options = {}) {
   // Texto do HUD sobre o campo fica ilegível quando um orbe passa atrás dele:
   // ordem de desenho garante que o texto vença os pixels, não que ele seja
   // lido. A placa devolve o contraste sem escurecer a cena inteira.
+  //
+  // O preenchimento sozinho não bastava. Sobre o campo ele resolve em #0a0c10
+  // contra #171b26 — diferença real, imperceptível em vídeo comprimido — e em
+  // alto contraste, onde o campo é preto, a placa preta é invisível por
+  // definição. Dois revisores independentes descreveram o efeito (o orbe
+  // desaparece atrás do texto) negando a placa. Placa que não se vê não
+  // tranquiliza ninguém sobre onde termina a interface, então ela ganhou borda:
+  // a borda é o que separa a superfície do campo em qualquer compressão, e é o
+  // único traço que funciona quando preenchimento e fundo são a mesma cor.
   function plate(target, palette, x, y, width, height) {
     const box = { x: x - 3, y: y - 2.5, width: width + 6, height: height + 5 };
     target.fillStyle = palette.plate;
+    target.strokeStyle = palette.plateEdge;
+    target.lineWidth = 1;
+    // Meio pixel alinha o traço à grade e evita que ele saia com 2px esmaecidos.
+    const edge = { x: box.x + 0.5, y: box.y + 0.5, width: box.width - 1, height: box.height - 1 };
     if (typeof target.roundRect !== "function") {
       target.fillRect(box.x, box.y, box.width, box.height);
+      target.strokeRect(edge.x, edge.y, edge.width, edge.height);
       return box;
     }
     target.beginPath();
     target.roundRect(box.x, box.y, box.width, box.height, 3);
     target.fill();
+    target.beginPath();
+    target.roundRect(edge.x, edge.y, edge.width, edge.height, 2.5);
+    target.stroke();
     return box;
   }
 
@@ -171,7 +193,11 @@ export function createRenderer(canvas, options = {}) {
     target.font = `${size}px system-ui, sans-serif`;
     target.textBaseline = "top";
     const second = 5 + size + 2;
-    const chain = `Corrente ${state.chain}${state.chain > 0 ? ` → ${state.chain * state.chain}` : ""}`;
+    // A seta existe para mostrar o que guardar vale. Com corrente 1 ela dizia
+    // "1 → 1", que não é erro de conta — é ruído, e um revisor leu como bug.
+    // Ela aparece quando guardar rende mais do que a corrente já vale.
+    const payoff = state.chain * state.chain;
+    const chain = `Corrente ${state.chain}${payoff > state.chain ? ` → ${payoff}` : ""}`;
     const score = `Pontos ${state.score}`;
     const seconds = Math.ceil(remainingTicks(state) / TICK_HZ);
     const best = extra.best === undefined ? null : `Recorde ${extra.best}`;
