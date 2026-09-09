@@ -148,7 +148,7 @@ export function createRenderer(canvas, options = {}) {
   }
 
   function moteFill(palette, kind) {
-    if (kind === "collect") return palette.orb;
+    if (kind === "collect" || kind === "land") return palette.orb;
     if (kind === "bank") return palette.chain;
     if (kind === "hit" || kind === "over") return palette.danger;
     return palette.player;

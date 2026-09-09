@@ -7,6 +7,7 @@ import { CONFIG } from "./rules.js";
 
 const ROLES = {
   dash: { ms: "rumbleDashMs", magnitude: "rumbleDash", strong: 0.10 },
+  land: { ms: "rumbleLandMs", magnitude: "rumbleLand", strong: 0.14 },
   collect: { ms: "rumbleCollectMs", magnitude: "rumbleCollect", strong: 0.22 },
   bank: { ms: "rumbleBankMs", magnitude: "rumbleBank", strong: 0.38 },
   hit: { ms: "rumbleHitMs", magnitude: "rumbleHit", strong: 0.88 },

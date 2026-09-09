@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.60 — O dash também aterrissa
+
+A partida alongava e o campo mudava de cor na recuperação. O término
+sumia no quadro seguinte. Ao acabar o avanço o corpo senta, a câmera
+confirma para baixo, o rastro cai e o controle tapa — distintos da
+partida e menores que guardar. `felt` continua falso. `feel` permanece
+`playable`: aterrissagem no stub não é peso percebido. Só `release`
+fica no piso.
+
+O que 0.9.60 não afirma: o harness não jogou e o término não aprova
+o feel.
+
 ## 0.9.59 — O campo ensina o avanço
 
 Mover, coletar e guardar já tinham passo. O dash — o verbo que a

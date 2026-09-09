@@ -463,6 +463,20 @@ test("guardar e o erro achatam o corpo diferente da coleta", () => {
   assert.ok(c.height < b.height && b.height < a.height, "o achatamento precisa chegar no quadro");
 });
 
+test("o término do dash senta mais que a partida e menos que guardar", () => {
+  const start = createState(1);
+  start.player.squash = CONFIG.feel.squashDash;
+  const land = createState(1);
+  land.player.squash = CONFIG.feel.squashLand;
+  const banked = createState(1);
+  banked.player.squash = CONFIG.feel.squashBank;
+  const a = playerBox(start);
+  const b = playerBox(land);
+  const c = playerBox(banked);
+  assert.ok(b.width > a.width, "aterrissar senta mais que a partida");
+  assert.ok(c.width > b.width, "guardar senta mais que aterrissar");
+});
+
 test("a recuperação do dash não se parece com o dash nem com o descanso", () => {
   const idle = createState(1);
   const dash = createState(1);

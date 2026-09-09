@@ -48,28 +48,33 @@ export const CONFIG = {
     shakeDecay: 0.86,
     squashCollect: 0.22,
     squashDash: 0.34, // partida do dash: alonga na direção, não achata
+    squashLand: 0.40, // término: senta depois de alongar; menor que guardar
     squashBank: 0.46, // compromisso: senta mais que a coleta
     squashHit: 0.62, // o erro esmaga mais que guardar
     squashDecay: 0.82,
     punchCollectY: -1.6, // coleta sobe a câmera
     punchBankY: 2.4, // guardar confirma para baixo
     punchDashX: 3.2, // dash empurra na direção
+    punchLandY: 1.8, // aterrissa para baixo; menor que guardar
     punchHitY: 4.2, // o erro desloca mais que a coleta
     punchDecay: 0.78,
     telegraphReach: 36, // antecipação: a ameaça marca o trilho antes do contato
     flashHit: 0.55, // impacto do erro: o campo acende; coleta não
     flashDecay: 0.72,
     rumbleDashMs: 16, // partida: toque curto
+    rumbleLandMs: 10, // término: tap mais curto que a partida
     rumbleCollectMs: 28, // contato do acerto
     rumbleBankMs: 48, // peso da decisão
     rumbleHitMs: 84, // o erro dói mais que guardar
     rumbleOverMs: 120, // fim
     rumbleDash: 0.16,
+    rumbleLand: 0.12,
     rumbleCollect: 0.26,
     rumbleBank: 0.40,
     rumbleHit: 0.74,
     rumbleOver: 0.52,
     moteDash: 3, // rastro curto na partida
+    moteLand: 2, // puff curto de término; menor que a partida
     moteCollect: 5, // contato do acerto
     moteBank: 7, // peso da decisão
     moteHit: 9, // o erro espalha mais
@@ -188,6 +193,7 @@ const motePool = [];
 const moteCounts = { created: 0, acquired: 0, released: 0 };
 const MOTE_COUNTS = {
   dash: "moteDash",
+  land: "moteLand",
   collect: "moteCollect",
   bank: "moteBank",
   hit: "moteHit",
@@ -249,6 +255,9 @@ function burst(state, kind) {
     if (kind === "dash") {
       vx = dir * (1.6 + Math.abs(unit) * 0.4);
       vy = unit * 1.1;
+    } else if (kind === "land") {
+      vx = -dir * (0.4 + Math.abs(unit) * 0.5);
+      vy = 1.3 + Math.abs(unit) * 0.3;
     } else if (kind === "collect") {
       vx = unit * 1.4;
       vy = -1.8 - Math.abs(unit) * 0.3;
@@ -405,7 +414,7 @@ export function advance(state, intent = neutralIntent()) {
     return state;
   }
 
-  advanceDashPhases(player);
+  advanceDashPhases(state);
   if (player.invuln > 0) player.invuln -= 1;
   if (state.bankLock > 0) state.bankLock -= 1;
 
@@ -447,10 +456,16 @@ export function advance(state, intent = neutralIntent()) {
   return state;
 }
 
-function advanceDashPhases(player) {
+function advanceDashPhases(state) {
+  const player = state.player;
   if (player.dashTicks > 0) {
     player.dashTicks -= 1;
-    if (player.dashTicks === 0) player.dashRecovery = CONFIG.player.dashRecoveryTicks;
+    if (player.dashTicks === 0) {
+      player.dashRecovery = CONFIG.player.dashRecoveryTicks;
+      player.squash = CONFIG.feel.squashLand;
+      punch(state, 0, CONFIG.feel.punchLandY);
+      emit(state, "land");
+    }
     return;
   }
   if (player.dashRecovery > 0) {

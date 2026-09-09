@@ -140,8 +140,9 @@ perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, buffe
 guardar, graça após dano, alcance de coleta maior que o desenho — cada valor com o
 motivo ao lado. Guardar no hitstop não é engolido; um toque sem corrente não decide
 o próximo orbe. Cada verbo desloca a câmera numa direção própria e achata o corpo
-numa medida própria: coleta, dash, guardar e o erro não compartilham
-squash. A ameaça que
+numa medida própria: coleta, dash, aterrissagem, guardar e o erro não compartilham
+squash. O dash aterrissa: o corpo senta, a câmera confirma para baixo
+e o rastro cai — distintos da partida. A ameaça que
 ainda não chegou marca o trilho (`approaching`); a recuperação do dash muda a
 silhueta; o erro acende o campo, a coleta não. O controle pulsa no
 impacto com duração e magnitude por verbo; pausa e descarte cancelam.

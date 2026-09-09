@@ -64,6 +64,31 @@ test("a graça impede perder duas correntes seguidas", () => {
   assert.ok(state.events.some((event) => event.type === "graze"));
 });
 
+test("o término do dash senta, empurra a câmera e deixa rastro próprio", () => {
+  const fade = CONFIG.feel.squashDecay;
+  const state = createState(3);
+  advance(state, { move: 1, dash: true, bank: false });
+  assert.equal(state.player.dashTicks, CONFIG.player.dashTicks);
+  while (state.player.dashTicks > 0) advance(state, neutralIntent());
+  assert.equal(state.player.dashRecovery, CONFIG.player.dashRecoveryTicks);
+  assert.equal(state.player.squash, CONFIG.feel.squashLand * fade);
+  assert.ok(state.camera.y > 0, "aterrissar confirma para baixo");
+  assert.ok(state.events.some((event) => event.type === "land"));
+  assert.equal(
+    state.motes.filter((mote) => mote.kind === "land").length,
+    CONFIG.feel.moteLand,
+    "o término precisa de puff próprio",
+  );
+  assert.ok(
+    state.motes.filter((mote) => mote.kind === "land").every((mote) => mote.vy > 0),
+    "o puff do término cai, não copia a partida",
+  );
+  assert.ok(CONFIG.feel.squashLand > CONFIG.feel.squashDash);
+  assert.ok(CONFIG.feel.squashLand < CONFIG.feel.squashBank);
+  assert.ok(CONFIG.feel.punchLandY < CONFIG.feel.punchBankY);
+  assert.ok(CONFIG.feel.rumbleLandMs < CONFIG.feel.rumbleDashMs);
+});
+
 test("o dash atravessa o estilhaço sem perder a corrente", () => {
   const state = createState(3);
   advance(state, { move: 1, dash: true, bank: false });
@@ -114,10 +139,11 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   const squashes = [
     CONFIG.feel.squashCollect,
     CONFIG.feel.squashDash,
+    CONFIG.feel.squashLand,
     CONFIG.feel.squashBank,
     CONFIG.feel.squashHit,
   ];
-  assert.equal(new Set(squashes).size, 4, "squash repetido não distingue o verbo");
+  assert.equal(new Set(squashes).size, 5, "squash repetido não distingue o verbo");
   assert.notEqual(CONFIG.feel.collectShake, CONFIG.feel.hitShake);
   assert.notEqual(CONFIG.feel.bankShake, CONFIG.feel.collectShake);
   assert.notEqual(dash.camera.x, 0, "dash empurra a câmera na direção");
@@ -132,12 +158,13 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   assert.equal(struck.motes.length, CONFIG.feel.moteHit, "o erro precisa espalhar mais");
   const motes = [
     CONFIG.feel.moteDash,
+    CONFIG.feel.moteLand,
     CONFIG.feel.moteCollect,
     CONFIG.feel.moteBank,
     CONFIG.feel.moteHit,
     CONFIG.feel.moteOver,
   ];
-  assert.equal(new Set(motes).size, 5, "rastro repetido não distingue o verbo");
+  assert.equal(new Set(motes).size, 6, "rastro repetido não distingue o verbo");
   assert.equal(CONFIG.feel.chainPips, 8);
   assert.ok(CONFIG.feel.chainOrbit > CONFIG.player.halfWidth, "a órbita precisa caber fora do corpo");
   assert.ok(CONFIG.feel.chainSpin > 0);
