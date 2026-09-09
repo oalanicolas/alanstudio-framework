@@ -39,6 +39,9 @@ referenciados por índice ou por nome de arquivo, qualquer reordenação corromp
 saves antigos silenciosamente. Versão do conteúdo e versão do save são contratos
 distintos; não os una em um número por conveniência.
 
+`save <projeto>` lê se o código usa armazenamento e se declara schema/migrate.
+`trusted` é sempre falso: o harness não abre o save e não confirma escrita.
+
 Implementação concreta, com o limite dito: o starter `canvas-arcade` versiona o
 save em `src/core/save.js`, com migração e recuperação de dado inválido, e grava
 de forma **verificada** em `src/core/storage.js` — escreve em chave de estágio,

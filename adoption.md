@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.10 — Alcance, save e orçamento no disco
+
+Três dimensões AAA que o starter já implementa e o harness não lia:
+`access` (highContrast, reducedMotion, captions, remap), `save` (uso de
+armazenamento × PROGRESS_SCHEMA/migrate) e `budget` (script ou
+tools/budget.*). `verified`/`trusted`/`measured` são sempre `false`. `next`
+propõe `access.missing`, `save.unversioned` e `performance.unbudgeted`
+quando o disco não declara. O starter declara os três, então um `init`
+fresco não ganha três tarefas novas — um canvas sem opção de alcance, sim.
+
+O que 0.9.10 não afirma: o harness não mede contraste, não abre o save e
+não roda o orçamento.
+
 ## 0.9.9 — Feel declarado e observação no disco
 
 O starter nomeia perdão, graça e hitstop no `CONFIG`; o harness só via a

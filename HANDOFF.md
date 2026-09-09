@@ -23,6 +23,10 @@ um papel sem arquivo — depois da partida, antes dos rascunhos.
 `record.json` de observação. `felt` é sempre falso. `next` propõe
 `feel.unobserved` quando há constante e não há recibo.
 
+**Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
+código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
+só levanta quando falta a declaração.
+
 Esta árvore reúne produção, pacotes e memória persistente do PR #2 com os
 critérios observáveis, perguntas de valor e regras de escopo do PR #3.
 A integração preserva o trabalho de ambas as branches, inclusive os commits de

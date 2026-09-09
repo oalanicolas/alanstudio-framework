@@ -83,14 +83,16 @@ onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
-→ papéis de áudio vazios → feel ainda sem observação → rascunho → documento sem versão
+→ papéis de áudio vazios → feel ainda sem observação → acessibilidade sem opção
+→ save sem versão → orçamento ausente → rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
 recibo → gate → ofício → barra. Depois de um `init` fresco — nove áreas com
 candidato, sete ainda rascunho, e um script que abre o jogo — a primeira proposta
 é jogar o ciclo, não preencher os templates. O verbo mudo vem em seguida: papéis
 declarados sem arquivo. Depois, se o código nomeia perdão e hitstop e ninguém
 registrou uma observação no projeto, o `next` pede esse recibo — constante
-nomeada não é peso percebido. O gate tem três ramos: linha
+nomeada não é peso percebido. Sem opção de alcance no código, sem versão de
+save ou sem artefato de orçamento, esses ramos vêm antes dos rascunhos. O gate tem três ramos: linha
 de gate malformada, pergunta de valor e critério pendente — nessa ordem, porque
 terminar o que talvez não devesse existir é o desperdício que um gate existe para
 interromper. O ofício tem dois: linha de ofício malformada e checklist pendente.
@@ -508,6 +510,24 @@ python3 scripts/game.py feel /caminho/do/laboratorio/meu-jogo
 
 `felt` é sempre `false`. `next` propõe `feel.unobserved` quando há constante
 e não há recibo. O harness não joga e não atribui peso.
+
+## Alcance, save e orçamento
+
+Três leituras do disco, no mesmo formato honesto: o que o código declara, não
+o que alguém observou.
+
+```sh
+python3 scripts/game.py access /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py save /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py budget /caminho/do/laboratorio/meu-jogo
+```
+
+`access` procura highContrast, reducedMotion, captions e remapeamento.
+`verified` é sempre `false`. `save` procura armazenamento e
+PROGRESS_SCHEMA/migrate; `trusted` é sempre `false`. `budget` procura script
+`budget`/`bench`, `tools/budget.*` ou `record --kind budget`; `measured` é
+sempre `false`. O starter declara os três; um canvas sem opção de alcance
+recebe `access.missing` antes da barra.
 
 ## Verificar
 

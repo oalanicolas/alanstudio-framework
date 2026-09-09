@@ -38,6 +38,10 @@ Confirme onde a prova vale. Editor não é build exportado; máquina de desenvol
 quente não é máquina do jogador fria. Aquecimento, cache e ferramentas de perfil
 alteram o próprio resultado que estão medindo.
 
+`budget <projeto>` lê se existe script `budget`/`bench`, `tools/budget.*` ou
+`record --kind budget`. `measured` é sempre falso: o harness não executa a
+medição.
+
 Implementação concreta: `tools/budget.mjs` do starter `canvas-arcade` mede a
 simulação por percentil, não por média, e declara no próprio resultado que não
 cobre render, áudio, carregamento nem o dispositivo alvo. O laço de passo fixo em

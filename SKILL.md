@@ -149,6 +149,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    **`feel <projeto>`** lê constantes de perdão/hitstop no `CONFIG` e o
    recibo de observação no disco. `felt` é sempre falso. Sem recibo, `next`
    propõe `feel.unobserved`.
+   **`access` / `save` / `budget`** leem opção de alcance, versão de save e
+   artefato de orçamento. `verified`/`trusted`/`measured` são sempre falsos.
+   Falta no disco entra no `next` antes dos rascunhos.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

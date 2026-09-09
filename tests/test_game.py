@@ -973,6 +973,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "playable.unplayed": "ciclo jogável ainda sem partida",
             "audio.roles": "papéis de áudio vazios",
             "feel.unobserved": "feel ainda sem observação",
+            "access.missing": "acessibilidade sem opção",
+            "save.unversioned": "save sem versão",
+            "performance.unbudgeted": "orçamento ausente",
             "areas.draft_only": "rascunho",
             "areas.historical_or_reference_only": "documento sem versão vigente",
             "continuity.sources": "continuidade",
@@ -1418,6 +1421,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("feel.unobserved", bases)
         self.assertIn("areas.draft_only", bases)
         self.assertIn("scripts", bases)
+        self.assertNotIn("access.missing", bases)
+        self.assertNotIn("save.unversioned", bases)
+        self.assertNotIn("performance.unbudgeted", bases)
         # O projeto herda a tabela do starter, então a barra já tem piso e a
         # proposta nomeia a dimensão em vez de listar as dez.
         self.assertIn("production_bar.floor", bases)
@@ -1438,16 +1444,19 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("feel.unobserved", after_bases)
         self.assertIn("areas.draft_only", after_bases)
 
-    def test_next_falls_back_to_the_production_bar_when_nothing_is_missing(self):
+    def test_next_names_missing_access_before_the_bar_on_a_bare_canvas(self):
         self.foundation_document()
         (self.project / "index.html").write_text("<canvas id=\"jogo\"></canvas>")
         (self.project / "AGENTS.md").write_text("# Jogo\nRodar: abrir index.html.\n")
         result = game.next_step(self.project, "feel")
         self.assertEqual(result["signals"]["gaps"], [])
         self.assertEqual(result["signals"]["scripts"], [])
-        # Sem tabela de degraus no projeto, a barra é vocabulário: a proposta é
-        # declarar, não subir uma dimensão que ninguém situou.
-        self.assertEqual(result["proposal"]["basis"], "production_bar.undeclared")
+        # Canvas que abre sem opção de alcance não é “nada faltando”: a barra
+        # espera, e o ramo novo nomeia a dimensão que o código ainda não declara.
+        self.assertEqual(result["proposal"]["basis"], "access.missing")
+        self.assertFalse(game.access_reading(self.project)["declared"])
+        bases = [item["basis"] for item in result["alternatives"]]
+        self.assertIn("production_bar.undeclared", bases)
         self.assertEqual(result["signals"]["production_bar_undeclared"], list(game.BAR_DIMENSIONS))
         self.assertIsNone(result["signals"]["production_bar_floor"])
         self.assertEqual(result["signals"]["production_bar_dimensions"], list(game.FOCUS_DIMENSIONS["feel"]))
@@ -1944,6 +1953,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bases = [item["basis"] for item in self.proposals(game.next_step(destination))]
         self.assertNotIn("feel.unobserved", bases)
 
+    def test_access_save_and_budget_read_the_starter_without_claiming_proof(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        access = game.access_reading(starter)
+        persist = game.save_reading(starter)
+        perf = game.budget_reading(starter)
+        self.assertTrue(access["declared"])
+        self.assertFalse(access["verified"])
+        self.assertEqual(access["missing"], [])
+        self.assertTrue(persist["used"])
+        self.assertTrue(persist["versioned"])
+        self.assertFalse(persist["unversioned"])
+        self.assertFalse(persist["trusted"])
+        self.assertTrue(perf["declared"])
+        self.assertFalse(perf["unbudgeted"])
+        self.assertFalse(perf["measured"])
+        self.assertIn("budget", perf["scripts"])
+
+    def test_save_names_storage_without_a_schema_as_unversioned(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "store.js").write_text("localStorage.setItem('score', value)\n")
+        report = game.save_reading(self.project)
+        self.assertTrue(report["used"])
+        self.assertTrue(report["unversioned"])
+        self.assertFalse(report["trusted"])
+        proposal = next(
+            item for item in self.proposals(game.next_step(self.project, "persistence"))
+            if item["basis"] == "save.unversioned"
+        )
+        self.assertIn("migrate", proposal["why"])
+
+    def test_budget_names_a_package_without_a_measurement_artifact(self):
+        self.package()
+        self.foundation_document()
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        report = game.budget_reading(self.project)
+        self.assertTrue(report["expected"])
+        self.assertTrue(report["unbudgeted"])
+        self.assertFalse(report["measured"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "performance"))]
+        self.assertIn("performance.unbudgeted", bases)
+
     def test_next_only_raises_craft_for_a_gate_the_project_asked_for(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         self.foundation_document()
@@ -2108,6 +2158,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     def test_next_names_the_floor_dimension_once_the_project_declares_the_bar(self):
         self.foundation_document()
         (self.project / "index.html").write_text("<canvas id=\"jogo\"></canvas>")
+        (self.project / "settings.js").write_text(
+            "export const settings = { highContrast: false, reducedMotion: false, captions: true, bindings: {} }\n"
+        )
         (self.project / "AGENTS.md").write_text("# Jogo\nRodar: abrir index.html.\n")
         self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS} | {"audio_mix": ("prototype", "playable")})
         result = game.next_step(self.project, "feel")
@@ -2563,6 +2616,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     def test_next_proposes_agents_file_after_areas_and_continuity_and_init_ships_one(self):
         self.foundation_document()
         (self.project / "index.html").write_text("<canvas id=\"jogo\"></canvas>")
+        (self.project / "settings.js").write_text(
+            "export const settings = { highContrast: false, reducedMotion: false, captions: true, bindings: {} }\n"
+        )
         result = game.next_step(self.project, "feel")
         self.assertEqual(result["proposal"]["basis"], "agent_context.not_located")
         self.assertEqual(result["signals"]["agent_context"], "not_located")

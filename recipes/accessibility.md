@@ -31,6 +31,10 @@ Reaproveite o que existe antes de criar sistema paralelo: tokens do design syste
 tabela de comandos, camada de legenda do diálogo, opções já presentes no menu.
 Uma opção sem consumidor no código não é uma opção.
 
+`access <projeto>` lê as opções que o código declara (highContrast,
+reducedMotion, captions, remapeamento). `verified` é sempre falso: chave
+no fonte não é sessão com o modo ativo.
+
 Não declare cobertura que não observou. Verificação automática de contraste é útil
 e não substitui uma sessão com o modo ativo. Uma lacuna registrada com motivo vale
 mais que uma lista de recursos não testados.

@@ -542,6 +542,9 @@ def review(root, limit=REVIEW_LIMIT):
         origins = origins_reading(path)
         roles = roles_reading(path, root)
         feel_report = feel_reading(path)
+        access_report = access_reading(path)
+        persist_report = save_reading(path)
+        perf_report = budget_reading(path)
         reviewed.append(dict(
             entry,
             areas_located=len(located),
@@ -559,6 +562,9 @@ def review(root, limit=REVIEW_LIMIT):
             audio_roles_empty=len(roles["empty"]),
             feel_constants=len(feel_report["constants"]),
             feel_observations=len(feel_report["observations"]),
+            access_declared=access_report["declared"],
+            save_unversioned=persist_report["unversioned"],
+            performance_unbudgeted=perf_report["unbudgeted"],
         ))
     return {
         "schema_version": 1,
@@ -1288,6 +1294,169 @@ def feel_reading(project):
             "`record.json` com kind=observation. Não executa o jogo, não mede "
             "latência e não atribui degrau. `felt` é sempre falso: tabela de "
             "constantes e recibo otimista saem intactos."
+        ),
+    }
+
+
+SURFACE_SUFFIXES = {".js", ".mjs", ".ts", ".html", ".css"}
+A11Y_OPTIONS = {
+    "high_contrast": re.compile(r"highContrast|high-contrast|prefersHighContrast|prefers-contrast"),
+    "reduced_motion": re.compile(r"reducedMotion|reduced-motion|prefersReducedMotion"),
+    "captions": re.compile(r"\bcaptions\b|captionLimit|\blegendas?\b"),
+    "remap": re.compile(r"\bbindings\b|remap|rebind"),
+}
+PERSIST_USE = re.compile(
+    r"localStorage|sessionStorage|indexedDB|saveProgress|loadProgress|PROGRESS_KEY|SETTINGS_KEY"
+)
+PERSIST_VERSION = re.compile(r"PROGRESS_SCHEMA|SETTINGS_SCHEMA|SAVE_VERSION|function migrate\b|\bmigrate\s*\(")
+BUDGET_FILES = ("tools/budget.mjs", "tools/budget.js", "tools/budget.py")
+
+
+def walk_project_files(project, suffixes, max_files=80, max_bytes=64000):
+    pending = [(project, 0)] if project.is_dir() else []
+    inspected = 0
+    while pending and inspected < max_files:
+        directory, depth = pending.pop(0)
+        try:
+            entries = sorted(directory.iterdir(), key=lambda item: item.name)
+        except OSError:
+            continue
+        for path in entries:
+            if inspected >= max_files:
+                return
+            if path.name.startswith(".") or path.name in ROLE_WALK_SKIP:
+                continue
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                if depth < 4:
+                    pending.append((path, depth + 1))
+                continue
+            if path.suffix.casefold() not in suffixes:
+                continue
+            inspected += 1
+            try:
+                if path.stat().st_size > max_bytes:
+                    continue
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            yield path.relative_to(project).as_posix(), text
+
+
+def access_reading(project):
+    project = Path(project)
+    found = {key: [] for key in A11Y_OPTIONS}
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        for key, pattern in A11Y_OPTIONS.items():
+            if pattern.search(text):
+                found[key].append(relative)
+    options = [key for key, sources in found.items() if sources]
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "options": [
+            {"key": key, "sources": found[key][:4]}
+            for key in A11Y_OPTIONS if found[key]
+        ],
+        "missing": [key for key in A11Y_OPTIONS if not found[key]],
+        "declared": bool(options),
+        "verified": False,
+        "guide": str(FRAMEWORK / "recipes/accessibility.md"),
+        "rule": (
+            "Opção declarada no código não é opção observada. Uma chave sem "
+            "consumidor também não é alcance."
+        ),
+        "scope": (
+            "Procura highContrast, reducedMotion, captions e remapeamento no "
+            "código. Não mede contraste, não joga com o modo ativo e não "
+            "aprova alcance. `verified` é sempre falso."
+        ),
+    }
+
+
+def save_reading(project):
+    project = Path(project)
+    used, versioned, sources = [], [], []
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
+        if PERSIST_USE.search(text):
+            used.append(relative)
+        if PERSIST_VERSION.search(text):
+            versioned.append(relative)
+        if PERSIST_USE.search(text) or PERSIST_VERSION.search(text):
+            sources.append(relative)
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "used": bool(used),
+        "versioned": bool(versioned),
+        "unversioned": bool(used) and not versioned,
+        "sources": sources[:8],
+        "trusted": False,
+        "guide": str(FRAMEWORK / "recipes/persistence.md"),
+        "rule": (
+            "Uso de armazenamento sem versão e sem migração é contrato sem data. "
+            "O harness não abre o save e não confirma escrita."
+        ),
+        "scope": (
+            "Procura localStorage/saveProgress e PROGRESS_SCHEMA/migrate. Não "
+            "executa migração, não interrompe a aba e não chama o save de "
+            "atômico. `trusted` é sempre falso."
+        ),
+    }
+
+
+def budget_receipts(project):
+    found = []
+    for relative, text in walk_project_files(project, {".json"}):
+        if not relative.endswith("record.json"):
+            continue
+        try:
+            data = json.loads(text)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(data, dict) and data.get("kind") == "budget":
+            found.append(relative)
+    return found
+
+
+def budget_reading(project):
+    project = Path(project)
+    try:
+        scripts, _ = project_commands(project)
+    except (OSError, ValueError):
+        scripts = {}
+    named = [
+        name for name in scripts
+        if name == "budget" or name.startswith("budget:") or name.startswith("budget-")
+        or name == "bench" or name.startswith("bench:")
+    ]
+    files = [name for name in BUDGET_FILES if (project / name).is_file() and not (project / name).is_symlink()]
+    receipts = budget_receipts(project)
+    expected = bool(scripts) or (project / "Cargo.toml").is_file()
+    declared = bool(named or files or receipts)
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "expected": expected,
+        "scripts": named,
+        "files": files,
+        "receipts": receipts,
+        "declared": declared,
+        "unbudgeted": expected and not declared,
+        "measured": False,
+        "guide": str(FRAMEWORK / "recipes/performance.md"),
+        "rule": (
+            "Script de orçamento não é medição no dispositivo alvo. Sem artefato "
+            "que meça, não existe ‘rápido o suficiente’."
+        ),
+        "scope": (
+            "Procura script `budget`/`bench`, tools/budget.* e record kind=budget. "
+            "Não executa o orçamento e não compara com build anterior. "
+            "`measured` é sempre falso."
         ),
     }
 
@@ -2527,6 +2696,42 @@ def next_step(project, focus="create", studies_root=None):
             ],
             "feel.unobserved",
         )
+    access = access_reading(project)
+    if payload["kind"] and not access["declared"]:
+        propose(
+            "Declarar no código as opções de alcance que o recorte precisa",
+            "O jogo já tem ponto de entrada e nenhuma opção de contraste, "
+            "movimento, legenda ou remapeamento aparece no código. Opção só "
+            "existe com consumidor. O harness não mede contraste.",
+            "highContrast, reducedMotion, captions ou remapeamento têm "
+            "consumidor no código — ou a ausência está escrita no canônico.",
+            [harness_command("access", project)],
+            "access.missing",
+        )
+    persist = save_reading(project)
+    if persist["unversioned"]:
+        propose(
+            "Versionar o save e escrever a migração junto do formato",
+            "O projeto grava progresso ou preferência e não declara schema nem "
+            "migrate. Atualização sem migração é perda de progresso. O harness "
+            "não abre o save.",
+            "O formato tem versão nomeada e uma migração que a acompanha, ou o "
+            "armazenamento sai do recorte.",
+            [harness_command("save", project)],
+            "save.unversioned",
+        )
+    perf = budget_reading(project)
+    if perf["unbudgeted"]:
+        propose(
+            "Declarar um orçamento mensurável (script budget/bench ou tools/budget)",
+            "Há manifesto de execução e nenhum artefato que meça tempo de quadro "
+            "ou simulação. Sem orçamento, ‘rápido o suficiente’ é opinião. O "
+            "harness não mede.",
+            "Existe `budget`/`bench` no manifesto, um tools/budget.* ou um "
+            "`record --kind budget` — a medição em si continua pendente.",
+            [harness_command("budget", project)],
+            "performance.unbudgeted",
+        )
     if drafts:
         propose(
             "Substituir rascunho por decisão em: " + labels(drafts),
@@ -2754,6 +2959,9 @@ def next_step(project, focus="create", studies_root=None):
             "playable_unplayed": fresh,
             "audio_roles_empty": roles["empty"],
             "feel_unobserved": feel["unobserved"],
+            "access_missing": access["missing"] if payload["kind"] else [],
+            "save_unversioned": persist["unversioned"],
+            "performance_unbudgeted": perf["unbudgeted"],
             "craft_pending": [
                 key for key, spec in CRAFT_CHECKS.items()
                 if spec["gate"] in gates["declared"]
@@ -3024,6 +3232,21 @@ def main():
         help="constantes de feel que o projeto declara e o recibo de observação no disco",
     )
     feel_cmd.add_argument("project")
+    access_cmd = commands.add_parser(
+        "access", parents=[common],
+        help="opções de alcance que o código declara, sem medição",
+    )
+    access_cmd.add_argument("project")
+    save_cmd = commands.add_parser(
+        "save", parents=[common],
+        help="uso de persistência e se o formato tem versão e migração",
+    )
+    save_cmd.add_argument("project")
+    budget_cmd = commands.add_parser(
+        "budget", parents=[common],
+        help="artefato de orçamento que o projeto declara, sem medir",
+    )
+    budget_cmd.add_argument("project")
     ctx = commands.add_parser("context", parents=[common])
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
@@ -3093,6 +3316,12 @@ def main():
             emit(roles_reading(resolve(args.project, root), root))
         elif args.action == "feel":
             emit(feel_reading(resolve(args.project, root)))
+        elif args.action == "access":
+            emit(access_reading(resolve(args.project, root)))
+        elif args.action == "save":
+            emit(save_reading(resolve(args.project, root)))
+        elif args.action == "budget":
+            emit(budget_reading(resolve(args.project, root)))
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":
