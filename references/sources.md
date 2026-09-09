@@ -40,6 +40,26 @@ não “nada relevante existe”. Preencher esses focos exigiria novos recortes 
 mesmo rigor; inventar citações para emparelhar a lista seria o oposto do que este
 mapa existe para fazer.
 
+## Critérios observáveis (pesquisa externa, 0.9)
+
+O levantamento em
+[observable-criteria-research.md](observable-criteria-research.md) é de outra
+natureza e **não preenche os focos vazios acima**. Ele não é extração de código:
+é busca por fontes publicadas — normas, documentação de fornecedor, artigos
+revisados por pares, código-fonte de jogos publicados — que sustentem números
+para game feel, consistência de arte, orçamento de performance, legibilidade de
+interface e metodologia de playtest.
+
+O resultado é assimétrico, e isso está dito lá dentro: safe area de TV, contraste
+e tamanho de fonte têm norma ou documentação de plataforma atrás; orçamento de
+draw calls, tamanho de paleta e limiar de latência universal não têm nada. A
+seção final lista explicitamente os números que **não** podem ser citados como
+fato estabelecido, com o motivo de cada um.
+
+Nenhum limiar de lá foi promovido para a [barra](production-bar.md) nem para os
+[gates](gates.md). Levantar a fonte e calibrar contra uma amostra de jogos são
+passos diferentes, e só o primeiro foi dado.
+
 ## Pré-produção e checagem
 
 Na versão 0.2, leitura adicional dos templates no mesmo commit BMad
