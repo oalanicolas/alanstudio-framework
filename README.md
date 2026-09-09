@@ -4,6 +4,12 @@ Harness thin para criar, evoluir e produzir games com IA. Compartilha conceitos,
 processo, seleção de contexto, marcos de produção e evidência. Cada jogo continua
 usando sua engine, suas regras, seus assets e seus validadores.
 
+Fácil de começar: um pedido vira um ciclo jogável, sem nove templates vazios.
+Difícil de rebaixar: feel, áudio, pacing e receita de conteúdo fazem parte do
+recorte, não de um “polimento depois”. “AAA” aqui é só o piso de acabamento da
+slice — não tier de publisher, orçamento nem adjetivo de trailer. O alvo
+honesto com IA é AA / Triple-I nesse piso.
+
 Não é um motor. Não publica sozinho. Não mede diversão. Não promove marcos.
 
 Executor para macOS/Linux, Python 3.10+; biblioteca padrão, sem instalação de
@@ -32,6 +38,7 @@ No Codex ou no Claude, invoque **`$game-dev`** com o projeto e a mudança deseja
 $game-dev crie um conto jogável em Canvas a partir do acervo existente
 $game-dev desenvolva o Game Brief e o GDD desta ideia, usando MDA
 $game-dev monte o plano de produção e diga em que marco estamos
+$game-dev o pulo ainda não tem peso; ajuste o feel e o áudio dessa ação
 ```
 
 A fonte é [SKILL.md](SKILL.md). Copie-a para o atalho do host
@@ -44,15 +51,18 @@ python3 scripts/game.py discover --root /caminho/do/laboratorio
 python3 scripts/game.py context /caminho/do/jogo --focus create --root /caminho/do/laboratorio
 python3 scripts/game.py scan /caminho/do/jogo --root /caminho/do/laboratorio
 python3 scripts/game.py context /caminho/do/jogo --focus architecture --stage tdd --root /caminho/do/laboratorio
+python3 scripts/game.py context /caminho/do/jogo --focus feel --root /caminho/do/laboratorio
+python3 scripts/game.py context /caminho/do/jogo --focus audio --root /caminho/do/laboratorio
 ```
 
-Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `feel`, `network`,
-`architecture`, `production`. O contexto entrega caminhos para leitura, registros já
-existentes, catálogos de estudo (se um irmão `Games-Frameworks` existir, ou
-`GAMES_FRAMEWORKS_ROOT`), menções locais de pause/reset/seed, `foundation` (nove
-áreas documentais) e o acervo `shared/sfx` da raiz informada. Não executa o jogo.
-`mentioned` não é `verified`. `candidate_found` não prova suficiência, atualidade
-nem aprovação.
+Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
+`network`, `architecture`, `production`. Jogo novo começa em `create`. Acabamento do
+verbo usa `feel` e `audio`; contrato: [ambição](references/ambition.md). O contexto
+entrega caminhos para leitura, registros já existentes, catálogos de estudo (se um
+irmão `Games-Frameworks` existir, ou `GAMES_FRAMEWORKS_ROOT`), menções locais de
+pause/reset/seed, `foundation` (nove áreas documentais) e o acervo `shared/sfx` da
+raiz informada. Não executa o jogo. `mentioned` não é `verified`. `candidate_found`
+não prova suficiência, atualidade nem aprovação.
 
 Descoberta percorre até três níveis, reconhece Unity, Godot, Unreal (`.uproject`),
 Defold, GameMaker (`.yyp`), Construct (`.c3proj`), RPG Maker (`.rmmzproject`/`.rpgproject`),
@@ -119,17 +129,22 @@ dependências, não esteira rígida. Um jogo pequeno pode reunir essas decisões
 um documento.
 
 Nove templates do ciclo: brief, mda, gdd, poc, prd, tdd, vertical-slice, mvp, qa.
-Três complementos: `art-bible`, `devlog`, `audit`. Três de consolidação e produção:
-`game-design` (documento único), `production-plan`, `milestone`.
+Quatro complementos: `art-bible`, `devlog`, `audit`, `aaa` (checklist de piso; o
+`context` expõe `finish` — núcleo / produto / promessa / mercado; slice, QA, create,
+feel e audio carregam a guia; `template aaa` não certifica). Três de consolidação e
+produção: `game-design` (documento único), `production-plan`, `milestone`.
 
 ```sh
 python3 scripts/game.py context /caminho/do/jogo --focus content --stage gdd --root /caminho/do/laboratorio
 python3 scripts/game.py template brief --project meu-jogo
 python3 scripts/game.py template art-bible --project meu-jogo --output /tmp/meu-jogo-art.md
+python3 scripts/game.py template aaa --project meu-jogo
+python3 scripts/game.py context /caminho/do/jogo --stage aaa --root /caminho/do/laboratorio
 ```
 
 Sem `--output`, `template` só imprime. Com ele, cria um rascunho novo e recusa
-sobrescrita, inclusive de symlinks. Gerar `template audit` não executa auditoria.
+sobrescrita, inclusive de symlinks. Gerar `template audit` não executa auditoria. Gerar `template aaa` não
+certifica acabamento nem publisher.
 
 **REUSE → ADAPT → CREATE.** CREATE só entra com lacuna explícita.
 O [contrato JSON](assets/work.example.json) formaliza uma decisão nova;
@@ -141,10 +156,10 @@ python3 scripts/game.py check-plan caminho/do/trabalho.json --root /caminho/do/l
 
 Receitas: [criar](recipes/create.md), [mecânicas](recipes/mechanics.md),
 [ciclo de vida](recipes/lifecycle.md), [conteúdo](recipes/content.md),
-[visual](recipes/visual.md), [feel](recipes/feel.md), [rede](recipes/network.md),
+[visual](recipes/visual.md), [áudio](recipes/audio.md), [feel](recipes/feel.md), [rede](recipes/network.md),
 [arquitetura](recipes/architecture.md), [produção](recipes/production.md).
-`--focus architecture` ou `--stage tdd` carrega a receita de arquitetura;
-`--focus production`, `--stage production-plan` ou `--stage milestone` carregam a
+`--focus architecture` ou `--stage tdd` carrega a receita de arquitetura; `--focus feel`
+e `--focus audio` carregam acabamento do verbo; `--focus production`, `--stage production-plan` ou `--stage milestone` carregam a
 de produção. A skill aplica quando a mudança pede; o CLI só seleciona referências.
 
 ## Produção e acabamento
@@ -189,7 +204,7 @@ python3 scripts/game.py verify /caminho/do/jogo --output /tmp/jogo-qa-01 --root 
 ```
 
 `--command` vai por último. Não há shell implícito. Cada execução cria uma pasta
-inédita. Destino existente é recusado. Build verde não prova arte, reinício, rede
+inédita. Destino existente é recusado. Build verde não prova arte, feel, áudio, reinício, rede
 nem que o jogo é divertido. `experience_status` continua `not_assessed`.
 
 `--script` aceita scripts de `package.json` (npm/pnpm/yarn/bun conforme declaração
@@ -225,7 +240,9 @@ mede e não aprova. `role=agent` é avaliação do agente, não aprovação do u
 ## O que este repositório não é
 
 Não há engine comum, API universal de ações, avaliação automática de diversão,
-medição automática de performance ou publicação automática. Os jogos do
+medição automática de performance ou publicação automática. “AAA” neste texto é piso
+de acabamento observável, não tier de publisher, orçamento nem certificado de mercado;
+o alvo honesto com IA é AA / Triple-I nesse piso. Os jogos do
 [playground](https://games.alanicolas.com/) continuam com a própria engine; este
 harness não reivindica tê-los produzido.
 

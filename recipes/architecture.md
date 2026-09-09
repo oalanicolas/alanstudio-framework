@@ -66,8 +66,9 @@ possível. Examine apenas os eixos pertinentes:
   quando existente. Quem possui o relógio e qual estado a apresentação pode alterar?
 - **Persistência/conteúdo:** identidade, versões, loading e saves atuais; o que acontece
   com progresso existente e se é possível recuperar o estado anterior após uma mudança.
-- **Apresentação/recursos:** input, câmera, UI, áudio, carregamento e descarte de GPU,
-  timers/listeners. Contrato lógico correto ainda pode produzir regressão perceptível.
+- **Apresentação/recursos:** input, câmera, UI, áudio, feel do verbo, carregamento
+  e descarte de GPU, timers/listeners. Contrato lógico correto ainda pode produzir
+  regressão perceptível; feel e mix têm receitas próprias.
 - **Rede/serviços, quando presentes:** autoridade, ações recusadas, desconexão e limites
   externos. Exemplares locais não comprovam comportamento multiplayer.
 

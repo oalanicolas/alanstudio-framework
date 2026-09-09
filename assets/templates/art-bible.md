@@ -29,8 +29,15 @@ e consumidores. Diferencie observado, inferido, proposto e ainda não examinado.
 
 ## Feel e feedback
 
-[Sinal da ação central: hitstop, câmera, squash, partículas, rumble, stinger,
-silêncio. Ligue ao verbo do GDD. Jogo sem juice declara essa escolha.]
+[Sinal da ação central: intenção, input, antecipação, corpo, impacto, câmera,
+áudio, recuperação. Hitstop, squash, partículas, rumble, stinger. Ligue ao
+verbo do GDD. Jogo sem juice declara essa escolha.]
+
+## Áudio e mix
+
+[Papéis: ação/Foley, mundo, música, stinger, silêncio. Consumidor real (evento,
+bus, cena). Ducking, interrupção em pause/reset, descarte. Piso de gravação
+licenciada salvo direção explícita. Arquivo sem consumidor não é token ativo.]
 
 ## UI, HUD e acesso
 
@@ -50,6 +57,8 @@ existentes. Jogo sem HUD registra essa escolha, sem inventar biblioteca de UI.]
 
 - Cenário de comparação em movimento: [referência e condições equivalentes].
 - Observação realizada: [evidência e autor; não presumir aprovação do usuário].
-- Lacunas: [visual, som, feel, acesso, origem ou consumo ainda não demonstrados].
+- Lacunas: [visual, som, feel, mix, acesso, origem ou consumo ainda não demonstrados].
 - Decisão REUSE/ADAPT/CREATE e próximo passo: [fontes, motivo e alcance].
 - Performance: [custo observado e hipótese de eficiência; sem degradar o piso aprovado].
+- Escala: [jam / produto / AA–Triple-I; a slice precisa demonstrar o piso escolhido].
+  “AAA” não é adjetivo do build.

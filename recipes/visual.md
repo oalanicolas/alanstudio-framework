@@ -23,7 +23,9 @@ animação como solução automática de FPS.
 
 Na câmera, observe antecipação de curvas/ameaças, oclusão do jogador, estabilidade,
 escala e transição. No mundo, compare silhueta, materiais, luz, sombras, efeitos e
-coerência em movimento, não apenas a melhor screenshot.
+coerência em movimento, não apenas a melhor screenshot. Feel da ação e mix da
+consequência têm receitas próprias: [feel](feel.md), [áudio](audio.md). Não trate
+partículas ou um loop de fundo como substituto desses focos.
 
 Casos já documentados: nomes podem mudar após o carregamento do GLTF; culling deve
 ser testado em todas as aberturas visíveis; animação em shader invalida suposições

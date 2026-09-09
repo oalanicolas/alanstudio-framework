@@ -6,8 +6,9 @@ Leia o formato atual, sua carga em runtime e os consumidores. Procure definiçã
 slot substituível antes de duplicar lógica. Preserve identidade, escala, pivot,
 colisões, animações e referências ao trocar arte. Som novo: consulte
 `shared/sfx` no laboratório (`sfx search`) antes de baixar; copie o arquivo e a
-proveniência. Registre origem e condições de uso; conteúdo baixado não recebe
-uma licença nova pelo simples reuso.
+proveniência. Mix, interrupção e silêncio seguem [áudio](audio.md), não apenas
+a cópia do arquivo. Registre origem e condições de uso; conteúdo baixado não
+recebe uma licença nova pelo simples reuso.
 
 Geração externa (Magnific e similares) distingue capacidades documentadas de
 integração comprovada. Não torna o fornecedor obrigatório.

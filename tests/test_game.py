@@ -287,6 +287,78 @@ class HarnessTest(unittest.TestCase):
         self.assertTrue(all(item["status"] in ("unknown", "mentioned") for item in result["capabilities"].values()))
         self.assertTrue(all(item["status"] != "verified" for item in result["capabilities"].values()))
 
+    def test_feel_and_audio_load_design_system_and_ambition_without_writing(self):
+        before = set(self.project.iterdir())
+        for focus, recipe in (("feel", "feel.md"), ("audio", "audio.md")):
+            with self.subTest(focus=focus):
+                result = game.context(self.project, focus, studies_root=self.root / "absent")
+                names = [Path(p).name for p in result["read_next"]]
+                self.assertEqual(result["focus"], focus)
+                self.assertEqual(result["studies"], [])
+                self.assertIn(recipe, names)
+                self.assertIn("game-design-system.md", names)
+                self.assertIn("ambition.md", names)
+                self.assertIn("project-audit.md", names)
+                self.assertTrue(all(Path(p).is_file() for p in result["read_next"]))
+                self.assertIn("Feel e áudio são focos próprios", " ".join(result["limits"]))
+                self.assertIn("piso de acabamento da slice, não tier de publisher", " ".join(result["limits"]))
+                self.assertIn("aaa-checklist.md", names)
+                self.assertEqual(result["finish"]["action"], "observe_core_on_slice")
+                self.assertIn("CHK-0", result["finish"]["core_groups"])
+                self.assertIn("CHK-16", result["finish"]["market_groups"])
+                self.assertFalse(result["finish"]["executed"])
+        create = game.context(self.project, "create", studies_root=self.root / "absent")
+        self.assertIn("ambition.md", [Path(p).name for p in create["read_next"]])
+        self.assertIn("preproduction.md", [Path(p).name for p in create["read_next"]])
+        self.assertIn("aaa-checklist.md", [Path(p).name for p in create["read_next"]])
+        self.assertEqual(create["finish"]["action"], "defer_until_playable_cycle")
+        self.assertEqual(before, set(self.project.iterdir()))
+        self.assertEqual(game.FOCI, (
+            "create", "mechanics", "lifecycle", "content", "visual",
+            "audio", "feel", "network", "architecture", "production",
+        ))
+        brief = game.context(self.project, "mechanics", stage="brief")
+        self.assertIn("ambition.md", [Path(p).name for p in brief["read_next"]])
+        self.assertIn("brief.md", [Path(p).name for p in brief["read_next"]])
+        slice_ctx = game.context(self.project, "content", stage="vertical-slice")
+        self.assertIn("ambition.md", [Path(p).name for p in slice_ctx["read_next"]])
+        self.assertIn("aaa-checklist.md", [Path(p).name for p in slice_ctx["read_next"]])
+        self.assertNotIn("aaa.md", [Path(p).name for p in slice_ctx["read_next"]])
+        self.assertEqual(slice_ctx["finish"]["action"], "observe_core_on_slice")
+        qa_ctx = game.context(self.project, "mechanics", stage="qa")
+        self.assertIn("aaa-checklist.md", [Path(p).name for p in qa_ctx["read_next"]])
+        visual = game.context(self.project, "visual")
+        self.assertNotIn("aaa-checklist.md", [Path(p).name for p in visual["read_next"]])
+        self.assertEqual(visual["finish"]["action"], "defer_until_playable_cycle")
+
+    def test_aaa_stage_loads_checklist_ambition_and_finish_recipes_without_writing(self):
+        before = set(self.project.iterdir())
+        result = game.context(self.project, "mechanics", stage="aaa", studies_root=self.root / "absent")
+        names = [Path(p).name for p in result["read_next"]]
+        self.assertEqual(result["stage"], "aaa")
+        self.assertEqual(result["focus"], "mechanics")
+        self.assertEqual(names.count("aaa.md"), 1)
+        self.assertIn("aaa-checklist.md", names)
+        self.assertIn("ambition.md", names)
+        self.assertIn("game-design-system.md", names)
+        self.assertIn("feel.md", names)
+        self.assertIn("audio.md", names)
+        self.assertIn("mechanics.md", names)
+        self.assertTrue(all(Path(p).is_file() for p in result["read_next"]))
+        self.assertIn("ver finish no JSON", " ".join(result["limits"]))
+        self.assertEqual(result["finish"]["core_groups"], list(game.FINISH_CORE))
+        self.assertEqual(before, set(self.project.iterdir()))
+        self.assertIn("aaa", game.STAGES)
+
+    def test_scan_treats_finish_checklist_as_qa_candidate_not_a_tenth_area(self):
+        path = self.project / "docs/piso.md"
+        path.parent.mkdir()
+        path.write_text("# Checklist de piso de acabamento\nCHK-0 contrato do recorte.\nCHK-1 verbo observado.\n")
+        result = game.scan(self.project)
+        self.assertEqual(len(result["areas"]), 9)
+        self.assertEqual(result["areas"]["qa"]["status"], "candidate_found")
+        self.assertEqual(result["areas"]["qa"]["candidates"][0]["path"], "docs/piso.md")
+
     def test_context_lists_focus_studies_without_loading_other_catalogs(self):
         studies = self.root / "Games-Frameworks"
         phaser = studies / "outputs/decoded/games-phaser/study-02d8931b626d/validate/rule-catalog.md"

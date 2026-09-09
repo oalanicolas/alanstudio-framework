@@ -5,17 +5,23 @@ description: Criar, evoluir, depurar, produzir e verificar jogos com IA, partind
 
 # Game Dev
 
-Use este processo em qualquer engine. O objetivo é uma experiência jogável com
-evidência, preservando a direção do usuário e a qualidade visual aprovada. Todos os
-comandos abaixo são `python3 scripts/game.py ...` a partir deste repositório (ou pelo
-caminho absoluto do script), com `--root <laboratorio>` antes ou depois do subcomando.
+Use este processo em qualquer engine. O objetivo é uma experiência jogável no
+**acabamento pretendido**, com evidência, preservando a direção do usuário e a
+qualidade aprovada — fácil de começar, difícil de rebaixar. “AAA” neste framework é
+piso de acabamento observável (verbo, feel sincronizado, áudio, pacing, mundo, receita
+repetível), não tier de publisher, orçamento nem adjetivo de trailer; o alvo honesto
+com IA é AA / Triple-I nesse piso. Todos os comandos abaixo são
+`python3 scripts/game.py ...` a partir deste repositório (ou pelo caminho absoluto do
+script), com `--root <laboratorio>` antes ou depois do subcomando.
 
 ## Caminho rápido
 
 | Situação | Faça |
 | --- | --- |
 | Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing` |
-| Jogo novo e pequeno | `template game-design --project <novo> --output <novo>/docs/game-design.md`, depois `context <novo> --focus create --stage game-design` |
+| Jogo novo | `context <novo> --focus create`; resolva fantasia, verbo, plataforma e maior incerteza; brief curto ou, se pequeno, `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
+| O verbo funciona mas não convence | `context <projeto> --focus feel` e depois `--focus audio` |
+| “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
 | Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
 | “continue” / “vamos avançar” | `context <projeto> --event resume` e leia `continuity.sources` |
 | Usuário aprovou uma referência | `context <projeto> --focus <foco> --event direction-approved` e sincronize a base no mesmo turno |
@@ -23,10 +29,10 @@ caminho absoluto do script), com `--root <laboratorio>` antes ou depois do subco
 | Revisar um marco (alpha, beta, gold) | `context <projeto> --focus production --stage milestone` |
 | Registrar observação, orçamento medido ou decisão de marco | `record <projeto> --kind observation\|budget\|milestone --author ... --note ... --field k=v --output <pasta-nova>` |
 
-Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `feel`, `network`,
-`architecture`, `production`. Etapas: `brief`, `mda`, `gdd`, `poc`, `prd`, `tdd`,
-`vertical-slice`, `mvp`, `qa`, `art-bible`, `devlog`, `audit`, `game-design`,
-`production-plan`, `milestone`. Gêneros (`--genre`): `narrative`, `adventure`,
+Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
+`network`, `architecture`, `production`. Etapas: `brief`, `mda`, `gdd`, `poc`, `prd`,
+`tdd`, `vertical-slice`, `mvp`, `qa`, `art-bible`, `devlog`, `audit`, `aaa`,
+`game-design`, `production-plan`, `milestone`. Gêneros (`--genre`): `narrative`, `adventure`,
 `platformer`, `action-adventure`, `shooter`, `fighting`, `stealth`, `horror`, `racing`,
 `sports`, `rhythm`, `turn-based`, `deckbuilder`, `strategy`, `tower-defense`, `puzzle`,
 `simulation`, `survival-crafting`, `rpg`, `roguelike`, `multiplayer-competitive`, `idle`,
@@ -49,8 +55,11 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `feel`, `network
    consentimento; respeite restrição explícita na conversa atual. Sem projeto
    identificável, não invente um alvo. Em retomada, fonte encontrada não é tarefa
    validada: siga [continuidade e retomada](references/process.md#continuidade-e-retomada).
-2. **Intenção e prontidão.** Defina sensação pretendida, verbo central, cenário,
-   restrições e prova de conclusão. Leia [processo](references/process.md) e
+2. **Intenção e prontidão.** Defina fantasia, verbo central, plataforma, cenário,
+   restrições, a maior incerteza e a prova de conclusão; assuma o resto com registro e
+   pergunte só o que impede de jogar. A escala (jam/conto, produto, AA / Triple-I)
+   vive no brief e muda a quantidade de documentos, não o piso do verbo
+   ([ambição](references/ambition.md)). Leia [processo](references/process.md) e
    [qualidade](references/quality.md). Para criação ou pré-produção, siga
    [o ciclo criativo](references/preproduction.md): Game Brief, MDA/GDD, PoC, PRD/TDD,
    vertical slice, MVP e QA/playtest. `--stage <etapa>` carrega só o template
@@ -69,20 +78,28 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `feel`, `network
    técnicas → tarefas → evidência. Se a mudança afetar responsabilidades, contratos,
    estado/tempo, saves, renderização ou integrações, aplique
    [arquitetura](recipes/architecture.md) (`--focus architecture` ou `--stage tdd`).
-   Implemente uma fatia jogável que atravesse regra, apresentação e conteúdo. Não
-   acrescente um runtime comum, uma hierarquia de agentes ou IA por quadro.
+   Implemente uma fatia jogável que atravesse regra, apresentação e conteúdo: perceber
+   → decidir → agir → consequência → reinício. Em seguida o feel e o áudio **desse**
+   verbo (`--focus feel`, `--focus audio`); título e cores novos não demonstram
+   experiência nova. Não acrescente um runtime comum, uma hierarquia de agentes ou IA
+   por quadro.
 5. **Verificar.** Use os validadores existentes e o cenário real. `verify` registra
    comandos explícitos e logs (scripts de `package.json` ou alvos Cargo; outras engines
    por `--command`). Build verde não comprova diversão, arte, reinício, rede, direitos
    de assets nem aprovação humana. O que uma pessoa observou em movimento, uma medição
    de orçamento ou uma decisão de marco entra por `record`, com `role=human` ou
    `role=agent`; avaliação do agente não é aprovação do usuário. Capacidade
-   desconhecida permanece desconhecida até ser demonstrada.
+   desconhecida permanece desconhecida até ser demonstrada; `experience_status`
+   continua `not_assessed` até haver observação em movimento.
 6. **Comparar, registrar, continuar.** Compare antes/depois em condições equivalentes
    e em movimento quando houver efeito visual. Corrija regressões, registre decisões e
    hipóteses descartadas, cumpra `continuity.before_close` e
-   `documentation.before_close`. Não promova scaffold a jogo concluído. Não publique
-   nem delegue sem autorização aplicável.
+   `documentation.before_close`. Não promova scaffold a slice nem slice a jogo
+   concluído. Não chame o recorte de AAA — nem de “quase AAA” — se o perfil em
+   `finish` (núcleo; produto se a escala pedir; promessas só se o brief as tiver) não
+   foi observado; na slice ou em “está AAA?”, leia `finish` e
+   [o guia](references/aaa-checklist.md) e grave no canônico — completar linhas não
+   certifica e `N/A` exige motivo. Não publique nem delegue sem autorização aplicável.
 7. **Produzir até o acabamento.** Quando o recorte já demonstrou a experiência, siga
    [produção](recipes/production.md): plano de produção com marcos como gates de
    evidência (first playable → vertical slice → alpha → beta → gold → live), lentes de

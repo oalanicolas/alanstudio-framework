@@ -3,10 +3,11 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
-## 0.9 — Caminho fácil e produção até o acabamento
+## 0.9.4 — Produção por marcos, pacotes e recibos
 
 Revisão do que o framework se propõe (criar jogos com IA com evidência, até a
-qualidade aprovada) contra o que entregava até 0.8. Lacunas encontradas:
+qualidade aprovada) contra o que entregava até 0.9.3, integrada às linhas paralelas
+de facilidade e piso de acabamento. Lacunas encontradas:
 
 - **Os comandos documentados não rodavam.** Todo exemplo do README e da skill passava
   `--root` depois do subcomando; o argparse só aceitava antes. Corrigido: `--root` em
@@ -26,8 +27,8 @@ qualidade aprovada) contra o que entregava até 0.8. Lacunas encontradas:
   beta → gold → live), lentes de disciplina e orçamentos medidos; os templates
   `production-plan` e `milestone` mantêm o estado; `quality.md` ganhou a barra de
   acabamento.
-- **Feel não tinha receita.** `feel` trata latência, animação, câmera, tempo, efeitos,
-  som e haptics como camadas medidas e observadas, registradas no design system do jogo.
+- **Feel e áudio** vieram da linha 0.9–0.9.3 (abaixo); a receita de feel ganhou a ligação
+  com `record` e com as lentes de marco.
 - **A skill era um bloco denso.** Reorganizada em caminho rápido e sete passos, sem
   remover regras.
 - **Só havia recibo para comandos técnicos.** A receita de produção exige orçamento
@@ -55,6 +56,41 @@ O que 0.9 não afirma: “AAA” é padrão de acabamento observável, não orç
 equipe; nenhum comando mede performance, executa soak, promove marco, certifica
 requisito de plataforma ou aprova arte. Os termos de marco seguem uso corrente da
 indústria; cada jogo registra a definição adotada.
+
+## 0.9.3 — Checklist adaptado ao harness
+
+O checklist deixa de ser só `--stage aaa`. `context` expõe `finish`
+(núcleo / produto / promessa / mercado e a ação). Slice, QA, `create`,
+`feel` e `audio` carregam a [guia](references/aaa-checklist.md); o
+template inteiro só na etapa `aaa`. Scanner trata o documento como
+candidato de QA — continua havendo nove áreas. Primeira sessão não gera
+o arquivo.
+
+## 0.9.2 — Checklist de piso de acabamento
+
+Etapa `aaa`: [guia](references/aaa-checklist.md) e
+[template](assets/templates/aaa.md). 16 grupos (CHK-0 a CHK-16), estados
+`não executado` / `observado` / `inconclusivo` / `N/A`. Completar linhas não
+certifica publisher. Tier de mercado fica na seção 16 como contexto. Jam
+pode marcar o resto `N/A` com a escala.
+
+## 0.9.1 — Tier de mercado ≠ piso de acabamento
+
+Pesquisa de 2026-09-09 dobrada em [ambição](references/ambition.md) e
+[sources](references/sources.md#aaa-tier-e-piso-09). AAA de publisher é
+rótulo financeiro (sem certificação). O harness usa “AAA” só como piso da
+slice. Escala de produto ambicioso passa a **AA / Triple-I**. Barras novas:
+sincronia no frame do impacto, pacing/latência, repeatability da slice.
+Nenhum orçamento citado vira meta.
+
+## 0.9 — Facilidade e piso AAA operacional
+
+Caminho curto na skill e em [criar](recipes/create.md): primeira sessão chega a
+um ciclo jogável sem gerar nove templates. Focos [feel](recipes/feel.md) e
+[áudio](recipes/audio.md). Contrato [ambição](references/ambition.md): AAA é
+acabamento demonstrado na slice, não motor nem nota. Escala jam / produto /
+AAA-shaped muda quantidade, não o piso do verbo. O harness continua thin:
+não mede diversão, não publica, não escolhe engine.
 
 ## 0.8 — Arquitetura proporcional
 
