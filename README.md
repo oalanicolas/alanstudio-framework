@@ -219,7 +219,7 @@ do próprio jogo.
 
 ```sh
 python3 scripts/game.py verify /caminho/do/jogo --script test --output /tmp/jogo-qa-01 --root /caminho/do/laboratorio
-python3 scripts/game.py verify /caminho/do/jogo --output /tmp/jogo-qa-01 --root /caminho/do/laboratorio --command python3 tools/verify.py
+python3 scripts/game.py verify /caminho/do/jogo --output /tmp/jogo-qa-02 --root /caminho/do/laboratorio --command python3 tools/verify.py
 ```
 
 `--command` vai por último. Não há shell implícito. Cada execução cria uma pasta
@@ -232,7 +232,7 @@ executá-los. `--proves` **não** promove nenhuma delas a verificada; o harness 
 tem como saber se um comando exercita pause.
 
 ```sh
-python3 scripts/game.py verify /caminho/do/jogo --script test --output /tmp/jogo-qa-02 --proves pause --proves reset --proves seed
+python3 scripts/game.py verify /caminho/do/jogo --script test --output /tmp/jogo-qa-03 --proves pause --proves reset --proves seed
 ```
 
 O que ele acrescenta é uma alegação com autor, data, argv e log: `claimed` quando

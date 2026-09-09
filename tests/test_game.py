@@ -9,7 +9,19 @@ import sys
 import tempfile
 import unittest
 
-LINK = re.compile(r"\[[^\]]*\]\((?!https?://|#|mailto:)([^)\s]+)\)")
+LINK = re.compile(r"\[[^\]]*\]\((?!https?://|mailto:)([^)\s]+)\)")
+HEADING = re.compile(r"^#{1,6}\s+(.*?)\s*$", re.MULTILINE)
+
+
+# Slug do GitHub: minúsculas, pontuação fora, espaço em hífen. Acentos ficam,
+# que é o que importa num repositório em português.
+def slug(heading):
+    folded = re.sub(r"[^\w\- ]+", "", heading.strip().casefold(), flags=re.UNICODE)
+    return folded.replace(" ", "-")
+
+
+def anchors(document):
+    return {slug(found) for found in HEADING.findall(document.read_text(encoding="utf-8"))}
 
 
 def broken_links(base):
@@ -18,9 +30,15 @@ def broken_links(base):
         if "node_modules" in document.parts:
             continue
         for target in LINK.findall(document.read_text(encoding="utf-8")):
-            path = target.split("#")[0]
-            if path and not (document.parent / path).exists():
+            path, _, fragment = target.partition("#")
+            destination = document.parent / path if path else document
+            if path and not destination.exists():
                 broken.append(f"{document}: {target}")
+                continue
+            # Âncora quebrada leva a página errada calada, e a doc usa âncora
+            # justamente para apontar a seção de limites de outra referência.
+            if fragment and destination.suffix == ".md" and slug(fragment) not in anchors(destination):
+                broken.append(f"{document}: {target} (âncora)")
     return broken
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts/game.py"
@@ -823,11 +841,29 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue({"mentioned", "claimed"} <= observed, observed)
 
     def test_framework_documentation_has_no_broken_internal_link(self):
-        # Os starters ficam de fora porque seus documentos ainda têm marcadores;
-        # `init` os resolve, e o teste seguinte confere o resultado.
-        starters = game.FRAMEWORK / "assets/starters"
-        broken = [item for item in broken_links(game.FRAMEWORK) if not item.startswith(str(starters))]
-        self.assertEqual(broken, [])
+        # Os starters entram: um starter é servido e lido no lugar, então link
+        # morto nele é link morto na referência que a doc chama de executável.
+        self.assertEqual(broken_links(game.FRAMEWORK), [])
+
+    # Dois exemplos com o mesmo `--output` se atropelam: o primeiro passa, o
+    # segundo é recusado pela regra enunciada duas linhas abaixo deles, e quem
+    # copiou os dois na ordem escrita conclui que o harness está quebrado.
+    def test_no_two_documented_examples_share_an_evidence_destination(self):
+        pattern = re.compile(r"--output\s+(\S+)")
+        seen = {}
+        collisions = []
+        for document in sorted(game.FRAMEWORK.rglob("*.md")):
+            if "node_modules" in document.parts:
+                continue
+            for number, line in enumerate(document.read_text(encoding="utf-8").splitlines(), start=1):
+                for destination in pattern.findall(line):
+                    if destination.upper() == destination:
+                        continue  # marcador, como CAMINHO_NOVO
+                    place = f"{document.relative_to(game.FRAMEWORK)}:{number}"
+                    if destination in seen:
+                        collisions.append(f"{destination}: {seen[destination]} e {place}")
+                    seen[destination] = place
+        self.assertEqual(collisions, [])
 
     def test_generated_project_documentation_has_no_broken_internal_link(self):
         destination = self.root / "links-do-projeto"

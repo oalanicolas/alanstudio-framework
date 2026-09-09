@@ -226,4 +226,4 @@ As revisões desta página dependem de execução e julgamento do agente/pessoa,
 limites declarados. Exemplo completo sem criar documentos paralelos:
 [estudo aplicado a Era Uma Vez](../examples/era-uma-vez-preproduction.md).
 
-Referências usadas e limites de adaptação: [fontes](sources.md#pré-produção-ampliada).
+Referências usadas e limites de adaptação: [fontes](sources.md#pré-produção-e-checagem).

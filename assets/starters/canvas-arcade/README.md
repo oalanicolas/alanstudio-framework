@@ -33,22 +33,29 @@ npm test           # regras, determinismo, ciclo de vida, save e mixagem
 npm run budget     # custo da simulação, por percentil, sem apresentação
 ```
 
-A partir da raiz do framework, com recibo:
+Com recibo, a partir da raiz do framework — o caminho é este starter, não `.`,
+porque a raiz do framework não tem `package.json`:
 
 ```sh
-python3 scripts/game.py verify . --script test --output /tmp/qa-01 \
+python3 scripts/game.py verify assets/starters/canvas-arcade \
+  --script test --output /tmp/qa-01 \
   --proves pause --proves reset --proves seed --proves observe \
   --proves act --proves advance --proves capture --proves dispose
 ```
 
+Em um projeto criado pelo `init`, troque o caminho pelo do projeto. Cada execução
+quer um `--output` inédito: destino existente é recusado, de propósito.
+
 `--proves` anexa ao recibo a alegação de que a execução exercita essas capacidades,
 com autor, argv e log. Aqui a alegação se sustenta porque `tests/lifecycle.test.mjs`
-e `tests/determinism.test.mjs` cobrem exatamente essas oito — não porque o harness
-tenha conferido. Em um projeto adaptado, só declare o que os seus testes cobrirem:
-o recibo sai como `claimed`, nunca como verificado.
+e `tests/determinism.test.mjs` cobrem essas oito — com uma ressalva honesta:
+`capture` só é exercitada na guarda de ausência de tela, porque `toDataURL` não
+existe em headless. Nada disso é conferido pelo harness. Em um projeto adaptado,
+só declare o que os seus testes cobrirem: o recibo sai como `claimed`, nunca como
+verificado.
 
-Recibo verde comprova os comandos executados. Não comprova arte, ritmo,
-diversão nem que o jogo é bom.
+Recibo verde registra os comandos executados e o que saiu deles. Não diz nada
+sobre arte, ritmo, diversão nem sobre o jogo ser bom.
 
 ## A decisão do jogo
 
@@ -67,13 +74,15 @@ alcance de coleta maior que o desenho — estão em `CONFIG`, em
 
 ## Documentos
 
-- [Game Brief](docs/brief.md) · [GDD](docs/gdd.md) · [MDA](docs/mda.md)
-- [Arquitetura / TDD](docs/tdd.md) · [Design system](docs/art-bible.md)
-- [Devlog](docs/devlog.md) · [QA e playtest](docs/qa.md)
-- [Origem de código e assets](CREDITS.md)
+- Origem de código e assets: [CREDITS.md](CREDITS.md) — existe aqui, desde já
+- `docs/brief.md` · `docs/gdd.md` · `docs/mda.md`
+- `docs/tdd.md` · `docs/art-bible.md`
+- `docs/devlog.md` · `docs/qa.md`
 
-Os documentos vêm dos templates do framework e estão em rascunho: preenchê-los
-com decisão, fato ou lacuna é o primeiro trabalho real do projeto.
+Os sete de `docs/` são escritos pelo `init` a partir dos templates do framework:
+neste starter lido no lugar eles ainda não existem, e é por isso que estão em
+código e não em link. Nascem em rascunho, e preenchê-los com decisão, fato ou
+lacuna é o primeiro trabalho real do projeto. Com `init --no-docs`, não nascem.
 
 ## Degrau de acabamento declarado
 
