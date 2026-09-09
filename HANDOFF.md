@@ -1,3 +1,24 @@
+# Handoff — integração dos PRs #2 e #3
+
+Esta árvore reúne produção, pacotes e memória persistente do PR #2 com os
+critérios observáveis, perguntas de valor e regras de escopo do PR #3.
+A integração preserva o trabalho de ambas as branches, inclusive os commits de
+retomada adicionados durante a revisão.
+
+Validação do conjunto: 178 testes Python aprovados; os 83 testes do starter e
+seu orçamento de simulação também passaram. O starter não mudou na integração.
+Foram corrigidos os exemplos e critérios apontados na revisão, o uso de foco
+inválido no teste de gates e a consulta de contexto em ambientes sem Git.
+
+Os registros abaixo descrevem o estado de cada linha antes da integração;
+contagens, situação dos PRs e nomes de branches são históricos. As frentes
+futuras continuam pendentes, sem implementação adicional neste merge.
+
+- Produção, pacotes e memória persistente (PR #2): registro abaixo.
+- Critérios observáveis e gates (PR #3): [registro preservado](HANDOFF-PR3.md).
+
+## Registro da linha de produção e pacotes (PR #2)
+
 # Handoff — branch `cursor/framework-0-9-aaa-facil-f6f6`
 
 **PR:** [#2](https://github.com/oalanicolas/alanstudio-framework/pull/2) → `main`  

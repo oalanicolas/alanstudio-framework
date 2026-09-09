@@ -124,10 +124,14 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    degrau; ao declarar um, declare dispositivo, versão, cena e quem observou.
    **A barra descreve, o gate recusa.** [Os dez gates](references/gates.md) formalizam
    as linhas “Pronto para…” do ciclo: ao pedir a próxima permissão, declare uma linha
-   por critério com `met`/`unmet`/`waived` e o que sustenta o estado; `gate <projeto>`
+   por critério com `met`/`unmet`/`waived`/`out_of_scope` e o que sustenta o estado; `gate <projeto>`
    lê. Critério sem linha é pendente. As três saídas são passar, cortar escopo e
    abandonar — proponha a terceira quando for a honesta. Dispensa exige motivo; quatro
-   critérios não se dispensam; `granted` é sempre falso. Nenhum comando promove marco,
+   critérios de `readiness` não se dispensam. `out_of_scope` é o critério que nunca
+   incidiu: exige motivo e não entra na conta das dispensas. Três critérios são
+   `must_meet` — perguntam se ainda vale o que custa, não se o trabalho está feito;
+   pendência neles não se resolve trabalhando mais. Esses três também não se dispensam,
+   e os sete recusam saída de escopo. `granted` é sempre falso. Nenhum comando promove marco,
    mede orçamento ou certifica acabamento; a passagem é declarada por pessoa com a
    prova ligada (`record --kind milestone`, recibos de `verify`, `observation` e
    `budget`). Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
