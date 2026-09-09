@@ -523,6 +523,42 @@ test("a partida termina no limite de tempo e informa a corrente perdida", () => 
   assert.equal(typeof over.unbanked, "number");
 });
 
+test("no fim a aposta não guardada cai; a conta sobrevive", () => {
+  const state = createState(7);
+  state.chain = 5;
+  state.tick = CONFIG.runTicks - 1;
+  state.spawnTimer = 999;
+  advance(state, neutralIntent());
+  assert.equal(state.phase, "over");
+  assert.equal(state.chain, 5, "a conta no estado sobrevive ao fim");
+  const over = state.events.find((event) => event.type === "over");
+  assert.equal(over.unbanked, 5);
+  const lapses = state.motes.filter((mote) => mote.kind === "lapse");
+  assert.equal(lapses.length, 5, "a aposta cai, não some");
+  assert.ok(
+    lapses.every((mote) => mote.vx === 0 && mote.vy === CONFIG.feel.lapseFall),
+    "a queda é para baixo, não explosão nem depósito",
+  );
+});
+
+test("sem corrente o fim não inventa queda; o teto vale na perda", () => {
+  const empty = createState(7);
+  empty.tick = CONFIG.runTicks - 1;
+  empty.spawnTimer = 999;
+  advance(empty, neutralIntent());
+  assert.equal(empty.motes.filter((mote) => mote.kind === "lapse").length, 0);
+  const packed = createState(7);
+  packed.chain = 12;
+  packed.tick = CONFIG.runTicks - 1;
+  packed.spawnTimer = 999;
+  advance(packed, neutralIntent());
+  assert.equal(
+    packed.motes.filter((mote) => mote.kind === "lapse").length,
+    CONFIG.feel.chainPips,
+    "o teto dos pips também é o teto da queda",
+  );
+});
+
 test("partida encerrada não avança mais", () => {
   const state = createState(8);
   state.phase = "over";

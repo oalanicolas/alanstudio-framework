@@ -89,6 +89,7 @@ export const CONFIG = {
     chainRateMax: 1.48, // teto: a conta continua no HUD
     depositAimX: 28, // placa da pontuação; o pip voa para o placar, não some
     depositAimY: 14,
+    lapseFall: 1.8, // aposta não guardada cai; não explode nem voa ao placar
   },
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
@@ -458,6 +459,7 @@ export function advance(state, intent = neutralIntent()) {
   if (state.tick >= CONFIG.runTicks) {
     state.phase = "over";
     emit(state, "over", { score: state.score, unbanked: state.chain });
+    lapseChain(state, state.chain);
   }
   decayMotes(state);
   return state;
@@ -629,6 +631,20 @@ function shatterChain(state, lost) {
     const pip = chainPipAt(index, count, x, y, tick, false);
     const angle = tick * CONFIG.feel.chainSpin + (index * Math.PI * 2) / count;
     state.motes.push(acquireMote("break", pip.x, pip.y, Math.cos(angle) * 1.8, Math.sin(angle) * 1.8, life));
+  }
+}
+
+function lapseChain(state, lost) {
+  const count = chainPipCount(lost);
+  if (count <= 0) return;
+  const life = CONFIG.feel.moteLife;
+  const x = state.player.x;
+  const y = PLAYER_Y;
+  const tick = Number.isFinite(state.tick) ? state.tick : 0;
+  const fall = CONFIG.feel.lapseFall;
+  for (let index = 0; index < count; index += 1) {
+    const pip = chainPipAt(index, count, x, y, tick, false);
+    state.motes.push(acquireMote("lapse", pip.x, pip.y, 0, fall, life));
   }
 }
 

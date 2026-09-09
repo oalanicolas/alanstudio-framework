@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.66 — A aposta não guardada também cai
+
+A regra já dizia que corrente não guardada no fim se perde. O corpo
+continuava vestindo a órbita no overlay. O fim derruba os pips; o
+teto da órbita também é o teto da queda. Sem corrente o fim não
+inventa pip. A conta no estado e o `unbanked` do evento sobrevivem
+— a sessão continua lendo o fato. `felt` continua falso. `feel`
+permanece `playable`: queda no stub não é peso percebido. Só
+`release` fica no piso.
+
+O que 0.9.66 não afirma: o harness não deixou a corrente caducar
+e o overlay não aprova o feel.
+
 ## 0.9.65 — A coleta também entra no corpo
 
 A coleta era squash, rastro para cima e o pip aparecia. Guardar 1 e

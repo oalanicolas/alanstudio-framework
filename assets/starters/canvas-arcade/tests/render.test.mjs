@@ -236,6 +236,10 @@ test("a corrente mora no corpo, não só no HUD", () => {
   spinning.tick = 20;
   const later = chainMarks(spinning)[0];
   assert.notEqual(first.x, later.x, "sem redução a órbita precisa andar");
+  const ended = createState(1);
+  ended.phase = "over";
+  ended.chain = 5;
+  assert.equal(chainMarks(ended).length, 0, "no fim o corpo não veste a aposta que já caiu");
 });
 
 // Dois revisores independentes olharam o vídeo, viram os orbes desaparecerem
@@ -497,6 +501,23 @@ test("o flash do erro some com redução de movimento", () => {
   );
   assert.equal(lit, true, "o erro precisa acender o campo");
   assert.equal(still, true, "com menos movimento o sinal vira contorno, não some");
+});
+
+test("a queda da corrente pinta a aposta que não foi guardada", () => {
+  const state = createState(1);
+  state.phase = "over";
+  state.motes = [
+    { kind: "lapse", x: 40, y: 80, sx: 40, sy: 80, vx: 0, vy: 1.8, life: 8 },
+    { kind: "lapse", x: 90, y: 80, sx: 90, sy: 80, vx: 0, vy: 1.8, life: 8 },
+  ];
+  const flying = paint(state);
+  const pips = flying.rects.filter(
+    (rect) => rect.style === PALETTES.normal.chain && Math.abs(rect.width - CONFIG.feel.chainPipSize) < 0.01,
+  );
+  assert.ok(pips.length >= 2, `esperava a queda na tinta da corrente: ${JSON.stringify(flying.rects.map((rect) => [rect.width, rect.style]))}`);
+  const still = paint(state, { reducedMotion: true });
+  const marks = still.rects.filter((rect) => rect.style === PALETTES.normal.chain && rect.width === 2);
+  assert.ok(marks.length >= 2, "com menos movimento a queda vira marca, não some");
 });
 
 test("a entrada da corrente pinta o orbe a caminho da órbita", () => {

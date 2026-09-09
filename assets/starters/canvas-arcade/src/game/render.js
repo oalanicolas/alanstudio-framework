@@ -149,7 +149,7 @@ export function createRenderer(canvas, options = {}) {
 
   function moteFill(palette, kind) {
     if (kind === "collect" || kind === "land" || kind === "join") return palette.orb;
-    if (kind === "bank" || kind === "break" || kind === "deposit") return palette.chain;
+    if (kind === "bank" || kind === "break" || kind === "deposit" || kind === "lapse") return palette.chain;
     if (kind === "hit" || kind === "over" || kind === "graze") return palette.danger;
     return palette.player;
   }
@@ -166,7 +166,7 @@ export function createRenderer(canvas, options = {}) {
       } else if (mote.kind === "hit") {
         target.fillRect(x - 1.6, y - 0.6, 3.2, 1.2);
         target.fillRect(x - 0.6, y - 1.6, 1.2, 3.2);
-      } else if (mote.kind === "deposit" || mote.kind === "join") {
+      } else if (mote.kind === "deposit" || mote.kind === "join" || mote.kind === "lapse") {
         const size = CONFIG.feel.chainPipSize;
         target.fillRect(x - size / 2, y - size / 2, size, size);
       } else {
@@ -204,9 +204,11 @@ export function createRenderer(canvas, options = {}) {
 
   // A corrente no HUD é conta. No corpo ela é a aposta: cada elo vira um
   // pip em órbita. A coleta leva o orbe ao slot; guardar leva o pip ao
-  // placar; o erro espalha. Com menos movimento a formação trava, não
-  // some. Número no disco não é peso percebido.
+  // placar; o erro espalha; no fim a aposta não guardada cai. Com menos
+  // movimento a formação trava, não some. Número no disco não é peso
+  // percebido. A conta no estado sobrevive ao fim — a órbita não.
   function drawChain(target, palette, state, reduced) {
+    if (state.phase === "over") return;
     const count = chainPipCount(state.chain);
     if (count <= 0) return;
     const size = CONFIG.feel.chainPipSize;
