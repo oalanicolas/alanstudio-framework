@@ -30,6 +30,15 @@ qualidade aprovada) contra o que entregava até 0.8. Lacunas encontradas:
   som e haptics como camadas medidas e observadas, registradas no design system do jogo.
 - **A skill era um bloco denso.** Reorganizada em caminho rápido e sete passos, sem
   remover regras.
+- **Só havia recibo para comandos técnicos.** A receita de produção exige orçamento
+  medido e passagem declarada por pessoa, mas nada ligava essas provas à versão do
+  jogo. `record` grava observação (`role=human|agent`), medição de orçamento e
+  decisão de marco em pasta inédita, com HEAD do git e anexos por SHA-256. Ele guarda
+  o que foi declarado; não valida nem aprova.
+- **`verify --script` só conhecia npm.** Projetos Cargo ganham `check`, `build` e
+  `test`; Unity, Godot e Unreal seguem por `--command`, sem inventar CLI.
+- **Faltava exemplo de produção.** [Da trilha ao capítulo acabado](examples/era-uma-vez-production.md)
+  mostra plano, orçamentos como hipóteses, marcos e recibos num jogo pequeno.
 
 O que 0.9 não afirma: “AAA” é padrão de acabamento observável, não orçamento nem
 equipe; nenhum comando mede performance, executa soak, promove marco, certifica

@@ -5,6 +5,7 @@ Status: rascunho. Marco avaliado: [first playable / vertical slice / alpha / bet
 Versão/build, plataforma e data: [localizadores]. Revisor(es): [preencher].
 Fontes: [plano de produção, PRD, TDD, QA, orçamentos]. Receita: `framework/recipes/production.md`.
 Uma revisão de marco lê evidência; não a produz. Item sem prova permanece pendente.
+Evidência: pastas de `verify` e `record` (observation/budget/milestone) ligadas ao HEAD desta versão.
 
 ## Critérios do marco
 

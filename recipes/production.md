@@ -104,11 +104,20 @@ produção como fonte única de estado: marco atual, orçamentos, riscos e conti
 Atualize-o a cada entrega; não crie planos paralelos. Ao fechar uma fatia, siga
 [continuidade e retomada](../references/process.md#continuidade-e-retomada).
 
+## 7. Evidência ligada
+
+Cada critério de marco aponta para um recibo em pasta inédita, ligado ao HEAD do
+projeto: `verify` para comandos técnicos; `record --kind observation` para o que uma
+pessoa (ou o agente, com `role=agent`) viu em movimento; `record --kind budget` para
+cada medição de orçamento com plataforma e ferramenta; `record --kind milestone` para
+a decisão de passagem, com quem declarou. O recibo guarda o fato declarado; não o
+valida. Exemplo completo: [da trilha ao capítulo acabado](../examples/era-uma-vez-production.md).
+
 ## Limites
 
 O harness localiza o plano de produção e o inclui em `continuity.sources`; a leitura
 dos marcos, a medição dos orçamentos e a declaração de passagem são do agente e da
-pessoa. Nenhum comando mede desempenho, executa soak ou certifica requisitos de
-plataforma. Os termos first playable, alpha, beta e gold seguem o uso corrente da
+pessoa. `record` escreve o que lhe foi declarado e recusa sobrescrita; nenhum comando
+mede desempenho, executa soak ou certifica requisitos de plataforma. Os termos first playable, alpha, beta e gold seguem o uso corrente da
 indústria; cada estúdio e plataforma define detalhes próprios, e o plano do jogo
 registra a definição adotada. Ver [fontes](../references/sources.md#produção-09).

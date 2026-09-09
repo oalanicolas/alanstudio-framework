@@ -83,6 +83,10 @@ Para cada critério afetado registre no local de QA existente:
 - **Conclusão:** critério atendido, regressão ou pendência. Não declare aprovação
   do usuário quando só houve avaliação do agente.
 
+Para ligar a observação à versão do jogo, grave-a com
+`record --kind observation --field role=human|agent --attach <vídeo>`; o recibo guarda
+HEAD, autor, fato e anexos por SHA-256, e não substitui o julgamento registrado acima.
+
 Origens: o [playground](https://games.alanicolas.com/), os recortes em
 [sources.md](sources.md) e a direção de qualidade deste repositório. Os estudos
 são referências históricas; suas medições não foram repetidas só por entrarem

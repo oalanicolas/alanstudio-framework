@@ -4,6 +4,7 @@ Projeto: {{PROJECT_PATH}}
 Status: rascunho. Autor/revisão: [preencher]. Fontes: [brief/GDD, PRD, TDD, vertical slice].
 Receita: `framework/recipes/production.md`. Marcos são gates de evidência, não datas.
 Nenhum comando do harness promove um marco; a passagem é declarada por pessoa com a prova ligada.
+Provas ficam em recibos de pasta inédita: `verify` (técnica), `record --kind observation|budget|milestone`.
 
 ## Alvo de acabamento
 

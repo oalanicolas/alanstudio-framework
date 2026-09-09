@@ -21,6 +21,7 @@ caminho absoluto do script), com `--root <laboratorio>` antes ou depois do subco
 | Usuário aprovou uma referência | `context <projeto> --focus <foco> --event direction-approved` e sincronize a base no mesmo turno |
 | Recorte já demonstra a experiência | `context <projeto> --focus production --stage production-plan` |
 | Revisar um marco (alpha, beta, gold) | `context <projeto> --focus production --stage milestone` |
+| Registrar observação, orçamento medido ou decisão de marco | `record <projeto> --kind observation\|budget\|milestone --author ... --note ... --field k=v --output <pasta-nova>` |
 
 Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `feel`, `network`,
 `architecture`, `production`. Etapas: `brief`, `mda`, `gdd`, `poc`, `prd`, `tdd`,
@@ -62,9 +63,12 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `feel`, `network
    Implemente uma fatia jogável que atravesse regra, apresentação e conteúdo. Não
    acrescente um runtime comum, uma hierarquia de agentes ou IA por quadro.
 5. **Verificar.** Use os validadores existentes e o cenário real. `verify` registra
-   comandos explícitos e logs. Build verde não comprova diversão, arte, reinício, rede,
-   direitos de assets nem aprovação humana. Capacidade desconhecida permanece
-   desconhecida até ser demonstrada.
+   comandos explícitos e logs (scripts de `package.json` ou alvos Cargo; outras engines
+   por `--command`). Build verde não comprova diversão, arte, reinício, rede, direitos
+   de assets nem aprovação humana. O que uma pessoa observou em movimento, uma medição
+   de orçamento ou uma decisão de marco entra por `record`, com `role=human` ou
+   `role=agent`; avaliação do agente não é aprovação do usuário. Capacidade
+   desconhecida permanece desconhecida até ser demonstrada.
 6. **Comparar, registrar, continuar.** Compare antes/depois em condições equivalentes
    e em movimento quando houver efeito visual. Corrija regressões, registre decisões e
    hipóteses descartadas, cumpra `continuity.before_close` e
@@ -76,7 +80,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `feel`, `network
    disciplina, orçamentos medidos na plataforma alvo, pipeline de conteúdo e
    estabilidade. Aplique [feel](recipes/feel.md) ao verbo central. Nenhum comando
    promove marco, mede orçamento ou certifica acabamento; a passagem é declarada por
-   pessoa com a prova ligada.
+   pessoa com a prova ligada (`record --kind milestone`, recibos de `verify`,
+   `observation` e `budget`). Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

@@ -138,7 +138,8 @@ python3 scripts/game.py template milestone --project meu-jogo --output /tmp/meu-
 
 O plano de produção entra em `continuity.sources` quando existe. Nenhum comando mede
 orçamento, executa soak, promove marco ou certifica requisito de plataforma; a
-passagem é declarada por pessoa com a prova ligada.
+passagem é declarada por pessoa com a prova ligada (`record --kind milestone`).
+Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
 
 ## Áudio (opcional)
 
@@ -167,12 +168,33 @@ python3 scripts/game.py verify /caminho/do/jogo --output /tmp/jogo-qa-01 --root 
 inédita. Destino existente é recusado. Build verde não prova arte, reinício, rede
 nem que o jogo é divertido. `experience_status` continua `not_assessed`.
 
+`--script` aceita scripts de `package.json` (npm/pnpm/yarn/bun conforme declaração
+ou lockfile) e, em projetos com `Cargo.toml`, os alvos `check`, `build` e `test`.
+Unity, Godot e Unreal não têm CLI padronizada; use `--command` com o executável real.
+
+## Registrar evidência declarada
+
+O que o `verify` não cobre — observação de pessoa em movimento, medição de orçamento,
+decisão de marco — entra por `record`, em pasta inédita e ligado ao HEAD do projeto:
+
+```sh
+python3 scripts/game.py record /caminho/do/jogo --kind observation --author "Alan" --note "Completou a volta sem instrução." --field scenario=travessia --field role=human --attach /tmp/playtest.mp4 --output /tmp/jogo-obs-01 --root /caminho/do/laboratorio
+python3 scripts/game.py record /caminho/do/jogo --kind budget --author "Alan" --note "Travessia completa" --field metric=frame_p99 --field value=14.2 --field unit=ms --field platform=tablet-ref --field tool=devtools --output /tmp/jogo-budget-01 --root /caminho/do/laboratorio
+python3 scripts/game.py record /caminho/do/jogo --kind milestone --author "Alan" --note "Critérios com evidência ligada." --field milestone=alpha --field decision=declared --field declared_by=Alan --field role=human --output /tmp/jogo-alpha-gate --root /caminho/do/laboratorio
+```
+
+Campos obrigatórios por tipo: `observation` → `scenario`, `role` (`human`/`agent`);
+`budget` → `metric`, `value` numérico, `unit`, `platform`, `tool`; `milestone` →
+`milestone`, `decision` (`declared`/`denied`/`deferred`), `declared_by`, `role`. Anexos
+entram por caminho e SHA-256. O recibo guarda o que foi declarado; não valida, não
+mede e não aprova. `role=agent` é avaliação do agente, não aprovação do usuário.
+
 ## Três camadas
 
 - **IA:** interpreta a intenção, consulta fontes e propõe a mudança. Não depende
   de um fornecedor.
-- **Harness:** recorta o contexto, varre a base, valida a forma do contrato e
-  corre os comandos escolhidos com recibo.
+- **Harness:** recorta o contexto, varre a base, valida a forma do contrato,
+  corre os comandos escolhidos com recibo e registra evidência declarada.
 - **Memória:** brief, decisões, plano de produção, estudos e evidência ficam nos
   locais canônicos de cada jogo.
 
