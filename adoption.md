@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.33 — Contraste em cena no stub, sem limiar
+
+`npm run contrast` deixava de ver o que o token hex não cobre: placa
+composta sobre o campo, flash sobre o orbe, preenchimento da placa
+que some no alto contraste. Agora amostra pixels depois do `draw()`
+numa cena montada. `fillText` é retângulo da cor, não glifo.
+`verified` continua falso. Acessibilidade permanece `slice`: stub não
+é dispositivo nem sessão com o modo ativo. Só `release` fica no piso.
+
+O que 0.9.33 não afirma: o harness não leu o jogo em movimento no
+aparelho e não importou razão de contraste como selo.
+
 ## 0.9.32 — Evento e telegraph sem array novo
 
 O passo seguinte ao poço da chuva ainda alocava `{ type }` por verbo e

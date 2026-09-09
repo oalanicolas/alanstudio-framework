@@ -34,7 +34,8 @@ recuperação do dash.
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
 só levanta quando falta a declaração. O starter expõe assistência,
-`uiScale`, preset de uma mão e `docs/access.md`; `pagehide` descarrega
+`uiScale`, preset de uma mão e `docs/access.md`; `npm run contrast`
+amostra pixels do stub após `draw()`. `pagehide` descarrega
 o save. A chuva compacta o array vivo e reusa o poço; evento e
 telegraph também reusam; `npm run budget` cronometra simulação e
 `draw` no stub e relata o reuso.

@@ -15,7 +15,7 @@ Declaração vigente. Opção no código não é sessão observada.
 
 ## O que o recorte não atende
 
-- Contraste medido em cena e em movimento — `npm run contrast` relata pares hex sem limiar
+- Contraste medido no dispositivo e em movimento — `npm run contrast` amostra pixels do stub após `draw()` e relata o par sem limiar; o aparelho alvo não foi observado
 - Jogo completável com uma só mão, observado
 - Sessão com cada modo ativo, observada
 - Leitura em escala de cinza no dispositivo alvo, observada

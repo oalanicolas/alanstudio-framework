@@ -34,6 +34,7 @@ npm run budget     # custo da simulação e do draw num canvas stub
 npm run peak       # pico de cada WAV no disco; não é mix ouvido
 npm run mix        # soma as vozes de uma partida simulada; não é mix ouvido
 npm run probe      # dispara o buffer declarado; não é peso percebido
+npm run contrast   # pares hex + pixels do stub após draw(); não é dispositivo
 npm run session    # partida simulada → docs/playtest/last-run.json; não é sessão observada
 npm run size       # bytes de dist/; sem teto e sem aprovação
 npm run build      # copia a árvore jogável para dist/; não prova outra máquina
@@ -107,13 +108,13 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | Dimensão | Degrau | Critério do degrau seguinte |
 | --- | --- | --- |
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor/câmera distintos; a ameaça marca o trilho, a recuperação do dash muda a silhueta e o erro acende o campo; `npm run probe` conta os buffers, não o peso percebido |
-| `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — a sequência de quadros no stub cobre o HUD; o dispositivo alvo ainda não foi observado |
+| `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — a sequência de quadros no stub cobre o HUD; `npm run contrast` amostra a cena montada no stub; o dispositivo alvo ainda não foi observado |
 | `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; `consistent` é falso |
 | `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — o palco tem folga e o mixer limita o master; `npm run mix` soma com o mesmo palco, não no dispositivo; loudness percebido não foi medido |
 | `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; abandono e erro repetido ainda não foram investigados |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; cada tick compacta a chuva no mesmo array e reusa o poço; evento e telegraph também reusam; `npm run budget` cronometra simulação e `draw` num canvas stub e relata o reuso — não o compositor nem o dispositivo alvo |
-| `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena — `docs/access.md` declara o que o recorte não atende; `uiScale` e o preset de uma mão têm consumidor; sessão com uma mão ainda não foi observada |
+| `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena no dispositivo — `npm run contrast` amostra pixels do stub após `draw()`; `docs/access.md` declara o que o recorte não atende; sessão com uma mão ainda não foi observada |
 | `content_scale` | `shippable` | `flagship`: a ferramenta é boa o bastante para alguém de fora produzir no piso — `dusk` é a segunda chuva e o jogo a consome por `?spawn=` / `settings.spawnProfile`; `npm run table -- <nome> --from spawn` copia a forma; `enough` é falso |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `dist/VERSION.json` nomeia a versão; ninguém correu o artefato fora daqui |
 

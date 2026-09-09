@@ -45,7 +45,9 @@ mais que uma lista de recursos não testados.
 Implementação concreta: o starter `canvas-arcade` guarda remapeamento e redução de
 movimento em `src/core/settings.js`, herda a preferência do sistema, desenha formas
 distintas além da cor em `src/game/render.js` e mantém legenda equivalente para
-toda informação sonora em `src/game/audio.js`.
+toda informação sonora em `src/game/audio.js`. `npm run contrast` amostra
+pixels do stub depois do `draw()` além dos pares hex — relata, não aprova,
+e não substitui o dispositivo.
 
 Prova: uma sessão completa com cada modo ativado, o jogo terminado sem áudio,
 verificação de contraste na cena de pior caso, remapeamento aplicado e

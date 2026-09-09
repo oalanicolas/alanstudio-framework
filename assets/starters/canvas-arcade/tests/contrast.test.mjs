@@ -4,7 +4,21 @@ import { spawn } from "node:child_process";
 import { once } from "node:events";
 import { fileURLToPath } from "node:url";
 
+import { createRasterCanvas } from "../tools/raster.mjs";
+
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
+
+test("o raster compõe a placa sobre o campo, não o token isolado", () => {
+  const canvas = createRasterCanvas(8, 8);
+  const context = canvas.getContext("2d");
+  context.fillStyle = "#171b26";
+  context.fillRect(0, 0, 8, 8);
+  context.fillStyle = "rgba(7,9,13,0.86)";
+  context.fillRect(0, 0, 8, 8);
+  const pixel = canvas.sample(2, 2);
+  assert.ok(pixel.r < 20 && pixel.g < 20);
+  assert.notEqual(pixel.r, 23, "o campo cru não sobreviveu à composição");
+});
 
 test("o contraste relata pares hex sem importar limiar nem aprovar", async () => {
   const child = spawn(process.execPath, ["tools/contrast.mjs"], {
@@ -22,6 +36,24 @@ test("o contraste relata pares hex sem importar limiar nem aprovar", async () =>
   const text = report.pairs.normal.find((item) => item.foreground === "text");
   assert.ok(Number.isFinite(text.ratio));
   assert.ok(text.ratio > 1, "texto e campo não podem ser a mesma luminância");
+  assert.ok(Array.isArray(report.scenes));
+  const names = report.scenes.map((scene) => scene.name);
+  assert.deepEqual(names, ["playing.normal", "playing.contrast", "playing.flash"]);
+  const contrast = report.scenes.find((scene) => scene.name === "playing.contrast");
+  const plate = contrast.pairs.find((item) => item.foreground === "plate" && item.background === "field");
+  const edge = contrast.pairs.find((item) => item.foreground === "plate_edge" && item.background === "field");
+  assert.ok(Number.isFinite(plate.ratio));
+  assert.ok(Number.isFinite(edge.ratio));
+  assert.notEqual(
+    plate.ratio,
+    edge.ratio,
+    "preenchimento e borda da placa são pixels distintos na cena",
+  );
+  const flash = report.scenes.find((scene) => scene.name === "playing.flash");
+  const tokenOrb = report.pairs.normal.find((item) => item.foreground === "orb").ratio;
+  const flashOrb = flash.pairs.find((item) => item.foreground === "orb" && item.background === "field").ratio;
+  assert.notEqual(flashOrb, tokenOrb, "o flash muda o par orbe/campo; o token hex não vê isso");
   assert.match(report.scope, /Sem limiar/);
+  assert.match(report.scope, /cena montada/);
   assert.doesNotMatch(stdout, /4\.5\s*:\s*1|WCAG|aprovado|verified/);
 });
