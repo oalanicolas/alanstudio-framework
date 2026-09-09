@@ -960,17 +960,22 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(len(bases), len(set(bases)))
         readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
         ordering = readme[readme.index("ordena por dependência"):]
-        ordering = ordering[:ordering.index("\n\n")]
+        # A prosa é quebrada em linhas, então o parágrafo é normalizado antes de
+        # procurar o nome de cada ramo — senão o teste falha por onde o texto
+        # coube na coluna, não por ramo faltando.
+        ordering = " ".join(ordering[:ordering.index("\n\n")].split())
         # Cada ramo é nomeado em português na prosa; o mapa amarra os dois lados,
         # então um ramo novo no código sem linha no README quebra o teste.
         described = {
-            "exists=false": "sem\ndestino",
+            "exists=false": "sem destino",
             "kind=null": "sem entrypoint",
             "areas.not_located": "área não localizada",
             "areas.draft_only": "rascunho",
-            "areas.historical_or_reference_only": "documento sem versão\nvigente",
+            "areas.historical_or_reference_only": "documento sem versão vigente",
             "continuity.sources": "continuidade",
             "scripts": "validadores",
+            "gates.problems": "linha de gate malformada",
+            "gates.pending": "critério pendente",
             "production_bar.problems": "linha de degrau malformada",
             "production_bar.undeclared": "dimensão sem linha",
             "production_bar.conflicts": "duas linhas em conflito",
@@ -1433,6 +1438,20 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     # A barra nomeava dez dimensões e nunca sabia em qual o projeto estava, então
     # a única coisa capaz de virar tarefa — a dimensão mais baixa — ficava fora do
     # alcance do harness. A declaração vem do documento do próprio projeto.
+    def proposals(self, result):
+        return [result["proposal"], *result["alternatives"]]
+
+    def declare_gate(self, rows, path="README.md", project=None):
+        lines = [f"| `{gate}` | `{criterion}` | `{state}` | {note} |"
+                 for (gate, criterion), (state, note) in rows.items()]
+        document = (project or self.project) / path
+        document.parent.mkdir(parents=True, exist_ok=True)
+        header = "" if document.is_file() else "# Jogo\n"
+        with document.open("a", encoding="utf-8") as handle:
+            handle.write(f"{header}\n| Gate | Critério | Estado | Evidência |\n| --- | --- | --- | --- |\n"
+                         + "\n".join(lines) + "\n")
+        return document
+
     def declare_bar(self, tiers, path="README.md", project=None):
         rows = [f"| `{key}` | `{tier}` | `{target}`: critério declarado no documento do projeto |"
                 for key, (tier, target) in tiers.items()]
@@ -1480,6 +1499,132 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(feel["tier"], "prototype")
         self.assertEqual(feel["source"], "docs/qa.md:5")
         self.assertEqual(report["at_floor"], ["feel"])
+
+    # Os dez gates são a formalização de linhas que já existiam em prosa. Se um
+    # gate perder a sua, ele passa a ser critério inventado aqui — que é
+    # exatamente o que este framework não pode fazer.
+    def test_every_gate_still_points_at_the_prose_it_came_from(self):
+        cycle = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        for key, spec in game.GATES.items():
+            with self.subTest(gate=key):
+                self.assertIn(f"**{spec['readiness']}:**", cycle)
+                self.assertIn(f"### `{spec['stage']}`", cycle)
+                self.assertIn(f"`{key}`", guide)
+                self.assertIn(spec["stage"], game.STAGES)
+                keys = [item[0] for item in spec["criteria"]]
+                self.assertEqual(len(keys), len(set(keys)))
+                for _, label, _ in spec["criteria"]:
+                    self.assertTrue(label[0].isupper(), label)
+        # A ordem dos gates é a do ciclo, não alfabética: um gate guarda a
+        # permissão seguinte, e a sequência é o que dá sentido a "o próximo".
+        self.assertEqual(
+            [spec["stage"] for spec in game.GATES.values()],
+            [stage for stage in game.STAGES if stage in {spec["stage"] for spec in game.GATES.values()}],
+        )
+
+    def test_a_gate_never_grants_passage_only_reads_what_the_project_claims(self):
+        self.declare_gate({("deliver", "runbook"): ("met", "Ana construiu do zero, log em /tmp/qa-07")})
+        report = game.gate_reading(self.project, "deliver")
+        self.assertFalse(report["granted"])
+        self.assertIn("não concede passagem", report["scope"])
+        entrega = report["gates"][0]
+        self.assertFalse(entrega["held_by_declaration"])
+        states = {item["key"]: item["state"] for item in entrega["criteria"]}
+        self.assertEqual(states["runbook"], "met")
+        # Critério sem linha é pendente, não presumido cumprido.
+        self.assertEqual(states["licensing"], "undeclared")
+        self.assertIn("licensing", entrega["pending"])
+
+    def test_a_gate_holds_only_when_every_criterion_has_a_line(self):
+        rows = {}
+        for key, _, waivable in game.GATES["scale"]["criteria"]:
+            rows[("scale", key)] = ("met", f"evidência declarada para {key}")
+        self.declare_gate(rows)
+        entrega = game.gate_reading(self.project, "scale")["gates"][0]
+        self.assertEqual(entrega["pending"], [])
+        self.assertTrue(entrega["held_by_declaration"])
+        # "Sustenta pela declaração" não é "verificado", e o nome do campo diz isso.
+        self.assertNotIn("verified", entrega)
+        self.assertNotIn("passed", entrega)
+
+    # A prosa da etapa não deixa terceira opção em quatro critérios: licença
+    # desconhecida bloqueia a entrega, prioridade não remove exigência do usuário,
+    # teste com pessoa não se registra onde houve simulação, e origem de referência
+    # é declarada ou a ausência é explícita. Dispensar esses é recusado.
+    def test_the_four_criteria_the_prose_leaves_no_way_around_cannot_be_waived(self):
+        forbidden = [(gate, key) for gate, spec in game.GATES.items() for key, _, waivable in spec["criteria"] if not waivable]
+        self.assertEqual(
+            forbidden,
+            [("design", "reference_origin"), ("implement", "user_requirements"),
+             ("conclude", "human_vs_agent"), ("deliver", "licensing")],
+        )
+        for gate, key in forbidden:
+            with self.subTest(gate=gate, criterion=key):
+                document = self.declare_gate({(gate, key): ("waived", "queria dispensar")})
+                report = game.gate_reading(self.project, gate)
+                self.assertEqual([item["reason"] for item in report["problems"]], ["not_waivable"])
+                state = {item["key"]: item["state"] for item in report["gates"][0]["criteria"]}[key]
+                self.assertEqual(state, "undeclared")
+                document.unlink()
+
+    def test_a_waiver_without_a_reason_is_a_criterion_quietly_deleted(self):
+        self.declare_gate({("deliver", "save_migration"): ("waived", "")})
+        report = game.gate_reading(self.project, "deliver")
+        self.assertEqual([item["reason"] for item in report["problems"]], ["waiver_without_reason"])
+        self.assertIn("save_migration", report["gates"][0]["pending"])
+
+    def test_met_without_anything_written_beside_it_is_refused(self):
+        self.declare_gate({("deliver", "rollback"): ("met", "")})
+        report = game.gate_reading(self.project, "deliver")
+        self.assertEqual([item["reason"] for item in report["problems"]], ["met_without_evidence"])
+
+    def test_a_gate_reports_the_typo_instead_of_swallowing_the_line(self):
+        document = self.project / "README.md"
+        document.write_text(
+            "# Jogo\n\n"
+            "| `entregar` | `runbook` | `met` | gate com nome errado |\n"
+            "| `deliver` | `runbok` | `met` | critério com typo |\n"
+            "| `deliver` | `rollback` | `feito` | estado inventado |\n"
+            "| `versao` | `1.2.0` | `met` | tabela de outro assunto |\n",
+            encoding="utf-8",
+        )
+        report = game.gate_reading(self.project, "deliver")
+        self.assertEqual(
+            [(item["reason"], item["found"]) for item in report["problems"]],
+            [("unknown_gate", "entregar"), ("unknown_criterion", "runbok"), ("unknown_state", "feito")],
+        )
+
+    def test_two_lines_that_disagree_keep_the_weaker_state(self):
+        self.declare_gate({("deliver", "runbook"): ("met", "Ana construiu do zero")})
+        self.declare_gate({("deliver", "runbook"): ("unmet", "ninguém tentou ainda")}, path="docs/qa.md")
+        report = game.gate_reading(self.project, "deliver")
+        state = {item["key"]: item["state"] for item in report["gates"][0]["criteria"]}["runbook"]
+        self.assertEqual(state, "unmet")
+        self.assertEqual([item["reason"] for item in report["problems"]], ["conflicting_state"])
+
+    def test_next_only_raises_a_gate_the_project_actually_asked_for(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        self.foundation_document()
+        # Sem nenhuma linha de gate, nenhum gate está sendo pedido.
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "release"))]
+        self.assertNotIn("gates.pending", bases)
+        rows = {("deliver", key): ("met", f"evidência de {key}") for key, _, _ in game.GATES["deliver"]["criteria"]}
+        rows[("deliver", "foreign_machine")] = ("unmet", "só rodou na máquina de dev")
+        self.declare_gate(rows)
+        result = game.next_step(self.project, "release")
+        proposal = next(item for item in self.proposals(result) if item["basis"] == "gates.pending")
+        self.assertIn("foreign_machine", proposal["action"])
+        self.assertIn("deliver", proposal["action"])
+        self.assertIn("abandonar", proposal["why"])
+        self.assertEqual(result["signals"]["gates_declared"], ["deliver"])
+
+    def test_next_fixes_the_gate_form_before_chasing_the_criterion(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        self.declare_gate({("deliver", "licensing"): ("waived", "queria dispensar")})
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "release"))]
+        self.assertIn("gates.problems", bases)
+        self.assertNotIn("gates.pending", bases)
 
     def test_bar_ignores_a_row_that_names_something_the_bar_does_not(self):
         self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS})

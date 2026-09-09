@@ -126,6 +126,133 @@ FOCUS_DIMENSIONS = {
     "persistence": ("state_trust", "content_scale"),
     "release": ("release", "performance", "accessibility", "state_trust"),
 }
+# A barra descreve onde o jogo está; um gate diz o que ainda não pode passar. Os
+# dez já existiam como prosa em references/preproduction.md, uma linha "Pronto
+# para…" por etapa, que nada lia e nada recusava — a mesma forma que a barra tinha
+# antes do comando `bar`. Os critérios abaixo são extraídos dessas linhas, não
+# inventados aqui, e um teste exige que cada gate continue tendo a sua.
+#
+# O terceiro campo de cada critério é `waivable`. Ele é falso só onde a prosa da
+# etapa não deixa terceira opção — "prioridade não permite remover exigências
+# explícitas do usuário", "não registre teste com pessoa quando houve somente
+# simulação", "licença desconhecida bloqueia a entrega", e origem declarada ou
+# ausência explícita, que já traz a própria saída. Nos demais, dispensar é decisão
+# de quem assina, com motivo e autor, em vez de eu decidir por todo mundo o que é
+# negociável.
+GATES = {
+    "design": {
+        "asks": "desenhar e experimentar",
+        "stage": "brief",
+        "readiness": "Pronto para desenhar/experimentar",
+        "criteria": (
+            ("match", "Uma partida curta pode ser descrita do início ao fim", True),
+            ("feeling", "A sensação pretendida está escrita, não implícita", True),
+            ("uncertainty", "A maior incerteza a aprender primeiro está nomeada", True),
+            ("reference_origin", "Cada referência visual tem origem e autoridade declaradas, ou ausência explícita", False),
+        ),
+    },
+    "test": {
+        "asks": "testar a hipótese",
+        "stage": "mda",
+        "readiness": "Pronto para testar",
+        "criteria": (
+            ("chain", "Cada hipótese liga regra → comportamento → experiência", True),
+            ("distinguishing", "Existe uma situação observável que distingue a hipótese da alternativa", True),
+            ("refutation", "A observação capaz de contradizer a hipótese está definida", True),
+        ),
+    },
+    "prototype": {
+        "asks": "prototipar",
+        "stage": "gdd",
+        "readiness": "Pronto para prototipar",
+        "criteria": (
+            ("verbs", "O que o jogador faz, quais alternativas tem e o que acontece está descrito", True),
+            ("end_and_restart", "Como a partida termina e reinicia está descrito", True),
+            ("pillars", "Cada pilar resolve uma escolha concreta, não um adjetivo", True),
+        ),
+    },
+    "close": {
+        "asks": "encerrar o experimento",
+        "stage": "poc",
+        "readiness": "Pronto para encerrar",
+        "criteria": (
+            ("verdict", "O resultado distingue a hipótese, ou o motivo da inconclusão está escrito", True),
+            ("conditions", "As condições da observação estão registradas", True),
+            ("decision", "A decisão está registrada: continuar, ajustar ou abandonar", True),
+            ("effort_limit", "O limite de esforço foi definido antes do experimento", True),
+        ),
+    },
+    "implement": {
+        "asks": "implementar o recorte",
+        "stage": "prd",
+        "readiness": "Pronto para implementar o recorte",
+        "criteria": (
+            ("acceptance", "Cada requisito necessário tem condição, resultado esperado e método de verificação", True),
+            ("dependencies", "Dependências e lacunas que podem mudar o escopo estão resolvidas ou delimitam um experimento", True),
+            ("user_requirements", "Nenhuma exigência explícita do usuário foi removida por prioridade", False),
+        ),
+    },
+    "build": {
+        "asks": "construir",
+        "stage": "tdd",
+        "readiness": "Pronto para construir",
+        "criteria": (
+            ("consumers", "Caminhos canônicos e consumidores afetados foram lidos", True),
+            ("coverage", "As decisões cobrem os requisitos do recorte", True),
+            ("risk_to_poc", "Risco sem prova virou PoC explícita", True),
+        ),
+    },
+    "scale": {
+        "asks": "ampliar a produção",
+        "stage": "vertical-slice",
+        "readiness": "Pronto para ampliar",
+        "criteria": (
+            ("repeatable", "O cenário é jogável e repetível", True),
+            ("integrations", "As integrações foram verificadas com recibo", True),
+            ("in_motion", "A comparação foi feita em movimento, não em quadro estático", True),
+            ("regressions", "As regressões encontradas foram resolvidas", True),
+            ("no_placeholder", "Nenhum placeholder está contado como acabamento", True),
+        ),
+    },
+    "evaluate": {
+        "asks": "avaliar a entrega",
+        "stage": "mvp",
+        "readiness": "Pronto para avaliar a entrega",
+        "criteria": (
+            ("full_cycle", "O ciclo do jogo está completo, do início ao fim", True),
+            ("essentials", "Os requisitos essenciais estão atendidos", True),
+            ("access", "Existe acesso ao jogo para quem vai observar", True),
+            ("observation", "O método de observação está definido", True),
+        ),
+    },
+    "conclude": {
+        "asks": "concluir o escopo",
+        "stage": "qa",
+        "readiness": "Pronto para concluir o escopo",
+        "criteria": (
+            ("evidence", "Cada critério aplicável tem evidência correspondente", True),
+            ("retested", "Falhas relevantes foram resolvidas e retestadas", True),
+            ("declared_gaps", "As lacunas restantes estão explícitas", True),
+            ("human_vs_agent", "Teste com pessoa não está registrado onde houve só simulação ou avaliação do agente", False),
+        ),
+    },
+    "deliver": {
+        "asks": "entregar",
+        "stage": "release",
+        "readiness": "Pronto para entregar",
+        "criteria": (
+            ("runbook", "Outra pessoa constrói a partir do runbook", True),
+            ("foreign_machine", "O artefato roda em máquina que não é a de desenvolvimento", True),
+            ("save_migration", "Save migra da versão anterior", True),
+            # A prosa é explícita: licença desconhecida bloqueia a entrega. Esse é o
+            # único critério que o framework declara como não dispensável.
+            ("licensing", "Nenhum recurso embarcado tem licença desconhecida", False),
+            ("rollback", "Existe procedimento de reversão", True),
+        ),
+    },
+}
+GATE_STATES = ("met", "unmet", "waived")
+
 STAGE_TIERS = {
     "brief": "prototype", "mda": "prototype", "poc": "prototype",
     "gdd": "playable", "prd": "playable", "tdd": "playable",
@@ -361,6 +488,132 @@ def bar_declaration(project):
         # mínimo entre as dez é desconhecido, e o degrau percebido não sai.
         "perceived_tier": None if undeclared or not declared else floor,
         "sources": list(BAR_SOURCES),
+    }
+
+
+GATE_ROW = re.compile(
+    r"^\|\s*`([\w-]+)`\s*\|\s*`([\w-]+)`\s*\|\s*`(\w+)`\s*\|\s*(.*?)\s*\|\s*$"
+)
+GATE_SOURCES = ("README.md", "docs/qa.md", "docs/devlog.md", "docs/release.md", "docs/prd.md")
+
+
+def gate_declaration(project):
+    declared = {}
+    problems = []
+    sources = []
+    for relative in GATE_SOURCES:
+        path = project / relative
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        seen_here = False
+        for number, line in enumerate(text.splitlines(), start=1):
+            match = GATE_ROW.match(line)
+            if not match:
+                continue
+            gate, criterion, state, note = match.groups()
+            source = f"{relative}:{number}"
+            known_gate = gate in GATES
+            known_state = state in GATE_STATES
+            # Mesmo filtro da barra: sem nenhuma das células reconhecível, a linha
+            # não é da tabela de gates e não vira ruído no relatório.
+            if not known_gate and not known_state:
+                continue
+            if not known_gate:
+                problems.append({"source": source, "reason": "unknown_gate", "found": gate})
+                continue
+            keys = [key for key, _, _ in GATES[gate]["criteria"]]
+            if criterion not in keys:
+                problems.append({"source": source, "reason": "unknown_criterion", "gate": gate, "found": criterion})
+                continue
+            if not known_state:
+                problems.append({"source": source, "reason": "unknown_state", "gate": gate, "found": state})
+                continue
+            waivable = dict((key, allowed) for key, _, allowed in GATES[gate]["criteria"])[criterion]
+            if state == "waived" and not waivable:
+                problems.append({
+                    "source": source, "reason": "not_waivable", "gate": gate, "found": criterion,
+                })
+                continue
+            # Dispensa sem motivo escrito é dispensa sem autor: o que sobra é um
+            # critério apagado da lista, que é justamente o que um gate impede.
+            if state == "waived" and not note:
+                problems.append({"source": source, "reason": "waiver_without_reason", "gate": gate, "found": criterion})
+                continue
+            if state == "met" and not note:
+                problems.append({"source": source, "reason": "met_without_evidence", "gate": gate, "found": criterion})
+                continue
+            previous = declared.setdefault(gate, {}).get(criterion)
+            # Duas linhas discordantes não se resolvem por precedência, como na
+            # barra: a mais fraca vale, e o conflito fica visível.
+            rank = {"unmet": 0, "waived": 1, "met": 2}
+            entry = {"state": state, "note": note or None, "source": source}
+            if previous is None or rank[state] < rank[previous["state"]]:
+                declared[gate][criterion] = entry
+            if previous is not None and previous["state"] != state:
+                problems.append({
+                    "source": source, "reason": "conflicting_state", "gate": gate, "found": criterion,
+                })
+            seen_here = True
+        if seen_here:
+            sources.append(relative)
+    return {"declared": declared, "problems": problems, "sources": sources}
+
+
+def gate_reading(project, gate=None):
+    declaration = gate_declaration(project)
+    wanted = (gate,) if gate else tuple(GATES)
+    gates = []
+    for key in wanted:
+        spec = GATES[key]
+        rows = declaration["declared"].get(key, {})
+        criteria = []
+        for criterion, label, waivable in spec["criteria"]:
+            row = rows.get(criterion)
+            criteria.append({
+                "key": criterion,
+                "criterion": label,
+                "waivable": waivable,
+                "state": row["state"] if row else "undeclared",
+                "evidence": row["note"] if row else None,
+                "source": row["source"] if row else None,
+            })
+        pending = [item["key"] for item in criteria if item["state"] in ("undeclared", "unmet")]
+        waived = [item["key"] for item in criteria if item["state"] == "waived"]
+        gates.append({
+            "key": key,
+            "asks": spec["asks"],
+            "stage": spec["stage"],
+            "readiness": spec["readiness"],
+            "criteria": criteria,
+            "pending": pending,
+            "waived": waived,
+            # Não é "passou". É o que a declaração do projeto sustenta hoje.
+            "held_by_declaration": not pending,
+        })
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "gates": gates,
+        "problems": declaration["problems"],
+        "sources": declaration["sources"],
+        "granted": False,
+        "guide": str(FRAMEWORK / "references/gates.md"),
+        "rule": (
+            "Um gate recusa avanço enquanto um critério estiver pendente. Passar, cortar escopo e abandonar "
+            "são as três saídas legítimas — abandonar não é falha do gate, é uma das respostas dele."
+        ),
+        "scope": (
+            "Lê a declaração do próprio projeto e confere só a forma dela, relatando em `problems`: gate "
+            "desconhecido, critério que não pertence ao gate, estado fora de met/unmet/waived, dispensa de "
+            "critério que a prosa não deixa dispensar, dispensa ou met sem nada escrito ao lado, e duas linhas "
+            "discordantes. Não observa o jogo, não executa nada e **não concede passagem**: "
+            "`held_by_declaration` diz que o projeto afirma cumprir, não que alguém conferiu."
+        ),
     }
 
 
@@ -1215,6 +1468,41 @@ def next_step(project, focus="create", studies_root=None):
             [harness_command("verify", project, "--script", scripts[0], "--output", "CAMINHO_NOVO")],
             "scripts",
         )
+    # Um gate só está em jogo quando o projeto o declara: ninguém pede uma
+    # permissão que não mencionou, e listar os dez num projeto que declarou um
+    # transformaria a recusa em ruído.
+    gates = gate_declaration(project)
+    if gates["problems"]:
+        propose(
+            "Corrigir a forma da declaração de gate em: "
+            + ", ".join(f"{item['source']} ({item['reason']})" for item in gates["problems"][:4]),
+            "Linha malformada não entra na leitura, e o critério que ela pretendia declarar continua pendente. "
+            "Dispensa sem motivo escrito é critério apagado da lista, que é justamente o que um gate impede.",
+            "Cada linha nomeia um dos dez gates, um critério dele, um estado entre met/unmet/waived e o que "
+            "sustenta o estado.",
+            [harness_command("gate", project)],
+            "gates.problems",
+        )
+    else:
+        reading = gate_reading(project)
+        live = [item for item in reading["gates"] if item["key"] in gates["declared"]]
+        blocked = next((item for item in live if item["pending"]), None)
+        if blocked:
+            first = blocked["pending"][0]
+            criterion = next(item for item in blocked["criteria"] if item["key"] == first)
+            propose(
+                f"Resolver o critério `{first}` do gate `{blocked['key']}`: {criterion['criterion']}",
+                f"O gate `{blocked['key']}` pede {blocked['asks']} e recusa enquanto "
+                f"{len(blocked['pending'])} critério(s) estiver(em) pendente(s). "
+                + ("Este não é dispensável: a etapa não deixa terceira opção."
+                   if not criterion["waivable"] else
+                   "Cortar escopo e abandonar também são saídas legítimas deste gate."),
+                f"A linha do critério sai de `undeclared`/`unmet` com o que sustenta o estado ao lado, "
+                f"ou é dispensada com motivo e autor.",
+                [harness_command("gate", project, "--gate", blocked["key"])],
+                "gates.pending",
+            )
+
     bar = payload["production_bar"]
     dimensions = [item["key"] for item in bar["dimensions"]]
     declaration = bar["declaration"]
@@ -1286,6 +1574,8 @@ def next_step(project, focus="create", studies_root=None):
             "production_bar_floor": declaration["floor"],
             "production_bar_undeclared": declaration["undeclared"],
             "production_bar_problems": declaration["problems"],
+            "gates_declared": sorted(gates["declared"]),
+            "gates_problems": gates["problems"],
         },
         "context_command": harness_command("context", project, "--focus", focus),
         "authority": "agent_resolves",
@@ -1438,6 +1728,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT, help="raiz para descobrir projetos e resolver caminhos")
     commands = parser.add_subparsers(dest="action", required=True)
+    gate_cmd = commands.add_parser(
+        "gate", parents=[common],
+        help="critérios que o projeto declara cumprir para pedir a próxima permissão",
+    )
+    gate_cmd.add_argument("project")
+    gate_cmd.add_argument("--gate", choices=sorted(GATES), help="um gate só, em vez dos dez")
+
     discover_cmd = commands.add_parser("discover", parents=[common])
     discover_cmd.add_argument(
         "--plain", action="store_true",
@@ -1506,6 +1803,8 @@ def main():
             emit(scan(resolve(args.project, root)))
         elif args.action == "bar":
             emit(bar_reading(resolve(args.project, root)))
+        elif args.action == "gate":
+            emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":
             emit(context(resolve(args.project, root), args.focus, args.stage, studies_root=default_studies_root(root), event=args.event))
         elif args.action == "template":

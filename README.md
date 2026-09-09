@@ -62,10 +62,11 @@ validadores do starter onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → rascunho → documento sem versão
-vigente → continuidade → validadores → barra. O último passo tem quatro ramos, na
-ordem: linha de degrau malformada, dimensão sem linha, duas linhas em conflito e
-— só então — subir a dimensão mais baixa. Num projeto sem tabela, portanto, a
-última proposta é declarar os degraus, não subir um deles. Devolve
+vigente → continuidade → validadores → gate → barra. O gate tem dois ramos: linha
+de gate malformada e critério pendente. A barra tem quatro, na ordem: linha de
+degrau malformada, dimensão sem linha, duas linhas em conflito e — só então —
+subir a dimensão mais baixa. Num projeto sem tabela, portanto, a última proposta
+é declarar os degraus, não subir um deles. Devolve
 também as alternativas descartadas. `executed` permanece `false`: o harness propõe,
 quem decide é o agente ou você.
 
@@ -141,6 +142,59 @@ dimensão mais baixa passa a ter nome — e `next` propõe subir exatamente ela,
 citando o critério escrito no documento e a linha de onde veio, em vez de listar
 as dez. Havendo linha malformada, ele propõe corrigi-la primeiro: ela é a causa da
 dimensão que aparece como não declarada.
+
+## Gates
+
+A barra descreve **onde o jogo está**. Um gate diz **o que ainda não pode
+passar**. [Os dez](references/gates.md) não foram inventados: cada um formaliza
+uma linha `**Pronto para…**` que já existia em prosa no ciclo criativo, com o
+critério de saída da etapa. Faltava alguém ler essas linhas e alguém recusar.
+
+```sh
+python3 scripts/game.py gate /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py gate /caminho/do/laboratorio/meu-jogo --gate deliver
+```
+
+Um gate tem nome do que você está pedindo, não da etapa que acabou: `design`,
+`test`, `prototype`, `close`, `implement`, `build`, `scale`, `evaluate`,
+`conclude`, `deliver`. A ordem é a do ciclo, e o ciclo tem retorno — reprovar em
+`scale` devolve para `build`, o que é uso normal.
+
+O projeto declara uma linha por critério, em `README.md`, `docs/qa.md`,
+`docs/devlog.md`, `docs/release.md` ou `docs/prd.md`:
+
+```markdown
+| Gate | Critério | Estado | Evidência |
+| --- | --- | --- | --- |
+| `deliver` | `runbook` | `met` | Ana construiu do zero em 2026-09-02, log em /tmp/qa-07 |
+| `deliver` | `foreign_machine` | `unmet` | só rodou na máquina de dev |
+| `deliver` | `save_migration` | `waived` | sem versão anterior publicada — Alan, 2026-09-05 |
+```
+
+**As três saídas de um gate são passar, cortar escopo e abandonar.** A terceira é
+a que costuma faltar: abandonar não é falha do gate, é uma das respostas dele — o
+ciclo já dizia isso na etapa `poc`, e aqui vale para todas. Um processo que só
+admite “passou” e “ainda não” empurra escopo morto para frente até ele custar
+caro demais para matar.
+
+Dispensa é estado de primeira classe, porque produção real dispensa requisito com
+assinatura — mas exige motivo escrito, senão é o critério apagado da lista.
+**Quatro critérios não são dispensáveis**, e não por escolha do harness: a prosa
+da etapa não deixa terceira opção (licença desconhecida bloqueia a entrega;
+prioridade não remove exigência explícita do usuário; teste com pessoa não se
+registra onde houve só simulação; origem de referência é declarada ou a ausência
+é explícita).
+
+Critério sem linha conta como **pendente**, nunca como cumprido: silêncio não é
+aprovação. `met` sem nada escrito ao lado é recusado. Duas linhas discordantes
+mantêm o estado mais fraco e o conflito fica listado. `next` propõe resolver o
+critério pendente do primeiro gate **declarado** — um gate que o projeto não
+mencionou não está sendo pedido.
+
+O campo se chama `held_by_declaration`, não `passed`: ele diz que o projeto afirma
+cumprir, não que alguém conferiu. **Nenhum comando concede passagem** (`granted`
+é sempre `false`), e uma tabela bem formada e otimista sai daí intacta, como sai
+da barra.
 
 ## Starters
 
