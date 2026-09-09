@@ -845,6 +845,130 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         # morto nele é link morto na referência que a doc chama de executável.
         self.assertEqual(broken_links(game.FRAMEWORK), [])
 
+    # `verify --script serve` espera o `--timeout` inteiro — cinco minutos por
+    # padrão — e sai como `failed`, porque servidor de desenvolvimento não
+    # termina. E benchmark não é o primeiro validador; só vinha na frente por
+    # ordem alfabética.
+    # O README apresenta a ordenação do `next` como a lista completa de
+    # dependências, e é o que um agente usa para prever o comportamento sem rodar
+    # o comando. Ela tinha um passo a menos que o código: a barra virou quatro
+    # ramos e a prosa continuou falando de um.
+    def test_the_documented_ordering_of_next_lists_every_branch_the_code_has(self):
+        source = (game.FRAMEWORK / "scripts/game.py").read_text(encoding="utf-8")
+        block = source[source.index("def next_step"):]
+        block = block[:block.index("\ndef ", 1)]
+        bases = re.findall(r"^\s+\"([a-z_]+(?:[.=][a-z_]+)?)\",\n\s+\)\n", block, re.MULTILINE)
+        self.assertEqual(len(bases), len(set(bases)))
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        ordering = readme[readme.index("ordena por dependência"):]
+        ordering = ordering[:ordering.index("\n\n")]
+        # Cada ramo é nomeado em português na prosa; o mapa amarra os dois lados,
+        # então um ramo novo no código sem linha no README quebra o teste.
+        described = {
+            "exists=false": "sem\ndestino",
+            "kind=null": "sem entrypoint",
+            "areas.not_located": "área não localizada",
+            "areas.draft_only": "rascunho",
+            "areas.historical_or_reference_only": "documento sem versão\nvigente",
+            "continuity.sources": "continuidade",
+            "scripts": "validadores",
+            "production_bar.problems": "linha de degrau malformada",
+            "production_bar.undeclared": "dimensão sem linha",
+            "production_bar.conflicts": "duas linhas em conflito",
+            "production_bar.floor": "subir a dimensão mais baixa",
+        }
+        self.assertEqual(sorted(described), sorted(bases))
+        for basis in bases:
+            self.assertIn(described[basis], ordering, basis)
+
+    # Um projeto de segundos de idade não tem passo registrado. As fontes de
+    # continuidade que `scan` encontra nele são campos de template — "Próxima
+    # ação: [uma tarefa concreta...]" — e propor retomá-los empurra o agente a
+    # continuar trabalho que nunca existiu.
+    def test_a_project_born_seconds_ago_has_no_step_to_resume(self):
+        destination = self.root / "recém-nascido"
+        game.init(destination, "canvas-arcade")
+        sources = game.scan(destination)["continuity_sources"]
+        self.assertTrue(sources)
+        self.assertEqual({item["status"] for item in sources}, {"draft"})
+        result = game.next_step(destination, "create")
+        bases = [item["basis"] for item in [result["proposal"], *result["alternatives"]]]
+        self.assertNotIn("continuity.sources", bases)
+        # Com um passo de verdade escrito, a proposta volta.
+        (destination / "docs/devlog.md").write_text(
+            "# Devlog\n\n## 2026-01-01\n\n- Decisão: dash atravessa estilhaço.\n"
+            "- Próxima ação: medir o custo de colisão com 200 estilhaços.\n",
+            encoding="utf-8",
+        )
+        revived = game.next_step(destination, "create")
+        bases = [item["basis"] for item in [revived["proposal"], *revived["alternatives"]]]
+        self.assertIn("continuity.sources", bases)
+
+    # Um symlink para o SKILL.md vigente é o atalho que menos pode envelhecer, e
+    # ainda assim `doctor` avisava que estava fora de dia e mandava trocá-lo por
+    # uma cópia — ou seja, avisava exatamente quando estava em dia.
+    def test_doctor_accepts_a_symlink_that_points_at_the_current_skill(self):
+        target = self.root / ".agents/skills/game-dev/SKILL.md"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.symlink_to(game.FRAMEWORK / "SKILL.md")
+        report = game.doctor(self.root)
+        shortcut = next(item for item in report["skill_targets"] if item["path"] == str(target))
+        self.assertEqual(shortcut["status"], "current")
+        self.assertTrue(shortcut["link"])
+        skill = {check["name"]: check for check in report["checks"]}["skill"]
+        self.assertEqual(skill["status"], "ok")
+        self.assertIsNone(skill["fix"])
+        self.assertIn("symlink", skill["detail"])
+
+    def test_doctor_flags_a_symlink_that_drifted_and_one_that_dangles(self):
+        stale = self.root / "velho.md"
+        stale.write_text("versão anterior", encoding="utf-8")
+        drifted = self.root / ".agents/skills/game-dev/SKILL.md"
+        drifted.parent.mkdir(parents=True, exist_ok=True)
+        drifted.symlink_to(stale)
+        dangling = self.root / ".claude/skills/game-dev/SKILL.md"
+        dangling.parent.mkdir(parents=True, exist_ok=True)
+        dangling.symlink_to(self.root / "não existe.md")
+        states = {item["path"]: item["status"] for item in game.doctor(self.root)["skill_targets"]}
+        self.assertEqual(states[str(drifted)], "outdated")
+        self.assertEqual(states[str(dangling)], "outdated")
+
+    # Dizer "passe --root" a quem acabou de passar --root é instrução circular:
+    # a ação que falta é criar o diretório.
+    def test_doctor_asks_for_the_directory_instead_of_the_flag_it_already_got(self):
+        missing = self.root / "laboratório novo"
+        check = {item["name"]: item for item in game.doctor(missing)["checks"]}["root"]
+        self.assertEqual(check["status"], "missing")
+        self.assertEqual(shlex.split(check["fix"]), ["mkdir", "-p", str(missing)])
+        run = subprocess.run(["/bin/sh", "-c", check["fix"]], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertEqual({item["name"]: item for item in game.doctor(missing)["checks"]}["root"]["status"], "ok")
+
+    def test_doctor_says_what_is_wrong_when_the_root_is_not_a_directory(self):
+        intruder = self.root / "arquivo.txt"
+        intruder.write_text("não sou pasta", encoding="utf-8")
+        check = {item["name"]: item for item in game.doctor(intruder)["checks"]}["root"]
+        self.assertNotIn("mkdir", check["fix"])
+        self.assertIn("não é um diretório", check["fix"])
+
+    def test_next_never_proposes_a_server_as_a_validator(self):
+        self.assertEqual(game.validators(["serve", "test", "budget"]), ["test", "budget"])
+        self.assertEqual(game.validators(["dev", "watch:css", "start", "preview"]), [])
+        self.assertEqual(
+            game.validators(["budget", "build", "lint", "test", "test:unit", "zzz"]),
+            ["test", "test:unit", "lint", "build", "budget", "zzz"],
+        )
+        # "serverless" não é "serve": o corte é por palavra, não por prefixo solto.
+        self.assertEqual(game.validators(["serverless"]), ["serverless"])
+
+    def test_the_validator_proposal_of_a_created_project_runs_and_finishes(self):
+        destination = self.root / "validadores"
+        game.init(destination, "canvas-arcade")
+        result = game.next_step(destination, "create")
+        proposal = next(item for item in [result["proposal"], *result["alternatives"]] if item["basis"] == "scripts")
+        self.assertNotIn("serve", proposal["action"])
+        self.assertIn("--script test", proposal["commands"][0])
+
     # A doc afirma que o starter exercita as oito capacidades. Alegação de
     # cobertura tem de acompanhar o código: se um teste deixar de invocar uma
     # delas, a frase do README passa a ser falsa em silêncio.
@@ -1398,8 +1522,16 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
                     self.assertEqual(argv[:2], ["python3", str(SCRIPT)], command)
         absent = game.next_step(self.root / "ainda não existe")["proposal"]["commands"][0]
         self.assertIn(str(self.root / "ainda não existe"), shlex.split(absent))
-        skill = {check["name"]: check for check in game.doctor(self.root)["checks"]}["skill"]
-        self.assertEqual(shlex.split(skill["fix"]), ["cp", str(game.FRAMEWORK / "SKILL.md"), "CAMINHO_DO_ATALHO"])
+        # A correção do atalho de skill nomeia um destino real, então ela é
+        # colável como está — e a raiz da fixture tem espaço.
+        checks = {check["name"]: check for check in game.doctor(self.root)["checks"]}
+        argv = shlex.split(checks["skill"]["fix"])
+        self.assertEqual(argv[:2], ["mkdir", "-p"])
+        self.assertEqual(argv[3:6], ["&&", "cp", str(game.FRAMEWORK / "SKILL.md")])
+        self.assertIn(str(self.root), argv[6])
+        run = subprocess.run(["/bin/sh", "-c", checks["skill"]["fix"]], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertEqual({check["name"]: check for check in game.doctor(self.root)["checks"]}["skill"]["status"], "ok")
 
     def test_the_proposal_runs_as_written_when_it_is_a_harness_command(self):
         self.package()

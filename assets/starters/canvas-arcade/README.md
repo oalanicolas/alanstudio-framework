@@ -88,9 +88,9 @@ lacuna é o primeiro trabalho real do projeto. Com `init --no-docs`, não nascem
 
 Pela [barra de acabamento](../../../references/production-bar.md), o degrau
 percebido de um jogo é o **mínimo** entre suas dimensões. O projeto nasce assim, e
-a última coluna é o mapa das próximas tarefas: cada linha nomeia o critério do
-degrau **imediatamente** seguinte, não o de um degrau distante — é isso que a
-torna uma tarefa em vez de uma aspiração.
+a última coluna diz o que falta em cada uma: o critério do degrau
+**imediatamente** seguinte, nunca o de um degrau distante — é isso que a torna
+trabalho em vez de aspiração.
 
 `python3 <framework>/scripts/game.py bar .` lê esta tabela e devolve o piso, as
 dimensões que estão nele e o degrau percebido. Ela é a **afirmação** deste

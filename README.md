@@ -21,20 +21,28 @@ python3 scripts/game.py next /caminho/do/laboratorio/meu-jogo --focus feel
 ```
 
 `doctor` observa Python, integridade do framework, raiz, starters disponíveis e os
-atalhos de skill do host — vigente, desatualizado ou ausente. Não escreve nada;
-sinaliza bloqueio pelo código de saída.
+atalhos de skill do host — vigente, desatualizado ou ausente, comparando conteúdo.
+Symlink apontando para o `SKILL.md` deste repositório conta como vigente: é o
+atalho que não tem como ficar para trás. Não escreve nada; sinaliza bloqueio pelo
+código de saída, e a correção que ele sugere roda como está — inclusive criando a
+pasta do atalho.
 
 `init` copia um starter, troca pelo nome do projeto os valores que o
-`starter.json` dele declara e cria em `docs/` os sete documentos que cobrem as
-áreas mínimas — brief, gdd, mda, tdd, art-bible, devlog e qa — como **rascunho
-declarado**. Os demais templates do ciclo entram depois, com `template`, quando a
+`starter.json` dele declara e cria em `docs/` sete documentos — brief, gdd, mda,
+tdd, art-bible, devlog e qa — como **rascunho declarado**. Eles cobrem sete das
+nove áreas mínimas que `scan` cobra; as outras duas, origem e execução, ficam com o
+README e o CREDITS do starter, então depois do `init` as nove têm candidato. Com
+`--no-docs`, sobram três. Os demais templates do ciclo entram depois, com `template`, quando a
 etapa chegar. Não instala dependências, não toca no starter de origem e recusa
 destino ocupado. `scan` reconhece o resultado no mesmo turno, e `verify` roda os
 validadores do starter onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → rascunho → documento sem versão
-vigente → continuidade → validadores → dimensão mais baixa da barra. Devolve
+vigente → continuidade → validadores → barra. O último passo tem quatro ramos, na
+ordem: linha de degrau malformada, dimensão sem linha, duas linhas em conflito e
+— só então — subir a dimensão mais baixa. Num projeto sem tabela, portanto, a
+última proposta é declarar os degraus, não subir um deles. Devolve
 também as alternativas descartadas. `executed` permanece `false`: o harness propõe,
 quem decide é o agente ou você.
 
@@ -46,8 +54,9 @@ $game-dev desenvolva o Game Brief e o GDD desta ideia, usando MDA
 ```
 
 A fonte é [SKILL.md](SKILL.md). Copie-a para o atalho do host
-(`.agents/skills/game-dev/SKILL.md` ou `.claude/skills/game-dev/SKILL.md`);
-`doctor` avisa quando a cópia ficou para trás.
+(`.agents/skills/game-dev/SKILL.md` ou `.claude/skills/game-dev/SKILL.md`), ou
+aponte um symlink para ela e nunca mais pense nisso; `doctor` avisa quando a cópia
+ficou para trás.
 
 ## Contexto
 
@@ -168,6 +177,12 @@ python3 scripts/game.py context /caminho/do/jogo --focus mechanics --event resum
 fontes de continuidade; o agente resolve o próximo passo. O harness deixa
 `next_step: null` e `executed: false`.
 
+Fonte encontrada não é tarefa validada — e fonte em rascunho não é nem passo. Num
+projeto recém-criado, as fontes que `scan` lista são os campos de template
+("Próxima ação: [...]"), todas com `status: "draft"`; `next` não propõe retomar
+nenhuma delas, porque não há nada escrito para retomar. Ele volta a propor quando
+alguma fonte deixa de ser rascunho.
+
 ## Processo
 
 [Pré-produção](references/preproduction.md): Game Brief → GDD/MDA ↔ protótipo/PoC
@@ -190,7 +205,9 @@ Gerar `template release` não concede autorização de publicação.
 
 **REUSE → ADAPT → CREATE.** CREATE só entra com lacuna explícita.
 O [contrato JSON](assets/work.example.json) formaliza uma decisão nova;
-`check-plan` valida a forma, não o mérito.
+`check-plan` valida a forma, não o mérito. O arquivo de exemplo é um formulário em
+branco, de propósito: rodá-lo no validador devolve os oito campos que faltam, que
+é a lista do que preencher.
 
 ```sh
 python3 scripts/game.py check-plan caminho/do/trabalho.json --root /caminho/do/laboratorio

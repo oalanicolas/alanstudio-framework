@@ -9,9 +9,11 @@ Duas lacunas entre o que o framework prometia e o que entregava.
 
 **Começar.** Até 0.8 o harness sabia ler um jogo existente e não sabia criar um.
 `doctor` observa ambiente, integridade e os atalhos de skill do host — vigente,
-desatualizado, ausente — sem escrever nada. `init` monta um projeto a partir de um
-starter do acervo, troca os valores que o `starter.json` dele declara e gera como
-rascunho declarado os sete documentos que cobrem as áreas mínimas; não instala
+desatualizado, ausente, comparados por conteúdo, com symlink para o `SKILL.md`
+vigente contando como vigente — sem escrever nada. `init` monta um projeto a partir
+de um starter do acervo, troca os valores que o `starter.json` dele declara e gera
+como rascunho declarado sete documentos, que cobrem sete das nove áreas mínimas
+(as outras duas ficam com o README e o CREDITS do starter); não instala
 dependências e não toca no starter de origem. Um starter carrega valores reais em
 vez de marcadores porque ele é referência executável: serve e abre antes de
 qualquer `init`.

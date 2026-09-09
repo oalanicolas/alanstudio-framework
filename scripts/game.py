@@ -736,6 +736,26 @@ def harness_command(*parts):
     return " ".join(["python3", script, *(shlex.quote(str(part)) for part in parts)])
 
 
+# Um servidor de desenvolvimento não termina: proposto como validador, ele espera
+# o `--timeout` inteiro e sai como `failed`. E um benchmark não é o primeiro
+# validador a rodar — só vinha na frente por ordem alfabética.
+LONG_RUNNING = ("serve", "start", "dev", "watch", "preview", "storybook", "docs")
+VALIDATOR_ORDER = ("test", "check", "lint", "typecheck", "types", "verify", "audit", "build", "budget", "bench")
+
+
+def validators(names):
+    def rank(name):
+        for position, prefix in enumerate(VALIDATOR_ORDER):
+            if name == prefix or name.startswith(f"{prefix}:") or name.startswith(f"{prefix}-"):
+                return position
+        return len(VALIDATOR_ORDER)
+
+    kept = [name for name in names if not any(
+        name == word or name.startswith(f"{word}:") or name.startswith(f"{word}-") for word in LONG_RUNNING
+    )]
+    return sorted(kept, key=lambda name: (rank(name), name))
+
+
 def starters():
     if not STARTERS_ROOT.is_dir():
         return []
@@ -980,17 +1000,34 @@ def doctor(root):
     installed = []
     for target in skill_targets(root):
         state = "absent"
-        if target.is_symlink():
-            state = "symlink"
-        elif target.is_file():
-            same = hashlib.sha256(target.read_bytes()).hexdigest() == digest
+        # Um symlink para o SKILL.md vigente é o atalho mais atualizado que existe,
+        # porque não tem como ficar para trás. Contá-lo como fora de dia avisava
+        # justamente quando estava em dia, e mandava trocá-lo por uma cópia que
+        # pode envelhecer. Então o vínculo é reportado, e a comparação é do
+        # conteúdo — inclusive para symlink apontando para outro arquivo.
+        if target.is_symlink() or target.is_file():
+            try:
+                same = hashlib.sha256(target.read_bytes()).hexdigest() == digest
+            except OSError:
+                same = False  # link pendurado
             state = "current" if same else "outdated"
-        installed.append({"path": str(target), "status": state})
+        installed.append({
+            "path": str(target),
+            "status": state,
+            "link": target.is_symlink() or None,
+        })
     current = [item for item in installed if item["status"] == "current"]
+    stale = [item for item in installed if item["status"] != "current"]
     add(
         "skill", False, bool(current),
-        f"{len(current)} de {len(installed)} atalhos com a versão atual",
-        None if current else f"cp {shlex.quote(str(source))} CAMINHO_DO_ATALHO",
+        f"{len(current)} de {len(installed)} atalhos com o conteúdo vigente"
+        + (" · symlink conta como vigente enquanto aponta para ele" if any(item["link"] for item in current) else ""),
+        # `cp` sozinho falha quando a pasta do atalho ainda não existe, que é o
+        # caso mais comum: correção proposta tem de rodar como está.
+        None if current or not stale else (
+            f"mkdir -p {shlex.quote(str(Path(stale[0]['path']).parent))} && "
+            f"cp {shlex.quote(str(source))} {shlex.quote(str(stale[0]['path']))}"
+        ),
     )
 
     projects = discover(root) if root.is_dir() else []
@@ -998,7 +1035,13 @@ def doctor(root):
         "root", True, root.is_dir(),
         f"{root} · {len(projects)} projeto(s) reconhecido(s)"
         + (" · AGENTS.md presente" if (root / "AGENTS.md").is_file() else ""),
-        None if root.is_dir() else "Passe --root com o caminho do laboratório de jogos.",
+        # Dizer "passe --root" a quem acabou de passar --root é instrução circular:
+        # a ação que falta é criar o diretório, ou apontar para outro.
+        None if root.is_dir() else (
+            f"mkdir -p {shlex.quote(str(root))}"
+            if root.parent.is_dir() and not root.exists()
+            else f"O caminho {root} não é um diretório; aponte --root para o laboratório de jogos."
+        ),
     )
     library = root / "shared/sfx"
     add(
@@ -1032,7 +1075,7 @@ def next_step(project, focus="create", studies_root=None):
     areas = foundation["areas"]
     drafts = [key for key, area in areas.items() if area["status"] == "draft_only"]
     stale = [key for key, area in areas.items() if area["status"] in ("historical_only", "reference_only")]
-    scripts = sorted(payload["scripts"])
+    scripts = validators(payload["scripts"])
     proposals = []
 
     def propose(action, why, done_when, commands, basis):
@@ -1085,8 +1128,12 @@ def next_step(project, focus="create", studies_root=None):
             [harness_command("scan", project)],
             "areas.historical_or_reference_only",
         )
-    if foundation["continuity_sources"]:
-        first = foundation["continuity_sources"][0]
+    # Campo de template ainda em rascunho é fonte de continuidade só na forma:
+    # "Próxima ação: [uma tarefa concreta...]" não é passo registrado. Propor
+    # retomá-lo mandava o agente continuar trabalho que nunca existiu.
+    registered = [item for item in foundation["continuity_sources"] if item["status"] != "draft"]
+    if registered:
+        first = registered[0]
         propose(
             f"Conferir o estado real e retomar o passo registrado em {first['path']}:{first['line']}",
             "Existe fonte de continuidade; retomar evita refazer briefing ou auditoria ainda válida. Fonte encontrada não é tarefa validada.",
