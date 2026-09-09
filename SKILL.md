@@ -26,8 +26,11 @@ caminho absoluto do script), com `--root <laboratorio>` antes ou depois do subco
 Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `feel`, `network`,
 `architecture`, `production`. Etapas: `brief`, `mda`, `gdd`, `poc`, `prd`, `tdd`,
 `vertical-slice`, `mvp`, `qa`, `art-bible`, `devlog`, `audit`, `game-design`,
-`production-plan`, `milestone`. Gêneros (`--genre`): `narrative`, `platformer`,
-`shooter`, `racing`, `turn-based`, `puzzle`, `simulation`, `rpg`, `roguelike`.
+`production-plan`, `milestone`. Gêneros (`--genre`): `narrative`, `adventure`,
+`platformer`, `action-adventure`, `shooter`, `fighting`, `stealth`, `horror`, `racing`,
+`sports`, `rhythm`, `turn-based`, `deckbuilder`, `strategy`, `tower-defense`, `puzzle`,
+`simulation`, `survival-crafting`, `rpg`, `roguelike`, `multiplayer-competitive`, `idle`,
+`casual` — a lista vigente está em `context.packs.genre.available`.
 
 ## Passos
 

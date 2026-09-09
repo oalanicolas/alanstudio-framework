@@ -54,10 +54,13 @@ existentes, catálogos de estudo (se um irmão `Games-Frameworks` existir, ou
 `mentioned` não é `verified`. `candidate_found` não prova suficiência, atualidade
 nem aprovação.
 
-Descoberta percorre até três níveis, reconhece `package.json`, Unity, Godot, Unreal
-(`.uproject`), Defold, GameMaker (`.yyp`), Cargo, Python (`pyproject.toml`), Love2D
-(`main.lua`) e HTML, e para na raiz de cada projeto. `shared/` e pastas de build das
-engines não entram como jogo.
+Descoberta percorre até três níveis, reconhece Unity, Godot, Unreal (`.uproject`),
+Defold, GameMaker (`.yyp`), Construct (`.c3proj`), RPG Maker (`.rmmzproject`/`.rpgproject`),
+Ren'Py, Roblox/Rojo, PICO-8 (`.p8`), Haxe, Flutter (`pubspec.yaml`), .NET (`.sln`/`.csproj`),
+`package.json`, Cargo, CMake, Python (`pyproject.toml`), Love2D (`main.lua`) e HTML, e
+para na raiz de cada projeto. Marcadores próprios de engine vencem manifestos que ela
+carrega junto (RPG Maker MZ tem `package.json`; Unity gera `.csproj`). `shared/` e
+pastas de build das engines não entram como jogo.
 
 ## Pacotes de plataforma e gênero
 
@@ -69,9 +72,12 @@ o gênero é declarado, acrescenta o pacote de gênero:
 python3 scripts/game.py context /caminho/do/jogo --focus feel --genre platformer --root /caminho/do/laboratorio
 ```
 
-Plataformas: `web`, `unity`, `godot`, `unreal`, `defold`, `gamemaker`, `cargo`,
-`python`, `lua`. Gêneros: `narrative`, `platformer`, `shooter`, `racing`,
-`turn-based`, `puzzle`, `simulation`, `rpg`, `roguelike`. Cada pacote traz comandos
+Plataformas (18): `web`, `unity`, `godot`, `unreal`, `defold`, `gamemaker`, `construct`,
+`rpgmaker`, `renpy`, `roblox`, `pico8`, `haxe`, `flutter`, `dotnet`, `cpp`, `cargo`,
+`python`, `lua`. Gêneros (23): `narrative`, `adventure`, `platformer`, `action-adventure`,
+`shooter`, `fighting`, `stealth`, `horror`, `racing`, `sports`, `rhythm`, `turn-based`,
+`deckbuilder`, `strategy`, `tower-defense`, `puzzle`, `simulation`, `survival-crafting`,
+`rpg`, `roguelike`, `multiplayer-competitive`, `idle`, `casual`. Cada pacote traz comandos
 reais de execução/teste, ciclo de vida, pipeline, ferramentas de medição e riscos do
 gênero — como convenções a confirmar no projeto, não como capacidade certificada.
 Um campo `Gênero:` em documento do projeto aparece em `packs.genre.suggested`; só

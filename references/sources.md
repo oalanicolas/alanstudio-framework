@@ -69,7 +69,9 @@ Os [pacotes de plataforma e gênero](../packs/README.md) reúnem convenções p�
 engines (callbacks, CLIs, ferramentas de profiling, formatos) e vocabulário corrente de
 design por gênero. Não são extração de repositório nem foram executados neste
 repositório; comandos e nomes mudam entre versões. Cada pacote manda confirmar na
-documentação oficial da versão em uso e no código do projeto. Os pontos de partida do
+documentação oficial da versão em uso e no código do projeto. Fantasy consoles (PICO-8)
+invertem o piso sonoro do framework de propósito: ali o chiptune é a plataforma, e o
+pacote pede que a decisão fique registrada. Os pontos de partida do
 laboratório citados nos pacotes de gênero (Era Uma Vez, Brasa-Pista, Distrito Rabisco)
 seguem os limites já declarados em [criar](../recipes/create.md).
 

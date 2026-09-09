@@ -4,15 +4,34 @@ O núcleo do framework (processo, qualidade, receitas, templates) é agnóstico.
 pacote só entra no `context` quando há evidência para ele:
 
 - **Plataforma** (`packs/platforms/<nome>.md`): selecionado automaticamente pelo
-  marcador que `identify` encontra no projeto (`package.json`/`index.html` → `web`,
-  `ProjectSettings/ProjectVersion.txt` → `unity`, `project.godot` → `godot`,
-  `*.uproject` → `unreal`, `game.project` → `defold`, `*.yyp` → `gamemaker`,
-  `Cargo.toml` → `cargo`, `pyproject.toml` → `python`, `main.lua` → `lua`).
+  marcador que `identify` encontra no projeto. Marcadores próprios de engine vêm
+  antes dos manifestos de ecossistema (RPG Maker MZ também tem `package.json`):
+
+  | Marcador | Pacote | Marcador | Pacote |
+  |---|---|---|---|
+  | `ProjectSettings/ProjectVersion.txt` | `unity` | `*.p8` | `pico8` |
+  | `project.godot` | `godot` | `Project.xml`, `*.hxml` | `haxe` |
+  | `*.uproject` | `unreal` | `pubspec.yaml` | `flutter` |
+  | `game.project` | `defold` | `*.sln`, `*.csproj` | `dotnet` |
+  | `*.yyp` | `gamemaker` | `package.json`, `index.html` | `web` |
+  | `*.c3proj` | `construct` | `Cargo.toml` | `cargo` |
+  | `*.rmmzproject`, `*.rpgproject` | `rpgmaker` | `CMakeLists.txt` | `cpp` |
+  | `game/options.rpy` | `renpy` | `pyproject.toml` | `python` |
+  | `default.project.json` | `roblox` | `main.lua` | `lua` |
+
 - **Gênero** (`packs/genres/<nome>.md`): selecionado por `--genre` declarado na
   conversa. Um campo `Gênero:` em documento do projeto gera apenas `suggested`; o
-  agente confirma e passa a flag. Gêneros: `narrative`, `platformer`, `shooter`,
-  `racing`, `turn-based`, `puzzle`, `simulation`, `rpg`, `roguelike`. Jogo híbrido
-  escolhe o gênero do verbo central e lê o segundo pacote por conta própria.
+  agente confirma e passa a flag. Jogo híbrido escolhe o gênero do verbo central e
+  lê o segundo pacote por conta própria (cada pacote aponta os vizinhos).
+
+  | Verbo | Gêneros |
+  |---|---|
+  | Ler e escolher | `narrative`, `adventure` |
+  | Mover e enfrentar | `platformer`, `action-adventure`, `shooter`, `fighting`, `stealth`, `horror` |
+  | Pilotar e executar | `racing`, `sports`, `rhythm` |
+  | Planejar | `turn-based`, `deckbuilder`, `strategy`, `tower-defense`, `puzzle` |
+  | Construir e gerir | `simulation`, `survival-crafting`, `rpg`, `roguelike`, `idle` |
+  | Competir e repetir | `multiplayer-competitive`, `casual` |
 
 Os pacotes entram em `read_next` logo após a receita do foco: **receita → plataforma
 → gênero**. `context.packs` explica a base de cada seleção e o que não foi selecionado.
