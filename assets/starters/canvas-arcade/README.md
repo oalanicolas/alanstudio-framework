@@ -78,11 +78,15 @@ com decisão, fato ou lacuna é o primeiro trabalho real do projeto.
 ## Degrau de acabamento declarado
 
 Pela [barra de acabamento](../../../references/production-bar.md), o degrau
-percebido de um jogo é o **mínimo** entre suas dimensões. Este starter começa
-assim, e a coluna “o que falta” é o mapa das próximas tarefas:
+percebido de um jogo é o **mínimo** entre suas dimensões. O projeto nasce assim, e
+a última coluna é o mapa das próximas tarefas: cada linha nomeia o critério do
+degrau **imediatamente** seguinte, não o de um degrau distante — é isso que a
+torna uma tarefa em vez de uma aspiração.
 
-Cada linha nomeia o critério do degrau **imediatamente** seguinte, não o de um
-degrau distante: é isso que a torna uma tarefa em vez de uma aspiração.
+`python3 <framework>/scripts/game.py bar .` lê esta tabela e devolve o piso, as
+dimensões que estão nele e o degrau percebido. Ela é a **afirmação** deste
+projeto; o harness confere a forma dela e nada mais. Ao subir uma linha, escreva
+junto a condição: dispositivo, versão, cena e quem observou.
 
 | Dimensão | Degrau | Critério do degrau seguinte |
 | --- | --- | --- |

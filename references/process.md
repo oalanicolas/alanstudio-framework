@@ -13,7 +13,10 @@ pequenas, atualize somente a decisão e a evidência afetadas no registro existe
 Quanto acabamento cada passo pretende é assunto da
 [barra de acabamento](production-bar.md). Vale desde já a regra que reordena o
 trabalho: **o degrau percebido de um jogo é o mínimo entre suas dimensões, não a
-média** — procure a mais baixa antes de melhorar a que já está alta.
+média** — procure a mais baixa antes de melhorar a que já está alta. Qual é a mais
+baixa deixa de ser adivinhação quando o projeto declara os degraus em tabela:
+`bar <projeto>` a lê e nomeia o piso, e `next` propõe subir exatamente essa
+dimensão. O harness confere a forma da declaração, não o jogo.
 
 ## 1. Estado e intenção
 
