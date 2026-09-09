@@ -131,6 +131,47 @@ prototipar antes de decidir, documento de design, consistência de estilo, reusa
 o que existe, definir público e sensação pretendida —, o que serve como
 convergência independente, não como fonte nova.
 
+### Levantamento externo posterior
+
+Depois que os dez gates já estavam escritos, foi feito um levantamento da
+literatura externa sobre gates e marcos de produção, registrado em
+[gates-research.md](gates-research.md) com URL, autoria, natureza primária ou
+secundária e limite de cada fonte. Ele **não** foi a origem dos gates; serve para
+três coisas, e a terceira é a que mais importa.
+
+Primeiro, **substituir a fonte fraca da tabela acima onde houver fonte forte**. A
+estrutura de três saídas tem apoio formal em Robert G. Cooper (Go / Recycle / Kill,
+do método Stage-Gate), em artigos do próprio autor e na *Wiley International
+Encyclopedia of Marketing* — literatura de gestão de produto, não conselho de
+praticante. O mesmo vale para `waived` e os quatro não dispensáveis, que reproduzem
+a distinção must-meet × should-meet, e para `held_by_declaration`, que corresponde
+ao asterisco com que a Microsoft separa requisito de requisito testado nos Xbox
+Requirements públicos. Essas escolhas foram feitas aqui sem conhecer as fontes;
+convergência nessa ordem é evidência melhor que citação posterior, e a ordem está
+declarada.
+
+Segundo, **nomear lacunas** — entre elas a ausência de um estado “fora de escopo”
+distinto de dispensa, e o fato de os dez gates serem quase todos readiness check,
+sem critério que force a pergunta de valor. Ficam em `gates-research.md` como
+observação de pesquisa, não como mudança feita.
+
+Terceiro, e mais importante para o que este repositório pode afirmar: **o
+levantamento confirma que não existe definição canônica dos marcos de produção de
+jogos**. Não há norma de corpo de padronização, associação da indústria nem
+publisher em documento público que defina First Playable, Vertical Slice, Alpha,
+Beta, Content Lock ou Gold Master; e as fontes que existem — livro-texto, prosa de
+praticante, modelo de contrato — **discordam entre si sobre o conteúdo**, não apenas
+na ênfase. Alpha aparece como “feature complete” numa fonte e como “40–50% dos
+assets finais, com features ainda sujeitas a ajustes maiores” noutra. Portanto a
+decisão de nomear os gates pela permissão pedida (`design`, `build`, `scale`) em vez
+de pelo nome do marco tem agora razão documentada, e o vocabulário de etapas
+continua sendo convenção deste repositório, como a barra já declarava.
+
+O levantamento também registra o que **não** tem fonte confiável, incluindo a
+ausência de qualquer avaliação empírica de que gates de produção melhorem o jogo
+entregue. Adotar gates como disciplina explícita é defensável; alegar eficácia
+comprovada não é.
+
 ## Starter `canvas-arcade` (0.9)
 
 Escrito neste repositório, sem dependências de terceiros. `mulberry32`, em
