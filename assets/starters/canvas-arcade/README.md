@@ -173,7 +173,7 @@ em vez de confiar no olho.
 ## Estrutura
 
 ```
-src/core/     laço de passo fixo, entrada, RNG, impressão, armazenamento, save, preferências
+src/core/     laço de passo fixo, entrada, RNG, impressão, armazenamento, save, preferências, rótulo das teclas vivas
 src/game/     regras, apresentação, mixagem, mesas, carga de sfx e ensino do ciclo
 src/main.js   montagem e contrato de ciclo de vida
 data/         conteúdo separado da regra (chuva, HUD e avisos)
