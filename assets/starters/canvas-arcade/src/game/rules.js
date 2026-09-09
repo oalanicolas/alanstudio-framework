@@ -54,6 +54,9 @@ export const CONFIG = {
     punchDashX: 3.2, // dash empurra na direção
     punchHitY: 4.2, // o erro desloca mais que a coleta
     punchDecay: 0.78,
+    telegraphReach: 36, // antecipação: a ameaça marca o trilho antes do contato
+    flashHit: 0.55, // impacto do erro: o campo acende; coleta não
+    flashDecay: 0.72,
   },
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
@@ -93,6 +96,7 @@ export function createState(seed = 1, options = {}) {
     chain: 0,
     hitstop: 0,
     shake: 0,
+    flash: 0,
     camera: { x: 0, y: 0 },
     bankLock: 0,
     bankBuffer: 0,
@@ -152,6 +156,7 @@ export function advance(state, intent = neutralIntent()) {
   if (state.hitstop > 0) {
     state.hitstop -= 1;
     state.shake *= CONFIG.feel.shakeDecay;
+    decayFlash(state);
     decayCamera(state);
     return state;
   }
@@ -184,6 +189,7 @@ export function advance(state, intent = neutralIntent()) {
 
   state.shake *= CONFIG.feel.shakeDecay;
   if (state.shake < 0.01) state.shake = 0;
+  decayFlash(state);
   decayCamera(state);
   player.squash *= CONFIG.feel.squashDecay;
   if (player.squash < 0.01) player.squash = 0;
@@ -323,13 +329,28 @@ function hit(state) {
   state.player.invuln = CONFIG.player.invulnTicks + (state.assist ? CONFIG.assist.extraInvulnTicks : 0);
   state.hitstop = CONFIG.feel.hitHitstopTicks;
   state.shake += CONFIG.feel.hitShake;
+  state.flash = CONFIG.feel.flashHit;
   punch(state, 0, CONFIG.feel.punchHitY);
   state.events.push({ type: "hit", lost });
+}
+
+export function approaching(state) {
+  const reach = CONFIG.feel.telegraphReach;
+  const band = CONFIG.collect.reachY;
+  return state.entities.filter((entity) => {
+    const gap = PLAYER_Y - entity.y;
+    return gap > band && gap <= reach;
+  });
 }
 
 function punch(state, x, y) {
   state.camera.x += x;
   state.camera.y += y;
+}
+
+function decayFlash(state) {
+  state.flash *= CONFIG.feel.flashDecay;
+  if (state.flash < 0.02) state.flash = 0;
 }
 
 function decayCamera(state) {

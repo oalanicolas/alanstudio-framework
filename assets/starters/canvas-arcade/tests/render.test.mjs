@@ -364,6 +364,44 @@ test("a câmera por verbo desloca o campo e some com redução de movimento", ()
   assert.notEqual(moved.transform.f, still.transform.f, "punch vertical precisa chegar no quadro");
 });
 
+function paint(state, settings = {}, extra = { best: 0 }) {
+  const recorder = recordingCanvas();
+  const renderer = createRenderer(recorder.canvas, { devicePixelRatio: 1 });
+  renderer.resize(360, 640);
+  renderer.draw(state, { paused: false, alpha: 0, steps: 1 }, settings, extra);
+  return recorder.calls;
+}
+
+function playerFill(state) {
+  const rects = paint(state).rects.filter(
+    (rect) => rect.width < 40 && rect.y < PLAYER_Y && rect.y + rect.height > PLAYER_Y - 8,
+  );
+  assert.ok(rects.length > 0, "o jogador precisa ter sido pintado");
+  return rects[0].style;
+}
+
+test("a recuperação do dash não se parece com o dash nem com o descanso", () => {
+  const idle = createState(1);
+  const dash = createState(1);
+  dash.player.dashTicks = 4;
+  const recovery = createState(1);
+  recovery.player.dashRecovery = 4;
+  assert.notEqual(playerFill(dash), playerFill(idle));
+  assert.notEqual(playerFill(recovery), playerFill(idle));
+  assert.notEqual(playerFill(recovery), playerFill(dash));
+});
+
+test("o flash do erro some com redução de movimento", () => {
+  const state = createState(2);
+  state.flash = CONFIG.feel.flashHit;
+  const lit = paint(state).rects.some((rect) => String(rect.style).startsWith("rgba(255"));
+  const still = paint(state, { reducedMotion: true }).edges.some(
+    (edge) => edge.style === PALETTES.normal.danger,
+  );
+  assert.equal(lit, true, "o erro precisa acender o campo");
+  assert.equal(still, true, "com menos movimento o sinal vira contorno, não some");
+});
+
 test("o aviso do primeiro ciclo cabe na placa e some depois de guardar", () => {
   const inicial = hudTexts(createState(1), {}, { hint: "move" });
   const aviso = inicial.texts.filter((item) => item.text.includes("Mova pela faixa"));

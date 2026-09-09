@@ -2023,6 +2023,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("feel.hitHitstopTicks", keys)
         self.assertIn("bank.bufferTicks", keys)
         self.assertIn("feel.punchDashX", keys)
+        self.assertIn("feel.telegraphReach", keys)
+        self.assertIn("feel.flashHit", keys)
         self.assertIn("src/game/rules.js", report["sources"])
         self.assertEqual(report["observations"], [])
         empty = game.feel_reading(self.project)

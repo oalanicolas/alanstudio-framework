@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.29 — Antecipação no trilho e recuperação visível
+
+A cadeia do feel ganhava contato e câmera e chegava “de graça” no
+impacto. A ameaça que ainda não chegou marca o trilho; a recuperação do
+dash muda a silhueta; o erro acende o campo, a coleta não. Redução de
+movimento troca o flash por contorno. `feel` permanece `playable`:
+elo no código não é peso percebido. `felt` continua falso. Só `release`
+fica no piso.
+
+O que 0.9.29 não afirma: o harness não jogou, não sentiu o punch e
+ninguém identificou o jogo por um clipe de três segundos.
+
 ## 0.9.28 — O primeiro ciclo não pede `next`
 
 `start` devolve `play`, `then.note` e um `prompt` colável. `guide`

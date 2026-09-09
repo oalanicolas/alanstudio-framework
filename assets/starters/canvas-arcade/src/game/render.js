@@ -5,7 +5,7 @@
 // quem não distingue as duas cores. Tremor e piscada respeitam redução de
 // movimento — o sinal de causa migra para uma forma estática, não desaparece.
 
-import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ } from "./rules.js";
+import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching } from "./rules.js";
 import { copy } from "./tables.js";
 
 // Exportadas para terem consumidor além do desenho: é assim que um teste
@@ -77,6 +77,16 @@ export function createRenderer(canvas, options = {}) {
 
     context.fillStyle = palette.field;
     context.fillRect(0, 0, FIELD.width, FIELD.height);
+    if (state.flash > 0) {
+      if (reduced) {
+        context.strokeStyle = palette.danger;
+        context.lineWidth = 2;
+        context.strokeRect(1, 1, FIELD.width - 2, FIELD.height - 2);
+      } else {
+        context.fillStyle = `rgba(255,245,235,${Math.min(0.32, state.flash * 0.5)})`;
+        context.fillRect(0, 0, FIELD.width, FIELD.height);
+      }
+    }
     context.strokeStyle = palette.muted;
     context.lineWidth = 0.5;
     context.beginPath();
@@ -84,6 +94,9 @@ export function createRenderer(canvas, options = {}) {
     context.lineTo(FIELD.width, PLAYER_Y + 10);
     context.stroke();
 
+    for (const entity of approaching(state)) {
+      drawTelegraph(context, palette, entity, reduced);
+    }
     for (const entity of state.entities) {
       if (entity.kind === "orb") drawOrb(context, palette, entity);
       else drawShard(context, palette, entity);
@@ -132,13 +145,36 @@ export function createRenderer(canvas, options = {}) {
     target.stroke();
   }
 
+  function drawTelegraph(target, palette, entity, reduced) {
+    const y = PLAYER_Y + 10;
+    target.globalAlpha = reduced ? 1 : 0.62;
+    if (entity.kind === "orb") {
+      target.strokeStyle = palette.orb;
+      target.lineWidth = 1.2;
+      target.beginPath();
+      target.arc(entity.x, y, 3.5, 0, Math.PI * 2);
+      target.stroke();
+    } else {
+      target.strokeStyle = palette.shard;
+      target.lineWidth = 1.2;
+      target.beginPath();
+      target.moveTo(entity.x, y - 4);
+      target.lineTo(entity.x + 3.5, y + 3);
+      target.lineTo(entity.x - 3.5, y + 3);
+      target.closePath();
+      target.stroke();
+    }
+    target.globalAlpha = 1;
+  }
+
   function drawPlayer(target, palette, state, reduced) {
     const player = state.player;
     const squash = 1 + player.squash;
     const width = CONFIG.player.halfWidth * 2 * squash;
     const height = 12 / squash;
     const dashing = player.dashTicks > 0;
-    target.fillStyle = dashing ? palette.chain : palette.player;
+    const recovering = !dashing && player.dashRecovery > 0;
+    target.fillStyle = dashing ? palette.chain : recovering ? palette.orb : palette.player;
     target.fillRect(player.x - width / 2, PLAYER_Y - height / 2, width, height);
     if (player.invuln > 0) {
       // Com redução de movimento, contorno constante em vez de piscar.

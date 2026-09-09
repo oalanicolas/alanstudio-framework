@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, createState, neutralIntent, CONFIG, PLAYER_Y } from "../src/game/rules.js";
+import { advance, approaching, createState, neutralIntent, CONFIG, PLAYER_Y } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -115,6 +115,22 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   assert.equal(collected.camera.y < 0, true, "coleta sobe a câmera");
   assert.equal(banked.camera.y > 0, true, "guardar confirma para baixo");
   assert.ok(Math.abs(struck.camera.y) > Math.abs(collected.camera.y), "o erro desloca mais que a coleta");
+  assert.equal(collected.flash, 0, "coleta não acende o campo como se fosse o erro");
+  assert.equal(struck.flash, CONFIG.feel.flashHit * CONFIG.feel.flashDecay);
+});
+
+test("a ameaça marca o trilho antes do contato e some na faixa", () => {
+  const state = createState(1);
+  state.entities = [
+    { id: 1, kind: "orb", x: 80, y: PLAYER_Y - 24, vy: 1 },
+    { id: 2, kind: "shard", x: 120, y: -8, vy: 1 },
+    { id: 3, kind: "orb", x: 160, y: PLAYER_Y, vy: 0 },
+  ];
+  const near = approaching(state);
+  assert.equal(near.length, 1);
+  assert.equal(near[0].id, 1);
+  state.entities[0].y = PLAYER_Y;
+  assert.equal(approaching(state).length, 0, "na faixa de coleta o aviso já é o próprio orbe");
 });
 
 test("o pedido de guardar sobrevive ao hitstop da coleta", () => {

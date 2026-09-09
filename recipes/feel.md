@@ -138,9 +138,10 @@ Antes de escrever a sua cadeia, leia uma concreta: o starter `canvas-arcade` re�
 perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, buffer de
 guardar, graça após dano, alcance de coleta maior que o desenho — cada valor com o
 motivo ao lado. Guardar no hitstop não é engolido; um toque sem corrente não decide
-o próximo orbe. Cada verbo desloca a câmera numa direção própria. A entrada
-continua separada da regra em `src/core/input.js`. Perdão de entrada é decisão de
-design explícita com valor registrado; sem registro, esses valores viram folclore e
-regridem na próxima alteração. `felt` continua falso. Degraus e critérios da
-dimensão `feel`:
+o próximo orbe. Cada verbo desloca a câmera numa direção própria. A ameaça que
+ainda não chegou marca o trilho (`approaching`); a recuperação do dash muda a
+silhueta; o erro acende o campo, a coleta não. A entrada continua separada da
+regra em `src/core/input.js`. Perdão de entrada é decisão de design explícita com
+valor registrado; sem registro, esses valores viram folclore e regridem na
+próxima alteração. `felt` continua falso. Degraus e critérios da dimensão `feel`:
 [barra de acabamento](../references/production-bar.md#feel--resposta-da-ação-central).
