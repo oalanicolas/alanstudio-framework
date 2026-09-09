@@ -20,6 +20,12 @@ Playground: [games.alanicolas.com/framework](https://games.alanicolas.com/framew
 
 ## Chegar num laboratório que já tem jogos
 
+O framework pode ser usado por vários workspaces com uma única implementação.
+Cada laboratório mantém um link `framework/core` para este checkout e um
+encaminhador curto em `framework/scripts/game.py`. Regras e evidências locais
+ficam no laboratório; recipes, packages, templates e testes compartilhados ficam
+aqui. [Ligação e personalização](references/workspace-binding.md).
+
 Este é o caso normal: a raiz de trabalho não está vazia. O primeiro movimento é
 revisar o que existe, não criar mais um.
 
@@ -71,7 +77,7 @@ etapa chegar. Não instala dependências, não toca no starter de origem e recus
 destino ocupado. `scan` reconhece o resultado no mesmo turno, e `verify` roda os
 validadores do starter onde houver Node.
 
-`next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
+`next` deriva **uma** proposta do estado no disco e ordena por dependência: módulo não baixado → sem
 destino → sem entrypoint → área não localizada → rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → gate → barra.
 O gate tem três ramos: linha
@@ -338,6 +344,14 @@ nenhuma delas, porque não há nada escrito para retomar. Ele volta a propor qua
 alguma fonte deixa de ser rascunho.
 
 ## Processo
+
+`context --event initialize` prepara uma análise profunda e documental quando esse
+for o pedido ou a convenção do workspace. O evento não cria um jogo nem executa a
+auditoria. [Inicialização](references/project-audit.md#inicializar-o-projeto).
+`delivery_review` orienta a conferência do pedido, artefato, prova e continuidade.
+O comando `python3 scripts/game.py gauntlet <projeto> --objective "recorte definido"` prepara um prompt de
+continuidade; duração é opcional e preparação não inicia execução.
+[Continuidade](references/gauntlet.md) · [Revisão de entrega](references/delivery.md).
 
 [Pré-produção](references/preproduction.md): Game Brief → GDD/MDA ↔ protótipo/PoC
 e playtest → PRD/TDD → vertical slice → produção/MVP → QA → release. Orientação de

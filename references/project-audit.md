@@ -7,6 +7,79 @@ inicial é automática no `context` e também está disponível em `scan <projet
 A entrada do agente no workspace manda executá-la mesmo sem invocação de `$game-dev`.
 Isso não é um daemon nem um hook que intercepta ferramentas externas ao agente.
 
+## Inicializar o projeto
+
+Quando o pedido ou a convenção do workspace define inicialização documental,
+**inicializar o projeto inicia análise profunda e organização documental**. Esse é o significado
+padrão no processo Games quando não há um alvo operacional mais específico.
+O agente resolve a intenção pelo objeto e pelo contexto da conversa, sem exigir que
+a pessoa conheça o termo auditoria ou os comandos do harness.
+
+- “Inicialize o Combate Lendário” ou “vamos começar a organizar este projeto”:
+  levantar implementação, confrontar documentos, organizar a base e definir continuidade.
+- “Inicie o servidor”, “abra o jogo para eu jogar” ou “inicie a partida”: realizar
+  essa operação explícita, respeitando o escopo; não substituir por uma auditoria ampla.
+- “Inicie a implementação da etapa que definimos” ou “vamos avançar” depois de
+  apresentar um recorte: retomar esse recorte; reaproveitar auditoria ainda válida.
+- “Inicie um projeto novo com esta ideia”, sem implementação: organizar visão,
+  hipóteses, decisões e primeiras provas. Arquitetura atual inexistente permanece
+  explícita; arquitetura proposta não vira descrição de código.
+
+Não trate a ocorrência da palavra “iniciar” em um arquivo como gatilho de execução.
+Instrução mais específica na conversa prevalece. Inicializar o processo autoriza
+esse levantamento e documentação; implementar além dele segue o pedido já autorizado.
+
+Execute internamente, com o projeto resolvido:
+
+```sh
+python3 framework/scripts/game.py context games/combate-lendario --focus architecture --event initialize
+```
+
+O evento seleciona `documentation.action: audit_and_document`, carrega auditoria e
+arquitetura e entrega `documentation.initialization` com o aviso e as evidências
+exigidas. O foco original é preservado se outro foi escolhido. A ação vale **mesmo
+com candidatos nas nove áreas**; localização lexical não substitui confronto com código.
+O comando retorna `pending_agent_audit`; o resultado real fica no registro canônico
+após o trabalho do agente e não é inferido pelo scanner. O comando não interpreta
+a conversa, executa a auditoria nem certifica seu resultado.
+
+Avise e siga o roteiro “Levantar e organizar o estado real” abaixo no mesmo turno.
+Reaproveite fontes e trabalho simultâneo: uma auditoria já em andamento deve ser
+consultada, sem criar outra versão concorrente da base. Uma análise anterior atual
+pode ser incorporada após conferir cobertura e divergências; não refaça tudo por rito.
+
+### Profundidade e entrega
+
+A inicialização precisa explicar o jogo que existe e a base necessária para evoluí-lo:
+
+1. **Diagnóstico:** versão e fluxo principal, estado implementado versus pretendido,
+   fontes consultadas e limites. Diferencie jogos/protótipos homônimos antes de rastrear.
+2. **Rastros de código:** percorrer o fluxo principal de ponta a ponta e os sistemas
+   que o sustentam, com entrypoint, estado, condições/consequências e consumidores.
+   Examinar teste existente quando ele sustenta a alegação. Uma árvore de pastas ou
+   lista de nomes de módulos não demonstra arquitetura nem regra de negócio.
+3. **Base canônica:** organizar as nove áreas abaixo com conteúdo, localizadores e
+   divergências. Preservar decisões autorais e separar fatos, propostas e hipóteses.
+4. **Lacunas priorizadas:** impacto, evidência faltante e dependência/ação para resolver.
+   Não esconder desconhecidos com templates preenchidos ou classificação “não aplicável”.
+5. **Continuidade:** escolher o primeiro recorte justificável e gerar seu prompt pronto
+   em linguagem comum, com fonte, limites e prova. Se há decisão indispensável, explicitar
+   a ação para destravá-la; uma investigação delimitada também é um próximo recorte.
+
+Use extração formal de regras (`code-anatomist`) quando a complexidade exigir catálogo
+retomável; um rastreamento menor pode viver no TDD/auditoria existente. Não marque
+catálogo como executado apenas por iniciar o controlador ou copiar seus títulos.
+
+Servidor, HTTP, build, testes e observação do jogo podem produzir **evidência de apoio**.
+Nenhum deles, sozinho ou em conjunto sem o diagnóstico/documentação, conclui a
+inicialização. Abrir o navegador deve responder a uma pergunta concreta do levantamento,
+não se tornar a entrega principal. Não alterar gameplay só para fazer a auditoria passar.
+
+Na resposta, apresente o diagnóstico principal, links dos canônicos e a prioridade
+com seu prompt pronto. Diga “base analisada e documentada” somente com esses registros;
+se incompleto, identifique o recorte pendente. Não encerre apenas com URL, convite
+para jogar, quantidade de testes ou “documentação atualizada”.
+
 ## Mínimo adotado no Games
 
 É cobertura de conteúdo, não uma exigência de nove arquivos nem um padrão universal
@@ -46,6 +119,12 @@ entram no levantamento quando o jogo possui ou exige essas capacidades. Não imp
 esses sistemas só para completar um checklist.
 
 ## O que o scanner alcança
+
+O título canônico “Origem de código e assets” e o arquivo local `provenance.json`
+são candidatos de proveniência. Campos e títulos dentro de blocos Markdown cercados
+por crases ou tils não são marcadores de cobertura: registrar uma saída antiga de
+`context` não pode preencher as lacunas que essa saída relata. O conteúdo dos
+documentos e as condições de uso continuam exigindo revisão; presença não certifica licença.
 
 Localiza documentos por nomes, títulos/campos e marcadores textuais de estado.
 Primeiro inventaria raiz e pastas `docs`, `production`, `design`, `art`, `audio`,
@@ -200,7 +279,8 @@ Nunca preencher essas lacunas com certeza fabricada para deixar a varredura verd
 
 A conclusão deve também situar o projeto e indicar **uma próxima tarefa** com motivo,
 entrada canônica e prova de término. Grave a continuidade no plano/devlog existente
-e diga-a na resposta; “agora implementar” ou uma lista de PoCs não basta. O pedido de
+e gere automaticamente seu prompt preenchido quando o recorte estiver definido.
+Apresente-o na resposta; “agora implementar” ou uma lista de PoCs não basta. O pedido de
 retomada usa [o procedimento comum](process.md#continuidade-e-retomada), aproveitando
 o levantamento já feito.
 

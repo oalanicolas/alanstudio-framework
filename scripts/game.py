@@ -4,6 +4,7 @@ import argparse
 import hashlib
 from html import escape
 import json
+import math
 import os
 from pathlib import Path, PurePosixPath
 import re
@@ -21,6 +22,9 @@ FRAMEWORK = Path(__file__).resolve().parents[1]
 
 
 def default_root():
+    configured = os.environ.get("GAMES_WORKSPACE_ROOT")
+    if configured:
+        return Path(configured).expanduser().resolve()
     parent = FRAMEWORK.parent
     if FRAMEWORK.name == "framework" and (parent / "AGENTS.md").is_file():
         return parent
@@ -63,7 +67,7 @@ INSTRUCTION_FILES = (
     "AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules", ".cursor/rules",
     ".github/copilot-instructions.md", ".windsurfrules",
 )
-EVENTS = ("task", "direction-approved", "resume")
+EVENTS = ("task", "direction-approved", "resume", "initialize")
 REFERENCES = (
     "process", "quality", "preproduction", "project-audit", "game-design-system", "sources",
     "ambition", "aaa-checklist", "production-bar", "gates",
@@ -143,7 +147,7 @@ FOUNDATION_AREAS = (
     ("decisions", "Decisões e histórico / Devlog", r"\b(devlog|decision log|decisions|decisoes|changelog|aprendizados|historico de decisoes|adr)\b"),
     ("qa", "QA e playtest", r"\b(qa|playtest|test plan|verification|verificacao|validacao|plano de testes|checklist de piso|piso de acabamento|chk-\d)\b"),
     ("runbook", "Como executar e verificar", r"\b(runbook|getting started|setup|instalacao|executar|rodar|desenvolvimento|development|jogar|build|package)\b"),
-    ("provenance", "Origem de código e assets", r"\b(licenses?|licences?|licencas?|copying|authors|sources|proveniencia|provenance|creditos|credits|asset sources)\b"),
+    ("provenance", "Origem de código e assets", r"\b(licenses?|licences?|licencas?|copying|authors|sources|proveniencia|provenance|origem de codigo e assets|creditos|credits|asset sources)\b"),
 )
 CAPABILITIES = ("pause", "reset", "seed", "observe", "act", "advance", "capture", "dispose")
 FINISH_CORE = ("CHK-0", "CHK-1", "CHK-2", "CHK-4", "CHK-5", "CHK-6", "CHK-11")
@@ -904,7 +908,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     pending = [(project, 0)] if project.is_dir() else []
     doc_roots = {"docs", "production", "design", "art", "audio", "documentation"}
     excluded_dirs = {"node_modules", "dist", "build", "evidence", "outputs", "archive", "archives", "templates", "validation", "baseline", "captures", "previews", "models", "textures", "fonts", "videos"}
-    json_docs = {"brief.json", "state.json", "decisions.json", "sources.json", "licenses.json", "package.json"}
+    json_docs = {"brief.json", "state.json", "decisions.json", "sources.json", "licenses.json", "provenance.json", "package.json"}
     text_docs = {"license", "licence", "copying", "credits", "authors"}
     indexes, documents, links, statuses = [], {}, {}, {}
     deferred, non_current, continuity_sources, genre_mentions = [], [], [], []
@@ -1038,7 +1042,19 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
             if not has_text:
                 continue
         labels = [(1, normalized(path.stem), "filename")]
+        fence = None
         for number, line in enumerate(lines, 1):
+            marker = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line)
+            if marker:
+                delimiter, suffix = marker.groups()
+                if fence is None:
+                    if delimiter[0] != "`" or "`" not in suffix:
+                        fence = delimiter
+                elif delimiter[0] == fence[0] and len(delimiter) >= len(fence) and not suffix.strip():
+                    fence = None
+                continue
+            if fence is not None:
+                continue
             if inline_link.search(line) or navigation.match(line):
                 continue
             heading = re.match(r"^\s{0,3}#{1,6}\s+(.+)", line)
@@ -1203,6 +1219,59 @@ def select_packs(kind, genre, mentions):
     }
 
 
+def workspace_module(project, root=None):
+    """Locate an optional workspace module without treating an empty checkout as a new game."""
+    project = Path(project).resolve()
+    if root is None:
+        root = next((parent for parent in (project, *project.parents)
+                     if (parent / "workspace.json").is_file()), default_root())
+    root = Path(root).resolve()
+    if not (root / "workspace.json").is_file():
+        return None
+    manifest = read_json(root / "workspace.json")
+    if not isinstance(manifest, dict) or manifest.get("version") != 1 or not isinstance(manifest.get("modules"), list):
+        raise ValueError("workspace.json precisa declarar version 1 e uma lista modules")
+    for module in manifest["modules"]:
+        if not isinstance(module, dict) or not all(isinstance(module.get(key), str) and module[key] for key in ("id", "path")):
+            raise ValueError("Módulo precisa de id e path textuais")
+        relative = PurePosixPath(module["path"])
+        target = (root / relative).resolve()
+        if relative.is_absolute() or ".." in relative.parts or not target.is_relative_to(root):
+            raise ValueError("Módulo fora do workspace")
+        if target == project:
+            return {
+                "id": module["id"], "path": module["path"],
+                "state": "present" if (target / ".git").exists() else "not_downloaded",
+                "get_command": shlex.join(["python3", str(root / "framework/scripts/workspace.py"),
+                                            "--root", str(root), "get", module["id"]]),
+            }
+    return None
+
+
+def workspace_profile(root):
+    """Read local context references; all reusable rules remain in this repository."""
+    root = Path(root).resolve()
+    config = root / "framework/config.json"
+    result = {"root": str(root), "config": None, "context_files": [], "missing": []}
+    if not config.is_file():
+        return result
+    data = read_json(config)
+    if not isinstance(data, dict) or data.get("version") != 1:
+        raise ValueError("framework/config.json precisa declarar version 1")
+    files = data.get("context_files", [])
+    if not isinstance(files, list) or not all(isinstance(name, str) and name for name in files):
+        raise ValueError("context_files precisa ser uma lista de caminhos")
+    result["config"] = str(config)
+    for name in files:
+        path = (root / name).resolve()
+        if not path.is_relative_to(root):
+            raise ValueError("Referência de personalização fora do workspace")
+        collection = result["context_files"] if path.is_file() else result["missing"]
+        if str(path) not in collection:
+            collection.append(str(path))
+    return result
+
+
 def context(project, focus, stage=None, studies_root=None, event="task", root=None, genre=None):
     if focus not in FOCI:
         raise ValueError("foco desconhecido")
@@ -1222,8 +1291,14 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         metadata_issues.append({"path": "package.json", "reason": str(error)})
     instructions = instruction_files(project)
     foundation = scan(project)
+    module = workspace_module(project, root)
+    module_pending = module is not None and module["state"] == "not_downloaded"
+    if module_pending:
+        foundation["audit"]["required"] = False
+        foundation["audit"]["deferred_reason"] = "workspace_module_not_downloaded"
     records = [str(project / relative) for relative in foundation["read_first"]]
-    document_minimum = foundation["audit"]["required"] or event == "direction-approved" or stage == "audit"
+    initializing = event == "initialize"
+    document_minimum = foundation["audit"]["required"] or event in ("direction-approved", "initialize") or stage == "audit"
     kind = identify(project)
     packs = select_packs(kind, genre, foundation["genre_mentions"])
     references = [str(path) for path in select_references(focus, stage, document_minimum)]
@@ -1232,9 +1307,15 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         if pack:
             references.insert(references.index(recipe) + 1 if recipe in references else len(references), pack)
     references = list(dict.fromkeys(references))
+    profile = workspace_profile(root if root is not None else default_root())
+    references.extend(path for path in profile["context_files"] if path not in references)
+    if initializing and str(FRAMEWORK / "recipes/architecture.md") not in references:
+        references.append(str(FRAMEWORK / "recipes/architecture.md"))
     studies = studies_for(focus, STUDIES_ROOT if studies_root is None else studies_root)
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(), "kind": kind,
+        "workspace_module": module,
+        "workspace": profile,
         "focus": focus, "stage": stage, "event": event, "instructions": instructions, "records": records,
         "read_next": references, "packs": packs, "studies": studies,
         "git": git_summary(project) if project.is_dir() else None,
@@ -1243,6 +1324,13 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         "metadata_issues": metadata_issues,
         "scripts": scripts,
         "capabilities": mention_capabilities(project), "foundation": foundation,
+        "delivery_review": {
+            "status": "pending_agent_review",
+            "criteria": ["intent", "artifact", "evidence", "continuity"],
+            "guide": str(FRAMEWORK / "references/delivery.md"),
+            "before_close": "Confrontar pedido e aceite com artefatos, localizadores, prova e resposta final no QA/plano existente. Corrigir divergências; critério desconhecido não está atendido.",
+            "limits": "Context não lê a conversa, executa a revisão ou certifica a entrega. Testes do harness não comprovam comportamento do agente.",
+        },
         "production_bar": production_bar(focus, stage, project),
         "continuity": {
             "status": "sources_found" if foundation["continuity_sources"] else "not_located",
@@ -1250,14 +1338,32 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "source_count": foundation["continuity_source_count"],
             "action": "resolve_and_continue" if event == "resume" else "record_and_present_next_step",
             "next_step": None, "executed": False,
+            "prompt": {
+                "policy": "generate_when_defined",
+                "readiness": "agent_review_required",
+                "required_inputs": ["project", "next_action", "scope", "acceptance", "canonical_source"],
+                "text": None,
+                "presentation": "Um prompt pronto para copiar, em linguagem comum, preenchido com o próximo recorte real; não exigir gauntlet, skill, comandos ou variáveis do usuário.",
+                "budget": "Opcional, somente se informado na conversa; sem horas, concluir o recorte definido. Retomada preserva prazo já vigente.",
+                "guide": str(FRAMEWORK / "references/gauntlet.md"),
+            },
             "guide": str(FRAMEWORK / "references/process.md") + "#continuidade-e-retomada",
-            "before_close": "Atualizar o registro canônico e dizer onde chegamos, uma próxima ação concreta, por que vem primeiro e qual evidência a conclui; dependências/decisões só quando reais. Se o objetivo terminou, declarar conclusão sem inventar trabalho.",
+            "before_close": "Atualizar o registro canônico e dizer onde chegamos, uma próxima ação concreta, por que vem primeiro e qual evidência a conclui. Quando esse recorte estiver definido, gerar e apresentar automaticamente seu prompt de continuidade pronto para copiar; sem jargão, variáveis ou pedido de horas. Continuar trabalho já autorizado. Se o objetivo terminou, declarar conclusão sem inventar trabalho.",
             "on_resume": "Ler o registro e a conversa, conferir o estado real, resolver a próxima ação e executá-la dentro do escopo autorizado. Não repetir briefing, auditoria já válida ou pergunta genérica de permissão.",
-            "scope": "Fontes são candidatos, não fila validada. O agente resolve next_step antes de responder; o comando não escolhe tarefa, infere etapa concluída nem concede autorização a partir de documentos.",
+            "scope": "Fontes são candidatos, não fila validada. O agente resolve next_step e a prontidão do prompt antes de responder; o comando não escolhe tarefa, gera prompt semântico, infere etapa concluída nem concede autorização a partir de documentos.",
         },
         "documentation": {
-            "action": "document_minimum" if document_minimum else "maintain_affected_documents",
+            "action": "obtain_workspace_module" if module_pending else "audit_and_document" if initializing else "document_minimum" if document_minimum else "maintain_affected_documents",
             "executed": False,
+            "on_initialize": "Iniciar/inicializar o projeto, sem alvo operacional explícito, pede análise profunda e documentação: use --event initialize. Iniciar servidor, partida ou uma fase já definida segue esse alvo e a conversa; não decidir só pelo verbo.",
+            "initialization": {
+                "status": "pending_agent_audit",
+                "notice": f"Vou iniciar a análise de {project.name}: levantar a implementação disponível, confrontar os documentos e organizar a base e o próximo passo com evidências.",
+                "required_evidence": ["source_traces_and_consumers", "canonical_documents_or_explicit_gaps", "prioritized_findings", "next_action_with_ready_prompt_or_actual_blocker"],
+                "not_sufficient": ["server_running", "http_ok", "tests_passed", "documents_found"],
+                "guide": str(FRAMEWORK / "references/project-audit.md") + "#inicializar-o-projeto",
+                "runtime_role": "Observar o jogo pode apoiar o diagnóstico; abrir navegador ou servidor não é a entrega da inicialização. Não alterar gameplay apenas por esse pedido.",
+            } if initializing else None,
             "on_direction_approved": "Aprovação na conversa exige sincronizar a base mínima neste turno, mesmo com todos os candidatos encontrados; use --event direction-approved.",
             "before_close": "Registrar conteúdo e fontes nos documentos canônicos; cobrir cada área mínima com decisão/fato ou lacuna e próxima ação. Referência salva e templates vazios não concluem a documentação.",
             "scope": "O agente executa a ação e respeita restrições atuais do usuário. O comando não escreve documentos, concede aprovação ou certifica sua suficiência.",
@@ -1306,6 +1412,39 @@ def template(stage, project, output=None):
     return text
 
 
+def gauntlet(project, objective, hours=None, focus="create", output=None):
+    if not nonempty(objective):
+        raise ValueError("objetivo deve conter texto")
+    if hours is not None and (isinstance(hours, bool) or not isinstance(hours, (int, float)) or not math.isfinite(hours) or hours <= 0):
+        raise ValueError("horas devem ser um número finito maior que zero")
+    if focus not in FOCI:
+        raise ValueError("foco desconhecido")
+    project = project.resolve()
+    if project.exists() and not project.is_dir():
+        raise ValueError("projeto deve ser um diretório")
+    contract = {
+        "schema_version": 1,
+        "status": "prepared",
+        "execution_started": False,
+        "project": str(project),
+        "objective": objective,
+        "budget_hours": hours,
+        "focus": focus,
+        "skill": str(FRAMEWORK / "SKILL.md"),
+        "guide": str(FRAMEWORK / "references/gauntlet.md"),
+        "context_argv": shlex.split(harness_command("context", project, "--focus", focus, "--event", "resume")),
+    }
+    document = (FRAMEWORK / "assets/gauntlet.md").read_text(encoding="utf-8")
+    document = document.replace("{{CONTRACT}}", json.dumps(contract, ensure_ascii=False, indent=2))
+    if output is not None:
+        if output.exists() or output.is_symlink():
+            raise ValueError("documento existente; escolha um novo destino para o gauntlet")
+        output.parent.mkdir(parents=True, exist_ok=True)
+        with output.open("x", encoding="utf-8") as target:
+            target.write(document)
+    return document
+
+
 # Todo comando que o harness sugere existe para ser copiado e colado. Caminho de
 # projeto com espaço é comum — "Farol do Sul" é um nome de jogo, não um caso de
 # borda — e sem citação o shell o parte em dois argumentos. Construir tudo por
@@ -1313,7 +1452,8 @@ def template(stage, project, output=None):
 # acrescenta aspas quando são necessárias, então flags e literais passam intactos.
 def harness_command(*parts):
     script = shlex.quote(str(FRAMEWORK / "scripts/game.py"))
-    return " ".join(["python3", script, *(shlex.quote(str(part)) for part in parts)])
+    workspace = ["--root", str(default_root())]
+    return " ".join(["python3", script, *(shlex.quote(str(part)) for part in (*workspace, *parts))])
 
 
 # Um servidor de desenvolvimento não termina: proposto como validador, ele espera
@@ -1431,6 +1571,9 @@ def substitute_document(path, pairs):
 
 
 def init(destination, starter, title=None, documents=True):
+    module = workspace_module(destination)
+    if module and module["state"] == "not_downloaded":
+        raise ValueError(f"Projeto é um módulo opcional existente. Use {module['get_command']}")
     available = starters()
     if starter not in available:
         raise ValueError(f"starter desconhecido: {starter}; disponíveis: {', '.join(available) or 'nenhum'}")
@@ -1719,7 +1862,16 @@ def next_step(project, focus="create", studies_root=None):
             "commands": commands, "basis": basis,
         })
 
-    if not payload["exists"]:
+    module = payload.get("workspace_module")
+    if module and module["state"] == "not_downloaded":
+        propose(
+            f"Baixar o módulo existente {module['id']} para continuar o jogo",
+            "O workspace já declara este jogo; a pasta vazia é um módulo opcional ainda não baixado.",
+            "O módulo está disponível na versão registrada e seu contexto pode ser lido, sem recriar o jogo.",
+            [module["get_command"]],
+            "workspace_module.not_downloaded",
+        )
+    elif not payload["exists"]:
         propose(
             f"Criar o projeto em {project} a partir de um starter e adaptá-lo à proposta",
             "Sem destino no disco não há candidato para REUSE, e qualquer decisão de design fica sem consumidor.",
@@ -2164,6 +2316,12 @@ def main():
     doc.add_argument("stage", choices=STAGES)
     doc.add_argument("--project", required=True)
     doc.add_argument("--output", type=Path, help="sem output, imprime o rascunho sem escrever")
+    prompts = commands.add_parser("gauntlet", parents=[common], help="preparar prompts de continuidade; não inicia execução")
+    prompts.add_argument("project")
+    prompts.add_argument("--objective", required=True)
+    prompts.add_argument("--hours", type=float, help="teto opcional informado pelo usuário; sem horas, trabalhar até concluir o recorte")
+    prompts.add_argument("--focus", choices=FOCI, default="create")
+    prompts.add_argument("--output", type=Path, help="arquivo novo; sem output, imprime os prompts")
     plan = commands.add_parser("check-plan", parents=[common])
     plan.add_argument("plan", type=Path)
     run = commands.add_parser("verify", parents=[common])
@@ -2197,6 +2355,7 @@ def main():
     args = parser.parse_args()
     try:
         root = args.root.resolve()
+        os.environ["GAMES_WORKSPACE_ROOT"] = str(root)
         if args.action == "discover":
             emit(discover(root) if args.plain else review(root))
         elif args.action == "doctor":
@@ -2223,6 +2382,12 @@ def main():
                 emit({"document": str(args.output.resolve()), "status": "draft", "scope": "Template inicial; decisões, revisão e prova continuam pendentes."})
             else:
                 print(document, end="")
+        elif args.action == "gauntlet":
+            document = gauntlet(resolve(args.project, root), args.objective, args.hours, args.focus, args.output)
+            if args.output:
+                emit({"document": str(args.output.resolve()), "status": "prepared", "execution_started": False, "scope": "Prompts preparados; execução, controle do prazo e retomada pertencem à sessão do agente."})
+            else:
+                print(document, end="")
         elif args.action == "check-plan":
             errors = check_plan(read_json(args.plan), root)
             emit({"contract_valid": not errors, "errors": errors, "scope": "Estrutura e existência dos candidatos; busca, adequação e qualidade exigem revisão."})
@@ -2230,6 +2395,9 @@ def main():
         elif args.action == "record":
             emit(record(resolve(args.project, root), args.kind, args.author, args.note, parse_fields(args.field), args.attach, args.output.absolute()))
         elif args.action == "sfx":
+            if (root / "workspace.json").is_file() and not (sfx_catalog.catalog_dir(root) / "catalog.json").is_file():
+                raise ValueError("Acervo sfx não baixado. Execute "
+                                 "python3 framework/scripts/workspace.py get sfx antes de consultar sons.")
             if args.sfx_action in (None, "summary"):
                 emit(sfx_catalog.summarize(root))
             elif args.sfx_action == "search":

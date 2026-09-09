@@ -7,6 +7,7 @@ from pathlib import Path
 import tempfile
 import threading
 import unittest
+from unittest.mock import patch
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 import zipfile
@@ -59,9 +60,32 @@ class AudioCatalogTests(unittest.TestCase):
         self.assertEqual((self.root / "catalog.json").read_bytes(), before)
         self.assertEqual(len(list((self.root / "files").iterdir())), 1)
 
+    def test_interrupted_write_does_not_leave_corrupt_canonical_file(self):
+        before = (self.root / "catalog.json").read_bytes()
+        item = copy.deepcopy(self.item)
+        data = b"another recording"
+        item.update(id="another-sound", sha256=audio.digest(data), bytes=len(data),
+                    file=f"files/{audio.digest(data)}.wav")
+        original_write = Path.write_bytes
+
+        def fail_write(path, content):
+            if path.suffix == ".part":
+                original_write(path, content[:3])
+                raise OSError("No space left on device")
+            return original_write(path, content)
+
+        with patch.object(Path, "write_bytes", fail_write):
+            with self.assertRaises(OSError):
+                audio.save_imports([(item, data)], self.root)
+        self.assertFalse((self.root / item["file"]).exists())
+        self.assertEqual(len(list((self.root / "files").iterdir())), 1)
+        self.assertEqual((self.root / "catalog.json").read_bytes(), before)
+        self.assertEqual(audio.save_imports([(item, data)], self.root)["added"], 1)
+
     def test_search_accents_and_combined_terms(self):
         sounds = audio.load_catalog(self.root)["sounds"]
         self.assertEqual(len(audio.search(sounds, "pe madeira")), 1)
+        self.assertEqual(len(audio.search(sounds, "autora original footstep")), 1)
         self.assertEqual(audio.search(sounds, "madeira metal"), [])
         self.assertEqual(audio.search(sounds, license_id="CC0-1.0"), [])
 
@@ -122,6 +146,11 @@ class AudioCatalogTests(unittest.TestCase):
         self.addCleanup(server.server_close)
         self.addCleanup(server.shutdown)
         base = f"http://127.0.0.1:{server.server_port}"
+        selections = {"games": {"example": {"step": [self.item["id"]]}}}
+        (self.root / "rollout-selections.json").write_bytes(audio.json_bytes(selections))
+        with urlopen(base + "/rollout-selections.json", timeout=5) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(json.loads(response.read()), selections)
         request = Request(base + "/" + self.item["file"], headers={"Range": "bytes=2-5"})
         with urlopen(request, timeout=5) as response:
             self.assertEqual(response.status, 206)

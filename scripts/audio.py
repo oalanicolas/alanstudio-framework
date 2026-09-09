@@ -10,6 +10,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import io
 import json
 import math
+import os
 from pathlib import Path
 import re
 import shutil
@@ -21,6 +22,9 @@ import zipfile
 
 
 def default_workspace():
+    configured = os.environ.get("GAMES_WORKSPACE_ROOT")
+    if configured:
+        return Path(configured).expanduser().resolve()
     here = Path(__file__).resolve()
     if here.parents[1].name == "framework" and (here.parents[2] / "AGENTS.md").is_file():
         return here.parents[2]
@@ -209,7 +213,12 @@ def save_imports(prepared, root=LIBRARY):
         target = inside(root, relative)
         target.parent.mkdir(parents=True, exist_ok=True)
         if not target.exists():
-            target.write_bytes(data)
+            staging = target.with_suffix(target.suffix + ".part")
+            try:
+                staging.write_bytes(data)
+                staging.replace(target)
+            finally:
+                staging.unlink(missing_ok=True)
     catalog["sounds"] = sorted(sounds, key=lambda s: (s["category"], s["title"], s["id"]))
     temporary = root / "catalog.json.tmp"
     temporary.write_bytes(json_bytes(catalog))
@@ -223,7 +232,9 @@ def search(sounds, query="", category=None, license_id=None):
             (not category or fold(s["category"]) == fold(category))
             and (not license_id or all(x["license"] == license_id for x in s["sources"]))
             and all(term in fold(" ".join([s["id"], s["title"], s["category"],
-                                           *s["tags"], *s.get("aliases", [])])) for term in terms)]
+                                           *s["tags"], *s.get("aliases", []),
+                                           *[v for source in s["sources"]
+                                             for v in (source["author"], source["title"])]])) for term in terms)]
 
 
 def select(sounds, ids):
@@ -341,8 +352,8 @@ class CatalogHandler(BaseHTTPRequestHandler):
                 data = (self.root / "ui" / name).read_bytes()
                 content_type = {".html": "text/html", ".js": "text/javascript",
                                 ".css": "text/css"}[Path(name).suffix] + "; charset=utf-8"
-            elif path == "/catalog.json":
-                data = (self.root / "catalog.json").read_bytes()
+            elif path in {"/catalog.json", "/rollout-selections.json"}:
+                data = (self.root / path[1:]).read_bytes()
                 content_type = "application/json; charset=utf-8"
             elif path.startswith("/files/"):
                 allowed = {s["file"] for s in load_catalog(self.root)["sounds"]}

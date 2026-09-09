@@ -1,11 +1,16 @@
 """Entrada do harness para o acervo em shared/sfx, se existir no laboratório."""
 from pathlib import Path
 import json
+import os
+import shlex
 
 import audio
 
 
 def default_workspace():
+    configured = os.environ.get("GAMES_WORKSPACE_ROOT")
+    if configured:
+        return Path(configured).expanduser().resolve()
     here = Path(__file__).resolve()
     if here.parents[1].name == "framework" and (here.parents[2] / "AGENTS.md").is_file():
         return here.parents[2]
@@ -104,6 +109,8 @@ def copy_entry(entry_id, destination, root=None, sources=None):
 
 def summarize(root=None):
     catalog = load_catalog(root)
+    command = shlex.join(["python3", str(Path(__file__).resolve().with_name("game.py")),
+                          "--root", str(Path(root or DEFAULT_ROOT).resolve()), "sfx"])
     groups = {}
     for item in catalog["sounds"]:
         groups[item["category"]] = groups.get(item["category"], 0) + 1
@@ -115,9 +122,9 @@ def summarize(root=None):
         "originals": sum(s.get("edition") == "original" for s in catalog["sounds"]),
         "updated": catalog.get("updated"), "quality_bar": QUALITY_BAR,
         "categories": [{"title": name, "count": count} for name, count in sorted(groups.items())],
-        "search": "python3 scripts/game.py sfx search TERMO",
-        "listen": "python3 scripts/game.py sfx serve",
-        "copy": "python3 scripts/game.py sfx copy ID --to PASTA",
+        "search": f"{command} search TERMO",
+        "listen": f"{command} serve",
+        "copy": f"{command} copy ID --to PASTA",
     }
 
 

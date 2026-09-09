@@ -314,3 +314,54 @@ A receita de áudio orienta mix e interrupção; o catálogo só localiza arquiv
 
 Os jogos públicos da Alan Studios ficam em [games.alanicolas.com](https://games.alanicolas.com/).
 Cada um usa a própria engine. Este harness não reivindica tê-los produzido.
+
+## Gauntlet de prompts
+
+Na 0.9, leitura adicional de fontes locais para o [modo prolongado](gauntlet.md),
+sem executar workflows de terceiros nem ampliar as extrações Code Anatomist:
+
+- MKT book-research-gauntlet (estudo local do laboratório)
+  e manifesto (estudo local do laboratório):
+  escopo declarado, fonte/localizador e lacuna explícita. Adaptados para objetivo e
+  evidência do recorte; não copiamos corpus mínimo nem regras de produção editorial.
+- Pesquisa local de gauntlet no MKT (estudo local do laboratório):
+  insumo conceitual para rodadas, inspeção do artefato e preservação do melhor resultado.
+  Suas alegações sobre modelos, custos e resultados externos não foram verificadas
+  nesta entrega e não fundamentam garantias do Games.
+- BMad quick-dev, revisão (estudo local do laboratório):
+  distinguir intenção, especificação, patch, achado anterior e alegação descartada;
+  preservar o que funciona antes de corrigir. Adaptamos também a causa “ambiente/prova”.
+  Não importamos fan-out obrigatório, número fixo de iterações ou rollback automático.
+
+Os oito estudos acima fornecem cenários candidatos conforme gênero/risco, não provas
+de que um jogo já os suporta. O gerador é determinístico; seleção de fatias, controle
+do prazo, avaliação e continuidade dependem da execução do agente. Testes do gerador
+não demonstram uma sessão autônoma de várias horas.
+
+## Pré-produção ampliada
+
+Na versão 0.2, leitura adicional dos templates no mesmo commit BMad
+`2486f5f5f3b8870baa6cee4615a870c0330f441c`. Esta leitura amplia o repertório de
+processo; não foi uma nova extração Code Anatomist nem execução dos workflows BMad.
+
+- Game Brief (estudo local do laboratório):
+  visão, público, pilares, diferenciação, escopo e risco.
+- GDD (estudo local do laboratório):
+  ciclo, regras, controles, progressão, conteúdo e arte/áudio.
+- PRD (estudo local do laboratório):
+  seções proporcionais, requisitos com IDs, hipóteses, prioridades e escopo.
+- Arquitetura (estudo local do laboratório):
+  decisões, contratos e vínculo com implementação; adaptado como TDD do Games.
+- Playtest (estudo local do laboratório):
+  hipótese, participantes, observação e interpretação separadas.
+- [MDA, artigo original](https://www.cs.northwestern.edu/~hunicke/MDA.pdf):
+  mecânicas, dinâmicas e experiência estética. A ficha de hipótese/contraprova é
+  aplicação nossa ao processo de trabalho, não uma garantia fornecida pelo artigo.
+- [GDD na Unity](https://learn.unity.com/tutorial/664b276cedbc2a4d7b2e4f10?version=2022.3)
+  e [PRD na Atlassian](https://www.atlassian.com/agile/product-management/requirements/):
+  referências consultadas ao esclarecer os documentos ao usuário.
+
+Os templates Games foram redigidos em português e adaptados aos executores locais.
+Não importam a hierarquia de agentes, instalação, publicação ou cerimônias BMad.
+PoC, vertical slice e MVP recebem critérios distintos no [ciclo criativo](preproduction.md);
+profundidade e evidência acompanham a tarefa, sem nove arquivos obrigatórios.

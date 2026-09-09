@@ -14,6 +14,10 @@ com IA é AA / Triple-I nesse piso. Todos os comandos abaixo são
 `python3 scripts/game.py ...` a partir deste repositório (ou pelo caminho absoluto do
 script), com `--root <laboratorio>` antes ou depois do subcomando.
 
+Num [workspace ligado](references/workspace-binding.md), use a entrada local
+`python3 framework/scripts/game.py ...`: ela executa este mesmo núcleo e resolve
+a raiz do laboratório. Leia as personalizações indicadas em `context.workspace`.
+
 ## Caminho rápido
 
 | Situação | Faça |
@@ -40,6 +44,22 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
 `sports`, `rhythm`, `turn-based`, `deckbuilder`, `strategy`, `tower-defense`, `puzzle`,
 `simulation`, `survival-crafting`, `rpg`, `roguelike`, `multiplayer-competitive`, `idle`,
 `casual` — a lista vigente está em `context.packs.genre.available`.
+
+**“Inicie/inicialize o projeto” inicia o processo:** faça análise profunda e
+documentação com `context <projeto> --event initialize`, preferindo foco `architecture`.
+Leia [inicialização](references/project-audit.md#inicializar-o-projeto) e cumpra a
+entrega de rastros, base canônica, lacunas priorizadas e próximo prompt. Isso vale
+mesmo com documentos encontrados. Servidor aberto e testes verdes não encerram esse
+pedido. O objeto e a conversa prevalecem: “inicie o servidor/partida” pede essa operação;
+“inicie a implementação” de uma etapa definida retoma o trabalho autorizado.
+
+**Continuidade automática:** sempre que o próximo recorte estiver bem definido,
+gere seu prompt pronto em linguagem comum, conforme [o roteiro](references/gauntlet.md).
+Resolva projeto, ação, limites, fonte canônica e prova antes de apresentá-lo; sem
+variáveis para preencher nem exigência de dizer “gauntlet”, invocar skill ou dar horas.
+Registre no plano/Devlog e apresente o prompt ao encerrar uma entrega com trabalho
+seguinte definido. Trabalho já autorizado continua no mesmo turno. Duração só entra
+se informada; sem ela, o limite é concluir o recorte. Retomada preserva prazo vigente.
 
 ## Passos
 
@@ -101,7 +121,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `verify --proves <capacidade>`: sai como `claimed`, com autor, argv e log, nunca
    como verificada; declare só o que os comandos cobrirem. `experience_status`
    continua `not_assessed` até haver observação em movimento.
-6. **Comparar, registrar, continuar.** Compare antes/depois em condições equivalentes
+6. **Comparar, registrar, continuar.** Confira pedido, artefato, prova e continuidade
+   pela [revisão de entrega](references/delivery.md), no registro já existente.
+   Compare antes/depois em condições equivalentes
    e em movimento quando houver efeito visual. Corrija regressões, registre decisões e
    hipóteses descartadas, cumpra `continuity.before_close` e
    `documentation.before_close`. Não promova scaffold a slice nem slice a jogo
