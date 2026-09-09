@@ -83,6 +83,7 @@
         <label><input type="checkbox" id="reducedMotion" /> <span>Reduzir movimento</span></label>
         <label><input type="checkbox" id="highContrast" /> <span>Alto contraste</span></label>
         <label><input type="checkbox" id="captions" /> <span>Legendas de som</span></label>
+        <label><input type="checkbox" id="assist" /> <span>Assistência (alcance maior, chuva mais lenta)</span></label>
         <label><span>Escala da interface</span><input type="range" id="uiScale" min="0.75" max="2" step="0.05" /></label>
         <label><span>Volume geral</span><input type="range" id="master" min="0" max="1" step="0.05" /></label>
         <label><span>Efeitos</span><input type="range" id="sfx" min="0" max="1" step="0.05" /></label>
@@ -96,7 +97,7 @@
     <script type="module">
       const game = window.__game;
       if (game) {
-        const toggles = ["reducedMotion", "highContrast", "captions"];
+        const toggles = ["reducedMotion", "highContrast", "captions", "assist"];
         const buses = ["master", "sfx", "music", "ui"];
         const sync = () => {
           const settings = game.settings;

@@ -26,7 +26,8 @@ carrega o arquivo no mixer. `heard` é sempre falso.
 
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
-só levanta quando falta a declaração.
+só levanta quando falta a declaração. O starter expõe assistência que
+não esconde conteúdo; o leitor ainda não a cobra.
 
 **Arte, conteúdo, empacotar:** `art`, `content` e `ship` leem paleta ou
 art-bible vigente, dado fora do código e passo de build/export.

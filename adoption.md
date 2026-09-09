@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.16 — Assistência que não esconde conteúdo
+
+O starter ganha a opção `assist`: alcance de coleta maior, chuva mais
+lenta e graça mais longa. Os mesmos orbes, a mesma pontuação. `verified`
+continua falso — o harness não jogou com o modo ativo. Contraste ainda
+não foi medido; acessibilidade segue em `slice`.
+
+O que 0.9.16 não afirma: o harness não mediu contraste e não observou
+uma sessão com assistência ligada.
+
 ## 0.9.15 — Receita e ferramenta para a próxima mesa
 
 O starter nasce uma mesa com `npm run table -- <nome>`: JSON novo e

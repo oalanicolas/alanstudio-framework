@@ -102,6 +102,22 @@ test("o alcance de coleta é maior que o desenho, e tem limite", () => {
   assert.equal(outside.entities.length, 1);
 });
 
+test("a assistência alarga o alcance sem esconder o orbe nem o limite", () => {
+  const helped = createState(5, { assist: true });
+  helped.entities = [orb(helped.player.x + CONFIG.player.halfWidth + CONFIG.collect.pad + 1, PLAYER_Y)];
+  advance(helped, neutralIntent());
+  assert.equal(helped.chain, 1, "o mesmo orbe fora do alcance padrão entra com assistência");
+
+  const stillOut = createState(5, { assist: true });
+  stillOut.entities = [orb(
+    stillOut.player.x + CONFIG.player.halfWidth + CONFIG.collect.pad + CONFIG.assist.collectPad + 1,
+    PLAYER_Y,
+  )];
+  advance(stillOut, neutralIntent());
+  assert.equal(stillOut.chain, 0, "assistência não é alcance infinito");
+  assert.equal(stillOut.entities.length, 1);
+});
+
 test("orbe perdido é contado, não silencioso", () => {
   const state = createState(6);
   state.entities = [orb(20, 190)];

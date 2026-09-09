@@ -59,16 +59,25 @@ export const CONFIG = {
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
   },
+  // Assistência não esconde conteúdo: os mesmos orbes, a mesma pontuação.
+  // Perdão extra de alcance, chuva mais lenta e graça mais longa.
+  assist: {
+    collectPad: 4,
+    collectReachY: 3,
+    fallSpeedScale: 0.72,
+    extraInvulnTicks: 18,
+  },
 };
 
 const clamp = (value, min, max) => (value < min ? min : value > max ? max : value);
 const lerp = (from, to, amount) => from + (to - from) * amount;
 
-export function createState(seed = 1) {
+export function createState(seed = 1, options = {}) {
   const rng = createRng(seed);
   return {
     version: 1,
     seed,
+    assist: Boolean(options.assist),
     rngState: rng.state,
     tick: 0,
     phase: "playing",
@@ -215,7 +224,8 @@ function spawn(state) {
   const hazardChance = lerp(CONFIG.spawn.hazardChanceStart, CONFIG.spawn.hazardChanceEnd, progress);
   const kind = rng.next() < hazardChance ? "shard" : "orb";
   const x = rng.range(14, FIELD.width - 14);
-  const vy = rng.range(CONFIG.spawn.fallSpeedMin, CONFIG.spawn.fallSpeedMax) * (1 + progress * 0.35);
+  const fall = state.assist ? CONFIG.assist.fallSpeedScale : 1;
+  const vy = rng.range(CONFIG.spawn.fallSpeedMin, CONFIG.spawn.fallSpeedMax) * (1 + progress * 0.35) * fall;
   state.rngState = rng.state;
   state.entities.push({ id: state.nextId, kind, x, y: -8, vy });
   state.nextId += 1;
@@ -227,11 +237,13 @@ function resolveEntities(state) {
   const survivors = [];
   for (const entity of state.entities) {
     entity.y += entity.vy;
+    const pad = CONFIG.collect.pad + (state.assist ? CONFIG.assist.collectPad : 0);
+    const reachY = CONFIG.collect.reachY + (state.assist ? CONFIG.assist.collectReachY : 0);
     const reach =
       CONFIG.player.halfWidth +
-      (entity.kind === "orb" ? CONFIG.collect.pad : CONFIG.hazard.radius);
+      (entity.kind === "orb" ? pad : CONFIG.hazard.radius);
     const touching =
-      Math.abs(entity.y - PLAYER_Y) < CONFIG.collect.reachY && Math.abs(entity.x - player.x) < reach;
+      Math.abs(entity.y - PLAYER_Y) < reachY && Math.abs(entity.x - player.x) < reach;
     if (touching) {
       if (entity.kind === "orb") {
         collect(state);
@@ -270,7 +282,7 @@ function hit(state) {
   const lost = state.chain;
   state.chain = 0;
   state.stats.hits += 1;
-  state.player.invuln = CONFIG.player.invulnTicks;
+  state.player.invuln = CONFIG.player.invulnTicks + (state.assist ? CONFIG.assist.extraInvulnTicks : 0);
   state.hitstop = CONFIG.feel.hitHitstopTicks;
   state.shake += CONFIG.feel.hitShake;
   state.events.push({ type: "hit", lost });

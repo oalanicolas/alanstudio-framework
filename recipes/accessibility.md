@@ -33,7 +33,9 @@ Uma opção sem consumidor no código não é uma opção.
 
 `access <projeto>` lê as opções que o código declara (highContrast,
 reducedMotion, captions, remapeamento). `verified` é sempre falso: chave
-no fonte não é sessão com o modo ativo.
+no fonte não é sessão com o modo ativo. O starter `canvas-arcade` também
+expõe `assist` — alcance e chuva, sem esconder conteúdo. Essa chave ainda
+não entra no leitor: o harness não joga com o modo ativo.
 
 Não declare cobertura que não observou. Verificação automática de contraste é útil
 e não substitui uma sessão com o modo ativo. Uma lacuna registrada com motivo vale

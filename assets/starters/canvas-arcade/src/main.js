@@ -27,7 +27,7 @@ export function createGame(options = {}) {
   let settings = loadSettings(storage, environment).settings;
   const progressLoad = loadProgress(storage);
   let progress = progressLoad.progress;
-  let state = createState(options.seed ?? randomSeed());
+  let state = createState(options.seed ?? randomSeed(), { assist: settings.assist });
   let queued = neutralIntent();
   let recorded = false;
   let disposed = false;
@@ -121,7 +121,7 @@ export function createGame(options = {}) {
       return loop.paused;
     },
     reset(seed = state.seed) {
-      state = createState(seed);
+      state = createState(seed, { assist: settings.assist });
       queued = neutralIntent();
       recorded = false;
       loop.resume();
@@ -183,6 +183,7 @@ export function createGame(options = {}) {
     },
     updateSettings(patch) {
       settings = normalizeSettings({ ...settings, ...patch }, environment, settings);
+      state.assist = settings.assist;
       audio.applySettings(settings);
       for (const [action, codes] of Object.entries(settings.bindings)) input.rebind(action, codes);
       saveSettings(storage, settings);

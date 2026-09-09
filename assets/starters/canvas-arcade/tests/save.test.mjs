@@ -135,7 +135,14 @@ test("preferências recusam valor fora de faixa e campo desconhecido", () => {
   assert.equal(settings.buses.master, 1);
   assert.equal(settings.buses.sfx, 0);
   assert.equal(settings.reducedMotion, false, "tipo errado cai no padrão");
+  assert.equal(settings.assist, false);
   assert.equal("inventado" in settings, false);
+});
+
+test("assistência é preferência persistida, não um modo escondido", () => {
+  const settings = normalizeSettings({ assist: true });
+  assert.equal(settings.assist, true);
+  assert.equal(normalizeSettings({ assist: "sim" }).assist, false);
 });
 
 test("preferências herdam a redução de movimento do sistema", () => {

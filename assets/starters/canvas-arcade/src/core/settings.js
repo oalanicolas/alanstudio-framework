@@ -5,7 +5,7 @@
 // menos movimento não deveria precisar pedir de novo aqui.
 //
 // Uma opção só existe quando tem consumidor: cada campo abaixo é lido em
-// `render.js`, `audio.js` ou `input.js`.
+// `render.js`, `audio.js`, `input.js` ou `rules.js`.
 
 import { readJson, writeJson } from "./storage.js";
 
@@ -27,6 +27,7 @@ export function defaultSettings(environment = {}) {
     reducedMotion: Boolean(environment.prefersReducedMotion),
     highContrast: Boolean(environment.prefersHighContrast),
     captions: true,
+    assist: false,
     uiScale: 1,
     buses: { master: 0.8, music: 0.6, sfx: 0.9, ui: 0.7 },
     bindings: structuredCloneish(DEFAULT_BINDINGS),
@@ -66,6 +67,7 @@ export function normalizeSettings(raw, environment = {}, base = defaultSettings(
     reducedMotion: typeof raw.reducedMotion === "boolean" ? raw.reducedMotion : base.reducedMotion,
     highContrast: typeof raw.highContrast === "boolean" ? raw.highContrast : base.highContrast,
     captions: typeof raw.captions === "boolean" ? raw.captions : base.captions,
+    assist: typeof raw.assist === "boolean" ? raw.assist : base.assist,
     uiScale: Number.isFinite(raw.uiScale) ? Math.min(2, Math.max(0.75, raw.uiScale)) : base.uiScale,
     buses,
     bindings,

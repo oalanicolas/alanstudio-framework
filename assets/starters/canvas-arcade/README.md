@@ -108,7 +108,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `pacing` | `playable` | `slice`: o aviso some depois da primeira decisão e não tapa o verbo — some após guardar; ainda não foi observado em sessão |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada, perda de foco — além do teste de dado inválido |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
-| `accessibility` | `slice` | `shippable`: contraste verificado por medição e opções de dificuldade ou assistência |
+| `accessibility` | `slice` | `shippable`: contraste verificado por medição — assistência existe (alcance e chuva, sem esconder conteúdo); contraste ainda não foi medido |
 | `content_scale` | `slice` | `shippable`: conteúdo tem identidade estável, migração e validação; ausente ou inválido falha de forma legível — mesa desconhecida e campo obrigatório já falham; não há migração de formato |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `npm run build` existe e ninguém o correu fora daqui |
 
