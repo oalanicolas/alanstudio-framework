@@ -1158,6 +1158,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(run.returncode, 0, run.stderr)
         self.assertEqual(json.loads(run.stdout)["project"], str(self.project))
 
+    # `next` citava os caminhos e `init` não: o comando que aparecia primeiro
+    # para quem acabou de criar o projeto era justamente o que quebrava ao ser
+    # colado. A varredura cobre todo comando de harness que qualquer subcomando
+    # emita, para a próxima sugestão não nascer com o mesmo defeito.
+    def test_every_harness_command_the_output_offers_survives_a_path_with_spaces(self):
+        destination = self.root / "Farol do Sul"
+        created = game.init(destination, "canvas-arcade")
+        self.package()
+        emitted = list(created["next_commands"])
+        proposed = game.next_step(destination)
+        emitted.append(proposed["context_command"])
+        for item in [proposed["proposal"], *proposed["alternatives"]]:
+            emitted.extend(item["commands"])
+        for check in game.doctor(self.root)["checks"]:
+            if check["fix"] and check["fix"].startswith(("python3", "cp ")):
+                emitted.append(check["fix"])
+        harness = [command for command in emitted if command.startswith("python3")]
+        self.assertGreaterEqual(len(harness), 4, emitted)
+        for command in harness:
+            argv = shlex.split(command)
+            self.assertEqual(argv[:2], ["python3", str(SCRIPT)], command)
+            self.assertIn(str(destination), argv, command)
+            # Um caminho partido em dois argumentos deixa um pedaço solto no argv.
+            self.assertNotIn("do", argv, command)
+
     def test_next_cli_returns_one_proposal_and_never_executes_it(self):
         self.package(scripts={"test": "touch should-not-run"})
         run = subprocess.run([sys.executable, str(SCRIPT), "next", str(self.project), "--focus", "release", "--root", str(self.root)], capture_output=True, text=True)

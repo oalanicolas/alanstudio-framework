@@ -586,6 +586,16 @@ def template(stage, project, output=None):
     return text
 
 
+# Todo comando que o harness sugere existe para ser copiado e colado. Caminho de
+# projeto com espaço é comum — "Farol do Sul" é um nome de jogo, não um caso de
+# borda — e sem citação o shell o parte em dois argumentos. Construir tudo por
+# aqui é o que impede a próxima sugestão de nascer quebrada: `shlex.quote` só
+# acrescenta aspas quando são necessárias, então flags e literais passam intactos.
+def harness_command(*parts):
+    script = shlex.quote(str(FRAMEWORK / "scripts/game.py"))
+    return " ".join(["python3", script, *(shlex.quote(str(part)) for part in parts)])
+
+
 def starters():
     if not STARTERS_ROOT.is_dir():
         return []
@@ -733,8 +743,8 @@ def init(destination, starter, title=None, documents=True):
         ],
         "next_commands": [
             f"{manager or 'npm'} test" if manager else "node --test",
-            f"python3 {FRAMEWORK / 'scripts/game.py'} scan {destination}",
-            f"python3 {FRAMEWORK / 'scripts/game.py'} next {destination}",
+            harness_command("scan", destination),
+            harness_command("next", destination),
         ],
         "scope": (
             "Copiou o starter, trocou os valores que `starter.json` declara e criou rascunhos a partir dos "
@@ -883,10 +893,6 @@ def next_step(project, focus="create", studies_root=None):
     drafts = [key for key, area in areas.items() if area["status"] == "draft_only"]
     stale = [key for key, area in areas.items() if area["status"] in ("historical_only", "reference_only")]
     scripts = sorted(payload["scripts"])
-    # Um comando proposto precisa sobreviver a copiar e colar: caminho de projeto
-    # com espaço é comum, e sem citação o shell o parte em dois argumentos.
-    harness = f"python3 {shlex.quote(str(FRAMEWORK / 'scripts/game.py'))}"
-    target = shlex.quote(str(project))
     proposals = []
 
     def propose(action, why, done_when, commands, basis):
@@ -900,7 +906,7 @@ def next_step(project, focus="create", studies_root=None):
             f"Criar o projeto em {project} a partir de um starter e adaptá-lo à proposta",
             "Sem destino no disco não há candidato para REUSE, e qualquer decisão de design fica sem consumidor.",
             "O jogo abre, `npm test` passa e o README descreve a decisão característica desta proposta.",
-            [f"{harness} init {target} --starter {starters()[0] if starters() else 'NOME_DO_STARTER'}"],
+            [harness_command("init", project, "--starter", starters()[0] if starters() else "NOME_DO_STARTER")],
             "exists=false",
         )
     elif payload["kind"] is None:
@@ -908,7 +914,7 @@ def next_step(project, focus="create", studies_root=None):
             "Identificar o ponto de entrada do jogo e registrar como executá-lo",
             "Sem entrypoint reconhecível não é possível rodar, verificar nem comparar nada — todo o resto fica sem prova.",
             "Um comando declarado no README inicia o jogo, e `scan` reconhece a área de execução.",
-            [f"{harness} scan {target}"],
+            [harness_command("scan", project)],
             "kind=null",
         )
     missing = [key for key, area in areas.items() if area["status"] == "not_located"]
@@ -920,7 +926,7 @@ def next_step(project, focus="create", studies_root=None):
             "Avisar as lacunas e documentar as áreas não localizadas: " + labels(missing),
             "A política do estúdio é documentar sem pedir um segundo consentimento; sem essa base as mesmas decisões se repetem a cada sessão.",
             "Cada área tem decisão com fonte, hipótese identificada ou lacuna com motivo e próxima ação.",
-            [f"{harness} context {target} --focus {focus} --event direction-approved"],
+            [harness_command("context", project, "--focus", focus, "--event", "direction-approved")],
             "areas.not_located",
         )
     if drafts:
@@ -928,7 +934,7 @@ def next_step(project, focus="create", studies_root=None):
             "Substituir rascunho por decisão em: " + labels(drafts),
             "Template com marcador de preenchimento não documenta nada; enquanto for rascunho, cada retomada recomeça do zero.",
             "Os documentos citam fonte, decisão e o que ainda é hipótese, sem marcador de preenchimento.",
-            [f"{harness} context {target} --focus {focus} --stage {'brief' if 'vision' in drafts else 'gdd'}"],
+            [harness_command("context", project, "--focus", focus, "--stage", "brief" if "vision" in drafts else "gdd")],
             "areas.draft_only",
         )
     if stale:
@@ -936,7 +942,7 @@ def next_step(project, focus="create", studies_root=None):
             "Resolver documento sem versão vigente em: " + labels(stale),
             "Só há material histórico ou de referência para essas áreas, e histórico não é regra vigente.",
             "Existe um documento de trabalho vigente, e o histórico permanece marcado como histórico.",
-            [f"{harness} scan {target}"],
+            [harness_command("scan", project)],
             "areas.historical_or_reference_only",
         )
     if foundation["continuity_sources"]:
@@ -945,7 +951,7 @@ def next_step(project, focus="create", studies_root=None):
             f"Conferir o estado real e retomar o passo registrado em {first['path']}:{first['line']}",
             "Existe fonte de continuidade; retomar evita refazer briefing ou auditoria ainda válida. Fonte encontrada não é tarefa validada.",
             "O passo registrado foi executado ou substituído, com o resultado no registro canônico.",
-            [f"{harness} context {target} --focus {focus} --event resume"],
+            [harness_command("context", project, "--focus", focus, "--event", "resume")],
             "continuity.sources",
         )
     if scripts:
@@ -953,7 +959,7 @@ def next_step(project, focus="create", studies_root=None):
             f"Executar os validadores do projeto com recibo ({', '.join(scripts[:4])})",
             "Comando declarado não é comando executado; sem recibo não há evidência técnica para nenhuma decisão.",
             "Existe uma pasta de evidência com recibo e log de cada comando escolhido.",
-            [f"{harness} verify {target} --script {shlex.quote(scripts[0])} --output CAMINHO_NOVO"],
+            [harness_command("verify", project, "--script", scripts[0], "--output", "CAMINHO_NOVO")],
             "scripts",
         )
     dimensions = [item["key"] for item in payload["production_bar"]["dimensions"]]
@@ -961,7 +967,7 @@ def next_step(project, focus="create", studies_root=None):
         "Observar as dimensões pertinentes da barra e agir na mais baixa: " + ", ".join(dimensions),
         "O degrau percebido é o mínimo entre as dimensões; subir a que já está alta não muda a leitura do jogo.",
         "Cada dimensão pertinente tem degrau declarado com condição, evidência e autor, e a mais baixa subiu um degrau.",
-        [f"{harness} context {target} --focus {focus}"],
+        [harness_command("context", project, "--focus", focus)],
         "production_bar.dimensions",
     )
     return {
@@ -982,7 +988,7 @@ def next_step(project, focus="create", studies_root=None):
             "package_manager": payload["package_manager"],
             "production_bar_dimensions": dimensions,
         },
-        "context_command": f"{harness} context {target} --focus {focus}",
+        "context_command": harness_command("context", project, "--focus", focus),
         "authority": "agent_resolves",
         "executed": False,
         "scope": (
