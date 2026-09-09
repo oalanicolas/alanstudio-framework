@@ -983,6 +983,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "cycle.craft": "segundo ciclo de look, chuva e voz",
             "audio.roles": "papéis de áudio vazios",
             "feel.unobserved": "feel ainda sem observação",
+            "playtest.invite": "convite para quem nunca viu o jogo",
             "playtest.unstructured": "achado sem forma",
             "access.missing": "acessibilidade sem opção",
             "save.unversioned": "save sem versão",
@@ -1464,6 +1465,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("content.inline", bases)
         self.assertNotIn("ship.unpacked", bases)
         self.assertNotIn("playtest.unstructured", bases)
+        self.assertNotIn("playtest.invite", bases)
         self.assertNotIn("cycle.craft", bases)
         direction = game.art_reading(destination)
         self.assertTrue(direction["declared"])
@@ -2342,7 +2344,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(report["unstructured"])
         self.assertFalse(report["structured"])
         self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
         self.assertIsNone(report["candidate"])
+        self.assertIsNone(report["invite"])
         proposal = next(
             item for item in self.proposals(game.next_step(self.project, "feel"))
             if item["basis"] == "playtest.unstructured"
@@ -2441,6 +2445,72 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["findings"], ["docs/qa.md"])
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "feel"))]
         self.assertNotIn("playtest.unstructured", bases)
+
+    def test_playtest_invite_writes_a_page_without_claiming_an_outsider(self):
+        destination = self.root / "convite"
+        game.init(destination, "canvas-arcade")
+        first = game.invite_playtest(destination)
+        self.assertTrue(first["created"])
+        self.assertFalse(first["observed"])
+        self.assertFalse(first["outsider"])
+        self.assertEqual(first["path"], "docs/playtest/invite.md")
+        page = (destination / "docs/playtest/invite.md").read_text(encoding="utf-8")
+        self.assertIn("npm run serve", page)
+        self.assertIn("nunca viu", page.casefold())
+        self.assertNotRegex(page, game.FINDING_FIELDS)
+        again = game.invite_playtest(destination)
+        self.assertFalse(again["created"])
+        reading = game.playtest_reading(destination)
+        self.assertEqual(reading["invite"], "docs/playtest/invite.md")
+        self.assertFalse(reading["observed"])
+        self.assertFalse(reading["outsider"])
+        game.note_observation(destination, "Ana", "o verbo pesa no guarda")
+        nxt = game.next_step(destination)
+        bases = [item["basis"] for item in self.proposals(nxt)]
+        self.assertNotIn("playtest.invite", bases)
+        self.assertFalse(nxt["signals"]["playtest_invite"])
+        self.assertIn("playtest.unstructured", bases)
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "playtest", str(destination), "--invite", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        payload = json.loads(run.stdout)
+        self.assertFalse(payload["created"])
+        self.assertFalse(payload["outsider"])
+
+    def test_next_points_at_the_invite_after_the_maker_already_played(self):
+        destination = self.root / "depois-de-jogar"
+        game.start_project(destination, "canvas-arcade")
+        game.note_observation(destination, "Ana", "o verbo pesa no guarda")
+        nxt = game.next_step(destination)
+        self.assertEqual(nxt["proposal"]["basis"], "cycle.craft")
+        self.assertIn("playtest.invite", [item["basis"] for item in nxt["alternatives"]])
+        palettes = json.loads((destination / "data/palettes.json").read_text(encoding="utf-8"))
+        palettes["palettes"]["noite"] = dict(palettes["palettes"]["dusk"])
+        (destination / "data/palettes.json").write_text(
+            json.dumps(palettes, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        after = game.next_step(destination)
+        self.assertEqual(after["proposal"]["basis"], "playtest.invite")
+        self.assertTrue(after["signals"]["playtest_invite"])
+        self.assertIn("--invite", after["proposal"]["commands"][0])
+        self.assertIn("playtest.unstructured", [item["basis"] for item in after["alternatives"]])
+
+    def test_init_does_not_copy_a_local_dist_from_the_starter(self):
+        self.fake_starter("com-dist", {
+            "schema_version": 1,
+            "title": "Nome Real",
+            "substitutions": [{"field": "project_title", "value": "Nome Real", "files": ["README.md"]}],
+        })
+        built = Path(game.STARTERS_ROOT) / "com-dist" / "dist"
+        built.mkdir()
+        (built / "VERSION.json").write_text('{"name":"artefato"}\n', encoding="utf-8")
+        destination = self.root / "sem-artefato"
+        created = game.init(destination, "com-dist", documents=False)
+        self.assertFalse((destination / "dist").exists())
+        self.assertNotIn("dist/VERSION.json", created["files"])
 
     def test_the_craft_table_that_names_the_format_is_not_a_finding(self):
         (self.project / "README.md").write_text(

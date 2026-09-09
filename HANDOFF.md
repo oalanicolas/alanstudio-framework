@@ -72,7 +72,9 @@ Node 20 e recusa `npm install` e `file://`. `npm run size` relata
 bytes sem teto.
 
 **Playtest:** `playtest` lê o formato problema/evidência/hipótese/medição.
-`observed` é sempre falso. Nota de partida sem os quatro campos vira
+`observed` e `outsider` são sempre falsos. `--invite` escreve a página
+para quem nunca viu o jogo; `next` a aponta depois do recibo de quem fez.
+Nota de partida sem os quatro campos vira
 `playtest.unstructured`. O starter grava `docs/playtest/last-run.json`
 com `npm run session` (totais e curva); `note --from-run` anexa o
 candidato. Número no disco não é causa. `docs/release.md` vigente não

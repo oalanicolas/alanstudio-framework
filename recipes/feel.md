@@ -5,8 +5,10 @@ diferença percebida entre intenção e resposta atual.
 
 Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
-impressão — `next` propõe `playtest.unstructured`. `observed` é sempre
-falso: o harness não assiste à sessão. O starter grava um candidato com
+impressão — `next` propõe `playtest.unstructured`. `playtest --invite`
+escreve a página para quem nunca viu o jogo; `next` a aponta depois do
+recibo de quem fez. `observed` e `outsider` são sempre
+falsos: o harness não assiste à sessão. O starter grava um candidato com
 `npm run session` em `docs/playtest/last-run.json`; `note --from-run`
 anexa o resumo e, se houver, a curva. Número no disco não é causa nem
 sessão observada.

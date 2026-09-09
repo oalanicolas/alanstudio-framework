@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.63 — O convite para quem nunca viu
+
+A curva com outsider era um degrau sem ferramenta. `playtest --invite`
+escreve a página: abrir, não ensinar, gravar o achado noutro arquivo.
+`next` a aponta depois do recibo de quem fez. `init` não leva `dist/`
+de um build local. `observed` e `outsider` continuam falsos. `pacing`
+permanece `slice`. Só `release` fica no piso.
+
+O que 0.9.63 não afirma: o harness não convidou ninguém e ninguém de
+fora jogou.
+
 ## 0.9.62 — A corrente quebra no corpo
 
 Os pips orbitavam a aposta e sumiam no erro. Perder 1 e perder 8

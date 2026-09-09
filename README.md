@@ -98,7 +98,7 @@ onde houver Node.
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
 → segundo ciclo de look, chuva e voz
-→ papéis de áudio vazios → feel ainda sem observação → achado sem forma →
+→ papéis de áudio vazios → feel ainda sem observação → convite para quem nunca viu o jogo → achado sem forma →
 acessibilidade sem opção
 → save sem versão → orçamento ausente → direção de arte ausente → conteúdo
 ainda no código → empacotar ainda sem passo → rascunho → documento sem versão
@@ -607,11 +607,16 @@ recibo:
 
 ```sh
 python3 scripts/game.py playtest /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py playtest /caminho/do/laboratorio/meu-jogo --invite
 ```
 
-`observed` é sempre `false`. `next` propõe `playtest.unstructured` quando
-há recibo de observação (ou um `docs/qa.md` vigente) e o achado ainda não
-tem forma. Se `docs/playtest/last-run.json` existir, `playtest` o relata
+`observed` e `outsider` são sempre `false`. `--invite` escreve
+`docs/playtest/invite.md` para quem nunca viu o jogo; página no disco
+não é alguém de fora e não sobe `pacing`. `next` propõe `playtest.invite`
+depois do recibo de quem fez (e depois do segundo ciclo, se houver).
+`next` propõe `playtest.unstructured` quando há recibo de observação
+(ou um `docs/qa.md` vigente) e o achado ainda não tem forma. Se
+`docs/playtest/last-run.json` existir, `playtest` o relata
 como `candidate` e o `next` aponta `note --from-run`. Se o candidato
 tiver curva, o `note` a anexa. Número no disco não é causa. A tabela de
 ofício que *descreve* o formato não conta como

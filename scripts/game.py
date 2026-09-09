@@ -1873,6 +1873,8 @@ def playtest_findings(project):
 
 
 LAST_RUN = "docs/playtest/last-run.json"
+INVITE = "docs/playtest/invite.md"
+INIT_COPY_SKIP = {"dist", "node_modules", ".git"}
 
 
 def last_run_path(project):
@@ -1911,6 +1913,7 @@ def playtest_reading(project):
     expected = bool(observations) or qa_current
     structured = bool(findings)
     candidate = last_run_path(project)
+    invite = invite_path(project)
     return {
         "schema_version": 1,
         "project": str(project),
@@ -1918,24 +1921,96 @@ def playtest_reading(project):
         "observations": [item["path"] for item in observations],
         "findings": findings,
         "candidate": candidate,
+        "invite": invite,
         "qa_current": qa_current,
         "expected": expected,
         "structured": structured,
         "unstructured": expected and not structured,
         "observed": False,
+        "outsider": False,
         "guide": str(FRAMEWORK / "recipes/feel.md"),
         "rule": (
             "Recibo de observação sem problema, evidência, hipótese e medição "
             "é impressão. Os quatro no disco não são playtest observado. "
-            "last-run.json é candidato, não causa."
+            "last-run.json é candidato, não causa. Convite no disco não é "
+            "alguém de fora."
         ),
         "scope": (
             "Procura os quatro campos num documento ou num record de "
             "observação, e se docs/qa.md deixou de ser rascunho. Relata "
-            f"`{LAST_RUN}` quando existe. Não assiste a sessão, não conta "
-            "jogadores e não atribui causa. `observed` é sempre falso."
+            f"`{LAST_RUN}` e `{INVITE}` quando existem. Não assiste a sessão, não conta "
+            "jogadores e não atribui causa. `observed` e `outsider` são sempre falsos."
         ),
     }
+
+
+def invite_path(project):
+    path = Path(project) / INVITE
+    if path.is_file() and not path.is_symlink():
+        return INVITE
+    return None
+
+
+def invite_playtest(project):
+    project = Path(project)
+    if not project.is_dir() or project.is_symlink():
+        raise ValueError("projeto inexistente")
+    path = project / INVITE
+    created = not path.exists()
+    if path.is_symlink() or (path.exists() and not path.is_file()):
+        raise ValueError(f"convite inválido: {INVITE}")
+    if created:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(invite_page(project), encoding="utf-8")
+    reading = playtest_reading(project)
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "path": INVITE,
+        "created": created,
+        "observed": False,
+        "outsider": False,
+        "reading": reading,
+        "scope": (
+            "Escreve a página para quem nunca viu o jogo. Não ensina o verbo, "
+            "não assiste e não sobe pacing. outsider continua falso."
+        ),
+    }
+
+
+def invite_page(project):
+    project = Path(project)
+    try:
+        scripts, manager = project_commands(project)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
+    play = play_command(project, scripts, manager) or f"cd {shlex.quote(str(project))} && npm run serve"
+    return (
+        "# Convite — quem nunca viu o jogo\n"
+        "\n"
+        "Esta página não é playtest observado. `observed` e `outsider`\n"
+        "continuam falsos até alguém que **não fez** o jogo jogar e\n"
+        "escrever o achado noutro arquivo.\n"
+        "\n"
+        "## Abrir\n"
+        "\n"
+        "```\n"
+        f"{play}\n"
+        "```\n"
+        "\n"
+        "## Instrução\n"
+        "\n"
+        "Jogue uma partida. Não leia a tabela da página antes. Quem fez o\n"
+        "jogo não ensina o verbo e não fica atrás da cadeira.\n"
+        "\n"
+        "## Depois\n"
+        "\n"
+        "Grave o achado em `docs/playtest/` com os quatro nomes que o\n"
+        "harness já sabe ler — sem preenchê-los aqui, senão o arquivo\n"
+        "finge forma. Quem escreveu precisa ser quem jogou.\n"
+        "\n"
+        "Convite no disco não sobe `pacing` e não conta jogador.\n"
+    )
 
 
 # `scan` lê documentos e, de propósito, não entra em textures/fonts/models/videos.
@@ -2977,6 +3052,8 @@ def init(destination, starter, title=None, documents=True, idea=None):
         relative = path.relative_to(source).as_posix()
         if relative == STARTER_MANIFEST:
             continue
+        if any(part in INIT_COPY_SKIP for part in path.relative_to(source).parts):
+            continue
         target = destination / path.relative_to(source)
         if path.is_dir():
             target.mkdir(parents=True, exist_ok=True)
@@ -3480,6 +3557,18 @@ def next_step(project, focus="create", studies_root=None):
             "feel.unobserved",
         )
     playtest = playtest_reading(project)
+    wants_invite = bool(noted and not playtest.get("invite"))
+    if wants_invite:
+        propose(
+            "Escrever o convite para quem nunca viu o jogo",
+            "O ciclo já tem um recibo de quem fez. A curva com quem nunca "
+            "viu o jogo continua pendente. Página no disco não é alguém de "
+            "fora e não sobe pacing. O harness não assiste.",
+            "Existe docs/playtest/invite.md. observed e outsider continuam "
+            "falsos até alguém que não fez o jogo jogar e escrever o achado.",
+            [harness_command("playtest", project, "--invite")],
+            "playtest.invite",
+        )
     if playtest["unstructured"]:
         propose(
             "Escrever o achado de playtest no formato problema, evidência, hipótese e medição",
@@ -3805,6 +3894,7 @@ def next_step(project, focus="create", studies_root=None):
             "audio_roles_empty": roles["empty"],
             "feel_unobserved": feel["unobserved"],
             "playtest_unstructured": playtest["unstructured"],
+            "playtest_invite": wants_invite,
             "playtest_candidate": playtest.get("candidate"),
             "access_missing": access["missing"] if payload["kind"] else [],
             "save_unversioned": persist["unversioned"],
@@ -4154,6 +4244,10 @@ def main():
         help="achado de playtest no formato problema/evidência/hipótese/medição, sem assistir",
     )
     playtest_cmd.add_argument("project")
+    playtest_cmd.add_argument(
+        "--invite", action="store_true",
+        help="escreve docs/playtest/invite.md para quem nunca viu o jogo; não é alguém de fora",
+    )
     ctx = commands.add_parser("context", parents=[common])
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
@@ -4261,7 +4355,8 @@ def main():
         elif args.action == "ship":
             emit(ship_reading(resolve(args.project, root)))
         elif args.action == "playtest":
-            emit(playtest_reading(resolve(args.project, root)))
+            dest = resolve(args.project, root)
+            emit(invite_playtest(dest) if args.invite else playtest_reading(dest))
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":
