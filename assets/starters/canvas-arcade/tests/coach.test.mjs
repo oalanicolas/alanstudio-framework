@@ -2,7 +2,10 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { coachHint } from "../src/game/coach.js";
-import { createState } from "../src/game/rules.js";
+import { createState, PLAYER_Y } from "../src/game/rules.js";
+
+const shardOnRail = () => ({ id: 1, kind: "shard", x: 160, y: PLAYER_Y - 22, vy: 0 });
+const orbOnRail = () => ({ id: 2, kind: "orb", x: 160, y: PLAYER_Y - 22, vy: 0 });
 
 test("os primeiros ticks pedem movimento, não a tabela da página", () => {
   const state = createState(1);
@@ -45,4 +48,39 @@ test("partida encerrada não ensina", () => {
   const state = createState(1);
   state.phase = "over";
   assert.equal(coachHint(state), null);
+});
+
+test("estilhaço no trilho pede o dash antes do orbe", () => {
+  const state = createState(1);
+  state.tick = 90;
+  state.entities = [shardOnRail()];
+  assert.equal(coachHint(state), "dash");
+  state.stats.dashes = 1;
+  assert.equal(coachHint(state), "collect", "depois do avanço o aviso não insiste no dash");
+});
+
+test("orbe no trilho não finge ameaça", () => {
+  const state = createState(1);
+  state.tick = 90;
+  state.entities = [orbOnRail()];
+  assert.equal(coachHint(state), "collect");
+});
+
+test("toque e controle ganham passo depois do movimento", () => {
+  const state = createState(1);
+  state.tick = 70;
+  assert.equal(coachHint(state, {}, { surface: "pointer" }), "touch");
+  assert.equal(coachHint(state, {}, { surface: "gamepad" }), "pad");
+  assert.equal(coachHint(state, {}, { surface: "keyboard" }), "collect");
+  state.tick = 50;
+  assert.equal(coachHint(state, {}, { surface: "pointer" }), "move", "o movimento ainda vem primeiro");
+  state.tick = 120;
+  assert.equal(coachHint(state, {}, { surface: "gamepad" }), "collect", "o passo da superfície some");
+});
+
+test("estilhaço no trilho vence o passo da superfície", () => {
+  const state = createState(1);
+  state.tick = 70;
+  state.entities = [shardOnRail()];
+  assert.equal(coachHint(state, {}, { surface: "pointer" }), "dash");
 });

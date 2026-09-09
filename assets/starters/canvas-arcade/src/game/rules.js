@@ -352,7 +352,7 @@ export function createState(seed = 1, options = {}) {
     },
     entities: [],
     motes: [],
-    stats: { collected: 0, missed: 0, hits: 0, banks: 0, bestChain: 0, banked: 0 },
+    stats: { collected: 0, missed: 0, hits: 0, banks: 0, dashes: 0, bestChain: 0, banked: 0 },
     events: [],
   };
 }
@@ -421,6 +421,7 @@ export function advance(state, intent = neutralIntent()) {
     if (intent.move !== 0) player.dir = intent.move;
     punch(state, CONFIG.feel.punchDashX * player.dir, 0);
     emit(state, "dash");
+    state.stats.dashes += 1;
   }
 
   movePlayer(state, intent);

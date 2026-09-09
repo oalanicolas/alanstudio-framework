@@ -511,9 +511,31 @@ test("o aviso do primeiro ciclo cabe na placa e some depois de guardar", () => {
   assert.ok(covered(frase[0], seeded.plates), "fantasia sem placa é texto solto no campo");
   const depois = hudTexts(createState(1), {}, { hint: null });
   assert.equal(
-    depois.texts.filter((item) => /Mova|orbe|Guarde/.test(item.text)).length,
+    depois.texts.filter((item) => /Mova|orbe|Guarde|Atravesse|arraste já|analógico já/.test(item.text)).length,
     0,
     "depois de guardar o ensino não pode continuar na tela",
+  );
+});
+
+test("o aviso do dash e da superfície nomeia o mapa sem apagar as outras", () => {
+  const state = createState(1);
+  const dash = hudTexts(state, {}, { hint: "dash" });
+  assert.equal(
+    dash.texts.filter((item) => item.text.includes("Espaço") && item.text.includes("cima") && item.text.includes("A")).length,
+    1,
+    `esperava Espaço, toque e controle no dash: ${JSON.stringify(dash.texts.map((item) => item.text))}`,
+  );
+  const toque = hudTexts(state, {}, { hint: "touch" });
+  assert.equal(
+    toque.texts.filter((item) => item.text.includes("arraste já move")).length,
+    1,
+    `esperava o passo do toque: ${JSON.stringify(toque.texts.map((item) => item.text))}`,
+  );
+  const pad = hudTexts(state, {}, { hint: "pad" });
+  assert.equal(
+    pad.texts.filter((item) => item.text.includes("analógico já move")).length,
+    1,
+    `esperava o passo do controle: ${JSON.stringify(pad.texts.map((item) => item.text))}`,
   );
 });
 

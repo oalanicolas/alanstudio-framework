@@ -13,6 +13,9 @@
   "dash_ready": "Dash pronto",
   "dash_recharging": "Dash recarregando",
   "hint_move": "{left}/{right}, arraste ou analógico",
+  "hint_dash": "Atravesse o estilhaço ({dash}, cima ou A)",
+  "hint_touch": "Cima avança; baixo guarda — o arraste já move",
+  "hint_pad": "A avança; X guarda — o analógico já move",
   "hint_collect": "Passe no orbe — a corrente cresce",
   "hint_bank": "Guarde ({bank}, baixo ou X) antes de perder a corrente"
 }

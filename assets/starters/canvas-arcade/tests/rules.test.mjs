@@ -68,6 +68,7 @@ test("o dash atravessa o estilhaço sem perder a corrente", () => {
   const state = createState(3);
   advance(state, { move: 1, dash: true, bank: false });
   assert.ok(state.player.dashTicks > 0);
+  assert.equal(state.stats.dashes, 1);
   state.chain = 2;
   state.entities = [shard(state.player.x, PLAYER_Y)];
   advance(state, { move: 1, dash: false, bank: false });

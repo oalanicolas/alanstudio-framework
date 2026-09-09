@@ -134,7 +134,7 @@ export function createGame(options = {}) {
     renderer.draw(state, frame, settings, {
       captions: audio.captions(),
       best: progress.best,
-      hint: coachHint(state, copy),
+      hint: coachHint(state, copy, { surface: input.lastSource }),
       surface: input.lastSource,
     });
   }

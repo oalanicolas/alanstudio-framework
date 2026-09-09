@@ -9,9 +9,10 @@
 // `npm run table -- <nome> --from spawn|dusk` copia essa forma; `--as`
 // aplica uma intenção nomeada e deixa a chuva distinta. `copy.fantasy`
 // tem consumidor: o coach do primeiro ciclo. `resume`, `restart` e
-// `hint_bank` reservam o lugar da tecla viva; o aviso também nomeia
-// toque e controle. Overlay e HUD confirmam o aparelho que falou por
-// último.
+// `hint_bank` reservam o lugar da tecla viva; `hint_dash` ensina o
+// avanço nas três superfícies quando o estilhaço marca o trilho;
+// `hint_touch` e `hint_pad` são o passo da superfície que falou.
+// Overlay e HUD confirmam o aparelho que falou por último.
 // `palettes` tem consumidor: o desenho lê
 // `PALETTES` daqui, não uma constante no render. `look` escolhe um
 // look de arte (`normal`, `dusk`); `contrast` é o modo de alcance,
@@ -123,6 +124,9 @@ export const COPY_FIELDS = [
   "dash_ready",
   "dash_recharging",
   "hint_move",
+  "hint_dash",
+  "hint_touch",
+  "hint_pad",
   "hint_collect",
   "hint_bank",
 ];

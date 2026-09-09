@@ -2,9 +2,9 @@
 //
 // O manifesto e a tabela da página ensinam o padrão. O aviso do
 // primeiro ciclo nomeia teclado (ou o remapeamento vigente), toque e
-// controle juntos: sem isso o jogador só aprende pela tabela da
-// página. Overlay e HUD confirmam o aparelho que falou por último.
-// Rótulo no texto não é sessão observada.
+// controle juntos; o dash e o mapa da superfície que falou também
+// ganham passo no campo. Overlay e HUD confirmam o aparelho que
+// falou por último. Rótulo no texto não é sessão observada.
 
 const NAMED = {
   Space: "Espaço",

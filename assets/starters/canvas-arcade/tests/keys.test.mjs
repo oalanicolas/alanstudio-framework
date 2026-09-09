@@ -18,6 +18,9 @@ test("o padrão preenche o aviso e o overlay com as teclas do manifesto", () => 
   assert.equal(lines.resume, "Continuar: Esc ou P");
   assert.equal(lines.restart, "Reiniciar: R");
   assert.equal(lines.hint_move, "←/→, arraste ou analógico");
+  assert.equal(lines.hint_dash, "Atravesse o estilhaço (Espaço, cima ou A)");
+  assert.equal(lines.hint_touch, copy.hint_touch);
+  assert.equal(lines.hint_pad, copy.hint_pad);
   assert.equal(lines.hint_bank, "Guarde (↓, baixo ou X) antes de perder a corrente");
   assert.equal(actionLabel(DEFAULT_BINDINGS, "bank"), "↓");
   assert.deepEqual(actionLabels(DEFAULT_BINDINGS, "pause"), ["Esc", "P"]);
@@ -29,6 +32,7 @@ test("o preset de uma mão troca ↓ e R por K e O", () => {
   assert.equal(lines.restart, "Reiniciar: O");
   assert.equal(lines.restart_inline, "reiniciar: O");
   assert.equal(lines.hint_move, "J/L, arraste ou analógico");
+  assert.equal(lines.hint_dash, "Atravesse o estilhaço (I, cima ou A)");
   assert.equal(lines.hint_bank, "Guarde (K, baixo ou X) antes de perder a corrente");
   assert.equal(actionLabel(ONE_HAND_BINDINGS, "dash"), "I");
 });
@@ -38,6 +42,8 @@ test("o controle preenche o overlay e o aviso continua ensinando as três superf
   assert.equal(lines.resume, "Continuar: Start");
   assert.equal(lines.restart, "Reiniciar: Select");
   assert.equal(lines.hint_move, "←/→, arraste ou analógico");
+  assert.equal(lines.hint_dash, "Atravesse o estilhaço (Espaço, cima ou A)");
+  assert.equal(lines.hint_pad, copy.hint_pad);
   assert.equal(lines.hint_bank, "Guarde (↓, baixo ou X) antes de perder a corrente");
   assert.equal(lines.hint_collect, copy.hint_collect);
 });

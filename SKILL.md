@@ -145,7 +145,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    importado. `observed` é sempre falso. Só levanta o gate que o projeto pediu.
    Depois de um `init` fresco, `next` propõe **abrir o ciclo** antes de
    substituir os rascunhos: o starter já é um jogo que abre, ensina o
-   primeiro ciclo no campo e traz art-bible vigente — o `init` não o
+   primeiro ciclo no campo — mover, avançar, coletar, guardar e o mapa
+   da superfície que falou — e traz art-bible vigente. O `init` não o
    reescreve.
    **`guide [<projeto>]`** devolve os três passos ideia→ciclo (start,
    jogar, note) sem executar nenhum. Sem subcomando, o harness é o

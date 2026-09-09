@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.59 — O campo ensina o avanço
+
+Mover, coletar e guardar já tinham passo. O dash — o verbo que a
+fantasia nomeia — e o mapa da superfície que falou ficavam na tabela
+da página. Estilhaço no trilho pede atravessar; toque e controle
+ganham passo depois do movimento. `verified` continua falso.
+`accessibility` permanece `slice`: passo no campo não é sessão no
+aparelho. Só `release` fica no piso.
+
+O que 0.9.59 não afirma: o harness não atravessou o estilhaço, não
+tocou a tela e não segurou um controle.
+
 ## 0.9.58 — A corrente também se ouve
 
 O corpo já mostrava a aposta. A voz da coleta era a mesma no elo 1

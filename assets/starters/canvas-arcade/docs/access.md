@@ -11,8 +11,8 @@ Declaração vigente. Opção no código não é sessão observada.
 - Remapeamento de ações (`bindings`)
 - Escala da interface (`uiScale`)
 - Preset de uma mão no cluster direito (`oneHand`, IJKL + P/O); o aviso, o overlay e o `cycle.hand` nomeiam essas teclas; no stub o cluster coleta, guarda, pausa e reinicia — isso não é sessão observada
-- Toque: arrastar move, faixa de cima avança, faixa de baixo guarda; o `cycle.touch` nomeia o mapa; o stub percorre as três intenções; o aviso do primeiro ciclo nomeia o arraste junto do teclado e do controle — isso não é sessão no aparelho
-- Controle: analógico/dpad move, A avança, X guarda, Start pausa, Select reinicia; o `cycle.pad` nomeia o mapa; o stub percorre o verbo e os comandos; o aviso do primeiro ciclo nomeia o analógico e o X junto do teclado e do toque; overlay e HUD confirmam o mapa quando o controle falou por último — isso não é sessão no aparelho
+- Toque: arrastar move, faixa de cima avança, faixa de baixo guarda; o `cycle.touch` nomeia o mapa; o stub percorre as três intenções; o aviso do primeiro ciclo nomeia o arraste junto do teclado e do controle e, depois do primeiro toque, o mapa da superfície vira passo — isso não é sessão no aparelho
+- Controle: analógico/dpad move, A avança, X guarda, Start pausa, Select reinicia; o `cycle.pad` nomeia o mapa; o stub percorre o verbo e os comandos; o aviso do primeiro ciclo nomeia o analógico e o X junto do teclado e do toque e, depois do primeiro eixo, o mapa da superfície vira passo; overlay e HUD confirmam o mapa quando o controle falou por último — isso não é sessão no aparelho
 - Assistência que não esconde orbe nem pontuação (`assist`)
 
 ## O que o recorte não atende

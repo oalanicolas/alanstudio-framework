@@ -15,7 +15,8 @@ jogar → note sem executar. `start` cria o projeto e devolve `play` +
 `then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo,
 as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look e chuva. Se o projeto declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt e o `next` (`cycle.craft`) as apontam. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
 `next` ainda propõe `playable.unplayed` se você estiver perdido. O
-starter ensina mover, coletar e guardar no campo; o art-bible vigente
+starter ensina mover, avançar, coletar e guardar no campo; toque e
+controle ganham passo quando falam. O art-bible vigente
 não é reescrito. `--idea` entra no brief e, se houver `data/copy.json`,
 na tela do primeiro ciclo. O brief continua rascunho. A frase na tela
 não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta e
@@ -45,7 +46,8 @@ só levanta quando falta a declaração. O starter expõe assistência,
 `uiScale`, preset de uma mão (o aviso, o overlay e o `cycle.hand`
 nomeiam IJKL + P/O; o stub coleta, guarda, pausa e reinicia nesse
 cluster) e `docs/access.md`. O aviso do primeiro ciclo nomeia teclado,
-toque e controle; overlay e HUD confirmam o aparelho que falou por
+toque e controle; o dash e o mapa da superfície que falou também
+ganham passo; overlay e HUD confirmam o aparelho que falou por
 último. `npm run contrast`
 amostra pixels do stub após `draw()` e, em cinza, o que só
 o orbe ou só o estilhaço pinta. `pagehide` descarrega
