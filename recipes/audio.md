@@ -41,8 +41,9 @@ Reuso não concede licença nova.
 
 Implementação concreta: `src/game/audio.js` do starter `canvas-arcade` traz
 barramentos, prioridade, ducking, limite de vozes e legenda, com os seis papéis
-sonoros declarados e **vazios** — `audioGaps()` transforma a ausência em lacuna
-observável, em vez de escondê-la atrás de bipes sintetizados.
+sonoros declarados e **vazios**. O acesso `audioGaps()`, exposto em `src/main.js`,
+transforma essa ausência em lacuna observável pela interface e pelos testes, em vez
+de escondê-la atrás de bipes sintetizados.
 
 Prova: cena densa com um evento crítico audível, medição de pico e volume
 percebido, sessão longa verificando fadiga do som mais repetido, jogo completável

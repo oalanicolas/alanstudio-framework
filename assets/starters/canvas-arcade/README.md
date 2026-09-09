@@ -96,7 +96,8 @@ delas subirem.
 
 O starter **não embarca arquivos de áudio**. `src/game/audio.js` traz a mixagem
 — barramentos, prioridade, ducking, legenda — com os seis papéis declarados e
-vazios, e `audioGaps()` transforma isso em lacuna observável. O piso do estúdio
+vazios. `audioGaps()`, exposto em `src/main.js`, transforma isso em lacuna
+observável: a página a exibe e `tests/lifecycle.test.mjs` a confere. O piso do estúdio
 é gravação licenciada ou design contemporâneo; sintetizar bipes aqui escolheria
 a estética errada por conveniência.
 
