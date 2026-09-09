@@ -6,9 +6,14 @@ criação nova precisa de briefing e decisões retomáveis. Não há número obr
 de agentes, stories ou rodadas.
 
 Para concepção e produção de um jogo novo, o [ciclo criativo](preproduction.md)
-detalha Game Brief, MDA, GDD, PoC, PRD, TDD, vertical slice, MVP e QA/playtest,
-com templates, critérios de prontidão e rastreabilidade. Em correções pequenas,
-atualize somente a decisão e a evidência afetadas no registro existente.
+detalha Game Brief, MDA, GDD, PoC, PRD, TDD, vertical slice, MVP, QA/playtest e
+release, com templates, critérios de prontidão e rastreabilidade. Em correções
+pequenas, atualize somente a decisão e a evidência afetadas no registro existente.
+
+Quanto acabamento cada passo pretende é assunto da
+[barra de acabamento](production-bar.md). Vale desde já a regra que reordena o
+trabalho: **o degrau percebido de um jogo é o mínimo entre suas dimensões, não a
+média** — procure a mais baixa antes de melhorar a que já está alta.
 
 ## 1. Estado e intenção
 
@@ -31,6 +36,11 @@ Para efeito sonoro novo, se o laboratório tiver `shared/sfx`, busque com
 `python3 scripts/game.py sfx search <termo>` antes de baixar. Leia a implementação
 **e um consumidor real**. Registre comando/resultado da busca, candidato e adequação.
 A busca é delimitada à necessidade, não uma auditoria de tudo.
+
+Para um jogo que ainda não existe no disco, o candidato é um starter: `doctor`
+lista os disponíveis e `init` monta o projeto. Partir de um starter é REUSE;
+escrever um laço, um save e uma abstração de entrada do zero é CREATE, e CREATE
+pede a lacuna explícita como qualquer outra.
 
 - **REUSE:** atende à experiência por uso ou configuração já suportada.
 - **ADAPT:** estender a fonte canônica preserva seus consumidores, qualidade e
@@ -76,6 +86,12 @@ Execute o validador do projeto e o cenário afetado. Para decisões relevantes, 
 alternativas nas mesmas condições e use revisão independente quando autorizada e
 proporcional; registre divergências que mudem a escolha. Não faça média entre arte,
 correção e diversão para compensar regressões.
+
+`context` só sabe dizer `mentioned` sobre pause, reset, seed e determinismo, porque
+lê arquivos sem executá-los. Quando os testes do projeto realmente exercitarem uma
+dessas capacidades, registre no recibo com `verify --proves <capacidade>`. A
+declaração é de quem executa, e o recibo cobre o resultado dos comandos, não a
+cobertura deles.
 
 ## 5. Encerrar e aprender
 

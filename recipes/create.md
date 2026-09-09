@@ -18,6 +18,10 @@ ao projeto, e prossiga com o recorte solicitado. O usuário não precisa pedir e
 
 1. Consulte o [playground](https://games.alanicolas.com/) e identifique uma família
    compatível. Procure código, contratos e conteúdo reutilizável no jogo escolhido.
+   Sem destino no disco, o candidato local é um starter: `doctor` lista os
+   disponíveis e `init <destino> --starter <starter>` monta o projeto com laço de
+   passo fixo, save versionado, entrada abstraída e testes que já rodam. Partir dele
+   é REUSE; recomeçar essa infraestrutura é CREATE e pede lacuna explícita.
    Som: se o laboratório tiver `shared/sfx`, use `sfx search` antes de qualquer
    download. Explique REUSE, ADAPT ou CREATE antes de produzir novos sistemas.
 2. Construa um ciclo jogável com uma decisão característica da proposta. Defina
@@ -41,4 +45,11 @@ BMad inspira leitura por etapa e retomada (`RE-GDS-002`, `RE-GDS-022`); seus pas
 textuais não são uma garantia de execução. [Fonte](../references/sources.md).
 
 Concluir exige conteúdo distintivo, cenário real e QA. Scaffold ou cópia que inicia
-continua sendo ponto de partida. Esta receita não copia nem publica projetos por si.
+continua sendo ponto de partida — um projeto recém-criado por `init` é exatamente
+isso, com documentos em rascunho e a decisão característica ainda por fazer.
+Esta receita não copia nem publica projetos por si.
+
+Ao decidir onde investir depois do primeiro ciclo, use a
+[barra de acabamento](../references/production-bar.md) e trabalhe pela dimensão mais
+baixa: o degrau percebido é o mínimo entre elas, e um jogo curto e coerente é lido
+como produto enquanto um grande e irregular é lido como protótipo.
