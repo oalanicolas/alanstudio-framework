@@ -156,7 +156,8 @@ Nenhuma destas barras é “ser AAA de publisher”.
 
 O [protocolo](quality.md) registra cenário, condições, referência, evidência
 técnica e observação em movimento. O instrumento único é o
-[checklist de piso](aaa-checklist.md) (`--stage aaa` / `template aaa`).
+[checklist de piso](aaa-checklist.md). O `context` escolhe o perfil em
+`finish`; `--stage aaa` só materializa o rascunho inteiro.
 Sem essa comparação, declare a lacuna. Não rebatize uma versão degradada
 como novo piso. Completar o checklist não é nota AAA.
 

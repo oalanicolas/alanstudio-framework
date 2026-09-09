@@ -205,8 +205,10 @@ sem apresentar todas as PoCs como se fossem uma única tarefa nem recomeçar o c
 
 `context <projeto> --stage gdd` adiciona guia e template GDD aos caminhos selecionados.
 `template gdd --project <projeto>` imprime o rascunho; `--output <arquivo-novo>` o
-salva recusando destino existente. `--stage aaa` / `template aaa` carrega o
-[checklist de piso](aaa-checklist.md); preencher linhas não certifica o jogo.
+salva recusando destino existente. `--stage vertical-slice` e `--stage qa` carregam a
+[guia do piso](aaa-checklist.md). `--stage aaa` / `template aaa` materializa
+o rascunho inteiro; preencher linhas não certifica o jogo. Observe o perfil
+em `finish` (núcleo / produto / promessa).
 A escolha e leitura do documento canônico são
 responsabilidade do agente. O comando não preenche design, revisa mérito ou cria um jogo.
 
