@@ -6,13 +6,19 @@
 // execuções com a mesma seed prova.
 
 export function createRng(seed, state = null) {
+  let currentSeed = seed;
   let current = (state === null ? hashSeed(seed) : state) >>> 0;
   return {
     get seed() {
-      return seed;
+      return currentSeed;
     },
     get state() {
       return current;
+    },
+    reseed(nextSeed, nextState = null) {
+      currentSeed = nextSeed;
+      current = (nextState === null ? hashSeed(nextSeed) : nextState) >>> 0;
+      return this;
     },
     next() {
       current = (current + 0x6d2b79f5) >>> 0;

@@ -8,7 +8,7 @@
 //
 // Uso: node tools/budget.mjs [--runs 20] [--seed 7]
 
-import { advance, createState, entityPoolStats, eventPoolStats, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
+import { advance, createState, entityPoolStats, eventPoolStats, rngPoolStats, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
 import { createRenderer } from "../src/game/render.js";
 import { fingerprint } from "../src/core/hash.js";
 import { createRng } from "../src/core/rng.js";
@@ -67,6 +67,7 @@ let prints = new Set();
 let totalSteps = 0;
 const poolStart = entityPoolStats();
 const eventStart = eventPoolStats();
+const rngStart = rngPoolStats();
 
 const renderer = createRenderer(stubCanvas(), { devicePixelRatio: 1 });
 renderer.resize(640, 360);
@@ -107,10 +108,16 @@ const simulation = percentile(samples);
 const presentation = percentile(presents);
 const pool = entityPoolStats();
 const events = eventPoolStats();
+const rng = rngPoolStats();
 const report = {
   runs,
   ticks_per_run: CONFIG.runTicks,
   steps: totalSteps,
+  scene: {
+    name: "playing.run",
+    ticks: CONFIG.runTicks,
+    draw: "stub",
+  },
   step_budget_ms: Number(stepBudgetMs.toFixed(4)),
   simulation_ms: simulation,
   presentation_ms: presentation,
@@ -128,11 +135,16 @@ const report = {
     released: events.released - eventStart.released,
     idle: events.idle,
   },
+  rng: {
+    created: rng.created,
+    reseeds: rng.reseeds - rngStart.reseeds,
+  },
+  measured: false,
   scope:
-    "Simulação + draw() num canvas stub. Não mede compositor, áudio, " +
-    "carregamento nem o dispositivo alvo. Orçamento de quadro real exige " +
-    "medir no artefato exportado. O poço relata reuso, não velocidade. " +
-    "Sem limiar de apresentação.",
+    "Cena playing.run: partida inteira + draw() num canvas stub. Não mede " +
+    "compositor, áudio, carregamento nem o dispositivo alvo. Orçamento de " +
+    "quadro real exige medir no artefato exportado. O poço e o gerador " +
+    "relatam reuso, não velocidade. Sem limiar de apresentação.",
 };
 
 console.log(JSON.stringify(report, null, 2));

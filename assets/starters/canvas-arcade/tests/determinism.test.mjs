@@ -36,6 +36,27 @@ function continueWith(state, intents) {
   return state;
 }
 
+test("reseed devolve o mesmo objeto à mesma sequência", () => {
+  const rng = createRng(42);
+  const first = [rng.next(), rng.next(), rng.next()];
+  const same = rng.reseed(42);
+  assert.equal(same, rng);
+  assert.deepEqual([rng.next(), rng.next(), rng.next()], first);
+});
+
+test("partidas intercaladas não contaminam o gerador compartilhado", () => {
+  const first = script(11, 240);
+  const second = script(12, 240);
+  const a = createState(11);
+  const b = createState(12);
+  for (let index = 0; index < first.length; index += 1) {
+    advance(a, first[index]);
+    advance(b, second[index]);
+  }
+  assert.equal(print(a), print(play(11, first)));
+  assert.equal(print(b), print(play(12, second)));
+});
+
 test("a mesma seed com as mesmas intenções produz o mesmo estado", () => {
   const intents = script(11, 900);
   assert.equal(print(play(11, intents)), print(play(11, intents)));

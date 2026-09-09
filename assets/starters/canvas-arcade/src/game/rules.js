@@ -81,6 +81,18 @@ const lerp = (from, to, amount) => from + (to - from) * amount;
 const entityPool = [];
 const poolCounts = { created: 0, acquired: 0, released: 0 };
 
+const spawnRng = createRng(1);
+let rngReseeds = 0;
+
+function bindSpawnRng(seed, state = null) {
+  rngReseeds += 1;
+  return spawnRng.reseed(seed, state);
+}
+
+export function rngPoolStats() {
+  return { created: 1, reseeds: rngReseeds };
+}
+
 export function entityPoolStats() {
   return {
     idle: entityPool.length,
@@ -159,7 +171,7 @@ function rain(state) {
 }
 
 export function createState(seed = 1, options = {}) {
-  const rng = createRng(seed);
+  const rng = bindSpawnRng(seed);
   const spawnProfile = resolveSpawnName(options.spawnProfile);
   const spawn = { ...loadSpawn(spawnProfile) };
   return {
@@ -210,7 +222,7 @@ export function remainingTicks(state) {
 // de jogo roda isto muitas vezes por segundo e alocar um estado novo por passo
 // produz coleta de lixo perceptível como engasgo. A chuva compacta o array vivo
 // e reusa o poço; o evento volta ao poço no passo seguinte; o telegraph
-// reusa um buffer. createRng no spawn ainda aloca.
+// reusa um buffer. O gerador da chuva reusa o mesmo objeto.
 export function advance(state, intent = neutralIntent()) {
   recycleEvents(state);
   if (state.phase !== "playing") {
@@ -340,7 +352,7 @@ function spawn(state) {
   state.spawnTimer = Math.round(
     lerp(table.intervalTicks, table.minIntervalTicks, progress) * intervalScale,
   );
-  const rng = createRng(state.seed, state.rngState);
+  const rng = bindSpawnRng(state.seed, state.rngState);
   const practicing = state.tick < table.practiceTicks;
   const hazardChance = practicing
     ? 0

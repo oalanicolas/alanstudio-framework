@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.39 — O gerador da chuva reusa e a cena ganha nome
+
+A chuva alocava um gerador novo a cada queda. O budget cronometrava o
+stub sem nomear a cena. `createRng` agora reusa o mesmo objeto via
+`reseed`. O budget declara `playing.run` e conta as reseeds.
+`performance` permanece `playable`: stub não é compositor nem
+dispositivo. Só `release` fica no piso.
+
+O que 0.9.39 não afirma: o harness não mediu quadro no aparelho e
+nomear a cena não é caber no orçamento.
+
 ## 0.9.38 — O primeiro ciclo nomeia o verbo e as teclas
 
 `start` e `guide` apontavam o serve e o `note`, mas quem ia jogar

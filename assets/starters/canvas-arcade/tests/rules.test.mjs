@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, createState, entityPoolStats, eventPoolStats, neutralIntent, CONFIG, PLAYER_Y } from "../src/game/rules.js";
+import { advance, approaching, createState, entityPoolStats, eventPoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -292,6 +292,21 @@ test("entidade morta volta ao poço e o próximo spawn a reusa", () => {
   advance(state, neutralIntent());
   assert.equal(state.entities[0], born, "o poço devolve o mesmo objeto, não um novo");
   assert.equal(entityPoolStats().created, before.created, "reusar não cria outro objeto");
+});
+
+test("o gerador da chuva reusa o mesmo objeto entre partidas", () => {
+  const before = rngPoolStats();
+  const first = createState(11);
+  first.spawnTimer = 1;
+  advance(first, neutralIntent());
+  const second = createState(12);
+  second.spawnTimer = 1;
+  advance(second, neutralIntent());
+  const after = rngPoolStats();
+  assert.equal(after.created, 1);
+  assert.equal(after.created, before.created);
+  assert.ok(after.reseeds > before.reseeds);
+  assert.notEqual(first.rngState, second.rngState);
 });
 
 test("retomar JSON não puxa mortos do poço", () => {
