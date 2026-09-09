@@ -36,6 +36,7 @@ function fakeContext() {
         buffer: null,
         started: false,
         stopped: false,
+        playbackRate: { value: 1 },
         connect() {},
         loop: false,
         start() {
@@ -151,6 +152,27 @@ test("duas variantes do mesmo papel alternam em vez de repetir", () => {
   assert.equal(context.sources[0].buffer.mark, "a");
   assert.equal(context.sources[1].buffer.mark, "b");
   assert.deepEqual(audio.missing().registered, ["collect"]);
+});
+
+test("coleta e guarda sobem de tom com a corrente; o erro não", () => {
+  const { audio, context } = build();
+  audio.register("collect", { duration: 0.1 });
+  audio.register("bank", { duration: 0.1 });
+  audio.register("hit", { duration: 0.1 });
+  audio.register("dash", { duration: 0.1 });
+  audio.play("collect", { chain: 1 });
+  audio.play("collect", { chain: 5 });
+  audio.play("bank", { chain: 5 });
+  audio.play("hit", { chain: 5 });
+  audio.play("dash", { chain: 5 });
+  const [first, second, bank, hit, dash] = context.sources;
+  assert.ok(first.playbackRate.value > 1);
+  assert.ok(second.playbackRate.value > first.playbackRate.value, "elo maior precisa subir o tom");
+  assert.equal(bank.playbackRate.value, second.playbackRate.value);
+  assert.equal(hit.playbackRate.value, 1, "o erro não herda o tom da aposta");
+  assert.equal(dash.playbackRate.value, 1);
+  audio.play("collect");
+  assert.equal(context.sources.at(-1).playbackRate.value, 1, "sem corrente o tom não inventa aposta");
 });
 
 test("registrar um som o remove da lacuna e o toca", () => {

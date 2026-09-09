@@ -79,6 +79,8 @@ export const CONFIG = {
     chainOrbit: 15, // raio ao redor do jogador
     chainSpin: 0.035, // órbita por tick; com menos movimento a formação trava
     chainPipSize: 2.8,
+    chainRateStep: 0.06, // cada elo sobe o tom da coleta e da guarda
+    chainRateMax: 1.48, // teto: a conta continua no HUD
   },
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
@@ -97,6 +99,11 @@ export const CONFIG = {
 export function chainPipCount(chain) {
   const n = Number.isFinite(chain) ? Math.max(0, Math.floor(chain)) : 0;
   return Math.min(n, CONFIG.feel.chainPips);
+}
+
+export function chainPlaybackRate(chain) {
+  const n = Number.isFinite(chain) ? Math.max(0, Math.floor(chain)) : 0;
+  return Math.min(CONFIG.feel.chainRateMax, 1 + n * CONFIG.feel.chainRateStep);
 }
 
 export function chainPipAt(index, count, x, y, tick, reduced) {

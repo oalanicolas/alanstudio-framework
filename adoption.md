@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.58 — A corrente também se ouve
+
+O corpo já mostrava a aposta. A voz da coleta era a mesma no elo 1
+e no 8. Coleta e guarda sobem de tom com a corrente; o erro e o
+dash não herdam. O teto do tom não esconde a conta. `heard`
+continua falso. `audio_mix` permanece `slice`: taxa no stub não é
+mix ouvido. Só `release` fica no piso.
+
+O que 0.9.58 não afirma: o harness não ouviu a corrente e ninguém
+aprovou o mix.
+
 ## 0.9.57 — A corrente mora no corpo
 
 A aposta do verbo era um número no HUD. Cada elo vira um pip em

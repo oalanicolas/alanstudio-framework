@@ -6,7 +6,8 @@
 // A cama (`bed`) ocupa o barramento de música em loop; não é informação
 // de jogo e não ganha legenda.
 // 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão — esses
-// arquivos não usam nenhum dos quatro. Arquivo no disco não é mixagem
+// arquivos não usam nenhum dos quatro. Coleta e guarda sobem de tom
+// com a corrente; o erro não herda. Arquivo no disco não é mixagem
 // ouvida: `heard` no harness continua falso.
 //
 // O jogo carrega o arquivo no mixer. Sem esse consumidor, arquivo no
@@ -17,6 +18,17 @@
 // completável com o áudio desligado.
 
 import { DEFAULT_BUSES } from "../core/settings.js";
+import { chainPlaybackRate } from "./rules.js";
+
+const CHAIN_ROLES = new Set(["collect", "bank"]);
+
+function resolveRate(id, extra = {}) {
+  if (Number.isFinite(extra.rate)) return extra.rate;
+  if (CHAIN_ROLES.has(id) && Number.isFinite(extra.chain)) {
+    return chainPlaybackRate(extra.chain);
+  }
+  return 1;
+}
 
 export const BUSES = ["master", "music", "sfx", "ui"];
 // Folga no master: overlap de vozes não senta no teto digital.
@@ -113,7 +125,7 @@ export function createAudio(options = {}) {
       const copy = bytes instanceof ArrayBuffer ? bytes.slice(0) : bytes;
       return ctx.decodeAudioData(copy);
     },
-    play(id) {
+    play(id, extra = {}) {
       const definition = SOUNDS[id];
       if (!definition || disposed) return false;
       if (definition.caption && settings.captions !== false) {
@@ -143,6 +155,8 @@ export function createAudio(options = {}) {
       }
       const source = context.createBufferSource();
       source.buffer = buffer;
+      const rate = resolveRate(id, extra);
+      if (source.playbackRate) source.playbackRate.value = rate;
       source.connect(gains[definition.bus] ?? gains.master);
       source.start();
       const voice = {

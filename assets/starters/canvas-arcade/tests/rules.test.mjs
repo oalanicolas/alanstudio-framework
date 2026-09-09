@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt } from "../src/game/rules.js";
+import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -153,6 +153,10 @@ test("a corrente no corpo conta o que o HUD já sabe, com teto", () => {
   assert.deepEqual(a, b, "com menos movimento a formação não orbita");
   const c = chainPipAt(0, 3, 100, PLAYER_Y, 40, false);
   assert.notEqual(a.x, c.x);
+  assert.equal(chainPlaybackRate(0), 1);
+  assert.ok(chainPlaybackRate(1) > 1);
+  assert.ok(chainPlaybackRate(5) > chainPlaybackRate(1));
+  assert.equal(chainPlaybackRate(20), CONFIG.feel.chainRateMax);
 });
 
 test("a ameaça marca o trilho antes do contato e some na faixa", () => {

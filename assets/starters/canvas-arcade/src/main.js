@@ -109,7 +109,7 @@ export function createGame(options = {}) {
   function step(intent) {
     advanceRules(state, intent);
     for (const event of state.events) {
-      audio.play(event.type);
+      audio.play(event.type, event);
       haptics.play(event.type);
     }
     if (state.phase === "over" && !recorded) {
