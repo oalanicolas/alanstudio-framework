@@ -539,7 +539,7 @@ test("o overlay do fim nomeia a corrente que caiu e a queda vence a cortina", ()
   );
 
   const curtain = frame.rects.findIndex(
-    (rect) => rect.width === FIELD.width && rect.height === FIELD.height && String(rect.style).startsWith("rgba(0,0,0"),
+    (rect) => rect.width === FIELD.width && rect.height === FIELD.height && rect.style === PALETTES.normal.plate,
   );
   assert.ok(curtain >= 0, "esperava a cortina do fim");
   const after = frame.rects.slice(curtain + 1).filter(
@@ -555,6 +555,42 @@ test("o overlay do fim nomeia a corrente que caiu e a queda vence a cortina", ()
     false,
     `sem aposta o overlay não inventa o rótulo: ${JSON.stringify(idle)}`,
   );
+});
+
+test("a cortina segue o look, a legenda vence e o texto respeita a escala", () => {
+  const ended = createState(1);
+  ended.phase = "over";
+  ended.score = 3;
+  const captions = [{ text: "fim da partida", count: 1 }];
+  const dusk = paint(ended, { look: "dusk" }, { captions, best: 0 });
+  assert.equal(
+    dusk.rects.some((rect) => rect.width === FIELD.width && rect.height === FIELD.height && rect.style === PALETTES.dusk.plate),
+    true,
+    "dusk não herda o preto frio da cortina",
+  );
+  assert.equal(
+    dusk.rects.some((rect) => rect.width === FIELD.width && rect.height === FIELD.height && String(rect.style) === "rgba(0,0,0,0.62)"),
+    false,
+    `cortina fria no look quente: ${JSON.stringify(dusk.rects.filter((rect) => rect.width === FIELD.width).map((rect) => rect.style))}`,
+  );
+
+  const curtain = dusk.rects.findIndex(
+    (rect) => rect.width === FIELD.width && rect.height === FIELD.height && rect.style === PALETTES.dusk.plate,
+  );
+  assert.ok(curtain >= 0, "esperava a cortina do look");
+  const caption = dusk.texts.find((item) => item.text === "fim da partida");
+  assert.ok(caption, `esperava a legenda no fim: ${JSON.stringify(dusk.texts.map((item) => item.text))}`);
+  const platesAfter = dusk.rects.slice(curtain + 1).filter((rect) => rect.style === PALETTES.dusk.plate && rect.width < 200);
+  assert.ok(platesAfter.length >= 1, "a faixa da legenda precisa nascer depois da cortina");
+
+  const titleSize = (frame) => {
+    const title = frame.texts.find((item) => item.text.startsWith("Fim"));
+    assert.ok(title, `esperava o título do fim: ${JSON.stringify(frame.texts.map((item) => item.text))}`);
+    return title.bottom - title.top;
+  };
+  const compact = titleSize(paint(ended));
+  const large = titleSize(paint(ended, { uiScale: 1.6 }));
+  assert.ok(large > compact, `uiScale precisa crescer o overlay: ${compact} → ${large}`);
 });
 
 test("a entrada da corrente pinta o orbe a caminho da órbita", () => {

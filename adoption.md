@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.72 — A cortina também veste o look
+
+A pausa e o fim pintavam um preto frio por cima do campo. Em dusk
+a cena esquentava e a cortina continuava fria; a legenda e a
+escala da interface morriam embaixo. A cortina reusa a placa do
+look; a faixa nasce depois; o texto do overlay segue `uiScale`.
+`felt` e `verified` continuam falsos. `feel` permanece `playable`;
+`art_direction` e `accessibility` permanecem `slice`. Token no
+disco não é direção observada. Só `release` fica no piso.
+
+O que 0.9.72 não afirma: o harness não comparou o look em
+movimento e a faixa no stub não é sessão de alcance.
+
 ## 0.9.71 — O convite some a tabela
 
 A página para quem nunca viu o jogo pedia para não ler a tabela e

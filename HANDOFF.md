@@ -47,14 +47,16 @@ pulsa o controle no impacto, deixa um rastro
 por verbo e põe a corrente em órbita no corpo. A coleta leva o
 orbe ao slot; no erro os pips quebram para fora; na guarda eles
 voam para o placar; no fim a aposta não guardada cai e o overlay
-nomeia o que caiu — a queda vence a cortina. O raspo
+nomeia o que caiu — a queda vence a cortina, que reusa a
+placa do look. As legendas nascem depois da cortina; o texto
+do overlay segue `uiScale`. O raspo
 risca o campo sem pulsar o controle. O pulso some na pausa e no
 descarte.
 
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
 só levanta quando falta a declaração. O starter expõe assistência,
-`uiScale`, preset de uma mão (o aviso, o overlay e o `cycle.hand`
+`uiScale` (o overlay também), preset de uma mão (o aviso, o overlay e o `cycle.hand`
 nomeiam IJKL + P/O; o stub coleta, guarda, pausa e reinicia nesse
 cluster) e `docs/access.md`. O aviso do primeiro ciclo nomeia teclado,
 toque e controle; o dash e o mapa da superfície que falou também

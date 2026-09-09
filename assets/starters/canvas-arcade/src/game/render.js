@@ -88,13 +88,15 @@ export function createRenderer(canvas, options = {}) {
     drawMotes(context, palette, state, reduced, ending ? (mote) => mote.kind !== "lapse" : null);
     const reserved = drawHud(context, palette, state, settings, extra, lines);
     drawCoach(context, palette, extra.hint, reserved, settings, extra, lines);
+    if (frame.paused) drawOverlay(context, palette, lines.paused, lines.resume, settings);
+    else if (ending) {
+      drawOverlay(context, palette, `${lines.over} — ${state.score}`, overHint(state, lines), settings);
+      drawMotes(context, palette, state, reduced, (mote) => mote.kind === "lapse");
+    }
+    // A cortina cobria a faixa. Com o áudio desligado a informação
+    // existia e sumia no fim e na pausa. A legenda nasce depois.
     if (settings.captions !== false) {
       drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
-    }
-    if (frame.paused) drawOverlay(context, palette, lines.paused, lines.resume);
-    else if (ending) {
-      drawOverlay(context, palette, `${lines.over} — ${state.score}`, overHint(state, lines));
-      drawMotes(context, palette, state, reduced, (mote) => mote.kind === "lapse");
     }
   }
 
@@ -324,16 +326,20 @@ export function createRenderer(canvas, options = {}) {
     return parts.join(" · ");
   }
 
-  function drawOverlay(target, palette, title, hint) {
-    target.fillStyle = "rgba(0,0,0,0.62)";
+  function drawOverlay(target, palette, title, hint, settings = {}) {
+    // A cortina reusa a placa do look — dusk não herda o preto frio.
+    // Token no disco não é direção observada. O texto segue uiScale
+    // como o HUD; escala no stub não é sessão de alcance.
+    const scale = settings.uiScale ?? 1;
+    target.fillStyle = palette.plate;
     target.fillRect(0, 0, FIELD.width, FIELD.height);
     target.textAlign = "center";
     target.fillStyle = palette.text;
-    target.font = "16px system-ui, sans-serif";
-    target.fillText(title, FIELD.width / 2, FIELD.height / 2 - 14);
-    target.font = "8px system-ui, sans-serif";
+    target.font = `${16 * scale}px system-ui, sans-serif`;
+    target.fillText(title, FIELD.width / 2, FIELD.height / 2 - 14 * scale);
+    target.font = `${8 * scale}px system-ui, sans-serif`;
     target.fillStyle = palette.muted;
-    target.fillText(hint, FIELD.width / 2, FIELD.height / 2 + 8);
+    target.fillText(hint, FIELD.width / 2, FIELD.height / 2 + 8 * scale);
     target.textAlign = "left";
   }
 

@@ -38,7 +38,8 @@ O starter `canvas-arcade` também expõe `assist` e declara em
 `docs/access.md` o que o recorte não atende. O aviso do primeiro ciclo
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
 Estilhaço no trilho pede o dash; toque e controle ganham passo depois
-do movimento. Overlay e HUD confirmam o aparelho que falou por último. O harness não joga com o
+do movimento. Overlay e HUD confirmam o aparelho que falou por último;
+o overlay segue `uiScale` e as legendas vencem a cortina no stub. O harness não joga com o
 modo ativo.
 
 Não declare cobertura que não observou. Verificação automática de contraste é útil

@@ -153,7 +153,8 @@ Cada verbo deixa um rastro próprio no campo; com menos movimento o
 rastro vira marca. A corrente mora no corpo em pips; o HUD continua
 com a conta. A coleta leva o orbe ao slot; o erro espalha os pips;
 na guarda eles voam para o placar; no fim a aposta não guardada
-cai e o overlay nomeia o que caiu — a queda vence a cortina. O
+cai e o overlay nomeia o que caiu — a queda vence a cortina, que
+reusa a placa do look. As legendas nascem depois da cortina. O
 raspo risca o campo. Nenhum some. A conta no estado
 sobrevive ao fim — a órbita não.
 A entrada continua separada da
