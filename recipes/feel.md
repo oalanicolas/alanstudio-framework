@@ -6,9 +6,9 @@ diferença percebida entre intenção e resposta atual.
 Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured`. `observed` é sempre
-falso: o harness não assiste à sessão. O starter expõe `lastRun` (seed,
-pontos, coleta, erro, guarda) como candidato ao campo de medição — número
-no disco não é causa.
+falso: o harness não assiste à sessão. O starter grava um candidato com
+`npm run session` em `docs/playtest/last-run.json`; `note --from-run`
+anexa esses números. Número no disco não é causa nem sessão observada.
 
 Feel é o intervalo entre o input e a certeza de que o mundo respondeu.
 Swink: controle em tempo real, espaço simulado, polish. Jam e piso de

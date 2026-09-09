@@ -1871,6 +1871,33 @@ def playtest_findings(project):
     return found
 
 
+LAST_RUN = "docs/playtest/last-run.json"
+
+
+def last_run_path(project):
+    path = Path(project) / LAST_RUN
+    if path.is_file() and not path.is_symlink():
+        return LAST_RUN
+    return None
+
+
+def attach_run_candidate(project, fields=None, source=None):
+    project = Path(project)
+    path = Path(source) if source else project / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        raise ValueError(f"sem partida no disco: {path.as_posix()}")
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"partida ilegível: {path.as_posix()}") from error
+    if not isinstance(data, dict):
+        raise ValueError(f"partida ilegível: {path.as_posix()}")
+    run = data["run"] if isinstance(data.get("run"), dict) else data
+    payload = dict(fields or {})
+    payload["run"] = json.dumps(run, ensure_ascii=False, separators=(",", ":"))
+    return payload, path
+
+
 def playtest_reading(project):
     project = Path(project)
     observations = observation_receipts(project)
@@ -1879,12 +1906,14 @@ def playtest_reading(project):
     qa_current = document_is_current(qa)
     expected = bool(observations) or qa_current
     structured = bool(findings)
+    candidate = last_run_path(project)
     return {
         "schema_version": 1,
         "project": str(project),
         "exists": project.is_dir(),
         "observations": [item["path"] for item in observations],
         "findings": findings,
+        "candidate": candidate,
         "qa_current": qa_current,
         "expected": expected,
         "structured": structured,
@@ -1893,13 +1922,14 @@ def playtest_reading(project):
         "guide": str(FRAMEWORK / "recipes/feel.md"),
         "rule": (
             "Recibo de observação sem problema, evidência, hipótese e medição "
-            "é impressão. Os quatro no disco não são playtest observado."
+            "é impressão. Os quatro no disco não são playtest observado. "
+            "last-run.json é candidato, não causa."
         ),
         "scope": (
             "Procura os quatro campos num documento ou num record de "
-            "observação, e se docs/qa.md deixou de ser rascunho. Não assiste "
-            "a sessão, não conta jogadores e não atribui causa. `observed` é "
-            "sempre falso."
+            "observação, e se docs/qa.md deixou de ser rascunho. Relata "
+            f"`{LAST_RUN}` quando existe. Não assiste a sessão, não conta "
+            "jogadores e não atribui causa. `observed` é sempre falso."
         ),
     }
 
@@ -3239,14 +3269,22 @@ def next_step(project, focus="create", studies_root=None):
         propose(
             "Escrever o achado de playtest no formato problema, evidência, hipótese e medição",
             "Há observação (ou um qa.md vigente) e nenhum achado com os quatro "
-            "campos. Nota de partida não é métrica. O harness não assistiu à "
-            "sessão e não conta jogadores.",
+            "campos. Nota de partida não é métrica. last-run.json é candidato, "
+            "não causa. O harness não assistiu à sessão e não conta jogadores.",
             "Um documento ou o próprio recibo nomeia problema, evidência, "
             "hipótese e medição — a causa e o tamanho do efeito continuam "
             "pendentes.",
             [
                 harness_command("playtest", project),
                 harness_command("feel", project),
+                *(
+                    [harness_command(
+                        "note", project, "--author", "NOME",
+                        "--note", "o que o verbo sentiu", "--from-run",
+                    )]
+                    if playtest.get("candidate")
+                    else []
+                ),
             ],
             "playtest.unstructured",
         )
@@ -3551,6 +3589,7 @@ def next_step(project, focus="create", studies_root=None):
             "audio_roles_empty": roles["empty"],
             "feel_unobserved": feel["unobserved"],
             "playtest_unstructured": playtest["unstructured"],
+            "playtest_candidate": playtest.get("candidate"),
             "access_missing": access["missing"] if payload["kind"] else [],
             "save_unversioned": persist["unversioned"],
             "performance_unbudgeted": perf["unbudgeted"],
@@ -3761,9 +3800,13 @@ def record(project, kind, author, note, fields, attachments, output):
     return report
 
 
-def note_observation(project, author, note, fields=None, output=None, role="human", scenario="primeira partida"):
+def note_observation(project, author, note, fields=None, output=None, role="human", scenario="primeira partida", from_run=False):
     project = Path(project)
     payload = dict(fields or {})
+    attached = None
+    if from_run:
+        source = from_run if from_run is not True else None
+        payload, attached = attach_run_candidate(project, payload, source)
     if nonempty(scenario) and not nonempty(payload.get("scenario")):
         payload["scenario"] = scenario
     if nonempty(role) and not nonempty(payload.get("role")):
@@ -3773,6 +3816,8 @@ def note_observation(project, author, note, fields=None, output=None, role="huma
     report["command"] = "note"
     report["felt"] = False
     report["observed"] = False
+    if attached is not None:
+        report["from_run"] = attached.as_posix() if attached.is_absolute() else attached.as_posix()
     return report
 
 
@@ -3931,6 +3976,10 @@ def main():
     noted.add_argument("--role", choices=("human", "agent"), default="human")
     noted.add_argument("--scenario", default="primeira partida")
     noted.add_argument("--field", action="append", default=[], help="chave=valor extra; problema/evidência/hipótese/medição fecham o achado")
+    noted.add_argument(
+        "--from-run", nargs="?", const=True, default=False, metavar="ARQUIVO",
+        help="anexa docs/playtest/last-run.json (ou o arquivo) como candidato de medição; não fecha o achado",
+    )
     noted.add_argument("--output", type=Path, help="pasta nova; por omissão, docs/playtest/<utc>")
     sfx = commands.add_parser("sfx", parents=[common], help="catálogo compartilhado de efeitos sonoros")
     sfx_cmd = sfx.add_subparsers(dest="sfx_action")
@@ -4015,6 +4064,7 @@ def main():
             emit(note_observation(
                 resolve(args.project, root), args.author, args.note,
                 parse_fields(args.field), args.output, args.role, args.scenario,
+                args.from_run,
             ))
         elif args.action == "record":
             emit(record(resolve(args.project, root), args.kind, args.author, args.note, parse_fields(args.field), args.attach, args.output.absolute()))

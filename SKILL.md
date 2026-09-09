@@ -163,7 +163,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    recibo de observação no disco. `felt` é sempre falso. Sem recibo, `next`
    propõe `feel.unobserved` e aponta `note`.
    **`note <projeto>`** grava o recibo curto (cenário e papel por omissão)
-   em `docs/playtest/<utc>/`. Não joga e não sente.
+   em `docs/playtest/<utc>/`. `--from-run` anexa `docs/playtest/last-run.json`
+   como candidato de medição e não fecha o achado. Não joga e não sente.
    **`access` / `save` / `budget`** leem opção de alcance (incluindo
    uiScale e preset de uma mão), versão de save e artefato de orçamento.
    `verified`/`trusted`/`measured` são sempre falsos.

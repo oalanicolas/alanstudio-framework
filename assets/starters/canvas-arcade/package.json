@@ -15,6 +15,7 @@
     "peak": "node tools/peak.mjs",
     "mix": "node tools/mix.mjs",
     "probe": "node tools/probe.mjs",
+    "session": "node tools/session.mjs",
     "size": "node tools/size.mjs"
   },
   "engines": {

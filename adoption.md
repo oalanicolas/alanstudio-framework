@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.30 — Candidato de medição no disco
+
+`npm run session` corre uma partida simulada e grava
+`docs/playtest/last-run.json`. `note --from-run` anexa o resumo. O
+achado continua sem os quatro campos; `observed` continua falso.
+Número no disco não é causa nem sessão observada. Só `release` fica
+no piso.
+
+O que 0.9.30 não afirma: ninguém jogou, o harness não assistiu e a
+métrica não fecha o playtest.
+
 ## 0.9.29 — Antecipação no trilho e recuperação visível
 
 A cadeia do feel ganhava contato e câmera e chegava “de graça” no

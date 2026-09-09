@@ -47,8 +47,10 @@ bytes sem teto.
 
 **Playtest:** `playtest` lê o formato problema/evidência/hipótese/medição.
 `observed` é sempre falso. Nota de partida sem os quatro campos vira
-`playtest.unstructured`. O starter guarda `lastRun` como candidato à
-medição. `docs/release.md` vigente não torna `shipped` verdadeiro.
+`playtest.unstructured`. O starter grava `docs/playtest/last-run.json`
+com `npm run session`; `note --from-run` anexa o candidato. Número no
+disco não é causa. `docs/release.md` vigente não torna `shipped`
+verdadeiro.
 
 Esta árvore reúne produção, pacotes e memória persistente do PR #2 com os
 critérios observáveis, perguntas de valor e regras de escopo do PR #3.

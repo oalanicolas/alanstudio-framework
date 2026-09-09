@@ -2157,6 +2157,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(session["structured"])
         self.assertFalse(session["unstructured"])
         self.assertFalse(session["observed"])
+        self.assertIsNone(session["candidate"])
 
     def test_art_names_a_canvas_without_palette_or_bible(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
@@ -2270,11 +2271,50 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(report["unstructured"])
         self.assertFalse(report["structured"])
         self.assertFalse(report["observed"])
+        self.assertIsNone(report["candidate"])
         proposal = next(
             item for item in self.proposals(game.next_step(self.project, "feel"))
             if item["basis"] == "playtest.unstructured"
         )
         self.assertIn("problema", proposal["action"])
+
+    def test_note_from_run_attaches_the_candidate_without_closing_the_finding(self):
+        destination = self.root / "com-corrida"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 1,
+            "seed": 7,
+            "policy": "nearest-orb",
+            "run": {"seed": 7, "score": 9, "ticks": 3600, "collected": 4, "hits": 1, "banks": 2},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        reading = game.playtest_reading(destination)
+        self.assertEqual(reading["candidate"], "docs/playtest/last-run.json")
+        self.assertFalse(reading["expected"])
+        self.assertFalse(reading["structured"])
+        self.assertFalse(reading["observed"])
+        report = game.note_observation(
+            destination, "Ana", "o dash atravessou e a corrente ficou", from_run=True,
+        )
+        self.assertIn("score\":9", report["fields"]["run"])
+        self.assertFalse(report["felt"])
+        self.assertFalse(report["observed"])
+        after = game.playtest_reading(destination)
+        self.assertTrue(after["unstructured"])
+        self.assertFalse(after["structured"])
+        self.assertFalse(after["observed"])
+        proposal = next(
+            item for item in self.proposals(game.next_step(destination, "feel"))
+            if item["basis"] == "playtest.unstructured"
+        )
+        self.assertTrue(any("--from-run" in command for command in proposal["commands"]))
+        missing = self.root / "sem-corrida"
+        game.init(missing, "canvas-arcade")
+        with self.assertRaisesRegex(ValueError, "sem partida"):
+            game.note_observation(missing, "Ana", "nada no disco", from_run=True)
 
     def test_a_structured_finding_is_form_not_an_observed_session(self):
         (self.project / "index.html").write_text("<canvas></canvas>")

@@ -40,6 +40,7 @@ test("o export copia o jogo e deixa de fora o que só serve para desenvolver", a
     assert.equal(existsSync(join(dist, "tools/budget.mjs")), false, "orçamento não embarca");
     assert.equal(existsSync(join(dist, "tools/mix.mjs")), false, "mix de medição não embarca");
     assert.equal(existsSync(join(dist, "tools/size.mjs")), false, "tamanho não embarca");
+    assert.equal(existsSync(join(dist, "tools/session.mjs")), false, "sessão simulada não embarca");
     assert.equal(existsSync(join(dist, "tools/export.mjs")), false, "o export não se copia");
 
     const server = spawn(process.execPath, ["tools/serve.mjs"], {

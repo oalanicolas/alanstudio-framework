@@ -34,6 +34,7 @@ npm run budget     # custo da simulação e do draw num canvas stub
 npm run peak       # pico de cada WAV no disco; não é mix ouvido
 npm run mix        # soma as vozes de uma partida simulada; não é mix ouvido
 npm run probe      # dispara o buffer declarado; não é peso percebido
+npm run session    # partida simulada → docs/playtest/last-run.json; não é sessão observada
 npm run size       # bytes de dist/; sem teto e sem aprovação
 npm run build      # copia a árvore jogável para dist/; não prova outra máquina
 ```
@@ -177,7 +178,7 @@ src/main.js   montagem e contrato de ciclo de vida
 data/         conteúdo separado da regra (chuva, HUD e avisos)
 docs/         art-bible vigente — o init não o reescreve
 public/sfx/   design original dos seis papéis, com recibo
-tools/        servidor, orçamento, mix, tamanho, export, nascer mesa e gerar sfx
+tools/        servidor, orçamento, mix, sessão, tamanho, export, nascer mesa e gerar sfx
 tests/        regras, determinismo, ciclo de vida, save, mixagem, ensino, export
 ```
 
