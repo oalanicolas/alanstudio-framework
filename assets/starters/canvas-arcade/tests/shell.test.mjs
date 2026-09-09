@@ -10,7 +10,7 @@ import assert from "node:assert/strict";
 
 import { createGame } from "../src/main.js";
 import { memoryStorage } from "../src/core/storage.js";
-import { DEFAULT_BINDINGS } from "../src/core/settings.js";
+import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "../src/core/settings.js";
 
 function shell(overrides = {}) {
   const listeners = [];
@@ -49,6 +49,12 @@ function shell(overrides = {}) {
 
   return {
     game,
+    hold(code) {
+      dispatch("keydown", { code, preventDefault() {} });
+    },
+    release(code) {
+      dispatch("keyup", { code });
+    },
     press(action) {
       const code = DEFAULT_BINDINGS[action][0];
       dispatch("keydown", { code, preventDefault() {} });
@@ -124,6 +130,25 @@ test("um comando dado durante a pausa não é engolido pela intenção", () => {
   press("pause");
   frame();
   assert.equal(game.paused, false);
+  game.dispose();
+});
+
+test("o preset de uma mão move com o cluster direito", () => {
+  const { game, frame, hold, release } = shell();
+  game.updateSettings({ oneHand: true, bindings: ONE_HAND_BINDINGS });
+  game.start();
+  frame();
+  const origin = game.observe().player.x;
+
+  hold("ArrowLeft");
+  frame();
+  assert.equal(game.observe().player.x, origin, "seta não move no preset");
+  release("ArrowLeft");
+
+  hold("KeyJ");
+  frame();
+  frame();
+  assert.ok(game.observe().player.x < origin, "J precisa mover para a esquerda");
   game.dispose();
 });
 

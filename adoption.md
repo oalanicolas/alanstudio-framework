@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.23 — Desenho no stub, identidade lida e cluster de uma mão
+
+`npm run budget` cronometra o `draw` num canvas stub além da
+simulação. `performance` permanece `playable`: stub não é compositor
+nem dispositivo. `ship` relata `dist/VERSION.json` quando o arquivo
+existe; `shipped` continua falso. `npm run size` relata bytes de
+`dist/` sem teto. O starter oferece `oneHand` no cluster direito
+(IJKL + P/O); `access` passa a ver o preset. Acessibilidade permanece
+`slice`: sessão com uma mão não foi observada. Só `release` fica no
+piso.
+
+O que 0.9.23 não afirma: o harness não mediu quadro no dispositivo,
+não jogou com uma mão e ninguém correu o artefato fora daqui.
+
 ## 0.9.22 — Artefato com identidade e save na interrupção
 
 O export grava `dist/VERSION.json` (versão e HEAD). `shipped` continua

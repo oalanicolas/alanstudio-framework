@@ -31,13 +31,15 @@ não há recibo.
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
 só levanta quando falta a declaração. O starter expõe assistência,
-`uiScale` e `docs/access.md`; `pagehide` descarrega o save.
+`uiScale`, preset de uma mão e `docs/access.md`; `pagehide` descarrega
+o save. `npm run budget` cronometra simulação e `draw` no stub.
 
 **Arte, conteúdo, empacotar:** `art`, `content` e `ship` leem paleta ou
 art-bible vigente, dado fora do código e passo de build/export.
 `consistent`/`enough`/`shipped` são sempre falsos. O starter declara
 paleta, extrai a chuva, nasce mesa com `npm run table` e empacota com
-`npm run build`.
+`npm run build`. `ship` relata `dist/VERSION.json` quando existe;
+`npm run size` relata bytes sem teto.
 
 **Playtest:** `playtest` lê o formato problema/evidência/hipótese/medição.
 `observed` é sempre falso. Nota de partida sem os quatro campos vira

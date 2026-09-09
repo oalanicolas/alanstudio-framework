@@ -1,14 +1,15 @@
-// Orçamento: mede a simulação sem apresentação.
+// Orçamento: mede a simulação e o caminho de desenho num canvas stub.
 //
 // Isola o custo das regras do custo de desenhar. Se a simulação já não cabe no
-// orçamento headless, nenhuma otimização de render resolve. Reporta a
-// distribuição do tempo de passo — não a média — porque é o pior percentil que
-// o jogador sente, e a impressão determinística da partida, para que uma
-// alteração de desempenho que mude o comportamento seja detectada aqui.
+// orçamento headless, nenhuma otimização de render resolve. O draw no stub
+// exercita o caminho de apresentação — não o compositor nem o dispositivo.
+// Reporta a distribuição do tempo — não a média — porque é o pior percentil
+// que o jogador sente, e a impressão determinística da partida.
 //
 // Uso: node tools/budget.mjs [--runs 20] [--seed 7]
 
 import { advance, createState, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
+import { createRenderer } from "../src/game/render.js";
 import { fingerprint } from "../src/core/hash.js";
 import { createRng } from "../src/core/rng.js";
 
@@ -21,9 +22,52 @@ const runs = argument("runs", 20);
 const baseSeed = argument("seed", 7);
 const stepBudgetMs = 1000 / TICK_HZ;
 
+function stubCanvas() {
+  const context = {
+    setTransform() {},
+    save() {},
+    restore() {},
+    beginPath() {},
+    closePath() {},
+    moveTo() {},
+    lineTo() {},
+    arc() {},
+    ellipse() {},
+    quadraticCurveTo() {},
+    stroke() {},
+    fill() {},
+    fillRect() {},
+    roundRect() {},
+    strokeRect() {},
+    clearRect() {},
+    rect() {},
+    createLinearGradient: () => ({ addColorStop() {} }),
+    createRadialGradient: () => ({ addColorStop() {} }),
+    measureText: (text) => ({ width: String(text).length * 5 }),
+    fillText() {},
+    font: "8px system-ui",
+    textAlign: "left",
+    textBaseline: "top",
+    fillStyle: "",
+    strokeStyle: "",
+    lineWidth: 1,
+    globalAlpha: 1,
+  };
+  return {
+    width: 640,
+    height: 360,
+    style: {},
+    getContext: () => context,
+  };
+}
+
 const samples = [];
+const presents = [];
 let prints = new Set();
 let totalSteps = 0;
+
+const renderer = createRenderer(stubCanvas(), { devicePixelRatio: 1 });
+renderer.resize(640, 360);
 
 for (let run = 0; run < runs; run += 1) {
   const state = createState(baseSeed + run);
@@ -38,28 +82,44 @@ for (let run = 0; run < runs; run += 1) {
     const started = process.hrtime.bigint();
     advance(state, intent);
     samples.push(Number(process.hrtime.bigint() - started) / 1e6);
+    const drawn = process.hrtime.bigint();
+    renderer.draw(state, {}, {}, { captions: [], best: 0, hint: "" });
+    presents.push(Number(process.hrtime.bigint() - drawn) / 1e6);
     totalSteps += 1;
   }
   prints.add(fingerprint({ score: state.score, tick: state.tick, stats: state.stats }));
 }
 
-samples.sort((a, b) => a - b);
-const at = (fraction) => samples[Math.min(samples.length - 1, Math.floor(samples.length * fraction))];
+const percentile = (list) => {
+  const ordered = [...list].sort((a, b) => a - b);
+  const at = (fraction) => ordered[Math.min(ordered.length - 1, Math.floor(ordered.length * fraction))];
+  return {
+    p50: at(0.5),
+    p95: at(0.95),
+    p99: at(0.99),
+    worst: ordered[ordered.length - 1],
+  };
+};
+
+const simulation = percentile(samples);
+const presentation = percentile(presents);
 const report = {
   runs,
   ticks_per_run: CONFIG.runTicks,
   steps: totalSteps,
   step_budget_ms: Number(stepBudgetMs.toFixed(4)),
-  simulation_ms: { p50: at(0.5), p95: at(0.95), p99: at(0.99), worst: samples[samples.length - 1] },
-  headroom_p99: Number((1 - at(0.99) / stepBudgetMs).toFixed(4)),
+  simulation_ms: simulation,
+  presentation_ms: presentation,
+  headroom_p99: Number((1 - simulation.p99 / stepBudgetMs).toFixed(4)),
   distinct_outcomes: prints.size,
   scope:
-    "Somente simulação: não mede render, áudio, carregamento nem o dispositivo alvo. " +
-    "Orçamento de quadro real exige medir no artefato exportado.",
+    "Simulação + draw() num canvas stub. Não mede compositor, áudio, " +
+    "carregamento nem o dispositivo alvo. Orçamento de quadro real exige " +
+    "medir no artefato exportado. Sem limiar de apresentação.",
 };
 
 console.log(JSON.stringify(report, null, 2));
-if (at(0.99) > stepBudgetMs) {
+if (simulation.p99 > stepBudgetMs) {
   console.error("Simulação acima do orçamento de passo no percentil 99.");
   process.exit(1);
 }

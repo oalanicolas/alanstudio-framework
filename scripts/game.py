@@ -1373,6 +1373,7 @@ A11Y_OPTIONS = {
     "captions": re.compile(r"\bcaptions\b|captionLimit|\blegendas?\b"),
     "remap": re.compile(r"\bbindings\b|remap|rebind"),
     "ui_scale": re.compile(r"uiScale|ui-scale|interfaceScale"),
+    "one_hand": re.compile(r"ONE_HAND_BINDINGS|oneHand|one-hand|umaMao|uma-mao"),
 }
 PERSIST_USE = re.compile(
     r"localStorage|sessionStorage|indexedDB|saveProgress|loadProgress|PROGRESS_KEY|SETTINGS_KEY"
@@ -1438,9 +1439,10 @@ def access_reading(project):
             "consumidor também não é alcance."
         ),
         "scope": (
-            "Procura highContrast, reducedMotion, captions, remapeamento e "
-            "uiScale no código. Não mede contraste, não joga com o modo "
-            "ativo e não aprova alcance. `verified` é sempre falso."
+            "Procura highContrast, reducedMotion, captions, remapeamento, "
+            "uiScale e preset de uma mão no código. Não mede contraste, "
+            "não joga com o modo ativo e não aprova alcance. `verified` é "
+            "sempre falso."
         ),
     }
 
@@ -1548,6 +1550,30 @@ CONTENT_LOOSE_SUFFIXES = {".ldtk", ".tmx", ".ink"}
 SHIP_WORDS = ("build", "export", "dist", "package", "release")
 SHIP_CI = (".gitlab-ci.yml", ".circleci/config.yml", "azure-pipelines.yml")
 SHIP_RELEASE = "docs/release.md"
+SHIP_VERSION = "dist/VERSION.json"
+
+
+def optional_text(value):
+    return value if isinstance(value, str) and value else None
+
+
+def ship_artifact(project):
+    path = Path(project) / SHIP_VERSION
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+    except (OSError, json.JSONDecodeError):
+        return {"path": SHIP_VERSION, "readable": False}
+    if not isinstance(data, dict):
+        return {"path": SHIP_VERSION, "readable": False}
+    return {
+        "path": SHIP_VERSION,
+        "readable": True,
+        "name": optional_text(data.get("name")),
+        "version": optional_text(data.get("version")),
+        "git_head": optional_text(data.get("git_head")),
+    }
 
 
 def document_is_current(path):
@@ -1746,6 +1772,7 @@ def ship_reading(project):
     ci = ship_ci(project)
     release = project / SHIP_RELEASE
     release_current = document_is_current(release)
+    artifact = ship_artifact(project)
     expected = (project / "package.json").is_file() or (project / "Cargo.toml").is_file()
     declared = bool(named or ci or release_current)
     return {
@@ -1757,6 +1784,7 @@ def ship_reading(project):
         "ci": ci,
         "release": SHIP_RELEASE if release.is_file() and not release.is_symlink() else None,
         "release_current": release_current,
+        "artifact": artifact,
         "declared": declared,
         "unpacked": expected and not declared,
         "shipped": False,
@@ -1768,8 +1796,9 @@ def ship_reading(project):
         ),
         "scope": (
             "Procura script build/export/dist/package/release, docs/release.md "
-            "vigente e CI. Não executa o export, não instala o artefato e não "
-            "autoriza publicar. `shipped` é sempre falso."
+            "vigente e CI. Se dist/VERSION.json existe, relata nome e versão. "
+            "Não executa o export, não instala o artefato e não autoriza "
+            "publicar. `shipped` é sempre falso."
         ),
     }
 

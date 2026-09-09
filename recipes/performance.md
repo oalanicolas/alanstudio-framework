@@ -43,9 +43,11 @@ alteram o próprio resultado que estão medindo.
 medição.
 
 Implementação concreta: `tools/budget.mjs` do starter `canvas-arcade` mede a
-simulação por percentil, não por média, e declara no próprio resultado que não
-cobre render, áudio, carregamento nem o dispositivo alvo. O laço de passo fixo em
-`src/core/loop.js` é o que torna essa medição comparável entre execuções.
+simulação e o `draw` num canvas stub, por percentil, não por média, e declara
+no próprio resultado que não cobre compositor, áudio, carregamento nem o
+dispositivo alvo. O laço de passo fixo em `src/core/loop.js` é o que torna
+a medição da simulação comparável entre execuções. `npm run size` relata
+os bytes de `dist/` sem teto.
 
 Prova: distribuição de tempo de quadro na cena de pior caso, primeiro carregamento
 em ambiente frio, comparação visual em movimento confirmando que o acabamento

@@ -30,9 +30,10 @@ já criado, `starter.json` não existe: ele é metadado do starter, não do jogo
 
 ```sh
 npm test           # regras, determinismo, ciclo de vida, save, mixagem e export
-npm run budget     # custo da simulação, por percentil, sem apresentação
+npm run budget     # custo da simulação e do draw num canvas stub
 npm run peak       # pico de cada WAV no disco; não é mix ouvido
 npm run probe      # dispara o buffer declarado; não é peso percebido
+npm run size       # bytes de dist/; sem teto e sem aprovação
 npm run build      # copia a árvore jogável para dist/; não prova outra máquina
 ```
 
@@ -109,8 +110,8 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — `npm run peak` relata o pico do arquivo, não do mix em cena; loudness percebido não foi medido |
 | `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; abandono e erro repetido ainda não foram investigados |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
-| `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
-| `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena — `docs/access.md` declara o que o recorte não atende; `uiScale` tem consumidor; movimento ainda não foi observado |
+| `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` cronometra simulação e `draw` num canvas stub — não o compositor nem o dispositivo alvo |
+| `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena — `docs/access.md` declara o que o recorte não atende; `uiScale` e o preset de uma mão têm consumidor; sessão com uma mão ainda não foi observada |
 | `content_scale` | `shippable` | `flagship`: a ferramenta é boa o bastante para alguém de fora produzir no piso — spawn e copy migram e validam; `npm run table` já nasce com schema; `enough` é falso |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `dist/VERSION.json` nomeia a versão; ninguém correu o artefato fora daqui |
 
@@ -132,7 +133,7 @@ falso — a linha é afirmação de quem escreveu.
 | `percentile_def` | `met` | tools/budget.mjs declara o percentil por definição, não por apelido — starter |
 | `palette` | `met` | tokens em docs/art-bible.md; consumidores PALETTES.normal e PALETTES.contrast em src/game/render.js — starter |
 | `style_factor` | `out_of_scope` | sem assets de mundo de estilo; só primitivas — starter |
-| `budget_delta` | `unmet` | npm run budget mede a simulação; comparação com o build anterior ainda não existe — starter |
+| `budget_delta` | `unmet` | npm run budget cronometra simulação e draw no stub; comparação com o build anterior ainda não existe — starter |
 | `playtest_stop` | `unmet` | regra de parada ainda não escrita — starter |
 | `playtest_finding` | `unmet` | nenhum achado no formato problema/evidência/hipótese/medição — starter |
 | `evidence_kind` | `unmet` | lastro ainda não classificado como log ou observação — starter |
@@ -175,7 +176,7 @@ src/main.js   montagem e contrato de ciclo de vida
 data/         conteúdo separado da regra (chuva, HUD e avisos)
 docs/         art-bible vigente — o init não o reescreve
 public/sfx/   design original dos seis papéis, com recibo
-tools/        servidor, orçamento, export, nascer mesa e gerar sfx
+tools/        servidor, orçamento, tamanho, export, nascer mesa e gerar sfx
 tests/        regras, determinismo, ciclo de vida, save, mixagem, ensino, export
 ```
 

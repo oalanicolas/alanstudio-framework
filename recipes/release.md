@@ -12,7 +12,9 @@ conhecido: um jogo que funciona na máquina de quem construiu e falha em qualque
 outra. Release é a etapa que converte “funciona aqui” em “funciona para alguém”.
 
 O starter `canvas-arcade` grava `dist/VERSION.json` no export: versão e
-HEAD. Identidade do artefato não é outra máquina. `shipped` é sempre falso.
+HEAD. `ship` relata esse arquivo quando ele existe. Identidade do
+artefato não é outra máquina. `npm run size` relata os bytes de `dist/`
+sem teto. `shipped` é sempre falso.
 
 Verifique o artefato, não o ambiente de desenvolvimento. Editor, servidor de
 desenvolvimento e build de depuração têm caminhos, permissões, recursos e tempos

@@ -21,6 +21,16 @@ export const DEFAULT_BINDINGS = {
   reset: ["KeyR"],
 };
 
+// Cluster direito: IJKL + P/O. Não prova sessão com uma só mão observada.
+export const ONE_HAND_BINDINGS = {
+  left: ["KeyJ"],
+  right: ["KeyL"],
+  dash: ["KeyI"],
+  bank: ["KeyK"],
+  pause: ["KeyP"],
+  reset: ["KeyO"],
+};
+
 export function defaultSettings(environment = {}) {
   return {
     schema: SETTINGS_SCHEMA,
@@ -28,6 +38,7 @@ export function defaultSettings(environment = {}) {
     highContrast: Boolean(environment.prefersHighContrast),
     captions: true,
     assist: false,
+    oneHand: false,
     uiScale: 1,
     buses: { master: 0.8, music: 0.6, sfx: 0.9, ui: 0.7 },
     bindings: structuredCloneish(DEFAULT_BINDINGS),
@@ -68,6 +79,7 @@ export function normalizeSettings(raw, environment = {}, base = defaultSettings(
     highContrast: typeof raw.highContrast === "boolean" ? raw.highContrast : base.highContrast,
     captions: typeof raw.captions === "boolean" ? raw.captions : base.captions,
     assist: typeof raw.assist === "boolean" ? raw.assist : base.assist,
+    oneHand: typeof raw.oneHand === "boolean" ? raw.oneHand : base.oneHand,
     uiScale: Number.isFinite(raw.uiScale) ? Math.min(2, Math.max(0.75, raw.uiScale)) : base.uiScale,
     buses,
     bindings,

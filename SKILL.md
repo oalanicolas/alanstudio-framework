@@ -160,11 +160,13 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    propõe `feel.unobserved` e aponta `note`.
    **`note <projeto>`** grava o recibo curto (cenário e papel por omissão)
    em `docs/playtest/<utc>/`. Não joga e não sente.
-   **`access` / `save` / `budget`** leem opção de alcance, versão de save e
-   artefato de orçamento. `verified`/`trusted`/`measured` são sempre falsos.
+   **`access` / `save` / `budget`** leem opção de alcance (incluindo
+   uiScale e preset de uma mão), versão de save e artefato de orçamento.
+   `verified`/`trusted`/`measured` são sempre falsos.
    Falta no disco entra no `next` antes dos rascunhos.
    **`art` / `content` / `ship`** leem paleta ou art-bible vigente, conteúdo
-   fora do código e passo de empacotar. `consistent`/`enough`/`shipped` são
+   fora do código e passo de empacotar. Se `dist/VERSION.json` existe,
+   `ship` relata nome e versão. `consistent`/`enough`/`shipped` são
    sempre falsos. Sem declaração, o `next` nomeia `art.missing`,
    `content.inline` e `ship.unpacked` antes dos rascunhos.
    **`playtest <projeto>`** lê se o achado tem problema, evidência, hipótese

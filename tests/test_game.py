@@ -2087,6 +2087,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(access["verified"])
         self.assertEqual(access["missing"], [])
         self.assertIn("ui_scale", [item["key"] for item in access["options"]])
+        self.assertIn("one_hand", [item["key"] for item in access["options"]])
         self.assertTrue(persist["used"])
         self.assertTrue(persist["versioned"])
         self.assertFalse(persist["unversioned"])
@@ -2143,6 +2144,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(pack["release"], "docs/release.md")
         self.assertTrue(pack["release_current"])
         self.assertFalse(pack["shipped"])
+        if pack["artifact"]:
+            self.assertEqual(pack["artifact"]["path"], "dist/VERSION.json")
+            self.assertTrue(pack["artifact"]["readable"])
         session = game.playtest_reading(starter)
         self.assertFalse(session["expected"])
         self.assertFalse(session["structured"])
@@ -2223,6 +2227,28 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(after["unpacked"])
         self.assertTrue(after["release_current"])
         self.assertFalse(after["shipped"])
+        self.assertIsNone(after["artifact"])
+
+    def test_ship_names_version_json_without_calling_it_shipped(self):
+        self.package()
+        self.foundation_document()
+        (self.project / "docs").mkdir(exist_ok=True)
+        (self.project / "docs/release.md").write_text(
+            "# Release\n\nExport: npm run build. Artefato em dist/.\n"
+        )
+        (self.project / "dist").mkdir()
+        (self.project / "dist/VERSION.json").write_text(
+            json.dumps({"name": "demo", "version": "0.1.0", "git_head": "abc123"}),
+            encoding="utf-8",
+        )
+        report = game.ship_reading(self.project)
+        self.assertEqual(report["artifact"]["path"], "dist/VERSION.json")
+        self.assertTrue(report["artifact"]["readable"])
+        self.assertEqual(report["artifact"]["name"], "demo")
+        self.assertEqual(report["artifact"]["version"], "0.1.0")
+        self.assertEqual(report["artifact"]["git_head"], "abc123")
+        self.assertFalse(report["shipped"])
+        self.assertFalse(report["unpacked"])
 
     def test_playtest_names_an_observation_without_the_four_fields(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
@@ -2283,6 +2309,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["expected"])
         self.assertFalse(report["unpacked"])
         self.assertFalse(report["shipped"])
+        self.assertIsNone(report["artifact"])
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project))]
         self.assertNotIn("ship.unpacked", bases)
 

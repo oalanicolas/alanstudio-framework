@@ -366,7 +366,8 @@ migração e gravação verificada, e renderizador com alto contraste e reduçã
 movimento. Expõe `pause`, `reset`, `seed`, `observe`, `act`, `advance`, `capture`
 e `dispose`, e **exercita** as oito em testes headless (`npm test`) — com uma
 ressalva: `capture` só na guarda de ausência de tela, porque `toDataURL` não
-existe em headless. Também tem `npm run budget` para o orçamento de simulação. O
+existe em headless. Também tem `npm run budget` para o orçamento de simulação e do draw num
+canvas stub, e `npm run size` para os bytes de `dist/` sem teto. O
 README do starter declara em que degrau cada dimensão está, incluindo as que
 ainda não subiram.
 
@@ -543,12 +544,13 @@ python3 scripts/game.py save /caminho/do/laboratorio/meu-jogo
 python3 scripts/game.py budget /caminho/do/laboratorio/meu-jogo
 ```
 
-`access` procura highContrast, reducedMotion, captions e remapeamento.
-`verified` é sempre `false`. `save` procura armazenamento e
-PROGRESS_SCHEMA/migrate; `trusted` é sempre `false`. `budget` procura script
-`budget`/`bench`, `tools/budget.*` ou `record --kind budget`; `measured` é
-sempre `false`. O starter declara os três; um canvas sem opção de alcance
-recebe `access.missing` antes da barra.
+`access` procura highContrast, reducedMotion, captions, remapeamento,
+uiScale e preset de uma mão. `verified` é sempre `false`. `save` procura
+armazenamento e PROGRESS_SCHEMA/migrate; `trusted` é sempre `false`.
+`budget` procura script `budget`/`bench`, `tools/budget.*` ou
+`record --kind budget`; `measured` é sempre `false`. O starter declara
+os três; um canvas sem opção de alcance recebe `access.missing` antes da
+barra.
 
 ## Arte, conteúdo e empacotar
 
@@ -565,7 +567,8 @@ python3 scripts/game.py ship /caminho/do/laboratorio/meu-jogo
 `consistent` é sempre `false`. Rascunho do `init` não conta. `content`
 procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 `enough` é sempre `false`. `ship` procura script `build`/`export`/`package`/
-`release`, `docs/release.md` vigente ou CI. `shipped` é sempre `false`.
+`release`, `docs/release.md` vigente ou CI. Se `dist/VERSION.json`
+existe, relata nome e versão. `shipped` é sempre `false`.
 HTML estático sem manifesto já é o artefato; manifesto sem passo de
 empacotar recebe `ship.unpacked`. O starter declara paleta, extrai a chuva
 para `data/spawn.json` e empacota com `npm run build` — uma mesa e um
@@ -669,7 +672,7 @@ Recibos brutos de execução e o acervo sonoro ficam no laboratório.
 
 ```sh
 python3 -m unittest discover -s tests -v
-cd assets/starters/canvas-arcade && npm test && npm run budget
+cd assets/starters/canvas-arcade && npm test && npm run budget && npm run size
 ```
 
 Histórico 0.1–0.9: [adoção](adoption.md).

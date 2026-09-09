@@ -15,7 +15,13 @@ import {
   recordRun,
   saveProgress,
 } from "../src/core/save.js";
-import { defaultSettings, loadSettings, normalizeSettings } from "../src/core/settings.js";
+import {
+  DEFAULT_BINDINGS,
+  ONE_HAND_BINDINGS,
+  defaultSettings,
+  loadSettings,
+  normalizeSettings,
+} from "../src/core/settings.js";
 
 test("ausência de save começa do zero sem erro", () => {
   const result = migrate(null);
@@ -156,6 +162,25 @@ test("um campo inválido preserva o valor atual, não o padrão", () => {
   const current = { ...defaultSettings({}), uiScale: 1.5 };
   const settings = normalizeSettings({ ...current, uiScale: "grande" }, {}, current);
   assert.equal(settings.uiScale, 1.5);
+});
+
+test("o preset de uma mão usa o cluster direito sem colidir", () => {
+  const codes = Object.values(ONE_HAND_BINDINGS).flat();
+  assert.deepEqual(
+    Object.keys(ONE_HAND_BINDINGS),
+    Object.keys(DEFAULT_BINDINGS),
+  );
+  assert.equal(new Set(codes).size, codes.length, "duas ações não compartilham tecla");
+  assert.deepEqual(ONE_HAND_BINDINGS.left, ["KeyJ"]);
+  assert.deepEqual(ONE_HAND_BINDINGS.right, ["KeyL"]);
+  assert.deepEqual(ONE_HAND_BINDINGS.dash, ["KeyI"]);
+  assert.deepEqual(ONE_HAND_BINDINGS.bank, ["KeyK"]);
+  assert.deepEqual(ONE_HAND_BINDINGS.pause, ["KeyP"]);
+  assert.deepEqual(ONE_HAND_BINDINGS.reset, ["KeyO"]);
+  const settings = normalizeSettings({ oneHand: true, bindings: ONE_HAND_BINDINGS });
+  assert.equal(settings.oneHand, true);
+  assert.deepEqual(settings.bindings, ONE_HAND_BINDINGS);
+  assert.equal(defaultSettings({}).oneHand, false);
 });
 
 test("preferências ilegíveis são recuperadas com o padrão", () => {

@@ -32,10 +32,11 @@ tabela de comandos, camada de legenda do diálogo, opções já presentes no men
 Uma opção sem consumidor no código não é uma opção.
 
 `access <projeto>` lê as opções que o código declara (highContrast,
-reducedMotion, captions, remapeamento, uiScale). `verified` é sempre falso: chave
-no fonte não é sessão com o modo ativo. O starter `canvas-arcade` também
-expõe `assist` e declara em `docs/access.md` o que o recorte não atende.
-O harness não joga com o modo ativo.
+reducedMotion, captions, remapeamento, uiScale, preset de uma mão).
+`verified` é sempre falso: chave no fonte não é sessão com o modo ativo.
+O starter `canvas-arcade` também expõe `assist` e declara em
+`docs/access.md` o que o recorte não atende. O harness não joga com o
+modo ativo.
 
 Não declare cobertura que não observou. Verificação automática de contraste é útil
 e não substitui uma sessão com o modo ativo. Uma lacuna registrada com motivo vale

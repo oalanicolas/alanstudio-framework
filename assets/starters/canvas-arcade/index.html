@@ -69,9 +69,10 @@
         <dt>Avançar (dash)</dt><dd>Espaço, K, botão A, ou toque na área superior</dd>
         <dt>Guardar corrente</dt><dd>Seta abaixo, S, J, botão X, ou toque na faixa inferior</dd>
         <dt>Pausar</dt><dd>Esc ou P</dd>
-        <dt>Reiniciar</dt><dd>R</dd>
+        <dt>Reiniciar</dt><dd>R (padrão) ou O (uma mão)</dd>
       </dl>
       <p class="note">
+        Uma mão no cluster direito: J/L mover, I avançar, K guardar, P pausar, O reiniciar.
         Guardar converte a corrente em pontos ao quadrado e trava o dash por um instante.
         Ser atingido zera a corrente inteira. Corrente não guardada no fim da partida é perdida.
       </p>
@@ -84,6 +85,7 @@
         <label><input type="checkbox" id="highContrast" /> <span>Alto contraste</span></label>
         <label><input type="checkbox" id="captions" /> <span>Legendas de som</span></label>
         <label><input type="checkbox" id="assist" /> <span>Assistência (alcance maior, chuva mais lenta)</span></label>
+        <label><input type="checkbox" id="oneHand" /> <span>Uma mão (cluster direito)</span></label>
         <label><span>Escala da interface</span><input type="range" id="uiScale" min="0.75" max="2" step="0.05" /></label>
         <label><span>Volume geral</span><input type="range" id="master" min="0" max="1" step="0.05" /></label>
         <label><span>Efeitos</span><input type="range" id="sfx" min="0" max="1" step="0.05" /></label>
@@ -95,6 +97,7 @@
 
     <script type="module" src="./src/main.js"></script>
     <script type="module">
+      import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
       const game = window.__game;
       if (game) {
         const toggles = ["reducedMotion", "highContrast", "captions", "assist"];
@@ -102,6 +105,7 @@
         const sync = () => {
           const settings = game.settings;
           for (const name of toggles) document.getElementById(name).checked = settings[name];
+          document.getElementById("oneHand").checked = settings.oneHand;
           document.getElementById("uiScale").value = settings.uiScale;
           for (const bus of buses) document.getElementById(bus).value = settings.buses[bus];
         };
@@ -110,6 +114,12 @@
             game.updateSettings({ [name]: event.target.checked });
           });
         }
+        document.getElementById("oneHand").addEventListener("change", (event) => {
+          game.updateSettings({
+            oneHand: event.target.checked,
+            bindings: event.target.checked ? ONE_HAND_BINDINGS : DEFAULT_BINDINGS,
+          });
+        });
         document.getElementById("uiScale").addEventListener("input", (event) => {
           game.updateSettings({ uiScale: Number(event.target.value) });
         });

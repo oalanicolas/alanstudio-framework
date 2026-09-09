@@ -13,7 +13,8 @@
     "sfx": "python3 tools/design-sfx.py",
     "contrast": "node tools/contrast.mjs",
     "peak": "node tools/peak.mjs",
-    "probe": "node tools/probe.mjs"
+    "probe": "node tools/probe.mjs",
+    "size": "node tools/size.mjs"
   },
   "engines": {
     "node": ">=20"
