@@ -10,16 +10,17 @@ propõe `origins.undeclared`. Recibo não é licença válida — `granted` e
 com o que o próprio projeto declarou, zero dígitos nos rótulos. `observed` e
 `granted` são sempre `false`. `next` só levanta o gate que o projeto pediu.
 
-**Primeiro ciclo:** `start` é o caminho ideia→jogo. Depois de um `init` fresco,
-`next` propõe `playable.unplayed` antes de substituir os rascunhos. O
-starter ensina mover, coletar e guardar no campo; o art-bible vigente não
-é reescrito. `--idea` entra no brief como frase; o brief continua
+**Primeiro ciclo:** `guide` mapeia start → jogar → next sem executar.
+`start` é o caminho ideia→jogo. Depois de um `init` fresco, `next`
+propõe `playable.unplayed` antes de substituir os rascunhos. O starter
+ensina mover, coletar e guardar no campo; o art-bible vigente não é
+reescrito. `--idea` entra no brief como frase; o brief continua
 rascunho. O harness não executa o jogo.
 
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
 `--fill` sugere o acervo; `--apply` copia com o nome do papel. O starter
-já traz design original nos seis papéis e carrega no mixer. `heard` é
-sempre falso.
+já traz design original e variante (`-b`) nos seis papéis e carrega no
+mixer em rodízio. `heard` é sempre falso.
 
 **Feel (`feel`):** lê `const CONFIG` (perdão, graça, hitstop) e
 `record.json` de observação. `felt` é sempre falso. `next` propõe

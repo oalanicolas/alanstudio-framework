@@ -2841,6 +2841,72 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
     }
 
 
+def guide_cycle(destination=None, starter=None, idea=None):
+    available = starters()
+    chosen = starter or (available[0] if available else "canvas-arcade")
+    dest = Path(destination) if destination is not None else None
+    exists = bool(
+        dest is not None
+        and dest.is_dir()
+        and not dest.is_symlink()
+        and (dest / "package.json").is_file()
+    )
+    phrase = idea.strip() if nonempty(idea) else None
+    start_target = dest if dest is not None else Path("<destino>")
+    start_parts = ["start", start_target, "--starter", chosen]
+    if phrase:
+        start_parts.extend(["--idea", phrase])
+    play = None
+    nxt = None
+    if exists:
+        try:
+            scripts, manager = project_commands(dest)
+        except (OSError, ValueError):
+            scripts, manager = {}, None
+        play = play_command(dest, scripts, manager)
+        nxt = next_step(dest, "feel")
+    play_fallback = (
+        f"cd {shlex.quote(str(dest))} && npm run serve"
+        if dest is not None
+        else "npm run serve"
+    )
+    next_target = dest if dest is not None else Path("<destino>")
+    return {
+        "schema_version": 1,
+        "command": "guide",
+        "executed": False,
+        "idea": phrase,
+        "starter": chosen,
+        "path": str(dest) if dest is not None else None,
+        "exists": exists,
+        "steps": [
+            {
+                "n": 1,
+                "do": "abrir o ciclo",
+                "command": harness_command(*start_parts),
+                "done": exists,
+            },
+            {
+                "n": 2,
+                "do": "jogar no próprio dispositivo",
+                "command": play or play_fallback,
+                "executed": False,
+            },
+            {
+                "n": 3,
+                "do": "ler o que o harness ainda não localiza",
+                "command": harness_command("next", next_target, "--focus", "feel"),
+                "kind": nxt["proposal"]["basis"] if nxt else "playable.unplayed",
+            },
+        ],
+        "scope": (
+            "Três passos ideia→ciclo: start, jogar, next. Não cria o projeto, "
+            "não abre o jogo e não avalia a proposta. Passo 2 permanece "
+            "`executed` falso mesmo quando o destino já existe."
+        ),
+    }
+
+
 def tool_report(name, args=("--version",), timeout=15):
     path = shutil.which(name)
     if not path:
@@ -3678,6 +3744,14 @@ def main():
     begin.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
     begin.add_argument("--idea", help="frase da fantasia; entra no brief como rascunho, não como decisão")
     begin.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
+    guided = commands.add_parser(
+        "guide",
+        parents=[common],
+        help="três passos ideia→ciclo sem executar: start, jogar, next",
+    )
+    guided.add_argument("project", nargs="?", default=None)
+    guided.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
+    guided.add_argument("--idea", help="frase da fantasia; só entra no comando do start, não no disco")
     upcoming = commands.add_parser("next", parents=[common], help="proposta ordenada de próxima ação, a partir do estado no disco")
     upcoming.add_argument("project")
     upcoming.add_argument("--focus", choices=FOCI, default="create")
@@ -3804,6 +3878,9 @@ def main():
             emit(init(resolve(args.project, root), args.starter, args.title, not args.no_docs, args.idea))
         elif args.action == "start":
             emit(start_project(resolve(args.project, root), args.starter, args.title, args.idea, not args.no_docs))
+        elif args.action == "guide":
+            dest = resolve(args.project, root) if args.project else None
+            emit(guide_cycle(dest, args.starter, args.idea))
         elif args.action == "next":
             emit(next_step(resolve(args.project, root), args.focus, studies_root=default_studies_root(root)))
         elif args.action == "scan":

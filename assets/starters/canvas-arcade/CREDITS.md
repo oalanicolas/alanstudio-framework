@@ -25,12 +25,12 @@ uso, versão e o consumidor no código.
 
 | Parte | Origem | Condição de uso |
 | --- | --- | --- |
-| `public/sfx/dash.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
-| `public/sfx/graze.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
-| `public/sfx/collect.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
-| `public/sfx/bank.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
-| `public/sfx/hit.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
-| `public/sfx/over.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/dash.wav` / `dash-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/graze.wav` / `graze-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/collect.wav` / `collect-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/bank.wav` / `bank-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/hit.wav` / `hit-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/over.wav` / `over-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 
 Recibo por arquivo em `public/sfx/<papel>.credits.txt` e lista em
 `public/sfx/sources.json`. Sem samples de terceiros. O harness não

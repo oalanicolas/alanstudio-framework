@@ -104,12 +104,12 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — falta o som, e o perdão de entrada precisa ser medido, não só anotado |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — o que existe hoje é medição de placa, borda e faixa em quadro estático |
 | `art_direction` | `playable` | `slice`: a mesma linguagem em movimento, na resolução alvo — hoje a decisão está no art-bible e ainda não foi observada em sessão |
-| `audio_mix` | `playable` | `slice`: mixagem com variação para evitar fadiga — barramento, prioridade e ducking já existem; um arquivo por papel ainda não varia |
+| `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — barramento, prioridade, ducking e variação (`<papel>-b.wav`) já existem; loudness não foi medido |
 | `pacing` | `playable` | `slice`: o aviso some depois da primeira decisão e não tapa o verbo — some após guardar; ainda não foi observado em sessão |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada, perda de foco — além do teste de dado inválido |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
 | `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena — `npm run contrast` relata pares hex sem limiar; assistência existe; movimento ainda não foi observado |
-| `content_scale` | `slice` | `shippable`: conteúdo tem identidade estável, migração e validação; ausente ou inválido falha de forma legível — mesa desconhecida e campo obrigatório já falham; não há migração de formato |
+| `content_scale` | `slice` | `shippable`: conteúdo tem identidade estável, migração e validação; ausente ou inválido falha de forma legível — spawn já migra o schema antigo e recusa o futuro; copy ainda não tem contrato; receita de uma mesa não é a família |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `npm run build` existe e ninguém o correu fora daqui |
 
 **Leitura honesta: este projeto é um protótipo**, porque uma dimensão está
@@ -148,12 +148,13 @@ geométrica não é teste de percepção**, e é exatamente essa a distância en
 
 ## Som
 
-Os seis papéis têm design original em `public/sfx/<papel>.wav` (CC0-1.0,
-`tools/design-sfx.py`): seno e ruído filtrado, sem quadrada, sem jsfxr,
-sem Kenney. Origem em `public/sfx/sources.json` e nos sidecars
-`.credits.txt`. `src/game/audio.js` traz a mixagem — barramentos,
-prioridade, ducking, legenda. `heard` continua falso: arquivo no disco
-não é mixagem ouvida. Um arquivo por papel ainda não é variação.
+Os seis papéis têm design original em `public/sfx/<papel>.wav` e uma
+variante `public/sfx/<papel>-b.wav` (CC0-1.0, `tools/design-sfx.py`):
+seno e ruído filtrado, sem quadrada, sem jsfxr, sem Kenney. Origem em
+`public/sfx/sources.json` e nos sidecars `.credits.txt`. `src/game/audio.js`
+traz a mixagem — barramentos, prioridade, ducking, rodízio, legenda.
+`heard` continua falso: arquivo no disco não é mixagem ouvida. Variação
+no disco não é faixa dinâmica medida.
 
 Toda informação sonora já tem legenda equivalente: o jogo é completável
 com o áudio desligado, e precisa continuar sendo. A legenda tem faixa

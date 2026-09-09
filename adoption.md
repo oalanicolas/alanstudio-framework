@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.19 — Variação no mix, schema da mesa e o mapa ideia→ciclo
+
+Cada papel ganha `public/sfx/<papel>-b.wav`: o mixer alterna as
+variantes. `audio_mix` sobe a `slice`. `heard` continua falso — rodízio
+não é loudness medido. `data/spawn.json` declara `schema` e migra o
+formato antigo; schema futuro falha com o número. `content_scale`
+permanece `slice`: uma mesa migrada não é a família inteira. `guide`
+devolve start → jogar → next sem executar. Só `release` permanece no
+piso.
+
+O que 0.9.19 não afirma: o harness não ouviu a variação, não carregou
+schema inválido em sessão e não correu os três passos.
+
 ## 0.9.18 — Runbook vigente, medição de sessão e contraste sem limiar
 
 `docs/release.md` já nasce vigente: como exportar e servir o `dist/`.

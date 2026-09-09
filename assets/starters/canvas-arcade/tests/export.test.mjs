@@ -29,6 +29,7 @@ test("o export copia o jogo e deixa de fora o que só serve para desenvolver", a
     assert.ok(existsSync(join(dist, "src/game/rules.js")));
     assert.ok(existsSync(join(dist, "data/spawn.json")));
     assert.ok(existsSync(join(dist, "public/sfx/dash.wav")), "o artefato leva o som");
+    assert.ok(existsSync(join(dist, "public/sfx/dash-b.wav")), "o artefato leva a variante");
     assert.ok(existsSync(join(dist, "tools/serve.mjs")));
     assert.ok(existsSync(join(dist, "package.json")));
     assert.equal(existsSync(join(dist, "tests")), false, "teste não embarca");

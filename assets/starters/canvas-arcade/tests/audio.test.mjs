@@ -131,6 +131,17 @@ test("som desconhecido é ignorado sem quebrar o quadro", () => {
   assert.deepEqual(audio.captions(), []);
 });
 
+test("duas variantes do mesmo papel alternam em vez de repetir", () => {
+  const { audio, context } = build();
+  audio.register("collect", { duration: 0.1, mark: "a" });
+  audio.register("collect", { duration: 0.1, mark: "b" });
+  assert.equal(audio.play("collect"), true);
+  assert.equal(audio.play("collect"), true);
+  assert.equal(context.sources[0].buffer.mark, "a");
+  assert.equal(context.sources[1].buffer.mark, "b");
+  assert.deepEqual(audio.missing().registered, ["collect"]);
+});
+
 test("registrar um som o remove da lacuna e o toca", () => {
   const { audio, context } = build();
   assert.equal(audio.register("collect", { duration: 0.2 }), true);

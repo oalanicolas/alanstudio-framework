@@ -15,19 +15,21 @@ export async function loadRoleFiles(audio, options = {}) {
   const base = options.base ?? SFX_FOLDER;
   const loaded = [];
   for (const id of Object.keys(SOUNDS)) {
-    for (const ext of SFX_EXTENSIONS) {
-      const url = `${base}/${id}${ext}`;
-      try {
-        const response = await fetchFn(url);
-        if (!response || !response.ok) continue;
-        const bytes = await response.arrayBuffer();
-        const buffer = options.decode ? await options.decode(bytes, id) : bytes;
-        if (buffer && audio.register(id, buffer)) {
-          loaded.push({ id, url });
+    for (const stem of [id, `${id}-b`]) {
+      for (const ext of SFX_EXTENSIONS) {
+        const url = `${base}/${stem}${ext}`;
+        try {
+          const response = await fetchFn(url);
+          if (!response || !response.ok) continue;
+          const bytes = await response.arrayBuffer();
+          const buffer = options.decode ? await options.decode(bytes, id) : bytes;
+          if (buffer && audio.register(id, buffer)) {
+            loaded.push({ id, url, variant: stem !== id });
+          }
+          break;
+        } catch {
+          continue;
         }
-        break;
-      } catch {
-        continue;
       }
     }
   }

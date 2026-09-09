@@ -22,7 +22,7 @@ test("carrega o arquivo do papel e o registra no mixer", async () => {
     fetch: fetchFn,
     decode: async () => ({ duration: 0.2 }),
   });
-  assert.deepEqual(loaded, [{ id: "dash", url: "public/sfx/dash.wav" }]);
+  assert.deepEqual(loaded, [{ id: "dash", url: "public/sfx/dash.wav", variant: false }]);
   const gaps = audio.missing();
   assert.deepEqual(gaps.registered, ["dash"]);
   assert.ok(gaps.declared.includes("hit"));
@@ -30,13 +30,39 @@ test("carrega o arquivo do papel e o registra no mixer", async () => {
 
 test("os seis papéis têm WAV original no disco, não um stub", async () => {
   for (const id of Object.keys(SOUNDS)) {
-    const bytes = await readFile(join(ROOT, "public/sfx", `${id}.wav`));
-    assert.equal(bytes.subarray(0, 4).toString("ascii"), "RIFF", id);
-    assert.ok(bytes.length > 1000, `${id} curto demais para ser design`);
-    const credits = await readFile(join(ROOT, "public/sfx", `${id}.credits.txt`), "utf8");
-    assert.match(credits, /CC0-1.0/);
-    assert.match(credits, /design-sfx/);
+    for (const stem of [id, `${id}-b`]) {
+      const bytes = await readFile(join(ROOT, "public/sfx", `${stem}.wav`));
+      assert.equal(bytes.subarray(0, 4).toString("ascii"), "RIFF", stem);
+      assert.ok(bytes.length > 1000, `${stem} curto demais para ser design`);
+      const credits = await readFile(join(ROOT, "public/sfx", `${stem}.credits.txt`), "utf8");
+      assert.match(credits, /CC0-1.0/);
+      assert.match(credits, /design-sfx/);
+    }
   }
+});
+
+test("a variante entra no mesmo papel, não como papel novo", async () => {
+  const audio = createAudio({ createContext: () => null });
+  const seen = [];
+  const fetchFn = async (url) => {
+    seen.push(url);
+    if (url === "public/sfx/dash.wav" || url === "public/sfx/dash-b.wav") {
+      return { ok: true, arrayBuffer: async () => new ArrayBuffer(8) };
+    }
+    return { ok: false };
+  };
+  const loaded = await loadRoleFiles(audio, {
+    fetch: fetchFn,
+    decode: async () => ({ duration: 0.2 }),
+  });
+  assert.deepEqual(
+    loaded.filter((item) => item.id === "dash"),
+    [
+      { id: "dash", url: "public/sfx/dash.wav", variant: false },
+      { id: "dash", url: "public/sfx/dash-b.wav", variant: true },
+    ],
+  );
+  assert.ok(seen.includes("public/sfx/dash-b.wav"));
 });
 
 test("404 não inventa buffer e não quebra o restante dos papéis", async () => {

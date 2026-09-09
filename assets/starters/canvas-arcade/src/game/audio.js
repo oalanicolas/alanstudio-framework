@@ -1,7 +1,8 @@
 // Mixagem: barramentos, prioridade, ducking e legenda.
 //
-// Os seis papéis têm design original em `public/sfx/<papel>.wav`:
-// seno e ruído filtrado, gerados por tools/design-sfx.py.
+// Os seis papéis têm design original em `public/sfx/<papel>.wav`
+// e variante `public/sfx/<papel>-b.wav`: seno e ruído filtrado,
+// gerados por tools/design-sfx.py. O mixer alterna as variantes.
 // 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão — esses
 // arquivos não usam nenhum dos quatro. Arquivo no disco não é mixagem
 // ouvida: `heard` no harness continua falso.
@@ -34,6 +35,7 @@ export function createAudio(options = {}) {
   let context = null;
   let gains = null;
   const buffers = new Map();
+  const cursors = new Map();
   const missing = new Set();
   const voices = [];
   const captions = [];
@@ -78,7 +80,9 @@ export function createAudio(options = {}) {
     },
     register(id, buffer) {
       if (!(id in SOUNDS)) return false;
-      buffers.set(id, buffer);
+      const pack = buffers.get(id) ?? [];
+      pack.push(buffer);
+      buffers.set(id, pack);
       missing.delete(id);
       return true;
     },
@@ -96,11 +100,14 @@ export function createAudio(options = {}) {
         while (captions.length > captionLimit) captions.shift();
       }
       if (definition.duckMs) duckUntil = now() + definition.duckMs;
-      const buffer = buffers.get(id);
-      if (!buffer) {
+      const pack = buffers.get(id) ?? [];
+      if (!pack.length) {
         missing.add(id);
         return false;
       }
+      const cursor = cursors.get(id) ?? 0;
+      const buffer = pack[cursor % pack.length];
+      cursors.set(id, cursor + 1);
       ensureContext();
       if (!context) return false;
       retire();

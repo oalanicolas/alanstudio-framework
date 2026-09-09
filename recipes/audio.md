@@ -111,8 +111,8 @@ starter `canvas-arcade` inclui design original em `public/sfx`.
 ## Implementação de referência e degraus
 
 `src/game/audio.js` do starter `canvas-arcade` traz barramentos, prioridade, ducking,
-limite de vozes e legenda. Os seis papéis têm design original em `public/sfx`.
-`heard` continua falso. Toda
+limite de vozes, rodízio de variantes e legenda. Os seis papéis têm design
+original e variante (`-b`) em `public/sfx`. `heard` continua falso. Toda
 informação sonora precisa de equivalente visual — requisito de
 [acessibilidade](accessibility.md), não recurso extra. Degraus da dimensão `audio_mix`:
 [barra de acabamento](../references/production-bar.md#audio_mix--mixagem-não-arquivos).

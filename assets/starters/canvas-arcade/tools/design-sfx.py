@@ -140,13 +140,28 @@ def design(name: str) -> list[float]:
     return [sample * scale for sample in samples]
 
 
+def detune(samples: list[float], factor: float) -> list[float]:
+    length = max(1, int(len(samples) / factor))
+    out = []
+    last = len(samples) - 1
+    for index in range(length):
+        source = index * factor
+        low = min(int(source), last)
+        high = min(low + 1, last)
+        frac = source - low
+        out.append(samples[low] * (1.0 - frac) + samples[high] * frac)
+    return out
+
+
 def credits_text(name: str) -> str:
+    role = name[:-2] if name.endswith("-b") else name
+    kind = "variante para evitar fadiga" if name.endswith("-b") else "design original"
     return (
-        f"{name}.wav — design original do starter Canvas Arcade, 2026-09-09.\n"
+        f"{name}.wav — {kind} do starter Canvas Arcade, 2026-09-09.\n"
         "Gerado por tools/design-sfx.py. Autor: Alan Studios Framework. "
         "Licença: CC0-1.0. Sem samples de terceiros, sem jsfxr, sem Kenney, "
         "sem chiptune.\n"
-        f"Consumidor: src/game/audio.js (papel `{name}`) via src/game/sfx.js.\n"
+        f"Consumidor: src/game/audio.js (papel `{role}`) via src/game/sfx.js.\n"
     )
 
 
@@ -171,10 +186,14 @@ def write_receipts(names: list[str]) -> None:
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
+    names = []
     for name in ROLES:
-        write_wav(OUT / f"{name}.wav", design(name))
-    write_receipts(list(ROLES))
-    print(f"{len(ROLES)} papéis em {OUT}")
+        samples = design(name)
+        write_wav(OUT / f"{name}.wav", samples)
+        write_wav(OUT / f"{name}-b.wav", detune(samples, 1.07))
+        names.extend([name, f"{name}-b"])
+    write_receipts(names)
+    print(f"{len(names)} arquivos em {OUT}")
 
 
 if __name__ == "__main__":

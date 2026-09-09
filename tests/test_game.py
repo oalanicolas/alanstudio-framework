@@ -929,6 +929,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.doctor(self.root),
             game.scan(destination),
             game.next_step(destination, "lifecycle"),
+            game.guide_cycle(destination, "canvas-arcade"),
             game.context(destination, "lifecycle", "vertical-slice"),
             game.verify(destination, [], [sys.executable, "-c", "pass"], self.root / "prova", 30, list(game.CAPABILITIES)),
         ]
@@ -2283,6 +2284,36 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(again["created"])
         self.assertIsNone(again["init"])
         self.assertEqual(again["next"]["proposal"]["basis"], "playable.unplayed")
+
+    def test_guide_maps_the_cycle_without_creating_or_playing(self):
+        report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
+        self.assertFalse(report["executed"])
+        self.assertFalse(report["exists"])
+        self.assertEqual(len(report["steps"]), 3)
+        self.assertIn("start", report["steps"][0]["command"])
+        self.assertIn("atravessar estilhaços", report["steps"][0]["command"])
+        self.assertFalse(report["steps"][0]["done"])
+        self.assertFalse(report["steps"][1]["executed"])
+        self.assertEqual(report["steps"][2]["kind"], "playable.unplayed")
+        destination = self.root / "guiado"
+        game.start_project(destination, "canvas-arcade", idea="guardar a corrente")
+        after = game.guide_cycle(destination, "canvas-arcade")
+        self.assertTrue(after["exists"])
+        self.assertTrue(after["steps"][0]["done"])
+        self.assertIn("serve", after["steps"][1]["command"])
+        self.assertFalse(after["steps"][1]["executed"])
+        self.assertEqual(after["steps"][2]["kind"], "playable.unplayed")
+        self.assertIn("next", after["steps"][2]["command"])
+        self.assertFalse(after["executed"])
+        self.assertNotIn("atravessar estilhaços", (destination / "docs/brief.md").read_text(encoding="utf-8"))
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "guide", str(destination), "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        payload = json.loads(run.stdout)
+        self.assertFalse(payload["executed"])
+        self.assertEqual(payload["steps"][2]["kind"], "playable.unplayed")
 
     def test_init_seeds_the_idea_and_still_calls_the_brief_a_draft(self):
         destination = self.root / "com-ideia"
