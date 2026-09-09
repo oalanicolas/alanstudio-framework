@@ -13,8 +13,11 @@
 // remapeamento vigente. `palettes` tem consumidor: o desenho lê
 // `PALETTES` daqui, não uma constante no render. `look` escolhe um
 // look de arte (`normal`, `dusk`); `contrast` é o modo de alcance,
-// não um look. `dusk` na chuva e `dusk` no look compartilham o nome
-// e não a mesa. Mesas genéricas continuam sem consumidor automático.
+// não um look. `npm run look -- <nome> --from normal|dusk` copia um
+// look que o jogo já consome; `--as` desloca os tokens sem pedir a
+// receita de cabeça. `dusk` na chuva e `dusk` no look compartilham
+// o nome e não a mesa. Mesas genéricas continuam sem consumidor
+// automático.
 //
 // Toda mesa tem schema: formato antigo (sem campo) vira o vigente;
 // schema futuro falha com o número, não com undefined no meio do tick.
@@ -242,6 +245,106 @@ export function resolveLookName(name) {
     return name;
   }
   return "normal";
+}
+
+// Intenções sobre um look já pintável. Não são look melhor — só
+// deslocam os tokens que a receita já nomeia. Quem de fora ainda não
+// produziu; `consistent` continua falso.
+export const LOOK_INTENTS = {
+  warmer: "campo e acentos andam para o âmbar",
+  cooler: "campo e acentos andam para o azul",
+  night: "campo mais escuro, acentos no mesmo lugar",
+};
+
+export function listLookIntents() {
+  return Object.keys(LOOK_INTENTS);
+}
+
+export function lookRecord(palette) {
+  const record = {};
+  for (const field of PALETTE_FIELDS) record[field] = palette[field];
+  return record;
+}
+
+export function applyLookIntent(palette, intent) {
+  if (!(intent in LOOK_INTENTS)) {
+    throw new Error(`intenção desconhecida: ${intent}`);
+  }
+  const next = lookRecord(palette);
+  if (intent === "warmer") {
+    next.background = mixTint(next.background, "#2a1810", 0.4);
+    next.field = mixTint(next.field, "#3a2418", 0.45);
+    next.orb = mixTint(next.orb, "#ffb35a", 0.5);
+    next.shard = mixTint(next.shard, "#c45c6a", 0.35);
+    next.chain = mixTint(next.chain, "#f0c36a", 0.4);
+    next.muted = mixTint(next.muted, "#a89080", 0.35);
+    next.plate = mixTint(next.plate, "#120a08", 0.3);
+  } else if (intent === "cooler") {
+    next.background = mixTint(next.background, "#0c1220", 0.4);
+    next.field = mixTint(next.field, "#121828", 0.45);
+    next.orb = mixTint(next.orb, "#5ec8ff", 0.45);
+    next.shard = mixTint(next.shard, "#7a8cff", 0.35);
+    next.chain = mixTint(next.chain, "#8ad4ff", 0.35);
+    next.muted = mixTint(next.muted, "#7a88a0", 0.35);
+    next.plate = mixTint(next.plate, "#070913", 0.3);
+  } else {
+    next.background = scaleTint(next.background, 0.55);
+    next.field = scaleTint(next.field, 0.5);
+    next.plate = scaleTint(next.plate, 0.7);
+    next.muted = scaleTint(next.muted, 0.85);
+  }
+  return next;
+}
+
+function parseTint(value) {
+  if (typeof value !== "string") return null;
+  const hex = /^#([0-9a-f]{6})$/i.exec(value);
+  if (hex) {
+    const n = Number.parseInt(hex[1], 16);
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255, a: 1, kind: "hex" };
+  }
+  const rgba = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([0-9.]+)\s*)?\)$/i.exec(value);
+  if (!rgba) return null;
+  return {
+    r: Number(rgba[1]),
+    g: Number(rgba[2]),
+    b: Number(rgba[3]),
+    a: rgba[4] === undefined ? 1 : Number(rgba[4]),
+    kind: "rgba",
+  };
+}
+
+function formatTint(tint, kind) {
+  const r = clamp(Math.round(tint.r), 0, 255);
+  const g = clamp(Math.round(tint.g), 0, 255);
+  const b = clamp(Math.round(tint.b), 0, 255);
+  if (kind === "hex") {
+    return `#${[r, g, b].map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
+  }
+  return `rgba(${r},${g},${b},${Number(tint.a.toFixed(2))})`;
+}
+
+function mixTint(value, target, amount) {
+  const from = parseTint(value);
+  const to = parseTint(target);
+  if (!from || !to) return value;
+  return formatTint({
+    r: from.r + (to.r - from.r) * amount,
+    g: from.g + (to.g - from.g) * amount,
+    b: from.b + (to.b - from.b) * amount,
+    a: from.a,
+  }, from.kind);
+}
+
+function scaleTint(value, factor) {
+  const tint = parseTint(value);
+  if (!tint) return value;
+  return formatTint({
+    r: tint.r * factor,
+    g: tint.g * factor,
+    b: tint.b * factor,
+    a: tint.a,
+  }, tint.kind);
 }
 
 export function resolveSpawnName(name) {

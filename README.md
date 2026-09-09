@@ -584,12 +584,13 @@ existe, relata nome e versão. `shipped` é sempre `false`.
 HTML estático sem manifesto já é o artefato; manifesto sem passo de
 empacotar recebe `ship.unpacked`. O starter declara paleta em
 `data/palettes.json`, escolhe o look por `?look=` / `settings.look`
-(`dusk` já é o segundo; `contrast` é alcance, não look), extrai a chuva
+(`dusk` já é o segundo; `contrast` é alcance, não look), nasce o
+próximo com `look --from` / `--as`, extrai a chuva
 para `data/spawn.json` e `data/dusk.json`, escolhe o perfil por `?spawn=`,
 nasce a próxima com `table --from` / `--as` e `session --spawn`, e
 empacota com `npm run build` — look no disco, ferramenta que desloca knobs
-e um export na máquina de quem construiu não são direção consistente,
-escala nem entrega.
+ou tokens e um export na máquina de quem construiu não são direção
+consistente, escala nem entrega.
 
 ## Playtest
 

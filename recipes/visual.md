@@ -5,6 +5,8 @@ Entrada: referência aprovada, diferença percebida e percurso/câmera de compar
 O harness lê paleta e art-bible vigentes com `art <projeto>`. Paleta no
 código ou em `data/palettes.json` não é direção consistente — `consistent` é sempre falso. Rascunho
 do `init` não conta. Sem declaração, `next` propõe `art.missing`.
+No starter, `look --from` / `--as` nasce um look que o jogo já pinta;
+ferramenta no disco não é alguém de fora nem comparação em movimento.
 
 Leia [a qualidade](../references/quality.md) e os aprendizados de performance
 do laboratório, quando existirem.

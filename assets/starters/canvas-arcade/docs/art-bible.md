@@ -29,7 +29,9 @@ e cabe neste recorte.
 2. Acrescente o token em `data/palettes.json` (`normal`, `contrast` e
    cada look de arte). Trocar só a cor não exige abrir `render.js`.
    Um look novo entra na mesa e o jogo o consome por `?look=` /
-   `settings.look` — `dusk` já é o segundo.
+   `settings.look` — `dusk` já é o segundo. Nasça o próximo com
+   `npm run look -- <nome> --from dusk --as warmer|cooler|night`.
+   Intenção não é look aprovado nem alguém de fora no piso.
 3. Se o item for forma nova, desenhe o consumidor em `src/game/render.js`.
 4. Registre a linha nesta tabela e a origem em `CREDITS.md`.
 5. Se o item for chuva, nasça com `npm run table -- <nome> --from spawn`

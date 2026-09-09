@@ -2,10 +2,10 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  applySpawnIntent, loadTable, loadSpawn, listLooks, listSpawnIntents, listSpawnProfiles, looksLikeSpawn,
+  applyLookIntent, applySpawnIntent, loadTable, loadSpawn, listLookIntents, listLooks, listSpawnIntents, listSpawnProfiles, looksLikeSpawn, lookRecord,
   resolveLookName,
   migrateCopy, migratePalettes, migrateSpawn, migrateTable, requireFields, resolveSpawnName, spawnRecord, TABLES,
-  SPAWN_FIELDS, SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS, PALETTE_SCHEMA, PALETTE_FIELDS, SPAWN_INTENTS, PALETTES,
+  SPAWN_FIELDS, SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS, PALETTE_SCHEMA, PALETTE_FIELDS, LOOK_INTENTS, SPAWN_INTENTS, PALETTES,
 } from "../src/game/tables.js";
 
 test("as mesas passam pelo mesmo carregador", () => {
@@ -84,6 +84,21 @@ test("copy sem schema migra; schema futuro e campo ausente falham com o nome", (
     () => migrateTable("copy", { schema: 1 }, COPY_SCHEMA, COPY_FIELDS),
     /mesa copy sem fantasy/,
   );
+});
+
+test("a intenção desloca tokens sem inventar look nem aprovar arte", () => {
+  const warmer = applyLookIntent(PALETTES.normal, "warmer");
+  const cooler = applyLookIntent(PALETTES.normal, "cooler");
+  const night = applyLookIntent(PALETTES.normal, "night");
+  assert.deepEqual(listLookIntents(), Object.keys(LOOK_INTENTS));
+  assert.notEqual(warmer.field, PALETTES.normal.field);
+  assert.notEqual(cooler.field, PALETTES.normal.field);
+  assert.notEqual(night.field, PALETTES.normal.field);
+  assert.notEqual(warmer.field, cooler.field);
+  assert.notEqual(warmer.orb, PALETTES.normal.orb);
+  assert.deepEqual(Object.keys(lookRecord(warmer)).sort(), [...PALETTE_FIELDS].sort());
+  assert.equal(lookRecord(PALETTES.dusk).field, PALETTES.dusk.field);
+  assert.throws(() => applyLookIntent(PALETTES.normal, "melhor"), /intenção desconhecida/);
 });
 
 test("paleta sem contraste ou sem token falha com o nome", () => {

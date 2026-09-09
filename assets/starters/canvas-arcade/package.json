@@ -10,6 +10,7 @@
     "budget": "node tools/budget.mjs",
     "build": "node tools/export.mjs",
     "table": "node tools/new-table.mjs",
+    "look": "node tools/new-look.mjs",
     "sfx": "python3 tools/design-sfx.py",
     "contrast": "node tools/contrast.mjs",
     "peak": "node tools/peak.mjs",

@@ -6,12 +6,14 @@ forma de `spawn`. `copy.fantasy` alimenta o aviso do primeiro ciclo.
 `palettes` alimenta o desenho: trocar um token não exige abrir
 `render.js`. O look `dusk` mora nessa mesa; `?look=` / `settings.look`
 o consomem. `dusk` na chuva é outra mesa (`dusk.json`) e outro
-consumidor (`?spawn=`). Mesas genéricas ainda pedem consumidor.
+consumidor (`?spawn=`). Nasça o próximo look com o comando; mesas
+genéricas ainda pedem consumidor.
 
 ```sh
 npm run table -- <nome> --from spawn
 npm run table -- <nome> --from dusk --as denser
 npm run session -- --spawn <nome>
+npm run look -- <nome> --from dusk --as warmer
 ```
 
 `--from` copia um perfil de chuva que já existe (`spawn` ou `dusk`).
@@ -19,6 +21,11 @@ npm run session -- --spawn <nome>
 cabeça: a chuva nova não é um clone. Sem `--from`, o comando escreve
 `{ "schema": 1 }` e `loadTable("<nome>")` resolve; o jogo não muda até
 alguém ligar a regra ou a apresentação.
+
+`npm run look -- <nome> --from dusk --as warmer` copia um look que o
+jogo já pinta. `--from` é obrigatório; `contrast` não é look.
+`--as warmer|cooler|night` desloca os tokens. Sem `--as` a cópia é
+idêntica até alguém editar. Intenção não é look aprovado.
 
 A partida lê `?spawn=<nome>` ou `settings.spawnProfile`. `dusk` já é o
 segundo perfil: prática mais curta, chuva mais densa. Intenção nomeada

@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.45 — O próximo look nasce como a chuva
+
+A paleta aceitava look novo à mão. `look --from` copia um look que o
+jogo já pinta; `--as` desloca os tokens. `?look=` consome sem
+recomeçar a partida. `consistent` continua falso. `art_direction`
+permanece `slice`: ferramenta no disco não é alguém de fora nem
+comparação em movimento. Só `release` fica no piso.
+
+O que 0.9.45 não afirma: ninguém de fora produziu e o harness não
+comparou o look em movimento.
+
 ## 0.9.44 — O look dusk entra como a chuva
 
 A paleta era mesa, mas o jogo só pintava `normal` e `contrast`.
