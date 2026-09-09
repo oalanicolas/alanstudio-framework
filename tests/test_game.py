@@ -2,6 +2,7 @@ import copy
 import importlib.util
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -46,6 +47,94 @@ class HarnessTest(unittest.TestCase):
         self.assertEqual({item["kind"] for item in projects}, {"package.json", "unity", "godot", "static-web"})
         self.assertEqual(len(projects), 4)
         self.assertNotIn("shared", {Path(item["project"]).name for item in projects})
+
+    def test_discovery_recognizes_native_engines_and_skips_their_build_directories(self):
+        markers = {
+            "unreal/MyGame.uproject": "unreal", "defold/game.project": "defold", "gm/project.yyp": "gamemaker",
+            "rust/Cargo.toml": "cargo", "py/pyproject.toml": "python", "lua/main.lua": "lua",
+            "unreal/Binaries/tool/package.json": None, "unreal/Intermediate/x/index.html": None, "rust/target/debug/package.json": None,
+        }
+        for relative in markers:
+            path = self.root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("{}")
+        found = {Path(item["project"]).name: item["kind"] for item in game.discover(self.root)}
+        self.assertEqual(found, {"unreal": "unreal", "defold": "defold", "gm": "gamemaker", "rust": "cargo", "py": "python", "lua": "lua"})
+        self.assertIsNone(game.identify(self.root / "absent"))
+
+    def test_cli_accepts_root_before_and_after_the_subcommand(self):
+        self.package()
+        for argv in (["--root", str(self.root), "discover"], ["discover", "--root", str(self.root)], ["context", str(self.project), "--focus", "feel", "--root", str(self.root)]):
+            with self.subTest(argv=argv):
+                run = subprocess.run([sys.executable, str(SCRIPT), *argv], capture_output=True, text=True)
+                self.assertEqual(run.returncode, 0, run.stderr)
+                self.assertIn(str(self.project), run.stdout)
+        run = subprocess.run([sys.executable, str(SCRIPT), "sfx", "summary", "--root", str(self.root)], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertEqual(json.loads(run.stdout)["catalog"], str(self.root / "shared/sfx/catalog.json"))
+
+    def test_context_studio_assets_follow_the_requested_root(self):
+        result = game.context(self.project, "content", root=self.root)
+        self.assertEqual(result["studio_assets"]["sfx"]["catalog"], str(self.root / "shared/sfx/catalog.json"))
+        self.assertFalse(result["studio_assets"]["sfx"]["exists"])
+        run = subprocess.run([sys.executable, str(SCRIPT), "context", str(self.project), "--root", str(self.root)], capture_output=True, text=True)
+        self.assertEqual(json.loads(run.stdout)["studio_assets"]["sfx"]["catalog"], str(self.root / "shared/sfx/catalog.json"))
+
+    def test_doctor_reports_installation_without_writing_or_approving(self):
+        self.package()
+        before = sorted(str(p) for p in self.root.rglob("*"))
+        report = game.doctor(self.root)
+        self.assertTrue(report["ok"])
+        checks = {item["check"]: item for item in report["checks"]}
+        self.assertEqual({name for name, item in checks.items() if item["required"]}, {"python", "framework_files", "root"})
+        self.assertEqual(checks["framework_files"]["detail"]["missing"], [])
+        self.assertEqual(checks["framework_files"]["detail"]["expected"], 3 + len(game.FOCI) + len(game.STAGES) + len(game.REFERENCES))
+        self.assertEqual(checks["projects"]["detail"]["kinds"], ["package.json"])
+        self.assertEqual(checks["sfx"]["status"], "absent")
+        self.assertIn("context", report["next"])
+        self.assertEqual(before, sorted(str(p) for p in self.root.rglob("*")))
+        broken = game.doctor(self.root / "absent")
+        self.assertFalse(broken["ok"])
+        self.assertEqual(next(item["status"] for item in broken["checks"] if item["check"] == "root"), "missing")
+        self.assertIn("missing", broken["next"])
+        run = subprocess.run([sys.executable, str(SCRIPT), "doctor", "--root", str(self.root)], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertTrue(json.loads(run.stdout)["ok"])
+        self.assertEqual(subprocess.run([sys.executable, str(SCRIPT), "doctor", "--root", str(self.root / "absent")], capture_output=True, text=True).returncode, 1)
+
+    def test_filled_game_design_template_covers_every_minimum_area_in_one_document(self):
+        document = self.project / "game-design.md"
+        game.template("game-design", self.project, document)
+        draft = game.scan(self.project)
+        self.assertEqual(draft["minimum_status"], "needs_review")
+        self.assertTrue(all(area["status"] == "draft_only" for area in draft["areas"].values()), draft["areas"])
+        filled = re.sub(r"\[[^\]]*\]", "decidido com fonte", document.read_text(encoding="utf-8")).replace("Status: rascunho", "Status: revisado")
+        document.write_text(filled, encoding="utf-8")
+        result = game.scan(self.project)
+        self.assertEqual(result["gaps"], [])
+        self.assertEqual(result["minimum_status"], "candidates_found")
+        self.assertTrue(all(area["candidates"][0]["path"] == "game-design.md" for area in result["areas"].values()))
+        self.assertEqual(result["continuity_sources"][0]["path"], "game-design.md")
+        self.assertFalse(result["audit"]["required"])
+
+    def test_production_stages_route_production_recipe_once_and_keep_focus(self):
+        production = str(game.FRAMEWORK / "recipes/production.md")
+        for stage in game.PRODUCTION_STAGES:
+            for focus in ("mechanics", "production"):
+                with self.subTest(stage=stage, focus=focus):
+                    result = game.context(self.project, focus, stage=stage, studies_root=self.root / "absent")
+                    self.assertEqual(result["focus"], focus)
+                    self.assertEqual(result["read_next"].count(production), 1)
+                    self.assertIn(str(game.FRAMEWORK / f"assets/templates/{stage}.md"), result["read_next"])
+                    self.assertTrue(all(Path(p).is_file() for p in result["read_next"]))
+        self.assertNotIn(production, game.context(self.project, "mechanics", stage="gdd")["read_next"])
+        self.assertEqual(len(set(game.context(self.project, "create", stage="game-design")["read_next"])), len(game.context(self.project, "create", stage="game-design")["read_next"]))
+
+    def test_feel_focus_loads_design_system_and_unknown_focus_is_rejected(self):
+        names = [Path(p).name for p in game.context(self.project, "feel", studies_root=self.root / "absent")["read_next"]]
+        self.assertEqual(names[:4], ["process.md", "quality.md", "feel.md", "game-design-system.md"])
+        with self.assertRaisesRegex(ValueError, "foco desconhecido"):
+            game.context(self.project, "polish")
 
     def test_context_loads_selected_recipe_and_never_executes_declared_script(self):
         self.package(scripts={"test": "touch should-not-exist"})

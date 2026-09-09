@@ -5,7 +5,9 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import platform
 import re
+import shutil
 import signal
 import subprocess
 import sys
@@ -42,9 +44,24 @@ import sfx_catalog
 
 ROOT = default_root()
 STUDIES_ROOT = default_studies_root(ROOT)
-FOCI = ("create", "mechanics", "lifecycle", "content", "visual", "network", "architecture")
-STAGES = ("brief", "mda", "gdd", "poc", "prd", "tdd", "vertical-slice", "mvp", "qa", "art-bible", "devlog", "audit")
+FOCI = ("create", "mechanics", "lifecycle", "content", "visual", "feel", "network", "architecture", "production")
+STAGES = ("brief", "mda", "gdd", "poc", "prd", "tdd", "vertical-slice", "mvp", "qa", "art-bible", "devlog", "audit", "game-design", "production-plan", "milestone")
+PRODUCTION_STAGES = ("production-plan", "milestone")
 EVENTS = ("task", "direction-approved", "resume")
+REFERENCES = ("process", "quality", "preproduction", "project-audit", "game-design-system", "sources")
+# Ordem importa: manifestos web primeiro, engines nativas depois, marcadores genéricos por último.
+ENGINE_MARKERS = (
+    ("package.json", "package.json"),
+    ("ProjectSettings/ProjectVersion.txt", "unity"),
+    ("project.godot", "godot"),
+    ("*.uproject", "unreal"),
+    ("game.project", "defold"),
+    ("*.yyp", "gamemaker"),
+    ("Cargo.toml", "cargo"),
+    ("pyproject.toml", "python"),
+    ("main.lua", "lua"),
+    ("index.html", "static-web"),
+)
 CONTINUITY_PATTERN = r"\b(continuidade|continuity|retomada|proxim[ao]s? (passos?|acoes|acao|tarefas?)|next steps?)\b"
 CONTINUITY_FILES = {"production plan", "plano de producao", "roadmap", "backlog", "state", "decisions", "devlog"}
 FOUNDATION_AREAS = (
@@ -59,7 +76,12 @@ FOUNDATION_AREAS = (
     ("provenance", "Origem de código e assets", r"\b(licenses?|licences?|licencas?|copying|authors|sources|proveniencia|provenance|creditos|credits|asset sources)\b"),
 )
 CAPABILITIES = ("pause", "reset", "seed", "observe", "act", "advance", "capture", "dispose")
-SKIP = {"node_modules", "dist", "build", "docs", "framework", "squads", "public", "assets", "Assets", "Library", "Temp", "outputs", "shared"}
+SKIP = {
+    "node_modules", "dist", "build", "docs", "framework", "squads", "public", "assets", "outputs", "shared",
+    "Assets", "Library", "Temp", "Logs", "UserSettings",  # Unity
+    "Binaries", "Intermediate", "Saved", "DerivedDataCache", "Content", "Plugins",  # Unreal
+    "target", "__pycache__",  # Cargo / Python
+}
 FOCUS_STUDIES = {
     "create": (
         "outputs/decoded/games-bmad-game-dev-studio/study-2486f5f5f3b8/validate/rule-catalog.md",
@@ -114,14 +136,14 @@ def resolve(value, root=ROOT):
 
 
 def identify(project):
-    if (project / "package.json").is_file():
-        return "package.json"
-    if (project / "ProjectSettings/ProjectVersion.txt").is_file():
-        return "unity"
-    if (project / "project.godot").is_file():
-        return "godot"
-    if (project / "index.html").is_file():
-        return "static-web"
+    if not project.is_dir():
+        return None
+    for marker, kind in ENGINE_MARKERS:
+        if "*" in marker:
+            if any(path.is_file() for path in project.glob(marker)):
+                return kind
+        elif (project / marker).is_file():
+            return kind
     return None
 
 
@@ -434,7 +456,27 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     }
 
 
-def context(project, focus, stage=None, studies_root=None, event="task"):
+def select_references(focus, stage, document_minimum):
+    """Seleciona as leituras do framework para o foco/etapa; cada arquivo entra uma vez, na ordem de leitura."""
+    references = [FRAMEWORK / "references/process.md", FRAMEWORK / "references/quality.md", FRAMEWORK / f"recipes/{focus}.md"]
+    if stage == "tdd":
+        references.append(FRAMEWORK / "recipes/architecture.md")
+    if stage in PRODUCTION_STAGES:
+        references.append(FRAMEWORK / "recipes/production.md")
+    if stage or focus == "create":
+        references.append(FRAMEWORK / "references/preproduction.md")
+    if focus in ("create", "visual", "feel") or stage in ("art-bible", "game-design"):
+        references.append(FRAMEWORK / "references/game-design-system.md")
+    if stage:
+        references.append(FRAMEWORK / f"assets/templates/{stage}.md")
+    if document_minimum or stage in ("art-bible", "devlog"):
+        references.append(FRAMEWORK / "references/project-audit.md")
+    return list(dict.fromkeys(references))
+
+
+def context(project, focus, stage=None, studies_root=None, event="task", root=None):
+    if focus not in FOCI:
+        raise ValueError("foco desconhecido")
     if stage is not None and stage not in STAGES:
         raise ValueError("etapa desconhecida")
     if event not in EVENTS:
@@ -451,17 +493,7 @@ def context(project, focus, stage=None, studies_root=None, event="task"):
     foundation = scan(project)
     records = [str(project / relative) for relative in foundation["read_first"]]
     document_minimum = foundation["audit"]["required"] or event == "direction-approved" or stage == "audit"
-    references = [FRAMEWORK / "references/process.md", FRAMEWORK / "references/quality.md", FRAMEWORK / f"recipes/{focus}.md"]
-    if stage == "tdd" and focus != "architecture":
-        references.append(FRAMEWORK / "recipes/architecture.md")
-    if stage or focus == "create":
-        references.append(FRAMEWORK / "references/preproduction.md")
-    if focus in ("create", "visual") or stage == "art-bible":
-        references.append(FRAMEWORK / "references/game-design-system.md")
-    if stage:
-        references.append(FRAMEWORK / f"assets/templates/{stage}.md")
-    if document_minimum or stage in ("art-bible", "devlog"):
-        references.append(FRAMEWORK / "references/project-audit.md")
+    references = select_references(focus, stage, document_minimum)
     studies = studies_for(focus, STUDIES_ROOT if studies_root is None else studies_root)
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(), "kind": identify(project),
@@ -490,7 +522,7 @@ def context(project, focus, stage=None, studies_root=None, event="task"):
             "before_close": "Registrar conteúdo e fontes nos documentos canônicos; cobrir cada área mínima com decisão/fato ou lacuna e próxima ação. Referência salva e templates vazios não concluem a documentação.",
             "scope": "O agente executa a ação e respeita restrições atuais do usuário. O comando não escreve documentos, concede aprovação ou certifica sua suficiência.",
         },
-        "studio_assets": sfx_catalog.studio_assets(),
+        "studio_assets": sfx_catalog.studio_assets(root),
         "limits": [
             "Ponteiros não comprovam leitura; scripts declarados não comprovam execução.",
             "Inspecione os scripts antes de executá-los. Nenhum comando é executado por context.",
@@ -516,6 +548,47 @@ def template(stage, project, output=None):
         with output.open("x", encoding="utf-8") as document:
             document.write(text)
     return text
+
+
+def doctor(root, studies_root=None):
+    """Autodiagnóstico do harness: instalação, integridade dos arquivos e caminhos resolvidos. Não executa jogos."""
+    checks = []
+
+    def check(name, ok, detail, required=True):
+        status = "ok" if ok else ("missing" if required else "absent")
+        checks.append({"check": name, "status": status, "required": required, "detail": detail})
+
+    check("python", sys.version_info >= (3, 10), {"version": platform.python_version(), "minimum": "3.10"})
+    expected = [
+        FRAMEWORK / "SKILL.md", FRAMEWORK / "README.md", FRAMEWORK / "assets/work.example.json",
+        *(FRAMEWORK / f"recipes/{focus}.md" for focus in FOCI),
+        *(FRAMEWORK / f"assets/templates/{stage}.md" for stage in STAGES),
+        *(FRAMEWORK / f"references/{name}.md" for name in REFERENCES),
+    ]
+    missing = [path.relative_to(FRAMEWORK).as_posix() for path in expected if not path.is_file()]
+    check("framework_files", not missing, {"framework": str(FRAMEWORK), "expected": len(expected), "missing": missing})
+    check("root", root.is_dir(), {"path": str(root), "hint": "passe --root com a raiz do laboratório de jogos"})
+    check("root_instructions", (root / "AGENTS.md").is_file(), str(root / "AGENTS.md"), required=False)
+    projects = discover(root) if root.is_dir() else []
+    check("projects", bool(projects), {"count": len(projects), "kinds": sorted({item["kind"] for item in projects}), "known_markers": [marker for marker, _ in ENGINE_MARKERS]}, required=False)
+    studies = default_studies_root(root) if studies_root is None else Path(studies_root)
+    check("studies", studies.is_dir(), str(studies), required=False)
+    sfx = sfx_catalog.studio_assets(root)["sfx"]
+    check("sfx", sfx["exists"], sfx["catalog"], required=False)
+    git = shutil.which("git")
+    check("git", bool(git), git or "não encontrado no PATH; verify registra version.head = null", required=False)
+    ok = all(item["status"] != "missing" for item in checks)
+    if not ok:
+        next_step = "Corrija os itens `missing` antes de usar context/verify."
+    elif projects:
+        next_step = "python3 scripts/game.py context <projeto> --focus create --root <raiz>; para jogo novo, template game-design --project <novo> --output <arquivo>."
+    else:
+        next_step = "Nenhum projeto reconhecido na raiz. Para um jogo novo: template game-design --project <novo> --output <arquivo>, depois context <novo> --focus create."
+    return {
+        "schema_version": 1, "ok": ok, "framework": str(FRAMEWORK), "root": str(root), "checks": checks,
+        "next": next_step,
+        "scope": "Verifica instalação, integridade dos arquivos do framework e caminhos resolvidos. Itens `absent` são opcionais. Não executa jogos, não avalia projetos nem aprova nada.",
+    }
 
 
 def nonempty(value):
@@ -622,52 +695,63 @@ def verify(project, scripts, command, output, timeout):
     return report
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--root", type=Path, default=ROOT, help="raiz para descobrir projetos e resolver caminhos")
+def build_parser():
+    # --root é aceito antes ou depois do subcomando; SUPPRESS evita que o subparser sobrescreva o valor global.
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--root", type=Path, default=argparse.SUPPRESS, help="raiz do laboratório para descobrir projetos e resolver caminhos (padrão: %s)" % ROOT)
+    parser = argparse.ArgumentParser(description=__doc__, parents=[common])
     commands = parser.add_subparsers(dest="action", required=True)
-    commands.add_parser("discover")
-    initial_scan = commands.add_parser("scan")
+    commands.add_parser("discover", parents=[common], help="lista projetos reconhecidos na raiz")
+    commands.add_parser("doctor", parents=[common], help="autodiagnóstico do harness: instalação, arquivos e caminhos")
+    initial_scan = commands.add_parser("scan", parents=[common], help="checagem das nove áreas documentais")
     initial_scan.add_argument("project")
-    ctx = commands.add_parser("context")
+    ctx = commands.add_parser("context", parents=[common], help="recorte de leitura para um foco/etapa; inclui scan")
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
     ctx.add_argument("--stage", choices=STAGES)
     ctx.add_argument("--event", choices=EVENTS, default="task", help="evento observado na conversa pelo agente; não concede aprovação")
-    doc = commands.add_parser("template")
+    doc = commands.add_parser("template", parents=[common], help="imprime ou grava um rascunho de documento")
     doc.add_argument("stage", choices=STAGES)
     doc.add_argument("--project", required=True)
     doc.add_argument("--output", type=Path, help="sem output, imprime o rascunho sem escrever")
-    plan = commands.add_parser("check-plan")
+    plan = commands.add_parser("check-plan", parents=[common], help="valida a forma do contrato de reuso")
     plan.add_argument("plan", type=Path)
-    run = commands.add_parser("verify")
+    run = commands.add_parser("verify", parents=[common], help="executa validadores escolhidos com recibo")
     run.add_argument("project")
     run.add_argument("--output", type=Path, required=True)
     run.add_argument("--timeout", type=float, default=300)
     run.add_argument("--script", action="append", default=[])
     run.add_argument("--command", nargs=argparse.REMAINDER)
-    sfx = commands.add_parser("sfx", help="catálogo compartilhado de efeitos sonoros")
+    sfx = commands.add_parser("sfx", parents=[common], help="catálogo compartilhado de efeitos sonoros")
     sfx_cmd = sfx.add_subparsers(dest="sfx_action")
-    sfx_cmd.add_parser("summary")
-    sfx_search = sfx_cmd.add_parser("search")
+    sfx_cmd.add_parser("summary", parents=[common])
+    sfx_search = sfx_cmd.add_parser("search", parents=[common])
     sfx_search.add_argument("query")
     sfx_search.add_argument("--limit", type=int, default=40)
-    sfx_copy = sfx_cmd.add_parser("copy")
+    sfx_copy = sfx_cmd.add_parser("copy", parents=[common])
     sfx_copy.add_argument("id")
     sfx_copy.add_argument("--to", required=True)
     sfx_copy.add_argument("--sources")
-    sfx_cmd.add_parser("verify")
-    sfx_serve = sfx_cmd.add_parser("serve")
+    sfx_cmd.add_parser("verify", parents=[common])
+    sfx_serve = sfx_cmd.add_parser("serve", parents=[common])
     sfx_serve.add_argument("--port", type=int, default=8766)
-    args = parser.parse_args()
+    return parser
+
+
+def main():
+    args = build_parser().parse_args()
     try:
-        root = args.root.resolve()
+        root = getattr(args, "root", ROOT).resolve()
         if args.action == "discover":
             emit(discover(root))
+        elif args.action == "doctor":
+            report = doctor(root)
+            emit(report)
+            return int(not report["ok"])
         elif args.action == "scan":
             emit(scan(resolve(args.project, root)))
         elif args.action == "context":
-            emit(context(resolve(args.project, root), args.focus, args.stage, studies_root=default_studies_root(root), event=args.event))
+            emit(context(resolve(args.project, root), args.focus, args.stage, studies_root=default_studies_root(root), event=args.event, root=root))
         elif args.action == "template":
             document = template(args.stage, resolve(args.project, root), args.output)
             if args.output:
