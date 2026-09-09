@@ -44,11 +44,18 @@ export function createGame(options = {}) {
   });
 
   function readIntent() {
-    const aim = state.player.x / FIELD.width;
-    const intent = input.intent(aim);
-    if (intent.pause) togglePause();
-    if (intent.reset) handle.reset();
-    return intent;
+    return input.intent(state.player.x / FIELD.width);
+  }
+
+  // Comandos são lidos na apresentação, não na simulação: o laço continua
+  // desenhando em pausa, mas não atualiza. Ler a tecla de pausa junto com a
+  // intenção tornava impossível despausar pelo teclado — só um `resume()`
+  // programático saía dali, e nenhum teste passava por esse caminho.
+  function readCommands() {
+    if (disposed) return;
+    const command = input.commands();
+    if (command.reset) handle.reset();
+    else if (command.pause) togglePause();
   }
 
   function step(intent) {
@@ -64,6 +71,7 @@ export function createGame(options = {}) {
   }
 
   function present(frame) {
+    readCommands();
     audio.update();
     if (!renderer) return;
     renderer.draw(state, frame, settings, { captions: audio.captions(), best: progress.best });

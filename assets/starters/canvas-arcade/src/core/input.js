@@ -1,8 +1,13 @@
-// Entrada: teclado, ponteiro e gamepad reduzidos a uma intenção.
+// Entrada: teclado, ponteiro e gamepad reduzidos a intenção e comandos.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que
 // permite rodar a partida headless, repetir um replay e comparar dispositivos:
 // o mesmo teste que prova a regra prova a intenção.
+//
+// Pausar e reiniciar são **comandos**, não intenção, e por isso saem por
+// `commands()`. A intenção é consumida pela simulação, que não roda em pausa;
+// um comando lido junto com ela seria impossível de dar justamente quando é
+// mais necessário — despausar exigiria despausar antes.
 //
 // `dispose()` remove exatamente os listeners que registrou. Listener sobrevivente
 // é a causa mais comum de comportamento duplicado depois de reiniciar.
@@ -23,6 +28,7 @@ export function createInput(options = {}) {
   const held = new Set();
   const pressed = new Set();
   const gamepadHeld = new Set();
+  const padCommandHeld = new Set();
   const pointer = { active: false, aim: null, dash: false, bank: false };
   const registered = [];
 
@@ -125,7 +131,24 @@ export function createInput(options = {}) {
     return bindings[action]?.some((code) => held.has(code)) || gamepadHeld.has(action);
   }
 
+  const COMMANDS = ["pause", "reset"];
+
   return {
+    // Comandos do invólucro, lidos a cada quadro mesmo em pausa. No gamepad o
+    // botão é contínuo, então a borda é detectada aqui; no teclado ela já veio
+    // do keydown.
+    commands() {
+      pollGamepads();
+      const result = {};
+      for (const action of COMMANDS) {
+        const padDown = gamepadHeld.has(action);
+        result[action] = pressed.has(action) || (padDown && !padCommandHeld.has(action));
+        if (padDown) padCommandHeld.add(action);
+        else padCommandHeld.delete(action);
+        pressed.delete(action);
+      }
+      return result;
+    },
     // Consome as bordas: uma intenção lida é uma intenção entregue.
     intent(playerAim = null) {
       pollGamepads();
@@ -140,10 +163,12 @@ export function createInput(options = {}) {
         move,
         dash: pressed.has("dash") || isHeld("dash") || pointer.dash,
         bank: pressed.has("bank") || isHeld("bank") || pointer.bank,
-        pause: pressed.has("pause"),
-        reset: pressed.has("reset"),
       };
-      pressed.clear();
+      // Só as bordas de intenção. Um comando ainda não lido por `commands()`
+      // sobrevive a este quadro em vez de ser descartado em silêncio.
+      for (const action of pressed) {
+        if (!COMMANDS.includes(action)) pressed.delete(action);
+      }
       pointer.dash = false;
       pointer.bank = false;
       return result;
@@ -167,6 +192,7 @@ export function createInput(options = {}) {
       held.clear();
       pressed.clear();
       gamepadHeld.clear();
+      padCommandHeld.clear();
     },
   };
 }

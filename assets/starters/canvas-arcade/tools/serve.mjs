@@ -9,8 +9,12 @@ import { createServer } from "node:http";
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { extname, join, normalize, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const ROOT = resolve(new URL("..", import.meta.url).pathname);
+// `pathname` de uma URL mantém a codificação percentual: um projeto em
+// "Farol do Sul" viraria "Farol%20do%20Sul", uma pasta que não existe, e todo
+// pedido responderia 404. `fileURLToPath` decodifica.
+const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const PORT = Number(process.env.PORT ?? 8080);
 const TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -58,5 +62,7 @@ const server = createServer(async (request, response) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Jogo em http://localhost:${PORT}/  (Ctrl+C encerra)`);
+  // A porta anunciada é a que o sistema abriu, não a pedida: com PORT=0 elas
+  // são diferentes, e um endereço errado no console custa uma depuração inteira.
+  console.log(`Jogo em http://localhost:${server.address().port}/  (Ctrl+C encerra)`);
 });

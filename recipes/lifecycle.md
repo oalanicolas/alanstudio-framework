@@ -11,6 +11,13 @@ menções nesses arquivos, sem promover token a capacidade verificada. Quando um
 teste do projeto exercitar um deles, `verify --proves <nome>` anexa a alegação ao
 recibo, com autor, argv e log — `claimed`, nunca `verified`.
 
+**Teste o contrato pela ligação, não só pela API.** Uma suíte que chama
+`game.pause()` e `game.resume()` diretamente passa mesmo quando despausar pelo
+teclado é impossível — foi o que aconteceu no starter `canvas-arcade`, onde a
+leitura da tecla morava dentro da simulação, que não roda em pausa. O comando
+para sair de um estado nunca pode ser lido por um caminho que aquele estado
+desliga. Percorra a ligação real: evento de entrada → quadro → estado.
+
 Examine separadamente:
 
 - Pausa da simulação, render visível, input, áudio, callbacks e transições.
