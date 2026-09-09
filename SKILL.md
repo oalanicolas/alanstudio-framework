@@ -135,6 +135,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    mede orçamento ou certifica acabamento; a passagem é declarada por pessoa com a
    prova ligada (`record --kind milestone`, recibos de `verify`, `observation` e
    `budget`). Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
+   **`origins <projeto>` lê o disco**, não a tabela: lista mídia embarcada sem
+   recibo de origem. Não valida licença. Arquivo sem recibo conta como licença
+   desconhecida, e `next` propõe declarar a origem antes de seguir.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

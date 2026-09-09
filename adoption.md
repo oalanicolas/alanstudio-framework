@@ -196,6 +196,12 @@ não existe fonte — e uma regra de parada de playtest, que substitui a pergunt
 “quantas pessoas?” por “o que encerra a rodada?”. Um teste novo mantém os
 cinquenta critérios da barra livres de dígito.
 
+**Origem no disco.** `deliver.licensing` recusava dispensa e só lia a linha da
+tabela. `origins` percorre o projeto, lista mídia embarcada e cruza com recibos;
+`next` propõe declarar o que falta. Recibo não é licença válida, e os dois
+campos que poderiam mentir sobre isso (`granted`, `validated`) são sempre
+falsos.
+
 O que 0.9 **não** afirma: nenhum comando atribui um degrau da barra, e a escada não
 foi calibrada contra uma amostra de jogos publicados — é linguagem para observar,
 não aferição. `init` cria rascunho, e rascunho não é decisão documentada. `next`

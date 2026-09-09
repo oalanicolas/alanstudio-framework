@@ -173,6 +173,12 @@ Um gate cumprido não diz que o jogo é bom. Ele diz que uma condição de avan�
 específica tem lastro declarado. Acabamento é a barra; diversão não é nem uma
 coisa nem outra, e nada neste repositório mede isso.
 
+`deliver.licensing` é o critério em que a prosa é mais dura, e o gate **ainda
+não lê o disco**. Quem lê é `origins`: cruza arquivos embarcados com recibos e
+relata ausência. Recibo presente não é licença válida — é origem declarada.
+Uma tabela que afirma `met` enquanto `origins` lista arquivo sem recibo não
+sobrevive à leitura do próprio projeto.
+
 E o mais importante: **não há evidência de que gates melhorem o jogo entregue.**
 O levantamento em [gates-research.md](gates-research.md) §6.22 procurou e não
 achou avaliação empírica nenhuma, para jogos. A prática é difundida e, em

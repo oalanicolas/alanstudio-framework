@@ -73,8 +73,8 @@ validadores do starter onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → rascunho → documento sem versão
-vigente → continuidade → sem instruções para o agente → validadores → gate → barra.
-O gate tem três ramos: linha
+vigente → continuidade → sem instruções para o agente → validadores → origens sem
+recibo → gate → barra. O gate tem três ramos: linha
 de gate malformada, pergunta de valor e critério pendente — nessa ordem, porque
 terminar o que talvez não devesse existir é o desperdício que um gate existe para
 interromper. A barra tem quatro, na ordem: linha de
@@ -272,6 +272,29 @@ O campo se chama `held_by_declaration`, não `passed`: ele diz que o projeto afi
 cumprir, não que alguém conferiu. **Nenhum comando concede passagem** (`granted`
 é sempre `false`), e uma tabela bem formada e otimista sai daí intacta, como sai
 da barra.
+
+## Origens
+
+`deliver.licensing` é um dos quatro critérios que a prosa não deixa dispensar, e
+até aqui o harness só lia a linha da tabela. Uma frase otimista fechava o gate.
+`origins` percorre o disco:
+
+```sh
+python3 scripts/game.py origins /caminho/do/laboratorio/meu-jogo
+```
+
+Lista arquivos de mídia embarcados (som, imagem, fonte, vídeo, modelo) e cruza
+com recibos: `sources.json`, `licenses.json`, `CREDITS` e sidecar
+`.credits.txt`. Entra em `textures/`, `fonts/`, `models/` e `videos/` — pastas
+que o `scan` de documentos ignora de propósito. **Não valida a licença.** Não
+consulta titular, não interpreta texto jurídico e não distingue licença válida
+de inválida. O que falta é recibo de origem; o que o recibo afirma continua
+sendo alegação de quem escreveu.
+
+`granted` e `validated` são sempre `false`. Se o projeto declara
+`deliver.licensing` como `met` e o disco ainda tem arquivo sem recibo, a saída
+marca `contradicts_licensing`. `next` propõe declarar a origem — ou tirar o
+arquivo do embarque — antes de seguir o restante do gate.
 
 ## Starters
 

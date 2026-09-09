@@ -975,6 +975,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "continuity.sources": "continuidade",
             "agent_context.not_located": "sem instruções para o agente",
             "scripts": "validadores",
+            "origins.undeclared": "origens sem recibo",
             "gates.problems": "linha de gate malformada",
             "gates.value": "pergunta de valor",
             "gates.pending": "critério pendente",
@@ -1713,6 +1714,101 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("deliver", proposal["action"])
         self.assertIn("abandonar", proposal["why"])
         self.assertEqual(result["signals"]["gates_declared"], ["deliver"])
+
+    # O gate recusa dispensar licença desconhecida e, até origins, ninguém lia o
+    # disco: a linha da tabela era a única evidência. O comando não valida a
+    # licença — só vê se o arquivo embarcado tem recibo de origem.
+    def test_origins_lists_an_embedded_file_that_scan_would_skip(self):
+        hidden = self.project / "textures" / "hero.png"
+        hidden.parent.mkdir()
+        hidden.write_bytes(b"\x89PNG\r\n\x1a\nnot-a-real-png")
+        report = game.origins_reading(self.project)
+        self.assertEqual(report["undeclared"], ["textures/hero.png"])
+        self.assertEqual(report["declared"], [])
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertIn("Não consulta titular", report["scope"])
+
+    def test_origins_accepts_a_receipt_without_calling_it_a_valid_license(self):
+        asset = self.project / "audio" / "jump.wav"
+        asset.parent.mkdir()
+        asset.write_bytes(b"RIFF")
+        (self.project / "sources.json").write_text(
+            json.dumps({"files": [{"src": "jump.wav", "license": "CC0-1.0", "author": "Ana"}]}),
+            encoding="utf-8",
+        )
+        report = game.origins_reading(self.project)
+        self.assertEqual(report["undeclared"], [])
+        self.assertEqual(report["declared"], ["audio/jump.wav"])
+        self.assertFalse(report["validated"])
+        self.assertIn("sources.json", report["receipts"])
+
+    def test_a_sidecar_counts_as_a_receipt(self):
+        asset = self.project / "fonts" / "display.ttf"
+        asset.parent.mkdir()
+        asset.write_bytes(b"OTTO")
+        (self.project / "fonts" / "display.credits.txt").write_text(
+            "SIL Open Font License — Ana, 2026-09-09\n", encoding="utf-8",
+        )
+        report = game.origins_reading(self.project)
+        self.assertEqual(report["undeclared"], [])
+        self.assertEqual(report["declared"], ["fonts/display.ttf"])
+
+    def test_credits_mentioning_the_path_covers_the_file(self):
+        asset = self.project / "models" / "tree.glb"
+        asset.parent.mkdir()
+        asset.write_bytes(b"glTF")
+        (self.project / "CREDITS.md").write_text(
+            "Árvore em `models/tree.glb` — CC-BY-4.0, Kenney não.\n", encoding="utf-8",
+        )
+        report = game.origins_reading(self.project)
+        self.assertEqual(report["undeclared"], [])
+        self.assertEqual(report["declared"], ["models/tree.glb"])
+
+    def test_origins_ignores_vendor_trees_and_a_project_without_media(self):
+        vendor = self.project / "node_modules" / "pack" / "icon.png"
+        vendor.parent.mkdir(parents=True)
+        vendor.write_bytes(b"png")
+        report = game.origins_reading(self.project)
+        self.assertEqual(report["embedded"], [])
+        empty = game.origins_reading(self.root / "ainda-nao-existe")
+        self.assertFalse(empty["exists"])
+        self.assertEqual(empty["undeclared"], [])
+
+    def test_met_licensing_does_not_survive_an_undeclared_file(self):
+        (self.project / "hero.png").write_bytes(b"png")
+        self.declare_gate({("deliver", "licensing"): ("met", "todo asset tem crédito no README")})
+        report = game.origins_reading(self.project)
+        self.assertTrue(report["contradicts_licensing"])
+        self.assertEqual(report["undeclared"], ["hero.png"])
+
+    def test_a_created_project_has_no_undeclared_media(self):
+        destination = self.root / "arcade-limpo"
+        game.init(destination, "canvas-arcade")
+        report = game.origins_reading(destination)
+        self.assertEqual(report["undeclared"], [])
+        self.assertFalse(report["contradicts_licensing"])
+
+    def test_next_asks_for_a_receipt_before_chasing_the_rest_of_the_gate(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        self.foundation_document()
+        (self.project / "hero.png").write_bytes(b"png")
+        proposals = self.proposals(game.next_step(self.project, "release"))
+        proposal = next(item for item in proposals if item["basis"] == "origins.undeclared")
+        self.assertIn("hero.png", proposal["action"])
+        self.assertIn("licença desconhecida", proposal["why"])
+        self.assertTrue(any("origins" in command for command in proposal["commands"]))
+
+    def test_next_names_the_contradiction_when_the_table_says_met(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        self.foundation_document()
+        (self.project / "hero.png").write_bytes(b"png")
+        self.declare_gate({("deliver", "licensing"): ("met", "créditos no README")})
+        proposal = next(
+            item for item in self.proposals(game.next_step(self.project, "release"))
+            if item["basis"] == "origins.undeclared"
+        )
+        self.assertIn("não sobrevive", proposal["why"])
 
     def test_next_fixes_the_gate_form_before_chasing_the_criterion(self):
         (self.project / "index.html").write_text("<canvas></canvas>")

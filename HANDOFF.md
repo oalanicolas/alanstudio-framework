@@ -1,5 +1,11 @@
 # Handoff — integração dos PRs #2 e #3
 
+**Depois da integração:** `origins` lê o disco onde `deliver.licensing` só lia
+a tabela. Percorre mídia embarcada (inclusive `textures/`, `fonts/`, `models/`,
+`videos/`), cruza com recibos e o `next` propõe `origins.undeclared`. Recibo
+não é licença válida — `granted` e `validated` são sempre `false`. Checklists
+observáveis por gate (Frente seguinte do PR #3) continuam abertos.
+
 Esta árvore reúne produção, pacotes e memória persistente do PR #2 com os
 critérios observáveis, perguntas de valor e regras de escopo do PR #3.
 A integração preserva o trabalho de ambas as branches, inclusive os commits de

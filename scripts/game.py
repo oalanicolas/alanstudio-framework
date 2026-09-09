@@ -486,6 +486,7 @@ def review(root, limit=REVIEW_LIMIT):
             scripts = validators(project_commands(path)[0])
         except ValueError:
             scripts = []
+        origins = origins_reading(path)
         reviewed.append(dict(
             entry,
             areas_located=len(located),
@@ -497,6 +498,8 @@ def review(root, limit=REVIEW_LIMIT):
             bar_undeclared=len(declaration["undeclared"]),
             bar_problems=len(declaration["problems"]),
             validators=scripts,
+            origins_embedded=len(origins["embedded"]),
+            origins_undeclared=len(origins["undeclared"]),
         ))
     return {
         "schema_version": 1,
@@ -800,6 +803,165 @@ def gate_reading(project, gate=None):
             "sem nada escrito ao lado, e duas linhas discordantes. Não observa o jogo, não executa nada e "
             "**não concede passagem**: `held_by_declaration` diz que o projeto afirma cumprir, não que alguém "
             "conferiu."
+        ),
+    }
+
+
+# `scan` lê documentos e, de propósito, não entra em textures/fonts/models/videos.
+# É exatamente aí que mora o asset embarcado. O gate `deliver.licensing` recusa
+# dispensa e, até este comando, ninguém lia o disco: uma linha otimista fechava
+# a tabela. Aqui a pergunta é outra e mais estreita — o arquivo tem recibo de
+# origem? — e a resposta negativa não é "licença inválida". Validar licença
+# exigiria titular, texto e jurisdição, e nada disso cabe num walk.
+EMBEDDED_SUFFIXES = {
+    ".wav", ".ogg", ".mp3", ".flac", ".m4a", ".aac",
+    ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".svg", ".ico",
+    ".ttf", ".otf", ".woff", ".woff2",
+    ".mp4", ".webm", ".mov",
+    ".glb", ".gltf", ".fbx", ".obj",
+}
+ORIGIN_SKIP = {
+    "node_modules", "dist", "build", ".git", "__pycache__", "evidence", "outputs",
+    "library", "temp", "coverage", ".venv", "venv", "archives", "archive",
+}
+ORIGIN_RECEIPTS = {
+    "sources.json", "licenses.json", "credits.md", "credits.txt", "licence",
+    "license", "copying", "authors",
+}
+ORIGIN_ROW = re.compile(r"`([^`]+)`")
+ORIGIN_LINK = re.compile(r"\[[^\]]+\]\((?:<([^>\n]+)>|([^\s)]+))")
+
+
+def origins_reading(project, max_entries=2000):
+    project = Path(project).resolve()
+    embedded, receipts, problems = [], [], []
+    mentioned = set()
+    pending = [(project, 0)] if project.is_dir() else []
+    seen = 0
+    stopped = False
+
+    def remember(name):
+        text = str(name).replace("\\", "/").strip().lstrip("./")
+        if text:
+            mentioned.add(text)
+            mentioned.add(Path(text).name)
+
+    def ingest_json(path, relative):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+        except (OSError, json.JSONDecodeError):
+            problems.append({"source": relative, "reason": "unreadable_receipt"})
+            return
+        records = data.get("files") if isinstance(data, dict) else data
+        if not isinstance(records, list):
+            problems.append({"source": relative, "reason": "receipt_without_files"})
+            return
+        for record in records:
+            if not isinstance(record, dict):
+                continue
+            for key in ("src", "path", "file", "id", "key"):
+                if isinstance(record.get(key), str):
+                    remember(record[key])
+
+    def ingest_text(path, relative):
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            problems.append({"source": relative, "reason": "unreadable_receipt"})
+            return
+        for match in ORIGIN_ROW.findall(text):
+            remember(match)
+        for first, second in ORIGIN_LINK.findall(text):
+            remember(unquote(first or second).split("#", 1)[0])
+
+    while pending:
+        directory, depth = pending.pop(0)
+        try:
+            entries = sorted(directory.iterdir(), key=lambda item: item.name.casefold())
+        except OSError:
+            problems.append({
+                "source": str(directory.relative_to(project)) if directory != project else ".",
+                "reason": "unreadable_directory",
+            })
+            continue
+        for path in entries:
+            if seen >= max_entries:
+                problems.append({"reason": "scan_limit", "limit": "entries"})
+                pending.clear()
+                stopped = True
+                break
+            seen += 1
+            if path.name.startswith("."):
+                continue
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                if path.name.casefold() in ORIGIN_SKIP:
+                    continue
+                if depth >= 6:
+                    problems.append({
+                        "source": str(path.relative_to(project)), "reason": "depth_limit",
+                    })
+                else:
+                    pending.append((path, depth + 1))
+                continue
+            if not path.is_file():
+                continue
+            relative = path.relative_to(project).as_posix()
+            suffix = path.suffix.casefold()
+            stem = path.name.casefold()
+            if suffix in EMBEDDED_SUFFIXES:
+                embedded.append(relative)
+                sidecar = path.with_name(path.name + ".credits.txt")
+                alt = path.with_suffix(path.suffix + ".credits.txt")
+                near = path.with_name(path.stem + ".credits.txt")
+                if any(candidate.is_file() and not candidate.is_symlink()
+                       for candidate in (sidecar, alt, near)):
+                    remember(relative)
+                    remember(path.name)
+            if stem in ORIGIN_RECEIPTS or stem.endswith(".credits.txt"):
+                receipts.append(relative)
+                if suffix == ".json":
+                    ingest_json(path, relative)
+                else:
+                    ingest_text(path, relative)
+
+    declared, undeclared = [], []
+    for relative in embedded:
+        name = Path(relative).name
+        if relative in mentioned or name in mentioned:
+            declared.append(relative)
+        else:
+            undeclared.append(relative)
+
+    licensing = gate_declaration(project)["declared"].get("deliver", {}).get("licensing")
+    contradicts = bool(
+        licensing and licensing["state"] == "met" and undeclared
+    )
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "embedded": embedded,
+        "declared": declared,
+        "undeclared": undeclared,
+        "receipts": receipts,
+        "problems": problems,
+        "contradicts_licensing": contradicts,
+        "truncated": stopped,
+        "granted": False,
+        "validated": False,
+        "guide": str(FRAMEWORK / "references/gates.md"),
+        "rule": (
+            "Arquivo embarcado sem recibo de origem conta como licença desconhecida. "
+            "O recibo declara origem, autor e condição de uso; não prova que a condição vale."
+        ),
+        "scope": (
+            "Percorre o projeto, lista arquivos de mídia embarcados e cruza com recibos "
+            "(sources.json, licenses.json, CREDITS, sidecar `.credits.txt`). Relata ausência "
+            "de recibo, recibo ilegível e declaração `deliver.licensing` = `met` que o disco "
+            "contradiz. Não consulta titular, não interpreta texto de licença, não distingue "
+            "licença válida de inválida e **não concede passagem**."
         ),
     }
 
@@ -1767,6 +1929,29 @@ def next_step(project, focus="create", studies_root=None):
             [harness_command("verify", project, "--script", scripts[0], "--output", "CAMINHO_NOVO")],
             "scripts",
         )
+    origins = origins_reading(project)
+    if origins["undeclared"]:
+        sample = ", ".join(f"`{path}`" for path in origins["undeclared"][:4])
+        extra = " e mais" if len(origins["undeclared"]) > 4 else ""
+        why = (
+            "Arquivo embarcado sem recibo conta como licença desconhecida, e o critério "
+            "`deliver.licensing` não se dispensa. O harness não valida a licença: só vê "
+            "que a origem não foi declarada."
+        )
+        if origins["contradicts_licensing"]:
+            why = (
+                "O projeto declara `deliver.licensing` como `met`, e o disco ainda tem "
+                "arquivo embarcado sem recibo. A linha da tabela não sobrevive à leitura "
+                "do próprio projeto."
+            )
+        propose(
+            f"Declarar origem dos arquivos embarcados sem recibo: {sample}{extra}",
+            why,
+            "Cada arquivo listado tem recibo ao lado (sources.json, CREDITS ou "
+            "`.credits.txt`) com origem, autor e condição de uso — ou sai do embarque.",
+            [harness_command("origins", project)],
+            "origins.undeclared",
+        )
     # Um gate só está em jogo quando o projeto o declara: ninguém pede uma
     # permissão que não mencionou, e listar os dez num projeto que declarou um
     # transformaria a recusa em ruído.
@@ -1892,6 +2077,8 @@ def next_step(project, focus="create", studies_root=None):
             "production_bar_problems": declaration["problems"],
             "gates_declared": sorted(gates["declared"]),
             "gates_problems": gates["problems"],
+            "origins_undeclared": origins["undeclared"],
+            "origins_contradicts_licensing": origins["contradicts_licensing"],
         },
         "context_command": harness_command("context", project, "--focus", focus),
         "authority": "agent_resolves",
@@ -2126,6 +2313,11 @@ def main():
     initial_scan.add_argument("project")
     reading = commands.add_parser("bar", parents=[common], help="degrau de acabamento que o projeto declara, e qual dimensão é o piso")
     reading.add_argument("project")
+    origins_cmd = commands.add_parser(
+        "origins", parents=[common],
+        help="arquivos embarcados e o recibo de origem que o projeto declara",
+    )
+    origins_cmd.add_argument("project")
     ctx = commands.add_parser("context", parents=[common])
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
@@ -2185,6 +2377,8 @@ def main():
             emit(scan(resolve(args.project, root)))
         elif args.action == "bar":
             emit(bar_reading(resolve(args.project, root)))
+        elif args.action == "origins":
+            emit(origins_reading(resolve(args.project, root)))
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":
