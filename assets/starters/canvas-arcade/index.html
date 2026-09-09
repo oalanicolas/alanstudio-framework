@@ -10,13 +10,15 @@
         --ink: #e7ebf3;
         --muted: #8a93a6;
         --surface: #171b26;
-        --edge: #262c3b;
+        --page: #10131a;
+        --edge: rgba(231,235,243,0.22);
+        --accent: #4ea8ff;
       }
       * { box-sizing: border-box; }
       body {
         margin: 0;
         padding: 1.5rem 1rem 3rem;
-        background: #0b0d13;
+        background: var(--page);
         color: var(--ink);
         font: 15px/1.55 system-ui, -apple-system, Segoe UI, sans-serif;
         display: flex;
@@ -27,12 +29,12 @@
       h1 { font-size: 1.15rem; margin: 0; letter-spacing: 0.01em; }
       canvas {
         display: block;
-        background: #10131a;
+        background: var(--page);
         border: 1px solid var(--edge);
         border-radius: 8px;
         touch-action: none;
       }
-      canvas:focus-visible { outline: 2px solid #4ea8ff; outline-offset: 3px; }
+      canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
       .panel {
         width: min(960px, 100%);
         background: var(--surface);
@@ -121,7 +123,8 @@
     <script type="module">
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
       import { applyInvite } from "./src/core/invite.js";
-      import { listLooks, listSpawnProfiles } from "./src/game/tables.js";
+      import { applyShell } from "./src/core/shell.js";
+      import { listLooks, listSpawnProfiles, PALETTES, resolveLookName } from "./src/game/tables.js";
       applyInvite({
         root: document.documentElement,
         stage: document.getElementById("stage"),
@@ -149,6 +152,13 @@
           option.textContent = lookLabels[name] ?? name;
           lookSelect.appendChild(option);
         }
+        const dress = () => {
+          const settings = game.settings;
+          const palette = settings.highContrast
+            ? PALETTES.contrast
+            : PALETTES[resolveLookName(settings.look)];
+          applyShell(document.documentElement, palette);
+        };
         const sync = () => {
           const settings = game.settings;
           for (const name of toggles) document.getElementById(name).checked = settings[name];
@@ -157,10 +167,12 @@
           spawnSelect.value = settings.spawnProfile;
           lookSelect.value = settings.look;
           for (const bus of buses) document.getElementById(bus).value = settings.buses[bus];
+          dress();
         };
         for (const name of toggles) {
           document.getElementById(name).addEventListener("change", (event) => {
             game.updateSettings({ [name]: event.target.checked });
+            if (name === "highContrast") dress();
           });
         }
         document.getElementById("oneHand").addEventListener("change", (event) => {
@@ -177,6 +189,7 @@
         });
         lookSelect.addEventListener("change", (event) => {
           game.updateSettings({ look: event.target.value });
+          dress();
         });
         for (const bus of buses) {
           document.getElementById(bus).addEventListener("input", (event) => {

@@ -20,8 +20,9 @@ starter ensina mover, avançar, coletar e guardar no campo; toque e
 controle ganham passo quando falam. O art-bible vigente
 não é reescrito. `--idea` entra no brief e, se houver `data/copy.json`,
 na tela do primeiro ciclo. O brief continua rascunho. A frase na tela
-não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta e
-`?spawn=dusk` troca a chuva. O harness não executa o jogo.
+não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta
+(campo e a página) e `?spawn=dusk` troca a chuva. O harness não
+executa o jogo.
 
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
 `--fill` sugere o acervo; `--apply` copia com o nome do papel. Sem
@@ -73,7 +74,8 @@ relata o reuso.
 art-bible vigente, dado fora do código e passo de build/export.
 `consistent`/`enough`/`shipped` são sempre falsos. O starter declara
 paleta em `data/palettes.json` (look `dusk` por `?look=` / `settings.look`;
-`contrast` é alcance, não look; `look --from` / `--as` nasce o próximo),
+a página também veste esses tokens; `contrast` é alcance, não look;
+`look --from` / `--as` nasce o próximo),
 extrai a chuva (`spawn` e `dusk`), nasce mesa com `npm run table`
 (`--from spawn|dusk --as` já entra no consumidor; `session --spawn`
 traça) e empacota com `npm run build`.

@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.73 — A página também veste o look
+
+O campo já mudava com `?look=dusk`. A casca do HTML ficava no token
+frio do padrão — um terceiro fundo que a paleta não nomeia. A
+página reusa fundo, campo, texto e acento da paleta vigente;
+contraste vence o look. `consistent` continua falso.
+`art_direction` permanece `slice`. Token no disco não é comparação
+em movimento. Só `release` fica no piso.
+
+O que 0.9.73 não afirma: o harness não comparou a página em
+movimento e CSS no stub não aprova direção.
+
 ## 0.9.72 — A cortina também veste o look
 
 A pausa e o fim pintavam um preto frio por cima do campo. Em dusk
