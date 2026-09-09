@@ -144,7 +144,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    regra de parada) — conformidade com o que o projeto declarou, sem limiar
    importado. `observed` é sempre falso. Só levanta o gate que o projeto pediu.
    Depois de um `init` fresco, `next` propõe **abrir o ciclo** antes de
-   substituir os rascunhos: o starter já é um jogo que abre.
+   substituir os rascunhos: o starter já é um jogo que abre, ensina o
+   primeiro ciclo no campo e traz art-bible vigente — o `init` não o
+   reescreve.
    **`roles <projeto>`** lê os papéis de áudio que o código declara e os
    arquivos que os preenchem. `--fill` sugere o acervo; `--apply` copia
    com o nome do papel. `heard` é sempre falso. Papel vazio entra no

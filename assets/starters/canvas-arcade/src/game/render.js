@@ -88,6 +88,7 @@ export function createRenderer(canvas, options = {}) {
     }
     drawPlayer(context, palette, state, reduced);
     const reserved = drawHud(context, palette, state, settings, extra);
+    drawCoach(context, palette, extra.hint, reserved, settings);
     if (settings.captions !== false) {
       drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
     }
@@ -230,6 +231,21 @@ export function createRenderer(canvas, options = {}) {
     target.fillStyle = ready ? palette.orb : palette.muted;
     target.fillText(dash, 6, FIELD.height - size - 5);
     return { score: scoreBox, timer: timerBox, dash: dashBox };
+  }
+
+  function drawCoach(target, palette, hint, reserved, settings) {
+    if (!hint || !copy[`hint_${hint}`]) return;
+    const text = copy[`hint_${hint}`];
+    const size = 7 * (settings.uiScale ?? 1);
+    target.font = `${size}px system-ui, sans-serif`;
+    target.textBaseline = "top";
+    const width = target.measureText(text).width;
+    const x = (FIELD.width - width) / 2;
+    const y = reserved.score.y + reserved.score.height + 6;
+    plate(target, palette, x, y, width, size);
+    target.textAlign = "left";
+    target.fillStyle = palette.text;
+    target.fillText(text, x, y);
   }
 
   function drawOverlay(target, palette, title, hint) {

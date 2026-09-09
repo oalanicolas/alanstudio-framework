@@ -9,5 +9,8 @@
   "score": "Pontos",
   "record": "Recorde",
   "dash_ready": "Dash pronto",
-  "dash_recharging": "Dash recarregando"
+  "dash_recharging": "Dash recarregando",
+  "hint_move": "Mova pela faixa",
+  "hint_collect": "Passe no orbe — a corrente cresce",
+  "hint_bank": "Guarde (↓) antes de perder a corrente"
 }

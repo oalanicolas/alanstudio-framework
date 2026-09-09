@@ -16,6 +16,7 @@ import { createAudio } from "./game/audio.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { advance as advanceRules, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
+import { coachHint } from "./game/coach.js";
 
 export function createGame(options = {}) {
   const canvas = options.canvas ?? null;
@@ -83,7 +84,11 @@ export function createGame(options = {}) {
     readCommands();
     audio.update();
     if (!renderer) return;
-    renderer.draw(state, frame, settings, { captions: audio.captions(), best: progress.best });
+    renderer.draw(state, frame, settings, {
+      captions: audio.captions(),
+      best: progress.best,
+      hint: coachHint(state),
+    });
   }
 
   function togglePause() {

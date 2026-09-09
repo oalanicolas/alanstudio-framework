@@ -6,7 +6,7 @@
     {
       "field": "project_title",
       "value": "Canvas Arcade",
-      "files": ["README.md", "CREDITS.md", "index.html", "package.json"]
+      "files": ["README.md", "CREDITS.md", "index.html", "package.json", "docs/art-bible.md"]
     },
     {
       "field": "project_slug",

@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.14 — Primeiro ciclo no jogo e art-bible vigente
+
+O starter ensina mover, coletar e guardar no próprio campo; o aviso some
+depois da primeira guarda. `pacing` sobe a `playable`. `docs/art-bible.md`
+já vem escrito (primitivas por decisão) e o `init` não o sobrescreve.
+`art_direction` sobe a `playable`. `consistent` e observação de sessão
+continuam pendentes. Duas dimensões seguem em `prototype`: mix e release.
+
+O que 0.9.14 não afirma: o harness não jogou o ciclo e não aprovou a
+direção em movimento.
+
 ## 0.9.13 — Mixer consome o arquivo e o acervo preenche o papel
 
 O starter carrega `public/sfx/<papel>` no mixer: copiar um .wav sem

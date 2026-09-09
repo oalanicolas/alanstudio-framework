@@ -333,3 +333,17 @@ test("o HUD é desenhado depois das entidades, nunca antes", () => {
   assert.ok(order.includes("entidade"), "a cena precisa ter desenhado entidades");
   assert.ok(order.indexOf("entidade") < order.indexOf("texto"), "o texto do HUD precisa vir por cima");
 });
+
+test("o aviso do primeiro ciclo cabe na placa e some depois de guardar", () => {
+  const inicial = hudTexts(createState(1), {}, { hint: "move" });
+  const aviso = inicial.texts.filter((item) => item.text.includes("Mova pela faixa"));
+  assert.equal(aviso.length, 1, `esperava o aviso de mover: ${JSON.stringify(inicial.texts.map((i) => i.text))}`);
+  assert.ok(covered(aviso[0], inicial.plates), "aviso sem placa é texto solto no campo");
+  assert.ok(aviso[0].bottom < PLAYER_Y - 6, `aviso desce até a faixa do jogador: ${aviso[0].bottom}`);
+  const depois = hudTexts(createState(1), {}, { hint: null });
+  assert.equal(
+    depois.texts.filter((item) => /Mova|orbe|Guarde/.test(item.text)).length,
+    0,
+    "depois de guardar o ensino não pode continuar na tela",
+  );
+});

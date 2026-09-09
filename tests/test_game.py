@@ -1371,7 +1371,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bare = self.root / "sem-docs"
         result = game.init(bare, "canvas-arcade", documents=False)
         self.assertEqual(result["documents"], [])
-        self.assertFalse((bare / "docs").exists())
+        self.assertTrue(game.document_is_current(bare / "docs/art-bible.md"))
+        self.assertFalse((bare / "docs/brief.md").exists())
         self.assertTrue((bare / "src/game/rules.js").is_file())
 
     def test_init_neither_installs_dependencies_nor_touches_the_starter(self):
@@ -1441,8 +1442,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("playtest.unstructured", bases)
         direction = game.art_reading(destination)
         self.assertTrue(direction["declared"])
-        self.assertTrue(direction["bible_draft"])
+        self.assertTrue(direction["bible_current"])
+        self.assertFalse(direction["bible_draft"])
         self.assertFalse(direction["consistent"])
+        self.assertEqual(game.scan(destination)["areas"]["art_direction"]["status"], "candidate_found")
         # O projeto herda a tabela do starter, então a barra já tem piso e a
         # proposta nomeia a dimensão em vez de listar as dez.
         self.assertIn("production_bar.floor", bases)
@@ -2086,8 +2089,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(art["missing"])
         self.assertFalse(art["consistent"])
         self.assertEqual({item["key"] for item in art["palettes"]}, {"normal", "contrast"})
-        self.assertIsNone(art["bible"])
-        self.assertFalse(art["bible_current"])
+        self.assertEqual(art["bible"], "docs/art-bible.md")
+        self.assertTrue(art["bible_current"])
         self.assertFalse(art["bible_draft"])
         self.assertTrue(inventory["external"])
         self.assertFalse(inventory["inline"])
@@ -2282,6 +2285,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("[preencher]", brief)
         self.assertEqual(created["document_status"], "draft")
         self.assertEqual(game.scan(destination)["areas"]["vision"]["status"], "draft_only")
+        self.assertNotIn("docs/art-bible.md", created["documents"])
+        self.assertTrue(game.document_is_current(destination / "docs/art-bible.md"))
         self.assertIn("serve", created["next_commands"][0])
 
     def test_next_fixes_the_gate_form_before_chasing_the_criterion(self):

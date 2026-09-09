@@ -80,12 +80,11 @@ alcance de coleta maior que o desenho — estão em `CONFIG`, em
 - `docs/tdd.md` · `docs/art-bible.md`
 - `docs/devlog.md` · `docs/qa.md`
 
-Os sete de `docs/` são escritos pelo `init` a partir dos templates do framework:
-neste starter lido no lugar eles ainda não existem, e é por isso que estão em
-código e não em link. Nascem em rascunho. O primeiro trabalho real do projeto é
-**jogar o ciclo** — `npm run serve` — e escrever o que a proposta muda no verbo.
-Preencher os sete templates antes da primeira partida é o atrito que o `next`
-depois do `init` recusa. Com `init --no-docs`, os rascunhos não nascem.
+`docs/art-bible.md` já vem escrito: primitivas por decisão, não placeholder.
+Os outros seis de `docs/` nascem rascunho no `init`. O primeiro trabalho real
+do projeto é **jogar o ciclo** — `npm run serve` — e escrever o que a proposta
+muda no verbo. Preencher templates antes da primeira partida é o atrito que o
+`next` depois do `init` recusa. Com `init --no-docs`, os rascunhos não nascem.
 
 ## Degrau de acabamento declarado
 
@@ -104,16 +103,16 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | --- | --- | --- |
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — falta o som, e o perdão de entrada precisa ser medido, não só anotado |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — o que existe hoje é medição de placa, borda e faixa em quadro estático |
-| `art_direction` | `prototype` | `playable`: escala, pivot e linguagem consistentes por decisão registrada; hoje são primitivas que se assumem placeholder |
+| `art_direction` | `playable` | `slice`: a mesma linguagem em movimento, na resolução alvo — hoje a decisão está no art-bible e ainda não foi observada em sessão |
 | `audio_mix` | `prototype` | `playable`: som licenciado nas ações centrais, com origem registrada — os seis papéis estão declarados e vazios |
-| `pacing` | `prototype` | `playable`: o primeiro ciclo ensinar a ação sem depender da tabela de comandos da página |
+| `pacing` | `playable` | `slice`: o aviso some depois da primeira decisão e não tapa o verbo — some após guardar; ainda não foi observado em sessão |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada, perda de foco — além do teste de dado inválido |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
 | `accessibility` | `slice` | `shippable`: contraste verificado por medição e opções de dificuldade ou assistência |
 | `content_scale` | `playable` | `slice`: receita do próximo item da família com o mesmo carregador — hoje são a chuva e o texto do HUD |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `npm run build` existe e ninguém o correu fora daqui |
 
-**Leitura honesta: este projeto é um protótipo**, porque quatro dimensões estão
+**Leitura honesta: este projeto é um protótipo**, porque duas dimensões estão
 nesse degrau. Nenhuma quantidade de acabamento visual muda essa leitura antes
 delas subirem.
 
@@ -129,7 +128,7 @@ falso — a linha é afirmação de quem escreveu.
 | `canvas_scale` | `met` | FIELD em src/game/rules.js; canvas em index.html; o resize em render.js usa a escala calculada quando a divisão não é inteira — starter |
 | `forgiveness` | `met` | dashBufferTicks, invulnTicks, collect.pad e collect.reachY em CONFIG, src/game/rules.js, unidade em ticks — starter |
 | `percentile_def` | `met` | tools/budget.mjs declara o percentil por definição, não por apelido — starter |
-| `palette` | `unmet` | primitivas; paleta ainda não é contrato — starter |
+| `palette` | `met` | tokens em docs/art-bible.md; consumidores PALETTES.normal e PALETTES.contrast em src/game/render.js — starter |
 | `style_factor` | `out_of_scope` | sem assets de mundo de estilo; só primitivas — starter |
 | `budget_delta` | `unmet` | npm run budget mede a simulação; comparação com o build anterior ainda não existe — starter |
 | `playtest_stop` | `unmet` | regra de parada ainda não escrita — starter |
@@ -175,11 +174,12 @@ inferior, onde nascia, ela caía sobre o jogador e sobre o rótulo do dash:
 
 ```
 src/core/     laço de passo fixo, entrada, RNG, impressão, armazenamento, save, preferências
-src/game/     regras puras, apresentação, mixagem, mesas e carga de sfx
+src/game/     regras, apresentação, mixagem, mesas, carga de sfx e ensino do ciclo
 src/main.js   montagem e contrato de ciclo de vida
-data/         conteúdo separado da regra (chuva e texto do HUD)
+data/         conteúdo separado da regra (chuva, HUD e avisos)
+docs/         art-bible vigente — o init não o reescreve
 tools/        servidor local, medição de orçamento e export
-tests/        regras, determinismo, ciclo de vida, save, mixagem, export
+tests/        regras, determinismo, ciclo de vida, save, mixagem, ensino, export
 ```
 
 `src/game/rules.js` não conhece DOM, relógio nem aleatoriedade externa: é isso
@@ -187,12 +187,13 @@ que permite rodar a partida headless, repetir um replay a partir de uma seed e
 comparar duas execuções. `src/core/input.js` reduz teclado, ponteiro e gamepad a
 uma intenção — as regras nunca veem eventos.
 
-A paleta vive em `src/game/render.js` (`PALETTES`). O harness a lê; consistência
-em movimento continua pendente. Chuva e texto do HUD passam por
-`src/game/tables.js`. Duas mesas não são uma família. `public/sfx/<papel>`
-entra no mixer quando o arquivo existe; copiar sem consumidor deixava o
-jogo mudo. `npm run build` copia a árvore jogável para `dist/`; isso não é
-outra pessoa tendo jogado o artefato.
+A paleta vive em `src/game/render.js` (`PALETTES`) e o contrato está em
+`docs/art-bible.md`. O harness lê os dois; consistência em movimento
+continua pendente. Chuva e texto do HUD passam por `src/game/tables.js`.
+Duas mesas não são uma família. `public/sfx/<papel>` entra no mixer
+quando o arquivo existe; copiar sem consumidor deixava o jogo mudo.
+`npm run build` copia a árvore jogável para `dist/`; isso não é outra
+pessoa tendo jogado o artefato.
 
 `src/main.js` implementa `pause`, `resume`, `reset`, `seed`, `observe`, `act`,
 `advance`, `capture` e `dispose`. Esses nomes são o vocabulário de inspeção do

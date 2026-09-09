@@ -72,13 +72,16 @@ código de saída, e a correção que ele sugere roda como está — inclusive c
 pasta do atalho.
 
 `init` copia um starter, troca pelo nome do projeto os valores que o
-`starter.json` dele declara e cria em `docs/` sete documentos — brief, gdd, mda,
-tdd, art-bible, devlog e qa — como **rascunho declarado**, além de `AGENTS.md` na
-raiz para instruções persistentes. Os sete documentos em `docs/` cobrem sete das
-nove áreas mínimas que `scan` cobra; as outras duas, origem e execução, ficam com o
-README e o CREDITS do starter, então depois do `init` as nove têm candidato. Com
-`--no-docs`, sobram três. `--idea` escreve a frase da fantasia no brief; o brief
-continua rascunho. Os demais templates do ciclo entram depois, com `template`, quando a
+`starter.json` dele declara e cria em `docs/` os rascunhos que ainda faltam —
+brief, gdd, mda, tdd, devlog e qa — além de `AGENTS.md` na raiz. Documento
+vigente que o starter já trouxe (o art-bible do `canvas-arcade`) não é
+reescrito: o `template` recusaria o destino e a decisão vigente sumiria.
+Os seis rascunhos mais o art-bible cobrem sete das nove áreas mínimas que
+`scan` cobra; as outras duas, origem e execução, ficam com o README e o
+CREDITS do starter, então depois do `init` as nove têm candidato. Com
+`--no-docs`, o art-bible permanece e os rascunhos não são criados; README,
+CREDITS e art-bible cobrem três áreas. `--idea` escreve a frase da fantasia
+no brief; o brief continua rascunho. Os demais templates do ciclo entram depois, com `template`, quando a
 etapa chegar. Não instala dependências, não toca no starter de origem e recusa
 destino ocupado. `scan` reconhece o resultado no mesmo turno; o primeiro comando
 que `init` aponta é o que serve o jogo, e `verify` roda os validadores do starter
@@ -92,7 +95,7 @@ acessibilidade sem opção
 ainda no código → empacotar ainda sem passo → rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
 recibo → gate → ofício → barra. Depois de um `init` fresco — nove áreas com
-candidato, sete ainda rascunho, e um script que abre o jogo — a primeira proposta
+candidato, seis ainda rascunho (o art-bible do starter já vem vigente), e um script que abre o jogo — a primeira proposta
 é jogar o ciclo, não preencher os templates. O verbo mudo vem em seguida: papéis
 declarados sem arquivo. Depois, se o código nomeia perdão e hitstop e ninguém
 registrou uma observação no projeto, o `next` pede esse recibo — constante

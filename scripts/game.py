@@ -426,6 +426,9 @@ STARTERS_ROOT = FRAMEWORK / "assets/starters"
 STARTER_MANIFEST = "starter.json"
 STARTER_FIELDS = ("project", "project_slug", "project_title", "project_path", "framework_path")
 INIT_DOCUMENTS = ("brief", "gdd", "mda", "tdd", "art-bible", "devlog", "qa")
+# O ciclo fresco pede rascunho só no que ainda é decisão em aberto. Art-bible
+# vigente do starter não entra: direção já escrita não é atrito de template.
+FRESH_DRAFTS = ("brief", "gdd", "mda", "tdd", "devlog", "qa")
 INIT_TEXT_SUFFIXES = {".md", ".txt", ".html", ".css", ".js", ".mjs", ".json", ".svg"}
 # Marcador que o `init` deixa nos templates. Um documento com ele não é
 # decisão vigente — nem art-bible, nem release, nem brief.
@@ -2578,7 +2581,7 @@ def fresh_starter_cycle(project, missing, play):
     if not docs.is_dir() or docs.is_symlink():
         return False
     drafted = 0
-    for stage in INIT_DOCUMENTS:
+    for stage in FRESH_DRAFTS:
         path = docs / f"{stage}.md"
         if not path.is_file() or path.is_symlink():
             return False
@@ -2589,7 +2592,7 @@ def fresh_starter_cycle(project, missing, play):
         if not DRAFT_MARKERS.search(text):
             return False
         drafted += 1
-    return drafted == len(INIT_DOCUMENTS)
+    return drafted == len(FRESH_DRAFTS)
 
 
 def seed_idea(project, idea):
@@ -2748,6 +2751,11 @@ def init(destination, starter, title=None, documents=True, idea=None):
     if documents:
         for stage in INIT_DOCUMENTS:
             output = destination / "docs" / f"{stage}.md"
+            # O starter pode trazer um documento vigente (art-bible). Sobrescrever
+            # com o template apagaria a decisão e o `template` já recusa destino
+            # existente — pular é o que impede o init de quebrar e de rebaixar.
+            if output.exists():
+                continue
             template(stage, destination, output)
             drafts.append(output.relative_to(destination).as_posix())
         if not (destination / "AGENTS.md").exists():
@@ -2781,8 +2789,8 @@ def init(destination, starter, title=None, documents=True, idea=None):
         "scope": (
             "Copiou o starter, trocou os valores que `starter.json` declara e criou rascunhos a partir dos "
             "templates. O ciclo já abre: o primeiro comando apontado é o que serve o jogo, não o que preenche "
-            "os sete rascunhos. `scan` ainda reporta `draft_only` até cada área receber fato, hipótese ou "
-            "lacuna. `--idea` entra no brief como frase, e o brief continua rascunho. O starter é material de "
+            "os rascunhos. Documento vigente que o starter já trouxe (art-bible) não é reescrito. "
+            "`scan` ainda reporta `draft_only` nas áreas sem decisão. `--idea` entra no brief como frase, e o brief continua rascunho. O starter é material de "
             "ADAPT, não uma engine nem uma base aprovada; o comando não executa o jogo, não instala "
             "dependências e não avalia a proposta."
         ),
