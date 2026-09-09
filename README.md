@@ -92,7 +92,8 @@ um documento.
 
 Nove templates do ciclo: brief, mda, gdd, poc, prd, tdd, vertical-slice, mvp, qa.
 Quatro complementos: `art-bible`, `devlog`, `audit`, `aaa` (checklist de
-piso de acabamento; não certifica publisher).
+piso). O `context` expõe `finish` (núcleo / produto / promessa / mercado).
+Slice, QA, create, feel e audio carregam a guia; `template aaa` não certifica.
 
 ```sh
 python3 scripts/game.py context /caminho/do/jogo --focus content --stage gdd --root /caminho/do/laboratorio

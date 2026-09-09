@@ -1,202 +1,219 @@
 # Checklist de piso de acabamento — {{PROJECT}}
 
 Projeto: {{PROJECT_PATH}}
-Status: rascunho. Preencher este arquivo **não** certifica AAA de publisher,
-não mede diversão e não autoriza publicar. “AAA” = piso da fatia observada.
+Status: rascunho. Preencher **não** certifica AAA de publisher, não mede
+diversão e não autoriza publicar. “AAA” = piso da fatia observada.
 Contrato: `framework/references/ambition.md` e
 `framework/references/aaa-checklist.md`.
 
-- Escala: [jam/conto · produto · AA / Triple-I].
-- Recorte observado: [slice / capítulo / verbo; o que está fora].
-- Promessas do recorte: [cinemática, HUD, save, rede, localização, acesso…].
-- Referência aprovada: [localizador, quem aprovou, o que não cobre].
+- Escala: [jam/conto · produto · AA / Triple-I] → perfil do `finish`.
+- Recorte: [slice / capítulo / verbo; o que está fora].
+- Promessas: [cinemática, HUD, save, rede, locale, haptic, 30/60/120…].
+- Referência aprovada: [localizador, quem, o que não cobre].
 - Observador / data / versão / dispositivo / entrada: [preencher].
-- Legenda: `não executado` · `observado` · `inconclusivo` · `N/A` (motivo).
+- Origem: ID canônico (GDD-M01, FR-001, foco feel…) ou “recorte”.
 
-Não some linhas. Screenshot isolada não fecha feel, animação, câmera, mix
-nem pacing. N/A exige motivo. Vermelho material bloqueia o adjetivo.
+Jam: só **núcleo**; resto `N/A` com a escala. Não abra este arquivo na
+primeira sessão. Produto/AA: núcleo + produto + promessas do brief, na slice.
+Mercado nunca reprova jam. Não some linhas. Still não fecha feel/mix/pacing.
 
-## 0. Contrato — CHK-0
+Legenda: `não executado` · `observado` · `inconclusivo` · `N/A` (motivo).
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-0.1 | Escala e recorte estão explícitos; o adjetivo “AAA” não foi usado sem as barras | Brief/slice; busca pelo adjetivo no recorte | não executado | |
-| CHK-0.2 | Direção aprovada tem alcance; o que ela não cobre está escrito | Art Bible / conversa; mock ≠ mecânica | não executado | |
-| CHK-0.3 | Scaffold, PoC e slice não estão confundidos | Nome do build vs. comportamento | não executado | |
-| CHK-0.4 | Itens não prometidos estão `N/A` com motivo; nada foi inventado para “completar AAA” | Rede, live ops, localização, mocap… | não executado | |
+## Núcleo — qualquer escala após um ciclo jogável
 
-## 1. Verbo e decisão — CHK-1
+### 0. Contrato — CHK-0 · núcleo
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-1.1 | Há um verbo central nomeado e jogável | GDD + uma partida curta | não executado | |
-| CHK-1.2 | A escolha muda estado, rota, recurso ou expectativa | Alternativa A vs. B no mesmo cenário | não executado | |
-| CHK-1.3 | O risco é legível **antes** da punição | Informação disponível no momento da ação | não executado | |
-| CHK-1.4 | Recusa é distinta de sucesso (estado e feedback) | Recurso insuficiente, alvo inválido, após término | não executado | |
-| CHK-1.5 | Não há opção sempre dominante no recorte, ou isso é decisão explícita | Duas alternativas sob o mesmo cenário | não executado | |
-| CHK-1.6 | Término e reinício do ciclo estão definidos e jogáveis | Vitória, derrota, saída, repeat | não executado | |
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-0.1 | Escala e recorte explícitos; “AAA” não usado sem as barras | Brief/slice; busca do adjetivo | brief | não executado | |
+| CHK-0.2 | Direção aprovada tem alcance; o que não cobre está escrito | Art Bible / conversa; mock ≠ mecânica | art-bible | não executado | |
+| CHK-0.3 | Scaffold, PoC e slice não estão confundidos | Nome do build vs. comportamento | slice | não executado | |
+| CHK-0.4 | Fora do perfil está `N/A` com motivo; nada inventado para “completar AAA” | Rede, live ops, locale, mocap | finish | não executado | |
 
-## 2. Primeiro minuto — CHK-2
+### 1. Verbo e decisão — CHK-1 · núcleo
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-2.1 | A primeira ação ensina o verbo sem mural que bloqueia o jogo | Cold start, instrução neutra | não executado | |
-| CHK-2.2 | Input, frame e câmera do primeiro minuto não denunciam atraso nem stutter | Observação em movimento no boot | não executado | |
-| CHK-2.3 | A fantasia é reconhecível antes do brief | O que a pessoa faz e vê nos primeiros 60s | não executado | |
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-1.1 | Verbo central nomeado e jogável | GDD + uma partida curta | GDD-M | não executado | |
+| CHK-1.2 | A escolha muda estado, rota, recurso ou expectativa | Alternativa A vs. B no mesmo cenário | GDD-M / MDA | não executado | |
+| CHK-1.3 | O risco é legível **antes** da punição | Informação no momento da ação | GDD-M | não executado | |
+| CHK-1.4 | Recusa distinta de sucesso (estado e feedback) | Recurso, alvo inválido, após término | GDD-M / mechanics | não executado | |
+| CHK-1.5 | Sem opção sempre dominante, ou isso é decisão explícita | Duas alternativas | MDA | não executado | |
+| CHK-1.6 | Término e reinício do ciclo definidos e jogáveis | Vitória, derrota, saída, repeat | GDD / lifecycle | não executado | |
 
-## 3. Controle e câmera — CHK-3
+### 2. Primeiro minuto — CHK-2 · núcleo
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-3.1 | O verbo responde no dispositivo alvo (teclado / toque / gamepad) | Mesma ação em cada entrada prometida | não executado | |
-| CHK-3.2 | Buffer, deadzone, cancelamento e perda de foco foram exercitados | Alt-tab, gesto abortado, reconexão | não executado | |
-| CHK-3.3 | Câmera antecipa curva/ameaça sem ocluir o jogador nem enjoar | Percurso real, não still | não executado | |
-| CHK-3.4 | Look-ahead, aterrissagem e punch confirmam a ação e devolvem o controle | Trecho do verbo central | não executado | |
-| CHK-3.5 | Escala e transição de câmera preservam leitura de ameaça e landmark | Zoom, corte, indoor/outdoor se existirem | não executado | |
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-2.1 | A primeira ação ensina o verbo sem mural que bloqueia | Cold start, instrução neutra | GDD | não executado | |
+| CHK-2.2 | Input, frame e câmera do boot sem atraso nem stutter | Movimento nos primeiros segundos | feel / pacing | não executado | |
+| CHK-2.3 | A fantasia é reconhecível antes do brief | O que a pessoa faz e vê ~60s | brief | não executado | |
 
-## 4. Feel sincronizado — CHK-4
+### 4. Feel sincronizado — CHK-4 · núcleo · `--focus feel`
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-4.1 | Intenção: oportunidade e ameaça são legíveis antes do input | Frame anterior à ação | não executado | |
-| CHK-4.2 | Antecipação (pose/frames) promete o golpe/pulo/disparo | Comparar com e sem wind-up | não executado | |
-| CHK-4.3 | Corpo muda silhueta o bastante (squash, recuo, IK, veículo, cursor) | Em movimento | não executado | |
-| CHK-4.4 | Impacto tem peso proporcional (hitstop, flash, partícula, rumble) | Coleta ≠ golpe mortal | não executado | |
-| CHK-4.5 | Flash, hit-pause, shake, partícula e áudio disparam no **mesmo frame** do contato | Gravação quadro a quadro ou observação atenta | não executado | |
-| CHK-4.6 | Recuperação devolve o controle num tempo justo | Encadear a próxima ação | não executado | |
-| CHK-4.7 | Juice não esconde a consequência nem atrasa o próximo input além do ritmo | Silhueta e timing | não executado | |
-| CHK-4.8 | Feel sobrevive a pause, unfocus e restart (sem hitstop/rumble fantasma) | Montar → pausar → retomar; reset | não executado | |
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-4.1 | Intenção: oportunidade e ameaça legíveis antes do input | Frame anterior à ação | feel | não executado | |
+| CHK-4.2 | Antecipação (pose/frames) promete o golpe/pulo/disparo | Com vs. sem wind-up | feel | não executado | |
+| CHK-4.3 | Corpo muda silhueta o bastante | Squash, recuo, IK, veículo, cursor | feel | não executado | |
+| CHK-4.4 | Impacto com peso proporcional | Coleta ≠ golpe mortal | feel | não executado | |
+| CHK-4.5 | Flash, hit-pause, shake, partícula e áudio no **mesmo frame** do contato | Gravação ou observação atenta | feel + audio | não executado | |
+| CHK-4.6 | Recuperação devolve o controle num tempo justo | Encadear a próxima ação | feel | não executado | |
+| CHK-4.7 | Juice não esconde a consequência nem atrasa o próximo input | Silhueta e timing | feel | não executado | |
+| CHK-4.8 | Feel sobrevive a pause, unfocus e restart | Sem hitstop/rumble fantasma | lifecycle | não executado | |
+| CHK-4.9 | Cancelamento ou overlap não deixa o feel preso | Abortar gesto; duas ações seguidas | feel / input | não executado | |
 
-## 5. Áudio e mix — CHK-5
+### 5. Áudio e mix — CHK-5 · núcleo · `--focus audio`
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-5.1 | A ação central se ouve; recusa soa distinta do sucesso | Com som; comparar os dois | não executado | |
-| CHK-5.2 | One-shot de impacto no mesmo frame do hit visual | Sync com CHK-4.5 | não executado | |
-| CHK-5.3 | Camadas (ação, mundo, música, UI, silêncio) têm prioridade; ducking existe | Stinger vs. verbo vs. música | não executado | |
-| CHK-5.4 | Pause, morte, restart, troca de cena e unfocus não deixam voz fantasma | Montar → desmontar → montar | não executado | |
-| CHK-5.5 | O jogo permanece legível no mute, se o recorte exigir acesso ou ruído | Mesmo trecho com mute | não executado | |
-| CHK-5.6 | Piso de gravação licenciada ou direção contemporânea explícita; 8-bit/jsfxr/Kenney não são o padrão | Proveniência do asset | não executado | |
-| CHK-5.7 | Música informa estado (ou a ausência é decisão registrada) | Entrar/sair de combate, menu, morte | não executado | |
-| CHK-5.8 | `shared/sfx` foi buscado antes de baixar, se o laboratório o tiver | Recibo de `sfx search` | não executado | |
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-5.1 | Ação central se ouve; recusa soa distinta | Com som; os dois casos | audio | não executado | |
+| CHK-5.2 | One-shot de impacto no mesmo frame do hit visual | Sync com CHK-4.5 | audio | não executado | |
+| CHK-5.3 | Camadas com prioridade; ducking existe | Stinger vs. verbo vs. música | audio | não executado | |
+| CHK-5.4 | Pause, morte, restart, cena e unfocus sem voz fantasma | Montar → desmontar → montar | lifecycle | não executado | |
+| CHK-5.5 | Legível no mute se o recorte exigir acesso ou ruído | Mesmo trecho mutado | audio / acesso | não executado | |
+| CHK-5.6 | Piso de gravação licenciada ou direção contemporânea explícita | Sem 8-bit/jsfxr/Kenney como padrão | proveniência | não executado | |
+| CHK-5.7 | Música informa estado, ou a ausência é decisão | Combate, menu, morte | audio | não executado | |
+| CHK-5.8 | `sfx search` antes de baixar, se `shared/sfx` existir | Recibo | audio | não executado | |
+| CHK-5.9 | Espacialização só se o jogo já tem espaço; sem HRTF de checklist | 2D/3D real | audio | não executado | |
 
-## 6. Pacing e performance — CHK-6
+### 6. Pacing e performance — CHK-6 · núcleo
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-6.1 | Latência de input é aceitável no dispositivo alvo | Ação repetida; percepção + medição se existir | não executado | |
-| CHK-6.2 | Spikes de frametime no trecho real foram procurados; stutter não é “normal” | Percurso carregado, não menu vazio | não executado | |
-| CHK-6.3 | O piso visual/sonoro aprovado não foi cortado para “ganhar FPS” | Antes/depois; hipótese de eficiência | não executado | |
-| CHK-6.4 | Ambiente da prova está declarado (editor vs. build/export, resolução, plataforma) | Runbook do recorte | não executado | |
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-6.1 | Latência de input aceitável no dispositivo alvo | Ação repetida; medição se existir | feel | não executado | |
+| CHK-6.2 | Spikes de frametime procurados no trecho **carregado** | Não o menu vazio | visual / TDD | não executado | |
+| CHK-6.3 | Piso aprovado não foi cortado para “ganhar FPS” | Antes/depois; hipótese de eficiência | quality | não executado | |
+| CHK-6.4 | Ambiente da prova declarado | Editor vs. export, resolução, plataforma | runbook | não executado | |
+| CHK-6.5 | Se o recorte declara 30/60/120, o feel é equivalente | Mesma ação nas taxas prometidas | TDD / NFR | não executado | |
 
-## 7. Mundo, luz, animação, consistência — CHK-7
+### 11. Ciclo de vida e confiança — CHK-11 · núcleo · `--focus lifecycle`
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-7.1 | Silhueta, material e luz são legíveis **em movimento** | Percurso; não a melhor still | não executado | |
-| CHK-7.2 | Landmark e ameaça distinguem-se sem a cor como único sinal | Formas, movimento, áudio | não executado | |
-| CHK-7.3 | Animação tem antecipação e follow-through no verbo; não está “floaty” | Comparar com referência | não executado | |
-| CHK-7.4 | Família coerente com o asset-herói **no engine**, mesma luz/câmera | Hero comparison in-engine | não executado | |
-| CHK-7.5 | Asset lindo no DCC e errado no jogo foi procurado (integração) | Import real, shader, escala, pivot | não executado | |
-| CHK-7.6 | Um exemplo de “cabe neste jogo” e um de “quebra a direção” existem | Art Bible | não executado | |
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-11.1 | Iniciar, jogar, pausar, perder, ganhar, reiniciar e sair definidos | Cada transição | lifecycle | não executado | |
+| CHK-11.2 | Score, timer, entidade, som, input e progresso batem com o GDD | Pause/reset/load | lifecycle | não executado | |
+| CHK-11.3 | Save (se prometido) não corrompe; dado inválido tratado | Load, save velho, arquivo lixo | content | não executado | |
+| CHK-11.4 | Montar → desmontar → montar sem listener/áudio/GPU duplicado | Dois boots | lifecycle | não executado | |
+| CHK-11.5 | Erro (load, input, rede se houver) fala a verdade | Caminho de falha real | TDD | não executado | |
+| CHK-11.6 | Seed/determinismo só como `observado` se o parâmetro **afeta** o recorte | Repeat + compare; mentioned ≠ verified | lifecycle | não executado | |
 
-## 8. UI, HUD e acesso — CHK-8
+## Produto — escala produto ou AA / Triple-I
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-8.1 | HUD/menus existem e são do jogo, **ou** a ausência é decisão explícita | Art Bible / GDD | não executado | |
-| CHK-8.2 | Contraste e forma além da cor permitem ler estado crítico | Daltonismo, UI em movimento | não executado | |
-| CHK-8.3 | Foco, alvos de toque e movimento reduzido quando o recorte os exige | Dispositivo prometido | não executado | |
-| CHK-8.4 | UI não grita sobre o mundo; não tapa a silhueta da consequência | Mix + layout | não executado | |
-| CHK-8.5 | Navegação de menu sobrevive a pause, erro e volta ao jogo | Ida e volta | não executado | |
+`N/A` com a escala num jam, salvo se o brief prometeu câmera, mundo ou HUD.
 
-## 9. Narrativa e cinemática — CHK-9
+### 3. Controle e câmera — CHK-3 · produto
 
-`N/A` se o recorte não promete história, voz ou cutscene. Se o marketing
-promete imersão cinematográfica, estes itens tornam-se aplicáveis.
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-3.1 | O verbo responde em cada entrada prometida | Teclado / toque / gamepad | GDD | não executado | |
+| CHK-3.2 | Buffer, deadzone, cancelamento e perda de foco exercitados | Alt-tab, gesto abortado | feel | não executado | |
+| CHK-3.3 | Câmera antecipa ameaça sem ocluir nem enjoar | Percurso real | visual | não executado | |
+| CHK-3.4 | Look-ahead, aterrissagem e punch confirmam e devolvem o controle | Verbo central | feel | não executado | |
+| CHK-3.5 | Escala e transição preservam landmark e ameaça | Zoom, corte, indoor/outdoor | visual | não executado | |
+| CHK-3.6 | Rumble/haptic é elo do feel ou decisão explícita de não ter | Impacto vs. UI | feel | não executado | |
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-9.1 | História/escolha tem consequência jogável, não só texto | Caminho alternativo | não executado | |
-| CHK-9.2 | Voz, lip-sync e tom são consistentes (estilização ok; costura entre equipes não) | Cena representativa | não executado | |
-| CHK-9.3 | Corte/câmera de cena não rouba o verbo nem contradiz o feel | Transição jogo ↔ cena | não executado | |
-| CHK-9.4 | Save/histórico narrativo restaura o que o GDD promete | Load no meio da escolha | não executado | |
+### 7. Mundo, luz, animação — CHK-7 · produto · `--focus visual`
 
-## 10. Receita de conteúdo e produção — CHK-10
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-7.1 | Silhueta, material e luz legíveis **em movimento** | Percurso, não still | visual | não executado | |
+| CHK-7.2 | Landmark e ameaça sem a cor como único sinal | Forma, movimento, áudio | visual / acesso | não executado | |
+| CHK-7.3 | Animação com antecipação e follow-through; não “floaty” | Referência em movimento | visual / feel | não executado | |
+| CHK-7.4 | Família coerente com o herói **no engine**, mesma luz/câmera | Hero comparison | art-bible | não executado | |
+| CHK-7.5 | Asset lindo no DCC e errado no jogo foi procurado | Shader, escala, pivot | content | não executado | |
+| CHK-7.6 | Um “cabe neste jogo” e um “quebra a direção” | Art Bible | art-bible | não executado | |
+| CHK-7.7 | Luz serve à leitura; mood não apaga ameaça nem landmark | Trecho escuro/claro | visual | não executado | |
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-10.1 | Existe receita para o próximo item da família (inimigo, sala, efeito) | Art Bible / GDD | não executado | |
-| CHK-10.2 | A slice usou o **pipeline real**, não um atalho irrepetível | Ferramenta, import, naming | não executado | |
-| CHK-10.3 | Custo observado do próximo trecho está registrado | Tempo/esforço medido, não chute | não executado | |
-| CHK-10.4 | Repeatability: outro trecho nasce sem heroísmo | Quatro eixos: valor, técnica, produção, clareza | não executado | |
-| CHK-10.5 | Tokens têm consumidor real; arquivo órfão não conta | Path do uso | não executado | |
+### 8. UI, HUD e acesso — CHK-8 · produto
 
-## 11. Ciclo de vida e confiança — CHK-11
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-8.1 | HUD/menus do jogo, **ou** decisão explícita de não ter | Art Bible / GDD | art-bible | não executado | |
+| CHK-8.2 | Contraste e forma além da cor no estado crítico | Daltonismo, UI em movimento | acesso | não executado | |
+| CHK-8.3 | Foco, alvos de toque e movimento reduzido se o recorte os exige | Dispositivo prometido | acesso | não executado | |
+| CHK-8.4 | UI não grita sobre o mundo nem tapa a consequência | Mix + layout | audio / visual | não executado | |
+| CHK-8.5 | Menu sobrevive a pause, erro e volta ao jogo | Ida e volta | lifecycle | não executado | |
+| CHK-8.6 | Fotossensibilidade: flashes do feel não viram strobe contínuo | CHK-4.5 sob movimento reduzido | acesso / feel | não executado | |
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-11.1 | Iniciar, jogar, pausar, perder, ganhar, reiniciar e sair têm consequência definida | Cada transição uma vez | não executado | |
-| CHK-11.2 | Score, timer, entidade, som, input e progresso sobrevivem ou zeram como o GDD diz | Pause/reset/load | não executado | |
-| CHK-11.3 | Save (se prometido) não corrompe; migração/dado inválido está tratado | Load, save velho, arquivo lixo | não executado | |
-| CHK-11.4 | Descarte: montar → desmontar → montar sem listener/áudio/GPU duplicado | Dois boots seguidos | não executado | |
-| CHK-11.5 | Erro (falha de load, input, rede se houver) fala a verdade ao jogador | Caminho de falha real | não executado | |
+### 10. Receita e produção — CHK-10 · produto
 
-## 12. Rede — CHK-12
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-10.1 | Receita do próximo item da família | Art Bible / GDD | art-bible | não executado | |
+| CHK-10.2 | A slice usou o **pipeline real**, não atalho irrepetível | Ferramenta, import, naming | TDD | não executado | |
+| CHK-10.3 | Custo observado do próximo trecho | Medido, não chute | slice | não executado | |
+| CHK-10.4 | Repeatability: outro trecho sem heroísmo | Valor, técnica, produção, clareza | slice | não executado | |
+| CHK-10.5 | Tokens com consumidor real | Path do uso | art-bible | não executado | |
+| CHK-10.6 | Gate de import (nome, escala, pivot) antes de multiplicar | Um asset novo pela receita | content | não executado | |
 
-`N/A` se o recorte é local / um jogador sem estado compartilhado.
+### 14. QA e evidência — CHK-14 · produto · `--stage qa`
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-12.1 | Quem aceita a ação e quem decide o estado está explícito | Duas sessões reais | não executado | |
-| CHK-12.2 | Ação recusada no autoritativo, não só na UI | Cliente desonesto ou replay | não executado | |
-| CHK-12.3 | Entrada, saída, desconexão e reconexão foram exercitadas | Duas sessões | não executado | |
-| CHK-12.4 | Mensagem duplicada, atrasada ou fora de ordem não quebra o recorte | Quando o protocolo permite | não executado | |
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-14.1 | Casos técnicos com comando real e recibo | `verify`; inspect antes | qa | não executado | |
+| CHK-14.2 | Playtest de pessoa ≠ avaliação do agente | Relato literal vs. interpretação | qa | não executado | |
+| CHK-14.3 | Antes/depois em condições equivalentes, em movimento | Versão, resolução, entrada, trecho | quality | não executado | |
+| CHK-14.4 | `experience_status` = `not_assessed` até haver movimento | Recibo de verify | verify | não executado | |
 
-## 13. Localização — CHK-13
+### 15. Origem e direitos — CHK-15 · produto
 
-`N/A` se o recorte não promete outro idioma. Promessa de público amplo
-torna o item aplicável.
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-15.1 | Código e assets do recorte com origem, crédito e uso | CREDITS | provenance | não executado | |
+| CHK-15.2 | Nenhuma licença inventada pela pasta | Baixado / gerado | provenance | não executado | |
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-13.1 | Textos do recorte não estão hardcoded sem gancho de locale | UI + diálogo do trecho | não executado | |
-| CHK-13.2 | Overflow, fonte e leitura funcionam no idioma alvo (ou a lacuna está explícita) | Idioma mais longo se houver | não executado | |
+## Promessa — só se o brief prometeu
 
-## 14. QA, playtest e evidência — CHK-14
+### 9. Narrativa e cinemática — CHK-9 · promessa
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-14.1 | Casos técnicos do recorte têm comando real e recibo (`verify` ou equivalente) | Logs; inspect antes de rodar | não executado | |
-| CHK-14.2 | Playtest (pessoa) e avaliação do agente estão separados | Relato literal vs. interpretação | não executado | |
-| CHK-14.3 | Comparação antes/depois em condições equivalentes, em movimento | Versão, resolução, entrada, trecho | não executado | |
-| CHK-14.4 | `experience_status` permanece `not_assessed` até haver observação em movimento | Recibo de verify | não executado | |
+`N/A` sem história, voz ou cutscene. Marketing cinematográfico torna aplicável.
 
-## 15. Origem e direitos — CHK-15
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-9.1 | Escolha com consequência jogável, não só texto | Caminho alternativo | GDD / content | não executado | |
+| CHK-9.2 | Voz, lip-sync e tom consistentes | Cena representativa | art-bible | não executado | |
+| CHK-9.3 | Corte de cena não rouba o verbo nem o feel | Transição jogo ↔ cena | feel | não executado | |
+| CHK-9.4 | Save/histórico restaura o que o GDD promete | Load no meio da escolha | content | não executado | |
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-15.1 | Código e assets do recorte têm origem, crédito e condição de uso | CREDITS / proveniência | não executado | |
-| CHK-15.2 | Nada recebeu licença inventada pela pasta em que está | Arquivo baixado / gerado | não executado | |
+### 12. Rede — CHK-12 · promessa · `--focus network`
 
-## 16. Tier de mercado (contexto, não piso) — CHK-16
+`N/A` se for local, sem estado compartilhado.
 
-Todos começam `N/A` salvo se o projeto **for** desse tier. Não usar para
-reprovar um conto ou um AA / Triple-I.
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-12.1 | Quem aceita a ação e quem decide o estado | Duas sessões reais | network | não executado | |
+| CHK-12.2 | Recusa no autoritativo, não só na UI | Cliente desonesto ou replay | network | não executado | |
+| CHK-12.3 | Entrada, saída, desconexão e reconexão | Duas sessões | network | não executado | |
+| CHK-12.4 | Duplicata, atraso ou fora de ordem não quebra o recorte | Se o protocolo permite | network | não executado | |
 
-| ID | Item | Como observar | Estado | Evidência / lacuna |
-| --- | --- | --- | --- | --- |
-| CHK-16.1 | Publisher, orçamento e headcount reais (se existirem) | Fato, não meta | N/A | Não é condição do piso. |
-| CHK-16.2 | Live ops / temporada / microtransação | Só se o produto as tiver | N/A | Não inventar. |
-| CHK-16.3 | Certificação de console / XR / BVT | Só se houver submissão | N/A | Não é selo de acabamento. |
-| CHK-16.4 | Marketing blockbuster, celebridade, AAAA | Só como contexto | N/A | Buzzword; sem definição. |
+### 13. Localização — CHK-13 · promessa
+
+`N/A` sem outro idioma. Público amplo declarado torna aplicável.
+
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-13.1 | Textos do recorte com gancho de locale | UI + diálogo | content | não executado | |
+| CHK-13.2 | Overflow e leitura no idioma alvo, ou lacuna explícita | Idioma mais longo | content | não executado | |
+
+## Mercado — contexto, nunca piso
+
+### 16. Tier de publisher — CHK-16 · mercado
+
+Começa `N/A`. Não reprova conto nem AA / Triple-I.
+
+| ID | Item | Observar | Origem | Estado | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| CHK-16.1 | Publisher, orçamento e headcount **reais** | Fato, não meta | — | N/A | Não é condição do piso. |
+| CHK-16.2 | Live ops / temporada / microtransação | Só se o produto as tiver | — | N/A | Não inventar. |
+| CHK-16.3 | Certificação de console / XR / BVT | Só se houver submissão | — | N/A | Não é selo de acabamento. |
+| CHK-16.4 | Marketing blockbuster, celebridade, AAAA | Só contexto | — | N/A | Buzzword; sem definição. |
 
 ## Resumo do recorte
 
-- Aplicáveis observados: [IDs].
-- Aplicáveis inconclusivos: [IDs].
-- Aplicáveis não executados: [IDs].
-- N/A com motivo: [IDs].
-- **O que ainda impede chamar isto de piso de acabamento:** [IDs materiais].
+- Perfil usado: [núcleo · núcleo+produto · +promessas].
+- Núcleo observado / inconclusivo / não executado: [IDs].
+- Produto e promessa: [IDs ou N/A].
+- **O que ainda impede o adjetivo no perfil em vigor:** [IDs materiais].
 - Próxima ação (uma): [verbo, alvo, prova].
-- Aprovação do usuário: [somente se concedida; senão, avaliação do agente].
+- Aprovação do usuário: [somente se concedida].

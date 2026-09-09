@@ -3,6 +3,15 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.3 — Checklist adaptado ao harness
+
+O checklist deixa de ser só `--stage aaa`. `context` expõe `finish`
+(núcleo / produto / promessa / mercado e a ação). Slice, QA, `create`,
+`feel` e `audio` carregam a [guia](references/aaa-checklist.md); o
+template inteiro só na etapa `aaa`. Scanner trata o documento como
+candidato de QA — continua havendo nove áreas. Primeira sessão não gera
+o arquivo.
+
 ## 0.9.2 — Checklist de piso de acabamento
 
 Etapa `aaa`: [guia](references/aaa-checklist.md) e

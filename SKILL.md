@@ -90,11 +90,11 @@ registre decisões e hipóteses descartadas, cumpra `continuity.before_close`
 e `documentation.before_close`. Não promova scaffold a slice nem slice a
 jogo concluído. Não publique nem delegue sem autorização aplicável.
 
-Não chame o recorte de AAA — nem de “quase AAA” — se a slice não demonstra
-as barras da escala (incluindo pacing, sincronia do impacto e repeatability).
-Checklist preenchível: `context --stage aaa` ou `template aaa`. Completar
-linhas não certifica o jogo; N/A exige motivo.
-[Ambição](references/ambition.md), [checklist](references/aaa-checklist.md).
+Não chame o recorte de AAA — nem de “quase AAA” — se o perfil em
+`finish` (núcleo; produto se a escala pedir; promessas só se o brief as
+tiver) não foi observado. Na primeira sessão **não** gere `template aaa`.
+Na slice ou em “está AAA?”, leia `finish` e [o guia](references/aaa-checklist.md);
+grave no canônico. Completar linhas não certifica. `N/A` exige motivo.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

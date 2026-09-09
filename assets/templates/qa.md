@@ -49,6 +49,12 @@ Versão/arquivos, ambiente e referência: [localizadores e limites de identifica
 - Reteste: [caso, nova versão e resultado observado].
 - Comparação visual: [antes/depois em movimento; avaliação técnica não substitui julgamento].
 
+## Ligação ao piso
+
+- Perfil `finish`: [núcleo · +produto · +promessas].
+- IDs CHK observados / em aberto: [ligar a QA-00x / PLAY-00x].
+- O adjetivo “AAA” continua bloqueado se o núcleo material estiver aberto.
+
 ## Conclusão do escopo
 
 - Requisitos cobertos e pendentes: [IDs com evidência; não apenas contagem de testes].

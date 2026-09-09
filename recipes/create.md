@@ -43,6 +43,8 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    declarada; verbo mudo ou sem peso não é.
 5. Compare com a intenção e com a referência, em movimento. Preserve o que
    foi pedido. Registre herdado versus produzido e **uma** próxima ação.
+   Não gere o template `aaa` nesta sessão. O `finish.action` permanece
+   `defer_until_playable_cycle` até existir o ciclo.
 
 ## Da fatia à produção
 
