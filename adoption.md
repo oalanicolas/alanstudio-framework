@@ -1,7 +1,16 @@
 # Adoção — Alan Studios Framework
 
-Histórico das versões 0.1–0.8. Recibos brutos de execução e o acervo sonoro
+Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
+
+## 0.9 — Facilidade e piso AAA operacional
+
+Caminho curto na skill e em [criar](recipes/create.md): primeira sessão chega a
+um ciclo jogável sem gerar nove templates. Focos [feel](recipes/feel.md) e
+[áudio](recipes/audio.md). Contrato [ambição](references/ambition.md): AAA é
+acabamento demonstrado na slice, não motor nem nota. Escala jam / produto /
+AAA-shaped muda quantidade, não o piso do verbo. O harness continua thin:
+não mede diversão, não publica, não escolhe engine.
 
 ## 0.8 — Arquitetura proporcional
 

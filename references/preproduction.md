@@ -20,11 +20,16 @@ mesmo quando arquivos antigos cobrem nominalmente as nove áreas. Use o evento
 ## Escolher a profundidade
 
 **Ajuste localizado:** atualize decisão, requisito e caso de QA no registro existente.
-Não reinicie a pré-produção. **Jogo pequeno:** um `game-design.md` pode reunir brief,
-GDD, requisitos, decisões técnicas e experimentos. Use os templates como perguntas,
-sem duplicar a mesma informação em nove arquivos. **Projeto com sistemas/equipe
-maiores:** separe os documentos que têm responsabilidade e ritmo de atualização
-distintos. Linke suas fontes canônicas, mantendo IDs estáveis.
+Não reinicie a pré-produção. **Jogo pequeno / jam / conto:** um `game-design.md` pode
+reunir brief, GDD, requisitos, decisões técnicas e experimentos. Use os templates
+como perguntas, sem duplicar a mesma informação em nove arquivos. **Produto:**
+separe os documentos que têm responsabilidade e ritmo de atualização distintos.
+**AAA-shaped:** os mesmos artefatos; feel, áudio, luz, animação e receita de
+conteúdo entram como requisitos do recorte, não como fase posterior de polimento.
+Linke fontes canônicas e mantenha IDs estáveis.
+
+A escala vive no brief. Ela muda quantidade de documentos e de conteúdo, não o
+piso do verbo. Contrato: [ambição](ambition.md).
 
 Ao iniciar, resolva o pedido, artefatos atuais e referência aprovada. Extraia o que
 já foi decidido; identifique hipóteses e lacunas. Pergunte somente por decisão
@@ -130,9 +135,12 @@ acabamento pretendido. Demonstra a experiência e a capacidade de produzir mais
 conteúdo nesse padrão. Entrada: recorte e decisões de design/implementação.
 
 **Pronto para ampliar:** cenário jogável e repetível, integrações verificadas,
-comparação em movimento e regressões resolvidas. Cobertura parcial e avaliação do
-agente permanecem distintas de aprovação do usuário. Placeholders podem servir a
-uma PoC; não certificam o acabamento da vertical slice.
+comparação em movimento e regressões resolvidas. Feel do verbo e mix da
+consequência fazem parte do acabamento, não de um recorte futuro. A slice
+precisa demonstrar que outro trecho nasce no mesmo padrão (receita de conteúdo,
+custo observado). Cobertura parcial e avaliação do agente permanecem distintas
+de aprovação do usuário. Placeholders podem servir a uma PoC; não certificam o
+acabamento da vertical slice. Scaffold com HUD bonito também não.
 [Template](../assets/templates/vertical-slice.md).
 
 ### `mvp` — Minimum Viable Product

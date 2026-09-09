@@ -19,6 +19,14 @@ Versão/arquivos, ambiente e referência: [localizadores e limites de identifica
 - Resultado: não executado.
 - Evidência e versão: [log/estado/captura e limite do que comprovam].
 
+## Caso de feel / áudio — QA-002
+
+- Elo ou camada: [impacto, câmera, ducking, interrupção, silêncio…].
+- Condição equivalente: [versão, entrada, trecho; mute on/off quando couber].
+- Esperado percebido: [duração, peso, prioridade; sem screenshot isolada].
+- Resultado: não executado.
+- Julgamento: [agente ou pessoa; não confundir].
+
 ## Playtest — PLAY-001
 
 - Hipótese: [compreensão, decisão, controle, ritmo ou experiência].

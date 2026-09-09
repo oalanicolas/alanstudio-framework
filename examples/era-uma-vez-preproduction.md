@@ -12,7 +12,9 @@ e ajudar os irmãos a voltar. A experiência pretendida combina descoberta e
 confiança na própria observação.
 
 Pilares deste recorte: o verbo do conto vira controle; erro permite recuperação;
-consequência aparece no cenário.
+consequência aparece no cenário. Feel e áudio da marca (pedra que permanece,
+migalha que some) fazem parte do ciclo, mesmo neste documento único. Escala:
+conto / jam.
 
 ## GDD e MDA
 

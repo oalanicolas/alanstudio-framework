@@ -46,13 +46,19 @@ ativo; localize o uso real.
 2. **Tokens:** papéis nomeados e, quando existirem, o caminho do consumidor.
 3. **Componentes do mundo:** famílias recorrentes e como um item novo nasce.
 4. **Feel / feedback:** sinal percebido da ação central; ligar ao verbo do GDD.
-5. **UI / HUD / acesso:** ou a decisão explícita de não ter interface tradicional.
-6. **Fazer / não fazer:** um exemplo que cabe e um que quebra a direção.
-7. **Proveniência:** origem, crédito e condição de uso dos recursos.
-8. **Verificação:** cenário de comparação em movimento, nas mesmas condições.
+   Cadeia: intenção → input → antecipação → corpo → impacto → câmera → áudio
+   → recuperação. Receita: [feel](../recipes/feel.md).
+5. **Áudio / mix:** papéis (ação, mundo, música, stinger, silêncio), consumidor
+   real e interrupção. Piso de gravação licenciada salvo direção explícita em
+   contrário. Receita: [áudio](../recipes/audio.md).
+6. **UI / HUD / acesso:** ou a decisão explícita de não ter interface tradicional.
+7. **Fazer / não fazer:** um exemplo que cabe e um que quebra a direção.
+8. **Proveniência:** origem, crédito e condição de uso dos recursos.
+9. **Verificação:** cenário de comparação em movimento, nas mesmas condições.
 
-GDD define o que o jogador faz. O design system define como isso se parece, soa e
-se multiplica. MDA continua sendo hipótese de experiência, não paleta.
+GDD define o que o jogador faz. O design system define como isso se parece, soa,
+pesa e se multiplica. MDA continua sendo hipótese de experiência, não paleta.
+Áudio deixou de ser sub-item de feel: mix e silêncio têm consumidor próprio.
 
 ## Quando preencher
 
@@ -66,9 +72,10 @@ certifica tokens, consumidores nem aprovação artística.
 - **Onde estamos:** o contrato do estúdio existe; as instâncias continuam no documento
   canônico de cada jogo, com profundidade desigual.
 - **Próximo passo:** ao trabalhar num jogo identificável, preencher ou recuperar a
-  instância dele — tokens com consumidor, feel do verbo e uma receita de conteúdo novo.
+  instância dele — tokens com consumidor, feel do verbo, mix da consequência e
+  uma receita de conteúdo novo.
 - **Por que agora:** sem isso, arte e UI novas improvisam e o piso aprovado não se
   reproduz.
-- **Pronto quando:** as oito áreas acima têm fato, hipótese ou lacuna com próxima ação,
+- **Pronto quando:** as nove áreas acima têm fato, hipótese ou lacuna com próxima ação,
   e o próximo asset tem uma receita observável.
 - **Retomar por:** este guia, o Art Bible do jogo e os consumidores rastreados no código.

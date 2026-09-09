@@ -29,15 +29,38 @@ decisões ou domínio, não apenas aumentar números. Meça comportamentos obser
 (hesitação, erro repetido, abandono, estratégia), sem confundir tempo de sessão com
 diversão. Um playtest curto bem observado vale mais que uma nota inventada.
 
-## Mundo e direção visual
+## Feel da ação
 
-Escala, câmera, silhuetas, materiais, iluminação e áudio formam uma direção coerente.
-Landmarks ajudam orientação; ameaças e caminhos precisam ser legíveis em movimento.
-A versão visual aprovada é o piso. Não diminua detalhes, sombras, reflexos, animação
-ou efeitos para atingir FPS. Investigue implementações mais eficientes e registre
-custo quando a expansão visual exigir mais recursos. O
+A ação central precisa de peso, timing e recuperação. Antecipação, impacto
+(hitstop, squash, partículas, rumble, stinger) e câmera confirmam o verbo;
+juice que esconde a consequência é regressão. Ajuste um elo por vez e compare
+em movimento. Screenshot não comprova feel. Receita: [feel](../recipes/feel.md).
+
+## Mix e silêncio
+
+O jogador ouve causa e efeito. Camadas (ação, ambiente, música, UI) têm
+prioridade; pause/reinício não deixam voz fantasma. Silêncio é design, não
+arquivo ausente. Piso: gravação licenciada ou direção contemporânea explícita
+— 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão. Receita:
+[áudio](../recipes/audio.md).
+
+## Mundo, luz e animação
+
+Escala, câmera, silhuetas, materiais, iluminação e animação formam uma direção
+coerente. Landmarks ajudam orientação; ameaças e caminhos precisam ser
+legíveis em movimento. Antecipação e follow-through da animação pertencem ao
+verbo, não só à “beleza”. A versão visual aprovada é o piso. Não diminua
+detalhes, sombras, reflexos, animação ou efeitos para atingir FPS. Investigue
+implementações mais eficientes e registre custo quando a expansão visual
+exigir mais recursos. O
 [design system do jogo](game-design-system.md) é o contrato operacional dessa
 direção: tokens, famílias, feel e receita de conteúdo novo, não só o moodboard.
+
+## Primeiro minuto e acesso
+
+A primeira ação ensina o verbo. Mural de texto que bloqueia o jogo não é
+onboarding. Contraste, forma além da cor, foco, alvos de toque e movimento
+reduzido entram quando o recorte os exige — não como anexo depois do “polimento”.
 
 ## Estado e confiança
 
@@ -45,6 +68,14 @@ Iniciar, jogar, pausar, perder, ganhar, reiniciar e sair precisam ter consequên
 definidas. Teste o que sobrevive a cada transição: score, timers, entidades, som,
 inputs, progresso e conexões. Jogo narrativo precisa respeitar histórico e save;
 multiplayer precisa explicitar quem pode agir e quem decide o resultado.
+
+## Piso da escala, não nota
+
+Jam, produto e AAA-shaped compartilham o piso do verbo e diferem na quantidade
+de conteúdo e de artefatos. Não chame o recorte de AAA — nem de “quase AAA” —
+se a vertical slice não demonstra as barras que a escala escolheu. Contrato:
+[ambição](ambition.md). Scaffold demonstra estrutura; slice demonstra
+experiência. Confundi-los é declarar vitória cedo demais.
 
 ## Protocolo de observação
 

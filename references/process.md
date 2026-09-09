@@ -60,6 +60,9 @@ Produza um ciclo curto com entrada, decisão, consequência e reinício, adequad
 gênero. Resolva primeiro a incerteza que pode invalidar a experiência. Use valores
 existentes como ponto de partida, não como constantes universais. Transforme uma
 variável relevante por vez quando precisar atribuir causa a um resultado.
+O ciclo sem feel e sem áudio da ação continua incompleto: trate `--focus feel`
+e `--focus audio` como parte da fatia, não como enfeite posterior. Escala e
+piso: [ambição](ambition.md).
 
 Preserve separação entre regra, apresentação e conteúdo **onde ela já existe**.
 Não converta todos os jogos para um ECS, schema, relógio ou servidor comum. Ferramentas

@@ -42,7 +42,7 @@ import sfx_catalog
 
 ROOT = default_root()
 STUDIES_ROOT = default_studies_root(ROOT)
-FOCI = ("create", "mechanics", "lifecycle", "content", "visual", "network", "architecture")
+FOCI = ("create", "mechanics", "lifecycle", "content", "visual", "audio", "feel", "network", "architecture")
 STAGES = ("brief", "mda", "gdd", "poc", "prd", "tdd", "vertical-slice", "mvp", "qa", "art-bible", "devlog", "audit")
 EVENTS = ("task", "direction-approved", "resume")
 CONTINUITY_PATTERN = r"\b(continuidade|continuity|retomada|proxim[ao]s? (passos?|acoes|acao|tarefas?)|next steps?)\b"
@@ -456,8 +456,10 @@ def context(project, focus, stage=None, studies_root=None, event="task"):
         references.append(FRAMEWORK / "recipes/architecture.md")
     if stage or focus == "create":
         references.append(FRAMEWORK / "references/preproduction.md")
-    if focus in ("create", "visual") or stage == "art-bible":
+    if focus in ("create", "visual", "audio", "feel") or stage == "art-bible":
         references.append(FRAMEWORK / "references/game-design-system.md")
+    if focus in ("create", "audio", "feel") or stage in ("brief", "vertical-slice"):
+        references.append(FRAMEWORK / "references/ambition.md")
     if stage:
         references.append(FRAMEWORK / f"assets/templates/{stage}.md")
     if document_minimum or stage in ("art-bible", "devlog"):
@@ -500,6 +502,7 @@ def context(project, focus, stage=None, studies_root=None, event="task"):
             "capabilities.mentioned é só token em arquivo de inspeção. Não prova pause, reset, seed nem determinismo.",
             "capabilities.unknown significa não localizado na lista fixa de arquivos de inspeção, não capacidade ausente; rastreie o entrypoint e os consumidores na auditoria.",
             "Áudio novo: busque em shared/sfx (`sfx search`) antes de baixar. Piso de gravação licenciada; 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.",
+            "Feel e áudio são focos próprios (`--focus feel`, `--focus audio`). Sem observação em movimento, experience_status permanece not_assessed; scaffold não é vertical slice.",
         ],
     }
 

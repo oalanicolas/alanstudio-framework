@@ -61,6 +61,34 @@ class HarnessTest(unittest.TestCase):
         self.assertTrue(all(item["status"] in ("unknown", "mentioned") for item in result["capabilities"].values()))
         self.assertTrue(all(item["status"] != "verified" for item in result["capabilities"].values()))
 
+    def test_feel_and_audio_load_design_system_and_ambition_without_writing(self):
+        before = set(self.project.iterdir())
+        for focus, recipe in (("feel", "feel.md"), ("audio", "audio.md")):
+            with self.subTest(focus=focus):
+                result = game.context(self.project, focus, studies_root=self.root / "absent")
+                names = [Path(p).name for p in result["read_next"]]
+                self.assertEqual(result["focus"], focus)
+                self.assertEqual(result["studies"], [])
+                self.assertIn(recipe, names)
+                self.assertIn("game-design-system.md", names)
+                self.assertIn("ambition.md", names)
+                self.assertIn("project-audit.md", names)
+                self.assertTrue(all(Path(p).is_file() for p in result["read_next"]))
+                self.assertIn("Feel e áudio são focos próprios", " ".join(result["limits"]))
+        create = game.context(self.project, "create", studies_root=self.root / "absent")
+        self.assertIn("ambition.md", [Path(p).name for p in create["read_next"]])
+        self.assertIn("preproduction.md", [Path(p).name for p in create["read_next"]])
+        self.assertEqual(before, set(self.project.iterdir()))
+        self.assertEqual(game.FOCI, (
+            "create", "mechanics", "lifecycle", "content", "visual",
+            "audio", "feel", "network", "architecture",
+        ))
+        brief = game.context(self.project, "mechanics", stage="brief")
+        self.assertIn("ambition.md", [Path(p).name for p in brief["read_next"]])
+        self.assertIn("brief.md", [Path(p).name for p in brief["read_next"]])
+        slice_ctx = game.context(self.project, "content", stage="vertical-slice")
+        self.assertIn("ambition.md", [Path(p).name for p in slice_ctx["read_next"]])
+
     def test_context_lists_focus_studies_without_loading_other_catalogs(self):
         studies = self.root / "Games-Frameworks"
         phaser = studies / "outputs/decoded/games-phaser/study-02d8931b626d/validate/rule-catalog.md"

@@ -13,7 +13,9 @@ estado em todas as bibliotecas; confirme a implementação local.
 
 Teste invariantes nos limites: recursos não duplicam, ações recusadas não consomem
 turno indevidamente, vitória/derrota não dispara duas vezes. Separe esse teste da
-pergunta criativa: a decisão é compreensível e vale a pena?
+pergunta criativa: a decisão é compreensível e vale a pena? A regra correta com
+verbo sem peso ainda pede [feel](feel.md); recusa e sucesso precisam ser
+distintos também no [áudio](audio.md).
 
 Para ajuste de dificuldade ou economia, registre situação inicial, comportamento
 observado e variável alterada. Compare alternativas sob o mesmo cenário. Não deduza

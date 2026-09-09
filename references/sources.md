@@ -52,10 +52,19 @@ A receita [architecture](../recipes/architecture.md) adapta processo transversal
 observado no Architect AIOX, sem copiar o runtime, o roteador de engines nem a
 hierarquia de agentes. Estudo e hashes ficam no laboratório.
 
-## Áudio
+## Feel, áudio e ambição (0.9)
+
+As receitas [feel](../recipes/feel.md) e [áudio](../recipes/audio.md) e o
+contrato [ambição](ambition.md) sistematizam o piso de acabamento já implícito
+em qualidade, Art Bible e no playground. Não extraem um kit universal de juice
+nem um motor de mix. Não há recorte externo promovido a testado para esses
+focos; `studies` permanece vazio até existir catálogo pertinente.
+
+## Áudio (catálogo)
 
 O acervo `shared/sfx` é do laboratório, não deste repositório. O harness expõe
 `sfx search` / `sfx copy` quando essa pasta existir na raiz de `--root`.
+A receita de áudio orienta mix e interrupção; o catálogo só localiza arquivos.
 
 ## Playground
 

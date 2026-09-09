@@ -164,9 +164,11 @@ os registros afetados, sem repetir a pré-produção inteira.
 4. **Recuperar design:** reconstrua GDD e requisitos observáveis do comportamento.
    Relacione MDA como intenção documentada ou hipótese do auditor. Separe o que
    existe, o que contradiz a documentação e o que permanece desconhecido.
-5. **Recuperar direção e origem:** examine arte/áudio/UI/câmera e referências
-   disponíveis; identifique componentes, tokens e convenções reais. Não produza
-   aprovação visual por inspeção de arquivos. Identifique assets e créditos.
+5. **Recuperar direção e origem:** examine arte/áudio/UI/câmera, feel do verbo
+   e referências disponíveis; identifique componentes, tokens e convenções reais.
+   Não produza aprovação visual ou sonora por inspeção de arquivos. Identifique
+   assets e créditos. Mix e interrupção seguem a receita de áudio quando o
+   recorte os tiver.
    Rastreie consumidores: um arquivo de paleta sem importação não descreve a UI
    ativa; procure também estilos locais, sprites, materiais e overrides utilizados.
 6. **Recuperar histórico e prova:** examine decisões, devlog, commits pertinentes e

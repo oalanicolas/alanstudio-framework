@@ -1,8 +1,13 @@
-# Alan Studios Framework · 0.8
+# Alan Studios Framework · 0.9
 
 Harness thin para criar e evoluir games com IA. Compartilha conceitos, processo,
 seleção de contexto e evidência. Cada jogo continua usando sua engine, suas regras,
 seus assets e seus validadores.
+
+Fácil de começar: um pedido vira um ciclo jogável, sem nove templates vazios.
+Difícil de rebaixar: feel, áudio e receita de conteúdo fazem parte do recorte,
+não de um “polimento depois”. AAA, aqui, é o acabamento pretendido demonstrado
+numa fatia — não um motor, um orçamento nem uma nota automática.
 
 Não é um motor. Não publica sozinho. Não mede diversão.
 
@@ -19,6 +24,7 @@ No Codex ou no Claude, invoque **`$game-dev`** com o projeto e a mudança deseja
 ```
 $game-dev crie um conto jogável em Canvas a partir do acervo existente
 $game-dev desenvolva o Game Brief e o GDD desta ideia, usando MDA
+$game-dev o pulo ainda não tem peso; ajuste o feel e o áudio dessa ação
 ```
 
 A fonte é [SKILL.md](SKILL.md). Copie-a para o atalho do host
@@ -31,7 +37,13 @@ python3 scripts/game.py discover --root /caminho/do/laboratorio
 python3 scripts/game.py context /caminho/do/jogo --focus create --root /caminho/do/laboratorio
 python3 scripts/game.py scan /caminho/do/jogo --root /caminho/do/laboratorio
 python3 scripts/game.py context /caminho/do/jogo --focus architecture --stage tdd --root /caminho/do/laboratorio
+python3 scripts/game.py context /caminho/do/jogo --focus feel --root /caminho/do/laboratorio
+python3 scripts/game.py context /caminho/do/jogo --focus audio --root /caminho/do/laboratorio
 ```
+
+Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`,
+`feel`, `network`, `architecture`. Jogo novo começa em `create`. Acabamento
+do verbo usa `feel` e `audio`. Contrato: [ambição](references/ambition.md).
 
 O contexto entrega caminhos para leitura, registros já existentes, catálogos de
 estudo (se um irmão `Games-Frameworks` existir, ou `GAMES_FRAMEWORKS_ROOT`),
@@ -99,10 +111,12 @@ python3 scripts/game.py check-plan caminho/do/trabalho.json --root /caminho/do/l
 
 Receitas: [criar](recipes/create.md), [mecânicas](recipes/mechanics.md),
 [ciclo de vida](recipes/lifecycle.md), [conteúdo](recipes/content.md),
-[visual](recipes/visual.md), [rede](recipes/network.md),
-[arquitetura](recipes/architecture.md). `--focus architecture` ou `--stage tdd`
-carrega a receita de arquitetura. A skill aplica quando a mudança afeta
-contratos ou responsabilidades; o CLI só seleciona referências.
+[visual](recipes/visual.md), [áudio](recipes/audio.md), [feel](recipes/feel.md),
+[rede](recipes/network.md), [arquitetura](recipes/architecture.md).
+`--focus architecture` ou `--stage tdd` carrega a receita de arquitetura.
+`--focus feel` e `--focus audio` carregam acabamento do verbo.
+A skill aplica quando a mudança afeta contratos ou responsabilidades; o CLI
+só seleciona referências.
 
 ## Áudio (opcional)
 
@@ -128,7 +142,7 @@ python3 scripts/game.py verify /caminho/do/jogo --output /tmp/jogo-qa-01 --root 
 ```
 
 `--command` vai por último. Não há shell implícito. Cada execução cria uma pasta
-inédita. Destino existente é recusado. Build verde não prova arte, reinício, rede
+inédita. Destino existente é recusado. Build verde não prova arte, feel, áudio, reinício, rede
 nem que o jogo é divertido. `experience_status` continua `not_assessed`.
 
 ## Três camadas
@@ -143,7 +157,8 @@ nem que o jogo é divertido. `experience_status` continua `not_assessed`.
 ## O que este repositório não é
 
 Não há engine comum, API universal de ações, avaliação automática de diversão
-ou publicação automática. Os jogos do [playground](https://games.alanicolas.com/)
+ou publicação automática. “AAA” neste texto é piso de acabamento da slice, não
+certificado de mercado. Os jogos do [playground](https://games.alanicolas.com/)
 continuam com a própria engine; este harness não reivindica tê-los produzido.
 
 Os oito frameworks externos foram estudados em recortes; seus testes não foram
@@ -158,4 +173,4 @@ Recibos brutos de execução e o acervo sonoro ficam no laboratório.
 python3 -m unittest discover -s tests -v
 ```
 
-Histórico 0.1–0.8: [adoção](adoption.md).
+Histórico 0.1–0.9: [adoção](adoption.md).

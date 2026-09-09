@@ -24,10 +24,12 @@ restrições explícitas do usuário. Referencie a experiência canônica sem co
 
 ## Requisito de qualidade — NFR-001
 
-- Dimensão e origem: [acessibilidade, confiabilidade, controle, integração ou outra necessidade real].
+- Dimensão e origem: [feel, mix, acesso, confiabilidade, controle, integração
+  ou outra necessidade real do recorte].
 - Condições e resultado esperado: [dispositivo/cenário/critério; números apenas com fundamento].
-- Método de observação: [procedimento, referência e limite da prova].
-- Restrição: preservar a qualidade visual aprovada; metas de performance não autorizam cortes perceptíveis.
+- Método de observação: [procedimento, referência em movimento e limite da prova].
+- Restrição: preservar a qualidade visual e sonora aprovada; metas de
+  performance não autorizam cortes perceptíveis de feel, luz, animação ou mix.
 
 ## Fronteira do MVP e sucesso
 

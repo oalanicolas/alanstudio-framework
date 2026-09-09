@@ -14,11 +14,15 @@ Fontes canônicas: [GDD, PRD, TDD e experimentos anteriores].
 ## Integração e acabamento
 
 - Gameplay/estado: [regras, controles, câmera e transições reais].
-- Conteúdo/arte: [assets corretos carregados, escala, materiais e animações].
-- Áudio/feedback: [consequências perceptíveis, interrupção e retomada].
-- Referência visual: [origem, versão e quem aprovou; lacuna explícita se não houver].
+- Feel do verbo: [cadeia perceptível no trecho; o que ainda é placeholder].
+- Conteúdo/arte: [assets corretos carregados, escala, materiais, luz e animações].
+- Áudio/mix: [camadas, ducking, consequências audíveis, interrupção e retomada].
+- Referência visual/sonora: [origem, versão e quem aprovou; lacuna explícita se não houver].
 - Preservações: [qualidades aprovadas que precisam sobreviver ao recorte].
+- Receita de conteúdo: [o próximo item da família nasce como? custo observado].
 - Reuso/adaptação/criação: [fontes e consumidores; o que de fato foi produzido].
+- Escala declarada: [jam / produto / AAA-shaped]. Scaffold ou HUD isolado não
+  certificam a slice.
 
 ## Prova de integração e experiência
 
