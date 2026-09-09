@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, createState, neutralIntent, CONFIG, PLAYER_Y } from "../src/game/rules.js";
+import { advance, approaching, createState, entityPoolStats, neutralIntent, CONFIG, PLAYER_Y } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -245,6 +245,53 @@ test("orbe perdido é contado, não silencioso", () => {
   assert.equal(state.stats.missed, 1);
   assert.equal(state.entities.length, 0);
   assert.ok(state.events.some((event) => event.type === "missed"));
+});
+
+test("resolver a chuva compacta o mesmo array e não troca a lista", () => {
+  const state = createState(6);
+  const entities = state.entities;
+  state.entities.push(orb(20, 190));
+  advance(state, neutralIntent());
+  assert.equal(state.entities, entities, "um array novo por tick é o churn que o poço evita");
+  assert.equal(state.entities.length, 0);
+});
+
+test("entidade morta volta ao poço e o próximo spawn a reusa", () => {
+  const state = createState(3);
+  state.spawnTimer = 1;
+  advance(state, neutralIntent());
+  assert.equal(state.entities.length, 1);
+  const born = state.entities[0];
+  const before = entityPoolStats();
+  born.y = 190;
+  born.vy = 0;
+  advance(state, neutralIntent());
+  assert.equal(state.entities.length, 0);
+  assert.equal(state.entities.includes(born), false);
+  assert.equal(entityPoolStats().released, before.released + 1);
+  state.spawnTimer = 1;
+  advance(state, neutralIntent());
+  assert.equal(state.entities[0], born, "o poço devolve o mesmo objeto, não um novo");
+  assert.equal(entityPoolStats().created, before.created, "reusar não cria outro objeto");
+});
+
+test("retomar JSON não puxa mortos do poço", () => {
+  const state = createState(4);
+  state.spawnTimer = 1;
+  advance(state, neutralIntent());
+  assert.equal(state.entities.length, 1);
+  const saved = JSON.parse(JSON.stringify(state));
+  const liveId = state.entities[0].id;
+  state.entities[0].y = 190;
+  state.entities[0].vy = 0;
+  advance(state, neutralIntent());
+  assert.equal(state.entities.length, 0);
+  assert.equal(saved.entities.length, 1);
+  assert.equal(saved.entities[0].id, liveId);
+  assert.equal(saved.entities[0].kind, "orb", "o morto do poço não vaza para o JSON retomado");
+  advance(saved, neutralIntent());
+  assert.equal(saved.entities[0].id, liveId, "o objeto retomado continua a própria chuva");
+  assert.ok(saved.entities[0].y < 190);
 });
 
 test("a partida termina no limite de tempo e informa a corrente perdida", () => {

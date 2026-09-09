@@ -8,7 +8,7 @@
 //
 // Uso: node tools/budget.mjs [--runs 20] [--seed 7]
 
-import { advance, createState, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
+import { advance, createState, entityPoolStats, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
 import { createRenderer } from "../src/game/render.js";
 import { fingerprint } from "../src/core/hash.js";
 import { createRng } from "../src/core/rng.js";
@@ -65,6 +65,7 @@ const samples = [];
 const presents = [];
 let prints = new Set();
 let totalSteps = 0;
+const poolStart = entityPoolStats();
 
 const renderer = createRenderer(stubCanvas(), { devicePixelRatio: 1 });
 renderer.resize(640, 360);
@@ -103,6 +104,7 @@ const percentile = (list) => {
 
 const simulation = percentile(samples);
 const presentation = percentile(presents);
+const pool = entityPoolStats();
 const report = {
   runs,
   ticks_per_run: CONFIG.runTicks,
@@ -112,10 +114,17 @@ const report = {
   presentation_ms: presentation,
   headroom_p99: Number((1 - simulation.p99 / stepBudgetMs).toFixed(4)),
   distinct_outcomes: prints.size,
+  entity_pool: {
+    created: pool.created - poolStart.created,
+    acquired: pool.acquired - poolStart.acquired,
+    released: pool.released - poolStart.released,
+    idle: pool.idle,
+  },
   scope:
     "Simulação + draw() num canvas stub. Não mede compositor, áudio, " +
     "carregamento nem o dispositivo alvo. Orçamento de quadro real exige " +
-    "medir no artefato exportado. Sem limiar de apresentação.",
+    "medir no artefato exportado. O poço relata reuso, não velocidade. " +
+    "Sem limiar de apresentação.",
 };
 
 console.log(JSON.stringify(report, null, 2));

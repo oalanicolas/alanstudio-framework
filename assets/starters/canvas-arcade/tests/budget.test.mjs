@@ -25,7 +25,10 @@ test("o orçamento relata simulação e desenho sem aprovar quadro", async () =>
   assert.ok(Number.isFinite(report.simulation_ms.p99));
   assert.ok(Number.isFinite(report.presentation_ms.p99));
   assert.ok(report.presentation_ms.p99 > 0);
+  assert.ok(Number.isFinite(report.entity_pool.created));
+  assert.ok(report.entity_pool.acquired > report.entity_pool.created);
   assert.match(report.scope, /canvas stub/);
   assert.match(report.scope, /Sem limiar de apresentação/);
+  assert.match(report.scope, /poço relata reuso/);
   assert.doesNotMatch(stdout, /aprovado|verified|16 ms|16ms/);
 });

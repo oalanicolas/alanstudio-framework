@@ -75,6 +75,46 @@ export const CONFIG = {
 const clamp = (value, min, max) => (value < min ? min : value > max ? max : value);
 const lerp = (from, to, amount) => from + (to - from) * amount;
 
+// Poço de entidades: mora no módulo, não no estado. Observe e fingerprint só
+// vêem os vivos. Retomar JSON.parse continua válido — o objeto retomado não
+// veio daqui e volta ao poço só quando morre de novo.
+const entityPool = [];
+const poolCounts = { created: 0, acquired: 0, released: 0 };
+
+export function entityPoolStats() {
+  return {
+    idle: entityPool.length,
+    created: poolCounts.created,
+    acquired: poolCounts.acquired,
+    released: poolCounts.released,
+  };
+}
+
+function acquireEntity(id, kind, x, y, vy) {
+  poolCounts.acquired += 1;
+  const entity = entityPool.pop();
+  if (entity === undefined) {
+    poolCounts.created += 1;
+    return { id, kind, x, y, vy };
+  }
+  entity.id = id;
+  entity.kind = kind;
+  entity.x = x;
+  entity.y = y;
+  entity.vy = vy;
+  return entity;
+}
+
+function releaseEntity(entity) {
+  poolCounts.released += 1;
+  entity.id = 0;
+  entity.kind = "";
+  entity.x = 0;
+  entity.y = 0;
+  entity.vy = 0;
+  entityPool.push(entity);
+}
+
 function rain(state) {
   return state.spawn ?? CONFIG.spawn;
 }
@@ -129,7 +169,8 @@ export function remainingTicks(state) {
 
 // Avança exatamente um passo de simulação. Muta e devolve o mesmo estado: o loop
 // de jogo roda isto muitas vezes por segundo e alocar um estado novo por passo
-// produz coleta de lixo perceptível como engasgo.
+// produz coleta de lixo perceptível como engasgo. A chuva compacta o array vivo
+// e reusa objetos do poço; evento e telegraph ainda alocam.
 export function advance(state, intent = neutralIntent()) {
   state.events.length = 0;
   if (state.phase !== "playing") {
@@ -269,15 +310,17 @@ function spawn(state) {
   const fall = state.assist ? CONFIG.assist.fallSpeedScale : 1;
   const vy = rng.range(table.fallSpeedMin, table.fallSpeedMax) * (1 + progress * 0.35) * fall;
   state.rngState = rng.state;
-  state.entities.push({ id: state.nextId, kind, x, y: -8, vy });
+  state.entities.push(acquireEntity(state.nextId, kind, x, -8, vy));
   state.nextId += 1;
 }
 
 function resolveEntities(state) {
   const player = state.player;
   const invulnerable = player.invuln > 0 || player.dashTicks > 0;
-  const survivors = [];
-  for (const entity of state.entities) {
+  const entities = state.entities;
+  let write = 0;
+  for (let index = 0; index < entities.length; index += 1) {
+    const entity = entities[index];
     entity.y += entity.vy;
     const pad = CONFIG.collect.pad + (state.assist ? CONFIG.assist.collectPad : 0);
     const reachY = CONFIG.collect.reachY + (state.assist ? CONFIG.assist.collectReachY : 0);
@@ -289,13 +332,16 @@ function resolveEntities(state) {
     if (touching) {
       if (entity.kind === "orb") {
         collect(state);
+        releaseEntity(entity);
         continue;
       }
       if (invulnerable) {
         state.events.push({ type: "graze" });
+        releaseEntity(entity);
         continue;
       }
       hit(state);
+      releaseEntity(entity);
       continue;
     }
     if (entity.y > FIELD.height + 8) {
@@ -303,11 +349,13 @@ function resolveEntities(state) {
         state.stats.missed += 1;
         state.events.push({ type: "missed" });
       }
+      releaseEntity(entity);
       continue;
     }
-    survivors.push(entity);
+    entities[write] = entity;
+    write += 1;
   }
-  state.entities = survivors;
+  entities.length = write;
 }
 
 function collect(state) {

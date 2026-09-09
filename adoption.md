@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.31 — Poço da chuva, sem quadro medido
+
+Cada tick deixava um array novo de sobreviventes e um objeto novo no
+spawn. A chuva compacta o mesmo array e reusa o poço; mortos não
+ficam no estado. `npm run budget` relata o reuso. `performance`
+permanece `playable`: poço no processo não é compositor nem
+dispositivo. Evento e telegraph ainda alocam. Só `release` fica no
+piso.
+
+O que 0.9.31 não afirma: o harness não mediu quadro no aparelho, não
+comparou com o build anterior e não importou unidade de quadro como selo.
+
 ## 0.9.30 — Candidato de medição no disco
 
 `npm run session` corre uma partida simulada e grava
