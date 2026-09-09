@@ -59,7 +59,8 @@ paleta em `data/palettes.json` (look `dusk` por `?look=` / `settings.look`;
 extrai a chuva (`spawn` e `dusk`), nasce mesa com `npm run table`
 (`--from spawn|dusk --as` já entra no consumidor; `session --spawn`
 traça) e empacota com `npm run build`.
-`ship` relata `dist/VERSION.json` quando existe; `npm run size` relata
+`ship` relata `dist/VERSION.json` quando existe; o artefato declara
+Node 20 e recusa `npm install` e `file://`. `npm run size` relata
 bytes sem teto.
 
 **Playtest:** `playtest` lê o formato problema/evidência/hipótese/medição.
