@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.68 — O fim também nomeia a perda
+
+A queda da aposta já pintava os pips. A cortina do overlay nascia
+por cima e o texto só dizia a pontuação. O fim reusa `chain` para
+nomear o que caiu; a queda vence a cortina. Sem corrente o overlay
+não inventa o rótulo. `felt` continua falso. `feel` permanece
+`playable`: texto no stub não é peso percebido. Só `release` fica
+no piso.
+
+O que 0.9.68 não afirma: o harness não deixou a corrente caducar e
+o overlay não aprova o feel.
+
 ## 0.9.67 — A soma também sobe de tom
 
 O jogo já subia o tom da coleta e da guarda com a corrente. `npm run

@@ -44,7 +44,8 @@ recuperação do dash, aterrissa o avanço com squash e rastro próprios,
 pulsa o controle no impacto, deixa um rastro
 por verbo e põe a corrente em órbita no corpo. A coleta leva o
 orbe ao slot; no erro os pips quebram para fora; na guarda eles
-voam para o placar; no fim a aposta não guardada cai. O raspo
+voam para o placar; no fim a aposta não guardada cai e o overlay
+nomeia o que caiu — a queda vence a cortina. O raspo
 risca o campo sem pulsar o controle. O pulso some na pausa e no
 descarte.
 

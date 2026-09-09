@@ -81,22 +81,20 @@ export function createRenderer(canvas, options = {}) {
     }
     drawPlayer(context, palette, state, reduced);
     drawChain(context, palette, state, reduced);
-    drawMotes(context, palette, state, reduced);
+    const ending = state.phase === "over";
+    // No fim a cortina cobre o campo. A queda da aposta — o verbo que o
+    // overlay vai nomear — precisa nascer depois, senão a conta existe
+    // e o corpo some. Os outros rastros ficam embaixo: não são o fim.
+    drawMotes(context, palette, state, reduced, ending ? (mote) => mote.kind !== "lapse" : null);
     const reserved = drawHud(context, palette, state, settings, extra, lines);
     drawCoach(context, palette, extra.hint, reserved, settings, extra, lines);
     if (settings.captions !== false) {
       drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
     }
     if (frame.paused) drawOverlay(context, palette, lines.paused, lines.resume);
-    else if (state.phase === "over") {
-      drawOverlay(
-        context,
-        palette,
-        `${lines.over} — ${state.score}`,
-        state.stats.bestChain
-          ? `${lines.best_chain}: ${state.stats.bestChain} · ${lines.restart_inline}`
-          : lines.restart,
-      );
+    else if (ending) {
+      drawOverlay(context, palette, `${lines.over} — ${state.score}`, overHint(state, lines));
+      drawMotes(context, palette, state, reduced, (mote) => mote.kind === "lapse");
     }
   }
 
@@ -154,10 +152,11 @@ export function createRenderer(canvas, options = {}) {
     return palette.player;
   }
 
-  function drawMotes(target, palette, state, reduced) {
+  function drawMotes(target, palette, state, reduced, allow) {
     const motes = state.motes;
     if (!motes || !motes.length) return;
     for (const mote of motes) {
+      if (allow && !allow(mote)) continue;
       const x = reduced ? mote.sx : mote.x;
       const y = reduced ? mote.sy : mote.y;
       target.fillStyle = moteFill(palette, mote.kind);
@@ -204,9 +203,10 @@ export function createRenderer(canvas, options = {}) {
 
   // A corrente no HUD é conta. No corpo ela é a aposta: cada elo vira um
   // pip em órbita. A coleta leva o orbe ao slot; guardar leva o pip ao
-  // placar; o erro espalha; no fim a aposta não guardada cai. Com menos
-  // movimento a formação trava, não some. Número no disco não é peso
-  // percebido. A conta no estado sobrevive ao fim — a órbita não.
+  // placar; o erro espalha; no fim a aposta não guardada cai e o overlay
+  // nomeia o que caiu. Com menos movimento a formação trava, não some.
+  // Número no disco não é peso percebido. A conta no estado sobrevive
+  // ao fim — a órbita não.
   function drawChain(target, palette, state, reduced) {
     if (state.phase === "over") return;
     const count = chainPipCount(state.chain);
@@ -310,6 +310,18 @@ export function createRenderer(canvas, options = {}) {
     target.textAlign = "left";
     target.fillStyle = palette.text;
     target.fillText(text, x, y);
+  }
+
+  // A conta no HUD fica sob a cortina. O overlay reusa `chain` e
+  // `best_chain` — sem campo novo — para nomear a aposta que caiu.
+  // Sem corrente o fim não inventa o rótulo. Texto no disco não é
+  // peso percebido.
+  function overHint(state, lines) {
+    const parts = [];
+    if (state.chain > 0) parts.push(`${lines.chain} ${state.chain}`);
+    if (state.stats.bestChain) parts.push(`${lines.best_chain}: ${state.stats.bestChain}`);
+    parts.push(parts.length ? lines.restart_inline : lines.restart);
+    return parts.join(" · ");
   }
 
   function drawOverlay(target, palette, title, hint) {

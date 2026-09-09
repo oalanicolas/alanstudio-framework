@@ -520,6 +520,43 @@ test("a queda da corrente pinta a aposta que não foi guardada", () => {
   assert.ok(marks.length >= 2, "com menos movimento a queda vira marca, não some");
 });
 
+test("o overlay do fim nomeia a corrente que caiu e a queda vence a cortina", () => {
+  const lost = createState(1);
+  lost.phase = "over";
+  lost.score = 12;
+  lost.chain = 5;
+  lost.stats.bestChain = 8;
+  lost.motes = [
+    { kind: "lapse", x: 40, y: 80, sx: 40, sy: 80, vx: 0, vy: 1.8, life: 8 },
+    { kind: "lapse", x: 90, y: 80, sx: 90, sy: 80, vx: 0, vy: 1.8, life: 8 },
+  ];
+  const frame = paint(lost);
+  const texts = frame.texts.map((item) => item.text);
+  assert.ok(texts.some((text) => text === "Fim — 12"), `título: ${JSON.stringify(texts)}`);
+  assert.ok(
+    texts.some((text) => text.includes("Corrente 5") && text.includes("Maior corrente: 8") && text.includes("reiniciar")),
+    `esperava a aposta nomeada no overlay: ${JSON.stringify(texts)}`,
+  );
+
+  const curtain = frame.rects.findIndex(
+    (rect) => rect.width === FIELD.width && rect.height === FIELD.height && String(rect.style).startsWith("rgba(0,0,0"),
+  );
+  assert.ok(curtain >= 0, "esperava a cortina do fim");
+  const after = frame.rects.slice(curtain + 1).filter(
+    (rect) => rect.style === PALETTES.normal.chain && Math.abs(rect.width - CONFIG.feel.chainPipSize) < 0.01,
+  );
+  assert.ok(after.length >= 2, `a queda precisa nascer depois da cortina: ${JSON.stringify(frame.rects.slice(curtain).map((rect) => [rect.width, rect.style]))}`);
+
+  const empty = createState(1);
+  empty.phase = "over";
+  const idle = paint(empty).texts.map((item) => item.text);
+  assert.equal(
+    idle.some((text) => text.includes("Corrente") && text.includes("reiniciar")),
+    false,
+    `sem aposta o overlay não inventa o rótulo: ${JSON.stringify(idle)}`,
+  );
+});
+
 test("a entrada da corrente pinta o orbe a caminho da órbita", () => {
   const state = createState(1);
   state.motes = [

@@ -152,7 +152,8 @@ Cada verbo deixa um rastro próprio no campo; com menos movimento o
 rastro vira marca. A corrente mora no corpo em pips; o HUD continua
 com a conta. A coleta leva o orbe ao slot; o erro espalha os pips;
 na guarda eles voam para o placar; no fim a aposta não guardada
-cai. O raspo risca o campo. Nenhum some. A conta no estado
+cai e o overlay nomeia o que caiu — a queda vence a cortina. O
+raspo risca o campo. Nenhum some. A conta no estado
 sobrevive ao fim — a órbita não.
 A entrada continua separada da
 regra em `src/core/input.js`. Perdão de entrada é decisão de design explícita com
