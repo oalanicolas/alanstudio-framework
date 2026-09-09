@@ -143,7 +143,9 @@ o próximo orbe. Cada verbo desloca a câmera numa direção própria e achata o
 numa medida própria: coleta, dash, guardar e o erro não compartilham
 squash. A ameaça que
 ainda não chegou marca o trilho (`approaching`); a recuperação do dash muda a
-silhueta; o erro acende o campo, a coleta não. A entrada continua separada da
+silhueta; o erro acende o campo, a coleta não. O controle pulsa no
+impacto com duração e magnitude por verbo; pausa e descarte cancelam.
+A entrada continua separada da
 regra em `src/core/input.js`. Perdão de entrada é decisão de design explícita com
 valor registrado; sem registro, esses valores viram folclore e regridem na
 próxima alteração. `felt` continua falso. Degraus e critérios da dimensão `feel`:

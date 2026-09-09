@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.51 — O controle pulsa no impacto
+
+O mapa do pad já fechava o verbo. Visual e áudio marcavam o
+contato; o aparelho ficava mudo. Cada verbo ganha duração e
+magnitude próprias. `reducedMotion`, pausa e dispose cancelam.
+`felt` continua falso. `feel` permanece `playable`: pulso no stub
+não é peso percebido. Só `release` fica no piso.
+
+O que 0.9.51 não afirma: o harness não segurou um controle e
+ninguém sentiu o impacto.
+
 ## 0.9.50 — O canvas confirma o controle
 
 O `start` já nomeava o pad. O aviso e o overlay ainda ensinavam

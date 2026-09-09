@@ -9,6 +9,25 @@ import { createGame } from "../src/main.js";
 import { memoryStorage } from "../src/core/storage.js";
 import { CONFIG } from "../src/game/rules.js";
 
+function silentHaptics(played) {
+  return {
+    play(role) {
+      played.push(role);
+      return true;
+    },
+    applySettings() {},
+    mute() {
+      played.push("mute");
+    },
+    unmute() {
+      played.push("unmute");
+    },
+    dispose() {
+      played.push("dispose");
+    },
+  };
+}
+
 function recordingTarget() {
   const listeners = [];
   return {
@@ -279,4 +298,18 @@ test("remapear uma ação persiste e recusa uma lista vazia", () => {
   assert.deepEqual(game.settings.bindings.dash, ["KeyZ"], "remapeamento vazio tornaria a ação inalcançável");
   assert.equal(JSON.parse(storage.get("settings")).bindings.dash[0], "KeyZ");
   game.dispose();
+});
+
+test("o avanço pulsa no aparelho e a pausa cala o que ainda vibrava", () => {
+  const played = [];
+  const { game } = harness({ haptics: silentHaptics(played) });
+  game.act({ dash: true });
+  game.advance(1);
+  assert.ok(played.includes("dash"), `esperava dash no pulso: ${JSON.stringify(played)}`);
+  game.pause();
+  assert.ok(played.includes("mute"), "pausar precisa calar o pulso");
+  game.resume();
+  assert.ok(played.includes("unmute"));
+  game.dispose();
+  assert.ok(played.includes("dispose"));
 });

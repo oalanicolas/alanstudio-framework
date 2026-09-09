@@ -111,7 +111,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 
 | Dimensão | Degrau | Critério do degrau seguinte |
 | --- | --- | --- |
-| `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor/câmera distintos; a ameaça marca o trilho, a recuperação do dash muda a silhueta e o erro acende o campo; `npm run probe` conta os buffers, não o peso percebido |
+| `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor/câmera e rumble distintos; a ameaça marca o trilho, a recuperação do dash muda a silhueta e o erro acende o campo; `npm run probe` conta os buffers, não o peso percebido; o harness não segurou o controle |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — a sequência de quadros no stub cobre o HUD; `npm run contrast` amostra a cena montada e, em cinza, pixels que só o orbe ou só o estilhaço pintam; o dispositivo alvo ainda não foi observado |
 | `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; a paleta é mesa e `dusk` é o segundo look (`?look=` / `settings.look`); `look --from` / `--as` nasce o próximo; `consistent` é falso |
 | `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — o palco tem folga, a cama ocupa o barramento de música e o mixer limita o master; `npm run mix` soma cama e vozes na simulação, não no dispositivo; loudness percebido não foi medido |

@@ -13,6 +13,7 @@ import { loadProgress, recordRun, saveProgress, summarizeRun } from "./core/save
 import { detectEnvironment, loadSettings, normalizeSettings, saveSettings } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { createAudio } from "./game/audio.js";
+import { createHaptics } from "./game/haptics.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { advance as advanceRules, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
@@ -68,6 +69,7 @@ export function createGame(options = {}) {
 
   const input = options.input ?? createInput({ target: eventTarget, surface: canvas, bindings: settings.bindings });
   const audio = options.audio ?? createAudio({ settings });
+  const haptics = options.haptics ?? createHaptics({ settings, gamepads: options.gamepads });
   const renderer = canvas ? createRenderer(canvas) : null;
   // Sem canvas (teste headless) não busca arquivo: o fetch relativo não tem
   // servidor e atrasaria o teste. No browser, o arquivo em public/sfx precisa
@@ -108,6 +110,7 @@ export function createGame(options = {}) {
     advanceRules(state, intent);
     for (const event of state.events) {
       audio.play(event.type);
+      haptics.play(event.type);
     }
     if (state.phase === "over" && !recorded) {
       recorded = true;
@@ -137,8 +140,13 @@ export function createGame(options = {}) {
   }
 
   function togglePause() {
-    if (loop.paused) loop.resume();
-    else loop.pause();
+    if (loop.paused) {
+      loop.resume();
+      haptics.unmute();
+    } else {
+      loop.pause();
+      haptics.mute();
+    }
   }
 
   function flush() {
@@ -153,6 +161,7 @@ export function createGame(options = {}) {
       flush();
       loop.pause();
       audio.stop("bed");
+      haptics.mute();
     }
   };
   const onPageHide = () => {
@@ -179,11 +188,13 @@ export function createGame(options = {}) {
     },
     pause() {
       loop.pause();
+      haptics.mute();
       syncBed();
       return true;
     },
     resume() {
       loop.resume();
+      haptics.unmute();
       syncBed();
       return true;
     },
@@ -195,6 +206,7 @@ export function createGame(options = {}) {
       queued = neutralIntent();
       recorded = false;
       loop.resume();
+      haptics.unmute();
       syncBed();
       return handle.observe();
     },
@@ -231,6 +243,7 @@ export function createGame(options = {}) {
       loop.dispose();
       input.dispose();
       audio.dispose();
+      haptics.dispose();
       if (eventTarget && typeof eventTarget.removeEventListener === "function") {
         eventTarget.removeEventListener("pagehide", onPageHide);
         eventTarget.removeEventListener("visibilitychange", onVisibility);
@@ -269,6 +282,7 @@ export function createGame(options = {}) {
       settings = normalizeSettings({ ...settings, ...patch }, environment, settings);
       state.assist = settings.assist;
       audio.applySettings(settings);
+      haptics.applySettings(settings);
       for (const [action, codes] of Object.entries(settings.bindings)) input.rebind(action, codes);
       if (settings.spawnProfile !== previousSpawn) {
         state = createState(state.seed, matchOptions(settings));

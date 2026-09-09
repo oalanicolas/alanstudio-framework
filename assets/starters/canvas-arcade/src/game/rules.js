@@ -59,6 +59,16 @@ export const CONFIG = {
     telegraphReach: 36, // antecipação: a ameaça marca o trilho antes do contato
     flashHit: 0.55, // impacto do erro: o campo acende; coleta não
     flashDecay: 0.72,
+    rumbleDashMs: 16, // partida: toque curto
+    rumbleCollectMs: 28, // contato do acerto
+    rumbleBankMs: 48, // peso da decisão
+    rumbleHitMs: 84, // o erro dói mais que guardar
+    rumbleOverMs: 120, // fim
+    rumbleDash: 0.16,
+    rumbleCollect: 0.26,
+    rumbleBank: 0.40,
+    rumbleHit: 0.74,
+    rumbleOver: 0.52,
   },
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
