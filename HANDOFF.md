@@ -21,7 +21,8 @@ rascunho. O harness não executa o jogo.
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
 `--fill` sugere o acervo; `--apply` copia com o nome do papel. O starter
 já traz design original e variante (`-b`) nos seis papéis e carrega no
-mixer em rodízio. `heard` é sempre falso.
+mixer em rodízio. `npm run mix` soma as vozes na partida simulada.
+`heard` é sempre falso.
 
 **Feel (`feel`):** lê `const CONFIG` (perdão, graça, hitstop, punch) e
 `record.json` de observação. `note` grava o recibo curto. `felt` é

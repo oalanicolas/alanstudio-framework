@@ -32,6 +32,7 @@ já criado, `starter.json` não existe: ele é metadado do starter, não do jogo
 npm test           # regras, determinismo, ciclo de vida, save, mixagem e export
 npm run budget     # custo da simulação e do draw num canvas stub
 npm run peak       # pico de cada WAV no disco; não é mix ouvido
+npm run mix        # soma as vozes de uma partida simulada; não é mix ouvido
 npm run probe      # dispara o buffer declarado; não é peso percebido
 npm run size       # bytes de dist/; sem teto e sem aprovação
 npm run build      # copia a árvore jogável para dist/; não prova outra máquina
@@ -105,9 +106,9 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | Dimensão | Degrau | Critério do degrau seguinte |
 | --- | --- | --- |
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor/câmera distintos e som; `npm run probe` conta os buffers de dash e guardar na simulação, não o peso percebido |
-| `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — o que existe hoje é medição de placa, borda e faixa em quadro estático |
+| `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — a sequência de quadros no stub cobre o HUD; o dispositivo alvo ainda não foi observado |
 | `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; `consistent` é falso |
-| `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — `npm run peak` relata o pico do arquivo, não do mix em cena; loudness percebido não foi medido |
+| `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — `npm run mix` soma as vozes na partida simulada e pode passar de 1.0; isso não é dispositivo nem loudness percebido |
 | `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; abandono e erro repetido ainda não foram investigados |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` cronometra simulação e `draw` num canvas stub — não o compositor nem o dispositivo alvo |
@@ -176,7 +177,7 @@ src/main.js   montagem e contrato de ciclo de vida
 data/         conteúdo separado da regra (chuva, HUD e avisos)
 docs/         art-bible vigente — o init não o reescreve
 public/sfx/   design original dos seis papéis, com recibo
-tools/        servidor, orçamento, tamanho, export, nascer mesa e gerar sfx
+tools/        servidor, orçamento, mix, tamanho, export, nascer mesa e gerar sfx
 tests/        regras, determinismo, ciclo de vida, save, mixagem, ensino, export
 ```
 

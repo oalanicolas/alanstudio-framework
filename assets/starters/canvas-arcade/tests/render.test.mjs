@@ -337,6 +337,23 @@ test("o HUD é desenhado depois das entidades, nunca antes", () => {
   assert.ok(order.indexOf("entidade") < order.indexOf("texto"), "o texto do HUD precisa vir por cima");
 });
 
+test("em sequência de quadros o HUD continua coberto e as entidades passam por baixo", () => {
+  const state = createState(11);
+  let framesWithEntities = 0;
+  for (let index = 0; index < 240; index += 1) {
+    advance(state, { move: index % 18 < 9 ? -1 : 1, dash: index % 40 === 0, bank: false });
+    if (state.entities.length === 0) continue;
+    const frame = hudTexts(state);
+    framesWithEntities += 1;
+    assert.ok(frame.order.indexOf("entidade") < frame.order.indexOf("texto"));
+    for (const text of frame.texts) {
+      assert.ok(covered(text, frame.plates), `texto descoberto em movimento: ${text.text}`);
+    }
+    assert.ok(frame.edges.length > 0, "borda da placa some no movimento");
+  }
+  assert.ok(framesWithEntities > 20, "a sequência precisa ter chuva, não só o campo vazio");
+});
+
 test("a câmera por verbo desloca o campo e some com redução de movimento", () => {
   const state = createState(1);
   state.camera = { x: 5, y: -3 };

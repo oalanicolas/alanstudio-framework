@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.25 — Mix somado na partida e HUD em sequência
+
+`npm run mix` soma as vozes de uma partida simulada com barramento,
+ducking e limite. Relata o pico da soma, não do arquivo. `heard`
+continua falso. `audio_mix` permanece `slice`: soma headless não é
+dispositivo nem loudness percebido. A suíte desenha uma sequência de
+quadros e confere placa e ordem; `legibility` permanece `playable`:
+stub não é o dispositivo alvo. Só `release` fica no piso.
+
+O que 0.9.25 não afirma: o harness não ouviu o mix e não leu o jogo
+em movimento no aparelho.
+
 ## 0.9.24 — Buffer da decisão e câmera por verbo
 
 O pedido de guardar feito no hitstop da coleta dispara quando o mundo

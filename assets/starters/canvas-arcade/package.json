@@ -13,6 +13,7 @@
     "sfx": "python3 tools/design-sfx.py",
     "contrast": "node tools/contrast.mjs",
     "peak": "node tools/peak.mjs",
+    "mix": "node tools/mix.mjs",
     "probe": "node tools/probe.mjs",
     "size": "node tools/size.mjs"
   },
