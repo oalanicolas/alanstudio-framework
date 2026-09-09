@@ -6,7 +6,8 @@
 //
 // Perfil de chuva é o consumidor que já existe: `dusk` e qualquer mesa
 // com a forma de spawn entram por `?spawn=<nome>` ou settings.spawnProfile.
-// `npm run table -- <nome> --from spawn` copia essa forma. `copy.fantasy`
+// `npm run table -- <nome> --from spawn|dusk` copia essa forma; `--as`
+// aplica uma intenção nomeada e deixa a chuva distinta. `copy.fantasy`
 // tem consumidor: o coach do primeiro ciclo. Mesas genéricas continuam
 // sem consumidor automático.
 //
@@ -41,6 +42,61 @@ export const SPAWN_CORE_FIELDS = [
   "fallSpeedMin",
   "fallSpeedMax",
 ];
+
+// Intenções sobre uma chuva já jogável. Não são chuva melhor — só
+// deslocam os knobs que a receita já nomeia. Quem de fora ainda não
+// produziu; `enough` continua falso.
+export const SPAWN_INTENTS = {
+  denser: "intervalo menor, mais risco, prática mais curta",
+  calmer: "intervalo maior, menos risco, prática mais longa",
+  brief: "prática e rampa mais curtas",
+};
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const scaleInt = (value, factor, min) => Math.max(min, Math.round(value * factor));
+
+export function listSpawnIntents() {
+  return Object.keys(SPAWN_INTENTS);
+}
+
+export function spawnRecord(table) {
+  const record = { schema: SPAWN_SCHEMA };
+  for (const field of SPAWN_FIELDS) record[field] = table[field];
+  return record;
+}
+
+export function applySpawnIntent(table, intent) {
+  if (!(intent in SPAWN_INTENTS)) {
+    throw new Error(`intenção desconhecida: ${intent}`);
+  }
+  const next = spawnRecord(table);
+  if (intent === "denser") {
+    next.intervalTicks = scaleInt(next.intervalTicks, 0.75, 8);
+    next.minIntervalTicks = scaleInt(next.minIntervalTicks, 0.75, 4);
+    next.hazardChanceStart = clamp(next.hazardChanceStart + 0.08, 0, 0.9);
+    next.hazardChanceEnd = clamp(next.hazardChanceEnd + 0.08, 0, 0.95);
+    next.practiceTicks = scaleInt(next.practiceTicks, 0.5, 30);
+    next.fallSpeedMin = clamp(next.fallSpeedMin + 0.15, 0.4, 4);
+    next.fallSpeedMax = clamp(next.fallSpeedMax + 0.25, next.fallSpeedMin, 5);
+  } else if (intent === "calmer") {
+    next.intervalTicks = scaleInt(next.intervalTicks, 1.25, 8);
+    next.minIntervalTicks = scaleInt(next.minIntervalTicks, 1.25, 4);
+    next.hazardChanceStart = clamp(next.hazardChanceStart - 0.08, 0, 0.9);
+    next.hazardChanceEnd = clamp(next.hazardChanceEnd - 0.08, 0, 0.95);
+    next.practiceTicks = scaleInt(next.practiceTicks, 1.5, 30);
+    next.fallSpeedMin = clamp(next.fallSpeedMin - 0.15, 0.4, 4);
+    next.fallSpeedMax = clamp(next.fallSpeedMax - 0.2, next.fallSpeedMin, 5);
+  } else {
+    next.practiceTicks = scaleInt(next.practiceTicks, 0.4, 30);
+    next.recoveryTicks = scaleInt(next.recoveryTicks, 0.7, 20);
+    next.rampTicks = scaleInt(next.rampTicks, 0.6, 120);
+  }
+  if (next.minIntervalTicks > next.intervalTicks) next.minIntervalTicks = next.intervalTicks;
+  if (next.hazardChanceStart > next.hazardChanceEnd) {
+    next.hazardChanceStart = next.hazardChanceEnd;
+  }
+  return next;
+}
 export const COPY_FIELDS = [
   "fantasy",
   "paused",

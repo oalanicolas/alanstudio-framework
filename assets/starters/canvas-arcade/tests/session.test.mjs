@@ -9,26 +9,32 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 
+async function runSession(args) {
+  const child = spawn(process.execPath, ["tools/session.mjs", ...args], {
+    cwd: ROOT,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  let stdout = "";
+  let stderr = "";
+  child.stdout.on("data", (chunk) => {
+    stdout += chunk;
+  });
+  child.stderr.on("data", (chunk) => {
+    stderr += chunk;
+  });
+  const [code] = await once(child, "exit");
+  return { code, stdout, stderr };
+}
+
 test("a sessão simulada grava candidato sem chamar isso de observada", async () => {
   const folder = await mkdtemp(join(tmpdir(), "starter-session-"));
   const out = join(folder, "last-run.json");
   try {
-    const child = spawn(process.execPath, ["tools/session.mjs", "--seed", "7", "--out", out], {
-      cwd: ROOT,
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    let stdout = "";
-    let stderr = "";
-    child.stdout.on("data", (chunk) => {
-      stdout += chunk;
-    });
-    child.stderr.on("data", (chunk) => {
-      stderr += chunk;
-    });
-    const [code] = await once(child, "exit");
+    const { code, stdout, stderr } = await runSession(["--seed", "7", "--out", out]);
     assert.equal(code, 0, stderr);
     const report = JSON.parse(stdout);
     assert.equal(report.schema, 2);
+    assert.equal(report.spawn, "spawn");
     assert.equal(report.observed, false);
     assert.equal(report.felt, false);
     assert.equal(report.policy, "nearest-orb");
@@ -48,6 +54,29 @@ test("a sessão simulada grava candidato sem chamar isso de observada", async ()
     assert.deepEqual(saved.run, report.run);
     assert.deepEqual(saved.curve, report.curve);
     assert.equal(saved.observed, false);
+    assert.equal(saved.spawn, "spawn");
+  } finally {
+    await rm(folder, { recursive: true, force: true });
+  }
+});
+
+test("a sessão traça o perfil pedido e recusa chuva que não existe", async () => {
+  const folder = await mkdtemp(join(tmpdir(), "starter-session-dusk-"));
+  const spawnOut = join(folder, "spawn.json");
+  const duskOut = join(folder, "dusk.json");
+  try {
+    const spawnRun = await runSession(["--seed", "7", "--out", spawnOut]);
+    const duskRun = await runSession(["--seed", "7", "--spawn", "dusk", "--out", duskOut]);
+    assert.equal(spawnRun.code, 0, spawnRun.stderr);
+    assert.equal(duskRun.code, 0, duskRun.stderr);
+    const spawnReport = JSON.parse(spawnRun.stdout);
+    const duskReport = JSON.parse(duskRun.stdout);
+    assert.equal(duskReport.spawn, "dusk");
+    assert.equal(duskReport.observed, false);
+    assert.notDeepEqual(duskReport.run, spawnReport.run);
+    const missing = await runSession(["--spawn", "inventada", "--out", join(folder, "no.json")]);
+    assert.equal(missing.code, 2);
+    assert.match(missing.stderr, /perfil de chuva desconhecido/);
   } finally {
     await rm(folder, { recursive: true, force: true });
   }

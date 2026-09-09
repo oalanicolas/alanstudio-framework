@@ -582,9 +582,10 @@ procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 existe, relata nome e versão. `shipped` é sempre `false`.
 HTML estático sem manifesto já é o artefato; manifesto sem passo de
 empacotar recebe `ship.unpacked`. O starter declara paleta, extrai a chuva
-para `data/spawn.json` e `data/dusk.json`, escolhe o perfil por `?spawn=`
-e empacota com `npm run build` — duas mesas e um export na máquina de
-quem construiu não são escala nem entrega.
+para `data/spawn.json` e `data/dusk.json`, escolhe o perfil por `?spawn=`,
+nasce a próxima com `table --from` / `--as` e `session --spawn`, e
+empacota com `npm run build` — ferramenta que desloca knobs e um export
+na máquina de quem construiu não são escala nem entrega.
 
 ## Playtest
 

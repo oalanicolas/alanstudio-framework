@@ -2,9 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  loadTable, loadSpawn, listSpawnProfiles, looksLikeSpawn, migrateCopy, migrateSpawn, migrateTable,
-  requireFields, resolveSpawnName, TABLES,
-  SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS,
+  applySpawnIntent, loadTable, loadSpawn, listSpawnIntents, listSpawnProfiles, looksLikeSpawn,
+  migrateCopy, migrateSpawn, migrateTable, requireFields, resolveSpawnName, spawnRecord, TABLES,
+  SPAWN_FIELDS, SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS, SPAWN_INTENTS,
 } from "../src/game/tables.js";
 
 test("as mesas passam pelo mesmo carregador", () => {
@@ -42,6 +42,26 @@ test("spawn sem schema migra; schema futuro falha com o número", () => {
   assert.equal(old.recoveryTicks, 90);
   assert.throws(() => migrateSpawn({ schema: 9 }), /mesa spawn schema 9 não suportado/);
   assert.throws(() => migrateSpawn(null), /mesa spawn ilegível/);
+});
+
+test("a intenção desloca knobs sem inventar mesa nem aprovar chuva", () => {
+  const spawn = loadSpawn("spawn");
+  const denser = applySpawnIntent(spawn, "denser");
+  const calmer = applySpawnIntent(spawn, "calmer");
+  const brief = applySpawnIntent(spawn, "brief");
+  assert.deepEqual(listSpawnIntents(), Object.keys(SPAWN_INTENTS));
+  assert.ok(denser.intervalTicks < spawn.intervalTicks);
+  assert.ok(denser.practiceTicks < spawn.practiceTicks);
+  assert.ok(denser.hazardChanceEnd > spawn.hazardChanceEnd);
+  assert.ok(calmer.intervalTicks > spawn.intervalTicks);
+  assert.ok(calmer.practiceTicks > spawn.practiceTicks);
+  assert.ok(brief.practiceTicks < spawn.practiceTicks);
+  assert.ok(brief.rampTicks < spawn.rampTicks);
+  assert.ok(denser.minIntervalTicks <= denser.intervalTicks);
+  assert.ok(looksLikeSpawn(denser));
+  assert.deepEqual(Object.keys(spawnRecord(denser)), ["schema", ...SPAWN_FIELDS]);
+  assert.equal(spawnRecord(denser).schema, SPAWN_SCHEMA);
+  assert.throws(() => applySpawnIntent(spawn, "melhor"), /intenção desconhecida/);
 });
 
 test("copy sem schema migra; schema futuro e campo ausente falham com o nome", () => {

@@ -55,12 +55,29 @@ test("o comando registra a mesa no mesmo carregador", async () => {
     const copied = await runTable(project, "storm", ["--from", "spawn"]);
     assert.equal(copied.code, 0, copied.stderr);
     assert.match(copied.stdout, /\?spawn=storm/);
+    assert.match(copied.stdout, /session -- --spawn storm/);
     const { loadSpawn, listSpawnProfiles } = await import(`${pathToFileURL(join(project, "src/game/tables.js")).href}?t=2`);
     assert.equal(loadSpawn("storm").intervalTicks, 22);
     assert.ok(listSpawnProfiles().includes("storm"));
-    const wrongFrom = await runTable(project, "gale", ["--from", "copy"]);
+    const fromDusk = await runTable(project, "night", ["--from", "dusk"]);
+    assert.equal(fromDusk.code, 0, fromDusk.stderr);
+    const { loadSpawn: loadAfterDusk } = await import(`${pathToFileURL(join(project, "src/game/tables.js")).href}?t=3`);
+    assert.equal(loadAfterDusk("night").intervalTicks, 16);
+    const shifted = await runTable(project, "gale", ["--from", "spawn", "--as", "denser"]);
+    assert.equal(shifted.code, 0, shifted.stderr);
+    assert.match(shifted.stdout, /intenção denser/);
+    const { loadSpawn: loadGale } = await import(`${pathToFileURL(join(project, "src/game/tables.js")).href}?t=4`);
+    assert.ok(loadGale("gale").intervalTicks < loadGale("spawn").intervalTicks);
+    assert.ok(loadGale("gale").practiceTicks < loadGale("spawn").practiceTicks);
+    const noFrom = await runTable(project, "mist", ["--as", "denser"]);
+    assert.equal(noFrom.code, 2);
+    assert.match(noFrom.stderr, /--as precisa de --from/);
+    const unknownAs = await runTable(project, "haze", ["--from", "spawn", "--as", "melhor"]);
+    assert.equal(unknownAs.code, 2);
+    assert.match(unknownAs.stderr, /intenção desconhecida/);
+    const wrongFrom = await runTable(project, "words", ["--from", "copy"]);
     assert.equal(wrongFrom.code, 2);
-    assert.match(wrongFrom.stderr, /só --from spawn/);
+    assert.match(wrongFrom.stderr, /só --from de chuva/);
   } finally {
     await rm(base, { recursive: true, force: true });
   }

@@ -26,8 +26,10 @@ e cabe neste recorte.
 2. Acrescente o token em `PALETTES.normal` e `PALETTES.contrast`.
 3. Desenhe o consumidor em `src/game/render.js`.
 4. Registre a linha nesta tabela e a origem em `CREDITS.md`.
-5. Se o item for chuva, nasça com `npm run table -- <nome> --from spawn`.
-   Outro dado: `npm run table -- <nome>` e ligue o consumidor.
+5. Se o item for chuva, nasça com `npm run table -- <nome> --from spawn`
+   (ou `--from dusk`) e, se a chuva não for um clone, `--as denser|calmer|brief`.
+   Confira com `npm run session -- --spawn <nome>`. Outro dado:
+   `npm run table -- <nome>` e ligue o consumidor.
 
 Isto é a receita, não a prova de que alguém de fora a cumpriu.
 

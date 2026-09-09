@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.36 — A próxima chuva nasce distinta e se deixa traçar
+
+`npm run table -- --from spawn` só clonava a chuva padrão. Agora copia
+qualquer perfil jogável, `--as denser|calmer|brief` desloca os knobs
+e `session --spawn` traça essa chuva. A forma do save não muda.
+`content_scale` permanece `shippable`: ferramenta que nasce mesa não
+é alguém de fora no piso. `enough` continua falso. Só `release` fica
+no piso.
+
+O que 0.9.36 não afirma: ninguém de fora produziu, a intenção nomeada
+não é chuva melhor e o harness não assistiu à sessão.
+
 ## 0.9.35 — A sessão traça a curva pelos eventos
 
 `npm run session` só gravava totais de fim de partida. Agora percorre
