@@ -20,8 +20,8 @@ python3 scripts/game.py template game-design --project /caminho/do/laboratorio/m
 python3 scripts/game.py context /caminho/do/laboratorio/meu-jogo --focus create --stage game-design --root /caminho/do/laboratorio
 ```
 
-`doctor` confere Python, integridade dos arquivos do framework, raiz, projetos
-reconhecidos, estudos, acervo sonoro e git; itens `absent` são opcionais. O template
+`doctor` confere Python, integridade dos arquivos do framework (inclusive pacotes),
+raiz, projetos reconhecidos, estudos, acervo sonoro e git; itens `absent` são opcionais. O template
 `game-design` é um documento único que, preenchido, cobre as nove áreas mínimas de um
 jogo pequeno. `context` entrega o recorte de leitura e a checagem documental.
 `--root` pode vir antes ou depois do subcomando.
@@ -58,6 +58,24 @@ Descoberta percorre até três níveis, reconhece `package.json`, Unity, Godot, 
 (`.uproject`), Defold, GameMaker (`.yyp`), Cargo, Python (`pyproject.toml`), Love2D
 (`main.lua`) e HTML, e para na raiz de cada projeto. `shared/` e pastas de build das
 engines não entram como jogo.
+
+## Pacotes de plataforma e gênero
+
+O núcleo é agnóstico. Quando o projeto tem engine identificável, `context` acrescenta
+o [pacote de plataforma](packs/README.md) correspondente logo após a receita; quando
+o gênero é declarado, acrescenta o pacote de gênero:
+
+```sh
+python3 scripts/game.py context /caminho/do/jogo --focus feel --genre platformer --root /caminho/do/laboratorio
+```
+
+Plataformas: `web`, `unity`, `godot`, `unreal`, `defold`, `gamemaker`, `cargo`,
+`python`, `lua`. Gêneros: `narrative`, `platformer`, `shooter`, `racing`,
+`turn-based`, `puzzle`, `simulation`, `rpg`, `roguelike`. Cada pacote traz comandos
+reais de execução/teste, ciclo de vida, pipeline, ferramentas de medição e riscos do
+gênero — como convenções a confirmar no projeto, não como capacidade certificada.
+Um campo `Gênero:` em documento do projeto aparece em `packs.genre.suggested`; só
+`--genre` carrega o pacote. `context.packs` explica cada seleção.
 
 ## Checagem e continuidade
 

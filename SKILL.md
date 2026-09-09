@@ -16,7 +16,7 @@ caminho absoluto do script), com `--root <laboratorio>` antes ou depois do subco
 | --- | --- |
 | Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing` |
 | Jogo novo e pequeno | `template game-design --project <novo> --output <novo>/docs/game-design.md`, depois `context <novo> --focus create --stage game-design` |
-| Mudança em jogo existente | `context <projeto> --focus <foco>` |
+| Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
 | “continue” / “vamos avançar” | `context <projeto> --event resume` e leia `continuity.sources` |
 | Usuário aprovou uma referência | `context <projeto> --focus <foco> --event direction-approved` e sincronize a base no mesmo turno |
 | Recorte já demonstra a experiência | `context <projeto> --focus production --stage production-plan` |
@@ -26,13 +26,19 @@ caminho absoluto do script), com `--root <laboratorio>` antes ou depois do subco
 Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `feel`, `network`,
 `architecture`, `production`. Etapas: `brief`, `mda`, `gdd`, `poc`, `prd`, `tdd`,
 `vertical-slice`, `mvp`, `qa`, `art-bible`, `devlog`, `audit`, `game-design`,
-`production-plan`, `milestone`.
+`production-plan`, `milestone`. Gêneros (`--genre`): `narrative`, `platformer`,
+`shooter`, `racing`, `turn-based`, `puzzle`, `simulation`, `rpg`, `roguelike`.
 
 ## Passos
 
 1. **Contexto.** Resolva projeto e tarefa; execute `context <projeto> --focus <foco>`.
    Leia os AGENTS aplicáveis, `foundation.read_first`/`records`, os catálogos em
-   `studies` e somente as referências em `read_next`. `capabilities.mentioned` aponta
+   `studies` e somente as referências em `read_next`. O núcleo é agnóstico;
+   `read_next` inclui o [pacote de plataforma](packs/README.md) quando a engine foi
+   identificada e o de gênero quando você passou `--genre`. Se `packs.genre.suggested`
+   trouxer um gênero lido de documento, confirme com a conversa e repita o `context`
+   com `--genre`; pacotes são convenções a confirmar no código, não capacidades.
+   `capabilities.mentioned` aponta
    arquivo local; não prova pause, reset, seed nem determinismo. Confira `basis`,
    `via` e os limites. `context` já executa `scan`: se `foundation.audit.required`
    for verdadeiro, avise as lacunas com `audit.notice` e comece o levantamento conforme

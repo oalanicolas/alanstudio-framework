@@ -63,6 +63,16 @@ e plataforma define os detalhes; o plano de cada jogo registra a definição ado
 Requisitos de loja, console e acessibilidade devem ser consultados na fonte oficial
 da plataforma; o framework não os reproduz nem certifica.
 
+## Pacotes (0.9)
+
+Os [pacotes de plataforma e gênero](../packs/README.md) reúnem convenções públicas das
+engines (callbacks, CLIs, ferramentas de profiling, formatos) e vocabulário corrente de
+design por gênero. Não são extração de repositório nem foram executados neste
+repositório; comandos e nomes mudam entre versões. Cada pacote manda confirmar na
+documentação oficial da versão em uso e no código do projeto. Os pontos de partida do
+laboratório citados nos pacotes de gênero (Era Uma Vez, Brasa-Pista, Distrito Rabisco)
+seguem os limites já declarados em [criar](../recipes/create.md).
+
 ## Áudio
 
 O acervo `shared/sfx` é do laboratório, não deste repositório. O harness expõe

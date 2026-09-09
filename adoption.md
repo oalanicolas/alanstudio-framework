@@ -37,6 +37,13 @@ qualidade aprovada) contra o que entregava até 0.8. Lacunas encontradas:
   o que foi declarado; não valida nem aprova.
 - **`verify --script` só conhecia npm.** Projetos Cargo ganham `check`, `build` e
   `test`; Unity, Godot e Unreal seguem por `--command`, sem inventar CLI.
+- **O núcleo era agnóstico, mas a calibração real era web/2D.** Em vez de
+  especializar o núcleo, a 0.9 adiciona [pacotes](packs/README.md): nove de plataforma
+  (web, Unity, Godot, Unreal, Defold, GameMaker, Cargo, Python, Lua), selecionados
+  automaticamente pelo marcador que `identify` encontra, e nove de gênero (narrativa,
+  plataforma, shooter, corrida, turno, puzzle, simulação, RPG, roguelike), por
+  `--genre`. Entram em `read_next` depois da receita; um campo `Gênero:` em documento
+  só sugere. Pacotes são convenções a confirmar, não capacidades certificadas.
 - **Faltava exemplo de produção.** [Da trilha ao capítulo acabado](examples/era-uma-vez-production.md)
   mostra plano, orçamentos como hipóteses, marcos e recibos num jogo pequeno.
 
