@@ -2,10 +2,10 @@
   "schema": 2,
   "fantasy": "",
   "paused": "Pausado",
-  "resume": "Continuar: Esc ou P",
+  "resume": "Continuar: {pause}",
   "over": "Fim",
-  "restart": "Reiniciar: R",
-  "restart_inline": "reiniciar: R",
+  "restart": "Reiniciar: {reset}",
+  "restart_inline": "reiniciar: {reset}",
   "best_chain": "Maior corrente",
   "chain": "Corrente",
   "score": "Pontos",
@@ -14,5 +14,5 @@
   "dash_recharging": "Dash recarregando",
   "hint_move": "Mova pela faixa",
   "hint_collect": "Passe no orbe — a corrente cresce",
-  "hint_bank": "Guarde (↓) antes de perder a corrente"
+  "hint_bank": "Guarde ({bank}) antes de perder a corrente"
 }

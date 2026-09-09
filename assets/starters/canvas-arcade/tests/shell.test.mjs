@@ -152,6 +152,21 @@ test("o preset de uma mão move com o cluster direito", () => {
   game.dispose();
 });
 
+test("o preset de uma mão avança no cluster direito", () => {
+  const { game, frame, hold, release } = shell();
+  game.updateSettings({ oneHand: true, bindings: ONE_HAND_BINDINGS });
+  game.start();
+  frame();
+  hold("Space");
+  frame();
+  assert.equal(game.observe().player.dashTicks, 0, "espaço não avança no preset");
+  release("Space");
+  hold("KeyI");
+  frame();
+  assert.ok(game.observe().player.dashTicks > 0, "I precisa avançar");
+  game.dispose();
+});
+
 test("dispose para de responder ao teclado", () => {
   const { game, press, frame } = shell();
   game.start();

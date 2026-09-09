@@ -35,7 +35,8 @@ Uma opção sem consumidor no código não é uma opção.
 reducedMotion, captions, remapeamento, uiScale, preset de uma mão).
 `verified` é sempre falso: chave no fonte não é sessão com o modo ativo.
 O starter `canvas-arcade` também expõe `assist` e declara em
-`docs/access.md` o que o recorte não atende. O harness não joga com o
+`docs/access.md` o que o recorte não atende. O aviso e o overlay
+nomeiam as teclas do remapeamento vigente. O harness não joga com o
 modo ativo.
 
 Não declare cobertura que não observou. Verificação automática de contraste é útil
@@ -43,7 +44,8 @@ e não substitui uma sessão com o modo ativo. Uma lacuna registrada com motivo 
 mais que uma lista de recursos não testados.
 
 Implementação concreta: o starter `canvas-arcade` guarda remapeamento e redução de
-movimento em `src/core/settings.js`, herda a preferência do sistema, desenha formas
+movimento em `src/core/settings.js`, herda a preferência do sistema, preenche
+`{pause}`, `{reset}` e `{bank}` em `copy.json` com as teclas vivas, desenha formas
 distintas além da cor em `src/game/render.js` e mantém legenda equivalente para
 toda informação sonora em `src/game/audio.js`. `npm run contrast` amostra
 pixels do stub depois do `draw()` além dos pares hex — relata, não aprova,

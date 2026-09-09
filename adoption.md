@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.40 — A tela nomeia as teclas vivas
+
+O aviso de guardar e o overlay ensinavam as teclas do manifesto
+depois do remapeamento. `copy.json` reserva o lugar; `bindLines`
+preenche com `settings.bindings`. O preset de uma mão pede K e O,
+não ↓ e R. `verified` continua falso. Acessibilidade permanece
+`slice`: tecla na tela não é sessão com uma mão observada. Só
+`release` fica no piso.
+
+O que 0.9.40 não afirma: o harness não jogou com uma mão e o
+rótulo não prova que o recorte é completável.
+
 ## 0.9.39 — O gerador da chuva reusa e a cena ganha nome
 
 A chuva alocava um gerador novo a cada queda. O budget cronometrava o

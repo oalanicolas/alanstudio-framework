@@ -8,8 +8,10 @@
 // com a forma de spawn entram por `?spawn=<nome>` ou settings.spawnProfile.
 // `npm run table -- <nome> --from spawn|dusk` copia essa forma; `--as`
 // aplica uma intenção nomeada e deixa a chuva distinta. `copy.fantasy`
-// tem consumidor: o coach do primeiro ciclo. Mesas genéricas continuam
-// sem consumidor automático.
+// tem consumidor: o coach do primeiro ciclo. `resume`, `restart` e
+// `hint_bank` reservam o lugar da tecla; o desenho preenche com o
+// remapeamento vigente. Mesas genéricas continuam sem consumidor
+// automático.
 //
 // Toda mesa tem schema: formato antigo (sem campo) vira o vigente;
 // schema futuro falha com o número, não com undefined no meio do tick.

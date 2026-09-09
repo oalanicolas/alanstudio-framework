@@ -7,6 +7,8 @@
 
 import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching } from "./rules.js";
 import { copy } from "./tables.js";
+import { bindLines } from "../core/keys.js";
+import { DEFAULT_BINDINGS } from "../core/settings.js";
 
 // Exportadas para terem consumidor além do desenho: é assim que um teste
 // distingue a placa do HUD do preenchimento do campo, e é o gancho para o
@@ -62,6 +64,7 @@ export function createRenderer(canvas, options = {}) {
   }
 
   function draw(state, frame = {}, settings = {}, extra = {}) {
+    const lines = bindLines(copy, settings.bindings ?? DEFAULT_BINDINGS);
     const palette = settings.highContrast ? PALETTES.contrast : PALETTES.normal;
     const reduced = Boolean(settings.reducedMotion);
     context.setTransform(1, 0, 0, 1, 0, 0);
@@ -102,20 +105,20 @@ export function createRenderer(canvas, options = {}) {
       else drawShard(context, palette, entity);
     }
     drawPlayer(context, palette, state, reduced);
-    const reserved = drawHud(context, palette, state, settings, extra);
-    drawCoach(context, palette, extra.hint, reserved, settings, extra);
+    const reserved = drawHud(context, palette, state, settings, extra, lines);
+    drawCoach(context, palette, extra.hint, reserved, settings, extra, lines);
     if (settings.captions !== false) {
       drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
     }
-    if (frame.paused) drawOverlay(context, palette, copy.paused, copy.resume);
+    if (frame.paused) drawOverlay(context, palette, lines.paused, lines.resume);
     else if (state.phase === "over") {
       drawOverlay(
         context,
         palette,
-        `${copy.over} — ${state.score}`,
+        `${lines.over} — ${state.score}`,
         state.stats.bestChain
-          ? `${copy.best_chain}: ${state.stats.bestChain} · ${copy.restart_inline}`
-          : copy.restart,
+          ? `${lines.best_chain}: ${state.stats.bestChain} · ${lines.restart_inline}`
+          : lines.restart,
       );
     }
   }
@@ -230,7 +233,7 @@ export function createRenderer(canvas, options = {}) {
   // Devolve os retângulos que reservou. É deles que a faixa de legenda tira a
   // sua posição, em vez de repetir os números do HUD e sair de sincronia na
   // primeira vez que alguém mexer na escala da interface.
-  function drawHud(target, palette, state, settings, extra) {
+  function drawHud(target, palette, state, settings, extra, lines) {
     const size = 8 * (settings.uiScale ?? 1);
     target.font = `${size}px system-ui, sans-serif`;
     target.textBaseline = "top";
@@ -239,10 +242,10 @@ export function createRenderer(canvas, options = {}) {
     // "1 → 1", que não é erro de conta — é ruído, e um revisor leu como bug.
     // Ela aparece quando guardar rende mais do que a corrente já vale.
     const payoff = state.chain * state.chain;
-    const chain = `${copy.chain} ${state.chain}${payoff > state.chain ? ` → ${payoff}` : ""}`;
-    const score = `${copy.score} ${state.score}`;
+    const chain = `${lines.chain} ${state.chain}${payoff > state.chain ? ` → ${payoff}` : ""}`;
+    const score = `${lines.score} ${state.score}`;
     const seconds = Math.ceil(remainingTicks(state) / TICK_HZ);
-    const best = extra.best === undefined ? null : `${copy.record} ${extra.best}`;
+    const best = extra.best === undefined ? null : `${lines.record} ${extra.best}`;
     const width = (text) => target.measureText(text).width;
 
     target.textAlign = "left";
@@ -264,15 +267,15 @@ export function createRenderer(canvas, options = {}) {
 
     target.textAlign = "left";
     const ready = state.player.dashCooldown === 0 && state.player.dashRecovery === 0 && state.bankLock === 0;
-    const dash = ready ? copy.dash_ready : copy.dash_recharging;
+    const dash = ready ? lines.dash_ready : lines.dash_recharging;
     const dashBox = plate(target, palette, 6, FIELD.height - size - 5, width(dash), size);
     target.fillStyle = ready ? palette.orb : palette.muted;
     target.fillText(dash, 6, FIELD.height - size - 5);
     return { score: scoreBox, timer: timerBox, dash: dashBox };
   }
 
-  function drawCoach(target, palette, hint, reserved, settings, extra = {}) {
-    const text = hint === "fantasy" ? (extra.fantasy || copy.fantasy) : copy[`hint_${hint}`];
+  function drawCoach(target, palette, hint, reserved, settings, extra = {}, lines = copy) {
+    const text = hint === "fantasy" ? (extra.fantasy || lines.fantasy) : lines[`hint_${hint}`];
     if (!hint || !text) return;
     const size = 7 * (settings.uiScale ?? 1);
     target.font = `${size}px system-ui, sans-serif`;

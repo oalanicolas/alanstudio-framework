@@ -10,6 +10,7 @@ import assert from "node:assert/strict";
 
 import { createRenderer, PALETTES } from "../src/game/render.js";
 import { createState, advance, CONFIG, FIELD, PLAYER_Y } from "../src/game/rules.js";
+import { ONE_HAND_BINDINGS } from "../src/core/settings.js";
 
 const PLATE_COLORS = new Set(Object.values(PALETTES).map((palette) => palette.plate));
 const PLATE_EDGE_COLORS = new Set(Object.values(PALETTES).map((palette) => palette.plateEdge));
@@ -418,4 +419,30 @@ test("o aviso do primeiro ciclo cabe na placa e some depois de guardar", () => {
     0,
     "depois de guardar o ensino não pode continuar na tela",
   );
+});
+
+test("o aviso e o overlay nomeiam as teclas do remapeamento", () => {
+  const state = createState(1);
+  state.chain = 3;
+  const padrao = hudTexts(state, {}, { hint: "bank" });
+  assert.equal(
+    padrao.texts.filter((item) => item.text.includes("Guarde (↓)")).length,
+    1,
+    `esperava ↓ no padrão: ${JSON.stringify(padrao.texts.map((item) => item.text))}`,
+  );
+  const uma = hudTexts(state, { bindings: ONE_HAND_BINDINGS }, { hint: "bank" });
+  assert.equal(
+    uma.texts.filter((item) => item.text.includes("Guarde (K)")).length,
+    1,
+    `esperava K no preset: ${JSON.stringify(uma.texts.map((item) => item.text))}`,
+  );
+  assert.equal(uma.texts.filter((item) => item.text.includes("Guarde (↓)")).length, 0);
+
+  const recorder = recordingCanvas();
+  const renderer = createRenderer(recorder.canvas, { devicePixelRatio: 1 });
+  renderer.resize(360, 640);
+  renderer.draw(state, { paused: true }, { bindings: ONE_HAND_BINDINGS }, {});
+  const overlay = recorder.calls.texts.map((item) => item.text);
+  assert.ok(overlay.some((text) => text.includes("Continuar: P")), `overlay: ${JSON.stringify(overlay)}`);
+  assert.equal(overlay.some((text) => text.includes("Esc")), false);
 });
