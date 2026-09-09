@@ -14,7 +14,7 @@ com o que o próprio projeto declarou, zero dígitos nos rótulos. `observed` e
 jogar → note sem executar. Sem destino, se o diretório atual é um
 jogo fora do framework, o mapa usa esse caminho. `start` cria o projeto e devolve `play` +
 `then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo,
-as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look e chuva. Se o projeto declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt e o `next` (`cycle.craft`) as apontam. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
+as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look, chuva e convite. Se o projeto declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt e o `next` (`cycle.craft`) as apontam. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
 `next` ainda propõe `playable.unplayed` se você estiver perdido. O
 starter ensina mover, avançar, coletar e guardar no campo; toque e
 controle ganham passo quando falam. O art-bible vigente
@@ -81,7 +81,8 @@ bytes sem teto.
 
 **Playtest:** `playtest` lê o formato problema/evidência/hipótese/medição.
 `observed` e `outsider` são sempre falsos. `--invite` escreve a página
-para quem nunca viu o jogo; `next` a aponta depois do recibo de quem fez.
+e aponta `/?invite=1`, onde a tabela some; `next` a aponta depois do
+recibo de quem fez. Esconder a tabela não é alguém de fora.
 Nota de partida sem os quatro campos vira
 `playtest.unstructured`. O starter grava `docs/playtest/last-run.json`
 com `npm run session` (totais e curva); `note --from-run` anexa o

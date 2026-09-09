@@ -11,7 +11,8 @@ na primeira sessão, depois feel e áudio do verbo, depois receita de conteúdo.
 diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
 Depois do recibo, o
 mesmo `start` e o `next` apontam look, chuva e voz se o projeto declara
-essas ferramentas. Não gere todos os templates antes de experimentar. Nove arquivos vazios não
+essas ferramentas. `playtest --invite` aponta `/?invite=1`, onde a
+tabela some — esconder a tabela não é alguém de fora. Não gere todos os templates antes de experimentar. Nove arquivos vazios não
 aumentam a qualidade; uma fatia sem feel continua sendo protótipo.
 
 Siga [o ciclo de pré-produção](../references/preproduction.md) para escolher o

@@ -20,11 +20,11 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | --- | --- |
 | Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing`. Ele nomeia os projetos e lista os starters |
 | Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
-| Jogo novo | Destino inexistente e engine web: `start <novo> --starter <starter> --idea "<fantasia>"` cria o projeto, põe a frase na tela do primeiro ciclo e devolve `play` + `then.note` sem executar. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive o cluster de uma mão, o toque, o controle e as queries de look e chuva, se houver. Se o projeto declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt as aponta. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando) mapeia start → jogar → note. Sem destino, se o diretório atual é um jogo fora do framework, o mapa usa esse caminho. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
+| Jogo novo | Destino inexistente e engine web: `start <novo> --starter <starter> --idea "<fantasia>"` cria o projeto, põe a frase na tela do primeiro ciclo e devolve `play` + `then.note` sem executar. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive o cluster de uma mão, o toque, o controle e as queries de look, chuva e convite, se houver. Se o projeto declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt as aponta. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando) mapeia start → jogar → note. Sem destino, se o diretório atual é um jogo fora do framework, o mapa usa esse caminho. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
 | Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, `note <projeto> --author … --note "o que o verbo sentiu"`. Depois `roles` e `context --focus audio` |
 | Paleta, conteúdo no código ou jogo só na máquina de quem construiu | `art` / `content` / `ship` <projeto>; `consistent`/`enough`/`shipped` ficam `false` |
-| Observou uma partida e só tem uma nota | `playtest <projeto>`; se `unstructured`, escreva problema, evidência, hipótese e medição. Depois do recibo, `playtest --invite` escreve a página para quem nunca viu o jogo — não é alguém de fora |
+| Observou uma partida e só tem uma nota | `playtest <projeto>`; se `unstructured`, escreva problema, evidência, hipótese e medição. Depois do recibo, `playtest --invite` escreve a página e aponta `/?invite=1`, onde a tabela some — não é alguém de fora |
 | “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
 | Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
 | “continue” / “vamos avançar” | `context <projeto> --focus <foco> --event resume` e leia `continuity.sources`, preservando o foco da tarefa |
@@ -162,7 +162,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    **`start <projeto>`** cria se o destino estiver livre e devolve
    `play` + `then.note`. Se o starter declara o verbo e as teclas, o
    prompt as nomeia — inclusive o cluster de uma mão, o toque, o
-   controle e as queries de look e chuva, se o starter as declara. Se o
+   controle e as queries de look, chuva e convite, se o starter as declara. Se o
    projeto declara `look`/`table`/`sfx`, `then` as nomeia; depois de um
    recibo, o prompt aponta o segundo ciclo. Não executa o jogo. `--idea` entra no brief
    e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief

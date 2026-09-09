@@ -53,10 +53,13 @@ for (const name of ["farol", "Farol do Sul"]) {
       assert.ok(Number.isInteger(server.port) && server.port > 0, "porta não anunciada");
       assert.match(server.banner, /\?look=dusk/, "o serve precisa apontar o look");
       assert.match(server.banner, /\?spawn=dusk/, "o serve precisa apontar a chuva");
+      assert.match(server.banner, /\?invite=1/, "o serve precisa apontar o convite");
       const root = await fetch(`http://localhost:${server.port}/`);
       assert.equal(root.status, 200, "a raiz precisa entregar o index.html");
       const html = await root.text();
       assert.match(html, /<canvas/, "a página servida não é o jogo");
+      assert.match(html, /id="commands"/, "a tabela precisa ter id para o convite somir");
+      assert.match(html, /\?invite=1|invite=1/, "a página precisa declarar o gancho do convite");
 
       const module = await fetch(`http://localhost:${server.port}/src/main.js`);
       assert.equal(module.status, 200);

@@ -54,7 +54,7 @@ Com starter (REUSE de infraestrutura já testada):
 python3 scripts/game.py start /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
 ```
 
-O JSON devolve `play` (o comando que **abre** o jogo), `then.note` (o próximo comando do harness **depois** de uma partida) e, se o starter declara, `cycle` (verbo, teclas, cluster de uma mão, toque, controle e as queries de look e chuva). Se o projeto declara as ferramentas, `then` também nomeia `look`, `table` e `sfx`. Depois de um recibo de observação, o prompt aponta esses três em vez de repetir só o primeiro ciclo. Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta e `?spawn=dusk` troca a chuva — as duas sem recomeçar o projeto. Ferramenta no disco não é alguém de fora nem mix ouvido.
+O JSON devolve `play` (o comando que **abre** o jogo), `then.note` (o próximo comando do harness **depois** de uma partida) e, se o starter declara, `cycle` (verbo, teclas, cluster de uma mão, toque, controle e as queries de look, chuva e convite). Se o projeto declara as ferramentas, `then` também nomeia `look`, `table` e `sfx`. Depois de um recibo de observação, o prompt aponta esses três em vez de repetir só o primeiro ciclo. Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta, `?spawn=dusk` troca a chuva e `?invite=1` some a tabela — as três sem recomeçar o projeto. Ferramenta no disco não é alguém de fora nem mix ouvido.
 
 `guide` (também sem subcomando: `python3 scripts/game.py`) mapeia os três passos — start → jogar → `note` — sem executar nenhum. Sem destino, se o diretório atual é um jogo fora deste repositório, o mapa usa esse caminho. Dentro do framework o comando sem argumentos continua o convite a começar:
 
@@ -626,8 +626,9 @@ python3 scripts/game.py playtest /caminho/do/laboratorio/meu-jogo --invite
 ```
 
 `observed` e `outsider` são sempre `false`. `--invite` escreve
-`docs/playtest/invite.md` para quem nunca viu o jogo; página no disco
-não é alguém de fora e não sobe `pacing`. `next` propõe `playtest.invite`
+`docs/playtest/invite.md` e aponta `/?invite=1`, onde a tabela de
+comandos some; página no disco não é alguém de fora e não sobe
+`pacing`. `next` propõe `playtest.invite`
 depois do recibo de quem fez (e depois do segundo ciclo, se houver).
 `next` propõe `playtest.unstructured` quando há recibo de observação
 (ou um `docs/qa.md` vigente) e o achado ainda não tem forma. Se

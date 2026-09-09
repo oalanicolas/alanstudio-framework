@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.71 — O convite some a tabela
+
+A página para quem nunca viu o jogo pedia para não ler a tabela e
+mandava abrir `/`, onde a tabela ensina o verbo. `/?invite=1` some
+o painel de comandos; o alcance fica. O serve anuncia a URL; o
+convite no disco a aponta. `observed` e `outsider` continuam
+falsos. `pacing` permanece `slice`: esconder a tabela não é
+alguém de fora. Só `release` fica no piso.
+
+O que 0.9.71 não afirma: o harness não convidou ninguém e ninguém
+de fora jogou.
+
 ## 0.9.70 — O mapa também lê o chão
 
 `python3 scripts/game.py` sem destino pedia `<destino>` mesmo com o

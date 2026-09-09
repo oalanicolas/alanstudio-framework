@@ -1972,7 +1972,8 @@ def invite_playtest(project):
         "outsider": False,
         "reading": reading,
         "scope": (
-            "Escreve a página para quem nunca viu o jogo. Não ensina o verbo, "
+            "Escreve a página para quem nunca viu o jogo e aponta "
+            "`/?invite=1`, onde a tabela some. Não ensina o verbo, "
             "não assiste e não sobe pacing. outsider continua falso."
         ),
     }
@@ -1998,10 +1999,15 @@ def invite_page(project):
         f"{play}\n"
         "```\n"
         "\n"
+        "## Superfície\n"
+        "\n"
+        "No navegador, abra `/?invite=1`. A tabela de comandos some.\n"
+        "Quem fez o jogo fica em `/`. O serve anuncia as duas URLs.\n"
+        "\n"
         "## Instrução\n"
         "\n"
-        "Jogue uma partida. Não leia a tabela da página antes. Quem fez o\n"
-        "jogo não ensina o verbo e não fica atrás da cadeira.\n"
+        "Jogue uma partida. Quem fez o jogo não ensina o verbo e não\n"
+        "fica atrás da cadeira.\n"
         "\n"
         "## Depois\n"
         "\n"
@@ -2962,7 +2968,7 @@ def starter_manifest(starter):
     return manifest
 
 
-CYCLE_KEYS = ("verb", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn")
+CYCLE_KEYS = ("verb", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn", "invite")
 
 
 def starter_cycle(starter):
@@ -3003,6 +3009,8 @@ def cycle_line(cycle):
         parts.append(f"Look: {cycle['look']}.")
     if cycle.get("spawn"):
         parts.append(f"Chuva: {cycle['spawn']}.")
+    if cycle.get("invite"):
+        parts.append(f"Convite: {cycle['invite']}.")
     return " ".join(parts)
 
 
@@ -3175,7 +3183,7 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
             "aponta o comando que abre o jogo. Se o starter declara o verbo e "
             "as teclas, o prompt as nomeia — inclusive o cluster de uma mão, "
-            "o toque, o controle e as queries de look e chuva, se o starter as declara. Não "
+            "o toque, o controle e as queries de look, chuva e convite, se o starter as declara. Não "
             "executa o jogo. Depois de uma "
             "partida, o próximo comando do harness é `note`, não `next`. "
             "`then` já nomeia look, chuva e voz se o projeto declara essas "
@@ -3248,8 +3256,8 @@ def guide_cycle(destination=None, starter=None, idea=None):
         play_step["verb"] = cycle["verb"]
         play_step["controls"] = {
             key: cycle[key]
-            for key in ("move", "dash", "bank", "hand", "touch", "pad", "look", "spawn")
-            if key in cycle
+            for key in CYCLE_KEYS
+            if key != "verb" and key in cycle
         }
     return {
         "schema_version": 1,
@@ -3579,8 +3587,9 @@ def next_step(project, focus="create", studies_root=None):
         propose(
             "Escrever o convite para quem nunca viu o jogo",
             "O ciclo já tem um recibo de quem fez. A curva com quem nunca "
-            "viu o jogo continua pendente. Página no disco não é alguém de "
-            "fora e não sobe pacing. O harness não assiste.",
+            "viu o jogo continua pendente. `/?invite=1` some a tabela. "
+            "Página no disco não é alguém de fora e não sobe pacing. "
+            "O harness não assiste.",
             "Existe docs/playtest/invite.md. observed e outsider continuam "
             "falsos até alguém que não fez o jogo jogar e escrever o achado.",
             [harness_command("playtest", project, "--invite")],

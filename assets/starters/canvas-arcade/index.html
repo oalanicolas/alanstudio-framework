@@ -49,11 +49,21 @@
       dt { color: var(--muted); }
       dd { margin: 0; }
       .note { color: var(--muted); font-size: 0.85rem; margin: 0.7rem 0 0; }
+      .invite-strip { display: none; color: var(--muted); font-size: 0.9rem; margin: 0; }
+      html.invite #commands { display: none; }
+      html.invite .invite-strip { display: block; }
       @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
     </style>
+    <script>
+      document.documentElement.classList.toggle(
+        "invite",
+        new URLSearchParams(location.search).get("invite") === "1",
+      );
+    </script>
   </head>
   <body>
     <h1>Canvas Arcade</h1>
+    <p class="invite-strip">Jogue uma partida. Quem fez o jogo não ensina o verbo.</p>
 
     <canvas id="stage" width="640" height="360" tabindex="0"
       aria-label="Área de jogo. Colete orbes para formar corrente e guarde antes de ser atingido."></canvas>
@@ -62,7 +72,7 @@
       <p class="panel">Este jogo precisa de JavaScript. O código das regras fica em <code>src/game/rules.js</code>.</p>
     </noscript>
 
-    <section class="panel" aria-labelledby="controls-title">
+    <section class="panel" id="commands" aria-labelledby="controls-title">
       <h2 id="controls-title">Comandos</h2>
       <dl>
         <dt>Mover</dt><dd>Setas, A/D, analógico ou arrastar na tela</dd>
@@ -110,7 +120,13 @@
     <script type="module" src="./src/main.js"></script>
     <script type="module">
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
+      import { applyInvite } from "./src/core/invite.js";
       import { listLooks, listSpawnProfiles } from "./src/game/tables.js";
+      applyInvite({
+        root: document.documentElement,
+        stage: document.getElementById("stage"),
+        search: location.search,
+      });
       const game = window.__game;
       if (game) {
         const toggles = ["reducedMotion", "highContrast", "captions", "assist"];

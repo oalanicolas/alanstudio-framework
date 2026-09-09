@@ -88,7 +88,7 @@ if (invoked) {
     // são diferentes, e um endereço errado no console custa uma depuração inteira.
     const origin = `http://localhost:${server.address().port}`;
     console.log(
-      `Jogo em ${origin}/  (Ctrl+C encerra)\nLook: ${origin}/?look=dusk\nChuva: ${origin}/?spawn=dusk`,
+      `Jogo em ${origin}/  (Ctrl+C encerra)\nLook: ${origin}/?look=dusk\nChuva: ${origin}/?spawn=dusk\nConvite: ${origin}/?invite=1`,
     );
     if (shouldOpenBrowser()) openBrowser(`${origin}/`);
   });
