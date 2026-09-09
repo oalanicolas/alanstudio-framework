@@ -3,6 +3,15 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.6 — Memória do agente entre sessões (parcial)
+
+Handoff: [HANDOFF.md](HANDOFF.md). `instruction_files` localiza AGENTS.md e equivalentes
+(CLAUDE, GEMINI, .cursorrules, .cursor/rules, copilot-instructions, windsurfrules).
+`context` expõe `instructions` e `git` (HEAD, branch, sujeira, recentes — sem provar
+nada). `scan` reporta `agent_context`; `next` propõe `template agents` quando falta;
+`init` gera `AGENTS.md` na raiz. Frentes 2–5 do plano de remediação com IA ainda não
+começaram nesta branch.
+
 ## 0.9.5 — Integração das três linhas 0.9
 
 Três linhas paralelas de 0.9 foram unificadas neste repositório: facilidade e piso de

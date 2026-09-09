@@ -50,9 +50,18 @@ FOCI = (
 )
 STAGES = (
     "brief", "mda", "gdd", "poc", "prd", "tdd", "vertical-slice", "mvp", "qa", "release",
-    "art-bible", "devlog", "audit", "aaa", "game-design", "production-plan", "milestone",
+    "art-bible", "devlog", "audit", "aaa", "game-design", "production-plan", "milestone", "agents",
 )
 PRODUCTION_STAGES = ("production-plan", "milestone")
+# Etapas que não são fase do ciclo: geram um documento de apoio pelo `template`.
+SUPPORT_STAGES = ("agents",)
+# Arquivos que assistentes de código leem como instrução persistente. AGENTS.md é o
+# canônico deste harness; os demais entram porque o laboratório pode misturar hosts,
+# e uma instrução que o agente não lê é memória perdida na próxima sessão.
+INSTRUCTION_FILES = (
+    "AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules", ".cursor/rules",
+    ".github/copilot-instructions.md", ".windsurfrules",
+)
 EVENTS = ("task", "direction-approved", "resume")
 REFERENCES = (
     "process", "quality", "preproduction", "project-audit", "game-design-system", "sources",
@@ -391,6 +400,37 @@ def emit(value):
 
 def resolve(value, root=ROOT):
     return (root / value).resolve()
+
+
+def instruction_files(project):
+    """Instruções persistentes para agentes, da raiz mais externa à mais específica. Só localiza; não lê."""
+    found = []
+    for parent in reversed((project, *project.parents)):
+        for name in INSTRUCTION_FILES:
+            path = parent / name
+            if path.is_file() or (name == ".cursor/rules" and path.is_dir() and any(path.iterdir())):
+                found.append(str(path))
+    return found
+
+
+def git_summary(project):
+    """Versão, sujeira e últimos assuntos do repositório que contém o projeto; None fora de um repositório."""
+    def run(*args):
+        try:
+            result = subprocess.run(["git", "-C", str(project), *args], capture_output=True, text=True, check=False, timeout=5)
+        except (OSError, subprocess.TimeoutExpired):
+            return ""
+        return result.stdout.strip() if result.returncode == 0 else ""
+    if run("rev-parse", "--is-inside-work-tree") != "true":
+        return None
+    dirty = [line for line in run("status", "--porcelain", "--", ".").splitlines() if line.strip()]
+    return {
+        "head": run("rev-parse", "HEAD") or None,
+        "branch": run("rev-parse", "--abbrev-ref", "HEAD") or None,
+        "dirty_paths": len(dirty),
+        "recent": run("log", "-5", "--format=%h %s", "--", ".").splitlines(),
+        "scope": "Estado do repositório na hora do comando; commits não provam que a mudança funciona nem que foi revisada.",
+    }
 
 
 def identify(project):
@@ -1064,6 +1104,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         *(relative for relative in statuses if relative.casefold() == "production/state.json"),
     ]))
     gaps = [key for key, area in areas.items() if area["status"] != "candidate_found"]
+    local_instructions = [name for name in INSTRUCTION_FILES if (project / name).is_file() or (project / name).is_dir()] if project.is_dir() else []
     needs_documentation = bool(gaps or issues)
     notice = None
     if needs_documentation:
@@ -1079,6 +1120,11 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         "areas": areas, "gaps": gaps, "read_first": read_first,
         "continuity_sources": continuity_sources, "continuity_source_count": continuity_source_count,
         "genre_mentions": genre_mentions,
+        "agent_context": {
+            "status": "found" if local_instructions else "not_located",
+            "files": local_instructions,
+            "scope": "Instruções persistentes para o agente na raiz do projeto. Não é uma das nove áreas; sem elas, cada sessão reaprende convenções. `template agents` gera um rascunho.",
+        },
         "coverage": {
             "documents_inspected": inspected, "documents_located": len(documents), "entries_seen": entries_seen,
             "documents_deferred": deferred[:20], "documents_deferred_count": len(deferred),
@@ -1173,7 +1219,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
     except (OSError, ValueError, RecursionError) as error:
         scripts, manager = {}, None
         metadata_issues.append({"path": "package.json", "reason": str(error)})
-    instructions = [str(parent / "AGENTS.md") for parent in reversed((project, *project.parents)) if (parent / "AGENTS.md").is_file()]
+    instructions = instruction_files(project)
     foundation = scan(project)
     records = [str(project / relative) for relative in foundation["read_first"]]
     document_minimum = foundation["audit"]["required"] or event == "direction-approved" or stage == "audit"
@@ -1190,6 +1236,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         "schema_version": 3, "project": str(project), "exists": project.is_dir(), "kind": kind,
         "focus": focus, "stage": stage, "event": event, "instructions": instructions, "records": records,
         "read_next": references, "packs": packs, "studies": studies,
+        "git": git_summary(project) if project.is_dir() else None,
         "source_index": str(FRAMEWORK / "references/sources.md"),
         "package_manager": manager,
         "metadata_issues": metadata_issues,
@@ -1228,9 +1275,9 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         "studio_assets": sfx_catalog.studio_assets(root),
         "limits": [
             "Ponteiros não comprovam leitura; scripts declarados não comprovam execução.",
-            "Inspecione os scripts antes de executá-los. Nenhum comando é executado por context.",
+            "Inspecione os scripts antes de executá-los. context consulta o Git em modo de leitura, mas não executa o jogo nem seus validadores.",
             "Sem packageManager ou lockfile, npm é apenas a convenção do executor de package.json.",
-            "Consulte AGENTS.md mais específicos ao escolher os arquivos que serão alterados.",
+            "Consulte as instruções mais específicas (AGENTS.md e equivalentes em instructions) ao escolher os arquivos que serão alterados; git.recent é histórico, não prova.",
             "studies lista catálogos do foco se existirem no irmão Games-Frameworks; ausência não é evidência negativa.",
             "capabilities.mentioned é só token em arquivo de inspeção. Não prova pause, reset, seed nem determinismo.",
             "capabilities.unknown significa não localizado na lista fixa de arquivos de inspeção, não capacidade ausente; rastreie o entrypoint e os consumidores na auditoria.",
@@ -1417,6 +1464,9 @@ def init(destination, starter, title=None, documents=True):
             output = destination / "docs" / f"{stage}.md"
             template(stage, destination, output)
             drafts.append(output.relative_to(destination).as_posix())
+        if not (destination / "AGENTS.md").exists():
+            template("agents", destination, destination / "AGENTS.md")
+            drafts.append("AGENTS.md")
     manager = package_commands(destination)[1]
     return {
         "schema_version": 1,
@@ -1592,6 +1642,12 @@ def doctor(root):
             else f"mkdir -p {shlex.quote(str(root))}"
         ),
     )
+    repository = git_summary(root) if root.is_dir() and git["path"] else None
+    add(
+        "repository", False, repository is not None,
+        f"{repository['branch']} · {repository['dirty_paths']} caminho(s) alterado(s)" if repository else "raiz fora de um repositório git",
+        "Sem git, `record` e `verify` gravam version.head nulo e a memória entre sessões fica só nos documentos.",
+    )
     library = root / "shared/sfx"
     add(
         "shared/sfx", False, library.is_dir(),
@@ -1691,6 +1747,17 @@ def next_step(project, focus="create", studies_root=None):
             "O passo registrado foi executado ou substituído, com o resultado no registro canônico.",
             [harness_command("context", project, "--focus", focus, "--event", "resume")],
             "continuity.sources",
+        )
+    # Sem instrução persistente, cada sessão reaprende convenções e o agente repete
+    # os mesmos erros de contexto. Vem depois das áreas e da continuidade porque é
+    # delas que o AGENTS.md fala; antes dos validadores porque é ali que se diz como rodá-los.
+    if payload["exists"] and foundation["agent_context"]["status"] == "not_located":
+        propose(
+            "Escrever as instruções para o agente na raiz do projeto (AGENTS.md)",
+            "Sem AGENTS.md, convenções, comandos e limites ficam só na conversa e se perdem na próxima sessão; é a causa mais barata de retrabalho com IA.",
+            "AGENTS.md cita como executar e verificar, os documentos canônicos, o que não mudar e onde registrar continuidade.",
+            [harness_command("template", "agents", "--project", project, "--output", project / "AGENTS.md")],
+            "agent_context.not_located",
         )
     if scripts:
         propose(
@@ -1816,6 +1883,7 @@ def next_step(project, focus="create", studies_root=None):
             "draft_areas": drafts,
             "non_current_areas": stale,
             "continuity_source_count": foundation["continuity_source_count"],
+            "agent_context": foundation["agent_context"]["status"],
             "scripts": scripts,
             "package_manager": payload["package_manager"],
             "production_bar_dimensions": dimensions,

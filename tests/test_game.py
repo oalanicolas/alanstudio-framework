@@ -973,6 +973,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "areas.draft_only": "rascunho",
             "areas.historical_or_reference_only": "documento sem versão vigente",
             "continuity.sources": "continuidade",
+            "agent_context.not_located": "sem instruções para o agente",
             "scripts": "validadores",
             "gates.problems": "linha de gate malformada",
             "gates.value": "pergunta de valor",
@@ -1415,6 +1416,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     def test_next_falls_back_to_the_production_bar_when_nothing_is_missing(self):
         self.foundation_document()
         (self.project / "index.html").write_text("<canvas id=\"jogo\"></canvas>")
+        (self.project / "AGENTS.md").write_text("# Jogo\nRodar: abrir index.html.\n")
         result = game.next_step(self.project, "feel")
         self.assertEqual(result["signals"]["gaps"], [])
         self.assertEqual(result["signals"]["scripts"], [])
@@ -1833,6 +1835,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     def test_next_names_the_floor_dimension_once_the_project_declares_the_bar(self):
         self.foundation_document()
         (self.project / "index.html").write_text("<canvas id=\"jogo\"></canvas>")
+        (self.project / "AGENTS.md").write_text("# Jogo\nRodar: abrir index.html.\n")
         self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS} | {"audio_mix": ("prototype", "playable")})
         result = game.next_step(self.project, "feel")
         proposal = result["proposal"]
@@ -2235,6 +2238,85 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(len(result["areas"]), 9)
         self.assertEqual(result["areas"]["qa"]["status"], "candidate_found")
         self.assertEqual(result["areas"]["qa"]["candidates"][0]["path"], "docs/piso.md")
+
+
+    # --- memória do agente entre sessões ---
+
+    def test_context_still_works_when_optional_git_is_unavailable(self):
+        self.package()
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "context", str(self.project), "--root", str(self.root)],
+            capture_output=True, text=True, env={"PATH": ""},
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        result = json.loads(run.stdout)
+        self.assertIsNone(result["git"])
+        self.assertEqual(result["kind"], "package.json")
+        self.assertIn("foundation", result)
+
+    def test_context_lists_every_instruction_file_the_hosts_read_from_root_to_project(self):
+        self.package()
+        (self.root / "AGENTS.md").write_text("raiz")
+        (self.root / "CLAUDE.md").write_text("claude")
+        (self.project / ".cursorrules").write_text("cursor")
+        rules = self.project / ".cursor/rules"
+        rules.mkdir(parents=True)
+        (rules / "jogo.mdc").write_text("regra")
+        (self.project / ".github").mkdir()
+        (self.project / ".github/copilot-instructions.md").write_text("copilot")
+        result = game.context(self.project, "mechanics", studies_root=self.root / "absent")
+        names = [str(Path(p).relative_to(self.root)) for p in result["instructions"]]
+        self.assertEqual(names, ["AGENTS.md", "CLAUDE.md", f"{self.project.name}/.cursorrules", f"{self.project.name}/.cursor/rules", f"{self.project.name}/.github/copilot-instructions.md"])
+        self.assertEqual(result["foundation"]["agent_context"]["status"], "found")
+        self.assertEqual(result["foundation"]["agent_context"]["files"], [".cursorrules", ".cursor/rules", ".github/copilot-instructions.md"])
+        empty = game.context(self.root / "vazio", "create", studies_root=self.root / "absent")
+        self.assertEqual(empty["instructions"], ["%s" % (self.root / "AGENTS.md"), "%s" % (self.root / "CLAUDE.md")])
+        self.assertIsNone(empty["git"])
+
+    def test_context_git_reports_state_without_claiming_proof_and_is_none_outside_a_repository(self):
+        self.package()
+        self.assertIsNone(game.context(self.project, "create", studies_root=self.root / "absent")["git"])
+        subprocess.run(["git", "init", "-q", str(self.project)], check=True)
+        subprocess.run(["git", "-C", str(self.project), "add", "core.py"], check=True)
+        subprocess.run(["git", "-C", str(self.project), "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "-m", "Primeiro passo"], check=True)
+        (self.project / "novo.txt").write_text("sujo")
+        info = game.context(self.project, "create", studies_root=self.root / "absent")["git"]
+        self.assertEqual(len(info["head"]), 40)
+        self.assertTrue(info["branch"])
+        self.assertGreaterEqual(info["dirty_paths"], 1)
+        self.assertTrue(info["recent"][0].endswith("Primeiro passo"))
+        self.assertIn("não provam", info["scope"])
+
+    def test_next_proposes_agents_file_after_areas_and_continuity_and_init_ships_one(self):
+        self.foundation_document()
+        (self.project / "index.html").write_text("<canvas id=\"jogo\"></canvas>")
+        result = game.next_step(self.project, "feel")
+        self.assertEqual(result["proposal"]["basis"], "agent_context.not_located")
+        self.assertEqual(result["signals"]["agent_context"], "not_located")
+        command = result["proposal"]["commands"][0]
+        run = subprocess.run(["/bin/sh", "-c", f"{command} --root {shlex.quote(str(self.root))}"], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertTrue((self.project / "AGENTS.md").is_file())
+        self.assertIn(self.project.name, (self.project / "AGENTS.md").read_text())
+        after = game.next_step(self.project, "feel")
+        self.assertEqual(after["signals"]["agent_context"], "found")
+        self.assertNotIn("agent_context.not_located", [item["basis"] for item in [after["proposal"], *after["alternatives"]]])
+        destination = self.root / "nascido-com-memoria"
+        created = game.init(destination, "canvas-arcade")
+        self.assertIn("AGENTS.md", created["documents"])
+        self.assertEqual(game.scan(destination)["agent_context"]["status"], "found")
+        self.assertIn("agents", game.STAGES)
+        self.assertEqual(game.SUPPORT_STAGES, ("agents",))
+
+    def test_doctor_reports_whether_the_root_is_under_version_control(self):
+        self.package()
+        checks = {item["name"]: item for item in game.doctor(self.root)["checks"]}
+        self.assertEqual(checks["repository"]["status"], "optional")
+        self.assertFalse(checks["repository"]["required"])
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        checks = {item["name"]: item for item in game.doctor(self.root)["checks"]}
+        self.assertEqual(checks["repository"]["status"], "ok")
+        self.assertIn("caminho(s) alterado(s)", checks["repository"]["detail"])
 
 
 if __name__ == "__main__":
