@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.46 — Uma mão completa o verbo
+
+O ciclo nomeava A/D e Espaço; o preset IJKL existia, mas guardar,
+pausar e reiniciar no cluster não estavam no caminho guiado nem no
+teste de teclado. `start` e `guide` nomeiam IJKL + P/O. O preset
+coleta, guarda, pausa e reinicia só com essas teclas. `verified`
+continua falso. `accessibility` permanece `slice`: teclado no stub
+não é sessão com uma mão observada. Só `release` fica no piso.
+
+O que 0.9.46 não afirma: o harness não jogou com uma mão no
+aparelho e ninguém correu o artefato fora daqui.
+
 ## 0.9.45 — O próximo look nasce como a chuva
 
 A paleta aceitava look novo à mão. `look --from` copia um look que o

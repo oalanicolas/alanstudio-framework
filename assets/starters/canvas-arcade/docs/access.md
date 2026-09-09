@@ -10,7 +10,7 @@ Declaração vigente. Opção no código não é sessão observada.
 - Legendas para toda informação sonora (`captions`)
 - Remapeamento de ações (`bindings`)
 - Escala da interface (`uiScale`)
-- Preset de uma mão no cluster direito (`oneHand`, IJKL + P/O); o aviso e o overlay nomeiam essas teclas, não as do manifesto
+- Preset de uma mão no cluster direito (`oneHand`, IJKL + P/O); o aviso, o overlay e o `cycle.hand` nomeiam essas teclas; no stub o cluster coleta, guarda, pausa e reinicia — isso não é sessão observada
 - Assistência que não esconde orbe nem pontuação (`assist`)
 
 ## O que o recorte não atende

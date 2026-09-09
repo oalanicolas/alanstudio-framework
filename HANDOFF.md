@@ -12,8 +12,8 @@ com o que o próprio projeto declarou, zero dígitos nos rótulos. `observed` e
 
 **Primeiro ciclo:** `guide` (também sem subcomando) mapeia start →
 jogar → note sem executar. `start` cria o projeto e devolve `play` +
-`then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo e
-as teclas. `next` só entra em `then.lost`. Depois de um `init` fresco,
+`then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo,
+as teclas e o cluster de uma mão (`hand`). `next` só entra em `then.lost`. Depois de um `init` fresco,
 `next` ainda propõe `playable.unplayed` se você estiver perdido. O
 starter ensina mover, coletar e guardar no campo; o art-bible vigente
 não é reescrito. `--idea` entra no brief e, se houver `data/copy.json`,
@@ -39,8 +39,9 @@ recuperação do dash.
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
 só levanta quando falta a declaração. O starter expõe assistência,
-`uiScale`, preset de uma mão (o aviso e o overlay nomeiam as teclas
-vivas) e `docs/access.md`; `npm run contrast`
+`uiScale`, preset de uma mão (o aviso, o overlay e o `cycle.hand`
+nomeiam IJKL + P/O; o stub coleta, guarda, pausa e reinicia nesse
+cluster) e `docs/access.md`; `npm run contrast`
 amostra pixels do stub após `draw()` e, em cinza, o que só
 o orbe ou só o estilhaço pinta. `pagehide` descarrega
 o save. A chuva compacta o array vivo e reusa o poço; evento,
