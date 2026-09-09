@@ -1624,7 +1624,7 @@ def doctor(root):
         "genres": list(GENRES),
         "known_markers": [marker for marker, _ in ENGINE_MARKERS],
         "scope": (
-            "Presença e versão de ferramentas, integridade deste repositório e atalhos da skill no host. "
+            "Presença e versão de ferramentas, presença dos arquivos deste repositório e conteúdo dos atalhos da skill no host. "
             "Não instala nada, não copia a skill, não executa o jogo e não comprova que um projeto funciona."
         ),
     }

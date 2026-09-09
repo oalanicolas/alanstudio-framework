@@ -51,7 +51,7 @@ python3 scripts/game.py init /caminho/do/laboratorio/meu-jogo --starter canvas-a
 python3 scripts/game.py next /caminho/do/laboratorio/meu-jogo --focus feel
 ```
 
-`doctor` observa Python, Node, git, ffmpeg, integridade do framework (receitas,
+`doctor` observa Python, Node, git, ffmpeg, presença dos arquivos do framework (receitas,
 templates, referências e pacotes), raiz, projetos reconhecidos, estudos, acervo
 sonoro, starters disponíveis e os atalhos de skill do host — vigente, desatualizado
 ou ausente, comparando conteúdo.
