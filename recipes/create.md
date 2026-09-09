@@ -7,7 +7,9 @@ o projeto atual.
 
 O caminho curto está em [ambição](../references/ambition.md): um ciclo jogável
 na primeira sessão, depois feel e áudio do verbo, depois receita de conteúdo.
-`start` e `guide` mapeiam start → jogar → `note`. Depois do recibo, o
+`start` e `guide` mapeiam start → jogar → `note`. Sem destino, se o
+diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
+Depois do recibo, o
 mesmo `start` e o `next` apontam look, chuva e voz se o projeto declara
 essas ferramentas. Não gere todos os templates antes de experimentar. Nove arquivos vazios não
 aumentam a qualidade; uma fatia sem feel continua sendo protótipo.

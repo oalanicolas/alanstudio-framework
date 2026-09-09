@@ -3189,6 +3189,21 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
     }
 
 
+def here_project(explicit=None, root=None):
+    # Sem destino, o mapa usa o diretório atual só se ele for um jogo
+    # fora desta árvore. Dentro do framework o comando sem argumentos
+    # continua o convite a começar — não o starter como se fosse o seu.
+    if explicit is not None:
+        return resolve(explicit, root or ROOT)
+    cwd = Path.cwd().resolve()
+    framework = FRAMEWORK.resolve()
+    if cwd == framework or cwd.is_relative_to(framework):
+        return None
+    if cwd.is_dir() and not cwd.is_symlink() and (cwd / "package.json").is_file():
+        return cwd
+    return None
+
+
 def guide_cycle(destination=None, starter=None, idea=None):
     available = starters()
     chosen = starter or (available[0] if available else "canvas-arcade")
@@ -3240,6 +3255,7 @@ def guide_cycle(destination=None, starter=None, idea=None):
         "schema_version": 1,
         "command": "guide",
         "executed": False,
+        "here": False,
         "idea": phrase,
         "starter": chosen,
         "path": str(dest) if dest is not None else None,
@@ -3267,9 +3283,10 @@ def guide_cycle(destination=None, starter=None, idea=None):
             "o verbo e as teclas, o passo 2 as nomeia. `then` nomeia look, "
             "chuva e voz quando o projeto declara essas ferramentas. `next` "
             "fica para quando o ciclo já correu e você não sabe o que falta. "
-            "Não cria o projeto, não abre o jogo e não avalia a proposta. "
-            "Passos 2 e 3 permanecem `executed` falsos mesmo quando o destino "
-            "já existe."
+            "Sem destino, se o diretório atual é um jogo fora do framework, "
+            "o mapa usa esse caminho. Não cria o projeto, não abre o jogo e "
+            "não avalia a proposta. Passos 2 e 3 permanecem `executed` "
+            "falsos mesmo quando o destino já existe."
         ),
     }
 
@@ -4317,7 +4334,10 @@ def main():
     try:
         root = args.root.resolve()
         if args.action is None:
-            emit(guide_cycle())
+            dest = here_project()
+            report = guide_cycle(dest)
+            report["here"] = dest is not None
+            emit(report)
         elif args.action == "discover":
             emit(discover(root) if args.plain else review(root))
         elif args.action == "doctor":
@@ -4331,8 +4351,10 @@ def main():
         elif args.action == "start":
             emit(start_project(resolve(args.project, root), args.starter, args.title, args.idea, not args.no_docs))
         elif args.action == "guide":
-            dest = resolve(args.project, root) if args.project else None
-            emit(guide_cycle(dest, args.starter, args.idea))
+            dest = here_project(args.project, root)
+            report = guide_cycle(dest, args.starter, args.idea)
+            report["here"] = args.project is None and dest is not None
+            emit(report)
         elif args.action == "next":
             emit(next_step(resolve(args.project, root), args.focus, studies_root=default_studies_root(root)))
         elif args.action == "scan":

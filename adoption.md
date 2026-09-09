@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.70 — O mapa também lê o chão
+
+`python3 scripts/game.py` sem destino pedia `<destino>` mesmo com o
+jogo aberto no diretório. Sem caminho, se o diretório atual é um
+jogo fora desta árvore, o mapa usa esse caminho. Dentro do
+framework o comando sem argumentos continua o convite a começar.
+`guide --idea` continua só no comando do start, não no disco.
+`executed` continua falso. Só `release` fica no piso.
+
+O que 0.9.70 não afirma: o harness não abriu o jogo e estar no
+diretório não é uma partida.
+
 ## 0.9.69 — A ficha e a cópia também nascem no harness
 
 `audio.py` já lia a ficha e exportava bytes com créditos. O CLI

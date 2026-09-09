@@ -2840,7 +2840,37 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         mapped = json.loads(bare.stdout)
         self.assertEqual(mapped["command"], "guide")
         self.assertFalse(mapped["executed"])
+        self.assertFalse(mapped["here"])
         self.assertEqual(len(mapped["steps"]), 3)
+
+    def test_guide_without_args_uses_the_game_you_are_standing_in(self):
+        destination = self.root / "aqui"
+        game.start_project(destination, "canvas-arcade")
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT)],
+            capture_output=True, text=True, cwd=destination,
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        payload = json.loads(run.stdout)
+        self.assertTrue(payload["here"])
+        self.assertTrue(payload["exists"])
+        self.assertEqual(payload["path"], str(destination.resolve()))
+        self.assertTrue(payload["steps"][0]["done"])
+        self.assertIn("serve", payload["steps"][1]["command"])
+        self.assertEqual(payload["steps"][1]["kind"], "playable.unplayed")
+        self.assertEqual(len(payload["steps"]), 3)
+        self.assertFalse(payload["executed"])
+        self.assertFalse(payload["steps"][1]["executed"])
+        inside = subprocess.run(
+            [sys.executable, str(SCRIPT), "guide"],
+            capture_output=True, text=True,
+            cwd=Path(game.FRAMEWORK) / "assets/starters/canvas-arcade",
+        )
+        self.assertEqual(inside.returncode, 0, inside.stderr)
+        hosted = json.loads(inside.stdout)
+        self.assertFalse(hosted["here"])
+        self.assertFalse(hosted["exists"])
+        self.assertEqual(len(hosted["steps"]), 3)
 
     def test_start_omits_the_cycle_when_the_starter_does_not_declare_it(self):
         self.fake_starter("mudo", {
