@@ -70,7 +70,11 @@ evidência, preservando a direção do usuário e a qualidade visual aprovada.
 6. Verifique com os validadores existentes e com o cenário real. `verify`
    registra comandos explícitos e logs. Build verde não comprova diversão,
    arte, reinício, rede, direitos de assets nem aprovação humana. Capacidade
-   desconhecida permanece desconhecida até ser demonstrada.
+   desconhecida permanece desconhecida até ser demonstrada — e `context` só sabe
+   dizer `mentioned`, porque lê arquivos sem executá-los. Quando os testes do
+   projeto de fato exercitarem pause, reset, seed ou determinismo, declare no
+   recibo com `verify --proves <capacidade>`. A declaração é sua, não do
+   repositório; declare só o que os comandos cobrirem.
 7. Compare antes/depois em condições equivalentes e em movimento quando houver
    efeito visual. Corrija regressões, registre decisões e hipóteses descartadas,
    cumpra `continuity.before_close` e `documentation.before_close`. Não promova

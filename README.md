@@ -191,6 +191,18 @@ python3 scripts/game.py verify /caminho/do/jogo --output /tmp/jogo-qa-01 --root 
 inédita. Destino existente é recusado. Build verde não prova arte, reinício, rede
 nem que o jogo é divertido. `experience_status` continua `not_assessed`.
 
+`context` só consegue dizer `mentioned` sobre pause, reset, seed e as demais
+capacidades: ele lê arquivos, não executa nada. `--proves` fecha esse beco.
+
+```sh
+python3 scripts/game.py verify /caminho/do/jogo --script test --output /tmp/jogo-qa-02 --proves pause --proves reset --proves seed
+```
+
+O recibo passa a registrar cada capacidade declarada como `demonstrated` ou
+`not_demonstrated`, com os comandos e os logs anexados. A declaração é de **quem
+executa**, nunca do repositório: nenhum arquivo do projeto seleciona capacidade,
+e o harness confere que os comandos passaram, não que eles exercitam aquilo.
+
 ## Três camadas
 
 - **IA:** interpreta a intenção, consulta fontes e propõe a mudança. Não depende

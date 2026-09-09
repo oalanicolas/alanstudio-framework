@@ -24,6 +24,14 @@ candidato real: loop de passo fixo, RNG semeado, save versionado com migração,
 mixer com legendas e um contrato de ciclo de vida **provado** por testes headless,
 em vez de mencionado.
 
+**Sair de “mencionado”.** `context` lê arquivos e por isso só sabia dizer
+`mentioned` sobre pause, reset, seed e determinismo — `verified` era estado
+inalcançável, enquanto a barra exige determinismo demonstrado. `verify --proves
+<capacidade>` registra no recibo, com comandos e logs, o que a execução se propõe
+a demonstrar. A declaração é de quem executa; nenhum arquivo do repositório
+seleciona capacidade, e o harness confere o resultado dos comandos, não a
+cobertura deles.
+
 O que 0.9 **não** afirma: nenhum comando atribui um degrau da barra, e a escada não
 foi calibrada contra uma amostra de jogos publicados — é linguagem para observar,
 não aferição. `init` cria rascunho, e rascunho não é decisão documentada. `next`

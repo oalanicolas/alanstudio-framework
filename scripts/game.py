@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shlex
 import shutil
 import signal
 import subprocess
@@ -754,7 +755,7 @@ def doctor(root):
     add(
         "skill", False, bool(current),
         f"{len(current)} de {len(installed)} atalhos com a versão atual",
-        None if current else f"cp {source} <atalho do host>  (ver detalhe em skill_targets)",
+        None if current else f"cp {shlex.quote(str(source))} CAMINHO_DO_ATALHO",
     )
 
     projects = discover(root) if root.is_dir() else []
@@ -797,7 +798,10 @@ def next_step(project, focus="create", studies_root=None):
     drafts = [key for key, area in areas.items() if area["status"] == "draft_only"]
     stale = [key for key, area in areas.items() if area["status"] in ("historical_only", "reference_only")]
     scripts = sorted(payload["scripts"])
-    harness = f"python3 {FRAMEWORK / 'scripts/game.py'}"
+    # Um comando proposto precisa sobreviver a copiar e colar: caminho de projeto
+    # com espaço é comum, e sem citação o shell o parte em dois argumentos.
+    harness = f"python3 {shlex.quote(str(FRAMEWORK / 'scripts/game.py'))}"
+    target = shlex.quote(str(project))
     proposals = []
 
     def propose(action, why, done_when, commands, basis):
@@ -811,7 +815,7 @@ def next_step(project, focus="create", studies_root=None):
             f"Criar o projeto em {project} a partir de um starter e adaptá-lo à proposta",
             "Sem destino no disco não há candidato para REUSE, e qualquer decisão de design fica sem consumidor.",
             "O jogo abre, `npm test` passa e o README descreve a decisão característica desta proposta.",
-            [f"{harness} init {project} --starter {starters()[0] if starters() else '<starter>'}"],
+            [f"{harness} init {target} --starter {starters()[0] if starters() else 'NOME_DO_STARTER'}"],
             "exists=false",
         )
     elif payload["kind"] is None:
@@ -819,7 +823,7 @@ def next_step(project, focus="create", studies_root=None):
             "Identificar o ponto de entrada do jogo e registrar como executá-lo",
             "Sem entrypoint reconhecível não é possível rodar, verificar nem comparar nada — todo o resto fica sem prova.",
             "Um comando declarado no README inicia o jogo, e `scan` reconhece a área de execução.",
-            [f"{harness} scan {project}"],
+            [f"{harness} scan {target}"],
             "kind=null",
         )
     missing = [key for key, area in areas.items() if area["status"] == "not_located"]
@@ -831,7 +835,7 @@ def next_step(project, focus="create", studies_root=None):
             "Avisar as lacunas e documentar as áreas não localizadas: " + labels(missing),
             "A política do estúdio é documentar sem pedir um segundo consentimento; sem essa base as mesmas decisões se repetem a cada sessão.",
             "Cada área tem decisão com fonte, hipótese identificada ou lacuna com motivo e próxima ação.",
-            [f"{harness} context {project} --focus {focus} --event direction-approved"],
+            [f"{harness} context {target} --focus {focus} --event direction-approved"],
             "areas.not_located",
         )
     if drafts:
@@ -839,7 +843,7 @@ def next_step(project, focus="create", studies_root=None):
             "Substituir rascunho por decisão em: " + labels(drafts),
             "Template com marcador de preenchimento não documenta nada; enquanto for rascunho, cada retomada recomeça do zero.",
             "Os documentos citam fonte, decisão e o que ainda é hipótese, sem marcador de preenchimento.",
-            [f"{harness} context {project} --focus {focus} --stage {'brief' if 'vision' in drafts else 'gdd'}"],
+            [f"{harness} context {target} --focus {focus} --stage {'brief' if 'vision' in drafts else 'gdd'}"],
             "areas.draft_only",
         )
     if stale:
@@ -847,7 +851,7 @@ def next_step(project, focus="create", studies_root=None):
             "Resolver documento sem versão vigente em: " + labels(stale),
             "Só há material histórico ou de referência para essas áreas, e histórico não é regra vigente.",
             "Existe um documento de trabalho vigente, e o histórico permanece marcado como histórico.",
-            [f"{harness} scan {project}"],
+            [f"{harness} scan {target}"],
             "areas.historical_or_reference_only",
         )
     if foundation["continuity_sources"]:
@@ -856,7 +860,7 @@ def next_step(project, focus="create", studies_root=None):
             f"Conferir o estado real e retomar o passo registrado em {first['path']}:{first['line']}",
             "Existe fonte de continuidade; retomar evita refazer briefing ou auditoria ainda válida. Fonte encontrada não é tarefa validada.",
             "O passo registrado foi executado ou substituído, com o resultado no registro canônico.",
-            [f"{harness} context {project} --focus {focus} --event resume"],
+            [f"{harness} context {target} --focus {focus} --event resume"],
             "continuity.sources",
         )
     if scripts:
@@ -864,7 +868,7 @@ def next_step(project, focus="create", studies_root=None):
             f"Executar os validadores do projeto com recibo ({', '.join(scripts[:4])})",
             "Comando declarado não é comando executado; sem recibo não há evidência técnica para nenhuma decisão.",
             "Existe uma pasta de evidência com recibo e log de cada comando escolhido.",
-            [f"{harness} verify {project} --script {scripts[0]} --output <pasta nova>"],
+            [f"{harness} verify {target} --script {shlex.quote(scripts[0])} --output CAMINHO_NOVO"],
             "scripts",
         )
     dimensions = [item["key"] for item in payload["production_bar"]["dimensions"]]
@@ -872,7 +876,7 @@ def next_step(project, focus="create", studies_root=None):
         "Observar as dimensões pertinentes da barra e agir na mais baixa: " + ", ".join(dimensions),
         "O degrau percebido é o mínimo entre as dimensões; subir a que já está alta não muda a leitura do jogo.",
         "Cada dimensão pertinente tem degrau declarado com condição, evidência e autor, e a mais baixa subiu um degrau.",
-        [f"{harness} context {project} --focus {focus}"],
+        [f"{harness} context {target} --focus {focus}"],
         "production_bar.dimensions",
     )
     return {
@@ -893,7 +897,7 @@ def next_step(project, focus="create", studies_root=None):
             "package_manager": payload["package_manager"],
             "production_bar_dimensions": dimensions,
         },
-        "context_command": f"{harness} context {project} --focus {focus}",
+        "context_command": f"{harness} context {target} --focus {focus}",
         "authority": "agent_resolves",
         "executed": False,
         "scope": (
@@ -975,13 +979,17 @@ def run_command(argv, project, log, timeout):
     return {"argv": argv, "exit_code": code, "seconds": round(time.monotonic() - started, 3), "log": log.name, "log_sha256": hashlib.sha256(log.read_bytes()).hexdigest()}
 
 
-def verify(project, scripts, command, output, timeout):
+def verify(project, scripts, command, output, timeout, proves=()):
     if not project.is_dir():
         raise ValueError("projeto ausente")
     if timeout <= 0:
         raise ValueError("timeout precisa ser positivo")
     if bool(scripts) == bool(command):
         raise ValueError("use --script (repetível) OU --command com argv explícito")
+    unknown = [name for name in proves if name not in CAPABILITIES]
+    if unknown:
+        raise ValueError(f"capacidade fora do conjunto conhecido: {unknown}")
+    claimed = list(dict.fromkeys(proves))
     declared, manager = package_commands(project)
     commands = []
     for name in scripts:
@@ -1003,7 +1011,26 @@ def verify(project, scripts, command, output, timeout):
         report["commands"].append(result)
         if result["exit_code"]:
             break
-    report.update(technical_status="passed" if all(item["exit_code"] == 0 for item in report["commands"]) else "failed", finished_at=datetime.now(timezone.utc).isoformat())
+    passed = all(item["exit_code"] == 0 for item in report["commands"]) and len(report["commands"]) == len(commands)
+    report.update(technical_status="passed" if passed else "failed", finished_at=datetime.now(timezone.utc).isoformat())
+    # `context` só consegue dizer `mentioned`: ele lê arquivos, não executa nada.
+    # Sem este registro, `verified` seria um estado inalcançável, e a barra pede
+    # determinismo demonstrado, não presumido. O recibo prova que os comandos
+    # passaram; que eles exercitem a capacidade é afirmação de quem executou.
+    report["capabilities"] = {
+        name: {
+            "status": "demonstrated" if passed else "not_demonstrated",
+            "by": [item["argv"] for item in report["commands"]],
+            "logs": [item["log"] for item in report["commands"]],
+            "claimed_by": "operator",
+            "limit": "O recibo cobre o resultado dos comandos, não a cobertura deles sobre a capacidade.",
+        }
+        for name in claimed
+    }
+    report["capabilities_scope"] = (
+        "Capacidade só aparece aqui porque quem executou a declarou em --proves. O harness confere que a "
+        "capacidade existe no conjunto conhecido e que os comandos passaram; não confere que eles a exercitam."
+    )
     receipt.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     return report
 
@@ -1046,6 +1073,7 @@ def main():
     run.add_argument("--output", type=Path, required=True)
     run.add_argument("--timeout", type=float, default=300)
     run.add_argument("--script", action="append", default=[])
+    run.add_argument("--proves", action="append", default=[], choices=CAPABILITIES, help="capacidade que esta execução se propõe a demonstrar; a afirmação é de quem executa")
     run.add_argument("--command", nargs=argparse.REMAINDER)
     sfx = commands.add_parser("sfx", parents=[common], help="catálogo compartilhado de efeitos sonoros")
     sfx_cmd = sfx.add_subparsers(dest="sfx_action")
@@ -1103,7 +1131,7 @@ def main():
                 emit(check)
                 return int(not check["ok"])
         else:
-            report = verify(resolve(args.project, root), args.script, args.command, args.output.absolute(), args.timeout)
+            report = verify(resolve(args.project, root), args.script, args.command, args.output.absolute(), args.timeout, args.proves)
             emit(report)
             return int(report["technical_status"] != "passed")
     except (OSError, ValueError, TypeError, AttributeError) as error:

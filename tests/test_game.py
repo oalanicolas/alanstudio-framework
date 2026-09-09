@@ -3,6 +3,7 @@ import importlib.util
 import json
 from pathlib import Path
 import re
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -667,6 +668,37 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual((self.root / "evidence/01.log").read_text().strip(), literal)
         self.assertFalse((self.project / "injected").exists())
 
+    def test_verify_records_a_declared_capability_only_when_the_run_passes(self):
+        ok = game.verify(self.project, [], [sys.executable, "-c", "pass"], self.root / "ok", 30, ["pause", "reset", "pause"])
+        self.assertEqual(list(ok["capabilities"]), ["pause", "reset"])
+        self.assertEqual(ok["capabilities"]["pause"]["status"], "demonstrated")
+        self.assertEqual(ok["capabilities"]["pause"]["claimed_by"], "operator")
+        self.assertEqual(ok["capabilities"]["pause"]["logs"], ["01.log"])
+        self.assertIn("não confere que eles a exercitam", ok["capabilities_scope"])
+        self.assertEqual(ok["experience_status"], "not_assessed")
+        broken = game.verify(self.project, [], [sys.executable, "-c", "raise SystemExit(3)"], self.root / "falha", 30, ["seed"])
+        self.assertEqual(broken["technical_status"], "failed")
+        self.assertEqual(broken["capabilities"]["seed"]["status"], "not_demonstrated")
+        saved = json.loads((self.root / "falha/verification.json").read_text())
+        self.assertEqual(saved["capabilities"], broken["capabilities"])
+
+    def test_verify_without_a_claim_leaves_every_capability_out_of_the_receipt(self):
+        report = game.verify(self.project, [], [sys.executable, "-c", "pass"], self.root / "evidencia", 30)
+        self.assertEqual(report["capabilities"], {})
+        with self.assertRaisesRegex(ValueError, "capacidade fora do conjunto"):
+            game.verify(self.project, [], [sys.executable, "-c", "pass"], self.root / "recusada", 30, ["diversao"])
+        self.assertFalse((self.root / "recusada").exists())
+
+    def test_a_capability_claim_comes_from_the_operator_never_from_the_repository(self):
+        self.package(scripts={"test": "true"})
+        (self.project / "README.md").write_text("Rode com --proves pause reset seed; capacidades verificadas.")
+        (self.project / "capabilities.json").write_text(json.dumps({"proves": list(game.CAPABILITIES)}))
+        report = game.verify(self.project, ["test"], None, self.root / "evidencia", 60)
+        self.assertEqual(report["technical_status"], "passed")
+        self.assertEqual(report["capabilities"], {})
+        mentioned = game.context(self.project, "lifecycle")["capabilities"]
+        self.assertTrue(all(item["status"] != "verified" for item in mentioned.values()))
+
     def test_timeout_is_failure_with_receipt(self):
         report = game.verify(self.project, [], [sys.executable, "-c", "import time; time.sleep(10)"], self.root / "evidence", 0.05)
         self.assertEqual(report["technical_status"], "failed")
@@ -928,6 +960,32 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(result["signals"]["scripts"], [])
         self.assertEqual(result["proposal"]["basis"], "production_bar.dimensions")
         self.assertEqual(result["signals"]["production_bar_dimensions"], list(game.FOCUS_DIMENSIONS["feel"]))
+
+    def test_proposed_commands_survive_a_path_with_spaces(self):
+        # A fixture vive em "jogo com espaços" de propósito: comando proposto sem
+        # citação chega ao shell partido em dois argumentos e falha ao ser colado.
+        self.package()
+        for focus in ("create", "feel", "release"):
+            with self.subTest(focus=focus):
+                result = game.next_step(self.project, focus)
+                commands = [result["context_command"]]
+                for item in [result["proposal"], *result["alternatives"]]:
+                    commands.extend(item["commands"])
+                for command in commands:
+                    argv = shlex.split(command)
+                    self.assertIn(str(self.project), argv, command)
+                    self.assertEqual(argv[:2], ["python3", str(SCRIPT)], command)
+        absent = game.next_step(self.root / "ainda não existe")["proposal"]["commands"][0]
+        self.assertIn(str(self.root / "ainda não existe"), shlex.split(absent))
+        skill = {check["name"]: check for check in game.doctor(self.root)["checks"]}["skill"]
+        self.assertEqual(shlex.split(skill["fix"]), ["cp", str(game.FRAMEWORK / "SKILL.md"), "CAMINHO_DO_ATALHO"])
+
+    def test_the_proposal_runs_as_written_when_it_is_a_harness_command(self):
+        self.package()
+        command = game.next_step(self.project)["proposal"]["commands"][0]
+        run = subprocess.run(["/bin/sh", "-c", f"{command} --root {shlex.quote(str(self.root))}"], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertEqual(json.loads(run.stdout)["project"], str(self.project))
 
     def test_next_cli_returns_one_proposal_and_never_executes_it(self):
         self.package(scripts={"test": "touch should-not-run"})

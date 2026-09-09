@@ -144,6 +144,9 @@ entre tempo de sessão e interesse. Piso: [qualidade](quality.md).
 - `flagship`: o jogador nunca pensa no assunto.
 
 Prova: ciclo de transições, migração entre versões de save, interrupção forçada.
+Um teste que exercite pause, reset, seed ou determinismo pode ser registrado com
+`verify --proves <capacidade>`, que anexa comandos e logs ao recibo. O recibo
+sustenta a declaração; ele não a substitui.
 Receitas: [lifecycle](../recipes/lifecycle.md) e [persistence](../recipes/persistence.md).
 
 ### `performance` — estabilidade, não média

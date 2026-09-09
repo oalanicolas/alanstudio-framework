@@ -30,8 +30,16 @@ npm run budget     # custo da simulação, por percentil, sem apresentação
 A partir da raiz do framework, com recibo:
 
 ```sh
-python3 scripts/game.py verify . --script test --output /tmp/qa-01
+python3 scripts/game.py verify . --script test --output /tmp/qa-01 \
+  --proves pause --proves reset --proves seed --proves observe \
+  --proves act --proves advance --proves capture --proves dispose
 ```
+
+`--proves` registra no recibo quais capacidades a execução se propõe a demonstrar.
+Aqui a declaração se sustenta porque `tests/lifecycle.test.mjs` e
+`tests/determinism.test.mjs` exercitam exatamente essas oito. Em um projeto
+adaptado, só declare o que os seus testes cobrirem: o harness confere o resultado
+dos comandos, não a cobertura deles.
 
 Recibo verde comprova os comandos executados. Não comprova arte, ritmo,
 diversão nem que o jogo é bom.
