@@ -34,7 +34,7 @@ o trabalho autorizado. Não invente aprovação, público observado ou resultado
 ## Fluxo com retorno
 
 **Game Brief → GDD + MDA ↔ protótipo/PoC + playtest → PRD/TDD → vertical slice →
-produção/MVP → QA e aprendizado.**
+produção/MVP → QA e aprendizado → release.**
 
 Essa é uma orientação de dependências, não uma esteira rígida. Requisitos conhecidos
 podem ser escritos antes do protótipo. Uma PoC técnica pode anteceder o GDD. QA
@@ -44,6 +44,16 @@ coincidir com a vertical slice em um jogo muito pequeno, se cumprir ambos os obj
 
 REUSE → ADAPT → CREATE vale para documentos, mecânicas, ferramentas, código e assets.
 Leia candidatos e consumidores, adapte o canônico e explique lacunas antes de criar.
+Para um jogo que ainda não existe no disco, o candidato de reuso é um starter do
+acervo: `init <destino> --starter <starter>` monta o projeto e cria estes
+documentos como rascunho declarado, para serem substituídos por decisão — não para
+serem entregues como se fossem uma.
+
+Cada etapa pretende um degrau da [barra de acabamento](production-bar.md): PoC
+responde uma pergunta em degrau de protótipo, o MVP entrega um ciclo jogável, a
+vertical slice existe justamente para demonstrar o degrau `slice` em um recorte
+pequeno, e o release pretende `shippable`. Declarar a etapa não concede o degrau;
+`context --stage` apenas informa qual é a pretensão.
 
 ## Etapas, significado e prontidão
 
@@ -159,6 +169,23 @@ falhas relevantes foram resolvidas/retestadas e lacunas estão explícitas. Não
 contato automático com participantes nem publicação implícita. Não registre teste
 com pessoa quando houve somente simulação ou avaliação do agente.
 [Template](../assets/templates/qa.md), [protocolo de qualidade](quality.md).
+
+### `release` — Entrega
+
+Fecha o ciclo: o caminho repetível entre o repositório e o jogador. Entrada:
+versão pretendida, plataforma alvo e evidência acumulada. Saída: build reproduzível
+a partir de clone limpo, orçamento de tamanho e de tempo até jogar, verificação do
+**artefato exportado** — não do editor nem do servidor de desenvolvimento —,
+proveniência de tudo que embarca, procedimento de reversão e lacunas declaradas na
+nota da versão.
+
+**Pronto para entregar:** outra pessoa constrói a partir do runbook, o artefato roda
+em máquina que não é a de desenvolvimento, save migra da versão anterior e nenhum
+recurso embarcado tem licença desconhecida. Licença desconhecida bloqueia a entrega;
+localização de um arquivo não atribui autoria. O template registra o degrau observado
+por dimensão; **nenhum comando concede autorização de publicação**, e gerar o
+documento não é autorizar.
+[Template](../assets/templates/release.md), [receita](../recipes/release.md).
 
 ## Revisão, rastreabilidade e retomada
 

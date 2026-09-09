@@ -1,7 +1,35 @@
 # Adoção — Alan Studios Framework
 
-Histórico das versões 0.1–0.8. Recibos brutos de execução e o acervo sonoro
+Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
+
+## 0.9 — Começar e acabar
+
+Duas lacunas entre o que o framework prometia e o que entregava.
+
+**Começar.** Até 0.8 o harness sabia ler um jogo existente e não sabia criar um.
+`doctor` observa ambiente, integridade e os atalhos de skill do host — vigente,
+desatualizado, ausente — sem escrever nada. `init` monta um projeto a partir de um
+starter do acervo, substitui os marcadores e gera os documentos do ciclo como
+rascunho declarado; não instala dependências e não toca no starter de origem.
+`next` deriva uma proposta ordenada do estado no disco. `--root` passa a ser
+aceito antes e depois do subcomando, como a documentação já afirmava.
+
+**Acabar.** A [barra de acabamento](references/production-bar.md) nomeia cinco
+degraus em dez dimensões de ofício, com a observação que comprova cada degrau, e
+chega em todo `context` pelo campo `production_bar`. Seis receitas novas — feel,
+performance, acessibilidade, áudio, persistência, release — e a etapa `release`
+fecham o ciclo. O starter `canvas-arcade` existe para que o passo REUSE tenha um
+candidato real: loop de passo fixo, RNG semeado, save versionado com migração,
+mixer com legendas e um contrato de ciclo de vida **provado** por testes headless,
+em vez de mencionado.
+
+O que 0.9 **não** afirma: nenhum comando atribui um degrau da barra, e a escada não
+foi calibrada contra uma amostra de jogos publicados — é linguagem para observar,
+não aferição. `init` cria rascunho, e rascunho não é decisão documentada. `next`
+propõe e nunca executa. Os testes do starter provam o starter, não um jogo derivado
+dele. AAA continua descrevendo orçamento e equipe; o que este repositório persegue
+é acabamento por dimensão em escopo reduzido.
 
 ## 0.8 — Arquitetura proporcional
 

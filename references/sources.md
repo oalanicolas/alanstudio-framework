@@ -52,6 +52,38 @@ A receita [architecture](../recipes/architecture.md) adapta processo transversal
 observado no Architect AIOX, sem copiar o runtime, o roteador de engines nem a
 hierarquia de agentes. Estudo e hashes ficam no laboratório.
 
+## Barra de acabamento (0.9)
+
+A [escada](production-bar.md) **não** vem de uma fonte externa citável. Ela é uma
+síntese redigida neste repositório a partir de três origens, e é honesto separá-las:
+
+- **Critérios já presentes aqui**, reorganizados por dimensão e degrau: o roteiro
+  de [qualidade](quality.md), o contrato do
+  [design system do jogo](game-design-system.md) e as regras de ciclo de vida
+  vindas dos recortes de Phaser, Excalibur, Godot Demo Projects e PettingZoo.
+- **Vocabulário corrente da indústria** — protótipo, vertical slice, publicável —
+  usado no sentido de dependência entre etapas, não como certificação.
+- **Julgamento editorial deste estúdio** sobre o que o jogador percebe primeiro,
+  em especial a regra do mínimo entre dimensões.
+
+Nenhum degrau foi calibrado contra uma amostra de jogos publicados, e nenhuma
+medição foi repetida para produzir esta escada. Os limites numéricos que aparecem
+nas dimensões `performance` e `audio_mix` são pontos de partida a confirmar no
+dispositivo alvo, não constantes verificadas. Trate a escada como linguagem
+compartilhada para observar, não como aferição.
+
+## Starter `canvas-arcade` (0.9)
+
+Escrito neste repositório, sem dependências de terceiros. `mulberry32`, em
+`src/core/rng.js`, é algoritmo de domínio público amplamente publicado; o
+embaralhamento de bits em `src/core/hash.js` pertence à mesma família. O starter
+não embarca imagem, som nem fonte — proveniência completa em
+[CREDITS.md](../assets/starters/canvas-arcade/CREDITS.md).
+
+Seus testes rodam neste repositório e provam o contrato de ciclo de vida, o
+determinismo e a migração de save do próprio starter. Não provam nada sobre um
+jogo derivado depois que ele for adaptado.
+
 ## Áudio
 
 O acervo `shared/sfx` é do laboratório, não deste repositório. O harness expõe

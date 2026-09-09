@@ -2,10 +2,25 @@ import copy
 import importlib.util
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
 import unittest
+
+LINK = re.compile(r"\[[^\]]*\]\((?!https?://|#|mailto:)([^)\s]+)\)")
+
+
+def broken_links(base):
+    broken = []
+    for document in sorted(Path(base).rglob("*.md")):
+        if "node_modules" in document.parts:
+            continue
+        for target in LINK.findall(document.read_text(encoding="utf-8")):
+            path = target.split("#")[0]
+            if path and not (document.parent / path).exists():
+                broken.append(f"{document}: {target}")
+    return broken
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts/game.py"
 SPEC = importlib.util.spec_from_file_location("game_harness", SCRIPT)
@@ -727,6 +742,18 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(set(game.STAGE_TIERS.values()) <= set(game.BAR_TIERS))
         for dimensions in game.FOCUS_DIMENSIONS.values():
             self.assertTrue(set(dimensions) <= set(game.BAR_DIMENSIONS))
+
+    def test_framework_documentation_has_no_broken_internal_link(self):
+        # Os starters ficam de fora porque seus documentos ainda têm marcadores;
+        # `init` os resolve, e o teste seguinte confere o resultado.
+        starters = game.FRAMEWORK / "assets/starters"
+        broken = [item for item in broken_links(game.FRAMEWORK) if not item.startswith(str(starters))]
+        self.assertEqual(broken, [])
+
+    def test_generated_project_documentation_has_no_broken_internal_link(self):
+        destination = self.root / "links-do-projeto"
+        game.init(destination, "canvas-arcade")
+        self.assertEqual(broken_links(destination), [])
 
     def test_production_bar_selects_dimensions_without_assessing_a_tier(self):
         for focus in game.FOCI:
