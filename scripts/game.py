@@ -186,6 +186,65 @@ def discover(root, depth=3):
     return projects
 
 
+# Um laboratório de trabalho já tem jogos, e é por isso que o primeiro movimento
+# aqui é revisar o que existe. Caminho e tipo não bastam para isso: quatro jogos
+# em estados muito diferentes saem iguais numa listagem, e quem abre o estúdio
+# precisa saber onde o trabalho está antes de escolher um.
+REVIEW_LIMIT = 48
+
+
+def review(root, limit=REVIEW_LIMIT):
+    projects = discover(root)
+    reviewed = []
+    for entry in projects[:limit]:
+        path = Path(entry["project"])
+        try:
+            found = scan(path)
+        except (OSError, ValueError) as error:
+            reviewed.append(dict(entry, unreadable=str(error)))
+            continue
+        areas = found["areas"]
+        located = [key for key, area in areas.items() if area["status"] == "candidate_found"]
+        drafts = [key for key, area in areas.items() if area["status"] == "draft_only"]
+        declaration = bar_declaration(path)
+        # Fonte em rascunho não é passo registrado, pelo mesmo motivo que vale no
+        # `next`: campo de template em branco não é trabalho interrompido.
+        registered = [item for item in found["continuity_sources"] if item["status"] != "draft"]
+        try:
+            scripts = validators(package_commands(path)[0])
+        except ValueError:
+            scripts = []
+        reviewed.append(dict(
+            entry,
+            areas_located=len(located),
+            areas_total=len(areas),
+            areas_draft=len(drafts),
+            missing_areas=[key for key, area in areas.items() if area["status"] == "not_located"],
+            continuity=f"{registered[0]['path']}:{registered[0]['line']}" if registered else None,
+            bar_floor=declaration["floor"],
+            bar_undeclared=len(declaration["undeclared"]),
+            bar_problems=len(declaration["problems"]),
+            validators=scripts,
+        ))
+    return {
+        "schema_version": 1,
+        "root": str(root),
+        "project_count": len(projects),
+        "reviewed": len(reviewed),
+        "projects": reviewed,
+        "limit": limit,
+        "truncated": len(projects) > limit,
+        # Ordenar por urgência exigiria julgar qual jogo importa mais, e nada aqui
+        # observa isso. A ordem é a do disco, e a escolha continua sendo de quem lê.
+        "order": "caminho, em ordem determinística; o harness não classifica os jogos por urgência",
+        "scope": (
+            "Conta documentos por localização e lê a declaração de degrau de cada projeto. Não executa jogo "
+            "nenhum, não mede acabamento e não diz qual merece atenção primeiro. Área localizada é candidato "
+            "por nome ou título, não conteúdo aprovado; degrau é o que o projeto afirma de si."
+        ),
+    }
+
+
 def package_commands(project):
     path = project / "package.json"
     if not path.is_file():
@@ -1031,9 +1090,14 @@ def doctor(root):
     )
 
     projects = discover(root) if root.is_dir() else []
+    # Num laboratório de trabalho os jogos já existem, e contá-los sem nomeá-los
+    # obriga quem chega a adivinhar os caminhos que este comando acabou de ler.
+    named = ", ".join(Path(item["project"]).name for item in projects[:6])
     add(
         "root", True, root.is_dir(),
         f"{root} · {len(projects)} projeto(s) reconhecido(s)"
+        + (f": {named}" if named else "")
+        + (", …" if len(projects) > 6 else "")
         + (" · AGENTS.md presente" if (root / "AGENTS.md").is_file() else ""),
         # Dizer "passe --root" a quem acabou de passar --root é instrução circular:
         # a ação que falta é criar o diretório, ou apontar para outro.
@@ -1374,7 +1438,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT, help="raiz para descobrir projetos e resolver caminhos")
     commands = parser.add_subparsers(dest="action", required=True)
-    commands.add_parser("discover", parents=[common])
+    discover_cmd = commands.add_parser("discover", parents=[common])
+    discover_cmd.add_argument(
+        "--plain", action="store_true",
+        help="só caminho e tipo, sem ler os documentos de cada projeto",
+    )
     commands.add_parser("doctor", parents=[common], help="ambiente, integridade do framework e atalhos da skill")
     start = commands.add_parser("init", parents=[common], help="cria um projeto novo a partir de um starter, para ADAPT")
     start.add_argument("project")
@@ -1423,7 +1491,7 @@ def main():
     try:
         root = args.root.resolve()
         if args.action == "discover":
-            emit(discover(root))
+            emit(discover(root) if args.plain else review(root))
         elif args.action == "doctor":
             report = doctor(root)
             emit(report)

@@ -12,7 +12,30 @@ dependências. Testes do harness usam também Node/npm quando exercitam
 
 Playground: [games.alanicolas.com/framework](https://games.alanicolas.com/framework)
 
-## Começar em três comandos
+## Chegar num laboratório que já tem jogos
+
+Este é o caso normal: a raiz de trabalho não está vazia. O primeiro movimento é
+revisar o que existe, não criar mais um.
+
+```sh
+python3 scripts/game.py doctor --root /caminho/do/laboratorio
+python3 scripts/game.py discover --root /caminho/do/laboratorio
+python3 scripts/game.py next /caminho/do/laboratorio/um-dos-jogos --focus feel
+```
+
+`discover` lê cada jogo da raiz e devolve o que os distingue: quantas das nove
+áreas mínimas têm candidato, quantas estão em rascunho, se há um passo registrado
+para retomar e onde, o piso de acabamento que o projeto declara e quantas
+dimensões ainda não têm linha, e quais validadores existem. É essa diferença que
+uma listagem de caminho e tipo apagava — três jogos em estados incomparáveis saíam
+iguais. `--plain` volta ao caminho e tipo, sem ler documento nenhum.
+
+A ordem é a do disco e não muda: **o harness não classifica os jogos por
+urgência**, porque nada aqui observa qual importa mais. Ele conta e lê; escolher
+continua sendo trabalho de quem olha. Um projeto ilegível aparece com o motivo, em
+vez de derrubar a revisão ou desaparecer da lista.
+
+## Começar um jogo novo
 
 ```sh
 python3 scripts/game.py doctor --root /caminho/do/laboratorio

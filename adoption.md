@@ -5,7 +5,16 @@ ficam no laboratório; aqui permanece o que a versão afirma e o que ela não af
 
 ## 0.9 — Começar e acabar
 
-Duas lacunas entre o que o framework prometia e o que entregava.
+Três lacunas entre o que o framework prometia e o que entregava.
+
+**Chegar.** O laboratório onde este harness roda normalmente já tem jogos, e o
+primeiro movimento nele é revisar o que existe. `discover` devolvia caminho e
+tipo, o que faz jogos em estados incomparáveis saírem iguais; agora ele lê cada
+projeto e devolve áreas mínimas com candidato, rascunhos, passo registrado para
+retomar, piso de acabamento declarado e validadores — com `--plain` para a
+listagem crua. A ordem é a do disco, e o harness não classifica os jogos por
+urgência, porque nada nele observa qual importa mais. `doctor` passou a nomear os
+projetos que contou, em vez de só contá-los.
 
 **Começar.** Até 0.8 o harness sabia ler um jogo existente e não sabia criar um.
 `doctor` observa ambiente, integridade e os atalhos de skill do host — vigente,

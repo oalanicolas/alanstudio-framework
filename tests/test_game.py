@@ -81,6 +81,104 @@ class HarnessTest(unittest.TestCase):
         self.assertEqual(len(projects), 4)
         self.assertNotIn("shared", {Path(item["project"]).name for item in projects})
 
+    # O laboratório onde este harness roda de verdade já tem jogos, e o primeiro
+    # movimento nele é revisar o que existe. Caminho e tipo não servem para isso:
+    # quatro jogos em estados muito diferentes saem idênticos numa listagem.
+    def studio(self):
+        # Godot documentado, com um passo registrado de verdade no devlog.
+        madura = self.root / "era-uma-vez"
+        (madura / "docs").mkdir(parents=True)
+        (madura / "project.godot").write_text("")
+        (madura / "docs/gdd.md").write_text("# GDD\n\n## Pilar\nHistória ramificada.\n", encoding="utf-8")
+        (madura / "docs/devlog.md").write_text(
+            "# Devlog\n\n## 2026-08-30\n\n- Decisão: ramificação vira grafo de dados.\n"
+            "- Próxima ação: medir carga do grafo com 400 nós.\n",
+            encoding="utf-8",
+        )
+        # Web com validadores e um servidor, sem documentação de design.
+        web = self.root / "corrida-lunar"
+        web.mkdir()
+        (web / "package.json").write_text(json.dumps(
+            {"name": "corrida-lunar", "scripts": {"serve": "vite", "test": "node --test", "build": "vite build"}}
+        ))
+        (web / "index.html").write_text("<canvas></canvas>")
+        # Protótipo abandonado, aninhado, só com um index.
+        abandonada = self.root / "prototipos/ideia-do-farol"
+        abandonada.mkdir(parents=True)
+        (abandonada / "index.html").write_text("<html></html>")
+        return madura, web, abandonada
+
+    def test_the_review_of_a_studio_tells_the_games_apart(self):
+        madura, web, abandonada = self.studio()
+        report = game.review(self.root)
+        found = {Path(item["project"]).name: item for item in report["projects"]}
+        self.assertEqual(report["project_count"], 3)
+        self.assertEqual(sorted(found), ["corrida-lunar", "era-uma-vez", "ideia-do-farol"])
+        # O jogo com devlog tem passo para retomar; os outros dois, não. É essa
+        # diferença que uma listagem de caminho e tipo apagava.
+        self.assertEqual(found["era-uma-vez"]["continuity"], "docs/devlog.md:6")
+        self.assertIsNone(found["corrida-lunar"]["continuity"])
+        self.assertIsNone(found["ideia-do-farol"]["continuity"])
+        self.assertGreater(found["era-uma-vez"]["areas_located"], found["ideia-do-farol"]["areas_located"])
+        self.assertEqual(found["ideia-do-farol"]["areas_located"], 0)
+        # Servidor de desenvolvimento não é validador aqui, pelo mesmo motivo
+        # que não é no `next`: ele não termina.
+        self.assertEqual(found["corrida-lunar"]["validators"], ["test", "build"])
+        self.assertEqual(found["era-uma-vez"]["validators"], [])
+        self.assertEqual(found["ideia-do-farol"]["kind"], "static-web")
+
+    def test_the_review_reads_the_bar_of_each_game_without_assigning_one(self):
+        madura, _, _ = self.studio()
+        self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS}, project=madura)
+        report = game.review(self.root)
+        found = {Path(item["project"]).name: item for item in report["projects"]}
+        self.assertEqual(found["era-uma-vez"]["bar_floor"], "slice")
+        self.assertEqual(found["era-uma-vez"]["bar_undeclared"], 0)
+        # Quem nunca declarou não recebe degrau atribuído: fica sem piso e com as
+        # dez dimensões em aberto.
+        self.assertIsNone(found["ideia-do-farol"]["bar_floor"])
+        self.assertEqual(found["ideia-do-farol"]["bar_undeclared"], len(game.BAR_DIMENSIONS))
+        self.assertIn("não diz qual merece atenção primeiro", report["scope"])
+        self.assertIn("não classifica os jogos por urgência", report["order"])
+
+    def test_the_review_keeps_disk_order_and_says_when_it_stopped_reading(self):
+        for index in range(4):
+            path = self.root / f"jogo-{index}"
+            path.mkdir()
+            (path / "index.html").write_text("<html></html>")
+        report = game.review(self.root, limit=2)
+        self.assertEqual(report["project_count"], 4)
+        self.assertEqual(report["reviewed"], 2)
+        self.assertTrue(report["truncated"])
+        self.assertEqual([Path(item["project"]).name for item in report["projects"]], ["jogo-0", "jogo-1"])
+        # Sem truncar, a ordem é a mesma do disco, sem reordenação por urgência.
+        full = game.review(self.root)
+        self.assertFalse(full["truncated"])
+        self.assertEqual(
+            [Path(item["project"]).name for item in full["projects"]],
+            ["jogo-0", "jogo-1", "jogo-2", "jogo-3"],
+        )
+
+    def test_the_review_survives_a_game_it_cannot_read(self):
+        quebrado = self.root / "manifesto-torto"
+        quebrado.mkdir()
+        (quebrado / "package.json").write_text('{"scripts": {"test": 7}}')
+        bom = self.root / "inteiro"
+        bom.mkdir()
+        (bom / "index.html").write_text("<html></html>")
+        found = {Path(item["project"]).name: item for item in game.review(self.root)["projects"]}
+        # Um projeto ilegível não pode derrubar a revisão do laboratório inteiro,
+        # nem sair da lista como se não existisse.
+        self.assertEqual(found["manifesto-torto"]["validators"], [])
+        self.assertIn("inteiro", found)
+
+    def test_doctor_names_the_projects_it_counted(self):
+        madura, web, abandonada = self.studio()
+        check = {item["name"]: item for item in game.doctor(self.root)["checks"]}["root"]
+        self.assertIn("3 projeto(s)", check["detail"])
+        for name in ("era-uma-vez", "corrida-lunar", "ideia-do-farol"):
+            self.assertIn(name, check["detail"])
+
     def test_context_loads_selected_recipe_and_never_executes_declared_script(self):
         self.package(scripts={"test": "touch should-not-exist"})
         (self.root / "AGENTS.md").write_text("root")
@@ -772,7 +870,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             with self.subTest(argv=argv):
                 run = subprocess.run([sys.executable, str(SCRIPT), *argv], capture_output=True, text=True)
                 self.assertEqual(run.returncode, 0, run.stderr)
-                self.assertEqual([Path(item["project"]).name for item in json.loads(run.stdout)], [self.project.name])
+                found = json.loads(run.stdout)["projects"]
+                self.assertEqual([Path(item["project"]).name for item in found], [self.project.name])
         documented = (
             ["scan", str(self.project), "--root", str(self.root)],
             ["context", str(self.project), "--focus", "feel", "--root", str(self.root)],
@@ -1334,10 +1433,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     # A barra nomeava dez dimensões e nunca sabia em qual o projeto estava, então
     # a única coisa capaz de virar tarefa — a dimensão mais baixa — ficava fora do
     # alcance do harness. A declaração vem do documento do próprio projeto.
-    def declare_bar(self, tiers, path="README.md"):
+    def declare_bar(self, tiers, path="README.md", project=None):
         rows = [f"| `{key}` | `{tier}` | `{target}`: critério declarado no documento do projeto |"
                 for key, (tier, target) in tiers.items()]
-        document = self.project / path
+        document = (project or self.project) / path
         document.parent.mkdir(parents=True, exist_ok=True)
         header = "" if document.is_file() else "# Jogo\n"
         with document.open("a", encoding="utf-8") as handle:

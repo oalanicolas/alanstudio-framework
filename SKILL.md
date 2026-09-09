@@ -8,13 +8,18 @@ description: Criar, evoluir, depurar e verificar jogos com IA, partindo do acerv
 Use este processo em qualquer engine. O objetivo é uma experiência jogável com
 evidência, preservando a direção do usuário e a qualidade visual aprovada.
 
-0. **Sem destino no disco, comece pelo começo.** `python3 scripts/game.py doctor
-   --root <laboratorio>` diz se o ambiente responde e se a skill está atualizada;
-   `init <destino> --starter <starter>` monta um projeto completo a partir de um
-   starter do acervo e gera os documentos como rascunho declarado. Em dúvida sobre
-   o próximo passo, `next <projeto> --focus <foco>` deriva uma proposta do estado
-   observável. Proposta não é execução: `executed` permanece `false` e a escolha
-   continua sua.
+0. **O laboratório normalmente já tem jogos: comece revisando o que existe.**
+   `python3 scripts/game.py doctor --root <laboratorio>` diz se o ambiente responde
+   e nomeia os projetos que encontrou; `discover --root <laboratorio>` lê cada um e
+   devolve o que os distingue — áreas mínimas com candidato, rascunhos, passo
+   registrado para retomar, piso de acabamento declarado e validadores. A ordem é
+   a do disco: o harness não classifica os jogos por urgência, então **não trate a
+   primeira linha como prioridade**. Escolha pela leitura, ou pergunte.
+   Só quando o destino não existe é que `init <destino> --starter <starter>` monta
+   um projeto a partir de um starter do acervo, com os documentos em rascunho
+   declarado. Em dúvida sobre o próximo passo dentro de um jogo, `next <projeto>
+   --focus <foco>` deriva uma proposta do estado observável. Proposta não é
+   execução: `executed` permanece `false` e a escolha continua sua.
 1. Resolva o projeto e a tarefa. Execute `python3 scripts/game.py context
    <projeto> --focus <foco> --root <laboratorio>` a partir deste repositório
    (ou o caminho absoluto do script). Focos: `create`, `mechanics`, `lifecycle`,
