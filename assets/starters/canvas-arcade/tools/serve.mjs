@@ -64,5 +64,8 @@ const server = createServer(async (request, response) => {
 server.listen(PORT, () => {
   // A porta anunciada é a que o sistema abriu, não a pedida: com PORT=0 elas
   // são diferentes, e um endereço errado no console custa uma depuração inteira.
-  console.log(`Jogo em http://localhost:${server.address().port}/  (Ctrl+C encerra)`);
+  const origin = `http://localhost:${server.address().port}`;
+  console.log(
+    `Jogo em ${origin}/  (Ctrl+C encerra)\nLook: ${origin}/?look=dusk\nChuva: ${origin}/?spawn=dusk`,
+  );
 });

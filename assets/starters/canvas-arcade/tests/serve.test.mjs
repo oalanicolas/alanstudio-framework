@@ -31,9 +31,11 @@ async function serveFrom(name) {
     stdio: ["ignore", "pipe", "pipe"],
   });
   const [chunk] = await once(child.stdout, "data");
-  const port = Number(String(chunk).match(/:(\d+)\//)?.[1]);
+  const banner = String(chunk);
+  const port = Number(banner.match(/:(\d+)\//)?.[1]);
   return {
     port,
+    banner,
     async stop() {
       child.kill("SIGKILL");
       await once(child, "exit");
@@ -47,6 +49,8 @@ for (const name of ["farol", "Farol do Sul"]) {
     const server = await serveFrom(name);
     try {
       assert.ok(Number.isInteger(server.port) && server.port > 0, "porta não anunciada");
+      assert.match(server.banner, /\?look=dusk/, "o serve precisa apontar o look");
+      assert.match(server.banner, /\?spawn=dusk/, "o serve precisa apontar a chuva");
       const root = await fetch(`http://localhost:${server.port}/`);
       assert.equal(root.status, 200, "a raiz precisa entregar o index.html");
       const html = await root.text();

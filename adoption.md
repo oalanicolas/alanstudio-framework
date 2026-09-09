@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.48 — O toque completa o verbo
+
+O HTML e o input já reduziam o toque a intenção. Nenhum teste
+percorria mover, avançar e guardar, e o ciclo guiado não nomeava
+o toque. `start` e `guide` apontam o arraste e as faixas; o serve
+anuncia `?look=` e `?spawn=`. `verified` continua falso.
+`accessibility` permanece `slice`: intenção no stub não é sessão
+no aparelho. Só `release` fica no piso.
+
+O que 0.9.48 não afirma: o harness não tocou a tela e ninguém
+correu o artefato fora daqui.
+
 ## 0.9.47 — O ciclo nomeia look e chuva
 
 O caminho ideia→jogo nomeava o verbo e as teclas. Look e chuva já

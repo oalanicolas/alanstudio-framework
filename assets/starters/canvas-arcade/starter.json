@@ -8,6 +8,7 @@
     "dash": "Espaço ou K",
     "bank": "S ou J",
     "hand": "IJKL + P/O",
+    "touch": "arrastar move; cima avança; baixo guarda",
     "look": "?look=dusk troca a paleta",
     "spawn": "?spawn=dusk troca a chuva"
   },
