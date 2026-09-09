@@ -124,7 +124,7 @@ cama (`bed`, loop no barramento de música) têm design original e variante
 desloca a voz no papel que o mixer já toca; `--as` precisa de `--from`.
 `npm run peak` relata o pico do
 arquivo; `npm run mix` soma as vozes de uma partida simulada com o mesmo
-palco, folga e ducking do mixer. Nenhum dos dois é mix ouvido. `heard` continua falso. Toda
+palco, folga, ducking e taxa da corrente do mixer. Nenhum dos dois é mix ouvido. `heard` continua falso. Toda
 informação sonora precisa de equivalente visual — requisito de
 [acessibilidade](accessibility.md), não recurso extra. Degraus da dimensão `audio_mix`:
 [barra de acabamento](../references/production-bar.md#audio_mix--mixagem-não-arquivos).

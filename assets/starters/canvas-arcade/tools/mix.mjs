@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 import { MIX_HEADROOM, SOUNDS } from "../src/game/audio.js";
 import { DEFAULT_BUSES } from "../src/core/settings.js";
-import { advance, createState, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
+import { advance, chainPlaybackRate, createState, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
 import { createRng } from "../src/core/rng.js";
 import { readWav } from "./wav.mjs";
 
@@ -49,6 +49,23 @@ let overUnity = 0;
 let eventsMixed = 0;
 let stolen = 0;
 let voicesPlayed = 0;
+let pitched = 0;
+
+function eventRate(event) {
+  if ((event.type === "collect" || event.type === "bank") && Number.isFinite(event.chain)) {
+    return chainPlaybackRate(event.chain);
+  }
+  return 1;
+}
+
+function sampleAt(samples, offset) {
+  const index = Math.floor(offset);
+  if (index >= samples.length) return null;
+  const frac = offset - index;
+  const a = samples[index];
+  const b = index + 1 < samples.length ? samples[index + 1] : a;
+  return a + (b - a) * frac;
+}
 
 function gainAt(bus, ducked) {
   const level = Number.isFinite(DEFAULT_BUSES[bus]) ? DEFAULT_BUSES[bus] : 1;
@@ -89,7 +106,15 @@ for (let run = 0; run < runs; run += 1) {
         voices.splice(weakest, 1);
         stolen += 1;
       }
-      voices.push({ samples, offset: 0, priority: definition.priority, bus: definition.bus });
+      const rate = eventRate(event);
+      if (rate !== 1) pitched += 1;
+      voices.push({
+        samples,
+        offset: 0,
+        rate,
+        priority: definition.priority,
+        bus: definition.bus,
+      });
       eventsMixed += 1;
       voicesPlayed += 1;
     }
@@ -99,12 +124,13 @@ for (let run = 0; run < runs; run += 1) {
       let sum = 0;
       for (let index = voices.length - 1; index >= 0; index -= 1) {
         const voice = voices[index];
-        if (voice.offset >= voice.samples.length) {
+        const value = sampleAt(voice.samples, voice.offset);
+        if (value === null) {
           voices.splice(index, 1);
           continue;
         }
-        sum += voice.samples[voice.offset] * gainAt(voice.bus, ducked);
-        voice.offset += 1;
+        sum += value * gainAt(voice.bus, ducked);
+        voice.offset += voice.rate;
       }
       if (bedSamples) {
         sum += bedSamples[bedOffset] * gainAt("music", ducked);
@@ -124,14 +150,16 @@ const report = {
   events: eventsMixed,
   voices: voicesPlayed,
   stolen,
+  pitched,
   bed: Boolean(bedSamples),
   peak_linear: Number(peak.toFixed(4)),
   peak_dbfs: peak > 0 ? Number((20 * Math.log10(peak)).toFixed(2)) : null,
   samples_at_or_over_unity: overUnity,
   heard: false,
   scope:
-    "Soma das vozes numa partida simulada, com o mesmo palco e folga do " +
-    "mixer. Sem dispositivo, sem limiar, sem aprovação, sem loudness percebido.",
+    "Soma das vozes numa partida simulada, com o mesmo palco, folga e " +
+    "taxa da corrente do mixer. Sem dispositivo, sem limiar, sem aprovação, " +
+    "sem loudness percebido.",
 };
 
 console.log(JSON.stringify(report, null, 2));

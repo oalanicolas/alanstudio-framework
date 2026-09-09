@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.67 — A soma também sobe de tom
+
+O jogo já subia o tom da coleta e da guarda com a corrente. `npm run
+mix` somava as vozes no pitch original — a simulação não era o
+mesmo palco. A taxa da corrente entra na soma; o relatório conta
+os disparos deslocados. `heard` continua falso. `audio_mix` permanece
+`slice`: soma no stub não é mix ouvido. Só `release` fica no piso.
+
+O que 0.9.67 não afirma: o harness não ouviu a partida e o pico
+no disco não aprova loudness.
+
 ## 0.9.66 — A aposta não guardada também cai
 
 A regra já dizia que corrente não guardada no fim se perde. O corpo

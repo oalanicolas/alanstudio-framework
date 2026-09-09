@@ -21,8 +21,11 @@ test("o mix relata a soma da partida sem importar limiar nem aprovar", async () 
   assert.equal(report.heard, false);
   assert.equal(report.bed, true);
   assert.ok(report.events > 0);
+  assert.ok(report.pitched > 0, "coleta e guarda na simulação precisam usar a taxa da corrente");
+  assert.ok(report.pitched <= report.events);
   assert.ok(Number.isFinite(report.peak_linear));
   assert.ok(report.peak_linear > 0);
   assert.match(report.scope, /partida simulada/);
+  assert.match(report.scope, /taxa da corrente/);
   assert.doesNotMatch(stdout, /LUFS|-14|aprovado|verified|4\.5/);
 });

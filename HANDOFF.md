@@ -29,10 +29,10 @@ acervo é `sfx import` / `sfx seed` (ffmpeg); importar não é ouvir.
 O starter
 já traz design original e variante (`-b`) nos papéis do verbo e na cama
 e carrega no mixer. A cama entra em loop no barramento de música.
-`npm run mix` soma cama e vozes na partida simulada com o mesmo palco
-e folga do mixer. `sfx --from` / `--as` desloca a voz no papel que o
-mixer já toca. Coleta e guarda sobem de tom com a corrente; o erro
-não herda. `heard` é sempre falso.
+`npm run mix` soma cama e vozes na partida simulada com o mesmo palco,
+folga e taxa da corrente do mixer. `sfx --from` / `--as` desloca a voz
+no papel que o mixer já toca. Coleta e guarda sobem de tom com a
+corrente; o erro não herda. `heard` é sempre falso.
 
 **Feel (`feel`):** lê `const CONFIG` (perdão, graça, hitstop, punch,
 telegraph, flash, rumble) e `record.json` de observação. `note` grava o recibo
