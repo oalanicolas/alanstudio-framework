@@ -7,7 +7,9 @@
     "move": "A/D ou setas",
     "dash": "Espaço ou K",
     "bank": "S ou J",
-    "hand": "IJKL + P/O"
+    "hand": "IJKL + P/O",
+    "look": "?look=dusk troca a paleta",
+    "spawn": "?spawn=dusk troca a chuva"
   },
   "substitutions": [
     {

@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.47 — O ciclo nomeia look e chuva
+
+O caminho ideia→jogo nomeava o verbo e as teclas. Look e chuva já
+existiam no jogo (`?look=`, `?spawn=`) e ninguém no `start` ou no
+`guide` os apontava. O manifesto declara os dois; o prompt e o passo
+de jogar os nomeiam. Sem declaração, o campo fica vazio. `executed`
+permanece falso. Só `release` fica no piso.
+
+O que 0.9.47 não afirma: o harness não abriu o jogo e não trocou
+look nem chuva.
+
 ## 0.9.46 — Uma mão completa o verbo
 
 O ciclo nomeava A/D e Espaço; o preset IJKL existia, mas guardar,

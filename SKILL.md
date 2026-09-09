@@ -20,7 +20,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | --- | --- |
 | Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing`. Ele nomeia os projetos e lista os starters |
 | Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
-| Jogo novo | Destino inexistente e engine web: `start <novo> --starter <starter> --idea "<fantasia>"` cria o projeto, põe a frase na tela do primeiro ciclo e devolve `play` + `then.note` sem executar. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive o cluster de uma mão, se houver `hand`. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando) mapeia start → jogar → note. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
+| Jogo novo | Destino inexistente e engine web: `start <novo> --starter <starter> --idea "<fantasia>"` cria o projeto, põe a frase na tela do primeiro ciclo e devolve `play` + `then.note` sem executar. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive o cluster de uma mão e as queries de look e chuva, se houver. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando) mapeia start → jogar → note. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
 | Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, `note <projeto> --author … --note "o que o verbo sentiu"`. Depois `roles` e `context --focus audio` |
 | Paleta, conteúdo no código ou jogo só na máquina de quem construiu | `art` / `content` / `ship` <projeto>; `consistent`/`enough`/`shipped` ficam `false` |
@@ -154,8 +154,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    passo 2 o nomeia; `executed` fica `false`. `next` fica em `then.lost`.
    **`start <projeto>`** cria se o destino estiver livre e devolve
    `play` + `then.note`. Se o starter declara o verbo e as teclas, o
-   prompt as nomeia — inclusive o cluster de uma mão, se houver
-   `hand`. Não executa o jogo. `--idea` entra no brief
+   prompt as nomeia — inclusive o cluster de uma mão e as queries de
+   look e chuva, se o starter as declara. Não executa o jogo. `--idea` entra no brief
    e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief
    continua rascunho. A frase na tela não muda o verbo.
    **`roles <projeto>`** lê os papéis de áudio que o código declara e os
