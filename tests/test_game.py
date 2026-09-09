@@ -2448,6 +2448,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["then"]["play"], report["play"])
         self.assertIn("note", report["then"]["note"])
         self.assertIn("next", report["then"]["lost"])
+        self.assertEqual(report["cycle"]["verb"], "coletar orbes e guardar a corrente antes do estilhaço")
+        self.assertIn("A/D", report["cycle"]["move"])
+        self.assertIn("Espaço", report["prompt"])
+        self.assertIn("guardar", report["prompt"])
         self.assertIn(report["play"], report["prompt"])
         self.assertIn("note", report["prompt"])
         self.assertEqual(report["next"]["proposal"]["basis"], "playable.unplayed")
@@ -2469,6 +2473,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["steps"][0]["done"])
         self.assertFalse(report["steps"][1]["executed"])
         self.assertEqual(report["steps"][1]["kind"], "playable.unplayed")
+        self.assertEqual(report["cycle"]["verb"], "coletar orbes e guardar a corrente antes do estilhaço")
+        self.assertEqual(report["steps"][1]["verb"], report["cycle"]["verb"])
+        self.assertIn("A/D", report["steps"][1]["controls"]["move"])
         self.assertIn("note", report["steps"][2]["command"])
         self.assertNotIn(" next ", f" {report['steps'][2]['command']} ")
         self.assertFalse(report["steps"][2]["executed"])
@@ -2501,6 +2508,22 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(mapped["command"], "guide")
         self.assertFalse(mapped["executed"])
         self.assertEqual(len(mapped["steps"]), 3)
+
+    def test_start_omits_the_cycle_when_the_starter_does_not_declare_it(self):
+        self.fake_starter("mudo", {
+            "schema_version": 1,
+            "title": "Nome Real",
+            "substitutions": [{"field": "project_title", "value": "Nome Real", "files": ["README.md"]}],
+        })
+        destination = self.root / "sem-verbo"
+        report = game.start_project(destination, "mudo", documents=False)
+        self.assertIsNone(report["cycle"])
+        self.assertNotIn("Verbo:", report["prompt"])
+        self.assertFalse(report["executed"])
+        guided = game.guide_cycle(destination, "mudo")
+        self.assertIsNone(guided["cycle"])
+        self.assertNotIn("verb", guided["steps"][1])
+        self.assertEqual(len(guided["steps"]), 3)
 
     def test_init_seeds_the_idea_and_still_calls_the_brief_a_draft(self):
         destination = self.root / "com-ideia"

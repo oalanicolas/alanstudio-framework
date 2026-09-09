@@ -2785,6 +2785,40 @@ def starter_manifest(starter):
     return manifest
 
 
+CYCLE_KEYS = ("verb", "move", "dash", "bank")
+
+
+def starter_cycle(starter):
+    if not nonempty(starter):
+        return None
+    try:
+        manifest = starter_manifest(starter)
+    except ValueError:
+        return None
+    raw = manifest.get("cycle") if isinstance(manifest, dict) else None
+    if not isinstance(raw, dict):
+        return None
+    cycle = {}
+    for key in CYCLE_KEYS:
+        value = raw.get(key)
+        if nonempty(value) and isinstance(value, str):
+            cycle[key] = value.strip()
+    return cycle if "verb" in cycle else None
+
+
+def cycle_line(cycle):
+    if not cycle:
+        return ""
+    parts = [f"Verbo: {cycle['verb']}."]
+    if cycle.get("move"):
+        parts.append(f"Mover {cycle['move']}.")
+    if cycle.get("dash"):
+        parts.append(f"Avançar {cycle['dash']}.")
+    if cycle.get("bank"):
+        parts.append(f"Guardar {cycle['bank']}.")
+    return " ".join(parts)
+
+
 # Substituição em passo único, do valor mais longo para o mais curto, para que
 # o texto recém-inserido nunca seja candidato da próxima troca.
 def substitute(text, pairs):
@@ -2930,6 +2964,8 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
         scripts, manager = {}, None
     play = play_command(destination, scripts, manager)
     then = cycle_then(destination, play)
+    cycle = starter_cycle(chosen)
+    how = cycle_line(cycle)
     return {
         "schema_version": 1,
         "project": str(destination),
@@ -2938,13 +2974,15 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
         "idea": idea.strip() if nonempty(idea) else None,
         "brief": planted["brief"],
         "surface": planted["surface"],
+        "cycle": cycle,
         "play": play,
         "init": init_report,
         "next": proposal,
         "then": then,
         "prompt": (
             f"O jogo não foi aberto. Cole e rode: {play}. "
-            f"Depois de uma partida, no harness: {then['note']}. "
+            + (f"{how} " if how else "")
+            + f"Depois de uma partida, no harness: {then['note']}. "
             "`next` só se o ciclo já correu e você não sabe o que falta."
         ) if play else (
             "Sem comando de abrir: identifique o entrypoint e rode `next`. "
@@ -2953,8 +2991,9 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
         "executed": False,
         "scope": (
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
-            "aponta o comando que abre o jogo. Depois de uma partida, o próximo "
-            "comando do harness é `note`, não `next`. Não executa o jogo, não "
+            "aponta o comando que abre o jogo. Se o starter declara o verbo e "
+            "as teclas, o prompt as nomeia — não executa o jogo. Depois de uma "
+            "partida, o próximo comando do harness é `note`, não `next`. Não "
             "instala dependências e não avalia a proposta. `--idea` entra no "
             "brief como frase e, se houver `data/copy.json`, na tela do "
             "primeiro ciclo. O brief continua rascunho. A frase na tela não "
@@ -2995,6 +3034,17 @@ def guide_cycle(destination=None, starter=None, idea=None):
     next_target = dest if dest is not None else Path("<destino>")
     play_cmd = play or play_fallback
     then = cycle_then(next_target, play_cmd)
+    cycle = starter_cycle(chosen)
+    play_step = {
+        "n": 2,
+        "do": "jogar no próprio dispositivo",
+        "command": play_cmd,
+        "kind": nxt["proposal"]["basis"] if nxt else "playable.unplayed",
+        "executed": False,
+    }
+    if cycle:
+        play_step["verb"] = cycle["verb"]
+        play_step["controls"] = {key: cycle[key] for key in ("move", "dash", "bank") if key in cycle}
     return {
         "schema_version": 1,
         "command": "guide",
@@ -3003,6 +3053,7 @@ def guide_cycle(destination=None, starter=None, idea=None):
         "starter": chosen,
         "path": str(dest) if dest is not None else None,
         "exists": exists,
+        "cycle": cycle,
         "then": then,
         "steps": [
             {
@@ -3011,13 +3062,7 @@ def guide_cycle(destination=None, starter=None, idea=None):
                 "command": harness_command(*start_parts),
                 "done": exists,
             },
-            {
-                "n": 2,
-                "do": "jogar no próprio dispositivo",
-                "command": play_cmd,
-                "kind": nxt["proposal"]["basis"] if nxt else "playable.unplayed",
-                "executed": False,
-            },
+            play_step,
             {
                 "n": 3,
                 "do": "gravar o que o verbo sentiu",
@@ -3026,8 +3071,9 @@ def guide_cycle(destination=None, starter=None, idea=None):
             },
         ],
         "scope": (
-            "Três passos ideia→ciclo: start, jogar, note. `next` fica para "
-            "quando o ciclo já correu e você não sabe o que falta. Não cria o "
+            "Três passos ideia→ciclo: start, jogar, note. Se o starter declara "
+            "o verbo e as teclas, o passo 2 as nomeia. `next` fica para quando "
+            "o ciclo já correu e você não sabe o que falta. Não cria o "
             "projeto, não abre o jogo e não avalia a proposta. Passos 2 e 3 "
             "permanecem `executed` falsos mesmo quando o destino já existe."
         ),

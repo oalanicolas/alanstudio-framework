@@ -54,7 +54,7 @@ Com starter (REUSE de infraestrutura já testada):
 python3 scripts/game.py start /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
 ```
 
-O JSON devolve `play` (o comando que **abre** o jogo) e `then.note` (o próximo comando do harness **depois** de uma partida). Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo.
+O JSON devolve `play` (o comando que **abre** o jogo), `then.note` (o próximo comando do harness **depois** de uma partida) e, se o starter declara, `cycle` (verbo e teclas). Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo.
 
 `guide` (também sem subcomando: `python3 scripts/game.py`) mapeia os três passos — start → jogar → `note` — sem executar nenhum:
 

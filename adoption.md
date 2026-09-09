@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.38 — O primeiro ciclo nomeia o verbo e as teclas
+
+`start` e `guide` apontavam o serve e o `note`, mas quem ia jogar
+ainda precisava achar o verbo no HTML. O starter declara `cycle` no
+manifesto; o prompt e o passo 2 as nomeiam. Sem declaração, o campo
+fica vazio — o harness não inventa tecla. `executed` permanece falso.
+A frase na tela não muda o verbo. Só `release` fica no piso.
+
+O que 0.9.38 não afirma: o harness não abriu o jogo e nomear a tecla
+não é partida jogada.
+
 ## 0.9.37 — A cama ocupa o barramento de música
 
 O palco tinha `music` e o mix o abaixava no impacto, mas nada tocava
