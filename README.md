@@ -87,6 +87,25 @@ confiança de estado ficam para trás e definem a leitura final.
 Cada critério é observável, mas a observação é trabalho humano ou do agente, com
 condição e autor declarados.
 
+O que o projeto **declara** é outra coisa, e essa o harness lê:
+
+```sh
+python3 scripts/game.py bar /caminho/do/laboratorio/meu-jogo
+```
+
+`bar` procura, nos documentos do projeto — README, qa, devlog, gdd, art-bible —
+uma tabela com uma linha por dimensão: degrau atual, degrau seguinte e o critério
+que falta. É o formato que o [README do
+starter](assets/starters/canvas-arcade/README.md) já usa. O comando devolve o
+piso, quais dimensões estão nele e o degrau percebido — este último **só** quando
+as dez tiverem linha, porque dimensão não declarada não é dimensão alta.
+
+Ele confere a forma da declaração, não o jogo: dimensão conhecida, degrau
+existente, alvo no degrau imediatamente seguinte. **Uma tabela otimista sai daí
+intacta.** O ganho não é aferição, é que a dimensão mais baixa passa a ter nome —
+e `next` propõe subir exatamente ela, citando o critério escrito no documento e a
+linha de onde veio, em vez de listar as dez.
+
 ## Starters
 
 `assets/starters/` guarda projetos de referência completos para o passo REUSE.

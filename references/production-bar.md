@@ -234,6 +234,33 @@ a de desenvolvimento. Receita: [release](../recipes/release.md).
 4. Uma dimensão intencionalmente fora do jogo é registrada como decisão, com motivo.
    “Não aplicável” não pode esconder desconhecimento.
 
+## Como declarar, para o harness ler
+
+Uma tabela em Markdown, uma linha por dimensão, em `README.md`, `docs/qa.md`,
+`docs/devlog.md`, `docs/gdd.md` ou `docs/art-bible.md`:
+
+```
+| Dimensão | Degrau | Critério do degrau seguinte |
+| --- | --- | --- |
+| `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término |
+| `audio_mix` | `prototype` | `playable`: som licenciado nas ações centrais, com origem registrada |
+```
+
+O critério tem de ser o do degrau **imediatamente** seguinte. Apontar dois acima
+transforma a tarefa em aspiração, e ela sai da lista do que fazer amanhã.
+
+`bar <projeto>` devolve o piso, quais dimensões estão nele e o degrau percebido —
+este só quando as dez tiverem linha, porque dimensão não declarada não é dimensão
+alta. Duas linhas discordantes sobre a mesma dimensão não se resolvem por
+precedência: a mais baixa vale e o conflito fica listado para ser resolvido.
+`next` usa isso para propor subir a dimensão mais baixa pelo nome, citando o
+critério escrito e a linha de onde veio.
+
+O que o harness confere é a **forma**: dimensão conhecida, degrau existente, alvo
+no degrau seguinte. Ele não observa o jogo. Uma tabela otimista sai de lá intacta,
+e é por isso que o item 3 acima — condição, evidência e autor — continua sendo o
+trabalho de verdade.
+
 ## Limites
 
 Esta escada não mede diversão, não aprova arte e não substitui a aprovação do

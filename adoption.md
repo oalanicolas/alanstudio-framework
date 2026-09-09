@@ -20,7 +20,12 @@ aceito antes e depois do subcomando, como a documentação já afirmava.
 
 **Acabar.** A [barra de acabamento](references/production-bar.md) nomeia cinco
 degraus em dez dimensões de ofício, com a observação que sustenta cada degrau, e
-chega em todo `context` pelo campo `production_bar`. Seis receitas novas — feel,
+chega em todo `context` pelo campo `production_bar`. `bar <projeto>` lê a tabela
+de degraus que o projeto declara nos próprios documentos e devolve o piso, as
+dimensões que estão nele e — só quando as dez tiverem linha — o degrau percebido;
+com isso `next` propõe subir a dimensão mais baixa pelo nome, citando o critério
+escrito e a linha de onde veio. O harness confere a forma da declaração, não o
+jogo: tabela otimista sai de lá intacta. Seis receitas novas — feel,
 performance, acessibilidade, áudio, persistência, release — e a etapa `release`
 fecham o ciclo. O starter `canvas-arcade` existe para que o passo REUSE tenha um
 candidato real: loop de passo fixo, RNG semeado, save versionado com migração,

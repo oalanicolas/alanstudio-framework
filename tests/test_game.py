@@ -1121,7 +1121,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bases = [item["basis"] for item in result["alternatives"]]
         self.assertNotIn("areas.not_located", bases)
         self.assertIn("scripts", bases)
-        self.assertIn("production_bar.dimensions", bases)
+        # O projeto herda a tabela do starter, então a barra já tem piso e a
+        # proposta nomeia a dimensão em vez de listar as dez.
+        self.assertIn("production_bar.floor", bases)
+        self.assertEqual(result["signals"]["production_bar_floor"], "prototype")
+        self.assertEqual(result["signals"]["production_bar_undeclared"], [])
 
     def test_next_falls_back_to_the_production_bar_when_nothing_is_missing(self):
         self.foundation_document()
@@ -1129,8 +1133,121 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         result = game.next_step(self.project, "feel")
         self.assertEqual(result["signals"]["gaps"], [])
         self.assertEqual(result["signals"]["scripts"], [])
-        self.assertEqual(result["proposal"]["basis"], "production_bar.dimensions")
+        # Sem tabela de degraus no projeto, a barra é vocabulário: a proposta é
+        # declarar, não subir uma dimensão que ninguém situou.
+        self.assertEqual(result["proposal"]["basis"], "production_bar.undeclared")
+        self.assertEqual(result["signals"]["production_bar_undeclared"], list(game.BAR_DIMENSIONS))
+        self.assertIsNone(result["signals"]["production_bar_floor"])
         self.assertEqual(result["signals"]["production_bar_dimensions"], list(game.FOCUS_DIMENSIONS["feel"]))
+
+    # Subcomando que existe e ninguém documenta é recurso invisível; o inverso é
+    # promessa sem código. O `--help` do próprio parser é a lista canônica.
+    def test_every_subcommand_the_cli_accepts_is_named_in_the_readme(self):
+        run = subprocess.run([sys.executable, str(SCRIPT), "--help"], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        listed = re.search(r"\{([a-z,\-]+)\}", run.stdout)
+        self.assertIsNotNone(listed, run.stdout)
+        readme = (Path(game.FRAMEWORK) / "README.md").read_text(encoding="utf-8")
+        for command in listed.group(1).split(","):
+            self.assertIn(f"game.py {command}", readme, f"`{command}` não aparece no README")
+
+    # A barra nomeava dez dimensões e nunca sabia em qual o projeto estava, então
+    # a única coisa capaz de virar tarefa — a dimensão mais baixa — ficava fora do
+    # alcance do harness. A declaração vem do documento do próprio projeto.
+    def declare_bar(self, tiers, path="README.md"):
+        rows = [f"| `{key}` | `{tier}` | `{target}`: critério declarado no documento do projeto |"
+                for key, (tier, target) in tiers.items()]
+        document = self.project / path
+        document.parent.mkdir(parents=True, exist_ok=True)
+        header = "" if document.is_file() else "# Jogo\n"
+        with document.open("a", encoding="utf-8") as handle:
+            handle.write(f"{header}\n| Dimensão | Degrau | Seguinte |\n| --- | --- | --- |\n" + "\n".join(rows) + "\n")
+        return document
+
+    def test_bar_reads_the_tier_the_project_declares_and_never_assigns_one(self):
+        self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS} | {"pacing": ("playable", "slice")})
+        report = game.bar_reading(self.project)
+        self.assertFalse(report["assessed"])
+        self.assertEqual(report["floor"], "playable")
+        self.assertEqual(report["at_floor"], ["pacing"])
+        self.assertEqual(report["perceived_tier"], "playable")
+        self.assertEqual(report["undeclared"], [])
+        self.assertEqual([item["key"] for item in report["dimensions"]], list(game.BAR_DIMENSIONS))
+        pacing = next(item for item in report["dimensions"] if item["key"] == "pacing")
+        self.assertEqual(pacing["next_tier"], "slice")
+        self.assertTrue(pacing["source"].startswith("README.md:"))
+
+    # Dimensão sem linha não é dimensão alta: o mínimo entre as dez fica
+    # desconhecido, e um degrau percebido ali seria invenção.
+    def test_bar_withholds_the_perceived_tier_while_a_dimension_has_no_line(self):
+        partial = {key: ("shippable", "flagship") for key in list(game.BAR_DIMENSIONS)[:9]}
+        self.declare_bar(partial)
+        report = game.bar_reading(self.project)
+        self.assertEqual(report["undeclared"], [list(game.BAR_DIMENSIONS)[9]])
+        self.assertEqual(report["floor"], "shippable")
+        self.assertIsNone(report["perceived_tier"])
+        empty = game.bar_reading(self.root / "sem-nada")
+        self.assertEqual(empty["undeclared"], list(game.BAR_DIMENSIONS))
+        self.assertIsNone(empty["floor"])
+        self.assertIsNone(empty["perceived_tier"])
+        self.assertFalse(empty["exists"])
+
+    def test_bar_keeps_the_lower_tier_when_two_documents_disagree(self):
+        self.declare_bar({key: ("shippable", "flagship") for key in game.BAR_DIMENSIONS})
+        self.declare_bar({"feel": ("prototype", "playable")}, path="docs/qa.md")
+        report = game.bar_reading(self.project)
+        self.assertEqual([item["dimension"] for item in report["conflicts"]], ["feel"])
+        feel = next(item for item in report["dimensions"] if item["key"] == "feel")
+        self.assertEqual(feel["tier"], "prototype")
+        self.assertEqual(feel["source"], "docs/qa.md:5")
+        self.assertEqual(report["at_floor"], ["feel"])
+
+    def test_bar_ignores_a_row_that_names_something_the_bar_does_not(self):
+        self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS})
+        with (self.project / "README.md").open("a", encoding="utf-8") as document:
+            document.write("| `inventada` | `slice` | `shippable`: linha que não pertence à barra |\n")
+            document.write("| `feel` | `lendario` | `shippable`: degrau que não existe |\n")
+        report = game.bar_reading(self.project)
+        self.assertEqual([item["key"] for item in report["dimensions"]], list(game.BAR_DIMENSIONS))
+        self.assertEqual(next(item for item in report["dimensions"] if item["key"] == "feel")["tier"], "slice")
+
+    def test_next_names_the_floor_dimension_once_the_project_declares_the_bar(self):
+        self.foundation_document()
+        (self.project / "index.html").write_text("<canvas id=\"jogo\"></canvas>")
+        self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS} | {"audio_mix": ("prototype", "playable")})
+        result = game.next_step(self.project, "feel")
+        proposal = result["proposal"]
+        self.assertEqual(proposal["basis"], "production_bar.floor")
+        self.assertIn("`audio_mix`", proposal["action"])
+        self.assertIn("`prototype`", proposal["action"])
+        self.assertIn("`playable`", proposal["action"])
+        self.assertIn("README.md:", proposal["why"])
+        self.assertFalse(result["executed"])
+
+    def test_bar_cli_reads_a_project_created_by_init_and_writes_nothing(self):
+        destination = self.root / "Farol do Sul"
+        game.init(destination, "canvas-arcade")
+        before = {path: path.stat().st_mtime_ns for path in sorted(destination.rglob("*")) if path.is_file()}
+        run = subprocess.run([sys.executable, str(SCRIPT), "bar", str(destination), "--root", str(self.root)], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["perceived_tier"], "prototype")
+        self.assertEqual(report["undeclared"], [])
+        self.assertEqual(report["conflicts"], [])
+        self.assertFalse(report["assessed"])
+        self.assertEqual(before, {path: path.stat().st_mtime_ns for path in sorted(destination.rglob("*")) if path.is_file()})
+
+    def test_context_carries_the_declared_tier_of_every_dimension_it_selects(self):
+        self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS} | {"legibility": ("playable", "slice")})
+        bar = game.context(self.project, "feel")["production_bar"]
+        self.assertFalse(bar["assessed"])
+        self.assertIsNone(bar["observed"])
+        self.assertEqual(bar["declaration"]["floor"], "playable")
+        for item in bar["dimensions"]:
+            self.assertIsNotNone(item["declared"], item["key"])
+        selected = {item["key"]: item["declared"]["tier"] for item in bar["dimensions"]}
+        self.assertEqual(selected["legibility"], "playable")
+        self.assertEqual(selected["feel"], "slice")
 
     def test_proposed_commands_survive_a_path_with_spaces(self):
         # A fixture vive em "jogo com espaços" de propósito: comando proposto sem

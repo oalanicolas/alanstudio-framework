@@ -215,17 +215,128 @@ def studies_for(focus, studies_root):
     return found
 
 
-def production_bar(focus, stage=None):
+# A barra só fecha o ciclo se o projeto puder dizer onde está. Sem isso o
+# harness nomeia dez dimensões e nunca sabe qual delas é a mais baixa — que é
+# justamente a única informação capaz de virar a próxima tarefa.
+#
+# A tabela é a mesma do README do starter, em Markdown, porque documento é o
+# formato canônico deste framework e a tabela já existia lá escrita à mão.
+BAR_ROW = re.compile(r"^\|\s*`(\w+)`\s*\|\s*`(\w+)`\s*\|\s*(?:`(\w+)`\s*:)?\s*(.*?)\s*\|\s*$")
+BAR_SOURCES = ("README.md", "docs/qa.md", "docs/devlog.md", "docs/gdd.md", "docs/art-bible.md")
+
+
+def bar_declaration(project):
+    declared = {}
+    conflicts = []
+    for relative in BAR_SOURCES:
+        path = project / relative
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+        except OSError:
+            continue
+        for number, line in enumerate(lines, 1):
+            match = BAR_ROW.match(line)
+            if not match:
+                continue
+            dimension, tier, target, gap = match.groups()
+            if dimension not in BAR_DIMENSIONS or tier not in BAR_TIERS:
+                continue
+            if target is not None and target not in BAR_TIERS:
+                target = None
+            entry = {
+                "tier": tier,
+                "next_tier": target,
+                "gap": gap or None,
+                "source": f"{relative}:{number}",
+            }
+            previous = declared.get(dimension)
+            if previous is None:
+                declared[dimension] = entry
+            elif previous["tier"] != tier:
+                # Duas declarações discordantes não se resolvem por precedência:
+                # a mais baixa vale, e o conflito fica visível para ser resolvido.
+                conflicts.append({"dimension": dimension, "sources": [previous["source"], entry["source"]]})
+                if BAR_TIERS.index(tier) < BAR_TIERS.index(previous["tier"]):
+                    declared[dimension] = entry
+    undeclared = [key for key in BAR_DIMENSIONS if key not in declared]
+    floor = min((item["tier"] for item in declared.values()), key=BAR_TIERS.index) if declared else None
+    at_floor = [key for key, item in declared.items() if item["tier"] == floor]
+    return {
+        "declared": declared,
+        "undeclared": undeclared,
+        "conflicts": conflicts,
+        "floor": floor,
+        "at_floor": at_floor,
+        # Dimensão não declarada não é dimensão alta: enquanto faltar uma, o
+        # mínimo entre as dez é desconhecido, e o degrau percebido não sai.
+        "perceived_tier": None if undeclared or not declared else floor,
+        "sources": list(BAR_SOURCES),
+    }
+
+
+def bar_reading(project):
+    declaration = bar_declaration(project)
+    declared = declaration["declared"]
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "tiers": list(BAR_TIERS),
+        "dimensions": [
+            {
+                "key": key,
+                "label": BAR_DIMENSIONS[key],
+                **(declared.get(key) or {"tier": None, "next_tier": None, "gap": None, "source": None}),
+            }
+            for key in BAR_DIMENSIONS
+        ],
+        "floor": declaration["floor"],
+        "at_floor": declaration["at_floor"],
+        "undeclared": declaration["undeclared"],
+        "conflicts": declaration["conflicts"],
+        "perceived_tier": declaration["perceived_tier"],
+        "rule": "O degrau percebido de um jogo é o mínimo entre suas dimensões, não a média.",
+        "guide": str(FRAMEWORK / "references/production-bar.md"),
+        "sources": declaration["sources"],
+        "assessed": False,
+        "scope": (
+            "Lê a declaração do próprio projeto e confere só a forma dela: dimensão conhecida, degrau existente "
+            "e alvo no degrau seguinte. Não observa o jogo, não mede nada e não corrige a declaração — uma "
+            "tabela otimista sai daqui intacta. `perceived_tier` só aparece quando as dez dimensões têm linha, "
+            "porque dimensão não declarada não é dimensão alta."
+        ),
+    }
+
+
+def production_bar(focus, stage=None, project=None):
     dimensions = FOCUS_DIMENSIONS.get(focus, ())
+    declaration = bar_declaration(project) if project is not None else None
     return {
         "tiers": list(BAR_TIERS),
         "tier_target": STAGE_TIERS.get(stage),
-        "dimensions": [{"key": key, "label": BAR_DIMENSIONS[key]} for key in dimensions],
+        "dimensions": [
+            {
+                "key": key,
+                "label": BAR_DIMENSIONS[key],
+                "declared": (declaration["declared"].get(key) if declaration else None),
+            }
+            for key in dimensions
+        ],
         "rule": "O degrau percebido de um jogo é o mínimo entre suas dimensões, não a média.",
         "guide": str(FRAMEWORK / "references/production-bar.md"),
+        "declaration": declaration,
         "observed": None,
         "assessed": False,
-        "scope": "Seleção das dimensões pertinentes ao foco e à etapa. O comando não atribui degrau, não mede acabamento e não aprova entrega; declarar um degrau exige observação com condição, evidência e autor.",
+        "scope": (
+            "Seleção das dimensões pertinentes ao foco e à etapa, mais o degrau que o próprio projeto declara "
+            "nos documentos listados em `declaration.sources`. O harness lê a declaração e confere só a forma "
+            "dela: não atribui degrau, não mede acabamento e não aprova entrega. Declarar um degrau exige "
+            "observação com condição, evidência e autor — a tabela é a afirmação, não a prova."
+        ),
     }
 
 
@@ -539,7 +650,7 @@ def context(project, focus, stage=None, studies_root=None, event="task"):
         "metadata_issues": metadata_issues,
         "scripts": {name: {"body": body, "argv": [manager, "run", name] if manager else None} for name, body in scripts.items()},
         "capabilities": mention_capabilities(project), "foundation": foundation,
-        "production_bar": production_bar(focus, stage),
+        "production_bar": production_bar(focus, stage, project),
         "continuity": {
             "status": "sources_found" if foundation["continuity_sources"] else "not_located",
             "sources": [dict(item, path=str(project / item["path"])) for item in foundation["continuity_sources"]],
@@ -962,14 +1073,45 @@ def next_step(project, focus="create", studies_root=None):
             [harness_command("verify", project, "--script", scripts[0], "--output", "CAMINHO_NOVO")],
             "scripts",
         )
-    dimensions = [item["key"] for item in payload["production_bar"]["dimensions"]]
-    propose(
-        "Observar as dimensões pertinentes da barra e agir na mais baixa: " + ", ".join(dimensions),
-        "O degrau percebido é o mínimo entre as dimensões; subir a que já está alta não muda a leitura do jogo.",
-        "Cada dimensão pertinente tem degrau declarado com condição, evidência e autor, e a mais baixa subiu um degrau.",
-        [harness_command("context", project, "--focus", focus)],
-        "production_bar.dimensions",
-    )
+    bar = payload["production_bar"]
+    dimensions = [item["key"] for item in bar["dimensions"]]
+    declaration = bar["declaration"]
+    # Sem declaração, a barra é um vocabulário; com ela, a dimensão mais baixa é
+    # uma tarefa com nome. As duas propostas são diferentes por isso.
+    if declaration["undeclared"]:
+        propose(
+            "Declarar o degrau das dimensões ainda sem linha: " + ", ".join(declaration["undeclared"]),
+            "Dimensão não declarada não é dimensão alta — enquanto faltar uma, o mínimo entre as dez é "
+            "desconhecido e nenhuma leitura do acabamento se sustenta.",
+            f"Cada dimensão tem uma linha em {declaration['sources'][0]} com degrau atual, degrau seguinte e "
+            "o critério que falta, e o degrau percebido sai do mínimo.",
+            [harness_command("context", project, "--focus", focus, "--stage", "qa")],
+            "production_bar.undeclared",
+        )
+    elif declaration["conflicts"]:
+        propose(
+            "Resolver declaração de degrau em conflito: "
+            + ", ".join(item["dimension"] for item in declaration["conflicts"]),
+            "Duas linhas discordantes sobre a mesma dimensão não se resolvem por precedência; enquanto "
+            "discordarem, a mais baixa é a que vale e a leitura do projeto fica em dúvida.",
+            "Cada dimensão tem uma declaração vigente, e as demais estão marcadas como histórico.",
+            [harness_command("scan", project)],
+            "production_bar.conflicts",
+        )
+    else:
+        lowest = declaration["at_floor"][0]
+        entry = declaration["declared"][lowest]
+        propose(
+            f"Subir `{lowest}` de `{entry['tier']}` para `{entry['next_tier'] or 'o degrau seguinte'}`: "
+            + (entry["gap"] or "critério declarado no próprio documento"),
+            "O degrau percebido é o mínimo entre as dimensões; subir a que já está alta não muda a leitura do "
+            f"jogo. Hoje o piso é `{declaration['floor']}` em {', '.join(declaration['at_floor'])}, "
+            f"segundo {entry['source']}.",
+            f"`{lowest}` cumpre o critério do degrau seguinte, com condição, evidência e autor declarados, e a "
+            "linha correspondente é atualizada.",
+            [harness_command("context", project, "--focus", focus)],
+            "production_bar.floor",
+        )
     return {
         "schema_version": 1,
         "project": str(project),
@@ -987,6 +1129,8 @@ def next_step(project, focus="create", studies_root=None):
             "scripts": scripts,
             "package_manager": payload["package_manager"],
             "production_bar_dimensions": dimensions,
+            "production_bar_floor": declaration["floor"],
+            "production_bar_undeclared": declaration["undeclared"],
         },
         "context_command": harness_command("context", project, "--focus", focus),
         "authority": "agent_resolves",
@@ -1151,6 +1295,8 @@ def main():
     upcoming.add_argument("--focus", choices=FOCI, default="create")
     initial_scan = commands.add_parser("scan", parents=[common])
     initial_scan.add_argument("project")
+    reading = commands.add_parser("bar", parents=[common], help="degrau de acabamento que o projeto declara, e qual dimensão é o piso")
+    reading.add_argument("project")
     ctx = commands.add_parser("context", parents=[common])
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
@@ -1199,6 +1345,8 @@ def main():
             emit(next_step(resolve(args.project, root), args.focus, studies_root=default_studies_root(root)))
         elif args.action == "scan":
             emit(scan(resolve(args.project, root)))
+        elif args.action == "bar":
+            emit(bar_reading(resolve(args.project, root)))
         elif args.action == "context":
             emit(context(resolve(args.project, root), args.focus, args.stage, studies_root=default_studies_root(root), event=args.event))
         elif args.action == "template":

@@ -53,6 +53,10 @@ evidência, preservando a direção do usuário e a qualidade visual aprovada.
    baixo. Escada, critérios observáveis e provas:
    [barra de acabamento](references/production-bar.md). Nenhum comando atribui um
    degrau; ao declarar um, declare também dispositivo, versão, cena e quem observou.
+   Declare em tabela, uma linha por dimensão, com degrau atual, degrau seguinte e
+   o critério que falta — `bar <projeto>` lê essa tabela e diz qual é o piso, e
+   `next` passa a propor subir a dimensão pelo nome. O harness confere a forma da
+   declaração, nunca o jogo: tabela otimista sai de lá intacta.
 4. **REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes
    pertinentes. `doctor` lista os starters disponíveis; começar por um deles é
    REUSE, escrever um loop do zero é CREATE. Se o laboratório tiver `shared/sfx`,
