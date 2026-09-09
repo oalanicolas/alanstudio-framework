@@ -17,6 +17,10 @@ Requer Node 20 ou mais recente. Não há dependências a instalar.
 npm run serve      # abre em http://localhost:8080
 ```
 
+`?look=dusk` troca a paleta e `?spawn=dusk` troca a chuva, sem recomeçar
+o projeto. O `start` do harness nomeia as duas queries quando o manifesto
+as declara.
+
 Módulos ES não carregam por `file://`, então abrir `index.html` direto no
 navegador não funciona; o servidor local existe só por isso.
 
