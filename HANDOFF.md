@@ -31,7 +31,8 @@ e folga do mixer. `heard` é sempre falso.
 telegraph, flash) e `record.json` de observação. `note` grava o recibo
 curto. `felt` é sempre falso. `next` propõe `feel.unobserved` quando há
 constante e não há recibo. O starter bufferiza guardar no hitstop,
-desloca a câmera por verbo, marca a ameaça no trilho e distingue a
+desloca a câmera por verbo, achata o corpo numa medida por verbo,
+marca a ameaça no trilho e distingue a
 recuperação do dash.
 
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o

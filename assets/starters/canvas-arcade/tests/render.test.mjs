@@ -381,6 +381,29 @@ function playerFill(state) {
   return rects[0].style;
 }
 
+function playerBox(state) {
+  const rects = paint(state).rects.filter(
+    (rect) => rect.width < 40 && rect.y < PLAYER_Y && rect.y + rect.height > PLAYER_Y - 8,
+  );
+  assert.ok(rects.length > 0, "o jogador precisa ter sido pintado");
+  return rects[0];
+}
+
+test("guardar e o erro achatam o corpo diferente da coleta", () => {
+  const collected = createState(1);
+  collected.player.squash = CONFIG.feel.squashCollect;
+  const banked = createState(1);
+  banked.player.squash = CONFIG.feel.squashBank;
+  const struck = createState(1);
+  struck.player.squash = CONFIG.feel.squashHit;
+  const a = playerBox(collected);
+  const b = playerBox(banked);
+  const c = playerBox(struck);
+  assert.ok(b.width > a.width, "guardar senta mais que coletar");
+  assert.ok(c.width > b.width, "o erro esmaga mais que guardar");
+  assert.ok(c.height < b.height && b.height < a.height, "o achatamento precisa chegar no quadro");
+});
+
 test("a recuperação do dash não se parece com o dash nem com o descanso", () => {
   const idle = createState(1);
   const dash = createState(1);

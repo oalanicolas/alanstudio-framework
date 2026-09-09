@@ -94,12 +94,14 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   banked.chain = 3;
   advance(banked, { move: 0, dash: false, bank: true });
   assert.equal(banked.hitstop, CONFIG.feel.bankHitstopTicks);
+  assert.equal(banked.player.squash, CONFIG.feel.squashBank * fade);
   assert.equal(banked.shake, CONFIG.feel.bankShake * tremor);
 
   const struck = createState(2);
   struck.entities = [shard(struck.player.x, PLAYER_Y - 1)];
   advance(struck, neutralIntent());
   assert.equal(struck.hitstop, CONFIG.feel.hitHitstopTicks);
+  assert.equal(struck.player.squash, CONFIG.feel.squashHit * fade);
   assert.equal(struck.shake, CONFIG.feel.hitShake * tremor);
 
   const stops = [
@@ -108,7 +110,13 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
     CONFIG.feel.hitHitstopTicks,
   ];
   assert.equal(new Set(stops).size, 3, "hitstop repetido não distingue o verbo");
-  assert.notEqual(CONFIG.feel.squashDash, CONFIG.feel.squashCollect);
+  const squashes = [
+    CONFIG.feel.squashCollect,
+    CONFIG.feel.squashDash,
+    CONFIG.feel.squashBank,
+    CONFIG.feel.squashHit,
+  ];
+  assert.equal(new Set(squashes).size, 4, "squash repetido não distingue o verbo");
   assert.notEqual(CONFIG.feel.collectShake, CONFIG.feel.hitShake);
   assert.notEqual(CONFIG.feel.bankShake, CONFIG.feel.collectShake);
   assert.notEqual(dash.camera.x, 0, "dash empurra a câmera na direção");

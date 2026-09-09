@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.41 — Guardar e o erro achatam o corpo
+
+A barra dizia que os quatro verbos tinham squash próprio. Coleta e
+dash achatavam; guardar e o erro só deslocavam a câmera. Cada um
+agora senta numa medida distinta — o erro esmaga mais que o
+compromisso, o compromisso mais que a coleta. `felt` continua falso.
+`feel` permanece `playable`: silhueta no stub não é peso percebido.
+Só `release` fica no piso.
+
+O que 0.9.41 não afirma: o harness não jogou e o achatamento não
+aprova o feel.
+
 ## 0.9.40 — A tela nomeia as teclas vivas
 
 O aviso de guardar e o overlay ensinavam as teclas do manifesto

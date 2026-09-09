@@ -48,6 +48,8 @@ export const CONFIG = {
     shakeDecay: 0.86,
     squashCollect: 0.22,
     squashDash: 0.34, // partida do dash: alonga na direção, não achata
+    squashBank: 0.46, // compromisso: senta mais que a coleta
+    squashHit: 0.62, // o erro esmaga mais que guardar
     squashDecay: 0.82,
     punchCollectY: -1.6, // coleta sobe a câmera
     punchBankY: 2.4, // guardar confirma para baixo
@@ -337,6 +339,7 @@ function bank(state, intent) {
   state.bankLock = CONFIG.bank.lockTicks;
   state.hitstop = CONFIG.feel.bankHitstopTicks;
   state.shake += CONFIG.feel.bankShake;
+  state.player.squash = CONFIG.feel.squashBank;
   punch(state, 0, CONFIG.feel.punchBankY);
   state.recoverUntil = state.tick + rain(state).recoveryTicks;
   emit(state, "bank", { chain, gain });
@@ -430,6 +433,7 @@ function hit(state) {
   state.hitstop = CONFIG.feel.hitHitstopTicks;
   state.shake += CONFIG.feel.hitShake;
   state.flash = CONFIG.feel.flashHit;
+  state.player.squash = CONFIG.feel.squashHit;
   punch(state, 0, CONFIG.feel.punchHitY);
   emit(state, "hit", { lost });
 }
