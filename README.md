@@ -56,7 +56,7 @@ python3 scripts/game.py guide /caminho/do/laboratorio/meu-jogo --idea "atravessa
 python3 scripts/game.py start /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
 ```
 
-`guide` devolve os três passos (start → jogar → `next --focus feel`) sem executar nenhum. Com destino existente, preenche o comando que abre o jogo e o `kind` do `next`. `executed` fica `false`. `start` é o caminho ideia→ciclo: cria o projeto se o destino estiver livre (o mesmo que `init`), aponta o comando que **abre** o jogo e devolve a proposta do `next`. Não executa o jogo. `--idea` entra no brief como frase; o brief continua rascunho. Sem `start`, o caminho em dois passos continua valendo:
+`guide` devolve os quatro passos (start → jogar → `next --focus feel` → `note`) sem executar nenhum. Sem subcomando, `python3 scripts/game.py` é o próprio `guide`. Com destino existente, preenche o comando que abre o jogo e o `kind` do `next`. `executed` fica `false`. `start` é o caminho ideia→ciclo: cria o projeto se o destino estiver livre (o mesmo que `init`), aponta o comando que **abre** o jogo e devolve a proposta do `next`. Não executa o jogo. `--idea` entra no brief como frase; o brief continua rascunho. Sem `start`, o caminho em dois passos continua valendo:
 
 ```sh
 python3 scripts/game.py init /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"

@@ -31,6 +31,8 @@ já criado, `starter.json` não existe: ele é metadado do starter, não do jogo
 ```sh
 npm test           # regras, determinismo, ciclo de vida, save, mixagem e export
 npm run budget     # custo da simulação, por percentil, sem apresentação
+npm run peak       # pico de cada WAV no disco; não é mix ouvido
+npm run probe      # dispara o buffer declarado; não é peso percebido
 npm run build      # copia a árvore jogável para dist/; não prova outra máquina
 ```
 
@@ -101,11 +103,11 @@ junto a condição: dispositivo, versão, cena e quem observou.
 
 | Dimensão | Degrau | Critério do degrau seguinte |
 | --- | --- | --- |
-| `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor distintos e som; o perdão de entrada está declarado, não medido |
+| `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor distintos e som; `npm run probe` conta o buffer na simulação, não o peso percebido |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — o que existe hoje é medição de placa, borda e faixa em quadro estático |
 | `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; `consistent` é falso |
-| `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — barramento, prioridade, ducking e variação (`<papel>-b.wav`) já existem; loudness não foi medido |
-| `pacing` | `playable` | `slice`: o aviso some depois da primeira decisão e não tapa o verbo — some após guardar; ainda não foi observado em sessão |
+| `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — `npm run peak` relata o pico do arquivo, não do mix em cena; loudness percebido não foi medido |
+| `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; abandono e erro repetido ainda não foram investigados |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada, perda de foco — além do teste de dado inválido |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
 | `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena — `npm run contrast` relata pares hex sem limiar; assistência existe; movimento ainda não foi observado |

@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.21 — Prática antes do risco, pico sem limiar e o harness sem subcomando
+
+A chuva começa só com orbes (`practiceTicks`) e guardar alonga o
+intervalo (`recoveryTicks`). `pacing` sobe a `slice`. A curva com
+quem nunca viu o jogo continua pendente. `npm run peak` relata o pico
+de cada WAV sem LUFS nem aprovação; `npm run probe` conta o buffer
+declarado sem chamar isso de peso. `python3 scripts/game.py` sem
+subcomando é o `guide` de quatro passos. `heard` e `felt` continuam
+falsos. Só `release` fica no piso.
+
+O que 0.9.21 não afirma: o harness não jogou a curva, não ouviu o
+pico e não mediu quadro no dispositivo.
+
 ## 0.9.20 — Recibo curto, contrato da família e receita de arte
 
 `note` grava a observação depois da primeira partida sem a linha longa

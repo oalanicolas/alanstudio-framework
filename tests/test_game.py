@@ -2321,12 +2321,14 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
         self.assertFalse(report["executed"])
         self.assertFalse(report["exists"])
-        self.assertEqual(len(report["steps"]), 3)
+        self.assertEqual(len(report["steps"]), 4)
         self.assertIn("start", report["steps"][0]["command"])
         self.assertIn("atravessar estilhaços", report["steps"][0]["command"])
         self.assertFalse(report["steps"][0]["done"])
         self.assertFalse(report["steps"][1]["executed"])
         self.assertEqual(report["steps"][2]["kind"], "playable.unplayed")
+        self.assertIn("note", report["steps"][3]["command"])
+        self.assertFalse(report["steps"][3]["executed"])
         destination = self.root / "guiado"
         game.start_project(destination, "canvas-arcade", idea="guardar a corrente")
         after = game.guide_cycle(destination, "canvas-arcade")
@@ -2336,6 +2338,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(after["steps"][1]["executed"])
         self.assertEqual(after["steps"][2]["kind"], "playable.unplayed")
         self.assertIn("next", after["steps"][2]["command"])
+        self.assertIn("note", after["steps"][3]["command"])
         self.assertFalse(after["executed"])
         self.assertNotIn("atravessar estilhaços", (destination / "docs/brief.md").read_text(encoding="utf-8"))
         run = subprocess.run(
@@ -2346,6 +2349,12 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         payload = json.loads(run.stdout)
         self.assertFalse(payload["executed"])
         self.assertEqual(payload["steps"][2]["kind"], "playable.unplayed")
+        bare = subprocess.run([sys.executable, str(SCRIPT)], capture_output=True, text=True)
+        self.assertEqual(bare.returncode, 0, bare.stderr)
+        mapped = json.loads(bare.stdout)
+        self.assertEqual(mapped["command"], "guide")
+        self.assertFalse(mapped["executed"])
+        self.assertEqual(len(mapped["steps"]), 4)
 
     def test_init_seeds_the_idea_and_still_calls_the_brief_a_draft(self):
         destination = self.root / "com-ideia"

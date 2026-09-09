@@ -81,6 +81,7 @@ export function createState(seed = 1, options = {}) {
     shake: 0,
     bankLock: 0,
     spawnTimer: CONFIG.spawn.intervalTicks,
+    recoverUntil: 0,
     nextId: 1,
     player: {
       x: FIELD.width / 2,
@@ -206,6 +207,7 @@ function bank(state, intent) {
   state.bankLock = CONFIG.bank.lockTicks;
   state.hitstop = CONFIG.feel.bankHitstopTicks;
   state.shake += CONFIG.feel.bankShake;
+  state.recoverUntil = state.tick + CONFIG.spawn.recoveryTicks;
   state.events.push({ type: "bank", chain, gain });
 }
 
@@ -213,11 +215,16 @@ function spawn(state) {
   state.spawnTimer -= 1;
   if (state.spawnTimer > 0) return;
   const progress = Math.min(1, state.tick / CONFIG.spawn.rampTicks);
+  const recovering = state.tick < state.recoverUntil;
+  const intervalScale = recovering ? CONFIG.spawn.recoveryIntervalScale : 1;
   state.spawnTimer = Math.round(
-    lerp(CONFIG.spawn.intervalTicks, CONFIG.spawn.minIntervalTicks, progress),
+    lerp(CONFIG.spawn.intervalTicks, CONFIG.spawn.minIntervalTicks, progress) * intervalScale,
   );
   const rng = createRng(state.seed, state.rngState);
-  const hazardChance = lerp(CONFIG.spawn.hazardChanceStart, CONFIG.spawn.hazardChanceEnd, progress);
+  const practicing = state.tick < CONFIG.spawn.practiceTicks;
+  const hazardChance = practicing
+    ? 0
+    : lerp(CONFIG.spawn.hazardChanceStart, CONFIG.spawn.hazardChanceEnd, progress);
   const kind = rng.next() < hazardChance ? "shard" : "orb";
   const x = rng.range(14, FIELD.width - 14);
   const fall = state.assist ? CONFIG.assist.fallSpeedScale : 1;

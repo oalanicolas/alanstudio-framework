@@ -10,7 +10,8 @@ propõe `origins.undeclared`. Recibo não é licença válida — `granted` e
 com o que o próprio projeto declarou, zero dígitos nos rótulos. `observed` e
 `granted` são sempre `false`. `next` só levanta o gate que o projeto pediu.
 
-**Primeiro ciclo:** `guide` mapeia start → jogar → next sem executar.
+**Primeiro ciclo:** `guide` (também sem subcomando) mapeia start →
+jogar → next → note sem executar.
 `start` é o caminho ideia→jogo. Depois de um `init` fresco, `next`
 propõe `playable.unplayed` antes de substituir os rascunhos. O starter
 ensina mover, coletar e guardar no campo; o art-bible vigente não é

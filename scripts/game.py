@@ -2898,11 +2898,19 @@ def guide_cycle(destination=None, starter=None, idea=None):
                 "command": harness_command("next", next_target, "--focus", "feel"),
                 "kind": nxt["proposal"]["basis"] if nxt else "playable.unplayed",
             },
+            {
+                "n": 4,
+                "do": "gravar o que o verbo sentiu",
+                "command": harness_command(
+                    "note", next_target, "--author", "NOME", "--note", "o que o verbo sentiu",
+                ),
+                "executed": False,
+            },
         ],
         "scope": (
-            "Três passos ideia→ciclo: start, jogar, next. Não cria o projeto, "
-            "não abre o jogo e não avalia a proposta. Passo 2 permanece "
-            "`executed` falso mesmo quando o destino já existe."
+            "Quatro passos ideia→ciclo: start, jogar, next, note. Não cria o "
+            "projeto, não abre o jogo e não avalia a proposta. Passos 2 e 4 "
+            "permanecem `executed` falsos mesmo quando o destino já existe."
         ),
     }
 
@@ -3726,7 +3734,7 @@ def main():
     common.add_argument("--root", type=Path, default=argparse.SUPPRESS, help="raiz para descobrir projetos e resolver caminhos")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT, help="raiz para descobrir projetos e resolver caminhos")
-    commands = parser.add_subparsers(dest="action", required=True)
+    commands = parser.add_subparsers(dest="action", required=False)
     gate_cmd = commands.add_parser(
         "gate", parents=[common],
         help="critérios que o projeto declara cumprir para pedir a próxima permissão",
@@ -3758,7 +3766,7 @@ def main():
     guided = commands.add_parser(
         "guide",
         parents=[common],
-        help="três passos ideia→ciclo sem executar: start, jogar, next",
+        help="quatro passos ideia→ciclo sem executar: start, jogar, next, note",
     )
     guided.add_argument("project", nargs="?", default=None)
     guided.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
@@ -3889,7 +3897,9 @@ def main():
     args = parser.parse_args()
     try:
         root = args.root.resolve()
-        if args.action == "discover":
+        if args.action is None:
+            emit(guide_cycle())
+        elif args.action == "discover":
             emit(discover(root) if args.plain else review(root))
         elif args.action == "doctor":
             report = doctor(root)

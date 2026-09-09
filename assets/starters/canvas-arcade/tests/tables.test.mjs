@@ -24,6 +24,8 @@ test("spawn sem schema migra; schema futuro falha com o número", () => {
   const old = migrateSpawn({ intervalTicks: 22, minIntervalTicks: 11 });
   assert.equal(old.schema, SPAWN_SCHEMA);
   assert.equal(old.intervalTicks, 22);
+  assert.equal(old.practiceTicks, 240);
+  assert.equal(old.recoveryTicks, 90);
   assert.throws(() => migrateSpawn({ schema: 9 }), /mesa spawn schema 9 não suportado/);
   assert.throws(() => migrateSpawn(null), /mesa spawn ilegível/);
 });

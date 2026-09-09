@@ -156,6 +156,29 @@ test("a assistência alarga o alcance sem esconder o orbe nem o limite", () => {
   assert.equal(stillOut.entities.length, 1);
 });
 
+test("os primeiros ticks são prática: só orbes, sem estilhaço", () => {
+  const state = createState(11);
+  const kinds = new Set();
+  while (state.tick < CONFIG.spawn.practiceTicks) {
+    advance(state, neutralIntent());
+    for (const entity of state.entities) kinds.add(entity.kind);
+  }
+  assert.ok(kinds.has("orb"), "a prática precisa nascer orbe");
+  assert.equal(kinds.has("shard"), false, "estilhaço na prática mistura o risco cedo demais");
+});
+
+test("guardar abre uma janela de recuperação na chuva", () => {
+  const state = createState(1);
+  state.chain = 2;
+  state.spawnTimer = 1;
+  advance(state, { move: 0, dash: false, bank: true });
+  assert.ok(state.recoverUntil > state.tick);
+  assert.ok(
+    state.spawnTimer > CONFIG.spawn.intervalTicks,
+    "a recuperação alonga o intervalo, não o encurta",
+  );
+});
+
 test("orbe perdido é contado, não silencioso", () => {
   const state = createState(6);
   state.entities = [orb(20, 190)];
