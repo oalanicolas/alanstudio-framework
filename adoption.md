@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.13 — Mixer consome o arquivo e o acervo preenche o papel
+
+O starter carrega `public/sfx/<papel>` no mixer: copiar um .wav sem
+consumidor deixava `roles` verde e o jogo mudo. `roles --fill` busca o
+papel no acervo (`audio.py` / `sfx_catalog`); `--apply` copia com o
+nome do papel e o recibo. `heard` continua falso. Duas mesas
+(`data/spawn.json`, `data/copy.json`) passam pelo mesmo `loadTable` —
+uma família ainda não é escala.
+
+O que 0.9.13 não afirma: o harness não ouve, não escolhe o som certo e
+não autoriza improvisar arquivo quando o acervo está vazio.
+
 ## 0.9.12 — Conteúdo fora do código, export e achado de playtest
 
 O starter extrai a chuva para `data/spawn.json` e passa a ter `npm run

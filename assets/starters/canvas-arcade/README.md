@@ -110,10 +110,10 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada, perda de foco — além do teste de dado inválido |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; `npm run budget` mede só a simulação, sem apresentação |
 | `accessibility` | `slice` | `shippable`: contraste verificado por medição e opções de dificuldade ou assistência |
-| `content_scale` | `prototype` | `playable`: mais de uma mesa com o mesmo carregador — hoje só a chuva saiu do código |
+| `content_scale` | `playable` | `slice`: receita do próximo item da família com o mesmo carregador — hoje são a chuva e o texto do HUD |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `npm run build` existe e ninguém o correu fora daqui |
 
-**Leitura honesta: este projeto é um protótipo**, porque cinco dimensões estão
+**Leitura honesta: este projeto é um protótipo**, porque quatro dimensões estão
 nesse degrau. Nenhuma quantidade de acabamento visual muda essa leitura antes
 delas subirem.
 
@@ -159,8 +159,8 @@ a estética errada por conveniência.
 Para preencher, a partir da raiz do framework:
 
 ```sh
-python3 scripts/game.py sfx search passos --root <laboratorio>
-python3 scripts/game.py sfx copy <id> --to <projeto>/public/sfx --root <laboratorio>
+python3 scripts/game.py roles <projeto> --fill --root <laboratorio>
+python3 scripts/game.py roles <projeto> --fill --apply --root <laboratorio>
 ```
 
 Toda informação sonora já tem legenda equivalente: o jogo é completável com o
@@ -175,9 +175,9 @@ inferior, onde nascia, ela caía sobre o jogador e sobre o rótulo do dash:
 
 ```
 src/core/     laço de passo fixo, entrada, RNG, impressão, armazenamento, save, preferências
-src/game/     regras puras, apresentação, mixagem
+src/game/     regras puras, apresentação, mixagem, mesas e carga de sfx
 src/main.js   montagem e contrato de ciclo de vida
-data/         conteúdo separado da regra (hoje: a chuva)
+data/         conteúdo separado da regra (chuva e texto do HUD)
 tools/        servidor local, medição de orçamento e export
 tests/        regras, determinismo, ciclo de vida, save, mixagem, export
 ```
@@ -188,10 +188,11 @@ comparar duas execuções. `src/core/input.js` reduz teclado, ponteiro e gamepad
 uma intenção — as regras nunca veem eventos.
 
 A paleta vive em `src/game/render.js` (`PALETTES`). O harness a lê; consistência
-em movimento continua pendente. A chuva mora em `data/spawn.json`: alterar a
-cadência não exige republicar o verbo. Uma mesa não é conteúdo em escala.
-`npm run build` copia a árvore jogável para `dist/`; isso não é outra pessoa
-tendo jogado o artefato.
+em movimento continua pendente. Chuva e texto do HUD passam por
+`src/game/tables.js`. Duas mesas não são uma família. `public/sfx/<papel>`
+entra no mixer quando o arquivo existe; copiar sem consumidor deixava o
+jogo mudo. `npm run build` copia a árvore jogável para `dist/`; isso não é
+outra pessoa tendo jogado o artefato.
 
 `src/main.js` implementa `pause`, `resume`, `reset`, `seed`, `observe`, `act`,
 `advance`, `capture` e `dispose`. Esses nomes são o vocabulário de inspeção do

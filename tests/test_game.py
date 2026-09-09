@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -1943,6 +1944,63 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("hit", report["empty"])
         self.assertFalse(report["heard"])
 
+    def test_roles_fill_suggests_from_the_catalog_and_apply_copies_as_the_role_name(self):
+        destination = self.root / "com-acervo"
+        game.init(destination, "canvas-arcade")
+        payload = b"RIFF" + b"\x00" * 24
+        library = self.root / "shared/sfx"
+        library.mkdir(parents=True)
+        (library / "whoosh-dash.wav").write_bytes(payload)
+        (library / "catalog.json").write_text(json.dumps({
+            "schema_version": 1,
+            "title": "Acervo",
+            "sounds": [{
+                "id": "whoosh-dash",
+                "title": "Whoosh of a dash",
+                "category": "action",
+                "processing": "trim",
+                "style": "designed-modern",
+                "tags": ["dash", "whoosh"],
+                "file": "whoosh-dash.wav",
+                "sha256": hashlib.sha256(payload).hexdigest(),
+                "bytes": len(payload),
+                "sources": [{
+                    "title": "Whoosh of a dash",
+                    "author": "Ana Studio",
+                    "url": "https://example.com/whoosh",
+                    "license": "CC0-1.0",
+                }],
+            }],
+        }), encoding="utf-8")
+        suggested = game.roles_fill(destination, self.root)
+        dash = next(item for item in suggested["suggestions"] if item["role"] == "dash")
+        self.assertEqual(dash["match"]["id"], "whoosh-dash")
+        self.assertFalse(suggested["applied"])
+        self.assertFalse(suggested["heard"])
+        self.assertFalse((destination / "public/sfx/dash.wav").exists())
+        applied = game.roles_fill(destination, self.root, apply=True)
+        self.assertTrue(applied["applied"])
+        self.assertIn("dash", applied["copied"])
+        self.assertTrue((destination / "public/sfx/dash.wav").is_file())
+        self.assertFalse(applied["heard"])
+        after = game.roles_reading(destination, self.root)
+        self.assertNotIn("dash", after["empty"])
+        self.assertIn("hit", after["empty"])
+
+    def test_roles_fill_without_a_catalog_does_not_invent_a_sound(self):
+        destination = self.root / "sem-acervo"
+        game.init(destination, "canvas-arcade")
+        report = game.roles_fill(destination, self.root)
+        self.assertFalse(report["catalog_exists"])
+        self.assertTrue(all(item["match"] is None for item in report["suggestions"]))
+        self.assertFalse(report["heard"])
+        commands = next(
+            item["commands"] for item in self.proposals(game.next_step(destination))
+            if item["basis"] == "audio.roles"
+        )
+        self.assertIn("--fill", commands[0])
+        self.assertTrue(all("--apply" not in command for command in commands))
+
     def test_feel_reads_named_constants_and_never_claims_to_have_felt_them(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.feel_reading(starter)
@@ -2035,6 +2093,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(inventory["inline"])
         self.assertFalse(inventory["enough"])
         self.assertIn("data/spawn.json", inventory["files"])
+        self.assertIn("data/copy.json", inventory["files"])
         self.assertTrue(pack["expected"])
         self.assertFalse(pack["unpacked"])
         self.assertIn("build", pack["scripts"])

@@ -8,7 +8,7 @@
 // da partida é perdida.
 
 import { createRng } from "../core/rng.js";
-import spawnTable from "../../data/spawn.json" with { type: "json" };
+import { spawn as spawnTable } from "./tables.js";
 
 export const TICK_HZ = 60;
 export const FIELD = { width: 320, height: 180 };

@@ -1152,6 +1152,57 @@ def roles_reading(project, root=None):
     }
 
 
+def roles_fill(project, root=None, apply=False):
+    project = Path(project)
+    reading = roles_reading(project, root)
+    suggestions = []
+    copied = []
+    for role in reading["empty"]:
+        match = None
+        if reading["catalog_exists"]:
+            try:
+                found = sfx_catalog.search_catalog(role, root, limit=1)
+            except ValueError:
+                found = {"matches": []}
+            if found["matches"]:
+                match = {
+                    "id": found["matches"][0]["id"],
+                    "title": found["matches"][0]["title"],
+                    "src": found["matches"][0]["src"],
+                }
+        item = {"role": role, "query": role, "match": match, "copied": False}
+        if apply and match:
+            result = sfx_catalog.copy_entry(
+                match["id"], project / "public" / "sfx", root, as_name=role,
+            )
+            item["copied"] = True
+            item["file"] = Path(result["copied"]).relative_to(project).as_posix()
+            copied.append(role)
+        suggestions.append(item)
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "empty": reading["empty"],
+        "catalog_exists": reading["catalog_exists"],
+        "suggestions": suggestions,
+        "applied": bool(apply),
+        "copied": copied,
+        "heard": False,
+        "approved": False,
+        "guide": str(FRAMEWORK / "recipes/audio.md"),
+        "rule": (
+            "Primeiro resultado da busca não é o som certo e não é mixagem "
+            "ouvida. `--apply` copia bytes e recibo; não toca e não aprova."
+        ),
+        "scope": (
+            "Para cada papel vazio, busca o id no acervo shared/sfx e, com "
+            "`--apply`, copia para public/sfx com o nome do papel. Sem "
+            "acervo, a sugestão vem vazia. `heard` é sempre falso."
+        ),
+    }
+
+
 # Feel: o starter nomeia perdão, graça e hitstop no CONFIG. Até aqui o harness
 # só via a tabela de ofício, não as constantes. A pergunta é estreita — o
 # projeto declara janelas de feel, e alguém registrou uma observação no disco?
@@ -3019,9 +3070,9 @@ def next_step(project, focus="create", studies_root=None):
     if roles["empty"]:
         sample = ", ".join(f"`{name}`" for name in roles["empty"][:4])
         extra = " e mais" if len(roles["empty"]) > 4 else ""
-        commands = [harness_command("roles", project)]
+        commands = [harness_command("roles", project, "--fill")]
         if roles["catalog_exists"]:
-            commands.append(harness_command("sfx", "search", roles["empty"][0]))
+            commands.append(harness_command("roles", project, "--fill", "--apply"))
         propose(
             f"Preencher os papéis de áudio declarados e vazios: {sample}{extra}",
             "O verbo já dispara esses papéis. Arquivo ausente não é silêncio "
@@ -3641,6 +3692,14 @@ def main():
         help="papéis de áudio que o projeto declara e os arquivos que os preenchem",
     )
     roles_cmd.add_argument("project")
+    roles_cmd.add_argument(
+        "--fill", action="store_true",
+        help="sugere um candidato do acervo para cada papel vazio; não copia",
+    )
+    roles_cmd.add_argument(
+        "--apply", action="store_true",
+        help="com --fill, copia a sugestão para public/sfx; não ouve e não aprova",
+    )
     feel_cmd = commands.add_parser(
         "feel", parents=[common],
         help="constantes de feel que o projeto declara e o recibo de observação no disco",
@@ -3747,7 +3806,11 @@ def main():
         elif args.action == "craft":
             emit(craft_reading(resolve(args.project, root), args.gate))
         elif args.action == "roles":
-            emit(roles_reading(resolve(args.project, root), root))
+            target = resolve(args.project, root)
+            if args.fill or args.apply:
+                emit(roles_fill(target, root, apply=args.apply))
+            else:
+                emit(roles_reading(target, root))
         elif args.action == "feel":
             emit(feel_reading(resolve(args.project, root)))
         elif args.action == "access":

@@ -6,6 +6,7 @@
 // movimento — o sinal de causa migra para uma forma estática, não desaparece.
 
 import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ } from "./rules.js";
+import { copy } from "./tables.js";
 
 // Exportadas para terem consumidor além do desenho: é assim que um teste
 // distingue a placa do HUD do preenchimento do campo, e é o gancho para o
@@ -90,13 +91,15 @@ export function createRenderer(canvas, options = {}) {
     if (settings.captions !== false) {
       drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
     }
-    if (frame.paused) drawOverlay(context, palette, "Pausado", "Continuar: Esc ou P");
+    if (frame.paused) drawOverlay(context, palette, copy.paused, copy.resume);
     else if (state.phase === "over") {
       drawOverlay(
         context,
         palette,
-        `Fim — ${state.score}`,
-        state.stats.bestChain ? `Maior corrente: ${state.stats.bestChain} · reiniciar: R` : "Reiniciar: R",
+        `${copy.over} — ${state.score}`,
+        state.stats.bestChain
+          ? `${copy.best_chain}: ${state.stats.bestChain} · ${copy.restart_inline}`
+          : copy.restart,
       );
     }
   }
@@ -197,10 +200,10 @@ export function createRenderer(canvas, options = {}) {
     // "1 → 1", que não é erro de conta — é ruído, e um revisor leu como bug.
     // Ela aparece quando guardar rende mais do que a corrente já vale.
     const payoff = state.chain * state.chain;
-    const chain = `Corrente ${state.chain}${payoff > state.chain ? ` → ${payoff}` : ""}`;
-    const score = `Pontos ${state.score}`;
+    const chain = `${copy.chain} ${state.chain}${payoff > state.chain ? ` → ${payoff}` : ""}`;
+    const score = `${copy.score} ${state.score}`;
     const seconds = Math.ceil(remainingTicks(state) / TICK_HZ);
-    const best = extra.best === undefined ? null : `Recorde ${extra.best}`;
+    const best = extra.best === undefined ? null : `${copy.record} ${extra.best}`;
     const width = (text) => target.measureText(text).width;
 
     target.textAlign = "left";
@@ -222,7 +225,7 @@ export function createRenderer(canvas, options = {}) {
 
     target.textAlign = "left";
     const ready = state.player.dashCooldown === 0 && state.player.dashRecovery === 0 && state.bankLock === 0;
-    const dash = ready ? "Dash pronto" : "Dash recarregando";
+    const dash = ready ? copy.dash_ready : copy.dash_recharging;
     const dashBox = plate(target, palette, 6, FIELD.height - size - 5, width(dash), size);
     target.fillStyle = ready ? palette.orb : palette.muted;
     target.fillText(dash, 6, FIELD.height - size - 5);

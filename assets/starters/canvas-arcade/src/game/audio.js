@@ -7,8 +7,10 @@
 // `missing()` transforma a ausência em uma lacuna observável.
 //
 // Para preencher, a partir da raiz do framework:
-//   python3 scripts/game.py sfx search <termo> --root <laboratorio>
-//   python3 scripts/game.py sfx copy <id> --to <projeto>/public/sfx --root <laboratorio>
+//   python3 scripts/game.py roles <projeto> --fill
+//   python3 scripts/game.py roles <projeto> --fill --apply --root <laboratorio>
+// O jogo carrega `public/sfx/<papel>.wav` (ou .ogg/.mp3) no mixer. Sem esse
+// consumidor, arquivo no disco e jogo mudo eram a mesma coisa.
 //
 // Toda informação sonora tem legenda equivalente: o jogo precisa ser
 // completável com o áudio desligado.
@@ -81,6 +83,12 @@ export function createAudio(options = {}) {
       buffers.set(id, buffer);
       missing.delete(id);
       return true;
+    },
+    async decode(bytes) {
+      const ctx = ensureContext();
+      if (!ctx || typeof ctx.decodeAudioData !== "function") return null;
+      const copy = bytes instanceof ArrayBuffer ? bytes.slice(0) : bytes;
+      return ctx.decodeAudioData(copy);
     },
     play(id) {
       const definition = SOUNDS[id];

@@ -10,10 +10,11 @@ e Kenney arcade não são o padrão.
 
 `context --focus audio` seleciona esta receita. `roles <projeto>` lê os
 papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
-em `public/sfx`. Arquivo ausente é lacuna do verbo, não silêncio deliberado;
-`heard` é sempre falso. Som novo no laboratório: `sfx search` antes de
-qualquer download; `sfx copy` leva o arquivo e a proveniência. Sem
-`shared/sfx`, o catálogo vem vazio — isso não autoriza improvisar licença.
+em `public/sfx`. `roles --fill` sugere um candidato do acervo; `--apply`
+copia para `public/sfx/<papel>` com recibo. O starter `canvas-arcade`
+carrega esse arquivo no mixer. Arquivo ausente é lacuna do verbo, não
+silêncio deliberado; `heard` é sempre falso. Sem `shared/sfx`, a sugestão
+vem vazia — isso não autoriza improvisar licença.
 
 ## 1. Nomear a camada
 

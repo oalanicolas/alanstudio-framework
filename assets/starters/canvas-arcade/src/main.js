@@ -13,6 +13,7 @@ import { loadProgress, recordRun, saveProgress } from "./core/save.js";
 import { detectEnvironment, loadSettings, normalizeSettings, saveSettings } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { createAudio } from "./game/audio.js";
+import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { advance as advanceRules, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
 
@@ -33,6 +34,14 @@ export function createGame(options = {}) {
   const input = options.input ?? createInput({ target: eventTarget, surface: canvas, bindings: settings.bindings });
   const audio = options.audio ?? createAudio({ settings });
   const renderer = canvas ? createRenderer(canvas) : null;
+  // Sem canvas (teste headless) não busca arquivo: o fetch relativo não tem
+  // servidor e atrasaria o teste. No browser, o arquivo em public/sfx precisa
+  // chegar ao mixer — senão `roles` verde e o jogo mudo são a mesma coisa.
+  if ((options.loadSfx ?? Boolean(canvas)) && typeof (options.fetch ?? globalThis.fetch) === "function") {
+    const fetchFn = options.fetch ?? globalThis.fetch.bind(globalThis);
+    const decode = options.decodeSfx ?? ((bytes) => audio.decode(bytes));
+    loadRoleFiles(audio, { fetch: fetchFn, decode }).catch(() => {});
+  }
 
   const loop = createLoop({
     stepMs: 1000 / TICK_HZ,

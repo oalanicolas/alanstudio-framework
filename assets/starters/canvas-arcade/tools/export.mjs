@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const DIST = join(ROOT, "dist");
-const ENTRIES = ["index.html", "src", "data", "CREDITS.md", "tools/serve.mjs"];
+const ENTRIES = ["index.html", "src", "data", "public", "CREDITS.md", "tools/serve.mjs"];
 
 await rm(DIST, { recursive: true, force: true });
 await mkdir(join(DIST, "tools"), { recursive: true });

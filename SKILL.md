@@ -146,7 +146,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Depois de um `init` fresco, `next` propõe **abrir o ciclo** antes de
    substituir os rascunhos: o starter já é um jogo que abre.
    **`roles <projeto>`** lê os papéis de áudio que o código declara e os
-   arquivos que os preenchem. `heard` é sempre falso. Papel vazio entra no
+   arquivos que os preenchem. `--fill` sugere o acervo; `--apply` copia
+   com o nome do papel. `heard` é sempre falso. Papel vazio entra no
    `next` como `audio.roles` — o verbo mudo não espera os sete templates.
    **`feel <projeto>`** lê constantes de perdão/hitstop no `CONFIG` e o
    recibo de observação no disco. `felt` é sempre falso. Sem recibo, `next`

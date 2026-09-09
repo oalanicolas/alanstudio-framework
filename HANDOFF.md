@@ -16,8 +16,8 @@ sete rascunhos. `--idea` entra no brief como frase; o brief continua rascunho.
 O harness não executa o jogo.
 
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
-`heard` é sempre falso. `next` propõe `audio.roles` quando o verbo dispara
-um papel sem arquivo — depois da partida, antes dos rascunhos.
+`--fill` sugere o acervo; `--apply` copia com o nome do papel. O starter
+carrega o arquivo no mixer. `heard` é sempre falso.
 
 **Feel (`feel`):** lê `const CONFIG` (perdão, graça, hitstop) e
 `record.json` de observação. `felt` é sempre falso. `next` propõe

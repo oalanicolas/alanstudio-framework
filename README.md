@@ -490,11 +490,16 @@ arquivos em `public/sfx` (e equivalentes):
 
 ```sh
 python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo --fill
+python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo --fill --apply --root /caminho/do/laboratorio
 ```
 
 `heard` e `approved` são sempre `false`: arquivo presente não é mixagem ouvida.
-`next` propõe `audio.roles` quando um papel está vazio. Silêncio deliberado é o
-papel fora da declaração, não o slot sem arquivo.
+`next` propõe `audio.roles` quando um papel está vazio. `roles --fill` sugere
+um candidato do acervo; `--apply` copia para `public/sfx/<papel>` com recibo.
+O starter carrega esse arquivo no mixer. Primeiro resultado da busca não é
+mixagem. Silêncio deliberado é o papel fora da declaração, não o slot sem
+arquivo.
 
 Se o laboratório tiver `shared/sfx` na raiz passada em `--root`:
 

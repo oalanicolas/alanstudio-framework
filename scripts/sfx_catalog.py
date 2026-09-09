@@ -1,6 +1,7 @@
 """Entrada do harness para o acervo em shared/sfx, se existir no laboratório."""
 from pathlib import Path
 import json
+import re
 
 import audio
 
@@ -59,20 +60,25 @@ def search_catalog(query, root=None, limit=40):
     }
 
 
-def copy_entry(entry_id, destination, root=None, sources=None):
+def copy_entry(entry_id, destination, root=None, sources=None, as_name=None):
     base = catalog_dir(root)
     item = audio.select(load_catalog(root)["sounds"], [entry_id])[0]
     payload = audio.export_payload([item], base)
-    name = item["id"] + Path(item["file"]).suffix
+    catalog_name = item["id"] + Path(item["file"]).suffix
+    stem = as_name if as_name else item["id"]
+    if as_name and not re.fullmatch(r"[A-Za-z_][\w-]*", as_name):
+        raise ValueError("nome de papel inválido")
+    name = stem + Path(item["file"]).suffix
     destination = Path(destination).resolve()
     if destination.is_relative_to(base.resolve()) or base.resolve().is_relative_to(destination):
         raise ValueError("Destino deve ser separado do acervo")
     target = destination / name
     if target.is_symlink() or (target.exists() and
-                              (not target.is_file() or target.read_bytes() != payload[name])):
+                              (not target.is_file() or target.read_bytes() != payload[catalog_name])):
         raise ValueError("Arquivo de destino diferente; escolha outra pasta")
     record = json.loads(payload["manifest.json"])["files"][0]
-    record.update(key=entry_id, from_catalog="shared/sfx")
+    record["src"] = name
+    record.update(key=as_name or entry_id, from_catalog="shared/sfx")
     receipt = Path(sources) if sources else destination / "sources.json"
     if receipt.resolve().is_relative_to(base.resolve()) or receipt.resolve() == target:
         raise ValueError("Proveniência deve ficar fora do acervo e do arquivo de áudio")
@@ -81,12 +87,12 @@ def copy_entry(entry_id, destination, root=None, sources=None):
         raise ValueError("Manifesto de destino sem lista files")
     entries = previous["files"]
     existing = next((r for r in entries if r.get("id") == item["id"]
-                     or r.get("key") == entry_id or r.get("src") == name), None)
+                     or r.get("key") in {entry_id, as_name} or r.get("src") == name), None)
     if existing and existing != record:
         raise ValueError("Proveniência de destino diferente; escolha outra pasta")
     if not existing:
         entries.append(record)
-    credit_path = destination / (item["id"] + ".credits.txt")
+    credit_path = destination / (stem + ".credits.txt")
     for path in (receipt, credit_path):
         if path.is_symlink() or (path.exists() and not path.is_file()):
             raise ValueError("Destino de créditos/proveniência inválido")
@@ -95,7 +101,7 @@ def copy_entry(entry_id, destination, root=None, sources=None):
     destination.mkdir(parents=True, exist_ok=True)
     receipt.parent.mkdir(parents=True, exist_ok=True)
     if not target.exists():
-        target.write_bytes(payload[name])
+        target.write_bytes(payload[catalog_name])
     receipt.write_bytes(audio.json_bytes(previous))
     credit_path.write_bytes(payload["CREDITS.txt"])
     return {"copied": str(target), "bytes": item["bytes"], "record": record,
