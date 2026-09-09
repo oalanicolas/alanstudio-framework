@@ -33,8 +33,8 @@ python3 scripts/game.py next /caminho/do/laboratorio/um-dos-jogos --focus feel
 áreas mínimas têm candidato, quantas estão em rascunho, se há um passo registrado
 para retomar e onde, o piso de acabamento que o projeto declara e quantas
 dimensões ainda não têm linha, quais validadores existem, quantos papéis de
-áudio estão declarados e vazios, e se o feel tem constante e recibo de
-observação. É essa diferença que
+áudio estão declarados e vazios, se o feel tem constante e recibo de
+observação, e se alcance, save e orçamento estão declarados no código. É essa diferença que
 uma listagem de caminho e tipo apagava — três jogos em estados incomparáveis saíam
 iguais. `--plain` volta ao caminho e tipo, sem ler documento nenhum.
 
