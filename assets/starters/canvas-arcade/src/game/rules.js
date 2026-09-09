@@ -590,8 +590,23 @@ function collect(state) {
   emit(state, "collect", { chain: state.chain });
 }
 
+function shatterChain(state, lost) {
+  const count = chainPipCount(lost);
+  if (count <= 0) return;
+  const life = CONFIG.feel.moteLife;
+  const x = state.player.x;
+  const y = PLAYER_Y;
+  const tick = Number.isFinite(state.tick) ? state.tick : 0;
+  for (let index = 0; index < count; index += 1) {
+    const pip = chainPipAt(index, count, x, y, tick, false);
+    const angle = tick * CONFIG.feel.chainSpin + (index * Math.PI * 2) / count;
+    state.motes.push(acquireMote("break", pip.x, pip.y, Math.cos(angle) * 1.8, Math.sin(angle) * 1.8, life));
+  }
+}
+
 function hit(state) {
   const lost = state.chain;
+  shatterChain(state, lost);
   state.chain = 0;
   state.bankBuffer = 0;
   state.stats.hits += 1;

@@ -40,7 +40,8 @@ desloca a câmera por verbo, achata o corpo numa medida por verbo,
 marca a ameaça no trilho, distingue a
 recuperação do dash, aterrissa o avanço com squash e rastro próprios,
 pulsa o controle no impacto, deixa um rastro
-por verbo e põe a corrente em órbita no corpo. O pulso some na pausa e no descarte.
+por verbo e põe a corrente em órbita no corpo. No erro os pips
+quebram para fora, não somem. O pulso some na pausa e no descarte.
 
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
 código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`

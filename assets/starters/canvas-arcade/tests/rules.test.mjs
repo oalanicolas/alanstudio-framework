@@ -48,6 +48,25 @@ test("ser atingido zera a corrente inteira e concede graça", () => {
     state.events.find((event) => event.type === "hit"),
     { type: "hit", lost: 5 },
   );
+  const shards = state.motes.filter((mote) => mote.kind === "break");
+  assert.equal(shards.length, 5, "a corrente quebra no corpo, não some");
+  assert.ok(shards.every((mote) => mote.vx !== 0 || mote.vy !== 0), "o pip sai da órbita");
+});
+
+test("sem corrente o erro não inventa pip quebrado; o teto da órbita vale na quebra", () => {
+  const empty = createState(2);
+  empty.entities = [shard(empty.player.x, PLAYER_Y - 1)];
+  advance(empty, neutralIntent());
+  assert.equal(empty.motes.filter((mote) => mote.kind === "break").length, 0);
+  const packed = createState(2);
+  packed.chain = 12;
+  packed.entities = [shard(packed.player.x, PLAYER_Y - 1)];
+  advance(packed, neutralIntent());
+  assert.equal(
+    packed.motes.filter((mote) => mote.kind === "break").length,
+    CONFIG.feel.chainPips,
+    "o teto dos pips também é o teto da quebra",
+  );
 });
 
 test("a graça impede perder duas correntes seguidas", () => {

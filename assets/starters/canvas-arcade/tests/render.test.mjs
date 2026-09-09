@@ -499,6 +499,20 @@ test("o flash do erro some com redução de movimento", () => {
   assert.equal(still, true, "com menos movimento o sinal vira contorno, não some");
 });
 
+test("a quebra da corrente pinta os pips que o corpo perdeu", () => {
+  const state = createState(1);
+  state.motes = [
+    { kind: "break", x: 40, y: 80, sx: 40, sy: 80, vx: 0, vy: 0, life: 8 },
+    { kind: "break", x: 90, y: 80, sx: 90, sy: 80, vx: 0, vy: 0, life: 8 },
+  ];
+  const flying = paint(state);
+  const shards = flying.rects.filter((rect) => rect.style === PALETTES.normal.chain && rect.width < 5);
+  assert.ok(shards.length >= 2, `esperava os pips quebrados na tinta da corrente: ${JSON.stringify(flying.rects.map((rect) => [rect.width, rect.style]))}`);
+  const still = paint(state, { reducedMotion: true });
+  const marks = still.rects.filter((rect) => rect.style === PALETTES.normal.chain && rect.width === 2);
+  assert.ok(marks.length >= 2, "com menos movimento a quebra vira marca, não some");
+});
+
 test("o rastro do impacto aparece e com menos movimento vira marca", () => {
   const state = createState(5);
   state.motes = [
