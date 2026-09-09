@@ -15,6 +15,10 @@ com o que o próprio projeto declarou, zero dígitos nos rótulos. `observed` e
 sete rascunhos. `--idea` entra no brief como frase; o brief continua rascunho.
 O harness não executa o jogo.
 
+**Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
+`heard` é sempre falso. `next` propõe `audio.roles` quando o verbo dispara
+um papel sem arquivo — depois da partida, antes dos rascunhos.
+
 Esta árvore reúne produção, pacotes e memória persistente do PR #2 com os
 critérios observáveis, perguntas de valor e regras de escopo do PR #3.
 A integração preserva o trabalho de ambas as branches, inclusive os commits de

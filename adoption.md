@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.8 — Papéis de áudio no disco
+
+O starter declara seis papéis do verbo e os deixa vazios; o harness não lia
+isso. `roles` cruza `const SOUNDS` (e `sounds.json`) com arquivos em
+`public/sfx`. `heard` e `approved` são sempre `false`. `next` propõe
+`audio.roles` depois do primeiro ciclo e antes dos rascunhos: verbo mudo não
+espera sete templates. `discover` conta papéis e vazios por jogo. Sem
+`shared/sfx`, o catálogo continua vazio — isso não autoriza improvisar
+licença nem sintetizar beep.
+
+O que 0.9.8 não afirma: arquivo presente não é mixagem, não é feel e não é
+som ouvido. Copiar do acervo ainda passa por `sfx copy` com recibo; `origins`
+continua sem validar licença.
+
 ## 0.9.7 — Disco, ofício e primeiro ciclo
 
 Três lacunas entre a promessa (ideia→jogo jogável, acabamento observável) e o

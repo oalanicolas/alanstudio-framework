@@ -143,6 +143,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    importado. `observed` é sempre falso. Só levanta o gate que o projeto pediu.
    Depois de um `init` fresco, `next` propõe **abrir o ciclo** antes de
    substituir os rascunhos: o starter já é um jogo que abre.
+   **`roles <projeto>`** lê os papéis de áudio que o código declara e os
+   arquivos que os preenchem. `heard` é sempre falso. Papel vazio entra no
+   `next` como `audio.roles` — o verbo mudo não espera os sete templates.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

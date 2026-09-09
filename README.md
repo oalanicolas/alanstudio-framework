@@ -32,7 +32,8 @@ python3 scripts/game.py next /caminho/do/laboratorio/um-dos-jogos --focus feel
 `discover` lê cada jogo da raiz e devolve o que os distingue: quantas das nove
 áreas mínimas têm candidato, quantas estão em rascunho, se há um passo registrado
 para retomar e onde, o piso de acabamento que o projeto declara e quantas
-dimensões ainda não têm linha, e quais validadores existem. É essa diferença que
+dimensões ainda não têm linha, quais validadores existem, e quantos papéis de
+áudio estão declarados e vazios. É essa diferença que
 uma listagem de caminho e tipo apagava — três jogos em estados incomparáveis saíam
 iguais. `--plain` volta ao caminho e tipo, sem ler documento nenhum.
 
@@ -81,11 +82,12 @@ onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
-→ rascunho → documento sem versão
+→ papéis de áudio vazios → rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
 recibo → gate → ofício → barra. Depois de um `init` fresco — nove áreas com
 candidato, sete ainda rascunho, e um script que abre o jogo — a primeira proposta
-é jogar o ciclo, não preencher os templates. O gate tem três ramos: linha
+é jogar o ciclo, não preencher os templates. O verbo mudo vem em seguida: papéis
+declarados sem arquivo. O gate tem três ramos: linha
 de gate malformada, pergunta de valor e critério pendente — nessa ordem, porque
 terminar o que talvez não devesse existir é o desperdício que um gate existe para
 interromper. O ofício tem dois: linha de ofício malformada e checklist pendente.
@@ -466,7 +468,19 @@ orçamento, executa soak, promove marco ou certifica requisito de plataforma; a
 passagem é declarada por pessoa com a prova ligada (`record --kind milestone`).
 Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
 
-## Áudio (opcional)
+## Áudio
+
+O starter declara os papéis do verbo (`const SOUNDS`) e os deixa vazios. Isso
+não é silêncio deliberado — é lacuna. `roles` lê a declaração e cruza com
+arquivos em `public/sfx` (e equivalentes):
+
+```sh
+python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo
+```
+
+`heard` e `approved` são sempre `false`: arquivo presente não é mixagem ouvida.
+`next` propõe `audio.roles` quando um papel está vazio. Silêncio deliberado é o
+papel fora da declaração, não o slot sem arquivo.
 
 Se o laboratório tiver `shared/sfx` na raiz passada em `--root`:
 

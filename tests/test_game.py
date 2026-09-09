@@ -971,6 +971,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "kind=null": "sem entrypoint",
             "areas.not_located": "área não localizada",
             "playable.unplayed": "ciclo jogável ainda sem partida",
+            "audio.roles": "papéis de áudio vazios",
             "areas.draft_only": "rascunho",
             "areas.historical_or_reference_only": "documento sem versão vigente",
             "continuity.sources": "continuidade",
@@ -1412,6 +1413,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("test", result["signals"]["scripts"])
         bases = [item["basis"] for item in result["alternatives"]]
         self.assertNotIn("areas.not_located", bases)
+        self.assertIn("audio.roles", bases)
         self.assertIn("areas.draft_only", bases)
         self.assertIn("scripts", bases)
         # O projeto herda a tabela do starter, então a barra já tem piso e a
@@ -1426,8 +1428,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             encoding="utf-8",
         )
         after = game.next_step(destination)
-        self.assertEqual(after["proposal"]["basis"], "areas.draft_only")
+        self.assertEqual(after["proposal"]["basis"], "audio.roles")
         self.assertFalse(after["signals"]["playable_unplayed"])
+        self.assertIn("dash", after["signals"]["audio_roles_empty"])
+        self.assertIn("areas.draft_only", [item["basis"] for item in after["alternatives"]])
 
     def test_next_falls_back_to_the_production_bar_when_nothing_is_missing(self):
         self.foundation_document()
@@ -1874,6 +1878,32 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["granted"])
         self.assertEqual(report["problems"][0]["reason"], "met_without_evidence")
         self.assertIn("palette", report["pending"])
+
+    def test_roles_reads_declared_sounds_and_never_claims_to_have_heard_them(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.roles_reading(starter)
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertEqual([item["id"] for item in report["roles"]], ["dash", "graze", "collect", "bank", "hit", "over"])
+        self.assertEqual(report["empty"], [item["id"] for item in report["roles"]])
+        self.assertIn("src/game/audio.js", report["sources"])
+        empty = game.roles_reading(self.project)
+        self.assertEqual(empty["roles"], [])
+        self.assertFalse(empty["heard"])
+
+    def test_roles_treats_a_file_on_disk_as_present_not_as_mix(self):
+        destination = self.root / "com-som"
+        game.init(destination, "canvas-arcade")
+        target = destination / "public/sfx"
+        target.mkdir(parents=True)
+        (target / "dash.wav").write_bytes(b"RIFF")
+        report = game.roles_reading(destination)
+        dash = next(item for item in report["roles"] if item["id"] == "dash")
+        self.assertEqual(dash["state"], "present")
+        self.assertEqual(dash["files"], ["public/sfx/dash.wav"])
+        self.assertNotIn("dash", report["empty"])
+        self.assertIn("hit", report["empty"])
+        self.assertFalse(report["heard"])
 
     def test_next_only_raises_craft_for_a_gate_the_project_asked_for(self):
         (self.project / "index.html").write_text("<canvas></canvas>")

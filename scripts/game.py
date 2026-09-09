@@ -540,6 +540,7 @@ def review(root, limit=REVIEW_LIMIT):
         except ValueError:
             scripts = []
         origins = origins_reading(path)
+        roles = roles_reading(path, root)
         reviewed.append(dict(
             entry,
             areas_located=len(located),
@@ -553,6 +554,8 @@ def review(root, limit=REVIEW_LIMIT):
             validators=scripts,
             origins_embedded=len(origins["embedded"]),
             origins_undeclared=len(origins["undeclared"]),
+            audio_roles=len(roles["roles"]),
+            audio_roles_empty=len(roles["empty"]),
         ))
     return {
         "schema_version": 1,
@@ -963,6 +966,166 @@ def craft_reading(project, gate=None):
             "Lê a declaração do próprio projeto e confere só a forma. Não observa o "
             "jogo, não mede contraste nem tempo de quadro e **não concede passagem**. "
             "`observed` é sempre falso: tabela bem formada e otimista sai intacta."
+        ),
+    }
+
+
+# Papéis de áudio: o starter declara SOUNDS e deixa os slots vazios de propósito.
+# Mixagem AAA não é pasta cheia — é cada papel do verbo ter arquivo ou silêncio
+# deliberado (papel removido). O harness só vê declaração e arquivo no disco.
+# Não ouve, não aprova estética e não confunde arquivo presente com mixagem boa.
+ROLE_FOLDERS = ("public/sfx", "assets/sfx", "sfx", "audio", "public/audio")
+ROLE_EXTENSIONS = {".wav", ".ogg", ".mp3", ".flac", ".m4a", ".webm"}
+SOUNDS_OPEN = re.compile(r"(?:export\s+)?const\s+SOUNDS\s*=\s*\{")
+ROLE_OBJECT = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*\{")
+ROLE_CODE_SUFFIXES = {".js", ".mjs", ".ts"}
+ROLE_MANIFESTS = ("sounds.json", "audio-roles.json", "docs/audio-roles.json")
+ROLE_WALK_SKIP = {
+    "node_modules", "dist", "build", ".git", "__pycache__", "coverage",
+    "library", "temp", ".venv", "venv", "target",
+}
+
+
+def _role_names_from_manifest(path):
+    try:
+        data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    if isinstance(data, list):
+        return [item for item in data if isinstance(item, str) and item.strip()]
+    if not isinstance(data, dict):
+        return []
+    listed = data.get("roles")
+    if isinstance(listed, list):
+        return [item for item in listed if isinstance(item, str) and item.strip()]
+    return [
+        key for key, value in data.items()
+        if key != "schema_version" and isinstance(value, (dict, str, bool, int))
+    ]
+
+
+def _role_names_from_code(text):
+    start = SOUNDS_OPEN.search(text)
+    if not start:
+        return []
+    names = []
+    for line in text[start.end():].splitlines():
+        stripped = line.strip()
+        if stripped.startswith("}"):
+            break
+        match = ROLE_OBJECT.match(stripped)
+        if match:
+            names.append(match.group(1))
+    return names
+
+
+def declared_sound_roles(project, max_files=80, max_bytes=64000):
+    found = []
+    sources = []
+    seen = set()
+
+    def add(names, source):
+        added = False
+        for name in names:
+            if name in seen:
+                continue
+            seen.add(name)
+            found.append(name)
+            added = True
+        if added:
+            sources.append(source)
+
+    for relative in ROLE_MANIFESTS:
+        path = project / relative
+        if not path.is_file() or path.is_symlink():
+            continue
+        add(_role_names_from_manifest(path), relative)
+    pending = [(project, 0)] if project.is_dir() else []
+    inspected = 0
+    while pending and inspected < max_files:
+        directory, depth = pending.pop(0)
+        try:
+            entries = sorted(directory.iterdir(), key=lambda item: item.name)
+        except OSError:
+            continue
+        for path in entries:
+            if inspected >= max_files:
+                break
+            if path.name.startswith(".") or path.name in ROLE_WALK_SKIP:
+                continue
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                if depth >= 4:
+                    continue
+                pending.append((path, depth + 1))
+                continue
+            if path.suffix.casefold() not in ROLE_CODE_SUFFIXES:
+                continue
+            inspected += 1
+            try:
+                if path.stat().st_size > max_bytes:
+                    continue
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            names = _role_names_from_code(text)
+            if names:
+                add(names, path.relative_to(project).as_posix())
+    return found, sources
+
+
+def role_files(project, role):
+    present = []
+    for folder in ROLE_FOLDERS:
+        directory = project / folder
+        if not directory.is_dir() or directory.is_symlink():
+            continue
+        try:
+            entries = directory.iterdir()
+        except OSError:
+            continue
+        for path in entries:
+            if path.is_symlink() or not path.is_file():
+                continue
+            if path.stem == role and path.suffix.casefold() in ROLE_EXTENSIONS:
+                present.append(f"{folder}/{path.name}")
+    return present
+
+
+def roles_reading(project, root=None):
+    project = Path(project)
+    names, sources = declared_sound_roles(project)
+    roles = []
+    for name in names:
+        files = role_files(project, name)
+        roles.append({
+            "id": name,
+            "files": files,
+            "state": "present" if files else "empty",
+        })
+    empty = [item["id"] for item in roles if item["state"] == "empty"]
+    catalog = sfx_catalog.catalog_dir(root)
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "roles": roles,
+        "empty": empty,
+        "sources": sources,
+        "catalog_exists": (catalog / "catalog.json").is_file(),
+        "heard": False,
+        "approved": False,
+        "guide": str(FRAMEWORK / "recipes/audio.md"),
+        "rule": (
+            "Papel declarado sem arquivo é lacuna do verbo, não silêncio deliberado. "
+            "Silêncio deliberado é o papel ausente da declaração."
+        ),
+        "scope": (
+            "Lê `const SOUNDS` e manifestos de papéis, e cruza com arquivos em "
+            "public/sfx e equivalentes. Não toca o som, não valida mixagem e não "
+            "aprova estética. `heard` e `approved` são sempre falsos: arquivo "
+            "presente não é mixagem ouvida."
         ),
     }
 
@@ -2164,6 +2327,23 @@ def next_step(project, focus="create", studies_root=None):
             [play, harness_command("next", project, "--focus", "feel")],
             "playable.unplayed",
         )
+    roles = roles_reading(project)
+    if roles["empty"]:
+        sample = ", ".join(f"`{name}`" for name in roles["empty"][:4])
+        extra = " e mais" if len(roles["empty"]) > 4 else ""
+        commands = [harness_command("roles", project)]
+        if roles["catalog_exists"]:
+            commands.append(harness_command("sfx", "search", roles["empty"][0]))
+        propose(
+            f"Preencher os papéis de áudio declarados e vazios: {sample}{extra}",
+            "O verbo já dispara esses papéis. Arquivo ausente não é silêncio "
+            "deliberado — silêncio deliberado é o papel fora da declaração. "
+            "O harness não ouve o som e não aprova mixagem.",
+            "Cada papel declarado tem um arquivo no disco (public/sfx ou "
+            "equivalente), ou o papel saiu da declaração.",
+            commands,
+            "audio.roles",
+        )
     if drafts:
         propose(
             "Substituir rascunho por decisão em: " + labels(drafts),
@@ -2389,6 +2569,7 @@ def next_step(project, focus="create", studies_root=None):
             "origins_undeclared": origins["undeclared"],
             "origins_contradicts_licensing": origins["contradicts_licensing"],
             "playable_unplayed": fresh,
+            "audio_roles_empty": roles["empty"],
             "craft_pending": [
                 key for key, spec in CRAFT_CHECKS.items()
                 if spec["gate"] in gates["declared"]
@@ -2649,6 +2830,11 @@ def main():
     )
     craft_cmd.add_argument("project")
     craft_cmd.add_argument("--gate", choices=sorted(GATES), help="só os checklists daquele gate")
+    roles_cmd = commands.add_parser(
+        "roles", parents=[common],
+        help="papéis de áudio que o projeto declara e os arquivos que os preenchem",
+    )
+    roles_cmd.add_argument("project")
     ctx = commands.add_parser("context", parents=[common])
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
@@ -2714,6 +2900,8 @@ def main():
             emit(origins_reading(resolve(args.project, root)))
         elif args.action == "craft":
             emit(craft_reading(resolve(args.project, root), args.gate))
+        elif args.action == "roles":
+            emit(roles_reading(resolve(args.project, root), root))
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":

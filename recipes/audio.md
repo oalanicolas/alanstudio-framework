@@ -8,10 +8,12 @@ efeito e o espaço, e o silêncio também informa. Um loop 8-bit no lugar de
 uma gravação licenciada não cumpre o piso deste estúdio. jsfxr, chiptune
 e Kenney arcade não são o padrão.
 
-`context --focus audio` seleciona esta receita. Som novo no laboratório:
-`sfx search` antes de qualquer download; `sfx copy` leva o arquivo e a
-proveniência. Sem `shared/sfx`, o catálogo vem vazio — isso não autoriza
-improvisar licença.
+`context --focus audio` seleciona esta receita. `roles <projeto>` lê os
+papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
+em `public/sfx`. Arquivo ausente é lacuna do verbo, não silêncio deliberado;
+`heard` é sempre falso. Som novo no laboratório: `sfx search` antes de
+qualquer download; `sfx copy` leva o arquivo e a proveniência. Sem
+`shared/sfx`, o catálogo vem vazio — isso não autoriza improvisar licença.
 
 ## 1. Nomear a camada
 
