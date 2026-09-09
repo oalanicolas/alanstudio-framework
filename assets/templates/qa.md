@@ -31,6 +31,12 @@ Versão/arquivos, ambiente e referência: [localizadores e limites de identifica
 - Observação/relato literal: não coletado.
 - Interpretação e explicação alternativa: [separadas do fato].
 - Evidência/condições: [localizador; autorização aplicável se houver gravação].
+- Regra de parada: [o que encerra a rodada — por exemplo, N sessões consecutivas
+  sem mudança necessária. Escrever antes de começar; não é número de participantes].
+- Recorrência: [quantas sessões distintas mostraram o mesmo problema; um relato é
+  observação, não causa demonstrada].
+- Achado: [problema, evidência, hipótese e medição. Sem os quatro, registre como
+  impressão].
 
 ## Problemas e reteste
 

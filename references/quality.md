@@ -69,6 +69,30 @@ Para cada critério afetado registre no local de QA existente:
 - **Conclusão:** critério atendido, regressão ou pendência. Não declare aprovação
   do usuário quando só houve avaliação do agente.
 
+E, por rodada de playtest, duas coisas que não são sobre um critério e sim sobre a
+observação inteira:
+
+- **Achado, não impressão.** Cada achado nomeia o problema, a evidência, a
+  hipótese e a medição. O que não consegue nomear os quatro é impressão, e entra
+  como impressão. A cadeia é o formato que a Valve usa nos próprios exemplos
+  publicados de Left 4 Dead e Dota 2.
+- **Regra de parada declarada, e não número de participantes.** Escreva antes de
+  começar o que encerra a rodada — por exemplo, N sessões consecutivas sem
+  mudança necessária. Um método de observação sem regra de parada não está
+  definido, e é isso que o critério `observation` do gate
+  [`evaluate`](gates.md) pede.
+
+**Este framework não prescreve quantas pessoas.** O “cinco usuários” que circula
+como regra vem de um artigo cuja conclusão é outra: Nielsen e Landauer estimaram
+que 16 avaliações valeriam o custo, com pico de benefício/custo em 4, e o 85%
+saiu de um parâmetro ajustado sobre treze conjuntos de dados que não continham
+jogo nenhum. Faulkner mediu, empiricamente, cinco usuários achando entre 55% e
+99% dos problemas — a faixa é grande o bastante para que o número sozinho não
+signifique nada. Ninguém publicou o parâmetro para playtest de jogo. A
+procedência está em
+[observable-criteria-research.md](observable-criteria-research.md), §5.1 e §5.2;
+a regra de parada vem do RITE, §5.3.
+
 Origens: o [playground](https://games.alanicolas.com/), os recortes em
 [sources.md](sources.md) e a direção de qualidade deste repositório. Os estudos
 são referências históricas; suas medições não foram repetidas só por entrarem

@@ -275,6 +275,51 @@ Nada disso observa o jogo. Uma tabela **bem formada** e otimista sai de lá
 intacta, porque o degrau é afirmação de quem escreveu — e é por isso que o item 3
 acima, condição, evidência e autor, continua sendo o trabalho de verdade.
 
+## Conferir sem importar número
+
+Os critérios acima quase não têm número, e isso foi decisão antes de ser
+pesquisa: “orçamento de quadro declarado” em vez de 16 ms, “contraste verificado”
+em vez de 4,5:1. Um [levantamento posterior](observable-criteria-research.md)
+procurou os números que se poderia importar e o resultado justifica a decisão em
+retrospecto. Ele separa três coisas que costumam vir misturadas.
+
+**Onde existe norma ou regulação.** Safe title e safe action area saem da SMPTE ST
+2046-1 (90% e 93%), que substituiu em 2009 os 80%/90% de 1961–63 que ainda
+circulam. A faixa de ajuste de tamanho de legenda — 50% a 200% do padrão — é
+regra da FCC. Contraste de texto sai da WCAG 2.2. Ao usar um desses, cite a norma
+e a versão, porque a versão é justamente o que muda.
+
+**Onde existe documentação de fornecedor, que é outra coisa.** Tamanho mínimo de
+fonte por plataforma, escala de texto até 200%, contraste em jogo, caracteres por
+linha de legenda e orçamento de quadro têm páginas publicadas por Xbox, Netflix,
+BBC, Unity e Google. É guideline de quem faz a plataforma, não requisito
+verificado: a própria Microsoft diz que as diretrizes de acessibilidade dela não
+servem para validar conformidade.
+
+**Onde não existe fonte, e o número circula igual.** Orçamento de draw calls
+(o autor mais citado chama os próprios números de *guesstimates*), orçamento de
+memória de textura, tamanho de paleta, limiar universal de latência e número de
+playtesters. Nada disso entrou em critério nenhum daqui, e o motivo de cada
+ausência está registrado na §6 do levantamento.
+
+O padrão que dá para reconhecer, e que vale mais que qualquer tabela: **fonte
+séria diz de onde tirou o número.** A EBU declara de qual medição de overscan
+saíram os 3,5%; a Unity chama o seu 35% de “a general tip”; Miller abre o artigo
+de 1968 perguntando “response time to what?”. Página que afirma um percentil com
+casa decimal e nenhuma origem não está sendo mais precisa — está sendo menos
+honesta.
+
+Por isso a forma mais robusta de critério observável não depende de número
+externo nenhum: é **conformidade com o que o próprio projeto declarou**. Cada cor
+usada consta da paleta declarada. Cada janela de perdão tem constante nomeada, num
+lugar só, com unidade. O percentil está definido pela definição e não pelo apelido
+(“99º percentil do tempo de quadro”, não “1% low”). Draw calls e tempo de quadro
+por cena estão registrados por build e comparados com o anterior. O playtest tem
+regra de parada declarada, em vez de número de participantes — o
+[roteiro de observação](quality.md) explica por quê. Nenhuma dessas checagens
+exige que um número seja verdadeiro em geral; exige que o projeto tenha dito o
+seu, e que a coisa observada corresponda.
+
 ## Limites
 
 Esta escada não mede diversão, não aprova arte e não substitui a aprovação do

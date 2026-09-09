@@ -1719,6 +1719,28 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("gates.problems", bases)
         self.assertNotIn("gates.pending", bases)
 
+    # A barra descreve acabamento sem citar limiar, e isso foi decisão antes de ser
+    # pesquisa. Um levantamento posterior achou os números que se poderia importar e
+    # mostrou que os mais repetidos ou estão desatualizados, ou vêm de medição que
+    # não era de jogo, ou não têm fonte. Um limiar que aparecesse aqui depois seria
+    # a escada afirmando o que ninguém verificou para este jogo.
+    def test_no_tier_criterion_smuggles_a_threshold_into_the_bar(self):
+        text = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
+        start = re.compile(r"^- `(%s)`:" % "|".join(game.BAR_TIERS))
+        criteria = []
+        for line in text.splitlines():
+            if start.match(line):
+                criteria.append(line)
+            # Critério que dobrou de linha continua sendo o mesmo critério: sem
+            # juntar a continuação, um número na segunda linha escaparia.
+            elif criteria and line.startswith("  ") and line.strip():
+                criteria[-1] += " " + line.strip()
+            elif not line.strip():
+                continue
+        self.assertEqual(len(criteria), len(game.BAR_TIERS) * len(game.BAR_DIMENSIONS))
+        for criterion in criteria:
+            self.assertNotRegex(criterion, r"\d", criterion)
+
     def test_bar_ignores_a_row_that_names_something_the_bar_does_not(self):
         self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS})
         with (self.project / "README.md").open("a", encoding="utf-8") as document:

@@ -56,9 +56,27 @@ draw calls, tamanho de paleta e limiar de latência universal não têm nada. A
 seção final lista explicitamente os números que **não** podem ser citados como
 fato estabelecido, com o motivo de cada um.
 
-Nenhum limiar de lá foi promovido para a [barra](production-bar.md) nem para os
-[gates](gates.md). Levantar a fonte e calibrar contra uma amostra de jogos são
-passos diferentes, e só o primeiro foi dado.
+**Nenhum limiar de lá foi promovido** para a [barra](production-bar.md) nem para
+os [gates](gates.md). Levantar a fonte e calibrar contra uma amostra de jogos são
+passos diferentes, e só o primeiro foi dado — nenhum degrau passou a exigir 16 ms,
+4,5:1 ou 93%.
+
+Duas coisas que **não** são limiar entraram, e é justo dizer quais. A primeira é
+um método: a regra de parada de playtest, do RITE (Medlock et al., 2002, fonte
+primária), que substitui a pergunta “quantas pessoas?” por “o que encerra a
+rodada?”. Ela entrou no [roteiro de observação](quality.md) e no template de QA.
+A segunda é uma correção: o “cinco usuários” foi recusado por leitura do artigo
+original, que conclui outra coisa, e a recusa está escrita onde alguém iria
+procurar o número. Junto delas, a barra ganhou uma seção sobre o que se pode
+conferir **sem** importar número — conformidade com o que o próprio projeto
+declarou —, que é o formato de critério que não depende de nenhuma fonte externa
+estar certa.
+
+A heurística de triagem que sobrou do levantamento e vale para qualquer fonte
+futura: **fonte séria declara de onde tirou o número.** A EBU diz de qual medição
+de overscan saíram os 3,5%; a Unity chama o próprio 35% de “a general tip”. Um
+número com casa decimal e sem origem não é mais preciso, é menos honesto — e o
+levantamento nomeia os domínios em que isso apareceu.
 
 ## Pré-produção e checagem
 
