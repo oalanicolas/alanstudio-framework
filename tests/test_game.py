@@ -88,7 +88,7 @@ class HarnessTest(unittest.TestCase):
         checks = {item["check"]: item for item in report["checks"]}
         self.assertEqual({name for name, item in checks.items() if item["required"]}, {"python", "framework_files", "root"})
         self.assertEqual(checks["framework_files"]["detail"]["missing"], [])
-        self.assertEqual(checks["framework_files"]["detail"]["expected"], 3 + len(game.FOCI) + len(game.STAGES) + len(game.REFERENCES))
+        self.assertEqual(checks["framework_files"]["detail"]["expected"], 3 + len(game.FOCI) + len(game.STAGES) + len(game.REFERENCES) + len(set(game.PLATFORM_PACKS.values())) + len(game.GENRES))
         self.assertEqual(checks["projects"]["detail"]["kinds"], ["package.json"])
         self.assertEqual(checks["sfx"]["status"], "absent")
         self.assertIn("context", report["next"])
@@ -135,6 +135,58 @@ class HarnessTest(unittest.TestCase):
         self.assertEqual(names[:4], ["process.md", "quality.md", "feel.md", "game-design-system.md"])
         with self.assertRaisesRegex(ValueError, "foco desconhecido"):
             game.context(self.project, "polish")
+
+    def test_every_recognized_engine_has_a_platform_pack_loaded_after_the_recipe(self):
+        for marker, kind in game.ENGINE_MARKERS:
+            with self.subTest(kind=kind):
+                project = self.root / f"p-{kind}"
+                project.mkdir()
+                (project / marker.replace("*", "Jogo")).parent.mkdir(parents=True, exist_ok=True)
+                (project / marker.replace("*", "Jogo")).write_text("{}")
+                result = game.context(project, "lifecycle", studies_root=self.root / "absent")
+                pack = result["packs"]["platform"]
+                self.assertEqual(pack["kind"], kind)
+                self.assertEqual(Path(pack["pack"]).name, f"{game.PLATFORM_PACKS[kind]}.md")
+                self.assertTrue(Path(pack["pack"]).is_file())
+                names = [Path(p).name for p in result["read_next"]]
+                self.assertEqual(names[names.index("lifecycle.md") + 1], f"{game.PLATFORM_PACKS[kind]}.md")
+        self.assertEqual(set(game.PLATFORM_PACKS), {kind for _, kind in game.ENGINE_MARKERS})
+
+    def test_project_without_marker_gets_agnostic_core_and_no_platform_pack(self):
+        result = game.context(self.project, "mechanics", studies_root=self.root / "absent")
+        self.assertIsNone(result["kind"])
+        self.assertIsNone(result["packs"]["platform"]["pack"])
+        self.assertIn("agnóstico", result["packs"]["platform"]["basis"])
+        self.assertFalse(any("packs" in Path(p).parts for p in result["read_next"]))
+
+    def test_declared_genre_loads_pack_after_platform_and_unknown_genre_is_rejected(self):
+        self.package()
+        for genre in game.GENRES:
+            with self.subTest(genre=genre):
+                result = game.context(self.project, "feel", studies_root=self.root / "absent", genre=genre)
+                names = [Path(p).name for p in result["read_next"]]
+                self.assertEqual(names[:5], ["process.md", "quality.md", "feel.md", "web.md", f"{genre}.md"])
+                self.assertTrue(Path(result["packs"]["genre"]["pack"]).is_file())
+                self.assertEqual(result["packs"]["genre"]["available"], list(game.GENRES))
+        with self.assertRaisesRegex(ValueError, "gênero desconhecido"):
+            game.context(self.project, "feel", genre="fighting")
+        run = subprocess.run([sys.executable, str(SCRIPT), "context", str(self.project), "--genre", "racing", "--root", str(self.root)], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertEqual(Path(json.loads(run.stdout)["packs"]["genre"]["pack"]).name, "racing.md")
+
+    def test_genre_field_in_documents_only_suggests_and_never_loads_a_pack(self):
+        (self.project / "README.md").write_text("# Jogo\n- Gênero: corrida arcade de kart\nEscopo local.\n")
+        (self.project / "old.md").write_text("> Documento histórico, não vigente.\n# Antigo\nGênero: puzzle\n")
+        result = game.context(self.project, "create", studies_root=self.root / "absent")
+        genre = result["packs"]["genre"]
+        self.assertEqual(genre["suggested"], ["racing"])
+        self.assertEqual(genre["mentions"], [{"path": "README.md", "line": 2, "value": "corrida arcade de kart"}])
+        self.assertIsNone(genre["pack"])
+        self.assertIsNone(genre["name"])
+        self.assertIn("--genre", genre["basis"])
+        self.assertFalse(any("genres" in Path(p).parts for p in result["read_next"]))
+        self.assertEqual(game.suggest_genres([{"value": "RPG tático por turnos"}]), ["turn-based", "rpg"])
+        self.assertEqual(game.suggest_genres([{"value": "sem correspondência"}]), [])
 
     def test_cargo_project_exposes_conventional_targets_and_verify_runs_them(self):
         (self.project / "Cargo.toml").write_text("[package]\nname = \"jogo\"\n")
@@ -208,7 +260,9 @@ class HarnessTest(unittest.TestCase):
         result = game.context(self.project, "visual")
         self.assertEqual(before, set(self.project.iterdir()))
         self.assertEqual(result["instructions"][-2:], [str(self.root / "AGENTS.md"), str(self.project / "AGENTS.md")])
-        self.assertEqual([Path(p).name for p in result["read_next"]], ["process.md", "quality.md", "visual.md", "game-design-system.md", "project-audit.md"])
+        self.assertEqual([Path(p).name for p in result["read_next"]], ["process.md", "quality.md", "visual.md", "web.md", "game-design-system.md", "project-audit.md"])
+        self.assertEqual(result["packs"]["platform"]["kind"], "package.json")
+        self.assertIsNone(result["packs"]["genre"]["pack"])
         self.assertIn("sfx", result["studio_assets"])
         self.assertTrue(result["capabilities"])
         self.assertTrue(all(item["status"] in ("unknown", "mentioned") for item in result["capabilities"].values()))

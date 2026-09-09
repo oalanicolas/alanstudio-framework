@@ -49,6 +49,24 @@ STAGES = ("brief", "mda", "gdd", "poc", "prd", "tdd", "vertical-slice", "mvp", "
 PRODUCTION_STAGES = ("production-plan", "milestone")
 EVENTS = ("task", "direction-approved", "resume")
 REFERENCES = ("process", "quality", "preproduction", "project-audit", "game-design-system", "sources")
+# Pacotes: o núcleo é agnóstico; um pacote só entra quando a plataforma foi identificada ou o gênero foi declarado.
+PLATFORM_PACKS = {
+    "package.json": "web", "static-web": "web", "unity": "unity", "godot": "godot", "unreal": "unreal",
+    "defold": "defold", "gamemaker": "gamemaker", "cargo": "cargo", "python": "python", "lua": "lua",
+}
+GENRES = ("narrative", "platformer", "shooter", "racing", "turn-based", "puzzle", "simulation", "rpg", "roguelike")
+GENRE_KEYWORDS = {
+    "narrative": ("narrativ", "conto", "visual novel", "interactive fiction", "aventura textual", "historia interativa"),
+    "platformer": ("plataforma", "platformer", "metroidvania"),
+    "shooter": ("fps", "tps", "shooter", "tiro", "shoot em up", "shmup"),
+    "racing": ("corrida", "racing", "kart", "drift"),
+    "turn-based": ("turno", "turn based", "tabuleiro", "board game", "cartas", "card game", "tatico", "tactics"),
+    "puzzle": ("puzzle", "quebra cabeca", "logica", "match 3"),
+    "simulation": ("simula", "fabrica", "factory", "gestao", "management", "tycoon", "city builder", "automacao"),
+    "rpg": ("rpg", "jrpg", "arpg", "crpg"),
+    "roguelike": ("roguelike", "roguelite", "run based", "permadeath"),
+}
+GENRE_FIELD = re.compile(r"^\s*(?:[-*]\s+)?(?:g[eê]nero(?: do jogo)?|genre)\s*:\s*(.+?)\s*$", re.IGNORECASE)
 # Ordem importa: manifestos web primeiro, engines nativas depois, marcadores genéricos por último.
 ENGINE_MARKERS = (
     ("package.json", "package.json"),
@@ -125,6 +143,10 @@ CAPABILITY_TOKENS = {
 
 def read_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def normalize_text(text):
+    return "".join(c for c in unicodedata.normalize("NFKD", text.casefold()) if not unicodedata.combining(c)).replace("-", " ").replace("_", " ")
 
 
 def emit(value):
@@ -245,13 +267,12 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     json_docs = {"brief.json", "state.json", "decisions.json", "sources.json", "licenses.json", "package.json"}
     text_docs = {"license", "licence", "copying", "credits", "authors"}
     indexes, documents, links, statuses = [], {}, {}, {}
-    deferred, non_current, continuity_sources = [], [], []
+    deferred, non_current, continuity_sources, genre_mentions = [], [], [], []
     link_count, max_links, links_limited = 0, 128, False
     inline_link = re.compile(r'(?<!!)\[[^\]\n]+\]\((?:<([^>\n]+)>|([^\s)]+))(?:\s+"[^"]*")?\)')
     navigation = re.compile(r"^\s*(?:(?:[-*]|\d+[.)])\s+)?\[[^\]]+\](?:\(|\[)")
 
-    def normalized(text):
-        return "".join(c for c in unicodedata.normalize("NFKD", text.casefold()) if not unicodedata.combining(c)).replace("-", " ").replace("_", " ")
+    normalized = normalize_text
 
     def status_hint(text):
         text = normalized(text)
@@ -387,6 +408,9 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
                     labels.append((number, normalized(heading.group(1)), "heading"))
             elif field:
                 labels.append((number, normalized(field.group(1)), "field"))
+                genre = GENRE_FIELD.match(line)
+                if genre and status in {"candidate", "draft"} and len(genre_mentions) < 5:
+                    genre_mentions.append({"path": relative, "line": number, "value": genre.group(1)})
         for key, _, pattern in FOUNDATION_AREAS:
             hits = [(number, basis) for number, label, basis in labels if re.search(pattern, label)]
             if hits:
@@ -454,6 +478,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         "minimum_status": "needs_review" if needs_documentation else "candidates_found",
         "areas": areas, "gaps": gaps, "read_first": read_first,
         "continuity_sources": continuity_sources, "continuity_source_count": continuity_source_count,
+        "genre_mentions": genre_mentions,
         "coverage": {
             "documents_inspected": inspected, "documents_located": len(documents), "entries_seen": entries_seen,
             "documents_deferred": deferred[:20], "documents_deferred_count": len(deferred),
@@ -492,9 +517,41 @@ def select_references(focus, stage, document_minimum):
     return list(dict.fromkeys(references))
 
 
-def context(project, focus, stage=None, studies_root=None, event="task", root=None):
+def suggest_genres(mentions):
+    """Mapeia valores lexicais de um campo Gênero para pacotes; sugestão, não classificação."""
+    suggested = []
+    for mention in mentions:
+        value = normalize_text(mention["value"])
+        for genre, keywords in GENRE_KEYWORDS.items():
+            if genre not in suggested and any(keyword in value for keyword in keywords):
+                suggested.append(genre)
+    return suggested
+
+
+def select_packs(kind, genre, mentions):
+    pack_name = PLATFORM_PACKS.get(kind)
+    platform_path = FRAMEWORK / f"packs/platforms/{pack_name}.md" if pack_name else None
+    genre_path = FRAMEWORK / f"packs/genres/{genre}.md" if genre else None
+    suggested = suggest_genres(mentions)
+    return {
+        "platform": {
+            "kind": kind, "pack": str(platform_path) if platform_path and platform_path.is_file() else None,
+            "basis": "identify: marcador de manifesto/engine no diretório do projeto" if kind else "projeto sem marcador reconhecido; núcleo agnóstico apenas",
+        },
+        "genre": {
+            "name": genre, "pack": str(genre_path) if genre_path and genre_path.is_file() else None,
+            "basis": "--genre declarado na conversa" if genre else ("campo Gênero localizado em documento; confirme e passe --genre" if suggested else "não declarado; passe --genre quando o jogo tiver gênero definido"),
+            "suggested": suggested, "mentions": mentions, "available": list(GENRES),
+        },
+        "scope": "Pacotes são convenções de plataforma/gênero para orientar leitura e verificação. Não substituem AGENTS, a documentação oficial nem o que o projeto realmente faz; confirme cada convenção no código.",
+    }
+
+
+def context(project, focus, stage=None, studies_root=None, event="task", root=None, genre=None):
     if focus not in FOCI:
         raise ValueError("foco desconhecido")
+    if genre is not None and genre not in GENRES:
+        raise ValueError("gênero desconhecido")
     if stage is not None and stage not in STAGES:
         raise ValueError("etapa desconhecida")
     if event not in EVENTS:
@@ -511,12 +568,19 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
     foundation = scan(project)
     records = [str(project / relative) for relative in foundation["read_first"]]
     document_minimum = foundation["audit"]["required"] or event == "direction-approved" or stage == "audit"
-    references = select_references(focus, stage, document_minimum)
+    kind = identify(project)
+    packs = select_packs(kind, genre, foundation["genre_mentions"])
+    references = [str(path) for path in select_references(focus, stage, document_minimum)]
+    recipe = str(FRAMEWORK / f"recipes/{focus}.md")
+    for pack in (packs["genre"]["pack"], packs["platform"]["pack"]):  # inserção reversa: receita → plataforma → gênero
+        if pack:
+            references.insert(references.index(recipe) + 1 if recipe in references else len(references), pack)
+    references = list(dict.fromkeys(references))
     studies = studies_for(focus, STUDIES_ROOT if studies_root is None else studies_root)
     return {
-        "schema_version": 3, "project": str(project), "exists": project.is_dir(), "kind": identify(project),
+        "schema_version": 3, "project": str(project), "exists": project.is_dir(), "kind": kind,
         "focus": focus, "stage": stage, "event": event, "instructions": instructions, "records": records,
-        "read_next": [str(path) for path in references], "studies": studies,
+        "read_next": references, "packs": packs, "studies": studies,
         "source_index": str(FRAMEWORK / "references/sources.md"),
         "package_manager": manager,
         "metadata_issues": metadata_issues,
@@ -582,6 +646,8 @@ def doctor(root, studies_root=None):
         *(FRAMEWORK / f"recipes/{focus}.md" for focus in FOCI),
         *(FRAMEWORK / f"assets/templates/{stage}.md" for stage in STAGES),
         *(FRAMEWORK / f"references/{name}.md" for name in REFERENCES),
+        *(FRAMEWORK / f"packs/platforms/{name}.md" for name in sorted(set(PLATFORM_PACKS.values()))),
+        *(FRAMEWORK / f"packs/genres/{name}.md" for name in GENRES),
     ]
     missing = [path.relative_to(FRAMEWORK).as_posix() for path in expected if not path.is_file()]
     check("framework_files", not missing, {"framework": str(FRAMEWORK), "expected": len(expected), "missing": missing})
@@ -729,6 +795,7 @@ def build_parser():
     ctx.add_argument("--focus", choices=FOCI, default="create")
     ctx.add_argument("--stage", choices=STAGES)
     ctx.add_argument("--event", choices=EVENTS, default="task", help="evento observado na conversa pelo agente; não concede aprovação")
+    ctx.add_argument("--genre", choices=GENRES, help="gênero declarado; carrega o pacote de gênero correspondente")
     doc = commands.add_parser("template", parents=[common], help="imprime ou grava um rascunho de documento")
     doc.add_argument("stage", choices=STAGES)
     doc.add_argument("--project", required=True)
@@ -835,7 +902,7 @@ def main():
         elif args.action == "scan":
             emit(scan(resolve(args.project, root)))
         elif args.action == "context":
-            emit(context(resolve(args.project, root), args.focus, args.stage, studies_root=default_studies_root(root), event=args.event, root=root))
+            emit(context(resolve(args.project, root), args.focus, args.stage, studies_root=default_studies_root(root), event=args.event, root=root, genre=args.genre))
         elif args.action == "template":
             document = template(args.stage, resolve(args.project, root), args.output)
             if args.output:
