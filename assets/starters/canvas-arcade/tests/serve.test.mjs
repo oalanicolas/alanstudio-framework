@@ -59,7 +59,7 @@ for (const name of ["farol", "Farol do Sul"]) {
       const html = await root.text();
       assert.match(html, /<canvas/, "a página servida não é o jogo");
       assert.match(html, /id="commands"/, "a tabela precisa ter id para o convite somir");
-      assert.match(html, /\?invite=1|invite=1/, "a página precisa declarar o gancho do convite");
+      assert.match(html, /get\("invite"\) === "1"/, "a página precisa declarar o gancho do convite");
 
       const module = await fetch(`http://localhost:${server.port}/src/main.js`);
       assert.equal(module.status, 200);
