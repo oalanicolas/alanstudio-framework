@@ -78,6 +78,17 @@ Registre também o que ficou fora do recorte e por quê. Um grafo lexical vazio 
 prova ausência de consumidores. Formatos e sistemas universais só entram após uma
 lacuna demonstrada em consumidores reais. Prefira as fronteiras que o jogo já possui.
 
+O erro tem duas direções, e a frase acima só cobre uma. Construir o sistema geral
+cedo desperdiça o esforço; continuar improvisando depois que as cópias se
+acumularam desperdiça mais, e de forma silenciosa. Nenhuma regra decide isso por
+você — a decisão depende de quanto conteúdo o jogo vai ter, e no começo isso é
+estimativa. O que dá para fazer é **declarar a estimativa em vez de a manter na
+cabeça**: escreva no TDD a contagem a partir da qual o sistema passa a valer a
+pena (“acima de N falas, um sistema de diálogo; abaixo, texto no lugar”), com a
+data e quem estimou. Quando a contagem real cruzar a linha, a decisão já está
+tomada e datada, em vez de ser adiada por inércia. Estimativa declarada e errada
+é revisável; estimativa implícita não é nem discutível.
+
 ## 4. Decidir com alternativas e contraprova
 
 No [TDD existente](../assets/templates/tdd.md), reúna: problema e requisito de origem,

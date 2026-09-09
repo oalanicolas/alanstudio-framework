@@ -112,6 +112,15 @@ ajustar ou abandonar”) e que passou a valer nas dez. A generalização é julg
 editorial deste estúdio, apoiada numa coerência interna, não na autoridade do
 vídeo.
 
+A segunda coisa que veio de lá é menor e está na [receita de
+arquitetura](../recipes/architecture.md): o repositório já dizia para não
+generalizar cedo e não dizia nada sobre o erro contrário, o de seguir improvisando
+depois que as cópias se acumularam. O vídeo trata os dois lados e admite que a
+escolha é um palpite. A adaptação — declarar a contagem-limite no TDD, com data e
+autor, em vez de mantê-la na cabeça — é deste repositório, e segue a mesma lógica
+que já vale para a barra e para os gates: transformar julgamento implícito em
+declaração contestável. Nenhum número foi importado.
+
 O que recusei da mesma fonte, para não dar a impressão de que absorvi o material
 inteiro: o limiar de “80% pronto, então termine” é número sem origem, e não entrou
 em critério nenhum. “Sua engine não importa” contradiz a receita de arquitetura
