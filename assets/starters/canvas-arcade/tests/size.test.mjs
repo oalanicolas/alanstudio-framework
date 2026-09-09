@@ -23,7 +23,7 @@ async function runSize(args = []) {
 }
 
 test("o tamanho relata bytes sem teto nem aprovação", async () => {
-  const base = join(tmpdir(), `starter-size-${process.pid}`);
+  const base = join(tmpdir(), `starter-size-pid${process.pid}`);
   await rm(base, { recursive: true, force: true });
   await mkdir(join(base, "nested"), { recursive: true });
   await writeFile(join(base, "a.txt"), "abcd");
@@ -35,7 +35,9 @@ test("o tamanho relata bytes sem teto nem aprovação", async () => {
     assert.equal(report.files, 2);
     assert.equal(report.bytes, 10);
     assert.match(report.scope, /Sem teto/);
-    assert.doesNotMatch(stdout, /aprovado|verified|LUFS|-14/);
+    const { directory, ...claimed } = report;
+    assert.equal(typeof directory, "string");
+    assert.doesNotMatch(JSON.stringify(claimed), /aprovado|verified|LUFS|-14/);
   } finally {
     await rm(base, { recursive: true, force: true });
   }
