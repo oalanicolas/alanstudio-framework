@@ -497,8 +497,9 @@ Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
 
 ## Áudio
 
-O starter declara os papéis do verbo (`const SOUNDS`) e já traz design
-original em `public/sfx/<papel>.wav`. `roles` lê a declaração e cruza com
+O starter declara os papéis do verbo e a cama (`const SOUNDS`) e já traz
+design original em `public/sfx/<papel>.wav`. A cama entra em loop no
+barramento de música. `roles` lê a declaração e cruza com
 arquivos em `public/sfx` (e equivalentes). Papel vazio continua lacuna:
 
 ```sh
@@ -510,8 +511,8 @@ python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo --fill --apply --
 `heard` e `approved` são sempre `false`: arquivo presente não é mixagem ouvida.
 `next` propõe `audio.roles` quando um papel está vazio. `roles --fill` sugere
 um candidato do acervo; `--apply` copia para `public/sfx/<papel>` com recibo.
-O starter carrega esse arquivo no mixer. `npm run mix` soma as vozes de
-uma partida simulada; isso também não é mix ouvida. Primeiro resultado da
+O starter carrega esse arquivo no mixer. `npm run mix` soma cama e vozes
+de uma partida simulada; isso também não é mix ouvida. Primeiro resultado da
 busca não é mixagem. Silêncio deliberado é o papel fora da declaração, não
 o slot sem arquivo.
 

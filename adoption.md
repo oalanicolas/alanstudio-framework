@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.37 — A cama ocupa o barramento de música
+
+O palco tinha `music` e o mix o abaixava no impacto, mas nada tocava
+nele. `bed` entra em loop no barramento, some na pausa e no fim da
+partida, e `npm run mix` a soma com as vozes. Sem legenda: não é
+informação de jogo. Design original, CC0, seno e ruído filtrado.
+`heard` continua falso. `audio_mix` permanece `slice`: cama no
+processo não é loudness no dispositivo. Só `release` fica no piso.
+
+O que 0.9.37 não afirma: o harness não ouviu, não mediu LUFS e não
+aprovou a faixa dinâmica.
+
 ## 0.9.36 — A próxima chuva nasce distinta e se deixa traçar
 
 `npm run table -- --from spawn` só clonava a chuva padrão. Agora copia

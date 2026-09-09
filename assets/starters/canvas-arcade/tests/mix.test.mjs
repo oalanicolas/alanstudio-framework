@@ -19,6 +19,7 @@ test("o mix relata a soma da partida sem importar limiar nem aprovar", async () 
   assert.equal(code, 0, stdout);
   const report = JSON.parse(stdout);
   assert.equal(report.heard, false);
+  assert.equal(report.bed, true);
   assert.ok(report.events > 0);
   assert.ok(Number.isFinite(report.peak_linear));
   assert.ok(report.peak_linear > 0);

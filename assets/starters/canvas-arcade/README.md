@@ -110,7 +110,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor/câmera distintos; a ameaça marca o trilho, a recuperação do dash muda a silhueta e o erro acende o campo; `npm run probe` conta os buffers, não o peso percebido |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — a sequência de quadros no stub cobre o HUD; `npm run contrast` amostra a cena montada no stub; o dispositivo alvo ainda não foi observado |
 | `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; `consistent` é falso |
-| `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — o palco tem folga e o mixer limita o master; `npm run mix` soma com o mesmo palco, não no dispositivo; loudness percebido não foi medido |
+| `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — o palco tem folga, a cama ocupa o barramento de música e o mixer limita o master; `npm run mix` soma cama e vozes na simulação, não no dispositivo; loudness percebido não foi medido |
 | `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; a sessão relata never_banked e erro repetido na simulação; a curva com quem nunca viu o jogo continua pendente |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; cada tick compacta a chuva no mesmo array e reusa o poço; evento e telegraph também reusam; `npm run budget` cronometra simulação e `draw` num canvas stub e relata o reuso — não o compositor nem o dispositivo alvo |
@@ -154,7 +154,7 @@ geométrica não é teste de percepção**, e é exatamente essa a distância en
 
 ## Som
 
-Os seis papéis têm design original em `public/sfx/<papel>.wav` e uma
+Os papéis do verbo e a cama têm design original em `public/sfx/<papel>.wav` e uma
 variante `public/sfx/<papel>-b.wav` (CC0-1.0, `tools/design-sfx.py`):
 seno e ruído filtrado, sem quadrada, sem jsfxr, sem Kenney. Origem em
 `public/sfx/sources.json` e nos sidecars `.credits.txt`. `src/game/audio.js`
@@ -178,7 +178,7 @@ src/game/     regras, apresentação, mixagem, mesas, carga de sfx e ensino do c
 src/main.js   montagem e contrato de ciclo de vida
 data/         conteúdo separado da regra (chuva, HUD e avisos)
 docs/         art-bible vigente — o init não o reescreve
-public/sfx/   design original dos seis papéis, com recibo
+public/sfx/   design original dos papéis do verbo e da cama, com recibo
 tools/        servidor, orçamento, mix, sessão, tamanho, export, nascer mesa e gerar sfx
 tests/        regras, determinismo, ciclo de vida, save, mixagem, ensino, export
 ```
@@ -197,7 +197,7 @@ no mesmo carregador e no mesmo consumidor (`?spawn=` /
 a cópia é idêntica nos knobs. `npm run session -- --spawn <nome>` traça
 essa chuva. Sem `--from`, o custo variável continua sendo ligar a regra.
 `dusk` já é a segunda chuva; ferramenta que desloca knobs não é volume
-nem alguém de fora no piso. Os seis papéis em `public/sfx` entram no mixer;
+nem alguém de fora no piso. Os papéis do verbo e a cama em `public/sfx` entram no mixer;
 `heard` continua falso. `npm run build` copia a árvore jogável para
 `dist/`; isso não é outra pessoa tendo jogado o artefato.
 

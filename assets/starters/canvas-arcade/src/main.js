@@ -58,7 +58,9 @@ export function createGame(options = {}) {
   if ((options.loadSfx ?? Boolean(canvas)) && typeof (options.fetch ?? globalThis.fetch) === "function") {
     const fetchFn = options.fetch ?? globalThis.fetch.bind(globalThis);
     const decode = options.decodeSfx ?? ((bytes) => audio.decode(bytes));
-    loadRoleFiles(audio, { fetch: fetchFn, decode }).catch(() => {});
+    loadRoleFiles(audio, { fetch: fetchFn, decode })
+      .then(() => syncBed())
+      .catch(() => {});
   }
 
   const loop = createLoop({
@@ -95,7 +97,14 @@ export function createGame(options = {}) {
       lastRun = summarizeRun(state);
       progress = recordRun(progress, state);
       saveProgress(storage, progress, progressLoad);
+      audio.stop("bed");
     }
+  }
+
+  function syncBed() {
+    if (disposed) return;
+    if (loop.paused || state.phase === "over") audio.stop("bed");
+    else audio.play("bed");
   }
 
   function present(frame) {
@@ -125,6 +134,7 @@ export function createGame(options = {}) {
     if (hidden) {
       flush();
       loop.pause();
+      audio.stop("bed");
     }
   };
   const onPageHide = () => {
@@ -146,14 +156,17 @@ export function createGame(options = {}) {
     // Ciclo de vida
     start() {
       loop.start();
+      syncBed();
       return handle;
     },
     pause() {
       loop.pause();
+      syncBed();
       return true;
     },
     resume() {
       loop.resume();
+      syncBed();
       return true;
     },
     get paused() {
@@ -164,6 +177,7 @@ export function createGame(options = {}) {
       queued = neutralIntent();
       recorded = false;
       loop.resume();
+      syncBed();
       return handle.observe();
     },
     seed(value) {

@@ -21,8 +21,9 @@ não muda o verbo. O harness não executa o jogo.
 
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
 `--fill` sugere o acervo; `--apply` copia com o nome do papel. O starter
-já traz design original e variante (`-b`) nos seis papéis e carrega no
-mixer em rodízio. `npm run mix` soma as vozes na partida simulada com o mesmo palco
+já traz design original e variante (`-b`) nos papéis do verbo e na cama
+e carrega no mixer. A cama entra em loop no barramento de música.
+`npm run mix` soma cama e vozes na partida simulada com o mesmo palco
 e folga do mixer. `heard` é sempre falso.
 
 **Feel (`feel`):** lê `const CONFIG` (perdão, graça, hitstop, punch,

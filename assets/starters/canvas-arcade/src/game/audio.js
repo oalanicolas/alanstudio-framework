@@ -1,8 +1,10 @@
 // Mixagem: barramentos, prioridade, ducking e legenda.
 //
-// Os seis papéis têm design original em `public/sfx/<papel>.wav`
+// Os papéis do verbo e a cama têm design original em `public/sfx/<papel>.wav`
 // e variante `public/sfx/<papel>-b.wav`: seno e ruído filtrado,
-// gerados por tools/design-sfx.py. O mixer alterna as variantes.
+// gerados por tools/design-sfx.py. O mixer alterna as variantes do verbo.
+// A cama (`bed`) ocupa o barramento de música em loop; não é informação
+// de jogo e não ganha legenda.
 // 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão — esses
 // arquivos não usam nenhum dos quatro. Arquivo no disco não é mixagem
 // ouvida: `heard` no harness continua falso.
@@ -28,6 +30,7 @@ export const SOUNDS = {
   bank: { bus: "sfx", caption: "corrente guardada", priority: 3, duckMs: 180 },
   hit: { bus: "sfx", caption: "atingido: corrente perdida", priority: 4, duckMs: 260 },
   over: { bus: "ui", caption: "fim da partida", priority: 5, duckMs: 400 },
+  bed: { bus: "music", caption: null, priority: 0, loop: true },
 };
 
 export function createAudio(options = {}) {
@@ -43,6 +46,7 @@ export function createAudio(options = {}) {
   const cursors = new Map();
   const missing = new Set();
   const voices = [];
+  const loops = new Map();
   const captions = [];
   let duckUntil = 0;
   let disposed = false;
@@ -112,7 +116,7 @@ export function createAudio(options = {}) {
     play(id) {
       const definition = SOUNDS[id];
       if (!definition || disposed) return false;
-      if (settings.captions !== false) {
+      if (definition.caption && settings.captions !== false) {
         captions.push({ id, text: definition.caption, at: now() });
         while (captions.length > captionLimit) captions.shift();
       }
@@ -122,11 +126,13 @@ export function createAudio(options = {}) {
         missing.add(id);
         return false;
       }
+      ensureContext();
+      if (!context) return false;
+      applyBusLevels();
+      if (definition.loop) return startLoop(id, definition, pack[0]);
       const cursor = cursors.get(id) ?? 0;
       const buffer = pack[cursor % pack.length];
       cursors.set(id, cursor + 1);
-      ensureContext();
-      if (!context) return false;
       retire();
       if (voices.length >= maxVoices) {
         // Sob pressão, o som menos importante é o que desaparece — não o aviso.
@@ -135,7 +141,6 @@ export function createAudio(options = {}) {
         weakest.stop();
         voices.splice(voices.indexOf(weakest), 1);
       }
-      applyBusLevels();
       const source = context.createBufferSource();
       source.buffer = buffer;
       source.connect(gains[definition.bus] ?? gains.master);
@@ -152,6 +157,13 @@ export function createAudio(options = {}) {
         },
       };
       voices.push(voice);
+      return true;
+    },
+    stop(id) {
+      const voice = loops.get(id);
+      if (!voice) return false;
+      voice.stop();
+      loops.delete(id);
       return true;
     },
     // Chamado a cada quadro: o ducking precisa voltar sozinho.
@@ -188,12 +200,33 @@ export function createAudio(options = {}) {
       disposed = true;
       for (const voice of voices) voice.stop();
       voices.length = 0;
+      for (const voice of loops.values()) voice.stop();
+      loops.clear();
       captions.length = 0;
       if (context && typeof context.close === "function") context.close();
       context = null;
       gains = null;
     },
   };
+
+  function startLoop(id, definition, buffer) {
+    if (loops.has(id)) return true;
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    source.connect(gains[definition.bus] ?? gains.master);
+    source.start();
+    loops.set(id, {
+      stop: () => {
+        try {
+          source.stop();
+        } catch {
+          /* já parou */
+        }
+      },
+    });
+    return true;
+  }
 }
 
 function defaultContext() {

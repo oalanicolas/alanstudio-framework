@@ -108,6 +108,24 @@
       "license": "CC0-1.0",
       "origin": "tools/design-sfx.py",
       "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "bed.wav",
+      "key": "bed",
+      "title": "Canvas Arcade / bed",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "bed-b.wav",
+      "key": "bed-b",
+      "title": "Canvas Arcade / bed-b",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
     }
   ]
 }

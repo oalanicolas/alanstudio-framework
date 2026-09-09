@@ -37,6 +37,7 @@ function fakeContext() {
         started: false,
         stopped: false,
         connect() {},
+        loop: false,
         start() {
           node.started = true;
         },
@@ -200,6 +201,21 @@ test("alterar preferências reflete nos barramentos", () => {
   audio.applySettings({ buses: { master: 0.2, music: 0, sfx: 0.5, ui: 0.1 }, captions: true });
   assert.equal(context.gains[0].gain.value, 0.2 * MIX_HEADROOM);
   assert.equal(context.gains[2].gain.value, 0.5);
+});
+
+test("a cama entra em loop no barramento de música sem legenda e sem roubar voz", () => {
+  const { audio, context } = build({ maxVoices: 1 });
+  audio.register("bed", { duration: 4 });
+  audio.register("hit", { duration: 1 });
+  assert.equal(audio.play("bed"), true);
+  assert.equal(context.sources[0].loop, true);
+  assert.equal(audio.play("bed"), true, "segunda chamada não abre outra voz");
+  assert.equal(context.sources.length, 1);
+  assert.equal(audio.play("hit"), true);
+  assert.equal(context.sources[0].stopped, false, "a cama não entra no poço de vozes");
+  assert.equal(audio.captions().some((item) => item.id === "bed"), false);
+  assert.equal(audio.stop("bed"), true);
+  assert.equal(context.sources[0].stopped, true);
 });
 
 test("dispose encerra as vozes e o contexto", () => {

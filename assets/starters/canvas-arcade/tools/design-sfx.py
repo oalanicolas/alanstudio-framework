@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gera os seis papéis em public/sfx/. Design contemporâneo, não 8-bit.
+"""Gera os papéis do verbo e a cama em public/sfx/. Design contemporâneo, não 8-bit.
 
 Cada voz é seno ou ruído filtrado com envelope. Quadrada, dente e jsfxr
 ficam de fora: o piso do estúdio recusa essa estética como padrão.
@@ -16,7 +16,7 @@ from pathlib import Path
 RATE = 44100
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "public" / "sfx"
-ROLES = ("dash", "graze", "collect", "bank", "hit", "over")
+ROLES = ("dash", "graze", "collect", "bank", "hit", "over", "bed")
 
 
 def clamp(value: float) -> int:
@@ -118,6 +118,15 @@ def over(index: int, total: int) -> float:
     return 0.26 * fall + 0.18 * fifth
 
 
+def bed(index: int, total: int) -> float:
+    # Ciclos inteiros em 4s: a junta do loop não pede envelope.
+    t = index / RATE
+    root = math.sin(2 * math.pi * 220.0 * t)
+    fifth = math.sin(2 * math.pi * 330.0 * t)
+    air = noise(index, 19)
+    return 0.12 * root + 0.08 * fifth + 0.02 * air
+
+
 VOICES = {
     "dash": (0.18, dash, 0.55, 0.18),
     "graze": (0.07, graze, 0.7, 0.35),
@@ -125,6 +134,7 @@ VOICES = {
     "bank": (0.42, bank, None, None),
     "hit": (0.28, hit, 0.35, 0.22),
     "over": (0.55, over, None, None),
+    "bed": (4.0, bed, None, 0.12),
 }
 
 

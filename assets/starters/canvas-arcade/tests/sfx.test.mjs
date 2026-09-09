@@ -28,7 +28,7 @@ test("carrega o arquivo do papel e o registra no mixer", async () => {
   assert.ok(gaps.declared.includes("hit"));
 });
 
-test("os seis papéis têm WAV original no disco, não um stub", async () => {
+test("os papéis do verbo e a cama têm WAV original no disco, não um stub", async () => {
   for (const id of Object.keys(SOUNDS)) {
     for (const stem of [id, `${id}-b`]) {
       const bytes = await readFile(join(ROOT, "public/sfx", `${stem}.wav`));

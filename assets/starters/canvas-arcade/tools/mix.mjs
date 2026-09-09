@@ -43,6 +43,7 @@ for (const name of files.sort()) {
 
 const tickSamples = Math.max(1, Math.round(sampleRate / TICK_HZ));
 const cursors = new Map();
+const bedSamples = packs.get("bed")?.[0] ?? null;
 let peak = 0;
 let overUnity = 0;
 let eventsMixed = 0;
@@ -61,6 +62,7 @@ for (let run = 0; run < runs; run += 1) {
   const voices = [];
   let duckUntil = 0;
   let tick = 0;
+  let bedOffset = 0;
 
   while (state.phase === "playing") {
     intent.move = rng.next() < 0.55 ? (rng.next() < 0.5 ? -1 : 1) : 0;
@@ -104,6 +106,10 @@ for (let run = 0; run < runs; run += 1) {
         sum += voice.samples[voice.offset] * gainAt(voice.bus, ducked);
         voice.offset += 1;
       }
+      if (bedSamples) {
+        sum += bedSamples[bedOffset] * gainAt("music", ducked);
+        bedOffset = (bedOffset + 1) % bedSamples.length;
+      }
       const abs = Math.abs(sum);
       if (abs > peak) peak = abs;
       if (abs >= 1) overUnity += 1;
@@ -118,6 +124,7 @@ const report = {
   events: eventsMixed,
   voices: voicesPlayed,
   stolen,
+  bed: Boolean(bedSamples),
   peak_linear: Number(peak.toFixed(4)),
   peak_dbfs: peak > 0 ? Number((20 * Math.log10(peak)).toFixed(2)) : null,
   samples_at_or_over_unity: overUnity,

@@ -1949,7 +1949,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.roles_reading(starter)
         self.assertFalse(report["heard"])
         self.assertFalse(report["approved"])
-        self.assertEqual([item["id"] for item in report["roles"]], ["dash", "graze", "collect", "bank", "hit", "over"])
+        self.assertEqual(
+            [item["id"] for item in report["roles"]],
+            ["dash", "graze", "collect", "bank", "hit", "over", "bed"],
+        )
         self.assertEqual(report["empty"], [])
         self.assertTrue(all(item["state"] == "present" for item in report["roles"]))
         self.assertIn("src/game/audio.js", report["sources"])
