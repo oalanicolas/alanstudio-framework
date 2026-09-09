@@ -4,10 +4,19 @@ Entrada: transição ou estado que precisa ser criado, reproduzido ou encerrado.
 
 Antes de abstrair, localize os caminhos reais de início, atualização, render,
 eventos, áudio, pausa, término, reinício e descarte. Declare o que é controlável e
-o que permanece desconhecido. Os nomes `pause`, `reset`, `observe`, `act`, `advance`, `capture`
-e `dispose` são vocabulário de inspeção; não uma API implementada pelo harness.
-`context --focus lifecycle` lista catálogos do foco e menções nesses arquivos,
-sem promover token a capacidade verificada.
+o que permanece desconhecido. Os oito nomes `pause`, `reset`, `seed`, `observe`,
+`act`, `advance`, `capture` e `dispose` são vocabulário de inspeção; não uma API
+implementada pelo harness. `context --focus lifecycle` lista catálogos do foco e
+menções nesses arquivos, sem promover token a capacidade verificada. Quando um
+teste do projeto exercitar um deles, `verify --proves <nome>` anexa a alegação ao
+recibo, com autor, argv e log — `claimed`, nunca `verified`.
+
+**Teste o contrato pela ligação, não só pela API.** Uma suíte que chama
+`game.pause()` e `game.resume()` diretamente passa mesmo quando despausar pelo
+teclado é impossível — foi o que aconteceu no starter `canvas-arcade`, onde a
+leitura da tecla morava dentro da simulação, que não roda em pausa. O comando
+para sair de um estado nunca pode ser lido por um caminho que aquele estado
+desliga. Percorra a ligação real: evento de entrada → quadro → estado.
 
 Examine separadamente:
 

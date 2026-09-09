@@ -31,6 +31,15 @@ inteiro.
 Nenhuma regra foi copiada como mecânica obrigatória para todos os gêneros.
 `context --focus` lista os catálogos deste mapa que existirem no irmão.
 
+**A cobertura não é uniforme, e isso não é acidente.** Só seis focos têm catálogo:
+`create`, `mechanics`, `lifecycle`, `content`, `visual` e `network` — os que
+correspondem aos recortes efetivamente estudados. Em `architecture`, `feel`,
+`performance`, `accessibility`, `audio`, `persistence`, `release` e `production`, `studies` vem
+vazio, porque não houve extração para eles. Vazio aqui significa **não estudado**,
+não “nada relevante existe”. Preencher esses focos exigiria novos recortes com o
+mesmo rigor; inventar citações para emparelhar a lista seria o oposto do que este
+mapa existe para fazer.
+
 ## Pré-produção e checagem
 
 Na versão 0.2, leitura adicional dos templates no mesmo commit BMad
@@ -121,7 +130,131 @@ O harness adapta o **piso** e recusa o **tier** como objetivo. O instrumento
 preenchível é o [checklist](aaa-checklist.md) (`--stage aaa`); não é um
 score nem uma extração testada desses textos.
 
-## Áudio (catálogo)
+## Barra de acabamento (0.9)
+
+A [escada](production-bar.md) **não** vem de uma fonte externa citável. Ela é uma
+síntese redigida neste repositório a partir de três origens, e é honesto separá-las:
+
+- **Critérios já presentes aqui**, reorganizados por dimensão e degrau: o roteiro
+  de [qualidade](quality.md), o contrato do
+  [design system do jogo](game-design-system.md) e as regras de ciclo de vida
+  vindas dos recortes de Phaser, Excalibur, Godot Demo Projects e PettingZoo.
+- **Vocabulário corrente da indústria** — protótipo, vertical slice, publicável —
+  usado no sentido de dependência entre etapas, não como certificação.
+- **Julgamento editorial deste estúdio** sobre o que o jogador percebe primeiro,
+  em especial a regra do mínimo entre dimensões.
+
+O formato de declaração que `bar` lê — tabela em Markdown, uma linha por dimensão
+— também não vem de fora: ele foi extraído da tabela que o README do starter já
+tinha escrita à mão, e o comando passou a ler o que já existia em vez de pedir um
+arquivo novo. Nenhuma das dez dimensões ganhou limiar numérico nessa passagem: o
+que o harness confere é a forma da linha, e a escada continua sem calibração
+contra uma amostra de jogos publicados.
+
+Nenhum degrau foi calibrado contra uma amostra de jogos publicados, e nenhuma
+medição foi repetida para produzir esta escada. Os limites numéricos que aparecem
+nas dimensões `performance` e `audio_mix` são pontos de partida a confirmar no
+dispositivo alvo, não constantes verificadas. Trate a escada como linguagem
+compartilhada para observar, não como aferição.
+
+## Gates de produção (0.9)
+
+Os dez gates de [gates.md](gates.md) têm procedência interna e verificável: cada
+critério é extraído de uma linha `**Pronto para…**` que já estava escrita em
+[preproduction.md](preproduction.md), uma por etapa. Nada ali foi inventado na
+passagem, e um teste do harness exige que cada gate continue apontando para a
+prosa de origem. A regra de quais critérios **não** são dispensáveis também não é
+escolha do harness: são os quatro em que a prosa da etapa não deixa terceira
+opção, com a frase citada na tabela do próprio `gates.md`.
+
+O que **não** vem de dentro é a estrutura de três saídas — passar, cortar escopo,
+abandonar. Ela vem de uma única fonte, e é preciso dizer o que essa fonte é:
+
+| Fonte | O que é | O que sustenta |
+| --- | --- | --- |
+| [20 Game Dev Tips](https://youtu.be/fqb9MfRqK9I) | Vídeo de um desenvolvedor indie, patrocinado, dirigido a iniciantes, sem citação de estudo ou dado | Que praticantes tratam abandonar como decisão legítima, e que decidir cedo é melhor que decidir tarde |
+
+Isso é **conselho de praticante**, não evidência. Sustenta “há quem defenda isso e
+por quê”; não sustenta “isso funciona”. Peguei dela uma coisa só: a legitimação de
+abandonar como saída de gate, que o ciclo já tinha na etapa `poc` (“continuar,
+ajustar ou abandonar”) e que passou a valer nas dez. A generalização é julgamento
+editorial deste estúdio, apoiada numa coerência interna, não na autoridade do
+vídeo.
+
+A segunda coisa que veio de lá é menor e está na [receita de
+arquitetura](../recipes/architecture.md): o repositório já dizia para não
+generalizar cedo e não dizia nada sobre o erro contrário, o de seguir improvisando
+depois que as cópias se acumularam. O vídeo trata os dois lados e admite que a
+escolha é um palpite. A adaptação — declarar a contagem-limite no TDD, com data e
+autor, em vez de mantê-la na cabeça — é deste repositório, e segue a mesma lógica
+que já vale para a barra e para os gates: transformar julgamento implícito em
+declaração contestável. Nenhum número foi importado.
+
+O que recusei da mesma fonte, para não dar a impressão de que absorvi o material
+inteiro: o limiar de “80% pronto, então termine” é número sem origem, e não entrou
+em critério nenhum. “Sua engine não importa” contradiz a receita de arquitetura
+deste repositório e é simplificação para iniciante. Os conselhos sobre sorte,
+dinheiro e tutoriais não são critério de avanço de nada. E cerca de metade do
+vídeo descreve práticas que este framework já tinha — feel antes de conteúdo,
+prototipar antes de decidir, documento de design, consistência de estilo, reusar
+o que existe, definir público e sensação pretendida —, o que serve como
+convergência independente, não como fonte nova.
+
+### Levantamento externo posterior
+
+Depois que os dez gates já estavam escritos, foi feito um levantamento da
+literatura externa sobre gates e marcos de produção, registrado em
+[gates-research.md](gates-research.md) com URL, autoria, natureza primária ou
+secundária e limite de cada fonte. Ele **não** foi a origem dos gates; serve para
+três coisas, e a terceira é a que mais importa.
+
+Primeiro, **substituir a fonte fraca da tabela acima onde houver fonte forte**. A
+estrutura de três saídas tem apoio formal em Robert G. Cooper (Go / Recycle / Kill,
+do método Stage-Gate), em artigos do próprio autor e na *Wiley International
+Encyclopedia of Marketing* — literatura de gestão de produto, não conselho de
+praticante. O mesmo vale para `waived` e os quatro não dispensáveis, que reproduzem
+a distinção must-meet × should-meet, e para `held_by_declaration`, que corresponde
+ao asterisco com que a Microsoft separa requisito de requisito testado nos Xbox
+Requirements públicos. Essas escolhas foram feitas aqui sem conhecer as fontes;
+convergência nessa ordem é evidência melhor que citação posterior, e a ordem está
+declarada.
+
+Segundo, **nomear lacunas** — entre elas a ausência de um estado “fora de escopo”
+distinto de dispensa, e o fato de os dez gates serem quase todos readiness check,
+sem critério que force a pergunta de valor. Ficam em `gates-research.md` como
+observação de pesquisa, não como mudança feita.
+
+Terceiro, e mais importante para o que este repositório pode afirmar: **o
+levantamento confirma que não existe definição canônica dos marcos de produção de
+jogos**. Não há norma de corpo de padronização, associação da indústria nem
+publisher em documento público que defina First Playable, Vertical Slice, Alpha,
+Beta, Content Lock ou Gold Master; e as fontes que existem — livro-texto, prosa de
+praticante, modelo de contrato — **discordam entre si sobre o conteúdo**, não apenas
+na ênfase. Alpha aparece como “feature complete” numa fonte e como “40–50% dos
+assets finais, com features ainda sujeitas a ajustes maiores” noutra. Portanto a
+decisão de nomear os gates pela permissão pedida (`design`, `build`, `scale`) em vez
+de pelo nome do marco tem agora razão documentada, e o vocabulário de etapas
+continua sendo convenção deste repositório, como a barra já declarava.
+
+O levantamento também registra o que **não** tem fonte confiável, incluindo a
+ausência de qualquer avaliação empírica de que gates de produção melhorem o jogo
+entregue. Adotar gates como disciplina explícita é defensável; alegar eficácia
+comprovada não é.
+
+## Starter `canvas-arcade` (0.9)
+
+Escrito neste repositório, sem dependências de terceiros. `mulberry32`, em
+`src/core/rng.js`, é algoritmo de domínio público amplamente publicado; o
+embaralhamento de bits em `src/core/hash.js` pertence à mesma família. O starter
+não embarca imagem, som nem fonte — proveniência completa em
+[CREDITS.md](../assets/starters/canvas-arcade/CREDITS.md).
+
+Seus testes rodam neste repositório e exercitam o ciclo de vida, o determinismo e
+a migração de save do próprio starter — com duas exceções ditas: `capture` só é
+exercitada na guarda de ausência de tela, e nenhum teste interrompe a gravação no
+meio. Nada disso alcança um jogo derivado depois que ele for adaptado.
+
+## Áudio
 
 O acervo `shared/sfx` é do laboratório, não deste repositório. O harness expõe
 `sfx search` / `sfx copy` quando essa pasta existir na raiz de `--root`.

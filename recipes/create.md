@@ -33,9 +33,13 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
 
 1. Consulte o [playground](https://games.alanicolas.com/) e o acervo local.
    Identifique uma família compatível. Procure código, contratos e conteúdo
-   reutilizável. Som: se o laboratório tiver `shared/sfx`, use `sfx search`
-   antes de qualquer download. Explique REUSE, ADAPT ou CREATE antes de
-   produzir novos sistemas.
+   reutilizável. Sem destino no disco, o candidato local é um starter: `doctor`
+   lista os disponíveis e `init <destino> --starter <starter>` monta o projeto com
+   laço de passo fixo, save versionado, entrada abstraída e testes que já rodam.
+   Partir dele é REUSE; recomeçar essa infraestrutura é CREATE e pede lacuna
+   explícita. Som: se o laboratório tiver `shared/sfx`, use `sfx search` antes de
+   qualquer download. Explique REUSE, ADAPT ou CREATE antes de produzir novos
+   sistemas.
 2. Construa um ciclo jogável com uma decisão característica. Defina entrada,
    objetivo percebido, consequência, término e repetição. Título e cores novos
    não demonstram uma experiência nova.
@@ -78,7 +82,15 @@ BMad inspira leitura por etapa e retomada (`RE-GDS-002`, `RE-GDS-022`); seus pas
 textuais não são uma garantia de execução. [Fonte](../references/sources.md).
 
 Concluir o pedido exige conteúdo distintivo, cenário real e QA. Scaffold ou
-cópia que inicia continua sendo ponto de partida. Esta receita não copia nem
-publica projetos por si. Não chame o recorte de AAA se as barras da escala
-— feel sincronizado, mix, pacing, repeatability — não foram demonstradas na
-slice.
+cópia que inicia continua sendo ponto de partida — um projeto recém-criado por
+`init` é exatamente isso, com documentos em rascunho e a decisão característica
+ainda por fazer. Esta receita não copia nem publica projetos por si. Não chame o
+recorte de AAA se as barras da escala — feel sincronizado, mix, pacing,
+repeatability — não foram demonstradas na slice.
+
+Ao decidir onde investir depois do primeiro ciclo, use a
+[barra de acabamento](../references/production-bar.md) e trabalhe pela dimensão mais
+baixa: o degrau percebido é o mínimo entre elas, e um jogo curto e coerente é lido
+como produto enquanto um grande e irregular é lido como protótipo. Quando a fatia
+demonstrar a experiência, a [receita de produção](production.md) leva do recorte ao
+acabamento por marcos.

@@ -3,6 +3,14 @@
 Este é um roteiro de concepção e observação. Não é uma fórmula de nota nem um teste
 automático de diversão. Selecione critérios que correspondam ao jogo e ao pedido.
 
+Esta página pergunta **o que observar**. A
+[barra de acabamento](production-bar.md) pergunta **quão longe isso foi levado**:
+os mesmos temas aparecem lá organizados em cinco degraus por dimensão de ofício,
+com a prova que sustenta cada degrau. Use as duas juntas — aqui para decidir o que
+importa neste jogo, lá para saber se o que importa está em protótipo ou acabado.
+E lembre da regra que mais muda a ordem do trabalho: **o degrau percebido é o
+mínimo entre as dimensões, não a média.**
+
 ## Verbo, decisão e consequência
 
 O jogador consegue agir, entender as alternativas e perceber por que algo aconteceu?

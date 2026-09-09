@@ -102,3 +102,13 @@ Origem: piso de áudio do [README](../README.md),
 [qualidade](../references/quality.md),
 [ambição](../references/ambition.md) e catálogo `shared/sfx` do laboratório.
 Este repositório não inclui os arquivos de som.
+
+## Implementação de referência e degraus
+
+`src/game/audio.js` do starter `canvas-arcade` traz barramentos, prioridade, ducking,
+limite de vozes e legenda, com os seis papéis sonoros declarados e **vazios**. O acesso
+`audioGaps()`, exposto em `src/main.js`, transforma essa ausência em lacuna observável
+pela interface e pelos testes, em vez de escondê-la atrás de bipes sintetizados. Toda
+informação sonora precisa de equivalente visual — requisito de
+[acessibilidade](accessibility.md), não recurso extra. Degraus da dimensão `audio_mix`:
+[barra de acabamento](../references/production-bar.md#audio_mix--mixagem-não-arquivos).

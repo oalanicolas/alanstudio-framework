@@ -18,21 +18,24 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 
 | Situação | Faça |
 | --- | --- |
-| Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing` |
-| Jogo novo | `context <novo> --focus create`; resolva fantasia, verbo, plataforma e maior incerteza; brief curto ou, se pequeno, `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
+| Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing`. Ele nomeia os projetos e lista os starters |
+| Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
+| Jogo novo | `context <novo> --focus create`; resolva fantasia, verbo, plataforma e maior incerteza. Destino inexistente e engine web: `init <novo> --starter <starter>` (REUSE). Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
+| Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `context <projeto> --focus feel` e depois `--focus audio` |
 | “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
 | Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
 | “continue” / “vamos avançar” | `context <projeto> --event resume` e leia `continuity.sources` |
 | Usuário aprovou uma referência | `context <projeto> --focus <foco> --event direction-approved` e sincronize a base no mesmo turno |
 | Recorte já demonstra a experiência | `context <projeto> --focus production --stage production-plan` |
-| Revisar um marco (alpha, beta, gold) | `context <projeto> --focus production --stage milestone` |
+| Revisar um marco (alpha, beta, gold) | `context <projeto> --focus production --stage milestone`; `bar <projeto>` diz o piso declarado e `gate <projeto>` o que ainda não pode passar |
 | Registrar observação, orçamento medido ou decisão de marco | `record <projeto> --kind observation\|budget\|milestone --author ... --note ... --field k=v --output <pasta-nova>` |
 
 Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
-`network`, `architecture`, `production`. Etapas: `brief`, `mda`, `gdd`, `poc`, `prd`,
-`tdd`, `vertical-slice`, `mvp`, `qa`, `art-bible`, `devlog`, `audit`, `aaa`,
-`game-design`, `production-plan`, `milestone`. Gêneros (`--genre`): `narrative`, `adventure`,
+`network`, `architecture`, `performance`, `accessibility`, `persistence`, `release`,
+`production`. Etapas: `brief`, `mda`, `gdd`, `poc`, `prd`, `tdd`, `vertical-slice`,
+`mvp`, `qa`, `release`, `art-bible`, `devlog`, `audit`, `aaa`, `game-design`,
+`production-plan`, `milestone`. Gêneros (`--genre`): `narrative`, `adventure`,
 `platformer`, `action-adventure`, `shooter`, `fighting`, `stealth`, `horror`, `racing`,
 `sports`, `rhythm`, `turn-based`, `deckbuilder`, `strategy`, `tower-defense`, `puzzle`,
 `simulation`, `survival-crafting`, `rpg`, `roguelike`, `multiplayer-competitive`, `idle`,
@@ -62,15 +65,17 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    ([ambição](references/ambition.md)). Leia [processo](references/process.md) e
    [qualidade](references/quality.md). Para criação ou pré-produção, siga
    [o ciclo criativo](references/preproduction.md): Game Brief, MDA/GDD, PoC, PRD/TDD,
-   vertical slice, MVP e QA/playtest. `--stage <etapa>` carrega só o template
+   vertical slice, MVP, QA/playtest e release. `--stage <etapa>` carrega só o template
    pertinente; `template <etapa> --project <projeto>` imprime um rascunho. Reaproveite
    documentos existentes; um jogo pequeno reúne tudo em `game-design`. O design system
    do jogo (`art-bible`) é conteúdo mínimo; o arquivo separado é opcional se outro
    canônico cobrir. Contrato: [design system do jogo](references/game-design-system.md).
    Direção aprovada: `--event direction-approved` e base mínima sincronizada no mesmo
    turno, mesmo com nove candidatos encontrados.
-3. **REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes pertinentes. Se o
-   laboratório tiver `shared/sfx`, use `sfx search` antes de baixar som. Sem 8-bit,
+3. **REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes pertinentes.
+   `doctor` lista os starters disponíveis; começar por um deles é REUSE, escrever um
+   loop do zero é CREATE. Se o laboratório tiver `shared/sfx`, use `sfx search` antes
+   de baixar som. Sem 8-bit,
    chiptune, jsfxr ou Kenney arcade como padrão. Leia candidatos e consumidores.
    CREATE exige lacuna explícita. Para trabalho novo sem registro, use
    [o contrato](assets/work.example.json); `check-plan` valida a estrutura, não o mérito.
@@ -89,7 +94,12 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    de assets nem aprovação humana. O que uma pessoa observou em movimento, uma medição
    de orçamento ou uma decisão de marco entra por `record`, com `role=human` ou
    `role=agent`; avaliação do agente não é aprovação do usuário. Capacidade
-   desconhecida permanece desconhecida até ser demonstrada; `experience_status`
+   desconhecida permanece desconhecida até ser demonstrada: `context` só sabe dizer
+   `mentioned` sobre as oito capacidades conhecidas (pause, reset, seed, observe, act,
+   advance, capture, dispose), porque lê arquivos sem executá-los. Quando os testes do
+   projeto de fato exercitarem alguma delas, anexe a alegação ao recibo com
+   `verify --proves <capacidade>`: sai como `claimed`, com autor, argv e log, nunca
+   como verificada; declare só o que os comandos cobrirem. `experience_status`
    continua `not_assessed` até haver observação em movimento.
 6. **Comparar, registrar, continuar.** Compare antes/depois em condições equivalentes
    e em movimento quando houver efeito visual. Corrija regressões, registre decisões e
@@ -100,14 +110,27 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    foi observado; na slice ou em “está AAA?”, leia `finish` e
    [o guia](references/aaa-checklist.md) e grave no canônico — completar linhas não
    certifica e `N/A` exige motivo. Não publique nem delegue sem autorização aplicável.
-7. **Produzir até o acabamento.** Quando o recorte já demonstrou a experiência, siga
-   [produção](recipes/production.md): plano de produção com marcos como gates de
-   evidência (first playable → vertical slice → alpha → beta → gold → live), lentes de
-   disciplina, orçamentos medidos na plataforma alvo, pipeline de conteúdo e
-   estabilidade. Aplique [feel](recipes/feel.md) ao verbo central. Nenhum comando
-   promove marco, mede orçamento ou certifica acabamento; a passagem é declarada por
-   pessoa com a prova ligada (`record --kind milestone`, recibos de `verify`,
-   `observation` e `budget`). Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
+7. **Produzir até o acabamento, pela dimensão mais baixa.** Quando o recorte já
+   demonstrou a experiência, siga [produção](recipes/production.md): plano de produção
+   com marcos como gates de evidência (first playable → vertical slice → alpha → beta →
+   gold → live), lentes de disciplina, orçamentos medidos na plataforma alvo, pipeline
+   de conteúdo e estabilidade. Aplique [feel](recipes/feel.md) ao verbo central. Os
+   marcos são o calendário; `context` devolve `production_bar` com as dimensões
+   pertinentes ao foco, e o degrau percebido de um jogo é o **mínimo** entre elas, não
+   a média — antes de melhorar o que já está alto, procure o que está baixo
+   ([barra de acabamento](references/production-bar.md)). Declare em tabela, uma linha
+   por dimensão, com degrau atual, seguinte e o critério que falta; `bar <projeto>` lê
+   e diz o piso, `next` propõe subir a dimensão pelo nome. Nenhum comando atribui
+   degrau; ao declarar um, declare dispositivo, versão, cena e quem observou.
+   **A barra descreve, o gate recusa.** [Os dez gates](references/gates.md) formalizam
+   as linhas “Pronto para…” do ciclo: ao pedir a próxima permissão, declare uma linha
+   por critério com `met`/`unmet`/`waived` e o que sustenta o estado; `gate <projeto>`
+   lê. Critério sem linha é pendente. As três saídas são passar, cortar escopo e
+   abandonar — proponha a terceira quando for a honesta. Dispensa exige motivo; quatro
+   critérios não se dispensam; `granted` é sempre falso. Nenhum comando promove marco,
+   mede orçamento ou certifica acabamento; a passagem é declarada por pessoa com a
+   prova ligada (`record --kind milestone`, recibos de `verify`, `observation` e
+   `budget`). Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

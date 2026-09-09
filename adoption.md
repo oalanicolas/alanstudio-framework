@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.5 — Integração das três linhas 0.9
+
+Três linhas paralelas de 0.9 foram unificadas neste repositório: facilidade e piso de
+acabamento (0.9–0.9.3), começar e acabar (starter, `init`, `next`, `bar`, `gate`,
+`discover` revisado, `verify --proves`) e produção por marcos, pacotes e recibos
+(0.9.4). Uma só seleção de leituras une `audio`, `aaa`, `finish`, `production-bar`,
+pacotes e `production`; `doctor` confere também referências e pacotes e nomeia os
+projetos; `verify --script` aceita alvos Cargo; `record` e `--genre` entram no CLI
+com `init`, `next`, `bar` e `gate`. Catorze focos, dezessete etapas, dez referências.
+Onde as linhas discordavam — a receita de feel existia em três versões — ficou a
+mais completa, com o que as outras traziam de único (starter como implementação de
+referência, ligação com `record`).
+
 ## 0.9.4 — Produção por marcos, pacotes e recibos
 
 Revisão do que o framework se propõe (criar jogos com IA com evidência, até a
@@ -11,11 +24,12 @@ de facilidade e piso de acabamento. Lacunas encontradas:
 
 - **Os comandos documentados não rodavam.** Todo exemplo do README e da skill passava
   `--root` depois do subcomando; o argparse só aceitava antes. Corrigido: `--root` em
-  qualquer posição.
+  qualquer posição (a linha paralela chegou à mesma correção).
 - **`context` ignorava `--root` para o acervo sonoro** e consultava o diretório atual.
   Corrigido.
 - **Não havia autodiagnóstico.** `doctor` confere Python, integridade dos arquivos do
-  framework, raiz, projetos, estudos, sfx e git, e indica o próximo comando.
+  framework (receitas, templates, referências, pacotes), raiz, projetos, estudos, sfx e
+  git; a linha paralela somou ferramentas, starters e atalhos da skill.
 - **A pré-produção recomendava um `game-design.md` único para jogos pequenos, mas não
   havia template.** O template `game-design` reúne as nove áreas e, preenchido, é
   reconhecido pelo scan como cobertura completa (teste garante).
@@ -91,6 +105,74 @@ um ciclo jogável sem gerar nove templates. Focos [feel](recipes/feel.md) e
 acabamento demonstrado na slice, não motor nem nota. Escala jam / produto /
 AAA-shaped muda quantidade, não o piso do verbo. O harness continua thin:
 não mede diversão, não publica, não escolhe engine.
+
+## 0.9 — Começar e acabar (linha paralela)
+
+Quatro lacunas entre o que o framework prometia e o que entregava.
+
+**Recusar.** A barra descreve onde o jogo está e nada dizia o que não pode
+passar. Os dez [gates](references/gates.md) formalizam as linhas “Pronto para…”
+que já estavam no ciclo criativo — 38 critérios extraídos da prosa, não
+inventados, com um teste exigindo que cada gate continue apontando para a linha
+de origem. O projeto declara `met`/`unmet`/`waived` por critério com o que
+sustenta o estado, e `gate` lê. Critério sem linha é pendente: silêncio não é
+aprovação. As três saídas são passar, cortar escopo e **abandonar** — a terceira
+o ciclo já tinha na etapa `poc`, e passou a valer nas dez. Dispensa exige motivo
+escrito; quatro critérios não se dispensam, porque a prosa da etapa não deixa
+terceira opção. `granted` é sempre falso.
+
+**Chegar.** O laboratório onde este harness roda normalmente já tem jogos, e o
+primeiro movimento nele é revisar o que existe. `discover` devolvia caminho e
+tipo, o que faz jogos em estados incomparáveis saírem iguais; agora ele lê cada
+projeto e devolve áreas mínimas com candidato, rascunhos, passo registrado para
+retomar, piso de acabamento declarado e validadores — com `--plain` para a
+listagem crua. A ordem é a do disco, e o harness não classifica os jogos por
+urgência, porque nada nele observa qual importa mais. `doctor` passou a nomear os
+projetos que contou, em vez de só contá-los.
+
+**Começar.** Até 0.8 o harness sabia ler um jogo existente e não sabia criar um.
+`doctor` observa ambiente, integridade e os atalhos de skill do host — vigente,
+desatualizado, ausente, comparados por conteúdo, com symlink para o `SKILL.md`
+vigente contando como vigente — sem escrever nada. `init` monta um projeto a partir
+de um starter do acervo, troca os valores que o `starter.json` dele declara e gera
+como rascunho declarado sete documentos, que cobrem sete das nove áreas mínimas
+(as outras duas ficam com o README e o CREDITS do starter); não instala
+dependências e não toca no starter de origem. Um starter carrega valores reais em
+vez de marcadores porque ele é referência executável: serve e abre antes de
+qualquer `init`.
+`next` deriva uma proposta ordenada do estado no disco. `--root` passa a ser
+aceito antes e depois do subcomando, como a documentação já afirmava.
+
+**Acabar.** A [barra de acabamento](references/production-bar.md) nomeia cinco
+degraus em dez dimensões de ofício, com a observação que sustenta cada degrau, e
+chega em todo `context` pelo campo `production_bar`. `bar <projeto>` lê a tabela
+de degraus que o projeto declara nos próprios documentos e devolve o piso, as
+dimensões que estão nele e — só quando as dez tiverem linha — o degrau percebido;
+com isso `next` propõe subir a dimensão mais baixa pelo nome, citando o critério
+escrito e a linha de onde veio. O harness confere a forma da declaração — e
+relata em `problems` dimensão fora das dez, degrau fora dos cinco e alvo que não
+é o seguinte — nunca o jogo: tabela bem formada e otimista sai de lá intacta.
+Seis receitas novas — feel,
+performance, acessibilidade, áudio, persistência, release — e a etapa `release`
+fecham o ciclo. O starter `canvas-arcade` existe para que o passo REUSE tenha um
+candidato real: loop de passo fixo, RNG semeado, save versionado com migração,
+mixer com legendas e um contrato de ciclo de vida exercitado por testes headless,
+em vez de apenas mencionado.
+
+**Alegação com recibo.** `context` lê arquivos e por isso só sabe dizer
+`mentioned` sobre as oito capacidades conhecidas. `verify --proves <capacidade>`
+**não** as promove a verificadas — o harness não sabe se um comando exercita
+pause. O que ele acrescenta é uma alegação com autor, data, argv e log: `claimed`
+com recibo verde, `unsupported` quando a execução falha. A afirmação deixa de sumir
+na prosa e passa a ser contestável. Nenhum arquivo do repositório seleciona
+capacidade.
+
+O que 0.9 **não** afirma: nenhum comando atribui um degrau da barra, e a escada não
+foi calibrada contra uma amostra de jogos publicados — é linguagem para observar,
+não aferição. `init` cria rascunho, e rascunho não é decisão documentada. `next`
+propõe e nunca executa. Os testes do starter provam o starter, não um jogo derivado
+dele. AAA continua descrevendo orçamento e equipe; o que este repositório persegue
+é acabamento por dimensão em escopo reduzido.
 
 ## 0.8 — Arquitetura proporcional
 

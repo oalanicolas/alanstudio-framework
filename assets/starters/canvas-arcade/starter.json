@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "title": "Canvas Arcade",
+  "summary": "Arcade de uma tela em Canvas: passo fixo, determinismo verificável, ciclo de vida sem vazamento, save versionado e acesso desde o início.",
+  "substitutions": [
+    {
+      "field": "project_title",
+      "value": "Canvas Arcade",
+      "files": ["README.md", "CREDITS.md", "index.html", "package.json"]
+    },
+    {
+      "field": "project_slug",
+      "value": "canvas-arcade",
+      "files": ["package.json", "src/main.js"]
+    },
+    {
+      "field": "framework_path",
+      "value": "../../..",
+      "files": ["README.md"]
+    }
+  ]
+}
