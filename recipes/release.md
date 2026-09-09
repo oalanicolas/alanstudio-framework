@@ -1,0 +1,60 @@
+# Release: do repositório até o jogador
+
+Entrada: a versão que se pretende entregar, a plataforma alvo e quem vai jogar.
+
+**Autorização primeiro.** Nada nesta receita autoriza publicar, criar conta em
+loja, subir artefato, contatar pessoas ou anunciar. Publicação exige autorização
+explícita do usuário para aquela entrega. Preparar um artefato verificável é
+trabalho técnico; distribuí-lo é decisão dele.
+
+O ciclo criativo do framework terminava em QA, e essa lacuna produz um padrão
+conhecido: um jogo que funciona na máquina de quem construiu e falha em qualquer
+outra. Release é a etapa que converte “funciona aqui” em “funciona para alguém”.
+
+Verifique o artefato, não o ambiente de desenvolvimento. Editor, servidor de
+desenvolvimento e build de depuração têm caminhos, permissões, recursos e tempos
+diferentes do export. Um teste no editor não demonstra o jogo exportado.
+
+O que precisa estar resolvido antes de chamar uma versão entregável:
+
+- **Build reproduzível:** a partir de um clone limpo e de uma versão declarada,
+  outra pessoa produz o mesmo artefato seguindo o runbook. Dependência
+  não fixada, recurso local não versionado e passo manual não documentado
+  são as três causas usuais de build que só funciona em uma máquina.
+- **Orçamento de entrega:** tamanho do artefato e tempo até jogar têm teto
+  declarado e medido na plataforma alvo, em rede e máquina realistas.
+- **Plataforma real:** execução em dispositivo que não é o de desenvolvimento,
+  com a entrada, a resolução e o sistema pretendidos. Emulação e redimensionar
+  uma janela não substituem isso.
+- **Primeira execução:** instalação limpa, sem save, sem cache, sem permissão
+  concedida. É o único caminho que todo jogador percorre e o menos testado.
+- **Proveniência do que embarca:** cada asset, fonte, som, biblioteca e recurso
+  gerado com origem, crédito e condição de uso compatíveis com a distribuição
+  pretendida. Licença desconhecida bloqueia a entrega, não recebe uma suposição.
+- **Registro de falha:** quando o jogo quebra no dispositivo de alguém, existe
+  como saber. Coleta de erro precisa de decisão explícita sobre o que é enviado e
+  do consentimento aplicável; telemetria não é padrão silencioso.
+- **Reversão:** como voltar à versão anterior e o que acontece com saves criados
+  pela versão nova. Reverter código não recupera dado já transformado; veja
+  [persistence](persistence.md).
+- **Acabamento mínimo:** as dimensões pertinentes da
+  [barra](../references/production-bar.md) declaradas no degrau observado, com
+  condição e autor. Uma dimensão abaixo do pretendido é lacuna registrada, não
+  surpresa depois da entrega.
+
+Registre a versão entregue, o conteúdo dela, o que ficou de fora e as lacunas
+conhecidas. Uma entrega sem essa nota impede diagnosticar o primeiro relato de
+problema, porque ninguém sabe o que estava dentro dela.
+
+Implementação concreta a adaptar: o starter `canvas-arcade` não tem dependências
+e serve por `tools/serve.mjs`, o que torna o clone limpo trivial de reproduzir —
+e também significa que o passo de export ainda não existe ali. Esse é justamente o
+primeiro trabalho de release em um projeto derivado dele.
+
+Prova: build a partir de clone limpo, execução do artefato exportado em máquina
+que não é a de desenvolvimento, primeira execução sem estado anterior, medição de
+tamanho e tempo de carga, e a lista de proveniência do que foi embarcado. `verify`
+registra esses comandos com recibo; recibo verde não aprova a entrega nem
+substitui a autorização do usuário. Degraus:
+[barra de acabamento](../references/production-bar.md#release--confiança-operacional).
+Template da etapa: [release](../assets/templates/release.md).

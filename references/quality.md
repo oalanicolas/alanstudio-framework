@@ -3,6 +3,14 @@
 Este é um roteiro de concepção e observação. Não é uma fórmula de nota nem um teste
 automático de diversão. Selecione critérios que correspondam ao jogo e ao pedido.
 
+Esta página pergunta **o que observar**. A
+[barra de acabamento](production-bar.md) pergunta **quão longe isso foi levado**:
+os mesmos temas aparecem lá organizados em cinco degraus por dimensão de ofício,
+com a prova que sustenta cada degrau. Use as duas juntas — aqui para decidir o que
+importa neste jogo, lá para saber se o que importa está em protótipo ou acabado.
+E lembre da regra que mais muda a ordem do trabalho: **o degrau percebido é o
+mínimo entre as dimensões, não a média.**
+
 ## Verbo, decisão e consequência
 
 O jogador consegue agir, entender as alternativas e perceber por que algo aconteceu?
@@ -76,6 +84,28 @@ definidas. Teste o que sobrevive a cada transição: score, timers, entidades, s
 inputs, progresso e conexões. Jogo narrativo precisa respeitar histórico e save;
 multiplayer precisa explicitar quem pode agir e quem decide o resultado.
 
+## Acabamento e estabilidade
+
+O que separa um recorte que funciona de um jogo no acabamento pretendido é
+observável por disciplina, na plataforma alvo, em movimento e ao longo do tempo:
+
+- **Feel:** latência entrada → resposta medida; a ação central é legível sem ajuda.
+  Ver [feel](../recipes/feel.md).
+- **Orçamentos:** tempo de quadro (p50/p99), memória, carregamento e tamanho medidos
+  com ferramenta, cena e data; desvio só com aprovação registrada.
+- **Estabilidade:** soak, reinício repetido, saves inválidos e antigos, perda de foco,
+  desconexão e atualização sobre instalação existente, no build exportado.
+- **Acesso e localização:** contraste, forma além da cor, foco, toque, movimento
+  reduzido, remapeamento, legendas; textos fora do código e fontes com cobertura, ou a
+  decisão explícita de um idioma. Consulte as diretrizes da plataforma na fonte oficial.
+- **Consistência de conteúdo:** o último asset produzido pertence ao mesmo jogo que o
+  primeiro; a receita do design system foi seguida e validada.
+- **Proveniência completa:** créditos e licenças de tudo que embarca no build.
+
+Esses critérios entram no [plano de produção](../assets/templates/production-plan.md)
+e são revisados por marco ([produção](../recipes/production.md)). O harness não os
+mede; pessoa e agente medem, registram e declaram a passagem com a prova ligada.
+
 ## Piso da escala, não nota
 
 Jam, produto e AA / Triple-I compartilham o piso do verbo e diferem na
@@ -100,6 +130,10 @@ Para cada critério afetado registre no local de QA existente:
   problemas e julgamento/autor. Screenshot isolada não comprova animação nem controle.
 - **Conclusão:** critério atendido, regressão ou pendência. Não declare aprovação
   do usuário quando só houve avaliação do agente.
+
+Para ligar a observação à versão do jogo, grave-a com
+`record --kind observation --field role=human|agent --attach <vídeo>`; o recibo guarda
+HEAD, autor, fato e anexos por SHA-256, e não substitui o julgamento registrado acima.
 
 Instrumento: [checklist de piso](aaa-checklist.md). O `context` diz o perfil
 em `finish` (núcleo / produto / promessa). `--stage aaa` só imprime o

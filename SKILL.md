@@ -1,100 +1,136 @@
 ---
 name: game-dev
-description: Criar, evoluir, depurar e verificar jogos com IA, partindo do acervo existente.
+description: Criar, evoluir, depurar, produzir e verificar jogos com IA, partindo do acervo existente, até o acabamento pretendido.
 ---
 
 # Game Dev
 
-Use em qualquer engine. O objetivo é uma experiência jogável no **acabamento
-pretendido**, com evidência — fácil de começar, difícil de rebaixar. “AAA”
-neste framework é só o piso da slice (verbo, feel sincronizado, áudio, pacing,
-mundo, receita repetível). Não é tier de publisher, orçamento nem adjetivo
-de trailer. O alvo honesto com IA é AA / Triple-I nesse piso.
+Use este processo em qualquer engine. O objetivo é uma experiência jogável no
+**acabamento pretendido**, com evidência, preservando a direção do usuário e a
+qualidade aprovada — fácil de começar, difícil de rebaixar. “AAA” neste framework é
+piso de acabamento observável (verbo, feel sincronizado, áudio, pacing, mundo, receita
+repetível), não tier de publisher, orçamento nem adjetivo de trailer; o alvo honesto
+com IA é AA / Triple-I nesse piso. Todos os comandos abaixo são
+`python3 scripts/game.py ...` a partir deste repositório (ou pelo caminho absoluto do
+script), com `--root <laboratorio>` antes ou depois do subcomando.
 
-Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`,
-`feel`, `network`, `architecture`.
+## Caminho rápido
 
-## Primeira sessão (jogo novo ou recorte novo)
+| Situação | Faça |
+| --- | --- |
+| Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing`. Ele nomeia os projetos e lista os starters |
+| Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
+| Jogo novo | `context <novo> --focus create`; resolva fantasia, verbo, plataforma e maior incerteza. Destino inexistente e engine web: `init <novo> --starter <starter>` (REUSE). Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
+| Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
+| O verbo funciona mas não convence | `context <projeto> --focus feel` e depois `--focus audio` |
+| “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
+| Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
+| “continue” / “vamos avançar” | `context <projeto> --focus <foco> --event resume` e leia `continuity.sources`, preservando o foco da tarefa |
+| Usuário aprovou uma referência | `context <projeto> --focus <foco> --event direction-approved` e sincronize a base no mesmo turno |
+| Recorte já demonstra a experiência | `context <projeto> --focus production --stage production-plan` |
+| Revisar um marco (alpha, beta, gold) | `context <projeto> --focus production --stage milestone`; `bar <projeto>` diz o piso declarado e `gate <projeto>` o que ainda não pode passar |
+| Registrar observação, orçamento medido ou decisão de marco | `record <projeto> --kind observation\|budget\|milestone --author ... --note ... --field k=v --output <pasta-nova>` |
 
-Não gere nove templates. Não peça o usuário para conhecer o harness.
+Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
+`network`, `architecture`, `performance`, `accessibility`, `persistence`, `release`,
+`production`. Etapas: `brief`, `mda`, `gdd`, `poc`, `prd`, `tdd`, `vertical-slice`,
+`mvp`, `qa`, `release`, `art-bible`, `devlog`, `audit`, `aaa`, `game-design`,
+`production-plan`, `milestone`, `agents` (instruções persistentes). Gêneros (`--genre`): `narrative`, `adventure`,
+`platformer`, `action-adventure`, `shooter`, `fighting`, `stealth`, `horror`, `racing`,
+`sports`, `rhythm`, `turn-based`, `deckbuilder`, `strategy`, `tower-defense`, `puzzle`,
+`simulation`, `survival-crafting`, `rpg`, `roguelike`, `multiplayer-competitive`, `idle`,
+`casual` — a lista vigente está em `context.packs.genre.available`.
 
-1. Resolva fantasia, verbo, plataforma e a maior incerteza. Assuma o resto
-   com registro; pergunte só o que impede de jogar.
-2. Execute `python3 scripts/game.py context <projeto> --focus create
-   --root <laboratorio>` a partir deste repositório (ou o caminho absoluto
-   do script). Leia `read_next`, `foundation.read_first` e
-   [ambição](references/ambition.md). Sem projeto identificável, não invente
-   um alvo.
-3. Adapte um brief curto ou a seção equivalente no canônico existente.
-4. Construa um ciclo: perceber → decidir → agir → consequência → reinício.
-   Em seguida o feel e o áudio **desse** verbo (`--focus feel`, `--focus audio`).
-5. Compare em movimento. Diga uma próxima ação com prova. Título e cores
-   novos não demonstram experiência nova.
+## Passos
 
-Escala no brief: jam/conto, produto ou AA / Triple-I (piso de acabamento).
-A escala muda quantidade de documentos, não o piso do verbo. Não chame o
-build de AAA. Detalhe: [criar](recipes/create.md),
-[ambição](references/ambition.md).
-
-## Jogo existente e continuidade
-
-Execute `context <projeto> --focus <foco>`. `context` já corre `scan`.
-Comece por `foundation.read_first`/`records`; confira `basis`, `via` e os
-limites. `capabilities.mentioned` aponta arquivo local; não prova pause,
-reset, seed nem determinismo.
-
-Se `foundation.audit.required` for verdadeiro, avise com `audit.notice` e
-comece o levantamento em [auditoria](references/project-audit.md). Não peça
-segundo consentimento para documentar o mínimo; restrição explícita na
-conversa atual continua valendo.
-
-Em “continue”/“vamos avançar”, use `--event resume` e leia
-`continuity.sources`. Fonte encontrada não é tarefa validada. Siga
-[continuidade](references/process.md#continuidade-e-retomada).
-
-## Direção, reuso e implementação
-
-Leia [processo](references/process.md) e [qualidade](references/quality.md).
-Pré-produção: [ciclo criativo](references/preproduction.md).
-`context --stage <etapa>` carrega o template; `template <etapa> --project
-<projeto>` imprime um rascunho. Jogo pequeno pode reunir as decisões em um
-documento. O design system (template `art-bible`) é conteúdo mínimo; arquivo
-separado é opcional se outro canônico cobrir.
-[Contrato](references/game-design-system.md).
-
-**Direção aprovada:** `--event direction-approved` e sincronize a base
-mínima no mesmo turno, mesmo com nove candidatos encontrados.
-
-**REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes
-pertinentes. Com `shared/sfx`, `sfx search` antes de baixar som. Sem 8-bit,
-chiptune, jsfxr ou Kenney arcade como padrão. CREATE exige lacuna explícita.
-Trabalho novo sem registro: [contrato](assets/work.example.json); `check-plan`
-valida a estrutura, não o mérito.
-
-Ligue intenção/GDD → requisitos/aceite → decisões técnicas → tarefas →
-evidência. Mudança em contratos, estado/tempo, saves, renderização ou
-integrações: [arquitetura](recipes/architecture.md)
-(`--focus architecture` ou `--stage tdd`). Implemente uma fatia jogável.
-Não acrescente runtime comum, hierarquia de agentes ou IA por quadro.
-
-## Verificar e encerrar
-
-Use os valores do próprio jogo e o cenário real. `verify` registra comandos
-explícitos e logs. Build verde não comprova diversão, arte, feel, áudio,
-reinício, rede, direitos nem aprovação humana. Capacidade desconhecida
-permanece desconhecida até ser demonstrada. `experience_status` continua
-`not_assessed` até haver observação em movimento.
-
-Compare antes/depois em condições equivalentes. Corrija regressões,
-registre decisões e hipóteses descartadas, cumpra `continuity.before_close`
-e `documentation.before_close`. Não promova scaffold a slice nem slice a
-jogo concluído. Não publique nem delegue sem autorização aplicável.
-
-Não chame o recorte de AAA — nem de “quase AAA” — se o perfil em
-`finish` (núcleo; produto se a escala pedir; promessas só se o brief as
-tiver) não foi observado. Na primeira sessão **não** gere `template aaa`.
-Na slice ou em “está AAA?”, leia `finish` e [o guia](references/aaa-checklist.md);
-grave no canônico. Completar linhas não certifica. `N/A` exige motivo.
+1. **Contexto.** Resolva projeto e tarefa; execute `context <projeto> --focus <foco>`.
+   Leia os AGENTS aplicáveis, `foundation.read_first`/`records`, os catálogos em
+   `studies` e somente as referências em `read_next`. O núcleo é agnóstico;
+   `read_next` inclui o [pacote de plataforma](packs/README.md) quando a engine foi
+   identificada e o de gênero quando você passou `--genre`. Se `packs.genre.suggested`
+   trouxer um gênero lido de documento, confirme com a conversa e repita o `context`
+   com `--genre`; pacotes são convenções a confirmar no código, não capacidades.
+   `capabilities.mentioned` aponta
+   arquivo local; não prova pause, reset, seed nem determinismo. Confira `basis`,
+   `via` e os limites. `context` já executa `scan`: se `foundation.audit.required`
+   for verdadeiro, avise as lacunas com `audit.notice` e comece o levantamento conforme
+   [auditoria de projeto](references/project-audit.md), sem pedir um segundo
+   consentimento; respeite restrição explícita na conversa atual. Sem projeto
+   identificável, não invente um alvo. Em retomada, fonte encontrada não é tarefa
+   validada: siga [continuidade e retomada](references/process.md#continuidade-e-retomada).
+2. **Intenção e prontidão.** Defina fantasia, verbo central, plataforma, cenário,
+   restrições, a maior incerteza e a prova de conclusão; assuma o resto com registro e
+   pergunte só o que impede de jogar. A escala (jam/conto, produto, AA / Triple-I)
+   vive no brief e muda a quantidade de documentos, não o piso do verbo
+   ([ambição](references/ambition.md)). Leia [processo](references/process.md) e
+   [qualidade](references/quality.md). Para criação ou pré-produção, siga
+   [o ciclo criativo](references/preproduction.md): Game Brief, MDA/GDD, PoC, PRD/TDD,
+   vertical slice, MVP, QA/playtest e release. `--stage <etapa>` carrega só o template
+   pertinente; `template <etapa> --project <projeto>` imprime um rascunho. Reaproveite
+   documentos existentes; um jogo pequeno reúne tudo em `game-design`. O design system
+   do jogo (`art-bible`) é conteúdo mínimo; o arquivo separado é opcional se outro
+   canônico cobrir. Contrato: [design system do jogo](references/game-design-system.md).
+   Direção aprovada: `--event direction-approved` e base mínima sincronizada no mesmo
+   turno, mesmo com nove candidatos encontrados.
+3. **REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes pertinentes.
+   `doctor` lista os starters disponíveis; começar por um deles é REUSE, escrever um
+   loop do zero é CREATE. Se o laboratório tiver `shared/sfx`, use `sfx search` antes
+   de baixar som. Sem 8-bit,
+   chiptune, jsfxr ou Kenney arcade como padrão. Leia candidatos e consumidores.
+   CREATE exige lacuna explícita. Para trabalho novo sem registro, use
+   [o contrato](assets/work.example.json); `check-plan` valida a estrutura, não o mérito.
+4. **Arquitetura e fatia jogável.** Ligue intenção/GDD → requisitos/aceite → decisões
+   técnicas → tarefas → evidência. Se a mudança afetar responsabilidades, contratos,
+   estado/tempo, saves, renderização ou integrações, aplique
+   [arquitetura](recipes/architecture.md) (`--focus architecture` ou `--stage tdd`).
+   Implemente uma fatia jogável que atravesse regra, apresentação e conteúdo: perceber
+   → decidir → agir → consequência → reinício. Em seguida o feel e o áudio **desse**
+   verbo (`--focus feel`, `--focus audio`); título e cores novos não demonstram
+   experiência nova. Não acrescente um runtime comum, uma hierarquia de agentes ou IA
+   por quadro.
+5. **Verificar.** Use os validadores existentes e o cenário real. `verify` registra
+   comandos explícitos e logs (scripts de `package.json` ou alvos Cargo; outras engines
+   por `--command`). Build verde não comprova diversão, arte, reinício, rede, direitos
+   de assets nem aprovação humana. O que uma pessoa observou em movimento, uma medição
+   de orçamento ou uma decisão de marco entra por `record`, com `role=human` ou
+   `role=agent`; avaliação do agente não é aprovação do usuário. Capacidade
+   desconhecida permanece desconhecida até ser demonstrada: `context` só sabe dizer
+   `mentioned` sobre as oito capacidades conhecidas (pause, reset, seed, observe, act,
+   advance, capture, dispose), porque lê arquivos sem executá-los. Quando os testes do
+   projeto de fato exercitarem alguma delas, anexe a alegação ao recibo com
+   `verify --proves <capacidade>`: sai como `claimed`, com autor, argv e log, nunca
+   como verificada; declare só o que os comandos cobrirem. `experience_status`
+   continua `not_assessed` até haver observação em movimento.
+6. **Comparar, registrar, continuar.** Compare antes/depois em condições equivalentes
+   e em movimento quando houver efeito visual. Corrija regressões, registre decisões e
+   hipóteses descartadas, cumpra `continuity.before_close` e
+   `documentation.before_close`. Não promova scaffold a slice nem slice a jogo
+   concluído. Não chame o recorte de AAA — nem de “quase AAA” — se o perfil em
+   `finish` (núcleo; produto se a escala pedir; promessas só se o brief as tiver) não
+   foi observado; na slice ou em “está AAA?”, leia `finish` e
+   [o guia](references/aaa-checklist.md) e grave no canônico — completar linhas não
+   certifica e `N/A` exige motivo. Não publique nem delegue sem autorização aplicável.
+7. **Produzir até o acabamento, pela dimensão mais baixa.** Quando o recorte já
+   demonstrou a experiência, siga [produção](recipes/production.md): plano de produção
+   com marcos com critérios de evidência (first playable → vertical slice → alpha → beta →
+   gold → live), lentes de disciplina, orçamentos medidos na plataforma alvo, pipeline
+   de conteúdo e estabilidade. Aplique [feel](recipes/feel.md) ao verbo central. Os
+   marcos são o calendário; `context` devolve `production_bar` com as dimensões
+   pertinentes ao foco, e o degrau percebido de um jogo é o **mínimo** entre elas, não
+   a média — antes de melhorar o que já está alto, procure o que está baixo
+   ([barra de acabamento](references/production-bar.md)). Declare em tabela, uma linha
+   por dimensão, com degrau atual, seguinte e o critério que falta; `bar <projeto>` lê
+   e diz o piso, `next` propõe subir a dimensão pelo nome. Nenhum comando atribui
+   degrau; ao declarar um, declare dispositivo, versão, cena e quem observou.
+   **A barra descreve, o gate recusa.** [Os dez gates](references/gates.md) formalizam
+   as linhas “Pronto para…” do ciclo: ao pedir a próxima permissão, declare uma linha
+   por critério com `met`/`unmet`/`waived` e o que sustenta o estado; `gate <projeto>`
+   lê. Critério sem linha é pendente. As três saídas são passar, cortar escopo e
+   abandonar — proponha a terceira quando for a honesta. Dispensa exige motivo; quatro
+   critérios não se dispensam; `granted` é sempre falso. Nenhum comando promove marco,
+   mede orçamento ou certifica acabamento; a passagem é declarada por pessoa com a
+   prova ligada (`record --kind milestone`, recibos de `verify`, `observation` e
+   `budget`). Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

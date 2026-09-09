@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Canvas Arcade</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #e7ebf3;
+        --muted: #8a93a6;
+        --surface: #171b26;
+        --edge: #262c3b;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 1.5rem 1rem 3rem;
+        background: #0b0d13;
+        color: var(--ink);
+        font: 15px/1.55 system-ui, -apple-system, Segoe UI, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.25rem;
+      }
+      h1 { font-size: 1.15rem; margin: 0; letter-spacing: 0.01em; }
+      canvas {
+        display: block;
+        background: #10131a;
+        border: 1px solid var(--edge);
+        border-radius: 8px;
+        touch-action: none;
+      }
+      canvas:focus-visible { outline: 2px solid #4ea8ff; outline-offset: 3px; }
+      .panel {
+        width: min(960px, 100%);
+        background: var(--surface);
+        border: 1px solid var(--edge);
+        border-radius: 8px;
+        padding: 1rem 1.15rem;
+      }
+      .panel h2 { font-size: 0.95rem; margin: 0 0 0.6rem; }
+      .grid { display: grid; gap: 0.55rem 1.5rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+      label { display: flex; align-items: center; gap: 0.55rem; }
+      label span { flex: 1; }
+      input[type="range"] { flex: 1; min-width: 90px; }
+      dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.3rem 0.9rem; }
+      dt { color: var(--muted); }
+      dd { margin: 0; }
+      .note { color: var(--muted); font-size: 0.85rem; margin: 0.7rem 0 0; }
+      @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+    </style>
+  </head>
+  <body>
+    <h1>Canvas Arcade</h1>
+
+    <canvas id="stage" width="640" height="360" tabindex="0"
+      aria-label="Área de jogo. Colete orbes para formar corrente e guarde antes de ser atingido."></canvas>
+
+    <noscript>
+      <p class="panel">Este jogo precisa de JavaScript. O código das regras fica em <code>src/game/rules.js</code>.</p>
+    </noscript>
+
+    <section class="panel" aria-labelledby="controls-title">
+      <h2 id="controls-title">Comandos</h2>
+      <dl>
+        <dt>Mover</dt><dd>Setas, A/D, analógico ou arrastar na tela</dd>
+        <dt>Avançar (dash)</dt><dd>Espaço, K, botão A, ou toque na área superior</dd>
+        <dt>Guardar corrente</dt><dd>Seta abaixo, S, J, botão X, ou toque na faixa inferior</dd>
+        <dt>Pausar</dt><dd>Esc ou P</dd>
+        <dt>Reiniciar</dt><dd>R</dd>
+      </dl>
+      <p class="note">
+        Guardar converte a corrente em pontos ao quadrado e trava o dash por um instante.
+        Ser atingido zera a corrente inteira. Corrente não guardada no fim da partida é perdida.
+      </p>
+    </section>
+
+    <section class="panel" aria-labelledby="options-title">
+      <h2 id="options-title">Acessibilidade e som</h2>
+      <div class="grid">
+        <label><input type="checkbox" id="reducedMotion" /> <span>Reduzir movimento</span></label>
+        <label><input type="checkbox" id="highContrast" /> <span>Alto contraste</span></label>
+        <label><input type="checkbox" id="captions" /> <span>Legendas de som</span></label>
+        <label><span>Escala da interface</span><input type="range" id="uiScale" min="0.75" max="2" step="0.05" /></label>
+        <label><span>Volume geral</span><input type="range" id="master" min="0" max="1" step="0.05" /></label>
+        <label><span>Efeitos</span><input type="range" id="sfx" min="0" max="1" step="0.05" /></label>
+        <label><span>Música</span><input type="range" id="music" min="0" max="1" step="0.05" /></label>
+        <label><span>Interface</span><input type="range" id="ui" min="0" max="1" step="0.05" /></label>
+      </div>
+      <p class="note" id="audio-gap"></p>
+    </section>
+
+    <script type="module" src="./src/main.js"></script>
+    <script type="module">
+      const game = window.__game;
+      if (game) {
+        const toggles = ["reducedMotion", "highContrast", "captions"];
+        const buses = ["master", "sfx", "music", "ui"];
+        const sync = () => {
+          const settings = game.settings;
+          for (const name of toggles) document.getElementById(name).checked = settings[name];
+          document.getElementById("uiScale").value = settings.uiScale;
+          for (const bus of buses) document.getElementById(bus).value = settings.buses[bus];
+        };
+        for (const name of toggles) {
+          document.getElementById(name).addEventListener("change", (event) => {
+            game.updateSettings({ [name]: event.target.checked });
+          });
+        }
+        document.getElementById("uiScale").addEventListener("input", (event) => {
+          game.updateSettings({ uiScale: Number(event.target.value) });
+        });
+        for (const bus of buses) {
+          document.getElementById(bus).addEventListener("input", (event) => {
+            game.updateSettings({ buses: { ...game.settings.buses, [bus]: Number(event.target.value) } });
+          });
+        }
+        sync();
+        const gaps = game.audioGaps();
+        document.getElementById("audio-gap").textContent = gaps.registered.length
+          ? `Sons registrados: ${gaps.registered.join(", ")}.`
+          : `Nenhum arquivo de som embarcado. Papéis declarados e vazios: ${gaps.declared.join(", ")}. As legendas cobrem a informação sonora até o acervo ser preenchido.`;
+      }
+    </script>
+  </body>
+</html>

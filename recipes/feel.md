@@ -112,3 +112,22 @@ Fontes de método: [qualidade](../references/quality.md),
 or lose it* no [mapa](../references/sources.md#aaa-tier-e-piso-09). Estudos
 de câmera/tempo no laboratório, quando existirem, são precedentes — não um
 kit de juice obrigatório.
+
+## Limites
+
+O harness não mede latência nem captura quadros; use as ferramentas da engine ou do
+[pacote de plataforma](../packs/README.md) e registre o comando ou procedimento. A
+medição entra por `record --kind budget` (latência, p99 do quadro com efeitos ativos)
+e a observação em movimento por `record --kind observation`, ligadas ao HEAD do jogo.
+Os valores certos pertencem a cada jogo e só existem depois de medidos e observados;
+o feel do verbo central é lente de marco em [produção](production.md).
+
+## Implementação de referência e degraus
+
+Antes de escrever a sua cadeia, leia uma concreta: o starter `canvas-arcade` reúne o
+perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, graça após dano,
+alcance de coleta maior que o desenho — cada valor com o motivo ao lado, e separa
+entrada de regra em `src/core/input.js`. Perdão de entrada é decisão de design explícita
+com valor registrado; sem registro, esses valores viram folclore e regridem na próxima
+alteração. Degraus e critérios da dimensão `feel`:
+[barra de acabamento](../references/production-bar.md#feel--resposta-da-ação-central).

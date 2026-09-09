@@ -23,13 +23,16 @@ mesmo quando arquivos antigos cobrem nominalmente as nove áreas. Use o evento
 
 **Ajuste localizado:** atualize decisão, requisito e caso de QA no registro existente.
 Não reinicie a pré-produção. **Jogo pequeno / jam / conto:** um `game-design.md` pode
-reunir brief, GDD, requisitos, decisões técnicas e experimentos. Use os templates
-como perguntas, sem duplicar a mesma informação em nove arquivos. **Produto:**
-separe os documentos que têm responsabilidade e ritmo de atualização distintos.
-**AA / Triple-I (piso de acabamento):** os mesmos artefatos; feel, áudio, luz,
-animação, pacing e receita de conteúdo entram como requisitos do recorte, não
-como fase posterior de polimento. Não é tier de publisher.
-Linke fontes canônicas e mantenha IDs estáveis.
+reunir brief, GDD, requisitos, decisões técnicas e experimentos; o template
+[`game-design`](../assets/templates/game-design.md) traz as nove áreas em um documento,
+com seções que o scanner reconhece quando preenchidas. Use os templates como
+perguntas, sem duplicar a mesma informação em nove arquivos. **Produto:** separe os
+documentos que têm responsabilidade e ritmo de atualização distintos e mantenha um
+[plano de produção](../assets/templates/production-plan.md) como fonte única de marco,
+orçamentos e riscos. **AA / Triple-I (piso de acabamento):** os mesmos artefatos; feel,
+áudio, luz, animação, pacing e receita de conteúdo entram como requisitos do recorte,
+não como fase posterior de polimento. Não é tier de publisher. Linke fontes canônicas
+e mantenha IDs estáveis.
 
 A escala vive no brief. Ela muda quantidade de documentos e de conteúdo, não o
 piso do verbo. Contrato: [ambição](ambition.md).
@@ -42,7 +45,7 @@ o trabalho autorizado. Não invente aprovação, público observado ou resultado
 ## Fluxo com retorno
 
 **Game Brief → GDD + MDA ↔ protótipo/PoC + playtest → PRD/TDD → vertical slice →
-produção/MVP → QA e aprendizado.**
+produção/MVP → QA e aprendizado → release e marcos de produção até o acabamento.**
 
 Essa é uma orientação de dependências, não uma esteira rígida. Requisitos conhecidos
 podem ser escritos antes do protótipo. Uma PoC técnica pode anteceder o GDD. QA
@@ -52,8 +55,26 @@ coincidir com a vertical slice em um jogo muito pequeno, se cumprir ambos os obj
 
 REUSE → ADAPT → CREATE vale para documentos, mecânicas, ferramentas, código e assets.
 Leia candidatos e consumidores, adapte o canônico e explique lacunas antes de criar.
+Para um jogo que ainda não existe no disco, o candidato de reuso é um starter do
+acervo: `init <destino> --starter <starter>` monta o projeto e cria estes
+documentos como rascunho declarado, para serem substituídos por decisão — não para
+serem entregues como se fossem uma.
+
+Cada etapa pretende um degrau da [barra de acabamento](production-bar.md): PoC
+responde uma pergunta em degrau de protótipo, o MVP entrega um ciclo jogável, a
+vertical slice existe justamente para demonstrar o degrau `slice` em um recorte
+pequeno, e o release pretende `shippable`. Declarar a etapa não concede o degrau;
+`context --stage` apenas informa qual é a pretensão.
 
 ## Etapas, significado e prontidão
+
+Cada linha **Pronto para…** abaixo é o critério de saída da etapa, e é dela que
+os [gates](gates.md) são extraídos: um gate por linha, com os critérios
+enumerados. Isso muda o que a frase faz — ela deixa de ser só orientação de
+leitura e passa a ser recusável, com `gate <projeto>` lendo o que o projeto
+declara cumprir. Nenhum comando concede passagem, e as três saídas de um gate são
+passar, cortar escopo e abandonar. A terceira já aparece explícita na etapa `poc`
+e vale para todas.
 
 ### `brief` — Game Brief
 
@@ -162,6 +183,20 @@ quando adequado; preserve a qualidade aprovada e o que o usuário exigiu. Entreg
 um MVP não prova que sua hipótese de valor foi validada.
 [Template](../assets/templates/mvp.md).
 
+### `production-plan` e `milestone` — Produção até o acabamento
+
+Depois que a vertical slice demonstra a experiência, a produção prova que ela
+sobrevive à escala, ao tempo e à plataforma. O [plano de produção](../assets/templates/production-plan.md)
+mantém marcos com critérios de evidência (first playable → vertical slice → alpha →
+beta → gold → live), orçamentos medidos, pipeline de conteúdo e riscos; a
+[revisão de marco](../assets/templates/milestone.md) lê a evidência por lente de
+disciplina e registra quem declarou a passagem. Receita: [produção](../recipes/production.md).
+
+**Pronto para declarar um marco:** cada critério do gate tem evidência ligada, os
+orçamentos foram medidos na plataforma alvo e os bloqueadores passaram por triagem.
+O comando `context --stage production-plan` seleciona receita e template; não mede,
+não promove e não certifica.
+
 ### `qa` — Quality Assurance e playtest
 
 QA acompanha requisitos e riscos; playtest observa compreensão, decisões, controle
@@ -174,6 +209,23 @@ falhas relevantes foram resolvidas/retestadas e lacunas estão explícitas. Não
 contato automático com participantes nem publicação implícita. Não registre teste
 com pessoa quando houve somente simulação ou avaliação do agente.
 [Template](../assets/templates/qa.md), [protocolo de qualidade](quality.md).
+
+### `release` — Entrega
+
+Fecha o ciclo: o caminho repetível entre o repositório e o jogador. Entrada:
+versão pretendida, plataforma alvo e evidência acumulada. Saída: build reproduzível
+a partir de clone limpo, orçamento de tamanho e de tempo até jogar, verificação do
+**artefato exportado** — não do editor nem do servidor de desenvolvimento —,
+proveniência de tudo que embarca, procedimento de reversão e lacunas declaradas na
+nota da versão.
+
+**Pronto para entregar:** outra pessoa constrói a partir do runbook, o artefato roda
+em máquina que não é a de desenvolvimento, save migra da versão anterior e nenhum
+recurso embarcado tem licença desconhecida. Licença desconhecida bloqueia a entrega;
+localização de um arquivo não atribui autoria. O template registra o degrau observado
+por dimensão; **nenhum comando concede autorização de publicação**, e gerar o
+documento não é autorizar.
+[Template](../assets/templates/release.md), [receita](../recipes/release.md).
 
 ## Revisão, rastreabilidade e retomada
 
@@ -218,4 +270,4 @@ As revisões desta página dependem de execução e julgamento do agente/pessoa,
 limites declarados. Exemplo completo sem criar documentos paralelos:
 [estudo aplicado a Era Uma Vez](../examples/era-uma-vez-preproduction.md).
 
-Referências usadas e limites de adaptação: [fontes](sources.md#pré-produção-ampliada).
+Referências usadas e limites de adaptação: [fontes](sources.md#pré-produção-e-checagem).

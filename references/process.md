@@ -6,9 +6,18 @@ criação nova precisa de briefing e decisões retomáveis. Não há número obr
 de agentes, stories ou rodadas.
 
 Para concepção e produção de um jogo novo, o [ciclo criativo](preproduction.md)
-detalha Game Brief, MDA, GDD, PoC, PRD, TDD, vertical slice, MVP e QA/playtest,
-com templates, critérios de prontidão e rastreabilidade. Em correções pequenas,
-atualize somente a decisão e a evidência afetadas no registro existente.
+detalha Game Brief, MDA, GDD, PoC, PRD, TDD, vertical slice, MVP, QA/playtest e
+release, com templates, critérios de prontidão e rastreabilidade. Em correções
+pequenas, atualize somente a decisão e a evidência afetadas no registro existente.
+
+Quanto acabamento cada passo pretende é assunto da
+[barra de acabamento](production-bar.md). Vale desde já a regra que reordena o
+trabalho: **o degrau percebido de um jogo é o mínimo entre suas dimensões, não a
+média** — procure a mais baixa antes de melhorar a que já está alta. Qual é a mais
+baixa deixa de ser adivinhação quando o projeto declara os degraus em tabela:
+`bar <projeto>` a lê e nomeia o piso, e `next` propõe subir exatamente essa
+dimensão. O harness confere a forma da declaração — dimensão entre as dez, degrau
+entre os cinco, alvo no seguinte — e nunca o jogo.
 
 ## 1. Estado e intenção
 
@@ -31,6 +40,11 @@ Para efeito sonoro novo, se o laboratório tiver `shared/sfx`, busque com
 `python3 scripts/game.py sfx search <termo>` antes de baixar. Leia a implementação
 **e um consumidor real**. Registre comando/resultado da busca, candidato e adequação.
 A busca é delimitada à necessidade, não uma auditoria de tudo.
+
+Para um jogo que ainda não existe no disco, o candidato é um starter: `doctor`
+lista os disponíveis e `init` monta o projeto. Partir de um starter é REUSE;
+escrever um laço, um save e uma abstração de entrada do zero é CREATE, e CREATE
+pede a lacuna explícita como qualquer outra.
 
 - **REUSE:** atende à experiência por uso ou configuração já suportada.
 - **ADAPT:** estender a fonte canônica preserva seus consumidores, qualidade e
@@ -64,6 +78,11 @@ O ciclo sem feel e sem áudio da ação continua incompleto: trate `--focus feel
 e `--focus audio` como parte da fatia, não como enfeite posterior. Escala e
 piso: [ambição](ambition.md).
 
+Quando a fatia já demonstrou a experiência e o trabalho passa a ser escala, acabamento
+e estabilidade, siga a [receita de produção](../recipes/production.md): marcos com
+critérios de evidência, orçamentos medidos e lentes de disciplina no plano de produção;
+a [barra](production-bar.md) diz o degrau por dimensão e os [gates](gates.md) o que ainda não pode passar.
+
 Preserve separação entre regra, apresentação e conteúdo **onde ela já existe**.
 Não converta todos os jogos para um ECS, schema, relógio ou servidor comum. Ferramentas
 compartilhadas recebem projeto/cenário por parâmetro; nomes de armas e carros pertencem
@@ -79,6 +98,13 @@ Execute o validador do projeto e o cenário afetado. Para decisões relevantes, 
 alternativas nas mesmas condições e use revisão independente quando autorizada e
 proporcional; registre divergências que mudem a escolha. Não faça média entre arte,
 correção e diversão para compensar regressões.
+
+`context` só sabe dizer `mentioned` sobre as oito capacidades conhecidas — pause,
+reset, seed, observe, act, advance, capture, dispose — porque lê arquivos sem
+executá-los. Quando os testes do projeto realmente exercitarem uma delas, anexe a
+alegação ao recibo com `verify --proves <capacidade>`. Ela sai como `claimed`, com
+autor, argv e log; o recibo cobre o resultado dos comandos, não a cobertura deles,
+e `claimed` não é `verified`.
 
 ## 5. Encerrar e aprender
 
