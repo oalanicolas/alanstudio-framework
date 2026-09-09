@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.52 — O artefato declara como se serve
+
+O `dist/` já saía servível. Quem recebia a pasta ainda podia achar
+que precisava de `npm install` ou abrir `file://`. O `package.json`
+exportado declara Node 20; o README recusa install e `file://`.
+`shipped` continua falso. `release` permanece `prototype`: runbook
+honesto não é outra máquina.
+
+O que 0.9.52 não afirma: ninguém correu o artefato fora daqui.
+
 ## 0.9.51 — O controle pulsa no impacto
 
 O mapa do pad já fechava o verbo. Visual e áudio marcavam o

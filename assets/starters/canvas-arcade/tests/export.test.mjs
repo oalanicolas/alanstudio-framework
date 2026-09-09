@@ -34,6 +34,13 @@ test("o export copia o jogo e deixa de fora o que só serve para desenvolver", a
     assert.ok(existsSync(join(dist, "public/sfx/dash-b.wav")), "o artefato leva a variante");
     assert.ok(existsSync(join(dist, "tools/serve.mjs")));
     assert.ok(existsSync(join(dist, "package.json")));
+    const exported = JSON.parse(await readFile(join(dist, "package.json"), "utf8"));
+    assert.equal(exported.engines.node, ">=20");
+    assert.equal(exported.scripts.serve, "node tools/serve.mjs");
+    const readme = await readFile(join(dist, "README.md"), "utf8");
+    assert.match(readme, /Node 20/);
+    assert.match(readme, /Não rode `npm install`/);
+    assert.match(readme, /file:\/\//);
     const version = JSON.parse(await readFile(join(dist, "VERSION.json"), "utf8"));
     assert.equal(version.version, "0.1.0");
     assert.match(version.scope, /Não prova/);

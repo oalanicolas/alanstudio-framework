@@ -22,8 +22,9 @@ cd dist
 node tools/serve.mjs
 ```
 
-Módulos ES não carregam por `file://`. Servir essa pasta é o que a
-torna jogável. A prova de `playable` nesta dimensão é outra pessoa
+Node 20 ou mais novo. Não rode `npm install`: o artefato não tem
+dependências. Módulos ES não carregam por `file://`. Servir essa pasta
+é o que a torna jogável. A prova de `playable` nesta dimensão é outra pessoa
 seguindo estes dois blocos numa máquina que não é a de desenvolvimento.
 
 ## O que falta para o degrau seguinte

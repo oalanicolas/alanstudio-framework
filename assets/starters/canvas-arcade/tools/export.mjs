@@ -36,6 +36,7 @@ await writeFile(
       private: true,
       type: "module",
       description: "Artefato exportado. Serve; não desenvolve.",
+      engines: pack.engines ?? { node: ">=20" },
       scripts: { serve: "node tools/serve.mjs" },
     },
     null,
@@ -49,6 +50,9 @@ await writeFile(
 
 Árvore exportada por \`npm run build\`. Não é o repositório de desenvolvimento:
 não traz testes, orçamento nem este export.
+
+Node 20 ou mais novo. Não rode \`npm install\`: este artefato não tem
+dependências. Não abra \`index.html\` por \`file://\`.
 
 \`\`\`sh
 node tools/serve.mjs

@@ -120,7 +120,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; cada tick compacta a chuva no mesmo array e reusa o poço; evento, telegraph e o gerador da chuva também reusam; `npm run budget` cronometra a cena `playing.run` (simulação + `draw` num canvas stub) e relata o reuso — não o compositor nem o dispositivo alvo |
 | `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena no dispositivo — `npm run contrast` amostra pixels do stub após `draw()`; o aviso, o overlay e o `cycle.hand` nomeiam IJKL + P/O; `cycle.touch` e `cycle.pad` nomeiam toque e controle; o canvas confirma o mapa da superfície que falou por último; `docs/access.md` declara o que o recorte não atende; sessão com uma mão ainda não foi observada |
 | `content_scale` | `shippable` | `flagship`: a ferramenta é boa o bastante para alguém de fora produzir no piso — `dusk` é a segunda chuva e o jogo a consome por `?spawn=` / `settings.spawnProfile`; `table --from` de spawn ou dusk com `--as denser` nasce chuva distinta; `session --spawn` traça essa chuva; `enough` é falso |
-| `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `dist/VERSION.json` nomeia a versão; ninguém correu o artefato fora daqui |
+| `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `dist/VERSION.json` nomeia a versão; o `package.json` do artefato declara Node 20 e o README recusa `npm install` e `file://`; ninguém correu o artefato fora daqui |
 
 **Leitura honesta: este projeto é um protótipo**, porque uma dimensão está
 nesse degrau. Nenhuma quantidade de acabamento visual muda essa leitura antes
