@@ -15,8 +15,9 @@ próximo artefato e revisar sua prontidão. Brief e GDD definem a experiência; 
 explicita a hipótese; PoC a investiga; PRD/TDD delimitam requisitos e implementação;
 vertical slice e MVP têm objetivos distintos; QA e playtest alimentam o design.
 Carregue o template da etapa com `context <projeto> --stage <etapa>` e adapte o
-documento canônico. Jogo pequeno: `template game-design` cria um documento único com
-as nove áreas; preencha-o em vez de gerar nove arquivos. Não gere todos os arquivos
+documento canônico. Jogo pequeno: `template game-design --project <novo> --output <arquivo-novo.md>`
+grava um documento único com as nove áreas; sem `--output`, só imprime o rascunho.
+Preencha-o em vez de gerar nove arquivos. Não gere todos os arquivos
 antes de começar a experimentar. Quando a fatia demonstrar a experiência, a
 [receita de produção](production.md) leva do recorte ao acabamento por marcos.
 Uma direção aprovada exige sincronizar a base oficial no mesmo turno, conforme

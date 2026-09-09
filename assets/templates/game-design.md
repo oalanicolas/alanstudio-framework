@@ -2,9 +2,10 @@
 
 Projeto: {{PROJECT_PATH}}
 Status: rascunho. Autor/revisão: [preencher]. Direção do usuário e fonte anterior: [localizar; adaptar se já existir].
-Documento único para um jogo pequeno: reúne brief, GDD, MDA, requisitos, decisões
-técnicas, design system, devlog, QA, execução e origem. Preenchido, cobre as nove
-áreas mínimas; separe um documento por área só quando o ritmo de atualização divergir.
+Documento único para um jogo pequeno: cobre as nove áreas mínimas — brief/PRD
+(visão, escopo, requisitos e aceite), GDD, MDA, arquitetura/TDD, design system,
+devlog, QA, execução e origem. Continuidade é uma seção auxiliar de retomada.
+Separe um documento por área só quando o ritmo de atualização divergir.
 Substitua cada `[preencher]`; uma área intencionalmente não aplicável recebe o motivo.
 
 ## Visão e escopo

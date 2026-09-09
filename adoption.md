@@ -27,7 +27,7 @@ de facilidade e piso de acabamento. Lacunas encontradas:
   qualquer posição (a linha paralela chegou à mesma correção).
 - **`context` ignorava `--root` para o acervo sonoro** e consultava o diretório atual.
   Corrigido.
-- **Não havia autodiagnóstico.** `doctor` confere Python, integridade dos arquivos do
+- **Não havia autodiagnóstico.** `doctor` confere Python, presença dos arquivos do
   framework (receitas, templates, referências, pacotes), raiz, projetos, estudos, sfx e
   git; a linha paralela somou ferramentas, starters e atalhos da skill.
 - **A pré-produção recomendava um `game-design.md` único para jogos pequenos, mas não
@@ -131,7 +131,7 @@ urgência, porque nada nele observa qual importa mais. `doctor` passou a nomear 
 projetos que contou, em vez de só contá-los.
 
 **Começar.** Até 0.8 o harness sabia ler um jogo existente e não sabia criar um.
-`doctor` observa ambiente, integridade e os atalhos de skill do host — vigente,
+`doctor` observa ambiente, presença dos arquivos e os atalhos de skill do host — vigente,
 desatualizado, ausente, comparados por conteúdo, com symlink para o `SKILL.md`
 vigente contando como vigente — sem escrever nada. `init` monta um projeto a partir
 de um starter do acervo, troca os valores que o `starter.json` dele declara e gera

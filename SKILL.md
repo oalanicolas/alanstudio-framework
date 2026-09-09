@@ -25,7 +25,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | O verbo funciona mas não convence | `context <projeto> --focus feel` e depois `--focus audio` |
 | “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
 | Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
-| “continue” / “vamos avançar” | `context <projeto> --event resume` e leia `continuity.sources` |
+| “continue” / “vamos avançar” | `context <projeto> --focus <foco> --event resume` e leia `continuity.sources`, preservando o foco da tarefa |
 | Usuário aprovou uma referência | `context <projeto> --focus <foco> --event direction-approved` e sincronize a base no mesmo turno |
 | Recorte já demonstra a experiência | `context <projeto> --focus production --stage production-plan` |
 | Revisar um marco (alpha, beta, gold) | `context <projeto> --focus production --stage milestone`; `bar <projeto>` diz o piso declarado e `gate <projeto>` o que ainda não pode passar |

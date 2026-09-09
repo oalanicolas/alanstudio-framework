@@ -32,7 +32,7 @@ Para cada marco: critério observável, evidência ligada, quem declarou a passa
 - **First playable:** ciclo central jogável de ponta a ponta com placeholders. Prova: [cenário, build, observação]. Estado: [pendente / atingido em (data, evidência)].
 - **Vertical slice:** trecho representativo no acabamento pretendido; receita de conteúdo compreendida. Prova: [preencher]. Estado: [preencher].
 - **Alpha (feature complete):** todos os sistemas do recorte presentes; conteúdo pode ser parcial; nenhum bloqueador conhecido sem plano. Prova: [preencher]. Estado: [preencher].
-- **Beta (content complete):** todo o conteúdo do recorte; orçamentos dentro da meta ou desvio aprovado; localização e acesso implementados; playtest externo observado. Prova: [preencher]. Estado: [preencher].
+- **Beta (content complete):** todo o conteúdo do recorte; orçamentos dentro da meta ou desvio aprovado; localização e acesso implementados no escopo aplicável, com motivo explícito para cada item não aplicável e exigências do usuário preservadas; playtest externo observado. Prova: [preencher]. Estado: [preencher].
 - **Gold / release candidate:** zero bloqueadores; soak e reinstalação/atualização/save verificados; checklist da plataforma revisado; créditos e licenças completos. Prova: [preencher]. Estado: [preencher].
 - **Live (se houver):** telemetria mínima, canal de relato, plano de hotfix e de conteúdo. Prova: [preencher]. Estado: [preencher].
 
