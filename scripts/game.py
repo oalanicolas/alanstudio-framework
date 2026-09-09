@@ -2649,7 +2649,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "studies lista catálogos do foco se existirem no irmão Games-Frameworks; ausência não é evidência negativa.",
             "capabilities.mentioned é só token em arquivo de inspeção. Não prova pause, reset, seed nem determinismo.",
             "capabilities.unknown significa não localizado na lista fixa de arquivos de inspeção, não capacidade ausente; rastreie o entrypoint e os consumidores na auditoria.",
-            "Áudio novo: se shared/sfx tiver sons, busque (`sfx search`) antes de baixar. Sem acervo, o starter já fala em public/sfx e sfx serve recusa. Crescer o acervo é `sfx import ARQUIVO --metadata JSON` (ffmpeg); importar não é ouvir. Piso de gravação licenciada; 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.",
+            "Áudio novo: se shared/sfx tiver sons, busque (`sfx search`) antes de baixar. Sem acervo, o starter já fala em public/sfx e sfx serve recusa. Crescer o acervo é `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx info` lê a ficha e `sfx export ID --to PASTA` copia bytes e créditos. Importar e exportar não é ouvir. Piso de gravação licenciada; 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.",
             "Feel e áudio são focos próprios (`--focus feel`, `--focus audio`). Sem observação em movimento, experience_status permanece not_assessed; scaffold não é vertical slice.",
             "“AAA” neste harness é piso de acabamento da slice, não tier de publisher. Sem feel sincronizado, pacing e repeatability, não use o adjetivo.",
             "Checklist: ver finish no JSON. Jam observa core_groups; produto/AA soma product_groups; promise_groups só se prometidos. `template aaa` não certifica; N/A exige motivo.",
@@ -4306,6 +4306,11 @@ def main():
     sfx_import.add_argument("file", type=Path)
     sfx_import.add_argument("--metadata", type=Path, required=True)
     sfx_cmd.add_parser("seed", parents=[common])
+    sfx_info = sfx_cmd.add_parser("info", parents=[common])
+    sfx_info.add_argument("id")
+    sfx_export = sfx_cmd.add_parser("export", parents=[common])
+    sfx_export.add_argument("ids", nargs="+")
+    sfx_export.add_argument("--to", required=True, type=Path)
     sfx_serve = sfx_cmd.add_parser("serve", parents=[common])
     sfx_serve.add_argument("--port", type=int, default=8766)
     args = parser.parse_args()
@@ -4394,6 +4399,10 @@ def main():
                 emit(sfx_catalog.import_entry(args.file, args.metadata, root))
             elif args.sfx_action == "seed":
                 emit(sfx_catalog.seed_catalog(root))
+            elif args.sfx_action == "info":
+                emit(sfx_catalog.info_entry(args.id, root))
+            elif args.sfx_action == "export":
+                emit(sfx_catalog.export_entries(args.ids, args.to, root))
             elif args.sfx_action == "serve":
                 sfx_catalog.serve_catalog(root, port=args.port)
             else:

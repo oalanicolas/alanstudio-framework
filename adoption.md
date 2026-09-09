@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.69 — A ficha e a cópia também nascem no harness
+
+`audio.py` já lia a ficha e exportava bytes com créditos. O CLI
+que o SKILL ensina — `game.py sfx` — parava em importar e buscar.
+`sfx info` lê o id no disco; `sfx export` copia bytes, manifesto e
+créditos para fora do acervo. Sem sons os dois recusam. `heard`
+continua falso. `audio_mix` permanece `slice`: ficha no disco não
+é mix ouvido. Só `release` fica no piso.
+
+O que 0.9.69 não afirma: o harness não ouviu o arquivo e exportar
+não aprova loudness.
+
 ## 0.9.68 — O fim também nomeia a perda
 
 A queda da aposta já pintava os pips. A cortina do overlay nascia

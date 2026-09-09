@@ -534,12 +534,16 @@ há o que ouvir. Crescer o acervo é arquivo local com recibo:
 ```sh
 python3 scripts/game.py sfx import /caminho/do.wav --metadata /caminho/meta.json --root /caminho/do/laboratorio
 python3 scripts/game.py sfx seed --root /caminho/do/laboratorio
+python3 scripts/game.py sfx info passo-madeira-01 --root /caminho/do/laboratorio
+python3 scripts/game.py sfx export passo-madeira-01 --to /caminho/do/jogo/public/audio --root /caminho/do/laboratorio
 ```
 
 `sfx import` exige ffmpeg e um JSON com id, título, categoria, estilo,
 tags, processamento e fontes (licença CC0 ou CC-BY). `sfx seed` lê
 `shared/sfx/selection.json` com `local_path` já no disco. Sem seleção,
-o seed recusa. Importar não é mix ouvido. O primeiro ciclo já tem voz
+o seed recusa. `sfx info` lê a ficha no disco. `sfx export` copia
+bytes, `manifest.json` e `CREDITS.txt` para uma pasta fora do acervo.
+Importar e exportar não é mix ouvido. O primeiro ciclo já tem voz
 no starter (`public/sfx/<papel>.wav`). `shared/sfx` é ADAPT, não
 pré-requisito. Piso: gravação licenciada ou design contemporâneo.
 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão. Este

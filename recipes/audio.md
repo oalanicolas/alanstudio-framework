@@ -21,7 +21,8 @@ Arquivo ausente é lacuna do verbo, não silêncio deliberado;
 vazia, `sfx search` aponta o starter e `sfx serve` recusa — isso não
 autoriza improvisar licença. Crescer o acervo é `sfx import ARQUIVO
 --metadata JSON` (ffmpeg) ou `sfx seed` com `selection.json` local.
-Importar não é ouvir. O acervo compartilhado é ADAPT, não o
+`sfx info ID` lê a ficha; `sfx export ID --to PASTA` copia bytes e
+créditos. Importar e exportar não é ouvir. O acervo compartilhado é ADAPT, não o
 primeiro ciclo.
 
 ## 1. Nomear a camada

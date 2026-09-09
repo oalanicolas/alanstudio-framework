@@ -25,7 +25,8 @@ não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta e
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
 `--fill` sugere o acervo; `--apply` copia com o nome do papel. Sem
 acervo a busca aponta o starter e `sfx serve` recusa. Crescer o
-acervo é `sfx import` / `sfx seed` (ffmpeg); importar não é ouvir.
+acervo é `sfx import` / `sfx seed` (ffmpeg); `sfx info` lê a ficha
+e `sfx export` copia bytes e créditos. Importar e exportar não é ouvir.
 O starter
 já traz design original e variante (`-b`) nos papéis do verbo e na cama
 e carrega no mixer. A cama entra em loop no barramento de música.

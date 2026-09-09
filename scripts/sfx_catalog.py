@@ -45,6 +45,24 @@ IMPORT_NEXT = (
     "ffmpeg decodifica; sem ele o import recusa. "
     "sfx serve só depois de haver acervo."
 )
+INFO_EMPTY = (
+    "Acervo vazio. O starter já fala em public/sfx. "
+    "sfx info lê a ficha de um id que existe; sem acervo não há ficha. "
+    "Cresça com sfx import ARQUIVO --metadata JSON (ffmpeg)."
+)
+EXPORT_EMPTY = (
+    "Acervo vazio. O starter já fala em public/sfx. "
+    "sfx export copia bytes e créditos de um id que existe. "
+    "Sem acervo não há o que exportar."
+)
+INFO_NEXT = (
+    "Ficha lida no disco. Não é mix ouvido. "
+    "Ouça no jogo, no papel."
+)
+EXPORT_NEXT = (
+    "Exportar preserva bytes e créditos. Não é mix ouvido. "
+    "Ouça no jogo, no papel."
+)
 SEED_MISSING = (
     "selection.json ausente. Seed só importa arquivos locais já selecionados. "
     "Sem seleção, o starter já fala em public/sfx."
@@ -156,6 +174,8 @@ def summarize(root=None):
         "copy": "python3 scripts/game.py sfx copy ID --to PASTA",
         "import": "python3 scripts/game.py sfx import ARQUIVO --metadata JSON",
         "seed": "python3 scripts/game.py sfx seed",
+        "info": "python3 scripts/game.py sfx info ID",
+        "export": "python3 scripts/game.py sfx export ID --to PASTA",
         "next": EMPTY_NEXT if empty else LISTEN_NEXT,
     }
 
@@ -164,6 +184,40 @@ def import_entry(file, metadata, root=None):
     prepared = audio.prepare_import(Path(file), audio.read_json(metadata))
     result = audio.save_imports([prepared], catalog_dir(root))
     result.update(heard=False, next=IMPORT_NEXT)
+    return result
+
+
+def info_entry(entry_id, root=None):
+    sounds = load_catalog(root)["sounds"]
+    if not sounds:
+        raise ValueError(INFO_EMPTY)
+    item = audio.select(sounds, [entry_id])[0]
+    return {
+        "id": item["id"],
+        "title": item["title"],
+        "category": item["category"],
+        "tags": item.get("tags", []),
+        "style": item.get("style"),
+        "src": item.get("file"),
+        "bytes": item.get("bytes"),
+        "licenses": sorted({source["license"] for source in item.get("sources", [])}),
+        "authors": sorted({source["author"] for source in item.get("sources", [])}),
+        "heard": False,
+        "next": INFO_NEXT,
+    }
+
+
+def export_entries(ids, destination, root=None):
+    sounds = load_catalog(root)["sounds"]
+    if not sounds:
+        raise ValueError(EXPORT_EMPTY)
+    items = audio.select(sounds, ids)
+    result = audio.export_files(items, Path(destination), catalog_dir(root))
+    result.update(
+        heard=False,
+        next=EXPORT_NEXT,
+        ids=[item["id"] for item in items],
+    )
     return result
 
 

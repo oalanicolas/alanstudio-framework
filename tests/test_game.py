@@ -2068,6 +2068,24 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("vazio", serve.stderr.casefold())
         self.assertIn("sfx import", summary["import"])
         self.assertIn("sfx seed", summary["seed"])
+        self.assertIn("sfx info", summary["info"])
+        self.assertIn("sfx export", summary["export"])
+        info = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "info", "passo-madeira-01", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertNotEqual(info.returncode, 0)
+        self.assertIn("vazio", info.stderr.casefold())
+        self.assertNotIn("Ouça com sfx serve", info.stderr)
+        exported = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "export", "passo-madeira-01",
+             "--to", str(self.root / "out"), "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertNotEqual(exported.returncode, 0)
+        self.assertIn("vazio", exported.stderr.casefold())
+        self.assertNotIn("Ouça com sfx serve", exported.stderr)
+        self.assertFalse((self.root / "out").exists())
 
     def test_sfx_import_grows_the_catalog_without_claiming_to_hear_it(self):
         fake = {
@@ -2181,6 +2199,71 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["added"], 1)
         self.assertFalse(report["heard"])
         self.assertNotIn("Ouça com sfx serve", report["next"])
+
+    def _plant_catalog_sound(self):
+        audio = game.sfx_catalog.audio
+        data = b"same source bytes"
+        digest = audio.digest(data)
+        item = {
+            "id": "passo-madeira-01",
+            "title": "Passo em madeira",
+            "category": "Passos",
+            "tags": ["pé", "madeira"],
+            "style": "recorded",
+            "processing": "Corte do original; sem conversão adicional.",
+            "sources": [{
+                "title": "Original Footstep",
+                "author": "Autora",
+                "url": "https://example.com/source",
+                "license": "CC-BY-4.0",
+            }],
+            "sha256": digest,
+            "bytes": len(data),
+            "file": f"files/{digest}.wav",
+            "technical": {"sample_rate": 44100, "duration": 1, "warnings": []},
+        }
+        audio.save_imports([(item, data)], self.root / "shared/sfx")
+        return item, data
+
+    def test_sfx_info_reads_the_card_without_claiming_to_hear_it(self):
+        item, _ = self._plant_catalog_sound()
+        report = game.sfx_catalog.info_entry(item["id"], self.root)
+        self.assertEqual(report["id"], item["id"])
+        self.assertEqual(report["title"], item["title"])
+        self.assertEqual(report["licenses"], ["CC-BY-4.0"])
+        self.assertFalse(report["heard"])
+        self.assertNotIn("Ouça com sfx serve", report["next"])
+        self.assertIn("não é mix", report["next"].casefold())
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "info", item["id"], "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        listed = json.loads(run.stdout)
+        self.assertFalse(listed["heard"])
+        self.assertEqual(listed["authors"], ["Autora"])
+
+    def test_sfx_export_copies_bytes_and_credits_without_claiming_to_hear_them(self):
+        item, data = self._plant_catalog_sound()
+        destination = self.root / "jogo" / "public" / "audio"
+        report = game.sfx_catalog.export_entries([item["id"]], destination, self.root)
+        self.assertEqual(report["status"], "exported")
+        self.assertFalse(report["heard"])
+        self.assertNotIn("Ouça com sfx serve", report["next"])
+        self.assertIn("não é mix", report["next"].casefold())
+        self.assertEqual((destination / f"{item['id']}.wav").read_bytes(), data)
+        credits = (destination / "CREDITS.txt").read_text(encoding="utf-8")
+        self.assertIn("Autora", credits)
+        self.assertIn("CC-BY-4.0", credits)
+        again = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "export", item["id"],
+             "--to", str(destination), "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(again.returncode, 0, again.stderr)
+        repeated = json.loads(again.stdout)
+        self.assertEqual(repeated["status"], "already_exported")
+        self.assertFalse(repeated["heard"])
 
     def test_feel_reads_named_constants_and_never_claims_to_have_felt_them(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
