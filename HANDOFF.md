@@ -41,7 +41,8 @@ código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
 só levanta quando falta a declaração. O starter expõe assistência,
 `uiScale`, preset de uma mão (o aviso, o overlay e o `cycle.hand`
 nomeiam IJKL + P/O; o stub coleta, guarda, pausa e reinicia nesse
-cluster) e `docs/access.md`; `npm run contrast`
+cluster) e `docs/access.md`. O canvas confirma o mapa do controle
+ou do toque quando essa superfície falou por último. `npm run contrast`
 amostra pixels do stub após `draw()` e, em cinza, o que só
 o orbe ou só o estilhaço pinta. `pagehide` descarrega
 o save. A chuva compacta o array vivo e reusa o poço; evento,

@@ -10,7 +10,8 @@
 // aplica uma intenção nomeada e deixa a chuva distinta. `copy.fantasy`
 // tem consumidor: o coach do primeiro ciclo. `resume`, `restart` e
 // `hint_bank` reservam o lugar da tecla; o desenho preenche com o
-// remapeamento vigente. `palettes` tem consumidor: o desenho lê
+// remapeamento vigente ou com o mapa do aparelho que falou por último.
+// `palettes` tem consumidor: o desenho lê
 // `PALETTES` daqui, não uma constante no render. `look` escolhe um
 // look de arte (`normal`, `dusk`); `contrast` é o modo de alcance,
 // não um look. `npm run look -- <nome> --from normal|dusk` copia um

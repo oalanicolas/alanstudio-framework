@@ -35,6 +35,7 @@ test("arrastar no toque move; a faixa de cima avança e a de baixo guarda", () =
   const pad = surface();
   const input = createInput({ target: null, surface: pad });
   pad.tap(64, 90);
+  assert.equal(input.lastSource, "pointer", "toque precisa marcar a superfície");
   const dash = input.intent(0.5);
   assert.equal(dash.move, -1, "toque à esquerda do jogador precisa mover");
   assert.equal(dash.dash, true, "faixa de cima precisa avançar");
@@ -55,6 +56,7 @@ test("arrastar no toque move; a faixa de cima avança e a de baixo guarda", () =
 
 test("sem superfície o toque não inventa intenção", () => {
   const input = createInput({ target: null });
+  assert.equal(input.lastSource, "keyboard");
   assert.deepEqual(input.intent(0.5), { move: 0, dash: false, bank: false });
   input.dispose();
 });
@@ -67,10 +69,13 @@ function stubPad({ axes = [0], buttons = {} } = {}) {
 test("o controle move, avança, guarda, pausa e reinicia", () => {
   let pads = [];
   const input = createInput({ target: null, gamepads: () => pads });
+  assert.equal(input.lastSource, "keyboard");
   pads = stubPad({ axes: [-0.1] });
   assert.equal(input.intent().move, 0, "eixo dentro da zona morta não move");
+  assert.equal(input.lastSource, "keyboard", "zona morta não troca a superfície");
   pads = stubPad({ axes: [-0.8] });
   assert.equal(input.intent().move, -1, "analógico à esquerda precisa mover");
+  assert.equal(input.lastSource, "gamepad", "analógico precisa marcar o controle");
   pads = stubPad({ buttons: { 15: true } });
   assert.equal(input.intent().move, 1, "dpad direita precisa mover");
   pads = stubPad({ buttons: { 0: true } });

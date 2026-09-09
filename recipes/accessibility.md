@@ -36,7 +36,8 @@ reducedMotion, captions, remapeamento, uiScale, preset de uma mão).
 `verified` é sempre falso: chave no fonte não é sessão com o modo ativo.
 O starter `canvas-arcade` também expõe `assist` e declara em
 `docs/access.md` o que o recorte não atende. O aviso e o overlay
-nomeiam as teclas do remapeamento vigente. O harness não joga com o
+nomeiam as teclas do remapeamento vigente — e o mapa do controle ou
+do toque quando essa superfície falou por último. O harness não joga com o
 modo ativo.
 
 Não declare cobertura que não observou. Verificação automática de contraste é útil

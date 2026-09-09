@@ -34,7 +34,7 @@ export function createRenderer(canvas, options = {}) {
   }
 
   function draw(state, frame = {}, settings = {}, extra = {}) {
-    const lines = bindLines(copy, settings.bindings ?? DEFAULT_BINDINGS);
+    const lines = bindLines(copy, settings.bindings ?? DEFAULT_BINDINGS, extra.surface);
     const palette =
       settings.palette && typeof settings.palette.field === "string"
         ? settings.palette

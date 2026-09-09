@@ -494,3 +494,29 @@ test("o aviso e o overlay nomeiam as teclas do remapeamento", () => {
   assert.ok(overlay.some((text) => text.includes("Continuar: P")), `overlay: ${JSON.stringify(overlay)}`);
   assert.equal(overlay.some((text) => text.includes("Esc")), false);
 });
+
+test("o aviso e o overlay nomeiam o controle quando ele falou por último", () => {
+  const state = createState(1);
+  state.chain = 3;
+  const aviso = hudTexts(state, {}, { hint: "bank", surface: "gamepad" });
+  assert.equal(
+    aviso.texts.filter((item) => item.text.includes("Guarde (X)")).length,
+    1,
+    `esperava X no controle: ${JSON.stringify(aviso.texts.map((item) => item.text))}`,
+  );
+  assert.equal(aviso.texts.filter((item) => item.text.includes("Guarde (↓)")).length, 0);
+
+  const recorder = recordingCanvas();
+  const renderer = createRenderer(recorder.canvas, { devicePixelRatio: 1 });
+  renderer.resize(360, 640);
+  renderer.draw(state, { paused: true }, {}, { surface: "gamepad" });
+  const overlay = recorder.calls.texts.map((item) => item.text);
+  assert.ok(overlay.some((text) => text.includes("Continuar: Start")), `overlay: ${JSON.stringify(overlay)}`);
+  assert.equal(overlay.some((text) => text.includes("Esc")), false);
+
+  const over = createState(1);
+  over.phase = "over";
+  renderer.draw(over, {}, {}, { surface: "gamepad" });
+  const fim = recorder.calls.texts.map((item) => item.text);
+  assert.ok(fim.some((text) => text.includes("Select")), `fim: ${JSON.stringify(fim)}`);
+});

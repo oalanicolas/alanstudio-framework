@@ -132,6 +132,7 @@ export function createGame(options = {}) {
       captions: audio.captions(),
       best: progress.best,
       hint: coachHint(state, copy),
+      surface: input.lastSource,
     });
   }
 

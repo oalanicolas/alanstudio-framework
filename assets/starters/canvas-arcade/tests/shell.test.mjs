@@ -9,6 +9,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { createGame } from "../src/main.js";
+import { createInput } from "../src/core/input.js";
 import { memoryStorage } from "../src/core/storage.js";
 import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "../src/core/settings.js";
 
@@ -229,6 +230,76 @@ test("o preset de uma mão pausa e reinicia no cluster direito", () => {
   frame();
   assert.equal(game.paused, false, "O precisa sair da pausa");
   assert.equal(game.observe().tick, 0, "O precisa reiniciar");
+  game.dispose();
+});
+
+function stubPad(buttons = {}) {
+  const list = Array.from({ length: 16 }, (_, index) => ({ pressed: Boolean(buttons[index]) }));
+  return [{ axes: [0], buttons: list }];
+}
+
+function textCanvas() {
+  const texts = [];
+  const context = {
+    setTransform() {},
+    save() {},
+    restore() {},
+    beginPath() {},
+    closePath() {},
+    moveTo() {},
+    lineTo() {},
+    arc() {},
+    ellipse() {},
+    quadraticCurveTo() {},
+    stroke() {},
+    fill() {},
+    fillRect() {},
+    roundRect() {},
+    strokeRect() {},
+    clearRect() {},
+    rect() {},
+    createLinearGradient: () => ({ addColorStop() {} }),
+    createRadialGradient: () => ({ addColorStop() {} }),
+    measureText: (text) => ({ width: String(text).length * 5 }),
+    fillText(text) {
+      texts.push(text);
+    },
+    fillStyle: "#000",
+    strokeStyle: "#000",
+    font: "8px",
+    textAlign: "left",
+    textBaseline: "top",
+    lineWidth: 1,
+    globalAlpha: 1,
+  };
+  return {
+    texts,
+    canvas: {
+      getContext: () => context,
+      style: {},
+      width: 360,
+      height: 640,
+    },
+  };
+}
+
+test("o overlay nomeia o controle quando ele falou por último", () => {
+  const view = textCanvas();
+  let pads = stubPad({ 9: true });
+  const { game, frame } = shell({
+    canvas: view.canvas,
+    input: createInput({ target: null, gamepads: () => pads }),
+  });
+  game.start();
+  frame();
+  assert.equal(game.paused, true, "Start precisa pausar");
+  frame();
+  assert.ok(
+    view.texts.some((text) => text.includes("Continuar: Start")),
+    `esperava Start no overlay: ${JSON.stringify(view.texts)}`,
+  );
+  assert.equal(view.texts.some((text) => text.includes("Esc")), false);
+  pads = [];
   game.dispose();
 });
 

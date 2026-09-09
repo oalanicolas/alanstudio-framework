@@ -30,3 +30,24 @@ test("o preset de uma mão troca ↓ e R por K e O", () => {
   assert.equal(lines.hint_bank, "Guarde (K) antes de perder a corrente");
   assert.equal(actionLabel(ONE_HAND_BINDINGS, "dash"), "I");
 });
+
+test("o controle preenche o aviso e o overlay com o próprio mapa", () => {
+  const lines = bindLines(copy, DEFAULT_BINDINGS, "gamepad");
+  assert.equal(lines.resume, "Continuar: Start");
+  assert.equal(lines.restart, "Reiniciar: Select");
+  assert.equal(lines.hint_bank, "Guarde (X) antes de perder a corrente");
+  assert.equal(lines.hint_collect, copy.hint_collect);
+});
+
+test("o toque nomeia as faixas e deixa pausa no teclado", () => {
+  const lines = bindLines(copy, DEFAULT_BINDINGS, "pointer");
+  assert.equal(lines.hint_bank, "Guarde (baixo) antes de perder a corrente");
+  assert.equal(lines.resume, "Continuar: Esc ou P");
+  assert.equal(lines.restart, "Reiniciar: R");
+});
+
+test("superfície desconhecida não inventa mapa", () => {
+  const lines = bindLines(copy, DEFAULT_BINDINGS, "inventada");
+  assert.equal(lines.resume, "Continuar: Esc ou P");
+  assert.equal(lines.hint_bank, "Guarde (↓) antes de perder a corrente");
+});

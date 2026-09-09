@@ -1,9 +1,10 @@
-// Rótulo das teclas vivas.
+// Rótulo das teclas vivas — e do aparelho que falou por último.
 //
 // O manifesto e a tabela da página ensinam o padrão. Depois de um
 // remapeamento — o preset de uma mão incluso — o aviso e o overlay
-// precisam nomear o que de fato dispara a ação. Rótulo no texto não é
-// sessão observada.
+// precisam nomear o que de fato dispara a ação. Se o controle ou o
+// toque falou por último, nomear só a tecla ensina o mapa errado.
+// Rótulo no texto não é sessão observada.
 
 const NAMED = {
   Space: "Espaço",
@@ -32,7 +33,22 @@ export function actionLabel(bindings, action) {
   return actionLabels(bindings, action)[0] ?? "";
 }
 
-export function bindLines(lines, bindings) {
+const SURFACE_TOKENS = {
+  gamepad: {
+    pause: "Start",
+    reset: "Select",
+    bank: "X",
+    dash: "A",
+    left: "analógico",
+    right: "analógico",
+  },
+  pointer: {
+    bank: "baixo",
+    dash: "cima",
+  },
+};
+
+export function bindLines(lines, bindings, surface = "keyboard") {
   const tokens = {
     pause: actionLabels(bindings, "pause").join(" ou "),
     reset: actionLabels(bindings, "reset").join(" ou "),
@@ -41,6 +57,8 @@ export function bindLines(lines, bindings) {
     left: actionLabel(bindings, "left"),
     right: actionLabel(bindings, "right"),
   };
+  const spoken = SURFACE_TOKENS[surface];
+  if (spoken) Object.assign(tokens, spoken);
   const fill = (text) =>
     typeof text === "string"
       ? text.replace(TOKEN, (_, name) => tokens[name] || `{${name}}`)

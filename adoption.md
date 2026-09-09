@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.50 — O canvas confirma o controle
+
+O `start` já nomeava o pad. O aviso e o overlay ainda ensinavam
+só o teclado: quem jogava no controle lia "Guarde (↓)" e
+"Continuar: Esc ou P". `lastSource` guarda quem falou por último;
+`bindLines` preenche Start, Select e X quando foi o controle, e
+as faixas quando foi o toque. `verified` continua falso.
+`accessibility` permanece `slice`: rótulo no canvas não é sessão
+no aparelho. Só `release` fica no piso.
+
+O que 0.9.50 não afirma: o harness não segurou um controle e
+ninguém correu o artefato fora daqui.
+
 ## 0.9.49 — O controle completa o verbo
 
 O gamepad já movia, avançava e guardava. Sem Select a partida não

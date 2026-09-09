@@ -1,6 +1,8 @@
 // Entrada: teclado, ponteiro e gamepad reduzidos a intenção e comandos.
 // No gamepad, Select (8) reinicia: sem isso o verbo fecha e a partida
-// não recomeça só com o controle. Sessão no aparelho não foi observada.
+// não recomeça só com o controle. `lastSource` guarda quem falou por
+// último para o aviso e o overlay nomearem esse mapa — não o manifesto.
+// Sessão no aparelho não foi observada.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que
 // permite rodar a partida headless, repetir um replay e comparar dispositivos:
@@ -33,6 +35,11 @@ export function createInput(options = {}) {
   const padCommandHeld = new Set();
   const pointer = { active: false, aim: null, dash: false, bank: false };
   const registered = [];
+  let lastSource = "keyboard";
+
+  function noteSource(source) {
+    lastSource = source;
+  }
 
   function on(element, type, handler, opts) {
     if (!element || typeof element.addEventListener !== "function") return;
@@ -47,6 +54,7 @@ export function createInput(options = {}) {
   function onKeyDown(event) {
     const code = event.code ?? event.key;
     if (!actionsFor(code).length) return;
+    noteSource("keyboard");
     // Setas e espaço rolam a página; o jogo já consumiu a tecla.
     if (typeof event.preventDefault === "function") event.preventDefault();
     if (!held.has(code)) {
@@ -79,6 +87,7 @@ export function createInput(options = {}) {
   function onPointerDown(event) {
     const position = pointerAim(event);
     if (!position) return;
+    noteSource("pointer");
     pointer.active = true;
     pointer.aim = position.x;
     // Faixa inferior guarda a corrente; o resto da tela é dash.
@@ -115,19 +124,45 @@ export function createInput(options = {}) {
   function pollGamepads() {
     gamepadHeld.clear();
     let axis = 0;
+    let speaking = false;
     for (const pad of readGamepads() ?? []) {
       if (!pad) continue;
       const value = pad.axes?.[0] ?? 0;
       if (Math.abs(value) > Math.abs(axis)) axis = value;
-      if (pad.buttons?.[14]?.pressed) gamepadHeld.add("left");
-      if (pad.buttons?.[15]?.pressed) gamepadHeld.add("right");
-      if (pad.buttons?.[0]?.pressed) gamepadHeld.add("dash");
-      if (pad.buttons?.[2]?.pressed) gamepadHeld.add("bank");
-      if (pad.buttons?.[8]?.pressed) gamepadHeld.add("reset");
-      if (pad.buttons?.[9]?.pressed) gamepadHeld.add("pause");
+      if (pad.buttons?.[14]?.pressed) {
+        gamepadHeld.add("left");
+        speaking = true;
+      }
+      if (pad.buttons?.[15]?.pressed) {
+        gamepadHeld.add("right");
+        speaking = true;
+      }
+      if (pad.buttons?.[0]?.pressed) {
+        gamepadHeld.add("dash");
+        speaking = true;
+      }
+      if (pad.buttons?.[2]?.pressed) {
+        gamepadHeld.add("bank");
+        speaking = true;
+      }
+      if (pad.buttons?.[8]?.pressed) {
+        gamepadHeld.add("reset");
+        speaking = true;
+      }
+      if (pad.buttons?.[9]?.pressed) {
+        gamepadHeld.add("pause");
+        speaking = true;
+      }
     }
-    if (axis < -MOVE_DEADZONE) gamepadHeld.add("left");
-    if (axis > MOVE_DEADZONE) gamepadHeld.add("right");
+    if (axis < -MOVE_DEADZONE) {
+      gamepadHeld.add("left");
+      speaking = true;
+    }
+    if (axis > MOVE_DEADZONE) {
+      gamepadHeld.add("right");
+      speaking = true;
+    }
+    if (speaking) noteSource("gamepad");
   }
 
   function isHeld(action) {
@@ -183,6 +218,9 @@ export function createInput(options = {}) {
     },
     get bindings() {
       return bindings;
+    },
+    get lastSource() {
+      return lastSource;
     },
     listenerCount() {
       return registered.length;
