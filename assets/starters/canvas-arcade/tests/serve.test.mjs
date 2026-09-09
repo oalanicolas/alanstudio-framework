@@ -14,6 +14,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { shouldOpenBrowser } from "../tools/serve.mjs";
+
 const STARTER = fileURLToPath(new URL("..", import.meta.url));
 
 async function serveFrom(name) {
@@ -80,3 +82,10 @@ for (const name of ["farol", "Farol do Sul"]) {
     }
   });
 }
+
+test("o serve só tenta abrir o navegador no terminal", () => {
+  assert.equal(shouldOpenBrowser({ CI: "true" }, { isTTY: true }), false);
+  assert.equal(shouldOpenBrowser({ BROWSER: "0" }, { isTTY: true }), false);
+  assert.equal(shouldOpenBrowser({}, { isTTY: false }), false);
+  assert.equal(shouldOpenBrowser({}, { isTTY: true }), true);
+});

@@ -12,7 +12,7 @@
   "record": "Recorde",
   "dash_ready": "Dash pronto",
   "dash_recharging": "Dash recarregando",
-  "hint_move": "Mova pela faixa",
+  "hint_move": "{left}/{right}, arraste ou analógico",
   "hint_collect": "Passe no orbe — a corrente cresce",
-  "hint_bank": "Guarde ({bank}) antes de perder a corrente"
+  "hint_bank": "Guarde ({bank}, baixo ou X) antes de perder a corrente"
 }

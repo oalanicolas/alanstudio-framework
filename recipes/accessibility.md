@@ -35,9 +35,9 @@ Uma opção sem consumidor no código não é uma opção.
 reducedMotion, captions, remapeamento, uiScale, preset de uma mão).
 `verified` é sempre falso: chave no fonte não é sessão com o modo ativo.
 O starter `canvas-arcade` também expõe `assist` e declara em
-`docs/access.md` o que o recorte não atende. O aviso e o overlay
-nomeiam as teclas do remapeamento vigente — e o mapa do controle ou
-do toque quando essa superfície falou por último. O harness não joga com o
+`docs/access.md` o que o recorte não atende. O aviso do primeiro ciclo
+nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
+Overlay e HUD confirmam o aparelho que falou por último. O harness não joga com o
 modo ativo.
 
 Não declare cobertura que não observou. Verificação automática de contraste é útil

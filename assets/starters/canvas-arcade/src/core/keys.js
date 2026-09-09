@@ -1,9 +1,9 @@
 // Rótulo das teclas vivas — e do aparelho que falou por último.
 //
-// O manifesto e a tabela da página ensinam o padrão. Depois de um
-// remapeamento — o preset de uma mão incluso — o aviso e o overlay
-// precisam nomear o que de fato dispara a ação. Se o controle ou o
-// toque falou por último, nomear só a tecla ensina o mapa errado.
+// O manifesto e a tabela da página ensinam o padrão. O aviso do
+// primeiro ciclo nomeia teclado (ou o remapeamento vigente), toque e
+// controle juntos: sem isso o jogador só aprende pela tabela da
+// página. Overlay e HUD confirmam o aparelho que falou por último.
 // Rótulo no texto não é sessão observada.
 
 const NAMED = {
@@ -58,12 +58,17 @@ export function bindLines(lines, bindings, surface = "keyboard") {
     right: actionLabel(bindings, "right"),
   };
   const spoken = SURFACE_TOKENS[surface];
-  if (spoken) Object.assign(tokens, spoken);
-  const fill = (text) =>
+  const fill = (text, map) =>
     typeof text === "string"
-      ? text.replace(TOKEN, (_, name) => tokens[name] || `{${name}}`)
+      ? text.replace(TOKEN, (_, name) => map[name] || `{${name}}`)
       : text;
   const next = { ...lines };
-  for (const key of Object.keys(next)) next[key] = fill(next[key]);
+  for (const key of Object.keys(next)) {
+    // O aviso do primeiro ciclo ensina as três superfícies. Overlay e HUD
+    // confirmam o aparelho que falou por último. Misturar os dois no
+    // mesmo texto apagava toque e controle até alguém já ter jogado.
+    const map = spoken && !String(key).startsWith("hint_") ? { ...tokens, ...spoken } : tokens;
+    next[key] = fill(next[key], map);
+  }
   return next;
 }

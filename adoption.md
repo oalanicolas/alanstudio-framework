@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.56 — O campo ensina as três superfícies
+
+O aviso do primeiro ciclo só nomeava a última superfície. Quem
+abria no toque ou no controle lia a tabela da página — ou um
+mapa de teclado. O campo agora nomeia teclado (ou o remapeamento),
+arraste e analógico juntos; overlay e HUD continuam confirmando
+quem falou por último. `serve` tenta abrir o navegador quando o
+terminal é interativo. `verified` continua falso. `accessibility`
+permanece `slice`: aviso no stub não é sessão no aparelho. Só
+`release` fica no piso.
+
+O que 0.9.56 não afirma: o harness não tocou a tela, não segurou
+um controle e não jogou. Abrir a janela não é a partida.
+
 ## 0.9.55 — O segundo ciclo nomeia look, chuva e voz
 
 O caminho ideia→jogo parava no `note`. Look, chuva e voz já

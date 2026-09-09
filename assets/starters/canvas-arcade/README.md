@@ -14,14 +14,17 @@ desde o início.
 Requer Node 20 ou mais recente. Não há dependências a instalar.
 
 ```sh
-npm run serve      # abre em http://localhost:8080
+npm run serve      # serve em http://localhost:8080; no terminal, tenta abrir o navegador
 ```
 
 `?look=dusk` troca a paleta e `?spawn=dusk` troca a chuva, sem recomeçar
 o projeto. O `start` do harness nomeia as duas queries quando o manifesto
 as declara. Depois de um `note`, `start` e `next` apontam
 `look --from`, `table --from` e `sfx --from` — o segundo ciclo. Ferramenta
-no disco não é alguém de fora nem mix ouvido.
+no disco não é alguém de fora nem mix ouvido. No campo, o aviso do
+primeiro ciclo nomeia teclado, toque e controle; `npm run serve` tenta
+abrir o navegador quando o terminal é interativo. Abrir a janela não é
+jogar.
 
 Módulos ES não carregam por `file://`, então abrir `index.html` direto no
 navegador não funciona; o servidor local existe só por isso.
@@ -120,7 +123,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; a sessão relata never_banked e erro repetido na simulação; a curva com quem nunca viu o jogo continua pendente |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; cada tick compacta a chuva no mesmo array e reusa o poço; evento, telegraph, rastro e o gerador da chuva também reusam; `npm run budget` cronometra a cena `playing.run` (simulação + `draw` num canvas stub) e relata o reuso — não o compositor nem o dispositivo alvo |
-| `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena no dispositivo — `npm run contrast` amostra pixels do stub após `draw()`; o aviso, o overlay e o `cycle.hand` nomeiam IJKL + P/O; `cycle.touch` e `cycle.pad` nomeiam toque e controle; o canvas confirma o mapa da superfície que falou por último; `docs/access.md` declara o que o recorte não atende; sessão com uma mão ainda não foi observada |
+| `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena no dispositivo — `npm run contrast` amostra pixels do stub após `draw()`; o aviso do primeiro ciclo nomeia teclado, toque e controle; o overlay confirma o mapa da superfície que falou por último; o `cycle.hand` nomeia IJKL + P/O; `docs/access.md` declara o que o recorte não atende; sessão com uma mão ainda não foi observada |
 | `content_scale` | `shippable` | `flagship`: a ferramenta é boa o bastante para alguém de fora produzir no piso — `dusk` é a segunda chuva e o jogo a consome por `?spawn=` / `settings.spawnProfile`; `table --from` de spawn ou dusk com `--as denser` nasce chuva distinta; `session --spawn` traça essa chuva; `enough` é falso |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `dist/VERSION.json` nomeia a versão; o `package.json` do artefato declara Node 20 e o README recusa `npm install` e `file://`; ninguém correu o artefato fora daqui |
 

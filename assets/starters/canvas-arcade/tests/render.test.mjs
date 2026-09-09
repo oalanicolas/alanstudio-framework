@@ -467,8 +467,8 @@ test("o rastro do impacto aparece e com menos movimento vira marca", () => {
 
 test("o aviso do primeiro ciclo cabe na placa e some depois de guardar", () => {
   const inicial = hudTexts(createState(1), {}, { hint: "move" });
-  const aviso = inicial.texts.filter((item) => item.text.includes("Mova pela faixa"));
-  assert.equal(aviso.length, 1, `esperava o aviso de mover: ${JSON.stringify(inicial.texts.map((i) => i.text))}`);
+  const aviso = inicial.texts.filter((item) => item.text.includes("arraste") && item.text.includes("analógico"));
+  assert.equal(aviso.length, 1, `esperava o aviso de mover nas três superfícies: ${JSON.stringify(inicial.texts.map((i) => i.text))}`);
   assert.ok(covered(aviso[0], inicial.plates), "aviso sem placa é texto solto no campo");
   assert.ok(aviso[0].bottom < PLAYER_Y - 6, `aviso desce até a faixa do jogador: ${aviso[0].bottom}`);
   const seeded = hudTexts(createState(1), {}, { hint: "fantasy", fantasy: "guardar a corrente ou continuar" });
@@ -488,17 +488,17 @@ test("o aviso e o overlay nomeiam as teclas do remapeamento", () => {
   state.chain = 3;
   const padrao = hudTexts(state, {}, { hint: "bank" });
   assert.equal(
-    padrao.texts.filter((item) => item.text.includes("Guarde (↓)")).length,
+    padrao.texts.filter((item) => item.text.includes("Guarde (↓, baixo ou X)")).length,
     1,
-    `esperava ↓ no padrão: ${JSON.stringify(padrao.texts.map((item) => item.text))}`,
+    `esperava ↓, toque e controle no padrão: ${JSON.stringify(padrao.texts.map((item) => item.text))}`,
   );
   const uma = hudTexts(state, { bindings: ONE_HAND_BINDINGS }, { hint: "bank" });
   assert.equal(
-    uma.texts.filter((item) => item.text.includes("Guarde (K)")).length,
+    uma.texts.filter((item) => item.text.includes("Guarde (K, baixo ou X)")).length,
     1,
-    `esperava K no preset: ${JSON.stringify(uma.texts.map((item) => item.text))}`,
+    `esperava K, toque e controle no preset: ${JSON.stringify(uma.texts.map((item) => item.text))}`,
   );
-  assert.equal(uma.texts.filter((item) => item.text.includes("Guarde (↓)")).length, 0);
+  assert.equal(uma.texts.filter((item) => item.text.includes("Guarde (↓")).length, 0);
 
   const recorder = recordingCanvas();
   const renderer = createRenderer(recorder.canvas, { devicePixelRatio: 1 });
@@ -509,16 +509,15 @@ test("o aviso e o overlay nomeiam as teclas do remapeamento", () => {
   assert.equal(overlay.some((text) => text.includes("Esc")), false);
 });
 
-test("o aviso e o overlay nomeiam o controle quando ele falou por último", () => {
+test("o aviso ensina as três superfícies e o overlay confirma o controle", () => {
   const state = createState(1);
   state.chain = 3;
   const aviso = hudTexts(state, {}, { hint: "bank", surface: "gamepad" });
   assert.equal(
-    aviso.texts.filter((item) => item.text.includes("Guarde (X)")).length,
+    aviso.texts.filter((item) => item.text.includes("Guarde (↓, baixo ou X)")).length,
     1,
-    `esperava X no controle: ${JSON.stringify(aviso.texts.map((item) => item.text))}`,
+    `esperava teclado, toque e controle no aviso: ${JSON.stringify(aviso.texts.map((item) => item.text))}`,
   );
-  assert.equal(aviso.texts.filter((item) => item.text.includes("Guarde (↓)")).length, 0);
 
   const recorder = recordingCanvas();
   const renderer = createRenderer(recorder.canvas, { devicePixelRatio: 1 });

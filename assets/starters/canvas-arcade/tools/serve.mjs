@@ -5,11 +5,31 @@
 // Não é servidor de produção: serve apenas o diretório do projeto, por método
 // GET, e recusa qualquer caminho que escape dele.
 
+import { spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+
+// Abrir o navegador é cortesia do terminal, não o jogo executado.
+// Testes encanaram o stdout: sem TTY, ninguém ganha uma janela.
+// CI e BROWSER=0 também recusam. Falha ao abrir não derruba o serve.
+export function shouldOpenBrowser(env = process.env, stdout = process.stdout) {
+  if (env.CI === "true" || env.CI === "1") return false;
+  if (env.BROWSER === "0" || env.BROWSER === "none") return false;
+  return Boolean(stdout && stdout.isTTY);
+}
+
+function openBrowser(url) {
+  const command = process.platform === "darwin" ? "open" : process.platform === "win32" ? "cmd" : "xdg-open";
+  const args = process.platform === "win32" ? ["/c", "start", "", url] : [url];
+  try {
+    spawn(command, args, { detached: true, stdio: "ignore" }).unref();
+  } catch {
+    // o endereço continua no console
+  }
+}
 
 // `pathname` de uma URL mantém a codificação percentual: um projeto em
 // "Farol do Sul" viraria "Farol%20do%20Sul", uma pasta que não existe, e todo
@@ -61,11 +81,15 @@ const server = createServer(async (request, response) => {
   }
 });
 
-server.listen(PORT, () => {
-  // A porta anunciada é a que o sistema abriu, não a pedida: com PORT=0 elas
-  // são diferentes, e um endereço errado no console custa uma depuração inteira.
-  const origin = `http://localhost:${server.address().port}`;
-  console.log(
-    `Jogo em ${origin}/  (Ctrl+C encerra)\nLook: ${origin}/?look=dusk\nChuva: ${origin}/?spawn=dusk`,
-  );
-});
+const invoked = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
+if (invoked) {
+  server.listen(PORT, () => {
+    // A porta anunciada é a que o sistema abriu, não a pedida: com PORT=0 elas
+    // são diferentes, e um endereço errado no console custa uma depuração inteira.
+    const origin = `http://localhost:${server.address().port}`;
+    console.log(
+      `Jogo em ${origin}/  (Ctrl+C encerra)\nLook: ${origin}/?look=dusk\nChuva: ${origin}/?spawn=dusk`,
+    );
+    if (shouldOpenBrowser()) openBrowser(`${origin}/`);
+  });
+}

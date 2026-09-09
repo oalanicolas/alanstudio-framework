@@ -9,8 +9,9 @@
 // `npm run table -- <nome> --from spawn|dusk` copia essa forma; `--as`
 // aplica uma intenção nomeada e deixa a chuva distinta. `copy.fantasy`
 // tem consumidor: o coach do primeiro ciclo. `resume`, `restart` e
-// `hint_bank` reservam o lugar da tecla; o desenho preenche com o
-// remapeamento vigente ou com o mapa do aparelho que falou por último.
+// `hint_bank` reservam o lugar da tecla viva; o aviso também nomeia
+// toque e controle. Overlay e HUD confirmam o aparelho que falou por
+// último.
 // `palettes` tem consumidor: o desenho lê
 // `PALETTES` daqui, não uma constante no render. `look` escolhe um
 // look de arte (`normal`, `dusk`); `contrast` é o modo de alcance,
