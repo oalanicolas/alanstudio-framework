@@ -72,7 +72,7 @@ validadores do starter onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → rascunho → documento sem versão
-vigente → continuidade → validadores → gate → barra. O gate tem dois ramos: linha
+vigente → continuidade → sem instruções para o agente → validadores → gate → barra. O gate tem dois ramos: linha
 de gate malformada e critério pendente. A barra tem quatro, na ordem: linha de
 degrau malformada, dimensão sem linha, duas linhas em conflito e — só então —
 subir a dimensão mais baixa. Num projeto sem tabela, portanto, a última proposta
