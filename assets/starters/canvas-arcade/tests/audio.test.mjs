@@ -6,7 +6,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { SOUNDS, createAudio } from "../src/game/audio.js";
+import { MIX_HEADROOM, SOUNDS, createAudio } from "../src/game/audio.js";
 
 function fakeContext() {
   const gains = [];
@@ -20,6 +20,16 @@ function fakeContext() {
       const node = { gain: { value: 1 }, connect() {} };
       gains.push(node);
       return node;
+    },
+    createDynamicsCompressor() {
+      return {
+        threshold: { value: 0 },
+        knee: { value: 0 },
+        ratio: { value: 0 },
+        attack: { value: 0 },
+        release: { value: 0 },
+        connect() {},
+      };
     },
     createBufferSource() {
       const node = {
@@ -173,11 +183,12 @@ test("o evento crítico abaixa os outros barramentos e o ducking volta sozinho",
   audio.register("hit", { duration: 0.3 });
   audio.play("hit");
   const [master, music, sfx] = context.gains;
-  assert.equal(master.gain.value, 0.8, "o volume geral não é alterado pelo ducking");
+  assert.equal(master.gain.value, 0.8 * MIX_HEADROOM, "o volume geral não é alterado pelo ducking");
   assert.ok(sfx.gain.value < 0.9);
   assert.ok(music.gain.value < 0.6);
   tick(SOUNDS.hit.duckMs + 1);
   audio.update();
+  assert.equal(master.gain.value, 0.8 * MIX_HEADROOM);
   assert.equal(sfx.gain.value, 0.9);
   assert.equal(music.gain.value, 0.6);
 });
@@ -187,7 +198,7 @@ test("alterar preferências reflete nos barramentos", () => {
   audio.register("dash", { duration: 0.2 });
   audio.play("dash");
   audio.applySettings({ buses: { master: 0.2, music: 0, sfx: 0.5, ui: 0.1 }, captions: true });
-  assert.equal(context.gains[0].gain.value, 0.2);
+  assert.equal(context.gains[0].gain.value, 0.2 * MIX_HEADROOM);
   assert.equal(context.gains[2].gain.value, 0.5);
 });
 

@@ -114,7 +114,7 @@ starter `canvas-arcade` inclui design original em `public/sfx`.
 limite de vozes, rodízio de variantes e legenda. Os seis papéis têm design
 original e variante (`-b`) em `public/sfx`. `npm run peak` relata o pico do
 arquivo; `npm run mix` soma as vozes de uma partida simulada com o mesmo
-barramento e ducking. Nenhum dos dois é mix ouvido. `heard` continua falso. Toda
+palco, folga e ducking do mixer. Nenhum dos dois é mix ouvido. `heard` continua falso. Toda
 informação sonora precisa de equivalente visual — requisito de
 [acessibilidade](accessibility.md), não recurso extra. Degraus da dimensão `audio_mix`:
 [barra de acabamento](../references/production-bar.md#audio_mix--mixagem-não-arquivos).

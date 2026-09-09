@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.26 — Folga no palco de ganho
+
+A soma da 0.9.25 passou de 1.0 porque o palco usava o teto do arquivo
+em overlap. O starter baixa o padrão dos barramentos, aplica folga no
+master e um compressor no destino. `npm run mix` usa o mesmo palco.
+`heard` continua falso. `audio_mix` permanece `slice`: folga no código
+não é faixa ouvida no dispositivo. Só `release` fica no piso.
+
+O que 0.9.26 não afirma: o harness não ouviu, não aprovou loudness e
+não importou unidade como selo.
+
 ## 0.9.25 — Mix somado na partida e HUD em sequência
 
 `npm run mix` soma as vozes de uma partida simulada com barramento,

@@ -14,7 +14,12 @@
 // Toda informação sonora tem legenda equivalente: o jogo precisa ser
 // completável com o áudio desligado.
 
+import { DEFAULT_BUSES } from "../core/settings.js";
+
 export const BUSES = ["master", "music", "sfx", "ui"];
+// Folga no master: overlap de vozes não senta no teto digital.
+// Não é loudness aprovado e não substitui sessão no dispositivo.
+export const MIX_HEADROOM = 0.82;
 
 export const SOUNDS = {
   dash: { bus: "sfx", caption: "avanço", priority: 1 },
@@ -31,7 +36,7 @@ export function createAudio(options = {}) {
   const now = options.now ?? (() => Date.now());
   const createContext = options.createContext ?? defaultContext;
 
-  let settings = options.settings ?? { buses: { master: 0.8, music: 0.6, sfx: 0.9, ui: 0.7 }, captions: true };
+  let settings = options.settings ?? { buses: { ...DEFAULT_BUSES }, captions: true };
   let context = null;
   let gains = null;
   const buffers = new Map();
@@ -48,7 +53,19 @@ export function createAudio(options = {}) {
     if (!context) return null;
     gains = {};
     gains.master = context.createGain();
-    gains.master.connect(context.destination);
+    const limiter =
+      typeof context.createDynamicsCompressor === "function" ? context.createDynamicsCompressor() : null;
+    if (limiter) {
+      limiter.threshold.value = -6;
+      limiter.knee.value = 8;
+      limiter.ratio.value = 8;
+      limiter.attack.value = 0.003;
+      limiter.release.value = 0.12;
+      gains.master.connect(limiter);
+      limiter.connect(context.destination);
+    } else {
+      gains.master.connect(context.destination);
+    }
     for (const bus of BUSES.slice(1)) {
       gains[bus] = context.createGain();
       gains[bus].connect(gains.master);
@@ -63,7 +80,7 @@ export function createAudio(options = {}) {
     const ducked = now() < duckUntil ? 0.35 : 1;
     for (const bus of BUSES) {
       const level = Number.isFinite(levels[bus]) ? levels[bus] : 1;
-      gains[bus].gain.value = bus === "master" ? level : level * ducked;
+      gains[bus].gain.value = bus === "master" ? level * MIX_HEADROOM : level * ducked;
     }
   }
 

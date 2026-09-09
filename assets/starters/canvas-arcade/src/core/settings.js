@@ -31,6 +31,10 @@ export const ONE_HAND_BINDINGS = {
   reset: ["KeyO"],
 };
 
+// Palco conservador: overlap de one-shots não usa o teto do arquivo.
+// Folga não é loudness aprovado; `heard` continua falso.
+export const DEFAULT_BUSES = { master: 0.7, music: 0.45, sfx: 0.62, ui: 0.55 };
+
 export function defaultSettings(environment = {}) {
   return {
     schema: SETTINGS_SCHEMA,
@@ -40,7 +44,7 @@ export function defaultSettings(environment = {}) {
     assist: false,
     oneHand: false,
     uiScale: 1,
-    buses: { master: 0.8, music: 0.6, sfx: 0.9, ui: 0.7 },
+    buses: structuredCloneish(DEFAULT_BUSES),
     bindings: structuredCloneish(DEFAULT_BINDINGS),
   };
 }

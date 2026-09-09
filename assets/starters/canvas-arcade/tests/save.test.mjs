@@ -17,6 +17,7 @@ import {
 } from "../src/core/save.js";
 import {
   DEFAULT_BINDINGS,
+  DEFAULT_BUSES,
   ONE_HAND_BINDINGS,
   defaultSettings,
   loadSettings,
@@ -145,6 +146,12 @@ test("preferências recusam valor fora de faixa e campo desconhecido", () => {
   assert.equal(settings.reducedMotion, false, "tipo errado cai no padrão");
   assert.equal(settings.assist, false);
   assert.equal("inventado" in settings, false);
+});
+
+test("o palco padrão é o mesmo objeto que o mixer declara", () => {
+  assert.deepEqual(defaultSettings({}).buses, DEFAULT_BUSES);
+  assert.ok(DEFAULT_BUSES.master < 0.8, "folga no master: overlap não usa o teto antigo");
+  assert.ok(DEFAULT_BUSES.sfx < 0.9);
 });
 
 test("assistência é preferência persistida, não um modo escondido", () => {

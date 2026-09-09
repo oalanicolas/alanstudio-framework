@@ -9,14 +9,14 @@ import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { SOUNDS } from "../src/game/audio.js";
+import { MIX_HEADROOM, SOUNDS } from "../src/game/audio.js";
+import { DEFAULT_BUSES } from "../src/core/settings.js";
 import { advance, createState, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
 import { createRng } from "../src/core/rng.js";
 import { readWav } from "./wav.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const FOLDER = join(ROOT, "public/sfx");
-const BUSES = { master: 0.8, music: 0.6, sfx: 0.9, ui: 0.7 };
 const MAX_VOICES = 6;
 
 const argument = (name, fallback) => {
@@ -50,9 +50,8 @@ let stolen = 0;
 let voicesPlayed = 0;
 
 function gainAt(bus, ducked) {
-  const level = Number.isFinite(BUSES[bus]) ? BUSES[bus] : 1;
-  const duck = bus === "master" ? 1 : ducked;
-  return BUSES.master * level * duck;
+  const level = Number.isFinite(DEFAULT_BUSES[bus]) ? DEFAULT_BUSES[bus] : 1;
+  return DEFAULT_BUSES.master * MIX_HEADROOM * level * ducked;
 }
 
 for (let run = 0; run < runs; run += 1) {
@@ -124,8 +123,8 @@ const report = {
   samples_at_or_over_unity: overUnity,
   heard: false,
   scope:
-    "Soma das vozes numa partida simulada, com barramento, ducking e limite. " +
-    "Sem dispositivo, sem limiar, sem aprovação, sem loudness percebido.",
+    "Soma das vozes numa partida simulada, com o mesmo palco e folga do " +
+    "mixer. Sem dispositivo, sem limiar, sem aprovação, sem loudness percebido.",
 };
 
 console.log(JSON.stringify(report, null, 2));
