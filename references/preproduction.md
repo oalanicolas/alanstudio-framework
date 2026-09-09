@@ -8,8 +8,10 @@ Em qualquer pedido sobre um jogo, comece pelo `context`: a checagem `foundation`
 é automática, mesmo em ajustes localizados. Ao encontrar lacunas, avise e inicie a
 [documentação automática](project-audit.md), sem pedir consentimento. A reconstrução
 de um jogo existente segue aquele roteiro; não exige
-reiniciar seu ciclo criativo nem preencher documentos sem evidência. O design system do jogo (Art Bible) e o
-Devlog complementam este ciclo quando o conteúdo ainda não tem registro canônico.
+reiniciar seu ciclo criativo nem preencher documentos sem evidência. O design system do jogo (Art Bible), o Devlog e o
+[checklist de piso](aaa-checklist.md) (`aaa`) complementam este ciclo quando
+o conteúdo ainda não tem registro canônico. O checklist observa o acabamento
+da fatia; não substitui GDD nem certifica publisher.
 Todo jogo identificável precisa da instância; o arquivo separado é opcional se outro
 canônico cobrir as seções. O contrato do estúdio está no
 [design system do jogo](game-design-system.md).
@@ -203,7 +205,9 @@ sem apresentar todas as PoCs como se fossem uma única tarefa nem recomeçar o c
 
 `context <projeto> --stage gdd` adiciona guia e template GDD aos caminhos selecionados.
 `template gdd --project <projeto>` imprime o rascunho; `--output <arquivo-novo>` o
-salva recusando destino existente. A escolha e leitura do documento canônico são
+salva recusando destino existente. `--stage aaa` / `template aaa` carrega o
+[checklist de piso](aaa-checklist.md); preencher linhas não certifica o jogo.
+A escolha e leitura do documento canônico são
 responsabilidade do agente. O comando não preenche design, revisa mérito ou cria um jogo.
 
 `check-plan` continua validando o registro de reuso; não é validador semântico de

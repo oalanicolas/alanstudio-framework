@@ -155,8 +155,10 @@ Nenhuma destas barras é “ser AAA de publisher”.
   observado do próximo trecho é conhecido.
 
 O [protocolo](quality.md) registra cenário, condições, referência, evidência
-técnica e observação em movimento. Sem essa comparação, declare a lacuna.
-Não rebatize uma versão degradada como novo piso.
+técnica e observação em movimento. O instrumento único é o
+[checklist de piso](aaa-checklist.md) (`--stage aaa` / `template aaa`).
+Sem essa comparação, declare a lacuna. Não rebatize uma versão degradada
+como novo piso. Completar o checklist não é nota AAA.
 
 ## O que este repositório continua recusando
 
@@ -182,6 +184,8 @@ paleta ou feel.
 - **Por que agora:** sem a distinção, o agente documenta demais, polida de
   menos, ou usa “AAA” como adjetivo de marketing.
 - **Pronto quando:** a escala está no brief (jam / produto / AA–Triple-I),
-  o ciclo existe, e o próximo passo da escada está nomeado com prova.
+  o ciclo existe, o próximo passo da escada está nomeado com prova, e o
+  [checklist](aaa-checklist.md) do recorte tem estado ou N/A em cada item
+  aplicável.
 - **Retomar por:** este guia, [criar](../recipes/create.md),
   [qualidade](quality.md) e a continuidade do próprio jogo.

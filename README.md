@@ -91,12 +91,15 @@ dependências, não esteira rígida. Um jogo pequeno pode reunir essas decisões
 um documento.
 
 Nove templates do ciclo: brief, mda, gdd, poc, prd, tdd, vertical-slice, mvp, qa.
-Três complementos: `art-bible`, `devlog`, `audit`.
+Quatro complementos: `art-bible`, `devlog`, `audit`, `aaa` (checklist de
+piso de acabamento; não certifica publisher).
 
 ```sh
 python3 scripts/game.py context /caminho/do/jogo --focus content --stage gdd --root /caminho/do/laboratorio
 python3 scripts/game.py template brief --project meu-jogo
 python3 scripts/game.py template art-bible --project meu-jogo --output /tmp/meu-jogo-art.md
+python3 scripts/game.py template aaa --project meu-jogo
+python3 scripts/game.py context /caminho/do/jogo --stage aaa --root /caminho/do/laboratorio
 ```
 
 Sem `--output`, `template` só imprime. Com ele, cria um rascunho novo e recusa

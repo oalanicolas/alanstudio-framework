@@ -92,7 +92,9 @@ jogo concluído. Não publique nem delegue sem autorização aplicável.
 
 Não chame o recorte de AAA — nem de “quase AAA” — se a slice não demonstra
 as barras da escala (incluindo pacing, sincronia do impacto e repeatability).
-[Ambição](references/ambition.md).
+Checklist preenchível: `context --stage aaa` ou `template aaa`. Completar
+linhas não certifica o jogo; N/A exige motivo.
+[Ambição](references/ambition.md), [checklist](references/aaa-checklist.md).
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

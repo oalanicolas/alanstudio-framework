@@ -3,6 +3,14 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.2 — Checklist de piso de acabamento
+
+Etapa `aaa`: [guia](references/aaa-checklist.md) e
+[template](assets/templates/aaa.md). 16 grupos (CHK-0 a CHK-16), estados
+`não executado` / `observado` / `inconclusivo` / `N/A`. Completar linhas não
+certifica publisher. Tier de mercado fica na seção 16 como contexto. Jam
+pode marcar o resto `N/A` com a escala.
+
 ## 0.9.1 — Tier de mercado ≠ piso de acabamento
 
 Pesquisa de 2026-09-09 dobrada em [ambição](references/ambition.md) e

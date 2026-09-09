@@ -93,7 +93,9 @@ do harness.
 
 Blogs de estúdio/agência de 2025–26 (orçamento, AA vs AAA, consistência visual)
 informaram o vocabulário contemporâneo; não foram promovidos a regra testada.
-O harness adapta o **piso** e recusa o **tier** como objetivo.
+O harness adapta o **piso** e recusa o **tier** como objetivo. O instrumento
+preenchível é o [checklist](aaa-checklist.md) (`--stage aaa`); não é um
+score nem uma extração testada desses textos.
 
 ## Áudio (catálogo)
 

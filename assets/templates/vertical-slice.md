@@ -46,6 +46,7 @@ Fontes canônicas: [GDD, PRD, TDD e experimentos anteriores].
 
 - O recorte demonstra o padrão de experiência/acabamento pretendido? [evidência e autor do julgamento].
 - Feel/áudio sincronizados no impacto e pacing estável no trecho? [observação].
+- Checklist de piso (`aaa`): [IDs materiais ainda abertos; N/A com motivo].
 - O processo para produzir outro trecho está compreendido? [custo observado e dificuldade].
 - Limites: [o que esse recorte ainda não prova sobre o jogo completo].
 - Próxima fatia: [resultado, requisitos, dependências e prova].

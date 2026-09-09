@@ -90,6 +90,24 @@ class HarnessTest(unittest.TestCase):
         slice_ctx = game.context(self.project, "content", stage="vertical-slice")
         self.assertIn("ambition.md", [Path(p).name for p in slice_ctx["read_next"]])
 
+    def test_aaa_stage_loads_checklist_ambition_and_finish_recipes_without_writing(self):
+        before = set(self.project.iterdir())
+        result = game.context(self.project, "mechanics", stage="aaa", studies_root=self.root / "absent")
+        names = [Path(p).name for p in result["read_next"]]
+        self.assertEqual(result["stage"], "aaa")
+        self.assertEqual(result["focus"], "mechanics")
+        self.assertEqual(names.count("aaa.md"), 1)
+        self.assertIn("aaa-checklist.md", names)
+        self.assertIn("ambition.md", names)
+        self.assertIn("game-design-system.md", names)
+        self.assertIn("feel.md", names)
+        self.assertIn("audio.md", names)
+        self.assertIn("mechanics.md", names)
+        self.assertTrue(all(Path(p).is_file() for p in result["read_next"]))
+        self.assertIn("template aaa", " ".join(result["limits"]))
+        self.assertEqual(before, set(self.project.iterdir()))
+        self.assertIn("aaa", game.STAGES)
+
     def test_context_lists_focus_studies_without_loading_other_catalogs(self):
         studies = self.root / "Games-Frameworks"
         phaser = studies / "outputs/decoded/games-phaser/study-02d8931b626d/validate/rule-catalog.md"
