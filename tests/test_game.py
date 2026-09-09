@@ -55,7 +55,7 @@ class HarnessTest(unittest.TestCase):
         result = game.context(self.project, "visual")
         self.assertEqual(before, set(self.project.iterdir()))
         self.assertEqual(result["instructions"][-2:], [str(self.root / "AGENTS.md"), str(self.project / "AGENTS.md")])
-        self.assertEqual([Path(p).name for p in result["read_next"]], ["process.md", "quality.md", "visual.md", "game-design-system.md", "project-audit.md"])
+        self.assertEqual([Path(p).name for p in result["read_next"]], ["process.md", "quality.md", "production-bar.md", "visual.md", "game-design-system.md", "project-audit.md"])
         self.assertIn("sfx", result["studio_assets"])
         self.assertTrue(result["capabilities"])
         self.assertTrue(all(item["status"] in ("unknown", "mentioned") for item in result["capabilities"].values()))
@@ -696,6 +696,223 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         result = subprocess.run([sys.executable, str(SCRIPT), "check-plan", str(plan)], capture_output=True, text=True)
         self.assertEqual(result.returncode, 1)
         self.assertNotIn("Traceback", result.stderr)
+
+    def test_root_is_accepted_before_and_after_the_subcommand(self):
+        self.package()
+        for argv in (["--root", str(self.root), "discover"], ["discover", "--root", str(self.root)]):
+            with self.subTest(argv=argv):
+                run = subprocess.run([sys.executable, str(SCRIPT), *argv], capture_output=True, text=True)
+                self.assertEqual(run.returncode, 0, run.stderr)
+                self.assertEqual([Path(item["project"]).name for item in json.loads(run.stdout)], [self.project.name])
+        documented = (
+            ["scan", str(self.project), "--root", str(self.root)],
+            ["context", str(self.project), "--focus", "feel", "--root", str(self.root)],
+            ["next", str(self.project), "--root", str(self.root)],
+            ["doctor", "--root", str(self.root)],
+            ["sfx", "search", "passos", "--root", str(self.root)],
+        )
+        for argv in documented:
+            with self.subTest(argv=argv):
+                run = subprocess.run([sys.executable, str(SCRIPT), *argv], capture_output=True, text=True)
+                self.assertEqual(run.returncode, 0, run.stderr)
+                self.assertNotIn("unrecognized arguments", run.stderr)
+
+    def test_every_focus_stage_and_dimension_has_its_document(self):
+        for focus in game.FOCI:
+            self.assertTrue((game.FRAMEWORK / f"recipes/{focus}.md").is_file(), focus)
+        for stage in game.STAGES:
+            self.assertTrue((game.FRAMEWORK / f"assets/templates/{stage}.md").is_file(), stage)
+        self.assertEqual(set(game.FOCUS_DIMENSIONS), set(game.FOCI))
+        self.assertTrue(set(game.STAGE_TIERS) <= set(game.STAGES))
+        self.assertTrue(set(game.STAGE_TIERS.values()) <= set(game.BAR_TIERS))
+        for dimensions in game.FOCUS_DIMENSIONS.values():
+            self.assertTrue(set(dimensions) <= set(game.BAR_DIMENSIONS))
+
+    def test_production_bar_selects_dimensions_without_assessing_a_tier(self):
+        for focus in game.FOCI:
+            with self.subTest(focus=focus):
+                bar = game.context(self.project, focus)["production_bar"]
+                self.assertEqual([item["key"] for item in bar["dimensions"]], list(game.FOCUS_DIMENSIONS[focus]))
+                self.assertIsNone(bar["tier_target"])
+                self.assertIsNone(bar["observed"])
+                self.assertFalse(bar["assessed"])
+                self.assertTrue(Path(bar["guide"]).is_file())
+                self.assertIn("mínimo entre suas dimensões", bar["rule"])
+        for stage, tier in game.STAGE_TIERS.items():
+            with self.subTest(stage=stage):
+                self.assertEqual(game.context(self.project, "create", stage)["production_bar"]["tier_target"], tier)
+        self.assertIsNone(game.context(self.project, "create", "devlog")["production_bar"]["tier_target"])
+
+    def test_release_stage_closes_the_cycle_with_its_recipe_and_tier(self):
+        result = game.context(self.project, "release", "release")
+        self.assertIn(str(game.FRAMEWORK / "recipes/release.md"), result["read_next"])
+        self.assertIn(str(game.FRAMEWORK / "assets/templates/release.md"), result["read_next"])
+        self.assertEqual(result["production_bar"]["tier_target"], "shippable")
+        text = game.template("release", self.project)
+        self.assertIn(self.project.name, text)
+        self.assertNotIn("{{", text)
+        self.assertIn("Autorização de publicação: não concedida", text)
+
+    def test_doctor_reports_environment_and_integrity_without_changing_anything(self):
+        before = set(self.root.iterdir())
+        report = game.doctor(self.root)
+        checks = {check["name"]: check for check in report["checks"]}
+        self.assertEqual(checks["python"]["status"], "ok")
+        self.assertEqual(checks["framework"]["status"], "ok")
+        self.assertEqual(checks["root"]["status"], "ok")
+        self.assertEqual(checks["skill"]["status"], "optional")
+        self.assertEqual(checks["shared/sfx"]["status"], "optional")
+        self.assertIn("canvas-arcade", report["starters"])
+        self.assertEqual(report["foci"], list(game.FOCI))
+        self.assertTrue(report["ready"])
+        self.assertEqual(report["blocking"], [])
+        self.assertTrue(all(check["fix"] is None for check in report["checks"] if check["status"] == "ok"))
+        self.assertTrue(all(check["fix"] for check in report["checks"] if check["status"] != "ok"))
+        self.assertEqual(before, set(self.root.iterdir()))
+
+    def test_doctor_distinguishes_current_outdated_and_absent_skill_shortcuts(self):
+        target = self.root / ".agents/skills/game-dev/SKILL.md"
+        target.parent.mkdir(parents=True)
+        target.write_bytes((game.FRAMEWORK / "SKILL.md").read_bytes())
+        statuses = {item["path"]: item["status"] for item in game.doctor(self.root)["skill_targets"]}
+        self.assertEqual(statuses[str(target)], "current")
+        self.assertEqual(statuses[str(self.root / ".claude/skills/game-dev/SKILL.md")], "absent")
+        target.write_text("cópia antiga da skill")
+        self.assertEqual({i["path"]: i["status"] for i in game.doctor(self.root)["skill_targets"]}[str(target)], "outdated")
+
+    def test_doctor_cli_signals_a_blocking_root_by_exit_code(self):
+        ready = subprocess.run([sys.executable, str(SCRIPT), "doctor", "--root", str(self.root)], capture_output=True, text=True)
+        self.assertEqual(ready.returncode, 0, ready.stderr)
+        self.assertTrue(json.loads(ready.stdout)["ready"])
+        absent = self.root / "laboratorio-inexistente"
+        blocked = subprocess.run([sys.executable, str(SCRIPT), "doctor", "--root", str(absent)], capture_output=True, text=True)
+        self.assertEqual(blocked.returncode, 1)
+        self.assertEqual(json.loads(blocked.stdout)["blocking"], ["root"])
+        self.assertFalse(absent.exists())
+
+    def test_init_creates_a_recognizable_project_from_the_starter(self):
+        destination = self.root / "Corrente do Farol"
+        result = game.init(destination, "canvas-arcade")
+        self.assertEqual(result["kind"], "package.json")
+        self.assertEqual(result["starter"], "canvas-arcade")
+        self.assertEqual(result["document_status"], "draft")
+        self.assertEqual(result["title"], "Corrente do Farol")
+        self.assertIn("src/game/rules.js", result["files"])
+        self.assertIn("tests/lifecycle.test.mjs", result["files"])
+        self.assertIn("docs/gdd.md", result["documents"])
+        for relative in result["files"] + result["documents"]:
+            self.assertTrue((destination / relative).is_file(), relative)
+        self.assertEqual(game.identify(destination), "package.json")
+
+    def test_init_substitutes_every_placeholder_and_leaves_none_behind(self):
+        destination = self.root / "meu-jogo-novo"
+        game.init(destination, "canvas-arcade")
+        for path in destination.rglob("*"):
+            if path.is_file() and path.suffix.casefold() in game.INIT_TEXT_SUFFIXES:
+                self.assertNotIn("{{", path.read_text(encoding="utf-8"), path.name)
+        self.assertEqual(json.loads((destination / "package.json").read_text())["name"], "meu-jogo-novo")
+        readme = (destination / "README.md").read_text(encoding="utf-8")
+        self.assertIn("Meu jogo novo", readme)
+        self.assertIn(str(Path(game.FRAMEWORK).name), readme)
+
+    def test_init_refuses_an_occupied_destination_and_an_unknown_starter(self):
+        with self.assertRaisesRegex(ValueError, "não vazio"):
+            game.init(self.project, "canvas-arcade")
+        self.assertFalse((self.project / "package.json").exists())
+        occupied = self.root / "arquivo.md"
+        occupied.write_text("conteúdo canônico")
+        with self.assertRaisesRegex(ValueError, "existente"):
+            game.init(occupied, "canvas-arcade")
+        self.assertEqual(occupied.read_text(), "conteúdo canônico")
+        with self.assertRaisesRegex(ValueError, "starter desconhecido"):
+            game.init(self.root / "outro", "inventado")
+        self.assertFalse((self.root / "outro").exists())
+
+    def test_init_accepts_an_empty_directory_and_can_skip_the_drafts(self):
+        prepared = self.root / "vazio"
+        prepared.mkdir()
+        self.assertTrue(game.init(prepared, "canvas-arcade")["files"])
+        bare = self.root / "sem-docs"
+        result = game.init(bare, "canvas-arcade", documents=False)
+        self.assertEqual(result["documents"], [])
+        self.assertFalse((bare / "docs").exists())
+        self.assertTrue((bare / "src/game/rules.js").is_file())
+
+    def test_init_neither_installs_dependencies_nor_touches_the_starter(self):
+        starter_before = {path.relative_to(game.FRAMEWORK): path.stat().st_mtime_ns for path in (game.FRAMEWORK / "assets/starters").rglob("*")}
+        destination = self.root / "jogo-limpo"
+        game.init(destination, "canvas-arcade")
+        self.assertFalse((destination / "node_modules").exists())
+        self.assertEqual(starter_before, {path.relative_to(game.FRAMEWORK): path.stat().st_mtime_ns for path in (game.FRAMEWORK / "assets/starters").rglob("*")})
+        self.assertEqual(set(self.root.iterdir()), {self.project, destination})
+
+    def test_init_cli_yields_a_project_that_scan_reads_and_verify_can_prove(self):
+        destination = self.root / "ciclo-completo"
+        run = subprocess.run([sys.executable, str(SCRIPT), "init", str(destination), "--root", str(self.root)], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertEqual(json.loads(run.stdout)["starter"], "canvas-arcade")
+        areas = game.scan(destination)["areas"]
+        self.assertEqual([key for key, area in areas.items() if area["status"] == "not_located"], [])
+        self.assertEqual(areas["runbook"]["status"], "candidate_found")
+        self.assertEqual(areas["provenance"]["status"], "candidate_found")
+        self.assertEqual(areas["gdd"]["status"], "draft_only")
+        self.assertEqual(game.scan(destination)["minimum_status"], "needs_review")
+        capabilities = game.context(destination, "lifecycle")["capabilities"]
+        self.assertTrue(all(item["status"] == "mentioned" for item in capabilities.values()))
+        self.assertTrue(all(item["status"] != "verified" for item in capabilities.values()))
+        report = game.verify(destination, ["test"], None, self.root / "evidencia", 180)
+        self.assertEqual(report["technical_status"], "passed")
+        self.assertEqual(report["experience_status"], "not_assessed")
+
+    def test_next_proposes_creating_the_project_when_there_is_nothing_on_disk(self):
+        result = game.next_step(self.root / "ainda-nao-existe")
+        self.assertFalse(result["exists"])
+        self.assertEqual(result["proposal"]["basis"], "exists=false")
+        self.assertIn("init", result["proposal"]["commands"][0])
+        self.assertEqual(result["authority"], "agent_resolves")
+        self.assertFalse(result["executed"])
+        self.assertFalse((self.root / "ainda-nao-existe").exists())
+
+    def test_next_proposes_documenting_areas_that_were_not_located(self):
+        self.package()
+        result = game.next_step(self.project)
+        self.assertEqual(result["proposal"]["basis"], "areas.not_located")
+        self.assertIn("direction-approved", result["proposal"]["commands"][0])
+        self.assertTrue(result["signals"]["gaps"])
+        self.assertEqual(result["signals"]["package_manager"], "npm")
+
+    def test_next_moves_from_documenting_to_replacing_the_drafts_after_init(self):
+        destination = self.root / "novo-jogo"
+        game.init(destination, "canvas-arcade")
+        result = game.next_step(destination)
+        self.assertEqual(result["proposal"]["basis"], "areas.draft_only")
+        self.assertEqual(result["signals"]["non_current_areas"], [])
+        self.assertIn("test", result["signals"]["scripts"])
+        bases = [item["basis"] for item in result["alternatives"]]
+        self.assertNotIn("areas.not_located", bases)
+        self.assertIn("scripts", bases)
+        self.assertIn("production_bar.dimensions", bases)
+
+    def test_next_falls_back_to_the_production_bar_when_nothing_is_missing(self):
+        self.foundation_document()
+        (self.project / "index.html").write_text("<canvas id=\"jogo\"></canvas>")
+        result = game.next_step(self.project, "feel")
+        self.assertEqual(result["signals"]["gaps"], [])
+        self.assertEqual(result["signals"]["scripts"], [])
+        self.assertEqual(result["proposal"]["basis"], "production_bar.dimensions")
+        self.assertEqual(result["signals"]["production_bar_dimensions"], list(game.FOCUS_DIMENSIONS["feel"]))
+
+    def test_next_cli_returns_one_proposal_and_never_executes_it(self):
+        self.package(scripts={"test": "touch should-not-run"})
+        run = subprocess.run([sys.executable, str(SCRIPT), "next", str(self.project), "--focus", "release", "--root", str(self.root)], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        payload = json.loads(run.stdout)
+        self.assertEqual(payload["focus"], "release")
+        self.assertIsNotNone(payload["proposal"])
+        self.assertNotIn(payload["proposal"], payload["alternatives"])
+        self.assertEqual(payload["signals"]["production_bar_dimensions"], list(game.FOCUS_DIMENSIONS["release"]))
+        self.assertFalse(payload["executed"])
+        self.assertFalse((self.project / "should-not-run").exists())
 
 
 if __name__ == "__main__":

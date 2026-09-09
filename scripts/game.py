@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import signal
 import subprocess
 import sys
@@ -42,8 +43,14 @@ import sfx_catalog
 
 ROOT = default_root()
 STUDIES_ROOT = default_studies_root(ROOT)
-FOCI = ("create", "mechanics", "lifecycle", "content", "visual", "network", "architecture")
-STAGES = ("brief", "mda", "gdd", "poc", "prd", "tdd", "vertical-slice", "mvp", "qa", "art-bible", "devlog", "audit")
+FOCI = (
+    "create", "mechanics", "lifecycle", "content", "visual", "network", "architecture",
+    "feel", "performance", "accessibility", "audio", "persistence", "release",
+)
+STAGES = (
+    "brief", "mda", "gdd", "poc", "prd", "tdd", "vertical-slice", "mvp", "qa", "release",
+    "art-bible", "devlog", "audit",
+)
 EVENTS = ("task", "direction-approved", "resume")
 CONTINUITY_PATTERN = r"\b(continuidade|continuity|retomada|proxim[ao]s? (passos?|acoes|acao|tarefas?)|next steps?)\b"
 CONTINUITY_FILES = {"production plan", "plano de producao", "roadmap", "backlog", "state", "decisions", "devlog"}
@@ -87,8 +94,46 @@ FOCUS_STUDIES = {
 }
 HINT_FILES = (
     "game.mjs", "game.js", "game.test.mjs", "game.test.js",
-    "src/engine/core/loop.js", "tools/verify.py", "headless/env_server.ts",
+    "src/main.js", "src/engine/core/loop.js", "src/core/loop.js", "src/game/rules.js",
+    "tests/lifecycle.test.mjs", "tools/verify.py", "tools/verify.mjs", "headless/env_server.ts",
 )
+BAR_TIERS = ("prototype", "playable", "slice", "shippable", "flagship")
+BAR_DIMENSIONS = {
+    "feel": "Resposta da ação central",
+    "legibility": "Legibilidade do estado",
+    "art_direction": "Coerência audiovisual",
+    "audio_mix": "Mixagem, não pasta de arquivos",
+    "pacing": "Ritmo e aprendizado",
+    "state_trust": "Confiança no estado",
+    "performance": "Estabilidade sob orçamento",
+    "accessibility": "Alcance",
+    "content_scale": "Capacidade de produzir mais",
+    "release": "Confiança operacional",
+}
+FOCUS_DIMENSIONS = {
+    "create": ("feel", "legibility", "pacing", "state_trust"),
+    "mechanics": ("feel", "legibility", "pacing"),
+    "lifecycle": ("state_trust", "performance"),
+    "content": ("content_scale", "art_direction", "legibility"),
+    "visual": ("art_direction", "legibility", "performance"),
+    "network": ("state_trust", "performance"),
+    "architecture": ("state_trust", "performance", "content_scale"),
+    "feel": ("feel", "legibility", "audio_mix"),
+    "performance": ("performance", "art_direction"),
+    "accessibility": ("accessibility", "legibility", "audio_mix"),
+    "audio": ("audio_mix", "feel", "accessibility"),
+    "persistence": ("state_trust", "content_scale"),
+    "release": ("release", "performance", "accessibility", "state_trust"),
+}
+STAGE_TIERS = {
+    "brief": "prototype", "mda": "prototype", "poc": "prototype",
+    "gdd": "playable", "prd": "playable", "tdd": "playable",
+    "vertical-slice": "slice", "art-bible": "slice",
+    "mvp": "shippable", "qa": "shippable", "release": "shippable",
+}
+STARTERS_ROOT = FRAMEWORK / "assets/starters"
+INIT_DOCUMENTS = ("brief", "gdd", "mda", "tdd", "art-bible", "devlog", "qa")
+INIT_TEXT_SUFFIXES = {".md", ".txt", ".html", ".css", ".js", ".mjs", ".json", ".svg"}
 CAPABILITY_TOKENS = {
     "pause": ("pause", "paused"),
     "reset": ("reset", "restart"),
@@ -165,6 +210,20 @@ def studies_for(focus, studies_root):
         if path.is_file():
             found.append(str(path))
     return found
+
+
+def production_bar(focus, stage=None):
+    dimensions = FOCUS_DIMENSIONS.get(focus, ())
+    return {
+        "tiers": list(BAR_TIERS),
+        "tier_target": STAGE_TIERS.get(stage),
+        "dimensions": [{"key": key, "label": BAR_DIMENSIONS[key]} for key in dimensions],
+        "rule": "O degrau percebido de um jogo é o mínimo entre suas dimensões, não a média.",
+        "guide": str(FRAMEWORK / "references/production-bar.md"),
+        "observed": None,
+        "assessed": False,
+        "scope": "Seleção das dimensões pertinentes ao foco e à etapa. O comando não atribui degrau, não mede acabamento e não aprova entrega; declarar um degrau exige observação com condição, evidência e autor.",
+    }
 
 
 def mention_capabilities(project):
@@ -451,7 +510,12 @@ def context(project, focus, stage=None, studies_root=None, event="task"):
     foundation = scan(project)
     records = [str(project / relative) for relative in foundation["read_first"]]
     document_minimum = foundation["audit"]["required"] or event == "direction-approved" or stage == "audit"
-    references = [FRAMEWORK / "references/process.md", FRAMEWORK / "references/quality.md", FRAMEWORK / f"recipes/{focus}.md"]
+    references = [
+        FRAMEWORK / "references/process.md",
+        FRAMEWORK / "references/quality.md",
+        FRAMEWORK / "references/production-bar.md",
+        FRAMEWORK / f"recipes/{focus}.md",
+    ]
     if stage == "tdd" and focus != "architecture":
         references.append(FRAMEWORK / "recipes/architecture.md")
     if stage or focus == "create":
@@ -472,6 +536,7 @@ def context(project, focus, stage=None, studies_root=None, event="task"):
         "metadata_issues": metadata_issues,
         "scripts": {name: {"body": body, "argv": [manager, "run", name] if manager else None} for name, body in scripts.items()},
         "capabilities": mention_capabilities(project), "foundation": foundation,
+        "production_bar": production_bar(focus, stage),
         "continuity": {
             "status": "sources_found" if foundation["continuity_sources"] else "not_located",
             "sources": [dict(item, path=str(project / item["path"])) for item in foundation["continuity_sources"]],
@@ -516,6 +581,327 @@ def template(stage, project, output=None):
         with output.open("x", encoding="utf-8") as document:
             document.write(text)
     return text
+
+
+def starters():
+    if not STARTERS_ROOT.is_dir():
+        return []
+    return sorted(path.name for path in STARTERS_ROOT.iterdir() if path.is_dir() and not path.is_symlink())
+
+
+def slugify(name):
+    folded = "".join(c for c in unicodedata.normalize("NFKD", name.casefold()) if not unicodedata.combining(c))
+    return re.sub(r"[^a-z0-9]+", "-", folded).strip("-")[:200] or "jogo"
+
+
+def readable_title(name):
+    if " " in name or any(character.isupper() for character in name):
+        return name
+    words = " ".join(part for part in re.split(r"[-_]+", name) if part)
+    return words[:1].upper() + words[1:] if words else name
+
+
+def init(destination, starter, title=None, documents=True):
+    available = starters()
+    if starter not in available:
+        raise ValueError(f"starter desconhecido: {starter}; disponíveis: {', '.join(available) or 'nenhum'}")
+    if destination.is_symlink() or destination.is_file():
+        raise ValueError("destino existente; escolha um caminho novo")
+    if destination.is_dir() and any(destination.iterdir()):
+        raise ValueError("destino existente e não vazio; adapte o projeto atual em vez de sobrescrevê-lo")
+    source = STARTERS_ROOT / starter
+    entries = sorted(source.rglob("*"))
+    for path in entries:
+        if path.is_symlink():
+            raise ValueError(f"starter contém symlink: {path.relative_to(source)}")
+    replacements = {
+        "{{PROJECT}}": destination.name,
+        "{{PROJECT_SLUG}}": slugify(destination.name),
+        "{{PROJECT_TITLE}}": title if nonempty(title) else readable_title(destination.name),
+        "{{PROJECT_PATH}}": str(destination),
+        "{{FRAMEWORK_PATH}}": os.path.relpath(FRAMEWORK, destination),
+    }
+    files = []
+    for path in entries:
+        target = destination / path.relative_to(source)
+        if path.is_dir():
+            target.mkdir(parents=True, exist_ok=True)
+            continue
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if path.suffix.casefold() in INIT_TEXT_SUFFIXES:
+            text = path.read_text(encoding="utf-8")
+            for token, value in replacements.items():
+                text = text.replace(token, value)
+            with target.open("x", encoding="utf-8") as document:
+                document.write(text)
+        else:
+            with target.open("xb") as document:
+                document.write(path.read_bytes())
+        files.append(path.relative_to(source).as_posix())
+    drafts = []
+    if documents:
+        for stage in INIT_DOCUMENTS:
+            output = destination / "docs" / f"{stage}.md"
+            template(stage, destination, output)
+            drafts.append(output.relative_to(destination).as_posix())
+    manager = package_commands(destination)[1]
+    return {
+        "schema_version": 1,
+        "project": str(destination),
+        "starter": starter,
+        "kind": identify(destination),
+        "title": replacements["{{PROJECT_TITLE}}"],
+        "files": files,
+        "documents": drafts,
+        "document_status": "draft",
+        "read_next": [
+            str(FRAMEWORK / "references/production-bar.md"),
+            str(FRAMEWORK / "references/preproduction.md"),
+            str(destination / "README.md"),
+        ],
+        "next_commands": [
+            f"{manager or 'npm'} test" if manager else "node --test",
+            f"python3 {FRAMEWORK / 'scripts/game.py'} scan {destination}",
+            f"python3 {FRAMEWORK / 'scripts/game.py'} next {destination}",
+        ],
+        "scope": (
+            "Copiou o starter e criou rascunhos a partir dos templates. Os documentos estão vazios de decisão: "
+            "`scan` vai reportar `draft_only` até que cada área receba fato, hipótese ou lacuna com próxima ação. "
+            "O starter é material de ADAPT, não uma engine nem uma base aprovada; o comando não executa o jogo, "
+            "não instala dependências e não avalia a proposta."
+        ),
+    }
+
+
+def tool_report(name, args=("--version",), timeout=15):
+    path = shutil.which(name)
+    if not path:
+        return {"path": None, "version": None}
+    try:
+        run = subprocess.run([path, *args], capture_output=True, text=True, timeout=timeout, check=False)
+    except (OSError, subprocess.SubprocessError):
+        return {"path": path, "version": None}
+    lines = (run.stdout or run.stderr or "").strip().splitlines()
+    return {"path": path, "version": lines[0].strip() if lines else None}
+
+
+def skill_targets(root):
+    return [root / ".agents/skills/game-dev/SKILL.md", root / ".claude/skills/game-dev/SKILL.md"]
+
+
+def doctor(root):
+    source = FRAMEWORK / "SKILL.md"
+    digest = hashlib.sha256(source.read_bytes()).hexdigest() if source.is_file() else None
+    available = starters()
+    checks = []
+
+    def add(name, required, ok, detail, fix=None):
+        checks.append({
+            "name": name, "required": required,
+            "status": "ok" if ok else ("missing" if required else "optional"),
+            "detail": detail,
+            "fix": None if ok else fix,
+        })
+
+    version = sys.version_info
+    add(
+        "python", True, version >= (3, 10),
+        f"{version.major}.{version.minor}.{version.micro}",
+        None if version >= (3, 10) else "Instale Python 3.10 ou mais recente.",
+    )
+    node = tool_report("node")
+    node_major = int(re.sub(r"^v?(\d+).*", r"\1", node["version"])) if node["version"] else 0
+    add(
+        "node", False, node_major >= 20,
+        node["version"] or "ausente",
+        None if node_major >= 20 else "Node 20+ é exigido pelo starter canvas-arcade e pelos validadores de package.json.",
+    )
+    git = tool_report("git")
+    add("git", False, bool(git["path"]), git["version"] or "ausente", "Sem git, `verify` registra versão nula no recibo.")
+    for binary in ("ffmpeg", "ffprobe"):
+        found = tool_report(binary)
+        add(binary, False, bool(found["path"]), found["version"] or "ausente", "Necessário só para importar e verificar áudio no acervo.")
+
+    missing_recipes = [focus for focus in FOCI if not (FRAMEWORK / f"recipes/{focus}.md").is_file()]
+    missing_templates = [stage for stage in STAGES if not (FRAMEWORK / f"assets/templates/{stage}.md").is_file()]
+    missing_references = [
+        name for name in ("process.md", "quality.md", "production-bar.md", "preproduction.md", "project-audit.md", "game-design-system.md", "sources.md")
+        if not (FRAMEWORK / "references" / name).is_file()
+    ]
+    add(
+        "framework", True, not (missing_recipes or missing_templates or missing_references),
+        "receitas, templates e referências completos"
+        if not (missing_recipes or missing_templates or missing_references)
+        else f"faltando receitas={missing_recipes} templates={missing_templates} referências={missing_references}",
+        "Um foco sem receita ou uma etapa sem template quebra `context`.",
+    )
+    add(
+        "starters", False, bool(available),
+        ", ".join(available) or "nenhum",
+        "Sem starter, `init` não tem de onde partir e REUSE não tem candidato local.",
+    )
+
+    installed = []
+    for target in skill_targets(root):
+        state = "absent"
+        if target.is_symlink():
+            state = "symlink"
+        elif target.is_file():
+            same = hashlib.sha256(target.read_bytes()).hexdigest() == digest
+            state = "current" if same else "outdated"
+        installed.append({"path": str(target), "status": state})
+    current = [item for item in installed if item["status"] == "current"]
+    add(
+        "skill", False, bool(current),
+        f"{len(current)} de {len(installed)} atalhos com a versão atual",
+        None if current else f"cp {source} <atalho do host>  (ver detalhe em skill_targets)",
+    )
+
+    projects = discover(root) if root.is_dir() else []
+    add(
+        "root", True, root.is_dir(),
+        f"{root} · {len(projects)} projeto(s) reconhecido(s)"
+        + (" · AGENTS.md presente" if (root / "AGENTS.md").is_file() else ""),
+        None if root.is_dir() else "Passe --root com o caminho do laboratório de jogos.",
+    )
+    library = root / "shared/sfx"
+    add(
+        "shared/sfx", False, library.is_dir(),
+        str(library) if library.is_dir() else "ausente",
+        "Sem esse acervo o catálogo vem vazio; `sfx search` não é erro, só não tem o que listar.",
+    )
+
+    blocking = [check["name"] for check in checks if check["required"] and check["status"] != "ok"]
+    return {
+        "schema_version": 1,
+        "framework": str(FRAMEWORK),
+        "root": str(root),
+        "ready": not blocking,
+        "blocking": blocking,
+        "checks": checks,
+        "skill_targets": installed,
+        "starters": available,
+        "foci": list(FOCI),
+        "stages": list(STAGES),
+        "scope": (
+            "Presença e versão de ferramentas, integridade deste repositório e atalhos da skill no host. "
+            "Não instala nada, não copia a skill, não executa o jogo e não comprova que um projeto funciona."
+        ),
+    }
+
+
+def next_step(project, focus="create", studies_root=None):
+    payload = context(project, focus, studies_root=studies_root)
+    foundation = payload["foundation"]
+    areas = foundation["areas"]
+    drafts = [key for key, area in areas.items() if area["status"] == "draft_only"]
+    stale = [key for key, area in areas.items() if area["status"] in ("historical_only", "reference_only")]
+    scripts = sorted(payload["scripts"])
+    harness = f"python3 {FRAMEWORK / 'scripts/game.py'}"
+    proposals = []
+
+    def propose(action, why, done_when, commands, basis):
+        proposals.append({
+            "action": action, "why": why, "done_when": done_when,
+            "commands": commands, "basis": basis,
+        })
+
+    if not payload["exists"]:
+        propose(
+            f"Criar o projeto em {project} a partir de um starter e adaptá-lo à proposta",
+            "Sem destino no disco não há candidato para REUSE, e qualquer decisão de design fica sem consumidor.",
+            "O jogo abre, `npm test` passa e o README descreve a decisão característica desta proposta.",
+            [f"{harness} init {project} --starter {starters()[0] if starters() else '<starter>'}"],
+            "exists=false",
+        )
+    elif payload["kind"] is None:
+        propose(
+            "Identificar o ponto de entrada do jogo e registrar como executá-lo",
+            "Sem entrypoint reconhecível não é possível rodar, verificar nem comparar nada — todo o resto fica sem prova.",
+            "Um comando declarado no README inicia o jogo, e `scan` reconhece a área de execução.",
+            [f"{harness} scan {project}"],
+            "kind=null",
+        )
+    missing = [key for key, area in areas.items() if area["status"] == "not_located"]
+    labels = lambda keys: ", ".join(areas[key]["label"] for key in keys)
+    # Não localizado, rascunho e histórico são três problemas diferentes, e todos
+    # aparecem em `gaps`. Propor os três de uma vez repetiria a mesma tarefa.
+    if missing:
+        propose(
+            "Avisar as lacunas e documentar as áreas não localizadas: " + labels(missing),
+            "A política do estúdio é documentar sem pedir um segundo consentimento; sem essa base as mesmas decisões se repetem a cada sessão.",
+            "Cada área tem decisão com fonte, hipótese identificada ou lacuna com motivo e próxima ação.",
+            [f"{harness} context {project} --focus {focus} --event direction-approved"],
+            "areas.not_located",
+        )
+    if drafts:
+        propose(
+            "Substituir rascunho por decisão em: " + labels(drafts),
+            "Template com marcador de preenchimento não documenta nada; enquanto for rascunho, cada retomada recomeça do zero.",
+            "Os documentos citam fonte, decisão e o que ainda é hipótese, sem marcador de preenchimento.",
+            [f"{harness} context {project} --focus {focus} --stage {'brief' if 'vision' in drafts else 'gdd'}"],
+            "areas.draft_only",
+        )
+    if stale:
+        propose(
+            "Resolver documento sem versão vigente em: " + labels(stale),
+            "Só há material histórico ou de referência para essas áreas, e histórico não é regra vigente.",
+            "Existe um documento de trabalho vigente, e o histórico permanece marcado como histórico.",
+            [f"{harness} scan {project}"],
+            "areas.historical_or_reference_only",
+        )
+    if foundation["continuity_sources"]:
+        first = foundation["continuity_sources"][0]
+        propose(
+            f"Conferir o estado real e retomar o passo registrado em {first['path']}:{first['line']}",
+            "Existe fonte de continuidade; retomar evita refazer briefing ou auditoria ainda válida. Fonte encontrada não é tarefa validada.",
+            "O passo registrado foi executado ou substituído, com o resultado no registro canônico.",
+            [f"{harness} context {project} --focus {focus} --event resume"],
+            "continuity.sources",
+        )
+    if scripts:
+        propose(
+            f"Executar os validadores do projeto com recibo ({', '.join(scripts[:4])})",
+            "Comando declarado não é comando executado; sem recibo não há evidência técnica para nenhuma decisão.",
+            "Existe uma pasta de evidência com recibo e log de cada comando escolhido.",
+            [f"{harness} verify {project} --script {scripts[0]} --output <pasta nova>"],
+            "scripts",
+        )
+    dimensions = [item["key"] for item in payload["production_bar"]["dimensions"]]
+    propose(
+        "Observar as dimensões pertinentes da barra e agir na mais baixa: " + ", ".join(dimensions),
+        "O degrau percebido é o mínimo entre as dimensões; subir a que já está alta não muda a leitura do jogo.",
+        "Cada dimensão pertinente tem degrau declarado com condição, evidência e autor, e a mais baixa subiu um degrau.",
+        [f"{harness} context {project} --focus {focus}"],
+        "production_bar.dimensions",
+    )
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": payload["exists"],
+        "kind": payload["kind"],
+        "focus": focus,
+        "proposal": proposals[0],
+        "alternatives": proposals[1:],
+        "signals": {
+            "minimum_status": foundation["minimum_status"],
+            "gaps": foundation["gaps"],
+            "draft_areas": drafts,
+            "non_current_areas": stale,
+            "continuity_source_count": foundation["continuity_source_count"],
+            "scripts": scripts,
+            "package_manager": payload["package_manager"],
+            "production_bar_dimensions": dimensions,
+        },
+        "context_command": f"{harness} context {project} --focus {focus}",
+        "authority": "agent_resolves",
+        "executed": False,
+        "scope": (
+            "Proposta ordenada por dependência, derivada só do que é observável no disco. Não é fila validada, "
+            "não conhece a conversa, a direção do usuário nem o backlog, e não concede autorização. "
+            "O agente confronta a proposta com o pedido real e decide; `alternatives` existe para ser escolhida."
+        ),
+    }
 
 
 def nonempty(value):
@@ -623,47 +1009,72 @@ def verify(project, scripts, command, output, timeout):
 
 
 def main():
+    # `--root` é aceito antes e depois do subcomando. A documentação sempre o
+    # escreveu depois, e argparse só o aceitava antes: cada exemplo com `--root`
+    # falhava com código 2. O parser comum abaixo herda a opção em todo
+    # subcomando, com default suprimido para não sobrescrever o valor global.
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--root", type=Path, default=argparse.SUPPRESS, help="raiz para descobrir projetos e resolver caminhos")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT, help="raiz para descobrir projetos e resolver caminhos")
     commands = parser.add_subparsers(dest="action", required=True)
-    commands.add_parser("discover")
-    initial_scan = commands.add_parser("scan")
+    commands.add_parser("discover", parents=[common])
+    commands.add_parser("doctor", parents=[common], help="ambiente, integridade do framework e atalhos da skill")
+    start = commands.add_parser("init", parents=[common], help="cria um projeto novo a partir de um starter, para ADAPT")
+    start.add_argument("project")
+    start.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
+    start.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
+    start.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
+    upcoming = commands.add_parser("next", parents=[common], help="proposta ordenada de próxima ação, a partir do estado no disco")
+    upcoming.add_argument("project")
+    upcoming.add_argument("--focus", choices=FOCI, default="create")
+    initial_scan = commands.add_parser("scan", parents=[common])
     initial_scan.add_argument("project")
-    ctx = commands.add_parser("context")
+    ctx = commands.add_parser("context", parents=[common])
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
     ctx.add_argument("--stage", choices=STAGES)
     ctx.add_argument("--event", choices=EVENTS, default="task", help="evento observado na conversa pelo agente; não concede aprovação")
-    doc = commands.add_parser("template")
+    doc = commands.add_parser("template", parents=[common])
     doc.add_argument("stage", choices=STAGES)
     doc.add_argument("--project", required=True)
     doc.add_argument("--output", type=Path, help="sem output, imprime o rascunho sem escrever")
-    plan = commands.add_parser("check-plan")
+    plan = commands.add_parser("check-plan", parents=[common])
     plan.add_argument("plan", type=Path)
-    run = commands.add_parser("verify")
+    run = commands.add_parser("verify", parents=[common])
     run.add_argument("project")
     run.add_argument("--output", type=Path, required=True)
     run.add_argument("--timeout", type=float, default=300)
     run.add_argument("--script", action="append", default=[])
     run.add_argument("--command", nargs=argparse.REMAINDER)
-    sfx = commands.add_parser("sfx", help="catálogo compartilhado de efeitos sonoros")
+    sfx = commands.add_parser("sfx", parents=[common], help="catálogo compartilhado de efeitos sonoros")
     sfx_cmd = sfx.add_subparsers(dest="sfx_action")
-    sfx_cmd.add_parser("summary")
-    sfx_search = sfx_cmd.add_parser("search")
+    sfx_cmd.add_parser("summary", parents=[common])
+    sfx_search = sfx_cmd.add_parser("search", parents=[common])
     sfx_search.add_argument("query")
     sfx_search.add_argument("--limit", type=int, default=40)
-    sfx_copy = sfx_cmd.add_parser("copy")
+    sfx_copy = sfx_cmd.add_parser("copy", parents=[common])
     sfx_copy.add_argument("id")
     sfx_copy.add_argument("--to", required=True)
     sfx_copy.add_argument("--sources")
-    sfx_cmd.add_parser("verify")
-    sfx_serve = sfx_cmd.add_parser("serve")
+    sfx_cmd.add_parser("verify", parents=[common])
+    sfx_serve = sfx_cmd.add_parser("serve", parents=[common])
     sfx_serve.add_argument("--port", type=int, default=8766)
     args = parser.parse_args()
     try:
         root = args.root.resolve()
         if args.action == "discover":
             emit(discover(root))
+        elif args.action == "doctor":
+            report = doctor(root)
+            emit(report)
+            return int(not report["ready"])
+        elif args.action == "init":
+            if not args.starter:
+                raise ValueError("nenhum starter disponível neste repositório")
+            emit(init(resolve(args.project, root), args.starter, args.title, not args.no_docs))
+        elif args.action == "next":
+            emit(next_step(resolve(args.project, root), args.focus, studies_root=default_studies_root(root)))
         elif args.action == "scan":
             emit(scan(resolve(args.project, root)))
         elif args.action == "context":

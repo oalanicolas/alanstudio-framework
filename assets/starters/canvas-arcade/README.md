@@ -63,7 +63,7 @@ com decisão, fato ou lacuna é o primeiro trabalho real do projeto.
 
 ## Degrau de acabamento declarado
 
-Pela [barra de acabamento](../framework/references/production-bar.md), o degrau
+Pela [barra de acabamento]({{FRAMEWORK_PATH}}/references/production-bar.md), o degrau
 percebido de um jogo é o **mínimo** entre suas dimensões. Este starter começa
 assim, e a coluna “o que falta” é o mapa das próximas tarefas:
 
