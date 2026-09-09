@@ -4,7 +4,7 @@ import argparse
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import shlex
 import shutil
@@ -133,6 +133,8 @@ STAGE_TIERS = {
     "mvp": "shippable", "qa": "shippable", "release": "shippable",
 }
 STARTERS_ROOT = FRAMEWORK / "assets/starters"
+STARTER_MANIFEST = "starter.json"
+STARTER_FIELDS = ("project", "project_slug", "project_title", "project_path", "framework_path")
 INIT_DOCUMENTS = ("brief", "gdd", "mda", "tdd", "art-bible", "devlog", "qa")
 INIT_TEXT_SUFFIXES = {".md", ".txt", ".html", ".css", ".js", ".mjs", ".json", ".svg"}
 CAPABILITY_TOKENS = {
@@ -602,6 +604,59 @@ def readable_title(name):
     return words[:1].upper() + words[1:] if words else name
 
 
+# Um starter com `{{TOKEN}}` no lugar do nome não abre: quem serve a pasta lê o
+# token na aba do navegador. Então o starter carrega valores reais e declara,
+# em `starter.json`, quais deles `init` troca e em quais arquivos. O escopo por
+# arquivo é o que impede a troca de um nome de alcançar um import ou um caminho
+# relativo que só se parece com ele.
+def starter_manifest(starter):
+    source = STARTERS_ROOT / starter
+    path = source / STARTER_MANIFEST
+    if not path.is_file():
+        raise ValueError(f"starter sem {STARTER_MANIFEST}: {starter}")
+    try:
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
+        raise ValueError(f"{starter}/{STARTER_MANIFEST} ilegível: {error}") from error
+    entries = manifest.get("substitutions") if isinstance(manifest, dict) else None
+    if not isinstance(entries, list) or not entries:
+        raise ValueError(f"{starter}/{STARTER_MANIFEST} sem `substitutions`")
+    for entry in entries:
+        field = entry.get("field") if isinstance(entry, dict) else None
+        value = entry.get("value") if isinstance(entry, dict) else None
+        files = entry.get("files") if isinstance(entry, dict) else None
+        if not nonempty(field) or not nonempty(value) or not isinstance(files, list) or not files:
+            raise ValueError(f"{starter}/{STARTER_MANIFEST}: substituição incompleta {entry!r}")
+        if field not in STARTER_FIELDS:
+            raise ValueError(
+                f"{starter}/{STARTER_MANIFEST}: campo desconhecido {field!r}; conhecidos: {', '.join(STARTER_FIELDS)}"
+            )
+        for name in files:
+            if not nonempty(name) or name != PurePosixPath(name).as_posix() or ".." in PurePosixPath(name).parts:
+                raise ValueError(f"{starter}/{STARTER_MANIFEST}: caminho inválido {name!r}")
+            declared = source / name
+            if not declared.is_file() or declared.is_symlink():
+                raise ValueError(f"{starter}/{STARTER_MANIFEST}: {name} não existe no starter")
+            if value not in declared.read_text(encoding="utf-8"):
+                raise ValueError(f"{starter}/{STARTER_MANIFEST}: {name} não contém {value!r}")
+    return manifest
+
+
+# Substituição em passo único, do valor mais longo para o mais curto, para que
+# o texto recém-inserido nunca seja candidato da próxima troca.
+def substitute(text, pairs):
+    mapping = dict(pairs)
+    pattern = re.compile("|".join(re.escape(old) for old in sorted(mapping, key=len, reverse=True)))
+    counted = {}
+
+    def swap(match):
+        found = match.group(0)
+        counted[found] = counted.get(found, 0) + 1
+        return mapping[found]
+
+    return pattern.sub(swap, text), counted
+
+
 def init(destination, starter, title=None, documents=True):
     available = starters()
     if starter not in available:
@@ -610,35 +665,50 @@ def init(destination, starter, title=None, documents=True):
         raise ValueError("destino existente; escolha um caminho novo")
     if destination.is_dir() and any(destination.iterdir()):
         raise ValueError("destino existente e não vazio; adapte o projeto atual em vez de sobrescrevê-lo")
+    manifest = starter_manifest(starter)
     source = STARTERS_ROOT / starter
     entries = sorted(source.rglob("*"))
     for path in entries:
         if path.is_symlink():
             raise ValueError(f"starter contém symlink: {path.relative_to(source)}")
-    replacements = {
-        "{{PROJECT}}": destination.name,
-        "{{PROJECT_SLUG}}": slugify(destination.name),
-        "{{PROJECT_TITLE}}": title if nonempty(title) else readable_title(destination.name),
-        "{{PROJECT_PATH}}": str(destination),
-        "{{FRAMEWORK_PATH}}": os.path.relpath(FRAMEWORK, destination),
+    values = {
+        "project": destination.name,
+        "project_slug": slugify(destination.name),
+        "project_title": title if nonempty(title) else readable_title(destination.name),
+        "project_path": str(destination),
+        "framework_path": os.path.relpath(FRAMEWORK, destination),
     }
+    plan = {}
+    for entry in manifest["substitutions"]:
+        for name in entry["files"]:
+            plan.setdefault(name, []).append((entry["value"], values[entry["field"]]))
+    applied = {}
     files = []
     for path in entries:
+        relative = path.relative_to(source).as_posix()
+        if relative == STARTER_MANIFEST:
+            continue
         target = destination / path.relative_to(source)
         if path.is_dir():
             target.mkdir(parents=True, exist_ok=True)
             continue
         target.parent.mkdir(parents=True, exist_ok=True)
-        if path.suffix.casefold() in INIT_TEXT_SUFFIXES:
-            text = path.read_text(encoding="utf-8")
-            for token, value in replacements.items():
-                text = text.replace(token, value)
+        pairs = plan.get(relative)
+        if pairs:
+            text, counted = substitute(path.read_text(encoding="utf-8"), pairs)
+            missed = [old for old, _ in pairs if not counted.get(old)]
+            if missed:
+                raise ValueError(f"{starter}/{STARTER_MANIFEST}: {relative} não contém {missed!r}")
+            applied[relative] = counted
             with target.open("x", encoding="utf-8") as document:
                 document.write(text)
+        elif path.suffix.casefold() in INIT_TEXT_SUFFIXES:
+            with target.open("x", encoding="utf-8") as document:
+                document.write(path.read_text(encoding="utf-8"))
         else:
             with target.open("xb") as document:
                 document.write(path.read_bytes())
-        files.append(path.relative_to(source).as_posix())
+        files.append(relative)
     drafts = []
     if documents:
         for stage in INIT_DOCUMENTS:
@@ -651,10 +721,11 @@ def init(destination, starter, title=None, documents=True):
         "project": str(destination),
         "starter": starter,
         "kind": identify(destination),
-        "title": replacements["{{PROJECT_TITLE}}"],
+        "title": values["project_title"],
         "files": files,
         "documents": drafts,
         "document_status": "draft",
+        "substitutions": applied,
         "read_next": [
             str(FRAMEWORK / "references/production-bar.md"),
             str(FRAMEWORK / "references/preproduction.md"),
@@ -666,10 +737,10 @@ def init(destination, starter, title=None, documents=True):
             f"python3 {FRAMEWORK / 'scripts/game.py'} next {destination}",
         ],
         "scope": (
-            "Copiou o starter e criou rascunhos a partir dos templates. Os documentos estão vazios de decisão: "
-            "`scan` vai reportar `draft_only` até que cada área receba fato, hipótese ou lacuna com próxima ação. "
-            "O starter é material de ADAPT, não uma engine nem uma base aprovada; o comando não executa o jogo, "
-            "não instala dependências e não avalia a proposta."
+            "Copiou o starter, trocou os valores que `starter.json` declara e criou rascunhos a partir dos "
+            "templates. Os documentos estão vazios de decisão: `scan` vai reportar `draft_only` até que cada área "
+            "receba fato, hipótese ou lacuna com próxima ação. O starter é material de ADAPT, não uma engine nem "
+            "uma base aprovada; o comando não executa o jogo, não instala dependências e não avalia a proposta."
         ),
     }
 
@@ -740,6 +811,20 @@ def doctor(root):
         "starters", False, bool(available),
         ", ".join(available) or "nenhum",
         "Sem starter, `init` não tem de onde partir e REUSE não tem candidato local.",
+    )
+    # `init` só falha na hora de copiar; aqui a divergência entre o manifesto e
+    # os arquivos do starter é diagnosticável antes de alguém tentar criar um
+    # projeto, que é quando ela custaria caro.
+    broken = []
+    for name in available:
+        try:
+            starter_manifest(name)
+        except ValueError as error:
+            broken.append(str(error))
+    add(
+        "starter_manifest", bool(available), not broken,
+        f"{len(available) - len(broken)} de {len(available)} manifestos íntegros" if available else "nenhum starter",
+        "; ".join(broken) or None,
     )
 
     installed = []

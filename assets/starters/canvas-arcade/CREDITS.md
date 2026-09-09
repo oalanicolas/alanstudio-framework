@@ -1,4 +1,4 @@
-# Origem de código e assets — {{PROJECT}}
+# Origem de código e assets — Canvas Arcade
 
 Registro de proveniência. Origem desconhecida permanece desconhecida: não
 atribuir licença ou autoria pela localização de um arquivo.

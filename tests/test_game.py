@@ -921,6 +921,92 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("Meu jogo novo", readme)
         self.assertIn(str(Path(game.FRAMEWORK).name), readme)
 
+    # Um starter cheio de token não abre: quem serve a pasta lê `{{PROJECT_TITLE}}`
+    # na aba do navegador em vez do nome do jogo. O starter é referência
+    # executável, então ele precisa carregar valores reais.
+    def test_the_starter_opens_in_place_with_no_token_left_in_it(self):
+        for name in game.starters():
+            source = Path(game.STARTERS_ROOT) / name
+            for path in sorted(source.rglob("*")):
+                if path.is_file() and path.suffix.casefold() in game.INIT_TEXT_SUFFIXES:
+                    self.assertNotIn("{{", path.read_text(encoding="utf-8"), f"{name}/{path.relative_to(source)}")
+            title = (source / "index.html").read_text(encoding="utf-8")
+            declared = game.starter_manifest(name)["title"]
+            self.assertIn(f"<title>{declared}</title>", title)
+
+    def test_the_starter_manifest_declares_a_value_that_the_files_really_carry(self):
+        for name in game.starters():
+            manifest = game.starter_manifest(name)
+            source = Path(game.STARTERS_ROOT) / name
+            for entry in manifest["substitutions"]:
+                self.assertIn(entry["field"], game.STARTER_FIELDS)
+                for relative in entry["files"]:
+                    self.assertIn(entry["value"], (source / relative).read_text(encoding="utf-8"), relative)
+
+    # Trocar um nome por busca de texto no projeto inteiro alcança imports e
+    # caminhos relativos que só se parecem com ele. O escopo por arquivo é o que
+    # impede isso, e é observável: a frase de procedência sobrevive.
+    def test_init_replaces_only_inside_the_files_the_manifest_names(self):
+        destination = self.root / "Farol do Sul"
+        result = game.init(destination, "canvas-arcade")
+        self.assertEqual(json.loads((destination / "package.json").read_text())["name"], "farol-do-sul")
+        self.assertIn('browserStorage("farol-do-sul")', (destination / "src/main.js").read_text(encoding="utf-8"))
+        readme = (destination / "README.md").read_text(encoding="utf-8")
+        self.assertIn("# Farol do Sul", readme)
+        self.assertIn("starter `canvas-arcade`", readme)
+        self.assertEqual(result["substitutions"]["package.json"], {"Canvas Arcade": 1, "canvas-arcade": 1})
+        self.assertNotIn("starter.json", result["files"])
+        self.assertFalse((destination / "starter.json").exists())
+
+    def fake_starter(self, name, manifest, extra=None):
+        home = self.root / "starters-de-teste"
+        (home / name).mkdir(parents=True, exist_ok=True)
+        (home / name / "README.md").write_text("# Nome Real\n", encoding="utf-8")
+        for relative, text in (extra or {}).items():
+            (home / name / relative).write_text(text, encoding="utf-8")
+        if manifest is not None:
+            (home / name / game.STARTER_MANIFEST).write_text(json.dumps(manifest), encoding="utf-8")
+        original = game.STARTERS_ROOT
+        game.STARTERS_ROOT = home
+        self.addCleanup(lambda: setattr(game, "STARTERS_ROOT", original))
+        return home
+
+    # O manifesto e os arquivos saem de sincronia no dia em que alguém renomeia o
+    # jogo do starter. Falhar alto ali é a diferença entre um erro e um projeto
+    # criado pela metade, com o nome antigo em metade dos arquivos.
+    def test_a_manifest_that_drifted_from_the_starter_is_refused_before_any_copy(self):
+        for manifest, expected in [
+            (None, "sem starter.json"),
+            ({"substitutions": []}, "sem `substitutions`"),
+            ({"substitutions": [{"field": "project_title", "value": "Nome Real"}]}, "substituição incompleta"),
+            ({"substitutions": [{"field": "inventado", "value": "Nome Real", "files": ["README.md"]}]}, "campo desconhecido"),
+            ({"substitutions": [{"field": "project_title", "value": "Nome Real", "files": ["../fora.md"]}]}, "caminho inválido"),
+            ({"substitutions": [{"field": "project_title", "value": "Nome Real", "files": ["ausente.md"]}]}, "não existe no starter"),
+            ({"substitutions": [{"field": "project_title", "value": "Outro Nome", "files": ["README.md"]}]}, "não contém"),
+        ]:
+            with self.subTest(expected=expected):
+                self.fake_starter("torto", manifest)
+                destination = self.root / f"projeto-{expected[:8].strip()}"
+                with self.assertRaisesRegex(ValueError, re.escape(expected)):
+                    game.init(destination, "torto", documents=False)
+                self.assertFalse(destination.exists())
+
+    def test_doctor_reports_a_broken_starter_manifest_instead_of_waiting_for_init(self):
+        self.fake_starter("torto", {"substitutions": [{"field": "project_title", "value": "Outro Nome", "files": ["README.md"]}]})
+        report = game.doctor(self.root)
+        check = next(item for item in report["checks"] if item["name"] == "starter_manifest")
+        self.assertEqual(check["status"], "missing")
+        self.assertIn("não contém", check["fix"])
+        self.assertIn("starter_manifest", report["blocking"])
+        self.assertFalse(report["ready"])
+
+    # Uma troca cujo resultado contém o valor da próxima cascatearia. Passo único,
+    # do valor mais longo para o mais curto, é o que impede.
+    def test_a_replacement_never_feeds_the_next_one(self):
+        text, counted = game.substitute("Canvas Arcade e canvas-arcade", [("Canvas Arcade", "canvas-arcade"), ("canvas-arcade", "farol")])
+        self.assertEqual(text, "canvas-arcade e farol")
+        self.assertEqual(counted, {"Canvas Arcade": 1, "canvas-arcade": 1})
+
     def test_init_refuses_an_occupied_destination_and_an_unknown_starter(self):
         with self.assertRaisesRegex(ValueError, "não vazio"):
             game.init(self.project, "canvas-arcade")

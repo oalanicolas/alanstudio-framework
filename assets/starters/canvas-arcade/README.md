@@ -1,4 +1,4 @@
-# {{PROJECT_TITLE}}
+# Canvas Arcade
 
 Arcade de uma tela em Canvas. O jogador atravessa uma chuva de orbes e
 estilhaços e decide, a cada instante, **guardar a corrente ou continuar**.
@@ -71,7 +71,7 @@ com decisão, fato ou lacuna é o primeiro trabalho real do projeto.
 
 ## Degrau de acabamento declarado
 
-Pela [barra de acabamento]({{FRAMEWORK_PATH}}/references/production-bar.md), o degrau
+Pela [barra de acabamento](../../../references/production-bar.md), o degrau
 percebido de um jogo é o **mínimo** entre suas dimensões. Este starter começa
 assim, e a coluna “o que falta” é o mapa das próximas tarefas:
 
