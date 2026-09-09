@@ -64,10 +64,9 @@ test("o comando registra o look no mesmo consumidor", async () => {
     const cloned = await runLook(project, "twin", ["--from", "dusk"]);
     assert.equal(cloned.code, 0, cloned.stderr);
     assert.match(cloned.stdout, /cópia de dusk/);
-    const { PALETTES: afterClone } = await import(
-      `${pathToFileURL(join(project, "src/game/tables.js")).href}?t=2`
-    );
-    assert.equal(afterClone.twin.field, afterClone.dusk.field);
+    const afterClone = JSON.parse(await readFile(join(project, "data/palettes.json"), "utf8"));
+    assert.equal(afterClone.palettes.twin.field, afterClone.palettes.dusk.field);
+    assert.ok(afterClone.palettes.dawn, "o look anterior permanece na mesa");
     const unknownAs = await runLook(project, "haze", ["--from", "dusk", "--as", "melhor"]);
     assert.equal(unknownAs.code, 2);
     assert.match(unknownAs.stderr, /intenção desconhecida/);
