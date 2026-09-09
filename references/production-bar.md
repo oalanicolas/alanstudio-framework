@@ -256,10 +256,24 @@ precedência: a mais baixa vale e o conflito fica listado para ser resolvido.
 `next` usa isso para propor subir a dimensão mais baixa pelo nome, citando o
 critério escrito e a linha de onde veio.
 
-O que o harness confere é a **forma**: dimensão conhecida, degrau existente, alvo
-no degrau seguinte. Ele não observa o jogo. Uma tabela otimista sai de lá intacta,
-e é por isso que o item 3 acima — condição, evidência e autor — continua sendo o
-trabalho de verdade.
+O que o harness confere é a **forma**, e o que ele encontra sai em `problems`, com
+arquivo, linha e motivo:
+
+| `reason` | Linha que o dispara |
+| --- | --- |
+| `unknown_dimension` | o nome não é uma das dez — o caso típico é erro de digitação |
+| `unknown_tier` | o degrau não é um dos cinco |
+| `target_not_next` | o alvo existe mas não é o degrau imediatamente seguinte |
+| `missing_target` | a última coluna não nomeia degrau algum, e existe um seguinte |
+
+Um degrau declarado continua utilizável mesmo com o alvo errado: o problema é da
+linha, não motivo para descartar o que a pessoa afirmou sobre hoje. Linha com
+dimensão ou degrau irreconhecível não entra na leitura, e é por isso que ela
+precisa aparecer em `problems` — some da declaração, mas não da saída.
+
+Nada disso observa o jogo. Uma tabela **bem formada** e otimista sai de lá
+intacta, porque o degrau é afirmação de quem escreveu — e é por isso que o item 3
+acima, condição, evidência e autor, continua sendo o trabalho de verdade.
 
 ## Limites
 

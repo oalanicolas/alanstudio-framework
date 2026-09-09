@@ -56,7 +56,9 @@ evidência, preservando a direção do usuário e a qualidade visual aprovada.
    Declare em tabela, uma linha por dimensão, com degrau atual, degrau seguinte e
    o critério que falta — `bar <projeto>` lê essa tabela e diz qual é o piso, e
    `next` passa a propor subir a dimensão pelo nome. O harness confere a forma da
-   declaração, nunca o jogo: tabela otimista sai de lá intacta.
+   declaração e relata em `problems` dimensão fora das dez, degrau fora dos cinco
+   e alvo que não é o seguinte. Nunca confere o jogo: tabela bem formada e
+   otimista sai de lá intacta.
 4. **REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes
    pertinentes. `doctor` lista os starters disponíveis; começar por um deles é
    REUSE, escrever um loop do zero é CREATE. Se o laboratório tiver `shared/sfx`,

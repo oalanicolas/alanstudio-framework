@@ -16,7 +16,8 @@ trabalho: **o degrau percebido de um jogo é o mínimo entre suas dimensões, n�
 média** — procure a mais baixa antes de melhorar a que já está alta. Qual é a mais
 baixa deixa de ser adivinhação quando o projeto declara os degraus em tabela:
 `bar <projeto>` a lê e nomeia o piso, e `next` propõe subir exatamente essa
-dimensão. O harness confere a forma da declaração, não o jogo.
+dimensão. O harness confere a forma da declaração — dimensão entre as dez, degrau
+entre os cinco, alvo no seguinte — e nunca o jogo.
 
 ## 1. Estado e intenção
 

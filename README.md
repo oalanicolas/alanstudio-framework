@@ -100,11 +100,15 @@ starter](assets/starters/canvas-arcade/README.md) já usa. O comando devolve o
 piso, quais dimensões estão nele e o degrau percebido — este último **só** quando
 as dez tiverem linha, porque dimensão não declarada não é dimensão alta.
 
-Ele confere a forma da declaração, não o jogo: dimensão conhecida, degrau
-existente, alvo no degrau imediatamente seguinte. **Uma tabela otimista sai daí
-intacta.** O ganho não é aferição, é que a dimensão mais baixa passa a ter nome —
-e `next` propõe subir exatamente ela, citando o critério escrito no documento e a
-linha de onde veio, em vez de listar as dez.
+Ele confere a forma da declaração, não o jogo, e relata em `problems` o que
+encontra com arquivo, linha e motivo: dimensão fora das dez (o caso típico é erro
+de digitação), degrau fora dos cinco, alvo que não é o degrau imediatamente
+seguinte, alvo ausente. **Uma tabela bem formada e otimista sai daí intacta**,
+porque o degrau é afirmação de quem escreveu. O ganho não é aferição, é que a
+dimensão mais baixa passa a ter nome — e `next` propõe subir exatamente ela,
+citando o critério escrito no documento e a linha de onde veio, em vez de listar
+as dez. Havendo linha malformada, ele propõe corrigi-la primeiro: ela é a causa da
+dimensão que aparece como não declarada.
 
 ## Starters
 

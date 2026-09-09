@@ -24,8 +24,10 @@ chega em todo `context` pelo campo `production_bar`. `bar <projeto>` lê a tabel
 de degraus que o projeto declara nos próprios documentos e devolve o piso, as
 dimensões que estão nele e — só quando as dez tiverem linha — o degrau percebido;
 com isso `next` propõe subir a dimensão mais baixa pelo nome, citando o critério
-escrito e a linha de onde veio. O harness confere a forma da declaração, não o
-jogo: tabela otimista sai de lá intacta. Seis receitas novas — feel,
+escrito e a linha de onde veio. O harness confere a forma da declaração — e
+relata em `problems` dimensão fora das dez, degrau fora dos cinco e alvo que não
+é o seguinte — nunca o jogo: tabela bem formada e otimista sai de lá intacta.
+Seis receitas novas — feel,
 performance, acessibilidade, áudio, persistência, release — e a etapa `release`
 fecham o ciclo. O starter `canvas-arcade` existe para que o passo REUSE tenha um
 candidato real: loop de passo fixo, RNG semeado, save versionado com migração,

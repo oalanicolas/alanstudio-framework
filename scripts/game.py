@@ -228,6 +228,7 @@ BAR_SOURCES = ("README.md", "docs/qa.md", "docs/devlog.md", "docs/gdd.md", "docs
 def bar_declaration(project):
     declared = {}
     conflicts = []
+    problems = []
     for relative in BAR_SOURCES:
         path = project / relative
         if not path.is_file() or path.is_symlink():
@@ -243,15 +244,40 @@ def bar_declaration(project):
             if not match:
                 continue
             dimension, tier, target, gap = match.groups()
-            if dimension not in BAR_DIMENSIONS or tier not in BAR_TIERS:
+            source = f"{relative}:{number}"
+            known_dimension = dimension in BAR_DIMENSIONS
+            known_tier = tier in BAR_TIERS
+            # Uma linha só é candidata a declaração se pelo menos uma das duas
+            # células for reconhecível. Sem esse filtro, qualquer tabela de duas
+            # colunas em crase entraria no relatório como problema da barra.
+            if not known_dimension and not known_tier:
                 continue
-            if target is not None and target not in BAR_TIERS:
-                target = None
+            if not known_dimension:
+                problems.append({"source": source, "reason": "unknown_dimension", "found": dimension})
+                continue
+            if not known_tier:
+                problems.append({"source": source, "reason": "unknown_tier", "dimension": dimension, "found": tier})
+                continue
+            # O degrau declarado é utilizável mesmo com o alvo errado, então o
+            # problema é relatado sem descartar a linha. Descartar em silêncio era
+            # o defeito: quem declarava `feel` recebia a instrução de declarar
+            # `feel`, e a promessa de conferência não se cumpria em lugar nenhum.
+            expected = BAR_TIERS[BAR_TIERS.index(tier) + 1] if tier != BAR_TIERS[-1] else None
+            if target is not None and target != expected:
+                problems.append({
+                    "source": source, "reason": "target_not_next", "dimension": dimension,
+                    "found": target, "expected": expected,
+                })
+            elif target is None and expected is not None:
+                problems.append({
+                    "source": source, "reason": "missing_target", "dimension": dimension,
+                    "found": None, "expected": expected,
+                })
             entry = {
                 "tier": tier,
                 "next_tier": target,
                 "gap": gap or None,
-                "source": f"{relative}:{number}",
+                "source": source,
             }
             previous = declared.get(dimension)
             if previous is None:
@@ -269,6 +295,7 @@ def bar_declaration(project):
         "declared": declared,
         "undeclared": undeclared,
         "conflicts": conflicts,
+        "problems": problems,
         "floor": floor,
         "at_floor": at_floor,
         # Dimensão não declarada não é dimensão alta: enquanto faltar uma, o
@@ -298,16 +325,18 @@ def bar_reading(project):
         "at_floor": declaration["at_floor"],
         "undeclared": declaration["undeclared"],
         "conflicts": declaration["conflicts"],
+        "problems": declaration["problems"],
         "perceived_tier": declaration["perceived_tier"],
         "rule": "O degrau percebido de um jogo é o mínimo entre suas dimensões, não a média.",
         "guide": str(FRAMEWORK / "references/production-bar.md"),
         "sources": declaration["sources"],
         "assessed": False,
         "scope": (
-            "Lê a declaração do próprio projeto e confere só a forma dela: dimensão conhecida, degrau existente "
-            "e alvo no degrau seguinte. Não observa o jogo, não mede nada e não corrige a declaração — uma "
-            "tabela otimista sai daqui intacta. `perceived_tier` só aparece quando as dez dimensões têm linha, "
-            "porque dimensão não declarada não é dimensão alta."
+            "Lê a declaração do próprio projeto e confere só a forma dela, relatando em `problems`: dimensão "
+            "fora das dez, degrau fora dos cinco e alvo que não é o degrau imediatamente seguinte. Não observa "
+            "o jogo, não mede nada e não corrige a declaração — uma tabela bem formada e otimista sai daqui "
+            "intacta, porque o degrau é afirmação de quem escreveu. `perceived_tier` só aparece quando as dez "
+            "dimensões têm linha, porque dimensão não declarada não é dimensão alta."
         ),
     }
 
@@ -1077,8 +1106,20 @@ def next_step(project, focus="create", studies_root=None):
     dimensions = [item["key"] for item in bar["dimensions"]]
     declaration = bar["declaration"]
     # Sem declaração, a barra é um vocabulário; com ela, a dimensão mais baixa é
-    # uma tarefa com nome. As duas propostas são diferentes por isso.
-    if declaration["undeclared"]:
+    # uma tarefa com nome. Linha malformada vem primeiro porque ela é a causa: uma
+    # dimensão com erro de digitação aparece como não declarada, e propor declarar
+    # o que já foi declarado manda a pessoa reescrever em vez de corrigir.
+    if declaration["problems"]:
+        propose(
+            "Corrigir a forma da declaração de degrau em: "
+            + ", ".join(f"{item['source']} ({item['reason']})" for item in declaration["problems"][:4]),
+            "Linha malformada não entra na leitura, e a dimensão que ela pretendia declarar continua contando "
+            "como não declarada — aqui o erro mais provável é o de digitação.",
+            "Cada linha nomeia uma das dez dimensões, um dos cinco degraus e o degrau imediatamente seguinte.",
+            [harness_command("bar", project)],
+            "production_bar.problems",
+        )
+    elif declaration["undeclared"]:
         propose(
             "Declarar o degrau das dimensões ainda sem linha: " + ", ".join(declaration["undeclared"]),
             "Dimensão não declarada não é dimensão alta — enquanto faltar uma, o mínimo entre as dez é "
@@ -1131,6 +1172,7 @@ def next_step(project, focus="create", studies_root=None):
             "production_bar_dimensions": dimensions,
             "production_bar_floor": declaration["floor"],
             "production_bar_undeclared": declaration["undeclared"],
+            "production_bar_problems": declaration["problems"],
         },
         "context_command": harness_command("context", project, "--focus", focus),
         "authority": "agent_resolves",

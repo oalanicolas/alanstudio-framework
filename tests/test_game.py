@@ -1207,9 +1207,89 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         with (self.project / "README.md").open("a", encoding="utf-8") as document:
             document.write("| `inventada` | `slice` | `shippable`: linha que não pertence à barra |\n")
             document.write("| `feel` | `lendario` | `shippable`: degrau que não existe |\n")
+            # Nem toda tabela de duas células em crase é da barra: sem nenhuma das
+            # duas reconhecível, a linha não vira problema da barra.
+            document.write("| `versao` | `1.2.0` | tabela de outra coisa |\n")
         report = game.bar_reading(self.project)
         self.assertEqual([item["key"] for item in report["dimensions"]], list(game.BAR_DIMENSIONS))
         self.assertEqual(next(item for item in report["dimensions"] if item["key"] == "feel")["tier"], "slice")
+        self.assertEqual(
+            [(item["reason"], item["found"]) for item in report["problems"]],
+            [("unknown_dimension", "inventada"), ("unknown_tier", "lendario")],
+        )
+
+    # O comando afirmava, no próprio `scope`, conferir "alvo no degrau seguinte", e
+    # só checava se o alvo era um dos cinco nomes. Uma tabela apontando quatro
+    # degraus acima saía intacta, e o campo `scope` é justamente onde o framework
+    # declara onde termina a sua competência.
+    def test_bar_refuses_to_call_a_distant_target_the_next_step(self):
+        self.declare_bar({
+            "feel": ("prototype", "flagship"),
+            "legibility": ("prototype", "prototype"),
+            "art_direction": ("shippable", "playable"),
+            "pacing": ("slice", "shippable"),
+        })
+        report = game.bar_reading(self.project)
+        self.assertEqual(
+            [(item["dimension"], item["found"], item["expected"]) for item in report["problems"]],
+            [
+                ("feel", "flagship", "playable"),
+                ("legibility", "prototype", "playable"),
+                ("art_direction", "playable", "flagship"),
+            ],
+        )
+        # O degrau declarado continua utilizável: o alvo errado é problema da
+        # linha, não motivo para descartar o que a pessoa afirmou sobre hoje.
+        declared = {item["key"]: item["tier"] for item in report["dimensions"]}
+        self.assertEqual(declared["feel"], "prototype")
+        self.assertEqual(declared["art_direction"], "shippable")
+        self.assertEqual(report["floor"], "prototype")
+
+    def test_bar_reports_the_typo_instead_of_swallowing_the_line(self):
+        # Quem declarou `feel` com erro de digitação recebia de volta a instrução
+        # de declarar `feel`: a linha sumia sem deixar rastro na saída.
+        self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS})
+        self.declare_bar({"fell": ("slice", "shippable")}, path="docs/qa.md")
+        report = game.bar_reading(self.project)
+        self.assertEqual([item["reason"] for item in report["problems"]], ["unknown_dimension"])
+        self.assertEqual(report["problems"][0]["source"], "docs/qa.md:5")
+
+    def test_bar_asks_for_a_target_when_the_row_leaves_it_out(self):
+        rows = "| `feel` | `slice` | sem alvo declarado |\n| `release` | `flagship` | topo da escada |\n"
+        (self.project / "README.md").write_text(f"# Jogo\n\n{rows}", encoding="utf-8")
+        report = game.bar_reading(self.project)
+        # `flagship` é o último degrau: não há seguinte para exigir.
+        self.assertEqual(
+            [(item["dimension"], item["reason"], item["expected"]) for item in report["problems"]],
+            [("feel", "missing_target", "shippable")],
+        )
+
+    def test_next_proposes_fixing_the_malformed_row_before_asking_for_more_rows(self):
+        self.foundation_document()
+        (self.project / "index.html").write_text("<canvas id=\"jogo\"></canvas>")
+        self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS})
+        self.declare_bar({"fell": ("prototype", "playable")}, path="docs/devlog.md")
+        result = game.next_step(self.project, "feel")
+        proposals = [result["proposal"], *result["alternatives"]]
+        bases = [item["basis"] for item in proposals]
+        self.assertIn("production_bar.problems", bases)
+        # A linha malformada é a causa da dimensão "não declarada": propor
+        # declarar de novo manda reescrever em vez de corrigir.
+        self.assertNotIn("production_bar.undeclared", bases)
+        problem = next(item for item in proposals if item["basis"] == "production_bar.problems")
+        self.assertIn("docs/devlog.md:5", problem["action"])
+        self.assertIn("unknown_dimension", problem["action"])
+        self.assertEqual([item["reason"] for item in result["signals"]["production_bar_problems"]], ["unknown_dimension"])
+
+    # A promessa do `scope` tem de ser conferível: se o texto diz que relata algo,
+    # o campo correspondente existe na saída.
+    def test_the_bar_scope_only_promises_what_the_payload_carries(self):
+        self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS})
+        report = game.bar_reading(self.project)
+        self.assertIn("`problems`", report["scope"])
+        self.assertIn("problems", report)
+        self.assertIn("imediatamente seguinte", report["scope"])
+        self.assertEqual(report["problems"], [])
 
     def test_next_names_the_floor_dimension_once_the_project_declares_the_bar(self):
         self.foundation_document()
