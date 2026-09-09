@@ -28,15 +28,25 @@ test("a sessão simulada grava candidato sem chamar isso de observada", async ()
     const [code] = await once(child, "exit");
     assert.equal(code, 0, stderr);
     const report = JSON.parse(stdout);
+    assert.equal(report.schema, 2);
     assert.equal(report.observed, false);
     assert.equal(report.felt, false);
     assert.equal(report.policy, "nearest-orb");
     assert.ok(Number.isFinite(report.run.ticks));
     assert.ok(report.run.ticks > 0);
+    assert.equal(report.curve.never_banked, report.run.banks === 0);
+    assert.equal(report.curve.never_hit, report.run.hits === 0);
+    assert.equal(report.curve.first_bank_tick === null, report.curve.never_banked);
+    assert.equal(report.curve.first_hit_tick === null, report.curve.never_hit);
+    assert.equal(report.curve.first_collect_tick === null, report.run.collected === 0);
+    assert.equal(report.curve.unbanked_at_end, report.run.chain);
+    if (report.run.hits > 0) assert.ok(report.curve.longest_hit_streak >= 1);
+    if (report.run.missed > 0) assert.ok(report.curve.longest_miss_streak >= 1);
     assert.match(report.scope, /não é causa/);
     assert.doesNotMatch(stdout, /aprovado|verified|LUFS|-14|4\.5/);
     const saved = JSON.parse(await readFile(out, "utf8"));
     assert.deepEqual(saved.run, report.run);
+    assert.deepEqual(saved.curve, report.curve);
     assert.equal(saved.observed, false);
   } finally {
     await rm(folder, { recursive: true, force: true });

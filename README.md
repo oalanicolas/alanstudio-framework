@@ -538,8 +538,9 @@ python3 scripts/game.py note /caminho/do/laboratorio/meu-jogo --author "NOME" --
 ```
 
 `note` grava o recibo de observação em `docs/playtest/<utc>/` com cenário e
-papel por omissão. `--from-run` anexa `docs/playtest/last-run.json` como
-candidato de medição e não fecha o achado. Não joga. `felt` é sempre
+papel por omissão. `--from-run` anexa `docs/playtest/last-run.json` (resumo
+e, se houver, a curva) como candidato de medição e não fecha o achado.
+Não joga. `felt` é sempre
 `false`. `next` propõe `feel.unobserved` quando há constante e não há
 recibo; o comando que ele aponta é o `note`. O harness não atribui peso.
 
@@ -598,8 +599,9 @@ python3 scripts/game.py playtest /caminho/do/laboratorio/meu-jogo
 `observed` é sempre `false`. `next` propõe `playtest.unstructured` quando
 há recibo de observação (ou um `docs/qa.md` vigente) e o achado ainda não
 tem forma. Se `docs/playtest/last-run.json` existir, `playtest` o relata
-como `candidate` e o `next` aponta `note --from-run`. Número no disco não
-é causa. A tabela de ofício que *descreve* o formato não conta como
+como `candidate` e o `next` aponta `note --from-run`. Se o candidato
+tiver curva, o `note` a anexa. Número no disco não é causa. A tabela de
+ofício que *descreve* o formato não conta como
 achado. O harness não assiste à sessão e não conta jogadores.
 
 ## Verificar

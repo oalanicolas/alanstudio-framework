@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.35 — A sessão traça a curva pelos eventos
+
+`npm run session` só gravava totais de fim de partida. Agora percorre
+os eventos e relata first_*_tick, never_banked, never_hit e as
+sequências mais longas de hit e missed. `note --from-run` anexa a
+curva quando ela existe. Número na simulação não é abandono observado.
+`pacing` permanece `slice`: ninguém de fora jogou. `observed` e `felt`
+continuam falsos. Só `release` fica no piso.
+
+O que 0.9.35 não afirma: o harness não assistiu, não investigou causa
+e não importou limiar de erro como selo.
+
 ## 0.9.34 — A ideia chega na tela do primeiro ciclo
 
 `--idea` só escrevia no brief: a partida continuava o mesmo jogo

@@ -1895,6 +1895,9 @@ def attach_run_candidate(project, fields=None, source=None):
     run = data["run"] if isinstance(data.get("run"), dict) else data
     payload = dict(fields or {})
     payload["run"] = json.dumps(run, ensure_ascii=False, separators=(",", ":"))
+    curve = data.get("curve")
+    if isinstance(curve, dict):
+        payload["curve"] = json.dumps(curve, ensure_ascii=False, separators=(",", ":"))
     return payload, path
 
 
@@ -4013,7 +4016,7 @@ def main():
     noted.add_argument("--field", action="append", default=[], help="chave=valor extra; problema/evidência/hipótese/medição fecham o achado")
     noted.add_argument(
         "--from-run", nargs="?", const=True, default=False, metavar="ARQUIVO",
-        help="anexa docs/playtest/last-run.json (ou o arquivo) como candidato de medição; não fecha o achado",
+        help="anexa docs/playtest/last-run.json (resumo e, se houver, a curva) como candidato de medição; não fecha o achado",
     )
     noted.add_argument("--output", type=Path, help="pasta nova; por omissão, docs/playtest/<utc>")
     sfx = commands.add_parser("sfx", parents=[common], help="catálogo compartilhado de efeitos sonoros")

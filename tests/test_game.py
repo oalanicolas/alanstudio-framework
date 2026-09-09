@@ -2337,6 +2337,41 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         with self.assertRaisesRegex(ValueError, "sem partida"):
             game.note_observation(missing, "Ana", "nada no disco", from_run=True)
 
+    def test_note_from_run_attaches_the_curve_without_calling_it_observed(self):
+        destination = self.root / "com-curva"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 7,
+            "policy": "nearest-orb",
+            "run": {"seed": 7, "score": 4, "ticks": 3600, "collected": 3, "hits": 2, "banks": 0},
+            "curve": {
+                "first_collect_tick": 80,
+                "first_bank_tick": None,
+                "first_hit_tick": 200,
+                "never_banked": True,
+                "never_hit": False,
+                "longest_hit_streak": 2,
+                "longest_miss_streak": 3,
+                "unbanked_at_end": 1,
+            },
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.note_observation(
+            destination, "Ana", "nunca guardou nesta simulação", from_run=True,
+        )
+        self.assertIn("never_banked\":true", report["fields"]["curve"])
+        self.assertIn("longest_hit_streak\":2", report["fields"]["curve"])
+        self.assertFalse(report["felt"])
+        self.assertFalse(report["observed"])
+        after = game.playtest_reading(destination)
+        self.assertTrue(after["unstructured"])
+        self.assertFalse(after["structured"])
+        self.assertFalse(after["observed"])
+
     def test_a_structured_finding_is_form_not_an_observed_session(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "docs").mkdir()
