@@ -75,6 +75,10 @@ export const CONFIG = {
     moteHit: 9, // o erro espalha mais
     moteOver: 4, // fim
     moteLife: 14,
+    chainPips: 8, // a aposta cabe no corpo; o HUD continua com o resto
+    chainOrbit: 15, // raio ao redor do jogador
+    chainSpin: 0.035, // órbita por tick; com menos movimento a formação trava
+    chainPipSize: 2.8,
   },
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
@@ -89,6 +93,21 @@ export const CONFIG = {
     extraInvulnTicks: 18,
   },
 };
+
+export function chainPipCount(chain) {
+  const n = Number.isFinite(chain) ? Math.max(0, Math.floor(chain)) : 0;
+  return Math.min(n, CONFIG.feel.chainPips);
+}
+
+export function chainPipAt(index, count, x, y, tick, reduced) {
+  const radius = CONFIG.feel.chainOrbit;
+  const spin = reduced ? 0 : tick * CONFIG.feel.chainSpin;
+  const angle = spin + (index * Math.PI * 2) / Math.max(count, 1);
+  return {
+    x: x + Math.cos(angle) * radius,
+    y: y + Math.sin(angle) * radius,
+  };
+}
 
 const clamp = (value, min, max) => (value < min ? min : value > max ? max : value);
 const lerp = (from, to, amount) => from + (to - from) * amount;

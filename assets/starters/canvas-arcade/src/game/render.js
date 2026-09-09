@@ -5,7 +5,7 @@
 // dispositivo não foi observado. Tremor e piscada respeitam redução de
 // movimento — o sinal de causa migra para uma forma estática, não desaparece.
 
-import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching } from "./rules.js";
+import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, chainPipCount, chainPipAt } from "./rules.js";
 import { copy, PALETTES, resolveLookName } from "./tables.js";
 import { bindLines } from "../core/keys.js";
 import { DEFAULT_BINDINGS } from "../core/settings.js";
@@ -80,6 +80,7 @@ export function createRenderer(canvas, options = {}) {
       else drawShard(context, palette, entity);
     }
     drawPlayer(context, palette, state, reduced);
+    drawChain(context, palette, state, reduced);
     drawMotes(context, palette, state, reduced);
     const reserved = drawHud(context, palette, state, settings, extra, lines);
     drawCoach(context, palette, extra.hint, reserved, settings, extra, lines);
@@ -195,6 +196,21 @@ export function createRenderer(canvas, options = {}) {
       target.beginPath();
       target.arc(player.x, PLAYER_Y, 11, 0, (Math.PI * 2 * state.bankLock) / CONFIG.bank.lockTicks);
       target.stroke();
+    }
+  }
+
+  // A corrente no HUD é conta. No corpo ela é a aposta: cada elo vira um
+  // pip em órbita. Com menos movimento a formação trava, não some.
+  // Número no disco não é peso percebido.
+  function drawChain(target, palette, state, reduced) {
+    const count = chainPipCount(state.chain);
+    if (count <= 0) return;
+    const size = CONFIG.feel.chainPipSize;
+    const tick = Number.isFinite(state.tick) ? state.tick : 0;
+    target.fillStyle = palette.chain;
+    for (let index = 0; index < count; index += 1) {
+      const pip = chainPipAt(index, count, state.player.x, PLAYER_Y, tick, reduced);
+      target.fillRect(pip.x - size / 2, pip.y - size / 2, size, size);
     }
   }
 

@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.57 — A corrente mora no corpo
+
+A aposta do verbo era um número no HUD. Cada elo vira um pip em
+órbita ao redor do jogador; o teto dos pips não esconde o resto
+da conta. Com menos movimento a formação trava, não some. `felt`
+continua falso. `feel` permanece `playable`: pip no stub não é
+peso percebido. Só `release` fica no piso.
+
+O que 0.9.57 não afirma: o harness não jogou e a órbita não
+aprova o feel.
+
 ## 0.9.56 — O campo ensina as três superfícies
 
 O aviso do primeiro ciclo só nomeava a última superfície. Quem

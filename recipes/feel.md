@@ -146,7 +146,8 @@ ainda não chegou marca o trilho (`approaching`); a recuperação do dash muda a
 silhueta; o erro acende o campo, a coleta não. O controle pulsa no
 impacto com duração e magnitude por verbo; pausa e descarte cancelam.
 Cada verbo deixa um rastro próprio no campo; com menos movimento o
-rastro vira marca.
+rastro vira marca. A corrente mora no corpo em pips; o HUD continua
+com a conta.
 A entrada continua separada da
 regra em `src/core/input.js`. Perdão de entrada é decisão de design explícita com
 valor registrado; sem registro, esses valores viram folclore e regridem na

@@ -204,6 +204,40 @@ test("a seta da corrente só aparece quando guardar rende mais que a corrente", 
   assert.equal(chainText(7), "Corrente 7 → 49");
 });
 
+function chainMarks(state, settings = {}) {
+  return paint(state, settings).rects.filter(
+    (rect) => rect.style === PALETTES.normal.chain && rect.width < 5 && rect.height < 5,
+  );
+}
+
+test("a corrente mora no corpo, não só no HUD", () => {
+  const empty = createState(1);
+  assert.equal(chainMarks(empty).length, 0, "sem corrente o corpo não inventa aposta");
+  const one = createState(1);
+  one.chain = 1;
+  assert.equal(chainMarks(one).length, 1);
+  const three = createState(1);
+  three.chain = 3;
+  assert.equal(chainMarks(three).length, 3);
+  const packed = createState(1);
+  packed.chain = 12;
+  assert.equal(chainMarks(packed).length, CONFIG.feel.chainPips, "o teto dos pips não esconde o HUD");
+  const still = createState(1);
+  still.chain = 3;
+  still.tick = 40;
+  const a = chainMarks(still, { reducedMotion: true }).map((rect) => [rect.x, rect.y]);
+  still.tick = 80;
+  const b = chainMarks(still, { reducedMotion: true }).map((rect) => [rect.x, rect.y]);
+  assert.deepEqual(a, b, "com menos movimento a formação trava, não some");
+  const spinning = createState(1);
+  spinning.chain = 3;
+  spinning.tick = 0;
+  const first = chainMarks(spinning)[0];
+  spinning.tick = 20;
+  const later = chainMarks(spinning)[0];
+  assert.notEqual(first.x, later.x, "sem redução a órbita precisa andar");
+});
+
 // Dois revisores independentes olharam o vídeo, viram os orbes desaparecerem
 // atrás do texto e ainda assim relataram que não havia placa nenhuma. Estavam
 // certos sobre o que importa: preenchida com rgba(7,9,13,0.86) sobre o campo

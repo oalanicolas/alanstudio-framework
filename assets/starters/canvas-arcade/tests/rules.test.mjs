@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y } from "../src/game/rules.js";
+import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -137,8 +137,22 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
     CONFIG.feel.moteOver,
   ];
   assert.equal(new Set(motes).size, 5, "rastro repetido não distingue o verbo");
+  assert.equal(CONFIG.feel.chainPips, 8);
+  assert.ok(CONFIG.feel.chainOrbit > CONFIG.player.halfWidth, "a órbita precisa caber fora do corpo");
+  assert.ok(CONFIG.feel.chainSpin > 0);
   assert.ok(collected.motes.every((mote) => mote.vy < 0), "coleta sobe");
   assert.ok(banked.motes.every((mote) => mote.vy > 0), "guardar confirma para baixo");
+});
+
+test("a corrente no corpo conta o que o HUD já sabe, com teto", () => {
+  assert.equal(chainPipCount(0), 0);
+  assert.equal(chainPipCount(3), 3);
+  assert.equal(chainPipCount(12), CONFIG.feel.chainPips);
+  const a = chainPipAt(0, 3, 100, PLAYER_Y, 0, true);
+  const b = chainPipAt(0, 3, 100, PLAYER_Y, 40, true);
+  assert.deepEqual(a, b, "com menos movimento a formação não orbita");
+  const c = chainPipAt(0, 3, 100, PLAYER_Y, 40, false);
+  assert.notEqual(a.x, c.x);
 });
 
 test("a ameaça marca o trilho antes do contato e some na faixa", () => {
