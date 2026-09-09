@@ -187,7 +187,7 @@ um MVP não prova que sua hipótese de valor foi validada.
 
 Depois que a vertical slice demonstra a experiência, a produção prova que ela
 sobrevive à escala, ao tempo e à plataforma. O [plano de produção](../assets/templates/production-plan.md)
-mantém marcos como gates de evidência (first playable → vertical slice → alpha →
+mantém marcos com critérios de evidência (first playable → vertical slice → alpha →
 beta → gold → live), orçamentos medidos, pipeline de conteúdo e riscos; a
 [revisão de marco](../assets/templates/milestone.md) lê a evidência por lente de
 disciplina e registra quem declarou a passagem. Receita: [produção](../recipes/production.md).

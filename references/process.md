@@ -79,8 +79,9 @@ e `--focus audio` como parte da fatia, não como enfeite posterior. Escala e
 piso: [ambição](ambition.md).
 
 Quando a fatia já demonstrou a experiência e o trabalho passa a ser escala, acabamento
-e estabilidade, siga a [receita de produção](../recipes/production.md): marcos como
-gates de evidência, orçamentos medidos e lentes de disciplina no plano de produção.
+e estabilidade, siga a [receita de produção](../recipes/production.md): marcos com
+critérios de evidência, orçamentos medidos e lentes de disciplina no plano de produção;
+a [barra](production-bar.md) diz o degrau por dimensão e os [gates](gates.md) o que ainda não pode passar.
 
 Preserve separação entre regra, apresentação e conteúdo **onde ela já existe**.
 Não converta todos os jogos para um ECS, schema, relógio ou servidor comum. Ferramentas

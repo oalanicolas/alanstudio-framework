@@ -2,7 +2,7 @@
 
 Projeto: {{PROJECT_PATH}}
 Status: rascunho. Autor/revisão: [preencher]. Fontes: [brief/GDD, PRD, TDD, vertical slice].
-Receita: `framework/recipes/production.md`. Marcos são gates de evidência, não datas.
+Receita: `framework/recipes/production.md`. Marcos têm critérios de evidência, não datas; a barra (`bar`) diz o degrau por dimensão e os gates (`gate`) o que ainda não pode passar.
 Nenhum comando do harness promove um marco; a passagem é declarada por pessoa com a prova ligada.
 Provas ficam em recibos de pasta inédita: `verify` (técnica), `record --kind observation|budget|milestone`.
 
@@ -25,9 +25,9 @@ Valores medidos no caminho real, na plataforma alvo. Número sem medição é hi
 | Tamanho do build | [preencher] | [MB] | [preencher] | [preencher] | [preencher] |
 | Latência entrada → resposta visível | [preencher] | [ms/quadros] | [preencher] | [preencher] | [preencher] |
 
-## Marcos e gates
+## Marcos
 
-Para cada marco: critério observável, evidência ligada e quem declarou a passagem.
+Para cada marco: critério observável, evidência ligada, quem declarou a passagem e o degrau mínimo da barra que ele pressupõe.
 
 - **First playable:** ciclo central jogável de ponta a ponta com placeholders. Prova: [cenário, build, observação]. Estado: [pendente / atingido em (data, evidência)].
 - **Vertical slice:** trecho representativo no acabamento pretendido; receita de conteúdo compreendida. Prova: [preencher]. Estado: [preencher].

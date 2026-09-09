@@ -17,7 +17,27 @@ pode alcançá-lo num recorte pequeno; um jogo grande falha nele com muito conte
 desigual. A pré-produção prova que a experiência vale; a produção prova que ela
 sobrevive à escala, ao tempo e à plataforma.
 
-## 1. Marcos como gates de evidência
+## 0. Três instrumentos, três perguntas
+
+Este framework usa três vocabulários que não se substituem, e esta receita liga os três:
+
+- **Marcos** (esta receita) respondem *em que ponto da produção estamos* — first
+  playable → vertical slice → alpha → beta → gold → live. São o calendário do
+  projeto, com critérios de evidência definidos antes.
+- **A [barra de acabamento](../references/production-bar.md)** responde *quão longe
+  cada dimensão de ofício foi levada* — dez dimensões, cinco degraus, e o degrau
+  percebido é o mínimo entre elas. `bar <projeto>` lê a declaração; `next` propõe subir
+  a dimensão mais baixa.
+- **Os [gates](../references/gates.md)** respondem *o que ainda não pode passar* — dez
+  recusas por etapa do ciclo, com critérios `met`/`unmet`/`waived`. `gate <projeto>` lê.
+
+Correspondência usual, a confirmar em cada jogo: first playable fecha o gate `prototype`
+e pede a barra em `playable`; vertical slice fecha `scale` e pede `slice` em todas as
+dimensões do recorte; alpha e beta atravessam `evaluate` e `conclude`; gold fecha
+`deliver` e pede `shippable`. Um marco declarado com uma dimensão ainda em `prototype`
+é a contradição que a barra existe para expor.
+
+## 1. Marcos com critérios de evidência
 
 Cada marco tem critérios observáveis definidos **antes** e é declarado por pessoa com
 a prova ligada. Datas organizam trabalho; não substituem critérios.

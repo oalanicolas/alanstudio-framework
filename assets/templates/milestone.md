@@ -11,7 +11,7 @@ Evidência: pastas de `verify` e `record` (observation/budget/milestone) ligadas
 
 | Critério | Origem | Evidência | Resultado |
 | --- | --- | --- | --- |
-| [critério observável do gate] | [plano/PRD/ID] | [log, captura em movimento, recibo, relato] | atendido / pendente / violado |
+| [critério observável do marco] | [plano/PRD/ID] | [log, captura em movimento, recibo, relato] | atendido / pendente / violado |
 
 ## Lentes de disciplina
 

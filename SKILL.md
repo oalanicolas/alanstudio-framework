@@ -112,7 +112,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    certifica e `N/A` exige motivo. Não publique nem delegue sem autorização aplicável.
 7. **Produzir até o acabamento, pela dimensão mais baixa.** Quando o recorte já
    demonstrou a experiência, siga [produção](recipes/production.md): plano de produção
-   com marcos como gates de evidência (first playable → vertical slice → alpha → beta →
+   com marcos com critérios de evidência (first playable → vertical slice → alpha → beta →
    gold → live), lentes de disciplina, orçamentos medidos na plataforma alvo, pipeline
    de conteúdo e estabilidade. Aplique [feel](recipes/feel.md) ao verbo central. Os
    marcos são o calendário; `context` devolve `production_bar` com as dimensões

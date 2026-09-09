@@ -366,7 +366,7 @@ produção. A skill aplica quando a mudança pede; o CLI só seleciona referênc
 
 ## Produção e acabamento
 
-[Produção](recipes/production.md) trata marcos como gates de evidência — first
+[Produção](recipes/production.md) trata marcos como critérios de evidência — first
 playable → vertical slice → alpha → beta → gold → live — com lentes de disciplina
 (design, arte, animação, áudio, feel, UX/acesso, técnica, conteúdo, localização, QA,
 plataforma), orçamentos medidos na plataforma alvo, pipeline de conteúdo e
