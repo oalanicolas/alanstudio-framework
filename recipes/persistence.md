@@ -39,10 +39,16 @@ referenciados por índice ou por nome de arquivo, qualquer reordenação corromp
 saves antigos silenciosamente. Versão do conteúdo e versão do save são contratos
 distintos; não os una em um número por conveniência.
 
-Implementação concreta: o starter `canvas-arcade` versiona o save em
-`src/core/save.js`, com migração e recuperação de dado inválido, e escreve de forma
-atômica em `src/core/storage.js`. `tests/save.test.mjs` exercita migração, dado
-corrompido e preferência fora de faixa.
+Implementação concreta, com o limite dito: o starter `canvas-arcade` versiona o
+save em `src/core/save.js`, com migração e recuperação de dado inválido, e grava
+de forma **verificada** em `src/core/storage.js` — escreve em chave de estágio,
+relê, compara e só então grava na chave real. Isso **não** é a escrita atômica do
+parágrafo acima: `localStorage` não tem substituição, então a gravação final é
+uma escrita comum, com a mesma exposição a interrupção que uma escrita direta. O
+estágio compra detecção de cota e de truncamento, não atomicidade. Para ter
+atomicidade de verdade nesse alvo é preciso outro armazenamento — IndexedDB tem
+transação. `tests/save.test.mjs` exercita migração, dado corrompido e preferência
+fora de faixa; interrupção abrupta real, ninguém exercitou.
 
 Prova: cadeia de migração desde a versão mais antiga em uso, carregamento de cada
 forma de dado inválido, interrupção forçada durante a gravação, progresso real

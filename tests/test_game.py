@@ -845,6 +845,23 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         # morto nele é link morto na referência que a doc chama de executável.
         self.assertEqual(broken_links(game.FRAMEWORK), [])
 
+    # A doc afirma que o starter exercita as oito capacidades. Alegação de
+    # cobertura tem de acompanhar o código: se um teste deixar de invocar uma
+    # delas, a frase do README passa a ser falsa em silêncio.
+    def test_every_capability_the_docs_call_covered_is_invoked_by_a_starter_test(self):
+        suite = "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in sorted((game.FRAMEWORK / "assets/starters/canvas-arcade/tests").glob("*.mjs"))
+        )
+        missing = [name for name in game.CAPABILITIES if f".{name}(" not in suite]
+        self.assertEqual(missing, [])
+        # E a ressalva do `capture` fica escrita onde a alegação é feita, porque
+        # `toDataURL` não existe em headless e o teste só cobre a guarda.
+        for document in ("README.md", "assets/starters/canvas-arcade/README.md", "references/sources.md"):
+            text = (game.FRAMEWORK / document).read_text(encoding="utf-8")
+            self.assertIn("capture", text, document)
+            self.assertIn("ausência de tela", text, document)
+
     # Dois exemplos com o mesmo `--output` se atropelam: o primeiro passa, o
     # segundo é recusado pela regra enunciada duas linhas abaixo deles, e quem
     # copiou os dois na ordem escrita conclui que o harness está quebrado.

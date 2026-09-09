@@ -156,4 +156,5 @@ uma intenção — as regras nunca veem eventos.
 `src/main.js` implementa `pause`, `resume`, `reset`, `seed`, `observe`, `act`,
 `advance`, `capture` e `dispose`. Esses nomes são o vocabulário de inspeção do
 harness; aqui `tests/lifecycle.test.mjs` e `tests/determinism.test.mjs` os
-provam. No navegador, o mesmo contrato está em `window.__game`.
+exercitam — `capture` apenas na guarda de ausência de tela. No navegador, o mesmo
+contrato está em `window.__game`.

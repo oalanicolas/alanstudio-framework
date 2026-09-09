@@ -118,11 +118,18 @@ Hoje há um:
 **`canvas-arcade`** — jogo em Canvas 2D com loop de passo fixo, RNG semeado,
 hash de estado, abstração de entrada (teclado, ponteiro, gamepad, remapeável),
 mixer com barramentos/ducking/limite de vozes/legendas, save versionado com
-migração e escrita atômica, e renderizador com alto contraste e redução de
+migração e gravação verificada, e renderizador com alto contraste e redução de
 movimento. Expõe `pause`, `reset`, `seed`, `observe`, `act`, `advance`, `capture`
-e `dispose` — e **prova cada uma** em testes headless (`npm test`), além de
-`npm run budget` para o orçamento de simulação. O README do starter declara em
-que degrau cada dimensão está, incluindo as que ainda não subiram.
+e `dispose`, e **exercita** as oito em testes headless (`npm test`) — com uma
+ressalva: `capture` só na guarda de ausência de tela, porque `toDataURL` não
+existe em headless. Também tem `npm run budget` para o orçamento de simulação. O
+README do starter declara em que degrau cada dimensão está, incluindo as que
+ainda não subiram.
+
+"Gravação verificada" é literal e menos do que atômica: escreve em chave de
+estágio, relê, compara e grava na real. `localStorage` não tem substituição, então
+a última escrita é comum. [A receita de persistência](recipes/persistence.md)
+explica o que isso compra e o que não compra.
 
 Um starter é referência **executável**: `cd assets/starters/canvas-arcade && npm
 run serve` abre o jogo antes de qualquer `init`. É por isso que os arquivos

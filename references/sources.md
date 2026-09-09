@@ -96,9 +96,10 @@ embaralhamento de bits em `src/core/hash.js` pertence à mesma família. O start
 não embarca imagem, som nem fonte — proveniência completa em
 [CREDITS.md](../assets/starters/canvas-arcade/CREDITS.md).
 
-Seus testes rodam neste repositório e provam o contrato de ciclo de vida, o
-determinismo e a migração de save do próprio starter. Não provam nada sobre um
-jogo derivado depois que ele for adaptado.
+Seus testes rodam neste repositório e exercitam o ciclo de vida, o determinismo e
+a migração de save do próprio starter — com duas exceções ditas: `capture` só é
+exercitada na guarda de ausência de tela, e nenhum teste interrompe a gravação no
+meio. Nada disso alcança um jogo derivado depois que ele for adaptado.
 
 ## Áudio
 

@@ -279,7 +279,7 @@ acima, condição, evidência e autor, continua sendo o trabalho de verdade.
 
 Esta escada não mede diversão, não aprova arte e não substitui a aprovação do
 usuário. Os critérios são observáveis, mas a observação é trabalho humano ou do
-agente, com autor declarado. `verify` comprova comandos técnicos; nenhum comando
+agente, com autor declarado. `verify` registra comandos executados; nenhum comando
 deste repositório atribui um degrau. Um jogo pode cumprir todos os critérios
 mencionados aqui e ainda não interessar a ninguém — a escada trata de acabamento,
 e acabamento é condição necessária, não suficiente.
