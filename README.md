@@ -62,7 +62,8 @@ pasta do atalho.
 
 `init` copia um starter, troca pelo nome do projeto os valores que o
 `starter.json` dele declara e cria em `docs/` sete documentos — brief, gdd, mda,
-tdd, art-bible, devlog e qa — como **rascunho declarado**. Eles cobrem sete das
+tdd, art-bible, devlog e qa — como **rascunho declarado**, além de `AGENTS.md` na
+raiz para instruções persistentes. Os sete documentos em `docs/` cobrem sete das
 nove áreas mínimas que `scan` cobra; as outras duas, origem e execução, ficam com o
 README e o CREDITS do starter, então depois do `init` as nove têm candidato. Com
 `--no-docs`, sobram três. Os demais templates do ciclo entram depois, com `template`, quando a
@@ -329,6 +330,7 @@ release. Quatro complementos: `art-bible`, `devlog`, `audit`, `aaa` (checklist d
 o `context` expõe `finish` — núcleo / produto / promessa / mercado; slice, QA, create,
 feel e audio carregam a guia; `template aaa` não certifica). Três de consolidação e
 produção: `game-design` (documento único), `production-plan`, `milestone`.
+O complemento `agents` gera as instruções persistentes em `AGENTS.md`.
 
 ```sh
 python3 scripts/game.py context /caminho/do/jogo --focus content --stage gdd --root /caminho/do/laboratorio

@@ -31,7 +31,7 @@ Mais ~30 commits da linha de produção/pacotes e da linha 6f33 (starters, barra
 
 ---
 
-## Trabalho local ainda não commitado (Frente 1 — memória do agente)
+## Trabalho incluído na branch (Frente 1 — memória do agente)
 
 Início da **Frente 1** do plano aprovado (“remediar problemas de desenvolvimento com IA”). **Não** inclui Frentes 2–5.
 

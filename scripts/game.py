@@ -395,12 +395,14 @@ def instruction_files(project):
 
 def git_summary(project):
     """Versão, sujeira e últimos assuntos do repositório que contém o projeto; None fora de um repositório."""
-    inside = subprocess.run(["git", "-C", str(project), "rev-parse", "--is-inside-work-tree"], capture_output=True, text=True, check=False)
-    if inside.returncode != 0 or inside.stdout.strip() != "true":
-        return None
     def run(*args):
-        result = subprocess.run(["git", "-C", str(project), *args], capture_output=True, text=True, check=False)
+        try:
+            result = subprocess.run(["git", "-C", str(project), *args], capture_output=True, text=True, check=False, timeout=5)
+        except (OSError, subprocess.TimeoutExpired):
+            return ""
         return result.stdout.strip() if result.returncode == 0 else ""
+    if run("rev-parse", "--is-inside-work-tree") != "true":
+        return None
     dirty = [line for line in run("status", "--porcelain", "--", ".").splitlines() if line.strip()]
     return {
         "head": run("rev-parse", "HEAD") or None,
@@ -1229,7 +1231,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         "studio_assets": sfx_catalog.studio_assets(root),
         "limits": [
             "Ponteiros não comprovam leitura; scripts declarados não comprovam execução.",
-            "Inspecione os scripts antes de executá-los. Nenhum comando é executado por context.",
+            "Inspecione os scripts antes de executá-los. context consulta o Git em modo de leitura, mas não executa o jogo nem seus validadores.",
             "Sem packageManager ou lockfile, npm é apenas a convenção do executor de package.json.",
             "Consulte as instruções mais específicas (AGENTS.md e equivalentes em instructions) ao escolher os arquivos que serão alterados; git.recent é histórico, não prova.",
             "studies lista catálogos do foco se existirem no irmão Games-Frameworks; ausência não é evidência negativa.",

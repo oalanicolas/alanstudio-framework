@@ -5,7 +5,7 @@ ficam no laboratório; aqui permanece o que a versão afirma e o que ela não af
 
 ## 0.9.6 — Memória do agente entre sessões (parcial)
 
-Handoff: [HANDOFF.md](HANDOFF.md). `instruction_files` lê AGENTS.md e equivalentes
+Handoff: [HANDOFF.md](HANDOFF.md). `instruction_files` localiza AGENTS.md e equivalentes
 (CLAUDE, GEMINI, .cursorrules, .cursor/rules, copilot-instructions, windsurfrules).
 `context` expõe `instructions` e `git` (HEAD, branch, sujeira, recentes — sem provar
 nada). `scan` reporta `agent_context`; `next` propõe `template agents` quando falta;

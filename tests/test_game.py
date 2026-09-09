@@ -2127,6 +2127,18 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
 
     # --- memória do agente entre sessões ---
 
+    def test_context_still_works_when_optional_git_is_unavailable(self):
+        self.package()
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "context", str(self.project), "--root", str(self.root)],
+            capture_output=True, text=True, env={"PATH": ""},
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        result = json.loads(run.stdout)
+        self.assertIsNone(result["git"])
+        self.assertEqual(result["kind"], "package.json")
+        self.assertIn("foundation", result)
+
     def test_context_lists_every_instruction_file_the_hosts_read_from_root_to_project(self):
         self.package()
         (self.root / "AGENTS.md").write_text("raiz")
