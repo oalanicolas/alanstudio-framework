@@ -11,11 +11,11 @@ com o que o próprio projeto declarou, zero dígitos nos rótulos. `observed` e
 `granted` são sempre `false`. `next` só levanta o gate que o projeto pediu.
 
 **Primeiro ciclo:** `guide` (também sem subcomando) mapeia start →
-jogar → next → note sem executar.
-`start` é o caminho ideia→jogo. Depois de um `init` fresco, `next`
-propõe `playable.unplayed` antes de substituir os rascunhos. O starter
-ensina mover, coletar e guardar no campo; o art-bible vigente não é
-reescrito. `--idea` entra no brief como frase; o brief continua
+jogar → note sem executar. `start` cria o projeto e devolve `play` +
+`then.note`. `next` só entra em `then.lost`. Depois de um `init` fresco,
+`next` ainda propõe `playable.unplayed` se você estiver perdido. O
+starter ensina mover, coletar e guardar no campo; o art-bible vigente
+não é reescrito. `--idea` entra no brief como frase; o brief continua
 rascunho. O harness não executa o jogo.
 
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.

@@ -51,12 +51,18 @@ vez de derrubar a revisão ou desaparecer da lista.
 Com starter (REUSE de infraestrutura já testada):
 
 ```sh
-python3 scripts/game.py doctor --root /caminho/do/laboratorio
-python3 scripts/game.py guide /caminho/do/laboratorio/meu-jogo --idea "atravessar estilhaços para guardar a corrente"
 python3 scripts/game.py start /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
 ```
 
-`guide` devolve os quatro passos (start → jogar → `next --focus feel` → `note`) sem executar nenhum. Sem subcomando, `python3 scripts/game.py` é o próprio `guide`. Com destino existente, preenche o comando que abre o jogo e o `kind` do `next`. `executed` fica `false`. `start` é o caminho ideia→ciclo: cria o projeto se o destino estiver livre (o mesmo que `init`), aponta o comando que **abre** o jogo e devolve a proposta do `next`. Não executa o jogo. `--idea` entra no brief como frase; o brief continua rascunho. Sem `start`, o caminho em dois passos continua valendo:
+O JSON devolve `play` (o comando que **abre** o jogo) e `then.note` (o próximo comando do harness **depois** de uma partida). Não executa o jogo. `--idea` entra no brief como frase; o brief continua rascunho.
+
+`guide` (também sem subcomando: `python3 scripts/game.py`) mapeia os três passos — start → jogar → `note` — sem executar nenhum:
+
+```sh
+python3 scripts/game.py guide /caminho/do/laboratorio/meu-jogo --idea "atravessar estilhaços para guardar a corrente"
+```
+
+`guide` não cria o projeto. `next` sai do caminho feliz: só entra em `then.lost`, quando o ciclo já correu e você não sabe o que falta. Com destino existente, preenche o comando que abre o jogo e o `kind` do passo de jogar. `executed` fica `false`. Sem `start`, o caminho em dois passos continua valendo:
 
 ```sh
 python3 scripts/game.py init /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"

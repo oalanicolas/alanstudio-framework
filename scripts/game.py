@@ -2605,6 +2605,18 @@ def play_command(project, scripts, manager):
     return f"cd {shlex.quote(str(project))} && {body}"
 
 
+def note_command(project):
+    return harness_command("note", project, "--author", "NOME", "--note", "o que o verbo sentiu")
+
+
+def cycle_then(project, play):
+    return {
+        "play": play,
+        "note": note_command(project),
+        "lost": harness_command("next", project, "--focus", "feel"),
+    }
+
+
 def fresh_starter_cycle(project, missing, play):
     if missing or not play:
         return False
@@ -2851,6 +2863,8 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
         scripts, manager = project_commands(destination)
     except (OSError, ValueError):
         scripts, manager = {}, None
+    play = play_command(destination, scripts, manager)
+    then = cycle_then(destination, play)
     return {
         "schema_version": 1,
         "project": str(destination),
@@ -2858,15 +2872,25 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
         "starter": init_report["starter"] if init_report else None,
         "idea": idea.strip() if nonempty(idea) else None,
         "brief": seeded,
-        "play": play_command(destination, scripts, manager),
+        "play": play,
         "init": init_report,
         "next": proposal,
+        "then": then,
+        "prompt": (
+            f"O jogo não foi aberto. Cole e rode: {play}. "
+            f"Depois de uma partida, no harness: {then['note']}. "
+            "`next` só se o ciclo já correu e você não sabe o que falta."
+        ) if play else (
+            "Sem comando de abrir: identifique o entrypoint e rode `next`. "
+            "O harness não executa o jogo."
+        ),
         "executed": False,
         "scope": (
-            "Caminho ideia→ciclo: cria o projeto se o destino estiver livre, aponta o "
-            "comando que abre o jogo e devolve a proposta do `next`. Não executa o "
-            "jogo, não instala dependências e não avalia a proposta. `--idea` entra "
-            "no brief como frase, e o brief continua rascunho."
+            "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
+            "aponta o comando que abre o jogo. Depois de uma partida, o próximo "
+            "comando do harness é `note`, não `next`. Não executa o jogo, não "
+            "instala dependências e não avalia a proposta. `--idea` entra no "
+            "brief como frase, e o brief continua rascunho."
         ),
     }
 
@@ -2901,6 +2925,8 @@ def guide_cycle(destination=None, starter=None, idea=None):
         else "npm run serve"
     )
     next_target = dest if dest is not None else Path("<destino>")
+    play_cmd = play or play_fallback
+    then = cycle_then(next_target, play_cmd)
     return {
         "schema_version": 1,
         "command": "guide",
@@ -2909,6 +2935,7 @@ def guide_cycle(destination=None, starter=None, idea=None):
         "starter": chosen,
         "path": str(dest) if dest is not None else None,
         "exists": exists,
+        "then": then,
         "steps": [
             {
                 "n": 1,
@@ -2919,27 +2946,21 @@ def guide_cycle(destination=None, starter=None, idea=None):
             {
                 "n": 2,
                 "do": "jogar no próprio dispositivo",
-                "command": play or play_fallback,
+                "command": play_cmd,
+                "kind": nxt["proposal"]["basis"] if nxt else "playable.unplayed",
                 "executed": False,
             },
             {
                 "n": 3,
-                "do": "ler o que o harness ainda não localiza",
-                "command": harness_command("next", next_target, "--focus", "feel"),
-                "kind": nxt["proposal"]["basis"] if nxt else "playable.unplayed",
-            },
-            {
-                "n": 4,
                 "do": "gravar o que o verbo sentiu",
-                "command": harness_command(
-                    "note", next_target, "--author", "NOME", "--note", "o que o verbo sentiu",
-                ),
+                "command": then["note"],
                 "executed": False,
             },
         ],
         "scope": (
-            "Quatro passos ideia→ciclo: start, jogar, next, note. Não cria o "
-            "projeto, não abre o jogo e não avalia a proposta. Passos 2 e 4 "
+            "Três passos ideia→ciclo: start, jogar, note. `next` fica para "
+            "quando o ciclo já correu e você não sabe o que falta. Não cria o "
+            "projeto, não abre o jogo e não avalia a proposta. Passos 2 e 3 "
             "permanecem `executed` falsos mesmo quando o destino já existe."
         ),
     }
@@ -3796,7 +3817,7 @@ def main():
     guided = commands.add_parser(
         "guide",
         parents=[common],
-        help="quatro passos ideia→ciclo sem executar: start, jogar, next, note",
+        help="três passos ideia→ciclo sem executar: start, jogar, note",
     )
     guided.add_argument("project", nargs="?", default=None)
     guided.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)

@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.28 — O primeiro ciclo não pede `next`
+
+`start` devolve `play`, `then.note` e um `prompt` colável. `guide`
+mapeia três passos: start → jogar → note. `next` sai do caminho feliz
+e fica em `then.lost`, para quando o ciclo já correu. O harness
+continua sem abrir o jogo. `executed` permanece falso. Só `release`
+fica no piso.
+
+O que 0.9.28 não afirma: ninguém jogou, o verbo não foi sentido e o
+projeto não deixou de ser protótipo.
+
 ## 0.9.27 — Segunda chuva com o mesmo consumidor
 
 `dusk` é um perfil de spawn distinto (prática mais curta, intervalo

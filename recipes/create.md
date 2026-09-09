@@ -34,9 +34,11 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
 
 1. Consulte o [playground](https://games.alanicolas.com/) e o acervo local.
    Identifique uma família compatível. Procure código, contratos e conteúdo
-   reutilizável. Sem destino no disco, o candidato local é um starter: `doctor`
-   lista os disponíveis e `init <destino> --starter <starter>` monta o projeto com
-   laço de passo fixo, save versionado, entrada abstraída e testes que já rodam.
+   reutilizável.    Sem destino no disco, o candidato local é um starter: `start <destino>
+   --starter <starter> --idea "<fantasia>"` monta o projeto e devolve o
+   comando que abre o jogo. `init` faz a mesma cópia sem apontar o ciclo.
+   O projeto nasce com laço de passo fixo, save versionado, entrada
+   abstraída e testes que já rodam.
    Partir dele é REUSE; recomeçar essa infraestrutura é CREATE e pede lacuna
    explícita. Som: se o laboratório tiver `shared/sfx`, use `sfx search` antes de
    qualquer download. Explique REUSE, ADAPT ou CREATE antes de produzir novos
