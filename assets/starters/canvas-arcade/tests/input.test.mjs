@@ -58,3 +58,31 @@ test("sem superfície o toque não inventa intenção", () => {
   assert.deepEqual(input.intent(0.5), { move: 0, dash: false, bank: false });
   input.dispose();
 });
+
+function stubPad({ axes = [0], buttons = {} } = {}) {
+  const list = Array.from({ length: 16 }, (_, index) => ({ pressed: Boolean(buttons[index]) }));
+  return [{ axes, buttons: list }];
+}
+
+test("o controle move, avança, guarda, pausa e reinicia", () => {
+  let pads = [];
+  const input = createInput({ target: null, gamepads: () => pads });
+  pads = stubPad({ axes: [-0.1] });
+  assert.equal(input.intent().move, 0, "eixo dentro da zona morta não move");
+  pads = stubPad({ axes: [-0.8] });
+  assert.equal(input.intent().move, -1, "analógico à esquerda precisa mover");
+  pads = stubPad({ buttons: { 15: true } });
+  assert.equal(input.intent().move, 1, "dpad direita precisa mover");
+  pads = stubPad({ buttons: { 0: true } });
+  assert.equal(input.intent().dash, true, "A precisa avançar");
+  pads = stubPad({ buttons: { 2: true } });
+  assert.equal(input.intent().bank, true, "X precisa guardar");
+  pads = stubPad({ buttons: { 9: true } });
+  assert.equal(input.commands().pause, true, "Start precisa pausar");
+  assert.equal(input.commands().pause, false, "Start contínuo não repete o comando");
+  pads = stubPad({ buttons: { 8: true } });
+  assert.equal(input.commands().reset, true, "Select precisa reiniciar");
+  pads = [];
+  assert.deepEqual(input.intent(), { move: 0, dash: false, bank: false });
+  input.dispose();
+});

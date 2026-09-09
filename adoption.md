@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.49 — O controle completa o verbo
+
+O gamepad já movia, avançava e guardava. Sem Select a partida não
+recomeçava só com o controle, nenhum teste percorria o mapa e o
+ciclo guiado não o nomeava. `start` e `guide` apontam analógico,
+A, X, Start e Select. `verified` continua falso. `accessibility`
+permanece `slice`: intenção no stub não é sessão no aparelho.
+Só `release` fica no piso.
+
+O que 0.9.49 não afirma: o harness não segurou um controle e
+ninguém correu o artefato fora daqui.
+
 ## 0.9.48 — O toque completa o verbo
 
 O HTML e o input já reduziam o toque a intenção. Nenhum teste

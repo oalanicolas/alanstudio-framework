@@ -1,4 +1,6 @@
 // Entrada: teclado, ponteiro e gamepad reduzidos a intenção e comandos.
+// No gamepad, Select (8) reinicia: sem isso o verbo fecha e a partida
+// não recomeça só com o controle. Sessão no aparelho não foi observada.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que
 // permite rodar a partida headless, repetir um replay e comparar dispositivos:
@@ -121,6 +123,7 @@ export function createInput(options = {}) {
       if (pad.buttons?.[15]?.pressed) gamepadHeld.add("right");
       if (pad.buttons?.[0]?.pressed) gamepadHeld.add("dash");
       if (pad.buttons?.[2]?.pressed) gamepadHeld.add("bank");
+      if (pad.buttons?.[8]?.pressed) gamepadHeld.add("reset");
       if (pad.buttons?.[9]?.pressed) gamepadHeld.add("pause");
     }
     if (axis < -MOVE_DEADZONE) gamepadHeld.add("left");

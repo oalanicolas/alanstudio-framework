@@ -2786,7 +2786,7 @@ def starter_manifest(starter):
     return manifest
 
 
-CYCLE_KEYS = ("verb", "move", "dash", "bank", "hand", "touch", "look", "spawn")
+CYCLE_KEYS = ("verb", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn")
 
 
 def starter_cycle(starter):
@@ -2821,6 +2821,8 @@ def cycle_line(cycle):
         parts.append(f"Uma mão: {cycle['hand']}.")
     if cycle.get("touch"):
         parts.append(f"Toque: {cycle['touch']}.")
+    if cycle.get("pad"):
+        parts.append(f"Controle: {cycle['pad']}.")
     if cycle.get("look"):
         parts.append(f"Look: {cycle['look']}.")
     if cycle.get("spawn"):
@@ -3002,7 +3004,7 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
             "aponta o comando que abre o jogo. Se o starter declara o verbo e "
             "as teclas, o prompt as nomeia — inclusive o cluster de uma mão, "
-            "o toque e as queries de look e chuva, se o starter as declara. Não "
+            "o toque, o controle e as queries de look e chuva, se o starter as declara. Não "
             "executa o jogo. Depois de uma "
             "partida, o próximo comando do harness é `note`, não `next`. Não "
             "instala dependências e não avalia a proposta. `--idea` entra no "
@@ -3057,7 +3059,7 @@ def guide_cycle(destination=None, starter=None, idea=None):
         play_step["verb"] = cycle["verb"]
         play_step["controls"] = {
             key: cycle[key]
-            for key in ("move", "dash", "bank", "hand", "touch", "look", "spawn")
+            for key in ("move", "dash", "bank", "hand", "touch", "pad", "look", "spawn")
             if key in cycle
         }
     return {

@@ -9,6 +9,7 @@
     "bank": "S ou J",
     "hand": "IJKL + P/O",
     "touch": "arrastar move; cima avança; baixo guarda",
+    "pad": "analógico move; A avança; X guarda; Start pausa; Select reinicia",
     "look": "?look=dusk troca a paleta",
     "spawn": "?spawn=dusk troca a chuva"
   },
