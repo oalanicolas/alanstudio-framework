@@ -103,7 +103,8 @@ python3 scripts/game.py context /caminho/do/jogo --stage aaa --root /caminho/do/
 ```
 
 Sem `--output`, `template` só imprime. Com ele, cria um rascunho novo e recusa
-sobrescrita, inclusive de symlinks. Gerar `template audit` não executa auditoria.
+sobrescrita, inclusive de symlinks. Gerar `template audit` não executa auditoria. Gerar `template aaa` não
+certifica acabamento nem publisher.
 
 **REUSE → ADAPT → CREATE.** CREATE só entra com lacuna explícita.
 O [contrato JSON](assets/work.example.json) formaliza uma decisão nova;
