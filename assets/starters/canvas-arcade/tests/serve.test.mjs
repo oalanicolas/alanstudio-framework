@@ -8,7 +8,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { cp, mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+import { cp, mkdtemp, mkdir, writeFile, rm, symlink } from "node:fs/promises";
 import { once } from "node:events";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -31,14 +31,65 @@ async function serveFrom(name) {
   const [chunk] = await once(child.stdout, "data");
   const port = Number(String(chunk).match(/:(\d+)\//)?.[1]);
   return {
-    port,
+    port, base, project,
     async stop() {
-      child.kill("SIGKILL");
-      await once(child, "exit");
+      if (child.exitCode === null && child.signalCode === null) {
+        const stopped = once(child, "exit");
+        child.kill("SIGKILL");
+        await stopped;
+      }
       await rm(base, { recursive: true, force: true });
     },
   };
 }
+
+test("links para arquivos e pastas externos não saem pelo servidor", async () => {
+  const server = await serveFrom("jogo");
+  try {
+    const external = join(server.base, "externo");
+    await mkdir(external);
+    await writeFile(join(external, "privado.txt"), "fixture fora do projeto");
+    await symlink(join(external, "privado.txt"), join(server.project, "arquivo.txt"));
+    await symlink(external, join(server.project, "pasta"), "dir");
+    for (const path of ["/arquivo.txt", "/pasta/privado.txt"]) {
+      for (const method of ["GET", "HEAD"]) {
+        const response = await fetch(`http://localhost:${server.port}${path}`, { method });
+        assert.equal(response.status, 403, `${method} ${path}`);
+        assert.doesNotMatch(await response.text(), /fixture fora do projeto/);
+      }
+    }
+  } finally {
+    await server.stop();
+  }
+});
+
+test("links internos continuam servindo recursos do próprio projeto", async () => {
+  const server = await serveFrom("jogo");
+  try {
+    await symlink(join(server.project, "index.html"), join(server.project, "interno.html"));
+    const response = await fetch(`http://localhost:${server.port}/interno.html`);
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), /<canvas/);
+  } finally {
+    await server.stop();
+  }
+});
+
+test("URLs inválidas recebem 400 e o servidor continua respondendo", async () => {
+  const server = await serveFrom("jogo");
+  try {
+    for (const path of ["/broken%ZZ", "/%E0%A4%A", "/%00"]) {
+      const invalid = await fetch(`http://localhost:${server.port}${path}`);
+      assert.equal(invalid.status, 400, path);
+      await invalid.text();
+      const healthy = await fetch(`http://localhost:${server.port}/`);
+      assert.equal(healthy.status, 200, "o pedido anterior não pode encerrar o processo");
+      await healthy.text();
+    }
+  } finally {
+    await server.stop();
+  }
+});
 
 for (const name of ["farol", "Farol do Sul"]) {
   test(`o servidor entrega o jogo a partir de "${name}"`, async () => {
