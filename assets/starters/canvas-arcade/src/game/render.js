@@ -69,8 +69,10 @@ export function createRenderer(canvas, options = {}) {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     const shake = reduced ? 0 : state.shake;
-    const jitterX = shake ? (Math.sin(state.tick * 12.9898) * shake * 3) : 0;
-    const jitterY = shake ? (Math.cos(state.tick * 7.233) * shake * 3) : 0;
+    const punchX = reduced ? 0 : (state.camera?.x ?? 0);
+    const punchY = reduced ? 0 : (state.camera?.y ?? 0);
+    const jitterX = (shake ? (Math.sin(state.tick * 12.9898) * shake * 3) : 0) + punchX;
+    const jitterY = (shake ? (Math.cos(state.tick * 7.233) * shake * 3) : 0) + punchY;
     context.setTransform(scale, 0, 0, scale, offsetX + jitterX * scale, offsetY + jitterY * scale);
 
     context.fillStyle = palette.field;

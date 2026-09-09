@@ -21,6 +21,8 @@ test("a sonda conta o buffer sem chamar isso de peso", async () => {
   assert.equal(report.felt, false);
   assert.ok(report.late_requests > 0);
   assert.ok(report.buffered_fires > 0);
+  assert.ok(report.late_banks > 0);
+  assert.ok(report.buffered_banks > 0);
   assert.match(report.scope, /não peso percebido/);
   assert.doesNotMatch(stdout, /aprovado|verified|93%/);
 });

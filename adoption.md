@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.24 — Buffer da decisão e câmera por verbo
+
+O pedido de guardar feito no hitstop da coleta dispara quando o mundo
+volta a andar. Guardar no mesmo quadro da coleta decide a corrente
+nova; um toque sem corrente não decide o próximo orbe. Cada verbo
+empurra a câmera numa direção própria (dash, coleta, guarda, dano).
+`feel` permanece `playable`: câmera e buffer no código não são peso
+percebido. `npm run probe` conta as duas janelas. `felt` continua
+falso. Só `release` fica no piso.
+
+O que 0.9.24 não afirma: o harness não jogou, não sentiu o punch e
+ninguém identificou o jogo por um clipe de três segundos.
+
 ## 0.9.23 — Desenho no stub, identidade lida e cluster de uma mão
 
 `npm run budget` cronometra o `draw` num canvas stub além da

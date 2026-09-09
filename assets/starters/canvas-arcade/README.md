@@ -104,7 +104,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 
 | Dimensão | Degrau | Critério do degrau seguinte |
 | --- | --- | --- |
-| `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor distintos e som; `npm run probe` conta o buffer na simulação, não o peso percebido |
+| `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor/câmera distintos e som; `npm run probe` conta os buffers de dash e guardar na simulação, não o peso percebido |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — o que existe hoje é medição de placa, borda e faixa em quadro estático |
 | `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; `consistent` é falso |
 | `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — `npm run peak` relata o pico do arquivo, não do mix em cena; loudness percebido não foi medido |
@@ -129,7 +129,7 @@ falso — a linha é afirmação de quem escreveu.
 | Check | Estado | Evidência |
 | --- | --- | --- |
 | `canvas_scale` | `met` | FIELD em src/game/rules.js; canvas em index.html; o resize em render.js usa a escala calculada quando a divisão não é inteira — starter |
-| `forgiveness` | `met` | dashBufferTicks, invulnTicks, collect.pad e collect.reachY em CONFIG, src/game/rules.js, unidade em ticks — starter |
+| `forgiveness` | `met` | dashBufferTicks, bank.bufferTicks, invulnTicks, collect.pad e collect.reachY em CONFIG, src/game/rules.js, unidade em ticks — starter |
 | `percentile_def` | `met` | tools/budget.mjs declara o percentil por definição, não por apelido — starter |
 | `palette` | `met` | tokens em docs/art-bible.md; consumidores PALETTES.normal e PALETTES.contrast em src/game/render.js — starter |
 | `style_factor` | `out_of_scope` | sem assets de mundo de estilo; só primitivas — starter |

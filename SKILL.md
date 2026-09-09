@@ -155,7 +155,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    arquivos que os preenchem. `--fill` sugere o acervo; `--apply` copia
    com o nome do papel. `heard` é sempre falso. Papel vazio entra no
    `next` como `audio.roles` — o verbo mudo não espera os rascunhos.
-   **`feel <projeto>`** lê constantes de perdão/hitstop no `CONFIG` e o
+   **`feel <projeto>`** lê constantes de perdão/hitstop/câmera no `CONFIG` e o
    recibo de observação no disco. `felt` é sempre falso. Sem recibo, `next`
    propõe `feel.unobserved` e aponta `note`.
    **`note <projeto>`** grava o recibo curto (cenário e papel por omissão)

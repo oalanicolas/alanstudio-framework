@@ -111,6 +111,49 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   assert.notEqual(CONFIG.feel.squashDash, CONFIG.feel.squashCollect);
   assert.notEqual(CONFIG.feel.collectShake, CONFIG.feel.hitShake);
   assert.notEqual(CONFIG.feel.bankShake, CONFIG.feel.collectShake);
+  assert.notEqual(dash.camera.x, 0, "dash empurra a câmera na direção");
+  assert.equal(collected.camera.y < 0, true, "coleta sobe a câmera");
+  assert.equal(banked.camera.y > 0, true, "guardar confirma para baixo");
+  assert.ok(Math.abs(struck.camera.y) > Math.abs(collected.camera.y), "o erro desloca mais que a coleta");
+});
+
+test("o pedido de guardar sobrevive ao hitstop da coleta", () => {
+  const state = createState(5);
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.equal(state.chain, 1);
+  assert.ok(state.hitstop > 0);
+  advance(state, { move: 0, dash: false, bank: true });
+  assert.ok(state.bankBuffer > 0, "o pedido feito no congelamento fica guardado");
+  assert.equal(state.stats.banks, 0, "não guarda durante o hitstop");
+  settle(state);
+  let fired = false;
+  for (let index = 0; index < CONFIG.bank.bufferTicks + 2 && !fired; index += 1) {
+    advance(state, neutralIntent());
+    fired = state.events.some((event) => event.type === "bank");
+  }
+  assert.ok(fired, "o pedido guardado dispara quando o mundo volta a andar");
+  assert.equal(state.stats.banks, 1);
+  assert.equal(state.chain, 0);
+});
+
+test("guardar no mesmo quadro da coleta decide a corrente nova", () => {
+  const state = createState(5);
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, { move: 0, dash: false, bank: true });
+  assert.equal(state.stats.banks, 1);
+  assert.equal(state.score, 1);
+  assert.equal(state.chain, 0);
+});
+
+test("toque de guardar sem corrente não decide o próximo orbe", () => {
+  const state = createState(5);
+  advance(state, { move: 0, dash: false, bank: true });
+  assert.equal(state.bankBuffer, 0);
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.equal(state.chain, 1);
+  assert.equal(state.stats.banks, 0);
 });
 
 test("o pedido de dash é guardado e dispara quando recarrega", () => {

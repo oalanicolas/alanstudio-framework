@@ -49,9 +49,15 @@ export const CONFIG = {
     squashCollect: 0.22,
     squashDash: 0.34, // partida do dash: alonga na direção, não achata
     squashDecay: 0.82,
+    punchCollectY: -1.6, // coleta sobe a câmera
+    punchBankY: 2.4, // guardar confirma para baixo
+    punchDashX: 3.2, // dash empurra na direção
+    punchHitY: 4.2, // o erro desloca mais que a coleta
+    punchDecay: 0.78,
   },
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
+    bufferTicks: 8, // perdão: pedido cedo ou no hitstop dispara quando a corrente existe
   },
   // Assistência não esconde conteúdo: os mesmos orbes, a mesma pontuação.
   // Perdão extra de alcance, chuva mais lenta e graça mais longa.
@@ -79,7 +85,9 @@ export function createState(seed = 1, options = {}) {
     chain: 0,
     hitstop: 0,
     shake: 0,
+    camera: { x: 0, y: 0 },
     bankLock: 0,
+    bankBuffer: 0,
     spawnTimer: CONFIG.spawn.intervalTicks,
     recoverUntil: 0,
     nextId: 1,
@@ -125,10 +133,18 @@ export function advance(state, intent = neutralIntent()) {
   } else if (player.dashBuffer > 0) {
     player.dashBuffer -= 1;
   }
+  // Corrente vazia não guarda o pedido: um toque cedo demais não decide
+  // guardar o orbe que ainda não existe.
+  if (intent.bank && state.chain > 0) {
+    state.bankBuffer = CONFIG.bank.bufferTicks;
+  } else if (state.bankBuffer > 0) {
+    state.bankBuffer -= 1;
+  }
 
   if (state.hitstop > 0) {
     state.hitstop -= 1;
     state.shake *= CONFIG.feel.shakeDecay;
+    decayCamera(state);
     return state;
   }
 
@@ -146,6 +162,7 @@ export function advance(state, intent = neutralIntent()) {
     player.dashBuffer = 0;
     player.squash = CONFIG.feel.squashDash;
     if (intent.move !== 0) player.dir = intent.move;
+    punch(state, CONFIG.feel.punchDashX * player.dir, 0);
     state.events.push({ type: "dash" });
   }
 
@@ -153,9 +170,13 @@ export function advance(state, intent = neutralIntent()) {
   bank(state, intent);
   spawn(state);
   resolveEntities(state);
+  // Mesmo quadro: coleta primeiro, guardar depois — o pedido deste tick
+  // não espera o buffer se o orbe acabou de entrar na corrente.
+  if (intent.bank) bank(state, intent);
 
   state.shake *= CONFIG.feel.shakeDecay;
   if (state.shake < 0.01) state.shake = 0;
+  decayCamera(state);
   player.squash *= CONFIG.feel.squashDecay;
   if (player.squash < 0.01) player.squash = 0;
 
@@ -197,16 +218,19 @@ function movePlayer(state, intent) {
 }
 
 function bank(state, intent) {
-  if (!intent.bank || state.bankLock > 0 || state.chain === 0) return;
+  const requested = state.bankBuffer > 0 || Boolean(intent?.bank);
+  if (!requested || state.bankLock > 0 || state.chain === 0) return;
   const chain = state.chain;
   const gain = chain * chain;
   state.score += gain;
   state.stats.banked += gain;
   state.stats.banks += 1;
   state.chain = 0;
+  state.bankBuffer = 0;
   state.bankLock = CONFIG.bank.lockTicks;
   state.hitstop = CONFIG.feel.bankHitstopTicks;
   state.shake += CONFIG.feel.bankShake;
+  punch(state, 0, CONFIG.feel.punchBankY);
   state.recoverUntil = state.tick + CONFIG.spawn.recoveryTicks;
   state.events.push({ type: "bank", chain, gain });
 }
@@ -278,15 +302,30 @@ function collect(state) {
   state.hitstop = CONFIG.feel.collectHitstopTicks;
   state.shake += CONFIG.feel.collectShake;
   state.player.squash = CONFIG.feel.squashCollect;
+  punch(state, 0, CONFIG.feel.punchCollectY);
   state.events.push({ type: "collect", chain: state.chain });
 }
 
 function hit(state) {
   const lost = state.chain;
   state.chain = 0;
+  state.bankBuffer = 0;
   state.stats.hits += 1;
   state.player.invuln = CONFIG.player.invulnTicks + (state.assist ? CONFIG.assist.extraInvulnTicks : 0);
   state.hitstop = CONFIG.feel.hitHitstopTicks;
   state.shake += CONFIG.feel.hitShake;
+  punch(state, 0, CONFIG.feel.punchHitY);
   state.events.push({ type: "hit", lost });
+}
+
+function punch(state, x, y) {
+  state.camera.x += x;
+  state.camera.y += y;
+}
+
+function decayCamera(state) {
+  state.camera.x *= CONFIG.feel.punchDecay;
+  state.camera.y *= CONFIG.feel.punchDecay;
+  if (Math.abs(state.camera.x) < 0.01) state.camera.x = 0;
+  if (Math.abs(state.camera.y) < 0.01) state.camera.y = 0;
 }

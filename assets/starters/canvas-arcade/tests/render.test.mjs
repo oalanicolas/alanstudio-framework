@@ -30,7 +30,9 @@ function recordingCanvas() {
   const commit = (rect) => calls.rects.push({ ...rect, style: context.fillStyle });
   const commitEdge = (rect) => calls.edges.push({ ...rect, style: context.strokeStyle });
   const context = {
-    setTransform() {},
+    setTransform(a, b, c, d, e, f) {
+      calls.transform = { e, f };
+    },
     save() {},
     restore() {},
     beginPath() {
@@ -115,6 +117,7 @@ function hudTexts(state, settings = {}, extra = { best: 0 }) {
     plates: recorder.plates(),
     edges: recorder.edges(),
     order: recorder.calls.order,
+    transform: recorder.calls.transform,
   };
 }
 
@@ -332,6 +335,16 @@ test("o HUD é desenhado depois das entidades, nunca antes", () => {
   const { order } = hudTexts(state);
   assert.ok(order.includes("entidade"), "a cena precisa ter desenhado entidades");
   assert.ok(order.indexOf("entidade") < order.indexOf("texto"), "o texto do HUD precisa vir por cima");
+});
+
+test("a câmera por verbo desloca o campo e some com redução de movimento", () => {
+  const state = createState(1);
+  state.camera = { x: 5, y: -3 };
+  const moved = hudTexts(state);
+  const still = hudTexts(state, { reducedMotion: true });
+  assert.ok(moved.transform);
+  assert.notEqual(moved.transform.e, still.transform.e, "punch horizontal precisa chegar no quadro");
+  assert.notEqual(moved.transform.f, still.transform.f, "punch vertical precisa chegar no quadro");
 });
 
 test("o aviso do primeiro ciclo cabe na placa e some depois de guardar", () => {

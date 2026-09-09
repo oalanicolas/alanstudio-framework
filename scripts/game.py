@@ -1215,7 +1215,7 @@ CONFIG_OPEN = re.compile(r"(?:export\s+)?const\s+CONFIG\s*=\s*\{")
 CONFIG_NESTED = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*\{")
 CONFIG_LEAF = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*(-?[\d.]+)\s*,?\s*(?://\s*(.*))?")
 FEEL_KEY = re.compile(
-    r"(buffer|invuln|pad|reach|lock|hitstop|shake|squash|grace|forgiv|cooldown|recovery|dashticks)",
+    r"(buffer|invuln|pad|reach|lock|hitstop|shake|squash|punch|grace|forgiv|cooldown|recovery|dashticks)",
     re.IGNORECASE,
 )
 FEEL_NOTE = re.compile(r"(perd[aã]o|gra[cç]a|contato|peso|feel|juice)", re.IGNORECASE)
@@ -1358,7 +1358,7 @@ def feel_reading(project):
             "projeto é o que o harness consegue ver; ele não joga."
         ),
         "scope": (
-            "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash) e "
+            "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch) e "
             "`record.json` com kind=observation. Não executa o jogo, não mede "
             "latência e não atribui degrau. `felt` é sempre falso: tabela de "
             "constantes e recibo otimista saem intactos."

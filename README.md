@@ -519,9 +519,9 @@ Este repositório **não inclui** os arquivos de som.
 
 ## Feel
 
-O starter nomeia perdão, graça e hitstop no `CONFIG`. Constante nomeada não é
-peso percebido. `feel` lê as constantes e procura um `record.json` de
-observação no projeto:
+O starter nomeia perdão, graça, hitstop, buffer de guardar e punch de
+câmera no `CONFIG`. Constante nomeada não é peso percebido. `feel` lê as
+constantes e procura um `record.json` de observação no projeto:
 
 ```sh
 python3 scripts/game.py feel /caminho/do/laboratorio/meu-jogo

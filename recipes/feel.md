@@ -135,9 +135,12 @@ o feel do verbo central é lente de marco em [produção](production.md).
 ## Implementação de referência e degraus
 
 Antes de escrever a sua cadeia, leia uma concreta: o starter `canvas-arcade` reúne o
-perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, graça após dano,
-alcance de coleta maior que o desenho — cada valor com o motivo ao lado, e separa
-entrada de regra em `src/core/input.js`. Perdão de entrada é decisão de design explícita
-com valor registrado; sem registro, esses valores viram folclore e regridem na próxima
-alteração. Degraus e critérios da dimensão `feel`:
+perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, buffer de
+guardar, graça após dano, alcance de coleta maior que o desenho — cada valor com o
+motivo ao lado. Guardar no hitstop não é engolido; um toque sem corrente não decide
+o próximo orbe. Cada verbo desloca a câmera numa direção própria. A entrada
+continua separada da regra em `src/core/input.js`. Perdão de entrada é decisão de
+design explícita com valor registrado; sem registro, esses valores viram folclore e
+regridem na próxima alteração. `felt` continua falso. Degraus e critérios da
+dimensão `feel`:
 [barra de acabamento](../references/production-bar.md#feel--resposta-da-ação-central).
