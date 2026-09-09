@@ -81,8 +81,10 @@ alcance de coleta maior que o desenho — estão em `CONFIG`, em
 
 Os sete de `docs/` são escritos pelo `init` a partir dos templates do framework:
 neste starter lido no lugar eles ainda não existem, e é por isso que estão em
-código e não em link. Nascem em rascunho, e preenchê-los com decisão, fato ou
-lacuna é o primeiro trabalho real do projeto. Com `init --no-docs`, não nascem.
+código e não em link. Nascem em rascunho. O primeiro trabalho real do projeto é
+**jogar o ciclo** — `npm run serve` — e escrever o que a proposta muda no verbo.
+Preencher os sete templates antes da primeira partida é o atrito que o `next`
+depois do `init` recusa. Com `init --no-docs`, os rascunhos não nascem.
 
 ## Degrau de acabamento declarado
 
@@ -113,6 +115,25 @@ junto a condição: dispositivo, versão, cena e quem observou.
 **Leitura honesta: este projeto é um protótipo**, porque cinco dimensões estão
 nesse degrau. Nenhuma quantidade de acabamento visual muda essa leitura antes
 delas subirem.
+
+## Ofício declarado
+
+Checklists da [§7 do levantamento](../../../references/observable-criteria-research.md):
+conformidade com o que **este** projeto declara, sem limiar importado.
+`python3 <framework>/scripts/game.py craft .` lê a tabela. `observed` continua
+falso — a linha é afirmação de quem escreveu.
+
+| Check | Estado | Evidência |
+| --- | --- | --- |
+| `canvas_scale` | `met` | FIELD em src/game/rules.js; canvas em index.html; o resize em render.js usa a escala calculada quando a divisão não é inteira — starter |
+| `forgiveness` | `met` | dashBufferTicks, invulnTicks, collect.pad e collect.reachY em CONFIG, src/game/rules.js, unidade em ticks — starter |
+| `percentile_def` | `met` | tools/budget.mjs declara o percentil por definição, não por apelido — starter |
+| `palette` | `unmet` | primitivas; paleta ainda não é contrato — starter |
+| `style_factor` | `out_of_scope` | sem assets de mundo de estilo; só primitivas — starter |
+| `budget_delta` | `unmet` | npm run budget mede a simulação; comparação com o build anterior ainda não existe — starter |
+| `playtest_stop` | `unmet` | regra de parada ainda não escrita — starter |
+| `playtest_finding` | `unmet` | nenhum achado no formato problema/evidência/hipótese/medição — starter |
+| `evidence_kind` | `unmet` | lastro ainda não classificado como log ou observação — starter |
 
 Por que `legibility` não é `slice`, com um caso concreto: as placas do HUD
 existiam, os testes provavam que cobriam cada linha de texto, e os orbes

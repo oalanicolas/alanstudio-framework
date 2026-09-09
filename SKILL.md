@@ -20,7 +20,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | --- | --- |
 | Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing`. Ele nomeia os projetos e lista os starters |
 | Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
-| Jogo novo | `context <novo> --focus create`; resolva fantasia, verbo, plataforma e maior incerteza. Destino inexistente e engine web: `init <novo> --starter <starter>` (REUSE). Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
+| Jogo novo | Destino inexistente e engine web: `start <novo> --starter <starter> --idea "<fantasia>"` (REUSE; aponta o comando que abre o ciclo, não o executa). Sem `start`: `init` e depois `next --focus feel`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
 | Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `context <projeto> --focus feel` e depois `--focus audio` |
 | “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
@@ -138,6 +138,11 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    **`origins <projeto>` lê o disco**, não a tabela: lista mídia embarcada sem
    recibo de origem. Não valida licença. Arquivo sem recibo conta como licença
    desconhecida, e `next` propõe declarar a origem antes de seguir.
+   **`craft <projeto>`** lê checklists de ofício (paleta, perdão, percentil,
+   regra de parada) — conformidade com o que o projeto declarou, sem limiar
+   importado. `observed` é sempre falso. Só levanta o gate que o projeto pediu.
+   Depois de um `init` fresco, `next` propõe **abrir o ciclo** antes de
+   substituir os rascunhos: o starter já é um jogo que abre.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

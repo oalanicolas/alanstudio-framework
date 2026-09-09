@@ -361,6 +361,59 @@ GATES = {
 # como "Applicable" — references/gates-research.md, §3.4 e §4.2.
 GATE_STATES = ("met", "unmet", "waived", "out_of_scope")
 GATE_KINDS = ("readiness", "must_meet")
+# Conformidade com o que o próprio projeto declarou. Não são os critérios de
+# `preproduction.md` — esses já estão nos gates — e não são limiares importados.
+# A lista vem de references/observable-criteria-research.md §7, o único conjunto
+# que a pesquisa chamou de "não precisa de autoridade externa". Um teste exige
+# que cada rótulo continue sem dígito e que a frase-âncora ainda exista no
+# levantamento. Cada item pende do gate em que a pergunta passa a doer.
+CRAFT_CHECKS = {
+    "canvas_scale": {
+        "gate": "build",
+        "label": "A resolução de apresentação está declarada, e a escala tela sobre canvas é inteira ou o fallback está escrito",
+        "anchor": "resolução de canvas está declarada",
+    },
+    "forgiveness": {
+        "gate": "build",
+        "label": "Cada janela de perdão tem constante nomeada, num só lugar, com unidade declarada",
+        "anchor": "janela de perdão tem constante nomeada",
+    },
+    "palette": {
+        "gate": "scale",
+        "label": "Cada cor usada consta da paleta declarada",
+        "anchor": "cor usada consta da paleta declarada",
+    },
+    "style_factor": {
+        "gate": "scale",
+        "label": "Todo asset do mesmo mundo de estilo usa o mesmo fator inteiro, e nenhum asset aparece em dois mundos",
+        "anchor": "mesmo fator inteiro",
+    },
+    "percentile_def": {
+        "gate": "scale",
+        "label": "O percentil de tempo de quadro está definido pela definição, não pelo apelido",
+        "anchor": "Percentil está declarado por definição",
+    },
+    "budget_delta": {
+        "gate": "scale",
+        "label": "Tempo de quadro por cena está registrado por build e comparado com o anterior",
+        "anchor": "comparados com o build anterior",
+    },
+    "playtest_stop": {
+        "gate": "evaluate",
+        "label": "A rodada de playtest tem regra de parada declarada, em vez de conta de participantes",
+        "anchor": "regra de parada declarada",
+    },
+    "playtest_finding": {
+        "gate": "evaluate",
+        "label": "Cada achado de playtest nomeia problema, evidência, hipótese e medição",
+        "anchor": "problema, a evidência, a hipótese e a medição",
+    },
+    "evidence_kind": {
+        "gate": "conclude",
+        "label": "Cada evidência diz se o lastro é log de comando ou observação de pessoa",
+        "anchor": "log de comando",
+    },
+}
 
 STAGE_TIERS = {
     "brief": "prototype", "mda": "prototype", "poc": "prototype",
@@ -803,6 +856,113 @@ def gate_reading(project, gate=None):
             "sem nada escrito ao lado, e duas linhas discordantes. Não observa o jogo, não executa nada e "
             "**não concede passagem**: `held_by_declaration` diz que o projeto afirma cumprir, não que alguém "
             "conferiu."
+        ),
+    }
+
+
+CRAFT_ROW = re.compile(r"^\|\s*`([\w-]+)`\s*\|\s*`(\w+)`\s*\|\s*(.*?)\s*\|\s*$")
+CRAFT_SOURCES = GATE_SOURCES
+
+
+def craft_declaration(project):
+    declared = {}
+    problems = []
+    sources = []
+    for relative in CRAFT_SOURCES:
+        path = project / relative
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        seen_here = False
+        for number, line in enumerate(text.splitlines(), start=1):
+            match = CRAFT_ROW.match(line)
+            if not match:
+                continue
+            check, state, note = match.groups()
+            source = f"{relative}:{number}"
+            known_check = check in CRAFT_CHECKS
+            known_state = state in GATE_STATES
+            if not known_check and not known_state:
+                continue
+            if not known_check:
+                problems.append({"source": source, "reason": "unknown_check", "found": check})
+                continue
+            if not known_state:
+                problems.append({
+                    "source": source, "reason": "unknown_state",
+                    "gate": CRAFT_CHECKS[check]["gate"], "found": state,
+                })
+                continue
+            if state in ("waived", "out_of_scope", "met") and not note:
+                reason = {
+                    "waived": "waiver_without_reason",
+                    "out_of_scope": "scope_without_reason",
+                    "met": "met_without_evidence",
+                }[state]
+                problems.append({
+                    "source": source, "reason": reason,
+                    "gate": CRAFT_CHECKS[check]["gate"], "found": check,
+                })
+                continue
+            previous = declared.get(check)
+            rank = {"unmet": 0, "waived": 1, "met": 2, "out_of_scope": 3}
+            entry = {"state": state, "note": note or None, "source": source}
+            if previous is None or rank[state] < rank[previous["state"]]:
+                declared[check] = entry
+            if previous is not None and previous["state"] != state:
+                problems.append({
+                    "source": source, "reason": "conflicting_state",
+                    "gate": CRAFT_CHECKS[check]["gate"], "found": check,
+                })
+            seen_here = True
+        if seen_here:
+            sources.append(relative)
+    return {"declared": declared, "problems": problems, "sources": sources}
+
+
+def craft_reading(project, gate=None):
+    declaration = craft_declaration(project)
+    wanted = tuple(
+        key for key, spec in CRAFT_CHECKS.items()
+        if gate is None or spec["gate"] == gate
+    )
+    checks = []
+    for key in wanted:
+        spec = CRAFT_CHECKS[key]
+        row = declaration["declared"].get(key)
+        checks.append({
+            "key": key,
+            "check": spec["label"],
+            "gate": spec["gate"],
+            "state": row["state"] if row else "undeclared",
+            "evidence": row["note"] if row else None,
+            "source": row["source"] if row else None,
+        })
+    pending = [item["key"] for item in checks if item["state"] in ("undeclared", "unmet")]
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "checks": checks,
+        "pending": pending,
+        "problems": declaration["problems"],
+        "sources": declaration["sources"],
+        "granted": False,
+        "observed": False,
+        "guide": str(FRAMEWORK / "references/observable-criteria-research.md"),
+        "rule": (
+            "Checklist de ofício pergunta se o projeto corresponde ao que ele mesmo "
+            "declarou. Não importa limiar externo: paleta, constante de perdão, "
+            "definição de percentil, regra de parada. Um dígito aqui seria a escada "
+            "afirmando, para este jogo, o que ninguém verificou."
+        ),
+        "scope": (
+            "Lê a declaração do próprio projeto e confere só a forma. Não observa o "
+            "jogo, não mede contraste nem tempo de quadro e **não concede passagem**. "
+            "`observed` é sempre falso: tabela bem formada e otimista sai intacta."
         ),
     }
 
@@ -1481,7 +1641,69 @@ def harness_command(*parts):
 # o `--timeout` inteiro e sai como `failed`. E um benchmark não é o primeiro
 # validador a rodar — só vinha na frente por ordem alfabética.
 LONG_RUNNING = ("serve", "start", "dev", "watch", "preview", "storybook", "docs")
+PLAY_SCRIPTS = ("serve", "start", "dev", "preview")
 VALIDATOR_ORDER = ("test", "check", "lint", "typecheck", "types", "verify", "audit", "build", "budget", "bench")
+BRIEF_IDEA_MARKER = "[quem o jogador é e o que realiza]"
+
+
+def play_script_names(scripts):
+    names = list(scripts)
+    found = []
+    for word in PLAY_SCRIPTS:
+        for name in names:
+            if name == word or name.startswith(f"{word}:") or name.startswith(f"{word}-"):
+                if name not in found:
+                    found.append(name)
+    return found
+
+
+def play_command(project, scripts, manager):
+    names = play_script_names(scripts)
+    if not names or not manager:
+        return None
+    name = names[0]
+    info = scripts[name] if isinstance(scripts, dict) else {}
+    argv = info.get("argv") if isinstance(info, dict) else None
+    body = " ".join(shlex.quote(str(part)) for part in argv) if argv else f"{manager} run {shlex.quote(name)}"
+    return f"cd {shlex.quote(str(project))} && {body}"
+
+
+def fresh_starter_cycle(project, missing, play):
+    if missing or not play:
+        return False
+    docs = project / "docs"
+    if not docs.is_dir() or docs.is_symlink():
+        return False
+    marker = re.compile(r"\{\{|\[preencher|status[^\n]{0,30}(rascunho|draft)", re.IGNORECASE)
+    drafted = 0
+    for stage in INIT_DOCUMENTS:
+        path = docs / f"{stage}.md"
+        if not path.is_file() or path.is_symlink():
+            return False
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            return False
+        if not marker.search(text):
+            return False
+        drafted += 1
+    return drafted == len(INIT_DOCUMENTS)
+
+
+def seed_idea(project, idea):
+    if not nonempty(idea):
+        return None
+    path = project / "docs/brief.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    phrase = idea.strip()
+    text = path.read_text(encoding="utf-8")
+    if BRIEF_IDEA_MARKER in text:
+        text = text.replace(BRIEF_IDEA_MARKER, phrase, 1)
+    else:
+        text = text.replace("## Visão e jogador", f"## Visão e jogador\n\n- Fantasia em uma frase: {phrase}.", 1)
+    path.write_text(text, encoding="utf-8")
+    return "docs/brief.md"
 
 
 def validators(names):
@@ -1568,7 +1790,7 @@ def substitute(text, pairs):
     return pattern.sub(swap, text), counted
 
 
-def init(destination, starter, title=None, documents=True):
+def init(destination, starter, title=None, documents=True, idea=None):
     available = starters()
     if starter not in available:
         raise ValueError(f"starter desconhecido: {starter}; disponíveis: {', '.join(available) or 'nenhum'}")
@@ -1629,7 +1851,13 @@ def init(destination, starter, title=None, documents=True):
         if not (destination / "AGENTS.md").exists():
             template("agents", destination, destination / "AGENTS.md")
             drafts.append("AGENTS.md")
-    manager = package_commands(destination)[1]
+    seeded = seed_idea(destination, idea)
+    scripts, manager = package_commands(destination)
+    play = play_command(destination, {name: {"argv": [manager, "run", name]} for name in scripts} if manager else scripts, manager)
+    commands = []
+    if play:
+        commands.append(play)
+    commands.append(harness_command("next", destination, "--focus", "feel"))
     return {
         "schema_version": 1,
         "project": str(destination),
@@ -1639,22 +1867,65 @@ def init(destination, starter, title=None, documents=True):
         "files": files,
         "documents": drafts,
         "document_status": "draft",
+        "idea": idea.strip() if nonempty(idea) else None,
+        "brief": seeded,
         "substitutions": applied,
         "read_next": [
             str(FRAMEWORK / "references/production-bar.md"),
             str(FRAMEWORK / "references/preproduction.md"),
             str(destination / "README.md"),
         ],
-        "next_commands": [
-            f"{manager or 'npm'} test" if manager else "node --test",
-            harness_command("scan", destination),
-            harness_command("next", destination),
-        ],
+        "next_commands": commands,
         "scope": (
             "Copiou o starter, trocou os valores que `starter.json` declara e criou rascunhos a partir dos "
-            "templates. Os documentos estão vazios de decisão: `scan` vai reportar `draft_only` até que cada área "
-            "receba fato, hipótese ou lacuna com próxima ação. O starter é material de ADAPT, não uma engine nem "
-            "uma base aprovada; o comando não executa o jogo, não instala dependências e não avalia a proposta."
+            "templates. O ciclo já abre: o primeiro comando apontado é o que serve o jogo, não o que preenche "
+            "os sete rascunhos. `scan` ainda reporta `draft_only` até cada área receber fato, hipótese ou "
+            "lacuna. `--idea` entra no brief como frase, e o brief continua rascunho. O starter é material de "
+            "ADAPT, não uma engine nem uma base aprovada; o comando não executa o jogo, não instala "
+            "dependências e não avalia a proposta."
+        ),
+    }
+
+
+def start_project(destination, starter=None, title=None, idea=None, documents=True):
+    available = starters()
+    chosen = starter or (available[0] if available else None)
+    created = False
+    init_report = None
+    seeded = None
+    if not destination.exists() or (
+        destination.is_dir() and not destination.is_symlink() and not any(destination.iterdir())
+    ):
+        if not chosen:
+            raise ValueError("nenhum starter disponível neste repositório")
+        init_report = init(destination, chosen, title, documents, idea)
+        created = True
+        seeded = init_report.get("brief")
+    elif destination.exists() and not destination.is_dir():
+        raise ValueError("destino existente; escolha um caminho novo")
+    elif nonempty(idea):
+        seeded = seed_idea(destination, idea)
+    proposal = next_step(destination, "feel")
+    try:
+        scripts, manager = project_commands(destination)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
+    return {
+        "schema_version": 1,
+        "project": str(destination),
+        "created": created,
+        "starter": init_report["starter"] if init_report else None,
+        "idea": idea.strip() if nonempty(idea) else None,
+        "brief": seeded,
+        "play": play_command(destination, scripts, manager),
+        "init": init_report,
+        "next": proposal,
+        "executed": False,
+        "scope": (
+            "Caminho ideia→ciclo: cria o projeto se o destino estiver livre, aponta o "
+            "comando que abre o jogo e devolve a proposta do `next`. Não executa o "
+            "jogo, não instala dependências e não avalia a proposta. `--idea` entra "
+            "no brief como frase, e o brief continua rascunho."
         ),
     }
 
@@ -1855,10 +2126,10 @@ def next_step(project, focus="create", studies_root=None):
 
     if not payload["exists"]:
         propose(
-            f"Criar o projeto em {project} a partir de um starter e adaptá-lo à proposta",
+            f"Criar o projeto em {project} a partir de um starter e abrir o ciclo",
             "Sem destino no disco não há candidato para REUSE, e qualquer decisão de design fica sem consumidor.",
-            "O jogo abre, `npm test` passa e o README descreve a decisão característica desta proposta.",
-            [harness_command("init", project, "--starter", starters()[0] if starters() else "NOME_DO_STARTER")],
+            "O jogo abre, o verbo da proposta foi jogado uma vez e o brief registra o que muda — ou a lacuna.",
+            [harness_command("start", project, "--starter", starters()[0] if starters() else "NOME_DO_STARTER")],
             "exists=false",
         )
     elif payload["kind"] is None:
@@ -1880,6 +2151,18 @@ def next_step(project, focus="create", studies_root=None):
             "Cada área tem decisão com fonte, hipótese identificada ou lacuna com motivo e próxima ação.",
             [harness_command("context", project, "--focus", focus, "--event", "direction-approved")],
             "areas.not_located",
+        )
+    play = play_command(project, payload["scripts"], payload["package_manager"])
+    fresh = fresh_starter_cycle(project, missing, play)
+    if fresh:
+        propose(
+            "Abrir o ciclo do starter e escrever o que a proposta muda no verbo",
+            "O destino já é um jogo que abre. Sete rascunhos antes da primeira partida "
+            "são o atrito que este passo existe para cortar. O harness não executa o jogo.",
+            "O ciclo correu uma vez, e o brief (ou um recibo de observação) registra o que "
+            "esta proposta muda no verbo — ou a lacuna, se ainda não souber.",
+            [play, harness_command("next", project, "--focus", "feel")],
+            "playable.unplayed",
         )
     if drafts:
         propose(
@@ -2002,6 +2285,32 @@ def next_step(project, focus="create", studies_root=None):
                     [harness_command("gate", project, "--gate", blocked["key"])],
                     "gates.pending",
                 )
+    craft = craft_declaration(project)
+    if craft["problems"]:
+        propose(
+            "Corrigir a forma da declaração de ofício em: "
+            + ", ".join(f"{item['source']} ({item['reason']})" for item in craft["problems"][:4]),
+            "Linha malformada não entra na leitura, e o checklist que ela pretendia "
+            "declarar continua pendente.",
+            "Cada linha nomeia um dos checklists de ofício, um estado e o que sustenta o estado.",
+            [harness_command("craft", project)],
+            "craft.problems",
+        )
+    else:
+        reading = craft_reading(project)
+        live = [item for item in reading["checks"] if item["gate"] in gates["declared"]]
+        blocked = next((item for item in live if item["state"] in ("undeclared", "unmet")), None)
+        if blocked:
+            propose(
+                f"Declarar o checklist `{blocked['key']}` do gate `{blocked['gate']}`: {blocked['check']}",
+                "Isto não pergunta se um número externo se cumpriu. Pergunta se o projeto "
+                "corresponde ao que ele mesmo declarou — paleta, constante, definição, "
+                "regra de parada. O harness não observa o jogo.",
+                "A linha sai de `undeclared`/`unmet` com o que sustenta o estado, ou é "
+                "dispensada com motivo e autor, ou marcada fora de escopo com motivo.",
+                [harness_command("craft", project, "--gate", blocked["gate"])],
+                "craft.pending",
+            )
 
     bar = payload["production_bar"]
     dimensions = [item["key"] for item in bar["dimensions"]]
@@ -2079,6 +2388,12 @@ def next_step(project, focus="create", studies_root=None):
             "gates_problems": gates["problems"],
             "origins_undeclared": origins["undeclared"],
             "origins_contradicts_licensing": origins["contradicts_licensing"],
+            "playable_unplayed": fresh,
+            "craft_pending": [
+                key for key, spec in CRAFT_CHECKS.items()
+                if spec["gate"] in gates["declared"]
+                and craft["declared"].get(key, {}).get("state", "undeclared") in ("undeclared", "unmet")
+            ],
         },
         "context_command": harness_command("context", project, "--focus", focus),
         "authority": "agent_resolves",
@@ -2305,7 +2620,17 @@ def main():
     start.add_argument("project")
     start.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
     start.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
+    start.add_argument("--idea", help="frase da fantasia; entra no brief como rascunho, não como decisão")
     start.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
+    begin = commands.add_parser(
+        "start", parents=[common],
+        help="caminho ideia→ciclo: cria se o destino estiver livre e aponta o comando que abre o jogo",
+    )
+    begin.add_argument("project")
+    begin.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
+    begin.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
+    begin.add_argument("--idea", help="frase da fantasia; entra no brief como rascunho, não como decisão")
+    begin.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
     upcoming = commands.add_parser("next", parents=[common], help="proposta ordenada de próxima ação, a partir do estado no disco")
     upcoming.add_argument("project")
     upcoming.add_argument("--focus", choices=FOCI, default="create")
@@ -2318,6 +2643,12 @@ def main():
         help="arquivos embarcados e o recibo de origem que o projeto declara",
     )
     origins_cmd.add_argument("project")
+    craft_cmd = commands.add_parser(
+        "craft", parents=[common],
+        help="checklists de ofício que o projeto declara cumprir, sem limiar importado",
+    )
+    craft_cmd.add_argument("project")
+    craft_cmd.add_argument("--gate", choices=sorted(GATES), help="só os checklists daquele gate")
     ctx = commands.add_parser("context", parents=[common])
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
@@ -2370,7 +2701,9 @@ def main():
         elif args.action == "init":
             if not args.starter:
                 raise ValueError("nenhum starter disponível neste repositório")
-            emit(init(resolve(args.project, root), args.starter, args.title, not args.no_docs))
+            emit(init(resolve(args.project, root), args.starter, args.title, not args.no_docs, args.idea))
+        elif args.action == "start":
+            emit(start_project(resolve(args.project, root), args.starter, args.title, args.idea, not args.no_docs))
         elif args.action == "next":
             emit(next_step(resolve(args.project, root), args.focus, studies_root=default_studies_root(root)))
         elif args.action == "scan":
@@ -2379,6 +2712,8 @@ def main():
             emit(bar_reading(resolve(args.project, root)))
         elif args.action == "origins":
             emit(origins_reading(resolve(args.project, root)))
+        elif args.action == "craft":
+            emit(craft_reading(resolve(args.project, root), args.gate))
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":

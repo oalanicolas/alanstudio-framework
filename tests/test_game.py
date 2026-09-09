@@ -970,6 +970,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "exists=false": "sem destino",
             "kind=null": "sem entrypoint",
             "areas.not_located": "área não localizada",
+            "playable.unplayed": "ciclo jogável ainda sem partida",
             "areas.draft_only": "rascunho",
             "areas.historical_or_reference_only": "documento sem versão vigente",
             "continuity.sources": "continuidade",
@@ -979,6 +980,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "gates.problems": "linha de gate malformada",
             "gates.value": "pergunta de valor",
             "gates.pending": "critério pendente",
+            "craft.problems": "linha de ofício malformada",
+            "craft.pending": "checklist pendente",
             "production_bar.problems": "linha de degrau malformada",
             "production_bar.undeclared": "dimensão sem linha",
             "production_bar.conflicts": "duas linhas em conflito",
@@ -1312,11 +1315,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     # envelhece calada quando alguém sobe uma linha da tabela.
     def test_the_starter_reading_counts_the_dimensions_that_are_really_at_the_floor(self):
         escrito = {1: "uma", 2: "duas", 3: "três", 4: "quatro", 5: "cinco", 6: "seis", 7: "sete"}
-        row = re.compile(r"^\| `(\w+)` \| `(\w+)` \|", re.MULTILINE)
+        row = re.compile(r"^\| `(\w+)` \| `(\w+)` \| `(\w+)`:", re.MULTILINE)
         leitura = re.compile(r"este projeto é um (\w+)\*\*, porque (\w+) dimensões")
         for name in game.starters():
             readme = (Path(game.STARTERS_ROOT) / name / "README.md").read_text(encoding="utf-8")
-            tiers = [tier for _, tier in row.findall(readme)]
+            tiers = [tier for _, tier, _ in row.findall(readme)]
             self.assertTrue(tiers, name)
             lowest = min(tiers, key=game.BAR_TIERS.index)
             found = leitura.search(readme)
@@ -1385,7 +1388,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         result = game.next_step(self.root / "ainda-nao-existe")
         self.assertFalse(result["exists"])
         self.assertEqual(result["proposal"]["basis"], "exists=false")
-        self.assertIn("init", result["proposal"]["commands"][0])
+        self.assertIn("start", result["proposal"]["commands"][0])
         self.assertEqual(result["authority"], "agent_resolves")
         self.assertFalse(result["executed"])
         self.assertFalse((self.root / "ainda-nao-existe").exists())
@@ -1398,21 +1401,33 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(result["signals"]["gaps"])
         self.assertEqual(result["signals"]["package_manager"], "npm")
 
-    def test_next_moves_from_documenting_to_replacing_the_drafts_after_init(self):
+    def test_next_opens_the_starter_before_replacing_drafts_after_init(self):
         destination = self.root / "novo-jogo"
         game.init(destination, "canvas-arcade")
         result = game.next_step(destination)
-        self.assertEqual(result["proposal"]["basis"], "areas.draft_only")
+        self.assertEqual(result["proposal"]["basis"], "playable.unplayed")
+        self.assertTrue(result["signals"]["playable_unplayed"])
+        self.assertIn("serve", result["proposal"]["commands"][0])
         self.assertEqual(result["signals"]["non_current_areas"], [])
         self.assertIn("test", result["signals"]["scripts"])
         bases = [item["basis"] for item in result["alternatives"]]
         self.assertNotIn("areas.not_located", bases)
+        self.assertIn("areas.draft_only", bases)
         self.assertIn("scripts", bases)
         # O projeto herda a tabela do starter, então a barra já tem piso e a
         # proposta nomeia a dimensão em vez de listar as dez.
         self.assertIn("production_bar.floor", bases)
         self.assertEqual(result["signals"]["production_bar_floor"], "prototype")
         self.assertEqual(result["signals"]["production_bar_undeclared"], [])
+        # Uma área que deixa de ser rascunho encerra o atalho: o restante dos
+        # templates volta a ser a proposta, porque já não é um init fresco.
+        (destination / "docs/brief.md").write_text(
+            "# Visão e escopo\n\nO jogador atravessa estilhaços para guardar a corrente.\n",
+            encoding="utf-8",
+        )
+        after = game.next_step(destination)
+        self.assertEqual(after["proposal"]["basis"], "areas.draft_only")
+        self.assertFalse(after["signals"]["playable_unplayed"])
 
     def test_next_falls_back_to_the_production_bar_when_nothing_is_missing(self):
         self.foundation_document()
@@ -1453,6 +1468,17 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         header = "" if document.is_file() else "# Jogo\n"
         with document.open("a", encoding="utf-8") as handle:
             handle.write(f"{header}\n| Gate | Critério | Estado | Evidência |\n| --- | --- | --- | --- |\n"
+                         + "\n".join(lines) + "\n")
+        return document
+
+    def declare_craft(self, rows, path="README.md", project=None):
+        lines = [f"| `{check}` | `{state}` | {note} |"
+                 for check, (state, note) in rows.items()]
+        document = (project or self.project) / path
+        document.parent.mkdir(parents=True, exist_ok=True)
+        header = "" if document.is_file() else "# Jogo\n"
+        with document.open("a", encoding="utf-8") as handle:
+            handle.write(f"{header}\n| Check | Estado | Evidência |\n| --- | --- | --- |\n"
                          + "\n".join(lines) + "\n")
         return document
 
@@ -1809,6 +1835,88 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             if item["basis"] == "origins.undeclared"
         )
         self.assertIn("não sobrevive", proposal["why"])
+
+    def test_every_craft_check_still_points_at_the_research_it_came_from(self):
+        corpus = " ".join(
+            (game.FRAMEWORK / "references" / name).read_text(encoding="utf-8")
+            for name in (
+                "observable-criteria-research.md", "gates-research.md", "gates.md",
+            )
+        )
+        corpus = " ".join(corpus.split())
+        self.assertEqual(len(game.CRAFT_CHECKS), 9)
+        for key, spec in game.CRAFT_CHECKS.items():
+            with self.subTest(check=key):
+                self.assertIn(spec["gate"], game.GATES)
+                self.assertIn(spec["anchor"], corpus)
+                self.assertTrue(spec["label"][0].isupper(), spec["label"])
+                self.assertNotRegex(spec["label"], r"\d", spec["label"])
+
+    def test_craft_never_claims_to_have_observed_the_game(self):
+        report = game.craft_reading(self.project)
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["observed"])
+        self.assertIn("Não observa o jogo", report["scope"])
+        self.assertEqual(len(report["pending"]), len(game.CRAFT_CHECKS))
+
+    def test_craft_accepts_a_receipt_without_calling_it_observation(self):
+        self.declare_craft({"palette": ("met", "paleta em art-bible; cores de render.js — Ana")})
+        report = game.craft_reading(self.project, "scale")
+        palette = next(item for item in report["checks"] if item["key"] == "palette")
+        self.assertEqual(palette["state"], "met")
+        self.assertFalse(report["observed"])
+        self.assertNotIn("palette", report["pending"])
+
+    def test_craft_refuses_met_without_evidence_and_never_observes(self):
+        self.declare_craft({"palette": ("met", "")})
+        report = game.craft_reading(self.project)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertEqual(report["problems"][0]["reason"], "met_without_evidence")
+        self.assertIn("palette", report["pending"])
+
+    def test_next_only_raises_craft_for_a_gate_the_project_asked_for(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        self.foundation_document()
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "release"))]
+        self.assertNotIn("craft.pending", bases)
+        rows = {("scale", key): ("met", f"evidência de {key}")
+                for key, _, _, _ in game.GATES["scale"]["criteria"]}
+        self.declare_gate(rows)
+        proposal = next(
+            item for item in self.proposals(game.next_step(self.project, "release"))
+            if item["basis"] == "craft.pending"
+        )
+        self.assertIn("palette", proposal["action"])
+        self.assertIn("corresponde ao que ele mesmo declarou", proposal["why"])
+
+    def test_start_creates_the_project_and_points_at_serve_without_playing(self):
+        destination = self.root / "ideia ao ciclo"
+        report = game.start_project(destination, "canvas-arcade", idea="guardar a corrente ou continuar")
+        self.assertTrue(report["created"])
+        self.assertFalse(report["executed"])
+        self.assertTrue((destination / "index.html").is_file())
+        self.assertIn("guardar a corrente ou continuar", (destination / "docs/brief.md").read_text(encoding="utf-8"))
+        self.assertIn("[preencher]", (destination / "docs/brief.md").read_text(encoding="utf-8"))
+        self.assertIn("serve", report["play"])
+        self.assertEqual(report["next"]["proposal"]["basis"], "playable.unplayed")
+        self.assertFalse(report["next"]["executed"])
+        # Destino ocupado não é sobrescrito: start aponta o ciclo que já existe.
+        again = game.start_project(destination, "canvas-arcade")
+        self.assertFalse(again["created"])
+        self.assertIsNone(again["init"])
+        self.assertEqual(again["next"]["proposal"]["basis"], "playable.unplayed")
+
+    def test_init_seeds_the_idea_and_still_calls_the_brief_a_draft(self):
+        destination = self.root / "com-ideia"
+        created = game.init(destination, "canvas-arcade", idea="atravessar estilhaços")
+        brief = (destination / "docs/brief.md").read_text(encoding="utf-8")
+        self.assertEqual(created["brief"], "docs/brief.md")
+        self.assertIn("atravessar estilhaços", brief)
+        self.assertIn("[preencher]", brief)
+        self.assertEqual(created["document_status"], "draft")
+        self.assertEqual(game.scan(destination)["areas"]["vision"]["status"], "draft_only")
+        self.assertIn("serve", created["next_commands"][0])
 
     def test_next_fixes_the_gate_form_before_chasing_the_criterion(self):
         (self.project / "index.html").write_text("<canvas></canvas>")

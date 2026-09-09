@@ -47,7 +47,13 @@ Com starter (REUSE de infraestrutura já testada):
 
 ```sh
 python3 scripts/game.py doctor --root /caminho/do/laboratorio
-python3 scripts/game.py init /caminho/do/laboratorio/meu-jogo --starter canvas-arcade
+python3 scripts/game.py start /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
+```
+
+`start` é o caminho ideia→ciclo: cria o projeto se o destino estiver livre (o mesmo que `init`), aponta o comando que **abre** o jogo e devolve a proposta do `next`. Não executa o jogo. `--idea` entra no brief como frase; o brief continua rascunho. Sem `start`, o caminho em dois passos continua valendo:
+
+```sh
+python3 scripts/game.py init /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
 python3 scripts/game.py next /caminho/do/laboratorio/meu-jogo --focus feel
 ```
 
@@ -66,18 +72,24 @@ tdd, art-bible, devlog e qa — como **rascunho declarado**, além de `AGENTS.md
 raiz para instruções persistentes. Os sete documentos em `docs/` cobrem sete das
 nove áreas mínimas que `scan` cobra; as outras duas, origem e execução, ficam com o
 README e o CREDITS do starter, então depois do `init` as nove têm candidato. Com
-`--no-docs`, sobram três. Os demais templates do ciclo entram depois, com `template`, quando a
+`--no-docs`, sobram três. `--idea` escreve a frase da fantasia no brief; o brief
+continua rascunho. Os demais templates do ciclo entram depois, com `template`, quando a
 etapa chegar. Não instala dependências, não toca no starter de origem e recusa
-destino ocupado. `scan` reconhece o resultado no mesmo turno, e `verify` roda os
-validadores do starter onde houver Node.
+destino ocupado. `scan` reconhece o resultado no mesmo turno; o primeiro comando
+que `init` aponta é o que serve o jogo, e `verify` roda os validadores do starter
+onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
-destino → sem entrypoint → área não localizada → rascunho → documento sem versão
+destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
+→ rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
-recibo → gate → barra. O gate tem três ramos: linha
+recibo → gate → ofício → barra. Depois de um `init` fresco — nove áreas com
+candidato, sete ainda rascunho, e um script que abre o jogo — a primeira proposta
+é jogar o ciclo, não preencher os templates. O gate tem três ramos: linha
 de gate malformada, pergunta de valor e critério pendente — nessa ordem, porque
 terminar o que talvez não devesse existir é o desperdício que um gate existe para
-interromper. A barra tem quatro, na ordem: linha de
+interromper. O ofício tem dois: linha de ofício malformada e checklist pendente.
+A barra tem quatro, na ordem: linha de
 degrau malformada, dimensão sem linha, duas linhas em conflito e — só então —
 subir a dimensão mais baixa. Num projeto sem tabela, portanto, a última proposta
 é declarar os degraus, não subir um deles. Devolve
@@ -295,6 +307,32 @@ sendo alegação de quem escreveu.
 `deliver.licensing` como `met` e o disco ainda tem arquivo sem recibo, a saída
 marca `contradicts_licensing`. `next` propõe declarar a origem — ou tirar o
 arquivo do embarque — antes de seguir o restante do gate.
+
+## Ofício
+
+Os gates perguntam se o trabalho está feito e se ainda vale o que custa. Isso
+não cobre paleta, janela de perdão, definição de percentil nem regra de parada
+de playtest. Esses checklists vêm do [levantamento de critérios
+observáveis](references/observable-criteria-research.md) §7 — o único conjunto
+que a pesquisa chamou de “não precisa de autoridade externa”: conformidade com
+o que o **próprio projeto** declarou.
+
+```sh
+python3 scripts/game.py craft /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py craft /caminho/do/laboratorio/meu-jogo --gate scale
+```
+
+```markdown
+| Check | Estado | Evidência |
+| --- | --- | --- |
+| `palette` | `met` | paleta em docs/art-bible.md; cores de src/game/render.js listadas lá — Ana |
+| `playtest_stop` | `unmet` | regra de parada ainda não escrita |
+```
+
+**Nenhum checklist cita dígito.** Um limiar aqui seria o harness afirmando, para
+este jogo, o que ninguém verificou. `observed` e `granted` são sempre `false`.
+`next` só levanta um checklist do gate que o projeto **declarou** — o mesmo
+silêncio dos gates: quem não pediu a permissão não recebe a lista.
 
 ## Starters
 

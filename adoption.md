@@ -3,6 +3,27 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.7 — Disco, ofício e primeiro ciclo
+
+Três lacunas entre a promessa (ideia→jogo jogável, acabamento observável) e o
+que o harness de fato fazia:
+
+- **`origins`** percorre mídia embarcada e cruza com recibos. Não valida
+  licença. `granted` e `validated` são sempre `false`. Se `deliver.licensing`
+  está `met` e o disco tem arquivo sem recibo, a saída marca
+  `contradicts_licensing`.
+- **`craft`** lê os nove checklists da §7 — paleta, perdão, percentil, regra de
+  parada — como conformidade com a declaração do projeto. Nenhum rótulo tem
+  dígito. `observed` é sempre `false`. Só entra no `next` se o projeto declarou
+  o gate correspondente.
+- **`start`** e `playable.unplayed`: depois de um `init` fresco o `next` propõe
+  abrir o ciclo, não preencher sete templates. `--idea` escreve a fantasia no
+  brief; o brief continua rascunho. `executed` permanece `false`.
+
+O que 0.9.7 não afirma: nenhum comando observa o jogo, mede contraste, concede
+passagem de gate ou transforma recibo em licença válida. Feel, arte e conteúdo
+em sessão real continuam `not_assessed` até haver observação em movimento.
+
 ## 0.9.6 — Memória do agente entre sessões (parcial)
 
 Handoff: [HANDOFF.md](HANDOFF.md). `instruction_files` localiza AGENTS.md e equivalentes
