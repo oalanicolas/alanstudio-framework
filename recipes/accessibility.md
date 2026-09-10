@@ -4,7 +4,8 @@ Entrada: a barreira concreta que impede alguém de jogar — entrada, visão, au
 movimento, leitura ou tempo de reação.
 
 Com tela, a primeira superfície é a porta. O aviso do primeiro ciclo
-mora no canvas — fantasia e mover na porta, o resto no campo — e a
+mora no canvas — fantasia e mover na porta, o resto no campo, inclusive
+a prática orbe-só enquanto o campo a marca — e a
 região viva nomeia a mesma linha. Sem isto quem não vê a tela só
 tinha a tabela, e o convite some `#commands`. Overlay, HUD da abertura, a
 legenda e a casca da página também seguem `uiScale`. Os knobs da casca
@@ -55,6 +56,8 @@ nomeia as teclas vigentes e mantém toque e controle no
 sufixo. Declara em
 `docs/access.md` o que o recorte não atende. O aviso do primeiro ciclo
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
+A prática orbe-só também ganha passo no campo enquanto o canvas a
+marca; a porta não ensina.
 Estilhaço no trilho pede o dash; toque e controle ganham passo depois
 do movimento. Overlay e HUD confirmam o aparelho que falou por último.
 Na pausa o toque retoma — Esc e P não existem no polegar.

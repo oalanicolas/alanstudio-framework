@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.312 — O aviso do campo nomeia a prática
+
+O
+campo
+já
+contornava
+a
+janela
+orbe-só.
+O
+aviso
+pedia
+coleta
+como
+se
+a
+ameaça
+já
+caísse.
+Agora
+nomeia
+a
+prática.
+Dash,
+hit,
+miss
+e
+a
+superfície
+vencem.
+A
+porta
+não
+ensina.
+Copy
+4.
+Não
+promove
+`felt`.
+
+O que 0.9.312 não afirma:
+texto
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.311 — A região viva nomeia a lacuna do som
 
 O

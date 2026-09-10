@@ -17,6 +17,7 @@
   "hint_touch": "Cima avança; baixo guarda — o arraste já move",
   "hint_pad": "A avança; X guarda — o analógico já move",
   "hint_collect": "Passe no orbe — a corrente cresce",
+  "hint_practice": "Só orbes — a borda some quando a ameaça começa",
   "hint_miss": "O orbe caiu — a corrente não cresceu",
   "hint_hit": "O estilhaço come a corrente viva — atravesse ou guarde",
   "hint_bank": "Guarde ({bank}, baixo ou X) antes de perder a corrente",

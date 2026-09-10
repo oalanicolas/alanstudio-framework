@@ -261,6 +261,9 @@ cooldown e veste o look — rótulo sozinho era o mesmo quadro.
 O fecho da partida contorna o campo e pulsa o controle a cada
 segundo; não é faixa no HUD. Com menos movimento vira traço.
 A prática e a guarda falam no mixer quando a janela acaba;
+o aviso nomeia a janela orbe-só enquanto o campo a contorna
+(`hint_practice`) — dash, hit, miss e a superfície vencem;
+depois da prática o aviso pede o orbe; a porta não ensina;
 o orbe que cai fala, acende o campo, marca o lugar, desloca
 a câmera para baixo e senta o corpo quando o verbo está parado;
 no avanço, no coil e no sit da guarda a queda marca o chão e

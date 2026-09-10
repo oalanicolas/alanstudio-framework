@@ -24,10 +24,12 @@ test("fantasia vazia não toma o lugar do movimento", () => {
   assert.equal(coachHint(createState(1), { fantasy: "   " }), "move");
 });
 
-test("sem corrente o aviso pede o orbe", () => {
+test("sem corrente o aviso nomeia a prática enquanto o campo a marca", () => {
   const state = createState(1);
   state.tick = 90;
-  assert.equal(coachHint(state), "collect");
+  assert.equal(coachHint(state), "practice");
+  state.tick = CONFIG.spawn.practiceTicks;
+  assert.equal(coachHint(state), "collect", "depois da prática o aviso pede o orbe");
 });
 
 test("corrente que já vale mais pede guardar", () => {
@@ -77,7 +79,7 @@ test("depois da porta o campo não repete a frase nem o mover", () => {
   beginRun(door);
   assert.equal(door.phase, "playing");
   assert.equal(door.tick, 0);
-  assert.equal(coachHint(door, lines), "collect", "depois da porta o campo pede o orbe");
+  assert.equal(coachHint(door, lines), "practice", "depois da porta o campo nomeia a prática");
   door.entities = [shardOnRail()];
   assert.equal(coachHint(door, lines), "dash", "depois da porta o estilhaço pede o dash");
 
@@ -99,7 +101,7 @@ test("depois da porta o campo não repete a frase nem o mover", () => {
   const plain = createState(5, { entry: "title" });
   plain.attractTick = MOVE_TICKS;
   beginRun(plain);
-  assert.equal(coachHint(plain), "collect", "sem frase a porta que já ensinou mover não pede de novo");
+  assert.equal(coachHint(plain), "practice", "sem frase a porta que já ensinou mover não pede de novo");
 });
 
 test("o hold não some o relógio da porta", () => {
@@ -108,13 +110,13 @@ test("o hold não some o relógio da porta", () => {
   door.attractTick = FANTASY_TICKS + MOVE_TICKS;
   beginRun(door);
   door.tick = 10;
-  assert.equal(coachHint(door, lines), "collect", "depois da porta o campo pede o orbe");
+  assert.equal(coachHint(door, lines), "practice", "depois da porta o campo nomeia a prática");
   const hold = captureHold(door);
   assert.ok(hold, "o tick no campo cabe no hold");
   assert.equal(hold.attractTick, FANTASY_TICKS + MOVE_TICKS, "o recorte leva o relógio");
   const resumed = restoreState(hold);
   assert.equal(resumed.attractTick, FANTASY_TICKS + MOVE_TICKS);
-  assert.equal(coachHint(resumed, lines), "collect", "retomar não devolve a frase");
+  assert.equal(coachHint(resumed, lines), "practice", "retomar não devolve a frase");
   resumed.entities = [shardOnRail()];
   assert.equal(coachHint(resumed, lines), "dash", "retomar não devolve o mover");
 
@@ -171,14 +173,14 @@ test("estilhaço no trilho pede o dash antes do orbe", () => {
   state.entities = [shardOnRail()];
   assert.equal(coachHint(state), "dash");
   state.stats.dashes = 1;
-  assert.equal(coachHint(state), "collect", "depois do avanço o aviso não insiste no dash");
+  assert.equal(coachHint(state), "practice", "depois do avanço o aviso não insiste no dash");
 });
 
 test("orbe no trilho não finge ameaça", () => {
   const state = createState(1);
   state.tick = 90;
   state.entities = [orbOnRail()];
-  assert.equal(coachHint(state), "collect");
+  assert.equal(coachHint(state), "practice");
 });
 
 test("toque e controle ganham passo depois do movimento", () => {
@@ -186,11 +188,11 @@ test("toque e controle ganham passo depois do movimento", () => {
   state.tick = 70;
   assert.equal(coachHint(state, {}, { surface: "pointer" }), "touch");
   assert.equal(coachHint(state, {}, { surface: "gamepad" }), "pad");
-  assert.equal(coachHint(state, {}, { surface: "keyboard" }), "collect");
+  assert.equal(coachHint(state, {}, { surface: "keyboard" }), "practice");
   state.tick = 50;
   assert.equal(coachHint(state, {}, { surface: "pointer" }), "move", "o movimento ainda vem primeiro");
   state.tick = 120;
-  assert.equal(coachHint(state, {}, { surface: "gamepad" }), "collect", "o passo da superfície some");
+  assert.equal(coachHint(state, {}, { surface: "gamepad" }), "practice", "o passo da superfície some");
 });
 
 test("estilhaço no trilho vence o passo da superfície", () => {
@@ -208,7 +210,7 @@ test("o estilhaço nomeia o custo enquanto a corrente voltou a zero", () => {
   state.stats.missed = 1;
   assert.equal(coachHint(state), "hit", "o estilhaço vence a queda");
   state.chain = 1;
-  assert.equal(coachHint(state), "collect");
+  assert.equal(coachHint(state), "practice");
   state.chain = 3;
   assert.equal(coachHint(state), "bank");
   state.stats.banks = 1;
@@ -221,6 +223,13 @@ test("estilhaço no trilho vence o custo do hit", () => {
   state.stats.hits = 1;
   state.entities = [shardOnRail()];
   assert.equal(coachHint(state), "dash");
+});
+
+test("a porta não ensina a prática", () => {
+  const state = createState(1, { entry: "title" });
+  state.attractTick = 90;
+  assert.equal(coachHint(state), null);
+  assert.equal(coachHint(state, {}, { surface: "pointer" }), null, "a porta não ensina toque na prática");
 });
 
 test("a porta não ensina o custo do estilhaço", () => {
@@ -237,7 +246,7 @@ test("orbe perdido nomeia o custo enquanto a corrente é zero", () => {
   state.stats.missed = 1;
   assert.equal(coachHint(state), "miss");
   state.chain = 1;
-  assert.equal(coachHint(state), "collect");
+  assert.equal(coachHint(state), "practice");
   state.chain = 3;
   assert.equal(coachHint(state), "bank");
   state.stats.banks = 1;
@@ -287,6 +296,7 @@ test("o aviso do primeiro ciclo vira texto, não só a chave", () => {
     fantasy: "guardar a corrente",
     hint_move: "←/→, arraste ou analógico",
     hint_collect: "Passe no orbe — a corrente cresce",
+    hint_practice: "Só orbes — a borda some quando a ameaça começa",
   };
   const door = createState(1, { entry: "title" });
   assert.equal(coachText(door, lines), "guardar a corrente");
@@ -294,6 +304,8 @@ test("o aviso do primeiro ciclo vira texto, não só a chave", () => {
   assert.equal(coachText(door, lines), "←/→, arraste ou analógico");
   const field = createState(2);
   field.tick = 90;
+  assert.equal(coachText(field, lines), "Só orbes — a borda some quando a ameaça começa");
+  field.tick = CONFIG.spawn.practiceTicks;
   assert.equal(coachText(field, lines), "Passe no orbe — a corrente cresce");
   field.phase = "over";
   assert.equal(coachText(field, lines), "");

@@ -21,6 +21,8 @@
 // `hint_touch` e `hint_pad` são o passo da superfície que falou;
 // `hint_miss` nomeia a queda quando a corrente ainda é zero.
 // `hint_hit` nomeia o estilhaço quando a corrente voltou a zero.
+// `hint_practice` nomeia a janela orbe-só enquanto o campo a
+// contorna. Depois da prática o aviso volta a pedir o orbe.
 // Overlay e HUD confirmam o aparelho que falou por último.
 // `palettes` tem consumidor: o desenho lê
 // `PALETTES` daqui, não uma constante no render. `look` escolhe um
@@ -42,6 +44,7 @@
 // Spawn 3 acrescenta o fecho (`closeIntervalScale`); ausente fica 1.
 // Spawn 4 acrescenta o risco do fecho (`closeHazardScale`); ausente fica 1.
 // Copy 3 acrescenta `hint_hit`; ausente ganha o padrão.
+// Copy 4 acrescenta `hint_practice`; ausente ganha o padrão.
 
 import spawnRaw from "../../data/spawn.json" with { type: "json" };
 import copyRaw from "../../data/copy.json" with { type: "json" };
@@ -152,6 +155,7 @@ export const COPY_FIELDS = [
   "hint_touch",
   "hint_pad",
   "hint_collect",
+  "hint_practice",
   "hint_miss",
   "hint_hit",
   "hint_bank",
@@ -226,6 +230,10 @@ export function migrateCopy(raw) {
     over_door: typeof table.over_door === "string" ? table.over_door : "Abertura: {dash}",
     over_door_inline: typeof table.over_door_inline === "string" ? table.over_door_inline : "abertura: {dash}",
     hint_hit: typeof table.hint_hit === "string" ? table.hint_hit : "O estilhaço come a corrente viva — atravesse ou guarde",
+    hint_practice:
+      typeof table.hint_practice === "string"
+        ? table.hint_practice
+        : "Só orbes — a borda some quando a ameaça começa",
   };
 }
 

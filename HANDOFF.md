@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.311: a região viva nomeia a lacuna do som. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.312: o aviso do campo nomeia a prática. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.311):** `python3 -m unittest discover -s tests` → 320 OK.
-`cd assets/starters/canvas-arcade && npm test` → 495 OK.
+**Testes no HEAD (0.9.312):** `python3 -m unittest discover -s tests` → (confirmar).
+`cd assets/starters/canvas-arcade && npm test` → (confirmar).
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.311)
+## O que o HEAD já entrega (0.9.91–0.9.312)
 
 | Ver | Salto |
 | --- | --- |
@@ -255,6 +255,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.309 | A memória nomeia o playtest. O start já nomeava o serve e o note; a próxima sessão calava o leitor que o `next` já aponta. Não promove `outsider`. |
 | 0.9.310 | Os rascunhos de hipótese nomeiam a porta. Brief e GDD já falavam; o MDA do `init` e os rascunhos de MVP/PRD começavam no campo. Não promove `observed`. |
 | 0.9.311 | A região viva nomeia a lacuna do som. O painel já falava; o live calava e o convite some a tabela. Catálogo completo não entra. Não promove `heard`. |
+| 0.9.312 | O aviso do campo nomeia a prática. O campo já contornava a janela orbe-só; o coach pedia coleta como se a ameaça já caísse. Dash, hit, miss e a superfície vencem. A porta não ensina. Copy 4. Não promove `felt`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -268,14 +269,14 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
-| pacing | slice | o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
+| pacing | slice | o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
-| accessibility | slice | a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
+| accessibility | slice | o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
 | content_scale | shippable | paleta não finge volume; dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -335,11 +336,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   **depois** da primeira guarda. O fecho com corrente viva pede
   `bank` (reusa `hint_bank`); sem corrente, ou fora do fecho,
   a primeira guarda continua encerrando o ensino. A porta não
-  ensina pad, toque, dash, coleta nem guarda.
+  ensina pad, toque, dash, coleta, prática nem guarda.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, chuva da porta, `gameSpeed` no disco, `hold` no stub,
-  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, `closeHazardScale` no disco, `closeBedRate` no disco, recorde no overlay do fim, aviso de guardar no fecho, `hint_hit` no disco, pulso do corpo na graça, copiar ou gravar o achado, last-run,
+  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, `closeHazardScale` no disco, `closeBedRate` no disco, recorde no overlay do fim, aviso de guardar no fecho, `hint_hit` no disco, `hint_practice` no disco, pulso do corpo na graça, copiar ou gravar o achado, last-run,
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
   `then.invite`, `invite_href`, copiar o endereço do convite,
   levar a chuva ou o look na URL, tinta estável no disco,
@@ -470,7 +471,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um Copiar que cala o destino
   ou uma memória que cala o playtest
   ou um MDA que cala a porta
-  ou uma região viva que cala a lacuna do som.
+  ou uma região viva que cala a lacuna do som
+  ou um aviso que some a prática enquanto o campo já
+  contorna a janela orbe-só.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -793,8 +796,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   número restaura 0 e não inventa ensino feito.
   `coachText` devolve a linha que o canvas pinta; `#live`
   a nomeia na porta e no campo. `over` continua mudo. Dash, coleta,
-  guarda, queda, hit e superfície ficam no campo.
+  guarda, queda, hit, prática e superfície ficam no campo.
   `hint_hit` nomeia o estilhaço quando `hits > 0` e `chain === 0`.
+  `hint_practice` nomeia a janela orbe-só enquanto
+  `practicingWindow`. Dash, hit, miss e a superfície vencem.
+  Depois da prática o aviso pede o orbe. A porta não ensina.
   Dash no trilho vence. Texto no disco não é `felt`.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso
   quando a porta ainda não deu a frase.
@@ -803,7 +809,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `title_volatile` / `title_unsaved` /
   `over_door` / `over_door_inline` em `COPY_FIELDS` (default `{dash}`).
   Copy 3: `hint_hit` (default «O estilhaço come a corrente viva —
-  atravesse ou guarde»). Ausente ganha o padrão. Sem faixa nova.
+  atravesse ou guarde»). Copy 4: `hint_practice` (default
+  «Só orbes — a borda some quando a ameaça começa»).
+  Ausente ganha o padrão. Sem faixa nova. Schema continua 3.
   A porta e o fim leem `persistLine`. O overlay do fim reusa
   `record` com `extra.best` quando `best > 0`. Recorde 0 some.
   O overlay da pausa reusa o placar (`Pausado — N`) e o mesmo
@@ -1069,6 +1077,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma memória que cala o playtest.
 **Não** mais um MDA que cala a porta.
 **Não** mais uma região viva que cala a lacuna do som.
+**Não** mais um aviso que some a prática enquanto o campo já a marca.
 
 Candidatos, do que ainda dói:
 
@@ -1946,6 +1955,18 @@ Candidatos, do que ainda dói:
   lacuna
   do
   som
+  e um
+  aviso
+  que
+  some
+  a
+  prática
+  enquanto
+  o
+  campo
+  já
+  a
+  marca
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -1969,11 +1990,13 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a região
-viva nomeia a lacuna do som. O painel já
-falava; o live calava e o convite some a
-tabela. Catálogo completo não entra. Não
-promove `heard`.
+Arquivos quentes da última sessão: o aviso
+do campo nomeia a prática. O campo já
+contornava a janela orbe-só; o coach
+pedia coleta como se a ameaça já caísse.
+Dash, hit, miss e a superfície vencem.
+A porta não ensina. Copy 4. Não promove
+`felt`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2020,3 +2043,4 @@ A família Copiar que cala o destino está saturada.
 A família memória que cala o playtest está saturada.
 A família MDA que cala a porta está saturada.
 A família região viva que cala a lacuna do som está saturada.
+A família aviso que some a prática enquanto o campo já a marca está saturada.

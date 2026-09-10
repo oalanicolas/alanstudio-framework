@@ -15,10 +15,12 @@
 // fantasia nomeia — e o mapa da superfície que falou ficavam só na
 // tabela. A queda do orbe falava e marcava o lugar; o aviso não
 // nomeava o custo. O estilhaço come a corrente e o mixer fala;
-// o aviso não nomeava esse custo. Passo no campo não é sessão
+// o aviso não nomeava esse custo. A prática já contorna o campo
+// na tinta do orbe; o aviso pedia coleta como se a ameaça
+// já tivesse começado. Passo no campo não é sessão
 // observada.
 
-import { approaching, closingWindow } from "./rules.js";
+import { approaching, closingWindow, practicingWindow } from "./rules.js";
 
 export const FANTASY_TICKS = 48;
 export const MOVE_TICKS = 60;
@@ -65,6 +67,11 @@ export function coachHint(state, lines = {}, extra = {}) {
   if (state.tick < SURFACE_TICKS && (surface === "pointer" || surface === "gamepad")) {
     return surface === "pointer" ? "touch" : "pad";
   }
+  // O campo já marca a janela orbe-só. Sem isto o aviso
+  // pedia o orbe como se o estilhaço já caísse. A porta
+  // não ensina. Dash, hit, miss e a superfície vencem.
+  // Texto no disco não é sessão.
+  if (practicingWindow(state)) return "practice";
   return "collect";
 }
 
