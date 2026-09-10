@@ -27,7 +27,7 @@ export const CONFIG = {
     dashTicks: 8, // contato: rápido e invulnerável
     dashRecoveryTicks: 6, // recuperação: controle reduzido, ainda vulnerável; o quadro do land atravessa
     dashCooldownTicks: 30,
-    dashBufferTicks: 8, // perdão: dash pedido cedo dispara ao recarregar
+    dashBufferTicks: 8, // perdão: dash pedido cedo dispara ao recarregar; o lock da guarda não come o pedido
     dashWindupTicks: 2, // antecipação: o corpo senta antes de alongar; já é graça; a guarda com corrente espera este coil
     invulnTicks: 42, // graça após dano; evita perder duas correntes seguidas — inclusive no mesmo quadro
   },
@@ -695,7 +695,11 @@ export function advance(state, intent = neutralIntent()) {
   if (intent.dash) {
     player.dashBuffer = CONFIG.player.dashBufferTicks;
   } else if (player.dashBuffer > 0) {
-    player.dashBuffer -= 1;
+    // A recarga conta o perdão. Sem isto o lock da guarda
+    // — mais longo que o buffer — comia o avanço pedido
+    // no compromisso. Pedido no disco não é felt.
+    const held = state.bankLock > 0 || (state.bankWindup ?? 0) > 0;
+    if (!held) player.dashBuffer -= 1;
   }
   // Corrente vazia não guarda o pedido: um toque cedo demais não decide
   // guardar o orbe que ainda não existe.

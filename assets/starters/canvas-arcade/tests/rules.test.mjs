@@ -923,6 +923,28 @@ test("toque de guardar sem corrente não decide o próximo orbe", () => {
   assert.equal(state.stats.banks, 0);
 });
 
+test("o pedido de dash sobrevive ao lock da guarda", () => {
+  const state = createState(1);
+  state.chain = 4;
+  state.spawnTimer = 999;
+  bankOut(state);
+  while (state.hitstop > 0) advance(state, neutralIntent());
+  assert.ok(state.bankLock > CONFIG.player.dashBufferTicks, "o lock dura mais que o buffer");
+  advance(state, { move: 0, dash: true, bank: false });
+  assert.ok(state.player.dashBuffer > 0, "o pedido fica guardado");
+  assert.equal(state.player.dashTicks, 0, "não dispara durante o lock");
+  assert.equal(state.player.dashWindup, 0);
+  while (state.bankLock > 0) {
+    advance(state, { move: 0, dash: false, bank: false });
+  }
+  assert.ok(
+    state.player.dashWindup > 0
+      || state.player.dashTicks > 0
+      || state.events.some((event) => event.type === "dash"),
+    "o pedido feito no lock dispara quando a guarda solta",
+  );
+});
+
 test("o pedido de dash é guardado e dispara quando recarrega", () => {
   const state = createState(4);
   state.player.dashCooldown = 3;

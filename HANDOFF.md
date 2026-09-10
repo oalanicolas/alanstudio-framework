@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.236 (confirmado): na porta o arraste move sem abrir; o tap abre. No campo o down de cima continua o avanço.
+**HEAD:** ver `git log -1` — vigente 0.9.237: o pedido de dash sobrevive ao lock da guarda. A recarga continua contando o perdão.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 281 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.236)
+## O que o HEAD já entrega (0.9.91–0.9.237)
 
 | Ver | Salto |
 | --- | --- |
@@ -180,6 +180,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.234 | O `next` do ciclo fresco aponta `note`, não um segundo `next --focus feel`. `init.next_commands` também. `then.lost` continua o next. Não executa. |
 | 0.9.235 | A coleta no land e no quadro da conversão não come o sit do compromisso. Parada continua com hitstop e sit. Não promove feel. |
 | 0.9.236 | Na porta o arraste move sem abrir; o tap abre. No campo o down de cima continua o avanço. Não promove feel. |
+| 0.9.237 | O pedido de dash sobrevive ao lock da guarda. A recarga continua contando o perdão. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -193,7 +194,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | a coleta no compromisso não come o sit; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o pedido de dash sobrevive ao lock; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
@@ -334,7 +335,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou coleta no avanço que congela e senta o dash
   ou next do ciclo fresco que aponta um segundo next
   ou coleta no land ou no quadro da conversão que come o sit do compromisso
-  ou toque na porta que abre no down e some o arraste.
+  ou toque na porta que abre no down e some o arraste
+  ou pedido de dash que morre no lock da guarda.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -548,7 +550,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   do avanço: os dois arcos no mesmo tick comiam o disparo
   (`canDash` lia `bankWindup`). `dashCharge` também lê o sit:
   `bankWindup > 0` é `lock`, como o `bankLock` — a faixa não
-  diz pronto. Coleta e guarda no mesmo quadro continuam na hora. Orbe que cai no arco da guarda espera — o sit não inflama a aposta; depois do commit o orbe entra. `collect` lê o mesmo `committed` do raspo: no avanço, no land e no quadro da conversão não seta hitstop nem sit; treme e sobe a câmera. Parada continua com suco. O relógio não come o sit: se `bankWindup > 0` no último tick, `commitBank` corre antes do `over`. Sem sit a corrente continua caindo.   O hitstop no fim não alonga o relógio: se `hitstop > 0` no último tick, `endRun` corre no early-return do freeze. A queda longe não come o verbo: se `committed`, miss marca o chão e não senta squash nem puxa a câmera. Parado, a queda ainda senta. Raspo (`grazeContact`): estreita, punch na direção,
+  diz pronto. `dashBuffer` não decai durante `bankLock` nem
+  `bankWindup` — o lock dura mais que o perdão; a recarga
+  continua contando. Coleta e guarda no mesmo quadro continuam na hora. Orbe que cai no arco da guarda espera — o sit não inflama a aposta; depois do commit o orbe entra. `collect` lê o mesmo `committed` do raspo: no avanço, no land e no quadro da conversão não seta hitstop nem sit; treme e sobe a câmera. Parada continua com suco. O relógio não come o sit: se `bankWindup > 0` no último tick, `commitBank` corre antes do `over`. Sem sit a corrente continua caindo.   O hitstop no fim não alonga o relógio: se `hitstop > 0` no último tick, `endRun` corre no early-return do freeze. A queda longe não come o verbo: se `committed`, miss marca o chão e não senta squash nem puxa a câmera. Parado, a queda ainda senta. Raspo (`grazeContact`): estreita, punch na direção,
   flash menor que a queda. Sem hitstop. Sem rumble.
   Queda (`squashMiss`): senta menos que a coleta quando o verbo está parado. Sem rumble.
   Sem hitstop. Graça pós-dano: `hit()` concede `invuln` e o
@@ -767,6 +771,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `next` do ciclo fresco que aponta um segundo `next`.
 **Não** mais uma coleta no land ou no quadro da conversão que come o sit do compromisso.
 **Não** mais um toque na porta que abre no down e some o arraste.
+**Não** mais um pedido de dash que morre no lock da guarda.
 
 Candidatos, do que ainda dói:
 
@@ -1163,6 +1168,12 @@ Candidatos, do que ainda dói:
   abre no
   down e some
   o arraste
+  e o
+  pedido de
+  dash que
+  morre no
+  lock da
+  guarda
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1186,7 +1197,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: na porta
-o arraste move sem abrir; o tap abre.
-`setDashOnPress` no title. No campo o
-down de cima continua o avanço. Não promove.
+Arquivos quentes da última sessão: o pedido
+de dash sobrevive ao lock da guarda.
+A recarga continua contando o perdão.
+Não promove.

@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.237 — O pedido de dash sobrevive ao lock da guarda
+
+O
+lock
+da
+guarda
+dura
+mais
+que
+o
+buffer.
+Quem
+guardava
+e
+pedia
+o
+avanço
+na
+hora
+perdia
+o
+verbo.
+A
+recarga
+continua
+contando
+o
+perdão.
+Agora
+o
+pedido
+espera
+o
+compromisso
+soltar.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.237 não afirma:
+pedido
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.236 — Na porta o arraste move sem abrir; o tap abre
 
 O
