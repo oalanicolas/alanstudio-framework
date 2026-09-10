@@ -8,7 +8,8 @@ o projeto atual.
 O caminho curto está em [ambição](../references/ambition.md): um ciclo jogável
 na primeira sessão, depois feel e áudio do verbo, depois receita de conteúdo.
 `start` e `guide` mapeiam start → jogar → `note`. Os dois devolvem
-`open` (o comando de agora) e `prompt` (a frase para colar). Depois do
+`open` (o comando de agora) e `prompt` (a frase para colar; também
+sai em stderr). Depois do
 `start`, `open` é o play e `steps` é o mesmo mapa de três passos, com
 o passo 1 feito. Sem destino, `--idea`
 nomeia a pasta no comando do start e não grava a frase. Sem destino, se o

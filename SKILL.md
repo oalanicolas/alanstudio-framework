@@ -160,7 +160,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    entra no comando do start. Sem destino, a frase nomeia a pasta —
    ao lado do framework se o mapa corre de dentro desta árvore.
    Destino existente preenche o comando que abre o jogo e o `kind`
-   do passo de jogar. `open` é o comando de agora; `prompt` o nomeia.
+   do passo de jogar. `open` é o comando de agora; `prompt` o nomeia
+   e também sai em stderr — o JSON fica no stdout.
    Se o starter declara o verbo, o passo 2 o
    nomeia — e a porta, se o manifesto a declara; `then` nomeia par, look, chuva e voz quando o projeto — ou o
    starter, se o destino ainda não existe — as declara; se declara
@@ -175,7 +176,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    prompt as nomeia — inclusive a porta, o cluster de uma mão, o toque, o
    controle e as queries de look, chuva, par e convite, se o starter as declara. Se o
    projeto declara `pair`/`look`/`table`/`sfx`, `then` as nomeia; depois de um
-   recibo, o prompt aponta o segundo ciclo. Não executa o jogo. `--idea` entra no brief
+   recibo, o prompt aponta o segundo ciclo. O `prompt` também sai em
+   stderr; o JSON fica no stdout. Não executa o jogo. `--idea` entra no brief
    e, se houver `data/copy.json`, na abertura e no aviso do primeiro ciclo. O brief
    continua rascunho. A frase na tela não muda o verbo.
    **`play [<projeto>]`** (também `open`) aponta o comando que abre o
@@ -183,7 +185,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    diretório atual se ele for um jogo fora desta árvore. `open` é o
    play. Com tela, o avanço abre a porta. Depois de uma partida, a
    página grava o recibo se você escrever; o próximo comando do
-   harness continua `note`. `executed` fica `false`.
+   harness continua `note`. `executed` fica `false`. O `prompt` também
+   sai em stderr; o JSON fica no stdout.
    **`roles <projeto>`** lê os papéis de áudio que o código declara e os
    arquivos que os preenchem. `--fill` sugere o acervo; `--apply` copia
    com o nome do papel. Crescer o acervo é `sfx import` / `sfx seed`

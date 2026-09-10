@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.118 — O guia também fala a frase
+
+O JSON enterrava o comando de agora. `guide`,
+`start` e `play` escrevem o `prompt` em stderr.
+stdout continua o recibo. `executed` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.118 não afirma: falar a frase não serviu
+o jogo e o harness não jogou.
+
 ## 0.9.117 — O fim também abre com o avanço
 
 O overlay pedia R. O mesmo verbo da porta volta à

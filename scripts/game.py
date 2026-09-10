@@ -454,7 +454,13 @@ def normalize_text(text):
 
 
 def emit(value):
-    print(json.dumps(value, ensure_ascii=False, indent=2))
+    # A frase de agora sai em stderr para quem cola. O JSON fica no
+    # stdout para quem encana. Falar a frase não executa o jogo.
+    if isinstance(value, dict):
+        prompt = value.get("prompt")
+        if isinstance(prompt, str) and prompt.strip():
+            print(prompt, file=sys.stderr, flush=True)
+    print(json.dumps(value, ensure_ascii=False, indent=2), flush=True)
 
 
 def resolve(value, root=ROOT):
@@ -3379,7 +3385,8 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "as teclas, o prompt as nomeia — inclusive a porta, o cluster de "
             "uma mão, o toque, o controle e as queries de look, chuva, par e "
             "convite, se o starter as declara. Não "
-            "executa o jogo. Depois de uma "
+            "executa o jogo. O `prompt` também sai em stderr; o JSON "
+            "fica no stdout. Depois de uma "
             "partida, a página grava o recibo se você escrever; o próximo "
             "comando do harness continua `note`, não `next`. "
             "`then` já nomeia par, look, chuva e voz se o projeto declara essas "
@@ -3431,6 +3438,7 @@ def play_cycle(destination=None, starter=None):
             "joga. `open` é o play. Com tela, o avanço abre a porta. Depois "
             "de uma partida, a página grava o recibo se você escrever; o "
             "próximo comando do harness continua `note`, não `next`. "
+            "O `prompt` também sai em stderr; o JSON fica no stdout. "
             "`executed` fica falso."
         ),
     }
@@ -3547,7 +3555,8 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         "scope": (
             "Três passos ideia→ciclo: start, jogar, note. `open` é o comando "
             "de agora — o start se o destino ainda não existe, o play se "
-            "já existe. `prompt` o nomeia para colar. Se o starter declara "
+            "já existe. `prompt` o nomeia para colar e também sai em "
+            "stderr; o JSON fica no stdout. Se o starter declara "
             "o verbo e as teclas, o passo 2 as nomeia — inclusive o par. Sem destino, a frase "
             "nomeia a pasta no comando do start — ao lado do framework se o "
             "mapa corre de dentro desta árvore; no diretório atual se corre "

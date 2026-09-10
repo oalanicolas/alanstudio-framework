@@ -3,6 +3,10 @@
 Entrada: a barreira concreta que impede alguém de jogar — entrada, visão, audição,
 movimento, leitura ou tempo de reação.
 
+Com tela, a primeira superfície é a porta. O aviso do primeiro ciclo
+mora no campo, depois do avanço. Overlay e HUD da abertura também
+seguem `uiScale`. Sem tela o headless já joga.
+
 Acesso é decisão de design, não camada final. Tratado no GDD, custa uma escolha;
 tratado depois do conteúdo pronto, custa retrabalho de arte, UI e regra. Registre
 essas opções como requisitos de qualidade no PRD, com forma de verificar.

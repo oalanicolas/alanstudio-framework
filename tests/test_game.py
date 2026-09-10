@@ -2308,6 +2308,15 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(empty["constants"], [])
         self.assertFalse(empty["unobserved"])
         self.assertFalse(empty["felt"])
+        cli = subprocess.run(
+            [sys.executable, str(SCRIPT), "feel", str(starter), "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(cli.returncode, 0, cli.stderr)
+        payload = json.loads(cli.stdout)
+        self.assertFalse(payload["felt"])
+        self.assertNotIn("prompt", payload)
+        self.assertFalse((cli.stderr or "").strip())
 
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
         destination = self.root / "com-observacao"
@@ -3050,12 +3059,15 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         payload = json.loads(cli.stdout)
         self.assertEqual(payload["open"], report["open"])
         self.assertFalse(payload["executed"])
+        self.assertEqual(cli.stderr.strip(), payload["prompt"])
+        self.assertIn("serve", cli.stderr)
         opened = subprocess.run(
             [sys.executable, str(SCRIPT), "open", str(destination), "--root", str(self.root)],
             capture_output=True, text=True,
         )
         self.assertEqual(opened.returncode, 0, opened.stderr)
         self.assertEqual(json.loads(opened.stdout)["command"], "play")
+        self.assertEqual(opened.stderr.strip(), payload["prompt"])
         with self.assertRaisesRegex(ValueError, "sem destino"):
             game.play_cycle(None)
         with self.assertRaisesRegex(ValueError, "sem jogo"):
@@ -3226,6 +3238,12 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(mapped["suggest"], payload["suggest"])
         self.assertFalse(mapped["executed"])
         self.assertFalse(planted.exists())
+        self.assertEqual(bare.stderr.strip(), payload["prompt"])
+        self.assertEqual(guided.stderr.strip(), mapped["prompt"])
+        self.assertIn("start", bare.stderr)
+        self.assertNotIn("aprovado", bare.stderr)
+        self.assertNotIn("verified", bare.stderr)
+        self.assertNotIn("enough", bare.stderr)
 
     def test_start_names_the_folder_from_the_idea_and_writes_it(self):
         mapped = game.guide_cycle(
@@ -3261,6 +3279,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(payload["suggest"], "guardar-a-corrente")
         self.assertTrue((self.root / "guardar-a-corrente" / "index.html").is_file())
         self.assertFalse(payload["executed"])
+        self.assertEqual(cli.stderr.strip(), payload["prompt"])
+        self.assertIn("serve", cli.stderr)
         self.assertEqual(payload["open"], payload["play"])
         self.assertEqual(len(payload["steps"]), 3)
         self.assertTrue(payload["steps"][0]["done"])
@@ -3665,6 +3685,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(payload["proposal"], payload["alternatives"])
         self.assertEqual(payload["signals"]["production_bar_dimensions"], list(game.FOCUS_DIMENSIONS["release"]))
         self.assertFalse(payload["executed"])
+        self.assertNotIn("prompt", payload)
+        self.assertFalse((run.stderr or "").strip())
         self.assertFalse((self.project / "should-not-run").exists())
 
 
@@ -3720,7 +3742,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(next(item["status"] for item in broken["checks"] if item["name"] == "root"), "missing")
         run = subprocess.run([sys.executable, str(SCRIPT), "doctor", "--root", str(self.root)], capture_output=True, text=True)
         self.assertEqual(run.returncode, 0, run.stderr)
-        self.assertTrue(json.loads(run.stdout)["ready"])
+        installed = json.loads(run.stdout)
+        self.assertTrue(installed["ready"])
+        self.assertNotIn("prompt", installed)
+        self.assertFalse((run.stderr or "").strip())
         self.assertEqual(subprocess.run([sys.executable, str(SCRIPT), "doctor", "--root", str(self.root / "absent")], capture_output=True, text=True).returncode, 1)
 
     def test_filled_game_design_template_covers_every_minimum_area_in_one_document(self):

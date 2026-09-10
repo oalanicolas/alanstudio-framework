@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.117: o fim também abre com o avanço.
+**HEAD:** ver `git log -1` — vigente 0.9.118: o guia também fala a frase.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 248 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.117)
+## O que o HEAD já entrega (0.9.91–0.9.118)
 
 | Ver | Salto |
 | --- | --- |
@@ -61,6 +61,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.115 | No convite, a página grava `docs/playtest/<utc>-achado.md` se os quatro tiverem texto. Copiar não grava. Esqueleto vazio não é achado. `outsider` continua falso. |
 | 0.9.116 | O término do dash declara `land` no mixer (voz curta, x do campo, legenda). Recipes de mecânica/visual nomeiam a porta. `felt`/`heard` continuam falsos. |
 | 0.9.117 | Um avanço *novo* no fim volta à porta. Dash apertado no último tick não pula o overlay. `#note`/`#finding` também na abertura se houver partida. `felt` continua falso. |
+| 0.9.118 | `guide` / `start` / `play` escrevem o `prompt` em stderr. O JSON fica no stdout. `executed` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -165,6 +166,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `guide` sem destino: `open` é o start. Os dois: `executed` falso.
 - `play` / `open` (CLI) apontam o serve do projeto existente. Não
   criam, não executam. Sem caminho: `here_project` ou “sem destino”.
+- `emit()` escreve `prompt` em stderr quando a chave existe e tem
+  texto. stdout continua só o JSON. Falar a frase não executa.
+  `next` / `doctor` / `feel` não têm `prompt` e não escrevem frase.
 - `then` sempre tem `play`, `note`, `lost`.
 - Sem caminho e sem ideia (ou ideia que não vira slug): `ValueError` “sem destino”.
 
@@ -235,16 +239,17 @@ Candidatos, do que ainda dói:
    promover. `ship` já nomeia árvore incompleta, HEAD velho e
    `elsewhere` falso; isso não é a prova.
 2. **Idéia→jogo:** `start` devolve `open`; `play` / `open` o
-   reimprimem. A partida no serve grava o candidato e, se você
-   escrever, o recibo. No convite a página grava o achado se os
-   quatro tiverem texto. O comando `note` continua. Não auto-servir.
-   `len(steps) == 3` e `executed: false` continuam.
+   reimprimem. O `prompt` também sai em stderr. A partida no serve
+   grava o candidato e, se você escrever, o recibo. No convite a
+   página grava o achado se os quatro tiverem texto. O comando
+   `note` continua. Não auto-servir. `len(steps) == 3` e
+   `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
-4. **Item 1 residual:** o mapa, `feel.md`, `mechanics.md`, `visual.md`
-   e `lifecycle.md` já nomeiam a porta. Recipes de outro foco que
-   ainda falarem só do campo sem a abertura estão velhas — a primeira
-   superfície com tela é a porta.
+4. **Item 1 residual:** o mapa, `feel.md`, `mechanics.md`, `visual.md`,
+   `lifecycle.md` e `accessibility.md` já nomeiam a porta. Recipes de
+   outro foco que ainda falarem só do campo sem a abertura estão
+   velhas — a primeira superfície com tela é a porta.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, copiar o
    achado e gravar os quatro nomes não fecham. A receita de
@@ -268,5 +273,4 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `doorArmed` em `main.js`,
-`applyNote`/`applyFinding` com `run`, `over_door` em `{dash}`.
+Arquivos quentes da última sessão: `emit()` e o `prompt` em stderr.
