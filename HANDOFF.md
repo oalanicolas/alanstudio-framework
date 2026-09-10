@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.249: `roles --apply` recoloca o stem quando o recibo já está. Origem e licença diferentes recusam. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 284 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 286 OK.
 `cd assets/starters/canvas-arcade && npm test` → 424 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
