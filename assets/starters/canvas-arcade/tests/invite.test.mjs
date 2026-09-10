@@ -41,3 +41,13 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.equal(/problema|evidência|hipótese|medição/i.test(strip[1]), false, strip[1]);
   assert.match(html, /id="options-title"/, "o convite não pode some o alcance");
 });
+
+test("a página nomeia o par sem fingir que alguém de fora escolheu", () => {
+  assert.match(html, /id="mood"/);
+  assert.match(html, /listMoods/);
+  assert.match(html, /pairPatch/);
+  assert.match(html, /matchingMood/);
+  assert.match(html, /LOOK_LABELS/);
+  assert.match(html, /SPAWN_LABELS/);
+  assert.doesNotMatch(html, /outsider|aprovado|verified|alguém de fora/);
+});

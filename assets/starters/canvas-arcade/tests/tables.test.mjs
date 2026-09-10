@@ -2,8 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  applyLookIntent, applySpawnIntent, loadTable, loadSpawn, listLookIntents, listLooks, listMoods, listSpawnIntents, listSpawnProfiles, looksLikeSpawn, lookRecord,
-  resolveLookName, resolveMoodName,
+  applyLookIntent, applySpawnIntent, loadTable, loadSpawn, listLookIntents,   listLooks, listMoods, listSpawnIntents, listSpawnProfiles, looksLikeSpawn, lookRecord,
+  LOOK_LABELS, matchingMood, pairPatch, resolveLookName, resolveMoodName, SPAWN_LABELS,
   migrateCopy, migratePalettes, migrateSpawn, migrateTable, requireFields, resolveSpawnName, spawnRecord, TABLES,
   SPAWN_FIELDS, SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS, PALETTE_SCHEMA, PALETTE_FIELDS, LOOK_INTENTS, SPAWN_INTENTS, PALETTES,
 } from "../src/game/tables.js";
@@ -53,6 +53,17 @@ test("o par só existe quando o nome é look e chuva", () => {
   assert.equal(resolveMoodName("spawn"), "calm");
   assert.equal(resolveMoodName("contrast"), "calm");
   assert.equal(resolveMoodName("inventada"), "calm");
+  assert.deepEqual(pairPatch("calm"), { look: "calm", spawnProfile: "calm" });
+  assert.deepEqual(pairPatch("dusk"), { look: "dusk", spawnProfile: "dusk" });
+  assert.equal(pairPatch("normal"), null);
+  assert.equal(pairPatch("spawn"), null);
+  assert.equal(pairPatch(""), null);
+  assert.equal(matchingMood("calm", "calm"), "calm");
+  assert.equal(matchingMood("dusk", "calm"), "");
+  assert.equal(matchingMood("normal", "spawn"), "");
+  assert.equal(LOOK_LABELS.calm, "Calma");
+  assert.equal(SPAWN_LABELS.calm, "Calma");
+  assert.equal(LOOK_LABELS.dusk, "Crepúsculo");
 });
 
 test("campo obrigatório ausente falha com o nome da mesa e do campo", () => {

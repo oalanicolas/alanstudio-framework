@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.87 — A página também nomeia o par
+
+O par autoral já tinha endereço. Na página, look e chuva
+continuavam dois controles e `calm` caía no nome cru. O select
+Par aplica os dois; os rótulos dizem Calma. `outsider` continua
+falso. Um controle no disco não é alguém de fora. Só `release`
+fica no piso.
+
+O que 0.9.87 não afirma: o harness não abriu o par e a página
+não aprova pacing nem direção.
+
 ## 0.9.86 — A prática também fala
 
 O campo já contornava a janela orbe-só e acendia na saída. O mixer

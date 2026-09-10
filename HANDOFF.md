@@ -25,7 +25,8 @@ na tela do primeiro ciclo. O brief continua rascunho. A frase na tela
 não muda o verbo. Depois do `init`, `?look=dusk` ou `?look=calm` troca a paleta
 (campo e a página), `?spawn=dusk` ou `?spawn=calm` troca a chuva e
 `?mood=calm` ou `?mood=dusk` troca o par. Look ou chuva explícitos
-vencem o mood no próprio eixo. O harness não
+vencem o mood no próprio eixo. A página nomeia o mesmo par no
+select. O harness não
 executa o jogo.
 
 **Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.

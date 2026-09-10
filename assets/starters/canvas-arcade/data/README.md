@@ -8,7 +8,7 @@ forma de `spawn`. `copy.fantasy` alimenta o aviso do primeiro ciclo.
 `settings.look` os consomem. `dusk` e `calm` na chuva são outras
 mesas e outro consumidor (`?spawn=`). `?mood=` aplica o par quando o
 nome é look e chuva; look ou chuva explícitos vencem no próprio
-eixo. A chuva `calm` é prática mais longa, menos risco, queda mais
+eixo. A página nomeia o mesmo par no select. A chuva `calm` é prática mais longa, menos risco, queda mais
 lenta; não é o `calmer` aplicado em `spawn`. O look `calm` é sálvia
 quieta; não é o `cooler` aplicado em `normal`. Nasça o próximo look
 com o comando; mesas genéricas ainda pedem consumidor.

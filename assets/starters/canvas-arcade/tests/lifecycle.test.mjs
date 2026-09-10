@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 import { createGame } from "../src/main.js";
 import { memoryStorage } from "../src/core/storage.js";
 import { CONFIG } from "../src/game/rules.js";
+import { pairPatch } from "../src/game/tables.js";
 
 function silentHaptics(played) {
   return {
@@ -306,6 +307,18 @@ test("?mood aplica o par look e chuva sem inventar mesa", () => {
   assert.equal(ignored.settings.spawnProfile, "spawn");
   ignored.dispose();
   dusk.dispose();
+  game.dispose();
+});
+
+test("o par da página aplica look e chuva e recomeça a chuva", () => {
+  const { game } = harness();
+  game.advance(40);
+  assert.ok(game.observe().tick > 0);
+  game.updateSettings(pairPatch("calm"));
+  assert.equal(game.settings.look, "calm");
+  assert.equal(game.settings.spawnProfile, "calm");
+  assert.equal(game.observe().spawnProfile, "calm");
+  assert.equal(game.observe().tick, 0, "trocar a chuva do par recomeça");
   game.dispose();
 });
 

@@ -98,6 +98,11 @@
         <label><input type="checkbox" id="captions" /> <span>Legendas de som</span></label>
         <label><input type="checkbox" id="assist" /> <span>Assistência (alcance maior, chuva mais lenta)</span></label>
         <label><input type="checkbox" id="oneHand" /> <span>Uma mão (cluster direito)</span></label>
+        <label><span>Par</span>
+          <select id="mood" aria-label="Par look e chuva">
+            <option value="">—</option>
+          </select>
+        </label>
         <label><span>Chuva</span>
           <select id="spawnProfile" aria-label="Perfil de chuva">
             <option value="spawn">Padrão</option>
@@ -124,7 +129,7 @@
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
       import { applyInvite } from "./src/core/invite.js";
       import { applyShell } from "./src/core/shell.js";
-      import { listLooks, listSpawnProfiles, PALETTES, resolveLookName } from "./src/game/tables.js";
+      import { LOOK_LABELS, SPAWN_LABELS, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch, PALETTES, resolveLookName } from "./src/game/tables.js";
       applyInvite({
         root: document.documentElement,
         stage: document.getElementById("stage"),
@@ -134,14 +139,12 @@
       if (game) {
         const toggles = ["reducedMotion", "highContrast", "captions", "assist"];
         const buses = ["master", "sfx", "music", "ui"];
-        const spawnLabels = { spawn: "Padrão", dusk: "Crepúsculo" };
-        const lookLabels = { normal: "Padrão", dusk: "Crepúsculo" };
         const spawnSelect = document.getElementById("spawnProfile");
         spawnSelect.replaceChildren();
         for (const name of listSpawnProfiles()) {
           const option = document.createElement("option");
           option.value = name;
-          option.textContent = spawnLabels[name] ?? name;
+          option.textContent = SPAWN_LABELS[name] ?? name;
           spawnSelect.appendChild(option);
         }
         const lookSelect = document.getElementById("look");
@@ -149,8 +152,20 @@
         for (const name of listLooks()) {
           const option = document.createElement("option");
           option.value = name;
-          option.textContent = lookLabels[name] ?? name;
+          option.textContent = LOOK_LABELS[name] ?? name;
           lookSelect.appendChild(option);
+        }
+        const moodSelect = document.getElementById("mood");
+        moodSelect.replaceChildren();
+        const blank = document.createElement("option");
+        blank.value = "";
+        blank.textContent = "—";
+        moodSelect.appendChild(blank);
+        for (const name of listMoods()) {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = LOOK_LABELS[name] ?? name;
+          moodSelect.appendChild(option);
         }
         const dress = () => {
           const settings = game.settings;
@@ -166,6 +181,7 @@
           document.getElementById("uiScale").value = settings.uiScale;
           spawnSelect.value = settings.spawnProfile;
           lookSelect.value = settings.look;
+          moodSelect.value = matchingMood(settings.look, settings.spawnProfile);
           for (const bus of buses) document.getElementById(bus).value = settings.buses[bus];
           dress();
         };
@@ -186,10 +202,19 @@
         });
         spawnSelect.addEventListener("change", (event) => {
           game.updateSettings({ spawnProfile: event.target.value });
+          sync();
         });
         lookSelect.addEventListener("change", (event) => {
           game.updateSettings({ look: event.target.value });
           dress();
+          sync();
+        });
+        moodSelect.addEventListener("change", (event) => {
+          const patch = pairPatch(event.target.value);
+          if (!patch) return;
+          game.updateSettings(patch);
+          dress();
+          sync();
         });
         for (const bus of buses) {
           document.getElementById(bus).addEventListener("input", (event) => {

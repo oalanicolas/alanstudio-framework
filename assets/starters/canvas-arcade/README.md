@@ -18,9 +18,9 @@ npm run serve      # serve em http://localhost:8080; no terminal, tenta abrir o 
 ```
 
 `?look=dusk` ou `?look=calm` troca a paleta (campo e a página), `?spawn=dusk` ou
-`?spawn=calm` troca a chuva e `?mood=calm` ou `?mood=dusk` troca o par,
-sem recomeçar o projeto. Look ou chuva explícitos vencem o mood no
-próprio eixo. O `start` do harness nomeia as queries quando o manifesto
+`?spawn=calm` troca a chuva e `?mood=calm` ou `?mood=dusk` troca o par.
+A página nomeia o mesmo par no select. Look ou chuva explícitos vencem o mood no
+próprio eixo. Trocar a chuva do par recomeça a partida; trocar só o look não. O `start` do harness nomeia as queries quando o manifesto
 as declara. Depois de um `note`, `start` e `next` apontam
 `look --from`, `table --from` e `sfx --from` — o segundo ciclo. Ferramenta
 no disco não é alguém de fora nem mix ouvido. No campo, o aviso do

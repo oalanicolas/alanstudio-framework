@@ -21,6 +21,8 @@
 // receita de cabeça. `dusk` e `calm` na chuva e no look compartilham
 // o nome e não a mesa. `?mood=<nome>` aplica o par quando o nome é
 // look e chuva; look ou chuva explícitos vencem no próprio eixo.
+// A página nomeia o mesmo par no select; um controle no disco não
+// é alguém de fora.
 // Mesas genéricas continuam sem consumidor automático.
 //
 // Toda mesa tem schema: formato antigo (sem campo) vira o vigente;
@@ -257,6 +259,26 @@ export function listMoods() {
 export function resolveMoodName(name) {
   const moods = listMoods();
   return moods.includes(name) ? name : moods[0] ?? "";
+}
+
+export const LOOK_LABELS = {
+  normal: "Padrão",
+  dusk: "Crepúsculo",
+  calm: "Calma",
+};
+
+export const SPAWN_LABELS = {
+  spawn: "Padrão",
+  dusk: "Crepúsculo",
+  calm: "Calma",
+};
+
+export function pairPatch(name) {
+  return resolveMoodName(name) === name ? { look: name, spawnProfile: name } : null;
+}
+
+export function matchingMood(look, spawn) {
+  return look === spawn && resolveMoodName(look) === look ? look : "";
 }
 
 export function resolveLookName(name) {
