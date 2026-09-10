@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.170: o over senta o corpo.
+**HEAD:** ver `git log -1` — vigente 0.9.171: a região viva nomeia a pausa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 267 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.170)
+## O que o HEAD já entrega (0.9.91–0.9.171)
 
 | Ver | Salto |
 | --- | --- |
@@ -114,6 +114,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.168 | Na graça do erro o corpo some e volta no relógio do contorno. `fillRect` permanece. Reduced trava o tijolo. Não promove feel. |
 | 0.9.169 | O `over` pede fade na cama. Pause, title e aba escondida cortam seco. Play no meio do fade nasce de novo. Não promove `heard`. |
 | 0.9.170 | O `over` senta o corpo (`squashOver`). Larga dash, graça e arco da guarda. `fillRect` permanece. Não promove feel. |
+| 0.9.171 | A região viva nomeia `pausado`. Overlay do canvas não chega ao leitor. Não promove `accessibility`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -133,7 +134,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | `hold` no stub; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | nove opções + remap + relógio; sessão real pendente |
+| accessibility | slice | pausa na região viva no disco; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -425,7 +426,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   sobre o look vigente. Alto contraste vence. Não entra no href.
   `threatCue` é estilhaço no x do corpo dentro do telegraph —
   na porta lê a mostra, não `entities`. `#live` espelha fase,
-  perigo e a última legenda. Texto no DOM não é sessão. Não
+  pausa, perigo e a última legenda. Texto no DOM não é sessão. Não
   promover `accessibility`.
 
 ---
@@ -468,6 +469,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um corpo sólido enquanto a graça do erro só pisca o contorno.
 **Não** mais uma cama que some seco no over enquanto o loop já tem ganho.
 **Não** mais um corpo em pose de jogo enquanto o relógio já derrubou a aposta.
+**Não** mais uma região viva que some a pausa enquanto o overlay já a nomeia.
 
 Candidatos, do que ainda dói:
 
@@ -540,7 +542,9 @@ Candidatos, do que ainda dói:
   da cama no
   over e o
   corpo sentado
-  no over
+  no over e a
+  pausa na
+  região viva
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -564,5 +568,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o over senta o corpo.
-Larga dash, graça e arco. `fillRect` permanece. Não promove feel.
+Arquivos quentes da última sessão: a região viva nomeia a pausa.
+Overlay do canvas não chega ao leitor. Não promove `accessibility`.

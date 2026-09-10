@@ -257,6 +257,7 @@ export function createGame(options = {}) {
         captions,
         phase: state.phase,
         threat: threatCue(state),
+        paused: loop.paused,
       }),
     });
     if (!renderer) return;

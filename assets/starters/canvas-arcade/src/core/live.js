@@ -1,8 +1,9 @@
 // Região viva. A legenda e o perigo à frente já existem no mixer
-// e no telegraph; sem isto só o canvas os mostra. Texto no DOM
-// não é sessão de alcance nem alguém de fora.
+// e no telegraph; a pausa já existe no overlay. Sem isto só o
+// canvas os mostra. Texto no DOM não é sessão de alcance nem
+// alguém de fora.
 
-export function liveText({ captions = [], phase, threat } = {}) {
+export function liveText({ captions = [], phase, threat, paused } = {}) {
   const parts = [];
   const seen = new Set();
   const add = (text) => {
@@ -11,6 +12,7 @@ export function liveText({ captions = [], phase, threat } = {}) {
     seen.add(value);
     parts.push(value);
   };
+  if (paused) add("pausado");
   if (phase === "over") add("fim da partida");
   else if (phase === "title") add("abertura");
   if (threat === "ahead") add("perigo à frente");

@@ -3,6 +3,21 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.171 — A região viva nomeia a pausa
+
+O overlay já dizia
+Pausado. Só o canvas
+falava. A região viva
+repete `pausado`. O
+perigo e a fase
+continuam. `verified`
+continua falso. Só
+`release` fica no piso.
+
+O que 0.9.171 não afirma:
+texto no DOM não é
+sessão de alcance.
+
 ## 0.9.170 — O over senta o corpo
 
 A aposta já caía e a

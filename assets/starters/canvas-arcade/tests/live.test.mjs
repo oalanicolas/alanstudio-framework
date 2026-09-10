@@ -34,6 +34,21 @@ test("liveText junta fase, perigo e a última legenda sem repetir", () => {
   })), false);
 });
 
+test("a pausa entra na região viva sem fingir sessão", () => {
+  assert.equal(liveText({ paused: true }), "pausado");
+  assert.equal(
+    liveText({ phase: "playing", threat: "ahead", paused: true }),
+    "pausado. perigo à frente",
+  );
+  assert.equal(
+    liveText({ phase: "over", paused: true }),
+    "pausado. fim da partida",
+  );
+  assert.equal(liveText({ phase: "playing", paused: false }), "");
+  assert.match(main, /paused:\s*loop\.paused/);
+  assert.doesNotMatch(liveText({ paused: true }), /aprovado|verified|alguém de fora/);
+});
+
 test("applyLive só escreve quando o texto muda", () => {
   const node = { textContent: "" };
   assert.equal(applyLive({}), false);
