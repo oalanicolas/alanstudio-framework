@@ -3,6 +3,47 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.262 — A outra aba veste as preferências
+
+A
+outra
+aba
+já
+gravava.
+Esta
+página
+ficava
+com
+o
+look
+e
+o
+mix
+velhos.
+Agora
+`storage`
+veste
+as
+preferências.
+O
+progresso
+em
+curso
+não.
+Não
+promove
+`trusted`.
+
+O que 0.9.262 não afirma:
+ouvir
+a
+outra
+aba
+não
+é
+aba
+fechada.
+
 ## 0.9.261 — Os knobs vestem o look
 
 O

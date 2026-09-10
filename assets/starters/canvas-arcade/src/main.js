@@ -8,10 +8,10 @@
 
 import { createLoop } from "./core/loop.js";
 import { createInput } from "./core/input.js";
-import { browserStorage } from "./core/storage.js";
+import { browserStorage, foreignKey } from "./core/storage.js";
 import { playReport, LAST_RUN_ROUTE } from "./core/run-report.js";
 import { canContinue, canResume, captureHold, loadProgress, persistLine, persistStatus, recordRun, saveProgress, summarizeRun } from "./core/save.js";
-import { DEFAULT_BINDINGS, detectEnvironment, loadSettings, normalizeSettings, saveSettings, settingsLine } from "./core/settings.js";
+import { DEFAULT_BINDINGS, detectEnvironment, loadSettings, normalizeSettings, saveSettings, SETTINGS_KEY, settingsLine } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { BED_FADE_MS, createAudio } from "./game/audio.js";
 import { createHaptics, rumbleRole } from "./game/haptics.js";
@@ -69,7 +69,7 @@ export function createGame(options = {}) {
   const environment = options.environment ?? detectEnvironment();
   const eventTarget = options.eventTarget ?? (typeof window !== "undefined" ? window : null);
 
-  const settingsLoad = loadSettings(storage, environment);
+  let settingsLoad = loadSettings(storage, environment);
   let settings = settingsLoad.settings;
   const queryMood = readMoodQuery(options);
   const querySpawn = readSpawnQuery(options) ?? queryMood;
@@ -108,6 +108,7 @@ export function createGame(options = {}) {
   let doorArmed = true;
   let trace = createTrace();
   const watchers = new Set();
+  const settingWatchers = new Set();
   function resetTrace() {
     trace = createTrace();
   }
@@ -368,10 +369,37 @@ export function createGame(options = {}) {
   const onBeforeUnload = () => {
     flush();
   };
+  function wearSettings(next, persist) {
+    const previousSpawn = settings.spawnProfile;
+    settings = next;
+    state.assist = settings.assist;
+    syncClock();
+    audio.applySettings(settings);
+    haptics.applySettings(settings);
+    for (const [action, codes] of Object.entries(settings.bindings)) input.rebind(action, codes);
+    if (settings.spawnProfile !== previousSpawn) {
+      const stay = state.phase === "title" ? "title" : "playing";
+      state = createState(state.seed, matchOptions(settings, stay));
+      recorded = false;
+      resetTrace();
+      progress = { ...progress, hold: null };
+    }
+    if (persist) rememberWrite(saveSettings(storage, settings));
+  }
+  function onStorage(event) {
+    // A outra aba já gravou. Sem isto look e mix
+    // ficavam velhos até recarregar. Ouvir não é
+    // aba fechada; trusted continua falso.
+    if (!foreignKey(event, storage.prefix, SETTINGS_KEY)) return;
+    settingsLoad = loadSettings(storage, environment);
+    wearSettings(settingsLoad.settings, false);
+    for (const fn of settingWatchers) fn(settings);
+  }
   if (eventTarget && typeof eventTarget.addEventListener === "function") {
     eventTarget.addEventListener("pagehide", onPageHide);
     eventTarget.addEventListener("beforeunload", onBeforeUnload);
     eventTarget.addEventListener("visibilitychange", onVisibility);
+    eventTarget.addEventListener("storage", onStorage);
   }
   if (
     typeof document !== "undefined"
@@ -461,6 +489,7 @@ export function createGame(options = {}) {
       if (disposed) return false;
       disposed = true;
       watchers.clear();
+      settingWatchers.clear();
       loop.dispose();
       input.dispose();
       audio.dispose();
@@ -469,6 +498,7 @@ export function createGame(options = {}) {
         eventTarget.removeEventListener("pagehide", onPageHide);
         eventTarget.removeEventListener("beforeunload", onBeforeUnload);
         eventTarget.removeEventListener("visibilitychange", onVisibility);
+        eventTarget.removeEventListener("storage", onStorage);
       }
       if (
         typeof document !== "undefined"
@@ -506,22 +536,13 @@ export function createGame(options = {}) {
     get settingsLoad() {
       return { status: settingsLoad.status, notes: [...(settingsLoad.notes ?? [])] };
     },
+    watchSettings(fn) {
+      if (typeof fn !== "function") return () => {};
+      settingWatchers.add(fn);
+      return () => settingWatchers.delete(fn);
+    },
     updateSettings(patch) {
-      const previousSpawn = settings.spawnProfile;
-      settings = normalizeSettings({ ...settings, ...patch }, environment, settings);
-      state.assist = settings.assist;
-      syncClock();
-      audio.applySettings(settings);
-      haptics.applySettings(settings);
-      for (const [action, codes] of Object.entries(settings.bindings)) input.rebind(action, codes);
-      if (settings.spawnProfile !== previousSpawn) {
-        const stay = state.phase === "title" ? "title" : "playing";
-        state = createState(state.seed, matchOptions(settings, stay));
-        recorded = false;
-        resetTrace();
-        progress = { ...progress, hold: null };
-      }
-      rememberWrite(saveSettings(storage, settings));
+      wearSettings(normalizeSettings({ ...settings, ...patch }, environment, settings), true);
       return settings;
     },
     resize(width, height) {

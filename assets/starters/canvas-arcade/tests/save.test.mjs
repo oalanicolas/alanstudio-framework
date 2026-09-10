@@ -5,7 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { memoryStorage, readJson, writeJson } from "../src/core/storage.js";
+import { foreignKey, memoryStorage, readJson, writeJson } from "../src/core/storage.js";
 import {
   PROGRESS_KEY,
   PROGRESS_SCHEMA,
@@ -86,6 +86,15 @@ test("valor que não é objeto também vira recuperação", () => {
   const read = readJson(storage, "chave");
   assert.equal(read.status, "unreadable");
   assert.equal(storage.get("chave.broken"), "42");
+});
+
+test("a outra aba nomeia a chave desta página", () => {
+  assert.equal(foreignKey({ key: "lab:settings" }, "lab", "settings"), true);
+  assert.equal(foreignKey({ key: "lab:settings.tmp" }, "lab", "settings"), false);
+  assert.equal(foreignKey({ key: "lab:progress" }, "lab", "settings"), false);
+  assert.equal(foreignKey({ key: "outro:settings" }, "lab", "settings"), false);
+  assert.equal(foreignKey({ key: "lab:settings" }, "", "settings"), false);
+  assert.equal(foreignKey({}, "lab", "settings"), false);
 });
 
 test("a gravação verifica antes de promover e não deixa rastro temporário", () => {

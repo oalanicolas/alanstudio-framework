@@ -485,6 +485,9 @@
           });
         }
         sync();
+        if (typeof game.watchSettings === "function") {
+          game.watchSettings(() => { sync(); });
+        }
         const paintGaps = () => {
           document.getElementById("audio-gap").textContent = audioGapLine(game.audioGaps());
         };

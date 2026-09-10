@@ -59,7 +59,8 @@ repetia a frase e o mover. `canResume` lê o hold; `canContinue`
 continua sendo repetir a última seed.
 `?seed=<n>` abre essa partida e ignora o hold — não é Continuar.
 Pausa, `pagehide`, `beforeunload` e perda de foco gravam o hold. Terminar ou resetar limpa.
-Isto **não** é aba fechada observada e não sobe `state_trust`. Grava
+A outra aba veste as preferências desta página (`storage`); o progresso
+em curso não. Ouvir não é aba fechada. Isto **não** é aba fechada observada e não sobe `state_trust`. Grava
 de forma **verificada** em `src/core/storage.js` — escreve em chave de estágio,
 relê, compara e só então grava na chave real. Isso **não** é a escrita atômica do
 parágrafo acima: `localStorage` não tem substituição, então a gravação final é

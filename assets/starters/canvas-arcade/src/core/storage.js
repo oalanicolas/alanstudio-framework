@@ -5,11 +5,22 @@
 // apagar o que já estava salvo. A gravação escreve em uma chave temporária,
 // relê, compara e só então promove — e um valor ilegível é preservado em
 // `<chave>.broken` em vez de descartado.
+// A outra aba dispara `storage`. Sem isto esta página
+// ficava com o look e o mix velhos. Ouvir não é aba
+// fechada; `trusted` continua falso.
+
+export function foreignKey(event, prefix, key) {
+  if (!event || typeof event.key !== "string") return false;
+  if (typeof prefix !== "string" || !prefix) return false;
+  if (typeof key !== "string" || !key) return false;
+  return event.key === `${prefix}:${key}`;
+}
 
 export function memoryStorage(initial = {}) {
   const data = new Map(Object.entries(initial));
   return {
     persistent: false,
+    prefix: "",
     get(key) {
       return data.has(key) ? data.get(key) : null;
     },
@@ -38,9 +49,10 @@ export function browserStorage(prefix) {
   } catch {
     backend = null;
   }
-  if (!backend) return memoryStorage();
+  if (!backend) return { ...memoryStorage(), prefix };
   return {
     persistent: true,
+    prefix,
     get(key) {
       try {
         return backend.getItem(namespace + key);

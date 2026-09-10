@@ -4,6 +4,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 import { createGame } from "../src/main.js";
 import { createInput } from "../src/core/input.js";
@@ -1107,4 +1108,32 @@ test("o avanço pulsa no aparelho e a pausa cala o que ainda vibrava", () => {
   assert.ok(played.includes("unmute"));
   game.dispose();
   assert.ok(played.includes("dispose"));
+});
+
+test("a outra aba veste as preferências", () => {
+  const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  assert.match(html, /watchSettings\([\s\S]*sync\(\)/);
+
+  const storage = memoryStorage();
+  storage.prefix = "lab";
+  const target = recordingTarget();
+  const seen = [];
+  const game = createGame({ seed: 5, eventTarget: target, storage });
+  game.watchSettings((next) => { seen.push(next.look); });
+  assert.equal(game.settings.look, "normal");
+
+  storage.set("settings", JSON.stringify({ ...game.settings, look: "dusk", uiScale: 1.6 }));
+  const onStorage = target.listeners.find((entry) => entry.type === "storage");
+  assert.ok(onStorage, "storage precisa de ouvinte");
+  onStorage.handler({ key: "lab:settings" });
+  assert.equal(game.settings.look, "dusk");
+  assert.equal(game.settings.uiScale, 1.6);
+  assert.deepEqual(seen, ["dusk"]);
+
+  onStorage.handler({ key: "lab:settings.tmp" });
+  assert.equal(game.settings.look, "dusk", "tmp não veste");
+  onStorage.handler({ key: "outro:settings" });
+  assert.equal(game.settings.look, "dusk");
+  game.dispose();
+  assert.equal(target.listeners.length, 0);
 });
