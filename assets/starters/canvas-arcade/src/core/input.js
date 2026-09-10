@@ -16,6 +16,9 @@
 // hold disparava o ofício, e no campo o cooldown virava
 // metralhadora. A guarda continua nível — segurar ainda
 // converte o orbe do mesmo quadro.
+// O recado foca o campo no fim. Sem isto Espaço e R
+// disparavam o verbo enquanto a pessoa escrevia.
+// Escrever no disco não é felt.
 // Sessão no aparelho não foi observada.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que
@@ -34,6 +37,14 @@ import { DEFAULT_BINDINGS } from "./settings.js";
 
 const MOVE_DEADZONE = 0.28;
 const DRAG_DEADZONE = 0.04;
+
+export function isTypingTarget(event) {
+  const node = event?.target;
+  if (!node || typeof node !== "object") return false;
+  const tag = String(node.tagName || "").toLowerCase();
+  if (tag === "input" || tag === "textarea" || tag === "select") return true;
+  return Boolean(node.isContentEditable);
+}
 
 export function createInput(options = {}) {
   const target = options.target ?? (typeof window !== "undefined" ? window : null);
@@ -90,6 +101,9 @@ export function createInput(options = {}) {
   }
 
   function onKeyDown(event) {
+    // O painel foca o recado no over. Sem isto o espaço
+    // avançava e o R recomeçava no meio da frase.
+    if (isTypingTarget(event)) return;
     const code = event.code ?? event.key;
     if (!actionsFor(code).length) return;
     noteSource("keyboard");
@@ -106,7 +120,7 @@ export function createInput(options = {}) {
     held.delete(event.code ?? event.key);
   }
 
-  function onBlur() {
+  function releaseHold() {
     // Perder o foco com a tecla apertada travaria o movimento para sempre.
     held.clear();
     pointer.active = false;
@@ -116,6 +130,17 @@ export function createInput(options = {}) {
     pointer.originX = null;
     pointer.originY = null;
     pointer.dragged = false;
+  }
+
+  function onBlur() {
+    releaseHold();
+  }
+
+  function onFocusIn(event) {
+    if (!isTypingTarget(event)) return;
+    releaseHold();
+    // O aperto que ainda não foi lido não vira ofício no recado.
+    pressed.clear();
   }
 
   function pointerAim(event) {
@@ -188,6 +213,7 @@ export function createInput(options = {}) {
   on(target, "keydown", onKeyDown);
   on(target, "keyup", onKeyUp);
   on(target, "blur", onBlur);
+  on(target, "focusin", onFocusIn);
   on(surface, "pointerdown", onPointerDown);
   on(surface, "pointermove", onPointerMove);
   on(surface, "pointerup", onPointerUp);

@@ -3,6 +3,47 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.259 — O recado não dispara o verbo
+
+O
+painel
+foca
+o
+campo
+no
+fim.
+Espaço
+avançava.
+R
+recomeçava.
+Quem
+escrevia
+o
+recibo
+disparava
+o
+ofício.
+Agora
+o
+campo
+fica
+com
+a
+tecla.
+Não
+promove
+`felt`.
+
+O que 0.9.259 não afirma:
+poupar
+o
+recado
+não
+é
+peso
+no
+dispositivo.
+
 ## 0.9.258 — A escala veste a casca da página
 
 O
