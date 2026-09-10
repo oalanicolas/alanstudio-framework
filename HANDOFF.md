@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.289: o ciclo nomeia o relógio que o jogo já lê. `CYCLE_KEYS` inclui `speed`. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 307 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 308 OK.
 `cd assets/starters/canvas-arcade && npm test` → 474 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
