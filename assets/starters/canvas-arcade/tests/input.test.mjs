@@ -137,6 +137,28 @@ function stubPad({ axes = [0], buttons = {} } = {}) {
   return [{ axes, buttons: list }];
 }
 
+test("o controle acorda o mixer no gesto, zona morta não", () => {
+  const woken = [];
+  let pads = [];
+  const input = createInput({
+    target: null,
+    gamepads: () => pads,
+    unlock: () => {
+      woken.push(input.lastSource);
+    },
+  });
+  pads = stubPad({ axes: [-0.1] });
+  input.intent();
+  assert.deepEqual(woken, [], "zona morta não pede resume");
+  pads = stubPad({ buttons: { 0: true } });
+  input.intent();
+  assert.deepEqual(woken, ["gamepad"], "A do controle pede resume");
+  pads = stubPad({ axes: [0.8] });
+  input.intent();
+  assert.equal(woken.at(-1), "gamepad", "analógico também pede");
+  input.dispose();
+});
+
 test("o controle move, avança, guarda, pausa e reinicia", () => {
   let pads = [];
   const input = createInput({ target: null, gamepads: () => pads });

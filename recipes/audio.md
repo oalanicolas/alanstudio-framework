@@ -24,7 +24,7 @@ mixer. O pedido que chega antes do WAV — ou enquanto o contexto
 ainda está suspenso — fica na fila e toca quando o buffer entra ou
 o gesto retoma, sem segunda legenda. Os stems sobem juntos: collect
 não espera dash terminar. Wav no lugar não pede ogg. O gesto
-(tecla ou toque) retoma o contexto suspenso. Retomar, fila e
+(tecla, toque ou controle) retoma o contexto suspenso. Retomar, fila e
 paralelo não são mix ouvido.
 Coleta e guarda sobem de tom com a corrente; o erro não herda o tom.
 A legenda desses dois papéis nomeia a mesma aposta. Sem o número

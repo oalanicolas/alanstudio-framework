@@ -21,7 +21,7 @@
 // WAV — ou enquanto o contexto ainda está suspenso — fica na fila e
 // toca quando o buffer entra ou o gesto retoma, sem segunda
 // legenda. Os stems sobem juntos; wav no lugar não pede ogg.
-// O gesto (tecla ou toque) retoma o contexto suspenso;
+// O gesto (tecla, toque ou controle) retoma o contexto suspenso;
 // retomar, fila e paralelo não são mix ouvido.
 // `missing()` ainda lista o papel se o decode falhar ou o fetch 404.
 // O `over` pede fade na cama; pause, title e aba escondida

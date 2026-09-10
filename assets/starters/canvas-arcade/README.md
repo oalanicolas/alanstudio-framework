@@ -182,7 +182,7 @@ traz a mixagem — barramentos, prioridade, ducking, rodízio, legenda.
 `heard` continua falso: arquivo no disco não é mixagem ouvida. O
 pedido que chega antes do WAV fica na fila e toca quando o buffer
 entra; os stems sobem juntos — collect não espera dash terminar;
-wav no lugar não pede ogg; o gesto retoma o contexto suspenso.
+wav no lugar não pede ogg; o gesto (tecla, toque ou controle) retoma o contexto suspenso.
 Fila, paralelo e resume não são mix ouvido. Variação no disco
 não é faixa dinâmica medida.
 

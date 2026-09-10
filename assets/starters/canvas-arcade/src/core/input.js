@@ -3,7 +3,10 @@
 // não recomeça só com o controle. `lastSource` guarda quem falou por
 // último para o aviso e o overlay nomearem esse mapa — não o manifesto.
 // O gesto acorda o mixer (`unlock`): o resume no quadro chega
-// tarde e o primeiro verbo fica mudo. Acordar não é mix ouvido.
+// tarde e o primeiro verbo fica mudo. Tecla e toque já pediam.
+// Sem isto o controle marcava a superfície e a porta falava
+// no vazio. Pedir resume não é mix ouvido. O aparelho pode
+// recusar o gesto do pad — `heard` continua falso.
 // Na porta o arraste move sem abrir; o tap abre — inclusive
 // na faixa da guarda. Sem isto o polegar no primeiro gesto
 // caía na faixa e a porta calava. No campo o down de cima
@@ -231,7 +234,14 @@ export function createInput(options = {}) {
       gamepadHeld.add("right");
       speaking = true;
     }
-    if (speaking) noteSource("gamepad");
+    if (speaking) {
+      noteSource("gamepad");
+      // Tecla e toque já pediam o resume no gesto. O pad
+      // falava e o mixer continuava suspenso: live da porta
+      // e o primeiro avanço iam para a fila e não saíam.
+      // Pedir não é mix ouvido.
+      wake();
+    }
   }
 
   function isHeld(action) {

@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.244 — O controle também pede o resume
+
+Tecla
+e
+toque
+já
+acordavam
+o
+mixer.
+O
+pad
+marcava
+a
+superfície
+e
+a
+porta
+ia
+para
+a
+fila.
+Agora
+o
+gesto
+do
+controle
+também
+pede
+o
+resume.
+Não
+promove
+`heard`.
+
+O que 0.9.244 não afirma:
+pedir
+resume
+não
+é
+mix
+ouvido.
+O
+aparelho
+pode
+recusar
+o
+gesto
+do
+pad.
+
 ## 0.9.243 — Na porta o tap na faixa da guarda também abre
 
 O
