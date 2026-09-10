@@ -3,6 +3,24 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.167 — O aviso nomeia o custo do estilhaço
+
+A queda do orbe já tinha
+passo. O estilhaço — o verbo
+da fantasia — comia a
+corrente e o mixer falava;
+o aviso ia para coletar.
+`hint_hit` nomeia esse custo
+enquanto a corrente é zero.
+Dash no trilho vence. A
+porta não ensina. Copy 3.
+`felt` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.167 não afirma:
+texto no disco não é peso
+percebido.
+
 ## 0.9.166 — O doctor aponta o mapa no lab vazio
 
 O primeiro comando da skill

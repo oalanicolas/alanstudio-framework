@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.166: doctor aponta o mapa no lab vazio.
+**HEAD:** ver `git log -1` — vigente 0.9.167: o aviso nomeia o custo do estilhaço.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 267 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.166)
+## O que o HEAD já entrega (0.9.91–0.9.167)
 
 | Ver | Salto |
 | --- | --- |
@@ -110,6 +110,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.164 | `cycle_line` nomeia `Fantasia:` antes de `Verbo:` quando `--idea` ou `copy.json` têm frase. O guide não grava. A frase não muda o verbo. Não entra em `CYCLE_KEYS`. |
 | 0.9.165 | `init_scope` distingue rascunhos plantados. Sem docs não afirma brief nem `draft_only`. `preproduction.md` ensina `start --idea`; `init` continua o que planta. O `context` injeta esse arquivo. Não promove. |
 | 0.9.166 | `doctor` no laboratório vazio devolve `then.guide`. Sem starter o aviso nomeia `start --idea`, não `init`. Com jogo a chave some. Sem `prompt`. Não cria e não executa. |
+| 0.9.167 | O aviso do primeiro ciclo nomeia o estilhaço quando a corrente voltou a zero (`hint_hit`). Dash no trilho vence. A porta não ensina. Copy 3. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -354,12 +355,14 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   na hora. Raspo (`grazeContact`): estreita, punch na direção,
   flash menor que a queda. Sem hitstop. Sem rumble.
   Não promover `feel`.
-- Coach: fantasy → move → dash → miss → touch/pad → collect → null após
+- Coach: fantasy → move → dash → hit → miss → touch/pad → collect → null após
   1ª guarda. Exceção: `closingWindow` e `chain > 0` devolve `bank`
   mesmo depois da primeira guarda. Sem corrente o fecho não ensina.
   Pad/touch não voltam. Na porta (`phase === "title"`) o relógio
   é `attractTick`: fantasia e mover; depois some. Dash, coleta,
-  guarda, queda e superfície ficam no campo. `over` continua mudo.
+  guarda, queda, hit e superfície ficam no campo. `over` continua mudo.
+  `hint_hit` nomeia o estilhaço quando `hits > 0` e `chain === 0`.
+  Dash no trilho vence. Texto no disco não é `felt`.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
 - `title_play` / `title_again` / `title_new` / `title_last` /
   `title_volatile` / `title_unsaved` /
@@ -449,6 +452,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `init.scope` que afirma rascunhos, brief ou `draft_only` quando `start` não os plantou.
 **Não** mais um `preproduction.md` que ensina `init` como a entrada de jogo novo.
 **Não** mais um `doctor` que ensina `init` e some o mapa quando o laboratório está vazio.
+**Não** mais um aviso que some o custo do estilhaço enquanto o miss já nomeia a queda.
 
 Candidatos, do que ainda dói:
 
@@ -540,5 +544,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `doctor_then` aponta `guide` no
-lab vazio. Sem starter o aviso nomeia `start --idea`. Sem `prompt`.
+Arquivos quentes da última sessão: `hint_hit` no primeiro ciclo.
+Copy 3. A porta não ensina. Não promove feel.

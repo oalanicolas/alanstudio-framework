@@ -99,6 +99,37 @@ test("estilhaço no trilho vence o passo da superfície", () => {
   assert.equal(coachHint(state, {}, { surface: "pointer" }), "dash");
 });
 
+test("o estilhaço nomeia o custo enquanto a corrente voltou a zero", () => {
+  const state = createState(1);
+  state.tick = 90;
+  state.stats.hits = 1;
+  assert.equal(coachHint(state), "hit");
+  state.stats.missed = 1;
+  assert.equal(coachHint(state), "hit", "o estilhaço vence a queda");
+  state.chain = 1;
+  assert.equal(coachHint(state), "collect");
+  state.chain = 3;
+  assert.equal(coachHint(state), "bank");
+  state.stats.banks = 1;
+  assert.equal(coachHint(state), null);
+});
+
+test("estilhaço no trilho vence o custo do hit", () => {
+  const state = createState(1);
+  state.tick = 90;
+  state.stats.hits = 1;
+  state.entities = [shardOnRail()];
+  assert.equal(coachHint(state), "dash");
+});
+
+test("a porta não ensina o custo do estilhaço", () => {
+  const state = createState(1, { entry: "title" });
+  state.attractTick = 90;
+  state.stats.hits = 1;
+  assert.equal(coachHint(state), null);
+  assert.equal(coachHint(state, {}, { surface: "pointer" }), null, "a porta não ensina toque no hit");
+});
+
 test("orbe perdido nomeia o custo enquanto a corrente é zero", () => {
   const state = createState(1);
   state.tick = 90;

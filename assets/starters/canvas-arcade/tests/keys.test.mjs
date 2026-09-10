@@ -53,6 +53,7 @@ test("o controle preenche o overlay e o aviso continua ensinando as três superf
   assert.equal(lines.hint_bank, "Guarde (↓, baixo ou X) antes de perder a corrente");
   assert.equal(lines.hint_collect, copy.hint_collect);
   assert.equal(lines.hint_miss, copy.hint_miss);
+  assert.equal(lines.hint_hit, copy.hint_hit);
 });
 
 test("o toque nomeia as faixas no overlay e deixa o aviso com as três superfícies", () => {
