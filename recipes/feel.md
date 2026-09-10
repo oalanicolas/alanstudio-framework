@@ -164,7 +164,7 @@ perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, buffe
 guardar, graça após dano, alcance de coleta maior que o desenho — cada valor com o
 motivo ao lado. Guardar no hitstop não é engolido; um toque sem corrente não decide
 o próximo orbe. Cada verbo desloca a câmera numa direção própria e achata o corpo
-numa medida própria: coleta, dash, aterrissagem, guardar e o erro não compartilham
+numa medida própria: coleta, dash, raspo, aterrissagem, guardar e o erro não compartilham
 squash. O dash aterrissa: o corpo senta, a câmera confirma para baixo,
 o rastro cai e o mixer fala `land` — distintos da partida. Arquivo no
 disco não é peso percebido. A ameaça que
@@ -183,7 +183,9 @@ a câmera para baixo, sem pulsar o controle. Arquivo no disco não é peso perce
 na guarda eles voam para o placar; no fim a aposta não guardada
 cai e o overlay nomeia o que caiu — a queda vence a cortina, que
 reusa a placa do look. As legendas nascem depois da cortina. O
-raspo risca o campo. Nenhum some. A conta no estado
+raspo risca o campo, estreita o corpo, empurra a câmera na
+direção e acende menos que a queda. Sem hitstop. Sem pulso no
+controle. Nenhum some. A conta no estado
 sobrevive ao fim — a órbita não.
 A entrada continua separada da
 regra em `src/core/input.js`. Perdão de entrada é decisão de design explícita com

@@ -46,10 +46,12 @@ export const CONFIG = {
     collectShake: 0.12,
     bankShake: 0.28,
     missedShake: 0.06, // a queda treme menos que a coleta
+    grazeShake: 0.08, // o raspo treme mais que a queda, menos que a coleta
     hitShake: 1,
     shakeDecay: 0.86,
     squashCollect: 0.22,
     squashCoil: -0.18, // antecipação: estreita antes de alongar
+    squashGraze: -0.26, // o contato estreita; o dash alonga
     squashDash: 0.34, // partida do dash: alonga na direção, não achata
     squashLand: 0.40, // término: senta depois de alongar; menor que guardar
     squashBank: 0.46, // compromisso: senta mais que a coleta
@@ -58,6 +60,7 @@ export const CONFIG = {
     punchCollectY: -1.6, // coleta sobe a câmera
     punchBankY: 2.4, // guardar confirma para baixo
     punchDashX: 3.2, // dash empurra na direção
+    punchGrazeX: 1.6, // o raspo empurra na direção; menor que o dash
     punchLandY: 1.8, // aterrissa para baixo; menor que guardar
     punchMissedY: 0.9, // a queda confirma para baixo; menor que aterrissar
     punchHitY: 4.2, // o erro desloca mais que a coleta
@@ -67,6 +70,7 @@ export const CONFIG = {
     flashPractice: 0.28, // a prática some: o campo acende menos que o erro
     flashStir: 0.18, // a folga acaba: o campo acende menos que a prática
     flashMissed: 0.12, // o orbe caiu: o campo acende menos que a volta
+    flashGraze: 0.08, // o contato acende menos que a queda
     flashDecay: 0.72,
     closeTicks: 600, // TICK_HZ * 10 — fecho: o campo marca o fim; não é faixa no HUD
     rumbleDashMs: 16, // partida: toque curto
@@ -800,6 +804,7 @@ function resolveEntities(state) {
         continue;
       }
       if (invulnerable) {
+        grazeContact(state);
         emit(state, "graze", { x: entity.x });
         releaseEntity(entity);
         continue;
@@ -823,6 +828,14 @@ function resolveEntities(state) {
     write += 1;
   }
   entities.length = write;
+}
+
+function grazeContact(state) {
+  const dir = state.player.dir < 0 ? -1 : 1;
+  state.shake += CONFIG.feel.grazeShake;
+  state.flash = Math.max(state.flash, CONFIG.feel.flashGraze);
+  state.player.squash = CONFIG.feel.squashGraze;
+  punch(state, CONFIG.feel.punchGrazeX * dir, 0);
 }
 
 function collect(state, fromX, fromY) {

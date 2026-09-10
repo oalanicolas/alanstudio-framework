@@ -248,6 +248,39 @@ test("o dash atravessa o estilhaço sem perder a corrente", () => {
   );
 });
 
+test("o raspo confirma no corpo e na câmera sem congelar", () => {
+  const fade = CONFIG.feel.squashDecay;
+  const tremor = CONFIG.feel.shakeDecay;
+  const flash = CONFIG.feel.flashDecay;
+  const punch = CONFIG.feel.punchDecay;
+  const state = createState(3);
+  state.player.invuln = 10;
+  state.player.dir = 1;
+  state.entities = [shard(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.ok(state.events.some((event) => event.type === "graze"));
+  assert.equal(state.hitstop, 0, "raspo não congela o dash");
+  assert.equal(state.player.squash, CONFIG.feel.squashGraze * fade);
+  assert.equal(state.shake, CONFIG.feel.grazeShake * tremor);
+  assert.equal(state.flash, CONFIG.feel.flashGraze * flash);
+  assert.equal(state.camera.x, CONFIG.feel.punchGrazeX * punch);
+  assert.equal(state.camera.y, 0, "raspo empurra na direção, não para baixo");
+  const left = createState(4);
+  left.player.invuln = 10;
+  left.player.dir = -1;
+  left.entities = [shard(left.player.x, PLAYER_Y)];
+  advance(left, neutralIntent());
+  assert.equal(left.camera.x, -CONFIG.feel.punchGrazeX * punch);
+  assert.ok(CONFIG.feel.squashGraze < 0, "o contato estreita, não alonga");
+  assert.ok(CONFIG.feel.squashGraze !== CONFIG.feel.squashCoil);
+  assert.ok(CONFIG.feel.grazeShake > CONFIG.feel.missedShake);
+  assert.ok(CONFIG.feel.grazeShake < CONFIG.feel.collectShake);
+  assert.ok(CONFIG.feel.punchGrazeX > 0);
+  assert.ok(CONFIG.feel.punchGrazeX < CONFIG.feel.punchDashX);
+  assert.ok(CONFIG.feel.flashGraze > 0);
+  assert.ok(CONFIG.feel.flashGraze < CONFIG.feel.flashMissed);
+});
+
 test("cada verbo tem sinal próprio de partida e contato", () => {
   const fade = CONFIG.feel.squashDecay;
   const tremor = CONFIG.feel.shakeDecay;
@@ -285,13 +318,14 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   assert.equal(new Set(stops).size, 3, "hitstop repetido não distingue o verbo");
   const squashes = [
     CONFIG.feel.squashCoil,
+    CONFIG.feel.squashGraze,
     CONFIG.feel.squashCollect,
     CONFIG.feel.squashDash,
     CONFIG.feel.squashLand,
     CONFIG.feel.squashBank,
     CONFIG.feel.squashHit,
   ];
-  assert.equal(new Set(squashes).size, 6, "squash repetido não distingue o verbo");
+  assert.equal(new Set(squashes).size, 7, "squash repetido não distingue o verbo");
   assert.notEqual(CONFIG.feel.collectShake, CONFIG.feel.hitShake);
   assert.notEqual(CONFIG.feel.bankShake, CONFIG.feel.collectShake);
   assert.notEqual(dash.camera.x, 0, "dash empurra a câmera na direção");

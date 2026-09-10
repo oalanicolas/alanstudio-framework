@@ -532,6 +532,17 @@ test("guardar e o erro achatam o corpo diferente da coleta", () => {
   assert.ok(c.height < b.height && b.height < a.height, "o achatamento precisa chegar no quadro");
 });
 
+test("o raspo estreita o corpo; o dash alonga", () => {
+  const start = createState(1);
+  start.player.squash = CONFIG.feel.squashDash;
+  const graze = createState(1);
+  graze.player.squash = CONFIG.feel.squashGraze;
+  const launched = playerBox(start);
+  const rasped = playerBox(graze);
+  assert.ok(rasped.width < launched.width, "o contato estreita; o dash alonga");
+  assert.ok(rasped.height > launched.height, "o contato alonga na vertical");
+});
+
 test("a antecipação do avanço estreita o corpo antes de alongar", () => {
   const idle = createState(1);
   const coil = createState(1);
