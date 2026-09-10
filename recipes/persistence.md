@@ -26,7 +26,9 @@ mãos de alguém, e teste **a cadeia inteira**, não apenas o último salto.
 Trate dado inválido como caso normal, não como exceção: arquivo truncado, campo
 ausente, valor fora de faixa, save de uma versão futura, armazenamento cheio ou
 negado. A política precisa preservar o que ainda é aproveitável e falhar de forma
-legível para o jogador. **Não apague save real para fazer um teste passar**; ao
+legível para o jogador. A porta e o fim nomeiam sessão volátil e
+gravação que não ficou. Nomear não é aba fechada nem `trusted`.
+**Não apague save real para fazer um teste passar**; ao
 migrar, preserve o original até a nova gravação estar confirmada.
 
 Grave em escrita atômica — arquivo temporário e substituição — para que uma

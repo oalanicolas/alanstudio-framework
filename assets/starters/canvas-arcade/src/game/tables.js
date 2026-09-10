@@ -10,6 +10,8 @@
 // aplica uma intenção nomeada e deixa a chuva distinta. `copy.fantasy`
 // tem consumidor: a abertura e o coach do primeiro ciclo.
 // `title_play`, `title_again` e `title_new` nomeiam a porta.
+// `title_volatile` e `title_unsaved` nomeiam sessão que não
+// grava e gravação que não ficou. Nomear não é `trusted`.
 // `resume`, `restart` e
 // `hint_bank` reservam o lugar da tecla viva; `hint_dash` ensina o
 // avanço nas três superfícies quando o estilhaço marca o trilho;
@@ -142,6 +144,8 @@ export const COPY_FIELDS = [
   "title_again",
   "title_new",
   "title_last",
+  "title_volatile",
+  "title_unsaved",
   "over_door",
   "over_door_inline",
 ];
@@ -192,6 +196,8 @@ export function migrateCopy(raw) {
     title_again: typeof table.title_again === "string" ? table.title_again : "Repetir a última: {dash}",
     title_new: typeof table.title_new === "string" ? table.title_new : "Nova partida: {reset}",
     title_last: typeof table.title_last === "string" ? table.title_last : "Última",
+    title_volatile: typeof table.title_volatile === "string" ? table.title_volatile : "Esta sessão não grava",
+    title_unsaved: typeof table.title_unsaved === "string" ? table.title_unsaved : "A última gravação não ficou",
     over_door: typeof table.over_door === "string" ? table.over_door : "Abertura: {dash}",
     over_door_inline: typeof table.over_door_inline === "string" ? table.over_door_inline : "abertura: {dash}",
   };

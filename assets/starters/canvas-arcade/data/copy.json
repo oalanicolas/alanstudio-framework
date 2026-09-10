@@ -23,6 +23,8 @@
   "title_again": "Repetir a última: {dash}",
   "title_new": "Nova partida: {reset}",
   "title_last": "Última",
+  "title_volatile": "Esta sessão não grava",
+  "title_unsaved": "A última gravação não ficou",
   "over_door": "Abertura: {dash}",
   "over_door_inline": "abertura: {dash}"
 }

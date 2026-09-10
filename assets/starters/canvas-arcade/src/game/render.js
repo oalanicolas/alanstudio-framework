@@ -11,6 +11,7 @@
 
 import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, attractEntities, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse, recoveryPulse } from "./rules.js";
 import { copy, dressPalette, PALETTES } from "./tables.js";
+import { persistLine } from "../core/save.js";
 import { bindLines } from "../core/keys.js";
 import { DEFAULT_BINDINGS } from "../core/settings.js";
 
@@ -139,7 +140,14 @@ export function createRenderer(canvas, options = {}) {
     drawCoach(context, palette, extra.hint, reserved, settings, extra, lines);
     if (frame.paused) drawOverlay(context, palette, lines.paused, lines.resume, settings);
     else if (ending) {
-      drawOverlay(context, palette, `${lines.over} — ${state.score}`, overHint(state, lines), settings);
+      drawOverlay(
+        context,
+        palette,
+        `${lines.over} — ${state.score}`,
+        overHint(state, lines),
+        settings,
+        persistLine(extra.persist, lines),
+      );
       drawMotes(context, palette, state, reduced, (mote) => mote.kind === "lapse");
     }
     // A cortina cobria a faixa. Com o áudio desligado a informação
@@ -551,11 +559,18 @@ export function createRenderer(canvas, options = {}) {
     if (extra.canContinue) {
       target.fillStyle = palette.muted;
       target.fillText(lines.title_new, FIELD.width / 2, line + 12 * scale);
+      line += 12 * scale;
+    }
+    const persist = persistLine(extra.persist, lines);
+    if (persist) {
+      target.fillStyle = palette.muted;
+      target.font = `${7 * scale}px system-ui, sans-serif`;
+      target.fillText(persist, FIELD.width / 2, line + 12 * scale);
     }
     target.textAlign = "left";
   }
 
-  function drawOverlay(target, palette, title, hint, settings = {}) {
+  function drawOverlay(target, palette, title, hint, settings = {}, persist = "") {
     // A cortina reusa a placa do look — dusk não herda o preto frio.
     // Token no disco não é direção observada. O texto segue uiScale
     // como o HUD; escala no stub não é sessão de alcance.
@@ -569,6 +584,9 @@ export function createRenderer(canvas, options = {}) {
     target.font = `${8 * scale}px system-ui, sans-serif`;
     target.fillStyle = palette.muted;
     target.fillText(hint, FIELD.width / 2, FIELD.height / 2 + 8 * scale);
+    if (persist) {
+      target.fillText(persist, FIELD.width / 2, FIELD.height / 2 + 20 * scale);
+    }
     target.textAlign = "left";
   }
 

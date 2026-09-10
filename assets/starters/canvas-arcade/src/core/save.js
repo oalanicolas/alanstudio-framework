@@ -109,6 +109,31 @@ export function saveProgress(storage, progress, load = null) {
   return writeJson(storage, PROGRESS_KEY, { ...defaultProgress(), ...progress, schema: PROGRESS_SCHEMA });
 }
 
+// O que a porta pode nomear. Memória volátil e escrita recusada
+// são casos diferentes; nenhum dos dois é save confiável.
+// `trusted` continua falso: a linha não observa a aba fechada.
+export function persistStatus(storage, lastWrite = { ok: true }) {
+  const durable = storage?.persistent !== false;
+  const wrote = lastWrite?.ok !== false;
+  return {
+    durable,
+    wrote,
+    reason: wrote ? null : (lastWrite?.reason ?? "write_failed"),
+    trusted: false,
+  };
+}
+
+export function persistLine(status, lines = {}) {
+  if (!status) return "";
+  if (status.durable === false) {
+    return typeof lines.title_volatile === "string" ? lines.title_volatile : "";
+  }
+  if (status.wrote === false) {
+    return typeof lines.title_unsaved === "string" ? lines.title_unsaved : "";
+  }
+  return "";
+}
+
 function readRun(raw) {
   if (!raw || typeof raw !== "object") return null;
   return summarizeRun({

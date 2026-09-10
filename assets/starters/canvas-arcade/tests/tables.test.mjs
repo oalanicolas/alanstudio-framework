@@ -145,6 +145,8 @@ test("copy sem schema migra; schema futuro e campo ausente falham com o nome", (
   assert.equal(old.title_again, "Repetir a última: {dash}");
   assert.equal(old.title_new, "Nova partida: {reset}");
   assert.equal(old.title_last, "Última");
+  assert.equal(old.title_volatile, "Esta sessão não grava");
+  assert.equal(old.title_unsaved, "A última gravação não ficou");
   assert.equal(old.over_door, "Abertura: {dash}");
   assert.equal(old.over_door_inline, "abertura: {dash}");
   assert.throws(() => migrateTable("copy", { schema: 4 }, COPY_SCHEMA), /mesa copy schema 4 não suportado/);

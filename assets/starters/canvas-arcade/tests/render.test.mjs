@@ -571,6 +571,26 @@ test("a recuperação do dash não se parece com o dash nem com o descanso", () 
   assert.notEqual(playerFill(recovery), playerFill(dash));
 });
 
+test("a abertura nomeia sessão volátil e gravação recusada sem inventar faixa", () => {
+  const state = createState(1, { entry: "title" });
+  const volatile = paint(state, {}, { best: 0, persist: { durable: false, wrote: true, trusted: false } });
+  assert.ok(volatile.texts.some((item) => String(item.text).includes("não grava")));
+  assert.ok(hudBands(volatile) <= hudBands(paint(state)), "o aviso de save não é faixa no HUD");
+  const unsaved = paint(state, {}, { best: 0, persist: { durable: true, wrote: false, trusted: false } });
+  assert.ok(unsaved.texts.some((item) => String(item.text).includes("não ficou")));
+  const quiet = paint(state, {}, { best: 0, persist: { durable: true, wrote: true, trusted: false } });
+  assert.equal(quiet.texts.some((item) => String(item.text).includes("não grava")), false);
+  assert.equal(quiet.texts.some((item) => String(item.text).includes("não ficou")), false);
+  const ended = createState(1);
+  ended.phase = "over";
+  const over = paint(ended, {}, { persist: { durable: false, wrote: true, trusted: false } });
+  assert.ok(over.texts.some((item) => String(item.text).includes("não grava")));
+  assert.doesNotMatch(
+    [...volatile.texts, ...unsaved.texts, ...over.texts].map((item) => item.text).join(" "),
+    /aprovado|verified|trusted/,
+  );
+});
+
 test("a abertura nomeia a fantasia, o recorde e a última seed", () => {
   const state = createState(1, { entry: "title" });
   const first = paint(state, {}, { best: 0, canContinue: false });

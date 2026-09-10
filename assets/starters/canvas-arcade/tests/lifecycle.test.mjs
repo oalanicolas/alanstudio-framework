@@ -179,6 +179,32 @@ test("a lacuna de áudio é declarada em vez de silenciosa", () => {
   game.dispose();
 });
 
+test("sessão volátil e gravação recusada aparecem no persist sem chamar isso de confiável", () => {
+  const { game } = harness();
+  assert.equal(game.persist.durable, false);
+  assert.equal(game.persist.wrote, true);
+  assert.equal(game.persist.trusted, false);
+  const failing = {
+    persistent: true,
+    get: () => null,
+    set() {
+      throw new Error("QuotaExceededError");
+    },
+    remove() {},
+    keys: () => [],
+  };
+  const broken = createGame({ seed: 5, eventTarget: recordingTarget(), storage: failing });
+  const flushed = broken.flush();
+  assert.equal(broken.persist.durable, true);
+  assert.equal(broken.persist.wrote, false);
+  assert.equal(broken.persist.reason, "write_failed");
+  assert.equal(broken.persist.trusted, false);
+  assert.equal(flushed.persist.trusted, false);
+  assert.equal(flushed.persist.wrote, false);
+  broken.dispose();
+  game.dispose();
+});
+
 test("uma partida completa é registrada no progresso persistido", () => {
   const { game, storage } = harness();
   game.advance(CONFIG.runTicks);

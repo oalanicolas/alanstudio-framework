@@ -15,6 +15,8 @@ import {
   canContinue,
   canResume,
   captureHold,
+  persistLine,
+  persistStatus,
   recordRun,
   saveProgress,
 } from "../src/core/save.js";
@@ -115,6 +117,25 @@ test("cota cheia falha sem derrubar o jogo", () => {
   assert.equal(result.ok, false);
   assert.equal(result.reason, "write_failed");
   assert.deepEqual(dropped, ["chave.tmp"], "a chave temporária é limpa mesmo na falha");
+});
+
+test("sessão volátil e gravação recusada têm linha, sem chamar isso de confiável", () => {
+  const memory = persistStatus(memoryStorage(), { ok: true });
+  assert.equal(memory.durable, false);
+  assert.equal(memory.wrote, true);
+  assert.equal(memory.trusted, false);
+  assert.equal(persistLine(memory, { title_volatile: "Esta sessão não grava" }), "Esta sessão não grava");
+  const failed = persistStatus({ persistent: true }, { ok: false, reason: "write_failed" });
+  assert.equal(failed.durable, true);
+  assert.equal(failed.wrote, false);
+  assert.equal(failed.trusted, false);
+  assert.equal(persistLine(failed, { title_unsaved: "A última gravação não ficou" }), "A última gravação não ficou");
+  const ok = persistStatus({ persistent: true }, { ok: true });
+  assert.equal(ok.durable, true);
+  assert.equal(ok.wrote, true);
+  assert.equal(ok.trusted, false);
+  assert.equal(persistLine(ok, { title_volatile: "Esta sessão não grava", title_unsaved: "A última gravação não ficou" }), "");
+  assert.equal(persistLine(null, { title_volatile: "x" }), "");
 });
 
 test("valor não serializável é recusado antes de tocar o armazenamento", () => {

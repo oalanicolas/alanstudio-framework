@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.139: o pedido que chega antes do WAV toca quando o buffer entra.
+**HEAD:** ver `git log -1` — vigente 0.9.140: a porta nomeia sessão volátil e gravação que não ficou.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 260 OK.
-`cd assets/starters/canvas-arcade && npm test` → 304 OK.
+`cd assets/starters/canvas-arcade && npm test` → 307 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.139)
+## O que o HEAD já entrega (0.9.91–0.9.140)
 
 | Ver | Salto |
 | --- | --- |
@@ -83,6 +83,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.137 | `play` / `open` sem caminho usam o único jogo do laboratório. Dois listam os nomes e pedem o caminho. O starter não é o jogo. Não varre a raiz do disco. `executed` continua falso. |
 | 0.9.138 | `note`, `next`, `feel` e `playtest` sem caminho usam o mesmo resolvedor. Achar o único jogo não sente e não assiste. `felt` / `observed` / `outsider` continuam falsos. |
 | 0.9.139 | O pedido que chega antes do WAV fica na fila e toca quando o buffer entra. Sem segunda legenda. `heard` continua falso. |
+| 0.9.140 | A porta e o fim nomeiam sessão volátil e gravação que não ficou. `handle.persist` expõe o estado. `trusted` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -166,7 +167,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   faixa do achado, `play` achar o único jogo do
   laboratório, `note` / `next` / `feel` / `playtest`
   acharem o mesmo jogo, fila do mixer no primeiro
-  WAV
+  WAV, aviso de save na porta
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -263,7 +264,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   1ª guarda. `coachHint` some se `phase !== "playing"`.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
 - `title_play` / `title_again` / `title_new` / `title_last` /
+  `title_volatile` / `title_unsaved` /
   `over_door` / `over_door_inline` em `COPY_FIELDS` (default `{dash}`).
+  A porta e o fim leem `persistLine`. Nomear não é `trusted`.
   `migrateCopy` preenche default se a mesa antiga não tiver.
 - Invite (`?invite=1`) some `#commands`, não `#remap`. Com seed no
   last-run, `/?invite=1&seed=<n>` some a tabela e abre essa partida.
@@ -304,7 +307,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 Saltos alinhados: feel visível/audível, ferramenta de outsider, superfície
 de entrada, auditoria item 1, ou atrito ideia→jogo. **Não** mais um
 script de medição. **Não** mais um `play` sem caminho. **Não** mais
-um `note` sem caminho. **Não** mais a fila do mixer.
+um `note` sem caminho. **Não** mais a fila do mixer. **Não** mais
+aviso de save na porta.
 
 Candidatos, do que ainda dói:
 
@@ -323,7 +327,8 @@ Candidatos, do que ainda dói:
    look quando o candidato os nomeia) e o convite junta os
    mesmos eixos. Não auto-servir.
    `len(steps) == 3` e `executed: false` continuam.
-3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
+3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
+   volátil e gravação recusada. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
 4. **Item 1 residual:** o mapa, as receitas de foco e os templates da
    primeira situação — brief, GDD, game-design, PoC, slice, QA e
@@ -336,7 +341,8 @@ Candidatos, do que ainda dói:
    disco, copiar o achado,
    gravar os quatro nomes, mostrar seed/pontos/eixos na faixa,
    anexar last-run, `play` achar o único jogo, `note` achar
-   o mesmo jogo e a fila do mixer no primeiro WAV não fecham. A receita
+   o mesmo jogo, a fila do mixer no primeiro WAV e o aviso
+   de save na porta não fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
    Não nascer look/chuva first-party novo como craft.
@@ -357,5 +363,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `pending` / `emitVoice` em
-`src/game/audio.js`. Fila no mixer não é mix ouvido.
+Arquivos quentes da última sessão: `persistStatus` / `persistLine`.
+Nomear sessão volátil não é aba fechada nem `trusted`.

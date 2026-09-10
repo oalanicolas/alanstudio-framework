@@ -10,7 +10,7 @@ import { createLoop } from "./core/loop.js";
 import { createInput } from "./core/input.js";
 import { browserStorage } from "./core/storage.js";
 import { playReport, LAST_RUN_ROUTE } from "./core/run-report.js";
-import { canContinue, canResume, captureHold, loadProgress, recordRun, saveProgress, summarizeRun } from "./core/save.js";
+import { canContinue, canResume, captureHold, loadProgress, persistStatus, recordRun, saveProgress, summarizeRun } from "./core/save.js";
 import { detectEnvironment, loadSettings, normalizeSettings, saveSettings } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { createAudio } from "./game/audio.js";
@@ -98,6 +98,7 @@ export function createGame(options = {}) {
   let queued = neutralIntent();
   let recorded = false;
   let lastRun = progress.lastRun ?? null;
+  let lastWrite = { ok: true };
   let disposed = false;
   let lastPhase = state.phase;
   let doorArmed = true;
@@ -123,6 +124,15 @@ export function createGame(options = {}) {
   }
   function doorOpen() {
     return canContinue(progress) && (forcedSeed === undefined || forcedSeed === progress.lastSeed);
+  }
+
+  function rememberWrite(result) {
+    lastWrite = result && typeof result === "object" ? result : { ok: false, reason: "write_failed" };
+    return lastWrite;
+  }
+
+  function persist() {
+    return persistStatus(storage, lastWrite);
   }
 
   const input = options.input ?? createInput({ target: eventTarget, surface: canvas, bindings: settings.bindings });
@@ -208,7 +218,7 @@ export function createGame(options = {}) {
       doorArmed = false;
       lastRun = summarizeRun(state, { look: settings.look });
       progress = recordRun(progress, state, { lastRun });
-      saveProgress(storage, progress, progressLoad);
+      rememberWrite(saveProgress(storage, progress, progressLoad));
       audio.stop("bed");
       offerLastRun(playReport({
         seed: state.seed,
@@ -240,6 +250,7 @@ export function createGame(options = {}) {
       fantasy: copy.fantasy,
       canContinue: doorOpen(),
       lastRun,
+      persist: persist(),
     });
   }
 
@@ -257,9 +268,10 @@ export function createGame(options = {}) {
     if (state.phase === "playing") {
       progress = { ...progress, hold: captureHold(state) };
     }
-    saveProgress(storage, progress, progressLoad);
-    saveSettings(storage, settings);
-    return { progress: { ...progress }, settings };
+    rememberWrite(saveProgress(storage, progress, progressLoad));
+    const settingsWrite = saveSettings(storage, settings);
+    if (settingsWrite && settingsWrite.ok === false) rememberWrite(settingsWrite);
+    return { progress: { ...progress }, settings, persist: persist() };
   }
 
   const onVisibility = () => {
@@ -318,7 +330,7 @@ export function createGame(options = {}) {
       const toTitle = Boolean(canvas) && state.phase === "over" && arguments.length === 0;
       const nextSeed = toTitle ? (progress.lastSeed ?? seed) : seed;
       progress = { ...progress, hold: null };
-      saveProgress(storage, progress, progressLoad);
+      rememberWrite(saveProgress(storage, progress, progressLoad));
       state = createState(nextSeed, matchOptions(settings, toTitle ? "title" : "playing"));
       queued = neutralIntent();
       recorded = false;
@@ -399,6 +411,9 @@ export function createGame(options = {}) {
     get lastRun() {
       return lastRun ? { ...lastRun } : null;
     },
+    get persist() {
+      return persist();
+    },
     flush,
     get settings() {
       return settings;
@@ -418,7 +433,7 @@ export function createGame(options = {}) {
         resetTrace();
         progress = { ...progress, hold: null };
       }
-      saveSettings(storage, settings);
+      rememberWrite(saveSettings(storage, settings));
       return settings;
     },
     resize(width, height) {
