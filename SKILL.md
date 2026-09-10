@@ -80,12 +80,14 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    loop do zero é CREATE. Se o laboratório tiver `shared/sfx` com sons, use
    `sfx search` antes de baixar. Sem acervo, o starter já fala em
    `public/sfx`; `sfx search` nomeia o stem que casa com o termo,
-   `sfx summary` lista todos e `sfx serve` recusa catálogo vazio.
+   `sfx info` lê a chave, `sfx summary` lista todos e `sfx serve`
+   recusa catálogo vazio.
    Com sons no acervo, `sfx serve` abre a página de escuta — se
    `shared/sfx/ui` faltar, o harness gera a lista. Tocar nessa
    página não é mix ouvida no jogo. Arquivo no disco não é mix ouvido. Crescer o acervo é
    `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx seed` lê
-   `selection.json` local. `sfx info ID` lê a ficha; `sfx export ID
+   `selection.json` local. `sfx info ID` lê a ficha do acervo ou a
+   chave do stem do starter; `sfx export ID
    --to PASTA` copia bytes e créditos. Importar e exportar não é
    ouvir. Sem 8-bit,
    chiptune, jsfxr ou Kenney arcade como padrão. Leia candidatos e consumidores.
@@ -210,7 +212,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    **`roles <projeto>`** lê os papéis de áudio que o código declara e os
    arquivos que os preenchem. `--fill` sugere o acervo; `--apply` copia
    com o nome do papel. Crescer o acervo é `sfx import` / `sfx seed`
-   (ffmpeg); `sfx info` lê a ficha e `sfx export` copia bytes e
+   (ffmpeg); `sfx info` lê a ficha do acervo ou a chave do stem
+   do starter e `sfx export` copia bytes e
    créditos. Importar e exportar não é ouvir. `heard` é sempre falso. Papel vazio
    entra no `next` como `audio.roles` — o verbo mudo não espera os
    rascunhos.

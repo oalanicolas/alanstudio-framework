@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.178 (confirmado): a pausa corta as vozes do verbo.
+**HEAD:** ver `git log -1` — vigente 0.9.179: sfx info lê a chave do stem do starter.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 270 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 271 OK.
 `cd assets/starters/canvas-arcade && npm test` → 358 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.178)
+## O que o HEAD já entrega (0.9.91–0.9.179)
 
 | Ver | Salto |
 | --- | --- |
@@ -122,6 +122,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.176 | O `over` senta tremor, flash e punch. O corpo já sentava. Pose no disco não é felt. Não promove feel. |
 | 0.9.177 | `sfx serve` gera a página de escuta se `shared/sfx/ui` faltar. Tocar não é `heard`. Catálogo vazio continua recusado. |
 | 0.9.178 | A pausa corta as vozes do verbo (`hush`). A cama continua no stop seco. Overlay Pausado com hit no ar era a mesma partida. Não promove `heard`. |
+| 0.9.179 | `sfx info` lê a ficha do stem do starter que casa (chave, arquivo, licença, origem). Id do acervo continua na frente. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -487,6 +488,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma câmera em pose de golpe enquanto o relógio já derrubou a aposta.
 **Não** mais um `sfx serve` que promete ouvir e devolve 400 porque `ui/` não embarcou.
 **Não** mais um overlay Pausado com o hit ainda no ar.
+**Não** mais um `sfx info` que some o stem do starter que casa.
 
 Candidatos, do que ainda dói:
 
@@ -515,8 +517,9 @@ Candidatos, do que ainda dói:
    `context` no foco create e em `--stage`) ensina `start --idea`.
    `doctor` no lab vazio devolve `then.guide`; com jogo a chave some.
    Sem starter o aviso nomeia `start --idea`. Sem `prompt`.
-   `sfx search` nomeia o stem do starter que casa; `count` continua
-   o acervo. `len(steps) == 3` e `executed: false` continuam.
+   `sfx search` nomeia o stem do starter que casa; `sfx info`
+   lê a mesma chave. `count` continua o acervo. `len(steps) == 3`
+   e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
    volátil e gravação recusada. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
@@ -525,8 +528,8 @@ Candidatos, do que ainda dói:
    release — já nomeiam a porta. O rascunho de playtest traz a forma
    do achado, vazia. `preproduction.md` já ensina `start --idea`.
    Referências que ainda falarem só do campo sem a abertura estão
-   velhas. `sfx serve` gera a página se `ui/` faltar. Nomear não
-   entrega. Tocar não é `heard`.
+   velhas. `sfx serve` gera a página se `ui/` faltar. `sfx info`
+   lê a chave do starter. Nomear não entrega. Tocar não é `heard`.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
    estável no disco, estilhaço dusk no disco, intenção warmer no
@@ -572,6 +575,9 @@ Candidatos, do que ainda dói:
   search do
   stem que
   casa e o
+  info da
+  chave que
+  casa e o
   placar na
   região viva e o
   quadro sentado
@@ -579,7 +585,10 @@ Candidatos, do que ainda dói:
   página gerada
   do serve e o
   hush da
-  pausa
+  pausa e a
+  ficha do
+  stem que
+  casa
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -603,5 +612,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a pausa `hush()` corta as vozes do
-verbo. A cama continua no stop seco. Não promove `heard`.
+Arquivos quentes da última sessão: `sfx info` lê a chave do stem do
+starter. Id do acervo continua na frente. Não promove `heard`.

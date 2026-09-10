@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.179 — A ficha nomeia o stem que casa
+
+A busca já
+devolvia a chave.
+`sfx info dash`
+falhava: acervo
+vazio, sem ficha.
+A ficha lê o mesmo
+`sources.json`.
+`heard` continua
+falso. Só `release`
+fica no piso.
+
+O que 0.9.179 não afirma:
+ficha no disco não é
+mix ouvida.
+
 ## 0.9.178 — A pausa corta o verbo
 
 O overlay já dizia

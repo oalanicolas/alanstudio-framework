@@ -28,7 +28,8 @@ QUALITY_BAR = {
 
 EMPTY_NEXT = (
     "Acervo vazio. O starter já fala em public/sfx; sfx search "
-    "nomeia o stem que casa com o termo e sfx summary lista todos. "
+    "nomeia o stem que casa com o termo, sfx info lê a chave e "
+    "sfx summary lista todos. "
     "Arquivo no disco não é mix ouvido. Desloque com "
     "npm run sfx -- --from <papel> --as brighter. sfx serve não ouve "
     "o que não existe. Para crescer o acervo, sfx import ARQUIVO "
@@ -55,7 +56,8 @@ IMPORT_NEXT = (
 )
 INFO_EMPTY = (
     "Acervo vazio. O starter já fala em public/sfx. "
-    "sfx info lê a ficha de um id que existe; sem acervo não há ficha. "
+    "sfx info lê a ficha de um id do acervo ou a chave do stem do starter. "
+    "Sem id e sem chave que case, não há ficha. "
     "Cresça com sfx import ARQUIVO --metadata JSON (ffmpeg)."
 )
 EXPORT_EMPTY = (
@@ -65,6 +67,11 @@ EXPORT_EMPTY = (
 )
 INFO_NEXT = (
     "Ficha lida no disco. Não é mix ouvido. "
+    "Ouça no jogo, no papel."
+)
+INFO_LOCAL_NEXT = (
+    "Ficha do stem do starter. Não é id do acervo. "
+    "Arquivo no disco não é mix ouvido. "
     "Ouça no jogo, no papel."
 )
 EXPORT_NEXT = (
@@ -144,6 +151,38 @@ def match_local_stems(query, folder=None, limit=40):
         "file_count": len(picked),
         "files": picked,
         "heard": False,
+    }
+
+
+def find_local_stem(entry_id, folder=None):
+    needle = audio.fold(entry_id) if isinstance(entry_id, str) else ""
+    if not needle:
+        return None
+    for item in local_stems(folder)["files"]:
+        key = audio.fold(item["key"])
+        src = audio.fold(item["src"])
+        stem = audio.fold(Path(item["src"]).stem)
+        if needle in {key, src, stem}:
+            return item
+    return None
+
+
+def local_info_card(item, empty):
+    licenses = [item["license"]] if item.get("license") else []
+    authors = [item["author"]] if item.get("author") else []
+    return {
+        "id": item["key"],
+        "key": item["key"],
+        "title": item.get("title") or item["key"],
+        "src": item["src"],
+        "bytes": item["bytes"],
+        "licenses": licenses,
+        "authors": authors,
+        "origin": item.get("origin"),
+        "kind": "starter",
+        "empty": empty,
+        "heard": False,
+        "next": INFO_LOCAL_NEXT,
     }
 
 
@@ -277,22 +316,33 @@ def import_entry(file, metadata, root=None):
 
 def info_entry(entry_id, root=None):
     sounds = load_catalog(root)["sounds"]
-    if not sounds:
+    empty = len(sounds) == 0
+    if sounds:
+        try:
+            item = audio.select(sounds, [entry_id])[0]
+        except ValueError:
+            item = None
+        if item:
+            return {
+                "id": item["id"],
+                "title": item["title"],
+                "category": item["category"],
+                "tags": item.get("tags", []),
+                "style": item.get("style"),
+                "src": item.get("file"),
+                "bytes": item.get("bytes"),
+                "licenses": sorted({source["license"] for source in item.get("sources", [])}),
+                "authors": sorted({source["author"] for source in item.get("sources", [])}),
+                "kind": "catalog",
+                "heard": False,
+                "next": INFO_NEXT,
+            }
+    local = find_local_stem(entry_id)
+    if local:
+        return local_info_card(local, empty)
+    if empty:
         raise ValueError(INFO_EMPTY)
-    item = audio.select(sounds, [entry_id])[0]
-    return {
-        "id": item["id"],
-        "title": item["title"],
-        "category": item["category"],
-        "tags": item.get("tags", []),
-        "style": item.get("style"),
-        "src": item.get("file"),
-        "bytes": item.get("bytes"),
-        "licenses": sorted({source["license"] for source in item.get("sources", [])}),
-        "authors": sorted({source["author"] for source in item.get("sources", [])}),
-        "heard": False,
-        "next": INFO_NEXT,
-    }
+    raise ValueError(f"Seleção vazia ou IDs desconhecidos: {entry_id}")
 
 
 def export_entries(ids, destination, root=None):

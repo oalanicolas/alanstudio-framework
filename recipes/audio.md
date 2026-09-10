@@ -32,13 +32,15 @@ depois de um `note`, `start` e `next` apontam esse comando.
 Arquivo ausente é lacuna do verbo, não silêncio deliberado;
 `heard` é sempre falso. Sem `shared/sfx`, a sugestão de `--fill` vem
 vazia, `sfx search` nomeia o stem do starter que casa com o termo,
-`sfx summary` lista todos os stems já no `public/sfx` e `sfx serve`
+`sfx info` lê a chave, `sfx summary` lista todos os stems já no
+`public/sfx` e `sfx serve`
 recusa. Com sons no acervo, `sfx serve` abre a página de escuta —
 se `shared/sfx/ui` faltar, o harness gera a lista. Tocar nessa
 página não é mix ouvida no jogo. Isso não
 autoriza improvisar licença. Arquivo no disco não é mix ouvido. Crescer o acervo é `sfx import ARQUIVO
 --metadata JSON` (ffmpeg) ou `sfx seed` com `selection.json` local.
-`sfx info ID` lê a ficha; `sfx export ID --to PASTA` copia bytes e
+`sfx info ID` lê a ficha do acervo ou a chave do stem do starter;
+`sfx export ID --to PASTA` copia bytes e
 créditos. Importar e exportar não é ouvir. O acervo compartilhado é ADAPT, não o
 primeiro ciclo.
 
