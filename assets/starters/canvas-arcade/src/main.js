@@ -13,7 +13,7 @@ import { playReport, LAST_RUN_ROUTE } from "./core/run-report.js";
 import { canContinue, canResume, captureHold, loadProgress, persistLine, persistStatus, recordRun, saveProgress, summarizeRun } from "./core/save.js";
 import { applyEnvironment, DEFAULT_BINDINGS, detectEnvironment, GAME_SPEED_MAX, GAME_SPEED_MIN, loadSettings, normalizeSettings, saveSettings, SETTINGS_KEY, settingsLine, watchEnvironment } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
-import { BED_FADE_MS, createAudio } from "./game/audio.js";
+import { audioGapLive, BED_FADE_MS, createAudio } from "./game/audio.js";
 import { createHaptics, rumbleRole } from "./game/haptics.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
@@ -383,6 +383,7 @@ export function createGame(options = {}) {
         lastScore: lastRun && Number.isFinite(lastRun.score) ? lastRun.score : undefined,
         persist: persistLine(persist(), copy),
         settings: settingsLine(settingsLoad, copy),
+        audio: audioGapLive(audio.missing()),
         attractTouch: state.attractTouch,
         coach: coachText(state, bound, { surface: spoken, fantasy: copy.fantasy }),
         resume: bound.resume,

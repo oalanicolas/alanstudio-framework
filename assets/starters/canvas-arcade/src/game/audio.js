@@ -59,6 +59,17 @@ export function audioGapLine(gaps) {
   return `Sons registrados: ${registered.join(", ")}. Ainda vazios: ${empty.join(", ")}.`;
 }
 
+// O painel já nomeia o vazio. Sem isto a região viva
+// calava e o convite some a tabela. Catálogo completo
+// não entra — não é lacuna. Nomear não é mix ouvido.
+export function audioGapLive(gaps) {
+  const declared = Array.isArray(gaps?.declared) ? gaps.declared : [];
+  const registered = Array.isArray(gaps?.registered) ? gaps.registered : [];
+  const empty = declared.filter((id) => !registered.includes(id));
+  if (!declared.length || !empty.length) return "";
+  return audioGapLine(gaps);
+}
+
 export function stereoPan(x, width = FIELD.width) {
   if (!Number.isFinite(x) || !Number.isFinite(width) || !(width > 0)) return 0;
   return Math.max(-1, Math.min(1, (x / width) * 2 - 1));

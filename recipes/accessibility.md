@@ -85,6 +85,9 @@ região viva também nomeia o aviso da sessão se o canvas o
 mostra. Preferências ilegíveis: o painel avisa; a região viva
 nomeia a mesma recuperação na porta e no fim; o canvas da
 porta e do fim pinta a mesma linha. A pausa não.
+Lacuna de som: o painel avisa; a região viva nomeia a
+mesma lacuna na porta e no fim. Catálogo completo não
+entra. Nomear o 404 não é mix ouvido.
 Nomear não é aba fechada. O overlay do canvas não chega ao leitor. Texto no
 DOM não é sessão. O harness não joga com o modo ativo.
 

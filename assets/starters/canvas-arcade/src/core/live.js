@@ -14,8 +14,10 @@
 // quem não vê a tela só ouvia pausado. Na porta o canvas já
 // nomeia jogar, repetir e seed nova; a região viva espelha
 // essas linhas. Sem isto quem não vê a tela só ouvia abertura.
-// Jogando sem pausa o número não entra. Texto no DOM não é
-// sessão de alcance.
+// Jogando sem pausa o número não entra. O painel já nomeia
+// o som que o fetch perdeu; a região viva espelha essa
+// lacuna na porta e no fim. Catálogo completo não entra.
+// Texto no DOM não é sessão de alcance nem mix ouvido.
 
 function whole(value) {
   if (!Number.isFinite(value)) return null;
@@ -33,6 +35,7 @@ export function liveText({
   chain,
   persist,
   settings,
+  audio,
   attractTouch,
   coach,
   resume,
@@ -62,6 +65,7 @@ export function liveText({
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
     add(persist);
     add(settings);
+    add(audio);
     add(overDoor);
   } else if (phase === "title") {
     add("abertura");
@@ -71,6 +75,7 @@ export function liveText({
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
     add(persist);
     add(settings);
+    add(audio);
     // O canvas já nomeia jogar, repetir e seed nova.
     // Sem isto o leitor só ouvia abertura. Texto no
     // DOM não é sessão.

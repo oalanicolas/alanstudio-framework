@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 
 import { readFileSync } from "node:fs";
 
-import { BED_FADE_MS, DUCK_BUSES, DUCK_LEVEL, MIX_HEADROOM, SOUNDS, audioGapLine, captionFor, createAudio, stereoPan } from "../src/game/audio.js";
+import { BED_FADE_MS, DUCK_BUSES, DUCK_LEVEL, MIX_HEADROOM, SOUNDS, audioGapLine, audioGapLive, captionFor, createAudio, stereoPan } from "../src/game/audio.js";
 import { FIELD } from "../src/game/rules.js";
 
 const main = readFileSync(new URL("../src/main.js", import.meta.url), "utf8");
@@ -121,6 +121,23 @@ test("o painel nomeia os vazios mesmo quando outro papel já registrou", () => {
   const full = audioGapLine({ declared: ["dash"], registered: ["dash"] });
   assert.equal(full, "Sons registrados: dash.");
   assert.doesNotMatch(full, /Ainda vazios/);
+});
+
+test("a região viva só nomeia a lacuna do som, não o catálogo", () => {
+  const declared = Object.keys(SOUNDS);
+  assert.equal(audioGapLive({}), "");
+  assert.equal(audioGapLive({ declared: [], registered: [] }), "");
+  assert.equal(audioGapLive({ declared: ["dash"], registered: ["dash"] }), "");
+  const empty = audioGapLive({ declared, registered: [] });
+  assert.match(empty, /Nenhum arquivo de som embarcado/);
+  assert.equal(empty, audioGapLine({ declared, registered: [] }));
+  const mixed = audioGapLive({ declared, registered: ["dash"] });
+  assert.match(mixed, /Ainda vazios/);
+  assert.equal(mixed, audioGapLine({ declared, registered: ["dash"] }));
+  assert.doesNotMatch(
+    `${empty} ${mixed}`,
+    /aprovado|verified|heard|alguém de fora/,
+  );
 });
 
 test("a legenda sai mesmo sem arquivo de som", () => {

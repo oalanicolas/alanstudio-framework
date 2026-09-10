@@ -213,6 +213,36 @@ test("na porta e no fim a região viva nomeia a recuperação que o painel já m
   );
 });
 
+test("na porta e no fim a região viva nomeia a lacuna do som que o painel já mostra", () => {
+  const gap = "Nenhum arquivo de som embarcado. Papéis declarados e vazios: dash.";
+  assert.equal(liveText({ phase: "title", audio: gap }), `abertura. ${gap}`);
+  assert.equal(
+    liveText({ phase: "over", score: 12, audio: gap }),
+    `fim da partida. 12. ${gap}`,
+  );
+  assert.equal(
+    liveText({
+      phase: "title",
+      persist: "Esta sessão não grava",
+      settings: "As preferências voltaram ao padrão",
+      audio: gap,
+    }),
+    `abertura. Esta sessão não grava. As preferências voltaram ao padrão. ${gap}`,
+  );
+  assert.equal(liveText({ phase: "title", audio: "" }), "abertura");
+  assert.equal(liveText({ phase: "playing", audio: gap }), "");
+  assert.equal(
+    liveText({ phase: "playing", paused: true, score: 12, audio: gap }),
+    "pausado. 12",
+  );
+  assert.match(main, /audioGapLive\(audio\.missing\(\)\)/);
+  assert.equal(liveText({ phase: "title", audio: gap }).includes(gap), true, "o painel falava e o live calava");
+  assert.doesNotMatch(
+    liveText({ phase: "title", audio: gap }),
+    /aprovado|verified|heard|alguém de fora/,
+  );
+});
+
 test("na porta a região viva nomeia o toque da mostra sem fingir coleta", () => {
   assert.equal(liveText({ phase: "title", attractTouch: "orb" }), "abertura. a mostra toca");
   assert.equal(liveText({ phase: "title", attractTouch: "shard" }), "abertura. a mostra raspa");

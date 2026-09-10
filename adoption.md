@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.311 — A região viva nomeia a lacuna do som
+
+O
+painel
+já
+nomeava
+o
+vazio.
+A
+região
+viva
+calava.
+O
+convite
+some
+a
+tabela.
+Agora
+a
+porta
+e
+o
+fim
+espelham
+a
+lacuna.
+Catálogo
+completo
+não
+entra.
+Não
+promove
+`heard`.
+
+O que 0.9.311 não afirma:
+texto
+no
+DOM
+não
+é
+mix
+ouvido.
+
 ## 0.9.310 — Os rascunhos de hipótese nomeiam a porta
 
 Brief
