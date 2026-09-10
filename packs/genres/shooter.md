@@ -12,6 +12,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Hitmarker/hit feedback em som, VFX e animação do alvo; recuo e recuperação da arma;
   muzzle flash e tracers proporcionais; câmera com kick e recuperação; hitstop curto
   em impactos fortes.

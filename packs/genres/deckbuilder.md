@@ -14,6 +14,8 @@ perguntas, riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Manipulação física das cartas: arrastar com inércia, hover que amplia e lê,
   alvo com seta/highlight de válidos, ordem visível do descarte; animação de efeito
   rápida e pulável (segurar para acelerar).

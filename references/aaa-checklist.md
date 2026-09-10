@@ -67,6 +67,7 @@ slice**, antes de multiplicar conteúdo.
 | `N/A` | O recorte ou a escala declara que não se aplica; o motivo é obrigatório. |
 
 Screenshot isolada não fecha feel, animação, câmera, mix nem pacing.
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
 Avaliação do agente ≠ aprovação do usuário. Não some linhas. Um vermelho
 **material do perfil em vigor** bloqueia o adjetivo; verde noutro eixo
 não compensa.

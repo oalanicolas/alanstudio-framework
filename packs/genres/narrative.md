@@ -13,6 +13,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Transições de cena e de fala, tipografia legível em movimento, tempo de exibição
   ajustável, pular/rever sem punição, feedback sutil da escolha (som, luz, postura).
 - Áudio: ambiente e stingers nos momentos de virada; silêncio como recurso.

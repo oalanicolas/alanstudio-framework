@@ -1179,6 +1179,26 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("{{", text)
         self.assertIn("Autorização de publicação: não concedida", text)
 
+    def test_canonical_maps_name_the_door(self):
+        maps = (
+            "references/game-design-system.md",
+            "references/ambition.md",
+            "references/production-bar.md",
+            "references/aaa-checklist.md",
+        )
+        for name in maps:
+            with self.subTest(name=name):
+                text = (game.FRAMEWORK / name).read_text(encoding="utf-8")
+                self.assertIn("a porta", text.casefold())
+                self.assertNotIn("verified", text)
+        genres = sorted((game.FRAMEWORK / "packs/genres").glob("*.md"))
+        self.assertTrue(genres)
+        for path in genres:
+            with self.subTest(genre=path.name):
+                text = path.read_text(encoding="utf-8")
+                self.assertIn("a primeira superfície é a porta", text.casefold())
+                self.assertNotIn("verified", text)
+
     def test_delivery_recipes_name_the_door_without_shipping(self):
         for name in ("release", "production", "architecture"):
             with self.subTest(name=name):

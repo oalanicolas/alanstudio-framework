@@ -13,6 +13,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Física de bola/objeto crível e consistente: quique, spin, peso; contato atleta-bola
   legível. Animação: blending por contexto sem travar controle; IK de pés.
 - Câmera: broadcast (lateral, com zoom por ação) ou ação; nunca perde a bola.

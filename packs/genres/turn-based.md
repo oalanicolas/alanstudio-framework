@@ -13,6 +13,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Confirmação e cancelamento claros; previsão do resultado antes de confirmar;
   animação que resume a resolução sem atrasar quem já entendeu (acelerar/pular).
 - Feedback de erro sem punição (ação recusada explicada); som e movimento nos pontos

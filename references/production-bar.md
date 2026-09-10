@@ -68,7 +68,8 @@ em vez de fingir o degrau.
   por um clipe de três segundos sem HUD.
 
 Prova: vídeo em movimento, latência da entrada até o primeiro quadro de resposta e
-repetição da ação por um minuto sem objetivo. Receita: [feel](../recipes/feel.md).
+repetição da ação por um minuto sem objetivo. Com tela, a prova inclui a porta
+e a mostra, não só o campo. Receita: [feel](../recipes/feel.md).
 
 ### `legibility` — legibilidade do estado
 

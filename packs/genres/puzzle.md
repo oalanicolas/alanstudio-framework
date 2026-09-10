@@ -12,6 +12,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Desfazer/refazer instantâneos e ilimitados quando o gênero permite; reinício sem
   custo; resposta imediata a cada movimento; "aha" sublinhado por som/luz, não por
   texto.

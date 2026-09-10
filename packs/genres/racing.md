@@ -12,6 +12,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Sensação de velocidade: FOV dinâmico, motion blur controlado, partículas laterais,
   som de motor por RPM e Doppler, vibração por superfície.
 - Câmera: antecipação de curva, estabilidade em colisão, altura/distância por

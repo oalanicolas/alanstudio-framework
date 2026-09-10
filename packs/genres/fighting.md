@@ -14,6 +14,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Determinismo em frames: startup/active/recovery inteiros, hitstop, hitstun,
   blockstun; input buffer e leniência de comandos (motion inputs) documentados.
 - Feedback: hit spark por força, screen shake por golpe pesado, som em camadas

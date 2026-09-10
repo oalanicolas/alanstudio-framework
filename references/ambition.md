@@ -143,9 +143,9 @@ Nenhuma destas barras é “ser AAA de publisher”.
 - **Mundo:** silhueta, material, luz e animação legíveis em movimento;
   landmark e ameaça distinguíveis sem a melhor screenshot; família coerente
   com o asset-herói, **no engine**, não só no DCC.
-- **Primeiro minuto:** a primeira ação ensina o verbo sem mural de texto;
-  tutorial que bloqueia o jogo não é onboarding. O primeiro minuto também
-  denuncia float, atraso e stutter.
+- **Primeiro minuto:** com tela, a primeira superfície é a porta; a primeira
+  ação ensina o verbo sem mural de texto; tutorial que bloqueia o jogo não é
+  onboarding. O primeiro minuto também denuncia float, atraso e stutter.
 - **Acesso:** contraste, forma além da cor, foco, toque, movimento reduzido
   quando o recorte os exige — e quando a promessa de público os exige.
 - **Confiança:** iniciar, pausar, perder, ganhar, reiniciar e sair têm

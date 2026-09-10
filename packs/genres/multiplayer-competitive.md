@@ -16,6 +16,8 @@ específico de competição online.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Netcode como feel: predição no cliente, reconciliação, compensação de lag para
   acerto, interpolação de remotos; tudo isso precisa ser testado com latência e perda
   simuladas, não em LAN.

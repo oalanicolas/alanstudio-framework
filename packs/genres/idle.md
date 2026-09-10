@@ -14,6 +14,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Números subindo com satisfação: formatação legível (1.2M, notação científica
   opcional), animação de compra, som por marco; "a próxima compra" sempre visível
   com tempo estimado.
