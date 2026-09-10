@@ -1933,7 +1933,7 @@ def playtest_findings(project):
 
 LAST_RUN = "docs/playtest/last-run.json"
 INVITE = "docs/playtest/invite.md"
-INIT_COPY_SKIP = {"dist", "node_modules", ".git"}
+INIT_COPY_SKIP = {"dist", "node_modules", ".git", "__pycache__"}
 
 
 def last_run_path(project):

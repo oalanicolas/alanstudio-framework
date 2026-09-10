@@ -45,6 +45,7 @@ export const CONFIG = {
     hitHitstopTicks: 5, // o erro precisa doer mais que o acerto
     collectShake: 0.12,
     bankShake: 0.28,
+    missedShake: 0.06, // a queda treme menos que a coleta
     hitShake: 1,
     shakeDecay: 0.86,
     squashCollect: 0.22,
@@ -58,6 +59,7 @@ export const CONFIG = {
     punchBankY: 2.4, // guardar confirma para baixo
     punchDashX: 3.2, // dash empurra na direção
     punchLandY: 1.8, // aterrissa para baixo; menor que guardar
+    punchMissedY: 0.9, // a queda confirma para baixo; menor que aterrissar
     punchHitY: 4.2, // o erro desloca mais que a coleta
     punchDecay: 0.78,
     telegraphReach: 36, // antecipação: a ameaça marca o trilho antes do contato
@@ -811,6 +813,8 @@ function resolveEntities(state) {
         state.stats.missed += 1;
         emit(state, "missed", { x: entity.x });
         dropMiss(state, entity.x);
+        state.shake += CONFIG.feel.missedShake;
+        punch(state, 0, CONFIG.feel.punchMissedY);
       }
       releaseEntity(entity);
       continue;

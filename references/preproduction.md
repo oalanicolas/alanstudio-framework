@@ -113,14 +113,15 @@ ao jogo. Entrada: brief, hipóteses MDA e observações existentes. Saída: reco
 jogável definido, com consequências e situações de teste.
 
 **Pronto para prototipar:** o implementador consegue explicar o que o jogador faz,
-quais alternativas tem, o que acontece e como termina/reinicia. Pilares precisam
+quais alternativas tem, o que acontece e como termina/reinicia. Com tela, a
+primeira situação é a porta; o campo começa depois do avanço. Pilares precisam
 resolver escolhas concretas; “imersivo” ou “divertido” isoladamente não basta.
 [Template](../assets/templates/gdd.md).
 
 ### `poc` — Proof of Concept
 
 Experimento para reduzir uma incerteza criativa ou técnica. Entrada: pergunta
-delimitada. Saída: comportamento observado, condições, evidência e decisão de
+delimitada. Com tela, o cenário começa na porta. Saída: comportamento observado, condições, evidência e decisão de
 continuar, ajustar ou abandonar a hipótese. Protótipo pode ser descartável; código
 de experimento só entra na produção após revisão de adequação e consumidores.
 

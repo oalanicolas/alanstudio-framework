@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.135 — O orbe que cai também desloca a câmera
+
+A queda falava, acendia o campo e marcava o
+chão. A câmera ficava parada — quem olhava o
+corpo podia perder a confirmação. Perder o orbe
+empurra para baixo e treme menos que a coleta.
+Não congela, não esmaga e não pulsa o controle.
+`felt` continua falso.
+O `init` também deixa o bytecode do starter
+para trás. Só `release` fica no piso.
+
+O que 0.9.135 não afirma: punch no disco não é
+peso no aparelho. Não importa limiar.
+
 ## 0.9.134 — A intenção warmer também deixa o estilhaço no outro eixo
 
 O ofício que o guia aponta (`--from dusk --as warmer`)

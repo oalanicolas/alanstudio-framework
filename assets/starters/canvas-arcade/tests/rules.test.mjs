@@ -610,6 +610,12 @@ test("orbe perdido é contado, não silencioso", () => {
   assert.ok(stains.every((mote) => Math.abs(mote.x - 20) <= 4), "a marca fica onde o orbe caiu");
   assert.ok(stains.every((mote) => mote.y > PLAYER_Y), "a marca fica na queda, não no corpo");
   assert.ok(stains.every((mote) => mote.vy > 0), "a queda continua para baixo");
+  assert.equal(state.camera.y, CONFIG.feel.punchMissedY * CONFIG.feel.punchDecay, "perder o orbe confirma para baixo");
+  assert.equal(state.shake, CONFIG.feel.missedShake * CONFIG.feel.shakeDecay, "a queda treme menos que a coleta");
+  assert.equal(state.hitstop, 0, "perder o orbe não congela o mundo");
+  assert.ok(CONFIG.feel.punchMissedY > 0);
+  assert.ok(CONFIG.feel.punchMissedY < CONFIG.feel.punchLandY, "a queda desloca menos que aterrissar");
+  assert.ok(CONFIG.feel.missedShake < CONFIG.feel.collectShake, "a queda treme menos que a coleta");
 });
 
 test("resolver a chuva compacta o mesmo array e não troca a lista", () => {

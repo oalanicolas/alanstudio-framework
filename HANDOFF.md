@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.134: a intenção warmer também deixa o estilhaço no outro eixo.
+**HEAD:** ver `git log -1` — vigente 0.9.135: o orbe que cai também desloca a câmera.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 253 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 254 OK.
 `cd assets/starters/canvas-arcade && npm test` → 299 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.134)
+## O que o HEAD já entrega (0.9.91–0.9.135)
 
 | Ver | Salto |
 | --- | --- |
@@ -77,7 +77,8 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.131 | O look dusk pinta orbe âmbar e estilhaço índigo. O campo continua quente. `colorblind` ainda troca a chuva pelo par do padrão. `consistent` e `verified` continuam falsos. |
 | 0.9.132 | Guardar uma corrente que já existe senta dois ticks (`bank.windupTicks`) antes de converter. Coleta e guarda no mesmo quadro continuam na hora. `felt` continua falso. |
 | 0.9.133 | Brief, GDD, game-design, PoC, slice, QA e release nomeiam a porta. O rascunho de playtest traz os quatro campos vazios. Esqueleto vazio não é achado. `observed` continua falso. |
-| 0.9.134 | `--as warmer` / `--as cooler` deslocam campo e orbe; o estilhaço permanece. `dusk --as warmer` não devolve o losango ao rosa. `consistent` continua falso. |
+| 0.9.134 | `--as warmer` / `--as cooler` deslocam campo e orbe; o estilhaço permanece. `dusk --as warmer` não devolve o losango ao rosa. O orbe dusk já é o âmbar da intenção. `consistent` continua falso. |
+| 0.9.135 | Perder o orbe desloca a câmera para baixo e treme menos que a coleta. Sem hitstop, squash ou rumble. `init` não copia `__pycache__`. `felt` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -145,6 +146,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Não zerar `state.chain` no `over`.
 - Não reduzir `INIT_DOCUMENTS` sem mudar `fresh_starter_cycle` /
   `areas.not_located`.
+- `INIT_COPY_SKIP` inclui `dist`, `node_modules`, `.git` e
+  `__pycache__`. Bytecode no starter vivo não entra no projeto.
 - Não ensinar pad/touch no coach **antes** de `lastSource` nem
   **depois** da primeira guarda.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
@@ -154,7 +157,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
   `then.invite`, `invite_href`, copiar o endereço do convite,
   levar a chuva ou o look na URL, tinta estável no disco,
-  estilhaço dusk no disco, intenção warmer no disco
+  estilhaço dusk no disco, intenção warmer no disco,
+  punch da queda no disco
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -332,5 +336,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `applyLookIntent` (`warmer` / `cooler`).
-O estilhaço não muda de eixo. Hex no disco não é comparação em movimento.
+Arquivos quentes da última sessão: queda do orbe (`punchMissedY`,
+`missedShake`) e `INIT_COPY_SKIP` (`__pycache__`). Punch no disco
+não é peso no aparelho. O orbe dusk já é o âmbar da intenção warmer.

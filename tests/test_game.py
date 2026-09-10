@@ -1301,6 +1301,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(result["substitutions"]["package.json"], {"Canvas Arcade": 1, "canvas-arcade": 1})
         self.assertNotIn("starter.json", result["files"])
         self.assertFalse((destination / "starter.json").exists())
+        self.assertFalse(any("__pycache__" in relative or relative.endswith(".pyc") for relative in result["files"]))
 
     def fake_starter(self, name, manifest, extra=None):
         home = self.root / "starters-de-teste"
@@ -3119,6 +3120,20 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         created = game.init(destination, "com-dist", documents=False)
         self.assertFalse((destination / "dist").exists())
         self.assertNotIn("dist/VERSION.json", created["files"])
+
+    def test_init_does_not_copy_bytecode_from_the_starter(self):
+        self.fake_starter("com-cache", {
+            "schema_version": 1,
+            "title": "Nome Real",
+            "substitutions": [{"field": "project_title", "value": "Nome Real", "files": ["README.md"]}],
+        })
+        cache = Path(game.STARTERS_ROOT) / "com-cache" / "tools" / "__pycache__"
+        cache.mkdir(parents=True)
+        (cache / "design-sfx.cpython-312.pyc").write_bytes(b"\x00")
+        destination = self.root / "sem-bytecode"
+        created = game.init(destination, "com-cache", documents=False)
+        self.assertFalse((destination / "tools" / "__pycache__").exists())
+        self.assertFalse(any("__pycache__" in relative for relative in created["files"]))
 
     def test_the_craft_table_that_names_the_format_is_not_a_finding(self):
         (self.project / "README.md").write_text(
