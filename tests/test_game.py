@@ -5336,6 +5336,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotEqual(empty.returncode, 0)
         self.assertIn("sem destino", empty.stderr)
+        self.assertIn(game.start_idea_command(), empty.stderr)
         self.assertNotIn("um", empty.stderr)
 
     def test_playable_neighbors_looks_beside_the_framework_not_inside_it(self):
@@ -5779,6 +5780,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotEqual(missing.returncode, 0)
         self.assertIn("sem destino", missing.stderr)
+        self.assertIn(game.start_idea_command(), missing.stderr)
 
     def test_guide_without_idea_matches_start_rejection_at_framework_root(self):
         with self.assertRaisesRegex(ValueError, "sem destino"):
@@ -5793,18 +5795,60 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotEqual(bare.returncode, 0)
         self.assertIn("sem destino", bare.stderr)
+        self.assertIn(game.start_idea_command(), bare.stderr)
         default = subprocess.run(
             [sys.executable, str(SCRIPT)],
             capture_output=True, text=True, cwd=str(game.FRAMEWORK),
         )
         self.assertNotEqual(default.returncode, 0)
         self.assertIn("sem destino", default.stderr)
+        self.assertIn(game.start_idea_command(), default.stderr)
         starter = subprocess.run(
             [sys.executable, str(SCRIPT), "guide"],
             capture_output=True, text=True,
             cwd=str(game.FRAMEWORK / "assets/starters/canvas-arcade"),
         )
         self.assertEqual(starter.returncode, 0, starter.stderr)
+
+    def test_missing_destination_names_the_readme_start(self):
+        # A recusa explicava --idea e calava o comando que o
+        # README já imprime. Nomear não cria.
+        command = game.start_idea_command()
+        self.assertIn("start --idea", command)
+        self.assertIn(game.START_IDEA_EXAMPLE, command)
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn(f'start --idea "{game.START_IDEA_EXAMPLE}"', readme)
+        with self.assertRaises(ValueError) as raised:
+            game.start_destination_from_idea(None, cwd=self.root)
+        self.assertEqual(str(raised.exception), game.missing_destination_hint())
+        self.assertIn(command, str(raised.exception))
+        with self.assertRaises(ValueError) as guided:
+            game.require_guide_idea(None, None, cwd=game.FRAMEWORK)
+        self.assertIn(command, str(guided.exception))
+        missing = subprocess.run(
+            [sys.executable, str(SCRIPT), "start"],
+            capture_output=True, text=True, cwd=str(self.root),
+        )
+        self.assertNotEqual(missing.returncode, 0)
+        self.assertIn(command, missing.stderr)
+        self.assertNotIn("aprovado", missing.stderr)
+        self.assertNotIn("verified", missing.stderr)
+        followed = subprocess.run(
+            shlex.split(command),
+            capture_output=True, text=True, cwd=str(self.root),
+        )
+        self.assertEqual(followed.returncode, 0, followed.stderr)
+        payload = json.loads(followed.stdout)
+        self.assertTrue(payload["created"])
+        self.assertFalse(payload["executed"])
+        slug = game.idea_slug(game.START_IDEA_EXAMPLE)
+        self.assertTrue((self.root / slug / "index.html").is_file())
+        default = subprocess.run(
+            [sys.executable, str(SCRIPT)],
+            capture_output=True, text=True, cwd=str(game.FRAMEWORK),
+        )
+        self.assertNotEqual(default.returncode, 0)
+        self.assertIn(command, default.stderr)
 
     def test_guide_names_craft_from_the_starter_before_the_project_exists(self):
         report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")

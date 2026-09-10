@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.331: o feel nomeia o rumble que já lê. Não promove `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.332: o `sem destino` nomeia o `start --idea` do README. Não cria.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.331):** `python3 -m unittest discover -s tests` → 329.
+**Testes no HEAD (0.9.332):** `python3 -m unittest discover -s tests` → 330.
 `cd assets/starters/canvas-arcade && npm test` → 503.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.331)
+## O que o HEAD já entrega (0.9.91–0.9.332)
 
 | Ver | Salto |
 | --- | --- |
@@ -275,9 +275,11 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.329 | O `sfx verify` nomeia o som que o catálogo lista e o disco perdeu. A página de escuta já nomeava a ausência; o cruzamento despejava errno. Não promove `heard`. |
 | 0.9.330 | A região viva nomeia a mesa e o look da porta. A chuva já vestia dusk e calm; o live só dizia abertura. Spawn e normal somem. Não promove `verified`. |
 | 0.9.331 | O `feel` nomeia o rumble que a tabela já lista. As constantes já entravam; o scope e o `-h` calavam o pulso. Não promove `felt`. |
+| 0.9.332 | O `sem destino` nomeia o `start --idea` que o README já imprime. A recusa explicava `--idea` e calava o comando. Nomear não cria. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
-framework, sem `--idea` e sem caminho, recusa com `sem destino`.
+framework, sem `--idea` e sem caminho, recusa com `sem destino` —
+e a recusa nomeia o `start --idea` do README. Nomear não cria.
 `--idea` no parser principal também funciona sem subcomando.
 
 ---
@@ -594,7 +596,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   Starter mudo não inventa.
 - `start` devolve `open` (= `play`), `url` e `steps` (3, passo 1 feito).
   `guide` sem destino: `open` é o start. Na raiz do framework, sem
-  `--idea`, o CLI recusa — `guide_cycle(None)` continua o mapa.
+  `--idea`, o CLI recusa e o `sem destino` nomeia o `start --idea`
+  do README — `guide_cycle(None)` continua o mapa. Nomear não cria.
   Os dois: `executed` falso.
   `url` é `http://localhost:<PORT>/` só se o script for `serve`
   (`PORT` positivo; vazio → 8080; `PORT=0` → sem url). Não é
@@ -658,7 +661,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   partida. `invite_href` / `playtest --invite` / banner `Convite:` /
   `#note` usam o convite com os mesmos eixos. Página já escrita
   não é reescrita; o JSON aponta o href vigente.
-- Sem caminho e sem ideia (ou ideia que não vira slug): `ValueError` “sem destino”.
+- Sem caminho e sem ideia (ou ideia que não vira slug): `ValueError`
+  “sem destino” que nomeia o `start --idea` do README. Nomear não cria.
 - `ship` devolve `artifact_open` só se `dist/` está completo e o HEAD
   do VERSION.json é o checkout. O valor é
   `cd <dist> && node tools/serve.mjs`. Incompleto ou stale some a
@@ -1252,9 +1256,16 @@ Candidatos, do que ainda dói:
    porta já nomeia a mesa e o look — não pintar os eixos
    no canvas da porta (irmão, não o próximo salto). O `feel`
    já nomeia o rumble — não inventar chave `haptics` no
-   recibo (irmão, não o próximo salto). `origins --declare`
+   recibo (irmão, não o próximo salto).    `origins --declare`
    escreve o sidecar. Recibo não é
-   licença.
+   licença. O `sem destino` do
+   `start` e do `guide` na raiz
+   nomeia o `start --idea` que o
+   README já imprime. Nomear não
+   cria. Não trocar a
+   `description` do `-h` (irmão
+   de 322) nem a ordem dos
+   verbos.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
    estável no disco, pulso no disco, chuva no disco, estilhaço dusk no disco, intenção warmer no
@@ -2224,6 +2235,37 @@ Candidatos, do que ainda dói:
   o
   catálogo
   perdeu
+  e uma
+  região
+  viva
+  que
+  cala
+  a
+  mesa
+  e
+  o
+  look
+  da
+  porta
+  e um
+  `feel`
+  que
+  cala
+  o
+  rumble
+  que
+  a
+  tabela
+  já
+  lista
+  e um
+  `sem destino`
+  que
+  cala
+  o
+  `start`
+  do
+  README
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2248,10 +2290,10 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`feel` nomeia o rumble que a tabela
-já lista. As constantes já entravam;
-o scope e o `-h` calavam o pulso.
-Não promove `felt`.
+`sem destino` nomeia o `start --idea`
+que o README já imprime. A recusa
+explicava `--idea` e calava o
+comando. Nomear não cria.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2318,3 +2360,4 @@ A família rótulo do dash diz recarregando no travel está saturada.
 A família sfx verify despeja errno do som que o catálogo perdeu está saturada.
 A família região viva que cala a mesa e o look da porta está saturada.
 A família feel que cala o rumble que a tabela já lista está saturada.
+A família sem destino que cala o start do README está saturada.

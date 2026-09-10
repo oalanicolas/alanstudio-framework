@@ -68,7 +68,8 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    reutilizável.    Sem destino no disco, o candidato local é um starter.
    `python3 scripts/game.py --idea "<fantasia>"` mapeia o start com a
    pasta nomeada pela frase (ao lado do framework se o mapa corre de
-   dentro desta árvore) e não cria a pasta. `start --idea "<fantasia>"`
+   dentro desta árvore) e não cria a pasta. Sem frase, a recusa nomeia
+   o `start --idea` do README; nomear não cria. `start --idea "<fantasia>"`
    (ou `start <destino> --starter <starter> --idea "<fantasia>"`) monta
    o projeto — sem caminho, a frase nomeia e cria a pasta —, põe a
    frase na abertura e no aviso do primeiro ciclo, escreve `AGENTS.md`

@@ -4408,10 +4408,10 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
 
 def play_cycle(destination=None, starter=None):
     if destination is None:
-        raise ValueError("sem destino: passe o caminho ou rode start --idea")
+        raise ValueError(missing_destination_hint())
     dest = Path(destination)
     if dest.is_symlink() or not dest.is_dir() or not (dest / "package.json").is_file():
-        raise ValueError("sem jogo: rode start --idea ou passe o caminho do projeto")
+        raise ValueError(missing_game_hint())
     available = starters()
     chosen = starter or (available[0] if available else "canvas-arcade")
     try:
@@ -4529,7 +4529,7 @@ def resolve_project_destination(explicit=None, root=None):
         return found[0]
     if len(found) > 1:
         names = ", ".join(path.name for path in found)
-        raise ValueError(f"sem destino: {names}. passe o caminho ou rode start --idea")
+        raise ValueError(missing_destination_hint(names))
     return None
 
 
@@ -4541,13 +4541,32 @@ resolve_play_destination = resolve_project_destination
 def require_project_destination(explicit=None, root=None):
     dest = resolve_project_destination(explicit, root)
     if dest is None:
-        raise ValueError("sem destino: passe o caminho ou rode start --idea")
+        raise ValueError(missing_destination_hint())
     return dest
 
 
 # Teto do nome derivado da frase. Mais que isso vira caminho ilegível;
 # menos obriga a inventar o resto. A pasta só existe depois do `start`.
 IDEA_SLUG_LIMIT = 48
+# A recusa explicava --idea e calava o comando que o README
+# já imprime. Nomear não cria.
+START_IDEA_EXAMPLE = "atravessar estilhaços para guardar a corrente"
+
+
+def start_idea_command(idea=None):
+    phrase = idea.strip() if isinstance(idea, str) and idea.strip() else START_IDEA_EXAMPLE
+    return harness_command("start", "--idea", phrase)
+
+
+def missing_destination_hint(names=None):
+    command = start_idea_command()
+    if names:
+        return f"sem destino: {names}. passe o caminho ou rode {command}"
+    return f"sem destino: passe o caminho ou rode {command}"
+
+
+def missing_game_hint():
+    return f"sem jogo: rode {start_idea_command()} ou passe o caminho do projeto"
 
 
 def idea_slug(idea, limit=IDEA_SLUG_LIMIT):
@@ -4577,18 +4596,17 @@ def suggested_start_target(idea, cwd=None, framework=None):
 def start_destination_from_idea(idea, cwd=None, framework=None):
     target = suggested_start_target(idea, cwd=cwd, framework=framework)
     if target is None:
-        raise ValueError(
-            "sem destino: passe o caminho ou --idea com uma frase que nomeie a pasta"
-        )
+        raise ValueError(missing_destination_hint())
     here = Path(cwd or Path.cwd()).resolve()
     return (here / target).resolve()
 
 
 def require_guide_idea(project, idea, cwd=None):
     # O mapa sem destino devolvia `start '<destino>'` com saída 0 na raiz
-    # do framework — o primeiro passo quebrava. Subpastas (starter
-    # incluído) e a API `guide_cycle` continuam pedindo o mapa sem
-    # frase. Recusar cedo não cria e não executa.
+    # do framework — o primeiro passo quebrava. A recusa explicava
+    # --idea e calava o comando que o README já imprime. Subpastas
+    # (starter incluído) e a API `guide_cycle` continuam pedindo o
+    # mapa sem frase. Recusar cedo não cria e não executa.
     if project is not None:
         return
     here = Path(cwd or Path.cwd()).resolve()
@@ -4596,9 +4614,7 @@ def require_guide_idea(project, idea, cwd=None):
         return
     if suggested_start_target(idea, cwd=cwd, framework=FRAMEWORK) is not None:
         return
-    raise ValueError(
-        "sem destino: passe o caminho ou --idea com uma frase que nomeie a pasta"
-    )
+    raise ValueError(missing_destination_hint())
 
 
 def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
