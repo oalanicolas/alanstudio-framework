@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.334: sidecar sem os três campos não declara. Não promove `granted`.
+**HEAD:** ver `git log -1` — vigente 0.9.335: o `feel` nomeia o peso do passo. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.334):** `python3 -m unittest discover -s tests` → 331.
+**Testes no HEAD (0.9.335):** `python3 -m unittest discover -s tests` → 332.
 `cd assets/starters/canvas-arcade && npm test` → 504.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.334)
+## O que o HEAD já entrega (0.9.91–0.9.335)
 
 | Ver | Salto |
 | --- | --- |
@@ -278,6 +278,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.332 | O `sem destino` nomeia o `start --idea` que o README já imprime. A recusa explicava `--idea` e calava o comando. Nomear não cria. |
 | 0.9.333 | No fim a região viva nomeia a mesa e o look que a partida já vestiu. O last-run já gravava; o live só dizia o placar. Spawn e normal somem. Não promove `verified`. |
 | 0.9.334 | O sidecar sem origem, autor e licença não declara. O JSON já exigia os três campos; o arquivo ao lado declarava só por existir. CREDITS.md pela menção continua. Não promove `granted`. |
+| 0.9.335 | O `feel` nomeia o peso do passo. O CONFIG já declarava `player.speed` e o avanço; o comando lia perdão e rumble e calava o passo. `halfWidth` continua de fora. Não promove `felt`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -292,7 +293,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | o `feel` nomeia o rumble que já lê; o rótulo do dash nomeia o avanço no travel; o compromisso da guarda veste a aposta; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o `feel` nomeia o peso do passo que o CONFIG já declara; o `feel` nomeia o rumble que já lê; o rótulo do dash nomeia o avanço no travel; o compromisso da guarda veste a aposta; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o `sfx verify` nomeia o som que o catálogo perdeu; o `sfx export` nomeia o stem que o disco perdeu; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
@@ -1147,6 +1148,10 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `sfx verify` que despeja errno do som que o catálogo perdeu.
 **Não** mais uma região viva que cala a mesa e o look da porta.
 **Não** mais um `feel` que cala o rumble que a tabela já lista.
+**Não** mais um `sem destino` que cala o `start --idea` do README.
+**Não** mais uma região viva que cala a mesa e o look do fim.
+**Não** mais um sidecar que declara só por existir.
+**Não** mais um `feel` que cala o peso do passo que o CONFIG já declara.
 
 Candidatos, do que ainda dói:
 
@@ -1205,8 +1210,9 @@ Candidatos, do que ainda dói:
    `feel`
    nomeia `then.play` e `then.note` sem
    executar. Lê as janelas da chuva que o
-   campo já marca e o rumble que a tabela
-   já lista. Com last-run, nomeia
+   campo já marca, o rumble que a tabela
+   já lista e o peso do passo que o
+   CONFIG já declara. Com last-run, nomeia
    `then.seed` e `then.invite`. O `next`
    (`feel.unobserved`) aponta o mesmo
    `note` — com `--from-run` se o
@@ -1258,9 +1264,13 @@ Candidatos, do que ainda dói:
    porta e no fim já nomeia a mesa e o look — não pintar
    os eixos no canvas (irmão, não o próximo salto). Não
    nomear `gameSpeed` no live (irmão, não o próximo
-   salto). O `feel`
-   já nomeia o rumble — não inventar chave `haptics` no
-   recibo (irmão, não o próximo salto).    `origins --declare`
+   salto).    O `feel`
+   já nomeia o rumble e o peso do passo —
+   não inventar chave `haptics` no
+   recibo (irmão, não o próximo salto).
+   Não incluir `player.halfWidth` em
+   `FEEL_KEY` (irmão, não o próximo
+   salto).    `origins --declare`
    escreve o sidecar. Sidecar sem
    os três rótulos não declara.
    Recibo não é
@@ -2317,12 +2327,12 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-sidecar sem origem, autor e licença
-não declara. O JSON já exigia os
-três campos; o arquivo ao lado
-declarava só por existir. CREDITS.md
-pela menção continua. Não promove
-`granted`.
+`feel` nomeia o peso do passo. O
+CONFIG já declarava `player.speed` e
+o avanço; o comando lia perdão e
+rumble e calava o passo. `halfWidth`
+continua de fora. Não promove
+`felt`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2392,3 +2402,7 @@ A família feel que cala o rumble que a tabela já lista está saturada.
 A família sem destino que cala o start do README está saturada.
 A família região viva que cala a mesa e o look do fim está saturada.
 A família sidecar que declara só por existir está saturada.
+A família feel que cala o peso do passo que o CONFIG já declara está saturada.
+Não incluir `player.halfWidth` em `FEEL_KEY`.
+Não outro leaf do `player` no extrator.
+CREDITS.md pela menção ainda declara — irmão de 334.

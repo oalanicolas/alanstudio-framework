@@ -73,9 +73,10 @@ Leia o verbo no GDD, os tokens de tempo/câmera/áudio no
 [design system](../references/game-design-system.md) e o
 [piso](../references/quality.md). `context --focus feel` seleciona esta
 receita. `feel` lê as constantes nomeadas no `CONFIG` (perdão, graça, hitstop,
-shake, squash, punch e rumble) e as
+shake, squash, punch e rumble) e o peso do passo
+(`player.speed`, o avanço); as
 janelas da chuva (`practiceTicks`, `recoveryTicks`, o fecho) —
-o campo já as marca; o comando calava o pulso que a
+o campo já as marca; o comando calava o pulso e o passo que a
 tabela já lista. Número no disco não é peso percebido. Lê o
 recibo de observação no disco; nomeia `then.play` e `then.note`
 sem executar. Com last-run, nomeia `then.seed` e `then.invite`

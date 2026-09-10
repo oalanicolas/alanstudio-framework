@@ -3265,6 +3265,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(report["unobserved"])
         keys = [item["key"] for item in report["constants"]]
         self.assertIn("player.dashBufferTicks", keys)
+        self.assertIn("player.speed", keys, "o feel lia o CONFIG e calava o passo")
+        self.assertIn("player.dashSpeed", keys, "o feel calava a velocidade do avanço")
         self.assertIn("player.dashWindupTicks", keys)
         self.assertIn("feel.squashCoil", keys)
         self.assertIn("feel.squashBankCoil", keys)
@@ -3351,6 +3353,41 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertEqual(help_cli.returncode, 0, help_cli.stderr)
         self.assertIn("rumble", (help_cli.stdout + help_cli.stderr).casefold())
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", feel)
+
+    def test_feel_names_the_step_weight_the_config_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.feel_reading(starter)
+        keys = [item["key"] for item in report["constants"]]
+        self.assertIn("player.speed", keys, "o feel lia o CONFIG e calava o passo")
+        self.assertIn("player.dashSpeed", keys, "o feel calava a velocidade do avanço")
+        self.assertNotIn("player.halfWidth", keys)
+        self.assertIn("peso do passo", report["scope"])
+        self.assertFalse(report["felt"])
+        extracted = game._feel_constants_from_code(
+            "export const CONFIG = {\n"
+            "  player: {\n"
+            "    speed: 1.9,\n"
+            "    dashSpeed: 5.4,\n"
+            "    halfWidth: 7,\n"
+            "  },\n"
+            "};\n"
+        )
+        extracted_keys = [item["key"] for item in extracted]
+        self.assertEqual(extracted_keys, ["player.speed", "player.dashSpeed"])
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("peso do passo", recipe.casefold())
+        self.assertIn("peso do passo", feel.casefold())
+        self.assertIn("peso do passo", readme.casefold())
+        help_cli = subprocess.run(
+            [sys.executable, str(SCRIPT), "feel", "-h", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(help_cli.returncode, 0, help_cli.stderr)
+        self.assertIn("passo", (help_cli.stdout + help_cli.stderr).casefold())
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", feel)
 

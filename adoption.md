@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.335 — o feel nomeia o peso do passo
+
+O
+CONFIG
+já
+declarava
+`player.speed`
+e
+o
+avanço.
+O
+comando
+lia
+perdão
+e
+rumble
+e
+calava
+o
+passo.
+Agora
+o
+`feel`
+lista
+os
+dois.
+`halfWidth`
+continua
+de
+fora.
+Não
+promove
+`felt`.
+
+O que 0.9.335 não afirma:
+número
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.334 — o sidecar sem os três campos não declara
 
 O
