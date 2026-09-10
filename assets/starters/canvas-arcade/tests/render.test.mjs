@@ -555,9 +555,15 @@ test("a abertura nomeia a fantasia, o recorde e a última seed", () => {
   const back = paint(
     state,
     {},
-    { best: 18, canContinue: true, fantasy: "guardar a corrente ou continuar" },
+    {
+      best: 18,
+      canContinue: true,
+      fantasy: "guardar a corrente ou continuar",
+      lastRun: { score: 7 },
+    },
   );
   assert.ok(back.texts.some((item) => item.text.includes("guardar a corrente ou continuar")));
+  assert.ok(back.texts.some((item) => item.text.includes("Última") && item.text.includes("7")));
   assert.ok(back.texts.some((item) => item.text.includes("Recorde") && item.text.includes("18")));
   assert.ok(back.texts.some((item) => item.text.includes("Repetir a última")));
   assert.ok(back.texts.some((item) => item.text.includes("Nova partida")));

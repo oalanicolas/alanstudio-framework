@@ -141,6 +141,7 @@ export const COPY_FIELDS = [
   "title_play",
   "title_again",
   "title_new",
+  "title_last",
 ];
 
 export function migrateTable(name, raw, schema, fields = []) {
@@ -188,6 +189,7 @@ export function migrateCopy(raw) {
     title_play: typeof table.title_play === "string" ? table.title_play : "Jogar: {dash}",
     title_again: typeof table.title_again === "string" ? table.title_again : "Repetir a última: {dash}",
     title_new: typeof table.title_new === "string" ? table.title_new : "Nova partida: {reset}",
+    title_last: typeof table.title_last === "string" ? table.title_last : "Última",
   };
 }
 

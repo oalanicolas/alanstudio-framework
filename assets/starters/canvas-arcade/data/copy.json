@@ -21,5 +21,6 @@
   "hint_bank": "Guarde ({bank}, baixo ou X) antes de perder a corrente",
   "title_play": "Jogar: {dash}",
   "title_again": "Repetir a última: {dash}",
-  "title_new": "Nova partida: {reset}"
+  "title_new": "Nova partida: {reset}",
+  "title_last": "Última"
 }

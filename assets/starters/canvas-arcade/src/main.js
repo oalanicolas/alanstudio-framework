@@ -75,7 +75,9 @@ export function createGame(options = {}) {
   let recorded = false;
   let lastRun = progress.lastRun ?? null;
   let disposed = false;
-  const offeringContinue = resumeSeed != null && (forcedSeed === undefined || forcedSeed === resumeSeed);
+  function doorOpen() {
+    return canContinue(progress) && (forcedSeed === undefined || forcedSeed === progress.lastSeed);
+  }
 
   const input = options.input ?? createInput({ target: eventTarget, surface: canvas, bindings: settings.bindings });
   const audio = options.audio ?? createAudio({ settings });
@@ -158,7 +160,8 @@ export function createGame(options = {}) {
       hint: coachHint(state, copy, { surface: input.lastSource }),
       surface: input.lastSource,
       fantasy: copy.fantasy,
-      canContinue: offeringContinue,
+      canContinue: doorOpen(),
+      lastRun,
     });
   }
 
@@ -225,7 +228,14 @@ export function createGame(options = {}) {
       return loop.paused;
     },
     reset(seed = state.seed) {
-      state = createState(seed, matchOptions(settings, "playing"));
+      // Com tela, o fim não pula a porta. R no overlay abre a
+      // abertura — repetir a seed ou sortear outra. Sem tela o
+      // headless continua no tick zero. Reset no meio da partida
+      // não muda de fase. Seed explícita (teste, `seed()`) entra
+      // jogando — não é o botão do overlay.
+      const toTitle = Boolean(canvas) && state.phase === "over" && arguments.length === 0;
+      const nextSeed = toTitle ? (progress.lastSeed ?? seed) : seed;
+      state = createState(nextSeed, matchOptions(settings, toTitle ? "title" : "playing"));
       queued = neutralIntent();
       recorded = false;
       loop.resume();

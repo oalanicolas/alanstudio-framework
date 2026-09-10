@@ -502,6 +502,13 @@ export function createRenderer(canvas, options = {}) {
       target.fillText(fantasy, FIELD.width / 2, line);
       line += 16 * scale;
     }
+    const last = extra.lastRun;
+    if (last && Number.isFinite(last.score)) {
+      target.fillStyle = palette.muted;
+      target.font = `${8 * scale}px system-ui, sans-serif`;
+      target.fillText(`${lines.title_last} ${last.score}`, FIELD.width / 2, line);
+      line += 12 * scale;
+    }
     const best = Number.isFinite(extra.best) ? extra.best : 0;
     if (best > 0) {
       target.fillStyle = palette.muted;

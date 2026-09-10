@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** `b7b9ac2` — *A abertura também lê a última* (0.9.101)
+**HEAD:** ver `git log -1` — vigente 0.9.102: o fim volta à porta.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 240 OK.
@@ -45,6 +45,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.99 | Halo na forma + vinheta. Reduced some os dois. |
 | 0.9.100 | Corpo aponta o último avanço. Orbe círculo, estilhaço losango. |
 | 0.9.101 | Com tela, fase `title`. Lê `lastSeed` e recorde. Sem tela, headless joga. |
+| 0.9.102 | Com tela, R no fim volta à abertura. Última pontuação na porta. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -155,14 +156,16 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Fase `title` só com canvas (ou `options.entry === "title"`). Headless
   e `createState()` default = `playing`. `advance` em title não anda o
   tick. Dash em `step` chama `beginRun`. Reset na title sorteia seed nova
-  e vai a `playing`. Pause na title é ignorado.
+  e vai a `playing`. Pause na title é ignorado. Com tela, `reset()` sem
+  argumento no `over` volta à title; `reset(seed)` explícito joga.
 - Continuar = **repetir `lastSeed`**, não restaurar o tick. `canContinue`
-  exige `runs > 0` e `lastSeed`.
+  exige `runs > 0` e `lastSeed`. `doorOpen()` relê o progresso — não
+  congela o valor do boot.
 - Coach: fantasy → move → dash → miss → touch/pad → collect → null após
   1ª guarda. `coachHint` some se `phase !== "playing"`.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
-- `title_play` / `title_again` / `title_new` em `COPY_FIELDS`.
-  `migrateCopy` preenche default se a mesa antiga não tiver.
+- `title_play` / `title_again` / `title_new` / `title_last` em
+  `COPY_FIELDS`. `migrateCopy` preenche default se a mesa antiga não tiver.
 - Invite (`?invite=1`) some `#commands`, não `#remap`.
 - `pagehide` flush; hidden pausa.
 
@@ -183,8 +186,8 @@ Candidatos, do que ainda dói:
    `note`. O harness não deve auto-servir sem o usuário pedir — mas o
    prompt pode ficar mais curto/colar-único se isso não quebrar
    `len(steps) == 3` nem `executed: false`.
-3. **Checkpoint do tick:** a abertura repete a seed; o save não guarda
-   o meio da chuva. Mid-run resume é schema novo + contrato
+3. **Checkpoint do tick:** a abertura e o fim repetem a seed; o save
+   não guarda o meio da chuva. Mid-run resume é schema novo + contrato
    observe/advance. Não chamar isso de Continuar.
 4. **Item 1 residual:** recipes/templates vs código. O HANDOFF antigo
    (PRs #2/#3) está obsoleto; recipes ainda falam “tela do primeiro

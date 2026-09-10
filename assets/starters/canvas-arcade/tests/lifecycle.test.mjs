@@ -250,6 +250,35 @@ test("com tela a abertura lê a última seed", () => {
   again.dispose();
 });
 
+test("com tela o fim volta à abertura", () => {
+  const storage = memoryStorage();
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage,
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(game.observe().phase, "title");
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing");
+  game.advance(CONFIG.runTicks);
+  assert.equal(game.observe().phase, "over");
+  const lastSeed = game.observe().seed;
+  const score = game.lastRun.score;
+  game.reset();
+  assert.equal(game.observe().phase, "title", "o overlay não pula a porta");
+  assert.equal(game.observe().seed, lastSeed);
+  assert.equal(game.observe().tick, 0);
+  assert.equal(Number.isFinite(score), true);
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing");
+  assert.equal(game.observe().seed, lastSeed);
+  game.dispose();
+});
+
 test("preferências e progresso vivem em chaves separadas", () => {
   const { game, storage } = harness();
   game.updateSettings({ highContrast: true, reducedMotion: true });

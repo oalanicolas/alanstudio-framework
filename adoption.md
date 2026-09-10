@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.102 — O fim também volta à porta
+
+Com tela, o overlay de fim pulava a abertura.
+R abre a porta: última pontuação, recorde,
+repetir a seed ou nova partida. Sem tela o
+headless continua no tick zero. `trusted`
+continua falso. Só `release` fica no piso.
+
+O que 0.9.102 não afirma: o harness não
+terminou a partida e voltar à porta não é
+o tick interrompido.
+
 ## 0.9.101 — A abertura também lê a última
 
 O save já guardava `lastSeed` e o recorde. O boot ia
