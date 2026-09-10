@@ -169,7 +169,7 @@ test("a intenção desloca tokens sem inventar look nem aprovar arte", () => {
   const duskWarm = applyLookIntent(PALETTES.dusk, "warmer");
   assert.equal(duskWarm.shard, PALETTES.dusk.shard, "dusk+warmer não devolve o estilhaço ao eixo quente");
   assert.notEqual(duskWarm.field, PALETTES.dusk.field);
-  assert.notEqual(duskWarm.orb, PALETTES.dusk.orb);
+  assert.equal(duskWarm.orb, PALETTES.dusk.orb, "o orbe dusk já é o âmbar da intenção");
   const shard = Number.parseInt(duskWarm.shard.slice(1), 16);
   assert.ok((shard & 0xff) > (shard >> 16), "o estilhaço warmer continua índigo");
   assert.deepEqual(Object.keys(lookRecord(warmer)).sort(), [...PALETTE_FIELDS].sort());
