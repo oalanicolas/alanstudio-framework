@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.268: o preset de uma mão não some o remap. Desligar devolvia o padrão e apagava o KeyZ. Save antigo sem o conjunto guardado não inventa remap. Não promove `trusted`.
+**HEAD:** ver `git log -1` — vigente 0.9.269: a faixa nomeia o valor que o knob já guarda. O thumb andava; 75% some. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 293 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.268)
+## O que o HEAD já entrega (0.9.91–0.9.269)
 
 | Ver | Salto |
 | --- | --- |
@@ -212,6 +212,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.266 | O verify nomeia o stem que o recibo perdeu. O WAV sumia e o relatório fingia que o papel não existia. Não promove `heard`. |
 | 0.9.267 | A faixa nomeia a curva que o last-run já traçou. Seed e pontos ficavam; never_banked some. Não promove `outsider`. |
 | 0.9.268 | O preset de uma mão não some o remap. Desligar devolvia o padrão e apagava o KeyZ. Save antigo sem o conjunto guardado não inventa remap. Não promove `trusted`. |
+| 0.9.269 | A faixa nomeia o valor que o knob já guarda. O thumb andava; 75% some. Não promove `verified`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -232,7 +233,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a recuperação que o painel já mostra; a porta não; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
+| accessibility | slice | as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -1503,6 +1504,11 @@ Candidatos, do que ainda dói:
   uma mão que
   some o
   remap
+  e uma
+  faixa que
+  some o
+  percentual
+  do knob
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1526,10 +1532,10 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o preset
-de uma mão não some o remap.
-Desligar devolvia o padrão e apagava o KeyZ.
-Save antigo sem o conjunto guardado não inventa remap.
-Não promove `trusted`.
+Arquivos quentes da última sessão: a faixa
+nomeia o valor que o knob já guarda.
+O thumb andava; 75% some.
+Não promove `verified`.
 A família recado/remap/botão está saturada.
-A família faixa/curva está saturada.
+A família curva do last-run está saturada.
+A família oneHand/remap restore está saturada.

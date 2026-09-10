@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { applyScale, applyShell, scaleVar, shellVars } from "../src/core/shell.js";
+import { applyKnobs, applyScale, applyShell, knobText, knobValues, KNOB_IDS, scaleVar, shellVars } from "../src/core/shell.js";
 import { UI_SCALE_MAX, UI_SCALE_MIN } from "../src/core/settings.js";
 import { applyLookIntent, PALETTES } from "../src/game/tables.js";
 
@@ -71,4 +71,39 @@ test("a escala veste a casca, não só o canvas", () => {
   assert.equal(/font:\s*15px/.test(html), false);
   assert.match(html, /applyScale\(document\.documentElement, settings\.uiScale\)/);
   assert.match(html, /getElementById\("uiScale"\)\.addEventListener\("input"[\s\S]*dress\(\)/);
+});
+
+test("a faixa nomeia o valor que o knob já guarda", () => {
+  assert.equal(knobText(0.75), "75%");
+  assert.equal(knobText(1.5), "150%");
+  assert.equal(knobText(0.7), "70%");
+  assert.equal(knobText(Number.NaN), "");
+  const values = knobValues({ gameSpeed: 0.75, uiScale: 1.5, buses: { master: 0.7, sfx: 0.62, music: 0.45, ui: 0.55 } });
+  assert.equal(values.gameSpeed, 0.75);
+  assert.equal(values.uiScale, 1.5);
+  assert.equal(values.master, 0.7);
+  assert.deepEqual(KNOB_IDS, ["gameSpeed", "uiScale", "master", "sfx", "music", "ui"]);
+
+  const nodes = {};
+  for (const name of KNOB_IDS) {
+    nodes[name] = { value: "", attrs: {}, setAttribute(key, value) { this.attrs[key] = value; } };
+    nodes[`${name}-readout`] = { textContent: "" };
+  }
+  const root = { getElementById(id) { return nodes[id] ?? null; } };
+  assert.equal(applyKnobs(root, { gameSpeed: 0.75, uiScale: 1.5, buses: { master: 0.7, sfx: 0.4, music: 0.2, ui: 0 } }), true);
+  assert.equal(nodes["gameSpeed-readout"].textContent, "75%");
+  assert.equal(nodes.gameSpeed.value, "0.75");
+  assert.equal(nodes.gameSpeed.attrs["aria-valuetext"], "75%");
+  assert.equal(nodes["uiScale-readout"].textContent, "150%");
+  assert.equal(nodes["master-readout"].textContent, "70%");
+  assert.equal(nodes["ui-readout"].textContent, "0%");
+  assert.equal(applyKnobs({}, { gameSpeed: 0.75 }), false);
+
+  for (const name of KNOB_IDS) {
+    assert.match(html, new RegExp(`id="${name}-readout"`));
+    assert.match(html, new RegExp(`<output id="${name}-readout" for="${name}">`));
+  }
+  assert.match(html, /applyKnobs\(document, settings\)/);
+  assert.match(html, /applyKnobs\(document, game\.settings\)/);
+  assert.doesNotMatch(html, /verified|aprovado/);
 });

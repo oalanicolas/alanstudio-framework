@@ -3,6 +3,42 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.269 — A faixa nomeia o valor que o knob já guarda
+
+A
+faixa
+já
+andava.
+O
+número
+já
+estava
+nas
+preferências.
+A
+casca
+some
+75%.
+Agora
+a
+saída
+nomeia
+o
+percentual.
+Não
+promove
+`verified`.
+
+O que 0.9.269 não afirma:
+número
+no
+rótulo
+não
+é
+sessão
+no
+aparelho.
+
 ## 0.9.268 — O preset de uma mão não some o remap
 
 O

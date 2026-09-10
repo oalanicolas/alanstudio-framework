@@ -250,7 +250,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    **`access` / `save` / `budget`** leem opção de alcance (incluindo
    uiScale, remapeamento das seis ações do teclado na página — a escuta
    come a tecla que escolhe o verbo e o botão focado não dispara o
-   ofício —, preset de
+   ofício —, faixas que nomeiam o percentual vigente, preset de
    uma mão (desligar devolve o remap; save antigo não inventa tecla), assistência, velocidade da partida, tinta estável e região viva), versão de save e artefato
    de orçamento. `save` relata `warned` se o disco nomeia sessão volátil
    (`persistLine`, `title_volatile`, `title_unsaved`) ou preferências
