@@ -1,6 +1,9 @@
 // Superfície de remapeamento na página. O código já persistia `bindings`;
 // sem botão, só o console trocava a tecla. Toque e controle não entram
 // aqui. Trocar no stub não é sessão observada.
+// A escuta precisa comer a tecla. Sem a captura, Espaço
+// avançava enquanto a pessoa escolhia o verbo.
+// Tecla no disco não é felt.
 
 import { actionLabels, keyLabel } from "./keys.js";
 
@@ -41,11 +44,12 @@ export function captureKey(target, onCode) {
     const code = event && typeof event.code === "string" ? event.code : "";
     if (!code) return;
     if (typeof event.preventDefault === "function") event.preventDefault();
-    target.removeEventListener("keydown", onKey);
+    if (typeof event.stopImmediatePropagation === "function") event.stopImmediatePropagation();
+    target.removeEventListener("keydown", onKey, true);
     onCode(code);
   }
-  target.addEventListener("keydown", onKey);
-  return () => target.removeEventListener("keydown", onKey);
+  target.addEventListener("keydown", onKey, true);
+  return () => target.removeEventListener("keydown", onKey, true);
 }
 
 export function mountRemap(host, options = {}) {

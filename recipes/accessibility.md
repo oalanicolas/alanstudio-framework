@@ -74,7 +74,9 @@ e não substitui uma sessão com o modo ativo. Uma lacuna registrada com motivo 
 mais que uma lista de recursos não testados.
 
 Implementação concreta: o starter `canvas-arcade` guarda remapeamento, redução de
-movimento e velocidade da partida em `src/core/settings.js`. `gameSpeed` dilata o
+movimento e velocidade da partida em `src/core/settings.js`. A escuta do remap
+come a tecla que escolhe o verbo — Espaço não avança enquanto a pessoa
+escolhe. Tecla no disco não é sessão. `gameSpeed` dilata o
 acumulador em `src/core/loop.js` só na partida; a porta e o fim ficam no
 relógio cheio. `advance()` headless não passa por ele. `assist` cede queda e
 alcance também na mostra da porta; a graça extra fica no campo. `reducedMotion`

@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
+import { createInput } from "../src/core/input.js";
 import { DEFAULT_BINDINGS } from "../src/core/settings.js";
 import {
   applyRebind,
@@ -26,7 +27,18 @@ function fakeTarget() {
       if (index >= 0) listeners.splice(index, 1);
     },
     press(code) {
-      for (const fn of [...listeners]) fn({ code, preventDefault() {} });
+      let stopped = false;
+      const event = {
+        code,
+        preventDefault() {},
+        stopImmediatePropagation() {
+          stopped = true;
+        },
+      };
+      for (const fn of [...listeners]) {
+        if (stopped) break;
+        fn(event);
+      }
     },
     count() {
       return listeners.length;
@@ -95,6 +107,56 @@ test("capturar uma tecla entrega o código uma vez", () => {
   assert.deepEqual(codes, ["KeyZ"]);
   assert.equal(target.count(), 0);
   cancel();
+});
+
+function windowKeys() {
+  // No documento a tecla cai no foco e o window só vê a
+  // captura e o bubble. EventTarget no mesmo nó inverte
+  // a ordem e o ofício ganhava da escuta.
+  const capture = [];
+  const bubble = [];
+  return {
+    addEventListener(type, handler, opts) {
+      const list = opts === true || opts?.capture ? capture : bubble;
+      list.push({ type, handler });
+    },
+    removeEventListener(type, handler, opts) {
+      const list = opts === true || opts?.capture ? capture : bubble;
+      const index = list.findIndex((entry) => entry.type === type && entry.handler === handler);
+      if (index >= 0) list.splice(index, 1);
+    },
+    press(code) {
+      const event = {
+        code,
+        defaultPrevented: false,
+        preventDefault() {
+          this.defaultPrevented = true;
+        },
+        stopImmediatePropagation() {
+          this._stopped = true;
+        },
+      };
+      for (const entry of [...capture, ...bubble]) {
+        if (event._stopped) break;
+        if (entry.type === "keydown") entry.handler(event);
+      }
+      return event;
+    },
+  };
+}
+
+test("a tecla do remap não dispara o verbo", () => {
+  const keys = windowKeys();
+  const input = createInput({ target: keys, surface: null });
+  const codes = [];
+  const cancel = captureKey(keys, (code) => codes.push(code));
+  keys.press("Space");
+  assert.deepEqual(codes, ["Space"]);
+  assert.equal(input.intent().dash, false, "a escuta come o ofício");
+  cancel();
+  keys.press("Space");
+  assert.equal(input.intent().dash, true, "fora da escuta o aperto avança");
+  input.dispose();
 });
 
 test("a superfície na página troca a tecla sem marcar sessão", () => {

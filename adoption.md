@@ -3,6 +3,44 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.264 — A tecla do remap não dispara o verbo
+
+A
+escuta
+já
+lia
+a
+tecla.
+O
+ofício
+também.
+Espaço
+avançava
+enquanto
+a
+pessoa
+escolheva
+o
+verbo.
+Agora
+a
+captura
+come
+a
+tecla.
+Não
+promove
+`felt`.
+
+O que 0.9.264 não afirma:
+botão
+focado
+ainda
+pode
+ativar
+e
+avançar.
+
 ## 0.9.263 — O recibo sem origem não declara
 
 O

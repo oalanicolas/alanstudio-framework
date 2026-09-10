@@ -185,6 +185,18 @@ test("o controle move, avança, guarda, pausa e reinicia", () => {
   input.dispose();
 });
 
+test("tecla já comida não dispara o verbo", () => {
+  const keys = surface();
+  const input = createInput({ target: keys, surface: null });
+  keys.dispatch("keydown", {
+    code: "Space",
+    defaultPrevented: true,
+    preventDefault() {},
+  });
+  assert.equal(input.intent().dash, false, "defaultPrevented come o ofício");
+  input.dispose();
+});
+
 test("o recado não dispara o verbo", () => {
   assert.equal(isTypingTarget({ target: { tagName: "TEXTAREA" } }), true);
   assert.equal(isTypingTarget({ target: { tagName: "INPUT" } }), true);

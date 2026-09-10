@@ -246,7 +246,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Sem `then`. Recibo sem os quatro não é achado. Os quatro no disco
    não observam. Não joga e não sente. Achar o único jogo não é ter sentido.
    **`access` / `save` / `budget`** leem opção de alcance (incluindo
-   uiScale, remapeamento das seis ações do teclado na página, preset de
+   uiScale, remapeamento das seis ações do teclado na página — a escuta
+   come a tecla que escolhe o verbo —, preset de
    uma mão, assistência, velocidade da partida, tinta estável e região viva), versão de save e artefato
    de orçamento. `save` relata `warned` se o disco nomeia sessão volátil
    (`persistLine`, `title_volatile`, `title_unsaved`) ou preferências

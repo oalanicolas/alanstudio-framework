@@ -107,6 +107,10 @@ export function createInput(options = {}) {
     // O painel foca o recado no over. Sem isto o espaço
     // avançava e o R recomeçava no meio da frase.
     if (isTypingTarget(event)) return;
+    // A escuta do remap come a tecla na captura. Sem isto
+    // o bubble ainda avançava se a ordem no mesmo nó
+    // invertia. Tecla no disco não é felt.
+    if (event?.defaultPrevented) return;
     const code = event.code ?? event.key;
     if (!actionsFor(code).length) return;
     noteSource("keyboard");
