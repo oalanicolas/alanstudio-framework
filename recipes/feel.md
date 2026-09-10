@@ -12,7 +12,8 @@ solta o ofício pendente — Space e R não disparam no quadro
 seguinte. Na pausa o toque retoma — Esc e P não existem no
 polegar; o tap não é o avanço. Na porta o telefone vê
 Jogar: toque sem ter apertado; o aviso continua teclado
-até o gesto. Soltar no disco não é
+até o gesto. Depois do tap a porta e o fim não chamam
+o avanço de cima. Soltar no disco não é
 sessão observada. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured` e aponta a página

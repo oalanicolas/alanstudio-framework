@@ -59,7 +59,8 @@ Estilhaço no trilho pede o dash; toque e controle ganham passo depois
 do movimento. Overlay e HUD confirmam o aparelho que falou por último.
 Na pausa o toque retoma — Esc e P não existem no polegar.
 Na porta o telefone vê Jogar: toque sem ter apertado; o aviso
-do primeiro ciclo continua teclado até o gesto.
+do primeiro ciclo continua teclado até o gesto. Depois do
+tap a porta e o fim não chamam o avanço de cima.
 O overlay e a casca da página seguem `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
 x do corpo, no alcance do telegraph, vira `perigo à frente` na região viva
 junto da última legenda. Na porta o canvas também marca a mostra no

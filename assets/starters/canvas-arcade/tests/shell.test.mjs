@@ -399,6 +399,64 @@ test("o telefone vê Jogar: toque na porta sem ter apertado", () => {
   game.dispose();
 });
 
+test("depois do tap a porta não chama o avanço de cima", () => {
+  const listeners = [];
+  const view = textCanvas();
+  const canvas = {
+    ...view.canvas,
+    getBoundingClientRect() {
+      return { left: 0, top: 0, width: 360, height: 640 };
+    },
+    addEventListener(type, handler) {
+      listeners.push({ type, handler });
+    },
+    removeEventListener(type, handler) {
+      const index = listeners.findIndex((entry) => entry.type === type && entry.handler === handler);
+      if (index !== -1) listeners.splice(index, 1);
+    },
+    dispatch(type, event) {
+      for (const entry of [...listeners]) {
+        if (entry.type === type) entry.handler(event);
+      }
+    },
+  };
+  const { game, frame } = shell({ canvas, loadSfx: false });
+  game.start();
+  frame();
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing");
+  canvas.dispatch("pointerdown", { clientX: 180, clientY: 200, pointerId: 1 });
+  canvas.dispatch("pointerup", { pointerId: 1 });
+  frame();
+  frame();
+  game.advance(CONFIG.runTicks);
+  assert.equal(game.observe().phase, "over");
+  frame();
+  assert.ok(
+    view.texts.some((text) => /abertura: toque/i.test(String(text))),
+    `esperava toque no fim: ${JSON.stringify(view.texts)}`,
+  );
+  assert.equal(
+    view.texts.some((text) => /abertura: cima/i.test(String(text))),
+    false,
+    "cima mente na porta do fim",
+  );
+  game.reset();
+  assert.equal(game.observe().phase, "title");
+  frame();
+  assert.ok(
+    view.texts.some((text) => /Repetir a última: toque|Jogar: toque/.test(String(text))),
+    `esperava toque na porta: ${JSON.stringify(view.texts)}`,
+  );
+  assert.equal(
+    view.texts.some((text) => /Repetir a última: cima|Jogar: cima/.test(String(text))),
+    false,
+    "cima mente na porta depois do tap",
+  );
+  game.dispose();
+});
+
 test("o toque retoma a pausa sem avançar no mesmo aperto", () => {
   const listeners = [];
   const view = textCanvas();

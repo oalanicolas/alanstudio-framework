@@ -336,11 +336,14 @@ export function createGame(options = {}) {
     audio.update({ bedRate: sessionBedRate(state, clockSpeed()) });
     const captions = audio.captions();
     const spoken = input.lastSource;
-    // Na porta o telefone ainda não falou. lastSource
-    // nasce teclado e Jogar: Espaço mente. A placa
-    // usa a superfície da porta; o aviso continua
-    // teclado até o gesto. Texto no disco não é felt.
-    const surface = state.phase === "title" ? titleSurface(environment, spoken) : spoken;
+    // Na porta o tap abre em qualquer faixa. lastSource
+    // pointer preenchia cima e mente. A placa da
+    // abertura e do fim usa a superfície da porta;
+    // o aviso continua o aparelho que falou.
+    // Texto no disco não é felt.
+    const surface = state.phase === "title" || state.phase === "over"
+      ? titleSurface(environment, spoken)
+      : spoken;
     const bound = bindLines(copy, settings.bindings ?? DEFAULT_BINDINGS, spoken);
     const hint = coachHint(state, copy, { surface: spoken });
     applyLive({

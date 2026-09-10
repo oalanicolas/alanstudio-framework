@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.296 — A porta não chama o tap de cima
+
+O
+gesto
+marcava
+pointer.
+A
+placa
+herdava
+cima.
+O
+tap
+abre
+em
+qualquer
+faixa.
+Agora
+a
+abertura
+e
+o
+fim
+dizem
+toque.
+O
+aviso
+continua
+o
+aparelho
+que
+falou.
+Não
+promove
+`felt`.
+
+O que 0.9.296 não afirma:
+rótulo
+no
+stub
+não
+é
+polegar
+no
+aparelho.
+
 ## 0.9.295 — Na porta o telefone vê toque
 
 O

@@ -34,7 +34,8 @@ jogar. Com tela, o boot espera o avanço: a abertura recebe o
 movimento, o aviso pede mover, e nomeia a fantasia, a última
 pontuação, o recorde e repetir a última seed. No telefone a
 porta vê Jogar: toque sem ter apertado; o aviso continua
-teclado até o gesto. O fim
+teclado até o gesto. Depois do tap a porta e o fim não
+chamam o avanço de cima. O fim
 volta à porta com um avanço novo; R também. Sem tela o headless começa jogando. Repetir não
 é o tick interrompido.
 

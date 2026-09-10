@@ -102,8 +102,9 @@ const SURFACE_TOKENS = {
     dash: "cima",
   },
   // A porta abre no tap, em qualquer faixa. O mapa
-  // pointer chama o dash de cima — e mente aqui.
-  // lastSource continua teclado até o gesto.
+  // pointer chama o dash de cima — e mente aqui,
+  // inclusive depois do gesto. lastSource teclado
+  // no telefone também mente com Espaço.
   // Superfície no disco não é sessão observada.
   door: {
     dash: "toque",
@@ -111,8 +112,9 @@ const SURFACE_TOKENS = {
 };
 
 export function titleSurface(environment, lastSource = "keyboard") {
-  if (lastSource !== "keyboard") return lastSource;
-  return environment?.pointer?.coarse ? "door" : lastSource;
+  if (lastSource === "gamepad") return lastSource;
+  if (lastSource === "pointer" || environment?.pointer?.coarse) return "door";
+  return lastSource;
 }
 
 export function bindLines(lines, bindings, surface = "keyboard") {

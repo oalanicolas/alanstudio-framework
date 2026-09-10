@@ -67,13 +67,15 @@ test("o toque nomeia as faixas no overlay e deixa o aviso com as três superfíc
 
 test("a porta do telefone nomeia toque sem promover lastSource", () => {
   assert.equal(titleSurface({ pointer: { coarse: true } }, "keyboard"), "door");
-  assert.equal(titleSurface({ pointer: { coarse: true } }, "pointer"), "pointer");
+  assert.equal(titleSurface({ pointer: { coarse: true } }, "pointer"), "door");
+  assert.equal(titleSurface({}, "pointer"), "door", "depois do tap a porta não herda cima");
   assert.equal(titleSurface({ pointer: { coarse: true } }, "gamepad"), "gamepad");
   assert.equal(titleSurface({ pointer: { coarse: false } }, "keyboard"), "keyboard");
   assert.equal(titleSurface({}, "keyboard"), "keyboard");
   const lines = bindLines(copy, DEFAULT_BINDINGS, "door");
   assert.equal(lines.title_play, "Jogar: toque");
   assert.equal(lines.title_again, "Repetir a última: toque");
+  assert.equal(lines.over_door, "Abertura: toque");
   assert.equal(lines.title_new, "Nova partida: R");
   assert.equal(lines.hint_move, "←/→, arraste ou analógico");
   assert.equal(lines.hint_touch, copy.hint_touch);
