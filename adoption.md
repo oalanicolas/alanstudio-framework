@@ -3,6 +3,64 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.224 — O hitstop não alonga o relógio no fim
+
+O
+congelamento
+no
+fim
+ganhava
+ticks
+depois
+do
+limite.
+Collect
+ou
+hit
+no
+último
+quadro
+alongavam
+a
+partida.
+Agora
+`endRun`
+corre
+no
+early-return
+do
+freeze.
+O
+relógio
+não
+passa
+de
+`runTicks`.
+A
+guarda
+que
+já
+sentou
+ainda
+entra.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.224 não afirma:
+flush
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.223 — O relógio não come a guarda que já sentou
 
 O

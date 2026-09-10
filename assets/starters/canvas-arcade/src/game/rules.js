@@ -713,6 +713,11 @@ export function advance(state, intent = neutralIntent()) {
     markRecovery(state);
     decayCamera(state);
     decayMotes(state);
+    // O congelamento não alonga a partida. Sem isto um
+    // collect ou hit no fim ganhava ticks extras e o
+    // relógio passava de runTicks. Pose no disco não é
+    // peso percebido.
+    if (state.tick >= CONFIG.runTicks) endRun(state);
     return state;
   }
 
@@ -761,30 +766,33 @@ export function advance(state, intent = neutralIntent()) {
   player.squash *= CONFIG.feel.squashDecay;
   if (Math.abs(player.squash) < 0.01) player.squash = 0;
 
-  if (state.tick >= CONFIG.runTicks) {
-    // O sit já era o compromisso. Sem isto o relógio
-    // lapseava a aposta no meio do arco — você sentou
-    // para guardar e o fim comeu a corrente. Pose no
-    // disco não é peso percebido.
-    if ((state.bankWindup ?? 0) > 0 && state.chain > 0) {
-      commitBank(state);
-    }
-    state.phase = "over";
-    player.squash = CONFIG.feel.squashOver;
-    // O corpo já sentava. Tremor e punch do último verbo
-    // ficavam no quadro. O relógio senta o campo com o tijolo.
-    // Pose no disco não é peso percebido.
-    state.shake = 0;
-    state.flash = 0;
-    if (state.camera) {
-      state.camera.x = 0;
-      state.camera.y = 0;
-    }
-    emit(state, "over", { score: state.score, unbanked: state.chain });
-    lapseChain(state, state.chain);
-  }
+  if (state.tick >= CONFIG.runTicks) endRun(state);
   decayMotes(state);
   return state;
+}
+
+function endRun(state) {
+  if (!state || state.phase !== "playing") return;
+  // O sit já era o compromisso. Sem isto o relógio
+  // lapseava a aposta no meio do arco — você sentou
+  // para guardar e o fim comeu a corrente. Pose no
+  // disco não é peso percebido.
+  if ((state.bankWindup ?? 0) > 0 && state.chain > 0) {
+    commitBank(state);
+  }
+  state.phase = "over";
+  state.player.squash = CONFIG.feel.squashOver;
+  // O corpo já sentava. Tremor e punch do último verbo
+  // ficavam no quadro. O relógio senta o campo com o tijolo.
+  // Pose no disco não é peso percebido.
+  state.shake = 0;
+  state.flash = 0;
+  if (state.camera) {
+    state.camera.x = 0;
+    state.camera.y = 0;
+  }
+  emit(state, "over", { score: state.score, unbanked: state.chain });
+  lapseChain(state, state.chain);
 }
 
 function fireDash(state, intent) {

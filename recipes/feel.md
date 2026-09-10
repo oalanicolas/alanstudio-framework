@@ -95,7 +95,8 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    que cai no arco da guarda espera: o sit não inflama a aposta
    que você já pediu; depois do commit o orbe entra. O relógio
    não come a guarda que já sentou: o sit converte antes do
-   `over`. Dois
+   `over`. O hitstop no fim não alonga o relógio: o limite
+   encerra mesmo durante o congelamento. Dois
    orbes no mesmo quadro não inflam a corrente: o segundo espera o
    próximo tick. Orbe e estilhaço no mesmo quadro: o estilhaço letal
    resolve; o orbe espera. Ordem do array não decide a aposta. A graça

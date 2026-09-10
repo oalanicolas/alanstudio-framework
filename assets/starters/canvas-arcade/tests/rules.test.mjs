@@ -1248,6 +1248,21 @@ test("retomar JSON não puxa mortos do poço", () => {
   assert.ok(saved.entities[0].y < 190);
 });
 
+test("o hitstop não alonga o relógio no fim", () => {
+  const state = createState(7);
+  state.tick = CONFIG.runTicks - 2;
+  state.spawnTimer = 999;
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.equal(state.phase, "playing");
+  assert.equal(state.tick, CONFIG.runTicks - 1);
+  assert.ok(state.hitstop > 0, "a coleta ainda congela");
+  advance(state, neutralIntent());
+  assert.equal(state.phase, "over", "o congelamento não ganha ticks depois do limite");
+  assert.equal(state.tick, CONFIG.runTicks);
+  assert.ok(state.events.some((event) => event.type === "over"));
+});
+
 test("o relógio não come a guarda que já sentou", () => {
   const state = createState(7);
   state.chain = 4;
