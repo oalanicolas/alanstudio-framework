@@ -209,6 +209,51 @@ test("dois orbes no mesmo quadro: o segundo espera o próximo tick", () => {
   assert.equal(state.stats.collected, 2);
 });
 
+test("orbe e estilhaço no mesmo quadro: a corrente não depende da ordem", () => {
+  for (const order of [["orb", "shard"], ["shard", "orb"]]) {
+    const state = createState(7);
+    state.chain = 3;
+    const x = state.player.x;
+    state.entities = order.map((kind, index) => ({
+      id: index + 2,
+      kind,
+      x,
+      y: kind === "orb" ? PLAYER_Y : PLAYER_Y - 1,
+      vy: 0,
+    }));
+    advance(state, neutralIntent());
+    assert.equal(state.chain, 0, `ordem ${order.join("+")} não decide a aposta`);
+    assert.equal(state.stats.hits, 1);
+    assert.equal(state.stats.collected, 0, "o orbe espera o próximo tick");
+    assert.equal(state.entities.filter((entity) => entity.kind === "orb").length, 1);
+    assert.ok(state.events.some((event) => event.type === "hit"));
+    assert.equal(state.events.some((event) => event.type === "collect"), false);
+  }
+});
+
+test("no dash, orbe e estilhaço no mesmo quadro atravessam juntos", () => {
+  for (const order of [["orb", "shard"], ["shard", "orb"]]) {
+    const state = createState(8);
+    state.chain = 3;
+    state.player.dashTicks = 4;
+    state.player.dir = 0;
+    const x = state.player.x;
+    state.entities = order.map((kind, index) => ({
+      id: index + 2,
+      kind,
+      x,
+      y: kind === "orb" ? PLAYER_Y : PLAYER_Y - 1,
+      vy: 0,
+    }));
+    advance(state, neutralIntent());
+    assert.equal(state.chain, 4, `ordem ${order.join("+")} no dash coleta`);
+    assert.equal(state.stats.hits, 0);
+    assert.equal(state.stats.collected, 1);
+    assert.ok(state.events.some((event) => event.type === "graze"));
+    assert.ok(state.events.some((event) => event.type === "collect"));
+  }
+});
+
 test("dois estilhaços no mesmo quadro: o segundo já é graça", () => {
   const fade = CONFIG.feel.shakeDecay;
   const state = createState(2);

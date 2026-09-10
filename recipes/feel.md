@@ -90,7 +90,8 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    sentar e pontuar no mesmo impacto não mata. Coleta e guarda no mesmo
    quadro continuam na hora — o contato já foi a antecipação. Dois
    orbes no mesmo quadro não inflam a corrente: o segundo espera o
-   próximo tick. A graça
+   próximo tick. Orbe e estilhaço no mesmo quadro: o estilhaço letal
+   resolve; o orbe espera. Ordem do array não decide a aposta. A graça
    após dano também vale no mesmo quadro: o segundo estilhaço raspa,
    não empilha impacto. Pose e
    arquivo no disco não são peso percebido.

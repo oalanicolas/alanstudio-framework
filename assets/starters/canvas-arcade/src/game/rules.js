@@ -32,7 +32,8 @@ export const CONFIG = {
     invulnTicks: 42, // graça após dano; evita perder duas correntes seguidas — inclusive no mesmo quadro
   },
   // Um orbe por tick: dois no alcance não inflam a corrente.
-  // O segundo espera o próximo quadro. Pose no disco não é peso.
+  // Estilhaço letal no mesmo quadro: o orbe espera. Ordem do
+  // array não decide a aposta. Pose no disco não é peso.
   collect: {
     pad: 5, // alcance além do desenho: quem quase pegou, pega
     reachY: 8,
@@ -930,24 +931,35 @@ function resolveEntities(state) {
     // continua vulnerável. Pose no disco não é peso.
     state.events.some((event) => event.type === "bank" || event.type === "land");
   const entities = state.entities;
-  let write = 0;
-  for (let index = 0; index < entities.length; index += 1) {
-    const entity = entities[index];
-    entity.y += entity.vy;
-    const pad = CONFIG.collect.pad + (state.assist ? CONFIG.assist.collectPad : 0);
-    const reachY = CONFIG.collect.reachY + (state.assist ? CONFIG.assist.collectReachY : 0);
+  const pad = CONFIG.collect.pad + (state.assist ? CONFIG.assist.collectPad : 0);
+  const reachY = CONFIG.collect.reachY + (state.assist ? CONFIG.assist.collectReachY : 0);
+  const touches = (entity) => {
     const reach =
       CONFIG.player.halfWidth +
       (entity.kind === "orb" ? pad : CONFIG.hazard.radius);
-    const touching =
-      Math.abs(entity.y - PLAYER_Y) < reachY && Math.abs(entity.x - player.x) < reach;
-    if (touching) {
+    return Math.abs(entity.y - PLAYER_Y) < reachY && Math.abs(entity.x - player.x) < reach;
+  };
+  for (let index = 0; index < entities.length; index += 1) {
+    entities[index].y += entities[index].vy;
+  }
+  // Estilhaço letal neste tick: o orbe espera. Ordem do
+  // array não decide a aposta. Graça e dash atravessam os
+  // dois. Pose no disco não é peso percebido.
+  const shardHits =
+    !committed &&
+    !(player.invuln > 0) &&
+    entities.some((entity) => entity.kind === "shard" && touches(entity));
+  let write = 0;
+  for (let index = 0; index < entities.length; index += 1) {
+    const entity = entities[index];
+    if (touches(entity)) {
       if (entity.kind === "orb") {
         // Um verbo, um tick. O primeiro collect já emitiu;
         // o segundo orbe fica para o próximo quadro. Dois
-        // no alcance não inflam a corrente. Pose no disco
-        // não é peso percebido.
-        if (state.events.some((event) => event.type === "collect")) {
+        // no alcance não inflam a corrente. Estilhaço letal
+        // no mesmo quadro também manda o orbe esperar.
+        // Pose no disco não é peso percebido.
+        if (shardHits || state.events.some((event) => event.type === "collect")) {
           entities[write] = entity;
           write += 1;
           continue;

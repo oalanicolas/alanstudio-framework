@@ -3,6 +3,38 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.212 — Orbe e estilhaço no mesmo quadro não decidem pela ordem
+
+Orbe e
+estilhaço no
+alcance no
+mesmo quadro
+somavam ou
+zeravam a
+corrente
+conforme a
+ordem do
+array. Agora
+o estilhaço
+letal
+resolve; o
+orbe espera
+o próximo
+tick. No dash
+os dois
+atravessam.
+`felt`
+continua
+falso. Só
+`release`
+fica no piso.
+
+O que 0.9.212 não afirma:
+prioridade no
+disco não é
+peso
+percebido.
+
 ## 0.9.211 — A legenda nomeia a corrente que o tom já sobe
 
 Coleta e
