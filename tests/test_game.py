@@ -3134,6 +3134,55 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.play_cycle(None)
         with self.assertRaisesRegex(ValueError, "sem jogo"):
             game.play_cycle(self.root / "ainda-nao-existe")
+
+    def test_guide_names_the_last_run_seed_without_claiming_it_observed(self):
+        destination = self.root / "com-seed"
+        game.start_project(destination, "canvas-arcade")
+        fresh = game.start_project(destination, "canvas-arcade")
+        self.assertNotIn("seed", fresh["then"])
+        self.assertNotIn("/?seed=", fresh["prompt"])
+        self.assertNotIn("seed", game.guide_cycle(destination, "canvas-arcade")["then"])
+        self.assertNotIn("seed", game.play_cycle(destination)["then"])
+        (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "run": {"ticks": 1},
+        }), encoding="utf-8")
+        self.assertNotIn("seed", game.guide_cycle(destination, "canvas-arcade")["then"])
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        after = game.guide_cycle(destination, "canvas-arcade")
+        self.assertEqual(after["then"]["seed"], "/?seed=8")
+        self.assertIn("?seed=8", after["prompt"])
+        self.assertIn("serve", after["then"]["play"])
+        self.assertNotIn("aprovado", after["prompt"])
+        self.assertNotIn("verified", after["prompt"])
+        self.assertFalse(after["executed"])
+        opened = game.play_cycle(destination)
+        self.assertEqual(opened["then"]["seed"], "/?seed=8")
+        self.assertIn("?seed=8", opened["prompt"])
+        self.assertEqual(opened["then"]["play"], opened["play"])
+        self.assertFalse(opened["executed"])
+        started = game.start_project(destination, "canvas-arcade")
+        self.assertEqual(started["then"]["seed"], "/?seed=8")
+        self.assertIn("?seed=8", started["prompt"])
+        self.assertEqual(started["next"]["proposal"]["basis"], "playable.unplayed")
+        game.note_observation(destination, "Ana", "o verbo pesa no guarda")
+        noted = game.guide_cycle(destination, "canvas-arcade")
+        self.assertTrue(noted["noted"])
+        self.assertEqual(noted["then"]["seed"], "/?seed=8")
+        self.assertIn("?seed=8", noted["prompt"])
+        self.assertIn("recibo", noted["prompt"])
+        self.assertIn("pair", noted["prompt"])
+        self.assertNotIn("O jogo não foi aberto", noted["prompt"])
+        nxt = game.next_step(destination)
+        self.assertEqual(nxt["proposal"]["basis"], "cycle.craft")
+        self.assertFalse(nxt["executed"])
         missing = subprocess.run(
             [sys.executable, str(SCRIPT), "play", "--root", str(self.root)],
             capture_output=True, text=True, cwd=str(Path(game.FRAMEWORK)),

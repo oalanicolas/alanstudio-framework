@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.122 — O guia também nomeia a seed
+
+`playtest` já lia `candidate_seed`. O guia só
+falava o template. Depois de um last-run no
+disco, `then.seed` aponta `/?seed=<n>` e o
+prompt nomeia o número. Sem last-run, a chave
+some. `then.seed` não é ofício.
+`observed` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.122 não afirma: nomear o número não é
+quem jogou nem curva observada.
+
 ## 0.9.121 — A porta também lê a legenda
 
 O mixer guardava o fim. A abertura desenhava e

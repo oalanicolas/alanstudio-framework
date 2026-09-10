@@ -2987,6 +2987,9 @@ def cycle_then(project, play, starter=None):
     session = session_command(project, starter)
     if session:
         then["session"] = session
+    seed = last_run_seed(project)
+    if isinstance(seed, int) and not isinstance(seed, bool):
+        then["seed"] = f"/?seed={seed}"
     return then
 
 
@@ -3028,11 +3031,18 @@ def cycle_prompt(play, then, cycle, noted=False):
             "Sem comando de abrir: identifique o entrypoint e rode `next`. "
             "O harness não executa o jogo."
         )
+    seed_line = (
+        f"A última partida no disco abre em {then['seed']}. Seed explícita ignora o hold."
+        if then.get("seed")
+        else ""
+    )
     craft = [key for key in CRAFT_EXAMPLES if then.get(key)]
     if noted and craft:
         parts = ["O ciclo já tem um recibo."]
         for key in craft:
             parts.append(f"{CRAFT_LABELS[key]}: {then[key]}.")
+        if seed_line:
+            parts.append(seed_line)
         parts.append("O harness não pinta, não chove e não ouve.")
         parts.append(f"`next` só se você não sabe o que falta: {then['lost']}.")
         return " ".join(parts)
@@ -3040,6 +3050,7 @@ def cycle_prompt(play, then, cycle, noted=False):
     return (
         f"O jogo não foi aberto. Cole e rode: {play}. "
         + (f"{how} " if how else "")
+        + (f"{seed_line} " if seed_line else "")
         + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
         "`next` só se o ciclo já correu e você não sabe o que falta."
     )
@@ -3441,8 +3452,9 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "partida, a página grava o recibo se você escrever; o próximo "
             "comando do harness continua `note`, não `next`. "
             "`then` já nomeia par, look, chuva e voz se o projeto declara essas "
-            "ferramentas; depois de um recibo, o prompt as aponta. Ferramenta "
-            "no disco não é alguém de fora nem mix ouvido. Não "
+            "ferramentas; depois de um recibo, o prompt as aponta. Se o disco "
+            "tem last-run com seed, `then` a aponta; nomear o número não "
+            "observa. Ferramenta no disco não é alguém de fora nem mix ouvido. Não "
             "instala dependências e não avalia a proposta. `--idea` entra no "
             "brief como frase e, se houver `data/copy.json`, na abertura e no aviso do "
             "primeiro ciclo. O brief continua rascunho. A frase na tela não "
@@ -3489,8 +3501,9 @@ def play_cycle(destination=None, starter=None):
             "joga. `open` é o play. Com tela, o avanço abre a porta. Depois "
             "de uma partida, a página grava o recibo se você escrever; o "
             "próximo comando do harness continua `note`, não `next`. "
-            "O `prompt` também sai em stderr; o JSON fica no stdout. "
-            "`executed` fica falso."
+            "Se o disco tem last-run com seed, `then` a aponta; nomear o "
+            "número não observa. O `prompt` também sai em stderr; o JSON "
+            "fica no stdout. `executed` fica falso."
         ),
     }
 
@@ -3614,8 +3627,9 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "de fora. `guide --idea` continua só no comando, não no disco. "
             "`then` nomeia par, look, chuva e voz quando o projeto — ou o "
             "starter, se o destino ainda não existe — declara essas "
-            "ferramentas. Se declara `session`, `then` a aponta. Nomear o "
-            "ofício não pinta, não chove e não ouve. O autor do `note` é "
+            "ferramentas. Se declara `session`, `then` a aponta. Se o disco "
+            "tem last-run com seed, `then` a aponta; nomear o número não "
+            "observa. Nomear o ofício não pinta, não chove e não ouve. O autor do `note` é "
             "sugestão do git ou do ambiente, não quem jogou. "
             "`next` fica para quando o ciclo já correu e você não sabe o "
             "que falta. Sem destino, se o diretório atual é um jogo fora "

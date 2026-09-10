@@ -16,7 +16,8 @@ nomeia a pasta no comando do start e não grava a frase. Sem destino, se o
 diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
 `then` nomeia par, look, chuva e voz se o projeto — ou o starter, antes do
 destino existir — declara essas ferramentas. Se declara `session`,
-`then` a aponta. A partida no serve grava o candidato; a simulação
+`then` a aponta. Se o disco tem last-run com seed, `then` a aponta;
+nomear o número não observa. A partida no serve grava o candidato; a simulação
 também. Depois do fim, a página grava o recibo se você escrever.
 Depois do recibo, o mesmo `start` e o `next` apontam
 o ofício. O autor do `note` é sugestão do git ou do ambiente, não
