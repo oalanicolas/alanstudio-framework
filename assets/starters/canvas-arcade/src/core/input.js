@@ -19,6 +19,9 @@
 // O recado foca o campo no fim. Sem isto Espaço e R
 // disparavam o verbo enquanto a pessoa escrevia.
 // Escrever no disco não é felt.
+// O toque só escutava o canvas. Sem a captura, sair
+// do campo deixava o corpo andando. Captura no disco
+// não é felt.
 // Sessão no aparelho não foi observada.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que
@@ -172,6 +175,16 @@ export function createInput(options = {}) {
       pointer.dash = true;
       pressed.add("dash");
     }
+    // Sem isto o up e o move morriam na borda e o
+    // corpo seguia o último aim. Captura recusada
+    // não pode derrubar o gesto.
+    if (typeof surface.setPointerCapture === "function" && Number.isFinite(event?.pointerId)) {
+      try {
+        surface.setPointerCapture(event.pointerId);
+      } catch {
+        /* captura recusada não pode derrubar o gesto */
+      }
+    }
   }
 
   function onPointerMove(event) {
@@ -184,6 +197,13 @@ export function createInput(options = {}) {
       const dy = position.y - pointer.originY;
       if (dx * dx + dy * dy > DRAG_DEADZONE * DRAG_DEADZONE) pointer.dragged = true;
     }
+  }
+
+  function onLostCapture() {
+    // O up já soltou. Sem isto o lostpointercapture
+    // comia o tap da porta.
+    if (!pointer.active) return;
+    onPointerUp();
   }
 
   function onPointerUp() {
@@ -218,6 +238,7 @@ export function createInput(options = {}) {
   on(surface, "pointermove", onPointerMove);
   on(surface, "pointerup", onPointerUp);
   on(surface, "pointercancel", onPointerUp);
+  on(surface, "lostpointercapture", onLostCapture);
 
   function pollGamepads() {
     gamepadHeld.clear();

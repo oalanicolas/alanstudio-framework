@@ -253,3 +253,39 @@ test("A contínuo no controle não repete o avanço", () => {
   assert.equal(input.intent().dash, true, "soltar e apertar é um avanço novo");
   input.dispose();
 });
+
+test("o toque que sai do campo ainda solta", () => {
+  const pad = surface();
+  const captured = [];
+  pad.setPointerCapture = (id) => { captured.push(id); };
+  const input = createInput({ target: null, surface: pad });
+  pad.dispatch("pointerdown", { clientX: 10 + 64, clientY: 20 + 90, pointerId: 7 });
+  assert.deepEqual(captured, [7], "o campo precisa da captura");
+  assert.equal(input.intent(0.5).move, -1, "o down ainda move");
+  pad.dispatch("pointerup", { pointerId: 7 });
+  assert.equal(input.intent(0.5).move, 0, "soltar fora ainda para");
+  input.dispose();
+});
+
+test("perder a captura no meio do arraste solta", () => {
+  const pad = surface();
+  pad.setPointerCapture = () => {};
+  const input = createInput({ target: null, surface: pad });
+  pad.dispatch("pointerdown", { clientX: 10 + 64, clientY: 20 + 90, pointerId: 4 });
+  assert.equal(input.intent(0.5).move, -1);
+  pad.dispatch("lostpointercapture", { pointerId: 4 });
+  assert.equal(input.intent(0.5).move, 0, "perder a captura para o movimento");
+  input.dispose();
+});
+
+test("perder a captura não come o tap da porta", () => {
+  const pad = surface();
+  pad.setPointerCapture = () => {};
+  const input = createInput({ target: null, surface: pad });
+  input.setDashOnPress(false);
+  pad.dispatch("pointerdown", { clientX: 10 + 160, clientY: 20 + 90, pointerId: 3 });
+  pad.dispatch("pointerup", { pointerId: 3 });
+  pad.dispatch("lostpointercapture", { pointerId: 3 });
+  assert.equal(input.intent(0.5).dash, true, "o tap ainda abre");
+  input.dispose();
+});

@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.259: o recado não dispara o verbo. O painel foca o campo no fim; Espaço e R ficavam no ofício. Não promove `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.260: o toque que sai do campo ainda solta. Sem a captura o corpo seguia o último aim. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 288 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.259)
+## O que o HEAD já entrega (0.9.91–0.9.260)
 
 | Ver | Salto |
 | --- | --- |
@@ -203,6 +203,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.257 | A região viva nomeia o aviso do primeiro ciclo que o canvas já pinta. O convite some a tabela. No fim a linha some. Não promove `verified`. |
 | 0.9.258 | A escala veste a casca da página. O canvas já crescia; tabela, painel e convite ficavam em quinze pixels. Não promove `verified`. |
 | 0.9.259 | O recado não dispara o verbo. O painel foca o campo no fim; Espaço e R ficavam no ofício. Não promove `felt`. |
+| 0.9.260 | O toque que sai do campo ainda solta. Sem a captura o corpo seguia o último aim. Perder a captura não come o tap da porta. Não promove `felt`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -216,7 +217,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
@@ -383,7 +384,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um hold que some o relógio da porta e o campo repete o ensino
   ou uma região viva que some o aviso do primeiro ciclo
   ou um knob de escala que cresce o canvas e some a casca
-  ou um recado que dispara o verbo.
+  ou um recado que dispara o verbo
+  ou um toque que sai do campo e deixa o corpo andando.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -591,7 +593,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   novo. A guarda continua nível. Na porta o toque não avança no
   down (`setDashOnPress(false)`): o arraste move; o tap abre,
   inclusive na faixa da guarda. No campo o down de cima
-  continua o avanço; a faixa inferior continua guardando. Sem dash, `attractMove` desloca o corpo, `attractTick` anda a
+  continua o avanço; a faixa inferior continua guardando.
+  O down pede `setPointerCapture`: sair do campo ainda
+  solta. Perder a captura com o toque ativo solta; depois
+  do up não come o tap. Sem dash, `attractMove` desloca o corpo, `attractTick` anda a
   chuva, decai squash/flash e emite `live` uma vez, e
   `attractTouch` acende quando a mostra cruza o corpo — sem
   pontuar, sem punch, sem seed. Sem cama. Sem rumble.
@@ -1449,6 +1454,13 @@ Candidatos, do que ainda dói:
   recado que
   dispara o
   verbo
+  e um
+  toque que
+  sai do
+  campo e
+  deixa o
+  corpo
+  andando
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1472,7 +1484,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o recado
-não dispara o verbo. O painel foca o
-campo no fim; Espaço e R ficavam no ofício.
+Arquivos quentes da última sessão: o toque
+que sai do campo ainda solta. Sem a
+captura o corpo seguia o último aim.
 Não promove `felt`.

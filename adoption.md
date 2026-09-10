@@ -3,6 +3,50 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.260 — O toque que sai do campo ainda solta
+
+O
+toque
+só
+escutava
+o
+canvas.
+Sair
+do
+campo
+deixava
+o
+corpo
+andando.
+Agora
+a
+captura
+leva
+o
+up.
+Perder
+a
+captura
+não
+come
+o
+tap
+da
+porta.
+Não
+promove
+`felt`.
+
+O que 0.9.260 não afirma:
+captura
+no
+disco
+não
+é
+peso
+no
+dispositivo.
+
 ## 0.9.259 — O recado não dispara o verbo
 
 O
