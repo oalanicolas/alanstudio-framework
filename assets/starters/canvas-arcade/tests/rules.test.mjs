@@ -182,7 +182,10 @@ test("o término do dash senta, empurra a câmera e deixa rastro próprio", () =
   assert.equal(state.player.dashRecovery, CONFIG.player.dashRecoveryTicks);
   assert.equal(state.player.squash, CONFIG.feel.squashLand * fade);
   assert.ok(state.camera.y > 0, "aterrissar confirma para baixo");
-  assert.ok(state.events.some((event) => event.type === "land"));
+  const land = state.events.find((event) => event.type === "land");
+  assert.ok(land, "o término precisa nascer como evento");
+  assert.equal(typeof land.x, "number");
+  assert.ok(Number.isFinite(land.x), "o término marca o lugar no campo");
   assert.equal(
     state.motes.filter((mote) => mote.kind === "land").length,
     CONFIG.feel.moteLand,

@@ -26,6 +26,7 @@ uso, versão e o consumidor no código.
 | Parte | Origem | Condição de uso |
 | --- | --- | --- |
 | `public/sfx/dash.wav` / `dash-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/land.wav` / `land-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 | `public/sfx/graze.wav` / `graze-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 | `public/sfx/collect.wav` / `collect-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 | `public/sfx/missed.wav` / `missed-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |

@@ -663,7 +663,7 @@ function advanceDashPhases(state) {
       player.dashRecovery = CONFIG.player.dashRecoveryTicks;
       player.squash = CONFIG.feel.squashLand;
       punch(state, 0, CONFIG.feel.punchLandY);
-      emit(state, "land");
+      emit(state, "land", { x: player.x });
     }
     return;
   }

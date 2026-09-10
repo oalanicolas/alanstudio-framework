@@ -33,6 +33,7 @@ test("o export copia o jogo e deixa de fora o que só serve para desenvolver", a
     assert.ok(existsSync(join(dist, "data/calm.json")), "o artefato leva a chuva calma");
     assert.ok(existsSync(join(dist, "data/palettes.json")), "o artefato leva a paleta");
     assert.ok(existsSync(join(dist, "public/sfx/dash.wav")), "o artefato leva o som");
+    assert.ok(existsSync(join(dist, "public/sfx/land.wav")), "o artefato leva o tap do término");
     assert.ok(existsSync(join(dist, "public/sfx/close.wav")), "o artefato leva o tap do fecho");
     assert.ok(existsSync(join(dist, "public/sfx/live.wav")), "o artefato leva o tap da prática");
     assert.ok(existsSync(join(dist, "public/sfx/stir.wav")), "o artefato leva o tap da guarda");

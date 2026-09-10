@@ -2,6 +2,11 @@
 
 Entrada: referência aprovada, diferença percebida e percurso/câmera de comparação.
 
+Com tela, a primeira superfície é a porta. Halo, vinheta e a chuva
+da abertura são o primeiro quadro; o campo começa depois do avanço.
+Comparar só o meio da partida esconde a imagem que o jogador vê ao
+abrir. Sem tela o headless já joga.
+
 O harness lê paleta e art-bible vigentes com `art <projeto>`. Paleta no
 código ou em `data/palettes.json` não é direção consistente — `consistent` é sempre falso. Rascunho
 do `init` não conta. Sem declaração, `next` propõe `art.missing`.

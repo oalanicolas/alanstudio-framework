@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.115: o convite também grava o achado.
+**HEAD:** ver `git log -1` — vigente 0.9.116: o término também fala.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 248 OK.
-`cd assets/starters/canvas-arcade && npm test` → 283 OK.
+`cd assets/starters/canvas-arcade && npm test` → 284 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.115)
+## O que o HEAD já entrega (0.9.91–0.9.116)
 
 | Ver | Salto |
 | --- | --- |
@@ -59,6 +59,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.113 | A partida no serve grava `last-run.json`. A simulação continua à parte. `observed` continua falso. |
 | 0.9.114 | Depois do fim, a página grava o recibo de `note` se você escrever. Convite não oferece. `felt` continua falso. |
 | 0.9.115 | No convite, a página grava `docs/playtest/<utc>-achado.md` se os quatro tiverem texto. Copiar não grava. Esqueleto vazio não é achado. `outsider` continua falso. |
+| 0.9.116 | O término do dash declara `land` no mixer (voz curta, x do campo, legenda). Recipes de mecânica/visual nomeiam a porta. `felt`/`heard` continuam falsos. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -171,7 +172,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Looks first-party: `normal`, `dusk`, `calm`. Contrast é alcance.
 - Chuvas first-party: `spawn`, `dusk`, `calm`.
 - `listMoods()` = interseção look ∩ spawn (hoje `calm`, `dusk`).
-- `SOUNDS`: dash, graze, collect, missed, bank, hit, over, close, live, stir, bed.
+- `SOUNDS`: dash, land, graze, collect, missed, bank, hit, over, close, live, stir, bed.
 - Jogador: `fillRect` do squash **permanece** (testes `playerFill` /
   `playerBox`). A ponta é path (`lineTos`). Halo do estilhaço **não**
   é `arc` (`orb.arcs > shard.arcs`).
@@ -235,9 +236,10 @@ Candidatos, do que ainda dói:
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
-4. **Item 1 residual:** o mapa e `feel.md` já nomeiam a porta. Recipes
-   de mecânica/visual que ainda falarem só do campo sem a abertura
-   estão velhas — a primeira superfície com tela é a porta.
+4. **Item 1 residual:** o mapa, `feel.md`, `mechanics.md` e `visual.md`
+   já nomeiam a porta. Recipes de outro foco que ainda falarem só do
+   campo sem a abertura estão velhas — a primeira superfície com tela
+   é a porta.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, copiar o
    achado e gravar os quatro nomes não fecham. A receita de
@@ -261,5 +263,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `playFinding` / `FINDING_ROUTE`,
-`#finding-save` em `index.html`, POST `/playtest/finding` em `serve.mjs`.
+Arquivos quentes da última sessão: `SOUNDS.land`, `tools/design-sfx.py`
+`--from land`, `recipes/mechanics.md` e `recipes/visual.md`.

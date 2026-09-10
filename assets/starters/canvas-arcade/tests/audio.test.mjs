@@ -170,6 +170,18 @@ test("a legenda expira em vez de acumular na tela", () => {
   assert.deepEqual(audio.captions(), []);
 });
 
+test("o término legendas sem fingir que o mix foi ouvido", () => {
+  const { audio, context } = build();
+  audio.register("land", { duration: 0.1 });
+  assert.equal(audio.play("land", { x: 0 }), true);
+  assert.equal(context.panners[0].pan.value, -1);
+  assert.equal(audio.captions()[0].text, "o avanço senta");
+  assert.equal(SOUNDS.land.bus, "sfx");
+  assert.equal(SOUNDS.land.priority, SOUNDS.dash.priority);
+  assert.equal(SOUNDS.land.loop, undefined);
+  assert.equal("duckMs" in SOUNDS.land, false);
+});
+
 test("o orbe perdido legendas sem fingir que o mix foi ouvido", () => {
   const { audio } = build();
   audio.play("missed");

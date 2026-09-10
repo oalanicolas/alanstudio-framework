@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.116 — O término também fala
+
+O dash sentava, empurrava e deixava puff. O mixer
+não declarava `land`. A voz curta marca o lugar.
+`mechanics.md` e `visual.md` nomeiam a porta.
+`felt` e `heard` continuam falsos.
+Só `release` fica no piso.
+
+O que 0.9.116 não afirma: o harness não aterrissou
+e o arquivo no disco não é peso percebido.
+
 ## 0.9.115 — O convite também grava o achado
 
 Quem nunca viu o jogo só podia copiar os quatro

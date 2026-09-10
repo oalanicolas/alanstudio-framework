@@ -19,7 +19,7 @@ from pathlib import Path
 RATE = 44100
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "public" / "sfx"
-ROLES = ("dash", "graze", "collect", "missed", "bank", "hit", "over", "close", "live", "stir", "bed")
+ROLES = ("dash", "land", "graze", "collect", "missed", "bank", "hit", "over", "close", "live", "stir", "bed")
 INTENTS = {
     "brighter": "sobe o tom e abre o brilho",
     "darker": "desce o tom e fecha o grave",
@@ -86,6 +86,13 @@ def dash(index: int, total: int) -> float:
     whoosh = noise(index, 3) * envelope(index, total, 0.008, 0.12)
     sweep = math.sin(2 * math.pi * (420 - 260 * t) * t) * envelope(index, total, 0.01, 0.1)
     return 0.34 * whoosh + 0.22 * sweep
+
+
+def land(index: int, total: int) -> float:
+    t = index / RATE
+    sit = math.sin(2 * math.pi * (180.0 - 70 * t) * t) * envelope(index, total, 0.003, 0.07)
+    dust = noise(index, 41) * envelope(index, total, 0.001, 0.04)
+    return 0.20 * sit + 0.05 * dust
 
 
 def graze(index: int, total: int) -> float:
@@ -165,6 +172,7 @@ def bed(index: int, total: int) -> float:
 
 VOICES = {
     "dash": (0.18, dash, 0.55, 0.18),
+    "land": (0.10, land, 0.50, 0.28),
     "graze": (0.07, graze, 0.7, 0.35),
     "collect": (0.22, collect, None, None),
     "missed": (0.09, missed, 0.48, 0.32),

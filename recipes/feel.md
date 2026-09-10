@@ -65,7 +65,8 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
 3. **Antecipação** — frames ou pose que prometem o golpe/pulo/disparo antes
    do impacto. Sem ela, a ação chega “de graça” ou atrasada demais.
    No starter o avanço senta (`squashCoil`) dois ticks antes de alongar;
-   pose no disco não é peso percebido.
+   o término emite `land` (squash, câmera, puff, rumble e voz).
+   Pose e arquivo no disco não são peso percebido.
 4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
 5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.
@@ -154,8 +155,9 @@ guardar, graça após dano, alcance de coleta maior que o desenho — cada valor
 motivo ao lado. Guardar no hitstop não é engolido; um toque sem corrente não decide
 o próximo orbe. Cada verbo desloca a câmera numa direção própria e achata o corpo
 numa medida própria: coleta, dash, aterrissagem, guardar e o erro não compartilham
-squash. O dash aterrissa: o corpo senta, a câmera confirma para baixo
-e o rastro cai — distintos da partida. A ameaça que
+squash. O dash aterrissa: o corpo senta, a câmera confirma para baixo,
+o rastro cai e o mixer fala `land` — distintos da partida. Arquivo no
+disco não é peso percebido. A ameaça que
 ainda não chegou marca o trilho (`approaching`); a recuperação do dash muda a
 silhueta; o erro acende o campo, a coleta não. O controle pulsa no
 impacto com duração e magnitude por verbo; pausa e descarte cancelam.

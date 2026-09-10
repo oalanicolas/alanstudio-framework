@@ -14,8 +14,9 @@ em `public/sfx`. `roles --fill` sugere um candidato do acervo; `--apply`
 copia para `public/sfx/<papel>` com recibo. O starter `canvas-arcade`
 já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
 mixer. Coleta e guarda sobem de tom com a corrente; o erro não herda.
-Coleta, queda, raspo, impacto e avanço levam o x do campo; o panner
-marca o lugar. Número no panner não é mix ouvido.
+Coleta, queda, raspo, impacto, avanço e o término levam o x do campo; o panner
+marca o lugar. Número no panner não é mix ouvido. O término (`land`) é
+voz própria, mais curta que o dash; sem o papel o aterrissar é mudo.
 `sfx --from` / `--as` desloca a voz no papel que o mixer já toca;
 depois de um `note`, `start` e `next` apontam esse comando.
 Arquivo ausente é lacuna do verbo, não silêncio deliberado;

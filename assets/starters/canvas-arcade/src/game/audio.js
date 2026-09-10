@@ -7,8 +7,8 @@
 // de jogo e não ganha legenda.
 // 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão — esses
 // arquivos não usam nenhum dos quatro. Coleta e guarda sobem de tom
-// com a corrente; o erro não herda. Coleta, queda, raspo, impacto e
-// avanço levam o x do campo; o panner marca o lugar. Arquivo no disco
+// com a corrente; o erro não herda. Coleta, queda, raspo, impacto,
+// avanço e o término levam o x do campo; o panner marca o lugar. Arquivo no disco
 // não é mixagem ouvida: `heard` no harness continua falso.
 //
 // O jogo carrega o arquivo no mixer. Sem esse consumidor, arquivo no
@@ -45,6 +45,7 @@ export const MIX_HEADROOM = 0.82;
 
 export const SOUNDS = {
   dash: { bus: "sfx", caption: "avanço", priority: 1 },
+  land: { bus: "sfx", caption: "o avanço senta", priority: 1 },
   graze: { bus: "sfx", caption: "passou raspando", priority: 1 },
   collect: { bus: "sfx", caption: "orbe coletado", priority: 2 },
   missed: { bus: "sfx", caption: "orbe perdido", priority: 1 },

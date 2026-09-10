@@ -1963,7 +1963,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["approved"])
         self.assertEqual(
             [item["id"] for item in report["roles"]],
-            ["dash", "graze", "collect", "missed", "bank", "hit", "over", "close", "live", "stir", "bed"],
+            ["dash", "land", "graze", "collect", "missed", "bank", "hit", "over", "close", "live", "stir", "bed"],
         )
         self.assertEqual(report["empty"], [])
         self.assertTrue(all(item["state"] == "present" for item in report["roles"]))
