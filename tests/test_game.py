@@ -172,7 +172,35 @@ class HarnessTest(unittest.TestCase):
         self.assertNotIn("proposal", found["ainda-nao-jogou"])
         self.assertIn("não classifica os jogos por urgência", report["order"])
         self.assertIn("Sinal verdadeiro não é partida jogada", report["scope"])
+        self.assertIn("origem sem recibo", report["scope"])
         self.assertNotIn("verified", report["scope"])
+
+    def test_the_review_names_the_origin_signal_next_uses_without_granting(self):
+        clean = self.root / "arcade-limpo"
+        dirty = self.root / "arcade-sem-recibo"
+        game.init(clean, "canvas-arcade", documents=False)
+        game.init(dirty, "canvas-arcade", documents=False)
+        (dirty / "hero.png").write_bytes(b"png")
+        report = game.review(self.root)
+        found = {Path(item["project"]).name: item for item in report["projects"]}
+        self.assertEqual(found["arcade-limpo"]["origins_undeclared"], 0)
+        self.assertEqual(found["arcade-limpo"]["signals"]["origins_undeclared"], [])
+        self.assertFalse(found["arcade-limpo"]["signals"]["origins_contradicts_licensing"])
+        self.assertEqual(found["arcade-sem-recibo"]["origins_undeclared"], 1)
+        self.assertEqual(
+            found["arcade-sem-recibo"]["signals"]["origins_undeclared"],
+            game.next_step(dirty)["signals"]["origins_undeclared"],
+        )
+        self.assertEqual(found["arcade-sem-recibo"]["signals"]["origins_undeclared"], ["hero.png"])
+        self.assertEqual(
+            found["arcade-sem-recibo"]["signals"]["origins_contradicts_licensing"],
+            game.next_step(dirty)["signals"]["origins_contradicts_licensing"],
+        )
+        self.assertFalse(found["arcade-sem-recibo"]["signals"]["origins_contradicts_licensing"])
+        self.assertNotIn("proposal", found["arcade-sem-recibo"])
+        self.assertFalse(game.origins_reading(dirty)["granted"])
+        self.assertIn("origem sem recibo", report["scope"])
+        self.assertNotIn("granted", report["scope"])
 
     def test_the_review_reads_the_bar_of_each_game_without_assigning_one(self):
         madura, _, _ = self.studio()

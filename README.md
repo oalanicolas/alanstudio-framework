@@ -38,9 +38,10 @@ observação, se o achado de playtest tem forma, se alcance, save e orçamento
 estão declarados no código, se a
 direção de arte aparece no disco, se o conteúdo saiu do código e se existe
 passo de empacotar. `signals` nomeia os mesmos flags que o `next` usa
-para o primeiro ciclo, o ofício, o feel sem recibo, o achado sem forma e
-o convite — sem propor e sem ranquear. Sinal verdadeiro não é partida
-jogada. É essa diferença que
+para o primeiro ciclo, o ofício, o feel sem recibo, o achado sem forma,
+o convite e a origem sem recibo — sem propor e sem ranquear. Sinal
+verdadeiro não é partida jogada. Lista de arquivo sem recibo não é
+licença. É essa diferença que
 uma listagem de caminho e tipo apagava — três jogos em estados incomparáveis saíam
 iguais. `--plain` volta ao caminho e tipo, sem ler documento nenhum.
 

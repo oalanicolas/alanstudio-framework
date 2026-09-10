@@ -576,6 +576,8 @@ def review(root, limit=REVIEW_LIMIT):
             "feel_unobserved": feel_report["unobserved"],
             "playtest_unstructured": playtest_report["unstructured"],
             "playtest_invite": bool(noted and not playtest_report.get("invite")),
+            "origins_undeclared": origins["undeclared"],
+            "origins_contradicts_licensing": origins["contradicts_licensing"],
         }
         reviewed.append(dict(
             entry,
@@ -619,9 +621,11 @@ def review(root, limit=REVIEW_LIMIT):
         "scope": (
             "Conta documentos por localização e lê a declaração de degrau de cada projeto. "
             "Relata os mesmos sinais que o `next` usa para o primeiro ciclo, o ofício, "
-            "o feel sem recibo, o achado sem forma e o convite. Não executa jogo "
+            "o feel sem recibo, o achado sem forma, o convite e a origem sem recibo. "
+            "Não executa jogo "
             "nenhum, não mede acabamento e não diz qual merece atenção primeiro. "
             "Sinal verdadeiro não é partida jogada nem alguém de fora. "
+            "Lista de arquivo sem recibo não é licença. "
             "Área localizada é candidato "
             "por nome ou título, não conteúdo aprovado; degrau é o que o projeto afirma de si."
         ),

@@ -3,6 +3,45 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.283 — O discover nomeia o sinal de origem
+
+O
+`next`
+já
+propunha
+recibo.
+O
+`discover`
+escondia
+o
+sinal.
+Dois
+jogos
+pareciam
+iguais.
+Agora
+`origins_undeclared`
+entra
+em
+`signals`
+com
+a
+mesma
+lista.
+Não
+promove
+`granted`.
+
+O que 0.9.283 não afirma:
+listar
+o
+arquivo
+sem
+recibo
+não
+é
+licença.
+
 ## 0.9.282 — O sfx info nomeia o stem perdido
 
 O

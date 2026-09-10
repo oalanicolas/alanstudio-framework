@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.282: o `sfx info` nomeia o stem que o disco perdeu. Recibo sem WAV não é id desconhecido. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.283: o `discover` nomeia o sinal de origem que o `next` já usa. Lista sem recibo ≠ licença. Não promove `granted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 301 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.282)
+## O que o HEAD já entrega (0.9.91–0.9.283)
 
 | Ver | Salto |
 | --- | --- |
@@ -226,6 +226,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.280 | O contrato de alcance nomeia o pulso. `haptics` entra no `access`. A receita e o `docs/access.md` deixam de omitir o aparelho. Não promove `verified`. |
 | 0.9.281 | O `art` nomeia a chuva que o disco já tem. `spawn`, `dusk` e `calm` deixam de ser só arquivo em `content`. Não promove `consistent`. |
 | 0.9.282 | O `sfx info` nomeia o stem que o recibo lista e o disco perdeu. Não é id desconhecido. Não promove `heard`. |
+| 0.9.283 | O `discover` nomeia o sinal de origem que o `next` já usa. Dois jogos deixam de parecer iguais quando um embarca sem recibo. Não promove `granted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -951,6 +952,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um contrato de alcance que omite o pulso que o código já tem.
 **Não** mais um `art` que lê paleta e cala a chuva que o disco já tem.
 **Não** mais um `sfx info` que trata o stem perdido como id desconhecido.
+**Não** mais um `discover` que some o sinal de origem que o `next` já usa.
 
 Candidatos, do que ainda dói:
 
@@ -1004,7 +1006,8 @@ Candidatos, do que ainda dói:
    nomeia `then.play` e `then.note` sem
    executar. Sem serve a chave some. Sem
    `prompt`. `discover` nomeia os mesmos
-   sinais que o `next` usa, sem propor e
+   sinais que o `next` usa, inclusive origem
+   sem recibo, sem propor e
    sem ranquear. Sinal verdadeiro não é
    partida jogada. `len(steps) == 3`
    e `executed: false` continuam.
@@ -1634,6 +1637,14 @@ Candidatos, do que ainda dói:
   como
   id
   desconhecido
+  e um
+  discover
+  que
+  some
+  o
+  sinal
+  de
+  origem
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1657,9 +1668,10 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o `sfx info`
-nomeia o stem que o disco perdeu. Recibo sem WAV
-não é id desconhecido. Não promove `heard`.
+Arquivos quentes da última sessão: o `discover`
+nomeia o sinal de origem que o `next` já usa.
+Lista sem recibo não é licença. Não promove
+`granted`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1677,3 +1689,4 @@ A família política do candidato / session apaga played está saturada.
 A família contrato de alcance omite o pulso está saturada.
 A família art lê paleta e cala a chuva está saturada.
 A família sfx info trata stem perdido como id desconhecido está saturada.
+A família discover some o sinal de origem está saturada.
