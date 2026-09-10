@@ -341,6 +341,7 @@ export function createGame(options = {}) {
       canContinue: doorOpen(),
       lastRun,
       persist: persist(),
+      settingsLoad,
     });
   }
 

@@ -205,6 +205,7 @@ test("na porta e no fim a região viva nomeia a recuperação que o painel já m
     "pausado. 12",
   );
   assert.match(main, /settingsLine\(settingsLoad,\s*copy\)/);
+  assert.match(main, /persist:\s*persist\(\),\s*settingsLoad/);
   assert.doesNotMatch(main, /persistLine\([^)]*settings/);
   assert.doesNotMatch(
     liveText({ phase: "title", settings: recovered }),

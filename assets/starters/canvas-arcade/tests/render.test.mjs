@@ -719,6 +719,37 @@ test("a recuperação do dash não se parece com o dash nem com o descanso", () 
   assert.notEqual(playerFill(recovery), playerFill(dash));
 });
 
+test("a porta nomeia a recuperação que o painel já mostra", () => {
+  const state = createState(1, { entry: "title" });
+  const door = paint(state, {}, { best: 0, settingsLoad: { status: "recovered" } });
+  assert.ok(door.texts.some((item) => String(item.text).includes("voltaram ao padrão")));
+  assert.ok(door.texts.some((item) => String(item.text).includes("settings.broken")));
+  assert.ok(hudBands(door) <= hudBands(paint(state)), "o aviso de preferências não é faixa no HUD");
+  const quiet = paint(state, {}, { best: 0, settingsLoad: { status: "loaded" } });
+  assert.equal(quiet.texts.some((item) => String(item.text).includes("voltaram ao padrão")), false);
+  const both = paint(state, {}, {
+    best: 0,
+    persist: { durable: false, wrote: true, trusted: false },
+    settingsLoad: { status: "recovered" },
+  });
+  assert.ok(both.texts.some((item) => String(item.text).includes("não grava")));
+  assert.ok(both.texts.some((item) => String(item.text).includes("voltaram ao padrão")));
+  const ended = createState(1);
+  ended.phase = "over";
+  const over = paint(ended, {}, { settingsLoad: { status: "recovered" } });
+  assert.ok(over.texts.some((item) => String(item.text).includes("voltaram ao padrão")));
+  const paused = paint(createState(1), {}, { settingsLoad: { status: "recovered" } }, { paused: true });
+  assert.equal(
+    paused.texts.some((item) => String(item.text).includes("voltaram ao padrão")),
+    false,
+    "a pausa não nomeia a recuperação",
+  );
+  assert.doesNotMatch(
+    [...door.texts, ...over.texts].map((item) => item.text).join(" "),
+    /aprovado|verified|trusted/,
+  );
+});
+
 test("a abertura nomeia sessão volátil e gravação recusada sem inventar faixa", () => {
   const state = createState(1, { entry: "title" });
   const volatile = paint(state, {}, { best: 0, persist: { durable: false, wrote: true, trusted: false } });

@@ -13,7 +13,7 @@
 // `title_play`, `title_again` e `title_new` nomeiam a porta.
 // `title_volatile` e `title_unsaved` nomeiam sessão que não
 // grava e gravação que não ficou. `settings_recovered` nomeia
-// preferências ilegíveis no painel, não na porta. Nomear não é `trusted`.
+// preferências ilegíveis no painel, no live e no canvas da porta e do fim. Nomear não é `trusted`.
 // `resume`, `restart` e
 // `hint_bank` reservam o lugar da tecla viva — o fecho com corrente
 // viva reusa essa linha; `hint_dash` ensina o

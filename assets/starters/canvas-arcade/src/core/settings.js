@@ -170,10 +170,9 @@ export function loadSettings(storage, environment = {}) {
   };
 }
 
-// O painel de preferências nomeia a recuperação. A porta não:
-// persistLine continua só sessão volátil e gravação recusada.
-// A região viva lê a mesma linha do painel na porta e no fim.
-// Nomear não é trusted.
+// O painel, o live e o canvas da porta e do fim nomeiam a
+// recuperação. persistLine continua só sessão volátil e
+// gravação recusada. Jogando a linha some. Nomear não é trusted.
 export function settingsLine(load, lines = {}) {
   if (load?.status !== "recovered") return "";
   return typeof lines.settings_recovered === "string" ? lines.settings_recovered : "";

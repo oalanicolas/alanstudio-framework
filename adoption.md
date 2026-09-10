@@ -3,6 +3,54 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.273 — A porta nomeia a recuperação que o painel já mostra
+
+O
+painel
+já
+avisava.
+O
+live
+já
+lia
+a
+mesma
+linha.
+Quem
+olhava
+só
+o
+canvas
+calava
+`settings.broken`.
+Agora
+a
+abertura
+e
+o
+fim
+pintam
+`settingsLine`.
+A
+pausa
+não.
+`persistLine`
+continua
+só
+sessão.
+Não
+promove
+`trusted`.
+
+O que 0.9.273 não afirma:
+nomear
+a
+recuperação
+não
+é
+aba
+fechada.
+
 ## 0.9.272 — O pulso do fecho não come a legenda do verbo
 
 O

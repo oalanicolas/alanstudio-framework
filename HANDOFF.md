@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.272: o pulso do fecho não come a legenda do verbo. Dez "últimos segundos" empurravam collect. O SFX continua. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.273: a porta nomeia a recuperação que o painel já mostra. PersistLine continua só sessão. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 293 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.272)
+## O que o HEAD já entrega (0.9.91–0.9.273)
 
 | Ver | Salto |
 | --- | --- |
@@ -216,6 +216,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.270 | O sistema que pede reduce no meio da sessão veste a caixa. O boot herdava; o pedido depois ficava no matchMedia. Desligar o SO não apaga. Não promove `verified`. |
 | 0.9.271 | O convite nomeia o relógio da partida. Seed e eixos abriam no relógio cheio. 1 some. A faixa não leva o knob. Não promove `outsider`. |
 | 0.9.272 | O pulso do fecho não come a legenda do verbo. Dez "últimos segundos" empurravam collect. O SFX continua. Não promove `heard`. |
+| 0.9.273 | A porta nomeia a recuperação que o painel já mostra. O canvas da abertura e do fim pinta `settingsLine`. A pausa não. `persistLine` continua só sessão. Não promove `trusted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -234,9 +235,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | art_direction | slice | os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
-| state_trust | slice | o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a recuperação que o painel já mostra; a porta não; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
+| state_trust | slice | a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
+| accessibility | slice | a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -644,7 +645,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   o campo repetia a frase. Hold antigo sem o número restaura 0.
   Preferências ilegíveis: `#settings-gap` no painel;
   `liveText.settings` lê `settingsLine` na porta e no fim;
-  `persistLine` na porta continua sem settings. Jogando a
+  o canvas da porta e do over pinta a mesma linha;
+  `persistLine` continua só sessão. Jogando a
   chave some. Nomear não é aba fechada.
   `liveText.coach` lê `coachText` na porta e no campo —
   o mesmo texto do canvas, teclas vivas. No fim a linha
@@ -930,6 +932,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um sistema que pede reduce e some no meio da sessão.
 **Não** mais um convite que abre a seed no relógio cheio.
 **Não** mais um pulso do fecho que come a legenda do verbo.
+**Não** mais uma porta que cala a recuperação que o painel já mostra.
 
 Candidatos, do que ainda dói:
 
@@ -990,7 +993,7 @@ Candidatos, do que ainda dói:
    porta. A porta nomeia sessão
    volátil e gravação recusada. Preferências ilegíveis avisam no
    painel e preservam `settings.broken`. A região viva nomeia
-   a mesma recuperação na porta e no fim; a porta não.
+   a mesma recuperação na porta e no fim; o canvas também.
    `save` relata `warned` se o disco tem essas chaves. A região
    viva também espelha o aviso da sessão na porta e no fim.
    Falta aba fechada real.
@@ -1538,6 +1541,13 @@ Candidatos, do que ainda dói:
   come a
   legenda do
   verbo
+  e uma
+  porta que
+  cala a
+  recuperação
+  que o
+  painel já
+  mostra
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1561,10 +1571,11 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o pulso do
-fecho não come a legenda do verbo.
-Dez "últimos segundos" empurravam collect.
-O SFX continua. Não promove `heard`.
+Arquivos quentes da última sessão: a porta
+nomeia a recuperação que o painel já mostra.
+O canvas da abertura e do fim pinta `settingsLine`.
+A pausa não. `persistLine` continua só sessão.
+Não promove `trusted`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1572,3 +1583,4 @@ A família readout do knob está saturada.
 A família matchMedia ao vivo está saturada.
 A família eixo no convite está saturada.
 A família close caption flood está saturada.
+A família settings no canvas da porta está saturada.

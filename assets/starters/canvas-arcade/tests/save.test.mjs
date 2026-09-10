@@ -444,6 +444,6 @@ test("preferências ilegíveis são recuperadas com o padrão", () => {
   assert.equal(
     persistLine({ durable: true, wrote: true, trusted: false }, { settings_recovered: "x", title_volatile: "volátil" }),
     "",
-    "a porta não nomeia a recuperação das preferências",
+    "persistLine continua só sessão; settingsLine nomeia a recuperação",
   );
 });

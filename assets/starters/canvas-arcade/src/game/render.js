@@ -13,7 +13,7 @@ import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, attractE
 import { copy, dressPalette, PALETTES } from "./tables.js";
 import { persistLine } from "../core/save.js";
 import { bindLines } from "../core/keys.js";
-import { DEFAULT_BINDINGS } from "../core/settings.js";
+import { DEFAULT_BINDINGS, settingsLine } from "../core/settings.js";
 
 // Reexporta a mesa: o token mora em data/palettes.json. Quem não
 // desenhou o render troca o look sem republicar o verbo. `consistent`
@@ -157,6 +157,7 @@ export function createRenderer(canvas, options = {}) {
         overHint(state, lines, extra),
         settings,
         persistLine(extra.persist, lines),
+        settingsLine(extra.settingsLoad, lines),
       );
       drawMotes(context, palette, state, reduced, (mote) => mote.kind === "lapse");
     } else if (frame.paused) {
@@ -620,15 +621,24 @@ export function createRenderer(canvas, options = {}) {
       line += 12 * scale;
     }
     const persist = persistLine(extra.persist, lines);
+    const recovered = settingsLine(extra.settingsLoad, lines);
+    // persistLine continua só sessão. A recuperação das
+    // preferências mora em settingsLine — o painel e o live
+    // já falavam; o canvas da porta calava.
+    let notice = line + 12 * scale;
+    target.fillStyle = palette.muted;
+    target.font = `${7 * scale}px system-ui, sans-serif`;
     if (persist) {
-      target.fillStyle = palette.muted;
-      target.font = `${7 * scale}px system-ui, sans-serif`;
-      target.fillText(persist, FIELD.width / 2, line + 12 * scale);
+      target.fillText(persist, FIELD.width / 2, notice);
+      notice += 12 * scale;
+    }
+    if (recovered) {
+      target.fillText(recovered, FIELD.width / 2, notice);
     }
     target.textAlign = "left";
   }
 
-  function drawOverlay(target, palette, title, hint, settings = {}, persist = "") {
+  function drawOverlay(target, palette, title, hint, settings = {}, persist = "", recovered = "") {
     // A cortina reusa a placa do look — dusk não herda o preto frio.
     // Token no disco não é direção observada. O texto segue uiScale
     // como o HUD; escala no stub não é sessão de alcance.
@@ -642,8 +652,13 @@ export function createRenderer(canvas, options = {}) {
     target.font = `${8 * scale}px system-ui, sans-serif`;
     target.fillStyle = palette.muted;
     target.fillText(hint, FIELD.width / 2, FIELD.height / 2 + 8 * scale);
+    let notice = FIELD.height / 2 + 20 * scale;
     if (persist) {
-      target.fillText(persist, FIELD.width / 2, FIELD.height / 2 + 20 * scale);
+      target.fillText(persist, FIELD.width / 2, notice);
+      notice += 12 * scale;
+    }
+    if (recovered) {
+      target.fillText(recovered, FIELD.width / 2, notice);
     }
     target.textAlign = "left";
   }
