@@ -59,6 +59,11 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
 Registre o elo fraco antes de adicionar mais partículas. Três efeitos no
 impacto não compensam input que ignora o botão.
 
+Legibilidade respeita o contrato de informação do jogo. Se memória e incerteza
+são parte da disputa, revelar alcance futuro, autoria ou consequências ocultas
+pode retirar decisões em vez de melhorar o feedback. Distinga antecipação da ação
+e confirmação do impacto de uma previsão que o jogador deve construir sozinho.
+
 ## 3. REUSE → ADAPT → CREATE
 
 Procure o feel já existente no jogo: hitstop, easing, impulse de câmera,
@@ -102,6 +107,12 @@ Screenshot não comprova feel. Compare o antes/depois no percurso real.
 Observe também pause, perda de foco, reinício e troca de entrada: um
 hitstop que sobrevive à pausa ou um rumble que não morre no descarte é
 regressão de [ciclo de vida](lifecycle.md).
+
+Em Canvas, teste também alterações de layout causadas por HUD, mensagens e
+reinício. Atribuir `width`/`height` apaga o bitmap; `ResizeObserver` pode executar
+depois do rAF de desenho. Garanta redimensionamento e repintura antes da próxima
+apresentação. Reproduza a mesma sequência antes/depois, amostrando o canvas após
+os callbacks de layout; contar quadros vazios separa apagão de efeito intencional.
 
 No QA, um caso de feel declara: ação, elo sob teste, duração/escala
 esperada, condição equivalente e julgamento (agente ou pessoa, sem

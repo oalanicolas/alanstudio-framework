@@ -36,6 +36,17 @@ Casos já documentados: nomes podem mudar após o carregamento do GLTF; culling 
 ser testado em todas as aberturas visíveis; animação em shader invalida suposições
 de sombras estáticas. Reproduza a cena em vez de inferir a correção por nomes crus.
 
+Ao reaproveitar um renderer com outra projeção de câmera, confira também o pós-processamento:
+um passe de silhueta por profundidade inversa pressupõe perspectiva; ortográfica
+pede profundidade linear e densidade de hachura pela escala da vista. Verifique
+silhuetas e superfícies em tamanho de jogo antes de atribuir a diferença à arte.
+
+Efeitos que precisam sobreviver a pausa, replay ou snapshots devem guardar a decisão
+visual no estado e reconstruir pose/partículas pela idade do evento e seed cosmética.
+Teste recebimento sem o evento inicial, reinício e reaproveitamento do pool; compare
+objetos visíveis, pois transformações antigas de partículas inativas não representam
+diferença renderizada. Mantenha o movimento cosmético fora da posição de colisão.
+
 Registre efeito visual, custo e hipóteses descartadas. Teste técnico não aprova arte.
 Sem comparação suficiente, declare a lacuna; não redefina uma versão degradada como
 novo piso. Não marque aprovação do usuário a partir da opinião da IA.
