@@ -34,6 +34,31 @@ test("liveText junta fase, perigo e a última legenda sem repetir", () => {
   })), false);
 });
 
+test("o placar e o recorde entram na região viva no fim e na porta sem fingir sessão", () => {
+  assert.equal(liveText({ phase: "over", score: 12 }), "fim da partida. 12");
+  assert.equal(
+    liveText({ phase: "over", score: 12, best: 20 }),
+    "fim da partida. 12. recorde 20",
+  );
+  assert.equal(liveText({ phase: "over", score: 0, best: 0 }), "fim da partida. 0");
+  assert.equal(liveText({ phase: "title", lastScore: 8 }), "abertura. última 8");
+  assert.equal(
+    liveText({ phase: "title", lastScore: 8, best: 20 }),
+    "abertura. última 8. recorde 20",
+  );
+  assert.equal(
+    liveText({ phase: "playing", score: 12, best: 20, threat: "ahead" }),
+    "perigo à frente",
+  );
+  assert.match(main, /score:\s*state\.score/);
+  assert.match(main, /best:\s*progress\.best/);
+  assert.match(main, /lastScore:/);
+  assert.doesNotMatch(
+    liveText({ phase: "over", score: 12, best: 20 }),
+    /aprovado|verified|alguém de fora/,
+  );
+});
+
 test("a pausa entra na região viva sem fingir sessão", () => {
   assert.equal(liveText({ paused: true }), "pausado");
   assert.equal(

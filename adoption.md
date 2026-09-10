@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.175 — A região viva nomeia o placar
+
+O overlay já dizia
+Fim — N e o recorde.
+A porta já dizia a
+última. Só o canvas
+falava. A região viva
+repete o número. A
+pausa e o perigo
+continuam. `verified`
+continua falso. Só
+`release` fica no piso.
+
+O que 0.9.175 não afirma:
+texto no DOM não é
+sessão de alcance.
+
 ## 0.9.174 — A busca nomeia o stem que casa
 
 O summary já listava

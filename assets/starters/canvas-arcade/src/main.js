@@ -258,6 +258,9 @@ export function createGame(options = {}) {
         phase: state.phase,
         threat: threatCue(state),
         paused: loop.paused,
+        score: state.score,
+        best: progress.best,
+        lastScore: lastRun && Number.isFinite(lastRun.score) ? lastRun.score : undefined,
       }),
     });
     if (!renderer) return;

@@ -49,7 +49,9 @@ Estilhaço no trilho pede o dash; toque e controle ganham passo depois
 do movimento. Overlay e HUD confirmam o aparelho que falou por último;
 o overlay segue `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
 x do corpo, no alcance do telegraph, vira `perigo à frente` na região viva
-junto da última legenda. A pausa entra como `pausado` — o overlay do canvas
+junto da última legenda. A pausa entra como `pausado`. No fim a região
+viva nomeia o placar e o recorde que o overlay já mostra; na porta,
+a última pontuação e o recorde se o save os tem. O overlay do canvas
 não chega ao leitor. Texto no DOM não é sessão. O harness não joga com o
 modo ativo.
 
