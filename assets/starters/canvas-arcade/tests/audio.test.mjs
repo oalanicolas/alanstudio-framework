@@ -244,6 +244,46 @@ test("registrar um papel inexistente é recusado", () => {
   assert.equal(audio.register("trilha-inventada", {}), false);
 });
 
+test("o pedido que chega antes do arquivo toca quando o buffer entra", () => {
+  const { audio, context } = build();
+  assert.equal(audio.play("dash", { x: 0 }), false);
+  assert.equal(audio.captions().length, 1);
+  assert.equal(context.sources.length, 0);
+  assert.equal(audio.register("dash", { duration: 0.2 }), true);
+  assert.equal(context.sources.length, 1);
+  assert.equal(context.sources[0].started, true);
+  assert.equal(context.panners[0].pan.value, -1);
+  assert.equal(audio.captions().length, 1, "a fila não duplica a legenda");
+  assert.deepEqual(audio.missing().requested, []);
+});
+
+test("a fila guarda o último pedido do papel, não a rajada", () => {
+  const { audio, context } = build();
+  assert.equal(audio.play("collect", { x: 0 }), false);
+  assert.equal(audio.play("collect", { x: FIELD.width }), false);
+  audio.register("collect", { duration: 0.2 });
+  assert.equal(context.sources.length, 1);
+  assert.equal(context.panners[0].pan.value, 1);
+  assert.equal(audio.captions()[0].count, 2);
+});
+
+test("a cama que pediu antes do arquivo entra em loop quando o buffer chega", () => {
+  const { audio, context } = build();
+  assert.equal(audio.play("bed"), false);
+  assert.equal(audio.captions().some((item) => item.id === "bed"), false);
+  audio.register("bed", { duration: 4 });
+  assert.equal(context.sources[0].loop, true);
+  assert.equal(context.sources[0].started, true);
+});
+
+test("dispose esquece a fila e recusa o registro", () => {
+  const { audio, context } = build();
+  audio.play("dash");
+  audio.dispose();
+  assert.equal(audio.register("dash", { duration: 0.2 }), false);
+  assert.equal(context.sources.length, 0);
+});
+
 test("sob pressão, o aviso importante corta o som menor", () => {
   const { audio, context } = build({ maxVoices: 2 });
   for (const id of ["dash", "graze", "hit"]) audio.register(id, { duration: 1 });

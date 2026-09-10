@@ -18,7 +18,9 @@ papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
 em `public/sfx`. `roles --fill` sugere um candidato do acervo; `--apply`
 copia para `public/sfx/<papel>` com recibo. O starter `canvas-arcade`
 já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
-mixer. Coleta e guarda sobem de tom com a corrente; o erro não herda.
+mixer. O pedido que chega antes do WAV fica na fila e toca quando o
+buffer entra — sem segunda legenda. Fila no mixer não é mix ouvido.
+Coleta e guarda sobem de tom com a corrente; o erro não herda.
 Coleta, queda, raspo, impacto, avanço e o término levam o x do campo; o panner
 marca o lugar. Número no panner não é mix ouvido. O término (`land`) é
 voz própria, mais curta que o dash; sem o papel o aterrissar é mudo.

@@ -12,7 +12,9 @@
 // não é mixagem ouvida: `heard` no harness continua falso.
 //
 // O jogo carrega o arquivo no mixer. Sem esse consumidor, arquivo no
-// disco e jogo mudo eram a mesma coisa. `missing()` ainda lista o
+// disco e jogo mudo eram a mesma coisa. O pedido que chega antes do
+// WAV fica na fila e toca quando o buffer entra — sem segunda
+// legenda. Fila no disco não é mix ouvido. `missing()` ainda lista o
 // papel se o decode falhar ou o fetch 404.
 //
 // Toda informação sonora tem legenda equivalente: o jogo precisa ser
@@ -70,6 +72,7 @@ export function createAudio(options = {}) {
   const buffers = new Map();
   const cursors = new Map();
   const missing = new Set();
+  const pending = new Map();
   const voices = [];
   const loops = new Map();
   const captions = [];
@@ -120,16 +123,71 @@ export function createAudio(options = {}) {
     }
   }
 
+  function emitVoice(id, extra = {}) {
+    const definition = SOUNDS[id];
+    if (!definition || disposed) return false;
+    const pack = buffers.get(id) ?? [];
+    if (!pack.length) return false;
+    ensureContext();
+    if (!context) return false;
+    applyBusLevels();
+    if (definition.loop) return startLoop(id, definition, pack[0]);
+    const cursor = cursors.get(id) ?? 0;
+    const buffer = pack[cursor % pack.length];
+    cursors.set(id, cursor + 1);
+    retire();
+    if (voices.length >= maxVoices) {
+      // Sob pressão, o som menos importante é o que desaparece — não o aviso.
+      const weakest = voices.reduce((low, voice) => (voice.priority < low.priority ? voice : low), voices[0]);
+      if (weakest.priority >= definition.priority) return false;
+      weakest.stop();
+      voices.splice(voices.indexOf(weakest), 1);
+    }
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    const rate = resolveRate(id, extra);
+    if (source.playbackRate) source.playbackRate.value = rate;
+    const bus = gains[definition.bus] ?? gains.master;
+    const placed = Number.isFinite(extra.pan) || Number.isFinite(extra.x);
+    if (placed && typeof context.createStereoPanner === "function") {
+      const panner = context.createStereoPanner();
+      panner.pan.value = Number.isFinite(extra.pan) ? Math.max(-1, Math.min(1, extra.pan)) : stereoPan(extra.x);
+      source.connect(panner);
+      panner.connect(bus);
+    } else {
+      source.connect(bus);
+    }
+    source.start();
+    const voice = {
+      priority: definition.priority,
+      until: now() + Math.ceil((buffer.duration ?? 0.2) * 1000),
+      stop: () => {
+        try {
+          source.stop();
+        } catch {
+          /* já terminou */
+        }
+      },
+    };
+    voices.push(voice);
+    return true;
+  }
+
   return {
     get available() {
       return Boolean(context);
     },
     register(id, buffer) {
-      if (!(id in SOUNDS)) return false;
+      if (!(id in SOUNDS) || disposed) return false;
       const pack = buffers.get(id) ?? [];
       pack.push(buffer);
       buffers.set(id, pack);
       missing.delete(id);
+      const waiting = pending.get(id);
+      if (waiting !== undefined) {
+        pending.delete(id);
+        emitVoice(id, waiting);
+      }
       return true;
     },
     async decode(bytes) {
@@ -149,51 +207,11 @@ export function createAudio(options = {}) {
       const pack = buffers.get(id) ?? [];
       if (!pack.length) {
         missing.add(id);
+        pending.set(id, extra);
+        ensureContext();
         return false;
       }
-      ensureContext();
-      if (!context) return false;
-      applyBusLevels();
-      if (definition.loop) return startLoop(id, definition, pack[0]);
-      const cursor = cursors.get(id) ?? 0;
-      const buffer = pack[cursor % pack.length];
-      cursors.set(id, cursor + 1);
-      retire();
-      if (voices.length >= maxVoices) {
-        // Sob pressão, o som menos importante é o que desaparece — não o aviso.
-        const weakest = voices.reduce((low, voice) => (voice.priority < low.priority ? voice : low), voices[0]);
-        if (weakest.priority >= definition.priority) return false;
-        weakest.stop();
-        voices.splice(voices.indexOf(weakest), 1);
-      }
-      const source = context.createBufferSource();
-      source.buffer = buffer;
-      const rate = resolveRate(id, extra);
-      if (source.playbackRate) source.playbackRate.value = rate;
-      const bus = gains[definition.bus] ?? gains.master;
-      const placed = Number.isFinite(extra.pan) || Number.isFinite(extra.x);
-      if (placed && typeof context.createStereoPanner === "function") {
-        const panner = context.createStereoPanner();
-        panner.pan.value = Number.isFinite(extra.pan) ? Math.max(-1, Math.min(1, extra.pan)) : stereoPan(extra.x);
-        source.connect(panner);
-        panner.connect(bus);
-      } else {
-        source.connect(bus);
-      }
-      source.start();
-      const voice = {
-        priority: definition.priority,
-        until: now() + Math.ceil((buffer.duration ?? 0.2) * 1000),
-        stop: () => {
-          try {
-            source.stop();
-          } catch {
-            /* já terminou */
-          }
-        },
-      };
-      voices.push(voice);
-      return true;
+      return emitVoice(id, extra);
     },
     stop(id) {
       const voice = loops.get(id);
@@ -234,6 +252,7 @@ export function createAudio(options = {}) {
     },
     dispose() {
       disposed = true;
+      pending.clear();
       for (const voice of voices) voice.stop();
       voices.length = 0;
       for (const voice of loops.values()) voice.stop();

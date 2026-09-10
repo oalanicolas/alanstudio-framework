@@ -177,7 +177,9 @@ variante `public/sfx/<papel>-b.wav` (CC0-1.0, `tools/design-sfx.py`):
 seno e ruído filtrado, sem quadrada, sem jsfxr, sem Kenney. Origem em
 `public/sfx/sources.json` e nos sidecars `.credits.txt`. `src/game/audio.js`
 traz a mixagem — barramentos, prioridade, ducking, rodízio, legenda.
-`heard` continua falso: arquivo no disco não é mixagem ouvida. Variação
+`heard` continua falso: arquivo no disco não é mixagem ouvida. O
+pedido que chega antes do WAV fica na fila e toca quando o buffer
+entra; a fila não duplica a legenda e não é mix ouvido. Variação
 no disco não é faixa dinâmica medida.
 
 Toda informação sonora já tem legenda equivalente: o jogo é completável

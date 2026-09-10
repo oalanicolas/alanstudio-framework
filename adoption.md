@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.139 — O pedido que chega antes do WAV também toca
+
+O mixer carregava os arquivos em série.
+Coleta e guarda na abertura pediam um
+papel que ainda não tinha buffer e o
+pedido morria. O último pedido do papel
+fica na fila e toca quando o WAV entra.
+Sem segunda legenda. `heard` continua
+falso. Só `release` fica no piso.
+
+O que 0.9.139 não afirma: fila no mixer
+não é mix ouvido nem peso no aparelho.
+
 ## 0.9.138 — Note sem caminho usa o único jogo do laboratório
 
 O ciclo é start → play → note. O play já
