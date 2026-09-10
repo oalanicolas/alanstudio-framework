@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.300: na pausa o telefone vê Continuar: toque sem ter apertado. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.299):** `python3 -m unittest discover -s tests` → 315 OK.
-`cd assets/starters/canvas-arcade && npm test` → 484 OK.
+**Testes no HEAD (0.9.300):** `python3 -m unittest discover -s tests` → 315 OK.
+`cd assets/starters/canvas-arcade && npm test` → 486 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
