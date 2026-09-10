@@ -185,7 +185,8 @@ o orbe que cai fala, acende o campo, marca o lugar e desloca
 a câmera para baixo, sem pulsar o controle. Arquivo no disco não é peso percebido. A coleta leva o orbe ao slot; o erro espalha os pips;
 na guarda eles voam para o placar; no fim a aposta não guardada
 cai, o corpo senta (`squashOver`), o quadro senta (tremor, flash e
-punch do último verbo não atravessam o overlay) e o overlay nomeia o que caiu — a queda vence a cortina, que
+punch do último verbo não atravessam o overlay); na pausa o quadro
+senta do mesmo jeito — o corpo fica na pose congelada — e o overlay nomeia o que caiu — a queda vence a cortina, que
 reusa a placa do look. As legendas nascem depois da cortina. O
 raspo risca o campo, estreita o corpo, empurra a câmera na
 direção e acende menos que a queda. Sem hitstop. Sem pulso no

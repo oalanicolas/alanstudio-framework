@@ -122,11 +122,11 @@ function recordingCanvas() {
   };
 }
 
-function hudTexts(state, settings = {}, extra = { best: 0 }) {
+function hudTexts(state, settings = {}, extra = { best: 0 }, frame = { paused: false, alpha: 0, steps: 1 }) {
   const recorder = recordingCanvas();
   const renderer = createRenderer(recorder.canvas, { devicePixelRatio: 1 });
   renderer.resize(360, 640);
-  renderer.draw(state, { paused: false, alpha: 0, steps: 1 }, settings, extra);
+  renderer.draw(state, frame, settings, extra);
   return {
     texts: recorder.calls.texts,
     plates: recorder.plates(),
@@ -486,11 +486,31 @@ test("no fim a câmera senta; o punch do último verbo não atravessa o overlay"
   assert.equal(flash, false, "o flash do último verbo não atravessa o fim");
 });
 
-function paint(state, settings = {}, extra = { best: 0 }) {
+test("na pausa a câmera senta; o punch do último verbo não atravessa o overlay", () => {
+  const leftover = createState(1);
+  leftover.camera = { x: 5, y: -3 };
+  leftover.shake = 4;
+  leftover.flash = 0.8;
+  const sat = createState(1);
+  const held = { paused: true, alpha: 0, steps: 1 };
+  const paused = hudTexts(leftover, {}, { best: 0 }, held);
+  const rest = hudTexts(sat, {}, { best: 0 }, held);
+  assert.equal(paused.transform.e, rest.transform.e, "punch horizontal não atravessa a pausa");
+  assert.equal(paused.transform.f, rest.transform.f, "punch vertical não atravessa a pausa");
+  const flash = paint(leftover, {}, { best: 0 }, held).rects.some((rect) => (
+    String(rect.style).startsWith("rgba(255,245,235")
+  ));
+  assert.equal(flash, false, "o flash do último verbo não atravessa a pausa");
+  const live = hudTexts(leftover);
+  const idle = hudTexts(sat);
+  assert.notEqual(live.transform.e, idle.transform.e, "sem pausa o punch continua");
+});
+
+function paint(state, settings = {}, extra = { best: 0 }, frame = { paused: false, alpha: 0, steps: 1 }) {
   const recorder = recordingCanvas();
   const renderer = createRenderer(recorder.canvas, { devicePixelRatio: 1 });
   renderer.resize(360, 640);
-  renderer.draw(state, { paused: false, alpha: 0, steps: 1 }, settings, extra);
+  renderer.draw(state, frame, settings, extra);
   return recorder.calls;
 }
 

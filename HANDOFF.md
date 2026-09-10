@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.179 (confirmado): sfx info lê a chave do stem do starter.
+**HEAD:** ver `git log -1` — vigente 0.9.180: a pausa senta o quadro.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 271 OK.
-`cd assets/starters/canvas-arcade && npm test` → 358 OK.
+`cd assets/starters/canvas-arcade && npm test` → 359 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.179)
+## O que o HEAD já entrega (0.9.91–0.9.180)
 
 | Ver | Salto |
 | --- | --- |
@@ -123,6 +123,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.177 | `sfx serve` gera a página de escuta se `shared/sfx/ui` faltar. Tocar não é `heard`. Catálogo vazio continua recusado. |
 | 0.9.178 | A pausa corta as vozes do verbo (`hush`). A cama continua no stop seco. Overlay Pausado com hit no ar era a mesma partida. Não promove `heard`. |
 | 0.9.179 | `sfx info` lê a ficha do stem do starter que casa (chave, arquivo, licença, origem). Id do acervo continua na frente. Não promove `heard`. |
+| 0.9.180 | A pausa senta tremor, flash e punch. O over já sentava o quadro. Overlay Pausado com câmera no golpe era a mesma partida. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -135,7 +136,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | corpo e quadro sentam no over no disco; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | corpo e quadro sentam no over e a pausa senta o quadro no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over + pausa corta o verbo; `heard` falso |
@@ -222,7 +223,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   região viva do perigo,
   duck só na cama, graça no coil
   ou avanço no overlay, recorde no overlay do fim
-  ou movimento na porta ou toque da mostra ou voz da mostra.
+  ou movimento na porta ou toque da mostra ou voz da mostra
+  ou quadro sentado na pausa.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -340,7 +342,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `playerBox`). Na graça (`invuln`) o corpo pulsa com
   `globalAlpha` no relógio do contorno; o tijolo não some.
   Reduced trava o tijolo e o contorno. No `over` o corpo senta
-  (`squashOver`) e o quadro senta (tremor, flash, punch). Larga
+  (`squashOver`) e o quadro senta (tremor, flash, punch). Na pausa
+  o quadro senta; o corpo fica na pose congelada. Larga
   dash, graça e arco da guarda. A ponta é
   path (`lineTos`). Halo do estilhaço **não** é `arc`
   (`orb.arcs > shard.arcs`). Luz no disco não é `felt`.
@@ -489,6 +492,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `sfx serve` que promete ouvir e devolve 400 porque `ui/` não embarcou.
 **Não** mais um overlay Pausado com o hit ainda no ar.
 **Não** mais um `sfx info` que some o stem do starter que casa.
+**Não** mais um overlay Pausado com o tremor do último verbo.
 
 Candidatos, do que ainda dói:
 
@@ -588,7 +592,10 @@ Candidatos, do que ainda dói:
   pausa e a
   ficha do
   stem que
-  casa
+  casa e o
+  quadro
+  sentado
+  na pausa
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -612,5 +619,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `sfx info` lê a chave do stem do
-starter. Id do acervo continua na frente. Não promove `heard`.
+Arquivos quentes da última sessão: a pausa senta tremor, flash e
+punch. O corpo fica na pose congelada. Não promove feel.

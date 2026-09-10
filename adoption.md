@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.180 — A pausa senta o quadro
+
+O overlay já dizia
+Pausado. O hush já
+cortava as vozes.
+Tremor, flash e
+punch do último
+verbo ficavam sob
+a placa. O relógio
+zera o campo. `felt`
+continua falso. Só
+`release` fica no piso.
+
+O que 0.9.180 não afirma:
+quadro parado no disco
+não é peso percebido.
+
 ## 0.9.179 — A ficha nomeia o stem que casa
 
 A busca já
