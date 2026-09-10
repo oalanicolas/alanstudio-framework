@@ -231,8 +231,21 @@ test("a legenda da coleta e da guarda nomeia a corrente que o tom já sobe", () 
   assert.ok(lines.includes("orbe coletado, corrente 3"));
   assert.ok(lines.includes("corrente guardada, corrente 4"));
   assert.ok(lines.includes(SOUNDS.collect.caption));
-  assert.equal(lines.includes("atingido: corrente perdida"), true);
+  assert.equal(lines.includes("atingido"), true);
   assert.doesNotMatch(lines.join(" "), /aprovado|verified|heard|felt/);
+});
+
+test("a legenda do erro nomeia a corrente que lost derrubou e cala quando era zero", () => {
+  assert.equal(captionFor("hit"), "atingido");
+  assert.equal(captionFor("hit", { lost: 0 }), "atingido");
+  assert.equal(captionFor("hit", { chain: 4 }), "atingido", "o erro não herda o número da aposta");
+  assert.equal(captionFor("hit", { lost: 4 }), "atingido: corrente 4 perdida");
+  const { audio } = build();
+  audio.play("hit", { lost: 0 });
+  assert.equal(audio.captions().at(-1).text, "atingido");
+  audio.play("hit", { lost: 3 });
+  assert.equal(audio.captions().at(-1).text, "atingido: corrente 3 perdida");
+  assert.doesNotMatch(audio.captions().map((entry) => entry.text).join(" "), /aprovado|verified|heard|felt/);
 });
 
 test("a rajada da coleta fica com a aposta vigente, não com a primeira", () => {

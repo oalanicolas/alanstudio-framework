@@ -25,9 +25,11 @@ buffer entra — sem segunda legenda. Os stems sobem juntos: collect
 não espera dash terminar. Wav no lugar não pede ogg. O gesto
 (tecla ou toque) retoma o contexto suspenso. Retomar, fila e
 paralelo não são mix ouvido.
-Coleta e guarda sobem de tom com a corrente; o erro não herda.
+Coleta e guarda sobem de tom com a corrente; o erro não herda o tom.
 A legenda desses dois papéis nomeia a mesma aposta. Sem o número
-o tom falava e a faixa calava. Número na legenda não é mix ouvido.
+o tom falava e a faixa calava. O erro emite `lost`; a faixa nomeia
+a corrente que caiu e cala a aposta quando era zero. Não herda
+`chain`. Número na legenda não é mix ouvido.
 Coleta, queda, raspo, impacto, avanço e o término levam o x do campo; o panner
 marca o lugar. Número no panner não é mix ouvido. O término (`land`) é
 voz própria, mais curta que o dash; sem o papel o aterrissar é mudo.

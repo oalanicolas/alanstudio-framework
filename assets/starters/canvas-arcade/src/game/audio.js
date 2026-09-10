@@ -8,8 +8,10 @@
 // (`bedRate`); número no disco não é mix ouvido.
 // 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão — esses
 // arquivos não usam nenhum dos quatro. Coleta e guarda sobem de tom
-// com a corrente; o erro não herda. A legenda desses dois papéis
+// com a corrente; o erro não herda o tom. A legenda desses dois papéis
 // nomeia a mesma aposta — sem isto o tom falava e a faixa calava.
+// O erro emite `lost`. Sem isto a faixa dizia corrente perdida
+// com aposta zero. Número na legenda não é mix ouvido.
 // Coleta, queda, raspo, impacto,
 // avanço e o término levam o x do campo; o panner marca o lugar. Arquivo no disco
 // não é mixagem ouvida: `heard` no harness continua falso.
@@ -56,6 +58,13 @@ export function captionFor(id, extra = {}) {
   const definition = SOUNDS[id];
   const base = definition?.caption;
   if (!base) return "";
+  if (id === "hit") {
+    const lost = Number(extra.lost);
+    if (Number.isFinite(lost) && lost > 0) {
+      return `${base}: corrente ${Math.trunc(lost)} perdida`;
+    }
+    return base;
+  }
   if (CHAIN_ROLES.has(id) && Number.isFinite(extra.chain) && extra.chain > 0) {
     return `${base}, corrente ${Math.trunc(extra.chain)}`;
   }
@@ -81,7 +90,7 @@ export const SOUNDS = {
   collect: { bus: "sfx", caption: "orbe coletado", priority: 2 },
   missed: { bus: "sfx", caption: "orbe perdido", priority: 1 },
   bank: { bus: "sfx", caption: "corrente guardada", priority: 3, duckMs: 180 },
-  hit: { bus: "sfx", caption: "atingido: corrente perdida", priority: 4, duckMs: 260 },
+  hit: { bus: "sfx", caption: "atingido", priority: 4, duckMs: 260 },
   over: { bus: "ui", caption: "fim da partida", priority: 5, duckMs: 400 },
   close: { bus: "ui", caption: "últimos segundos", priority: 2 },
   live: { bus: "ui", caption: "a chuva começa", priority: 2 },

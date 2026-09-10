@@ -8,7 +8,7 @@ Declaração vigente. Opção no código não é sessão observada.
 - Contraste alto (`highContrast`) com paleta própria
 - Tinta estável (`colorblind`): orbe e estilhaço usam o par azul/laranja do look padrão; o campo do look permanece. Alto contraste vence. Chave no disco não é sessão observada
 - Redução de movimento (`reducedMotion`): tremor e piscada viram forma estática; na porta a mostra trava no canvas, no toque e no aviso vivo — os três leem a mesma chuva parada. Isso não é sessão observada
-- Legendas para toda informação sonora (`captions`); a faixa vence a cortina da pausa e do fim no stub; coleta e guarda nomeiam a corrente que o tom já sobe — isso não é sessão observada
+- Legendas para toda informação sonora (`captions`); a faixa vence a cortina da pausa e do fim no stub; coleta e guarda nomeiam a corrente que o tom já sobe; o erro nomeia a corrente que `lost` derrubou e cala a aposta quando era zero — isso não é sessão observada
 - Remapeamento de ações (`bindings`); a página expõe as seis ações do teclado e a tabela `#commands` nomeia as teclas vigentes — toque e controle ficam no sufixo e não entram no remap; persistir no stub não é sessão observada
 - Escala da interface (`uiScale`); o overlay do fim e da pausa também cresce — isso não é sessão observada
 - Preset de uma mão no cluster direito (`oneHand`, IJKL + P/O); o aviso, o overlay e o `cycle.hand` nomeiam essas teclas; no stub o cluster coleta, guarda, pausa e reinicia — isso não é sessão observada

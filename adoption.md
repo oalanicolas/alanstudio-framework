@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.218 — A legenda do erro lê a corrente que caiu
+
+O
+erro
+emitia
+`lost`.
+A
+faixa
+dizia
+`atingido:
+corrente
+perdida`
+com
+aposta
+zero.
+Agora
+lê
+`lost`.
+Zero
+ou
+ausente
+fica
+`atingido`.
+`lost
+>
+0`
+nomeia
+a
+corrente
+que
+caiu.
+Não
+herda
+`chain`.
+Não
+promove
+`heard`
+nem
+`accessibility`.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.218 não afirma:
+número
+na
+legenda
+não
+é
+mix
+ouvido.
+
 ## 0.9.217 — O apply também copia o stem do starter
 
 O
