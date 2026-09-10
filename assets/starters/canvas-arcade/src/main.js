@@ -310,9 +310,15 @@ export function createGame(options = {}) {
     const hidden = typeof document === "undefined" || document.hidden;
     if (hidden) {
       flush();
-      loop.pause();
-      haptics.mute();
-      syncBed();
+      // P na porta é ignorado. Hidden que pausa sem P para
+      // retomar congela a mostra e come o avanço. No campo
+      // e no fim a aba continua sentando o relógio. Stub
+      // não é aba fechada; trusted continua falso.
+      if (state.phase !== "title") {
+        loop.pause();
+        haptics.mute();
+        syncBed();
+      }
     }
   };
   const onPageHide = () => {

@@ -785,6 +785,35 @@ test("perda de foco pausa e descarrega", () => {
   game.dispose();
 });
 
+test("na porta a aba escondida não congela a mostra sem chamar isso de confiável", () => {
+  const storage = memoryStorage();
+  const target = recordingTarget();
+  const game = createGame({
+    seed: 5,
+    eventTarget: target,
+    storage,
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(game.observe().phase, "title");
+  game.updateSettings({ captions: false });
+  storage.remove("settings");
+  const change = target.listeners.find((entry) => entry.type === "visibilitychange");
+  assert.ok(change);
+  change.handler();
+  assert.equal(game.paused, false, "na porta a aba só descarrega");
+  assert.equal(JSON.parse(storage.get("settings")).captions, false);
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing", "o avanço ainda abre");
+  game.advance(CONFIG.runTicks);
+  assert.equal(game.observe().phase, "over");
+  change.handler();
+  assert.equal(game.paused, true, "no fim a aba continua sentando");
+  assert.equal(game.persist.trusted, false);
+  game.dispose();
+});
+
 test("trocar a chuva na porta troca a mostra e não abre o ciclo", () => {
   const game = createGame({
     seed: 5,

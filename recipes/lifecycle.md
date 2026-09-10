@@ -22,6 +22,9 @@ Com tela, o ciclo deste starter é abertura → partida → fim → abertura.
 O avanço abre a porta e, depois do fim, um avanço *novo* volta a ela.
 R no overlay também. Sem tela o headless já joga. A página oferece o
 recibo no overlay e na porta se houver partida; isso não é observação.
+Aba escondida pausa no campo e no fim. Na porta só descarrega — P já
+é ignorado e a placa nem nasce. Hidden que pausa sem P para retomar
+congela a mostra. Stub não é aba fechada.
 
 Examine separadamente:
 

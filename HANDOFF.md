@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.185 (confirmado): no fim a pausa não come o stinger.
+**HEAD:** ver `git log -1` — vigente 0.9.186: na porta a aba escondida não congela a mostra.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 272 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.185)
+## O que o HEAD já entrega (0.9.91–0.9.186)
 
 | Ver | Salto |
 | --- | --- |
@@ -129,6 +129,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.183 | `sfx verify` nomeia os stems do starter quando o acervo está vazio. Não cruza. `ok` fica falso. Não promove `heard`. |
 | 0.9.184 | A região viva só diz `pausado` quando o overlay diz Pausado. No fim e na porta a palavra some. Não promove `accessibility`. |
 | 0.9.185 | No fim a pausa não come o stinger. No campo o `hush` continua. Não promove `heard`. |
+| 0.9.186 | Na porta a aba escondida só descarrega. Não congela a mostra. Não promove `trusted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -146,7 +147,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
-| state_trust | slice | beforeunload no disco; aba fechada real não observada; `trusted` falso |
+| state_trust | slice | beforeunload no disco; na porta hidden só descarrega; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
 | accessibility | slice | live só diz pausado quando o overlay diz Pausado; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
@@ -231,7 +232,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou movimento na porta ou toque da mostra ou voz da mostra
   ou quadro sentado na pausa ou placar na pausa ou fim que vence a pausa
   ou verify dos stems do starter ou live que some pausado no fim
-  ou hush no over que poupa o stinger.
+  ou hush no over que poupa o stinger
+  ou hidden na porta que poupa a mostra.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -367,7 +369,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `threatCue` na porta lê a mostra. A chuva lê a mesa vigente
   (cadência e queda), sem RNG, sem `entities`. A mostra do spawn
   continua quatro gotas. Reduced trava a queda. Reset na title sorteia seed nova
-  e vai a `playing`. Pause na title é ignorado. Com tela, `reset()` sem
+  e vai a `playing`. Pause na title é ignorado. Hidden na porta só
+  descarrega — não pausa o laço. Com tela, `reset()` sem
   argumento no `over` volta à title; um avanço *novo* no over faz o
   mesmo. Dash ainda apertado no último tick não arma a porta.
   `reset(seed)` explícito joga.
@@ -444,7 +447,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `outsider`/`observed` falsos). Não é `record.json` e não limpa
   `playable.unplayed` sozinho. `playtest` relata o anexo em
   `finding_attachments`.
-- `pagehide` e `beforeunload` flush; hidden pausa. Stub não é aba fechada.
+- `pagehide` e `beforeunload` flush; hidden pausa no campo e no fim.
+  Na porta só descarrega. Stub não é aba fechada.
 - `gameSpeed` (0.5–1, padrão 1) dilata o acumulador do laço.
   `advance()` ignora. Assistência não é este knob.
 - `colorblind` é alcance, não look. `dressPalette` aplica
@@ -514,6 +518,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `sfx verify` que some os stems do starter.
 **Não** mais uma região viva que diz pausado enquanto o overlay diz Fim.
 **Não** mais um hush no over que come o stinger.
+**Não** mais um hidden na porta que congela a mostra sem P para retomar.
 
 Candidatos, do que ainda dói:
 
@@ -633,7 +638,11 @@ Candidatos, do que ainda dói:
   hush que
   poupa o
   stinger no
-  fim
+  fim e o
+  hidden que
+  poupa a
+  mostra na
+  porta
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -657,5 +666,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: no fim a pausa não come o
-stinger. No campo o `hush` continua. Não promove `heard`.
+Arquivos quentes da última sessão: na porta a aba escondida
+só descarrega. Não congela a mostra. Não promove `trusted`.
