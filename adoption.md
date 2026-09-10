@@ -3,6 +3,43 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.289 — O ciclo nomeia o relógio que o jogo já lê
+
+O
+SKILL
+já
+pedia
+relógio
+no
+ciclo.
+A
+query
+já
+dilatava
+a
+partida.
+`CYCLE_KEYS`
+omitia
+`speed`.
+Agora
+o
+prompt
+nomeia
+`Relógio:`.
+Não
+promove
+`outsider`.
+
+O que 0.9.289 não afirma:
+nomear
+a
+query
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.288 — A sessão simulada nomeia o look e o relógio que o convite já lê
 
 O

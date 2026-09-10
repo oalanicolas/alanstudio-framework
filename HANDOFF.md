@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.288: a sessão simulada nomeia o look e o relógio que o convite já lê. Simular no relógio cheio não observa. Não promove `outsider`.
+**HEAD:** ver `git log -1` — vigente 0.9.289: o ciclo nomeia o relógio que o jogo já lê. `CYCLE_KEYS` inclui `speed`. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 307 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.288)
+## O que o HEAD já entrega (0.9.91–0.9.289)
 
 | Ver | Salto |
 | --- | --- |
@@ -232,6 +232,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.286 | O controle que some não deixa a partida correr sozinha. `gamepaddisconnected` senta se a sessão falou no pad. Não promove `felt`. |
 | 0.9.287 | A cama segue o relógio da sessão. O fecho sobe em cima do knob; coleta e guarda guardam o tom. Não promove `heard`. |
 | 0.9.288 | A sessão simulada nomeia o look e o relógio que o convite já lê. `session --look` / `--speed` escrevem o candidato. Não promove `outsider`. |
+| 0.9.289 | O ciclo nomeia o relógio que o jogo já lê. `CYCLE_KEYS` inclui `speed` depois de `seed`. O SKILL já pedia. Não promove `outsider`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -424,7 +425,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um botão focado que ativa e avança
   ou um verify que some o stem que o recibo já nomeia
   ou uma faixa que some a curva que o last-run já traçou
-  ou uma sessão que some o look e o relógio que o convite já lê.
+  ou uma sessão que some o look e o relógio que o convite já lê
+  ou um ciclo que some o relógio que o jogo já lê.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -446,10 +448,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 **Guide / start**
 
-- `CYCLE_KEYS` inclui `door` depois de `verb` e `seed` depois de
-  `mood`. `cycle_line` nomeia `Fantasia:` antes de `Verbo:` quando
-  há frase (`--idea` ou `copy.json`), `Porta:` antes de `Mover` e
-  `Seed:` antes de `Convite`. Fantasia não entra em `CYCLE_KEYS`.
+- `CYCLE_KEYS` inclui `door` depois de `verb`, `seed` depois de
+  `mood` e `speed` depois de `seed`. `cycle_line` nomeia `Fantasia:`
+  antes de `Verbo:` quando há frase (`--idea` ou `copy.json`),
+  `Porta:` antes de `Mover`, `Seed:` antes de `Relógio:` e
+  `Relógio:` antes de `Convite`. Fantasia não entra em `CYCLE_KEYS`.
   A frase não muda o verbo. Sem frase a linha some.
 - `CRAFT_EXAMPLES` ordem: pair → look → table → sfx. Look e chuva do
   exemplo compartilham o nome `noite`.
@@ -969,6 +972,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um controle que some e deixa a partida correr sozinha.
 **Não** mais uma cama que ignora o relógio da sessão.
 **Não** mais uma sessão que some o look e o relógio que o convite já lê.
+**Não** mais um ciclo que some o relógio que o jogo já lê.
 
 Candidatos, do que ainda dói:
 
@@ -1708,10 +1712,10 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a sessão
-simulada nomeia o look e o relógio que o
-convite já lê. Simular no relógio cheio não
-observa. Não promove `outsider`.
+Arquivos quentes da última sessão: o ciclo
+nomeia o relógio que o jogo já lê.
+`CYCLE_KEYS` inclui `speed`. Não promove
+`outsider`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1735,3 +1739,4 @@ A família discover some as lacunas de dimensão está saturada.
 A família controle que some / pad disconnect deixa a partida correr está saturada.
 A família cama ignora o relógio da sessão / gameSpeed sem cama está saturada.
 A família sessão some look/speed que o convite já lê está saturada.
+A família ciclo some o relógio que o jogo já lê está saturada.

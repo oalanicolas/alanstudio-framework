@@ -3809,7 +3809,7 @@ def starter_manifest(starter):
     return manifest
 
 
-CYCLE_KEYS = ("verb", "door", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn", "mood", "seed", "invite")
+CYCLE_KEYS = ("verb", "door", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn", "mood", "seed", "speed", "invite")
 
 
 def starter_cycle(starter):
@@ -3860,6 +3860,8 @@ def cycle_line(cycle, fantasy=None):
         parts.append(f"Par: {cycle['mood']}.")
     if cycle.get("seed"):
         parts.append(f"Seed: {cycle['seed']}.")
+    if cycle.get("speed"):
+        parts.append(f"Relógio: {cycle['speed']}.")
     if cycle.get("invite"):
         parts.append(f"Convite: {cycle['invite']}.")
     return " ".join(parts)
