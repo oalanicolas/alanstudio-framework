@@ -609,6 +609,8 @@ sentido nem assistir.
 `note` grava o recibo de observação em `docs/playtest/<utc>/` com cenário e
 papel por omissão. `--from-run` anexa `docs/playtest/last-run.json` (resumo
 e, se houver, a curva) como candidato de medição e não fecha o achado.
+Nomeia `finding` (os quatro no recibo), `form` e `needed`. Sem `then`.
+Recibo sem os quatro não é achado. Os quatro no disco não observam.
 Não joga. `felt` é sempre
 `false`. `next` propõe `feel.unobserved` quando há constante e não há
 recibo; o comando que ele aponta é o `note`. O harness não atribui peso.

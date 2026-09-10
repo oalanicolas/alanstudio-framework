@@ -2795,6 +2795,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["fields"]["role"], "human")
         self.assertFalse(report["felt"])
         self.assertFalse(report["observed"])
+        self.assertFalse(report["finding"])
+        self.assertEqual(report["needed"], ["problema", "evidencia", "hipotese", "medicao"])
+        self.assertTrue(Path(report["form"]).is_file())
+        self.assertNotIn("then", report)
         self.assertTrue((destination / "docs/playtest").is_dir())
         after = game.feel_reading(destination)
         self.assertFalse(after["unobserved"])
@@ -2809,7 +2813,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(run.returncode, 0, run.stderr)
         payload = json.loads(run.stdout)
         self.assertFalse(payload["felt"])
+        self.assertFalse(payload["finding"])
         self.assertEqual(payload["fields"]["scenario"], "primeira partida")
+
+    def test_note_names_a_complete_finding_without_calling_it_observed(self):
+        destination = self.root / "achado-no-recibo"
+        game.init(destination, "canvas-arcade")
+        report = game.note_observation(
+            destination, "Ana", "o dash atravessou e a corrente ficou",
+            fields={
+                "problema": "o contato some no movimento",
+                "evidencia": "três sessões, o jogador pergunta se atravessou",
+                "hipotese": "o hitstop de 2 ticks some",
+                "medicao": "repetir o graze com hitstop 5 e 2",
+            },
+        )
+        self.assertTrue(report["finding"])
+        self.assertEqual(report["needed"], [])
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["felt"])
+        self.assertNotIn("outsider", report)
+        self.assertNotIn("then", report)
+        after = game.playtest_reading(destination)
+        self.assertTrue(after["structured"])
+        self.assertFalse(after["unstructured"])
+        self.assertFalse(after["observed"])
 
     def test_a_note_from_the_page_is_a_receipt_without_feeling(self):
         destination = self.root / "nota-da-pagina"

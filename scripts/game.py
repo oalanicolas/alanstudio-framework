@@ -5137,6 +5137,13 @@ def note_observation(project, author, note, fields=None, output=None, role="huma
     report["command"] = "note"
     report["felt"] = False
     report["observed"] = False
+    # O playtest já nomeia o esqueleto. Sem isto o note gravava e
+    # some se os quatro fecharam o achado. Recibo sem forma não é
+    # achado. Sem `then`: este comando escreve, não aponta o leitor.
+    complete = fields_have_finding(payload)
+    report["finding"] = complete
+    report["form"] = str(PLAYTEST_FORM)
+    report["needed"] = [] if complete else list(PLAYTEST_FIELDS)
     if attached is not None:
         report["from_run"] = attached.as_posix() if attached.is_absolute() else attached.as_posix()
     return report

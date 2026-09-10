@@ -3,6 +3,39 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.209 — O note nomeia se o recibo fechou o achado
+
+O
+`playtest`
+já nomeava
+o esqueleto.
+O `note`
+gravava e
+some se os
+quatro
+fecharam o
+achado. Agora
+nomeia
+`finding`,
+`form` e
+`needed`. Sem
+`then`. Recibo
+sem os quatro
+não é achado.
+Os quatro no
+disco não
+observam.
+`observed`
+continua
+falso. Só
+`release`
+fica no piso.
+
+O que 0.9.209 não afirma:
+flag no recibo
+não é sessão
+observada.
+
 ## 0.9.208 — Origins declara o sidecar
 
 O

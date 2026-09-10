@@ -234,7 +234,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    basta; dois pedem o caminho. O comando do mapa sugere `--author` a partir
    do git ou do ambiente; não é quem jogou. `--from-run` anexa `docs/playtest/last-run.json`
    (resumo e, se houver, a curva) como candidato de medição e não fecha o
-   achado. Não joga e não sente. Achar o único jogo não é ter sentido.
+   achado. Nomeia `finding` (os quatro no recibo), `form` e `needed`.
+   Sem `then`. Recibo sem os quatro não é achado. Os quatro no disco
+   não observam. Não joga e não sente. Achar o único jogo não é ter sentido.
    **`access` / `save` / `budget`** leem opção de alcance (incluindo
    uiScale, remapeamento das seis ações do teclado na página, preset de
    uma mão, assistência, velocidade da partida, tinta estável e região viva), versão de save e artefato
