@@ -3,6 +3,77 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.221 — A tinta estável não esmaga a chuva que já separa
+
+A
+tinta
+estável
+trocava
+orbe
+e
+estilhaço
+de
+qualquer
+look
+pelo
+par
+do
+padrão.
+dusk
+âmbar/índigo
+e
+calm
+teal/coral
+já
+separavam
+quente
+e
+frio.
+O
+campo
+ficava
+alheio
+à
+chuva.
+Agora
+`dressPalette`
+só
+aplica
+o
+par
+quando
+as
+duas
+tintas
+ainda
+compartilham
+o
+eixo.
+Alto
+contraste
+continua
+vencendo.
+Não
+promove
+`accessibility`
+nem
+`art_direction`.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.221 não afirma:
+hex
+no
+disco
+não
+é
+sessão
+no
+aparelho.
+
 ## 0.9.220 — O coil do avanço não some quando a guarda pede
 
 O

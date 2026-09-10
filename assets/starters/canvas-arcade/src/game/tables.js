@@ -23,7 +23,8 @@
 // `palettes` tem consumidor: o desenho lê
 // `PALETTES` daqui, não uma constante no render. `look` escolhe um
 // look de arte (`normal`, `dusk`, `calm`); `contrast` e a tinta estável
-// (`colorblind`) são alcance, não look. `npm run look -- <nome> --from normal|dusk|calm` copia um
+// (`colorblind`) são alcance, não look. A tinta não esmaga chuva que
+// já separa quente e frio; o par do padrão é o fallback. `npm run look -- <nome> --from normal|dusk|calm` copia um
 // look que o jogo já consome; `--as` desloca os tokens sem pedir a
 // receita de cabeça. `dusk` e `calm` na chuva e no look compartilham
 // o nome e não a mesa. `?mood=<nome>` aplica o par quando o nome é
@@ -331,10 +332,12 @@ export function resolveLookName(name) {
 }
 
 // Orbe azul e estilhaço laranja do look padrão. Não é look: o campo
-// do crepúsculo permanece. O dusk first-party já separa orbe âmbar
-// e estilhaço índigo; a tinta estável ainda troca a chuva pelo par
-// do padrão. Alto contraste continua vencendo. Chave no disco não
-// é sessão. JSON no disco não é comparação em movimento.
+// permanece. Fallback para chuva que ainda compartilha o eixo —
+// os dois quentes ou os dois frios. dusk âmbar/índigo e calm
+// teal/coral já separam; esmagar pelo par do padrão era a mesma
+// chuva com campo alheio. Alto contraste continua vencendo.
+// Chave no disco não é sessão. JSON no disco não é comparação
+// em movimento.
 export const COLORBLIND_INKS = {
   orb: PALETTES.normal.orb,
   shard: PALETTES.normal.shard,
@@ -342,11 +345,36 @@ export const COLORBLIND_INKS = {
   danger: PALETTES.normal.danger,
 };
 
+function inkChannels(hex) {
+  const raw = typeof hex === "string" && hex.startsWith("#") && hex.length === 7
+    ? hex.slice(1)
+    : "";
+  if (!raw) return null;
+  const value = Number.parseInt(raw, 16);
+  if (!Number.isFinite(value)) return null;
+  return { r: (value >> 16) & 255, g: (value >> 8) & 255, b: value & 255 };
+}
+
+// Quente (R > B) contra frio (B > R). Mesmo eixo não distingue
+// orbe de estilhaço para quem lê só a temperatura. Hex no disco
+// não é sessão no aparelho.
+export function rainSplitsWarmCool(look = {}) {
+  const orb = inkChannels(look.orb);
+  const shard = inkChannels(look.shard);
+  if (!orb || !shard || look.orb === look.shard) return false;
+  return (orb.r > orb.b) !== (shard.r > shard.b);
+}
+
+export function applyColorblindInks(look = {}) {
+  if (rainSplitsWarmCool(look)) return look;
+  return { ...look, ...COLORBLIND_INKS };
+}
+
 export function dressPalette(settings = {}) {
   if (settings.highContrast) return PALETTES.contrast;
   const look = PALETTES[resolveLookName(settings.look)] ?? PALETTES.normal;
   if (!settings.colorblind) return look;
-  return { ...look, ...COLORBLIND_INKS };
+  return applyColorblindInks(look);
 }
 
 // Intenções sobre um look já pintável. Não são look melhor — só

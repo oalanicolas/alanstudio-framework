@@ -72,7 +72,10 @@ movimento e velocidade da partida em `src/core/settings.js`. `gameSpeed` dilata 
 acumulador em `src/core/loop.js` só na partida; a porta e o fim ficam no
 relógio cheio. `advance()` headless não passa por ele. `assist` cede queda e
 alcance também na mostra da porta; a graça extra fica no campo. `reducedMotion`
-na porta trava canvas, toque e aviso vivo na mesma chuva parada. Herda a preferência do sistema, preenche
+na porta trava canvas, toque e aviso vivo na mesma chuva parada. `colorblind`
+não esmaga a chuva do look que já separa quente e frio; o par do
+padrão é o fallback quando as duas tintas ainda compartilham o eixo.
+Herda a preferência do sistema, preenche
 `{pause}`, `{reset}` e `{bank}` em `copy.json` com as teclas vivas, desenha formas
 distintas além da cor em `src/game/render.js` e mantém legenda equivalente para
 toda informação sonora em `src/game/audio.js` — coleta e guarda nomeiam a

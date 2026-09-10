@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.220 (confirmado): o coil do avanço não some quando a guarda pede no mesmo tick.
+**HEAD:** ver `git log -1` — vigente 0.9.221: a tinta estável não esmaga a chuva do look que já separa quente e frio.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 279 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.220)
+## O que o HEAD já entrega (0.9.91–0.9.221)
 
 | Ver | Salto |
 | --- | --- |
@@ -164,6 +164,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.218 | A legenda do erro lê `lost`. Aposta zero ou ausente fica `atingido`; `lost > 0` nomeia a corrente que caiu. Não herda `chain`. Não promove `heard` nem `accessibility`. |
 | 0.9.219 | O arco da guarda senta com `squashBankCoil`. O coil do avanço continua estreitando. Sem voz nova. Não promove feel. |
 | 0.9.220 | O coil do avanço não some quando a guarda pede no mesmo tick. A guarda com corrente espera; coleta e guarda no mesmo quadro continuam na hora. Não promove feel. |
+| 0.9.221 | A tinta estável não esmaga a chuva do look que já separa quente e frio. O par do padrão continua o fallback. Não promove `accessibility` nem `art_direction`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -179,12 +180,12 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | --- | --- | --- |
 | feel | playable | o coil do avanço não some quando a guarda pede; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
-| art_direction | slice | `consistent` falso |
+| art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | live nomeia o aviso na porta e no fim; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | live nomeia o toque da mostra na porta; sessão real pendente |
+| accessibility | slice | tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -302,7 +303,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou roles --apply que some o stem que o fill já nomeia
   ou legenda do erro que mente corrente perdida com aposta zero
   ou arco da guarda que copia o coil do avanço
-  ou coil do avanço que some quando a guarda pede.
+  ou coil do avanço que some quando a guarda pede
+  ou tinta estável que esmaga a chuva do look que já separa.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -576,8 +578,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   A graça extra (`extraInvulnTicks`) fica no campo. Não
   esconde orbe nem pontuação. Knob no disco não é sessão.
 - `colorblind` é alcance, não look. `dressPalette` aplica
-  `COLORBLIND_INKS` (orbe/estilhaço/corrente/perigo do `normal`)
-  sobre o look vigente. Alto contraste vence. Não entra no href.
+  `COLORBLIND_INKS` só quando a chuva ainda compartilha o eixo
+  (orbe e estilhaço os dois quentes ou os dois frios). dusk e
+  calm já separam; a tinta não esmaga. Alto contraste vence. Não entra no href.
   `threatCue` é estilhaço no x do corpo dentro do telegraph —
   na porta lê a mostra, não `entities`. `approaching` na porta
   lê a mesma mostra (`attractEntities`) e o canvas marca o
@@ -688,6 +691,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma legenda do erro que mente corrente perdida com aposta zero.
 **Não** mais um arco da guarda que copia o coil do avanço.
 **Não** mais um coil do avanço que some quando a guarda pede.
+**Não** mais uma tinta estável que esmaga a chuva do look que já separa.
 
 Candidatos, do que ainda dói:
 
@@ -989,6 +993,13 @@ Candidatos, do que ainda dói:
   some quando
   a guarda
   pede
+  e a
+  tinta
+  estável que
+  esmaga a
+  chuva do
+  look que já
+  separa
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1012,6 +1023,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o coil do
-avanço não some quando a guarda pede. A
-guarda com corrente espera. Não promove feel.
+Arquivos quentes da última sessão: a tinta
+estável não esmaga dusk nem calm. O par do
+padrão continua o fallback. Não promove
+`accessibility` nem `art_direction`.

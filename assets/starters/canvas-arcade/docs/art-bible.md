@@ -9,6 +9,8 @@ mesma tinta; o dispositivo alvo não foi observado. Paletas canônicas em
 `data/palettes.json` (`normal`, `contrast`, `dusk` e `calm`); o desenho consome
 `PALETTES` via `src/game/tables.js`. `look` escolhe `normal`, `dusk` ou `calm`;
 `contrast` e a tinta estável (`colorblind`) são alcance, não look.
+A tinta não esmaga chuva que já separa quente e frio; o par do padrão
+é o fallback. JSON no disco não é comparação em movimento.
 
 ## Tokens
 

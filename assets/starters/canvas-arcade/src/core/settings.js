@@ -8,7 +8,9 @@
 // `render.js`, `audio.js`, `input.js` ou `rules.js`. `spawnProfile` escolhe
 // a mesa de chuva; `look` escolhe o look de arte. Nome desconhecido cai
 // no padrão. `contrast` não é look: alto contraste continua sendo o modo
-// de alcance. `colorblind` também é alcance: troca só a tinta da chuva.
+// de alcance. `colorblind` também é alcance: o par do padrão
+// só veste chuva que ainda compartilha o eixo; look que já
+// separa quente e frio permanece.
 
 import { readJson, writeJson } from "./storage.js";
 

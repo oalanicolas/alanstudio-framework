@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   applyLookIntent, applySpawnIntent, loadTable, loadSpawn, listLookIntents,   listLooks, listMoods, listSpawnIntents, listSpawnProfiles, looksLikeSpawn, lookRecord,
-  LOOK_LABELS, matchingMood, pairPatch, resolveLookName, resolveMoodName, SPAWN_LABELS, COLORBLIND_INKS, dressPalette,
+  LOOK_LABELS, matchingMood, pairPatch, resolveLookName, resolveMoodName, SPAWN_LABELS, COLORBLIND_INKS, applyColorblindInks, dressPalette, rainSplitsWarmCool,
   migrateCopy, migratePalettes, migrateSpawn, migrateTable, requireFields, resolveSpawnName, spawnRecord, TABLES,
   SPAWN_FIELDS, SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS, PALETTE_SCHEMA, PALETTE_FIELDS, LOOK_INTENTS, SPAWN_INTENTS, PALETTES,
 } from "../src/game/tables.js";
@@ -37,11 +37,27 @@ test("as mesas passam pelo mesmo carregador", () => {
   assert.ok((duskOrb >> 16) > (duskOrb & 0xff), "orbe dusk continua âmbar");
   assert.ok((duskShard & 0xff) > (duskShard >> 16), "estilhaço dusk é índigo, não rosa");
   const stable = dressPalette({ look: "dusk", colorblind: true });
-  assert.equal(stable.orb, COLORBLIND_INKS.orb);
-  assert.equal(stable.shard, COLORBLIND_INKS.shard);
+  assert.equal(stable.orb, PALETTES.dusk.orb, "dusk já separa; a tinta não esmaga o âmbar");
+  assert.equal(stable.shard, PALETTES.dusk.shard, "dusk já separa; a tinta não esmaga o índigo");
   assert.equal(stable.field, PALETTES.dusk.field, "a tinta estável não troca o campo");
+  assert.notEqual(stable.orb, COLORBLIND_INKS.orb, "o par do padrão não come o crepúsculo");
+  assert.notEqual(stable.shard, COLORBLIND_INKS.shard);
+  const calmStable = dressPalette({ look: "calm", colorblind: true });
+  assert.equal(calmStable.orb, PALETTES.calm.orb, "calm já separa; a tinta não esmaga o teal");
+  assert.equal(calmStable.shard, PALETTES.calm.shard);
+  assert.equal(dressPalette({ look: "normal", colorblind: true }).orb, COLORBLIND_INKS.orb);
   assert.equal(dressPalette({ look: "dusk", colorblind: true, highContrast: true }).field, PALETTES.contrast.field);
   assert.equal(listLooks().includes("colorblind"), false);
+  assert.equal(rainSplitsWarmCool(PALETTES.dusk), true);
+  assert.equal(rainSplitsWarmCool(PALETTES.calm), true);
+  assert.equal(rainSplitsWarmCool(PALETTES.normal), true);
+  assert.equal(rainSplitsWarmCool({ orb: "#ff6644", shard: "#cc4422" }), false, "os dois quentes pedem o par");
+  assert.equal(rainSplitsWarmCool({ orb: "#4466ff", shard: "#2244cc" }), false, "os dois frios pedem o par");
+  assert.equal(rainSplitsWarmCool({ orb: "#ff6644", shard: "#4466ff" }), true);
+  const muddy = applyColorblindInks({ field: "#241816", orb: "#ff6644", shard: "#cc4422" });
+  assert.equal(muddy.orb, COLORBLIND_INKS.orb, "eixo compartilhado ganha o par do padrão");
+  assert.equal(muddy.shard, COLORBLIND_INKS.shard);
+  assert.equal(muddy.field, "#241816", "o fallback não troca o campo");
   assert.throws(() => loadTable("inventada"), /mesa desconhecida/);
 });
 

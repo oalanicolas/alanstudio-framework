@@ -419,7 +419,7 @@ test("o look dusk pinta o campo diferente do padrão e cede ao alto contraste", 
   assert.equal(contrast.style, PALETTES.contrast.field, "alto contraste vence o look");
 });
 
-test("a tinta estável troca orbe e estilhaço e cede ao alto contraste", () => {
+test("a tinta estável não esmaga a chuva do look e cede ao alto contraste", () => {
   const state = createState(1);
   const fieldOf = (calls) => calls.rects.find((rect) => rect.width === FIELD.width && rect.height === FIELD.height);
   const dusk = fieldOf(paint(state, { look: "dusk" }));
