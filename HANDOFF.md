@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.263: o recibo sem origem não declara. JSON listava o arquivo e fingia recibo. Não promove `granted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 288 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 291 OK.
 `cd assets/starters/canvas-arcade && npm test` → 446 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
