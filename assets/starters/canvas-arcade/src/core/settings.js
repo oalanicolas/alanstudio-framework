@@ -62,6 +62,7 @@ export function defaultSettings(environment = {}) {
     look: "normal",
     buses: structuredCloneish(DEFAULT_BUSES),
     bindings: structuredCloneish(DEFAULT_BINDINGS),
+    keptBindings: structuredCloneish(DEFAULT_BINDINGS),
   };
 }
 
@@ -83,16 +84,9 @@ export function normalizeSettings(raw, environment = {}, base = defaultSettings(
       buses[name] = clamp01(raw.buses[name], base.buses[name]);
     }
   }
-  const bindings = structuredCloneish(base.bindings);
-  if (raw.bindings && typeof raw.bindings === "object") {
-    for (const action of Object.keys(base.bindings)) {
-      const codes = raw.bindings[action];
-      // Um remapeamento vazio tornaria a ação inalcançável: mantém o padrão.
-      if (Array.isArray(codes) && codes.length && codes.every((code) => typeof code === "string")) {
-        bindings[action] = [...codes];
-      }
-    }
-  }
+  const bindings = readBindings(raw.bindings, base.bindings);
+  const oneHand = typeof raw.oneHand === "boolean" ? raw.oneHand : base.oneHand;
+  const keptBindings = readKeptBindings(raw, bindings, oneHand, base);
   return {
     schema: SETTINGS_SCHEMA,
     reducedMotion: typeof raw.reducedMotion === "boolean" ? raw.reducedMotion : base.reducedMotion,
@@ -103,7 +97,7 @@ export function normalizeSettings(raw, environment = {}, base = defaultSettings(
     gameSpeed: Number.isFinite(raw.gameSpeed)
       ? Math.min(GAME_SPEED_MAX, Math.max(GAME_SPEED_MIN, raw.gameSpeed))
       : base.gameSpeed,
-    oneHand: typeof raw.oneHand === "boolean" ? raw.oneHand : base.oneHand,
+    oneHand,
     uiScale: Number.isFinite(raw.uiScale)
       ? Math.min(UI_SCALE_MAX, Math.max(UI_SCALE_MIN, raw.uiScale))
       : base.uiScale,
@@ -117,6 +111,46 @@ export function normalizeSettings(raw, environment = {}, base = defaultSettings(
         : base.look,
     buses,
     bindings,
+    keptBindings,
+  };
+}
+
+export function readBindings(raw, fallback = DEFAULT_BINDINGS) {
+  const bindings = structuredCloneish(fallback);
+  if (!raw || typeof raw !== "object") return bindings;
+  for (const action of Object.keys(fallback)) {
+    const codes = raw[action];
+    // Um remapeamento vazio tornaria a ação inalcançável: mantém o padrão.
+    if (Array.isArray(codes) && codes.length && codes.every((code) => typeof code === "string")) {
+      bindings[action] = [...codes];
+    }
+  }
+  return bindings;
+}
+
+function readKeptBindings(raw, bindings, oneHand, base) {
+  if (raw.keptBindings && typeof raw.keptBindings === "object") {
+    return readBindings(raw.keptBindings, base.keptBindings ?? DEFAULT_BINDINGS);
+  }
+  // Save antigo: se já estava no preset, não inventa remap.
+  if (oneHand) return structuredCloneish(DEFAULT_BINDINGS);
+  return structuredCloneish(bindings);
+}
+
+// Liga o cluster direito e guarda o conjunto vigente.
+// Desligar devolve o que estava guardado, não o padrão.
+export function applyOneHand(settings, enabled) {
+  if (enabled) {
+    const kept = settings.oneHand ? settings.keptBindings : settings.bindings;
+    return {
+      oneHand: true,
+      keptBindings: structuredCloneish(kept ?? DEFAULT_BINDINGS),
+      bindings: structuredCloneish(ONE_HAND_BINDINGS),
+    };
+  }
+  return {
+    oneHand: false,
+    bindings: structuredCloneish(settings.keptBindings ?? DEFAULT_BINDINGS),
   };
 }
 

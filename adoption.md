@@ -3,6 +3,48 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.268 — O preset de uma mão não some o remap
+
+O
+preset
+lia
+o
+cluster
+e
+apagava
+o
+conjunto
+ao
+desligar.
+O
+remap
+já
+estava
+nas
+preferências.
+Agora
+desligar
+devolve
+as
+teclas
+que
+a
+pessoa
+já
+tinha.
+Não
+promove
+`trusted`.
+
+O que 0.9.268 não afirma:
+devolver
+o
+conjunto
+não
+é
+aba
+fechada.
+
 ## 0.9.267 — A faixa nomeia a curva que o last-run já traçou
 
 A

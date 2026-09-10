@@ -4,6 +4,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 import { foreignKey, memoryStorage, readJson, writeJson } from "../src/core/storage.js";
 import {
@@ -21,6 +22,7 @@ import {
   saveProgress,
 } from "../src/core/save.js";
 import {
+  applyOneHand,
   DEFAULT_BINDINGS,
   DEFAULT_BUSES,
   ONE_HAND_BINDINGS,
@@ -29,6 +31,8 @@ import {
   settingsLine,
   normalizeSettings,
 } from "../src/core/settings.js";
+
+const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
 test("ausência de save começa do zero sem erro", () => {
   const result = migrate(null);
@@ -332,7 +336,37 @@ test("o preset de uma mão usa o cluster direito sem colidir", () => {
   const settings = normalizeSettings({ oneHand: true, bindings: ONE_HAND_BINDINGS });
   assert.equal(settings.oneHand, true);
   assert.deepEqual(settings.bindings, ONE_HAND_BINDINGS);
+  assert.deepEqual(settings.keptBindings, DEFAULT_BINDINGS, "save antigo no preset não inventa remap");
   assert.equal(defaultSettings({}).oneHand, false);
+  assert.deepEqual(defaultSettings({}).keptBindings, DEFAULT_BINDINGS);
+});
+
+test("desligar uma mão devolve o remap, não o padrão", () => {
+  const remapped = { ...DEFAULT_BINDINGS, dash: ["KeyZ"] };
+  let settings = normalizeSettings({ bindings: remapped });
+  assert.deepEqual(settings.keptBindings.dash, ["KeyZ"]);
+  settings = normalizeSettings({ ...settings, ...applyOneHand(settings, true) });
+  assert.equal(settings.oneHand, true);
+  assert.deepEqual(settings.bindings, ONE_HAND_BINDINGS);
+  assert.deepEqual(settings.keptBindings.dash, ["KeyZ"]);
+  settings = normalizeSettings({ ...settings, ...applyOneHand(settings, true) });
+  assert.deepEqual(settings.keptBindings.dash, ["KeyZ"], "ligar de novo não come o conjunto já guardado");
+  settings = normalizeSettings({ ...settings, ...applyOneHand(settings, false) });
+  assert.equal(settings.oneHand, false);
+  assert.deepEqual(settings.bindings.dash, ["KeyZ"]);
+});
+
+test("save antigo no preset devolve o padrão ao desligar", () => {
+  const loaded = normalizeSettings({ oneHand: true, bindings: ONE_HAND_BINDINGS });
+  const restored = normalizeSettings({ ...loaded, ...applyOneHand(loaded, false) });
+  assert.equal(restored.oneHand, false);
+  assert.deepEqual(restored.bindings, DEFAULT_BINDINGS);
+});
+
+test("a página devolve o remap ao desligar uma mão", () => {
+  assert.match(html, /applyOneHand/);
+  assert.match(html, /keptBindings/);
+  assert.doesNotMatch(html, /DEFAULT_BINDINGS|ONE_HAND_BINDINGS/);
 });
 
 test("preferências ilegíveis são recuperadas com o padrão", () => {

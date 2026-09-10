@@ -253,7 +253,7 @@
 
     <script type="module" src="./src/main.js"></script>
     <script type="module">
-      import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS, settingsLine } from "./src/core/settings.js";
+      import { applyOneHand, settingsLine } from "./src/core/settings.js";
       import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, bringPanel, composeFinding, inviteHref, inviteMode, offerFinding, readArtifactMark } from "./src/core/invite.js";
       import { FINDING_ROUTE, NOTE_ROUTE, playFinding } from "./src/core/run-report.js";
       import { applyScale, applyShell } from "./src/core/shell.js";
@@ -416,7 +416,7 @@
           target: window,
           getBindings: () => game.settings.bindings,
           setBindings: (bindings) => {
-            game.updateSettings({ oneHand: false, bindings });
+            game.updateSettings({ oneHand: false, bindings, keptBindings: bindings });
             document.getElementById("oneHand").checked = false;
             paintCommands(commandList, bindings);
           },
@@ -450,10 +450,7 @@
           });
         }
         document.getElementById("oneHand").addEventListener("change", (event) => {
-          game.updateSettings({
-            oneHand: event.target.checked,
-            bindings: event.target.checked ? ONE_HAND_BINDINGS : DEFAULT_BINDINGS,
-          });
+          game.updateSettings(applyOneHand(game.settings, event.target.checked));
           refreshKeys();
         });
         document.getElementById("gameSpeed").addEventListener("input", (event) => {
