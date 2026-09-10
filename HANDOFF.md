@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.306: o playtest nomeia a página do achado. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.305):** `python3 -m unittest discover -s tests` → 317 OK.
+**Testes no HEAD (0.9.306):** `python3 -m unittest discover -s tests` → 318 OK.
 `cd assets/starters/canvas-arcade && npm test` → 491 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
