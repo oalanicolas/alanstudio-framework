@@ -10,6 +10,7 @@ test("só invite=1 liga o modo; outro valor não esconde a tabela", () => {
   assert.equal(inviteMode("?invite=1"), true);
   assert.equal(inviteMode("invite=1"), true);
   assert.equal(inviteMode("?invite=1&look=dusk"), true);
+  assert.equal(inviteMode("?invite=1&seed=8"), true);
   assert.equal(inviteMode("?look=dusk"), false);
   assert.equal(inviteMode("?invite=true"), false);
   assert.equal(inviteMode(""), false);

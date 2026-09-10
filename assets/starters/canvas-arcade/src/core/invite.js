@@ -1,5 +1,7 @@
 // Superfície de convite. A tabela da página ensina o verbo; quem nunca
-// viu o jogo não deveria lê-la. `?invite=1` some o painel. Esconder a
+// viu o jogo não deveria lê-la. `?invite=1` some o painel. Com seed no
+// last-run, `?invite=1&seed=<n>` some a tabela e abre essa partida.
+// Juntar o número não é alguém de fora. Esconder a
 // tabela não é alguém de fora nem curva observada. Depois do fim, a
 // porta também oferece os quatro nomes — no overlay e na abertura, se
 // houver partida. Copiar não grava. Esqueleto vazio não é achado.

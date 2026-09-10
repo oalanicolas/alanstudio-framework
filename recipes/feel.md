@@ -7,10 +7,11 @@ Com tela, a primeira superfície é a porta. O campo começa depois do
 avanço. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured`. `playtest --invite`
-escreve a página e aponta `/?invite=1`, onde a tabela some; depois do
+escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco,
+`/?invite=1&seed=<n>`), onde a tabela some; depois do
 fim a página oferece os quatro nomes para copiar ou gravar. Copiar
 não grava. Gravar anexa o candidato se last-run existir. Gravado
-não é alguém de fora. `next` aponta o convite
+não é alguém de fora. Nomear o endereço não observa. `next` aponta o convite
 depois do recibo de quem fez. O serve anuncia a URL da rede
 se a máquina tiver outro endereço IPv4. Esconder a tabela, anunciar
 a rede, copiar o achado e gravar os quatro nomes não são alguém de fora. `observed` e `outsider` são sempre

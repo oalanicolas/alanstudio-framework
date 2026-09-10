@@ -9,7 +9,7 @@
 
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { createReadStream, existsSync } from "node:fs";
+import { createReadStream, existsSync, readFileSync } from "node:fs";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { networkInterfaces } from "node:os";
 import { dirname, extname, join, normalize, resolve, sep } from "node:path";
@@ -73,23 +73,45 @@ export function isArtifactRoot(root = ROOT) {
   return existsSync(join(root, "VERSION.json"));
 }
 
+export function lastRunSeed(root = ROOT) {
+  try {
+    const data = JSON.parse(readFileSync(join(root, LAST_RUN_FILE), "utf8"));
+    if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+    const nested = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+      ? data.run.seed
+      : null;
+    const seed = data.seed ?? nested;
+    if (typeof seed !== "number" || !Number.isSafeInteger(seed) || seed < 0) return null;
+    return seed >>> 0;
+  } catch {
+    return null;
+  }
+}
+
+export function inviteQuery(seed) {
+  return Number.isInteger(seed) ? `/?invite=1&seed=${seed >>> 0}` : "/?invite=1";
+}
+
 export function listenBanner(port, interfaces = networkInterfaces(), env = process.env, root = ROOT) {
   const origins = advertisedOrigins(port, interfaces, env);
   const local = origins[0];
+  const seed = lastRunSeed(root);
+  const invite = inviteQuery(seed);
+  const seedPath = Number.isInteger(seed) ? `/?seed=${seed}` : "/?seed=7";
   const lines = [
     `Jogo em ${local}/  (Ctrl+C encerra)`,
     `Look: ${local}/?look=dusk  ${local}/?look=calm`,
     `Chuva: ${local}/?spawn=dusk  ${local}/?spawn=calm`,
     `Par: ${local}/?mood=calm  ${local}/?mood=dusk`,
-    `Convite: ${local}/?invite=1`,
-    `Seed: ${local}/?seed=7`,
+    `Convite: ${local}${invite}`,
+    `Seed: ${local}${seedPath}`,
     "Candidato: a partida grava docs/playtest/last-run.json",
     "Nota: depois do fim a página grava o recibo em docs/playtest/",
     "Achado: no convite a página grava os quatro nomes e anexa o candidato se houver partida",
   ];
   for (const origin of origins.slice(1)) {
     lines.push(`Rede: ${origin}/`);
-    lines.push(`Convite na rede: ${origin}/?invite=1`);
+    lines.push(`Convite na rede: ${origin}${invite}`);
   }
   if (isArtifactRoot(root)) {
     lines.push("Árvore exportada. Servir aqui não é outra máquina.");

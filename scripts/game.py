@@ -2001,6 +2001,7 @@ def playtest_reading(project):
         "candidate": candidate,
         "candidate_seed": candidate_seed,
         "invite": invite,
+        "invite_href": invite_href(project),
         "qa_current": qa_current,
         "expected": expected,
         "structured": structured,
@@ -2022,7 +2023,8 @@ def playtest_reading(project):
             "página pode gravar o markdown dos quatro nomes e anexar o "
             "candidato que estava em last-run.json. Anexo não é sessão "
             "observada. Se o candidato nomeia a seed, `candidate_seed` "
-            "a relata — `?seed=` abre essa partida e ignora o hold. "
+            "a relata e `invite_href` junta convite e número — "
+            "`?invite=1&seed=` abre essa partida e ignora o hold. "
             "Não assiste a sessão, não conta jogadores e não "
             "atribui causa. `observed` e `outsider` são sempre falsos."
         ),
@@ -2056,6 +2058,13 @@ def invite_path(project):
     return None
 
 
+def invite_href(project):
+    seed = last_run_seed(project)
+    if isinstance(seed, int) and not isinstance(seed, bool):
+        return f"/?invite=1&seed={seed}"
+    return "/?invite=1"
+
+
 def invite_playtest(project):
     project = Path(project)
     if not project.is_dir() or project.is_symlink():
@@ -2073,16 +2082,18 @@ def invite_playtest(project):
         "project": str(project),
         "path": INVITE,
         "created": created,
+        "href": invite_href(project),
         "observed": False,
         "outsider": False,
         "reading": reading,
         "scope": (
             "Escreve a página para quem nunca viu o jogo e aponta "
-            "`/?invite=1`, onde a tabela some. Depois do fim a página "
+            "`href`. Sem last-run é `/?invite=1`; com seed no disco "
+            "junta o número. A tabela some. Depois do fim a página "
             "oferece os quatro nomes para copiar ou gravar. Copiar não "
             "grava. Esqueleto vazio não é achado. Gravado anexa o "
             "candidato se last-run existir — não é alguém de fora. "
-            "O serve anuncia a URL da rede se a "
+            "Nomear o endereço não observa. O serve anuncia a URL da rede se a "
             "máquina tiver outro endereço IPv4. Não ensina o verbo, "
             "não assiste e não sobe pacing. outsider continua falso."
         ),
@@ -2096,6 +2107,13 @@ def invite_page(project):
     except (OSError, ValueError):
         scripts, manager = {}, None
     play = play_command(project, scripts, manager) or f"cd {shlex.quote(str(project))} && npm run serve"
+    href = invite_href(project)
+    seed = last_run_seed(project)
+    seed_line = (
+        f"Esta partida abre em `/?seed={seed}` e ignora o hold."
+        if isinstance(seed, int) and not isinstance(seed, bool)
+        else "Se a partida deixou seed, `/?seed=<n>` abre essa partida e ignora o hold."
+    )
     return (
         "# Convite — quem nunca viu o jogo\n"
         "\n"
@@ -2111,7 +2129,7 @@ def invite_page(project):
         "\n"
         "## Superfície\n"
         "\n"
-        "No navegador, abra `/?invite=1`. A tabela de comandos some.\n"
+        f"No navegador, abra `{href}`. A tabela de comandos some.\n"
         "Quem fez o jogo fica em `/`. O serve anuncia localhost e, se a\n"
         "máquina tiver outro endereço IPv4, a URL da rede. Compartilhar\n"
         "essa URL não é alguém de fora.\n"
@@ -2119,8 +2137,7 @@ def invite_page(project):
         "## Instrução\n"
         "\n"
         "Jogue uma partida. Com tela, o avanço abre a porta — a tabela\n"
-        "some, a abertura não. Se a partida deixou seed, `/?seed=<n>`\n"
-        "abre essa partida e ignora o hold. Quem fez o jogo não ensina\n"
+        f"some, a abertura não. {seed_line} Quem fez o jogo não ensina\n"
         "o verbo e não fica atrás da cadeira.\n"
         "\n"
         "## Depois\n"
@@ -2990,6 +3007,7 @@ def cycle_then(project, play, starter=None):
     seed = last_run_seed(project)
     if isinstance(seed, int) and not isinstance(seed, bool):
         then["seed"] = f"/?seed={seed}"
+        then["invite"] = invite_href(project)
     return then
 
 
@@ -3036,6 +3054,11 @@ def cycle_prompt(play, then, cycle, noted=False):
         if then.get("seed")
         else ""
     )
+    invite_line = (
+        f"O convite desta partida abre em {then['invite']}. Nomear o endereço não observa."
+        if then.get("invite")
+        else ""
+    )
     craft = [key for key in CRAFT_EXAMPLES if then.get(key)]
     if noted and craft:
         parts = ["O ciclo já tem um recibo."]
@@ -3043,14 +3066,17 @@ def cycle_prompt(play, then, cycle, noted=False):
             parts.append(f"{CRAFT_LABELS[key]}: {then[key]}.")
         if seed_line:
             parts.append(seed_line)
+        if invite_line:
+            parts.append(invite_line)
         parts.append("O harness não pinta, não chove e não ouve.")
         parts.append(f"`next` só se você não sabe o que falta: {then['lost']}.")
         return " ".join(parts)
     how = cycle_line(cycle)
+    extra = " ".join(part for part in (seed_line, invite_line) if part)
     return (
         f"O jogo não foi aberto. Cole e rode: {play}. "
         + (f"{how} " if how else "")
-        + (f"{seed_line} " if seed_line else "")
+        + (f"{extra} " if extra else "")
         + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
         "`next` só se o ciclo já correu e você não sabe o que falta."
     )
@@ -3453,8 +3479,9 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "comando do harness continua `note`, não `next`. "
             "`then` já nomeia par, look, chuva e voz se o projeto declara essas "
             "ferramentas; depois de um recibo, o prompt as aponta. Se o disco "
-            "tem last-run com seed, `then` a aponta; nomear o número não "
-            "observa. Ferramenta no disco não é alguém de fora nem mix ouvido. Não "
+            "tem last-run com seed, `then` aponta a seed e o convite; "
+            "nomear o endereço não observa. Ferramenta "
+            "no disco não é alguém de fora nem mix ouvido. Não "
             "instala dependências e não avalia a proposta. `--idea` entra no "
             "brief como frase e, se houver `data/copy.json`, na abertura e no aviso do "
             "primeiro ciclo. O brief continua rascunho. A frase na tela não "
@@ -3501,9 +3528,9 @@ def play_cycle(destination=None, starter=None):
             "joga. `open` é o play. Com tela, o avanço abre a porta. Depois "
             "de uma partida, a página grava o recibo se você escrever; o "
             "próximo comando do harness continua `note`, não `next`. "
-            "Se o disco tem last-run com seed, `then` a aponta; nomear o "
-            "número não observa. O `prompt` também sai em stderr; o JSON "
-            "fica no stdout. `executed` fica falso."
+            "Se o disco tem last-run com seed, `then` aponta a seed e o "
+            "convite; nomear o endereço não observa. O `prompt` também "
+            "sai em stderr; o JSON fica no stdout. `executed` fica falso."
         ),
     }
 
@@ -3628,8 +3655,8 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "`then` nomeia par, look, chuva e voz quando o projeto — ou o "
             "starter, se o destino ainda não existe — declara essas "
             "ferramentas. Se declara `session`, `then` a aponta. Se o disco "
-            "tem last-run com seed, `then` a aponta; nomear o número não "
-            "observa. Nomear o ofício não pinta, não chove e não ouve. O autor do `note` é "
+            "tem last-run com seed, `then` aponta a seed e o convite; "
+            "nomear o endereço não observa. Nomear o ofício não pinta, não chove e não ouve. O autor do `note` é "
             "sugestão do git ou do ambiente, não quem jogou. "
             "`next` fica para quando o ciclo já correu e você não sabe o "
             "que falta. Sem destino, se o diretório atual é um jogo fora "

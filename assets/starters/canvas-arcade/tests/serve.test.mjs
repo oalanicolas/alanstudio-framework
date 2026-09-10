@@ -14,7 +14,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { advertisedOrigins, FINDING_ROUTE, isArtifactRoot, LAST_RUN_FILE, LAST_RUN_ROUTE, NOTE_DIR, NOTE_ROUTE, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
+import { advertisedOrigins, FINDING_ROUTE, inviteQuery, isArtifactRoot, LAST_RUN_FILE, LAST_RUN_ROUTE, lastRunSeed, NOTE_DIR, NOTE_ROUTE, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
 
 const STARTER = fileURLToPath(new URL("..", import.meta.url));
 
@@ -219,6 +219,34 @@ test("o serve anuncia a rede sem fingir que alguém de fora jogou", () => {
   const local = listenBanner(8080, { lo: [{ address: "127.0.0.1", family: "IPv4", internal: true }] }, {});
   assert.doesNotMatch(local, /Rede:/);
   assert.doesNotMatch(local, /Árvore exportada/);
+});
+
+test("o serve junta convite e seed do last-run sem fingir quem jogou", async () => {
+  const base = await mkdtemp(join(tmpdir(), "starter-invite-seed-"));
+  try {
+    assert.equal(lastRunSeed(base), null);
+    assert.equal(inviteQuery(null), "/?invite=1");
+    await mkdir(join(base, "docs/playtest"), { recursive: true });
+    await writeFile(join(base, LAST_RUN_FILE), JSON.stringify({
+      schema: 2,
+      seed: 8,
+      run: { ticks: 40, score: 3, seed: 8 },
+      observed: false,
+      felt: false,
+    }));
+    assert.equal(lastRunSeed(base), 8);
+    assert.equal(inviteQuery(8), "/?invite=1&seed=8");
+    const banner = listenBanner(8080, {
+      wlan0: [{ address: "192.168.1.40", family: "IPv4", internal: false }],
+    }, {}, base);
+    assert.match(banner, /Convite: http:\/\/localhost:8080\/\?invite=1&seed=8/);
+    assert.match(banner, /Seed: http:\/\/localhost:8080\/\?seed=8/);
+    assert.match(banner, /Convite na rede: http:\/\/192\.168\.1\.40:8080\/\?invite=1&seed=8/);
+    assert.doesNotMatch(banner, /\?seed=7/);
+    assert.doesNotMatch(banner, /outsider|aprovado|verified/);
+  } finally {
+    await rm(base, { recursive: true, force: true });
+  }
 });
 
 test("o serve da árvore exportada nomeia o artefato sem fingir outra máquina", async () => {

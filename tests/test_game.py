@@ -2817,6 +2817,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(first["observed"])
         self.assertFalse(first["outsider"])
         self.assertEqual(first["path"], "docs/playtest/invite.md")
+        self.assertEqual(first["href"], "/?invite=1")
+        self.assertEqual(first["reading"]["invite_href"], "/?invite=1")
         page = (destination / "docs/playtest/invite.md").read_text(encoding="utf-8")
         self.assertIn("npm run serve", page)
         self.assertIn("invite=1", page)
@@ -2851,6 +2853,42 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         payload = json.loads(run.stdout)
         self.assertFalse(payload["created"])
         self.assertFalse(payload["outsider"])
+
+    def test_invite_names_the_last_run_seed_without_claiming_an_outsider(self):
+        destination = self.root / "convite-com-seed"
+        game.init(destination, "canvas-arcade")
+        (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        first = game.invite_playtest(destination)
+        self.assertTrue(first["created"])
+        self.assertEqual(first["href"], "/?invite=1&seed=8")
+        self.assertEqual(first["reading"]["invite_href"], "/?invite=1&seed=8")
+        self.assertEqual(first["reading"]["candidate_seed"], 8)
+        self.assertFalse(first["observed"])
+        self.assertFalse(first["outsider"])
+        page = (destination / "docs/playtest/invite.md").read_text(encoding="utf-8")
+        self.assertIn("/?invite=1&seed=8", page)
+        self.assertIn("/?seed=8", page)
+        self.assertNotRegex(page, game.FINDING_FIELDS)
+        self.assertNotIn("aprovado", page)
+        self.assertNotIn("verified", page)
+        again = game.invite_playtest(destination)
+        self.assertFalse(again["created"])
+        self.assertEqual(again["href"], "/?invite=1&seed=8")
+        self.assertEqual(
+            (destination / "docs/playtest/invite.md").read_text(encoding="utf-8"),
+            page,
+        )
+        reading = game.playtest_reading(destination)
+        self.assertEqual(reading["invite_href"], "/?invite=1&seed=8")
+        self.assertFalse(reading["observed"])
+        self.assertFalse(reading["outsider"])
 
     def test_a_page_finding_is_form_not_an_outsider(self):
         destination = self.root / "achado-da-pagina"
@@ -3140,8 +3178,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         game.start_project(destination, "canvas-arcade")
         fresh = game.start_project(destination, "canvas-arcade")
         self.assertNotIn("seed", fresh["then"])
+        self.assertNotIn("invite", fresh["then"])
         self.assertNotIn("/?seed=", fresh["prompt"])
         self.assertNotIn("seed", game.guide_cycle(destination, "canvas-arcade")["then"])
+        self.assertNotIn("invite", game.guide_cycle(destination, "canvas-arcade")["then"])
         self.assertNotIn("seed", game.play_cycle(destination)["then"])
         (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
         (destination / "docs/playtest/last-run.json").write_text(json.dumps({
@@ -3158,25 +3198,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         }), encoding="utf-8")
         after = game.guide_cycle(destination, "canvas-arcade")
         self.assertEqual(after["then"]["seed"], "/?seed=8")
+        self.assertEqual(after["then"]["invite"], "/?invite=1&seed=8")
         self.assertIn("?seed=8", after["prompt"])
+        self.assertIn("?invite=1&seed=8", after["prompt"])
         self.assertIn("serve", after["then"]["play"])
         self.assertNotIn("aprovado", after["prompt"])
         self.assertNotIn("verified", after["prompt"])
         self.assertFalse(after["executed"])
         opened = game.play_cycle(destination)
         self.assertEqual(opened["then"]["seed"], "/?seed=8")
+        self.assertEqual(opened["then"]["invite"], "/?invite=1&seed=8")
         self.assertIn("?seed=8", opened["prompt"])
         self.assertEqual(opened["then"]["play"], opened["play"])
         self.assertFalse(opened["executed"])
         started = game.start_project(destination, "canvas-arcade")
         self.assertEqual(started["then"]["seed"], "/?seed=8")
+        self.assertEqual(started["then"]["invite"], "/?invite=1&seed=8")
         self.assertIn("?seed=8", started["prompt"])
         self.assertEqual(started["next"]["proposal"]["basis"], "playable.unplayed")
         game.note_observation(destination, "Ana", "o verbo pesa no guarda")
         noted = game.guide_cycle(destination, "canvas-arcade")
         self.assertTrue(noted["noted"])
         self.assertEqual(noted["then"]["seed"], "/?seed=8")
+        self.assertEqual(noted["then"]["invite"], "/?invite=1&seed=8")
         self.assertIn("?seed=8", noted["prompt"])
+        self.assertIn("?invite=1&seed=8", noted["prompt"])
         self.assertIn("recibo", noted["prompt"])
         self.assertIn("pair", noted["prompt"])
         self.assertNotIn("O jogo não foi aberto", noted["prompt"])

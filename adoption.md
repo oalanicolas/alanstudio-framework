@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.123 — O convite também nomeia a seed
+
+O guia já apontava `/?seed=<n>`. Quem nunca viu
+o jogo ainda abria `/?invite=1` sem a partida.
+Com last-run, o convite junta o número.
+`outsider` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.123 não afirma: nomear o endereço não
+é quem jogou nem curva observada.
+
 ## 0.9.122 — O guia também nomeia a seed
 
 `playtest` já lia `candidate_seed`. O guia só

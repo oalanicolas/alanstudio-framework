@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.122: o guia também nomeia a seed.
+**HEAD:** ver `git log -1` — vigente 0.9.123: o convite também nomeia a seed.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 250 OK.
-`cd assets/starters/canvas-arcade && npm test` → 289 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 251 OK.
+`cd assets/starters/canvas-arcade && npm test` → 290 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.122)
+## O que o HEAD já entrega (0.9.91–0.9.123)
 
 | Ver | Salto |
 | --- | --- |
@@ -66,6 +66,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.120 | `?seed=<n>` abre essa partida. Seed explícita (query ou construtor) ignora o hold. `playtest` relata `candidate_seed`. `CYCLE_KEYS` inclui `seed`. `observed` continua falso. |
 | 0.9.121 | A porta desenha a legenda que o mixer ainda guarda. `captions: false` some a linha. `verified` continua falso. |
 | 0.9.122 | Depois de um last-run no disco, `then.seed` aponta `/?seed=<n>`. O prompt nomeia o número. Sem last-run, a chave some. `then.seed` não é ofício. `observed` continua falso. |
+| 0.9.123 | Com seed no last-run, o convite aponta `/?invite=1&seed=<n>`. `then.invite`, `invite_href` e o banner do serve juntam o número. Sem last-run, continua `/?invite=1`. `then.invite` não é ofício. `outsider` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -139,8 +140,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, `gameSpeed` no disco, `hold` no stub,
   coil/windup no disco, copiar ou gravar o achado, last-run,
-  anexo do achado, recibo da página, `?seed=`, `then.seed` ou
-  avanço no overlay.
+  anexo do achado, recibo da página, `?seed=`, `then.seed`,
+  `then.invite`, `invite_href` ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -177,9 +178,14 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `next` / `doctor` / `feel` não têm `prompt` e não escrevem frase.
 - `then` sempre tem `play`, `note`, `lost`.
 - Se `last_run_seed` devolver um `int` (não bool), `then.seed`
-  é `/?seed=<n>`. Sem last-run ou sem seed, a chave some.
-  `then.seed` **não** entra em `CRAFT_EXAMPLES` / `CRAFT_LABELS`.
-  `next` não ganha basis nova na frente de `cycle.craft`.
+  é `/?seed=<n>` e `then.invite` é `/?invite=1&seed=<n>`. Sem
+  last-run ou sem seed, as duas chaves somem.
+  `then.seed` e `then.invite` **não** entram em `CRAFT_EXAMPLES` /
+  `CRAFT_LABELS`. `next` não ganha basis nova na frente de
+  `cycle.craft`.
+- `invite_href` / `playtest --invite` / banner do serve usam o
+  mesmo endereço. Página já escrita não é reescrita; o JSON
+  aponta o href vigente.
 - Sem caminho e sem ideia (ou ideia que não vira slug): `ValueError` “sem destino”.
 
 **Starter**
@@ -218,11 +224,12 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `title_play` / `title_again` / `title_new` / `title_last` /
   `over_door` / `over_door_inline` em `COPY_FIELDS` (default `{dash}`).
   `migrateCopy` preenche default se a mesa antiga não tiver.
-- Invite (`?invite=1`) some `#commands`, não `#remap`. `#finding`
-  aparece com `html.invite.finding` no `over` e na `title` se houver
-  `lastRun`. Copiar não grava. Gravar só se `playFinding` devolver
-  texto. Esqueleto vazio não casa `FINDING_FIELDS`. Achado `.md` ≠
-  recibo `record.json`.
+- Invite (`?invite=1`) some `#commands`, não `#remap`. Com seed no
+  last-run, `/?invite=1&seed=<n>` some a tabela e abre essa partida.
+  `#finding` aparece com `html.invite.finding` no `over` e na `title`
+  se houver `lastRun`. Copiar não grava. Gravar só se `playFinding`
+  devolver texto. Esqueleto vazio não casa `FINDING_FIELDS`. Achado
+  `.md` ≠ recibo `record.json`.
 - Serve POST `/playtest/last-run` grava `docs/playtest/last-run.json`.
   Força `observed`/`felt` falsos e `policy: played`. Árvore
   exportada responde 403. Sem canvas o headless não posta.
@@ -259,7 +266,8 @@ Candidatos, do que ainda dói:
    página grava o achado se os quatro tiverem texto e anexa o
    candidato se last-run existir. `?seed=` abre a seed do
    candidato. Depois de um last-run, `then.seed` aponta o
-   número. O comando `note` continua. Não auto-servir.
+   número e o convite junta `/?invite=1&seed=<n>`. O comando
+   `note` continua. Não auto-servir.
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
@@ -290,5 +298,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `cycle_then` lê `last_run_seed`
-e o prompt nomeia `/?seed=<n>` quando o disco tem o número.
+Arquivos quentes da última sessão: `invite_href` junta convite e
+seed; o banner do serve lê `last-run.json` no boot.
