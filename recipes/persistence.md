@@ -60,6 +60,10 @@ repetia a frase e o mover. `canResume` lê o hold; `canContinue`
 continua sendo repetir a última seed.
 `?seed=<n>` abre essa partida e ignora o hold — não é Continuar.
 Pausa, `pagehide`, `beforeunload`, perda de foco e o controle que some gravam o hold. Terminar ou resetar limpa.
+`?look=` / `?spawn=` / `?speed=` vestem a sessão. Fechar, esconder
+ou `flush` não grava esses eixos — o convite é candidato, não
+preferência. Escolher no painel grava. Query no disco não é
+aba fechada nem `trusted`.
 A outra aba veste as preferências desta página (`storage`); o progresso
 em curso não. Ouvir não é aba fechada. Isto **não** é aba fechada observada e não sobe `state_trust`. Grava
 de forma **verificada** em `src/core/storage.js` — escreve em chave de estágio,

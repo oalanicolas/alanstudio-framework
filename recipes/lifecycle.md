@@ -28,7 +28,9 @@ e senta o mesmo relógio; na porta só descarrega. O controle que some
 senta o mesmo relógio se a sessão falou no pad; teclado e toque não
 sentam porque um pad na gaveta desconectou. Na porta só descarrega.
 Hidden que pausa sem P para retomar
-congela a mostra. Stub não é aba fechada nem sessão no controle.
+congela a mostra. A query de look, chuva e relógio veste a
+sessão; `pagehide` e `flush` não a gravam. Escolher no painel
+grava. Stub não é aba fechada nem sessão no controle.
 
 Examine separadamente:
 

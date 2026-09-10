@@ -85,10 +85,15 @@ export function createGame(options = {}) {
 
   let settingsLoad = loadSettings(storage, environment);
   let settings = settingsLoad.settings;
+  let keptSettings = { ...settings };
+  const sessionAxes = {};
   const queryMood = readMoodQuery(options);
   const querySpawn = readSpawnQuery(options) ?? queryMood;
   const queryLook = readLookQuery(options) ?? queryMood;
   const querySpeed = readSpeedQuery(options);
+  if (querySpawn) sessionAxes.spawnProfile = true;
+  if (queryLook) sessionAxes.look = true;
+  if (querySpeed !== null) sessionAxes.gameSpeed = true;
   if (querySpawn || queryLook || querySpeed !== null) {
     settings = normalizeSettings(
       {
@@ -359,12 +364,41 @@ export function createGame(options = {}) {
     syncBed();
   }
 
+  function persistableSettings() {
+    // O convite veste a sessão. Sem isto pagehide gravava
+    // dusk como se a pessoa tivesse escolhido. Query no
+    // disco não é preferência; trusted continua falso.
+    if (!sessionAxes.look && !sessionAxes.spawnProfile && !sessionAxes.gameSpeed) {
+      return settings;
+    }
+    return {
+      ...settings,
+      ...(sessionAxes.look ? { look: keptSettings.look } : {}),
+      ...(sessionAxes.spawnProfile ? { spawnProfile: keptSettings.spawnProfile } : {}),
+      ...(sessionAxes.gameSpeed ? { gameSpeed: keptSettings.gameSpeed } : {}),
+    };
+  }
+
+  function claimSessionAxes(patch) {
+    if (!patch || typeof patch !== "object") return;
+    if ("look" in patch) delete sessionAxes.look;
+    if ("spawnProfile" in patch) delete sessionAxes.spawnProfile;
+    if ("gameSpeed" in patch) delete sessionAxes.gameSpeed;
+  }
+
+  function writeSettings() {
+    const written = persistableSettings();
+    const result = saveSettings(storage, written);
+    keptSettings = { ...written };
+    return result;
+  }
+
   function flush() {
     if (state.phase === "playing") {
       progress = { ...progress, hold: captureHold(state) };
     }
     rememberWrite(saveProgress(storage, progress, progressLoad));
-    const settingsWrite = saveSettings(storage, settings);
+    const settingsWrite = writeSettings();
     if (settingsWrite && settingsWrite.ok === false) rememberWrite(settingsWrite);
     return { progress: { ...progress }, settings, persist: persist() };
   }
@@ -423,7 +457,7 @@ export function createGame(options = {}) {
       resetTrace();
       progress = { ...progress, hold: null };
     }
-    if (persist) rememberWrite(saveSettings(storage, settings));
+    if (persist) rememberWrite(writeSettings());
   }
   function onStorage(event) {
     // A outra aba já gravou. Sem isto look e mix
@@ -431,6 +465,10 @@ export function createGame(options = {}) {
     // aba fechada; trusted continua falso.
     if (!foreignKey(event, storage.prefix, SETTINGS_KEY)) return;
     settingsLoad = loadSettings(storage, environment);
+    keptSettings = { ...settingsLoad.settings };
+    delete sessionAxes.look;
+    delete sessionAxes.spawnProfile;
+    delete sessionAxes.gameSpeed;
     wearSettings(settingsLoad.settings, false);
     for (const fn of settingWatchers) fn(settings);
   }
@@ -596,6 +634,7 @@ export function createGame(options = {}) {
       return () => settingWatchers.delete(fn);
     },
     updateSettings(patch) {
+      claimSessionAxes(patch);
       wearSettings(normalizeSettings({ ...settings, ...patch }, environment, settings), true);
       return settings;
     },

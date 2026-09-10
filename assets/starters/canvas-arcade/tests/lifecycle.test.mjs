@@ -1155,6 +1155,78 @@ test("trocar o look não recomeça a partida", () => {
   game.dispose();
 });
 
+test("a query não grava o look, a chuva nem o relógio", () => {
+  const queries = {};
+  const matchMedia = (text) => {
+    if (!queries[text]) {
+      const listeners = new Set();
+      queries[text] = {
+        matches: false,
+        addEventListener(_, fn) { listeners.add(fn); },
+        removeEventListener(_, fn) { listeners.delete(fn); },
+        fire(next) {
+          this.matches = next;
+          for (const fn of listeners) fn();
+        },
+      };
+    }
+    return queries[text];
+  };
+  const storage = memoryStorage();
+  const prior = createGame({ seed: 5, eventTarget: recordingTarget(), storage });
+  prior.updateSettings({ look: "calm", spawnProfile: "calm", gameSpeed: 0.5 });
+  prior.dispose();
+  const { game, target } = harness({
+    storage,
+    query: "?look=dusk&spawn=dusk&speed=0.75",
+    matchMedia,
+  });
+  assert.equal(game.settings.look, "dusk");
+  assert.equal(game.settings.spawnProfile, "dusk");
+  assert.equal(game.settings.gameSpeed, 0.75);
+  const hide = target.listeners.find((entry) => entry.type === "pagehide");
+  assert.ok(hide, "pagehide precisa de ouvinte");
+  hide.handler();
+  const afterHide = JSON.parse(storage.get("settings"));
+  assert.equal(afterHide.look, "calm", "esconder não grava o look do convite");
+  assert.equal(afterHide.spawnProfile, "calm", "esconder não grava a chuva do convite");
+  assert.equal(afterHide.gameSpeed, 0.5, "esconder não grava o relógio do convite");
+  matchMedia("(prefers-reduced-motion: reduce)").fire(true);
+  const afterEnv = JSON.parse(storage.get("settings"));
+  assert.equal(afterEnv.reducedMotion, true);
+  assert.equal(afterEnv.look, "calm", "o sistema não grava o look que só vestiu");
+  game.updateSettings({ captions: false });
+  const afterOther = JSON.parse(storage.get("settings"));
+  assert.equal(afterOther.captions, false);
+  assert.equal(afterOther.look, "calm");
+  assert.equal(afterOther.spawnProfile, "calm");
+  assert.equal(afterOther.gameSpeed, 0.5);
+  const reopened = createGame({ seed: 5, eventTarget: recordingTarget(), storage });
+  assert.equal(reopened.settings.look, "calm");
+  assert.equal(reopened.settings.spawnProfile, "calm");
+  assert.equal(reopened.settings.gameSpeed, 0.5);
+  assert.equal(reopened.settings.captions, false);
+  game.dispose();
+  reopened.dispose();
+});
+
+test("escolher o look na sessão do convite grava", () => {
+  const storage = memoryStorage();
+  const { game } = harness({ storage, query: "?look=dusk&speed=0.75" });
+  assert.equal(game.settings.look, "dusk");
+  game.flush();
+  assert.equal(JSON.parse(storage.get("settings")).look, "normal");
+  assert.equal(JSON.parse(storage.get("settings")).gameSpeed, 1);
+  game.updateSettings({ look: "dusk" });
+  assert.equal(JSON.parse(storage.get("settings")).look, "dusk");
+  assert.equal(JSON.parse(storage.get("settings")).gameSpeed, 1, "escolher o look não grava o relógio vestido");
+  const reopened = createGame({ seed: 5, eventTarget: recordingTarget(), storage });
+  assert.equal(reopened.settings.look, "dusk");
+  assert.equal(reopened.settings.gameSpeed, 1);
+  game.dispose();
+  reopened.dispose();
+});
+
 test("a query escolhe o look sem inventar mesa", () => {
   const { game } = harness({ query: "?look=dusk" });
   assert.equal(game.settings.look, "dusk");

@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.291: a página de escuta nomeia o som que o catálogo lista e o disco perdeu. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.292: o convite não grava o look, a chuva nem o relógio que só vestiu. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 311 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.291)
+## O que o HEAD já entrega (0.9.91–0.9.292)
 
 | Ver | Salto |
 | --- | --- |
@@ -235,6 +235,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.289 | O ciclo nomeia o relógio que o jogo já lê. `CYCLE_KEYS` inclui `speed` depois de `seed`. O SKILL já pedia. Não promove `outsider`. |
 | 0.9.290 | O banner do serve nomeia o relógio que o jogo já lê. Look, chuva e par deixam de calar `?speed=`. Não promove `outsider`. |
 | 0.9.291 | A página de escuta nomeia o som que o catálogo lista e o disco perdeu. O player some. Não promove `heard`. |
+| 0.9.292 | O convite não grava o look, a chuva nem o relógio que só vestiu. `flush` e o sistema não promovem candidato a preferência. Escolher no painel grava. Não promove `trusted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -253,7 +254,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | art_direction | slice | o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
-| state_trust | slice | o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
+| state_trust | slice | o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
 | content_scale | shippable | paleta não finge volume; dusk+calm+pair; `enough` falso |
@@ -430,7 +431,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou uma sessão que some o look e o relógio que o convite já lê
   ou um ciclo que some o relógio que o jogo já lê
   ou um banner do serve que some o relógio que o jogo já lê
-  ou uma página de escuta que oferece o player do som que o disco perdeu.
+  ou uma página de escuta que oferece o player do som que o disco perdeu
+  ou um convite que grava o look, a chuva ou o relógio que só vestiu.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -671,6 +673,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   o canvas da porta e do over pinta a mesma linha;
   `persistLine` continua só sessão. Jogando a
   chave some. Nomear não é aba fechada.
+  `?look=` / `?spawn=` / `?speed=` vestem a sessão.
+  `flush`, `pagehide` e o sistema não gravam esses
+  eixos. `updateSettings` com a chave no patch grava.
+  A outra aba apaga o overlay da query. Query no
+  disco não é preferência; `trusted` continua falso.
   `liveText.coach` lê `coachText` na porta e no campo —
   o mesmo texto do canvas, teclas vivas. No fim a linha
   some. O convite some `#commands`; sem o live o aviso
@@ -979,6 +986,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um ciclo que some o relógio que o jogo já lê.
 **Não** mais um banner do serve que some o relógio que o jogo já lê.
 **Não** mais uma página de escuta que oferece o player do som que o disco perdeu.
+**Não** mais um convite que grava o look, a chuva ou o relógio que só vestiu.
 
 Candidatos, do que ainda dói:
 
@@ -1696,6 +1704,15 @@ Candidatos, do que ainda dói:
   relógio
   da
   sessão
+  e um
+  convite
+  que
+  grava
+  o
+  look
+  que
+  só
+  vestiu
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -1719,10 +1736,10 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a página
-de escuta nomeia o som que o catálogo lista
-e o disco perdeu. O player some. Não promove
-`heard`.
+Arquivos quentes da última sessão: o convite
+não grava o look, a chuva nem o relógio que
+só vestiu. Escolher no painel grava. Não
+promove `trusted`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1749,3 +1766,4 @@ A família sessão some look/speed que o convite já lê está saturada.
 A família ciclo some o relógio que o jogo já lê está saturada.
 A família banner do serve some o relógio que o jogo já lê está saturada.
 A família página de escuta oferece o player do som perdido está saturada.
+A família convite grava o look/chuva/relógio da query está saturada.

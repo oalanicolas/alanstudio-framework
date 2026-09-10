@@ -3,6 +3,48 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.292 — O convite não grava o look, a chuva nem o relógio que só vestiu
+
+O
+convite
+vestia
+dusk.
+O
+`flush`
+gravava
+dusk.
+A
+reabertura
+sem
+query
+abria
+dusk.
+Agora
+o
+candidato
+fica
+na
+sessão.
+Escolher
+no
+painel
+grava.
+Não
+promove
+`trusted`.
+
+O que 0.9.292 não afirma:
+não
+gravar
+o
+eixo
+vestido
+não
+é
+aba
+fechada
+observada.
+
 ## 0.9.291 — A página de escuta nomeia o som que o catálogo lista e o disco perdeu
 
 O
