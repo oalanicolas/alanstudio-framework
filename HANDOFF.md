@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.291: a página de escuta nomeia o som que o catálogo lista e o disco perdeu. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 309 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 311 OK.
 `cd assets/starters/canvas-arcade && npm test` → 475 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
