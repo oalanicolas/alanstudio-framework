@@ -5,7 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { createInput, isChromeTarget, isTypingTarget } from "../src/core/input.js";
+import { createInput, isChromeTarget, isTypingTarget, pauseCorner, PAUSE_CORNER } from "../src/core/input.js";
 
 function surface(width = 320, height = 180, left = 10, top = 20) {
   const listeners = [];
@@ -112,6 +112,28 @@ test("depois da partida a faixa de baixo pede seed nova", () => {
   const field = input.intent(0.5);
   assert.equal(field.dash, true, "o tap no campo ainda abre");
   assert.equal(input.commands().reset, false);
+  input.dispose();
+});
+
+test("no campo o relógio pausa; o resto avança", () => {
+  assert.equal(pauseCorner({ x: PAUSE_CORNER.x, y: PAUSE_CORNER.y }), true);
+  assert.equal(pauseCorner({ x: 0.87, y: 0.1 }), false, "à esquerda do relógio avança");
+  assert.equal(pauseCorner({ x: 0.95, y: 0.2 }), false, "abaixo do relógio avança");
+  assert.equal(pauseCorner({}), false);
+  const pad = surface();
+  const input = createInput({ target: null, surface: pad });
+  assert.equal(input.setDashOnPress(true), true);
+  pad.tap(300, 18);
+  assert.equal(input.commands().pause, true, "o relógio precisa pausar");
+  assert.equal(input.intent(0.5).dash, false, "o relógio não avança");
+  pad.tap(64, 90);
+  assert.equal(input.commands().pause, false, "o campo não pausa");
+  assert.equal(input.intent(0.5).dash, true, "o campo continua avançando");
+  input.setDashOnPress(false);
+  pad.tap(300, 18);
+  assert.equal(input.commands().pause, false, "na porta o canto não pausa");
+  pad.dispatch("pointerup", {});
+  assert.equal(input.intent(0.5).dash, true, "na porta o canto continua abrindo");
   input.dispose();
 });
 

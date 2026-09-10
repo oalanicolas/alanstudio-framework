@@ -44,7 +44,7 @@ export const COMMAND_SURFACES = {
   move: "analógico ou arrastar na tela",
   dash: "botão A, ou toque na área superior",
   bank: "botão X, ou toque na faixa inferior",
-  pause: "Start no controle",
+  pause: "Start no controle, ou toque no relógio",
   reset: "Select no controle",
 };
 

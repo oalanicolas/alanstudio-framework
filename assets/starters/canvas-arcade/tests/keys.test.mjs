@@ -114,6 +114,7 @@ test("a tabela nomeia as teclas vivas e mantém toque e controle", () => {
   assert.match(one[0].text, /^J \/ L,/);
   assert.match(one[2].text, /^K,/);
   assert.match(one[2].text, /botão X/);
+  assert.match(rows[3].text, /toque no relógio/);
 });
 
 test("pintar a tabela troca o texto sem inventar sessão", () => {

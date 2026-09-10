@@ -568,6 +568,44 @@ test("o toque retoma a pausa sem avançar no mesmo aperto", () => {
   game.dispose();
 });
 
+test("no campo o telefone pausa no relógio", () => {
+  const listeners = [];
+  const view = textCanvas();
+  const canvas = {
+    ...view.canvas,
+    getBoundingClientRect() {
+      return { left: 0, top: 0, width: 360, height: 640 };
+    },
+    addEventListener(type, handler) {
+      listeners.push({ type, handler });
+    },
+    removeEventListener(type, handler) {
+      const index = listeners.findIndex((entry) => entry.type === type && entry.handler === handler);
+      if (index !== -1) listeners.splice(index, 1);
+    },
+    dispatch(type, event) {
+      for (const entry of [...listeners]) {
+        if (entry.type === type) entry.handler(event);
+      }
+    },
+  };
+  const { game, frame } = shell({ canvas, loadSfx: false });
+  game.start();
+  frame();
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing");
+  const dashes = game.observe().stats.dashes;
+  canvas.dispatch("pointerdown", { clientX: 340, clientY: 40, pointerId: 2 });
+  frame();
+  assert.equal(game.paused, true, "o relógio precisa pausar");
+  assert.equal(game.observe().stats.dashes, dashes, "o relógio não é o avanço");
+  canvas.dispatch("pointerup", { pointerId: 2 });
+  frame();
+  assert.equal(game.paused, true, "soltar o relógio não retoma");
+  game.dispose();
+});
+
 test("na pausa o telefone vê Continuar: toque sem ter apertado", () => {
   const view = textCanvas();
   const live = { textContent: "" };

@@ -29,7 +29,10 @@
 // não é felt.
 // Na pausa o tap retoma. Sem isto a aba escondida
 // no telefone sentava e Esc/P não existem no toque.
-// Espaço na pausa continua só intenção. Toque no
+// No campo o relógio pausa. Sem isto o telefone
+// só retomava — Esc e P não existem no polegar.
+// Na porta o canto continua abrindo. Espaço na
+// pausa continua só intenção. Toque no
 // disco não é felt.
 // Esconder a aba perde o keyup. Sem o visibilitychange
 // o corpo seguia o último hold. Perder o foco da janela
@@ -56,6 +59,21 @@ import { DEFAULT_BINDINGS } from "./settings.js";
 
 const MOVE_DEADZONE = 0.28;
 const DRAG_DEADZONE = 0.04;
+
+// O relógio mora no canto alto direito. Faixa larga
+// come o avanço; faixa estreita demais some o alvo.
+// Números no disco não são sessão observada.
+export const PAUSE_CORNER = { x: 0.88, y: 0.14 };
+
+export function pauseCorner(position) {
+  return Boolean(
+    position
+    && Number.isFinite(position.x)
+    && Number.isFinite(position.y)
+    && position.x >= PAUSE_CORNER.x
+    && position.y <= PAUSE_CORNER.y,
+  );
+}
 
 export function isTypingTarget(event) {
   const node = event?.target;
@@ -220,6 +238,14 @@ export function createInput(options = {}) {
     if (!position) return;
     noteSource("pointer");
     wake();
+    // No campo o relógio já mora no canto. Sem isto
+    // o telefone só retomava. Na porta dashOnPress
+    // é falso e o canto continua abrindo. Toque no
+    // disco não é felt.
+    if (dashOnPress && pauseCorner(position)) {
+      pressed.add("pause");
+      return;
+    }
     pointer.active = true;
     pointer.aim = position.x;
     pointer.originX = position.x;

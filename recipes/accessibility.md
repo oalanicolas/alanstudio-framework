@@ -58,6 +58,8 @@ nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
 Estilhaço no trilho pede o dash; toque e controle ganham passo depois
 do movimento. Overlay e HUD confirmam o aparelho que falou por último.
 Na pausa o toque retoma — Esc e P não existem no polegar.
+No campo o telefone pausa no relógio; o resto da tela
+continua o avanço. Na porta o canto continua abrindo.
 A placa da pausa nomeia reiniciar; R já saía e o overlay calava.
 A região viva espelha continuar e reiniciar — o overlay do canvas
 não chega ao leitor.

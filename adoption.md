@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.305 — No campo o telefone pausa no relógio
+
+Esc
+e
+P
+não
+existem
+no
+polegar.
+O
+toque
+só
+retomava.
+O
+relógio
+já
+mora
+no
+canto.
+Agora
+o
+toque
+ali
+pausa.
+Na
+porta
+o
+canto
+continua
+abrindo.
+Não
+promove
+`felt`.
+
+O que 0.9.305 não afirma:
+toque
+no
+disco
+não
+é
+sessão
+observada.
+
 ## 0.9.304 — O feel nomeia a partida do last-run
 
 O

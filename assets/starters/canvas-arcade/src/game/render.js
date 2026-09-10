@@ -510,6 +510,9 @@ export function createRenderer(canvas, options = {}) {
     target.fillStyle = state.chain > 0 ? palette.chain : palette.muted;
     target.fillText(chain, 6, second);
 
+    // O relógio mora neste canto. O toque ali pausa —
+    // Esc e P não existem no polegar. Texto no disco
+    // não é sessão observada.
     const rightWidth = Math.max(width(`${seconds}s`), best ? width(best) : 0);
     const timerBox = plate(target, palette, FIELD.width - 6 - rightWidth, 5, rightWidth, best ? second + size - 5 : size);
     target.textAlign = "right";
