@@ -2,12 +2,16 @@
 // página — e a barra chama isso de protótipo. O aviso some depois da
 // primeira vez que o jogador guarda: a decisão já foi jogada.
 //
+// Exceção: no fecho a corrente viva ainda pode cair. Pedir guardar
+// de novo não reabre o primeiro ciclo — pad e toque continuam
+// calados depois da primeira guarda. Texto no disco não é sessão.
+//
 // Mover, coletar e guardar já tinham passo. O dash — o verbo que a
 // fantasia nomeia — e o mapa da superfície que falou ficavam só na
 // tabela. A queda do orbe falava e marcava o lugar; o aviso não
 // nomeava o custo. Passo no campo não é sessão observada.
 
-import { approaching } from "./rules.js";
+import { approaching, closingWindow } from "./rules.js";
 
 const FANTASY_TICKS = 48;
 const MOVE_TICKS = 60;
@@ -23,6 +27,7 @@ function shardThreat(state) {
 
 export function coachHint(state, lines = {}, extra = {}) {
   if (!state || state.phase !== "playing") return null;
+  if (closingWindow(state) && (state.chain ?? 0) > 0) return "bank";
   if (state.stats.banks > 0) return null;
   const fantasy = typeof lines.fantasy === "string" ? lines.fantasy.trim() : "";
   if (fantasy && state.tick < FANTASY_TICKS) return "fantasy";

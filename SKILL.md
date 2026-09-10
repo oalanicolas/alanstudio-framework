@@ -152,7 +152,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Depois de um `init` fresco ou de um `start` sem rascunhos, `next` propõe
    **abrir o ciclo** antes de documentar o que falta: o starter já é um jogo que abre. Com tela,
    o avanço abre a porta; no campo o aviso ensina mover, avançar,
-   coletar, guardar e o mapa da superfície que falou. Art-bible vigente.
+   coletar, guardar e o mapa da superfície que falou. No fecho, corrente
+   viva pede guardar de novo; pad e toque não voltam. Art-bible vigente.
    O `init` não o reescreve.
    **`guide [<projeto>]`** devolve os três passos ideia→ciclo (start,
    jogar, note) sem executar nenhum. Sem subcomando, o harness é o

@@ -13,7 +13,8 @@
 // `title_volatile` e `title_unsaved` nomeiam sessão que não
 // grava e gravação que não ficou. Nomear não é `trusted`.
 // `resume`, `restart` e
-// `hint_bank` reservam o lugar da tecla viva; `hint_dash` ensina o
+// `hint_bank` reservam o lugar da tecla viva — o fecho com corrente
+// viva reusa essa linha; `hint_dash` ensina o
 // avanço nas três superfícies quando o estilhaço marca o trilho;
 // `hint_touch` e `hint_pad` são o passo da superfície que falou;
 // `hint_miss` nomeia a queda quando a corrente ainda é zero.

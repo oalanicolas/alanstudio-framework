@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { coachHint } from "../src/game/coach.js";
-import { createState, PLAYER_Y } from "../src/game/rules.js";
+import { CONFIG, createState, PLAYER_Y } from "../src/game/rules.js";
 
 const shardOnRail = () => ({ id: 1, kind: "shard", x: 160, y: PLAYER_Y - 22, vy: 0 });
 const orbOnRail = () => ({ id: 2, kind: "orb", x: 160, y: PLAYER_Y - 22, vy: 0 });
@@ -109,4 +109,34 @@ test("estilhaço no trilho vence a queda", () => {
   state.stats.missed = 1;
   state.entities = [shardOnRail()];
   assert.equal(coachHint(state), "dash");
+});
+
+test("o fecho pede guardar a corrente viva sem fingir sessão observada", () => {
+  const mid = createState(1);
+  mid.tick = 1800;
+  mid.chain = 4;
+  mid.stats.banks = 1;
+  assert.equal(coachHint(mid), null, "no meio a primeira guarda encerra o ensino");
+
+  const close = createState(1);
+  close.tick = CONFIG.runTicks - 300;
+  close.chain = 4;
+  close.stats.banks = 1;
+  assert.equal(coachHint(close), "bank");
+  assert.equal(coachHint(close, {}, { surface: "pointer" }), "bank", "o fecho não reabre o toque");
+  assert.equal(coachHint(close, {}, { surface: "gamepad" }), "bank", "o fecho não reabre o controle");
+
+  const empty = createState(1);
+  empty.tick = CONFIG.runTicks - 300;
+  empty.chain = 0;
+  empty.stats.banks = 1;
+  assert.equal(coachHint(empty), null);
+  assert.equal(coachHint(empty, {}, { surface: "pointer" }), null, "sem corrente o fecho não ensina toque");
+
+  const ended = createState(1);
+  ended.phase = "over";
+  ended.tick = CONFIG.runTicks;
+  ended.chain = 4;
+  ended.stats.banks = 1;
+  assert.equal(coachHint(ended), null);
 });

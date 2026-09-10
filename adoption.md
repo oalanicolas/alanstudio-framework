@@ -3,6 +3,22 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.156 — O fecho pede guardar
+
+Depois da primeira guarda o
+aviso sumia. Nos últimos 10 s
+a corrente viva caía sem
+pedido. O fecho reusa
+`hint_bank`. Pad e toque
+continuam calados. Sem
+corrente o aviso some.
+`felt` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.156 não afirma:
+pedir guardar no disco não é
+peso no dispositivo.
+
 ## 0.9.155 — O fecho aperta a chuva
 
 Os últimos 10 s só

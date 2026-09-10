@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.155: o fecho aperta a chuva.
+**HEAD:** ver `git log -1` — vigente 0.9.156: o fecho pede guardar.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 264 OK.
-`cd assets/starters/canvas-arcade && npm test` → 329 OK.
+`cd assets/starters/canvas-arcade && npm test` → conferir após o 0.9.156.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.155)
+## O que o HEAD já entrega (0.9.91–0.9.156)
 
 | Ver | Salto |
 | --- | --- |
@@ -99,6 +99,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.153 | `start` / `play` / `guide` devolvem `runtime`: Node no PATH se o play pede npm ou node. Sem 20+ o prompt avisa. Não executa o serve. `usable` é só o binário. |
 | 0.9.154 | O prompt nomeia `Sessão:` quando o manifesto declara `session`. `start` / `play` / `guide` devolvem a chave. Não executa. Simulação não é partida observada. |
 | 0.9.155 | Spawn 3: `closeIntervalScale` aperta o intervalo nos últimos 10 s. Ausente fica `1`. dusk aperta mais que spawn; calm menos. Recuperação e fecho se multiplicam. Não promove pacing. |
+| 0.9.156 | O fecho com corrente viva pede guardar de novo. Reusa `hint_bank`. Pad e toque continuam calados depois da primeira guarda. Sem corrente o aviso some. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -111,7 +112,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | fecho pede guardar no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | `heard` falso |
@@ -172,11 +173,13 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `INIT_COPY_SKIP` inclui `dist`, `node_modules`, `.git` e
   `__pycache__`. Bytecode no starter vivo não entra no projeto.
 - Não ensinar pad/touch no coach **antes** de `lastSource` nem
-  **depois** da primeira guarda.
+  **depois** da primeira guarda. O fecho com corrente viva pede
+  `bank` (reusa `hint_bank`); sem corrente, ou fora do fecho,
+  a primeira guarda continua encerrando o ensino.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, chuva da porta, `gameSpeed` no disco, `hold` no stub,
-  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, copiar ou gravar o achado, last-run,
+  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, aviso de guardar no fecho, copiar ou gravar o achado, last-run,
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
   `then.invite`, `invite_href`, copiar o endereço do convite,
   levar a chuva ou o look na URL, tinta estável no disco,
@@ -317,7 +320,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   flash menor que a queda. Sem hitstop. Sem rumble.
   Não promover `feel`.
 - Coach: fantasy → move → dash → miss → touch/pad → collect → null após
-  1ª guarda. `coachHint` some se `phase !== "playing"`.
+  1ª guarda. Exceção: `closingWindow` e `chain > 0` devolve `bank`
+  mesmo depois da primeira guarda. Sem corrente o fecho não ensina.
+  Pad/touch não voltam. `coachHint` some se `phase !== "playing"`.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
 - `title_play` / `title_again` / `title_new` / `title_last` /
   `title_volatile` / `title_unsaved` /
@@ -387,6 +392,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um campo que só relê o `doctor` sem mudar o prompt.
 **Não** mais esconder a sessão no `then` enquanto o prompt só cola o serve.
 **Não** mais um fecho que só pisca enquanto o dado já nomeia o aperto.
+**Não** mais um fecho que come a corrente viva sem pedir guardar.
 
 Candidatos, do que ainda dói:
 
@@ -434,7 +440,8 @@ Candidatos, do que ainda dói:
    duck só na cama e a graça
   no coil do avanço e o
   aperto do fecho no
-  disco não
+  disco e o aviso de
+  guardar no fecho não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
@@ -457,6 +464,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `closeIntervalScale` nas três
-chuvas; `spawnIntervalScale` em `rules.js`. Ausente fica 1.
-Não promover pacing.
+Arquivos quentes da última sessão: `coachHint` no fecho com
+corrente viva. Reusa `hint_bank`. Pad/touch não voltam.
+Não promover feel.
