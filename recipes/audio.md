@@ -15,8 +15,9 @@ e Kenney arcade não são o padrão.
 
 `context --focus audio` seleciona esta receita. `roles <projeto>` lê os
 papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
-em `public/sfx`. `roles --fill` sugere um candidato do acervo; `--apply`
-copia para `public/sfx/<papel>` com recibo. O starter `canvas-arcade`
+em `public/sfx`. `roles --fill` sugere um id do acervo ou a ficha do
+stem do starter que casa; `--apply` copia só o id do acervo.
+Stem do starter só nomeia. O starter `canvas-arcade`
 já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
 mixer. O pedido que chega antes do WAV fica na fila e toca quando o
 buffer entra — sem segunda legenda. Os stems sobem juntos: collect
@@ -30,8 +31,8 @@ voz própria, mais curta que o dash; sem o papel o aterrissar é mudo.
 `sfx --from` / `--as` desloca a voz no papel que o mixer já toca;
 depois de um `note`, `start` e `next` apontam esse comando.
 Arquivo ausente é lacuna do verbo, não silêncio deliberado;
-`heard` é sempre falso. Sem `shared/sfx`, a sugestão de `--fill` vem
-vazia, `sfx search` nomeia o stem do starter que casa com o termo,
+`heard` é sempre falso. Sem `shared/sfx`, `--fill` nomeia o stem
+do starter que casa, `sfx search` nomeia o mesmo stem,
 `sfx info` lê a chave, `sfx verify` nomeia os stems sem cruzar o
 que não existe, `sfx summary` lista todos os stems já no
 `public/sfx` e `sfx serve`

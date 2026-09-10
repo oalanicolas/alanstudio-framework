@@ -2122,19 +2122,25 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         suggested = game.roles_fill(destination, self.root)
         dash = next(item for item in suggested["suggestions"] if item["role"] == "dash")
         self.assertEqual(dash["match"]["id"], "whoosh-dash")
+        self.assertEqual(dash["match"]["kind"], "catalog")
+        hit = next(item for item in suggested["suggestions"] if item["role"] == "hit")
+        self.assertEqual(hit["match"]["kind"], "starter")
+        self.assertEqual(hit["match"]["id"], "hit")
         self.assertFalse(suggested["applied"])
         self.assertFalse(suggested["heard"])
         self.assertFalse((destination / "public/sfx/dash.wav").exists())
         applied = game.roles_fill(destination, self.root, apply=True)
         self.assertTrue(applied["applied"])
         self.assertIn("dash", applied["copied"])
+        self.assertNotIn("hit", applied["copied"])
         self.assertTrue((destination / "public/sfx/dash.wav").is_file())
+        self.assertFalse((destination / "public/sfx/hit.wav").exists())
         self.assertFalse(applied["heard"])
         after = game.roles_reading(destination, self.root)
         self.assertNotIn("dash", after["empty"])
         self.assertIn("hit", after["empty"])
 
-    def test_roles_fill_without_a_catalog_does_not_invent_a_sound(self):
+    def test_roles_fill_without_a_catalog_names_the_starter_stem(self):
         destination = self.root / "sem-acervo"
         game.init(destination, "canvas-arcade")
         for path in (destination / "public/sfx").iterdir():
@@ -2142,14 +2148,28 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
                 path.unlink()
         report = game.roles_fill(destination, self.root)
         self.assertFalse(report["catalog_exists"])
-        self.assertTrue(all(item["match"] is None for item in report["suggestions"]))
+        dash = next(item for item in report["suggestions"] if item["role"] == "dash")
+        self.assertEqual(dash["match"]["kind"], "starter")
+        self.assertEqual(dash["match"]["id"], "dash")
+        self.assertEqual(dash["match"]["src"], "dash.wav")
+        self.assertTrue(dash["match"]["license"])
+        self.assertFalse(dash["match"]["heard"])
+        self.assertFalse(dash["copied"])
         self.assertFalse(report["heard"])
+        self.assertIn("starter", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+        applied = game.roles_fill(destination, self.root, apply=True)
+        self.assertTrue(applied["applied"])
+        self.assertEqual(applied["copied"], [])
+        self.assertFalse((destination / "public/sfx/dash.wav").exists())
         commands = next(
             item["commands"] for item in self.proposals(game.next_step(destination))
             if item["basis"] == "audio.roles"
         )
         self.assertIn("--fill", commands[0])
         self.assertTrue(all("--apply" not in command for command in commands))
+        self.assertTrue(any(" sfx " in f" {command} " and " info " in f" {command} " for command in commands))
 
     def test_sfx_search_on_empty_catalog_does_not_pretend_you_can_listen(self):
         run = subprocess.run(
