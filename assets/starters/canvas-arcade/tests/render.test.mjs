@@ -734,6 +734,17 @@ test("a recuperação do dash não se parece com o dash nem com o descanso", () 
   assert.equal(playerFill(recovery), PALETTES.normal.muted);
 });
 
+test("o coil do dash veste o avanço, não o descanso", () => {
+  const idle = createState(1);
+  const coil = createState(1);
+  coil.player.dashWindup = CONFIG.player.dashWindupTicks;
+  coil.player.squash = CONFIG.feel.squashCoil;
+  assert.equal(playerFill(coil), PALETTES.normal.chain, "o coil do dash vestia o descanso");
+  assert.notEqual(playerFill(coil), playerFill(idle));
+  assert.notEqual(playerFill(coil), PALETTES.normal.orb, "o coil não veste a prática");
+  assert.notEqual(playerFill(coil), PALETTES.normal.muted, "o coil não é a recuperação");
+});
+
 test("a porta nomeia a recuperação que o painel já mostra", () => {
   const state = createState(1, { entry: "title" });
   const door = paint(state, {}, { best: 0, settingsLoad: { status: "recovered" } });

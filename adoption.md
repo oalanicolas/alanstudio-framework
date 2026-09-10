@@ -3,6 +3,43 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.321 — o coil do dash veste o avanço
+
+A
+faixa
+já
+vestia
+a
+corrente.
+O
+corpo
+no
+coil
+vestia
+o
+descanso.
+A
+antecipação
+mentia
+o
+verbo.
+Agora
+veste
+o
+avanço.
+Não
+promove
+`felt`.
+
+O que 0.9.321 não afirma:
+pose
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.320 — o rastro do dash veste o avanço
 
 O

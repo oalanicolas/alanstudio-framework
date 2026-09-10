@@ -382,7 +382,8 @@ export function createRenderer(canvas, options = {}) {
     const top = PLAYER_Y - height / 2;
     const ending = state.phase === "over";
     const dashing = !ending && player.dashTicks > 0;
-    const recovering = !ending && !dashing && player.dashRecovery > 0;
+    const winding = !ending && !dashing && (player.dashWindup ?? 0) > 0;
+    const recovering = !ending && !dashing && !winding && player.dashRecovery > 0;
     // A graça do erro já existia. Só o contorno piscava; o tijolo
     // sólido tapava a leitura. O corpo some e volta no mesmo
     // relógio — o fillRect permanece. Com menos movimento o
@@ -395,7 +396,10 @@ export function createRenderer(canvas, options = {}) {
     // tinta da prática — orbe-só, sem ameaça — e a silhueta
     // mentia folga. Apoio marca o verbo frio, não a janela.
     // Pose no disco não é peso percebido.
-    target.fillStyle = dashing ? palette.chain : recovering ? palette.muted : palette.player;
+    // A faixa do coil já veste a corrente. Sem isto o corpo
+    // no coil vestia o descanso e a antecipação mentia o
+    // verbo. Pose no disco não é peso percebido.
+    target.fillStyle = dashing || winding ? palette.chain : recovering ? palette.muted : palette.player;
     target.fillRect(left, top, width, height);
     // O retângulo sozinho era o tijolo da placa. A ponta segue o
     // último avanço: orbe é círculo, estilhaço é losango, o corpo
