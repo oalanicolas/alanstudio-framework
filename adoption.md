@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.234 — O next do ciclo fresco aponta note, não um segundo next
+
+O
+mapa
+é
+start,
+jogar,
+note.
+O
+`next`
+do
+ciclo
+fresco
+apontava
+`next --focus feel`.
+O
+`play`
+já
+dizia
+que
+o
+próximo
+é
+note.
+Agora
+a
+proposta
+e
+o
+`init.next_commands`
+usam
+o
+mesmo
+par.
+`then.lost`
+continua
+o
+next.
+Não
+executa.
+
+O que 0.9.234 não afirma:
+comando
+colável
+não
+é
+partida
+jogada.
+
 ## 0.9.233 — A coleta no avanço não congela nem senta o dash
 
 O

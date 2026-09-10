@@ -3813,7 +3813,11 @@ def init(destination, starter, title=None, documents=True, idea=None):
     commands = []
     if play:
         commands.append(play)
-    commands.append(harness_command("next", destination, "--focus", "feel"))
+    # O mapa é start → jogar → note. Sem isto o init
+    # apontava um segundo `next --focus feel` e o
+    # passo 3 sumia. O `play` já diz que o próximo
+    # comando é note. then.lost continua o next.
+    commands.append(note_command(destination))
     url = serve_url(scripts)
     then = cycle_then(destination, play, starter)
     cycle = starter_cycle(starter)
@@ -4552,7 +4556,7 @@ def next_step(project, focus="create", studies_root=None):
             "não os planta. O harness não executa o jogo.",
             "O ciclo correu uma vez, e o brief (ou um recibo de observação) registra o que "
             "esta proposta muda no verbo — ou a lacuna, se ainda não souber.",
-            [play, harness_command("next", project, "--focus", "feel")],
+            [play, note_command(project)],
             "playable.unplayed",
         )
     craft_cmds = craft_commands(project)

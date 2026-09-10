@@ -2,11 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.233 (confirmado): a coleta no avanço não congela nem senta o dash.
+**HEAD:** ver `git log -1` — vigente 0.9.234 (a confirmar): o next do ciclo fresco aponta note, não um segundo next.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 281 OK.
-`cd assets/starters/canvas-arcade && npm test` → 405 OK.
+**Testes no HEAD:** a confirmar no 0.9.234.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +31,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.233)
+## O que o HEAD já entrega (0.9.91–0.9.234)
 
 | Ver | Salto |
 | --- | --- |
@@ -177,6 +176,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.231 | O arco da guarda não mente que o dash está pronto. `dashCharge` trava como no `bankLock`. Não promove feel. |
 | 0.9.232 | O raspo no avanço não come a pose do dash. A graça parada continua pinçando. Não promove feel. |
 | 0.9.233 | A coleta no avanço não congela nem senta o dash. Parada continua com hitstop e sit. Não promove feel. |
+| 0.9.234 | O `next` do ciclo fresco aponta `note`, não um segundo `next --focus feel`. `init.next_commands` também. `then.lost` continua o next. Não executa. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -328,7 +328,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou init que planta e some a superfície
   ou arco da guarda que mente que o dash está pronto
   ou raspo no avanço que come a pose do dash
-  ou coleta no avanço que congela e senta o dash.
+  ou coleta no avanço que congela e senta o dash
+  ou next do ciclo fresco que aponta um segundo next.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -367,7 +368,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `--idea` a linha da frase some. `preproduction.md` ensina
   `start --idea`; `init` fica o caminho que planta.
 - Depois de um `start` fresco (o mesmo atalho `playable.unplayed`
-  do `next`), `scan` / `context` não pedem auditoria:
+  do `next`), a proposta é `play` + `note`, não um segundo
+  `next --focus feel`. O `init.next_commands` usa o mesmo par.
+  `then.lost` continua o next para quando o ciclo já correu.
+  `scan` / `context` não pedem auditoria:
   `audit.required` falso, `audit.deferred` verdadeiro,
   `next_action` e `documentation.action` são
   `defer_until_playable_cycle`. Lacunas continuam listadas.
@@ -377,7 +381,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `document_minimum`. O harness não executa o jogo.
 - `init` devolve `open` (= `play`), `url`, `runtime`, `then`,
   `fantasy`, `cycle` e `prompt`. O `prompt` também sai em stderr.
-  `next_commands` continua. Sem serve a `url` some. Não executa.
+  `next_commands` é `play` + `note`. Sem serve a `url` some. Não executa.
 - `doctor` devolve `empty` e `then`. Sem jogo, com starter e
   `ready`, `then.guide` é `guide --idea <fantasia>`. Sem a
   frase a raiz recusa. Com jogo, sem starter ou bloqueado,
@@ -753,6 +757,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um arco da guarda que mente que o dash está pronto.
 **Não** mais um raspo no avanço que come a pose do dash.
 **Não** mais uma coleta no avanço que congela e senta o dash.
+**Não** mais um `next` do ciclo fresco que aponta um segundo `next`.
 
 Candidatos, do que ainda dói:
 
@@ -1129,6 +1134,12 @@ Candidatos, do que ainda dói:
   congela e
   senta o
   dash
+  e o
+  next do
+  ciclo fresco
+  que aponta
+  um segundo
+  next
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1152,8 +1163,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a coleta
-no avanço não congela nem senta o dash.
-`collect` poupa hitstop e sit quando o
-avanço voa. Parada continua congelando.
-Não promove feel.
+Arquivos quentes da última sessão: o next
+do ciclo fresco aponta note, não um
+segundo next. `init.next_commands` também.
+`then.lost` continua o next. Não executa.
