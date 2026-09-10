@@ -50,6 +50,7 @@ export const CONFIG = {
     hitShake: 1,
     shakeDecay: 0.86,
     squashCollect: 0.22,
+    squashMiss: 0.16, // a queda senta o corpo; menor que a coleta
     squashCoil: -0.18, // antecipação: estreita antes de alongar
     squashGraze: -0.26, // o contato estreita; o dash alonga
     squashDash: 0.34, // partida do dash: alonga na direção, não achata
@@ -944,6 +945,7 @@ function resolveEntities(state) {
         emit(state, "missed", { x: entity.x });
         dropMiss(state, entity.x);
         state.shake += CONFIG.feel.missedShake;
+        state.player.squash = CONFIG.feel.squashMiss;
         punch(state, 0, CONFIG.feel.punchMissedY);
       }
       releaseEntity(entity);

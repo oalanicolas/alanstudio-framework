@@ -593,6 +593,17 @@ test("a antecipação do avanço estreita o corpo antes de alongar", () => {
   assert.ok(launched.width > rest.width, "o disparo alonga na horizontal");
 });
 
+test("perder o orbe senta o corpo menos que coletar", () => {
+  const collected = createState(1);
+  collected.player.squash = CONFIG.feel.squashCollect;
+  const missed = createState(1);
+  missed.player.squash = CONFIG.feel.squashMiss;
+  const a = playerBox(collected);
+  const b = playerBox(missed);
+  assert.ok(a.width > b.width, "a queda senta menos que a coleta");
+  assert.ok(a.height < b.height, "o achatamento precisa chegar no quadro");
+});
+
 test("o término do dash senta mais que a partida e menos que guardar", () => {
   const start = createState(1);
   start.player.squash = CONFIG.feel.squashDash;

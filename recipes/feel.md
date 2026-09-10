@@ -169,7 +169,7 @@ perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, buffe
 guardar, graça após dano, alcance de coleta maior que o desenho — cada valor com o
 motivo ao lado. Guardar no hitstop não é engolido; um toque sem corrente não decide
 o próximo orbe. Cada verbo desloca a câmera numa direção própria e achata o corpo
-numa medida própria: coleta, dash, raspo, aterrissagem, guardar e o erro não compartilham
+numa medida própria: coleta, queda, dash, raspo, aterrissagem, guardar e o erro não compartilham
 squash. O dash aterrissa: o corpo senta, a câmera confirma para baixo,
 o rastro cai e o mixer fala `land` — distintos da partida. A porta
 fecha o mesmo arco no tick que abre, sem contar o ofício. A guarda
@@ -186,8 +186,8 @@ cooldown e veste o look — rótulo sozinho era o mesmo quadro.
 O fecho da partida contorna o campo e pulsa o controle a cada
 segundo; não é faixa no HUD. Com menos movimento vira traço.
 A prática e a guarda falam no mixer quando a janela acaba;
-o orbe que cai fala, acende o campo, marca o lugar e desloca
-a câmera para baixo, sem pulsar o controle. Arquivo no disco não é peso percebido. A coleta leva o orbe ao slot; o erro espalha os pips;
+o orbe que cai fala, acende o campo, marca o lugar, desloca
+a câmera para baixo e senta o corpo, sem pulsar o controle. Arquivo no disco não é peso percebido. A coleta leva o orbe ao slot; o erro espalha os pips;
 na guarda eles voam para o placar; no fim a aposta não guardada
 cai, o corpo senta (`squashOver`), o quadro senta (tremor, flash e
 punch do último verbo não atravessam o overlay); na pausa o quadro

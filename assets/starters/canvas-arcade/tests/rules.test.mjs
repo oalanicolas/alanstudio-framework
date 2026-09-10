@@ -348,13 +348,14 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
     CONFIG.feel.squashCoil,
     CONFIG.feel.squashGraze,
     CONFIG.feel.squashCollect,
+    CONFIG.feel.squashMiss,
     CONFIG.feel.squashDash,
     CONFIG.feel.squashLand,
     CONFIG.feel.squashBank,
     CONFIG.feel.squashOver,
     CONFIG.feel.squashHit,
   ];
-  assert.equal(new Set(squashes).size, 8, "squash repetido não distingue o verbo");
+  assert.equal(new Set(squashes).size, 9, "squash repetido não distingue o verbo");
   assert.notEqual(CONFIG.feel.collectShake, CONFIG.feel.hitShake);
   assert.notEqual(CONFIG.feel.bankShake, CONFIG.feel.collectShake);
   assert.notEqual(dash.camera.x, 0, "dash empurra a câmera na direção");
@@ -826,10 +827,13 @@ test("orbe perdido é contado, não silencioso", () => {
   assert.ok(stains.every((mote) => mote.vy > 0), "a queda continua para baixo");
   assert.equal(state.camera.y, CONFIG.feel.punchMissedY * CONFIG.feel.punchDecay, "perder o orbe confirma para baixo");
   assert.equal(state.shake, CONFIG.feel.missedShake * CONFIG.feel.shakeDecay, "a queda treme menos que a coleta");
+  assert.equal(state.player.squash, CONFIG.feel.squashMiss * CONFIG.feel.squashDecay, "perder o orbe senta o corpo");
   assert.equal(state.hitstop, 0, "perder o orbe não congela o mundo");
   assert.ok(CONFIG.feel.punchMissedY > 0);
   assert.ok(CONFIG.feel.punchMissedY < CONFIG.feel.punchLandY, "a queda desloca menos que aterrissar");
   assert.ok(CONFIG.feel.missedShake < CONFIG.feel.collectShake, "a queda treme menos que a coleta");
+  assert.ok(CONFIG.feel.squashMiss > 0, "a queda senta, não estreita");
+  assert.ok(CONFIG.feel.squashMiss < CONFIG.feel.squashCollect, "a queda senta menos que a coleta");
 });
 
 test("resolver a chuva compacta o mesmo array e não troca a lista", () => {

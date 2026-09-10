@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.191 (confirmado): no arco da guarda o corpo também atravessa.
+**HEAD:** ver `git log -1` — vigente 0.9.192: perder o orbe também senta o corpo.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 272 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.191)
+## O que o HEAD já entrega (0.9.91–0.9.192)
 
 | Ver | Salto |
 | --- | --- |
@@ -135,6 +135,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.189 | Na porta o avanço também aterrisa. Sem contar o ofício, sem recovery. Não promove feel. |
 | 0.9.190 | No fim a região viva nomeia a corrente que o overlay já mostra. Sem corrente o rótulo some. Não promove `accessibility`. |
 | 0.9.191 | No arco da guarda o corpo também atravessa o estilhaço. Sem punch novo. Não promove feel. |
+| 0.9.192 | Perder o orbe também senta o corpo. Menor que a coleta. Sem rumble. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -147,7 +148,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | corpo e quadro sentam no over; a porta fecha o arco do avanço; o arco da guarda atravessa; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | corpo e quadro sentam no over; a porta fecha o arco do avanço; o arco da guarda atravessa; a queda senta o corpo; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; `heard` falso |
@@ -243,7 +244,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou fill que nomeia o stem do starter
   ou porta que fecha o arco do avanço
   ou live que nomeia a corrente no fim
-  ou graça no arco da guarda.
+  ou graça no arco da guarda
+  ou queda que senta o corpo.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -413,7 +415,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   atravessa o estilhaço. Coleta e guarda no mesmo quadro
   continuam na hora. Raspo (`grazeContact`): estreita, punch na direção,
   flash menor que a queda. Sem hitstop. Sem rumble.
-  Não promover `feel`.
+  Queda (`squashMiss`): senta menos que a coleta. Sem rumble.
+  Sem hitstop. Não promover `feel`.
 - Coach: fantasy → move → dash → hit → miss → touch/pad → collect → null após
   1ª guarda. Exceção: `closingWindow` e `chain > 0` devolve `bank`
   mesmo depois da primeira guarda. Sem corrente o fecho não ensina.
@@ -550,6 +553,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma porta que dispara o avanço e some o término.
 **Não** mais uma região viva que some a corrente enquanto o overlay já a nomeia.
 **Não** mais um arco da guarda que é janela de hit enquanto o coil já atravessa.
+**Não** mais uma queda que acende o campo e some o corpo.
 
 Candidatos, do que ainda dói:
 
@@ -615,7 +619,9 @@ Candidatos, do que ainda dói:
    duck só na cama e a graça
   no coil do avanço e a
   graça no arco da
-  guarda e o
+  guarda e a
+  queda que senta
+  o corpo e o
   aperto do fecho no
   disco e o aviso de
   guardar no fecho e o
@@ -694,7 +700,10 @@ Candidatos, do que ainda dói:
   corrente e a
   graça no
   arco da
-  guarda
+  guarda e a
+  queda que
+  senta o
+  corpo
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -718,6 +727,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: no arco da guarda o
-corpo também atravessa o estilhaço. Sem punch novo. Não
+Arquivos quentes da última sessão: perder o orbe também
+senta o corpo. Menor que a coleta. Sem rumble. Não
 promove feel.
