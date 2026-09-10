@@ -113,7 +113,7 @@ destino → sem entrypoint → área não localizada → ciclo jogável ainda se
 → papéis de áudio vazios → feel ainda sem observação → convite para quem nunca viu o jogo → achado sem forma →
 acessibilidade sem opção
 → save sem versão → orçamento ausente → direção de arte ausente → conteúdo
-ainda no código → empacotar ainda sem passo → artefato incompleto → artefato de outro HEAD → rascunho → documento sem versão
+ainda no código → empacotar ainda sem passo → artefato incompleto → artefato de outro HEAD → árvore pronta para servir → rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
 recibo → gate → ofício → barra. Depois de um `init` fresco — nove áreas com
 candidato, seis ainda rascunho (o art-bible do starter já vem vigente), e um script que abre o jogo — a primeira proposta

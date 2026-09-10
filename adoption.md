@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.145 — O ship também nomeia como servir o dist/
+
+Árvore completa no HEAD atual
+parava o `next` sem comando.
+`ship` devolve `artifact_open`.
+O convite usa esse comando, não
+o serve de desenvolvimento.
+`elsewhere` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.145 não afirma: comando
+colável não é outra máquina nem
+entrega feita.
+
 ## 0.9.144 — O ciclo também nomeia a superfície do navegador
 
 O passo 2 apontava o shell.

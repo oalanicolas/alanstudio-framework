@@ -1807,6 +1807,21 @@ def ship_stale(artifact, project):
     return head != current
 
 
+def artifact_open_command(project):
+    # Superfície do artefato, não a de desenvolvimento. Árvore incompleta
+    # ou HEAD velho não ganham comando. Nomear não executa.
+    project = Path(project)
+    tree = ship_tree(project)
+    if not tree or not tree.get("complete"):
+        return None
+    if ship_stale(ship_artifact(project), project):
+        return None
+    serve = project / "dist" / "tools" / "serve.mjs"
+    if not serve.is_file() or serve.is_symlink():
+        return None
+    return f"cd {shlex.quote(str(project / 'dist'))} && node tools/serve.mjs"
+
+
 def ship_reading(project):
     project = Path(project)
     try:
@@ -1828,6 +1843,7 @@ def ship_reading(project):
     expected = (project / "package.json").is_file() or (project / "Cargo.toml").is_file()
     declared = bool(named or ci or release_current)
     incomplete = bool(tree) and not tree["complete"]
+    artifact_open = artifact_open_command(project)
     return {
         "schema_version": 1,
         "project": str(project),
@@ -1841,6 +1857,7 @@ def ship_reading(project):
         "tree": tree,
         "incomplete": incomplete,
         "stale": stale,
+        "artifact_open": artifact_open,
         "elsewhere": False,
         "declared": declared,
         "unpacked": expected and not declared,
@@ -1857,8 +1874,10 @@ def ship_reading(project):
             "vigente e CI. Se dist/VERSION.json existe, relata nome e versão. "
             "Se a pasta dist/ de um jogo web existe, relata se index, serve, "
             "package e VERSION estão lá, e se o HEAD do artefato é o HEAD "
-            "atual. Não executa o export, não instala o artefato e não "
-            "autoriza publicar. `shipped` e `elsewhere` são sempre falsos."
+            "atual. Árvore completa no HEAD atual ganha `artifact_open` — o "
+            "comando que serve dist/. Nomear não executa. Não executa o "
+            "export, não instala o artefato e não autoriza publicar. "
+            "`shipped` e `elsewhere` são sempre falsos."
         ),
     }
 
@@ -2174,7 +2193,10 @@ def invite_page(project):
         scripts, manager = project_commands(project)
     except (OSError, ValueError):
         scripts, manager = {}, None
-    play = play_command(project, scripts, manager) or f"cd {shlex.quote(str(project))} && npm run serve"
+    artifact_open = artifact_open_command(project)
+    play = artifact_open or play_command(project, scripts, manager) or (
+        f"cd {shlex.quote(str(project))} && npm run serve"
+    )
     href = invite_href(project)
     seed = last_run_seed(project)
     seed_line = (
@@ -2182,7 +2204,7 @@ def invite_page(project):
         if isinstance(seed, int) and not isinstance(seed, bool)
         else "Se a partida deixou seed, `/?seed=<n>` abre essa partida e ignora o hold."
     )
-    return (
+    page = (
         "# Convite — quem nunca viu o jogo\n"
         "\n"
         "Esta página não é playtest observado. `observed` e `outsider`\n"
@@ -2195,6 +2217,15 @@ def invite_page(project):
         f"{play}\n"
         "```\n"
         "\n"
+    )
+    if artifact_open:
+        page += (
+            "Esse comando serve `dist/`, não a árvore de desenvolvimento.\n"
+            "Na árvore exportada o serve recusa gravar o achado: copie os\n"
+            "quatro nomes e devolva ao maker. Recusar não é alguém de fora.\n"
+            "\n"
+        )
+    page += (
         "## Superfície\n"
         "\n"
         f"No navegador, abra `{href}`. A tabela de comandos some.\n"
@@ -2221,6 +2252,7 @@ def invite_page(project):
         "\n"
         "Convite no disco não sobe `pacing` e não conta jogador.\n"
     )
+    return page
 
 
 # `scan` lê documentos e, de propósito, não entra em textures/fonts/models/videos.
@@ -4279,6 +4311,17 @@ def next_step(project, focus="create", studies_root=None):
             "shipped continuam pendentes.",
             [harness_command("ship", project)],
             "ship.stale",
+        )
+    elif pack.get("artifact_open"):
+        propose(
+            "Servir a árvore em dist/ no próprio dispositivo",
+            "A árvore exportada está completa e no HEAD atual. "
+            "Servir aqui não é outra máquina. O harness não executa o "
+            "artefato e não autoriza publicar.",
+            "Alguém correu o dist/ fora daqui — elsewhere e shipped "
+            "continuam pendentes.",
+            [pack["artifact_open"], harness_command("ship", project)],
+            "ship.artifact_open",
         )
     if drafts:
         propose(

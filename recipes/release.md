@@ -67,8 +67,9 @@ reproduzir e declara o passo de empacotar — não prova que outra máquina
 já executou o artefato. O harness lê o passo com `ship <projeto>`.
 `shipped` é sempre falso. Sem o passo, `next` propõe `ship.unpacked`.
 Árvore incompleta é `ship.incomplete`; artefato de outro commit é
-`ship.stale`. HTML estático sem manifesto já é o artefato e não
-dispara esses ramos.
+`ship.stale`. Árvore completa no HEAD atual ganha `artifact_open`
+— o comando que serve `dist/`. Nomear não executa. HTML estático
+sem manifesto já é o artefato e não dispara esses ramos.
 
 Prova: build a partir de clone limpo, execução do artefato exportado em máquina
 que não é a de desenvolvimento, primeira execução sem estado anterior, medição de

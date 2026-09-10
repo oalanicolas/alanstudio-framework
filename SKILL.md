@@ -225,6 +225,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    sempre falsos. Sem declaração, o `next` nomeia `art.missing`,
    `content.inline` e `ship.unpacked` antes dos rascunhos. Árvore
    incompleta é `ship.incomplete`; artefato de outro commit é `ship.stale`.
+   Árvore completa no HEAD atual ganha `artifact_open` e o `next` nomeia
+   `ship.artifact_open`. Nomear não executa. `elsewhere` continua falso.
    **`playtest [<projeto>]`** lê se o achado tem problema, evidência, hipótese
    e medição. Sem caminho, o único jogo do laboratório basta.
    `observed` e `outsider` são sempre falsos. `--invite` escreve
