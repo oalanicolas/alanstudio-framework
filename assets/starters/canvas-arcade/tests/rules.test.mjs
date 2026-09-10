@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, attractEntities, attractMove, attractTick, beginRun, bedRateFor, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, FIELD, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnHazardChance, spawnIntervalScale, threatCue } from "../src/game/rules.js";
+import { advance, approaching, attractEntities, attractMove, attractTick, attractTouch, beginRun, bedRateFor, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, FIELD, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnHazardChance, spawnIntervalScale, threatCue } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -400,10 +400,22 @@ test("threatCue só nomeia o estilhaço no x do corpo", () => {
   state.entities[2].y = PLAYER_Y - 24;
   assert.equal(threatCue(state), "ahead");
   state.phase = "title";
-  assert.equal(threatCue(state), null);
+  assert.equal(threatCue(state), null, "a porta não lê a chuva da partida");
   state.phase = "playing";
   state.entities[2].y = PLAYER_Y;
   assert.equal(threatCue(state), null, "na faixa o aviso já é o próprio contato");
+});
+
+test("a porta nomeia o estilhaço da mostra no trilho", () => {
+  const door = createState(1, { entry: "title" });
+  assert.equal(threatCue(door), null);
+  assert.ok(seatOnShow(door, "shard", "ahead"), "esperava o estilhaço no telegraph");
+  assert.equal(threatCue(door), "ahead");
+  assert.equal(door.tick, 0);
+  assert.equal(door.entities.length, 0);
+  const ended = createState(1);
+  ended.phase = "over";
+  assert.equal(threatCue(ended), null);
 });
 
 test("a ameaça marca o trilho antes do contato e some na faixa", () => {
@@ -602,6 +614,58 @@ test("a porta recebe o movimento sem comer o tick", () => {
   edge.player.x = FIELD.width - CONFIG.player.halfWidth;
   attractMove(edge, { move: 1 });
   assert.equal(edge.player.x, FIELD.width - CONFIG.player.halfWidth, "a porta respeita a borda");
+});
+
+function seatOnShow(state, kind, band) {
+  for (let step = 0; step < 400; step += 1) {
+    const rain = attractEntities(state);
+    const drop = rain.find((item) => {
+      if (item.kind !== kind) return false;
+      const gap = PLAYER_Y - item.y;
+      if (band === "ahead") return gap > CONFIG.collect.reachY && gap <= CONFIG.feel.telegraphReach;
+      return Math.abs(item.y - PLAYER_Y) < CONFIG.collect.reachY;
+    });
+    if (drop) {
+      state.player.x = drop.x;
+      return drop;
+    }
+    attractTick(state);
+  }
+  return null;
+}
+
+test("a mostra toca o corpo sem pontuar nem comer a seed", () => {
+  const state = createState(1, { entry: "title" });
+  const rng = state.rngState;
+  const drop = seatOnShow(state, "shard");
+  assert.ok(drop, "esperava o estilhaço na faixa");
+  attractTouch(state);
+  assert.equal(state.phase, "title");
+  assert.equal(state.tick, 0);
+  assert.equal(state.score, 0);
+  assert.equal(state.chain, 0);
+  assert.equal(state.entities.length, 0);
+  assert.equal(state.events.length, 0);
+  assert.equal(state.rngState, rng);
+  assert.equal(state.flash, CONFIG.feel.flashGraze);
+  assert.equal(state.player.squash, CONFIG.feel.squashGraze);
+  const again = state.flash;
+  attractTouch(state);
+  assert.equal(state.flash, again, "o mesmo toque não recarrega o pulso");
+  const play = createState(1);
+  const idle = play.player.squash;
+  attractTouch(play);
+  assert.equal(play.player.squash, idle, "fora da porta o toque não existe");
+});
+
+test("o orbe da mostra acende sem fingir coleta", () => {
+  const state = createState(1, { entry: "title" });
+  assert.ok(seatOnShow(state, "orb"), "esperava o orbe na faixa");
+  attractTouch(state);
+  assert.equal(state.flash, CONFIG.feel.flashMissed);
+  assert.equal(state.player.squash, CONFIG.feel.squashCollect);
+  assert.equal(state.stats.collected, 0);
+  assert.equal(state.chain, 0);
 });
 
 test("a chuva da porta não come a seed", () => {

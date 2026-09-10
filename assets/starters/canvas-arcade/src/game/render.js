@@ -88,16 +88,7 @@ export function createRenderer(canvas, options = {}) {
     drawPractice(context, palette, state, reduced);
     drawRecovery(context, palette, state, reduced);
     drawClose(context, palette, state, reduced);
-    if (state.flash > 0) {
-      if (reduced) {
-        context.strokeStyle = palette.danger;
-        context.lineWidth = 2;
-        context.strokeRect(1, 1, FIELD.width - 2, FIELD.height - 2);
-      } else {
-        context.fillStyle = `rgba(255,245,235,${Math.min(0.32, state.flash * 0.5)})`;
-        context.fillRect(0, 0, FIELD.width, FIELD.height);
-      }
-    }
+    paintFlash(context, palette, state.flash, reduced);
     context.strokeStyle = palette.muted;
     context.lineWidth = 0.5;
     context.beginPath();
@@ -119,6 +110,9 @@ export function createRenderer(canvas, options = {}) {
         else drawShard(context, palette, entity, reduced);
       }
       drawTitle(context, palette, settings, extra, lines);
+      // O pulso da mostra nascia sob a cortina e sumia. O mesmo
+      // flash do campo vence o véu. Luz no disco não é felt.
+      paintFlash(context, palette, state.flash, reduced);
       // A porta também ensina. Sem isto o aviso de mover existia
       // no campo e sumia na primeira superfície. Texto no disco
       // não é sessão observada.
@@ -158,6 +152,18 @@ export function createRenderer(canvas, options = {}) {
     if (settings.captions !== false) {
       drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
     }
+  }
+
+  function paintFlash(target, palette, amount, reduced) {
+    if (!(amount > 0)) return;
+    if (reduced) {
+      target.strokeStyle = palette.danger;
+      target.lineWidth = 2;
+      target.strokeRect(1, 1, FIELD.width - 2, FIELD.height - 2);
+      return;
+    }
+    target.fillStyle = `rgba(255,245,235,${Math.min(0.32, amount * 0.5)})`;
+    target.fillRect(0, 0, FIELD.width, FIELD.height);
   }
 
   // A prática era orbe-só e o campo calava. O contorno na tinta do

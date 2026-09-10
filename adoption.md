@@ -3,6 +3,24 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.162 — A mostra toca o corpo
+
+A porta já andava. A chuva
+atravessava. `attractTouch`
+acende e estreita sem
+pontuar, sem punch e sem
+comer a seed. `threatCue`
+lê a mostra; o live nomeia
+o perigo. O pulso vence a
+cortina. `felt` continua
+falso. Só `release` fica no
+piso.
+
+O que 0.9.162 não afirma:
+toque na mostra no disco
+não é primeiro minuto
+observado.
+
 ## 0.9.161 — A porta recebe movimento
 
 O convite some a tabela.

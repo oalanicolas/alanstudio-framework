@@ -643,6 +643,22 @@ test("a porta também lê a legenda", () => {
   assert.ok(line.bottom < PLAYER_Y - 6, `legenda na porta desce até ${line.bottom}`);
 });
 
+test("o pulso da mostra vence a cortina sem inventar faixa", () => {
+  const door = createState(1, { entry: "title" });
+  door.flash = CONFIG.feel.flashGraze;
+  const frame = paint(door);
+  const curtain = frame.rects.findIndex(
+    (rect) => rect.width === FIELD.width && rect.height === FIELD.height && rect.style === PALETTES.normal.plate,
+  );
+  assert.ok(curtain >= 0, "esperava a cortina da porta");
+  const after = frame.rects.slice(curtain + 1).some((rect) => String(rect.style).startsWith("rgba(255"));
+  assert.ok(after, "o pulso da mostra precisa nascer depois da cortina");
+  assert.ok(hudBands(frame) <= hudBands(paint(createState(1, { entry: "title" }))), "o pulso da porta não é faixa no HUD");
+  const still = paint(door, { reducedMotion: true });
+  const rim = still.edges.findIndex((edge) => edge.style === PALETTES.normal.danger);
+  assert.ok(rim >= 0, "com menos movimento o pulso vira contorno");
+});
+
 test("a abertura desenha o aviso sem inventar faixa", () => {
   const door = createState(1, { entry: "title" });
   const drawn = paint(door, {}, { hint: "move", best: 0 });

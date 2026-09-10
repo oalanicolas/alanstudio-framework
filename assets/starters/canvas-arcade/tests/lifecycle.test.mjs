@@ -293,6 +293,34 @@ function silentCanvas() {
   };
 }
 
+test("com tela a mostra toca o corpo sem abrir o ciclo", () => {
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(game.observe().phase, "title");
+  let touched = null;
+  for (let step = 0; step < 300; step += 1) {
+    const x = game.observe().player.x;
+    if (x > 128) game.act({ move: -1 });
+    const snap = game.advance(1);
+    if (snap.flash > 0 || snap.player.squash !== 0) {
+      touched = snap;
+      break;
+    }
+  }
+  assert.ok(touched, "esperava o contato da mostra");
+  assert.equal(touched.phase, "title");
+  assert.equal(touched.tick, 0);
+  assert.equal(touched.score, 0);
+  assert.equal(touched.entities.length, 0);
+  assert.equal(touched.events.length, 0);
+  game.dispose();
+});
+
 test("com tela a abertura recebe o movimento sem abrir o ciclo", () => {
   const game = createGame({
     seed: 5,

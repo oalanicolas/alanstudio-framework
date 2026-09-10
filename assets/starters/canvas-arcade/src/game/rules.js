@@ -458,6 +458,11 @@ export function beginRun(state) {
 export function attractTick(state) {
   if (!state || state.phase !== "title") return state;
   state.attractTick = (state.attractTick ?? 0) + 1;
+  if (state.player) {
+    state.player.squash *= CONFIG.feel.squashDecay;
+    if (Math.abs(state.player.squash) < 0.01) state.player.squash = 0;
+  }
+  decayFlash(state);
   return state;
 }
 
@@ -501,6 +506,38 @@ export function attractEntities(state, reduced = false) {
     });
   }
   return items;
+}
+
+// A mostra atravessava o corpo. Quem andava na porta não via
+// a mesa. O contato acende e estreita sem pontuar, sem punch
+// e sem comer a seed. Toque no disco não é feel observado.
+export function attractTouch(state) {
+  if (!state || state.phase !== "title" || !state.player) return state;
+  const rain = attractEntities(state);
+  const player = state.player;
+  const pad = CONFIG.collect.pad;
+  const reachY = CONFIG.collect.reachY;
+  let kind = "";
+  for (let index = 0; index < rain.length; index += 1) {
+    const entity = rain[index];
+    const reach = CONFIG.player.halfWidth + (entity.kind === "orb" ? pad : CONFIG.hazard.radius);
+    const touching =
+      Math.abs(entity.y - PLAYER_Y) < reachY && Math.abs(entity.x - player.x) < reach;
+    if (!touching) continue;
+    kind = entity.kind;
+    break;
+  }
+  if (kind && kind !== state.attractTouch) {
+    state.attractTouch = kind;
+    state.flash = Math.max(
+      state.flash,
+      kind === "shard" ? CONFIG.feel.flashGraze : CONFIG.feel.flashMissed,
+    );
+    player.squash = kind === "shard" ? CONFIG.feel.squashGraze : CONFIG.feel.squashCollect;
+  } else if (!kind) {
+    state.attractTouch = "";
+  }
+  return state;
 }
 
 export function neutralIntent() {
@@ -1011,8 +1048,9 @@ export function approaching(state) {
 // Estilhaço no alcance do telegraph e no x do corpo. Não reusa o
 // scratch de `approaching`. Texto no DOM não é sessão de alcance.
 export function threatCue(state) {
-  if (!state || state.phase !== "playing" || !state.player) return null;
-  const list = state.entities;
+  if (!state || !state.player) return null;
+  if (state.phase !== "playing" && state.phase !== "title") return null;
+  const list = state.phase === "title" ? attractEntities(state) : state.entities;
   if (!Array.isArray(list)) return null;
   const reach = CONFIG.feel.telegraphReach;
   const band = CONFIG.collect.reachY;

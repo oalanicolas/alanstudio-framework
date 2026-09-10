@@ -10,6 +10,7 @@ const main = readFileSync(new URL("../src/main.js", import.meta.url), "utf8");
 test("liveText junta fase, perigo e a última legenda sem repetir", () => {
   assert.equal(liveText({}), "");
   assert.equal(liveText({ phase: "title" }), "abertura");
+  assert.equal(liveText({ phase: "title", threat: "ahead" }), "abertura. perigo à frente");
   assert.equal(liveText({ phase: "over" }), "fim da partida");
   assert.equal(liveText({ phase: "playing", threat: "ahead" }), "perigo à frente");
   assert.equal(
