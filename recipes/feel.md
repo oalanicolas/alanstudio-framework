@@ -11,7 +11,8 @@ hold — o keyup some e o corpo não segue. Perder o foco da janela
 solta o ofício pendente — Space e R não disparam no quadro
 seguinte. Na pausa o toque retoma — Esc e P não existem no
 polegar; o tap não é o avanço. A placa da pausa nomeia
-reiniciar; R já saía e o overlay calava. Na porta o telefone vê
+reiniciar; R já saía e o overlay calava. A região viva
+espelha continuar e reiniciar. Na porta o telefone vê
 Jogar: toque sem ter apertado; o aviso continua teclado
 até o gesto. Depois do tap a porta e o fim não chamam
 o avanço de cima. Soltar no disco não é

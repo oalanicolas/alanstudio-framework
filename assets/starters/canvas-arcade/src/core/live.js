@@ -9,8 +9,9 @@
 // não. Na porta o canvas já acende o toque
 // da mostra; a região viva nomeia esse contato sem fingir coleta.
 // O canvas já pinta o aviso do primeiro ciclo; a região viva
-// nomeia a mesma linha. Sem isto quem não vê a tela só tinha
-// a tabela — e o convite some essa tabela. Jogando sem pausa
+// nomeia a mesma linha. Na pausa o canvas já nomeia continuar
+// e reiniciar; a região viva espelha essas linhas. Sem isto
+// quem não vê a tela só ouvia pausado. Jogando sem pausa
 // o número não entra. Texto no DOM não é sessão de alcance.
 
 function whole(value) {
@@ -31,6 +32,8 @@ export function liveText({
   settings,
   attractTouch,
   coach,
+  resume,
+  restart,
 } = {}) {
   const parts = [];
   const seen = new Set();
@@ -63,7 +66,11 @@ export function liveText({
   } else if (overlayPaused) {
     // A cortina cobre o HUD. Sem o número aqui só o canvas
     // o mostrava, e a placa o come. Jogando sem pausa o
-    // placar continua só no quadro. Texto no DOM não é sessão.
+    // placar continua só no quadro. O canvas já nomeia
+    // continuar e reiniciar; sem isto o leitor só ouvia
+    // pausado. Texto no DOM não é sessão.
+    add(resume);
+    add(restart);
     const points = whole(score);
     if (points !== null) add(points);
     const record = whole(best);

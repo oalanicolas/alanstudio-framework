@@ -3,6 +3,45 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.299 — A região viva nomeia como sair da pausa
+
+O
+overlay
+não
+chega
+ao
+leitor.
+A
+placa
+já
+dizia
+continuar
+e
+reiniciar.
+O
+live
+só
+dizia
+pausado.
+Agora
+espelha
+as
+duas
+linhas.
+Não
+promove
+`verified`.
+
+O que 0.9.299 não afirma:
+texto
+no
+DOM
+não
+é
+sessão
+de
+alcance.
+
 ## 0.9.298 — A pausa nomeia reiniciar
 
 R

@@ -361,6 +361,8 @@ export function createGame(options = {}) {
         settings: settingsLine(settingsLoad, copy),
         attractTouch: state.attractTouch,
         coach: coachText(state, bound, { surface: spoken, fantasy: copy.fantasy }),
+        resume: bound.resume,
+        restart: bound.restart,
       }),
     });
     if (!renderer) return;

@@ -270,6 +270,52 @@ test("a região viva nomeia o aviso do primeiro ciclo sem fingir sessão", () =>
   );
 });
 
+test("a região viva nomeia como sair da pausa sem fingir sessão", () => {
+  assert.equal(
+    liveText({
+      phase: "playing",
+      paused: true,
+      score: 12,
+      resume: "Continuar: Esc ou P",
+      restart: "Reiniciar: R",
+    }),
+    "pausado. Continuar: Esc ou P. Reiniciar: R. 12",
+  );
+  assert.equal(
+    liveText({ phase: "playing", paused: true, score: 12 }),
+    "pausado. 12",
+  );
+  assert.equal(
+    liveText({
+      phase: "over",
+      paused: true,
+      score: 12,
+      resume: "Continuar: Esc ou P",
+      restart: "Reiniciar: R",
+    }),
+    "fim da partida. 12",
+  );
+  assert.equal(
+    liveText({
+      phase: "title",
+      paused: true,
+      resume: "Continuar: Esc ou P",
+    }),
+    "abertura",
+  );
+  assert.match(main, /resume:\s*bound\.resume/);
+  assert.match(main, /restart:\s*bound\.restart/);
+  assert.doesNotMatch(
+    liveText({
+      phase: "playing",
+      paused: true,
+      resume: "Continuar: Esc ou P",
+      restart: "Reiniciar: R",
+    }),
+    /aprovado|verified|alguém de fora|felt/,
+  );
+});
+
 test("applyLive só escreve quando o texto muda", () => {
   const node = { textContent: "" };
   assert.equal(applyLive({}), false);

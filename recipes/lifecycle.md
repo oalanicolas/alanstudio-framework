@@ -24,7 +24,8 @@ R no overlay também. Sem tela o headless já joga. A página oferece o
 recibo no overlay e na porta se houver partida; isso não é observação.
 Aba escondida pausa no campo e no fim. Na porta só descarrega — P já
 é ignorado e a placa nem nasce. Na pausa o toque retoma; Espaço
-continua só intenção. A placa da pausa nomeia reiniciar. Na porta o telefone vê Jogar: toque
+continua só intenção. A placa da pausa nomeia reiniciar.
+A região viva espelha continuar e reiniciar. Na porta o telefone vê Jogar: toque
 sem ter apertado; lastSource continua teclado. Depois do
 tap a porta e o fim não chamam o avanço de cima. Perda de foco da janela grava o hold
 e senta o mesmo relógio; na porta só descarrega. O controle que some
