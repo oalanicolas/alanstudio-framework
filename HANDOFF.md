@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.301: o `next` unstructured nomeia a página do achado. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.300):** `python3 -m unittest discover -s tests` → 315 OK.
+**Testes no HEAD (0.9.301):** `python3 -m unittest discover -s tests` → 316 OK.
 `cd assets/starters/canvas-arcade && npm test` → 486 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
