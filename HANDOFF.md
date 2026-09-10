@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.321: o coil do dash veste o avanço. Não promove `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.322: o -h lista start antes de init. Não promove `executed`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.321):** `python3 -m unittest discover -s tests` → 321.
-`cd assets/starters/canvas-arcade && npm test` → 499.
+**Testes no HEAD (0.9.322):** `python3 -m unittest discover -s tests` → (confirmar).
+`cd assets/starters/canvas-arcade && npm test` → (confirmar).
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.321)
+## O que o HEAD já entrega (0.9.91–0.9.322)
 
 | Ver | Salto |
 | --- | --- |
@@ -265,6 +265,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.319 | O `next` do feel anexa o candidato. `then.note` e o playtest já levavam `--from-run`; o ofício pedia a nota sem a partida. Não promove `felt` nem `outsider`. |
 | 0.9.320 | O rastro do dash veste o avanço. O corpo já vestia a corrente; o rastro vestia o descanso. Não promove `felt`. |
 | 0.9.321 | O coil do dash veste o avanço. A faixa já vestia a corrente; o corpo no coil vestia o descanso. Não promove `felt`. |
+| 0.9.322 | O `-h` lista start antes de init. O ofício já era start → jogar → note; a ajuda listava o ADAPT primeiro. Não promove `executed`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -491,7 +492,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou uma folga que acaba e chama chuva que volta
   ou um `next` do feel que cala o candidato que o `then.note` já anexa
   ou um rastro do dash que veste o descanso
-  ou um coil do dash que veste o descanso.
+  ou um coil do dash que veste o descanso
+  ou um `-h` que lista init antes de start.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -1106,6 +1108,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `next` do feel que cala o candidato que o `then.note` já anexa.
 **Não** mais um rastro do dash que veste o descanso.
 **Não** mais um coil do dash que veste o descanso.
+**Não** mais um `-h` que lista init antes de start.
 
 Candidatos, do que ainda dói:
 
@@ -1113,7 +1116,7 @@ Candidatos, do que ainda dói:
    promover. `ship` já nomeia árvore incompleta, HEAD velho,
    `artifact_open` e `elsewhere` falso; o comando colável não é a
    prova.
-2. **Idéia→jogo:** `start` devolve `open` e `url`; `play` / `open`
+2. **Idéia→jogo:** o `-h` lista `start` antes de `init`. `start` devolve `open` e `url`; `play` / `open`
    os reimprimem. Sem caminho, o único jogo do laboratório basta;
    dois pedem o caminho. `note`, `next`, `feel` e `playtest`
    usam o mesmo resolvedor. O `prompt` também sai em stderr. A
@@ -2092,6 +2095,14 @@ Candidatos, do que ainda dói:
   veste
   o
   descanso
+  e um
+  `-h`
+  que
+  lista
+  init
+  antes
+  de
+  start
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2116,10 +2127,10 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-coil do dash veste o avanço.
-A faixa já vestia a corrente; o
-corpo no coil vestia o descanso.
-Não promove `felt`.
+`-h` lista start antes de init.
+O ofício já era start → jogar → note;
+a ajuda listava o ADAPT primeiro.
+Não promove `executed`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2176,3 +2187,4 @@ A família folga que acaba e chama chuva que volta está saturada.
 A família next do feel que cala o candidato que o then.note já anexa está saturada.
 A família rastro do dash que veste o descanso está saturada.
 A família coil do dash que veste o descanso está saturada.
+A família -h que lista init antes de start está saturada.

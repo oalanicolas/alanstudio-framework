@@ -3,6 +3,48 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.322 — o -h lista start antes de init
+
+O
+ofício
+já
+era
+start
+→
+jogar
+→
+note.
+O
+-h
+listava
+init
+antes
+de
+start.
+Quem
+lia
+a
+ajuda
+via
+o
+ADAPT
+primeiro.
+Agora
+start
+vem
+antes.
+Não
+promove
+`executed`.
+
+O que 0.9.322 não afirma:
+listar
+não
+é
+criar
+nem
+jogar.
+
 ## 0.9.321 — o coil do dash veste o avanço
 
 A

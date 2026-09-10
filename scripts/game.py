@@ -5696,12 +5696,9 @@ def main():
         help="só caminho e tipo, sem ler os documentos de cada projeto",
     )
     commands.add_parser("doctor", parents=[common], help="ambiente, integridade do framework e atalhos da skill")
-    start = commands.add_parser("init", parents=[common], help="cria um projeto novo a partir de um starter, para ADAPT")
-    start.add_argument("project")
-    start.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
-    start.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
-    start.add_argument("--idea", help="frase da fantasia; entra no brief, na abertura e no aviso do primeiro ciclo, sem mudar o verbo")
-    start.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
+    # O ofício já é start → jogar → note. Sem isto o -h
+    # listava init primeiro e quem lia a ajuda via o
+    # ADAPT antes do ciclo. Listar não é criar.
     begin = commands.add_parser(
         "start", parents=[common],
         help="caminho ideia→ciclo: cria se o destino estiver livre e aponta o comando que abre o jogo",
@@ -5727,6 +5724,12 @@ def main():
         help="aponta o comando que abre o jogo, sem executar; sem caminho, o único jogo do laboratório basta",
     )
     played.add_argument("project", nargs="?", default=None)
+    start = commands.add_parser("init", parents=[common], help="cria um projeto novo a partir de um starter, para ADAPT")
+    start.add_argument("project")
+    start.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
+    start.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
+    start.add_argument("--idea", help="frase da fantasia; entra no brief, na abertura e no aviso do primeiro ciclo, sem mudar o verbo")
+    start.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
     upcoming = commands.add_parser("next", parents=[common], help="proposta ordenada de próxima ação, a partir do estado no disco")
     upcoming.add_argument("project", nargs="?", default=None)
     upcoming.add_argument("--focus", choices=FOCI, default="create")

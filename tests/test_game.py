@@ -1897,6 +1897,18 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         for command in listed.group(1).split(","):
             self.assertIn(f"game.py {command}", readme, f"`{command}` não aparece no README")
 
+    def test_help_lists_start_before_init(self):
+        run = subprocess.run([sys.executable, str(SCRIPT), "--help"], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        listed = re.search(r"\{([a-z,\-]+)\}", run.stdout)
+        self.assertIsNotNone(listed, run.stdout)
+        names = listed.group(1).split(",")
+        self.assertLess(
+            names.index("start"),
+            names.index("init"),
+            "o -h listava init antes de start",
+        )
+
     # A barra nomeava dez dimensões e nunca sabia em qual o projeto estava, então
     # a única coisa capaz de virar tarefa — a dimensão mais baixa — ficava fora do
     # alcance do harness. A declaração vem do documento do próprio projeto.

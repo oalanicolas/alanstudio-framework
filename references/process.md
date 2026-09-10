@@ -45,7 +45,7 @@ A busca é delimitada à necessidade, não uma auditoria de tudo.
 
 Para um jogo que ainda não existe no disco, o candidato é um starter: `doctor`
 lista os disponíveis e `start --idea` monta o projeto sem plantar os
-rascunhos. `init` continua plantando. Com tela, a primeira superfície é
+rascunhos. O `-h` lista `start` antes de `init`. `init` continua plantando. Com tela, a primeira superfície é
 a porta; `play` (ou `open`) aponta o serve sem executar. O mapa tem
 três passos: start → jogar → `note`. Nomear o comando não abre o jogo.
 Partir de um starter é REUSE;
