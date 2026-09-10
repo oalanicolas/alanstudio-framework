@@ -535,8 +535,13 @@ export function attractEntities(state, reduced = false) {
   const span = 72 * 3;
   // A mesa já decide quanto da chuva é estilhaço. Sem isto
   // a porta chovia meio a meio e dusk vestia o mesmo risco
-  // que calm. Número no disco não é comparação em movimento.
-  const hazard = Number.isFinite(table.hazardChanceStart) ? table.hazardChanceStart : 0.5;
+  // que calm. O teto é o caráter da mesa — cadência e queda
+  // já liam o pico. Número no disco não é comparação em movimento.
+  const hazard = Number.isFinite(table.hazardChanceEnd)
+    ? table.hazardChanceEnd
+    : Number.isFinite(table.hazardChanceStart)
+      ? table.hazardChanceStart
+      : 0.5;
   const shards = Math.max(1, Math.min(count - 1, Math.round(count * hazard)));
   const risky = new Set();
   for (let slot = 1; slot < count && risky.size < shards; slot += 2) risky.add(slot);

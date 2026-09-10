@@ -28,7 +28,7 @@ calm.
 Agora
 lê
 o
-começo
+teto
 da
 mesa.
 Não

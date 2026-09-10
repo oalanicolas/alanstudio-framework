@@ -937,8 +937,8 @@ test("a porta chove a mesa sem fingir direção aprovada", () => {
   const spawn = paint(createState(1, { entry: "title" }));
   const dusk = paint(createState(1, { entry: "title", spawnProfile: "dusk" }));
   const calm = paint(createState(1, { entry: "title", spawnProfile: "calm" }));
-  assert.ok(dusk.arcs > spawn.arcs, "dusk na porta pinta mais orbe");
   assert.ok(dusk.lineTos > spawn.lineTos, "dusk na porta pinta mais estilhaço");
+  assert.ok(dusk.lineTos > calm.lineTos, "dusk na porta pinta mais estilhaço que calm");
   assert.ok(calm.lineTos < spawn.lineTos, "calm na porta pinta menos estilhaço");
   assert.ok(
     calm.arcs + calm.lineTos < spawn.arcs + spawn.lineTos,
