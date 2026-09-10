@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.320: o rastro do dash veste o avanço. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.320):** `python3 -m unittest discover -s tests` → (confirmar).
-`cd assets/starters/canvas-arcade && npm test` → (confirmar).
+**Testes no HEAD (0.9.320):** `python3 -m unittest discover -s tests` → 321.
+`cd assets/starters/canvas-arcade && npm test` → 498.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
