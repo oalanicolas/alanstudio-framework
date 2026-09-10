@@ -112,7 +112,7 @@ export const CONFIG = {
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
     bufferTicks: 8, // perdão: pedido cedo ou no hitstop dispara quando a corrente existe
-    windupTicks: 2, // antecipação: o corpo senta antes de converter
+    windupTicks: 2, // antecipação: o corpo senta antes de converter; já é graça
   },
   // Assistência não esconde conteúdo: os mesmos orbes, a mesma pontuação.
   // Perdão extra de alcance, chuva mais lenta e graça mais longa.
@@ -838,7 +838,8 @@ function bank(state, intent) {
   if ((state.bankWindup ?? 0) > 0) return;
   // Coleta neste tick já foi a antecipação: o pedido do mesmo quadro
   // converte na hora. Corrente que já existia senta antes de virar
-  // pontuação. Pose no disco não é peso percebido.
+  // pontuação — e esses ticks já atravessam. Pose no disco não é
+  // peso percebido.
   if (state.events.some((event) => event.type === "collect")) {
     commitBank(state);
     return;
@@ -900,11 +901,15 @@ function spawn(state) {
 
 function resolveEntities(state) {
   const player = state.player;
-  // O coil já é o compromisso. Sem isto, os dois ticks de antecipação
-  // eram janela de hit — o jogador sentou e morreu. Pose no disco
-  // não é peso percebido.
+  // O coil e o arco da guarda já são o compromisso. Sem isto, os
+  // dois ticks de antecipação eram janela de hit — o jogador sentou
+  // e morreu, ou sentou para guardar e perdeu a corrente. Pose no
+  // disco não é peso percebido.
   const invulnerable =
-    player.invuln > 0 || player.dashTicks > 0 || (player.dashWindup ?? 0) > 0;
+    player.invuln > 0 ||
+    player.dashTicks > 0 ||
+    (player.dashWindup ?? 0) > 0 ||
+    (state.bankWindup ?? 0) > 0;
   const entities = state.entities;
   let write = 0;
   for (let index = 0; index < entities.length; index += 1) {

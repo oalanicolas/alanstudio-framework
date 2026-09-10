@@ -245,6 +245,20 @@ test("antecipar o avanço também atravessa o estilhaço", () => {
   assert.ok(state.events.some((event) => event.type === "graze"));
 });
 
+test("antecipar a guarda também atravessa o estilhaço", () => {
+  const state = createState(3);
+  state.chain = 2;
+  advance(state, { move: 0, dash: false, bank: true });
+  assert.equal(state.bankWindup, CONFIG.bank.windupTicks);
+  assert.equal(state.stats.banks, 0, "o pedido ainda não converteu");
+  state.entities = [shard(state.player.x, PLAYER_Y)];
+  advance(state, { move: 0, dash: false, bank: false });
+  assert.equal(state.chain, 2, "o arco da guarda não é janela de hit");
+  assert.equal(state.stats.hits, 0);
+  assert.equal(state.stats.banks, 0, "atravessar no arco ainda não converteu");
+  assert.ok(state.events.some((event) => event.type === "graze"));
+});
+
 test("o dash atravessa o estilhaço sem perder a corrente", () => {
   const state = createState(3);
   dashOut(state);

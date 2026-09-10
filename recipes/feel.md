@@ -78,9 +78,10 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    esses ticks já atravessam o estilhaço — o coil não é janela de hit.
    O término emite `land` (squash, câmera, puff, rumble e voz).
    Guardar uma corrente que já existe senta os mesmos dois ticks antes
-   de converter; coleta e guarda no mesmo quadro continuam na hora —
-   o contato já foi a antecipação. Pose e arquivo no disco não são
-   peso percebido.
+   de converter; esses ticks já atravessam o estilhaço — o arco da
+   guarda não é janela de hit. Coleta e guarda no mesmo quadro
+   continuam na hora — o contato já foi a antecipação. Pose e arquivo
+   no disco não são peso percebido.
 4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
 5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.
@@ -171,7 +172,9 @@ o próximo orbe. Cada verbo desloca a câmera numa direção própria e achata o
 numa medida própria: coleta, dash, raspo, aterrissagem, guardar e o erro não compartilham
 squash. O dash aterrissa: o corpo senta, a câmera confirma para baixo,
 o rastro cai e o mixer fala `land` — distintos da partida. A porta
-fecha o mesmo arco no tick que abre, sem contar o ofício. Arquivo no
+fecha o mesmo arco no tick que abre, sem contar o ofício. A guarda
+que já tem corrente senta os mesmos dois ticks e também atravessa
+o estilhaço. Arquivo no
 disco não é peso percebido. A ameaça que
 ainda não chegou marca o trilho (`approaching`); a recuperação do dash muda a
 silhueta; o erro acende o campo, a coleta não. O controle pulsa no
