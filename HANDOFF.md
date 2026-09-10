@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.239 (confirmado): o avanço é o aperto, não o segurar. Porta não vira ofício; cooldown não metralha. Graça, queda e cama continuam sem pulso.
+**HEAD:** ver `git log -1` — vigente 0.9.240: o `start` escreve `AGENTS.md` com o comando que abre. Não lista rascunhos que não plantou. Não é GDD.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 281 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.239)
+## O que o HEAD já entrega (0.9.91–0.9.240)
 
 | Ver | Salto |
 | --- | --- |
@@ -183,6 +183,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.237 | O pedido de dash sobrevive ao lock da guarda. A recarga continua contando o perdão. Não promove feel. |
 | 0.9.238 | O rumble do quadro toca o verbo mais pesado, não o último. Porta fala dash; commit fala guarda. Não promove feel. |
 | 0.9.239 | O avanço é o aperto, não o segurar. Segurar na porta não dispara o ofício; no campo o cooldown não metralha. A guarda continua nível. Não promove feel. |
+| 0.9.240 | O `start` escreve `AGENTS.md` com o comando que abre. Sem rascunhos, a memória não lista GDD. `documents` continua vazio. Não executa. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -341,7 +342,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou pedido de dash que morre no lock da guarda
   ou rumble do quadro que toca o último verbo e some o peso
   ou avanço que lê o hold e metralha no cooldown
-  ou o mesmo aperto da porta que dispara o ofício no campo.
+  ou o mesmo aperto da porta que dispara o ofício no campo
+  ou o `start` que deixa a próxima sessão sem memória
+  ou o AGENTS do start que lista GDD que não plantou.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -374,6 +377,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `start` não planta os rascunhos (`documents=False`). CLI `--docs`
   opta; `--no-docs` permanece e é o padrão. `init` continua
   plantando. `--idea` entra em `data/copy.json`; brief só com `--docs`.
+  Os dois escrevem `AGENTS.md` com o comando que abre e o que o
+  disco ainda não tem. Sem rascunhos a memória não lista GDD.
+  `documents` só ganha `AGENTS.md` quando `documents` é verdadeiro.
   `init_scope(documents, idea)` é o `scope` do `init` e do
   `start.init`. Sem docs: `sem plantar`, sem `criou rascunhos`,
   sem `draft_only`, sem brief. Com docs: afirma os três. Sem
@@ -787,6 +793,8 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um rumble do quadro que toca o último verbo e some o peso.
 **Não** mais um avanço que lê o hold e metralha no cooldown.
 **Não** mais o mesmo aperto da porta que dispara o ofício no campo.
+**Não** mais um `start` que deixa a próxima sessão sem memória.
+**Não** mais um AGENTS do start que lista GDD que não plantou.
 
 Candidatos, do que ainda dói:
 
@@ -811,7 +819,8 @@ Candidatos, do que ainda dói:
    starter declara. Com `--idea` ou `copy.json`, o prompt nomeia
    `Fantasia:` antes de `Verbo:`. A frase não muda o verbo.
    `init_scope` só afirma rascunhos quando `documents` é verdadeiro;
-   o `start` embute esse recibo. `preproduction.md` (injetado pelo
+   o `start` embute esse recibo. Os dois escrevem `AGENTS.md` com
+   o serve; sem rascunhos a memória não lista GDD. `preproduction.md` (injetado pelo
    `context` no foco create e em `--stage`) ensina `start --idea`.
    `doctor` no lab vazio devolve `then.guide` com `--idea`; com jogo a chave some.
    Depois do `start` fresco o `context` adia a auditoria (`audit.deferred`);
@@ -1208,6 +1217,18 @@ Candidatos, do que ainda dói:
   dispara o
   ofício no
   campo
+  e o
+  start que
+  deixa a
+  próxima
+  sessão sem
+  memória
+  e o
+  AGENTS do
+  start que
+  lista GDD
+  que não
+  plantou
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1231,8 +1252,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o avanço
-é o aperto, não o segurar. Teclado, toque
-e A leem a borda. Porta não vira ofício;
-cooldown não metralha. A guarda continua
-nível. Não promove.
+Arquivos quentes da última sessão: o `start`
+escreve `AGENTS.md` com o comando que abre.
+Sem rascunhos a memória não lista GDD.
+`documents` continua vazio. Não executa.

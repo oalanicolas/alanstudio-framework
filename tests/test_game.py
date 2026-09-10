@@ -3908,6 +3908,26 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(forced["documentation"]["action"], "document_minimum")
         self.assertIn(str(game.FRAMEWORK / "references/project-audit.md"), forced["read_next"])
 
+    def test_start_without_docs_writes_agent_memory_without_claiming_drafts(self):
+        destination = self.root / "memoria-do-ciclo"
+        report = game.start_project(destination, "canvas-arcade", idea="atravessar estilhaços")
+        self.assertEqual(report["init"]["documents"], [])
+        self.assertIn("sem plantar", report["init"]["scope"])
+        self.assertIn("AGENTS.md", report["init"]["scope"])
+        self.assertNotIn("criou rascunhos", report["init"]["scope"])
+        memory = destination / "AGENTS.md"
+        self.assertTrue(memory.is_file(), "o start fresco deixava a próxima sessão sem memória")
+        text = memory.read_text(encoding="utf-8")
+        self.assertIn("npm run serve", text)
+        self.assertIn("atravessar estilhaços", text)
+        self.assertIn(destination.name, text)
+        self.assertNotIn("docs/gdd.md", text)
+        self.assertNotIn("[comando exato", text)
+        self.assertNotIn("docs/brief.md", text)
+        self.assertIn("não foram plantados", text)
+        self.assertEqual(game.scan(destination)["agent_context"]["status"], "found")
+        self.assertEqual(game.next_step(destination)["proposal"]["basis"], "playable.unplayed")
+
     def test_start_docs_still_plants_the_drafts(self):
         destination = self.root / "com-rascunhos"
         report = game.start_project(

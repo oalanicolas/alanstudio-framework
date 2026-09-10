@@ -65,7 +65,8 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    dentro desta árvore) e não cria a pasta. `start --idea "<fantasia>"`
    (ou `start <destino> --starter <starter> --idea "<fantasia>"`) monta
    o projeto — sem caminho, a frase nomeia e cria a pasta —, põe a
-   frase na abertura e no aviso do primeiro ciclo e devolve o comando que abre o jogo.
+   frase na abertura e no aviso do primeiro ciclo, escreve `AGENTS.md`
+   com o comando que abre (não lista rascunhos que não plantou) e devolve o comando que abre o jogo.
    Perdeu o JSON? `play` (ou `open`) aponta o serve de novo, sem executar.
    Se o manifesto declara `session`, o prompt também nomeia a partida
    simulada. Não executa e não observa.

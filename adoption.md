@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.240 — O start escreve a memória do agente sem fingir rascunho
+
+O
+start
+fresco
+deixava
+a
+próxima
+sessão
+sem
+AGENTS.md.
+O
+template
+agents
+listava
+GDD
+que
+o
+start
+não
+plantou.
+Agora
+a
+memória
+nomeia
+o
+serve
+e
+o
+que
+o
+disco
+ainda
+não
+tem.
+`documents`
+continua
+vazio.
+Não
+executa.
+
+O que 0.9.240 não afirma:
+arquivo
+na
+raiz
+não
+é
+partida
+jogada.
+
 ## 0.9.239 — O avanço é o aperto, não o segurar
 
 Segurar

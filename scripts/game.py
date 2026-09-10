@@ -3690,6 +3690,76 @@ def substitute(text, pairs):
     return pattern.sub(swap, text), counted
 
 
+def agents_memory_text(destination, play=None, starter=None, documents=False, idea=None, url=None, cycle=None, fantasy=None):
+    # O `start` não planta brief/GDD. O template `agents` lista esses
+    # caminhos como canônicos — na pasta do start isso mentia. Memória
+    # do agente não é rascunho do ciclo.
+    destination = Path(destination)
+    cycle = cycle or (starter_cycle(starter) if starter else {})
+    fantasy = fantasy if fantasy is not None else resolve_fantasy(idea, destination)
+    verb = cycle.get("verb") or cycle.get("door")
+    lines = [
+        f"# AGENTS — {destination.name}",
+        "",
+        f"Projeto: {destination}",
+        "Status: memória do agente. Não é GDD nem rascunho do ciclo.",
+        "",
+        "## Executar e verificar",
+        "",
+    ]
+    if nonempty(play):
+        lines.append(f"- Rodar o jogo: `{play}`.")
+        if nonempty(url):
+            lines.append(f"- Superfície: {url}. Nomear não serve.")
+    else:
+        lines.append("- Rodar o jogo: o manifesto do projeto declara o comando.")
+    lines.append(f"- De novo, sem executar: `{harness_command('play', destination)}`.")
+    lines.append(f"- O que o verbo sentiu: `{note_command(destination)}`.")
+    if destination.joinpath("package.json").is_file():
+        lines.append(f"- Validadores: `cd {shlex.quote(str(destination))} && npm test`. Build verde não prova diversão.")
+    lines.append("- Não publicar, não apagar saves e não rodar `python3 tools/design-sfx.py` sem `--from`.")
+    lines.extend(["", "## O que este jogo já é", ""])
+    if starter:
+        lines.append(f"- Starter: `{starter}`. Partir dele é REUSE.")
+    if nonempty(verb):
+        lines.append(f"- Verbo: {verb}")
+    if nonempty(cycle.get("door")) and cycle.get("door") != verb:
+        lines.append(f"- Porta: {cycle['door']}")
+    if nonempty(fantasy):
+        lines.append(f"- Fantasia: {fantasy} — a frase não muda o verbo.")
+    if documents:
+        lines.append(
+            "- Rascunhos do ciclo estão em `docs/` com marcador de preenchimento. "
+            "Template não é decisão."
+        )
+    else:
+        lines.append(
+            "- Brief, GDD, QA e os outros rascunhos do ciclo não foram plantados. "
+            "`start --docs` ou `init` os cria. Não os invente para fechar auditoria."
+        )
+    lines.extend([
+        "",
+        "## Como trabalhar",
+        "",
+        "- Um salto por vez. REUSE → ADAPT → CREATE. CREATE pede lacuna escrita.",
+        "- Nenhum comando do harness joga, ouve ou sente o jogo no dispositivo.",
+        "- Leitores de observação continuam falsos. Não chame o recorte de AAA.",
+        "",
+    ])
+    return "\n".join(lines)
+
+
+def write_agents_memory(destination, play=None, starter=None, documents=False, idea=None, url=None, cycle=None, fantasy=None):
+    path = Path(destination) / "AGENTS.md"
+    if path.exists() or path.is_symlink():
+        return None
+    path.write_text(
+        agents_memory_text(destination, play, starter, documents, idea, url, cycle, fantasy),
+        encoding="utf-8",
+    )
+    return "AGENTS.md"
+
+
 def init_scope(documents, idea=None):
     # O `start` chama `init` com documents=False. Afirmar rascunhos, brief ou
     # draft_only nesse ramo mentia no JSON que o agente lê depois de criar.
@@ -3698,7 +3768,8 @@ def init_scope(documents, idea=None):
     )
     if documents:
         drafts = (
-            " e criou rascunhos a partir dos templates. O ciclo já abre: o primeiro "
+            " e criou rascunhos a partir dos templates. Escreveu AGENTS.md "
+            "com o comando que abre; não é GDD. O ciclo já abre: o primeiro "
             "comando apontado é o que serve o jogo, não o que preenche os rascunhos. "
             "`open` e `url` nomeiam o mesmo serve; o `prompt` também sai em stderr. "
         )
@@ -3711,9 +3782,10 @@ def init_scope(documents, idea=None):
         )
     else:
         drafts = (
-            " sem plantar os rascunhos do ciclo. `start` faz o mesmo; `init` sem "
-            "`--no-docs` ou `start --docs` os cria. O ciclo já abre: o primeiro "
-            "comando apontado é o que serve o jogo. "
+            " sem plantar os rascunhos do ciclo. Escreveu AGENTS.md com o "
+            "comando que abre; não é GDD nem rascunho. `start` faz o mesmo; "
+            "`init` sem `--no-docs` ou `start --docs` cria os rascunhos. O ciclo "
+            "já abre: o primeiro comando apontado é o que serve o jogo. "
             "`open` e `url` nomeiam o mesmo serve; o `prompt` também sai em stderr. "
         )
         scan = (
@@ -3801,15 +3873,23 @@ def init(destination, starter, title=None, documents=True, idea=None):
                 continue
             template(stage, destination, output)
             drafts.append(output.relative_to(destination).as_posix())
-        if not (destination / "AGENTS.md").exists():
-            template("agents", destination, destination / "AGENTS.md")
-            drafts.append("AGENTS.md")
     planted = seed_idea(destination, idea)
     try:
         scripts, manager = project_commands(destination)
     except (OSError, ValueError):
         scripts, manager = {}, None
     play = play_command(destination, scripts, manager)
+    url = serve_url(scripts)
+    cycle = starter_cycle(starter)
+    fantasy = resolve_fantasy(idea, destination)
+    # O start não planta brief. Sem isto a próxima sessão
+    # reaprendia o serve e o template agents listava GDD
+    # que não existia. Memória do agente não é rascunho.
+    memory = write_agents_memory(
+        destination, play, starter, documents, idea, url, cycle, fantasy,
+    )
+    if memory and documents:
+        drafts.append(memory)
     commands = []
     if play:
         commands.append(play)
@@ -3818,11 +3898,8 @@ def init(destination, starter, title=None, documents=True, idea=None):
     # passo 3 sumia. O `play` já diz que o próximo
     # comando é note. then.lost continua o next.
     commands.append(note_command(destination))
-    url = serve_url(scripts)
     then = cycle_then(destination, play, starter)
-    cycle = starter_cycle(starter)
     runtime = node_runtime(play)
-    fantasy = resolve_fantasy(idea, destination)
     # O start já nomeava a superfície. Sem isto o init
     # plantava e calava — quem segue o caminho com
     # rascunhos tinha de achar o play depois. Nomear
