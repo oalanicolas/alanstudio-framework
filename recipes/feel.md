@@ -87,7 +87,9 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    Guardar uma corrente que já existe senta os mesmos dois ticks antes
    de converter (`squashBankCoil` senta; o coil do avanço estreita);
    esses ticks já atravessam o estilhaço — o arco da
-   guarda não é janela de hit. O quadro que converte também atravessa:
+   guarda não é janela de hit. Pedido de guarda com corrente já
+   existente espera o coil do avanço: os dois arcos no mesmo tick
+   comiam o disparo. O quadro que converte também atravessa:
    sentar e pontuar no mesmo impacto não mata. Coleta e guarda no mesmo
    quadro continuam na hora — o contato já foi a antecipação. Dois
    orbes no mesmo quadro não inflam a corrente: o segundo espera o

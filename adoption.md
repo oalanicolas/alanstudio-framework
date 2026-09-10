@@ -3,6 +3,68 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.220 — O coil do avanço não some quando a guarda pede
+
+O
+avanço
+e
+a
+guarda
+no
+mesmo
+tick
+abriam
+os
+dois
+arcos.
+`canDash`
+lia
+`bankWindup`
+e
+o
+disparo
+expirava
+sem
+alongar.
+Agora
+a
+guarda
+com
+corrente
+espera
+o
+coil
+do
+avanço.
+Coleta
+e
+guarda
+no
+mesmo
+quadro
+continuam
+na
+hora.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.220 não afirma:
+pedido
+que
+espera
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.219 — O arco da guarda senta com pose própria
 
 O

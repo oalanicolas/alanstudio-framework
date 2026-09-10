@@ -28,7 +28,7 @@ export const CONFIG = {
     dashRecoveryTicks: 6, // recuperação: controle reduzido, ainda vulnerável; o quadro do land atravessa
     dashCooldownTicks: 30,
     dashBufferTicks: 8, // perdão: dash pedido cedo dispara ao recarregar
-    dashWindupTicks: 2, // antecipação: o corpo senta antes de alongar; já é graça
+    dashWindupTicks: 2, // antecipação: o corpo senta antes de alongar; já é graça; a guarda com corrente espera este coil
     invulnTicks: 42, // graça após dano; evita perder duas correntes seguidas — inclusive no mesmo quadro
   },
   // Um orbe por tick: dois no alcance não inflam a corrente.
@@ -118,7 +118,7 @@ export const CONFIG = {
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
     bufferTicks: 8, // perdão: pedido cedo ou no hitstop dispara quando a corrente existe
-    windupTicks: 2, // antecipação: o corpo senta antes de converter; o arco e o quadro da conversão já são graça
+    windupTicks: 2, // antecipação: o corpo senta antes de converter; o arco e o quadro da conversão já são graça; corrente já existente espera o coil do avanço
   },
   // Assistência não esconde conteúdo: os mesmos orbes, a mesma pontuação.
   // Perdão extra de alcance, chuva mais lenta e graça mais longa.
@@ -857,6 +857,11 @@ function bank(state, intent) {
     commitBank(state);
     return;
   }
+  // Corrente que já existia espera o coil do avanço. Os dois
+  // arcos no mesmo tick travavam o disparo: canDash lê
+  // bankWindup e o avanço expirava sem alongar. Coleta neste
+  // quadro já converteu acima. Pedido no disco não é felt.
+  if ((state.player?.dashWindup ?? 0) > 0) return;
   const windup = CONFIG.bank.windupTicks;
   if (!(windup > 0)) {
     commitBank(state);

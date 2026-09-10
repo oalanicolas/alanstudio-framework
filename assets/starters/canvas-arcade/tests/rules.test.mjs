@@ -55,6 +55,40 @@ test("guardar senta antes de converter e não dispara no pedido", () => {
   assert.ok(state.events.some((event) => event.type === "bank"));
 });
 
+test("o coil do avanço não some quando a guarda pede no mesmo tick", () => {
+  const state = createState(3);
+  state.chain = 4;
+  advance(state, { move: 1, dash: true, bank: true });
+  assert.equal(state.player.dashWindup, CONFIG.player.dashWindupTicks, "o avanço ainda senta");
+  assert.equal(state.bankWindup, 0, "a guarda espera o coil");
+  assert.equal(state.stats.dashes, 0);
+  assert.equal(state.stats.banks, 0);
+  assert.ok(state.bankBuffer > 0, "o pedido da guarda permanece");
+  for (let step = 0; step < CONFIG.player.dashWindupTicks; step += 1) {
+    advance(state, { move: 1, dash: false, bank: false });
+  }
+  assert.equal(state.stats.dashes, 1, "os dois coils no mesmo tick não comem o avanço");
+  assert.ok(state.player.dashTicks > 0);
+  assert.ok(state.events.some((event) => event.type === "dash"));
+  assert.equal(state.stats.banks, 0, "a guarda ainda não converteu no disparo");
+  assert.equal(state.bankWindup, CONFIG.bank.windupTicks, "depois do disparo a guarda senta");
+});
+
+test("coleta e guarda no mesmo quadro continuam na hora durante o coil do avanço", () => {
+  const state = createState(3);
+  advance(state, { move: 1, dash: true, bank: false });
+  assert.equal(state.player.dashWindup, CONFIG.player.dashWindupTicks);
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, { move: 1, dash: false, bank: true });
+  assert.equal(state.stats.collected, 1, "o contato ainda coleta");
+  assert.equal(state.stats.banks, 1, "o contato já foi a antecipação");
+  assert.equal(state.chain, 0);
+  assert.equal(state.score, 1);
+  assert.equal(state.bankWindup, 0);
+  assert.equal(state.player.dashWindup, CONFIG.player.dashWindupTicks - 1, "o avanço continua o arco");
+  assert.equal(state.stats.dashes, 0, "converter no contato não dispara o avanço");
+});
+
 test("guardar converte a corrente ao quadrado e cobra o compromisso", () => {
   const state = createState(1);
   state.chain = 4;
