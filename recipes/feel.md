@@ -8,11 +8,11 @@ avanço. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê 
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured`. `playtest --invite`
 escreve a página e aponta `/?invite=1`, onde a tabela some; depois do
-fim a página oferece os quatro nomes para copiar. Copiar não grava
-e não é alguém de fora. `next` aponta o convite depois do recibo de
-quem fez. O serve anuncia a URL da rede
+fim a página oferece os quatro nomes para copiar ou gravar. Copiar
+não grava. Gravado não é alguém de fora. `next` aponta o convite
+depois do recibo de quem fez. O serve anuncia a URL da rede
 se a máquina tiver outro endereço IPv4. Esconder a tabela, anunciar
-a rede e copiar o achado não são alguém de fora. `observed` e `outsider` são sempre
+a rede, copiar o achado e gravar os quatro nomes não são alguém de fora. `observed` e `outsider` são sempre
 falsos: o harness não assiste à sessão. A partida no serve grava o
 mesmo candidato em `docs/playtest/last-run.json`. `npm run session`
 continua a simulação. Nenhum dos dois é sessão observada. Se o

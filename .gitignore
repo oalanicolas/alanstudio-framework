@@ -11,3 +11,4 @@ venv/
 .env.*
 dist/
 assets/starters/canvas-arcade/docs/playtest/last-run.json
+assets/starters/canvas-arcade/docs/playtest/*-achado.md

@@ -1991,8 +1991,10 @@ def playtest_reading(project):
             "Procura os quatro campos num documento ou num record de "
             "observação, e se docs/qa.md deixou de ser rascunho. Relata "
             f"`{LAST_RUN}` e `{INVITE}` quando existem. A partida no serve "
-            "pode gravar o candidato; a simulação também. Não assiste a sessão, não conta "
-            "jogadores e não atribui causa. `observed` e `outsider` são sempre falsos."
+            "pode gravar o candidato; a simulação também. No convite a "
+            "página pode gravar o markdown dos quatro nomes. Não assiste "
+            "a sessão, não conta jogadores e não atribui causa. "
+            "`observed` e `outsider` são sempre falsos."
         ),
     }
 
@@ -2027,8 +2029,9 @@ def invite_playtest(project):
         "scope": (
             "Escreve a página para quem nunca viu o jogo e aponta "
             "`/?invite=1`, onde a tabela some. Depois do fim a página "
-            "oferece os quatro nomes para copiar. Copiar não grava e "
-            "não é alguém de fora. O serve anuncia a URL da rede se a "
+            "oferece os quatro nomes para copiar ou gravar. Copiar não "
+            "grava. Esqueleto vazio não é achado. Gravado não é alguém "
+            "de fora. O serve anuncia a URL da rede se a "
             "máquina tiver outro endereço IPv4. Não ensina o verbo, "
             "não assiste e não sobe pacing. outsider continua falso."
         ),
@@ -2069,9 +2072,9 @@ def invite_page(project):
         "\n"
         "## Depois\n"
         "\n"
-        "A página oferece os quatro nomes para copiar. Copiar não\n"
-        "grava no projeto. Cole noutro arquivo em `docs/playtest/`\n"
-        "só se quem jogou preencheu. Esqueleto vazio não é achado.\n"
+        "A página oferece os quatro nomes para copiar ou gravar.\n"
+        "Copiar não grava. Grave só se os quatro tiverem texto.\n"
+        "Esqueleto vazio não é achado. Gravado não sobe pacing.\n"
         "Quem escreveu precisa ser quem jogou.\n"
         "\n"
         "Convite no disco não sobe `pacing` e não conta jogador.\n"

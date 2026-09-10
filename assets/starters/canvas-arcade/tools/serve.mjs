@@ -3,9 +3,9 @@
 // Módulos ES não carregam por `file://`, então abrir o index.html direto no
 // navegador falha. Este servidor existe só para jogar e comparar localmente.
 // Não é servidor de produção: serve o diretório do projeto por GET e aceita
-// um POST em `/playtest/last-run` (candidato) e outro em `/playtest/note`
-// (recibo). Recusa caminho que escape do projeto e não grava na árvore
-// exportada.
+// POST em `/playtest/last-run` (candidato), `/playtest/note` (recibo) e
+// `/playtest/finding` (achado preenchido). Recusa caminho que escape do
+// projeto e não grava na árvore exportada.
 
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
@@ -21,6 +21,8 @@ import {
   NOTE_DIR,
   NOTE_ROUTE,
   noteStamp,
+  FINDING_ROUTE,
+  playFinding,
   playNote,
   playReport,
 } from "../src/core/run-report.js";
@@ -81,6 +83,7 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
     `Convite: ${local}/?invite=1`,
     "Candidato: a partida grava docs/playtest/last-run.json",
     "Nota: depois do fim a página grava o recibo em docs/playtest/",
+    "Achado: no convite a página grava os quatro nomes se estiverem preenchidos",
   ];
   for (const origin of origins.slice(1)) {
     lines.push(`Rede: ${origin}/`);
@@ -105,7 +108,7 @@ function openBrowser(url) {
 // `pathname` de uma URL mantém a codificação percentual: um projeto em
 // "Farol do Sul" viraria "Farol%20do%20Sul", uma pasta que não existe, e todo
 // pedido responderia 404. `fileURLToPath` decodifica.
-export { LAST_RUN_FILE, LAST_RUN_ROUTE, NOTE_DIR, NOTE_ROUTE };
+export { FINDING_ROUTE, LAST_RUN_FILE, LAST_RUN_ROUTE, NOTE_DIR, NOTE_ROUTE };
 
 export const LAST_RUN_LIMIT = 32 * 1024;
 
@@ -193,6 +196,33 @@ export async function writeNote(root, { author, note }) {
   return dest;
 }
 
+export function acceptFinding(raw) {
+  let data;
+  try {
+    data = typeof raw === "string" ? JSON.parse(raw) : raw;
+  } catch {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  const text = playFinding(data);
+  if (!text) return { ok: false, status: 400, reason: "sem achado" };
+  return { ok: true, text };
+}
+
+export async function writeFinding(root, text) {
+  await mkdir(join(root, NOTE_DIR), { recursive: true });
+  let dest = join(root, NOTE_DIR, `${noteStamp()}-achado.md`);
+  try {
+    await writeFile(dest, text, { flag: "wx" });
+  } catch {
+    dest = join(root, NOTE_DIR, `${noteStamp()}-b-achado.md`);
+    await writeFile(dest, text, { flag: "wx" });
+  }
+  return dest;
+}
+
 function collectBody(request, limit) {
   return new Promise((done) => {
     const chunks = [];
@@ -264,6 +294,25 @@ const server = createServer(async (request, response) => {
       return;
     }
     await writeNote(ROOT, accepted);
+    response.writeHead(204).end();
+    return;
+  }
+  if (request.method === "POST" && pathname === FINDING_ROUTE) {
+    if (isArtifactRoot()) {
+      response.writeHead(403, { "content-type": "text/plain; charset=utf-8" }).end("árvore exportada");
+      return;
+    }
+    const raw = await collectBody(request, LAST_RUN_LIMIT);
+    if (raw === null) {
+      response.writeHead(413, { "content-type": "text/plain; charset=utf-8" }).end("corpo grande");
+      return;
+    }
+    const accepted = acceptFinding(raw);
+    if (!accepted.ok) {
+      response.writeHead(accepted.status, { "content-type": "text/plain; charset=utf-8" }).end(accepted.reason);
+      return;
+    }
+    await writeFinding(ROOT, accepted.text);
     response.writeHead(204).end();
     return;
   }

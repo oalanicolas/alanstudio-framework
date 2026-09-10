@@ -145,14 +145,17 @@
 
     <section class="panel" id="finding" aria-labelledby="finding-title">
       <h2 id="finding-title">Depois da partida</h2>
-      <p class="note">Copie o que jogou. Isto não grava no projeto.</p>
+      <p class="note">Copie ou grave o que jogou. Vazio não é achado.</p>
       <div class="grid">
         <label><span>Problema</span><textarea id="finding-problema" name="problema" rows="2"></textarea></label>
         <label><span>Evidência</span><textarea id="finding-evidencia" name="evidencia" rows="2"></textarea></label>
         <label><span>Hipótese</span><textarea id="finding-hipotese" name="hipotese" rows="2"></textarea></label>
         <label><span>Medição</span><textarea id="finding-medicao" name="medicao" rows="2"></textarea></label>
       </div>
-      <p><button type="button" id="finding-copy">Copiar</button></p>
+      <p>
+        <button type="button" id="finding-copy">Copiar</button>
+        <button type="button" id="finding-save">Gravar</button>
+      </p>
     </section>
 
     <section class="panel" id="commands" aria-labelledby="controls-title">
@@ -212,7 +215,7 @@
     <script type="module">
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
       import { applyFinding, applyInvite, applyNote, composeFinding, inviteMode } from "./src/core/invite.js";
-      import { NOTE_ROUTE } from "./src/core/run-report.js";
+      import { FINDING_ROUTE, NOTE_ROUTE, playFinding } from "./src/core/run-report.js";
       import { applyShell } from "./src/core/shell.js";
       import { LOOK_LABELS, SPAWN_LABELS, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch, PALETTES, resolveLookName } from "./src/game/tables.js";
       import { paintCommands } from "./src/core/keys.js";
@@ -255,6 +258,24 @@
           if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
             navigator.clipboard.writeText(text);
           }
+        });
+        document.getElementById("finding-save").addEventListener("click", () => {
+          const fields = {
+            problema: document.getElementById("finding-problema").value,
+            evidencia: document.getElementById("finding-evidencia").value,
+            hipotese: document.getElementById("finding-hipotese").value,
+            medicao: document.getElementById("finding-medicao").value,
+          };
+          if (!playFinding(fields)) return;
+          fetch(FINDING_ROUTE, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(fields),
+          }).then((response) => {
+            if (!response.ok) return;
+            document.getElementById("finding-save").disabled = true;
+            document.getElementById("finding-save").textContent = "Achado no disco";
+          }).catch(() => {});
         });
         const toggles = ["reducedMotion", "highContrast", "captions", "assist"];
         const buses = ["master", "sfx", "music", "ui"];

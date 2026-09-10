@@ -2810,7 +2810,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("nunca viu", page.casefold())
         self.assertIn("rede", page.casefold())
         self.assertIn("copiar", page.casefold())
+        self.assertIn("gravar", page.casefold())
         self.assertIn("quatro nomes", page.casefold())
+        self.assertIn("não grava", page.casefold())
+        self.assertIn("gravar", first["scope"].casefold())
         self.assertNotIn("Não leia a tabela", page)
         self.assertNotRegex(page, game.FINDING_FIELDS)
         self.assertNotIn("aprovado", page)
@@ -2835,6 +2838,34 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         payload = json.loads(run.stdout)
         self.assertFalse(payload["created"])
         self.assertFalse(payload["outsider"])
+
+    def test_a_page_finding_is_form_not_an_outsider(self):
+        destination = self.root / "achado-da-pagina"
+        game.init(destination, "canvas-arcade")
+        game.note_observation(destination, "Ana", "o verbo pesa no guarda")
+        hollow = game.playtest_reading(destination)
+        self.assertTrue(hollow["unstructured"])
+        self.assertFalse(hollow["structured"])
+        path = destination / "docs/playtest/20260910T000000Z-achado.md"
+        path.write_text(
+            "- Problema: o dash não comunica o contato\n"
+            "- Evidência: três sessões, pergunta se atravessou\n"
+            "- Hipótese: o hitstop some no movimento\n"
+            "- Medição: repetir o graze com hitstop 5 e 2\n",
+            encoding="utf-8",
+        )
+        report = game.playtest_reading(destination)
+        self.assertTrue(report["structured"])
+        self.assertFalse(report["unstructured"])
+        self.assertEqual(report["findings"], ["docs/playtest/20260910T000000Z-achado.md"])
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertNotIn("playtest.unstructured", [
+            item["basis"] for item in self.proposals(game.next_step(destination, "feel"))
+        ])
+        page = game.invite_page(destination)
+        self.assertNotRegex(page, game.FINDING_FIELDS)
+        self.assertIn("copiar ou gravar", page.casefold())
 
     def test_next_points_at_the_invite_after_the_maker_already_played(self):
         destination = self.root / "depois-de-jogar"

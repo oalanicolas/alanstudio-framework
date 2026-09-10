@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.115 — O convite também grava o achado
+
+Quem nunca viu o jogo só podia copiar os quatro
+nomes. Depois do fim, `?invite=1` grava
+`docs/playtest/<utc>-achado.md` se os quatro
+tiverem texto. Copiar não grava. Esqueleto vazio
+não é achado. `outsider` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.115 não afirma: gravar o achado não é
+alguém de fora e a página não observou a curva.
+
 ## 0.9.114 — A página também grava o recibo
 
 O `note` ainda pedia o harness. Depois do fim,

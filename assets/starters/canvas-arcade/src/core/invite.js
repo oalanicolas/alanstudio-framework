@@ -1,8 +1,8 @@
 // Superfície de convite. A tabela da página ensina o verbo; quem nunca
 // viu o jogo não deveria lê-la. `?invite=1` some o painel. Esconder a
 // tabela não é alguém de fora nem curva observada. Depois do fim, a
-// página oferece os quatro nomes para copiar. Copiar não grava no
-// projeto e não é alguém de fora.
+// página oferece os quatro nomes para copiar ou gravar. Copiar não
+// grava. Esqueleto vazio não é achado. Gravado não é alguém de fora.
 
 export function inviteMode(search = "") {
   const raw = typeof search === "string" ? search : "";

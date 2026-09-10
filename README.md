@@ -646,9 +646,11 @@ python3 scripts/game.py playtest /caminho/do/laboratorio/meu-jogo --invite
 `observed` e `outsider` são sempre `false`. `--invite` escreve
 `docs/playtest/invite.md` e aponta `/?invite=1`, onde a tabela de
 comandos some; depois do fim a página oferece os quatro nomes para
-copiar. Copiar não grava no projeto. Página no disco e texto na
-área de transferência não são alguém de fora e não sobem
-`pacing`. Esqueleto vazio não é achado. `next` propõe `playtest.invite`
+copiar ou gravar. Copiar não grava. Gravado vira
+`docs/playtest/<utc>-achado.md` se os quatro tiverem texto.
+Página no disco, texto na área de transferência e markdown
+preenchido não são alguém de fora e não sobem `pacing`.
+Esqueleto vazio não é achado. `next` propõe `playtest.invite`
 depois do recibo de quem fez (e depois do segundo ciclo, se houver).
 `next` propõe `playtest.unstructured` quando há recibo de observação
 (ou um `docs/qa.md` vigente) e o achado ainda não tem forma. Se

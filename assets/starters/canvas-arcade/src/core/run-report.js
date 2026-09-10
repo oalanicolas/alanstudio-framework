@@ -7,6 +7,30 @@ export const LAST_RUN_ROUTE = "/playtest/last-run";
 export const LAST_RUN_FILE = "docs/playtest/last-run.json";
 export const NOTE_ROUTE = "/playtest/note";
 export const NOTE_DIR = "docs/playtest";
+export const FINDING_ROUTE = "/playtest/finding";
+
+export function playFinding({
+  problema = "",
+  evidencia = "",
+  hipotese = "",
+  medicao = "",
+} = {}) {
+  const fields = {
+    problema: String(problema).trim(),
+    evidencia: String(evidencia).trim(),
+    hipotese: String(hipotese).trim(),
+    medicao: String(medicao).trim(),
+  };
+  if (!fields.problema || !fields.evidencia || !fields.hipotese || !fields.medicao) {
+    return null;
+  }
+  return (
+    `- Problema: ${fields.problema}\n` +
+    `- Evidência: ${fields.evidencia}\n` +
+    `- Hipótese: ${fields.hipotese}\n` +
+    `- Medição: ${fields.medicao}\n`
+  );
+}
 
 export function noteStamp(now = new Date()) {
   const iso = now.toISOString();

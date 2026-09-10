@@ -20,8 +20,8 @@ também. Depois do fim, a página grava o recibo se você escrever.
 Depois do recibo, o mesmo `start` e o `next` apontam
 o ofício. O autor do `note` é sugestão do git ou do ambiente, não
 quem jogou. Nomear o ofício não pinta. `playtest --invite` aponta `/?invite=1`, onde a
-tabela some; depois do fim a página oferece os quatro nomes para copiar.
-Copiar não grava e não é alguém de fora. Não gere todos os templates antes de experimentar. Nove arquivos vazios não
+tabela some; depois do fim a página oferece os quatro nomes para copiar
+ou gravar. Copiar não grava. Gravado não é alguém de fora. Não gere todos os templates antes de experimentar. Nove arquivos vazios não
 aumentam a qualidade; uma fatia sem feel continua sendo protótipo.
 
 Siga [o ciclo de pré-produção](../references/preproduction.md) para escolher o

@@ -14,7 +14,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { advertisedOrigins, isArtifactRoot, LAST_RUN_FILE, LAST_RUN_ROUTE, NOTE_DIR, NOTE_ROUTE, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
+import { advertisedOrigins, FINDING_ROUTE, isArtifactRoot, LAST_RUN_FILE, LAST_RUN_ROUTE, NOTE_DIR, NOTE_ROUTE, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
 
 const STARTER = fileURLToPath(new URL("..", import.meta.url));
 
@@ -135,6 +135,30 @@ for (const name of ["farol", "Farol do Sul"]) {
       });
       assert.equal(empty.status, 400);
 
+      const found = await fetch(`http://localhost:${server.port}${FINDING_ROUTE}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          problema: "o dash não comunica o contato",
+          evidencia: "três sessões, pergunta se atravessou",
+          hipotese: "o hitstop some no movimento",
+          medicao: "repetir o graze com hitstop 5 e 2",
+        }),
+      });
+      assert.equal(found.status, 204, found.status);
+      const files = await readdir(join(server.project, NOTE_DIR));
+      const achado = files.find((name) => name.endsWith("-achado.md"));
+      assert.ok(achado, "esperava o markdown do achado");
+      const finding = await readFile(join(server.project, NOTE_DIR, achado), "utf8");
+      assert.match(finding, /Problema: o dash não comunica o contato/);
+      assert.doesNotMatch(finding, /aprovado|verified|LUFS|-14|4\.5|outsider/);
+      const hollow = await fetch(`http://localhost:${server.port}${FINDING_ROUTE}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ problema: "o dash", evidencia: "", hipotese: "x", medicao: "y" }),
+      });
+      assert.equal(hollow.status, 400);
+
       const refused = await fetch(`http://localhost:${server.port}/docs/playtest/last-run.json`, {
         method: "POST",
         body: "{}",
@@ -176,6 +200,7 @@ test("o serve anuncia a rede sem fingir que alguém de fora jogou", () => {
   assert.match(banner, /Convite: http:\/\/localhost:8080\/\?invite=1/);
   assert.match(banner, /Candidato: a partida grava docs\/playtest\/last-run\.json/);
   assert.match(banner, /Nota: depois do fim a página grava o recibo/);
+  assert.match(banner, /Achado: no convite a página grava os quatro nomes/);
   assert.match(banner, /Rede: http:\/\/192\.168\.1\.40:8080\//);
   assert.match(banner, /Convite na rede: http:\/\/192\.168\.1\.40:8080\/\?invite=1/);
   assert.doesNotMatch(banner, /169\.254/);

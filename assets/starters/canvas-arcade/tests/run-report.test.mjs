@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { playNote, playReport } from "../src/core/run-report.js";
-import { acceptLastRun, acceptNote } from "../tools/serve.mjs";
+import { playFinding, playNote, playReport } from "../src/core/run-report.js";
+import { acceptFinding, acceptLastRun, acceptNote } from "../tools/serve.mjs";
 
 test("o recibo nasce sem observar e a simulação não se mistura com a partida", () => {
   const played = playReport({
@@ -78,4 +78,31 @@ test("a nota vazia não grava e a preenchida não observa", () => {
   assert.equal(report.fields.role, "human");
   assert.match(report.fields.run, /"ticks":40/);
   assert.doesNotMatch(report.scope, /aprovado|verified|LUFS|-14|4\.5|enough|consistent/);
+});
+
+test("o achado só nasce com os quatro nomes preenchidos", () => {
+  assert.equal(playFinding({}), null);
+  assert.equal(playFinding({
+    problema: "o dash",
+    evidencia: "três sessões",
+    hipotese: "hitstop",
+    medicao: "",
+  }), null);
+  assert.equal(acceptFinding({ problema: "o dash" }).ok, false);
+  const text = playFinding({
+    problema: "o dash não comunica o contato",
+    evidencia: "três sessões, pergunta se atravessou",
+    hipotese: "o hitstop some no movimento",
+    medicao: "repetir o graze com hitstop 5 e 2",
+  });
+  assert.match(text, /Problema: o dash não comunica o contato/);
+  assert.match(text, /Medição: repetir o graze/);
+  const accepted = acceptFinding({
+    problema: "o dash não comunica o contato",
+    evidencia: "três sessões, pergunta se atravessou",
+    hipotese: "o hitstop some no movimento",
+    medicao: "repetir o graze com hitstop 5 e 2",
+  });
+  assert.equal(accepted.ok, true);
+  assert.equal(accepted.text, text);
 });
