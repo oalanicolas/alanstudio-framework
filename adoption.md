@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.329 — o verify nomeia o som que o catálogo perdeu
+
+A
+página
+de
+escuta
+já
+nomeava
+a
+ausência.
+O
+verify
+despejava
+errno.
+O
+agente
+lia
+arquivo
+sumido
+como
+falha
+opaca.
+Agora
+o
+comando
+nomeia
+o
+recibo
+do
+acervo.
+Não
+promove
+`heard`.
+
+O que 0.9.329 não afirma:
+nomear
+a
+ausência
+não
+é
+mix
+ouvido.
+
 ## 0.9.328 — o rótulo do dash nomeia o avanço no travel
 
 A

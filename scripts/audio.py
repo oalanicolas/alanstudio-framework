@@ -368,6 +368,14 @@ def check(root=LIBRARY, decode=False):
             path = inside(root, item["file"])
             if path.parent != root.resolve() / "files" or path.stem != item["sha256"]:
                 raise ValueError(f"Caminho canônico inválido: {item['id']}")
+            # A página de escuta já nomeava a ausência. O
+            # verify despejava errno e o agente lia arquivo
+            # sumido como falha opaca. Nomear não é ouvir.
+            if not catalog_bytes_present(root, item["file"]):
+                raise ValueError(
+                    f"O catálogo lista este som e o disco perdeu "
+                    f"o arquivo: {item['id']}. Nomear não é ouvir."
+                )
             data = path.read_bytes()
             if digest(data) != item["sha256"] or len(data) != item["bytes"]:
                 raise ValueError(f"Integridade inválida: {item['id']}")

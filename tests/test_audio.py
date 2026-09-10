@@ -182,6 +182,20 @@ class AudioCatalogTests(unittest.TestCase):
         self.assertNotIn("verified", page)
         self.assertFalse(audio.catalog_bytes_present(self.root, self.item["file"]))
 
+    def test_check_names_the_catalog_sound_the_disk_lost(self):
+        lost = self.root / self.item["file"]
+        self.assertTrue(lost.is_file())
+        lost.unlink()
+        report = audio.check(self.root)
+        self.assertFalse(report["ok"])
+        blob = " ".join(report["errors"])
+        self.assertIn(self.item["id"], blob)
+        self.assertIn("catálogo lista", blob.casefold())
+        self.assertIn("disco perdeu", blob.casefold())
+        self.assertNotIn("No such file", blob)
+        self.assertNotIn("aprovado", blob)
+        self.assertNotIn("verified", blob)
+
 
 if __name__ == "__main__":
     unittest.main()

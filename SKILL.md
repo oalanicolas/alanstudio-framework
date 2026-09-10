@@ -93,7 +93,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    recusa catálogo vazio.
    Com sons no acervo, `sfx serve` abre a página de escuta — se
    `shared/sfx/ui` faltar, o harness gera a lista e nomeia o som
-   que o catálogo lista e o disco perdeu. Tocar nessa
+   que o catálogo lista e o disco perdeu. `sfx verify`
+   nomeia o som que o catálogo lista e o disco perdeu —
+   não despeja errno. Tocar nessa
    página não é mix ouvida no jogo. Arquivo no disco não é mix ouvido. Crescer o acervo é
    `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx seed` lê
    `selection.json` local. `sfx info ID` lê a ficha do acervo ou a
@@ -236,6 +238,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    do starter — o recibo que lista um stem e o disco perdeu não
    é id desconhecido; `sfx verify` nomeia os stems sem cruzar o que não
    existe e nomeia o stem que o recibo lista e o disco perdeu;
+   `sfx verify` nomeia o som que o catálogo lista e o disco
+   perdeu — não despeja errno;
    `sfx export` copia bytes e
    créditos e nomeia o stem que o recibo lista e o disco perdeu —
    exportar não inventa bytes. Importar e exportar não é ouvir. `heard` é sempre falso. Papel vazio

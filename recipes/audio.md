@@ -55,7 +55,9 @@ que não existe, `sfx summary` lista todos os stems já no
 `public/sfx` e `sfx serve`
 recusa. Com sons no acervo, `sfx serve` abre a página de escuta —
 se `shared/sfx/ui` faltar, o harness gera a lista e nomeia o
-som que o catálogo lista e o disco perdeu. Tocar nessa
+som que o catálogo lista e o disco perdeu. `sfx verify`
+nomeia o som que o catálogo lista e o disco perdeu —
+não despeja errno. Tocar nessa
 página não é mix ouvida no jogo. Isso não
 autoriza improvisar licença. Arquivo no disco não é mix ouvido. Crescer o acervo é `sfx import ARQUIVO
 --metadata JSON` (ffmpeg) ou `sfx seed` com `selection.json` local.

@@ -2958,6 +2958,28 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", json.dumps(report))
         self.assertNotIn("verified", json.dumps(report))
 
+    def test_sfx_verify_names_the_catalog_sound_the_disk_lost(self):
+        item, _ = self._plant_catalog_sound()
+        lost = self.root / "shared/sfx" / item["file"]
+        self.assertTrue(lost.is_file())
+        lost.unlink()
+        report = game.sfx_catalog.verify_catalog(self.root)
+        self.assertFalse(report["empty"])
+        self.assertFalse(report["ok"])
+        blob = " ".join(report["problems"])
+        self.assertIn(item["id"], blob)
+        self.assertIn("catálogo lista", blob.casefold())
+        self.assertIn("disco perdeu", blob.casefold())
+        self.assertNotIn("No such file", blob)
+        self.assertFalse(report["heard"])
+        dumped = json.dumps(report)
+        self.assertNotIn("aprovado", dumped)
+        self.assertNotIn("verified", dumped)
+        recipe = (Path(game.FRAMEWORK) / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (Path(game.FRAMEWORK) / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("não despeja errno", recipe.casefold())
+        self.assertIn("não despeja errno", skill.casefold())
+
     def test_sfx_info_names_a_receipt_whose_file_is_gone(self):
         folder = self.root / "sfx-ficha-sumida"
         folder.mkdir()
