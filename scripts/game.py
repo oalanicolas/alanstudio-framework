@@ -2878,6 +2878,38 @@ def cycle_then(project, play, starter=None):
     return then
 
 
+def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False):
+    play_step = {
+        "n": 2,
+        "do": "jogar no próprio dispositivo",
+        "command": play_cmd,
+        "kind": nxt["proposal"]["basis"] if nxt else "playable.unplayed",
+        "executed": False,
+    }
+    if cycle:
+        play_step["verb"] = cycle["verb"]
+        play_step["controls"] = {
+            key: cycle[key]
+            for key in CYCLE_KEYS
+            if key != "verb" and key in cycle
+        }
+    return [
+        {
+            "n": 1,
+            "do": "abrir o ciclo",
+            "command": start_command,
+            "done": exists,
+        },
+        play_step,
+        {
+            "n": 3,
+            "do": "gravar o que o verbo sentiu",
+            "command": then["note"],
+            "executed": False,
+        },
+    ]
+
+
 def cycle_prompt(play, then, cycle, noted=False):
     if not play:
         return (
@@ -3249,6 +3281,13 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
     then = cycle_then(destination, play, chosen)
     cycle = starter_cycle(chosen)
     noted = bool(observation_receipts(destination))
+    start_parts = ["start", destination]
+    if chosen:
+        start_parts.extend(["--starter", chosen])
+    if nonempty(idea):
+        start_parts.extend(["--idea", idea.strip()])
+    start_command = harness_command(*start_parts)
+    steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True)
     return {
         "schema_version": 1,
         "project": str(destination),
@@ -3259,6 +3298,8 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "surface": planted["surface"],
         "cycle": cycle,
         "play": play,
+        "open": play,
+        "steps": steps,
         "init": init_report,
         "next": proposal,
         "then": then,
@@ -3269,7 +3310,10 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "executed": False,
         "scope": (
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
-            "aponta o comando que abre o jogo. Sem caminho, `--idea` nomeia "
+            "aponta o comando que abre o jogo. `open` é o play — o comando de "
+            "agora, depois do start. `play` continua o mesmo valor, para quem "
+            "já lia essa chave. `steps` é o mesmo mapa de três passos do "
+            "guide, com o passo 1 feito. Sem caminho, `--idea` nomeia "
             "a pasta — ao lado do framework se o start corre de dentro desta "
             "árvore — e cria. `guide --idea` continua só no comando, não no "
             "disco. Se o starter declara o verbo e "
@@ -3379,20 +3423,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
     cycle = starter_cycle(chosen)
     start_command = harness_command(*start_parts)
     noted = bool(exists and observation_receipts(dest))
-    play_step = {
-        "n": 2,
-        "do": "jogar no próprio dispositivo",
-        "command": play_cmd,
-        "kind": nxt["proposal"]["basis"] if nxt else "playable.unplayed",
-        "executed": False,
-    }
-    if cycle:
-        play_step["verb"] = cycle["verb"]
-        play_step["controls"] = {
-            key: cycle[key]
-            for key in CYCLE_KEYS
-            if key != "verb" and key in cycle
-        }
+    steps = cycle_steps(start_command, play_cmd, then, cycle, nxt, exists)
     return {
         "schema_version": 1,
         "command": "guide",
@@ -3408,21 +3439,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         "noted": noted,
         "open": start_command if not exists else play_cmd,
         "prompt": guide_prompt(exists, start_command, play_cmd, then, cycle, noted),
-        "steps": [
-            {
-                "n": 1,
-                "do": "abrir o ciclo",
-                "command": start_command,
-                "done": exists,
-            },
-            play_step,
-            {
-                "n": 3,
-                "do": "gravar o que o verbo sentiu",
-                "command": then["note"],
-                "executed": False,
-            },
-        ],
+        "steps": steps,
         "scope": (
             "Três passos ideia→ciclo: start, jogar, note. `open` é o comando "
             "de agora — o start se o destino ainda não existe, o play se "
