@@ -3,6 +3,35 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.214 — O doctor aponta o guide com ideia
+
+O
+`doctor.then.guide`
+apontava o
+`guide` nu.
+Depois do
+0.9.213
+esse
+comando
+quebra na
+raiz. Agora
+aponta
+`guide
+--idea
+<fantasia>`.
+Não cria e
+não
+executa. Só
+`release`
+fica no piso.
+
+O que 0.9.214 não afirma:
+apontar o
+mapa com
+frase não
+abre o
+serve.
+
 ## 0.9.213 — O guide na raiz sem ideia recusa como o start
 
 Na raiz

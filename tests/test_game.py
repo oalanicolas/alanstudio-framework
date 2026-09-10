@@ -1285,6 +1285,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["blocking"], [])
         self.assertTrue(report["empty"])
         self.assertIn("guide", report["then"]["guide"])
+        self.assertIn("--idea", report["then"]["guide"])
         self.assertNotIn("play", report["then"])
         self.assertNotIn("note", report["then"])
         self.assertNotIn("prompt", report)
@@ -1312,6 +1313,17 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(empty["ready"])
         self.assertTrue(empty["empty"])
         self.assertIn("guide", empty["then"]["guide"])
+        self.assertIn("--idea", empty["then"]["guide"])
+        self.assertIn("<fantasia>", empty["then"]["guide"])
+        followed = subprocess.run(
+            shlex.split(empty["then"]["guide"]),
+            capture_output=True, text=True, cwd=str(game.FRAMEWORK),
+        )
+        self.assertEqual(followed.returncode, 0, followed.stderr)
+        mapped = json.loads(followed.stdout)
+        self.assertEqual(mapped["command"], "guide")
+        self.assertFalse(mapped["executed"])
+        self.assertEqual(len(mapped["steps"]), 3)
         self.assertNotIn("aprovado", empty["scope"])
         self.assertNotIn("verified", empty["scope"])
         with mock.patch.object(game, "starters", return_value=[]):

@@ -4417,7 +4417,8 @@ def doctor(root):
         "known_markers": [marker for marker, _ in ENGINE_MARKERS],
         "scope": (
             "Presença e versão de ferramentas, presença dos arquivos deste repositório e conteúdo dos atalhos da skill no host. "
-            "Com starter e laboratório sem jogo, `then.guide` aponta o mapa ideia→ciclo. "
+            "Com starter e laboratório sem jogo, `then.guide` aponta o mapa "
+            "com `--idea`. Sem frase a raiz recusa. "
             "Não instala nada, não copia a skill, não cria o projeto, não executa o jogo e não comprova que um projeto funciona."
         ),
     }
@@ -4429,7 +4430,9 @@ def doctor_then(ready, starters, empty):
     # Sem `prompt`: o CLI do doctor não escreve stderr.
     if not ready or not starters or not empty:
         return None
-    return {"guide": harness_command("guide")}
+    # Sem --idea o guide na raiz do framework recusa. Apontar o
+    # comando nu era o primeiro passo quebrado depois do doctor.
+    return {"guide": harness_command("guide", "--idea", "<fantasia>")}
 
 
 def next_step(project, focus="create", studies_root=None):

@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.213 (confirmado): na raiz do framework o `guide` sem `--idea` recusa como o `start`.
+**HEAD:** ver `git log -1` — vigente 0.9.214: o `doctor.then.guide` aponta o mapa com `--idea`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 279 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.213)
+## O que o HEAD já entrega (0.9.91–0.9.214)
 
 | Ver | Salto |
 | --- | --- |
@@ -157,6 +157,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.211 | A legenda da coleta e da guarda nomeia a corrente que o tom já sobe. Sem o número o tom falava e a faixa calava. Não promove `heard` nem `accessibility`. |
 | 0.9.212 | Orbe e estilhaço no mesmo quadro: o estilhaço letal resolve; o orbe espera. Ordem do array não decide a aposta. No dash os dois atravessam. Não promove feel. |
 | 0.9.213 | Na raiz do framework, `guide` / harness sem `--idea` recusam — não devolvem `start '<destino>'`. Subpasta e `guide_cycle` continuam o mapa. Não executa. |
+| 0.9.214 | `doctor.then.guide` aponta `guide --idea <fantasia>`. O comando nu quebrava na raiz depois do 0.9.213. Não cria e não executa. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -284,6 +285,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou dois orbes no mesmo quadro que inflam a corrente
   ou orbe e estilhaço no mesmo quadro que decidem pela ordem
   ou guide na raiz que devolve start '<destino>'
+  ou doctor.then.guide que aponta o guide nu
   ou legenda da coleta que some a corrente que o tom já sobe
   ou discover que some o sinal do next
   ou playtest que some o esqueleto dos quatro
@@ -327,10 +329,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `--idea` a linha da frase some. `preproduction.md` ensina
   `start --idea`; `init` fica o caminho que planta.
 - `doctor` devolve `empty` e `then`. Sem jogo, com starter e
-  `ready`, `then.guide` é o comando do `guide`. Com jogo, sem
-  starter ou bloqueado, `then` é nulo. Sem `prompt` — o CLI
-  não escreve stderr. O aviso de starter ausente nomeia
-  `start --idea`, não `init`. Não cria e não executa.
+  `ready`, `then.guide` é `guide --idea <fantasia>`. Sem a
+  frase a raiz recusa. Com jogo, sem starter ou bloqueado,
+  `then` é nulo. Sem `prompt` — o CLI não escreve stderr. O
+  aviso de starter ausente nomeia `start --idea`, não `init`.
+  Não cria e não executa.
 - `start` / `play` / `guide` devolvem `runtime` (`node`, `major`,
   `need`, `asked`, `usable`, `executed` falso). `asked` se o play
   casa `npm|node`. `usable` é major ≥ 20 ou o play não pede Node.
@@ -660,6 +663,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma legenda da coleta que some a corrente que o tom já sobe.
 **Não** mais orbe e estilhaço no mesmo quadro que decidem a corrente pela ordem do array.
 **Não** mais um `guide` na raiz do framework que devolve `start '<destino>'`.
+**Não** mais um `doctor.then.guide` que aponta o `guide` nu na raiz.
 
 Candidatos, do que ainda dói:
 
@@ -686,7 +690,7 @@ Candidatos, do que ainda dói:
    `init_scope` só afirma rascunhos quando `documents` é verdadeiro;
    o `start` embute esse recibo. `preproduction.md` (injetado pelo
    `context` no foco create e em `--stage`) ensina `start --idea`.
-   `doctor` no lab vazio devolve `then.guide`; com jogo a chave some.
+   `doctor` no lab vazio devolve `then.guide` com `--idea`; com jogo a chave some.
    Sem starter o aviso nomeia `start --idea`. Sem `prompt`.
    `sfx search` nomeia o stem do starter que casa; `sfx info`
    lê a mesma chave. `sfx copy` e `sfx export` levam
@@ -917,6 +921,10 @@ Candidatos, do que ainda dói:
   devolve
   start
   '<destino>'
+  e o
+  doctor que
+  aponta o
+  guide nu
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -940,7 +948,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: na raiz do
-framework o `guide` sem `--idea` recusa com o
-mesmo `sem destino` do `start`. Subpasta e
-`guide_cycle` continuam o mapa. Não executa.
+Arquivos quentes da última sessão: `doctor.then.guide`
+aponta `guide --idea <fantasia>`. O comando nu
+quebrava na raiz depois do 0.9.213. Não cria e
+não executa.
