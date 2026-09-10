@@ -3,6 +3,38 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.265 — O botão focado não dispara o verbo
+
+O
+Espaço
+no
+botão
+já
+ativava
+o
+controle.
+O
+ofício
+também.
+Agora
+a
+casca
+come
+a
+tecla.
+Não
+promove
+`felt`.
+
+O que 0.9.265 não afirma:
+focar
+o
+botão
+não
+é
+sessão
+observada.
+
 ## 0.9.264 — A tecla do remap não dispara o verbo
 
 A

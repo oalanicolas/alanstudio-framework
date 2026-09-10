@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.264: a tecla do remap não dispara o verbo. A escuta avançava enquanto a pessoa escolhia. Não promove `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.265: o botão focado não dispara o verbo. Espaço ativava o controle e avançava. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 291 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.264)
+## O que o HEAD já entrega (0.9.91–0.9.265)
 
 | Ver | Salto |
 | --- | --- |
@@ -208,6 +208,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.262 | A outra aba veste as preferências. Look e mix ficavam velhos até recarregar. O progresso em curso não. Não promove `trusted`. |
 | 0.9.263 | O recibo sem origem não declara. JSON listava o arquivo e fingia recibo. Envelope do acervo ainda vale. CREDITS e sidecar ainda declaram. Não promove `granted`. |
 | 0.9.264 | A tecla do remap não dispara o verbo. A escuta avançava enquanto a pessoa escolhia. Não promove `felt`. |
+| 0.9.265 | O botão focado não dispara o verbo. Espaço ativava o controle e avançava. Não promove `felt`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -221,7 +222,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
@@ -396,7 +397,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um look que veste o canvas e some o select
   ou uma outra aba que some as preferências desta página
   ou um JSON que lista o arquivo e declara sem origem
-  ou uma tecla do remap que dispara o verbo.
+  ou uma tecla do remap que dispara o verbo
+  ou um botão focado que ativa e avança.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -907,6 +909,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um hold que some o relógio da porta e o campo repete o ensino.
 **Não** mais uma região viva que some o aviso do primeiro ciclo.
 **Não** mais uma tecla do remap que dispara o verbo.
+**Não** mais um botão focado que ativa e avança.
 
 Candidatos, do que ainda dói:
 
@@ -1509,7 +1512,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a tecla
-do remap não dispara o verbo. A escuta
-avançava enquanto a pessoa escolhia. Não
-promove `felt`.
+Arquivos quentes da última sessão: o botão
+focado não dispara o verbo. Espaço ativava
+o controle e avançava. Não promove `felt`.
+A família recado/remap/botão está saturada.

@@ -5,7 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { createInput, isTypingTarget } from "../src/core/input.js";
+import { createInput, isChromeTarget, isTypingTarget } from "../src/core/input.js";
 
 function surface(width = 320, height = 180, left = 10, top = 20) {
   const listeners = [];
@@ -204,6 +204,11 @@ test("o recado não dispara o verbo", () => {
   assert.equal(isTypingTarget({ target: { isContentEditable: true } }), true);
   assert.equal(isTypingTarget({ target: { tagName: "BUTTON" } }), false);
   assert.equal(isTypingTarget({ preventDefault() {} }), false);
+  assert.equal(isChromeTarget({ target: { tagName: "BUTTON" } }), true);
+  assert.equal(isChromeTarget({ target: { tagName: "TEXTAREA" } }), true);
+  assert.equal(isChromeTarget({ target: { tagName: "SPAN", parentElement: { tagName: "BUTTON" } } }), true);
+  assert.equal(isChromeTarget({ target: { tagName: "BODY" } }), false);
+  assert.equal(isChromeTarget({ preventDefault() {} }), false);
 
   const keys = surface();
   const input = createInput({ target: keys, surface: null });
@@ -229,6 +234,55 @@ test("o recado não dispara o verbo", () => {
     preventDefault() { blocked = true; },
   });
   assert.equal(input.intent().dash, true, "fora do campo o aperto avança");
+  input.dispose();
+});
+
+test("o botão focado não dispara o verbo", () => {
+  const keys = surface();
+  const input = createInput({ target: keys, surface: null });
+  let blocked = false;
+  keys.dispatch("keydown", {
+    code: "Space",
+    target: { tagName: "BUTTON" },
+    preventDefault() { blocked = true; },
+  });
+  assert.equal(blocked, false, "o botão precisa do espaço");
+  assert.equal(input.intent().dash, false, "o botão focado não avança");
+
+  keys.dispatch("keydown", {
+    code: "KeyR",
+    target: { tagName: "SPAN", parentElement: { tagName: "BUTTON" } },
+    preventDefault() { blocked = true; },
+  });
+  assert.equal(input.commands().reset, false, "o ícone do botão não reinicia");
+
+  keys.dispatch("keydown", {
+    code: "Space",
+    target: { tagName: "BODY" },
+    preventDefault() { blocked = true; },
+  });
+  assert.equal(input.intent().dash, true, "fora do botão o aperto avança");
+  input.dispose();
+});
+
+test("focar o botão larga a tecla que ainda segurava", () => {
+  const keys = surface();
+  const input = createInput({ target: keys, surface: null });
+  keys.dispatch("keydown", {
+    code: "KeyD",
+    target: { tagName: "BODY" },
+    preventDefault() {},
+  });
+  assert.equal(input.intent().move, 1, "D ainda move");
+  keys.dispatch("keydown", {
+    code: "Space",
+    target: { tagName: "BODY" },
+    preventDefault() {},
+  });
+  keys.dispatch("focusin", { target: { tagName: "BUTTON" } });
+  const after = input.intent();
+  assert.equal(after.move, 0, "o botão larga o movimento");
+  assert.equal(after.dash, false, "o aperto pendente não vira ofício");
   input.dispose();
 });
 

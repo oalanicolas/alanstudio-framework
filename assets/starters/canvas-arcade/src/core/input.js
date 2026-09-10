@@ -19,6 +19,9 @@
 // O recado foca o campo no fim. Sem isto Espaço e R
 // disparavam o verbo enquanto a pessoa escrevia.
 // Escrever no disco não é felt.
+// O botão do remap (e o Gravar/Copiar) também é casca.
+// Sem isto o Espaço ativava o controle e avançava.
+// Botão no disco não é felt.
 // O toque só escutava o canvas. Sem a captura, sair
 // do campo deixava o corpo andando. Captura no disco
 // não é felt.
@@ -47,6 +50,18 @@ export function isTypingTarget(event) {
   const tag = String(node.tagName || "").toLowerCase();
   if (tag === "input" || tag === "textarea" || tag === "select") return true;
   return Boolean(node.isContentEditable);
+}
+
+export function isChromeTarget(event) {
+  // Campo é casca. Botão também: Espaço ativa o controle,
+  // não o verbo. Ícone dentro do botão conta igual.
+  if (isTypingTarget(event)) return true;
+  let node = event?.target;
+  for (let depth = 0; depth < 6 && node && typeof node === "object"; depth += 1) {
+    if (String(node.tagName || "").toLowerCase() === "button") return true;
+    node = node.parentElement ?? node.parentNode ?? null;
+  }
+  return false;
 }
 
 export function createInput(options = {}) {
@@ -106,7 +121,9 @@ export function createInput(options = {}) {
   function onKeyDown(event) {
     // O painel foca o recado no over. Sem isto o espaço
     // avançava e o R recomeçava no meio da frase.
-    if (isTypingTarget(event)) return;
+    // O botão focado também é casca: Espaço ativa o
+    // controle e não pode avançar no mesmo aperto.
+    if (isChromeTarget(event)) return;
     // A escuta do remap come a tecla na captura. Sem isto
     // o bubble ainda avançava se a ordem no mesmo nó
     // invertia. Tecla no disco não é felt.
@@ -144,7 +161,7 @@ export function createInput(options = {}) {
   }
 
   function onFocusIn(event) {
-    if (!isTypingTarget(event)) return;
+    if (!isChromeTarget(event)) return;
     releaseHold();
     // O aperto que ainda não foi lido não vira ofício no recado.
     pressed.clear();
