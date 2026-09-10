@@ -763,6 +763,8 @@ Candidatos, do que ainda dói:
    o `start` embute esse recibo. `preproduction.md` (injetado pelo
    `context` no foco create e em `--stage`) ensina `start --idea`.
    `doctor` no lab vazio devolve `then.guide` com `--idea`; com jogo a chave some.
+   Depois do `start` fresco o `context` adia a auditoria (`audit.deferred`);
+   lacunas continuam listadas. Sem jogo que abre, o `scan` ainda pede documentar.
    Sem starter o aviso nomeia `start --idea`. Sem `prompt`.
    `sfx search` nomeia o stem do starter que casa; `sfx info`
    lê a mesma chave. `sfx copy` e `sfx export` levam
