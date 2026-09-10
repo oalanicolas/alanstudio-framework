@@ -59,7 +59,8 @@ EMPTY_NEXT = (
     "nomeia o stem que casa com o termo, sfx info lê a chave, "
     "sfx verify nomeia os stems sem cruzar o que não existe, "
     "nomeia o stem que o recibo lista e o disco perdeu, "
-    "sfx info lê a mesma ausência e "
+    "sfx info lê a mesma ausência, "
+    "sfx export nomeia a mesma ausência e "
     "sfx summary lista todos. "
     "Arquivo no disco não é mix ouvido. Desloque com "
     "npm run sfx -- --from <papel> --as brighter. sfx serve não ouve "
@@ -95,8 +96,15 @@ INFO_EMPTY = (
 EXPORT_EMPTY = (
     "Acervo vazio. O starter já fala em public/sfx. "
     "sfx export copia bytes e créditos de um id do acervo ou da "
-    "chave do stem do starter. Sem id e sem chave que case, não "
-    "há o que exportar."
+    "chave do stem do starter. O recibo que lista um stem e o "
+    "disco perdeu não é id desconhecido. Sem id, sem chave e "
+    "sem recibo de stem perdido, não há o que exportar."
+)
+EXPORT_MISSING = (
+    "O recibo lista este stem e o disco perdeu o arquivo. "
+    "Não é id desconhecido. Exportar não inventa bytes. "
+    "roles --apply e sfx copy recoloca "
+    "se origem e licença casam. Nomear não é ouvir."
 )
 INFO_NEXT = (
     "Ficha lida no disco. Não é mix ouvido. "
@@ -564,10 +572,11 @@ def info_entry(entry_id, root=None, folder=None):
     raise ValueError(f"Seleção vazia ou IDs desconhecidos: {entry_id}")
 
 
-def export_entries(ids, destination, root=None):
+def export_entries(ids, destination, root=None, folder=None):
     sounds = load_catalog(root)["sounds"]
     catalog_items = []
     local_items = []
+    missing_items = []
     unknown = []
     for entry_id in ids:
         if sounds:
@@ -576,11 +585,21 @@ def export_entries(ids, destination, root=None):
                 continue
             except ValueError:
                 pass
-        local = find_local_stem(entry_id)
+        local = find_local_stem(entry_id, folder)
         if local:
             local_items.append(local)
             continue
+        # O info já nomeava a ausência. O export dizia id
+        # desconhecido e o agente reinventava o papel.
+        # Recibo sem bytes não é licença nem mix.
+        lost = find_local_missing(entry_id, folder)
+        if lost:
+            missing_items.append(lost)
+            continue
         unknown.append(entry_id)
+    if missing_items:
+        keys = ", ".join(item["key"] for item in missing_items)
+        raise ValueError(f"{EXPORT_MISSING} {keys}")
     if unknown:
         if not sounds:
             raise ValueError(EXPORT_EMPTY)
@@ -596,7 +615,7 @@ def export_entries(ids, destination, root=None):
             kind="catalog",
         )
         return result
-    copied = [copy_local_stem(item, destination, root=root) for item in local_items]
+    copied = [copy_local_stem(item, destination, root=root, folder=folder) for item in local_items]
     already = bool(copied) and all(item.get("status") == "already_exported" for item in copied)
     return {
         "files": len(local_items),

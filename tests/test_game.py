@@ -2997,6 +2997,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         with self.assertRaisesRegex(ValueError, "não há ficha|desconhecidos"):
             game.sfx_catalog.info_entry("nunca-existiu", self.root, folder=folder)
 
+    def test_sfx_export_names_a_receipt_whose_file_is_gone(self):
+        folder = self.root / "sfx-export-sumido"
+        folder.mkdir()
+        (folder / "sources.json").write_text(
+            json.dumps({
+                "files": [{
+                    "src": "ghost.wav",
+                    "key": "ghost",
+                    "title": "Fantasma",
+                    "author": "Ana",
+                    "license": "CC0-1.0",
+                    "origin": "teste",
+                }],
+            }),
+            encoding="utf-8",
+        )
+        destination = self.root / "jogo" / "public" / "sfx"
+        with self.assertRaises(ValueError) as raised:
+            game.sfx_catalog.export_entries(["ghost"], destination, self.root, folder=folder)
+        message = str(raised.exception)
+        self.assertIn("recibo lista", message)
+        self.assertIn("disco perdeu", message)
+        self.assertIn("Não é id desconhecido", message)
+        self.assertIn("ghost", message)
+        self.assertNotIn("IDs desconhecidos", message)
+        self.assertFalse(destination.exists(), "o export calava o stem que o recibo já lista")
+        recipe = (Path(game.FRAMEWORK) / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (Path(game.FRAMEWORK) / "SKILL.md").read_text(encoding="utf-8")
+        readme = (Path(game.FRAMEWORK) / "README.md").read_text(encoding="utf-8")
+        self.assertIn("exportar não inventa bytes", recipe.casefold())
+        self.assertIn("exportar não inventa bytes", skill.casefold())
+        self.assertIn("exportar não inventa bytes", readme.casefold())
+        with self.assertRaisesRegex(ValueError, "não há o que exportar|vazio"):
+            game.sfx_catalog.export_entries(
+                ["nunca-existiu"], destination, self.root, folder=folder,
+            )
+        self.assertFalse(destination.exists())
+
     def test_listen_page_names_the_catalog_sound_the_disk_lost(self):
         recipe = (Path(game.FRAMEWORK) / "recipes/audio.md").read_text(encoding="utf-8")
         skill = (Path(game.FRAMEWORK) / "SKILL.md").read_text(encoding="utf-8")

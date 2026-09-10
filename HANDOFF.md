@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.326: o art nomeia o risco da chuva. Não promove `consistent`.
+**HEAD:** ver `git log -1` — vigente 0.9.327: o export nomeia o stem que o disco perdeu. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.326):** `python3 -m unittest discover -s tests` → 323.
-`cd assets/starters/canvas-arcade && npm test` → 502.
+**Testes no HEAD (0.9.327):** `python3 -m unittest discover -s tests` → (confirmar).
+`cd assets/starters/canvas-arcade && npm test` → (confirmar).
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.326)
+## O que o HEAD já entrega (0.9.91–0.9.327)
 
 | Ver | Salto |
 | --- | --- |
@@ -270,6 +270,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.324 | A porta chove o risco da mesa. Cadência e queda já liam a mesa; o risco era meio a meio e dusk vestia o mesmo perigo que calm. Não promove `consistent`. |
 | 0.9.325 | O compromisso da guarda veste a aposta. O arco do lock já vestia a corrente; o corpo no hold vestia o descanso. Não promove `felt`. |
 | 0.9.326 | O `art` nomeia o risco da chuva. A porta já lia o teto; o comando listava a mesa e calava o perigo. Não promove `consistent`. |
+| 0.9.327 | O `sfx export` nomeia o stem que o recibo lista e o disco perdeu. O info já lia a ficha; o export dizia id desconhecido. Exportar não inventa bytes. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -286,7 +287,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | o compromisso da guarda veste a aposta; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
-| audio_mix | slice | a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
+| audio_mix | slice | o `sfx export` nomeia o stem que o disco perdeu; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | a porta chove o risco da mesa; o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
@@ -501,7 +502,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um coil da guarda que veste o descanso
   ou uma porta que chove meio a meio e cala o risco da mesa
   ou um compromisso da guarda que veste o descanso
-  ou um `art` que cala o risco da chuva que a porta já lê.
+  ou um `art` que cala o risco da chuva que a porta já lê
+  ou um `sfx export` que trata o stem perdido como id desconhecido.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -1121,6 +1123,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma porta que chove meio a meio e cala o risco da mesa.
 **Não** mais um compromisso da guarda que veste o descanso.
 **Não** mais um `art` que cala o risco da chuva que a porta já lê.
+**Não** mais um `sfx export` que trata o stem perdido como id desconhecido.
 
 Candidatos, do que ainda dói:
 
@@ -1160,8 +1163,10 @@ Candidatos, do que ainda dói:
    Sem starter o aviso nomeia `start --idea`. Sem `prompt`.
    `sfx search` nomeia o stem do starter que casa; `sfx info`
    lê a mesma chave e nomeia o stem que o recibo lista e o
-   disco perdeu. `sfx copy` e `sfx export` levam
-   bytes e créditos. `sfx verify` nomeia os stems sem cruzar
+   disco perdeu.    `sfx copy` e `sfx export` levam
+   bytes e créditos. `sfx export` nomeia o stem que o
+   recibo lista e o disco perdeu — exportar não inventa
+   bytes. `sfx verify` nomeia os stems sem cruzar
    e nomeia o stem que o recibo lista e o disco perdeu.
    `count` continua o acervo.    Sem os quatro campos,
    `playtest` nomeia `finding_href`, `finding_open`,
@@ -1212,11 +1217,15 @@ Candidatos, do que ainda dói:
    `ui/` faltar e nomeia o som que o catálogo lista e o disco
    perdeu. `sfx info` lê a chave do starter e nomeia o
    stem que o recibo lista e o disco perdeu.    `sfx copy` e
-   `sfx export` levam bytes e créditos. `roles --apply` também
+   `sfx export` levam bytes e créditos. `sfx export` nomeia
+   o stem que o recibo lista e o disco perdeu — exportar
+   não inventa bytes. `roles --apply` também
    copia o stem do starter. `sfx verify` nomeia os stems
    sem cruzar e nomeia o stem que o recibo lista e o disco
    perdeu. Nomear não entrega. Copiar não é `heard`. Tocar não
-   é `heard`. `origins --declare` escreve o sidecar. Recibo não é
+   é `heard`. `sfx copy` de stem local perdido ainda trata
+   a ausência como id desconhecido — irmão, não o próximo
+   salto. `origins --declare` escreve o sidecar. Recibo não é
    licença.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
@@ -2157,6 +2166,16 @@ Candidatos, do que ainda dói:
   porta
   já
   lê
+  e um
+  `sfx export`
+  que
+  trata
+  o
+  stem
+  perdido
+  como
+  id
+  desconhecido
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2181,10 +2200,12 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`art` nomeia o risco da chuva.
-A porta já lia o teto; o comando
-listava a mesa e calava o perigo.
-Não promove `consistent`.
+`sfx export` nomeia o stem que o
+recibo lista e o disco perdeu.
+O info já lia a ficha; o export
+dizia id desconhecido.
+Exportar não inventa bytes.
+Não promove `heard`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2246,3 +2267,4 @@ A família coil da guarda que veste o descanso está saturada.
 A família porta que chove meio a meio e cala o risco da mesa está saturada.
 A família compromisso da guarda que veste o descanso está saturada.
 A família art que cala o risco da chuva que a porta já lê está saturada.
+A família sfx export trata stem perdido como id desconhecido está saturada.

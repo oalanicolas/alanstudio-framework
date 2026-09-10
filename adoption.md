@@ -3,6 +3,54 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.327 — o export nomeia o stem que o disco perdeu
+
+O
+info
+já
+lia
+a
+ficha.
+O
+verify
+já
+nomeava
+a
+ausência.
+O
+export
+dizia
+id
+desconhecido
+e
+o
+agente
+reinventava
+o
+papel.
+Agora
+o
+comando
+nomeia
+o
+recibo.
+Exportar
+não
+inventa
+bytes.
+Não
+promove
+`heard`.
+
+O que 0.9.327 não afirma:
+nomear
+a
+ausência
+não
+é
+mix
+ouvido.
+
 ## 0.9.326 — o art nomeia o risco da chuva
 
 A

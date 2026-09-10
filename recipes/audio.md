@@ -63,7 +63,9 @@ autoriza improvisar licença. Arquivo no disco não é mix ouvido. Crescer o ace
 o recibo que lista um stem e o disco perdeu não é id desconhecido;
 `sfx export ID --to PASTA` copia bytes e
 créditos do acervo ou do stem do starter que `sfx info`
-já nomeia. `sfx copy` leva o mesmo stem para a pasta do
+já nomeia — o recibo que lista um stem e o disco perdeu
+não é id desconhecido; exportar não inventa bytes.
+`sfx copy` leva o mesmo stem para a pasta do
 jogo. `--apply` também leva o stem do starter. Importar e exportar não é ouvir. O acervo compartilhado é ADAPT, não o
 primeiro ciclo.
 

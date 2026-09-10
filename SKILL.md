@@ -99,7 +99,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `selection.json` local. `sfx info ID` lê a ficha do acervo ou a
    chave do stem do starter — o recibo que lista um stem e o
    disco perdeu não é id desconhecido; `sfx export ID
-   --to PASTA` copia bytes e créditos do acervo ou do stem.
+   --to PASTA` copia bytes e créditos do acervo ou do stem —
+   o recibo que lista um stem e o disco perdeu não é id
+   desconhecido; exportar não inventa bytes.
    `sfx copy` leva o stem do starter. Importar e exportar não é
    ouvir. Sem 8-bit,
    chiptune, jsfxr ou Kenney arcade como padrão. Leia candidatos e consumidores.
@@ -235,7 +237,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    é id desconhecido; `sfx verify` nomeia os stems sem cruzar o que não
    existe e nomeia o stem que o recibo lista e o disco perdeu;
    `sfx export` copia bytes e
-   créditos. Importar e exportar não é ouvir. `heard` é sempre falso. Papel vazio
+   créditos e nomeia o stem que o recibo lista e o disco perdeu —
+   exportar não inventa bytes. Importar e exportar não é ouvir. `heard` é sempre falso. Papel vazio
    entra no `next` como `audio.roles` — o verbo mudo não espera os
    rascunhos.
    **`feel [<projeto>]`** lê constantes de perdão/hitstop/câmera no `CONFIG` e

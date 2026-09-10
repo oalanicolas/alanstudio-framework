@@ -564,7 +564,9 @@ Sem esse acervo, `sfx search` não inventa id: o catálogo vem vazio e a
 busca nomeia o stem do starter que casa com o termo. `sfx info`
 lê a chave e nomeia o stem que o recibo lista e o disco perdeu.
 `sfx copy` e `sfx export` levam bytes e créditos
-desse stem. `sfx verify` nomeia os stems sem cruzar o que não
+desse stem. `sfx export` nomeia o stem que o recibo lista
+e o disco perdeu — exportar não inventa bytes.
+`sfx verify` nomeia os stems sem cruzar o que não
 existe e nomeia o stem que o recibo lista e o disco perdeu.
 `sfx summary` lista todos. `sfx serve` recusa — não
 há o que ouvir no acervo.
@@ -593,7 +595,9 @@ stem e o disco perdeu não é id desconhecido. Arquivo no disco não é
 mix ouvido. `sfx export` de um id do acervo copia
 bytes, `manifest.json` e `CREDITS.txt` para uma pasta fora do acervo.
 De uma chave do starter, copia o WAV, o `.credits.txt` e anexa
-`sources.json`. Copiar não é mix ouvido.
+`sources.json`. O recibo que lista um stem e o disco perdeu
+não é id desconhecido; exportar não inventa bytes.
+Copiar não é mix ouvido.
 Importar e exportar não é mix ouvido. O primeiro ciclo já tem voz
 no starter (`public/sfx/<papel>.wav`). `shared/sfx` é ADAPT, não
 pré-requisito. Piso: gravação licenciada ou design contemporâneo.
