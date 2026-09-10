@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.165: init sem rascunhos deixa de mentir.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 264 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 266 OK.
 `cd assets/starters/canvas-arcade && npm test` → 345 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
