@@ -191,15 +191,15 @@ export function createGame(options = {}) {
       if (intent?.dash) {
         beginRun(state);
         resetTrace();
-        for (const event of state.events) {
-          audio.play(event.type, event);
-          haptics.play(event.type);
-        }
         syncBed();
       } else {
         attractMove(state, intent);
         attractTick(state);
         attractTouch(state);
+      }
+      for (const event of state.events) {
+        audio.play(event.type, event);
+        haptics.play(event.type);
       }
       emitPhase();
       return;

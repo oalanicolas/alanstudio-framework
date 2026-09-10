@@ -457,12 +457,20 @@ export function beginRun(state) {
 // não é comparação em movimento.
 export function attractTick(state) {
   if (!state || state.phase !== "title") return state;
+  recycleEvents(state);
   state.attractTick = (state.attractTick ?? 0) + 1;
   if (state.player) {
     state.player.squash *= CONFIG.feel.squashDecay;
     if (Math.abs(state.player.squash) < 0.01) state.player.squash = 0;
   }
   decayFlash(state);
+  // A porta calava. A mostra já caía. `live` é a mesma voz
+  // do campo quando a prática acaba. Sem cama. Sem rumble.
+  // Ouvir no disco não é mix ouvido.
+  if (!state.attractSpoke) {
+    state.attractSpoke = true;
+    emit(state, "live");
+  }
   return state;
 }
 

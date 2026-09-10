@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.163 — A porta fala a mostra
+
+A mostra já caía e tocava.
+O mixer só falava no avanço.
+`attractTick` emite `live`
+uma vez — a mesma voz do
+campo. Sem cama. Sem rumble.
+`heard` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.163 não afirma:
+voz no disco não é mix
+ouvido.
+
 ## 0.9.162 — A mostra toca o corpo
 
 A porta já andava. A chuva

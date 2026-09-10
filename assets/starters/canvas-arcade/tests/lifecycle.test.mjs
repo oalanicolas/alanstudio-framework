@@ -321,6 +321,44 @@ test("com tela a mostra toca o corpo sem abrir o ciclo", () => {
   game.dispose();
 });
 
+test("com tela a porta fala a mostra sem abrir o ciclo", () => {
+  const heard = [];
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    canvas: silentCanvas(),
+    loadSfx: false,
+    audio: {
+      play(role) {
+        heard.push(role);
+        return true;
+      },
+      stop() {},
+      update() {},
+      captions() {
+        return heard.includes("live") ? [{ text: "a chuva começa", count: 1 }] : [];
+      },
+      unlock() {},
+      applySettings() {},
+      missing() {
+        return { declared: [], registered: [] };
+      },
+      dispose() {},
+    },
+  });
+  assert.equal(game.observe().phase, "title");
+  game.advance(1);
+  assert.equal(game.observe().phase, "title");
+  assert.equal(game.observe().tick, 0);
+  assert.ok(heard.includes("live"), `esperava a voz da mostra: ${JSON.stringify(heard)}`);
+  assert.equal(heard.filter((role) => role === "live").length, 1);
+  assert.equal(heard.includes("bed"), false, "a porta não liga a cama");
+  game.advance(1);
+  assert.equal(heard.filter((role) => role === "live").length, 1, "o segundo quadro não repete");
+  game.dispose();
+});
+
 test("com tela a abertura recebe o movimento sem abrir o ciclo", () => {
   const game = createGame({
     seed: 5,

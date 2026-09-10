@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.162: a mostra toca o corpo.
+**HEAD:** ver `git log -1` — vigente 0.9.163: a porta fala a mostra.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 264 OK.
-`cd assets/starters/canvas-arcade && npm test` → 343 OK.
+`cd assets/starters/canvas-arcade && npm test` → conferir após o 0.9.163.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.162)
+## O que o HEAD já entrega (0.9.91–0.9.163)
 
 | Ver | Salto |
 | --- | --- |
@@ -106,6 +106,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.160 | O overlay do fim reusa `record` com `extra.best`. Recorde 0 some. Sem faixa nova. Não promove feel. |
 | 0.9.161 | `attractMove` desloca o corpo na porta sem comer o tick. O aviso pede fantasia e mover no relógio da mostra. Dash, coleta e guarda ficam no campo. `advance` na porta continua no-op. Não promove feel. |
 | 0.9.162 | `attractTouch` acende e estreita quando a mostra cruza o corpo. Sem pontuar, sem punch, sem seed. `threatCue` lê a mostra; o live nomeia o perigo. O pulso vence a cortina. Não promove feel. |
+| 0.9.163 | `attractTick` emite `live` uma vez na porta. Mesma voz do campo. Sem cama. Sem rumble. O laço toca o evento sem abrir o ciclo. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -121,7 +122,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | mostra toca o corpo no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
-| audio_mix | slice | cama sobe o tom no disco; `heard` falso |
+| audio_mix | slice | porta fala `live` no disco; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | `hold` no stub; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -205,7 +206,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   região viva do perigo,
   duck só na cama, graça no coil
   ou avanço no overlay, recorde no overlay do fim
-  ou movimento na porta ou toque da mostra.
+  ou movimento na porta ou toque da mostra ou voz da mostra.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -310,8 +311,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   tick. A porta desenha `drawCaptions` se `captions !== false`.
   Legenda na abertura não sobe `accessibility`. Dash em `step` chama `beginRun` (squash, punch, `dash` sem
   incrementar `stats.dashes`).   Sem dash, `attractMove` desloca o corpo, `attractTick` anda a
-  chuva e decai squash/flash, e `attractTouch` acende quando a
-  mostra cruza o corpo — sem pontuar, sem punch, sem seed.
+  chuva, decai squash/flash e emite `live` uma vez, e
+  `attractTouch` acende quando a mostra cruza o corpo — sem
+  pontuar, sem punch, sem seed. Sem cama. Sem rumble.
   `threatCue` na porta lê a mostra. A chuva lê a mesa vigente
   (cadência e queda), sem RNG, sem `entities`. A mostra do spawn
   continua quatro gotas. Reduced trava a queda. Reset na title sorteia seed nova
@@ -425,6 +427,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um fim que esconde o recorde que o HUD mostrou a partida inteira.
 **Não** mais uma porta que ignora o movimento enquanto o convite some a tabela.
 **Não** mais uma mostra que atravessa o corpo enquanto a mesa já cai na porta.
+**Não** mais uma porta muda enquanto a mostra já cai e o campo já tem `live`.
 
 Candidatos, do que ainda dói:
 
@@ -483,6 +486,8 @@ Candidatos, do que ainda dói:
   movimento na
   porta e o
   toque da mostra
+  e a
+  voz da mostra
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -506,6 +511,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `attractTouch` na porta.
-`threatCue` lê a mostra. O pulso vence a cortina.
-Sem pontuar. Sem punch. Não promover feel.
+Arquivos quentes da última sessão: `attractTick` emite `live`
+uma vez. Sem cama. Sem rumble. Não promover `heard`.

@@ -590,6 +590,25 @@ test("a abertura não avança o tick até o corpo apontar", () => {
   assert.equal(state.tick, 1, "beginRun fora da abertura não reinicia");
 });
 
+test("a porta fala o começo da mostra sem ligar a cama", () => {
+  const state = createState(1, { entry: "title" });
+  const rng = state.rngState;
+  assert.equal(state.events.some((event) => event.type === "live"), false);
+  attractTick(state);
+  assert.ok(state.events.some((event) => event.type === "live"), "a primeira mostra precisa falar");
+  assert.equal(state.events.filter((event) => event.type === "live").length, 1);
+  assert.equal(state.tick, 0);
+  assert.equal(state.phase, "title");
+  assert.equal(state.entities.length, 0);
+  assert.equal(state.rngState, rng);
+  assert.equal(state.motes.length, 0, "live na porta não é rastro");
+  attractTick(state);
+  assert.equal(state.events.some((event) => event.type === "live"), false, "o segundo tick não repete a voz");
+  const play = createState(1);
+  attractTick(play);
+  assert.equal(play.events.some((event) => event.type === "live"), false, "fora da porta a mostra não fala");
+});
+
 test("a porta recebe o movimento sem comer o tick", () => {
   const state = createState(1, { entry: "title" });
   const rng = state.rngState;
