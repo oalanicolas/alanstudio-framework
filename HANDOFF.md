@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.231: o arco da guarda não mente que o dash está pronto.
+**HEAD:** ver `git log -1` — vigente 0.9.231 (confirmado): o arco da guarda não mente que o dash está pronto.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 281 OK.
-`cd assets/starters/canvas-arcade && npm test` → a confirmar no 0.9.231.
+`cd assets/starters/canvas-arcade && npm test` → 403 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
