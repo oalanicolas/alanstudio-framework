@@ -50,6 +50,7 @@ test("o comando registra look e chuva com o mesmo nome", async () => {
     const body = JSON.parse(await readFile(join(project, "data/palettes.json"), "utf8"));
     assert.ok(body.palettes.ember);
     assert.notEqual(body.palettes.ember.field, body.palettes.dusk.field);
+    assert.equal(body.palettes.ember.shard, body.palettes.dusk.shard, "o par warmer não devolve o estilhaço ao rosa");
     const rain = JSON.parse(await readFile(join(project, "data/ember.json"), "utf8"));
     const dusk = JSON.parse(await readFile(join(project, "data/dusk.json"), "utf8"));
     assert.ok(rain.intervalTicks < dusk.intervalTicks);

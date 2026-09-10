@@ -164,6 +164,14 @@ test("a intenção desloca tokens sem inventar look nem aprovar arte", () => {
   assert.notEqual(night.field, PALETTES.normal.field);
   assert.notEqual(warmer.field, cooler.field);
   assert.notEqual(warmer.orb, PALETTES.normal.orb);
+  assert.equal(warmer.shard, PALETTES.normal.shard, "warmer não puxa o estilhaço para o rosa");
+  assert.equal(cooler.shard, PALETTES.normal.shard, "cooler não puxa o estilhaço para o azul");
+  const duskWarm = applyLookIntent(PALETTES.dusk, "warmer");
+  assert.equal(duskWarm.shard, PALETTES.dusk.shard, "dusk+warmer não devolve o estilhaço ao eixo quente");
+  assert.notEqual(duskWarm.field, PALETTES.dusk.field);
+  assert.notEqual(duskWarm.orb, PALETTES.dusk.orb);
+  const shard = Number.parseInt(duskWarm.shard.slice(1), 16);
+  assert.ok((shard & 0xff) > (shard >> 16), "o estilhaço warmer continua índigo");
   assert.deepEqual(Object.keys(lookRecord(warmer)).sort(), [...PALETTE_FIELDS].sort());
   assert.equal(lookRecord(PALETTES.dusk).field, PALETTES.dusk.field);
   assert.throws(() => applyLookIntent(PALETTES.normal, "melhor"), /intenção desconhecida/);

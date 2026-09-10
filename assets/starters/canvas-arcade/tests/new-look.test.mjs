@@ -45,6 +45,7 @@ test("o comando registra o look no mesmo consumidor", async () => {
     const body = JSON.parse(await readFile(join(project, "data/palettes.json"), "utf8"));
     assert.ok(body.palettes.dawn);
     assert.notEqual(body.palettes.dawn.field, body.palettes.dusk.field);
+    assert.equal(body.palettes.dawn.shard, body.palettes.dusk.shard, "warmer não devolve o estilhaço ao rosa");
     const { listLooks, resolveLookName, PALETTES } = await import(
       `${pathToFileURL(join(project, "src/game/tables.js")).href}?t=1`
     );

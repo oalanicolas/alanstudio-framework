@@ -328,8 +328,8 @@ export function dressPalette(settings = {}) {
 // deslocam os tokens que a receita já nomeia. Quem de fora ainda não
 // produziu; `consistent` continua falso.
 export const LOOK_INTENTS = {
-  warmer: "campo e acentos andam para o âmbar",
-  cooler: "campo e acentos andam para o azul",
+  warmer: "campo e orbe andam para o âmbar; o estilhaço permanece",
+  cooler: "campo e orbe andam para o azul; o estilhaço permanece",
   night: "campo mais escuro, acentos no mesmo lugar",
 };
 
@@ -352,7 +352,6 @@ export function applyLookIntent(palette, intent) {
     next.background = mixTint(next.background, "#2a1810", 0.4);
     next.field = mixTint(next.field, "#3a2418", 0.45);
     next.orb = mixTint(next.orb, "#ffb35a", 0.5);
-    next.shard = mixTint(next.shard, "#c45c6a", 0.35);
     next.chain = mixTint(next.chain, "#f0c36a", 0.4);
     next.muted = mixTint(next.muted, "#a89080", 0.35);
     next.plate = mixTint(next.plate, "#120a08", 0.3);
@@ -360,7 +359,6 @@ export function applyLookIntent(palette, intent) {
     next.background = mixTint(next.background, "#0c1220", 0.4);
     next.field = mixTint(next.field, "#121828", 0.45);
     next.orb = mixTint(next.orb, "#5ec8ff", 0.45);
-    next.shard = mixTint(next.shard, "#7a8cff", 0.35);
     next.chain = mixTint(next.chain, "#8ad4ff", 0.35);
     next.muted = mixTint(next.muted, "#7a88a0", 0.35);
     next.plate = mixTint(next.plate, "#070913", 0.3);

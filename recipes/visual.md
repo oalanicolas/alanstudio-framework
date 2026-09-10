@@ -17,7 +17,9 @@ campo, cortina e a casca da página. `pair --from` nasce look e chuva
 no mesmo nome e `?mood=` aplica. `dusk` e `calm` já são o segundo
 e o terceiro look; `calm` não é o `cooler` aplicado em `normal`.
 `dusk` pinta orbe âmbar e estilhaço índigo; o campo continua
-quente. Token no disco não é comparação em movimento. No starter, halo e
+quente. `--as warmer` / `--as cooler` deslocam campo e orbe;
+o estilhaço permanece no outro eixo. Token no disco não é
+comparação em movimento. No starter, halo e
 vinheta dão volume ao recorte geométrico; com menos movimento
 somem. Isso não é direção consistente.
 depois de um `note`, `start` e `next` apontam esses comandos.

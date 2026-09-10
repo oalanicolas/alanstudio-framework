@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.134 — A intenção warmer também deixa o estilhaço no outro eixo
+
+O ofício que o guia aponta (`--from dusk --as warmer`)
+devolvia o estilhaço ao rosa. Campo e orbe andam
+para o âmbar; o estilhaço permanece. `cooler`
+também não puxa o losango para o azul.
+`consistent` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.134 não afirma: intenção no disco não
+é comparação em movimento nem alguém de fora.
+
 ## 0.9.133 — A primeira situação dos templates também abre na porta
 
 Brief, GDD e o recorte começavam no campo. Quem
