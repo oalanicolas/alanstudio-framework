@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.144 — O ciclo também nomeia a superfície do navegador
+
+O passo 2 apontava o shell.
+Quem perdia o banner do serve
+não sabia onde abrir. `start`,
+`play` e `guide` devolvem `url`.
+Sem script `serve`, a chave some.
+`executed` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.144 não afirma: nomear
+localhost não serve, não abre o
+navegador e não é outra máquina.
+
 ## 0.9.143 — O raspo também confirma no corpo e na câmera
 
 Atravessar o estilhaço falava e

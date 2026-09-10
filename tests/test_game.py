@@ -3253,6 +3253,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn(report["play"], report["prompt"])
         self.assertIn("note", report["prompt"])
         self.assertEqual(report["open"], report["play"])
+        self.assertEqual(report["url"], "http://localhost:8080/")
+        self.assertEqual(report["steps"][1]["url"], report["url"])
+        self.assertIn(report["url"], report["prompt"])
+        self.assertIn("file://", report["prompt"])
+        self.assertNotIn("url", report["then"])
         self.assertEqual(len(report["steps"]), 3)
         self.assertTrue(report["steps"][0]["done"])
         self.assertEqual(report["open"], report["steps"][1]["command"])
@@ -3279,6 +3284,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["command"], "play")
         self.assertFalse(report["executed"])
         self.assertEqual(report["open"], report["play"])
+        self.assertEqual(report["url"], "http://localhost:8080/")
+        self.assertIn(report["url"], report["prompt"])
         self.assertIn("serve", report["open"])
         self.assertIn("Porta:", report["prompt"])
         self.assertIn("note", report["prompt"])
@@ -3312,6 +3319,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.play_cycle(None)
         with self.assertRaisesRegex(ValueError, "sem jogo"):
             game.play_cycle(self.root / "ainda-nao-existe")
+
+    def test_cycle_names_the_browser_surface_without_serving(self):
+        destination = self.root / "superficie"
+        report = game.start_project(destination, "canvas-arcade")
+        self.assertEqual(report["url"], "http://localhost:8080/")
+        self.assertEqual(report["steps"][1]["url"], report["url"])
+        self.assertNotIn("url", report["then"])
+        self.assertIn("Abra http://localhost:8080/", report["prompt"])
+        self.assertFalse(report["executed"])
+        self.assertNotIn("aprovado", report["prompt"])
+        self.assertNotIn("verified", report["prompt"])
+        self.assertNotIn("aprovado", report["scope"])
+        opened = game.play_cycle(destination)
+        self.assertEqual(opened["url"], report["url"])
+        self.assertIn(opened["url"], opened["prompt"])
+        self.assertFalse(opened["executed"])
+        guided = game.guide_cycle(destination, "canvas-arcade")
+        self.assertEqual(guided["url"], report["url"])
+        self.assertTrue(guided["exists"])
+        mapped = game.guide_cycle(None, "canvas-arcade")
+        self.assertEqual(mapped["url"], "http://localhost:8080/")
+        self.assertFalse(mapped["exists"])
+        self.assertIn("http://localhost:8080/", mapped["prompt"])
+        self.assertFalse(mapped["executed"])
+        self.assertEqual(len(mapped["steps"]), 3)
+        self.assertEqual(game.serve_url(scripts={"serve": {}}, env={}), "http://localhost:8080/")
+        self.assertEqual(
+            game.serve_url(scripts={"serve": {}}, env={"PORT": "3000"}),
+            "http://localhost:3000/",
+        )
+        self.assertIsNone(game.serve_url(scripts={"serve": {}}, env={"PORT": "0"}))
+        self.assertIsNone(game.serve_url(scripts={"start": {}}, env={}))
+        self.assertIsNone(game.serve_url(scripts={}, play=None))
+        mute = self.root / "sem-serve"
+        game.start_project(mute, "canvas-arcade")
+        pkg = json.loads((mute / "package.json").read_text(encoding="utf-8"))
+        pkg["scripts"].pop("serve", None)
+        (mute / "package.json").write_text(json.dumps(pkg), encoding="utf-8")
+        silent = game.play_cycle(mute)
+        self.assertIsNone(silent["url"])
+        self.assertNotIn("url", silent["steps"][1])
+        self.assertNotIn("http://localhost", silent["prompt"] or "")
+        self.assertFalse(silent["executed"])
 
     def test_play_without_a_path_uses_the_only_game_in_the_lab(self):
         destination = self.root / "unico"

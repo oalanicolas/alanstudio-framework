@@ -2924,6 +2924,46 @@ def play_command(project, scripts, manager):
     return f"cd {shlex.quote(str(project))} && {body}"
 
 
+# A superfície pedida, não a que o sistema abriu. PORT=0 e listen
+# dinâmico continuam no banner do serve. Nomear não serve.
+DEFAULT_SERVE_PORT = 8080
+
+
+def default_serve_port(env=None):
+    env = os.environ if env is None else env
+    raw = env.get("PORT")
+    if raw in (None, ""):
+        return DEFAULT_SERVE_PORT
+    try:
+        port = int(raw)
+    except (TypeError, ValueError):
+        return DEFAULT_SERVE_PORT
+    if port <= 0:
+        return None
+    return port
+
+
+def serve_script_name(scripts=None, play=None):
+    names = play_script_names(scripts or {})
+    if names:
+        return names[0]
+    if isinstance(play, str) and re.search(r"\bserve\b", play):
+        return "serve"
+    return None
+
+
+def serve_url(scripts=None, play=None, env=None):
+    name = serve_script_name(scripts, play)
+    if name is None:
+        return None
+    if name != "serve" and not name.startswith("serve:") and not name.startswith("serve-"):
+        return None
+    port = default_serve_port(env)
+    if port is None:
+        return None
+    return f"http://localhost:{port}/"
+
+
 def note_author(project=None):
     # Sugestão para o comando colar. Não é quem jogou e não fecha o achado.
     targets = []
@@ -3081,7 +3121,7 @@ def cycle_then(project, play, starter=None):
     return then
 
 
-def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False):
+def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, url=None):
     play_step = {
         "n": 2,
         "do": "jogar no próprio dispositivo",
@@ -3089,6 +3129,8 @@ def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False):
         "kind": nxt["proposal"]["basis"] if nxt else "playable.unplayed",
         "executed": False,
     }
+    if url:
+        play_step["url"] = url
     if cycle:
         play_step["verb"] = cycle["verb"]
         play_step["controls"] = {
@@ -3113,7 +3155,7 @@ def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False):
     ]
 
 
-def cycle_prompt(play, then, cycle, noted=False):
+def cycle_prompt(play, then, cycle, noted=False, url=None):
     if not play:
         return (
             "Sem comando de abrir: identifique o entrypoint e rode `next`. "
@@ -3143,8 +3185,10 @@ def cycle_prompt(play, then, cycle, noted=False):
         return " ".join(parts)
     how = cycle_line(cycle)
     extra = " ".join(part for part in (seed_line, invite_line) if part)
+    surface = f"Abra {url} no navegador — file:// não carrega. " if url else ""
     return (
         f"O jogo não foi aberto. Cole e rode: {play}. "
+        + surface
         + (f"{how} " if how else "")
         + (f"{extra} " if extra else "")
         + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
@@ -3152,13 +3196,15 @@ def cycle_prompt(play, then, cycle, noted=False):
     )
 
 
-def guide_prompt(exists, start_command, play, then, cycle, noted=False):
+def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None):
     if exists:
-        return cycle_prompt(play, then, cycle, noted)
+        return cycle_prompt(play, then, cycle, noted, url)
+    surface = f"Abra {url} no navegador — file:// não carrega. " if url else ""
     return (
         f"O ciclo ainda não existe. Cole e rode: {start_command}. "
         f"Depois, no próprio dispositivo: {play}. "
-        f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
+        + surface
+        + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
         "O harness não cria a pasta, não abre o jogo e não joga."
     )
 
@@ -3501,6 +3547,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
     except (OSError, ValueError):
         scripts, manager = {}, None
     play = play_command(destination, scripts, manager)
+    url = serve_url(scripts)
     then = cycle_then(destination, play, chosen)
     cycle = starter_cycle(chosen)
     noted = bool(observation_receipts(destination))
@@ -3510,7 +3557,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
     if nonempty(idea):
         start_parts.extend(["--idea", idea.strip()])
     start_command = harness_command(*start_parts)
-    steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True)
+    steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True, url=url)
     return {
         "schema_version": 1,
         "project": str(destination),
@@ -3522,6 +3569,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "cycle": cycle,
         "play": play,
         "open": play,
+        "url": url,
         "steps": steps,
         "init": init_report,
         "next": proposal,
@@ -3529,13 +3577,15 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "noted": noted,
         "named": named,
         "suggest": str(suggested_start_target(idea, cwd=cwd)) if named else None,
-        "prompt": cycle_prompt(play, then, cycle, noted),
+        "prompt": cycle_prompt(play, then, cycle, noted, url),
         "executed": False,
         "scope": (
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
             "aponta o comando que abre o jogo. `open` é o play — o comando de "
             "agora, depois do start. `play` continua o mesmo valor, para quem "
-            "já lia essa chave. `steps` é o mesmo mapa de três passos do "
+            "já lia essa chave. `url` nomeia a superfície pedida; nomear não "
+            "serve, não abre e não observa. O banner do serve continua a "
+            "porta depois do listen. `steps` é o mesmo mapa de três passos do "
             "guide, com o passo 1 feito. Sem caminho, `--idea` nomeia "
             "a pasta — ao lado do framework se o start corre de dentro desta "
             "árvore — e cria. `guide --idea` continua só no comando, não no "
@@ -3572,31 +3622,36 @@ def play_cycle(destination=None, starter=None):
         scripts, manager = project_commands(dest)
     except (OSError, ValueError):
         scripts, manager = {}, None
-    play = play_command(dest, scripts, manager) or (
+    asked = play_command(dest, scripts, manager)
+    play = asked or (
         f"cd {shlex.quote(str(dest))} && npm run serve"
     )
+    url = serve_url(scripts)
     then = cycle_then(dest, play, chosen)
     cycle = starter_cycle(chosen)
     noted = bool(observation_receipts(dest))
     proposal = next_step(dest, "feel")
     start_command = harness_command("start", dest, "--starter", chosen)
-    steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True)
+    steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True, url=url)
     return {
         "schema_version": 1,
         "command": "play",
         "project": str(dest),
         "play": play,
         "open": play,
+        "url": url,
         "then": then,
         "cycle": cycle,
-        "prompt": cycle_prompt(play, then, cycle, noted),
+        "prompt": cycle_prompt(play, then, cycle, noted, url),
         "steps": steps,
         "noted": noted,
         "executed": False,
         "scope": (
-            "Aponta o comando que abre o jogo. Não executa, não cria e não "
-            "joga. Sem caminho, o único jogo do laboratório basta; dois "
-            "pedem o caminho. `open` é o play. Com tela, o avanço abre a porta. Depois "
+            "Aponta o comando que abre o jogo e a superfície pedida. Não "
+            "executa, não cria e não joga. Sem caminho, o único jogo do "
+            "laboratório basta; dois pedem o caminho. `open` é o play. "
+            "`url` nomeia localhost e a porta pedida; nomear não serve. "
+            "Com tela, o avanço abre a porta. Depois "
             "de uma partida, a página grava o recibo se você escrever; o "
             "próximo comando do harness continua `note`, não `next`. "
             "Se o disco tem last-run com seed, `then` aponta a seed e o "
@@ -3742,13 +3797,18 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         start_parts.extend(["--idea", phrase])
     play = None
     nxt = None
+    url = None
     if exists:
         try:
             scripts, manager = project_commands(dest)
         except (OSError, ValueError):
             scripts, manager = {}, None
         play = play_command(dest, scripts, manager)
+        url = serve_url(scripts)
         nxt = next_step(dest, "feel")
+    else:
+        starter_scripts, _starter_manager = starter_package_commands(chosen)
+        url = serve_url(starter_scripts)
     named = dest if dest is not None else suggested
     play_fallback = (
         f"cd {shlex.quote(str(named))} && npm run serve"
@@ -3761,7 +3821,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
     cycle = starter_cycle(chosen)
     start_command = harness_command(*start_parts)
     noted = bool(exists and observation_receipts(dest))
-    steps = cycle_steps(start_command, play_cmd, then, cycle, nxt, exists)
+    steps = cycle_steps(start_command, play_cmd, then, cycle, nxt, exists, url)
     return {
         "schema_version": 1,
         "command": "guide",
@@ -3776,12 +3836,14 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         "then": then,
         "noted": noted,
         "open": start_command if not exists else play_cmd,
-        "prompt": guide_prompt(exists, start_command, play_cmd, then, cycle, noted),
+        "url": url,
+        "prompt": guide_prompt(exists, start_command, play_cmd, then, cycle, noted, url),
         "steps": steps,
         "scope": (
             "Três passos ideia→ciclo: start, jogar, note. `open` é o comando "
             "de agora — o start se o destino ainda não existe, o play se "
-            "já existe. `prompt` o nomeia para colar e também sai em "
+            "já existe. `url` nomeia a superfície pedida; nomear não serve. "
+            "`prompt` o nomeia para colar e também sai em "
             "stderr; o JSON fica no stdout. Se o starter declara "
             "o verbo e as teclas, o passo 2 as nomeia — inclusive o par. Sem destino, a frase "
             "nomeia a pasta no comando do start — ao lado do framework se o "

@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.143: o raspo confirma no corpo e na câmera.
+**HEAD:** ver `git log -1` — vigente 0.9.144: start/play/guide nomeiam a superfície HTTP.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 260 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 261 OK.
 `cd assets/starters/canvas-arcade && npm test` → 314 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.143)
+## O que o HEAD já entrega (0.9.91–0.9.144)
 
 | Ver | Salto |
 | --- | --- |
@@ -87,6 +87,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.141 | Tecla ligada e toque retomam o `AudioContext` suspenso no gesto. Resume no quadro chega tarde. `heard` continua falso. |
 | 0.9.142 | Os stems SFX começam o fetch juntos. Collect não espera dash+land+graze. Wav no lugar não pede ogg. `heard` continua falso. |
 | 0.9.143 | O raspo estreita o corpo, empurra a câmera na direção e acende menos que a queda. Sem hitstop. Sem pulso. `felt` continua falso. |
+| 0.9.144 | `start` / `play` / `guide` devolvem `url` (`http://localhost:8080/` no serve). O prompt pede o navegador. Sem script `serve`, a chave some. `executed` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -172,7 +173,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   acharem o mesmo jogo, fila do mixer no primeiro
   WAV, aviso de save na porta, resume do
   contexto no gesto, stems SFX em
-  paralelo, punch do raspo no disco
+  paralelo, punch do raspo no disco,
+  `url` da abertura
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -201,12 +203,15 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `CRAFT_EXAMPLES` ordem: pair → look → table → sfx. Look e chuva do
   exemplo compartilham o nome `noite`.
 - `play` após `start` é `cd … && npm run serve`. Não há `npm install`.
-- `start` devolve `open` (= `play`) e `steps` (3, passo 1 feito).
+- `start` devolve `open` (= `play`), `url` e `steps` (3, passo 1 feito).
   `guide` sem destino: `open` é o start. Os dois: `executed` falso.
-- `play` / `open` (CLI) apontam o serve do projeto existente. Não
-  criam, não executam. Sem caminho: `here_project`, o único
-  vizinho jogável do laboratório, a lista dos nomes se houver
-  dois, ou “sem destino”. Não escolhe o starter. Não varre `/`.
+  `url` é `http://localhost:<PORT>/` só se o script for `serve`
+  (`PORT` positivo; vazio → 8080; `PORT=0` → sem url). Não é
+  `then.url`. Nomear não serve.
+- `play` / `open` (CLI) apontam o serve do projeto existente e a
+  mesma `url`. Não criam, não executam. Sem caminho: `here_project`,
+  o único vizinho jogável do laboratório, a lista dos nomes se
+  houver dois, ou “sem destino”. Não escolhe o starter. Não varre `/`.
 - `note` / `next` / `feel` / `playtest` (CLI) usam
   `require_project_destination` — o mesmo resolvedor. `note`
   continua exigindo `--author` e `--note`. Achar o jogo não
@@ -320,14 +325,15 @@ um `note` sem caminho. **Não** mais a fila do mixer. **Não** mais
 aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais waterfall ou paralelo do SFX.
 **Não** mais punch/shake em outro verbo.
+**Não** mais um `url` / href de abertura.
 
 Candidatos, do que ainda dói:
 
 1. **Release (define o piso):** outra máquina correr o `dist/`. Não
    promover. `ship` já nomeia árvore incompleta, HEAD velho e
    `elsewhere` falso; isso não é a prova.
-2. **Idéia→jogo:** `start` devolve `open`; `play` / `open` o
-   reimprimem. Sem caminho, o único jogo do laboratório basta;
+2. **Idéia→jogo:** `start` devolve `open` e `url`; `play` / `open`
+   os reimprimem. Sem caminho, o único jogo do laboratório basta;
    dois pedem o caminho. `note`, `next`, `feel` e `playtest`
    usam o mesmo resolvedor. O `prompt` também sai em stderr. A
    partida no serve grava o candidato e, se você escrever, o
@@ -336,7 +342,7 @@ Candidatos, do que ainda dói:
    `?seed=` abre a seed do candidato. Depois de um last-run,
    `then.seed` aponta o endereço da partida (número, chuva e
    look quando o candidato os nomeia) e o convite junta os
-   mesmos eixos. Não auto-servir.
+   mesmos eixos. Nomear `url` não serve. Não auto-servir.
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
    volátil e gravação recusada. Falta aba fechada real.
@@ -354,8 +360,9 @@ Candidatos, do que ainda dói:
    anexar last-run, `play` achar o único jogo, `note` achar
    o mesmo jogo, a fila do mixer no primeiro WAV, o aviso
    de save na porta, o resume no gesto e o
-   paralelo dos stems SFX e o punch do raspo
-   no disco não fecham. A receita
+   paralelo dos stems SFX, o punch do raspo
+   no disco e o `url` da abertura não
+   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
    Não nascer look/chuva first-party novo como craft.
@@ -376,5 +383,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `grazeContact` em `rules.js`.
-O raspo estreita, empurra e acende. Sem hitstop. Não é peso no aparelho.
+Arquivos quentes da última sessão: `serve_url` em `game.py`.
+`start` / `play` / `guide` nomeiam a superfície. Nomear não serve.
