@@ -726,6 +726,12 @@ test("a recuperação do dash não se parece com o dash nem com o descanso", () 
   assert.notEqual(playerFill(dash), playerFill(idle));
   assert.notEqual(playerFill(recovery), playerFill(idle));
   assert.notEqual(playerFill(recovery), playerFill(dash));
+  assert.notEqual(
+    playerFill(recovery),
+    PALETTES.normal.orb,
+    "a recuperação vulnerável não veste a tinta da prática",
+  );
+  assert.equal(playerFill(recovery), PALETTES.normal.muted);
 });
 
 test("a porta nomeia a recuperação que o painel já mostra", () => {

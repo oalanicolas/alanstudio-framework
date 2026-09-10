@@ -252,7 +252,8 @@ ainda não chegou marca o trilho (`approaching`) — na porta a mostra
 usa o mesmo aviso; a live já nomeava o perigo e o trilho calava.
 A câmera inclina para o mesmo aviso (`lookAheadX`), menor que o
 punch do dash. Lean no disco não é peso percebido. A recuperação do dash muda a
-silhueta; o erro acende o campo, a coleta não. O controle pulsa no
+silhueta no apoio — ainda vulnerável, não a tinta da prática;
+o erro acende o campo, a coleta não. O controle pulsa no
 impacto com duração e magnitude por verbo; pausa e descarte cancelam.
 Cada verbo deixa um rastro próprio no campo; com menos movimento o
 rastro vira marca. A corrente mora no corpo em pips; o HUD continua

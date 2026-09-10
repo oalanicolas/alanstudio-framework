@@ -386,7 +386,11 @@ export function createRenderer(canvas, options = {}) {
     const invuln = !ending && player.invuln > 0;
     const pulse = invuln && !reduced && Math.floor(player.invuln / 4) % 2 !== 0;
     if (pulse) target.globalAlpha = 0.38;
-    target.fillStyle = dashing ? palette.chain : recovering ? palette.orb : palette.player;
+    // A regra já diz vulnerável. Sem isto o corpo vestia a
+    // tinta da prática — orbe-só, sem ameaça — e a silhueta
+    // mentia folga. Apoio marca o verbo frio, não a janela.
+    // Pose no disco não é peso percebido.
+    target.fillStyle = dashing ? palette.chain : recovering ? palette.muted : palette.player;
     target.fillRect(left, top, width, height);
     // O retângulo sozinho era o tijolo da placa. A ponta segue o
     // último avanço: orbe é círculo, estilhaço é losango, o corpo

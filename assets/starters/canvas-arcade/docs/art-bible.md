@@ -18,7 +18,7 @@ A tinta não esmaga chuva que já separa quente e frio; o par do padrão
 | --- | --- | --- |
 | fundo | `#10131a` / `#000000` | `PALETTES.*.background` — casca da página |
 | campo | `#171b26` / `#000000` | `data/palettes.json` → `PALETTES.*.field` |
-| jogador | `#f2f4f8` / `#ffffff` | `PALETTES.*.player` |
+| jogador | `#f2f4f8` / `#ffffff` | `PALETTES.*.player` — o corpo em descanso; a recuperação do dash veste o apoio, não o orbe |
 | orbe | `#4ea8ff` / `#00d2ff` | `PALETTES.*.orb` — chuva e contorno da prática |
 | estilhaço | `#ff8a3d` / `#ff6a00` | `PALETTES.*.shard` |
 | corrente | `#ffd166` / `#ffe600` | `PALETTES.*.chain` — pips e contorno da folga |
