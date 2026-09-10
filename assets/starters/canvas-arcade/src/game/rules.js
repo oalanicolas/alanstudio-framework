@@ -55,6 +55,7 @@ export const CONFIG = {
     squashDash: 0.34, // partida do dash: alonga na direção, não achata
     squashLand: 0.40, // término: senta depois de alongar; menor que guardar
     squashBank: 0.46, // compromisso: senta mais que a coleta
+    squashOver: 0.52, // o relógio senta o corpo; mais que guardar, menos que o erro
     squashHit: 0.62, // o erro esmaga mais que guardar
     squashDecay: 0.82,
     punchCollectY: -1.6, // coleta sobe a câmera
@@ -739,6 +740,7 @@ export function advance(state, intent = neutralIntent()) {
 
   if (state.tick >= CONFIG.runTicks) {
     state.phase = "over";
+    player.squash = CONFIG.feel.squashOver;
     emit(state, "over", { score: state.score, unbanked: state.chain });
     lapseChain(state, state.chain);
   }

@@ -3,6 +3,21 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.170 — O over senta o corpo
+
+A aposta já caía e a
+cama já soltava. O tijolo
+ficava em pose de jogo —
+dash, graça, arco. O
+relógio senta o corpo.
+`fillRect` permanece.
+`felt` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.170 não afirma:
+pose no disco não é peso
+percebido.
+
 ## 0.9.169 — O over solta a cama
 
 A cama já ocupava o

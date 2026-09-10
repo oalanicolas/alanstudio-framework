@@ -2397,6 +2397,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("feel.chainPips", keys)
         self.assertIn("feel.chainRateStep", keys)
         self.assertIn("feel.squashLand", keys)
+        self.assertIn("feel.squashOver", keys)
         self.assertIn("feel.depositAimX", keys)
         self.assertIn("feel.moteGraze", keys)
         self.assertIn("feel.squashGraze", keys)

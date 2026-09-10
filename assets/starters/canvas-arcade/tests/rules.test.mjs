@@ -337,9 +337,10 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
     CONFIG.feel.squashDash,
     CONFIG.feel.squashLand,
     CONFIG.feel.squashBank,
+    CONFIG.feel.squashOver,
     CONFIG.feel.squashHit,
   ];
-  assert.equal(new Set(squashes).size, 7, "squash repetido não distingue o verbo");
+  assert.equal(new Set(squashes).size, 8, "squash repetido não distingue o verbo");
   assert.notEqual(CONFIG.feel.collectShake, CONFIG.feel.hitShake);
   assert.notEqual(CONFIG.feel.bankShake, CONFIG.feel.collectShake);
   assert.notEqual(dash.camera.x, 0, "dash empurra a câmera na direção");
@@ -893,13 +894,17 @@ test("a partida termina no limite de tempo e informa a corrente perdida", () => 
   assert.equal(typeof over.unbanked, "number");
 });
 
-test("no fim a aposta não guardada cai; a conta sobrevive", () => {
+test("no fim o corpo senta; a conta sobrevive", () => {
   const state = createState(7);
   state.chain = 5;
   state.tick = CONFIG.runTicks - 1;
   state.spawnTimer = 999;
+  state.player.squash = CONFIG.feel.squashDash;
   advance(state, neutralIntent());
   assert.equal(state.phase, "over");
+  assert.equal(state.player.squash, CONFIG.feel.squashOver, "o relógio senta o corpo");
+  assert.ok(CONFIG.feel.squashOver > CONFIG.feel.squashBank);
+  assert.ok(CONFIG.feel.squashOver < CONFIG.feel.squashHit);
   assert.equal(state.chain, 5, "a conta no estado sobrevive ao fim");
   const over = state.events.find((event) => event.type === "over");
   assert.equal(over.unbanked, 5);

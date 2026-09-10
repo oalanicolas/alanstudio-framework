@@ -599,6 +599,29 @@ test("a graça do erro some o corpo e o traz de volta sem apagar o tijolo", () =
   assert.ok(heldBox.length > 0, "com menos movimento o fillRect permanece");
 });
 
+test("no fim o corpo senta e larga a pose de jogo", () => {
+  const idle = createState(1);
+  const ended = createState(1);
+  ended.phase = "over";
+  ended.player.squash = CONFIG.feel.squashOver;
+  ended.player.dashTicks = 4;
+  ended.player.invuln = 6;
+  const rest = playerBox(idle);
+  const sat = playerBox(ended);
+  assert.ok(sat.width > rest.width, "o relógio senta o corpo");
+  assert.ok(sat.height < rest.height, "o achatamento precisa chegar no quadro");
+  assert.equal(playerFill(ended), PALETTES.normal.player, "o dash não veste o fim");
+  const rim = paint(ended).edges.filter((edge) => (
+    edge.style === PALETTES.normal.danger && edge.width < 40 && edge.y < PLAYER_Y
+  ));
+  assert.equal(rim.length, 0, "a graça não pisca depois do relógio");
+  const held = paint(ended, { reducedMotion: true }).rects.filter(
+    (rect) => rect.width < 40 && rect.y < PLAYER_Y && rect.y + rect.height > PLAYER_Y - 8,
+  );
+  assert.ok(held.length > 0, "o fillRect permanece no fim");
+  assert.ok(held[0].width > rest.width, "com menos movimento o corpo continua sentado");
+});
+
 test("a recuperação do dash não se parece com o dash nem com o descanso", () => {
   const idle = createState(1);
   const dash = createState(1);

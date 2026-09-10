@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.169: o over solta a cama com fade.
+**HEAD:** ver `git log -1` — vigente 0.9.170: o over senta o corpo.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 267 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.169)
+## O que o HEAD já entrega (0.9.91–0.9.170)
 
 | Ver | Salto |
 | --- | --- |
@@ -113,6 +113,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.167 | O aviso do primeiro ciclo nomeia o estilhaço quando a corrente voltou a zero (`hint_hit`). Dash no trilho vence. A porta não ensina. Copy 3. Não promove feel. |
 | 0.9.168 | Na graça do erro o corpo some e volta no relógio do contorno. `fillRect` permanece. Reduced trava o tijolo. Não promove feel. |
 | 0.9.169 | O `over` pede fade na cama. Pause, title e aba escondida cortam seco. Play no meio do fade nasce de novo. Não promove `heard`. |
+| 0.9.170 | O `over` senta o corpo (`squashOver`). Larga dash, graça e arco da guarda. `fillRect` permanece. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -125,7 +126,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | mostra toca o corpo no disco; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | corpo senta no over no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over no disco; `heard` falso |
@@ -328,9 +329,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Jogador: `fillRect` do squash **permanece** (testes `playerFill` /
   `playerBox`). Na graça (`invuln`) o corpo pulsa com
   `globalAlpha` no relógio do contorno; o tijolo não some.
-  Reduced trava o tijolo e o contorno. A ponta é path (`lineTos`).
-  Halo do estilhaço **não** é `arc` (`orb.arcs > shard.arcs`).
-  Luz no disco não é `felt`.
+  Reduced trava o tijolo e o contorno. No `over` o corpo senta
+  (`squashOver`) e larga dash, graça e arco da guarda. A ponta é
+  path (`lineTos`). Halo do estilhaço **não** é `arc`
+  (`orb.arcs > shard.arcs`). Luz no disco não é `felt`.
 - `player.dir` default `1`. Ponta some? Não — é forma, não brilho.
 - Fase `title` só com canvas (ou `options.entry === "title"`). Headless
   e `createState()` default = `playing`. `advance` em title não anda o
@@ -465,6 +467,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um aviso que some o custo do estilhaço enquanto o miss já nomeia a queda.
 **Não** mais um corpo sólido enquanto a graça do erro só pisca o contorno.
 **Não** mais uma cama que some seco no over enquanto o loop já tem ganho.
+**Não** mais um corpo em pose de jogo enquanto o relógio já derrubou a aposta.
 
 Candidatos, do que ainda dói:
 
@@ -535,7 +538,9 @@ Candidatos, do que ainda dói:
   voz da mostra
   e o fade
   da cama no
-  over
+  over e o
+  corpo sentado
+  no over
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -559,5 +564,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o over solta a cama com fade.
-Pause, title e aba escondida cortam seco. Não promove `heard`.
+Arquivos quentes da última sessão: o over senta o corpo.
+Larga dash, graça e arco. `fillRect` permanece. Não promove feel.

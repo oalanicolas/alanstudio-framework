@@ -347,13 +347,15 @@ export function createRenderer(canvas, options = {}) {
     const height = 12 / squash;
     const left = player.x - width / 2;
     const top = PLAYER_Y - height / 2;
-    const dashing = player.dashTicks > 0;
-    const recovering = !dashing && player.dashRecovery > 0;
+    const ending = state.phase === "over";
+    const dashing = !ending && player.dashTicks > 0;
+    const recovering = !ending && !dashing && player.dashRecovery > 0;
     // A graça do erro já existia. Só o contorno piscava; o tijolo
     // sólido tapava a leitura. O corpo some e volta no mesmo
     // relógio — o fillRect permanece. Com menos movimento o
-    // tijolo fica e o contorno não pisca. Luz no disco não é felt.
-    const invuln = player.invuln > 0;
+    // tijolo fica e o contorno não pisca. No fim a graça some:
+    // o relógio já sentou o corpo. Luz no disco não é felt.
+    const invuln = !ending && player.invuln > 0;
     const pulse = invuln && !reduced && Math.floor(player.invuln / 4) % 2 !== 0;
     if (pulse) target.globalAlpha = 0.38;
     target.fillStyle = dashing ? palette.chain : recovering ? palette.orb : palette.player;
@@ -386,7 +388,7 @@ export function createRenderer(canvas, options = {}) {
         target.strokeRect(left - 2, top - 2, width + 4, height + 4);
       }
     }
-    if ((state.bankWindup ?? 0) > 0) {
+    if (!ending && (state.bankWindup ?? 0) > 0) {
       const total = CONFIG.bank.windupTicks || 1;
       const fill = Math.max(0, Math.min(1, (total - state.bankWindup + 1) / total));
       target.strokeStyle = palette.chain;
@@ -394,7 +396,7 @@ export function createRenderer(canvas, options = {}) {
       target.beginPath();
       target.arc(player.x, PLAYER_Y, 11, 0, Math.PI * 2 * fill);
       target.stroke();
-    } else if (state.bankLock > 0) {
+    } else if (!ending && state.bankLock > 0) {
       target.strokeStyle = palette.chain;
       target.lineWidth = 1;
       target.beginPath();

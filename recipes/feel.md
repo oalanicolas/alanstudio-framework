@@ -184,7 +184,7 @@ A prática e a guarda falam no mixer quando a janela acaba;
 o orbe que cai fala, acende o campo, marca o lugar e desloca
 a câmera para baixo, sem pulsar o controle. Arquivo no disco não é peso percebido. A coleta leva o orbe ao slot; o erro espalha os pips;
 na guarda eles voam para o placar; no fim a aposta não guardada
-cai e o overlay nomeia o que caiu — a queda vence a cortina, que
+cai, o corpo senta (`squashOver`) e o overlay nomeia o que caiu — a queda vence a cortina, que
 reusa a placa do look. As legendas nascem depois da cortina. O
 raspo risca o campo, estreita o corpo, empurra a câmera na
 direção e acende menos que a queda. Sem hitstop. Sem pulso no
