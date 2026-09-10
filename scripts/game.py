@@ -2897,6 +2897,17 @@ def cycle_prompt(play, then, cycle, noted=False):
     )
 
 
+def guide_prompt(exists, start_command, play, then, cycle, noted=False):
+    if exists:
+        return cycle_prompt(play, then, cycle, noted)
+    return (
+        f"O ciclo ainda não existe. Cole e rode: {start_command}. "
+        f"Depois, no próprio dispositivo: {play}. "
+        f"Depois de uma partida, no harness: {then['note']}. "
+        "O harness não cria a pasta, não abre o jogo e não joga."
+    )
+
+
 def fresh_starter_cycle(project, missing, play):
     if missing or not play:
         return False
@@ -3342,6 +3353,8 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
     play_cmd = play or play_fallback
     then = cycle_then(next_target, play_cmd, chosen)
     cycle = starter_cycle(chosen)
+    start_command = harness_command(*start_parts)
+    noted = bool(exists and observation_receipts(dest))
     play_step = {
         "n": 2,
         "do": "jogar no próprio dispositivo",
@@ -3368,12 +3381,14 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         "exists": exists,
         "cycle": cycle,
         "then": then,
-        "noted": bool(exists and observation_receipts(dest)),
+        "noted": noted,
+        "open": start_command if not exists else play_cmd,
+        "prompt": guide_prompt(exists, start_command, play_cmd, then, cycle, noted),
         "steps": [
             {
                 "n": 1,
                 "do": "abrir o ciclo",
-                "command": harness_command(*start_parts),
+                "command": start_command,
                 "done": exists,
             },
             play_step,
@@ -3385,7 +3400,9 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             },
         ],
         "scope": (
-            "Três passos ideia→ciclo: start, jogar, note. Se o starter declara "
+            "Três passos ideia→ciclo: start, jogar, note. `open` é o comando "
+            "de agora — o start se o destino ainda não existe, o play se "
+            "já existe. `prompt` o nomeia para colar. Se o starter declara "
             "o verbo e as teclas, o passo 2 as nomeia — inclusive o par. Sem destino, a frase "
             "nomeia a pasta no comando do start — ao lado do framework se o "
             "mapa corre de dentro desta árvore; no diretório atual se corre "

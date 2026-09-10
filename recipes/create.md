@@ -7,7 +7,8 @@ o projeto atual.
 
 O caminho curto está em [ambição](../references/ambition.md): um ciclo jogável
 na primeira sessão, depois feel e áudio do verbo, depois receita de conteúdo.
-`start` e `guide` mapeiam start → jogar → `note`. Sem destino, `--idea`
+`start` e `guide` mapeiam start → jogar → `note`. O `guide` devolve
+`open` (o comando de agora) e `prompt` (a frase para colar). Sem destino, `--idea`
 nomeia a pasta no comando do start e não grava a frase. Sem destino, se o
 diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
 `then` nomeia look, chuva e voz se o projeto — ou o starter, antes do

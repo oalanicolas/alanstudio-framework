@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.91 — O mapa nomeia o comando de agora
+
+O `guide` já devolvia três passos. Quem lia o JSON tinha de
+adivinhar qual colar. `open` é o start se o destino ainda não
+existe, o play se já existe. `prompt` o nomeia. Os três passos
+continuam; `executed` continua falso. `guide --idea` continua só
+no comando, não no disco. Só `release` fica no piso.
+
+O que 0.9.91 não afirma: o harness não criou a pasta e não abriu
+o jogo.
+
 ## 0.9.90 — O orbe perdido também fala
 
 O evento `missed` já nascia quando o orbe caía. O mixer o

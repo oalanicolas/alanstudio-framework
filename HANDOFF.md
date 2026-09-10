@@ -11,7 +11,8 @@ com o que o próprio projeto declarou, zero dígitos nos rótulos. `observed` e
 `granted` são sempre `false`. `next` só levanta o gate que o projeto pediu.
 
 **Primeiro ciclo:** `guide` (também sem subcomando) mapeia start →
-jogar → note sem executar. Sem destino, `--idea` nomeia a pasta no
+jogar → note sem executar. `open` é o comando de agora; `prompt` o
+nomeia. Sem destino, `--idea` nomeia a pasta no
 comando do start — ao lado do framework se o mapa corre de dentro
 desta árvore — e não grava a frase. Sem destino, se o diretório atual é um
 jogo fora do framework, o mapa usa esse caminho. `start` cria o projeto e devolve `play` +
