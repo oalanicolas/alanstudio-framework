@@ -3,6 +3,25 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.152 — O start não planta rascunhos
+
+`start --idea` criava sete
+markdowns para o `next` dizer
+que não os preenchesse. O
+padrão agora é não plantar.
+`--idea` entra na abertura.
+`fresh_starter_cycle` aceita
+zero rascunhos do ciclo.
+`areas.not_located` só
+bloqueia quem ainda não abre.
+`init` e `start --docs`
+continuam plantando. Só
+`release` fica no piso.
+
+O que 0.9.152 não afirma:
+nascer sem brief não é GDD
+escrito nem alguém de fora.
+
 ## 0.9.151 — O coil do avanço também atravessa
 
 Os dois ticks de antecipação

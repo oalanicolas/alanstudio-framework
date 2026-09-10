@@ -1425,6 +1425,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             json.loads((destination / "data/copy.json").read_text(encoding="utf-8"))["fantasy"],
             "atravessar estilhaços",
         )
+        nxt = game.next_step(destination)
+        self.assertEqual(nxt["proposal"]["basis"], "playable.unplayed")
+        self.assertTrue(nxt["signals"]["playable_unplayed"])
+        self.assertTrue(nxt["signals"]["gaps"])
+        self.assertNotIn("areas.not_located", [item["basis"] for item in self.proposals(nxt)])
 
     def test_long_idea_fits_the_surface_and_keeps_the_full_phrase_in_the_brief(self):
         destination = self.root / "frase-longa"
@@ -3273,8 +3278,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["named"])
         self.assertIsNone(report["suggest"])
         self.assertTrue((destination / "index.html").is_file())
-        self.assertIn("guardar a corrente ou continuar", (destination / "docs/brief.md").read_text(encoding="utf-8"))
-        self.assertIn("[preencher]", (destination / "docs/brief.md").read_text(encoding="utf-8"))
+        self.assertFalse((destination / "docs/brief.md").exists())
+        self.assertIsNone(report["brief"])
         self.assertEqual(report["surface"], "data/copy.json")
         copy = json.loads((destination / "data/copy.json").read_text(encoding="utf-8"))
         self.assertEqual(copy["fantasy"], "guardar a corrente ou continuar")
@@ -3338,6 +3343,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(again["init"])
         self.assertEqual(again["next"]["proposal"]["basis"], "playable.unplayed")
         self.assertIn("serve", again["then"]["play"])
+        holes = game.scan(destination)["areas"]
+        self.assertTrue([key for key, area in holes.items() if area["status"] == "not_located"])
+        self.assertNotIn("areas.not_located", [item["basis"] for item in self.proposals(report["next"])])
+
+    def test_start_docs_still_plants_the_drafts(self):
+        destination = self.root / "com-rascunhos"
+        report = game.start_project(
+            destination, "canvas-arcade", idea="guardar a corrente", documents=True,
+        )
+        self.assertTrue((destination / "docs/brief.md").is_file())
+        self.assertIn("guardar a corrente", (destination / "docs/brief.md").read_text(encoding="utf-8"))
+        self.assertIn("[preencher]", (destination / "docs/brief.md").read_text(encoding="utf-8"))
+        self.assertEqual(report["brief"], "docs/brief.md")
+        self.assertEqual(report["next"]["proposal"]["basis"], "playable.unplayed")
+        self.assertEqual(game.scan(destination)["areas"]["vision"]["status"], "draft_only")
+        planted = subprocess.run(
+            [sys.executable, str(SCRIPT), "start", str(self.root / "via-cli"),
+             "--docs", "--idea", "atravessar estilhaços", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(planted.returncode, 0, planted.stderr)
+        payload = json.loads(planted.stdout)
+        self.assertEqual(payload["brief"], "docs/brief.md")
+        self.assertTrue((self.root / "via-cli" / "docs/brief.md").is_file())
+        self.assertFalse(payload["executed"])
 
     def test_play_points_at_serve_without_creating_or_playing(self):
         destination = self.root / "ja-criado"
@@ -3730,7 +3760,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("serve", after["prompt"])
         self.assertIn("O jogo não foi aberto", after["prompt"])
         self.assertFalse(after["executed"])
-        self.assertNotIn("atravessar estilhaços", (destination / "docs/brief.md").read_text(encoding="utf-8"))
+        self.assertFalse((destination / "docs/brief.md").exists())
+        self.assertEqual(
+            json.loads((destination / "data/copy.json").read_text(encoding="utf-8"))["fantasy"],
+            "guardar a corrente",
+        )
         run = subprocess.run(
             [sys.executable, str(SCRIPT), "guide", str(destination), "--root", str(self.root)],
             capture_output=True, text=True,
@@ -3859,7 +3893,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["executed"])
         self.assertEqual(Path(report["project"]), destination)
         self.assertTrue((destination / "index.html").is_file())
-        self.assertIn("atravessar estilhaços", (destination / "docs/brief.md").read_text(encoding="utf-8"))
+        self.assertFalse((destination / "docs/brief.md").exists())
+        self.assertIsNone(report["brief"])
         copy = json.loads((destination / "data/copy.json").read_text(encoding="utf-8"))
         self.assertEqual(copy["fantasy"], "atravessar estilhaços")
         self.assertIn("serve", report["play"])
@@ -3872,6 +3907,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(payload["named"])
         self.assertEqual(payload["suggest"], "guardar-a-corrente")
         self.assertTrue((self.root / "guardar-a-corrente" / "index.html").is_file())
+        self.assertFalse((self.root / "guardar-a-corrente" / "docs/brief.md").exists())
+        self.assertIsNone(payload["brief"])
         self.assertFalse(payload["executed"])
         self.assertEqual(cli.stderr.strip(), payload["prompt"])
         self.assertIn("serve", cli.stderr)

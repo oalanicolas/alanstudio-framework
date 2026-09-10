@@ -105,10 +105,11 @@ alcance de coleta maior que o desenho — estão em `CONFIG`, em
 - `docs/devlog.md` · `docs/qa.md`
 
 `docs/art-bible.md` já vem escrito: primitivas por decisão, não placeholder.
-Os outros seis de `docs/` nascem rascunho no `init`. O primeiro trabalho real
+Os outros seis de `docs/` nascem rascunho no `init`. O `start` não os planta;
+`--docs` no start ou o próprio `init` os cria. O primeiro trabalho real
 do projeto é **jogar o ciclo** — `npm run serve` — e escrever o que a proposta
 muda no verbo. Preencher templates antes da primeira partida é o atrito que o
-`next` depois do `init` recusa. Com `init --no-docs`, os rascunhos não nascem.
+`next` recusa. Com `init --no-docs`, os rascunhos também não nascem.
 
 ## Degrau de acabamento declarado
 

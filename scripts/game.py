@@ -3248,23 +3248,32 @@ def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None
 
 
 def fresh_starter_cycle(project, missing, play):
-    if missing or not play:
+    # Dois jeitos de nascer jogável: o `init` planta os seis rascunhos do
+    # ciclo (e some as lacunas) ou o `start` não planta nenhum. Exigir os
+    # seis só para o `next` dizer "não os preencha" era o atrito. Qualquer
+    # rascunho já escrito — ou um dos seis sem marcador — encerra o atalho.
+    if not play:
         return False
     docs = project / "docs"
-    if not docs.is_dir() or docs.is_symlink():
-        return False
+    present = []
     drafted = 0
-    for stage in FRESH_DRAFTS:
-        path = docs / f"{stage}.md"
-        if not path.is_file() or path.is_symlink():
-            return False
-        try:
-            text = path.read_text(encoding="utf-8", errors="replace")
-        except OSError:
-            return False
-        if not DRAFT_MARKERS.search(text):
-            return False
-        drafted += 1
+    if docs.is_dir() and not docs.is_symlink():
+        for stage in FRESH_DRAFTS:
+            path = docs / f"{stage}.md"
+            if not path.is_file() or path.is_symlink():
+                continue
+            present.append(stage)
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                return False
+            if not DRAFT_MARKERS.search(text):
+                return False
+            drafted += 1
+    if not present:
+        return True
+    if missing:
+        return False
     return drafted == len(FRESH_DRAFTS)
 
 
@@ -3556,7 +3565,7 @@ def init(destination, starter, title=None, documents=True, idea=None):
     }
 
 
-def start_project(destination=None, starter=None, title=None, idea=None, documents=True, cwd=None):
+def start_project(destination=None, starter=None, title=None, idea=None, documents=False, cwd=None):
     named = destination is None
     if destination is None:
         destination = start_destination_from_idea(idea, cwd=cwd)
@@ -3640,9 +3649,9 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "tem last-run com seed, `then` aponta a seed e o convite; "
             "nomear o endereço não observa. Ferramenta "
             "no disco não é alguém de fora nem mix ouvido. Não "
-            "instala dependências e não avalia a proposta. `--idea` entra no "
-            "brief como frase e, se houver `data/copy.json`, na abertura e no aviso do "
-            "primeiro ciclo. O brief continua rascunho. A frase na tela não "
+            "instala dependências e não avalia a proposta. `--idea` entra na "
+            "abertura se houver `data/copy.json`. O brief só nasce com `--docs`; "
+            "sem ele o `start` não planta rascunhos. A frase na tela não "
             "muda o verbo."
         ),
     }
@@ -4114,9 +4123,13 @@ def next_step(project, focus="create", studies_root=None):
         )
     missing = [key for key, area in areas.items() if area["status"] == "not_located"]
     labels = lambda keys: ", ".join(areas[key]["label"] for key in keys)
+    play = play_command(project, payload["scripts"], payload["package_manager"])
     # Não localizado, rascunho e histórico são três problemas diferentes, e todos
     # aparecem em `gaps`. Propor os três de uma vez repetiria a mesma tarefa.
-    if missing:
+    # Jogo que já abre não espera template: o buraco só bloqueia quem ainda
+    # não tem comando de jogar. Senão o `start` teria de plantar sete
+    # rascunhos só para o `next` recusar preenchê-los.
+    if missing and not play:
         propose(
             "Avisar as lacunas e documentar as áreas não localizadas: " + labels(missing),
             "A política do estúdio é documentar sem pedir um segundo consentimento; sem essa base as mesmas decisões se repetem a cada sessão.",
@@ -4124,15 +4137,15 @@ def next_step(project, focus="create", studies_root=None):
             [harness_command("context", project, "--focus", focus, "--event", "direction-approved")],
             "areas.not_located",
         )
-    play = play_command(project, payload["scripts"], payload["package_manager"])
     noted = bool(observation_receipts(project))
     fresh = fresh_starter_cycle(project, missing, play) and not noted
     if fresh:
         propose(
             "Abrir o ciclo do starter e escrever o que a proposta muda no verbo",
             "O destino já é um jogo que abre. Com tela, o avanço abre a porta; "
-            "sem tela o headless já joga. Sete rascunhos antes da primeira partida "
-            "são o atrito que este passo existe para cortar. O harness não executa o jogo.",
+            "sem tela o headless já joga. Rascunhos de template antes da primeira "
+            "partida são o atrito que este passo existe para cortar. O `start` "
+            "não os planta. O harness não executa o jogo.",
             "O ciclo correu uma vez, e o brief (ou um recibo de observação) registra o que "
             "esta proposta muda no verbo — ou a lacuna, se ainda não souber.",
             [play, harness_command("next", project, "--focus", "feel")],
@@ -4832,8 +4845,9 @@ def main():
     begin.add_argument("project", nargs="?", default=None)
     begin.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
     begin.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
-    begin.add_argument("--idea", help="frase da fantasia; entra no brief, na abertura e no aviso do primeiro ciclo, sem mudar o verbo. Sem caminho, nomeia e cria a pasta")
-    begin.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
+    begin.add_argument("--idea", help="frase da fantasia; entra na abertura se houver data/copy.json, sem mudar o verbo. Sem caminho, nomeia e cria a pasta. Brief só com --docs")
+    begin.add_argument("--docs", action="store_true", help="criar os rascunhos em docs/; o padrão do start é não plantá-los")
+    begin.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/ (já é o padrão do start)")
     guided = commands.add_parser(
         "guide",
         parents=[common],
@@ -5009,7 +5023,7 @@ def main():
             emit(init(resolve(args.project, root), args.starter, args.title, not args.no_docs, args.idea))
         elif args.action == "start":
             dest = None if args.project is None else resolve(args.project, root)
-            emit(start_project(dest, args.starter, args.title, args.idea, not args.no_docs))
+            emit(start_project(dest, args.starter, args.title, args.idea, args.docs and not args.no_docs))
         elif args.action == "guide":
             dest = here_project(args.project, root)
             report = guide_cycle(dest, args.starter, args.idea)

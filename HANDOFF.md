@@ -2,11 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.151: o coil do avanço também atravessa.
+**HEAD:** ver `git log -1` — vigente 0.9.152: o start não planta rascunhos.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 262 OK.
-`cd assets/starters/canvas-arcade && npm test` → 327 OK.
+**Testes no HEAD:** rodar as duas suítes neste checkout.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +31,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.151)
+## O que o HEAD já entrega (0.9.91–0.9.152)
 
 | Ver | Salto |
 | --- | --- |
@@ -95,6 +94,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.149 | Estilhaço no trilho do corpo vira `perigo à frente` na região viva, com a última legenda. Sem SFX novo. `verified` continua falso. |
 | 0.9.150 | `duckMs` abaixa só `music`. Hit e guarda não somem sob o próprio aviso. `heard` continua falso. |
 | 0.9.151 | `dashWindup` também é graça: o coil atravessa o estilhaço. Sem punch novo. `felt` continua falso. |
+| 0.9.152 | `start` não planta os seis rascunhos. `fresh_starter_cycle` aceita zero do ciclo. `areas.not_located` só bloqueia quem ainda não abre. `init` e `--docs` continuam plantando. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -143,7 +143,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   sobe por sessão simulada, `invite.md` nem `?invite=1`. `art_direction`
   não sobe por JSON/CSS/halo/vinheta/ponta/chuva da porta no disco.
 - Não implementar should-meet de Cooper.
-- Após `init`, `next` exige `playable.unplayed` primeiro (enquanto não
+- Após `init` ou `start`, `next` exige `playable.unplayed` primeiro (enquanto não
   houver `note`). Depois de um `note`, `playable.unplayed` some e `next`
   pode ser `cycle.craft` (par primeiro).
 - Recibo otimista ainda passa em `origins` e `feel` de propósito.
@@ -160,8 +160,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `emit()` já chama `burst()` — não duplicar. `close`, `live`, `stir`
   e `missed` **não** estão em `MOTE_COUNTS`.
 - Não zerar `state.chain` no `over`.
-- Não reduzir `INIT_DOCUMENTS` sem mudar `fresh_starter_cycle` /
-  `areas.not_located`.
+- `INIT_DOCUMENTS` permanece 7. `start` não os planta (padrão
+  `documents=False`; CLI `--docs` opta). `fresh_starter_cycle` aceita
+  zero rascunhos do ciclo **ou** os seis com marcador. Qualquer um dos
+  seis sem marcador encerra o atalho. `areas.not_located` só bloqueia
+  projeto **sem** comando de jogar.
 - `INIT_COPY_SKIP` inclui `dist`, `node_modules`, `.git` e
   `__pycache__`. Bytecode no starter vivo não entra no projeto.
 - Não ensinar pad/touch no coach **antes** de `lastSource` nem
@@ -215,6 +218,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `CRAFT_EXAMPLES` ordem: pair → look → table → sfx. Look e chuva do
   exemplo compartilham o nome `noite`.
 - `play` após `start` é `cd … && npm run serve`. Não há `npm install`.
+- `start` não planta os rascunhos (`documents=False`). CLI `--docs`
+  opta; `--no-docs` permanece e é o padrão. `init` continua
+  plantando. `--idea` entra em `data/copy.json`; brief só com `--docs`.
 - `start` devolve `open` (= `play`), `url` e `steps` (3, passo 1 feito).
   `guide` sem destino: `open` é o start. Os dois: `executed` falso.
   `url` é `http://localhost:<PORT>/` só se o script for `serve`
@@ -360,6 +366,8 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais região viva do perigo.
 **Não** mais duck só na cama.
 **Não** mais graça no coil do avanço.
+**Não** mais plantar os seis rascunhos no `start`.
+**Não** mais exigir `FRESH_DRAFTS` para o atalho do primeiro ciclo.
 
 Candidatos, do que ainda dói:
 
@@ -410,6 +418,7 @@ Candidatos, do que ainda dói:
    Não nascer look/chuva first-party novo como craft.
 
 `init` ainda cria 6 rascunhos de propósito (`fresh_starter_cycle`).
+O `start` não. `--docs` no start ou o `init` os planta.
 
 ---
 
@@ -425,6 +434,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `dashWindup` em `resolveEntities`.
-O coil do avanço também atravessa o estilhaço. Sem punch novo.
-`felt` continua falso.
+Arquivos quentes da última sessão: `start_project(documents=False)`,
+`fresh_starter_cycle` (zero rascunhos do ciclo também é fresco) e
+`areas.not_located` só sem `play`. Sem promover degrau.
