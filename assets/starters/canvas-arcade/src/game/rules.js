@@ -447,7 +447,6 @@ export function advance(state, intent = neutralIntent()) {
   }
   state.tick += 1;
   markClose(state);
-  markPractice(state);
   const player = state.player;
 
   // O pedido de dash é registrado antes de qualquer congelamento, para que uma
@@ -469,6 +468,7 @@ export function advance(state, intent = neutralIntent()) {
     state.hitstop -= 1;
     state.shake *= CONFIG.feel.shakeDecay;
     decayFlash(state);
+    markPractice(state);
     decayCamera(state);
     decayMotes(state);
     return state;
@@ -504,6 +504,7 @@ export function advance(state, intent = neutralIntent()) {
   state.shake *= CONFIG.feel.shakeDecay;
   if (state.shake < 0.01) state.shake = 0;
   decayFlash(state);
+  markPractice(state);
   decayCamera(state);
   player.squash *= CONFIG.feel.squashDecay;
   if (player.squash < 0.01) player.squash = 0;
