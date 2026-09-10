@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.251: decode nulo tenta a próxima extensão. Wav ilegível não esconde o ogg nem o pedido. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.252: a região viva nomeia a recuperação que o painel já mostra. A porta não. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 286 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.251)
+## O que o HEAD já entrega (0.9.91–0.9.252)
 
 | Ver | Salto |
 | --- | --- |
@@ -195,6 +195,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.249 | `roles --apply` recoloca o stem quando o recibo já está. Origem e licença diferentes recusam. Não promove `heard`. |
 | 0.9.250 | O painel nomeia o papel que o fetch perdeu. O loader marca o primário; variante ausente não é lacuna. Não promove `heard`. |
 | 0.9.251 | Decode nulo tenta a próxima extensão. Wav ilegível não esconde o ogg nem o pedido. Não promove `heard`. |
+| 0.9.252 | A região viva nomeia a recuperação que o painel já mostra. A porta não. Jogando a chave some. Não promove `trusted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -213,9 +214,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
-| state_trust | slice | preferências ilegíveis avisam no painel; live nomeia o aviso na porta e no fim; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
+| state_trust | slice | live nomeia a recuperação que o painel já mostra; a porta não; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
+| accessibility | slice | live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -367,7 +368,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou preferências ilegíveis que voltam ao padrão em silêncio
   ou um roles --apply que recusa o stem porque o recibo do init tem note
   ou um painel que some o 404 quando outro papel já registrou
-  ou um wav ilegível que esconde o ogg e some o pedido.
+  ou um wav ilegível que esconde o ogg e some o pedido
+  ou uma região viva que some a recuperação que o painel já mostra.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -590,6 +592,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   limpam. Não chamar de Continuar. `?seed=` não é sessão observada.
   Não promover `state_trust`. `hold.player` leva `dashWindup`.
   `hold` leva `bankWindup`.
+  Preferências ilegíveis: `#settings-gap` no painel;
+  `liveText.settings` lê `settingsLine` na porta e no fim;
+  `persistLine` na porta continua sem settings. Jogando a
+  chave some. Nomear não é aba fechada.
 - Avanço na partida: `dashWindupTicks` (2) senta com `squashCoil`
   antes de `fireDash`. Esses ticks também são graça: o coil
   atravessa o estilhaço. O quadro do `land` (`events` tem
@@ -849,6 +855,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `roles --apply` que recusa o stem porque o recibo do init tem `note`.
 **Não** mais um painel que some o 404 quando outro papel já registrou.
 **Não** mais um wav ilegível que esconde o ogg e some o pedido.
+**Não** mais uma região viva que some a recuperação que o painel já mostra.
 
 Candidatos, do que ainda dói:
 
@@ -904,9 +911,11 @@ Candidatos, do que ainda dói:
    e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
    volátil e gravação recusada. Preferências ilegíveis avisam no
-   painel e preservam `settings.broken`. `save` relata `warned` se o
-   disco tem essas chaves. A região viva espelha o aviso na
-   porta e no fim. Falta aba fechada real.
+   painel e preservam `settings.broken`. A região viva nomeia
+   a mesma recuperação na porta e no fim; a porta não.
+   `save` relata `warned` se o disco tem essas chaves. A região
+   viva também espelha o aviso da sessão na porta e no fim.
+   Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
 4. **Item 1 residual:** o mapa, as receitas de foco e os templates da
    primeira situação — brief, GDD, game-design, PoC, slice, QA e
@@ -1340,6 +1349,22 @@ Candidatos, do que ainda dói:
   stem porque o
   recibo do init
   tem note
+  e um
+  painel que
+  some o 404
+  quando outro
+  papel já
+  registrou
+  e um
+  wav ilegível
+  que esconde
+  o ogg
+  e uma
+  região viva
+  que some a
+  recuperação
+  que o painel
+  já mostra
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1363,7 +1388,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: decode nulo
-tenta a próxima extensão. Wav ilegível não
-esconde o ogg nem o pedido. Não promove
-`heard`.
+Arquivos quentes da última sessão: a região
+viva nomeia a recuperação que o painel já
+mostra. A porta não. Não promove `trusted`.

@@ -180,6 +180,38 @@ test("na porta e no fim a região viva nomeia o aviso da sessão sem fingir conf
   );
 });
 
+test("na porta e no fim a região viva nomeia a recuperação que o painel já mostra", () => {
+  const recovered = "As preferências voltaram ao padrão; o arquivo ilegível ficou em settings.broken";
+  assert.equal(
+    liveText({ phase: "title", settings: recovered }),
+    `abertura. ${recovered}`,
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, settings: recovered }),
+    `fim da partida. 12. ${recovered}`,
+  );
+  assert.equal(
+    liveText({
+      phase: "title",
+      persist: "Esta sessão não grava",
+      settings: recovered,
+    }),
+    `abertura. Esta sessão não grava. ${recovered}`,
+  );
+  assert.equal(liveText({ phase: "title", settings: "" }), "abertura");
+  assert.equal(liveText({ phase: "playing", settings: recovered }), "");
+  assert.equal(
+    liveText({ phase: "playing", paused: true, score: 12, settings: recovered }),
+    "pausado. 12",
+  );
+  assert.match(main, /settingsLine\(settingsLoad,\s*copy\)/);
+  assert.doesNotMatch(main, /persistLine\([^)]*settings/);
+  assert.doesNotMatch(
+    liveText({ phase: "title", settings: recovered }),
+    /aprovado|verified|trusted|alguém de fora/,
+  );
+});
+
 test("na porta a região viva nomeia o toque da mostra sem fingir coleta", () => {
   assert.equal(liveText({ phase: "title", attractTouch: "orb" }), "abertura. a mostra toca");
   assert.equal(liveText({ phase: "title", attractTouch: "shard" }), "abertura. a mostra raspa");

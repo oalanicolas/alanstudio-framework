@@ -11,7 +11,7 @@ import { createInput } from "./core/input.js";
 import { browserStorage } from "./core/storage.js";
 import { playReport, LAST_RUN_ROUTE } from "./core/run-report.js";
 import { canContinue, canResume, captureHold, loadProgress, persistLine, persistStatus, recordRun, saveProgress, summarizeRun } from "./core/save.js";
-import { detectEnvironment, loadSettings, normalizeSettings, saveSettings } from "./core/settings.js";
+import { detectEnvironment, loadSettings, normalizeSettings, saveSettings, settingsLine } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { BED_FADE_MS, createAudio } from "./game/audio.js";
 import { createHaptics, rumbleRole } from "./game/haptics.js";
@@ -292,6 +292,7 @@ export function createGame(options = {}) {
         chain: state.chain,
         lastScore: lastRun && Number.isFinite(lastRun.score) ? lastRun.score : undefined,
         persist: persistLine(persist(), copy),
+        settings: settingsLine(settingsLoad, copy),
         attractTouch: state.attractTouch,
       }),
     });

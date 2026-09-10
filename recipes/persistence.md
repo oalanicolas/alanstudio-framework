@@ -29,7 +29,9 @@ negado. A política precisa preservar o que ainda é aproveitável e falhar de f
 legível para o jogador. A porta e o fim nomeiam sessão volátil e
 gravação que não ficou. Preferências ilegíveis avisam no painel
 (`settings_recovered`); o arquivo fica em `settings.broken`. A porta
-não nomeia essa recuperação. `save` relata `warned` se o disco tem
+não nomeia essa recuperação. A região viva, na porta e no fim,
+nomeia a mesma linha do painel. Jogando a chave some. Nomear não
+é aba fechada. `save` relata `warned` se o disco tem
 `persistLine`, `title_volatile`, `title_unsaved`, `settings_recovered`
 ou `settings.broken`. Nomear não é
 aba fechada nem `trusted`.

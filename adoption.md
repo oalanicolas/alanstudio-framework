@@ -3,6 +3,52 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.252 — A região viva nomeia a recuperação
+
+O
+painel
+já
+avisava.
+A
+região
+viva
+cala.
+A
+porta
+continua
+sem
+`persistLine`
+para
+settings.
+Agora
+o
+leitor
+ouve
+a
+mesma
+linha
+na
+porta
+e
+no
+fim.
+Jogando
+a
+chave
+some.
+Não
+promove
+`trusted`.
+
+O que 0.9.252 não afirma:
+nomear
+a
+recuperação
+não
+é
+aba
+fechada.
+
 ## 0.9.251 — Decode nulo tenta a próxima extensão
 
 O

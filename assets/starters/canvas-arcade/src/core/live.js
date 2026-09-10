@@ -4,7 +4,9 @@
 // O fim, a porta e a pausa no campo já nomeiam placar e recorde
 // no canvas. No fim o overlay também nomeia a corrente que caiu.
 // Na porta e no fim o canvas já nomeia sessão volátil; a região
-// viva espelha essa linha. Na porta o canvas já acende o toque
+// viva espelha essa linha. Preferências ilegíveis avisam no
+// painel; a região viva nomeia a mesma recuperação — a porta
+// não. Na porta o canvas já acende o toque
 // da mostra; a região viva nomeia esse contato sem fingir coleta.
 // Jogando sem pausa o número não entra.
 // Texto no DOM não é sessão de alcance nem alguém de fora.
@@ -24,6 +26,7 @@ export function liveText({
   lastScore,
   chain,
   persist,
+  settings,
   attractTouch,
 } = {}) {
   const parts = [];
@@ -45,6 +48,7 @@ export function liveText({
     const record = whole(best);
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
     add(persist);
+    add(settings);
   } else if (phase === "title") {
     add("abertura");
     const last = whole(lastScore);
@@ -52,6 +56,7 @@ export function liveText({
     const record = whole(best);
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
     add(persist);
+    add(settings);
   } else if (overlayPaused) {
     // A cortina cobre o HUD. Sem o número aqui só o canvas
     // o mostrava, e a placa o come. Jogando sem pausa o
