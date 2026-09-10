@@ -63,8 +63,9 @@ INFO_EMPTY = (
 )
 EXPORT_EMPTY = (
     "Acervo vazio. O starter já fala em public/sfx. "
-    "sfx export copia bytes e créditos de um id que existe. "
-    "Sem acervo não há o que exportar."
+    "sfx export copia bytes e créditos de um id do acervo ou da "
+    "chave do stem do starter. Sem id e sem chave que case, não "
+    "há o que exportar."
 )
 INFO_NEXT = (
     "Ficha lida no disco. Não é mix ouvido. "
@@ -196,6 +197,86 @@ def local_info_card(item, empty):
     }
 
 
+def copy_local_stem(item, destination, root=None, sources=None, as_name=None, folder=None):
+    folder = Path(folder or STARTER_SFX).resolve()
+    src_path = folder / item["src"]
+    if not src_path.is_file() or src_path.is_symlink():
+        raise ValueError("Stem do starter ausente")
+    if as_name and not re.fullmatch(r"[A-Za-z_][\w-]*", as_name):
+        raise ValueError("nome de papel inválido")
+    stem = as_name if as_name else item["key"]
+    name = stem + src_path.suffix
+    destination = Path(destination).resolve()
+    base = catalog_dir(root)
+    if destination == folder:
+        raise ValueError("Destino deve ser separado do starter")
+    if destination.is_relative_to(base.resolve()) or base.resolve().is_relative_to(destination):
+        raise ValueError("Destino deve ser separado do acervo")
+    target = destination / name
+    data = src_path.read_bytes()
+    if target.is_symlink() or (target.exists() and (
+        not target.is_file() or target.read_bytes() != data
+    )):
+        raise ValueError("Arquivo de destino diferente; escolha outra pasta")
+    credit_src = folder / (Path(item["src"]).stem + ".credits.txt")
+    if credit_src.is_file() and not credit_src.is_symlink():
+        credit_bytes = credit_src.read_bytes()
+    else:
+        credit_bytes = (
+            f"{item['src']} — {item.get('title') or item['key']}. "
+            f"Autor: {item.get('author') or 'desconhecido'}. "
+            f"Licença: {item.get('license') or 'não declarada'}. "
+            f"Origem: {item.get('origin') or 'starter'}.\n"
+        ).encode()
+    credit_path = destination / (stem + ".credits.txt")
+    receipt = Path(sources) if sources else destination / "sources.json"
+    if receipt.resolve() == target or receipt.resolve().is_relative_to(base.resolve()):
+        raise ValueError("Proveniência deve ficar fora do acervo e do arquivo de áudio")
+    record = {
+        "src": name,
+        "key": stem,
+        "title": item.get("title") or item["key"],
+        "author": item.get("author"),
+        "license": item.get("license"),
+        "origin": item.get("origin"),
+        "kind": "starter",
+        "from": "assets/starters/canvas-arcade/public/sfx",
+    }
+    previous = audio.read_json(receipt) if receipt.exists() else {"files": []}
+    if not isinstance(previous.get("files"), list):
+        raise ValueError("Manifesto de destino sem lista files")
+    entries = previous["files"]
+    existing = next((row for row in entries if row.get("key") in {item["key"], stem} or row.get("src") == name), None)
+    if existing and existing != record:
+        raise ValueError("Proveniência de destino diferente; escolha outra pasta")
+    for path in (receipt, credit_path):
+        if path.is_symlink() or (path.exists() and not path.is_file()):
+            raise ValueError("Destino de créditos/proveniência inválido")
+    if credit_path.exists() and credit_path.read_bytes() != credit_bytes:
+        raise ValueError("Créditos de destino diferentes; escolha outra pasta")
+    already = target.exists() and credit_path.exists() and (existing == record or existing is None)
+    destination.mkdir(parents=True, exist_ok=True)
+    receipt.parent.mkdir(parents=True, exist_ok=True)
+    if not target.exists():
+        target.write_bytes(data)
+    if not existing:
+        entries.append(record)
+        receipt.write_bytes(audio.json_bytes(previous))
+    if not credit_path.exists():
+        credit_path.write_bytes(credit_bytes)
+    return {
+        "copied": str(target),
+        "bytes": item["bytes"],
+        "record": record,
+        "sources": str(receipt),
+        "credits": str(credit_path),
+        "kind": "starter",
+        "status": "already_exported" if already else "exported",
+        "heard": False,
+        "next": EXPORT_NEXT,
+    }
+
+
 def load_catalog(root=None):
     return audio.load_catalog(catalog_dir(root))
 
@@ -241,8 +322,22 @@ def search_catalog(query, root=None, limit=40):
 
 
 def copy_entry(entry_id, destination, root=None, sources=None, as_name=None):
+    sounds = load_catalog(root)["sounds"]
+    if sounds:
+        try:
+            audio.select(sounds, [entry_id])
+        except ValueError:
+            local = find_local_stem(entry_id)
+            if local:
+                return copy_local_stem(local, destination, root=root, sources=sources, as_name=as_name)
+            raise
+    else:
+        local = find_local_stem(entry_id)
+        if local:
+            return copy_local_stem(local, destination, root=root, sources=sources, as_name=as_name)
+        raise ValueError(EXPORT_EMPTY)
     base = catalog_dir(root)
-    item = audio.select(load_catalog(root)["sounds"], [entry_id])[0]
+    item = audio.select(sounds, [entry_id])[0]
     payload = audio.export_payload([item], base)
     catalog_name = item["id"] + Path(item["file"]).suffix
     stem = as_name if as_name else item["id"]
@@ -358,16 +453,48 @@ def info_entry(entry_id, root=None):
 
 def export_entries(ids, destination, root=None):
     sounds = load_catalog(root)["sounds"]
-    if not sounds:
-        raise ValueError(EXPORT_EMPTY)
-    items = audio.select(sounds, ids)
-    result = audio.export_files(items, Path(destination), catalog_dir(root))
-    result.update(
-        heard=False,
-        next=EXPORT_NEXT,
-        ids=[item["id"] for item in items],
-    )
-    return result
+    catalog_items = []
+    local_items = []
+    unknown = []
+    for entry_id in ids:
+        if sounds:
+            try:
+                catalog_items.append(audio.select(sounds, [entry_id])[0])
+                continue
+            except ValueError:
+                pass
+        local = find_local_stem(entry_id)
+        if local:
+            local_items.append(local)
+            continue
+        unknown.append(entry_id)
+    if unknown:
+        if not sounds:
+            raise ValueError(EXPORT_EMPTY)
+        raise ValueError(f"Seleção vazia ou IDs desconhecidos: {', '.join(unknown)}")
+    if catalog_items and local_items:
+        raise ValueError("Exporte ids do acervo e stems do starter em destinos separados")
+    if catalog_items:
+        result = audio.export_files(catalog_items, Path(destination), catalog_dir(root))
+        result.update(
+            heard=False,
+            next=EXPORT_NEXT,
+            ids=[item["id"] for item in catalog_items],
+            kind="catalog",
+        )
+        return result
+    copied = [copy_local_stem(item, destination, root=root) for item in local_items]
+    already = bool(copied) and all(item.get("status") == "already_exported" for item in copied)
+    return {
+        "files": len(local_items),
+        "status": "already_exported" if already else "exported",
+        "destination": str(Path(destination).resolve()),
+        "ids": [item["key"] for item in local_items],
+        "kind": "starter",
+        "heard": False,
+        "next": EXPORT_NEXT,
+        "copied": [item["copied"] for item in copied],
+    }
 
 
 def seed_catalog(root=None):

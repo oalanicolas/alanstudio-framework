@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.197 (confirmado): a câmera confirma o trilho.
+**HEAD:** ver `git log -1` — vigente 0.9.198: `sfx export` / `sfx copy` levam o stem do starter.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 272 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.197)
+## O que o HEAD já entrega (0.9.91–0.9.198)
 
 | Ver | Salto |
 | --- | --- |
@@ -141,6 +141,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.195 | Na porta e no fim a região viva nomeia o aviso da sessão que o canvas já mostra. Jogando a chave some. Não promove `trusted`. |
 | 0.9.196 | Na porta o telegraph marca a mostra. O live já nomeava o perigo; o trilho calava. Sem faixa nova. Não promove feel. |
 | 0.9.197 | A câmera inclina para o que o trilho já marca (`lookAheadX`). Menor que o punch do dash. Sem punch novo. Não promove feel. |
+| 0.9.198 | `sfx export` / `sfx copy` levam bytes e créditos do stem do starter. `--apply` continua só o acervo. `next` aponta `sfx copy`. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -255,7 +256,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou save que nomeia o aviso
   ou live que nomeia o aviso
   ou porta que marca a mostra no trilho
-  ou câmera que confirma o trilho.
+  ou câmera que confirma o trilho
+  ou export que some o stem do starter.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -331,7 +333,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   Sem acervo, `roles --fill` nomeia o stem do starter
   (`kind: starter`, licença, origem). `--apply` só copia
   `kind: catalog`. Sem catálogo, `next` em `audio.roles`
-  aponta `sfx info`, não `--apply`. Nomear não ouve.
+  aponta `sfx copy --to public/sfx`, não `--apply`.
+  `sfx export` / `sfx copy` levam bytes e créditos do stem.
+  Copiar não ouve.
 - `emit()` escreve `prompt` em stderr quando a chave existe e tem
   texto. stdout continua só o JSON. Falar a frase não executa.
   `next` / `doctor` / `feel` não têm `prompt` e não escrevem frase.
@@ -582,6 +586,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma região viva que some o aviso enquanto o canvas já o nomeia.
 **Não** mais uma porta que some o telegraph enquanto a mostra já cai e o live já nomeia o perigo.
 **Não** mais uma câmera que some a antecipação enquanto o trilho já marca.
+**Não** mais um `sfx export` que recusa o stem que `sfx info` já nomeia.
 
 Candidatos, do que ainda dói:
 
@@ -611,12 +616,14 @@ Candidatos, do que ainda dói:
    `doctor` no lab vazio devolve `then.guide`; com jogo a chave some.
    Sem starter o aviso nomeia `start --idea`. Sem `prompt`.
    `sfx search` nomeia o stem do starter que casa; `sfx info`
-   lê a mesma chave. `sfx verify` nomeia os stems sem cruzar.
+   lê a mesma chave. `sfx copy` e `sfx export` levam
+   bytes e créditos. `sfx verify` nomeia os stems sem cruzar.
    `count` continua o acervo. Sem os quatro campos,
    `playtest` nomeia `finding_href` e `qa`; `next`
    aponta a página e `note --field`, não relê o
    leitor.    Sem acervo, `roles --fill` nomeia o stem
-   do starter; `--apply` não o copia. `feel`
+   do starter; `--apply` não o copia; `next` aponta
+   `sfx copy`. `feel`
    nomeia `then.play` e `then.note` sem
    executar. Sem serve a chave some. Sem
    `prompt`. `len(steps) == 3`
@@ -632,8 +639,9 @@ Candidatos, do que ainda dói:
    do achado, vazia. `preproduction.md` já ensina `start --idea`.
    Referências que ainda falarem só do campo sem a abertura estão
    velhas. `sfx serve` gera a página se `ui/` faltar. `sfx info`
-   lê a chave do starter. `sfx verify` nomeia os stems sem cruzar.
-   Nomear não entrega. Tocar não é `heard`.
+   lê a chave do starter. `sfx copy` e `sfx export` levam
+   bytes e créditos. `sfx verify` nomeia os stems sem cruzar.
+   Nomear não entrega. Copiar não é `heard`. Tocar não é `heard`.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
    estável no disco, estilhaço dusk no disco, intenção warmer no
@@ -758,7 +766,10 @@ Candidatos, do que ainda dói:
   trilho e a
   câmera que
   confirma o
-  trilho
+  trilho e o
+  export que
+  leva o
+  stem
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -782,6 +793,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a câmera inclina para
-o que o trilho já marca. Menor que o punch do dash.
-Não grava no `state.camera`. Não promove feel.
+Arquivos quentes da última sessão: `sfx export` / `sfx copy`
+levam o stem do starter com créditos. `--apply` continua
+só o acervo. `next` aponta `sfx copy`. Não promove `heard`.

@@ -2174,7 +2174,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertIn("--fill", commands[0])
         self.assertTrue(all("--apply" not in command for command in commands))
-        self.assertTrue(any(" sfx " in f" {command} " and " info " in f" {command} " for command in commands))
+        self.assertTrue(any(" sfx " in f" {command} " and " copy " in f" {command} " for command in commands))
+        self.assertTrue(any("public/sfx" in command for command in commands))
 
     def test_sfx_search_on_empty_catalog_does_not_pretend_you_can_listen(self):
         run = subprocess.run(
@@ -2534,6 +2535,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         listed = json.loads(run.stdout)
         self.assertFalse(listed["heard"])
         self.assertEqual(listed["authors"], ["Autora"])
+
+    def test_sfx_export_copies_starter_stem_bytes_and_credits_without_claiming_to_hear_them(self):
+        destination = self.root / "jogo" / "public" / "sfx"
+        source = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade/public/sfx/dash.wav"
+        report = game.sfx_catalog.export_entries(["dash"], destination, self.root)
+        self.assertEqual(report["status"], "exported")
+        self.assertEqual(report["kind"], "starter")
+        self.assertFalse(report["heard"])
+        self.assertEqual(report["ids"], ["dash"])
+        self.assertEqual((destination / "dash.wav").read_bytes(), source.read_bytes())
+        credits = (destination / "dash.credits.txt").read_text(encoding="utf-8")
+        self.assertIn("CC0-1.0", credits)
+        self.assertIn("Alan Studios Framework", credits)
+        sources = json.loads((destination / "sources.json").read_text(encoding="utf-8"))
+        self.assertEqual(sources["files"][0]["kind"], "starter")
+        self.assertEqual(sources["files"][0]["key"], "dash")
+        dumped = json.dumps(report)
+        self.assertNotIn("aprovado", dumped)
+        self.assertNotIn("verified", dumped)
+        self.assertNotIn("Ouça com sfx serve", report["next"])
+        again = game.sfx_catalog.export_entries(["dash"], destination, self.root)
+        self.assertEqual(again["status"], "already_exported")
+        self.assertFalse(again["heard"])
+        copied = game.sfx_catalog.copy_entry("land", self.root / "outro" / "sfx", self.root)
+        land = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade/public/sfx/land.wav"
+        self.assertEqual(copied["kind"], "starter")
+        self.assertEqual(copied["status"], "exported")
+        self.assertFalse(copied["heard"])
+        self.assertEqual(Path(copied["copied"]).read_bytes(), land.read_bytes())
+        self.assertIn("CC0-1.0", Path(copied["credits"]).read_text(encoding="utf-8"))
+        with self.assertRaises(ValueError) as refused:
+            game.sfx_catalog.copy_entry(
+                "dash",
+                Path(game.FRAMEWORK) / "assets/starters/canvas-arcade/public/sfx",
+                self.root,
+            )
+        self.assertIn("starter", str(refused.exception).casefold())
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "export", "dash",
+             "--to", str(self.root / "out"), "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        listed = json.loads(run.stdout)
+        self.assertEqual(listed["kind"], "starter")
+        self.assertFalse(listed["heard"])
+        self.assertTrue((self.root / "out" / "dash.wav").is_file())
 
     def test_sfx_export_copies_bytes_and_credits_without_claiming_to_hear_them(self):
         item, data = self._plant_catalog_sound()

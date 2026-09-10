@@ -3,6 +3,26 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.198 — O export leva o stem do starter
+
+`sfx info` já
+nomeava a chave.
+`export` e `copy`
+recusavam o acervo
+vazio. Agora copiam
+bytes e créditos.
+`--apply` continua
+só o id do acervo.
+`next` aponta
+`sfx copy`. `heard`
+continua falso. Só
+`release` fica no
+piso.
+
+O que 0.9.198 não afirma:
+copiar não é mix
+ouvido.
+
 ## 0.9.197 — A câmera confirma o trilho
 
 O trilho já

@@ -529,7 +529,8 @@ python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo --fill --apply --
 `heard` e `approved` são sempre `false`: arquivo presente não é mixagem ouvida.
 `next` propõe `audio.roles` quando um papel está vazio. `roles --fill` sugere
 um id do acervo ou a ficha do stem do starter; `--apply` copia só o id
-do acervo para `public/sfx/<papel>` com recibo. Stem do starter só nomeia.
+do acervo para `public/sfx/<papel>` com recibo. Sem acervo, `sfx copy`
+leva o stem do starter com créditos. `--apply` não o copia.
 O starter carrega esse arquivo no mixer. `npm run mix` soma cama e vozes
 de uma partida simulada com a mesma taxa da corrente; isso também não é
 mix ouvida. Primeiro resultado da
@@ -545,7 +546,8 @@ python3 scripts/game.py sfx copy ID --to /caminho/do/jogo/public/sfx --root /cam
 
 Sem esse acervo, `sfx search` não inventa id: o catálogo vem vazio e a
 busca nomeia o stem do starter que casa com o termo. `sfx info`
-lê a chave. `sfx verify` nomeia os stems sem cruzar o que não
+lê a chave. `sfx copy` e `sfx export` levam bytes e créditos
+desse stem. `sfx verify` nomeia os stems sem cruzar o que não
 existe. `sfx summary` lista todos. `sfx serve` recusa — não
 há o que ouvir no acervo.
 Com sons, `sfx serve` abre a página de escuta; se `shared/sfx/ui`
@@ -568,8 +570,10 @@ e os stems do starter em `public/sfx` — arquivo no disco não é mix ouvido.
 `sfx verify` cruza bytes e fichas do acervo; sem acervo nomeia os
 stems do starter e não cruza. Não ouve. `sfx info` lê a ficha
 do acervo ou a chave do stem do starter. Arquivo no disco não é
-mix ouvido. `sfx export` copia
+mix ouvido. `sfx export` de um id do acervo copia
 bytes, `manifest.json` e `CREDITS.txt` para uma pasta fora do acervo.
+De uma chave do starter, copia o WAV, o `.credits.txt` e anexa
+`sources.json`. Copiar não é mix ouvido.
 Importar e exportar não é mix ouvido. O primeiro ciclo já tem voz
 no starter (`public/sfx/<papel>.wav`). `shared/sfx` é ADAPT, não
 pré-requisito. Piso: gravação licenciada ou design contemporâneo.

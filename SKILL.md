@@ -90,7 +90,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx seed` lê
    `selection.json` local. `sfx info ID` lê a ficha do acervo ou a
    chave do stem do starter; `sfx export ID
-   --to PASTA` copia bytes e créditos. Importar e exportar não é
+   --to PASTA` copia bytes e créditos do acervo ou do stem.
+   `sfx copy` leva o stem do starter. Importar e exportar não é
    ouvir. Sem 8-bit,
    chiptune, jsfxr ou Kenney arcade como padrão. Leia candidatos e consumidores.
    CREATE exige lacuna explícita. Para trabalho novo sem registro, use
@@ -213,8 +214,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    o JSON fica no stdout.
    **`roles <projeto>`** lê os papéis de áudio que o código declara e os
    arquivos que os preenchem. `--fill` sugere o acervo ou a ficha
-   do stem do starter; `--apply` copia só o id do acervo. Stem do
-   starter só nomeia. Crescer o acervo é `sfx import` / `sfx seed`
+   do stem do starter; `--apply` copia só o id do acervo. Sem
+   acervo, `sfx copy` leva o stem com créditos. Crescer o acervo é `sfx import` / `sfx seed`
    (ffmpeg); `sfx info` lê a ficha do acervo ou a chave do stem
    do starter; `sfx verify` nomeia os stems sem cruzar o que não
    existe e `sfx export` copia bytes e

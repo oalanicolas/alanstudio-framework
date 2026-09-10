@@ -43,7 +43,9 @@ autoriza improvisar licença. Arquivo no disco não é mix ouvido. Crescer o ace
 --metadata JSON` (ffmpeg) ou `sfx seed` com `selection.json` local.
 `sfx info ID` lê a ficha do acervo ou a chave do stem do starter;
 `sfx export ID --to PASTA` copia bytes e
-créditos. Importar e exportar não é ouvir. O acervo compartilhado é ADAPT, não o
+créditos do acervo ou do stem do starter que `sfx info`
+já nomeia. `sfx copy` leva o mesmo stem para a pasta do
+jogo. `--apply` continua só o id do acervo. Importar e exportar não é ouvir. O acervo compartilhado é ADAPT, não o
 primeiro ciclo.
 
 ## 1. Nomear a camada

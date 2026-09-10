@@ -1218,14 +1218,15 @@ def roles_fill(project, root=None, apply=False):
         "guide": str(FRAMEWORK / "recipes/audio.md"),
         "rule": (
             "Primeiro resultado da busca não é o som certo e não é mixagem "
-            "ouvida. `--apply` copia só o id do acervo; o stem do starter "
-            "só nomeia. Não toca e não aprova."
+            "ouvida. `--apply` copia só o id do acervo. Sem acervo, `sfx copy` "
+            "leva o stem do starter com créditos. Não toca e não aprova."
         ),
         "scope": (
             "Para cada papel vazio, busca o id no acervo shared/sfx e, com "
             "`--apply`, copia para public/sfx com o nome do papel. Sem "
             "acervo, ou sem id que case, nomeia o stem do starter que casa "
-            "(`kind: starter`). Stem do starter não entra no `--apply`. "
+            "(`kind: starter`). Stem do starter não entra no `--apply`; "
+            "`sfx copy` / `sfx export` levam bytes e créditos. "
             "`heard` é sempre falso."
         ),
     }
@@ -2955,7 +2956,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "studies lista catálogos do foco se existirem no irmão Games-Frameworks; ausência não é evidência negativa.",
             "capabilities.mentioned é só token em arquivo de inspeção. Não prova pause, reset, seed nem determinismo.",
             "capabilities.unknown significa não localizado na lista fixa de arquivos de inspeção, não capacidade ausente; rastreie o entrypoint e os consumidores na auditoria.",
-            "Áudio novo: se shared/sfx tiver sons, busque (`sfx search`) antes de baixar. Sem acervo, o starter já fala em public/sfx; sfx search nomeia o stem que casa, sfx info lê a chave, roles --fill nomeia o mesmo stem, sfx verify nomeia os stems sem cruzar o que não existe e sfx serve recusa. Com sons, sfx serve abre a página de escuta — se ui/ faltar, o harness gera a lista. Tocar nessa página não é mix ouvida. Crescer o acervo é `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx info` lê a ficha do acervo ou a chave do stem e `sfx export ID --to PASTA` copia bytes e créditos. Importar e exportar não é ouvir. Piso de gravação licenciada; 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.",
+            "Áudio novo: se shared/sfx tiver sons, busque (`sfx search`) antes de baixar. Sem acervo, o starter já fala em public/sfx; sfx search nomeia o stem que casa, sfx info lê a chave, roles --fill nomeia o mesmo stem, sfx copy e sfx export levam bytes e créditos, sfx verify nomeia os stems sem cruzar o que não existe e sfx serve recusa. Com sons, sfx serve abre a página de escuta — se ui/ faltar, o harness gera a lista. Tocar nessa página não é mix ouvida. Crescer o acervo é `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx info` lê a ficha do acervo ou a chave do stem e `sfx export ID --to PASTA` copia bytes e créditos do acervo ou do stem. Importar e exportar não é ouvir. Piso de gravação licenciada; 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.",
             "Feel e áudio são focos próprios (`--focus feel`, `--focus audio`). Sem observação em movimento, experience_status permanece not_assessed; scaffold não é vertical slice.",
             "“AAA” neste harness é piso de acabamento da slice, não tier de publisher. Sem feel sincronizado, pacing e repeatability, não use o adjetivo.",
             "Checklist: ver finish no JSON. Jam observa core_groups; produto/AA soma product_groups; promise_groups só se prometidos. `template aaa` não certifica; N/A exige motivo.",
@@ -4407,7 +4408,10 @@ def next_step(project, focus="create", studies_root=None):
         if roles["catalog_exists"]:
             commands.append(harness_command("roles", project, "--fill", "--apply"))
         elif sfx_catalog.find_local_stem(roles["empty"][0]):
-            commands.append(harness_command("sfx", "info", roles["empty"][0]))
+            commands.append(harness_command(
+                "sfx", "copy", roles["empty"][0],
+                "--to", str(Path(project) / "public" / "sfx"),
+            ))
         propose(
             f"Preencher os papéis de áudio declarados e vazios: {sample}{extra}",
             "O verbo já dispara esses papéis. Arquivo ausente não é silêncio "
