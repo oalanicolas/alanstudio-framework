@@ -24,7 +24,7 @@ export const CONFIG = {
     halfWidth: 7,
     speed: 1.9,
     dashSpeed: 5.4,
-    dashTicks: 8, // contato: rápido e invulnerável
+    dashTicks: 8, // contato: rápido e invulnerável; a guarda com corrente espera o land
     dashRecoveryTicks: 6, // recuperação: controle reduzido, ainda vulnerável; o quadro do land atravessa
     dashCooldownTicks: 30,
     dashBufferTicks: 8, // perdão: dash pedido cedo dispara ao recarregar; o lock da guarda não come o pedido
@@ -119,8 +119,8 @@ export const CONFIG = {
   },
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
-    bufferTicks: 8, // perdão: pedido cedo ou no hitstop dispara quando a corrente existe
-    windupTicks: 2, // antecipação: o corpo senta antes de converter; o arco e o quadro da conversão já são graça; corrente já existente espera o coil do avanço
+    bufferTicks: 8, // perdão: pedido cedo ou no hitstop dispara quando a corrente existe; o coil e o travel do avanço não comem o pedido
+    windupTicks: 2, // antecipação: o corpo senta antes de converter; o arco e o quadro da conversão já são graça; corrente já existente espera o coil e o land do avanço
   },
   // Assistência não esconde conteúdo: os mesmos orbes, a mesma pontuação.
   // Perdão extra de alcance, chuva mais lenta e graça mais longa.
@@ -706,7 +706,12 @@ export function advance(state, intent = neutralIntent()) {
   if (intent.bank && state.chain > 0) {
     state.bankBuffer = CONFIG.bank.bufferTicks;
   } else if (state.bankBuffer > 0) {
-    state.bankBuffer -= 1;
+    // O avanço inteiro conta o perdão. Sem isto o travel
+    // — oito ticks — comia o pedido feito no coil.
+    // Pedido no disco não é felt.
+    const traveling =
+      (player.dashWindup ?? 0) > 0 || (player.dashTicks ?? 0) > 0;
+    if (!traveling) state.bankBuffer -= 1;
   }
 
   if (state.hitstop > 0) {
@@ -746,7 +751,7 @@ export function advance(state, intent = neutralIntent()) {
     player.squash = CONFIG.feel.squashCoil;
   }
 
-  if ((state.bankWindup ?? 0) > 0) {
+  if ((state.bankWindup ?? 0) > 0 && player.dashTicks === 0) {
     state.bankWindup -= 1;
     player.squash = CONFIG.feel.squashBankCoil;
     if (state.bankWindup === 0) commitBank(state);
@@ -884,11 +889,13 @@ function bank(state, intent) {
     commitBank(state);
     return;
   }
-  // Corrente que já existia espera o coil do avanço. Os dois
-  // arcos no mesmo tick travavam o disparo: canDash lê
-  // bankWindup e o avanço expirava sem alongar. Coleta neste
+  // Corrente que já existia espera o coil e o travel do avanço.
+  // Os dois arcos no mesmo tick travavam o disparo: canDash lê
+  // bankWindup e o avanço expirava sem alongar. Sem o land
+  // o sit comia a pose do dash e convertia no ar. Coleta neste
   // quadro já converteu acima. Pedido no disco não é felt.
   if ((state.player?.dashWindup ?? 0) > 0) return;
+  if ((state.player?.dashTicks ?? 0) > 0) return;
   const windup = CONFIG.bank.windupTicks;
   if (!(windup > 0)) {
     commitBank(state);

@@ -71,7 +71,52 @@ test("o coil do avanço não some quando a guarda pede no mesmo tick", () => {
   assert.ok(state.player.dashTicks > 0);
   assert.ok(state.events.some((event) => event.type === "dash"));
   assert.equal(state.stats.banks, 0, "a guarda ainda não converteu no disparo");
-  assert.equal(state.bankWindup, CONFIG.bank.windupTicks, "depois do disparo a guarda senta");
+  assert.equal(state.bankWindup, 0, "a guarda espera o avanço inteiro");
+  assert.equal(state.bankBuffer, CONFIG.bank.bufferTicks, "o pedido sobrevive o disparo");
+});
+
+test("a guarda espera o land do avanço e o pedido não decai", () => {
+  const fade = CONFIG.feel.squashDecay;
+  const state = createState(3);
+  state.chain = 4;
+  dashOut(state, { move: 1, dash: true, bank: true });
+  assert.ok(state.player.dashTicks > 0);
+  assert.equal(state.bankWindup, 0, "no travel a guarda ainda não senta");
+  assert.equal(state.stats.banks, 0);
+  assert.equal(state.bankBuffer, CONFIG.bank.bufferTicks, "oito ticks de dash são oito de buffer");
+  assert.notEqual(state.player.squash, CONFIG.feel.squashBankCoil * fade, "o sit não come a pose do dash");
+  while (state.player.dashTicks > 0) {
+    advance(state, { move: 1, dash: false, bank: false });
+    if (state.player.dashTicks > 0) {
+      assert.equal(state.bankWindup, 0, "durante o avanço a guarda espera");
+      assert.equal(state.stats.banks, 0);
+      assert.equal(state.bankBuffer, CONFIG.bank.bufferTicks);
+    }
+  }
+  assert.ok(state.events.some((event) => event.type === "land"), "o término ainda fala");
+  assert.equal(state.bankWindup, CONFIG.bank.windupTicks, "depois do land a guarda senta");
+  assert.equal(state.stats.banks, 0, "o land não é o compromisso");
+  assert.equal(state.player.squash, CONFIG.feel.squashBankCoil * fade);
+  for (let step = 0; step < CONFIG.bank.windupTicks; step += 1) {
+    advance(state, { move: 0, dash: false, bank: false });
+  }
+  assert.equal(state.stats.banks, 1);
+  assert.equal(state.score, 16);
+  assert.equal(state.chain, 0);
+});
+
+test("coleta e guarda no mesmo quadro continuam na hora durante o avanço", () => {
+  const state = createState(3);
+  dashOut(state);
+  assert.ok(state.player.dashTicks > 0);
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, { move: 1, dash: false, bank: true });
+  assert.equal(state.stats.collected, 1, "o contato ainda coleta");
+  assert.equal(state.stats.banks, 1, "o contato já foi a antecipação");
+  assert.equal(state.chain, 0);
+  assert.equal(state.score, 1);
+  assert.equal(state.bankWindup, 0);
+  assert.ok(state.player.dashTicks > 0, "converter no contato não cancela o travel");
 });
 
 test("coleta e guarda no mesmo quadro continuam na hora durante o coil do avanço", () => {

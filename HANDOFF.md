@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.246: o processo comum nomeia a porta. O mapa start → jogar → note aponta sem executar. Não observa.
+**HEAD:** ver `git log -1` — vigente 0.9.247: a guarda espera o land do avanço. O sit não come a pose do dash; o pedido não decai no travel. Não promove feel.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 284 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.246)
+## O que o HEAD já entrega (0.9.91–0.9.247)
 
 | Ver | Salto |
 | --- | --- |
@@ -190,6 +190,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.244 | O controle também pede o resume. Tecla e toque já pediam; o pad falava e a porta ia para a fila. Não promove `heard`. |
 | 0.9.245 | O fim leva o x do campo. O stinger da partida não fala no centro. Não promove `heard`. |
 | 0.9.246 | O processo comum nomeia a porta. O mapa start → jogar → `note` aponta sem executar. Não observa. |
+| 0.9.247 | A guarda espera o land do avanço. O sit não come a pose do dash; o pedido não decai no travel. Coleta no mesmo quadro continua na hora. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -203,7 +204,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
@@ -356,7 +357,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou o template agents que lista GDD que o disco não tem
   ou o tap na faixa da porta que some o abrir
   ou o controle que fala e some o resume
-  ou o fim que fala no centro.
+  ou o fim que fala no centro
+  ou o processo comum que some a porta
+  ou a guarda que senta no travel e come a pose do dash.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -826,6 +829,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um controle que fala e some o resume.
 **Não** mais um fim que fala no centro.
 **Não** mais um processo comum que some a porta.
+**Não** mais uma guarda que senta no travel e come a pose do dash.
 
 Candidatos, do que ainda dói:
 
@@ -1296,6 +1300,13 @@ Candidatos, do que ainda dói:
   comum que
   some a
   porta
+  e a
+  guarda que
+  senta no
+  travel e
+  come a
+  pose do
+  dash
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1319,7 +1330,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o
-processo comum nomeia a porta. O mapa
-start → jogar → note aponta sem
-executar. Não observa.
+Arquivos quentes da última sessão: a
+guarda espera o land do avanço. O sit
+não come a pose do dash; o pedido
+não decai no travel. Não promove feel.

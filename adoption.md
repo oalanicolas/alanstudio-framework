@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.247 — A guarda espera o land do avanço
+
+O
+coil
+já
+esperava.
+O
+travel
+ainda
+sentava
+e
+convertiu
+no
+ar.
+O
+pedido
+morria
+nos
+oito
+ticks.
+Agora
+a
+guarda
+espera
+o
+land
+e
+o
+buffer
+sobrevive
+o
+avanço.
+Coleta
+no
+mesmo
+quadro
+continua
+na
+hora.
+Não
+promove
+feel.
+
+O que 0.9.247 não afirma:
+pose
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.246 — O processo comum nomeia a porta
 
 O

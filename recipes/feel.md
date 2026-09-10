@@ -88,8 +88,9 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    de converter (`squashBankCoil` senta; o coil do avanço estreita);
    esses ticks já atravessam o estilhaço — o arco da
    guarda não é janela de hit. Pedido de guarda com corrente já
-   existente espera o coil do avanço: os dois arcos no mesmo tick
-   comiam o disparo. O quadro que converte também atravessa:
+   existente espera o coil e o land do avanço: os dois arcos no mesmo tick
+   comiam o disparo; o sit no travel comia a pose e convertia no ar.
+   O pedido não decai durante o coil nem o travel. O quadro que converte também atravessa:
    sentar e pontuar no mesmo impacto não mata. Coleta e guarda no mesmo
    quadro continuam na hora — o contato já foi a antecipação. Orbe
    que cai no arco da guarda espera: o sit não inflama a aposta
@@ -207,7 +208,9 @@ a faixa inferior continua guardando. Aperto no disco não é peso
 percebido. A porta
 fecha o mesmo arco no tick que abre, sem contar o ofício. A guarda
 que já tem corrente senta os mesmos dois ticks e também atravessa
-o estilhaço. Arquivo no
+o estilhaço. Corrente já existente espera o land do avanço —
+o sit não come a pose do dash; o pedido não decai no travel.
+Arquivo no
 disco não é peso percebido. A ameaça que
 ainda não chegou marca o trilho (`approaching`) — na porta a mostra
 usa o mesmo aviso; a live já nomeava o perigo e o trilho calava.
