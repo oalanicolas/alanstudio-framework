@@ -67,3 +67,19 @@ export function coachHint(state, lines = {}, extra = {}) {
   }
   return "collect";
 }
+
+// O canvas já pinta este texto. Sem a região viva o aviso
+// ficava só no quadro — a tabela da página e o convite
+// (que some `#commands`) calavam quem não vê a tela.
+// Texto no DOM não é sessão observada.
+export function coachText(state, lines = {}, extra = {}) {
+  const hint = coachHint(state, lines, extra);
+  if (!hint) return "";
+  if (hint === "fantasy") {
+    const spoken = typeof extra.fantasy === "string" ? extra.fantasy.trim() : "";
+    if (spoken) return spoken;
+    return typeof lines.fantasy === "string" ? lines.fantasy.trim() : "";
+  }
+  const text = lines[`hint_${hint}`];
+  return typeof text === "string" ? text.trim() : "";
+}

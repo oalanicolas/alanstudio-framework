@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { coachHint, FANTASY_TICKS, MOVE_TICKS } from "../src/game/coach.js";
+import { coachHint, coachText, FANTASY_TICKS, MOVE_TICKS } from "../src/game/coach.js";
 import { beginRun, CONFIG, createState, restoreState, PLAYER_Y } from "../src/game/rules.js";
 import { captureHold } from "../src/core/save.js";
 
@@ -280,4 +280,21 @@ test("o fecho pede guardar a corrente viva sem fingir sessão observada", () => 
   ended.chain = 4;
   ended.stats.banks = 1;
   assert.equal(coachHint(ended), null);
+});
+
+test("o aviso do primeiro ciclo vira texto, não só a chave", () => {
+  const lines = {
+    fantasy: "guardar a corrente",
+    hint_move: "←/→, arraste ou analógico",
+    hint_collect: "Passe no orbe — a corrente cresce",
+  };
+  const door = createState(1, { entry: "title" });
+  assert.equal(coachText(door, lines), "guardar a corrente");
+  door.attractTick = FANTASY_TICKS;
+  assert.equal(coachText(door, lines), "←/→, arraste ou analógico");
+  const field = createState(2);
+  field.tick = 90;
+  assert.equal(coachText(field, lines), "Passe no orbe — a corrente cresce");
+  field.phase = "over";
+  assert.equal(coachText(field, lines), "");
 });

@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.256: o hold leva o relógio da porta. Retomar no campo não devolve a frase nem o mover. Não promove `trusted`.
+**HEAD:** ver `git log -1` — vigente 0.9.257: a região viva nomeia o aviso do primeiro ciclo. O convite some a tabela; o canvas já pintava. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 288 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.256)
+## O que o HEAD já entrega (0.9.91–0.9.257)
 
 | Ver | Salto |
 | --- | --- |
@@ -200,6 +200,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.254 | O painel relê a lacuna quando o fetch termina. Pintar só no boot some o que chegou. Não promove `heard`. |
 | 0.9.255 | O hitstop não come o perdão do avanço. O freeze também poupa a guarda. Não promove `felt`. |
 | 0.9.256 | O hold leva o relógio da porta. Retomar no campo não devolve a frase nem o mover. Hold antigo sem o número não inventa ensino feito. Não promove `trusted`. |
+| 0.9.257 | A região viva nomeia o aviso do primeiro ciclo que o canvas já pinta. O convite some a tabela. No fim a linha some. Não promove `verified`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -220,7 +221,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | o hold leva o relógio da porta; live nomeia a recuperação que o painel já mostra; a porta não; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
+| accessibility | slice | live nomeia o aviso do primeiro ciclo; live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -377,7 +378,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um `sfx copy` do acervo que recusa o WAV porque o recibo tem `note` e some `heard`
   ou um painel que pinta a lacuna no boot e some o que o fetch trouxe
   ou um hitstop que queima o perdão do avanço
-  ou um hold que some o relógio da porta e o campo repete o ensino.
+  ou um hold que some o relógio da porta e o campo repete o ensino
+  ou uma região viva que some o aviso do primeiro ciclo.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -610,6 +612,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `liveText.settings` lê `settingsLine` na porta e no fim;
   `persistLine` na porta continua sem settings. Jogando a
   chave some. Nomear não é aba fechada.
+  `liveText.coach` lê `coachText` na porta e no campo —
+  o mesmo texto do canvas, teclas vivas. No fim a linha
+  some. O convite some `#commands`; sem o live o aviso
+  calava. Texto no DOM não é sessão.
 - Avanço na partida: `dashWindupTicks` (2) senta com `squashCoil`
   antes de `fireDash`. Esses ticks também são graça: o coil
   atravessa o estilhaço. O quadro do `land` (`events` tem
@@ -659,8 +665,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   frase, ou `>= 60` sem) o campo não pede mover de novo —
   dash e coleta entram. Headless (`attractTick === 0`) ainda
   vê a frase nos primeiros 48 ticks. Hold antigo sem o
-  número restaura 0 e não inventa ensino feito. Dash, coleta,
-  guarda, queda, hit e superfície ficam no campo. `over` continua mudo.
+  número restaura 0 e não inventa ensino feito.
+  `coachText` devolve a linha que o canvas pinta; `#live`
+  a nomeia na porta e no campo. `over` continua mudo. Dash, coleta,
+  guarda, queda, hit e superfície ficam no campo.
   `hint_hit` nomeia o estilhaço quando `hits > 0` e `chain === 0`.
   Dash no trilho vence. Texto no disco não é `felt`.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso
@@ -877,6 +885,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um painel que pinta a lacuna no boot e some o que o fetch trouxe.
 **Não** mais um hitstop que queima o perdão do avanço.
 **Não** mais um hold que some o relógio da porta e o campo repete o ensino.
+**Não** mais uma região viva que some o aviso do primeiro ciclo.
 
 Candidatos, do que ainda dói:
 
@@ -1419,6 +1428,12 @@ Candidatos, do que ainda dói:
   campo
   repete o
   ensino
+  e uma
+  região viva
+  que some o
+  aviso do
+  primeiro
+  ciclo
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1442,7 +1457,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o hold
-leva o relógio da porta. Retomar no campo
-não devolve a frase nem o mover. Não promove
-`trusted`.
+Arquivos quentes da última sessão: a região
+viva nomeia o aviso do primeiro ciclo. O
+convite some a tabela; o canvas já pintava.
+Não promove `verified`.

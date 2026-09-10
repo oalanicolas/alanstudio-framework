@@ -8,8 +8,10 @@
 // painel; a região viva nomeia a mesma recuperação — a porta
 // não. Na porta o canvas já acende o toque
 // da mostra; a região viva nomeia esse contato sem fingir coleta.
-// Jogando sem pausa o número não entra.
-// Texto no DOM não é sessão de alcance nem alguém de fora.
+// O canvas já pinta o aviso do primeiro ciclo; a região viva
+// nomeia a mesma linha. Sem isto quem não vê a tela só tinha
+// a tabela — e o convite some essa tabela. Jogando sem pausa
+// o número não entra. Texto no DOM não é sessão de alcance.
 
 function whole(value) {
   if (!Number.isFinite(value)) return null;
@@ -28,6 +30,7 @@ export function liveText({
   persist,
   settings,
   attractTouch,
+  coach,
 } = {}) {
   const parts = [];
   const seen = new Set();
@@ -66,6 +69,10 @@ export function liveText({
     const record = whole(best);
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
   }
+  // O quadro já ensina. Sem isto a região viva calava o
+  // primeiro ciclo e o convite some a tabela. No fim o
+  // aviso não volta. Texto no DOM não é sessão.
+  if (phase !== "over") add(coach);
   if (threat === "ahead") add("perigo à frente");
   // O canvas já acende. Sem isto o live só nomeava o perigo
   // que ainda não tocou. Toque no DOM não é coleta nem sessão.

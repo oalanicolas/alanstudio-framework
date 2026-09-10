@@ -11,7 +11,7 @@ import { createInput } from "./core/input.js";
 import { browserStorage } from "./core/storage.js";
 import { playReport, LAST_RUN_ROUTE } from "./core/run-report.js";
 import { canContinue, canResume, captureHold, loadProgress, persistLine, persistStatus, recordRun, saveProgress, summarizeRun } from "./core/save.js";
-import { detectEnvironment, loadSettings, normalizeSettings, saveSettings, settingsLine } from "./core/settings.js";
+import { DEFAULT_BINDINGS, detectEnvironment, loadSettings, normalizeSettings, saveSettings, settingsLine } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { BED_FADE_MS, createAudio } from "./game/audio.js";
 import { createHaptics, rumbleRole } from "./game/haptics.js";
@@ -19,9 +19,10 @@ import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { createTrace, finishCurve, traceTick } from "./game/curve.js";
 import { applyLive, liveText } from "./core/live.js";
+import { bindLines } from "./core/keys.js";
 import { advance as advanceRules, attractMove, attractTick, attractTouch, beginRun, bedRateFor, createState, restoreState, neutralIntent, threatCue, FIELD, TICK_HZ } from "./game/rules.js";
 import { copy, resolveLookName, resolveMoodName, resolveSpawnName } from "./game/tables.js";
-import { coachHint } from "./game/coach.js";
+import { coachHint, coachText } from "./game/coach.js";
 
 function readQueryName(options, key, resolve) {
   const raw = options.query
@@ -289,6 +290,9 @@ export function createGame(options = {}) {
     readCommands();
     audio.update({ bedRate: bedRateFor(state) });
     const captions = audio.captions();
+    const surface = input.lastSource;
+    const bound = bindLines(copy, settings.bindings ?? DEFAULT_BINDINGS, surface);
+    const hint = coachHint(state, copy, { surface });
     applyLive({
       node: live,
       text: liveText({
@@ -303,14 +307,15 @@ export function createGame(options = {}) {
         persist: persistLine(persist(), copy),
         settings: settingsLine(settingsLoad, copy),
         attractTouch: state.attractTouch,
+        coach: coachText(state, bound, { surface, fantasy: copy.fantasy }),
       }),
     });
     if (!renderer) return;
     renderer.draw(state, frame, settings, {
       captions,
       best: progress.best,
-      hint: coachHint(state, copy, { surface: input.lastSource }),
-      surface: input.lastSource,
+      hint,
+      surface,
       fantasy: copy.fantasy,
       canContinue: doorOpen(),
       lastRun,

@@ -4,7 +4,9 @@ Entrada: a barreira concreta que impede alguém de jogar — entrada, visão, au
 movimento, leitura ou tempo de reação.
 
 Com tela, a primeira superfície é a porta. O aviso do primeiro ciclo
-mora no campo, depois do avanço. Overlay, HUD da abertura e a legenda
+mora no canvas — fantasia e mover na porta, o resto no campo — e a
+região viva nomeia a mesma linha. Sem isto quem não vê a tela só
+tinha a tabela, e o convite some `#commands`. Overlay, HUD da abertura e a legenda
 também seguem `uiScale`. A porta lê a legenda que o mixer ainda guarda.
 Sem tela o headless já joga.
 
@@ -81,7 +83,9 @@ Herda a preferência do sistema, preenche
 `{pause}`, `{reset}` e `{bank}` em `copy.json` com as teclas vivas, desenha formas
 distintas além da cor em `src/game/render.js` e mantém legenda equivalente para
 toda informação sonora em `src/game/audio.js` — coleta e guarda nomeiam a
-corrente que o tom já sobe. `npm run contrast` amostra
+corrente que o tom já sobe. A região viva nomeia o aviso do primeiro
+ciclo que o canvas já pinta; no fim a linha some. Texto no DOM
+não é sessão observada. `npm run contrast` amostra
 pixels do stub depois do `draw()` além dos pares hex e, em cinza, conta
 o que só o orbe ou só o estilhaço pinta — relata, não aprova,
 e não substitui o dispositivo.

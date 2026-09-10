@@ -3,6 +3,62 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.257 — A região viva nomeia o aviso do primeiro ciclo
+
+O
+canvas
+já
+pintava
+o
+aviso.
+A
+tabela
+da
+página
+também.
+O
+convite
+some
+essa
+tabela.
+A
+região
+viva
+cala.
+Quem
+não
+vê
+a
+tela
+perdia
+o
+primeiro
+ciclo.
+Agora
+`#live`
+nomeia
+a
+mesma
+linha.
+No
+fim
+a
+linha
+some.
+Não
+promove
+`verified`.
+
+O que 0.9.257 não afirma:
+nomear
+o
+aviso
+não
+é
+sessão
+de
+alcance.
+
 ## 0.9.256 — O hold leva o relógio da porta
 
 A

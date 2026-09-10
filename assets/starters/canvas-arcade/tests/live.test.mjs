@@ -233,6 +233,42 @@ test("na porta a região viva nomeia o toque da mostra sem fingir coleta", () =>
   );
 });
 
+test("a região viva nomeia o aviso do primeiro ciclo sem fingir sessão", () => {
+  assert.equal(
+    liveText({ phase: "title", coach: "←/→, arraste ou analógico" }),
+    "abertura. ←/→, arraste ou analógico",
+  );
+  assert.equal(
+    liveText({
+      phase: "title",
+      coach: "guardar a corrente",
+      attractTouch: "orb",
+      threat: "ahead",
+    }),
+    "abertura. guardar a corrente. perigo à frente. a mostra toca",
+  );
+  assert.equal(
+    liveText({ phase: "playing", coach: "Passe no orbe — a corrente cresce" }),
+    "Passe no orbe — a corrente cresce",
+  );
+  assert.equal(
+    liveText({ phase: "playing", paused: true, score: 12, coach: "Guarde antes de perder a corrente" }),
+    "pausado. 12. Guarde antes de perder a corrente",
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, coach: "Passe no orbe — a corrente cresce" }),
+    "fim da partida. 12",
+  );
+  assert.equal(liveText({ phase: "title" }), "abertura");
+  assert.match(main, /coachText/);
+  assert.match(main, /bindLines/);
+  assert.match(main, /coach:/);
+  assert.doesNotMatch(
+    liveText({ phase: "title", coach: "←/→, arraste ou analógico" }),
+    /aprovado|verified|alguém de fora|felt|heard/,
+  );
+});
+
 test("applyLive só escreve quando o texto muda", () => {
   const node = { textContent: "" };
   assert.equal(applyLive({}), false);
