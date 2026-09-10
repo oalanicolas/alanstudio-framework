@@ -896,7 +896,7 @@ test("esconder a página descarrega o progresso e pausa", () => {
   game.dispose();
 });
 
-test("perda de foco pausa e descarrega", () => {
+test("a aba escondida pausa e descarrega", () => {
   const storage = memoryStorage();
   const { game, target } = harness({ storage });
   game.updateSettings({ captions: false });
@@ -906,6 +906,49 @@ test("perda de foco pausa e descarrega", () => {
   change.handler();
   assert.equal(game.paused, true);
   assert.equal(JSON.parse(storage.get("settings")).captions, false);
+  game.dispose();
+});
+
+test("a perda de foco grava o hold que a receita já promete", () => {
+  const storage = memoryStorage();
+  const { game, target } = harness({ storage });
+  game.advance(40);
+  const tick = game.observe().tick;
+  assert.ok(tick > 0);
+  const leaves = target.listeners.filter((entry) => entry.type === "blur");
+  assert.ok(leaves.length >= 1, "blur precisa de ouvinte — visibilitychange não é perda de foco");
+  for (const leave of leaves) leave.handler();
+  assert.equal(game.paused, true, "perder o foco senta o relógio");
+  const saved = JSON.parse(storage.get("progress"));
+  assert.ok(saved.hold, "o tick precisa ficar no disco");
+  assert.equal(saved.hold.tick, tick);
+  assert.equal(game.persist.trusted, false);
+  const reopened = createGame({ eventTarget: recordingTarget(), storage });
+  assert.equal(reopened.observe().tick, tick, "a reabertura retoma o tick");
+  assert.equal(reopened.persist.trusted, false);
+  game.dispose();
+  reopened.dispose();
+});
+
+test("na porta a perda de foco não congela a mostra", () => {
+  const storage = memoryStorage();
+  const target = recordingTarget();
+  const game = createGame({
+    seed: 5,
+    eventTarget: target,
+    storage,
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(game.observe().phase, "title");
+  const leaves = target.listeners.filter((entry) => entry.type === "blur");
+  assert.ok(leaves.length >= 1, "blur precisa de ouvinte");
+  for (const leave of leaves) leave.handler();
+  assert.equal(game.paused, false, "na porta o blur só descarrega");
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing", "o avanço ainda abre");
+  assert.equal(game.persist.trusted, false);
   game.dispose();
 });
 

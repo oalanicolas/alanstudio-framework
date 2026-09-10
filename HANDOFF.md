@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.276: a perda de foco não deixa o ofício pendente. O blur solta hold e pressed. Não promove `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.277: a perda de foco grava o hold. Barra e DevTools não deixam o tick só na RAM. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 294 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.276)
+## O que o HEAD já entrega (0.9.91–0.9.277)
 
 | Ver | Salto |
 | --- | --- |
@@ -220,6 +220,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.274 | A receita não cala a porta que o canvas já pinta. `persistence` e `accessibility` ensinam `settingsLine` no canvas. A pausa não. Não promove `trusted`. |
 | 0.9.275 | A aba escondida não deixa o verbo preso. O keyup some; o corpo não segue. O pad continua no poll. Não promove `felt`. |
 | 0.9.276 | A perda de foco não deixa o ofício pendente. O blur solta hold e pressed. Voltar a focar ainda avança. O pad continua no poll. Não promove `felt`. |
+| 0.9.277 | A perda de foco grava o hold. O blur senta o relógio no campo e no fim. Na porta só descarrega. Não promove `trusted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -238,7 +239,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | art_direction | slice | os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
-| state_trust | slice | a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
+| state_trust | slice | a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
 | accessibility | slice | a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
@@ -939,6 +940,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma receita que cala a porta que o canvas já pinta.
 **Não** mais uma aba escondida que deixa o verbo preso.
 **Não** mais uma perda de foco que deixa o ofício pendente.
+**Não** mais uma perda de foco que deixa o tick só na RAM.
 
 Candidatos, do que ainda dói:
 
@@ -1002,6 +1004,8 @@ Candidatos, do que ainda dói:
    a mesma recuperação na porta e no fim; o canvas também.
    `save` relata `warned` se o disco tem essas chaves. A região
    viva também espelha o aviso da sessão na porta e no fim.
+   Pausa, `pagehide`, `beforeunload` e o blur da janela
+   gravam o hold. Na porta o blur só descarrega.
    Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
 4. **Item 1 residual:** o mapa, as receitas de foco e os templates da
@@ -1572,6 +1576,12 @@ Candidatos, do que ainda dói:
   deixa o
   ofício
   pendente
+  e uma
+  perda de
+  foco que
+  deixa o
+  tick só
+  na RAM
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1596,9 +1606,9 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: a perda
-de foco não deixa o ofício pendente.
-O blur solta hold e pressed.
-Voltar a focar ainda avança. Não promove `felt`.
+de foco grava o hold.
+Barra e DevTools não deixam o tick só na RAM.
+Na porta o blur só descarrega. Não promove `trusted`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1610,3 +1620,4 @@ A família settings no canvas da porta está saturada.
 A família receita vs canvas da porta está saturada.
 A família visibility ghost hold / aba escondida está saturada.
 A família blur ghost press / perda de foco deixa o ofício pendente está saturada.
+A família blur grava o hold / perda de foco deixa o tick na RAM está saturada.

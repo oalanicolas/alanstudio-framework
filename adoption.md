@@ -3,6 +3,57 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.277 — A perda de foco grava o hold
+
+A
+receita
+já
+prometia
+perda
+de
+foco.
+O
+blur
+só
+soltava
+o
+input.
+O
+tick
+seguia
+só
+na
+RAM.
+Agora
+o
+blur
+grava
+o
+hold
+e
+senta
+o
+relógio
+no
+campo
+e
+no
+fim.
+Na
+porta
+só
+descarrega.
+Não
+promove
+`trusted`.
+
+O que 0.9.277 não afirma:
+stub
+não
+é
+aba
+fechada.
+
 ## 0.9.276 — A perda de foco não deixa o ofício pendente
 
 A

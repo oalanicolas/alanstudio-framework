@@ -367,20 +367,27 @@ export function createGame(options = {}) {
     return { progress: { ...progress }, settings, persist: persist() };
   }
 
+  function sitAway() {
+    flush();
+    // P na porta é ignorado. Hidden ou blur que pausa sem P
+    // para retomar congela a mostra e come o avanço. No campo
+    // e no fim o relógio senta. Stub não é aba fechada;
+    // trusted continua falso.
+    if (state.phase !== "title") {
+      loop.pause();
+      haptics.mute();
+      syncBed();
+    }
+  }
+
   const onVisibility = () => {
     const hidden = typeof document === "undefined" || document.hidden;
-    if (hidden) {
-      flush();
-      // P na porta é ignorado. Hidden que pausa sem P para
-      // retomar congela a mostra e come o avanço. No campo
-      // e no fim a aba continua sentando o relógio. Stub
-      // não é aba fechada; trusted continua falso.
-      if (state.phase !== "title") {
-        loop.pause();
-        haptics.mute();
-        syncBed();
-      }
-    }
+    if (hidden) sitAway();
+  };
+  const onBlur = () => {
+    // A receita promete perda de foco. Sem isto barra e
+    // DevTools soltavam o input e o tick seguia só na RAM.
+    sitAway();
   };
   const onPageHide = () => {
     flush();
@@ -421,6 +428,7 @@ export function createGame(options = {}) {
     eventTarget.addEventListener("pagehide", onPageHide);
     eventTarget.addEventListener("beforeunload", onBeforeUnload);
     eventTarget.addEventListener("visibilitychange", onVisibility);
+    eventTarget.addEventListener("blur", onBlur);
     eventTarget.addEventListener("storage", onStorage);
   }
   // O boot já herdou o sistema. Sem o ouvinte o pedido no
@@ -531,6 +539,7 @@ export function createGame(options = {}) {
         eventTarget.removeEventListener("pagehide", onPageHide);
         eventTarget.removeEventListener("beforeunload", onBeforeUnload);
         eventTarget.removeEventListener("visibilitychange", onVisibility);
+        eventTarget.removeEventListener("blur", onBlur);
         eventTarget.removeEventListener("storage", onStorage);
       }
       if (

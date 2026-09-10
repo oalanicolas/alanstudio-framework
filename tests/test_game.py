@@ -3131,6 +3131,23 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(perf["measured"])
         self.assertIn("budget", perf["scripts"])
 
+    def test_persistence_recipe_names_the_focus_loss_the_starter_already_flushes(self):
+        persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
+        main = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/src/main.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("perda de foco", persist.casefold())
+        self.assertIn("perda de foco", cycle.casefold())
+        self.assertIn("addEventListener(\"blur\"", main)
+        self.assertIn("sitAway", main)
+        save = game.save_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        self.assertTrue(save["guide"].endswith("recipes/persistence.md"))
+        self.assertFalse(save["trusted"])
+        self.assertNotIn("aprovado", persist)
+        self.assertNotIn("aprovado", cycle)
+
     def test_persistence_recipe_names_the_door_recovery_the_canvas_already_paints(self):
         persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")

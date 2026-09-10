@@ -23,7 +23,8 @@ O avanço abre a porta e, depois do fim, um avanço *novo* volta a ela.
 R no overlay também. Sem tela o headless já joga. A página oferece o
 recibo no overlay e na porta se houver partida; isso não é observação.
 Aba escondida pausa no campo e no fim. Na porta só descarrega — P já
-é ignorado e a placa nem nasce. Hidden que pausa sem P para retomar
+é ignorado e a placa nem nasce. Perda de foco da janela grava o hold
+e senta o mesmo relógio; na porta só descarrega. Hidden que pausa sem P para retomar
 congela a mostra. Stub não é aba fechada.
 
 Examine separadamente:
