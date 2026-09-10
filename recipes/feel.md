@@ -159,8 +159,8 @@ cooldown e veste o look — rótulo sozinho era o mesmo quadro.
 O fecho da partida contorna o campo e pulsa o controle a cada
 segundo; não é faixa no HUD. Com menos movimento vira traço.
 A prática e a guarda falam no mixer quando a janela acaba;
-o orbe que cai fala e acende o campo, sem pulsar o controle.
-Arquivo no disco não é peso percebido. A coleta leva o orbe ao slot; o erro espalha os pips;
+o orbe que cai fala, acende o campo e marca o lugar da queda,
+sem pulsar o controle. Arquivo no disco não é peso percebido. A coleta leva o orbe ao slot; o erro espalha os pips;
 na guarda eles voam para o placar; no fim a aposta não guardada
 cai e o overlay nomeia o que caiu — a queda vence a cortina, que
 reusa a placa do look. As legendas nascem depois da cortina. O

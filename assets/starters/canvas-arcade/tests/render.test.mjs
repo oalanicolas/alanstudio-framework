@@ -690,6 +690,28 @@ test("a entrada da corrente pinta o orbe a caminho da órbita", () => {
   assert.ok(marks.length >= 2, "com menos movimento a entrada vira marca, não some");
 });
 
+test("o orbe perdido pinta a queda sem inventar faixa no HUD", () => {
+  const state = createState(1);
+  state.motes = [
+    { kind: "missed", x: 40, y: FIELD.height - 3, sx: 40, sy: FIELD.height - 3, vx: 0, vy: 0.25, life: 8 },
+    { kind: "missed", x: 90, y: FIELD.height - 3, sx: 90, sy: FIELD.height - 3, vx: 0, vy: 0.25, life: 8 },
+  ];
+  const flying = paint(state);
+  const stains = flying.rects.filter(
+    (rect) => rect.style === PALETTES.normal.orb && Math.abs(rect.width - 4.8) < 0.01 && rect.y > PLAYER_Y,
+  );
+  assert.ok(stains.length >= 2, `esperava a queda na tinta do orbe: ${JSON.stringify(flying.rects.map((rect) => [rect.width, rect.y, rect.style]))}`);
+  const timerStrips = flying.rects.filter((rect) => (
+    rect.height === 2
+    && rect.y < 20
+    && !PLATE_COLORS.has(rect.style)
+  ));
+  assert.equal(timerStrips.length, 0, "a queda não é faixa no HUD");
+  const still = paint(state, { reducedMotion: true });
+  const marks = still.rects.filter((rect) => rect.style === PALETTES.normal.orb && rect.width === 2 && rect.y > PLAYER_Y);
+  assert.ok(marks.length >= 2, "com menos movimento a queda vira marca, não some");
+});
+
 test("o raspo pinta o estilhaço que passou", () => {
   const state = createState(1);
   state.motes = [

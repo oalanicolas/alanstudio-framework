@@ -2285,6 +2285,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("feel.squashLand", keys)
         self.assertIn("feel.depositAimX", keys)
         self.assertIn("feel.moteGraze", keys)
+        self.assertIn("feel.moteMissed", keys)
         self.assertIn("feel.lapseFall", keys)
         self.assertIn("feel.closeTicks", keys)
         self.assertIn("feel.rumbleCloseMs", keys)

@@ -86,6 +86,7 @@ export const CONFIG = {
     moteBank: 7, // peso da decisão
     moteHit: 9, // o erro espalha mais
     moteOver: 4, // fim
+    moteMissed: 3, // a queda marca o lugar; não é rastro no corpo
     moteLife: 14,
     chainPips: 8, // a aposta cabe no corpo; o HUD continua com o resto
     chainOrbit: 15, // raio ao redor do jogador
@@ -461,6 +462,16 @@ function markMissed(state) {
   state.flash = Math.max(state.flash, CONFIG.feel.flashMissed);
 }
 
+function dropMiss(state, x) {
+  const life = CONFIG.feel.moteLife;
+  const count = CONFIG.feel.moteMissed;
+  const y = FIELD.height - 3;
+  for (let index = 0; index < count; index += 1) {
+    const unit = count === 1 ? 0 : index / (count - 1) - 0.5;
+    state.motes.push(acquireMote("missed", x + unit * 6, y, unit * 0.35, 0.25, life));
+  }
+}
+
 // Avança exatamente um passo de simulação. Muta e devolve o mesmo estado: o loop
 // de jogo roda isto muitas vezes por segundo e alocar um estado novo por passo
 // produz coleta de lixo perceptível como engasgo. A chuva compacta o array vivo
@@ -664,6 +675,7 @@ function resolveEntities(state) {
       if (entity.kind === "orb") {
         state.stats.missed += 1;
         emit(state, "missed");
+        dropMiss(state, entity.x);
       }
       releaseEntity(entity);
       continue;

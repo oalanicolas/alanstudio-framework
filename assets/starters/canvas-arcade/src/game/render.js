@@ -227,7 +227,7 @@ export function createRenderer(canvas, options = {}) {
   }
 
   function moteFill(palette, kind) {
-    if (kind === "collect" || kind === "land" || kind === "join") return palette.orb;
+    if (kind === "collect" || kind === "land" || kind === "join" || kind === "missed") return palette.orb;
     if (kind === "bank" || kind === "break" || kind === "deposit" || kind === "lapse") return palette.chain;
     if (kind === "hit" || kind === "over" || kind === "graze") return palette.danger;
     return palette.player;
@@ -246,6 +246,8 @@ export function createRenderer(canvas, options = {}) {
       } else if (mote.kind === "hit") {
         target.fillRect(x - 1.6, y - 0.6, 3.2, 1.2);
         target.fillRect(x - 0.6, y - 1.6, 1.2, 3.2);
+      } else if (mote.kind === "missed") {
+        target.fillRect(x - 2.4, y - 0.5, 4.8, 1.2);
       } else if (mote.kind === "deposit" || mote.kind === "join" || mote.kind === "lapse") {
         const size = CONFIG.feel.chainPipSize;
         target.fillRect(x - size / 2, y - size / 2, size, size);

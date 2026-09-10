@@ -472,6 +472,11 @@ test("orbe perdido é contado, não silencioso", () => {
   assert.equal(state.entities.length, 0);
   assert.ok(state.events.some((event) => event.type === "missed"));
   assert.ok(state.flash >= CONFIG.feel.flashMissed, "perder o orbe acende o campo");
+  const stains = state.motes.filter((mote) => mote.kind === "missed");
+  assert.equal(stains.length, CONFIG.feel.moteMissed, "perder o orbe marca o lugar");
+  assert.ok(stains.every((mote) => Math.abs(mote.x - 20) <= 4), "a marca fica onde o orbe caiu");
+  assert.ok(stains.every((mote) => mote.y > PLAYER_Y), "a marca fica na queda, não no corpo");
+  assert.ok(stains.every((mote) => mote.vy > 0), "a queda continua para baixo");
 });
 
 test("resolver a chuva compacta o mesmo array e não troca a lista", () => {

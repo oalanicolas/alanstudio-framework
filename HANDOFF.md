@@ -59,7 +59,8 @@ voam para o placar; no fim a aposta não guardada cai e o overlay
 nomeia o que caiu — a queda vence a cortina, que reusa a
 placa do look. As legendas nascem depois da cortina; o texto
 do overlay segue `uiScale`. O raspo
-risca o campo sem pulsar o controle. O pulso some na pausa e no
+risca o campo sem pulsar o controle. O orbe que cai marca o
+lugar da queda, sem pulsar o controle. O pulso some na pausa e no
 descarte.
 
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o

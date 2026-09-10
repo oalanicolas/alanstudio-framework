@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.92 — O orbe perdido também marca o lugar
+
+O mixer já falava quando o orbe caía e o campo acendia. A
+queda não deixava rastro: o lugar sumia com o orbe. Três
+marcas na tinta do orbe nascem onde ele saiu, na base do
+campo, e continuam para baixo. Não é faixa no HUD. Não é
+rastro no corpo. `felt` continua falso. Só `release` fica no
+piso.
+
+O que 0.9.92 não afirma: o harness não perdeu o orbe e a
+marca não é peso percebido.
+
 ## 0.9.91 — O mapa nomeia o comando de agora
 
 O `guide` já devolvia três passos. Quem lia o JSON tinha de
