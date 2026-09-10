@@ -722,8 +722,10 @@ depois do recibo de quem fez (e depois do segundo ciclo, se houver).
 proposta aponta a página (`finding_href` / `finding_open`,
 `/?invite=1#finding` ou a url do serve com o convite) e
 `note --field`. O comando nomeia o endereço; o serve nu não
-abre o painel. Sem o convite o âncora some. `playtest` só lê. Nomeia `form` (o esqueleto
-dos quatro nomes) e `fields`. Sem `then`. Esqueleto no disco
+abre o painel. Sem o convite o âncora some. `playtest` só lê.
+Nomeia `finding_open` (a url do serve com o convite, ou o mesmo
+endereço sem serve), `form` (o esqueleto dos quatro nomes) e
+`fields`. Sem `then`. Esqueleto no disco
 não é achado. Se o arquivo `docs/qa.md`
 existir, o recibo o nomeia em `qa`. Escrever não é sessão
 observada. Se

@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.306 — O playtest nomeia a página do achado
+
+O
+next
+já
+apontava
+finding_open.
+O
+leitor
+mandava
+só
+o
+caminho
+relativo.
+Agora
+nomeia
+a
+url
+do
+serve
+com
+o
+convite.
+Sem
+serve
+fica
+o
+mesmo
+endereço.
+Não
+promove
+`outsider`.
+
+O que 0.9.306 não afirma:
+endereço
+no
+disco
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.305 — No campo o telefone pausa no relógio
 
 Esc

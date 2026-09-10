@@ -3957,6 +3957,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(report["candidate_policy"])
         self.assertIsNone(report["invite"])
         self.assertEqual(report["finding_href"], "/?invite=1#finding")
+        self.assertEqual(report["finding_open"], report["finding_href"])
         self.assertIsNone(report["qa"])
         self.assertEqual(report["fields"], ["problema", "evidencia", "hipotese", "medicao"])
         self.assertTrue(Path(report["form"]).is_file())
@@ -4006,6 +4007,58 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("sem `invite=1` o âncora some", game.playtest_reading(self.project)["scope"])
         self.assertIn("finding_open", game.playtest_reading(self.project)["scope"])
         self.assertFalse(game.playtest_reading(self.project)["outsider"])
+
+    def test_playtest_names_finding_open_without_claiming_outsider(self):
+        empty = game.playtest_reading(self.project)
+        self.assertEqual(empty["finding_open"], empty["finding_href"])
+        self.assertEqual(empty["finding_open"], "/?invite=1#finding")
+        self.assertNotIn("then", empty)
+        self.assertFalse(empty["outsider"])
+        destination = self.root / "playtest-abre"
+        game.start_project(destination, "canvas-arcade")
+        fresh = game.playtest_reading(destination)
+        self.assertEqual(fresh["finding_href"], "/?invite=1#finding")
+        self.assertEqual(fresh["finding_open"], "http://localhost:8080/?invite=1#finding")
+        self.assertEqual(fresh["finding_open"], game.finding_open(destination, game.project_commands(destination)[0]))
+        self.assertNotIn("then", fresh)
+        self.assertFalse(fresh["outsider"])
+        (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "run": {"ticks": 1},
+        }), encoding="utf-8")
+        silent = game.playtest_reading(destination)
+        self.assertEqual(silent["finding_open"], "http://localhost:8080/?invite=1#finding")
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "spawn": "dusk",
+            "look": "dusk",
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        after = game.playtest_reading(destination)
+        self.assertEqual(after["finding_href"], game.finding_href(destination))
+        self.assertEqual(after["finding_open"], game.finding_open(destination, game.project_commands(destination)[0]))
+        self.assertIn("seed=8", after["finding_open"])
+        self.assertIn("spawn=dusk", after["finding_open"])
+        self.assertIn("look=dusk", after["finding_open"])
+        self.assertTrue(after["finding_open"].startswith("http://localhost:8080/"))
+        self.assertTrue(after["finding_open"].endswith(after["finding_href"]))
+        self.assertFalse(after["outsider"])
+        self.assertNotIn("then", after)
+        self.assertNotIn("aprovado", json.dumps(after))
+        self.assertNotIn("verified", json.dumps(after))
+        cli = subprocess.run(
+            [sys.executable, str(SCRIPT), "playtest", str(destination), "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(cli.returncode, 0, cli.stderr)
+        payload = json.loads(cli.stdout)
+        self.assertEqual(payload["finding_open"], after["finding_open"])
+        self.assertFalse(payload["outsider"])
+        self.assertNotIn("then", payload)
 
     def test_finding_open_joins_the_serve_so_next_does_not_point_at_the_bare_root(self):
         self.assertEqual(game.finding_open(self.project), "/?invite=1#finding")
@@ -4065,6 +4118,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(reading["candidate_seed"], 7)
         self.assertEqual(reading["finding_href"], "/?invite=1&seed=7#finding")
         self.assertEqual(reading["finding_href"], reading["invite_href"] + "#finding")
+        self.assertEqual(reading["finding_open"], "http://localhost:8080/?invite=1&seed=7#finding")
+        self.assertTrue(reading["finding_open"].endswith(reading["finding_href"]))
         self.assertIsNone(reading["candidate_spawn"])
         self.assertIsNone(reading["candidate_look"])
         self.assertIsNone(reading["candidate_speed"])

@@ -304,8 +304,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    convite) e `note --field`. O comando nomeia o endereço;
    o serve nu não abre o painel. Sem o
    convite o âncora some. `playtest` só lê.
-   Nomeia `form` (esqueleto dos quatro) e `fields`. Sem `then`.
-   Esqueleto no disco não é achado.
+   Nomeia `finding_open` (a url do serve com o convite, ou o
+   mesmo endereço sem serve), `form` (esqueleto dos quatro) e
+   `fields`. Sem `then`. Esqueleto no disco não é achado.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

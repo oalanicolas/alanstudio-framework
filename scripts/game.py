@@ -2295,6 +2295,15 @@ def playtest_reading(project):
     candidate_policy = last_run_policy(project) if candidate else None
     invite = invite_path(project)
     qa_file = qa.is_file() and not qa.is_symlink()
+    try:
+        scripts, _manager = project_commands(project)
+    except (OSError, ValueError):
+        scripts = {}
+    # O next já apontava finding_open. Sem isto o
+    # playtest mandava só o caminho relativo — o
+    # serve ficava no disco e o leitor calava.
+    # Endereço no disco não é alguém de fora.
+    opened = finding_open(project, scripts)
     return {
         "schema_version": 1,
         "project": str(project),
@@ -2312,6 +2321,7 @@ def playtest_reading(project):
         "invite": invite,
         "invite_href": invite_href(project),
         "finding_href": finding_href(project),
+        "finding_open": opened,
         "qa": "docs/qa.md" if qa_file else None,
         "qa_current": qa_current,
         "expected": expected,
@@ -2347,9 +2357,9 @@ def playtest_reading(project):
             "`?invite=1&seed=&spawn=&look=&speed=` abre essa partida e ignora o hold. "
             "`finding_href` junta o convite e o painel `#finding` — "
             "sem `invite=1` o âncora some. "
-            "O `next` nomeia `finding_open` (a url do serve com o "
-            "convite, ou o mesmo endereço sem serve). O serve nu "
-            "não abre o painel. "
+            "`finding_open` é a url do serve com o convite, ou o "
+            "mesmo endereço sem serve. O `next` aponta o mesmo "
+            "endereço. O serve nu não abre o painel. "
             "com seed no disco junta o número e os eixos. "
             "`qa` nomeia `docs/qa.md` se o arquivo existir. "
             "`form` aponta o esqueleto dos quatro nomes; `fields` os lista. "
