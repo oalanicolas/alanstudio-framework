@@ -22,14 +22,17 @@ import {
   saveProgress,
 } from "../src/core/save.js";
 import {
+  applyEnvironment,
   applyOneHand,
   DEFAULT_BINDINGS,
   DEFAULT_BUSES,
+  ENVIRONMENT_QUERIES,
   ONE_HAND_BINDINGS,
   defaultSettings,
   loadSettings,
   settingsLine,
   normalizeSettings,
+  watchEnvironment,
 } from "../src/core/settings.js";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
@@ -288,6 +291,44 @@ test("velocidade da partida é preferência persistida, não um modo escondido",
 test("preferências herdam a redução de movimento do sistema", () => {
   assert.equal(defaultSettings({ prefersReducedMotion: true }).reducedMotion, true);
   assert.equal(defaultSettings({}).reducedMotion, false);
+});
+
+test("o sistema que pede reduce no meio da sessão veste, e desligar não apaga", () => {
+  const off = defaultSettings({});
+  assert.deepEqual(applyEnvironment(off, { prefersReducedMotion: true }), { reducedMotion: true });
+  assert.deepEqual(applyEnvironment({ ...off, reducedMotion: true }, { prefersReducedMotion: true }), {});
+  assert.deepEqual(applyEnvironment({ ...off, reducedMotion: true }, { prefersReducedMotion: false }), {});
+  assert.deepEqual(applyEnvironment(off, { prefersHighContrast: true }), { highContrast: true });
+  assert.deepEqual(applyEnvironment(off, { prefersReducedMotion: false, prefersHighContrast: false }), {});
+
+  const queries = {};
+  const media = (text) => {
+    if (!queries[text]) {
+      const listeners = new Set();
+      queries[text] = {
+        matches: false,
+        addEventListener(_, fn) { listeners.add(fn); },
+        removeEventListener(_, fn) { listeners.delete(fn); },
+        fire(next) {
+          this.matches = next;
+          for (const fn of listeners) fn();
+        },
+        count() { return listeners.size; },
+      };
+    }
+    return queries[text];
+  };
+  const seen = [];
+  const stop = watchEnvironment((env) => seen.push(env), media);
+  assert.equal(queries[ENVIRONMENT_QUERIES.prefersReducedMotion].count(), 1);
+  queries[ENVIRONMENT_QUERIES.prefersReducedMotion].fire(true);
+  assert.deepEqual(seen, [{ prefersReducedMotion: true }]);
+  queries[ENVIRONMENT_QUERIES.prefersHighContrast].fire(true);
+  assert.deepEqual(seen[1], { prefersHighContrast: true });
+  stop();
+  queries[ENVIRONMENT_QUERIES.prefersReducedMotion].fire(false);
+  assert.equal(seen.length, 2, "dispose some o ouvinte");
+  assert.equal(typeof watchEnvironment(null, media), "function");
 });
 
 test("um campo inválido preserva o valor atual, não o padrão", () => {

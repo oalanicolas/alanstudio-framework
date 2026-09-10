@@ -183,11 +183,61 @@ export function saveSettings(storage, settings) {
   return writeJson(storage, SETTINGS_KEY, settings);
 }
 
+export const ENVIRONMENT_QUERIES = {
+  prefersReducedMotion: "(prefers-reduced-motion: reduce)",
+  prefersHighContrast: "(prefers-contrast: more)",
+};
+
 export function detectEnvironment() {
   const query = (text) =>
     typeof matchMedia === "function" ? Boolean(matchMedia(text).matches) : false;
   return {
-    prefersReducedMotion: query("(prefers-reduced-motion: reduce)"),
-    prefersHighContrast: query("(prefers-contrast: more)"),
+    prefersReducedMotion: query(ENVIRONMENT_QUERIES.prefersReducedMotion),
+    prefersHighContrast: query(ENVIRONMENT_QUERIES.prefersHighContrast),
+  };
+}
+
+// O boot herda o sistema. Sem isto o pedido no meio da
+// sessão ficava no matchMedia e a caixa não vestia.
+// Desligar o sistema não apaga a escolha. Pedido no
+// disco não é sessão observada.
+export function applyEnvironment(settings, environment = {}) {
+  const patch = {};
+  if (environment.prefersReducedMotion === true && settings?.reducedMotion !== true) {
+    patch.reducedMotion = true;
+  }
+  if (environment.prefersHighContrast === true && settings?.highContrast !== true) {
+    patch.highContrast = true;
+  }
+  return patch;
+}
+
+export function watchEnvironment(onChange, media) {
+  const query = typeof media === "function"
+    ? media
+    : typeof matchMedia === "function" ? matchMedia : null;
+  if (typeof onChange !== "function" || typeof query !== "function") return () => {};
+  const hooks = [];
+  for (const [key, text] of Object.entries(ENVIRONMENT_QUERIES)) {
+    let mql;
+    try {
+      mql = query(text);
+    } catch {
+      continue;
+    }
+    if (!mql) continue;
+    const handler = () => {
+      onChange({ [key]: Boolean(mql.matches) });
+    };
+    if (typeof mql.addEventListener === "function") {
+      mql.addEventListener("change", handler);
+      hooks.push(() => mql.removeEventListener("change", handler));
+    } else if (typeof mql.addListener === "function") {
+      mql.addListener(handler);
+      hooks.push(() => mql.removeListener(handler));
+    }
+  }
+  return () => {
+    for (const stop of hooks) stop();
   };
 }

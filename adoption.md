@@ -3,6 +3,52 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.270 — O sistema que pede reduce no meio da sessão veste a caixa
+
+O
+boot
+já
+herdava
+o
+pedido.
+O
+sistema
+mudava
+e
+a
+caixa
+ficava
+velha.
+Agora
+reduce
+e
+contraste
+vestem
+quando
+o
+SO
+pede.
+Desligar
+o
+sistema
+não
+apaga
+a
+escolha.
+Não
+promove
+`verified`.
+
+O que 0.9.270 não afirma:
+ouvir
+o
+matchMedia
+não
+é
+sessão
+no
+aparelho.
+
 ## 0.9.269 — A faixa nomeia o valor que o knob já guarda
 
 A

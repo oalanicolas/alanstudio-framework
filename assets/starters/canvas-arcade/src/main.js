@@ -11,7 +11,7 @@ import { createInput } from "./core/input.js";
 import { browserStorage, foreignKey } from "./core/storage.js";
 import { playReport, LAST_RUN_ROUTE } from "./core/run-report.js";
 import { canContinue, canResume, captureHold, loadProgress, persistLine, persistStatus, recordRun, saveProgress, summarizeRun } from "./core/save.js";
-import { DEFAULT_BINDINGS, detectEnvironment, loadSettings, normalizeSettings, saveSettings, SETTINGS_KEY, settingsLine } from "./core/settings.js";
+import { applyEnvironment, DEFAULT_BINDINGS, detectEnvironment, loadSettings, normalizeSettings, saveSettings, SETTINGS_KEY, settingsLine, watchEnvironment } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { BED_FADE_MS, createAudio } from "./game/audio.js";
 import { createHaptics, rumbleRole } from "./game/haptics.js";
@@ -404,6 +404,16 @@ export function createGame(options = {}) {
     eventTarget.addEventListener("visibilitychange", onVisibility);
     eventTarget.addEventListener("storage", onStorage);
   }
+  // O boot já herdou o sistema. Sem o ouvinte o pedido no
+  // meio da sessão ficava no matchMedia. Desligar o sistema
+  // não apaga a caixa. Pedido no disco não é sessão.
+  const unwatchEnvironment = watchEnvironment((env) => {
+    if (disposed) return;
+    const patch = applyEnvironment(settings, env);
+    if (!Object.keys(patch).length) return;
+    wearSettings(normalizeSettings({ ...settings, ...patch }, environment, settings), true);
+    for (const fn of settingWatchers) fn(settings);
+  }, options.matchMedia);
   if (
     typeof document !== "undefined"
     && document !== eventTarget
@@ -497,6 +507,7 @@ export function createGame(options = {}) {
       input.dispose();
       audio.dispose();
       haptics.dispose();
+      unwatchEnvironment();
       if (eventTarget && typeof eventTarget.removeEventListener === "function") {
         eventTarget.removeEventListener("pagehide", onPageHide);
         eventTarget.removeEventListener("beforeunload", onBeforeUnload);

@@ -1139,3 +1139,38 @@ test("a outra aba veste as preferências", () => {
   game.dispose();
   assert.equal(target.listeners.length, 0);
 });
+
+test("o sistema que pede reduce no meio da sessão veste a caixa", () => {
+  const queries = {};
+  const matchMedia = (text) => {
+    if (!queries[text]) {
+      const listeners = new Set();
+      queries[text] = {
+        matches: false,
+        addEventListener(_, fn) { listeners.add(fn); },
+        removeEventListener(_, fn) { listeners.delete(fn); },
+        fire(next) {
+          this.matches = next;
+          for (const fn of listeners) fn();
+        },
+      };
+    }
+    return queries[text];
+  };
+  const storage = memoryStorage();
+  const seen = [];
+  const game = createGame({ seed: 5, storage, matchMedia });
+  game.watchSettings((next) => { seen.push(next.reducedMotion); });
+  assert.equal(game.settings.reducedMotion, false);
+  matchMedia("(prefers-reduced-motion: reduce)").fire(true);
+  assert.equal(game.settings.reducedMotion, true);
+  assert.deepEqual(seen, [true]);
+  matchMedia("(prefers-reduced-motion: reduce)").fire(false);
+  assert.equal(game.settings.reducedMotion, true, "desligar o sistema não apaga a caixa");
+  const reopened = createGame({ seed: 5, storage, matchMedia });
+  assert.equal(reopened.settings.reducedMotion, true, "o pedido ficou nas preferências");
+  game.dispose();
+  matchMedia("(prefers-contrast: more)").fire(true);
+  assert.equal(game.settings.highContrast, false, "dispose some o ouvinte");
+  reopened.dispose();
+});
