@@ -844,6 +844,29 @@ test("o overlay do fim nomeia a corrente que caiu e a queda vence a cortina", ()
   );
 });
 
+test("o overlay do fim nomeia o recorde sem inventar faixa nem sessão", () => {
+  const ended = createState(1);
+  ended.phase = "over";
+  ended.score = 12;
+  const withBest = paint(ended, {}, { best: 40 }).texts.map((item) => item.text);
+  assert.ok(
+    withBest.some((text) => text.includes("Recorde 40") && text.includes("abertura")),
+    `esperava o recorde no overlay: ${JSON.stringify(withBest)}`,
+  );
+  assert.equal(
+    withBest.some((text) => text.includes("Corrente")),
+    false,
+    "sem aposta o recorde não inventa corrente",
+  );
+
+  const empty = paint(ended, {}, { best: 0 }).texts.map((item) => item.text);
+  assert.equal(
+    empty.some((text) => text.includes("Recorde")),
+    false,
+    `recorde zero não entra no overlay: ${JSON.stringify(empty)}`,
+  );
+});
+
 test("a cortina segue o look, a legenda vence e o texto respeita a escala", () => {
   const ended = createState(1);
   ended.phase = "over";

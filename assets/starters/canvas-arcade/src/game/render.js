@@ -144,7 +144,7 @@ export function createRenderer(canvas, options = {}) {
         context,
         palette,
         `${lines.over} — ${state.score}`,
-        overHint(state, lines),
+        overHint(state, lines, extra),
         settings,
         persistLine(extra.persist, lines),
       );
@@ -508,14 +508,18 @@ export function createRenderer(canvas, options = {}) {
     target.fillText(text, x, y);
   }
 
-  // A conta no HUD fica sob a cortina. O overlay reusa `chain` e
-  // `best_chain` — sem campo novo — para nomear a aposta que caiu.
-  // Sem corrente o fim não inventa o rótulo. O avanço abre a porta,
-  // não recomeça em silêncio. Texto no disco não é peso percebido.
-  function overHint(state, lines) {
+  // A conta no HUD fica sob a cortina. O overlay reusa `chain`,
+  // `best_chain` e `record` — sem campo novo — para nomear a aposta
+  // que caiu e o recorde que o HUD mostrou a partida inteira.
+  // Sem corrente o fim não inventa o rótulo. Recorde 0 some.
+  // O avanço abre a porta, não recomeça em silêncio. Texto no
+  // disco não é peso percebido.
+  function overHint(state, lines, extra = {}) {
     const parts = [];
     if (state.chain > 0) parts.push(`${lines.chain} ${state.chain}`);
     if (state.stats.bestChain) parts.push(`${lines.best_chain}: ${state.stats.bestChain}`);
+    const best = Number(extra.best);
+    if (Number.isFinite(best) && best > 0) parts.push(`${lines.record} ${best}`);
     parts.push(parts.length ? lines.over_door_inline : lines.over_door);
     return parts.join(" · ");
   }

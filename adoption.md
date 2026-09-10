@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.160 — O fim nomeia o recorde
+
+O HUD mostrou o recorde
+a partida inteira. O overlay
+do fim escondia. Reusa
+`record` com `extra.best`.
+Recorde 0 some. Sem faixa
+nova. `felt` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.160 não afirma:
+número no overlay não é
+peso no dispositivo.
+
 ## 0.9.159 — A cama sobe o tom no fecho
 
 O campo gritava. A cama
