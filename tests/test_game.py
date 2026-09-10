@@ -2002,6 +2002,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["declared"], [])
         self.assertFalse(report["granted"])
         self.assertFalse(report["validated"])
+        self.assertEqual(report["fields"], ["origin", "author", "license"])
+        self.assertTrue(Path(report["form"]).is_file())
+        self.assertNotIn("then", report)
         self.assertIn("Não consulta titular", report["scope"])
 
     def test_origins_accepts_a_receipt_without_calling_it_a_valid_license(self):
@@ -2072,7 +2075,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         proposal = next(item for item in proposals if item["basis"] == "origins.undeclared")
         self.assertIn("hero.png", proposal["action"])
         self.assertIn("licença desconhecida", proposal["why"])
-        self.assertTrue(any("origins" in command for command in proposal["commands"]))
+        self.assertTrue(any("--declare" in command and "hero.png" in command for command in proposal["commands"]))
+        self.assertTrue(any("--origin" in command and "--license" in command for command in proposal["commands"]))
 
     def test_next_names_the_contradiction_when_the_table_says_met(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
@@ -2084,6 +2088,36 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             if item["basis"] == "origins.undeclared"
         )
         self.assertIn("não sobrevive", proposal["why"])
+        self.assertTrue(any("--declare" in command for command in proposal["commands"]))
+
+    def test_origins_declare_writes_the_sidecar_without_validating_the_license(self):
+        asset = self.project / "textures" / "hero.png"
+        asset.parent.mkdir()
+        asset.write_bytes(b"\x89PNG\r\n\x1a\nnot-a-real-png")
+        report = game.origins_declare(
+            self.project, "textures/hero.png",
+            "foto própria, 2026-09-10", "Ana", "CC0-1.0",
+        )
+        self.assertEqual(report["declared"], "textures/hero.png")
+        self.assertEqual(report["sidecar"], "textures/hero.png.credits.txt")
+        self.assertEqual(report["undeclared"], [])
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertNotIn("then", report)
+        text = (self.project / "textures" / "hero.png.credits.txt").read_text(encoding="utf-8")
+        self.assertIn("foto própria", text)
+        self.assertIn("Ana", text)
+        self.assertIn("CC0-1.0", text)
+        after = game.origins_reading(self.project)
+        self.assertEqual(after["undeclared"], [])
+        self.assertEqual(after["declared"], ["textures/hero.png"])
+        with self.assertRaisesRegex(ValueError, "já tem recibo"):
+            game.origins_declare(
+                self.project, "textures/hero.png",
+                "outra origem", "Ana", "CC0-1.0",
+            )
+        with self.assertRaisesRegex(ValueError, "relativo"):
+            game.origins_declare(self.project, "../hero.png", "x", "Ana", "CC0-1.0")
 
     def test_every_craft_check_still_points_at_the_research_it_came_from(self):
         corpus = " ".join(

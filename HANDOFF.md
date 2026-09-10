@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.207 (confirmado): o `playtest` nomeia o esqueleto dos quatro campos.
+**HEAD:** ver `git log -1` — vigente 0.9.208: o `origins --declare` escreve o sidecar.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 276 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 277 esperados (confirmar).
 `cd assets/starters/canvas-arcade && npm test` → 384 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.207)
+## O que o HEAD já entrega (0.9.91–0.9.208)
 
 | Ver | Salto |
 | --- | --- |
@@ -151,6 +151,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.205 | O segundo estilhaço do mesmo quadro já é graça. Relê `invuln` depois do `hit()`. Sem janela nova. Não promove feel. |
 | 0.9.206 | `discover` / `review` nomeiam os mesmos sinais que o `next` usa. Sem proposta. Sem urgência. Não promove `observed`. |
 | 0.9.207 | `playtest` nomeia `form` e `fields`. Sem `then`. Esqueleto no disco não é achado. Não promove `outsider`. |
+| 0.9.208 | `origins --declare` escreve o sidecar. `next` aponta o declare, não relê o leitor. Recibo no disco não é licença. Não promove `granted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -275,7 +276,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou land que é janela de hit
   ou segundo estilhaço do mesmo quadro que é segundo hit
   ou discover que some o sinal do next
-  ou playtest que some o esqueleto dos quatro.
+  ou playtest que some o esqueleto dos quatro
+  ou next que declara origem relendo origins.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -630,6 +632,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um segundo estilhaço do mesmo quadro que mata depois da graça já ter nascido.
 **Não** mais um `discover` que some o sinal que o `next` já usa para escolher o jogo.
 **Não** mais um `playtest` que some o esqueleto dos quatro enquanto o `next` já aponta `--field`.
+**Não** mais um `next` que manda declarar origem relendo `origins`.
 
 Candidatos, do que ainda dói:
 
@@ -690,6 +693,7 @@ Candidatos, do que ainda dói:
    lê a chave do starter. `sfx copy` e `sfx export` levam
    bytes e créditos. `sfx verify` nomeia os stems sem cruzar.
    Nomear não entrega. Copiar não é `heard`. Tocar não é `heard`.
+   `origins --declare` escreve o sidecar. Recibo não é licença.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
    estável no disco, estilhaço dusk no disco, intenção warmer no
@@ -851,6 +855,11 @@ Candidatos, do que ainda dói:
   some o
   esqueleto dos
   quatro
+  e o
+  next que
+  declara origem
+  relendo
+  origins
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -874,6 +883,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o `playtest` nomeia
-`form` e `fields`. Sem `then`. Esqueleto no disco
-não é achado. Não promove `outsider`.
+Arquivos quentes da última sessão: `origins --declare`
+escreve o sidecar. `next` aponta o declare, não relê
+o leitor. Recibo no disco não é licença. Não promove
+`granted`.

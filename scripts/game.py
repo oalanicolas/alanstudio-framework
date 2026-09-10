@@ -2370,6 +2370,9 @@ ORIGIN_RECEIPTS = {
     "sources.json", "licenses.json", "credits.md", "credits.txt", "licence",
     "license", "copying", "authors",
 }
+# Os três nomes que o sidecar declara. Recibo no disco não é licença válida.
+ORIGIN_FIELDS = ("origin", "author", "license")
+ORIGIN_FORM = FRAMEWORK / "assets/templates/credits.txt"
 ORIGIN_ROW = re.compile(r"`([^`]+)`")
 ORIGIN_LINK = re.compile(r"\[[^\]]+\]\((?:<([^>\n]+)>|([^\s)]+))")
 
@@ -2493,6 +2496,8 @@ def origins_reading(project, max_entries=2000):
         "truncated": stopped,
         "granted": False,
         "validated": False,
+        "form": str(ORIGIN_FORM),
+        "fields": list(ORIGIN_FIELDS),
         "guide": str(FRAMEWORK / "references/gates.md"),
         "rule": (
             "Arquivo embarcado sem recibo de origem conta como licença desconhecida. "
@@ -2502,8 +2507,64 @@ def origins_reading(project, max_entries=2000):
             "Percorre o projeto, lista arquivos de mídia embarcados e cruza com recibos "
             "(sources.json, licenses.json, CREDITS, sidecar `.credits.txt`). Relata ausência "
             "de recibo, recibo ilegível e declaração `deliver.licensing` = `met` que o disco "
-            "contradiz. Não consulta titular, não interpreta texto de licença, não distingue "
+            "contradiz. `form` aponta o esqueleto; `fields` lista origem, autor e licença. "
+            "`--declare` escreve o sidecar. Sem `then`. Recibo no disco não é licença "
+            "válida. Não consulta titular, não interpreta texto de licença, não distingue "
             "licença válida de inválida e **não concede passagem**."
+        ),
+    }
+
+
+def origins_declare(project, relative, origin, author, license_name):
+    # O `next` pedia `origins` de novo. Relê não declara. Este caminho
+    # escreve o sidecar; não valida titular nem texto jurídico.
+    project = Path(project)
+    if not project.is_dir() or project.is_symlink():
+        raise ValueError("projeto ausente")
+    if not all(nonempty(value) for value in (relative, origin, author, license_name)):
+        raise ValueError("declare exige arquivo, origem, autor e licença")
+    rel = Path(relative)
+    if rel.is_absolute() or ".." in rel.parts:
+        raise ValueError("arquivo precisa ser relativo ao projeto")
+    path = (project / rel).resolve()
+    try:
+        path.relative_to(project.resolve())
+    except ValueError as error:
+        raise ValueError("arquivo precisa ficar dentro do projeto") from error
+    if path.is_symlink() or not path.is_file():
+        raise ValueError("arquivo embarcado inexistente")
+    if path.suffix.casefold() not in EMBEDDED_SUFFIXES:
+        raise ValueError("arquivo não é mídia embarcada")
+    posix = path.relative_to(project.resolve()).as_posix()
+    reading = origins_reading(project)
+    if posix not in reading["undeclared"]:
+        raise ValueError("arquivo já tem recibo ou não está sem origem")
+    sidecar = path.with_name(path.name + ".credits.txt")
+    if sidecar.exists() or sidecar.is_symlink():
+        raise ValueError("sidecar já existe")
+    sidecar.write_text(
+        f"{path.name} — origem: {origin.strip()}.\n"
+        f"Autor: {author.strip()}. Licença: {license_name.strip()}.\n",
+        encoding="utf-8",
+    )
+    after = origins_reading(project)
+    return {
+        "schema_version": 1,
+        "command": "origins",
+        "project": str(project),
+        "declared": posix,
+        "sidecar": sidecar.relative_to(project.resolve()).as_posix(),
+        "fields": {
+            "origin": origin.strip(),
+            "author": author.strip(),
+            "license": license_name.strip(),
+        },
+        "undeclared": after["undeclared"],
+        "granted": False,
+        "validated": False,
+        "scope": (
+            "Escreveu o sidecar ao lado do arquivo. Recibo no disco não é "
+            "licença válida. `granted` e `validated` continuam falsos."
         ),
     }
 
@@ -4676,12 +4737,18 @@ def next_step(project, focus="create", studies_root=None):
                 "arquivo embarcado sem recibo. A linha da tabela não sobrevive à leitura "
                 "do próprio projeto."
             )
+        first = origins["undeclared"][0]
         propose(
             f"Declarar origem dos arquivos embarcados sem recibo: {sample}{extra}",
             why,
             "Cada arquivo listado tem recibo ao lado (sources.json, CREDITS ou "
             "`.credits.txt`) com origem, autor e condição de uso — ou sai do embarque.",
-            [harness_command("origins", project)],
+            [harness_command(
+                "origins", project, "--declare", first,
+                "--origin", "de onde veio o arquivo",
+                "--author", note_author(project),
+                "--license", "condição de uso",
+            )],
             "origins.undeclared",
         )
     # Um gate só está em jogo quando o projeto o declara: ninguém pede uma
@@ -5146,6 +5213,13 @@ def main():
         help="arquivos embarcados e o recibo de origem que o projeto declara",
     )
     origins_cmd.add_argument("project")
+    origins_cmd.add_argument(
+        "--declare", metavar="ARQUIVO",
+        help="escreve o sidecar .credits.txt do arquivo embarcado; não valida licença",
+    )
+    origins_cmd.add_argument("--origin", help="de onde veio o arquivo")
+    origins_cmd.add_argument("--author", help="quem fez o arquivo")
+    origins_cmd.add_argument("--license", dest="license_name", help="condição de uso declarada")
     craft_cmd = commands.add_parser(
         "craft", parents=[common],
         help="checklists de ofício que o projeto declara cumprir, sem limiar importado",
@@ -5310,7 +5384,15 @@ def main():
         elif args.action == "bar":
             emit(bar_reading(resolve(args.project, root)))
         elif args.action == "origins":
-            emit(origins_reading(resolve(args.project, root)))
+            target = resolve(args.project, root)
+            declared = getattr(args, "declare", None)
+            origin = getattr(args, "origin", None)
+            author = getattr(args, "author", None)
+            license_name = getattr(args, "license_name", None)
+            if declared or origin or author or license_name:
+                emit(origins_declare(target, declared, origin, author, license_name))
+            else:
+                emit(origins_reading(target))
         elif args.action == "craft":
             emit(craft_reading(resolve(args.project, root), args.gate))
         elif args.action == "roles":

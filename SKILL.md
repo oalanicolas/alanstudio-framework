@@ -153,8 +153,10 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    prova ligada (`record --kind milestone`, recibos de `verify`, `observation` e
    `budget`). Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
    **`origins <projeto>` lê o disco**, não a tabela: lista mídia embarcada sem
-   recibo de origem. Não valida licença. Arquivo sem recibo conta como licença
-   desconhecida, e `next` propõe declarar a origem antes de seguir.
+   recibo de origem. Nomeia `form` e `fields`. `--declare` escreve o sidecar
+   `.credits.txt`. Sem `then`. Não valida licença. Recibo no disco não é
+   licença válida. Arquivo sem recibo conta como licença
+   desconhecida, e `next` aponta `--declare` antes de seguir.
    **`craft <projeto>`** lê checklists de ofício (paleta, perdão, percentil,
    regra de parada) — conformidade com o que o projeto declarou, sem limiar
    importado. `observed` é sempre falso. Só levanta o gate que o projeto pediu.

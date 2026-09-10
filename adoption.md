@@ -3,6 +3,42 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.208 — Origins declara o sidecar
+
+O
+`next`
+pedia
+`origins`
+de novo.
+Relê não
+declara.
+Agora
+`--declare`
+escreve o
+sidecar.
+`form` e
+`fields`
+nomeiam
+origem,
+autor e
+licença.
+Sem `then`.
+Recibo no
+disco não é
+licença
+válida.
+`granted`
+continua
+falso. Só
+`release`
+fica no piso.
+
+O que 0.9.208 não afirma:
+sidecar no
+disco não é
+titular
+consultado.
+
 ## 0.9.207 — O playtest nomeia o esqueleto dos quatro
 
 O

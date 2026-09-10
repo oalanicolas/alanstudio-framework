@@ -175,7 +175,8 @@ coisa nem outra, e nada neste repositório mede isso.
 
 `deliver.licensing` é o critério em que a prosa é mais dura, e o gate **ainda
 não lê o disco**. Quem lê é `origins`: cruza arquivos embarcados com recibos e
-relata ausência. Recibo presente não é licença válida — é origem declarada.
+relata ausência. `--declare` escreve o sidecar; recibo presente não é
+licença válida — é origem declarada.
 Uma tabela que afirma `met` enquanto `origins` lista arquivo sem recibo não
 sobrevive à leitura do próprio projeto.
 

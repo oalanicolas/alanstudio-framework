@@ -341,19 +341,22 @@ até aqui o harness só lia a linha da tabela. Uma frase otimista fechava o gate
 
 ```sh
 python3 scripts/game.py origins /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py origins /caminho/do/laboratorio/meu-jogo --declare textures/hero.png --origin "foto própria" --author "Ana" --license CC0-1.0
 ```
 
 Lista arquivos de mídia embarcados (som, imagem, fonte, vídeo, modelo) e cruza
 com recibos: `sources.json`, `licenses.json`, `CREDITS` e sidecar
 `.credits.txt`. Entra em `textures/`, `fonts/`, `models/` e `videos/` — pastas
-que o `scan` de documentos ignora de propósito. **Não valida a licença.** Não
+que o `scan` de documentos ignora de propósito. Nomeia `form` e `fields`
+(origem, autor, licença). `--declare` escreve o sidecar. Sem `then`.
+**Não valida a licença.** Não
 consulta titular, não interpreta texto jurídico e não distingue licença válida
 de inválida. O que falta é recibo de origem; o que o recibo afirma continua
-sendo alegação de quem escreveu.
+sendo alegação de quem escreveu. Recibo no disco não é licença válida.
 
 `granted` e `validated` são sempre `false`. Se o projeto declara
 `deliver.licensing` como `met` e o disco ainda tem arquivo sem recibo, a saída
-marca `contradicts_licensing`. `next` propõe declarar a origem — ou tirar o
+marca `contradicts_licensing`. `next` aponta `--declare` — ou tirar o
 arquivo do embarque — antes de seguir o restante do gate.
 
 ## Ofício
