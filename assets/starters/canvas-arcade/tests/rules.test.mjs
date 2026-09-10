@@ -1248,6 +1248,27 @@ test("retomar JSON não puxa mortos do poço", () => {
   assert.ok(saved.entities[0].y < 190);
 });
 
+test("o relógio não come a guarda que já sentou", () => {
+  const state = createState(7);
+  state.chain = 4;
+  state.tick = CONFIG.runTicks - 2;
+  state.spawnTimer = 999;
+  advance(state, { move: 0, dash: false, bank: true });
+  assert.equal(state.phase, "playing");
+  assert.equal(state.bankWindup, CONFIG.bank.windupTicks, "o arco começou");
+  assert.equal(state.stats.banks, 0);
+  advance(state, neutralIntent());
+  assert.equal(state.phase, "over");
+  assert.equal(state.stats.banks, 1, "o relógio não lapseia o sit");
+  assert.equal(state.score, 16);
+  assert.equal(state.chain, 0);
+  assert.ok(state.events.some((event) => event.type === "bank"));
+  const over = state.events.find((event) => event.type === "over");
+  assert.equal(over.unbanked, 0, "a aposta pedida não cai");
+  assert.equal(state.motes.filter((mote) => mote.kind === "lapse").length, 0);
+  assert.ok(state.motes.some((mote) => mote.kind === "deposit"), "a guarda ainda deposita");
+});
+
 test("a partida termina no limite de tempo e informa a corrente perdida", () => {
   const state = createState(7);
   let steps = 0;

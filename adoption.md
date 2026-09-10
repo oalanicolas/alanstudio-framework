@@ -3,6 +3,69 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.223 — O relógio não come a guarda que já sentou
+
+O
+sit
+da
+guarda
+já
+era
+o
+compromisso.
+O
+relógio
+lapseava
+a
+aposta
+no
+meio
+do
+arco.
+Você
+sentou
+para
+guardar
+e
+o
+fim
+comeu
+a
+corrente.
+Agora
+`commitBank`
+corre
+antes
+do
+`over`
+quando
+`bankWindup`
+ainda
+vive.
+Sem
+sit
+a
+corrente
+continua
+caindo.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.223 não afirma:
+flush
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.222 — Orbe no arco da guarda espera o compromisso
 
 O

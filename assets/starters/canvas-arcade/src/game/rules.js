@@ -762,6 +762,13 @@ export function advance(state, intent = neutralIntent()) {
   if (Math.abs(player.squash) < 0.01) player.squash = 0;
 
   if (state.tick >= CONFIG.runTicks) {
+    // O sit já era o compromisso. Sem isto o relógio
+    // lapseava a aposta no meio do arco — você sentou
+    // para guardar e o fim comeu a corrente. Pose no
+    // disco não é peso percebido.
+    if ((state.bankWindup ?? 0) > 0 && state.chain > 0) {
+      commitBank(state);
+    }
     state.phase = "over";
     player.squash = CONFIG.feel.squashOver;
     // O corpo já sentava. Tremor e punch do último verbo

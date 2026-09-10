@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.222 (confirmado): orbe que cai no arco da guarda espera o compromisso.
+**HEAD:** ver `git log -1` — vigente 0.9.223: o relógio não come a guarda que já sentou.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 279 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.222)
+## O que o HEAD já entrega (0.9.91–0.9.223)
 
 | Ver | Salto |
 | --- | --- |
@@ -166,6 +166,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.220 | O coil do avanço não some quando a guarda pede no mesmo tick. A guarda com corrente espera; coleta e guarda no mesmo quadro continuam na hora. Não promove feel. |
 | 0.9.221 | A tinta estável não esmaga a chuva do look que já separa quente e frio. O par do padrão continua o fallback. Não promove `accessibility` nem `art_direction`. |
 | 0.9.222 | Orbe que cai no arco da guarda espera. O sit não inflama a aposta; depois do commit o orbe entra. Coleta e guarda no mesmo quadro continuam na hora. Não promove feel. |
+| 0.9.223 | O relógio não come a guarda que já sentou. O sit converte antes do `over`. Sem sit a corrente continua caindo. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -179,7 +180,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | orbe no arco da guarda espera o compromisso; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o relógio não come a guarda que já sentou; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
@@ -306,7 +307,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou arco da guarda que copia o coil do avanço
   ou coil do avanço que some quando a guarda pede
   ou tinta estável que esmaga a chuva do look que já separa
-  ou orbe no arco da guarda que inflama a aposta.
+  ou orbe no arco da guarda que inflama a aposta
+  ou relógio que come a guarda que já sentou.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -500,7 +502,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   tem `bank`) também atravessa — `bankWindup` já é 0.
   Pedido de guarda com corrente já existente espera o coil
   do avanço: os dois arcos no mesmo tick comiam o disparo
-  (`canDash` lia `bankWindup`). Coleta e guarda no mesmo quadro continuam na hora. Orbe que cai no arco da guarda espera — o sit não inflama a aposta; depois do commit o orbe entra. Raspo (`grazeContact`): estreita, punch na direção,
+  (`canDash` lia `bankWindup`). Coleta e guarda no mesmo quadro continuam na hora. Orbe que cai no arco da guarda espera — o sit não inflama a aposta; depois do commit o orbe entra. O relógio não come o sit: se `bankWindup > 0` no último tick, `commitBank` corre antes do `over`. Sem sit a corrente continua caindo. Raspo (`grazeContact`): estreita, punch na direção,
   flash menor que a queda. Sem hitstop. Sem rumble.
   Queda (`squashMiss`): senta menos que a coleta. Sem rumble.
   Sem hitstop. Graça pós-dano: `hit()` concede `invuln` e o
@@ -695,6 +697,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um coil do avanço que some quando a guarda pede.
 **Não** mais uma tinta estável que esmaga a chuva do look que já separa.
 **Não** mais um orbe no arco da guarda que inflama a aposta.
+**Não** mais um relógio que come a guarda que já sentou.
 
 Candidatos, do que ainda dói:
 
@@ -1009,6 +1012,11 @@ Candidatos, do que ainda dói:
   guarda que
   inflama a
   aposta
+  e o
+  relógio que
+  come a
+  guarda que
+  já sentou
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1032,6 +1040,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: orbe que
-cai no arco da guarda espera. O sit não
-inflama a aposta. Não promove feel.
+Arquivos quentes da última sessão: o relógio
+não come a guarda que já sentou. O sit
+converte antes do over. Não promove feel.
