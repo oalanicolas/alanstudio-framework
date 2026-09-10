@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 
 import { readFileSync } from "node:fs";
 
-import { BED_FADE_MS, DUCK_BUSES, DUCK_LEVEL, MIX_HEADROOM, SOUNDS, createAudio, stereoPan } from "../src/game/audio.js";
+import { BED_FADE_MS, DUCK_BUSES, DUCK_LEVEL, MIX_HEADROOM, SOUNDS, captionFor, createAudio, stereoPan } from "../src/game/audio.js";
 import { FIELD } from "../src/game/rules.js";
 
 const main = readFileSync(new URL("../src/main.js", import.meta.url), "utf8");
@@ -215,6 +215,35 @@ test("duas variantes do mesmo papel alternam em vez de repetir", () => {
   assert.equal(context.sources[0].buffer.mark, "a");
   assert.equal(context.sources[1].buffer.mark, "b");
   assert.deepEqual(audio.missing().registered, ["collect"]);
+});
+
+test("a legenda da coleta e da guarda nomeia a corrente que o tom já sobe", () => {
+  const { audio } = build();
+  audio.play("collect", { chain: 3 });
+  audio.play("bank", { chain: 4 });
+  audio.play("hit", { chain: 4 });
+  audio.play("collect");
+  const lines = audio.captions().map((entry) => entry.text);
+  assert.equal(captionFor("collect", { chain: 3 }), "orbe coletado, corrente 3");
+  assert.equal(captionFor("bank", { chain: 4 }), "corrente guardada, corrente 4");
+  assert.equal(captionFor("collect"), SOUNDS.collect.caption);
+  assert.equal(captionFor("hit", { chain: 4 }), SOUNDS.hit.caption, "o erro não herda o número da aposta");
+  assert.ok(lines.includes("orbe coletado, corrente 3"));
+  assert.ok(lines.includes("corrente guardada, corrente 4"));
+  assert.ok(lines.includes(SOUNDS.collect.caption));
+  assert.equal(lines.includes("atingido: corrente perdida"), true);
+  assert.doesNotMatch(lines.join(" "), /aprovado|verified|heard|felt/);
+});
+
+test("a rajada da coleta fica com a aposta vigente, não com a primeira", () => {
+  const { audio } = build();
+  audio.play("collect", { chain: 1 });
+  audio.play("collect", { chain: 2 });
+  audio.play("collect", { chain: 3 });
+  const juntas = audio.captions();
+  assert.equal(juntas.length, 1);
+  assert.equal(juntas[0].count, 3);
+  assert.equal(juntas[0].text, "orbe coletado, corrente 3");
 });
 
 test("coleta e guarda sobem de tom com a corrente; o erro não", () => {

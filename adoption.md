@@ -3,6 +3,39 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.211 — A legenda nomeia a corrente que o tom já sobe
+
+Coleta e
+guarda já
+subiam de
+tom com a
+corrente.
+A faixa
+só dizia o
+verbo. Agora
+`captionFor`
+junta
+`corrente N`
+quando o
+pedido traz a
+aposta. A
+rajada do
+mesmo id
+fica com o
+texto vigente.
+`heard`
+continua
+falso. Só
+`release`
+fica no piso.
+
+O que 0.9.211 não afirma:
+número na
+legenda não é
+mix ouvido
+nem sessão
+de alcance.
+
 ## 0.9.210 — Dois orbes no mesmo quadro não inflam a corrente
 
 Dois

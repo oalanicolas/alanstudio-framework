@@ -22,7 +22,9 @@ Examine as barreiras que o jogo realmente cria:
   fundo neutro; escala de interface e de texto; foco visível na navegação.
 - **Audição:** legenda ou indicador visual para toda informação que hoje só existe
   no som, incluindo aviso de ameaça fora da tela; nomes de quem fala em diálogo;
-  o jogo permanece completável com o áudio desligado.
+  o jogo permanece completável com o áudio desligado. No starter a coleta e a
+  guarda sobem de tom com a corrente; a legenda nomeia essa aposta. Número
+  na faixa não é sessão observada.
 - **Movimento:** redução de movimento desligando tremor de câmera, paralaxe
   agressiva, flashes e transições longas — sem remover o feedback de causa, que
   precisa migrar para um sinal estático equivalente.
@@ -73,7 +75,8 @@ alcance também na mostra da porta; a graça extra fica no campo. `reducedMotion
 na porta trava canvas, toque e aviso vivo na mesma chuva parada. Herda a preferência do sistema, preenche
 `{pause}`, `{reset}` e `{bank}` em `copy.json` com as teclas vivas, desenha formas
 distintas além da cor em `src/game/render.js` e mantém legenda equivalente para
-toda informação sonora em `src/game/audio.js`. `npm run contrast` amostra
+toda informação sonora em `src/game/audio.js` — coleta e guarda nomeiam a
+corrente que o tom já sobe. `npm run contrast` amostra
 pixels do stub depois do `draw()` além dos pares hex e, em cinza, conta
 o que só o orbe ou só o estilhaço pinta — relata, não aprova,
 e não substitui o dispositivo.

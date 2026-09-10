@@ -8,7 +8,9 @@
 // (`bedRate`); número no disco não é mix ouvido.
 // 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão — esses
 // arquivos não usam nenhum dos quatro. Coleta e guarda sobem de tom
-// com a corrente; o erro não herda. Coleta, queda, raspo, impacto,
+// com a corrente; o erro não herda. A legenda desses dois papéis
+// nomeia a mesma aposta — sem isto o tom falava e a faixa calava.
+// Coleta, queda, raspo, impacto,
 // avanço e o término levam o x do campo; o panner marca o lugar. Arquivo no disco
 // não é mixagem ouvida: `heard` no harness continua falso.
 //
@@ -46,6 +48,18 @@ function resolveRate(id, extra = {}) {
     return chainPlaybackRate(extra.chain);
   }
   return 1;
+}
+
+// O tom já nomeia a aposta. Sem isto a faixa só dizia o verbo.
+// Número na legenda não é mix ouvido nem sessão de alcance.
+export function captionFor(id, extra = {}) {
+  const definition = SOUNDS[id];
+  const base = definition?.caption;
+  if (!base) return "";
+  if (CHAIN_ROLES.has(id) && Number.isFinite(extra.chain) && extra.chain > 0) {
+    return `${base}, corrente ${Math.trunc(extra.chain)}`;
+  }
+  return base;
 }
 
 export const BUSES = ["master", "music", "sfx", "ui"];
@@ -255,8 +269,9 @@ export function createAudio(options = {}) {
       const definition = SOUNDS[id];
       if (!definition || disposed) return false;
       if (hushed && !definition.loop) return false;
-      if (definition.caption && settings.captions !== false) {
-        captions.push({ id, text: definition.caption, at: now() });
+      const text = captionFor(id, extra);
+      if (text && settings.captions !== false) {
+        captions.push({ id, text, at: now() });
         while (captions.length > captionLimit) captions.shift();
       }
       if (definition.duckMs) duckUntil = now() + definition.duckMs;
@@ -311,6 +326,7 @@ export function createAudio(options = {}) {
         if (last && last.id === entry.id) {
           last.count += 1;
           last.at = entry.at;
+          last.text = entry.text;
           continue;
         }
         merged.push({ ...entry, count: 1 });

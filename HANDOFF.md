@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.210 (confirmado): dois orbes no mesmo quadro não inflam a corrente.
+**HEAD:** ver `git log -1` — vigente 0.9.211: a legenda da coleta e da guarda nomeia a corrente que o tom já sobe.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 278 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.210)
+## O que o HEAD já entrega (0.9.91–0.9.211)
 
 | Ver | Salto |
 | --- | --- |
@@ -154,6 +154,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.208 | `origins --declare` escreve o sidecar. `next` aponta o declare, não relê o leitor. Recibo no disco não é licença. Não promove `granted`. |
 | 0.9.209 | `note` nomeia `finding`, `form` e `needed`. Sem `then`. Recibo sem os quatro não é achado. Não promove `observed`. |
 | 0.9.210 | Dois orbes no mesmo quadro não inflam a corrente. O segundo espera o próximo tick. Sem suco empilhado. Não promove feel. |
+| 0.9.211 | A legenda da coleta e da guarda nomeia a corrente que o tom já sobe. Sem o número o tom falava e a faixa calava. Não promove `heard` nem `accessibility`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -169,7 +170,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | corpo e quadro sentam no over; a porta fecha o arco do avanço; o arco da guarda atravessa; o quadro da conversão também atravessa; o quadro do land também atravessa; o segundo estilhaço do mesmo quadro já é graça; dois orbes no mesmo quadro não inflam a corrente; a queda senta o corpo; a porta marca a mostra no trilho; a câmera confirma o trilho; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
-| audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; `heard` falso |
+| audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | live nomeia o aviso na porta e no fim; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -278,6 +279,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou land que é janela de hit
   ou segundo estilhaço do mesmo quadro que é segundo hit
   ou dois orbes no mesmo quadro que inflam a corrente
+  ou legenda da coleta que some a corrente que o tom já sobe
   ou discover que some o sinal do next
   ou playtest que some o esqueleto dos quatro
   ou next que declara origem relendo origins
@@ -405,7 +407,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `listMoods()` = interseção look ∩ spawn (hoje `calm`, `dusk`).
 - `SOUNDS`: dash, land, graze, collect, missed, bank, hit, over, close, live, stir, bed.
   `live` também nasce uma vez na porta (`attractSpoke`). Sem cama.
-  Sem rumble. `heard` falso.
+  Sem rumble. Coleta e guarda: `captionFor` junta `corrente N` quando
+  `extra.chain > 0`. Rajada do mesmo id fica com o texto vigente.
+  Sem o número o tom falava e a faixa calava. `heard` falso.
   Pedido sem buffer: last-wins na fila; `register` toca sem segunda
   legenda. `dispose` esquece. Tecla ligada e toque chamam
   `audio.unlock()` no gesto. Stems sobem juntos (`Promise.all`);
@@ -644,6 +648,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `next` que manda declarar origem relendo `origins`.
 **Não** mais um `note` que grava e some se os quatro fecharam o achado.
 **Não** mais dois orbes no mesmo quadro que inflam a corrente.
+**Não** mais uma legenda da coleta que some a corrente que o tom já sobe.
 
 Candidatos, do que ainda dói:
 
@@ -882,6 +887,13 @@ Candidatos, do que ainda dói:
   quadro que
   inflam a
   corrente
+  e a
+  legenda da
+  coleta que
+  some a
+  corrente que
+  o tom já
+  sobe
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -905,7 +917,8 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: dois orbes no
-mesmo quadro não inflam a corrente. O segundo
-espera o próximo tick. Sem suco empilhado. Não
-promove feel.
+Arquivos quentes da última sessão: a legenda da
+coleta e da guarda nomeia a corrente que o tom
+já sobe. `captionFor` junta o número. Rajada do
+mesmo id fica com o texto vigente. Não promove
+`heard` nem `accessibility`.
