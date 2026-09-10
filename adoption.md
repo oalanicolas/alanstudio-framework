@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.300 — Na pausa o telefone vê Continuar: toque
+
+Esc
+e
+P
+não
+existem
+no
+polegar.
+O
+tap
+já
+retoma.
+A
+placa
+ensinava
+Esc
+antes
+do
+gesto.
+Agora
+nomeia
+toque.
+lastSource
+continua
+teclado.
+Reiniciar
+continua
+R.
+Não
+promove
+`felt`.
+
+O que 0.9.300 não afirma:
+rótulo
+no
+stub
+não
+é
+peso
+no
+aparelho.
+
 ## 0.9.299 — A região viva nomeia como sair da pausa
 
 O

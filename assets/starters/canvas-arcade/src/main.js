@@ -19,7 +19,7 @@ import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { createTrace, finishCurve, traceTick } from "./game/curve.js";
 import { applyLive, liveText } from "./core/live.js";
-import { bindLines, titleSurface } from "./core/keys.js";
+import { bindLines, pauseSurface, titleSurface } from "./core/keys.js";
 import { advance as advanceRules, attractMove, attractTick, attractTouch, beginRun, sessionBedRate, createState, restoreState, neutralIntent, threatCue, FIELD, TICK_HZ } from "./game/rules.js";
 import { copy, resolveLookName, resolveMoodName, resolveSpawnName } from "./game/tables.js";
 import { coachHint, coachText } from "./game/coach.js";
@@ -340,11 +340,22 @@ export function createGame(options = {}) {
     // pointer preenchia cima e mente. A placa da
     // abertura e do fim usa a superfície da porta;
     // o aviso continua o aparelho que falou.
+    // Na pausa o telefone ainda não falou: Esc e P
+    // não existem no polegar. O tap já retoma. A
+    // placa usa a superfície do toque; o aviso
+    // continua o aparelho que falou.
     // Texto no disco não é felt.
+    const overlayPaused = loop.paused && state.phase !== "over" && state.phase !== "title";
     const surface = state.phase === "title" || state.phase === "over"
       ? titleSurface(environment, spoken)
-      : spoken;
-    const bound = bindLines(copy, settings.bindings ?? DEFAULT_BINDINGS, spoken);
+      : overlayPaused
+        ? pauseSurface(environment, spoken)
+        : spoken;
+    const bound = bindLines(
+      copy,
+      settings.bindings ?? DEFAULT_BINDINGS,
+      overlayPaused ? pauseSurface(environment, spoken) : spoken,
+    );
     const hint = coachHint(state, copy, { surface: spoken });
     applyLive({
       node: live,

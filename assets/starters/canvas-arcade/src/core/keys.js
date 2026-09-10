@@ -8,7 +8,9 @@
 // Overlay e HUD confirmam o aparelho que falou por último.
 // Na porta o telefone ainda não falou: a placa usa a
 // superfície `door` quando o ponteiro é grosso.
-// Rótulo no texto não é sessão observada.
+// Na pausa a placa usa `pointer` — o token é pause, não
+// dash. Reiniciar continua R. Rótulo no texto não é
+// sessão observada.
 
 const NAMED = {
   Space: "Espaço",
@@ -114,6 +116,18 @@ const SURFACE_TOKENS = {
 export function titleSurface(environment, lastSource = "keyboard") {
   if (lastSource === "gamepad") return lastSource;
   if (lastSource === "pointer" || environment?.pointer?.coarse) return "door";
+  return lastSource;
+}
+
+// Na pausa o telefone ainda não falou. Esc e P não
+// existem no polegar. O tap já retoma. A porta usa
+// `door` (só o dash); aqui o token é pause. lastSource
+// teclado mente com Esc. Superfície no disco não é
+// sessão observada. Reiniciar continua R — o toque
+// não reseta.
+export function pauseSurface(environment, lastSource = "keyboard") {
+  if (lastSource === "gamepad") return lastSource;
+  if (lastSource === "pointer" || environment?.pointer?.coarse) return "pointer";
   return lastSource;
 }
 

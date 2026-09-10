@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { actionLabel, actionLabels, bindLines, commandRows, keyLabel, paintCommands, titleSurface } from "../src/core/keys.js";
+import { actionLabel, actionLabels, bindLines, commandRows, keyLabel, paintCommands, pauseSurface, titleSurface } from "../src/core/keys.js";
 import { applyRebind } from "../src/core/remap.js";
 import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "../src/core/settings.js";
 import { copy } from "../src/game/tables.js";
@@ -79,6 +79,20 @@ test("a porta do telefone nomeia toque sem promover lastSource", () => {
   assert.equal(lines.title_new, "Nova partida: R");
   assert.equal(lines.hint_move, "←/→, arraste ou analógico");
   assert.equal(lines.hint_touch, copy.hint_touch);
+});
+
+test("a pausa do telefone nomeia toque sem promover lastSource", () => {
+  assert.equal(pauseSurface({ pointer: { coarse: true } }, "keyboard"), "pointer");
+  assert.equal(pauseSurface({ pointer: { coarse: true } }, "pointer"), "pointer");
+  assert.equal(pauseSurface({}, "pointer"), "pointer");
+  assert.equal(pauseSurface({ pointer: { coarse: true } }, "gamepad"), "gamepad");
+  assert.equal(pauseSurface({ pointer: { coarse: false } }, "keyboard"), "keyboard");
+  assert.equal(pauseSurface({}, "keyboard"), "keyboard");
+  assert.equal(titleSurface({ pointer: { coarse: true } }, "keyboard"), "door");
+  const lines = bindLines(copy, DEFAULT_BINDINGS, pauseSurface({ pointer: { coarse: true } }, "keyboard"));
+  assert.equal(lines.resume, "Continuar: toque");
+  assert.equal(lines.restart, "Reiniciar: R", "o toque não reseta");
+  assert.equal(lines.title_play, "Jogar: cima", "a pausa não herda a porta");
 });
 
 test("superfície desconhecida não inventa mapa", () => {

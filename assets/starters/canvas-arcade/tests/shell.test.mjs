@@ -507,6 +507,42 @@ test("o toque retoma a pausa sem avançar no mesmo aperto", () => {
   game.dispose();
 });
 
+test("na pausa o telefone vê Continuar: toque sem ter apertado", () => {
+  const view = textCanvas();
+  const live = { textContent: "" };
+  const { game, press, frame } = shell({
+    canvas: view.canvas,
+    live,
+    loadSfx: false,
+    environment: { pointer: { coarse: true } },
+  });
+  game.start();
+  frame();
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing");
+  press("pause");
+  frame();
+  assert.equal(game.paused, true);
+  frame();
+  assert.ok(
+    view.texts.some((text) => String(text).includes("Continuar: toque")),
+    `esperava toque na pausa: ${JSON.stringify(view.texts)}`,
+  );
+  assert.equal(
+    view.texts.some((text) => String(text).includes("Esc")),
+    false,
+    "Esc mente no telefone",
+  );
+  assert.ok(
+    view.texts.some((text) => String(text).includes("Reiniciar: R")),
+    "o toque não reseta — R continua",
+  );
+  assert.match(live.textContent, /Continuar: toque/);
+  assert.equal(/Esc/.test(live.textContent), false, "o live não herda Esc");
+  game.dispose();
+});
+
 test("a velocidade da partida dilata o relógio, não o passo", () => {
   const step = 1000 / 60;
   const slow = shell();
