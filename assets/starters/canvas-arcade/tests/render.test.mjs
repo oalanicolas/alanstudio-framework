@@ -963,6 +963,27 @@ test("o overlay do fim nomeia a corrente que caiu e a queda vence a cortina", ()
   );
 });
 
+test("no fim a pausa não come a aposta que o overlay já nomeava", () => {
+  const ended = createState(1);
+  ended.phase = "over";
+  ended.score = 12;
+  ended.chain = 5;
+  const held = { paused: true, alpha: 0, steps: 1 };
+  const texts = hudTexts(ended, {}, { best: 40 }, held).texts.map((item) => item.text);
+  assert.ok(texts.some((text) => text === "Fim — 12"), `título: ${JSON.stringify(texts)}`);
+  assert.equal(
+    texts.some((text) => text === "Pausado — 12"),
+    false,
+    `a pausa não come o fim: ${JSON.stringify(texts)}`,
+  );
+  const hint = texts.find((text) => text.includes("Corrente 5") && text.includes("Recorde 40") && /abertura/i.test(text));
+  assert.ok(hint, `esperava a aposta no overlay: ${JSON.stringify(texts)}`);
+  const playing = createState(1);
+  playing.score = 12;
+  const paused = hudTexts(playing, {}, { best: 40 }, held).texts.map((item) => item.text);
+  assert.ok(paused.some((text) => text === "Pausado — 12"), "no campo a pausa continua");
+});
+
 test("o overlay da pausa nomeia o placar sem inventar faixa nem sessão", () => {
   const state = createState(1);
   state.score = 12;

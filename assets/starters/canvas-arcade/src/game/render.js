@@ -139,7 +139,21 @@ export function createRenderer(canvas, options = {}) {
     drawMotes(context, palette, state, reduced, ending ? (mote) => mote.kind !== "lapse" : null);
     const reserved = drawHud(context, palette, state, settings, extra, lines);
     drawCoach(context, palette, extra.hint, reserved, settings, extra, lines);
-    if (frame.paused) {
+    if (ending) {
+      // Aba escondida e P pausam o laço. Sem isto a placa
+      // Pausado comia Fim, a corrente e a porta. O relógio
+      // já derrubou a aposta; a cortina do over vence.
+      // Pose no disco não é felt.
+      drawOverlay(
+        context,
+        palette,
+        `${lines.over} — ${state.score}`,
+        overHint(state, lines, extra),
+        settings,
+        persistLine(extra.persist, lines),
+      );
+      drawMotes(context, palette, state, reduced, (mote) => mote.kind === "lapse");
+    } else if (frame.paused) {
       // A cortina cobre o HUD. Sem o número aqui o placar que a
       // partida inteira mostrou some atrás de Pausado. Recorde 0
       // some. Texto no disco não é sessão de alcance.
@@ -150,17 +164,6 @@ export function createRenderer(canvas, options = {}) {
         pauseHint(lines, extra),
         settings,
       );
-    }
-    else if (ending) {
-      drawOverlay(
-        context,
-        palette,
-        `${lines.over} — ${state.score}`,
-        overHint(state, lines, extra),
-        settings,
-        persistLine(extra.persist, lines),
-      );
-      drawMotes(context, palette, state, reduced, (mote) => mote.kind === "lapse");
     }
     // A cortina cobria a faixa. Com o áudio desligado a informação
     // existia e sumia no fim e na pausa. A legenda nasce depois.

@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.182 — O fim vence a pausa
+
+P e aba
+escondida pausam o
+laço. A placa
+Pausado comia Fim,
+corrente e porta.
+A cortina do over
+vence. `felt`
+continua falso. Só
+`release` fica no
+piso.
+
+O que 0.9.182 não afirma:
+cortina no disco não
+é peso percebido.
+
 ## 0.9.181 — A pausa nomeia o placar
 
 A cortina já dizia

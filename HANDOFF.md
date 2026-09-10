@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.181 (confirmado): a pausa nomeia o placar.
+**HEAD:** ver `git log -1` — vigente 0.9.182: o fim vence a pausa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 271 OK.
-`cd assets/starters/canvas-arcade && npm test` → 361 OK.
+`cd assets/starters/canvas-arcade && npm test` → 362 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.181)
+## O que o HEAD já entrega (0.9.91–0.9.182)
 
 | Ver | Salto |
 | --- | --- |
@@ -125,6 +125,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.179 | `sfx info` lê a ficha do stem do starter que casa (chave, arquivo, licença, origem). Id do acervo continua na frente. Não promove `heard`. |
 | 0.9.180 | A pausa senta tremor, flash e punch. O over já sentava o quadro. Overlay Pausado com câmera no golpe era a mesma partida. Não promove feel. |
 | 0.9.181 | A pausa nomeia o placar no overlay e na região viva. Recorde 0 some. Jogando sem pausa o número não entra. Não promove `accessibility`. |
+| 0.9.182 | No fim a cortina do over vence a pausa. P e aba escondida não comem Fim, corrente nem porta. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -137,7 +138,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | corpo e quadro sentam no over e a pausa senta o quadro no disco; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | corpo e quadro sentam no over; a pausa senta o quadro; o over vence a pausa no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over + pausa corta o verbo; `heard` falso |
@@ -225,7 +226,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   duck só na cama, graça no coil
   ou avanço no overlay, recorde no overlay do fim
   ou movimento na porta ou toque da mostra ou voz da mostra
-  ou quadro sentado na pausa ou placar na pausa.
+  ou quadro sentado na pausa ou placar na pausa ou fim que vence a pausa.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -397,7 +398,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   A porta e o fim leem `persistLine`. O overlay do fim reusa
   `record` com `extra.best` quando `best > 0`. Recorde 0 some.
   O overlay da pausa reusa o placar (`Pausado — N`) e o mesmo
-  `record` no hint. Recorde 0 some. Jogando sem pausa o número
+  `record` no hint. Recorde 0 some. No `over`, a cortina do fim
+  vence `frame.paused` — P e aba escondida não comem Fim,
+  corrente nem porta. Jogando sem pausa o número
   não entra na região viva. Sem faixa nova. Nomear não é `felt`
   nem sessão.
   `migrateCopy` preenche default se a mesa antiga não tiver.
@@ -499,6 +502,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `sfx info` que some o stem do starter que casa.
 **Não** mais um overlay Pausado com o tremor do último verbo.
 **Não** mais um overlay Pausado que some o placar que o HUD mostrou.
+**Não** mais um overlay Pausado no fim que come a aposta.
 
 Candidatos, do que ainda dói:
 
@@ -603,7 +607,10 @@ Candidatos, do que ainda dói:
   sentado
   na pausa e o
   placar
-  na pausa
+  na pausa e o
+  fim que
+  vence a
+  pausa
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -627,6 +634,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a pausa nomeia o placar no
-overlay e na região viva. Recorde 0 some. Não promove
-`accessibility`.
+Arquivos quentes da última sessão: no fim a cortina do over vence
+a pausa. P e aba escondida não comem a aposta. Não promove feel.
