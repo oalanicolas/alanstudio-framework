@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.277: a perda de foco grava o hold. Barra e DevTools não deixam o tick só na RAM. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 294 OK.
-`cd assets/starters/canvas-arcade && npm test` → 465 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 295 OK.
+`cd assets/starters/canvas-arcade && npm test` → 467 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
