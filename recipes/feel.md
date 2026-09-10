@@ -260,7 +260,8 @@ silhueta no apoio — ainda vulnerável, não a tinta da prática;
 o erro acende o campo, a coleta não. O controle pulsa no
 impacto com duração e magnitude por verbo; pausa e descarte cancelam.
 Cada verbo deixa um rastro próprio no campo; com menos movimento o
-rastro vira marca. A corrente mora no corpo em pips; o HUD continua
+rastro vira marca. O rastro do dash veste a corrente do avanço —
+não o descanso. A corrente mora no corpo em pips; o HUD continua
 com a conta. A faixa do dash enche o tempo de recuperação e
 cooldown e veste o look — rótulo sozinho era o mesmo quadro.
 O fecho da partida contorna o campo e pulsa o controle a cada

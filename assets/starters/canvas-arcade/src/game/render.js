@@ -339,7 +339,12 @@ export function createRenderer(canvas, options = {}) {
 
   function moteFill(palette, kind) {
     if (kind === "collect" || kind === "land" || kind === "join" || kind === "missed") return palette.orb;
-    if (kind === "bank" || kind === "break" || kind === "deposit" || kind === "lapse") return palette.chain;
+    // O corpo no avanço veste a corrente. Sem isto o rastro
+    // vestia o descanso e o verbo não se distinguia. Pose
+    // no disco não é peso percebido.
+    if (kind === "dash" || kind === "bank" || kind === "break" || kind === "deposit" || kind === "lapse") {
+      return palette.chain;
+    }
     if (kind === "hit" || kind === "over" || kind === "graze") return palette.danger;
     return palette.player;
   }

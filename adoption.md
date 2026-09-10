@@ -3,6 +3,41 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.320 — o rastro do dash veste o avanço
+
+O
+corpo
+já
+vestia
+a
+corrente.
+O
+rastro
+vestia
+o
+descanso.
+O
+verbo
+não
+se
+distinguia.
+Agora
+veste
+o
+avanço.
+Não
+promove
+`felt`.
+
+O que 0.9.320 não afirma:
+pose
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.319 — o next do feel anexa o candidato
 
 O

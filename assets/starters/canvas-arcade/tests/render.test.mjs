@@ -1277,6 +1277,30 @@ test("a quebra da corrente pinta os pips que o corpo perdeu", () => {
   assert.ok(marks.length >= 2, "com menos movimento a quebra vira marca, não some");
 });
 
+test("o rastro do dash veste o avanço, não o descanso", () => {
+  const state = createState(1);
+  state.motes = [
+    { kind: "dash", x: 80, y: 100, sx: 80, sy: 100, vx: 0, vy: 0, life: 8 },
+  ];
+  const flying = paint(state);
+  const trail = flying.rects.filter((rect) => (
+    rect.width === 2.4 && rect.height === 2.4 && rect.style === PALETTES.normal.chain
+  ));
+  assert.ok(trail.length >= 1, "o rastro do dash vestia o descanso");
+  assert.equal(
+    flying.rects.filter((rect) => (
+      rect.width === 2.4 && rect.height === 2.4 && rect.style === PALETTES.normal.player
+    )).length,
+    0,
+    "o rastro do dash vestia o descanso",
+  );
+  const still = paint(state, { reducedMotion: true });
+  const marks = still.rects.filter((rect) => (
+    rect.width === 2 && rect.height === 2 && rect.style === PALETTES.normal.chain
+  ));
+  assert.ok(marks.length >= 1, "com menos movimento o rastro veste o avanço");
+});
+
 test("o rastro do impacto aparece e com menos movimento vira marca", () => {
   const state = createState(5);
   state.motes = [

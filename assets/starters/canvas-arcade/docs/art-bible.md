@@ -21,7 +21,7 @@ A tinta não esmaga chuva que já separa quente e frio; o par do padrão
 | jogador | `#f2f4f8` / `#ffffff` | `PALETTES.*.player` — o corpo em descanso; a recuperação do dash veste o apoio, não o orbe |
 | orbe | `#4ea8ff` / `#00d2ff` | `PALETTES.*.orb` — chuva e contorno da prática |
 | estilhaço | `#ff8a3d` / `#ff6a00` | `PALETTES.*.shard` |
-| corrente | `#ffd166` / `#ffe600` | `PALETTES.*.chain` — pips e contorno da folga |
+| corrente | `#ffd166` / `#ffe600` | `PALETTES.*.chain` — pips, rastro do avanço e contorno da folga |
 | texto | `#e7ebf3` / `#ffffff` | `PALETTES.*.text` |
 | apoio | `#8a93a6` / `#c9c9c9` | `PALETTES.*.muted` — HUD em descanso |
 | perigo | `#ff5d5d` / `#ff2b2b` | `PALETTES.*.danger` — fecho, impacto e raspo |
