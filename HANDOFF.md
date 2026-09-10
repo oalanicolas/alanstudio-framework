@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.330: a região viva nomeia a mesa e o look da porta. Não promove `verified`.
+**HEAD:** ver `git log -1` — vigente 0.9.331: o feel nomeia o rumble que já lê. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.330):** `python3 -m unittest discover -s tests` → 328.
-`cd assets/starters/canvas-arcade && npm test` → 503.
+**Testes no HEAD (0.9.331):** `python3 -m unittest discover -s tests` → (confirmar).
+`cd assets/starters/canvas-arcade && npm test` → (confirmar).
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.330)
+## O que o HEAD já entrega (0.9.91–0.9.331)
 
 | Ver | Salto |
 | --- | --- |
@@ -274,6 +274,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.328 | O rótulo do dash nomeia o avanço no travel. A faixa já enchia; o rótulo dizia recarregando e o verbo mentia a recarga. O sit da guarda continua sem prometer o dash. Não promove `felt`. |
 | 0.9.329 | O `sfx verify` nomeia o som que o catálogo lista e o disco perdeu. A página de escuta já nomeava a ausência; o cruzamento despejava errno. Não promove `heard`. |
 | 0.9.330 | A região viva nomeia a mesa e o look da porta. A chuva já vestia dusk e calm; o live só dizia abertura. Spawn e normal somem. Não promove `verified`. |
+| 0.9.331 | O `feel` nomeia o rumble que a tabela já lista. As constantes já entravam; o scope e o `-h` calavam o pulso. Não promove `felt`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -287,7 +288,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | o rótulo do dash nomeia o avanço no travel; o compromisso da guarda veste a aposta; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o `feel` nomeia o rumble que já lê; o rótulo do dash nomeia o avanço no travel; o compromisso da guarda veste a aposta; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o `sfx verify` nomeia o som que o catálogo perdeu; o `sfx export` nomeia o stem que o disco perdeu; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
@@ -509,7 +510,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um `sfx export` que trata o stem perdido como id desconhecido
   ou um rótulo do dash que diz recarregando no travel
   ou um `sfx verify` que despeja errno do som que o catálogo perdeu
-  ou uma região viva que cala a mesa e o look que a porta já veste.
+  ou uma região viva que cala a mesa e o look que a porta já veste
+  ou um `feel` que cala o rumble que a tabela já lista.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -636,6 +638,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   abrir, `play`. Com last-run, `seed` e `invite` — os mesmos
   endereços do ciclo. Sem serve a chave some. Sem last-run,
   seed e invite somem. Não ganha `lost`.
+  `feel.scope` nomeia rumble — as constantes já listavam
+  `feel.rumble*`; o texto calava. Número no disco não é
+  peso percebido. `felt` falso.
   `save` relata `warned` / `warnings` se o disco tem
   `persistLine`, `title_volatile` ou `title_unsaved`. Nomear
   não é aba fechada. `trusted` falso. Sem `prompt`.
@@ -1134,6 +1139,8 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `sfx export` que trata o stem perdido como id desconhecido.
 **Não** mais um rótulo do dash que diz recarregando no travel.
 **Não** mais um `sfx verify` que despeja errno do som que o catálogo perdeu.
+**Não** mais uma região viva que cala a mesa e o look da porta.
+**Não** mais um `feel` que cala o rumble que a tabela já lista.
 
 Candidatos, do que ainda dói:
 
@@ -1192,7 +1199,8 @@ Candidatos, do que ainda dói:
    `feel`
    nomeia `then.play` e `then.note` sem
    executar. Lê as janelas da chuva que o
-   campo já marca. Com last-run, nomeia
+   campo já marca e o rumble que a tabela
+   já lista. Com last-run, nomeia
    `then.seed` e `then.invite`. O `next`
    (`feel.unobserved`) aponta o mesmo
    `note` — com `--from-run` se o
@@ -1242,7 +1250,9 @@ Candidatos, do que ainda dói:
    id do acervo cujo arquivo sumiu ainda despeja errno —
    irmão do verify, não o próximo salto. A região viva na
    porta já nomeia a mesa e o look — não pintar os eixos
-   no canvas da porta (irmão, não o próximo salto). `origins --declare`
+   no canvas da porta (irmão, não o próximo salto). O `feel`
+   já nomeia o rumble — não inventar chave `haptics` no
+   recibo (irmão, não o próximo salto). `origins --declare`
    escreve o sidecar. Recibo não é
    licença.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
@@ -2237,12 +2247,11 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a
-região viva nomeia a mesa e o look
-da porta. A chuva já vestia dusk e
-calm; o live só dizia abertura.
-Spawn e normal somem. Não promove
-`verified`.
+Arquivos quentes da última sessão: o
+`feel` nomeia o rumble que a tabela
+já lista. As constantes já entravam;
+o scope e o `-h` calavam o pulso.
+Não promove `felt`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2308,3 +2317,4 @@ A família sfx export trata stem perdido como id desconhecido está saturada.
 A família rótulo do dash diz recarregando no travel está saturada.
 A família sfx verify despeja errno do som que o catálogo perdeu está saturada.
 A família região viva que cala a mesa e o look da porta está saturada.
+A família feel que cala o rumble que a tabela já lista está saturada.

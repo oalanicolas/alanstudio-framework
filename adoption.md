@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.331 — o feel nomeia o rumble que já lê
+
+As
+constantes
+já
+entravam.
+O
+scope
+e
+o
+`-h`
+calavam
+o
+pulso.
+O
+agente
+lia
+feel
+sem
+ver
+o
+rumble.
+Agora
+o
+comando
+nomeia
+o
+que
+já
+lista.
+Não
+promove
+`felt`.
+
+O que 0.9.331 não afirma:
+número
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.330 — a região viva nomeia a mesa e o look da porta
 
 A

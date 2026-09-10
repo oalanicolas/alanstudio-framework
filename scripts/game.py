@@ -1458,15 +1458,16 @@ def feel_reading(project):
             "projeto é o que o harness consegue ver; ele não joga."
         ),
         "scope": (
-            "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch) e "
-            "as janelas da chuva (`practiceTicks`, `recoveryTicks`, o fecho) "
-            "em data/, tables/ e content/. Lê `record.json` com "
+            "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch e "
+            "rumble) e as janelas da chuva (`practiceTicks`, `recoveryTicks`, "
+            "o fecho) em data/, tables/ e content/. Lê `record.json` com "
             "kind=observation. Nomeia `then.play` e `then.note` "
             "sem executar. Com last-run, nomeia `then.seed` e `then.invite`. "
             "O `next` (`feel.unobserved`) aponta o mesmo `note` — com "
             "`--from-run` se o candidato existir. Sem "
             "comando de abrir, a chave some. Sem last-run, seed e invite somem. "
-            "Não tem `prompt`. Não mede latência e não atribui degrau. `felt` é "
+            "Não tem `prompt`. Não mede latência, não segura o controle e não "
+            "atribui degrau. `felt` é "
             "sempre falso: tabela de constantes e recibo otimista saem intactos."
         ),
     }
@@ -5782,7 +5783,11 @@ def main():
     )
     feel_cmd = commands.add_parser(
         "feel", parents=[common],
-        help="constantes de feel que o projeto declara e o recibo de observação no disco",
+        help="constantes de feel que o projeto declara — inclusive rumble e as janelas da chuva — e o recibo de observação no disco",
+        description=(
+            "Lê constantes de feel (inclusive rumble) e as janelas da chuva; "
+            "nomear não é felt."
+        ),
     )
     feel_cmd.add_argument("project", nargs="?", default=None)
     access_cmd = commands.add_parser(

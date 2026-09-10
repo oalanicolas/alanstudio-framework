@@ -3292,6 +3292,29 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("spawn.practiceTicks", [item["key"] for item in payload["constants"]])
         self.assertFalse((cli.stderr or "").strip())
 
+    def test_feel_scope_names_the_rumble_the_constants_already_list(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.feel_reading(starter)
+        keys = [item["key"] for item in report["constants"]]
+        self.assertIn("feel.rumbleHitMs", keys)
+        self.assertIn("feel.rumbleCloseMs", keys)
+        self.assertIn("rumble", report["scope"].casefold())
+        self.assertIn("não segura o controle", report["scope"])
+        self.assertFalse(report["felt"])
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertIn("lê rumble", recipe.casefold())
+        self.assertIn("punch e rumble", feel.casefold())
+        self.assertIn("calava o pulso", feel)
+        help_cli = subprocess.run(
+            [sys.executable, str(SCRIPT), "feel", "-h", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(help_cli.returncode, 0, help_cli.stderr)
+        self.assertIn("rumble", (help_cli.stdout + help_cli.stderr).casefold())
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", feel)
+
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
         destination = self.root / "com-observacao"
         game.init(destination, "canvas-arcade")
