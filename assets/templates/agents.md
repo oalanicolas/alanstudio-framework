@@ -15,6 +15,7 @@ pior que ausente.
 
 - O comando que abre o jogo (`play` / `npm run serve` quando o manifesto declara).
 - O `note` depois da partida. Nenhum comando do harness joga, ouve ou sente.
+- O `playtest` depois da partida. Só lê. Sem os quatro não é achado.
 - O que o disco ainda não tem. Sem plantar, não invente GDD para fechar auditoria.
 - Um salto por vez. REUSE → ADAPT → CREATE. CREATE pede lacuna escrita.
 - Leitores de observação continuam falsos. Não chame o recorte de AAA.

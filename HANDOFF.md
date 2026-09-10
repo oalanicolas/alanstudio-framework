@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.308: o Copiar nomeia o destino. Não promove `outsider`.
+**HEAD:** ver `git log -1` — vigente 0.9.309: a memória nomeia o playtest. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.308):** `python3 -m unittest discover -s tests` → 318 OK.
+**Testes no HEAD (0.9.309):** `python3 -m unittest discover -s tests` → a confirmar.
 `cd assets/starters/canvas-arcade && npm test` → 493 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.308)
+## O que o HEAD já entrega (0.9.91–0.9.309)
 
 | Ver | Salto |
 | --- | --- |
@@ -252,6 +252,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.306 | O `playtest` nomeia a página do achado. O `next` já apontava `finding_open`; o leitor mandava só o caminho relativo. Não promove `outsider`. |
 | 0.9.307 | O relógio nomeia a pausa. O toque no canto já sentava; o canvas só mostrava o número e o convite some a tabela. Não promove `felt`. |
 | 0.9.308 | O Copiar nomeia o destino. O Gravar já virava Achado no disco; o botão calava e o convite some a tabela. Não promove `outsider`. |
+| 0.9.309 | A memória nomeia o playtest. O start já nomeava o serve e o note; a próxima sessão calava o leitor que o `next` já aponta. Não promove `outsider`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -464,7 +465,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um telefone que só retoma e não pausa
   ou um `playtest` que cala a url do achado
   ou um relógio que cala a pausa
-  ou um Copiar que cala o destino.
+  ou um Copiar que cala o destino
+  ou uma memória que cala o playtest.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -498,10 +500,12 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `start` não planta os rascunhos (`documents=False`). CLI `--docs`
   opta; `--no-docs` permanece e é o padrão. `init` continua
   plantando. `--idea` entra em `data/copy.json`; brief só com `--docs`.
-  Os dois escrevem `AGENTS.md` com o comando que abre e o que o
-  disco ainda não tem. Sem rascunhos a memória não lista GDD.
-  `template agents` e o `next` em `agent_context.not_located`
-  geram o mesmo texto a partir do disco — play, url, fantasia,
+  Os dois escrevem `AGENTS.md` com o comando que abre, o `note`,
+  o `playtest` e o que o disco ainda não tem. Sem rascunhos a
+  memória não lista GDD. O `playtest` só lê. Sem os quatro não
+  é achado. Nomear o leitor não observa. `template agents` e o
+  `next` em `agent_context.not_located` geram o mesmo texto a
+  partir do disco — play, url, note, playtest, fantasia,
   ciclo do `starter.json` do projeto, rascunhos só se brief/GDD
   (os seis do start) existirem. O molde em `assets/templates/agents.md`
   é a referência; o comando não o preenche com caminhos inventados.
@@ -1056,6 +1060,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `playtest` que cala a url do achado.
 **Não** mais um relógio que cala a pausa.
 **Não** mais um Copiar que cala o destino.
+**Não** mais uma memória que cala o playtest.
 
 Candidatos, do que ainda dói:
 
@@ -1081,7 +1086,9 @@ Candidatos, do que ainda dói:
    `Fantasia:` antes de `Verbo:`. A frase não muda o verbo.
    `init_scope` só afirma rascunhos quando `documents` é verdadeiro;
    o `start` embute esse recibo.    Os dois escrevem `AGENTS.md` com
-   o serve; sem rascunhos a memória não lista GDD. `template agents`
+   o serve, o `note` e o `playtest`; sem rascunhos a memória não
+   lista GDD. O `playtest` só lê. Sem os quatro não é achado.
+   Nomear o leitor não observa. `template agents`
    e o `next` sem memória geram o mesmo texto.    `preproduction.md` (injetado pelo
    `context` no foco create e em `--stage`) ensina `start --idea`.
    `process.md` (primeiro `read_next` de todo foco) nomeia a porta e o
@@ -1910,6 +1917,12 @@ Candidatos, do que ainda dói:
   cala
   o
   destino
+  e uma
+  memória
+  que
+  cala
+  o
+  playtest
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -1933,10 +1946,10 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o Copiar
-nomeia o destino. O Gravar já virava Achado
-no disco; o botão calava e o convite some a
-tabela. Não promove `outsider`.
+Arquivos quentes da última sessão: a memória
+nomeia o playtest. O start já nomeava o serve
+e o note; a próxima sessão calava o leitor
+que o `next` já aponta. Não promove `outsider`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1980,3 +1993,4 @@ A família telefone que só retoma e não pausa está saturada.
 A família playtest que cala a url do achado está saturada.
 A família relógio que cala a pausa está saturada.
 A família Copiar que cala o destino está saturada.
+A família memória que cala o playtest está saturada.

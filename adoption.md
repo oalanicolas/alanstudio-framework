@@ -3,6 +3,50 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.309 — A memória nomeia o playtest
+
+O
+start
+já
+nomeava
+o
+serve
+e
+o
+note.
+A
+próxima
+sessão
+calava
+o
+leitor
+que
+o
+`next`
+já
+aponta.
+Agora
+o
+`AGENTS.md`
+nomeia
+o
+`playtest`.
+Só
+lê.
+Não
+promove
+`outsider`.
+
+O que 0.9.309 não afirma:
+comando
+no
+disco
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.308 — O Copiar nomeia o destino
 
 O

@@ -4867,6 +4867,24 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(game.scan(destination)["agent_context"]["status"], "found")
         self.assertEqual(game.next_step(destination)["proposal"]["basis"], "playable.unplayed")
 
+    def test_agents_memory_names_playtest_without_claiming_outsider(self):
+        destination = self.root / "memoria-do-achado"
+        game.start_project(destination, "canvas-arcade", idea="atravessar estilhaços")
+        text = (destination / "AGENTS.md").read_text(encoding="utf-8")
+        command = game.playtest_command(destination)
+        self.assertIn(command, text)
+        self.assertIn("Só lê", text)
+        self.assertIn("Sem os quatro não é achado", text)
+        self.assertIn("O que o verbo sentiu", text)
+        self.assertNotIn("docs/gdd.md", text)
+        self.assertNotRegex(text, r"outsider|aprovado|verified|alguém de fora")
+        self.assertEqual(text.count(command) >= 1, True, "o note sozinho calava o leitor")
+        rebuilt = game.template("agents", destination)
+        self.assertIn(command, rebuilt)
+        mold = (game.FRAMEWORK / "assets/templates/agents.md").read_text(encoding="utf-8")
+        self.assertIn("`playtest`", mold)
+        self.assertIn("Só lê", mold)
+
     def test_template_agents_reads_the_disk_instead_of_listing_missing_drafts(self):
         bare = self.root / "sem-memoria"
         bare.mkdir()

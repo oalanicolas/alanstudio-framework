@@ -71,7 +71,8 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    (ou `start <destino> --starter <starter> --idea "<fantasia>"`) monta
    o projeto — sem caminho, a frase nomeia e cria a pasta —, põe a
    frase na abertura e no aviso do primeiro ciclo, escreve `AGENTS.md`
-   com o comando que abre (não lista rascunhos que não plantou) e devolve o comando que abre o jogo.
+   com o comando que abre, o `note` e o `playtest` (não lista rascunhos que não plantou) e devolve o comando que abre o jogo.
+   O `playtest` só lê. Sem os quatro não é achado. Nomear o leitor não observa.
    Sem memória no disco, `template agents` e o `next` geram o mesmo
    texto a partir do que existe — não o molde que listava GDD.
    Perdeu o JSON? `play` (ou `open`) aponta o serve de novo, sem executar.

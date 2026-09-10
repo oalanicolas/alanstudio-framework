@@ -3454,6 +3454,10 @@ def note_command(project):
     return harness_command(*parts)
 
 
+def playtest_command(project):
+    return harness_command("playtest", project)
+
+
 # Exemplos coláveis do segundo ciclo. Os nomes não existem no starter:
 # nascer o par `noite` (look e chuva no mesmo nome) ou deslocar `dash`
 # é o que o `next` deixa de apontar quando o disco já tem um look, uma
@@ -3993,6 +3997,12 @@ def agents_memory_text(destination, play=None, starter=None, documents=False, id
         lines.append("- Rodar o jogo: o manifesto do projeto declara o comando.")
     lines.append(f"- De novo, sem executar: `{harness_command('play', destination)}`.")
     lines.append(f"- O que o verbo sentiu: `{note_command(destination)}`.")
+    # O start já nomeava o serve e o note. Sem isto a
+    # próxima sessão calava o leitor que o `next` já
+    # aponta. Só lê. Sem os quatro não é achado.
+    lines.append(
+        f"- O achado: `{playtest_command(destination)}`. Só lê. Sem os quatro não é achado."
+    )
     if destination.joinpath("package.json").is_file():
         lines.append(f"- Validadores: `cd {shlex.quote(str(destination))} && npm test`. Build verde não prova diversão.")
     lines.append("- Não publicar, não apagar saves e não rodar `python3 tools/design-sfx.py` sem `--from`.")
@@ -4047,7 +4057,8 @@ def init_scope(documents, idea=None):
     if documents:
         drafts = (
             " e criou rascunhos a partir dos templates. Escreveu AGENTS.md "
-            "com o comando que abre; não é GDD. O ciclo já abre: o primeiro "
+            "com o comando que abre, o note e o playtest; não é GDD. "
+            "O playtest só lê. O ciclo já abre: o primeiro "
             "comando apontado é o que serve o jogo, não o que preenche os rascunhos. "
             "`open` e `url` nomeiam o mesmo serve; o `prompt` também sai em stderr. "
         )
@@ -4061,7 +4072,8 @@ def init_scope(documents, idea=None):
     else:
         drafts = (
             " sem plantar os rascunhos do ciclo. Escreveu AGENTS.md com o "
-            "comando que abre; não é GDD nem rascunho. `start` faz o mesmo; "
+            "comando que abre, o note e o playtest; não é GDD nem rascunho. "
+            "O playtest só lê. `start` faz o mesmo; "
             "`init` sem `--no-docs` ou `start --docs` cria os rascunhos. O ciclo "
             "já abre: o primeiro comando apontado é o que serve o jogo. "
             "`open` e `url` nomeiam o mesmo serve; o `prompt` também sai em stderr. "
@@ -5149,7 +5161,7 @@ def next_step(project, focus="create", studies_root=None):
         propose(
             "Escrever as instruções para o agente na raiz do projeto (AGENTS.md)",
             "Sem AGENTS.md, convenções, comandos e limites ficam só na conversa e se perdem na próxima sessão; é a causa mais barata de retrabalho com IA.",
-            "AGENTS.md cita o comando que abre e o que o disco ainda não tem. Sem rascunhos plantados, não lista GDD.",
+            "AGENTS.md cita o comando que abre, o note, o playtest e o que o disco ainda não tem. Sem rascunhos plantados, não lista GDD.",
             [harness_command("template", "agents", "--project", project, "--output", project / "AGENTS.md")],
             "agent_context.not_located",
         )
