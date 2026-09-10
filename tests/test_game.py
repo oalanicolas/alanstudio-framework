@@ -202,6 +202,81 @@ class HarnessTest(unittest.TestCase):
         self.assertIn("origem sem recibo", report["scope"])
         self.assertNotIn("granted", report["scope"])
 
+    def test_the_review_names_the_dimension_signals_next_uses_without_choosing(self):
+        bare = self.root / "canvas-nu"
+        bare.mkdir()
+        (bare / "index.html").write_text("<canvas></canvas>")
+        fresh = self.root / "arcade-fresco"
+        game.init(fresh, "canvas-arcade", documents=False)
+        # Legenda no disco declara alcance; o pulso continua ausente. Sem a
+        # lista, este jogo saía igual ao starter no bool `access_declared`.
+        captions = self.root / "tem-legenda"
+        captions.mkdir()
+        (captions / "index.html").write_text("<canvas></canvas>")
+        (captions / "game.js").write_text("const captions = true;\n", encoding="utf-8")
+        report = game.review(self.root)
+        found = {Path(item["project"]).name: item for item in report["projects"]}
+        self.assertTrue(found["arcade-fresco"]["access_declared"])
+        self.assertTrue(found["tem-legenda"]["access_declared"])
+        self.assertEqual(found["arcade-fresco"]["signals"]["access_missing"], [])
+        self.assertIn("haptics", found["tem-legenda"]["signals"]["access_missing"])
+        self.assertEqual(
+            found["canvas-nu"]["signals"]["access_missing"],
+            game.next_step(bare)["signals"]["access_missing"],
+        )
+        self.assertEqual(
+            found["arcade-fresco"]["signals"]["access_missing"],
+            game.next_step(fresh)["signals"]["access_missing"],
+        )
+        self.assertEqual(
+            found["tem-legenda"]["signals"]["access_missing"],
+            game.next_step(captions)["signals"]["access_missing"],
+        )
+        self.assertEqual(
+            found["canvas-nu"]["signals"]["art_missing"],
+            game.next_step(bare)["signals"]["art_missing"],
+        )
+        self.assertTrue(found["canvas-nu"]["signals"]["art_missing"])
+        self.assertFalse(found["arcade-fresco"]["signals"]["art_missing"])
+        self.assertEqual(
+            found["canvas-nu"]["signals"]["content_inline"],
+            game.next_step(bare)["signals"]["content_inline"],
+        )
+        self.assertTrue(found["canvas-nu"]["signals"]["content_inline"])
+        self.assertFalse(found["arcade-fresco"]["signals"]["content_inline"])
+        self.assertEqual(
+            found["arcade-fresco"]["signals"]["audio_roles_empty"],
+            game.next_step(fresh)["signals"]["audio_roles_empty"],
+        )
+        self.assertEqual(found["arcade-fresco"]["signals"]["audio_roles_empty"], [])
+        self.assertEqual(
+            found["arcade-fresco"]["audio_roles_empty"],
+            len(found["arcade-fresco"]["signals"]["audio_roles_empty"]),
+        )
+        self.assertEqual(
+            found["canvas-nu"]["signals"]["save_unversioned"],
+            game.next_step(bare)["signals"]["save_unversioned"],
+        )
+        self.assertEqual(
+            found["canvas-nu"]["signals"]["performance_unbudgeted"],
+            game.next_step(bare)["signals"]["performance_unbudgeted"],
+        )
+        self.assertEqual(
+            found["canvas-nu"]["signals"]["ship_unpacked"],
+            game.next_step(bare)["signals"]["ship_unpacked"],
+        )
+        self.assertEqual(
+            found["arcade-fresco"]["signals"]["playtest_candidate"],
+            game.next_step(fresh)["signals"]["playtest_candidate"],
+        )
+        self.assertIsNone(found["arcade-fresco"]["signals"]["playtest_candidate"])
+        self.assertNotIn("proposal", found["canvas-nu"])
+        self.assertIn("lacunas de dimensão", report["scope"])
+        self.assertIn("origem sem recibo", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("granted", report["scope"])
+        self.assertFalse(game.access_reading(fresh)["verified"])
+
     def test_the_review_reads_the_bar_of_each_game_without_assigning_one(self):
         madura, _, _ = self.studio()
         self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS}, project=madura)

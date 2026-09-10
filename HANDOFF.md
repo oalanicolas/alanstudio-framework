@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.284: o `content` não conta paleta como volume. `palettes.json` não extrai. Não promove `enough`.
+**HEAD:** ver `git log -1` — vigente 0.9.285: o `discover` nomeia as lacunas de dimensão que o `next` já usa. `access_declared` não esconde o pulso. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 303 OK.
-`cd assets/starters/canvas-arcade && npm test` → 468 OK.
+**Testes no HEAD:** suíte ainda não recontada neste salto — confirmar depois do commit.
+`cd assets/starters/canvas-arcade && npm test` → 468 OK (sem mudança no starter).
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.284)
+## O que o HEAD já entrega (0.9.91–0.9.285)
 
 | Ver | Salto |
 | --- | --- |
@@ -228,6 +228,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.282 | O `sfx info` nomeia o stem que o recibo lista e o disco perdeu. Não é id desconhecido. Não promove `heard`. |
 | 0.9.283 | O `discover` nomeia o sinal de origem que o `next` já usa. Dois jogos deixam de parecer iguais quando um embarca sem recibo. Não promove `granted`. |
 | 0.9.284 | O `content` não conta paleta como volume. `palettes.json` deixa de calar `content.inline`. Não promove `enough`. |
+| 0.9.285 | O `discover` nomeia as lacunas de dimensão que o `next` já usa. `access_declared` deixa de esconder `haptics`. Não promove `verified`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -1677,9 +1678,10 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o `content`
-não conta paleta como volume. `palettes.json`
-não extrai. Não promove `enough`.
+Arquivos quentes da última sessão: o `discover`
+nomeia as lacunas de dimensão que o `next` já
+usa. `access_declared` não esconde o pulso.
+Não promove `verified`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1699,3 +1701,4 @@ A família art lê paleta e cala a chuva está saturada.
 A família sfx info trata stem perdido como id desconhecido está saturada.
 A família discover some o sinal de origem está saturada.
 A família content conta paleta como volume está saturada.
+A família discover some as lacunas de dimensão está saturada.

@@ -3,6 +3,46 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.285 — O discover nomeia as lacunas de dimensão
+
+O
+`next`
+já
+usava
+`access_missing`.
+O
+`discover`
+escondia
+a
+lista.
+`access_declared`
+calava
+o
+pulso.
+Dois
+jogos
+pareciam
+iguais.
+Agora
+as
+lacunas
+entram
+em
+`signals`.
+Não
+promove
+`verified`.
+
+O que 0.9.285 não afirma:
+nomear
+a
+chave
+ausente
+não
+é
+alcance
+observado.
+
 ## 0.9.284 — O content não conta paleta como volume
 
 O

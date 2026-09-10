@@ -566,10 +566,12 @@ def review(root, limit=REVIEW_LIMIT):
         # Contar constantes e rascunhos não diz qual jogo o `next` abriria.
         # Sem estes sinais, dois destinos com a mesma conta saíam iguais e
         # o laboratório pedia `next` em cada um só para escolher. Sinal no
-        # disco não é partida jogada.
+        # disco não é partida jogada. `access_declared` também esconde a
+        # lista: um jogo com legendas e sem pulso saía igual ao starter.
         play = play_command(path, commands, manager)
         missing = [key for key, area in areas.items() if area["status"] == "not_located"]
         noted = bool(feel_report["observations"])
+        kind = entry.get("kind")
         signals = {
             "playable_unplayed": fresh_starter_cycle(path, missing, play) and not noted,
             "cycle_craft": bool(noted and craft_commands(path) and not cycle_crafted(path)),
@@ -578,6 +580,14 @@ def review(root, limit=REVIEW_LIMIT):
             "playtest_invite": bool(noted and not playtest_report.get("invite")),
             "origins_undeclared": origins["undeclared"],
             "origins_contradicts_licensing": origins["contradicts_licensing"],
+            "access_missing": access_report["missing"] if kind else [],
+            "save_unversioned": persist_report["unversioned"],
+            "performance_unbudgeted": perf_report["unbudgeted"],
+            "art_missing": bool(kind) and not art_report["declared"],
+            "content_inline": content_report["inline"],
+            "ship_unpacked": ship_report["unpacked"],
+            "audio_roles_empty": roles["empty"],
+            "playtest_candidate": playtest_report.get("candidate"),
         }
         reviewed.append(dict(
             entry,
@@ -621,11 +631,13 @@ def review(root, limit=REVIEW_LIMIT):
         "scope": (
             "Conta documentos por localização e lê a declaração de degrau de cada projeto. "
             "Relata os mesmos sinais que o `next` usa para o primeiro ciclo, o ofício, "
-            "o feel sem recibo, o achado sem forma, o convite e a origem sem recibo. "
+            "o feel sem recibo, o achado sem forma, o convite, a origem sem recibo "
+            "e as lacunas de dimensão. "
             "Não executa jogo "
             "nenhum, não mede acabamento e não diz qual merece atenção primeiro. "
             "Sinal verdadeiro não é partida jogada nem alguém de fora. "
             "Lista de arquivo sem recibo não é licença. "
+            "Lista de chave ausente não é alcance observado. "
             "Área localizada é candidato "
             "por nome ou título, não conteúdo aprovado; degrau é o que o projeto afirma de si."
         ),
