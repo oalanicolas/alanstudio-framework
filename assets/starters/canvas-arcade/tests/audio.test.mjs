@@ -92,6 +92,15 @@ test("o fecho legendas sem fingir que o mix foi ouvido", () => {
   assert.equal(SOUNDS.close.priority < SOUNDS.over.priority, true);
 });
 
+test("a prática legendas sem fingir que o mix foi ouvido", () => {
+  const { audio } = build();
+  audio.play("live");
+  assert.equal(audio.captions()[0].text, "a chuva começa");
+  assert.equal(SOUNDS.live.bus, "ui");
+  assert.equal(SOUNDS.live.loop, undefined);
+  assert.equal("duckMs" in SOUNDS.live, false);
+});
+
 test("legenda desligada não produz legenda", () => {
   const { audio } = build({ settings: { buses: { master: 1 }, captions: false } });
   audio.play("hit");

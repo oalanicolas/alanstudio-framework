@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.86 — A prática também fala
+
+O campo já contornava a janela orbe-só e acendia na saída. O mixer
+calava: `live` não era papel. A voz e a legenda "a chuva começa"
+entram no barramento de UI, com variante. Nasceu com `--from live`,
+sem republicar o banco. `heard` continua falso. `audio_mix` permanece
+`slice`: arquivo no disco não é mix ouvido. Só `release` fica no
+piso.
+
+O que 0.9.86 não afirma: o harness não ouviu o tap e a legenda não
+aprova o mix.
+
 ## 0.9.85 — A prática também marca o campo
 
 A chuva já nascia orbe-só nos primeiros ticks. O campo calava: o

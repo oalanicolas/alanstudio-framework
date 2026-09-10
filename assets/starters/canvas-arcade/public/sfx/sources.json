@@ -144,6 +144,24 @@
       "license": "CC0-1.0",
       "origin": "tools/design-sfx.py",
       "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "live.wav",
+      "key": "live",
+      "title": "Canvas Arcade / live",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "live-b.wav",
+      "key": "live-b",
+      "title": "Canvas Arcade / live-b",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
     }
   ]
 }
