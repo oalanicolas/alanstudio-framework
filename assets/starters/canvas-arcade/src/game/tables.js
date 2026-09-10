@@ -11,7 +11,8 @@
 // tem consumidor: o coach do primeiro ciclo. `resume`, `restart` e
 // `hint_bank` reservam o lugar da tecla viva; `hint_dash` ensina o
 // avanço nas três superfícies quando o estilhaço marca o trilho;
-// `hint_touch` e `hint_pad` são o passo da superfície que falou.
+// `hint_touch` e `hint_pad` são o passo da superfície que falou;
+// `hint_miss` nomeia a queda quando a corrente ainda é zero.
 // Overlay e HUD confirmam o aparelho que falou por último.
 // `palettes` tem consumidor: o desenho lê
 // `PALETTES` daqui, não uma constante no render. `look` escolhe um
@@ -133,6 +134,7 @@ export const COPY_FIELDS = [
   "hint_touch",
   "hint_pad",
   "hint_collect",
+  "hint_miss",
   "hint_bank",
 ];
 

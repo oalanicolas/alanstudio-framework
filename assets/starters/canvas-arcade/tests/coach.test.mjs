@@ -84,3 +84,24 @@ test("estilhaço no trilho vence o passo da superfície", () => {
   state.entities = [shardOnRail()];
   assert.equal(coachHint(state, {}, { surface: "pointer" }), "dash");
 });
+
+test("orbe perdido nomeia o custo enquanto a corrente é zero", () => {
+  const state = createState(1);
+  state.tick = 90;
+  state.stats.missed = 1;
+  assert.equal(coachHint(state), "miss");
+  state.chain = 1;
+  assert.equal(coachHint(state), "collect");
+  state.chain = 3;
+  assert.equal(coachHint(state), "bank");
+  state.stats.banks = 1;
+  assert.equal(coachHint(state), null);
+});
+
+test("estilhaço no trilho vence a queda", () => {
+  const state = createState(1);
+  state.tick = 90;
+  state.stats.missed = 1;
+  state.entities = [shardOnRail()];
+  assert.equal(coachHint(state), "dash");
+});

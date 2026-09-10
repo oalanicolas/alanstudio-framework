@@ -4,7 +4,8 @@
 //
 // Mover, coletar e guardar já tinham passo. O dash — o verbo que a
 // fantasia nomeia — e o mapa da superfície que falou ficavam só na
-// tabela. Passo no campo não é sessão observada.
+// tabela. A queda do orbe falava e marcava o lugar; o aviso não
+// nomeava o custo. Passo no campo não é sessão observada.
 
 import { approaching } from "./rules.js";
 
@@ -28,6 +29,7 @@ export function coachHint(state, lines = {}, extra = {}) {
   if (state.chain >= 2) return "bank";
   if (state.tick < MOVE_TICKS) return "move";
   if ((state.stats.dashes ?? 0) === 0 && shardThreat(state)) return "dash";
+  if ((state.stats.missed ?? 0) > 0 && (state.chain ?? 0) === 0) return "miss";
   const surface = extra.surface;
   if (state.tick < SURFACE_TICKS && (surface === "pointer" || surface === "gamepad")) {
     return surface === "pointer" ? "touch" : "pad";

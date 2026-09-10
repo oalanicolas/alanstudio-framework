@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.97 — O aviso também nomeia o orbe perdido
+
+A queda já falava e marcava o lugar. O aviso do primeiro
+ciclo pedia coletar como se nada tivesse caído. Enquanto a
+corrente é zero, o custo ganha passo. Depois da primeira
+guarda o ensino some. `felt` continua falso. Só `release`
+fica no piso.
+
+O que 0.9.97 não afirma: o harness não perdeu o orbe e o
+aviso não é peso percebido.
+
 ## 0.9.96 — O start também nomeia a pasta
 
 `guide --idea` já nomeava a pasta e não criava. `start`

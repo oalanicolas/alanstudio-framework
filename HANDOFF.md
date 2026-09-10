@@ -21,7 +21,7 @@ dentro desta árvore. `guide --idea` continua só no comando. `start` devolve `p
 `then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo,
 as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look, chuva, par e convite. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia par, look, chuva e voz; se declara `session`, `then` a aponta. Depois de um recibo, o prompt e o `next` (`cycle.craft`) apontam o ofício. O autor do `note` é sugestão do git ou do ambiente, não quem jogou. Nomear o ofício não pinta. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
 `next` ainda propõe `playable.unplayed` se você estiver perdido. O
-starter ensina mover, avançar, coletar e guardar no campo; toque e
+starter ensina mover, avançar, coletar, o orbe perdido e guardar no campo; toque e
 controle ganham passo quando falam. O art-bible vigente
 não é reescrito. `--idea` entra no brief e, se houver `data/copy.json`,
 na tela do primeiro ciclo. O brief continua rascunho. A frase na tela
