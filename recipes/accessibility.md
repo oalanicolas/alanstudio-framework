@@ -84,7 +84,8 @@ come a tecla que escolhe o verbo — Espaço não avança enquanto a pessoa
 escolhe. O botão focado também é casca: Espaço ativa o controle
 e não avança. Botão no disco não é sessão. `gameSpeed` dilata o
 acumulador em `src/core/loop.js` só na partida; a porta e o fim ficam no
-relógio cheio. `advance()` headless não passa por ele. `assist` cede queda e
+relógio cheio. A cama segue o relógio da sessão; coleta e guarda
+guardam o tom da aposta. `advance()` headless não passa por ele. `assist` cede queda e
 alcance também na mostra da porta; a graça extra fica no campo. `reducedMotion`
 na porta trava canvas, toque e aviso vivo na mesma chuva parada. `colorblind`
 não esmaga a chuva do look que já separa quente e frio; o par do

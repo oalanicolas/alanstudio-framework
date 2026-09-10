@@ -613,6 +613,17 @@ export function bedRateFor(state, config = CONFIG) {
   return 1 + pulse.fill * (top - 1);
 }
 
+// O knob dilata o laço. Sem isto a cama corria no
+// relógio cheio e o campo andava lento. Só a cama:
+// coleta e guarda guardam o tom da aposta. Título e
+// fim passam speed 1 — o caller é o relógio da sessão.
+// Número no disco não é mix ouvido.
+export function sessionBedRate(state, speed = 1, config = CONFIG) {
+  const bed = bedRateFor(state, config);
+  const clock = Number.isFinite(speed) && speed > 0 ? speed : 1;
+  return bed * clock;
+}
+
 export function practicingWindow(state) {
   if (!state || state.phase !== "playing") return false;
   const ticks = rain(state).practiceTicks;

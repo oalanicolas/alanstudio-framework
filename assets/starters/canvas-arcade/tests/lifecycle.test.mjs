@@ -830,6 +830,54 @@ test("com tela o hold retoma o tick e não a porta", () => {
   again.dispose();
 });
 
+test("a cama segue o relógio da sessão sem fingir mix ouvido", () => {
+  const rates = [];
+  const audio = {
+    play() {
+      return true;
+    },
+    stop() {},
+    update(extra = {}) {
+      if (Number.isFinite(extra.bedRate)) rates.push(extra.bedRate);
+    },
+    captions() {
+      return [];
+    },
+    unlock() {},
+    applySettings() {},
+    missing() {
+      return { declared: [], registered: [] };
+    },
+    dispose() {},
+  };
+  const { game } = harness({ audio });
+  game.updateSettings({ gameSpeed: 0.5 });
+  assert.equal(rates.at(-1), 0.5, "na partida a cama dilata com o knob");
+  game.updateSettings({ gameSpeed: 1 });
+  assert.equal(rates.at(-1), 1);
+  assert.equal(game.persist.trusted, false);
+  game.dispose();
+
+  const titleRates = [];
+  const title = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    canvas: silentCanvas(),
+    loadSfx: false,
+    audio: {
+      ...audio,
+      update(extra = {}) {
+        if (Number.isFinite(extra.bedRate)) titleRates.push(extra.bedRate);
+      },
+    },
+  });
+  assert.equal(title.observe().phase, "title");
+  title.updateSettings({ gameSpeed: 0.5 });
+  assert.equal(titleRates.at(-1), 1, "na porta a cama fica no relógio cheio");
+  title.dispose();
+});
+
 test("advance ignora a velocidade da partida", () => {
   const { game } = harness();
   game.updateSettings({ gameSpeed: 0.5 });

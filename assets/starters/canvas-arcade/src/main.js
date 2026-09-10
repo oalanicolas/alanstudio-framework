@@ -20,7 +20,7 @@ import { createRenderer } from "./game/render.js";
 import { createTrace, finishCurve, traceTick } from "./game/curve.js";
 import { applyLive, liveText } from "./core/live.js";
 import { bindLines } from "./core/keys.js";
-import { advance as advanceRules, attractMove, attractTick, attractTouch, beginRun, bedRateFor, createState, restoreState, neutralIntent, threatCue, FIELD, TICK_HZ } from "./game/rules.js";
+import { advance as advanceRules, attractMove, attractTick, attractTouch, beginRun, sessionBedRate, createState, restoreState, neutralIntent, threatCue, FIELD, TICK_HZ } from "./game/rules.js";
 import { copy, resolveLookName, resolveMoodName, resolveSpawnName } from "./game/tables.js";
 import { coachHint, coachText } from "./game/coach.js";
 
@@ -146,6 +146,7 @@ export function createGame(options = {}) {
   }
   function syncClock() {
     loop.setSpeed(clockSpeed());
+    audio.update({ bedRate: sessionBedRate(state, clockSpeed()) });
   }
   function syncDashOnPress() {
     // A porta pede mover. Sem isto o toque de cima abria o
@@ -311,7 +312,7 @@ export function createGame(options = {}) {
 
   function present(frame) {
     readCommands();
-    audio.update({ bedRate: bedRateFor(state) });
+    audio.update({ bedRate: sessionBedRate(state, clockSpeed()) });
     const captions = audio.captions();
     const surface = input.lastSource;
     const bound = bindLines(copy, settings.bindings ?? DEFAULT_BINDINGS, surface);

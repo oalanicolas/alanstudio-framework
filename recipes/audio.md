@@ -160,7 +160,8 @@ starter `canvas-arcade` inclui design original em `public/sfx`.
 `src/game/audio.js` do starter `canvas-arcade` traz barramentos, prioridade, ducking
 só na cama (`music`), limite de vozes, rodízio de variantes e legenda.
 O aviso crítico não some o próprio verbo. Os papéis do verbo e a
-cama (`bed`, loop no barramento de música), o fecho (`close`, tap e
+cama (`bed`, loop no barramento de música; o relógio da sessão dilata
+a cama só na partida — o fecho sobe em cima dele), o fecho (`close`, tap e
 legenda "últimos segundos"), a prática (`live`, "a chuva começa"),
 a guarda (`stir`, "a chuva volta") e o orbe perdido (`missed`,
 "orbe perdido") têm design original e variante

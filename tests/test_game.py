@@ -3280,6 +3280,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(perf["measured"])
         self.assertIn("budget", perf["scripts"])
 
+    def test_audio_recipe_names_the_session_clock_the_bed_already_follows(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        declared = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/docs/access.md"
+        ).read_text(encoding="utf-8")
+        rules = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/src/game/rules.js"
+        ).read_text(encoding="utf-8")
+        main = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/src/main.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("relógio da sessão", recipe.casefold())
+        self.assertIn("relógio da sessão", access.casefold())
+        self.assertIn("relógio da sessão", declared.casefold())
+        self.assertIn("sessionBedRate", rules)
+        self.assertIn("sessionBedRate", main)
+        self.assertNotIn("aprovado", access)
+        self.assertNotIn("aprovado", declared)
+        reach = game.access_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        self.assertFalse(reach["verified"])
+
     def test_access_recipe_names_the_pulse_the_starter_already_has(self):
         recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
         declared = (

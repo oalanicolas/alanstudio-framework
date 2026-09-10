@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, attractEntities, attractMove, attractTick, attractTouch, beginRun, bedRateFor, createState, entityPoolStats, eventPoolStats, lookAhead, motePoolStats, rngPoolStats, neutralIntent, CONFIG, FIELD, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnHazardChance, spawnIntervalScale, threatCue } from "../src/game/rules.js";
+import { advance, approaching, attractEntities, attractMove, attractTick, attractTouch, beginRun, bedRateFor, sessionBedRate, createState, entityPoolStats, eventPoolStats, lookAhead, motePoolStats, rngPoolStats, neutralIntent, CONFIG, FIELD, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnHazardChance, spawnIntervalScale, threatCue } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -1853,4 +1853,25 @@ test("a cama sobe o tom no fecho sem fingir mix ouvido", () => {
   ended.phase = "over";
   ended.tick = CONFIG.runTicks;
   assert.equal(bedRateFor(ended), 1);
+});
+
+test("a cama segue o relógio da sessão sem fingir mix ouvido", () => {
+  const mid = createState(3);
+  mid.tick = 1800;
+  assert.equal(sessionBedRate(mid, 1), 1);
+  assert.equal(sessionBedRate(mid, 0.5), 0.5, "antes do fecho a cama dilata com o knob");
+  assert.equal(sessionBedRate(mid, 0), 1, "relógio oco não inventa parada");
+
+  const late = createState(3);
+  late.tick = CONFIG.runTicks - 30;
+  const full = bedRateFor(late);
+  assert.ok(full > 1);
+  assert.equal(sessionBedRate(late, 1), full);
+  assert.equal(sessionBedRate(late, 0.5), full * 0.5, "o fecho sobe em cima do relógio da sessão");
+  assert.equal(sessionBedRate(late), full, "sem speed a cama fica no fecho puro");
+
+  const ended = createState(3);
+  ended.phase = "over";
+  ended.tick = CONFIG.runTicks;
+  assert.equal(sessionBedRate(ended, 0.5), 0.5, "o caller passa 1 no fim — a função não adivinha a fase");
 });

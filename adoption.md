@@ -3,6 +3,45 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.287 — A cama segue o relógio da sessão
+
+O
+knob
+já
+dilatava
+o
+laço.
+A
+cama
+corria
+no
+relógio
+cheio.
+Agora
+`sessionBedRate`
+compõe
+fecho
+e
+knob.
+Coleta
+e
+guarda
+guardam
+o
+tom.
+Não
+promove
+`heard`.
+
+O que 0.9.287 não afirma:
+dilatar
+a
+cama
+não
+é
+mix
+ouvido.
+
 ## 0.9.286 — O controle que some não deixa a partida correr
 
 O

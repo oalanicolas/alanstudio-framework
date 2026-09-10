@@ -5,7 +5,9 @@
 // gerados por tools/design-sfx.py. O mixer alterna as variantes do verbo.
 // A cama (`bed`) ocupa o barramento de música em loop; não é informação
 // de jogo e não ganha legenda. No fecho o mixer desloca o tom da cama
-// (`bedRate`); número no disco não é mix ouvido.
+// (`bedRate`); o relógio da sessão (`gameSpeed`) dilata a
+// mesma cama só na partida — coleta e guarda guardam o tom
+// da aposta. Número no disco não é mix ouvido.
 // 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão — esses
 // arquivos não usam nenhum dos quatro. Coleta e guarda sobem de tom
 // com a corrente; o erro não herda o tom. A legenda desses dois papéis
