@@ -134,6 +134,45 @@ class HarnessTest(unittest.TestCase):
         self.assertFalse(found["ideia-do-farol"]["ship_unpacked"])
         self.assertTrue(found["ideia-do-farol"]["content_inline"])
         self.assertFalse(found["ideia-do-farol"]["art_declared"])
+        # Só a web declara `serve`. Sem o sinal, os três saíam iguais na
+        # conta de feel e o laboratório pedia `next` em cada um.
+        self.assertTrue(found["corrida-lunar"]["signals"]["playable_unplayed"])
+        self.assertFalse(found["era-uma-vez"]["signals"]["playable_unplayed"])
+        self.assertFalse(found["ideia-do-farol"]["signals"]["playable_unplayed"])
+        self.assertFalse(found["corrida-lunar"]["signals"]["feel_unobserved"])
+        self.assertNotIn("proposal", found["corrida-lunar"])
+
+    def test_the_review_names_the_signals_next_uses_without_choosing(self):
+        fresh = self.root / "ainda-nao-jogou"
+        game.init(fresh, "canvas-arcade", documents=False)
+        written = self.root / "ja-escreveu-o-brief"
+        game.init(written, "canvas-arcade", documents=False)
+        (written / "docs").mkdir(exist_ok=True)
+        (written / "docs/brief.md").write_text(
+            "# Visão e escopo\n\nO jogador atravessa estilhaços.\n",
+            encoding="utf-8",
+        )
+        report = game.review(self.root)
+        found = {Path(item["project"]).name: item for item in report["projects"]}
+        self.assertEqual(
+            found["ainda-nao-jogou"]["feel_observations"],
+            found["ja-escreveu-o-brief"]["feel_observations"],
+        )
+        self.assertTrue(found["ainda-nao-jogou"]["signals"]["playable_unplayed"])
+        self.assertFalse(found["ja-escreveu-o-brief"]["signals"]["playable_unplayed"])
+        self.assertTrue(found["ja-escreveu-o-brief"]["signals"]["feel_unobserved"])
+        self.assertEqual(
+            found["ainda-nao-jogou"]["signals"]["playable_unplayed"],
+            game.next_step(fresh)["signals"]["playable_unplayed"],
+        )
+        self.assertEqual(
+            found["ja-escreveu-o-brief"]["signals"]["feel_unobserved"],
+            game.next_step(written)["signals"]["feel_unobserved"],
+        )
+        self.assertNotIn("proposal", found["ainda-nao-jogou"])
+        self.assertIn("não classifica os jogos por urgência", report["order"])
+        self.assertIn("Sinal verdadeiro não é partida jogada", report["scope"])
+        self.assertNotIn("verified", report["scope"])
 
     def test_the_review_reads_the_bar_of_each_game_without_assigning_one(self):
         madura, _, _ = self.studio()
@@ -178,6 +217,7 @@ class HarnessTest(unittest.TestCase):
         # Um projeto ilegível não pode derrubar a revisão do laboratório inteiro,
         # nem sair da lista como se não existisse.
         self.assertEqual(found["manifesto-torto"]["validators"], [])
+        self.assertFalse(found["manifesto-torto"]["signals"]["playable_unplayed"])
         self.assertIn("inteiro", found)
         broken = game.feel_reading(quebrado)
         self.assertNotIn("play", broken["then"])

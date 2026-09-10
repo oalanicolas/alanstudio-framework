@@ -548,8 +548,10 @@ def review(root, limit=REVIEW_LIMIT):
         # `next`: campo de template em branco não é trabalho interrompido.
         registered = [item for item in found["continuity_sources"] if item["status"] != "draft"]
         try:
-            scripts = validators(project_commands(path)[0])
+            commands, manager = project_commands(path)
+            scripts = validators(commands)
         except ValueError:
+            commands, manager = {}, None
             scripts = []
         origins = origins_reading(path)
         roles = roles_reading(path, root)
@@ -561,6 +563,20 @@ def review(root, limit=REVIEW_LIMIT):
         content_report = content_reading(path)
         ship_report = ship_reading(path)
         playtest_report = playtest_reading(path)
+        # Contar constantes e rascunhos não diz qual jogo o `next` abriria.
+        # Sem estes sinais, dois destinos com a mesma conta saíam iguais e
+        # o laboratório pedia `next` em cada um só para escolher. Sinal no
+        # disco não é partida jogada.
+        play = play_command(path, commands, manager)
+        missing = [key for key, area in areas.items() if area["status"] == "not_located"]
+        noted = bool(feel_report["observations"])
+        signals = {
+            "playable_unplayed": fresh_starter_cycle(path, missing, play) and not noted,
+            "cycle_craft": bool(noted and craft_commands(path) and not cycle_crafted(path)),
+            "feel_unobserved": feel_report["unobserved"],
+            "playtest_unstructured": playtest_report["unstructured"],
+            "playtest_invite": bool(noted and not playtest_report.get("invite")),
+        }
         reviewed.append(dict(
             entry,
             areas_located=len(located),
@@ -587,6 +603,7 @@ def review(root, limit=REVIEW_LIMIT):
             ship_unpacked=ship_report["unpacked"],
             playtest_expected=playtest_report["expected"],
             playtest_structured=playtest_report["structured"],
+            signals=signals,
         ))
     return {
         "schema_version": 1,
@@ -600,8 +617,12 @@ def review(root, limit=REVIEW_LIMIT):
         # observa isso. A ordem é a do disco, e a escolha continua sendo de quem lê.
         "order": "caminho, em ordem determinística; o harness não classifica os jogos por urgência",
         "scope": (
-            "Conta documentos por localização e lê a declaração de degrau de cada projeto. Não executa jogo "
-            "nenhum, não mede acabamento e não diz qual merece atenção primeiro. Área localizada é candidato "
+            "Conta documentos por localização e lê a declaração de degrau de cada projeto. "
+            "Relata os mesmos sinais que o `next` usa para o primeiro ciclo, o ofício, "
+            "o feel sem recibo, o achado sem forma e o convite. Não executa jogo "
+            "nenhum, não mede acabamento e não diz qual merece atenção primeiro. "
+            "Sinal verdadeiro não é partida jogada nem alguém de fora. "
+            "Área localizada é candidato "
             "por nome ou título, não conteúdo aprovado; degrau é o que o projeto afirma de si."
         ),
     }

@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.205 (confirmado): o segundo estilhaço do mesmo quadro já é graça.
+**HEAD:** ver `git log -1` — vigente 0.9.206: o `discover` nomeia os sinais que o `next` já usa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 274 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 275 esperados (confirmar).
 `cd assets/starters/canvas-arcade && npm test` → 384 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.205)
+## O que o HEAD já entrega (0.9.91–0.9.206)
 
 | Ver | Salto |
 | --- | --- |
@@ -149,6 +149,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.203 | Design system, ambição, barra, checklist e os pacotes de gênero nomeiam a porta. O `context` já os injeta. Não promove feel. |
 | 0.9.204 | O quadro do `land` também atravessa. A recuperação depois continua vulnerável. Sem punch novo. Não promove feel. |
 | 0.9.205 | O segundo estilhaço do mesmo quadro já é graça. Relê `invuln` depois do `hit()`. Sem janela nova. Não promove feel. |
+| 0.9.206 | `discover` / `review` nomeiam os mesmos sinais que o `next` usa. Sem proposta. Sem urgência. Não promove `observed`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -271,7 +272,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou conversão da guarda que é janela de hit
   ou mapa canônico que some a porta
   ou land que é janela de hit
-  ou segundo estilhaço do mesmo quadro que é segundo hit.
+  ou segundo estilhaço do mesmo quadro que é segundo hit
+  ou discover que some o sinal do next.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -622,6 +624,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um mapa que o `context` injeta ensinando o verbo só no campo.
 **Não** mais um quadro do land que mata depois do dash já ter atravessado.
 **Não** mais um segundo estilhaço do mesmo quadro que mata depois da graça já ter nascido.
+**Não** mais um `discover` que some o sinal que o `next` já usa para escolher o jogo.
 
 Candidatos, do que ainda dói:
 
@@ -658,10 +661,13 @@ Candidatos, do que ainda dói:
    aponta a página e `note --field`, não relê o
    leitor.    Sem acervo, `roles --fill` nomeia o stem
    do starter; `--apply` não o copia; `next` aponta
-   `sfx copy`. `feel`
+   `sfx copy`.    `feel`
    nomeia `then.play` e `then.note` sem
    executar. Sem serve a chave some. Sem
-   `prompt`. `len(steps) == 3`
+   `prompt`. `discover` nomeia os mesmos
+   sinais que o `next` usa, sem propor e
+   sem ranquear. Sinal verdadeiro não é
+   partida jogada. `len(steps) == 3`
    e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
    volátil e gravação recusada. `save` relata `warned` se o
@@ -830,6 +836,10 @@ Candidatos, do que ainda dói:
   mesmo quadro
   que é
   segundo hit
+  e o
+  discover que
+  some o sinal
+  do next
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -853,6 +863,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o segundo estilhaço
-do mesmo quadro já é graça. Relê `invuln` depois do
-`hit()`. Sem janela nova. Não promove feel.
+Arquivos quentes da última sessão: o `discover` nomeia
+os sinais que o `next` já usa. Sem proposta. Sem
+urgência. Não promove `observed`.

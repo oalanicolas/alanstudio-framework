@@ -3,6 +3,44 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.206 — O discover nomeia os sinais do next
+
+O
+`discover`
+já contava
+constantes e
+rascunhos.
+Dois jogos
+com a mesma
+conta saíam
+iguais. O
+laboratório
+pedia `next`
+em cada um
+só para
+escolher.
+Agora relata
+os mesmos
+sinais que o
+`next` usa.
+Sem proposta.
+Sem urgência.
+Sinal
+verdadeiro
+não é
+partida
+jogada.
+`observed`
+continua
+falso. Só
+`release`
+fica no piso.
+
+O que 0.9.206 não afirma:
+flag no disco
+não é sessão
+observada.
+
 ## 0.9.205 — O segundo estilhaço do mesmo quadro já é graça
 
 A graça
