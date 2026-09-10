@@ -15,7 +15,9 @@ reiniciar; R já saía e o overlay calava. A região viva
 espelha continuar e reiniciar. Na porta o telefone vê
 Jogar: toque sem ter apertado; o aviso continua teclado
 até o gesto. Depois do tap a porta e o fim não chamam
-o avanço de cima. Soltar no disco não é
+o avanço de cima. Depois da partida o telefone pede
+seed nova embaixo; o campo repete a última. A primeira
+visita continua abrindo na faixa. Soltar no disco não é
 sessão observada. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured` e aponta a página

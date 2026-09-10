@@ -165,6 +165,12 @@ export function createGame(options = {}) {
     if (typeof input.setDashOnPress === "function") {
       input.setDashOnPress(state.phase !== "title" && !pausedNow());
     }
+    if (typeof input.setTitleNewOnBank === "function") {
+      // Depois da partida o tap no campo repete. A faixa
+      // de baixo pede seed nova. Na primeira visita a
+      // faixa continua abrindo. Toque no disco não é felt.
+      input.setTitleNewOnBank(state.phase === "title" && doorOpen());
+    }
   }
   function emitPhase() {
     if (state.phase === lastPhase) return;

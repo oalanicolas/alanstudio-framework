@@ -790,6 +790,14 @@ test("a abertura nomeia a fantasia, o recorde e a última seed", () => {
   assert.ok(back.texts.some((item) => item.text.includes("Recorde") && item.text.includes("18")));
   assert.ok(back.texts.some((item) => item.text.includes("Repetir a última")));
   assert.ok(back.texts.some((item) => item.text.includes("Nova partida")));
+  const phone = paint(
+    state,
+    {},
+    { best: 18, canContinue: true, lastRun: { score: 7 }, surface: "door" },
+  );
+  assert.ok(phone.texts.some((item) => item.text.includes("Nova partida: baixo")));
+  assert.ok(phone.texts.some((item) => item.text.includes("Repetir a última: toque")));
+  assert.equal(phone.texts.some((item) => String(item.text).includes("Nova partida: R")), false);
   assert.ok(hudBands(back) <= hudBands(paint(createState(1))), "a abertura não inventa faixa no HUD");
 });
 

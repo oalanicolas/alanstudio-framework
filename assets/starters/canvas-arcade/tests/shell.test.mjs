@@ -403,6 +403,58 @@ test("o telefone vê Jogar: toque na porta sem ter apertado", () => {
   game.dispose();
 });
 
+test("depois da partida o telefone pede seed nova embaixo", () => {
+  const listeners = [];
+  const view = textCanvas();
+  const canvas = {
+    ...view.canvas,
+    getBoundingClientRect() {
+      return { left: 0, top: 0, width: 360, height: 640 };
+    },
+    addEventListener(type, handler) {
+      listeners.push({ type, handler });
+    },
+    removeEventListener(type, handler) {
+      const index = listeners.findIndex((entry) => entry.type === type && entry.handler === handler);
+      if (index !== -1) listeners.splice(index, 1);
+    },
+    dispatch(type, event) {
+      for (const entry of [...listeners]) {
+        if (entry.type === type) entry.handler(event);
+      }
+    },
+  };
+  const { game, frame } = shell({
+    canvas,
+    loadSfx: false,
+    environment: { pointer: { coarse: true } },
+  });
+  game.start();
+  frame();
+  game.act({ dash: true });
+  game.advance(1);
+  game.advance(CONFIG.runTicks);
+  assert.equal(game.observe().phase, "over");
+  const lastSeed = game.observe().seed;
+  game.reset();
+  assert.equal(game.observe().phase, "title");
+  frame();
+  assert.ok(
+    view.texts.some((text) => String(text).includes("Nova partida: baixo")),
+    `esperava baixo: ${JSON.stringify(view.texts)}`,
+  );
+  assert.ok(
+    view.texts.some((text) => /Repetir a última: toque/.test(String(text))),
+    "o campo continua repetindo",
+  );
+  canvas.dispatch("pointerdown", { clientX: 180, clientY: 560, pointerId: 1 });
+  canvas.dispatch("pointerup", { pointerId: 1 });
+  frame();
+  assert.equal(game.observe().phase, "playing", "o baixo precisa abrir seed nova");
+  assert.notEqual(game.observe().seed, lastSeed, "baixo não repete a última");
+  game.dispose();
+});
+
 test("depois do tap a porta não chama o avanço de cima", () => {
   const listeners = [];
   const view = textCanvas();

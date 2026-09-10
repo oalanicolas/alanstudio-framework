@@ -8,9 +8,10 @@
 // Overlay e HUD confirmam o aparelho que falou por último.
 // Na porta o telefone ainda não falou: a placa usa a
 // superfície `door` quando o ponteiro é grosso.
-// Na pausa a placa usa `pointer` — o token é pause, não
-// dash. Reiniciar continua R. Rótulo no texto não é
-// sessão observada.
+// Depois da partida `door.reset` é baixo — a faixa pede
+// seed nova. Na pausa a placa usa `pointer` — o token é
+// pause, não dash. Reiniciar continua R. Rótulo no texto
+// não é sessão observada.
 
 const NAMED = {
   Space: "Espaço",
@@ -110,6 +111,11 @@ const SURFACE_TOKENS = {
   // Superfície no disco não é sessão observada.
   door: {
     dash: "toque",
+    // Depois da partida o tap no campo repete a seed.
+    // R não existe no polegar. A faixa de baixo — a
+    // mesma da guarda no campo — pede seed nova.
+    // Superfície no disco não é sessão observada.
+    reset: "baixo",
   },
 };
 

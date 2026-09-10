@@ -76,7 +76,7 @@ test("a porta do telefone nomeia toque sem promover lastSource", () => {
   assert.equal(lines.title_play, "Jogar: toque");
   assert.equal(lines.title_again, "Repetir a última: toque");
   assert.equal(lines.over_door, "Abertura: toque");
-  assert.equal(lines.title_new, "Nova partida: R");
+  assert.equal(lines.title_new, "Nova partida: baixo");
   assert.equal(lines.hint_move, "←/→, arraste ou analógico");
   assert.equal(lines.hint_touch, copy.hint_touch);
 });

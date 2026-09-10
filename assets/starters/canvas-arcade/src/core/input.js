@@ -8,7 +8,9 @@
 // no vazio. Pedir resume não é mix ouvido. O aparelho pode
 // recusar o gesto do pad — `heard` continua falso.
 // Na porta o arraste move sem abrir; o tap abre — inclusive
-// na faixa da guarda. Sem isto o polegar no primeiro gesto
+// na faixa da guarda, na primeira visita. Depois da partida
+// a mesma faixa pede seed nova; o campo repete a última.
+// Sem isto o polegar no primeiro gesto
 // caía na faixa e a porta calava. No campo o down de cima
 // continua o avanço; a faixa inferior continua guardando.
 // O avanço é o aperto, não o segurar: teclado, toque e A do
@@ -108,6 +110,11 @@ export function createInput(options = {}) {
   // do quadro. Na porta o mesmo down abria o ciclo e o aviso
   // de mover mentia. Arraste no disco não é sessão observada.
   let dashOnPress = true;
+  // Na primeira visita o tap de baixo também abre.
+  // Depois da partida a mesma faixa pede seed nova —
+  // R não existe no polegar. Sem isto o toque só
+  // repetia. Superfície no disco não é sessão.
+  let titleNewOnBank = false;
 
   function noteSource(source) {
     lastSource = source;
@@ -269,8 +276,12 @@ export function createInput(options = {}) {
       && !pointer.dragged
       && pointer.originY !== null
     ) {
-      pointer.dash = true;
-      pressed.add("dash");
+      if (titleNewOnBank && pointer.originY > 0.82) {
+        pressed.add("reset");
+      } else {
+        pointer.dash = true;
+        pressed.add("dash");
+      }
     } else {
       pointer.dash = false;
     }
@@ -396,6 +407,10 @@ export function createInput(options = {}) {
     setDashOnPress(next) {
       dashOnPress = next !== false;
       return dashOnPress;
+    },
+    setTitleNewOnBank(next) {
+      titleNewOnBank = next === true;
+      return titleNewOnBank;
     },
     rebind(action, codes) {
       if (!(action in bindings) || !Array.isArray(codes) || !codes.length) return false;

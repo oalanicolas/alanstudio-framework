@@ -61,7 +61,8 @@ Na pausa o toque retoma — Esc e P não existem no polegar.
 A placa da pausa nomeia reiniciar; R já saía e o overlay calava.
 A região viva espelha continuar e reiniciar — o overlay do canvas
 não chega ao leitor.
-Na porta o telefone vê Jogar: toque sem ter apertado; o aviso
+Na porta o telefone vê Jogar: toque sem ter apertado. Depois da
+partida o baixo pede seed nova; o campo repete a última. O aviso
 do primeiro ciclo continua teclado até o gesto. Depois do
 tap a porta e o fim não chamam o avanço de cima.
 O overlay e a casca da página seguem `uiScale` e as legendas vencem a cortina no stub. Estilhaço no

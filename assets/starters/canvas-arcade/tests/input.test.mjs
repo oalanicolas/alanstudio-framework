@@ -93,6 +93,28 @@ test("na porta o tap na faixa da guarda também abre", () => {
   input.dispose();
 });
 
+test("depois da partida a faixa de baixo pede seed nova", () => {
+  const pad = surface();
+  const input = createInput({ target: null, surface: pad });
+  input.setDashOnPress(false);
+  assert.equal(input.setTitleNewOnBank(true), true);
+  pad.tap(160, 160);
+  const down = input.intent(0.5);
+  assert.equal(down.dash, false, "o down na faixa não abre");
+  assert.equal(down.bank, true, "o down ainda marca a guarda");
+  pad.dispatch("pointerup", {});
+  const tap = input.intent(0.5);
+  assert.equal(tap.dash, false, "o tap de baixo não repete a seed");
+  assert.equal(tap.bank, false);
+  assert.equal(input.commands().reset, true, "a faixa pede seed nova");
+  pad.tap(160, 90);
+  pad.dispatch("pointerup", {});
+  const field = input.intent(0.5);
+  assert.equal(field.dash, true, "o tap no campo ainda abre");
+  assert.equal(input.commands().reset, false);
+  input.dispose();
+});
+
 test("segurar o avanço não dispara de novo", () => {
   const keys = surface();
   const input = createInput({ target: keys, surface: null });

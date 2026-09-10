@@ -3,6 +3,47 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.302 — Depois da partida o telefone pede seed nova embaixo
+
+R
+não
+existe
+no
+polegar.
+O
+tap
+só
+repetia
+a
+última.
+A
+faixa
+de
+baixo
+pede
+seed
+nova.
+A
+primeira
+visita
+continua
+abrindo
+na
+faixa.
+Não
+promove
+`felt`.
+
+O que 0.9.302 não afirma:
+rótulo
+no
+stub
+não
+é
+peso
+no
+aparelho.
+
 ## 0.9.301 — O next unstructured nomeia a página do achado
 
 SKILL
