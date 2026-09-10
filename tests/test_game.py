@@ -2164,6 +2164,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("Ouça com sfx serve", report["next"])
         self.assertIn("vazio", report["next"].casefold())
         self.assertIn("public/sfx", report["next"])
+        self.assertFalse(report["heard"])
+        self.assertEqual(report["local"]["files"], [])
+        self.assertFalse(report["local"]["heard"])
         summary = json.loads(subprocess.run(
             [sys.executable, str(SCRIPT), "sfx", "summary", "--root", str(self.root)],
             capture_output=True, text=True,
@@ -2218,6 +2221,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         dumped = json.dumps(report)
         self.assertNotIn("aprovado", dumped)
         self.assertNotIn("verified", dumped)
+
+    def test_sfx_search_names_matching_starter_stems_without_claiming_to_hear_them(self):
+        report = game.sfx_catalog.search_catalog("dash", self.root)
+        self.assertTrue(report["empty"])
+        self.assertEqual(report["count"], 0)
+        self.assertEqual(report["matches"], [])
+        self.assertFalse(report["heard"])
+        local = report["local"]
+        self.assertEqual(local["kind"], "starter")
+        self.assertFalse(local["heard"])
+        keys = {item["key"] for item in local["files"]}
+        self.assertIn("dash", keys)
+        self.assertIn("dash-b", keys)
+        self.assertTrue(all(item["key"].startswith("dash") for item in local["files"]))
+        self.assertTrue(all(item["license"] for item in local["files"]))
+        self.assertTrue(all(item["bytes"] > 0 for item in local["files"]))
+        self.assertNotIn("Ouça com sfx serve", report["next"])
+        self.assertIn("public/sfx", report["next"])
+        self.assertIn("sfx search nomeia", report["next"])
+        dumped = json.dumps(report)
+        self.assertNotIn("aprovado", dumped)
+        self.assertNotIn("verified", dumped)
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "search", "dash", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        listed = json.loads(run.stdout)
+        self.assertFalse(listed["heard"])
+        self.assertIn("dash", {item["key"] for item in listed["local"]["files"]})
+        miss = game.sfx_catalog.search_catalog("passos", self.root)
+        self.assertEqual(miss["local"]["files"], [])
+        self.assertFalse(miss["heard"])
+        self.assertNotIn("Ouça com sfx serve", miss["next"])
+        self._plant_catalog_sound()
+        hit = game.sfx_catalog.search_catalog("dash", self.root)
+        self.assertFalse(hit["empty"])
+        self.assertEqual(hit["count"], 0)
+        self.assertEqual(hit["matches"], [])
+        self.assertIn("dash", {item["key"] for item in hit["local"]["files"]})
+        self.assertFalse(hit["heard"])
+        self.assertNotIn("Ouça com sfx serve", hit["next"])
+        self.assertIn("starter já fala", hit["next"])
 
     def test_sfx_import_grows_the_catalog_without_claiming_to_hear_it(self):
         fake = {

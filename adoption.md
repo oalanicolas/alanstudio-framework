@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.174 — A busca nomeia o stem que casa
+
+O summary já listava
+os stems. `sfx search
+dash` devolvia zero.
+A busca lê o mesmo
+`sources.json` e casa
+chave, arquivo, licença
+e origem. `count` continua
+o acervo. `heard`
+continua falso. Só
+`release` fica no piso.
+
+O que 0.9.174 não afirma:
+termo que casa não é
+mix ouvido.
+
 ## 0.9.173 — O summary nomeia os stems
 
 O acervo vazio já

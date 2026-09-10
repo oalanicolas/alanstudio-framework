@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.173: sfx summary lista os stems do starter.
+**HEAD:** ver `git log -1` — vigente 0.9.174: sfx search nomeia o stem do starter que casa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 268 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 269 OK.
 `cd assets/starters/canvas-arcade && npm test` → 355 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.173)
+## O que o HEAD já entrega (0.9.91–0.9.174)
 
 | Ver | Salto |
 | --- | --- |
@@ -117,6 +117,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.171 | A região viva nomeia `pausado`. Overlay do canvas não chega ao leitor. Não promove `accessibility`. |
 | 0.9.172 | `beforeunload` descarrega o mesmo hold do `pagehide`. Não pausa. Stub não é aba fechada. Não promove `trusted`. |
 | 0.9.173 | `sfx summary` lista stems, licença e origem do starter. Acervo vazio não some o que já fala. Não promove `heard`. |
+| 0.9.174 | `sfx search` nomeia o stem do starter que casa (chave, arquivo, licença, origem). `count` continua o acervo. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -132,7 +133,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | corpo senta no over no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
-| audio_mix | slice | fade no over no disco; `heard` falso |
+| audio_mix | slice | fade no over + search nomeia stem; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -474,6 +475,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma região viva que some a pausa enquanto o overlay já a nomeia.
 **Não** mais um tick que some no reload enquanto só o `pagehide` descarregava.
 **Não** mais um `sfx summary` que some os stems do starter enquanto o acervo está vazio.
+**Não** mais um `sfx search` que some o stem do starter que casa com o termo.
 
 Candidatos, do que ainda dói:
 
@@ -502,7 +504,8 @@ Candidatos, do que ainda dói:
    `context` no foco create e em `--stage`) ensina `start --idea`.
    `doctor` no lab vazio devolve `then.guide`; com jogo a chave some.
    Sem starter o aviso nomeia `start --idea`. Sem `prompt`.
-   `len(steps) == 3` e `executed: false` continuam.
+   `sfx search` nomeia o stem do starter que casa; `count` continua
+   o acervo. `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
    volátil e gravação recusada. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
@@ -553,7 +556,10 @@ Candidatos, do que ainda dói:
   do tick e o
   summary dos
   stems do
-  starter
+  starter e o
+  search do
+  stem que
+  casa
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -577,5 +583,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `sfx summary` lista os stems do starter.
-Acervo vazio não some o que já fala. Não promove `heard`.
+Arquivos quentes da última sessão: `sfx search` nomeia o stem do starter
+que casa com o termo. `count` continua o acervo. Não promove `heard`.

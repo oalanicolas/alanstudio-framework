@@ -2897,7 +2897,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "studies lista catálogos do foco se existirem no irmão Games-Frameworks; ausência não é evidência negativa.",
             "capabilities.mentioned é só token em arquivo de inspeção. Não prova pause, reset, seed nem determinismo.",
             "capabilities.unknown significa não localizado na lista fixa de arquivos de inspeção, não capacidade ausente; rastreie o entrypoint e os consumidores na auditoria.",
-            "Áudio novo: se shared/sfx tiver sons, busque (`sfx search`) antes de baixar. Sem acervo, o starter já fala em public/sfx e sfx serve recusa. Crescer o acervo é `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx info` lê a ficha e `sfx export ID --to PASTA` copia bytes e créditos. Importar e exportar não é ouvir. Piso de gravação licenciada; 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.",
+            "Áudio novo: se shared/sfx tiver sons, busque (`sfx search`) antes de baixar. Sem acervo, o starter já fala em public/sfx; sfx search nomeia o stem que casa e sfx serve recusa. Crescer o acervo é `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx info` lê a ficha e `sfx export ID --to PASTA` copia bytes e créditos. Importar e exportar não é ouvir. Piso de gravação licenciada; 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.",
             "Feel e áudio são focos próprios (`--focus feel`, `--focus audio`). Sem observação em movimento, experience_status permanece not_assessed; scaffold não é vertical slice.",
             "“AAA” neste harness é piso de acabamento da slice, não tier de publisher. Sem feel sincronizado, pacing e repeatability, não use o adjetivo.",
             "Checklist: ver finish no JSON. Jam observa core_groups; produto/AA soma product_groups; promise_groups só se prometidos. `template aaa` não certifica; N/A exige motivo.",
@@ -4227,7 +4227,7 @@ def doctor(root):
     add(
         "shared/sfx", False, library.is_dir(),
         str(library) if library.is_dir() else "ausente",
-        "Sem esse acervo o catálogo vem vazio; `sfx search` não é erro, só não tem o que listar.",
+        "Sem esse acervo o catálogo vem vazio; `sfx search` nomeia o stem do starter que casa com o termo. Arquivo no disco não é mix ouvido.",
     )
 
     blocking = [check["name"] for check in checks if check["required"] and check["status"] != "ok"]

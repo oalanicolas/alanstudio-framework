@@ -27,8 +27,9 @@ QUALITY_BAR = {
 }
 
 EMPTY_NEXT = (
-    "Acervo vazio. O starter já fala em public/sfx; sfx summary lista "
-    "esses stems. Arquivo no disco não é mix ouvido. Desloque com "
+    "Acervo vazio. O starter já fala em public/sfx; sfx search "
+    "nomeia o stem que casa com o termo e sfx summary lista todos. "
+    "Arquivo no disco não é mix ouvido. Desloque com "
     "npm run sfx -- --from <papel> --as brighter. sfx serve não ouve "
     "o que não existe. Para crescer o acervo, sfx import ARQUIVO "
     "--metadata JSON (ffmpeg); importar não é ouvir. Procure fora só "
@@ -41,6 +42,11 @@ LISTEN_NEXT = (
 MISS_NEXT = (
     "Nenhum id neste termo. O acervo existe: mude o termo ou ouça com sfx serve. "
     "Procure fora só após constatar uma lacuna."
+)
+LOCAL_HIT_NEXT = (
+    "Nenhum id neste termo no acervo. O starter já fala este papel "
+    "em public/sfx. Arquivo no disco não é mix ouvido. "
+    "Procure fora só após constatar uma lacuna no papel."
 )
 IMPORT_NEXT = (
     "Importar não é mix ouvido. Ouça no jogo, no papel. "
@@ -96,6 +102,8 @@ def local_stems(folder=None):
                 files.append({
                     "src": src,
                     "key": key if isinstance(key, str) and key.strip() else Path(src).stem,
+                    "title": item.get("title") if isinstance(item.get("title"), str) else None,
+                    "author": item.get("author") if isinstance(item.get("author"), str) else None,
                     "license": item.get("license") if isinstance(item.get("license"), str) else None,
                     "origin": item.get("origin") if isinstance(item.get("origin"), str) else None,
                     "bytes": path.stat().st_size,
@@ -106,6 +114,35 @@ def local_stems(folder=None):
         "exists": folder.is_dir(),
         "file_count": len(files),
         "files": files,
+        "heard": False,
+    }
+
+
+def local_match_text(item):
+    return audio.fold(" ".join(
+        part for part in (
+            item.get("key"),
+            item.get("src"),
+            item.get("license"),
+            item.get("origin"),
+        ) if isinstance(part, str) and part.strip()
+    ))
+
+
+def match_local_stems(query, folder=None, limit=40):
+    local = local_stems(folder)
+    terms = [term for term in audio.fold(query).split() if term]
+    files = [
+        item for item in local["files"]
+        if terms and all(term in local_match_text(item) for term in terms)
+    ]
+    picked = files[:max(1, limit)]
+    return {
+        "path": local["path"],
+        "kind": "starter",
+        "exists": local["exists"],
+        "file_count": len(picked),
+        "files": picked,
         "heard": False,
     }
 
@@ -131,6 +168,15 @@ def search_catalog(query, root=None, limit=40):
     sounds = load_catalog(root)["sounds"]
     matches = audio.search(sounds, query)[:limit]
     empty = len(sounds) == 0
+    local = match_local_stems(query, limit=limit)
+    if empty:
+        nxt = EMPTY_NEXT
+    elif matches:
+        nxt = LISTEN_NEXT
+    elif local["files"]:
+        nxt = LOCAL_HIT_NEXT
+    else:
+        nxt = MISS_NEXT
     return {
         "query": query, "count": len(matches),
         "empty": empty,
@@ -138,8 +184,10 @@ def search_catalog(query, root=None, limit=40):
                      "title": s["title"], "category": s["category"], "tags": s["tags"],
                      "licenses": sorted({x["license"] for x in s["sources"]}),
                      "authors": sorted({x["author"] for x in s["sources"]})} for s in matches],
+        "local": local,
+        "heard": False,
         "rule": QUALITY_BAR["note"],
-        "next": EMPTY_NEXT if empty else (LISTEN_NEXT if matches else MISS_NEXT),
+        "next": nxt,
     }
 
 

@@ -79,8 +79,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `doctor` lista os starters disponíveis; começar por um deles é REUSE, escrever um
    loop do zero é CREATE. Se o laboratório tiver `shared/sfx` com sons, use
    `sfx search` antes de baixar. Sem acervo, o starter já fala em
-   `public/sfx`; `sfx summary` lista esses stems e `sfx serve` recusa
-   catálogo vazio. Arquivo no disco não é mix ouvido. Crescer o acervo é
+   `public/sfx`; `sfx search` nomeia o stem que casa com o termo,
+   `sfx summary` lista todos e `sfx serve` recusa catálogo vazio.
+   Arquivo no disco não é mix ouvido. Crescer o acervo é
    `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx seed` lê
    `selection.json` local. `sfx info ID` lê a ficha; `sfx export ID
    --to PASTA` copia bytes e créditos. Importar e exportar não é

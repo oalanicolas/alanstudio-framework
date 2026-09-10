@@ -542,8 +542,11 @@ python3 scripts/game.py sfx search passos --root /caminho/do/laboratorio
 python3 scripts/game.py sfx copy ID --to /caminho/do/jogo/public/sfx --root /caminho/do/laboratorio
 ```
 
-Sem esse acervo, `sfx search` devolve vazio e `sfx serve` recusa — não
-há o que ouvir. Crescer o acervo é arquivo local com recibo:
+Sem esse acervo, `sfx search` não inventa id: o catálogo vem vazio e a
+busca nomeia o stem do starter que casa com o termo. `sfx summary`
+lista todos. `sfx serve` recusa — não há o que ouvir no acervo.
+Arquivo no disco não é mix ouvido. Crescer o acervo é arquivo local
+com recibo:
 
 ```sh
 python3 scripts/game.py sfx import /caminho/do.wav --metadata /caminho/meta.json --root /caminho/do/laboratorio

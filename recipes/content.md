@@ -27,7 +27,8 @@ Leia o formato atual, sua carga em runtime e os consumidores. Procure definiçã
 slot substituível antes de duplicar lógica. Preserve identidade, escala, pivot,
 colisões, animações e referências ao trocar arte. Som novo: consulte
 `shared/sfx` no laboratório (`sfx search`) só se o acervo tiver sons; sem
-ele, o starter já fala em `public/sfx`. Copie o arquivo e a
+ele, o starter já fala em `public/sfx` e a busca nomeia o stem que
+casa com o termo. Copie o arquivo e a
 proveniência. Mix, interrupção e silêncio seguem [áudio](audio.md), não apenas
 a cópia do arquivo. Registre origem e condições de uso; conteúdo baixado não
 recebe uma licença nova pelo simples reuso.
