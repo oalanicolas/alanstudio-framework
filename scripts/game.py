@@ -1413,6 +1413,14 @@ def feel_then(project):
     play = play_command(project, scripts, manager)
     if play:
         then["play"] = play
+    # O play/guide já nomeiam a partida do last-run.
+    # Sem isto o feel mandava só o serve nu — a seed
+    # do candidato ficava no disco e o comando calava.
+    # Endereço no disco não é peso percebido.
+    href = seed_href(project)
+    if href:
+        then["seed"] = href
+        then["invite"] = invite_href(project)
     return then
 
 
@@ -1439,9 +1447,10 @@ def feel_reading(project):
         "scope": (
             "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch) e "
             "`record.json` com kind=observation. Nomeia `then.play` e `then.note` "
-            "sem executar. Sem comando de abrir, a chave some. Não tem `prompt`. "
-            "Não mede latência e não atribui degrau. `felt` é sempre falso: "
-            "tabela de constantes e recibo otimista saem intactos."
+            "sem executar. Com last-run, nomeia `then.seed` e `then.invite`. Sem "
+            "comando de abrir, a chave some. Sem last-run, seed e invite somem. "
+            "Não tem `prompt`. Não mede latência e não atribui degrau. `felt` é "
+            "sempre falso: tabela de constantes e recibo otimista saem intactos."
         ),
     }
 

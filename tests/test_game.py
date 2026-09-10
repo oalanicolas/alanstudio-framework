@@ -3142,6 +3142,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("serve", report["then"]["play"])
         self.assertIn("note", report["then"]["note"])
         self.assertNotIn("lost", report["then"])
+        self.assertNotIn("seed", report["then"])
+        self.assertNotIn("invite", report["then"])
         self.assertNotIn("prompt", report)
         empty = game.feel_reading(self.project)
         self.assertEqual(empty["constants"], [])
@@ -3180,6 +3182,69 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bases = [item["basis"] for item in self.proposals(game.next_step(destination))]
         self.assertNotIn("feel.unobserved", bases)
         self.assertIn("playtest.unstructured", bases)
+
+    def test_feel_names_the_last_run_seed_without_claiming_it_felt(self):
+        destination = self.root / "feel-com-seed"
+        game.start_project(destination, "canvas-arcade")
+        fresh = game.feel_reading(destination)
+        self.assertNotIn("seed", fresh["then"])
+        self.assertNotIn("invite", fresh["then"])
+        self.assertIn("serve", fresh["then"]["play"])
+        self.assertNotIn("lost", fresh["then"])
+        self.assertFalse(fresh["felt"])
+        self.assertNotIn("prompt", fresh)
+        (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "run": {"ticks": 1},
+        }), encoding="utf-8")
+        silent = game.feel_reading(destination)
+        self.assertNotIn("seed", silent["then"])
+        self.assertNotIn("invite", silent["then"])
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        after = game.feel_reading(destination)
+        self.assertEqual(after["then"]["seed"], "/?seed=8")
+        self.assertEqual(after["then"]["invite"], "/?invite=1&seed=8")
+        self.assertEqual(after["then"]["seed"], game.play_cycle(destination)["then"]["seed"])
+        self.assertEqual(after["then"]["invite"], game.play_cycle(destination)["then"]["invite"])
+        self.assertIn("serve", after["then"]["play"])
+        self.assertNotIn("lost", after["then"])
+        self.assertFalse(after["felt"])
+        self.assertNotIn("prompt", after)
+        self.assertNotIn("aprovado", json.dumps(after))
+        self.assertNotIn("verified", json.dumps(after))
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "spawn": "dusk",
+            "look": "dusk",
+            "speed": 0.8,
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        painted = game.feel_reading(destination)
+        self.assertEqual(painted["then"]["seed"], game.seed_href(destination))
+        self.assertEqual(painted["then"]["invite"], game.invite_href(destination))
+        self.assertIn("spawn=dusk", painted["then"]["seed"])
+        self.assertIn("look=dusk", painted["then"]["invite"])
+        self.assertFalse(painted["felt"])
+        cli = subprocess.run(
+            [sys.executable, str(SCRIPT), "feel", str(destination), "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(cli.returncode, 0, cli.stderr)
+        payload = json.loads(cli.stdout)
+        self.assertEqual(payload["then"]["seed"], painted["then"]["seed"])
+        self.assertEqual(payload["then"]["invite"], painted["then"]["invite"])
+        self.assertFalse(payload["felt"])
+        self.assertFalse((cli.stderr or "").strip())
 
     def test_note_writes_an_observation_without_claiming_to_have_felt_it(self):
         destination = self.root / "com-nota"

@@ -67,7 +67,9 @@ Leia o verbo no GDD, os tokens de tempo/câmera/áudio no
 [piso](../references/quality.md). `context --focus feel` seleciona esta
 receita. `feel` lê as constantes nomeadas no `CONFIG` e o
 recibo de observação no disco; nomeia `then.play` e `then.note`
-sem executar. Sem comando de abrir, a chave some. Não tem
+sem executar. Com last-run, nomeia `then.seed` e `then.invite`
+— o mesmo endereço que `play` / `guide`. Sem comando de abrir,
+a chave some. Sem last-run, seed e invite somem. Não tem
 `prompt`. `felt` é sempre falso. `note`
 grava o recibo curto depois da partida. Sem caminho, o único
 jogo do laboratório basta; dois pedem o caminho. Achar o jogo
