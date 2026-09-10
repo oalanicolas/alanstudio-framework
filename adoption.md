@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.82 — O fecho também marca o campo
+
+O relógio no HUD já ficava vermelho nos últimos segundos. O campo
+agora contorna o fim e aperta a cada segundo; o controle pulsa
+nesse tap. Não é faixa no HUD. Com menos movimento o sinal vira
+traço, não some. `felt` continua falso. `feel` permanece
+`playable`: contorno no stub não é peso percebido. Só `release`
+fica no piso.
+
+O que 0.9.82 não afirma: o harness não avançou e o fecho não
+aprova o feel.
+
 ## 0.9.81 — O terceiro look também é autoral
 
 `dusk` era o único desvio de arte. `calm` é o par visual da chuva

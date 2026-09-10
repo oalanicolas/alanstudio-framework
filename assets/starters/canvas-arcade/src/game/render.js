@@ -5,7 +5,7 @@
 // dispositivo não foi observado. Tremor e piscada respeitam redução de
 // movimento — o sinal de causa migra para uma forma estática, não desaparece.
 
-import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, chainPipCount, chainPipAt } from "./rules.js";
+import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, chainPipCount, chainPipAt, closingWindow, closingPulse } from "./rules.js";
 import { copy, PALETTES, resolveLookName } from "./tables.js";
 import { bindLines } from "../core/keys.js";
 import { DEFAULT_BINDINGS } from "../core/settings.js";
@@ -74,6 +74,7 @@ export function createRenderer(canvas, options = {}) {
 
     context.fillStyle = palette.field;
     context.fillRect(0, 0, FIELD.width, FIELD.height);
+    drawClose(context, palette, state, reduced);
     if (state.flash > 0) {
       if (reduced) {
         context.strokeStyle = palette.danger;
@@ -117,6 +118,25 @@ export function createRenderer(canvas, options = {}) {
     if (settings.captions !== false) {
       drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
     }
+  }
+
+  // O relógio no HUD já ficava vermelho. O campo agora marca o fecho:
+  // contorno que aperta e pulsa a cada segundo. Não é faixa. Com menos
+  // movimento vira um traço estático, como o flash do erro.
+  function drawClose(target, palette, state, reduced) {
+    const pulse = closingPulse(state);
+    if (!pulse.active) return;
+    target.strokeStyle = palette.danger;
+    if (reduced) {
+      target.lineWidth = 2;
+      target.strokeRect(2, 2, FIELD.width - 4, FIELD.height - 4);
+      return;
+    }
+    const inset = 1 + pulse.fill * 3;
+    target.globalAlpha = Math.min(0.55, 0.14 + pulse.fill * 0.22 + pulse.beat * 0.18);
+    target.lineWidth = 1.2 + pulse.fill * 1.8 + pulse.beat * 1.2;
+    target.strokeRect(inset, inset, FIELD.width - inset * 2, FIELD.height - inset * 2);
+    target.globalAlpha = 1;
   }
 
   function drawOrb(target, palette, entity) {
@@ -302,7 +322,7 @@ export function createRenderer(canvas, options = {}) {
     const rightWidth = Math.max(width(`${seconds}s`), best ? width(best) : 0);
     const timerBox = plate(target, palette, FIELD.width - 6 - rightWidth, 5, rightWidth, best ? second + size - 5 : size);
     target.textAlign = "right";
-    target.fillStyle = seconds <= 10 ? palette.danger : palette.muted;
+    target.fillStyle = closingWindow(state) ? palette.danger : palette.muted;
     target.fillText(`${seconds}s`, FIELD.width - 6, 5);
     if (best) {
       target.fillStyle = palette.muted;

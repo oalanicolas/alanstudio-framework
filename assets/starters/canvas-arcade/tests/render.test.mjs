@@ -492,6 +492,32 @@ test("a recuperação do dash não se parece com o dash nem com o descanso", () 
   assert.notEqual(playerFill(recovery), playerFill(dash));
 });
 
+test("o fecho marca o campo sem inventar faixa no HUD", () => {
+  const early = paint(createState(2));
+  assert.equal(
+    early.edges.filter((edge) => edge.style === PALETTES.normal.danger).length,
+    0,
+    "antes do fecho o campo não inventa contorno",
+  );
+  const late = createState(2);
+  late.tick = CONFIG.runTicks - 90;
+  const drawn = paint(late);
+  const edges = drawn.edges.filter((edge) => edge.style === PALETTES.normal.danger);
+  assert.ok(edges.length >= 1, "o fecho precisa contornar o campo");
+  assert.ok(edges.some((edge) => edge.width > FIELD.width * 0.8 && edge.height > FIELD.height * 0.8));
+  const timerStrips = drawn.rects.filter((rect) => (
+    rect.height === 2
+    && rect.y < 20
+    && !PLATE_COLORS.has(rect.style)
+  ));
+  assert.equal(timerStrips.length, 0, "o fecho não é faixa no HUD");
+  const still = paint(late, { reducedMotion: true });
+  assert.ok(
+    still.edges.some((edge) => edge.style === PALETTES.normal.danger && edge.x === 2 && edge.y === 2),
+    "com menos movimento o fecho vira traço, não some",
+  );
+});
+
 test("o flash do erro some com redução de movimento", () => {
   const state = createState(2);
   state.flash = CONFIG.feel.flashHit;

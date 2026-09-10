@@ -61,18 +61,21 @@ export const CONFIG = {
     telegraphReach: 36, // antecipação: a ameaça marca o trilho antes do contato
     flashHit: 0.55, // impacto do erro: o campo acende; coleta não
     flashDecay: 0.72,
+    closeTicks: TICK_HZ * 10, // fecho: o campo marca o fim; não é faixa no HUD
     rumbleDashMs: 16, // partida: toque curto
     rumbleLandMs: 10, // término: tap mais curto que a partida
     rumbleCollectMs: 28, // contato do acerto
     rumbleBankMs: 48, // peso da decisão
     rumbleHitMs: 84, // o erro dói mais que guardar
     rumbleOverMs: 120, // fim
+    rumbleCloseMs: 36, // fecho: tap por segundo, menor que guardar
     rumbleDash: 0.16,
     rumbleLand: 0.12,
     rumbleCollect: 0.26,
     rumbleBank: 0.40,
     rumbleHit: 0.74,
     rumbleOver: 0.52,
+    rumbleClose: 0.32, // entre coleta e guarda; o relógio não é o erro
     moteDash: 3, // rastro curto na partida
     moteLand: 2, // puff curto de término; menor que a partida
     moteCollect: 5, // contato do acerto
@@ -378,8 +381,32 @@ export function neutralIntent() {
   return { move: 0, dash: false, bank: false };
 }
 
-export function remainingTicks(state) {
-  return Math.max(0, CONFIG.runTicks - state.tick);
+export function remainingTicks(state, config = CONFIG) {
+  return Math.max(0, config.runTicks - state.tick);
+}
+
+export function closingWindow(state, config = CONFIG) {
+  if (!state || state.phase !== "playing") return false;
+  const left = remainingTicks(state, config);
+  return left > 0 && left <= config.feel.closeTicks;
+}
+
+export function closingPulse(state, config = CONFIG) {
+  if (!closingWindow(state, config)) return { active: false, fill: 0, beat: 0 };
+  const left = remainingTicks(state, config);
+  const fill = 1 - (left - 1) / config.feel.closeTicks;
+  const beat = 1 - (left % TICK_HZ) / TICK_HZ;
+  return {
+    active: true,
+    fill: Math.max(0, Math.min(1, fill)),
+    beat: Math.max(0, Math.min(1, beat)),
+  };
+}
+
+function markClose(state) {
+  const left = remainingTicks(state);
+  if (left <= 0 || left > CONFIG.feel.closeTicks) return;
+  if (left % TICK_HZ === 0) emit(state, "close");
 }
 
 // Avança exatamente um passo de simulação. Muta e devolve o mesmo estado: o loop
@@ -396,6 +423,7 @@ export function advance(state, intent = neutralIntent()) {
     return state;
   }
   state.tick += 1;
+  markClose(state);
   const player = state.player;
 
   // O pedido de dash é registrado antes de qualquer congelamento, para que uma

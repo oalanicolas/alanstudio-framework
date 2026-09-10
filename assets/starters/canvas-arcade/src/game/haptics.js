@@ -12,6 +12,7 @@ const ROLES = {
   bank: { ms: "rumbleBankMs", magnitude: "rumbleBank", strong: 0.38 },
   hit: { ms: "rumbleHitMs", magnitude: "rumbleHit", strong: 0.88 },
   over: { ms: "rumbleOverMs", magnitude: "rumbleOver", strong: 0.62 },
+  close: { ms: "rumbleCloseMs", magnitude: "rumbleClose", strong: 0.30 },
 };
 
 function defaultGamepads() {

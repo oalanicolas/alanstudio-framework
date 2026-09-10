@@ -155,7 +155,9 @@ impacto com duração e magnitude por verbo; pausa e descarte cancelam.
 Cada verbo deixa um rastro próprio no campo; com menos movimento o
 rastro vira marca. A corrente mora no corpo em pips; o HUD continua
 com a conta. A faixa do dash enche o tempo de recuperação e
-cooldown e veste o look — rótulo sozinho era o mesmo quadro. A coleta leva o orbe ao slot; o erro espalha os pips;
+cooldown e veste o look — rótulo sozinho era o mesmo quadro.
+O fecho da partida contorna o campo e pulsa o controle a cada
+segundo; não é faixa no HUD. Com menos movimento vira traço. A coleta leva o orbe ao slot; o erro espalha os pips;
 na guarda eles voam para o placar; no fim a aposta não guardada
 cai e o overlay nomeia o que caiu — a queda vence a cortina, que
 reusa a placa do look. As legendas nascem depois da cortina. O

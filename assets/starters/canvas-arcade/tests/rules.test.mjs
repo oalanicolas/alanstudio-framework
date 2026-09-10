@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate } from "../src/game/rules.js";
+import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -629,4 +629,38 @@ test("o perfil calm alonga a prática sem republicar o verbo", () => {
     for (const entity of practice.entities) kinds.add(entity.kind);
   }
   assert.equal(kinds.has("shard"), false, "calm ainda está em prática aos 200");
+});
+
+test("o fecho emite no segundo redondo e não no meio do segundo", () => {
+  const early = createState(3);
+  advance(early, neutralIntent());
+  assert.equal(closingWindow(early), false);
+  assert.equal(closingPulse(early).active, false);
+  assert.equal(early.events.some((event) => event.type === "close"), false);
+
+  const enter = createState(3);
+  enter.tick = CONFIG.runTicks - CONFIG.feel.closeTicks - 1;
+  advance(enter, neutralIntent());
+  assert.equal(remainingTicks(enter), CONFIG.feel.closeTicks);
+  assert.equal(closingWindow(enter), true);
+  assert.equal(closingPulse(enter).active, true);
+  assert.ok(enter.events.some((event) => event.type === "close"), "entrar no fecho precisa emitir");
+
+  const mid = createState(3);
+  mid.tick = CONFIG.runTicks - 571;
+  advance(mid, neutralIntent());
+  assert.equal(remainingTicks(mid), 570);
+  assert.equal(closingWindow(mid), true);
+  assert.equal(mid.events.some((event) => event.type === "close"), false, "meio do segundo não é o tap");
+
+  const beat = createState(3);
+  beat.tick = CONFIG.runTicks - 541;
+  advance(beat, neutralIntent());
+  assert.equal(remainingTicks(beat), 540);
+  assert.ok(beat.events.some((event) => event.type === "close"));
+
+  const ended = createState(3);
+  ended.phase = "over";
+  ended.tick = CONFIG.runTicks;
+  assert.equal(closingWindow(ended), false);
 });

@@ -26,23 +26,26 @@ function stubActuator() {
 test("cada verbo pulsa com duração e magnitude distintas", () => {
   const { plays, actuator } = stubActuator();
   const haptics = createHaptics({ gamepads: () => [{ vibrationActuator: actuator }] });
-  for (const role of ["dash", "land", "collect", "bank", "hit", "over"]) {
+  for (const role of ["dash", "land", "collect", "close", "bank", "hit", "over"]) {
     assert.equal(haptics.play(role), true, `${role} precisa pulsar`);
   }
   const pulses = plays.filter((entry) => entry !== "reset");
-  assert.equal(pulses.length, 6);
+  assert.equal(pulses.length, 7);
   const durations = pulses.map((entry) => entry.duration);
   const weaks = pulses.map((entry) => entry.weakMagnitude);
   const strongs = pulses.map((entry) => entry.strongMagnitude);
-  assert.equal(new Set(durations).size, 6, "duração igual apaga o peso do verbo");
-  assert.equal(new Set(weaks).size, 6, "magnitude igual apaga o peso do verbo");
-  assert.equal(new Set(strongs).size, 6);
+  assert.equal(new Set(durations).size, 7, "duração igual apaga o peso do verbo");
+  assert.equal(new Set(weaks).size, 7, "magnitude igual apaga o peso do verbo");
+  assert.equal(new Set(strongs).size, 7);
   assert.ok(CONFIG.feel.rumbleHitMs > CONFIG.feel.rumbleBankMs);
   assert.ok(CONFIG.feel.rumbleBankMs > CONFIG.feel.rumbleCollectMs);
   assert.ok(CONFIG.feel.rumbleDashMs > CONFIG.feel.rumbleLandMs);
   assert.ok(CONFIG.feel.rumbleCollectMs > CONFIG.feel.rumbleDashMs);
+  assert.ok(CONFIG.feel.rumbleCloseMs > CONFIG.feel.rumbleCollectMs);
+  assert.ok(CONFIG.feel.rumbleBankMs > CONFIG.feel.rumbleCloseMs);
   assert.ok(CONFIG.feel.rumbleHit > CONFIG.feel.rumbleBank);
-  assert.ok(CONFIG.feel.rumbleBank > CONFIG.feel.rumbleCollect);
+  assert.ok(CONFIG.feel.rumbleBank > CONFIG.feel.rumbleClose);
+  assert.ok(CONFIG.feel.rumbleClose > CONFIG.feel.rumbleCollect);
   const hit = pulses.find((entry) => entry.duration === CONFIG.feel.rumbleHitMs);
   const collect = pulses.find((entry) => entry.duration === CONFIG.feel.rumbleCollectMs);
   assert.ok(hit.weakMagnitude > collect.weakMagnitude);
