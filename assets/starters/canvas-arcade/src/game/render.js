@@ -473,13 +473,13 @@ export function createRenderer(canvas, options = {}) {
 
   // A conta no HUD fica sob a cortina. O overlay reusa `chain` e
   // `best_chain` — sem campo novo — para nomear a aposta que caiu.
-  // Sem corrente o fim não inventa o rótulo. Texto no disco não é
-  // peso percebido.
+  // Sem corrente o fim não inventa o rótulo. R abre a porta, não
+  // recomeça em silêncio. Texto no disco não é peso percebido.
   function overHint(state, lines) {
     const parts = [];
     if (state.chain > 0) parts.push(`${lines.chain} ${state.chain}`);
     if (state.stats.bestChain) parts.push(`${lines.best_chain}: ${state.stats.bestChain}`);
-    parts.push(parts.length ? lines.restart_inline : lines.restart);
+    parts.push(parts.length ? lines.over_door_inline : lines.over_door);
     return parts.join(" · ");
   }
 

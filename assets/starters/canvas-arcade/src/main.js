@@ -126,6 +126,10 @@ export function createGame(options = {}) {
     if (state.phase === "title") {
       if (intent?.dash) {
         beginRun(state);
+        for (const event of state.events) {
+          audio.play(event.type, event);
+          haptics.play(event.type);
+        }
         syncBed();
       }
       return;

@@ -384,6 +384,13 @@ export function createState(seed = 1, options = {}) {
 export function beginRun(state) {
   if (!state || state.phase !== "title") return state;
   state.phase = "playing";
+  // A porta também é um verbo. O avanço que a abre senta, desloca
+  // e fala — sem contar no ofício do dash. Número no disco não é
+  // peso percebido.
+  const dir = state.player.dir < 0 ? -1 : 1;
+  state.player.squash = CONFIG.feel.squashDash;
+  punch(state, CONFIG.feel.punchDashX * dir, 0);
+  emit(state, "dash", { x: state.player.x });
   return state;
 }
 

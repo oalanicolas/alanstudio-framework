@@ -142,6 +142,8 @@ export const COPY_FIELDS = [
   "title_again",
   "title_new",
   "title_last",
+  "over_door",
+  "over_door_inline",
 ];
 
 export function migrateTable(name, raw, schema, fields = []) {
@@ -190,6 +192,8 @@ export function migrateCopy(raw) {
     title_again: typeof table.title_again === "string" ? table.title_again : "Repetir a última: {dash}",
     title_new: typeof table.title_new === "string" ? table.title_new : "Nova partida: {reset}",
     title_last: typeof table.title_last === "string" ? table.title_last : "Última",
+    over_door: typeof table.over_door === "string" ? table.over_door : "Abertura: {reset}",
+    over_door_inline: typeof table.over_door_inline === "string" ? table.over_door_inline : "abertura: {reset}",
   };
 }
 

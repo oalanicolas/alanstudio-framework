@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.102: o fim volta à porta.
+**HEAD:** ver `git log -1` — vigente 0.9.103: a porta também é um verbo.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 240 OK.
@@ -46,6 +46,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.100 | Corpo aponta o último avanço. Orbe círculo, estilhaço losango. |
 | 0.9.101 | Com tela, fase `title`. Lê `lastSeed` e recorde. Sem tela, headless joga. |
 | 0.9.102 | Com tela, R no fim volta à abertura. Última pontuação na porta. |
+| 0.9.103 | Abrir a porta senta, desloca e fala sem contar o dash. Overlay nomeia a abertura. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -155,7 +156,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `player.dir` default `1`. Ponta some? Não — é forma, não brilho.
 - Fase `title` só com canvas (ou `options.entry === "title"`). Headless
   e `createState()` default = `playing`. `advance` em title não anda o
-  tick. Dash em `step` chama `beginRun`. Reset na title sorteia seed nova
+  tick. Dash em `step` chama `beginRun` (squash, punch, `dash` sem
+  incrementar `stats.dashes`). Reset na title sorteia seed nova
   e vai a `playing`. Pause na title é ignorado. Com tela, `reset()` sem
   argumento no `over` volta à title; `reset(seed)` explícito joga.
 - Continuar = **repetir `lastSeed`**, não restaurar o tick. `canContinue`
@@ -164,8 +166,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Coach: fantasy → move → dash → miss → touch/pad → collect → null após
   1ª guarda. `coachHint` some se `phase !== "playing"`.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
-- `title_play` / `title_again` / `title_new` / `title_last` em
-  `COPY_FIELDS`. `migrateCopy` preenche default se a mesa antiga não tiver.
+- `title_play` / `title_again` / `title_new` / `title_last` /
+  `over_door` / `over_door_inline` em `COPY_FIELDS`. `migrateCopy`
+  preenche default se a mesa antiga não tiver.
 - Invite (`?invite=1`) some `#commands`, não `#remap`.
 - `pagehide` flush; hidden pausa.
 

@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.103 — A porta também é um verbo
+
+O avanço que abre a partida sentava só no ofício.
+Agora a porta senta, desloca e fala — sem contar
+o dash. O overlay de fim nomeia a abertura, não
+um reinício silencioso. `felt` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.103 não afirma: o harness não avançou
+e o tap da porta não é peso percebido.
+
 ## 0.9.102 — O fim também volta à porta
 
 Com tela, o overlay de fim pulava a abertura.

@@ -439,6 +439,10 @@ test("a abertura não avança o tick até o corpo apontar", () => {
   assert.equal(state.entities.length, 0);
   beginRun(state);
   assert.equal(state.phase, "playing");
+  assert.equal(state.player.squash, CONFIG.feel.squashDash, "a porta senta como o avanço");
+  assert.ok(state.events.some((event) => event.type === "dash"), "a porta fala o avanço");
+  assert.equal(state.stats.dashes, 0, "abrir a porta não conta o ofício");
+  assert.ok(state.camera.x !== 0, "a porta desloca o campo");
   advance(state, neutralIntent());
   assert.equal(state.tick, 1);
   beginRun(state);

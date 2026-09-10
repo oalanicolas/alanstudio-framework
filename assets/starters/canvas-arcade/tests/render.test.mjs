@@ -708,7 +708,7 @@ test("o overlay do fim nomeia a corrente que caiu e a queda vence a cortina", ()
   const texts = frame.texts.map((item) => item.text);
   assert.ok(texts.some((text) => text === "Fim — 12"), `título: ${JSON.stringify(texts)}`);
   assert.ok(
-    texts.some((text) => text.includes("Corrente 5") && text.includes("Maior corrente: 8") && text.includes("reiniciar")),
+    texts.some((text) => text.includes("Corrente 5") && text.includes("Maior corrente: 8") && text.includes("abertura")),
     `esperava a aposta nomeada no overlay: ${JSON.stringify(texts)}`,
   );
 
@@ -725,7 +725,7 @@ test("o overlay do fim nomeia a corrente que caiu e a queda vence a cortina", ()
   empty.phase = "over";
   const idle = paint(empty).texts.map((item) => item.text);
   assert.equal(
-    idle.some((text) => text.includes("Corrente") && text.includes("reiniciar")),
+    idle.some((text) => text.includes("Corrente") && text.includes("abertura")),
     false,
     `sem aposta o overlay não inventa o rótulo: ${JSON.stringify(idle)}`,
   );
