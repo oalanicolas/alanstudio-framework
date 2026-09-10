@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.146 — A árvore exportada some o Gravar do achado
+
+O serve já recusava o POST.
+O botão fingia que nada
+aconteceu. `VERSION.json` na
+raiz some Gravar. Copiar
+permanece. `outsider` continua
+falso. Só `release` fica no piso.
+
+O que 0.9.146 não afirma: some o
+botão não é alguém de fora nem
+aba fechada.
+
 ## 0.9.145 — O ship também nomeia como servir o dist/
 
 Árvore completa no HEAD atual

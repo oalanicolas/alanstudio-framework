@@ -68,6 +68,8 @@
       html.invite .invite-strip { display: block; }
       #finding { display: none; }
       html.invite.finding #finding { display: block; }
+      html.artifact #finding-save,
+      html.artifact #note-save { display: none; }
       #note { display: none; }
       html.note #note { display: block; }
       #finding textarea {
@@ -150,7 +152,7 @@
 
     <section class="panel" id="finding" aria-labelledby="finding-title">
       <h2 id="finding-title">Depois da partida</h2>
-      <p class="note">Copie ou grave o que jogou. Vazio não é achado. Gravar anexa o candidato se houver partida.</p>
+      <p class="note" id="finding-hint">Copie ou grave o que jogou. Vazio não é achado. Gravar anexa o candidato se houver partida.</p>
       <p class="note" id="finding-run" hidden></p>
       <div class="grid">
         <label><span>Problema</span><textarea id="finding-problema" name="problema" rows="2"></textarea></label>
@@ -221,7 +223,7 @@
     <script type="module" src="./src/main.js"></script>
     <script type="module">
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
-      import { applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, composeFinding, inviteHref, inviteMode } from "./src/core/invite.js";
+      import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, composeFinding, inviteHref, inviteMode, readArtifactMark } from "./src/core/invite.js";
       import { FINDING_ROUTE, NOTE_ROUTE, playFinding } from "./src/core/run-report.js";
       import { applyShell } from "./src/core/shell.js";
       import { LOOK_LABELS, SPAWN_LABELS, dressPalette, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch } from "./src/game/tables.js";
@@ -231,6 +233,15 @@
         root: document.documentElement,
         stage: document.getElementById("stage"),
         search: location.search,
+      });
+      readArtifactMark({ fetch }).then((artifact) => {
+        applyArtifactSurface({
+          root: document.documentElement,
+          findingSave: document.getElementById("finding-save"),
+          noteSave: document.getElementById("note-save"),
+          findingHint: document.getElementById("finding-hint"),
+          artifact,
+        });
       });
       const game = window.__game;
       if (game) {

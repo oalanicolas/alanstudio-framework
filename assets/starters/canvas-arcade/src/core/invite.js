@@ -11,7 +11,9 @@
 // porta também oferece os quatro nomes — no overlay e na abertura, se
 // houver partida — e mostra seed, pontos e eixos. Número na faixa
 // não preenche os quatro. Copiar não grava. Esqueleto vazio não é
-// achado. Gravado não é alguém de fora.
+// achado. Gravado não é alguém de fora. VERSION.json na raiz some
+// o Gravar: o serve da árvore exportada recusa o POST. Copiar
+// permanece. Recusar não fecha o achado.
 
 function runSeed(run) {
   if (!run || typeof run !== "object" || Array.isArray(run)) return null;
@@ -140,6 +142,42 @@ export function applyNote({ root, phase, invite, run } = {}) {
   const show = Boolean(!invite && afterRun(phase, run));
   root?.classList?.toggle("note", show);
   return show;
+}
+
+export const VERSION_ROUTE = "/VERSION.json";
+export const ARTIFACT_FINDING_HINT =
+  "Na árvore exportada o serve recusa gravar. Copie os quatro nomes.";
+
+export async function readArtifactMark(options = {}) {
+  const fetchFn = options.fetch;
+  if (typeof fetchFn !== "function") return false;
+  try {
+    const response = await fetchFn(options.url ?? VERSION_ROUTE);
+    return Boolean(response && response.ok);
+  } catch {
+    return false;
+  }
+}
+
+export function applyArtifactSurface({
+  root,
+  findingSave,
+  noteSave,
+  findingHint,
+  artifact,
+} = {}) {
+  if (!artifact) return false;
+  if (findingSave) {
+    findingSave.hidden = true;
+    findingSave.disabled = true;
+  }
+  if (noteSave) {
+    noteSave.hidden = true;
+    noteSave.disabled = true;
+  }
+  if (findingHint) findingHint.textContent = ARTIFACT_FINDING_HINT;
+  root?.classList?.toggle("artifact", true);
+  return true;
 }
 
 export function composeFinding({

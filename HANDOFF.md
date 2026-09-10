@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.145: ship nomeia como servir o dist/.
+**HEAD:** ver `git log -1` — vigente 0.9.146: a árvore exportada some o Gravar.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 262 OK.
-`cd assets/starters/canvas-arcade && npm test` → 314 OK.
+`cd assets/starters/canvas-arcade && npm test` → 315 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.145)
+## O que o HEAD já entrega (0.9.91–0.9.146)
 
 | Ver | Salto |
 | --- | --- |
@@ -89,6 +89,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.143 | O raspo estreita o corpo, empurra a câmera na direção e acende menos que a queda. Sem hitstop. Sem pulso. `felt` continua falso. |
 | 0.9.144 | `start` / `play` / `guide` devolvem `url` (`http://localhost:8080/` no serve). O prompt pede o navegador. Sem script `serve`, a chave some. `executed` continua falso. |
 | 0.9.145 | `ship` devolve `artifact_open` quando `dist/` está completo no HEAD atual. O convite usa esse comando. `elsewhere` continua falso. |
+| 0.9.146 | `VERSION.json` na raiz some o Gravar do achado e do recibo. Copiar permanece. `outsider` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -176,7 +177,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   contexto no gesto, stems SFX em
   paralelo, punch do raspo no disco,
   `url` da abertura, `artifact_open`
-  do dist/
+  do dist/, some o Gravar no
+  artefato
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -295,6 +297,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   Com chuva nomeada e ≠ `spawn`, junta `&spawn=<mesa>`. Com look
   nomeado e ≠ `normal`/`contrast`, junta `&look=<paleta>`. Spawn
   ou look inválido, e os nomes padrão, somem.
+  `VERSION.json` na raiz (`readArtifactMark`) some `#finding-save`
+  e `#note-save`. Copiar permanece. Nomear não é `outsider`.
   `#finding` aparece com `html.invite.finding` no `over` e na `title`
   se houver `lastRun`. Copiar não grava. Gravar só se `playFinding`
   devolver texto. Esqueleto vazio não casa `FINDING_FIELDS`. Achado
@@ -335,6 +339,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais punch/shake em outro verbo.
 **Não** mais um `url` / href de abertura.
 **Não** mais um comando de servir o `dist/`.
+**Não** mais some o Gravar no artefato.
 
 Candidatos, do que ainda dói:
 
@@ -372,7 +377,8 @@ Candidatos, do que ainda dói:
    de save na porta, o resume no gesto e o
    paralelo dos stems SFX, o punch do raspo
    no disco, o `url` da abertura e o
-   `artifact_open` do dist/ não
+   `artifact_open` do dist/ e some
+   o Gravar no artefato não
    fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
@@ -394,6 +400,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `artifact_open_command` em
-`game.py`. `ship` e o convite apontam servir `dist/`. Nomear não
-é outra máquina.
+Arquivos quentes da última sessão: `applyArtifactSurface` em
+`invite.js`. VERSION.json some o Gravar. Copiar permanece. Não é
+alguém de fora.

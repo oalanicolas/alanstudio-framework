@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, composeFinding, inviteHref, inviteMode, INVITE_LABEL, runFacts, seedHref } from "../src/core/invite.js";
+import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, ARTIFACT_FINDING_HINT, composeFinding, inviteHref, inviteMode, INVITE_LABEL, readArtifactMark, runFacts, seedHref } from "../src/core/invite.js";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -51,6 +51,10 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /html\.invite\.finding\s+#finding/);
   assert.match(html, /id="finding-copy"/);
   assert.match(html, /id="finding-save"/);
+  assert.match(html, /id="finding-hint"/);
+  assert.match(html, /readArtifactMark/);
+  assert.match(html, /applyArtifactSurface/);
+  assert.match(html, /html\.artifact\s+#finding-save/);
   assert.match(html, /id="finding-run"/);
   assert.match(html, /id="note-run"/);
   assert.match(html, /Copie ou grave/);
@@ -71,6 +75,43 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /NOTE_ROUTE/);
   assert.doesNotMatch(html, /html\.invite\s+#note/);
   assert.match(html, /game\.lastRun/, "a porta relê a partida para manter o recibo");
+});
+
+test("VERSION.json no root some o Gravar e deixa o Copiar", async () => {
+  assert.equal(await readArtifactMark({}), false);
+  assert.equal(await readArtifactMark({ fetch: async () => ({ ok: false }) }), false);
+  assert.equal(await readArtifactMark({
+    fetch: async () => { throw new Error("offline"); },
+  }), false);
+  assert.equal(await readArtifactMark({ fetch: async () => ({ ok: true }) }), true);
+  const save = { hidden: false, disabled: false };
+  const copy = { hidden: false, disabled: false };
+  const note = { hidden: false, disabled: false };
+  const hint = { textContent: "Copie ou grave" };
+  const root = { classList: { artifact: false, toggle(name, on) { this[name] = on; } } };
+  assert.equal(applyArtifactSurface({
+    root,
+    findingSave: save,
+    noteSave: note,
+    findingHint: hint,
+    artifact: false,
+  }), false);
+  assert.equal(save.hidden, false);
+  assert.equal(applyArtifactSurface({
+    root,
+    findingSave: save,
+    noteSave: note,
+    findingHint: hint,
+    artifact: true,
+  }), true);
+  assert.equal(save.hidden, true);
+  assert.equal(save.disabled, true);
+  assert.equal(note.hidden, true);
+  assert.equal(copy.hidden, false);
+  assert.equal(hint.textContent, ARTIFACT_FINDING_HINT);
+  assert.match(hint.textContent, /recusa gravar/);
+  assert.doesNotMatch(hint.textContent, /outsider|aprovado|verified|alguém de fora/);
+  assert.equal(root.classList.artifact, true);
 });
 
 test("a seed da partida junta chuva e look sem fingir que observou", () => {
