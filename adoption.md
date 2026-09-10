@@ -3,6 +3,35 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.213 — Guide sem --idea recusa como o start; budget grava delta
+
+Na raiz do framework, `guide` e o
+harness sem subcomando devolviam
+`start '<destino>'` com saída
+0. `start` já recusava. Agora os
+dois recusam com `sem destino`
+quando não há caminho nem frase
+que vire slug. Subpastas — starter
+incluído — continuam podendo pedir
+o mapa de referência. Projeto
+existente ou caminho explícito
+seguem sem `--idea`. `executed`
+continua falso. Não cria pasta.
+
+`npm run budget` grava
+`docs/performance/budget-last.json`
+e, na corrida seguinte, relata
+`delta` contra esse arquivo —
+simulação e draw no stub. Sem
+limiar, sem aprovação.
+`measured` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.213 não afirma:
+recusar cedo não observa o jogo;
+delta no stub não é dispositivo
+nem regressão aprovada.
+
 ## 0.9.212 — Orbe e estilhaço no mesmo quadro não decidem pela ordem
 
 Orbe e

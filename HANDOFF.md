@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.212 (confirmado): orbe e estilhaço no mesmo quadro não decidem a corrente pela ordem.
+**HEAD:** ver `git log -1` — vigente 0.9.213: guide sem `--idea` recusa como o start; budget relata delta contra `docs/performance/budget-last.json`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 278 OK.
@@ -156,6 +156,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.210 | Dois orbes no mesmo quadro não inflam a corrente. O segundo espera o próximo tick. Sem suco empilhado. Não promove feel. |
 | 0.9.211 | A legenda da coleta e da guarda nomeia a corrente que o tom já sobe. Sem o número o tom falava e a faixa calava. Não promove `heard` nem `accessibility`. |
 | 0.9.212 | Orbe e estilhaço no mesmo quadro: o estilhaço letal resolve; o orbe espera. Ordem do array não decide a aposta. No dash os dois atravessam. Não promove feel. |
+| 0.9.213 | `guide` / harness sem subcomando recusam sem `--idea` ou caminho — não devolvem mais `start '<destino>'`. `npm run budget` grava baseline e relata delta no segundo run. `measured` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
