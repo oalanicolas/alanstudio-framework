@@ -52,6 +52,7 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    (ou `start <destino> --starter <starter> --idea "<fantasia>"`) monta
    o projeto — sem caminho, a frase nomeia e cria a pasta —, põe a
    frase na abertura e no aviso do primeiro ciclo e devolve o comando que abre o jogo.
+   Com tela, o avanço abre a porta; sem tela o headless já joga.
    A frase não muda o verbo.
    `init` faz a mesma cópia sem apontar o ciclo.
    O projeto nasce com laço de passo fixo, save versionado, entrada

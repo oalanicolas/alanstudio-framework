@@ -1452,6 +1452,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(result["proposal"]["basis"], "playable.unplayed")
         self.assertTrue(result["signals"]["playable_unplayed"])
         self.assertIn("serve", result["proposal"]["commands"][0])
+        self.assertIn("porta", result["proposal"]["why"])
         self.assertEqual(result["signals"]["non_current_areas"], [])
         self.assertIn("test", result["signals"]["scripts"])
         bases = [item["basis"] for item in result["alternatives"]]
@@ -2868,6 +2869,18 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("palette", proposal["action"])
         self.assertIn("corresponde ao que ele mesmo declarou", proposal["why"])
 
+    def test_cycle_line_names_the_door_without_claiming_it_opened(self):
+        cycle = game.starter_cycle("canvas-arcade")
+        self.assertIn("door", cycle)
+        self.assertIn("porta", cycle["door"])
+        self.assertIn("headless", cycle["door"])
+        line = game.cycle_line(cycle)
+        self.assertIn("Porta:", line)
+        self.assertIn("headless", line)
+        self.assertNotIn("aprovado", line)
+        self.assertNotIn("verified", line)
+        self.assertLess(line.index("Porta:"), line.index("Mover"))
+
     def test_start_creates_the_project_and_points_at_serve_without_playing(self):
         destination = self.root / "ideia ao ciclo"
         report = game.start_project(destination, "canvas-arcade", idea="guardar a corrente ou continuar")
@@ -2887,6 +2900,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("note", report["then"]["note"])
         self.assertIn("next", report["then"]["lost"])
         self.assertEqual(report["cycle"]["verb"], "coletar orbes e guardar a corrente antes do estilhaço")
+        self.assertIn("porta", report["cycle"]["door"])
+        self.assertIn("headless", report["cycle"]["door"])
         self.assertIn("A/D", report["cycle"]["move"])
         self.assertIn("IJKL", report["cycle"]["hand"])
         self.assertIn("arrastar", report["cycle"]["touch"])
@@ -2899,6 +2914,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("?mood=dusk", report["cycle"]["mood"])
         self.assertIn("?invite=1", report["cycle"]["invite"])
         self.assertIn("Espaço", report["prompt"])
+        self.assertIn("Porta:", report["prompt"])
         self.assertIn("guardar", report["prompt"])
         self.assertIn("IJKL", report["prompt"])
         self.assertIn("Toque:", report["prompt"])
@@ -2941,6 +2957,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["steps"][1]["kind"], "playable.unplayed")
         self.assertEqual(report["cycle"]["verb"], "coletar orbes e guardar a corrente antes do estilhaço")
         self.assertEqual(report["steps"][1]["verb"], report["cycle"]["verb"])
+        self.assertIn("porta", report["steps"][1]["controls"]["door"])
         self.assertIn("A/D", report["steps"][1]["controls"]["move"])
         self.assertIn("IJKL", report["steps"][1]["controls"]["hand"])
         self.assertIn("arrastar", report["steps"][1]["controls"]["touch"])

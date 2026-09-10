@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.109 — O mapa também nomeia a porta
+
+Com tela o boot espera o avanço. O prompt do ciclo
+falava do verbo como se a partida já tivesse
+começado. `cycle.door` entra no manifesto e no
+`cycle_line`. Nomear a porta não é alguém ter
+avançado. Só `release` fica no piso.
+
+O que 0.9.109 não afirma: o harness não abriu a
+porta e o prompt não é a partida.
+
 ## 0.9.108 — O ship também nomeia o buraco
 
 `VERSION.json` sozinho não abre o jogo. `ship` relata se

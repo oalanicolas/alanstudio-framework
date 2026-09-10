@@ -20,7 +20,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | --- | --- |
 | Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing`. Ele nomeia os projetos e lista os starters |
 | Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
-| Jogo novo | Destino inexistente e engine web: `start --idea "<fantasia>"` (ou `start <novo> --starter <starter> --idea "<fantasia>"`) cria o projeto — sem caminho, a frase nomeia a pasta, ao lado do framework se o start corre de dentro desta árvore —, põe a frase na abertura e no aviso do primeiro ciclo e devolve `open` (= `play`) + `then.note` sem executar. `open` é o comando de agora; `steps` é o mesmo mapa de três passos do `guide`, com o passo 1 feito. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive o cluster de uma mão, o toque, o controle e as queries de look, chuva, par e convite, se houver. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia par, look, chuva e voz; depois de um recibo, o prompt as aponta. Nomear o ofício não pinta. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando: `python3 scripts/game.py --idea "<fantasia>"`) mapeia start → jogar → note. `open` é o comando de agora; `prompt` o nomeia. Sem destino, a frase nomeia a pasta no comando do start — ao lado do framework se o mapa corre de dentro desta árvore; no diretório atual se corre de fora. Não grava a frase nem cria a pasta. Sem destino, se o diretório atual é um jogo fora do framework, o mapa usa esse caminho. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
+| Jogo novo | Destino inexistente e engine web: `start --idea "<fantasia>"` (ou `start <novo> --starter <starter> --idea "<fantasia>"`) cria o projeto — sem caminho, a frase nomeia a pasta, ao lado do framework se o start corre de dentro desta árvore —, põe a frase na abertura e no aviso do primeiro ciclo e devolve `open` (= `play`) + `then.note` sem executar. `open` é o comando de agora; `steps` é o mesmo mapa de três passos do `guide`, com o passo 1 feito. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive a porta, o cluster de uma mão, o toque, o controle e as queries de look, chuva, par e convite, se houver. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia par, look, chuva e voz; depois de um recibo, o prompt as aponta. Nomear o ofício não pinta. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando: `python3 scripts/game.py --idea "<fantasia>"`) mapeia start → jogar → note. `open` é o comando de agora; `prompt` o nomeia. Sem destino, a frase nomeia a pasta no comando do start — ao lado do framework se o mapa corre de dentro desta árvore; no diretório atual se corre de fora. Não grava a frase nem cria a pasta. Sem destino, se o diretório atual é um jogo fora do framework, o mapa usa esse caminho. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
 | Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, `note <projeto> --author … --note "o que o verbo sentiu"`. Depois `roles` e `context --focus audio` |
 | Paleta, conteúdo no código ou jogo só na máquina de quem construiu | `art` / `content` / `ship` <projeto>; `consistent`/`enough`/`shipped` ficam `false` |
@@ -149,10 +149,10 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    regra de parada) — conformidade com o que o projeto declarou, sem limiar
    importado. `observed` é sempre falso. Só levanta o gate que o projeto pediu.
    Depois de um `init` fresco, `next` propõe **abrir o ciclo** antes de
-   substituir os rascunhos: o starter já é um jogo que abre, ensina o
-   primeiro ciclo no campo — mover, avançar, coletar, guardar e o mapa
-   da superfície que falou — e traz art-bible vigente. O `init` não o
-   reescreve.
+   substituir os rascunhos: o starter já é um jogo que abre. Com tela,
+   o avanço abre a porta; no campo o aviso ensina mover, avançar,
+   coletar, guardar e o mapa da superfície que falou. Art-bible vigente.
+   O `init` não o reescreve.
    **`guide [<projeto>]`** devolve os três passos ideia→ciclo (start,
    jogar, note) sem executar nenhum. Sem subcomando, o harness é o
    próprio `guide`; `--idea` no mapa (com ou sem o verbo `guide`) só
@@ -161,7 +161,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Destino existente preenche o comando que abre o jogo e o `kind`
    do passo de jogar. `open` é o comando de agora; `prompt` o nomeia.
    Se o starter declara o verbo, o passo 2 o
-   nomeia; `then` nomeia par, look, chuva e voz quando o projeto — ou o
+   nomeia — e a porta, se o manifesto a declara; `then` nomeia par, look, chuva e voz quando o projeto — ou o
    starter, se o destino ainda não existe — as declara; se declara
    `session`, `then` a aponta; `executed` fica `false`. O autor do
    `note` é sugestão do git ou do ambiente, não quem jogou. Nomear o
@@ -171,7 +171,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    o passo 1 feito. Sem caminho, `--idea` nomeia e cria a pasta —
    ao lado do framework se o start corre de dentro desta árvore.
    `guide --idea` continua só no comando, não no disco. Se o starter declara o verbo e as teclas, o
-   prompt as nomeia — inclusive o cluster de uma mão, o toque, o
+   prompt as nomeia — inclusive a porta, o cluster de uma mão, o toque, o
    controle e as queries de look, chuva, par e convite, se o starter as declara. Se o
    projeto declara `pair`/`look`/`table`/`sfx`, `then` as nomeia; depois de um
    recibo, o prompt aponta o segundo ciclo. Não executa o jogo. `--idea` entra no brief

@@ -4,6 +4,7 @@
   "summary": "Arcade de uma tela em Canvas: passo fixo, determinismo verificável, ciclo de vida sem vazamento, save versionado e acesso desde o início.",
   "cycle": {
     "verb": "coletar orbes e guardar a corrente antes do estilhaço",
+    "door": "com tela, o avanço abre a porta; sem tela o headless já joga",
     "move": "A/D ou setas",
     "dash": "Espaço ou K",
     "bank": "S ou J",

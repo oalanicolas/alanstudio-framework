@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.108: o ship também nomeia o buraco.
+**HEAD:** ver `git log -1` — vigente 0.9.109: o mapa também nomeia a porta.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 243 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 244 OK.
 `cd assets/starters/canvas-arcade && npm test` → 272 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.108)
+## O que o HEAD já entrega (0.9.91–0.9.109)
 
 | Ver | Salto |
 | --- | --- |
@@ -52,6 +52,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.106 | `start` devolve `open` (= `play`) e os mesmos `steps` do guide. |
 | 0.9.107 | Schema 3: `hold` é o tick interrompido. `canResume` ≠ Continuar. |
 | 0.9.108 | `ship` nomeia árvore incompleta, HEAD velho e `elsewhere` falso. |
+| 0.9.109 | `cycle.door` entra no prompt: com tela o avanço abre a porta. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -145,6 +146,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 **Guide / start**
 
+- `CYCLE_KEYS` inclui `door` depois de `verb`. `cycle_line` nomeia
+  `Porta:` antes de `Mover`.
 - `CRAFT_EXAMPLES` ordem: pair → look → table → sfx. Look e chuva do
   exemplo compartilham o nome `noite`.
 - `play` após `start` é `cd … && npm run serve`. Não há `npm install`.
@@ -200,14 +203,15 @@ Candidatos, do que ainda dói:
 1. **Release (define o piso):** outra máquina correr o `dist/`. Não
    promover. `ship` já nomeia árvore incompleta, HEAD velho e
    `elsewhere` falso; isso não é a prova.
-2. **Idéia→jogo:** `start` já devolve `open` e `steps`. Ainda são
-   dois contextos (servir no dispositivo, `note` no harness). Não
-   auto-servir. `len(steps) == 3` e `executed: false` continuam.
+2. **Idéia→jogo:** `start` já devolve `open` e `steps`; o prompt
+   nomeia a porta. Ainda são dois contextos (servir no dispositivo,
+   `note` no harness). Não auto-servir. `len(steps) == 3` e
+   `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
-4. **Item 1 residual:** recipes/templates vs código. O HANDOFF antigo
-   (PRs #2/#3) está obsoleto; recipes ainda falam “tela do primeiro
-   ciclo” em alguns sítios — a abertura agora é a porta.
+4. **Item 1 residual:** o mapa já nomeia a porta. Recipes que ainda
+   falarem só do campo sem a abertura estão velhas — a primeira
+   superfície com tela é a porta.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub e `gameSpeed` no disco não fecham.
    A receita de velocidade ajustável já tem knob; falta a sessão.
@@ -230,6 +234,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `scripts/game.py` (`ship_tree`,
-`ship_stale`, `ship.incomplete` / `ship.stale`), `tools/serve.mjs`
-(`isArtifactRoot`), testes de ship e do banner do artefato.
+Arquivos quentes da última sessão: `starter.json` (`cycle.door`),
+`scripts/game.py` (`CYCLE_KEYS`, `cycle_line`, `playable.unplayed`),
+prompt do `start` / `guide`.

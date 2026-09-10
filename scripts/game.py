@@ -3129,7 +3129,7 @@ def starter_manifest(starter):
     return manifest
 
 
-CYCLE_KEYS = ("verb", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn", "mood", "invite")
+CYCLE_KEYS = ("verb", "door", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn", "mood", "invite")
 
 
 def starter_cycle(starter):
@@ -3154,6 +3154,8 @@ def cycle_line(cycle):
     if not cycle:
         return ""
     parts = [f"Verbo: {cycle['verb']}."]
+    if cycle.get("door"):
+        parts.append(f"Porta: {cycle['door']}.")
     if cycle.get("move"):
         parts.append(f"Mover {cycle['move']}.")
     if cycle.get("dash"):
@@ -3367,8 +3369,9 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "a pasta — ao lado do framework se o start corre de dentro desta "
             "árvore — e cria. `guide --idea` continua só no comando, não no "
             "disco. Se o starter declara o verbo e "
-            "as teclas, o prompt as nomeia — inclusive o cluster de uma mão, "
-            "o toque, o controle e as queries de look, chuva, par e convite, se o starter as declara. Não "
+            "as teclas, o prompt as nomeia — inclusive a porta, o cluster de "
+            "uma mão, o toque, o controle e as queries de look, chuva, par e "
+            "convite, se o starter as declara. Não "
             "executa o jogo. Depois de uma "
             "partida, o próximo comando do harness é `note`, não `next`. "
             "`then` já nomeia par, look, chuva e voz se o projeto declara essas "
@@ -3740,7 +3743,8 @@ def next_step(project, focus="create", studies_root=None):
     if fresh:
         propose(
             "Abrir o ciclo do starter e escrever o que a proposta muda no verbo",
-            "O destino já é um jogo que abre. Sete rascunhos antes da primeira partida "
+            "O destino já é um jogo que abre. Com tela, o avanço abre a porta; "
+            "sem tela o headless já joga. Sete rascunhos antes da primeira partida "
             "são o atrito que este passo existe para cortar. O harness não executa o jogo.",
             "O ciclo correu uma vez, e o brief (ou um recibo de observação) registra o que "
             "esta proposta muda no verbo — ou a lacuna, se ainda não souber.",
