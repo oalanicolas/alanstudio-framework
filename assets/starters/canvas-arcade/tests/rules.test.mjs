@@ -231,6 +231,35 @@ test("o término do dash senta, empurra a câmera e deixa rastro próprio", () =
   assert.ok(CONFIG.feel.rumbleLandMs < CONFIG.feel.rumbleDashMs);
 });
 
+test("o término do dash também atravessa o estilhaço", () => {
+  const state = createState(3);
+  dashOut(state);
+  assert.equal(state.player.dashTicks, CONFIG.player.dashTicks);
+  while (state.player.dashTicks > 1) advance(state, neutralIntent());
+  assert.equal(state.player.dashTicks, 1);
+  state.chain = 2;
+  state.entities = [shard(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.equal(state.player.dashTicks, 0);
+  assert.ok(state.events.some((event) => event.type === "land"), "o término ainda nasce");
+  assert.equal(state.stats.hits, 0, "o quadro do land não é janela de hit");
+  assert.equal(state.chain, 2);
+  assert.ok(state.events.some((event) => event.type === "graze"));
+});
+
+test("depois do término a recuperação continua vulnerável", () => {
+  const state = createState(3);
+  dashOut(state);
+  while (state.player.dashTicks > 0) advance(state, neutralIntent());
+  assert.ok(state.player.dashRecovery > 0);
+  assert.ok(state.events.some((event) => event.type === "land"));
+  state.chain = 2;
+  state.entities = [shard(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.equal(state.stats.hits, 1, "a recuperação depois do land continua vulnerável");
+  assert.equal(state.chain, 0);
+});
+
 test("antecipar o avanço também atravessa o estilhaço", () => {
   const state = createState(3);
   advance(state, { move: 1, dash: true, bank: false });

@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.203 (confirmado): os mapas que o `context` injeta nomeiam a porta.
+**HEAD:** ver `git log -1` — vigente 0.9.204: o quadro do land do dash também atravessa o estilhaço.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 274 OK.
-`cd assets/starters/canvas-arcade && npm test` → 381 OK.
+`cd assets/starters/canvas-arcade && npm test` → 383 esperados (confirmar).
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.203)
+## O que o HEAD já entrega (0.9.91–0.9.204)
 
 | Ver | Salto |
 | --- | --- |
@@ -147,6 +147,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.201 | `reducedMotion` na porta trava toque e live na mesma mostra que o canvas já para. O campo continua caindo. Não promove `accessibility`. |
 | 0.9.202 | O quadro que converte a guarda também atravessa o estilhaço. Sem punch novo. Não promove feel. |
 | 0.9.203 | Design system, ambição, barra, checklist e os pacotes de gênero nomeiam a porta. O `context` já os injeta. Não promove feel. |
+| 0.9.204 | O quadro do `land` também atravessa. A recuperação depois continua vulnerável. Sem punch novo. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -159,7 +160,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | corpo e quadro sentam no over; a porta fecha o arco do avanço; o arco da guarda atravessa; o quadro da conversão também atravessa; a queda senta o corpo; a porta marca a mostra no trilho; a câmera confirma o trilho; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | corpo e quadro sentam no over; a porta fecha o arco do avanço; o arco da guarda atravessa; o quadro da conversão também atravessa; o quadro do land também atravessa; a queda senta o corpo; a porta marca a mostra no trilho; a câmera confirma o trilho; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; `heard` falso |
@@ -267,7 +268,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou assistência que some a mostra
   ou reduced que some o toque da mostra
   ou conversão da guarda que é janela de hit
-  ou mapa canônico que some a porta.
+  ou mapa canônico que some a porta
+  ou land que é janela de hit.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -437,8 +439,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `hold` leva `bankWindup`.
 - Avanço na partida: `dashWindupTicks` (2) senta com `squashCoil`
   antes de `fireDash`. Esses ticks também são graça: o coil
-  atravessa o estilhaço. A porta (`beginRun`) continua imediata e
-  fecha o arco (`land`) no mesmo tick.
+  atravessa o estilhaço. O quadro do `land` (`events` tem
+  `land`) também atravessa — `dashTicks` já é 0. A
+  recuperação depois continua vulnerável. A porta
+  (`beginRun`) continua imediata e fecha o arco (`land`)
+  no mesmo tick.
   Guardar corrente já existente: `bank.windupTicks` (2) senta
   antes de converter. Esses ticks também são graça: o arco
   atravessa o estilhaço. O quadro da conversão (`events`
@@ -610,6 +615,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um reduced que trava o canvas e deixa o toque e o live lerem a chuva que some.
 **Não** mais um quadro da conversão que mata depois do arco já ter atravessado.
 **Não** mais um mapa que o `context` injeta ensinando o verbo só no campo.
+**Não** mais um quadro do land que mata depois do dash já ter atravessado.
 
 Candidatos, do que ainda dói:
 
@@ -809,7 +815,9 @@ Candidatos, do que ainda dói:
   janela de hit e o
   mapa canônico
   que some a
-  porta
+  porta e o
+  land que é
+  janela de hit
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -833,6 +841,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: design system, ambição,
-barra, checklist e os pacotes de gênero nomeiam a porta.
-O `context` já os injeta. Não promove feel.
+Arquivos quentes da última sessão: o quadro do `land`
+também atravessa. A recuperação depois continua vulnerável.
+Não promove feel.

@@ -3,6 +3,34 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.204 — O término do dash também atravessa
+
+O coil e o
+contato já
+atravessavam.
+O quadro do
+`land` —
+`dashTicks`
+já em zero —
+ainda matava.
+Agora o
+impacto do
+término também
+raspa. A
+recuperação
+depois continua
+vulnerável.
+Sem punch
+novo. `felt`
+continua falso.
+Só `release`
+fica no piso.
+
+O que 0.9.204 não afirma:
+graça no disco
+não é peso
+percebido.
+
 ## 0.9.203 — Os mapas do context nomeiam a porta
 
 O `context`

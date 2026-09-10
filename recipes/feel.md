@@ -79,6 +79,8 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    No starter o avanço senta (`squashCoil`) dois ticks antes de alongar;
    esses ticks já atravessam o estilhaço — o coil não é janela de hit.
    O término emite `land` (squash, câmera, puff, rumble e voz).
+   Esse quadro também atravessa o estilhaço; a recuperação depois
+   do land continua vulnerável.
    Guardar uma corrente que já existe senta os mesmos dois ticks antes
    de converter; esses ticks já atravessam o estilhaço — o arco da
    guarda não é janela de hit. O quadro que converte também atravessa:

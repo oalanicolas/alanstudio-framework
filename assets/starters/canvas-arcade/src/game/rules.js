@@ -25,7 +25,7 @@ export const CONFIG = {
     speed: 1.9,
     dashSpeed: 5.4,
     dashTicks: 8, // contato: rápido e invulnerável
-    dashRecoveryTicks: 6, // recuperação: controle reduzido, ainda vulnerável
+    dashRecoveryTicks: 6, // recuperação: controle reduzido, ainda vulnerável; o quadro do land atravessa
     dashCooldownTicks: 30,
     dashBufferTicks: 8, // perdão: dash pedido cedo dispara ao recarregar
     dashWindupTicks: 2, // antecipação: o corpo senta antes de alongar; já é graça
@@ -920,9 +920,10 @@ function resolveEntities(state) {
     (player.dashWindup ?? 0) > 0 ||
     (state.bankWindup ?? 0) > 0 ||
     // O arco já atravessava. Sem isto o quadro que
-    // converte — windup já em 0 — era janela de hit.
-    // Pose no disco não é peso percebido.
-    state.events.some((event) => event.type === "bank");
+    // converte — e o quadro do land, dashTicks já em 0 —
+    // era janela de hit. A recuperação depois do land
+    // continua vulnerável. Pose no disco não é peso.
+    state.events.some((event) => event.type === "bank" || event.type === "land");
   const entities = state.entities;
   let write = 0;
   for (let index = 0; index < entities.length; index += 1) {
