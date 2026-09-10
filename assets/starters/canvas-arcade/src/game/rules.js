@@ -382,6 +382,47 @@ export function createState(seed = 1, options = {}) {
   };
 }
 
+// Retoma o recorte gravado em `hold`. Motes e eventos não voltam:
+// são efêmeros. Isto não é Continuar — Continuar repete a seed.
+export function restoreState(hold, options = {}) {
+  if (!hold || !hold.player) return createState(hold?.seed ?? 1, options);
+  const seed = hold.seed;
+  const spawnProfile = resolveSpawnName(options.spawnProfile ?? hold.spawnProfile);
+  const rng = bindSpawnRng(seed, hold.rngState);
+  const spawn = { ...loadSpawn(spawnProfile) };
+  const entities = [];
+  for (const entity of hold.entities ?? []) {
+    entities.push(acquireEntity(entity.id, entity.kind, entity.x, entity.y, entity.vy));
+  }
+  return {
+    version: 1,
+    seed,
+    assist: options.assist !== undefined ? Boolean(options.assist) : Boolean(hold.assist),
+    spawnProfile,
+    spawn,
+    rngState: rng.state,
+    tick: hold.tick,
+    phase: "playing",
+    score: hold.score,
+    chain: hold.chain,
+    hitstop: hold.hitstop,
+    shake: hold.shake,
+    flash: hold.flash,
+    camera: { x: hold.camera?.x ?? 0, y: hold.camera?.y ?? 0 },
+    bankLock: hold.bankLock,
+    bankBuffer: hold.bankBuffer,
+    spawnTimer: hold.spawnTimer,
+    recoverUntil: hold.recoverUntil,
+    nextId: hold.nextId,
+    player: { ...hold.player },
+    entities,
+    motes: [],
+    attractTick: 0,
+    stats: { ...hold.stats },
+    events: [],
+  };
+}
+
 export function beginRun(state) {
   if (!state || state.phase !== "title") return state;
   state.phase = "playing";

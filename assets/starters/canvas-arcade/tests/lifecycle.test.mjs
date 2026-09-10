@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 
 import { createGame } from "../src/main.js";
 import { memoryStorage } from "../src/core/storage.js";
+import { canResume } from "../src/core/save.js";
 import { CONFIG } from "../src/game/rules.js";
 import { pairPatch } from "../src/game/tables.js";
 
@@ -277,6 +278,64 @@ test("com tela o fim volta à abertura", () => {
   assert.equal(game.observe().phase, "playing");
   assert.equal(game.observe().seed, lastSeed);
   game.dispose();
+});
+
+function playFields(obs) {
+  return {
+    tick: obs.tick,
+    seed: obs.seed,
+    score: obs.score,
+    chain: obs.chain,
+    rngState: obs.rngState,
+    player: obs.player,
+    entities: obs.entities,
+    stats: obs.stats,
+  };
+}
+
+test("o tick interrompido volta; Continuar continua sendo a seed", () => {
+  const storage = memoryStorage();
+  const live = createGame({ seed: 11, eventTarget: recordingTarget(), storage });
+  live.advance(40);
+  const mid = live.observe();
+  live.flush();
+  assert.equal(canResume(JSON.parse(storage.get("progress"))), true);
+  assert.equal(canResume(live.progress), true);
+
+  const restored = createGame({ eventTarget: recordingTarget(), storage });
+  assert.equal(restored.observe().phase, "playing");
+  assert.deepEqual(playFields(restored.observe()), playFields(mid));
+
+  const ignored = createGame({ seed: 99, eventTarget: recordingTarget(), storage });
+  assert.equal(ignored.observe().tick, 0, "seed explícita não retoma o hold");
+  ignored.dispose();
+
+  live.advance(20);
+  restored.advance(20);
+  assert.deepEqual(playFields(restored.observe()), playFields(live.observe()));
+  live.dispose();
+  restored.dispose();
+});
+
+test("com tela o hold retoma o tick e não a porta", () => {
+  const storage = memoryStorage();
+  const game = createGame({ seed: 11, eventTarget: recordingTarget(), storage });
+  game.advance(40);
+  game.flush();
+  game.dispose();
+  const again = createGame({
+    eventTarget: recordingTarget(),
+    storage,
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(again.observe().phase, "playing", "hold não abre a porta");
+  assert.equal(again.observe().tick, 40);
+  assert.equal(again.observe().seed, 11);
+  again.reset();
+  assert.equal(again.observe().tick, 0);
+  assert.equal(canResume(again.progress), false, "reset abandona o tick interrompido");
+  again.dispose();
 });
 
 test("advance ignora a velocidade da partida", () => {

@@ -13,6 +13,8 @@ import {
   loadProgress,
   migrate,
   canContinue,
+  canResume,
+  captureHold,
   recordRun,
   saveProgress,
 } from "../src/core/save.js";
@@ -135,6 +137,24 @@ test("recordRun mantém os máximos e conta a partida", () => {
   assert.equal(canContinue(progress), false, "sem lastSeed não há o que repetir");
   assert.equal(canContinue(next), true);
   assert.equal(canContinue({ ...next, lastSeed: null }), false);
+  assert.equal(next.hold, null);
+  assert.equal(canResume(next), false, "terminar a partida não é retomar o tick");
+});
+
+test("schema 2 ganha hold vazio ao subir", () => {
+  const result = migrate({ schema: 2, best: 10, runs: 1, lastSeed: 3 });
+  assert.equal(result.status, "migrated");
+  assert.equal(result.progress.schema, PROGRESS_SCHEMA);
+  assert.equal(result.progress.hold, null);
+  assert.equal(result.progress.best, 10);
+  assert.equal(canResume(result.progress), false);
+});
+
+test("hold inválido não vira retomar", () => {
+  assert.equal(canResume({ hold: { tick: 4 } }), false);
+  assert.equal(canResume({ hold: { seed: 1, rngState: 2, tick: 4 } }), false);
+  assert.equal(captureHold({ phase: "title", tick: 8, player: { x: 1 }, entities: [] }), null);
+  assert.equal(captureHold({ phase: "playing", tick: 0, player: { x: 1 }, entities: [] }), null);
 });
 
 test("preferências recusam valor fora de faixa e campo desconhecido", () => {

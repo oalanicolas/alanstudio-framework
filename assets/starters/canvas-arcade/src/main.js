@@ -9,14 +9,14 @@
 import { createLoop } from "./core/loop.js";
 import { createInput } from "./core/input.js";
 import { browserStorage } from "./core/storage.js";
-import { canContinue, loadProgress, recordRun, saveProgress, summarizeRun } from "./core/save.js";
+import { canContinue, canResume, captureHold, loadProgress, recordRun, saveProgress, summarizeRun } from "./core/save.js";
 import { detectEnvironment, loadSettings, normalizeSettings, saveSettings } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { createAudio } from "./game/audio.js";
 import { createHaptics } from "./game/haptics.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
-import { advance as advanceRules, attractTick, beginRun, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
+import { advance as advanceRules, attractTick, beginRun, createState, restoreState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
 import { copy, resolveLookName, resolveMoodName, resolveSpawnName } from "./game/tables.js";
 import { coachHint } from "./game/coach.js";
 
@@ -67,10 +67,16 @@ export function createGame(options = {}) {
   const progressLoad = loadProgress(storage);
   let progress = progressLoad.progress;
   const forcedSeed = options.seed;
-  const entry = options.entry ?? (canvas ? "title" : "playing");
+  const resuming = forcedSeed === undefined && options.entry !== "title" && canResume(progress);
+  const entry = options.entry ?? (canvas && !resuming ? "title" : "playing");
   const resumeSeed = canContinue(progress) ? progress.lastSeed : null;
   const openingSeed = forcedSeed ?? resumeSeed ?? randomSeed();
-  let state = createState(openingSeed, matchOptions(settings, entry));
+  let state = resuming && entry === "playing"
+    ? restoreState(progress.hold, matchOptions({
+      ...settings,
+      spawnProfile: progress.hold.spawnProfile ?? settings.spawnProfile,
+    }, "playing"))
+    : createState(openingSeed, matchOptions(settings, entry));
   let queued = neutralIntent();
   let recorded = false;
   let lastRun = progress.lastRun ?? null;
@@ -183,6 +189,9 @@ export function createGame(options = {}) {
   }
 
   function flush() {
+    if (state.phase === "playing") {
+      progress = { ...progress, hold: captureHold(state) };
+    }
     saveProgress(storage, progress, progressLoad);
     saveSettings(storage, settings);
     return { progress: { ...progress }, settings };
@@ -223,6 +232,7 @@ export function createGame(options = {}) {
       loop.pause();
       haptics.mute();
       syncBed();
+      flush();
       return true;
     },
     resume() {
@@ -242,6 +252,8 @@ export function createGame(options = {}) {
       // jogando — não é o botão do overlay.
       const toTitle = Boolean(canvas) && state.phase === "over" && arguments.length === 0;
       const nextSeed = toTitle ? (progress.lastSeed ?? seed) : seed;
+      progress = { ...progress, hold: null };
+      saveProgress(storage, progress, progressLoad);
       state = createState(nextSeed, matchOptions(settings, toTitle ? "title" : "playing"));
       queued = neutralIntent();
       recorded = false;
@@ -329,6 +341,7 @@ export function createGame(options = {}) {
         const stay = state.phase === "title" ? "title" : "playing";
         state = createState(state.seed, matchOptions(settings, stay));
         recorded = false;
+        progress = { ...progress, hold: null };
       }
       saveSettings(storage, settings);
       return settings;

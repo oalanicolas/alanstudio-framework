@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.106: o start também nomeia o agora.
+**HEAD:** ver `git log -1` — vigente 0.9.107: o meio da chuva também volta.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 240 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.106)
+## O que o HEAD já entrega (0.9.91–0.9.107)
 
 | Ver | Salto |
 | --- | --- |
@@ -50,6 +50,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.104 | A porta chove (orbe e estilhaço) sem comer a seed. Reduced trava, não some. |
 | 0.9.105 | `gameSpeed` dilata o relógio. `advance()` não. Assistência ≠ este knob. |
 | 0.9.106 | `start` devolve `open` (= `play`) e os mesmos `steps` do guide. |
+| 0.9.107 | Schema 3: `hold` é o tick interrompido. `canResume` ≠ Continuar. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -67,7 +68,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | `heard` falso |
 | pacing | slice | curva com outsider pendente |
-| state_trust | slice | aba fechada real não observada; repetir seed ≠ tick interrompido |
+| state_trust | slice | `hold` no stub; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
 | accessibility | slice | oito opções + remap + relógio; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
@@ -169,6 +170,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Continuar = **repetir `lastSeed`**, não restaurar o tick. `canContinue`
   exige `runs > 0` e `lastSeed`. `doorOpen()` relê o progresso — não
   congela o valor do boot.
+- `hold` / `canResume` = tick interrompido (schema 3). Seed explícita
+  ignora o hold. Reset e `recordRun` limpam. Não chamar de Continuar.
+  Não promover `state_trust`.
 - Coach: fantasy → move → dash → miss → touch/pad → collect → null após
   1ª guarda. `coachHint` some se `phase !== "playing"`.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
@@ -196,9 +200,8 @@ Candidatos, do que ainda dói:
 2. **Idéia→jogo:** `start` já devolve `open` e `steps`. Ainda são
    dois contextos (servir no dispositivo, `note` no harness). Não
    auto-servir. `len(steps) == 3` e `executed: false` continuam.
-3. **Checkpoint do tick:** a abertura e o fim repetem a seed; o save
-   não guarda o meio da chuva. Mid-run resume é schema novo + contrato
-   observe/advance. Não chamar isso de Continuar.
+3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
+   Não promover. Não chamar `hold` de Continuar.
 4. **Item 1 residual:** recipes/templates vs código. O HANDOFF antigo
    (PRs #2/#3) está obsoleto; recipes ainda falam “tela do primeiro
    ciclo” em alguns sítios — a abertura agora é a porta.
@@ -224,6 +227,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `scripts/game.py` (`start_project`,
-`cycle_steps`), `tests/test_game.py`, SKILL/README/`recipes/create.md`,
-`adoption.md`.
+Arquivos quentes da última sessão: `src/core/save.js` (`hold`,
+`canResume`, schema 3), `src/game/rules.js` (`restoreState`),
+`src/main.js` (retoma sem seed explícita), testes de save/lifecycle.

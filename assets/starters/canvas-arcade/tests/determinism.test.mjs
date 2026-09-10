@@ -5,8 +5,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, createState } from "../src/game/rules.js";
+import { advance, createState, restoreState } from "../src/game/rules.js";
 import { createRng, hashSeed } from "../src/core/rng.js";
+import { captureHold } from "../src/core/save.js";
 import { fingerprint } from "../src/core/hash.js";
 
 function script(seed, length) {
@@ -77,6 +78,32 @@ test("retomar um estado serializado continua a mesma partida", () => {
   const straight = continueWith(live, rest);
   const resumed = continueWith(JSON.parse(saved), rest);
   assert.equal(print(straight), print(resumed));
+});
+
+function playFields(state) {
+  return {
+    tick: state.tick,
+    seed: state.seed,
+    score: state.score,
+    chain: state.chain,
+    rngState: state.rngState,
+    player: state.player,
+    entities: state.entities,
+    stats: state.stats,
+    spawnTimer: state.spawnTimer,
+    nextId: state.nextId,
+  };
+}
+
+test("o hold retoma a chuva, não a seed do zero", () => {
+  const first = script(21, 180);
+  const rest = script(23, 80);
+  const live = play(21, first);
+  const hold = captureHold(live);
+  assert.ok(hold, "a chuva no meio precisa caber no hold");
+  const straight = continueWith(live, rest);
+  const resumed = continueWith(restoreState(hold), rest);
+  assert.deepEqual(playFields(resumed), playFields(straight));
 });
 
 test("o estado é JSON simples, sem referências vivas", () => {

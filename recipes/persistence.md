@@ -43,7 +43,11 @@ distintos; não os una em um número por conveniência.
 `trusted` é sempre falso: o harness não abre o save e não confirma escrita.
 
 Implementação concreta, com o limite dito: o starter `canvas-arcade` versiona o
-save em `src/core/save.js`, com migração e recuperação de dado inválido, e grava
+save em `src/core/save.js` (schema 3), com migração e recuperação de dado inválido.
+`hold` guarda o tick interrompido — seed, `rngState`, chuva e ofício.
+`canResume` lê o hold; `canContinue` continua sendo repetir a última seed.
+Pausa, `pagehide` e perda de foco gravam o hold. Terminar ou resetar limpa.
+Isto **não** é aba fechada observada e não sobe `state_trust`. Grava
 de forma **verificada** em `src/core/storage.js` — escreve em chave de estágio,
 relê, compara e só então grava na chave real. Isso **não** é a escrita atômica do
 parágrafo acima: `localStorage` não tem substituição, então a gravação final é

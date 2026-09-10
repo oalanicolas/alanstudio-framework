@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.107 — O meio da chuva também volta
+
+O save já repetia a última seed. Fechar no meio
+perdia o tick. Schema 3 guarda `hold`: gerador,
+chuva e ofício. `canResume` não é Continuar.
+`trusted` continua falso. Só `release` fica no piso.
+
+O que 0.9.107 não afirma: o harness não fechou a
+aba e gravar o hold no stub não é interrupção real.
+
 ## 0.9.106 — O start também nomeia o agora
 
 O `guide` já devolvia `open`. O `start` devolvia `play` e
