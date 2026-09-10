@@ -3193,10 +3193,12 @@ def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, ur
     ]
 
 
-def cycle_prompt(play, then, cycle, noted=False, url=None):
+def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None):
+    hole = runtime_line(runtime)
     if not play:
         return (
-            "Sem comando de abrir: identifique o entrypoint e rode `next`. "
+            hole
+            + "Sem comando de abrir: identifique o entrypoint e rode `next`. "
             "O harness não executa o jogo."
         )
     seed_line = (
@@ -3220,12 +3222,13 @@ def cycle_prompt(play, then, cycle, noted=False, url=None):
             parts.append(invite_line)
         parts.append("O harness não pinta, não chove e não ouve.")
         parts.append(f"`next` só se você não sabe o que falta: {then['lost']}.")
-        return " ".join(parts)
+        return hole + " ".join(parts)
     how = cycle_line(cycle)
     extra = " ".join(part for part in (seed_line, invite_line) if part)
     surface = f"Abra {url} no navegador — file:// não carrega. " if url else ""
     return (
-        f"O jogo não foi aberto. Cole e rode: {play}. "
+        hole
+        + f"O jogo não foi aberto. Cole e rode: {play}. "
         + surface
         + (f"{how} " if how else "")
         + (f"{extra} " if extra else "")
@@ -3234,12 +3237,14 @@ def cycle_prompt(play, then, cycle, noted=False, url=None):
     )
 
 
-def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None):
+def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None, runtime=None):
     if exists:
-        return cycle_prompt(play, then, cycle, noted, url)
+        return cycle_prompt(play, then, cycle, noted, url, runtime)
+    hole = runtime_line(runtime)
     surface = f"Abra {url} no navegador — file:// não carrega. " if url else ""
     return (
-        f"O ciclo ainda não existe. Cole e rode: {start_command}. "
+        hole
+        + f"O ciclo ainda não existe. Cole e rode: {start_command}. "
         f"Depois, no próprio dispositivo: {play}. "
         + surface
         + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
@@ -3605,6 +3610,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         start_parts.extend(["--idea", idea.strip()])
     start_command = harness_command(*start_parts)
     steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True, url=url)
+    runtime = node_runtime(play)
     return {
         "schema_version": 1,
         "project": str(destination),
@@ -3617,6 +3623,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "play": play,
         "open": play,
         "url": url,
+        "runtime": runtime,
         "steps": steps,
         "init": init_report,
         "next": proposal,
@@ -3624,7 +3631,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "noted": noted,
         "named": named,
         "suggest": str(suggested_start_target(idea, cwd=cwd)) if named else None,
-        "prompt": cycle_prompt(play, then, cycle, noted, url),
+        "prompt": cycle_prompt(play, then, cycle, noted, url, runtime),
         "executed": False,
         "scope": (
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
@@ -3652,7 +3659,8 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "instala dependências e não avalia a proposta. `--idea` entra na "
             "abertura se houver `data/copy.json`. O brief só nasce com `--docs`; "
             "sem ele o `start` não planta rascunhos. A frase na tela não "
-            "muda o verbo."
+            "muda o verbo. `runtime` lê o `node` do PATH se o play pede "
+            "npm ou node; não executa o serve. `usable` é só o binário."
         ),
     }
 
@@ -3680,6 +3688,7 @@ def play_cycle(destination=None, starter=None):
     proposal = next_step(dest, "feel")
     start_command = harness_command("start", dest, "--starter", chosen)
     steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True, url=url)
+    runtime = node_runtime(play)
     return {
         "schema_version": 1,
         "command": "play",
@@ -3687,9 +3696,10 @@ def play_cycle(destination=None, starter=None):
         "play": play,
         "open": play,
         "url": url,
+        "runtime": runtime,
         "then": then,
         "cycle": cycle,
-        "prompt": cycle_prompt(play, then, cycle, noted, url),
+        "prompt": cycle_prompt(play, then, cycle, noted, url, runtime),
         "steps": steps,
         "noted": noted,
         "executed": False,
@@ -3702,7 +3712,9 @@ def play_cycle(destination=None, starter=None):
             "de uma partida, a página grava o recibo se você escrever; o "
             "próximo comando do harness continua `note`, não `next`. "
             "Se o disco tem last-run com seed, `then` aponta a seed e o "
-            "convite; nomear o endereço não observa. O `prompt` também "
+            "convite; nomear o endereço não observa. `runtime` lê o `node` "
+            "do PATH se o play pede npm ou node; não executa o serve. "
+            "O `prompt` também "
             "sai em stderr; o JSON fica no stdout. `executed` fica falso."
         ),
     }
@@ -3869,6 +3881,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
     start_command = harness_command(*start_parts)
     noted = bool(exists and observation_receipts(dest))
     steps = cycle_steps(start_command, play_cmd, then, cycle, nxt, exists, url)
+    runtime = node_runtime(play_cmd)
     return {
         "schema_version": 1,
         "command": "guide",
@@ -3884,7 +3897,8 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         "noted": noted,
         "open": start_command if not exists else play_cmd,
         "url": url,
-        "prompt": guide_prompt(exists, start_command, play_cmd, then, cycle, noted, url),
+        "runtime": runtime,
+        "prompt": guide_prompt(exists, start_command, play_cmd, then, cycle, noted, url, runtime),
         "steps": steps,
         "scope": (
             "Três passos ideia→ciclo: start, jogar, note. `open` é o comando "
@@ -3905,7 +3919,9 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "`next` fica para quando o ciclo já correu e você não sabe o "
             "que falta. Sem destino, se o diretório atual é um jogo fora "
             "do framework, o mapa usa esse caminho. Não cria o projeto, "
-            "não abre o jogo e não avalia a proposta. Passos 2 e 3 "
+            "não abre o jogo e não avalia a proposta. `runtime` lê o `node` "
+            "do PATH se o play pede npm ou node; não executa o serve. "
+            "Passos 2 e 3 "
             "permanecem `executed` falsos mesmo quando o destino já existe."
         ),
     }
@@ -3921,6 +3937,47 @@ def tool_report(name, args=("--version",), timeout=15):
         return {"path": path, "version": None}
     lines = (run.stdout or run.stderr or "").strip().splitlines()
     return {"path": path, "version": lines[0].strip() if lines else None}
+
+
+STARTER_NODE_MAJOR = 20
+
+
+def node_major(version):
+    if not isinstance(version, str) or not version.strip():
+        return 0
+    match = re.match(r"^v?(\d+)", version.strip())
+    return int(match.group(1)) if match else 0
+
+
+def node_runtime(play=None):
+    asked = bool(isinstance(play, str) and re.search(r"\b(npm|node)\b", play))
+    report = tool_report("node")
+    version = report["version"]
+    major = node_major(version)
+    usable = (not asked) or major >= STARTER_NODE_MAJOR
+    return {
+        "schema_version": 1,
+        "node": version,
+        "major": major or None,
+        "need": STARTER_NODE_MAJOR if asked else None,
+        "asked": asked,
+        "usable": usable,
+        "executed": False,
+        "scope": (
+            "Presença e major do `node` no PATH. Não executa o serve, não "
+            "instala e não observa o jogo. `usable` é só o binário; não é "
+            "partida, mix nem dispositivo."
+        ),
+    }
+
+
+def runtime_line(runtime):
+    if not runtime or not runtime.get("asked") or runtime.get("usable"):
+        return ""
+    need = runtime.get("need") or STARTER_NODE_MAJOR
+    if not runtime.get("node"):
+        return f"Node {need}+ ausente: o serve não sobe. "
+    return f"Node {runtime['node']} no PATH: o starter pede {need}+. "
 
 
 def skill_targets(root):
@@ -3948,11 +4005,11 @@ def doctor(root):
         None if version >= (3, 10) else "Instale Python 3.10 ou mais recente.",
     )
     node = tool_report("node")
-    node_major = int(re.sub(r"^v?(\d+).*", r"\1", node["version"])) if node["version"] else 0
+    major = node_major(node["version"])
     add(
-        "node", False, node_major >= 20,
+        "node", False, major >= STARTER_NODE_MAJOR,
         node["version"] or "ausente",
-        None if node_major >= 20 else "Node 20+ é exigido pelo starter canvas-arcade e pelos validadores de package.json.",
+        None if major >= STARTER_NODE_MAJOR else "Node 20+ é exigido pelo starter canvas-arcade e pelos validadores de package.json.",
     )
     git = tool_report("git")
     add("git", False, bool(git["path"]), git["version"] or "ausente", "Sem git, `verify` registra versão nula no recibo.")

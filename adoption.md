@@ -3,6 +3,22 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.153 — O mapa lê o Node sem servir
+
+O caminho feliz cola
+`npm run serve` e só então
+descobre que não há Node.
+`start` / `play` / `guide`
+leem o PATH. Sem 20+ o
+prompt avisa. Não executa o
+serve. `usable` é só o
+binário. Só `release` fica
+no piso.
+
+O que 0.9.153 não afirma:
+binário no PATH não é jogo
+aberto nem dispositivo.
+
 ## 0.9.152 — O start não planta rascunhos
 
 `start --idea` criava sete

@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 LINK = re.compile(r"\[[^\]]*\]\((?!https?://|mailto:)([^)\s]+)\)")
 HEADING = re.compile(r"^#{1,6}\s+(.*?)\s*$", re.MULTILINE)
@@ -3346,6 +3347,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         holes = game.scan(destination)["areas"]
         self.assertTrue([key for key, area in holes.items() if area["status"] == "not_located"])
         self.assertNotIn("areas.not_located", [item["basis"] for item in self.proposals(report["next"])])
+        self.assertTrue(report["runtime"]["asked"])
+        self.assertFalse(report["runtime"]["executed"])
+        self.assertNotIn("ausente", report["prompt"])
+        self.assertNotIn("aprovado", report["runtime"]["scope"])
+        self.assertNotIn("verified", report["runtime"]["scope"])
 
     def test_start_docs_still_plants_the_drafts(self):
         destination = self.root / "com-rascunhos"
@@ -3369,6 +3375,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue((self.root / "via-cli" / "docs/brief.md").is_file())
         self.assertFalse(payload["executed"])
 
+    def test_start_names_missing_node_without_serving(self):
+        destination = self.root / "sem-node"
+        game.start_project(destination, "canvas-arcade")
+        real = game.tool_report
+
+        def fake(name, *args, **kwargs):
+            if name == "node":
+                return {"path": None, "version": None}
+            return real(name, *args, **kwargs)
+
+        with mock.patch.object(game, "tool_report", side_effect=fake):
+            report = game.start_project(destination, "canvas-arcade")
+            played = game.play_cycle(destination)
+            guided = game.guide_cycle(destination, "canvas-arcade")
+        self.assertTrue(report["runtime"]["asked"])
+        self.assertFalse(report["runtime"]["usable"])
+        self.assertIsNone(report["runtime"]["node"])
+        self.assertEqual(report["runtime"]["need"], 20)
+        self.assertFalse(report["runtime"]["executed"])
+        self.assertFalse(report["executed"])
+        self.assertIn("Node 20+ ausente", report["prompt"])
+        self.assertIn("serve", report["prompt"])
+        self.assertNotIn("aprovado", report["prompt"])
+        self.assertNotIn("verified", report["prompt"])
+        self.assertFalse(played["runtime"]["usable"])
+        self.assertIn("Node 20+ ausente", played["prompt"])
+        self.assertFalse(played["executed"])
+        self.assertFalse(guided["runtime"]["usable"])
+        self.assertIn("Node 20+ ausente", guided["prompt"])
+        self.assertFalse(guided["executed"])
+        with mock.patch.object(
+            game, "tool_report", return_value={"path": "/bin/node", "version": "v18.20.4"},
+        ):
+            aged = game.node_runtime("cd . && npm run serve")
+            silent = game.node_runtime("abra o projeto.godot")
+        self.assertFalse(aged["usable"])
+        self.assertEqual(aged["major"], 18)
+        self.assertIn("v18.20.4", game.runtime_line(aged))
+        self.assertIn("20+", game.runtime_line(aged))
+        self.assertTrue(silent["usable"])
+        self.assertFalse(silent["asked"])
+        self.assertEqual(game.runtime_line(silent), "")
+
     def test_play_points_at_serve_without_creating_or_playing(self):
         destination = self.root / "ja-criado"
         game.start_project(destination, "canvas-arcade", idea="guardar a corrente")
@@ -3378,6 +3427,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(before, after)
         self.assertEqual(report["command"], "play")
         self.assertFalse(report["executed"])
+        self.assertTrue(report["runtime"]["asked"])
+        self.assertFalse(report["runtime"]["executed"])
         self.assertEqual(report["open"], report["play"])
         self.assertEqual(report["url"], "http://localhost:8080/")
         self.assertIn(report["url"], report["prompt"])
