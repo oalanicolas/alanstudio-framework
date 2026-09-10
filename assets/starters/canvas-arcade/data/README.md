@@ -65,7 +65,7 @@ de jogar; `loadSpawn` recusa.
 | --- | --- |
 | `intervalTicks` / `minIntervalTicks` | Folga entre quedas, do começo ao teto |
 | `rampTicks` | Em quantos ticks a chuva chega no teto |
-| `hazardChanceStart` / `hazardChanceEnd` | Quanto da chuva é estilhaço |
+| `hazardChanceStart` / `hazardChanceEnd` | Quanto da chuva é estilhaço; a porta lê o começo, sem RNG |
 | `fallSpeedMin` / `fallSpeedMax` | Quão rápido o item atravessa o campo |
 | `practiceTicks` | Primeiros ticks só com orbe; o campo marca a janela |
 | `recoveryTicks` / `recoveryIntervalScale` | Folga depois de guardar; o campo marca a janela e o mixer fala na volta |

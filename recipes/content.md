@@ -20,7 +20,7 @@ só pisca. Spawn 4 acrescenta `closeHazardScale`; ausente fica `1` e
 o fecho não muda a mistura. Aperto no disco não é curva observada.
 `npm run pair -- <nome> --from dusk|calm` nasce look e chuva no mesmo
 nome; `listMoods` inclui e `?mood=` aplica. `npm run session -- --spawn <nome>` traça essa chuva. Com tela, a
-porta também chove essa mesa — cadência e queda, sem o RNG da
+porta também chove essa mesa — cadência, queda e risco, sem o RNG da
 partida. Trocar `?spawn=` / `?mood=` troca a mostra. Mesa no disco
 não é volume. O `art` nomeia essas mesas. Depois de um
 `note`, `start` e `next` apontam `pair --from`, `look --from` e `table --from`. `dusk` e `calm` são

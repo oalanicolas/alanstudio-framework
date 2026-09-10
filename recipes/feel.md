@@ -254,6 +254,8 @@ Arquivo no
 disco não é peso percebido. A ameaça que
 ainda não chegou marca o trilho (`approaching`) — na porta a mostra
 usa o mesmo aviso; a live já nomeava o perigo e o trilho calava.
+A porta chove o risco da mesa — dusk mais estilhaço, calm menos —
+não um meio a meio; sem comer a seed.
 A câmera inclina para o mesmo aviso (`lookAheadX`), menor que o
 punch do dash. Lean no disco não é peso percebido. O coil do dash
 veste a corrente do avanço — não o descanso; o coil da guarda

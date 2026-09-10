@@ -533,11 +533,19 @@ export function attractEntities(state, reduced = false) {
   // disco não é sessão observada.
   const fall = state.assist ? CONFIG.assist.fallSpeedScale : 1;
   const span = 72 * 3;
+  // A mesa já decide quanto da chuva é estilhaço. Sem isto
+  // a porta chovia meio a meio e dusk vestia o mesmo risco
+  // que calm. Número no disco não é comparação em movimento.
+  const hazard = Number.isFinite(table.hazardChanceStart) ? table.hazardChanceStart : 0.5;
+  const shards = Math.max(1, Math.min(count - 1, Math.round(count * hazard)));
+  const risky = new Set();
+  for (let slot = 1; slot < count && risky.size < shards; slot += 2) risky.add(slot);
+  for (let slot = 0; slot < count && risky.size < shards; slot += 2) risky.add(slot);
   const items = [];
   for (let index = 0; index < count; index += 1) {
     const travel = (t * (base + index * 0.15) * fall + index * 44) % (FIELD.height - 28);
     items.push({
-      kind: index % 2 === 0 ? "orb" : "shard",
+      kind: risky.has(index) ? "shard" : "orb",
       x: 48 + (count === 1 ? 0 : index * (span / (count - 1))),
       y: 18 + travel,
     });

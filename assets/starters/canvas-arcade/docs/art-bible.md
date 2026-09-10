@@ -10,7 +10,8 @@ mesma tinta; o dispositivo alvo não foi observado. Paletas canônicas em
 `PALETTES` via `src/game/tables.js`. `look` escolhe `normal`, `dusk` ou `calm`;
 `contrast` e a tinta estável (`colorblind`) são alcance, não look.
 A tinta não esmaga chuva que já separa quente e frio; o par do padrão
-é o fallback. JSON no disco não é comparação em movimento.
+é o fallback. A porta chove o risco da mesa vigente — dusk mais
+estilhaço, calm menos — sem RNG. JSON no disco não é comparação em movimento.
 
 ## Tokens
 

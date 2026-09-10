@@ -1323,6 +1323,24 @@ test("a porta chove a mesa sem comer a seed", () => {
   assert.equal(dusk.tick, 0);
 });
 
+test("a porta chove o risco da mesa, não um meio a meio", () => {
+  const spawn = createState(7, { entry: "title" });
+  const dusk = createState(7, { entry: "title", spawnProfile: "dusk" });
+  const calm = createState(7, { entry: "title", spawnProfile: "calm" });
+  const rng = { spawn: spawn.rngState, dusk: dusk.rngState, calm: calm.rngState };
+  const shards = (rain) => rain.filter((item) => item.kind === "shard").length;
+  const shown = attractEntities(spawn);
+  const late = attractEntities(dusk);
+  const soft = attractEntities(calm);
+  assert.ok(shards(late) > shards(soft), "a porta chovia o mesmo risco em dusk e calm");
+  assert.ok(shards(late) > shards(shown), "dusk na porta chovia o mesmo risco que spawn");
+  assert.ok(shown.some((item) => item.kind === "orb"));
+  assert.ok(shown.some((item) => item.kind === "shard"));
+  assert.equal(spawn.rngState, rng.spawn);
+  assert.equal(dusk.rngState, rng.dusk);
+  assert.equal(calm.rngState, rng.calm);
+});
+
 test("sair da recuperação emite e acende o campo", () => {
   const state = createState(1);
   state.chain = 2;

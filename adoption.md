@@ -3,6 +3,48 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.324 — a porta chove o risco da mesa
+
+A
+mostra
+já
+lia
+cadência
+e
+queda.
+O
+risco
+era
+meio
+a
+meio.
+Dusk
+vestia
+o
+mesmo
+perigo
+que
+calm.
+Agora
+lê
+o
+começo
+da
+mesa.
+Não
+promove
+`consistent`.
+
+O que 0.9.324 não afirma:
+mostra
+no
+disco
+não
+é
+comparação
+em
+movimento.
+
 ## 0.9.323 — o coil da guarda veste a aposta
 
 O

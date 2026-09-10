@@ -4,7 +4,8 @@ Entrada: referência aprovada, diferença percebida e percurso/câmera de compar
 
 Com tela, a primeira superfície é a porta. Halo, vinheta e a chuva
 da abertura são o primeiro quadro; a mostra lê a mesa vigente —
-dusk cai mais denso, calm mais folgado — sem comer a seed. A ameaça
+dusk cai mais denso e com mais estilhaço, calm mais folgado e
+com menos risco — sem comer a seed. A ameaça
 da mostra marca o trilho com o mesmo telegraph do campo; a live já
 nomeava o perigo. Marca no disco não é comparação em movimento. O campo
 começa depois do avanço.
