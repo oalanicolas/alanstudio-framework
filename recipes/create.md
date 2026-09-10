@@ -10,9 +10,9 @@ na primeira sessão, depois feel e áudio do verbo, depois receita de conteúdo.
 `start` e `guide` mapeiam start → jogar → `note`. Sem destino, `--idea`
 nomeia a pasta no comando do start e não grava a frase. Sem destino, se o
 diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
-Depois do recibo, o
-mesmo `start` e o `next` apontam look, chuva e voz se o projeto declara
-essas ferramentas. `playtest --invite` aponta `/?invite=1`, onde a
+`then` nomeia look, chuva e voz se o projeto — ou o starter, antes do
+destino existir — declara essas ferramentas. Depois do recibo, o
+mesmo `start` e o `next` as apontam. Nomear o ofício não pinta. `playtest --invite` aponta `/?invite=1`, onde a
 tabela some — esconder a tabela não é alguém de fora. Não gere todos os templates antes de experimentar. Nove arquivos vazios não
 aumentam a qualidade; uma fatia sem feel continua sendo protótipo.
 

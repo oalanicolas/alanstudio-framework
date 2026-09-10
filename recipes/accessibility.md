@@ -32,9 +32,9 @@ tabela de comandos, camada de legenda do diálogo, opções já presentes no men
 Uma opção sem consumidor no código não é uma opção.
 
 `access <projeto>` lê as opções que o código declara (highContrast,
-reducedMotion, captions, remapeamento, uiScale, preset de uma mão).
-`verified` é sempre falso: chave no fonte não é sessão com o modo ativo.
-O starter `canvas-arcade` também expõe `assist` e declara em
+reducedMotion, captions, remapeamento, uiScale, preset de uma mão e
+assistência). `verified` é sempre falso: chave no fonte não é sessão
+com o modo ativo. O starter `canvas-arcade` expõe `assist` e declara em
 `docs/access.md` o que o recorte não atende. O aviso do primeiro ciclo
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
 Estilhaço no trilho pede o dash; toque e controle ganham passo depois

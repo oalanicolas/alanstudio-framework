@@ -54,7 +54,7 @@ Com starter (REUSE de infraestrutura já testada):
 python3 scripts/game.py start /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
 ```
 
-O JSON devolve `play` (o comando que **abre** o jogo), `then.note` (o próximo comando do harness **depois** de uma partida) e, se o starter declara, `cycle` (verbo, teclas, cluster de uma mão, toque, controle e as queries de look, chuva e convite). Se o projeto declara as ferramentas, `then` também nomeia `look`, `table` e `sfx`. Depois de um recibo de observação, o prompt aponta esses três em vez de repetir só o primeiro ciclo. Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta (campo e a página), `?spawn=dusk` troca a chuva e `?invite=1` some a tabela — as três sem recomeçar o projeto. Ferramenta no disco não é alguém de fora nem mix ouvido.
+O JSON devolve `play` (o comando que **abre** o jogo), `then.note` (o próximo comando do harness **depois** de uma partida) e, se o starter declara, `cycle` (verbo, teclas, cluster de uma mão, toque, controle e as queries de look, chuva e convite). Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` também nomeia `look`, `table` e `sfx`. Nomear o ofício não pinta. Depois de um recibo de observação, o prompt aponta esses três em vez de repetir só o primeiro ciclo. Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta (campo e a página), `?spawn=dusk` troca a chuva e `?invite=1` some a tabela — as três sem recomeçar o projeto. Ferramenta no disco não é alguém de fora nem mix ouvido.
 
 `guide` (também sem subcomando: `python3 scripts/game.py`) mapeia os três passos — start → jogar → `note` — sem executar nenhum. Sem destino, a frase nomeia a pasta no comando do start (ao lado do framework se você está dentro desta árvore; no diretório atual se está fora). Não grava a frase nem cria a pasta. Sem destino, se o diretório atual é um jogo fora deste repositório, o mapa usa esse caminho. Dentro do framework o comando sem argumentos continua o convite a começar:
 
@@ -469,7 +469,7 @@ branco, de propósito: rodá-lo no validador devolve os oito campos que faltam, 
 python3 scripts/game.py check-plan caminho/do/trabalho.json --root /caminho/do/laboratorio
 ```
 
-Treze receitas: [criar](recipes/create.md), [mecânicas](recipes/mechanics.md),
+Quatorze receitas: [criar](recipes/create.md), [mecânicas](recipes/mechanics.md),
 [ciclo de vida](recipes/lifecycle.md), [conteúdo](recipes/content.md),
 [visual](recipes/visual.md), [áudio](recipes/audio.md), [feel](recipes/feel.md),
 [rede](recipes/network.md), [arquitetura](recipes/architecture.md),
@@ -542,7 +542,9 @@ python3 scripts/game.py sfx export passo-madeira-01 --to /caminho/do/jogo/public
 `sfx import` exige ffmpeg e um JSON com id, título, categoria, estilo,
 tags, processamento e fontes (licença CC0 ou CC-BY). `sfx seed` lê
 `shared/sfx/selection.json` com `local_path` já no disco. Sem seleção,
-o seed recusa. `sfx info` lê a ficha no disco. `sfx export` copia
+o seed recusa. `sfx summary` (também sem subcomando) lê o acervo e os atalhos.
+`sfx verify` cruza bytes e fichas; não ouve. `sfx info` lê a ficha
+no disco. `sfx export` copia
 bytes, `manifest.json` e `CREDITS.txt` para uma pasta fora do acervo.
 Importar e exportar não é mix ouvido. O primeiro ciclo já tem voz
 no starter (`public/sfx/<papel>.wav`). `shared/sfx` é ADAPT, não
@@ -580,7 +582,7 @@ python3 scripts/game.py budget /caminho/do/laboratorio/meu-jogo
 ```
 
 `access` procura highContrast, reducedMotion, captions, remapeamento,
-uiScale e preset de uma mão (o ciclo nomeia IJKL + P/O quando o starter declara `hand`). `verified` é sempre `false`. `save` procura
+uiScale, preset de uma mão (o ciclo nomeia IJKL + P/O quando o starter declara `hand`) e assistência. `verified` é sempre `false`. `save` procura
 armazenamento e PROGRESS_SCHEMA/migrate; `trusted` é sempre `false`.
 `budget` procura script `budget`/`bench`, `tools/budget.*` ou
 `record --kind budget`; `measured` é sempre `false`. O starter declara

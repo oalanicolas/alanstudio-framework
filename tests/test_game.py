@@ -2353,6 +2353,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(access["missing"], [])
         self.assertIn("ui_scale", [item["key"] for item in access["options"]])
         self.assertIn("one_hand", [item["key"] for item in access["options"]])
+        self.assertIn("assist", [item["key"] for item in access["options"]])
         self.assertTrue(persist["used"])
         self.assertTrue(persist["versioned"])
         self.assertFalse(persist["unversioned"])
@@ -2820,6 +2821,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["steps"][2]["executed"])
         self.assertIn("note", report["then"]["note"])
         self.assertIn("next", report["then"]["lost"])
+        self.assertIn("look", report["then"])
+        self.assertIn("table", report["then"])
+        self.assertIn("sfx", report["then"])
+        self.assertIn("atravessar-estilhacos", report["then"]["look"])
         destination = self.root / "guiado"
         game.start_project(destination, "canvas-arcade", idea="guardar a corrente")
         after = game.guide_cycle(destination, "canvas-arcade")
@@ -2930,6 +2935,27 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(mapped["suggest"], payload["suggest"])
         self.assertFalse(mapped["executed"])
         self.assertFalse(planted.exists())
+
+    def test_guide_names_craft_from_the_starter_before_the_project_exists(self):
+        report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
+        self.assertFalse(report["exists"])
+        self.assertFalse(report["executed"])
+        self.assertEqual(len(report["steps"]), 3)
+        self.assertIn("--from", report["then"]["look"])
+        self.assertIn("dusk", report["then"]["look"])
+        self.assertIn("--from", report["then"]["table"])
+        self.assertIn("spawn", report["then"]["table"])
+        self.assertIn("--from", report["then"]["sfx"])
+        self.assertIn("dash", report["then"]["sfx"])
+        self.assertIn("atravessar-estilhacos", report["then"]["look"])
+        self.assertIn("atravessar-estilhacos", report["then"]["table"])
+        self.assertIn("atravessar-estilhacos", report["then"]["sfx"])
+        self.assertNotIn("noite", report["steps"][0]["command"])
+        self.assertFalse((game.FRAMEWORK.parent / "atravessar-estilhacos").exists())
+        empty = game.guide_cycle(None, "canvas-arcade")
+        self.assertIn("<destino>", empty["then"]["look"])
+        self.assertIn("look", empty["then"])
+        self.assertEqual(len(empty["steps"]), 3)
 
     def test_start_omits_the_cycle_when_the_starter_does_not_declare_it(self):
         self.fake_starter("mudo", {

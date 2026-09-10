@@ -1374,6 +1374,7 @@ A11Y_OPTIONS = {
     "remap": re.compile(r"\bbindings\b|remap|rebind"),
     "ui_scale": re.compile(r"uiScale|ui-scale|interfaceScale"),
     "one_hand": re.compile(r"ONE_HAND_BINDINGS|oneHand|one-hand|umaMao|uma-mao"),
+    "assist": re.compile(r"\bassist\b|assistMode|assistencia|assistência"),
 }
 PERSIST_USE = re.compile(
     r"localStorage|sessionStorage|indexedDB|saveProgress|loadProgress|PROGRESS_KEY|SETTINGS_KEY"
@@ -1440,9 +1441,9 @@ def access_reading(project):
         ),
         "scope": (
             "Procura highContrast, reducedMotion, captions, remapeamento, "
-            "uiScale e preset de uma mão no código. Não mede contraste, "
-            "não joga com o modo ativo e não aprova alcance. `verified` é "
-            "sempre falso."
+            "uiScale, preset de uma mão e assistência no código. Não mede "
+            "contraste, não joga com o modo ativo e não aprova alcance. "
+            "`verified` é sempre falso."
         ),
     }
 
@@ -2749,21 +2750,38 @@ def project_run_command(project, manager, name, extra=()):
     return f"cd {shlex.quote(str(project))} && {body}"
 
 
-def craft_commands(project):
-    project = Path(project)
-    if not project.is_dir():
-        return {}
+def starter_package_commands(starter):
+    source = STARTERS_ROOT / starter
+    if not source.is_dir() or source.is_symlink():
+        return {}, None
     try:
-        scripts, manager = project_commands(project)
+        return package_commands(source)
     except (OSError, ValueError):
-        return {}
-    if not manager:
+        return {}, None
+
+
+def craft_from_scripts(project, scripts, manager):
+    if not manager or not scripts:
         return {}
     found = {}
     for name, extra in CRAFT_EXAMPLES.items():
         if name in scripts:
             found[name] = project_run_command(project, manager, name, extra)
     return found
+
+
+def craft_commands(project, starter=None):
+    project = Path(project)
+    if project.is_dir() and not project.is_symlink():
+        try:
+            scripts, manager = project_commands(project)
+        except (OSError, ValueError):
+            return {}
+        return craft_from_scripts(project, scripts, manager)
+    if not starter:
+        return {}
+    scripts, manager = starter_package_commands(starter)
+    return craft_from_scripts(project, scripts, manager)
 
 
 def cycle_crafted(project):
@@ -2803,13 +2821,13 @@ def cycle_crafted(project):
     return False
 
 
-def cycle_then(project, play):
+def cycle_then(project, play, starter=None):
     then = {
         "play": play,
         "note": note_command(project),
         "lost": harness_command("next", project, "--focus", "feel"),
     }
-    then.update(craft_commands(project))
+    then.update(craft_commands(project, starter))
     return then
 
 
@@ -3163,7 +3181,7 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
     except (OSError, ValueError):
         scripts, manager = {}, None
     play = play_command(destination, scripts, manager)
-    then = cycle_then(destination, play)
+    then = cycle_then(destination, play, chosen)
     cycle = starter_cycle(chosen)
     noted = bool(observation_receipts(destination))
     return {
@@ -3277,7 +3295,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
     )
     next_target = named if named is not None else Path("<destino>")
     play_cmd = play or play_fallback
-    then = cycle_then(next_target, play_cmd)
+    then = cycle_then(next_target, play_cmd, chosen)
     cycle = starter_cycle(chosen)
     play_step = {
         "n": 2,
@@ -3327,11 +3345,13 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "nomeia a pasta no comando do start — ao lado do framework se o "
             "mapa corre de dentro desta árvore; no diretório atual se corre "
             "de fora. `guide --idea` continua só no comando, não no disco. "
-            "`then` nomeia look, chuva e voz quando o projeto declara essas "
-            "ferramentas. `next` fica para quando o ciclo já correu e você "
-            "não sabe o que falta. Sem destino, se o diretório atual é um "
-            "jogo fora do framework, o mapa usa esse caminho. Não cria o "
-            "projeto, não abre o jogo e não avalia a proposta. Passos 2 e 3 "
+            "`then` nomeia look, chuva e voz quando o projeto — ou o "
+            "starter, se o destino ainda não existe — declara essas "
+            "ferramentas. Nomear o ofício não pinta, não chove e não ouve. "
+            "`next` fica para quando o ciclo já correu e você não sabe o "
+            "que falta. Sem destino, se o diretório atual é um jogo fora "
+            "do framework, o mapa usa esse caminho. Não cria o projeto, "
+            "não abre o jogo e não avalia a proposta. Passos 2 e 3 "
             "permanecem `executed` falsos mesmo quando o destino já existe."
         ),
     }

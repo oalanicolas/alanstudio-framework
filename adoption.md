@@ -3,6 +3,30 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.77 — O alcance também lê a assistência
+
+O starter já persistia `assist` e a receita a nomeava. `access`
+lia seis chaves e omitia a sétima. A leitura inclui assistência.
+`verified` continua falso. `accessibility` permanece `slice`:
+chave no fonte não é sessão com o modo ativo. Só `release`
+fica no piso.
+
+O que 0.9.77 não afirma: o harness não jogou com assistência
+e opção no disco não aprova alcance.
+
+## 0.9.76 — O mapa nomeia o ofício
+
+`then` só nomeava look, chuva e voz depois do `start`, quando
+o `package.json` já estava no destino. O SKILL já prometia o
+ofício no mapa. Sem destino, o `then` lê os scripts do starter
+e aponta os três no caminho que a frase nomeou. Starter sem
+essas ferramentas continua sem as chaves. Nomear o ofício não
+pinta, não chove e não ouve. `executed` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.76 não afirma: o harness não nasceu look, chuva nem
+voz e ferramenta no comando não é o segundo ciclo jogado.
+
 ## 0.9.75 — O serve anuncia a rede
 
 O bind já alcançava a LAN. O banner só dizia localhost, e o

@@ -16,7 +16,7 @@ comando do start — ao lado do framework se o mapa corre de dentro
 desta árvore — e não grava a frase. Sem destino, se o diretório atual é um
 jogo fora do framework, o mapa usa esse caminho. `start` cria o projeto e devolve `play` +
 `then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo,
-as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look, chuva e convite. Se o projeto declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt e o `next` (`cycle.craft`) as apontam. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
+as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look, chuva e convite. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt e o `next` (`cycle.craft`) as apontam. Nomear o ofício não pinta. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
 `next` ainda propõe `playable.unplayed` se você estiver perdido. O
 starter ensina mover, avançar, coletar e guardar no campo; toque e
 controle ganham passo quando falam. O art-bible vigente
@@ -57,7 +57,7 @@ risca o campo sem pulsar o controle. O pulso some na pausa e no
 descarte.
 
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
-código declara. `verified`/`trusted`/`measured` são sempre falsos. `next`
+código declara — `access` inclui assistência. `verified`/`trusted`/`measured` são sempre falsos. `next`
 só levanta quando falta a declaração. O starter expõe assistência,
 `uiScale` (o overlay também), preset de uma mão (o aviso, o overlay e o `cycle.hand`
 nomeiam IJKL + P/O; o stub coleta, guarda, pausa e reinicia nesse

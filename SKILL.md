@@ -20,7 +20,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | --- | --- |
 | Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing`. Ele nomeia os projetos e lista os starters |
 | Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
-| Jogo novo | Destino inexistente e engine web: `start <novo> --starter <starter> --idea "<fantasia>"` cria o projeto, põe a frase na tela do primeiro ciclo e devolve `play` + `then.note` sem executar. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive o cluster de uma mão, o toque, o controle e as queries de look, chuva e convite, se houver. Se o projeto declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt as aponta. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando: `python3 scripts/game.py --idea "<fantasia>"`) mapeia start → jogar → note. Sem destino, a frase nomeia a pasta no comando do start — ao lado do framework se o mapa corre de dentro desta árvore; no diretório atual se corre de fora. Não grava a frase nem cria a pasta. Sem destino, se o diretório atual é um jogo fora do framework, o mapa usa esse caminho. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
+| Jogo novo | Destino inexistente e engine web: `start <novo> --starter <starter> --idea "<fantasia>"` cria o projeto, põe a frase na tela do primeiro ciclo e devolve `play` + `then.note` sem executar. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive o cluster de uma mão, o toque, o controle e as queries de look, chuva e convite, se houver. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt as aponta. Nomear o ofício não pinta. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando: `python3 scripts/game.py --idea "<fantasia>"`) mapeia start → jogar → note. Sem destino, a frase nomeia a pasta no comando do start — ao lado do framework se o mapa corre de dentro desta árvore; no diretório atual se corre de fora. Não grava a frase nem cria a pasta. Sem destino, se o diretório atual é um jogo fora do framework, o mapa usa esse caminho. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
 | Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, `note <projeto> --author … --note "o que o verbo sentiu"`. Depois `roles` e `context --focus audio` |
 | Paleta, conteúdo no código ou jogo só na máquina de quem construiu | `art` / `content` / `ship` <projeto>; `consistent`/`enough`/`shipped` ficam `false` |
@@ -160,8 +160,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    ao lado do framework se o mapa corre de dentro desta árvore.
    Destino existente preenche o comando que abre o jogo e o `kind`
    do passo de jogar; se o starter declara o verbo, o passo 2 o
-   nomeia; `then` nomeia look, chuva e voz quando o projeto as
-   declara; `executed` fica `false`. `next` fica em `then.lost`.
+   nomeia; `then` nomeia look, chuva e voz quando o projeto — ou o
+   starter, se o destino ainda não existe — as declara; `executed`
+   fica `false`. Nomear o ofício não pinta. `next` fica em `then.lost`.
    **`start <projeto>`** cria se o destino estiver livre e devolve
    `play` + `then.note`. Se o starter declara o verbo e as teclas, o
    prompt as nomeia — inclusive o cluster de uma mão, o toque, o
@@ -185,7 +186,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    (resumo e, se houver, a curva) como candidato de medição e não fecha o
    achado. Não joga e não sente.
    **`access` / `save` / `budget`** leem opção de alcance (incluindo
-   uiScale e preset de uma mão), versão de save e artefato de orçamento.
+   uiScale, preset de uma mão e assistência), versão de save e artefato
+   de orçamento.
    `verified`/`trusted`/`measured` são sempre falsos.
    Falta no disco entra no `next` antes dos rascunhos.
    **`art` / `content` / `ship`** leem paleta ou art-bible vigente, conteúdo
