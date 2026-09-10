@@ -201,7 +201,10 @@ squash. O dash aterrissa: o corpo senta, a câmera confirma para baixo,
 o rastro cai e o mixer fala `land` — distintos da partida. O avanço
 é o aperto, não o segurar: teclado, toque e A leem a borda. Segurar
 na porta não dispara o ofício; no campo o cooldown não metralha. A
-guarda continua nível. Aperto no disco não é peso percebido. A porta
+guarda continua nível. Na porta o tap abre inclusive na faixa da
+guarda — o polegar no primeiro gesto não cala a abertura. No campo
+a faixa inferior continua guardando. Aperto no disco não é peso
+percebido. A porta
 fecha o mesmo arco no tick que abre, sem contar o ofício. A guarda
 que já tem corrente senta os mesmos dois ticks e também atravessa
 o estilhaço. Arquivo no

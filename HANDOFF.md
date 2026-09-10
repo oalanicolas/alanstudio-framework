@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.242 (confirmado): `template agents` e o `next` em `agent_context.not_located` geram a mesma memória do `start`. Sem rascunhos não listam GDD.
+**HEAD:** ver `git log -1` — vigente 0.9.243: na porta o tap na faixa da guarda também abre. O polegar no primeiro gesto não cala a abertura. No campo a faixa continua guardando.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 283 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.242)
+## O que o HEAD já entrega (0.9.91–0.9.243)
 
 | Ver | Salto |
 | --- | --- |
@@ -186,6 +186,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.240 | O `start` escreve `AGENTS.md` com o comando que abre. Sem rascunhos, a memória não lista GDD. `documents` continua vazio. Não executa. |
 | 0.9.241 | O pedido no contexto suspenso espera o gesto. A porta e o primeiro avanço não disparam no vazio. Não promove `heard`. |
 | 0.9.242 | `template agents` e o `next` sem AGENTS geram a memória do disco. Sem rascunhos não listam GDD. Não executa. |
+| 0.9.243 | Na porta o tap na faixa da guarda também abre. O polegar no primeiro gesto não cala a abertura. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -199,7 +200,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o pedido suspenso espera o gesto; a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
@@ -348,7 +349,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou o `start` que deixa a próxima sessão sem memória
   ou o AGENTS do start que lista GDD que não plantou
   ou o pedido no contexto suspenso que dispara no vazio
-  ou o template agents que lista GDD que o disco não tem.
+  ou o template agents que lista GDD que o disco não tem
+  ou o tap na faixa da porta que some o abrir.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -539,8 +541,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   hold: teclado, toque e A do controle. Segurar na porta não
   dispara o ofício no campo; segurar no campo não dispara de
   novo. A guarda continua nível. Na porta o toque não avança no
-  down (`setDashOnPress(false)`): o arraste move; o tap abre.
-  No campo o down de cima continua o avanço. Sem dash, `attractMove` desloca o corpo, `attractTick` anda a
+  down (`setDashOnPress(false)`): o arraste move; o tap abre,
+  inclusive na faixa da guarda. No campo o down de cima
+  continua o avanço; a faixa inferior continua guardando. Sem dash, `attractMove` desloca o corpo, `attractTick` anda a
   chuva, decai squash/flash e emite `live` uma vez, e
   `attractTouch` acende quando a mostra cruza o corpo — sem
   pontuar, sem punch, sem seed. Sem cama. Sem rumble.
@@ -809,6 +812,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um AGENTS do start que lista GDD que não plantou.
 **Não** mais um pedido no contexto suspenso que dispara no vazio.
 **Não** mais um template agents que lista GDD que o disco não tem.
+**Não** mais um tap na faixa da porta que some o abrir.
 
 Candidatos, do que ainda dói:
 
@@ -1257,6 +1261,12 @@ Candidatos, do que ainda dói:
   que o
   disco não
   tem
+  e o
+  tap na
+  faixa da
+  porta que
+  some o
+  abrir
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1280,7 +1290,8 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `template
-agents` e o `next` sem AGENTS geram a
-memória do disco. Sem rascunhos não
-listam GDD.
+Arquivos quentes da última sessão: na porta
+o tap na faixa da guarda também abre. O
+polegar no primeiro gesto não cala a
+abertura. No campo a faixa continua
+guardando.

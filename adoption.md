@@ -3,6 +3,50 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.243 — Na porta o tap na faixa da guarda também abre
+
+O
+polegar
+no
+primeiro
+gesto
+caía
+na
+faixa
+que
+o
+painel
+ensina
+como
+guarda.
+A
+porta
+calava.
+Agora
+o
+tap
+abre
+também
+aí.
+No
+campo
+a
+faixa
+continua
+guardando.
+Não
+promove
+feel.
+
+O que 0.9.243 não afirma:
+toque
+no
+disco
+não
+é
+sessão
+observada.
+
 ## 0.9.242 — O template agents lê o disco em vez de listar GDD
 
 O

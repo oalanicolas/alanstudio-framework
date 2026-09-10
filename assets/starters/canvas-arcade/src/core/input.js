@@ -4,12 +4,15 @@
 // último para o aviso e o overlay nomearem esse mapa — não o manifesto.
 // O gesto acorda o mixer (`unlock`): o resume no quadro chega
 // tarde e o primeiro verbo fica mudo. Acordar não é mix ouvido.
-// Na porta o arraste move sem abrir; o tap abre. No campo o
-// down de cima continua o avanço. O avanço é o aperto, não o
-// segurar: teclado, toque e A do controle leem a borda. Sem
-// isto a porta abria e o mesmo hold disparava o ofício, e no
-// campo o cooldown virava metralhadora. A guarda continua
-// nível — segurar ainda converte o orbe do mesmo quadro.
+// Na porta o arraste move sem abrir; o tap abre — inclusive
+// na faixa da guarda. Sem isto o polegar no primeiro gesto
+// caía na faixa e a porta calava. No campo o down de cima
+// continua o avanço; a faixa inferior continua guardando.
+// O avanço é o aperto, não o segurar: teclado, toque e A do
+// controle leem a borda. Sem isto a porta abria e o mesmo
+// hold disparava o ofício, e no campo o cooldown virava
+// metralhadora. A guarda continua nível — segurar ainda
+// converte o orbe do mesmo quadro.
 // Sessão no aparelho não foi observada.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que
@@ -156,14 +159,15 @@ export function createInput(options = {}) {
   }
 
   function onPointerUp() {
-    // Na porta o tap (sem arraste) abre; o arraste já moveu.
-    // No campo o down já avançou — soltar não dispara de novo.
+    // Na porta o tap (sem arraste) abre — a faixa da guarda
+    // também. No campo a faixa não existe: o down de baixo
+    // já guardou e o de cima já avançou. Soltar não dispara
+    // de novo. Toque no disco não é sessão observada.
     if (
       !dashOnPress
       && pointer.active
       && !pointer.dragged
       && pointer.originY !== null
-      && pointer.originY <= 0.82
     ) {
       pointer.dash = true;
       pressed.add("dash");

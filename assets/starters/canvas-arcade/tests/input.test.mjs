@@ -78,6 +78,21 @@ test("na porta o arraste move sem avançar; o tap abre", () => {
   input.dispose();
 });
 
+test("na porta o tap na faixa da guarda também abre", () => {
+  const pad = surface();
+  const input = createInput({ target: null, surface: pad });
+  input.setDashOnPress(false);
+  pad.tap(160, 160);
+  const down = input.intent(0.5);
+  assert.equal(down.dash, false, "o down na faixa não abre");
+  assert.equal(down.bank, true, "o down ainda marca a guarda");
+  pad.dispatch("pointerup", {});
+  const tap = input.intent(0.5);
+  assert.equal(tap.dash, true, "o tap na faixa da porta abre");
+  assert.equal(tap.bank, false, "soltar a faixa não guarda na abertura");
+  input.dispose();
+});
+
 test("segurar o avanço não dispara de novo", () => {
   const keys = surface();
   const input = createInput({ target: keys, surface: null });
