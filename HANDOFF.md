@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.318: a folga que acaba nomeia a folga. Não promove `heard` nem `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.319: o `next` do feel anexa o candidato. Não promove `felt` nem `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.318):** `python3 -m unittest discover -s tests` → 320.
-`cd assets/starters/canvas-arcade && npm test` → 497.
+**Testes no HEAD (0.9.319):** `python3 -m unittest discover -s tests` → (confirmar).
+`cd assets/starters/canvas-arcade && npm test` → (confirmar).
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.318)
+## O que o HEAD já entrega (0.9.91–0.9.319)
 
 | Ver | Salto |
 | --- | --- |
@@ -262,6 +262,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.316 | O `feel` nomeia as janelas da chuva. O campo já marcava prática, folga e fecho; o comando lia só o `CONFIG`. Não promove `felt`. |
 | 0.9.317 | A prática que acaba nomeia a ameaça. O aviso já dizia ameaça; a faixa chamava orbe de chuva que começa. A porta reusa a voz e continua a mostra. Não promove `heard` nem `felt`. |
 | 0.9.318 | A folga que acaba nomeia a folga. A chuva não some — só afrouxa; a faixa dizia que voltava. O campo já some o contorno. Não promove `heard` nem `felt`. |
+| 0.9.319 | O `next` do feel anexa o candidato. `then.note` e o playtest já levavam `--from-run`; o ofício pedia a nota sem a partida. Não promove `felt` nem `outsider`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -275,11 +276,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
-| pacing | slice | o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
+| pacing | slice | o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
@@ -485,7 +486,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um corpo na recuperação do dash que veste a tinta da prática
   ou um `feel` que cala as janelas da chuva que o campo já marca
   ou uma prática que acaba e chama orbe de chuva que começa
-  ou uma folga que acaba e chama chuva que volta.
+  ou uma folga que acaba e chama chuva que volta
+  ou um `next` do feel que cala o candidato que o `then.note` já anexa.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -1097,6 +1099,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `feel` que cala as janelas da chuva que o campo já marca.
 **Não** mais uma prática que acaba e chama orbe de chuva que começa.
 **Não** mais uma folga que acaba e chama chuva que volta.
+**Não** mais um `next` do feel que cala o candidato que o `then.note` já anexa.
 
 Candidatos, do que ainda dói:
 
@@ -1153,7 +1156,10 @@ Candidatos, do que ainda dói:
    nomeia `then.play` e `then.note` sem
    executar. Lê as janelas da chuva que o
    campo já marca. Com last-run, nomeia
-   `then.seed` e `then.invite`. Sem serve a
+   `then.seed` e `then.invite`. O `next`
+   (`feel.unobserved`) aponta o mesmo
+   `note` — com `--from-run` se o
+   candidato existir. Sem serve a
    chave some. Sem last-run, seed e invite
    somem. Sem
    `prompt`. `discover` nomeia os mesmos
@@ -2051,6 +2057,19 @@ Candidatos, do que ainda dói:
   chuva
   que
   volta
+  e um
+  `next`
+  do
+  feel
+  que
+  cala
+  o
+  candidato
+  que
+  o
+  `then.note`
+  já
+  anexa
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2074,12 +2093,12 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a
-folga que acaba nomeia a folga.
-A chuva não some — só afrouxa; a
-faixa dizia que voltava. O campo
-já some o contorno. Não promove
-`heard` nem `felt`.
+Arquivos quentes da última sessão: o
+`next` do feel anexa o candidato.
+`then.note` e o playtest já
+levavam `--from-run`; o ofício
+pedia a nota sem a partida. Não
+promove `felt` nem `outsider`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2133,3 +2152,4 @@ A família corpo na recuperação do dash que veste a tinta da prática está sa
 A família feel que cala as janelas da chuva que o campo já marca está saturada.
 A família prática que acaba e chama orbe de chuva que começa está saturada.
 A família folga que acaba e chama chuva que volta está saturada.
+A família next do feel que cala o candidato que o then.note já anexa está saturada.

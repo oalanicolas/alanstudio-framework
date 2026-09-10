@@ -3,6 +3,42 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.319 — o next do feel anexa o candidato
+
+O
+`then.note`
+e
+o
+playtest
+já
+levavam
+`--from-run`.
+O
+ofício
+pedia
+a
+nota
+sem
+a
+partida.
+Agora
+anexa.
+Não
+promove
+`felt`
+nem
+`outsider`.
+
+O que 0.9.319 não afirma:
+anexar
+o
+candidato
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.318 — a folga que acaba nomeia a folga
 
 A

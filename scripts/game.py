@@ -1462,7 +1462,9 @@ def feel_reading(project):
             "as janelas da chuva (`practiceTicks`, `recoveryTicks`, o fecho) "
             "em data/, tables/ e content/. Lê `record.json` com "
             "kind=observation. Nomeia `then.play` e `then.note` "
-            "sem executar. Com last-run, nomeia `then.seed` e `then.invite`. Sem "
+            "sem executar. Com last-run, nomeia `then.seed` e `then.invite`. "
+            "O `next` (`feel.unobserved`) aponta o mesmo `note` — com "
+            "`--from-run` se o candidato existir. Sem "
             "comando de abrir, a chave some. Sem last-run, seed e invite somem. "
             "Não tem `prompt`. Não mede latência e não atribui degrau. `felt` é "
             "sempre falso: tabela de constantes e recibo otimista saem intactos."
@@ -5036,7 +5038,10 @@ def next_step(project, focus="create", studies_root=None):
             "se ainda não souber.",
             [
                 harness_command("feel", project),
-                harness_command("note", project, "--author", note_author(project), "--note", "o que o verbo sentiu"),
+                # O then.note já anexa o candidato. Sem isto o next
+                # do feel calava o last-run e o ofício pedia a nota
+                # sem a partida. Recibo sem corrida não é felt.
+                note_command(project),
             ],
             "feel.unobserved",
         )

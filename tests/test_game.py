@@ -1826,6 +1826,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(after["signals"]["playable_unplayed"])
         self.assertEqual(after["signals"]["audio_roles_empty"], [])
         self.assertTrue(after["signals"]["feel_unobserved"])
+        self.assertFalse(
+            any("--from-run" in command for command in after["proposal"]["commands"]),
+            "sem last-run o next do feel não inventa candidato",
+        )
         after_bases = [item["basis"] for item in after["alternatives"]]
         self.assertNotIn("audio.roles", after_bases)
         self.assertNotIn("content.inline", after_bases)
@@ -1835,6 +1839,32 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ship.artifact_open", after_bases)
         self.assertNotIn("playtest.unstructured", after_bases)
         self.assertIn("areas.draft_only", after_bases)
+
+    def test_next_feel_names_the_candidate_the_note_already_attaches(self):
+        destination = self.root / "feel-com-corrida"
+        game.init(destination, "canvas-arcade")
+        (destination / "docs/brief.md").write_text(
+            "# Visão e escopo\n\nO jogador atravessa estilhaços para guardar a corrente.\n",
+            encoding="utf-8",
+        )
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 1,
+            "seed": 7,
+            "run": {"seed": 7, "score": 9, "ticks": 3600},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        result = game.next_step(destination)
+        self.assertEqual(result["proposal"]["basis"], "feel.unobserved")
+        self.assertTrue(
+            any("--from-run" in command for command in result["proposal"]["commands"]),
+            "o next do feel calava o candidato que o then.note já anexa",
+        )
+        self.assertIn("--from-run", game.feel_reading(destination)["then"]["note"])
+        self.assertFalse(result["executed"])
+        self.assertFalse(game.feel_reading(destination)["felt"])
 
     def test_next_names_missing_access_before_the_bar_on_a_bare_canvas(self):
         self.foundation_document()

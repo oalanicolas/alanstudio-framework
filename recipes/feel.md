@@ -77,7 +77,9 @@ janelas da chuva (`practiceTicks`, `recoveryTicks`, o fecho) —
 o campo já as marca; o comando calava. Lê o
 recibo de observação no disco; nomeia `then.play` e `then.note`
 sem executar. Com last-run, nomeia `then.seed` e `then.invite`
-— o mesmo endereço que `play` / `guide`. Sem comando de abrir,
+— o mesmo endereço que `play` / `guide` — e o `note` do `next`
+(`feel.unobserved`) anexa o candidato; o ofício calava a
+partida. Sem comando de abrir,
 a chave some. Sem last-run, seed e invite somem. Não tem
 `prompt`. `felt` é sempre falso. `note`
 grava o recibo curto depois da partida. Sem caminho, o único

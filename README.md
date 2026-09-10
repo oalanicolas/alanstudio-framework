@@ -630,7 +630,8 @@ Nomeia `finding` (os quatro no recibo), `form` e `needed`. Sem `then`.
 Recibo sem os quatro não é achado. Os quatro no disco não observam.
 Não joga. `felt` é sempre
 `false`. `next` propõe `feel.unobserved` quando há constante e não há
-recibo; o comando que ele aponta é o `note`. O harness não atribui peso.
+recibo; o comando que ele aponta é o mesmo `note` que `then.note` —
+com `--from-run` se last-run existir. O harness não atribui peso.
 
 ## Alcance, save e orçamento
 

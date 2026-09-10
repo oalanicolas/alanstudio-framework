@@ -245,7 +245,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    executar. Com last-run, nomeia `then.seed` e `then.invite` — o mesmo
    endereço que `play` / `guide`. Sem comando de abrir, `then.play` some.
    Sem last-run, seed e invite somem. Não tem `prompt`. `felt` é sempre
-   falso. Sem recibo, `next` propõe `feel.unobserved` e aponta `note`. Sem
+   falso. Sem recibo, `next` propõe `feel.unobserved` e aponta o mesmo
+   `note` que `then.note` — com `--from-run` se last-run existir. Sem
    caminho, o único jogo do laboratório basta.
    **`note [<projeto>]`** grava o recibo curto (cenário e papel por omissão)
    em `docs/playtest/<utc>/`. Sem caminho, o único jogo do laboratório
