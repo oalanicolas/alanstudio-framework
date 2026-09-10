@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.267: a faixa nomeia a curva que o last-run já traçou. Seed e pontos ficavam; never_banked some. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 292 OK.
-`cd assets/starters/canvas-arcade && npm test` → 450 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 293 OK.
+`cd assets/starters/canvas-arcade && npm test` → 452 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
