@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.168 — O corpo pulsa na graça do erro
+
+A graça depois do estilhaço
+já existia. Só o contorno
+piscava; o tijolo sólido
+tapava a leitura. O corpo
+some e volta no mesmo
+relógio. O `fillRect`
+permanece. Reduced trava o
+tijolo. `felt` continua
+falso. Só `release` fica no
+piso.
+
+O que 0.9.168 não afirma:
+pulso no disco não é peso
+percebido.
+
 ## 0.9.167 — O aviso nomeia o custo do estilhaço
 
 A queda do orbe já tinha

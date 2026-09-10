@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.167: o aviso nomeia o custo do estilhaço.
+**HEAD:** ver `git log -1` — vigente 0.9.168: o corpo pulsa na graça do erro.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 267 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.167)
+## O que o HEAD já entrega (0.9.91–0.9.168)
 
 | Ver | Salto |
 | --- | --- |
@@ -111,6 +111,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.165 | `init_scope` distingue rascunhos plantados. Sem docs não afirma brief nem `draft_only`. `preproduction.md` ensina `start --idea`; `init` continua o que planta. O `context` injeta esse arquivo. Não promove. |
 | 0.9.166 | `doctor` no laboratório vazio devolve `then.guide`. Sem starter o aviso nomeia `start --idea`, não `init`. Com jogo a chave some. Sem `prompt`. Não cria e não executa. |
 | 0.9.167 | O aviso do primeiro ciclo nomeia o estilhaço quando a corrente voltou a zero (`hint_hit`). Dash no trilho vence. A porta não ensina. Copy 3. Não promove feel. |
+| 0.9.168 | Na graça do erro o corpo some e volta no relógio do contorno. `fillRect` permanece. Reduced trava o tijolo. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -321,8 +322,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `music` (`DUCK_BUSES`). `update({ bedRate })` desloca o tom da
   cama; `bedRateFor` lê o pulso do fecho. Não é duck. `heard` falso.
 - Jogador: `fillRect` do squash **permanece** (testes `playerFill` /
-  `playerBox`). A ponta é path (`lineTos`). Halo do estilhaço **não**
-  é `arc` (`orb.arcs > shard.arcs`).
+  `playerBox`). Na graça (`invuln`) o corpo pulsa com
+  `globalAlpha` no relógio do contorno; o tijolo não some.
+  Reduced trava o tijolo e o contorno. A ponta é path (`lineTos`).
+  Halo do estilhaço **não** é `arc` (`orb.arcs > shard.arcs`).
+  Luz no disco não é `felt`.
 - `player.dir` default `1`. Ponta some? Não — é forma, não brilho.
 - Fase `title` só com canvas (ou `options.entry === "title"`). Headless
   e `createState()` default = `playing`. `advance` em title não anda o
@@ -455,6 +459,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `preproduction.md` que ensina `init` como a entrada de jogo novo.
 **Não** mais um `doctor` que ensina `init` e some o mapa quando o laboratório está vazio.
 **Não** mais um aviso que some o custo do estilhaço enquanto o miss já nomeia a queda.
+**Não** mais um corpo sólido enquanto a graça do erro só pisca o contorno.
 
 Candidatos, do que ainda dói:
 
@@ -546,5 +551,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `hint_hit` no primeiro ciclo.
-Copy 3. A porta não ensina. Não promove feel.
+Arquivos quentes da última sessão: o corpo pulsa na graça do erro.
+`fillRect` permanece. Reduced trava. Não promove feel.

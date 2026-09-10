@@ -571,6 +571,34 @@ test("o término do dash senta mais que a partida e menos que guardar", () => {
   assert.ok(c.width > b.width, "guardar senta mais que aterrissar");
 });
 
+test("a graça do erro some o corpo e o traz de volta sem apagar o tijolo", () => {
+  const lit = createState(1);
+  lit.player.invuln = 8;
+  const dim = createState(1);
+  dim.player.invuln = 6;
+  const a = playerBox(lit);
+  const b = playerBox(dim);
+  assert.equal(a.width, b.width, "o fillRect do squash permanece nos dois tempos");
+  const rimOn = paint(lit).edges.filter((edge) => (
+    edge.style === PALETTES.normal.danger && edge.width < 40 && edge.y < PLAYER_Y
+  ));
+  const rimOff = paint(dim).edges.filter((edge) => (
+    edge.style === PALETTES.normal.danger && edge.width < 40 && edge.y < PLAYER_Y
+  ));
+  assert.ok(rimOn.length >= 1, "no tempo claro o contorno marca a graça");
+  assert.equal(rimOff.length, 0, "no tempo escuro o contorno some com o corpo");
+  const still = createState(1);
+  still.player.invuln = 6;
+  const held = paint(still, { reducedMotion: true }).edges.filter((edge) => (
+    edge.style === PALETTES.normal.danger && edge.width < 40 && edge.y < PLAYER_Y
+  ));
+  assert.ok(held.length >= 1, "com menos movimento o contorno fica, o tijolo não some");
+  const heldBox = paint(still, { reducedMotion: true }).rects.filter(
+    (rect) => rect.width < 40 && rect.y < PLAYER_Y && rect.y + rect.height > PLAYER_Y - 8,
+  );
+  assert.ok(heldBox.length > 0, "com menos movimento o fillRect permanece");
+});
+
 test("a recuperação do dash não se parece com o dash nem com o descanso", () => {
   const idle = createState(1);
   const dash = createState(1);

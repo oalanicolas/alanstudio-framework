@@ -349,6 +349,13 @@ export function createRenderer(canvas, options = {}) {
     const top = PLAYER_Y - height / 2;
     const dashing = player.dashTicks > 0;
     const recovering = !dashing && player.dashRecovery > 0;
+    // A graça do erro já existia. Só o contorno piscava; o tijolo
+    // sólido tapava a leitura. O corpo some e volta no mesmo
+    // relógio — o fillRect permanece. Com menos movimento o
+    // tijolo fica e o contorno não pisca. Luz no disco não é felt.
+    const invuln = player.invuln > 0;
+    const pulse = invuln && !reduced && Math.floor(player.invuln / 4) % 2 !== 0;
+    if (pulse) target.globalAlpha = 0.38;
     target.fillStyle = dashing ? palette.chain : recovering ? palette.orb : palette.player;
     target.fillRect(left, top, width, height);
     // O retângulo sozinho era o tijolo da placa. A ponta segue o
@@ -369,7 +376,8 @@ export function createRenderer(canvas, options = {}) {
     }
     target.closePath();
     target.fill();
-    if (player.invuln > 0) {
+    if (pulse) target.globalAlpha = 1;
+    if (invuln) {
       // Com redução de movimento, contorno constante em vez de piscar.
       const visible = reduced || Math.floor(player.invuln / 4) % 2 === 0;
       if (visible) {
