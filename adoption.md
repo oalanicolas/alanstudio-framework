@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.173 — O summary nomeia os stems
+
+O acervo vazio já
+avisava que o starter
+fala. A lista ficava
+só na pasta. `sfx
+summary` lê
+`sources.json` e os
+WAV. Licença e origem
+entram. `heard`
+continua falso. Só
+`release` fica no piso.
+
+O que 0.9.173 não afirma:
+ficha no disco não é
+mix ouvido.
+
 ## 0.9.172 — O reload descarrega o tick
 
 O `hold` já existia.

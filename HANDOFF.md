@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.172: beforeunload descarrega o tick.
+**HEAD:** ver `git log -1` — vigente 0.9.173: sfx summary lista os stems do starter.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 267 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.172)
+## O que o HEAD já entrega (0.9.91–0.9.173)
 
 | Ver | Salto |
 | --- | --- |
@@ -116,6 +116,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.170 | O `over` senta o corpo (`squashOver`). Larga dash, graça e arco da guarda. `fillRect` permanece. Não promove feel. |
 | 0.9.171 | A região viva nomeia `pausado`. Overlay do canvas não chega ao leitor. Não promove `accessibility`. |
 | 0.9.172 | `beforeunload` descarrega o mesmo hold do `pagehide`. Não pausa. Stub não é aba fechada. Não promove `trusted`. |
+| 0.9.173 | `sfx summary` lista stems, licença e origem do starter. Acervo vazio não some o que já fala. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -472,6 +473,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um corpo em pose de jogo enquanto o relógio já derrubou a aposta.
 **Não** mais uma região viva que some a pausa enquanto o overlay já a nomeia.
 **Não** mais um tick que some no reload enquanto só o `pagehide` descarregava.
+**Não** mais um `sfx summary` que some os stems do starter enquanto o acervo está vazio.
 
 Candidatos, do que ainda dói:
 
@@ -548,7 +550,10 @@ Candidatos, do que ainda dói:
   pausa na
   região viva e o
   beforeunload
-  do tick
+  do tick e o
+  summary dos
+  stems do
+  starter
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -572,5 +577,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `beforeunload` descarrega o tick.
-Não pausa. Stub não é aba fechada. Não promove `trusted`.
+Arquivos quentes da última sessão: `sfx summary` lista os stems do starter.
+Acervo vazio não some o que já fala. Não promove `heard`.

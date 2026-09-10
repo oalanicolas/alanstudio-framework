@@ -15,6 +15,7 @@ def default_workspace():
 
 DEFAULT_ROOT = default_workspace()
 CATALOG_RELATIVE = Path("shared/sfx")
+STARTER_SFX = Path(__file__).resolve().parents[1] / "assets/starters/canvas-arcade/public/sfx"
 LICENSES = tuple(audio.LICENSES)
 QUALITY_BAR = {
     "required": ["gravação licenciada ou design sonoro contemporâneo com origem",
@@ -26,7 +27,8 @@ QUALITY_BAR = {
 }
 
 EMPTY_NEXT = (
-    "Acervo vazio. O starter já fala em public/sfx; desloque com "
+    "Acervo vazio. O starter já fala em public/sfx; sfx summary lista "
+    "esses stems. Arquivo no disco não é mix ouvido. Desloque com "
     "npm run sfx -- --from <papel> --as brighter. sfx serve não ouve "
     "o que não existe. Para crescer o acervo, sfx import ARQUIVO "
     "--metadata JSON (ffmpeg); importar não é ouvir. Procure fora só "
@@ -71,6 +73,41 @@ SEED_MISSING = (
 
 def catalog_dir(root=None):
     return Path(root or DEFAULT_ROOT) / CATALOG_RELATIVE
+
+
+def local_stems(folder=None):
+    folder = Path(folder or STARTER_SFX)
+    files = []
+    sources = folder / "sources.json"
+    if sources.is_file():
+        data = audio.read_json(sources)
+        entries = data.get("files") if isinstance(data, dict) else None
+        if isinstance(entries, list):
+            for item in entries:
+                if not isinstance(item, dict):
+                    continue
+                src = item.get("src")
+                if not isinstance(src, str) or not src.strip():
+                    continue
+                path = folder / src
+                if not path.is_file() or path.is_symlink():
+                    continue
+                key = item.get("key")
+                files.append({
+                    "src": src,
+                    "key": key if isinstance(key, str) and key.strip() else Path(src).stem,
+                    "license": item.get("license") if isinstance(item.get("license"), str) else None,
+                    "origin": item.get("origin") if isinstance(item.get("origin"), str) else None,
+                    "bytes": path.stat().st_size,
+                })
+    return {
+        "path": str(folder),
+        "kind": "starter",
+        "exists": folder.is_dir(),
+        "file_count": len(files),
+        "files": files,
+        "heard": False,
+    }
 
 
 def load_catalog(root=None):
@@ -160,6 +197,7 @@ def summarize(root=None):
     for item in catalog["sounds"]:
         groups[item["category"]] = groups.get(item["category"], 0) + 1
     empty = len(catalog["sounds"]) == 0
+    local = local_stems()
     return {
         "catalog": str(catalog_dir(root) / "catalog.json"),
         "guide": str(catalog_dir(root) / "README.md"),
@@ -169,6 +207,8 @@ def summarize(root=None):
         "originals": sum(s.get("edition") == "original" for s in catalog["sounds"]),
         "updated": catalog.get("updated"), "quality_bar": QUALITY_BAR,
         "categories": [{"title": name, "count": count} for name, count in sorted(groups.items())],
+        "local": local,
+        "heard": False,
         "search": "python3 scripts/game.py sfx search TERMO",
         "listen": None if empty else "python3 scripts/game.py sfx serve",
         "copy": "python3 scripts/game.py sfx copy ID --to PASTA",

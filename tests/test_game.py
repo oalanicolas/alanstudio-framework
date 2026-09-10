@@ -2198,6 +2198,27 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("Ouça com sfx serve", exported.stderr)
         self.assertFalse((self.root / "out").exists())
 
+    def test_sfx_summary_names_starter_stems_without_claiming_to_hear_them(self):
+        report = game.sfx_catalog.summarize(self.root)
+        self.assertTrue(report["empty"])
+        self.assertFalse(report["heard"])
+        self.assertIsNone(report["listen"])
+        local = report["local"]
+        self.assertEqual(local["kind"], "starter")
+        self.assertFalse(local["heard"])
+        self.assertTrue(local["exists"])
+        keys = {item["key"] for item in local["files"]}
+        self.assertIn("dash", keys)
+        self.assertIn("bed", keys)
+        self.assertTrue(local["file_count"] >= 12)
+        self.assertTrue(all(item["license"] for item in local["files"]))
+        self.assertTrue(all(item["bytes"] > 0 for item in local["files"]))
+        self.assertIn("sfx summary lista", report["next"])
+        self.assertNotIn("Ouça com sfx serve", report["next"])
+        dumped = json.dumps(report)
+        self.assertNotIn("aprovado", dumped)
+        self.assertNotIn("verified", dumped)
+
     def test_sfx_import_grows_the_catalog_without_claiming_to_hear_it(self):
         fake = {
             "sample_rate": 44100, "duration": 0.2, "channels": 1,

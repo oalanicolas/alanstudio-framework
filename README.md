@@ -555,7 +555,8 @@ python3 scripts/game.py sfx export passo-madeira-01 --to /caminho/do/jogo/public
 `sfx import` exige ffmpeg e um JSON com id, título, categoria, estilo,
 tags, processamento e fontes (licença CC0 ou CC-BY). `sfx seed` lê
 `shared/sfx/selection.json` com `local_path` já no disco. Sem seleção,
-o seed recusa. `sfx summary` (também sem subcomando) lê o acervo e os atalhos.
+o seed recusa. `sfx summary` (também sem subcomando) lê o acervo, os atalhos
+e os stems do starter em `public/sfx` — arquivo no disco não é mix ouvido.
 `sfx verify` cruza bytes e fichas; não ouve. `sfx info` lê a ficha
 no disco. `sfx export` copia
 bytes, `manifest.json` e `CREDITS.txt` para uma pasta fora do acervo.
