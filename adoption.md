@@ -3,6 +3,71 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.215 — A barra de acessibilidade não mente o dispositivo
+
+A
+célula
+`accessibility`
+do
+README
+do
+starter
+dizia
+`contraste
+verificado
+por
+medição
+em
+cena
+no
+dispositivo`
+e
+apontava
+`npm
+run
+contrast`.
+O
+script
+amostra
+o
+stub
+e
+recusa
+limiar.
+Agora
+o
+critério
+nomeia
+o
+stub
+e
+diz
+que
+o
+aparelho
+ainda
+não
+foi
+observado.
+Não
+promove
+`accessibility`.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.215 não afirma:
+corrigir
+a
+barra
+não
+mede
+contraste
+no
+aparelho.
+
 ## 0.9.214 — O doctor aponta o guide com ideia
 
 O
