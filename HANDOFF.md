@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.213: na raiz do framework o `guide` sem `--idea` recusa como o `start`.
+**HEAD:** ver `git log -1` — vigente 0.9.213 (confirmado): na raiz do framework o `guide` sem `--idea` recusa como o `start`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 278 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 279 OK.
 `cd assets/starters/canvas-arcade && npm test` → 389 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
