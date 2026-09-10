@@ -146,8 +146,10 @@ legenda "últimos segundos"), a prática (`live`, "a chuva começa"),
 a guarda (`stir`, "a chuva volta") e o orbe perdido (`missed`,
 "orbe perdido") têm design original e variante
 (`-b`) em `public/sfx`. No `over` a cama solta com fade; pause, title
-e aba escondida continuam cortando a cama seco. Na pausa o mixer
-também corta as vozes do verbo que ainda soavam. `npm run sfx -- --from dash --as brighter`
+e aba escondida continuam cortando a cama seco. No campo a pausa
+também corta as vozes do verbo que ainda soavam. No fim e na
+porta o `hush` não corre: a cortina já venceu e o stinger
+precisa atravessar. Arquivo no disco não é mix ouvido. `npm run sfx -- --from dash --as brighter`
 desloca a voz no papel que o mixer já toca; `--as` precisa de `--from`.
 `npm run peak` relata o pico do
 arquivo; `npm run mix` soma as vozes de uma partida simulada com o mesmo

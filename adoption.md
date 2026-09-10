@@ -3,6 +3,24 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.185 — No fim a pausa não come o stinger
+
+O overlay do fim
+já vencia a pausa.
+O `hush` do campo
+ainda cortava o
+stinger se P ou a
+aba caíssem depois
+da cortina. Agora
+só o campo husha.
+`heard` continua
+falso. Só `release`
+fica no piso.
+
+O que 0.9.185 não afirma:
+corte no stub não é
+mix ouvida.
+
 ## 0.9.184 — A live só diz pausado na placa
 
 O overlay do fim

@@ -264,6 +264,60 @@ test("o over pede fade da cama sem fingir mix ouvido", () => {
   game.dispose();
 });
 
+test("no fim a pausa não come o stinger sem fingir mix ouvido", () => {
+  const calls = [];
+  const audio = {
+    play() {
+      return true;
+    },
+    stop() {
+      return true;
+    },
+    hush() {
+      calls.push("hush");
+      return true;
+    },
+    lift() {
+      calls.push("lift");
+      return true;
+    },
+    update() {},
+    captions() {
+      return [];
+    },
+    unlock() {},
+    applySettings() {},
+    missing() {
+      return { declared: [], registered: [] };
+    },
+    dispose() {},
+  };
+  const field = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    audio,
+  });
+  field.advance(1);
+  assert.equal(field.observe().phase, "playing");
+  field.pause();
+  assert.equal(calls.includes("hush"), true, "no campo o hit some");
+  field.dispose();
+  calls.length = 0;
+  const ended = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    audio,
+  });
+  ended.advance(CONFIG.runTicks);
+  assert.equal(ended.observe().phase, "over");
+  ended.pause();
+  assert.equal(calls.includes("hush"), false, "o stinger atravessa o fim");
+  ended.dispose();
+  assert.doesNotMatch(calls.join(" "), /aprovado|verified|heard|LUFS|-14/);
+});
+
 test("com tela o fim oferece o candidato sem chamar isso de observado", async () => {
   const posted = [];
   const game = createGame({

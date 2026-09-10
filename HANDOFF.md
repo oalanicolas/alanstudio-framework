@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.184 (confirmado): a região viva só diz pausado na placa.
+**HEAD:** ver `git log -1` — vigente 0.9.185: no fim a pausa não come o stinger.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 272 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.184)
+## O que o HEAD já entrega (0.9.91–0.9.185)
 
 | Ver | Salto |
 | --- | --- |
@@ -128,6 +128,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.182 | No fim a cortina do over vence a pausa. P e aba escondida não comem Fim, corrente nem porta. Não promove feel. |
 | 0.9.183 | `sfx verify` nomeia os stems do starter quando o acervo está vazio. Não cruza. `ok` fica falso. Não promove `heard`. |
 | 0.9.184 | A região viva só diz `pausado` quando o overlay diz Pausado. No fim e na porta a palavra some. Não promove `accessibility`. |
+| 0.9.185 | No fim a pausa não come o stinger. No campo o `hush` continua. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -143,7 +144,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | corpo e quadro sentam no over; a pausa senta o quadro; o over vence a pausa no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
-| audio_mix | slice | fade no over + pausa corta o verbo; `heard` falso |
+| audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -229,7 +230,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou avanço no overlay, recorde no overlay do fim
   ou movimento na porta ou toque da mostra ou voz da mostra
   ou quadro sentado na pausa ou placar na pausa ou fim que vence a pausa
-  ou verify dos stems do starter ou live que some pausado no fim.
+  ou verify dos stems do starter ou live que some pausado no fim
+  ou hush no over que poupa o stinger.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -340,8 +342,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `music` (`DUCK_BUSES`). `update({ bedRate })` desloca o tom da
   cama; `bedRateFor` lê o pulso do fecho. Não é duck. O `over`
   pede `stop("bed", { fadeMs: BED_FADE_MS })`; pause, title e aba
-  escondida cortam a cama seco. Na pausa `hush()` corta as vozes
-  do verbo; `lift()` no resume. Play no meio do fade corta o leftover.
+  escondida cortam a cama seco. No campo a pausa `hush()` corta
+  as vozes do verbo; no fim e na porta o `hush` não corre.
+  `lift()` no resume. Play no meio do fade corta o leftover.
   `heard` falso.
 - Jogador: `fillRect` do squash **permanece** (testes `playerFill` /
   `playerBox`). Na graça (`invuln`) o corpo pulsa com
@@ -510,6 +513,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um overlay Pausado no fim que come a aposta.
 **Não** mais um `sfx verify` que some os stems do starter.
 **Não** mais uma região viva que diz pausado enquanto o overlay diz Fim.
+**Não** mais um hush no over que come o stinger.
 
 Candidatos, do que ainda dói:
 
@@ -625,6 +629,10 @@ Candidatos, do que ainda dói:
   live que
   some
   pausado no
+  fim e o
+  hush que
+  poupa o
+  stinger no
   fim
   não
   fecham. A receita
@@ -649,6 +657,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a região viva só diz pausado
-quando o overlay diz Pausado. No fim e na porta a palavra some.
-Não promove `accessibility`.
+Arquivos quentes da última sessão: no fim a pausa não come o
+stinger. No campo o `hush` continua. Não promove `heard`.

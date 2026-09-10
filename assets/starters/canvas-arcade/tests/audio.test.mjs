@@ -463,8 +463,15 @@ test("a pausa corta o verbo que ainda soava sem fingir mix ouvido", () => {
   audio.lift();
   assert.equal(audio.play("hit"), true);
   assert.equal(context.sources.at(-1).started, true);
-  assert.match(main, /if \(loop\.paused\) \{\s*audio\.hush/);
+  assert.match(main, /if \(state\.phase === "playing"\) audio\.hush\(\)/);
   assert.match(main, /togglePause[\s\S]*syncBed\(\)/);
+  assert.doesNotMatch(main, /aprovado|verified|heard|LUFS|-14/);
+});
+
+test("no fim a pausa não come o stinger sem fingir mix ouvido", () => {
+  assert.match(main, /if \(loop\.paused\) \{/);
+  assert.match(main, /if \(state\.phase === "playing"\) audio\.hush\(\)/);
+  assert.doesNotMatch(main, /if \(loop\.paused\) \{\s*audio\.hush/);
   assert.doesNotMatch(main, /aprovado|verified|heard|LUFS|-14/);
 });
 

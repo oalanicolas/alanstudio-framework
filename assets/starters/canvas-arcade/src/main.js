@@ -244,7 +244,10 @@ export function createGame(options = {}) {
   function syncBed() {
     if (disposed) return;
     if (loop.paused) {
-      audio.hush();
+      // No campo o hit não atravessa Pausado. No fim a cortina
+      // já venceu; hush comeria o stinger. Na porta a placa
+      // nem nasce. Arquivo no disco não é mix ouvido.
+      if (state.phase === "playing") audio.hush();
       audio.stop("bed");
       return;
     }
