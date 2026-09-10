@@ -3,6 +3,39 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.213 — O guide na raiz sem ideia recusa como o start
+
+Na raiz
+do
+framework o
+`guide` sem
+`--idea`
+devolvia
+`start
+'<destino>'`
+com saída 0.
+O primeiro
+passo
+quebrava.
+Agora recusa
+com o mesmo
+`sem destino`
+do `start`.
+Subpasta e
+`guide_cycle`
+continuam o
+mapa. Não
+executa. Só
+`release`
+fica no piso.
+
+O que 0.9.213 não afirma:
+recusar cedo
+não cria o
+jogo nem
+abre o
+serve.
+
 ## 0.9.212 — Orbe e estilhaço no mesmo quadro não decidem pela ordem
 
 Orbe e

@@ -4342,13 +4342,17 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(payload["executed"])
         self.assertEqual(payload["steps"][1]["kind"], "playable.unplayed")
         self.assertEqual(len(payload["steps"]), 3)
-        bare = subprocess.run([sys.executable, str(SCRIPT)], capture_output=True, text=True)
+        bare = subprocess.run(
+            [sys.executable, str(SCRIPT), "--idea", "mapear o ciclo"],
+            capture_output=True, text=True, cwd=str(game.FRAMEWORK),
+        )
         self.assertEqual(bare.returncode, 0, bare.stderr)
         mapped = json.loads(bare.stdout)
         self.assertEqual(mapped["command"], "guide")
         self.assertFalse(mapped["executed"])
         self.assertFalse(mapped["here"])
         self.assertEqual(len(mapped["steps"]), 3)
+        self.assertIn("mapear-o-ciclo", mapped["steps"][0]["command"])
 
     def test_guide_without_args_uses_the_game_you_are_standing_in(self):
         destination = self.root / "aqui"
@@ -4494,6 +4498,32 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotEqual(missing.returncode, 0)
         self.assertIn("sem destino", missing.stderr)
+
+    def test_guide_without_idea_matches_start_rejection_at_framework_root(self):
+        with self.assertRaisesRegex(ValueError, "sem destino"):
+            game.require_guide_idea(None, None, cwd=game.FRAMEWORK)
+        with self.assertRaisesRegex(ValueError, "sem destino"):
+            game.require_guide_idea(None, "!!!", cwd=game.FRAMEWORK)
+        game.require_guide_idea(None, "atravessar estilhaços", cwd=game.FRAMEWORK)
+        game.require_guide_idea(None, None, cwd=game.FRAMEWORK / "assets/starters/canvas-arcade")
+        bare = subprocess.run(
+            [sys.executable, str(SCRIPT), "guide"],
+            capture_output=True, text=True, cwd=str(game.FRAMEWORK),
+        )
+        self.assertNotEqual(bare.returncode, 0)
+        self.assertIn("sem destino", bare.stderr)
+        default = subprocess.run(
+            [sys.executable, str(SCRIPT)],
+            capture_output=True, text=True, cwd=str(game.FRAMEWORK),
+        )
+        self.assertNotEqual(default.returncode, 0)
+        self.assertIn("sem destino", default.stderr)
+        starter = subprocess.run(
+            [sys.executable, str(SCRIPT), "guide"],
+            capture_output=True, text=True,
+            cwd=str(game.FRAMEWORK / "assets/starters/canvas-arcade"),
+        )
+        self.assertEqual(starter.returncode, 0, starter.stderr)
 
     def test_guide_names_craft_from_the_starter_before_the_project_exists(self):
         report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")

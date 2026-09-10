@@ -4076,6 +4076,23 @@ def start_destination_from_idea(idea, cwd=None, framework=None):
     return (here / target).resolve()
 
 
+def require_guide_idea(project, idea, cwd=None):
+    # O mapa sem destino devolvia `start '<destino>'` com saída 0 na raiz
+    # do framework — o primeiro passo quebrava. Subpastas (starter
+    # incluído) e a API `guide_cycle` continuam pedindo o mapa sem
+    # frase. Recusar cedo não cria e não executa.
+    if project is not None:
+        return
+    here = Path(cwd or Path.cwd()).resolve()
+    if here != FRAMEWORK.resolve():
+        return
+    if suggested_start_target(idea, cwd=cwd, framework=FRAMEWORK) is not None:
+        return
+    raise ValueError(
+        "sem destino: passe o caminho ou --idea com uma frase que nomeie a pasta"
+    )
+
+
 def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
     available = starters()
     chosen = starter or (available[0] if available else "canvas-arcade")
@@ -5360,6 +5377,7 @@ def main():
         root = args.root.resolve()
         if args.action is None:
             dest = here_project()
+            require_guide_idea(None, args.idea)
             report = guide_cycle(dest, idea=args.idea)
             report["here"] = dest is not None
             emit(report)
@@ -5378,6 +5396,7 @@ def main():
             emit(start_project(dest, args.starter, args.title, args.idea, args.docs and not args.no_docs))
         elif args.action == "guide":
             dest = here_project(args.project, root)
+            require_guide_idea(args.project, args.idea)
             report = guide_cycle(dest, args.starter, args.idea)
             report["here"] = args.project is None and dest is not None
             emit(report)

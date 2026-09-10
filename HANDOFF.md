@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.212 (confirmado): orbe e estilhaço no mesmo quadro não decidem a corrente pela ordem.
+**HEAD:** ver `git log -1` — vigente 0.9.213: na raiz do framework o `guide` sem `--idea` recusa como o `start`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 278 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.212)
+## O que o HEAD já entrega (0.9.91–0.9.213)
 
 | Ver | Salto |
 | --- | --- |
@@ -156,9 +156,11 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.210 | Dois orbes no mesmo quadro não inflam a corrente. O segundo espera o próximo tick. Sem suco empilhado. Não promove feel. |
 | 0.9.211 | A legenda da coleta e da guarda nomeia a corrente que o tom já sobe. Sem o número o tom falava e a faixa calava. Não promove `heard` nem `accessibility`. |
 | 0.9.212 | Orbe e estilhaço no mesmo quadro: o estilhaço letal resolve; o orbe espera. Ordem do array não decide a aposta. No dash os dois atravessam. Não promove feel. |
+| 0.9.213 | Na raiz do framework, `guide` / harness sem `--idea` recusam — não devolvem `start '<destino>'`. Subpasta e `guide_cycle` continuam o mapa. Não executa. |
 
-`python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
-principal também funciona sem subcomando.
+`python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
+framework, sem `--idea` e sem caminho, recusa com `sem destino`.
+`--idea` no parser principal também funciona sem subcomando.
 
 ---
 
@@ -281,6 +283,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou segundo estilhaço do mesmo quadro que é segundo hit
   ou dois orbes no mesmo quadro que inflam a corrente
   ou orbe e estilhaço no mesmo quadro que decidem pela ordem
+  ou guide na raiz que devolve start '<destino>'
   ou legenda da coleta que some a corrente que o tom já sobe
   ou discover que some o sinal do next
   ou playtest que some o esqueleto dos quatro
@@ -340,7 +343,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   cola `cycle_line` (Verbo / Porta / teclas) se o starter declara.
   Starter mudo não inventa.
 - `start` devolve `open` (= `play`), `url` e `steps` (3, passo 1 feito).
-  `guide` sem destino: `open` é o start. Os dois: `executed` falso.
+  `guide` sem destino: `open` é o start. Na raiz do framework, sem
+  `--idea`, o CLI recusa — `guide_cycle(None)` continua o mapa.
+  Os dois: `executed` falso.
   `url` é `http://localhost:<PORT>/` só se o script for `serve`
   (`PORT` positivo; vazio → 8080; `PORT=0` → sem url). Não é
   `then.url`. Nomear não serve.
@@ -654,6 +659,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais dois orbes no mesmo quadro que inflam a corrente.
 **Não** mais uma legenda da coleta que some a corrente que o tom já sobe.
 **Não** mais orbe e estilhaço no mesmo quadro que decidem a corrente pela ordem do array.
+**Não** mais um `guide` na raiz do framework que devolve `start '<destino>'`.
 
 Candidatos, do que ainda dói:
 
@@ -905,6 +911,12 @@ Candidatos, do que ainda dói:
   mesmo quadro
   que decidem
   pela ordem
+  e o
+  guide na
+  raiz que
+  devolve
+  start
+  '<destino>'
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -928,8 +940,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: orbe e
-estilhaço no mesmo quadro. Estilhaço letal
-resolve; o orbe espera. Ordem do array não
-decide a aposta. No dash os dois atravessam.
-Não promove feel.
+Arquivos quentes da última sessão: na raiz do
+framework o `guide` sem `--idea` recusa com o
+mesmo `sem destino` do `start`. Subpasta e
+`guide_cycle` continuam o mapa. Não executa.
