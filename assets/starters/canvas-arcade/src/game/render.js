@@ -566,6 +566,10 @@ export function createRenderer(canvas, options = {}) {
     const best = Number(extra.best);
     if (Number.isFinite(best) && best > 0) parts.push(`${lines.record} ${best}`);
     parts.push(lines.resume);
+    // R e Select já saem da pausa. Sem isto a placa
+    // só ensinava continuar e o reinício falava no
+    // vazio. Texto no disco não é felt.
+    if (lines.restart) parts.push(lines.restart);
     return parts.join(" · ");
   }
 

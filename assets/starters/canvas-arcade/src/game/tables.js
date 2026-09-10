@@ -14,8 +14,8 @@
 // `title_volatile` e `title_unsaved` nomeiam sessão que não
 // grava e gravação que não ficou. `settings_recovered` nomeia
 // preferências ilegíveis no painel, no live e no canvas da porta e do fim. Nomear não é `trusted`.
-// `resume`, `restart` e
-// `hint_bank` reservam o lugar da tecla viva — o fecho com corrente
+// `resume` e `restart` nomeiam a pausa — R já saía e a
+// placa calava. `hint_bank` reserva o lugar da tecla viva — o fecho com corrente
 // viva reusa essa linha; `hint_dash` ensina o
 // avanço nas três superfícies quando o estilhaço marca o trilho;
 // `hint_touch` e `hint_pad` são o passo da superfície que falou;

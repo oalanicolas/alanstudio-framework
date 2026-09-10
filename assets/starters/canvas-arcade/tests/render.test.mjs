@@ -1106,10 +1106,12 @@ test("o overlay da pausa nomeia o placar sem inventar faixa nem sessão", () => 
   assert.ok(withBest.some((text) => text === "Pausado — 12"), `título: ${JSON.stringify(withBest)}`);
   const hint = withBest.find((text) => text.includes("Recorde 40") && /continuar/i.test(text));
   assert.ok(hint, `esperava o recorde na pausa: ${JSON.stringify(withBest)}`);
+  assert.match(hint, /Reiniciar: R/, `esperava o reinício na pausa: ${hint}`);
   const empty = hudTexts(state, {}, { best: 0 }, held).texts.map((item) => item.text);
   assert.ok(empty.some((text) => text === "Pausado — 12"), `sem recorde o placar fica: ${JSON.stringify(empty)}`);
   const resume = empty.find((text) => /continuar/i.test(text));
   assert.ok(resume, `esperava o retomar: ${JSON.stringify(empty)}`);
+  assert.match(resume, /Reiniciar: R/, `esperava o reinício: ${resume}`);
   assert.equal(/recorde/i.test(resume), false, `recorde 0 some do overlay: ${resume}`);
   const live = hudTexts(state, {}, { best: 40 }).texts.map((item) => item.text);
   assert.equal(
@@ -1329,6 +1331,7 @@ test("o aviso e o overlay nomeiam as teclas do remapeamento", () => {
   renderer.draw(state, { paused: true }, { bindings: ONE_HAND_BINDINGS }, {});
   const overlay = recorder.calls.texts.map((item) => item.text);
   assert.ok(overlay.some((text) => text.includes("Continuar: P")), `overlay: ${JSON.stringify(overlay)}`);
+  assert.ok(overlay.some((text) => text.includes("Reiniciar: O")), `overlay: ${JSON.stringify(overlay)}`);
   assert.equal(overlay.some((text) => text.includes("Esc")), false);
 });
 
@@ -1348,12 +1351,14 @@ test("o aviso ensina as três superfícies e o overlay confirma o controle", () 
   renderer.draw(state, { paused: true }, {}, { surface: "gamepad" });
   const overlay = recorder.calls.texts.map((item) => item.text);
   assert.ok(overlay.some((text) => text.includes("Continuar: Start")), `overlay: ${JSON.stringify(overlay)}`);
+  assert.ok(overlay.some((text) => text.includes("Reiniciar: Select")), `overlay: ${JSON.stringify(overlay)}`);
   assert.equal(overlay.some((text) => text.includes("Esc")), false);
 
   const over = createState(1);
   over.phase = "over";
+  const afterPause = recorder.calls.texts.length;
   renderer.draw(over, {}, {}, { surface: "gamepad" });
-  const fim = recorder.calls.texts.map((item) => item.text);
+  const fim = recorder.calls.texts.slice(afterPause).map((item) => item.text);
   assert.ok(fim.some((text) => text.includes("Abertura: A")), `fim: ${JSON.stringify(fim)}`);
   assert.equal(fim.some((text) => text.includes("Select")), false, "o overlay do fim nomeia o avanço");
 });

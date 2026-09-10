@@ -3,6 +3,35 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.298 — A pausa nomeia reiniciar
+
+R
+já
+saía
+da
+pausa.
+A
+placa
+só
+ensinava
+continuar.
+Agora
+nomeia
+reiniciar.
+Não
+promove
+`felt`.
+
+O que 0.9.298 não afirma:
+rótulo
+no
+stub
+não
+é
+peso
+no
+aparelho.
+
 ## 0.9.297 — O achado abre o convite
 
 O

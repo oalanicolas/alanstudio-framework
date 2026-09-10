@@ -363,6 +363,10 @@ test("o overlay nomeia o controle quando ele falou por último", () => {
     view.texts.some((text) => text.includes("Continuar: Start")),
     `esperava Start no overlay: ${JSON.stringify(view.texts)}`,
   );
+  assert.ok(
+    view.texts.some((text) => text.includes("Reiniciar: Select")),
+    `esperava Select no overlay: ${JSON.stringify(view.texts)}`,
+  );
   assert.equal(view.texts.some((text) => text.includes("Esc")), false);
   pads = [];
   game.dispose();
