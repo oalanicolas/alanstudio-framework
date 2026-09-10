@@ -3,6 +3,61 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.274 — A receita não cala a porta que o canvas já pinta
+
+O
+canvas
+já
+pintava
+`settingsLine`.
+A
+receita
+de
+`save`
+e
+`access`
+ainda
+dizia
+que
+a
+porta
+calava.
+Quem
+lia
+o
+guia
+tratava
+um
+bug
+fechado.
+Agora
+as
+duas
+receitas
+ensinam
+o
+canvas
+da
+abertura
+e
+do
+fim.
+A
+pausa
+não.
+Não
+promove
+`trusted`.
+
+O que 0.9.274 não afirma:
+alinhar
+a
+receita
+não
+é
+aba
+fechada.
+
 ## 0.9.273 — A porta nomeia a recuperação que o painel já mostra
 
 O

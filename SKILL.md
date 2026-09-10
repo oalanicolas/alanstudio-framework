@@ -255,7 +255,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    uma mão (desligar devolve o remap; save antigo não inventa tecla), assistência, velocidade da partida, tinta estável e região viva), versão de save e artefato
    de orçamento. `save` relata `warned` se o disco nomeia sessão volátil
    (`persistLine`, `title_volatile`, `title_unsaved`) ou preferências
-   ilegíveis (`settings_recovered`, `settings.broken`). Nomear não é
+   ilegíveis (`settings_recovered`, `settings.broken`). A receita
+   de persistência e alcance ensina o canvas da porta e do fim; a
+   pausa não. Nomear não é
    `trusted`. Trocar no stub não é sessão observada.
    `verified`/`trusted`/`measured` são sempre falsos.
    Falta no disco entra no `next` antes dos rascunhos.

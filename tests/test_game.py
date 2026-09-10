@@ -3131,6 +3131,26 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(perf["measured"])
         self.assertIn("budget", perf["scripts"])
 
+    def test_persistence_recipe_names_the_door_recovery_the_canvas_already_paints(self):
+        persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertNotIn("não nomeia essa recuperação", persist)
+        self.assertNotIn("A porta não.", access)
+        self.assertIn("settingsLine", persist)
+        self.assertIn("canvas", persist.casefold())
+        self.assertIn("canvas", access.casefold())
+        self.assertRegex(persist.casefold(), r"pausa\s+não")
+        self.assertRegex(access.casefold(), r"pausa\s+não")
+        save = game.save_reading(starter)
+        reach = game.access_reading(starter)
+        self.assertTrue(save["guide"].endswith("recipes/persistence.md"))
+        self.assertTrue(reach["guide"].endswith("recipes/accessibility.md"))
+        self.assertFalse(save["trusted"])
+        self.assertFalse(reach["verified"])
+        self.assertNotIn("aprovado", persist)
+        self.assertNotIn("aprovado", access)
+
     def test_save_names_storage_without_a_schema_as_unversioned(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "store.js").write_text("localStorage.setItem('score', value)\n")
