@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.275 — A aba escondida não deixa o verbo preso
+
+O
+keyup
+some
+ao
+esconder
+a
+aba.
+O
+corpo
+seguia
+o
+último
+hold.
+Agora
+`visibilitychange`
+solta
+hold
+e
+pressed.
+Mostrar
+de
+novo
+não
+some
+o
+hold.
+O
+pad
+continua
+no
+poll.
+Não
+promove
+`felt`.
+
+O que 0.9.275 não afirma:
+soltar
+no
+disco
+não
+é
+peso
+no
+dispositivo.
+
 ## 0.9.274 — A receita não cala a porta que o canvas já pinta
 
 O

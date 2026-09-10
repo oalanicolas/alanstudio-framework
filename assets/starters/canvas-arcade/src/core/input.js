@@ -25,6 +25,8 @@
 // O toque só escutava o canvas. Sem a captura, sair
 // do campo deixava o corpo andando. Captura no disco
 // não é felt.
+// Esconder a aba perde o keyup. Sem o visibilitychange
+// o corpo seguia o último hold. Soltar no disco não é felt.
 // Sessão no aparelho não foi observada.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que
@@ -73,6 +75,9 @@ export function createInput(options = {}) {
       typeof navigator !== "undefined" && navigator.getGamepads ? navigator.getGamepads() : []);
   let bindings = { ...DEFAULT_BINDINGS, ...(options.bindings ?? {}) };
   const unlock = typeof options.unlock === "function" ? options.unlock : null;
+  const visibility =
+    options.visibility
+    ?? (typeof document !== "undefined" ? document : null);
 
   const held = new Set();
   const pressed = new Set();
@@ -154,6 +159,19 @@ export function createInput(options = {}) {
     pointer.originX = null;
     pointer.originY = null;
     pointer.dragged = false;
+  }
+
+  function releaseSession() {
+    // Esconder a aba perde o keyup. Sem isto o corpo
+    // seguia o último hold. Pad continua no poll.
+    // Soltar no disco não é felt.
+    releaseHold();
+    pressed.clear();
+  }
+
+  function onVisibility() {
+    if (visibility?.hidden !== true) return;
+    releaseSession();
   }
 
   function onBlur() {
@@ -255,6 +273,7 @@ export function createInput(options = {}) {
   on(target, "keyup", onKeyUp);
   on(target, "blur", onBlur);
   on(target, "focusin", onFocusIn);
+  on(visibility, "visibilitychange", onVisibility);
   on(surface, "pointerdown", onPointerDown);
   on(surface, "pointermove", onPointerMove);
   on(surface, "pointerup", onPointerUp);

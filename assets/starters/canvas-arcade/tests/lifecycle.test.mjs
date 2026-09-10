@@ -1200,3 +1200,8 @@ test("o sistema que pede reduce no meio da sessão veste a caixa", () => {
   assert.equal(game.settings.highContrast, false, "dispose some o ouvinte");
   reopened.dispose();
 });
+
+test("o jogo entrega a aba escondida à escuta do hold", () => {
+  const main = readFileSync(new URL("../src/main.js", import.meta.url), "utf8");
+  assert.match(main, /visibility:\s*options\.visibility/);
+});

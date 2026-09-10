@@ -181,6 +181,7 @@ export function createGame(options = {}) {
     surface: canvas,
     bindings: settings.bindings,
     unlock: () => audio.unlock(),
+    visibility: options.visibility,
   });
   syncDashOnPress();
   const haptics = options.haptics ?? createHaptics({ settings, gamepads: options.gamepads });

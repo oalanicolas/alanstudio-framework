@@ -344,6 +344,51 @@ test("perder a captura no meio do arraste solta", () => {
   input.dispose();
 });
 
+test("a aba escondida não deixa o verbo preso", () => {
+  const keys = surface();
+  const page = {
+    hidden: false,
+    listeners: [],
+    addEventListener(type, handler) {
+      this.listeners.push({ type, handler });
+    },
+    removeEventListener(type, handler) {
+      this.listeners = this.listeners.filter((entry) => entry.type !== type || entry.handler !== handler);
+    },
+    hide() {
+      this.hidden = true;
+      for (const entry of this.listeners) {
+        if (entry.type === "visibilitychange") entry.handler();
+      }
+    },
+    show() {
+      this.hidden = false;
+      for (const entry of this.listeners) {
+        if (entry.type === "visibilitychange") entry.handler();
+      }
+    },
+  };
+  const input = createInput({ target: keys, surface: null, visibility: page });
+  keys.dispatch("keydown", {
+    code: "KeyD",
+    target: { tagName: "BODY" },
+    preventDefault() {},
+  });
+  assert.equal(input.intent().move, 1, "D ainda move");
+  page.show();
+  assert.equal(input.intent().move, 1, "mostrar de novo não some o hold");
+  keys.dispatch("keydown", {
+    code: "Space",
+    target: { tagName: "BODY" },
+    preventDefault() {},
+  });
+  page.hide();
+  const after = input.intent();
+  assert.equal(after.move, 0, "esconder a aba solta o movimento");
+  assert.equal(after.dash, false, "o aperto pendente não vira ofício");
+  input.dispose();
+});
+
 test("perder a captura não come o tap da porta", () => {
   const pad = surface();
   pad.setPointerCapture = () => {};
