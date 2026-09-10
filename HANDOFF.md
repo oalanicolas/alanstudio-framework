@@ -396,7 +396,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   atravesse ou guarde»). Ausente ganha o padrão. Sem faixa nova.
   A porta e o fim leem `persistLine`. O overlay do fim reusa
   `record` com `extra.best` quando `best > 0`. Recorde 0 some.
-  Sem faixa nova. Nomear não é `felt`.
+  O overlay da pausa reusa o placar (`Pausado — N`) e o mesmo
+  `record` no hint. Recorde 0 some. Jogando sem pausa o número
+  não entra na região viva. Sem faixa nova. Nomear não é `felt`
+  nem sessão.
   `migrateCopy` preenche default se a mesa antiga não tiver.
 - `attractMove` desloca `player.x` na porta com a mesma velocidade
   do campo. Não come `tick`, seed, `entities` nem eventos.
