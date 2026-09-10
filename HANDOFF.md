@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.310: os rascunhos de hipótese nomeiam a porta. Não promove `observed`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.310):** `python3 -m unittest discover -s tests` → a confirmar.
+**Testes no HEAD (0.9.310):** `python3 -m unittest discover -s tests` → 320 OK.
 `cd assets/starters/canvas-arcade && npm test` → 493 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
