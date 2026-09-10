@@ -5,7 +5,12 @@
 // O gesto acorda o mixer (`unlock`): o resume no quadro chega
 // tarde e o primeiro verbo fica mudo. Acordar não é mix ouvido.
 // Na porta o arraste move sem abrir; o tap abre. No campo o
-// down de cima continua o avanço. Sessão no aparelho não foi observada.
+// down de cima continua o avanço. O avanço é o aperto, não o
+// segurar: teclado, toque e A do controle leem a borda. Sem
+// isto a porta abria e o mesmo hold disparava o ofício, e no
+// campo o cooldown virava metralhadora. A guarda continua
+// nível — segurar ainda converte o orbe do mesmo quadro.
+// Sessão no aparelho não foi observada.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que
 // permite rodar a partida headless, repetir um replay e comparar dispositivos:
@@ -38,6 +43,7 @@ export function createInput(options = {}) {
   const pressed = new Set();
   const gamepadHeld = new Set();
   const padCommandHeld = new Set();
+  let padDashDown = false;
   const pointer = {
     active: false,
     aim: null,
@@ -256,9 +262,12 @@ export function createInput(options = {}) {
         const delta = pointer.aim - playerAim;
         if (Math.abs(delta) > 0.02) move = delta > 0 ? 1 : -1;
       }
+      const padDash = gamepadHeld.has("dash");
+      const padDashPressed = padDash && !padDashDown;
+      padDashDown = padDash;
       const result = {
         move,
-        dash: pressed.has("dash") || isHeld("dash") || pointer.dash,
+        dash: pressed.has("dash") || padDashPressed || pointer.dash,
         bank: pressed.has("bank") || isHeld("bank") || pointer.bank,
       };
       // Só as bordas de intenção. Um comando ainda não lido por `commands()`
@@ -297,6 +306,7 @@ export function createInput(options = {}) {
       pressed.clear();
       gamepadHeld.clear();
       padCommandHeld.clear();
+      padDashDown = false;
     },
   };
 }

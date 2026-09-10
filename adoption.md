@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.239 — O avanço é o aperto, não o segurar
+
+Segurar
+Space
+ou
+A
+na
+porta
+abria
+e
+disparava
+o
+ofício
+no
+campo.
+No
+campo
+o
+mesmo
+hold
+metralhava
+quando
+o
+cooldown
+acabava.
+Agora
+o
+avanço
+lê
+a
+borda.
+A
+guarda
+continua
+nível.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.239 não afirma:
+aperto
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.238 — O rumble do quadro toca o verbo mais pesado, não o último
 
 Dois

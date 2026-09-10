@@ -78,6 +78,18 @@ test("na porta o arraste move sem avançar; o tap abre", () => {
   input.dispose();
 });
 
+test("segurar o avanço não dispara de novo", () => {
+  const keys = surface();
+  const input = createInput({ target: keys, surface: null });
+  keys.dispatch("keydown", { code: "Space", preventDefault() {} });
+  assert.equal(input.intent().dash, true, "o aperto avança");
+  assert.equal(input.intent().dash, false, "segurar não é outro avanço");
+  keys.dispatch("keyup", { code: "Space" });
+  keys.dispatch("keydown", { code: "Space", preventDefault() {} });
+  assert.equal(input.intent().dash, true, "soltar e apertar é um avanço novo");
+  input.dispose();
+});
+
 test("tecla ligada e toque acordam o mixer no gesto, tecla solta não", () => {
   const woken = [];
   const keys = surface();
@@ -133,5 +145,17 @@ test("o controle move, avança, guarda, pausa e reinicia", () => {
   assert.equal(input.commands().reset, true, "Select precisa reiniciar");
   pads = [];
   assert.deepEqual(input.intent(), { move: 0, dash: false, bank: false });
+  input.dispose();
+});
+
+test("A contínuo no controle não repete o avanço", () => {
+  let pads = stubPad({ buttons: { 0: true } });
+  const input = createInput({ target: null, gamepads: () => pads });
+  assert.equal(input.intent().dash, true, "A precisa avançar");
+  assert.equal(input.intent().dash, false, "A contínuo não é outro avanço");
+  pads = [];
+  assert.equal(input.intent().dash, false);
+  pads = stubPad({ buttons: { 0: true } });
+  assert.equal(input.intent().dash, true, "soltar e apertar é um avanço novo");
   input.dispose();
 });

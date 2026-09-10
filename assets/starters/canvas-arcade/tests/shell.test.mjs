@@ -284,6 +284,44 @@ function textCanvas() {
   };
 }
 
+test("segurar o avanço na porta não dispara o ofício no campo", () => {
+  const view = textCanvas();
+  const { game, hold, release, frame } = shell({ canvas: view.canvas, loadSfx: false });
+  game.start();
+  frame();
+  assert.equal(game.observe().phase, "title");
+  hold("Space");
+  frame();
+  assert.equal(game.observe().phase, "playing", "o aperto abre");
+  assert.equal(game.observe().stats.dashes, 0, "abrir não conta o ofício");
+  for (let step = 0; step < 80; step += 1) frame(16);
+  assert.equal(game.observe().stats.dashes, 0, "o mesmo aperto não é o avanço do campo");
+  assert.equal(game.observe().player.dashWindup ?? 0, 0, "segurar não arma o coil");
+  release("Space");
+  frame(16);
+  hold("Space");
+  for (let step = 0; step < 40; step += 1) frame(16);
+  assert.equal(game.observe().stats.dashes, 1, "um avanço novo conta");
+  game.dispose();
+});
+
+test("segurar o avanço no campo não dispara de novo", () => {
+  const { game, hold, release, frame } = shell();
+  game.start();
+  frame();
+  hold("Space");
+  for (let step = 0; step < 40; step += 1) frame(16);
+  assert.equal(game.observe().stats.dashes, 1, "um aperto é um avanço");
+  for (let step = 0; step < 80; step += 1) frame(16);
+  assert.equal(game.observe().stats.dashes, 1, "o cooldown não dispara sozinho");
+  release("Space");
+  frame(16);
+  hold("Space");
+  for (let step = 0; step < 40; step += 1) frame(16);
+  assert.equal(game.observe().stats.dashes, 2, "soltar e apertar é outro");
+  game.dispose();
+});
+
 test("com tela o boot espera o avanço", () => {
   const view = textCanvas();
   const { game, press, frame } = shell({ canvas: view.canvas, loadSfx: false });

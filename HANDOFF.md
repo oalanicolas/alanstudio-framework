@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.238 (confirmado): o rumble do quadro toca o verbo mais pesado, não o último. Graça, queda e cama continuam sem pulso.
+**HEAD:** ver `git log -1` — vigente 0.9.239: o avanço é o aperto, não o segurar. Porta não vira ofício; cooldown não metralha. Graça, queda e cama continuam sem pulso.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 281 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.238)
+## O que o HEAD já entrega (0.9.91–0.9.239)
 
 | Ver | Salto |
 | --- | --- |
@@ -182,6 +182,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.236 | Na porta o arraste move sem abrir; o tap abre. No campo o down de cima continua o avanço. Não promove feel. |
 | 0.9.237 | O pedido de dash sobrevive ao lock da guarda. A recarga continua contando o perdão. Não promove feel. |
 | 0.9.238 | O rumble do quadro toca o verbo mais pesado, não o último. Porta fala dash; commit fala guarda. Não promove feel. |
+| 0.9.239 | O avanço é o aperto, não o segurar. Segurar na porta não dispara o ofício; no campo o cooldown não metralha. A guarda continua nível. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -195,7 +196,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | o rumble do quadro toca o peso maior; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
@@ -338,7 +339,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou coleta no land ou no quadro da conversão que come o sit do compromisso
   ou toque na porta que abre no down e some o arraste
   ou pedido de dash que morre no lock da guarda
-  ou rumble do quadro que toca o último verbo e some o peso.
+  ou rumble do quadro que toca o último verbo e some o peso
+  ou avanço que lê o hold e metralha no cooldown
+  ou o mesmo aperto da porta que dispara o ofício no campo.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -514,7 +517,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   Legenda na abertura não sobe `accessibility`. Dash em `step` chama
   `beginRun`: dispara `dash`, fecha com `land` no mesmo tick
   (`squashLand`, punch Y, puff). Sem `dashTicks`, sem recovery,
-  sem incrementar `stats.dashes`. Na porta o toque não avança no
+  sem incrementar `stats.dashes`. O avanço lê a borda, não o
+  hold: teclado, toque e A do controle. Segurar na porta não
+  dispara o ofício no campo; segurar no campo não dispara de
+  novo. A guarda continua nível. Na porta o toque não avança no
   down (`setDashOnPress(false)`): o arraste move; o tap abre.
   No campo o down de cima continua o avanço. Sem dash, `attractMove` desloca o corpo, `attractTick` anda a
   chuva, decai squash/flash e emite `live` uma vez, e
@@ -779,6 +785,8 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um toque na porta que abre no down e some o arraste.
 **Não** mais um pedido de dash que morre no lock da guarda.
 **Não** mais um rumble do quadro que toca o último verbo e some o peso.
+**Não** mais um avanço que lê o hold e metralha no cooldown.
+**Não** mais o mesmo aperto da porta que dispara o ofício no campo.
 
 Candidatos, do que ainda dói:
 
@@ -1188,6 +1196,18 @@ Candidatos, do que ainda dói:
   último
   verbo e some
   o peso
+  e o
+  avanço que
+  lê o hold
+  e metralha
+  no cooldown
+  e o
+  mesmo
+  aperto da
+  porta que
+  dispara o
+  ofício no
+  campo
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1211,7 +1231,8 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o rumble
-do quadro toca o verbo mais pesado, não
-o último. `rumbleRole`. Porta fala dash;
-commit fala guarda. Não promove.
+Arquivos quentes da última sessão: o avanço
+é o aperto, não o segurar. Teclado, toque
+e A leem a borda. Porta não vira ofício;
+cooldown não metralha. A guarda continua
+nível. Não promove.
