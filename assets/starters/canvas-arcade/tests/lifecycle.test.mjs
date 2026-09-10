@@ -279,6 +279,14 @@ test("com tela o fim volta à abertura", () => {
   game.dispose();
 });
 
+test("advance ignora a velocidade da partida", () => {
+  const { game } = harness();
+  game.updateSettings({ gameSpeed: 0.5 });
+  game.advance(10);
+  assert.equal(game.observe().tick, 10, "o passo headless não dilata com o relógio");
+  game.dispose();
+});
+
 test("preferências e progresso vivem em chaves separadas", () => {
   const { game, storage } = harness();
   game.updateSettings({ highContrast: true, reducedMotion: true });
@@ -288,6 +296,16 @@ test("preferências e progresso vivem em chaves separadas", () => {
   assert.equal(reopened.settings.highContrast, true, "apagar a partida não apaga a preferência");
   assert.equal(reopened.progress.runs, 0);
   game.dispose();
+  reopened.dispose();
+});
+
+test("a velocidade da partida sobrevive à reabertura", () => {
+  const storage = memoryStorage();
+  const { game } = harness({ storage });
+  game.updateSettings({ gameSpeed: 0.75 });
+  game.dispose();
+  const reopened = createGame({ seed: 5, eventTarget: recordingTarget(), storage });
+  assert.equal(reopened.settings.gameSpeed, 0.75);
   reopened.dispose();
 });
 

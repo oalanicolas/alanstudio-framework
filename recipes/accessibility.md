@@ -32,9 +32,9 @@ tabela de comandos, camada de legenda do diálogo, opções já presentes no men
 Uma opção sem consumidor no código não é uma opção.
 
 `access <projeto>` lê as opções que o código declara (highContrast,
-reducedMotion, captions, remapeamento, uiScale, preset de uma mão e
-assistência). `verified` é sempre falso: chave no fonte não é sessão
-com o modo ativo. O starter `canvas-arcade` expõe `assist` e o remapeamento
+reducedMotion, captions, remapeamento, uiScale, preset de uma mão,
+assistência e velocidade da partida). `verified` é sempre falso: chave no fonte não é sessão
+com o modo ativo. O starter `canvas-arcade` expõe `assist`, `gameSpeed` e o remapeamento
 das seis ações do teclado na página; a tabela `#commands`
 nomeia as teclas vigentes e mantém toque e controle no
 sufixo. Declara em
@@ -49,8 +49,9 @@ Não declare cobertura que não observou. Verificação automática de contraste
 e não substitui uma sessão com o modo ativo. Uma lacuna registrada com motivo vale
 mais que uma lista de recursos não testados.
 
-Implementação concreta: o starter `canvas-arcade` guarda remapeamento e redução de
-movimento em `src/core/settings.js`, herda a preferência do sistema, preenche
+Implementação concreta: o starter `canvas-arcade` guarda remapeamento, redução de
+movimento e velocidade da partida em `src/core/settings.js`. `gameSpeed` dilata o
+acumulador em `src/core/loop.js`; `advance()` headless não passa por ele. Herda a preferência do sistema, preenche
 `{pause}`, `{reset}` e `{bank}` em `copy.json` com as teclas vivas, desenha formas
 distintas além da cor em `src/game/render.js` e mantém legenda equivalente para
 toda informação sonora em `src/game/audio.js`. `npm run contrast` amostra

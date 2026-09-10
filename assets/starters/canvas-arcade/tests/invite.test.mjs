@@ -41,6 +41,7 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.equal(/problema|evidência|hipótese|medição/i.test(strip[1]), false, strip[1]);
   assert.match(html, /id="options-title"/, "o convite não pode some o alcance");
   assert.match(html, /id="remap"/, "o convite não some o remapeamento");
+  assert.match(html, /id="gameSpeed"/, "o convite não some a velocidade da partida");
   assert.doesNotMatch(html, /html\.invite\s+#remap/, "só a tabela some");
 });
 

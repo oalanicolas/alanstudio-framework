@@ -96,6 +96,7 @@ export function createGame(options = {}) {
 
   const loop = createLoop({
     stepMs: 1000 / TICK_HZ,
+    speed: settings.gameSpeed,
     now: options.now,
     schedule: options.schedule,
     cancel: options.cancel,
@@ -320,6 +321,7 @@ export function createGame(options = {}) {
       const previousSpawn = settings.spawnProfile;
       settings = normalizeSettings({ ...settings, ...patch }, environment, settings);
       state.assist = settings.assist;
+      loop.setSpeed(settings.gameSpeed);
       audio.applySettings(settings);
       haptics.applySettings(settings);
       for (const [action, codes] of Object.entries(settings.bindings)) input.rebind(action, codes);

@@ -164,6 +164,15 @@ test("assistência é preferência persistida, não um modo escondido", () => {
   assert.equal(normalizeSettings({ assist: "sim" }).assist, false);
 });
 
+test("velocidade da partida é preferência persistida, não um modo escondido", () => {
+  const settings = normalizeSettings({ gameSpeed: 0.75 });
+  assert.equal(settings.gameSpeed, 0.75);
+  assert.equal(normalizeSettings({ gameSpeed: "lento" }).gameSpeed, 1);
+  assert.equal(normalizeSettings({ gameSpeed: 12 }).gameSpeed, 1);
+  assert.equal(normalizeSettings({ gameSpeed: 0.1 }).gameSpeed, 0.5);
+  assert.equal(defaultSettings({}).gameSpeed, 1);
+});
+
 test("preferências herdam a redução de movimento do sistema", () => {
   assert.equal(defaultSettings({ prefersReducedMotion: true }).reducedMotion, true);
   assert.equal(defaultSettings({}).reducedMotion, false);

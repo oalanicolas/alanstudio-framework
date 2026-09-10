@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.105 — O relógio também cede
+
+A receita pedia velocidade ajustável. Assistência alarga
+alcance e deixa a chuva mais lenta — não o milissegundo.
+`gameSpeed` dilata o acumulador do laço. `advance()`
+continua sendo passo. `verified` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.105 não afirma: o harness não jogou com o
+relógio lento e dilatar o laço não é sessão observada.
+
 ## 0.9.104 — A porta também chove
 
 A abertura era um campo vazio atrás da cortina.

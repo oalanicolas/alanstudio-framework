@@ -2360,6 +2360,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("ui_scale", [item["key"] for item in access["options"]])
         self.assertIn("one_hand", [item["key"] for item in access["options"]])
         self.assertIn("assist", [item["key"] for item in access["options"]])
+        self.assertIn("game_speed", [item["key"] for item in access["options"]])
         self.assertTrue(persist["used"])
         self.assertTrue(persist["versioned"])
         self.assertFalse(persist["unversioned"])

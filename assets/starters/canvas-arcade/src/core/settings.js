@@ -38,6 +38,11 @@ export const ONE_HAND_BINDINGS = {
 // Folga não é loudness aprovado; `heard` continua falso.
 export const DEFAULT_BUSES = { master: 0.7, music: 0.45, sfx: 0.62, ui: 0.55 };
 
+// Relógio da partida, não a queda da chuva. Assistência continua sendo
+// alcance e invuln; este knob só dilata o milissegundo real.
+export const GAME_SPEED_MIN = 0.5;
+export const GAME_SPEED_MAX = 1;
+
 export function defaultSettings(environment = {}) {
   return {
     schema: SETTINGS_SCHEMA,
@@ -45,6 +50,7 @@ export function defaultSettings(environment = {}) {
     highContrast: Boolean(environment.prefersHighContrast),
     captions: true,
     assist: false,
+    gameSpeed: 1,
     oneHand: false,
     uiScale: 1,
     spawnProfile: "spawn",
@@ -88,6 +94,9 @@ export function normalizeSettings(raw, environment = {}, base = defaultSettings(
     highContrast: typeof raw.highContrast === "boolean" ? raw.highContrast : base.highContrast,
     captions: typeof raw.captions === "boolean" ? raw.captions : base.captions,
     assist: typeof raw.assist === "boolean" ? raw.assist : base.assist,
+    gameSpeed: Number.isFinite(raw.gameSpeed)
+      ? Math.min(GAME_SPEED_MAX, Math.max(GAME_SPEED_MIN, raw.gameSpeed))
+      : base.gameSpeed,
     oneHand: typeof raw.oneHand === "boolean" ? raw.oneHand : base.oneHand,
     uiScale: Number.isFinite(raw.uiScale) ? Math.min(2, Math.max(0.75, raw.uiScale)) : base.uiScale,
     spawnProfile:

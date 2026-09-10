@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.104: a porta também chove.
+**HEAD:** ver `git log -1` — vigente 0.9.105: o relógio também cede.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 240 OK.
-`cd assets/starters/canvas-arcade && npm test` → 258 OK.
+`cd assets/starters/canvas-arcade && npm test` → 266 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.101)
+## O que o HEAD já entrega (0.9.91–0.9.105)
 
 | Ver | Salto |
 | --- | --- |
@@ -48,6 +48,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.102 | Com tela, R no fim volta à abertura. Última pontuação na porta. |
 | 0.9.103 | Abrir a porta senta, desloca e fala sem contar o dash. Overlay nomeia a abertura. |
 | 0.9.104 | A porta chove (orbe e estilhaço) sem comer a seed. Reduced trava, não some. |
+| 0.9.105 | `gameSpeed` dilata o relógio. `advance()` não. Assistência ≠ este knob. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -67,7 +68,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | curva com outsider pendente |
 | state_trust | slice | aba fechada real não observada; repetir seed ≠ tick interrompido |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | sete opções + remap; sessão real pendente |
+| accessibility | slice | oito opções + remap + relógio; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui |
 
@@ -117,7 +118,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   **depois** da primeira guarda.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
-  ponta ou tela de título.
+  ponta, tela de título ou `gameSpeed` no disco.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -173,6 +174,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   preenche default se a mesa antiga não tiver.
 - Invite (`?invite=1`) some `#commands`, não `#remap`.
 - `pagehide` flush; hidden pausa.
+- `gameSpeed` (0.5–1, padrão 1) dilata o acumulador do laço.
+  `advance()` ignora. Assistência não é este knob.
 
 ---
 
@@ -198,7 +201,8 @@ Candidatos, do que ainda dói:
    (PRs #2/#3) está obsoleto; recipes ainda falam “tela do primeiro
    ciclo” em alguns sítios — a abertura agora é a porta.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
-   promover. Convite, LAN e stub não fecham.
+   promover. Convite, LAN, stub e `gameSpeed` no disco não fecham.
+   A receita de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
    Não nascer look/chuva first-party novo como craft.
 
@@ -218,7 +222,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `src/main.js` (title), `src/game/rules.js`
-(`beginRun`, `entry`), `src/core/save.js` (`canContinue`),
-`src/game/render.js` (`drawTitle`, ponta), `data/copy.json`,
-`scripts/game.py` (guide/start), `adoption.md`.
+Arquivos quentes da última sessão: `src/core/loop.js` (`setSpeed`),
+`src/core/settings.js` (`gameSpeed`), `src/main.js` (`updateSettings`),
+`index.html` (`#gameSpeed`), `scripts/game.py` (`A11Y_OPTIONS`),
+`docs/access.md`, `adoption.md`.

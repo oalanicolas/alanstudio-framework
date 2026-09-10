@@ -326,6 +326,26 @@ test("o overlay nomeia o controle quando ele falou por último", () => {
   game.dispose();
 });
 
+test("a velocidade da partida dilata o relógio, não o passo", () => {
+  const step = 1000 / 60;
+  const slow = shell();
+  slow.game.updateSettings({ gameSpeed: 0.5 });
+  slow.game.start();
+  slow.frame();
+  slow.frame(step);
+  assert.equal(slow.game.observe().tick, 0, "meio passo de parede não vira tick");
+  slow.frame(step);
+  assert.equal(slow.game.observe().tick, 1);
+  slow.game.dispose();
+
+  const full = shell();
+  full.game.start();
+  full.frame();
+  full.frame(step);
+  assert.equal(full.game.observe().tick, 1, "relógio cheio anda um tick no passo");
+  full.game.dispose();
+});
+
 test("dispose para de responder ao teclado", () => {
   const { game, press, frame } = shell();
   game.start();
