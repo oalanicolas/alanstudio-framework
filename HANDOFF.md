@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.333: no fim a região viva nomeia a mesa e o look. Não promove `verified`.
+**HEAD:** ver `git log -1` — vigente 0.9.334: sidecar sem os três campos não declara. Não promove `granted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.333):** `python3 -m unittest discover -s tests` → 330.
+**Testes no HEAD (0.9.334):** `python3 -m unittest discover -s tests` → 331.
 `cd assets/starters/canvas-arcade && npm test` → 504.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.333)
+## O que o HEAD já entrega (0.9.91–0.9.334)
 
 | Ver | Salto |
 | --- | --- |
@@ -277,6 +277,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.331 | O `feel` nomeia o rumble que a tabela já lista. As constantes já entravam; o scope e o `-h` calavam o pulso. Não promove `felt`. |
 | 0.9.332 | O `sem destino` nomeia o `start --idea` que o README já imprime. A recusa explicava `--idea` e calava o comando. Nomear não cria. |
 | 0.9.333 | No fim a região viva nomeia a mesa e o look que a partida já vestiu. O last-run já gravava; o live só dizia o placar. Spawn e normal somem. Não promove `verified`. |
+| 0.9.334 | O sidecar sem origem, autor e licença não declara. O JSON já exigia os três campos; o arquivo ao lado declarava só por existir. CREDITS.md pela menção continua. Não promove `granted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -331,9 +332,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   houver `note`). Depois de um `note`, `playable.unplayed` some e `next`
   pode ser `cycle.craft` (par primeiro).
 - Recibo otimista ainda passa em `origins` e `feel` de propósito.
-  JSON incompleto (sem origem, autor e licença) não declara; menção
-  em CREDITS e sidecar ao lado do arquivo ainda declaram. Os três
-  campos no JSON não validam a licença.
+  JSON incompleto (sem origem, autor e licença) não declara; sidecar
+  sem os três rótulos também não. Menção em CREDITS.md ainda declara.
+  Os três campos não validam a licença.
 - **Não só adicionar mais um script de medição** se o salto alinhado
   for feel visível/audível, ferramenta de outsider, superfície de
   entrada, auditoria original (item 1) ou facilidade ideia→jogo.
@@ -1260,8 +1261,12 @@ Candidatos, do que ainda dói:
    salto). O `feel`
    já nomeia o rumble — não inventar chave `haptics` no
    recibo (irmão, não o próximo salto).    `origins --declare`
-   escreve o sidecar. Recibo não é
-   licença. O `sem destino` do
+   escreve o sidecar. Sidecar sem
+   os três rótulos não declara.
+   Recibo não é
+   licença. CREDITS.md pela menção
+   ainda declara (irmão, não o
+   próximo salto). O `sem destino` do
    `start` e do `guide` na raiz
    nomeia o `start --idea` que o
    README já imprime. Nomear não
@@ -2281,6 +2286,13 @@ Candidatos, do que ainda dói:
   look
   do
   fim
+  e um
+  sidecar
+  que
+  declara
+  só
+  por
+  existir
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2304,11 +2316,13 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: no
-fim a região viva nomeia a mesa e o
-look que o last-run já gravava. O
-live só dizia o placar. Spawn e
-normal somem. Não promove `verified`.
+Arquivos quentes da última sessão: o
+sidecar sem origem, autor e licença
+não declara. O JSON já exigia os
+três campos; o arquivo ao lado
+declarava só por existir. CREDITS.md
+pela menção continua. Não promove
+`granted`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2377,3 +2391,4 @@ A família região viva que cala a mesa e o look da porta está saturada.
 A família feel que cala o rumble que a tabela já lista está saturada.
 A família sem destino que cala o start do README está saturada.
 A família região viva que cala a mesa e o look do fim está saturada.
+A família sidecar que declara só por existir está saturada.

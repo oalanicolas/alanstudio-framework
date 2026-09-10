@@ -2221,7 +2221,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("then", report)
         self.assertIn("Não consulta titular", report["scope"])
         self.assertIn("JSON sem os três campos não declara", report["rule"])
+        self.assertIn("Sidecar sem origem, autor e licença também não", report["rule"])
         self.assertIn("JSON sem origem, autor e licença", report["scope"])
+        self.assertIn("Sidecar sem os três rótulos também não", report["scope"])
 
     def test_origins_accepts_a_receipt_without_calling_it_a_valid_license(self):
         asset = self.project / "audio" / "jump.wav"
@@ -2303,11 +2305,48 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         asset.parent.mkdir()
         asset.write_bytes(b"OTTO")
         (self.project / "fonts" / "display.credits.txt").write_text(
-            "SIL Open Font License — Ana, 2026-09-09\n", encoding="utf-8",
+            "display.ttf — origem: fonte própria, 2026-09-09.\n"
+            "Autor: Ana. Licença: SIL Open Font License.\n",
+            encoding="utf-8",
         )
         report = game.origins_reading(self.project)
         self.assertEqual(report["undeclared"], [])
         self.assertEqual(report["declared"], ["fonts/display.ttf"])
+
+    def test_origins_does_not_declare_a_sidecar_that_omits_origin(self):
+        # O JSON já exigia os três campos. O sidecar ao lado
+        # declarava só por existir. Nome no disco não é licença.
+        asset = self.project / "fonts" / "display.ttf"
+        asset.parent.mkdir()
+        asset.write_bytes(b"OTTO")
+        incomplete = "SIL Open Font License — Ana, 2026-09-09\n"
+        (self.project / "fonts" / "display.credits.txt").write_text(
+            incomplete, encoding="utf-8",
+        )
+        report = game.origins_reading(self.project)
+        self.assertEqual(report["undeclared"], ["fonts/display.ttf"])
+        self.assertEqual(report["declared"], [])
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertTrue(
+            any(item.get("reason") == "incomplete_sidecar" for item in report["problems"])
+        )
+        empty = self.project / "audio" / "jump.wav"
+        empty.parent.mkdir()
+        empty.write_bytes(b"RIFF")
+        (self.project / "audio" / "jump.credits.txt").write_text("", encoding="utf-8")
+        vacant = game.origins_reading(self.project)
+        self.assertIn("audio/jump.wav", vacant["undeclared"])
+        self.assertNotIn("audio/jump.wav", vacant["declared"])
+        filled = game.origins_declare(
+            self.project, "fonts/display.ttf",
+            "fonte própria", "Ana", "SIL Open Font License",
+        )
+        self.assertEqual(filled["declared"], "fonts/display.ttf")
+        self.assertFalse(filled["granted"])
+        after = game.origins_reading(self.project)
+        self.assertNotIn("fonts/display.ttf", after["undeclared"])
+        self.assertIn("fonts/display.ttf", after["declared"])
 
     def test_credits_mentioning_the_path_covers_the_file(self):
         asset = self.project / "models" / "tree.glb"

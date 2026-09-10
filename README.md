@@ -351,7 +351,8 @@ python3 scripts/game.py origins /caminho/do/laboratorio/meu-jogo --declare textu
 
 Lista arquivos de mídia embarcados (som, imagem, fonte, vídeo, modelo) e cruza
 com recibos: `sources.json`, `licenses.json`, `CREDITS` e sidecar
-`.credits.txt`. JSON sem origem, autor e licença não declara. Entra em
+`.credits.txt`. JSON sem origem, autor e licença não declara. Sidecar sem
+os três rótulos também não. Entra em
 `textures/`, `fonts/`, `models/` e `videos/` — pastas
 que o `scan` de documentos ignora de propósito. Nomeia `form` e `fields`
 (origem, autor, licença). `--declare` escreve o sidecar. Sem `then`.

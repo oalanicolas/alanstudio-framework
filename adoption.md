@@ -3,6 +3,50 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.334 — o sidecar sem os três campos não declara
+
+O
+JSON
+já
+exigia
+origem,
+autor
+e
+licença.
+O
+arquivo
+ao
+lado
+declarava
+só
+por
+existir.
+Inclusive
+vazio.
+Agora
+o
+sidecar
+pede
+os
+três
+rótulos.
+CREDITS.md
+pela
+menção
+continua.
+Não
+promove
+`granted`.
+
+O que 0.9.334 não afirma:
+recibo
+no
+disco
+não
+é
+licença
+válida.
+
 ## 0.9.333 — no fim a região viva nomeia a mesa e o look
 
 O

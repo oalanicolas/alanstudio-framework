@@ -237,7 +237,7 @@ def credits_text(name: str, intent: str | None = None) -> str:
     kind = "variante para evitar fadiga" if name.endswith("-b") else "design original"
     shift = f" Intenção {intent}: {INTENTS[intent]}." if intent and intent in INTENTS else ""
     return (
-        f"{name}.wav — {kind} do starter Canvas Arcade, 2026-09-09.\n"
+        f"{name}.wav — origem: {kind} do starter Canvas Arcade, 2026-09-09.\n"
         "Gerado por tools/design-sfx.py. Autor: Alan Studios Framework. "
         "Licença: CC0-1.0. Sem samples de terceiros, sem jsfxr, sem Kenney, "
         f"sem chiptune.{shift}\n"

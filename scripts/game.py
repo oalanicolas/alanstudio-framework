@@ -2672,6 +2672,27 @@ def origin_record_complete(record):
     return all(nonempty(sfx_catalog.receipt_field(record, field)) for field in ORIGIN_FIELDS)
 
 
+def sidecar_declares(text):
+    # O JSON já exigia os três campos. O sidecar ao lado
+    # declarava só por existir — inclusive vazio. Nome no
+    # disco não é licença.
+    if not isinstance(text, str) or not text.strip():
+        return False
+    folded = text.casefold()
+    return bool(
+        re.search(r"\b(?:origem|origin)\s*:", folded)
+        and re.search(r"\b(?:autor|author)\s*:", folded)
+        and re.search(r"\b(?:licen[cç]a|license)\s*:", folded)
+    )
+
+
+def sidecar_text(path):
+    try:
+        return path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+
+
 def origins_reading(project, max_entries=2000):
     project = Path(project).resolve()
     embedded, receipts, problems = [], [], []
@@ -2757,14 +2778,27 @@ def origins_reading(project, max_entries=2000):
                 sidecar = path.with_name(path.name + ".credits.txt")
                 alt = path.with_suffix(path.suffix + ".credits.txt")
                 near = path.with_name(path.stem + ".credits.txt")
-                if any(candidate.is_file() and not candidate.is_symlink()
-                       for candidate in (sidecar, alt, near)):
+                for candidate in (sidecar, alt, near):
+                    if not candidate.is_file() or candidate.is_symlink():
+                        continue
+                    text = sidecar_text(candidate)
+                    if text is None or not sidecar_declares(text):
+                        continue
                     remember(relative)
                     remember(path.name)
+                    break
             if stem in ORIGIN_RECEIPTS or stem.endswith(".credits.txt"):
                 receipts.append(relative)
                 if suffix == ".json":
                     ingest_json(path, relative)
+                elif stem.endswith(".credits.txt") and stem not in ORIGIN_RECEIPTS:
+                    text = sidecar_text(path)
+                    if text is None:
+                        problems.append({"source": relative, "reason": "unreadable_receipt"})
+                    elif not sidecar_declares(text):
+                        problems.append({"source": relative, "reason": "incomplete_sidecar"})
+                    else:
+                        ingest_text(path, relative)
                 else:
                     ingest_text(path, relative)
 
@@ -2799,14 +2833,16 @@ def origins_reading(project, max_entries=2000):
         "rule": (
             "Arquivo embarcado sem recibo de origem conta como licença desconhecida. "
             "O recibo declara origem, autor e condição de uso; não prova que a condição vale. "
-            "JSON sem os três campos não declara."
+            "JSON sem os três campos não declara. "
+            "Sidecar sem origem, autor e licença também não."
         ),
         "scope": (
             "Percorre o projeto, lista arquivos de mídia embarcados e cruza com recibos "
             "(sources.json, licenses.json, CREDITS, sidecar `.credits.txt`). Relata ausência "
             "de recibo, recibo ilegível e declaração `deliver.licensing` = `met` que o disco "
             "contradiz. JSON sem origem, autor e licença — no topo ou em `sources[0]` — "
-            "não cobre o arquivo. `form` aponta o esqueleto; `fields` lista origem, autor e licença. "
+            "não cobre o arquivo. Sidecar sem os três rótulos também não. "
+            "`form` aponta o esqueleto; `fields` lista origem, autor e licença. "
             "`--declare` escreve o sidecar. Sem `then`. Recibo no disco não é licença "
             "válida. Não consulta titular, não interpreta texto de licença, não distingue "
             "licença válida de inválida e **não concede passagem**."
@@ -2840,7 +2876,11 @@ def origins_declare(project, relative, origin, author, license_name):
         raise ValueError("arquivo já tem recibo ou não está sem origem")
     sidecar = path.with_name(path.name + ".credits.txt")
     if sidecar.exists() or sidecar.is_symlink():
-        raise ValueError("sidecar já existe")
+        if sidecar.is_symlink() or not sidecar.is_file():
+            raise ValueError("sidecar já existe")
+        existing = sidecar_text(sidecar)
+        if existing is not None and sidecar_declares(existing):
+            raise ValueError("sidecar já existe")
     sidecar.write_text(
         f"{path.name} — origem: {origin.strip()}.\n"
         f"Autor: {author.strip()}. Licença: {license_name.strip()}.\n",

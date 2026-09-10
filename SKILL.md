@@ -169,6 +169,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    recibo de origem. Nomeia `form` e `fields`. `--declare` escreve o sidecar
    `.credits.txt`. Sem `then`. Não valida licença. Recibo no disco não é
    licença válida. JSON sem origem, autor e licença não declara.
+   Sidecar sem os três rótulos também não.
    Arquivo sem recibo conta como licença
    desconhecida, e `next` aponta `--declare` antes de seguir.
    **`craft <projeto>`** lê checklists de ofício (paleta, perdão, percentil,
