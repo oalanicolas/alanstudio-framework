@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.96 — O start também nomeia a pasta
+
+`guide --idea` já nomeava a pasta e não criava. `start`
+ainda pedia o caminho. Sem destino, `--idea` nomeia e cria
+— ao lado do framework se o start corre de dentro desta
+árvore. `guide --idea` continua só no comando. O harness
+não abre o jogo. Só `release` fica no piso.
+
+O que 0.9.96 não afirma: o harness não jogou e a pasta
+nomeada não é o ciclo observado.
+
 ## 0.9.95 — O segundo ciclo também nasce o par
 
 Look `noite` e chuva `densa` não viravam `?mood=`: os nomes

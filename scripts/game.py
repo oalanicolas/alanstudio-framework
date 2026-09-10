@@ -3216,7 +3216,12 @@ def init(destination, starter, title=None, documents=True, idea=None):
     }
 
 
-def start_project(destination, starter=None, title=None, idea=None, documents=True):
+def start_project(destination=None, starter=None, title=None, idea=None, documents=True, cwd=None):
+    named = destination is None
+    if destination is None:
+        destination = start_destination_from_idea(idea, cwd=cwd)
+    else:
+        destination = Path(destination)
     available = starters()
     chosen = starter or (available[0] if available else None)
     created = False
@@ -3257,11 +3262,16 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
         "next": proposal,
         "then": then,
         "noted": noted,
+        "named": named,
+        "suggest": str(suggested_start_target(idea, cwd=cwd)) if named else None,
         "prompt": cycle_prompt(play, then, cycle, noted),
         "executed": False,
         "scope": (
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
-            "aponta o comando que abre o jogo. Se o starter declara o verbo e "
+            "aponta o comando que abre o jogo. Sem caminho, `--idea` nomeia "
+            "a pasta — ao lado do framework se o start corre de dentro desta "
+            "árvore — e cria. `guide --idea` continua só no comando, não no "
+            "disco. Se o starter declara o verbo e "
             "as teclas, o prompt as nomeia — inclusive o cluster de uma mão, "
             "o toque, o controle e as queries de look, chuva, par e convite, se o starter as declara. Não "
             "executa o jogo. Depois de uma "
@@ -3319,6 +3329,16 @@ def suggested_start_target(idea, cwd=None, framework=None):
     if here == root or here.is_relative_to(root):
         return Path("..") / slug
     return Path(slug)
+
+
+def start_destination_from_idea(idea, cwd=None, framework=None):
+    target = suggested_start_target(idea, cwd=cwd, framework=framework)
+    if target is None:
+        raise ValueError(
+            "sem destino: passe o caminho ou --idea com uma frase que nomeie a pasta"
+        )
+    here = Path(cwd or Path.cwd()).resolve()
+    return (here / target).resolve()
 
 
 def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
@@ -4317,10 +4337,10 @@ def main():
         "start", parents=[common],
         help="caminho ideia→ciclo: cria se o destino estiver livre e aponta o comando que abre o jogo",
     )
-    begin.add_argument("project")
+    begin.add_argument("project", nargs="?", default=None)
     begin.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
     begin.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
-    begin.add_argument("--idea", help="frase da fantasia; entra no brief e na tela do primeiro ciclo, sem mudar o verbo")
+    begin.add_argument("--idea", help="frase da fantasia; entra no brief e na tela do primeiro ciclo, sem mudar o verbo. Sem caminho, nomeia e cria a pasta")
     begin.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
     guided = commands.add_parser(
         "guide",
@@ -4489,7 +4509,8 @@ def main():
                 raise ValueError("nenhum starter disponível neste repositório")
             emit(init(resolve(args.project, root), args.starter, args.title, not args.no_docs, args.idea))
         elif args.action == "start":
-            emit(start_project(resolve(args.project, root), args.starter, args.title, args.idea, not args.no_docs))
+            dest = None if args.project is None else resolve(args.project, root)
+            emit(start_project(dest, args.starter, args.title, args.idea, not args.no_docs))
         elif args.action == "guide":
             dest = here_project(args.project, root)
             report = guide_cycle(dest, args.starter, args.idea)

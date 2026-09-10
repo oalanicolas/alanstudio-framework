@@ -2766,6 +2766,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.start_project(destination, "canvas-arcade", idea="guardar a corrente ou continuar")
         self.assertTrue(report["created"])
         self.assertFalse(report["executed"])
+        self.assertFalse(report["named"])
+        self.assertIsNone(report["suggest"])
         self.assertTrue((destination / "index.html").is_file())
         self.assertIn("guardar a corrente ou continuar", (destination / "docs/brief.md").read_text(encoding="utf-8"))
         self.assertIn("[preencher]", (destination / "docs/brief.md").read_text(encoding="utf-8"))
@@ -2970,6 +2972,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(mapped["suggest"], payload["suggest"])
         self.assertFalse(mapped["executed"])
         self.assertFalse(planted.exists())
+
+    def test_start_names_the_folder_from_the_idea_and_writes_it(self):
+        mapped = game.guide_cycle(
+            None, "canvas-arcade", idea="atravessar estilhaços", cwd=self.root,
+        )
+        self.assertEqual(mapped["suggest"], "atravessar-estilhacos")
+        self.assertFalse((self.root / "atravessar-estilhacos").exists())
+        with self.assertRaises(ValueError):
+            game.start_project(None, "canvas-arcade", cwd=self.root)
+        with self.assertRaises(ValueError):
+            game.start_project(None, "canvas-arcade", idea="!!!", cwd=self.root)
+        report = game.start_project(
+            None, "canvas-arcade", idea="atravessar estilhaços", cwd=self.root,
+        )
+        destination = self.root / "atravessar-estilhacos"
+        self.assertTrue(report["named"])
+        self.assertEqual(report["suggest"], "atravessar-estilhacos")
+        self.assertTrue(report["created"])
+        self.assertFalse(report["executed"])
+        self.assertEqual(Path(report["project"]), destination)
+        self.assertTrue((destination / "index.html").is_file())
+        self.assertIn("atravessar estilhaços", (destination / "docs/brief.md").read_text(encoding="utf-8"))
+        copy = json.loads((destination / "data/copy.json").read_text(encoding="utf-8"))
+        self.assertEqual(copy["fantasy"], "atravessar estilhaços")
+        self.assertIn("serve", report["play"])
+        cli = subprocess.run(
+            [sys.executable, str(SCRIPT), "start", "--idea", "guardar a corrente"],
+            capture_output=True, text=True, cwd=str(self.root),
+        )
+        self.assertEqual(cli.returncode, 0, cli.stderr)
+        payload = json.loads(cli.stdout)
+        self.assertTrue(payload["named"])
+        self.assertEqual(payload["suggest"], "guardar-a-corrente")
+        self.assertTrue((self.root / "guardar-a-corrente" / "index.html").is_file())
+        self.assertFalse(payload["executed"])
+        missing = subprocess.run(
+            [sys.executable, str(SCRIPT), "start"],
+            capture_output=True, text=True, cwd=str(self.root),
+        )
+        self.assertNotEqual(missing.returncode, 0)
+        self.assertIn("sem destino", missing.stderr)
 
     def test_guide_names_craft_from_the_starter_before_the_project_exists(self):
         report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")

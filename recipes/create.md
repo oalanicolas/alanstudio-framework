@@ -46,9 +46,11 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    reutilizável.    Sem destino no disco, o candidato local é um starter.
    `python3 scripts/game.py --idea "<fantasia>"` mapeia o start com a
    pasta nomeada pela frase (ao lado do framework se o mapa corre de
-   dentro desta árvore). `start <destino> --starter <starter> --idea
-   "<fantasia>"` monta o projeto, põe a frase na tela do primeiro ciclo
-   e devolve o comando que abre o jogo. A frase não muda o verbo.
+   dentro desta árvore) e não cria a pasta. `start --idea "<fantasia>"`
+   (ou `start <destino> --starter <starter> --idea "<fantasia>"`) monta
+   o projeto — sem caminho, a frase nomeia e cria a pasta —, põe a
+   frase na tela do primeiro ciclo e devolve o comando que abre o jogo.
+   A frase não muda o verbo.
    `init` faz a mesma cópia sem apontar o ciclo.
    O projeto nasce com laço de passo fixo, save versionado, entrada
    abstraída e testes que já rodam.

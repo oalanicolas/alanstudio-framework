@@ -15,7 +15,9 @@ jogar → note sem executar. `open` é o comando de agora; `prompt` o
 nomeia. Sem destino, `--idea` nomeia a pasta no
 comando do start — ao lado do framework se o mapa corre de dentro
 desta árvore — e não grava a frase. Sem destino, se o diretório atual é um
-jogo fora do framework, o mapa usa esse caminho. `start` cria o projeto e devolve `play` +
+jogo fora do framework, o mapa usa esse caminho. `start --idea` sem
+caminho nomeia e cria a pasta — ao lado do framework se corre de
+dentro desta árvore. `guide --idea` continua só no comando. `start` devolve `play` +
 `then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo,
 as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look, chuva, par e convite. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia par, look, chuva e voz; se declara `session`, `then` a aponta. Depois de um recibo, o prompt e o `next` (`cycle.craft`) apontam o ofício. O autor do `note` é sugestão do git ou do ambiente, não quem jogou. Nomear o ofício não pinta. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
 `next` ainda propõe `playable.unplayed` se você estiver perdido. O
