@@ -157,6 +157,9 @@ export function seedQuery(seed, spawn, look, speed) {
 }
 
 export function listenBanner(port, interfaces = networkInterfaces(), env = process.env, root = ROOT) {
+  // O ciclo já nomeia o relógio. Sem isto o banner ensinava
+  // look, chuva e par e calava a query que o jogo já lê.
+  // Nomear não observa.
   const origins = advertisedOrigins(port, interfaces, env);
   const local = origins[0];
   const seed = lastRunSeed(root);
@@ -170,6 +173,7 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
     `Look: ${local}/?look=dusk  ${local}/?look=calm`,
     `Chuva: ${local}/?spawn=dusk  ${local}/?spawn=calm`,
     `Par: ${local}/?mood=calm  ${local}/?mood=dusk`,
+    `Relógio: ${local}/?speed=0.75`,
     `Convite: ${local}${invite}`,
     `Seed: ${local}${seedPath}`,
     "Candidato: a partida grava docs/playtest/last-run.json",

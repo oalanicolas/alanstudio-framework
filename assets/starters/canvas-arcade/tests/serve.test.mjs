@@ -207,6 +207,7 @@ test("o serve anuncia a rede sem fingir que alguém de fora jogou", () => {
   assert.equal(listenHost({}), undefined);
   const banner = listenBanner(8080, interfaces, {});
   assert.match(banner, /Par: http:\/\/localhost:8080\/\?mood=calm  http:\/\/localhost:8080\/\?mood=dusk/);
+  assert.match(banner, /Relógio: http:\/\/localhost:8080\/\?speed=0\.75/);
   assert.match(banner, /Convite: http:\/\/localhost:8080\/\?invite=1/);
   assert.match(banner, /Seed: http:\/\/localhost:8080\/\?seed=7/);
   assert.match(banner, /Candidato: a partida grava docs\/playtest\/last-run\.json/);
@@ -219,6 +220,16 @@ test("o serve anuncia a rede sem fingir que alguém de fora jogou", () => {
   const local = listenBanner(8080, { lo: [{ address: "127.0.0.1", family: "IPv4", internal: true }] }, {});
   assert.doesNotMatch(local, /Rede:/);
   assert.doesNotMatch(local, /Árvore exportada/);
+});
+
+test("o banner do serve nomeia o relógio que o jogo já lê", () => {
+  const banner = listenBanner(8080, { lo: [{ address: "127.0.0.1", family: "IPv4", internal: true }] }, {});
+  assert.match(banner, /Relógio: http:\/\/localhost:8080\/\?speed=0\.75/);
+  assert.match(banner, /Par: http:\/\/localhost:8080\/\?mood=calm/);
+  const relogio = banner.indexOf("Relógio:");
+  const convite = banner.indexOf("Convite:");
+  assert.ok(relogio >= 0 && convite > relogio);
+  assert.doesNotMatch(banner, /aprovado|verified|LUFS|-14|4\.5/);
 });
 
 test("o serve junta convite e seed do last-run sem fingir quem jogou", async () => {

@@ -4455,6 +4455,18 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", line)
         self.assertNotIn("verified", line)
 
+    def test_serve_banner_names_the_clock_the_game_already_reads(self):
+        destination = self.root / "banner-nomeia-relogio"
+        game.init(destination, "canvas-arcade")
+        serve = (destination / "tools/serve.mjs").read_text(encoding="utf-8")
+        readme = (destination / "README.md").read_text(encoding="utf-8")
+        self.assertIn("Relógio:", serve)
+        self.assertIn("?speed=0.75", serve)
+        self.assertIn("relógio", readme)
+        self.assertIn("?speed=0.75", readme)
+        self.assertNotIn("aprovado", serve.split("listenBanner", 1)[-1][:800])
+        self.assertNotIn("verified", serve.split("listenBanner", 1)[-1][:800])
+
     def test_start_creates_the_project_and_points_at_serve_without_playing(self):
         destination = self.root / "ideia ao ciclo"
         report = game.start_project(destination, "canvas-arcade", idea="guardar a corrente ou continuar")

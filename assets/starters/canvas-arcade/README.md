@@ -14,14 +14,15 @@ desde o início.
 Requer Node 20 ou mais recente. Não há dependências a instalar.
 
 ```sh
-npm run serve      # serve em http://localhost:8080; no terminal, tenta abrir o navegador
+npm run serve      # serve em http://localhost:8080; o banner nomeia look, chuva, par e relógio; no terminal, tenta abrir o navegador
 ```
 
 `?look=dusk` ou `?look=calm` troca a paleta (campo e a página), `?spawn=dusk` ou
 `?spawn=calm` troca a chuva e `?mood=calm` ou `?mood=dusk` troca o par.
+`?speed=0.75` dilata o relógio da partida; 1 e fora da faixa somem.
 `?seed=<n>` abre essa partida e ignora o hold.
 `?invite=1` some a tabela; com last-run, o endereço junta a seed e,
-se a partida nomeou a chuva ou o look, a mesa e a paleta.
+se a partida nomeou a chuva, o look ou o relógio, a mesa, a paleta e o knob.
 A página nomeia o mesmo par no select. Look ou chuva explícitos vencem o mood no
 próprio eixo. Trocar a chuva do par recomeça a partida; trocar só o look não. O `start` do harness nomeia as queries quando o manifesto
 as declara. Depois de um `note`, `start` e `next` apontam
