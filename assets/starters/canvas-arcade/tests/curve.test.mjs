@@ -112,6 +112,9 @@ test("a partida real alimenta a curva pelos eventos do tick", () => {
   const trace = createTrace();
   state.chain = 3;
   advance(state, { move: 0, dash: false, bank: true });
+  for (let step = 0; step < CONFIG.bank.windupTicks; step += 1) {
+    advance(state, { move: 0, dash: false, bank: false });
+  }
   traceEvents(trace, state.events, state.tick);
   assert.equal(trace.curve.never_banked, false);
   assert.equal(trace.curve.first_bank_tick, state.tick);

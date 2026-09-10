@@ -70,7 +70,10 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    do impacto. Sem ela, a ação chega “de graça” ou atrasada demais.
    No starter o avanço senta (`squashCoil`) dois ticks antes de alongar;
    o término emite `land` (squash, câmera, puff, rumble e voz).
-   Pose e arquivo no disco não são peso percebido.
+   Guardar uma corrente que já existe senta os mesmos dois ticks antes
+   de converter; coleta e guarda no mesmo quadro continuam na hora —
+   o contato já foi a antecipação. Pose e arquivo no disco não são
+   peso percebido.
 4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
 5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.

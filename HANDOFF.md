@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.131: o estilhaço dusk também deixa o eixo quente.
+**HEAD:** ver `git log -1` — vigente 0.9.132: guardar também senta antes de converter.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 252 OK.
-`cd assets/starters/canvas-arcade && npm test` → 297 OK.
+`cd assets/starters/canvas-arcade && npm test` → 299 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.131)
+## O que o HEAD já entrega (0.9.91–0.9.132)
 
 | Ver | Salto |
 | --- | --- |
@@ -75,6 +75,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.129 | `colorblind` fixa orbe azul e estilhaço laranja sem trocar o campo do look. Não é look. Alto contraste vence. `access` relata a chave. `verified` continua falso. |
 | 0.9.130 | Com chuva ou look no last-run, `then.seed` junta `&spawn=` e `&look=`. `seed_href`, o banner do serve e o prompt usam o mesmo endereço. Sem mesa ou paleta nomeada, continua `/?seed=<n>`. `then.seed` não é ofício. `observed` continua falso. |
 | 0.9.131 | O look dusk pinta orbe âmbar e estilhaço índigo. O campo continua quente. `colorblind` ainda troca a chuva pelo par do padrão. `consistent` e `verified` continuam falsos. |
+| 0.9.132 | Guardar uma corrente que já existe senta dois ticks (`bank.windupTicks`) antes de converter. Coleta e guarda no mesmo quadro continuam na hora. `felt` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -147,7 +148,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, chuva da porta, `gameSpeed` no disco, `hold` no stub,
-  coil/windup no disco, copiar ou gravar o achado, last-run,
+  coil/windup no disco, `bank.windupTicks` no disco, copiar ou gravar o achado, last-run,
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
   `then.invite`, `invite_href`, copiar o endereço do convite,
   levar a chuva ou o look na URL, tinta estável no disco,
@@ -229,9 +230,12 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   (`options.seed` ou `?seed=`) ignora o hold. Reset e `recordRun`
   limpam. Não chamar de Continuar. `?seed=` não é sessão observada.
   Não promover `state_trust`. `hold.player` leva `dashWindup`.
+  `hold` leva `bankWindup`.
 - Avanço na partida: `dashWindupTicks` (2) senta com `squashCoil`
   antes de `fireDash`. A porta (`beginRun`) continua imediata.
-  Não promover `feel`.
+  Guardar corrente já existente: `bank.windupTicks` (2) senta
+  antes de converter. Coleta e guarda no mesmo quadro continuam
+  na hora. Não promover `feel`.
 - Coach: fantasy → move → dash → miss → touch/pad → collect → null após
   1ª guarda. `coachHint` some se `phase !== "playing"`.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
@@ -323,6 +327,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `data/palettes.json` (`dusk.shard`).
-O campo dusk continua quente; o estilhaço saiu do rosa. Hex no disco
-não é comparação em movimento nem sessão com o modo ativo.
+Arquivos quentes da última sessão: `bank.windupTicks` / `commitBank`.
+Coleta no mesmo quadro continua imediata. Pose no disco não é peso
+percebido. Não promover `feel`.

@@ -361,7 +361,15 @@ export function createRenderer(canvas, options = {}) {
         target.strokeRect(left - 2, top - 2, width + 4, height + 4);
       }
     }
-    if (state.bankLock > 0) {
+    if ((state.bankWindup ?? 0) > 0) {
+      const total = CONFIG.bank.windupTicks || 1;
+      const fill = Math.max(0, Math.min(1, (total - state.bankWindup + 1) / total));
+      target.strokeStyle = palette.chain;
+      target.lineWidth = 1;
+      target.beginPath();
+      target.arc(player.x, PLAYER_Y, 11, 0, Math.PI * 2 * fill);
+      target.stroke();
+    } else if (state.bankLock > 0) {
       target.strokeStyle = palette.chain;
       target.lineWidth = 1;
       target.beginPath();

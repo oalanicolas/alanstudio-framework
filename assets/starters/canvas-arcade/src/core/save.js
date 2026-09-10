@@ -162,6 +162,7 @@ export function captureHold(state) {
     camera: { x: finiteNumber(camera.x), y: finiteNumber(camera.y) },
     bankLock: integer(state.bankLock),
     bankBuffer: integer(state.bankBuffer),
+    bankWindup: integer(state.bankWindup),
     spawnTimer: integer(state.spawnTimer),
     recoverUntil: integer(state.recoverUntil),
     nextId: integer(state.nextId, 1),

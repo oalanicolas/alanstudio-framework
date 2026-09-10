@@ -657,6 +657,9 @@ test("a guarda marca o campo sem inventar faixa no HUD", () => {
   const state = createState(2);
   state.chain = 3;
   advance(state, { move: 0, dash: false, bank: true });
+  for (let step = 0; step < CONFIG.bank.windupTicks; step += 1) {
+    advance(state, { move: 0, dash: false, bank: false });
+  }
   const drawn = paint(state);
   const edges = drawn.edges.filter((edge) => edge.style === PALETTES.normal.chain);
   assert.ok(edges.length >= 1, "a guarda precisa contornar o campo");
@@ -679,6 +682,17 @@ test("a guarda marca o campo sem inventar faixa no HUD", () => {
     0,
     "depois da folga o campo não inventa contorno",
   );
+});
+
+test("a antecipação de guardar contorna o corpo sem inventar faixa no HUD", () => {
+  const state = createState(2);
+  state.chain = 3;
+  const idle = paint(state);
+  advance(state, { move: 0, dash: false, bank: true });
+  assert.equal(state.bankWindup, CONFIG.bank.windupTicks);
+  const drawn = paint(state);
+  assert.ok(drawn.arcs > idle.arcs, "sentar precisa marcar o corpo");
+  assert.equal(hudBands(drawn), 0, "a antecipação não é faixa no HUD");
 });
 
 test("a prática marca o campo sem inventar faixa no HUD", () => {

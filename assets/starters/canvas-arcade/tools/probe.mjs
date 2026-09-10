@@ -33,7 +33,7 @@ for (let run = 0; run < runs; run += 1) {
   advance(state, { move: 0, dash: false, bank: true });
   if (state.bankBuffer <= 0) continue;
   lateBanks += 1;
-  for (let step = 0; step < CONFIG.bank.bufferTicks + 4; step += 1) {
+  for (let step = 0; step < CONFIG.bank.bufferTicks + CONFIG.bank.windupTicks + 4; step += 1) {
     advance(state, neutralIntent());
     if (state.events.some((event) => event.type === "bank")) {
       bufferedBanks += 1;

@@ -22,10 +22,40 @@ function dashOut(state, intent = { move: 1, dash: true, bank: false }) {
   return state;
 }
 
-test("guardar converte a corrente ao quadrado e cobra o compromisso", () => {
+function bankOut(state, intent = { move: 0, dash: false, bank: true }) {
+  advance(state, intent);
+  if (state.events.some((event) => event.type === "bank")) return state;
+  for (let step = 0; step < CONFIG.bank.windupTicks; step += 1) {
+    advance(state, { ...intent, bank: false });
+  }
+  return state;
+}
+
+test("guardar senta antes de converter e não dispara no pedido", () => {
+  const fade = CONFIG.feel.squashDecay;
   const state = createState(1);
   state.chain = 4;
   advance(state, { move: 0, dash: false, bank: true });
+  assert.equal(state.stats.banks, 0, "o pedido não é o disparo");
+  assert.equal(state.score, 0);
+  assert.equal(state.chain, 4);
+  assert.equal(state.bankWindup, CONFIG.bank.windupTicks);
+  assert.equal(state.player.squash, CONFIG.feel.squashCoil * fade);
+  assert.equal(state.events.some((event) => event.type === "bank"), false);
+  assert.ok(CONFIG.bank.windupTicks > 0);
+  for (let step = 0; step < CONFIG.bank.windupTicks; step += 1) {
+    advance(state, { move: 0, dash: false, bank: false });
+  }
+  assert.equal(state.score, 16);
+  assert.equal(state.chain, 0);
+  assert.equal(state.stats.banks, 1);
+  assert.ok(state.events.some((event) => event.type === "bank"));
+});
+
+test("guardar converte a corrente ao quadrado e cobra o compromisso", () => {
+  const state = createState(1);
+  state.chain = 4;
+  bankOut(state);
   assert.equal(state.score, 16);
   assert.equal(state.chain, 0);
   assert.equal(state.stats.banks, 1);
@@ -80,7 +110,7 @@ test("sem corrente o erro não inventa pip quebrado; o teto da órbita vale na q
 test("guardar deposita os pips no placar, não some com a aposta", () => {
   const state = createState(1);
   state.chain = 5;
-  advance(state, { move: 0, dash: false, bank: true });
+  bankOut(state);
   const deposits = state.motes.filter((mote) => mote.kind === "deposit");
   assert.equal(deposits.length, 5, "a corrente voa para o placar, não some");
   const aimX = CONFIG.feel.depositAimX;
@@ -132,7 +162,7 @@ test("sem corrente o guardar não inventa depósito; o teto da órbita vale na g
   assert.equal(empty.motes.filter((mote) => mote.kind === "deposit").length, 0);
   const packed = createState(1);
   packed.chain = 12;
-  advance(packed, { move: 0, dash: false, bank: true });
+  bankOut(packed);
   assert.equal(
     packed.motes.filter((mote) => mote.kind === "deposit").length,
     CONFIG.feel.chainPips,
@@ -235,7 +265,7 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
 
   const banked = createState(1);
   banked.chain = 3;
-  advance(banked, { move: 0, dash: false, bank: true });
+  bankOut(banked);
   assert.equal(banked.hitstop, CONFIG.feel.bankHitstopTicks);
   assert.equal(banked.player.squash, CONFIG.feel.squashBank * fade);
   assert.equal(banked.shake, CONFIG.feel.bankShake * tremor);
@@ -328,7 +358,7 @@ test("evento reusado não carrega campo do verbo anterior", () => {
   const state = createState(1);
   state.chain = 4;
   state.spawnTimer = 999;
-  advance(state, { move: 0, dash: false, bank: true });
+  bankOut(state);
   assert.deepEqual(state.events[0], { type: "bank", chain: 4, gain: 16 });
   const before = eventPoolStats();
   while (state.hitstop > 0 || state.bankLock > 0) {
@@ -355,7 +385,7 @@ test("o pedido de guardar sobrevive ao hitstop da coleta", () => {
   assert.equal(state.stats.banks, 0, "não guarda durante o hitstop");
   settle(state);
   let fired = false;
-  for (let index = 0; index < CONFIG.bank.bufferTicks + 2 && !fired; index += 1) {
+  for (let index = 0; index < CONFIG.bank.bufferTicks + CONFIG.bank.windupTicks + 2 && !fired; index += 1) {
     advance(state, neutralIntent());
     fired = state.events.some((event) => event.type === "bank");
   }
@@ -442,7 +472,7 @@ test("guardar abre uma janela de recuperação na chuva", () => {
   state.chain = 2;
   state.spawnTimer = 1;
   assert.equal(recoveringWindow(state), false);
-  advance(state, { move: 0, dash: false, bank: true });
+  bankOut(state);
   assert.ok(state.recoverUntil > state.tick);
   assert.equal(recoveringWindow(state), true);
   assert.ok(recoveryPulse(state).fill > 0.9);
@@ -531,7 +561,7 @@ test("a porta chove a mesa sem comer a seed", () => {
 test("sair da recuperação emite e acende o campo", () => {
   const state = createState(1);
   state.chain = 2;
-  advance(state, { move: 0, dash: false, bank: true });
+  bankOut(state);
   assert.equal(state.events.some((event) => event.type === "stir"), false, "guardar não é o tap da volta");
   const until = state.recoverUntil;
   state.hitstop = 0;
@@ -545,7 +575,7 @@ test("sair da recuperação emite e acende o campo", () => {
 
   const mid = createState(1);
   mid.chain = 2;
-  advance(mid, { move: 0, dash: false, bank: true });
+  bankOut(mid);
   mid.hitstop = 0;
   mid.tick = mid.recoverUntil - 10;
   advance(mid, neutralIntent());
@@ -553,13 +583,14 @@ test("sair da recuperação emite e acende o campo", () => {
 
   const hold = createState(1);
   hold.chain = 2;
-  advance(hold, { move: 0, dash: false, bank: true });
+  bankOut(hold);
   const first = hold.recoverUntil;
   hold.hitstop = 0;
   hold.bankLock = 0;
+  hold.bankWindup = 0;
   hold.tick = first - 1;
   hold.chain = 2;
-  advance(hold, { move: 0, dash: false, bank: true });
+  bankOut(hold);
   assert.ok(hold.recoverUntil > first);
   assert.equal(hold.events.some((event) => event.type === "stir"), false, "alongar a folga não é a volta");
 });

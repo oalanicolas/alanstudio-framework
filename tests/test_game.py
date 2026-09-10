@@ -2292,6 +2292,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("player.invulnTicks", keys)
         self.assertIn("feel.hitHitstopTicks", keys)
         self.assertIn("bank.bufferTicks", keys)
+        self.assertIn("bank.windupTicks", keys)
         self.assertIn("feel.punchDashX", keys)
         self.assertIn("feel.telegraphReach", keys)
         self.assertIn("feel.flashHit", keys)

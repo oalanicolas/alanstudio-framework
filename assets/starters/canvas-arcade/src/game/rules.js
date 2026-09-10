@@ -103,6 +103,7 @@ export const CONFIG = {
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
     bufferTicks: 8, // perdão: pedido cedo ou no hitstop dispara quando a corrente existe
+    windupTicks: 2, // antecipação: o corpo senta antes de converter
   },
   // Assistência não esconde conteúdo: os mesmos orbes, a mesma pontuação.
   // Perdão extra de alcance, chuva mais lenta e graça mais longa.
@@ -363,6 +364,7 @@ export function createState(seed = 1, options = {}) {
     camera: { x: 0, y: 0 },
     bankLock: 0,
     bankBuffer: 0,
+    bankWindup: 0,
     spawnTimer: spawn.intervalTicks,
     recoverUntil: 0,
     nextId: 1,
@@ -414,6 +416,7 @@ export function restoreState(hold, options = {}) {
     camera: { x: hold.camera?.x ?? 0, y: hold.camera?.y ?? 0 },
     bankLock: hold.bankLock,
     bankBuffer: hold.bankBuffer,
+    bankWindup: hold.bankWindup ?? 0,
     spawnTimer: hold.spawnTimer,
     recoverUntil: hold.recoverUntil,
     nextId: hold.nextId,
@@ -616,7 +619,8 @@ export function advance(state, intent = neutralIntent()) {
     player.dashTicks === 0 &&
     player.dashRecovery === 0 &&
     player.dashCooldown === 0 &&
-    state.bankLock === 0;
+    state.bankLock === 0 &&
+    (state.bankWindup ?? 0) === 0;
   if ((player.dashWindup ?? 0) > 0) {
     player.dashWindup -= 1;
     player.squash = CONFIG.feel.squashCoil;
@@ -625,6 +629,12 @@ export function advance(state, intent = neutralIntent()) {
     player.dashWindup = CONFIG.player.dashWindupTicks;
     player.dashBuffer = 0;
     player.squash = CONFIG.feel.squashCoil;
+  }
+
+  if ((state.bankWindup ?? 0) > 0) {
+    state.bankWindup -= 1;
+    player.squash = CONFIG.feel.squashCoil;
+    if (state.bankWindup === 0) commitBank(state);
   }
 
   movePlayer(state, intent);
@@ -702,9 +712,8 @@ function movePlayer(state, intent) {
   );
 }
 
-function bank(state, intent) {
-  const requested = state.bankBuffer > 0 || Boolean(intent?.bank);
-  if (!requested || state.bankLock > 0 || state.chain === 0) return;
+function commitBank(state) {
+  if (state.bankLock > 0 || state.chain === 0) return;
   const chain = state.chain;
   const gain = chain * chain;
   state.score += gain;
@@ -713,6 +722,7 @@ function bank(state, intent) {
   depositChain(state, chain);
   state.chain = 0;
   state.bankBuffer = 0;
+  state.bankWindup = 0;
   state.bankLock = CONFIG.bank.lockTicks;
   state.hitstop = CONFIG.feel.bankHitstopTicks;
   state.shake += CONFIG.feel.bankShake;
@@ -720,6 +730,26 @@ function bank(state, intent) {
   punch(state, 0, CONFIG.feel.punchBankY);
   state.recoverUntil = state.tick + rain(state).recoveryTicks;
   emit(state, "bank", { chain, gain });
+}
+
+function bank(state, intent) {
+  const requested = state.bankBuffer > 0 || Boolean(intent?.bank);
+  if (!requested || state.bankLock > 0 || state.chain === 0) return;
+  if ((state.bankWindup ?? 0) > 0) return;
+  // Coleta neste tick já foi a antecipação: o pedido do mesmo quadro
+  // converte na hora. Corrente que já existia senta antes de virar
+  // pontuação. Pose no disco não é peso percebido.
+  if (state.events.some((event) => event.type === "collect")) {
+    commitBank(state);
+    return;
+  }
+  const windup = CONFIG.bank.windupTicks;
+  if (!(windup > 0)) {
+    commitBank(state);
+    return;
+  }
+  state.bankWindup = windup;
+  state.player.squash = CONFIG.feel.squashCoil;
 }
 
 function spawn(state) {
@@ -877,6 +907,7 @@ function hit(state) {
   shatterChain(state, lost);
   state.chain = 0;
   state.bankBuffer = 0;
+  state.bankWindup = 0;
   state.stats.hits += 1;
   state.player.invuln = CONFIG.player.invulnTicks + (state.assist ? CONFIG.assist.extraInvulnTicks : 0);
   state.hitstop = CONFIG.feel.hitHitstopTicks;

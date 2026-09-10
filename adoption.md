@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.132 — Guardar também senta antes de converter
+
+O avanço já sentava dois ticks. Guardar uma
+corrente que já existia convertia no pedido.
+O corpo senta (`squashCoil`) antes de virar
+pontuação. Coleta e guarda no mesmo quadro
+continuam na hora — o contato já foi a
+antecipação. `felt` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.132 não afirma: pose no disco não é
+peso no aparelho. Não importa limiar.
+
 ## 0.9.131 — O estilhaço dusk também deixa o eixo quente
 
 O look dusk pintava orbe e estilhaço no mesmo
