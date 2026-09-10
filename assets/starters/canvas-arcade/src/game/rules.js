@@ -61,7 +61,7 @@ export const CONFIG = {
     telegraphReach: 36, // antecipação: a ameaça marca o trilho antes do contato
     flashHit: 0.55, // impacto do erro: o campo acende; coleta não
     flashDecay: 0.72,
-    closeTicks: TICK_HZ * 10, // fecho: o campo marca o fim; não é faixa no HUD
+    closeTicks: 600, // TICK_HZ * 10 — fecho: o campo marca o fim; não é faixa no HUD
     rumbleDashMs: 16, // partida: toque curto
     rumbleLandMs: 10, // término: tap mais curto que a partida
     rumbleCollectMs: 28, // contato do acerto

@@ -632,6 +632,7 @@ test("o perfil calm alonga a prática sem republicar o verbo", () => {
 });
 
 test("o fecho emite no segundo redondo e não no meio do segundo", () => {
+  assert.equal(CONFIG.feel.closeTicks, 10 * 60, "o fecho é dez segundos no passo fixo");
   const early = createState(3);
   advance(early, neutralIntent());
   assert.equal(closingWindow(early), false);
