@@ -15,7 +15,7 @@
     "spawn": "?spawn=dusk ou ?spawn=calm troca a chuva; a porta também chove essa mesa",
     "mood": "?mood=calm ou ?mood=dusk troca o par",
     "seed": "?seed=<n> abre essa partida; seed explícita ignora o hold",
-    "invite": "?invite=1 esconde a tabela"
+    "invite": "?invite=1 esconde a tabela; depois do fim a página aponta o endereço desta partida"
   },
   "substitutions": [
     {

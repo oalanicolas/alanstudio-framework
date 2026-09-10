@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.124: a porta também chove a mesa.
+**HEAD:** ver `git log -1` — vigente 0.9.125: a página também aponta o convite.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 251 OK.
-`cd assets/starters/canvas-arcade && npm test` → 293 OK.
+`cd assets/starters/canvas-arcade && npm test` → 294 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.124)
+## O que o HEAD já entrega (0.9.91–0.9.125)
 
 | Ver | Salto |
 | --- | --- |
@@ -68,6 +68,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.122 | Depois de um last-run no disco, `then.seed` aponta `/?seed=<n>`. O prompt nomeia o número. Sem last-run, a chave some. `then.seed` não é ofício. `observed` continua falso. |
 | 0.9.123 | Com seed no last-run, o convite aponta `/?invite=1&seed=<n>`. `then.invite`, `invite_href` e o banner do serve juntam o número. Sem last-run, continua `/?invite=1`. `then.invite` não é ofício. `outsider` continua falso. |
 | 0.9.124 | A porta chove a mesa vigente: dusk mais denso e rápido, calm mais folgado e lento. Sem RNG, sem `entities`. A mostra do spawn continua a chuva de quatro. `consistent` continua falso. |
+| 0.9.125 | Depois do fim, `#note` aponta `/?invite=1&seed=<n>` e copia o endereço. Sem seed, a linha some. Copiar o endereço não grava. `outsider` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -142,7 +143,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ponta, tela de título, chuva da porta, `gameSpeed` no disco, `hold` no stub,
   coil/windup no disco, copiar ou gravar o achado, last-run,
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
-  `then.invite`, `invite_href` ou avanço no overlay.
+  `then.invite`, `invite_href`, copiar o endereço do convite ou
+  avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -238,7 +240,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Serve POST `/playtest/note` grava `docs/playtest/<utc>/record.json`.
   Nota vazia é 400. Autor vazio vira `página`. Anexa last-run se
   existir. `#note` no `over` e na `title` se houver `lastRun`, fora
-  do convite. `felt` falso.
+  do convite. Com seed, `#note-invite` aponta o endereço e copia.
+  Sem seed, a linha some. Copiar o endereço não grava. `felt` falso.
 - Serve POST `/playtest/finding` grava `docs/playtest/<utc>-achado.md`.
   Quatro vazios → 400. Árvore exportada → 403. Se `last-run.json`
   existir, grava `<utc>-achado.run.json` (`kind: finding-attachment`,
@@ -274,11 +277,11 @@ Candidatos, do que ainda dói:
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
 4. **Item 1 residual:** o mapa, `feel.md`, `mechanics.md`, `visual.md`,
-   `lifecycle.md`, `accessibility.md`, `audio.md`, `content.md` e
-   `performance.md` já nomeiam a porta. `quality.md` nomeia a
-   abertura no primeiro minuto. Recipes de outro foco
-   (`production`, `architecture`, `network`, `release`) que ainda
-   falarem só do campo sem a abertura estão velhas.
+   `lifecycle.md`, `accessibility.md`, `audio.md`, `content.md`,
+   `performance.md` e `network.md` já nomeiam a porta ou o convite
+   da LAN. `quality.md` nomeia a abertura no primeiro minuto.
+   Recipes de outro foco (`production`, `architecture`, `release`)
+   que ainda falarem só do campo sem a abertura estão velhas.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, copiar o
    achado, gravar os quatro nomes e anexar last-run não fecham.
@@ -302,5 +305,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `attractEntities` lê
-`intervalTicks` e `fallSpeedMin` da mesa vigente.
+Arquivos quentes da última sessão: `inviteHref` / `applyShare` no
+painel `#note`. Copiar o endereço não grava.

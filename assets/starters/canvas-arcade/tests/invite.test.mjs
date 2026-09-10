@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { applyFinding, applyInvite, applyNote, composeFinding, inviteMode, INVITE_LABEL } from "../src/core/invite.js";
+import { applyFinding, applyInvite, applyNote, applyShare, composeFinding, inviteHref, inviteMode, INVITE_LABEL } from "../src/core/invite.js";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -57,9 +57,32 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /id="note"/);
   assert.match(html, /html\.note\s+#note/);
   assert.match(html, /id="note-save"/);
+  assert.match(html, /id="note-invite"/);
+  assert.match(html, /id="note-invite-href"/);
+  assert.match(html, /id="note-invite-copy"/);
+  assert.match(html, /applyShare/);
+  assert.match(html, /inviteHref/);
   assert.match(html, /NOTE_ROUTE/);
   assert.doesNotMatch(html, /html\.invite\s+#note/);
   assert.match(html, /game\.lastRun/, "a porta relê a partida para manter o recibo");
+});
+
+test("o convite da partida junta a seed sem fingir quem jogou", () => {
+  assert.equal(inviteHref(null), "/?invite=1");
+  assert.equal(inviteHref({ score: 3 }), "/?invite=1");
+  assert.equal(inviteHref({ seed: 8 }), "/?invite=1&seed=8");
+  assert.equal(inviteHref({ run: { seed: 8 } }), "/?invite=1&seed=8");
+  assert.equal(inviteHref({ seed: 8 }, "http://192.168.1.40:8080"), "http://192.168.1.40:8080/?invite=1&seed=8");
+  const hrefNode = { textContent: "" };
+  const wrap = { hidden: true };
+  assert.equal(applyShare({ hrefNode, wrap, run: { seed: 8 } }), "/?invite=1&seed=8");
+  assert.equal(hrefNode.textContent, "/?invite=1&seed=8");
+  assert.equal(wrap.hidden, false);
+  assert.equal(applyShare({ hrefNode, wrap, run: { score: 3 } }), "/?invite=1");
+  assert.equal(wrap.hidden, true);
+  assert.match(html, /Convite desta partida/);
+  assert.match(html, /Copiar endereço/);
+  assert.doesNotMatch(html, /outsider|aprovado|verified|alguém de fora/);
 });
 
 test("a nota só aparece depois do fim e some no convite", () => {

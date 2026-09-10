@@ -11,7 +11,9 @@ escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco,
 `/?invite=1&seed=<n>`), onde a tabela some; depois do
 fim a página oferece os quatro nomes para copiar ou gravar. Copiar
 não grava. Gravar anexa o candidato se last-run existir. Gravado
-não é alguém de fora. Nomear o endereço não observa. `next` aponta o convite
+não é alguém de fora. Nomear o endereço não observa. Depois do
+fim, a página aponta o convite desta partida se a seed ficou no
+recibo. Copiar o endereço não grava. `next` aponta o convite
 depois do recibo de quem fez. O serve anuncia a URL da rede
 se a máquina tiver outro endereço IPv4. Esconder a tabela, anunciar
 a rede, copiar o achado e gravar os quatro nomes não são alguém de fora. `observed` e `outsider` são sempre

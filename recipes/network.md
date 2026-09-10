@@ -2,6 +2,11 @@
 
 Entrada: ação, participantes, estado compartilhado e comportamento esperado na falha.
 
+No starter, a rede que existe é o serve anunciando a LAN e, depois
+do fim, a página apontando `/?invite=1&seed=<n>` para enviar essa
+partida. Compartilhar o endereço não é alguém de fora nem duas
+sessões reais. Com tela, a primeira superfície continua a porta.
+
 Leia o protocolo existente e quem o consome. Identifique quem aceita a ação, valida
 identidade/turno/recursos e decide o estado. Verifique o caminho com e sem identidade;
 uma validação opcional de jogador não comprova autenticação. UI bloqueada não

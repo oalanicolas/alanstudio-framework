@@ -18,7 +18,9 @@ diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
 destino existir — declara essas ferramentas. Se declara `session`,
 `then` a aponta. Se o disco tem last-run com seed, `then` aponta a
 seed e o convite; nomear o endereço não observa. A partida no serve grava o candidato; a simulação
-também. Depois do fim, a página grava o recibo se você escrever.
+também. Depois do fim, a página grava o recibo se você escrever
+e aponta o convite desta partida se a seed ficou no recibo. Copiar
+o endereço não grava.
 Depois do recibo, o mesmo `start` e o `next` apontam
 o ofício. O autor do `note` é sugestão do git ou do ambiente, não
 quem jogou. Nomear o ofício não pinta. `playtest --invite` aponta `href`

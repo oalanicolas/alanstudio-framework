@@ -3095,6 +3095,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("?mood=calm", report["cycle"]["mood"])
         self.assertIn("?mood=dusk", report["cycle"]["mood"])
         self.assertIn("?invite=1", report["cycle"]["invite"])
+        self.assertIn("partida", report["cycle"]["invite"])
         self.assertIn("?seed=", report["cycle"]["seed"])
         self.assertIn("hold", report["cycle"]["seed"])
         self.assertIn("Espaço", report["prompt"])

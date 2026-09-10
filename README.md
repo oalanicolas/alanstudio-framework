@@ -646,7 +646,9 @@ python3 scripts/game.py playtest /caminho/do/laboratorio/meu-jogo --invite
 `observed` e `outsider` são sempre `false`. `--invite` escreve
 `docs/playtest/invite.md` e aponta `href` (`/?invite=1` ou, com seed
 no disco, `/?invite=1&seed=<n>`), onde a tabela de
-comandos some; depois do fim a página oferece os quatro nomes para
+comandos some; depois do fim a página do maker aponta o convite
+desta partida se a seed ficou no recibo — copiar o endereço não
+grava — e, no convite, oferece os quatro nomes para
 copiar ou gravar. Copiar não grava. Gravado vira
 `docs/playtest/<utc>-achado.md` se os quatro tiverem texto.
 Se last-run existir, o serve anexa

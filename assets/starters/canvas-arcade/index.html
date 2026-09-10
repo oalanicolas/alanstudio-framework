@@ -141,6 +141,10 @@
         <label><span>Nota</span><textarea id="note-text" name="note" rows="2"></textarea></label>
       </div>
       <p><button type="button" id="note-save">Gravar</button></p>
+      <p id="note-invite" hidden>
+        Convite desta partida: <code id="note-invite-href"></code>
+        <button type="button" id="note-invite-copy">Copiar endereço</button>
+      </p>
     </section>
 
     <section class="panel" id="finding" aria-labelledby="finding-title">
@@ -214,7 +218,7 @@
     <script type="module" src="./src/main.js"></script>
     <script type="module">
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
-      import { applyFinding, applyInvite, applyNote, composeFinding, inviteMode } from "./src/core/invite.js";
+      import { applyFinding, applyInvite, applyNote, applyShare, composeFinding, inviteHref, inviteMode } from "./src/core/invite.js";
       import { FINDING_ROUTE, NOTE_ROUTE, playFinding } from "./src/core/run-report.js";
       import { applyShell } from "./src/core/shell.js";
       import { LOOK_LABELS, SPAWN_LABELS, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch, PALETTES, resolveLookName } from "./src/game/tables.js";
@@ -232,9 +236,22 @@
           const run = game.lastRun;
           applyFinding({ root: document.documentElement, phase, invite: invited, run });
           applyNote({ root: document.documentElement, phase, invite: invited, run });
+          applyShare({
+            hrefNode: document.getElementById("note-invite-href"),
+            wrap: document.getElementById("note-invite"),
+            run,
+            origin: location.origin,
+          });
         };
         if (typeof game.watch === "function") game.watch(revealAfter);
         else revealAfter(game.observe().phase);
+        document.getElementById("note-invite-copy").addEventListener("click", () => {
+          const href = document.getElementById("note-invite-href").textContent
+            || inviteHref(game.lastRun, location.origin);
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+            navigator.clipboard.writeText(href);
+          }
+        });
         document.getElementById("note-save").addEventListener("click", () => {
           const text = document.getElementById("note-text").value;
           const author = document.getElementById("note-author").value;
