@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.245: o fim leva o x do campo. O stinger da partida não fala no centro. `heard` falso.
+**HEAD:** ver `git log -1` — vigente 0.9.246: o processo comum nomeia a porta. O mapa start → jogar → note aponta sem executar. Não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 283 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.245)
+## O que o HEAD já entrega (0.9.91–0.9.246)
 
 | Ver | Salto |
 | --- | --- |
@@ -189,6 +189,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.243 | Na porta o tap na faixa da guarda também abre. O polegar no primeiro gesto não cala a abertura. Não promove feel. |
 | 0.9.244 | O controle também pede o resume. Tecla e toque já pediam; o pad falava e a porta ia para a fila. Não promove `heard`. |
 | 0.9.245 | O fim leva o x do campo. O stinger da partida não fala no centro. Não promove `heard`. |
+| 0.9.246 | O processo comum nomeia a porta. O mapa start → jogar → `note` aponta sem executar. Não observa. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -311,6 +312,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou reduced que some o toque da mostra
   ou conversão da guarda que é janela de hit
   ou mapa canônico que some a porta
+  ou processo comum que some a porta
   ou land que é janela de hit
   ou segundo estilhaço do mesmo quadro que é segundo hit
   ou dois orbes no mesmo quadro que inflam a corrente
@@ -822,6 +824,8 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um template agents que lista GDD que o disco não tem.
 **Não** mais um tap na faixa da porta que some o abrir.
 **Não** mais um controle que fala e some o resume.
+**Não** mais um fim que fala no centro.
+**Não** mais um processo comum que some a porta.
 
 Candidatos, do que ainda dói:
 
@@ -848,8 +852,10 @@ Candidatos, do que ainda dói:
    `init_scope` só afirma rascunhos quando `documents` é verdadeiro;
    o `start` embute esse recibo.    Os dois escrevem `AGENTS.md` com
    o serve; sem rascunhos a memória não lista GDD. `template agents`
-   e o `next` sem memória geram o mesmo texto. `preproduction.md` (injetado pelo
+   e o `next` sem memória geram o mesmo texto.    `preproduction.md` (injetado pelo
    `context` no foco create e em `--stage`) ensina `start --idea`.
+   `process.md` (primeiro `read_next` de todo foco) nomeia a porta e o
+   mapa start → jogar → `note` sem executar.
    `doctor` no lab vazio devolve `then.guide` com `--idea`; com jogo a chave some.
    Depois do `start` fresco o `context` adia a auditoria (`audit.deferred`);
    lacunas continuam listadas. Sem jogo que abre, o `scan` ainda pede documentar.
@@ -880,7 +886,8 @@ Candidatos, do que ainda dói:
 4. **Item 1 residual:** o mapa, as receitas de foco e os templates da
    primeira situação — brief, GDD, game-design, PoC, slice, QA e
    release — já nomeiam a porta. Design system, ambição, barra,
-   checklist e os pacotes de gênero também. O rascunho de playtest traz a forma
+   checklist, os pacotes de gênero e o processo comum (`process.md`,
+   primeiro `read_next`) também. O rascunho de playtest traz a forma
    do achado, vazia. `preproduction.md` já ensina `start --idea`.
    A barra de `accessibility` do starter não atribui medição no
    dispositivo ao `contrast`. Referências que ainda falarem só do
@@ -1284,6 +1291,11 @@ Candidatos, do que ainda dói:
   fim que
   fala no
   centro
+  e o
+  processo
+  comum que
+  some a
+  porta
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1308,5 +1320,6 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-fim leva o x do campo. O stinger da
-partida não fala no centro. `heard` falso.
+processo comum nomeia a porta. O mapa
+start → jogar → note aponta sem
+executar. Não observa.

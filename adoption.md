@@ -3,6 +3,44 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.246 — O processo comum nomeia a porta
+
+O
+primeiro
+arquivo
+do
+`context`
+já
+ensinava
+`start --idea`.
+Não
+nomeava
+a
+porta.
+Agora
+o
+mapa
+aponta
+start
+→
+jogar
+→
+`note`
+sem
+executar.
+Nomear
+não
+observa.
+
+O que 0.9.246 não afirma:
+parágrafo
+no
+disco
+não
+é
+partida
+jogada.
+
 ## 0.9.245 — O fim leva o x do campo
 
 Coleta,

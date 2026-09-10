@@ -69,8 +69,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    restrições, a maior incerteza e a prova de conclusão; assuma o resto com registro e
    pergunte só o que impede de jogar. A escala (jam/conto, produto, AA / Triple-I)
    vive no brief e muda a quantidade de documentos, não o piso do verbo
-   ([ambição](references/ambition.md)). Leia [processo](references/process.md) e
-   [qualidade](references/quality.md). Para criação ou pré-produção, siga
+   ([ambição](references/ambition.md)). Leia [processo](references/process.md)
+   — com tela, a primeira superfície é a porta; `play` aponta sem executar —
+   e [qualidade](references/quality.md). Para criação ou pré-produção, siga
    [o ciclo criativo](references/preproduction.md): Game Brief, MDA/GDD, PoC, PRD/TDD,
    vertical slice, MVP, QA/playtest e release. `--stage <etapa>` carrega só o template
    pertinente; `template <etapa> --project <projeto>` imprime um rascunho. Reaproveite

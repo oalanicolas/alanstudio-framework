@@ -1219,6 +1219,15 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("{{", text)
         self.assertIn("Autorização de publicação: não concedida", text)
 
+    def test_process_names_the_door_and_the_play_cycle(self):
+        text = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        folded = text.casefold()
+        self.assertIn("a porta", folded)
+        self.assertIn("`play`", text)
+        self.assertIn("`note`", text)
+        self.assertIn("sem executar", folded)
+        self.assertIn("`claimed` não é `verified`", text)
+
     def test_canonical_maps_name_the_door(self):
         maps = (
             "references/game-design-system.md",

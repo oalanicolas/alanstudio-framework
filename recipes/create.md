@@ -7,7 +7,8 @@ o projeto atual.
 
 O caminho curto está em [ambição](../references/ambition.md): um ciclo jogável
 na primeira sessão, depois feel e áudio do verbo, depois receita de conteúdo.
-`start` e `guide` mapeiam start → jogar → `note`. Os dois devolvem
+`start` e `guide` mapeiam start → jogar → `note`. O [processo comum](../references/process.md)
+também nomeia a porta nesse mapa. Os dois devolvem
 `open` (o comando de agora) e `prompt` (a frase para colar; também
 sai em stderr). Depois do
 `start`, `open` é o play e `steps` é o mesmo mapa de três passos, com
