@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.176: o over senta a câmera com o corpo.
+**HEAD:** ver `git log -1` — vigente 0.9.176 (confirmado): o over senta a câmera com o corpo.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 269 OK.
@@ -336,7 +336,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `playerBox`). Na graça (`invuln`) o corpo pulsa com
   `globalAlpha` no relógio do contorno; o tijolo não some.
   Reduced trava o tijolo e o contorno. No `over` o corpo senta
-  (`squashOver`) e larga dash, graça e arco da guarda. A ponta é
+  (`squashOver`) e o quadro senta (tremor, flash, punch). Larga
+  dash, graça e arco da guarda. A ponta é
   path (`lineTos`). Halo do estilhaço **não** é `arc`
   (`orb.arcs > shard.arcs`). Luz no disco não é `felt`.
 - `player.dir` default `1`. Ponta some? Não — é forma, não brilho.
