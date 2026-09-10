@@ -26,7 +26,9 @@
 // do campo deixava o corpo andando. Captura no disco
 // não é felt.
 // Esconder a aba perde o keyup. Sem o visibilitychange
-// o corpo seguia o último hold. Soltar no disco não é felt.
+// o corpo seguia o último hold. Perder o foco da janela
+// (barra, DevTools) também some o keyup e deixava o
+// aperto pendente virar ofício. Soltar no disco não é felt.
 // Sessão no aparelho não foi observada.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que
@@ -175,7 +177,11 @@ export function createInput(options = {}) {
   }
 
   function onBlur() {
-    releaseHold();
+    // A aba escondida já solta hold e pressed. Sem isto
+    // a barra de endereço e o DevTools deixavam o Space
+    // ou o R virarem ofício no quadro seguinte.
+    // Soltar no disco não é felt.
+    releaseSession();
   }
 
   function onFocusIn(event) {

@@ -3,6 +3,63 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.276 — A perda de foco não deixa o ofício pendente
+
+A
+aba
+escondida
+já
+soltava
+hold
+e
+pressed.
+A
+barra
+e
+o
+DevTools
+só
+largavam
+o
+movimento.
+Space
+e
+R
+pendentes
+viravam
+ofício
+no
+quadro
+seguinte.
+Agora
+o
+blur
+chama
+`releaseSession`.
+Voltar
+a
+focar
+ainda
+avança.
+O
+pad
+continua
+no
+poll.
+Não
+promove
+`felt`.
+
+O que 0.9.276 não afirma:
+soltar
+no
+disco
+não
+é
+peso
+no
+dispositivo.
+
 ## 0.9.275 — A aba escondida não deixa o verbo preso
 
 O

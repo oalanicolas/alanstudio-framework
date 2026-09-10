@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.275: a aba escondida não deixa o verbo preso. O keyup some; o corpo não segue. Não promove `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.276: a perda de foco não deixa o ofício pendente. O blur solta hold e pressed. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 294 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.275)
+## O que o HEAD já entrega (0.9.91–0.9.276)
 
 | Ver | Salto |
 | --- | --- |
@@ -219,6 +219,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.273 | A porta nomeia a recuperação que o painel já mostra. O canvas da abertura e do fim pinta `settingsLine`. A pausa não. `persistLine` continua só sessão. Não promove `trusted`. |
 | 0.9.274 | A receita não cala a porta que o canvas já pinta. `persistence` e `accessibility` ensinam `settingsLine` no canvas. A pausa não. Não promove `trusted`. |
 | 0.9.275 | A aba escondida não deixa o verbo preso. O keyup some; o corpo não segue. O pad continua no poll. Não promove `felt`. |
+| 0.9.276 | A perda de foco não deixa o ofício pendente. O blur solta hold e pressed. Voltar a focar ainda avança. O pad continua no poll. Não promove `felt`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -232,7 +233,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
@@ -937,6 +938,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma porta que cala a recuperação que o painel já mostra.
 **Não** mais uma receita que cala a porta que o canvas já pinta.
 **Não** mais uma aba escondida que deixa o verbo preso.
+**Não** mais uma perda de foco que deixa o ofício pendente.
 
 Candidatos, do que ainda dói:
 
@@ -1564,6 +1566,12 @@ Candidatos, do que ainda dói:
   que deixa
   o verbo
   preso
+  e uma
+  perda de
+  foco que
+  deixa o
+  ofício
+  pendente
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1587,10 +1595,10 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a aba
-escondida não deixa o verbo preso.
-O keyup some; o corpo não segue.
-O pad continua no poll. Não promove `felt`.
+Arquivos quentes da última sessão: a perda
+de foco não deixa o ofício pendente.
+O blur solta hold e pressed.
+Voltar a focar ainda avança. Não promove `felt`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1601,3 +1609,4 @@ A família close caption flood está saturada.
 A família settings no canvas da porta está saturada.
 A família receita vs canvas da porta está saturada.
 A família visibility ghost hold / aba escondida está saturada.
+A família blur ghost press / perda de foco deixa o ofício pendente está saturada.

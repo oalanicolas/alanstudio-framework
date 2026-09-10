@@ -389,6 +389,40 @@ test("a aba escondida não deixa o verbo preso", () => {
   input.dispose();
 });
 
+test("a perda de foco não deixa o ofício pendente", () => {
+  const keys = surface();
+  const input = createInput({ target: keys, surface: null });
+  keys.dispatch("keydown", {
+    code: "KeyD",
+    target: { tagName: "BODY" },
+    preventDefault() {},
+  });
+  assert.equal(input.intent().move, 1, "D ainda move");
+  keys.dispatch("keydown", {
+    code: "Space",
+    target: { tagName: "BODY" },
+    preventDefault() {},
+  });
+  keys.dispatch("blur", {});
+  const after = input.intent();
+  assert.equal(after.move, 0, "perder o foco solta o movimento");
+  assert.equal(after.dash, false, "o aperto pendente não vira ofício");
+  keys.dispatch("keydown", {
+    code: "KeyR",
+    target: { tagName: "BODY" },
+    preventDefault() {},
+  });
+  keys.dispatch("blur", {});
+  assert.equal(input.commands().reset, false, "o R pendente não reinicia");
+  keys.dispatch("keydown", {
+    code: "Space",
+    target: { tagName: "BODY" },
+    preventDefault() {},
+  });
+  assert.equal(input.intent().dash, true, "voltar a focar ainda avança");
+  input.dispose();
+});
+
 test("perder a captura não come o tap da porta", () => {
   const pad = surface();
   pad.setPointerCapture = () => {};
