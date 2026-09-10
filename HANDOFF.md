@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.173: sfx summary lista os stems do starter.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 267 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 268 OK.
 `cd assets/starters/canvas-arcade && npm test` → 355 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
