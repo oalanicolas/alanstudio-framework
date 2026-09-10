@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { coachHint } from "../src/game/coach.js";
+import { coachHint, FANTASY_TICKS, MOVE_TICKS } from "../src/game/coach.js";
 import { CONFIG, createState, PLAYER_Y } from "../src/game/rules.js";
 
 const shardOnRail = () => ({ id: 1, kind: "shard", x: 160, y: PLAYER_Y - 22, vy: 0 });
@@ -50,13 +50,34 @@ test("partida encerrada não ensina", () => {
   assert.equal(coachHint(state), null);
 });
 
+test("a fantasia na porta não come o aviso de mover", () => {
+  const state = createState(1, { entry: "title" });
+  const lines = { fantasy: "guardar a corrente ou continuar" };
+  assert.equal(coachHint(state, lines), "fantasy");
+  state.attractTick = FANTASY_TICKS - 1;
+  assert.equal(coachHint(state, lines), "fantasy");
+  state.attractTick = FANTASY_TICKS;
+  assert.equal(coachHint(state, lines), "move", "depois da frase a porta ainda ensina a abrir");
+  state.attractTick = FANTASY_TICKS + MOVE_TICKS - 1;
+  assert.equal(coachHint(state, lines), "move");
+  state.attractTick = FANTASY_TICKS + MOVE_TICKS;
+  assert.equal(coachHint(state, lines), null);
+  const plain = createState(2, { entry: "title" });
+  plain.attractTick = MOVE_TICKS - 1;
+  assert.equal(coachHint(plain), "move", "sem frase o aviso de mover continua o mesmo");
+  plain.attractTick = MOVE_TICKS;
+  assert.equal(coachHint(plain), null);
+});
+
 test("a abertura ensina mover sem abrir o ciclo", () => {
   const state = createState(1, { entry: "title" });
   assert.equal(coachHint(state), "move");
   assert.equal(coachHint(state, { fantasy: "guardar a corrente ou continuar" }), "fantasy");
-  state.attractTick = 48;
+  state.attractTick = FANTASY_TICKS;
   assert.equal(coachHint(state, { fantasy: "guardar a corrente ou continuar" }), "move");
-  state.attractTick = 60;
+  state.attractTick = FANTASY_TICKS + MOVE_TICKS - 1;
+  assert.equal(coachHint(state, { fantasy: "guardar a corrente ou continuar" }), "move");
+  state.attractTick = FANTASY_TICKS + MOVE_TICKS;
   assert.equal(coachHint(state, { fantasy: "guardar a corrente ou continuar" }), null);
   state.chain = 3;
   state.entities = [shardOnRail()];

@@ -3,6 +3,62 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.227 — A fantasia na porta não come o aviso de mover
+
+A
+frase
+do
+`--idea`
+comia
+o
+aviso
+de
+abrir.
+Doze
+ticks
+de
+mover
+e
+a
+porta
+calava.
+Agora
+depois
+da
+fantasia
+vem
+uma
+janela
+inteira
+de
+mover.
+Sem
+frase
+o
+mover
+continua
+os
+mesmos
+sessenta
+ticks.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.227 não afirma:
+aviso
+na
+porta
+não
+é
+sessão
+observada.
+
 ## 0.9.226 — A guarda leva o x do campo
 
 A

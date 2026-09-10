@@ -17,8 +17,8 @@
 
 import { approaching, closingWindow } from "./rules.js";
 
-const FANTASY_TICKS = 48;
-const MOVE_TICKS = 60;
+export const FANTASY_TICKS = 48;
+export const MOVE_TICKS = 60;
 const SURFACE_TICKS = 108;
 
 function shardThreat(state) {
@@ -34,8 +34,12 @@ export function coachHint(state, lines = {}, extra = {}) {
   if (state.phase === "title") {
     const clock = state.attractTick ?? 0;
     const fantasy = typeof lines.fantasy === "string" ? lines.fantasy.trim() : "";
+    // A frase do --idea não come o aviso de abrir. Sem
+    // isto a fantasia deixava 12 ticks de mover e a
+    // porta calava. Texto no disco não é sessão.
     if (fantasy && clock < FANTASY_TICKS) return "fantasy";
-    if (clock < MOVE_TICKS) return "move";
+    const moved = fantasy ? clock - FANTASY_TICKS : clock;
+    if (moved < MOVE_TICKS) return "move";
     return null;
   }
   if (state.phase !== "playing") return null;
