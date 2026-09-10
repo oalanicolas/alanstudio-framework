@@ -170,6 +170,18 @@ class AudioCatalogTests(unittest.TestCase):
         self.assertEqual(error.exception.code, 404)
         error.exception.close()
 
+    def test_preview_names_the_catalog_sound_the_disk_lost(self):
+        lost = self.root / self.item["file"]
+        self.assertTrue(lost.is_file())
+        lost.unlink()
+        page = audio.preview_page(self.root).decode()
+        self.assertIn(self.item["id"], page)
+        self.assertIn("o disco perdeu", page.casefold())
+        self.assertNotIn("<audio", page)
+        self.assertNotIn("aprovado", page)
+        self.assertNotIn("verified", page)
+        self.assertFalse(audio.catalog_bytes_present(self.root, self.item["file"]))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -62,6 +62,16 @@ def inside(root, relative):
     return path
 
 
+def catalog_bytes_present(root, relative):
+    # O catálogo listava e a página oferecia o player.
+    # Sem os bytes o clique virava 400. Nomear não é ouvir.
+    try:
+        path = inside(root, relative)
+    except ValueError:
+        return False
+    return path.is_file() and not path.is_symlink()
+
+
 def load_catalog(root=LIBRARY):
     path = root / "catalog.json"
     if not path.exists():
@@ -91,16 +101,27 @@ def preview_page(root=LIBRARY):
             for source in item.get("sources") or []
             if isinstance(source, dict) and isinstance(source.get("author"), str)
         })
-        rows.append(
+        heading = (
             "<article>"
             f"<h2>{html.escape(str(item.get('id') or src))}</h2>"
             f"<p>{html.escape(str(item.get('title') or ''))} · "
             f"{html.escape(str(item.get('category') or ''))}</p>"
             f"<p>{html.escape(', '.join(authors))} · "
             f"{html.escape(', '.join(licenses))}</p>"
-            f'<audio controls preload="none" src="/{html.escape(src, quote=True)}"></audio>'
-            "</article>"
         )
+        if catalog_bytes_present(root, src):
+            rows.append(
+                heading
+                + f'<audio controls preload="none" src="/{html.escape(src, quote=True)}"></audio>'
+                + "</article>"
+            )
+        else:
+            rows.append(
+                heading
+                + "<p class=\"note\">O catálogo lista este som e o disco perdeu "
+                "o arquivo. Nomear não é ouvir.</p>"
+                + "</article>"
+            )
     body = "".join(rows) if rows else "<p>Acervo vazio.</p>"
     title = catalog.get("title") if isinstance(catalog.get("title"), str) else "Acervo sonoro"
     page = (

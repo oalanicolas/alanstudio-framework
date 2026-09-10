@@ -92,7 +92,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    disco perdeu, `sfx summary` lista todos e `sfx serve`
    recusa catálogo vazio.
    Com sons no acervo, `sfx serve` abre a página de escuta — se
-   `shared/sfx/ui` faltar, o harness gera a lista. Tocar nessa
+   `shared/sfx/ui` faltar, o harness gera a lista e nomeia o som
+   que o catálogo lista e o disco perdeu. Tocar nessa
    página não é mix ouvida no jogo. Arquivo no disco não é mix ouvido. Crescer o acervo é
    `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx seed` lê
    `selection.json` local. `sfx info ID` lê a ficha do acervo ou a

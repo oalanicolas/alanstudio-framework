@@ -2937,6 +2937,22 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         with self.assertRaisesRegex(ValueError, "não há ficha|desconhecidos"):
             game.sfx_catalog.info_entry("nunca-existiu", self.root, folder=folder)
 
+    def test_listen_page_names_the_catalog_sound_the_disk_lost(self):
+        recipe = (Path(game.FRAMEWORK) / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (Path(game.FRAMEWORK) / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("catálogo lista e o disco perdeu", recipe)
+        self.assertIn("catálogo lista e o disco perdeu", skill)
+        item, _ = self._plant_catalog_sound()
+        lost = self.root / "shared/sfx" / item["file"]
+        self.assertTrue(lost.is_file())
+        lost.unlink()
+        page = game.sfx_catalog.audio.preview_page(self.root / "shared/sfx").decode()
+        self.assertIn(item["id"], page)
+        self.assertIn("o disco perdeu", page.casefold())
+        self.assertNotIn("<audio", page)
+        self.assertNotIn("aprovado", page)
+        self.assertNotIn("verified", page)
+
     def test_sfx_info_reads_the_card_without_claiming_to_hear_it(self):
         item, _ = self._plant_catalog_sound()
         report = game.sfx_catalog.info_entry(item["id"], self.root)

@@ -3,6 +3,43 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.291 — A página de escuta nomeia o som que o catálogo lista e o disco perdeu
+
+O
+catálogo
+ainda
+listava.
+A
+página
+oferecia
+o
+player.
+O
+clique
+virava
+400.
+Agora
+a
+ausência
+tem
+nome.
+O
+player
+some.
+Não
+promove
+`heard`.
+
+O que 0.9.291 não afirma:
+nomear
+o
+arquivo
+perdido
+não
+é
+mix
+ouvida.
+
 ## 0.9.290 — O banner do serve nomeia o relógio que o jogo já lê
 
 O
