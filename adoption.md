@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.333 — no fim a região viva nomeia a mesa e o look
+
+O
+last-run
+já
+gravava
+os
+eixos.
+O
+live
+só
+dizia
+o
+placar.
+Dusk
+e
+calm
+vestiam
+o
+mesmo
+nome.
+Agora
+o
+fim
+nomeia
+a
+mesa
+e
+o
+look.
+Spawn
+e
+normal
+somem.
+Não
+promove
+`verified`.
+
+O que 0.9.333 não afirma:
+texto
+no
+DOM
+não
+é
+direção
+observada.
+
 ## 0.9.332 — o sem destino nomeia o start do README
 
 A

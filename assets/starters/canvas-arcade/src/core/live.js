@@ -14,7 +14,8 @@
 // quem não vê a tela só ouvia pausado. Na porta o canvas já
 // nomeia jogar, repetir e seed nova; a região viva espelha
 // essas linhas. Sem isto quem não vê a tela só ouvia abertura.
-// A porta já chove a mesa e veste o look; a região viva
+// A porta já chove a mesa e veste o look; o fim já
+// gravou os mesmos eixos no last-run. A região viva
 // nomeia esses eixos quando não são o padrão. Spawn e
 // normal somem. Contrast não é look de arte. Texto no
 // DOM não é direção observada.
@@ -75,6 +76,12 @@ export function liveText({
     if (stake !== null && Number(chain) > 0) add(`corrente ${stake}`);
     const record = whole(best);
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
+    // O last-run já gravou a mesa e o look. Sem isto
+    // o leitor só ouvia o placar e a chuva dusk
+    // vestia o mesmo nome que calm. Texto no DOM
+    // não é direção observada.
+    add(namedAxis("chuva", spawn, ["spawn"]));
+    add(namedAxis("look", look, ["normal", "contrast"]));
     add(persist);
     add(settings);
     add(audio);

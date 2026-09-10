@@ -71,7 +71,7 @@ não chega ao leitor.
 Na porta o telefone vê Jogar: toque sem ter apertado. Depois da
 partida o baixo pede seed nova; o campo repete a última. A região
 viva espelha jogar, repetir, seed nova e a abertura do fim — o
-overlay do canvas não chega ao leitor. Na porta a região viva
+overlay do canvas não chega ao leitor. Na porta e no fim a região viva
 nomeia a mesa e o look que a chuva já veste — spawn e
 normal somem; contrast não é look de arte. Texto no DOM
 não é direção observada. O aviso

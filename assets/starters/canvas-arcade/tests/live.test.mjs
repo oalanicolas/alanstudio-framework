@@ -259,10 +259,6 @@ test("na porta a região viva nomeia a mesa e o look que a chuva já veste", () 
   assert.equal(liveText({ phase: "title", spawn: "  dusk  " }), "abertura. chuva dusk");
   assert.equal(liveText({ phase: "playing", spawn: "dusk", look: "dusk" }), "");
   assert.equal(
-    liveText({ phase: "over", score: 12, spawn: "dusk", look: "dusk" }),
-    "fim da partida. 12",
-  );
-  assert.equal(
     liveText({
       phase: "title",
       spawn: "dusk",
@@ -277,6 +273,51 @@ test("na porta a região viva nomeia a mesa e o look que a chuva já veste", () 
   assert.doesNotMatch(
     liveText({ phase: "title", spawn: "dusk", look: "dusk" }),
     /aprovado|verified|consistent|alguém de fora|felt/,
+  );
+});
+
+test("no fim a região viva nomeia a mesa e o look que a partida já vestiu", () => {
+  // O last-run já gravava os eixos. Sem isto o live
+  // só dizia o placar e dusk vestia o mesmo nome
+  // que calm. Texto no DOM não é direção observada.
+  assert.equal(
+    liveText({ phase: "over", score: 12, spawn: "dusk" }),
+    "fim da partida. 12. chuva dusk",
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, look: "calm" }),
+    "fim da partida. 12. look calm",
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, spawn: "dusk", look: "dusk" }),
+    "fim da partida. 12. chuva dusk. look dusk",
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, chain: 5, spawn: "calm", look: "dusk" }),
+    "fim da partida. 12. corrente 5. chuva calm. look dusk",
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, spawn: "spawn", look: "normal" }),
+    "fim da partida. 12",
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, look: "contrast" }),
+    "fim da partida. 12",
+  );
+  assert.equal(liveText({ phase: "playing", spawn: "dusk", look: "dusk" }), "");
+  assert.equal(
+    liveText({
+      phase: "over",
+      score: 12,
+      spawn: "dusk",
+      look: "dusk",
+      persist: "Esta sessão não grava",
+    }),
+    "fim da partida. 12. chuva dusk. look dusk. Esta sessão não grava",
+  );
+  assert.doesNotMatch(
+    liveText({ phase: "over", score: 12, spawn: "dusk", look: "dusk" }),
+    /aprovado|verified|consistent|alguém de fora|felt|speed/,
   );
 });
 

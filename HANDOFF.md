@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.332: o `sem destino` nomeia o `start --idea` do README. Não cria.
+**HEAD:** ver `git log -1` — vigente 0.9.333: no fim a região viva nomeia a mesa e o look. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.332):** `python3 -m unittest discover -s tests` → 330.
-`cd assets/starters/canvas-arcade && npm test` → 503.
+**Testes no HEAD (0.9.333):** `python3 -m unittest discover -s tests` → 330.
+`cd assets/starters/canvas-arcade && npm test` → 504.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.332)
+## O que o HEAD já entrega (0.9.91–0.9.333)
 
 | Ver | Salto |
 | --- | --- |
@@ -276,6 +276,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.330 | A região viva nomeia a mesa e o look da porta. A chuva já vestia dusk e calm; o live só dizia abertura. Spawn e normal somem. Não promove `verified`. |
 | 0.9.331 | O `feel` nomeia o rumble que a tabela já lista. As constantes já entravam; o scope e o `-h` calavam o pulso. Não promove `felt`. |
 | 0.9.332 | O `sem destino` nomeia o `start --idea` que o README já imprime. A recusa explicava `--idea` e calava o comando. Nomear não cria. |
+| 0.9.333 | No fim a região viva nomeia a mesa e o look que a partida já vestiu. O last-run já gravava; o live só dizia o placar. Spawn e normal somem. Não promove `verified`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -297,7 +298,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | a porta chove o risco da mesa; o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
-| accessibility | slice | a região viva nomeia a mesa e o look da porta; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
+| accessibility | slice | a região viva nomeia a mesa e o look da porta e do fim; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
 | content_scale | shippable | `brief` não come a folga da guarda; paleta não finge volume; dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -1252,9 +1253,11 @@ Candidatos, do que ainda dói:
    salto. O rótulo do coil do dash ainda diz recarregando —
    irmão do travel, não o próximo salto. `sfx export` de
    id do acervo cujo arquivo sumiu ainda despeja errno —
-   irmão do verify, não o próximo salto. A região viva na
-   porta já nomeia a mesa e o look — não pintar os eixos
-   no canvas da porta (irmão, não o próximo salto). O `feel`
+   irmão do verify, não o próximo salto.    A região viva na
+   porta e no fim já nomeia a mesa e o look — não pintar
+   os eixos no canvas (irmão, não o próximo salto). Não
+   nomear `gameSpeed` no live (irmão, não o próximo
+   salto). O `feel`
    já nomeia o rumble — não inventar chave `haptics` no
    recibo (irmão, não o próximo salto).    `origins --declare`
    escreve o sidecar. Recibo não é
@@ -2266,6 +2269,18 @@ Candidatos, do que ainda dói:
   `start`
   do
   README
+  e uma
+  região
+  viva
+  que
+  cala
+  a
+  mesa
+  e
+  o
+  look
+  do
+  fim
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2289,11 +2304,11 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o
-`sem destino` nomeia o `start --idea`
-que o README já imprime. A recusa
-explicava `--idea` e calava o
-comando. Nomear não cria.
+Arquivos quentes da última sessão: no
+fim a região viva nomeia a mesa e o
+look que o last-run já gravava. O
+live só dizia o placar. Spawn e
+normal somem. Não promove `verified`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2361,3 +2376,4 @@ A família sfx verify despeja errno do som que o catálogo perdeu está saturada
 A família região viva que cala a mesa e o look da porta está saturada.
 A família feel que cala o rumble que a tabela já lista está saturada.
 A família sem destino que cala o start do README está saturada.
+A família região viva que cala a mesa e o look do fim está saturada.
