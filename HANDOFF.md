@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.248: preferências ilegíveis avisam. O painel nomeia a recuperação; a porta não. Não promove `trusted`.
+**HEAD:** ver `git log -1` — vigente 0.9.249: `roles --apply` recoloca o stem quando o recibo já está. Origem e licença diferentes recusam. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 284 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.248)
+## O que o HEAD já entrega (0.9.91–0.9.249)
 
 | Ver | Salto |
 | --- | --- |
@@ -192,6 +192,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.246 | O processo comum nomeia a porta. O mapa start → jogar → `note` aponta sem executar. Não observa. |
 | 0.9.247 | A guarda espera o land do avanço. O sit não come a pose do dash; o pedido não decai no travel. Coleta no mesmo quadro continua na hora. Não promove feel. |
 | 0.9.248 | Preferências ilegíveis avisam. `settingsLoad` espelha o progresso; o painel nomeia a recuperação; a porta não. Não promove `trusted`. |
+| 0.9.249 | `roles --apply` recoloca o stem quando o recibo já está. Origem e licença diferentes recusam. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -361,7 +362,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou o fim que fala no centro
   ou o processo comum que some a porta
   ou a guarda que senta no travel e come a pose do dash
-  ou preferências ilegíveis que voltam ao padrão em silêncio.
+  ou preferências ilegíveis que voltam ao padrão em silêncio
+  ou um roles --apply que recusa o stem porque o recibo do init tem note.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -833,6 +835,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um processo comum que some a porta.
 **Não** mais uma guarda que senta no travel e come a pose do dash.
 **Não** mais preferências ilegíveis que voltam ao padrão em silêncio.
+**Não** mais um `roles --apply` que recusa o stem porque o recibo do init tem `note`.
 
 Candidatos, do que ainda dói:
 
@@ -876,7 +879,8 @@ Candidatos, do que ainda dói:
    e `fields`; `next`
    aponta a página e `note --field`, não relê o
    leitor. Sem `then` no leitor.    Sem acervo, `roles --fill` nomeia o stem
-   do starter; `--apply` o copia; `next` aponta
+   do starter; `--apply` o copia — e recoloca o WAV se o
+   recibo já está e origem e licença casam; `next` aponta
    `--apply`.    `feel`
    nomeia `then.play` e `then.note` sem
    executar. Sem serve a chave some. Sem
@@ -1317,6 +1321,12 @@ Candidatos, do que ainda dói:
   voltam ao
   padrão em
   silêncio
+  e o
+  roles --apply
+  que recusa o
+  stem porque o
+  recibo do init
+  tem note
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1340,7 +1350,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: preferências
-ilegíveis avisam. O painel nomeia a
-recuperação; a porta não. Não promove
-`trusted`.
+Arquivos quentes da última sessão: `roles --apply`
+recoloca o stem quando o recibo já está.
+Origem e licença diferentes recusam. Não
+promove `heard`.

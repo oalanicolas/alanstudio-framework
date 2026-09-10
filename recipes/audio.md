@@ -17,7 +17,8 @@ e Kenney arcade não são o padrão.
 papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
 em `public/sfx`. `roles --fill` sugere um id do acervo ou a ficha do
 stem do starter que casa; `--apply` copia o id do acervo ou o stem
-do starter com créditos. `sfx copy` continua o caminho explícito.
+do starter com créditos — e recoloca o WAV se o recibo já está e
+origem e licença casam. `sfx copy` continua o caminho explícito.
 O starter `canvas-arcade`
 já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
 mixer. O pedido que chega antes do WAV — ou enquanto o contexto
@@ -38,7 +39,7 @@ voz própria, mais curta que o dash; sem o papel o aterrissar é mudo.
 depois de um `note`, `start` e `next` apontam esse comando.
 Arquivo ausente é lacuna do verbo, não silêncio deliberado;
 `heard` é sempre falso. Sem `shared/sfx`, `--fill` nomeia o stem
-do starter que casa, `--apply` o copia, `sfx search` nomeia o mesmo stem,
+do starter que casa, `--apply` o copia ou recoloca o WAV se o recibo já está, `sfx search` nomeia o mesmo stem,
 `sfx info` lê a chave, `sfx verify` nomeia os stems sem cruzar o
 que não existe, `sfx summary` lista todos os stems já no
 `public/sfx` e `sfx serve`

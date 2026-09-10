@@ -2324,6 +2324,43 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         after = game.roles_reading(destination, self.root)
         self.assertNotIn("dash", after["empty"])
 
+    def test_roles_apply_restores_the_wav_when_the_receipt_already_exists(self):
+        destination = self.root / "recibo-sem-bytes"
+        game.init(destination, "canvas-arcade")
+        wav = destination / "public/sfx/dash.wav"
+        receipt = destination / "public/sfx/sources.json"
+        before = json.loads(receipt.read_text(encoding="utf-8"))
+        note = next(row["note"] for row in before["files"] if row["key"] == "dash")
+        wav.unlink()
+        self.assertTrue(receipt.is_file())
+        applied = game.roles_fill(destination, self.root, apply=True)
+        self.assertIn("dash", applied["copied"])
+        self.assertTrue(wav.is_file())
+        self.assertFalse(applied["heard"])
+        after = json.loads(receipt.read_text(encoding="utf-8"))
+        dash = next(row for row in after["files"] if row["key"] == "dash")
+        self.assertEqual(dash["note"], note)
+        self.assertEqual(dash["license"], "CC0-1.0")
+        self.assertNotIn("dash", game.roles_reading(destination, self.root)["empty"])
+        dumped = json.dumps(applied)
+        self.assertNotIn("aprovado", dumped)
+        self.assertNotIn("verified", dumped)
+
+    def test_roles_apply_refuses_when_the_receipt_names_another_license(self):
+        destination = self.root / "recibo-outra-licenca"
+        game.init(destination, "canvas-arcade")
+        receipt = destination / "public/sfx/sources.json"
+        data = json.loads(receipt.read_text(encoding="utf-8"))
+        for row in data["files"]:
+            if row.get("key") == "dash":
+                row["license"] = "CC-BY-4.0"
+        receipt.write_text(json.dumps(data), encoding="utf-8")
+        (destination / "public/sfx/dash.wav").unlink()
+        with self.assertRaises(ValueError) as refused:
+            game.roles_fill(destination, self.root, apply=True)
+        self.assertIn("Proveniência", str(refused.exception))
+        self.assertFalse((destination / "public/sfx/dash.wav").exists())
+
     def test_sfx_search_on_empty_catalog_does_not_pretend_you_can_listen(self):
         run = subprocess.run(
             [sys.executable, str(SCRIPT), "sfx", "search", "passos", "--root", str(self.root)],

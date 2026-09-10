@@ -1247,6 +1247,8 @@ def roles_fill(project, root=None, apply=False):
             "`--apply`, copia para public/sfx com o nome do papel. Sem "
             "acervo, ou sem id que case, nomeia o stem do starter que casa "
             "(`kind: starter`) e o `--apply` também o copia com créditos. "
+            "Se o recibo já está e o WAV sumiu, recoloca os bytes quando "
+            "origem e licença casam; recibo diferente recusa. "
             "`sfx copy` / `sfx export` continuam o caminho explícito. "
             "`heard` é sempre falso."
         ),

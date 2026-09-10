@@ -16,6 +16,16 @@ def default_workspace():
 DEFAULT_ROOT = default_workspace()
 CATALOG_RELATIVE = Path("shared/sfx")
 STARTER_SFX = Path(__file__).resolve().parents[1] / "assets/starters/canvas-arcade/public/sfx"
+STEM_RECEIPT = ("src", "key", "author", "license", "origin")
+
+
+def same_stem_receipt(existing, record):
+    # O init copia o recibo com `note`. O export acrescenta `kind`/`from`.
+    # Comparar o dicionário inteiro recusava recolocar o WAV que sumiu.
+    # Identidade é origem e licença, não o campo extra. Recibo não é licença.
+    if not isinstance(existing, dict) or not isinstance(record, dict):
+        return False
+    return all(existing.get(field) == record.get(field) for field in STEM_RECEIPT)
 LICENSES = tuple(audio.LICENSES)
 QUALITY_BAR = {
     "required": ["gravação licenciada ou design sonoro contemporâneo com origem",
@@ -247,14 +257,16 @@ def copy_local_stem(item, destination, root=None, sources=None, as_name=None, fo
         raise ValueError("Manifesto de destino sem lista files")
     entries = previous["files"]
     existing = next((row for row in entries if row.get("key") in {item["key"], stem} or row.get("src") == name), None)
-    if existing and existing != record:
+    if existing and not same_stem_receipt(existing, record):
         raise ValueError("Proveniência de destino diferente; escolha outra pasta")
     for path in (receipt, credit_path):
         if path.is_symlink() or (path.exists() and not path.is_file()):
             raise ValueError("Destino de créditos/proveniência inválido")
     if credit_path.exists() and credit_path.read_bytes() != credit_bytes:
         raise ValueError("Créditos de destino diferentes; escolha outra pasta")
-    already = target.exists() and credit_path.exists() and (existing == record or existing is None)
+    already = target.exists() and credit_path.exists() and (
+        existing is None or same_stem_receipt(existing, record)
+    )
     destination.mkdir(parents=True, exist_ok=True)
     receipt.parent.mkdir(parents=True, exist_ok=True)
     if not target.exists():

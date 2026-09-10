@@ -223,7 +223,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    **`roles <projeto>`** lê os papéis de áudio que o código declara e os
    arquivos que os preenchem. `--fill` sugere o acervo ou a ficha
    do stem do starter; `--apply` copia o id do acervo ou o stem
-   do starter com créditos. `sfx copy` continua o caminho explícito. Crescer o acervo é `sfx import` / `sfx seed`
+   do starter com créditos — e recoloca o WAV se o recibo já está
+   e origem e licença casam. `sfx copy` continua o caminho explícito. Crescer o acervo é `sfx import` / `sfx seed`
    (ffmpeg); `sfx info` lê a ficha do acervo ou a chave do stem
    do starter; `sfx verify` nomeia os stems sem cruzar o que não
    existe e `sfx export` copia bytes e

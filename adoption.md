@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.249 — O apply recoloca o stem com o recibo
+
+O
+`--fill`
+já
+nomeava
+o
+stem.
+O
+`--apply`
+recusava
+quando
+o
+recibo
+do
+`init`
+tinha
+`note`
+e
+o
+WAV
+tinha
+sumido.
+Agora
+recoloca
+os
+bytes
+se
+origem
+e
+licença
+casam.
+Recibo
+diferente
+recusa.
+Não
+promove
+`heard`.
+
+O que 0.9.249 não afirma:
+recolocar
+bytes
+não
+é
+mix
+ouvido.
+
 ## 0.9.248 — Preferências ilegíveis avisam
 
 O
