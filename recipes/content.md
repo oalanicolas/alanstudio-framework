@@ -12,7 +12,8 @@ falha com o número; campo obrigatório falha com o nome da mesa.
 starter já consome (`?spawn=` / `settings.spawnProfile`).
 `--as denser|calmer|brief` desloca os knobs e deixa a chuva distinta.
 Spawn 3 acrescenta `closeIntervalScale`; ausente fica `1` e o fecho
-só pisca. Aperto no disco não é curva observada.
+só pisca. Spawn 4 acrescenta `closeHazardScale`; ausente fica `1` e
+o fecho não muda a mistura. Aperto no disco não é curva observada.
 `npm run pair -- <nome> --from dusk|calm` nasce look e chuva no mesmo
 nome; `listMoods` inclui e `?mood=` aplica. `npm run session -- --spawn <nome>` traça essa chuva. Com tela, a
 porta também chove essa mesa — cadência e queda, sem o RNG da

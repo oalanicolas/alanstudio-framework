@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.157: o mapa nomeia a porta.
+**HEAD:** ver `git log -1` — vigente 0.9.158: o fecho sobe o risco.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 264 OK.
-`cd assets/starters/canvas-arcade && npm test` → 330 OK.
+`cd assets/starters/canvas-arcade && npm test` → conferir após o 0.9.158.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.157)
+## O que o HEAD já entrega (0.9.91–0.9.158)
 
 | Ver | Salto |
 | --- | --- |
@@ -101,6 +101,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.155 | Spawn 3: `closeIntervalScale` aperta o intervalo nos últimos 10 s. Ausente fica `1`. dusk aperta mais que spawn; calm menos. Recuperação e fecho se multiplicam. Não promove pacing. |
 | 0.9.156 | O fecho com corrente viva pede guardar de novo. Reusa `hint_bank`. Pad e toque continuam calados depois da primeira guarda. Sem corrente o aviso some. Não promove feel. |
 | 0.9.157 | O `guide` sem destino nomeia `Verbo:` / `Porta:` no prompt. Starter mudo continua sem. `process.md` aponta `start`, não só `init`. Não executa. |
+| 0.9.158 | Spawn 4: `closeHazardScale` sobe o estilhaço nos últimos 10 s. Ausente fica `1`. dusk sobe mais que spawn; calm menos. O pulso acende o campo (`flashClose`). Não promove pacing. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -117,7 +118,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | `heard` falso |
-| pacing | slice | fecho aperta no disco; curva com outsider pendente |
+| pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | `hold` no stub; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
 | accessibility | slice | nove opções + remap + relógio; sessão real pendente |
@@ -180,7 +181,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, chuva da porta, `gameSpeed` no disco, `hold` no stub,
-  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, aviso de guardar no fecho, copiar ou gravar o achado, last-run,
+  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, `closeHazardScale` no disco, aviso de guardar no fecho, copiar ou gravar o achado, last-run,
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
   `then.invite`, `invite_href`, copiar o endereço do convite,
   levar a chuva ou o look na URL, tinta estável no disco,
@@ -280,9 +281,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 **Starter**
 
 - Looks first-party: `normal`, `dusk`, `calm`. Contrast é alcance.
-- Chuvas first-party: `spawn`, `dusk`, `calm`. Spawn 3: `closeIntervalScale`
-  (spawn 0.72, dusk 0.58, calm 0.86). Ausente ou ≤ 0 vira `1`.
-  `spawnIntervalScale` multiplica recuperação e fecho. Não promover
+- Chuvas first-party: `spawn`, `dusk`, `calm`. Spawn 4: `closeIntervalScale`
+  (spawn 0.72, dusk 0.58, calm 0.86) e `closeHazardScale` (spawn 1.22,
+  dusk 1.36, calm 1.12). Ausente ou ≤ 0 vira `1`. `spawnIntervalScale`
+  multiplica recuperação e fecho. `spawnHazardChance` aplica o risco
+  do fecho depois da prática. `flashClose` no pulso. Não promover
   `pacing`.
 - `listMoods()` = interseção look ∩ spawn (hoje `calm`, `dusk`).
 - `SOUNDS`: dash, land, graze, collect, missed, bank, hit, over, close, live, stir, bed.
@@ -397,6 +400,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um fecho que só pisca enquanto o dado já nomeia o aperto.
 **Não** mais um fecho que come a corrente viva sem pedir guardar.
 **Não** mais um `guide` que esconde a porta no JSON enquanto o stderr só cola o start.
+**Não** mais um fecho que só enche a chuva enquanto o risco fica no teto da rampa.
 
 Candidatos, do que ainda dói:
 
@@ -446,7 +450,9 @@ Candidatos, do que ainda dói:
   no coil do avanço e o
   aperto do fecho no
   disco e o aviso de
-  guardar no fecho não
+  guardar no fecho e o
+  risco do fecho no
+  disco não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
@@ -469,6 +475,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `guide_prompt` chama
-`cycle_line` antes do destino existir. Starter mudo não inventa
-porta. Não executa.
+Arquivos quentes da última sessão: `closeHazardScale` nas três
+chuvas; `spawnHazardChance` e `flashClose` no pulso. Ausente fica 1.
+Não promover pacing.

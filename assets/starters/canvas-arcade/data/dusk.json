@@ -1,5 +1,5 @@
 {
-  "schema": 3,
+  "schema": 4,
   "intervalTicks": 16,
   "minIntervalTicks": 8,
   "rampTicks": 600,
@@ -10,5 +10,6 @@
   "practiceTicks": 90,
   "recoveryTicks": 70,
   "recoveryIntervalScale": 1.4,
-  "closeIntervalScale": 0.58
+  "closeIntervalScale": 0.58,
+  "closeHazardScale": 1.36
 }

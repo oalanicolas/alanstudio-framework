@@ -69,6 +69,7 @@ export const CONFIG = {
     flashHit: 0.55, // impacto do erro: o campo acende; coleta não
     flashPractice: 0.28, // a prática some: o campo acende menos que o erro
     flashStir: 0.18, // a folga acaba: o campo acende menos que a prática
+    flashClose: 0.16, // o fecho pulsa: o campo acende menos que a folga
     flashMissed: 0.12, // o orbe caiu: o campo acende menos que a volta
     flashGraze: 0.08, // o contato acende menos que a queda
     flashDecay: 0.72,
@@ -541,7 +542,9 @@ export function recoveryPulse(state) {
 function markClose(state) {
   const left = remainingTicks(state);
   if (left <= 0 || left > CONFIG.feel.closeTicks) return;
-  if (left % TICK_HZ === 0) emit(state, "close");
+  if (left % TICK_HZ !== 0) return;
+  state.flash = Math.max(state.flash, CONFIG.feel.flashClose);
+  emit(state, "close");
 }
 
 function markPractice(state) {
@@ -588,7 +591,6 @@ export function advance(state, intent = neutralIntent()) {
     return state;
   }
   state.tick += 1;
-  markClose(state);
   const player = state.player;
 
   // O pedido de dash é registrado antes de qualquer congelamento, para que uma
@@ -610,6 +612,7 @@ export function advance(state, intent = neutralIntent()) {
     state.hitstop -= 1;
     state.shake *= CONFIG.feel.shakeDecay;
     decayFlash(state);
+    markClose(state);
     markPractice(state);
     markRecovery(state);
     decayCamera(state);
@@ -654,6 +657,7 @@ export function advance(state, intent = neutralIntent()) {
   state.shake *= CONFIG.feel.shakeDecay;
   if (state.shake < 0.01) state.shake = 0;
   decayFlash(state);
+  markClose(state);
   markPractice(state);
   markRecovery(state);
   markMissed(state);
@@ -771,6 +775,18 @@ export function spawnIntervalScale(state, table = rain(state)) {
   return scale;
 }
 
+export function spawnHazardChance(state, table = rain(state)) {
+  if (state.tick < table.practiceTicks) return 0;
+  const progress = Math.min(1, state.tick / table.rampTicks);
+  let chance = lerp(table.hazardChanceStart, table.hazardChanceEnd, progress);
+  if (closingWindow(state)) {
+    const close = Number(table.closeHazardScale);
+    if (Number.isFinite(close) && close > 0) chance *= close;
+  }
+  if (!(chance > 0)) return 0;
+  return Math.min(0.95, chance);
+}
+
 function spawn(state) {
   const table = rain(state);
   state.spawnTimer -= 1;
@@ -782,10 +798,7 @@ function spawn(state) {
   );
   if (state.spawnTimer < 1) state.spawnTimer = 1;
   const rng = bindSpawnRng(state.seed, state.rngState);
-  const practicing = state.tick < table.practiceTicks;
-  const hazardChance = practicing
-    ? 0
-    : lerp(table.hazardChanceStart, table.hazardChanceEnd, progress);
+  const hazardChance = spawnHazardChance(state, table);
   const kind = rng.next() < hazardChance ? "shard" : "orb";
   const x = rng.range(14, FIELD.width - 14);
   const fall = state.assist ? CONFIG.assist.fallSpeedScale : 1;

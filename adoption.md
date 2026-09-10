@@ -3,6 +3,22 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.158 — O fecho sobe o risco
+
+O fecho enchia a chuva e
+pedia guardar. O estilhaço
+ficava no teto da rampa.
+`closeHazardScale` sobe a
+mistura. Mesa velha fica `1`.
+dusk sobe mais; calm menos.
+O pulso acende o campo.
+`pacing` não sobe. Só
+`release` fica no piso.
+
+O que 0.9.158 não afirma:
+mais estilhaço no disco não
+é curva observada.
+
 ## 0.9.157 — O mapa nomeia a porta
 
 O `guide` sem destino

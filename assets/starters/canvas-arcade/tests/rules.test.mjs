@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, attractEntities, attractTick, beginRun, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnIntervalScale, threatCue } from "../src/game/rules.js";
+import { advance, approaching, attractEntities, attractTick, beginRun, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnHazardChance, spawnIntervalScale, threatCue } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -934,6 +934,9 @@ test("o fecho emite no segundo redondo e não no meio do segundo", () => {
   assert.equal(closingWindow(enter), true);
   assert.equal(closingPulse(enter).active, true);
   assert.ok(enter.events.some((event) => event.type === "close"), "entrar no fecho precisa emitir");
+  assert.ok(enter.flash >= CONFIG.feel.flashClose, "o pulso do fecho acende o campo");
+  assert.ok(CONFIG.feel.flashClose < CONFIG.feel.flashStir);
+  assert.ok(CONFIG.feel.flashClose > CONFIG.feel.flashMissed);
 
   const mid = createState(3);
   mid.tick = CONFIG.runTicks - 571;
@@ -981,4 +984,30 @@ test("o fecho aperta a chuva sem fingir curva observada", () => {
     spawnIntervalScale(both, both.spawn)
       - both.spawn.recoveryIntervalScale * both.spawn.closeIntervalScale,
   ) < 1e-9, "recuperação e fecho se multiplicam");
+});
+
+test("o fecho sobe o risco sem fingir curva observada", () => {
+  const mid = createState(3);
+  mid.tick = 1800;
+  const base = spawnHazardChance(mid, mid.spawn);
+  assert.equal(closingWindow(mid), false);
+  assert.ok(base > 0);
+  assert.equal(base, mid.spawn.hazardChanceEnd);
+
+  const close = createState(3);
+  close.tick = CONFIG.runTicks - 300;
+  assert.equal(closingWindow(close), true);
+  const raised = spawnHazardChance(close, close.spawn);
+  assert.ok(close.spawn.closeHazardScale > 1);
+  assert.ok(raised > base, "o fecho precisa subir o estilhaço, não só encher");
+  assert.ok(raised <= 0.95);
+
+  const old = createState(3);
+  old.tick = CONFIG.runTicks - 300;
+  old.spawn = { ...old.spawn, closeHazardScale: 1 };
+  assert.equal(spawnHazardChance(old, old.spawn), base);
+
+  const early = createState(3);
+  early.tick = 10;
+  assert.equal(spawnHazardChance(early, early.spawn), 0);
 });
