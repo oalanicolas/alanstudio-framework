@@ -32,8 +32,9 @@ export const CONFIG = {
     invulnTicks: 42, // graça após dano; evita perder duas correntes seguidas — inclusive no mesmo quadro
   },
   // Um orbe por tick: dois no alcance não inflam a corrente.
-  // Estilhaço letal no mesmo quadro: o orbe espera. Ordem do
-  // array não decide a aposta. Pose no disco não é peso.
+  // Estilhaço letal no mesmo quadro: o orbe espera. Orbe no
+  // arco da guarda também espera — o sit não inflama a aposta.
+  // Ordem do array não decide a aposta. Pose no disco não é peso.
   collect: {
     pad: 5, // alcance além do desenho: quem quase pegou, pega
     reachY: 8,
@@ -966,6 +967,16 @@ function resolveEntities(state) {
         // no mesmo quadro também manda o orbe esperar.
         // Pose no disco não é peso percebido.
         if (shardHits || state.events.some((event) => event.type === "collect")) {
+          entities[write] = entity;
+          write += 1;
+          continue;
+        }
+        // O arco já escolheu a aposta. Sem isto o orbe que
+        // caía no sit inflamava a corrente e o commit
+        // convertia o que você não pediu. Coleta e guarda
+        // no mesmo quadro (sem arco) continuam na hora.
+        // Pose no disco não é peso percebido.
+        if ((state.bankWindup ?? 0) > 0) {
           entities[write] = entity;
           write += 1;
           continue;

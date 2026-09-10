@@ -89,6 +89,25 @@ test("coleta e guarda no mesmo quadro continuam na hora durante o coil do avanç
   assert.equal(state.stats.dashes, 0, "converter no contato não dispara o avanço");
 });
 
+test("orbe no arco da guarda espera o compromisso", () => {
+  const state = createState(3);
+  state.chain = 2;
+  advance(state, { move: 0, dash: false, bank: true });
+  assert.equal(state.bankWindup, CONFIG.bank.windupTicks);
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.equal(state.bankWindup, CONFIG.bank.windupTicks - 1, "ainda no arco");
+  assert.equal(state.stats.collected, 0, "o sit não come o orbe");
+  assert.equal(state.chain, 2, "a aposta do pedido permanece");
+  assert.equal(state.stats.banks, 0);
+  assert.equal(state.entities.length, 1, "o orbe espera o próximo tick depois do commit");
+  advance(state, neutralIntent());
+  assert.equal(state.stats.banks, 1, "o quadro da conversão ainda converte");
+  assert.equal(state.score, 4, "converte a corrente pedida, não a inflamada");
+  assert.equal(state.stats.collected, 1, "depois do commit o orbe entra");
+  assert.equal(state.chain, 1);
+});
+
 test("guardar converte a corrente ao quadrado e cobra o compromisso", () => {
   const state = createState(1);
   state.chain = 4;

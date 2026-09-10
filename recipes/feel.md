@@ -91,7 +91,9 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    existente espera o coil do avanço: os dois arcos no mesmo tick
    comiam o disparo. O quadro que converte também atravessa:
    sentar e pontuar no mesmo impacto não mata. Coleta e guarda no mesmo
-   quadro continuam na hora — o contato já foi a antecipação. Dois
+   quadro continuam na hora — o contato já foi a antecipação. Orbe
+   que cai no arco da guarda espera: o sit não inflama a aposta
+   que você já pediu; depois do commit o orbe entra. Dois
    orbes no mesmo quadro não inflam a corrente: o segundo espera o
    próximo tick. Orbe e estilhaço no mesmo quadro: o estilhaço letal
    resolve; o orbe espera. Ordem do array não decide a aposta. A graça
