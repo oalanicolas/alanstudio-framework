@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.208: o `origins --declare` escreve o sidecar.
+**HEAD:** ver `git log -1` — vigente 0.9.208 (confirmado): o `origins --declare` escreve o sidecar.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 277 esperados (confirmar).
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 277 OK.
 `cd assets/starters/canvas-arcade && npm test` → 384 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
