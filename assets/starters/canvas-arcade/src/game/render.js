@@ -383,10 +383,13 @@ export function createRenderer(canvas, options = {}) {
     const ending = state.phase === "over";
     const dashing = !ending && player.dashTicks > 0;
     const winding = !ending && !dashing && (player.dashWindup ?? 0) > 0;
-    // O arco do sit já veste a corrente. Sem isto o corpo
-    // no coil da guarda vestia o descanso e a antecipação
-    // mentia a aposta. Pose no disco não é peso percebido.
-    const banking = !ending && !dashing && (state.bankWindup ?? 0) > 0;
+    // O arco do sit e do lock já vestem a corrente. Sem
+    // isto o corpo no compromisso vestia o descanso e o
+    // hold mentia a aposta — o avanço no travel já veste
+    // a corrente. Pose no disco não é peso percebido.
+    const banking = !ending && !dashing && (
+      (state.bankWindup ?? 0) > 0 || (state.bankLock ?? 0) > 0
+    );
     const recovering = !ending && !dashing && !winding && !banking && player.dashRecovery > 0;
     // A graça do erro já existia. Só o contorno piscava; o tijolo
     // sólido tapava a leitura. O corpo some e volta no mesmo

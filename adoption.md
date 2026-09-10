@@ -3,6 +3,48 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.325 — o compromisso da guarda veste a aposta
+
+O
+arco
+do
+lock
+já
+vestia
+a
+corrente.
+O
+corpo
+no
+hold
+vestia
+o
+descanso.
+O
+avanço
+no
+travel
+já
+veste
+a
+corrente.
+Agora
+o
+compromisso
+também.
+Não
+promove
+`felt`.
+
+O que 0.9.325 não afirma:
+pose
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.324 — a porta chove o risco da mesa
 
 A

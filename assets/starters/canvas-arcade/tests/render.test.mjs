@@ -756,6 +756,17 @@ test("o coil da guarda veste a aposta, não o descanso", () => {
   assert.notEqual(playerFill(coil), PALETTES.normal.muted, "o coil da guarda não é a recuperação");
 });
 
+test("o compromisso da guarda veste a aposta, não o descanso", () => {
+  const idle = createState(1);
+  const lock = createState(1);
+  lock.bankLock = CONFIG.bank.lockTicks;
+  lock.player.squash = CONFIG.feel.squashBank;
+  assert.equal(playerFill(lock), PALETTES.normal.chain, "o compromisso da guarda vestia o descanso");
+  assert.notEqual(playerFill(lock), playerFill(idle));
+  assert.notEqual(playerFill(lock), PALETTES.normal.orb, "o compromisso da guarda não veste a prática");
+  assert.notEqual(playerFill(lock), PALETTES.normal.muted, "o compromisso da guarda não é a recuperação");
+});
+
 test("a porta nomeia a recuperação que o painel já mostra", () => {
   const state = createState(1, { entry: "title" });
   const door = paint(state, {}, { best: 0, settingsLoad: { status: "recovered" } });
