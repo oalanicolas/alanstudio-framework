@@ -163,8 +163,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Destino existente preenche o comando que abre o jogo e o `kind`
    do passo de jogar. `open` é o comando de agora; `prompt` o nomeia
    e também sai em stderr — o JSON fica no stdout.
-   Se o starter declara o verbo, o passo 2 o
-   nomeia — e a porta, se o manifesto a declara; `then` nomeia par, look, chuva e voz quando o projeto — ou o
+   Se o starter declara o verbo, o prompt e o passo 2 o
+   nomeiam — e a porta, se o manifesto a declara; `then` nomeia par, look, chuva e voz quando o projeto — ou o
    starter, se o destino ainda não existe — as declara; se declara
    `session`, `then` a aponta e o prompt a nomeia; se o disco tem last-run com seed,
    `then` aponta a partida (número, chuva e look quando o candidato os nomeia) e o convite; nomear o endereço não observa; `executed` fica `false`. `runtime` lê o `node` do PATH se o play pede npm ou node. O autor do

@@ -3246,12 +3246,14 @@ def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None
     hole = runtime_line(runtime)
     simulated = session_line(then)
     surface = f"Abra {url} no navegador — file:// não carrega. " if url else ""
+    how = cycle_line(cycle)
     return (
         hole
         + f"O ciclo ainda não existe. Cole e rode: {start_command}. "
         f"Depois, no próprio dispositivo: {play}. "
         + simulated
         + surface
+        + (f"{how} " if how else "")
         + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
         "O harness não cria a pasta, não abre o jogo e não joga."
     )
@@ -3918,7 +3920,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "já existe. `url` nomeia a superfície pedida; nomear não serve. "
             "`prompt` o nomeia para colar e também sai em "
             "stderr; o JSON fica no stdout. Se o starter declara "
-            "o verbo e as teclas, o passo 2 as nomeia — inclusive o par. Sem destino, a frase "
+            "o verbo e as teclas, o prompt e o passo 2 as nomeiam — inclusive a porta. Sem destino, a frase "
             "nomeia a pasta no comando do start — ao lado do framework se o "
             "mapa corre de dentro desta árvore; no diretório atual se corre "
             "de fora. `guide --idea` continua só no comando, não no disco. "

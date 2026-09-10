@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.156: o fecho pede guardar.
+**HEAD:** ver `git log -1` — vigente 0.9.157: o mapa nomeia a porta.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 264 OK.
-`cd assets/starters/canvas-arcade && npm test` → 330 OK.
+`cd assets/starters/canvas-arcade && npm test` → conferir após o 0.9.157.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.156)
+## O que o HEAD já entrega (0.9.91–0.9.157)
 
 | Ver | Salto |
 | --- | --- |
@@ -100,6 +100,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.154 | O prompt nomeia `Sessão:` quando o manifesto declara `session`. `start` / `play` / `guide` devolvem a chave. Não executa. Simulação não é partida observada. |
 | 0.9.155 | Spawn 3: `closeIntervalScale` aperta o intervalo nos últimos 10 s. Ausente fica `1`. dusk aperta mais que spawn; calm menos. Recuperação e fecho se multiplicam. Não promove pacing. |
 | 0.9.156 | O fecho com corrente viva pede guardar de novo. Reusa `hint_bank`. Pad e toque continuam calados depois da primeira guarda. Sem corrente o aviso some. Não promove feel. |
+| 0.9.157 | O `guide` sem destino nomeia `Verbo:` / `Porta:` no prompt. Starter mudo continua sem. `process.md` aponta `start`, não só `init`. Não executa. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -232,11 +233,13 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `need`, `asked`, `usable`, `executed` falso). `asked` se o play
   casa `npm|node`. `usable` é major ≥ 20 ou o play não pede Node.
   Sem usable o prompt avisa. Não executa o serve.
-- Se `then.session` existe, o recibo sobe `session` e o prompt do
+-   Se `then.session` existe, o recibo sobe `session` e o prompt do
   primeiro ciclo nomeia `Sessão:`. Sem script, a chave é nula e a
   linha some. Não entra em `CYCLE_KEYS`. Depois de um recibo o
   prompt de ofício não repete a sessão. Não executa. Simulação
-  não é partida observada.
+  não é partida observada. Sem destino, `guide_prompt` também
+  cola `cycle_line` (Verbo / Porta / teclas) se o starter declara.
+  Starter mudo não inventa.
 - `start` devolve `open` (= `play`), `url` e `steps` (3, passo 1 feito).
   `guide` sem destino: `open` é o start. Os dois: `executed` falso.
   `url` é `http://localhost:<PORT>/` só se o script for `serve`
@@ -393,6 +396,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais esconder a sessão no `then` enquanto o prompt só cola o serve.
 **Não** mais um fecho que só pisca enquanto o dado já nomeia o aperto.
 **Não** mais um fecho que come a corrente viva sem pedir guardar.
+**Não** mais um `guide` que esconde a porta no JSON enquanto o stderr só cola o start.
 
 Candidatos, do que ainda dói:
 
@@ -413,7 +417,8 @@ Candidatos, do que ainda dói:
    mesmos eixos.    Nomear `url` não serve. Não auto-servir.
    `runtime` lê o Node do PATH; sem 20+ o prompt avisa.
    O prompt nomeia `Sessão:` se o manifesto declara `session`.
-   `len(steps) == 3` e `executed: false` continuam.
+   Sem destino, o `guide` também nomeia `Verbo:` / `Porta:` se o
+   starter declara. `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
    volátil e gravação recusada. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
@@ -464,6 +469,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `coachHint` no fecho com
-corrente viva. Reusa `hint_bank`. Pad/touch não voltam.
-Não promover feel.
+Arquivos quentes da última sessão: `guide_prompt` chama
+`cycle_line` antes do destino existir. Starter mudo não inventa
+porta. Não executa.

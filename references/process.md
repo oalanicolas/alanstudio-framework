@@ -43,7 +43,8 @@ starter já fala em `public/sfx`. Leia a implementação
 A busca é delimitada à necessidade, não uma auditoria de tudo.
 
 Para um jogo que ainda não existe no disco, o candidato é um starter: `doctor`
-lista os disponíveis e `init` monta o projeto. Partir de um starter é REUSE;
+lista os disponíveis e `start --idea` monta o projeto sem plantar os
+rascunhos. `init` continua plantando. Partir de um starter é REUSE;
 escrever um laço, um save e uma abstração de entrada do zero é CREATE, e CREATE
 pede a lacuna explícita como qualquer outra.
 
