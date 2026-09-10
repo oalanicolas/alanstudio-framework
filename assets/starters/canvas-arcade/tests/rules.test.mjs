@@ -122,6 +122,17 @@ test("guardar converte a corrente ao quadrado e cobra o compromisso", () => {
   );
 });
 
+test("o fim leva o x do campo", () => {
+  const state = createState(1);
+  state.player.x = 20;
+  state.tick = CONFIG.runTicks - 1;
+  state.spawnTimer = 999;
+  advance(state, neutralIntent());
+  const over = state.events.find((event) => event.type === "over");
+  assert.ok(over, "o relógio emite o fim");
+  assert.equal(over.x, 20, "a voz precisa do lugar do corpo");
+});
+
 test("a guarda leva o x do campo", () => {
   const state = createState(1);
   state.chain = 4;
@@ -1517,6 +1528,7 @@ test("no fim o corpo senta; a conta sobrevive", () => {
   assert.equal(state.chain, 5, "a conta no estado sobrevive ao fim");
   const over = state.events.find((event) => event.type === "over");
   assert.equal(over.unbanked, 5);
+  assert.equal(over.x, state.player.x, "o fim precisa do lugar do corpo");
   const lapses = state.motes.filter((mote) => mote.kind === "lapse");
   assert.equal(lapses.length, 5, "a aposta cai, não some");
   assert.ok(

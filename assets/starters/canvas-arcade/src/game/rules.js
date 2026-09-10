@@ -796,7 +796,10 @@ function endRun(state) {
     state.camera.x = 0;
     state.camera.y = 0;
   }
-  emit(state, "over", { score: state.score, unbanked: state.chain });
+  // Coleta, guarda e o erro já marcam o lugar. Sem isto
+  // o stinger da partida falava no centro e o corpo
+  // que sentou calava. Número no panner não é mix ouvido.
+  emit(state, "over", { score: state.score, unbanked: state.chain, x: state.player.x });
   lapseChain(state, state.chain);
 }
 

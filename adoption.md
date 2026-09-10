@@ -3,6 +3,45 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.245 — O fim leva o x do campo
+
+Coleta,
+guarda
+e
+o
+erro
+já
+marcavam
+o
+lugar.
+O
+stinger
+da
+partida
+falava
+no
+centro.
+Agora
+o
+fim
+leva
+o
+x
+do
+corpo.
+Não
+promove
+`heard`.
+
+O que 0.9.245 não afirma:
+número
+no
+panner
+não
+é
+mix
+ouvido.
+
 ## 0.9.244 — O controle também pede o resume
 
 Tecla

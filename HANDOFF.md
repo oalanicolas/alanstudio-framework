@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.244 (confirmado): o controle também pede o resume. Tecla e toque já pediam; o pad falava e a porta ia para a fila. `heard` falso.
+**HEAD:** ver `git log -1` — vigente 0.9.245: o fim leva o x do campo. O stinger da partida não fala no centro. `heard` falso.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 283 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.244)
+## O que o HEAD já entrega (0.9.91–0.9.245)
 
 | Ver | Salto |
 | --- | --- |
@@ -188,6 +188,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.242 | `template agents` e o `next` sem AGENTS geram a memória do disco. Sem rascunhos não listam GDD. Não executa. |
 | 0.9.243 | Na porta o tap na faixa da guarda também abre. O polegar no primeiro gesto não cala a abertura. Não promove feel. |
 | 0.9.244 | O controle também pede o resume. Tecla e toque já pediam; o pad falava e a porta ia para a fila. Não promove `heard`. |
+| 0.9.245 | O fim leva o x do campo. O stinger da partida não fala no centro. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -204,7 +205,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
-| audio_mix | slice | o controle também pede o resume; o pedido suspenso espera o gesto; a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
+| audio_mix | slice | o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | live nomeia o aviso na porta e no fim; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -352,7 +353,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou o pedido no contexto suspenso que dispara no vazio
   ou o template agents que lista GDD que o disco não tem
   ou o tap na faixa da porta que some o abrir
-  ou o controle que fala e some o resume.
+  ou o controle que fala e some o resume
+  ou o fim que fala no centro.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -509,6 +511,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   texto vigente. Sem o número o tom falava e a faixa calava.
   `heard` falso.
   A guarda emite `x` no campo — sem isto a aposta falava no centro.
+  O `over` emite `x` do corpo — sem isto o stinger da partida
+  falava no centro. Fecho, prática e cama continuam no centro.
   Pedido sem buffer: last-wins na fila; `register` toca sem segunda
   legenda. Pedido com buffer no contexto suspenso também espera;
   `unlock` / o resume toca sem segunda legenda. Disparar no
@@ -797,6 +801,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um hitstop no fim que alonga o relógio.
 **Não** mais uma queda longe que senta o verbo em curso.
 **Não** mais uma guarda que fala no centro.
+**Não** mais um fim que fala no centro.
 **Não** mais uma fantasia na porta que come o aviso de mover.
 **Não** mais um campo que repete a frase e o mover que a porta já deu.
 **Não** mais um `context` que manda documentar um `start` fresco.
@@ -1275,6 +1280,10 @@ Candidatos, do que ainda dói:
   controle que
   fala e some
   o resume
+  e o
+  fim que
+  fala no
+  centro
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1299,6 +1308,5 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-controle também pede o resume. Tecla e
-toque já pediam; o pad falava e a porta
-ia para a fila. `heard` falso.
+fim leva o x do campo. O stinger da
+partida não fala no centro. `heard` falso.

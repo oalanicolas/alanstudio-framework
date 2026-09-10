@@ -191,6 +191,16 @@ test("o término legendas sem fingir que o mix foi ouvido", () => {
   assert.equal("duckMs" in SOUNDS.land, false);
 });
 
+test("o fim leva o x do campo sem fingir que o mix foi ouvido", () => {
+  const { audio, context } = build();
+  audio.register("over", { duration: 0.1 });
+  assert.equal(audio.play("over", { score: 12, unbanked: 0, x: 0 }), true);
+  assert.equal(context.panners[0].pan.value, -1);
+  assert.equal(audio.play("over", { score: 12, unbanked: 0, x: FIELD.width }), true);
+  assert.equal(context.panners[1].pan.value, 1);
+  assert.equal(captionFor("over", { score: 12, x: 0 }), "fim da partida");
+});
+
 test("a guarda leva o x do campo sem fingir que o mix foi ouvido", () => {
   const { audio, context } = build();
   audio.register("bank", { duration: 0.1 });
