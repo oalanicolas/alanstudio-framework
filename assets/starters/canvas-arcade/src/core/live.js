@@ -14,6 +14,10 @@
 // quem não vê a tela só ouvia pausado. Na porta o canvas já
 // nomeia jogar, repetir e seed nova; a região viva espelha
 // essas linhas. Sem isto quem não vê a tela só ouvia abertura.
+// A porta já chove a mesa e veste o look; a região viva
+// nomeia esses eixos quando não são o padrão. Spawn e
+// normal somem. Contrast não é look de arte. Texto no
+// DOM não é direção observada.
 // Jogando sem pausa o número não entra. O painel já nomeia
 // o som que o fetch perdeu; a região viva espelha essa
 // lacuna na porta e no fim. Catálogo completo não entra.
@@ -22,6 +26,12 @@
 function whole(value) {
   if (!Number.isFinite(value)) return null;
   return String(Math.trunc(value));
+}
+
+function namedAxis(kind, value, silent) {
+  const name = typeof value === "string" ? value.trim() : "";
+  if (!name || silent.includes(name)) return "";
+  return `${kind} ${name}`;
 }
 
 export function liveText({
@@ -37,6 +47,8 @@ export function liveText({
   settings,
   audio,
   attractTouch,
+  spawn,
+  look,
   coach,
   resume,
   restart,
@@ -73,6 +85,12 @@ export function liveText({
     if (last !== null) add(`última ${last}`);
     const record = whole(best);
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
+    // A porta já chove a mesa e veste o look. Sem isto
+    // o leitor só ouvia abertura e a chuva dusk
+    // vestia o mesmo nome que calm. Texto no DOM
+    // não é direção observada.
+    add(namedAxis("chuva", spawn, ["spawn"]));
+    add(namedAxis("look", look, ["normal", "contrast"]));
     add(persist);
     add(settings);
     add(audio);

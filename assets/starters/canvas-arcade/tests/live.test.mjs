@@ -243,6 +243,43 @@ test("na porta e no fim a região viva nomeia a lacuna do som que o painel já m
   );
 });
 
+test("na porta a região viva nomeia a mesa e o look que a chuva já veste", () => {
+  assert.equal(liveText({ phase: "title", spawn: "dusk" }), "abertura. chuva dusk");
+  assert.equal(liveText({ phase: "title", look: "dusk" }), "abertura. look dusk");
+  assert.equal(
+    liveText({ phase: "title", spawn: "dusk", look: "calm" }),
+    "abertura. chuva dusk. look calm",
+  );
+  assert.equal(
+    liveText({ phase: "title", spawn: "calm", look: "dusk", lastScore: 8 }),
+    "abertura. última 8. chuva calm. look dusk",
+  );
+  assert.equal(liveText({ phase: "title", spawn: "spawn", look: "normal" }), "abertura");
+  assert.equal(liveText({ phase: "title", look: "contrast" }), "abertura");
+  assert.equal(liveText({ phase: "title", spawn: "  dusk  " }), "abertura. chuva dusk");
+  assert.equal(liveText({ phase: "playing", spawn: "dusk", look: "dusk" }), "");
+  assert.equal(
+    liveText({ phase: "over", score: 12, spawn: "dusk", look: "dusk" }),
+    "fim da partida. 12",
+  );
+  assert.equal(
+    liveText({
+      phase: "title",
+      spawn: "dusk",
+      look: "dusk",
+      persist: "Esta sessão não grava",
+      titlePlay: "Jogar: toque",
+    }),
+    "abertura. chuva dusk. look dusk. Esta sessão não grava. Jogar: toque",
+  );
+  assert.match(main, /spawn:\s*state\.spawnProfile/);
+  assert.match(main, /look:\s*settings\.look/);
+  assert.doesNotMatch(
+    liveText({ phase: "title", spawn: "dusk", look: "dusk" }),
+    /aprovado|verified|consistent|alguém de fora|felt/,
+  );
+});
+
 test("na porta a região viva nomeia o toque da mostra sem fingir coleta", () => {
   assert.equal(liveText({ phase: "title", attractTouch: "orb" }), "abertura. a mostra toca");
   assert.equal(liveText({ phase: "title", attractTouch: "shard" }), "abertura. a mostra raspa");

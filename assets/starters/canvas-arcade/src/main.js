@@ -385,6 +385,11 @@ export function createGame(options = {}) {
         settings: settingsLine(settingsLoad, copy),
         audio: audioGapLive(audio.missing()),
         attractTouch: state.attractTouch,
+        // A porta já chove a mesa e veste o look.
+        // Sem isto o live só dizia abertura.
+        // Nome no DOM não é direção observada.
+        spawn: state.spawnProfile,
+        look: settings.look,
         coach: coachText(state, bound, { surface: spoken, fantasy: copy.fantasy }),
         resume: bound.resume,
         restart: bound.restart,

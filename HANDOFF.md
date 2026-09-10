@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.329: o verify nomeia o som que o catálogo perdeu. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.330: a região viva nomeia a mesa e o look da porta. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.329):** `python3 -m unittest discover -s tests` → 327.
-`cd assets/starters/canvas-arcade && npm test` → 502.
+**Testes no HEAD (0.9.330):** `python3 -m unittest discover -s tests` → (confirmar).
+`cd assets/starters/canvas-arcade && npm test` → (confirmar).
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.329)
+## O que o HEAD já entrega (0.9.91–0.9.330)
 
 | Ver | Salto |
 | --- | --- |
@@ -273,6 +273,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.327 | O `sfx export` nomeia o stem que o recibo lista e o disco perdeu. O info já lia a ficha; o export dizia id desconhecido. Exportar não inventa bytes. Não promove `heard`. |
 | 0.9.328 | O rótulo do dash nomeia o avanço no travel. A faixa já enchia; o rótulo dizia recarregando e o verbo mentia a recarga. O sit da guarda continua sem prometer o dash. Não promove `felt`. |
 | 0.9.329 | O `sfx verify` nomeia o som que o catálogo lista e o disco perdeu. A página de escuta já nomeava a ausência; o cruzamento despejava errno. Não promove `heard`. |
+| 0.9.330 | A região viva nomeia a mesa e o look da porta. A chuva já vestia dusk e calm; o live só dizia abertura. Spawn e normal somem. Não promove `verified`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -293,7 +294,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | a porta chove o risco da mesa; o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
-| accessibility | slice | a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
+| accessibility | slice | a região viva nomeia a mesa e o look da porta; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
 | content_scale | shippable | `brief` não come a folga da guarda; paleta não finge volume; dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -507,7 +508,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um `art` que cala o risco da chuva que a porta já lê
   ou um `sfx export` que trata o stem perdido como id desconhecido
   ou um rótulo do dash que diz recarregando no travel
-  ou um `sfx verify` que despeja errno do som que o catálogo perdeu.
+  ou um `sfx verify` que despeja errno do som que o catálogo perdeu
+  ou uma região viva que cala a mesa e o look que a porta já veste.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -778,7 +780,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `liveText.coach` lê `coachText` na porta e no campo —
   o mesmo texto do canvas, teclas vivas. No fim a linha
   some. O convite some `#commands`; sem o live o aviso
-  calava. Texto no DOM não é sessão.
+  calava. Na porta `liveText` nomeia `chuva <mesa>` e
+  `look <paleta>` quando não são o padrão (`spawn` /
+  `normal`); `contrast` some. Texto no DOM não é sessão.
 - Avanço na partida: `dashWindupTicks` (2) senta com `squashCoil`
   antes de `fireDash`. Esses ticks também são graça: o coil
   atravessa o estilhaço. O quadro do `land` (`events` tem
@@ -1236,7 +1240,9 @@ Candidatos, do que ainda dói:
    salto. O rótulo do coil do dash ainda diz recarregando —
    irmão do travel, não o próximo salto. `sfx export` de
    id do acervo cujo arquivo sumiu ainda despeja errno —
-   irmão do verify, não o próximo salto. `origins --declare`
+   irmão do verify, não o próximo salto. A região viva na
+   porta já nomeia a mesa e o look — não pintar os eixos
+   no canvas da porta (irmão, não o próximo salto). `origins --declare`
    escreve o sidecar. Recibo não é
    licença.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
@@ -2231,12 +2237,12 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o
-`sfx verify` nomeia o som que o
-catálogo lista e o disco perdeu.
-A página de escuta já nomeava a
-ausência; o cruzamento despejava
-errno. Não promove `heard`.
+Arquivos quentes da última sessão: a
+região viva nomeia a mesa e o look
+da porta. A chuva já vestia dusk e
+calm; o live só dizia abertura.
+Spawn e normal somem. Não promove
+`verified`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2301,3 +2307,4 @@ A família art que cala o risco da chuva que a porta já lê está saturada.
 A família sfx export trata stem perdido como id desconhecido está saturada.
 A família rótulo do dash diz recarregando no travel está saturada.
 A família sfx verify despeja errno do som que o catálogo perdeu está saturada.
+A família região viva que cala a mesa e o look da porta está saturada.

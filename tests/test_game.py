@@ -3537,6 +3537,33 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", recipe)
         self.assertNotIn("aprovado", declared)
 
+    def test_access_recipe_names_the_door_table_the_live_already_wears(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        declared = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/docs/access.md"
+        ).read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        live = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/src/core/live.js"
+        ).read_text(encoding="utf-8")
+        main = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/src/main.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("nomeia a mesa e o look", recipe.casefold())
+        self.assertIn("nomeia a mesa e o look", skill.casefold())
+        self.assertIn("chuva dusk", declared)
+        self.assertIn("namedAxis", live)
+        self.assertIn('namedAxis("chuva", spawn, ["spawn"])', live)
+        self.assertIn("spawn: state.spawnProfile", main)
+        self.assertIn("look: settings.look", main)
+        reach = game.access_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        self.assertFalse(reach["verified"])
+        self.assertNotIn("aprovado", recipe)
+        self.assertNotIn("aprovado", declared)
+
     def test_performance_recipe_names_the_door_the_budget_already_times(self):
         recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
         tool = (

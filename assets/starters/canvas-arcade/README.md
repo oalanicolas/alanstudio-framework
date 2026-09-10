@@ -37,7 +37,9 @@ porta vê Jogar: toque sem ter apertado; o aviso continua
 teclado até o gesto. Depois do tap a porta e o fim não
 chamam o avanço de cima. Na pausa a placa nomeia
 reiniciar; R já saía e o overlay calava. A região viva
-espelha continuar e reiniciar. O fim
+espelha continuar e reiniciar. Na porta ela nomeia a
+mesa e o look que a chuva já veste — spawn e normal
+somem. O fim
 volta à porta com um avanço novo; R também. Sem tela o headless começa jogando. Repetir não
 é o tick interrompido.
 

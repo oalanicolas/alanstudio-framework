@@ -71,7 +71,10 @@ não chega ao leitor.
 Na porta o telefone vê Jogar: toque sem ter apertado. Depois da
 partida o baixo pede seed nova; o campo repete a última. A região
 viva espelha jogar, repetir, seed nova e a abertura do fim — o
-overlay do canvas não chega ao leitor. O aviso
+overlay do canvas não chega ao leitor. Na porta a região viva
+nomeia a mesa e o look que a chuva já veste — spawn e
+normal somem; contrast não é look de arte. Texto no DOM
+não é direção observada. O aviso
 do primeiro ciclo continua teclado até o gesto. Depois do
 tap a porta e o fim não chamam o avanço de cima.
 O overlay e a casca da página seguem `uiScale` e as legendas vencem a cortina no stub. Estilhaço no

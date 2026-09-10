@@ -3,6 +3,54 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.330 — a região viva nomeia a mesa e o look da porta
+
+A
+porta
+já
+chovia
+a
+mesa
+e
+vestia
+o
+look.
+O
+live
+só
+dizia
+abertura.
+Dusk
+e
+calm
+vestiam
+o
+mesmo
+nome.
+Agora
+a
+região
+viva
+nomeia
+os
+eixos.
+Spawn
+e
+normal
+somem.
+Não
+promove
+`verified`.
+
+O que 0.9.330 não afirma:
+nomear
+a
+mesa
+não
+é
+direção
+observada.
+
 ## 0.9.329 — o verify nomeia o som que o catálogo perdeu
 
 A
