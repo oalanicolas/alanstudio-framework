@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, ARTIFACT_FINDING_HINT, composeFinding, inviteHref, inviteMode, INVITE_LABEL, readArtifactMark, runFacts, seedHref } from "../src/core/invite.js";
+import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, ARTIFACT_FINDING_HINT, composeFinding, FINDING_FILE, inviteHref, inviteMode, INVITE_LABEL, offerFinding, findingFile, readArtifactMark, runFacts, seedHref } from "../src/core/invite.js";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -60,6 +60,7 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /Copie ou grave/);
   assert.match(html, /anexa o candidato/);
   assert.match(html, /composeFinding/);
+  assert.match(html, /offerFinding/);
   assert.match(html, /playFinding/);
   assert.match(html, /applyRunFacts/);
   assert.match(html, /FINDING_ROUTE/);
@@ -111,6 +112,8 @@ test("VERSION.json no root some o Gravar e deixa o Copiar", async () => {
   assert.equal(hint.textContent, ARTIFACT_FINDING_HINT);
   assert.match(hint.textContent, /recusa gravar/);
   assert.doesNotMatch(hint.textContent, /outsider|aprovado|verified|alguém de fora/);
+  assert.match(hint.textContent, /baixa o markdown/);
+  assert.doesNotMatch(FINDING_FILE, /outsider|aprovado|verified/);
   assert.equal(root.classList.artifact, true);
 });
 
@@ -228,6 +231,58 @@ test("a partida nomeia seed, pontos e eixos sem preencher o achado", () => {
   assert.equal(node.hidden, true);
   assert.equal(runFacts({ seed: 8 }).includes("Problema:"), false);
   assert.equal(runFacts({ seed: 8, score: 12, spawn: "dusk" }).includes("Evidência:"), false);
+});
+
+test("findingFile nomeia o markdown que a página pode baixar", () => {
+  const file = findingFile("Problema: some no toque");
+  assert.equal(file.name, FINDING_FILE);
+  assert.equal(file.type, "text/markdown");
+  assert.equal(file.text, "Problema: some no toque");
+});
+
+test("offerFinding copia quando a área de transferência escreve", async () => {
+  const written = [];
+  const saved = [];
+  assert.equal(
+    await offerFinding("Problema: some no toque", {
+      clipboard: { writeText: async (text) => written.push(text) },
+      save: (file) => saved.push(file),
+    }),
+    "copied",
+  );
+  assert.deepEqual(written, ["Problema: some no toque"]);
+  assert.deepEqual(saved, []);
+});
+
+test("offerFinding baixa quando a área de transferência recusa", async () => {
+  const saved = [];
+  assert.equal(
+    await offerFinding("Problema: some no toque", {
+      clipboard: {
+        writeText: async () => {
+          throw new Error("denied");
+        },
+      },
+      save: (file) => saved.push(file.name),
+    }),
+    "saved",
+  );
+  assert.deepEqual(saved, [FINDING_FILE]);
+});
+
+test("offerFinding baixa quando não há área de transferência", async () => {
+  const saved = [];
+  assert.equal(
+    await offerFinding("Problema: some no toque", {
+      save: (file) => saved.push(file.name),
+    }),
+    "saved",
+  );
+  assert.deepEqual(saved, [FINDING_FILE]);
+});
+
+test("offerFinding perde o achado quando ninguém recebe", async () => {
+  assert.equal(await offerFinding("Problema: some no toque"), "missed");
 });
 
 test("copiar o achado preenchido tem forma; o vazio não finge", () => {

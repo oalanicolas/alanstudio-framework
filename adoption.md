@@ -3,6 +3,21 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.147 — Sem clipboard o Copiar baixa o achado
+
+Em HTTP o `writeText` some ou
+recusa. O botão falhava em
+silêncio. Sem área de
+transferência, ou se ela
+recusa, o Copiar baixa
+`achado.md`. Baixar não grava.
+`outsider` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.147 não afirma: markdown
+no download não é alguém de fora
+nem aba fechada.
+
 ## 0.9.146 — A árvore exportada some o Gravar do achado
 
 O serve já recusava o POST.

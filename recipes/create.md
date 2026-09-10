@@ -28,7 +28,8 @@ quem jogou. Nomear o ofício não pinta. `playtest --invite` aponta `href`
 chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a
 tabela some; depois do fim a página mostra seed, pontos e eixos e
 oferece os quatro nomes para copiar ou gravar. Número na faixa não
-preenche os quatro. Copiar não grava. Gravar anexa o candidato se last-run
+preenche os quatro. Copiar não grava. Sem a área de transferência,
+o Copiar baixa o markdown. Gravar anexa o candidato se last-run
 existir. Na árvore exportada o Gravar some; copie os quatro
 nomes. Gravado não é alguém de fora. Não gere todos os templates antes de experimentar. Nove arquivos vazios não
 aumentam a qualidade; uma fatia sem feel continua sendo protótipo.

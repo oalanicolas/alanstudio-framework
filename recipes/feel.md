@@ -11,7 +11,8 @@ escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco,
 `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a tabela some; depois do
 fim a página oferece os quatro nomes para copiar ou gravar e
 mostra seed, pontos e eixos da partida. Número na faixa não
-preenche os quatro. Copiar não grava. Gravar anexa o candidato
+preenche os quatro. Copiar não grava. Sem a área de
+transferência, o Copiar baixa o markdown. Gravar anexa o candidato
 se last-run existir. Gravado
 não é alguém de fora. Nomear o endereço não observa. Depois do
 fim, a página aponta o convite desta partida se a seed ficou no

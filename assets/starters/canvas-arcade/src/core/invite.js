@@ -13,7 +13,8 @@
 // não preenche os quatro. Copiar não grava. Esqueleto vazio não é
 // achado. Gravado não é alguém de fora. VERSION.json na raiz some
 // o Gravar: o serve da árvore exportada recusa o POST. Copiar
-// permanece. Recusar não fecha o achado.
+// permanece. Sem clipboard, o Copiar baixa o markdown. Baixar
+// não grava e não é alguém de fora. Recusar não fecha o achado.
 
 function runSeed(run) {
   if (!run || typeof run !== "object" || Array.isArray(run)) return null;
@@ -146,7 +147,8 @@ export function applyNote({ root, phase, invite, run } = {}) {
 
 export const VERSION_ROUTE = "/VERSION.json";
 export const ARTIFACT_FINDING_HINT =
-  "Na árvore exportada o serve recusa gravar. Copie os quatro nomes.";
+  "Na árvore exportada o serve recusa gravar. Copie os quatro nomes. Sem a área de transferência, o Copiar baixa o markdown.";
+export const FINDING_FILE = "achado.md";
 
 export async function readArtifactMark(options = {}) {
   const fetchFn = options.fetch;
@@ -192,6 +194,36 @@ export function composeFinding({
     `- Hipótese: ${String(hipotese)}\n` +
     `- Medição: ${String(medicao)}\n`
   );
+}
+
+export function findingFile(text) {
+  return { name: FINDING_FILE, type: "text/markdown", text: String(text ?? "") };
+}
+
+export function canWriteClipboard(clipboard) {
+  return typeof clipboard?.writeText === "function";
+}
+
+export async function offerFinding(text, { clipboard, save, name } = {}) {
+  const file = findingFile(text);
+  if (name) file.name = name;
+  if (canWriteClipboard(clipboard)) {
+    try {
+      await clipboard.writeText(file.text);
+      return "copied";
+    } catch {
+      if (typeof save === "function") {
+        save(file);
+        return "saved";
+      }
+      return "missed";
+    }
+  }
+  if (typeof save === "function") {
+    save(file);
+    return "saved";
+  }
+  return "missed";
 }
 
 export function findingValues(fields = {}) {

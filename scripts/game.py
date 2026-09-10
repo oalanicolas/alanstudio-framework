@@ -2222,7 +2222,8 @@ def invite_page(project):
         page += (
             "Esse comando serve `dist/`, não a árvore de desenvolvimento.\n"
             "Na árvore exportada o serve recusa gravar o achado: copie os\n"
-            "quatro nomes e devolva ao maker. Recusar não é alguém de fora.\n"
+            "quatro nomes e devolva ao maker. Sem a área de transferência,\n"
+            "o Copiar baixa o markdown. Recusar não é alguém de fora.\n"
             "\n"
         )
     page += (
@@ -2244,6 +2245,7 @@ def invite_page(project):
         "A página oferece os quatro nomes para copiar ou gravar.\n"
         "Depois do fim ela mostra seed, pontos e eixos da partida.\n"
         "Número na faixa não preenche os quatro nomes. Copiar não grava.\n"
+        "Sem a área de transferência, o Copiar baixa o markdown.\n"
         "Grave só se os quatro tiverem texto. Esqueleto vazio não é\n"
         "achado. Se a partida deixou last-run, o serve anexa o candidato\n"
         "ao lado do markdown. Anexo não é sessão observada. Gravado não\n"

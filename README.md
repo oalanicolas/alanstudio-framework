@@ -658,13 +658,15 @@ comandos some; depois do fim a página do maker aponta o convite
 desta partida se a seed ficou no recibo — copiar o endereço não
 grava — e, no convite, mostra seed, pontos e eixos e oferece
 os quatro nomes para copiar ou gravar. Número na faixa não
-preenche os quatro. Copiar não grava. Gravado vira
+preenche os quatro. Copiar não grava. Sem a área de
+transferência, o Copiar baixa o markdown. Baixar não grava.
+Gravado vira
 `docs/playtest/<utc>-achado.md` se os quatro tiverem texto.
 Se last-run existir, o serve anexa
 `docs/playtest/<utc>-achado.run.json`. `playtest` relata esses
 anexos em `finding_attachments`. Anexo não é sessão observada.
-Página no disco, texto na área de transferência e markdown
-preenchido não são alguém de fora e não sobem `pacing`.
+Página no disco, texto na área de transferência, markdown
+baixado e markdown preenchido não são alguém de fora e não sobem `pacing`.
 Esqueleto vazio não é achado. `next` propõe `playtest.invite`
 depois do recibo de quem fez (e depois do segundo ciclo, se houver).
 `next` propõe `playtest.unstructured` quando há recibo de observação
