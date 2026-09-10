@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, attractEntities, attractTick, beginRun, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnHazardChance, spawnIntervalScale, threatCue } from "../src/game/rules.js";
+import { advance, approaching, attractEntities, attractTick, beginRun, bedRateFor, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnHazardChance, spawnIntervalScale, threatCue } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -1010,4 +1010,26 @@ test("o fecho sobe o risco sem fingir curva observada", () => {
   const early = createState(3);
   early.tick = 10;
   assert.equal(spawnHazardChance(early, early.spawn), 0);
+});
+
+test("a cama sobe o tom no fecho sem fingir mix ouvido", () => {
+  assert.ok(CONFIG.feel.closeBedRate > 1);
+  const mid = createState(3);
+  mid.tick = 1800;
+  assert.equal(bedRateFor(mid), 1);
+
+  const enter = createState(3);
+  enter.tick = CONFIG.runTicks - CONFIG.feel.closeTicks;
+  const late = createState(3);
+  late.tick = CONFIG.runTicks - 30;
+  assert.equal(closingPulse(enter).active, true);
+  assert.equal(closingPulse(late).active, true);
+  assert.ok(bedRateFor(enter) > 1);
+  assert.ok(bedRateFor(late) > bedRateFor(enter));
+  assert.ok(bedRateFor(late) <= CONFIG.feel.closeBedRate);
+
+  const ended = createState(3);
+  ended.phase = "over";
+  ended.tick = CONFIG.runTicks;
+  assert.equal(bedRateFor(ended), 1);
 });

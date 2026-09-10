@@ -4,7 +4,8 @@
 // e variante `public/sfx/<papel>-b.wav`: seno e ruído filtrado,
 // gerados por tools/design-sfx.py. O mixer alterna as variantes do verbo.
 // A cama (`bed`) ocupa o barramento de música em loop; não é informação
-// de jogo e não ganha legenda.
+// de jogo e não ganha legenda. No fecho o mixer desloca o tom da cama
+// (`bedRate`); número no disco não é mix ouvido.
 // 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão — esses
 // arquivos não usam nenhum dos quatro. Coleta e guarda sobem de tom
 // com a corrente; o erro não herda. Coleta, queda, raspo, impacto,
@@ -249,8 +250,11 @@ export function createAudio(options = {}) {
       return true;
     },
     // Chamado a cada quadro: o ducking precisa voltar sozinho.
-    update() {
+    // `bedRate` desloca a cama no fecho; número no disco não é mix ouvido.
+    update(extra = {}) {
       applyBusLevels();
+      const rate = Number(extra.bedRate);
+      if (Number.isFinite(rate) && rate > 0) applyLoopRate("bed", rate);
     },
     applySettings(next) {
       settings = next;
@@ -300,6 +304,7 @@ export function createAudio(options = {}) {
     source.connect(gains[definition.bus] ?? gains.master);
     source.start();
     loops.set(id, {
+      source,
       stop: () => {
         try {
           source.stop();
@@ -308,6 +313,13 @@ export function createAudio(options = {}) {
         }
       },
     });
+    return true;
+  }
+
+  function applyLoopRate(id, rate) {
+    const voice = loops.get(id);
+    if (!voice?.source?.playbackRate) return false;
+    voice.source.playbackRate.value = rate;
     return true;
   }
 }

@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.159 — A cama sobe o tom no fecho
+
+O campo gritava. A cama
+seguia igual. `closeBedRate`
+desloca o tom com o pulso.
+Sem pedido fica `1`. Não é
+duck. `heard` continua
+falso. Só `release` fica no
+piso.
+
+O que 0.9.159 não afirma:
+tom no disco não é mix
+ouvido.
+
 ## 0.9.158 — O fecho sobe o risco
 
 O fecho enchia a chuva e

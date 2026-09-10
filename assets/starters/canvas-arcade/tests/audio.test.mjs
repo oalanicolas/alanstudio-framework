@@ -373,6 +373,20 @@ test("a cama entra em loop no barramento de música sem legenda e sem roubar voz
   assert.equal(context.sources[0].stopped, true);
 });
 
+test("a cama sobe o tom no fecho sem fingir mix ouvido", () => {
+  const { audio, context } = build();
+  audio.register("bed", { duration: 4 });
+  assert.equal(audio.play("bed"), true);
+  assert.equal(context.sources[0].playbackRate.value, 1);
+  audio.update({ bedRate: 1.08 });
+  assert.equal(context.sources[0].playbackRate.value, 1.08);
+  audio.update({ bedRate: 1 });
+  assert.equal(context.sources[0].playbackRate.value, 1);
+  audio.update();
+  assert.equal(context.sources[0].playbackRate.value, 1, "sem pedido a cama não inventa tensão");
+  assert.doesNotMatch(SOUNDS.bed.caption ?? "", /aprovado|verified|heard|LUFS|-14/);
+});
+
 test("o campo tem lugar: esquerda e direita não ocupam o mesmo ponto", () => {
   assert.equal(stereoPan(0), -1);
   assert.equal(stereoPan(FIELD.width), 1);

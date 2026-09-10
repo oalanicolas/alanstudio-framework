@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.158: o fecho sobe o risco.
+**HEAD:** ver `git log -1` — vigente 0.9.159: a cama sobe o tom no fecho.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 264 OK.
-`cd assets/starters/canvas-arcade && npm test` → 332 OK.
+`cd assets/starters/canvas-arcade && npm test` → conferir após o 0.9.159.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.158)
+## O que o HEAD já entrega (0.9.91–0.9.159)
 
 | Ver | Salto |
 | --- | --- |
@@ -102,6 +102,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.156 | O fecho com corrente viva pede guardar de novo. Reusa `hint_bank`. Pad e toque continuam calados depois da primeira guarda. Sem corrente o aviso some. Não promove feel. |
 | 0.9.157 | O `guide` sem destino nomeia `Verbo:` / `Porta:` no prompt. Starter mudo continua sem. `process.md` aponta `start`, não só `init`. Não executa. |
 | 0.9.158 | Spawn 4: `closeHazardScale` sobe o estilhaço nos últimos 10 s. Ausente fica `1`. dusk sobe mais que spawn; calm menos. O pulso acende o campo (`flashClose`). Não promove pacing. |
+| 0.9.159 | `closeBedRate` desloca o tom da cama com o pulso do fecho. Sem pedido a cama fica em `1`. Não é duck. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -117,7 +118,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | fecho pede guardar no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
-| audio_mix | slice | `heard` falso |
+| audio_mix | slice | cama sobe o tom no disco; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | `hold` no stub; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -181,7 +182,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, chuva da porta, `gameSpeed` no disco, `hold` no stub,
-  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, `closeHazardScale` no disco, aviso de guardar no fecho, copiar ou gravar o achado, last-run,
+  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, `closeHazardScale` no disco, `closeBedRate` no disco, aviso de guardar no fecho, copiar ou gravar o achado, last-run,
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
   `then.invite`, `invite_href`, copiar o endereço do convite,
   levar a chuva ou o look na URL, tinta estável no disco,
@@ -292,8 +293,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   Pedido sem buffer: last-wins na fila; `register` toca sem segunda
   legenda. `dispose` esquece. Tecla ligada e toque chamam
   `audio.unlock()` no gesto. Stems sobem juntos (`Promise.all`);
-  extensão seguinte só se a atual falhou. `duckMs` abaixa só
-  `music` (`DUCK_BUSES`). `heard` falso.
+  extensão seguinte só se a atual falhou.   `duckMs` abaixa só
+  `music` (`DUCK_BUSES`). `update({ bedRate })` desloca o tom da
+  cama; `bedRateFor` lê o pulso do fecho. Não é duck. `heard` falso.
 - Jogador: `fillRect` do squash **permanece** (testes `playerFill` /
   `playerBox`). A ponta é path (`lineTos`). Halo do estilhaço **não**
   é `arc` (`orb.arcs > shard.arcs`).
@@ -401,6 +403,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um fecho que come a corrente viva sem pedir guardar.
 **Não** mais um `guide` que esconde a porta no JSON enquanto o stderr só cola o start.
 **Não** mais um fecho que só enche a chuva enquanto o risco fica no teto da rampa.
+**Não** mais uma cama que ignora o fecho enquanto o campo grita.
 
 Candidatos, do que ainda dói:
 
@@ -452,7 +455,8 @@ Candidatos, do que ainda dói:
   disco e o aviso de
   guardar no fecho e o
   risco do fecho no
-  disco não
+  disco e o tom da
+  cama no fecho não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
@@ -475,6 +479,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `closeHazardScale` nas três
-chuvas; `spawnHazardChance` e `flashClose` no pulso. Ausente fica 1.
-Não promover pacing.
+Arquivos quentes da última sessão: `bedRateFor` + `audio.update({
+bedRate })`. Sem pedido a cama fica em 1. Não é duck.
+Não promover heard.

@@ -74,6 +74,7 @@ export const CONFIG = {
     flashGraze: 0.08, // o contato acende menos que a queda
     flashDecay: 0.72,
     closeTicks: 600, // TICK_HZ * 10 — fecho: o campo marca o fim; o dado aperta a chuva; não é faixa no HUD
+    closeBedRate: 1.08, // a cama sobe o tom com o pulso; número no disco não é mix ouvido
     rumbleDashMs: 16, // partida: toque curto
     rumbleLandMs: 10, // término: tap mais curto que a partida
     rumbleCollectMs: 28, // contato do acerto
@@ -508,6 +509,14 @@ export function closingPulse(state, config = CONFIG) {
     fill: Math.max(0, Math.min(1, fill)),
     beat: Math.max(0, Math.min(1, beat)),
   };
+}
+
+export function bedRateFor(state, config = CONFIG) {
+  const pulse = closingPulse(state, config);
+  if (!pulse.active) return 1;
+  const top = Number(config.feel.closeBedRate);
+  if (!(Number.isFinite(top) && top > 0)) return 1;
+  return 1 + pulse.fill * (top - 1);
 }
 
 export function practicingWindow(state) {
