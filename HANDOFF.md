@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.126: o convite também leva a chuva.
+**HEAD:** ver `git log -1` — vigente 0.9.127: as receitas de entrega também nomeiam a porta.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → conferir a contagem vigente.
-`cd assets/starters/canvas-arcade && npm test` → conferir a contagem vigente.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 252 OK.
+`cd assets/starters/canvas-arcade && npm test` → 294 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.126)
+## O que o HEAD já entrega (0.9.91–0.9.127)
 
 | Ver | Salto |
 | --- | --- |
@@ -70,6 +70,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.124 | A porta chove a mesa vigente: dusk mais denso e rápido, calm mais folgado e lento. Sem RNG, sem `entities`. A mostra do spawn continua a chuva de quatro. `consistent` continua falso. |
 | 0.9.125 | Depois do fim, `#note` aponta `/?invite=1&seed=<n>` e copia o endereço. Sem seed, a linha some. Copiar o endereço não grava. `outsider` continua falso. |
 | 0.9.126 | Com chuva no last-run, o convite junta `/?invite=1&seed=<n>&spawn=<mesa>`. `then.invite`, `invite_href`, `#note` e o banner do serve levam a mesa. Spawn padrão ou inválido some. Sem last-run, continua `/?invite=1`. `playtest` relata `candidate_spawn`. `outsider` continua falso. |
+| 0.9.127 | `production.md`, `architecture.md` e `release.md` nomeiam a porta. Nomear a abertura não entrega o artefato nem fecha marco. `elsewhere` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -282,12 +283,10 @@ Candidatos, do que ainda dói:
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
-4. **Item 1 residual:** o mapa, `feel.md`, `mechanics.md`, `visual.md`,
-   `lifecycle.md`, `accessibility.md`, `audio.md`, `content.md`,
-   `performance.md` e `network.md` já nomeiam a porta ou o convite
-   da LAN. `quality.md` nomeia a abertura no primeiro minuto.
-   Recipes de outro foco (`production`, `architecture`, `release`)
-   que ainda falarem só do campo sem a abertura estão velhas.
+4. **Item 1 residual:** o mapa e as receitas de foco — inclusive
+   `production.md`, `architecture.md` e `release.md` — já nomeiam a
+   porta ou o convite. Templates e referências que ainda falarem só
+   do campo sem a abertura estão velhos. Nomear não entrega.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, copiar o
    achado, gravar os quatro nomes e anexar last-run não fecham.
@@ -311,6 +310,8 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `last_run_spawn` / `inviteHref`
-juntam a chuva ao convite. Spawn padrão some. Look não entra.
-Levar a mesa na URL não é outsider.
+Arquivos quentes da última sessão: receitas de produção, arquitetura
+e release nomeiam a porta. O salto anterior (0.9.126) junta a chuva
+ao convite. Spawn padrão some. Look não entra. Levar a mesa na URL
+não é outsider. Nomear a porta nas receitas de entrega não é
+`elsewhere`.

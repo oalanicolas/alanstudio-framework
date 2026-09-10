@@ -21,6 +21,10 @@ máquina tiver outro endereço IPv4; um endereço alcançável não é outra
 máquina. Na árvore exportada o banner nomeia o artefato. `npm run size`
 relata os bytes de `dist/` sem teto. `shipped` é sempre falso.
 
+Com tela, a primeira superfície do artefato também é a porta. O serve
+de desenvolvimento apontar `/?invite=1&seed=&spawn=` não é o `dist/`
+em outra máquina. Compartilhar o convite não é `elsewhere`.
+
 Verifique o artefato, não o ambiente de desenvolvimento. Editor, servidor de
 desenvolvimento e build de depuração têm caminhos, permissões, recursos e tempos
 diferentes do export. Um teste no editor não demonstra o jogo exportado.

@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.127 — As receitas de entrega também nomeiam a porta
+
+`feel`, rede e o campo já falavam da abertura.
+Produção, arquitetura e release ainda começavam no
+campo. As três nomeiam a porta. Nomear não entrega
+o artefato nem fecha marco. `elsewhere` continua
+falso. Só `release` fica no piso.
+
+O que 0.9.127 não afirma: texto na receita não é
+outra máquina nem acabamento observado.
+
 ## 0.9.126 — O convite também leva a chuva
 
 O convite já juntava a seed. Quem jogou com

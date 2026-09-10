@@ -1172,6 +1172,13 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("{{", text)
         self.assertIn("Autorização de publicação: não concedida", text)
 
+    def test_delivery_recipes_name_the_door_without_shipping(self):
+        for name in ("release", "production", "architecture"):
+            with self.subTest(name=name):
+                text = (game.FRAMEWORK / f"recipes/{name}.md").read_text(encoding="utf-8")
+                self.assertIn("porta", text.casefold())
+                self.assertNotIn("verified", text)
+
     def test_doctor_reports_environment_and_integrity_without_changing_anything(self):
         before = set(self.root.iterdir())
         report = game.doctor(self.root)

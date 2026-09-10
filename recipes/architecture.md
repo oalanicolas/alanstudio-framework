@@ -14,6 +14,9 @@ agente; o harness não infere dependências, escolhe arquitetura nem aprova deci
 ## 1. Dimensionar a análise
 
 Comece pelo cenário: **ação do jogador → mudança de estado → consequência percebida**.
+Com tela, a primeira ação deste starter é abrir a porta. `hold` é o
+tick interrompido; Continuar é repetir a seed. `?seed=` e `?spawn=`
+nomeiam a partida — não são estado observado.
 Ligue-o ao GDD/MDA, ao aceite e à referência aprovada. Reconstrua lacunas com o
 [roteiro de auditoria](../references/project-audit.md), avisando e documentando.
 Separe comportamento atual observado, direção aprovada, proposta e desconhecido.

@@ -17,6 +17,10 @@ pode alcançá-lo num recorte pequeno; um jogo grande falha nele com muito conte
 desigual. A pré-produção prova que a experiência vale; a produção prova que ela
 sobrevive à escala, ao tempo e à plataforma.
 
+No starter, com tela, a primeira superfície do recorte é a porta.
+Convite, last-run e recibo no disco não fecham marco nem certificam
+acabamento.
+
 ## 0. Três instrumentos, três perguntas
 
 Este framework usa três vocabulários que não se substituem, e esta receita liga os três:
