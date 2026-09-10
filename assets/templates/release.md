@@ -30,7 +30,7 @@ Versão pretendida e origem: [tag/commit declarados; localizar o runbook canôni
 ## Verificação do artefato
 
 - Execução em máquina que não é a de desenvolvimento: [resultado ou não executado].
-- Primeira execução sem save, cache ou permissão: [resultado].
+- Primeira execução sem save, cache ou permissão: [com tela, a porta; resultado].
 - Entrada e acessibilidade na plataforma alvo: [resultado].
 - Áudio: [controles separados, faixa dinâmica, jogo completável sem som].
 - Save: [migração da versão anterior e dado inválido].

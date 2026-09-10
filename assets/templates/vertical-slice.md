@@ -7,7 +7,7 @@ Fontes canônicas: [GDD, PRD, TDD e experimentos anteriores].
 ## Trecho representativo
 
 - Fantasia/pilares demonstrados: [preencher].
-- Cenário completo: [entrada, decisão característica, consequência, término/reinício].
+- Cenário completo: [com tela, a porta; depois decisão característica, consequência, término/reinício].
 - Requisitos cobertos: [IDs e critérios de aceite].
 - Conteúdo incluído e adiado: [por que esse trecho representa o jogo].
 

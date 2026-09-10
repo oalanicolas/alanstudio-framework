@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.132: guardar também senta antes de converter.
+**HEAD:** ver `git log -1` — vigente 0.9.133: a primeira situação dos templates também abre na porta.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 252 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 253 OK.
 `cd assets/starters/canvas-arcade && npm test` → 299 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.132)
+## O que o HEAD já entrega (0.9.91–0.9.133)
 
 | Ver | Salto |
 | --- | --- |
@@ -76,6 +76,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.130 | Com chuva ou look no last-run, `then.seed` junta `&spawn=` e `&look=`. `seed_href`, o banner do serve e o prompt usam o mesmo endereço. Sem mesa ou paleta nomeada, continua `/?seed=<n>`. `then.seed` não é ofício. `observed` continua falso. |
 | 0.9.131 | O look dusk pinta orbe âmbar e estilhaço índigo. O campo continua quente. `colorblind` ainda troca a chuva pelo par do padrão. `consistent` e `verified` continuam falsos. |
 | 0.9.132 | Guardar uma corrente que já existe senta dois ticks (`bank.windupTicks`) antes de converter. Coleta e guarda no mesmo quadro continuam na hora. `felt` continua falso. |
+| 0.9.133 | Brief, GDD, game-design, PoC, slice, QA e release nomeiam a porta. O rascunho de playtest traz os quatro campos vazios. Esqueleto vazio não é achado. `observed` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -299,10 +300,11 @@ Candidatos, do que ainda dói:
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
-4. **Item 1 residual:** o mapa e as receitas de foco — inclusive
-   `production.md`, `architecture.md` e `release.md` — já nomeiam a
-   porta ou o convite. Templates e referências que ainda falarem só
-   do campo sem a abertura estão velhos. Nomear não entrega.
+4. **Item 1 residual:** o mapa, as receitas de foco e os templates da
+   primeira situação — brief, GDD, game-design, PoC, slice, QA e
+   release — já nomeiam a porta. O rascunho de playtest traz a forma
+   do achado, vazia. Referências que ainda falarem só do campo sem a
+   abertura estão velhas. Nomear não entrega.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
    estável no disco, estilhaço dusk no disco, copiar o achado,
@@ -327,6 +329,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `bank.windupTicks` / `commitBank`.
-Coleta no mesmo quadro continua imediata. Pose no disco não é peso
-percebido. Não promover `feel`.
+Arquivos quentes da última sessão: `assets/templates/{brief,gdd,qa}.md`.
+Esqueleto vazio não é achado. Nomear a porta não observa.

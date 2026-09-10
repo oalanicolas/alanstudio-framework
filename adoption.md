@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.133 — A primeira situação dos templates também abre na porta
+
+Brief, GDD e o recorte começavam no campo. Quem
+seguia o rascunho pulava a abertura. Os
+templates da primeira situação nomeiam a porta.
+O rascunho de playtest traz os quatro campos
+vazios. Esqueleto vazio não é achado.
+`observed` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.133 não afirma: texto no template não
+é sessão observada nem artefato em outra
+máquina.
+
 ## 0.9.132 — Guardar também senta antes de converter
 
 O avanço já sentava dois ticks. Guardar uma

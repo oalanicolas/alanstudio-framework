@@ -1179,6 +1179,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
                 self.assertIn("porta", text.casefold())
                 self.assertNotIn("verified", text)
 
+    def test_first_playable_templates_name_the_door_and_keep_the_finding_empty(self):
+        names = ("brief", "gdd", "game-design", "poc", "vertical-slice", "qa", "release")
+        for name in names:
+            with self.subTest(name=name):
+                text = (game.FRAMEWORK / f"assets/templates/{name}.md").read_text(encoding="utf-8")
+                self.assertIn("porta", text.casefold())
+                self.assertNotIn("verified", text)
+                self.assertIsNone(game.FINDING_FIELDS.search(text))
+        qa = (game.FRAMEWORK / "assets/templates/qa.md").read_text(encoding="utf-8")
+        self.assertIn("Problema:", qa)
+        self.assertIn("Evidência:", qa)
+        self.assertIn("Hipótese:", qa)
+        self.assertIn("Medição:", qa)
+        destination = self.root / "rascunho-com-porta"
+        game.init(destination, "canvas-arcade")
+        drafted = (destination / "docs/qa.md").read_text(encoding="utf-8")
+        self.assertIn("porta", drafted.casefold())
+        self.assertIsNone(game.FINDING_FIELDS.search(drafted))
+        reading = game.playtest_reading(destination)
+        self.assertFalse(reading["structured"])
+        self.assertEqual(reading["findings"], [])
+        self.assertFalse(reading["observed"])
+        self.assertFalse(reading["outsider"])
+
     def test_doctor_reports_environment_and_integrity_without_changing_anything(self):
         before = set(self.root.iterdir())
         report = game.doctor(self.root)
