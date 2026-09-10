@@ -470,7 +470,7 @@ test("os primeiros ticks são prática: só orbes, sem estilhaço", () => {
 test("guardar abre uma janela de recuperação na chuva", () => {
   const state = createState(1);
   state.chain = 2;
-  state.spawnTimer = 1;
+  state.spawnTimer = CONFIG.bank.windupTicks + 1;
   assert.equal(recoveringWindow(state), false);
   bankOut(state);
   assert.ok(state.recoverUntil > state.tick);
