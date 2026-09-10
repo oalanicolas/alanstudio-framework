@@ -184,6 +184,28 @@ test("a graça impede perder duas correntes seguidas", () => {
   assert.ok(state.events.some((event) => event.type === "graze"));
 });
 
+test("dois estilhaços no mesmo quadro: o segundo já é graça", () => {
+  const fade = CONFIG.feel.shakeDecay;
+  const state = createState(2);
+  state.chain = 5;
+  const x = state.player.x;
+  state.entities = [
+    { id: 2, kind: "shard", x, y: PLAYER_Y - 1, vy: 0 },
+    { id: 3, kind: "shard", x: x + 0.4, y: PLAYER_Y - 1, vy: 0 },
+  ];
+  advance(state, neutralIntent());
+  assert.equal(state.chain, 0);
+  assert.equal(state.stats.hits, 1, "o segundo estilhaço do mesmo quadro não é segundo hit");
+  assert.equal(state.events.filter((event) => event.type === "hit").length, 1);
+  assert.ok(state.events.some((event) => event.type === "graze"), "o segundo raspa");
+  assert.equal(state.player.invuln, CONFIG.player.invulnTicks);
+  assert.equal(
+    state.shake,
+    (CONFIG.feel.hitShake + CONFIG.feel.grazeShake) * fade,
+    "o suco não empilha dois impactos",
+  );
+});
+
 test("o avanço senta antes de alongar e não dispara no pedido", () => {
   const state = createState(3);
   advance(state, { move: 1, dash: true, bank: false });

@@ -85,7 +85,9 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    de converter; esses ticks já atravessam o estilhaço — o arco da
    guarda não é janela de hit. O quadro que converte também atravessa:
    sentar e pontuar no mesmo impacto não mata. Coleta e guarda no mesmo
-   quadro continuam na hora — o contato já foi a antecipação. Pose e
+   quadro continuam na hora — o contato já foi a antecipação. A graça
+   após dano também vale no mesmo quadro: o segundo estilhaço raspa,
+   não empilha impacto. Pose e
    arquivo no disco não são peso percebido.
 4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
@@ -174,7 +176,7 @@ o feel do verbo central é lente de marco em [produção](production.md).
 
 Antes de escrever a sua cadeia, leia uma concreta: o starter `canvas-arcade` reúne o
 perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, buffer de
-guardar, graça após dano, alcance de coleta maior que o desenho — cada valor com o
+guardar, graça após dano — inclusive no mesmo quadro —, alcance de coleta maior que o desenho — cada valor com o
 motivo ao lado. Guardar no hitstop não é engolido; um toque sem corrente não decide
 o próximo orbe. Cada verbo desloca a câmera numa direção própria e achata o corpo
 numa medida própria: coleta, queda, dash, raspo, aterrissagem, guardar e o erro não compartilham

@@ -29,7 +29,7 @@ export const CONFIG = {
     dashCooldownTicks: 30,
     dashBufferTicks: 8, // perdão: dash pedido cedo dispara ao recarregar
     dashWindupTicks: 2, // antecipação: o corpo senta antes de alongar; já é graça
-    invulnTicks: 42, // graça após dano; evita perder duas correntes seguidas
+    invulnTicks: 42, // graça após dano; evita perder duas correntes seguidas — inclusive no mesmo quadro
   },
   collect: {
     pad: 5, // alcance além do desenho: quem quase pegou, pega
@@ -914,8 +914,11 @@ function resolveEntities(state) {
   // dois ticks de antecipação eram janela de hit — o jogador sentou
   // e morreu, ou sentou para guardar e perdeu a corrente. Pose no
   // disco não é peso percebido.
-  const invulnerable =
-    player.invuln > 0 ||
+  // Coil, arco e land já atravessam. A graça pós-dano também
+  // já existe — hit() a concede neste quadro. Sem reler
+  // invuln a cada entidade, o segundo estilhaço ainda
+  // acertava. Pose no disco não é peso percebido.
+  const committed =
     player.dashTicks > 0 ||
     (player.dashWindup ?? 0) > 0 ||
     (state.bankWindup ?? 0) > 0 ||
@@ -942,7 +945,7 @@ function resolveEntities(state) {
         releaseEntity(entity);
         continue;
       }
-      if (invulnerable) {
+      if (committed || player.invuln > 0) {
         grazeContact(state);
         emit(state, "graze", { x: entity.x });
         releaseEntity(entity);
