@@ -9,8 +9,9 @@
 // alguém de fora. Esconder a
 // tabela não é alguém de fora nem curva observada. Depois do fim, a
 // porta também oferece os quatro nomes — no overlay e na abertura, se
-// houver partida. Copiar não grava. Esqueleto vazio não é achado.
-// Gravado não é alguém de fora.
+// houver partida — e mostra seed, pontos e eixos. Número na faixa
+// não preenche os quatro. Copiar não grava. Esqueleto vazio não é
+// achado. Gravado não é alguém de fora.
 
 function runSeed(run) {
   if (!run || typeof run !== "object" || Array.isArray(run)) return null;
@@ -44,6 +45,39 @@ function runQuery(run) {
   const look = runLook(run);
   if (look) parts.push(`look=${look}`);
   return parts;
+}
+
+function runScore(run) {
+  if (!run || typeof run !== "object" || Array.isArray(run)) return null;
+  if (typeof run.score === "number" && Number.isFinite(run.score)) return run.score;
+  const nested = run.run && typeof run.run === "object" && !Array.isArray(run.run) ? run.run.score : null;
+  if (typeof nested === "number" && Number.isFinite(nested)) return nested;
+  return null;
+}
+
+// Números da partida para quem vai escrever o achado. Não preenche
+// os quatro campos e não é evidência. Sem seed, pontos ou eixo
+// nomeado, a linha some.
+export function runFacts(run) {
+  const parts = [];
+  const seed = runSeed(run);
+  if (seed !== null) parts.push(`seed ${seed}`);
+  const score = runScore(run);
+  if (score !== null) parts.push(String(score));
+  const spawn = runSpawn(run);
+  if (spawn) parts.push(spawn);
+  const look = runLook(run);
+  if (look && look !== spawn) parts.push(look);
+  return parts.join(" · ");
+}
+
+export function applyRunFacts({ node, run } = {}) {
+  const text = runFacts(run);
+  if (node) {
+    node.textContent = text;
+    node.hidden = !text;
+  }
+  return text;
 }
 
 function hrefFromParts(parts, origin) {

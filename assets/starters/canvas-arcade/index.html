@@ -136,6 +136,7 @@
     <section class="panel" id="note" aria-labelledby="note-title">
       <h2 id="note-title">Depois da partida</h2>
       <p class="note">Escreva o que o verbo sentiu. Isto grava o recibo e não sente.</p>
+      <p class="note" id="note-run" hidden></p>
       <div class="grid">
         <label><span>Quem assina</span><input type="text" id="note-author" name="author" autocomplete="nickname" /></label>
         <label><span>Nota</span><textarea id="note-text" name="note" rows="2"></textarea></label>
@@ -150,6 +151,7 @@
     <section class="panel" id="finding" aria-labelledby="finding-title">
       <h2 id="finding-title">Depois da partida</h2>
       <p class="note">Copie ou grave o que jogou. Vazio não é achado. Gravar anexa o candidato se houver partida.</p>
+      <p class="note" id="finding-run" hidden></p>
       <div class="grid">
         <label><span>Problema</span><textarea id="finding-problema" name="problema" rows="2"></textarea></label>
         <label><span>Evidência</span><textarea id="finding-evidencia" name="evidencia" rows="2"></textarea></label>
@@ -219,7 +221,7 @@
     <script type="module" src="./src/main.js"></script>
     <script type="module">
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
-      import { applyFinding, applyInvite, applyNote, applyShare, composeFinding, inviteHref, inviteMode } from "./src/core/invite.js";
+      import { applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, composeFinding, inviteHref, inviteMode } from "./src/core/invite.js";
       import { FINDING_ROUTE, NOTE_ROUTE, playFinding } from "./src/core/run-report.js";
       import { applyShell } from "./src/core/shell.js";
       import { LOOK_LABELS, SPAWN_LABELS, dressPalette, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch } from "./src/game/tables.js";
@@ -237,6 +239,8 @@
           const run = game.lastRun;
           applyFinding({ root: document.documentElement, phase, invite: invited, run });
           applyNote({ root: document.documentElement, phase, invite: invited, run });
+          applyRunFacts({ node: document.getElementById("finding-run"), run });
+          applyRunFacts({ node: document.getElementById("note-run"), run });
           applyShare({
             hrefNode: document.getElementById("note-invite-href"),
             wrap: document.getElementById("note-invite"),

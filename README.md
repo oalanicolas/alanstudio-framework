@@ -649,8 +649,9 @@ no disco, `/?invite=1&seed=<n>`, com chuva nomeada
 `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a tabela de
 comandos some; depois do fim a página do maker aponta o convite
 desta partida se a seed ficou no recibo — copiar o endereço não
-grava — e, no convite, oferece os quatro nomes para
-copiar ou gravar. Copiar não grava. Gravado vira
+grava — e, no convite, mostra seed, pontos e eixos e oferece
+os quatro nomes para copiar ou gravar. Número na faixa não
+preenche os quatro. Copiar não grava. Gravado vira
 `docs/playtest/<utc>-achado.md` se os quatro tiverem texto.
 Se last-run existir, o serve anexa
 `docs/playtest/<utc>-achado.run.json`. `playtest` relata esses

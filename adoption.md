@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.136 — A partida também deixa os números na página do achado
+
+Quem jogou no convite escrevia os quatro nomes
+sem ver seed, pontos ou eixos. Depois do fim a
+página mostra a linha. Não preenche os campos.
+Vazio continua sem ser achado. `outsider`
+continua falso.
+Só `release` fica no piso.
+
+O que 0.9.136 não afirma: número na faixa não é
+evidência nem alguém de fora.
+
 ## 0.9.135 — O orbe que cai também desloca a câmera
 
 A queda falava, acendia o campo e marcava o

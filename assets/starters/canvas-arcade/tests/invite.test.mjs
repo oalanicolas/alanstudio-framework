@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { applyFinding, applyInvite, applyNote, applyShare, composeFinding, inviteHref, inviteMode, INVITE_LABEL, seedHref } from "../src/core/invite.js";
+import { applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, composeFinding, inviteHref, inviteMode, INVITE_LABEL, runFacts, seedHref } from "../src/core/invite.js";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -51,10 +51,13 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /html\.invite\.finding\s+#finding/);
   assert.match(html, /id="finding-copy"/);
   assert.match(html, /id="finding-save"/);
+  assert.match(html, /id="finding-run"/);
+  assert.match(html, /id="note-run"/);
   assert.match(html, /Copie ou grave/);
   assert.match(html, /anexa o candidato/);
   assert.match(html, /composeFinding/);
   assert.match(html, /playFinding/);
+  assert.match(html, /applyRunFacts/);
   assert.match(html, /FINDING_ROUTE/);
   assert.doesNotMatch(html, /html\.invite\s+#finding\s*\{/);
   assert.match(html, /id="note"/);
@@ -161,6 +164,29 @@ test("o achado só aparece no convite depois do fim", () => {
   assert.equal(root.classList.finding, true);
   assert.equal(applyFinding({ root, phase: "title", invite: true, run: { score: 3 } }), true);
   assert.equal(applyFinding({ root, phase: "title", invite: false, run: { score: 3 } }), false);
+});
+
+test("a partida nomeia seed, pontos e eixos sem preencher o achado", () => {
+  assert.equal(runFacts(null), "");
+  assert.equal(runFacts({}), "");
+  assert.equal(runFacts({ score: 3 }), "3");
+  assert.equal(runFacts({ seed: 8 }), "seed 8");
+  assert.equal(runFacts({ seed: 8, score: 12 }), "seed 8 · 12");
+  assert.equal(runFacts({ seed: 8, score: 12, spawn: "spawn" }), "seed 8 · 12");
+  assert.equal(runFacts({ seed: 8, score: 12, spawn: "dusk" }), "seed 8 · 12 · dusk");
+  assert.equal(runFacts({ seed: 8, score: 12, spawn: "dusk", look: "dusk" }), "seed 8 · 12 · dusk");
+  assert.equal(runFacts({ seed: 8, score: 12, spawn: "dusk", look: "calm" }), "seed 8 · 12 · dusk · calm");
+  assert.equal(runFacts({ seed: 8, run: { score: 3, seed: 8 } }), "seed 8 · 3");
+  assert.equal(runFacts({ seed: 8, spawn: "../x", look: "normal" }), "seed 8");
+  const node = { textContent: "velho", hidden: false };
+  assert.equal(applyRunFacts({ node, run: { seed: 8, score: 12, spawn: "dusk" } }), "seed 8 · 12 · dusk");
+  assert.equal(node.textContent, "seed 8 · 12 · dusk");
+  assert.equal(node.hidden, false);
+  assert.equal(applyRunFacts({ node, run: { look: "contrast" } }), "");
+  assert.equal(node.textContent, "");
+  assert.equal(node.hidden, true);
+  assert.equal(runFacts({ seed: 8 }).includes("Problema:"), false);
+  assert.equal(runFacts({ seed: 8, score: 12, spawn: "dusk" }).includes("Evidência:"), false);
 });
 
 test("copiar o achado preenchido tem forma; o vazio não finge", () => {

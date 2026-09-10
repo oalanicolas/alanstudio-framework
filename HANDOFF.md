@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.135: o orbe que cai também desloca a câmera.
+**HEAD:** ver `git log -1` — vigente 0.9.136: a partida também deixa os números na página do achado.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 254 OK.
-`cd assets/starters/canvas-arcade && npm test` → 299 OK.
+`cd assets/starters/canvas-arcade && npm test` → 300 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.135)
+## O que o HEAD já entrega (0.9.91–0.9.136)
 
 | Ver | Salto |
 | --- | --- |
@@ -79,6 +79,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.133 | Brief, GDD, game-design, PoC, slice, QA e release nomeiam a porta. O rascunho de playtest traz os quatro campos vazios. Esqueleto vazio não é achado. `observed` continua falso. |
 | 0.9.134 | `--as warmer` / `--as cooler` deslocam campo e orbe; o estilhaço permanece. `dusk --as warmer` não devolve o losango ao rosa. O orbe dusk já é o âmbar da intenção. `consistent` continua falso. |
 | 0.9.135 | Perder o orbe desloca a câmera para baixo e treme menos que a coleta. Sem hitstop, squash ou rumble. `init` não copia `__pycache__`. `felt` continua falso. |
+| 0.9.136 | Depois do fim, `#finding-run` e `#note-run` mostram seed, pontos e eixos. Não preenche os quatro. `outsider` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -158,7 +159,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `then.invite`, `invite_href`, copiar o endereço do convite,
   levar a chuva ou o look na URL, tinta estável no disco,
   estilhaço dusk no disco, intenção warmer no disco,
-  punch da queda no disco
+  punch da queda no disco, números da partida na
+  faixa do achado
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -315,7 +317,8 @@ Candidatos, do que ainda dói:
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
    estável no disco, estilhaço dusk no disco, intenção warmer no
    disco, copiar o achado,
-   gravar os quatro nomes e anexar last-run não fecham. A receita
+   gravar os quatro nomes, mostrar seed/pontos/eixos na faixa
+   e anexar last-run não fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
    Não nascer look/chuva first-party novo como craft.
@@ -336,6 +339,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: queda do orbe (`punchMissedY`,
-`missedShake`) e `INIT_COPY_SKIP` (`__pycache__`). Punch no disco
-não é peso no aparelho. O orbe dusk já é o âmbar da intenção warmer.
+Arquivos quentes da última sessão: `runFacts` / `applyRunFacts`
+(`#finding-run`, `#note-run`). Número na faixa não preenche os
+quatro e não é alguém de fora.

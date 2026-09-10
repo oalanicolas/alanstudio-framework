@@ -2865,6 +2865,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("copiar", page.casefold())
         self.assertIn("gravar", page.casefold())
         self.assertIn("quatro nomes", page.casefold())
+        self.assertIn("seed, pontos e eixos", page.casefold())
+        self.assertIn("não preenche", page.casefold())
         self.assertIn("não grava", page.casefold())
         self.assertIn("gravar", first["scope"].casefold())
         self.assertNotIn("Não leia a tabela", page)
