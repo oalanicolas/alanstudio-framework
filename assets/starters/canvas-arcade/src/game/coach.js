@@ -1,6 +1,8 @@
 // Ensino do primeiro ciclo. Sem isto o jogador só aprende pela tabela da
-// página — e a barra chama isso de protótipo. O aviso some depois da
-// primeira vez que o jogador guarda: a decisão já foi jogada.
+// página — e a barra chama isso de protótipo. A porta ensina fantasia
+// e mover no relógio da mostra; dash, coleta e guarda ficam no campo.
+// O aviso some depois da primeira vez que o jogador guarda: a decisão
+// já foi jogada.
 //
 // Exceção: no fecho a corrente viva ainda pode cair. Pedir guardar
 // de novo não reabre o primeiro ciclo — pad e toque continuam
@@ -26,7 +28,15 @@ function shardThreat(state) {
 }
 
 export function coachHint(state, lines = {}, extra = {}) {
-  if (!state || state.phase !== "playing") return null;
+  if (!state) return null;
+  if (state.phase === "title") {
+    const clock = state.attractTick ?? 0;
+    const fantasy = typeof lines.fantasy === "string" ? lines.fantasy.trim() : "";
+    if (fantasy && clock < FANTASY_TICKS) return "fantasy";
+    if (clock < MOVE_TICKS) return "move";
+    return null;
+  }
+  if (state.phase !== "playing") return null;
   if (closingWindow(state) && (state.chain ?? 0) > 0) return "bank";
   if (state.stats.banks > 0) return null;
   const fantasy = typeof lines.fantasy === "string" ? lines.fantasy.trim() : "";

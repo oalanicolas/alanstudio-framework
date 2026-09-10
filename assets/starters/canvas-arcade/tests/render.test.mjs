@@ -643,6 +643,22 @@ test("a porta também lê a legenda", () => {
   assert.ok(line.bottom < PLAYER_Y - 6, `legenda na porta desce até ${line.bottom}`);
 });
 
+test("a abertura desenha o aviso sem inventar faixa", () => {
+  const door = createState(1, { entry: "title" });
+  const drawn = paint(door, {}, { hint: "move", best: 0 });
+  const aviso = drawn.texts.filter((item) => item.text.includes("arraste") && item.text.includes("analógico"));
+  assert.equal(aviso.length, 1, `esperava o aviso de mover na porta: ${JSON.stringify(drawn.texts.map((item) => item.text))}`);
+  const plates = drawn.rects.filter((rect) => PLATE_COLORS.has(rect.style));
+  assert.ok(covered(aviso[0], plates), "aviso na porta também cabe na placa");
+  assert.ok(hudBands(drawn) <= hudBands(paint(door)), "o aviso da porta não é faixa no HUD");
+  const quiet = paint(door, {}, { best: 0 });
+  assert.equal(
+    quiet.texts.some((item) => String(item.text).includes("arraste")),
+    false,
+    "sem pedido a porta não inventa o aviso",
+  );
+});
+
 test("a abertura chove sem ser a partida", () => {
   const door = createState(1, { entry: "title" });
   const play = createState(1);

@@ -293,6 +293,25 @@ function silentCanvas() {
   };
 }
 
+test("com tela a abertura recebe o movimento sem abrir o ciclo", () => {
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(game.observe().phase, "title");
+  const start = game.observe().player.x;
+  game.act({ move: 1 });
+  game.advance(1);
+  assert.equal(game.observe().phase, "title");
+  assert.equal(game.observe().tick, 0);
+  assert.ok(game.observe().player.x > start, "a porta precisa do passo");
+  assert.equal(game.observe().entities.length, 0);
+  game.dispose();
+});
+
 test("sem tela o boot não espera a abertura", () => {
   const { game } = harness();
   assert.equal(game.observe().phase, "playing");

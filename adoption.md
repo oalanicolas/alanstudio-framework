@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.161 — A porta recebe movimento
+
+O convite some a tabela.
+O corpo só andava depois
+do avanço. `attractMove`
+desloca na porta sem comer
+o tick. O aviso pede mover
+no relógio da mostra. Dash,
+coleta e guarda ficam no
+campo. `felt` continua
+falso. Só `release` fica no
+piso.
+
+O que 0.9.161 não afirma:
+passo na porta no disco não
+é primeiro minuto observado.
+
 ## 0.9.160 — O fim nomeia o recorde
 
 O HUD mostrou o recorde

@@ -50,9 +50,18 @@ test("partida encerrada não ensina", () => {
   assert.equal(coachHint(state), null);
 });
 
-test("a abertura não ensina", () => {
+test("a abertura ensina mover sem abrir o ciclo", () => {
   const state = createState(1, { entry: "title" });
+  assert.equal(coachHint(state), "move");
+  assert.equal(coachHint(state, { fantasy: "guardar a corrente ou continuar" }), "fantasy");
+  state.attractTick = 48;
+  assert.equal(coachHint(state, { fantasy: "guardar a corrente ou continuar" }), "move");
+  state.attractTick = 60;
   assert.equal(coachHint(state, { fantasy: "guardar a corrente ou continuar" }), null);
+  state.chain = 3;
+  state.entities = [shardOnRail()];
+  assert.equal(coachHint(state), null, "a porta não pede guardar");
+  assert.equal(coachHint(state, {}, { surface: "pointer" }), null, "a porta não ensina toque");
 });
 
 test("estilhaço no trilho pede o dash antes do orbe", () => {

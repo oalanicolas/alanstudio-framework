@@ -461,6 +461,24 @@ export function attractTick(state) {
   return state;
 }
 
+// A porta também é campo. Sem isto o corpo só andava depois
+// do avanço — quem chega no convite sem tabela não ensaiava
+// o verbo. Não come o tick, a seed nem a chuva. Andar no
+// disco não é peso percebido.
+export function attractMove(state, intent) {
+  if (!state || state.phase !== "title" || !state.player) return state;
+  const move = Number(intent?.move);
+  if (!Number.isFinite(move) || move === 0) return state;
+  const limit = CONFIG.player.halfWidth;
+  state.player.dir = move < 0 ? -1 : 1;
+  state.player.x = clamp(
+    state.player.x + CONFIG.player.speed * move,
+    limit,
+    FIELD.width - limit,
+  );
+  return state;
+}
+
 export function attractEntities(state, reduced = false) {
   if (!state || state.phase !== "title") return [];
   const t = reduced ? 0 : (state.attractTick ?? 0);

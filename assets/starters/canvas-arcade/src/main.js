@@ -19,7 +19,7 @@ import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { createTrace, finishCurve, traceTick } from "./game/curve.js";
 import { applyLive, liveText } from "./core/live.js";
-import { advance as advanceRules, attractTick, beginRun, bedRateFor, createState, restoreState, neutralIntent, threatCue, FIELD, TICK_HZ } from "./game/rules.js";
+import { advance as advanceRules, attractMove, attractTick, beginRun, bedRateFor, createState, restoreState, neutralIntent, threatCue, FIELD, TICK_HZ } from "./game/rules.js";
 import { copy, resolveLookName, resolveMoodName, resolveSpawnName } from "./game/tables.js";
 import { coachHint } from "./game/coach.js";
 
@@ -197,6 +197,7 @@ export function createGame(options = {}) {
         }
         syncBed();
       } else {
+        attractMove(state, intent);
         attractTick(state);
       }
       emitPhase();

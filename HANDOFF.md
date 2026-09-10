@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.160: o fim nomeia o recorde.
+**HEAD:** ver `git log -1` — vigente 0.9.161: a porta recebe movimento.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 264 OK.
-`cd assets/starters/canvas-arcade && npm test` → 335 OK.
+`cd assets/starters/canvas-arcade && npm test` → conferir após o 0.9.161.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.160)
+## O que o HEAD já entrega (0.9.91–0.9.161)
 
 | Ver | Salto |
 | --- | --- |
@@ -104,6 +104,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.158 | Spawn 4: `closeHazardScale` sobe o estilhaço nos últimos 10 s. Ausente fica `1`. dusk sobe mais que spawn; calm menos. O pulso acende o campo (`flashClose`). Não promove pacing. |
 | 0.9.159 | `closeBedRate` desloca o tom da cama com o pulso do fecho. Sem pedido a cama fica em `1`. Não é duck. Não promove `heard`. |
 | 0.9.160 | O overlay do fim reusa `record` com `extra.best`. Recorde 0 some. Sem faixa nova. Não promove feel. |
+| 0.9.161 | `attractMove` desloca o corpo na porta sem comer o tick. O aviso pede fantasia e mover no relógio da mostra. Dash, coleta e guarda ficam no campo. `advance` na porta continua no-op. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -116,7 +117,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | fecho pede guardar no disco; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | porta recebe movimento no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | cama sobe o tom no disco; `heard` falso |
@@ -179,7 +180,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Não ensinar pad/touch no coach **antes** de `lastSource` nem
   **depois** da primeira guarda. O fecho com corrente viva pede
   `bank` (reusa `hint_bank`); sem corrente, ou fora do fecho,
-  a primeira guarda continua encerrando o ensino.
+  a primeira guarda continua encerrando o ensino. A porta não
+  ensina pad, toque, dash, coleta nem guarda.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, chuva da porta, `gameSpeed` no disco, `hold` no stub,
@@ -201,7 +203,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   rolar o painel no over,
   região viva do perigo,
   duck só na cama, graça no coil
-  ou avanço no overlay.
+  ou avanço no overlay, recorde no overlay do fim
+  ou movimento na porta.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -305,8 +308,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   e `createState()` default = `playing`. `advance` em title não anda o
   tick. A porta desenha `drawCaptions` se `captions !== false`.
   Legenda na abertura não sobe `accessibility`. Dash em `step` chama `beginRun` (squash, punch, `dash` sem
-  incrementar `stats.dashes`). Sem dash, `attractTick` anda a chuva da
-  porta — lê a mesa vigente (cadência e queda), sem RNG, sem
+  incrementar `stats.dashes`).   Sem dash, `attractMove` desloca o corpo e `attractTick` anda a
+  chuva da porta — lê a mesa vigente (cadência e queda), sem RNG, sem
   `entities`. A mostra do spawn continua quatro gotas. Reduced trava a queda. Reset na title sorteia seed nova
   e vai a `playing`. Pause na title é ignorado. Com tela, `reset()` sem
   argumento no `over` volta à title; um avanço *novo* no over faz o
@@ -331,7 +334,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Coach: fantasy → move → dash → miss → touch/pad → collect → null após
   1ª guarda. Exceção: `closingWindow` e `chain > 0` devolve `bank`
   mesmo depois da primeira guarda. Sem corrente o fecho não ensina.
-  Pad/touch não voltam. `coachHint` some se `phase !== "playing"`.
+  Pad/touch não voltam. Na porta (`phase === "title"`) o relógio
+  é `attractTick`: fantasia e mover; depois some. Dash, coleta,
+  guarda, queda e superfície ficam no campo. `over` continua mudo.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
 - `title_play` / `title_again` / `title_new` / `title_last` /
   `title_volatile` / `title_unsaved` /
@@ -340,6 +345,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `record` com `extra.best` quando `best > 0`. Recorde 0 some.
   Sem faixa nova. Nomear não é `felt`.
   `migrateCopy` preenche default se a mesa antiga não tiver.
+- `attractMove` desloca `player.x` na porta com a mesma velocidade
+  do campo. Não come `tick`, seed, `entities` nem eventos.
+  `advance()` na porta continua no-op — o passo mora no `step()`.
+  O aviso da porta reusa `drawCoach` sem faixa nova. Andar no
+  disco não é `felt`.
 - Invite (`?invite=1`) some `#commands`, não `#remap`. Com seed no
   last-run, `/?invite=1&seed=<n>` some a tabela e abre essa partida.
   Com chuva nomeada e ≠ `spawn`, junta `&spawn=<mesa>`. Com look
@@ -408,6 +418,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um fecho que só enche a chuva enquanto o risco fica no teto da rampa.
 **Não** mais uma cama que ignora o fecho enquanto o campo grita.
 **Não** mais um fim que esconde o recorde que o HUD mostrou a partida inteira.
+**Não** mais uma porta que ignora o movimento enquanto o convite some a tabela.
 
 Candidatos, do que ainda dói:
 
@@ -462,7 +473,9 @@ Candidatos, do que ainda dói:
   disco e o tom da
   cama no fecho e o
   recorde no overlay
-  do fim não
+  do fim e o
+  movimento na
+  porta não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
@@ -485,6 +498,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `overHint` reusa `record` com
-`extra.best`. Recorde 0 some. Sem faixa nova.
-Não promover feel.
+Arquivos quentes da última sessão: `attractMove` na porta.
+O aviso pede fantasia e mover no relógio da mostra.
+`advance` na porta continua no-op. Não promover feel.

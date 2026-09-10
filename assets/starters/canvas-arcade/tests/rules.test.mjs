@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, attractEntities, attractTick, beginRun, bedRateFor, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnHazardChance, spawnIntervalScale, threatCue } from "../src/game/rules.js";
+import { advance, approaching, attractEntities, attractMove, attractTick, beginRun, bedRateFor, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, FIELD, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnHazardChance, spawnIntervalScale, threatCue } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -565,6 +565,7 @@ test("a abertura não avança o tick até o corpo apontar", () => {
   assert.equal(state.phase, "title");
   assert.equal(state.tick, 0);
   assert.equal(state.entities.length, 0);
+  assert.equal(state.player.x, FIELD.width / 2, "advance na porta não move");
   beginRun(state);
   assert.equal(state.phase, "playing");
   assert.equal(state.player.squash, CONFIG.feel.squashDash, "a porta senta como o avanço");
@@ -575,6 +576,32 @@ test("a abertura não avança o tick até o corpo apontar", () => {
   assert.equal(state.tick, 1);
   beginRun(state);
   assert.equal(state.tick, 1, "beginRun fora da abertura não reinicia");
+});
+
+test("a porta recebe o movimento sem comer o tick", () => {
+  const state = createState(1, { entry: "title" });
+  const rng = state.rngState;
+  const start = state.player.x;
+  attractMove(state, { move: 1 });
+  assert.ok(state.player.x > start, "a porta precisa do passo");
+  assert.equal(state.player.dir, 1);
+  assert.equal(state.tick, 0);
+  assert.equal(state.phase, "title");
+  assert.equal(state.entities.length, 0);
+  assert.equal(state.events.length, 0);
+  assert.equal(state.rngState, rng);
+  attractMove(state, { move: -1 });
+  assert.equal(state.player.dir, -1);
+  attractMove(state, { move: 0 });
+  assert.equal(state.tick, 0, "parado não anda o relógio");
+  const play = createState(1);
+  const idle = play.player.x;
+  attractMove(play, { move: 1 });
+  assert.equal(play.player.x, idle, "fora da porta o passo não existe");
+  const edge = createState(1, { entry: "title" });
+  edge.player.x = FIELD.width - CONFIG.player.halfWidth;
+  attractMove(edge, { move: 1 });
+  assert.equal(edge.player.x, FIELD.width - CONFIG.player.halfWidth, "a porta respeita a borda");
 });
 
 test("a chuva da porta não come a seed", () => {
