@@ -37,7 +37,12 @@ export function dashCharge(state, config = CONFIG) {
       fill: Math.max(0, Math.min(1, (total - player.dashWindup) / total)),
     };
   }
-  if ((state.bankLock ?? 0) > 0) return { phase: "lock", fill: 0 };
+  // O arco da guarda também trava o dash. Sem isto a
+  // faixa dizia pronto e o avanço não saía. Rótulo no
+  // disco não é felt.
+  if ((state.bankLock ?? 0) > 0 || (state.bankWindup ?? 0) > 0) {
+    return { phase: "lock", fill: 0 };
+  }
   const remaining = (player.dashRecovery ?? 0) > 0
     ? player.dashRecovery + cooldownTicks
     : (player.dashCooldown ?? 0);

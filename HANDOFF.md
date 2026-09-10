@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.230 (confirmado): o `init` aponta a mesma superfície do `start`.
+**HEAD:** ver `git log -1` — vigente 0.9.231: o arco da guarda não mente que o dash está pronto.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 281 OK.
-`cd assets/starters/canvas-arcade && npm test` → 403 OK.
+`cd assets/starters/canvas-arcade && npm test` → a confirmar no 0.9.231.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.230)
+## O que o HEAD já entrega (0.9.91–0.9.231)
 
 | Ver | Salto |
 | --- | --- |
@@ -174,6 +174,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.228 | Depois da porta o campo não repete a frase nem o mover. Dash e coleta entram. Headless ainda vê a frase. Não promove feel. |
 | 0.9.229 | O `context` não manda documentar um `start` fresco. `audit.deferred`; o `next` já pedia jogar. `--event direction-approved` e `--stage audit` continuam pedindo a base. Não promove. |
 | 0.9.230 | O `init` aponta a mesma superfície do `start`: `open`, `url`, `prompt` no stderr. Não executa. Não promove. |
+| 0.9.231 | O arco da guarda não mente que o dash está pronto. `dashCharge` trava como no `bankLock`. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -187,7 +188,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | depois da porta o campo não repete o ensino; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o arco da guarda não mente o dash; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
@@ -322,7 +323,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou fantasia na porta que come o aviso de mover
   ou campo que repete a frase e o mover da porta
   ou context que manda documentar um start fresco
-  ou init que planta e some a superfície.
+  ou init que planta e some a superfície
+  ou arco da guarda que mente que o dash está pronto.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -529,7 +531,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   tem `bank`) também atravessa — `bankWindup` já é 0.
   Pedido de guarda com corrente já existente espera o coil
   do avanço: os dois arcos no mesmo tick comiam o disparo
-  (`canDash` lia `bankWindup`). Coleta e guarda no mesmo quadro continuam na hora. Orbe que cai no arco da guarda espera — o sit não inflama a aposta; depois do commit o orbe entra. O relógio não come o sit: se `bankWindup > 0` no último tick, `commitBank` corre antes do `over`. Sem sit a corrente continua caindo.   O hitstop no fim não alonga o relógio: se `hitstop > 0` no último tick, `endRun` corre no early-return do freeze. A queda longe não come o verbo: se `committed`, miss marca o chão e não senta squash nem puxa a câmera. Parado, a queda ainda senta. Raspo (`grazeContact`): estreita, punch na direção,
+  (`canDash` lia `bankWindup`). `dashCharge` também lê o sit:
+  `bankWindup > 0` é `lock`, como o `bankLock` — a faixa não
+  diz pronto. Coleta e guarda no mesmo quadro continuam na hora. Orbe que cai no arco da guarda espera — o sit não inflama a aposta; depois do commit o orbe entra. O relógio não come o sit: se `bankWindup > 0` no último tick, `commitBank` corre antes do `over`. Sem sit a corrente continua caindo.   O hitstop no fim não alonga o relógio: se `hitstop > 0` no último tick, `endRun` corre no early-return do freeze. A queda longe não come o verbo: se `committed`, miss marca o chão e não senta squash nem puxa a câmera. Parado, a queda ainda senta. Raspo (`grazeContact`): estreita, punch na direção,
   flash menor que a queda. Sem hitstop. Sem rumble.
   Queda (`squashMiss`): senta menos que a coleta quando o verbo está parado. Sem rumble.
   Sem hitstop. Graça pós-dano: `hit()` concede `invuln` e o
@@ -742,6 +746,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um campo que repete a frase e o mover que a porta já deu.
 **Não** mais um `context` que manda documentar um `start` fresco.
 **Não** mais um `init` que planta e some a superfície que o `start` já nomeia.
+**Não** mais um arco da guarda que mente que o dash está pronto.
 
 Candidatos, do que ainda dói:
 
@@ -1100,6 +1105,12 @@ Candidatos, do que ainda dói:
   planta e
   some a
   superfície
+  e o
+  arco da
+  guarda que
+  mente que o
+  dash está
+  pronto
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1123,7 +1134,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o `init`
-aponta a mesma superfície do `start`.
-`open`, `url` e `prompt` no stderr.
-Não executa. Não promove.
+Arquivos quentes da última sessão: o arco
+da guarda não mente que o dash está pronto.
+`dashCharge` trava como no `bankLock`.
+Não promove feel.

@@ -1349,6 +1349,21 @@ test("a recarga do dash enche a faixa sem aprovar o feel", () => {
   lock.bankLock = 4;
   assert.equal(dashCharge(lock).phase, "lock");
   assert.equal(dashCharge(lock).fill, 0);
+  const sit = createState(1);
+  sit.chain = 3;
+  sit.bankWindup = CONFIG.bank.windupTicks;
+  assert.equal(dashCharge(sit).phase, "lock", "o arco da guarda não mente que o dash está pronto");
+  assert.equal(dashCharge(sit).fill, 0);
+  const painted = hudTexts(sit);
+  assert.equal(
+    painted.texts.some((item) => item.text.includes("Dash pronto")),
+    false,
+    "o rótulo não promete o avanço no sit",
+  );
+  assert.ok(
+    painted.texts.some((item) => item.text.includes("Dash recarregando")),
+    "o arco reusa o rótulo de recarga",
+  );
   const dash = createState(1);
   dash.player.dashTicks = 3;
   assert.equal(dashCharge(dash).phase, "dash");
