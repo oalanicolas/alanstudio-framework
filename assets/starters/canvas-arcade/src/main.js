@@ -135,8 +135,13 @@ export function createGame(options = {}) {
     return persistStatus(storage, lastWrite);
   }
 
-  const input = options.input ?? createInput({ target: eventTarget, surface: canvas, bindings: settings.bindings });
   const audio = options.audio ?? createAudio({ settings });
+  const input = options.input ?? createInput({
+    target: eventTarget,
+    surface: canvas,
+    bindings: settings.bindings,
+    unlock: () => audio.unlock(),
+  });
   const haptics = options.haptics ?? createHaptics({ settings, gamepads: options.gamepads });
   const renderer = canvas ? createRenderer(canvas) : null;
   // Sem canvas (teste headless) não busca arquivo: o fetch relativo não tem

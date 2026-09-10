@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.141 — O gesto também retoma o contexto suspenso
+
+O decode no boot cria o AudioContext
+fora do gesto. Chrome e Safari nascem
+suspensos. O play no quadro chega
+tarde. Tecla ligada e toque pedem
+`resume` no próprio gesto. `heard`
+continua falso. Só `release` fica no
+piso.
+
+O que 0.9.141 não afirma: resume no
+gesto não é mix ouvido nem sessão no
+aparelho.
+
 ## 0.9.140 — A porta também nomeia quando o save não ficou
 
 A gravação já detectava cota, privativo

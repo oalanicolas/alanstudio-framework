@@ -179,8 +179,8 @@ seno e ruído filtrado, sem quadrada, sem jsfxr, sem Kenney. Origem em
 traz a mixagem — barramentos, prioridade, ducking, rodízio, legenda.
 `heard` continua falso: arquivo no disco não é mixagem ouvida. O
 pedido que chega antes do WAV fica na fila e toca quando o buffer
-entra; a fila não duplica a legenda e não é mix ouvido. Variação
-no disco não é faixa dinâmica medida.
+entra; o gesto retoma o contexto suspenso. Fila e resume não são
+mix ouvido. Variação no disco não é faixa dinâmica medida.
 
 Toda informação sonora já tem legenda equivalente: o jogo é completável
 com o áudio desligado, e precisa continuar sendo. A legenda tem faixa

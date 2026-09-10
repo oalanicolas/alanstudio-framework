@@ -54,6 +54,26 @@ test("arrastar no toque move; a faixa de cima avança e a de baixo guarda", () =
   input.dispose();
 });
 
+test("tecla ligada e toque acordam o mixer no gesto, tecla solta não", () => {
+  const woken = [];
+  const keys = surface();
+  const pad = surface();
+  const input = createInput({
+    target: keys,
+    surface: pad,
+    unlock: () => {
+      woken.push(input.lastSource);
+    },
+  });
+  keys.dispatch("keydown", { code: "KeyZ", preventDefault() {} });
+  assert.deepEqual(woken, []);
+  keys.dispatch("keydown", { code: "Space", preventDefault() {} });
+  assert.deepEqual(woken, ["keyboard"]);
+  pad.tap(64, 90);
+  assert.deepEqual(woken, ["keyboard", "pointer"]);
+  input.dispose();
+});
+
 test("sem superfície o toque não inventa intenção", () => {
   const input = createInput({ target: null });
   assert.equal(input.lastSource, "keyboard");

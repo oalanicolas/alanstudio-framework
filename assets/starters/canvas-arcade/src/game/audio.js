@@ -14,8 +14,9 @@
 // O jogo carrega o arquivo no mixer. Sem esse consumidor, arquivo no
 // disco e jogo mudo eram a mesma coisa. O pedido que chega antes do
 // WAV fica na fila e toca quando o buffer entra — sem segunda
-// legenda. Fila no disco não é mix ouvido. `missing()` ainda lista o
-// papel se o decode falhar ou o fetch 404.
+// legenda. O gesto (tecla ou toque) retoma o contexto suspenso;
+// retomar não é mix ouvido. Fila no disco não é mix ouvido.
+// `missing()` ainda lista o papel se o decode falhar ou o fetch 404.
 //
 // Toda informação sonora tem legenda equivalente: o jogo precisa ser
 // completável com o áudio desligado.
@@ -80,7 +81,8 @@ export function createAudio(options = {}) {
   let disposed = false;
 
   function ensureContext() {
-    if (disposed || context) return context;
+    if (disposed) return context;
+    if (context) return context;
     context = createContext();
     if (!context) return null;
     gains = {};
@@ -106,6 +108,25 @@ export function createAudio(options = {}) {
     return context;
   }
 
+  // Chrome e Safari nascem suspensos. `decode` no boot cria o
+  // contexto fora do gesto; o avanço da porta já é o gesto — se
+  // o resume ficar para o quadro, o primeiro verbo continua mudo.
+  // Pedir resume não é mix ouvido.
+  function unlock() {
+    if (disposed) return false;
+    const ctx = ensureContext();
+    if (!ctx) return false;
+    if (ctx.state === "suspended" && typeof ctx.resume === "function") {
+      try {
+        const pending = ctx.resume();
+        if (pending && typeof pending.catch === "function") pending.catch(() => {});
+      } catch {
+        return false;
+      }
+    }
+    return true;
+  }
+
   function applyBusLevels() {
     if (!gains) return;
     const levels = settings.buses ?? {};
@@ -128,7 +149,7 @@ export function createAudio(options = {}) {
     if (!definition || disposed) return false;
     const pack = buffers.get(id) ?? [];
     if (!pack.length) return false;
-    ensureContext();
+    unlock();
     if (!context) return false;
     applyBusLevels();
     if (definition.loop) return startLoop(id, definition, pack[0]);
@@ -177,6 +198,7 @@ export function createAudio(options = {}) {
     get available() {
       return Boolean(context);
     },
+    unlock,
     register(id, buffer) {
       if (!(id in SOUNDS) || disposed) return false;
       const pack = buffers.get(id) ?? [];
@@ -208,7 +230,7 @@ export function createAudio(options = {}) {
       if (!pack.length) {
         missing.add(id);
         pending.set(id, extra);
-        ensureContext();
+        unlock();
         return false;
       }
       return emitVoice(id, extra);

@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.140: a porta nomeia sessão volátil e gravação que não ficou.
+**HEAD:** ver `git log -1` — vigente 0.9.141: o gesto retoma o contexto de áudio suspenso.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 260 OK.
-`cd assets/starters/canvas-arcade && npm test` → 307 OK.
+`cd assets/starters/canvas-arcade && npm test` → 310 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.140)
+## O que o HEAD já entrega (0.9.91–0.9.141)
 
 | Ver | Salto |
 | --- | --- |
@@ -84,6 +84,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.138 | `note`, `next`, `feel` e `playtest` sem caminho usam o mesmo resolvedor. Achar o único jogo não sente e não assiste. `felt` / `observed` / `outsider` continuam falsos. |
 | 0.9.139 | O pedido que chega antes do WAV fica na fila e toca quando o buffer entra. Sem segunda legenda. `heard` continua falso. |
 | 0.9.140 | A porta e o fim nomeiam sessão volátil e gravação que não ficou. `handle.persist` expõe o estado. `trusted` continua falso. |
+| 0.9.141 | Tecla ligada e toque retomam o `AudioContext` suspenso no gesto. Resume no quadro chega tarde. `heard` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -167,7 +168,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   faixa do achado, `play` achar o único jogo do
   laboratório, `note` / `next` / `feel` / `playtest`
   acharem o mesmo jogo, fila do mixer no primeiro
-  WAV, aviso de save na porta
+  WAV, aviso de save na porta, resume do
+  contexto no gesto
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -231,7 +233,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `listMoods()` = interseção look ∩ spawn (hoje `calm`, `dusk`).
 - `SOUNDS`: dash, land, graze, collect, missed, bank, hit, over, close, live, stir, bed.
   Pedido sem buffer: last-wins na fila; `register` toca sem segunda
-  legenda. `dispose` esquece. `heard` falso.
+  legenda. `dispose` esquece. Tecla ligada e toque chamam
+  `audio.unlock()` no gesto. `heard` falso.
 - Jogador: `fillRect` do squash **permanece** (testes `playerFill` /
   `playerBox`). A ponta é path (`lineTos`). Halo do estilhaço **não**
   é `arc` (`orb.arcs > shard.arcs`).
@@ -308,7 +311,7 @@ Saltos alinhados: feel visível/audível, ferramenta de outsider, superfície
 de entrada, auditoria item 1, ou atrito ideia→jogo. **Não** mais um
 script de medição. **Não** mais um `play` sem caminho. **Não** mais
 um `note` sem caminho. **Não** mais a fila do mixer. **Não** mais
-aviso de save na porta.
+aviso de save na porta. **Não** mais resume do contexto.
 
 Candidatos, do que ainda dói:
 
@@ -341,8 +344,8 @@ Candidatos, do que ainda dói:
    disco, copiar o achado,
    gravar os quatro nomes, mostrar seed/pontos/eixos na faixa,
    anexar last-run, `play` achar o único jogo, `note` achar
-   o mesmo jogo, a fila do mixer no primeiro WAV e o aviso
-   de save na porta não fecham. A receita
+   o mesmo jogo, a fila do mixer no primeiro WAV, o aviso
+   de save na porta e o resume no gesto não fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
    Não nascer look/chuva first-party novo como craft.
@@ -363,5 +366,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `persistStatus` / `persistLine`.
-Nomear sessão volátil não é aba fechada nem `trusted`.
+Arquivos quentes da última sessão: `audio.unlock` no gesto de
+`input`. Resume no quadro chega tarde. Não é mix ouvido.

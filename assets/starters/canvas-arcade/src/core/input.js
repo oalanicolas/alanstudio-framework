@@ -2,6 +2,8 @@
 // No gamepad, Select (8) reinicia: sem isso o verbo fecha e a partida
 // não recomeça só com o controle. `lastSource` guarda quem falou por
 // último para o aviso e o overlay nomearem esse mapa — não o manifesto.
+// O gesto acorda o mixer (`unlock`): o resume no quadro chega
+// tarde e o primeiro verbo fica mudo. Acordar não é mix ouvido.
 // Sessão no aparelho não foi observada.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que
@@ -28,6 +30,7 @@ export function createInput(options = {}) {
     (() =>
       typeof navigator !== "undefined" && navigator.getGamepads ? navigator.getGamepads() : []);
   let bindings = { ...DEFAULT_BINDINGS, ...(options.bindings ?? {}) };
+  const unlock = typeof options.unlock === "function" ? options.unlock : null;
 
   const held = new Set();
   const pressed = new Set();
@@ -39,6 +42,15 @@ export function createInput(options = {}) {
 
   function noteSource(source) {
     lastSource = source;
+  }
+
+  function wake() {
+    if (!unlock) return;
+    try {
+      unlock();
+    } catch {
+      /* retomar o contexto não pode quebrar o gesto */
+    }
   }
 
   function on(element, type, handler, opts) {
@@ -55,6 +67,7 @@ export function createInput(options = {}) {
     const code = event.code ?? event.key;
     if (!actionsFor(code).length) return;
     noteSource("keyboard");
+    wake();
     // Setas e espaço rolam a página; o jogo já consumiu a tecla.
     if (typeof event.preventDefault === "function") event.preventDefault();
     if (!held.has(code)) {
@@ -88,6 +101,7 @@ export function createInput(options = {}) {
     const position = pointerAim(event);
     if (!position) return;
     noteSource("pointer");
+    wake();
     pointer.active = true;
     pointer.aim = position.x;
     // Faixa inferior guarda a corrente; o resto da tela é dash.

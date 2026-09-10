@@ -59,6 +59,11 @@ function fakeContext() {
     close() {
       context.closed = true;
     },
+    state: "running",
+    resume() {
+      context.state = "running";
+      return Promise.resolve();
+    },
   };
   return context;
 }
@@ -273,6 +278,37 @@ test("a cama que pediu antes do arquivo entra em loop quando o buffer chega", ()
   assert.equal(audio.captions().some((item) => item.id === "bed"), false);
   audio.register("bed", { duration: 4 });
   assert.equal(context.sources[0].loop, true);
+  assert.equal(context.sources[0].started, true);
+});
+
+test("o gesto retoma o contexto suspenso sem fingir que o mix foi ouvido", () => {
+  const { audio, context } = build();
+  context.state = "suspended";
+  let resumed = 0;
+  context.resume = () => {
+    resumed += 1;
+    context.state = "running";
+    return Promise.resolve();
+  };
+  assert.equal(audio.unlock(), true);
+  assert.equal(resumed, 1);
+  audio.register("dash", { duration: 0.2 });
+  context.state = "suspended";
+  assert.equal(audio.play("dash"), true);
+  assert.equal(resumed, 2);
+  assert.equal(context.sources[0].started, true);
+});
+
+test("resume recusado não derruba o quadro", () => {
+  const { audio, context } = build();
+  audio.register("dash", { duration: 0.2 });
+  context.state = "suspended";
+  context.resume = () => {
+    throw new Error("NotAllowedError");
+  };
+  assert.equal(audio.unlock(), false);
+  context.resume = () => Promise.reject(new Error("NotAllowedError"));
+  assert.equal(audio.play("dash"), true);
   assert.equal(context.sources[0].started, true);
 });
 
