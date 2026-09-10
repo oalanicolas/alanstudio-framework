@@ -3,6 +3,32 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.200 — A assistência também cede a mostra
+
+O rótulo já
+dizia alcance
+e chuva lenta.
+A porta
+ignorava o
+knob. Agora a
+mostra cai mais
+devagar e o
+toque alarga
+com o mesmo
+perdão do
+campo. A graça
+extra fica no
+campo.
+`verified`
+continua falso.
+Só `release`
+fica no piso.
+
+O que 0.9.200 não afirma:
+slider no disco
+não é sessão
+observada.
+
 ## 0.9.199 — O relógio da partida poupa a mostra
 
 O knob já

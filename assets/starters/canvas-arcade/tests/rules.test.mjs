@@ -769,6 +769,48 @@ test("a mostra toca o corpo sem pontuar nem comer a seed", () => {
   assert.equal(play.player.squash, idle, "fora da porta o toque não existe");
 });
 
+test("a assistência na porta também deixa a mostra mais lenta", () => {
+  const plain = createState(7, { entry: "title" });
+  const helped = createState(7, { entry: "title", assist: true });
+  for (let step = 0; step < 20; step += 1) {
+    attractTick(plain);
+    attractTick(helped);
+  }
+  const shown = attractEntities(plain);
+  const soft = attractEntities(helped);
+  assert.equal(shown.length, soft.length);
+  assert.equal(shown[0].x, soft[0].x, "assistência não muda a faixa");
+  assert.ok(soft[0].y < shown[0].y, "assistência na porta cai mais devagar");
+  assert.equal(plain.rngState, helped.rngState);
+  assert.equal(plain.entities.length, 0);
+  assert.equal(helped.entities.length, 0);
+});
+
+test("a assistência na porta também alarga o toque da mostra", () => {
+  const helped = createState(1, { entry: "title", assist: true });
+  const drop = seatOnShow(helped, "orb");
+  assert.ok(drop, "esperava o orbe na faixa");
+  helped.player.x = drop.x + CONFIG.player.halfWidth + CONFIG.collect.pad + 1;
+  attractTouch(helped);
+  assert.equal(helped.flash, CONFIG.feel.flashMissed, "o mesmo orbe fora do alcance padrão acende com assistência");
+  assert.equal(helped.chain, 0, "o toque não finge coleta");
+  assert.equal(helped.score, 0);
+
+  const plain = createState(1, { entry: "title" });
+  const missed = seatOnShow(plain, "orb");
+  assert.ok(missed, "esperava o orbe na faixa");
+  plain.player.x = missed.x + CONFIG.player.halfWidth + CONFIG.collect.pad + 1;
+  attractTouch(plain);
+  assert.equal(plain.flash, 0, "sem assistência o mesmo vão não acende");
+
+  const stillOut = createState(1, { entry: "title", assist: true });
+  const far = seatOnShow(stillOut, "orb");
+  assert.ok(far, "esperava o orbe na faixa");
+  stillOut.player.x = far.x + CONFIG.player.halfWidth + CONFIG.collect.pad + CONFIG.assist.collectPad + 1;
+  attractTouch(stillOut);
+  assert.equal(stillOut.flash, 0, "assistência na porta não é alcance infinito");
+});
+
 test("o orbe da mostra acende sem fingir coleta", () => {
   const state = createState(1, { entry: "title" });
   assert.ok(seatOnShow(state, "orb"), "esperava o orbe na faixa");

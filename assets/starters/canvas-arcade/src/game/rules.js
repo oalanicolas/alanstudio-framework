@@ -118,6 +118,7 @@ export const CONFIG = {
   },
   // Assistência não esconde conteúdo: os mesmos orbes, a mesma pontuação.
   // Perdão extra de alcance, chuva mais lenta e graça mais longa.
+  // Na porta vale queda e alcance da mostra; a graça extra fica no campo.
   assist: {
     collectPad: 4,
     collectReachY: 3,
@@ -515,10 +516,14 @@ export function attractEntities(state, reduced = false) {
   const base = Number.isFinite(table.fallSpeedMin) && table.fallSpeedMin > 0
     ? table.fallSpeedMin
     : 1.1;
+  // O rótulo promete chuva mais lenta. Sem isto a mostra
+  // ignorava o knob e só o campo cedia. Assistência no
+  // disco não é sessão observada.
+  const fall = state.assist ? CONFIG.assist.fallSpeedScale : 1;
   const span = 72 * 3;
   const items = [];
   for (let index = 0; index < count; index += 1) {
-    const travel = (t * (base + index * 0.15) + index * 44) % (FIELD.height - 28);
+    const travel = (t * (base + index * 0.15) * fall + index * 44) % (FIELD.height - 28);
     items.push({
       kind: index % 2 === 0 ? "orb" : "shard",
       x: 48 + (count === 1 ? 0 : index * (span / (count - 1))),
@@ -535,8 +540,8 @@ export function attractTouch(state) {
   if (!state || state.phase !== "title" || !state.player) return state;
   const rain = attractEntities(state);
   const player = state.player;
-  const pad = CONFIG.collect.pad;
-  const reachY = CONFIG.collect.reachY;
+  const pad = CONFIG.collect.pad + (state.assist ? CONFIG.assist.collectPad : 0);
+  const reachY = CONFIG.collect.reachY + (state.assist ? CONFIG.assist.collectReachY : 0);
   let kind = "";
   for (let index = 0; index < rain.length; index += 1) {
     const entity = rain[index];

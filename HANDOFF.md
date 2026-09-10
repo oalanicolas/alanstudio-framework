@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.199 (confirmado): `gameSpeed` só dilata a partida; porta e fim ficam no relógio cheio.
+**HEAD:** ver `git log -1` — vigente 0.9.200: `assist` cede queda e alcance também na mostra da porta.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 273 OK.
-`cd assets/starters/canvas-arcade && npm test` → 376 OK.
+`cd assets/starters/canvas-arcade && npm test` → 378 esperados (confirmar).
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.199)
+## O que o HEAD já entrega (0.9.91–0.9.200)
 
 | Ver | Salto |
 | --- | --- |
@@ -143,6 +143,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.197 | A câmera inclina para o que o trilho já marca (`lookAheadX`). Menor que o punch do dash. Sem punch novo. Não promove feel. |
 | 0.9.198 | `sfx export` / `sfx copy` levam bytes e créditos do stem do starter. `--apply` continua só o acervo. `next` aponta `sfx copy`. Não promove `heard`. |
 | 0.9.199 | `gameSpeed` só dilata o relógio em `playing`. Porta e fim ficam no relógio cheio. `advance()` continua ignorando. Não promove `accessibility`. |
+| 0.9.200 | `assist` cede queda e alcance também na mostra da porta. Graça extra fica no campo. Não promove `accessibility`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -259,7 +260,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou porta que marca a mostra no trilho
   ou câmera que confirma o trilho
   ou export que some o stem do starter
-  ou relógio da partida que some a mostra.
+  ou relógio da partida que some a mostra
+  ou assistência que some a mostra.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -501,6 +503,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   só em `playing`. Porta e over ficam em 1. `advance()`
   ignora. Assistência não é este knob. Knob no disco
   não é sessão observada.
+- `assist` cede queda e alcance na partida e na mostra da
+  porta (`fallSpeedScale`, `collectPad`, `collectReachY`).
+  A graça extra (`extraInvulnTicks`) fica no campo. Não
+  esconde orbe nem pontuação. Knob no disco não é sessão.
 - `colorblind` é alcance, não look. `dressPalette` aplica
   `COLORBLIND_INKS` (orbe/estilhaço/corrente/perigo do `normal`)
   sobre o look vigente. Alto contraste vence. Não entra no href.
@@ -592,6 +598,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma câmera que some a antecipação enquanto o trilho já marca.
 **Não** mais um `sfx export` que recusa o stem que `sfx info` já nomeia.
 **Não** mais um relógio da partida que dilata a mostra da porta.
+**Não** mais uma assistência que some a queda e o alcance na porta.
 
 Candidatos, do que ainda dói:
 
@@ -778,6 +785,9 @@ Candidatos, do que ainda dói:
   relógio da
   partida que
   some a
+  mostra e a
+  assistência
+  que some a
   mostra
   não
   fecham. A receita
@@ -802,6 +812,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `gameSpeed` só dilata
-`playing`. Porta e over ficam no relógio cheio.
-`advance()` continua ignorando. Não promove `accessibility`.
+Arquivos quentes da última sessão: `assist` cede queda e
+alcance também na mostra da porta. Graça extra fica no
+campo. Não promove `accessibility`.

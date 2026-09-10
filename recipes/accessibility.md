@@ -68,7 +68,8 @@ mais que uma lista de recursos não testados.
 Implementação concreta: o starter `canvas-arcade` guarda remapeamento, redução de
 movimento e velocidade da partida em `src/core/settings.js`. `gameSpeed` dilata o
 acumulador em `src/core/loop.js` só na partida; a porta e o fim ficam no
-relógio cheio. `advance()` headless não passa por ele. Herda a preferência do sistema, preenche
+relógio cheio. `advance()` headless não passa por ele. `assist` cede queda e
+alcance também na mostra da porta; a graça extra fica no campo. Herda a preferência do sistema, preenche
 `{pause}`, `{reset}` e `{bank}` em `copy.json` com as teclas vivas, desenha formas
 distintas além da cor em `src/game/render.js` e mantém legenda equivalente para
 toda informação sonora em `src/game/audio.js`. `npm run contrast` amostra
