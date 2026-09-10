@@ -177,7 +177,7 @@ do que um preset mais baixo.
 ## 5. Provar em movimento
 
 Screenshot não comprova feel. Compare o antes/depois no percurso real.
-Observe também pause, perda de foco, reinício e troca de entrada: um
+Observe também pause, perda de foco, o controle que some, reinício e troca de entrada: um
 hitstop que sobrevive à pausa ou um rumble que não morre no descarte é
 regressão de [ciclo de vida](lifecycle.md).
 

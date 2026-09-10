@@ -24,8 +24,11 @@ R no overlay também. Sem tela o headless já joga. A página oferece o
 recibo no overlay e na porta se houver partida; isso não é observação.
 Aba escondida pausa no campo e no fim. Na porta só descarrega — P já
 é ignorado e a placa nem nasce. Perda de foco da janela grava o hold
-e senta o mesmo relógio; na porta só descarrega. Hidden que pausa sem P para retomar
-congela a mostra. Stub não é aba fechada.
+e senta o mesmo relógio; na porta só descarrega. O controle que some
+senta o mesmo relógio se a sessão falou no pad; teclado e toque não
+sentam porque um pad na gaveta desconectou. Na porta só descarrega.
+Hidden que pausa sem P para retomar
+congela a mostra. Stub não é aba fechada nem sessão no controle.
 
 Examine separadamente:
 

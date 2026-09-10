@@ -3,6 +3,44 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.286 — O controle que some não deixa a partida correr
+
+O
+blur
+já
+sentava
+o
+relógio.
+O
+pad
+sumia
+e
+o
+corpo
+morria.
+Agora
+`gamepaddisconnected`
+senta
+se
+`lastSource`
+é
+gamepad.
+Teclado
+não.
+Não
+promove
+`felt`.
+
+O que 0.9.286 não afirma:
+sentar
+no
+disco
+não
+é
+sessão
+no
+controle.
+
 ## 0.9.285 — O discover nomeia as lacunas de dimensão
 
 O

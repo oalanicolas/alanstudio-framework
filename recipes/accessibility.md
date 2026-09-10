@@ -32,7 +32,8 @@ Examine as barreiras que o jogo realmente cria:
 - **Movimento:** redução de movimento desligando tremor de câmera, paralaxe
   agressiva, flashes e transições longas — sem remover o feedback de causa, que
   precisa migrar para um sinal estático equivalente. No starter o pulso do
-  aparelho também some com `reducedMotion` e com a pausa. Pulso no disco
+  aparelho também some com `reducedMotion` e com a pausa. O controle que some
+  senta o relógio se a sessão falou no pad. Pulso no disco
   não é sessão no controle.
 - **Tempo e reação:** dificuldade ou assistência que **não** escondem conteúdo,
   velocidade ajustável quando o gênero permite, pausa disponível em qualquer

@@ -3319,6 +3319,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", recipe)
         self.assertNotIn("16 ms", recipe)
 
+    def test_persistence_recipe_names_the_pad_loss_the_starter_already_flushes(self):
+        persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
+        access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        main = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/src/main.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("controle que some", persist.casefold())
+        self.assertIn("controle que some", cycle.casefold())
+        self.assertIn("controle que some", access.casefold())
+        self.assertIn("addEventListener(\"gamepaddisconnected\"", main)
+        self.assertIn("sitAway", main)
+        self.assertIn("lastSource", main)
+        save = game.save_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        reach = game.access_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        self.assertTrue(save["guide"].endswith("recipes/persistence.md"))
+        self.assertTrue(reach["guide"].endswith("recipes/accessibility.md"))
+        self.assertFalse(save["trusted"])
+        self.assertFalse(reach["verified"])
+        self.assertNotIn("aprovado", persist)
+        self.assertNotIn("aprovado", cycle)
+        self.assertNotIn("aprovado", access)
+
     def test_persistence_recipe_names_the_focus_loss_the_starter_already_flushes(self):
         persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")

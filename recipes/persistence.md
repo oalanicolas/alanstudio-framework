@@ -59,7 +59,7 @@ e o relógio da porta (`attractTick`). Sem o relógio o campo
 repetia a frase e o mover. `canResume` lê o hold; `canContinue`
 continua sendo repetir a última seed.
 `?seed=<n>` abre essa partida e ignora o hold — não é Continuar.
-Pausa, `pagehide`, `beforeunload` e perda de foco gravam o hold. Terminar ou resetar limpa.
+Pausa, `pagehide`, `beforeunload`, perda de foco e o controle que some gravam o hold. Terminar ou resetar limpa.
 A outra aba veste as preferências desta página (`storage`); o progresso
 em curso não. Ouvir não é aba fechada. Isto **não** é aba fechada observada e não sobe `state_trust`. Grava
 de forma **verificada** em `src/core/storage.js` — escreve em chave de estágio,

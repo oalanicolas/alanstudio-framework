@@ -29,6 +29,9 @@
 // o corpo seguia o último hold. Perder o foco da janela
 // (barra, DevTools) também some o keyup e deixava o
 // aperto pendente virar ofício. Soltar no disco não é felt.
+// O pad que some some o hold no poll. Sem o
+// `gamepaddisconnected` o relógio seguia e o corpo
+// morria sozinho. Sentar no disco não é felt.
 // Sessão no aparelho não foi observada.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que

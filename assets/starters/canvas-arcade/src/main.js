@@ -182,6 +182,7 @@ export function createGame(options = {}) {
     bindings: settings.bindings,
     unlock: () => audio.unlock(),
     visibility: options.visibility,
+    gamepads: options.gamepads,
   });
   syncDashOnPress();
   const haptics = options.haptics ?? createHaptics({ settings, gamepads: options.gamepads });
@@ -389,6 +390,14 @@ export function createGame(options = {}) {
     // DevTools soltavam o input e o tick seguia só na RAM.
     sitAway();
   };
+  const onGamepadGone = () => {
+    // O poll some o hold. Sem isto o relógio seguia e o
+    // corpo morria sozinho. Só a sessão que o controle
+    // falou: um pad na gaveta não senta o teclado.
+    // Stub não é sessão no controle; felt continua falso.
+    if (input.lastSource !== "gamepad") return;
+    sitAway();
+  };
   const onPageHide = () => {
     flush();
   };
@@ -429,6 +438,7 @@ export function createGame(options = {}) {
     eventTarget.addEventListener("beforeunload", onBeforeUnload);
     eventTarget.addEventListener("visibilitychange", onVisibility);
     eventTarget.addEventListener("blur", onBlur);
+    eventTarget.addEventListener("gamepaddisconnected", onGamepadGone);
     eventTarget.addEventListener("storage", onStorage);
   }
   // O boot já herdou o sistema. Sem o ouvinte o pedido no
@@ -540,6 +550,7 @@ export function createGame(options = {}) {
         eventTarget.removeEventListener("beforeunload", onBeforeUnload);
         eventTarget.removeEventListener("visibilitychange", onVisibility);
         eventTarget.removeEventListener("blur", onBlur);
+        eventTarget.removeEventListener("gamepaddisconnected", onGamepadGone);
         eventTarget.removeEventListener("storage", onStorage);
       }
       if (

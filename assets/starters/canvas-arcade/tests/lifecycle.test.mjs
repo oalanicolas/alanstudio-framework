@@ -952,6 +952,80 @@ test("na porta a perda de foco não congela a mostra", () => {
   game.dispose();
 });
 
+function stubPad({ axes = [0], buttons = {} } = {}) {
+  const list = Array.from({ length: 16 }, (_, index) => ({ pressed: Boolean(buttons[index]) }));
+  return [{ axes, buttons: list }];
+}
+
+test("o controle que some senta o relógio que a sessão já falou", () => {
+  const storage = memoryStorage();
+  const target = recordingTarget();
+  let pads = stubPad({ axes: [0.8] });
+  const input = createInput({ target, gamepads: () => pads });
+  input.intent();
+  assert.equal(input.lastSource, "gamepad");
+  const game = createGame({ seed: 5, eventTarget: target, storage, input });
+  game.advance(40);
+  const tick = game.observe().tick;
+  assert.ok(tick > 0);
+  const gone = target.listeners.find((entry) => entry.type === "gamepaddisconnected");
+  assert.ok(gone, "gamepaddisconnected precisa de ouvinte — blur não é o pad");
+  gone.handler();
+  assert.equal(game.paused, true, "o pad que some senta o relógio");
+  const saved = JSON.parse(storage.get("progress"));
+  assert.ok(saved.hold, "o tick precisa ficar no disco");
+  assert.equal(saved.hold.tick, tick);
+  assert.equal(game.persist.trusted, false);
+  const reopened = createGame({ eventTarget: recordingTarget(), storage });
+  assert.equal(reopened.observe().tick, tick, "a reabertura retoma o tick");
+  assert.equal(reopened.persist.trusted, false);
+  game.dispose();
+  reopened.dispose();
+  input.dispose();
+});
+
+test("na porta o controle que some não congela a mostra", () => {
+  const storage = memoryStorage();
+  const target = recordingTarget();
+  let pads = stubPad({ axes: [0.8] });
+  const input = createInput({ target, gamepads: () => pads });
+  input.intent();
+  const game = createGame({
+    seed: 5,
+    eventTarget: target,
+    storage,
+    canvas: silentCanvas(),
+    loadSfx: false,
+    input,
+  });
+  assert.equal(game.observe().phase, "title");
+  const gone = target.listeners.find((entry) => entry.type === "gamepaddisconnected");
+  assert.ok(gone, "gamepaddisconnected precisa de ouvinte");
+  gone.handler();
+  assert.equal(game.paused, false, "na porta o pad que some só descarrega");
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing", "o avanço ainda abre");
+  assert.equal(game.persist.trusted, false);
+  game.dispose();
+  input.dispose();
+});
+
+test("o teclado não senta quando um pad na gaveta some", () => {
+  const storage = memoryStorage();
+  const { game, target } = harness({ storage });
+  game.advance(40);
+  const tick = game.observe().tick;
+  const gone = target.listeners.find((entry) => entry.type === "gamepaddisconnected");
+  assert.ok(gone, "o ouvinte existe mesmo na sessão de teclado");
+  gone.handler();
+  assert.equal(game.paused, false, "lastSource teclado não é sessão no controle");
+  game.advance(1);
+  assert.equal(game.observe().tick, tick + 1, "o relógio segue");
+  assert.equal(game.persist.trusted, false);
+  game.dispose();
+});
+
 test("na porta a aba escondida não congela a mostra sem chamar isso de confiável", () => {
   const storage = memoryStorage();
   const target = recordingTarget();
