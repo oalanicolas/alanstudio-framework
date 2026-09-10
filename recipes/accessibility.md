@@ -34,7 +34,8 @@ Uma opção sem consumidor no código não é uma opção.
 `access <projeto>` lê as opções que o código declara (highContrast,
 reducedMotion, captions, remapeamento, uiScale, preset de uma mão e
 assistência). `verified` é sempre falso: chave no fonte não é sessão
-com o modo ativo. O starter `canvas-arcade` expõe `assist` e declara em
+com o modo ativo. O starter `canvas-arcade` expõe `assist` e o remapeamento
+das seis ações do teclado na página, e declara em
 `docs/access.md` o que o recorte não atende. O aviso do primeiro ciclo
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
 Estilhaço no trilho pede o dash; toque e controle ganham passo depois

@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.93 — A página também remapeia
+
+O código já persistia `bindings`. Sem botão, só o console
+trocava a tecla. As seis ações do teclado ganham superfície
+no painel de alcance. Toque e controle não entram. `verified`
+continua falso. Opção na página não é sessão observada. Só
+`release` fica no piso.
+
+O que 0.9.93 não afirma: o harness não remapeou e ninguém
+jogou com a tecla nova.
+
 ## 0.9.92 — O orbe perdido também marca o lugar
 
 O mixer já falava quando o orbe caía e o campo acendia. A

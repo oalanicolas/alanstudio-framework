@@ -66,9 +66,11 @@ descarte.
 **Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
 código declara — `access` inclui assistência. `verified`/`trusted`/`measured` são sempre falsos. `next`
 só levanta quando falta a declaração. O starter expõe assistência,
-`uiScale` (o overlay também), preset de uma mão (o aviso, o overlay e o `cycle.hand`
+`uiScale` (o overlay também), remapeamento das seis ações do teclado
+na página, preset de uma mão (o aviso, o overlay e o `cycle.hand`
 nomeiam IJKL + P/O; o stub coleta, guarda, pausa e reinicia nesse
-cluster) e `docs/access.md`. O HUD do dash enche a faixa no tempo
+cluster) e `docs/access.md`. Trocar a tecla no stub não é sessão
+observada. O HUD do dash enche a faixa no tempo
 de recuperação e cooldown; faixa no stub não é peso percebido. O aviso do primeiro ciclo nomeia teclado,
 toque e controle; o dash e o mapa da superfície que falou também
 ganham passo; overlay e HUD confirmam o aparelho que falou por

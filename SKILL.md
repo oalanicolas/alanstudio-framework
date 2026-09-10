@@ -190,8 +190,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    (resumo e, se houver, a curva) como candidato de medição e não fecha o
    achado. Não joga e não sente.
    **`access` / `save` / `budget`** leem opção de alcance (incluindo
-   uiScale, preset de uma mão e assistência), versão de save e artefato
-   de orçamento.
+   uiScale, remapeamento das seis ações do teclado na página, preset de
+   uma mão e assistência), versão de save e artefato
+   de orçamento. Trocar no stub não é sessão observada.
    `verified`/`trusted`/`measured` são sempre falsos.
    Falta no disco entra no `next` antes dos rascunhos.
    **`art` / `content` / `ship`** leem paleta ou art-bible vigente, conteúdo

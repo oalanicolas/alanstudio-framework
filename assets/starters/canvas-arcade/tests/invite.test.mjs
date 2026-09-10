@@ -40,6 +40,8 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.equal(/mover|dash|guardar|estilhaço|orbe/i.test(strip[1]), false, strip[1]);
   assert.equal(/problema|evidência|hipótese|medição/i.test(strip[1]), false, strip[1]);
   assert.match(html, /id="options-title"/, "o convite não pode some o alcance");
+  assert.match(html, /id="remap"/, "o convite não some o remapeamento");
+  assert.doesNotMatch(html, /html\.invite\s+#remap/, "só a tabela some");
 });
 
 test("a página nomeia o par sem fingir que alguém de fora escolheu", () => {

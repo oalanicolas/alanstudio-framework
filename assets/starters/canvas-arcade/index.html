@@ -51,6 +51,18 @@
       dt { color: var(--muted); }
       dd { margin: 0; }
       .note { color: var(--muted); font-size: 0.85rem; margin: 0.7rem 0 0; }
+      .remap button {
+        appearance: none;
+        background: transparent;
+        color: inherit;
+        border: 1px solid var(--edge);
+        border-radius: 6px;
+        padding: 0.35rem 0.65rem;
+        text-align: left;
+        cursor: pointer;
+        font: inherit;
+      }
+      .remap button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       .invite-strip { display: none; color: var(--muted); font-size: 0.9rem; margin: 0; }
       html.invite #commands { display: none; }
       html.invite .invite-strip { display: block; }
@@ -98,6 +110,8 @@
         <label><input type="checkbox" id="captions" /> <span>Legendas de som</span></label>
         <label><input type="checkbox" id="assist" /> <span>Assistência (alcance maior, chuva mais lenta)</span></label>
         <label><input type="checkbox" id="oneHand" /> <span>Uma mão (cluster direito)</span></label>
+        <div id="remap" class="grid remap" aria-label="Remapeamento de teclas"></div>
+        <p class="note">Teclado: clique para trocar. Toque e controle não entram aqui.</p>
         <label><span>Par</span>
           <select id="mood" aria-label="Par look e chuva">
             <option value="">—</option>
@@ -130,6 +144,7 @@
       import { applyInvite } from "./src/core/invite.js";
       import { applyShell } from "./src/core/shell.js";
       import { LOOK_LABELS, SPAWN_LABELS, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch, PALETTES, resolveLookName } from "./src/game/tables.js";
+      import { mountRemap } from "./src/core/remap.js";
       applyInvite({
         root: document.documentElement,
         stage: document.getElementById("stage"),
@@ -167,6 +182,15 @@
           option.textContent = LOOK_LABELS[name] ?? name;
           moodSelect.appendChild(option);
         }
+        const remap = mountRemap(document.getElementById("remap"), {
+          document,
+          target: window,
+          getBindings: () => game.settings.bindings,
+          setBindings: (bindings) => {
+            game.updateSettings({ oneHand: false, bindings });
+            document.getElementById("oneHand").checked = false;
+          },
+        });
         const dress = () => {
           const settings = game.settings;
           const palette = settings.highContrast
@@ -184,6 +208,7 @@
           moodSelect.value = matchingMood(settings.look, settings.spawnProfile);
           for (const bus of buses) document.getElementById(bus).value = settings.buses[bus];
           dress();
+          remap.refresh();
         };
         for (const name of toggles) {
           document.getElementById(name).addEventListener("change", (event) => {
@@ -196,6 +221,7 @@
             oneHand: event.target.checked,
             bindings: event.target.checked ? ONE_HAND_BINDINGS : DEFAULT_BINDINGS,
           });
+          remap.refresh();
         });
         document.getElementById("uiScale").addEventListener("input", (event) => {
           game.updateSettings({ uiScale: Number(event.target.value) });

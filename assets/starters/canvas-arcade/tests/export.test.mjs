@@ -27,6 +27,7 @@ test("o export copia o jogo e deixa de fora o que só serve para desenvolver", a
     const dist = join(project, "dist");
     assert.ok(existsSync(join(dist, "index.html")));
     assert.ok(existsSync(join(dist, "src/game/rules.js")));
+    assert.ok(existsSync(join(dist, "src/core/remap.js")), "o artefato leva o remapeamento");
     assert.ok(existsSync(join(dist, "data/spawn.json")));
     assert.ok(existsSync(join(dist, "data/dusk.json")));
     assert.ok(existsSync(join(dist, "data/calm.json")), "o artefato leva a chuva calma");
