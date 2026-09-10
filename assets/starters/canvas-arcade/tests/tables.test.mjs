@@ -1,5 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import {
   applyLookIntent, applySpawnIntent, loadTable, loadSpawn, listLookIntents,   listLooks, listMoods, listSpawnIntents, listSpawnProfiles, looksLikeSpawn, lookRecord,
@@ -223,6 +225,12 @@ test("a intenção desloca tokens sem inventar look nem aprovar arte", () => {
   assert.notEqual(warmer.orb, PALETTES.normal.orb);
   assert.equal(warmer.shard, PALETTES.normal.shard, "warmer não puxa o estilhaço para o rosa");
   assert.equal(cooler.shard, PALETTES.normal.shard, "cooler não puxa o estilhaço para o azul");
+  assert.equal(warmer.danger, PALETTES.normal.danger, "warmer não puxa o perigo para o âmbar");
+  assert.equal(cooler.danger, PALETTES.normal.danger, "cooler não puxa o perigo para o azul");
+  assert.equal(night.danger, PALETTES.normal.danger, "night não some o perigo");
+  assert.match(LOOK_INTENTS.warmer, /perigo/);
+  assert.match(LOOK_INTENTS.cooler, /perigo/);
+  assert.match(LOOK_INTENTS.night, /perigo/);
   const duskWarm = applyLookIntent(PALETTES.dusk, "warmer");
   assert.equal(duskWarm.shard, PALETTES.dusk.shard, "dusk+warmer não devolve o estilhaço ao eixo quente");
   assert.notEqual(duskWarm.field, PALETTES.dusk.field);
@@ -264,4 +272,12 @@ test("paleta sem contraste ou sem token falha com o nome", () => {
     /mesa palettes.contrast sem/,
   );
   assert.throws(() => migratePalettes({ schema: 4 }), /mesa palettes schema 4 não suportado/);
+});
+
+test("o art-bible nomeia o perigo e as janelas que o desenho já pinta", () => {
+  const bible = readFileSync(fileURLToPath(new URL("../docs/art-bible.md", import.meta.url)), "utf8");
+  assert.match(bible, /perigo/, "a mesa já tinha danger; a receita calava");
+  assert.match(bible, /prática/);
+  assert.match(bible, /fecho/);
+  assert.match(bible, /permanecem/);
 });

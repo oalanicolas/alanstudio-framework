@@ -41,11 +41,13 @@ test("o comando registra o look no mesmo consumidor", async () => {
     assert.equal(created.code, 0, created.stderr);
     assert.match(created.stdout, /\?look=dawn/);
     assert.match(created.stdout, /intenção warmer/);
+    assert.match(created.stdout, /perigo/, "a intenção que calava o perigo mentia o contrato");
     assert.doesNotMatch(created.stdout, /aprovado|verified|consistent/);
     const body = JSON.parse(await readFile(join(project, "data/palettes.json"), "utf8"));
     assert.ok(body.palettes.dawn);
     assert.notEqual(body.palettes.dawn.field, body.palettes.dusk.field);
     assert.equal(body.palettes.dawn.shard, body.palettes.dusk.shard, "warmer não devolve o estilhaço ao rosa");
+    assert.equal(body.palettes.dawn.danger, body.palettes.dusk.danger, "warmer não come o perigo");
     const { listLooks, resolveLookName, PALETTES } = await import(
       `${pathToFileURL(join(project, "src/game/tables.js")).href}?t=1`
     );

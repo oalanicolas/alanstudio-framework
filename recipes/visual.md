@@ -24,7 +24,10 @@ no mesmo nome e `?mood=` aplica. `dusk` e `calm` já são o segundo
 e o terceiro look; `calm` não é o `cooler` aplicado em `normal`.
 `dusk` pinta orbe âmbar e estilhaço índigo; o campo continua
 quente. `--as warmer` / `--as cooler` deslocam campo e orbe;
-o estilhaço permanece no outro eixo. Token no disco não é
+o estilhaço e o perigo permanecem — o fecho e o impacto
+não herdam o eixo do orbe. A receita do art-bible nomeia
+essas tintas e as janelas do campo (prática no orbe, folga
+na corrente, fecho no perigo). Token no disco não é
 comparação em movimento. No starter, halo e
 vinheta dão volume ao recorte geométrico; com menos movimento
 somem. Isso não é direção consistente.

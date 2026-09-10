@@ -16,12 +16,22 @@ A tinta não esmaga chuva que já separa quente e frio; o par do padrão
 
 | Papel | Valor | Consumidor |
 | --- | --- | --- |
+| fundo | `#10131a` / `#000000` | `PALETTES.*.background` — casca da página |
 | campo | `#171b26` / `#000000` | `data/palettes.json` → `PALETTES.*.field` |
 | jogador | `#f2f4f8` / `#ffffff` | `PALETTES.*.player` |
-| orbe | `#4ea8ff` / `#00d2ff` | `PALETTES.*.orb` |
+| orbe | `#4ea8ff` / `#00d2ff` | `PALETTES.*.orb` — chuva e contorno da prática |
 | estilhaço | `#ff8a3d` / `#ff6a00` | `PALETTES.*.shard` |
-| corrente | `#ffd166` / `#ffe600` | `PALETTES.*.chain` |
+| corrente | `#ffd166` / `#ffe600` | `PALETTES.*.chain` — pips e contorno da folga |
+| texto | `#e7ebf3` / `#ffffff` | `PALETTES.*.text` |
+| apoio | `#8a93a6` / `#c9c9c9` | `PALETTES.*.muted` — HUD em descanso |
+| perigo | `#ff5d5d` / `#ff2b2b` | `PALETTES.*.danger` — fecho, impacto e raspo |
 | placa | preenchimento + borda | `PALETTES.*.plate` e `plateEdge` — em `contrast`, campo e placa são pretos; quem separa é a borda branca |
+
+As janelas do campo não são faixa no HUD. Prática contorna na tinta
+do orbe; a folga da guarda, na da corrente; o fecho, na do perigo.
+Com menos movimento viram traço. `--as warmer|cooler|night` desloca
+campo e orbe; estilhaço e perigo permanecem. Token no disco não é
+comparação em movimento.
 
 Escala: 1 unidade = 1 pixel lógico em `FIELD` 320×180. Pivot do jogador no
 centro da faixa (`PLAYER_Y`). Sem asset de mundo: a linguagem é geométrica

@@ -3,6 +3,41 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.313 — A receita do look nomeia o perigo
+
+O
+`--as`
+já
+preservava
+`danger`.
+A
+intenção
+e
+o
+art-bible
+calavam.
+Agora
+nomeiam
+o
+perigo.
+Estilhaço
+e
+perigo
+permanecem.
+Não
+promove
+`consistent`.
+
+O que 0.9.313 não afirma:
+token
+no
+disco
+não
+é
+comparação
+em
+movimento.
+
 ## 0.9.312 — O aviso do campo nomeia a prática
 
 O

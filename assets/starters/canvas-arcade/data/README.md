@@ -40,7 +40,7 @@ alguém ligar a regra ou a apresentação.
 `npm run look -- <nome> --from dusk|calm --as warmer` copia um look que o
 jogo já pinta. `--from` é obrigatório; `contrast` não é look.
 `--as warmer|cooler|night` desloca campo e orbe; o estilhaço
-permanece. Sem `--as` a cópia é idêntica até alguém editar.
+e o perigo permanecem. Sem `--as` a cópia é idêntica até alguém editar.
 Intenção não é look aprovado.
 
 A partida lê `?spawn=<nome>` ou `settings.spawnProfile`. `dusk` é o

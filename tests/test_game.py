@@ -3693,6 +3693,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         dusk = (starter / "data/dusk.json").read_text(encoding="utf-8")
         self.assertIn("mesas de chuva", recipe.casefold())
+        self.assertIn("perigo", recipe)
         self.assertIn("intervalTicks", dusk)
         report = game.art_reading(starter)
         self.assertEqual({item["key"] for item in report["rains"]}, {"spawn", "dusk", "calm"})

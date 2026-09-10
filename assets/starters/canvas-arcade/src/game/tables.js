@@ -29,8 +29,8 @@
 // look de arte (`normal`, `dusk`, `calm`); `contrast` e a tinta estável
 // (`colorblind`) são alcance, não look. A tinta não esmaga chuva que
 // já separa quente e frio; o par do padrão é o fallback. `npm run look -- <nome> --from normal|dusk|calm` copia um
-// look que o jogo já consome; `--as` desloca os tokens sem pedir a
-// receita de cabeça. `dusk` e `calm` na chuva e no look compartilham
+// look que o jogo já consome; `--as` desloca campo e orbe — estilhaço
+// e perigo permanecem. `dusk` e `calm` na chuva e no look compartilham
 // o nome e não a mesa. `?mood=<nome>` aplica o par quando o nome é
 // look e chuva; look ou chuva explícitos vencem no próprio eixo.
 // `npm run pair -- <nome> --from dusk|calm` nasce os dois no mesmo
@@ -392,12 +392,13 @@ export function dressPalette(settings = {}) {
 }
 
 // Intenções sobre um look já pintável. Não são look melhor — só
-// deslocam os tokens que a receita já nomeia. Quem de fora ainda não
-// produziu; `consistent` continua falso.
+// deslocam os tokens que a receita já nomeia. Estilhaço e perigo
+// ficam: o fecho e o impacto não herdam o eixo do orbe. Quem de
+// fora ainda não produziu; `consistent` continua falso.
 export const LOOK_INTENTS = {
-  warmer: "campo e orbe andam para o âmbar; o estilhaço permanece",
-  cooler: "campo e orbe andam para o azul; o estilhaço permanece",
-  night: "campo mais escuro, acentos no mesmo lugar",
+  warmer: "campo e orbe andam para o âmbar; o estilhaço e o perigo permanecem",
+  cooler: "campo e orbe andam para o azul; o estilhaço e o perigo permanecem",
+  night: "campo mais escuro, acentos no mesmo lugar; o perigo permanece",
 };
 
 export function listLookIntents() {
