@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.88 — A guarda também marca o campo
+
+Guardar já alongava a chuva. O campo calava: a folga só existia
+no intervalo. O contorno na tinta da corrente some à medida que
+a janela acaba. Não é faixa no HUD. `felt` continua falso.
+`pacing` permanece `slice`: contorno no stub não é curva
+observada. Só `release` fica no piso.
+
+O que 0.9.88 não afirma: o harness não guardou e o contorno não
+aprova o pacing.
+
 ## 0.9.87 — A página também nomeia o par
 
 O par autoral já tinha endereço. Na página, look e chuva

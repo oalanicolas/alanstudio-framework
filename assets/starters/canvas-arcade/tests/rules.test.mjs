@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse } from "../src/game/rules.js";
+import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -408,12 +408,24 @@ test("guardar abre uma janela de recuperação na chuva", () => {
   const state = createState(1);
   state.chain = 2;
   state.spawnTimer = 1;
+  assert.equal(recoveringWindow(state), false);
   advance(state, { move: 0, dash: false, bank: true });
   assert.ok(state.recoverUntil > state.tick);
+  assert.equal(recoveringWindow(state), true);
+  assert.ok(recoveryPulse(state).fill > 0.9);
   assert.ok(
     state.spawnTimer > CONFIG.spawn.intervalTicks,
     "a recuperação alonga o intervalo, não o encurta",
   );
+  const until = state.recoverUntil;
+  state.tick = until;
+  assert.equal(recoveringWindow(state), false);
+  assert.equal(recoveryPulse(state).active, false);
+  const ended = createState(1);
+  ended.phase = "over";
+  ended.recoverUntil = 80;
+  ended.tick = 10;
+  assert.equal(recoveringWindow(ended), false);
 });
 
 test("orbe perdido é contado, não silencioso", () => {

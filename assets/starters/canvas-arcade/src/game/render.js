@@ -5,7 +5,7 @@
 // dispositivo não foi observado. Tremor e piscada respeitam redução de
 // movimento — o sinal de causa migra para uma forma estática, não desaparece.
 
-import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse } from "./rules.js";
+import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse, recoveryPulse } from "./rules.js";
 import { copy, PALETTES, resolveLookName } from "./tables.js";
 import { bindLines } from "../core/keys.js";
 import { DEFAULT_BINDINGS } from "../core/settings.js";
@@ -75,6 +75,7 @@ export function createRenderer(canvas, options = {}) {
     context.fillStyle = palette.field;
     context.fillRect(0, 0, FIELD.width, FIELD.height);
     drawPractice(context, palette, state, reduced);
+    drawRecovery(context, palette, state, reduced);
     drawClose(context, palette, state, reduced);
     if (state.flash > 0) {
       if (reduced) {
@@ -136,6 +137,25 @@ export function createRenderer(canvas, options = {}) {
     const inset = 4 + (1 - pulse.fill) * 6;
     target.globalAlpha = Math.min(0.42, 0.10 + pulse.fill * 0.28);
     target.lineWidth = 0.8 + pulse.fill * 1.6;
+    target.strokeRect(inset, inset, FIELD.width - inset * 2, FIELD.height - inset * 2);
+    target.globalAlpha = 1;
+  }
+
+  // A guarda já alongava a chuva. O campo calava. O contorno na tinta
+  // da corrente some à medida que a folga acaba. Não é faixa. Com menos
+  // movimento vira traço, não some.
+  function drawRecovery(target, palette, state, reduced) {
+    const pulse = recoveryPulse(state);
+    if (!pulse.active) return;
+    target.strokeStyle = palette.chain;
+    if (reduced) {
+      target.lineWidth = 2;
+      target.strokeRect(6, 6, FIELD.width - 12, FIELD.height - 12);
+      return;
+    }
+    const inset = 6 + (1 - pulse.fill) * 5;
+    target.globalAlpha = Math.min(0.40, 0.10 + pulse.fill * 0.26);
+    target.lineWidth = 0.8 + pulse.fill * 1.4;
     target.strokeRect(inset, inset, FIELD.width - inset * 2, FIELD.height - inset * 2);
     target.globalAlpha = 1;
   }

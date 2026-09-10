@@ -419,6 +419,20 @@ export function practicePulse(state) {
   };
 }
 
+export function recoveringWindow(state) {
+  if (!state || state.phase !== "playing") return false;
+  return Number.isFinite(state.recoverUntil) && state.tick < state.recoverUntil;
+}
+
+export function recoveryPulse(state) {
+  if (!recoveringWindow(state)) return { active: false, fill: 0 };
+  const total = Math.max(1, rain(state).recoveryTicks);
+  return {
+    active: true,
+    fill: Math.max(0, Math.min(1, (state.recoverUntil - state.tick) / total)),
+  };
+}
+
 function markClose(state) {
   const left = remainingTicks(state);
   if (left <= 0 || left > CONFIG.feel.closeTicks) return;

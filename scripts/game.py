@@ -3249,7 +3249,7 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
             "aponta o comando que abre o jogo. Se o starter declara o verbo e "
             "as teclas, o prompt as nomeia — inclusive o cluster de uma mão, "
-            "o toque, o controle e as queries de look, chuva e convite, se o starter as declara. Não "
+            "o toque, o controle e as queries de look, chuva, par e convite, se o starter as declara. Não "
             "executa o jogo. Depois de uma "
             "partida, o próximo comando do harness é `note`, não `next`. "
             "`then` já nomeia look, chuva e voz se o projeto declara essas "

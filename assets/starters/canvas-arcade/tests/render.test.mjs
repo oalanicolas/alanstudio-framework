@@ -492,6 +492,34 @@ test("a recuperação do dash não se parece com o dash nem com o descanso", () 
   assert.notEqual(playerFill(recovery), playerFill(dash));
 });
 
+test("a guarda marca o campo sem inventar faixa no HUD", () => {
+  const state = createState(2);
+  state.chain = 3;
+  advance(state, { move: 0, dash: false, bank: true });
+  const drawn = paint(state);
+  const edges = drawn.edges.filter((edge) => edge.style === PALETTES.normal.chain);
+  assert.ok(edges.length >= 1, "a guarda precisa contornar o campo");
+  assert.ok(edges.some((edge) => edge.width > FIELD.width * 0.8 && edge.height > FIELD.height * 0.8));
+  const timerStrips = drawn.rects.filter((rect) => (
+    rect.height === 2
+    && rect.y < 20
+    && !PLATE_COLORS.has(rect.style)
+  ));
+  assert.equal(timerStrips.length, 0, "a guarda não é faixa no HUD");
+  const still = paint(state, { reducedMotion: true });
+  assert.ok(
+    still.edges.some((edge) => edge.style === PALETTES.normal.chain && edge.x === 6 && edge.y === 6),
+    "com menos movimento a guarda vira traço, não some",
+  );
+  state.tick = state.recoverUntil;
+  const gone = paint(state);
+  assert.equal(
+    gone.edges.filter((edge) => edge.style === PALETTES.normal.chain && edge.width > FIELD.width * 0.8).length,
+    0,
+    "depois da folga o campo não inventa contorno",
+  );
+});
+
 test("a prática marca o campo sem inventar faixa no HUD", () => {
   const start = createState(2);
   const early = paint(start);
