@@ -31,6 +31,8 @@ export const CONFIG = {
     dashWindupTicks: 2, // antecipação: o corpo senta antes de alongar; já é graça
     invulnTicks: 42, // graça após dano; evita perder duas correntes seguidas — inclusive no mesmo quadro
   },
+  // Um orbe por tick: dois no alcance não inflam a corrente.
+  // O segundo espera o próximo quadro. Pose no disco não é peso.
   collect: {
     pad: 5, // alcance além do desenho: quem quase pegou, pega
     reachY: 8,
@@ -941,6 +943,15 @@ function resolveEntities(state) {
       Math.abs(entity.y - PLAYER_Y) < reachY && Math.abs(entity.x - player.x) < reach;
     if (touching) {
       if (entity.kind === "orb") {
+        // Um verbo, um tick. O primeiro collect já emitiu;
+        // o segundo orbe fica para o próximo quadro. Dois
+        // no alcance não inflam a corrente. Pose no disco
+        // não é peso percebido.
+        if (state.events.some((event) => event.type === "collect")) {
+          entities[write] = entity;
+          write += 1;
+          continue;
+        }
         collect(state, entity.x, entity.y);
         releaseEntity(entity);
         continue;

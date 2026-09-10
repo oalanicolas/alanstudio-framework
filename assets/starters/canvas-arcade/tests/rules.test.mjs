@@ -184,6 +184,31 @@ test("a graça impede perder duas correntes seguidas", () => {
   assert.ok(state.events.some((event) => event.type === "graze"));
 });
 
+test("dois orbes no mesmo quadro: o segundo espera o próximo tick", () => {
+  const fade = CONFIG.feel.shakeDecay;
+  const state = createState(5);
+  const x = state.player.x;
+  state.entities = [
+    { id: 2, kind: "orb", x, y: PLAYER_Y, vy: 0 },
+    { id: 3, kind: "orb", x: x + 0.4, y: PLAYER_Y, vy: 0 },
+  ];
+  advance(state, neutralIntent());
+  assert.equal(state.chain, 1, "dois orbes no mesmo quadro não inflam a corrente");
+  assert.equal(state.stats.collected, 1);
+  assert.equal(state.events.filter((event) => event.type === "collect").length, 1);
+  assert.equal(state.entities.length, 1, "o segundo orbe fica para o próximo quadro");
+  assert.equal(state.entities[0].id, 3);
+  assert.equal(
+    state.shake,
+    CONFIG.feel.collectShake * fade,
+    "o suco não empilha duas coletas",
+  );
+  settle(state);
+  advance(state, neutralIntent());
+  assert.equal(state.chain, 2, "o segundo orbe conta no tick seguinte");
+  assert.equal(state.stats.collected, 2);
+});
+
 test("dois estilhaços no mesmo quadro: o segundo já é graça", () => {
   const fade = CONFIG.feel.shakeDecay;
   const state = createState(2);

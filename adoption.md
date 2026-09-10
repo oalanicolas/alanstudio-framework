@@ -3,6 +3,39 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.210 — Dois orbes no mesmo quadro não inflam a corrente
+
+Dois
+orbes no
+alcance
+no mesmo
+quadro
+somavam
+dois à
+corrente e
+empilhavam
+suco. Um
+verbo, um
+tick. Agora
+o primeiro
+collect
+emite; o
+segundo
+espera o
+próximo
+quadro.
+`felt`
+continua
+falso. Só
+`release`
+fica no piso.
+
+O que 0.9.210 não afirma:
+um orbe por
+tick no disco
+não é peso
+percebido.
+
 ## 0.9.209 — O note nomeia se o recibo fechou o achado
 
 O
