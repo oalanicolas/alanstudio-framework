@@ -1,252 +1,216 @@
-# Handoff — integração dos PRs #2 e #3
+# Handoff — fácil + AAA honesto
 
-**Nesta árvore, depois da integração:** `origins` lê o disco onde
-`deliver.licensing` só lia a tabela. Percorre mídia embarcada (inclusive
-`textures/`, `fonts/`, `models/`, `videos/`), cruza com recibos e o `next`
-propõe `origins.undeclared`. Recibo não é licença válida — `granted` e
-`validated` são sempre `false`.
+**Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
+**PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
+**HEAD:** `b7b9ac2` — *A abertura também lê a última* (0.9.101)
+**Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Ofício (`craft`)** lê os nove checklists da §7 do levantamento — conformidade
-com o que o próprio projeto declarou, zero dígitos nos rótulos. `observed` e
-`granted` são sempre `false`. `next` só levanta o gate que o projeto pediu.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 240 OK.
+`cd assets/starters/canvas-arcade && npm test` → 258 OK.
 
-**Primeiro ciclo:** `guide` (também sem subcomando) mapeia start →
-jogar → note sem executar. `open` é o comando de agora; `prompt` o
-nomeia. Sem destino, `--idea` nomeia a pasta no
-comando do start — ao lado do framework se o mapa corre de dentro
-desta árvore — e não grava a frase. Sem destino, se o diretório atual é um
-jogo fora do framework, o mapa usa esse caminho. `start --idea` sem
-caminho nomeia e cria a pasta — ao lado do framework se corre de
-dentro desta árvore. `guide --idea` continua só no comando. `start` devolve `play` +
-`then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo,
-as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look, chuva, par e convite. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia par, look, chuva e voz; se declara `session`, `then` a aponta. Depois de um recibo, o prompt e o `next` (`cycle.craft`) apontam o ofício. O autor do `note` é sugestão do git ou do ambiente, não quem jogou. Nomear o ofício não pinta. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
-`next` ainda propõe `playable.unplayed` se você estiver perdido. O
-starter ensina mover, avançar, coletar, o orbe perdido e guardar no campo; toque e
-controle ganham passo quando falam. O art-bible vigente
-não é reescrito. `--idea` entra no brief e, se houver `data/copy.json`,
-na tela do primeiro ciclo. O brief continua rascunho. A frase na tela
-não muda o verbo. Depois do `init`, `?look=dusk` ou `?look=calm` troca a paleta
-(campo e a página), `?spawn=dusk` ou `?spawn=calm` troca a chuva e
-`?mood=calm` ou `?mood=dusk` troca o par. Look ou chuva explícitos
-vencem o mood no próprio eixo. A página nomeia o mesmo par no
-select. O harness não
-executa o jogo.
-
-**Papéis de áudio (`roles`):** lê `const SOUNDS` e cruza com `public/sfx`.
-`--fill` sugere o acervo; `--apply` copia com o nome do papel. Sem
-acervo a busca aponta o starter e `sfx serve` recusa. Crescer o
-acervo é `sfx import` / `sfx seed` (ffmpeg); `sfx info` lê a ficha
-e `sfx export` copia bytes e créditos. Importar e exportar não é ouvir.
-O starter
-já traz design original e variante (`-b`) nos papéis do verbo, no orbe
-perdido, no fecho, na prática, na guarda e na cama e carrega no mixer. A cama entra em loop no barramento de música.
-`npm run mix` soma cama e vozes na partida simulada com o mesmo palco,
-folga e taxa da corrente do mixer. `sfx --from` / `--as` desloca a voz
-no papel que o mixer já toca. Coleta e guarda sobem de tom com a
-corrente; o erro não herda. Coleta, queda, raspo, impacto e avanço
-levam o x do campo; o panner marca o lugar. `heard` é sempre falso.
-
-**Feel (`feel`):** lê `const CONFIG` (perdão, graça, hitstop, punch,
-telegraph, flash, rumble) e `record.json` de observação. `note` grava o recibo
-curto. `felt` é sempre falso. `next` propõe `feel.unobserved` quando há
-constante e não há recibo. O starter bufferiza guardar no hitstop,
-desloca a câmera por verbo, achata o corpo numa medida por verbo,
-marca a ameaça no trilho, distingue a
-recuperação do dash, enche a faixa do HUD no tempo de espera,
-contorna o campo na prática, na guarda e no fecho da partida,
-aterrissa o avanço com squash e rastro próprios,
-pulsa o controle no impacto, deixa um rastro
-por verbo e põe a corrente em órbita no corpo. A coleta leva o
-orbe ao slot; no erro os pips quebram para fora; na guarda eles
-voam para o placar; no fim a aposta não guardada cai e o overlay
-nomeia o que caiu — a queda vence a cortina, que reusa a
-placa do look. As legendas nascem depois da cortina; o texto
-do overlay segue `uiScale`. O raspo
-risca o campo sem pulsar o controle. O orbe que cai marca o
-lugar da queda, sem pulsar o controle. O pulso some na pausa e no
-descarte.
-
-**Alcance, save, orçamento:** `access`, `save` e `budget` leem o que o
-código declara — `access` inclui assistência. `verified`/`trusted`/`measured` são sempre falsos. `next`
-só levanta quando falta a declaração. O starter expõe assistência,
-`uiScale` (o overlay também), remapeamento das seis ações do teclado
-na página (a tabela `#commands` nomeia as teclas vigentes), preset de uma mão (o aviso, o overlay e o `cycle.hand`
-nomeiam IJKL + P/O; o stub coleta, guarda, pausa e reinicia nesse
-cluster) e `docs/access.md`. Trocar a tecla no stub não é sessão
-observada. O HUD do dash enche a faixa no tempo
-de recuperação e cooldown; faixa no stub não é peso percebido. O aviso do primeiro ciclo nomeia teclado,
-toque e controle; o dash e o mapa da superfície que falou também
-ganham passo; overlay e HUD confirmam o aparelho que falou por
-último. `npm run contrast`
-amostra pixels do stub após `draw()` e, em cinza, o que só
-o orbe ou só o estilhaço pinta. `pagehide` descarrega
-o save. A chuva compacta o array vivo e reusa o poço; evento, rastro,
-telegraph e o gerador da chuva também reusam; `npm run budget`
-cronometra a cena `playing.run` (simulação e `draw` no stub) e
-relata o reuso.
-
-**Arte, conteúdo, empacotar:** `art`, `content` e `ship` leem paleta ou
-art-bible vigente, dado fora do código e passo de build/export.
-`consistent`/`enough`/`shipped` são sempre falsos. O starter declara
-paleta em `data/palettes.json` (looks `dusk` e `calm` por `?look=` / `settings.look`;
-a página também veste esses tokens; halo e vinheta dão volume ao recorte;
-`contrast` é alcance, não look;
-`look --from` / `--as` nasce o próximo),
-extrai a chuva (`spawn`, `dusk` e `calm`), nasce mesa com `npm run table`
-(`--from spawn|dusk|calm --as` já entra no consumidor; `session --spawn`
-traça), nasce o par com `npm run pair` (look e chuva no mesmo nome) e empacota com `npm run build`.
-`ship` relata `dist/VERSION.json` quando existe; o artefato declara
-Node 20 e recusa `npm install` e `file://`. `npm run size` relata
-bytes sem teto.
-
-**Playtest:** `playtest` lê o formato problema/evidência/hipótese/medição.
-`observed` e `outsider` são sempre falsos. `--invite` escreve a página
-e aponta `/?invite=1`, onde a tabela some; `next` a aponta depois do
-recibo de quem fez. O serve anuncia a URL da rede se a máquina
-tiver outro endereço IPv4. Esconder a tabela e anunciar a rede
-não são alguém de fora.
-Nota de partida sem os quatro campos vira
-`playtest.unstructured`. O starter grava `docs/playtest/last-run.json`
-com `npm run session` (totais e curva); `note --from-run` anexa o
-candidato. Número no disco não é causa. `docs/release.md` vigente não
-torna `shipped` verdadeiro.
-
-Esta árvore reúne produção, pacotes e memória persistente do PR #2 com os
-critérios observáveis, perguntas de valor e regras de escopo do PR #3.
-A integração preserva o trabalho de ambas as branches, inclusive os commits de
-retomada adicionados durante a revisão.
-
-Validação do conjunto: 178 testes Python aprovados; os 83 testes do starter e
-seu orçamento de simulação também passaram. O starter não mudou na integração.
-Foram corrigidos os exemplos e critérios apontados na revisão, o uso de foco
-inválido no teste de gates e a consulta de contexto em ambientes sem Git.
-
-Os registros abaixo descrevem o estado de cada linha antes da integração;
-contagens, situação dos PRs e nomes de branches são históricos. As frentes
-futuras continuam pendentes, sem implementação adicional neste merge.
-
-- Produção, pacotes e memória persistente (PR #2): registro abaixo.
-- Critérios observáveis e gates (PR #3): [registro preservado](HANDOFF-PR3.md).
-
-## Registro da linha de produção e pacotes (PR #2)
-
-# Handoff — branch `cursor/framework-0-9-aaa-facil-f6f6`
-
-**PR:** [#2](https://github.com/oalanicolas/alanstudio-framework/pull/2) → `main`  
-**Última atualização:** 2026-09-09  
-**Testes:** `python3 -m unittest tests.test_game` → **160 OK**  
-**Doctor:** `python3 scripts/game.py doctor --root <lab>` → `ready: true` (com framework completo)
+O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
+é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
 
 ---
 
-## O que esta branch entrega (visão geral)
+## Objetivo que permanece
 
-Integração das **três linhas paralelas de 0.9** que nasceram do mesmo pedido (“criar jogos com IA fácil e no acabamento AAA”) e divergiram em código e documentação:
+Evoluir o Alan Studios Framework para que criar jogos com IA seja **fácil**
+e o resultado alcance qualidade **AAA**, com honestidade epistêmica:
+não prometer o que o harness não verifica.
 
-| Linha | Origem | O que trouxe |
+1. Auditar promessa vs entrega (SKILL, README, references/, recipes/,
+   templates, `scripts/game.py`, `scripts/audio.py`, `scripts/sfx_catalog.py`,
+   tests/).
+2. Reduzir atrito ideia → jogo jogável.
+3. Endereçar no disco as dimensões que separam protótipo de AAA.
+4. Implementar com as duas suítes verdes.
+5. Não promover o que ninguém observou.
+
+Não redefinir sucesso pelo que já passou nos testes. O piso do starter
+continua **protótipo** porque só `release` está em `prototype`.
+
+---
+
+## O que o HEAD já entrega (0.9.91–0.9.101)
+
+| Ver | Salto |
+| --- | --- |
+| 0.9.91 | `guide` devolve `open` + `prompt`. `len(steps) == 3`. `--idea` no guide não grava. |
+| 0.9.93–94 | `#remap` na página; `#commands` lê teclas vivas. Invite some só `#commands`. |
+| 0.9.95 | `npm run pair` nasce look + chuva no mesmo nome. `then`/`next` apontam par primeiro. |
+| 0.9.96 | `start --idea` sem caminho cria a pasta. Guide não cria. |
+| 0.9.97 | Coach nomeia orbe perdido enquanto `chain === 0`. |
+| 0.9.98 | Panner no x do campo (coleta, queda, raspo, impacto, avanço). |
+| 0.9.99 | Halo na forma + vinheta. Reduced some os dois. |
+| 0.9.100 | Corpo aponta o último avanço. Orbe círculo, estilhaço losango. |
+| 0.9.101 | Com tela, fase `title`. Lê `lastSeed` e recorde. Sem tela, headless joga. |
+
+`python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
+principal também funciona sem subcomando.
+
+---
+
+## Barra vigente do starter
+
+Piso percebido = **mínimo**. Só `release` está em `prototype`.
+
+| Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| Facilidade e piso | `main` (PR #1, 0.9–0.9.3) | `feel`, `audio`, [ambição](references/ambition.md), checklist de piso (`--stage aaa`, `finish` no `context`) |
-| Começar e acabar | PR #3 / `6f33` | `init`, `next`, `bar`, `gate`, `discover` revisado, `verify --proves`, starter `canvas-arcade`, receitas performance/acessibilidade/persistência/release, [gates](references/gates.md) |
-| Produção e pacotes | esta branch (0.9.4) | `doctor`, `record`, `production`, marcos, 18 pacotes de plataforma, 23 de gênero (`--genre`), `game-design`, Cargo em `verify` |
-
-O resultado é um **único `game.py`** (~2k linhas), **160 testes**, README e SKILL unificados, e vocabulário reconciliado: **marcos** (calendário), **barra** (degrau por dimensão), **gates** (dez recusas do ciclo) — três instrumentos, três perguntas ([receita de produção](recipes/production.md) §0).
-
----
-
-## Commits já na branch (antes do handoff)
-
-1. **Merge `origin/main`** — feel, áudio, ambição, checklist, `finish` no `context`.
-2. **Merge `6f33`** — init/next/bar/gate, starter, suíte de testes expandida.
-3. **Liga marcos, barra e gates** — “gate” deixa de significar “marco com evidência”; só as dez recusas de `gates.md`.
-
-Mais ~30 commits da linha de produção/pacotes e da linha 6f33 (starters, barra, gates, discover revisado, etc.).
+| feel | playable | peso no dispositivo; stub ≠ felt |
+| legibility | playable | stub ≠ dispositivo |
+| art_direction | slice | `consistent` falso |
+| audio_mix | slice | `heard` falso |
+| pacing | slice | curva com outsider pendente |
+| state_trust | slice | aba fechada real não observada; repetir seed ≠ tick interrompido |
+| performance | playable | poços + stub ≠ dispositivo |
+| accessibility | slice | sete opções + remap; sessão real pendente |
+| content_scale | shippable | dusk+calm+pair; `enough` falso |
+| release | **prototype** | ninguém correu o `dist/` fora daqui |
 
 ---
 
-## Trabalho incluído na branch (Frente 1 — memória do agente)
+## Invariantes — não violar
 
-Início da **Frente 1** do plano aprovado (“remediar problemas de desenvolvimento com IA”). **Não** inclui Frentes 2–5.
-
-### Código (`scripts/game.py`)
-
-- **`INSTRUCTION_FILES`** — `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.cursor/rules`, `.github/copilot-instructions.md`, `.windsurfrules`.
-- **`instruction_files(project)`** — lista da raiz do laboratório até o projeto (substitui só `AGENTS.md` no `context`).
-- **`git_summary(project)`** — `head`, `branch`, `dirty_paths`, `recent` (5 commits); exposto em `context.git`.
-- **`scan` → `foundation.agent_context`** — status `found` / `not_located` + arquivos na raiz do projeto.
-- **`next`** — ramo `agent_context.not_located` (depois de áreas e continuidade, antes de validadores): propõe `template agents`.
-- **`init`** — gera `AGENTS.md` na raiz do projeto novo (além dos rascunhos em `docs/`).
-- **`doctor`** — check opcional `repository` (git na raiz).
-- **Etapas:** `agents` em `STAGES` / `SUPPORT_STAGES`; template novo.
-
-### Documentação
-
-- [`assets/templates/agents.md`](assets/templates/agents.md) — rascunho de memória persistente do agente.
-- [`README.md`](README.md) — ordem do `next` inclui “sem instruções para o agente”.
-
-### Testes (+4)
-
-- Instruções multi-host em `context.instructions`.
-- `context.git` com e sem repositório.
-- `next` propõe AGENTS; `init` entrega `AGENTS.md`.
-- `doctor` reporta repositório.
+- Nenhum comando observa/joga/ouve/sente/mede o jogo no dispositivo.
+- Nunca emitir `verified` como status. `verify --proves` → `claimed`.
+- `granted` / `validated` / `observed` / `heard` / `approved` / `felt` /
+  `trusted` / `measured` / `consistent` / `enough` / `shipped` / `outsider`
+  sempre `false` nos leitores correspondentes.
+- Não importar limiares (16 ms, 100 ms, 4,5:1, 93%, “cinco usuários”,
+  draw calls, −14 LUFS) como critério/aprovação.
+- Relatórios (`peak`, `mix`, `budget`, `contrast`, `probe`, `size`,
+  `session`) não podem conter `aprovado|verified|LUFS|-14|4.5` no stdout
+  do que o relatório afirma. `size.test.mjs` exclui o campo `directory`.
+  `budget.test.mjs` recusa `16 ms|16ms`. Contrast recusa `WCAG`.
+  Dizer “sem LUFS” no scope **quebra** teste — use “sem limiar”.
+- Não promover degraus sem a observação que o critério pede.
+- `release` não sobe sem outra máquina. `content_scale` não sobe a
+  flagship sem outsider. `feel`/`legibility`/`performance` não sobem
+  por código headless. `accessibility` não sobe por stub. `pacing` não
+  sobe por sessão simulada, `invite.md` nem `?invite=1`. `art_direction`
+  não sobe por JSON/CSS/halo/vinheta/ponta no disco.
+- Não implementar should-meet de Cooper.
+- Após `init`, `next` exige `playable.unplayed` primeiro (enquanto não
+  houver `note`). Depois de um `note`, `playable.unplayed` some e `next`
+  pode ser `cycle.craft` (par primeiro).
+- Recibo otimista ainda passa em `origins` e `feel` de propósito.
+- **Não só adicionar mais um script de medição** se o salto alinhado
+  for feel visível/audível, ferramenta de outsider, superfície de
+  entrada, auditoria original (item 1) ou facilidade ideia→jogo.
+- `len(steps) == 3` do `guide` é invariante.
+- `--idea` no `guide` **não grava** nem cria pasta; no `start` grava e,
+  sem caminho, cria a pasta.
+- `contrast` não é look escolhível.
+- Trocar look **não** recomeça; trocar spawn **recomeça**.
+- Não rodar `python3 tools/design-sfx.py` **sem `--from`** no repo —
+  regenera os WAV commitados.
+- `emit()` já chama `burst()` — não duplicar. `close`, `live`, `stir`
+  e `missed` **não** estão em `MOTE_COUNTS`.
+- Não zerar `state.chain` no `over`.
+- Não reduzir `INIT_DOCUMENTS` sem mudar `fresh_starter_cycle` /
+  `areas.not_located`.
+- Não ensinar pad/touch no coach **antes** de `lastSource` nem
+  **depois** da primeira guarda.
+- Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
+  LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
+  ponta ou tela de título.
+- Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
+- Não tratar mesa/look first-party novo como craft (atualizar
+  `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
+- Não regenerar o banco SFX.
+- Se nascer chave nova no cycle: `CYCLE_KEYS` + `cycle_line` + testes.
+- Se nascer papel SFX novo: entrar em `ROLES`/`VOICES`/`SOUNDS` **antes**
+  de `--from`.
+- Contornos de campo já usam insets 2/4/6.
+- Stdout de ferramentas **não pode** conter `enough|consistent|aprovado|verified`
+  mesmo em frases de negação.
+- Não criar segundo PR. Atualizar o #4 com `ManagePullRequest`.
+- Respostas ao usuário em português.
+- Commits em português, presente, sem período no título.
+  `Co-authored-by: Alan Nicolas <oalanicolas@users.noreply.github.com>`
 
 ---
 
-## O que **não** foi feito (próxima sessão)
+## Contratos que a próxima sessão precisa acertar
 
-Plano acordado após merge; **nenhum código** destas frentes na branch ainda:
+**Guide / start**
 
-| Frente | Tema | Entregáveis previstos |
-| --- | --- | --- |
-| **2** | Spec + bug + subsistema único | template `spec` + stage, protocolo de bug em [process](references/process.md), entrega auditável no devlog/SKILL |
-| **3** | Zonas de risco | [quality](references/quality.md), [network](recipes/network.md), [visual](recipes/visual.md), candidatos de netcode nos packs |
-| **4** | Assets gerados por IA | disclosure no gate gold, receita de estilo, templates/production/sources |
-| **5** | Gate 30 s / PoC / headless | PoC = vibe coding com prova de parada; simulação headless em alpha |
+- `CRAFT_EXAMPLES` ordem: pair → look → table → sfx. Look e chuva do
+  exemplo compartilham o nome `noite`.
+- `play` após `start` é `cd … && npm run serve`. Não há `npm install`.
+- `then` sempre tem `play`, `note`, `lost`.
+- Sem caminho e sem ideia (ou ideia que não vira slug): `ValueError` “sem destino”.
 
-Também pendente da Frente 1 (menor): atualizar [SKILL](SKILL.md), [process](references/process.md) e [project-audit](references/project-audit.md) para citar `instructions`, `git` e `agent_context`; entrada em [adoption](adoption.md) (ex. 0.9.6).
+**Starter**
+
+- Looks first-party: `normal`, `dusk`, `calm`. Contrast é alcance.
+- Chuvas first-party: `spawn`, `dusk`, `calm`.
+- `listMoods()` = interseção look ∩ spawn (hoje `calm`, `dusk`).
+- `SOUNDS`: dash, graze, collect, missed, bank, hit, over, close, live, stir, bed.
+- Jogador: `fillRect` do squash **permanece** (testes `playerFill` /
+  `playerBox`). A ponta é path (`lineTos`). Halo do estilhaço **não**
+  é `arc` (`orb.arcs > shard.arcs`).
+- `player.dir` default `1`. Ponta some? Não — é forma, não brilho.
+- Fase `title` só com canvas (ou `options.entry === "title"`). Headless
+  e `createState()` default = `playing`. `advance` em title não anda o
+  tick. Dash em `step` chama `beginRun`. Reset na title sorteia seed nova
+  e vai a `playing`. Pause na title é ignorado.
+- Continuar = **repetir `lastSeed`**, não restaurar o tick. `canContinue`
+  exige `runs > 0` e `lastSeed`.
+- Coach: fantasy → move → dash → miss → touch/pad → collect → null após
+  1ª guarda. `coachHint` some se `phase !== "playing"`.
+- `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
+- `title_play` / `title_again` / `title_new` em `COPY_FIELDS`.
+  `migrateCopy` preenche default se a mesa antiga não tiver.
+- Invite (`?invite=1`) some `#commands`, não `#remap`.
+- `pagehide` flush; hidden pausa.
+
+---
+
+## Lacunas ainda abertas (priorizar alinhamento, não facilidade de teste)
+
+Saltos alinhados: feel visível/audível, ferramenta de outsider, superfície
+de entrada, auditoria item 1, ou atrito ideia→jogo. **Não** mais um
+script de medição.
+
+Candidatos, do que ainda dói:
+
+1. **Release (define o piso):** outra máquina correr o `dist/`. Não
+   promover. Um runbook mais honesto ou um `ship` que nomeie o buraco
+   sem fingir `shipped` ainda pode ajudar o caminho.
+2. **Idéia→jogo:** `start --idea` cria; ainda falta colar `play` e
+   `note`. O harness não deve auto-servir sem o usuário pedir — mas o
+   prompt pode ficar mais curto/colar-único se isso não quebrar
+   `len(steps) == 3` nem `executed: false`.
+3. **Checkpoint do tick:** a abertura repete a seed; o save não guarda
+   o meio da chuva. Mid-run resume é schema novo + contrato
+   observe/advance. Não chamar isso de Continuar.
+4. **Item 1 residual:** recipes/templates vs código. O HANDOFF antigo
+   (PRs #2/#3) está obsoleto; recipes ainda falam “tela do primeiro
+   ciclo” em alguns sítios — a abertura agora é a porta.
+5. **Outsider / pacing / a11y real / feel no dispositivo:** não
+   promover. Convite, LAN e stub não fecham.
+6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
+   Não nascer look/chuva first-party novo como craft.
+
+`init` ainda cria 6 rascunhos de propósito (`fresh_starter_cycle`).
 
 ---
 
 ## Como retomar
 
 ```sh
-git checkout cursor/framework-0-9-aaa-facil-f6f6
-python3 -m unittest tests.test_game          # 160 testes
-python3 scripts/game.py doctor --root .      # integridade + pacotes
+git checkout cursor/framework-0-9-facil-e-aaa-1083
+python3 -m unittest discover -s tests
+cd assets/starters/canvas-arcade && npm test
 ```
 
-**Fluxos para validar manualmente:**
+Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
+trocar ou apagar o que estiver velho. Um salto por vez, commit
+descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-```sh
-# Laboratório com jogos
-python3 scripts/game.py discover --root /caminho/do/lab
-python3 scripts/game.py next /caminho/do/lab/meu-jogo --focus create
-
-# Jogo novo (starter)
-python3 scripts/game.py init /caminho/do/lab/novo --starter canvas-arcade
-# → docs/* + AGENTS.md na raiz
-
-# Contexto com pacote e git
-python3 scripts/game.py context /caminho/do/lab/novo --focus create --genre platformer --root /caminho/do/lab
-```
-
-**Decisão já tomada:** integrar tudo na branch antes de implementar Frentes 2–5; não fazer merge em `main` até revisão do PR #2.
-
----
-
-## Riscos e limites (inalterados)
-
-- Nenhum comando mede performance, atribui degrau da barra, concede passagem de gate, promove marco ou certifica acabamento.
-- Pacotes são convenções — confirmar na engine e no código do projeto.
-- `claimed` (`verify --proves`) não é `verified`.
-- Links `#audio_mix--…` em receitas da linha 6f33 podem não bater com slugs do GitHub em `production-bar.md` (2 âncoras; teste de links do harness não cobre todos os casos).
-
----
-
-## Arquivos tocados neste handoff (commit pendente)
-
-- `scripts/game.py`
-- `tests/test_game.py`
-- `assets/templates/agents.md` (novo)
-- `README.md`
-- `HANDOFF.md` (este arquivo)
+Arquivos quentes da última sessão: `src/main.js` (title), `src/game/rules.js`
+(`beginRun`, `entry`), `src/core/save.js` (`canContinue`),
+`src/game/render.js` (`drawTitle`, ponta), `data/copy.json`,
+`scripts/game.py` (guide/start), `adoption.md`.
