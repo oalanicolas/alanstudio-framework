@@ -12,11 +12,14 @@ conhecido: um jogo que funciona na máquina de quem construiu e falha em qualque
 outra. Release é a etapa que converte “funciona aqui” em “funciona para alguém”.
 
 O starter `canvas-arcade` grava `dist/VERSION.json` no export: versão e
-HEAD. `ship` relata esse arquivo quando ele existe. Identidade do
-artefato não é outra máquina. O serve anuncia a URL da rede se a
+HEAD. `ship` relata esse arquivo quando ele existe, e se a pasta `dist/`
+de um jogo web tem index, serve, package e VERSION. Árvore sem esses
+quatro é `incomplete`. HEAD do artefato diferente do checkout é
+`stale`. Identidade do artefato não é outra máquina. `elsewhere` é
+sempre falso. O serve anuncia a URL da rede se a
 máquina tiver outro endereço IPv4; um endereço alcançável não é outra
-máquina. `npm run size` relata os bytes de `dist/` sem teto. `shipped`
-é sempre falso.
+máquina. Na árvore exportada o banner nomeia o artefato. `npm run size`
+relata os bytes de `dist/` sem teto. `shipped` é sempre falso.
 
 Verifique o artefato, não o ambiente de desenvolvimento. Editor, servidor de
 desenvolvimento e build de depuração têm caminhos, permissões, recursos e tempos
@@ -59,7 +62,9 @@ e serve por `tools/serve.mjs`. `npm run build` copia a árvore jogável para
 reproduzir e declara o passo de empacotar — não prova que outra máquina
 já executou o artefato. O harness lê o passo com `ship <projeto>`.
 `shipped` é sempre falso. Sem o passo, `next` propõe `ship.unpacked`.
-HTML estático sem manifesto já é o artefato e não dispara esse ramo.
+Árvore incompleta é `ship.incomplete`; artefato de outro commit é
+`ship.stale`. HTML estático sem manifesto já é o artefato e não
+dispara esses ramos.
 
 Prova: build a partir de clone limpo, execução do artefato exportado em máquina
 que não é a de desenvolvimento, primeira execução sem estado anterior, medição de

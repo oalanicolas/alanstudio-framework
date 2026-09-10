@@ -33,8 +33,10 @@ máquina que não é a de desenvolvimento.
 ## O que falta para o degrau seguinte
 
 Outra pessoa seguir os dois blocos acima numa máquina que não é a de
-desenvolvimento. `VERSION.json`, `npm run size` e o teste que serve o
-`dist/` não substituem essa prova. `shipped` continua falso.
+desenvolvimento. `VERSION.json`, árvore completa, HEAD atual, `npm run size`
+e o teste que serve o `dist/` não substituem essa prova. `shipped` e
+`elsewhere` continuam falsos. `ship.incomplete` nomeia VERSION sem jogo;
+`ship.stale` nomeia artefato de outro commit.
 
 `npm run size` relata os bytes de `dist/` sem teto. Identidade e
 tamanho no disco não são outra máquina.

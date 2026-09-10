@@ -200,9 +200,11 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Falta no disco entra no `next` antes dos rascunhos.
    **`art` / `content` / `ship`** leem paleta ou art-bible vigente, conteúdo
    fora do código e passo de empacotar. Se `dist/VERSION.json` existe,
-   `ship` relata nome e versão. `consistent`/`enough`/`shipped` são
+   `ship` relata nome e versão. Se `dist/` de um jogo web existe, relata
+   árvore e HEAD. `consistent`/`enough`/`shipped`/`elsewhere` são
    sempre falsos. Sem declaração, o `next` nomeia `art.missing`,
-   `content.inline` e `ship.unpacked` antes dos rascunhos.
+   `content.inline` e `ship.unpacked` antes dos rascunhos. Árvore
+   incompleta é `ship.incomplete`; artefato de outro commit é `ship.stale`.
    **`playtest <projeto>`** lê se o achado tem problema, evidência, hipótese
    e medição. `observed` e `outsider` são sempre falsos. `--invite` escreve
    a página para quem nunca viu o jogo; `next` a aponta depois do recibo

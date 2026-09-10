@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.107: o meio da chuva também volta.
+**HEAD:** ver `git log -1` — vigente 0.9.108: o ship também nomeia o buraco.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 240 OK.
-`cd assets/starters/canvas-arcade && npm test` → 266 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 243 OK.
+`cd assets/starters/canvas-arcade && npm test` → 272 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.107)
+## O que o HEAD já entrega (0.9.91–0.9.108)
 
 | Ver | Salto |
 | --- | --- |
@@ -51,6 +51,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.105 | `gameSpeed` dilata o relógio. `advance()` não. Assistência ≠ este knob. |
 | 0.9.106 | `start` devolve `open` (= `play`) e os mesmos `steps` do guide. |
 | 0.9.107 | Schema 3: `hold` é o tick interrompido. `canResume` ≠ Continuar. |
+| 0.9.108 | `ship` nomeia árvore incompleta, HEAD velho e `elsewhere` falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -72,7 +73,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | performance | playable | poços + stub ≠ dispositivo |
 | accessibility | slice | oito opções + remap + relógio; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
-| release | **prototype** | ninguém correu o `dist/` fora daqui |
+| release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
 ---
 
@@ -81,8 +82,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Nenhum comando observa/joga/ouve/sente/mede o jogo no dispositivo.
 - Nunca emitir `verified` como status. `verify --proves` → `claimed`.
 - `granted` / `validated` / `observed` / `heard` / `approved` / `felt` /
-  `trusted` / `measured` / `consistent` / `enough` / `shipped` / `outsider`
-  sempre `false` nos leitores correspondentes.
+  `trusted` / `measured` / `consistent` / `enough` / `shipped` /
+  `elsewhere` / `outsider` sempre `false` nos leitores correspondentes.
 - Não importar limiares (16 ms, 100 ms, 4,5:1, 93%, “cinco usuários”,
   draw calls, −14 LUFS) como critério/aprovação.
 - Relatórios (`peak`, `mix`, `budget`, `contrast`, `probe`, `size`,
@@ -91,7 +92,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `budget.test.mjs` recusa `16 ms|16ms`. Contrast recusa `WCAG`.
   Dizer “sem LUFS” no scope **quebra** teste — use “sem limiar”.
 - Não promover degraus sem a observação que o critério pede.
-- `release` não sobe sem outra máquina. `content_scale` não sobe a
+- `release` não sobe sem outra máquina. `ship.incomplete` / `ship.stale`
+  / banner do artefato / `elsewhere` falso não promovem. Não nascer
+  `ship.unbuilt` — o starter não commita `dist/`. `content_scale` não sobe a
   flagship sem outsider. `feel`/`legibility`/`performance` não sobem
   por código headless. `accessibility` não sobe por stub. `pacing` não
   sobe por sessão simulada, `invite.md` nem `?invite=1`. `art_direction`
@@ -120,7 +123,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   **depois** da primeira guarda.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
-  ponta, tela de título ou `gameSpeed` no disco.
+  ponta, tela de título, `gameSpeed` no disco ou `hold` no stub.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -195,8 +198,8 @@ script de medição.
 Candidatos, do que ainda dói:
 
 1. **Release (define o piso):** outra máquina correr o `dist/`. Não
-   promover. Um runbook mais honesto ou um `ship` que nomeie o buraco
-   sem fingir `shipped` ainda pode ajudar o caminho.
+   promover. `ship` já nomeia árvore incompleta, HEAD velho e
+   `elsewhere` falso; isso não é a prova.
 2. **Idéia→jogo:** `start` já devolve `open` e `steps`. Ainda são
    dois contextos (servir no dispositivo, `note` no harness). Não
    auto-servir. `len(steps) == 3` e `executed: false` continuam.
@@ -227,6 +230,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `src/core/save.js` (`hold`,
-`canResume`, schema 3), `src/game/rules.js` (`restoreState`),
-`src/main.js` (retoma sem seed explícita), testes de save/lifecycle.
+Arquivos quentes da última sessão: `scripts/game.py` (`ship_tree`,
+`ship_stale`, `ship.incomplete` / `ship.stale`), `tools/serve.mjs`
+(`isArtifactRoot`), testes de ship e do banner do artefato.

@@ -1554,6 +1554,13 @@ SHIP_WORDS = ("build", "export", "dist", "package", "release")
 SHIP_CI = (".gitlab-ci.yml", ".circleci/config.yml", "azure-pipelines.yml")
 SHIP_RELEASE = "docs/release.md"
 SHIP_VERSION = "dist/VERSION.json"
+SHIP_TREE = (
+    ("index", "index.html"),
+    ("serve", "tools/serve.mjs"),
+    ("package", "package.json"),
+    ("version", "VERSION.json"),
+)
+SHIP_TREE_NEEDED = ("index", "serve", "package", "version")
 
 
 def optional_text(value):
@@ -1760,6 +1767,39 @@ def ship_ci(project):
     return found
 
 
+def ship_expects_web_tree(project):
+    project = Path(project)
+    return (project / "index.html").is_file() and (project / "package.json").is_file()
+
+
+def ship_tree(project):
+    dist = Path(project) / "dist"
+    if not dist.is_dir() or dist.is_symlink():
+        return None
+    if not ship_expects_web_tree(project):
+        return None
+    parts = {}
+    for key, relative in SHIP_TREE:
+        path = dist / relative
+        parts[key] = path.is_file() and not path.is_symlink()
+    return {
+        "parts": parts,
+        "complete": all(parts[key] for key in SHIP_TREE_NEEDED),
+    }
+
+
+def ship_stale(artifact, project):
+    if not artifact or not artifact.get("readable"):
+        return False
+    head = artifact.get("git_head")
+    if not nonempty(head):
+        return False
+    current = git_version(project).get("head")
+    if not nonempty(current):
+        return False
+    return head != current
+
+
 def ship_reading(project):
     project = Path(project)
     try:
@@ -1776,8 +1816,11 @@ def ship_reading(project):
     release = project / SHIP_RELEASE
     release_current = document_is_current(release)
     artifact = ship_artifact(project)
+    tree = ship_tree(project)
+    stale = ship_stale(artifact, project)
     expected = (project / "package.json").is_file() or (project / "Cargo.toml").is_file()
     declared = bool(named or ci or release_current)
+    incomplete = bool(tree) and not tree["complete"]
     return {
         "schema_version": 1,
         "project": str(project),
@@ -1788,6 +1831,10 @@ def ship_reading(project):
         "release": SHIP_RELEASE if release.is_file() and not release.is_symlink() else None,
         "release_current": release_current,
         "artifact": artifact,
+        "tree": tree,
+        "incomplete": incomplete,
+        "stale": stale,
+        "elsewhere": False,
         "declared": declared,
         "unpacked": expected and not declared,
         "shipped": False,
@@ -1795,13 +1842,16 @@ def ship_reading(project):
         "rule": (
             "Script de build não é artefato que outra pessoa executou. HTML "
             "estático sem manifesto já é o artefato; manifesto sem passo de "
-            "empacotar é o que este leitor nomeia."
+            "empacotar é o que este leitor nomeia. VERSION.json sozinho não "
+            "é árvore jogável; HEAD diferente não é outra máquina."
         ),
         "scope": (
             "Procura script build/export/dist/package/release, docs/release.md "
             "vigente e CI. Se dist/VERSION.json existe, relata nome e versão. "
-            "Não executa o export, não instala o artefato e não autoriza "
-            "publicar. `shipped` é sempre falso."
+            "Se a pasta dist/ de um jogo web existe, relata se index, serve, "
+            "package e VERSION estão lá, e se o HEAD do artefato é o HEAD "
+            "atual. Não executa o export, não instala o artefato e não "
+            "autoriza publicar. `shipped` e `elsewhere` são sempre falsos."
         ),
     }
 
@@ -3854,6 +3904,28 @@ def next_step(project, focus="create", studies_root=None):
             "outra máquina continua pendente.",
             [harness_command("ship", project)],
             "ship.unpacked",
+        )
+    elif pack.get("incomplete"):
+        propose(
+            "Completar a árvore jogável em dist/ (index, serve, package e VERSION)",
+            "Há identidade do artefato ou uma pasta dist/ e falta o que outra "
+            "pessoa serve. VERSION.json sozinho não abre o jogo. O harness "
+            "não executa o export e não autoriza publicar.",
+            "dist/ tem index.html, tools/serve.mjs, package.json e "
+            "VERSION.json — outra máquina e shipped continuam pendentes.",
+            [harness_command("ship", project)],
+            "ship.incomplete",
+        )
+    elif pack.get("stale"):
+        propose(
+            "Gerar de novo o artefato a partir do HEAD atual",
+            "dist/VERSION.json nomeia um HEAD que não é o deste checkout. "
+            "Artefato de outro commit não é esta entrega. O harness não "
+            "executa o export e não autoriza publicar.",
+            "O git_head do VERSION.json é o HEAD atual — outra máquina e "
+            "shipped continuam pendentes.",
+            [harness_command("ship", project)],
+            "ship.stale",
         )
     if drafts:
         propose(

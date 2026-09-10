@@ -65,7 +65,11 @@ test("o export copia o jogo e deixa de fora o que só serve para desenvolver", a
       stdio: ["ignore", "pipe", "pipe"],
     });
     const [chunk] = await once(server.stdout, "data");
-    const port = Number(String(chunk).match(/:(\d+)\//)?.[1]);
+    const banner = String(chunk);
+    assert.match(banner, /Árvore exportada/);
+    assert.match(banner, /não é outra máquina/);
+    assert.doesNotMatch(banner, /aprovado|verified|shipped/);
+    const port = Number(banner.match(/:(\d+)\//)?.[1]);
     try {
       const page = await fetch(`http://localhost:${port}/`);
       assert.equal(page.status, 200);

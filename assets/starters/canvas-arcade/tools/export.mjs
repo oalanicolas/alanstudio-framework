@@ -59,9 +59,10 @@ node tools/serve.mjs
 \`\`\`
 
 Módulos ES não carregam por \`file://\`. Servir esta pasta é o que a torna
-jogável. O serve anuncia a URL da rede se a máquina tiver outro endereço
-IPv4; um endereço alcançável não é outra máquina. Este README não afirma
-que outra máquina já executou o artefato.
+jogável. O serve nomeia esta pasta como árvore exportada. Anunciar a URL
+da rede se a máquina tiver outro endereço IPv4 não é outra máquina.
+Servir o dist/ na máquina de quem exportou também não. Este README não
+afirma que outra máquina já executou o artefato.
 `,
 );
 

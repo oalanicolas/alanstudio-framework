@@ -14,7 +14,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { advertisedOrigins, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
+import { advertisedOrigins, isArtifactRoot, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
 
 const STARTER = fileURLToPath(new URL("..", import.meta.url));
 
@@ -127,4 +127,20 @@ test("o serve anuncia a rede sem fingir que alguém de fora jogou", () => {
   assert.doesNotMatch(banner, /outsider|aprovado|verified|alguém de fora jogou/i);
   const local = listenBanner(8080, { lo: [{ address: "127.0.0.1", family: "IPv4", internal: true }] }, {});
   assert.doesNotMatch(local, /Rede:/);
+  assert.doesNotMatch(local, /Árvore exportada/);
+});
+
+test("o serve da árvore exportada nomeia o artefato sem fingir outra máquina", async () => {
+  const base = await mkdtemp(join(tmpdir(), "starter-artifact-banner-"));
+  try {
+    await writeFile(join(base, "VERSION.json"), "{}\n");
+    assert.equal(isArtifactRoot(base), true);
+    assert.equal(isArtifactRoot(STARTER), false);
+    const banner = listenBanner(8080, {}, {}, base);
+    assert.match(banner, /Árvore exportada/);
+    assert.match(banner, /não é outra máquina/);
+    assert.doesNotMatch(banner, /aprovado|verified|shipped/);
+  } finally {
+    await rm(base, { recursive: true, force: true });
+  }
 });

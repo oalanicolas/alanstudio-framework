@@ -7,11 +7,13 @@
 
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { createReadStream } from "node:fs";
+import { createReadStream, existsSync } from "node:fs";
 import { stat } from "node:fs/promises";
 import { networkInterfaces } from "node:os";
 import { extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+
+const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 
 // Abrir o navegador é cortesia do terminal, não o jogo executado.
 // Testes encanaram o stdout: sem TTY, ninguém ganha uma janela.
@@ -52,7 +54,11 @@ export function advertisedOrigins(port, interfaces = networkInterfaces(), env = 
   return [...new Set(origins)];
 }
 
-export function listenBanner(port, interfaces = networkInterfaces(), env = process.env) {
+export function isArtifactRoot(root = ROOT) {
+  return existsSync(join(root, "VERSION.json"));
+}
+
+export function listenBanner(port, interfaces = networkInterfaces(), env = process.env, root = ROOT) {
   const origins = advertisedOrigins(port, interfaces, env);
   const local = origins[0];
   const lines = [
@@ -65,6 +71,9 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
   for (const origin of origins.slice(1)) {
     lines.push(`Rede: ${origin}/`);
     lines.push(`Convite na rede: ${origin}/?invite=1`);
+  }
+  if (isArtifactRoot(root)) {
+    lines.push("Árvore exportada. Servir aqui não é outra máquina.");
   }
   return lines.join("\n");
 }
@@ -82,7 +91,6 @@ function openBrowser(url) {
 // `pathname` de uma URL mantém a codificação percentual: um projeto em
 // "Farol do Sul" viraria "Farol%20do%20Sul", uma pasta que não existe, e todo
 // pedido responderia 404. `fileURLToPath` decodifica.
-const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const PORT = Number(process.env.PORT ?? 8080);
 const TYPES = {
   ".html": "text/html; charset=utf-8",

@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.108 — O ship também nomeia o buraco
+
+`VERSION.json` sozinho não abre o jogo. `ship` relata se
+`dist/` de um jogo web tem index, serve, package e VERSION,
+e se o HEAD do artefato é o deste checkout. `incomplete` e
+`stale` entram no `next`. `elsewhere` continua falso. O
+serve da árvore exportada nomeia o artefato. Só `release`
+fica no piso.
+
+O que 0.9.108 não afirma: o harness não correu o `dist/`
+em outra máquina e nomear o buraco não é entrega.
+
 ## 0.9.107 — O meio da chuva também volta
 
 O save já repetia a última seed. Fechar no meio

@@ -103,7 +103,7 @@ destino → sem entrypoint → área não localizada → ciclo jogável ainda se
 → papéis de áudio vazios → feel ainda sem observação → convite para quem nunca viu o jogo → achado sem forma →
 acessibilidade sem opção
 → save sem versão → orçamento ausente → direção de arte ausente → conteúdo
-ainda no código → empacotar ainda sem passo → rascunho → documento sem versão
+ainda no código → empacotar ainda sem passo → artefato incompleto → artefato de outro HEAD → rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
 recibo → gate → ofício → barra. Depois de um `init` fresco — nove áreas com
 candidato, seis ainda rascunho (o art-bible do starter já vem vigente), e um script que abre o jogo — a primeira proposta
@@ -608,7 +608,10 @@ python3 scripts/game.py ship /caminho/do/laboratorio/meu-jogo
 procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 `enough` é sempre `false`. `ship` procura script `build`/`export`/`package`/
 `release`, `docs/release.md` vigente ou CI. Se `dist/VERSION.json`
-existe, relata nome e versão. `shipped` é sempre `false`.
+existe, relata nome e versão. Se `dist/` de um jogo web existe, relata
+se a árvore jogável está completa e se o HEAD do artefato é o HEAD
+atual. `shipped` e `elsewhere` são sempre `false`. Árvore incompleta
+recebe `ship.incomplete`; artefato de outro commit recebe `ship.stale`.
 HTML estático sem manifesto já é o artefato; manifesto sem passo de
 empacotar recebe `ship.unpacked`. O starter declara paleta em
 `data/palettes.json`, escolhe o look por `?look=` / `settings.look`

@@ -991,6 +991,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "art.missing": "direção de arte ausente",
             "content.inline": "conteúdo ainda no código",
             "ship.unpacked": "empacotar ainda sem passo",
+            "ship.incomplete": "artefato incompleto",
+            "ship.stale": "artefato de outro HEAD",
             "areas.draft_only": "rascunho",
             "areas.historical_or_reference_only": "documento sem versão vigente",
             "continuity.sources": "continuidade",
@@ -1464,6 +1466,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("art.missing", bases)
         self.assertNotIn("content.inline", bases)
         self.assertNotIn("ship.unpacked", bases)
+        self.assertNotIn("ship.incomplete", bases)
+        self.assertNotIn("ship.stale", bases)
         self.assertNotIn("playtest.unstructured", bases)
         self.assertNotIn("playtest.invite", bases)
         self.assertNotIn("cycle.craft", bases)
@@ -1493,6 +1497,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("audio.roles", after_bases)
         self.assertNotIn("content.inline", after_bases)
         self.assertNotIn("ship.unpacked", after_bases)
+        self.assertNotIn("ship.incomplete", after_bases)
+        self.assertNotIn("ship.stale", after_bases)
         self.assertNotIn("playtest.unstructured", after_bases)
         self.assertIn("areas.draft_only", after_bases)
 
@@ -2420,6 +2426,17 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(pack["release"], "docs/release.md")
         self.assertTrue(pack["release_current"])
         self.assertFalse(pack["shipped"])
+        self.assertFalse(pack["elsewhere"])
+        dist = starter / "dist"
+        if dist.is_dir() and not dist.is_symlink():
+            # `dist/` é gitignorado. Um export local não é o starter
+            # commitado — o leitor nomeia a árvore que está no disco.
+            self.assertIsNotNone(pack["tree"])
+            self.assertEqual(set(pack["tree"]["parts"]), {"index", "serve", "package", "version"})
+        else:
+            self.assertIsNone(pack["tree"])
+            self.assertFalse(pack["incomplete"])
+            self.assertFalse(pack["stale"])
         if pack["artifact"]:
             self.assertEqual(pack["artifact"]["path"], "dist/VERSION.json")
             self.assertTrue(pack["artifact"]["readable"])
@@ -2518,18 +2535,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(after["shipped"])
         self.assertIsNone(after["artifact"])
 
-    def test_ship_names_version_json_without_calling_it_shipped(self):
-        self.package()
-        self.foundation_document()
+    def _release_note(self):
         (self.project / "docs").mkdir(exist_ok=True)
         (self.project / "docs/release.md").write_text(
             "# Release\n\nExport: npm run build. Artefato em dist/.\n"
         )
-        (self.project / "dist").mkdir()
-        (self.project / "dist/VERSION.json").write_text(
-            json.dumps({"name": "demo", "version": "0.1.0", "git_head": "abc123"}),
+
+    def _web_manifest(self):
+        self.package()
+        (self.project / "index.html").write_text("<canvas></canvas>")
+
+    def _artifact_tree(self, git_head="abc123", complete=True):
+        dist = self.project / "dist"
+        (dist / "tools").mkdir(parents=True, exist_ok=True)
+        (dist / "VERSION.json").write_text(
+            json.dumps({"name": "demo", "version": "0.1.0", "git_head": git_head}),
             encoding="utf-8",
         )
+        if complete:
+            (dist / "index.html").write_text("<html></html>")
+            (dist / "tools" / "serve.mjs").write_text("ok")
+            (dist / "package.json").write_text("{}")
+
+    def _commit_project(self, message="passo"):
+        subprocess.run(["git", "init", "-q", str(self.project)], check=True)
+        subprocess.run(["git", "-C", str(self.project), "add", "-A"], check=True)
+        subprocess.run(
+            ["git", "-C", str(self.project), "-c", "user.name=t", "-c", "user.email=t@t",
+             "commit", "-q", "-m", message],
+            check=True,
+        )
+        return subprocess.run(
+            ["git", "-C", str(self.project), "rev-parse", "HEAD"],
+            capture_output=True, text=True, check=True,
+        ).stdout.strip()
+
+    def test_ship_names_version_json_without_calling_it_shipped(self):
+        self._web_manifest()
+        self.foundation_document()
+        self._release_note()
+        self._artifact_tree(complete=False)
         report = game.ship_reading(self.project)
         self.assertEqual(report["artifact"]["path"], "dist/VERSION.json")
         self.assertTrue(report["artifact"]["readable"])
@@ -2537,7 +2582,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["artifact"]["version"], "0.1.0")
         self.assertEqual(report["artifact"]["git_head"], "abc123")
         self.assertFalse(report["shipped"])
+        self.assertFalse(report["elsewhere"])
         self.assertFalse(report["unpacked"])
+        self.assertTrue(report["incomplete"])
+        self.assertFalse(report["stale"])
+        self.assertFalse(report["tree"]["complete"])
+        self.assertFalse(report["tree"]["parts"]["index"])
+        self.assertTrue(report["tree"]["parts"]["version"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "release"))]
+        self.assertIn("ship.incomplete", bases)
+        self.assertNotIn("ship.stale", bases)
+
+    def test_ship_names_a_stale_artifact_without_calling_it_elsewhere(self):
+        self._web_manifest()
+        self.foundation_document()
+        self._release_note()
+        self._commit_project()
+        self._artifact_tree(git_head="deadbeef", complete=True)
+        report = game.ship_reading(self.project)
+        self.assertTrue(report["tree"]["complete"])
+        self.assertFalse(report["incomplete"])
+        self.assertTrue(report["stale"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(report["elsewhere"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "release"))]
+        self.assertIn("ship.stale", bases)
+        self.assertNotIn("ship.incomplete", bases)
+
+    def test_ship_names_incomplete_before_stale_when_both_are_true(self):
+        self._web_manifest()
+        self.foundation_document()
+        self._release_note()
+        self._commit_project()
+        self._artifact_tree(git_head="deadbeef", complete=False)
+        report = game.ship_reading(self.project)
+        self.assertTrue(report["incomplete"])
+        self.assertTrue(report["stale"])
+        self.assertFalse(report["elsewhere"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "release"))]
+        self.assertIn("ship.incomplete", bases)
+        self.assertNotIn("ship.stale", bases)
+
+    def test_ship_complete_tree_with_matching_head_is_not_stale(self):
+        self._web_manifest()
+        self.foundation_document()
+        self._release_note()
+        head = self._commit_project()
+        self._artifact_tree(git_head=head, complete=True)
+        report = game.ship_reading(self.project)
+        self.assertTrue(report["tree"]["complete"])
+        self.assertFalse(report["incomplete"])
+        self.assertFalse(report["stale"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(report["elsewhere"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "release"))]
+        self.assertNotIn("ship.incomplete", bases)
+        self.assertNotIn("ship.stale", bases)
 
     def test_playtest_names_an_observation_without_the_four_fields(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
@@ -2743,9 +2843,15 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["expected"])
         self.assertFalse(report["unpacked"])
         self.assertFalse(report["shipped"])
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["incomplete"])
+        self.assertFalse(report["stale"])
+        self.assertIsNone(report["tree"])
         self.assertIsNone(report["artifact"])
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project))]
         self.assertNotIn("ship.unpacked", bases)
+        self.assertNotIn("ship.incomplete", bases)
+        self.assertNotIn("ship.stale", bases)
 
     def test_next_only_raises_craft_for_a_gate_the_project_asked_for(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
