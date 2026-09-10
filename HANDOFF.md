@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.299: a região viva nomeia como sair da pausa. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.298):** `python3 -m unittest discover -s tests` → 315 OK.
-`cd assets/starters/canvas-arcade && npm test` → 483 OK.
+**Testes no HEAD (0.9.299):** `python3 -m unittest discover -s tests` → 315 OK.
+`cd assets/starters/canvas-arcade && npm test` → 484 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
