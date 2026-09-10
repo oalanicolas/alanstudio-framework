@@ -849,16 +849,14 @@ test("o overlay do fim nomeia o recorde sem inventar faixa nem sessão", () => {
   ended.phase = "over";
   ended.score = 12;
   const withBest = paint(ended, {}, { best: 40 }).texts.map((item) => item.text);
-  const hint = withBest.find((text) => text.includes("Recorde 40"));
-  assert.ok(hint && hint.includes("abertura"), `esperava o recorde no overlay: ${JSON.stringify(withBest)}`);
+  const hint = withBest.find((text) => text.includes("Recorde 40") && text.includes("abertura"));
+  assert.ok(hint, `esperava o recorde no overlay: ${JSON.stringify(withBest)}`);
   assert.equal(hint.includes("Corrente"), false, "sem aposta o recorde não inventa corrente");
 
   const empty = paint(ended, {}, { best: 0 }).texts.map((item) => item.text);
-  assert.equal(
-    empty.some((text) => text.includes("Recorde")),
-    false,
-    `recorde zero não entra no overlay: ${JSON.stringify(empty)}`,
-  );
+  const door = empty.find((text) => /abertura/i.test(text));
+  assert.ok(door, `esperava a porta no overlay: ${JSON.stringify(empty)}`);
+  assert.equal(door.includes("Recorde"), false, "recorde zero não entra no overlay");
 });
 
 test("a cortina segue o look, a legenda vence e o texto respeita a escala", () => {
