@@ -57,7 +57,7 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
   const local = origins[0];
   const lines = [
     `Jogo em ${local}/  (Ctrl+C encerra)`,
-    `Look: ${local}/?look=dusk`,
+    `Look: ${local}/?look=dusk  ${local}/?look=calm`,
     `Chuva: ${local}/?spawn=dusk  ${local}/?spawn=calm`,
     `Convite: ${local}/?invite=1`,
   ];

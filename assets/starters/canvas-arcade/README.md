@@ -17,7 +17,7 @@ Requer Node 20 ou mais recente. Não há dependências a instalar.
 npm run serve      # serve em http://localhost:8080; no terminal, tenta abrir o navegador
 ```
 
-`?look=dusk` troca a paleta (campo e a página) e `?spawn=dusk` ou
+`?look=dusk` ou `?look=calm` troca a paleta (campo e a página) e `?spawn=dusk` ou
 `?spawn=calm` troca a chuva, sem recomeçar
 o projeto. O `start` do harness nomeia as queries quando o manifesto
 as declara. Depois de um `note`, `start` e `next` apontam
@@ -119,7 +119,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | --- | --- | --- |
 | `feel` | `playable` | `slice`: cada ação com sinal próprio de partida, contato e término — dash, coleta, guarda e dano já têm squash/hitstop/tremor/câmera, rumble e rastro distintos; o dash agora aterrissa (senta, câmera, puff e tap próprios); a corrente mora no corpo em pips, não só no HUD; a coleta leva o orbe ao slot, o erro espalha, a guarda deposita e o fim derruba a aposta não guardada — o overlay nomeia o que caiu e a queda vence a cortina, que reusa a placa do look; as legendas nascem depois da cortina; o raspo risca o campo; a ameaça marca o trilho, a recuperação do dash muda a silhueta e o erro acende o campo; `npm run probe` conta os buffers, não o peso percebido; o harness não jogou |
 | `legibility` | `playable` | `slice`: leitura em movimento, na resolução e no dispositivo alvo — a sequência de quadros no stub cobre o HUD; `npm run contrast` amostra a cena montada e, em cinza, pixels que só o orbe ou só o estilhaço pintam; o dispositivo alvo ainda não foi observado |
-| `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; a paleta é mesa e `dusk` é o segundo look (`?look=` / `settings.look`); a página também veste esses tokens; `look --from` / `--as` nasce o próximo; `consistent` é falso |
+| `art_direction` | `slice` | `shippable`: um implementador que não participou da direção produz o próximo item dentro do piso, e a comparação em movimento confirma — a receita está no art-bible; a paleta é mesa e `dusk` e `calm` são o segundo e o terceiro look (`?look=` / `settings.look`); a página também veste esses tokens; `look --from` / `--as` nasce o próximo; três looks não aprovam direção; `consistent` é falso |
 | `audio_mix` | `slice` | `shippable`: faixa dinâmica controlada, sem clipping que obrigue a baixar o volume — o palco tem folga, a cama ocupa o barramento de música e o mixer limita o master; coleta e guarda sobem de tom com a corrente; `sfx --from` / `--as` nasce a próxima voz no papel que o mixer já toca; `npm run mix` soma cama e vozes na simulação com a mesma taxa, não no dispositivo; loudness percebido não foi medido; `heard` é falso |
 | `pacing` | `slice` | `shippable`: a curva foi observada com quem nunca viu o jogo — a prática é orbe-só e guardar recupera o intervalo; a sessão relata never_banked e erro repetido na simulação; `/?invite=1` some a tabela de comandos; a curva com quem nunca viu o jogo continua pendente |
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
@@ -200,8 +200,8 @@ uma intenção — as regras nunca veem eventos.
 
 A paleta vive em `data/palettes.json` e o contrato está em
 `docs/art-bible.md`. O desenho consome `PALETTES` via `tables.js`.
-`?look=` / `settings.look` escolhem `normal` ou `dusk`; alto contraste
-vence o look. O harness lê os dois; consistência em movimento continua
+`?look=` / `settings.look` escolhem `normal`, `dusk` ou `calm`; alto contraste
+vence o look. O harness lê os três; consistência em movimento continua
 pendente. Chuva e texto do HUD passam por `src/game/tables.js`.
 `npm run table -- <nome> --from spawn --as denser` nasce a próxima chuva
 no mesmo carregador e no mesmo consumidor (`?spawn=` /
@@ -209,8 +209,8 @@ no mesmo carregador e no mesmo consumidor (`?spawn=` /
 parte da prática longa; sem `--as` a cópia é idêntica nos knobs.
 `npm run session -- --spawn <nome>` traça essa chuva. Sem `--from`, o
 custo variável continua sendo ligar a regra.
-`dusk` já é a segunda chuva e o segundo look — o nome é compartilhado,
-as mesas não. `calm` é só chuva. `npm run look -- <nome> --from dusk --as warmer` nasce o
+`dusk` e `calm` compartilham o nome entre chuva e look —
+as mesas não. `npm run look -- <nome> --from dusk|calm --as warmer` nasce o
 próximo look no mesmo consumidor. Ferramenta que desloca knobs ou
 tokens não é volume, direção consistente nem alguém de fora no piso. `npm run sfx -- --from dash --as brighter` desloca a voz no papel que o mixer já toca; sem `--from` o banco inteiro nasce de novo. Intenção não é mix ouvido. Os papéis do verbo e a cama em `public/sfx` entram no mixer;
 `heard` continua falso. `npm run build` copia a árvore jogável para

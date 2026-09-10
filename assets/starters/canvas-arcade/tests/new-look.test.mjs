@@ -59,6 +59,13 @@ test("o comando registra o look no mesmo consumidor", async () => {
     assert.equal(reserved.code, 2);
     const existing = await runLook(project, "normal", ["--from", "dusk"]);
     assert.equal(existing.code, 2);
+    const calmReserved = await runLook(project, "calm", ["--from", "dusk"]);
+    assert.equal(calmReserved.code, 2);
+    assert.match(calmReserved.stderr, /já existe look calm/);
+    const fromCalm = await runLook(project, "mist", ["--from", "calm"]);
+    assert.equal(fromCalm.code, 0, fromCalm.stderr);
+    const afterCalm = JSON.parse(await readFile(join(project, "data/palettes.json"), "utf8"));
+    assert.equal(afterCalm.palettes.mist.field, afterCalm.palettes.calm.field);
     const invalid = await runLook(project, "Tempo-1", ["--from", "dusk"]);
     assert.equal(invalid.code, 2);
     const cloned = await runLook(project, "twin", ["--from", "dusk"]);

@@ -51,7 +51,8 @@ for (const name of ["farol", "Farol do Sul"]) {
     const server = await serveFrom(name);
     try {
       assert.ok(Number.isInteger(server.port) && server.port > 0, "porta não anunciada");
-      assert.match(server.banner, /\?look=dusk/, "o serve precisa apontar o look");
+      assert.match(server.banner, /\?look=dusk/, "o serve precisa apontar o look denso");
+      assert.match(server.banner, /\?look=calm/, "o serve precisa apontar o look calmo");
       assert.match(server.banner, /\?spawn=dusk/, "o serve precisa apontar a chuva densa");
       assert.match(server.banner, /\?spawn=calm/, "o serve precisa apontar a chuva calma");
       assert.match(server.banner, /\?invite=1/, "o serve precisa apontar o convite");

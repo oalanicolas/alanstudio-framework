@@ -15,10 +15,10 @@
 // Overlay e HUD confirmam o aparelho que falou por último.
 // `palettes` tem consumidor: o desenho lê
 // `PALETTES` daqui, não uma constante no render. `look` escolhe um
-// look de arte (`normal`, `dusk`); `contrast` é o modo de alcance,
-// não um look. `npm run look -- <nome> --from normal|dusk` copia um
+// look de arte (`normal`, `dusk`, `calm`); `contrast` é o modo de alcance,
+// não um look. `npm run look -- <nome> --from normal|dusk|calm` copia um
 // look que o jogo já consome; `--as` desloca os tokens sem pedir a
-// receita de cabeça. `dusk` na chuva e `dusk` no look compartilham
+// receita de cabeça. `dusk` e `calm` na chuva e no look compartilham
 // o nome e não a mesa. Mesas genéricas continuam sem consumidor
 // automático.
 //

@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.81 — O terceiro look também é autoral
+
+`dusk` era o único desvio de arte. `calm` é o par visual da chuva
+calma: sálvia quieta, não o `cooler` nem o `night` aplicados em
+`normal`. A página e o campo vestem `?look=calm` no mesmo
+consumidor. `consistent` continua falso. `art_direction` permanece
+`slice`: token no disco não é comparação em movimento. Só `release`
+fica no piso.
+
+O que 0.9.81 não afirma: o harness não comparou os looks no
+dispositivo e três looks não aprovam direção.
+
 ## 0.9.80 — A terceira chuva também é autoral
 
 `dusk` era o único desvio da chuva padrão. `calm` é o inverso:

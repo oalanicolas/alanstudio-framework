@@ -264,6 +264,13 @@ test("trocar o look não recomeça a partida", () => {
 test("a query escolhe o look sem inventar mesa", () => {
   const { game } = harness({ query: "?look=dusk" });
   assert.equal(game.settings.look, "dusk");
+  const soft = createGame({
+    seed: 5,
+    query: "?look=calm",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(soft.settings.look, "calm");
   const ignored = createGame({
     seed: 5,
     query: "?look=inventada",
@@ -272,6 +279,7 @@ test("a query escolhe o look sem inventar mesa", () => {
   });
   assert.equal(ignored.settings.look, "normal");
   ignored.dispose();
+  soft.dispose();
   game.dispose();
 });
 

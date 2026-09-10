@@ -26,6 +26,9 @@ test("dusk veste a página; contraste vence; look novo também entra", () => {
 
   const dawn = applyLookIntent(PALETTES.dusk, "warmer");
   assert.equal(shellVars(dawn)["--page"], dawn.background);
+  assert.equal(applyShell(target, PALETTES.calm), true);
+  assert.equal(painted["--page"], PALETTES.calm.background);
+  assert.notEqual(PALETTES.calm.background, PALETTES.dusk.background);
   assert.equal(applyShell({}, PALETTES.dusk), false);
   assert.equal(shellVars({ text: "x" }), null);
 });

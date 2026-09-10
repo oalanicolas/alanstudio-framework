@@ -816,4 +816,17 @@ test("a faixa do dash veste o look e não a placa", () => {
   ));
   assert.equal(duskStrip.style, PALETTES.dusk.muted);
   assert.notEqual(duskStrip.style, PALETTES.normal.muted);
+  const soft = recordingCanvas();
+  const softRenderer = createRenderer(soft.canvas, { devicePixelRatio: 1 });
+  softRenderer.resize(360, 640);
+  softRenderer.draw(state, { paused: false, alpha: 0, steps: 1 }, { look: "calm" }, { best: 0 });
+  const softPlate = soft.plates().find((plate) => plate.y > 80);
+  const softStrip = soft.calls.rects.find((rect) => (
+    !PLATE_COLORS.has(rect.style)
+    && softPlate
+    && Math.abs(rect.x - softPlate.x) < 0.6
+    && Math.abs(rect.y + rect.height - (softPlate.y + softPlate.height)) < 0.6
+  ));
+  assert.equal(softStrip.style, PALETTES.calm.muted);
+  assert.notEqual(softStrip.style, PALETTES.dusk.muted);
 });

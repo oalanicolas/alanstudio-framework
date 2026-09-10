@@ -4,11 +4,12 @@ Uma mesa nova entra pelo mesmo carregador. O custo conhecido do próximo
 item de chuva é **o comando** — o jogo já consome qualquer mesa com a
 forma de `spawn`. `copy.fantasy` alimenta o aviso do primeiro ciclo.
 `palettes` alimenta o desenho: trocar um token não exige abrir
-`render.js`. O look `dusk` mora nessa mesa; `?look=` / `settings.look`
-o consomem. `dusk` na chuva é outra mesa (`dusk.json`) e outro
-consumidor (`?spawn=`). `calm` é a terceira chuva — prática mais
+`render.js`. Os looks `dusk` e `calm` moram nessa mesa; `?look=` /
+`settings.look` os consomem. `dusk` e `calm` na chuva são outras
+mesas e outro consumidor (`?spawn=`). A chuva `calm` é prática mais
 longa, menos risco, queda mais lenta; não é o `calmer` aplicado
-em `spawn`. Nasça o próximo look com o comando; mesas
+em `spawn`. O look `calm` é sálvia quieta; não é o `cooler` aplicado
+em `normal`. Nasça o próximo look com o comando; mesas
 genéricas ainda pedem consumidor.
 
 ```sh
@@ -17,6 +18,7 @@ npm run table -- <nome> --from dusk --as denser
 npm run table -- <nome> --from calm --as brief
 npm run session -- --spawn <nome>
 npm run look -- <nome> --from dusk --as warmer
+npm run look -- <nome> --from calm --as cooler
 npm run sfx -- --from dash --as brighter
 ```
 
@@ -26,7 +28,7 @@ cabeça: a chuva nova não é um clone. Sem `--from`, o comando escreve
 `{ "schema": 1 }` e `loadTable("<nome>")` resolve; o jogo não muda até
 alguém ligar a regra ou a apresentação.
 
-`npm run look -- <nome> --from dusk --as warmer` copia um look que o
+`npm run look -- <nome> --from dusk|calm --as warmer` copia um look que o
 jogo já pinta. `--from` é obrigatório; `contrast` não é look.
 `--as warmer|cooler|night` desloca os tokens. Sem `--as` a cópia é
 idêntica até alguém editar. Intenção não é look aprovado.

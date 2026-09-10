@@ -20,8 +20,10 @@ test("as mesas passam pelo mesmo carregador", () => {
   assert.equal(loadTable("palettes").palettes.normal.field, "#171b26");
   assert.equal(PALETTES.contrast.plateEdge, "#ffffff");
   assert.equal(PALETTES.dusk.field, "#241816");
-  assert.deepEqual(listLooks(), ["dusk", "normal"]);
+  assert.equal(PALETTES.calm.field, "#15201e");
+  assert.deepEqual(listLooks(), ["calm", "dusk", "normal"]);
   assert.equal(resolveLookName("dusk"), "dusk");
+  assert.equal(resolveLookName("calm"), "calm");
   assert.equal(resolveLookName("contrast"), "normal");
   assert.equal(resolveLookName("inventada"), "normal");
   assert.throws(() => loadTable("inventada"), /mesa desconhecida/);
@@ -122,6 +124,21 @@ test("a intenção desloca tokens sem inventar look nem aprovar arte", () => {
   assert.deepEqual(Object.keys(lookRecord(warmer)).sort(), [...PALETTE_FIELDS].sort());
   assert.equal(lookRecord(PALETTES.dusk).field, PALETTES.dusk.field);
   assert.throws(() => applyLookIntent(PALETTES.normal, "melhor"), /intenção desconhecida/);
+});
+
+test("calm é look autoral, não cooler nem night aplicados em normal", () => {
+  const cooler = applyLookIntent(PALETTES.normal, "cooler");
+  const night = applyLookIntent(PALETTES.normal, "night");
+  const duskCooler = applyLookIntent(PALETTES.dusk, "cooler");
+  assert.equal(PALETTES.calm.orb, "#6ab8a4");
+  assert.notEqual(PALETTES.calm.field, PALETTES.normal.field);
+  assert.notEqual(PALETTES.calm.field, PALETTES.dusk.field);
+  assert.notEqual(PALETTES.calm.field, cooler.field);
+  assert.notEqual(PALETTES.calm.field, night.field);
+  assert.notEqual(PALETTES.calm.field, duskCooler.field);
+  assert.notEqual(PALETTES.calm.orb, cooler.orb);
+  assert.notEqual(PALETTES.calm.orb, PALETTES.dusk.orb);
+  assert.notEqual(PALETTES.calm.orb, night.orb);
 });
 
 test("paleta sem contraste ou sem token falha com o nome", () => {
