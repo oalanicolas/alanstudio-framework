@@ -74,6 +74,28 @@ test("404 não inventa buffer e não quebra o restante dos papéis", async () =>
   assert.deepEqual(loaded, []);
   assert.deepEqual(audio.missing().registered, []);
   assert.deepEqual(audio.missing().declared, Object.keys(SOUNDS));
+  assert.deepEqual(audio.missing().requested, Object.keys(SOUNDS));
+});
+
+test("o primário que 404 marca o pedido; o que registrou some da lacuna", async () => {
+  const audio = createAudio({ createContext: () => null });
+  const fetchFn = async (url) => {
+    if (url === "public/sfx/dash.wav") {
+      return { ok: true, arrayBuffer: async () => new ArrayBuffer(8) };
+    }
+    return { ok: false };
+  };
+  const loaded = await loadRoleFiles(audio, {
+    fetch: fetchFn,
+    decode: async () => ({ duration: 0.2 }),
+  });
+  assert.deepEqual(loaded, [{ id: "dash", url: "public/sfx/dash.wav", variant: false }]);
+  const gaps = audio.missing();
+  assert.deepEqual(gaps.registered, ["dash"]);
+  assert.ok(gaps.requested.includes("hit"));
+  assert.ok(gaps.requested.includes("collect"));
+  assert.equal(gaps.requested.includes("dash"), false, "variante ausente não é lacuna do papel");
+  assert.equal(gaps.requested.length, Object.keys(SOUNDS).length - 1);
 });
 
 test("papéis começam juntos: collect não espera dash.wav terminar", async () => {

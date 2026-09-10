@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 
 import { readFileSync } from "node:fs";
 
-import { BED_FADE_MS, DUCK_BUSES, DUCK_LEVEL, MIX_HEADROOM, SOUNDS, captionFor, createAudio, stereoPan } from "../src/game/audio.js";
+import { BED_FADE_MS, DUCK_BUSES, DUCK_LEVEL, MIX_HEADROOM, SOUNDS, audioGapLine, captionFor, createAudio, stereoPan } from "../src/game/audio.js";
 import { FIELD } from "../src/game/rules.js";
 
 const main = readFileSync(new URL("../src/main.js", import.meta.url), "utf8");
@@ -90,6 +90,37 @@ test("a ausência de som é uma lacuna declarada, não silêncio", () => {
   assert.deepEqual(audio.missing().registered, []);
   assert.equal(audio.play("collect"), false);
   assert.deepEqual(audio.missing().requested, ["collect"]);
+});
+
+test("fail sem play entra no pedido; papel já registrado recusa", () => {
+  const { audio } = build();
+  assert.equal(audio.fail("hit"), true);
+  assert.deepEqual(audio.missing().requested, ["hit"]);
+  assert.equal(audio.fail("trilha-inventada"), false);
+  audio.register("dash", { duration: 0.1 });
+  assert.equal(audio.fail("dash"), false);
+  assert.deepEqual(audio.missing().requested, ["hit"]);
+  audio.dispose();
+  assert.equal(audio.fail("bank"), false);
+});
+
+test("o painel nomeia os vazios mesmo quando outro papel já registrou", () => {
+  const declared = Object.keys(SOUNDS);
+  assert.equal(audioGapLine({}), "");
+  assert.equal(audioGapLine({ declared: [] }), "");
+  const empty = audioGapLine({ declared, registered: [] });
+  assert.match(empty, /Nenhum arquivo de som embarcado/);
+  assert.match(empty, /Papéis declarados e vazios: /);
+  assert.match(empty, /dash/);
+  assert.doesNotMatch(empty, /Ainda vazios/);
+  const mixed = audioGapLine({ declared, registered: ["dash"] });
+  assert.match(mixed, /Sons registrados: dash\./);
+  assert.match(mixed, /Ainda vazios: /);
+  assert.match(mixed, /hit/);
+  assert.doesNotMatch(mixed, /Nenhum arquivo de som embarcado/);
+  const full = audioGapLine({ declared: ["dash"], registered: ["dash"] });
+  assert.equal(full, "Sons registrados: dash.");
+  assert.doesNotMatch(full, /Ainda vazios/);
 });
 
 test("a legenda sai mesmo sem arquivo de som", () => {

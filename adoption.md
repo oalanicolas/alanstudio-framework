@@ -3,6 +3,65 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.250 — O painel nomeia o papel que o fetch perdeu
+
+O
+comentário
+já
+dizia
+que
+`missing()`
+lista
+404.
+O
+loader
+não
+marcava.
+O
+painel
+some
+os
+vazios
+quando
+outro
+papel
+já
+registrou.
+Agora
+o
+primário
+que
+esgota
+as
+extensões
+marca
+o
+pedido
+e
+o
+painel
+nomeia
+os
+dois
+lados.
+Variante
+ausente
+não
+é
+lacuna.
+Não
+promove
+`heard`.
+
+O que 0.9.250 não afirma:
+nomear
+o
+404
+não
+é
+mix
+ouvido.
+
 ## 0.9.249 — O apply recoloca o stem com o recibo
 
 O

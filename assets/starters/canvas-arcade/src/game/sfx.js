@@ -45,5 +45,8 @@ async function loadStem(job, audio, options) {
       continue;
     }
   }
+  // Variante ausente não é lacuna do papel. O primário que esgota
+  // as extensões marca o pedido — sem isto o 404 só aparecia no play.
+  if (!job.variant) audio.fail?.(job.id);
   return null;
 }

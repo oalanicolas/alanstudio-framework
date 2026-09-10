@@ -239,6 +239,7 @@
       import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, bringPanel, composeFinding, inviteHref, inviteMode, offerFinding, readArtifactMark } from "./src/core/invite.js";
       import { FINDING_ROUTE, NOTE_ROUTE, playFinding } from "./src/core/run-report.js";
       import { applyShell } from "./src/core/shell.js";
+      import { audioGapLine } from "./src/game/audio.js";
       import { LOOK_LABELS, SPAWN_LABELS, dressPalette, listLooks, listMoods, listSpawnProfiles, loadTable, matchingMood, pairPatch } from "./src/game/tables.js";
       import { paintCommands } from "./src/core/keys.js";
       import { mountRemap } from "./src/core/remap.js";
@@ -464,10 +465,7 @@
           });
         }
         sync();
-        const gaps = game.audioGaps();
-        document.getElementById("audio-gap").textContent = gaps.registered.length
-          ? `Sons registrados: ${gaps.registered.join(", ")}.`
-          : `Nenhum arquivo de som embarcado. Papéis declarados e vazios: ${gaps.declared.join(", ")}. As legendas cobrem a informação sonora até o acervo ser preenchido.`;
+        document.getElementById("audio-gap").textContent = audioGapLine(game.audioGaps());
       }
     </script>
   </body>

@@ -23,7 +23,9 @@
 // legenda. Os stems sobem juntos; wav no lugar não pede ogg.
 // O gesto (tecla, toque ou controle) retoma o contexto suspenso;
 // retomar, fila e paralelo não são mix ouvido.
-// `missing()` ainda lista o papel se o decode falhar ou o fetch 404.
+// `missing()` lista o papel se o decode falhar ou o fetch 404 —
+// o loader marca o primário; o play também marca o pedido sem buffer.
+// O painel nomeia os vazios mesmo quando outro papel já registrou.
 // O `over` pede fade na cama; pause, title e aba escondida
 // continuam cortando a cama seco. Na pausa o mixer também
 // corta as vozes do verbo que ainda soavam — overlay
@@ -38,6 +40,21 @@ import { chainPlaybackRate, FIELD } from "./rules.js";
 
 // O campo tem lugar. Sem isto, coleta à esquerda e à direita
 // ocupam o mesmo ponto. Número no panner não é mix ouvido.
+export function audioGapLine(gaps) {
+  const declared = Array.isArray(gaps?.declared) ? gaps.declared : [];
+  const registered = Array.isArray(gaps?.registered) ? gaps.registered : [];
+  const empty = declared.filter((id) => !registered.includes(id));
+  if (!declared.length) return "";
+  if (!registered.length) {
+    return (
+      `Nenhum arquivo de som embarcado. Papéis declarados e vazios: ${declared.join(", ")}. `
+      + "As legendas cobrem a informação sonora até o acervo ser preenchido."
+    );
+  }
+  if (!empty.length) return `Sons registrados: ${registered.join(", ")}.`;
+  return `Sons registrados: ${registered.join(", ")}. Ainda vazios: ${empty.join(", ")}.`;
+}
+
 export function stereoPan(x, width = FIELD.width) {
   if (!Number.isFinite(x) || !Number.isFinite(width) || !(width > 0)) return 0;
   return Math.max(-1, Math.min(1, (x / width) * 2 - 1));
@@ -285,6 +302,11 @@ export function createAudio(options = {}) {
         pending.delete(id);
         emitVoice(id, waiting);
       }
+      return true;
+    },
+    fail(id) {
+      if (!(id in SOUNDS) || disposed || buffers.has(id)) return false;
+      missing.add(id);
       return true;
     },
     async decode(bytes) {
