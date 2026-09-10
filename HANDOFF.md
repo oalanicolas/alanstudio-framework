@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.150: o aviso crítico abaixa só a cama.
+**HEAD:** ver `git log -1` — vigente 0.9.151: o coil do avanço também atravessa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 262 OK.
-`cd assets/starters/canvas-arcade && npm test` → 326 OK.
+`cd assets/starters/canvas-arcade && npm test` → 327 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.150)
+## O que o HEAD já entrega (0.9.91–0.9.151)
 
 | Ver | Salto |
 | --- | --- |
@@ -94,6 +94,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.148 | No primeiro `over` a página rola até `#finding` / `#note` e foca o primeiro campo. Título com last-run não rola. `outsider` continua falso. |
 | 0.9.149 | Estilhaço no trilho do corpo vira `perigo à frente` na região viva, com a última legenda. Sem SFX novo. `verified` continua falso. |
 | 0.9.150 | `duckMs` abaixa só `music`. Hit e guarda não somem sob o próprio aviso. `heard` continua falso. |
+| 0.9.151 | `dashWindup` também é graça: o coil atravessa o estilhaço. Sem punch novo. `felt` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -185,7 +186,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   artefato, fallback do Copiar,
   rolar o painel no over,
   região viva do perigo,
-  duck só na cama
+  duck só na cama, graça no coil
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -286,7 +287,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   Não promover `state_trust`. `hold.player` leva `dashWindup`.
   `hold` leva `bankWindup`.
 - Avanço na partida: `dashWindupTicks` (2) senta com `squashCoil`
-  antes de `fireDash`. A porta (`beginRun`) continua imediata.
+  antes de `fireDash`. Esses ticks também são graça: o coil
+  atravessa o estilhaço. A porta (`beginRun`) continua imediata.
   Guardar corrente já existente: `bank.windupTicks` (2) senta
   antes de converter. Coleta e guarda no mesmo quadro continuam
   na hora. Raspo (`grazeContact`): estreita, punch na direção,
@@ -357,6 +359,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais rolar o painel no over.
 **Não** mais região viva do perigo.
 **Não** mais duck só na cama.
+**Não** mais graça no coil do avanço.
 
 Candidatos, do que ainda dói:
 
@@ -399,7 +402,8 @@ Candidatos, do que ainda dói:
    fallback do Copiar e rolar
    o painel no over e a
    região viva do perigo e o
-   duck só na cama não
+   duck só na cama e a graça
+   no coil do avanço não
    fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
@@ -421,6 +425,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `DUCK_BUSES` em `audio.js`.
-O aviso crítico abaixa só a cama. Hit não some sob o hit.
-`heard` continua falso.
+Arquivos quentes da última sessão: `dashWindup` em `resolveEntities`.
+O coil do avanço também atravessa o estilhaço. Sem punch novo.
+`felt` continua falso.

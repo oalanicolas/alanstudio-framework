@@ -28,7 +28,7 @@ export const CONFIG = {
     dashRecoveryTicks: 6, // recuperação: controle reduzido, ainda vulnerável
     dashCooldownTicks: 30,
     dashBufferTicks: 8, // perdão: dash pedido cedo dispara ao recarregar
-    dashWindupTicks: 2, // antecipação: o corpo senta antes de alongar
+    dashWindupTicks: 2, // antecipação: o corpo senta antes de alongar; já é graça
     invulnTicks: 42, // graça após dano; evita perder duas correntes seguidas
   },
   collect: {
@@ -784,7 +784,11 @@ function spawn(state) {
 
 function resolveEntities(state) {
   const player = state.player;
-  const invulnerable = player.invuln > 0 || player.dashTicks > 0;
+  // O coil já é o compromisso. Sem isto, os dois ticks de antecipação
+  // eram janela de hit — o jogador sentou e morreu. Pose no disco
+  // não é peso percebido.
+  const invulnerable =
+    player.invuln > 0 || player.dashTicks > 0 || (player.dashWindup ?? 0) > 0;
   const entities = state.entities;
   let write = 0;
   for (let index = 0; index < entities.length; index += 1) {

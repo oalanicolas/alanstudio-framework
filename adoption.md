@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.151 — O coil do avanço também atravessa
+
+Os dois ticks de antecipação
+eram janela de hit. Quem
+sentava morria. `dashWindup`
+também é graça. Sem punch
+novo. `felt` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.151 não afirma: graça
+no coil não é peso no
+dispositivo.
+
 ## 0.9.150 — O aviso crítico abaixa só a cama
 
 Hit, guarda e fim

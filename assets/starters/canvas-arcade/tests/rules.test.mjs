@@ -231,6 +231,20 @@ test("o término do dash senta, empurra a câmera e deixa rastro próprio", () =
   assert.ok(CONFIG.feel.rumbleLandMs < CONFIG.feel.rumbleDashMs);
 });
 
+test("antecipar o avanço também atravessa o estilhaço", () => {
+  const state = createState(3);
+  advance(state, { move: 1, dash: true, bank: false });
+  assert.equal(state.player.dashWindup, CONFIG.player.dashWindupTicks);
+  assert.equal(state.player.dashTicks, 0);
+  state.chain = 2;
+  state.entities = [shard(state.player.x, PLAYER_Y)];
+  advance(state, { move: 1, dash: false, bank: false });
+  assert.equal(state.chain, 2, "o coil não é janela de hit");
+  assert.equal(state.stats.hits, 0);
+  assert.equal(state.stats.dashes, 0, "atravessar no coil ainda não disparou");
+  assert.ok(state.events.some((event) => event.type === "graze"));
+});
+
 test("o dash atravessa o estilhaço sem perder a corrente", () => {
   const state = createState(3);
   dashOut(state);

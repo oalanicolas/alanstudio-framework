@@ -74,7 +74,8 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
 3. **Antecipação** — frames ou pose que prometem o golpe/pulo/disparo antes
    do impacto. Sem ela, a ação chega “de graça” ou atrasada demais.
    No starter o avanço senta (`squashCoil`) dois ticks antes de alongar;
-   o término emite `land` (squash, câmera, puff, rumble e voz).
+   esses ticks já atravessam o estilhaço — o coil não é janela de hit.
+   O término emite `land` (squash, câmera, puff, rumble e voz).
    Guardar uma corrente que já existe senta os mesmos dois ticks antes
    de converter; coleta e guarda no mesmo quadro continuam na hora —
    o contato já foi a antecipação. Pose e arquivo no disco não são
