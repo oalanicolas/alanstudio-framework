@@ -77,9 +77,9 @@ export function createRenderer(canvas, options = {}) {
 
     const ending = state.phase === "over";
     const held = ending || Boolean(frame?.paused);
-    // No fim e na pausa o relógio senta o quadro. Tremor e punch
-    // do último verbo não atravessam o overlay. Pose no disco
-    // não é felt.
+    // No fim e na pausa o relógio senta o quadro. Tremor, punch
+    // e o lean do trilho não atravessam o overlay. Lean no
+    // disco não é felt.
     const shake = reduced || held ? 0 : state.shake;
     const punchX = reduced || held ? 0 : (state.camera?.x ?? 0);
     const punchY = reduced || held ? 0 : (state.camera?.y ?? 0);
