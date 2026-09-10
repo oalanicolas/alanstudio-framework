@@ -470,6 +470,22 @@ test("a câmera por verbo desloca o campo e some com redução de movimento", ()
   assert.notEqual(moved.transform.f, still.transform.f, "punch vertical precisa chegar no quadro");
 });
 
+test("no fim a câmera senta; o punch do último verbo não atravessa o overlay", () => {
+  const leftover = createState(1);
+  leftover.phase = "over";
+  leftover.camera = { x: 5, y: -3 };
+  leftover.shake = 4;
+  leftover.flash = 0.8;
+  const sat = createState(1);
+  sat.phase = "over";
+  const ended = hudTexts(leftover);
+  const rest = hudTexts(sat);
+  assert.equal(ended.transform.e, rest.transform.e, "punch horizontal não atravessa o fim");
+  assert.equal(ended.transform.f, rest.transform.f, "punch vertical não atravessa o fim");
+  const flash = paint(leftover).rects.some((rect) => String(rect.style).startsWith("rgba(255,245,235"));
+  assert.equal(flash, false, "o flash do último verbo não atravessa o fim");
+});
+
 function paint(state, settings = {}, extra = { best: 0 }) {
   const recorder = recordingCanvas();
   const renderer = createRenderer(recorder.canvas, { devicePixelRatio: 1 });

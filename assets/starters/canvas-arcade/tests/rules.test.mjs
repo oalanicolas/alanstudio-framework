@@ -900,9 +900,16 @@ test("no fim o corpo senta; a conta sobrevive", () => {
   state.tick = CONFIG.runTicks - 1;
   state.spawnTimer = 999;
   state.player.squash = CONFIG.feel.squashDash;
+  state.shake = 4;
+  state.flash = 0.8;
+  state.camera = { x: 6, y: -4 };
   advance(state, neutralIntent());
   assert.equal(state.phase, "over");
   assert.equal(state.player.squash, CONFIG.feel.squashOver, "o relógio senta o corpo");
+  assert.equal(state.shake, 0, "o relógio senta o tremor");
+  assert.equal(state.flash, 0, "o relógio senta o flash");
+  assert.equal(state.camera.x, 0, "o relógio senta o punch");
+  assert.equal(state.camera.y, 0);
   assert.ok(CONFIG.feel.squashOver > CONFIG.feel.squashBank);
   assert.ok(CONFIG.feel.squashOver < CONFIG.feel.squashHit);
   assert.equal(state.chain, 5, "a conta no estado sobrevive ao fim");

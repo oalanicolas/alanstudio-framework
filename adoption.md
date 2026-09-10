@@ -3,6 +3,21 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.176 — O over senta o quadro
+
+O corpo já sentava.
+Tremor, flash e punch
+do último verbo
+ficavam no overlay.
+O relógio zera o
+campo. `felt` continua
+falso. Só `release`
+fica no piso.
+
+O que 0.9.176 não afirma:
+quadro parado no disco
+não é peso percebido.
+
 ## 0.9.175 — A região viva nomeia o placar
 
 O overlay já dizia

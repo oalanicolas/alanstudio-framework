@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.175 (confirmado): a região viva nomeia o placar no fim e na porta.
+**HEAD:** ver `git log -1` — vigente 0.9.176: o over senta a câmera com o corpo.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 269 OK.
-`cd assets/starters/canvas-arcade && npm test` → 356 OK.
+`cd assets/starters/canvas-arcade && npm test` → 357 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.175)
+## O que o HEAD já entrega (0.9.91–0.9.176)
 
 | Ver | Salto |
 | --- | --- |
@@ -119,6 +119,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.173 | `sfx summary` lista stems, licença e origem do starter. Acervo vazio não some o que já fala. Não promove `heard`. |
 | 0.9.174 | `sfx search` nomeia o stem do starter que casa (chave, arquivo, licença, origem). `count` continua o acervo. Não promove `heard`. |
 | 0.9.175 | A região viva nomeia placar e recorde no fim e na porta. Overlay do canvas não chega ao leitor. Não promove `accessibility`. |
+| 0.9.176 | O `over` senta tremor, flash e punch. O corpo já sentava. Pose no disco não é felt. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -131,7 +132,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | corpo senta no over no disco; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | corpo e quadro sentam no over no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over + search nomeia stem; `heard` falso |
@@ -479,6 +480,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `sfx summary` que some os stems do starter enquanto o acervo está vazio.
 **Não** mais um `sfx search` que some o stem do starter que casa com o termo.
 **Não** mais uma região viva que some o placar enquanto o overlay já o nomeia.
+**Não** mais uma câmera em pose de golpe enquanto o relógio já derrubou a aposta.
 
 Candidatos, do que ainda dói:
 
@@ -564,7 +566,9 @@ Candidatos, do que ainda dói:
   stem que
   casa e o
   placar na
-  região viva
+  região viva e o
+  quadro sentado
+  no over
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -588,6 +592,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a região viva nomeia placar e recorde
-no fim e na porta. Overlay do canvas não chega ao leitor. Não promove
-`accessibility`.
+Arquivos quentes da última sessão: o over senta tremor, flash e punch
+com o corpo. Pose no disco não é felt. Não promove feel.
