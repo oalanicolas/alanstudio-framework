@@ -37,10 +37,11 @@ o juice vira ruído.
 Leia o verbo no GDD, os tokens de tempo/câmera/áudio no
 [design system](../references/game-design-system.md) e o
 [piso](../references/quality.md). `context --focus feel` seleciona esta
-receita. `feel <projeto>` lê as constantes nomeadas no `CONFIG` e o
-recibo de observação no disco; `felt` é sempre falso. `note <projeto>`
-grava o recibo curto depois da partida. O usuário não
-precisa pedir “ative o juice”.
+receita. `feel` lê as constantes nomeadas no `CONFIG` e o
+recibo de observação no disco; `felt` é sempre falso. `note`
+grava o recibo curto depois da partida. Sem caminho, o único
+jogo do laboratório basta; dois pedem o caminho. Achar o jogo
+não é ter sentido. O usuário não precisa pedir “ative o juice”.
 
 ## 1. Isolar o verbo
 

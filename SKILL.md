@@ -20,12 +20,12 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | --- | --- |
 | Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing`. Ele nomeia os projetos e lista os starters |
 | Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
-| Perdeu o comando que abre | `play <projeto>` (ou `open`) aponta o serve sem executar. Sem caminho, o único jogo do laboratório basta; dois pedem o caminho. Com tela, o avanço abre a porta. Depois da partida a página grava o recibo se você escrever; `then.note` continua. `executed` fica falso. Não cria e não serve |
+| Perdeu o comando que abre | `play` (ou `open`) aponta o serve sem executar. Sem caminho, o único jogo do laboratório basta; dois pedem o caminho. Com tela, o avanço abre a porta. Depois da partida a página grava o recibo se você escrever; `note` sem caminho usa o mesmo jogo. `then.note` continua. `executed` fica falso. Não cria e não serve |
 | Jogo novo | Destino inexistente e engine web: `start --idea "<fantasia>"` (ou `start <novo> --starter <starter> --idea "<fantasia>"`) cria o projeto — sem caminho, a frase nomeia a pasta, ao lado do framework se o start corre de dentro desta árvore —, põe a frase na abertura e no aviso do primeiro ciclo e devolve `open` (= `play`) + `then.note` sem executar. `open` é o comando de agora; `steps` é o mesmo mapa de três passos do `guide`, com o passo 1 feito. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive a porta, o cluster de uma mão, o toque, o controle e as queries de look, chuva, par, seed e convite, se houver. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia par, look, chuva e voz; depois de um recibo, o prompt as aponta. Se o disco tem last-run com seed, `then` aponta a partida (número, chuva e look quando o candidato os nomeia) e o convite; nomear o endereço não observa. Nomear o ofício não pinta. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando: `python3 scripts/game.py --idea "<fantasia>"`) mapeia start → jogar → note. `open` é o comando de agora; `prompt` o nomeia. Sem destino, a frase nomeia a pasta no comando do start — ao lado do framework se o mapa corre de dentro desta árvore; no diretório atual se corre de fora. Não grava a frase nem cria a pasta. Sem destino, se o diretório atual é um jogo fora do framework, o mapa usa esse caminho. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
-| Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
-| O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, `note <projeto> --author … --note "o que o verbo sentiu"`. Depois `roles` e `context --focus audio` |
+| Em dúvida sobre o próximo passo | `next --focus <foco>` deriva uma proposta do estado no disco; sem caminho, o único jogo do laboratório basta. `executed` fica `false` e a escolha é sua |
+| O verbo funciona mas não convence | `feel`; se `unobserved`, `note --author … --note "o que o verbo sentiu"`. Sem caminho, o único jogo do laboratório basta. Depois `roles` e `context --focus audio` |
 | Paleta, conteúdo no código ou jogo só na máquina de quem construiu | `art` / `content` / `ship` <projeto>; `consistent`/`enough`/`shipped` ficam `false` |
-| Observou uma partida e só tem uma nota | `playtest <projeto>`; se `unstructured`, escreva problema, evidência, hipótese e medição. Depois do recibo, `playtest --invite` escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a tabela some; depois do fim a página do maker aponta o convite desta partida se a seed ficou no recibo — copiar o endereço não grava; a página também mostra seed, pontos e eixos da partida e oferece os quatro nomes para copiar ou gravar — número na faixa não preenche os quatro; copiar não grava; gravar anexa o candidato se houver last-run; gravado não é alguém de fora |
+| Observou uma partida e só tem uma nota | `playtest`; se `unstructured`, escreva problema, evidência, hipótese e medição. Sem caminho, o único jogo do laboratório basta. Depois do recibo, `playtest --invite` escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a tabela some; depois do fim a página do maker aponta o convite desta partida se a seed ficou no recibo — copiar o endereço não grava; a página também mostra seed, pontos e eixos da partida e oferece os quatro nomes para copiar ou gravar — número na faixa não preenche os quatro; copiar não grava; gravar anexa o candidato se houver last-run; gravado não é alguém de fora |
 | “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
 | Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
 | “continue” / “vamos avançar” | `context <projeto> --focus <foco> --event resume` e leia `continuity.sources`, preservando o foco da tarefa |
@@ -184,12 +184,16 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    continua rascunho. A frase na tela não muda o verbo.
    **`play [<projeto>]`** (também `open`) aponta o comando que abre o
    jogo. Não executa, não cria e não serve. Sem caminho, usa o
-   diretório atual se ele for um jogo fora desta árvore. `open` é o
-   play. Com tela, o avanço abre a porta. Depois de uma partida, a
-   página grava o recibo se você escrever; o próximo comando do
-   harness continua `note`. Se o disco tem last-run com seed, `then`
-   aponta a partida (número, chuva e look quando o candidato os nomeia) e o convite; nomear o endereço não observa. `executed` fica `false`. O `prompt` também
-   sai em stderr; o JSON fica no stdout.
+   diretório atual se ele for um jogo fora desta árvore; se o
+   laboratório tem um único jogo, esse basta; dois pedem o caminho.
+   `open` é o play. Com tela, o avanço abre a porta. Depois de uma
+   partida, a página grava o recibo se você escrever; o próximo
+   comando do harness continua `note`. `note`, `next`, `feel` e
+   `playtest` sem caminho usam o mesmo resolvedor. Se o disco tem
+   last-run com seed, `then` aponta a partida (número, chuva e look
+   quando o candidato os nomeia) e o convite; nomear o endereço não
+   observa. `executed` fica `false`. O `prompt` também sai em stderr;
+   o JSON fica no stdout.
    **`roles <projeto>`** lê os papéis de áudio que o código declara e os
    arquivos que os preenchem. `--fill` sugere o acervo; `--apply` copia
    com o nome do papel. Crescer o acervo é `sfx import` / `sfx seed`
@@ -197,14 +201,16 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    créditos. Importar e exportar não é ouvir. `heard` é sempre falso. Papel vazio
    entra no `next` como `audio.roles` — o verbo mudo não espera os
    rascunhos.
-   **`feel <projeto>`** lê constantes de perdão/hitstop/câmera no `CONFIG` e o
+   **`feel [<projeto>]`** lê constantes de perdão/hitstop/câmera no `CONFIG` e o
    recibo de observação no disco. `felt` é sempre falso. Sem recibo, `next`
-   propõe `feel.unobserved` e aponta `note`.
-   **`note <projeto>`** grava o recibo curto (cenário e papel por omissão)
-   em `docs/playtest/<utc>/`. O comando do mapa sugere `--author` a partir
+   propõe `feel.unobserved` e aponta `note`. Sem caminho, o único jogo
+   do laboratório basta.
+   **`note [<projeto>]`** grava o recibo curto (cenário e papel por omissão)
+   em `docs/playtest/<utc>/`. Sem caminho, o único jogo do laboratório
+   basta; dois pedem o caminho. O comando do mapa sugere `--author` a partir
    do git ou do ambiente; não é quem jogou. `--from-run` anexa `docs/playtest/last-run.json`
    (resumo e, se houver, a curva) como candidato de medição e não fecha o
-   achado. Não joga e não sente.
+   achado. Não joga e não sente. Achar o único jogo não é ter sentido.
    **`access` / `save` / `budget`** leem opção de alcance (incluindo
    uiScale, remapeamento das seis ações do teclado na página, preset de
    uma mão, assistência, velocidade da partida e tinta estável), versão de save e artefato
@@ -218,8 +224,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    sempre falsos. Sem declaração, o `next` nomeia `art.missing`,
    `content.inline` e `ship.unpacked` antes dos rascunhos. Árvore
    incompleta é `ship.incomplete`; artefato de outro commit é `ship.stale`.
-   **`playtest <projeto>`** lê se o achado tem problema, evidência, hipótese
-   e medição. `observed` e `outsider` são sempre falsos. `--invite` escreve
+   **`playtest [<projeto>]`** lê se o achado tem problema, evidência, hipótese
+   e medição. Sem caminho, o único jogo do laboratório basta.
+   `observed` e `outsider` são sempre falsos. `--invite` escreve
    a página para quem nunca viu o jogo; depois do fim a página mostra
    seed, pontos e eixos e oferece os quatro nomes para copiar ou gravar.
    Número na faixa não preenche os quatro. Copiar não grava. Gravar anexa

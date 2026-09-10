@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.137: `play` sem caminho usa o único jogo do laboratório.
+**HEAD:** ver `git log -1` — vigente 0.9.138: `note` sem caminho usa o único jogo do laboratório.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 257 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 260 OK.
 `cd assets/starters/canvas-arcade && npm test` → 300 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.137)
+## O que o HEAD já entrega (0.9.91–0.9.138)
 
 | Ver | Salto |
 | --- | --- |
@@ -81,6 +81,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.135 | Perder o orbe desloca a câmera para baixo e treme menos que a coleta. Sem hitstop, squash ou rumble. `init` não copia `__pycache__`. `felt` continua falso. |
 | 0.9.136 | Depois do fim, `#finding-run` e `#note-run` mostram seed, pontos e eixos. Não preenche os quatro. `outsider` continua falso. |
 | 0.9.137 | `play` / `open` sem caminho usam o único jogo do laboratório. Dois listam os nomes e pedem o caminho. O starter não é o jogo. Não varre a raiz do disco. `executed` continua falso. |
+| 0.9.138 | `note`, `next`, `feel` e `playtest` sem caminho usam o mesmo resolvedor. Achar o único jogo não sente e não assiste. `felt` / `observed` / `outsider` continuam falsos. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -162,7 +163,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   estilhaço dusk no disco, intenção warmer no disco,
   punch da queda no disco, números da partida na
   faixa do achado, `play` achar o único jogo do
-  laboratório
+  laboratório, `note` / `next` / `feel` / `playtest`
+  acharem o mesmo jogo
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -197,6 +199,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   criam, não executam. Sem caminho: `here_project`, o único
   vizinho jogável do laboratório, a lista dos nomes se houver
   dois, ou “sem destino”. Não escolhe o starter. Não varre `/`.
+- `note` / `next` / `feel` / `playtest` (CLI) usam
+  `require_project_destination` — o mesmo resolvedor. `note`
+  continua exigindo `--author` e `--note`. Achar o jogo não
+  sente, não assiste e não promove.
 - `emit()` escreve `prompt` em stderr quando a chave existe e tem
   texto. stdout continua só o JSON. Falar a frase não executa.
   `next` / `doctor` / `feel` não têm `prompt` e não escrevem frase.
@@ -293,7 +299,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 Saltos alinhados: feel visível/audível, ferramenta de outsider, superfície
 de entrada, auditoria item 1, ou atrito ideia→jogo. **Não** mais um
-script de medição. **Não** mais um `play` sem caminho.
+script de medição. **Não** mais um `play` sem caminho. **Não** mais
+um `note` sem caminho.
 
 Candidatos, do que ainda dói:
 
@@ -302,14 +309,15 @@ Candidatos, do que ainda dói:
    `elsewhere` falso; isso não é a prova.
 2. **Idéia→jogo:** `start` devolve `open`; `play` / `open` o
    reimprimem. Sem caminho, o único jogo do laboratório basta;
-   dois pedem o caminho. O `prompt` também sai em stderr. A
+   dois pedem o caminho. `note`, `next`, `feel` e `playtest`
+   usam o mesmo resolvedor. O `prompt` também sai em stderr. A
    partida no serve grava o candidato e, se você escrever, o
    recibo. No convite a página grava o achado se os quatro
    tiverem texto e anexa o candidato se last-run existir.
    `?seed=` abre a seed do candidato. Depois de um last-run,
    `then.seed` aponta o endereço da partida (número, chuva e
    look quando o candidato os nomeia) e o convite junta os
-   mesmos eixos. O comando `note` continua. Não auto-servir.
+   mesmos eixos. Não auto-servir.
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
@@ -323,7 +331,8 @@ Candidatos, do que ainda dói:
    estável no disco, estilhaço dusk no disco, intenção warmer no
    disco, copiar o achado,
    gravar os quatro nomes, mostrar seed/pontos/eixos na faixa,
-   anexar last-run e `play` achar o único jogo não fecham. A receita
+   anexar last-run, `play` achar o único jogo e `note` achar
+   o mesmo jogo não fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
    Não nascer look/chuva first-party novo como craft.
@@ -344,6 +353,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `playable_neighbors` /
-`resolve_play_destination`. Achar o único jogo não executa e
-não promove.
+Arquivos quentes da última sessão: `require_project_destination`.
+Achar o único jogo no `note` não sente e não promove.

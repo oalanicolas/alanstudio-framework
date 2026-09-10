@@ -3381,6 +3381,76 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn(planted.resolve(), found)
         self.assertIn("único jogo", game.play_cycle(only)["scope"])
+        self.assertIs(game.resolve_play_destination, game.resolve_project_destination)
+
+    def test_note_without_a_path_uses_the_only_game_in_the_lab(self):
+        destination = self.root / "unico"
+        game.start_project(destination, "canvas-arcade")
+        self.assertEqual(
+            game.require_project_destination(None, self.root),
+            destination.resolve(),
+        )
+        run = subprocess.run(
+            [
+                sys.executable, str(SCRIPT), "note",
+                "--author", "Ana", "--note", "o verbo pesa no guarda",
+                "--output", str(destination / "docs/playtest/sem-caminho"),
+                "--root", str(self.root),
+            ],
+            capture_output=True, text=True, cwd=str(Path(game.FRAMEWORK)),
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        payload = json.loads(run.stdout)
+        self.assertEqual(payload["command"], "note")
+        self.assertEqual(Path(payload["project"]).resolve(), destination.resolve())
+        self.assertFalse(payload["felt"])
+        self.assertFalse(payload["observed"])
+        self.assertTrue((destination / "docs/playtest/sem-caminho/record.json").is_file())
+        self.assertNotIn("aprovado", run.stdout)
+        self.assertNotIn("verified", run.stdout)
+
+    def test_note_without_a_path_lists_neighbors_instead_of_picking(self):
+        game.start_project(self.root / "um", "canvas-arcade")
+        game.start_project(self.root / "dois", "canvas-arcade")
+        with self.assertRaisesRegex(ValueError, "um"):
+            game.require_project_destination(None, self.root)
+        run = subprocess.run(
+            [
+                sys.executable, str(SCRIPT), "note",
+                "--author", "Ana", "--note", "o verbo pesa",
+                "--root", str(self.root),
+            ],
+            capture_output=True, text=True, cwd=str(Path(game.FRAMEWORK)),
+        )
+        self.assertNotEqual(run.returncode, 0)
+        self.assertIn("sem destino", run.stderr)
+        self.assertIn("um", run.stderr)
+        self.assertIn("dois", run.stderr)
+
+    def test_cycle_verbs_without_a_path_share_the_only_game(self):
+        destination = self.root / "unico"
+        game.start_project(destination, "canvas-arcade")
+        here = str(Path(game.FRAMEWORK))
+        for action in ("next", "feel", "playtest"):
+            run = subprocess.run(
+                [sys.executable, str(SCRIPT), action, "--root", str(self.root)],
+                capture_output=True, text=True, cwd=here,
+            )
+            self.assertEqual(run.returncode, 0, run.stderr)
+            payload = json.loads(run.stdout)
+            self.assertEqual(Path(payload["project"]).resolve(), destination.resolve())
+            self.assertNotIn("aprovado", run.stdout)
+            self.assertNotIn("verified", run.stdout)
+        empty = subprocess.run(
+            [
+                sys.executable, str(SCRIPT), "note",
+                "--author", "Ana", "--note", "nada",
+                "--root", str(self.root / "vazio"),
+            ],
+            capture_output=True, text=True, cwd=here,
+        )
+        self.assertNotEqual(empty.returncode, 0)
+        self.assertIn("sem destino", empty.stderr)
 
     def test_guide_names_the_last_run_seed_without_claiming_it_observed(self):
         destination = self.root / "com-seed"

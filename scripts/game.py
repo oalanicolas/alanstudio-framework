@@ -3660,7 +3660,7 @@ def playable_neighbors(root, framework=None):
     return found
 
 
-def resolve_play_destination(explicit=None, root=None):
+def resolve_project_destination(explicit=None, root=None):
     dest = here_project(explicit, root)
     if explicit is not None or dest is not None:
         return dest
@@ -3671,6 +3671,18 @@ def resolve_play_destination(explicit=None, root=None):
         names = ", ".join(path.name for path in found)
         raise ValueError(f"sem destino: {names}. passe o caminho ou rode start --idea")
     return None
+
+
+# O 0.9.137 nasceu neste nome. Os verbos do ciclo depois do play
+# usam o mesmo resolvedor; o alias evita partir os testes que já o leem.
+resolve_play_destination = resolve_project_destination
+
+
+def require_project_destination(explicit=None, root=None):
+    dest = resolve_project_destination(explicit, root)
+    if dest is None:
+        raise ValueError("sem destino: passe o caminho ou rode start --idea")
+    return dest
 
 
 # Teto do nome derivado da frase. Mais que isso vira caminho ilegível;
@@ -4727,7 +4739,7 @@ def main():
     )
     played.add_argument("project", nargs="?", default=None)
     upcoming = commands.add_parser("next", parents=[common], help="proposta ordenada de próxima ação, a partir do estado no disco")
-    upcoming.add_argument("project")
+    upcoming.add_argument("project", nargs="?", default=None)
     upcoming.add_argument("--focus", choices=FOCI, default="create")
     initial_scan = commands.add_parser("scan", parents=[common])
     initial_scan.add_argument("project")
@@ -4761,7 +4773,7 @@ def main():
         "feel", parents=[common],
         help="constantes de feel que o projeto declara e o recibo de observação no disco",
     )
-    feel_cmd.add_argument("project")
+    feel_cmd.add_argument("project", nargs="?", default=None)
     access_cmd = commands.add_parser(
         "access", parents=[common],
         help="opções de alcance que o código declara, sem medição",
@@ -4796,7 +4808,7 @@ def main():
         "playtest", parents=[common],
         help="achado de playtest no formato problema/evidência/hipótese/medição, sem assistir",
     )
-    playtest_cmd.add_argument("project")
+    playtest_cmd.add_argument("project", nargs="?", default=None)
     playtest_cmd.add_argument(
         "--invite", action="store_true",
         help="escreve docs/playtest/invite.md para quem nunca viu o jogo; não é alguém de fora",
@@ -4831,9 +4843,9 @@ def main():
     noted = commands.add_parser(
         "note",
         parents=[common],
-        help="recibo curto de observação: o que o verbo sentiu, sem jogar",
+        help="recibo curto de observação: o que o verbo sentiu, sem jogar; sem caminho, o único jogo do laboratório basta",
     )
-    noted.add_argument("project")
+    noted.add_argument("project", nargs="?", default=None)
     noted.add_argument("--author", required=True)
     noted.add_argument("--note", required=True)
     noted.add_argument("--role", choices=("human", "agent"), default="human")
@@ -4896,7 +4908,7 @@ def main():
             dest = resolve_play_destination(args.project, root)
             emit(play_cycle(dest))
         elif args.action == "next":
-            emit(next_step(resolve(args.project, root), args.focus, studies_root=default_studies_root(root)))
+            emit(next_step(require_project_destination(args.project, root), args.focus, studies_root=default_studies_root(root)))
         elif args.action == "scan":
             emit(scan(resolve(args.project, root)))
         elif args.action == "bar":
@@ -4912,7 +4924,7 @@ def main():
             else:
                 emit(roles_reading(target, root))
         elif args.action == "feel":
-            emit(feel_reading(resolve(args.project, root)))
+            emit(feel_reading(require_project_destination(args.project, root)))
         elif args.action == "access":
             emit(access_reading(resolve(args.project, root)))
         elif args.action == "save":
@@ -4926,7 +4938,7 @@ def main():
         elif args.action == "ship":
             emit(ship_reading(resolve(args.project, root)))
         elif args.action == "playtest":
-            dest = resolve(args.project, root)
+            dest = require_project_destination(args.project, root)
             emit(invite_playtest(dest) if args.invite else playtest_reading(dest))
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
@@ -4944,7 +4956,7 @@ def main():
             return int(bool(errors))
         elif args.action == "note":
             emit(note_observation(
-                resolve(args.project, root), args.author, args.note,
+                require_project_destination(args.project, root), args.author, args.note,
                 parse_fields(args.field), args.output, args.role, args.scenario,
                 args.from_run,
             ))

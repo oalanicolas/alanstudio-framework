@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.138 — Note sem caminho usa o único jogo do laboratório
+
+O ciclo é start → play → note. O play já
+achava o único jogo; o passo 3 ainda
+pedia o caminho. Sem caminho, `note`,
+`next`, `feel` e `playtest` usam o mesmo
+resolvedor. Dois listam os nomes.
+`felt` / `observed` / `outsider` continuam
+falsos. Só `release` fica no piso.
+
+O que 0.9.138 não afirma: achar o único
+jogo não é ter sentido, assistir nem
+alguém de fora.
+
 ## 0.9.137 — Play sem caminho usa o único jogo do laboratório
 
 Quem perdia o JSON do `start` tinha de

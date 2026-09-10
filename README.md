@@ -72,7 +72,7 @@ python3 scripts/game.py play /caminho/do/laboratorio/meu-jogo
 python3 scripts/game.py open /caminho/do/laboratorio/meu-jogo
 ```
 
-`play` e `open` são o mesmo verbo. Com tela, o avanço abre a porta. Depois de uma partida, a página grava o recibo se você escrever; o próximo comando do harness continua `note`. Se o disco tem last-run com seed, `then.seed` aponta `/?seed=<n>` e, se o candidato nomeou a chuva ou o look, junta a mesa e a paleta. `then.invite` aponta o convite com os mesmos eixos. Nomear o endereço não observa. `executed` fica `false`. Não cria pasta e não serve. Achar o único jogo do laboratório também não executa. A frase de agora sai em stderr; encanar o stdout continua o recibo.
+`play` e `open` são o mesmo verbo. Com tela, o avanço abre a porta. Depois de uma partida, a página grava o recibo se você escrever; o próximo comando do harness continua `note`. `note`, `next`, `feel` e `playtest` sem caminho usam o mesmo resolvedor. Se o disco tem last-run com seed, `then.seed` aponta `/?seed=<n>` e, se o candidato nomeou a chuva ou o look, junta a mesa e a paleta. `then.invite` aponta o convite com os mesmos eixos. Nomear o endereço não observa. `executed` fica `false`. Não cria pasta e não serve. Achar o único jogo do laboratório também não executa e não sente. A frase de agora sai em stderr; encanar o stdout continua o recibo.
 
 `guide` não cria o projeto. `next` sai do caminho feliz: só entra em `then.lost`, quando o ciclo já correu e você não sabe o que falta. Com destino existente, preenche o comando que abre o jogo e o `kind` do passo de jogar. `executed` fica `false`. Sem `start`, o caminho em dois passos continua valendo:
 
@@ -570,10 +570,16 @@ câmera no `CONFIG`. Constante nomeada não é peso percebido. `feel` lê as
 constantes e procura um `record.json` de observação no projeto:
 
 ```sh
+python3 scripts/game.py feel
 python3 scripts/game.py feel /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py note --author "NOME" --note "o que o verbo sentiu"
 python3 scripts/game.py note /caminho/do/laboratorio/meu-jogo --author "NOME" --note "o que o verbo sentiu"
 # o mapa preenche --author com git ou o ambiente; NOME só se os dois faltarem
 ```
+
+Sem caminho, o único jogo do laboratório basta; dois pedem o caminho.
+`next` e `playtest` usam o mesmo resolvedor. Achar o jogo não é ter
+sentido nem assistir.
 
 `note` grava o recibo de observação em `docs/playtest/<utc>/` com cenário e
 papel por omissão. `--from-run` anexa `docs/playtest/last-run.json` (resumo
