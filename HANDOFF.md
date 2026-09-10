@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.278: o orçamento cronometra a porta. Orçar só o campo escondia o primeiro quadro. Não promove `measured`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 295 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 296 OK.
 `cd assets/starters/canvas-arcade && npm test` → 467 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
