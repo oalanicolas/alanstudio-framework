@@ -32,7 +32,8 @@ depois de um `note`, `start` e `next` apontam esse comando.
 Arquivo ausente é lacuna do verbo, não silêncio deliberado;
 `heard` é sempre falso. Sem `shared/sfx`, a sugestão de `--fill` vem
 vazia, `sfx search` nomeia o stem do starter que casa com o termo,
-`sfx info` lê a chave, `sfx summary` lista todos os stems já no
+`sfx info` lê a chave, `sfx verify` nomeia os stems sem cruzar o
+que não existe, `sfx summary` lista todos os stems já no
 `public/sfx` e `sfx serve`
 recusa. Com sons no acervo, `sfx serve` abre a página de escuta —
 se `shared/sfx/ui` faltar, o harness gera a lista. Tocar nessa

@@ -28,7 +28,8 @@ QUALITY_BAR = {
 
 EMPTY_NEXT = (
     "Acervo vazio. O starter já fala em public/sfx; sfx search "
-    "nomeia o stem que casa com o termo, sfx info lê a chave e "
+    "nomeia o stem que casa com o termo, sfx info lê a chave, "
+    "sfx verify nomeia os stems sem cruzar o que não existe e "
     "sfx summary lista todos. "
     "Arquivo no disco não é mix ouvido. Desloque com "
     "npm run sfx -- --from <papel> --as brighter. sfx serve não ouve "
@@ -81,6 +82,15 @@ EXPORT_NEXT = (
 SEED_MISSING = (
     "selection.json ausente. Seed só importa arquivos locais já selecionados. "
     "Sem seleção, o starter já fala em public/sfx."
+)
+VERIFY_EMPTY = (
+    "Acervo vazio. O starter já fala em public/sfx. "
+    "sfx verify cruza bytes e fichas do acervo; sem acervo não há o que cruzar. "
+    "sfx summary lista os stems. Arquivo no disco não é mix ouvido."
+)
+VERIFY_NEXT = (
+    "Cruzou bytes e fichas do acervo. Não é mix ouvido. "
+    "Ouça no jogo, no papel."
 )
 
 
@@ -303,6 +313,7 @@ def summarize(root=None):
         "seed": "python3 scripts/game.py sfx seed",
         "info": "python3 scripts/game.py sfx info ID",
         "export": "python3 scripts/game.py sfx export ID --to PASTA",
+        "verify": "python3 scripts/game.py sfx verify",
         "next": EMPTY_NEXT if empty else LISTEN_NEXT,
     }
 
@@ -380,9 +391,31 @@ def seed_catalog(root=None):
 
 
 def verify_catalog(root=None):
+    sounds = load_catalog(root)["sounds"]
+    empty = len(sounds) == 0
+    local = local_stems()
+    if empty:
+        return {
+            "ok": False,
+            "empty": True,
+            "file_count": 0,
+            "problems": [],
+            "warnings": [],
+            "local": local,
+            "heard": False,
+            "next": VERIFY_EMPTY,
+        }
     result = audio.check(catalog_dir(root))
-    return {"ok": result["ok"], "problems": result["errors"],
-            "file_count": result["sounds"], "warnings": result["warnings"]}
+    return {
+        "ok": result["ok"],
+        "empty": False,
+        "problems": result["errors"],
+        "file_count": result["sounds"],
+        "warnings": result["warnings"],
+        "local": local,
+        "heard": False,
+        "next": VERIFY_NEXT,
+    }
 
 
 def serve_catalog(root=None, port=8766):

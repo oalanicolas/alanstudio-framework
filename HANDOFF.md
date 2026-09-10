@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.182 (confirmado): o fim vence a pausa.
+**HEAD:** ver `git log -1` — vigente 0.9.183: sfx verify nomeia os stems do starter.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 271 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 272 OK.
 `cd assets/starters/canvas-arcade && npm test` → 362 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.182)
+## O que o HEAD já entrega (0.9.91–0.9.183)
 
 | Ver | Salto |
 | --- | --- |
@@ -126,6 +126,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.180 | A pausa senta tremor, flash e punch. O over já sentava o quadro. Overlay Pausado com câmera no golpe era a mesma partida. Não promove feel. |
 | 0.9.181 | A pausa nomeia o placar no overlay e na região viva. Recorde 0 some. Jogando sem pausa o número não entra. Não promove `accessibility`. |
 | 0.9.182 | No fim a cortina do over vence a pausa. P e aba escondida não comem Fim, corrente nem porta. Não promove feel. |
+| 0.9.183 | `sfx verify` nomeia os stems do starter quando o acervo está vazio. Não cruza. `ok` fica falso. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -226,7 +227,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   duck só na cama, graça no coil
   ou avanço no overlay, recorde no overlay do fim
   ou movimento na porta ou toque da mostra ou voz da mostra
-  ou quadro sentado na pausa ou placar na pausa ou fim que vence a pausa.
+  ou quadro sentado na pausa ou placar na pausa ou fim que vence a pausa
+  ou verify dos stems do starter.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -503,6 +505,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um overlay Pausado com o tremor do último verbo.
 **Não** mais um overlay Pausado que some o placar que o HUD mostrou.
 **Não** mais um overlay Pausado no fim que come a aposta.
+**Não** mais um `sfx verify` que some os stems do starter.
 
 Candidatos, do que ainda dói:
 
@@ -532,7 +535,8 @@ Candidatos, do que ainda dói:
    `doctor` no lab vazio devolve `then.guide`; com jogo a chave some.
    Sem starter o aviso nomeia `start --idea`. Sem `prompt`.
    `sfx search` nomeia o stem do starter que casa; `sfx info`
-   lê a mesma chave. `count` continua o acervo. `len(steps) == 3`
+   lê a mesma chave. `sfx verify` nomeia os stems sem cruzar.
+   `count` continua o acervo. `len(steps) == 3`
    e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
    volátil e gravação recusada. Falta aba fechada real.
@@ -543,7 +547,8 @@ Candidatos, do que ainda dói:
    do achado, vazia. `preproduction.md` já ensina `start --idea`.
    Referências que ainda falarem só do campo sem a abertura estão
    velhas. `sfx serve` gera a página se `ui/` faltar. `sfx info`
-   lê a chave do starter. Nomear não entrega. Tocar não é `heard`.
+   lê a chave do starter. `sfx verify` nomeia os stems sem cruzar.
+   Nomear não entrega. Tocar não é `heard`.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
    estável no disco, estilhaço dusk no disco, intenção warmer no
@@ -610,7 +615,9 @@ Candidatos, do que ainda dói:
   na pausa e o
   fim que
   vence a
-  pausa
+  pausa e o
+  verify dos
+  stems
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -634,5 +641,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: no fim a cortina do over vence
-a pausa. P e aba escondida não comem a aposta. Não promove feel.
+Arquivos quentes da última sessão: `sfx verify` nomeia os stems do
+starter. Não cruza. `ok` fica falso. Não promove `heard`.

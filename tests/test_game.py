@@ -2446,6 +2446,51 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(catalog["id"], "passo-madeira-01")
         self.assertFalse(catalog["heard"])
 
+    def test_sfx_verify_names_starter_stems_without_claiming_to_cross_them(self):
+        report = game.sfx_catalog.verify_catalog(self.root)
+        self.assertTrue(report["empty"])
+        self.assertFalse(report["ok"])
+        self.assertEqual(report["file_count"], 0)
+        self.assertEqual(report["problems"], [])
+        self.assertFalse(report["heard"])
+        local = report["local"]
+        self.assertEqual(local["kind"], "starter")
+        self.assertFalse(local["heard"])
+        keys = {item["key"] for item in local["files"]}
+        self.assertIn("dash", keys)
+        self.assertIn("bed", keys)
+        self.assertTrue(local["file_count"] >= 12)
+        self.assertNotIn("Ouça com sfx serve", report["next"])
+        self.assertIn("vazio", report["next"].casefold())
+        self.assertIn("public/sfx", report["next"])
+        self.assertIn("não há o que cruzar", report["next"])
+        dumped = json.dumps(report)
+        self.assertNotIn("aprovado", dumped)
+        self.assertNotIn("verified", dumped)
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "verify", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertNotEqual(run.returncode, 0)
+        listed = json.loads(run.stdout)
+        self.assertTrue(listed["empty"])
+        self.assertFalse(listed["heard"])
+        self.assertIn("dash", {item["key"] for item in listed["local"]["files"]})
+        self.assertNotIn("Ouça com sfx serve", listed["next"])
+        item, _ = self._plant_catalog_sound()
+        crossed = game.sfx_catalog.verify_catalog(self.root)
+        self.assertFalse(crossed["empty"])
+        self.assertTrue(crossed["ok"])
+        self.assertEqual(crossed["file_count"], 1)
+        self.assertFalse(crossed["heard"])
+        self.assertIn("dash", {entry["key"] for entry in crossed["local"]["files"]})
+        self.assertNotIn("Ouça com sfx serve", crossed["next"])
+        self.assertIn("não é mix", crossed["next"].casefold())
+        planted = json.dumps(crossed)
+        self.assertNotIn("aprovado", planted)
+        self.assertNotIn("verified", planted)
+        self.assertEqual(item["id"], "passo-madeira-01")
+
     def test_sfx_info_reads_the_card_without_claiming_to_hear_it(self):
         item, _ = self._plant_catalog_sound()
         report = game.sfx_catalog.info_entry(item["id"], self.root)
