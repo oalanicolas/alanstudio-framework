@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.192 (confirmado): perder o orbe também senta o corpo.
+**HEAD:** ver `git log -1` — vigente 0.9.193: o feel nomeia o serve e o recibo.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 272 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.192)
+## O que o HEAD já entrega (0.9.91–0.9.193)
 
 | Ver | Salto |
 | --- | --- |
@@ -136,6 +136,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.190 | No fim a região viva nomeia a corrente que o overlay já mostra. Sem corrente o rótulo some. Não promove `accessibility`. |
 | 0.9.191 | No arco da guarda o corpo também atravessa o estilhaço. Sem punch novo. Não promove feel. |
 | 0.9.192 | Perder o orbe também senta o corpo. Menor que a coleta. Sem rumble. Não promove feel. |
+| 0.9.193 | `feel` nomeia `then.play` e `then.note` sem executar. Sem serve a chave some. Sem `prompt`. Não promove `felt`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -245,7 +246,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou porta que fecha o arco do avanço
   ou live que nomeia a corrente no fim
   ou graça no arco da guarda
-  ou queda que senta o corpo.
+  ou queda que senta o corpo
+  ou feel que nomeia o serve.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -325,7 +327,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `emit()` escreve `prompt` em stderr quando a chave existe e tem
   texto. stdout continua só o JSON. Falar a frase não executa.
   `next` / `doctor` / `feel` não têm `prompt` e não escrevem frase.
-- `then` sempre tem `play`, `note`, `lost`.
+  `feel.then` tem `note` e, se o projeto declara o comando de
+  abrir, `play`. Sem serve a chave some. Não ganha `lost`.
+- `then` do ciclo (`guide` / `start` / `play`) sempre tem `play`, `note`, `lost`.
 - Se `last_run_seed` devolver um `int` (não bool), `then.seed`
   é `seed_href` (`/?seed=<n>` ou, com chuva nomeada e ≠ `spawn`,
   `/?seed=<n>&spawn=<mesa>`, e com look nomeado e ≠ `normal`/`contrast`,
@@ -554,6 +558,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma região viva que some a corrente enquanto o overlay já a nomeia.
 **Não** mais um arco da guarda que é janela de hit enquanto o coil já atravessa.
 **Não** mais uma queda que acende o campo e some o corpo.
+**Não** mais um `feel` que some o serve enquanto lista as constantes.
 
 Candidatos, do que ainda dói:
 
@@ -587,8 +592,11 @@ Candidatos, do que ainda dói:
    `count` continua o acervo. Sem os quatro campos,
    `playtest` nomeia `finding_href` e `qa`; `next`
    aponta a página e `note --field`, não relê o
-   leitor. Sem acervo, `roles --fill` nomeia o stem
-   do starter; `--apply` não o copia. `len(steps) == 3`
+   leitor.    Sem acervo, `roles --fill` nomeia o stem
+   do starter; `--apply` não o copia. `feel`
+   nomeia `then.play` e `then.note` sem
+   executar. Sem serve a chave some. Sem
+   `prompt`. `len(steps) == 3`
    e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
    volátil e gravação recusada. Falta aba fechada real.
@@ -622,6 +630,8 @@ Candidatos, do que ainda dói:
   guarda e a
   queda que senta
   o corpo e o
+  feel que nomeia
+  o serve e o
   aperto do fecho no
   disco e o aviso de
   guardar no fecho e o
@@ -703,7 +713,10 @@ Candidatos, do que ainda dói:
   guarda e a
   queda que
   senta o
-  corpo
+  corpo e o
+  feel que
+  nomeia o
+  serve
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -727,6 +740,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: perder o orbe também
-senta o corpo. Menor que a coleta. Sem rumble. Não
-promove feel.
+Arquivos quentes da última sessão: `feel` nomeia
+`then.play` e `then.note` sem executar. Sem serve a
+chave some. Sem `prompt`. Não promove `felt`.

@@ -1363,10 +1363,21 @@ def observation_receipts(project, max_files=80):
     return found
 
 
+def feel_then(project):
+    project = Path(project)
+    then = {"note": note_command(project)}
+    scripts, manager = project_commands(project)
+    play = play_command(project, scripts, manager)
+    if play:
+        then["play"] = play
+    return then
+
+
 def feel_reading(project):
     project = Path(project)
     constants, sources = declared_feel_constants(project)
     observations = observation_receipts(project)
+    then = feel_then(project)
     return {
         "schema_version": 1,
         "project": str(project),
@@ -1376,6 +1387,7 @@ def feel_reading(project):
         "observations": observations,
         "unobserved": bool(constants) and not observations,
         "felt": False,
+        "then": then,
         "guide": str(FRAMEWORK / "recipes/feel.md"),
         "rule": (
             "Constante nomeada não é peso percebido. Recibo de observação no "
@@ -1383,9 +1395,10 @@ def feel_reading(project):
         ),
         "scope": (
             "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch) e "
-            "`record.json` com kind=observation. Não executa o jogo, não mede "
-            "latência e não atribui degrau. `felt` é sempre falso: tabela de "
-            "constantes e recibo otimista saem intactos."
+            "`record.json` com kind=observation. Nomeia `then.play` e `then.note` "
+            "sem executar. Sem comando de abrir, a chave some. Não tem `prompt`. "
+            "Não mede latência e não atribui degrau. `felt` é sempre falso: "
+            "tabela de constantes e recibo otimista saem intactos."
         ),
     }
 

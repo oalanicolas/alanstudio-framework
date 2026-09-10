@@ -222,9 +222,10 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    entra no `next` como `audio.roles` — o verbo mudo não espera os
    rascunhos.
    **`feel [<projeto>]`** lê constantes de perdão/hitstop/câmera no `CONFIG` e o
-   recibo de observação no disco. `felt` é sempre falso. Sem recibo, `next`
-   propõe `feel.unobserved` e aponta `note`. Sem caminho, o único jogo
-   do laboratório basta.
+   recibo de observação no disco. Nomeia `then.play` e `then.note` sem
+   executar. Sem comando de abrir, `then.play` some. Não tem `prompt`.
+   `felt` é sempre falso. Sem recibo, `next` propõe `feel.unobserved` e
+   aponta `note`. Sem caminho, o único jogo do laboratório basta.
    **`note [<projeto>]`** grava o recibo curto (cenário e papel por omissão)
    em `docs/playtest/<utc>/`. Sem caminho, o único jogo do laboratório
    basta; dois pedem o caminho. O comando do mapa sugere `--author` a partir

@@ -2590,10 +2590,17 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("feel.flashMissed", keys)
         self.assertIn("src/game/rules.js", report["sources"])
         self.assertEqual(report["observations"], [])
+        self.assertIn("serve", report["then"]["play"])
+        self.assertIn("note", report["then"]["note"])
+        self.assertNotIn("lost", report["then"])
+        self.assertNotIn("prompt", report)
         empty = game.feel_reading(self.project)
         self.assertEqual(empty["constants"], [])
         self.assertFalse(empty["unobserved"])
         self.assertFalse(empty["felt"])
+        self.assertIn("note", empty["then"]["note"])
+        self.assertNotIn("play", empty["then"])
+        self.assertNotIn("prompt", empty)
         cli = subprocess.run(
             [sys.executable, str(SCRIPT), "feel", str(starter), "--root", str(self.root)],
             capture_output=True, text=True,
@@ -2602,6 +2609,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         payload = json.loads(cli.stdout)
         self.assertFalse(payload["felt"])
         self.assertNotIn("prompt", payload)
+        self.assertIn("serve", payload["then"]["play"])
+        self.assertIn("note", payload["then"]["note"])
         self.assertFalse((cli.stderr or "").strip())
 
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):

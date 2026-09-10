@@ -580,7 +580,9 @@ repositório **não inclui** o acervo `shared/sfx` do laboratório.
 
 O starter nomeia perdão, graça, hitstop, buffer de guardar e punch de
 câmera no `CONFIG`. Constante nomeada não é peso percebido. `feel` lê as
-constantes e procura um `record.json` de observação no projeto:
+constantes, procura um `record.json` de observação no projeto e nomeia
+`then.play` e `then.note` sem executar. Sem comando de abrir, a chave
+some. Não tem `prompt`. `felt` é sempre falso:
 
 ```sh
 python3 scripts/game.py feel

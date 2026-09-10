@@ -41,7 +41,9 @@ Leia o verbo no GDD, os tokens de tempo/câmera/áudio no
 [design system](../references/game-design-system.md) e o
 [piso](../references/quality.md). `context --focus feel` seleciona esta
 receita. `feel` lê as constantes nomeadas no `CONFIG` e o
-recibo de observação no disco; `felt` é sempre falso. `note`
+recibo de observação no disco; nomeia `then.play` e `then.note`
+sem executar. Sem comando de abrir, a chave some. Não tem
+`prompt`. `felt` é sempre falso. `note`
 grava o recibo curto depois da partida. Sem caminho, o único
 jogo do laboratório basta; dois pedem o caminho. Achar o jogo
 não é ter sentido. O usuário não precisa pedir “ative o juice”.

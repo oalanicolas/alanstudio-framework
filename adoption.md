@@ -3,6 +3,27 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.193 — O feel nomeia o serve e o recibo
+
+O leitor já listava
+constantes. Quem
+corria `feel` não
+via o comando que
+abre nem o que
+grava. Agora
+`then.play` e
+`then.note` saem no
+JSON. Sem serve a
+chave some. Sem
+`prompt`. `felt`
+continua falso. Só
+`release` fica no
+piso.
+
+O que 0.9.193 não afirma:
+nomear o serve não
+abre o jogo.
+
 ## 0.9.192 — Perder o orbe também senta o corpo
 
 O campo já acendia
