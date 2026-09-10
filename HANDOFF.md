@@ -114,7 +114,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   flagship sem outsider. `feel`/`legibility`/`performance` não sobem
   por código headless. `accessibility` não sobe por stub. `pacing` não
   sobe por sessão simulada, `invite.md` nem `?invite=1`. `art_direction`
-  não sobe por JSON/CSS/halo/vinheta/ponta no disco.
+  não sobe por JSON/CSS/halo/vinheta/ponta/chuva da porta no disco.
 - Não implementar should-meet de Cooper.
 - Após `init`, `next` exige `playable.unplayed` primeiro (enquanto não
   houver `note`). Depois de um `note`, `playable.unplayed` some e `next`
