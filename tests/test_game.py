@@ -3327,7 +3327,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("data/copy.json", inventory["files"])
         self.assertIn("data/dusk.json", inventory["files"])
         self.assertIn("data/calm.json", inventory["files"])
-        self.assertIn("data/palettes.json", inventory["files"])
+        self.assertNotIn("data/palettes.json", inventory["files"])
         self.assertTrue(pack["expected"])
         self.assertFalse(pack["unpacked"])
         self.assertIn("build", pack["scripts"])
@@ -3461,6 +3461,27 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["files"], ["data/waves.json"])
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project))]
         self.assertNotIn("content.inline", bases)
+
+    def test_content_does_not_treat_a_palette_table_as_extracted_volume(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "data").mkdir()
+        (self.project / "data/palettes.json").write_text(
+            '{"schema": 1, "palettes": {"dusk": {"field": "#100"}}}\n'
+        )
+        (self.project / "data/tokens.json").write_text('{"field": "#100"}\n')
+        report = game.content_reading(self.project)
+        self.assertFalse(report["external"])
+        self.assertTrue(report["inline"])
+        self.assertEqual(report["files"], [])
+        self.assertFalse(report["enough"])
+        self.assertIn("palettes.json", report["scope"])
+        art = game.art_reading(self.project)
+        self.assertTrue(art["declared"])
+        self.assertIn("data/palettes.json", art["manifests"])
+        bases = [item["basis"] for item in self.proposals(game.next_step(self.project))]
+        self.assertIn("content.inline", bases)
+        self.assertNotIn("art.missing", bases)
+        self.assertNotIn("aprovado", report["scope"])
 
     def test_ship_names_a_package_without_a_pack_step(self):
         self.package()

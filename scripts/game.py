@@ -1641,6 +1641,9 @@ RAIN_CORE_FIELDS = (
 CONTENT_DIRS = ("data", "content", "levels", "maps", "tables")
 CONTENT_SUFFIXES = {".json", ".ldtk", ".tmx", ".csv", ".ink"}
 CONTENT_LOOSE_SUFFIXES = {".ldtk", ".tmx", ".ink"}
+CONTENT_ART_SKIP = frozenset({
+    "palettes.json", "tokens.json", "art-tokens.json", "design-tokens.json",
+})
 SHIP_WORDS = ("build", "export", "dist", "package", "release")
 SHIP_CI = (".gitlab-ci.yml", ".circleci/config.yml", "azure-pipelines.yml")
 SHIP_RELEASE = "docs/release.md"
@@ -1852,6 +1855,8 @@ def content_files(project):
                         pending.append((path, depth + 1))
                     continue
                 if path.suffix.casefold() in CONTENT_SUFFIXES:
+                    if path.name.casefold() in CONTENT_ART_SKIP:
+                        continue
                     add(path.relative_to(project).as_posix())
     for relative, _ in walk_project_files(project, CONTENT_LOOSE_SUFFIXES):
         add(relative)
@@ -1874,12 +1879,14 @@ def content_reading(project):
         "guide": str(FRAMEWORK / "recipes/content.md"),
         "rule": (
             "Conteúdo no código não escala. Arquivo em data/levels não é "
-            "volume suficiente nem consumidor comprovado."
+            "volume suficiente nem consumidor comprovado. Paleta e token "
+            "não extraem conteúdo."
         ),
         "scope": (
             "Procura .json/.csv em data/, content/, levels/, maps/, tables/ e "
-            ".ldtk/.tmx/.ink em qualquer pasta do projeto. Não carrega o "
-            "formato e não conta itens. `enough` é sempre falso."
+            ".ldtk/.tmx/.ink em qualquer pasta do projeto. Não conta "
+            "palettes.json nem tokens.json — o `art` lê esses manifestos. "
+            "Não carrega o formato e não conta itens. `enough` é sempre falso."
         ),
     }
 

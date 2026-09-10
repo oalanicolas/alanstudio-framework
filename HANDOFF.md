@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.283: o `discover` nomeia o sinal de origem que o `next` já usa. Lista sem recibo ≠ licença. Não promove `granted`.
+**HEAD:** ver `git log -1` — vigente 0.9.284: o `content` não conta paleta como volume. `palettes.json` não extrai. Não promove `enough`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 302 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.283)
+## O que o HEAD já entrega (0.9.91–0.9.284)
 
 | Ver | Salto |
 | --- | --- |
@@ -227,6 +227,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.281 | O `art` nomeia a chuva que o disco já tem. `spawn`, `dusk` e `calm` deixam de ser só arquivo em `content`. Não promove `consistent`. |
 | 0.9.282 | O `sfx info` nomeia o stem que o recibo lista e o disco perdeu. Não é id desconhecido. Não promove `heard`. |
 | 0.9.283 | O `discover` nomeia o sinal de origem que o `next` já usa. Dois jogos deixam de parecer iguais quando um embarca sem recibo. Não promove `granted`. |
+| 0.9.284 | O `content` não conta paleta como volume. `palettes.json` deixa de calar `content.inline`. Não promove `enough`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -248,7 +249,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | state_trust | slice | a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão no controle pendente |
-| content_scale | shippable | dusk+calm+pair; `enough` falso |
+| content_scale | shippable | paleta não finge volume; dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
 ---
@@ -953,6 +954,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `art` que lê paleta e cala a chuva que o disco já tem.
 **Não** mais um `sfx info` que trata o stem perdido como id desconhecido.
 **Não** mais um `discover` que some o sinal de origem que o `next` já usa.
+**Não** mais um `content` que conta paleta como volume extraído.
 
 Candidatos, do que ainda dói:
 
@@ -1645,6 +1647,13 @@ Candidatos, do que ainda dói:
   sinal
   de
   origem
+  e um
+  content
+  que
+  conta
+  paleta
+  como
+  volume
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1668,10 +1677,9 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o `discover`
-nomeia o sinal de origem que o `next` já usa.
-Lista sem recibo não é licença. Não promove
-`granted`.
+Arquivos quentes da última sessão: o `content`
+não conta paleta como volume. `palettes.json`
+não extrai. Não promove `enough`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1690,3 +1698,4 @@ A família contrato de alcance omite o pulso está saturada.
 A família art lê paleta e cala a chuva está saturada.
 A família sfx info trata stem perdido como id desconhecido está saturada.
 A família discover some o sinal de origem está saturada.
+A família content conta paleta como volume está saturada.
