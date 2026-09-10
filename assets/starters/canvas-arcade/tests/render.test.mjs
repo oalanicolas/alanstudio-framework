@@ -22,7 +22,7 @@ const PLATE_EDGE_COLORS = new Set(Object.values(PALETTES).map((palette) => palet
 // algum retângulo" seria sempre verdadeiro. Cada retângulo guarda a cor com
 // que foi pintado, e só os da cor de placa contam.
 function recordingCanvas() {
-  const calls = { rects: [], edges: [], texts: [], order: [], arcs: 0, lineTos: 0 };
+  const calls = { rects: [], edges: [], texts: [], order: [], arcs: 0, lineTos: 0, radials: 0 };
   let font = "8px system-ui";
   let align = "left";
   let pending = null;
@@ -70,7 +70,10 @@ function recordingCanvas() {
     clearRect() {},
     rect() {},
     createLinearGradient: () => ({ addColorStop() {} }),
-    createRadialGradient: () => ({ addColorStop() {} }),
+    createRadialGradient() {
+      calls.radials += 1;
+      return { addColorStop() {} };
+    },
     measureText(text) {
       return { width: measure(text) };
     },
@@ -416,6 +419,27 @@ test("orbe e estilhaço usam primitivas diferentes, não só cores diferentes", 
   const paintedShard = paint(shard);
   assert.ok(paintedOrb.arcs > paintedShard.arcs, "o orbe precisa do círculo; o estilhaço não");
   assert.ok(paintedShard.lineTos > paintedOrb.lineTos, "o estilhaço precisa do losango; o orbe não");
+});
+
+test("a chuva e o campo ganham volume sem virar faixa no HUD", () => {
+  const state = createState(1);
+  state.entities = [
+    { id: 1, kind: "orb", x: 80, y: 70, vy: 0 },
+    { id: 2, kind: "shard", x: 200, y: 70, vy: 0 },
+  ];
+  const lit = paint(state);
+  const still = paint(state, { reducedMotion: true });
+  assert.ok(lit.radials > 0, "o campo precisa da vinheta");
+  assert.equal(still.radials, 0, "com menos movimento a vinheta some");
+  assert.ok(lit.arcs > still.arcs, "o orbe precisa do halo");
+  assert.ok(lit.lineTos > still.lineTos, "o estilhaço precisa do halo na mesma forma");
+  assert.ok(
+    lit.rects.filter((rect) => rect.height === 2 && rect.y < 20 && !PLATE_COLORS.has(rect.style)).length
+      === still.rects.filter((rect) => rect.height === 2 && rect.y < 20 && !PLATE_COLORS.has(rect.style)).length,
+    "volume no campo não é faixa no HUD",
+  );
+  const field = lit.rects.find((rect) => rect.width === FIELD.width && rect.height === FIELD.height);
+  assert.ok(field, "o campo continua o primeiro recorte");
 });
 
 test("a câmera por verbo desloca o campo e some com redução de movimento", () => {

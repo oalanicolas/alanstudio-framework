@@ -1,9 +1,10 @@
 // Apresentação. Não decide regra e não altera o estado.
 //
 // Legibilidade antes de estilo: orbe e estilhaço têm **formas** diferentes, não
-// só cores diferentes. O stub distingue as silhuetas com a mesma tinta; o
-// dispositivo não foi observado. Tremor e piscada respeitam redução de
-// movimento — o sinal de causa migra para uma forma estática, não desaparece.
+// só cores diferentes. O halo segue a mesma primitiva. O stub distingue as
+// silhuetas com a mesma tinta; o dispositivo não foi observado. Tremor,
+// piscada e vinheta respeitam redução de movimento — o sinal de causa
+// migra para uma forma estática, não desaparece.
 
 import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse, recoveryPulse } from "./rules.js";
 import { copy, PALETTES, resolveLookName } from "./tables.js";
@@ -74,6 +75,7 @@ export function createRenderer(canvas, options = {}) {
 
     context.fillStyle = palette.field;
     context.fillRect(0, 0, FIELD.width, FIELD.height);
+    drawVignette(context, reduced);
     drawPractice(context, palette, state, reduced);
     drawRecovery(context, palette, state, reduced);
     drawClose(context, palette, state, reduced);
@@ -98,8 +100,8 @@ export function createRenderer(canvas, options = {}) {
       drawTelegraph(context, palette, entity, reduced);
     }
     for (const entity of state.entities) {
-      if (entity.kind === "orb") drawOrb(context, palette, entity);
-      else drawShard(context, palette, entity);
+      if (entity.kind === "orb") drawOrb(context, palette, entity, reduced);
+      else drawShard(context, palette, entity, reduced);
     }
     drawPlayer(context, palette, state, reduced);
     drawChain(context, palette, state, reduced);
@@ -179,7 +181,35 @@ export function createRenderer(canvas, options = {}) {
     target.globalAlpha = 1;
   }
 
-  function drawOrb(target, palette, entity) {
+  // O campo era um retângulo chapado. A vinheta marca o recorte
+  // sem ser faixa no HUD. Com menos movimento some: o sinal de
+  // causa fica na forma, não no brilho. JSON no disco não é
+  // comparação em movimento.
+  function drawVignette(target, reduced) {
+    if (reduced || typeof target.createRadialGradient !== "function") return;
+    const glow = target.createRadialGradient(
+      FIELD.width / 2,
+      FIELD.height / 2,
+      FIELD.height * 0.28,
+      FIELD.width / 2,
+      FIELD.height / 2,
+      FIELD.height * 0.78,
+    );
+    glow.addColorStop(0, "rgba(0,0,0,0)");
+    glow.addColorStop(1, "rgba(0,0,0,0.32)");
+    target.fillStyle = glow;
+    target.fillRect(0, 0, FIELD.width, FIELD.height);
+  }
+
+  function drawOrb(target, palette, entity, reduced) {
+    if (!reduced) {
+      target.globalAlpha = 0.22;
+      target.fillStyle = palette.orb;
+      target.beginPath();
+      target.arc(entity.x, entity.y, 10, 0, Math.PI * 2);
+      target.fill();
+      target.globalAlpha = 1;
+    }
     target.fillStyle = palette.orb;
     target.beginPath();
     target.arc(entity.x, entity.y, 4, 0, Math.PI * 2);
@@ -191,7 +221,18 @@ export function createRenderer(canvas, options = {}) {
     target.stroke();
   }
 
-  function drawShard(target, palette, entity) {
+  function drawShard(target, palette, entity, reduced) {
+    if (!reduced) {
+      target.globalAlpha = 0.2;
+      target.fillStyle = palette.shard;
+      target.beginPath();
+      target.moveTo(entity.x, entity.y - 9);
+      target.lineTo(entity.x + 8, entity.y + 7.5);
+      target.lineTo(entity.x - 8, entity.y + 7.5);
+      target.closePath();
+      target.fill();
+      target.globalAlpha = 1;
+    }
     target.fillStyle = palette.shard;
     target.beginPath();
     target.moveTo(entity.x, entity.y - 6);

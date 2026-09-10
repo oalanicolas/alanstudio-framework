@@ -1,7 +1,9 @@
 # Design system — Canvas Arcade
 
 Primitivas por decisão, não placeholder. Orbe e estilhaço se separam por
-**forma** (círculo com anel versus losango), não só por cor. O stub
+**forma** (círculo com anel versus losango), não só por cor. O halo
+segue a mesma primitiva; a vinheta marca o recorte. Com menos
+movimento os dois somem. O stub
 distingue as duas silhuetas com a mesma tinta; o dispositivo alvo
 não foi observado. Paletas canônicas em
 `data/palettes.json` (`normal`, `contrast`, `dusk` e `calm`); o desenho consome

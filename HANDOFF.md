@@ -89,7 +89,8 @@ relata o reuso.
 art-bible vigente, dado fora do código e passo de build/export.
 `consistent`/`enough`/`shipped` são sempre falsos. O starter declara
 paleta em `data/palettes.json` (looks `dusk` e `calm` por `?look=` / `settings.look`;
-a página também veste esses tokens; `contrast` é alcance, não look;
+a página também veste esses tokens; halo e vinheta dão volume ao recorte;
+`contrast` é alcance, não look;
 `look --from` / `--as` nasce o próximo),
 extrai a chuva (`spawn`, `dusk` e `calm`), nasce mesa com `npm run table`
 (`--from spawn|dusk|calm --as` já entra no consumidor; `session --spawn`

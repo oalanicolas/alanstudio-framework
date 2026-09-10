@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.99 — O campo também tem volume
+
+A chuva era tinta chapada num retângulo. Halo na forma do
+orbe e do estilhaço, vinheta no recorte. Com menos movimento
+os dois somem. `consistent` continua falso. Só `release`
+fica no piso.
+
+O que 0.9.99 não afirma: o harness não comparou em
+movimento e o halo não é direção aprovada.
+
 ## 0.9.98 — A voz também marca o lugar
 
 Coleta, queda, raspo, impacto e avanço levavam o mesmo

@@ -9,7 +9,9 @@ No starter, `look --from` / `--as` nasce um look que o jogo já pinta —
 campo, cortina e a casca da página. `pair --from` nasce look e chuva
 no mesmo nome e `?mood=` aplica. `dusk` e `calm` já são o segundo
 e o terceiro look; `calm` não é o `cooler` aplicado em `normal`.
-Token no disco não é comparação em movimento.
+Token no disco não é comparação em movimento. No starter, halo e
+vinheta dão volume ao recorte geométrico; com menos movimento
+somem. Isso não é direção consistente.
 depois de um `note`, `start` e `next` apontam esses comandos.
 Ferramenta no disco não é alguém de fora nem comparação em movimento.
 
