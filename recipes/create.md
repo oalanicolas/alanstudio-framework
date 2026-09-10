@@ -42,7 +42,8 @@ aumentam a qualidade; uma fatia sem feel continua sendo protótipo.
 
 Siga [o ciclo de pré-produção](../references/preproduction.md) para escolher o
 próximo artefato e revisar sua prontidão. Brief e GDD definem a experiência; MDA
-explicita a hipótese; PoC a investiga; PRD/TDD delimitam requisitos e implementação;
+explicita a hipótese e, com tela, começa na porta; PoC a investiga; PRD/TDD delimitam requisitos e implementação;
+MVP e PRD também nomeiam a abertura. Nomear a porta não observa.
 vertical slice e MVP têm objetivos distintos; QA e playtest alimentam o design.
 Carregue o template da etapa com `context <projeto> --stage <etapa>` e adapte o
 documento canônico. Jogo pequeno: `template game-design --project <novo> --output <arquivo-novo.md>`

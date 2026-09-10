@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.309: a memória nomeia o playtest. Não promove `outsider`.
+**HEAD:** ver `git log -1` — vigente 0.9.310: os rascunhos de hipótese nomeiam a porta. Não promove `observed`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.309):** `python3 -m unittest discover -s tests` → 319 OK.
+**Testes no HEAD (0.9.310):** `python3 -m unittest discover -s tests` → a confirmar.
 `cd assets/starters/canvas-arcade && npm test` → 493 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.309)
+## O que o HEAD já entrega (0.9.91–0.9.310)
 
 | Ver | Salto |
 | --- | --- |
@@ -253,6 +253,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.307 | O relógio nomeia a pausa. O toque no canto já sentava; o canvas só mostrava o número e o convite some a tabela. Não promove `felt`. |
 | 0.9.308 | O Copiar nomeia o destino. O Gravar já virava Achado no disco; o botão calava e o convite some a tabela. Não promove `outsider`. |
 | 0.9.309 | A memória nomeia o playtest. O start já nomeava o serve e o note; a próxima sessão calava o leitor que o `next` já aponta. Não promove `outsider`. |
+| 0.9.310 | Os rascunhos de hipótese nomeiam a porta. Brief e GDD já falavam; o MDA do `init` e os rascunhos de MVP/PRD começavam no campo. Não promove `observed`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -466,7 +467,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um `playtest` que cala a url do achado
   ou um relógio que cala a pausa
   ou um Copiar que cala o destino
-  ou uma memória que cala o playtest.
+  ou uma memória que cala o playtest
+  ou um MDA que cala a porta.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -1061,6 +1063,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um relógio que cala a pausa.
 **Não** mais um Copiar que cala o destino.
 **Não** mais uma memória que cala o playtest.
+**Não** mais um MDA que cala a porta.
 
 Candidatos, do que ainda dói:
 
@@ -1138,7 +1141,7 @@ Candidatos, do que ainda dói:
    Não promover. Não chamar `hold` de Continuar.
 4. **Item 1 residual:** o mapa, as receitas de foco e os templates da
    primeira situação — brief, GDD, game-design, PoC, slice, QA e
-   release — já nomeiam a porta. Design system, ambição, barra,
+   release — já nomeiam a porta. MDA, MVP e PRD também. Design system, ambição, barra,
    checklist, os pacotes de gênero e o processo comum (`process.md`,
    primeiro `read_next`) também. O rascunho de playtest traz a forma
    do achado, vazia. `preproduction.md` já ensina `start --idea`.
@@ -1923,6 +1926,12 @@ Candidatos, do que ainda dói:
   cala
   o
   playtest
+  e um
+  MDA
+  que
+  cala
+  a
+  porta
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -1946,10 +1955,11 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a memória
-nomeia o playtest. O start já nomeava o serve
-e o note; a próxima sessão calava o leitor
-que o `next` já aponta. Não promove `outsider`.
+Arquivos quentes da última sessão: os rascunhos
+de hipótese nomeiam a porta. Brief e GDD já
+falavam; o MDA do `init` e os rascunhos de
+MVP/PRD começavam no campo. Não promove
+`observed`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1994,3 +2004,4 @@ A família playtest que cala a url do achado está saturada.
 A família relógio que cala a pausa está saturada.
 A família Copiar que cala o destino está saturada.
 A família memória que cala o playtest está saturada.
+A família MDA que cala a porta está saturada.

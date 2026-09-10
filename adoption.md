@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.310 — Os rascunhos de hipótese nomeiam a porta
+
+Brief
+e
+GDD
+já
+falavam.
+O
+MDA
+que
+o
+`init`
+planta
+e
+os
+rascunhos
+de
+MVP
+e
+PRD
+calavam.
+O
+cenário
+começava
+no
+campo.
+Agora
+nomeiam
+a
+porta.
+Não
+promove
+`observed`.
+
+O que 0.9.310 não afirma:
+texto
+no
+disco
+não
+é
+sessão
+observada.
+
 ## 0.9.309 — A memória nomeia o playtest
 
 O

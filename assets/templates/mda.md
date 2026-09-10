@@ -6,8 +6,8 @@ Pode ser uma seção do GDD; não mantenha cópia paralela desta análise.
 
 ## Hipótese de experiência — MDA-001
 
-- Experiência desejada: [sentimento e situação em que deve aparecer].
-- Dinâmica esperada: [comportamento do jogador e interação entre sistemas ao longo do tempo].
+- Experiência desejada: [sentimento e situação em que deve aparecer; com tela, a primeira superfície é a porta].
+- Dinâmica esperada: [comportamento do jogador e interação entre sistemas ao longo do tempo; o campo começa depois do avanço].
 - Mecânicas necessárias: [ações, recursos, regras, informação e consequências].
 - Relação causal proposta: [por que essas regras poderiam produzir esse comportamento e sensação].
 - Alternativa plausível: [outra regra ou outro comportamento que explique o efeito].
@@ -17,7 +17,7 @@ Pode ser uma seção do GDD; não mantenha cópia paralela desta análise.
 
 - Candidato/consumidor existente: [path, o que foi lido e adequação].
 - Decisão REUSE/ADAPT/CREATE: [motivo, lacuna e limite da alteração].
-- Cenário: [estado inicial, ação, condições e variante de comparação].
+- Cenário: [com tela, a porta; depois estado, ação, condições e variante de comparação].
 - Observação que apoia a hipótese: [comportamento e relato que seriam relevantes].
 - Observação que a contradiz: [condição concreta para reconsiderar o design].
 - O que não pode ser inferido: [limites de amostra, simulação ou teste técnico].

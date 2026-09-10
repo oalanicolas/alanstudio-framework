@@ -99,7 +99,9 @@ pasta do atalho.
 
 `init` copia um starter, troca pelo nome do projeto os valores que o
 `starter.json` dele declara e cria em `docs/` os rascunhos que ainda faltam —
-brief, gdd, mda, tdd, devlog e qa — além de `AGENTS.md` na raiz. Documento
+brief, gdd, mda, tdd, devlog e qa — além de `AGENTS.md` na raiz. O MDA
+nomeia a porta; brief e GDD já falavam e o cenário do MDA começava no
+campo. Nomear a abertura não observa. Documento
 vigente que o starter já trouxe (o art-bible do `canvas-arcade`) não é
 reescrito: o `template` recusaria o destino e a decisão vigente sumiria.
 Os seis rascunhos mais o art-bible cobrem sete das nove áreas mínimas que

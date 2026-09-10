@@ -1382,6 +1382,24 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(reading["observed"])
         self.assertFalse(reading["outsider"])
 
+    def test_hypothesis_and_delivery_drafts_name_the_door_without_claiming_observation(self):
+        # Brief, GDD, slice e QA já falavam. Sem isto o MDA
+        # que o init planta e os rascunhos de valor começavam
+        # no campo. Nomear a porta não observa.
+        names = ("mda", "mvp", "prd")
+        for name in names:
+            with self.subTest(name=name):
+                text = (game.FRAMEWORK / f"assets/templates/{name}.md").read_text(encoding="utf-8")
+                self.assertIn("a porta", text.casefold())
+                self.assertNotIn("verified", text)
+                self.assertIsNone(game.FINDING_FIELDS.search(text))
+        destination = self.root / "hipotese-com-porta"
+        game.init(destination, "canvas-arcade")
+        drafted = (destination / "docs/mda.md").read_text(encoding="utf-8")
+        self.assertIn("a porta", drafted.casefold())
+        self.assertNotIn("verified", drafted)
+        self.assertIsNone(game.FINDING_FIELDS.search(drafted))
+
     def test_doctor_reports_environment_and_integrity_without_changing_anything(self):
         before = set(self.root.iterdir())
         report = game.doctor(self.root)

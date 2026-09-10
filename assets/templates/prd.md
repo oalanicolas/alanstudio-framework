@@ -10,7 +10,7 @@ restrições explícitas do usuário. Referencie a experiência canônica sem co
 
 ## Jornada — UJ-001
 
-[Quem inicia em qual estado, faz o quê e alcança qual resultado; ligue ao cenário GDD.]
+[Com tela, a jornada começa na porta; quem inicia em qual estado, faz o quê e alcança qual resultado; ligue ao cenário GDD.]
 
 ## Requisito funcional — FR-001
 
