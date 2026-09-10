@@ -2125,6 +2125,27 @@ def last_run_speed(project):
     return None
 
 
+def last_run_policy(project):
+    # Serve grava played; session grava nearest-orb.
+    # Sem a chave o leitor fingia a mesma origem.
+    # Nomear não é sessão observada.
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    policy = data.get("policy")
+    if policy is None and isinstance(data.get("run"), dict):
+        policy = data["run"].get("policy")
+    if policy in {"played", "nearest-orb"}:
+        return policy
+    return None
+
+
 def last_run_look(project):
     path = Path(project) / LAST_RUN
     if not path.is_file() or path.is_symlink():
@@ -2160,6 +2181,11 @@ def attach_run_candidate(project, fields=None, source=None):
     curve = data.get("curve")
     if isinstance(curve, dict):
         payload["curve"] = json.dumps(curve, ensure_ascii=False, separators=(",", ":"))
+    policy = data.get("policy")
+    if policy is None and isinstance(run, dict):
+        policy = run.get("policy")
+    if policy in {"played", "nearest-orb"}:
+        payload["policy"] = policy
     return payload, path
 
 
@@ -2177,6 +2203,7 @@ def playtest_reading(project):
     candidate_look = last_run_look(project) if candidate else None
     candidate_speed = last_run_speed(project) if candidate else None
     candidate_curve = last_run_curve(project) if candidate else None
+    candidate_policy = last_run_policy(project) if candidate else None
     invite = invite_path(project)
     qa_file = qa.is_file() and not qa.is_symlink()
     return {
@@ -2192,6 +2219,7 @@ def playtest_reading(project):
         "candidate_look": candidate_look,
         "candidate_speed": candidate_speed,
         "candidate_curve": candidate_curve,
+        "candidate_policy": candidate_policy,
         "invite": invite,
         "invite_href": invite_href(project),
         "finding_href": finding_href(project),
@@ -2223,7 +2251,9 @@ def playtest_reading(project):
             "se nomeia o look, `candidate_look` o relata; "
             "se nomeia o relógio, `candidate_speed` o relata; "
             "se nomeia a curva, `candidate_curve` relata "
-            "`never_banked` e a aposta que ficou. "
+            "`never_banked` e a aposta que ficou; "
+            "se nomeia a origem, `candidate_policy` relata "
+            "`played` ou `nearest-orb`. "
             "`invite_href` junta convite, número, mesa, paleta e relógio — "
             "`?invite=1&seed=&spawn=&look=&speed=` abre essa partida e ignora o hold. "
             "`finding_href` aponta o painel `#finding` depois do fim; "

@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.278: o orçamento cronometra a porta. Orçar só o campo escondia o primeiro quadro. Não promove `measured`.
+**HEAD:** ver `git log -1` — vigente 0.9.279: o playtest nomeia a política do candidato. Serve é `played`; session é `nearest-orb`. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 296 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.278)
+## O que o HEAD já entrega (0.9.91–0.9.279)
 
 | Ver | Salto |
 | --- | --- |
@@ -222,6 +222,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.276 | A perda de foco não deixa o ofício pendente. O blur solta hold e pressed. Voltar a focar ainda avança. O pad continua no poll. Não promove `felt`. |
 | 0.9.277 | A perda de foco grava o hold. O blur senta o relógio no campo e no fim. Na porta só descarrega. Não promove `trusted`. |
 | 0.9.278 | O orçamento cronometra a porta. `title.attract` entra ao lado de `playing.run`. Stub ≠ dispositivo. Não promove `measured`. |
+| 0.9.279 | O playtest nomeia a política do candidato. `played` e `nearest-orb` deixam de ser a mesma origem. A simulação não apaga a jogada. Não promove `outsider`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -943,6 +944,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma perda de foco que deixa o ofício pendente.
 **Não** mais uma perda de foco que deixa o tick só na RAM.
 **Não** mais um orçamento que cronometra só o campo e some a porta.
+**Não** mais um playtest que some a origem do candidato.
 
 Candidatos, do que ainda dói:
 
@@ -1590,6 +1592,12 @@ Candidatos, do que ainda dói:
   cronometra
   só o
   campo
+  e um
+  playtest
+  que some
+  a origem
+  do
+  candidato
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1613,10 +1621,10 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o orçamento
-cronometra a porta.
-`title.attract` entra ao lado de `playing.run`.
-Stub ≠ dispositivo. Não promove `measured`.
+Arquivos quentes da última sessão: o playtest
+nomeia a política do candidato.
+Serve é `played`; session é `nearest-orb`.
+A simulação não apaga a jogada. Não promove `outsider`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1630,3 +1638,4 @@ A família visibility ghost hold / aba escondida está saturada.
 A família blur ghost press / perda de foco deixa o ofício pendente está saturada.
 A família blur grava o hold / perda de foco deixa o tick na RAM está saturada.
 A família orçamento só o campo / porta some do budget está saturada.
+A família política do candidato / session apaga played está saturada.

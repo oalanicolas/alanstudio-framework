@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { once } from "node:events";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -55,6 +55,35 @@ test("a sessão simulada grava candidato sem chamar isso de observada", async ()
     assert.deepEqual(saved.curve, report.curve);
     assert.equal(saved.observed, false);
     assert.equal(saved.spawn, "spawn");
+  } finally {
+    await rm(folder, { recursive: true, force: true });
+  }
+});
+
+test("a sessão não apaga a partida jogada sem chamar isso de observada", async () => {
+  const folder = await mkdtemp(join(tmpdir(), "starter-session-played-"));
+  const out = join(folder, "last-run.json");
+  try {
+    await writeFile(out, `${JSON.stringify({
+      schema: 2,
+      seed: 8,
+      policy: "played",
+      run: { seed: 8, score: 3, ticks: 40 },
+      observed: false,
+      felt: false,
+    }, null, 2)}\n`);
+    const blocked = await runSession(["--seed", "7", "--out", out]);
+    assert.equal(blocked.code, 3, blocked.stderr);
+    assert.match(blocked.stderr, /partida jogada/);
+    const kept = JSON.parse(await readFile(out, "utf8"));
+    assert.equal(kept.policy, "played");
+    assert.equal(kept.seed, 8);
+    const forced = await runSession(["--seed", "7", "--out", out, "--force"]);
+    assert.equal(forced.code, 0, forced.stderr);
+    const report = JSON.parse(forced.stdout);
+    assert.equal(report.policy, "nearest-orb");
+    assert.equal(report.observed, false);
+    assert.doesNotMatch(forced.stdout, /aprovado|verified|LUFS|-14|4\.5/);
   } finally {
     await rm(folder, { recursive: true, force: true });
   }

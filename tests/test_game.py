@@ -3530,6 +3530,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(report["candidate_look"])
         self.assertIsNone(report["candidate_speed"])
         self.assertIsNone(report["candidate_curve"])
+        self.assertIsNone(report["candidate_policy"])
         self.assertIsNone(report["invite"])
         self.assertEqual(report["finding_href"], "/#finding")
         self.assertIsNone(report["qa"])
@@ -3585,6 +3586,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(reading["candidate_look"])
         self.assertIsNone(reading["candidate_speed"])
         self.assertIsNone(reading["candidate_curve"])
+        self.assertEqual(reading["candidate_policy"], "nearest-orb")
         self.assertFalse(reading["expected"])
         self.assertFalse(reading["structured"])
         self.assertFalse(reading["observed"])
@@ -3592,6 +3594,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             destination, "Ana", "o dash atravessou e a corrente ficou", from_run=True,
         )
         self.assertIn("score\":9", report["fields"]["run"])
+        self.assertEqual(report["fields"]["policy"], "nearest-orb")
         self.assertFalse(report["felt"])
         self.assertFalse(report["observed"])
         after = game.playtest_reading(destination)
@@ -3936,6 +3939,38 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("verified", report["scope"])
         self.assertNotIn("enough", report["scope"])
+
+    def test_playtest_names_the_policy_the_last_run_already_declares(self):
+        destination = self.root / "com-politica"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "policy": "played",
+            "run": {"seed": 8, "score": 3, "ticks": 40},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        played = game.playtest_reading(destination)
+        self.assertEqual(played["candidate_policy"], "played")
+        self.assertEqual(played["candidate_seed"], 8)
+        self.assertFalse(played["observed"])
+        self.assertFalse(played["outsider"])
+        self.assertIn("candidate_policy", played["scope"])
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"seed": 8, "score": 3, "ticks": 40},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        hollow = game.playtest_reading(destination)
+        self.assertIsNone(hollow["candidate_policy"])
+        self.assertFalse(hollow["observed"])
+        self.assertNotIn("aprovado", json.dumps(played))
+        self.assertNotIn("verified", json.dumps(played))
 
     def test_playtest_names_the_curve_the_last_run_already_traced(self):
         destination = self.root / "com-curva"

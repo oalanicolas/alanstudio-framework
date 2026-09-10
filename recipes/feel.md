@@ -34,8 +34,10 @@ depois do recibo de quem fez. O serve anuncia a URL da rede
 se a máquina tiver outro endereço IPv4. Esconder a tabela, anunciar
 a rede, mostrar os números, copiar o achado e gravar os quatro nomes não são alguém de fora. `observed` e `outsider` são sempre
 falsos: o harness não assiste à sessão. A partida no serve grava o
-mesmo candidato em `docs/playtest/last-run.json`. `npm run session`
-continua a simulação. Nenhum dos dois é sessão observada. Se o
+mesmo candidato em `docs/playtest/last-run.json` com `policy: played`.
+`npm run session` grava a simulação (`nearest-orb`) e não
+sobrescreve `played` sem `--force`. `playtest` relata
+`candidate_policy`. Nenhum dos dois é sessão observada. Se o
 projeto (ou o starter) declara `session`, `then` a aponta. `note --from-run`
 anexa o resumo e, se houver, a curva — o mapa já põe `--from-run`
 quando o arquivo existe. Depois do fim, a página grava o mesmo

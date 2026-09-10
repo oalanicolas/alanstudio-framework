@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.279 — O playtest nomeia a política do candidato
+
+O
+disco
+já
+distinguia
+`played`
+e
+`nearest-orb`.
+O
+leitor
+omitia
+a
+origem.
+A
+simulação
+apagava
+a
+partida
+jogada.
+Agora
+`candidate_policy`
+nomeia
+e
+o
+`session`
+recusa
+sobrescrever
+`played`.
+Não
+promove
+`outsider`.
+
+O que 0.9.279 não afirma:
+nomear
+a
+origem
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.278 — O orçamento cronometra a porta
 
 A

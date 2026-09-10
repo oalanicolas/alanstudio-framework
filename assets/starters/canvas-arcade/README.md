@@ -53,7 +53,7 @@ npm run peak       # pico de cada WAV no disco; não é mix ouvido
 npm run mix        # soma as vozes de uma partida simulada; não é mix ouvido
 npm run probe      # dispara o buffer declarado; não é peso percebido
 npm run contrast   # pares hex + pixels do stub após draw(); em cinza, forma sem cor; não é dispositivo
-npm run session    # partida simulada → totais e curva; `--spawn` escolhe a chuva; não é sessão observada
+npm run session    # partida simulada → totais e curva; `--spawn` escolhe a chuva; não sobrescreve `played` sem `--force`; não é sessão observada
 # a partida no `npm run serve` grava o mesmo candidato; depois do fim a página grava o recibo se você escrever — o campo não dispara o verbo; no convite grava o achado se os quatro tiverem texto; nenhum observa
 npm run size       # bytes de dist/; sem teto e sem aprovação
 npm run build      # copia a árvore jogável para dist/; não prova outra máquina

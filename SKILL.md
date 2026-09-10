@@ -287,7 +287,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Se o candidato nomeia a seed, `playtest` relata `candidate_seed`
    e `?seed=` abre essa partida, ignorando o hold. Se nomeia a
    chuva, relata `candidate_spawn`; se nomeia o look, relata
-   `candidate_look`; se nomeia a curva, relata `candidate_curve`.
+   `candidate_look`; se nomeia a curva, relata `candidate_curve`;
+   se nomeia a origem, relata `candidate_policy` (`played` ou
+   `nearest-orb`). A simulação não sobrescreve `played` sem `--force`.
    O convite junta mesa e paleta. Nenhum dos
    dois é sessão observada.    Recibo sem forma entra no
    `next` como `playtest.unstructured`: a proposta aponta a

@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 // Corre uma partida simulada e grava resumo e curva no disco. É candidato
 // ao campo de medição de um achado — não é sessão observada e não atribui causa.
+// last-run jogado (`policy: played`) não some sob a simulação. --force
+// ou outro --out. Nomear a origem não observa.
 
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -22,7 +24,17 @@ const argument = (name, fallback) => {
 
 const seed = Number(argument("seed", "7"));
 const spawn = String(argument("spawn", "spawn"));
+const force = process.argv.includes("--force");
 const out = resolve(ROOT, argument("out", "docs/playtest/last-run.json"));
+
+async function existingPolicy(path) {
+  try {
+    const data = JSON.parse(await readFile(path, "utf8"));
+    return typeof data?.policy === "string" ? data.policy : null;
+  } catch {
+    return null;
+  }
+}
 
 if (!listSpawnProfiles().includes(spawn)) {
   console.error(`perfil de chuva desconhecido: ${spawn}`);
@@ -60,6 +72,13 @@ const report = playReport({
   curve: finishCurve(trace, state.chain),
   policy: "nearest-orb",
 });
+
+if (!force && (await existingPolicy(out)) === "played") {
+  console.error(
+    "last-run.json é partida jogada. A simulação não sobrescreve. Use --force ou --out.",
+  );
+  process.exit(3);
+}
 
 await mkdir(dirname(out), { recursive: true });
 await writeFile(out, `${JSON.stringify(report, null, 2)}\n`);
