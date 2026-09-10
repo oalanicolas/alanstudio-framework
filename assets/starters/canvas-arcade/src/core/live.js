@@ -2,7 +2,8 @@
 // e no telegraph. A pausa só entra quando o overlay diz Pausado
 // — no fim a cortina do over vence; na porta a placa nem nasce.
 // O fim, a porta e a pausa no campo já nomeiam placar e recorde
-// no canvas. Jogando sem pausa o número não entra. Texto no DOM
+// no canvas. No fim o overlay também nomeia a corrente que caiu.
+// Jogando sem pausa o número não entra. Texto no DOM
 // não é sessão de alcance nem alguém de fora.
 
 function whole(value) {
@@ -18,6 +19,7 @@ export function liveText({
   score,
   best,
   lastScore,
+  chain,
 } = {}) {
   const parts = [];
   const seen = new Set();
@@ -33,6 +35,8 @@ export function liveText({
     add("fim da partida");
     const points = whole(score);
     if (points !== null) add(points);
+    const stake = whole(chain);
+    if (stake !== null && Number(chain) > 0) add(`corrente ${stake}`);
     const record = whole(best);
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
   } else if (phase === "title") {

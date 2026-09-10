@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.189 (confirmado): na porta o avanço também aterrisa.
+**HEAD:** ver `git log -1` — vigente 0.9.190: no fim a live nomeia a corrente que caiu.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 272 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.189)
+## O que o HEAD já entrega (0.9.91–0.9.190)
 
 | Ver | Salto |
 | --- | --- |
@@ -133,6 +133,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.187 | `playtest` unstructured aponta `#finding` e `note --field`. O leitor não finge gravar. Não promove `outsider`. |
 | 0.9.188 | `roles --fill` nomeia o stem do starter quando o acervo está vazio. `--apply` não copia o starter. Não promove `heard`. |
 | 0.9.189 | Na porta o avanço também aterrisa. Sem contar o ofício, sem recovery. Não promove feel. |
+| 0.9.190 | No fim a região viva nomeia a corrente que o overlay já mostra. Sem corrente o rótulo some. Não promove `accessibility`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -152,7 +153,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | beforeunload no disco; na porta hidden só descarrega; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | live só diz pausado quando o overlay diz Pausado; sessão real pendente |
+| accessibility | slice | live nomeia a corrente no fim quando o overlay a nomeia; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -239,7 +240,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou hidden na porta que poupa a mostra
   ou playtest que aponta o painel do achado
   ou fill que nomeia o stem do starter
-  ou porta que fecha o arco do avanço.
+  ou porta que fecha o arco do avanço
+  ou live que nomeia a corrente no fim.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -476,7 +478,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `threatCue` é estilhaço no x do corpo dentro do telegraph —
   na porta lê a mostra, não `entities`.   `#live` espelha fase,
   perigo, a última legenda e, no fim, na porta e na pausa no campo,
-  o placar e o recorde que o canvas já mostra. `pausado` só entra
+  o placar e o recorde que o canvas já mostra. No fim, se
+  `chain > 0`, também a corrente que o overlay nomeia. Sem
+  corrente o rótulo some. `pausado` só entra
   quando o overlay diz Pausado — no fim a cortina do over vence;
   na porta a placa nem nasce. Jogando sem pausa o número
   não entra. Texto no DOM não é sessão. Não
@@ -541,6 +545,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `next` que manda escrever o achado relendo `playtest`.
 **Não** mais um `roles --fill` que some o stem que `sfx search` já nomeia.
 **Não** mais uma porta que dispara o avanço e some o término.
+**Não** mais uma região viva que some a corrente enquanto o overlay já a nomeia.
 
 Candidatos, do que ainda dói:
 
@@ -677,7 +682,10 @@ Candidatos, do que ainda dói:
   stem e a
   porta que
   fecha o
-  arco
+  arco e a
+  live que
+  nomeia a
+  corrente
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -701,5 +709,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: na porta o avanço também
-aterrisa. Sem contar o ofício, sem recovery. Não promove feel.
+Arquivos quentes da última sessão: no fim a região viva
+nomeia a corrente que o overlay já mostra. Sem corrente o
+rótulo some. Não promove `accessibility`.

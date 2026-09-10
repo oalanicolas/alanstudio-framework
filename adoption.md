@@ -3,6 +3,24 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.190 — No fim a live nomeia a corrente
+
+O overlay já dizia
+Corrente N. A região
+viva só falava
+placar e recorde. A
+aposta caía em
+silêncio para o
+leitor. Agora
+espelha a placa.
+`verified` continua
+falso. Só `release`
+fica no piso.
+
+O que 0.9.190 não afirma:
+texto no DOM não é
+sessão de alcance.
+
 ## 0.9.189 — Na porta o avanço também aterrisa
 
 O campo já

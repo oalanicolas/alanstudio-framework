@@ -59,6 +59,34 @@ test("o placar e o recorde entram na região viva no fim e na porta sem fingir s
   );
 });
 
+test("no fim a região viva nomeia a corrente que caiu sem fingir sessão", () => {
+  assert.equal(
+    liveText({ phase: "over", score: 12, chain: 5, best: 20 }),
+    "fim da partida. 12. corrente 5. recorde 20",
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, chain: 0, best: 20 }),
+    "fim da partida. 12. recorde 20",
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, chain: 5, paused: true }),
+    "fim da partida. 12. corrente 5",
+  );
+  assert.doesNotMatch(
+    liveText({ phase: "over", score: 12, chain: 5, paused: true }),
+    /pausado/,
+  );
+  assert.equal(
+    liveText({ phase: "playing", chain: 5, score: 12 }),
+    "",
+  );
+  assert.match(main, /chain:\s*state\.chain/);
+  assert.doesNotMatch(
+    liveText({ phase: "over", score: 12, chain: 5 }),
+    /aprovado|verified|alguém de fora|felt|heard/,
+  );
+});
+
 test("a pausa entra na região viva sem fingir sessão", () => {
   assert.equal(liveText({ paused: true }), "pausado");
   assert.equal(

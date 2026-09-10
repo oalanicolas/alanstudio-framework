@@ -269,6 +269,7 @@ export function createGame(options = {}) {
         paused: loop.paused,
         score: state.score,
         best: progress.best,
+        chain: state.chain,
         lastScore: lastRun && Number.isFinite(lastRun.score) ? lastRun.score : undefined,
       }),
     });
