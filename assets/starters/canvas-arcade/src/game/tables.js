@@ -306,8 +306,10 @@ export function resolveLookName(name) {
 }
 
 // Orbe azul e estilhaço laranja do look padrão. Não é look: o campo
-// do crepúsculo permanece; só a tinta da chuva deixa o eixo quente.
-// Alto contraste continua vencendo. Chave no disco não é sessão.
+// do crepúsculo permanece. O dusk first-party já separa orbe âmbar
+// e estilhaço índigo; a tinta estável ainda troca a chuva pelo par
+// do padrão. Alto contraste continua vencendo. Chave no disco não
+// é sessão. JSON no disco não é comparação em movimento.
 export const COLORBLIND_INKS = {
   orb: PALETTES.normal.orb,
   shard: PALETTES.normal.shard,

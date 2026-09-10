@@ -27,8 +27,15 @@ test("as mesas passam pelo mesmo carregador", () => {
   assert.equal(resolveLookName("contrast"), "normal");
   assert.equal(resolveLookName("inventada"), "normal");
   assert.equal(dressPalette({ look: "dusk" }).orb, PALETTES.dusk.orb);
+  assert.equal(dressPalette({ look: "dusk" }).shard, PALETTES.dusk.shard);
   assert.equal(dressPalette({ look: "dusk" }).field, PALETTES.dusk.field);
   assert.notEqual(PALETTES.dusk.orb, PALETTES.normal.orb, "dusk no eixo quente precisa desta tinta");
+  assert.notEqual(PALETTES.dusk.shard, PALETTES.dusk.orb, "orbe e estilhaço dusk não compartilham tinta");
+  assert.notEqual(PALETTES.dusk.shard, "#c45c6a", "o estilhaço dusk saiu do eixo quente");
+  const duskOrb = Number.parseInt(PALETTES.dusk.orb.slice(1), 16);
+  const duskShard = Number.parseInt(PALETTES.dusk.shard.slice(1), 16);
+  assert.ok((duskOrb >> 16) > (duskOrb & 0xff), "orbe dusk continua âmbar");
+  assert.ok((duskShard & 0xff) > (duskShard >> 16), "estilhaço dusk é índigo, não rosa");
   const stable = dressPalette({ look: "dusk", colorblind: true });
   assert.equal(stable.orb, COLORBLIND_INKS.orb);
   assert.equal(stable.shard, COLORBLIND_INKS.shard);

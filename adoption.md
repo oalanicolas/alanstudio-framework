@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.131 — O estilhaço dusk também deixa o eixo quente
+
+O look dusk pintava orbe e estilhaço no mesmo
+eixo quente. O checkbox era a única leitura
+estável. O estilhaço passa a índigo; o orbe
+continua âmbar; o campo continua quente.
+`colorblind` ainda troca a chuva pelo par do
+padrão. `consistent` e `verified` continuam
+falsos. Só `release` fica no piso.
+
+O que 0.9.131 não afirma: hex no disco não é
+comparação em movimento nem sessão com o modo
+ativo. Não importa limiar.
+
 ## 0.9.130 — A seed também leva chuva e look
 
 O convite já juntava mesa e paleta. Quem colava

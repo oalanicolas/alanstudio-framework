@@ -7,7 +7,9 @@ primeiro ciclo. `title_play`, `title_again` e `title_new` nomeiam a
 porta. Repetir a última seed não é o tick interrompido.
 `palettes` alimenta o desenho: trocar um token não exige abrir
 `render.js`. Os looks `dusk` e `calm` moram nessa mesa; `?look=` /
-`settings.look` os consomem. `dusk` e `calm` na chuva são outras
+`settings.look` os consomem. O look `dusk` pinta orbe âmbar e
+estilhaço índigo; o campo continua quente. Hex no disco não é
+comparação em movimento. `dusk` e `calm` na chuva são outras
 mesas e outro consumidor (`?spawn=`). `?mood=` aplica o par quando o
 nome é look e chuva; look ou chuva explícitos vencem no próprio
 eixo. A página nomeia o mesmo par no select. A chuva `calm` é prática mais longa, menos risco, queda mais
