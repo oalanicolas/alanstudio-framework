@@ -2482,6 +2482,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(session["structured"])
         self.assertFalse(session["unstructured"])
         self.assertFalse(session["observed"])
+        self.assertEqual(session["finding_attachments"], [])
         self.assertIsNone(session["candidate"])
 
     def test_art_names_a_canvas_without_palette_or_bible(self):
@@ -2692,6 +2693,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["structured"])
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
+        self.assertEqual(report["finding_attachments"], [])
         self.assertIsNone(report["candidate"])
         self.assertIsNone(report["invite"])
         proposal = next(
@@ -2867,6 +2869,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(report["structured"])
         self.assertFalse(report["unstructured"])
         self.assertEqual(report["findings"], ["docs/playtest/20260910T000000Z-achado.md"])
+        self.assertEqual(report["finding_attachments"], [])
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
         self.assertNotIn("playtest.unstructured", [
@@ -2875,6 +2878,55 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         page = game.invite_page(destination)
         self.assertNotRegex(page, game.FINDING_FIELDS)
         self.assertIn("copiar ou gravar", page.casefold())
+        self.assertIn("porta", page.casefold())
+        self.assertIn("anexa o candidato", page.casefold())
+
+    def test_a_page_finding_attaches_the_candidate_without_becoming_an_outsider(self):
+        destination = self.root / "achado-com-corrida"
+        game.init(destination, "canvas-arcade")
+        (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "spawn": "dusk",
+            "policy": "played",
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "curve": {"never_banked": False},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        (destination / "docs/playtest/20260910T120000Z-achado.md").write_text(
+            "- Problema: o dash não comunica o contato\n"
+            "- Evidência: três sessões, pergunta se atravessou\n"
+            "- Hipótese: o hitstop some no movimento\n"
+            "- Medição: repetir o graze com hitstop 5 e 2\n",
+            encoding="utf-8",
+        )
+        (destination / "docs/playtest/20260910T120000Z-achado.run.json").write_text(
+            json.dumps({
+                "schema": 2,
+                "kind": "finding-attachment",
+                "seed": 8,
+                "spawn": "dusk",
+                "policy": "played",
+                "run": {"ticks": 40, "score": 3, "seed": 8},
+                "observed": False,
+                "felt": False,
+                "outsider": False,
+            }),
+            encoding="utf-8",
+        )
+        report = game.playtest_reading(destination)
+        self.assertEqual(report["findings"], ["docs/playtest/20260910T120000Z-achado.md"])
+        self.assertEqual(report["finding_attachments"], [
+            "docs/playtest/20260910T120000Z-achado.run.json",
+        ])
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertIn("anexar", report["scope"].casefold())
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("enough", report["scope"])
 
     def test_next_points_at_the_invite_after_the_maker_already_played(self):
         destination = self.root / "depois-de-jogar"

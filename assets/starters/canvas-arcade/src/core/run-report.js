@@ -94,3 +94,23 @@ export function playReport({
   }
   return report;
 }
+
+// O achado da página é markdown. Este JSON é o candidato que estava
+// em last-run.json na hora de gravar — não a prova de quem jogou.
+export function findingAttachment({
+  seed,
+  spawn,
+  run,
+  curve,
+  finding,
+} = {}) {
+  const report = playReport({ seed, spawn, run, curve, policy: "played" });
+  return {
+    ...report,
+    kind: "finding-attachment",
+    finding: typeof finding === "string" ? finding : "",
+    outsider: false,
+    scope:
+      "Anexo do candidato que estava em last-run.json quando a página gravou o achado. Número no disco não é causa nem sessão observada. Sem limiar.",
+  };
+}

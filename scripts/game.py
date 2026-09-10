@@ -1978,6 +1978,7 @@ def playtest_reading(project):
         "exists": project.is_dir(),
         "observations": [item["path"] for item in observations],
         "findings": findings,
+        "finding_attachments": playtest_finding_attachments(project, findings),
         "candidate": candidate,
         "invite": invite,
         "qa_current": qa_current,
@@ -1998,11 +1999,32 @@ def playtest_reading(project):
             "observação, e se docs/qa.md deixou de ser rascunho. Relata "
             f"`{LAST_RUN}` e `{INVITE}` quando existem. A partida no serve "
             "pode gravar o candidato; a simulação também. No convite a "
-            "página pode gravar o markdown dos quatro nomes. Não assiste "
-            "a sessão, não conta jogadores e não atribui causa. "
-            "`observed` e `outsider` são sempre falsos."
+            "página pode gravar o markdown dos quatro nomes e anexar o "
+            "candidato que estava em last-run.json. Anexo não é sessão "
+            "observada. Não assiste a sessão, não conta jogadores e não "
+            "atribui causa. `observed` e `outsider` são sempre falsos."
         ),
     }
+
+
+def playtest_finding_attachments(project, findings=None):
+    project = Path(project)
+    attached = []
+    names = findings if findings is not None else playtest_findings(project)
+    for relative in names:
+        if not relative.endswith("-achado.md"):
+            continue
+        companion = f"{relative[:-len('.md')]}.run.json"
+        path = project / companion
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(data, dict) and isinstance(data.get("run"), dict):
+            attached.append(companion)
+    return attached
 
 
 def invite_path(project):
@@ -2036,8 +2058,9 @@ def invite_playtest(project):
             "Escreve a página para quem nunca viu o jogo e aponta "
             "`/?invite=1`, onde a tabela some. Depois do fim a página "
             "oferece os quatro nomes para copiar ou gravar. Copiar não "
-            "grava. Esqueleto vazio não é achado. Gravado não é alguém "
-            "de fora. O serve anuncia a URL da rede se a "
+            "grava. Esqueleto vazio não é achado. Gravado anexa o "
+            "candidato se last-run existir — não é alguém de fora. "
+            "O serve anuncia a URL da rede se a "
             "máquina tiver outro endereço IPv4. Não ensina o verbo, "
             "não assiste e não sobe pacing. outsider continua falso."
         ),
@@ -2073,14 +2096,17 @@ def invite_page(project):
         "\n"
         "## Instrução\n"
         "\n"
-        "Jogue uma partida. Quem fez o jogo não ensina o verbo e não\n"
+        "Jogue uma partida. Com tela, o avanço abre a porta — a tabela\n"
+        "some, a abertura não. Quem fez o jogo não ensina o verbo e não\n"
         "fica atrás da cadeira.\n"
         "\n"
         "## Depois\n"
         "\n"
         "A página oferece os quatro nomes para copiar ou gravar.\n"
         "Copiar não grava. Grave só se os quatro tiverem texto.\n"
-        "Esqueleto vazio não é achado. Gravado não sobe pacing.\n"
+        "Esqueleto vazio não é achado. Se a partida deixou last-run, o\n"
+        "serve anexa o candidato ao lado do markdown. Anexo não é\n"
+        "sessão observada. Gravado não sobe pacing.\n"
         "Quem escreveu precisa ser quem jogou.\n"
         "\n"
         "Convite no disco não sobe `pacing` e não conta jogador.\n"

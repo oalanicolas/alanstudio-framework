@@ -152,6 +152,16 @@ for (const name of ["farol", "Farol do Sul"]) {
       const finding = await readFile(join(server.project, NOTE_DIR, achado), "utf8");
       assert.match(finding, /Problema: o dash não comunica o contato/);
       assert.doesNotMatch(finding, /aprovado|verified|LUFS|-14|4\.5|outsider/);
+      const companion = files.find((name) => name.endsWith("-achado.run.json"));
+      assert.ok(companion, "esperava o anexo do candidato");
+      const attached = JSON.parse(await readFile(join(server.project, NOTE_DIR, companion), "utf8"));
+      assert.equal(attached.kind, "finding-attachment");
+      assert.equal(attached.observed, false);
+      assert.equal(attached.felt, false);
+      assert.equal(attached.outsider, false);
+      assert.equal(attached.run.ticks, 40);
+      assert.equal(attached.finding, achado);
+      assert.doesNotMatch(JSON.stringify(attached), /aprovado|verified|LUFS|-14|4\.5/);
       const hollow = await fetch(`http://localhost:${server.port}${FINDING_ROUTE}`, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -200,7 +210,7 @@ test("o serve anuncia a rede sem fingir que alguém de fora jogou", () => {
   assert.match(banner, /Convite: http:\/\/localhost:8080\/\?invite=1/);
   assert.match(banner, /Candidato: a partida grava docs\/playtest\/last-run\.json/);
   assert.match(banner, /Nota: depois do fim a página grava o recibo/);
-  assert.match(banner, /Achado: no convite a página grava os quatro nomes/);
+  assert.match(banner, /Achado: no convite a página grava os quatro nomes e anexa o candidato/);
   assert.match(banner, /Rede: http:\/\/192\.168\.1\.40:8080\//);
   assert.match(banner, /Convite na rede: http:\/\/192\.168\.1\.40:8080\/\?invite=1/);
   assert.doesNotMatch(banner, /169\.254/);

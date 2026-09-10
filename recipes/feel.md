@@ -9,7 +9,8 @@ disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured`. `playtest --invite`
 escreve a página e aponta `/?invite=1`, onde a tabela some; depois do
 fim a página oferece os quatro nomes para copiar ou gravar. Copiar
-não grava. Gravado não é alguém de fora. `next` aponta o convite
+não grava. Gravar anexa o candidato se last-run existir. Gravado
+não é alguém de fora. `next` aponta o convite
 depois do recibo de quem fez. O serve anuncia a URL da rede
 se a máquina tiver outro endereço IPv4. Esconder a tabela, anunciar
 a rede, copiar o achado e gravar os quatro nomes não são alguém de fora. `observed` e `outsider` são sempre

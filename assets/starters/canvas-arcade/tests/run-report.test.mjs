@@ -1,8 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { playFinding, playNote, playReport } from "../src/core/run-report.js";
-import { acceptFinding, acceptLastRun, acceptNote } from "../tools/serve.mjs";
+import { findingAttachment, playFinding, playNote, playReport } from "../src/core/run-report.js";
+import { acceptFinding, acceptLastRun, acceptNote, writeFinding } from "../tools/serve.mjs";
+import { mkdtemp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 test("o recibo nasce sem observar e a simulação não se mistura com a partida", () => {
   const played = playReport({
@@ -105,4 +108,68 @@ test("o achado só nasce com os quatro nomes preenchidos", () => {
   });
   assert.equal(accepted.ok, true);
   assert.equal(accepted.text, text);
+});
+
+test("o anexo do achado nasce do candidato e não observa", () => {
+  const attached = findingAttachment({
+    seed: 8,
+    spawn: "dusk",
+    run: { ticks: 40, score: 3, seed: 8 },
+    curve: { never_banked: false },
+    finding: "20260910T000000Z-achado.md",
+    observed: true,
+    outsider: true,
+  });
+  assert.equal(attached.kind, "finding-attachment");
+  assert.equal(attached.policy, "played");
+  assert.equal(attached.observed, false);
+  assert.equal(attached.felt, false);
+  assert.equal(attached.outsider, false);
+  assert.equal(attached.finding, "20260910T000000Z-achado.md");
+  assert.equal(attached.run.ticks, 40);
+  assert.equal(attached.spawn, "dusk");
+  assert.match(attached.scope, /não é causa/);
+  assert.doesNotMatch(attached.scope, /aprovado|verified|LUFS|-14|4\.5|enough|consistent/);
+});
+
+test("gravar o achado anexa last-run e sem partida não inventa anexo", async () => {
+  const root = await mkdtemp(join(tmpdir(), "starter-finding-"));
+  try {
+    const text = playFinding({
+      problema: "o dash não comunica o contato",
+      evidencia: "três sessões, pergunta se atravessou",
+      hipotese: "o hitstop some no movimento",
+      medicao: "repetir o graze com hitstop 5 e 2",
+    });
+    const hollow = await writeFinding(root, text);
+    assert.match(hollow, /-achado\.md$/);
+    const empty = await readdir(join(root, "docs/playtest"));
+    assert.equal(empty.filter((name) => name.endsWith("-achado.run.json")).length, 0);
+
+    await mkdir(join(root, "docs/playtest"), { recursive: true });
+    await writeFile(join(root, "docs/playtest/last-run.json"), `${JSON.stringify({
+      schema: 2,
+      seed: 8,
+      spawn: "dusk",
+      policy: "played",
+      run: { ticks: 40, score: 3, seed: 8 },
+      curve: { never_banked: false },
+      observed: true,
+      felt: true,
+    }, null, 2)}\n`);
+    const dest = await writeFinding(root, text);
+    const companion = dest.replace(/-achado\.md$/, "-achado.run.json");
+    const attached = JSON.parse(await readFile(companion, "utf8"));
+    assert.equal(attached.kind, "finding-attachment");
+    assert.equal(attached.observed, false);
+    assert.equal(attached.felt, false);
+    assert.equal(attached.outsider, false);
+    assert.equal(attached.policy, "played");
+    assert.equal(attached.run.ticks, 40);
+    assert.equal(attached.spawn, "dusk");
+    assert.equal(attached.finding, dest.split(/[/\\]/).pop());
+    assert.doesNotMatch(JSON.stringify(attached), /aprovado|verified|LUFS|-14|4\.5|enough|consistent/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
 });

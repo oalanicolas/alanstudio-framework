@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.119 — O achado também anexa o candidato
+
+O recibo da página já levava last-run. O achado
+do convite ficava só com os quatro nomes. Agora
+grava `<utc>-achado.run.json` se a partida deixou
+candidato. `outsider` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.119 não afirma: anexar o número não é
+quem jogou nem curva observada.
+
 ## 0.9.118 — O guia também fala a frase
 
 O JSON enterrava o comando de agora. `guide`,

@@ -648,6 +648,9 @@ python3 scripts/game.py playtest /caminho/do/laboratorio/meu-jogo --invite
 comandos some; depois do fim a página oferece os quatro nomes para
 copiar ou gravar. Copiar não grava. Gravado vira
 `docs/playtest/<utc>-achado.md` se os quatro tiverem texto.
+Se last-run existir, o serve anexa
+`docs/playtest/<utc>-achado.run.json`. `playtest` relata esses
+anexos em `finding_attachments`. Anexo não é sessão observada.
 Página no disco, texto na área de transferência e markdown
 preenchido não são alguém de fora e não sobem `pacing`.
 Esqueleto vazio não é achado. `next` propõe `playtest.invite`

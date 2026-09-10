@@ -4,8 +4,8 @@
 // navegador falha. Este servidor existe só para jogar e comparar localmente.
 // Não é servidor de produção: serve o diretório do projeto por GET e aceita
 // POST em `/playtest/last-run` (candidato), `/playtest/note` (recibo) e
-// `/playtest/finding` (achado preenchido). Recusa caminho que escape do
-// projeto e não grava na árvore exportada.
+// `/playtest/finding` (achado preenchido; anexa last-run se existir). Recusa
+// caminho que escape do projeto e não grava na árvore exportada.
 
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
@@ -22,6 +22,7 @@ import {
   NOTE_ROUTE,
   noteStamp,
   FINDING_ROUTE,
+  findingAttachment,
   playFinding,
   playNote,
   playReport,
@@ -83,7 +84,7 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
     `Convite: ${local}/?invite=1`,
     "Candidato: a partida grava docs/playtest/last-run.json",
     "Nota: depois do fim a página grava o recibo em docs/playtest/",
-    "Achado: no convite a página grava os quatro nomes se estiverem preenchidos",
+    "Achado: no convite a página grava os quatro nomes e anexa o candidato se houver partida",
   ];
   for (const origin of origins.slice(1)) {
     lines.push(`Rede: ${origin}/`);
@@ -167,9 +168,18 @@ async function attachedRun(root) {
   try {
     const data = JSON.parse(await readFile(join(root, LAST_RUN_FILE), "utf8"));
     if (!data || typeof data !== "object") return {};
-    const run = data.run && typeof data.run === "object" ? data.run : null;
-    const curve = data.curve && typeof data.curve === "object" ? data.curve : null;
-    return { run, curve };
+    const run = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+      ? data.run
+      : null;
+    const curve = data.curve && typeof data.curve === "object" && !Array.isArray(data.curve)
+      ? data.curve
+      : null;
+    return {
+      run,
+      curve,
+      seed: data.seed ?? run?.seed ?? null,
+      spawn: typeof data.spawn === "string" && data.spawn ? data.spawn : undefined,
+    };
   } catch {
     return {};
   }
@@ -219,6 +229,18 @@ export async function writeFinding(root, text) {
   } catch {
     dest = join(root, NOTE_DIR, `${noteStamp()}-b-achado.md`);
     await writeFile(dest, text, { flag: "wx" });
+  }
+  const extra = await attachedRun(root);
+  if (extra.run) {
+    const companion = dest.replace(/-achado\.md$/, "-achado.run.json");
+    const report = findingAttachment({
+      seed: extra.seed ?? extra.run.seed,
+      spawn: extra.spawn,
+      run: extra.run,
+      curve: extra.curve,
+      finding: dest.split(/[/\\]/).pop(),
+    });
+    await writeFile(companion, `${JSON.stringify(report, null, 2)}\n`, { flag: "wx" });
   }
   return dest;
 }

@@ -48,6 +48,7 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /id="finding-copy"/);
   assert.match(html, /id="finding-save"/);
   assert.match(html, /Copie ou grave/);
+  assert.match(html, /anexa o candidato/);
   assert.match(html, /composeFinding/);
   assert.match(html, /playFinding/);
   assert.match(html, /FINDING_ROUTE/);
