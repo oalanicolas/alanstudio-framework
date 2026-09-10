@@ -3,6 +3,43 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.323 — o coil da guarda veste a aposta
+
+O
+arco
+já
+vestia
+a
+corrente.
+O
+corpo
+no
+sit
+vestia
+o
+descanso.
+A
+antecipação
+mentia
+a
+aposta.
+Agora
+veste
+a
+corrente.
+Não
+promove
+`felt`.
+
+O que 0.9.323 não afirma:
+pose
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.322 — o -h lista start antes de init
 
 O

@@ -383,7 +383,11 @@ export function createRenderer(canvas, options = {}) {
     const ending = state.phase === "over";
     const dashing = !ending && player.dashTicks > 0;
     const winding = !ending && !dashing && (player.dashWindup ?? 0) > 0;
-    const recovering = !ending && !dashing && !winding && player.dashRecovery > 0;
+    // O arco do sit já veste a corrente. Sem isto o corpo
+    // no coil da guarda vestia o descanso e a antecipação
+    // mentia a aposta. Pose no disco não é peso percebido.
+    const banking = !ending && !dashing && (state.bankWindup ?? 0) > 0;
+    const recovering = !ending && !dashing && !winding && !banking && player.dashRecovery > 0;
     // A graça do erro já existia. Só o contorno piscava; o tijolo
     // sólido tapava a leitura. O corpo some e volta no mesmo
     // relógio — o fillRect permanece. Com menos movimento o
@@ -399,7 +403,7 @@ export function createRenderer(canvas, options = {}) {
     // A faixa do coil já veste a corrente. Sem isto o corpo
     // no coil vestia o descanso e a antecipação mentia o
     // verbo. Pose no disco não é peso percebido.
-    target.fillStyle = dashing || winding ? palette.chain : recovering ? palette.muted : palette.player;
+    target.fillStyle = dashing || winding || banking ? palette.chain : recovering ? palette.muted : palette.player;
     target.fillRect(left, top, width, height);
     // O retângulo sozinho era o tijolo da placa. A ponta segue o
     // último avanço: orbe é círculo, estilhaço é losango, o corpo

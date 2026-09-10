@@ -745,6 +745,17 @@ test("o coil do dash veste o avanço, não o descanso", () => {
   assert.notEqual(playerFill(coil), PALETTES.normal.muted, "o coil não é a recuperação");
 });
 
+test("o coil da guarda veste a aposta, não o descanso", () => {
+  const idle = createState(1);
+  const coil = createState(1);
+  coil.bankWindup = CONFIG.bank.windupTicks;
+  coil.player.squash = CONFIG.feel.squashBankCoil;
+  assert.equal(playerFill(coil), PALETTES.normal.chain, "o coil da guarda vestia o descanso");
+  assert.notEqual(playerFill(coil), playerFill(idle));
+  assert.notEqual(playerFill(coil), PALETTES.normal.orb, "o coil da guarda não veste a prática");
+  assert.notEqual(playerFill(coil), PALETTES.normal.muted, "o coil da guarda não é a recuperação");
+});
+
 test("a porta nomeia a recuperação que o painel já mostra", () => {
   const state = createState(1, { entry: "title" });
   const door = paint(state, {}, { best: 0, settingsLoad: { status: "recovered" } });

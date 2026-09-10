@@ -256,7 +256,8 @@ ainda não chegou marca o trilho (`approaching`) — na porta a mostra
 usa o mesmo aviso; a live já nomeava o perigo e o trilho calava.
 A câmera inclina para o mesmo aviso (`lookAheadX`), menor que o
 punch do dash. Lean no disco não é peso percebido. O coil do dash
-veste a corrente do avanço — não o descanso; a recuperação muda a
+veste a corrente do avanço — não o descanso; o coil da guarda
+veste a corrente da aposta — não o descanso; a recuperação muda a
 silhueta no apoio — ainda vulnerável, não a tinta da prática;
 o erro acende o campo, a coleta não. O controle pulsa no
 impacto com duração e magnitude por verbo; pausa e descarte cancelam.
