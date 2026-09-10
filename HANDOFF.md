@@ -192,7 +192,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, chuva da porta, `gameSpeed` no disco, `hold` no stub,
-  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, `closeHazardScale` no disco, `closeBedRate` no disco, recorde no overlay do fim, aviso de guardar no fecho, `hint_hit` no disco, copiar ou gravar o achado, last-run,
+  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, `closeHazardScale` no disco, `closeBedRate` no disco, recorde no overlay do fim, aviso de guardar no fecho, `hint_hit` no disco, pulso do corpo na graça, copiar ou gravar o achado, last-run,
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
   `then.invite`, `invite_href`, copiar o endereço do convite,
   levar a chuva ou o look na URL, tinta estável no disco,
