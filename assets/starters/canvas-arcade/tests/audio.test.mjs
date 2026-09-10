@@ -84,6 +84,14 @@ test("a legenda sai mesmo sem arquivo de som", () => {
   assert.equal(captions[0].text, SOUNDS.hit.caption);
 });
 
+test("o fecho legendas sem fingir que o mix foi ouvido", () => {
+  const { audio } = build();
+  audio.play("close");
+  assert.equal(audio.captions()[0].text, "últimos segundos");
+  assert.equal(SOUNDS.close.bus, "ui");
+  assert.equal(SOUNDS.close.priority < SOUNDS.over.priority, true);
+});
+
 test("legenda desligada não produz legenda", () => {
   const { audio } = build({ settings: { buses: { master: 1 }, captions: false } });
   audio.play("hit");

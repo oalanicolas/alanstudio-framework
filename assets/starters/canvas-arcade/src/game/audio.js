@@ -42,6 +42,7 @@ export const SOUNDS = {
   bank: { bus: "sfx", caption: "corrente guardada", priority: 3, duckMs: 180 },
   hit: { bus: "sfx", caption: "atingido: corrente perdida", priority: 4, duckMs: 260 },
   over: { bus: "ui", caption: "fim da partida", priority: 5, duckMs: 400 },
+  close: { bus: "ui", caption: "últimos segundos", priority: 2 },
   bed: { bus: "music", caption: null, priority: 0, loop: true },
 };
 

@@ -31,6 +31,7 @@ uso, versão e o consumidor no código.
 | `public/sfx/bank.wav` / `bank-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 | `public/sfx/hit.wav` / `hit-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 | `public/sfx/over.wav` / `over-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/close.wav` / `close-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 | `public/sfx/bed.wav` / `bed-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 
 Recibo por arquivo em `public/sfx/<papel>.credits.txt` e lista em
