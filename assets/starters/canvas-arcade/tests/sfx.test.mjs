@@ -127,6 +127,41 @@ test("papéis começam juntos: collect não espera dash.wav terminar", async () 
   assert.ok(ids.includes("collect"));
 });
 
+test("decode nulo tenta a próxima extensão e marca o pedido se nenhuma falar", async () => {
+  const audio = createAudio({ createContext: () => null });
+  const seen = [];
+  const fetchFn = async (url) => {
+    seen.push(url);
+    if (url === "public/sfx/dash.wav" || url === "public/sfx/dash.ogg") {
+      return { ok: true, arrayBuffer: async () => new ArrayBuffer(url.endsWith(".wav") ? 4 : 8) };
+    }
+    return { ok: false };
+  };
+  const loaded = await loadRoleFiles(audio, {
+    fetch: fetchFn,
+    decode: async (bytes) => (bytes.byteLength === 4 ? null : { duration: 0.2 }),
+  });
+  assert.deepEqual(
+    loaded.filter((item) => item.id === "dash"),
+    [{ id: "dash", url: "public/sfx/dash.ogg", variant: false }],
+  );
+  assert.ok(seen.includes("public/sfx/dash.ogg"));
+  assert.deepEqual(audio.missing().registered, ["dash"]);
+  assert.equal(audio.missing().requested.includes("dash"), false);
+
+  const silent = createAudio({ createContext: () => null });
+  await loadRoleFiles(silent, {
+    fetch: async (url) => (
+      url.startsWith("public/sfx/hit.")
+        ? { ok: true, arrayBuffer: async () => new ArrayBuffer(8) }
+        : { ok: false }
+    ),
+    decode: async () => null,
+  });
+  assert.ok(silent.missing().requested.includes("hit"), "decode nulo em todas as extensões é lacuna");
+  assert.equal(silent.missing().registered.includes("hit"), false);
+});
+
 test("wav no lugar não pede o ogg do mesmo stem", async () => {
   const audio = createAudio({ createContext: () => null });
   const seen = [];

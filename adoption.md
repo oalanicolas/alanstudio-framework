@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.251 — Decode nulo tenta a próxima extensão
+
+O
+wav
+ilegível
+devolvia
+nulo
+e
+escondia
+o
+ogg.
+O
+pedido
+também
+someva.
+Agora
+decode
+nulo
+continua
+o
+stem.
+Se
+nenhuma
+extensão
+fala,
+o
+primário
+marca
+o
+pedido.
+Não
+promove
+`heard`.
+
+O que 0.9.251 não afirma:
+tentar
+o
+ogg
+não
+é
+mix
+ouvido.
+
 ## 0.9.250 — O painel nomeia o papel que o fetch perdeu
 
 O

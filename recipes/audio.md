@@ -40,7 +40,9 @@ depois de um `note`, `start` e `next` apontam esse comando.
 Arquivo ausente é lacuna do verbo, não silêncio deliberado.
 O loader marca o primário que esgota as extensões; o painel
 nomeia os vazios mesmo quando outro papel já registrou.
-Variante ausente não é lacuna. Nomear o 404 não é mix ouvido.
+Variante ausente não é lacuna. Decode nulo tenta a próxima
+extensão; wav ilegível não esconde o ogg nem o pedido.
+Nomear o 404 não é mix ouvido.
 `heard` é sempre falso. Sem `shared/sfx`, `--fill` nomeia o stem
 do starter que casa, `--apply` o copia ou recoloca o WAV se o recibo já está, `sfx search` nomeia o mesmo stem,
 `sfx info` lê a chave, `sfx verify` nomeia os stems sem cruzar o

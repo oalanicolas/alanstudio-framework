@@ -24,7 +24,8 @@
 // O gesto (tecla, toque ou controle) retoma o contexto suspenso;
 // retomar, fila e paralelo não são mix ouvido.
 // `missing()` lista o papel se o decode falhar ou o fetch 404 —
-// o loader marca o primário; o play também marca o pedido sem buffer.
+// o loader marca o primário; decode nulo tenta a próxima extensão
+// antes de marcar. O play também marca o pedido sem buffer.
 // O painel nomeia os vazios mesmo quando outro papel já registrou.
 // O `over` pede fade na cama; pause, title e aba escondida
 // continuam cortando a cama seco. Na pausa o mixer também

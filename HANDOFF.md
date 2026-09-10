@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.250: o painel nomeia o papel que o fetch perdeu. Variante ausente não é lacuna. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.251: decode nulo tenta a próxima extensão. Wav ilegível não esconde o ogg nem o pedido. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 286 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.250)
+## O que o HEAD já entrega (0.9.91–0.9.251)
 
 | Ver | Salto |
 | --- | --- |
@@ -194,6 +194,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.248 | Preferências ilegíveis avisam. `settingsLoad` espelha o progresso; o painel nomeia a recuperação; a porta não. Não promove `trusted`. |
 | 0.9.249 | `roles --apply` recoloca o stem quando o recibo já está. Origem e licença diferentes recusam. Não promove `heard`. |
 | 0.9.250 | O painel nomeia o papel que o fetch perdeu. O loader marca o primário; variante ausente não é lacuna. Não promove `heard`. |
+| 0.9.251 | Decode nulo tenta a próxima extensão. Wav ilegível não esconde o ogg nem o pedido. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -210,7 +211,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
-| audio_mix | slice | o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
+| audio_mix | slice | decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | preferências ilegíveis avisam no painel; live nomeia o aviso na porta e no fim; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -365,7 +366,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou a guarda que senta no travel e come a pose do dash
   ou preferências ilegíveis que voltam ao padrão em silêncio
   ou um roles --apply que recusa o stem porque o recibo do init tem note
-  ou um painel que some o 404 quando outro papel já registrou.
+  ou um painel que some o 404 quando outro papel já registrou
+  ou um wav ilegível que esconde o ogg e some o pedido.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -533,7 +535,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   não pede.   Stems sobem juntos (`Promise.all`);
   extensão seguinte só se a atual falhou.
   O loader marca o primário que esgota as extensões (`fail`);
-  variante ausente não é lacuna. `register` apaga o pedido.
+  variante ausente não é lacuna. Decode nulo continua o stem;
+  só marca o pedido se nenhuma extensão falar. `register` apaga o pedido.
   O painel (`audioGapLine`) nomeia os vazios mesmo quando
   outro papel já registrou. Sem registro, a frase antiga
   permanece. Nomear o 404 não é `heard`.
@@ -845,6 +848,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais preferências ilegíveis que voltam ao padrão em silêncio.
 **Não** mais um `roles --apply` que recusa o stem porque o recibo do init tem `note`.
 **Não** mais um painel que some o 404 quando outro papel já registrou.
+**Não** mais um wav ilegível que esconde o ogg e some o pedido.
 
 Candidatos, do que ainda dói:
 
@@ -1359,7 +1363,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o painel
-nomeia o papel que o fetch perdeu. O loader
-marca o primário; variante ausente não é
-lacuna. Não promove `heard`.
+Arquivos quentes da última sessão: decode nulo
+tenta a próxima extensão. Wav ilegível não
+esconde o ogg nem o pedido. Não promove
+`heard`.

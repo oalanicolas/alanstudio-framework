@@ -6,8 +6,9 @@
 //
 // Os stems sobem juntos. Em série, collect esperava dash+land+graze
 // terminarem — a abertura da sessão pedia um papel que ainda nem
-// tinha fetch. Extensão seguinte só entra se a atual falhou; wav no
-// lugar não pede ogg. Paralelo não é mix ouvido.
+// tinha fetch. Extensão seguinte só entra se a atual falhou — fetch
+// 404 ou decode nulo. Wav que decodifica não pede ogg. Decode nulo
+// no wav não esconde o ogg nem some o pedido. Paralelo não é mix ouvido.
 
 import { SOUNDS } from "./audio.js";
 
@@ -40,7 +41,10 @@ async function loadStem(job, audio, options) {
       if (buffer && audio.register(job.id, buffer)) {
         return { id: job.id, url, variant: job.variant };
       }
-      return null;
+      // Fetch ok com decode nulo não esgota o stem: a próxima
+      // extensão ainda pode falar. Sem isto o wav ilegível
+      // escondia o ogg e o pedido.
+      continue;
     } catch {
       continue;
     }
