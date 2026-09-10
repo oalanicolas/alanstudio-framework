@@ -170,7 +170,8 @@ motivo ao lado. Guardar no hitstop não é engolido; um toque sem corrente não 
 o próximo orbe. Cada verbo desloca a câmera numa direção própria e achata o corpo
 numa medida própria: coleta, dash, raspo, aterrissagem, guardar e o erro não compartilham
 squash. O dash aterrissa: o corpo senta, a câmera confirma para baixo,
-o rastro cai e o mixer fala `land` — distintos da partida. Arquivo no
+o rastro cai e o mixer fala `land` — distintos da partida. A porta
+fecha o mesmo arco no tick que abre, sem contar o ofício. Arquivo no
 disco não é peso percebido. A ameaça que
 ainda não chegou marca o trilho (`approaching`); a recuperação do dash muda a
 silhueta; o erro acende o campo, a coleta não. O controle pulsa no

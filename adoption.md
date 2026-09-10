@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.189 — Na porta o avanço também aterrisa
+
+O campo já
+aterrissava. A porta
+disparava o avanço e
+parava no meio do
+arco. Agora fecha no
+mesmo tick. Sem
+contar o ofício.
+`felt` continua
+falso. Só `release`
+fica no piso.
+
+O que 0.9.189 não afirma:
+pose no disco não é
+peso percebido.
+
 ## 0.9.188 — O fill nomeia o stem do starter
 
 `sfx search` já

@@ -438,16 +438,25 @@ export function restoreState(hold, options = {}) {
   };
 }
 
+function landDash(state) {
+  const player = state.player;
+  player.squash = CONFIG.feel.squashLand;
+  punch(state, 0, CONFIG.feel.punchLandY);
+  emit(state, "land", { x: player.x });
+}
+
 export function beginRun(state) {
   if (!state || state.phase !== "title") return state;
   state.phase = "playing";
-  // A porta também é um verbo. O avanço que a abre senta, desloca
-  // e fala — sem contar no ofício do dash. Número no disco não é
-  // peso percebido.
+  // A porta também é um verbo. Não viaja: o arco fecha no
+  // mesmo tick — dispara, senta, confirma para baixo e fala
+  // land. Sem contar o ofício, sem recovery. Pose no disco
+  // não é peso percebido.
   const dir = state.player.dir < 0 ? -1 : 1;
   state.player.squash = CONFIG.feel.squashDash;
   punch(state, CONFIG.feel.punchDashX * dir, 0);
   emit(state, "dash", { x: state.player.x });
+  landDash(state);
   return state;
 }
 
@@ -775,9 +784,7 @@ function advanceDashPhases(state) {
     player.dashTicks -= 1;
     if (player.dashTicks === 0) {
       player.dashRecovery = CONFIG.player.dashRecoveryTicks;
-      player.squash = CONFIG.feel.squashLand;
-      punch(state, 0, CONFIG.feel.punchLandY);
-      emit(state, "land", { x: player.x });
+      landDash(state);
     }
     return;
   }

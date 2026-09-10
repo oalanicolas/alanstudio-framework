@@ -581,14 +581,36 @@ test("a abertura não avança o tick até o corpo apontar", () => {
   assert.equal(state.player.x, FIELD.width / 2, "advance na porta não move");
   beginRun(state);
   assert.equal(state.phase, "playing");
-  assert.equal(state.player.squash, CONFIG.feel.squashDash, "a porta senta como o avanço");
+  assert.equal(state.player.squash, CONFIG.feel.squashLand, "a porta fecha o arco");
   assert.ok(state.events.some((event) => event.type === "dash"), "a porta fala o avanço");
+  assert.ok(state.events.some((event) => event.type === "land"), "a porta também aterrissa");
   assert.equal(state.stats.dashes, 0, "abrir a porta não conta o ofício");
   assert.ok(state.camera.x !== 0, "a porta desloca o campo");
+  assert.ok(state.camera.y > 0, "aterrissar confirma para baixo");
   advance(state, neutralIntent());
   assert.equal(state.tick, 1);
   beginRun(state);
   assert.equal(state.tick, 1, "beginRun fora da abertura não reinicia");
+});
+
+test("a porta aterrissa sem fingir peso percebido", () => {
+  const state = createState(1, { entry: "title" });
+  beginRun(state);
+  assert.equal(state.phase, "playing");
+  assert.equal(state.player.squash, CONFIG.feel.squashLand);
+  const land = state.events.find((event) => event.type === "land");
+  assert.ok(land, "a porta precisa do término");
+  assert.equal(typeof land.x, "number");
+  assert.ok(Number.isFinite(land.x));
+  assert.equal(
+    state.motes.filter((mote) => mote.kind === "land").length,
+    CONFIG.feel.moteLand,
+    "a porta deixa o puff do término",
+  );
+  assert.equal(state.player.dashTicks, 0, "a porta não viaja");
+  assert.equal(state.player.dashRecovery, 0, "a porta não come o primeiro dash");
+  assert.equal(state.stats.dashes, 0);
+  assert.doesNotMatch(String(state.events.map((event) => event.type)), /aprovado|verified|felt|heard/);
 });
 
 test("a porta fala o começo da mostra sem ligar a cama", () => {
