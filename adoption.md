@@ -3,6 +3,30 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.202 — Converter a guarda também atravessa
+
+O arco já
+atravessava.
+O quadro que
+converte —
+`bankWindup`
+já em zero —
+ainda matava.
+Agora o
+impacto da
+pontuação
+também raspa.
+Sem punch
+novo. `felt`
+continua falso.
+Só `release`
+fica no piso.
+
+O que 0.9.202 não afirma:
+graça no disco
+não é peso
+percebido.
+
 ## 0.9.201 — Reduced trava o toque da mostra
 
 O canvas já

@@ -114,7 +114,7 @@ export const CONFIG = {
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
     bufferTicks: 8, // perdão: pedido cedo ou no hitstop dispara quando a corrente existe
-    windupTicks: 2, // antecipação: o corpo senta antes de converter; já é graça
+    windupTicks: 2, // antecipação: o corpo senta antes de converter; o arco e o quadro da conversão já são graça
   },
   // Assistência não esconde conteúdo: os mesmos orbes, a mesma pontuação.
   // Perdão extra de alcance, chuva mais lenta e graça mais longa.
@@ -918,7 +918,11 @@ function resolveEntities(state) {
     player.invuln > 0 ||
     player.dashTicks > 0 ||
     (player.dashWindup ?? 0) > 0 ||
-    (state.bankWindup ?? 0) > 0;
+    (state.bankWindup ?? 0) > 0 ||
+    // O arco já atravessava. Sem isto o quadro que
+    // converte — windup já em 0 — era janela de hit.
+    // Pose no disco não é peso percebido.
+    state.events.some((event) => event.type === "bank");
   const entities = state.entities;
   let write = 0;
   for (let index = 0; index < entities.length; index += 1) {

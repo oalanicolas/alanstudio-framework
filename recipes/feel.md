@@ -81,9 +81,10 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    O término emite `land` (squash, câmera, puff, rumble e voz).
    Guardar uma corrente que já existe senta os mesmos dois ticks antes
    de converter; esses ticks já atravessam o estilhaço — o arco da
-   guarda não é janela de hit. Coleta e guarda no mesmo quadro
-   continuam na hora — o contato já foi a antecipação. Pose e arquivo
-   no disco não são peso percebido.
+   guarda não é janela de hit. O quadro que converte também atravessa:
+   sentar e pontuar no mesmo impacto não mata. Coleta e guarda no mesmo
+   quadro continuam na hora — o contato já foi a antecipação. Pose e
+   arquivo no disco não são peso percebido.
 4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
 5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.

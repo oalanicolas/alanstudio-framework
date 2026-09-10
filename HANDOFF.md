@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.201 (confirmado): `reducedMotion` na porta trava toque e live na mostra visível.
+**HEAD:** ver `git log -1` — vigente 0.9.202: o quadro da conversão da guarda também atravessa o estilhaço.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 273 OK.
-`cd assets/starters/canvas-arcade && npm test` → 380 OK.
+`cd assets/starters/canvas-arcade && npm test` → 381 esperados (confirmar).
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.201)
+## O que o HEAD já entrega (0.9.91–0.9.202)
 
 | Ver | Salto |
 | --- | --- |
@@ -145,6 +145,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.199 | `gameSpeed` só dilata o relógio em `playing`. Porta e fim ficam no relógio cheio. `advance()` continua ignorando. Não promove `accessibility`. |
 | 0.9.200 | `assist` cede queda e alcance também na mostra da porta. Graça extra fica no campo. Não promove `accessibility`. |
 | 0.9.201 | `reducedMotion` na porta trava toque e live na mesma mostra que o canvas já para. O campo continua caindo. Não promove `accessibility`. |
+| 0.9.202 | O quadro que converte a guarda também atravessa o estilhaço. Sem punch novo. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -157,7 +158,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | corpo e quadro sentam no over; a porta fecha o arco do avanço; o arco da guarda atravessa; a queda senta o corpo; a porta marca a mostra no trilho; a câmera confirma o trilho; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | corpo e quadro sentam no over; a porta fecha o arco do avanço; o arco da guarda atravessa; o quadro da conversão também atravessa; a queda senta o corpo; a porta marca a mostra no trilho; a câmera confirma o trilho; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; `heard` falso |
@@ -263,7 +264,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou export que some o stem do starter
   ou relógio da partida que some a mostra
   ou assistência que some a mostra
-  ou reduced que some o toque da mostra.
+  ou reduced que some o toque da mostra
+  ou conversão da guarda que é janela de hit.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -437,8 +439,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   fecha o arco (`land`) no mesmo tick.
   Guardar corrente já existente: `bank.windupTicks` (2) senta
   antes de converter. Esses ticks também são graça: o arco
-  atravessa o estilhaço. Coleta e guarda no mesmo quadro
-  continuam na hora. Raspo (`grazeContact`): estreita, punch na direção,
+  atravessa o estilhaço. O quadro da conversão (`events`
+  tem `bank`) também atravessa — `bankWindup` já é 0.
+  Coleta e guarda no mesmo quadro continuam na hora. Raspo (`grazeContact`): estreita, punch na direção,
   flash menor que a queda. Sem hitstop. Sem rumble.
   Queda (`squashMiss`): senta menos que a coleta. Sem rumble.
   Sem hitstop. Não promover `feel`.
@@ -603,6 +606,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um relógio da partida que dilata a mostra da porta.
 **Não** mais uma assistência que some a queda e o alcance na porta.
 **Não** mais um reduced que trava o canvas e deixa o toque e o live lerem a chuva que some.
+**Não** mais um quadro da conversão que mata depois do arco já ter atravessado.
 
 Candidatos, do que ainda dói:
 
@@ -795,7 +799,10 @@ Candidatos, do que ainda dói:
   mostra e o
   reduced que
   some o toque
-  da mostra
+  da mostra e a
+  conversão da
+  guarda que é
+  janela de hit
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -819,6 +826,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `reducedMotion` na porta
-trava toque e live na mesma mostra que o canvas já para.
-O campo continua caindo. Não promove `accessibility`.
+Arquivos quentes da última sessão: o quadro da conversão da
+guarda também atravessa o estilhaço. Sem punch novo.
+Não promove feel.
