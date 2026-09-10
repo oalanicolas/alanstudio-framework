@@ -67,11 +67,38 @@ test("a pausa entra na região viva sem fingir sessão", () => {
   );
   assert.equal(
     liveText({ phase: "over", paused: true }),
-    "pausado. fim da partida",
+    "fim da partida",
+  );
+  assert.equal(
+    liveText({ phase: "title", paused: true }),
+    "abertura",
   );
   assert.equal(liveText({ phase: "playing", paused: false }), "");
   assert.match(main, /paused:\s*loop\.paused/);
   assert.doesNotMatch(liveText({ paused: true }), /aprovado|verified|alguém de fora/);
+});
+
+test("a região viva só diz pausado quando o overlay diz Pausado", () => {
+  assert.equal(
+    liveText({ phase: "over", paused: true, score: 12, best: 20 }),
+    "fim da partida. 12. recorde 20",
+  );
+  assert.equal(
+    liveText({ phase: "title", paused: true, lastScore: 8, best: 20 }),
+    "abertura. última 8. recorde 20",
+  );
+  assert.equal(
+    liveText({ phase: "playing", paused: true, score: 12, best: 20 }),
+    "pausado. 12. recorde 20",
+  );
+  assert.doesNotMatch(
+    liveText({ phase: "over", paused: true, score: 12 }),
+    /pausado/,
+  );
+  assert.doesNotMatch(
+    liveText({ phase: "over", paused: true, score: 12 }),
+    /aprovado|verified|alguém de fora/,
+  );
 });
 
 test("a pausa nomeia o placar na região viva sem fingir sessão", () => {

@@ -49,13 +49,14 @@ Estilhaço no trilho pede o dash; toque e controle ganham passo depois
 do movimento. Overlay e HUD confirmam o aparelho que falou por último;
 o overlay segue `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
 x do corpo, no alcance do telegraph, vira `perigo à frente` na região viva
-junto da última legenda. A pausa entra como `pausado` e, com a
-cortina no campo, nomeia o placar e o recorde que o overlay agora
-mostra. Jogando sem pausa o número não entra. No fim a região
-viva nomeia o placar e o recorde que o overlay já mostra; na porta,
-a última pontuação e o recorde se o save os tem. O overlay do canvas
-não chega ao leitor. Texto no DOM não é sessão. O harness não joga com o
-modo ativo.
+junto da última legenda. A pausa entra como `pausado` só quando o
+overlay diz Pausado — no fim a cortina do over vence; na porta a
+placa nem nasce. Com a cortina no campo, nomeia o placar e o
+recorde que o overlay agora mostra. Jogando sem pausa o número
+não entra. No fim a região viva nomeia o placar e o recorde que o
+overlay já mostra; na porta, a última pontuação e o recorde se o
+save os tem. O overlay do canvas não chega ao leitor. Texto no
+DOM não é sessão. O harness não joga com o modo ativo.
 
 Não declare cobertura que não observou. Verificação automática de contraste é útil
 e não substitui uma sessão com o modo ativo. Uma lacuna registrada com motivo vale

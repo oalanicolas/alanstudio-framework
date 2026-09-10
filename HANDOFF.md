@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.183 (confirmado): sfx verify nomeia os stems do starter.
+**HEAD:** ver `git log -1` — vigente 0.9.184: a região viva só diz pausado na placa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 272 OK.
-`cd assets/starters/canvas-arcade && npm test` → 362 OK.
+`cd assets/starters/canvas-arcade && npm test` → 363 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.183)
+## O que o HEAD já entrega (0.9.91–0.9.184)
 
 | Ver | Salto |
 | --- | --- |
@@ -127,6 +127,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.181 | A pausa nomeia o placar no overlay e na região viva. Recorde 0 some. Jogando sem pausa o número não entra. Não promove `accessibility`. |
 | 0.9.182 | No fim a cortina do over vence a pausa. P e aba escondida não comem Fim, corrente nem porta. Não promove feel. |
 | 0.9.183 | `sfx verify` nomeia os stems do starter quando o acervo está vazio. Não cruza. `ok` fica falso. Não promove `heard`. |
+| 0.9.184 | A região viva só diz `pausado` quando o overlay diz Pausado. No fim e na porta a palavra some. Não promove `accessibility`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -146,7 +147,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | pausa nomeia placar no overlay e na região viva no disco; sessão real pendente |
+| accessibility | slice | live só diz pausado quando o overlay diz Pausado; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -228,7 +229,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou avanço no overlay, recorde no overlay do fim
   ou movimento na porta ou toque da mostra ou voz da mostra
   ou quadro sentado na pausa ou placar na pausa ou fim que vence a pausa
-  ou verify dos stems do starter.
+  ou verify dos stems do starter ou live que some pausado no fim.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -448,9 +449,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   sobre o look vigente. Alto contraste vence. Não entra no href.
   `threatCue` é estilhaço no x do corpo dentro do telegraph —
   na porta lê a mostra, não `entities`.   `#live` espelha fase,
-  pausa, perigo, a última legenda e, no fim, na porta e na pausa, o
-  placar e o recorde que o canvas já mostra. Jogando sem pausa o
-  número não entra. Texto no DOM não é sessão. Não
+  perigo, a última legenda e, no fim, na porta e na pausa no campo,
+  o placar e o recorde que o canvas já mostra. `pausado` só entra
+  quando o overlay diz Pausado — no fim a cortina do over vence;
+  na porta a placa nem nasce. Jogando sem pausa o número
+  não entra. Texto no DOM não é sessão. Não
   promover `accessibility`.
 
 ---
@@ -506,6 +509,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um overlay Pausado que some o placar que o HUD mostrou.
 **Não** mais um overlay Pausado no fim que come a aposta.
 **Não** mais um `sfx verify` que some os stems do starter.
+**Não** mais uma região viva que diz pausado enquanto o overlay diz Fim.
 
 Candidatos, do que ainda dói:
 
@@ -617,7 +621,11 @@ Candidatos, do que ainda dói:
   vence a
   pausa e o
   verify dos
-  stems
+  stems e a
+  live que
+  some
+  pausado no
+  fim
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -641,5 +649,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `sfx verify` nomeia os stems do
-starter. Não cruza. `ok` fica falso. Não promove `heard`.
+Arquivos quentes da última sessão: a região viva só diz pausado
+quando o overlay diz Pausado. No fim e na porta a palavra some.
+Não promove `accessibility`.
