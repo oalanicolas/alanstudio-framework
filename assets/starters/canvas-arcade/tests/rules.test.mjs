@@ -516,6 +516,83 @@ test("a coleta no avanço não congela nem senta o dash", () => {
   assert.equal(standing.player.squash, CONFIG.feel.squashCollect * fade, "parada continua sentando");
 });
 
+test("a coleta no término não come o sit do land", () => {
+  const fade = CONFIG.feel.squashDecay;
+  const tremor = CONFIG.feel.shakeDecay;
+  const punch = CONFIG.feel.punchDecay;
+  const state = createState(5);
+  dashOut(state);
+  state.spawnTimer = 999;
+  while (state.player.dashTicks > 1) {
+    state.entities = [];
+    advance(state, { move: 1, dash: false, bank: false });
+  }
+  assert.equal(state.player.dashTicks, 1);
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  state.shake = 0;
+  state.camera.x = 0;
+  state.camera.y = 0;
+  advance(state, { move: 1, dash: false, bank: false });
+  assert.equal(state.player.dashTicks, 0);
+  assert.ok(state.events.some((event) => event.type === "land"), "o término ainda nasce");
+  assert.equal(state.chain, 1, "o orbe ainda entra");
+  assert.ok(state.events.some((event) => event.type === "collect"));
+  assert.equal(state.hitstop, 0, "a coleta no land não congela");
+  assert.equal(
+    state.player.squash,
+    CONFIG.feel.squashLand * fade,
+    "a coleta não come o sit do término",
+  );
+  assert.equal(state.shake, CONFIG.feel.collectShake * tremor, "a coleta ainda treme");
+  assert.equal(
+    state.camera.y,
+    (CONFIG.feel.punchLandY + CONFIG.feel.punchCollectY) * punch,
+    "a coleta ainda sobe a câmera sobre o land",
+  );
+});
+
+test("a coleta no quadro da conversão não come o peso da guarda", () => {
+  const fade = CONFIG.feel.squashDecay;
+  const tremor = CONFIG.feel.shakeDecay;
+  const punch = CONFIG.feel.punchDecay;
+  const state = createState(3);
+  state.chain = 2;
+  advance(state, { move: 0, dash: false, bank: true });
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.equal(state.stats.collected, 0, "o arco ainda espera");
+  state.shake = 0;
+  state.camera.x = 0;
+  state.camera.y = 0;
+  advance(state, neutralIntent());
+  assert.equal(state.stats.banks, 1, "o quadro da conversão ainda converte");
+  assert.equal(state.score, 4);
+  assert.equal(state.stats.collected, 1, "depois do commit o orbe entra");
+  assert.equal(state.chain, 1);
+  assert.ok(state.events.some((event) => event.type === "bank"));
+  assert.ok(state.events.some((event) => event.type === "collect"));
+  assert.equal(
+    state.hitstop,
+    CONFIG.feel.bankHitstopTicks,
+    "a coleta não troca o peso da guarda",
+  );
+  assert.equal(
+    state.player.squash,
+    CONFIG.feel.squashBank * fade,
+    "a coleta não senta por cima da guarda",
+  );
+  assert.equal(
+    state.shake,
+    (CONFIG.feel.bankShake + CONFIG.feel.collectShake) * tremor,
+    "a coleta ainda treme sobre a guarda",
+  );
+  assert.equal(
+    state.camera.y,
+    (CONFIG.feel.punchBankY + CONFIG.feel.punchCollectY) * punch,
+    "a coleta ainda sobe a câmera sobre a guarda",
+  );
+});
+
 test("o raspo no avanço não come a pose do dash", () => {
   const fade = CONFIG.feel.squashDecay;
   const tremor = CONFIG.feel.shakeDecay;

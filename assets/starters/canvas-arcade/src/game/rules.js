@@ -34,6 +34,7 @@ export const CONFIG = {
   // Um orbe por tick: dois no alcance não inflam a corrente.
   // Estilhaço letal no mesmo quadro: o orbe espera. Orbe no
   // arco da guarda também espera — o sit não inflama a aposta.
+  // Coleta no land ou no quadro da conversão não come o sit.
   // Ordem do array não decide a aposta. Pose no disco não é peso.
   collect: {
     pad: 5, // alcance além do desenho: quem quase pegou, pega
@@ -999,7 +1000,7 @@ function resolveEntities(state) {
           write += 1;
           continue;
         }
-        collect(state, entity.x, entity.y);
+        collect(state, entity.x, entity.y, committed);
         releaseEntity(entity);
         continue;
       }
@@ -1051,19 +1052,16 @@ function grazeContact(state, committed = false) {
   }
 }
 
-function collect(state, fromX, fromY) {
+function collect(state, fromX, fromY, committed = false) {
   const before = chainPipCount(state.chain);
   state.chain += 1;
   state.stats.collected += 1;
   if (state.chain > state.stats.bestChain) state.stats.bestChain = state.chain;
-  const flying =
-    (state.player.dashTicks ?? 0) > 0 ||
-    (state.player.dashWindup ?? 0) > 0;
-  // O raspo já não come o alongamento. Sem isto o orbe
-  // no avanço congelava o dash e sentava o corpo — a
-  // coleta parada continua com hitstop e sit. Pose no
-  // disco não é peso percebido.
-  if (!flying) {
+  // O raspo e a queda já poupam o compromisso. Sem isto
+  // o orbe no land e no quadro da conversão congelava e
+  // sentava por cima do sit — a coleta parada continua
+  // com hitstop e sit. Pose no disco não é peso percebido.
+  if (!committed) {
     state.hitstop = CONFIG.feel.collectHitstopTicks;
     state.player.squash = CONFIG.feel.squashCollect;
   }
