@@ -4,7 +4,8 @@
 // último para o aviso e o overlay nomearem esse mapa — não o manifesto.
 // O gesto acorda o mixer (`unlock`): o resume no quadro chega
 // tarde e o primeiro verbo fica mudo. Acordar não é mix ouvido.
-// Sessão no aparelho não foi observada.
+// Na porta o arraste move sem abrir; o tap abre. No campo o
+// down de cima continua o avanço. Sessão no aparelho não foi observada.
 //
 // As regras nunca veem eventos — recebem `{ move, dash, bank }`. Isso é o que
 // permite rodar a partida headless, repetir um replay e comparar dispositivos:
@@ -21,6 +22,7 @@
 import { DEFAULT_BINDINGS } from "./settings.js";
 
 const MOVE_DEADZONE = 0.28;
+const DRAG_DEADZONE = 0.04;
 
 export function createInput(options = {}) {
   const target = options.target ?? (typeof window !== "undefined" ? window : null);
@@ -36,9 +38,21 @@ export function createInput(options = {}) {
   const pressed = new Set();
   const gamepadHeld = new Set();
   const padCommandHeld = new Set();
-  const pointer = { active: false, aim: null, dash: false, bank: false };
+  const pointer = {
+    active: false,
+    aim: null,
+    dash: false,
+    bank: false,
+    originX: null,
+    originY: null,
+    dragged: false,
+  };
   const registered = [];
   let lastSource = "keyboard";
+  // No campo o toque de cima avança no down — o verbo precisa
+  // do quadro. Na porta o mesmo down abria o ciclo e o aviso
+  // de mover mentia. Arraste no disco não é sessão observada.
+  let dashOnPress = true;
 
   function noteSource(source) {
     lastSource = source;
@@ -85,6 +99,11 @@ export function createInput(options = {}) {
     held.clear();
     pointer.active = false;
     pointer.aim = null;
+    pointer.dash = false;
+    pointer.bank = false;
+    pointer.originX = null;
+    pointer.originY = null;
+    pointer.dragged = false;
   }
 
   function pointerAim(event) {
@@ -104,11 +123,15 @@ export function createInput(options = {}) {
     wake();
     pointer.active = true;
     pointer.aim = position.x;
-    // Faixa inferior guarda a corrente; o resto da tela é dash.
+    pointer.originX = position.x;
+    pointer.originY = position.y;
+    pointer.dragged = false;
+    // Faixa inferior guarda a corrente; o resto da tela é dash
+    // no campo. Na porta o down não avança — o arraste ensaia.
     if (position.y > 0.82) {
       pointer.bank = true;
       pressed.add("bank");
-    } else {
+    } else if (dashOnPress) {
       pointer.dash = true;
       pressed.add("dash");
     }
@@ -117,14 +140,36 @@ export function createInput(options = {}) {
   function onPointerMove(event) {
     if (!pointer.active) return;
     const position = pointerAim(event);
-    if (position) pointer.aim = position.x;
+    if (!position) return;
+    pointer.aim = position.x;
+    if (pointer.originX !== null && pointer.originY !== null) {
+      const dx = position.x - pointer.originX;
+      const dy = position.y - pointer.originY;
+      if (dx * dx + dy * dy > DRAG_DEADZONE * DRAG_DEADZONE) pointer.dragged = true;
+    }
   }
 
   function onPointerUp() {
+    // Na porta o tap (sem arraste) abre; o arraste já moveu.
+    // No campo o down já avançou — soltar não dispara de novo.
+    if (
+      !dashOnPress
+      && pointer.active
+      && !pointer.dragged
+      && pointer.originY !== null
+      && pointer.originY <= 0.82
+    ) {
+      pointer.dash = true;
+      pressed.add("dash");
+    } else {
+      pointer.dash = false;
+    }
     pointer.active = false;
     pointer.aim = null;
-    pointer.dash = false;
     pointer.bank = false;
+    pointer.originX = null;
+    pointer.originY = null;
+    pointer.dragged = false;
   }
 
   on(target, "keydown", onKeyDown);
@@ -224,6 +269,10 @@ export function createInput(options = {}) {
       pointer.dash = false;
       pointer.bank = false;
       return result;
+    },
+    setDashOnPress(next) {
+      dashOnPress = next !== false;
+      return dashOnPress;
     },
     rebind(action, codes) {
       if (!(action in bindings) || !Array.isArray(codes) || !codes.length) return false;

@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.235 (confirmado): a coleta no land e no quadro da conversão não come o sit do compromisso.
+**HEAD:** ver `git log -1` — vigente 0.9.236: na porta o arraste move sem abrir; o tap abre. No campo o down de cima continua o avanço.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 281 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.235)
+## O que o HEAD já entrega (0.9.91–0.9.236)
 
 | Ver | Salto |
 | --- | --- |
@@ -179,6 +179,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.233 | A coleta no avanço não congela nem senta o dash. Parada continua com hitstop e sit. Não promove feel. |
 | 0.9.234 | O `next` do ciclo fresco aponta `note`, não um segundo `next --focus feel`. `init.next_commands` também. `then.lost` continua o next. Não executa. |
 | 0.9.235 | A coleta no land e no quadro da conversão não come o sit do compromisso. Parada continua com hitstop e sit. Não promove feel. |
+| 0.9.236 | Na porta o arraste move sem abrir; o tap abre. No campo o down de cima continua o avanço. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -332,7 +333,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou raspo no avanço que come a pose do dash
   ou coleta no avanço que congela e senta o dash
   ou next do ciclo fresco que aponta um segundo next
-  ou coleta no land ou no quadro da conversão que come o sit do compromisso.
+  ou coleta no land ou no quadro da conversão que come o sit do compromisso
+  ou toque na porta que abre no down e some o arraste.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -508,7 +510,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   Legenda na abertura não sobe `accessibility`. Dash em `step` chama
   `beginRun`: dispara `dash`, fecha com `land` no mesmo tick
   (`squashLand`, punch Y, puff). Sem `dashTicks`, sem recovery,
-  sem incrementar `stats.dashes`. Sem dash, `attractMove` desloca o corpo, `attractTick` anda a
+  sem incrementar `stats.dashes`. Na porta o toque não avança no
+  down (`setDashOnPress(false)`): o arraste move; o tap abre.
+  No campo o down de cima continua o avanço. Sem dash, `attractMove` desloca o corpo, `attractTick` anda a
   chuva, decai squash/flash e emite `live` uma vez, e
   `attractTouch` acende quando a mostra cruza o corpo — sem
   pontuar, sem punch, sem seed. Sem cama. Sem rumble.
@@ -762,6 +766,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma coleta no avanço que congela e senta o dash.
 **Não** mais um `next` do ciclo fresco que aponta um segundo `next`.
 **Não** mais uma coleta no land ou no quadro da conversão que come o sit do compromisso.
+**Não** mais um toque na porta que abre no down e some o arraste.
 
 Candidatos, do que ainda dói:
 
@@ -1152,6 +1157,12 @@ Candidatos, do que ainda dói:
   que come o
   sit do
   compromisso
+  e o
+  toque na
+  porta que
+  abre no
+  down e some
+  o arraste
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1175,7 +1186,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a coleta
-no land e no quadro da conversão lê o
-mesmo `committed` do raspo. Parada
-continua com hitstop e sit. Não promove.
+Arquivos quentes da última sessão: na porta
+o arraste move sem abrir; o tap abre.
+`setDashOnPress` no title. No campo o
+down de cima continua o avanço. Não promove.

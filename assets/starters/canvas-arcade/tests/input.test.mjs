@@ -54,6 +54,30 @@ test("arrastar no toque move; a faixa de cima avança e a de baixo guarda", () =
   input.dispose();
 });
 
+test("na porta o arraste move sem avançar; o tap abre", () => {
+  const pad = surface();
+  const input = createInput({ target: null, surface: pad });
+  assert.equal(input.setDashOnPress(false), false);
+  pad.tap(64, 90);
+  const drag = input.intent(0.5);
+  assert.equal(drag.move, -1, "o arraste ainda move");
+  assert.equal(drag.dash, false, "o down na porta não avança");
+  assert.equal(drag.bank, false);
+  pad.dispatch("pointermove", { clientX: 10 + 40, clientY: 20 + 90 });
+  pad.dispatch("pointerup", {});
+  const afterDrag = input.intent(0.5);
+  assert.equal(afterDrag.dash, false, "soltar o arraste não abre");
+
+  pad.tap(160, 90);
+  const hold = input.intent(0.5);
+  assert.equal(hold.dash, false, "o down do tap ainda não abre");
+  pad.dispatch("pointerup", {});
+  const tap = input.intent(0.5);
+  assert.equal(tap.dash, true, "o tap na porta abre");
+  assert.equal(tap.bank, false);
+  input.dispose();
+});
+
 test("tecla ligada e toque acordam o mixer no gesto, tecla solta não", () => {
   const woken = [];
   const keys = surface();

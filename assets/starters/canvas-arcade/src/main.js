@@ -128,10 +128,19 @@ export function createGame(options = {}) {
   function syncClock() {
     loop.setSpeed(clockSpeed());
   }
+  function syncDashOnPress() {
+    // A porta pede mover. Sem isto o toque de cima abria o
+    // ciclo no down e o arraste mentia. Toque no disco não
+    // é sessão observada.
+    if (typeof input.setDashOnPress === "function") {
+      input.setDashOnPress(state.phase !== "title");
+    }
+  }
   function emitPhase() {
     if (state.phase === lastPhase) return;
     lastPhase = state.phase;
     syncClock();
+    syncDashOnPress();
     for (const fn of watchers) fn(state.phase);
   }
   function doorOpen() {
@@ -154,6 +163,7 @@ export function createGame(options = {}) {
     bindings: settings.bindings,
     unlock: () => audio.unlock(),
   });
+  syncDashOnPress();
   const haptics = options.haptics ?? createHaptics({ settings, gamepads: options.gamepads });
   const renderer = canvas ? createRenderer(canvas) : null;
   // Sem canvas (teste headless) não busca arquivo: o fetch relativo não tem

@@ -6,6 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { createGame } from "../src/main.js";
+import { createInput } from "../src/core/input.js";
 import { memoryStorage } from "../src/core/storage.js";
 import { canResume } from "../src/core/save.js";
 import { BED_FADE_MS } from "../src/game/audio.js";
@@ -444,6 +445,50 @@ test("com tela a porta fala a mostra sem abrir o ciclo", () => {
   assert.equal(heard.includes("bed"), false, "a porta não liga a cama");
   game.advance(1);
   assert.equal(heard.filter((role) => role === "live").length, 1, "o segundo quadro não repete");
+  game.dispose();
+});
+
+test("com tela o toque na porta não avança no down", () => {
+  const listeners = [];
+  const pad = {
+    getBoundingClientRect() {
+      return { left: 0, top: 0, width: 320, height: 180 };
+    },
+    addEventListener(type, handler) {
+      listeners.push({ type, handler });
+    },
+    removeEventListener(type, handler) {
+      const index = listeners.findIndex((entry) => entry.type === type && entry.handler === handler);
+      if (index !== -1) listeners.splice(index, 1);
+    },
+    dispatch(type, event) {
+      for (const entry of [...listeners]) {
+        if (entry.type === type) entry.handler(event);
+      }
+    },
+  };
+  const input = createInput({ target: null, surface: pad });
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    canvas: silentCanvas(),
+    input,
+    loadSfx: false,
+  });
+  assert.equal(game.observe().phase, "title");
+  pad.dispatch("pointerdown", { clientX: 64, clientY: 90 });
+  const door = input.intent(0.5);
+  assert.equal(door.dash, false, "o down na porta não avança");
+  assert.equal(door.move, -1, "o toque ainda aponta o passo");
+  pad.dispatch("pointerup", {});
+  input.intent(0.5);
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing");
+  pad.dispatch("pointerdown", { clientX: 64, clientY: 90 });
+  const field = input.intent(0.5);
+  assert.equal(field.dash, true, "no campo o down de cima avança");
   game.dispose();
 });
 
