@@ -55,7 +55,9 @@ placa nem nasce. Com a cortina no campo, nomeia o placar e o
 recorde que o overlay agora mostra. Jogando sem pausa o número
 não entra. No fim a região viva nomeia o placar, o recorde e a
 corrente que caiu se o overlay a nomeia; na porta, a última
-pontuação e o recorde se o save os tem. O overlay do canvas não chega ao leitor. Texto no
+pontuação e o recorde se o save os tem. Na porta e no fim a
+região viva também nomeia o aviso da sessão se o canvas o
+mostra. Nomear não é aba fechada. O overlay do canvas não chega ao leitor. Texto no
 DOM não é sessão. O harness não joga com o modo ativo.
 
 Não declare cobertura que não observou. Verificação automática de contraste é útil

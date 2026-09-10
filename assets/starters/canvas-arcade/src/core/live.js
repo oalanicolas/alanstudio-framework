@@ -3,8 +3,9 @@
 // — no fim a cortina do over vence; na porta a placa nem nasce.
 // O fim, a porta e a pausa no campo já nomeiam placar e recorde
 // no canvas. No fim o overlay também nomeia a corrente que caiu.
-// Jogando sem pausa o número não entra. Texto no DOM
-// não é sessão de alcance nem alguém de fora.
+// Na porta e no fim o canvas já nomeia sessão volátil; a região
+// viva espelha essa linha. Jogando sem pausa o número não entra.
+// Texto no DOM não é sessão de alcance nem alguém de fora.
 
 function whole(value) {
   if (!Number.isFinite(value)) return null;
@@ -20,6 +21,7 @@ export function liveText({
   best,
   lastScore,
   chain,
+  persist,
 } = {}) {
   const parts = [];
   const seen = new Set();
@@ -39,12 +41,14 @@ export function liveText({
     if (stake !== null && Number(chain) > 0) add(`corrente ${stake}`);
     const record = whole(best);
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
+    add(persist);
   } else if (phase === "title") {
     add("abertura");
     const last = whole(lastScore);
     if (last !== null) add(`última ${last}`);
     const record = whole(best);
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
+    add(persist);
   } else if (overlayPaused) {
     // A cortina cobre o HUD. Sem o número aqui só o canvas
     // o mostrava, e a placa o come. Jogando sem pausa o

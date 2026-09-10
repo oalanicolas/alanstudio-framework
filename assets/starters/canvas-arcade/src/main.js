@@ -10,7 +10,7 @@ import { createLoop } from "./core/loop.js";
 import { createInput } from "./core/input.js";
 import { browserStorage } from "./core/storage.js";
 import { playReport, LAST_RUN_ROUTE } from "./core/run-report.js";
-import { canContinue, canResume, captureHold, loadProgress, persistStatus, recordRun, saveProgress, summarizeRun } from "./core/save.js";
+import { canContinue, canResume, captureHold, loadProgress, persistLine, persistStatus, recordRun, saveProgress, summarizeRun } from "./core/save.js";
 import { detectEnvironment, loadSettings, normalizeSettings, saveSettings } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { BED_FADE_MS, createAudio } from "./game/audio.js";
@@ -271,6 +271,7 @@ export function createGame(options = {}) {
         best: progress.best,
         chain: state.chain,
         lastScore: lastRun && Number.isFinite(lastRun.score) ? lastRun.score : undefined,
+        persist: persistLine(persist(), copy),
       }),
     });
     if (!renderer) return;

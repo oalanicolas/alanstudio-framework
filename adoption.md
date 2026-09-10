@@ -3,6 +3,26 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.195 — Na porta e no fim a live nomeia o aviso
+
+O canvas já dizia
+sessão volátil. A
+região viva só
+falava placar e
+recorde. O `save`
+já via o aviso. O
+leitor ainda não.
+Agora espelha a
+linha. Jogando a
+chave some. `trusted`
+continua falso. Só
+`release` fica no
+piso.
+
+O que 0.9.195 não afirma:
+texto no DOM não é
+aba fechada.
+
 ## 0.9.194 — O save nomeia o aviso da sessão
 
 A porta já dizia

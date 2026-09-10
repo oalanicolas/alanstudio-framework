@@ -148,6 +148,38 @@ test("a pausa nomeia o placar na região viva sem fingir sessão", () => {
   );
 });
 
+test("na porta e no fim a região viva nomeia o aviso da sessão sem fingir confiança", () => {
+  assert.equal(
+    liveText({ phase: "title", persist: "Esta sessão não grava" }),
+    "abertura. Esta sessão não grava",
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, persist: "Esta sessão não grava" }),
+    "fim da partida. 12. Esta sessão não grava",
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, persist: "A última gravação não ficou" }),
+    "fim da partida. 12. A última gravação não ficou",
+  );
+  assert.equal(
+    liveText({ phase: "title", persist: "" }),
+    "abertura",
+  );
+  assert.equal(
+    liveText({ phase: "playing", persist: "Esta sessão não grava" }),
+    "",
+  );
+  assert.equal(
+    liveText({ phase: "playing", paused: true, score: 12, persist: "Esta sessão não grava" }),
+    "pausado. 12",
+  );
+  assert.match(main, /persistLine\(persist\(\),\s*copy\)/);
+  assert.doesNotMatch(
+    liveText({ phase: "title", persist: "Esta sessão não grava" }),
+    /aprovado|verified|trusted|alguém de fora/,
+  );
+});
+
 test("applyLive só escreve quando o texto muda", () => {
   const node = { textContent: "" };
   assert.equal(applyLive({}), false);
