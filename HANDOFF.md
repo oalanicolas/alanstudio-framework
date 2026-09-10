@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.285: o `discover` nomeia as lacunas de dimensão que o `next` já usa. `access_declared` não esconde o pulso. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** suíte ainda não recontada neste salto — confirmar depois do commit.
-`cd assets/starters/canvas-arcade && npm test` → 468 OK (sem mudança no starter).
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 304 OK.
+`cd assets/starters/canvas-arcade && npm test` → 468 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
