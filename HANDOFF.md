@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.209: o `note` nomeia se o recibo fechou o achado.
+**HEAD:** ver `git log -1` — vigente 0.9.209 (confirmado): o `note` nomeia se o recibo fechou o achado.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 278 esperados (confirmar).
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 278 OK.
 `cd assets/starters/canvas-arcade && npm test` → 384 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -342,9 +342,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   mesma `url`. Não criam, não executam. Sem caminho: `here_project`,
   o único vizinho jogável do laboratório, a lista dos nomes se
   houver dois, ou “sem destino”. Não escolhe o starter. Não varre `/`.
-- `note` / `next` / `feel` / `playtest` (CLI) usam
+-   `note` / `next` / `feel` / `playtest` (CLI) usam
   `require_project_destination` — o mesmo resolvedor. `note`
-  continua exigindo `--author` e `--note`. Achar o jogo não
+  continua exigindo `--author` e `--note`. Nomeia `finding`,
+  `form` e `needed`. Sem `then`. Recibo sem os quatro
+  não é achado. Achar o jogo não
   sente, não assiste e não promove. `playtest` só lê.
   Sem os quatro campos, o recibo traz `finding_href`
   (`/#finding` ou `/?seed=<n>#finding` com os eixos),
