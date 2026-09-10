@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.225 — A queda não come o verbo em curso
+
+O
+orbe
+que
+você
+nem
+contestou
+sentava
+o
+corpo
+no
+meio
+do
+avanço,
+do
+coil
+ou
+do
+sit
+da
+guarda.
+A
+queda
+ainda
+marca
+o
+chão,
+fala
+e
+treme.
+Parado,
+ainda
+senta.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.225 não afirma:
+marca
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.224 — O hitstop não alonga o relógio no fim
 
 O

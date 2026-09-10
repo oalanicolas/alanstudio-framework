@@ -95,8 +95,11 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    que cai no arco da guarda espera: o sit não inflama a aposta
    que você já pediu; depois do commit o orbe entra. O relógio
    não come a guarda que já sentou: o sit converte antes do
-   `over`. O hitstop no fim não alonga o relógio: o limite
-   encerra mesmo durante o congelamento. Dois
+   `over`.    O hitstop no fim não alonga o relógio: o limite
+   encerra mesmo durante o congelamento. A queda
+   longe não come o verbo em curso: marca o chão
+   e não senta o avanço, o coil nem o sit da guarda.
+   Parado, a queda ainda senta. Dois
    orbes no mesmo quadro não inflam a corrente: o segundo espera o
    próximo tick. Orbe e estilhaço no mesmo quadro: o estilhaço letal
    resolve; o orbe espera. Ordem do array não decide a aposta. A graça
@@ -214,7 +217,9 @@ O fecho da partida contorna o campo e pulsa o controle a cada
 segundo; não é faixa no HUD. Com menos movimento vira traço.
 A prática e a guarda falam no mixer quando a janela acaba;
 o orbe que cai fala, acende o campo, marca o lugar, desloca
-a câmera para baixo e senta o corpo, sem pulsar o controle. Arquivo no disco não é peso percebido. A coleta leva o orbe ao slot; o erro espalha os pips;
+a câmera para baixo e senta o corpo quando o verbo está parado;
+no avanço, no coil e no sit da guarda a queda marca o chão e
+não senta o compromisso. Sem pulsar o controle. Arquivo no disco não é peso percebido. A coleta leva o orbe ao slot; o erro espalha os pips;
 na guarda eles voam para o placar; no fim a aposta não guardada
 cai, o corpo senta (`squashOver`), o quadro senta (tremor, flash e
 punch do último verbo não atravessam o overlay); na pausa o quadro

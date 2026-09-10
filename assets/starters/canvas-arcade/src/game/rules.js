@@ -54,7 +54,7 @@ export const CONFIG = {
     hitShake: 1,
     shakeDecay: 0.86,
     squashCollect: 0.22,
-    squashMiss: 0.16, // a queda senta o corpo; menor que a coleta
+    squashMiss: 0.16, // a queda senta o corpo parado; menor que a coleta; o verbo em curso não senta
     squashCoil: -0.18, // antecipação do avanço: estreita antes de alongar
     squashBankCoil: 0.28, // antecipação da guarda: senta, não estreita; menor que o compromisso
     squashGraze: -0.26, // o contato estreita; o dash alonga
@@ -1016,8 +1016,14 @@ function resolveEntities(state) {
         emit(state, "missed", { x: entity.x });
         dropMiss(state, entity.x);
         state.shake += CONFIG.feel.missedShake;
-        state.player.squash = CONFIG.feel.squashMiss;
-        punch(state, 0, CONFIG.feel.punchMissedY);
+        // A queda marca o chão. Sem isto o orbe que
+        // você nem contestou sentava o corpo no meio
+        // do avanço, do coil ou do sit da guarda.
+        // Pose no disco não é peso percebido.
+        if (!committed) {
+          state.player.squash = CONFIG.feel.squashMiss;
+          punch(state, 0, CONFIG.feel.punchMissedY);
+        }
       }
       releaseEntity(entity);
       continue;

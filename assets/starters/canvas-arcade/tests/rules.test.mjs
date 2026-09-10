@@ -1138,6 +1138,40 @@ test("sair da recuperação emite e acende o campo", () => {
   assert.equal(hold.events.some((event) => event.type === "stir"), false, "alongar a folga não é a volta");
 });
 
+test("a queda não come o verbo em curso", () => {
+  const fade = CONFIG.feel.squashDecay;
+  const state = createState(3);
+  dashOut(state);
+  assert.ok(state.player.dashTicks > 0);
+  const dashSquash = state.player.squash;
+  state.camera.x = 0;
+  state.camera.y = 0;
+  state.entities = [orb(20, 190)];
+  advance(state, { move: 1, dash: false, bank: false });
+  assert.equal(state.stats.missed, 1);
+  assert.ok(state.events.some((event) => event.type === "missed"));
+  assert.ok(state.motes.some((mote) => mote.kind === "missed"), "a marca da queda permanece");
+  assert.equal(state.player.squash, dashSquash * fade, "a queda longe não senta o avanço");
+  assert.equal(state.camera.y, 0, "a queda longe não puxa a câmera do avanço");
+
+  const coil = createState(4);
+  advance(coil, { move: 1, dash: true, bank: false });
+  assert.equal(coil.player.dashWindup, CONFIG.player.dashWindupTicks);
+  coil.entities = [orb(20, 190)];
+  advance(coil, { move: 1, dash: false, bank: false });
+  assert.equal(coil.stats.missed, 1);
+  assert.equal(coil.player.squash, CONFIG.feel.squashCoil * fade, "a queda longe não senta o coil");
+
+  const guard = createState(5);
+  guard.chain = 4;
+  advance(guard, { move: 0, dash: false, bank: true });
+  assert.equal(guard.bankWindup, CONFIG.bank.windupTicks);
+  guard.entities = [orb(20, 190)];
+  advance(guard, neutralIntent());
+  assert.equal(guard.stats.missed, 1);
+  assert.equal(guard.player.squash, CONFIG.feel.squashBankCoil * fade, "a queda longe não senta a guarda");
+});
+
 test("orbe perdido é contado, não silencioso", () => {
   const state = createState(6);
   state.entities = [orb(20, 190)];
