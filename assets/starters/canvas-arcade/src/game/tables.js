@@ -34,6 +34,7 @@
 // Toda mesa tem schema: formato antigo (sem campo) vira o vigente;
 // schema futuro falha com o número, não com undefined no meio do tick.
 // Spawn 2 acrescenta prática e recuperação; ausentes ganham o padrão.
+// Spawn 3 acrescenta o fecho (`closeIntervalScale`); ausente fica 1.
 
 import spawnRaw from "../../data/spawn.json" with { type: "json" };
 import copyRaw from "../../data/copy.json" with { type: "json" };
@@ -41,7 +42,7 @@ import duskRaw from "../../data/dusk.json" with { type: "json" };
 import calmRaw from "../../data/calm.json" with { type: "json" };
 import palettesRaw from "../../data/palettes.json" with { type: "json" };
 
-export const SPAWN_SCHEMA = 2;
+export const SPAWN_SCHEMA = 3;
 export const COPY_SCHEMA = 2;
 export const PALETTE_SCHEMA = 1;
 export const SPAWN_FIELDS = [
@@ -55,6 +56,7 @@ export const SPAWN_FIELDS = [
   "practiceTicks",
   "recoveryTicks",
   "recoveryIntervalScale",
+  "closeIntervalScale",
 ];
 export const SPAWN_CORE_FIELDS = [
   "intervalTicks",
@@ -101,6 +103,7 @@ export function applySpawnIntent(table, intent) {
     next.practiceTicks = scaleInt(next.practiceTicks, 0.5, 30);
     next.fallSpeedMin = clamp(next.fallSpeedMin + 0.15, 0.4, 4);
     next.fallSpeedMax = clamp(next.fallSpeedMax + 0.25, next.fallSpeedMin, 5);
+    next.closeIntervalScale = clamp((next.closeIntervalScale ?? 1) * 0.85, 0.35, 1);
   } else if (intent === "calmer") {
     next.intervalTicks = scaleInt(next.intervalTicks, 1.25, 8);
     next.minIntervalTicks = scaleInt(next.minIntervalTicks, 1.25, 4);
@@ -109,6 +112,7 @@ export function applySpawnIntent(table, intent) {
     next.practiceTicks = scaleInt(next.practiceTicks, 1.5, 30);
     next.fallSpeedMin = clamp(next.fallSpeedMin - 0.15, 0.4, 4);
     next.fallSpeedMax = clamp(next.fallSpeedMax - 0.2, next.fallSpeedMin, 5);
+    next.closeIntervalScale = clamp((next.closeIntervalScale ?? 1) * 1.12, 0.35, 1.25);
   } else {
     next.practiceTicks = scaleInt(next.practiceTicks, 0.4, 30);
     next.recoveryTicks = scaleInt(next.recoveryTicks, 0.7, 20);
@@ -178,6 +182,9 @@ export function migrateSpawn(raw, name = "spawn") {
     recoveryIntervalScale: Number.isFinite(table.recoveryIntervalScale)
       ? table.recoveryIntervalScale
       : 1.6,
+    closeIntervalScale: Number.isFinite(table.closeIntervalScale) && table.closeIntervalScale > 0
+      ? table.closeIntervalScale
+      : 1,
   };
 }
 

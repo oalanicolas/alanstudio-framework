@@ -3,6 +3,25 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.155 — O fecho aperta a chuva
+
+Os últimos 10 s só
+piscavam e falavam. A
+cadência não mudava.
+`closeIntervalScale` aperta
+o intervalo a partir do
+dado. Mesa velha fica `1`.
+dusk aperta mais; calm
+menos. Recuperação e fecho
+se multiplicam. `pacing`
+não sobe. Só `release`
+fica no piso.
+
+O que 0.9.155 não afirma:
+aperto no disco não é
+curva observada nem
+alguém de fora.
+
 ## 0.9.154 — O prompt nomeia a sessão
 
 O `then` já apontava

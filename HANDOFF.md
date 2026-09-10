@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.154: o prompt nomeia a sessão.
+**HEAD:** ver `git log -1` — vigente 0.9.155: o fecho aperta a chuva.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 264 OK.
-`cd assets/starters/canvas-arcade && npm test` → 327 OK.
+`cd assets/starters/canvas-arcade && npm test` → conferir após o 0.9.155.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.154)
+## O que o HEAD já entrega (0.9.91–0.9.155)
 
 | Ver | Salto |
 | --- | --- |
@@ -98,6 +98,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.152 | `start` não planta os seis rascunhos. `fresh_starter_cycle` aceita zero do ciclo. `areas.not_located` só bloqueia quem ainda não abre. `init` e `--docs` continuam plantando. |
 | 0.9.153 | `start` / `play` / `guide` devolvem `runtime`: Node no PATH se o play pede npm ou node. Sem 20+ o prompt avisa. Não executa o serve. `usable` é só o binário. |
 | 0.9.154 | O prompt nomeia `Sessão:` quando o manifesto declara `session`. `start` / `play` / `guide` devolvem a chave. Não executa. Simulação não é partida observada. |
+| 0.9.155 | Spawn 3: `closeIntervalScale` aperta o intervalo nos últimos 10 s. Ausente fica `1`. dusk aperta mais que spawn; calm menos. Recuperação e fecho se multiplicam. Não promove pacing. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -114,7 +115,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | `heard` falso |
-| pacing | slice | curva com outsider pendente |
+| pacing | slice | fecho aperta no disco; curva com outsider pendente |
 | state_trust | slice | `hold` no stub; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
 | accessibility | slice | nove opções + remap + relógio; sessão real pendente |
@@ -175,7 +176,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, chuva da porta, `gameSpeed` no disco, `hold` no stub,
-  coil/windup no disco, `bank.windupTicks` no disco, copiar ou gravar o achado, last-run,
+  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, copiar ou gravar o achado, last-run,
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
   `then.invite`, `invite_href`, copiar o endereço do convite,
   levar a chuva ou o look na URL, tinta estável no disco,
@@ -273,7 +274,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 **Starter**
 
 - Looks first-party: `normal`, `dusk`, `calm`. Contrast é alcance.
-- Chuvas first-party: `spawn`, `dusk`, `calm`.
+- Chuvas first-party: `spawn`, `dusk`, `calm`. Spawn 3: `closeIntervalScale`
+  (spawn 0.72, dusk 0.58, calm 0.86). Ausente ou ≤ 0 vira `1`.
+  `spawnIntervalScale` multiplica recuperação e fecho. Não promover
+  `pacing`.
 - `listMoods()` = interseção look ∩ spawn (hoje `calm`, `dusk`).
 - `SOUNDS`: dash, land, graze, collect, missed, bank, hit, over, close, live, stir, bed.
   Pedido sem buffer: last-wins na fila; `register` toca sem segunda
@@ -382,6 +386,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais exigir `FRESH_DRAFTS` para o atalho do primeiro ciclo.
 **Não** mais um campo que só relê o `doctor` sem mudar o prompt.
 **Não** mais esconder a sessão no `then` enquanto o prompt só cola o serve.
+**Não** mais um fecho que só pisca enquanto o dado já nomeia o aperto.
 
 Candidatos, do que ainda dói:
 
@@ -427,8 +432,10 @@ Candidatos, do que ainda dói:
    o painel no over e a
    região viva do perigo e o
    duck só na cama e a graça
-   no coil do avanço não
-   fecham. A receita
+  no coil do avanço e o
+  aperto do fecho no
+  disco não
+  fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
    Não nascer look/chuva first-party novo como craft.
@@ -450,6 +457,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `session_line` no prompt de
-`start` / `play` / `guide`. Chave `session` no recibo. Não executa.
-Simulação não é partida observada.
+Arquivos quentes da última sessão: `closeIntervalScale` nas três
+chuvas; `spawnIntervalScale` em `rules.js`. Ausente fica 1.
+Não promover pacing.

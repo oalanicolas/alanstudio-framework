@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, attractEntities, attractTick, beginRun, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, threatCue } from "../src/game/rules.js";
+import { advance, approaching, attractEntities, attractTick, beginRun, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnIntervalScale, threatCue } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -952,4 +952,33 @@ test("o fecho emite no segundo redondo e não no meio do segundo", () => {
   ended.phase = "over";
   ended.tick = CONFIG.runTicks;
   assert.equal(closingWindow(ended), false);
+});
+
+test("o fecho aperta a chuva sem fingir curva observada", () => {
+  const mid = createState(3);
+  mid.tick = 1800;
+  assert.equal(closingWindow(mid), false);
+  assert.equal(spawnIntervalScale(mid, mid.spawn), 1);
+
+  const close = createState(3);
+  close.tick = CONFIG.runTicks - 300;
+  assert.equal(closingWindow(close), true);
+  assert.equal(spawnIntervalScale(close, close.spawn), close.spawn.closeIntervalScale);
+  assert.ok(close.spawn.closeIntervalScale < 1);
+  close.spawnTimer = 0;
+  const progress = Math.min(1, (close.tick + 1) / close.spawn.rampTicks);
+  const unscaled = Math.round(
+    close.spawn.intervalTicks + (close.spawn.minIntervalTicks - close.spawn.intervalTicks) * progress,
+  );
+  advance(close, neutralIntent());
+  assert.ok(close.spawnTimer < unscaled, "o fecho precisa encurtar o intervalo");
+  assert.ok(close.spawnTimer >= 1);
+
+  const both = createState(3);
+  both.tick = CONFIG.runTicks - 300;
+  both.recoverUntil = both.tick + 40;
+  assert.ok(Math.abs(
+    spawnIntervalScale(both, both.spawn)
+      - both.spawn.recoveryIntervalScale * both.spawn.closeIntervalScale,
+  ) < 1e-9, "recuperação e fecho se multiplicam");
 });

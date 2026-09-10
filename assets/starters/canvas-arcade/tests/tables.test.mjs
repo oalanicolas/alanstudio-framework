@@ -93,8 +93,26 @@ test("spawn sem schema migra; schema futuro falha com o número", () => {
   assert.equal(old.intervalTicks, 22);
   assert.equal(old.practiceTicks, 240);
   assert.equal(old.recoveryTicks, 90);
+  assert.equal(old.closeIntervalScale, 1, "mesa velha não aperta o fecho");
   assert.throws(() => migrateSpawn({ schema: 9 }), /mesa spawn schema 9 não suportado/);
   assert.throws(() => migrateSpawn(null), /mesa spawn ilegível/);
+});
+
+test("o fecho first-party aperta o intervalo sem fingir curva observada", () => {
+  const spawn = loadSpawn("spawn");
+  const dusk = loadSpawn("dusk");
+  const calm = loadSpawn("calm");
+  assert.ok(spawn.closeIntervalScale < 1);
+  assert.ok(dusk.closeIntervalScale < spawn.closeIntervalScale);
+  assert.ok(spawn.closeIntervalScale < calm.closeIntervalScale);
+  assert.ok(calm.closeIntervalScale < 1);
+  const denser = applySpawnIntent(spawn, "denser");
+  const calmer = applySpawnIntent(spawn, "calmer");
+  const brief = applySpawnIntent(spawn, "brief");
+  assert.ok(denser.closeIntervalScale < spawn.closeIntervalScale);
+  assert.ok(calmer.closeIntervalScale > spawn.closeIntervalScale);
+  assert.equal(brief.closeIntervalScale, spawn.closeIntervalScale);
+  assert.equal(spawnRecord(spawn).closeIntervalScale, spawn.closeIntervalScale);
 });
 
 test("a intenção desloca knobs sem inventar mesa nem aprovar chuva", () => {

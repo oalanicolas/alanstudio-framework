@@ -67,6 +67,7 @@ de jogar; `loadSpawn` recusa.
 | `fallSpeedMin` / `fallSpeedMax` | Quão rápido o item atravessa o campo |
 | `practiceTicks` | Primeiros ticks só com orbe; o campo marca a janela |
 | `recoveryTicks` / `recoveryIntervalScale` | Folga depois de guardar; o campo marca a janela e o mixer fala na volta |
+| `closeIntervalScale` | Aperto do intervalo nos últimos 10 s. `1` = o fecho não muda a chuva. Ausente vira `1`. |
 
 Três chuvas mais o texto do HUD não são volume. `enough` no harness
 continua falso. Alguém de fora ainda não produziu no piso.

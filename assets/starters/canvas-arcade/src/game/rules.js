@@ -72,7 +72,7 @@ export const CONFIG = {
     flashMissed: 0.12, // o orbe caiu: o campo acende menos que a volta
     flashGraze: 0.08, // o contato acende menos que a queda
     flashDecay: 0.72,
-    closeTicks: 600, // TICK_HZ * 10 — fecho: o campo marca o fim; não é faixa no HUD
+    closeTicks: 600, // TICK_HZ * 10 — fecho: o campo marca o fim; o dado aperta a chuva; não é faixa no HUD
     rumbleDashMs: 16, // partida: toque curto
     rumbleLandMs: 10, // término: tap mais curto que a partida
     rumbleCollectMs: 28, // contato do acerto
@@ -758,16 +758,29 @@ function bank(state, intent) {
   state.player.squash = CONFIG.feel.squashCoil;
 }
 
+export function spawnIntervalScale(state, table = rain(state)) {
+  let scale = 1;
+  if (state.tick < state.recoverUntil) {
+    const recovery = Number(table.recoveryIntervalScale);
+    if (Number.isFinite(recovery) && recovery > 0) scale *= recovery;
+  }
+  if (closingWindow(state)) {
+    const close = Number(table.closeIntervalScale);
+    if (Number.isFinite(close) && close > 0) scale *= close;
+  }
+  return scale;
+}
+
 function spawn(state) {
   const table = rain(state);
   state.spawnTimer -= 1;
   if (state.spawnTimer > 0) return;
   const progress = Math.min(1, state.tick / table.rampTicks);
-  const recovering = state.tick < state.recoverUntil;
-  const intervalScale = recovering ? table.recoveryIntervalScale : 1;
+  const scale = spawnIntervalScale(state, table);
   state.spawnTimer = Math.round(
-    lerp(table.intervalTicks, table.minIntervalTicks, progress) * intervalScale,
+    lerp(table.intervalTicks, table.minIntervalTicks, progress) * scale,
   );
+  if (state.spawnTimer < 1) state.spawnTimer = 1;
   const rng = bindSpawnRng(state.seed, state.rngState);
   const practicing = state.tick < table.practiceTicks;
   const hazardChance = practicing
