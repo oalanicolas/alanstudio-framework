@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.177: sfx serve gera a página de escuta se ui/ faltar.
+**HEAD:** ver `git log -1` — vigente 0.9.177 (confirmado): sfx serve gera a página de escuta se ui/ faltar.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 270 OK.
