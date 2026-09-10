@@ -161,8 +161,10 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Destino existente preenche o comando que abre o jogo e o `kind`
    do passo de jogar; se o starter declara o verbo, o passo 2 o
    nomeia; `then` nomeia look, chuva e voz quando o projeto — ou o
-   starter, se o destino ainda não existe — as declara; `executed`
-   fica `false`. Nomear o ofício não pinta. `next` fica em `then.lost`.
+   starter, se o destino ainda não existe — as declara; se declara
+   `session`, `then` a aponta; `executed` fica `false`. O autor do
+   `note` é sugestão do git ou do ambiente, não quem jogou. Nomear o
+   ofício não pinta. `next` fica em `then.lost`.
    **`start <projeto>`** cria se o destino estiver livre e devolve
    `play` + `then.note`. Se o starter declara o verbo e as teclas, o
    prompt as nomeia — inclusive o cluster de uma mão, o toque, o
@@ -182,7 +184,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    recibo de observação no disco. `felt` é sempre falso. Sem recibo, `next`
    propõe `feel.unobserved` e aponta `note`.
    **`note <projeto>`** grava o recibo curto (cenário e papel por omissão)
-   em `docs/playtest/<utc>/`. `--from-run` anexa `docs/playtest/last-run.json`
+   em `docs/playtest/<utc>/`. O comando do mapa sugere `--author` a partir
+   do git ou do ambiente; não é quem jogou. `--from-run` anexa `docs/playtest/last-run.json`
    (resumo e, se houver, a curva) como candidato de medição e não fecha o
    achado. Não joga e não sente.
    **`access` / `save` / `budget`** leem opção de alcance (incluindo

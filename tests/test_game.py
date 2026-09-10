@@ -2950,6 +2950,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("atravessar-estilhacos", report["then"]["look"])
         self.assertIn("atravessar-estilhacos", report["then"]["table"])
         self.assertIn("atravessar-estilhacos", report["then"]["sfx"])
+        self.assertIn("session", report["then"])
+        self.assertIn("atravessar-estilhacos", report["then"]["session"])
         self.assertNotIn("noite", report["steps"][0]["command"])
         self.assertFalse((game.FRAMEWORK.parent / "atravessar-estilhacos").exists())
         empty = game.guide_cycle(None, "canvas-arcade")
@@ -2975,6 +2977,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("look", report["then"])
         self.assertNotIn("table", report["then"])
         self.assertNotIn("sfx", report["then"])
+        self.assertNotIn("session", report["then"])
 
     def test_start_names_craft_tools_in_then_without_playing(self):
         destination = self.root / "segundo ciclo"
@@ -2994,7 +2997,29 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("look", guided["then"])
         self.assertIn("table", guided["then"])
         self.assertIn("sfx", guided["then"])
+        self.assertIn("session", guided["then"])
+        self.assertIn("session", report["then"])
         self.assertFalse(guided["noted"])
+
+    def test_note_command_names_the_author_and_points_at_a_run_without_claiming_it(self):
+        destination = self.root / "autor-git"
+        game.start_project(destination, "canvas-arcade")
+        subprocess.run(["git", "init", "-q", str(destination)], check=True)
+        subprocess.run(["git", "-C", str(destination), "config", "user.name", "Ana"], check=True)
+        self.assertEqual(game.note_author(destination), "Ana")
+        cmd = game.note_command(destination)
+        self.assertIn("Ana", cmd)
+        self.assertNotIn("--from-run", cmd)
+        (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (destination / "docs/playtest/last-run.json").write_text("{}\n", encoding="utf-8")
+        after = game.note_command(destination)
+        self.assertIn("--from-run", after)
+        self.assertIn("Ana", after)
+        guided = game.guide_cycle(destination, "canvas-arcade")
+        self.assertEqual(len(guided["steps"]), 3)
+        self.assertIn("--from-run", guided["steps"][2]["command"])
+        self.assertIn("session", guided["then"])
+        self.assertFalse(guided["executed"])
 
     def test_start_points_at_craft_after_a_note(self):
         destination = self.root / "depois do recibo"

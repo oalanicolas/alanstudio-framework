@@ -3,6 +3,29 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.79 — O recibo também nomeia quem anota
+
+O terceiro passo do mapa pedia `--author NOME`. Sem nome o comando
+não cola. O autor sai do `user.name` do git ou do ambiente; `NOME`
+só se os dois faltarem. Se o starter declara `session`, `then` a
+aponta. Se `last-run.json` existe, o `note` do mapa já leva
+`--from-run`. `felt` e `observed` continuam falsos. Autor no
+comando não é quem jogou. Só `release` fica no piso.
+
+O que 0.9.79 não afirma: o harness não anotou a partida e
+sessão no disco não é curva observada.
+
+## 0.9.78 — O dash também recarrega no HUD
+
+O rótulo do dash trocava "pronto" e "recarregando". Recuperação e
+cooldown eram o mesmo quadro. A faixa enche o tempo inteiro de
+espera e veste o look; recuperação e cooldown são fases da mesma
+conta. `felt` continua falso. `feel` permanece `playable`: faixa
+no stub não é peso percebido. Só `release` fica no piso.
+
+O que 0.9.78 não afirma: o harness não avançou e a faixa não
+aprova o feel.
+
 ## 0.9.77 — O alcance também lê a assistência
 
 O starter já persistia `assist` e a receita a nomeava. `access`

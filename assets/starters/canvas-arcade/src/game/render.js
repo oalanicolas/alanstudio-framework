@@ -15,6 +15,25 @@ import { DEFAULT_BINDINGS } from "../core/settings.js";
 // continua falso — JSON no disco não é comparação em movimento.
 export { PALETTES };
 
+// A recarga do dash era só um rótulo. A faixa enche o tempo inteiro de
+// recuperação + cooldown — o verbo some e volta no mesmo sítio. Faixa no
+// stub não é peso percebido.
+export function dashCharge(state, config = CONFIG) {
+  const player = state?.player;
+  if (!player) return { phase: "ready", fill: 1 };
+  const recoveryTicks = config.player.dashRecoveryTicks;
+  const cooldownTicks = config.player.dashCooldownTicks;
+  const total = recoveryTicks + cooldownTicks;
+  if ((player.dashTicks ?? 0) > 0) return { phase: "dash", fill: 1 };
+  if ((state.bankLock ?? 0) > 0) return { phase: "lock", fill: 0 };
+  const remaining = (player.dashRecovery ?? 0) > 0
+    ? player.dashRecovery + cooldownTicks
+    : (player.dashCooldown ?? 0);
+  if (remaining <= 0 || total <= 0) return { phase: "ready", fill: 1 };
+  const phase = (player.dashRecovery ?? 0) > 0 ? "recovery" : "cooldown";
+  return { phase, fill: Math.max(0, Math.min(1, 1 - remaining / total)) };
+}
+
 export function createRenderer(canvas, options = {}) {
   const context = canvas.getContext("2d", { alpha: false });
   let scale = 1;
@@ -291,9 +310,18 @@ export function createRenderer(canvas, options = {}) {
     }
 
     target.textAlign = "left";
-    const ready = state.player.dashCooldown === 0 && state.player.dashRecovery === 0 && state.bankLock === 0;
+    const charge = dashCharge(state);
+    const ready = charge.phase === "ready";
     const dash = ready ? lines.dash_ready : lines.dash_recharging;
     const dashBox = plate(target, palette, 6, FIELD.height - size - 5, width(dash), size);
+    const strip = 2;
+    const ink = charge.phase === "ready" || charge.phase === "dash"
+      ? palette.orb
+      : charge.phase === "recovery"
+        ? palette.player
+        : palette.muted;
+    target.fillStyle = ink;
+    target.fillRect(dashBox.x, dashBox.y + dashBox.height - strip, dashBox.width * charge.fill, strip);
     target.fillStyle = ready ? palette.orb : palette.muted;
     target.fillText(dash, 6, FIELD.height - size - 5);
     return { score: scoreBox, timer: timerBox, dash: dashBox };

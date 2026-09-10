@@ -16,7 +16,7 @@ comando do start — ao lado do framework se o mapa corre de dentro
 desta árvore — e não grava a frase. Sem destino, se o diretório atual é um
 jogo fora do framework, o mapa usa esse caminho. `start` cria o projeto e devolve `play` +
 `then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo,
-as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look, chuva e convite. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt e o `next` (`cycle.craft`) as apontam. Nomear o ofício não pinta. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
+as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look, chuva e convite. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia look, chuva e voz; se declara `session`, `then` a aponta. Depois de um recibo, o prompt e o `next` (`cycle.craft`) apontam o ofício. O autor do `note` é sugestão do git ou do ambiente, não quem jogou. Nomear o ofício não pinta. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
 `next` ainda propõe `playable.unplayed` se você estiver perdido. O
 starter ensina mover, avançar, coletar e guardar no campo; toque e
 controle ganham passo quando falam. O art-bible vigente
@@ -45,7 +45,8 @@ curto. `felt` é sempre falso. `next` propõe `feel.unobserved` quando há
 constante e não há recibo. O starter bufferiza guardar no hitstop,
 desloca a câmera por verbo, achata o corpo numa medida por verbo,
 marca a ameaça no trilho, distingue a
-recuperação do dash, aterrissa o avanço com squash e rastro próprios,
+recuperação do dash, enche a faixa do HUD no tempo de espera,
+aterrissa o avanço com squash e rastro próprios,
 pulsa o controle no impacto, deixa um rastro
 por verbo e põe a corrente em órbita no corpo. A coleta leva o
 orbe ao slot; no erro os pips quebram para fora; na guarda eles
@@ -61,7 +62,8 @@ código declara — `access` inclui assistência. `verified`/`trusted`/`measured
 só levanta quando falta a declaração. O starter expõe assistência,
 `uiScale` (o overlay também), preset de uma mão (o aviso, o overlay e o `cycle.hand`
 nomeiam IJKL + P/O; o stub coleta, guarda, pausa e reinicia nesse
-cluster) e `docs/access.md`. O aviso do primeiro ciclo nomeia teclado,
+cluster) e `docs/access.md`. O HUD do dash enche a faixa no tempo
+de recuperação e cooldown; faixa no stub não é peso percebido. O aviso do primeiro ciclo nomeia teclado,
 toque e controle; o dash e o mapa da superfície que falou também
 ganham passo; overlay e HUD confirmam o aparelho que falou por
 último. `npm run contrast`

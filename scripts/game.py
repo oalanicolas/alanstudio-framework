@@ -2724,8 +2724,48 @@ def play_command(project, scripts, manager):
     return f"cd {shlex.quote(str(project))} && {body}"
 
 
+def note_author(project=None):
+    # Sugestão para o comando colar. Não é quem jogou e não fecha o achado.
+    targets = []
+    if project is not None:
+        path = Path(project)
+        if path.is_dir() and not path.is_symlink():
+            targets.append(["git", "-C", str(path), "config", "user.name"])
+    targets.append(["git", "config", "user.name"])
+    for argv in targets:
+        try:
+            run = subprocess.run(argv, capture_output=True, text=True, timeout=5, check=False)
+        except (OSError, subprocess.TimeoutExpired):
+            continue
+        name = (run.stdout or "").strip()
+        if run.returncode == 0 and nonempty(name):
+            return name
+    env = os.environ.get("GIT_AUTHOR_NAME") or os.environ.get("USER") or os.environ.get("USERNAME")
+    if nonempty(env):
+        return env.strip()
+    return "NOME"
+
+
+def session_command(project, starter=None):
+    project = Path(project)
+    scripts, manager = {}, None
+    if project.is_dir() and not project.is_symlink():
+        try:
+            scripts, manager = project_commands(project)
+        except (OSError, ValueError):
+            scripts, manager = {}, None
+    elif starter:
+        scripts, manager = starter_package_commands(starter)
+    if not manager or "session" not in scripts:
+        return None
+    return project_run_command(project, manager, "session")
+
+
 def note_command(project):
-    return harness_command("note", project, "--author", "NOME", "--note", "o que o verbo sentiu")
+    parts = ["note", project, "--author", note_author(project), "--note", "o que o verbo sentiu"]
+    if last_run_path(project):
+        parts.append("--from-run")
+    return harness_command(*parts)
 
 
 # Exemplos coláveis do segundo ciclo. Os nomes não existem no starter:
@@ -2828,6 +2868,9 @@ def cycle_then(project, play, starter=None):
         "lost": harness_command("next", project, "--focus", "feel"),
     }
     then.update(craft_commands(project, starter))
+    session = session_command(project, starter)
+    if session:
+        then["session"] = session
     return then
 
 
@@ -3347,7 +3390,9 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "de fora. `guide --idea` continua só no comando, não no disco. "
             "`then` nomeia look, chuva e voz quando o projeto — ou o "
             "starter, se o destino ainda não existe — declara essas "
-            "ferramentas. Nomear o ofício não pinta, não chove e não ouve. "
+            "ferramentas. Se declara `session`, `then` a aponta. Nomear o "
+            "ofício não pinta, não chove e não ouve. O autor do `note` é "
+            "sugestão do git ou do ambiente, não quem jogou. "
             "`next` fica para quando o ciclo já correu e você não sabe o "
             "que falta. Sem destino, se o diretório atual é um jogo fora "
             "do framework, o mapa usa esse caminho. Não cria o projeto, "
@@ -3635,7 +3680,7 @@ def next_step(project, focus="create", studies_root=None):
             "se ainda não souber.",
             [
                 harness_command("feel", project),
-                harness_command("note", project, "--author", "NOME", "--note", "o que o verbo sentiu"),
+                harness_command("note", project, "--author", note_author(project), "--note", "o que o verbo sentiu"),
             ],
             "feel.unobserved",
         )
@@ -3667,7 +3712,7 @@ def next_step(project, focus="create", studies_root=None):
                 harness_command("feel", project),
                 *(
                     [harness_command(
-                        "note", project, "--author", "NOME",
+                        "note", project, "--author", note_author(project),
                         "--note", "o que o verbo sentiu", "--from-run",
                     )]
                     if playtest.get("candidate")

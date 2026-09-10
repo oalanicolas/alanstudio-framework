@@ -8,7 +8,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { createRenderer, PALETTES } from "../src/game/render.js";
+import { createRenderer, PALETTES, dashCharge } from "../src/game/render.js";
 import { createState, advance, CONFIG, FIELD, PLAYER_Y } from "../src/game/rules.js";
 import { ONE_HAND_BINDINGS } from "../src/core/settings.js";
 
@@ -756,4 +756,64 @@ test("o aviso ensina as três superfícies e o overlay confirma o controle", () 
   renderer.draw(over, {}, {}, { surface: "gamepad" });
   const fim = recorder.calls.texts.map((item) => item.text);
   assert.ok(fim.some((text) => text.includes("Select")), `fim: ${JSON.stringify(fim)}`);
+});
+
+test("a recarga do dash enche a faixa sem aprovar o feel", () => {
+  const ready = dashCharge(createState(1));
+  assert.equal(ready.phase, "ready");
+  assert.equal(ready.fill, 1);
+  const recovery = createState(1);
+  recovery.player.dashRecovery = CONFIG.player.dashRecoveryTicks;
+  const start = dashCharge(recovery);
+  assert.equal(start.phase, "recovery");
+  assert.equal(start.fill, 0);
+  recovery.player.dashRecovery = 1;
+  assert.ok(dashCharge(recovery).fill > start.fill, "recuperação enche");
+  const cool = createState(1);
+  cool.player.dashCooldown = CONFIG.player.dashCooldownTicks;
+  const waiting = dashCharge(cool);
+  assert.equal(waiting.phase, "cooldown");
+  assert.ok(waiting.fill > 0 && waiting.fill < 1);
+  cool.player.dashCooldown = 1;
+  assert.ok(dashCharge(cool).fill > waiting.fill, "cooldown enche");
+  const lock = createState(1);
+  lock.bankLock = 4;
+  assert.equal(dashCharge(lock).phase, "lock");
+  assert.equal(dashCharge(lock).fill, 0);
+  const dash = createState(1);
+  dash.player.dashTicks = 3;
+  assert.equal(dashCharge(dash).phase, "dash");
+  assert.equal(dashCharge(dash).fill, 1);
+});
+
+test("a faixa do dash veste o look e não a placa", () => {
+  const state = longState();
+  const charge = dashCharge(state);
+  const recorder = recordingCanvas();
+  const renderer = createRenderer(recorder.canvas, { devicePixelRatio: 1 });
+  renderer.resize(360, 640);
+  renderer.draw(state, { paused: false, alpha: 0, steps: 1 }, {}, { best: 0 });
+  const dashPlate = recorder.plates().find((plate) => plate.y > 80);
+  assert.ok(dashPlate, "placa do dash");
+  const strips = recorder.calls.rects.filter((rect) => (
+    !PLATE_COLORS.has(rect.style)
+    && Math.abs(rect.x - dashPlate.x) < 0.6
+    && Math.abs(rect.y + rect.height - (dashPlate.y + dashPlate.height)) < 0.6
+  ));
+  assert.equal(strips.length, 1, "uma faixa na base da placa");
+  assert.ok(Math.abs(strips[0].width - dashPlate.width * charge.fill) < 0.6);
+  assert.equal(strips[0].style, PALETTES.normal.muted);
+  const dusk = recordingCanvas();
+  const duskRenderer = createRenderer(dusk.canvas, { devicePixelRatio: 1 });
+  duskRenderer.resize(360, 640);
+  duskRenderer.draw(state, { paused: false, alpha: 0, steps: 1 }, { look: "dusk" }, { best: 0 });
+  const duskPlate = dusk.plates().find((plate) => plate.y > 80);
+  const duskStrip = dusk.calls.rects.find((rect) => (
+    !PLATE_COLORS.has(rect.style)
+    && duskPlate
+    && Math.abs(rect.x - duskPlate.x) < 0.6
+    && Math.abs(rect.y + rect.height - (duskPlate.y + duskPlate.height)) < 0.6
+  ));
+  assert.equal(duskStrip.style, PALETTES.dusk.muted);
+  assert.notEqual(duskStrip.style, PALETTES.normal.muted);
 });
