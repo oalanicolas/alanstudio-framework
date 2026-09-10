@@ -57,7 +57,8 @@ QUALITY_BAR = {
 EMPTY_NEXT = (
     "Acervo vazio. O starter já fala em public/sfx; sfx search "
     "nomeia o stem que casa com o termo, sfx info lê a chave, "
-    "sfx verify nomeia os stems sem cruzar o que não existe e "
+    "sfx verify nomeia os stems sem cruzar o que não existe, "
+    "nomeia o stem que o recibo lista e o disco perdeu e "
     "sfx summary lista todos. "
     "Arquivo no disco não é mix ouvido. Desloque com "
     "npm run sfx -- --from <papel> --as brighter. sfx serve não ouve "
@@ -115,6 +116,7 @@ SEED_MISSING = (
 VERIFY_EMPTY = (
     "Acervo vazio. O starter já fala em public/sfx. "
     "sfx verify cruza bytes e fichas do acervo; sem acervo não há o que cruzar. "
+    "Nomeia o stem que o recibo lista e o disco perdeu. "
     "sfx summary lista os stems. Arquivo no disco não é mix ouvido."
 )
 VERIFY_NEXT = (
@@ -128,8 +130,11 @@ def catalog_dir(root=None):
 
 
 def local_stems(folder=None):
+    # O recibo listava o stem e o verify some se o WAV
+    # sumiu. Nomear a ausência não é cruzar nem ouvir.
     folder = Path(folder or STARTER_SFX)
     files = []
+    missing = []
     sources = folder / "sources.json"
     if sources.is_file():
         data = audio.read_json(sources)
@@ -141,13 +146,15 @@ def local_stems(folder=None):
                 src = item.get("src")
                 if not isinstance(src, str) or not src.strip():
                     continue
+                key = item.get("key")
+                key = key if isinstance(key, str) and key.strip() else Path(src).stem
                 path = folder / src
                 if not path.is_file() or path.is_symlink():
+                    missing.append({"key": key, "src": src})
                     continue
-                key = item.get("key")
                 files.append({
                     "src": src,
-                    "key": key if isinstance(key, str) and key.strip() else Path(src).stem,
+                    "key": key,
                     "title": item.get("title") if isinstance(item.get("title"), str) else None,
                     "author": item.get("author") if isinstance(item.get("author"), str) else None,
                     "license": item.get("license") if isinstance(item.get("license"), str) else None,
@@ -160,6 +167,7 @@ def local_stems(folder=None):
         "exists": folder.is_dir(),
         "file_count": len(files),
         "files": files,
+        "missing": missing,
         "heard": False,
     }
 
@@ -189,6 +197,7 @@ def match_local_stems(query, folder=None, limit=40):
         "exists": local["exists"],
         "file_count": len(picked),
         "files": picked,
+        "missing": local.get("missing", []),
         "heard": False,
     }
 
@@ -568,10 +577,10 @@ def seed_catalog(root=None):
     return result
 
 
-def verify_catalog(root=None):
+def verify_catalog(root=None, folder=None):
     sounds = load_catalog(root)["sounds"]
     empty = len(sounds) == 0
-    local = local_stems()
+    local = local_stems(folder)
     if empty:
         return {
             "ok": False,

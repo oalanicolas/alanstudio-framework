@@ -87,7 +87,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `public/sfx`; `sfx search` nomeia o stem que casa com o termo,
    `sfx info` lê a chave, `roles --fill` nomeia o mesmo stem,
    `sfx verify` nomeia os stems sem cruzar
-   o que não existe, `sfx summary` lista todos e `sfx serve`
+   o que não existe e nomeia o stem que o recibo lista e o
+   disco perdeu, `sfx summary` lista todos e `sfx serve`
    recusa catálogo vazio.
    Com sons no acervo, `sfx serve` abre a página de escuta — se
    `shared/sfx/ui` faltar, o harness gera a lista. Tocar nessa
@@ -228,7 +229,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    e origem e licença casam. `sfx copy` continua o caminho explícito. Crescer o acervo é `sfx import` / `sfx seed`
    (ffmpeg); `sfx info` lê a ficha do acervo ou a chave do stem
    do starter; `sfx verify` nomeia os stems sem cruzar o que não
-   existe e `sfx export` copia bytes e
+   existe e nomeia o stem que o recibo lista e o disco perdeu;
+   `sfx export` copia bytes e
    créditos. Importar e exportar não é ouvir. `heard` é sempre falso. Papel vazio
    entra no `next` como `audio.roles` — o verbo mudo não espera os
    rascunhos.

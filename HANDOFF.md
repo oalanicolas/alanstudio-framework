@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.265: o botão focado não dispara o verbo. Espaço ativava o controle e avançava. Não promove `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.266: o verify nomeia o stem que o recibo perdeu. O WAV sumia e o relatório fingia que o papel não existia. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 291 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.265)
+## O que o HEAD já entrega (0.9.91–0.9.266)
 
 | Ver | Salto |
 | --- | --- |
@@ -209,6 +209,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.263 | O recibo sem origem não declara. JSON listava o arquivo e fingia recibo. Envelope do acervo ainda vale. CREDITS e sidecar ainda declaram. Não promove `granted`. |
 | 0.9.264 | A tecla do remap não dispara o verbo. A escuta avançava enquanto a pessoa escolhia. Não promove `felt`. |
 | 0.9.265 | O botão focado não dispara o verbo. Espaço ativava o controle e avançava. Não promove `felt`. |
+| 0.9.266 | O verify nomeia o stem que o recibo perdeu. O WAV sumia e o relatório fingia que o papel não existia. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -398,7 +399,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou uma outra aba que some as preferências desta página
   ou um JSON que lista o arquivo e declara sem origem
   ou uma tecla do remap que dispara o verbo
-  ou um botão focado que ativa e avança.
+  ou um botão focado que ativa e avança
+  ou um verify que some o stem que o recibo já nomeia.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -910,6 +912,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma região viva que some o aviso do primeiro ciclo.
 **Não** mais uma tecla do remap que dispara o verbo.
 **Não** mais um botão focado que ativa e avança.
+**Não** mais um verify que some o stem que o recibo já nomeia.
 
 Candidatos, do que ainda dói:
 
@@ -947,7 +950,8 @@ Candidatos, do que ainda dói:
    Sem starter o aviso nomeia `start --idea`. Sem `prompt`.
    `sfx search` nomeia o stem do starter que casa; `sfx info`
    lê a mesma chave. `sfx copy` e `sfx export` levam
-   bytes e créditos. `sfx verify` nomeia os stems sem cruzar.
+   bytes e créditos. `sfx verify` nomeia os stems sem cruzar
+   e nomeia o stem que o recibo lista e o disco perdeu.
    `count` continua o acervo.    Sem os quatro campos,
    `playtest` nomeia `finding_href`, `qa`, `form`
    e `fields`; `next`
@@ -986,7 +990,8 @@ Candidatos, do que ainda dói:
    `ui/` faltar. `sfx info` lê a chave do starter.    `sfx copy` e
    `sfx export` levam bytes e créditos. `roles --apply` também
    copia o stem do starter. `sfx verify` nomeia os stems
-   sem cruzar. Nomear não entrega. Copiar não é `heard`. Tocar não
+   sem cruzar e nomeia o stem que o recibo lista e o disco
+   perdeu. Nomear não entrega. Copiar não é `heard`. Tocar não
    é `heard`. `origins --declare` escreve o sidecar. Recibo não é
    licença.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
@@ -1512,7 +1517,8 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o botão
-focado não dispara o verbo. Espaço ativava
-o controle e avançava. Não promove `felt`.
+Arquivos quentes da última sessão: o verify
+nomeia o stem que o recibo perdeu. O WAV
+sumia e o relatório fingia ausência do
+papel. Não promove `heard`.
 A família recado/remap/botão está saturada.

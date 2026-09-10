@@ -2487,6 +2487,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("dash", keys)
         self.assertIn("bed", keys)
         self.assertTrue(local["file_count"] >= 12)
+        self.assertEqual(local["missing"], [])
         self.assertTrue(all(item["license"] for item in local["files"]))
         self.assertTrue(all(item["bytes"] > 0 for item in local["files"]))
         self.assertIn("sfx summary lista", report["next"])
@@ -2733,10 +2734,12 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("dash", keys)
         self.assertIn("bed", keys)
         self.assertTrue(local["file_count"] >= 12)
+        self.assertEqual(local["missing"], [])
         self.assertNotIn("Ouça com sfx serve", report["next"])
         self.assertIn("vazio", report["next"].casefold())
         self.assertIn("public/sfx", report["next"])
         self.assertIn("não há o que cruzar", report["next"])
+        self.assertIn("recibo lista", report["next"])
         dumped = json.dumps(report)
         self.assertNotIn("aprovado", dumped)
         self.assertNotIn("verified", dumped)
@@ -2763,6 +2766,28 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", planted)
         self.assertNotIn("verified", planted)
         self.assertEqual(item["id"], "passo-madeira-01")
+
+    def test_sfx_verify_names_a_receipt_whose_file_is_gone(self):
+        folder = self.root / "sfx-sumido"
+        folder.mkdir()
+        (folder / "sources.json").write_text(
+            json.dumps({
+                "files": [{
+                    "src": "ghost.wav",
+                    "key": "ghost",
+                    "author": "Ana",
+                    "license": "CC0-1.0",
+                    "origin": "teste",
+                }],
+            }),
+            encoding="utf-8",
+        )
+        report = game.sfx_catalog.verify_catalog(self.root, folder=folder)
+        self.assertEqual(report["local"]["files"], [])
+        self.assertEqual(report["local"]["missing"], [{"key": "ghost", "src": "ghost.wav"}])
+        self.assertFalse(report["heard"])
+        self.assertNotIn("aprovado", json.dumps(report))
+        self.assertNotIn("verified", json.dumps(report))
 
     def test_sfx_info_reads_the_card_without_claiming_to_hear_it(self):
         item, _ = self._plant_catalog_sound()

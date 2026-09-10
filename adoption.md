@@ -3,6 +3,44 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.266 — O verify nomeia o stem que o recibo perdeu
+
+O
+recibo
+ainda
+listava
+o
+stem.
+O
+WAV
+sumiu.
+O
+relatório
+fingia
+que
+o
+papel
+não
+existia.
+Agora
+`missing`
+nomeia
+a
+ausência.
+Não
+promove
+`heard`.
+
+O que 0.9.266 não afirma:
+nomear
+o
+buraco
+não
+é
+ouvir
+o
+mix.
+
 ## 0.9.265 — O botão focado não dispara o verbo
 
 O
