@@ -2359,6 +2359,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(payload["felt"])
         self.assertEqual(payload["fields"]["scenario"], "primeira partida")
 
+    def test_a_note_from_the_page_is_a_receipt_without_feeling(self):
+        destination = self.root / "nota-da-pagina"
+        game.start_project(destination, "canvas-arcade")
+        folder = destination / "docs/playtest/20260910T023700123Z"
+        folder.mkdir(parents=True)
+        (folder / "record.json").write_text(json.dumps({
+            "schema_version": 1,
+            "kind": "observation",
+            "author": "página",
+            "note": "o dash atravessou",
+            "fields": {"scenario": "primeira partida", "role": "human"},
+            "status": "declared",
+            "felt": False,
+            "observed": False,
+        }), encoding="utf-8")
+        receipts = game.observation_receipts(destination)
+        self.assertEqual(receipts[0]["author"], "página")
+        nxt = game.next_step(destination)
+        self.assertFalse(nxt["signals"]["playable_unplayed"])
+        self.assertNotEqual(nxt["proposal"]["basis"], "playable.unplayed")
+        feel = game.feel_reading(destination)
+        self.assertFalse(feel["unobserved"])
+        self.assertFalse(feel["felt"])
+
     def test_access_save_and_budget_read_the_starter_without_claiming_proof(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         access = game.access_reading(starter)

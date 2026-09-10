@@ -27,6 +27,12 @@ export function applyFinding({ root, phase, invite } = {}) {
   return show;
 }
 
+export function applyNote({ root, phase, invite } = {}) {
+  const show = Boolean(!invite && phase === "over");
+  root?.classList?.toggle("note", show);
+  return show;
+}
+
 export function composeFinding({
   problema = "",
   evidencia = "",

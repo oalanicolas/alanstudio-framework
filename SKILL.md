@@ -20,7 +20,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | --- | --- |
 | Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing`. Ele nomeia os projetos e lista os starters |
 | Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
-| Perdeu o comando que abre | `play <projeto>` (ou `open`) aponta o serve sem executar. Com tela, o avanço abre a porta. Depois da partida: `then.note`. `executed` fica falso. Não cria e não serve |
+| Perdeu o comando que abre | `play <projeto>` (ou `open`) aponta o serve sem executar. Com tela, o avanço abre a porta. Depois da partida a página grava o recibo se você escrever; `then.note` continua. `executed` fica falso. Não cria e não serve |
 | Jogo novo | Destino inexistente e engine web: `start --idea "<fantasia>"` (ou `start <novo> --starter <starter> --idea "<fantasia>"`) cria o projeto — sem caminho, a frase nomeia a pasta, ao lado do framework se o start corre de dentro desta árvore —, põe a frase na abertura e no aviso do primeiro ciclo e devolve `open` (= `play`) + `then.note` sem executar. `open` é o comando de agora; `steps` é o mesmo mapa de três passos do `guide`, com o passo 1 feito. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive a porta, o cluster de uma mão, o toque, o controle e as queries de look, chuva, par e convite, se houver. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia par, look, chuva e voz; depois de um recibo, o prompt as aponta. Nomear o ofício não pinta. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando: `python3 scripts/game.py --idea "<fantasia>"`) mapeia start → jogar → note. `open` é o comando de agora; `prompt` o nomeia. Sem destino, a frase nomeia a pasta no comando do start — ao lado do framework se o mapa corre de dentro desta árvore; no diretório atual se corre de fora. Não grava a frase nem cria a pasta. Sem destino, se o diretório atual é um jogo fora do framework, o mapa usa esse caminho. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
 | Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, `note <projeto> --author … --note "o que o verbo sentiu"`. Depois `roles` e `context --focus audio` |
@@ -181,8 +181,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    **`play [<projeto>]`** (também `open`) aponta o comando que abre o
    jogo. Não executa, não cria e não serve. Sem caminho, usa o
    diretório atual se ele for um jogo fora desta árvore. `open` é o
-   play. Com tela, o avanço abre a porta. Depois de uma partida, o
-   próximo comando do harness é `note`. `executed` fica `false`.
+   play. Com tela, o avanço abre a porta. Depois de uma partida, a
+   página grava o recibo se você escrever; o próximo comando do
+   harness continua `note`. `executed` fica `false`.
    **`roles <projeto>`** lê os papéis de áudio que o código declara e os
    arquivos que os preenchem. `--fill` sugere o acervo; `--apply` copia
    com o nome do papel. Crescer o acervo é `sfx import` / `sfx seed`

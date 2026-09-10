@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { applyFinding, applyInvite, composeFinding, inviteMode, INVITE_LABEL } from "../src/core/invite.js";
+import { applyFinding, applyInvite, applyNote, composeFinding, inviteMode, INVITE_LABEL } from "../src/core/invite.js";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -48,6 +48,20 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /id="finding-copy"/);
   assert.match(html, /composeFinding/);
   assert.doesNotMatch(html, /html\.invite\s+#finding\s*\{/);
+  assert.match(html, /id="note"/);
+  assert.match(html, /html\.note\s+#note/);
+  assert.match(html, /id="note-save"/);
+  assert.match(html, /NOTE_ROUTE/);
+  assert.doesNotMatch(html, /html\.invite\s+#note/);
+});
+
+test("a nota só aparece depois do fim e some no convite", () => {
+  const root = { classList: { note: false, toggle(name, on) { this[name] = on; } } };
+  assert.equal(applyNote({ root, phase: "title", invite: false }), false);
+  assert.equal(applyNote({ root, phase: "playing", invite: false }), false);
+  assert.equal(applyNote({ root, phase: "over", invite: true }), false);
+  assert.equal(applyNote({ root, phase: "over", invite: false }), true);
+  assert.equal(root.classList.note, true);
 });
 
 test("o achado só aparece no convite depois do fim", () => {

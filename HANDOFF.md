@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.113: a partida no serve também deixa candidato.
+**HEAD:** ver `git log -1` — vigente 0.9.114: a página também grava o recibo.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 246 OK.
-`cd assets/starters/canvas-arcade && npm test` → 280 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 247 OK.
+`cd assets/starters/canvas-arcade && npm test` → 282 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.113)
+## O que o HEAD já entrega (0.9.91–0.9.114)
 
 | Ver | Salto |
 | --- | --- |
@@ -57,6 +57,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.111 | `play` / `open` apontam o serve sem executar. Perder o JSON não recomeça. |
 | 0.9.112 | Depois do fim no convite, a página oferece os quatro nomes para copiar. Esqueleto vazio não é achado. `outsider` continua falso. |
 | 0.9.113 | A partida no serve grava `last-run.json`. A simulação continua à parte. `observed` continua falso. |
+| 0.9.114 | Depois do fim, a página grava o recibo de `note` se você escrever. Convite não oferece. `felt` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -201,6 +202,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Serve POST `/playtest/last-run` grava `docs/playtest/last-run.json`.
   Força `observed`/`felt` falsos e `policy: played`. Árvore
   exportada responde 403. Sem canvas o headless não posta.
+- Serve POST `/playtest/note` grava `docs/playtest/<utc>/record.json`.
+  Nota vazia é 400. Autor vazio vira `página`. Anexa last-run se
+  existir. `#note` só depois do `over` e fora do convite. `felt` falso.
 - `pagehide` flush; hidden pausa.
 - `gameSpeed` (0.5–1, padrão 1) dilata o acumulador do laço.
   `advance()` ignora. Assistência não é este knob.
@@ -219,8 +223,8 @@ Candidatos, do que ainda dói:
    promover. `ship` já nomeia árvore incompleta, HEAD velho e
    `elsewhere` falso; isso não é a prova.
 2. **Idéia→jogo:** `start` devolve `open`; `play` / `open` o
-   reimprimem. A partida no serve já grava o candidato. Ainda
-   são dois contextos (`note` no harness). Não auto-servir.
+   reimprimem. A partida no serve grava o candidato e, se você
+   escrever, o recibo. O comando `note` continua. Não auto-servir.
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
@@ -250,5 +254,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `src/core/run-report.js`,
-`tools/serve.mjs` (POST `/playtest/last-run`), `offerLastRun` em `main.js`.
+Arquivos quentes da última sessão: `playNote` / `NOTE_ROUTE`,
+`#note` em `index.html`, POST `/playtest/note` em `serve.mjs`.

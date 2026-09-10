@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { playReport } from "../src/core/run-report.js";
-import { acceptLastRun } from "../tools/serve.mjs";
+import { playNote, playReport } from "../src/core/run-report.js";
+import { acceptLastRun, acceptNote } from "../tools/serve.mjs";
 
 test("o recibo nasce sem observar e a simulação não se mistura com a partida", () => {
   const played = playReport({
@@ -53,4 +53,29 @@ test("o POST só aceita run com ticks e apaga observed do cliente", () => {
   assert.equal(acceptLastRun("não-json").ok, false);
   assert.equal(acceptLastRun("{}").ok, false);
   assert.equal(acceptLastRun({ run: { score: 1 } }).ok, false);
+});
+
+test("a nota vazia não grava e a preenchida não observa", () => {
+  assert.equal(playNote({ note: "   " }), null);
+  assert.equal(acceptNote({ note: "" }).ok, false);
+  const accepted = acceptNote({ note: "  o dash atravessou  ", author: "" });
+  assert.equal(accepted.ok, true);
+  assert.equal(accepted.author, "página");
+  assert.equal(accepted.note, "o dash atravessou");
+  const report = playNote({
+    author: "página",
+    note: "o dash atravessou",
+    project: "/tmp/jogo",
+    run: { ticks: 40, score: 2 },
+    observed: true,
+    felt: true,
+  });
+  assert.equal(report.kind, "observation");
+  assert.equal(report.status, "declared");
+  assert.equal(report.author, "página");
+  assert.equal(report.felt, false);
+  assert.equal(report.observed, false);
+  assert.equal(report.fields.role, "human");
+  assert.match(report.fields.run, /"ticks":40/);
+  assert.doesNotMatch(report.scope, /aprovado|verified|LUFS|-14|4\.5|enough|consistent/);
 });

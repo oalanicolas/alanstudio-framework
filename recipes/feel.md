@@ -18,8 +18,9 @@ mesmo candidato em `docs/playtest/last-run.json`. `npm run session`
 continua a simulação. Nenhum dos dois é sessão observada. Se o
 projeto (ou o starter) declara `session`, `then` a aponta. `note --from-run`
 anexa o resumo e, se houver, a curva — o mapa já põe `--from-run`
-quando o arquivo existe. Número no disco não é causa. O
-autor sugerido no comando não é quem jogou.
+quando o arquivo existe. Depois do fim, a página grava o mesmo
+recibo de `note` se você escrever — `felt` continua falso. Número
+no disco não é causa. O autor sugerido no comando não é quem jogou.
 
 Feel é o intervalo entre o input e a certeza de que o mundo respondeu.
 Swink: controle em tempo real, espaço simulado, polish. Jam e piso de

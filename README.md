@@ -71,7 +71,7 @@ python3 scripts/game.py play /caminho/do/laboratorio/meu-jogo
 python3 scripts/game.py open /caminho/do/laboratorio/meu-jogo
 ```
 
-`play` e `open` são o mesmo verbo. Com tela, o avanço abre a porta. Depois de uma partida, o próximo comando do harness é `note`. `executed` fica `false`. Não cria pasta e não serve.
+`play` e `open` são o mesmo verbo. Com tela, o avanço abre a porta. Depois de uma partida, a página grava o recibo se você escrever; o próximo comando do harness continua `note`. `executed` fica `false`. Não cria pasta e não serve.
 
 `guide` não cria o projeto. `next` sai do caminho feliz: só entra em `then.lost`, quando o ciclo já correu e você não sabe o que falta. Com destino existente, preenche o comando que abre o jogo e o `kind` do passo de jogar. `executed` fica `false`. Sem `start`, o caminho em dois passos continua valendo:
 

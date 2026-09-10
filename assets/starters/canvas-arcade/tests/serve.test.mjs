@@ -8,13 +8,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { cp, mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
+import { cp, mkdtemp, mkdir, readFile, readdir, writeFile, rm } from "node:fs/promises";
 import { once } from "node:events";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { advertisedOrigins, isArtifactRoot, LAST_RUN_FILE, LAST_RUN_ROUTE, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
+import { advertisedOrigins, isArtifactRoot, LAST_RUN_FILE, LAST_RUN_ROUTE, NOTE_DIR, NOTE_ROUTE, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
 
 const STARTER = fileURLToPath(new URL("..", import.meta.url));
 
@@ -111,6 +111,30 @@ for (const name of ["farol", "Farol do Sul"]) {
       assert.equal(saved.spawn, "dusk");
       assert.doesNotMatch(JSON.stringify(saved), /aprovado|verified|LUFS|-14|4\.5/);
 
+      const noted = await fetch(`http://localhost:${server.port}${NOTE_ROUTE}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ note: "o dash atravessou", author: "" }),
+      });
+      assert.equal(noted.status, 204, noted.status);
+      const folders = await readdir(join(server.project, NOTE_DIR));
+      const receipt = folders.find((name) => name !== "last-run.json");
+      assert.ok(receipt, "esperava a pasta do recibo");
+      const record = JSON.parse(await readFile(join(server.project, NOTE_DIR, receipt, "record.json"), "utf8"));
+      assert.equal(record.kind, "observation");
+      assert.equal(record.author, "página");
+      assert.equal(record.felt, false);
+      assert.equal(record.observed, false);
+      assert.match(record.fields.run, /"ticks":40/);
+      assert.doesNotMatch(JSON.stringify(record), /aprovado|verified|LUFS|-14|4\.5/);
+
+      const empty = await fetch(`http://localhost:${server.port}${NOTE_ROUTE}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ note: "  " }),
+      });
+      assert.equal(empty.status, 400);
+
       const refused = await fetch(`http://localhost:${server.port}/docs/playtest/last-run.json`, {
         method: "POST",
         body: "{}",
@@ -151,6 +175,7 @@ test("o serve anuncia a rede sem fingir que alguém de fora jogou", () => {
   assert.match(banner, /Par: http:\/\/localhost:8080\/\?mood=calm  http:\/\/localhost:8080\/\?mood=dusk/);
   assert.match(banner, /Convite: http:\/\/localhost:8080\/\?invite=1/);
   assert.match(banner, /Candidato: a partida grava docs\/playtest\/last-run\.json/);
+  assert.match(banner, /Nota: depois do fim a página grava o recibo/);
   assert.match(banner, /Rede: http:\/\/192\.168\.1\.40:8080\//);
   assert.match(banner, /Convite na rede: http:\/\/192\.168\.1\.40:8080\/\?invite=1/);
   assert.doesNotMatch(banner, /169\.254/);

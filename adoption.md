@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.114 — A página também grava o recibo
+
+O `note` ainda pedia o harness. Depois do fim,
+a página grava o mesmo `record.json` se você
+escrever. Convite não oferece. `felt` continua
+falso. Só `release` fica no piso.
+
+O que 0.9.114 não afirma: gravar o recibo não é
+peso percebido e a página não jogou.
+
 ## 0.9.113 — A partida no serve também deixa candidato
 
 O `note --from-run` só via simulação. A partida no

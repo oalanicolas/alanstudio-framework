@@ -2982,7 +2982,7 @@ def cycle_prompt(play, then, cycle, noted=False):
     return (
         f"O jogo não foi aberto. Cole e rode: {play}. "
         + (f"{how} " if how else "")
-        + f"Depois de uma partida, no harness: {then['note']}. "
+        + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
         "`next` só se o ciclo já correu e você não sabe o que falta."
     )
 
@@ -2993,7 +2993,7 @@ def guide_prompt(exists, start_command, play, then, cycle, noted=False):
     return (
         f"O ciclo ainda não existe. Cole e rode: {start_command}. "
         f"Depois, no próprio dispositivo: {play}. "
-        f"Depois de uma partida, no harness: {then['note']}. "
+        f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
         "O harness não cria a pasta, não abre o jogo e não joga."
     )
 
@@ -3377,7 +3377,8 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "uma mão, o toque, o controle e as queries de look, chuva, par e "
             "convite, se o starter as declara. Não "
             "executa o jogo. Depois de uma "
-            "partida, o próximo comando do harness é `note`, não `next`. "
+            "partida, a página grava o recibo se você escrever; o próximo "
+            "comando do harness continua `note`, não `next`. "
             "`then` já nomeia par, look, chuva e voz se o projeto declara essas "
             "ferramentas; depois de um recibo, o prompt as aponta. Ferramenta "
             "no disco não é alguém de fora nem mix ouvido. Não "
@@ -3425,8 +3426,9 @@ def play_cycle(destination=None, starter=None):
         "scope": (
             "Aponta o comando que abre o jogo. Não executa, não cria e não "
             "joga. `open` é o play. Com tela, o avanço abre a porta. Depois "
-            "de uma partida, o próximo comando do harness é `note`, não "
-            "`next`. `executed` fica falso."
+            "de uma partida, a página grava o recibo se você escrever; o "
+            "próximo comando do harness continua `note`, não `next`. "
+            "`executed` fica falso."
         ),
     }
 

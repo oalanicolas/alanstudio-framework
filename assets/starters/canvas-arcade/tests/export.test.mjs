@@ -82,6 +82,12 @@ test("o export copia o jogo e deixa de fora o que só serve para desenvolver", a
         body: JSON.stringify({ run: { ticks: 10, score: 1 } }),
       });
       assert.equal(posted.status, 403, "árvore exportada não grava candidato");
+      const noted = await fetch(`http://localhost:${port}/playtest/note`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ note: "o dash atravessou" }),
+      });
+      assert.equal(noted.status, 403, "árvore exportada não grava recibo");
     } finally {
       server.kill("SIGKILL");
       await once(server, "exit");

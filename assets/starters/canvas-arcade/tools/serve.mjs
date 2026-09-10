@@ -3,18 +3,27 @@
 // Módulos ES não carregam por `file://`, então abrir o index.html direto no
 // navegador falha. Este servidor existe só para jogar e comparar localmente.
 // Não é servidor de produção: serve o diretório do projeto por GET e aceita
-// um POST, o candidato da partida, em `/playtest/last-run`. Recusa caminho
-// que escape do projeto e não grava na árvore exportada.
+// um POST em `/playtest/last-run` (candidato) e outro em `/playtest/note`
+// (recibo). Recusa caminho que escape do projeto e não grava na árvore
+// exportada.
 
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { createReadStream, existsSync } from "node:fs";
-import { mkdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { networkInterfaces } from "node:os";
 import { dirname, extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { LAST_RUN_FILE, LAST_RUN_ROUTE, playReport } from "../src/core/run-report.js";
+import {
+  LAST_RUN_FILE,
+  LAST_RUN_ROUTE,
+  NOTE_DIR,
+  NOTE_ROUTE,
+  noteStamp,
+  playNote,
+  playReport,
+} from "../src/core/run-report.js";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 
@@ -71,6 +80,7 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
     `Par: ${local}/?mood=calm  ${local}/?mood=dusk`,
     `Convite: ${local}/?invite=1`,
     "Candidato: a partida grava docs/playtest/last-run.json",
+    "Nota: depois do fim a página grava o recibo em docs/playtest/",
   ];
   for (const origin of origins.slice(1)) {
     lines.push(`Rede: ${origin}/`);
@@ -95,7 +105,7 @@ function openBrowser(url) {
 // `pathname` de uma URL mantém a codificação percentual: um projeto em
 // "Farol do Sul" viraria "Farol%20do%20Sul", uma pasta que não existe, e todo
 // pedido responderia 404. `fileURLToPath` decodifica.
-export { LAST_RUN_FILE, LAST_RUN_ROUTE };
+export { LAST_RUN_FILE, LAST_RUN_ROUTE, NOTE_DIR, NOTE_ROUTE };
 
 export const LAST_RUN_LIMIT = 32 * 1024;
 
@@ -131,6 +141,55 @@ export async function writeLastRun(root, report) {
   const dest = join(root, LAST_RUN_FILE);
   await mkdir(dirname(dest), { recursive: true });
   await writeFile(dest, `${JSON.stringify(report, null, 2)}\n`);
+  return dest;
+}
+
+export function acceptNote(raw) {
+  let data;
+  try {
+    data = typeof raw === "string" ? JSON.parse(raw) : raw;
+  } catch {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  const note = String(data.note ?? "").trim();
+  if (!note) return { ok: false, status: 400, reason: "sem nota" };
+  const author = String(data.author ?? "").trim() || "página";
+  return { ok: true, author, note };
+}
+
+async function attachedRun(root) {
+  try {
+    const data = JSON.parse(await readFile(join(root, LAST_RUN_FILE), "utf8"));
+    if (!data || typeof data !== "object") return {};
+    const run = data.run && typeof data.run === "object" ? data.run : null;
+    const curve = data.curve && typeof data.curve === "object" ? data.curve : null;
+    return { run, curve };
+  } catch {
+    return {};
+  }
+}
+
+export async function writeNote(root, { author, note }) {
+  const extra = await attachedRun(root);
+  const report = playNote({
+    author,
+    note,
+    project: String(root),
+    run: extra.run,
+    curve: extra.curve,
+  });
+  let folder = join(root, NOTE_DIR, noteStamp());
+  try {
+    await mkdir(folder, { recursive: true });
+  } catch {
+    folder = join(root, NOTE_DIR, `${noteStamp()}-b`);
+    await mkdir(folder, { recursive: true });
+  }
+  const dest = join(folder, "record.json");
+  await writeFile(dest, `${JSON.stringify(report, null, 2)}\n`, { flag: "wx" });
   return dest;
 }
 
@@ -186,6 +245,25 @@ const server = createServer(async (request, response) => {
       return;
     }
     await writeLastRun(ROOT, accepted.report);
+    response.writeHead(204).end();
+    return;
+  }
+  if (request.method === "POST" && pathname === NOTE_ROUTE) {
+    if (isArtifactRoot()) {
+      response.writeHead(403, { "content-type": "text/plain; charset=utf-8" }).end("árvore exportada");
+      return;
+    }
+    const raw = await collectBody(request, LAST_RUN_LIMIT);
+    if (raw === null) {
+      response.writeHead(413, { "content-type": "text/plain; charset=utf-8" }).end("corpo grande");
+      return;
+    }
+    const accepted = acceptNote(raw);
+    if (!accepted.ok) {
+      response.writeHead(accepted.status, { "content-type": "text/plain; charset=utf-8" }).end(accepted.reason);
+      return;
+    }
+    await writeNote(ROOT, accepted);
     response.writeHead(204).end();
     return;
   }

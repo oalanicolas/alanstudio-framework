@@ -68,6 +68,8 @@
       html.invite .invite-strip { display: block; }
       #finding { display: none; }
       html.invite.finding #finding { display: block; }
+      #note { display: none; }
+      html.note #note { display: block; }
       #finding textarea {
         width: 100%;
         min-height: 3.2rem;
@@ -90,6 +92,27 @@
         font: inherit;
       }
       #finding button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      #note textarea, #note input[type="text"] {
+        width: 100%;
+        background: var(--page);
+        color: inherit;
+        border: 1px solid var(--edge);
+        border-radius: 6px;
+        padding: 0.4rem 0.55rem;
+        font: inherit;
+      }
+      #note textarea { min-height: 3.2rem; resize: vertical; }
+      #note button {
+        appearance: none;
+        background: transparent;
+        color: inherit;
+        border: 1px solid var(--edge);
+        border-radius: 6px;
+        padding: 0.4rem 0.75rem;
+        cursor: pointer;
+        font: inherit;
+      }
+      #note button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
     </style>
     <script>
@@ -109,6 +132,16 @@
     <noscript>
       <p class="panel">Este jogo precisa de JavaScript. O código das regras fica em <code>src/game/rules.js</code>.</p>
     </noscript>
+
+    <section class="panel" id="note" aria-labelledby="note-title">
+      <h2 id="note-title">Depois da partida</h2>
+      <p class="note">Escreva o que o verbo sentiu. Isto grava o recibo e não sente.</p>
+      <div class="grid">
+        <label><span>Quem assina</span><input type="text" id="note-author" name="author" autocomplete="nickname" /></label>
+        <label><span>Nota</span><textarea id="note-text" name="note" rows="2"></textarea></label>
+      </div>
+      <p><button type="button" id="note-save">Gravar</button></p>
+    </section>
 
     <section class="panel" id="finding" aria-labelledby="finding-title">
       <h2 id="finding-title">Depois da partida</h2>
@@ -178,7 +211,8 @@
     <script type="module" src="./src/main.js"></script>
     <script type="module">
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
-      import { applyFinding, applyInvite, composeFinding, inviteMode } from "./src/core/invite.js";
+      import { applyFinding, applyInvite, applyNote, composeFinding, inviteMode } from "./src/core/invite.js";
+      import { NOTE_ROUTE } from "./src/core/run-report.js";
       import { applyShell } from "./src/core/shell.js";
       import { LOOK_LABELS, SPAWN_LABELS, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch, PALETTES, resolveLookName } from "./src/game/tables.js";
       import { paintCommands } from "./src/core/keys.js";
@@ -191,13 +225,26 @@
       const game = window.__game;
       if (game) {
         const invited = inviteMode(location.search);
-        const revealFinding = (phase) => applyFinding({
-          root: document.documentElement,
-          phase,
-          invite: invited,
+        const revealAfter = (phase) => {
+          applyFinding({ root: document.documentElement, phase, invite: invited });
+          applyNote({ root: document.documentElement, phase, invite: invited });
+        };
+        if (typeof game.watch === "function") game.watch(revealAfter);
+        else revealAfter(game.observe().phase);
+        document.getElementById("note-save").addEventListener("click", () => {
+          const text = document.getElementById("note-text").value;
+          const author = document.getElementById("note-author").value;
+          if (!String(text).trim()) return;
+          fetch(NOTE_ROUTE, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ author, note: text }),
+          }).then((response) => {
+            if (!response.ok) return;
+            document.getElementById("note-save").disabled = true;
+            document.getElementById("note-save").textContent = "Recibo no disco";
+          }).catch(() => {});
         });
-        if (typeof game.watch === "function") game.watch(revealFinding);
-        else revealFinding(game.observe().phase);
         document.getElementById("finding-copy").addEventListener("click", () => {
           const text = composeFinding({
             problema: document.getElementById("finding-problema").value,
