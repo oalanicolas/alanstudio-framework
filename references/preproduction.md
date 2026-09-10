@@ -56,9 +56,11 @@ coincidir com a vertical slice em um jogo muito pequeno, se cumprir ambos os obj
 REUSE → ADAPT → CREATE vale para documentos, mecânicas, ferramentas, código e assets.
 Leia candidatos e consumidores, adapte o canônico e explique lacunas antes de criar.
 Para um jogo que ainda não existe no disco, o candidato de reuso é um starter do
-acervo: `init <destino> --starter <starter>` monta o projeto e cria estes
-documentos como rascunho declarado, para serem substituídos por decisão — não para
-serem entregues como se fossem uma.
+acervo: `start --idea "<fantasia>"` (ou `start <destino> --starter <starter>`)
+monta o projeto e aponta o comando que abre o jogo, sem plantar estes documentos.
+`init <destino> --starter <starter>` faz a mesma cópia e cria os rascunhos — para
+serem substituídos por decisão, não para serem entregues como se fossem uma.
+`--docs` no start também os planta.
 
 Cada etapa pretende um degrau da [barra de acabamento](production-bar.md): PoC
 responde uma pergunta em degrau de protótipo, o MVP entrega um ciclo jogável, a

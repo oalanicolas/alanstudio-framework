@@ -3506,6 +3506,50 @@ def substitute(text, pairs):
     return pattern.sub(swap, text), counted
 
 
+def init_scope(documents, idea=None):
+    # O `start` chama `init` com documents=False. Afirmar rascunhos, brief ou
+    # draft_only nesse ramo mentia no JSON que o agente lê depois de criar.
+    copied = (
+        "Copiou o starter, trocou os valores que `starter.json` declara"
+    )
+    if documents:
+        drafts = (
+            " e criou rascunhos a partir dos templates. O ciclo já abre: o primeiro "
+            "comando apontado é o que serve o jogo, não o que preenche os rascunhos. "
+        )
+        scan = "`scan` ainda reporta `draft_only` nas áreas sem decisão. "
+        planted = (
+            "`--idea` entra no brief como frase e, se houver `data/copy.json`, na "
+            "abertura e no aviso do primeiro ciclo. O brief continua rascunho. "
+            if nonempty(idea)
+            else ""
+        )
+    else:
+        drafts = (
+            " sem plantar os rascunhos do ciclo. `start` faz o mesmo; `init` sem "
+            "`--no-docs` ou `start --docs` os cria. O ciclo já abre: o primeiro "
+            "comando apontado é o que serve o jogo. "
+        )
+        scan = (
+            "`scan` ainda reporta lacuna nas áreas sem candidato; "
+            "`areas.not_located` não bloqueia quem já abre. "
+        )
+        planted = (
+            "`--idea` entra na abertura se houver `data/copy.json`; o brief só nasce "
+            "se os rascunhos forem plantados. "
+            if nonempty(idea)
+            else ""
+        )
+    return (
+        copied + drafts
+        + "Documento vigente que o starter já trouxe (art-bible) não é reescrito. "
+        + scan + planted
+        + "A frase na tela não muda o verbo. O starter é material de "
+        "ADAPT, não uma engine nem uma base aprovada; o comando não executa o jogo, não instala "
+        "dependências e não avalia a proposta."
+    )
+
+
 def init(destination, starter, title=None, documents=True, idea=None):
     available = starters()
     if starter not in available:
@@ -3600,16 +3644,7 @@ def init(destination, starter, title=None, documents=True, idea=None):
             str(destination / "README.md"),
         ],
         "next_commands": commands,
-        "scope": (
-            "Copiou o starter, trocou os valores que `starter.json` declara e criou rascunhos a partir dos "
-            "templates. O ciclo já abre: o primeiro comando apontado é o que serve o jogo, não o que preenche "
-            "os rascunhos. Documento vigente que o starter já trouxe (art-bible) não é reescrito. "
-            "`scan` ainda reporta `draft_only` nas áreas sem decisão. `--idea` entra no brief como frase "
-            "e, se houver `data/copy.json`, na abertura e no aviso do primeiro ciclo. O brief continua rascunho. "
-            "A frase na tela não muda o verbo. O starter é material de "
-            "ADAPT, não uma engine nem uma base aprovada; o comando não executa o jogo, não instala "
-            "dependências e não avalia a proposta."
-        ),
+        "scope": init_scope(documents, idea),
     }
 
 

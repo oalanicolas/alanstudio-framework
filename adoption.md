@@ -3,6 +3,25 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.165 — O init sem rascunhos deixa de mentir
+
+`start` chama `init` sem
+plantar os seis rascunhos.
+O `scope` do `init` ainda
+afirmava rascunhos, brief e
+`draft_only`. `init_scope`
+distingue os dois ramos.
+`preproduction.md` — o
+arquivo que o `context`
+injeta no foco create —
+ensina `start --idea`.
+`init` continua o que planta.
+Só `release` fica no piso.
+
+O que 0.9.165 não afirma:
+texto honesto no recibo não
+abre o jogo nem observa.
+
 ## 0.9.164 — Fantasia no prompt
 
 `--idea` já gravava a frase

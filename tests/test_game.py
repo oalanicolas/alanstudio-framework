@@ -1431,6 +1431,28 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(nxt["signals"]["playable_unplayed"])
         self.assertTrue(nxt["signals"]["gaps"])
         self.assertNotIn("areas.not_located", [item["basis"] for item in self.proposals(nxt)])
+        self.assertIn("sem plantar", created["scope"])
+        self.assertNotIn("criou rascunhos", created["scope"])
+        self.assertNotIn("draft_only", created["scope"])
+        self.assertNotIn("entra no brief", created["scope"])
+        self.assertNotIn("aprovado", created["scope"])
+        self.assertNotIn("verified", created["scope"])
+
+    def test_init_scope_names_drafts_only_when_they_were_planted(self):
+        bare = game.init_scope(False, "atravessar estilhaços")
+        self.assertIn("sem plantar", bare)
+        self.assertNotIn("criou rascunhos", bare)
+        self.assertNotIn("draft_only", bare)
+        self.assertIn("copy.json", bare)
+        self.assertNotIn("entra no brief", bare)
+        planted = game.init_scope(True, "atravessar estilhaços")
+        self.assertIn("criou rascunhos", planted)
+        self.assertIn("draft_only", planted)
+        self.assertIn("entra no brief", planted)
+        mute = game.init_scope(False)
+        self.assertIn("sem plantar", mute)
+        self.assertNotIn("--idea", mute)
+        self.assertNotIn("copy.json", mute)
 
     def test_long_idea_fits_the_surface_and_keeps_the_full_phrase_in_the_brief(self):
         destination = self.root / "frase-longa"
@@ -1675,6 +1697,14 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             [spec["stage"] for spec in game.GATES.values()],
             [stage for stage in game.STAGES if stage in {spec["stage"] for spec in game.GATES.values()}],
         )
+
+    def test_preproduction_teaches_start_as_the_entry_for_a_new_game(self):
+        # context --stage e o foco create injetam este arquivo. Ensinar init
+        # como a entrada plantava seis rascunhos no caminho que o start recusou.
+        cycle = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertIn("start --idea", cycle)
+        self.assertNotIn("monta o projeto e cria estes", cycle)
+        self.assertIn("init <destino>", cycle)
 
     def test_a_gate_never_grants_passage_only_reads_what_the_project_claims(self):
         self.declare_gate({("deliver", "runbook"): ("met", "Ana construiu do zero, log em /tmp/qa-07")})
@@ -3371,6 +3401,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("não é partida observada", report["prompt"])
         self.assertNotIn("aprovado", report["prompt"])
         self.assertNotIn("verified", report["prompt"])
+        self.assertEqual(report["init"]["documents"], [])
+        self.assertIn("sem plantar", report["init"]["scope"])
+        self.assertNotIn("criou rascunhos", report["init"]["scope"])
+        self.assertNotIn("draft_only", report["init"]["scope"])
 
     def test_start_docs_still_plants_the_drafts(self):
         destination = self.root / "com-rascunhos"
@@ -3383,6 +3417,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["brief"], "docs/brief.md")
         self.assertEqual(report["next"]["proposal"]["basis"], "playable.unplayed")
         self.assertEqual(game.scan(destination)["areas"]["vision"]["status"], "draft_only")
+        self.assertIn("criou rascunhos", report["init"]["scope"])
+        self.assertIn("draft_only", report["init"]["scope"])
+        self.assertIn("entra no brief", report["init"]["scope"])
         planted = subprocess.run(
             [sys.executable, str(SCRIPT), "start", str(self.root / "via-cli"),
              "--docs", "--idea", "atravessar estilhaços", "--root", str(self.root)],
