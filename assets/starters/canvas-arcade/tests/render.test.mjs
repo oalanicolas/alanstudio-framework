@@ -179,7 +179,7 @@ for (const [nome, state, settings, extra] of [
 ]) {
   test(`toda linha do HUD cabe em uma placa — ${nome}`, () => {
     const calls = hudTexts(state, settings, extra);
-    const hud = calls.texts.filter((item) => /Pontos|Corrente|Recorde|Dash|^\d+s$/.test(item.text));
+    const hud = calls.texts.filter((item) => /Pontos|Corrente|Recorde|Dash|^\|\| \d+s$/.test(item.text));
     assert.ok(hud.length >= 4, `o HUD desenhou pouca coisa: ${JSON.stringify(hud.map((i) => i.text))}`);
     assert.ok(calls.plates.length >= 3, "cada canto do HUD precisa da sua placa");
     // Nenhuma placa pode ser um retângulo de tela cheia disfarçado.
@@ -214,6 +214,15 @@ test("a seta da corrente só aparece quando guardar rende mais que a corrente", 
   assert.equal(chainText(1), "Corrente 1");
   assert.equal(chainText(2), "Corrente 2 → 4");
   assert.equal(chainText(7), "Corrente 7 → 49");
+});
+
+test("o relógio nomeia a pausa sem fingir sessão", () => {
+  const calls = hudTexts(createState(2));
+  const clock = calls.texts.find((item) => /\d+s$/.test(item.text));
+  assert.ok(clock, `esperava relógio: ${JSON.stringify(calls.texts.map((item) => item.text))}`);
+  assert.match(clock.text, /^\|\| \d+s$/);
+  assert.equal(/^\d+s$/.test(clock.text), false, "o canto nu calava o verbo");
+  assert.doesNotMatch(clock.text, /aprovado|verified|felt|alguém de fora/);
 });
 
 function chainMarks(state, settings = {}) {
@@ -329,7 +338,7 @@ const RAJADA = [
 function withCaptions(captions, settings = {}, extra = { best: 98765 }) {
   const calls = hudTexts(longState(), settings, { ...extra, captions });
   const legenda = calls.texts.filter((item) => captions.some((entry) => item.text.startsWith(entry.text)));
-  const hud = calls.texts.filter((item) => /Pontos|Corrente |Recorde|Dash|^\d+s$/.test(item.text));
+  const hud = calls.texts.filter((item) => /Pontos|Corrente |Recorde|Dash|^\|\| \d+s$/.test(item.text));
   return { ...calls, legenda, hud };
 }
 

@@ -3,6 +3,43 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.307 — O relógio nomeia a pausa
+
+O
+toque
+no
+canto
+já
+sentava.
+O
+canvas
+só
+mostrava
+o
+número.
+O
+convite
+some
+a
+tabela.
+Agora
+o
+relógio
+leva
+||.
+Não
+promove
+`felt`.
+
+O que 0.9.307 não afirma:
+texto
+no
+disco
+não
+é
+sessão
+observada.
+
 ## 0.9.306 — O playtest nomeia a página do achado
 
 O

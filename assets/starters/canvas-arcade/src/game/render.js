@@ -511,13 +511,15 @@ export function createRenderer(canvas, options = {}) {
     target.fillText(chain, 6, second);
 
     // O relógio mora neste canto. O toque ali pausa —
-    // Esc e P não existem no polegar. Texto no disco
-    // não é sessão observada.
-    const rightWidth = Math.max(width(`${seconds}s`), best ? width(best) : 0);
+    // Esc e P não existem no polegar. Sem o || o canto
+    // calava o verbo e o convite some a tabela. Texto
+    // no disco não é sessão observada.
+    const clock = `|| ${seconds}s`;
+    const rightWidth = Math.max(width(clock), best ? width(best) : 0);
     const timerBox = plate(target, palette, FIELD.width - 6 - rightWidth, 5, rightWidth, best ? second + size - 5 : size);
     target.textAlign = "right";
     target.fillStyle = closingWindow(state) ? palette.danger : palette.muted;
-    target.fillText(`${seconds}s`, FIELD.width - 6, 5);
+    target.fillText(clock, FIELD.width - 6, 5);
     if (best) {
       target.fillStyle = palette.muted;
       target.fillText(best, FIELD.width - 6, second);

@@ -12,7 +12,9 @@ solta o ofício pendente — Space e R não disparam no quadro
 seguinte. Na pausa o toque retoma — Esc e P não existem no
 polegar; o tap não é o avanço. No campo o telefone
 pausa no relógio; o resto da tela continua o avanço.
-Na porta o canto continua abrindo. A placa da pausa nomeia
+O relógio nomeia a pausa — sem o || o canto calava o
+verbo e o convite some a tabela. Na porta o canto
+continua abrindo. A placa da pausa nomeia
 reiniciar; R já saía e o overlay calava. A região viva
 espelha continuar e reiniciar. Na porta o telefone vê
 Jogar: toque sem ter apertado; o aviso continua teclado
