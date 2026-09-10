@@ -55,6 +55,10 @@ test("a sessão simulada grava candidato sem chamar isso de observada", async ()
     assert.deepEqual(saved.curve, report.curve);
     assert.equal(saved.observed, false);
     assert.equal(saved.spawn, "spawn");
+    assert.equal(saved.look, "normal");
+    assert.equal(saved.speed, 1);
+    assert.equal(saved.run.look, "normal");
+    assert.equal(saved.run.speed, 1);
   } finally {
     await rm(folder, { recursive: true, force: true });
   }
@@ -106,6 +110,40 @@ test("a sessão traça o perfil pedido e recusa chuva que não existe", async ()
     const missing = await runSession(["--spawn", "inventada", "--out", join(folder, "no.json")]);
     assert.equal(missing.code, 2);
     assert.match(missing.stderr, /perfil de chuva desconhecido/);
+  } finally {
+    await rm(folder, { recursive: true, force: true });
+  }
+});
+
+test("a sessão nomeia o look e o relógio que o convite já lê", async () => {
+  const folder = await mkdtemp(join(tmpdir(), "starter-session-clock-"));
+  const out = join(folder, "last-run.json");
+  try {
+    const named = await runSession([
+      "--seed", "7",
+      "--look", "dusk",
+      "--speed", "0.75",
+      "--out", out,
+    ]);
+    assert.equal(named.code, 0, named.stderr);
+    const report = JSON.parse(named.stdout);
+    assert.equal(report.look, "dusk");
+    assert.equal(report.speed, 0.75);
+    assert.equal(report.run.look, "dusk");
+    assert.equal(report.run.speed, 0.75);
+    assert.equal(report.policy, "nearest-orb");
+    assert.equal(report.observed, false);
+    assert.equal(report.felt, false);
+    assert.doesNotMatch(named.stdout, /aprovado|verified|LUFS|-14|4\.5/);
+    const saved = JSON.parse(await readFile(out, "utf8"));
+    assert.equal(saved.look, "dusk");
+    assert.equal(saved.speed, 0.75);
+    const unknownLook = await runSession(["--look", "inventado", "--out", join(folder, "no-look.json")]);
+    assert.equal(unknownLook.code, 2);
+    assert.match(unknownLook.stderr, /look desconhecido/);
+    const hollowSpeed = await runSession(["--speed", "12", "--out", join(folder, "no-speed.json")]);
+    assert.equal(hollowSpeed.code, 2);
+    assert.match(hollowSpeed.stderr, /relógio fora da faixa/);
   } finally {
     await rm(folder, { recursive: true, force: true });
   }

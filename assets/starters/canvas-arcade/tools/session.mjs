@@ -2,7 +2,8 @@
 // Corre uma partida simulada e grava resumo e curva no disco. É candidato
 // ao campo de medição de um achado — não é sessão observada e não atribui causa.
 // last-run jogado (`policy: played`) não some sob a simulação. --force
-// ou outro --out. Nomear a origem não observa.
+// ou outro --out. `--look` e `--speed` nomeiam o que o convite já lê.
+// Simular no relógio cheio não observa. Nomear a origem não observa.
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -11,7 +12,8 @@ import { fileURLToPath } from "node:url";
 import { playReport } from "../src/core/run-report.js";
 import { summarizeRun } from "../src/core/save.js";
 import { createTrace, finishCurve, traceTick } from "../src/game/curve.js";
-import { listSpawnProfiles } from "../src/game/tables.js";
+import { GAME_SPEED_MAX, GAME_SPEED_MIN } from "../src/core/settings.js";
+import { listLooks, listSpawnProfiles } from "../src/game/tables.js";
 import { advance, createState, CONFIG, PLAYER_Y } from "../src/game/rules.js";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -24,6 +26,8 @@ const argument = (name, fallback) => {
 
 const seed = Number(argument("seed", "7"));
 const spawn = String(argument("spawn", "spawn"));
+const lookArg = process.argv.includes("--look") ? String(argument("look", "")) : null;
+const speedArg = process.argv.includes("--speed") ? argument("speed", "") : null;
 const force = process.argv.includes("--force");
 const out = resolve(ROOT, argument("out", "docs/playtest/last-run.json"));
 
@@ -39,6 +43,23 @@ async function existingPolicy(path) {
 if (!listSpawnProfiles().includes(spawn)) {
   console.error(`perfil de chuva desconhecido: ${spawn}`);
   process.exit(2);
+}
+
+const looks = listLooks();
+const look = lookArg === null || lookArg === "" ? "normal" : lookArg;
+if (!looks.includes(look)) {
+  console.error(`look desconhecido: ${look}`);
+  process.exit(2);
+}
+
+let speed = 1;
+if (speedArg !== null) {
+  const parsed = Number(speedArg);
+  if (!Number.isFinite(parsed) || parsed < GAME_SPEED_MIN || parsed > GAME_SPEED_MAX) {
+    console.error(`relógio fora da faixa: ${speedArg}`);
+    process.exit(2);
+  }
+  speed = parsed;
 }
 
 function intent(state) {
@@ -68,7 +89,9 @@ while (state.phase === "playing" && steps < CONFIG.runTicks + 4) {
 const report = playReport({
   seed: state.seed,
   spawn: state.spawnProfile,
-  run: summarizeRun(state),
+  look,
+  speed,
+  run: summarizeRun(state, { look, speed }),
   curve: finishCurve(trace, state.chain),
   policy: "nearest-orb",
 });

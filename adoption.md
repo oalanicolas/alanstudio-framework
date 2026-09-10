@@ -3,6 +3,48 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.288 — A sessão simulada nomeia o look e o relógio que o convite já lê
+
+O
+convite
+já
+lia
+look
+e
+relógio
+no
+last-run.
+A
+simulação
+os
+omitia.
+Agora
+`session --look`
+e
+`session --speed`
+escrevem
+o
+candidato.
+Simular
+no
+relógio
+cheio
+não
+observa.
+Não
+promove
+`outsider`.
+
+O que 0.9.288 não afirma:
+nomear
+o
+eixo
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.287 — A cama segue o relógio da sessão
 
 O

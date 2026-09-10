@@ -4141,6 +4141,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(game.seed_href(destination), "/?seed=8&spawn=dusk&look=dusk&speed=0.75")
         self.assertFalse(clocked["outsider"])
 
+    def test_session_named_look_and_speed_reach_the_invite_the_harness_already_reads(self):
+        destination = self.root / "sessao-nomeia-look-relogio"
+        game.init(destination, "canvas-arcade")
+        recipe = (Path(game.FRAMEWORK) / "recipes/feel.md").read_text(encoding="utf-8")
+        readme = (destination / "README.md").read_text(encoding="utf-8")
+        self.assertIn("session --look", recipe)
+        self.assertIn("session --speed", recipe)
+        self.assertIn("session --look", readme)
+        self.assertIn("session --speed", readme)
+        (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "spawn": "dusk",
+            "look": "dusk",
+            "speed": 0.75,
+            "policy": "nearest-orb",
+            "run": {
+                "ticks": 40,
+                "score": 3,
+                "seed": 8,
+                "look": "dusk",
+                "speed": 0.75,
+                "policy": "nearest-orb",
+            },
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        reading = game.playtest_reading(destination)
+        self.assertEqual(reading["candidate_look"], "dusk")
+        self.assertEqual(reading["candidate_speed"], 0.75)
+        self.assertEqual(reading["candidate_policy"], "nearest-orb")
+        self.assertEqual(
+            reading["invite_href"],
+            "/?invite=1&seed=8&spawn=dusk&look=dusk&speed=0.75",
+        )
+        self.assertFalse(reading["outsider"])
+
     def test_a_page_finding_is_form_not_an_outsider(self):
         destination = self.root / "achado-da-pagina"
         game.init(destination, "canvas-arcade")

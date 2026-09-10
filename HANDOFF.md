@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.287: a cama segue o relógio da sessão. Coleta e guarda guardam o tom da aposta. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.288: a sessão simulada nomeia o look e o relógio que o convite já lê. Simular no relógio cheio não observa. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 306 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.287)
+## O que o HEAD já entrega (0.9.91–0.9.288)
 
 | Ver | Salto |
 | --- | --- |
@@ -231,6 +231,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.285 | O `discover` nomeia as lacunas de dimensão que o `next` já usa. `access_declared` deixa de esconder `haptics`. Não promove `verified`. |
 | 0.9.286 | O controle que some não deixa a partida correr sozinha. `gamepaddisconnected` senta se a sessão falou no pad. Não promove `felt`. |
 | 0.9.287 | A cama segue o relógio da sessão. O fecho sobe em cima do knob; coleta e guarda guardam o tom. Não promove `heard`. |
+| 0.9.288 | A sessão simulada nomeia o look e o relógio que o convite já lê. `session --look` / `--speed` escrevem o candidato. Não promove `outsider`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -248,7 +249,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
-| pacing | slice | o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
+| pacing | slice | a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
@@ -422,7 +423,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou uma tecla do remap que dispara o verbo
   ou um botão focado que ativa e avança
   ou um verify que some o stem que o recibo já nomeia
-  ou uma faixa que some a curva que o last-run já traçou.
+  ou uma faixa que some a curva que o last-run já traçou
+  ou uma sessão que some o look e o relógio que o convite já lê.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -760,6 +762,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Serve POST `/playtest/last-run` grava `docs/playtest/last-run.json`.
   Força `observed`/`felt` falsos e `policy: played`. Árvore
   exportada responde 403. Sem canvas o headless não posta.
+- `npm run session` grava `nearest-orb`. `session --look` e
+  `session --speed` nomeiam o que o convite já lê. Look fora
+  da mesa e relógio fora de `[0.5, 1]` recusam. Simular no
+  relógio cheio não observa. Não sobrescreve `played` sem
+  `--force`. Nomear não é outsider.
 - Serve POST `/playtest/note` grava `docs/playtest/<utc>/record.json`.
   Nota vazia é 400. Autor vazio vira `página`. Anexa last-run se
   existir. `#note` no `over` e na `title` se houver `lastRun`, fora
@@ -958,6 +965,10 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `sfx info` que trata o stem perdido como id desconhecido.
 **Não** mais um `discover` que some o sinal de origem que o `next` já usa.
 **Não** mais um `content` que conta paleta como volume extraído.
+**Não** mais um `discover` que some as lacunas de dimensão que o `next` já usa.
+**Não** mais um controle que some e deixa a partida correr sozinha.
+**Não** mais uma cama que ignora o relógio da sessão.
+**Não** mais uma sessão que some o look e o relógio que o convite já lê.
 
 Candidatos, do que ainda dói:
 
@@ -1697,9 +1708,10 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a cama
-segue o relógio da sessão. Coleta e guarda
-guardam o tom da aposta. Não promove `heard`.
+Arquivos quentes da última sessão: a sessão
+simulada nomeia o look e o relógio que o
+convite já lê. Simular no relógio cheio não
+observa. Não promove `outsider`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1722,3 +1734,4 @@ A família content conta paleta como volume está saturada.
 A família discover some as lacunas de dimensão está saturada.
 A família controle que some / pad disconnect deixa a partida correr está saturada.
 A família cama ignora o relógio da sessão / gameSpeed sem cama está saturada.
+A família sessão some look/speed que o convite já lê está saturada.

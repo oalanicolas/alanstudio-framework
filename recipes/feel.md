@@ -36,7 +36,10 @@ a rede, mostrar os números, copiar o achado e gravar os quatro nomes não são 
 falsos: o harness não assiste à sessão. A partida no serve grava o
 mesmo candidato em `docs/playtest/last-run.json` com `policy: played`.
 `npm run session` grava a simulação (`nearest-orb`) e não
-sobrescreve `played` sem `--force`. `playtest` relata
+sobrescreve `played` sem `--force`. `session --look` e
+`session --speed` nomeiam o que o convite já lê. Simular
+no relógio cheio não observa.
+`playtest` relata
 `candidate_policy`. Nenhum dos dois é sessão observada. Se o
 projeto (ou o starter) declara `session`, `then` a aponta. `note --from-run`
 anexa o resumo e, se houver, a curva — o mapa já põe `--from-run`
