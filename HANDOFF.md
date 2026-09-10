@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.215 (confirmado): a barra de `accessibility` não atribui medição no dispositivo ao `contrast`.
+**HEAD:** ver `git log -1` — vigente 0.9.216: na porta o `#live` nomeia o toque da mostra.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 279 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.215)
+## O que o HEAD já entrega (0.9.91–0.9.216)
 
 | Ver | Salto |
 | --- | --- |
@@ -159,6 +159,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.213 | Na raiz do framework, `guide` / harness sem `--idea` recusam — não devolvem `start '<destino>'`. Subpasta e `guide_cycle` continuam o mapa. Não executa. |
 | 0.9.214 | `doctor.then.guide` aponta `guide --idea <fantasia>`. O comando nu quebrava na raiz depois do 0.9.213. Não cria e não executa. |
 | 0.9.215 | A barra de `accessibility` do starter não atribui medição no dispositivo ao `contrast`. O critério nomeia o stub; o aparelho continua pendente. Não promove `accessibility`. |
+| 0.9.216 | Na porta o `#live` nomeia o toque da mostra (`a mostra toca` / `a mostra raspa`). Sem fingir coleta. Sem voz nova. Não promove `accessibility`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -179,7 +180,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | live nomeia o aviso na porta e no fim; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | README não atribui dispositivo ao `contrast`; sessão real pendente |
+| accessibility | slice | live nomeia o toque da mostra na porta; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -292,7 +293,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou playtest que some o esqueleto dos quatro
   ou next que declara origem relendo origins
   ou note que some se o recibo fechou o achado
-  ou barra de accessibility que atribui medição no dispositivo ao contrast.
+  ou barra de accessibility que atribui medição no dispositivo ao contrast
+  ou live que nomeia o toque da mostra.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -666,6 +668,8 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais orbe e estilhaço no mesmo quadro que decidem a corrente pela ordem do array.
 **Não** mais um `guide` na raiz do framework que devolve `start '<destino>'`.
 **Não** mais um `doctor.then.guide` que aponta o `guide` nu na raiz.
+**Não** mais uma barra de `accessibility` que atribui medição no dispositivo ao `contrast`.
+**Não** mais uma região viva que some o toque da mostra enquanto o canvas já acende.
 
 Candidatos, do que ainda dói:
 
@@ -936,6 +940,11 @@ Candidatos, do que ainda dói:
   medição no
   dispositivo
   ao contrast
+  e a
+  região viva
+  que some o
+  toque da
+  mostra
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -959,8 +968,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a barra de
-`accessibility` do starter não atribui medição
-no dispositivo ao `contrast`. O critério nomeia
-o stub; o aparelho continua pendente. Não
-promove `accessibility`.
+Arquivos quentes da última sessão: na porta o
+`#live` nomeia o toque da mostra. Sem fingir
+coleta. Sem voz nova. Não promove
+`accessibility`.

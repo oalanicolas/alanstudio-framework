@@ -180,6 +180,27 @@ test("na porta e no fim a região viva nomeia o aviso da sessão sem fingir conf
   );
 });
 
+test("na porta a região viva nomeia o toque da mostra sem fingir coleta", () => {
+  assert.equal(liveText({ phase: "title", attractTouch: "orb" }), "abertura. a mostra toca");
+  assert.equal(liveText({ phase: "title", attractTouch: "shard" }), "abertura. a mostra raspa");
+  assert.equal(
+    liveText({ phase: "title", attractTouch: "shard", threat: "ahead" }),
+    "abertura. perigo à frente. a mostra raspa",
+  );
+  assert.equal(liveText({ phase: "title" }), "abertura");
+  assert.equal(liveText({ phase: "playing", attractTouch: "orb" }), "");
+  assert.equal(liveText({ phase: "over", attractTouch: "shard" }), "fim da partida");
+  assert.doesNotMatch(
+    liveText({ phase: "title", attractTouch: "orb" }),
+    /coletado|perdido|atingido|orbe coletado/,
+  );
+  assert.match(main, /attractTouch:\s*state\.attractTouch/);
+  assert.doesNotMatch(
+    liveText({ phase: "title", attractTouch: "shard" }),
+    /aprovado|verified|alguém de fora|felt|heard/,
+  );
+});
+
 test("applyLive só escreve quando o texto muda", () => {
   const node = { textContent: "" };
   assert.equal(applyLive({}), false);

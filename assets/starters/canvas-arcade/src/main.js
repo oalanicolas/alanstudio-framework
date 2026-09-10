@@ -282,6 +282,7 @@ export function createGame(options = {}) {
         chain: state.chain,
         lastScore: lastRun && Number.isFinite(lastRun.score) ? lastRun.score : undefined,
         persist: persistLine(persist(), copy),
+        attractTouch: state.attractTouch,
       }),
     });
     if (!renderer) return;

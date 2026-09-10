@@ -4,7 +4,9 @@
 // O fim, a porta e a pausa no campo já nomeiam placar e recorde
 // no canvas. No fim o overlay também nomeia a corrente que caiu.
 // Na porta e no fim o canvas já nomeia sessão volátil; a região
-// viva espelha essa linha. Jogando sem pausa o número não entra.
+// viva espelha essa linha. Na porta o canvas já acende o toque
+// da mostra; a região viva nomeia esse contato sem fingir coleta.
+// Jogando sem pausa o número não entra.
 // Texto no DOM não é sessão de alcance nem alguém de fora.
 
 function whole(value) {
@@ -22,6 +24,7 @@ export function liveText({
   lastScore,
   chain,
   persist,
+  attractTouch,
 } = {}) {
   const parts = [];
   const seen = new Set();
@@ -59,6 +62,12 @@ export function liveText({
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
   }
   if (threat === "ahead") add("perigo à frente");
+  // O canvas já acende. Sem isto o live só nomeava o perigo
+  // que ainda não tocou. Toque no DOM não é coleta nem sessão.
+  if (phase === "title") {
+    if (attractTouch === "orb") add("a mostra toca");
+    else if (attractTouch === "shard") add("a mostra raspa");
+  }
   const latest = captions.length ? captions[captions.length - 1] : null;
   if (latest) add(latest.text);
   return parts.join(". ");

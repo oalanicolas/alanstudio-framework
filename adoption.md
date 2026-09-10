@@ -3,6 +3,64 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.216 — O live nomeia o toque da mostra
+
+Na
+porta
+o
+canvas
+já
+acende
+quando
+a
+mostra
+cruza
+o
+corpo.
+O
+`#live`
+só
+nomeava
+o
+perigo
+que
+ainda
+não
+tocou.
+Agora
+nomeia
+`a
+mostra
+toca`
+e
+`a
+mostra
+raspa`.
+Sem
+fingir
+coleta.
+Sem
+voz
+nova.
+Não
+promove
+`accessibility`.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.216 não afirma:
+texto
+no
+DOM
+não
+é
+sessão
+no
+aparelho.
+
 ## 0.9.215 — A barra de acessibilidade não mente o dispositivo
 
 A
