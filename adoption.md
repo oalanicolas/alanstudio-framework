@@ -3,6 +3,45 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.318 — a folga que acaba nomeia a folga
+
+A
+chuva
+não
+some
+na
+folga
+—
+só
+afrouxa.
+A
+faixa
+dizia
+que
+voltava.
+O
+campo
+já
+some
+o
+contorno.
+Agora
+nomeia.
+Não
+promove
+`heard`
+nem
+`felt`.
+
+O que 0.9.318 não afirma:
+legenda
+no
+disco
+não
+é
+mix
+ouvido.
+
 ## 0.9.317 — a prática que acaba nomeia a ameaça
 
 O

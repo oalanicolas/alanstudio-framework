@@ -133,7 +133,10 @@ export const SOUNDS = {
   over: { bus: "ui", caption: "fim da partida", priority: 5, duckMs: 400 },
   close: { bus: "ui", caption: "últimos segundos", priority: 2 },
   live: { bus: "ui", caption: "a chuva começa", priority: 2 }, // porta; prática passa threat e vira ameaça
-  stir: { bus: "ui", caption: "a chuva volta", priority: 2 },
+  // A chuva não some na folga — só afrouxa. Sem isto a
+  // faixa dizia que a chuva voltava. O campo já some o
+  // contorno da folga. Legenda no disco não é mix ouvido.
+  stir: { bus: "ui", caption: "a folga acaba", priority: 2 },
   bed: { bus: "music", caption: null, priority: 0, loop: true },
 };
 

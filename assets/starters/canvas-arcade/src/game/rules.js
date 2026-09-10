@@ -676,6 +676,9 @@ function markRecovery(state) {
   const until = state.recoverUntil;
   if (!Number.isFinite(until) || until <= 0 || state.tick !== until) return;
   state.flash = Math.max(state.flash, CONFIG.feel.flashStir);
+  // A chuva não some na folga — só afrouxa. Sem isto a
+  // faixa dizia que a chuva voltava. O campo já some o
+  // contorno. Legenda no disco não é mix ouvido.
   emit(state, "stir");
 }
 

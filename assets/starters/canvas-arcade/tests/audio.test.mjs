@@ -206,7 +206,9 @@ test("a prática legendas sem fingir que o mix foi ouvido", () => {
 test("a guarda legendas sem fingir que o mix foi ouvido", () => {
   const { audio } = build();
   audio.play("stir");
-  assert.equal(audio.captions()[0].text, "a chuva volta");
+  assert.equal(audio.captions()[0].text, "a folga acaba", "a folga acabava e a faixa chamava chuva que volta");
+  assert.equal(captionFor("stir"), "a folga acaba");
+  assert.equal(SOUNDS.stir.caption, "a folga acaba");
   assert.equal(SOUNDS.stir.bus, "ui");
   assert.equal(SOUNDS.stir.loop, undefined);
   assert.equal("duckMs" in SOUNDS.stir, false);

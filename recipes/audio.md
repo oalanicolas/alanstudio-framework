@@ -168,7 +168,9 @@ a cama só na partida — o fecho sobe em cima dele), o fecho (`close`, tap e
 legenda "últimos segundos"), a prática (`live` com `threat`,
 "a ameaça começa" — a porta reusa a voz sem o tap e continua
 "a chuva começa"),
-a guarda (`stir`, "a chuva volta") e o orbe perdido (`missed`,
+a guarda (`stir`, "a folga acaba" — a chuva não some, só
+afrouxa),
+o orbe perdido (`missed`,
 "orbe perdido") têm design original e variante
 (`-b`) em `public/sfx`. No `over` a cama solta com fade; pause, title
 e aba escondida continuam cortando a cama seco. No campo a pausa
