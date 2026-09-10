@@ -27,6 +27,7 @@
 // o loader marca o primário; decode nulo tenta a próxima extensão
 // antes de marcar. O play também marca o pedido sem buffer.
 // O painel nomeia os vazios mesmo quando outro papel já registrou.
+// Relê quando o fetch termina — pintar só no boot some o que chegou.
 // O `over` pede fade na cama; pause, title e aba escondida
 // continuam cortando a cama seco. Na pausa o mixer também
 // corta as vozes do verbo que ainda soavam — overlay

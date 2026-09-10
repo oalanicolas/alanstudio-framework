@@ -465,7 +465,13 @@
           });
         }
         sync();
-        document.getElementById("audio-gap").textContent = audioGapLine(game.audioGaps());
+        const paintGaps = () => {
+          document.getElementById("audio-gap").textContent = audioGapLine(game.audioGaps());
+        };
+        paintGaps();
+        if (game.whenSfx && typeof game.whenSfx.then === "function") {
+          game.whenSfx.then(paintGaps);
+        }
       }
     </script>
   </body>

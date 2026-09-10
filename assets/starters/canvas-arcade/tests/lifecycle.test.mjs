@@ -181,6 +181,44 @@ test("a lacuna de áudio é declarada em vez de silenciosa", () => {
   game.dispose();
 });
 
+test("o painel relê a lacuna quando o fetch termina", async () => {
+  let release;
+  const gate = new Promise((resolve) => {
+    release = resolve;
+  });
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    loadSfx: true,
+    fetch: async (url) => {
+      await gate;
+      if (url === "public/sfx/dash.wav") {
+        return { ok: true, arrayBuffer: async () => new ArrayBuffer(8) };
+      }
+      return { ok: false };
+    },
+    decodeSfx: async () => ({ duration: 0.2 }),
+  });
+  assert.deepEqual(game.audioGaps().registered, []);
+  assert.equal(game.audioGaps().requested.includes("dash"), false, "o fetch ainda não esgotou o primário");
+  release();
+  const settled = await game.whenSfx;
+  assert.deepEqual(settled.registered, ["dash"]);
+  assert.deepEqual(game.audioGaps().registered, ["dash"]);
+  assert.ok(game.audioGaps().requested.includes("hit"));
+  assert.equal(game.audioGaps().requested.includes("dash"), false);
+  game.dispose();
+});
+
+test("sem loader a espera do som resolve na hora", async () => {
+  const { game } = harness();
+  const settled = await game.whenSfx;
+  assert.deepEqual(settled.registered, []);
+  assert.ok(settled.declared.includes("collect"));
+  game.dispose();
+});
+
 test("sessão volátil e gravação recusada aparecem no persist sem chamar isso de confiável", () => {
   const { game } = harness();
   assert.equal(game.persist.durable, false);

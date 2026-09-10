@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.253: `sfx copy` do acervo recoloca o WAV quando o recibo casa origem e licença, e declara que não ouviu. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.254: o painel relê a lacuna quando o fetch termina. Pintar só no boot some o que chegou. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 288 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.253)
+## O que o HEAD já entrega (0.9.91–0.9.254)
 
 | Ver | Salto |
 | --- | --- |
@@ -197,6 +197,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.251 | Decode nulo tenta a próxima extensão. Wav ilegível não esconde o ogg nem o pedido. Não promove `heard`. |
 | 0.9.252 | A região viva nomeia a recuperação que o painel já mostra. A porta não. Jogando a chave some. Não promove `trusted`. |
 | 0.9.253 | `sfx copy` do acervo recoloca o WAV quando origem e licença casam, e declara `heard` falso. Recibo diferente recusa. Não promove `heard`. |
+| 0.9.254 | O painel relê a lacuna quando o fetch termina. Pintar só no boot some o que chegou. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -213,7 +214,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
-| audio_mix | slice | decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
+| audio_mix | slice | o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | live nomeia a recuperação que o painel já mostra; a porta não; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -371,7 +372,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um painel que some o 404 quando outro papel já registrou
   ou um wav ilegível que esconde o ogg e some o pedido
   ou uma região viva que some a recuperação que o painel já mostra
-  ou um `sfx copy` do acervo que recusa o WAV porque o recibo tem `note` e some `heard`.
+  ou um `sfx copy` do acervo que recusa o WAV porque o recibo tem `note` e some `heard`
+  ou um painel que pinta a lacuna no boot e some o que o fetch trouxe.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -546,7 +548,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   só marca o pedido se nenhuma extensão falar. `register` apaga o pedido.
   O painel (`audioGapLine`) nomeia os vazios mesmo quando
   outro papel já registrou. Sem registro, a frase antiga
-  permanece. Nomear o 404 não é `heard`.
+  permanece. `whenSfx` resolve quando o loader termina;
+  o painel relê. Pintar só no boot some o que chegou.
+  Nomear o 404 não é `heard`.
   `duckMs` abaixa só
   `music` (`DUCK_BUSES`). `update({ bedRate })` desloca o tom da
   cama; `bedRateFor` lê o pulso do fecho. Não é duck. O `over`
@@ -862,6 +866,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um wav ilegível que esconde o ogg e some o pedido.
 **Não** mais uma região viva que some a recuperação que o painel já mostra.
 **Não** mais um `sfx copy` do acervo que recusa o WAV porque o recibo tem `note` e some `heard`.
+**Não** mais um painel que pinta a lacuna no boot e some o que o fetch trouxe.
 
 Candidatos, do que ainda dói:
 
@@ -1383,6 +1388,13 @@ Candidatos, do que ainda dói:
   note
   e some
   heard
+  e um
+  painel que
+  pinta a
+  lacuna no
+  boot e some
+  o que o
+  fetch trouxe
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1406,7 +1418,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `sfx copy`
-do acervo recoloca o WAV quando origem e
-licença casam, e declara que não ouviu. Não
+Arquivos quentes da última sessão: o painel
+relê a lacuna quando o fetch termina.
+Pintar só no boot some o que chegou. Não
 promove `heard`.

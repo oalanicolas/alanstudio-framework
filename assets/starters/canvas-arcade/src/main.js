@@ -167,15 +167,24 @@ export function createGame(options = {}) {
   syncDashOnPress();
   const haptics = options.haptics ?? createHaptics({ settings, gamepads: options.gamepads });
   const renderer = canvas ? createRenderer(canvas) : null;
+  let finishSfx;
+  const whenSfx = new Promise((resolve) => {
+    finishSfx = () => resolve(audio.missing());
+  });
   // Sem canvas (teste headless) não busca arquivo: o fetch relativo não tem
   // servidor e atrasaria o teste. No browser, o arquivo em public/sfx precisa
   // chegar ao mixer — senão `roles` verde e o jogo mudo são a mesma coisa.
+  // O painel pinta no boot; sem este aviso ele some os vazios que o
+  // fetch ainda não marcou e nunca relê.
   if ((options.loadSfx ?? Boolean(canvas)) && typeof (options.fetch ?? globalThis.fetch) === "function") {
     const fetchFn = options.fetch ?? globalThis.fetch.bind(globalThis);
     const decode = options.decodeSfx ?? ((bytes) => audio.decode(bytes));
     loadRoleFiles(audio, { fetch: fetchFn, decode })
       .then(() => syncBed())
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => finishSfx());
+  } else {
+    finishSfx();
   }
 
   const loop = createLoop({
@@ -475,6 +484,7 @@ export function createGame(options = {}) {
     audioGaps() {
       return audio.missing();
     },
+    whenSfx,
     get progress() {
       return { ...progress, status: progressLoad.status, notes: progressLoad.notes };
     },

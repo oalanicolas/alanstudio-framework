@@ -48,6 +48,7 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.doesNotMatch(html, /persistLine\([^)]*settings/, "a porta não nomeia a recuperação");
   assert.match(html, /id="audio-gap"/, "o convite não some a lacuna do som");
   assert.match(html, /audioGapLine\(game\.audioGaps\(\)/, "o painel nomeia o papel que o fetch perdeu");
+  assert.match(html, /game\.whenSfx\.then\(paintGaps\)/, "o painel relê quando o fetch termina");
   assert.match(html, /id="remap"/, "o convite não some o remapeamento");
   assert.match(html, /id="gameSpeed"/, "o convite não some a velocidade da partida");
   assert.match(html, /id="colorblind"/, "o convite não some a tinta estável");

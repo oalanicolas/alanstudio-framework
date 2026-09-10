@@ -41,6 +41,7 @@ depois de um `note`, `start` e `next` apontam esse comando.
 Arquivo ausente é lacuna do verbo, não silêncio deliberado.
 O loader marca o primário que esgota as extensões; o painel
 nomeia os vazios mesmo quando outro papel já registrou.
+Relê quando o fetch termina — pintar só no boot some o que chegou.
 Variante ausente não é lacuna. Decode nulo tenta a próxima
 extensão; wav ilegível não esconde o ogg nem o pedido.
 Nomear o 404 não é mix ouvido.

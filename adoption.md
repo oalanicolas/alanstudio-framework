@@ -3,6 +3,50 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.254 — O painel relê a lacuna quando o fetch termina
+
+O
+painel
+pintava
+no
+boot.
+O
+loader
+ainda
+corria.
+Os
+WAV
+chegavam
+e
+a
+linha
+ficava
+no
+vazio.
+Agora
+`whenSfx`
+resolve
+quando
+o
+fetch
+termina
+e
+o
+painel
+relê.
+Não
+promove
+`heard`.
+
+O que 0.9.254 não afirma:
+relê
+o
+painel
+não
+é
+mix
+ouvido.
+
 ## 0.9.253 — O copy do acervo recoloca o WAV
 
 O
