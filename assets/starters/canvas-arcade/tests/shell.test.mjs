@@ -367,6 +367,52 @@ test("o overlay nomeia o controle quando ele falou por último", () => {
   game.dispose();
 });
 
+test("o toque retoma a pausa sem avançar no mesmo aperto", () => {
+  const listeners = [];
+  const view = textCanvas();
+  const canvas = {
+    ...view.canvas,
+    getBoundingClientRect() {
+      return { left: 0, top: 0, width: 360, height: 640 };
+    },
+    addEventListener(type, handler) {
+      listeners.push({ type, handler });
+    },
+    removeEventListener(type, handler) {
+      const index = listeners.findIndex((entry) => entry.type === type && entry.handler === handler);
+      if (index !== -1) listeners.splice(index, 1);
+    },
+    dispatch(type, event) {
+      for (const entry of [...listeners]) {
+        if (entry.type === type) entry.handler(event);
+      }
+    },
+  };
+  const { game, press, frame } = shell({ canvas, loadSfx: false });
+  game.start();
+  frame();
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing");
+  game.advance(20);
+  const dashes = game.observe().stats.dashes;
+  press("pause");
+  frame();
+  assert.equal(game.paused, true);
+  canvas.dispatch("pointerdown", { clientX: 180, clientY: 200, pointerId: 1 });
+  frame();
+  assert.equal(game.paused, true, "o down na pausa não retoma");
+  assert.ok(
+    view.texts.some((text) => String(text).includes("Continuar: toque")),
+    `esperava toque no overlay: ${JSON.stringify(view.texts)}`,
+  );
+  canvas.dispatch("pointerup", { pointerId: 1 });
+  frame();
+  assert.equal(game.paused, false, "o tap precisa retomar");
+  assert.equal(game.observe().stats.dashes, dashes, "o tap da pausa não é o avanço");
+  game.dispose();
+});
+
 test("a velocidade da partida dilata o relógio, não o passo", () => {
   const step = 1000 / 60;
   const slow = shell();

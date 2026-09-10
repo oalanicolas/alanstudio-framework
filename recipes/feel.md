@@ -9,7 +9,8 @@ O toque que sai do campo ainda solta — a captura leva o up.
 Captura no disco não é sessão observada. Esconder a aba solta o
 hold — o keyup some e o corpo não segue. Perder o foco da janela
 solta o ofício pendente — Space e R não disparam no quadro
-seguinte. Soltar no disco não é
+seguinte. Na pausa o toque retoma — Esc e P não existem no
+polegar; o tap não é o avanço. Soltar no disco não é
 sessão observada. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured` e aponta a página

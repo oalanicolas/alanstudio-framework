@@ -95,6 +95,7 @@ const SURFACE_TOKENS = {
     right: "analógico",
   },
   pointer: {
+    pause: "toque",
     bank: "baixo",
     dash: "cima",
   },

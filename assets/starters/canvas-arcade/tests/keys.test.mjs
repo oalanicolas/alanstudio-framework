@@ -60,7 +60,7 @@ test("o toque nomeia as faixas no overlay e deixa o aviso com as três superfíc
   const lines = bindLines(copy, DEFAULT_BINDINGS, "pointer");
   assert.equal(lines.hint_bank, "Guarde (↓, baixo ou X) antes de perder a corrente");
   assert.match(lines.hint_move, /arraste/);
-  assert.equal(lines.resume, "Continuar: Esc ou P");
+  assert.equal(lines.resume, "Continuar: toque");
   assert.equal(lines.restart, "Reiniciar: R");
 });
 

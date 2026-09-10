@@ -23,7 +23,8 @@ O avanço abre a porta e, depois do fim, um avanço *novo* volta a ela.
 R no overlay também. Sem tela o headless já joga. A página oferece o
 recibo no overlay e na porta se houver partida; isso não é observação.
 Aba escondida pausa no campo e no fim. Na porta só descarrega — P já
-é ignorado e a placa nem nasce. Perda de foco da janela grava o hold
+é ignorado e a placa nem nasce. Na pausa o toque retoma; Espaço
+continua só intenção. Perda de foco da janela grava o hold
 e senta o mesmo relógio; na porta só descarrega. O controle que some
 senta o mesmo relógio se a sessão falou no pad; teclado e toque não
 sentam porque um pad na gaveta desconectou. Na porta só descarrega.

@@ -156,12 +156,14 @@ export function createGame(options = {}) {
     loop.setSpeed(clockSpeed());
     audio.update({ bedRate: sessionBedRate(state, clockSpeed()) });
   }
+  let pausedNow = () => false;
   function syncDashOnPress() {
     // A porta pede mover. Sem isto o toque de cima abria o
-    // ciclo no down e o arraste mentia. Toque no disco não
-    // é sessão observada.
+    // ciclo no down e o arraste mentia. Na pausa o down
+    // também mentia: o tap precisa retomar, não avançar.
+    // Toque no disco não é sessão observada.
     if (typeof input.setDashOnPress === "function") {
-      input.setDashOnPress(state.phase !== "title");
+      input.setDashOnPress(state.phase !== "title" && !pausedNow());
     }
   }
   function emitPhase() {
@@ -225,6 +227,7 @@ export function createGame(options = {}) {
     update: () => step(readIntent()),
     render: (frame) => present(frame),
   });
+  pausedNow = () => loop.paused;
 
   function readIntent() {
     return input.intent(state.player.x / FIELD.width);
@@ -243,6 +246,16 @@ export function createGame(options = {}) {
     }
     if (command.reset) handle.reset();
     else if (command.pause) togglePause();
+    else if (loop.paused && input.lastSource === "pointer") {
+      // A aba escondida no telefone senta. Sem isto o tap
+      // falava no vazio — Esc e P não existem no toque.
+      // Espaço na pausa continua só intenção. Toque no
+      // disco não é sessão observada.
+      const tap = input.intent();
+      if (!tap.dash) return;
+      if (state.phase === "over") handle.reset();
+      else togglePause();
+    }
   }
 
   function pulse(events) {
@@ -365,6 +378,7 @@ export function createGame(options = {}) {
       haptics.mute();
     }
     syncBed();
+    syncDashOnPress();
   }
 
   function persistableSettings() {
@@ -416,6 +430,7 @@ export function createGame(options = {}) {
       loop.pause();
       haptics.mute();
       syncBed();
+      syncDashOnPress();
     }
   }
 
@@ -512,6 +527,7 @@ export function createGame(options = {}) {
       loop.pause();
       haptics.mute();
       syncBed();
+      syncDashOnPress();
       flush();
       return true;
     },
@@ -519,6 +535,7 @@ export function createGame(options = {}) {
       loop.resume();
       haptics.unmute();
       syncBed();
+      syncDashOnPress();
       return true;
     },
     get paused() {
@@ -541,6 +558,7 @@ export function createGame(options = {}) {
       loop.resume();
       haptics.unmute();
       syncBed();
+      syncDashOnPress();
       emitPhase();
       return handle.observe();
     },

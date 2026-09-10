@@ -56,8 +56,9 @@ sufixo. Declara em
 `docs/access.md` o que o recorte não atende. O aviso do primeiro ciclo
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
 Estilhaço no trilho pede o dash; toque e controle ganham passo depois
-do movimento. Overlay e HUD confirmam o aparelho que falou por último;
-o overlay e a casca da página seguem `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
+do movimento. Overlay e HUD confirmam o aparelho que falou por último.
+Na pausa o toque retoma — Esc e P não existem no polegar.
+O overlay e a casca da página seguem `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
 x do corpo, no alcance do telegraph, vira `perigo à frente` na região viva
 junto da última legenda. Na porta o canvas também marca a mostra no
 trilho — o mesmo aviso do campo. Texto no DOM não é sessão. A pausa entra como `pausado` só quando o

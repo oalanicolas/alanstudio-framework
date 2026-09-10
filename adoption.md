@@ -3,6 +3,46 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.294 — Na pausa o toque retoma
+
+A
+aba
+escondida
+sentava.
+Esc
+e
+P
+não
+existem
+no
+polegar.
+O
+tap
+falava
+no
+vazio.
+Agora
+o
+toque
+retoma.
+Não
+é
+o
+avanço.
+Não
+promove
+`felt`.
+
+O que 0.9.294 não afirma:
+retomar
+no
+stub
+não
+é
+peso
+no
+aparelho.
+
 ## 0.9.293 — A query de chuva não retoma o hold de outra mesa
 
 O

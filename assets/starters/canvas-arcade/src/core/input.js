@@ -25,6 +25,10 @@
 // O toque só escutava o canvas. Sem a captura, sair
 // do campo deixava o corpo andando. Captura no disco
 // não é felt.
+// Na pausa o tap retoma. Sem isto a aba escondida
+// no telefone sentava e Esc/P não existem no toque.
+// Espaço na pausa continua só intenção. Toque no
+// disco não é felt.
 // Esconder a aba perde o keyup. Sem o visibilitychange
 // o corpo seguia o último hold. Perder o foco da janela
 // (barra, DevTools) também some o keyup e deixava o

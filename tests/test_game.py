@@ -3384,6 +3384,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", cycle)
         self.assertNotIn("aprovado", access)
 
+    def test_feel_recipe_names_the_touch_resume_the_starter_already_hears(self):
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
+        access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        declared = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/docs/access.md"
+        ).read_text(encoding="utf-8")
+        main = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/src/main.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("toque retoma", feel.casefold())
+        self.assertIn("toque retoma", cycle.casefold())
+        self.assertIn("toque retoma", access.casefold())
+        self.assertIn("tap retoma", declared.casefold())
+        self.assertIn("lastSource === \"pointer\"", main)
+        reach = game.access_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        felt = game.feel_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        self.assertTrue(reach["guide"].endswith("recipes/accessibility.md"))
+        self.assertFalse(reach["verified"])
+        self.assertFalse(felt["felt"])
+        self.assertNotIn("aprovado", cycle)
+        self.assertNotIn("aprovado", access)
+
     def test_persistence_recipe_names_the_rain_query_the_starter_already_keeps_off_hold(self):
         persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
