@@ -334,8 +334,16 @@ export function createAudio(options = {}) {
       if (hushed && !definition.loop) return false;
       const text = captionFor(id, extra);
       if (text && settings.captions !== false) {
-        captions.push({ id, text, at: now() });
-        while (captions.length > captionLimit) captions.shift();
+        const last = captions[captions.length - 1];
+        // O fecho pulsa a cada segundo. Empilhar a mesma linha come
+        // collect/bank/hit no teto da faixa. Flash e voz continuam;
+        // a faixa só refresca o instante da linha que já está lá.
+        if (id === "close" && last && last.id === id && last.text === text) {
+          last.at = now();
+        } else {
+          captions.push({ id, text, at: now() });
+          while (captions.length > captionLimit) captions.shift();
+        }
       }
       if (definition.duckMs) duckUntil = now() + definition.duckMs;
       const pack = buffers.get(id) ?? [];

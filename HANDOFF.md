@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.271: o convite nomeia o relógio da partida. Seed e eixos abriam no relógio cheio. 1 some. Não promove `outsider`.
+**HEAD:** ver `git log -1` — vigente 0.9.272: o pulso do fecho não come a legenda do verbo. Dez "últimos segundos" empurravam collect. O SFX continua. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 293 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.271)
+## O que o HEAD já entrega (0.9.91–0.9.272)
 
 | Ver | Salto |
 | --- | --- |
@@ -215,6 +215,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.269 | A faixa nomeia o valor que o knob já guarda. O thumb andava; 75% some. Não promove `verified`. |
 | 0.9.270 | O sistema que pede reduce no meio da sessão veste a caixa. O boot herdava; o pedido depois ficava no matchMedia. Desligar o SO não apaga. Não promove `verified`. |
 | 0.9.271 | O convite nomeia o relógio da partida. Seed e eixos abriam no relógio cheio. 1 some. A faixa não leva o knob. Não promove `outsider`. |
+| 0.9.272 | O pulso do fecho não come a legenda do verbo. Dez "últimos segundos" empurravam collect. O SFX continua. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -231,11 +232,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
-| audio_mix | slice | o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
+| audio_mix | slice | o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a recuperação que o painel já mostra; a porta não; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
+| accessibility | slice | o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -563,9 +564,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   Sem rumble.   Coleta e guarda: `captionFor` junta `corrente N` quando
   `extra.chain > 0`. O erro lê `extra.lost`: aposta zero ou
   ausente fica `atingido`; `lost > 0` nomeia a corrente que
-  caiu. Não herda `chain`. Rajada do mesmo id fica com o
+  caiu. Não herda `chain`.   Rajada do mesmo id fica com o
   texto vigente. Sem o número o tom falava e a faixa calava.
-  `heard` falso.
+  O pulso do fecho refresca a linha que já está lá — dez
+  "últimos segundos" não comem collect/bank/hit. A voz
+  continua a cada segundo. `heard` falso.
   A guarda emite `x` no campo — sem isto a aposta falava no centro.
   O `over` emite `x` do corpo — sem isto o stinger da partida
   falava no centro. Fecho, prática e cama continuam no centro.
@@ -922,6 +925,11 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um botão focado que ativa e avança.
 **Não** mais um verify que some o stem que o recibo já nomeia.
 **Não** mais uma faixa que some a curva que o last-run já traçou.
+**Não** mais um preset de uma mão que some o remap.
+**Não** mais uma faixa que some o percentual do knob.
+**Não** mais um sistema que pede reduce e some no meio da sessão.
+**Não** mais um convite que abre a seed no relógio cheio.
+**Não** mais um pulso do fecho que come a legenda do verbo.
 
 Candidatos, do que ainda dói:
 
@@ -1524,6 +1532,12 @@ Candidatos, do que ainda dói:
   abre a seed
   no relógio
   cheio
+  e um
+  pulso do
+  fecho que
+  come a
+  legenda do
+  verbo
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1547,13 +1561,14 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o convite
-nomeia o relógio da partida.
-Seed e eixos abriam no relógio cheio. 1 some.
-A faixa não leva o knob.
-Não promove `outsider`.
+Arquivos quentes da última sessão: o pulso do
+fecho não come a legenda do verbo.
+Dez "últimos segundos" empurravam collect.
+O SFX continua. Não promove `heard`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
 A família readout do knob está saturada.
 A família matchMedia ao vivo está saturada.
+A família eixo no convite está saturada.
+A família close caption flood está saturada.

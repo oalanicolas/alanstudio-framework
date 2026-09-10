@@ -139,6 +139,41 @@ test("o fecho legendas sem fingir que o mix foi ouvido", () => {
   assert.equal(SOUNDS.close.priority < SOUNDS.over.priority, true);
 });
 
+test("o pulso do fecho não come a legenda do verbo", () => {
+  const { audio, tick, context } = build();
+  audio.register("close", { duration: 0.1 });
+  for (const id of ["collect", "bank", "hit", "graze", "land", "missed"]) {
+    audio.play(id);
+    tick(40);
+  }
+  for (let pulse = 0; pulse < 10; pulse += 1) {
+    assert.equal(audio.play("close"), true);
+    tick(40);
+  }
+  const lines = audio.captions();
+  const ids = lines.map((entry) => entry.id);
+  assert.ok(ids.includes("collect"));
+  assert.ok(ids.includes("bank"));
+  assert.ok(ids.includes("hit"));
+  assert.equal(ids.filter((id) => id === "close").length, 1);
+  assert.equal(lines.find((entry) => entry.id === "close").count, 1);
+  assert.equal(lines.find((entry) => entry.id === "close").text, "últimos segundos");
+  assert.equal(context.sources.length, 10, "o pulso ainda fala; só a faixa para de empilhar");
+});
+
+test("o fecho volta à faixa depois do verbo", () => {
+  const { audio, tick } = build();
+  audio.play("close");
+  tick(40);
+  audio.play("collect");
+  tick(40);
+  audio.play("close");
+  assert.deepEqual(
+    audio.captions().map((entry) => entry.id),
+    ["close", "collect", "close"],
+  );
+});
+
 test("a prática legendas sem fingir que o mix foi ouvido", () => {
   const { audio } = build();
   audio.play("live");

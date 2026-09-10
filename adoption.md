@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.272 — O pulso do fecho não come a legenda do verbo
+
+O
+fecho
+já
+pulsava
+a
+cada
+segundo.
+A
+faixa
+empilhava
+a
+mesma
+linha.
+Collect
+e
+bank
+saíam
+do
+teto.
+Agora
+o
+pulso
+refresca
+a
+linha
+que
+já
+está
+lá.
+A
+voz
+continua.
+Não
+promove
+`heard`.
+
+O que 0.9.272 não afirma:
+refrescar
+a
+faixa
+não
+é
+mix
+ouvido.
+
 ## 0.9.271 — O convite nomeia o relógio da partida
 
 O
