@@ -665,7 +665,10 @@ function markPractice(state) {
   const ticks = rain(state).practiceTicks;
   if (!Number.isFinite(ticks) || state.tick !== ticks) return;
   state.flash = Math.max(state.flash, CONFIG.feel.flashPractice);
-  emit(state, "live");
+  // A porta reusa a voz. Sem isto a faixa dizia que a
+  // chuva começava — os orbes já caíam; o que nasce é
+  // a ameaça. Legenda no disco não é mix ouvido.
+  emit(state, "live", { threat: true });
 }
 
 function markRecovery(state) {

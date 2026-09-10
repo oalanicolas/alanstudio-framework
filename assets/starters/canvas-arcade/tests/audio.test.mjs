@@ -193,8 +193,11 @@ test("o fecho volta à faixa depois do verbo", () => {
 
 test("a prática legendas sem fingir que o mix foi ouvido", () => {
   const { audio } = build();
-  audio.play("live");
-  assert.equal(audio.captions()[0].text, "a chuva começa");
+  audio.play("live", { threat: true });
+  assert.equal(audio.captions()[0].text, "a ameaça começa", "a prática acabava e a faixa chamava orbe de chuva que começa");
+  assert.equal(captionFor("live", { threat: true }), "a ameaça começa");
+  assert.equal(captionFor("live"), "a chuva começa", "a porta continua a mostra");
+  assert.equal(SOUNDS.live.caption, "a chuva começa");
   assert.equal(SOUNDS.live.bus, "ui");
   assert.equal(SOUNDS.live.loop, undefined);
   assert.equal("duckMs" in SOUNDS.live, false);

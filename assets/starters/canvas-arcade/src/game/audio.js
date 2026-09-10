@@ -98,6 +98,12 @@ export function captionFor(id, extra = {}) {
     }
     return base;
   }
+  // A porta fala a mostra. Sem isto a prática acabava e
+  // a faixa chamava orbe de chuva que começa. O aviso já
+  // nomeia a ameaça. Legenda no disco não é mix ouvido.
+  if (id === "live" && extra.threat === true) {
+    return "a ameaça começa";
+  }
   if (CHAIN_ROLES.has(id) && Number.isFinite(extra.chain) && extra.chain > 0) {
     return `${base}, corrente ${Math.trunc(extra.chain)}`;
   }
@@ -126,7 +132,7 @@ export const SOUNDS = {
   hit: { bus: "sfx", caption: "atingido", priority: 4, duckMs: 260 },
   over: { bus: "ui", caption: "fim da partida", priority: 5, duckMs: 400 },
   close: { bus: "ui", caption: "últimos segundos", priority: 2 },
-  live: { bus: "ui", caption: "a chuva começa", priority: 2 },
+  live: { bus: "ui", caption: "a chuva começa", priority: 2 }, // porta; prática passa threat e vira ameaça
   stir: { bus: "ui", caption: "a chuva volta", priority: 2 },
   bed: { bus: "music", caption: null, priority: 0, loop: true },
 };

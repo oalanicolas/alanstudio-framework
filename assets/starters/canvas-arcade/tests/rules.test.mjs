@@ -1126,7 +1126,9 @@ test("a porta fala o começo da mostra sem ligar a cama", () => {
   const rng = state.rngState;
   assert.equal(state.events.some((event) => event.type === "live"), false);
   attractTick(state);
-  assert.ok(state.events.some((event) => event.type === "live"), "a primeira mostra precisa falar");
+  const spoke = state.events.find((event) => event.type === "live");
+  assert.ok(spoke, "a primeira mostra precisa falar");
+  assert.notEqual(spoke.threat, true, "a porta não é o tap da ameaça");
   assert.equal(state.events.filter((event) => event.type === "live").length, 1);
   assert.equal(state.tick, 0);
   assert.equal(state.phase, "title");
@@ -1726,7 +1728,9 @@ test("a prática some no último tick e o campo acende sem inventar shard cedo",
   assert.equal(late.tick, start.spawn.practiceTicks);
   assert.equal(practicingWindow(late), false);
   assert.equal(practicePulse(late).active, false);
-  assert.ok(late.events.some((event) => event.type === "live"), "sair da prática precisa emitir");
+  const tap = late.events.find((event) => event.type === "live");
+  assert.ok(tap, "sair da prática precisa emitir");
+  assert.equal(tap.threat, true, "a prática acabava e a faixa chamava orbe de chuva que começa");
   assert.ok(late.flash >= CONFIG.feel.flashPractice, "sair da prática acende o campo");
 
   const mid = createState(3);

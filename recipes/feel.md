@@ -264,6 +264,8 @@ cooldown e veste o look — rótulo sozinho era o mesmo quadro.
 O fecho da partida contorna o campo e pulsa o controle a cada
 segundo; não é faixa no HUD. Com menos movimento vira traço.
 A prática e a guarda falam no mixer quando a janela acaba;
+a prática que acaba nomeia a ameaça — os orbes já caíam; a
+porta reusa a voz e continua "a chuva começa";
 o aviso nomeia a janela orbe-só enquanto o campo a contorna
 (`hint_practice`) — dash, hit, miss e a superfície vencem;
 depois da prática o aviso pede o orbe; a porta não ensina;

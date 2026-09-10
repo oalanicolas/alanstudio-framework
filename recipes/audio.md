@@ -165,7 +165,9 @@ só na cama (`music`), limite de vozes, rodízio de variantes e legenda.
 O aviso crítico não some o próprio verbo. Os papéis do verbo e a
 cama (`bed`, loop no barramento de música; o relógio da sessão dilata
 a cama só na partida — o fecho sobe em cima dele), o fecho (`close`, tap e
-legenda "últimos segundos"), a prática (`live`, "a chuva começa"),
+legenda "últimos segundos"), a prática (`live` com `threat`,
+"a ameaça começa" — a porta reusa a voz sem o tap e continua
+"a chuva começa"),
 a guarda (`stir`, "a chuva volta") e o orbe perdido (`missed`,
 "orbe perdido") têm design original e variante
 (`-b`) em `public/sfx`. No `over` a cama solta com fade; pause, title

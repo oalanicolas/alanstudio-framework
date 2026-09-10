@@ -3,6 +3,47 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.317 — a prática que acaba nomeia a ameaça
+
+O
+aviso
+já
+dizia
+ameaça.
+A
+faixa
+chamava
+orbe
+de
+chuva
+que
+começa.
+A
+porta
+reusa
+a
+voz
+e
+continua
+a
+mostra.
+Agora
+nomeia.
+Não
+promove
+`heard`
+nem
+`felt`.
+
+O que 0.9.317 não afirma:
+legenda
+no
+disco
+não
+é
+mix
+ouvido.
+
 ## 0.9.316 — o feel nomeia as janelas da chuva
 
 O
