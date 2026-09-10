@@ -1547,6 +1547,32 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", created["scope"])
         self.assertNotIn("verified", created["scope"])
 
+    def test_init_names_the_same_opening_surface_as_start(self):
+        destination = self.root / "ideia-pelo-init"
+        created = game.init(destination, "canvas-arcade", idea="atravessar estilhaços")
+        self.assertEqual(created["open"], created["play"])
+        self.assertIn("serve", created["play"])
+        self.assertEqual(created["open"], created["next_commands"][0])
+        self.assertEqual(created["url"], "http://localhost:8080/")
+        self.assertIn(created["url"], created["prompt"])
+        self.assertIn(created["play"], created["prompt"])
+        self.assertEqual(created["fantasy"], "atravessar estilhaços")
+        self.assertIn("Fantasia: atravessar estilhaços.", created["prompt"])
+        self.assertFalse(created["executed"])
+        self.assertTrue(created["runtime"]["asked"])
+        self.assertFalse(created["runtime"]["executed"])
+        self.assertIn("note", created["then"]["note"])
+        self.assertIn("open", created["scope"])
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "init", str(self.root / "via-cli-init"),
+             "--idea", "guardar a corrente", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["url"], "http://localhost:8080/")
+        self.assertEqual(run.stderr.strip(), report["prompt"])
+
     def test_init_scope_names_drafts_only_when_they_were_planted(self):
         bare = game.init_scope(False, "atravessar estilhaços")
         self.assertIn("sem plantar", bare)

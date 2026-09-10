@@ -109,8 +109,9 @@ no brief e em `data/copy.json`; o brief continua rascunho e a frase na tela
 não muda o verbo. Os demais templates do ciclo entram depois, com `template`, quando a
 etapa chegar. Não instala dependências, não toca no starter de origem e recusa
 destino ocupado. `scan` reconhece o resultado no mesmo turno; o primeiro comando
-que `init` aponta é o que serve o jogo, e `verify` roda os validadores do starter
-onde houver Node.
+que `init` aponta é o que serve o jogo. `open`, `url` e `prompt` nomeiam
+a mesma superfície do `start` — o `prompt` também sai em stderr. Nomear
+não serve. `verify` roda os validadores do starter onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida

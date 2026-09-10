@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.229: o `context` não manda documentar um `start` fresco.
+**HEAD:** ver `git log -1` — vigente 0.9.230: o `init` aponta a mesma superfície do `start`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → a confirmar no 0.9.229.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → a confirmar no 0.9.230.
 `cd assets/starters/canvas-arcade && npm test` → 403 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.229)
+## O que o HEAD já entrega (0.9.91–0.9.230)
 
 | Ver | Salto |
 | --- | --- |
@@ -173,6 +173,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.227 | A fantasia na porta não come o aviso de mover. Depois da frase a porta ainda ensina a abrir. Não promove feel. |
 | 0.9.228 | Depois da porta o campo não repete a frase nem o mover. Dash e coleta entram. Headless ainda vê a frase. Não promove feel. |
 | 0.9.229 | O `context` não manda documentar um `start` fresco. `audit.deferred`; o `next` já pedia jogar. `--event direction-approved` e `--stage audit` continuam pedindo a base. Não promove. |
+| 0.9.230 | O `init` aponta a mesma superfície do `start`: `open`, `url`, `prompt` no stderr. Não executa. Não promove. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -320,7 +321,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou guarda que fala no centro
   ou fantasia na porta que come o aviso de mover
   ou campo que repete a frase e o mover da porta
-  ou context que manda documentar um start fresco.
+  ou context que manda documentar um start fresco
+  ou init que planta e some a superfície.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -367,6 +369,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   lacuna continua `notify_and_document`. `--event
   direction-approved` e `--stage audit` continuam
   `document_minimum`. O harness não executa o jogo.
+- `init` devolve `open` (= `play`), `url`, `runtime`, `then`,
+  `fantasy`, `cycle` e `prompt`. O `prompt` também sai em stderr.
+  `next_commands` continua. Sem serve a `url` some. Não executa.
 - `doctor` devolve `empty` e `then`. Sem jogo, com starter e
   `ready`, `then.guide` é `guide --idea <fantasia>`. Sem a
   frase a raiz recusa. Com jogo, sem starter ou bloqueado,
@@ -736,6 +741,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma fantasia na porta que come o aviso de mover.
 **Não** mais um campo que repete a frase e o mover que a porta já deu.
 **Não** mais um `context` que manda documentar um `start` fresco.
+**Não** mais um `init` que planta e some a superfície que o `start` já nomeia.
 
 Candidatos, do que ainda dói:
 
@@ -765,6 +771,7 @@ Candidatos, do que ainda dói:
    `doctor` no lab vazio devolve `then.guide` com `--idea`; com jogo a chave some.
    Depois do `start` fresco o `context` adia a auditoria (`audit.deferred`);
    lacunas continuam listadas. Sem jogo que abre, o `scan` ainda pede documentar.
+   O `init` também devolve `open`, `url` e `prompt`; o `prompt` sai em stderr.
    Sem starter o aviso nomeia `start --idea`. Sem `prompt`.
    `sfx search` nomeia o stem do starter que casa; `sfx info`
    lê a mesma chave. `sfx copy` e `sfx export` levam
@@ -1088,6 +1095,11 @@ Candidatos, do que ainda dói:
   documentar
   um start
   fresco
+  e o
+  init que
+  planta e
+  some a
+  superfície
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1111,8 +1123,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o `context`
-não manda documentar um `start` fresco.
-`audit.deferred`. O `next` já pedia jogar.
-`--event direction-approved` e `--stage audit`
-continuam pedindo a base. Não promove.
+Arquivos quentes da última sessão: o `init`
+aponta a mesma superfície do `start`.
+`open`, `url` e `prompt` no stderr.
+Não executa. Não promove.

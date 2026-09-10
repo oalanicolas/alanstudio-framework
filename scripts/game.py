@@ -3700,6 +3700,7 @@ def init_scope(documents, idea=None):
         drafts = (
             " e criou rascunhos a partir dos templates. O ciclo já abre: o primeiro "
             "comando apontado é o que serve o jogo, não o que preenche os rascunhos. "
+            "`open` e `url` nomeiam o mesmo serve; o `prompt` também sai em stderr. "
         )
         scan = "`scan` ainda reporta `draft_only` nas áreas sem decisão. "
         planted = (
@@ -3713,6 +3714,7 @@ def init_scope(documents, idea=None):
             " sem plantar os rascunhos do ciclo. `start` faz o mesmo; `init` sem "
             "`--no-docs` ou `start --docs` os cria. O ciclo já abre: o primeiro "
             "comando apontado é o que serve o jogo. "
+            "`open` e `url` nomeiam o mesmo serve; o `prompt` também sai em stderr. "
         )
         scan = (
             "`scan` ainda reporta lacuna nas áreas sem candidato; "
@@ -3803,12 +3805,25 @@ def init(destination, starter, title=None, documents=True, idea=None):
             template("agents", destination, destination / "AGENTS.md")
             drafts.append("AGENTS.md")
     planted = seed_idea(destination, idea)
-    scripts, manager = package_commands(destination)
-    play = play_command(destination, {name: {"argv": [manager, "run", name]} for name in scripts} if manager else scripts, manager)
+    try:
+        scripts, manager = project_commands(destination)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
+    play = play_command(destination, scripts, manager)
     commands = []
     if play:
         commands.append(play)
     commands.append(harness_command("next", destination, "--focus", "feel"))
+    url = serve_url(scripts)
+    then = cycle_then(destination, play, starter)
+    cycle = starter_cycle(starter)
+    runtime = node_runtime(play)
+    fantasy = resolve_fantasy(idea, destination)
+    # O start já nomeava a superfície. Sem isto o init
+    # plantava e calava — quem segue o caminho com
+    # rascunhos tinha de achar o play depois. Nomear
+    # não serve e não observa.
+    prompt = cycle_prompt(play, then, cycle, False, url, runtime, fantasy)
     return {
         "schema_version": 1,
         "project": str(destination),
@@ -3828,6 +3843,15 @@ def init(destination, starter, title=None, documents=True, idea=None):
             str(destination / "README.md"),
         ],
         "next_commands": commands,
+        "play": play,
+        "open": play,
+        "url": url,
+        "runtime": runtime,
+        "then": then,
+        "fantasy": fantasy,
+        "cycle": cycle,
+        "prompt": prompt,
+        "executed": False,
         "scope": init_scope(documents, idea),
     }
 

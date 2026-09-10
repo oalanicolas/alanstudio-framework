@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.230 — O init aponta a mesma superfície do start
+
+O
+`start`
+já
+nomeava
+`open`
+e
+`url`.
+O
+`init`
+plantava
+e
+calava.
+Quem
+segue
+o
+caminho
+com
+rascunhos
+tinha
+de
+achar
+o
+play
+depois.
+Agora
+o
+`prompt`
+também
+sai
+em
+stderr.
+Não
+executa.
+Não
+promove.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.230 não afirma:
+nomear
+a
+superfície
+não
+abre
+o
+jogo.
+
 ## 0.9.229 — O context não manda documentar um start fresco
 
 O
