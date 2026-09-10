@@ -401,6 +401,54 @@ test("o tick interrompido volta; Continuar continua sendo a seed", () => {
   restored.dispose();
 });
 
+test("?seed abre essa partida e ignora o hold", () => {
+  const storage = memoryStorage();
+  const live = createGame({ seed: 11, eventTarget: recordingTarget(), storage });
+  live.advance(40);
+  live.flush();
+  live.dispose();
+  const named = createGame({
+    query: "?seed=9",
+    eventTarget: recordingTarget(),
+    storage,
+  });
+  assert.equal(named.observe().seed, 9);
+  assert.equal(named.observe().tick, 0, "seed na query não retoma o hold");
+  assert.equal(named.observe().phase, "playing");
+  named.dispose();
+  const screened = createGame({
+    query: "?seed=9&spawn=dusk",
+    eventTarget: recordingTarget(),
+    storage,
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(screened.observe().phase, "title");
+  assert.equal(screened.observe().seed, 9);
+  assert.equal(screened.observe().spawnProfile, "dusk");
+  screened.act({ dash: true });
+  screened.advance(1);
+  assert.equal(screened.observe().phase, "playing");
+  assert.equal(screened.observe().seed, 9);
+  screened.dispose();
+  const kept = createGame({
+    seed: 5,
+    query: "?seed=9",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(kept.observe().seed, 5, "seed do construtor vence a query");
+  kept.dispose();
+  const hollow = createGame({
+    seed: 5,
+    query: "?seed=nope",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(hollow.observe().seed, 5);
+  hollow.dispose();
+});
+
 test("com tela o hold retoma o tick e não a porta", () => {
   const storage = memoryStorage();
   const game = createGame({ seed: 11, eventTarget: recordingTarget(), storage });

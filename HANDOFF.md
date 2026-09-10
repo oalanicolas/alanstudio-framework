@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.119: o achado também anexa o candidato.
+**HEAD:** ver `git log -1` — vigente 0.9.120: a partida também abre pela seed.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 249 OK.
-`cd assets/starters/canvas-arcade && npm test` → 287 OK.
+`cd assets/starters/canvas-arcade && npm test` → 288 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.119)
+## O que o HEAD já entrega (0.9.91–0.9.120)
 
 | Ver | Salto |
 | --- | --- |
@@ -63,6 +63,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.117 | Um avanço *novo* no fim volta à porta. Dash apertado no último tick não pula o overlay. `#note`/`#finding` também na abertura se houver partida. `felt` continua falso. |
 | 0.9.118 | `guide` / `start` / `play` escrevem o `prompt` em stderr. O JSON fica no stdout. `executed` continua falso. |
 | 0.9.119 | O achado da página anexa `last-run` em `<utc>-achado.run.json` se a partida deixou candidato. `playtest` relata `finding_attachments`. `outsider` continua falso. |
+| 0.9.120 | `?seed=<n>` abre essa partida. Seed explícita (query ou construtor) ignora o hold. `playtest` relata `candidate_seed`. `CYCLE_KEYS` inclui `seed`. `observed` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -136,7 +137,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, `gameSpeed` no disco, `hold` no stub,
   coil/windup no disco, copiar ou gravar o achado, last-run,
-  anexo do achado, recibo da página ou avanço no overlay.
+  anexo do achado, recibo da página, `?seed=` ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -158,8 +159,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 **Guide / start**
 
-- `CYCLE_KEYS` inclui `door` depois de `verb`. `cycle_line` nomeia
-  `Porta:` antes de `Mover`.
+- `CYCLE_KEYS` inclui `door` depois de `verb` e `seed` depois de
+  `mood`. `cycle_line` nomeia `Porta:` antes de `Mover` e `Seed:`
+  antes de `Convite`.
 - `CRAFT_EXAMPLES` ordem: pair → look → table → sfx. Look e chuva do
   exemplo compartilham o nome `noite`.
 - `play` após `start` é `cd … && npm run serve`. Não há `npm install`.
@@ -196,7 +198,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   exige `runs > 0` e `lastSeed`. `doorOpen()` relê o progresso — não
   congela o valor do boot.
 - `hold` / `canResume` = tick interrompido (schema 3). Seed explícita
-  ignora o hold. Reset e `recordRun` limpam. Não chamar de Continuar.
+  (`options.seed` ou `?seed=`) ignora o hold. Reset e `recordRun`
+  limpam. Não chamar de Continuar. `?seed=` não é sessão observada.
   Não promover `state_trust`. `hold.player` leva `dashWindup`.
 - Avanço na partida: `dashWindupTicks` (2) senta com `squashCoil`
   antes de `fireDash`. A porta (`beginRun`) continua imediata.
@@ -246,8 +249,9 @@ Candidatos, do que ainda dói:
    reimprimem. O `prompt` também sai em stderr. A partida no serve
    grava o candidato e, se você escrever, o recibo. No convite a
    página grava o achado se os quatro tiverem texto e anexa o
-   candidato se last-run existir. O comando `note` continua. Não
-   auto-servir. `len(steps) == 3` e `executed: false` continuam.
+   candidato se last-run existir. `?seed=` abre a seed do
+   candidato. O comando `note` continua. Não auto-servir.
+   `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
 4. **Item 1 residual:** o mapa, `feel.md`, `mechanics.md`, `visual.md`,
@@ -277,5 +281,4 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `writeFinding()` e
-`<utc>-achado.run.json`.
+Arquivos quentes da última sessão: `readSeedQuery()` e `cycle.seed`.

@@ -2695,6 +2695,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["outsider"])
         self.assertEqual(report["finding_attachments"], [])
         self.assertIsNone(report["candidate"])
+        self.assertIsNone(report["candidate_seed"])
         self.assertIsNone(report["invite"])
         proposal = next(
             item for item in self.proposals(game.next_step(self.project, "feel"))
@@ -2717,6 +2718,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         }), encoding="utf-8")
         reading = game.playtest_reading(destination)
         self.assertEqual(reading["candidate"], "docs/playtest/last-run.json")
+        self.assertEqual(reading["candidate_seed"], 7)
         self.assertFalse(reading["expected"])
         self.assertFalse(reading["structured"])
         self.assertFalse(reading["observed"])
@@ -2880,6 +2882,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("copiar ou gravar", page.casefold())
         self.assertIn("porta", page.casefold())
         self.assertIn("anexa o candidato", page.casefold())
+        self.assertIn("?seed=", page)
 
     def test_a_page_finding_attaches_the_candidate_without_becoming_an_outsider(self):
         destination = self.root / "achado-com-corrida"
@@ -2921,6 +2924,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["finding_attachments"], [
             "docs/playtest/20260910T120000Z-achado.run.json",
         ])
+        self.assertEqual(report["candidate_seed"], 8)
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
         self.assertIn("anexar", report["scope"].casefold())
@@ -3016,6 +3020,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", line)
         self.assertNotIn("verified", line)
         self.assertLess(line.index("Porta:"), line.index("Mover"))
+        self.assertIn("Seed:", line)
+        self.assertIn("?seed=", line)
+        self.assertLess(line.index("Seed:"), line.index("Convite:"))
 
     def test_start_creates_the_project_and_points_at_serve_without_playing(self):
         destination = self.root / "ideia ao ciclo"
@@ -3049,6 +3056,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("?mood=calm", report["cycle"]["mood"])
         self.assertIn("?mood=dusk", report["cycle"]["mood"])
         self.assertIn("?invite=1", report["cycle"]["invite"])
+        self.assertIn("?seed=", report["cycle"]["seed"])
+        self.assertIn("hold", report["cycle"]["seed"])
         self.assertIn("Espaço", report["prompt"])
         self.assertIn("Porta:", report["prompt"])
         self.assertIn("guardar", report["prompt"])
@@ -3062,6 +3071,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("?mood=calm", report["prompt"])
         self.assertIn("?mood=dusk", report["prompt"])
         self.assertIn("?invite=1", report["prompt"])
+        self.assertIn("?seed=", report["prompt"])
         self.assertIn(report["play"], report["prompt"])
         self.assertIn("note", report["prompt"])
         self.assertEqual(report["open"], report["play"])
@@ -3155,6 +3165,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("?mood=calm", report["steps"][1]["controls"]["mood"])
         self.assertIn("?mood=dusk", report["steps"][1]["controls"]["mood"])
         self.assertIn("?invite=1", report["steps"][1]["controls"]["invite"])
+        self.assertIn("?seed=", report["steps"][1]["controls"]["seed"])
         self.assertIn("note", report["steps"][2]["command"])
         self.assertNotIn(" next ", f" {report['steps'][2]['command']} ")
         self.assertFalse(report["steps"][2]["executed"])

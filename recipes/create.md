@@ -59,6 +59,7 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    frase na abertura e no aviso do primeiro ciclo e devolve o comando que abre o jogo.
    Perdeu o JSON? `play <projeto>` (ou `open`) aponta o serve de novo, sem executar.
    Com tela, o avanço abre a porta e, depois do fim, um avanço novo volta; sem tela o headless já joga.
+   `?seed=<n>` abre essa partida e ignora o hold.
    A frase não muda o verbo.
    `init` faz a mesma cópia sem apontar o ciclo.
    O projeto nasce com laço de passo fixo, save versionado, entrada

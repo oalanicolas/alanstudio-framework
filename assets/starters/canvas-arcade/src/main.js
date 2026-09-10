@@ -45,6 +45,21 @@ function readMoodQuery(options) {
   return readQueryName(options, "mood", resolveMoodName);
 }
 
+// A seed da query é a partida nomeada. Inválida some; explícita
+// no construtor vence. Número na URL não é sessão observada.
+export function readSeedQuery(options = {}) {
+  const raw = options.query
+    ?? (typeof location !== "undefined" && typeof location.search === "string" ? location.search : "");
+  if (!raw) return undefined;
+  const search = raw.startsWith("?") ? raw.slice(1) : raw;
+  const value = new URLSearchParams(search).get("seed");
+  if (value === null || value === "") return undefined;
+  if (!/^\d+$/.test(value)) return undefined;
+  const n = Number(value);
+  if (!Number.isSafeInteger(n)) return undefined;
+  return n >>> 0;
+}
+
 export function createGame(options = {}) {
   const canvas = options.canvas ?? null;
   const storage = options.storage ?? browserStorage("canvas-arcade");
@@ -68,7 +83,8 @@ export function createGame(options = {}) {
   }
   const progressLoad = loadProgress(storage);
   let progress = progressLoad.progress;
-  const forcedSeed = options.seed;
+  const querySeed = readSeedQuery(options);
+  const forcedSeed = options.seed !== undefined ? options.seed : querySeed;
   const resuming = forcedSeed === undefined && options.entry !== "title" && canResume(progress);
   const entry = options.entry ?? (canvas && !resuming ? "title" : "playing");
   const resumeSeed = canContinue(progress) ? progress.lastSeed : null;

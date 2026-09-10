@@ -208,6 +208,7 @@ test("o serve anuncia a rede sem fingir que alguém de fora jogou", () => {
   const banner = listenBanner(8080, interfaces, {});
   assert.match(banner, /Par: http:\/\/localhost:8080\/\?mood=calm  http:\/\/localhost:8080\/\?mood=dusk/);
   assert.match(banner, /Convite: http:\/\/localhost:8080\/\?invite=1/);
+  assert.match(banner, /Seed: http:\/\/localhost:8080\/\?seed=7/);
   assert.match(banner, /Candidato: a partida grava docs\/playtest\/last-run\.json/);
   assert.match(banner, /Nota: depois do fim a página grava o recibo/);
   assert.match(banner, /Achado: no convite a página grava os quatro nomes e anexa o candidato/);

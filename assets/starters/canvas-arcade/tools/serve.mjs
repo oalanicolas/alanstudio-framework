@@ -82,6 +82,7 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
     `Chuva: ${local}/?spawn=dusk  ${local}/?spawn=calm`,
     `Par: ${local}/?mood=calm  ${local}/?mood=dusk`,
     `Convite: ${local}/?invite=1`,
+    `Seed: ${local}/?seed=7`,
     "Candidato: a partida grava docs/playtest/last-run.json",
     "Nota: depois do fim a página grava o recibo em docs/playtest/",
     "Achado: no convite a página grava os quatro nomes e anexa o candidato se houver partida",

@@ -14,6 +14,7 @@
     "look": "?look=dusk ou ?look=calm troca a paleta",
     "spawn": "?spawn=dusk ou ?spawn=calm troca a chuva",
     "mood": "?mood=calm ou ?mood=dusk troca o par",
+    "seed": "?seed=<n> abre essa partida; seed explícita ignora o hold",
     "invite": "?invite=1 esconde a tabela"
   },
   "substitutions": [

@@ -1942,6 +1942,24 @@ def last_run_path(project):
     return None
 
 
+def last_run_seed(project):
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    seed = data.get("seed")
+    if seed is None and isinstance(data.get("run"), dict):
+        seed = data["run"].get("seed")
+    if isinstance(seed, int) and not isinstance(seed, bool):
+        return seed
+    return None
+
+
 def attach_run_candidate(project, fields=None, source=None):
     project = Path(project)
     path = Path(source) if source else project / LAST_RUN
@@ -1971,6 +1989,7 @@ def playtest_reading(project):
     expected = bool(observations) or qa_current
     structured = bool(findings)
     candidate = last_run_path(project)
+    candidate_seed = last_run_seed(project) if candidate else None
     invite = invite_path(project)
     return {
         "schema_version": 1,
@@ -1980,6 +1999,7 @@ def playtest_reading(project):
         "findings": findings,
         "finding_attachments": playtest_finding_attachments(project, findings),
         "candidate": candidate,
+        "candidate_seed": candidate_seed,
         "invite": invite,
         "qa_current": qa_current,
         "expected": expected,
@@ -2001,7 +2021,9 @@ def playtest_reading(project):
             "pode gravar o candidato; a simulação também. No convite a "
             "página pode gravar o markdown dos quatro nomes e anexar o "
             "candidato que estava em last-run.json. Anexo não é sessão "
-            "observada. Não assiste a sessão, não conta jogadores e não "
+            "observada. Se o candidato nomeia a seed, `candidate_seed` "
+            "a relata — `?seed=` abre essa partida e ignora o hold. "
+            "Não assiste a sessão, não conta jogadores e não "
             "atribui causa. `observed` e `outsider` são sempre falsos."
         ),
     }
@@ -2097,8 +2119,9 @@ def invite_page(project):
         "## Instrução\n"
         "\n"
         "Jogue uma partida. Com tela, o avanço abre a porta — a tabela\n"
-        "some, a abertura não. Quem fez o jogo não ensina o verbo e não\n"
-        "fica atrás da cadeira.\n"
+        "some, a abertura não. Se a partida deixou seed, `/?seed=<n>`\n"
+        "abre essa partida e ignora o hold. Quem fez o jogo não ensina\n"
+        "o verbo e não fica atrás da cadeira.\n"
         "\n"
         "## Depois\n"
         "\n"
@@ -3168,7 +3191,7 @@ def starter_manifest(starter):
     return manifest
 
 
-CYCLE_KEYS = ("verb", "door", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn", "mood", "invite")
+CYCLE_KEYS = ("verb", "door", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn", "mood", "seed", "invite")
 
 
 def starter_cycle(starter):
@@ -3213,6 +3236,8 @@ def cycle_line(cycle):
         parts.append(f"Chuva: {cycle['spawn']}.")
     if cycle.get("mood"):
         parts.append(f"Par: {cycle['mood']}.")
+    if cycle.get("seed"):
+        parts.append(f"Seed: {cycle['seed']}.")
     if cycle.get("invite"):
         parts.append(f"Convite: {cycle['invite']}.")
     return " ".join(parts)
@@ -3409,8 +3434,8 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "árvore — e cria. `guide --idea` continua só no comando, não no "
             "disco. Se o starter declara o verbo e "
             "as teclas, o prompt as nomeia — inclusive a porta, o cluster de "
-            "uma mão, o toque, o controle e as queries de look, chuva, par e "
-            "convite, se o starter as declara. Não "
+            "uma mão, o toque, o controle e as queries de look, chuva, par, "
+            "seed e convite, se o starter as declara. Não "
             "executa o jogo. O `prompt` também sai em stderr; o JSON "
             "fica no stdout. Depois de uma "
             "partida, a página grava o recibo se você escrever; o próximo "
