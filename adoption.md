@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.263 — O recibo sem origem não declara
+
+O
+JSON
+listava
+o
+arquivo
+e
+declarava.
+Sem
+origem
+o
+harness
+fingia
+recibo.
+Agora
+origem,
+autor
+e
+licença
+são
+os
+três.
+O
+envelope
+do
+acervo
+ainda
+vale.
+CREDITS
+e
+sidecar
+ainda
+declaram.
+Não
+promove
+`granted`.
+
+O que 0.9.263 não afirma:
+os
+três
+campos
+não
+são
+licença
+válida.
+
 ## 0.9.262 — A outra aba veste as preferências
 
 A

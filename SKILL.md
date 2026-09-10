@@ -160,7 +160,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    **`origins <projeto>` lê o disco**, não a tabela: lista mídia embarcada sem
    recibo de origem. Nomeia `form` e `fields`. `--declare` escreve o sidecar
    `.credits.txt`. Sem `then`. Não valida licença. Recibo no disco não é
-   licença válida. Arquivo sem recibo conta como licença
+   licença válida. JSON sem origem, autor e licença não declara.
+   Arquivo sem recibo conta como licença
    desconhecida, e `next` aponta `--declare` antes de seguir.
    **`craft <projeto>`** lê checklists de ofício (paleta, perdão, percentil,
    regra de parada) — conformidade com o que o projeto declarou, sem limiar

@@ -2380,6 +2380,15 @@ ORIGIN_ROW = re.compile(r"`([^`]+)`")
 ORIGIN_LINK = re.compile(r"\[[^\]]+\]\((?:<([^>\n]+)>|([^\s)]+))")
 
 
+def origin_record_complete(record):
+    # O JSON listava o arquivo e declarava. Sem origem o
+    # harness fingia recibo. Os três campos são o que
+    # `--declare` já exige. Nome no disco não é licença.
+    if not isinstance(record, dict):
+        return False
+    return all(nonempty(sfx_catalog.receipt_field(record, field)) for field in ORIGIN_FIELDS)
+
+
 def origins_reading(project, max_entries=2000):
     project = Path(project).resolve()
     embedded, receipts, problems = [], [], []
@@ -2406,6 +2415,8 @@ def origins_reading(project, max_entries=2000):
             return
         for record in records:
             if not isinstance(record, dict):
+                continue
+            if not origin_record_complete(record):
                 continue
             for key in ("src", "path", "file", "id", "key"):
                 if isinstance(record.get(key), str):
@@ -2504,13 +2515,15 @@ def origins_reading(project, max_entries=2000):
         "guide": str(FRAMEWORK / "references/gates.md"),
         "rule": (
             "Arquivo embarcado sem recibo de origem conta como licença desconhecida. "
-            "O recibo declara origem, autor e condição de uso; não prova que a condição vale."
+            "O recibo declara origem, autor e condição de uso; não prova que a condição vale. "
+            "JSON sem os três campos não declara."
         ),
         "scope": (
             "Percorre o projeto, lista arquivos de mídia embarcados e cruza com recibos "
             "(sources.json, licenses.json, CREDITS, sidecar `.credits.txt`). Relata ausência "
             "de recibo, recibo ilegível e declaração `deliver.licensing` = `met` que o disco "
-            "contradiz. `form` aponta o esqueleto; `fields` lista origem, autor e licença. "
+            "contradiz. JSON sem origem, autor e licença — no topo ou em `sources[0]` — "
+            "não cobre o arquivo. `form` aponta o esqueleto; `fields` lista origem, autor e licença. "
             "`--declare` escreve o sidecar. Sem `then`. Recibo no disco não é licença "
             "válida. Não consulta titular, não interpreta texto de licença, não distingue "
             "licença válida de inválida e **não concede passagem**."

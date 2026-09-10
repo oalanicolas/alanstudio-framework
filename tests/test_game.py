@@ -2057,8 +2057,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(Path(report["form"]).is_file())
         self.assertNotIn("then", report)
         self.assertIn("Não consulta titular", report["scope"])
+        self.assertIn("JSON sem os três campos não declara", report["rule"])
+        self.assertIn("JSON sem origem, autor e licença", report["scope"])
 
     def test_origins_accepts_a_receipt_without_calling_it_a_valid_license(self):
+        asset = self.project / "audio" / "jump.wav"
+        asset.parent.mkdir()
+        asset.write_bytes(b"RIFF")
+        (self.project / "sources.json").write_text(
+            json.dumps({
+                "files": [{
+                    "src": "jump.wav",
+                    "license": "CC0-1.0",
+                    "author": "Ana",
+                    "origin": "gravação própria",
+                }],
+            }),
+            encoding="utf-8",
+        )
+        report = game.origins_reading(self.project)
+        self.assertEqual(report["undeclared"], [])
+        self.assertEqual(report["declared"], ["audio/jump.wav"])
+        self.assertFalse(report["validated"])
+        self.assertIn("sources.json", report["receipts"])
+
+    def test_origins_does_not_declare_a_receipt_that_omits_origin(self):
         asset = self.project / "audio" / "jump.wav"
         asset.parent.mkdir()
         asset.write_bytes(b"RIFF")
@@ -2067,10 +2090,50 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             encoding="utf-8",
         )
         report = game.origins_reading(self.project)
+        self.assertEqual(report["undeclared"], ["audio/jump.wav"])
+        self.assertEqual(report["declared"], [])
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+
+    def test_origins_does_not_declare_a_receipt_that_omits_license(self):
+        asset = self.project / "audio" / "jump.wav"
+        asset.parent.mkdir()
+        asset.write_bytes(b"RIFF")
+        (self.project / "sources.json").write_text(
+            json.dumps({
+                "files": [{
+                    "src": "jump.wav",
+                    "origin": "gravação própria",
+                    "author": "Ana",
+                }],
+            }),
+            encoding="utf-8",
+        )
+        report = game.origins_reading(self.project)
+        self.assertEqual(report["undeclared"], ["audio/jump.wav"])
+        self.assertEqual(report["declared"], [])
+
+    def test_origins_reads_origin_from_the_catalog_envelope(self):
+        asset = self.project / "audio" / "jump.wav"
+        asset.parent.mkdir()
+        asset.write_bytes(b"RIFF")
+        (self.project / "sources.json").write_text(
+            json.dumps({
+                "files": [{
+                    "src": "jump.wav",
+                    "sources": [{
+                        "author": "Ana",
+                        "license": "CC0-1.0",
+                        "url": "https://exemplo.invalid/jump",
+                    }],
+                }],
+            }),
+            encoding="utf-8",
+        )
+        report = game.origins_reading(self.project)
         self.assertEqual(report["undeclared"], [])
         self.assertEqual(report["declared"], ["audio/jump.wav"])
         self.assertFalse(report["validated"])
-        self.assertIn("sources.json", report["receipts"])
 
     def test_a_sidecar_counts_as_a_receipt(self):
         asset = self.project / "fonts" / "display.ttf"

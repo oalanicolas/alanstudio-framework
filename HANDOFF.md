@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.262: a outra aba veste as preferências. Look e mix ficavam velhos até recarregar. Não promove `trusted`.
+**HEAD:** ver `git log -1` — vigente 0.9.263: o recibo sem origem não declara. JSON listava o arquivo e fingia recibo. Não promove `granted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 288 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.262)
+## O que o HEAD já entrega (0.9.91–0.9.263)
 
 | Ver | Salto |
 | --- | --- |
@@ -206,6 +206,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.260 | O toque que sai do campo ainda solta. Sem a captura o corpo seguia o último aim. Perder a captura não come o tap da porta. Não promove `felt`. |
 | 0.9.261 | Os knobs vestem o look. Select e faixa ficavam no widget frio; o foco visível também chega. Não promove `consistent`. |
 | 0.9.262 | A outra aba veste as preferências. Look e mix ficavam velhos até recarregar. O progresso em curso não. Não promove `trusted`. |
+| 0.9.263 | O recibo sem origem não declara. JSON listava o arquivo e fingia recibo. Envelope do acervo ainda vale. CREDITS e sidecar ainda declaram. Não promove `granted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -259,6 +260,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   houver `note`). Depois de um `note`, `playable.unplayed` some e `next`
   pode ser `cycle.craft` (par primeiro).
 - Recibo otimista ainda passa em `origins` e `feel` de propósito.
+  JSON incompleto (sem origem, autor e licença) não declara; menção
+  em CREDITS e sidecar ao lado do arquivo ainda declaram. Os três
+  campos no JSON não validam a licença.
 - **Não só adicionar mais um script de medição** se o salto alinhado
   for feel visível/audível, ferramenta de outsider, superfície de
   entrada, auditoria original (item 1) ou facilidade ideia→jogo.
@@ -389,7 +393,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um recado que dispara o verbo
   ou um toque que sai do campo e deixa o corpo andando
   ou um look que veste o canvas e some o select
-  ou uma outra aba que some as preferências desta página.
+  ou uma outra aba que some as preferências desta página
+  ou um JSON que lista o arquivo e declara sem origem.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -1501,7 +1506,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a outra
-aba veste as preferências. Look e mix
-ficavam velhos até recarregar. Não promove
-`trusted`.
+Arquivos quentes da última sessão: o recibo
+sem origem não declara. JSON listava o
+arquivo e fingia recibo. Não promove
+`granted`.
