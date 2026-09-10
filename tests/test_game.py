@@ -3384,6 +3384,24 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", cycle)
         self.assertNotIn("aprovado", access)
 
+    def test_persistence_recipe_names_the_rain_query_the_starter_already_keeps_off_hold(self):
+        persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        main = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/src/main.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("ignora o hold da outra mesa", persist.casefold())
+        self.assertIn("não retoma o hold de outra mesa", cycle.casefold())
+        self.assertIn("ignora o hold da outra mesa", create.casefold())
+        self.assertIn("!querySpawn", main)
+        save = game.save_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        self.assertTrue(save["guide"].endswith("recipes/persistence.md"))
+        self.assertFalse(save["trusted"])
+        self.assertNotIn("aprovado", persist)
+        self.assertNotIn("aprovado", cycle)
+
     def test_persistence_recipe_names_the_query_the_starter_already_keeps_off_disk(self):
         persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")

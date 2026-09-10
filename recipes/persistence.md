@@ -59,6 +59,8 @@ e o relógio da porta (`attractTick`). Sem o relógio o campo
 repetia a frase e o mover. `canResume` lê o hold; `canContinue`
 continua sendo repetir a última seed.
 `?seed=<n>` abre essa partida e ignora o hold — não é Continuar.
+`?spawn=` abre essa chuva e ignora o hold da outra mesa.
+`?look=` e `?speed=` vestem o hold que já está.
 Pausa, `pagehide`, `beforeunload`, perda de foco e o controle que some gravam o hold. Terminar ou resetar limpa.
 `?look=` / `?spawn=` / `?speed=` vestem a sessão. Fechar, esconder
 ou `flush` não grava esses eixos — o convite é candidato, não

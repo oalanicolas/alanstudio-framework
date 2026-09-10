@@ -3,6 +3,48 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.293 — A query de chuva não retoma o hold de outra mesa
+
+O
+banner
+pedia
+dusk.
+O
+hold
+chovia
+spawn.
+A
+URL
+mentia
+a
+mesa.
+Agora
+`?spawn=`
+abre
+a
+chuva
+nomeada.
+Look
+e
+relógio
+vestem
+o
+tick.
+Não
+promove
+`trusted`.
+
+O que 0.9.293 não afirma:
+abrir
+a
+mesa
+nomeada
+não
+é
+aba
+fechada
+observada.
+
 ## 0.9.292 — O convite não grava o look, a chuva nem o relógio que só vestiu
 
 O

@@ -110,7 +110,10 @@ export function createGame(options = {}) {
   let progress = progressLoad.progress;
   const querySeed = readSeedQuery(options);
   const forcedSeed = options.seed !== undefined ? options.seed : querySeed;
-  const resuming = forcedSeed === undefined && options.entry !== "title" && canResume(progress);
+  // A chuva da query é a mesa nomeada. Sem isto o hold
+  // de outra mesa vestia dusk e chovia spawn. Query no
+  // disco não é sessão observada.
+  const resuming = forcedSeed === undefined && !querySpawn && options.entry !== "title" && canResume(progress);
   const entry = options.entry ?? (canvas && !resuming ? "title" : "playing");
   const resumeSeed = canContinue(progress) ? progress.lastSeed : null;
   const openingSeed = forcedSeed ?? resumeSeed ?? randomSeed();

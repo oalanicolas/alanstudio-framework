@@ -30,7 +30,8 @@ sentam porque um pad na gaveta desconectou. Na porta só descarrega.
 Hidden que pausa sem P para retomar
 congela a mostra. A query de look, chuva e relógio veste a
 sessão; `pagehide` e `flush` não a gravam. Escolher no painel
-grava. Stub não é aba fechada nem sessão no controle.
+grava. `?spawn=` não retoma o hold de outra mesa; look e
+relógio vestem o tick que já está. Stub não é aba fechada nem sessão no controle.
 
 Examine separadamente:
 

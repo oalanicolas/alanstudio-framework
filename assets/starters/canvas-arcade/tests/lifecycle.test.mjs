@@ -1308,6 +1308,53 @@ test("look e spawn explícitos vencem o mood no próprio eixo", () => {
   spawnWins.dispose();
 });
 
+test("a query de chuva não retoma o hold de outra mesa", () => {
+  const storage = memoryStorage();
+  const live = createGame({ seed: 11, eventTarget: recordingTarget(), storage });
+  live.advance(40);
+  assert.equal(live.observe().spawnProfile, "spawn");
+  live.flush();
+  live.dispose();
+  const named = createGame({
+    query: "?spawn=dusk",
+    eventTarget: recordingTarget(),
+    storage,
+  });
+  assert.equal(named.observe().spawnProfile, "dusk");
+  assert.equal(named.observe().tick, 0, "chuva na query não retoma o hold");
+  assert.equal(named.observe().phase, "playing");
+  named.dispose();
+  const mood = createGame({
+    query: "?mood=calm",
+    eventTarget: recordingTarget(),
+    storage,
+  });
+  assert.equal(mood.observe().spawnProfile, "calm");
+  assert.equal(mood.observe().tick, 0, "o par na query também não retoma o hold");
+  mood.dispose();
+  const painted = createGame({
+    query: "?look=dusk",
+    eventTarget: recordingTarget(),
+    storage,
+  });
+  assert.equal(painted.observe().tick, 40, "look na query veste o hold que já está");
+  assert.equal(painted.observe().spawnProfile, "spawn");
+  assert.equal(painted.settings.look, "dusk");
+  painted.dispose();
+  const clocked = createGame({
+    query: "?speed=0.75",
+    eventTarget: recordingTarget(),
+    storage,
+  });
+  assert.equal(clocked.observe().tick, 40, "relógio na query veste o hold que já está");
+  assert.equal(clocked.settings.gameSpeed, 0.75);
+  clocked.dispose();
+  const resumed = createGame({ eventTarget: recordingTarget(), storage });
+  assert.equal(resumed.observe().tick, 40, "sem chuva na query o hold volta");
+  assert.equal(resumed.observe().spawnProfile, "spawn");
+  resumed.dispose();
+});
+
 test("a query escolhe o perfil de chuva sem inventar mesa", () => {
   const { game } = harness({ query: "?spawn=dusk" });
   assert.equal(game.observe().spawnProfile, "dusk");
