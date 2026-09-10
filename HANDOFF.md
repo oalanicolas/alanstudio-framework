@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.255: o hitstop não come o perdão do avanço. O freeze também poupa a guarda. Não promove `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.256: o hold leva o relógio da porta. Retomar no campo não devolve a frase nem o mover. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 288 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.255)
+## O que o HEAD já entrega (0.9.91–0.9.256)
 
 | Ver | Salto |
 | --- | --- |
@@ -199,6 +199,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.253 | `sfx copy` do acervo recoloca o WAV quando origem e licença casam, e declara `heard` falso. Recibo diferente recusa. Não promove `heard`. |
 | 0.9.254 | O painel relê a lacuna quando o fetch termina. Pintar só no boot some o que chegou. Não promove `heard`. |
 | 0.9.255 | O hitstop não come o perdão do avanço. O freeze também poupa a guarda. Não promove `felt`. |
+| 0.9.256 | O hold leva o relógio da porta. Retomar no campo não devolve a frase nem o mover. Hold antigo sem o número não inventa ensino feito. Não promove `trusted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -212,12 +213,12 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
-| state_trust | slice | live nomeia a recuperação que o painel já mostra; a porta não; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
+| state_trust | slice | o hold leva o relógio da porta; live nomeia a recuperação que o painel já mostra; a porta não; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
 | accessibility | slice | live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
@@ -375,7 +376,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou uma região viva que some a recuperação que o painel já mostra
   ou um `sfx copy` do acervo que recusa o WAV porque o recibo tem `note` e some `heard`
   ou um painel que pinta a lacuna no boot e some o que o fetch trouxe
-  ou um hitstop que queima o perdão do avanço.
+  ou um hitstop que queima o perdão do avanço
+  ou um hold que some o relógio da porta e o campo repete o ensino.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -602,7 +604,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   (`options.seed` ou `?seed=`) ignora o hold. Reset e `recordRun`
   limpam. Não chamar de Continuar. `?seed=` não é sessão observada.
   Não promover `state_trust`. `hold.player` leva `dashWindup`.
-  `hold` leva `bankWindup`.
+  `hold` leva `bankWindup` e `attractTick`. Sem o relógio
+  o campo repetia a frase. Hold antigo sem o número restaura 0.
   Preferências ilegíveis: `#settings-gap` no painel;
   `liveText.settings` lê `settingsLine` na porta e no fim;
   `persistLine` na porta continua sem settings. Jogando a
@@ -649,12 +652,14 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   é `attractTick`: fantasia e mover; a frase não come o aviso
   de abrir — depois dos 48 ticks de fantasia vem uma janela
   inteira de mover. Sem frase o mover continua os 60 ticks.
-  Depois some. `beginRun` não zera `attractTick`. Se a porta
+  Depois some. `beginRun` não zera `attractTick`. O hold
+  leva o mesmo relógio. Se a porta
   já deu a frase (`attractTick >= 48`) o campo não a repete.
   Se a porta já fechou o ensino (`attractTick >= 108` com
   frase, ou `>= 60` sem) o campo não pede mover de novo —
   dash e coleta entram. Headless (`attractTick === 0`) ainda
-  vê a frase nos primeiros 48 ticks. Dash, coleta,
+  vê a frase nos primeiros 48 ticks. Hold antigo sem o
+  número restaura 0 e não inventa ensino feito. Dash, coleta,
   guarda, queda, hit e superfície ficam no campo. `over` continua mudo.
   `hint_hit` nomeia o estilhaço quando `hits > 0` e `chain === 0`.
   Dash no trilho vence. Texto no disco não é `felt`.
@@ -871,6 +876,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `sfx copy` do acervo que recusa o WAV porque o recibo tem `note` e some `heard`.
 **Não** mais um painel que pinta a lacuna no boot e some o que o fetch trouxe.
 **Não** mais um hitstop que queima o perdão do avanço.
+**Não** mais um hold que some o relógio da porta e o campo repete o ensino.
 
 Candidatos, do que ainda dói:
 
@@ -926,7 +932,8 @@ Candidatos, do que ainda dói:
    sem ranquear. Sinal verdadeiro não é
    partida jogada. `len(steps) == 3`
    e `executed: false` continuam.
-3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
+3. **Checkpoint do tick:** `hold` existe e leva o relógio da
+   porta. A porta nomeia sessão
    volátil e gravação recusada. Preferências ilegíveis avisam no
    painel e preservam `settings.broken`. A região viva nomeia
    a mesma recuperação na porta e no fim; a porta não.
@@ -1404,6 +1411,14 @@ Candidatos, do que ainda dói:
   queima o
   perdão do
   avanço
+  e um
+  hold que
+  some o
+  relógio da
+  porta e o
+  campo
+  repete o
+  ensino
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1427,6 +1442,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o hitstop
-não come o perdão do avanço. O freeze também
-poupa a guarda. Não promove `felt`.
+Arquivos quentes da última sessão: o hold
+leva o relógio da porta. Retomar no campo
+não devolve a frase nem o mover. Não promove
+`trusted`.

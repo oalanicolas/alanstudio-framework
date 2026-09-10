@@ -2,7 +2,8 @@
 // página — e a barra chama isso de protótipo. A porta ensina fantasia
 // e mover no relógio da mostra; dash, coleta e guarda ficam no campo.
 // `beginRun` não zera `attractTick`: se a porta já deu a frase
-// e o mover, o campo não os repete.
+// e o mover, o campo não os repete. O hold leva o mesmo
+// relógio: retomar no campo não devolve o primeiro ciclo.
 // O aviso some depois da primeira vez que o jogador guarda: a decisão
 // já foi jogada.
 //

@@ -53,8 +53,10 @@ distintos; não os una em um número por conveniência.
 
 Implementação concreta, com o limite dito: o starter `canvas-arcade` versiona o
 save em `src/core/save.js` (schema 3), com migração e recuperação de dado inválido.
-`hold` guarda o tick interrompido — seed, `rngState`, chuva e ofício.
-`canResume` lê o hold; `canContinue` continua sendo repetir a última seed.
+`hold` guarda o tick interrompido — seed, `rngState`, chuva, ofício
+e o relógio da porta (`attractTick`). Sem o relógio o campo
+repetia a frase e o mover. `canResume` lê o hold; `canContinue`
+continua sendo repetir a última seed.
 `?seed=<n>` abre essa partida e ignora o hold — não é Continuar.
 Pausa, `pagehide`, `beforeunload` e perda de foco gravam o hold. Terminar ou resetar limpa.
 Isto **não** é aba fechada observada e não sobe `state_trust`. Grava

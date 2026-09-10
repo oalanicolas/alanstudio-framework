@@ -2,7 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { coachHint, FANTASY_TICKS, MOVE_TICKS } from "../src/game/coach.js";
-import { beginRun, CONFIG, createState, PLAYER_Y } from "../src/game/rules.js";
+import { beginRun, CONFIG, createState, restoreState, PLAYER_Y } from "../src/game/rules.js";
+import { captureHold } from "../src/core/save.js";
 
 const shardOnRail = () => ({ id: 1, kind: "shard", x: 160, y: PLAYER_Y - 22, vy: 0 });
 const orbOnRail = () => ({ id: 2, kind: "orb", x: 160, y: PLAYER_Y - 22, vy: 0 });
@@ -99,6 +100,52 @@ test("depois da porta o campo não repete a frase nem o mover", () => {
   plain.attractTick = MOVE_TICKS;
   beginRun(plain);
   assert.equal(coachHint(plain), "collect", "sem frase a porta que já ensinou mover não pede de novo");
+});
+
+test("o hold não some o relógio da porta", () => {
+  const lines = { fantasy: "guardar a corrente" };
+  const door = createState(1, { entry: "title" });
+  door.attractTick = FANTASY_TICKS + MOVE_TICKS;
+  beginRun(door);
+  door.tick = 10;
+  assert.equal(coachHint(door, lines), "collect", "depois da porta o campo pede o orbe");
+  const hold = captureHold(door);
+  assert.ok(hold, "o tick no campo cabe no hold");
+  assert.equal(hold.attractTick, FANTASY_TICKS + MOVE_TICKS, "o recorte leva o relógio");
+  const resumed = restoreState(hold);
+  assert.equal(resumed.attractTick, FANTASY_TICKS + MOVE_TICKS);
+  assert.equal(coachHint(resumed, lines), "collect", "retomar não devolve a frase");
+  resumed.entities = [shardOnRail()];
+  assert.equal(coachHint(resumed, lines), "dash", "retomar não devolve o mover");
+
+  const mid = createState(2, { entry: "title" });
+  mid.attractTick = FANTASY_TICKS;
+  beginRun(mid);
+  mid.tick = 10;
+  assert.equal(
+    coachHint(restoreState(captureHold(mid)), lines),
+    "move",
+    "se a porta só deu a frase o hold ainda pede mover",
+  );
+
+  const headless = createState(3);
+  headless.tick = 10;
+  const raw = captureHold(headless);
+  assert.equal(raw.attractTick, 0);
+  assert.equal(
+    coachHint(restoreState(raw), lines),
+    "fantasy",
+    "sem porta o hold não finge que a frase já passou",
+  );
+
+  const forgotten = captureHold(door);
+  delete forgotten.attractTick;
+  assert.equal(restoreState(forgotten).attractTick, 0, "hold antigo não inventa ensino feito");
+  assert.equal(
+    coachHint(restoreState(forgotten), lines),
+    "fantasy",
+    "sem relógio o campo volta ao primeiro aviso",
+  );
 });
 
 test("a abertura ensina mover sem abrir o ciclo", () => {

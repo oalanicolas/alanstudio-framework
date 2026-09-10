@@ -180,6 +180,45 @@ test("hold inválido não vira retomar", () => {
   assert.equal(captureHold({ phase: "playing", tick: 0, player: { x: 1 }, entities: [] }), null);
 });
 
+test("o hold leva o relógio da porta", () => {
+  const hold = captureHold({
+    phase: "playing",
+    seed: 7,
+    rngState: 3,
+    tick: 12,
+    score: 0,
+    chain: 0,
+    hitstop: 0,
+    shake: 0,
+    flash: 0,
+    camera: { x: 0, y: 0 },
+    bankLock: 0,
+    bankBuffer: 0,
+    bankWindup: 0,
+    spawnTimer: 4,
+    recoverUntil: 0,
+    nextId: 1,
+    attractTick: 108,
+    player: {
+      x: 160,
+      dir: 1,
+      dashTicks: 0,
+      dashRecovery: 0,
+      dashCooldown: 0,
+      dashBuffer: 0,
+      dashWindup: 0,
+      invuln: 0,
+      squash: 0,
+    },
+    entities: [{ id: 1, kind: "orb", x: 40, y: 20, vy: 1 }],
+    stats: {},
+  });
+  assert.ok(hold);
+  assert.equal(hold.attractTick, 108);
+  const again = captureHold({ ...hold, phase: "playing" });
+  assert.equal(again.attractTick, 108, "relê o mesmo relógio");
+});
+
 test("preferências recusam valor fora de faixa e campo desconhecido", () => {
   const settings = normalizeSettings({
     uiScale: 12,

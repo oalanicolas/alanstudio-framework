@@ -441,7 +441,13 @@ export function restoreState(hold, options = {}) {
     player: { dashWindup: 0, ...hold.player },
     entities,
     motes: [],
-    attractTick: 0,
+    // O hold leva o relógio da porta. Sem isto o recorte
+    // fingia que a mostra não ensinou e o campo repetia
+    // a frase. Headless continua 0. Pose no disco não é
+    // aba fechada.
+    attractTick: Number.isFinite(hold.attractTick)
+      ? Math.max(0, Math.floor(hold.attractTick))
+      : 0,
     stats: { ...hold.stats },
     events: [],
   };

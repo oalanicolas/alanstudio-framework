@@ -207,7 +207,11 @@ guarda continua nível. Na porta o tap abre inclusive na faixa da
 guarda — o polegar no primeiro gesto não cala a abertura. No campo
 a faixa inferior continua guardando. Aperto no disco não é peso
 percebido. A porta
-fecha o mesmo arco no tick que abre, sem contar o ofício. A guarda
+fecha o mesmo arco no tick que abre, sem contar o ofício. O hold
+leva o relógio da mostra: retomar no campo não devolve a frase
+nem o mover que a porta já deu. Hold antigo sem o número não
+inventa ensino feito. Número no disco não é aba fechada.
+A guarda
 que já tem corrente senta os mesmos dois ticks e também atravessa
 o estilhaço. Corrente já existente espera o land do avanço —
 o sit não come a pose do dash; o pedido não decai no travel.

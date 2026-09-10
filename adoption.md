@@ -3,6 +3,65 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.256 — O hold leva o relógio da porta
+
+A
+porta
+já
+ensinava
+no
+`attractTick`.
+`beginRun`
+não
+zerava.
+O
+recorte
+ainda
+abria
+em
+zero.
+O
+campo
+repetia
+a
+frase
+e
+o
+mover.
+Agora
+o
+hold
+leva
+o
+relógio.
+Retomar
+não
+devolve
+o
+primeiro
+ciclo.
+Hold
+antigo
+sem
+o
+número
+não
+inventa
+ensino
+feito.
+Não
+promove
+`trusted`.
+
+O que 0.9.256 não afirma:
+guardar
+o
+relógio
+não
+é
+aba
+fechada.
+
 ## 0.9.255 — O hitstop não come o perdão do avanço
 
 O

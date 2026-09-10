@@ -161,6 +161,7 @@ export function recordRun(progress, state, extras = {}) {
 const finiteNumber = (value, fallback = 0) => (Number.isFinite(value) ? value : fallback);
 
 // Recorte da partida em curso. Sem motes nem eventos: são efêmeros.
+// Leva o relógio da porta — sem ele o campo repete o ensino.
 // Quem lê isto não chama o resultado de Continuar.
 export function captureHold(state) {
   if (!state || state.phase !== "playing") return null;
@@ -193,6 +194,10 @@ export function captureHold(state) {
     nextId: integer(state.nextId, 1),
     spawnProfile: typeof state.spawnProfile === "string" ? state.spawnProfile : "spawn",
     assist: Boolean(state.assist),
+    // O campo lê este relógio para não repetir a frase e o
+    // mover. Sem isto o recorte zerava a porta e o aviso
+    // voltava. Número no disco não é aba fechada.
+    attractTick: integer(state.attractTick),
     player: {
       x: finiteNumber(player.x),
       dir: player.dir < 0 ? -1 : 1,
