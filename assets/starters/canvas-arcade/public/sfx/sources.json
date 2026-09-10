@@ -180,6 +180,24 @@
       "license": "CC0-1.0",
       "origin": "tools/design-sfx.py",
       "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "missed.wav",
+      "key": "missed",
+      "title": "Canvas Arcade / missed",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "missed-b.wav",
+      "key": "missed-b",
+      "title": "Canvas Arcade / missed-b",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
     }
   ]
 }

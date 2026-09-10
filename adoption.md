@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.90 — O orbe perdido também fala
+
+O evento `missed` já nascia quando o orbe caía. O mixer o
+tratava como som desconhecido e o campo não acendia. A voz e
+a legenda "orbe perdido" entram no barramento de sfx, com
+variante; o campo acende menos que a volta da guarda. Nasceu
+com `--from missed`, sem republicar o banco. Sem rumble: o
+erro que dói continua sendo o hit. `heard` e `felt` continuam
+falsos. `audio_mix` permanece `slice`. Só `release` fica no
+piso.
+
+O que 0.9.90 não afirma: o harness não perdeu o orbe e a
+legenda não aprova o mix.
+
 ## 0.9.89 — A guarda também fala
 
 O campo já contornava a folga depois de guardar. O mixer calava:

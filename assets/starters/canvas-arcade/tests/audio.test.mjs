@@ -163,9 +163,18 @@ test("a legenda expira em vez de acumular na tela", () => {
   assert.deepEqual(audio.captions(), []);
 });
 
+test("o orbe perdido legendas sem fingir que o mix foi ouvido", () => {
+  const { audio } = build();
+  audio.play("missed");
+  assert.equal(audio.captions()[0].text, "orbe perdido");
+  assert.equal(SOUNDS.missed.bus, "sfx");
+  assert.equal(SOUNDS.missed.loop, undefined);
+  assert.equal("duckMs" in SOUNDS.missed, false);
+});
+
 test("som desconhecido é ignorado sem quebrar o quadro", () => {
   const { audio } = build();
-  assert.equal(audio.play("missed"), false);
+  assert.equal(audio.play("unknown"), false);
   assert.deepEqual(audio.captions(), []);
 });
 

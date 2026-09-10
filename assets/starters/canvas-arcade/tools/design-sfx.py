@@ -19,7 +19,7 @@ from pathlib import Path
 RATE = 44100
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "public" / "sfx"
-ROLES = ("dash", "graze", "collect", "bank", "hit", "over", "close", "live", "stir", "bed")
+ROLES = ("dash", "graze", "collect", "missed", "bank", "hit", "over", "close", "live", "stir", "bed")
 INTENTS = {
     "brighter": "sobe o tom e abre o brilho",
     "darker": "desce o tom e fecha o grave",
@@ -102,6 +102,13 @@ def collect(index: int, total: int) -> float:
     return 0.28 * a + 0.22 * b
 
 
+def missed(index: int, total: int) -> float:
+    t = index / RATE
+    drop = math.sin(2 * math.pi * (196.0 - 80 * t) * t) * envelope(index, total, 0.003, 0.06)
+    air = noise(index, 37) * envelope(index, total, 0.001, 0.035)
+    return 0.14 * drop + 0.035 * air
+
+
 def bank(index: int, total: int) -> float:
     t = index / RATE
     chord = (
@@ -160,6 +167,7 @@ VOICES = {
     "dash": (0.18, dash, 0.55, 0.18),
     "graze": (0.07, graze, 0.7, 0.35),
     "collect": (0.22, collect, None, None),
+    "missed": (0.09, missed, 0.48, 0.32),
     "bank": (0.42, bank, None, None),
     "hit": (0.28, hit, 0.35, 0.22),
     "over": (0.55, over, None, None),

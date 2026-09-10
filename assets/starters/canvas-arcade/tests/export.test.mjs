@@ -35,6 +35,7 @@ test("o export copia o jogo e deixa de fora o que só serve para desenvolver", a
     assert.ok(existsSync(join(dist, "public/sfx/close.wav")), "o artefato leva o tap do fecho");
     assert.ok(existsSync(join(dist, "public/sfx/live.wav")), "o artefato leva o tap da prática");
     assert.ok(existsSync(join(dist, "public/sfx/stir.wav")), "o artefato leva o tap da guarda");
+    assert.ok(existsSync(join(dist, "public/sfx/missed.wav")), "o artefato leva o tap do orbe perdido");
     assert.ok(existsSync(join(dist, "public/sfx/dash-b.wav")), "o artefato leva a variante");
     assert.ok(existsSync(join(dist, "tools/serve.mjs")));
     assert.ok(existsSync(join(dist, "package.json")));

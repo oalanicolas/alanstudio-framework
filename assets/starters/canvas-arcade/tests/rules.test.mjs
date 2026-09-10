@@ -471,6 +471,7 @@ test("orbe perdido é contado, não silencioso", () => {
   assert.equal(state.stats.missed, 1);
   assert.equal(state.entities.length, 0);
   assert.ok(state.events.some((event) => event.type === "missed"));
+  assert.ok(state.flash >= CONFIG.feel.flashMissed, "perder o orbe acende o campo");
 });
 
 test("resolver a chuva compacta o mesmo array e não troca a lista", () => {

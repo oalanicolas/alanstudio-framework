@@ -1,6 +1,6 @@
 // Mixagem: barramentos, prioridade, ducking e legenda.
 //
-// Os papéis do verbo, do fecho, da prática, da guarda e a cama têm design original em `public/sfx/<papel>.wav`
+// Os papéis do verbo, do orbe perdido, do fecho, da prática, da guarda e a cama têm design original em `public/sfx/<papel>.wav`
 // e variante `public/sfx/<papel>-b.wav`: seno e ruído filtrado,
 // gerados por tools/design-sfx.py. O mixer alterna as variantes do verbo.
 // A cama (`bed`) ocupa o barramento de música em loop; não é informação
@@ -39,6 +39,7 @@ export const SOUNDS = {
   dash: { bus: "sfx", caption: "avanço", priority: 1 },
   graze: { bus: "sfx", caption: "passou raspando", priority: 1 },
   collect: { bus: "sfx", caption: "orbe coletado", priority: 2 },
+  missed: { bus: "sfx", caption: "orbe perdido", priority: 1 },
   bank: { bus: "sfx", caption: "corrente guardada", priority: 3, duckMs: 180 },
   hit: { bus: "sfx", caption: "atingido: corrente perdida", priority: 4, duckMs: 260 },
   over: { bus: "ui", caption: "fim da partida", priority: 5, duckMs: 400 },
