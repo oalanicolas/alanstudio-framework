@@ -9,6 +9,7 @@
 import { createLoop } from "./core/loop.js";
 import { createInput } from "./core/input.js";
 import { browserStorage } from "./core/storage.js";
+import { playReport, LAST_RUN_ROUTE } from "./core/run-report.js";
 import { canContinue, canResume, captureHold, loadProgress, recordRun, saveProgress, summarizeRun } from "./core/save.js";
 import { detectEnvironment, loadSettings, normalizeSettings, saveSettings } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
@@ -16,6 +17,7 @@ import { createAudio } from "./game/audio.js";
 import { createHaptics } from "./game/haptics.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
+import { createTrace, finishCurve, traceTick } from "./game/curve.js";
 import { advance as advanceRules, attractTick, beginRun, createState, restoreState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
 import { copy, resolveLookName, resolveMoodName, resolveSpawnName } from "./game/tables.js";
 import { coachHint } from "./game/coach.js";
@@ -82,7 +84,21 @@ export function createGame(options = {}) {
   let lastRun = progress.lastRun ?? null;
   let disposed = false;
   let lastPhase = state.phase;
+  let trace = createTrace();
   const watchers = new Set();
+  function resetTrace() {
+    trace = createTrace();
+  }
+  function offerLastRun(report) {
+    if (!canvas) return;
+    const fetchFn = options.fetch ?? (typeof fetch === "function" ? fetch : null);
+    if (typeof fetchFn !== "function") return;
+    fetchFn(LAST_RUN_ROUTE, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(report),
+    }).catch(() => {});
+  }
   function emitPhase() {
     if (state.phase === lastPhase) return;
     lastPhase = state.phase;
@@ -140,6 +156,7 @@ export function createGame(options = {}) {
     if (state.phase === "title") {
       if (intent?.dash) {
         beginRun(state);
+        resetTrace();
         for (const event of state.events) {
           audio.play(event.type, event);
           haptics.play(event.type);
@@ -152,6 +169,7 @@ export function createGame(options = {}) {
       return;
     }
     advanceRules(state, intent);
+    traceTick(trace, state);
     for (const event of state.events) {
       audio.play(event.type, event);
       haptics.play(event.type);
@@ -162,6 +180,13 @@ export function createGame(options = {}) {
       progress = recordRun(progress, state);
       saveProgress(storage, progress, progressLoad);
       audio.stop("bed");
+      offerLastRun(playReport({
+        seed: state.seed,
+        spawn: state.spawnProfile,
+        run: lastRun,
+        curve: finishCurve(trace, state.chain),
+        policy: "played",
+      }));
     }
     emitPhase();
   }
@@ -266,6 +291,7 @@ export function createGame(options = {}) {
       state = createState(nextSeed, matchOptions(settings, toTitle ? "title" : "playing"));
       queued = neutralIntent();
       recorded = false;
+      resetTrace();
       loop.resume();
       haptics.unmute();
       syncBed();
@@ -358,6 +384,7 @@ export function createGame(options = {}) {
         const stay = state.phase === "title" ? "title" : "playing";
         state = createState(state.seed, matchOptions(settings, stay));
         recorded = false;
+        resetTrace();
         progress = { ...progress, hold: null };
       }
       saveSettings(storage, settings);

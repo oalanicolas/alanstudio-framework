@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.113 — A partida no serve também deixa candidato
+
+O `note --from-run` só via simulação. A partida no
+serve grava o mesmo `last-run.json`. A árvore
+exportada recusa o POST. `observed` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.113 não afirma: gravar o candidato não
+é sessão observada e o harness não jogou.
+
 ## 0.9.112 — O convite também devolve o achado
 
 Quem nunca viu o jogo jogava e não tinha onde

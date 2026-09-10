@@ -2,16 +2,19 @@
 //
 // Módulos ES não carregam por `file://`, então abrir o index.html direto no
 // navegador falha. Este servidor existe só para jogar e comparar localmente.
-// Não é servidor de produção: serve apenas o diretório do projeto, por método
-// GET, e recusa qualquer caminho que escape dele.
+// Não é servidor de produção: serve o diretório do projeto por GET e aceita
+// um POST, o candidato da partida, em `/playtest/last-run`. Recusa caminho
+// que escape do projeto e não grava na árvore exportada.
 
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { createReadStream, existsSync } from "node:fs";
-import { stat } from "node:fs/promises";
+import { mkdir, stat, writeFile } from "node:fs/promises";
 import { networkInterfaces } from "node:os";
-import { extname, join, normalize, resolve, sep } from "node:path";
+import { dirname, extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { LAST_RUN_FILE, LAST_RUN_ROUTE, playReport } from "../src/core/run-report.js";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 
@@ -67,6 +70,7 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
     `Chuva: ${local}/?spawn=dusk  ${local}/?spawn=calm`,
     `Par: ${local}/?mood=calm  ${local}/?mood=dusk`,
     `Convite: ${local}/?invite=1`,
+    "Candidato: a partida grava docs/playtest/last-run.json",
   ];
   for (const origin of origins.slice(1)) {
     lines.push(`Rede: ${origin}/`);
@@ -91,6 +95,63 @@ function openBrowser(url) {
 // `pathname` de uma URL mantém a codificação percentual: um projeto em
 // "Farol do Sul" viraria "Farol%20do%20Sul", uma pasta que não existe, e todo
 // pedido responderia 404. `fileURLToPath` decodifica.
+export { LAST_RUN_FILE, LAST_RUN_ROUTE };
+
+export const LAST_RUN_LIMIT = 32 * 1024;
+
+export function acceptLastRun(raw) {
+  let data;
+  try {
+    data = typeof raw === "string" ? JSON.parse(raw) : raw;
+  } catch {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  const run = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+    ? data.run
+    : null;
+  if (!run || !Number.isFinite(run.ticks)) {
+    return { ok: false, status: 400, reason: "sem run" };
+  }
+  return {
+    ok: true,
+    report: playReport({
+      seed: data.seed ?? run.seed,
+      spawn: data.spawn,
+      run,
+      curve: data.curve,
+      policy: "played",
+    }),
+  };
+}
+
+export async function writeLastRun(root, report) {
+  const dest = join(root, LAST_RUN_FILE);
+  await mkdir(dirname(dest), { recursive: true });
+  await writeFile(dest, `${JSON.stringify(report, null, 2)}\n`);
+  return dest;
+}
+
+function collectBody(request, limit) {
+  return new Promise((done) => {
+    const chunks = [];
+    let size = 0;
+    request.on("data", (chunk) => {
+      size += chunk.length;
+      if (size > limit) {
+        request.destroy();
+        done(null);
+        return;
+      }
+      chunks.push(chunk);
+    });
+    request.on("end", () => done(Buffer.concat(chunks).toString("utf8")));
+    request.on("error", () => done(null));
+  });
+}
+
 const PORT = Number(process.env.PORT ?? 8080);
 const TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -108,8 +169,28 @@ const TYPES = {
 };
 
 const server = createServer(async (request, response) => {
+  const pathname = new URL(request.url, "http://localhost").pathname;
+  if (request.method === "POST" && pathname === LAST_RUN_ROUTE) {
+    if (isArtifactRoot()) {
+      response.writeHead(403, { "content-type": "text/plain; charset=utf-8" }).end("árvore exportada");
+      return;
+    }
+    const raw = await collectBody(request, LAST_RUN_LIMIT);
+    if (raw === null) {
+      response.writeHead(413, { "content-type": "text/plain; charset=utf-8" }).end("corpo grande");
+      return;
+    }
+    const accepted = acceptLastRun(raw);
+    if (!accepted.ok) {
+      response.writeHead(accepted.status, { "content-type": "text/plain; charset=utf-8" }).end(accepted.reason);
+      return;
+    }
+    await writeLastRun(ROOT, accepted.report);
+    response.writeHead(204).end();
+    return;
+  }
   if (request.method !== "GET" && request.method !== "HEAD") {
-    response.writeHead(405, { allow: "GET, HEAD" }).end();
+    response.writeHead(405, { allow: "GET, HEAD, POST" }).end();
     return;
   }
   const requested = decodeURIComponent(new URL(request.url, "http://localhost").pathname);

@@ -217,7 +217,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    os quatro nomes para copiar. Copiar não grava e não é alguém de fora.
    `next` aponta o convite depois do recibo de quem fez. O serve anuncia
    localhost e, se a máquina tiver outro endereço IPv4, a URL da rede —
-   compartilhar essa URL não é alguém de fora. Recibo sem forma entra no
+   compartilhar essa URL não é alguém de fora. A partida no serve grava
+   o candidato em `docs/playtest/last-run.json`; a simulação também.
+   Nenhum dos dois é sessão observada. Recibo sem forma entra no
    `next` como `playtest.unstructured`.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).

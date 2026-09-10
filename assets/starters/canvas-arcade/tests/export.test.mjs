@@ -76,6 +76,12 @@ test("o export copia o jogo e deixa de fora o que só serve para desenvolver", a
       assert.match(await page.text(), /<canvas/);
       const table = await fetch(`http://localhost:${port}/data/spawn.json`);
       assert.equal(table.status, 200);
+      const posted = await fetch(`http://localhost:${port}/playtest/last-run`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ run: { ticks: 10, score: 1 } }),
+      });
+      assert.equal(posted.status, 403, "árvore exportada não grava candidato");
     } finally {
       server.kill("SIGKILL");
       await once(server, "exit");

@@ -15,7 +15,8 @@ nomeia a pasta no comando do start e não grava a frase. Sem destino, se o
 diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
 `then` nomeia par, look, chuva e voz se o projeto — ou o starter, antes do
 destino existir — declara essas ferramentas. Se declara `session`,
-`then` a aponta. Depois do recibo, o mesmo `start` e o `next` apontam
+`then` a aponta. A partida no serve grava o candidato; a simulação
+também. Depois do recibo, o mesmo `start` e o `next` apontam
 o ofício. O autor do `note` é sugestão do git ou do ambiente, não
 quem jogou. Nomear o ofício não pinta. `playtest --invite` aponta `/?invite=1`, onde a
 tabela some; depois do fim a página oferece os quatro nomes para copiar.

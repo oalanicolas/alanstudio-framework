@@ -1984,13 +1984,14 @@ def playtest_reading(project):
         "rule": (
             "Recibo de observação sem problema, evidência, hipótese e medição "
             "é impressão. Os quatro no disco não são playtest observado. "
-            "last-run.json é candidato, não causa. Convite no disco não é "
-            "alguém de fora."
+            "last-run.json é candidato, não causa — venha da simulação ou "
+            "da partida no serve. Convite no disco não é alguém de fora."
         ),
         "scope": (
             "Procura os quatro campos num documento ou num record de "
             "observação, e se docs/qa.md deixou de ser rascunho. Relata "
-            f"`{LAST_RUN}` e `{INVITE}` quando existem. Não assiste a sessão, não conta "
+            f"`{LAST_RUN}` e `{INVITE}` quando existem. A partida no serve "
+            "pode gravar o candidato; a simulação também. Não assiste a sessão, não conta "
             "jogadores e não atribui causa. `observed` e `outsider` são sempre falsos."
         ),
     }

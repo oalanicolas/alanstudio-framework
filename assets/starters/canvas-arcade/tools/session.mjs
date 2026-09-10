@@ -6,6 +6,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { playReport } from "../src/core/run-report.js";
 import { summarizeRun } from "../src/core/save.js";
 import { createTrace, finishCurve, traceTick } from "../src/game/curve.js";
 import { listSpawnProfiles } from "../src/game/tables.js";
@@ -52,18 +53,13 @@ while (state.phase === "playing" && steps < CONFIG.runTicks + 4) {
   steps += 1;
 }
 
-const report = {
-  schema: 2,
+const report = playReport({
   seed: state.seed,
   spawn: state.spawnProfile,
-  policy: "nearest-orb",
   run: summarizeRun(state),
   curve: finishCurve(trace, state.chain),
-  observed: false,
-  felt: false,
-  scope:
-    "Partida simulada com política nearest-orb neste perfil de chuva. Curva pelos eventos: never_banked e sequências são fatos da simulação. Número no disco não é causa nem sessão observada. Sem limiar.",
-};
+  policy: "nearest-orb",
+});
 
 await mkdir(dirname(out), { recursive: true });
 await writeFile(out, `${JSON.stringify(report, null, 2)}\n`);

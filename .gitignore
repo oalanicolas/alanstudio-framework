@@ -10,3 +10,4 @@ venv/
 .env
 .env.*
 dist/
+assets/starters/canvas-arcade/docs/playtest/last-run.json

@@ -192,6 +192,37 @@ test("uma partida completa é registrada no progresso persistido", () => {
   game.dispose();
 });
 
+test("com tela o fim oferece o candidato sem chamar isso de observado", async () => {
+  const posted = [];
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    canvas: silentCanvas(),
+    loadSfx: false,
+    fetch: (url, init) => {
+      posted.push({ url, init });
+      return Promise.resolve({ ok: true });
+    },
+  });
+  game.act({ dash: true });
+  game.advance(1);
+  game.advance(CONFIG.runTicks);
+  assert.equal(game.observe().phase, "over");
+  assert.equal(posted.length, 1);
+  assert.equal(posted[0].url, "/playtest/last-run");
+  assert.equal(posted[0].init.method, "POST");
+  const body = JSON.parse(posted[0].init.body);
+  assert.equal(body.policy, "played");
+  assert.equal(body.observed, false);
+  assert.equal(body.felt, false);
+  assert.equal(body.run.ticks, game.lastRun.ticks);
+  assert.ok(body.curve);
+  assert.equal(body.curve.unbanked_at_end, game.lastRun.chain);
+  assert.doesNotMatch(body.scope, /aprovado|verified|LUFS|-14|4\.5/);
+  game.dispose();
+});
+
 function silentCanvas() {
   return {
     getContext: () => ({

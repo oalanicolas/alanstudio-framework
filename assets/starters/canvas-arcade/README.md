@@ -50,6 +50,7 @@ npm run mix        # soma as vozes de uma partida simulada; não é mix ouvido
 npm run probe      # dispara o buffer declarado; não é peso percebido
 npm run contrast   # pares hex + pixels do stub após draw(); em cinza, forma sem cor; não é dispositivo
 npm run session    # partida simulada → totais e curva; `--spawn` escolhe a chuva; não é sessão observada
+# a partida no `npm run serve` grava o mesmo candidato; também não é observada
 npm run size       # bytes de dist/; sem teto e sem aprovação
 npm run build      # copia a árvore jogável para dist/; não prova outra máquina
 ```

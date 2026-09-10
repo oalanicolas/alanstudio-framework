@@ -653,7 +653,9 @@ depois do recibo de quem fez (e depois do segundo ciclo, se houver).
 `next` propõe `playtest.unstructured` quando há recibo de observação
 (ou um `docs/qa.md` vigente) e o achado ainda não tem forma. Se
 `docs/playtest/last-run.json` existir, `playtest` o relata
-como `candidate` e o `next` aponta `note --from-run`. Se o candidato
+como `candidate` e o `next` aponta `note --from-run`. A partida no
+serve grava esse arquivo; `npm run session` grava a simulação.
+Nenhum dos dois é sessão observada. Se o candidato
 tiver curva, o `note` a anexa. Número no disco não é causa. A tabela de
 ofício que *descreve* o formato não conta como
 achado. O harness não assiste à sessão e não conta jogadores.

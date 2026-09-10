@@ -8,13 +8,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { cp, mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+import { cp, mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
 import { once } from "node:events";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { advertisedOrigins, isArtifactRoot, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
+import { advertisedOrigins, isArtifactRoot, LAST_RUN_FILE, LAST_RUN_ROUTE, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
 
 const STARTER = fileURLToPath(new URL("..", import.meta.url));
 
@@ -37,6 +37,7 @@ async function serveFrom(name) {
   const port = Number(banner.match(/:(\d+)\//)?.[1]);
   return {
     port,
+    project,
     banner,
     async stop() {
       child.kill("SIGKILL");
@@ -87,6 +88,34 @@ for (const name of ["farol", "Farol do Sul"]) {
 
       const escape = await fetch(`http://localhost:${server.port}/../../etc/passwd`);
       assert.ok(escape.status === 403 || escape.status === 404, "caminho fora do projeto não pode vazar");
+
+      const posted = await fetch(`http://localhost:${server.port}${LAST_RUN_ROUTE}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          observed: true,
+          felt: true,
+          policy: "nearest-orb",
+          run: { ticks: 40, score: 3, seed: 8, chain: 1 },
+          seed: 8,
+          spawn: "dusk",
+          curve: { never_banked: false, unbanked_at_end: 1 },
+        }),
+      });
+      assert.equal(posted.status, 204, posted.status);
+      const saved = JSON.parse(await readFile(join(server.project, LAST_RUN_FILE), "utf8"));
+      assert.equal(saved.observed, false);
+      assert.equal(saved.felt, false);
+      assert.equal(saved.policy, "played");
+      assert.equal(saved.run.ticks, 40);
+      assert.equal(saved.spawn, "dusk");
+      assert.doesNotMatch(JSON.stringify(saved), /aprovado|verified|LUFS|-14|4\.5/);
+
+      const refused = await fetch(`http://localhost:${server.port}/docs/playtest/last-run.json`, {
+        method: "POST",
+        body: "{}",
+      });
+      assert.equal(refused.status, 405);
     } finally {
       await server.stop();
     }
@@ -121,6 +150,7 @@ test("o serve anuncia a rede sem fingir que alguém de fora jogou", () => {
   const banner = listenBanner(8080, interfaces, {});
   assert.match(banner, /Par: http:\/\/localhost:8080\/\?mood=calm  http:\/\/localhost:8080\/\?mood=dusk/);
   assert.match(banner, /Convite: http:\/\/localhost:8080\/\?invite=1/);
+  assert.match(banner, /Candidato: a partida grava docs\/playtest\/last-run\.json/);
   assert.match(banner, /Rede: http:\/\/192\.168\.1\.40:8080\//);
   assert.match(banner, /Convite na rede: http:\/\/192\.168\.1\.40:8080\/\?invite=1/);
   assert.doesNotMatch(banner, /169\.254/);

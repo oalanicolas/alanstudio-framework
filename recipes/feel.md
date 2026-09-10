@@ -13,11 +13,12 @@ e não é alguém de fora. `next` aponta o convite depois do recibo de
 quem fez. O serve anuncia a URL da rede
 se a máquina tiver outro endereço IPv4. Esconder a tabela, anunciar
 a rede e copiar o achado não são alguém de fora. `observed` e `outsider` são sempre
-falsos: o harness não assiste à sessão. O starter grava um candidato com
-`npm run session` em `docs/playtest/last-run.json`. Se o projeto (ou o
-starter) declara `session`, `then` a aponta. `note --from-run` anexa o
-resumo e, se houver, a curva — o mapa já põe `--from-run` quando o
-arquivo existe. Número no disco não é causa nem sessão observada. O
+falsos: o harness não assiste à sessão. A partida no serve grava o
+mesmo candidato em `docs/playtest/last-run.json`. `npm run session`
+continua a simulação. Nenhum dos dois é sessão observada. Se o
+projeto (ou o starter) declara `session`, `then` a aponta. `note --from-run`
+anexa o resumo e, se houver, a curva — o mapa já põe `--from-run`
+quando o arquivo existe. Número no disco não é causa. O
 autor sugerido no comando não é quem jogou.
 
 Feel é o intervalo entre o input e a certeza de que o mundo respondeu.
