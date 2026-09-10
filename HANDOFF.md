@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.284: o `content` não conta paleta como volume. `palettes.json` não extrai. Não promove `enough`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 302 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 303 OK.
 `cd assets/starters/canvas-arcade && npm test` → 468 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
