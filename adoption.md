@@ -3,6 +3,26 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.194 — O save nomeia o aviso da sessão
+
+A porta já dizia
+sessão volátil. O
+leitor só via
+storage e schema.
+Agora relata
+`warned` se o disco
+tem `persistLine`
+ou as chaves da
+porta. Nomear não é
+aba fechada.
+`trusted` continua
+falso. Só `release`
+fica no piso.
+
+O que 0.9.194 não afirma:
+aviso no disco não
+é save observado.
+
 ## 0.9.193 — O feel nomeia o serve e o recibo
 
 O leitor já listava

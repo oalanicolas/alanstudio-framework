@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.193 (confirmado): o feel nomeia o serve e o recibo.
+**HEAD:** ver `git log -1` — vigente 0.9.194: o save nomeia o aviso da sessão.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 272 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.193)
+## O que o HEAD já entrega (0.9.91–0.9.194)
 
 | Ver | Salto |
 | --- | --- |
@@ -137,6 +137,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.191 | No arco da guarda o corpo também atravessa o estilhaço. Sem punch novo. Não promove feel. |
 | 0.9.192 | Perder o orbe também senta o corpo. Menor que a coleta. Sem rumble. Não promove feel. |
 | 0.9.193 | `feel` nomeia `then.play` e `then.note` sem executar. Sem serve a chave some. Sem `prompt`. Não promove `felt`. |
+| 0.9.194 | `save` relata `warned` se o disco nomeia sessão volátil. Nomear não é aba fechada. Não promove `trusted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -154,7 +155,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
-| state_trust | slice | beforeunload no disco; na porta hidden só descarrega; aba fechada real não observada; `trusted` falso |
+| state_trust | slice | `save` relata o aviso da sessão; beforeunload no disco; na porta hidden só descarrega; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
 | accessibility | slice | live nomeia a corrente no fim quando o overlay a nomeia; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
@@ -247,7 +248,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou live que nomeia a corrente no fim
   ou graça no arco da guarda
   ou queda que senta o corpo
-  ou feel que nomeia o serve.
+  ou feel que nomeia o serve
+  ou save que nomeia o aviso.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -329,6 +331,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `next` / `doctor` / `feel` não têm `prompt` e não escrevem frase.
   `feel.then` tem `note` e, se o projeto declara o comando de
   abrir, `play`. Sem serve a chave some. Não ganha `lost`.
+  `save` relata `warned` / `warnings` se o disco tem
+  `persistLine`, `title_volatile` ou `title_unsaved`. Nomear
+  não é aba fechada. `trusted` falso. Sem `prompt`.
 - `then` do ciclo (`guide` / `start` / `play`) sempre tem `play`, `note`, `lost`.
 - Se `last_run_seed` devolver um `int` (não bool), `then.seed`
   é `seed_href` (`/?seed=<n>` ou, com chuva nomeada e ≠ `spawn`,
@@ -559,6 +564,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um arco da guarda que é janela de hit enquanto o coil já atravessa.
 **Não** mais uma queda que acende o campo e some o corpo.
 **Não** mais um `feel` que some o serve enquanto lista as constantes.
+**Não** mais um `save` que some o aviso que a porta já nomeia.
 
 Candidatos, do que ainda dói:
 
@@ -599,7 +605,8 @@ Candidatos, do que ainda dói:
    `prompt`. `len(steps) == 3`
    e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
-   volátil e gravação recusada. Falta aba fechada real.
+   volátil e gravação recusada. `save` relata `warned` se o
+   disco tem essas chaves. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
 4. **Item 1 residual:** o mapa, as receitas de foco e os templates da
    primeira situação — brief, GDD, game-design, PoC, slice, QA e
@@ -632,6 +639,8 @@ Candidatos, do que ainda dói:
   o corpo e o
   feel que nomeia
   o serve e o
+  save que nomeia
+  o aviso e o
   aperto do fecho no
   disco e o aviso de
   guardar no fecho e o
@@ -716,7 +725,10 @@ Candidatos, do que ainda dói:
   corpo e o
   feel que
   nomeia o
-  serve
+  serve e o
+  save que
+  nomeia o
+  aviso
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -740,6 +752,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `feel` nomeia
-`then.play` e `then.note` sem executar. Sem serve a
-chave some. Sem `prompt`. Não promove `felt`.
+Arquivos quentes da última sessão: `save` relata
+`warned` se o disco nomeia sessão volátil. Nomear
+não é aba fechada. Não promove `trusted`.

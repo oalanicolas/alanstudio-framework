@@ -617,7 +617,9 @@ python3 scripts/game.py budget /caminho/do/laboratorio/meu-jogo
 `access` procura highContrast, reducedMotion, captions, remapeamento
 (a página do starter lista as seis ações do teclado; toque e controle não entram),
 uiScale, preset de uma mão (o ciclo nomeia IJKL + P/O quando o starter declara `hand`), assistência, velocidade da partida, tinta estável e região viva. `verified` é sempre `false`. Trocar no stub não é sessão observada. `save` procura
-armazenamento e PROGRESS_SCHEMA/migrate; `trusted` é sempre `false`.
+armazenamento, PROGRESS_SCHEMA/migrate e se o disco nomeia sessão volátil
+(`persistLine`, `title_volatile`, `title_unsaved`); relata `warned`. Nomear
+não é aba fechada. `trusted` é sempre `false`.
 `budget` procura script `budget`/`bench`, `tools/budget.*` ou
 `record --kind budget`; `measured` é sempre `false`. O starter declara
 os três; um canvas sem opção de alcance recebe `access.missing` antes da

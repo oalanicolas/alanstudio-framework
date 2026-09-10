@@ -235,8 +235,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    **`access` / `save` / `budget`** leem opção de alcance (incluindo
    uiScale, remapeamento das seis ações do teclado na página, preset de
    uma mão, assistência, velocidade da partida, tinta estável e região viva), versão de save e artefato
-   de orçamento. A porta nomeia sessão volátil e gravação que não ficou;
-   nomear não é `trusted`. Trocar no stub não é sessão observada.
+   de orçamento. `save` relata `warned` se o disco nomeia sessão volátil
+   (`persistLine`, `title_volatile`, `title_unsaved`). Nomear não é
+   `trusted`. Trocar no stub não é sessão observada.
    `verified`/`trusted`/`measured` são sempre falsos.
    Falta no disco entra no `next` antes dos rascunhos.
    **`art` / `content` / `ship`** leem paleta ou art-bible vigente, conteúdo

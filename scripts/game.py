@@ -1423,6 +1423,7 @@ PERSIST_USE = re.compile(
     r"localStorage|sessionStorage|indexedDB|saveProgress|loadProgress|PROGRESS_KEY|SETTINGS_KEY"
 )
 PERSIST_VERSION = re.compile(r"PROGRESS_SCHEMA|SETTINGS_SCHEMA|SAVE_VERSION|function migrate\b|\bmigrate\s*\(")
+PERSIST_WARN = re.compile(r"persistLine|title_volatile|title_unsaved")
 BUDGET_FILES = ("tools/budget.mjs", "tools/budget.js", "tools/budget.py")
 
 
@@ -1494,13 +1495,15 @@ def access_reading(project):
 
 def save_reading(project):
     project = Path(project)
-    used, versioned, sources = [], [], []
+    used, versioned, warned, sources = [], [], [], []
     for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
         if PERSIST_USE.search(text):
             used.append(relative)
         if PERSIST_VERSION.search(text):
             versioned.append(relative)
-        if PERSIST_USE.search(text) or PERSIST_VERSION.search(text):
+        if PERSIST_WARN.search(text):
+            warned.append(relative)
+        if PERSIST_USE.search(text) or PERSIST_VERSION.search(text) or PERSIST_WARN.search(text):
             sources.append(relative)
     return {
         "schema_version": 1,
@@ -1509,15 +1512,20 @@ def save_reading(project):
         "used": bool(used),
         "versioned": bool(versioned),
         "unversioned": bool(used) and not versioned,
+        "warned": bool(warned),
+        "warnings": warned[:8],
         "sources": sources[:8],
         "trusted": False,
         "guide": str(FRAMEWORK / "recipes/persistence.md"),
         "rule": (
             "Uso de armazenamento sem versão e sem migração é contrato sem data. "
+            "Nomear sessão volátil no disco não é aba fechada. "
             "O harness não abre o save e não confirma escrita."
         ),
         "scope": (
-            "Procura localStorage/saveProgress e PROGRESS_SCHEMA/migrate. Não "
+            "Procura localStorage/saveProgress, PROGRESS_SCHEMA/migrate e se o "
+            "disco nomeia sessão volátil (`persistLine`, `title_volatile`, "
+            "`title_unsaved`). Relata `warned`. Nomear não é aba fechada. Não "
             "executa migração, não interrompe a aba e não chama o save de "
             "atômico. `trusted` é sempre falso."
         ),

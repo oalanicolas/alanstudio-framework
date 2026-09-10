@@ -2709,7 +2709,14 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(persist["used"])
         self.assertTrue(persist["versioned"])
         self.assertFalse(persist["unversioned"])
+        self.assertTrue(persist["warned"])
+        self.assertTrue(
+            any("save.js" in path or "tables.js" in path or "render.js" in path for path in persist["warnings"]),
+        )
         self.assertFalse(persist["trusted"])
+        self.assertIn("warned", persist["scope"])
+        self.assertNotIn("aprovado", persist["scope"])
+        self.assertNotIn("verified", persist["scope"])
         self.assertTrue(perf["declared"])
         self.assertFalse(perf["unbudgeted"])
         self.assertFalse(perf["measured"])
@@ -2721,6 +2728,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.save_reading(self.project)
         self.assertTrue(report["used"])
         self.assertTrue(report["unversioned"])
+        self.assertFalse(report["warned"])
+        self.assertEqual(report["warnings"], [])
         self.assertFalse(report["trusted"])
         proposal = next(
             item for item in self.proposals(game.next_step(self.project, "persistence"))

@@ -27,7 +27,9 @@ Trate dado inválido como caso normal, não como exceção: arquivo truncado, ca
 ausente, valor fora de faixa, save de uma versão futura, armazenamento cheio ou
 negado. A política precisa preservar o que ainda é aproveitável e falhar de forma
 legível para o jogador. A porta e o fim nomeiam sessão volátil e
-gravação que não ficou. Nomear não é aba fechada nem `trusted`.
+gravação que não ficou. `save` relata `warned` se o disco tem
+`persistLine`, `title_volatile` ou `title_unsaved`. Nomear não é
+aba fechada nem `trusted`.
 **Não apague save real para fazer um teste passar**; ao
 migrar, preserve o original até a nova gravação estar confirmada.
 
