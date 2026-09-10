@@ -101,7 +101,7 @@ export function createRenderer(canvas, options = {}) {
     context.lineTo(FIELD.width, PLAYER_Y + 10);
     context.stroke();
 
-    for (const entity of approaching(state)) {
+    for (const entity of approaching(state, reduced)) {
       drawTelegraph(context, palette, entity, reduced);
     }
     for (const entity of state.entities) {
@@ -305,6 +305,9 @@ export function createRenderer(canvas, options = {}) {
     target.stroke();
   }
 
+  // A porta também marca. Sem isto o trilho só falava no
+  // campo e a mostra — que o live já nomeia — caía muda.
+  // Marca no disco não é felt.
   function drawTelegraph(target, palette, entity, reduced) {
     const y = PLAYER_Y + 10;
     target.globalAlpha = reduced ? 1 : 0.62;

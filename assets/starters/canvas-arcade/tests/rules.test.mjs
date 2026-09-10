@@ -434,6 +434,38 @@ test("a porta nomeia o estilhaço da mostra no trilho", () => {
   assert.equal(threatCue(ended), null);
 });
 
+test("a porta marca a mostra no trilho sem ler a chuva da partida", () => {
+  const door = createState(1, { entry: "title" });
+  door.entities = [{ id: 99, kind: "orb", x: 80, y: PLAYER_Y - 24, vy: 1 }];
+  assert.equal(
+    approaching(door).some((item) => item.id === 99),
+    false,
+    "a porta não lê a chuva da partida",
+  );
+  const drop = seatOnShow(door, "shard", "ahead");
+  assert.ok(drop, "esperava o estilhaço no telegraph");
+  const near = approaching(door);
+  assert.ok(
+    near.some((item) => item.kind === "shard" && Math.abs(item.x - drop.x) < 0.01),
+    "a mostra precisa marcar o trilho",
+  );
+  assert.equal(approaching(door), near, "o telegraph reusa o buffer; consumir antes do próximo quadro");
+  assert.equal(door.entities.length, 1);
+  assert.equal(door.tick, 0);
+  const frozen = approaching(door, true);
+  const frozenRain = attractEntities(door, true);
+  for (const item of frozen) {
+    assert.ok(
+      frozenRain.some((drop) => drop.kind === item.kind && Math.abs(drop.x - item.x) < 0.01),
+      "com menos movimento o aviso segue a chuva travada",
+    );
+  }
+  const play = createState(1);
+  play.entities = [{ id: 1, kind: "orb", x: 80, y: PLAYER_Y - 24, vy: 1 }];
+  assert.equal(approaching(play).length, 1);
+  assert.equal(approaching(play)[0].id, 1);
+});
+
 test("a ameaça marca o trilho antes do contato e some na faixa", () => {
   const state = createState(1);
   state.entities = [

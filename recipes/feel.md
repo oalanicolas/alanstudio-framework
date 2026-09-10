@@ -4,7 +4,7 @@ Entrada: verbo central, referência de sensação (aprovada ou proposta) e a
 diferença percebida entre intenção e resposta atual.
 
 Com tela, a primeira superfície é a porta. O campo começa depois do
-avanço. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
+avanço. A mostra da porta marca o trilho no mesmo alcance do campo. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured` e aponta a página
 (`#finding`) e `note --field`. `playtest` só lê. `playtest --invite`
@@ -178,7 +178,9 @@ fecha o mesmo arco no tick que abre, sem contar o ofício. A guarda
 que já tem corrente senta os mesmos dois ticks e também atravessa
 o estilhaço. Arquivo no
 disco não é peso percebido. A ameaça que
-ainda não chegou marca o trilho (`approaching`); a recuperação do dash muda a
+ainda não chegou marca o trilho (`approaching`) — na porta a mostra
+usa o mesmo aviso; a live já nomeava o perigo e o trilho calava.
+Marca no disco não é peso percebido. A recuperação do dash muda a
 silhueta; o erro acende o campo, a coleta não. O controle pulsa no
 impacto com duração e magnitude por verbo; pausa e descarte cancelam.
 Cada verbo deixa um rastro próprio no campo; com menos movimento o

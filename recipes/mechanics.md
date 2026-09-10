@@ -3,7 +3,8 @@
 Entrada: ação, estado inicial, alternativa e consequência que precisam mudar.
 
 Com tela, a primeira regra é a porta. O campo — chuva, guarda,
-recusa — começa depois do avanço. Descrever só o meio da partida
+recusa — começa depois do avanço. A mostra da porta marca o
+trilho no mesmo alcance do campo; descrever só o meio da partida
 esconde o verbo que abre o ciclo. Sem tela o headless já joga.
 
 Leia regra, configuração e consumidor existentes. Separe o requisito de experiência

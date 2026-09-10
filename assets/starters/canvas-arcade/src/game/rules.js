@@ -1062,12 +1062,22 @@ function hit(state) {
   emit(state, "hit", { lost, x: state.player.x });
 }
 
-export function approaching(state) {
+export function approaching(state, reduced = false) {
+  // A porta chove sem `entities`. Sem isto o trilho só
+  // falava no campo e a mostra — que o live já nomeia —
+  // caía muda. Reduced trava a queda; o aviso segue a
+  // chuva visível. Marca no disco não é felt.
   const reach = CONFIG.feel.telegraphReach;
   const band = CONFIG.collect.reachY;
+  const list = !state
+    ? []
+    : state.phase === "title"
+      ? attractEntities(state, reduced)
+      : (state.entities ?? []);
   let write = 0;
-  for (let index = 0; index < state.entities.length; index += 1) {
-    const entity = state.entities[index];
+  for (let index = 0; index < list.length; index += 1) {
+    const entity = list[index];
+    if (!entity) continue;
     const gap = PLAYER_Y - entity.y;
     if (gap > band && gap <= reach) {
       approachingScratch[write] = entity;

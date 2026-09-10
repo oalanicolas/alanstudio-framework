@@ -9,7 +9,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { createRenderer, PALETTES, dashCharge } from "../src/game/render.js";
-import { createState, advance, CONFIG, FIELD, PLAYER_Y } from "../src/game/rules.js";
+import { createState, advance, attractEntities, CONFIG, FIELD, PLAYER_Y } from "../src/game/rules.js";
 import { ONE_HAND_BINDINGS } from "../src/core/settings.js";
 
 const PLATE_COLORS = new Set(Object.values(PALETTES).map((palette) => palette.plate));
@@ -22,7 +22,7 @@ const PLATE_EDGE_COLORS = new Set(Object.values(PALETTES).map((palette) => palet
 // algum retângulo" seria sempre verdadeiro. Cada retângulo guarda a cor com
 // que foi pintado, e só os da cor de placa contam.
 function recordingCanvas() {
-  const calls = { rects: [], edges: [], texts: [], order: [], arcs: 0, lineTos: 0, radials: 0, paths: [] };
+  const calls = { rects: [], edges: [], texts: [], order: [], arcs: 0, lineTos: 0, radials: 0, paths: [], strokes: [] };
   let font = "8px system-ui";
   let align = "left";
   let pending = null;
@@ -57,6 +57,7 @@ function recordingCanvas() {
     quadraticCurveTo() {},
     stroke() {
       if (pending) commitEdge(pending);
+      if (path.length >= 2) calls.strokes.push({ points: path.slice(), style: context.strokeStyle });
       pending = null;
       path = [];
     },
@@ -771,6 +772,39 @@ test("a abertura desenha o aviso sem inventar faixa", () => {
     false,
     "sem pedido a porta não inventa o aviso",
   );
+});
+
+function railMarks(drawn, x) {
+  const rail = PLAYER_Y + 10;
+  return (drawn.strokes ?? []).filter((stroke) => (
+    stroke.points.some((point) => Math.abs(point.y - rail) < 5)
+    && (x === undefined || stroke.points.some((point) => Math.abs(point.x - x) < 4))
+  ));
+}
+
+test("a porta marca a mostra no trilho sem inventar faixa", () => {
+  const door = createState(1, { entry: "title" });
+  const rain = attractEntities(door);
+  const ahead = rain.filter((entity) => {
+    const gap = PLAYER_Y - entity.y;
+    return gap > CONFIG.collect.reachY && gap <= CONFIG.feel.telegraphReach;
+  });
+  assert.ok(ahead.length > 0, "esperava a mostra no alcance do telegraph");
+  const drawn = paint(door);
+  for (const drop of ahead) {
+    assert.ok(
+      railMarks(drawn, drop.x).length > 0,
+      `a porta precisa marcar a mostra em ${drop.x}`,
+    );
+  }
+  assert.ok(hudBands(drawn) <= hudBands(paint(createState(1))), "o aviso da porta não é faixa no HUD");
+  const play = createState(1);
+  play.entities = [{ id: 1, kind: "shard", x: 80, y: PLAYER_Y - 24, vy: 1 }];
+  const field = paint(play);
+  assert.ok(railMarks(field, 80).length > 0, "o campo continua marcando o trilho");
+  const quiet = createState(1);
+  quiet.entities = [{ id: 2, kind: "shard", x: 80, y: PLAYER_Y, vy: 1 }];
+  assert.equal(railMarks(paint(quiet), 80).length, 0, "na faixa o aviso já é o próprio contato");
 });
 
 test("a abertura chove sem ser a partida", () => {

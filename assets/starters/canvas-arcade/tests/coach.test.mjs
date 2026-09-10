@@ -62,6 +62,7 @@ test("a abertura ensina mover sem abrir o ciclo", () => {
   state.entities = [shardOnRail()];
   assert.equal(coachHint(state), null, "a porta não pede guardar");
   assert.equal(coachHint(state, {}, { surface: "pointer" }), null, "a porta não ensina toque");
+  assert.equal(coachHint(state, {}, { surface: "gamepad" }), null, "a mostra no trilho não ensina dash na porta");
 });
 
 test("estilhaço no trilho pede o dash antes do orbe", () => {

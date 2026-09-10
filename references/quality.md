@@ -69,7 +69,8 @@ direção: tokens, famílias, feel e receita de conteúdo novo, não só o moodb
 ## Primeiro minuto e acesso
 
 Com tela, a primeira superfície é a porta. A chuva que cai ali é a
-mesma mesa da partida; o avanço abre o campo. Mural de texto que
+mesma mesa da partida; o trilho marca a mostra no mesmo alcance
+do campo; o avanço abre o campo. Mural de texto que
 bloqueia o jogo não é onboarding. A primeira ação ensina o verbo.
 Contraste, forma além da cor, foco, alvos de toque e movimento
 reduzido entram quando o recorte os exige — não como anexo depois do “polimento”.

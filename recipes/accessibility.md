@@ -49,7 +49,8 @@ Estilhaço no trilho pede o dash; toque e controle ganham passo depois
 do movimento. Overlay e HUD confirmam o aparelho que falou por último;
 o overlay segue `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
 x do corpo, no alcance do telegraph, vira `perigo à frente` na região viva
-junto da última legenda. A pausa entra como `pausado` só quando o
+junto da última legenda. Na porta o canvas também marca a mostra no
+trilho — o mesmo aviso do campo. Texto no DOM não é sessão. A pausa entra como `pausado` só quando o
 overlay diz Pausado — no fim a cortina do over vence; na porta a
 placa nem nasce. Com a cortina no campo, nomeia o placar e o
 recorde que o overlay agora mostra. Jogando sem pausa o número

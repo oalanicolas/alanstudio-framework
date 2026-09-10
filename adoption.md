@@ -3,6 +3,25 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.196 — Na porta o telegraph marca a mostra
+
+A live já dizia
+perigo à frente.
+A mostra já caía
+na porta. O trilho
+só falava no campo.
+Agora `approaching`
+lê a chuva da
+abertura. Sem faixa
+nova. `felt`
+continua falso. Só
+`release` fica no
+piso.
+
+O que 0.9.196 não afirma:
+marca no canvas não
+é peso percebido.
+
 ## 0.9.195 — Na porta e no fim a live nomeia o aviso
 
 O canvas já dizia
