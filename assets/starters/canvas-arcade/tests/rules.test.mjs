@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, beginRun, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse } from "../src/game/rules.js";
+import { advance, approaching, attractEntities, attractTick, beginRun, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -447,6 +447,24 @@ test("a abertura não avança o tick até o corpo apontar", () => {
   assert.equal(state.tick, 1);
   beginRun(state);
   assert.equal(state.tick, 1, "beginRun fora da abertura não reinicia");
+});
+
+test("a chuva da porta não come a seed", () => {
+  const state = createState(7, { entry: "title" });
+  const rng = state.rngState;
+  attractTick(state);
+  attractTick(state);
+  assert.equal(state.tick, 0);
+  assert.equal(state.entities.length, 0);
+  assert.equal(state.rngState, rng);
+  assert.equal(state.phase, "title");
+  const rain = attractEntities(state);
+  assert.ok(rain.some((entity) => entity.kind === "orb"));
+  assert.ok(rain.some((entity) => entity.kind === "shard"));
+  const frozen = attractEntities(state, true);
+  assert.notEqual(frozen[0].y, rain[0].y, "com menos movimento a chuva da porta trava");
+  beginRun(state);
+  assert.equal(attractEntities(state).length, 0, "abrir a porta some a chuva de mostra");
 });
 
 test("sair da recuperação emite e acende o campo", () => {

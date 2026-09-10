@@ -570,6 +570,18 @@ test("a abertura nomeia a fantasia, o recorde e a última seed", () => {
   assert.ok(hudBands(back) <= hudBands(paint(createState(1))), "a abertura não inventa faixa no HUD");
 });
 
+test("a abertura chove sem ser a partida", () => {
+  const door = createState(1, { entry: "title" });
+  const play = createState(1);
+  const drawn = paint(door);
+  const live = paint(play);
+  assert.ok(drawn.arcs > live.arcs, "a porta precisa do orbe");
+  assert.ok(drawn.lineTos > live.lineTos, "a porta precisa do estilhaço");
+  assert.equal(door.entities.length, 0);
+  assert.equal(door.tick, 0);
+  assert.ok(hudBands(drawn) <= hudBands(live), "a chuva da porta não é faixa no HUD");
+});
+
 test("o corpo aponta para o lado do último avanço", () => {
   const left = createState(1);
   left.player.dir = -1;

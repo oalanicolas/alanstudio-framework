@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.104 — A porta também chove
+
+A abertura era um campo vazio atrás da cortina.
+Orbe e estilhaço caem na porta sem comer a seed.
+Com menos movimento a chuva trava, não some.
+`consistent` continua falso. Só `release` fica no piso.
+
+O que 0.9.104 não afirma: o harness não comparou em
+movimento e a chuva da porta não é a partida.
+
 ## 0.9.103 — A porta também é um verbo
 
 O avanço que abre a partida sentava só no ofício.

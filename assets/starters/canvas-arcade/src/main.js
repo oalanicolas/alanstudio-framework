@@ -16,7 +16,7 @@ import { createAudio } from "./game/audio.js";
 import { createHaptics } from "./game/haptics.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
-import { advance as advanceRules, beginRun, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
+import { advance as advanceRules, attractTick, beginRun, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
 import { copy, resolveLookName, resolveMoodName, resolveSpawnName } from "./game/tables.js";
 import { coachHint } from "./game/coach.js";
 
@@ -131,6 +131,8 @@ export function createGame(options = {}) {
           haptics.play(event.type);
         }
         syncBed();
+      } else {
+        attractTick(state);
       }
       return;
     }

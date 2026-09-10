@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.103: a porta também é um verbo.
+**HEAD:** ver `git log -1` — vigente 0.9.104: a porta também chove.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 240 OK.
@@ -47,6 +47,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.101 | Com tela, fase `title`. Lê `lastSeed` e recorde. Sem tela, headless joga. |
 | 0.9.102 | Com tela, R no fim volta à abertura. Última pontuação na porta. |
 | 0.9.103 | Abrir a porta senta, desloca e fala sem contar o dash. Overlay nomeia a abertura. |
+| 0.9.104 | A porta chove (orbe e estilhaço) sem comer a seed. Reduced trava, não some. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -157,7 +158,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Fase `title` só com canvas (ou `options.entry === "title"`). Headless
   e `createState()` default = `playing`. `advance` em title não anda o
   tick. Dash em `step` chama `beginRun` (squash, punch, `dash` sem
-  incrementar `stats.dashes`). Reset na title sorteia seed nova
+  incrementar `stats.dashes`). Sem dash, `attractTick` anda a chuva da
+  porta — sem RNG, sem `entities`. Reduced trava a queda. Reset na title sorteia seed nova
   e vai a `playing`. Pause na title é ignorado. Com tela, `reset()` sem
   argumento no `over` volta à title; `reset(seed)` explícito joga.
 - Continuar = **repetir `lastSeed`**, não restaurar o tick. `canContinue`

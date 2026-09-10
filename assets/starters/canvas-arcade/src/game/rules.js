@@ -376,6 +376,7 @@ export function createState(seed = 1, options = {}) {
     },
     entities: [],
     motes: [],
+    attractTick: 0,
     stats: { collected: 0, missed: 0, hits: 0, banks: 0, dashes: 0, bestChain: 0, banked: 0 },
     events: [],
   };
@@ -392,6 +393,30 @@ export function beginRun(state) {
   punch(state, CONFIG.feel.punchDashX * dir, 0);
   emit(state, "dash", { x: state.player.x });
   return state;
+}
+
+// Chuva só da porta. Não usa o RNG da partida, não entra em
+// `entities` e some quando o avanço abre o ciclo. Movimento no
+// stub não é comparação em movimento.
+export function attractTick(state) {
+  if (!state || state.phase !== "title") return state;
+  state.attractTick = (state.attractTick ?? 0) + 1;
+  return state;
+}
+
+export function attractEntities(state, reduced = false) {
+  if (!state || state.phase !== "title") return [];
+  const t = reduced ? 0 : (state.attractTick ?? 0);
+  const items = [];
+  for (let index = 0; index < 4; index += 1) {
+    const travel = (t * (1.1 + index * 0.15) + index * 44) % (FIELD.height - 28);
+    items.push({
+      kind: index % 2 === 0 ? "orb" : "shard",
+      x: 48 + index * 72,
+      y: 18 + travel,
+    });
+  }
+  return items;
 }
 
 export function neutralIntent() {

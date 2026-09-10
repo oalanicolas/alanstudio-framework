@@ -6,9 +6,10 @@
 // tijolo da placa. O stub distingue as silhuetas com a mesma tinta; o
 // dispositivo não foi observado. Tremor, piscada e vinheta respeitam
 // redução de movimento — o sinal de causa migra para uma forma estática,
-// não desaparece. A ponta do corpo fica: é forma, não brilho.
+// não desaparece. A ponta do corpo fica: é forma, não brilho. A chuva
+// da porta também: com menos movimento ela trava, não some.
 
-import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse, recoveryPulse } from "./rules.js";
+import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, attractEntities, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse, recoveryPulse } from "./rules.js";
 import { copy, PALETTES, resolveLookName } from "./tables.js";
 import { bindLines } from "../core/keys.js";
 import { DEFAULT_BINDINGS } from "../core/settings.js";
@@ -107,6 +108,10 @@ export function createRenderer(canvas, options = {}) {
     }
     drawPlayer(context, palette, state, reduced);
     if (state.phase === "title") {
+      for (const entity of attractEntities(state, reduced)) {
+        if (entity.kind === "orb") drawOrb(context, palette, entity, reduced);
+        else drawShard(context, palette, entity, reduced);
+      }
       drawTitle(context, palette, settings, extra, lines);
       return;
     }
