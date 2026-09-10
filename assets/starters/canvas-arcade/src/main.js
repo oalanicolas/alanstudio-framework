@@ -11,7 +11,7 @@ import { createInput } from "./core/input.js";
 import { browserStorage, foreignKey } from "./core/storage.js";
 import { playReport, LAST_RUN_ROUTE } from "./core/run-report.js";
 import { canContinue, canResume, captureHold, loadProgress, persistLine, persistStatus, recordRun, saveProgress, summarizeRun } from "./core/save.js";
-import { applyEnvironment, DEFAULT_BINDINGS, detectEnvironment, loadSettings, normalizeSettings, saveSettings, SETTINGS_KEY, settingsLine, watchEnvironment } from "./core/settings.js";
+import { applyEnvironment, DEFAULT_BINDINGS, detectEnvironment, GAME_SPEED_MAX, GAME_SPEED_MIN, loadSettings, normalizeSettings, saveSettings, SETTINGS_KEY, settingsLine, watchEnvironment } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { BED_FADE_MS, createAudio } from "./game/audio.js";
 import { createHaptics, rumbleRole } from "./game/haptics.js";
@@ -49,6 +49,20 @@ function readMoodQuery(options) {
 
 // A seed da query é a partida nomeada. Inválida some; explícita
 // no construtor vence. Número na URL não é sessão observada.
+// O relógio da query é o da partida nomeada. Fora da faixa
+// some; 1 some. Número na URL não é sessão observada.
+export function readSpeedQuery(options = {}) {
+  const raw = options.query
+    ?? (typeof location !== "undefined" && typeof location.search === "string" ? location.search : "");
+  if (!raw) return null;
+  const search = raw.startsWith("?") ? raw.slice(1) : raw;
+  const value = new URLSearchParams(search).get("speed");
+  if (value === null || value === "") return null;
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < GAME_SPEED_MIN || n > GAME_SPEED_MAX) return null;
+  return n;
+}
+
 export function readSeedQuery(options = {}) {
   const raw = options.query
     ?? (typeof location !== "undefined" && typeof location.search === "string" ? location.search : "");
@@ -74,12 +88,14 @@ export function createGame(options = {}) {
   const queryMood = readMoodQuery(options);
   const querySpawn = readSpawnQuery(options) ?? queryMood;
   const queryLook = readLookQuery(options) ?? queryMood;
-  if (querySpawn || queryLook) {
+  const querySpeed = readSpeedQuery(options);
+  if (querySpawn || queryLook || querySpeed !== null) {
     settings = normalizeSettings(
       {
         ...settings,
         ...(querySpawn ? { spawnProfile: querySpawn } : {}),
         ...(queryLook ? { look: queryLook } : {}),
+        ...(querySpeed !== null ? { gameSpeed: querySpeed } : {}),
       },
       environment,
       settings,
@@ -259,7 +275,7 @@ export function createGame(options = {}) {
       // A faixa lia seed e some a curva. O last-run já
       // a traçou. Número no disco não é outsider.
       const curve = finishCurve(trace, state.chain);
-      lastRun = { ...summarizeRun(state, { look: settings.look }), curve };
+      lastRun = { ...summarizeRun(state, { look: settings.look, speed: settings.gameSpeed }), curve };
       progress = recordRun(progress, state, { lastRun });
       rememberWrite(saveProgress(storage, progress, progressLoad));
       audio.stop("bed", { fadeMs: BED_FADE_MS });
@@ -267,6 +283,7 @@ export function createGame(options = {}) {
         seed: state.seed,
         spawn: state.spawnProfile,
         look: settings.look,
+        speed: settings.gameSpeed,
         run: lastRun,
         curve,
         policy: "played",

@@ -14,7 +14,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { advertisedOrigins, FINDING_ROUTE, inviteQuery, isArtifactRoot, LAST_RUN_FILE, LAST_RUN_ROUTE, lastRunLook, lastRunSeed, lastRunSpawn, NOTE_DIR, NOTE_ROUTE, listenBanner, listenHost, seedQuery, shouldOpenBrowser } from "../tools/serve.mjs";
+import { advertisedOrigins, FINDING_ROUTE, inviteQuery, isArtifactRoot, LAST_RUN_FILE, LAST_RUN_ROUTE, lastRunLook, lastRunSeed, lastRunSpawn, lastRunSpeed, NOTE_DIR, NOTE_ROUTE, listenBanner, listenHost, seedQuery, shouldOpenBrowser } from "../tools/serve.mjs";
 
 const STARTER = fileURLToPath(new URL("..", import.meta.url));
 
@@ -239,10 +239,12 @@ test("o serve junta convite e seed do last-run sem fingir quem jogou", async () 
     assert.equal(inviteQuery(8), "/?invite=1&seed=8");
     assert.equal(inviteQuery(8, "dusk"), "/?invite=1&seed=8&spawn=dusk");
     assert.equal(inviteQuery(8, "dusk", "dusk"), "/?invite=1&seed=8&spawn=dusk&look=dusk");
+    assert.equal(inviteQuery(8, "dusk", "dusk", 0.75), "/?invite=1&seed=8&spawn=dusk&look=dusk&speed=0.75");
     assert.equal(seedQuery(null), null);
     assert.equal(seedQuery(8), "/?seed=8");
     assert.equal(seedQuery(8, "dusk"), "/?seed=8&spawn=dusk");
     assert.equal(seedQuery(8, "dusk", "dusk"), "/?seed=8&spawn=dusk&look=dusk");
+    assert.equal(seedQuery(8, "dusk", "dusk", 0.75), "/?seed=8&spawn=dusk&look=dusk&speed=0.75");
     assert.equal(lastRunLook(base), null);
     const banner = listenBanner(8080, {
       wlan0: [{ address: "192.168.1.40", family: "IPv4", internal: false }],
@@ -281,6 +283,21 @@ test("o serve junta convite e seed do last-run sem fingir quem jogou", async () 
     assert.match(painted, /Seed: http:\/\/localhost:8080\/\?seed=8&spawn=dusk&look=dusk/);
     assert.match(painted, /Convite na rede: http:\/\/192\.168\.1\.40:8080\/\?invite=1&seed=8&spawn=dusk&look=dusk/);
     assert.doesNotMatch(painted, /outsider|aprovado|verified/);
+    await writeFile(join(base, LAST_RUN_FILE), JSON.stringify({
+      schema: 2,
+      seed: 8,
+      spawn: "dusk",
+      look: "dusk",
+      speed: 0.75,
+      run: { ticks: 40, score: 3, seed: 8, speed: 0.75 },
+    }));
+    assert.equal(lastRunSpeed(base), 0.75);
+    const clocked = listenBanner(8080, {
+      wlan0: [{ address: "192.168.1.40", family: "IPv4", internal: false }],
+    }, {}, base);
+    assert.match(clocked, /Convite: http:\/\/localhost:8080\/\?invite=1&seed=8&spawn=dusk&look=dusk&speed=0\.75/);
+    assert.match(clocked, /Seed: http:\/\/localhost:8080\/\?seed=8&spawn=dusk&look=dusk&speed=0\.75/);
+    assert.doesNotMatch(clocked, /outsider|aprovado|verified/);
   } finally {
     await rm(base, { recursive: true, force: true });
   }

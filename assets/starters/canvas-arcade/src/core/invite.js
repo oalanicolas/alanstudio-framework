@@ -1,9 +1,10 @@
 // Superfície de convite. A tabela da página ensina o verbo; quem nunca
 // viu o jogo não deveria lê-la. `?invite=1` some o painel. Com seed no
-// last-run, `?invite=1&seed=<n>&spawn=<mesa>&look=<paleta>` some a
-// tabela e abre essa partida com a chuva e o look que o candidato
-// nomeou. `seedHref` é o mesmo endereço sem o convite — o caminho
-// do maker. Sem mesa ou sem paleta, o aparelho decide o eixo omitido.
+// last-run, `?invite=1&seed=<n>&spawn=<mesa>&look=<paleta>&speed=<relógio>`
+// some a tabela e abre essa partida com a chuva, o look e o
+// relógio que o candidato nomeou. `seedHref` é o mesmo endereço
+// sem o convite — o caminho do maker. Relógio 1, mesa padrão
+// ou paleta `normal`/`contrast` some. Sem eixo, o aparelho decide.
 // Depois do fim, a página do maker aponta o convite. Copiar o
 // endereço não grava e não é quem jogou. Juntar o número não é
 // alguém de fora. Esconder a
@@ -42,6 +43,16 @@ function runLook(run) {
   return look;
 }
 
+function runSpeed(run) {
+  // A faixa não leva o relógio. O endereço sim: sem isto
+  // o convite abria a seed no relógio cheio. Número na
+  // URL não é sessão observada.
+  if (!run || typeof run !== "object" || Array.isArray(run)) return null;
+  const speed = typeof run.speed === "number" ? run.speed : run.run && typeof run.run === "object" ? run.run.speed : null;
+  if (!Number.isFinite(speed) || speed === 1 || speed < 0.5 || speed > 1) return null;
+  return speed;
+}
+
 function runQuery(run) {
   const parts = [];
   const seed = runSeed(run);
@@ -50,6 +61,8 @@ function runQuery(run) {
   if (spawn) parts.push(`spawn=${spawn}`);
   const look = runLook(run);
   if (look) parts.push(`look=${look}`);
+  const speed = runSpeed(run);
+  if (speed !== null) parts.push(`speed=${speed}`);
   return parts;
 }
 

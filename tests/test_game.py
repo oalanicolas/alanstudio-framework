@@ -3475,6 +3475,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(report["candidate_seed"])
         self.assertIsNone(report["candidate_spawn"])
         self.assertIsNone(report["candidate_look"])
+        self.assertIsNone(report["candidate_speed"])
         self.assertIsNone(report["candidate_curve"])
         self.assertIsNone(report["invite"])
         self.assertEqual(report["finding_href"], "/#finding")
@@ -3529,6 +3530,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(reading["finding_href"], "/?seed=7#finding")
         self.assertIsNone(reading["candidate_spawn"])
         self.assertIsNone(reading["candidate_look"])
+        self.assertIsNone(reading["candidate_speed"])
         self.assertIsNone(reading["candidate_curve"])
         self.assertFalse(reading["expected"])
         self.assertFalse(reading["structured"])
@@ -3786,6 +3788,21 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         contrast = game.playtest_reading(destination)
         self.assertEqual(contrast["invite_href"], "/?invite=1&seed=8")
         self.assertIsNone(contrast["candidate_look"])
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "spawn": "dusk",
+            "look": "dusk",
+            "speed": 0.75,
+            "run": {"ticks": 40, "score": 3, "seed": 8, "speed": 0.75},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        clocked = game.playtest_reading(destination)
+        self.assertEqual(clocked["invite_href"], "/?invite=1&seed=8&spawn=dusk&look=dusk&speed=0.75")
+        self.assertEqual(clocked["candidate_speed"], 0.75)
+        self.assertEqual(game.seed_href(destination), "/?seed=8&spawn=dusk&look=dusk&speed=0.75")
+        self.assertFalse(clocked["outsider"])
 
     def test_a_page_finding_is_form_not_an_outsider(self):
         destination = self.root / "achado-da-pagina"

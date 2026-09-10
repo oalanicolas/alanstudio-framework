@@ -123,19 +123,36 @@ export function lastRunLook(root = ROOT) {
   }
 }
 
-export function inviteQuery(seed, spawn, look) {
+export function lastRunSpeed(root = ROOT) {
+  try {
+    const data = JSON.parse(readFileSync(join(root, LAST_RUN_FILE), "utf8"));
+    if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+    const nested = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+      ? data.run.speed
+      : null;
+    const speed = data.speed ?? nested;
+    if (!Number.isFinite(speed) || speed === 1 || speed < 0.5 || speed > 1) return null;
+    return speed;
+  } catch {
+    return null;
+  }
+}
+
+export function inviteQuery(seed, spawn, look, speed) {
   return inviteHref({
     seed: Number.isInteger(seed) ? seed : undefined,
     spawn: typeof spawn === "string" ? spawn : undefined,
     look: typeof look === "string" ? look : undefined,
+    speed: Number.isFinite(speed) ? speed : undefined,
   });
 }
 
-export function seedQuery(seed, spawn, look) {
+export function seedQuery(seed, spawn, look, speed) {
   return seedHref({
     seed: Number.isInteger(seed) ? seed : undefined,
     spawn: typeof spawn === "string" ? spawn : undefined,
     look: typeof look === "string" ? look : undefined,
+    speed: Number.isFinite(speed) ? speed : undefined,
   });
 }
 
@@ -145,8 +162,9 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
   const seed = lastRunSeed(root);
   const spawn = lastRunSpawn(root);
   const look = lastRunLook(root);
-  const invite = inviteQuery(seed, spawn, look);
-  const seedPath = seedQuery(seed, spawn, look) ?? "/?seed=7";
+  const speed = lastRunSpeed(root);
+  const invite = inviteQuery(seed, spawn, look, speed);
+  const seedPath = seedQuery(seed, spawn, look, speed) ?? "/?seed=7";
   const lines = [
     `Jogo em ${local}/  (Ctrl+C encerra)`,
     `Look: ${local}/?look=dusk  ${local}/?look=calm`,

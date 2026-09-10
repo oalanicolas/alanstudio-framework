@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.271 — O convite nomeia o relógio da partida
+
+O
+convite
+já
+abria
+a
+seed.
+O
+relógio
+já
+estava
+nas
+preferências.
+Quem
+jogava
+de
+fora
+corria
+outro
+jogo.
+Agora
+o
+endereço
+junta
+`speed`
+quando
+não
+é
+1.
+A
+faixa
+não
+leva
+o
+knob.
+Não
+promove
+`outsider`.
+
+O que 0.9.271 não afirma:
+juntar
+o
+relógio
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.270 — O sistema que pede reduce no meio da sessão veste a caixa
 
 O

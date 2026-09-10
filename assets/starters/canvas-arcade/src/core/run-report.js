@@ -72,17 +72,20 @@ export function playReport({
   seed,
   spawn,
   look,
+  speed,
   run,
   curve,
   policy = "played",
 } = {}) {
   const nearest = policy === "nearest-orb";
   const summary = run && typeof run === "object" && !Array.isArray(run) ? { ...run } : {};
+  const rawSpeed = Number.isFinite(speed) ? speed : summary.speed;
   const report = {
     schema: 2,
     seed: seed ?? summary.seed ?? null,
     spawn: typeof spawn === "string" && spawn ? spawn : "spawn",
     look: typeof look === "string" && look ? look : typeof summary.look === "string" && summary.look ? summary.look : "normal",
+    speed: Number.isFinite(rawSpeed) ? rawSpeed : 1,
     policy: nearest ? "nearest-orb" : "played",
     run: summary,
     observed: false,

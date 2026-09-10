@@ -151,6 +151,10 @@ test("a seed da partida junta chuva e look sem fingir que observou", () => {
     seedHref({ seed: 8, spawn: "dusk", look: "dusk" }, "http://192.168.1.40:8080"),
     "http://192.168.1.40:8080/?seed=8&spawn=dusk&look=dusk",
   );
+  assert.equal(seedHref({ seed: 8, speed: 1 }), "/?seed=8");
+  assert.equal(seedHref({ seed: 8, speed: 0.75 }), "/?seed=8&speed=0.75");
+  assert.equal(seedHref({ seed: 8, run: { speed: 0.5 } }), "/?seed=8&speed=0.5");
+  assert.equal(seedHref({ seed: 8, speed: 12 }), "/?seed=8");
 });
 
 test("o convite da partida junta a seed sem fingir quem jogou", () => {
@@ -177,6 +181,10 @@ test("o convite da partida junta a seed sem fingir quem jogou", () => {
     inviteHref({ seed: 8, spawn: "dusk", look: "dusk" }, "http://192.168.1.40:8080"),
     "http://192.168.1.40:8080/?invite=1&seed=8&spawn=dusk&look=dusk",
   );
+  assert.equal(inviteHref({ seed: 8, speed: 1 }), "/?invite=1&seed=8");
+  assert.equal(inviteHref({ seed: 8, speed: 0.75 }), "/?invite=1&seed=8&speed=0.75");
+  assert.equal(inviteHref({ seed: 8, spawn: "dusk", look: "dusk", speed: 0.75 }), "/?invite=1&seed=8&spawn=dusk&look=dusk&speed=0.75");
+  assert.equal(inviteHref({ seed: 8, speed: 12 }), "/?invite=1&seed=8");
   const hrefNode = { textContent: "" };
   const wrap = { hidden: true };
   assert.equal(applyShare({ hrefNode, wrap, run: { seed: 8 } }), "/?invite=1&seed=8");
@@ -264,6 +272,7 @@ test("a partida nomeia seed, pontos e eixos sem preencher o achado", () => {
   assert.equal(runFacts({ seed: 8, score: 12, spawn: "dusk", look: "calm" }), "seed 8 · 12 · dusk · calm");
   assert.equal(runFacts({ seed: 8, run: { score: 3, seed: 8 } }), "seed 8 · 3");
   assert.equal(runFacts({ seed: 8, spawn: "../x", look: "normal" }), "seed 8");
+  assert.equal(runFacts({ seed: 8, speed: 0.75 }), "seed 8", "a faixa não leva o relógio");
   const node = { textContent: "velho", hidden: false };
   assert.equal(applyRunFacts({ node, run: { seed: 8, score: 12, spawn: "dusk" } }), "seed 8 · 12 · dusk");
   assert.equal(node.textContent, "seed 8 · 12 · dusk");

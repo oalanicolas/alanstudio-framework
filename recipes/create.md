@@ -26,7 +26,8 @@ Depois do recibo, o mesmo `start` e o `next` apontam
 o ofício. O autor do `note` é sugestão do git ou do ambiente, não
 quem jogou. Nomear o ofício não pinta. `playtest --invite` aponta `href`
 (`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`, com
-chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a
+chuva nomeada `&spawn=<mesa>`, com look nomeado `&look=<paleta>`,
+e com relógio nomeado e ≠ 1 `&speed=<relógio>`), onde a
 tabela some; depois do fim a página mostra seed, pontos, eixos e a
 curva que o last-run já traçou e oferece os quatro nomes para copiar
 ou gravar. Depois do fim a

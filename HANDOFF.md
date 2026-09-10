@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.270: o sistema que pede reduce no meio da sessão veste a caixa. O boot herdava; o pedido depois ficava no matchMedia. Desligar o SO não apaga. Não promove `verified`.
+**HEAD:** ver `git log -1` — vigente 0.9.271: o convite nomeia o relógio da partida. Seed e eixos abriam no relógio cheio. 1 some. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 293 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.270)
+## O que o HEAD já entrega (0.9.91–0.9.271)
 
 | Ver | Salto |
 | --- | --- |
@@ -214,6 +214,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.268 | O preset de uma mão não some o remap. Desligar devolvia o padrão e apagava o KeyZ. Save antigo sem o conjunto guardado não inventa remap. Não promove `trusted`. |
 | 0.9.269 | A faixa nomeia o valor que o knob já guarda. O thumb andava; 75% some. Não promove `verified`. |
 | 0.9.270 | O sistema que pede reduce no meio da sessão veste a caixa. O boot herdava; o pedido depois ficava no matchMedia. Desligar o SO não apaga. Não promove `verified`. |
+| 0.9.271 | O convite nomeia o relógio da partida. Seed e eixos abriam no relógio cheio. 1 some. A faixa não leva o knob. Não promove `outsider`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -231,7 +232,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
-| pacing | slice | a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
+| pacing | slice | o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a recuperação que o painel já mostra; a porta não; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
 | accessibility | slice | o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
@@ -528,8 +529,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `then` do ciclo (`guide` / `start` / `play`) sempre tem `play`, `note`, `lost`.
 - Se `last_run_seed` devolver um `int` (não bool), `then.seed`
   é `seed_href` (`/?seed=<n>` ou, com chuva nomeada e ≠ `spawn`,
-  `/?seed=<n>&spawn=<mesa>`, e com look nomeado e ≠ `normal`/`contrast`,
-  `&look=<paleta>`) e `then.invite` é `invite_href` (`/?invite=1`
+  `/?seed=<n>&spawn=<mesa>`, com look nomeado e ≠ `normal`/`contrast`,
+  `&look=<paleta>`, e com relógio nomeado e ≠ 1, `&speed=<relógio>`)
+  e `then.invite` é `invite_href` (`/?invite=1`
   mais os mesmos eixos). Sem last-run ou sem seed, as duas chaves
   somem. `then.seed` e `then.invite` **não** entram em
   `CRAFT_EXAMPLES` / `CRAFT_LABELS`. `next` não ganha basis nova
@@ -725,8 +727,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Invite (`?invite=1`) some `#commands`, não `#remap`. Com seed no
   last-run, `/?invite=1&seed=<n>` some a tabela e abre essa partida.
   Com chuva nomeada e ≠ `spawn`, junta `&spawn=<mesa>`. Com look
-  nomeado e ≠ `normal`/`contrast`, junta `&look=<paleta>`. Spawn
-  ou look inválido, e os nomes padrão, somem.
+  nomeado e ≠ `normal`/`contrast`, junta `&look=<paleta>`. Com
+  relógio nomeado e ≠ 1, junta `&speed=<relógio>`. Spawn, look
+  ou relógio inválido, e os nomes padrão, somem.
   `VERSION.json` na raiz (`readArtifactMark`) some `#finding-save`
   e `#note-save`. Copiar permanece. Sem clipboard, `offerFinding`
   baixa `achado.md`. Baixar não grava. Nomear não é `outsider`.
@@ -1516,6 +1519,11 @@ Candidatos, do que ainda dói:
   e some no
   meio da
   sessão
+  e um
+  convite que
+  abre a seed
+  no relógio
+  cheio
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1539,12 +1547,13 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o sistema
-que pede reduce no meio da sessão veste a caixa.
-O boot herdava; o pedido depois ficava no matchMedia.
-Desligar o SO não apaga.
-Não promove `verified`.
+Arquivos quentes da última sessão: o convite
+nomeia o relógio da partida.
+Seed e eixos abriam no relógio cheio. 1 some.
+A faixa não leva o knob.
+Não promove `outsider`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
 A família readout do knob está saturada.
+A família matchMedia ao vivo está saturada.

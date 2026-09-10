@@ -102,6 +102,7 @@ test("a curva não entra na forma do save", () => {
   });
   assert.equal(summary.spawn, "spawn");
   assert.equal(summary.look, "normal");
+  assert.equal(summary.speed, 1);
   assert.equal("never_banked" in summary, false);
   assert.equal("first_hit_tick" in summary, false);
   assert.equal("longest_miss_streak" in summary, false);

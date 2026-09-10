@@ -23,6 +23,7 @@ test("o recibo nasce sem observar e a simulação não se mistura com a partida"
   assert.equal(played.felt, false);
   assert.equal(played.spawn, "dusk");
   assert.equal(played.look, "dusk");
+  assert.equal(played.speed, 1);
   assert.equal(played.curve.never_banked, false);
   assert.match(played.scope, /não é causa/);
   assert.doesNotMatch(played.scope, /aprovado|verified|LUFS|-14|4\.5|enough|consistent/);
@@ -35,6 +36,8 @@ test("o recibo nasce sem observar e a simulação não se mistura com a partida"
   });
   assert.equal(simulated.policy, "nearest-orb");
   assert.equal(simulated.look, "normal");
+  assert.equal(simulated.speed, 1);
+  assert.equal(playReport({ seed: 9, speed: 0.75, run: { ticks: 10 } }).speed, 0.75);
   assert.equal(simulated.observed, false);
   assert.match(simulated.scope, /nearest-orb/);
 });

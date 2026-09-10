@@ -2100,6 +2100,31 @@ def last_run_curve(project):
     return facts or None
 
 
+def last_run_speed(project):
+    # O convite abria a seed no relógio cheio. last-run já
+    # guarda o knob. 1 some. Número não é outsider.
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    speed = data.get("speed")
+    if speed is None and isinstance(data.get("run"), dict):
+        speed = data["run"].get("speed")
+    if (
+        isinstance(speed, (int, float))
+        and not isinstance(speed, bool)
+        and 0.5 <= speed <= 1
+        and speed != 1
+    ):
+        return speed
+    return None
+
+
 def last_run_look(project):
     path = Path(project) / LAST_RUN
     if not path.is_file() or path.is_symlink():
@@ -2150,6 +2175,7 @@ def playtest_reading(project):
     candidate_seed = last_run_seed(project) if candidate else None
     candidate_spawn = last_run_spawn(project) if candidate else None
     candidate_look = last_run_look(project) if candidate else None
+    candidate_speed = last_run_speed(project) if candidate else None
     candidate_curve = last_run_curve(project) if candidate else None
     invite = invite_path(project)
     qa_file = qa.is_file() and not qa.is_symlink()
@@ -2164,6 +2190,7 @@ def playtest_reading(project):
         "candidate_seed": candidate_seed,
         "candidate_spawn": candidate_spawn,
         "candidate_look": candidate_look,
+        "candidate_speed": candidate_speed,
         "candidate_curve": candidate_curve,
         "invite": invite,
         "invite_href": invite_href(project),
@@ -2194,10 +2221,11 @@ def playtest_reading(project):
             "observada. Se o candidato nomeia a seed, `candidate_seed` "
             "a relata; se nomeia a chuva, `candidate_spawn` a relata; "
             "se nomeia o look, `candidate_look` o relata; "
+            "se nomeia o relógio, `candidate_speed` o relata; "
             "se nomeia a curva, `candidate_curve` relata "
             "`never_banked` e a aposta que ficou. "
-            "`invite_href` junta convite, número, mesa e paleta — "
-            "`?invite=1&seed=&spawn=&look=` abre essa partida e ignora o hold. "
+            "`invite_href` junta convite, número, mesa, paleta e relógio — "
+            "`?invite=1&seed=&spawn=&look=&speed=` abre essa partida e ignora o hold. "
             "`finding_href` aponta o painel `#finding` depois do fim; "
             "com seed no disco junta o número e os eixos. "
             "`qa` nomeia `docs/qa.md` se o arquivo existir. "
@@ -2246,6 +2274,9 @@ def last_run_axes(project):
     look = last_run_look(project)
     if look:
         parts.append(f"look={look}")
+    speed = last_run_speed(project)
+    if speed is not None:
+        parts.append(f"speed={speed}")
     return parts
 
 

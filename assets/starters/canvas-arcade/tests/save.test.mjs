@@ -173,6 +173,7 @@ test("recordRun mantém os máximos e conta a partida", () => {
   assert.equal(next.lastRun.score, 40);
   assert.equal(next.lastRun.bestChain, 9);
   assert.equal(next.lastRun.look, "normal");
+  assert.equal(next.lastRun.speed, 1);
   assert.equal(canContinue(progress), false, "sem lastSeed não há o que repetir");
   assert.equal(canContinue(next), true);
   assert.equal(canContinue({ ...next, lastSeed: null }), false);
@@ -195,6 +196,23 @@ test("o save relê a curva que o last-run já traçou", () => {
   });
   assert.equal(result.progress.lastRun.score, 12);
   assert.deepEqual(result.progress.lastRun.curve, { never_banked: true, unbanked_at_end: 3 });
+  assert.equal(result.progress.lastRun.speed, 1);
+});
+
+test("o save relê o relógio que o last-run já guardou", () => {
+  const result = migrate({
+    schema: PROGRESS_SCHEMA,
+    best: 12,
+    runs: 1,
+    lastSeed: 8,
+    lastRun: {
+      seed: 8,
+      score: 12,
+      ticks: 400,
+      speed: 0.75,
+    },
+  });
+  assert.equal(result.progress.lastRun.speed, 0.75);
 });
 
 test("schema 2 ganha hold vazio ao subir", () => {

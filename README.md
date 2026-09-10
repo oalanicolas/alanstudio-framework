@@ -691,7 +691,8 @@ python3 scripts/game.py playtest /caminho/do/laboratorio/meu-jogo --invite
 `observed` e `outsider` são sempre `false`. `--invite` escreve
 `docs/playtest/invite.md` e aponta `href` (`/?invite=1` ou, com seed
 no disco, `/?invite=1&seed=<n>`, com chuva nomeada
-`&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a tabela de
+`&spawn=<mesa>`, com look nomeado `&look=<paleta>`, e com
+relógio nomeado e ≠ 1 `&speed=<relógio>`), onde a tabela de
 comandos some; depois do fim a página do maker aponta o convite
 desta partida se a seed ficou no recibo — copiar o endereço não
 grava — e, no convite, mostra seed, pontos, eixos e a curva que o last-run já traçou e oferece

@@ -270,6 +270,7 @@ test("uma partida completa é registrada no progresso persistido", () => {
   assert.equal(game.lastRun.ticks, state.tick);
   assert.equal(game.lastRun.spawn, "spawn");
   assert.equal(game.lastRun.look, "normal");
+  assert.equal(game.lastRun.speed, 1);
   assert.equal(typeof game.lastRun.curve?.never_banked, "boolean");
   assert.equal(Number.isFinite(game.lastRun.curve?.unbanked_at_end), true);
   const painted = createGame({
@@ -277,10 +278,11 @@ test("uma partida completa é registrada no progresso persistido", () => {
     eventTarget: recordingTarget(),
     storage: memoryStorage(),
   });
-  painted.updateSettings({ look: "dusk" });
+  painted.updateSettings({ look: "dusk", gameSpeed: 0.75 });
   painted.advance(CONFIG.runTicks);
   assert.equal(painted.lastRun.look, "dusk");
   assert.equal(painted.lastRun.spawn, "spawn");
+  assert.equal(painted.lastRun.speed, 0.75);
   painted.dispose();
   game.dispose();
 });
@@ -765,6 +767,30 @@ test("?seed abre essa partida e ignora o hold", () => {
   assert.equal(dressed.observe().spawnProfile, "dusk");
   assert.equal(dressed.settings.look, "dusk");
   dressed.dispose();
+  const clocked = createGame({
+    query: "?invite=1&seed=9&speed=0.75",
+    eventTarget: recordingTarget(),
+    storage,
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(clocked.observe().seed, 9);
+  assert.equal(clocked.settings.gameSpeed, 0.75);
+  clocked.dispose();
+  const fullClock = createGame({
+    query: "?seed=9&speed=1",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(fullClock.settings.gameSpeed, 1);
+  fullClock.dispose();
+  const hollowSpeed = createGame({
+    query: "?seed=9&speed=12",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(hollowSpeed.settings.gameSpeed, 1, "relógio fora da faixa some");
+  hollowSpeed.dispose();
   const kept = createGame({
     seed: 5,
     query: "?seed=9",

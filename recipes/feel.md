@@ -14,7 +14,7 @@ impressão — `next` propõe `playtest.unstructured` e aponta a página
 nomeia `finding` e `needed` no próprio recibo. Recibo sem os
 quatro não é achado. `playtest --invite`
 escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco,
-`/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a tabela some; depois do
+`/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, com look nomeado `&look=<paleta>`, e com relógio nomeado e ≠ 1 `&speed=<relógio>`), onde a tabela some; depois do
 fim a página oferece os quatro nomes para copiar ou gravar e
 mostra seed, pontos, eixos e a curva que o last-run já traçou.
 Depois do fim a página

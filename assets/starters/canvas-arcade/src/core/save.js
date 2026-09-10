@@ -5,6 +5,7 @@
 // A migração acompanha a mudança de formato; um save de versão futura **bloqueia
 // a gravação** em vez de ser sobrescrito por uma versão antiga do jogo.
 
+import { GAME_SPEED_MAX, GAME_SPEED_MIN } from "./settings.js";
 import { readJson, writeJson } from "./storage.js";
 
 export const PROGRESS_KEY = "progress";
@@ -151,7 +152,10 @@ function readRun(raw) {
     chain: raw.chain,
     tick: raw.ticks ?? raw.tick,
     stats: raw,
-  });
+    spawnProfile: raw.spawn,
+    look: raw.look,
+    speed: raw.speed,
+  }, { look: raw.look, speed: raw.speed });
   const curve = readCurve(raw);
   return curve ? { ...run, curve } : run;
 }
@@ -264,10 +268,15 @@ export function summarizeRun(state, extras = {}) {
     : typeof state.look === "string" && state.look
       ? state.look
       : "normal";
+  const rawSpeed = extras.speed ?? state.speed ?? state.gameSpeed;
+  const speed = Number.isFinite(rawSpeed)
+    ? Math.min(GAME_SPEED_MAX, Math.max(GAME_SPEED_MIN, rawSpeed))
+    : 1;
   return {
     seed: state.seed ?? null,
     spawn: typeof state.spawnProfile === "string" && state.spawnProfile ? state.spawnProfile : "spawn",
     look,
+    speed,
     score: number(state.score),
     chain: number(state.chain),
     ticks: number(state.tick),
