@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.109: o mapa também nomeia a porta.
+**HEAD:** ver `git log -1` — vigente 0.9.110: o avanço também promete.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 244 OK.
-`cd assets/starters/canvas-arcade && npm test` → 272 OK.
+`cd assets/starters/canvas-arcade && npm test` → 274 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.109)
+## O que o HEAD já entrega (0.9.91–0.9.110)
 
 | Ver | Salto |
 | --- | --- |
@@ -53,6 +53,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.107 | Schema 3: `hold` é o tick interrompido. `canResume` ≠ Continuar. |
 | 0.9.108 | `ship` nomeia árvore incompleta, HEAD velho e `elsewhere` falso. |
 | 0.9.109 | `cycle.door` entra no prompt: com tela o avanço abre a porta. |
+| 0.9.110 | O avanço senta dois ticks antes de alongar. A porta continua imediata. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -65,7 +66,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | peso no dispositivo; stub ≠ felt |
+| feel | playable | peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | `heard` falso |
@@ -124,7 +125,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   **depois** da primeira guarda.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
-  ponta, tela de título, `gameSpeed` no disco ou `hold` no stub.
+  ponta, tela de título, `gameSpeed` no disco, `hold` no stub ou
+  coil/windup no disco.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -178,7 +180,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   congela o valor do boot.
 - `hold` / `canResume` = tick interrompido (schema 3). Seed explícita
   ignora o hold. Reset e `recordRun` limpam. Não chamar de Continuar.
-  Não promover `state_trust`.
+  Não promover `state_trust`. `hold.player` leva `dashWindup`.
+- Avanço na partida: `dashWindupTicks` (2) senta com `squashCoil`
+  antes de `fireDash`. A porta (`beginRun`) continua imediata.
+  Não promover `feel`.
 - Coach: fantasy → move → dash → miss → touch/pad → collect → null após
   1ª guarda. `coachHint` some se `phase !== "playing"`.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
@@ -234,6 +239,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `starter.json` (`cycle.door`),
-`scripts/game.py` (`CYCLE_KEYS`, `cycle_line`, `playable.unplayed`),
-prompt do `start` / `guide`.
+Arquivos quentes da última sessão: `src/game/rules.js` (`dashWindup`,
+`squashCoil`, `fireDash`), `src/game/render.js` (`dashCharge.windup`),
+`src/core/save.js` (hold leva o windup).

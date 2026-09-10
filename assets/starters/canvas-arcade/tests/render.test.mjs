@@ -522,6 +522,20 @@ test("guardar e o erro achatam o corpo diferente da coleta", () => {
   assert.ok(c.height < b.height && b.height < a.height, "o achatamento precisa chegar no quadro");
 });
 
+test("a antecipação do avanço estreita o corpo antes de alongar", () => {
+  const idle = createState(1);
+  const coil = createState(1);
+  coil.player.squash = CONFIG.feel.squashCoil;
+  const start = createState(1);
+  start.player.squash = CONFIG.feel.squashDash;
+  const rest = playerBox(idle);
+  const wound = playerBox(coil);
+  const launched = playerBox(start);
+  assert.ok(wound.width < rest.width, "antecipar estreita");
+  assert.ok(wound.height > rest.height, "antecipar alonga na vertical");
+  assert.ok(launched.width > rest.width, "o disparo alonga na horizontal");
+});
+
 test("o término do dash senta mais que a partida e menos que guardar", () => {
   const start = createState(1);
   start.player.squash = CONFIG.feel.squashDash;
@@ -992,6 +1006,13 @@ test("a recarga do dash enche a faixa sem aprovar o feel", () => {
   dash.player.dashTicks = 3;
   assert.equal(dashCharge(dash).phase, "dash");
   assert.equal(dashCharge(dash).fill, 1);
+  const coil = createState(1);
+  coil.player.dashWindup = CONFIG.player.dashWindupTicks;
+  const winding = dashCharge(coil);
+  assert.equal(winding.phase, "windup");
+  assert.ok(winding.fill < 1);
+  coil.player.dashWindup = 1;
+  assert.ok(dashCharge(coil).fill > winding.fill, "a antecipação enche");
 });
 
 test("a faixa do dash veste o look e não a placa", () => {

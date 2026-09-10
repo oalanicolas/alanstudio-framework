@@ -174,6 +174,7 @@ export function captureHold(state) {
       dashRecovery: integer(player.dashRecovery),
       dashCooldown: integer(player.dashCooldown),
       dashBuffer: integer(player.dashBuffer),
+      dashWindup: integer(player.dashWindup),
       invuln: integer(player.invuln),
       squash: finiteNumber(player.squash),
     },

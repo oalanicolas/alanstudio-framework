@@ -14,6 +14,14 @@ function settle(state) {
   return state;
 }
 
+function dashOut(state, intent = { move: 1, dash: true, bank: false }) {
+  advance(state, intent);
+  for (let step = 0; step < CONFIG.player.dashWindupTicks; step += 1) {
+    advance(state, { ...intent, dash: false });
+  }
+  return state;
+}
+
 test("guardar converte a corrente ao quadrado e cobra o compromisso", () => {
   const state = createState(1);
   state.chain = 4;
@@ -146,10 +154,29 @@ test("a graça impede perder duas correntes seguidas", () => {
   assert.ok(state.events.some((event) => event.type === "graze"));
 });
 
+test("o avanço senta antes de alongar e não dispara no pedido", () => {
+  const state = createState(3);
+  advance(state, { move: 1, dash: true, bank: false });
+  assert.equal(state.player.dashTicks, 0, "o pedido não é o disparo");
+  assert.equal(state.stats.dashes, 0, "antecipar não conta o ofício");
+  assert.equal(state.player.dashWindup, CONFIG.player.dashWindupTicks);
+  assert.equal(state.player.squash, CONFIG.feel.squashCoil * CONFIG.feel.squashDecay);
+  assert.equal(state.events.some((event) => event.type === "dash"), false);
+  assert.ok(CONFIG.feel.squashCoil < 0, "a antecipação estreita, não alonga");
+  assert.ok(CONFIG.feel.squashCoil !== CONFIG.feel.squashDash);
+  assert.ok(CONFIG.player.dashWindupTicks > 0);
+  for (let step = 0; step < CONFIG.player.dashWindupTicks; step += 1) {
+    advance(state, { move: 1, dash: false, bank: false });
+  }
+  assert.equal(state.player.dashTicks, CONFIG.player.dashTicks);
+  assert.equal(state.stats.dashes, 1);
+  assert.ok(state.events.some((event) => event.type === "dash"));
+});
+
 test("o término do dash senta, empurra a câmera e deixa rastro próprio", () => {
   const fade = CONFIG.feel.squashDecay;
   const state = createState(3);
-  advance(state, { move: 1, dash: true, bank: false });
+  dashOut(state);
   assert.equal(state.player.dashTicks, CONFIG.player.dashTicks);
   while (state.player.dashTicks > 0) advance(state, neutralIntent());
   assert.equal(state.player.dashRecovery, CONFIG.player.dashRecoveryTicks);
@@ -173,7 +200,7 @@ test("o término do dash senta, empurra a câmera e deixa rastro próprio", () =
 
 test("o dash atravessa o estilhaço sem perder a corrente", () => {
   const state = createState(3);
-  advance(state, { move: 1, dash: true, bank: false });
+  dashOut(state);
   assert.ok(state.player.dashTicks > 0);
   assert.equal(state.stats.dashes, 1);
   state.chain = 2;
@@ -192,7 +219,7 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   const fade = CONFIG.feel.squashDecay;
   const tremor = CONFIG.feel.shakeDecay;
   const dash = createState(3);
-  advance(dash, { move: 1, dash: true, bank: false });
+  dashOut(dash);
   assert.equal(dash.player.squash, CONFIG.feel.squashDash * fade);
   assert.equal(dash.hitstop, 0);
 
@@ -224,13 +251,14 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   ];
   assert.equal(new Set(stops).size, 3, "hitstop repetido não distingue o verbo");
   const squashes = [
+    CONFIG.feel.squashCoil,
     CONFIG.feel.squashCollect,
     CONFIG.feel.squashDash,
     CONFIG.feel.squashLand,
     CONFIG.feel.squashBank,
     CONFIG.feel.squashHit,
   ];
-  assert.equal(new Set(squashes).size, 5, "squash repetido não distingue o verbo");
+  assert.equal(new Set(squashes).size, 6, "squash repetido não distingue o verbo");
   assert.notEqual(CONFIG.feel.collectShake, CONFIG.feel.hitShake);
   assert.notEqual(CONFIG.feel.bankShake, CONFIG.feel.collectShake);
   assert.notEqual(dash.camera.x, 0, "dash empurra a câmera na direção");
@@ -303,7 +331,7 @@ test("evento reusado não carrega campo do verbo anterior", () => {
   while (state.hitstop > 0 || state.bankLock > 0) {
     advance(state, neutralIntent());
   }
-  advance(state, { move: 1, dash: true, bank: false });
+  dashOut(state);
   const dash = state.events.find((event) => event.type === "dash");
   assert.equal(dash.type, "dash");
   assert.equal(typeof dash.x, "number");
@@ -359,7 +387,7 @@ test("o pedido de dash é guardado e dispara quando recarrega", () => {
   assert.equal(state.player.dashTicks, 0, "não dispara durante a recarga");
   assert.ok(state.player.dashBuffer > 0, "o pedido fica guardado");
   let fired = false;
-  for (let index = 0; index < 4 && !fired; index += 1) {
+  for (let index = 0; index < 4 + CONFIG.player.dashWindupTicks && !fired; index += 1) {
     advance(state, neutralIntent());
     fired = state.events.some((event) => event.type === "dash");
   }

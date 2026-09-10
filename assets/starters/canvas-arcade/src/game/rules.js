@@ -28,6 +28,7 @@ export const CONFIG = {
     dashRecoveryTicks: 6, // recuperação: controle reduzido, ainda vulnerável
     dashCooldownTicks: 30,
     dashBufferTicks: 8, // perdão: dash pedido cedo dispara ao recarregar
+    dashWindupTicks: 2, // antecipação: o corpo senta antes de alongar
     invulnTicks: 42, // graça após dano; evita perder duas correntes seguidas
   },
   collect: {
@@ -47,6 +48,7 @@ export const CONFIG = {
     hitShake: 1,
     shakeDecay: 0.86,
     squashCollect: 0.22,
+    squashCoil: -0.18, // antecipação: estreita antes de alongar
     squashDash: 0.34, // partida do dash: alonga na direção, não achata
     squashLand: 0.40, // término: senta depois de alongar; menor que guardar
     squashBank: 0.46, // compromisso: senta mais que a coleta
@@ -371,6 +373,7 @@ export function createState(seed = 1, options = {}) {
       dashRecovery: 0,
       dashCooldown: 0,
       dashBuffer: 0,
+      dashWindup: 0,
       invuln: 0,
       squash: 0,
     },
@@ -414,7 +417,7 @@ export function restoreState(hold, options = {}) {
     spawnTimer: hold.spawnTimer,
     recoverUntil: hold.recoverUntil,
     nextId: hold.nextId,
-    player: { ...hold.player },
+    player: { dashWindup: 0, ...hold.player },
     entities,
     motes: [],
     attractTick: 0,
@@ -603,14 +606,14 @@ export function advance(state, intent = neutralIntent()) {
     player.dashRecovery === 0 &&
     player.dashCooldown === 0 &&
     state.bankLock === 0;
-  if (canDash && player.dashBuffer > 0) {
-    player.dashTicks = CONFIG.player.dashTicks;
+  if ((player.dashWindup ?? 0) > 0) {
+    player.dashWindup -= 1;
+    player.squash = CONFIG.feel.squashCoil;
+    if (player.dashWindup === 0 && canDash) fireDash(state, intent);
+  } else if (canDash && player.dashBuffer > 0) {
+    player.dashWindup = CONFIG.player.dashWindupTicks;
     player.dashBuffer = 0;
-    player.squash = CONFIG.feel.squashDash;
-    if (intent.move !== 0) player.dir = intent.move;
-    punch(state, CONFIG.feel.punchDashX * player.dir, 0);
-    emit(state, "dash", { x: player.x });
-    state.stats.dashes += 1;
+    player.squash = CONFIG.feel.squashCoil;
   }
 
   movePlayer(state, intent);
@@ -629,7 +632,7 @@ export function advance(state, intent = neutralIntent()) {
   markMissed(state);
   decayCamera(state);
   player.squash *= CONFIG.feel.squashDecay;
-  if (player.squash < 0.01) player.squash = 0;
+  if (Math.abs(player.squash) < 0.01) player.squash = 0;
 
   if (state.tick >= CONFIG.runTicks) {
     state.phase = "over";
@@ -638,6 +641,18 @@ export function advance(state, intent = neutralIntent()) {
   }
   decayMotes(state);
   return state;
+}
+
+function fireDash(state, intent) {
+  const player = state.player;
+  player.dashTicks = CONFIG.player.dashTicks;
+  player.dashWindup = 0;
+  player.dashBuffer = 0;
+  player.squash = CONFIG.feel.squashDash;
+  if (intent.move !== 0) player.dir = intent.move;
+  punch(state, CONFIG.feel.punchDashX * player.dir, 0);
+  emit(state, "dash", { x: player.x });
+  state.stats.dashes += 1;
 }
 
 function advanceDashPhases(state) {

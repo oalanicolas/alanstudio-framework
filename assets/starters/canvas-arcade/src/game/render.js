@@ -29,6 +29,13 @@ export function dashCharge(state, config = CONFIG) {
   const cooldownTicks = config.player.dashCooldownTicks;
   const total = recoveryTicks + cooldownTicks;
   if ((player.dashTicks ?? 0) > 0) return { phase: "dash", fill: 1 };
+  if ((player.dashWindup ?? 0) > 0) {
+    const total = config.player.dashWindupTicks || 1;
+    return {
+      phase: "windup",
+      fill: Math.max(0, Math.min(1, (total - player.dashWindup) / total)),
+    };
+  }
   if ((state.bankLock ?? 0) > 0) return { phase: "lock", fill: 0 };
   const remaining = (player.dashRecovery ?? 0) > 0
     ? player.dashRecovery + cooldownTicks
@@ -451,9 +458,11 @@ export function createRenderer(canvas, options = {}) {
     const strip = 2;
     const ink = charge.phase === "ready" || charge.phase === "dash"
       ? palette.orb
-      : charge.phase === "recovery"
-        ? palette.player
-        : palette.muted;
+      : charge.phase === "windup"
+        ? palette.chain
+        : charge.phase === "recovery"
+          ? palette.player
+          : palette.muted;
     target.fillStyle = ink;
     target.fillRect(dashBox.x, dashBox.y + dashBox.height - strip, dashBox.width * charge.fill, strip);
     target.fillStyle = ready ? palette.orb : palette.muted;

@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.110 — O avanço também promete
+
+O pedido disparava no mesmo quadro. Dois ticks
+de `squashCoil` sentam o corpo antes de alongar.
+A porta continua imediata. `felt` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.110 não afirma: o harness não avançou
+e a pose no disco não é peso percebido.
+
 ## 0.9.109 — O mapa também nomeia a porta
 
 Com tela o boot espera o avanço. O prompt do ciclo

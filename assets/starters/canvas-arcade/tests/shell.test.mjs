@@ -12,6 +12,7 @@ import { createGame } from "../src/main.js";
 import { createInput } from "../src/core/input.js";
 import { memoryStorage } from "../src/core/storage.js";
 import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "../src/core/settings.js";
+import { CONFIG } from "../src/game/rules.js";
 
 function shell(overrides = {}) {
   const listeners = [];
@@ -163,7 +164,7 @@ test("o preset de uma mão avança no cluster direito", () => {
   assert.equal(game.observe().player.dashTicks, 0, "espaço não avança no preset");
   release("Space");
   hold("KeyI");
-  frame();
+  for (let step = 0; step <= CONFIG.player.dashWindupTicks; step += 1) frame();
   assert.ok(game.observe().player.dashTicks > 0, "I precisa avançar");
   game.dispose();
 });

@@ -1215,7 +1215,7 @@ CONFIG_OPEN = re.compile(r"(?:export\s+)?const\s+CONFIG\s*=\s*\{")
 CONFIG_NESTED = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*\{")
 CONFIG_LEAF = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*(-?[\d.]+)\s*,?\s*(?://\s*(.*))?")
 FEEL_KEY = re.compile(
-    r"(buffer|invuln|pad|reach|lock|hitstop|shake|squash|punch|grace|forgiv|cooldown|recovery|dashticks|flash|telegraph)",
+    r"(buffer|invuln|pad|reach|lock|hitstop|shake|squash|punch|grace|forgiv|cooldown|recovery|dashticks|flash|telegraph|windup)",
     re.IGNORECASE,
 )
 FEEL_NOTE = re.compile(r"(perd[aã]o|gra[cç]a|contato|peso|feel|juice)", re.IGNORECASE)

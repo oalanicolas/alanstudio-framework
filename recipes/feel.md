@@ -59,6 +59,8 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    e funcionar em outra.
 3. **Antecipação** — frames ou pose que prometem o golpe/pulo/disparo antes
    do impacto. Sem ela, a ação chega “de graça” ou atrasada demais.
+   No starter o avanço senta (`squashCoil`) dois ticks antes de alongar;
+   pose no disco não é peso percebido.
 4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
 5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.

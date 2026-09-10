@@ -546,7 +546,7 @@ test("o avanço pulsa no aparelho e a pausa cala o que ainda vibrava", () => {
   const played = [];
   const { game } = harness({ haptics: silentHaptics(played) });
   game.act({ dash: true });
-  game.advance(1);
+  game.advance(1 + CONFIG.player.dashWindupTicks);
   assert.ok(played.includes("dash"), `esperava dash no pulso: ${JSON.stringify(played)}`);
   game.pause();
   assert.ok(played.includes("mute"), "pausar precisa calar o pulso");
