@@ -6,7 +6,7 @@
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 288 OK.
-`cd assets/starters/canvas-arcade && npm test` → 435 OK.
+`cd assets/starters/canvas-arcade && npm test` → 437 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
