@@ -6,6 +6,7 @@ import array
 from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache, partial
 import hashlib
+import html
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import io
 import json
@@ -69,6 +70,51 @@ def load_catalog(root=LIBRARY):
     if data.get("schema_version") != 1 or not isinstance(data.get("sounds"), list):
         raise ValueError("Formato de catálogo desconhecido")
     return data
+
+
+def preview_page(root=LIBRARY):
+    catalog = load_catalog(root)
+    rows = []
+    for item in catalog.get("sounds") or []:
+        if not isinstance(item, dict):
+            continue
+        src = item.get("file")
+        if not isinstance(src, str) or not src.strip():
+            continue
+        licenses = sorted({
+            source["license"]
+            for source in item.get("sources") or []
+            if isinstance(source, dict) and isinstance(source.get("license"), str)
+        })
+        authors = sorted({
+            source["author"]
+            for source in item.get("sources") or []
+            if isinstance(source, dict) and isinstance(source.get("author"), str)
+        })
+        rows.append(
+            "<article>"
+            f"<h2>{html.escape(str(item.get('id') or src))}</h2>"
+            f"<p>{html.escape(str(item.get('title') or ''))} · "
+            f"{html.escape(str(item.get('category') or ''))}</p>"
+            f"<p>{html.escape(', '.join(authors))} · "
+            f"{html.escape(', '.join(licenses))}</p>"
+            f'<audio controls preload="none" src="/{html.escape(src, quote=True)}"></audio>'
+            "</article>"
+        )
+    body = "".join(rows) if rows else "<p>Acervo vazio.</p>"
+    title = catalog.get("title") if isinstance(catalog.get("title"), str) else "Acervo sonoro"
+    page = (
+        "<!doctype html><html lang=\"pt\"><head><meta charset=\"utf-8\">"
+        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+        f"<title>{html.escape(title)}</title>"
+        "<style>body{font-family:system-ui,sans-serif;margin:1.5rem;max-width:40rem}"
+        "article{margin:1.25rem 0;padding-bottom:1rem;border-bottom:1px solid #ccc}"
+        "audio{width:100%}.note{color:#444}</style></head><body>"
+        f"<h1>{html.escape(title)}</h1>"
+        "<p class=\"note\">Tocar nesta página não é mix ouvida no jogo.</p>"
+        f"{body}</body></html>\n"
+    )
+    return page.encode()
 
 
 def validate_metadata(item):
@@ -338,9 +384,17 @@ class CatalogHandler(BaseHTTPRequestHandler):
         try:
             if path in {"/", "/index.html", "/catalog.js", "/catalog.css"}:
                 name = "index.html" if path == "/" else path[1:]
-                data = (self.root / "ui" / name).read_bytes()
-                content_type = {".html": "text/html", ".js": "text/javascript",
-                                ".css": "text/css"}[Path(name).suffix] + "; charset=utf-8"
+                ui = self.root / "ui" / name
+                if ui.is_file() and not ui.is_symlink():
+                    data = ui.read_bytes()
+                    content_type = {".html": "text/html", ".js": "text/javascript",
+                                    ".css": "text/css"}[Path(name).suffix] + "; charset=utf-8"
+                elif name == "index.html":
+                    data = preview_page(self.root)
+                    content_type = "text/html; charset=utf-8"
+                else:
+                    self.send_error(404)
+                    return
             elif path == "/catalog.json":
                 data = (self.root / "catalog.json").read_bytes()
                 content_type = "application/json; charset=utf-8"

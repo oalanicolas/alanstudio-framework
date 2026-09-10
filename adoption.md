@@ -3,6 +3,21 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.177 — O serve gera a escuta
+
+`sfx serve` já recusava
+catálogo vazio. Com sons
+lia `ui/` que o harness
+nunca embarcou. GET `/`
+virava 400. Sem pasta,
+o handler gera a lista.
+Tocar não é `heard`. Só
+`release` fica no piso.
+
+O que 0.9.177 não afirma:
+página no browser não é
+mix ouvida no jogo.
+
 ## 0.9.176 — O over senta o quadro
 
 O corpo já sentava.

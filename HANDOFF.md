@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.176 (confirmado): o over senta a câmera com o corpo.
+**HEAD:** ver `git log -1` — vigente 0.9.177: sfx serve gera a página de escuta se ui/ faltar.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 269 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 270 OK.
 `cd assets/starters/canvas-arcade && npm test` → 357 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.176)
+## O que o HEAD já entrega (0.9.91–0.9.177)
 
 | Ver | Salto |
 | --- | --- |
@@ -120,6 +120,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.174 | `sfx search` nomeia o stem do starter que casa (chave, arquivo, licença, origem). `count` continua o acervo. Não promove `heard`. |
 | 0.9.175 | A região viva nomeia placar e recorde no fim e na porta. Overlay do canvas não chega ao leitor. Não promove `accessibility`. |
 | 0.9.176 | O `over` senta tremor, flash e punch. O corpo já sentava. Pose no disco não é felt. Não promove feel. |
+| 0.9.177 | `sfx serve` gera a página de escuta se `shared/sfx/ui` faltar. Tocar não é `heard`. Catálogo vazio continua recusado. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -135,7 +136,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | corpo e quadro sentam no over no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
-| audio_mix | slice | fade no over + search nomeia stem; `heard` falso |
+| audio_mix | slice | fade no over + página de escuta do acervo; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -482,6 +483,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `sfx search` que some o stem do starter que casa com o termo.
 **Não** mais uma região viva que some o placar enquanto o overlay já o nomeia.
 **Não** mais uma câmera em pose de golpe enquanto o relógio já derrubou a aposta.
+**Não** mais um `sfx serve` que promete ouvir e devolve 400 porque `ui/` não embarcou.
 
 Candidatos, do que ainda dói:
 
@@ -520,7 +522,8 @@ Candidatos, do que ainda dói:
    release — já nomeiam a porta. O rascunho de playtest traz a forma
    do achado, vazia. `preproduction.md` já ensina `start --idea`.
    Referências que ainda falarem só do campo sem a abertura estão
-   velhas. Nomear não entrega.
+   velhas. `sfx serve` gera a página se `ui/` faltar. Nomear não
+   entrega. Tocar não é `heard`.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
    estável no disco, estilhaço dusk no disco, intenção warmer no
@@ -569,7 +572,9 @@ Candidatos, do que ainda dói:
   placar na
   região viva e o
   quadro sentado
-  no over
+  no over e a
+  página gerada
+  do serve
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -593,5 +598,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o over senta tremor, flash e punch
-com o corpo. Pose no disco não é felt. Não promove feel.
+Arquivos quentes da última sessão: `sfx serve` gera a página de escuta
+se `ui/` faltar. Tocar na página não é mix ouvida. Não promove `heard`.

@@ -81,7 +81,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `sfx search` antes de baixar. Sem acervo, o starter já fala em
    `public/sfx`; `sfx search` nomeia o stem que casa com o termo,
    `sfx summary` lista todos e `sfx serve` recusa catálogo vazio.
-   Arquivo no disco não é mix ouvido. Crescer o acervo é
+   Com sons no acervo, `sfx serve` abre a página de escuta — se
+   `shared/sfx/ui` faltar, o harness gera a lista. Tocar nessa
+   página não é mix ouvida no jogo. Arquivo no disco não é mix ouvido. Crescer o acervo é
    `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx seed` lê
    `selection.json` local. `sfx info ID` lê a ficha; `sfx export ID
    --to PASTA` copia bytes e créditos. Importar e exportar não é

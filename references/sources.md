@@ -310,7 +310,9 @@ meio. Nada disso alcança um jogo derivado depois que ele for adaptado.
 O acervo `shared/sfx` é do laboratório, não deste repositório. O harness
 expõe `sfx search` mesmo sem essa pasta: o catálogo vem vazio e a busca
 nomeia o stem do starter que casa com o termo. `sfx copy` precisa de id
-no acervo. A receita de áudio orienta mix e interrupção; o catálogo só
+no acervo. Com sons, `sfx serve` abre a página de escuta; se `ui/`
+faltar, o harness gera a lista. Tocar nessa página não é mix ouvida.
+A receita de áudio orienta mix e interrupção; o catálogo só
 localiza arquivos do acervo — não ouve o starter.
 
 ## Playground
