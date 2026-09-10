@@ -3,6 +3,62 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.232 — O raspo no avanço não come a pose do dash
+
+O
+contato
+da
+fantasia
+estreitava
+o
+alongamento.
+O
+sit
+do
+land
+também
+sumia.
+A
+queda
+longe
+já
+não
+sentava
+o
+compromisso.
+Agora
+o
+raspo
+treme
+e
+acende
+sem
+comer
+a
+pose.
+A
+graça
+parada
+continua
+pinçando.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.232 não afirma:
+pose
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.231 — O arco da guarda não mente que o dash está pronto
 
 O

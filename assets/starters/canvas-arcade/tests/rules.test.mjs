@@ -403,6 +403,11 @@ test("o término do dash também atravessa o estilhaço", () => {
   assert.equal(state.stats.hits, 0, "o quadro do land não é janela de hit");
   assert.equal(state.chain, 2);
   assert.ok(state.events.some((event) => event.type === "graze"));
+  assert.equal(
+    state.player.squash,
+    CONFIG.feel.squashLand * CONFIG.feel.squashDecay,
+    "o raspo no término não come o sit",
+  );
 });
 
 test("depois do término a recuperação continua vulnerável", () => {
@@ -479,6 +484,26 @@ test("o dash atravessa o estilhaço sem perder a corrente", () => {
     CONFIG.feel.moteGraze,
     "o raspo precisa riscar o campo",
   );
+});
+
+test("o raspo no avanço não come a pose do dash", () => {
+  const fade = CONFIG.feel.squashDecay;
+  const tremor = CONFIG.feel.shakeDecay;
+  const flash = CONFIG.feel.flashDecay;
+  const state = createState(3);
+  dashOut(state);
+  assert.ok(state.player.dashTicks > 0);
+  state.player.squash = CONFIG.feel.squashDash;
+  state.entities = [shard(state.player.x, PLAYER_Y)];
+  advance(state, { move: 1, dash: false, bank: false });
+  assert.ok(state.events.some((event) => event.type === "graze"), "o contato ainda raspa");
+  assert.equal(
+    state.player.squash,
+    CONFIG.feel.squashDash * fade,
+    "o raspo não estreita o alongamento",
+  );
+  assert.equal(state.shake, CONFIG.feel.grazeShake * tremor, "o raspo ainda treme");
+  assert.equal(state.flash, CONFIG.feel.flashGraze * flash, "o raspo ainda acende");
 });
 
 test("o raspo confirma no corpo e na câmera sem congelar", () => {

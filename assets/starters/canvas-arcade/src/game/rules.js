@@ -1004,7 +1004,7 @@ function resolveEntities(state) {
         continue;
       }
       if (committed || player.invuln > 0) {
-        grazeContact(state);
+        grazeContact(state, committed);
         emit(state, "graze", { x: entity.x });
         releaseEntity(entity);
         continue;
@@ -1037,12 +1037,18 @@ function resolveEntities(state) {
   entities.length = write;
 }
 
-function grazeContact(state) {
+function grazeContact(state, committed = false) {
   const dir = state.player.dir < 0 ? -1 : 1;
   state.shake += CONFIG.feel.grazeShake;
   state.flash = Math.max(state.flash, CONFIG.feel.flashGraze);
-  state.player.squash = CONFIG.feel.squashGraze;
   punch(state, CONFIG.feel.punchGrazeX * dir, 0);
+  // A queda longe já não senta o compromisso. Sem isto o
+  // raspo — o contato da fantasia — estreita o alongamento
+  // e come o sit do land. A graça parada continua pinçando.
+  // Pose no disco não é peso percebido.
+  if (!committed) {
+    state.player.squash = CONFIG.feel.squashGraze;
+  }
 }
 
 function collect(state, fromX, fromY) {
