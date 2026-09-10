@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.196 (confirmado): na porta o telegraph marca a mostra.
+**HEAD:** ver `git log -1` — vigente 0.9.197: a câmera confirma o trilho.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 272 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.196)
+## O que o HEAD já entrega (0.9.91–0.9.197)
 
 | Ver | Salto |
 | --- | --- |
@@ -140,6 +140,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.194 | `save` relata `warned` se o disco nomeia sessão volátil. Nomear não é aba fechada. Não promove `trusted`. |
 | 0.9.195 | Na porta e no fim a região viva nomeia o aviso da sessão que o canvas já mostra. Jogando a chave some. Não promove `trusted`. |
 | 0.9.196 | Na porta o telegraph marca a mostra. O live já nomeava o perigo; o trilho calava. Sem faixa nova. Não promove feel. |
+| 0.9.197 | A câmera inclina para o que o trilho já marca (`lookAheadX`). Menor que o punch do dash. Sem punch novo. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -152,7 +153,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | corpo e quadro sentam no over; a porta fecha o arco do avanço; o arco da guarda atravessa; a queda senta o corpo; a porta marca a mostra no trilho; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | corpo e quadro sentam no over; a porta fecha o arco do avanço; o arco da guarda atravessa; a queda senta o corpo; a porta marca a mostra no trilho; a câmera confirma o trilho; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; `heard` falso |
@@ -253,7 +254,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou feel que nomeia o serve
   ou save que nomeia o aviso
   ou live que nomeia o aviso
-  ou porta que marca a mostra no trilho.
+  ou porta que marca a mostra no trilho
+  ou câmera que confirma o trilho.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -498,7 +500,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   na porta lê a mostra, não `entities`. `approaching` na porta
   lê a mesma mostra (`attractEntities`) e o canvas marca o
   trilho; reduced segue a chuva travada. A porta não lê
-  `entities`. Marca no disco não é felt.   `#live` espelha fase,
+  `entities`. `lookAhead` no campo inclina a câmera para o
+  mesmo aviso (`lookAheadX` < `punchDashX`). Não grava no
+  `state.camera`. Porta, pausa, over e reduced some o lean.
+  Lean no disco não é felt.   `#live` espelha fase,
   perigo, a última legenda e, no fim, na porta e na pausa no campo,
   o placar e o recorde que o canvas já mostra. No fim, se
   `chain > 0`, também a corrente que o overlay nomeia. Sem
@@ -576,6 +581,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `save` que some o aviso que a porta já nomeia.
 **Não** mais uma região viva que some o aviso enquanto o canvas já o nomeia.
 **Não** mais uma porta que some o telegraph enquanto a mostra já cai e o live já nomeia o perigo.
+**Não** mais uma câmera que some a antecipação enquanto o trilho já marca.
 
 Candidatos, do que ainda dói:
 
@@ -749,6 +755,9 @@ Candidatos, do que ainda dói:
   porta que
   marca a
   mostra no
+  trilho e a
+  câmera que
+  confirma o
   trilho
   não
   fecham. A receita
@@ -773,6 +782,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: na porta o telegraph
-marca a mostra. O live já nomeava o perigo; o trilho
-calava. Sem faixa nova. Não promove feel.
+Arquivos quentes da última sessão: a câmera inclina para
+o que o trilho já marca. Menor que o punch do dash.
+Não grava no `state.camera`. Não promove feel.

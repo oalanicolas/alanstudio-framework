@@ -461,6 +461,30 @@ test("a chuva e o campo ganham volume sem virar faixa no HUD", () => {
   assert.ok(field, "o campo continua o primeiro recorte");
 });
 
+test("a câmera confirma o trilho sem inventar faixa", () => {
+  const right = createState(1);
+  right.player.x = 160;
+  right.entities = [{ id: 1, kind: "shard", x: 220, y: PLAYER_Y - 24, vy: 1 }];
+  const left = createState(1);
+  left.player.x = 160;
+  left.entities = [{ id: 1, kind: "shard", x: 100, y: PLAYER_Y - 24, vy: 1 }];
+  const idle = createState(1);
+  const a = hudTexts(right);
+  const b = hudTexts(left);
+  const rest = hudTexts(idle);
+  assert.ok(a.transform.e > rest.transform.e, "ameaça à direita inclina o quadro");
+  assert.ok(b.transform.e < rest.transform.e, "ameaça à esquerda inclina o quadro");
+  const still = hudTexts(right, { reducedMotion: true });
+  assert.equal(still.transform.e, hudTexts(idle, { reducedMotion: true }).transform.e, "reduced some o lean");
+  const held = { paused: true, alpha: 0, steps: 1 };
+  assert.equal(
+    hudTexts(right, {}, { best: 0 }, held).transform.e,
+    hudTexts(idle, {}, { best: 0 }, held).transform.e,
+    "a pausa senta o lean",
+  );
+  assert.ok(hudBands(paint(right)) <= hudBands(paint(idle)), "o lean não é faixa no HUD");
+});
+
 test("a câmera por verbo desloca o campo e some com redução de movimento", () => {
   const state = createState(1);
   state.camera = { x: 5, y: -3 };

@@ -9,7 +9,7 @@
 // não desaparece. A ponta do corpo fica: é forma, não brilho. A chuva
 // da porta também: com menos movimento ela trava, não some.
 
-import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, attractEntities, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse, recoveryPulse } from "./rules.js";
+import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, attractEntities, lookAhead, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse, recoveryPulse } from "./rules.js";
 import { copy, dressPalette, PALETTES } from "./tables.js";
 import { persistLine } from "../core/save.js";
 import { bindLines } from "../core/keys.js";
@@ -83,7 +83,8 @@ export function createRenderer(canvas, options = {}) {
     const shake = reduced || held ? 0 : state.shake;
     const punchX = reduced || held ? 0 : (state.camera?.x ?? 0);
     const punchY = reduced || held ? 0 : (state.camera?.y ?? 0);
-    const jitterX = (shake ? (Math.sin(state.tick * 12.9898) * shake * 3) : 0) + punchX;
+    const leanX = reduced || held ? 0 : lookAhead(state).x;
+    const jitterX = (shake ? (Math.sin(state.tick * 12.9898) * shake * 3) : 0) + punchX + leanX;
     const jitterY = (shake ? (Math.cos(state.tick * 7.233) * shake * 3) : 0) + punchY;
     context.setTransform(scale, 0, 0, scale, offsetX + jitterX * scale, offsetY + jitterY * scale);
 

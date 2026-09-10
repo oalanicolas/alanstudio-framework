@@ -2572,6 +2572,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("bank.windupTicks", keys)
         self.assertIn("feel.punchDashX", keys)
         self.assertIn("feel.telegraphReach", keys)
+        self.assertIn("feel.lookAheadX", keys)
         self.assertIn("feel.flashHit", keys)
         self.assertIn("feel.rumbleHitMs", keys)
         self.assertIn("feel.moteHit", keys)

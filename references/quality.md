@@ -21,7 +21,8 @@ uma curva e uma escolha narrativa podem cumprir esse contrato de maneiras distin
 ## Controle e feedback
 
 Entrada, movimento e câmera sustentam o verbo central. Observe resposta, continuidade,
-orientação, precisão e recuperação de erro. Movimento bom com mouse pode falhar no
+orientação, precisão e recuperação de erro. No starter a câmera
+inclina para o que o trilho já marca — antecipação, não punch. Movimento bom com mouse pode falhar no
 toque; cancelar um gesto, perder foco e reconectar um controle são cenários próprios.
 Som, animação, luz, efeitos e interface devem tornar causa e consequência perceptíveis
 sem esconder a ação. Efeito novo sai de `shared/sfx` no laboratório, se existir; o

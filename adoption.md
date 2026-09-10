@@ -3,6 +3,27 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.197 — A câmera confirma o trilho
+
+O trilho já
+marcava a ameaça.
+A câmera só
+confirmava o
+impacto. Agora
+inclina para o
+mesmo aviso
+(`lookAheadX`).
+Menor que o punch
+do dash. Sem
+punch novo. `felt`
+continua falso. Só
+`release` fica no
+piso.
+
+O que 0.9.197 não afirma:
+lean no disco não
+é peso percebido.
+
 ## 0.9.196 — Na porta o telegraph marca a mostra
 
 A live já dizia

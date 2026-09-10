@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, attractEntities, attractMove, attractTick, attractTouch, beginRun, bedRateFor, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, FIELD, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnHazardChance, spawnIntervalScale, threatCue } from "../src/game/rules.js";
+import { advance, approaching, attractEntities, attractMove, attractTick, attractTouch, beginRun, bedRateFor, createState, entityPoolStats, eventPoolStats, lookAhead, motePoolStats, rngPoolStats, neutralIntent, CONFIG, FIELD, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, spawnHazardChance, spawnIntervalScale, threatCue } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -464,6 +464,28 @@ test("a porta marca a mostra no trilho sem ler a chuva da partida", () => {
   play.entities = [{ id: 1, kind: "orb", x: 80, y: PLAYER_Y - 24, vy: 1 }];
   assert.equal(approaching(play).length, 1);
   assert.equal(approaching(play)[0].id, 1);
+});
+
+test("a câmera confirma o trilho sem ser punch", () => {
+  const state = createState(1);
+  state.player.x = 160;
+  state.entities = [{ id: 1, kind: "shard", x: 220, y: PLAYER_Y - 24, vy: 1 }];
+  const right = lookAhead(state);
+  assert.ok(right.x > 0, "ameaça à direita inclina o quadro");
+  assert.ok(right.x <= CONFIG.feel.lookAheadX);
+  assert.ok(CONFIG.feel.lookAheadX < CONFIG.feel.punchDashX, "o lean não é o punch do dash");
+  assert.equal(right.y, 0);
+  state.entities[0].x = 100;
+  const left = lookAhead(state);
+  assert.ok(left.x < 0, "ameaça à esquerda inclina o quadro");
+  assert.equal(lookAhead(state, true).x, 0, "reduced some o lean");
+  state.phase = "title";
+  assert.equal(lookAhead(state).x, 0, "a porta não inclina o quadro");
+  state.phase = "playing";
+  state.entities[0].y = PLAYER_Y;
+  assert.equal(lookAhead(state).x, 0, "na faixa o aviso já é o próprio contato");
+  const door = createState(1, { entry: "title" });
+  assert.equal(lookAhead(door).x, 0);
 });
 
 test("a ameaça marca o trilho antes do contato e some na faixa", () => {

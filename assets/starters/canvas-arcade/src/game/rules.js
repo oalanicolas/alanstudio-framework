@@ -68,6 +68,7 @@ export const CONFIG = {
     punchHitY: 4.2, // o erro desloca mais que a coleta
     punchDecay: 0.78,
     telegraphReach: 36, // antecipação: a ameaça marca o trilho antes do contato
+    lookAheadX: 2.2, // a câmera confirma o trilho; menor que o punch do dash
     flashHit: 0.55, // impacto do erro: o campo acende; coleta não
     flashPractice: 0.28, // a prática some: o campo acende menos que o erro
     flashStir: 0.18, // a folga acaba: o campo acende menos que a prática
@@ -1060,6 +1061,35 @@ function hit(state) {
   state.player.squash = CONFIG.feel.squashHit;
   punch(state, 0, CONFIG.feel.punchHitY);
   emit(state, "hit", { lost, x: state.player.x });
+}
+
+export function lookAhead(state, reduced = false) {
+  // O trilho já marca. Sem isto a câmera só confirma o
+  // impacto e some a antecipação. Lean no disco não é felt.
+  if (reduced || !state || !state.player || state.phase !== "playing") {
+    return { x: 0, y: 0 };
+  }
+  const near = approaching(state, reduced);
+  if (!near.length) return { x: 0, y: 0 };
+  const band = CONFIG.collect.reachY;
+  const span = CONFIG.feel.telegraphReach - band;
+  let best = near[0];
+  let bestGap = PLAYER_Y - best.y;
+  for (let index = 1; index < near.length; index += 1) {
+    const gap = PLAYER_Y - near[index].y;
+    if (gap < bestGap) {
+      best = near[index];
+      bestGap = gap;
+    }
+  }
+  const max = CONFIG.feel.lookAheadX;
+  const t = span > 0
+    ? Math.max(0, Math.min(1, 1 - (bestGap - band) / span))
+    : 1;
+  const raw = ((best.x - state.player.x) / 80) * max * (0.4 + 0.6 * t);
+  const x = clamp(raw, -max, max);
+  if (Math.abs(x) < 0.01) return { x: 0, y: 0 };
+  return { x, y: 0 };
 }
 
 export function approaching(state, reduced = false) {

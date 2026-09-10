@@ -93,6 +93,9 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    cérebro registrar dois eventos, não um peso.
 6. **Câmera** — punch, lookahead, aterrissagem, oclusão, recuperação. A
    câmera confirma a ação sem enjoar nem esconder o próximo risco.
+   No starter o trilho já marca a ameaça; a câmera inclina para o
+   mesmo aviso (`lookAheadX`), menor que o punch do dash. Lean no
+   disco não é peso percebido.
 7. **Áudio** — ataque, corpo, impacto, cauda e silêncio. Sem camada que
    marque o verbo, o feel fica visual-only; use [áudio](audio.md).
 8. **Recuperação** — o jogador volta ao controle num tempo justo. Recovery
@@ -180,7 +183,8 @@ o estilhaço. Arquivo no
 disco não é peso percebido. A ameaça que
 ainda não chegou marca o trilho (`approaching`) — na porta a mostra
 usa o mesmo aviso; a live já nomeava o perigo e o trilho calava.
-Marca no disco não é peso percebido. A recuperação do dash muda a
+A câmera inclina para o mesmo aviso (`lookAheadX`), menor que o
+punch do dash. Lean no disco não é peso percebido. A recuperação do dash muda a
 silhueta; o erro acende o campo, a coleta não. O controle pulsa no
 impacto com duração e magnitude por verbo; pausa e descarte cancelam.
 Cada verbo deixa um rastro próprio no campo; com menos movimento o
