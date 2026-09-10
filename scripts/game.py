@@ -2054,6 +2054,7 @@ def playtest_reading(project):
     candidate_spawn = last_run_spawn(project) if candidate else None
     candidate_look = last_run_look(project) if candidate else None
     invite = invite_path(project)
+    qa_file = qa.is_file() and not qa.is_symlink()
     return {
         "schema_version": 1,
         "project": str(project),
@@ -2067,6 +2068,8 @@ def playtest_reading(project):
         "candidate_look": candidate_look,
         "invite": invite,
         "invite_href": invite_href(project),
+        "finding_href": finding_href(project),
+        "qa": "docs/qa.md" if qa_file else None,
         "qa_current": qa_current,
         "expected": expected,
         "structured": structured,
@@ -2092,6 +2095,11 @@ def playtest_reading(project):
             "se nomeia o look, `candidate_look` o relata. "
             "`invite_href` junta convite, número, mesa e paleta — "
             "`?invite=1&seed=&spawn=&look=` abre essa partida e ignora o hold. "
+            "`finding_href` aponta o painel `#finding` depois do fim; "
+            "com seed no disco junta o número e os eixos. "
+            "`qa` nomeia `docs/qa.md` se o arquivo existir. "
+            "`playtest` só lê. A página e `note --field` escrevem. "
+            "Escrever não é sessão observada. "
             "Não assiste a sessão, não conta jogadores e não "
             "atribui causa. `observed` e `outsider` são sempre falsos."
         ),
@@ -2150,6 +2158,14 @@ def invite_href(project):
         parts.append(f"seed={seed}")
     parts.extend(last_run_axes(project))
     return "/?" + "&".join(parts)
+
+
+def finding_href(project):
+    # Painel do maker depois do fim. Não é convite e não é sessão.
+    seed = last_run_seed(project)
+    if isinstance(seed, int) and not isinstance(seed, bool):
+        return "/?" + "&".join([f"seed={seed}", *last_run_axes(project)]) + "#finding"
+    return "/#finding"
 
 
 def invite_playtest(project):
@@ -4393,21 +4409,23 @@ def next_step(project, focus="create", studies_root=None):
         propose(
             "Escrever o achado de playtest no formato problema, evidência, hipótese e medição",
             "Há observação (ou um qa.md vigente) e nenhum achado com os quatro "
-            "campos. Nota de partida não é métrica. last-run.json é candidato, "
-            "não causa. O harness não assistiu à sessão e não conta jogadores.",
+            "campos. `playtest` só lê. A página depois do fim (`#finding`) e "
+            "`note --field` escrevem. Nota de partida não é métrica. "
+            "last-run.json é candidato, não causa. O harness não assistiu "
+            "à sessão e não conta jogadores.",
             "Um documento ou o próprio recibo nomeia problema, evidência, "
             "hipótese e medição — a causa e o tamanho do efeito continuam "
             "pendentes.",
             [
-                harness_command("playtest", project),
-                harness_command("feel", project),
-                *(
-                    [harness_command(
-                        "note", project, "--author", note_author(project),
-                        "--note", "o que o verbo sentiu", "--from-run",
-                    )]
-                    if playtest.get("candidate")
-                    else []
+                play or harness_command("play", project),
+                harness_command(
+                    "note", project, "--author", note_author(project),
+                    "--note", "o achado com os quatro nomes",
+                    "--field", "problema=o que quebrou o verbo",
+                    "--field", "evidencia=o que a partida mostrou",
+                    "--field", "hipotese=por que isso acontece",
+                    "--field", "medicao=como repetir o recorte",
+                    *(["--from-run"] if playtest.get("candidate") else []),
                 ),
             ],
             "playtest.unstructured",
@@ -5107,7 +5125,7 @@ def main():
     ship_cmd.add_argument("project")
     playtest_cmd = commands.add_parser(
         "playtest", parents=[common],
-        help="achado de playtest no formato problema/evidência/hipótese/medição, sem assistir",
+        help="lê se o achado tem problema/evidência/hipótese/medição; não grava e não assiste",
     )
     playtest_cmd.add_argument("project", nargs="?", default=None)
     playtest_cmd.add_argument(

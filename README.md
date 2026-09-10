@@ -683,7 +683,11 @@ baixado e markdown preenchido não são alguém de fora e não sobem `pacing`.
 Esqueleto vazio não é achado. `next` propõe `playtest.invite`
 depois do recibo de quem fez (e depois do segundo ciclo, se houver).
 `next` propõe `playtest.unstructured` quando há recibo de observação
-(ou um `docs/qa.md` vigente) e o achado ainda não tem forma. Se
+(ou um `docs/qa.md` vigente) e o achado ainda não tem forma. A
+proposta aponta a página (`finding_href`, `#finding`) e
+`note --field`. `playtest` só lê. Se o arquivo `docs/qa.md`
+existir, o recibo o nomeia em `qa`. Escrever não é sessão
+observada. Se
 `docs/playtest/last-run.json` existir, `playtest` o relata
 como `candidate` e, se nomear a seed, como `candidate_seed`.
 Se nomear a chuva, como `candidate_spawn`. Se nomear o look,

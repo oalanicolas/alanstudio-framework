@@ -3023,11 +3023,21 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(report["candidate_spawn"])
         self.assertIsNone(report["candidate_look"])
         self.assertIsNone(report["invite"])
+        self.assertEqual(report["finding_href"], "/#finding")
+        self.assertIsNone(report["qa"])
+        self.assertIn("só lê", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
         proposal = next(
             item for item in self.proposals(game.next_step(self.project, "feel"))
             if item["basis"] == "playtest.unstructured"
         )
         self.assertIn("problema", proposal["action"])
+        self.assertIn("só lê", proposal["why"])
+        self.assertFalse(any(" playtest " in f" {command} " for command in proposal["commands"]))
+        self.assertFalse(any(" feel " in f" {command} " for command in proposal["commands"]))
+        self.assertTrue(any(" --field " in command and "problema=" in command for command in proposal["commands"]))
+        self.assertTrue(any(" play " in f" {command} " or "serve" in command for command in proposal["commands"]))
 
     def test_note_from_run_attaches_the_candidate_without_closing_the_finding(self):
         destination = self.root / "com-corrida"
@@ -3045,6 +3055,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         reading = game.playtest_reading(destination)
         self.assertEqual(reading["candidate"], "docs/playtest/last-run.json")
         self.assertEqual(reading["candidate_seed"], 7)
+        self.assertEqual(reading["finding_href"], "/?seed=7#finding")
         self.assertIsNone(reading["candidate_spawn"])
         self.assertIsNone(reading["candidate_look"])
         self.assertFalse(reading["expected"])
@@ -3130,6 +3141,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         report = game.playtest_reading(self.project)
         self.assertTrue(report["qa_current"])
+        self.assertEqual(report["qa"], "docs/qa.md")
+        self.assertEqual(report["finding_href"], "/#finding")
         self.assertTrue(report["structured"])
         self.assertFalse(report["unstructured"])
         self.assertFalse(report["observed"])

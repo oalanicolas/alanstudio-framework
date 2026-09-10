@@ -262,8 +262,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    e `?seed=` abre essa partida, ignorando o hold. Se nomeia a
    chuva, relata `candidate_spawn`; se nomeia o look, relata
    `candidate_look`. O convite junta mesa e paleta. Nenhum dos
-   dois é sessão observada. Recibo sem forma entra no
-   `next` como `playtest.unstructured`.
+   dois é sessão observada.    Recibo sem forma entra no
+   `next` como `playtest.unstructured`: a proposta aponta a
+   página (`#finding`) e `note --field`. `playtest` só lê.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

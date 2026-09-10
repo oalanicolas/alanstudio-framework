@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.187 — O playtest aponta onde gravar
+
+`next` mandava
+escrever o achado
+e colava `playtest`,
+que só lê. O recibo
+agora nomeia
+`#finding` e
+`note --field`.
+`outsider` continua
+falso. Só `release`
+fica no piso.
+
+O que 0.9.187 não afirma:
+apontar o painel não
+é alguém de fora.
+
 ## 0.9.186 — Na porta a aba não congela a mostra
 
 P na porta já era
