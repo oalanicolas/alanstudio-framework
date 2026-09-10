@@ -85,6 +85,8 @@ python3 scripts/game.py next /caminho/do/laboratorio/meu-jogo --focus feel
 templates, referências e pacotes), raiz, projetos reconhecidos, estudos, acervo
 sonoro, starters disponíveis e os atalhos de skill do host — vigente, desatualizado
 ou ausente, comparando conteúdo.
+Sem jogo reconhecido e com starter, `then.guide` aponta o mapa ideia→ciclo.
+Não cria e não executa. Sem starter, o aviso nomeia `start --idea`, não `init`.
 Symlink apontando para o `SKILL.md` deste repositório conta como vigente: é o
 atalho que não tem como ficar para trás. Não escreve nada; sinaliza bloqueio pelo
 código de saída, e a correção que ele sugere roda como está — inclusive criando a

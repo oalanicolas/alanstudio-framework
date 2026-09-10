@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.165: init sem rascunhos deixa de mentir.
+**HEAD:** ver `git log -1` — vigente 0.9.166: doctor aponta o mapa no lab vazio.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 266 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.165)
+## O que o HEAD já entrega (0.9.91–0.9.166)
 
 | Ver | Salto |
 | --- | --- |
@@ -109,6 +109,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.163 | `attractTick` emite `live` uma vez na porta. Mesma voz do campo. Sem cama. Sem rumble. O laço toca o evento sem abrir o ciclo. Não promove `heard`. |
 | 0.9.164 | `cycle_line` nomeia `Fantasia:` antes de `Verbo:` quando `--idea` ou `copy.json` têm frase. O guide não grava. A frase não muda o verbo. Não entra em `CYCLE_KEYS`. |
 | 0.9.165 | `init_scope` distingue rascunhos plantados. Sem docs não afirma brief nem `draft_only`. `preproduction.md` ensina `start --idea`; `init` continua o que planta. O `context` injeta esse arquivo. Não promove. |
+| 0.9.166 | `doctor` no laboratório vazio devolve `then.guide`. Sem starter o aviso nomeia `start --idea`, não `init`. Com jogo a chave some. Sem `prompt`. Não cria e não executa. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -246,6 +247,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   sem `draft_only`, sem brief. Com docs: afirma os três. Sem
   `--idea` a linha da frase some. `preproduction.md` ensina
   `start --idea`; `init` fica o caminho que planta.
+- `doctor` devolve `empty` e `then`. Sem jogo, com starter e
+  `ready`, `then.guide` é o comando do `guide`. Com jogo, sem
+  starter ou bloqueado, `then` é nulo. Sem `prompt` — o CLI
+  não escreve stderr. O aviso de starter ausente nomeia
+  `start --idea`, não `init`. Não cria e não executa.
 - `start` / `play` / `guide` devolvem `runtime` (`node`, `major`,
   `need`, `asked`, `usable`, `executed` falso). `asked` se o play
   casa `npm|node`. `usable` é major ≥ 20 ou o play não pede Node.
@@ -442,6 +448,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um prompt que esconde a fantasia enquanto `--idea` já gravou a abertura.
 **Não** mais um `init.scope` que afirma rascunhos, brief ou `draft_only` quando `start` não os plantou.
 **Não** mais um `preproduction.md` que ensina `init` como a entrada de jogo novo.
+**Não** mais um `doctor` que ensina `init` e some o mapa quando o laboratório está vazio.
 
 Candidatos, do que ainda dói:
 
@@ -468,6 +475,8 @@ Candidatos, do que ainda dói:
    `init_scope` só afirma rascunhos quando `documents` é verdadeiro;
    o `start` embute esse recibo. `preproduction.md` (injetado pelo
    `context` no foco create e em `--stage`) ensina `start --idea`.
+   `doctor` no lab vazio devolve `then.guide`; com jogo a chave some.
+   Sem starter o aviso nomeia `start --idea`. Sem `prompt`.
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
    volátil e gravação recusada. Falta aba fechada real.
@@ -531,6 +540,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `init_scope` distingue rascunhos
-plantados. `preproduction.md` ensina `start --idea`. O `start`
-embute o recibo honesto do `init`.
+Arquivos quentes da última sessão: `doctor_then` aponta `guide` no
+lab vazio. Sem starter o aviso nomeia `start --idea`. Sem `prompt`.

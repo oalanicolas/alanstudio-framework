@@ -4141,11 +4141,12 @@ def doctor(root):
     add(
         "starters", False, bool(available),
         ", ".join(available) or "nenhum",
-        "Sem starter, `init` não tem de onde partir e REUSE não tem candidato local.",
+        "Sem starter, `start --idea` não tem de onde partir e REUSE não tem candidato local.",
     )
-    # `init` só falha na hora de copiar; aqui a divergência entre o manifesto e
-    # os arquivos do starter é diagnosticável antes de alguém tentar criar um
-    # projeto, que é quando ela custaria caro.
+    # O primeiro comando da skill não ensina `init`: o laboratório vazio
+    # segue `start --idea`. `init` só falha na hora de copiar; aqui a
+    # divergência entre o manifesto e os arquivos do starter é
+    # diagnosticável antes de alguém tentar criar um projeto.
     broken = []
     for name in available:
         try:
@@ -4230,12 +4231,17 @@ def doctor(root):
     )
 
     blocking = [check["name"] for check in checks if check["required"] and check["status"] != "ok"]
+    ready = not blocking
+    empty = not projects
+    then = doctor_then(ready, available, empty)
     return {
         "schema_version": 1,
         "framework": str(FRAMEWORK),
         "root": str(root),
-        "ready": not blocking,
+        "ready": ready,
         "blocking": blocking,
+        "empty": empty,
+        "then": then,
         "checks": checks,
         "skill_targets": installed,
         "starters": available,
@@ -4245,9 +4251,19 @@ def doctor(root):
         "known_markers": [marker for marker, _ in ENGINE_MARKERS],
         "scope": (
             "Presença e versão de ferramentas, presença dos arquivos deste repositório e conteúdo dos atalhos da skill no host. "
-            "Não instala nada, não copia a skill, não executa o jogo e não comprova que um projeto funciona."
+            "Com starter e laboratório sem jogo, `then.guide` aponta o mapa ideia→ciclo. "
+            "Não instala nada, não copia a skill, não cria o projeto, não executa o jogo e não comprova que um projeto funciona."
         ),
     }
+
+
+def doctor_then(ready, starters, empty):
+    # Sem jogo e com starter, o primeiro comando aponta o mapa. Com jogo,
+    # `play` sem caminho já resolve. Sem starter não há o que mapear.
+    # Sem `prompt`: o CLI do doctor não escreve stderr.
+    if not ready or not starters or not empty:
+        return None
+    return {"guide": harness_command("guide")}
 
 
 def next_step(project, focus="create", studies_root=None):
