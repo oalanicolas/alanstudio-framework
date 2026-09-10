@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.163: a porta fala a mostra.
+**HEAD:** ver `git log -1` — vigente 0.9.164: fantasia no prompt.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 264 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → conferir após o 0.9.164.
 `cd assets/starters/canvas-arcade && npm test` → 345 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.163)
+## O que o HEAD já entrega (0.9.91–0.9.164)
 
 | Ver | Salto |
 | --- | --- |
@@ -107,6 +107,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.161 | `attractMove` desloca o corpo na porta sem comer o tick. O aviso pede fantasia e mover no relógio da mostra. Dash, coleta e guarda ficam no campo. `advance` na porta continua no-op. Não promove feel. |
 | 0.9.162 | `attractTouch` acende e estreita quando a mostra cruza o corpo. Sem pontuar, sem punch, sem seed. `threatCue` lê a mostra; o live nomeia o perigo. O pulso vence a cortina. Não promove feel. |
 | 0.9.163 | `attractTick` emite `live` uma vez na porta. Mesma voz do campo. Sem cama. Sem rumble. O laço toca o evento sem abrir o ciclo. Não promove `heard`. |
+| 0.9.164 | `cycle_line` nomeia `Fantasia:` antes de `Verbo:` quando `--idea` ou `copy.json` têm frase. O guide não grava. A frase não muda o verbo. Não entra em `CYCLE_KEYS`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -229,8 +230,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 **Guide / start**
 
 - `CYCLE_KEYS` inclui `door` depois de `verb` e `seed` depois de
-  `mood`. `cycle_line` nomeia `Porta:` antes de `Mover` e `Seed:`
-  antes de `Convite`.
+  `mood`. `cycle_line` nomeia `Fantasia:` antes de `Verbo:` quando
+  há frase (`--idea` ou `copy.json`), `Porta:` antes de `Mover` e
+  `Seed:` antes de `Convite`. Fantasia não entra em `CYCLE_KEYS`.
+  A frase não muda o verbo. Sem frase a linha some.
 - `CRAFT_EXAMPLES` ordem: pair → look → table → sfx. Look e chuva do
   exemplo compartilham o nome `noite`.
 - `play` após `start` é `cd … && npm run serve`. Não há `npm install`.
@@ -430,6 +433,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma porta que ignora o movimento enquanto o convite some a tabela.
 **Não** mais uma mostra que atravessa o corpo enquanto a mesa já cai na porta.
 **Não** mais uma porta muda enquanto a mostra já cai e o campo já tem `live`.
+**Não** mais um prompt que esconde a fantasia enquanto `--idea` já gravou a abertura.
 
 Candidatos, do que ainda dói:
 
@@ -451,7 +455,9 @@ Candidatos, do que ainda dói:
    `runtime` lê o Node do PATH; sem 20+ o prompt avisa.
    O prompt nomeia `Sessão:` se o manifesto declara `session`.
    Sem destino, o `guide` também nomeia `Verbo:` / `Porta:` se o
-   starter declara. `len(steps) == 3` e `executed: false` continuam.
+   starter declara. Com `--idea` ou `copy.json`, o prompt nomeia
+   `Fantasia:` antes de `Verbo:`. A frase não muda o verbo.
+   `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
    volátil e gravação recusada. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
@@ -513,5 +519,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `attractTick` emite `live`
-uma vez. Sem cama. Sem rumble. Não promover `heard`.
+Arquivos quentes da última sessão: `cycle_line` nomeia `Fantasia:`
+antes de `Verbo:`. O guide não grava. A frase não muda o verbo.

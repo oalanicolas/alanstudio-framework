@@ -3193,7 +3193,7 @@ def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, ur
     ]
 
 
-def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None):
+def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy=None):
     hole = runtime_line(runtime)
     simulated = session_line(then)
     if not play:
@@ -3225,7 +3225,7 @@ def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None):
         parts.append("O harness não pinta, não chove e não ouve.")
         parts.append(f"`next` só se você não sabe o que falta: {then['lost']}.")
         return hole + " ".join(parts)
-    how = cycle_line(cycle)
+    how = cycle_line(cycle, fantasy)
     extra = " ".join(part for part in (seed_line, invite_line) if part)
     surface = f"Abra {url} no navegador — file:// não carrega. " if url else ""
     return (
@@ -3240,13 +3240,13 @@ def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None):
     )
 
 
-def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None, runtime=None):
+def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None, runtime=None, fantasy=None):
     if exists:
-        return cycle_prompt(play, then, cycle, noted, url, runtime)
+        return cycle_prompt(play, then, cycle, noted, url, runtime, fantasy)
     hole = runtime_line(runtime)
     simulated = session_line(then)
     surface = f"Abra {url} no navegador — file:// não carrega. " if url else ""
-    how = cycle_line(cycle)
+    how = cycle_line(cycle, fantasy)
     return (
         hole
         + f"O ciclo ainda não existe. Cole e rode: {start_command}. "
@@ -3305,6 +3305,36 @@ def seed_brief_idea(project, phrase):
     return "docs/brief.md"
 
 
+def surface_fantasy(phrase):
+    if not nonempty(phrase):
+        return None
+    text = phrase.strip()
+    if len(text) <= SURFACE_IDEA_LIMIT:
+        return text
+    return f"{text[: SURFACE_IDEA_LIMIT - 3].rstrip()}..."
+
+
+def read_copy_fantasy(project):
+    path = Path(project) / "data/copy.json"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    return surface_fantasy(data.get("fantasy"))
+
+
+def resolve_fantasy(idea=None, project=None):
+    if nonempty(idea):
+        return surface_fantasy(idea)
+    if project is not None:
+        return read_copy_fantasy(project)
+    return None
+
+
 def seed_copy_fantasy(project, phrase):
     path = Path(project) / "data/copy.json"
     if not path.is_file() or path.is_symlink():
@@ -3315,7 +3345,9 @@ def seed_copy_fantasy(project, phrase):
         return None
     if not isinstance(data, dict):
         return None
-    surface = phrase if len(phrase) <= SURFACE_IDEA_LIMIT else f"{phrase[: SURFACE_IDEA_LIMIT - 3].rstrip()}..."
+    surface = surface_fantasy(phrase)
+    if surface is None:
+        return None
     data["fantasy"] = surface
     schema = data.get("schema")
     if not isinstance(schema, int) or schema < 2:
@@ -3424,10 +3456,14 @@ def starter_cycle(starter):
     return cycle if "verb" in cycle else None
 
 
-def cycle_line(cycle):
+def cycle_line(cycle, fantasy=None):
+    parts = []
+    phrase = surface_fantasy(fantasy)
+    if phrase:
+        parts.append(f"Fantasia: {phrase}.")
     if not cycle:
-        return ""
-    parts = [f"Verbo: {cycle['verb']}."]
+        return " ".join(parts)
+    parts.append(f"Verbo: {cycle['verb']}.")
     if cycle.get("door"):
         parts.append(f"Porta: {cycle['door']}.")
     if cycle.get("move"):
@@ -3618,12 +3654,14 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
     start_command = harness_command(*start_parts)
     steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True, url=url)
     runtime = node_runtime(play)
+    fantasy = resolve_fantasy(idea, destination)
     return {
         "schema_version": 1,
         "project": str(destination),
         "created": created,
         "starter": init_report["starter"] if init_report else None,
         "idea": idea.strip() if nonempty(idea) else None,
+        "fantasy": fantasy,
         "brief": planted["brief"],
         "surface": planted["surface"],
         "cycle": cycle,
@@ -3639,7 +3677,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "noted": noted,
         "named": named,
         "suggest": str(suggested_start_target(idea, cwd=cwd)) if named else None,
-        "prompt": cycle_prompt(play, then, cycle, noted, url, runtime),
+        "prompt": cycle_prompt(play, then, cycle, noted, url, runtime, fantasy),
         "executed": False,
         "scope": (
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
@@ -3665,7 +3703,8 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "nomear o endereço não observa. Ferramenta "
             "no disco não é alguém de fora nem mix ouvido. Não "
             "instala dependências e não avalia a proposta. `--idea` entra na "
-            "abertura se houver `data/copy.json`. O brief só nasce com `--docs`; "
+            "abertura se houver `data/copy.json` e o prompt nomeia `Fantasia:` "
+            "à parte de `Verbo:`. O brief só nasce com `--docs`; "
             "sem ele o `start` não planta rascunhos. A frase na tela não "
             "muda o verbo. `runtime` lê o `node` do PATH se o play pede "
             "npm ou node; não executa o serve. `usable` é só o binário. "
@@ -3699,6 +3738,7 @@ def play_cycle(destination=None, starter=None):
     start_command = harness_command("start", dest, "--starter", chosen)
     steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True, url=url)
     runtime = node_runtime(play)
+    fantasy = resolve_fantasy(project=dest)
     return {
         "schema_version": 1,
         "command": "play",
@@ -3710,7 +3750,8 @@ def play_cycle(destination=None, starter=None):
         "runtime": runtime,
         "then": then,
         "cycle": cycle,
-        "prompt": cycle_prompt(play, then, cycle, noted, url, runtime),
+        "fantasy": fantasy,
+        "prompt": cycle_prompt(play, then, cycle, noted, url, runtime, fantasy),
         "steps": steps,
         "noted": noted,
         "executed": False,
@@ -3895,12 +3936,14 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
     noted = bool(exists and observation_receipts(dest))
     steps = cycle_steps(start_command, play_cmd, then, cycle, nxt, exists, url)
     runtime = node_runtime(play_cmd)
+    fantasy = resolve_fantasy(phrase, dest if exists else None)
     return {
         "schema_version": 1,
         "command": "guide",
         "executed": False,
         "here": False,
         "idea": phrase,
+        "fantasy": fantasy,
         "starter": chosen,
         "path": str(dest) if dest is not None else None,
         "suggest": str(suggested) if suggested is not None else None,
@@ -3912,7 +3955,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         "url": url,
         "session": then.get("session"),
         "runtime": runtime,
-        "prompt": guide_prompt(exists, start_command, play_cmd, then, cycle, noted, url, runtime),
+        "prompt": guide_prompt(exists, start_command, play_cmd, then, cycle, noted, url, runtime, fantasy),
         "steps": steps,
         "scope": (
             "Três passos ideia→ciclo: start, jogar, note. `open` é o comando "
@@ -3924,6 +3967,8 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "nomeia a pasta no comando do start — ao lado do framework se o "
             "mapa corre de dentro desta árvore; no diretório atual se corre "
             "de fora. `guide --idea` continua só no comando, não no disco. "
+            "O prompt nomeia `Fantasia:` à parte de `Verbo:` quando há frase "
+            "ou `copy.json`; a frase não muda o verbo. "
             "`then` nomeia par, look, chuva e voz quando o projeto — ou o "
             "starter, se o destino ainda não existe — declara essas "
             "ferramentas. Se declara `session`, `then` a aponta. Se o disco "

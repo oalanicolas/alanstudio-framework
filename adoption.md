@@ -3,6 +3,22 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.164 — Fantasia no prompt
+
+`--idea` já gravava a frase
+na abertura. O prompt que a
+IA cola só nomeava o verbo
+do starter. `cycle_line`
+emite `Fantasia:` antes de
+`Verbo:`. O guide não grava.
+A frase não muda o verbo.
+Só `release` fica no piso.
+
+O que 0.9.164 não afirma:
+nomear a fantasia não
+implementa o verbo nem
+observa.
+
 ## 0.9.163 — A porta fala a mostra
 
 A mostra já caía e tocava.

@@ -3264,12 +3264,21 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         line = game.cycle_line(cycle)
         self.assertIn("Porta:", line)
         self.assertIn("headless", line)
+        self.assertNotIn("Fantasia:", line)
         self.assertNotIn("aprovado", line)
         self.assertNotIn("verified", line)
         self.assertLess(line.index("Porta:"), line.index("Mover"))
         self.assertIn("Seed:", line)
         self.assertIn("?seed=", line)
         self.assertLess(line.index("Seed:"), line.index("Convite:"))
+        named = game.cycle_line(cycle, "coletar luz")
+        self.assertIn("Fantasia: coletar luz.", named)
+        self.assertLess(named.index("Fantasia:"), named.index("Verbo:"))
+        self.assertEqual(cycle["verb"], "coletar orbes e guardar a corrente antes do estilhaço")
+        self.assertNotIn("coletar luz", cycle["verb"])
+        self.assertEqual(game.cycle_line(None, "coletar luz"), "Fantasia: coletar luz.")
+        self.assertEqual(game.cycle_line(None), "")
+        self.assertIsNone(game.surface_fantasy("   "))
 
     def test_start_creates_the_project_and_points_at_serve_without_playing(self):
         destination = self.root / "ideia ao ciclo"
@@ -3309,6 +3318,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("hold", report["cycle"]["seed"])
         self.assertIn("Espaço", report["prompt"])
         self.assertIn("Porta:", report["prompt"])
+        self.assertEqual(report["fantasy"], "guardar a corrente ou continuar")
+        self.assertIn("Fantasia: guardar a corrente ou continuar.", report["prompt"])
+        self.assertLess(report["prompt"].index("Fantasia:"), report["prompt"].index("Verbo:"))
         self.assertIn("guardar", report["prompt"])
         self.assertIn("IJKL", report["prompt"])
         self.assertIn("Toque:", report["prompt"])
@@ -3381,6 +3393,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(payload["brief"], "docs/brief.md")
         self.assertTrue((self.root / "via-cli" / "docs/brief.md").is_file())
         self.assertFalse(payload["executed"])
+        self.assertEqual(payload["fantasy"], "atravessar estilhaços")
+        self.assertIn("Fantasia: atravessar estilhaços.", planted.stderr)
+        self.assertLess(planted.stderr.index("Fantasia:"), planted.stderr.index("Verbo:"))
 
     def test_start_names_missing_node_without_serving(self):
         destination = self.root / "sem-node"
@@ -3803,6 +3818,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn(report["open"], report["prompt"])
         self.assertIn("start", report["prompt"])
         self.assertIn("atravessar estilhaços", report["prompt"])
+        self.assertEqual(report["fantasy"], "atravessar estilhaços")
+        self.assertIn("Fantasia: atravessar estilhaços.", report["prompt"])
+        self.assertLess(report["prompt"].index("Fantasia:"), report["prompt"].index("Verbo:"))
         self.assertIn("não cria a pasta", report["prompt"])
         self.assertIn("Verbo:", report["prompt"])
         self.assertIn("Porta:", report["prompt"])
@@ -3838,6 +3856,12 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             json.loads((destination / "data/copy.json").read_text(encoding="utf-8"))["fantasy"],
             "guardar a corrente",
         )
+        self.assertEqual(after["fantasy"], "guardar a corrente")
+        self.assertIn("Fantasia: guardar a corrente.", after["prompt"])
+        played = game.play_cycle(destination, "canvas-arcade")
+        self.assertEqual(played["fantasy"], "guardar a corrente")
+        self.assertIn("Fantasia: guardar a corrente.", played["prompt"])
+        self.assertLess(played["prompt"].index("Fantasia:"), played["prompt"].index("Verbo:"))
         run = subprocess.run(
             [sys.executable, str(SCRIPT), "guide", str(destination), "--root", str(self.root)],
             capture_output=True, text=True,
@@ -3906,6 +3930,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(inside["open"], inside["steps"][0]["command"])
         self.assertIn("atravessar-estilhacos", inside["prompt"])
         self.assertIn("atravessar estilhaços", inside["prompt"])
+        self.assertEqual(inside["fantasy"], "atravessar estilhaços")
+        self.assertIn("Fantasia: atravessar estilhaços.", inside["prompt"])
         planted = game.FRAMEWORK.parent / "atravessar-estilhacos"
         self.assertFalse(planted.exists(), "o mapa não cria a pasta que nomeia")
         outside = game.guide_cycle(
@@ -3929,6 +3955,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("atravessar-estilhacos", payload["steps"][0]["command"])
         self.assertFalse(payload["executed"])
         self.assertFalse(payload["here"])
+        self.assertEqual(payload["fantasy"], "atravessar estilhaços")
+        self.assertIn("Fantasia: atravessar estilhaços.", bare.stderr)
         self.assertFalse(planted.exists())
         guided = subprocess.run(
             [sys.executable, str(SCRIPT), "guide", "--idea", "atravessar estilhaços"],
@@ -4034,6 +4062,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.start_project(destination, "mudo", documents=False)
         self.assertIsNone(report["cycle"])
         self.assertNotIn("Verbo:", report["prompt"])
+        self.assertNotIn("Fantasia:", report["prompt"])
+        self.assertIsNone(report["fantasy"])
         self.assertFalse(report["executed"])
         self.assertEqual(len(report["steps"]), 3)
         self.assertTrue(report["steps"][0]["done"])
@@ -4055,6 +4085,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("session", report["then"])
         self.assertIsNone(report["session"])
         self.assertNotIn("Sessão:", report["prompt"])
+        spoken = game.guide_cycle(None, "mudo", idea="coletar luz")
+        self.assertEqual(spoken["fantasy"], "coletar luz")
+        self.assertIn("Fantasia: coletar luz.", spoken["prompt"])
+        self.assertNotIn("Verbo:", spoken["prompt"])
+        self.assertFalse(spoken["exists"])
 
     def test_start_names_craft_tools_in_then_without_playing(self):
         destination = self.root / "segundo ciclo"
