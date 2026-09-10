@@ -58,6 +58,7 @@ Leia candidatos e consumidores, adapte o canônico e explique lacunas antes de c
 Para um jogo que ainda não existe no disco, o candidato de reuso é um starter do
 acervo: `start --idea "<fantasia>"` (ou `start <destino> --starter <starter>`)
 monta o projeto, escreve `AGENTS.md` com o comando que abre (sem listar estes documentos) e aponta o serve, sem plantar estes documentos.
+Sem memória no disco, `template agents` gera o mesmo texto a partir do que existe.
 `init <destino> --starter <starter>` faz a mesma cópia e cria os rascunhos — para
 serem substituídos por decisão, não para serem entregues como se fossem uma.
 `--docs` no start também os planta.

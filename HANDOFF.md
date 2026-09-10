@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.241 (confirmado): o pedido no contexto suspenso espera o gesto. Live da porta e avanço não disparam no vazio. `heard` falso.
+**HEAD:** ver `git log -1` — vigente 0.9.242: `template agents` e o `next` em `agent_context.not_located` geram a mesma memória do `start`. Sem rascunhos não listam GDD.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 282 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.241)
+## O que o HEAD já entrega (0.9.91–0.9.242)
 
 | Ver | Salto |
 | --- | --- |
@@ -185,6 +185,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.239 | O avanço é o aperto, não o segurar. Segurar na porta não dispara o ofício; no campo o cooldown não metralha. A guarda continua nível. Não promove feel. |
 | 0.9.240 | O `start` escreve `AGENTS.md` com o comando que abre. Sem rascunhos, a memória não lista GDD. `documents` continua vazio. Não executa. |
 | 0.9.241 | O pedido no contexto suspenso espera o gesto. A porta e o primeiro avanço não disparam no vazio. Não promove `heard`. |
+| 0.9.242 | `template agents` e o `next` sem AGENTS geram a memória do disco. Sem rascunhos não listam GDD. Não executa. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -346,7 +347,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou o mesmo aperto da porta que dispara o ofício no campo
   ou o `start` que deixa a próxima sessão sem memória
   ou o AGENTS do start que lista GDD que não plantou
-  ou o pedido no contexto suspenso que dispara no vazio.
+  ou o pedido no contexto suspenso que dispara no vazio
+  ou o template agents que lista GDD que o disco não tem.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -381,6 +383,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   plantando. `--idea` entra em `data/copy.json`; brief só com `--docs`.
   Os dois escrevem `AGENTS.md` com o comando que abre e o que o
   disco ainda não tem. Sem rascunhos a memória não lista GDD.
+  `template agents` e o `next` em `agent_context.not_located`
+  geram o mesmo texto a partir do disco — play, url, fantasia,
+  ciclo do `starter.json` do projeto, rascunhos só se brief/GDD
+  (os seis do start) existirem. O molde em `assets/templates/agents.md`
+  é a referência; o comando não o preenche com caminhos inventados.
   `documents` só ganha `AGENTS.md` quando `documents` é verdadeiro.
   `init_scope(documents, idea)` é o `scope` do `init` e do
   `start.init`. Sem docs: `sem plantar`, sem `criou rascunhos`,
@@ -801,6 +808,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `start` que deixa a próxima sessão sem memória.
 **Não** mais um AGENTS do start que lista GDD que não plantou.
 **Não** mais um pedido no contexto suspenso que dispara no vazio.
+**Não** mais um template agents que lista GDD que o disco não tem.
 
 Candidatos, do que ainda dói:
 
@@ -825,8 +833,9 @@ Candidatos, do que ainda dói:
    starter declara. Com `--idea` ou `copy.json`, o prompt nomeia
    `Fantasia:` antes de `Verbo:`. A frase não muda o verbo.
    `init_scope` só afirma rascunhos quando `documents` é verdadeiro;
-   o `start` embute esse recibo. Os dois escrevem `AGENTS.md` com
-   o serve; sem rascunhos a memória não lista GDD. `preproduction.md` (injetado pelo
+   o `start` embute esse recibo.    Os dois escrevem `AGENTS.md` com
+   o serve; sem rascunhos a memória não lista GDD. `template agents`
+   e o `next` sem memória geram o mesmo texto. `preproduction.md` (injetado pelo
    `context` no foco create e em `--stage`) ensina `start --idea`.
    `doctor` no lab vazio devolve `then.guide` com `--idea`; com jogo a chave some.
    Depois do `start` fresco o `context` adia a auditoria (`audit.deferred`);
@@ -1241,6 +1250,13 @@ Candidatos, do que ainda dói:
   suspenso que
   dispara no
   vazio
+  e o
+  template
+  agents que
+  lista GDD
+  que o
+  disco não
+  tem
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1264,7 +1280,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o pedido
-no contexto suspenso espera o gesto. Live
-da porta e o primeiro avanço não disparam
-no vazio. `heard` falso.
+Arquivos quentes da última sessão: `template
+agents` e o `next` sem AGENTS geram a
+memória do disco. Sem rascunhos não
+listam GDD.

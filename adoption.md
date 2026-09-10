@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.242 — O template agents lê o disco em vez de listar GDD
+
+O
+`start`
+já
+escrevia
+a
+memória
+honesta.
+O
+`next`
+sem
+AGENTS
+ainda
+gerava
+o
+molde
+que
+listava
+GDD.
+Agora
+`template
+agents`
+lê
+o
+comando
+que
+abre
+e
+o
+que
+não
+foi
+plantado.
+Não
+executa.
+
+O que 0.9.242 não afirma:
+escrever
+AGENTS.md
+não
+é
+partida
+jogada.
+
 ## 0.9.241 — O pedido no contexto suspenso espera o gesto
 
 Chrome

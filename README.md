@@ -467,7 +467,7 @@ release. Quatro complementos: `art-bible`, `devlog`, `audit`, `aaa` (checklist d
 o `context` expõe `finish` — núcleo / produto / promessa / mercado; slice, QA, create,
 feel e audio carregam a guia; `template aaa` não certifica). Três de consolidação e
 produção: `game-design` (documento único), `production-plan`, `milestone`.
-O complemento `agents` gera as instruções persistentes em `AGENTS.md`.
+O complemento `agents` gera a memória persistente em `AGENTS.md` a partir do disco: o comando que abre e o que ainda não foi plantado. Sem rascunhos do ciclo, não lista GDD. O `start` já escreve o mesmo arquivo; `template agents` e o `next` em `agent_context.not_located` não voltam ao molde que fingia brief.
 
 ```sh
 python3 scripts/game.py context /caminho/do/jogo --focus content --stage gdd --root /caminho/do/laboratorio

@@ -3928,6 +3928,34 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(game.scan(destination)["agent_context"]["status"], "found")
         self.assertEqual(game.next_step(destination)["proposal"]["basis"], "playable.unplayed")
 
+    def test_template_agents_reads_the_disk_instead_of_listing_missing_drafts(self):
+        bare = self.root / "sem-memoria"
+        bare.mkdir()
+        (bare / "index.html").write_text("<canvas></canvas>")
+        text = game.template("agents", bare)
+        self.assertIn(bare.name, text)
+        self.assertIn(str(bare), text)
+        self.assertNotIn("docs/gdd.md", text)
+        self.assertNotIn("[comando exato", text)
+        self.assertNotIn("{{PROJECT", text)
+        self.assertIn("não foram plantados", text)
+        self.assertNotIn("docs/brief.md", text)
+        started = self.root / "com-serve"
+        game.start_project(started, "canvas-arcade", idea="atravessar estilhaços")
+        (started / "AGENTS.md").unlink()
+        rebuilt = game.template("agents", started)
+        self.assertIn("npm run serve", rebuilt)
+        self.assertIn("atravessar estilhaços", rebuilt)
+        self.assertNotIn("docs/gdd.md", rebuilt)
+        self.assertIn("não foram plantados", rebuilt)
+        drafted = self.root / "com-ciclo"
+        game.start_project(drafted, "canvas-arcade", idea="guardar a corrente", documents=True)
+        (drafted / "AGENTS.md").unlink()
+        with_docs = game.template("agents", drafted)
+        self.assertIn("Rascunhos do ciclo estão em `docs/`", with_docs)
+        self.assertNotIn("docs/gdd.md", with_docs)
+        self.assertNotIn("não foram plantados", with_docs)
+
     def test_start_docs_still_plants_the_drafts(self):
         destination = self.root / "com-rascunhos"
         report = game.start_project(
@@ -5393,7 +5421,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         run = subprocess.run(["/bin/sh", "-c", f"{command} --root {shlex.quote(str(self.root))}"], capture_output=True, text=True)
         self.assertEqual(run.returncode, 0, run.stderr)
         self.assertTrue((self.project / "AGENTS.md").is_file())
-        self.assertIn(self.project.name, (self.project / "AGENTS.md").read_text())
+        planted = (self.project / "AGENTS.md").read_text()
+        self.assertIn(self.project.name, planted)
+        self.assertNotIn("docs/gdd.md", planted)
+        self.assertNotIn("[comando exato", planted)
+        self.assertIn("não foram plantados", planted)
         after = game.next_step(self.project, "feel")
         self.assertEqual(after["signals"]["agent_context"], "found")
         self.assertNotIn("agent_context.not_located", [item["basis"] for item in [after["proposal"], *after["alternatives"]]])

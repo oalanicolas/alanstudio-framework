@@ -2909,7 +2909,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         "agent_context": {
             "status": "found" if local_instructions else "not_located",
             "files": local_instructions,
-            "scope": "Instruções persistentes para o agente na raiz do projeto. Não é uma das nove áreas; sem elas, cada sessão reaprende convenções. `template agents` gera um rascunho.",
+            "scope": "Instruções persistentes para o agente na raiz do projeto. Não é uma das nove áreas; sem elas, cada sessão reaprende convenções. `template agents` gera a memória a partir do disco — o comando que abre e o que não foi plantado.",
         },
         "coverage": {
             "documents_inspected": inspected, "documents_located": len(documents), "entries_seen": entries_seen,
@@ -3094,8 +3094,11 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
 def template(stage, project, output=None):
     if stage not in STAGES:
         raise ValueError("etapa desconhecida")
-    text = (FRAMEWORK / f"assets/templates/{stage}.md").read_text(encoding="utf-8")
-    text = text.replace("{{PROJECT}}", project.name).replace("{{PROJECT_PATH}}", str(project))
+    if stage == "agents":
+        text = agents_template_text(project)
+    else:
+        text = (FRAMEWORK / f"assets/templates/{stage}.md").read_text(encoding="utf-8")
+        text = text.replace("{{PROJECT}}", project.name).replace("{{PROJECT_PATH}}", str(project))
     if output is not None:
         if output.exists() or output.is_symlink():
             raise ValueError("documento existente; adapte a fonte canônica sem sobrescrever")
@@ -3690,8 +3693,60 @@ def substitute(text, pairs):
     return pattern.sub(swap, text), counted
 
 
+# Os seis rascunhos que o `start` não copia. art-bible do starter
+# sozinho não conta — o start fresco já o traz e a memória não
+# afirma que o ciclo foi plantado.
+CYCLE_DRAFT_FILES = ("brief.md", "gdd.md", "mda.md", "tdd.md", "devlog.md", "qa.md")
+
+
+def cycle_drafts_planted(project):
+    docs = Path(project) / "docs"
+    return any((docs / name).is_file() for name in CYCLE_DRAFT_FILES)
+
+
+def project_cycle(project):
+    path = Path(project) / STARTER_MANIFEST
+    if not path.is_file():
+        return None
+    try:
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    raw = manifest.get("cycle") if isinstance(manifest, dict) else None
+    if not isinstance(raw, dict):
+        return None
+    cycle = {}
+    for key in CYCLE_KEYS:
+        value = raw.get(key)
+        if nonempty(value) and isinstance(value, str):
+            cycle[key] = value.strip()
+    return cycle if "verb" in cycle else None
+
+
+def agents_template_text(project):
+    # O esqueleto listava GDD. O `start` já escreve a memória
+    # honesta; o `next` em not_located ainda gerava o molde.
+    # Template não é rascunho do ciclo.
+    destination = Path(project)
+    try:
+        scripts, manager = project_commands(destination)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
+    play = play_command(destination, scripts, manager)
+    url = serve_url(scripts, play)
+    fantasy = resolve_fantasy(project=destination) if destination.is_dir() else None
+    return agents_memory_text(
+        destination,
+        play,
+        documents=cycle_drafts_planted(destination),
+        url=url,
+        cycle=project_cycle(destination),
+        fantasy=fantasy,
+    )
+
+
 def agents_memory_text(destination, play=None, starter=None, documents=False, idea=None, url=None, cycle=None, fantasy=None):
-    # O `start` não planta brief/GDD. O template `agents` lista esses
+    # O `start` não planta brief/GDD. O molde antigo listava esses
     # caminhos como canônicos — na pasta do start isso mentia. Memória
     # do agente não é rascunho do ciclo.
     destination = Path(destination)
@@ -4868,7 +4923,7 @@ def next_step(project, focus="create", studies_root=None):
         propose(
             "Escrever as instruções para o agente na raiz do projeto (AGENTS.md)",
             "Sem AGENTS.md, convenções, comandos e limites ficam só na conversa e se perdem na próxima sessão; é a causa mais barata de retrabalho com IA.",
-            "AGENTS.md cita como executar e verificar, os documentos canônicos, o que não mudar e onde registrar continuidade.",
+            "AGENTS.md cita o comando que abre e o que o disco ainda não tem. Sem rascunhos plantados, não lista GDD.",
             [harness_command("template", "agents", "--project", project, "--output", project / "AGENTS.md")],
             "agent_context.not_located",
         )
