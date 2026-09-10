@@ -191,7 +191,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, chuva da porta, `gameSpeed` no disco, `hold` no stub,
-  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, `closeHazardScale` no disco, `closeBedRate` no disco, recorde no overlay do fim, aviso de guardar no fecho, copiar ou gravar o achado, last-run,
+  coil/windup no disco, `bank.windupTicks` no disco, `closeIntervalScale` no disco, `closeHazardScale` no disco, `closeBedRate` no disco, recorde no overlay do fim, aviso de guardar no fecho, `hint_hit` no disco, copiar ou gravar o achado, last-run,
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
   `then.invite`, `invite_href`, copiar o endereço do convite,
   levar a chuva ou o look na URL, tinta estável no disco,
@@ -367,6 +367,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `title_play` / `title_again` / `title_new` / `title_last` /
   `title_volatile` / `title_unsaved` /
   `over_door` / `over_door_inline` em `COPY_FIELDS` (default `{dash}`).
+  Copy 3: `hint_hit` (default «O estilhaço come a corrente viva —
+  atravesse ou guarde»). Ausente ganha o padrão. Sem faixa nova.
   A porta e o fim leem `persistLine`. O overlay do fim reusa
   `record` com `extra.best` quando `best > 0`. Recorde 0 some.
   Sem faixa nova. Nomear não é `felt`.
