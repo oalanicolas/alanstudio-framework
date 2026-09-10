@@ -963,6 +963,27 @@ test("o overlay do fim nomeia a corrente que caiu e a queda vence a cortina", ()
   );
 });
 
+test("o overlay da pausa nomeia o placar sem inventar faixa nem sessão", () => {
+  const state = createState(1);
+  state.score = 12;
+  const held = { paused: true, alpha: 0, steps: 1 };
+  const withBest = hudTexts(state, {}, { best: 40 }, held).texts.map((item) => item.text);
+  assert.ok(withBest.some((text) => text === "Pausado — 12"), `título: ${JSON.stringify(withBest)}`);
+  const hint = withBest.find((text) => text.includes("Recorde 40") && /continuar/i.test(text));
+  assert.ok(hint, `esperava o recorde na pausa: ${JSON.stringify(withBest)}`);
+  const empty = hudTexts(state, {}, { best: 0 }, held).texts.map((item) => item.text);
+  assert.ok(empty.some((text) => text === "Pausado — 12"), `sem recorde o placar fica: ${JSON.stringify(empty)}`);
+  const resume = empty.find((text) => /continuar/i.test(text));
+  assert.ok(resume, `esperava o retomar: ${JSON.stringify(empty)}`);
+  assert.equal(/recorde/i.test(resume), false, `recorde 0 some do overlay: ${resume}`);
+  const live = hudTexts(state, {}, { best: 40 }).texts.map((item) => item.text);
+  assert.equal(
+    live.some((text) => text === "Pausado — 12"),
+    false,
+    "sem pausa o overlay não inventa a placa",
+  );
+});
+
 test("o overlay do fim nomeia o recorde sem inventar faixa nem sessão", () => {
   const ended = createState(1);
   ended.phase = "over";

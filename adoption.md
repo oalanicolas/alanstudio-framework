@@ -3,6 +3,26 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.181 — A pausa nomeia o placar
+
+A cortina já dizia
+Pausado. O HUD já
+tinha o número. A
+placa o comia. O
+overlay reusa o
+placar e o recorde.
+A região viva
+espelha. Jogando
+sem pausa o número
+não entra.
+`verified` continua
+falso. Só `release`
+fica no piso.
+
+O que 0.9.181 não afirma:
+texto no DOM não é
+sessão de alcance.
+
 ## 0.9.180 — A pausa senta o quadro
 
 O overlay já dizia

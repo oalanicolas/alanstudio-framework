@@ -74,6 +74,25 @@ test("a pausa entra na região viva sem fingir sessão", () => {
   assert.doesNotMatch(liveText({ paused: true }), /aprovado|verified|alguém de fora/);
 });
 
+test("a pausa nomeia o placar na região viva sem fingir sessão", () => {
+  assert.equal(
+    liveText({ phase: "playing", paused: true, score: 12, best: 20 }),
+    "pausado. 12. recorde 20",
+  );
+  assert.equal(
+    liveText({ phase: "playing", paused: true, score: 0, best: 0 }),
+    "pausado. 0",
+  );
+  assert.equal(
+    liveText({ phase: "playing", score: 12, best: 20 }),
+    "",
+  );
+  assert.doesNotMatch(
+    liveText({ phase: "playing", paused: true, score: 12, best: 20 }),
+    /aprovado|verified|alguém de fora/,
+  );
+});
+
 test("applyLive só escreve quando o texto muda", () => {
   const node = { textContent: "" };
   assert.equal(applyLive({}), false);

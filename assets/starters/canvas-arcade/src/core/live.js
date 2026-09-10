@@ -1,7 +1,8 @@
 // Região viva. A legenda e o perigo à frente já existem no mixer
-// e no telegraph; a pausa já existe no overlay. O fim e a porta
-// já nomeiam placar e recorde no canvas. Sem isto só o canvas
-// os mostra. Texto no DOM não é sessão de alcance nem alguém de fora.
+// e no telegraph; a pausa já existe no overlay. O fim, a porta
+// e a pausa já nomeiam placar e recorde no canvas. Sem isto só
+// o canvas os mostra. Jogando sem pausa o número não entra.
+// Texto no DOM não é sessão de alcance nem alguém de fora.
 
 function whole(value) {
   if (!Number.isFinite(value)) return null;
@@ -36,6 +37,14 @@ export function liveText({
     add("abertura");
     const last = whole(lastScore);
     if (last !== null) add(`última ${last}`);
+    const record = whole(best);
+    if (record !== null && Number(best) > 0) add(`recorde ${record}`);
+  } else if (paused) {
+    // A cortina cobre o HUD. Sem o número aqui só o canvas
+    // o mostrava, e a placa o come. Jogando sem pausa o
+    // placar continua só no quadro. Texto no DOM não é sessão.
+    const points = whole(score);
+    if (points !== null) add(points);
     const record = whole(best);
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
   }

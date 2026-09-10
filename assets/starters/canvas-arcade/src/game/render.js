@@ -139,7 +139,18 @@ export function createRenderer(canvas, options = {}) {
     drawMotes(context, palette, state, reduced, ending ? (mote) => mote.kind !== "lapse" : null);
     const reserved = drawHud(context, palette, state, settings, extra, lines);
     drawCoach(context, palette, extra.hint, reserved, settings, extra, lines);
-    if (frame.paused) drawOverlay(context, palette, lines.paused, lines.resume, settings);
+    if (frame.paused) {
+      // A cortina cobre o HUD. Sem o número aqui o placar que a
+      // partida inteira mostrou some atrás de Pausado. Recorde 0
+      // some. Texto no disco não é sessão de alcance.
+      drawOverlay(
+        context,
+        palette,
+        `${lines.paused} — ${state.score}`,
+        pauseHint(lines, extra),
+        settings,
+      );
+    }
     else if (ending) {
       drawOverlay(
         context,
@@ -537,6 +548,14 @@ export function createRenderer(canvas, options = {}) {
   // Sem corrente o fim não inventa o rótulo. Recorde 0 some.
   // O avanço abre a porta, não recomeça em silêncio. Texto no
   // disco não é peso percebido.
+  function pauseHint(lines, extra = {}) {
+    const parts = [];
+    const best = Number(extra.best);
+    if (Number.isFinite(best) && best > 0) parts.push(`${lines.record} ${best}`);
+    parts.push(lines.resume);
+    return parts.join(" · ");
+  }
+
   function overHint(state, lines, extra = {}) {
     const parts = [];
     if (state.chain > 0) parts.push(`${lines.chain} ${state.chain}`);
