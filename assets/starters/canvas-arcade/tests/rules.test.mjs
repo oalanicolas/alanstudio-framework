@@ -1621,6 +1621,46 @@ test("o hitstop congela o mundo sem congelar a leitura da entrada", () => {
   assert.ok(state.player.dashBuffer > 0, "o pedido feito no congelamento não é engolido");
 });
 
+test("o hitstop não come o perdão do avanço", () => {
+  const state = createState(9);
+  state.entities = [shard(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.equal(state.hitstop, CONFIG.feel.hitHitstopTicks);
+  assert.ok(CONFIG.feel.hitHitstopTicks > 1, "o erro precisa congelar mais que um quadro");
+  state.player.dashCooldown = 20;
+  advance(state, { move: 0, dash: true, bank: false });
+  assert.equal(state.player.dashBuffer, CONFIG.player.dashBufferTicks);
+  while (state.hitstop > 0) {
+    advance(state, { move: 0, dash: false, bank: false });
+    if (state.hitstop > 0) {
+      assert.equal(
+        state.player.dashBuffer,
+        CONFIG.player.dashBufferTicks,
+        "o congelamento não queima o pedido",
+      );
+    }
+  }
+  assert.equal(state.player.dashBuffer, CONFIG.player.dashBufferTicks);
+  assert.equal(state.player.dashWindup, 0, "a recarga ainda segura o disparo");
+});
+
+test("o hitstop não come o perdão da guarda", () => {
+  const state = createState(5);
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, neutralIntent());
+  assert.ok(state.hitstop > 0);
+  advance(state, { move: 0, dash: false, bank: true });
+  assert.equal(state.bankBuffer, CONFIG.bank.bufferTicks);
+  while (state.hitstop > 0) {
+    advance(state, { move: 0, dash: false, bank: false });
+    if (state.hitstop > 0) {
+      assert.equal(state.bankBuffer, CONFIG.bank.bufferTicks, "o freeze não queima a guarda");
+    }
+  }
+  assert.equal(state.bankBuffer, CONFIG.bank.bufferTicks);
+  assert.equal(state.stats.banks, 0, "não guarda durante o hitstop");
+});
+
 test("o perfil dusk muda a chuva sem republicar o verbo", () => {
   const calm = createState(7);
   const late = createState(7, { spawnProfile: "dusk" });

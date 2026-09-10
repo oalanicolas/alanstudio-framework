@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.255 — O hitstop não come o perdão do avanço
+
+O
+lock
+da
+guarda
+já
+poupava
+o
+pedido.
+O
+freeze
+ainda
+queimava
+os
+ticks.
+Agora
+o
+hitstop
+não
+decai
+`dashBuffer`
+nem
+`bankBuffer`.
+O
+erro
+não
+come
+o
+avanço
+pedido
+no
+impacto.
+Não
+promove
+`felt`.
+
+O que 0.9.255 não afirma:
+poupar
+o
+perdão
+não
+é
+peso
+no
+dispositivo.
+
 ## 0.9.254 — O painel relê a lacuna quando o fetch termina
 
 O

@@ -27,7 +27,7 @@ export const CONFIG = {
     dashTicks: 8, // contato: rápido e invulnerável; a guarda com corrente espera o land
     dashRecoveryTicks: 6, // recuperação: controle reduzido, ainda vulnerável; o quadro do land atravessa
     dashCooldownTicks: 30,
-    dashBufferTicks: 8, // perdão: dash pedido cedo dispara ao recarregar; o lock da guarda não come o pedido
+    dashBufferTicks: 8, // perdão: dash pedido cedo dispara ao recarregar; o lock da guarda e o hitstop não comem o pedido
     dashWindupTicks: 2, // antecipação: o corpo senta antes de alongar; já é graça; a guarda com corrente espera este coil
     invulnTicks: 42, // graça após dano; evita perder duas correntes seguidas — inclusive no mesmo quadro
   },
@@ -119,7 +119,7 @@ export const CONFIG = {
   },
   bank: {
     lockTicks: 24, // custo do compromisso: sem dash enquanto guarda
-    bufferTicks: 8, // perdão: pedido cedo ou no hitstop dispara quando a corrente existe; o coil e o travel do avanço não comem o pedido
+    bufferTicks: 8, // perdão: pedido cedo ou no hitstop dispara quando a corrente existe; o coil, o travel e o hitstop não comem o pedido
     windupTicks: 2, // antecipação: o corpo senta antes de converter; o arco e o quadro da conversão já são graça; corrente já existente espera o coil e o land do avanço
   },
   // Assistência não esconde conteúdo: os mesmos orbes, a mesma pontuação.
@@ -699,7 +699,8 @@ export function advance(state, intent = neutralIntent()) {
     // — mais longo que o buffer — comia o avanço pedido
     // no compromisso. Pedido no disco não é felt.
     const held = state.bankLock > 0 || (state.bankWindup ?? 0) > 0;
-    if (!held) player.dashBuffer -= 1;
+    const frozen = state.hitstop > 0;
+    if (!held && !frozen) player.dashBuffer -= 1;
   }
   // Corrente vazia não guarda o pedido: um toque cedo demais não decide
   // guardar o orbe que ainda não existe.
@@ -708,10 +709,12 @@ export function advance(state, intent = neutralIntent()) {
   } else if (state.bankBuffer > 0) {
     // O avanço inteiro conta o perdão. Sem isto o travel
     // — oito ticks — comia o pedido feito no coil.
-    // Pedido no disco não é felt.
+    // O hitstop também conta: sem isto o freeze queimava
+    // o avanço pedido no impacto. Pedido no disco não é felt.
     const traveling =
       (player.dashWindup ?? 0) > 0 || (player.dashTicks ?? 0) > 0;
-    if (!traveling) state.bankBuffer -= 1;
+    const frozen = state.hitstop > 0;
+    if (!traveling && !frozen) state.bankBuffer -= 1;
   }
 
   if (state.hitstop > 0) {

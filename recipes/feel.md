@@ -195,7 +195,8 @@ o feel do verbo central é lente de marco em [produção](production.md).
 Antes de escrever a sua cadeia, leia uma concreta: o starter `canvas-arcade` reúne o
 perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, buffer de
 guardar, graça após dano — inclusive no mesmo quadro —, alcance de coleta maior que o desenho — cada valor com o
-motivo ao lado. Guardar no hitstop não é engolido; um toque sem corrente não decide
+motivo ao lado. Guardar no hitstop não é engolido; o freeze também
+não queima o perdão do avanço nem o da guarda. Um toque sem corrente não decide
 o próximo orbe. Cada verbo desloca a câmera numa direção própria e achata o corpo
 numa medida própria: coleta, queda, dash, raspo, aterrissagem, guardar e o erro não compartilham
 squash. O dash aterrissa: o corpo senta, a câmera confirma para baixo,

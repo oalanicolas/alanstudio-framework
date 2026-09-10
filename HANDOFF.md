@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.254: o painel relê a lacuna quando o fetch termina. Pintar só no boot some o que chegou. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.255: o hitstop não come o perdão do avanço. O freeze também poupa a guarda. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 288 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.254)
+## O que o HEAD já entrega (0.9.91–0.9.255)
 
 | Ver | Salto |
 | --- | --- |
@@ -198,6 +198,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.252 | A região viva nomeia a recuperação que o painel já mostra. A porta não. Jogando a chave some. Não promove `trusted`. |
 | 0.9.253 | `sfx copy` do acervo recoloca o WAV quando origem e licença casam, e declara `heard` falso. Recibo diferente recusa. Não promove `heard`. |
 | 0.9.254 | O painel relê a lacuna quando o fetch termina. Pintar só no boot some o que chegou. Não promove `heard`. |
+| 0.9.255 | O hitstop não come o perdão do avanço. O freeze também poupa a guarda. Não promove `felt`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -211,7 +212,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
@@ -373,7 +374,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um wav ilegível que esconde o ogg e some o pedido
   ou uma região viva que some a recuperação que o painel já mostra
   ou um `sfx copy` do acervo que recusa o WAV porque o recibo tem `note` e some `heard`
-  ou um painel que pinta a lacuna no boot e some o que o fetch trouxe.
+  ou um painel que pinta a lacuna no boot e some o que o fetch trouxe
+  ou um hitstop que queima o perdão do avanço.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -622,8 +624,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   (`canDash` lia `bankWindup`). `dashCharge` também lê o sit:
   `bankWindup > 0` é `lock`, como o `bankLock` — a faixa não
   diz pronto. `dashBuffer` não decai durante `bankLock` nem
-  `bankWindup` — o lock dura mais que o perdão; a recarga
-  continua contando. Coleta e guarda no mesmo quadro continuam na hora. Orbe que cai no arco da guarda espera — o sit não inflama a aposta; depois do commit o orbe entra. `collect` lê o mesmo `committed` do raspo: no avanço, no land e no quadro da conversão não seta hitstop nem sit; treme e sobe a câmera. Parada continua com suco. O relógio não come o sit: se `bankWindup > 0` no último tick, `commitBank` corre antes do `over`. Sem sit a corrente continua caindo.   O hitstop no fim não alonga o relógio: se `hitstop > 0` no último tick, `endRun` corre no early-return do freeze. A queda longe não come o verbo: se `committed`, miss marca o chão e não senta squash nem puxa a câmera. Parado, a queda ainda senta. Raspo (`grazeContact`): estreita, punch na direção,
+  `bankWindup` nem `hitstop` — o lock dura mais que o perdão;
+  o freeze não queima o pedido; a recarga continua contando.
+  `bankBuffer` também não decai no hitstop. Coleta e guarda no mesmo quadro continuam na hora. Orbe que cai no arco da guarda espera — o sit não inflama a aposta; depois do commit o orbe entra. `collect` lê o mesmo `committed` do raspo: no avanço, no land e no quadro da conversão não seta hitstop nem sit; treme e sobe a câmera. Parada continua com suco. O relógio não come o sit: se `bankWindup > 0` no último tick, `commitBank` corre antes do `over`. Sem sit a corrente continua caindo.   O hitstop no fim não alonga o relógio: se `hitstop > 0` no último tick, `endRun` corre no early-return do freeze. A queda longe não come o verbo: se `committed`, miss marca o chão e não senta squash nem puxa a câmera. Parado, a queda ainda senta. Raspo (`grazeContact`): estreita, punch na direção,
   flash menor que a queda. Sem hitstop. Sem rumble.
   Rumble do quadro: `rumbleRole` toca o verbo mais pesado,
   não o último. Porta (`dash`+`land`) fala dash; commit
@@ -867,6 +870,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma região viva que some a recuperação que o painel já mostra.
 **Não** mais um `sfx copy` do acervo que recusa o WAV porque o recibo tem `note` e some `heard`.
 **Não** mais um painel que pinta a lacuna no boot e some o que o fetch trouxe.
+**Não** mais um hitstop que queima o perdão do avanço.
 
 Candidatos, do que ainda dói:
 
@@ -1395,6 +1399,11 @@ Candidatos, do que ainda dói:
   boot e some
   o que o
   fetch trouxe
+  e um
+  hitstop que
+  queima o
+  perdão do
+  avanço
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1418,7 +1427,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o painel
-relê a lacuna quando o fetch termina.
-Pintar só no boot some o que chegou. Não
-promove `heard`.
+Arquivos quentes da última sessão: o hitstop
+não come o perdão do avanço. O freeze também
+poupa a guarda. Não promove `felt`.
