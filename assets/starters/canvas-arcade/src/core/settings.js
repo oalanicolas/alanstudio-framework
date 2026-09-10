@@ -44,6 +44,8 @@ export const DEFAULT_BUSES = { master: 0.7, music: 0.45, sfx: 0.62, ui: 0.55 };
 // alcance e invuln; este knob só dilata o milissegundo real.
 export const GAME_SPEED_MIN = 0.5;
 export const GAME_SPEED_MAX = 1;
+export const UI_SCALE_MIN = 0.75;
+export const UI_SCALE_MAX = 2;
 
 export function defaultSettings(environment = {}) {
   return {
@@ -102,7 +104,9 @@ export function normalizeSettings(raw, environment = {}, base = defaultSettings(
       ? Math.min(GAME_SPEED_MAX, Math.max(GAME_SPEED_MIN, raw.gameSpeed))
       : base.gameSpeed,
     oneHand: typeof raw.oneHand === "boolean" ? raw.oneHand : base.oneHand,
-    uiScale: Number.isFinite(raw.uiScale) ? Math.min(2, Math.max(0.75, raw.uiScale)) : base.uiScale,
+    uiScale: Number.isFinite(raw.uiScale)
+      ? Math.min(UI_SCALE_MAX, Math.max(UI_SCALE_MIN, raw.uiScale))
+      : base.uiScale,
     spawnProfile:
       typeof raw.spawnProfile === "string" && /^[a-z][a-z0-9]{0,31}$/.test(raw.spawnProfile)
         ? raw.spawnProfile

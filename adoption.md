@@ -3,6 +3,52 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.258 — A escala veste a casca da página
+
+O
+knob
+já
+crescia
+o
+canvas.
+A
+casca
+ficava
+em
+quinze
+pixels.
+Quem
+pedia
+interface
+maior
+lia
+o
+mesmo
+painel.
+Agora
+`--ui-scale`
+veste
+a
+página.
+O
+canvas
+continua
+no
+desenho.
+Não
+promove
+`verified`.
+
+O que 0.9.258 não afirma:
+crescer
+a
+casca
+não
+é
+sessão
+de
+alcance.
+
 ## 0.9.257 — A região viva nomeia o aviso do primeiro ciclo
 
 O

@@ -1,6 +1,9 @@
 // A casca da página. O campo já vestia o look; o HTML ficava no
-// token frio do padrão. A página reusa a paleta vigente. Token no
-// disco não é direção observada.
+// token frio do padrão. A página reusa a paleta vigente. O knob
+// de escala já crescia o canvas; a casca agora lê o mesmo número.
+// Token no disco não é direção observada nem sessão de alcance.
+
+import { UI_SCALE_MAX, UI_SCALE_MIN } from "./settings.js";
 
 export const SHELL_VARS = {
   "--ink": "text",
@@ -28,5 +31,18 @@ export function applyShell(target, palette) {
   for (const [name, value] of Object.entries(vars)) {
     target.style.setProperty(name, value);
   }
+  return true;
+}
+
+export function scaleVar(uiScale) {
+  if (!Number.isFinite(uiScale)) return null;
+  const scale = Math.min(UI_SCALE_MAX, Math.max(UI_SCALE_MIN, uiScale));
+  return { "--ui-scale": String(scale) };
+}
+
+export function applyScale(target, uiScale) {
+  const vars = scaleVar(uiScale);
+  if (!vars || !target?.style?.setProperty) return false;
+  target.style.setProperty("--ui-scale", vars["--ui-scale"]);
   return true;
 }

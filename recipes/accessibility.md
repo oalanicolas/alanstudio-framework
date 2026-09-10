@@ -6,8 +6,9 @@ movimento, leitura ou tempo de reação.
 Com tela, a primeira superfície é a porta. O aviso do primeiro ciclo
 mora no canvas — fantasia e mover na porta, o resto no campo — e a
 região viva nomeia a mesma linha. Sem isto quem não vê a tela só
-tinha a tabela, e o convite some `#commands`. Overlay, HUD da abertura e a legenda
-também seguem `uiScale`. A porta lê a legenda que o mixer ainda guarda.
+tinha a tabela, e o convite some `#commands`. Overlay, HUD da abertura, a
+legenda e a casca da página também seguem `uiScale`. O canvas continua no
+desenho. A porta lê a legenda que o mixer ainda guarda.
 Sem tela o headless já joga.
 
 Acesso é decisão de design, não camada final. Tratado no GDD, custa uma escolha;
@@ -51,7 +52,7 @@ sufixo. Declara em
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
 Estilhaço no trilho pede o dash; toque e controle ganham passo depois
 do movimento. Overlay e HUD confirmam o aparelho que falou por último;
-o overlay segue `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
+o overlay e a casca da página seguem `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
 x do corpo, no alcance do telegraph, vira `perigo à frente` na região viva
 junto da última legenda. Na porta o canvas também marca a mostra no
 trilho — o mesmo aviso do campo. Texto no DOM não é sessão. A pausa entra como `pausado` só quando o

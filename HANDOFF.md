@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.257: a região viva nomeia o aviso do primeiro ciclo. O convite some a tabela; o canvas já pintava. Não promove `verified`.
+**HEAD:** ver `git log -1` — vigente 0.9.258: a escala veste a casca da página. O canvas já crescia; o HTML ficava em quinze pixels. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 288 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.257)
+## O que o HEAD já entrega (0.9.91–0.9.258)
 
 | Ver | Salto |
 | --- | --- |
@@ -201,6 +201,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.255 | O hitstop não come o perdão do avanço. O freeze também poupa a guarda. Não promove `felt`. |
 | 0.9.256 | O hold leva o relógio da porta. Retomar no campo não devolve a frase nem o mover. Hold antigo sem o número não inventa ensino feito. Não promove `trusted`. |
 | 0.9.257 | A região viva nomeia o aviso do primeiro ciclo que o canvas já pinta. O convite some a tabela. No fim a linha some. Não promove `verified`. |
+| 0.9.258 | A escala veste a casca da página. O canvas já crescia; tabela, painel e convite ficavam em quinze pixels. Não promove `verified`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -221,7 +222,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | o hold leva o relógio da porta; live nomeia a recuperação que o painel já mostra; a porta não; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
-| accessibility | slice | live nomeia o aviso do primeiro ciclo; live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
+| accessibility | slice | a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a recuperação das preferências; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -379,7 +380,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um painel que pinta a lacuna no boot e some o que o fetch trouxe
   ou um hitstop que queima o perdão do avanço
   ou um hold que some o relógio da porta e o campo repete o ensino
-  ou uma região viva que some o aviso do primeiro ciclo.
+  ou uma região viva que some o aviso do primeiro ciclo
+  ou um knob de escala que cresce o canvas e some a casca.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -1434,6 +1436,13 @@ Candidatos, do que ainda dói:
   aviso do
   primeiro
   ciclo
+  e um
+  knob de
+  escala que
+  cresce o
+  canvas e
+  some a
+  casca
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1457,7 +1466,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a região
-viva nomeia o aviso do primeiro ciclo. O
-convite some a tabela; o canvas já pintava.
+Arquivos quentes da última sessão: a escala
+veste a casca da página. O canvas já
+crescia; o HTML ficava em quinze pixels.
 Não promove `verified`.

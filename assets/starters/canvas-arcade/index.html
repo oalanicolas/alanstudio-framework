@@ -7,12 +7,14 @@
     <style>
       :root {
         color-scheme: dark;
+        --ui-scale: 1;
         --ink: #e7ebf3;
         --muted: #8a93a6;
         --surface: #171b26;
         --page: #10131a;
         --edge: rgba(231,235,243,0.22);
         --accent: #4ea8ff;
+        font-size: calc(16px * var(--ui-scale, 1));
       }
       * { box-sizing: border-box; }
       body {
@@ -20,7 +22,7 @@
         padding: 1.5rem 1rem 3rem;
         background: var(--page);
         color: var(--ink);
-        font: 15px/1.55 system-ui, -apple-system, Segoe UI, sans-serif;
+        font: calc(15px * var(--ui-scale, 1)) / 1.55 system-ui, -apple-system, Segoe UI, sans-serif;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -43,10 +45,10 @@
         padding: 1rem 1.15rem;
       }
       .panel h2 { font-size: 0.95rem; margin: 0 0 0.6rem; }
-      .grid { display: grid; gap: 0.55rem 1.5rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+      .grid { display: grid; gap: 0.55rem 1.5rem; grid-template-columns: repeat(auto-fit, minmax(calc(210px * var(--ui-scale, 1)), 1fr)); }
       label { display: flex; align-items: center; gap: 0.55rem; }
       label span { flex: 1; }
-      input[type="range"] { flex: 1; min-width: 90px; }
+      input[type="range"] { flex: 1; min-width: calc(90px * var(--ui-scale, 1)); }
       dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.3rem 0.9rem; }
       dt { color: var(--muted); }
       dd { margin: 0; }
@@ -238,7 +240,7 @@
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS, settingsLine } from "./src/core/settings.js";
       import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, bringPanel, composeFinding, inviteHref, inviteMode, offerFinding, readArtifactMark } from "./src/core/invite.js";
       import { FINDING_ROUTE, NOTE_ROUTE, playFinding } from "./src/core/run-report.js";
-      import { applyShell } from "./src/core/shell.js";
+      import { applyScale, applyShell } from "./src/core/shell.js";
       import { audioGapLine } from "./src/game/audio.js";
       import { LOOK_LABELS, SPAWN_LABELS, dressPalette, listLooks, listMoods, listSpawnProfiles, loadTable, matchingMood, pairPatch } from "./src/game/tables.js";
       import { paintCommands } from "./src/core/keys.js";
@@ -410,6 +412,7 @@
         const dress = () => {
           const settings = game.settings;
           applyShell(document.documentElement, dressPalette(settings));
+          applyScale(document.documentElement, settings.uiScale);
         };
         const sync = () => {
           const settings = game.settings;
@@ -442,6 +445,7 @@
         });
         document.getElementById("uiScale").addEventListener("input", (event) => {
           game.updateSettings({ uiScale: Number(event.target.value) });
+          dress();
         });
         spawnSelect.addEventListener("change", (event) => {
           game.updateSettings({ spawnProfile: event.target.value });
