@@ -534,9 +534,9 @@ python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo --fill --apply --
 
 `heard` e `approved` são sempre `false`: arquivo presente não é mixagem ouvida.
 `next` propõe `audio.roles` quando um papel está vazio. `roles --fill` sugere
-um id do acervo ou a ficha do stem do starter; `--apply` copia só o id
-do acervo para `public/sfx/<papel>` com recibo. Sem acervo, `sfx copy`
-leva o stem do starter com créditos. `--apply` não o copia.
+um id do acervo ou a ficha do stem do starter; `--apply` copia o id do
+acervo ou o stem do starter para `public/sfx/<papel>` com recibo.
+`sfx copy` continua o caminho explícito. Copiar não é ouvir.
 O starter carrega esse arquivo no mixer. `npm run mix` soma cama e vozes
 de uma partida simulada com a mesma taxa da corrente; isso também não é
 mix ouvida. Primeiro resultado da

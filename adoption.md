@@ -3,6 +3,62 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.217 — O apply também copia o stem do starter
+
+O
+`--fill`
+já
+nomeava
+o
+stem
+do
+starter.
+O
+`--apply`
+só
+copiava
+o
+id
+do
+acervo
+e
+o
+`next`
+mandava
+`sfx
+copy`.
+Agora
+o
+`--apply`
+copia
+os
+dois
+com
+créditos.
+Sem
+acervo,
+o
+`next`
+aponta
+`--apply`.
+Não
+promove
+`heard`.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.217 não afirma:
+copiar
+o
+stem
+não
+é
+mix
+ouvido.
+
 ## 0.9.216 — O live nomeia o toque da mostra
 
 Na

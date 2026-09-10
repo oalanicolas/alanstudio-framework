@@ -2243,13 +2243,13 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         applied = game.roles_fill(destination, self.root, apply=True)
         self.assertTrue(applied["applied"])
         self.assertIn("dash", applied["copied"])
-        self.assertNotIn("hit", applied["copied"])
+        self.assertIn("hit", applied["copied"])
         self.assertTrue((destination / "public/sfx/dash.wav").is_file())
-        self.assertFalse((destination / "public/sfx/hit.wav").exists())
+        self.assertTrue((destination / "public/sfx/hit.wav").is_file())
         self.assertFalse(applied["heard"])
         after = game.roles_reading(destination, self.root)
         self.assertNotIn("dash", after["empty"])
-        self.assertIn("hit", after["empty"])
+        self.assertNotIn("hit", after["empty"])
 
     def test_roles_fill_without_a_catalog_names_the_starter_stem(self):
         destination = self.root / "sem-acervo"
@@ -2270,18 +2270,20 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("starter", report["scope"])
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("verified", report["scope"])
-        applied = game.roles_fill(destination, self.root, apply=True)
-        self.assertTrue(applied["applied"])
-        self.assertEqual(applied["copied"], [])
-        self.assertFalse((destination / "public/sfx/dash.wav").exists())
         commands = next(
             item["commands"] for item in self.proposals(game.next_step(destination))
             if item["basis"] == "audio.roles"
         )
         self.assertIn("--fill", commands[0])
-        self.assertTrue(all("--apply" not in command for command in commands))
-        self.assertTrue(any(" sfx " in f" {command} " and " copy " in f" {command} " for command in commands))
-        self.assertTrue(any("public/sfx" in command for command in commands))
+        self.assertTrue(any("--apply" in command for command in commands))
+        self.assertTrue(all(" sfx " not in f" {command} " or " copy " not in f" {command} " for command in commands))
+        applied = game.roles_fill(destination, self.root, apply=True)
+        self.assertTrue(applied["applied"])
+        self.assertIn("dash", applied["copied"])
+        self.assertTrue((destination / "public/sfx/dash.wav").is_file())
+        self.assertFalse(applied["heard"])
+        after = game.roles_reading(destination, self.root)
+        self.assertNotIn("dash", after["empty"])
 
     def test_sfx_search_on_empty_catalog_does_not_pretend_you_can_listen(self):
         run = subprocess.run(

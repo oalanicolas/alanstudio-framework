@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.216 (confirmado): na porta o `#live` nomeia o toque da mostra.
+**HEAD:** ver `git log -1` — vigente 0.9.217: `roles --apply` também copia o stem do starter.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 279 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.216)
+## O que o HEAD já entrega (0.9.91–0.9.217)
 
 | Ver | Salto |
 | --- | --- |
@@ -160,6 +160,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.214 | `doctor.then.guide` aponta `guide --idea <fantasia>`. O comando nu quebrava na raiz depois do 0.9.213. Não cria e não executa. |
 | 0.9.215 | A barra de `accessibility` do starter não atribui medição no dispositivo ao `contrast`. O critério nomeia o stub; o aparelho continua pendente. Não promove `accessibility`. |
 | 0.9.216 | Na porta o `#live` nomeia o toque da mostra (`a mostra toca` / `a mostra raspa`). Sem fingir coleta. Sem voz nova. Não promove `accessibility`. |
+| 0.9.217 | `roles --apply` copia o stem do starter com créditos. Sem acervo, `next` aponta `--apply`, não `sfx copy`. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -294,7 +295,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou next que declara origem relendo origins
   ou note que some se o recibo fechou o achado
   ou barra de accessibility que atribui medição no dispositivo ao contrast
-  ou live que nomeia o toque da mostra.
+  ou live que nomeia o toque da mostra
+  ou roles --apply que some o stem que o fill já nomeia.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -375,11 +377,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   nem `feel` como se gravassem. Esqueleto no disco
   não é achado. Escrever não é sessão.
   Sem acervo, `roles --fill` nomeia o stem do starter
-  (`kind: starter`, licença, origem). `--apply` só copia
-  `kind: catalog`. Sem catálogo, `next` em `audio.roles`
-  aponta `sfx copy --to public/sfx`, não `--apply`.
-  `sfx export` / `sfx copy` levam bytes e créditos do stem.
-  Copiar não ouve.
+  (`kind: starter`, licença, origem). `--apply` copia o
+  id do acervo ou o stem do starter com créditos. Sem
+  catálogo, `next` em `audio.roles` aponta `--apply`,
+  não `sfx copy`. `sfx export` / `sfx copy` continuam
+  o caminho explícito. Copiar não ouve.
 - `emit()` escreve `prompt` em stderr quando a chave existe e tem
   texto. stdout continua só o JSON. Falar a frase não executa.
   `next` / `doctor` / `feel` não têm `prompt` e não escrevem frase.
@@ -670,6 +672,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `doctor.then.guide` que aponta o `guide` nu na raiz.
 **Não** mais uma barra de `accessibility` que atribui medição no dispositivo ao `contrast`.
 **Não** mais uma região viva que some o toque da mostra enquanto o canvas já acende.
+**Não** mais um `roles --apply` que some o stem que o `--fill` já nomeia.
 
 Candidatos, do que ainda dói:
 
@@ -706,8 +709,8 @@ Candidatos, do que ainda dói:
    e `fields`; `next`
    aponta a página e `note --field`, não relê o
    leitor. Sem `then` no leitor.    Sem acervo, `roles --fill` nomeia o stem
-   do starter; `--apply` não o copia; `next` aponta
-   `sfx copy`.    `feel`
+   do starter; `--apply` o copia; `next` aponta
+   `--apply`.    `feel`
    nomeia `then.play` e `then.note` sem
    executar. Sem serve a chave some. Sem
    `prompt`. `discover` nomeia os mesmos
@@ -728,8 +731,9 @@ Candidatos, do que ainda dói:
    A barra de `accessibility` do starter não atribui medição no
    dispositivo ao `contrast`. Referências que ainda falarem só do
    campo sem a abertura estão velhas. `sfx serve` gera a página se
-   `ui/` faltar. `sfx info` lê a chave do starter. `sfx copy` e
-   `sfx export` levam bytes e créditos. `sfx verify` nomeia os stems
+   `ui/` faltar. `sfx info` lê a chave do starter.    `sfx copy` e
+   `sfx export` levam bytes e créditos. `roles --apply` também
+   copia o stem do starter. `sfx verify` nomeia os stems
    sem cruzar. Nomear não entrega. Copiar não é `heard`. Tocar não
    é `heard`. `origins --declare` escreve o sidecar. Recibo não é
    licença.
@@ -945,6 +949,12 @@ Candidatos, do que ainda dói:
   que some o
   toque da
   mostra
+  e o
+  roles --apply
+  que some o
+  stem que o
+  fill já
+  nomeia
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -968,7 +978,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: na porta o
-`#live` nomeia o toque da mostra. Sem fingir
-coleta. Sem voz nova. Não promove
-`accessibility`.
+Arquivos quentes da última sessão: `roles --apply`
+copia o stem do starter com créditos. Sem
+acervo, `next` aponta `--apply`. Não promove
+`heard`.

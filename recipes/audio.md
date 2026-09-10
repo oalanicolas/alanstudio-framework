@@ -16,8 +16,9 @@ e Kenney arcade não são o padrão.
 `context --focus audio` seleciona esta receita. `roles <projeto>` lê os
 papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
 em `public/sfx`. `roles --fill` sugere um id do acervo ou a ficha do
-stem do starter que casa; `--apply` copia só o id do acervo.
-Stem do starter só nomeia. O starter `canvas-arcade`
+stem do starter que casa; `--apply` copia o id do acervo ou o stem
+do starter com créditos. `sfx copy` continua o caminho explícito.
+O starter `canvas-arcade`
 já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
 mixer. O pedido que chega antes do WAV fica na fila e toca quando o
 buffer entra — sem segunda legenda. Os stems sobem juntos: collect
@@ -34,7 +35,7 @@ voz própria, mais curta que o dash; sem o papel o aterrissar é mudo.
 depois de um `note`, `start` e `next` apontam esse comando.
 Arquivo ausente é lacuna do verbo, não silêncio deliberado;
 `heard` é sempre falso. Sem `shared/sfx`, `--fill` nomeia o stem
-do starter que casa, `sfx search` nomeia o mesmo stem,
+do starter que casa, `--apply` o copia, `sfx search` nomeia o mesmo stem,
 `sfx info` lê a chave, `sfx verify` nomeia os stems sem cruzar o
 que não existe, `sfx summary` lista todos os stems já no
 `public/sfx` e `sfx serve`
@@ -47,7 +48,7 @@ autoriza improvisar licença. Arquivo no disco não é mix ouvido. Crescer o ace
 `sfx export ID --to PASTA` copia bytes e
 créditos do acervo ou do stem do starter que `sfx info`
 já nomeia. `sfx copy` leva o mesmo stem para a pasta do
-jogo. `--apply` continua só o id do acervo. Importar e exportar não é ouvir. O acervo compartilhado é ADAPT, não o
+jogo. `--apply` também leva o stem do starter. Importar e exportar não é ouvir. O acervo compartilhado é ADAPT, não o
 primeiro ciclo.
 
 ## 1. Nomear a camada
