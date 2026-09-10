@@ -3,6 +3,64 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.233 — A coleta no avanço não congela nem senta o dash
+
+O
+orbe
+no
+avanço
+congelava
+o
+dash
+e
+sentava
+o
+corpo.
+O
+raspo
+já
+não
+comia
+o
+alongamento.
+A
+coleta
+parada
+continua
+com
+hitstop
+e
+sit.
+Agora
+o
+orbe
+treme
+e
+sobe
+a
+câmera
+sem
+comer
+o
+verbo.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.233 não afirma:
+suco
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.232 — O raspo no avanço não come a pose do dash
 
 O

@@ -1056,9 +1056,18 @@ function collect(state, fromX, fromY) {
   state.chain += 1;
   state.stats.collected += 1;
   if (state.chain > state.stats.bestChain) state.stats.bestChain = state.chain;
-  state.hitstop = CONFIG.feel.collectHitstopTicks;
+  const flying =
+    (state.player.dashTicks ?? 0) > 0 ||
+    (state.player.dashWindup ?? 0) > 0;
+  // O raspo já não come o alongamento. Sem isto o orbe
+  // no avanço congelava o dash e sentava o corpo — a
+  // coleta parada continua com hitstop e sit. Pose no
+  // disco não é peso percebido.
+  if (!flying) {
+    state.hitstop = CONFIG.feel.collectHitstopTicks;
+    state.player.squash = CONFIG.feel.squashCollect;
+  }
   state.shake += CONFIG.feel.collectShake;
-  state.player.squash = CONFIG.feel.squashCollect;
   punch(state, 0, CONFIG.feel.punchCollectY);
   joinChain(state, before, fromX, fromY);
   emit(state, "collect", { chain: state.chain, x: fromX });

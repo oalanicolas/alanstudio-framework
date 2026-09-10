@@ -2,11 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.232 (confirmado): o raspo no avanço não come a pose do dash.
+**HEAD:** ver `git log -1` — vigente 0.9.233 (a confirmar): a coleta no avanço não congela nem senta o dash.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 281 OK.
-`cd assets/starters/canvas-arcade && npm test` → 404 OK.
+**Testes no HEAD:** a confirmar no 0.9.233.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +31,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.232)
+## O que o HEAD já entrega (0.9.91–0.9.233)
 
 | Ver | Salto |
 | --- | --- |
@@ -176,6 +175,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.230 | O `init` aponta a mesma superfície do `start`: `open`, `url`, `prompt` no stderr. Não executa. Não promove. |
 | 0.9.231 | O arco da guarda não mente que o dash está pronto. `dashCharge` trava como no `bankLock`. Não promove feel. |
 | 0.9.232 | O raspo no avanço não come a pose do dash. A graça parada continua pinçando. Não promove feel. |
+| 0.9.233 | A coleta no avanço não congela nem senta o dash. Parada continua com hitstop e sit. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -189,7 +189,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | o raspo no avanço não come o alongamento; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | a coleta no avanço não congela o dash; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
@@ -326,7 +326,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou context que manda documentar um start fresco
   ou init que planta e some a superfície
   ou arco da guarda que mente que o dash está pronto
-  ou raspo no avanço que come a pose do dash.
+  ou raspo no avanço que come a pose do dash
+  ou coleta no avanço que congela e senta o dash.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -750,6 +751,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `init` que planta e some a superfície que o `start` já nomeia.
 **Não** mais um arco da guarda que mente que o dash está pronto.
 **Não** mais um raspo no avanço que come a pose do dash.
+**Não** mais uma coleta no avanço que congela e senta o dash.
 
 Candidatos, do que ainda dói:
 
@@ -1120,6 +1122,12 @@ Candidatos, do que ainda dói:
   come a
   pose do
   dash
+  e a
+  coleta no
+  avanço que
+  congela e
+  senta o
+  dash
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1143,8 +1151,8 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o raspo
-no avanço não come a pose do dash.
-`grazeContact` não estreita o alongamento
-nem o sit do land. A graça parada continua
-pinçando. Não promove feel.
+Arquivos quentes da última sessão: a coleta
+no avanço não congela nem senta o dash.
+`collect` poupa hitstop e sit quando o
+avanço voa. Parada continua congelando.
+Não promove feel.

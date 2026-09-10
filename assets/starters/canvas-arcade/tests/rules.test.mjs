@@ -486,6 +486,36 @@ test("o dash atravessa o estilhaço sem perder a corrente", () => {
   );
 });
 
+test("a coleta no avanço não congela nem senta o dash", () => {
+  const fade = CONFIG.feel.squashDecay;
+  const tremor = CONFIG.feel.shakeDecay;
+  const punch = CONFIG.feel.punchDecay;
+  const state = createState(5);
+  dashOut(state);
+  assert.ok(state.player.dashTicks > 0);
+  const ticks = state.player.dashTicks;
+  state.player.squash = CONFIG.feel.squashDash;
+  state.entities = [orb(state.player.x, PLAYER_Y)];
+  advance(state, { move: 1, dash: false, bank: false });
+  assert.equal(state.chain, 1, "o orbe ainda entra");
+  assert.ok(state.events.some((event) => event.type === "collect"));
+  assert.equal(state.hitstop, 0, "a coleta no avanço não congela o dash");
+  assert.equal(
+    state.player.squash,
+    CONFIG.feel.squashDash * fade,
+    "a coleta não senta o alongamento",
+  );
+  assert.equal(state.player.dashTicks, ticks - 1, "o dash continua o relógio");
+  assert.equal(state.shake, CONFIG.feel.collectShake * tremor, "a coleta ainda treme");
+  assert.equal(state.camera.y, CONFIG.feel.punchCollectY * punch, "a coleta ainda sobe a câmera");
+
+  const standing = createState(5);
+  standing.entities = [orb(standing.player.x, PLAYER_Y)];
+  advance(standing, neutralIntent());
+  assert.equal(standing.hitstop, CONFIG.feel.collectHitstopTicks, "parada continua congelando");
+  assert.equal(standing.player.squash, CONFIG.feel.squashCollect * fade, "parada continua sentando");
+});
+
 test("o raspo no avanço não come a pose do dash", () => {
   const fade = CONFIG.feel.squashDecay;
   const tremor = CONFIG.feel.shakeDecay;
