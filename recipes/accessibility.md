@@ -7,7 +7,8 @@ Com tela, a primeira superfície é a porta. O aviso do primeiro ciclo
 mora no canvas — fantasia e mover na porta, o resto no campo — e a
 região viva nomeia a mesma linha. Sem isto quem não vê a tela só
 tinha a tabela, e o convite some `#commands`. Overlay, HUD da abertura, a
-legenda e a casca da página também seguem `uiScale`. O canvas continua no
+legenda e a casca da página também seguem `uiScale`. Os knobs da casca
+vestem o look e têm foco visível. O canvas continua no
 desenho. A porta lê a legenda que o mixer ainda guarda.
 Sem tela o headless já joga.
 

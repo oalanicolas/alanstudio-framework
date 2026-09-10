@@ -1,7 +1,9 @@
 // A casca da página. O campo já vestia o look; o HTML ficava no
 // token frio do padrão. A página reusa a paleta vigente. O knob
 // de escala já crescia o canvas; a casca agora lê o mesmo número.
-// Token no disco não é direção observada nem sessão de alcance.
+// Select e faixa nativos ficavam no widget do sistema; agora
+// leem `--page`, `--ink` e `--accent`. Token no disco não é
+// direção observada nem sessão de alcance.
 
 import { UI_SCALE_MAX, UI_SCALE_MIN } from "./settings.js";
 

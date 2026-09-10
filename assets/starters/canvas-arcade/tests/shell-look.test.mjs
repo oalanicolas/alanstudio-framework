@@ -42,6 +42,16 @@ test("a página declara a casca por token, não um fundo frio à parte", () => {
   assert.match(html, /applyShell/);
 });
 
+test("os knobs vestem o look, não o widget frio", () => {
+  assert.match(html, /accent-color:\s*var\(--accent\)/);
+  assert.match(html, /select\s*\{[\s\S]*background:\s*var\(--page\)/);
+  assert.match(html, /select\s*\{[\s\S]*color:\s*var\(--ink\)/);
+  assert.match(html, /select:focus-visible/);
+  assert.match(html, /input:focus-visible/);
+  assert.match(html, /textarea:focus-visible/);
+  assert.equal(html.includes("accent-color: #4ea8ff"), false);
+});
+
 test("a escala veste a casca, não só o canvas", () => {
   assert.equal(scaleVar(1.6)["--ui-scale"], "1.6");
   assert.equal(scaleVar(12)["--ui-scale"], String(UI_SCALE_MAX));

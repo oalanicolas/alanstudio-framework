@@ -15,7 +15,7 @@ O harness lê paleta e art-bible vigentes com `art <projeto>`. Paleta no
 código ou em `data/palettes.json` não é direção consistente — `consistent` é sempre falso. Rascunho
 do `init` não conta. Sem declaração, `next` propõe `art.missing`.
 No starter, `look --from` / `--as` nasce um look que o jogo já pinta —
-campo, cortina e a casca da página. `pair --from` nasce look e chuva
+campo, cortina, a casca da página e os knobs (select, faixa, foco). `pair --from` nasce look e chuva
 no mesmo nome e `?mood=` aplica. `dusk` e `calm` já são o segundo
 e o terceiro look; `calm` não é o `cooler` aplicado em `normal`.
 `dusk` pinta orbe âmbar e estilhaço índigo; o campo continua

@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.261 — Os knobs vestem o look
+
+O
+campo
+já
+vestia
+o
+look.
+A
+casca
+também.
+Select
+e
+faixa
+ficavam
+no
+widget
+frio.
+Agora
+leem
+`--page`,
+`--ink`
+e
+`--accent`.
+O
+foco
+visível
+também
+chega.
+Não
+promove
+`consistent`.
+
+O que 0.9.261 não afirma:
+vestir
+o
+knob
+não
+é
+comparação
+em
+movimento.
+
 ## 0.9.260 — O toque que sai do campo ainda solta
 
 O
