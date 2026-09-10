@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.110: o avanço também promete.
+**HEAD:** ver `git log -1` — vigente 0.9.111: o play também é um verbo.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 244 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 245 OK.
 `cd assets/starters/canvas-arcade && npm test` → 274 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.110)
+## O que o HEAD já entrega (0.9.91–0.9.111)
 
 | Ver | Salto |
 | --- | --- |
@@ -54,6 +54,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.108 | `ship` nomeia árvore incompleta, HEAD velho e `elsewhere` falso. |
 | 0.9.109 | `cycle.door` entra no prompt: com tela o avanço abre a porta. |
 | 0.9.110 | O avanço senta dois ticks antes de alongar. A porta continua imediata. |
+| 0.9.111 | `play` / `open` apontam o serve sem executar. Perder o JSON não recomeça. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -155,6 +156,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `play` após `start` é `cd … && npm run serve`. Não há `npm install`.
 - `start` devolve `open` (= `play`) e `steps` (3, passo 1 feito).
   `guide` sem destino: `open` é o start. Os dois: `executed` falso.
+- `play` / `open` (CLI) apontam o serve do projeto existente. Não
+  criam, não executam. Sem caminho: `here_project` ou “sem destino”.
 - `then` sempre tem `play`, `note`, `lost`.
 - Sem caminho e sem ideia (ou ideia que não vira slug): `ValueError` “sem destino”.
 
@@ -208,8 +211,8 @@ Candidatos, do que ainda dói:
 1. **Release (define o piso):** outra máquina correr o `dist/`. Não
    promover. `ship` já nomeia árvore incompleta, HEAD velho e
    `elsewhere` falso; isso não é a prova.
-2. **Idéia→jogo:** `start` já devolve `open` e `steps`; o prompt
-   nomeia a porta. Ainda são dois contextos (servir no dispositivo,
+2. **Idéia→jogo:** `start` devolve `open`; `play` / `open` o
+   reimprimem. Ainda são dois contextos (servir no dispositivo,
    `note` no harness). Não auto-servir. `len(steps) == 3` e
    `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
@@ -239,6 +242,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `src/game/rules.js` (`dashWindup`,
-`squashCoil`, `fireDash`), `src/game/render.js` (`dashCharge.windup`),
-`src/core/save.js` (hold leva o windup).
+Arquivos quentes da última sessão: `scripts/game.py` (`play_cycle`,
+parser `play`/`open`), SKILL/README do verbo play.

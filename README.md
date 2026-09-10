@@ -64,6 +64,15 @@ python3 scripts/game.py --idea "atravessar estilhaços para guardar a corrente"
 python3 scripts/game.py guide /caminho/do/laboratorio/meu-jogo --idea "atravessar estilhaços para guardar a corrente"
 ```
 
+Perdeu o JSON do `start`? `play` (também `open`) aponta de novo o comando que abre o jogo, sem executar:
+
+```sh
+python3 scripts/game.py play /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py open /caminho/do/laboratorio/meu-jogo
+```
+
+`play` e `open` são o mesmo verbo. Com tela, o avanço abre a porta. Depois de uma partida, o próximo comando do harness é `note`. `executed` fica `false`. Não cria pasta e não serve.
+
 `guide` não cria o projeto. `next` sai do caminho feliz: só entra em `then.lost`, quando o ciclo já correu e você não sabe o que falta. Com destino existente, preenche o comando que abre o jogo e o `kind` do passo de jogar. `executed` fica `false`. Sem `start`, o caminho em dois passos continua valendo:
 
 ```sh

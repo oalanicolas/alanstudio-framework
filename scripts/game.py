@@ -3385,6 +3385,48 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
     }
 
 
+def play_cycle(destination=None, starter=None):
+    if destination is None:
+        raise ValueError("sem destino: passe o caminho ou rode start --idea")
+    dest = Path(destination)
+    if dest.is_symlink() or not dest.is_dir() or not (dest / "package.json").is_file():
+        raise ValueError("sem jogo: rode start --idea ou passe o caminho do projeto")
+    available = starters()
+    chosen = starter or (available[0] if available else "canvas-arcade")
+    try:
+        scripts, manager = project_commands(dest)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
+    play = play_command(dest, scripts, manager) or (
+        f"cd {shlex.quote(str(dest))} && npm run serve"
+    )
+    then = cycle_then(dest, play, chosen)
+    cycle = starter_cycle(chosen)
+    noted = bool(observation_receipts(dest))
+    proposal = next_step(dest, "feel")
+    start_command = harness_command("start", dest, "--starter", chosen)
+    steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True)
+    return {
+        "schema_version": 1,
+        "command": "play",
+        "project": str(dest),
+        "play": play,
+        "open": play,
+        "then": then,
+        "cycle": cycle,
+        "prompt": cycle_prompt(play, then, cycle, noted),
+        "steps": steps,
+        "noted": noted,
+        "executed": False,
+        "scope": (
+            "Aponta o comando que abre o jogo. Não executa, não cria e não "
+            "joga. `open` é o play. Com tela, o avanço abre a porta. Depois "
+            "de uma partida, o próximo comando do harness é `note`, não "
+            "`next`. `executed` fica falso."
+        ),
+    }
+
+
 def here_project(explicit=None, root=None):
     # Sem destino, o mapa usa o diretório atual só se ele for um jogo
     # fora desta árvore. Dentro do framework o comando sem argumentos
@@ -4444,6 +4486,13 @@ def main():
     guided.add_argument("project", nargs="?", default=None)
     guided.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
     guided.add_argument("--idea", help="frase da fantasia; só entra no comando do start, não no disco")
+    played = commands.add_parser(
+        "play",
+        aliases=["open"],
+        parents=[common],
+        help="aponta o comando que abre o jogo, sem executar",
+    )
+    played.add_argument("project", nargs="?", default=None)
     upcoming = commands.add_parser("next", parents=[common], help="proposta ordenada de próxima ação, a partir do estado no disco")
     upcoming.add_argument("project")
     upcoming.add_argument("--focus", choices=FOCI, default="create")
@@ -4610,6 +4659,9 @@ def main():
             report = guide_cycle(dest, args.starter, args.idea)
             report["here"] = args.project is None and dest is not None
             emit(report)
+        elif args.action in ("play", "open"):
+            dest = here_project(args.project, root)
+            emit(play_cycle(dest))
         elif args.action == "next":
             emit(next_step(resolve(args.project, root), args.focus, studies_root=default_studies_root(root)))
         elif args.action == "scan":

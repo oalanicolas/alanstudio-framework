@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.111 — O play também é um verbo
+
+O `start` devolvia `open` no JSON. Quem perdia o
+recibo não tinha verbo para reimprimir o serve.
+`play` e `open` apontam o comando, nomeiam a
+porta e o `note`. `executed` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.111 não afirma: o harness não serviu e
+colar `play` não é uma partida jogada.
+
 ## 0.9.110 — O avanço também promete
 
 O pedido disparava no mesmo quadro. Dois ticks

@@ -930,6 +930,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.scan(destination),
             game.next_step(destination, "lifecycle"),
             game.guide_cycle(destination, "canvas-arcade"),
+            game.play_cycle(destination),
             game.note_observation(destination, "Ana", "o verbo respondeu"),
             game.context(destination, "lifecycle", "vertical-slice"),
             game.verify(destination, [], [sys.executable, "-c", "pass"], self.root / "prova", 30, list(game.CAPABILITIES)),
@@ -2946,6 +2947,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(again["init"])
         self.assertEqual(again["next"]["proposal"]["basis"], "playable.unplayed")
         self.assertIn("serve", again["then"]["play"])
+
+    def test_play_points_at_serve_without_creating_or_playing(self):
+        destination = self.root / "ja-criado"
+        game.start_project(destination, "canvas-arcade", idea="guardar a corrente")
+        before = {path.relative_to(destination).as_posix() for path in destination.rglob("*") if path.is_file()}
+        report = game.play_cycle(destination)
+        after = {path.relative_to(destination).as_posix() for path in destination.rglob("*") if path.is_file()}
+        self.assertEqual(before, after)
+        self.assertEqual(report["command"], "play")
+        self.assertFalse(report["executed"])
+        self.assertEqual(report["open"], report["play"])
+        self.assertIn("serve", report["open"])
+        self.assertIn("Porta:", report["prompt"])
+        self.assertIn("note", report["prompt"])
+        self.assertIn("note", report["then"]["note"])
+        self.assertEqual(len(report["steps"]), 3)
+        self.assertTrue(report["steps"][0]["done"])
+        self.assertEqual(report["open"], report["steps"][1]["command"])
+        self.assertFalse(report["steps"][1]["executed"])
+        self.assertFalse(report["steps"][2]["executed"])
+        self.assertIn("porta", report["cycle"]["door"])
+        self.assertNotIn("aprovado", report["prompt"])
+        self.assertNotIn("verified", report["prompt"])
+        cli = subprocess.run(
+            [sys.executable, str(SCRIPT), "play", str(destination), "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(cli.returncode, 0, cli.stderr)
+        payload = json.loads(cli.stdout)
+        self.assertEqual(payload["open"], report["open"])
+        self.assertFalse(payload["executed"])
+        opened = subprocess.run(
+            [sys.executable, str(SCRIPT), "open", str(destination), "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(opened.returncode, 0, opened.stderr)
+        self.assertEqual(json.loads(opened.stdout)["command"], "play")
+        with self.assertRaisesRegex(ValueError, "sem destino"):
+            game.play_cycle(None)
+        with self.assertRaisesRegex(ValueError, "sem jogo"):
+            game.play_cycle(self.root / "ainda-nao-existe")
+        missing = subprocess.run(
+            [sys.executable, str(SCRIPT), "play", "--root", str(self.root)],
+            capture_output=True, text=True, cwd=str(Path(game.FRAMEWORK)),
+        )
+        self.assertNotEqual(missing.returncode, 0)
+        self.assertIn("sem destino", missing.stderr)
 
     def test_guide_maps_the_cycle_without_creating_or_playing(self):
         report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
