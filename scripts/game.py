@@ -3695,7 +3695,7 @@ def agents_memory_text(destination, play=None, starter=None, documents=False, id
     # caminhos como canônicos — na pasta do start isso mentia. Memória
     # do agente não é rascunho do ciclo.
     destination = Path(destination)
-    cycle = cycle or (starter_cycle(starter) if starter else {})
+    cycle = cycle or starter_cycle(starter) or {}
     fantasy = fantasy if fantasy is not None else resolve_fantasy(idea, destination)
     verb = cycle.get("verb") or cycle.get("door")
     lines = [
