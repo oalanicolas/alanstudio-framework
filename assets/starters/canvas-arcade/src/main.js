@@ -68,7 +68,8 @@ export function createGame(options = {}) {
   const environment = options.environment ?? detectEnvironment();
   const eventTarget = options.eventTarget ?? (typeof window !== "undefined" ? window : null);
 
-  let settings = loadSettings(storage, environment).settings;
+  const settingsLoad = loadSettings(storage, environment);
+  let settings = settingsLoad.settings;
   const queryMood = readMoodQuery(options);
   const querySpawn = readSpawnQuery(options) ?? queryMood;
   const queryLook = readLookQuery(options) ?? queryMood;
@@ -485,6 +486,9 @@ export function createGame(options = {}) {
     flush,
     get settings() {
       return settings;
+    },
+    get settingsLoad() {
+      return { status: settingsLoad.status, notes: [...(settingsLoad.notes ?? [])] };
     },
     updateSettings(patch) {
       const previousSpawn = settings.spawnProfile;

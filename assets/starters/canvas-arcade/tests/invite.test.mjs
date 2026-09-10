@@ -43,6 +43,9 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.equal(/mover|dash|guardar|estilhaço|orbe/i.test(strip[1]), false, strip[1]);
   assert.equal(/problema|evidência|hipótese|medição/i.test(strip[1]), false, strip[1]);
   assert.match(html, /id="options-title"/, "o convite não pode some o alcance");
+  assert.match(html, /id="settings-gap"/, "o convite não some o aviso das preferências");
+  assert.match(html, /settingsLine\(game\.settingsLoad/, "o aviso lê o recibo, não a porta");
+  assert.doesNotMatch(html, /persistLine\([^)]*settings/, "a porta não nomeia a recuperação");
   assert.match(html, /id="remap"/, "o convite não some o remapeamento");
   assert.match(html, /id="gameSpeed"/, "o convite não some a velocidade da partida");
   assert.match(html, /id="colorblind"/, "o convite não some a tinta estável");

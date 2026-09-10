@@ -207,6 +207,18 @@ test("sessão volátil e gravação recusada aparecem no persist sem chamar isso
   game.dispose();
 });
 
+test("preferências ilegíveis avisam sem fingir confiança", () => {
+  const storage = memoryStorage();
+  storage.set("settings", "]{");
+  const game = createGame({ seed: 5, eventTarget: recordingTarget(), storage });
+  assert.equal(game.settingsLoad.status, "recovered");
+  assert.match(game.settingsLoad.notes[0], /settings\.broken/);
+  assert.equal(game.settings.schema, 1);
+  assert.equal(storage.get("settings.broken"), "]{");
+  assert.equal(game.persist.trusted, false);
+  game.dispose();
+});
+
 test("uma partida completa é registrada no progresso persistido", () => {
   const { game, storage } = harness();
   game.advance(CONFIG.runTicks);

@@ -26,6 +26,7 @@
   "title_last": "Última",
   "title_volatile": "Esta sessão não grava",
   "title_unsaved": "A última gravação não ficou",
+  "settings_recovered": "As preferências voltaram ao padrão; o arquivo ilegível ficou em settings.broken",
   "over_door": "Abertura: {dash}",
   "over_door_inline": "abertura: {dash}"
 }

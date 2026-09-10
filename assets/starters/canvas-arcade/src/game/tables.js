@@ -12,7 +12,8 @@
 // quando a porta ainda não deu a frase.
 // `title_play`, `title_again` e `title_new` nomeiam a porta.
 // `title_volatile` e `title_unsaved` nomeiam sessão que não
-// grava e gravação que não ficou. Nomear não é `trusted`.
+// grava e gravação que não ficou. `settings_recovered` nomeia
+// preferências ilegíveis no painel, não na porta. Nomear não é `trusted`.
 // `resume`, `restart` e
 // `hint_bank` reservam o lugar da tecla viva — o fecho com corrente
 // viva reusa essa linha; `hint_dash` ensina o
@@ -218,6 +219,10 @@ export function migrateCopy(raw) {
     title_last: typeof table.title_last === "string" ? table.title_last : "Última",
     title_volatile: typeof table.title_volatile === "string" ? table.title_volatile : "Esta sessão não grava",
     title_unsaved: typeof table.title_unsaved === "string" ? table.title_unsaved : "A última gravação não ficou",
+    settings_recovered:
+      typeof table.settings_recovered === "string"
+        ? table.settings_recovered
+        : "As preferências voltaram ao padrão; o arquivo ilegível ficou em settings.broken",
     over_door: typeof table.over_door === "string" ? table.over_door : "Abertura: {dash}",
     over_door_inline: typeof table.over_door_inline === "string" ? table.over_door_inline : "abertura: {dash}",
     hint_hit: typeof table.hint_hit === "string" ? table.hint_hit : "O estilhaço come a corrente viva — atravesse ou guarde",

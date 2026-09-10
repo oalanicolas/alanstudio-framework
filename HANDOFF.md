@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.247: a guarda espera o land do avanço. O sit não come a pose do dash; o pedido não decai no travel. Não promove feel.
+**HEAD:** ver `git log -1` — vigente 0.9.248: preferências ilegíveis avisam. O painel nomeia a recuperação; a porta não. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 284 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.247)
+## O que o HEAD já entrega (0.9.91–0.9.248)
 
 | Ver | Salto |
 | --- | --- |
@@ -191,6 +191,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.245 | O fim leva o x do campo. O stinger da partida não fala no centro. Não promove `heard`. |
 | 0.9.246 | O processo comum nomeia a porta. O mapa start → jogar → `note` aponta sem executar. Não observa. |
 | 0.9.247 | A guarda espera o land do avanço. O sit não come a pose do dash; o pedido não decai no travel. Coleta no mesmo quadro continua na hora. Não promove feel. |
+| 0.9.248 | Preferências ilegíveis avisam. `settingsLoad` espelha o progresso; o painel nomeia a recuperação; a porta não. Não promove `trusted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -209,7 +210,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
-| state_trust | slice | live nomeia o aviso na porta e no fim; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
+| state_trust | slice | preferências ilegíveis avisam no painel; live nomeia o aviso na porta e no fim; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
 | accessibility | slice | tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
@@ -359,7 +360,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou o controle que fala e some o resume
   ou o fim que fala no centro
   ou o processo comum que some a porta
-  ou a guarda que senta no travel e come a pose do dash.
+  ou a guarda que senta no travel e come a pose do dash
+  ou preferências ilegíveis que voltam ao padrão em silêncio.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -830,6 +832,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um fim que fala no centro.
 **Não** mais um processo comum que some a porta.
 **Não** mais uma guarda que senta no travel e come a pose do dash.
+**Não** mais preferências ilegíveis que voltam ao padrão em silêncio.
 
 Candidatos, do que ainda dói:
 
@@ -883,7 +886,8 @@ Candidatos, do que ainda dói:
    partida jogada. `len(steps) == 3`
    e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
-   volátil e gravação recusada. `save` relata `warned` se o
+   volátil e gravação recusada. Preferências ilegíveis avisam no
+   painel e preservam `settings.broken`. `save` relata `warned` se o
    disco tem essas chaves. A região viva espelha o aviso na
    porta e no fim. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
@@ -1307,6 +1311,12 @@ Candidatos, do que ainda dói:
   come a
   pose do
   dash
+  e as
+  preferências
+  ilegíveis que
+  voltam ao
+  padrão em
+  silêncio
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1330,7 +1340,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a
-guarda espera o land do avanço. O sit
-não come a pose do dash; o pedido
-não decai no travel. Não promove feel.
+Arquivos quentes da última sessão: preferências
+ilegíveis avisam. O painel nomeia a
+recuperação; a porta não. Não promove
+`trusted`.

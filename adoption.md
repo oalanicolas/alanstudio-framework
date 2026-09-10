@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.248 — Preferências ilegíveis avisam
+
+O
+progresso
+já
+nomeava
+a
+recuperação.
+As
+preferências
+voltavam
+ao
+padrão
+em
+silêncio.
+Agora
+o
+painel
+avisa
+e
+o
+arquivo
+ilegível
+fica
+em
+`settings.broken`.
+A
+porta
+não
+nomeia
+essa
+recuperação.
+Não
+promove
+`trusted`.
+
+O que 0.9.248 não afirma:
+aviso
+no
+disco
+não
+é
+aba
+fechada.
+
 ## 0.9.247 — A guarda espera o land do avanço
 
 O

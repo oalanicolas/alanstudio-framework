@@ -2940,6 +2940,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertFalse(persist["trusted"])
         self.assertIn("warned", persist["scope"])
+        self.assertIn("settings_recovered", persist["scope"])
         self.assertNotIn("aprovado", persist["scope"])
         self.assertNotIn("verified", persist["scope"])
         self.assertTrue(perf["declared"])

@@ -5,7 +5,8 @@ item de chuva é **o comando** — o jogo já consome qualquer mesa com a
 forma de `spawn`. `copy.fantasy` alimenta a abertura e o aviso do
 primeiro ciclo quando a porta ainda não deu a frase. `title_play`, `title_again` e `title_new` nomeiam a
 porta. `title_volatile` e `title_unsaved` nomeiam sessão
-que não grava e gravação que não ficou. Nomear não é
+que não grava e gravação que não ficou. `settings_recovered`
+nomeia preferências ilegíveis no painel, não na porta. Nomear não é
 save confiável. Repetir a última seed não é o tick interrompido.
 `palettes` alimenta o desenho: trocar um token não exige abrir
 `render.js`. Os looks `dusk` e `calm` moram nessa mesa; `?look=` /

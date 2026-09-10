@@ -26,6 +26,7 @@ import {
   ONE_HAND_BINDINGS,
   defaultSettings,
   loadSettings,
+  settingsLine,
   normalizeSettings,
 } from "../src/core/settings.js";
 
@@ -275,4 +276,16 @@ test("preferências ilegíveis são recuperadas com o padrão", () => {
   const load = loadSettings(storage, {});
   assert.equal(load.status, "recovered");
   assert.deepEqual(load.settings.bindings, defaultSettings({}).bindings);
+  assert.equal(storage.get("settings.broken"), "]{");
+  assert.match(load.notes[0], /settings\.broken/);
+  assert.equal(
+    settingsLine(load, { settings_recovered: "As preferências voltaram ao padrão" }),
+    "As preferências voltaram ao padrão",
+  );
+  assert.equal(settingsLine({ status: "loaded", notes: [] }, { settings_recovered: "x" }), "");
+  assert.equal(
+    persistLine({ durable: true, wrote: true, trusted: false }, { settings_recovered: "x", title_volatile: "volátil" }),
+    "",
+    "a porta não nomeia a recuperação das preferências",
+  );
 });

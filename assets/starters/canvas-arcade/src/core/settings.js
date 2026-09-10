@@ -118,10 +118,26 @@ export function normalizeSettings(raw, environment = {}, base = defaultSettings(
 
 export function loadSettings(storage, environment = {}) {
   const read = readJson(storage, SETTINGS_KEY);
+  if (read.status === "unreadable") {
+    return {
+      settings: defaultSettings(environment),
+      status: "recovered",
+      notes: ["preferências ilegíveis preservadas em settings.broken; preferências reiniciadas"],
+    };
+  }
   return {
     settings: normalizeSettings(read.value, environment),
-    status: read.status === "unreadable" ? "recovered" : read.status,
+    status: read.status,
+    notes: [],
   };
+}
+
+// O painel de preferências nomeia a recuperação. A porta não:
+// persistLine continua só sessão volátil e gravação recusada.
+// Nomear não é trusted.
+export function settingsLine(load, lines = {}) {
+  if (load?.status !== "recovered") return "";
+  return typeof lines.settings_recovered === "string" ? lines.settings_recovered : "";
 }
 
 export function saveSettings(storage, settings) {

@@ -27,8 +27,11 @@ Trate dado inválido como caso normal, não como exceção: arquivo truncado, ca
 ausente, valor fora de faixa, save de uma versão futura, armazenamento cheio ou
 negado. A política precisa preservar o que ainda é aproveitável e falhar de forma
 legível para o jogador. A porta e o fim nomeiam sessão volátil e
-gravação que não ficou. `save` relata `warned` se o disco tem
-`persistLine`, `title_volatile` ou `title_unsaved`. Nomear não é
+gravação que não ficou. Preferências ilegíveis avisam no painel
+(`settings_recovered`); o arquivo fica em `settings.broken`. A porta
+não nomeia essa recuperação. `save` relata `warned` se o disco tem
+`persistLine`, `title_volatile`, `title_unsaved`, `settings_recovered`
+ou `settings.broken`. Nomear não é
 aba fechada nem `trusted`.
 **Não apague save real para fazer um teste passar**; ao
 migrar, preserve o original até a nova gravação estar confirmada.
@@ -59,8 +62,8 @@ parágrafo acima: `localStorage` não tem substituição, então a gravação fi
 uma escrita comum, com a mesma exposição a interrupção que uma escrita direta. O
 estágio compra detecção de cota e de truncamento, não atomicidade. Para ter
 atomicidade de verdade nesse alvo é preciso outro armazenamento — IndexedDB tem
-transação. `tests/save.test.mjs` exercita migração, dado corrompido e preferência
-fora de faixa; interrupção abrupta real, ninguém exercitou.
+transação. `tests/save.test.mjs` exercita migração, dado corrompido, preferência
+fora de faixa e o aviso da recuperação; interrupção abrupta real, ninguém exercitou.
 
 Prova: cadeia de migração desde a versão mais antiga em uso, carregamento de cada
 forma de dado inválido, interrupção forçada durante a gravação, progresso real

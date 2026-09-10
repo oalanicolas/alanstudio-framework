@@ -196,6 +196,7 @@
 
     <section class="panel" aria-labelledby="options-title">
       <h2 id="options-title">Acessibilidade e som</h2>
+      <p class="note" id="settings-gap" hidden></p>
       <div class="grid">
         <label><input type="checkbox" id="reducedMotion" /> <span>Reduzir movimento</span></label>
         <label><input type="checkbox" id="highContrast" /> <span>Alto contraste</span></label>
@@ -234,11 +235,11 @@
 
     <script type="module" src="./src/main.js"></script>
     <script type="module">
-      import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
+      import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS, settingsLine } from "./src/core/settings.js";
       import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, bringPanel, composeFinding, inviteHref, inviteMode, offerFinding, readArtifactMark } from "./src/core/invite.js";
       import { FINDING_ROUTE, NOTE_ROUTE, playFinding } from "./src/core/run-report.js";
       import { applyShell } from "./src/core/shell.js";
-      import { LOOK_LABELS, SPAWN_LABELS, dressPalette, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch } from "./src/game/tables.js";
+      import { LOOK_LABELS, SPAWN_LABELS, dressPalette, listLooks, listMoods, listSpawnProfiles, loadTable, matchingMood, pairPatch } from "./src/game/tables.js";
       import { paintCommands } from "./src/core/keys.js";
       import { mountRemap } from "./src/core/remap.js";
       applyInvite({
@@ -354,6 +355,12 @@
             document.getElementById("finding-save").textContent = "Achado no disco";
           }).catch(() => {});
         });
+        const settingsGap = document.getElementById("settings-gap");
+        const recovered = settingsLine(game.settingsLoad, loadTable("copy"));
+        if (settingsGap && recovered) {
+          settingsGap.hidden = false;
+          settingsGap.textContent = recovered;
+        }
         const toggles = ["reducedMotion", "highContrast", "colorblind", "captions", "assist"];
         const buses = ["master", "sfx", "music", "ui"];
         const spawnSelect = document.getElementById("spawnProfile");

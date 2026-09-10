@@ -199,6 +199,7 @@ test("copy sem schema migra; schema futuro e campo ausente falham com o nome", (
   assert.equal(old.title_last, "Última");
   assert.equal(old.title_volatile, "Esta sessão não grava");
   assert.equal(old.title_unsaved, "A última gravação não ficou");
+  assert.match(old.settings_recovered, /settings\.broken/);
   assert.equal(old.over_door, "Abertura: {dash}");
   assert.equal(old.over_door_inline, "abertura: {dash}");
   assert.equal(old.hint_hit, "O estilhaço come a corrente viva — atravesse ou guarde");

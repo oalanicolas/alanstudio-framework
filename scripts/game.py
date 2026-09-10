@@ -1445,7 +1445,7 @@ PERSIST_USE = re.compile(
     r"localStorage|sessionStorage|indexedDB|saveProgress|loadProgress|PROGRESS_KEY|SETTINGS_KEY"
 )
 PERSIST_VERSION = re.compile(r"PROGRESS_SCHEMA|SETTINGS_SCHEMA|SAVE_VERSION|function migrate\b|\bmigrate\s*\(")
-PERSIST_WARN = re.compile(r"persistLine|title_volatile|title_unsaved")
+PERSIST_WARN = re.compile(r"persistLine|title_volatile|title_unsaved|settings_recovered|settings\.broken")
 BUDGET_FILES = ("tools/budget.mjs", "tools/budget.js", "tools/budget.py")
 
 
@@ -1547,7 +1547,8 @@ def save_reading(project):
         "scope": (
             "Procura localStorage/saveProgress, PROGRESS_SCHEMA/migrate e se o "
             "disco nomeia sessão volátil (`persistLine`, `title_volatile`, "
-            "`title_unsaved`). Relata `warned`. Nomear não é aba fechada. Não "
+            "`title_unsaved`) e preferências ilegíveis (`settings_recovered`, "
+            "`settings.broken`). Relata `warned`. Nomear não é aba fechada. Não "
             "executa migração, não interrompe a aba e não chama o save de "
             "atômico. `trusted` é sempre falso."
         ),
