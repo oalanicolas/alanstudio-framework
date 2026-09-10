@@ -283,14 +283,37 @@ function textCanvas() {
   };
 }
 
+test("com tela o boot espera o avanço", () => {
+  const view = textCanvas();
+  const { game, press, frame } = shell({ canvas: view.canvas, loadSfx: false });
+  game.start();
+  frame();
+  assert.equal(game.observe().phase, "title");
+  assert.ok(view.texts.some((text) => String(text).includes("Jogar")));
+  press("pause");
+  frame();
+  assert.equal(game.paused, false, "na abertura a pausa não cobre o campo");
+  assert.equal(game.observe().phase, "title");
+  press("dash");
+  frame();
+  assert.equal(game.observe().phase, "playing");
+  game.dispose();
+});
+
 test("o overlay nomeia o controle quando ele falou por último", () => {
   const view = textCanvas();
-  let pads = stubPad({ 9: true });
+  let pads = stubPad({ 0: true });
   const { game, frame } = shell({
     canvas: view.canvas,
     input: createInput({ target: null, gamepads: () => pads }),
   });
   game.start();
+  frame();
+  assert.equal(game.observe().phase, "title");
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing", "A sai da abertura");
+  pads = stubPad({ 9: true });
   frame();
   assert.equal(game.paused, true, "Start precisa pausar");
   frame();

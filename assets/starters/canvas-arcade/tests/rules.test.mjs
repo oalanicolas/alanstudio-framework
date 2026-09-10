@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse } from "../src/game/rules.js";
+import { advance, approaching, beginRun, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -428,6 +428,21 @@ test("guardar abre uma janela de recuperação na chuva", () => {
   ended.recoverUntil = 80;
   ended.tick = 10;
   assert.equal(recoveringWindow(ended), false);
+});
+
+test("a abertura não avança o tick até o corpo apontar", () => {
+  const state = createState(1, { entry: "title" });
+  assert.equal(state.phase, "title");
+  advance(state, { move: 1, dash: true, bank: true });
+  assert.equal(state.phase, "title");
+  assert.equal(state.tick, 0);
+  assert.equal(state.entities.length, 0);
+  beginRun(state);
+  assert.equal(state.phase, "playing");
+  advance(state, neutralIntent());
+  assert.equal(state.tick, 1);
+  beginRun(state);
+  assert.equal(state.tick, 1, "beginRun fora da abertura não reinicia");
 });
 
 test("sair da recuperação emite e acende o campo", () => {

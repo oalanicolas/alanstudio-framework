@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.101 — A abertura também lê a última
+
+O save já guardava `lastSeed` e o recorde. O boot ia
+direto ao tick. Com tela, a porta nomeia a fantasia,
+o recorde e repetir a última seed. Sem tela o
+headless continua jogando. `trusted` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.101 não afirma: o harness não voltou e
+repetir a seed não é o tick interrompido.
+
 ## 0.9.100 — O corpo também aponta
 
 O jogador era o mesmo tijolo da placa. A ponta segue

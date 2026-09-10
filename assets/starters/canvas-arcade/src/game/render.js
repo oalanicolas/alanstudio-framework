@@ -106,6 +106,10 @@ export function createRenderer(canvas, options = {}) {
       else drawShard(context, palette, entity, reduced);
     }
     drawPlayer(context, palette, state, reduced);
+    if (state.phase === "title") {
+      drawTitle(context, palette, settings, extra, lines);
+      return;
+    }
     drawChain(context, palette, state, reduced);
     const ending = state.phase === "over";
     // No fim a cortina cobre o campo. A queda da aposta — o verbo que o
@@ -477,6 +481,42 @@ export function createRenderer(canvas, options = {}) {
     if (state.stats.bestChain) parts.push(`${lines.best_chain}: ${state.stats.bestChain}`);
     parts.push(parts.length ? lines.restart_inline : lines.restart);
     return parts.join(" · ");
+  }
+
+  // A abertura lê o que o save já guardava. Recorde e última
+  // seed — não o tick interrompido. Fantasia do `--idea` mora
+  // aqui, não só nos 48 ticks do aviso. Tela no stub não é
+  // alguém que voltou.
+  function drawTitle(target, palette, settings, extra, lines) {
+    const scale = settings.uiScale ?? 1;
+    target.fillStyle = palette.plate;
+    target.globalAlpha = 0.62;
+    target.fillRect(0, 0, FIELD.width, FIELD.height);
+    target.globalAlpha = 1;
+    target.textAlign = "center";
+    const fantasy = String(extra.fantasy || lines.fantasy || "").trim();
+    let line = FIELD.height / 2 - 22 * scale;
+    if (fantasy) {
+      target.fillStyle = palette.text;
+      target.font = `${10 * scale}px system-ui, sans-serif`;
+      target.fillText(fantasy, FIELD.width / 2, line);
+      line += 16 * scale;
+    }
+    const best = Number.isFinite(extra.best) ? extra.best : 0;
+    if (best > 0) {
+      target.fillStyle = palette.muted;
+      target.font = `${8 * scale}px system-ui, sans-serif`;
+      target.fillText(`${lines.record} ${best}`, FIELD.width / 2, line);
+      line += 12 * scale;
+    }
+    target.fillStyle = palette.text;
+    target.font = `${8 * scale}px system-ui, sans-serif`;
+    target.fillText(extra.canContinue ? lines.title_again : lines.title_play, FIELD.width / 2, line);
+    if (extra.canContinue) {
+      target.fillStyle = palette.muted;
+      target.fillText(lines.title_new, FIELD.width / 2, line + 12 * scale);
+    }
+    target.textAlign = "left";
   }
 
   function drawOverlay(target, palette, title, hint, settings = {}) {

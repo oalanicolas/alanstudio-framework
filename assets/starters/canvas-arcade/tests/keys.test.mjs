@@ -23,6 +23,9 @@ test("o padrão preenche o aviso e o overlay com as teclas do manifesto", () => 
   assert.equal(lines.hint_touch, copy.hint_touch);
   assert.equal(lines.hint_pad, copy.hint_pad);
   assert.equal(lines.hint_bank, "Guarde (↓, baixo ou X) antes de perder a corrente");
+  assert.equal(lines.title_play, "Jogar: Espaço");
+  assert.equal(lines.title_again, "Repetir a última: Espaço");
+  assert.equal(lines.title_new, "Nova partida: R");
   assert.equal(actionLabel(DEFAULT_BINDINGS, "bank"), "↓");
   assert.deepEqual(actionLabels(DEFAULT_BINDINGS, "pause"), ["Esc", "P"]);
 });

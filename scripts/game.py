@@ -3208,7 +3208,7 @@ def init(destination, starter, title=None, documents=True, idea=None):
             "templates. O ciclo já abre: o primeiro comando apontado é o que serve o jogo, não o que preenche "
             "os rascunhos. Documento vigente que o starter já trouxe (art-bible) não é reescrito. "
             "`scan` ainda reporta `draft_only` nas áreas sem decisão. `--idea` entra no brief como frase "
-            "e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. "
+            "e, se houver `data/copy.json`, na abertura e no aviso do primeiro ciclo. O brief continua rascunho. "
             "A frase na tela não muda o verbo. O starter é material de "
             "ADAPT, não uma engine nem uma base aprovada; o comando não executa o jogo, não instala "
             "dependências e não avalia a proposta."
@@ -3280,7 +3280,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "ferramentas; depois de um recibo, o prompt as aponta. Ferramenta "
             "no disco não é alguém de fora nem mix ouvido. Não "
             "instala dependências e não avalia a proposta. `--idea` entra no "
-            "brief como frase e, se houver `data/copy.json`, na tela do "
+            "brief como frase e, se houver `data/copy.json`, na abertura e no aviso do "
             "primeiro ciclo. O brief continua rascunho. A frase na tela não "
             "muda o verbo."
         ),
@@ -4331,7 +4331,7 @@ def main():
     start.add_argument("project")
     start.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
     start.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
-    start.add_argument("--idea", help="frase da fantasia; entra no brief e na tela do primeiro ciclo, sem mudar o verbo")
+    start.add_argument("--idea", help="frase da fantasia; entra no brief, na abertura e no aviso do primeiro ciclo, sem mudar o verbo")
     start.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
     begin = commands.add_parser(
         "start", parents=[common],
@@ -4340,7 +4340,7 @@ def main():
     begin.add_argument("project", nargs="?", default=None)
     begin.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
     begin.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
-    begin.add_argument("--idea", help="frase da fantasia; entra no brief e na tela do primeiro ciclo, sem mudar o verbo. Sem caminho, nomeia e cria a pasta")
+    begin.add_argument("--idea", help="frase da fantasia; entra no brief, na abertura e no aviso do primeiro ciclo, sem mudar o verbo. Sem caminho, nomeia e cria a pasta")
     begin.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
     guided = commands.add_parser(
         "guide",

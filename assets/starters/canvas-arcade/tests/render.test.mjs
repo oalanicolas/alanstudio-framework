@@ -547,6 +547,23 @@ test("a recuperação do dash não se parece com o dash nem com o descanso", () 
   assert.notEqual(playerFill(recovery), playerFill(dash));
 });
 
+test("a abertura nomeia a fantasia, o recorde e a última seed", () => {
+  const state = createState(1, { entry: "title" });
+  const first = paint(state, {}, { best: 0, canContinue: false });
+  assert.ok(first.texts.some((item) => item.text.includes("Jogar")), "a primeira visita pede jogar");
+  assert.equal(first.texts.some((item) => String(item.text).includes("Repetir")), false);
+  const back = paint(
+    state,
+    {},
+    { best: 18, canContinue: true, fantasy: "guardar a corrente ou continuar" },
+  );
+  assert.ok(back.texts.some((item) => item.text.includes("guardar a corrente ou continuar")));
+  assert.ok(back.texts.some((item) => item.text.includes("Recorde") && item.text.includes("18")));
+  assert.ok(back.texts.some((item) => item.text.includes("Repetir a última")));
+  assert.ok(back.texts.some((item) => item.text.includes("Nova partida")));
+  assert.ok(hudBands(back) <= hudBands(paint(createState(1))), "a abertura não inventa faixa no HUD");
+});
+
 test("o corpo aponta para o lado do último avanço", () => {
   const left = createState(1);
   left.player.dir = -1;

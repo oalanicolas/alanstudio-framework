@@ -2,7 +2,9 @@
 
 Uma mesa nova entra pelo mesmo carregador. O custo conhecido do próximo
 item de chuva é **o comando** — o jogo já consome qualquer mesa com a
-forma de `spawn`. `copy.fantasy` alimenta o aviso do primeiro ciclo.
+forma de `spawn`. `copy.fantasy` alimenta a abertura e o aviso do
+primeiro ciclo. `title_play`, `title_again` e `title_new` nomeiam a
+porta. Repetir a última seed não é o tick interrompido.
 `palettes` alimenta o desenho: trocar um token não exige abrir
 `render.js`. Os looks `dusk` e `calm` moram nessa mesa; `?look=` /
 `settings.look` os consomem. `dusk` e `calm` na chuva são outras

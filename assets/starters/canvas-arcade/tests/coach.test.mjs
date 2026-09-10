@@ -50,6 +50,11 @@ test("partida encerrada não ensina", () => {
   assert.equal(coachHint(state), null);
 });
 
+test("a abertura não ensina", () => {
+  const state = createState(1, { entry: "title" });
+  assert.equal(coachHint(state, { fantasy: "guardar a corrente ou continuar" }), null);
+});
+
 test("estilhaço no trilho pede o dash antes do orbe", () => {
   const state = createState(1);
   state.tick = 90;

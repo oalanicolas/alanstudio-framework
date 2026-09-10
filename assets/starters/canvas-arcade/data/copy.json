@@ -18,5 +18,8 @@
   "hint_pad": "A avança; X guarda — o analógico já move",
   "hint_collect": "Passe no orbe — a corrente cresce",
   "hint_miss": "O orbe caiu — a corrente não cresceu",
-  "hint_bank": "Guarde ({bank}, baixo ou X) antes de perder a corrente"
+  "hint_bank": "Guarde ({bank}, baixo ou X) antes de perder a corrente",
+  "title_play": "Jogar: {dash}",
+  "title_again": "Repetir a última: {dash}",
+  "title_new": "Nova partida: {reset}"
 }

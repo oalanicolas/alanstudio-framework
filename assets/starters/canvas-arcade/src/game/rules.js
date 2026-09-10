@@ -352,7 +352,7 @@ export function createState(seed = 1, options = {}) {
     spawn,
     rngState: rng.state,
     tick: 0,
-    phase: "playing",
+    phase: options.entry === "title" ? "title" : "playing",
     score: 0,
     chain: 0,
     hitstop: 0,
@@ -379,6 +379,12 @@ export function createState(seed = 1, options = {}) {
     stats: { collected: 0, missed: 0, hits: 0, banks: 0, dashes: 0, bestChain: 0, banked: 0 },
     events: [],
   };
+}
+
+export function beginRun(state) {
+  if (!state || state.phase !== "title") return state;
+  state.phase = "playing";
+  return state;
 }
 
 export function neutralIntent() {

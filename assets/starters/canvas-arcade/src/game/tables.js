@@ -8,7 +8,9 @@
 // mesa com a forma de spawn entram por `?spawn=<nome>` ou settings.spawnProfile.
 // `npm run table -- <nome> --from spawn|dusk|calm` copia essa forma; `--as`
 // aplica uma intenção nomeada e deixa a chuva distinta. `copy.fantasy`
-// tem consumidor: o coach do primeiro ciclo. `resume`, `restart` e
+// tem consumidor: a abertura e o coach do primeiro ciclo.
+// `title_play`, `title_again` e `title_new` nomeiam a porta.
+// `resume`, `restart` e
 // `hint_bank` reservam o lugar da tecla viva; `hint_dash` ensina o
 // avanço nas três superfícies quando o estilhaço marca o trilho;
 // `hint_touch` e `hint_pad` são o passo da superfície que falou;
@@ -136,6 +138,9 @@ export const COPY_FIELDS = [
   "hint_collect",
   "hint_miss",
   "hint_bank",
+  "title_play",
+  "title_again",
+  "title_new",
 ];
 
 export function migrateTable(name, raw, schema, fields = []) {
@@ -180,6 +185,9 @@ export function migrateCopy(raw) {
     ...table,
     schema: COPY_SCHEMA,
     fantasy: typeof table.fantasy === "string" ? table.fantasy : "",
+    title_play: typeof table.title_play === "string" ? table.title_play : "Jogar: {dash}",
+    title_again: typeof table.title_again === "string" ? table.title_again : "Repetir a última: {dash}",
+    title_new: typeof table.title_new === "string" ? table.title_new : "Nova partida: {reset}",
   };
 }
 

@@ -9,14 +9,14 @@
 import { createLoop } from "./core/loop.js";
 import { createInput } from "./core/input.js";
 import { browserStorage } from "./core/storage.js";
-import { loadProgress, recordRun, saveProgress, summarizeRun } from "./core/save.js";
+import { canContinue, loadProgress, recordRun, saveProgress, summarizeRun } from "./core/save.js";
 import { detectEnvironment, loadSettings, normalizeSettings, saveSettings } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { createAudio } from "./game/audio.js";
 import { createHaptics } from "./game/haptics.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
-import { advance as advanceRules, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
+import { advance as advanceRules, beginRun, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
 import { copy, resolveLookName, resolveMoodName, resolveSpawnName } from "./game/tables.js";
 import { coachHint } from "./game/coach.js";
 
@@ -66,11 +66,16 @@ export function createGame(options = {}) {
   }
   const progressLoad = loadProgress(storage);
   let progress = progressLoad.progress;
-  let state = createState(options.seed ?? randomSeed(), matchOptions(settings));
+  const forcedSeed = options.seed;
+  const entry = options.entry ?? (canvas ? "title" : "playing");
+  const resumeSeed = canContinue(progress) ? progress.lastSeed : null;
+  const openingSeed = forcedSeed ?? resumeSeed ?? randomSeed();
+  let state = createState(openingSeed, matchOptions(settings, entry));
   let queued = neutralIntent();
   let recorded = false;
   let lastRun = progress.lastRun ?? null;
   let disposed = false;
+  const offeringContinue = resumeSeed != null && (forcedSeed === undefined || forcedSeed === resumeSeed);
 
   const input = options.input ?? createInput({ target: eventTarget, surface: canvas, bindings: settings.bindings });
   const audio = options.audio ?? createAudio({ settings });
@@ -107,11 +112,22 @@ export function createGame(options = {}) {
   function readCommands() {
     if (disposed) return;
     const command = input.commands();
+    if (state.phase === "title") {
+      if (command.reset) handle.reset(randomSeed());
+      return;
+    }
     if (command.reset) handle.reset();
     else if (command.pause) togglePause();
   }
 
   function step(intent) {
+    if (state.phase === "title") {
+      if (intent?.dash) {
+        beginRun(state);
+        syncBed();
+      }
+      return;
+    }
     advanceRules(state, intent);
     for (const event of state.events) {
       audio.play(event.type, event);
@@ -128,7 +144,7 @@ export function createGame(options = {}) {
 
   function syncBed() {
     if (disposed) return;
-    if (loop.paused || state.phase === "over") audio.stop("bed");
+    if (loop.paused || state.phase === "over" || state.phase === "title") audio.stop("bed");
     else audio.play("bed");
   }
 
@@ -141,6 +157,8 @@ export function createGame(options = {}) {
       best: progress.best,
       hint: coachHint(state, copy, { surface: input.lastSource }),
       surface: input.lastSource,
+      fantasy: copy.fantasy,
+      canContinue: offeringContinue,
     });
   }
 
@@ -207,7 +225,7 @@ export function createGame(options = {}) {
       return loop.paused;
     },
     reset(seed = state.seed) {
-      state = createState(seed, matchOptions(settings));
+      state = createState(seed, matchOptions(settings, "playing"));
       queued = neutralIntent();
       recorded = false;
       loop.resume();
@@ -290,7 +308,8 @@ export function createGame(options = {}) {
       haptics.applySettings(settings);
       for (const [action, codes] of Object.entries(settings.bindings)) input.rebind(action, codes);
       if (settings.spawnProfile !== previousSpawn) {
-        state = createState(state.seed, matchOptions(settings));
+        const stay = state.phase === "title" ? "title" : "playing";
+        state = createState(state.seed, matchOptions(settings, stay));
         recorded = false;
       }
       saveSettings(storage, settings);
@@ -305,10 +324,11 @@ export function createGame(options = {}) {
 
 // A seed escolhida ao abrir o jogo é aleatória; a partida a partir dela é
 // determinística. As duas afirmações são diferentes e as duas importam.
-function matchOptions(settings) {
+function matchOptions(settings, entry = "playing") {
   return {
     assist: settings.assist,
     spawnProfile: resolveSpawnName(settings.spawnProfile),
+    entry,
   };
 }
 

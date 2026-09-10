@@ -191,6 +191,65 @@ test("uma partida completa é registrada no progresso persistido", () => {
   game.dispose();
 });
 
+function silentCanvas() {
+  return {
+    getContext: () => ({
+      setTransform() {},
+      beginPath() {},
+      closePath() {},
+      moveTo() {},
+      lineTo() {},
+      arc() {},
+      fill() {},
+      stroke() {},
+      fillRect() {},
+      strokeRect() {},
+      measureText: () => ({ width: 0 }),
+      fillText() {},
+      createRadialGradient: () => ({ addColorStop() {} }),
+      fillStyle: "",
+      strokeStyle: "",
+      font: "",
+      textAlign: "left",
+      textBaseline: "top",
+      lineWidth: 1,
+      globalAlpha: 1,
+    }),
+    style: {},
+    width: 320,
+    height: 180,
+  };
+}
+
+test("sem tela o boot não espera a abertura", () => {
+  const { game } = harness();
+  assert.equal(game.observe().phase, "playing");
+  game.dispose();
+});
+
+test("com tela a abertura lê a última seed", () => {
+  const { game, storage } = harness();
+  game.advance(CONFIG.runTicks);
+  const lastSeed = game.observe().seed;
+  game.dispose();
+  const again = createGame({
+    eventTarget: recordingTarget(),
+    storage,
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(again.observe().phase, "title");
+  assert.equal(again.observe().seed, lastSeed);
+  again.act({ dash: true });
+  again.advance(1);
+  assert.equal(again.observe().phase, "playing");
+  assert.equal(again.observe().seed, lastSeed);
+  assert.equal(again.observe().tick, 0, "repetir a seed não é o tick interrompido");
+  again.reset();
+  assert.equal(again.observe().phase, "playing");
+  again.dispose();
+});
+
 test("preferências e progresso vivem em chaves separadas", () => {
   const { game, storage } = harness();
   game.updateSettings({ highContrast: true, reducedMotion: true });

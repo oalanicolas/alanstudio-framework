@@ -14,6 +14,14 @@ export function defaultProgress() {
   return { schema: PROGRESS_SCHEMA, best: 0, bestChain: 0, runs: 0, lastSeed: null, lastRun: null };
 }
 
+// Há partida gravada e seed para repetir. Não é o tick
+// interrompido: o save não guarda o meio da chuva.
+export function canContinue(progress) {
+  if (!progress) return false;
+  const seed = progress.lastSeed;
+  return (progress.runs ?? 0) > 0 && (typeof seed === "string" || Number.isFinite(seed));
+}
+
 const integer = (value, fallback = 0) =>
   Number.isFinite(value) && value >= 0 ? Math.floor(value) : fallback;
 

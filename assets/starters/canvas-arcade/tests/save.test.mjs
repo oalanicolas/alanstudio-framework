@@ -12,6 +12,7 @@ import {
   defaultProgress,
   loadProgress,
   migrate,
+  canContinue,
   recordRun,
   saveProgress,
 } from "../src/core/save.js";
@@ -131,6 +132,9 @@ test("recordRun mantém os máximos e conta a partida", () => {
   assert.equal(next.lastSeed, 3);
   assert.equal(next.lastRun.score, 40);
   assert.equal(next.lastRun.bestChain, 9);
+  assert.equal(canContinue(progress), false, "sem lastSeed não há o que repetir");
+  assert.equal(canContinue(next), true);
+  assert.equal(canContinue({ ...next, lastSeed: null }), false);
 });
 
 test("preferências recusam valor fora de faixa e campo desconhecido", () => {

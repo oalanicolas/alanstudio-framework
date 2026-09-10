@@ -125,6 +125,9 @@ test("copy sem schema migra; schema futuro e campo ausente falham com o nome", (
   const old = migrateCopy({ paused: "Pausado" });
   assert.equal(old.schema, COPY_SCHEMA);
   assert.equal(old.fantasy, "");
+  assert.equal(old.title_play, "Jogar: {dash}");
+  assert.equal(old.title_again, "Repetir a última: {dash}");
+  assert.equal(old.title_new, "Nova partida: {reset}");
   assert.throws(() => migrateTable("copy", { schema: 4 }, COPY_SCHEMA), /mesa copy schema 4 não suportado/);
   assert.throws(
     () => migrateTable("copy", { schema: 1 }, COPY_SCHEMA, COPY_FIELDS),
