@@ -3855,6 +3855,29 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("criou rascunhos", report["init"]["scope"])
         self.assertNotIn("draft_only", report["init"]["scope"])
 
+    def test_context_defers_audit_on_fresh_start_until_after_first_play(self):
+        destination = self.root / "ideia-fresca"
+        game.start_project(destination, "canvas-arcade", idea="guardar a corrente")
+        nxt = game.next_step(destination, "create")
+        self.assertEqual(nxt["proposal"]["basis"], "playable.unplayed")
+        scanned = game.scan(destination)
+        self.assertTrue(scanned["gaps"])
+        self.assertEqual(scanned["minimum_status"], "needs_review")
+        self.assertFalse(scanned["audit"]["required"])
+        self.assertTrue(scanned["audit"]["deferred"])
+        self.assertEqual(scanned["next_action"], "defer_until_playable_cycle")
+        self.assertIn("abre", scanned["audit"]["notice"])
+        self.assertNotIn("organizar a documentação mínima", scanned["audit"]["notice"])
+        ctx = game.context(destination, "create")
+        self.assertFalse(ctx["foundation"]["audit"]["required"])
+        self.assertTrue(ctx["foundation"]["audit"]["deferred"])
+        self.assertEqual(ctx["documentation"]["action"], "defer_until_playable_cycle")
+        self.assertNotIn(str(game.FRAMEWORK / "references/project-audit.md"), ctx["read_next"])
+        self.assertEqual(ctx["finish"]["action"], "defer_until_playable_cycle")
+        forced = game.context(destination, "create", event="direction-approved")
+        self.assertEqual(forced["documentation"]["action"], "document_minimum")
+        self.assertIn(str(game.FRAMEWORK / "references/project-audit.md"), forced["read_next"])
+
     def test_start_docs_still_plants_the_drafts(self):
         destination = self.root / "com-rascunhos"
         report = game.start_project(

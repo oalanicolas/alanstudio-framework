@@ -432,7 +432,10 @@ nem escreve arquivo.
 
 Se faltar base, `foundation.audit.required` pede ao agente **avisar e documentar
 sem esperar um segundo pedido**. Restrição explícita na conversa continua valendo.
-O scanner não executa a auditoria (`audit.executed: false`).
+Exceção: ciclo fresco que já abre (`audit.deferred`) — o `next` pede jogar
+primeiro; o `context` não manda preencher template. `--event direction-approved`
+e `--stage audit` continuam pedindo a base. O scanner não executa a auditoria
+(`audit.executed: false`).
 
 Eventos de conversa, interpretados pelo agente — o comando não concede aprovação:
 

@@ -58,7 +58,11 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `via` e os limites. `context` já executa `scan`: se `foundation.audit.required`
    for verdadeiro, avise as lacunas com `audit.notice` e comece o levantamento conforme
    [auditoria de projeto](references/project-audit.md), sem pedir um segundo
-   consentimento; respeite restrição explícita na conversa atual. Sem projeto
+   consentimento; respeite restrição explícita na conversa atual. Se
+   `foundation.audit.deferred` for verdadeiro, o destino já abre — jogue
+   primeiro; lacuna de rascunho depois do `start` não é auditoria neste
+   turno. `--event direction-approved` e `--stage audit` continuam
+   pedindo a base. Sem projeto
    identificável, não invente um alvo. Em retomada, fonte encontrada não é tarefa
    validada: siga [continuidade e retomada](references/process.md#continuidade-e-retomada).
 2. **Intenção e prontidão.** Defina fantasia, verbo central, plataforma, cenário,

@@ -3,6 +3,64 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.229 — O context não manda documentar um start fresco
+
+O
+`next`
+já
+pedia
+jogar.
+O
+`context`
+mandava
+preencher
+template.
+O
+agente
+que
+segue
+o
+SKILL
+caía
+na
+auditoria
+antes
+do
+serve.
+Agora
+`audit.deferred`
+adianta
+o
+jogo.
+Lacunas
+continuam
+listadas.
+`--event
+direction-approved`
+e
+`--stage
+audit`
+continuam
+pedindo
+a
+base.
+Não
+promove.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.229 não afirma:
+adiar
+a
+auditoria
+não
+é
+partida
+jogada.
+
 ## 0.9.228 — Depois da porta o campo não repete o ensino
 
 A

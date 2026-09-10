@@ -2659,6 +2659,20 @@ def mention_capabilities(project):
     return found
 
 
+def playable_unplayed(project, areas):
+    # O mesmo atalho do `next`. Jogo que já abre e ainda
+    # não tem recibo não pede auditoria de rascunho.
+    # Lacuna no disco não some — só deixa de mandar
+    # preencher template antes do serve.
+    try:
+        scripts, manager = project_commands(project)
+    except (OSError, ValueError, RecursionError):
+        scripts, manager = {}, None
+    play = play_command(project, scripts, manager)
+    missing = [key for key, area in areas.items() if area["status"] == "not_located"]
+    return fresh_starter_cycle(project, missing, play) and not observation_receipts(project)
+
+
 def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     project = Path(project).resolve()
     if project.exists() and not project.is_dir():
@@ -2871,13 +2885,20 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     gaps = [key for key, area in areas.items() if area["status"] != "candidate_found"]
     local_instructions = [name for name in INSTRUCTION_FILES if (project / name).is_file() or (project / name).is_dir()] if project.is_dir() else []
     needs_documentation = bool(gaps or issues)
+    waiting = playable_unplayed(project, areas) if project.is_dir() else False
+    require_audit = needs_documentation and not waiting
     notice = None
     if needs_documentation:
         missing = "; ".join(areas[key]["label"] for key in gaps)
         findings = f"Não localizei documentação confirmável para: {missing}." if gaps else "A checagem documental teve cobertura incompleta."
         if gaps and issues:
             findings += " A cobertura da checagem também foi limitada."
-        work = "Vou levantar o código e os registros e organizar a documentação mínima" if project.is_dir() else "Vou documentar a base disponível e a proposta, distinguindo o que ainda não foi implementado"
+        if waiting:
+            work = "O destino já abre. Jogue primeiro; rascunhos de template antes da primeira partida são o atrito. O harness não executa o jogo"
+        elif project.is_dir():
+            work = "Vou levantar o código e os registros e organizar a documentação mínima"
+        else:
+            work = "Vou documentar a base disponível e a proposta, distinguindo o que ainda não foi implementado"
         notice = f"{project.name}: {findings} {work}, preservando os documentos canônicos e registrando as lacunas."
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(),
@@ -2898,12 +2919,21 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
             "excluded_directory_names": sorted(excluded_dirs),
             "limits": {"entries": max_entries, "documents": max_documents, "bytes_per_document": max_bytes, "depth": 4, "index_links": max_links, "candidates_per_area": 3, "continuity_sources": 5},
         },
-        "next_action": "notify_and_document" if needs_documentation else "continue_requested_task",
+        "next_action": (
+            "defer_until_playable_cycle" if waiting
+            else "notify_and_document" if needs_documentation
+            else "continue_requested_task"
+        ),
         "audit": {
             "policy": "notify_and_proceed", "executed": False,
-            "required": needs_documentation,
+            "required": require_audit,
+            "deferred": waiting,
             "notice": notice,
-            "reason": "Direção do usuário: avisar e iniciar o levantamento/documentação automaticamente; respeitar restrição explícita na conversa atual.",
+            "reason": (
+                "O next já pede jogar primeiro. Lacuna de rascunho depois do start não é auditoria neste turno. --event direction-approved e --stage audit continuam pedindo a base."
+                if waiting else
+                "Direção do usuário: avisar e iniciar o levantamento/documentação automaticamente; respeitar restrição explícita na conversa atual."
+            ),
             "guide": str(FRAMEWORK / "references/project-audit.md"),
         },
         "scope": "Localização lexical limitada, priorizada por índices e nomes; links de navegação não são conteúdo. Marcadores de histórico/referência/rascunho são indícios, não certificação de atualidade. Não rastreia comportamento, executa código, escreve arquivos ou comprova suficiência e qualidade. Ausência significa não localizado neste recorte.",
@@ -2987,6 +3017,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
     instructions = instruction_files(project)
     foundation = scan(project)
     records = [str(project / relative) for relative in foundation["read_first"]]
+    deferred = bool(foundation["audit"].get("deferred"))
     document_minimum = foundation["audit"]["required"] or event == "direction-approved" or stage == "audit"
     kind = identify(project)
     packs = select_packs(kind, genre, foundation["genre_mentions"])
@@ -3020,7 +3051,11 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "scope": "Fontes são candidatos, não fila validada. O agente resolve next_step antes de responder; o comando não escolhe tarefa, infere etapa concluída nem concede autorização a partir de documentos.",
         },
         "documentation": {
-            "action": "document_minimum" if document_minimum else "maintain_affected_documents",
+            "action": (
+                "document_minimum" if document_minimum
+                else "defer_until_playable_cycle" if deferred
+                else "maintain_affected_documents"
+            ),
             "executed": False,
             "on_direction_approved": "Aprovação na conversa exige sincronizar a base mínima neste turno, mesmo com todos os candidatos encontrados; use --event direction-approved.",
             "before_close": "Registrar conteúdo e fontes nos documentos canônicos; cobrir cada área mínima com decisão/fato ou lacuna e próxima ação. Referência salva e templates vazios não concluem a documentação.",

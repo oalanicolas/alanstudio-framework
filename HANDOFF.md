@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.228 (confirmado): depois da porta o campo não repete a frase nem o mover.
+**HEAD:** ver `git log -1` — vigente 0.9.229: o `context` não manda documentar um `start` fresco.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 279 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → a confirmar no 0.9.229.
 `cd assets/starters/canvas-arcade && npm test` → 403 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.228)
+## O que o HEAD já entrega (0.9.91–0.9.229)
 
 | Ver | Salto |
 | --- | --- |
@@ -172,6 +172,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.226 | A guarda leva o x do campo. A aposta não fala no centro. Não promove `heard`. |
 | 0.9.227 | A fantasia na porta não come o aviso de mover. Depois da frase a porta ainda ensina a abrir. Não promove feel. |
 | 0.9.228 | Depois da porta o campo não repete a frase nem o mover. Dash e coleta entram. Headless ainda vê a frase. Não promove feel. |
+| 0.9.229 | O `context` não manda documentar um `start` fresco. `audit.deferred`; o `next` já pedia jogar. `--event direction-approved` e `--stage audit` continuam pedindo a base. Não promove. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -318,7 +319,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou queda longe que senta o verbo em curso
   ou guarda que fala no centro
   ou fantasia na porta que come o aviso de mover
-  ou campo que repete a frase e o mover da porta.
+  ou campo que repete a frase e o mover da porta
+  ou context que manda documentar um start fresco.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -356,6 +358,15 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   sem `draft_only`, sem brief. Com docs: afirma os três. Sem
   `--idea` a linha da frase some. `preproduction.md` ensina
   `start --idea`; `init` fica o caminho que planta.
+- Depois de um `start` fresco (o mesmo atalho `playable.unplayed`
+  do `next`), `scan` / `context` não pedem auditoria:
+  `audit.required` falso, `audit.deferred` verdadeiro,
+  `next_action` e `documentation.action` são
+  `defer_until_playable_cycle`. Lacunas continuam listadas.
+  `project-audit.md` some do `read_next`. Sem jogo que abre,
+  lacuna continua `notify_and_document`. `--event
+  direction-approved` e `--stage audit` continuam
+  `document_minimum`. O harness não executa o jogo.
 - `doctor` devolve `empty` e `then`. Sem jogo, com starter e
   `ready`, `then.guide` é `guide --idea <fantasia>`. Sem a
   frase a raiz recusa. Com jogo, sem starter ou bloqueado,
@@ -724,6 +735,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma guarda que fala no centro.
 **Não** mais uma fantasia na porta que come o aviso de mover.
 **Não** mais um campo que repete a frase e o mover que a porta já deu.
+**Não** mais um `context` que manda documentar um `start` fresco.
 
 Candidatos, do que ainda dói:
 
@@ -1068,6 +1080,12 @@ Candidatos, do que ainda dói:
   frase e o
   mover da
   porta
+  e o
+  context que
+  manda
+  documentar
+  um start
+  fresco
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1091,7 +1109,8 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: depois da
-porta o campo não repete a frase nem o mover.
-Dash e coleta entram. Headless ainda vê a
-frase. Não promove feel.
+Arquivos quentes da última sessão: o `context`
+não manda documentar um `start` fresco.
+`audit.deferred`. O `next` já pedia jogar.
+`--event direction-approved` e `--stage audit`
+continuam pedindo a base. Não promove.
