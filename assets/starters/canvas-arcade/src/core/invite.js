@@ -15,6 +15,8 @@
 // o Gravar: o serve da árvore exportada recusa o POST. Copiar
 // permanece. Sem clipboard, o Copiar baixa o markdown. Baixar
 // não grava e não é alguém de fora. Recusar não fecha o achado.
+// No primeiro over a página rola até o painel e foca o primeiro
+// campo. Trazer o painel não é alguém de fora nem curva observada.
 
 function runSeed(run) {
   if (!run || typeof run !== "object" || Array.isArray(run)) return null;
@@ -143,6 +145,27 @@ export function applyNote({ root, phase, invite, run } = {}) {
   const show = Boolean(!invite && afterRun(phase, run));
   root?.classList?.toggle("note", show);
   return show;
+}
+
+export function bringPanel({
+  node,
+  shown,
+  wasShown,
+  field,
+  phase,
+  reduceMotion,
+} = {}) {
+  if (!shown || wasShown || phase !== "over" || !node) return false;
+  if (typeof node.scrollIntoView === "function") {
+    node.scrollIntoView({
+      block: "start",
+      behavior: reduceMotion ? "auto" : "smooth",
+    });
+  }
+  if (field && typeof field.focus === "function") {
+    field.focus({ preventScroll: true });
+  }
+  return true;
 }
 
 export const VERSION_ROUTE = "/VERSION.json";

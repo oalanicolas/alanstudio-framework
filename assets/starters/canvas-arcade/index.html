@@ -223,7 +223,7 @@
     <script type="module" src="./src/main.js"></script>
     <script type="module">
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
-      import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, composeFinding, inviteHref, inviteMode, offerFinding, readArtifactMark } from "./src/core/invite.js";
+      import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, bringPanel, composeFinding, inviteHref, inviteMode, offerFinding, readArtifactMark } from "./src/core/invite.js";
       import { FINDING_ROUTE, NOTE_ROUTE, playFinding } from "./src/core/run-report.js";
       import { applyShell } from "./src/core/shell.js";
       import { LOOK_LABELS, SPAWN_LABELS, dressPalette, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch } from "./src/game/tables.js";
@@ -246,10 +246,31 @@
       const game = window.__game;
       if (game) {
         const invited = inviteMode(location.search);
+        let findingShown = false;
+        let noteShown = false;
         const revealAfter = (phase) => {
           const run = game.lastRun;
-          applyFinding({ root: document.documentElement, phase, invite: invited, run });
-          applyNote({ root: document.documentElement, phase, invite: invited, run });
+          const finding = applyFinding({ root: document.documentElement, phase, invite: invited, run });
+          const note = applyNote({ root: document.documentElement, phase, invite: invited, run });
+          const reduceMotion = Boolean(game.settings?.reducedMotion);
+          bringPanel({
+            node: document.getElementById("finding"),
+            shown: finding,
+            wasShown: findingShown,
+            field: document.getElementById("finding-problema"),
+            phase,
+            reduceMotion,
+          });
+          bringPanel({
+            node: document.getElementById("note"),
+            shown: note,
+            wasShown: noteShown,
+            field: document.getElementById("note-text"),
+            phase,
+            reduceMotion,
+          });
+          findingShown = finding;
+          noteShown = note;
           applyRunFacts({ node: document.getElementById("finding-run"), run });
           applyRunFacts({ node: document.getElementById("note-run"), run });
           applyShare({

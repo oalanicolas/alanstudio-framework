@@ -657,7 +657,8 @@ no disco, `/?invite=1&seed=<n>`, com chuva nomeada
 comandos some; depois do fim a página do maker aponta o convite
 desta partida se a seed ficou no recibo — copiar o endereço não
 grava — e, no convite, mostra seed, pontos e eixos e oferece
-os quatro nomes para copiar ou gravar. Número na faixa não
+os quatro nomes para copiar ou gravar. Depois do fim a página
+rola até o painel. Rolar não é alguém de fora. Número na faixa não
 preenche os quatro. Copiar não grava. Sem a área de
 transferência, o Copiar baixa o markdown. Baixar não grava.
 Gravado vira

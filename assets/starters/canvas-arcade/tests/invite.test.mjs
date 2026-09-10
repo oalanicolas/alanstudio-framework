@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, ARTIFACT_FINDING_HINT, composeFinding, FINDING_FILE, inviteHref, inviteMode, INVITE_LABEL, offerFinding, findingFile, readArtifactMark, runFacts, seedHref } from "../src/core/invite.js";
+import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, ARTIFACT_FINDING_HINT, bringPanel, composeFinding, FINDING_FILE, inviteHref, inviteMode, INVITE_LABEL, offerFinding, findingFile, readArtifactMark, runFacts, seedHref } from "../src/core/invite.js";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -61,6 +61,10 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /anexa o candidato/);
   assert.match(html, /composeFinding/);
   assert.match(html, /offerFinding/);
+  assert.match(html, /bringPanel/);
+  assert.match(html, /wasShown/);
+  assert.match(html, /finding-problema/);
+  assert.match(html, /note-text/);
   assert.match(html, /playFinding/);
   assert.match(html, /applyRunFacts/);
   assert.match(html, /FINDING_ROUTE/);
@@ -208,6 +212,38 @@ test("o achado só aparece no convite depois do fim", () => {
   assert.equal(root.classList.finding, true);
   assert.equal(applyFinding({ root, phase: "title", invite: true, run: { score: 3 } }), true);
   assert.equal(applyFinding({ root, phase: "title", invite: false, run: { score: 3 } }), false);
+});
+
+test("bringPanel só entra no primeiro over", () => {
+  const scrolled = [];
+  const focused = [];
+  const node = { scrollIntoView: (opts) => scrolled.push(opts) };
+  const field = { focus: (opts) => focused.push(opts) };
+  assert.equal(bringPanel({ node, field, shown: false, wasShown: false, phase: "over" }), false);
+  assert.equal(bringPanel({ node, field, shown: true, wasShown: false, phase: "title" }), false);
+  assert.equal(bringPanel({ node, field, shown: true, wasShown: false, phase: "playing" }), false);
+  assert.equal(bringPanel({ node, field, shown: true, wasShown: true, phase: "over" }), false);
+  assert.equal(bringPanel({ shown: true, wasShown: false, phase: "over" }), false);
+  assert.equal(bringPanel({ node, field, shown: true, wasShown: false, phase: "over" }), true);
+  assert.equal(scrolled.length, 1);
+  assert.equal(scrolled[0].block, "start");
+  assert.equal(scrolled[0].behavior, "smooth");
+  assert.deepEqual(focused, [{ preventScroll: true }]);
+  assert.equal(bringPanel({ node, field, shown: true, wasShown: true, phase: "over" }), false);
+  assert.equal(scrolled.length, 1);
+});
+
+test("bringPanel não anima quando o movimento some", () => {
+  const scrolled = [];
+  const node = { scrollIntoView: (opts) => scrolled.push(opts) };
+  assert.equal(bringPanel({
+    node,
+    shown: true,
+    wasShown: false,
+    phase: "over",
+    reduceMotion: true,
+  }), true);
+  assert.equal(scrolled[0].behavior, "auto");
 });
 
 test("a partida nomeia seed, pontos e eixos sem preencher o achado", () => {

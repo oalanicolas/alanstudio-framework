@@ -3,6 +3,22 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.148 — No over a página traz o painel
+
+O achado e a nota ficavam
+abaixo do canvas. Quem
+terminava a partida não os
+via. No primeiro `over` a
+página rola até o painel e
+foca o primeiro campo. Título
+com last-run não rola.
+`outsider` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.148 não afirma: rolar
+o painel não é alguém de fora
+nem sessão observada.
+
 ## 0.9.147 — Sem clipboard o Copiar baixa o achado
 
 Em HTTP o `writeText` some ou

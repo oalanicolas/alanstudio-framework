@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.147: sem clipboard, o Copiar baixa o achado.
+**HEAD:** ver `git log -1` — vigente 0.9.148: no over a página traz o painel.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 262 OK.
-`cd assets/starters/canvas-arcade && npm test` → 320 OK.
+`cd assets/starters/canvas-arcade && npm test` → 322 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.147)
+## O que o HEAD já entrega (0.9.91–0.9.148)
 
 | Ver | Salto |
 | --- | --- |
@@ -91,6 +91,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.145 | `ship` devolve `artifact_open` quando `dist/` está completo no HEAD atual. O convite usa esse comando. `elsewhere` continua falso. |
 | 0.9.146 | `VERSION.json` na raiz some o Gravar do achado e do recibo. Copiar permanece. `outsider` continua falso. |
 | 0.9.147 | Sem clipboard, ou se `writeText` recusa, o Copiar baixa `achado.md`. Baixar não grava. `outsider` continua falso. |
+| 0.9.148 | No primeiro `over` a página rola até `#finding` / `#note` e foca o primeiro campo. Título com last-run não rola. `outsider` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -179,7 +180,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   paralelo, punch do raspo no disco,
   `url` da abertura, `artifact_open`
   do dist/, some o Gravar no
-  artefato, fallback do Copiar
+  artefato, fallback do Copiar,
+  rolar o painel no over
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -302,7 +304,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   e `#note-save`. Copiar permanece. Sem clipboard, `offerFinding`
   baixa `achado.md`. Baixar não grava. Nomear não é `outsider`.
   `#finding` aparece com `html.invite.finding` no `over` e na `title`
-  se houver `lastRun`. Copiar não grava. Gravar só se `playFinding`
+  se houver `lastRun`. `bringPanel` só no primeiro `over`. Título com
+  last-run não rola. Copiar não grava. Gravar só se `playFinding`
   devolver texto. Esqueleto vazio não casa `FINDING_FIELDS`. Achado
   `.md` ≠ recibo `record.json`.
 - Serve POST `/playtest/last-run` grava `docs/playtest/last-run.json`.
@@ -311,7 +314,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Serve POST `/playtest/note` grava `docs/playtest/<utc>/record.json`.
   Nota vazia é 400. Autor vazio vira `página`. Anexa last-run se
   existir. `#note` no `over` e na `title` se houver `lastRun`, fora
-  do convite. Com seed, `#note-invite` aponta o endereço e copia —
+  do convite. `bringPanel` só no primeiro `over`. Título com last-run
+  não rola. Com seed, `#note-invite` aponta o endereço e copia —
   com a chuva e o look se o last-run os nomeou. Sem seed, a linha some.
   Copiar o endereço não grava. `felt` falso.
 - Serve POST `/playtest/finding` grava `docs/playtest/<utc>-achado.md`.
@@ -343,6 +347,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um comando de servir o `dist/`.
 **Não** mais some o Gravar no artefato.
 **Não** mais fallback de clipboard do achado.
+**Não** mais rolar o painel no over.
 
 Candidatos, do que ainda dói:
 
@@ -382,7 +387,8 @@ Candidatos, do que ainda dói:
    no disco, o `url` da abertura e o
    `artifact_open` do dist/ e some
    o Gravar no artefato e o
-   fallback do Copiar não
+   fallback do Copiar e rolar
+   o painel no over não
    fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
@@ -404,6 +410,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `offerFinding` em `invite.js`.
-Sem clipboard o Copiar baixa `achado.md`. Baixar não grava. Não é
-alguém de fora.
+Arquivos quentes da última sessão: `bringPanel` em `invite.js`.
+No primeiro over a página rola até o painel. Título com last-run
+não rola. Não é alguém de fora.

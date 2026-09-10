@@ -2243,6 +2243,8 @@ def invite_page(project):
         "## Depois\n"
         "\n"
         "A página oferece os quatro nomes para copiar ou gravar.\n"
+        "Depois do fim ela rola até o painel e foca o primeiro campo.\n"
+        "Rolar não é alguém de fora. Trazer o painel não observa.\n"
         "Depois do fim ela mostra seed, pontos e eixos da partida.\n"
         "Número na faixa não preenche os quatro nomes. Copiar não grava.\n"
         "Sem a área de transferência, o Copiar baixa o markdown.\n"

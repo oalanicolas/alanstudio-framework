@@ -2933,6 +2933,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("não preenche", page.casefold())
         self.assertIn("não grava", page.casefold())
         self.assertIn("baixa o markdown", page.casefold())
+        self.assertIn("rola até", page.casefold())
         self.assertIn("gravar", first["scope"].casefold())
         self.assertNotIn("Não leia a tabela", page)
         self.assertNotRegex(page, game.FINDING_FIELDS)
