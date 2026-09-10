@@ -6,6 +6,8 @@
 // teclado (ou o remapeamento), toque e controle juntos; o dash e o
 // mapa da superfície que falou também ganham passo no campo.
 // Overlay e HUD confirmam o aparelho que falou por último.
+// Na porta o telefone ainda não falou: a placa usa a
+// superfície `door` quando o ponteiro é grosso.
 // Rótulo no texto não é sessão observada.
 
 const NAMED = {
@@ -99,7 +101,19 @@ const SURFACE_TOKENS = {
     bank: "baixo",
     dash: "cima",
   },
+  // A porta abre no tap, em qualquer faixa. O mapa
+  // pointer chama o dash de cima — e mente aqui.
+  // lastSource continua teclado até o gesto.
+  // Superfície no disco não é sessão observada.
+  door: {
+    dash: "toque",
+  },
 };
+
+export function titleSurface(environment, lastSource = "keyboard") {
+  if (lastSource !== "keyboard") return lastSource;
+  return environment?.pointer?.coarse ? "door" : lastSource;
+}
 
 export function bindLines(lines, bindings, surface = "keyboard") {
   const tokens = {

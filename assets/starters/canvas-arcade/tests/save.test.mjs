@@ -29,6 +29,7 @@ import {
   ENVIRONMENT_QUERIES,
   ONE_HAND_BINDINGS,
   defaultSettings,
+  detectEnvironment,
   loadSettings,
   settingsLine,
   normalizeSettings,
@@ -309,6 +310,26 @@ test("velocidade da partida é preferência persistida, não um modo escondido",
 test("preferências herdam a redução de movimento do sistema", () => {
   assert.equal(defaultSettings({ prefersReducedMotion: true }).reducedMotion, true);
   assert.equal(defaultSettings({}).reducedMotion, false);
+});
+
+test("o ambiente nomeia o ponteiro grosso sem vestir preferência", () => {
+  const previous = globalThis.matchMedia;
+  globalThis.matchMedia = (query) => ({
+    matches: String(query).includes("pointer: coarse"),
+    media: query,
+    addEventListener() {},
+    removeEventListener() {},
+  });
+  try {
+    const env = detectEnvironment();
+    assert.equal(env.pointer.coarse, true);
+    assert.deepEqual(applyEnvironment(defaultSettings(), env), {});
+    assert.equal("prefersReducedMotion" in ENVIRONMENT_QUERIES, true);
+    assert.equal("pointer" in ENVIRONMENT_QUERIES, false);
+  } finally {
+    if (previous === undefined) delete globalThis.matchMedia;
+    else globalThis.matchMedia = previous;
+  }
 });
 
 test("o sistema que pede reduce no meio da sessão veste, e desligar não apaga", () => {

@@ -330,7 +330,8 @@ test("com tela o boot espera o avanço", () => {
   game.start();
   frame();
   assert.equal(game.observe().phase, "title");
-  assert.ok(view.texts.some((text) => String(text).includes("Jogar")));
+  assert.ok(view.texts.some((text) => String(text).includes("Jogar: Espaço")));
+  assert.equal(view.texts.some((text) => String(text).includes("Jogar: toque")), false);
   press("pause");
   frame();
   assert.equal(game.paused, false, "na abertura a pausa não cobre o campo");
@@ -364,6 +365,37 @@ test("o overlay nomeia o controle quando ele falou por último", () => {
   );
   assert.equal(view.texts.some((text) => text.includes("Esc")), false);
   pads = [];
+  game.dispose();
+});
+
+test("o telefone vê Jogar: toque na porta sem ter apertado", () => {
+  const view = textCanvas();
+  const { game, frame } = shell({
+    canvas: view.canvas,
+    loadSfx: false,
+    environment: { pointer: { coarse: true } },
+  });
+  game.start();
+  frame();
+  assert.equal(game.observe().phase, "title");
+  assert.ok(
+    view.texts.some((text) => String(text).includes("Jogar: toque")),
+    `esperava toque na porta: ${JSON.stringify(view.texts)}`,
+  );
+  assert.equal(
+    view.texts.some((text) => String(text).includes("Espaço")),
+    false,
+    "Espaço mente no telefone",
+  );
+  assert.ok(
+    view.texts.some((text) => String(text).includes("←/→")),
+    "o aviso da porta continua teclado",
+  );
+  assert.equal(
+    view.texts.some((text) => String(text).includes("Cima avança")),
+    false,
+    "a porta não ensina toque no coach",
+  );
   game.dispose();
 });
 

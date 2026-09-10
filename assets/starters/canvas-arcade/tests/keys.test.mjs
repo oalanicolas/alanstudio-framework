@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { actionLabel, actionLabels, bindLines, commandRows, keyLabel, paintCommands } from "../src/core/keys.js";
+import { actionLabel, actionLabels, bindLines, commandRows, keyLabel, paintCommands, titleSurface } from "../src/core/keys.js";
 import { applyRebind } from "../src/core/remap.js";
 import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "../src/core/settings.js";
 import { copy } from "../src/game/tables.js";
@@ -62,6 +62,21 @@ test("o toque nomeia as faixas no overlay e deixa o aviso com as três superfíc
   assert.match(lines.hint_move, /arraste/);
   assert.equal(lines.resume, "Continuar: toque");
   assert.equal(lines.restart, "Reiniciar: R");
+  assert.equal(lines.title_play, "Jogar: cima", "o mapa pointer mente na porta");
+});
+
+test("a porta do telefone nomeia toque sem promover lastSource", () => {
+  assert.equal(titleSurface({ pointer: { coarse: true } }, "keyboard"), "door");
+  assert.equal(titleSurface({ pointer: { coarse: true } }, "pointer"), "pointer");
+  assert.equal(titleSurface({ pointer: { coarse: true } }, "gamepad"), "gamepad");
+  assert.equal(titleSurface({ pointer: { coarse: false } }, "keyboard"), "keyboard");
+  assert.equal(titleSurface({}, "keyboard"), "keyboard");
+  const lines = bindLines(copy, DEFAULT_BINDINGS, "door");
+  assert.equal(lines.title_play, "Jogar: toque");
+  assert.equal(lines.title_again, "Repetir a última: toque");
+  assert.equal(lines.title_new, "Nova partida: R");
+  assert.equal(lines.hint_move, "←/→, arraste ou analógico");
+  assert.equal(lines.hint_touch, copy.hint_touch);
 });
 
 test("superfície desconhecida não inventa mapa", () => {

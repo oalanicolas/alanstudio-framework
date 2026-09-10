@@ -19,7 +19,7 @@ import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { createTrace, finishCurve, traceTick } from "./game/curve.js";
 import { applyLive, liveText } from "./core/live.js";
-import { bindLines } from "./core/keys.js";
+import { bindLines, titleSurface } from "./core/keys.js";
 import { advance as advanceRules, attractMove, attractTick, attractTouch, beginRun, sessionBedRate, createState, restoreState, neutralIntent, threatCue, FIELD, TICK_HZ } from "./game/rules.js";
 import { copy, resolveLookName, resolveMoodName, resolveSpawnName } from "./game/tables.js";
 import { coachHint, coachText } from "./game/coach.js";
@@ -335,9 +335,14 @@ export function createGame(options = {}) {
     readCommands();
     audio.update({ bedRate: sessionBedRate(state, clockSpeed()) });
     const captions = audio.captions();
-    const surface = input.lastSource;
-    const bound = bindLines(copy, settings.bindings ?? DEFAULT_BINDINGS, surface);
-    const hint = coachHint(state, copy, { surface });
+    const spoken = input.lastSource;
+    // Na porta o telefone ainda não falou. lastSource
+    // nasce teclado e Jogar: Espaço mente. A placa
+    // usa a superfície da porta; o aviso continua
+    // teclado até o gesto. Texto no disco não é felt.
+    const surface = state.phase === "title" ? titleSurface(environment, spoken) : spoken;
+    const bound = bindLines(copy, settings.bindings ?? DEFAULT_BINDINGS, spoken);
+    const hint = coachHint(state, copy, { surface: spoken });
     applyLive({
       node: live,
       text: liveText({
@@ -352,7 +357,7 @@ export function createGame(options = {}) {
         persist: persistLine(persist(), copy),
         settings: settingsLine(settingsLoad, copy),
         attractTouch: state.attractTouch,
-        coach: coachText(state, bound, { surface, fantasy: copy.fantasy }),
+        coach: coachText(state, bound, { surface: spoken, fantasy: copy.fantasy }),
       }),
     });
     if (!renderer) return;

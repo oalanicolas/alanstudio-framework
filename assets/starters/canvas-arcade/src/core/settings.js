@@ -187,12 +187,30 @@ export const ENVIRONMENT_QUERIES = {
   prefersHighContrast: "(prefers-contrast: more)",
 };
 
+function coarsePointer() {
+  if (typeof matchMedia === "function") {
+    try {
+      return Boolean(matchMedia("(pointer: coarse)").matches);
+    } catch {
+      // query recusada cai no toque cru
+    }
+  }
+  return typeof navigator !== "undefined" && Number(navigator.maxTouchPoints) > 0;
+}
+
 export function detectEnvironment() {
   const query = (text) =>
     typeof matchMedia === "function" ? Boolean(matchMedia(text).matches) : false;
   return {
     prefersReducedMotion: query(ENVIRONMENT_QUERIES.prefersReducedMotion),
     prefersHighContrast: query(ENVIRONMENT_QUERIES.prefersHighContrast),
+    // O ponteiro grosso não veste preferência. Só a
+    // porta lê. matchMedia some; maxTouchPoints só
+    // entra sem query. Aparelho no disco não é
+    // sessão observada.
+    pointer: {
+      coarse: coarsePointer(),
+    },
   };
 }
 

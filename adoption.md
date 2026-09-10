@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.295 — Na porta o telefone vê toque
+
+O
+telefone
+abria
+em
+Jogar:
+Espaço.
+lastSource
+nasce
+teclado.
+O
+mapa
+pointer
+chamaria
+cima
+e
+mente:
+o
+tap
+abre
+em
+qualquer
+faixa.
+Agora
+a
+placa
+diz
+toque.
+O
+aviso
+continua
+teclado
+até
+o
+gesto.
+Não
+promove
+`felt`.
+
+O que 0.9.295 não afirma:
+rótulo
+no
+stub
+não
+é
+polegar
+no
+aparelho.
+
 ## 0.9.294 — Na pausa o toque retoma
 
 A
