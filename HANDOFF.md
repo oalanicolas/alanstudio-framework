@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.300: na pausa o telefone vê Continuar: toque sem ter apertado. Não promove `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.301: o `next` unstructured nomeia a página do achado. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD (0.9.300):** `python3 -m unittest discover -s tests` → 315 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.300)
+## O que o HEAD já entrega (0.9.91–0.9.301)
 
 | Ver | Salto |
 | --- | --- |
@@ -244,6 +244,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.298 | A pausa nomeia reiniciar. R e Select já saíam; a placa só ensinava continuar. Não promove `felt`. |
 | 0.9.299 | A região viva nomeia como sair da pausa. O overlay do canvas não chega ao leitor. Não promove `verified`. |
 | 0.9.300 | Na pausa o telefone vê Continuar: toque sem ter apertado. lastSource continua teclado; o aviso não ensina cima. Reiniciar continua R. Não promove `felt`. |
+| 0.9.301 | O `next` unstructured nomeia a página do achado. SKILL e README já apontavam `/?invite=1#finding`; o comando mandava o serve nu. Não promove `outsider`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -261,7 +262,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
-| pacing | slice | finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
+| pacing | slice | o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
@@ -448,7 +449,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um `finding_href` que aponta um painel escondido
   ou uma pausa que cala o reinício que o comando já faz
   ou uma região viva que cala como sair da pausa
-  ou uma pausa que ensina Esc no telefone.
+  ou uma pausa que ensina Esc no telefone
+  ou um `next` unstructured que aponta o serve nu.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -549,9 +551,12 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   com os eixos — sem o convite o âncora some),
   `qa` se `docs/qa.md` existir, `form` (esqueleto
   canônico) e `fields`. Sem `then`. `next` em
-  `playtest.unstructured` aponta o serve/`play` e
-  `note --field` dos quatro nomes — não relê `playtest`
-  nem `feel` como se gravassem. Esqueleto no disco
+  `playtest.unstructured` aponta o serve/`play`,
+  o endereço do achado (`finding_open`: a url do
+  serve com o convite, ou `finding_href` sem serve)
+  e `note --field` dos quatro nomes — não relê `playtest`
+  nem `feel` como se gravassem. O serve nu não abre
+  o painel. Esqueleto no disco
   não é achado. Escrever não é sessão.
   Sem acervo, `roles --fill` nomeia o stem do starter
   (`kind: starter`, licença, origem). `--apply` copia o
@@ -1021,6 +1026,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma pausa que cala o reinício que o comando já faz.
 **Não** mais uma região viva que cala como sair da pausa.
 **Não** mais uma pausa que ensina Esc no telefone.
+**Não** mais um `next` unstructured que aponta o serve nu.
 
 Candidatos, do que ainda dói:
 
@@ -1064,7 +1070,7 @@ Candidatos, do que ainda dói:
    `count` continua o acervo.    Sem os quatro campos,
    `playtest` nomeia `finding_href`, `qa`, `form`
    e `fields`; `next`
-   aponta a página e `note --field`, não relê o
+   aponta o serve, a página (`finding_open`) e `note --field`, não relê o
    leitor. Sem `then` no leitor.    Sem acervo, `roles --fill` nomeia o stem
    do starter; `--apply` o copia — e recoloca o WAV se o
    recibo já está e origem e licença casam; `next` aponta
@@ -1809,6 +1815,14 @@ Candidatos, do que ainda dói:
   Esc
   no
   telefone
+  e um
+  next
+  unstructured
+  que
+  aponta
+  o
+  serve
+  nu
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -1832,10 +1846,10 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: na pausa
-o telefone vê Continuar: toque sem ter
-apertado. lastSource continua teclado.
-Reiniciar continua R. Não promove `felt`.
+Arquivos quentes da última sessão: o `next`
+unstructured nomeia a página do achado.
+SKILL já apontava o convite; o comando
+mandava o serve nu. Não promove `outsider`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1871,3 +1885,4 @@ A família finding_href aponta um painel escondido está saturada.
 A família pausa que cala o reinício está saturada.
 A família região viva que cala como sair da pausa está saturada.
 A família pausa que ensina Esc no telefone está saturada.
+A família next unstructured aponta o serve nu está saturada.

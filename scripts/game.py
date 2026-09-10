@@ -2338,6 +2338,9 @@ def playtest_reading(project):
             "`?invite=1&seed=&spawn=&look=&speed=` abre essa partida e ignora o hold. "
             "`finding_href` junta o convite e o painel `#finding` — "
             "sem `invite=1` o âncora some. "
+            "O `next` nomeia `finding_open` (a url do serve com o "
+            "convite, ou o mesmo endereço sem serve). O serve nu "
+            "não abre o painel. "
             "com seed no disco junta o número e os eixos. "
             "`qa` nomeia `docs/qa.md` se o arquivo existir. "
             "`form` aponta o esqueleto dos quatro nomes; `fields` os lista. "
@@ -2412,6 +2415,18 @@ def finding_href(project):
     # âncora cai em display:none. Endereço no disco
     # não é alguém de fora.
     return f"{invite_href(project)}#finding"
+
+
+def finding_open(project, scripts=None, play=None, env=None):
+    # O next apontava o serve nu. Sem o convite o
+    # âncora some. SKILL e README já nomeiam a
+    # página; o comando tem de apontá-la. Endereço
+    # no disco não é alguém de fora.
+    href = finding_href(project)
+    base = serve_url(scripts, play, env)
+    if not base:
+        return href
+    return f"{base.rstrip('/')}{href}"
 
 
 def invite_playtest(project):
@@ -4951,6 +4966,7 @@ def next_step(project, focus="create", studies_root=None):
             "Há observação (ou um qa.md vigente) e nenhum achado com os quatro "
             "campos. `playtest` só lê. A página do convite (`/?invite=1#finding`) e "
             "`note --field` escrevem. Sem o convite o âncora some. "
+            "O serve nu não abre o painel. O comando nomeia o endereço. "
             "Nota de partida não é métrica. "
             "last-run.json é candidato, não causa. O harness não assistiu "
             "à sessão e não conta jogadores.",
@@ -4959,6 +4975,7 @@ def next_step(project, focus="create", studies_root=None):
             "pendentes.",
             [
                 play or harness_command("play", project),
+                finding_open(project, payload["scripts"], play),
                 harness_command(
                     "note", project, "--author", note_author(project),
                     "--note", "o achado com os quatro nomes",

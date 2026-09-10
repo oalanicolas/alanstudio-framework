@@ -3,6 +3,45 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.301 — O next unstructured nomeia a página do achado
+
+SKILL
+e
+README
+já
+apontavam
+`/?invite=1#finding`.
+O
+comando
+mandava
+o
+serve
+nu.
+Sem
+o
+convite
+o
+âncora
+some.
+Agora
+`finding_open`
+entra
+na
+proposta.
+Não
+promove
+`outsider`.
+
+O que 0.9.301 não afirma:
+endereço
+no
+disco
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.300 — Na pausa o telefone vê Continuar: toque
 
 Esc

@@ -3907,10 +3907,13 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("problema", proposal["action"])
         self.assertIn("só lê", proposal["why"])
         self.assertIn("invite=1#finding", proposal["why"])
+        self.assertIn(game.finding_open(self.project), proposal["commands"])
+        self.assertIn("/?invite=1#finding", proposal["commands"])
         self.assertFalse(any(" playtest " in f" {command} " for command in proposal["commands"]))
         self.assertFalse(any(" feel " in f" {command} " for command in proposal["commands"]))
         self.assertTrue(any(" --field " in command and "problema=" in command for command in proposal["commands"]))
         self.assertTrue(any(" play " in f" {command} " or "serve" in command for command in proposal["commands"]))
+        self.assertFalse(report["outsider"])
 
     def test_playtest_names_the_form_without_writing_the_finding(self):
         report = game.playtest_reading(self.project)
@@ -3936,7 +3939,48 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("#finding { display: none; }", html)
         self.assertIn("html.invite.finding #finding { display: block; }", html)
         self.assertIn("sem `invite=1` o âncora some", game.playtest_reading(self.project)["scope"])
+        self.assertIn("finding_open", game.playtest_reading(self.project)["scope"])
         self.assertFalse(game.playtest_reading(self.project)["outsider"])
+
+    def test_finding_open_joins_the_serve_so_next_does_not_point_at_the_bare_root(self):
+        self.assertEqual(game.finding_open(self.project), "/?invite=1#finding")
+        self.assertEqual(
+            game.finding_open(self.project, scripts={"serve": {}}),
+            "http://localhost:8080/?invite=1#finding",
+        )
+        self.assertEqual(
+            game.finding_open(self.project, scripts={"serve": {}}, env={"PORT": "3000"}),
+            "http://localhost:3000/?invite=1#finding",
+        )
+        self.assertEqual(
+            game.finding_open(self.project, scripts={"serve": {}}, env={"PORT": "0"}),
+            "/?invite=1#finding",
+        )
+        self.assertEqual(
+            game.finding_open(self.project, scripts={"start": {}}),
+            "/?invite=1#finding",
+        )
+        destination = self.root / "com-serve"
+        game.init(destination, "canvas-arcade")
+        (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 7,
+            "run": {"ticks": 40, "score": 3, "seed": 7},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        game.note_observation(destination, "Ana", "o dash ainda não tem peso")
+        scripts, _manager = game.project_commands(destination)
+        opened = game.finding_open(destination, scripts)
+        self.assertEqual(opened, "http://localhost:8080/?invite=1&seed=7#finding")
+        proposal = next(
+            item for item in self.proposals(game.next_step(destination, "feel"))
+            if item["basis"] == "playtest.unstructured"
+        )
+        self.assertIn(opened, proposal["commands"])
+        self.assertFalse(any(command.endswith("/") and "invite=1" not in command for command in proposal["commands"]))
+        self.assertFalse(game.playtest_reading(destination)["outsider"])
 
     def test_note_from_run_attaches_the_candidate_without_closing_the_finding(self):
         destination = self.root / "com-corrida"
