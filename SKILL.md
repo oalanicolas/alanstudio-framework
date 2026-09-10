@@ -25,7 +25,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | Em dúvida sobre o próximo passo | `next --focus <foco>` deriva uma proposta do estado no disco; sem caminho, o único jogo do laboratório basta. `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `feel`; se `unobserved`, `note --author … --note "o que o verbo sentiu"`. Sem caminho, o único jogo do laboratório basta. Depois `roles` e `context --focus audio` |
 | Paleta, conteúdo no código ou jogo só na máquina de quem construiu | `art` / `content` / `ship` <projeto>; `consistent`/`enough`/`shipped` ficam `false` |
-| Observou uma partida e só tem uma nota | `playtest`; se `unstructured`, escreva problema, evidência, hipótese e medição. Sem caminho, o único jogo do laboratório basta. Depois do recibo, `playtest --invite` escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a tabela some; depois do fim a página do maker aponta o convite desta partida se a seed ficou no recibo — copiar o endereço não grava; a página também mostra seed, pontos e eixos da partida e oferece os quatro nomes para copiar ou gravar — depois do fim ela rola até o painel; rolar não é alguém de fora; número na faixa não preenche os quatro; copiar não grava; sem a área de transferência o Copiar baixa o markdown; baixar não grava; gravar anexa o candidato se houver last-run; gravado não é alguém de fora |
+| Observou uma partida e só tem uma nota | `playtest`; se `unstructured`, escreva problema, evidência, hipótese e medição. Sem caminho, o único jogo do laboratório basta. Depois do recibo, `playtest --invite` escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a tabela some; depois do fim a página do maker aponta o convite desta partida se a seed ficou no recibo — copiar o endereço não grava; a página também mostra seed, pontos, eixos e a curva que o last-run já traçou e oferece os quatro nomes para copiar ou gravar — depois do fim ela rola até o painel; rolar não é alguém de fora; número na faixa não preenche os quatro; copiar não grava; sem a área de transferência o Copiar baixa o markdown; baixar não grava; gravar anexa o candidato se houver last-run; gravado não é alguém de fora |
 | “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
 | Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
 | “continue” / “vamos avançar” | `context <projeto> --focus <foco> --event resume` e leia `continuity.sources`, preservando o foco da tarefa |
@@ -271,7 +271,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    e medição. Sem caminho, o único jogo do laboratório basta.
    `observed` e `outsider` são sempre falsos. `--invite` escreve
    a página para quem nunca viu o jogo; depois do fim a página mostra
-   seed, pontos e eixos e oferece os quatro nomes para copiar ou gravar.
+   seed, pontos, eixos e a curva que o last-run já traçou e oferece
+   os quatro nomes para copiar ou gravar.
    Depois do fim a página rola até o painel. Rolar não é alguém de fora.
    Número na faixa não preenche os quatro. Copiar não grava. Sem a
    área de transferência, o Copiar baixa o markdown. Gravar anexa
@@ -283,7 +284,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Se o candidato nomeia a seed, `playtest` relata `candidate_seed`
    e `?seed=` abre essa partida, ignorando o hold. Se nomeia a
    chuva, relata `candidate_spawn`; se nomeia o look, relata
-   `candidate_look`. O convite junta mesa e paleta. Nenhum dos
+   `candidate_look`; se nomeia a curva, relata `candidate_curve`.
+   O convite junta mesa e paleta. Nenhum dos
    dois é sessão observada.    Recibo sem forma entra no
    `next` como `playtest.unstructured`: a proposta aponta a
    página (`#finding`) e `note --field`. `playtest` só lê.

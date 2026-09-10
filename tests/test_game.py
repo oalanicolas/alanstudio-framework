@@ -3475,6 +3475,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(report["candidate_seed"])
         self.assertIsNone(report["candidate_spawn"])
         self.assertIsNone(report["candidate_look"])
+        self.assertIsNone(report["candidate_curve"])
         self.assertIsNone(report["invite"])
         self.assertEqual(report["finding_href"], "/#finding")
         self.assertIsNone(report["qa"])
@@ -3528,6 +3529,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(reading["finding_href"], "/?seed=7#finding")
         self.assertIsNone(reading["candidate_spawn"])
         self.assertIsNone(reading["candidate_look"])
+        self.assertIsNone(reading["candidate_curve"])
         self.assertFalse(reading["expected"])
         self.assertFalse(reading["structured"])
         self.assertFalse(reading["observed"])
@@ -3864,6 +3866,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("verified", report["scope"])
         self.assertNotIn("enough", report["scope"])
+
+    def test_playtest_names_the_curve_the_last_run_already_traced(self):
+        destination = self.root / "com-curva"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"seed": 8, "score": 12, "ticks": 400},
+            "curve": {"never_banked": True, "unbanked_at_end": 3},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(destination)
+        self.assertEqual(report["candidate_curve"], {
+            "never_banked": True,
+            "unbanked_at_end": 3,
+        })
+        self.assertEqual(report["candidate_seed"], 8)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertIn("candidate_curve", report["scope"])
+        self.assertNotIn("aprovado", json.dumps(report))
+        self.assertNotIn("verified", json.dumps(report))
 
     def test_next_points_at_the_invite_after_the_maker_already_played(self):
         destination = self.root / "depois-de-jogar"

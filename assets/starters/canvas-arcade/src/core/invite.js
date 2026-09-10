@@ -9,7 +9,8 @@
 // alguém de fora. Esconder a
 // tabela não é alguém de fora nem curva observada. Depois do fim, a
 // porta também oferece os quatro nomes — no overlay e na abertura, se
-// houver partida — e mostra seed, pontos e eixos. Número na faixa
+// houver partida — e mostra seed, pontos, eixos e a curva que o
+// last-run já traçou. Número na faixa
 // não preenche os quatro. Copiar não grava. Esqueleto vazio não é
 // achado. Gravado não é alguém de fora. VERSION.json na raiz some
 // o Gravar: o serve da árvore exportada recusa o POST. Copiar
@@ -60,9 +61,24 @@ function runScore(run) {
   return null;
 }
 
+export function curveFacts(curve) {
+  // A faixa mostrava seed e some a curva que o last-run
+  // já traçou. Número no disco não é causa nem outsider.
+  if (!curve || typeof curve !== "object" || Array.isArray(curve)) return "";
+  const source = curve.curve && typeof curve.curve === "object" && !Array.isArray(curve.curve)
+    ? curve.curve
+    : curve;
+  const parts = [];
+  if (source.never_banked === true) parts.push("nunca guardou");
+  if (Number.isFinite(source.unbanked_at_end) && source.unbanked_at_end > 0) {
+    parts.push(`aposta ${source.unbanked_at_end}`);
+  }
+  return parts.join(" · ");
+}
+
 // Números da partida para quem vai escrever o achado. Não preenche
-// os quatro campos e não é evidência. Sem seed, pontos ou eixo
-// nomeado, a linha some.
+// os quatro campos e não é evidência. Sem seed, pontos, eixo
+// nomeado ou curva, a linha some.
 export function runFacts(run) {
   const parts = [];
   const seed = runSeed(run);
@@ -73,6 +89,8 @@ export function runFacts(run) {
   if (spawn) parts.push(spawn);
   const look = runLook(run);
   if (look && look !== spawn) parts.push(look);
+  const curve = curveFacts(run && run.curve);
+  if (curve) parts.push(curve);
   return parts.join(" · ");
 }
 

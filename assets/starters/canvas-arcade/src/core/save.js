@@ -134,15 +134,26 @@ export function persistLine(status, lines = {}) {
   return "";
 }
 
+function readCurve(raw) {
+  const source = raw && typeof raw === "object" && !Array.isArray(raw) ? raw.curve : null;
+  if (!source || typeof source !== "object" || Array.isArray(source)) return null;
+  const curve = {};
+  if (typeof source.never_banked === "boolean") curve.never_banked = source.never_banked;
+  if (Number.isFinite(source.unbanked_at_end)) curve.unbanked_at_end = source.unbanked_at_end;
+  return Object.keys(curve).length ? curve : null;
+}
+
 function readRun(raw) {
   if (!raw || typeof raw !== "object") return null;
-  return summarizeRun({
+  const run = summarizeRun({
     seed: raw.seed,
     score: raw.score,
     chain: raw.chain,
     tick: raw.ticks ?? raw.tick,
     stats: raw,
   });
+  const curve = readCurve(raw);
+  return curve ? { ...run, curve } : run;
 }
 
 export function recordRun(progress, state, extras = {}) {

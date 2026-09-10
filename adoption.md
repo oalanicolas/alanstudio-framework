@@ -3,6 +3,45 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.267 — A faixa nomeia a curva que o last-run já traçou
+
+A
+faixa
+já
+mostrava
+seed
+e
+pontos.
+A
+curva
+já
+estava
+no
+last-run.
+`never_banked`
+some.
+Agora
+a
+linha
+nomeia
+a
+aposta
+que
+ficou.
+Não
+promove
+`outsider`.
+
+O que 0.9.267 não afirma:
+número
+na
+faixa
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.266 — O verify nomeia o stem que o recibo perdeu
 
 O

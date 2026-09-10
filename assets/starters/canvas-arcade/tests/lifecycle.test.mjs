@@ -270,6 +270,8 @@ test("uma partida completa é registrada no progresso persistido", () => {
   assert.equal(game.lastRun.ticks, state.tick);
   assert.equal(game.lastRun.spawn, "spawn");
   assert.equal(game.lastRun.look, "normal");
+  assert.equal(typeof game.lastRun.curve?.never_banked, "boolean");
+  assert.equal(Number.isFinite(game.lastRun.curve?.unbanked_at_end), true);
   const painted = createGame({
     seed: 5,
     eventTarget: recordingTarget(),

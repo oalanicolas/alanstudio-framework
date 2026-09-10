@@ -27,8 +27,9 @@ o ofício. O autor do `note` é sugestão do git ou do ambiente, não
 quem jogou. Nomear o ofício não pinta. `playtest --invite` aponta `href`
 (`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`, com
 chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a
-tabela some; depois do fim a página mostra seed, pontos e eixos e
-oferece os quatro nomes para copiar ou gravar. Depois do fim a
+tabela some; depois do fim a página mostra seed, pontos, eixos e a
+curva que o last-run já traçou e oferece os quatro nomes para copiar
+ou gravar. Depois do fim a
 página rola até o painel. Rolar não é alguém de fora. Número na faixa não
 preenche os quatro. Copiar não grava. Sem a área de transferência,
 o Copiar baixa o markdown. Gravar anexa o candidato se last-run

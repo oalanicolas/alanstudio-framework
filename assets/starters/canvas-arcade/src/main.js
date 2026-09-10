@@ -256,7 +256,10 @@ export function createGame(options = {}) {
     if (state.phase === "over" && !recorded) {
       recorded = true;
       doorArmed = false;
-      lastRun = summarizeRun(state, { look: settings.look });
+      // A faixa lia seed e some a curva. O last-run já
+      // a traçou. Número no disco não é outsider.
+      const curve = finishCurve(trace, state.chain);
+      lastRun = { ...summarizeRun(state, { look: settings.look }), curve };
       progress = recordRun(progress, state, { lastRun });
       rememberWrite(saveProgress(storage, progress, progressLoad));
       audio.stop("bed", { fadeMs: BED_FADE_MS });
@@ -265,7 +268,7 @@ export function createGame(options = {}) {
         spawn: state.spawnProfile,
         look: settings.look,
         run: lastRun,
-        curve: finishCurve(trace, state.chain),
+        curve,
         policy: "played",
       }));
     }

@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, ARTIFACT_FINDING_HINT, bringPanel, composeFinding, FINDING_FILE, inviteHref, inviteMode, INVITE_LABEL, offerFinding, findingFile, readArtifactMark, runFacts, seedHref } from "../src/core/invite.js";
+import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, ARTIFACT_FINDING_HINT, bringPanel, composeFinding, curveFacts, FINDING_FILE, inviteHref, inviteMode, INVITE_LABEL, offerFinding, findingFile, readArtifactMark, runFacts, seedHref } from "../src/core/invite.js";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -273,6 +273,23 @@ test("a partida nomeia seed, pontos e eixos sem preencher o achado", () => {
   assert.equal(node.hidden, true);
   assert.equal(runFacts({ seed: 8 }).includes("Problema:"), false);
   assert.equal(runFacts({ seed: 8, score: 12, spawn: "dusk" }).includes("Evidência:"), false);
+});
+
+test("a faixa nomeia a curva que o last-run já traçou", () => {
+  assert.equal(curveFacts({ never_banked: true }), "nunca guardou");
+  assert.equal(curveFacts({ never_banked: false, unbanked_at_end: 3 }), "aposta 3");
+  assert.equal(curveFacts({ never_banked: true, unbanked_at_end: 3 }), "nunca guardou · aposta 3");
+  assert.equal(curveFacts({ never_banked: false, unbanked_at_end: 0 }), "");
+  assert.equal(runFacts({
+    seed: 8,
+    score: 12,
+    curve: { never_banked: true, unbanked_at_end: 3 },
+  }), "seed 8 · 12 · nunca guardou · aposta 3");
+  assert.equal(runFacts({ seed: 8, score: 12 }).includes("nunca guardou"), false);
+  assert.equal(runFacts({
+    seed: 8,
+    curve: { never_banked: true },
+  }).includes("Problema:"), false);
 });
 
 test("findingFile nomeia o markdown que a página pode baixar", () => {

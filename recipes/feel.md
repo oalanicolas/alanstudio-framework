@@ -16,7 +16,8 @@ quatro não é achado. `playtest --invite`
 escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco,
 `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a tabela some; depois do
 fim a página oferece os quatro nomes para copiar ou gravar e
-mostra seed, pontos e eixos da partida. Depois do fim a página
+mostra seed, pontos, eixos e a curva que o last-run já traçou.
+Depois do fim a página
 rola até o painel e foca o campo. Escrever não dispara o
 verbo — Espaço e R ficam no recado. Rolar não é alguém de fora. Número na faixa não
 preenche os quatro. Copiar não grava. Sem a área de

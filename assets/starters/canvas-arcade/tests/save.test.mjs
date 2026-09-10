@@ -173,6 +173,23 @@ test("recordRun mantém os máximos e conta a partida", () => {
   assert.equal(canResume(next), false, "terminar a partida não é retomar o tick");
 });
 
+test("o save relê a curva que o last-run já traçou", () => {
+  const result = migrate({
+    schema: PROGRESS_SCHEMA,
+    best: 12,
+    runs: 1,
+    lastSeed: 8,
+    lastRun: {
+      seed: 8,
+      score: 12,
+      ticks: 400,
+      curve: { never_banked: true, unbanked_at_end: 3 },
+    },
+  });
+  assert.equal(result.progress.lastRun.score, 12);
+  assert.deepEqual(result.progress.lastRun.curve, { never_banked: true, unbanked_at_end: 3 });
+});
+
 test("schema 2 ganha hold vazio ao subir", () => {
   const result = migrate({ schema: 2, best: 10, runs: 1, lastSeed: 3 });
   assert.equal(result.status, "migrated");

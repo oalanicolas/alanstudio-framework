@@ -2074,6 +2074,32 @@ def last_run_spawn(project):
     return None
 
 
+def last_run_curve(project):
+    # A faixa e o leitor viam seed e some a curva.
+    # last-run.json já a traçou. Número não é outsider.
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    curve = data.get("curve")
+    if not isinstance(curve, dict) and isinstance(data.get("run"), dict):
+        curve = data["run"].get("curve")
+    if not isinstance(curve, dict):
+        return None
+    facts = {}
+    if isinstance(curve.get("never_banked"), bool):
+        facts["never_banked"] = curve["never_banked"]
+    unbanked = curve.get("unbanked_at_end")
+    if isinstance(unbanked, (int, float)) and not isinstance(unbanked, bool) and unbanked > 0:
+        facts["unbanked_at_end"] = unbanked
+    return facts or None
+
+
 def last_run_look(project):
     path = Path(project) / LAST_RUN
     if not path.is_file() or path.is_symlink():
@@ -2124,6 +2150,7 @@ def playtest_reading(project):
     candidate_seed = last_run_seed(project) if candidate else None
     candidate_spawn = last_run_spawn(project) if candidate else None
     candidate_look = last_run_look(project) if candidate else None
+    candidate_curve = last_run_curve(project) if candidate else None
     invite = invite_path(project)
     qa_file = qa.is_file() and not qa.is_symlink()
     return {
@@ -2137,6 +2164,7 @@ def playtest_reading(project):
         "candidate_seed": candidate_seed,
         "candidate_spawn": candidate_spawn,
         "candidate_look": candidate_look,
+        "candidate_curve": candidate_curve,
         "invite": invite,
         "invite_href": invite_href(project),
         "finding_href": finding_href(project),
@@ -2165,7 +2193,9 @@ def playtest_reading(project):
             "candidato que estava em last-run.json. Anexo não é sessão "
             "observada. Se o candidato nomeia a seed, `candidate_seed` "
             "a relata; se nomeia a chuva, `candidate_spawn` a relata; "
-            "se nomeia o look, `candidate_look` o relata. "
+            "se nomeia o look, `candidate_look` o relata; "
+            "se nomeia a curva, `candidate_curve` relata "
+            "`never_banked` e a aposta que ficou. "
             "`invite_href` junta convite, número, mesa e paleta — "
             "`?invite=1&seed=&spawn=&look=` abre essa partida e ignora o hold. "
             "`finding_href` aponta o painel `#finding` depois do fim; "
