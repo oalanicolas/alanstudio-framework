@@ -4,9 +4,10 @@ Entrada: ação, participantes, estado compartilhado e comportamento esperado na
 
 No starter, a rede que existe é o serve anunciando a LAN e, depois
 do fim, a página apontando `/?invite=1&seed=<n>` — e `&spawn=<mesa>`
-se o last-run nomeou a chuva — para enviar essa partida. Compartilhar
-o endereço não é alguém de fora nem duas sessões reais. Com tela, a
-primeira superfície continua a porta.
+e `&look=<paleta>` se o last-run nomeou a chuva ou o look — para
+enviar essa partida. Compartilhar o endereço não é alguém de fora
+nem duas sessões reais. Com tela, a primeira superfície continua a
+porta.
 
 Leia o protocolo existente e quem o consome. Identifique quem aceita a ação, valida
 identidade/turno/recursos e decide o estado. Verifique o caminho com e sem identidade;

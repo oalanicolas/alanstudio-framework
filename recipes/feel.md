@@ -8,7 +8,7 @@ avanço. Depois do fim, um avanço novo volta à porta; R também. Depois da par
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured`. `playtest --invite`
 escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco,
-`/?invite=1&seed=<n>`, e com chuva nomeada, `&spawn=<mesa>`), onde a tabela some; depois do
+`/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a tabela some; depois do
 fim a página oferece os quatro nomes para copiar ou gravar. Copiar
 não grava. Gravar anexa o candidato se last-run existir. Gravado
 não é alguém de fora. Nomear o endereço não observa. Depois do

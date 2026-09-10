@@ -106,10 +106,28 @@ export function lastRunSpawn(root = ROOT) {
   }
 }
 
-export function inviteQuery(seed, spawn) {
+export function lastRunLook(root = ROOT) {
+  try {
+    const data = JSON.parse(readFileSync(join(root, LAST_RUN_FILE), "utf8"));
+    if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+    const nested = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+      ? data.run.look
+      : null;
+    const look = data.look ?? nested;
+    if (typeof look !== "string" || !/^[a-z][a-z0-9]{0,31}$/.test(look) || look === "normal" || look === "contrast") {
+      return null;
+    }
+    return look;
+  } catch {
+    return null;
+  }
+}
+
+export function inviteQuery(seed, spawn, look) {
   return inviteHref({
     seed: Number.isInteger(seed) ? seed : undefined,
     spawn: typeof spawn === "string" ? spawn : undefined,
+    look: typeof look === "string" ? look : undefined,
   });
 }
 
@@ -118,7 +136,8 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
   const local = origins[0];
   const seed = lastRunSeed(root);
   const spawn = lastRunSpawn(root);
-  const invite = inviteQuery(seed, spawn);
+  const look = lastRunLook(root);
+  const invite = inviteQuery(seed, spawn, look);
   const seedPath = Number.isInteger(seed) ? `/?seed=${seed}` : "/?seed=7";
   const lines = [
     `Jogo em ${local}/  (Ctrl+C encerra)`,
@@ -179,6 +198,7 @@ export function acceptLastRun(raw) {
     report: playReport({
       seed: data.seed ?? run.seed,
       spawn: data.spawn,
+      look: data.look ?? run.look,
       run,
       curve: data.curve,
       policy: "played",
@@ -224,6 +244,7 @@ async function attachedRun(root) {
       curve,
       seed: data.seed ?? run?.seed ?? null,
       spawn: typeof data.spawn === "string" && data.spawn ? data.spawn : undefined,
+      look: typeof data.look === "string" && data.look ? data.look : undefined,
     };
   } catch {
     return {};
@@ -281,6 +302,7 @@ export async function writeFinding(root, text) {
     const report = findingAttachment({
       seed: extra.seed ?? extra.run.seed,
       spawn: extra.spawn,
+      look: extra.look,
       run: extra.run,
       curve: extra.curve,
       finding: dest.split(/[/\\]/).pop(),

@@ -206,13 +206,14 @@ export function createGame(options = {}) {
     if (state.phase === "over" && !recorded) {
       recorded = true;
       doorArmed = false;
-      lastRun = summarizeRun(state);
-      progress = recordRun(progress, state);
+      lastRun = summarizeRun(state, { look: settings.look });
+      progress = recordRun(progress, state, { lastRun });
       saveProgress(storage, progress, progressLoad);
       audio.stop("bed");
       offerLastRun(playReport({
         seed: state.seed,
         spawn: state.spawnProfile,
+        look: settings.look,
         run: lastRun,
         curve: finishCurve(trace, state.chain),
         policy: "played",

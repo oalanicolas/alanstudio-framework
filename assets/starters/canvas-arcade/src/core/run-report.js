@@ -71,6 +71,7 @@ export function playNote({ author, note, project, run, curve, recordedAt } = {})
 export function playReport({
   seed,
   spawn,
+  look,
   run,
   curve,
   policy = "played",
@@ -81,6 +82,7 @@ export function playReport({
     schema: 2,
     seed: seed ?? summary.seed ?? null,
     spawn: typeof spawn === "string" && spawn ? spawn : "spawn",
+    look: typeof look === "string" && look ? look : typeof summary.look === "string" && summary.look ? summary.look : "normal",
     policy: nearest ? "nearest-orb" : "played",
     run: summary,
     observed: false,
@@ -100,11 +102,12 @@ export function playReport({
 export function findingAttachment({
   seed,
   spawn,
+  look,
   run,
   curve,
   finding,
 } = {}) {
-  const report = playReport({ seed, spawn, run, curve, policy: "played" });
+  const report = playReport({ seed, spawn, look, run, curve, policy: "played" });
   return {
     ...report,
     kind: "finding-attachment",

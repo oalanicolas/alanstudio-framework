@@ -190,6 +190,17 @@ test("uma partida completa é registrada no progresso persistido", () => {
   assert.equal(game.lastRun.score, state.score);
   assert.equal(game.lastRun.ticks, state.tick);
   assert.equal(game.lastRun.spawn, "spawn");
+  assert.equal(game.lastRun.look, "normal");
+  const painted = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  painted.updateSettings({ look: "dusk" });
+  painted.advance(CONFIG.runTicks);
+  assert.equal(painted.lastRun.look, "dusk");
+  assert.equal(painted.lastRun.spawn, "spawn");
+  painted.dispose();
   game.dispose();
 });
 
@@ -218,6 +229,8 @@ test("com tela o fim oferece o candidato sem chamar isso de observado", async ()
   assert.equal(body.observed, false);
   assert.equal(body.felt, false);
   assert.equal(body.run.ticks, game.lastRun.ticks);
+  assert.equal(body.look, "normal");
+  assert.equal(body.run.look, "normal");
   assert.ok(body.curve);
   assert.equal(body.curve.unbanked_at_end, game.lastRun.chain);
   assert.doesNotMatch(body.scope, /aprovado|verified|LUFS|-14|4\.5/);
@@ -443,6 +456,18 @@ test("?seed abre essa partida e ignora o hold", () => {
   assert.equal(invited.observe().seed, 9);
   assert.equal(invited.observe().spawnProfile, "dusk");
   invited.dispose();
+  const dressed = createGame({
+    query: "?invite=1&seed=9&spawn=dusk&look=dusk",
+    eventTarget: recordingTarget(),
+    storage,
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(dressed.observe().phase, "title");
+  assert.equal(dressed.observe().seed, 9);
+  assert.equal(dressed.observe().spawnProfile, "dusk");
+  assert.equal(dressed.settings.look, "dusk");
+  dressed.dispose();
   const kept = createGame({
     seed: 5,
     query: "?seed=9",

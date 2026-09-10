@@ -12,6 +12,7 @@ test("só invite=1 liga o modo; outro valor não esconde a tabela", () => {
   assert.equal(inviteMode("?invite=1&look=dusk"), true);
   assert.equal(inviteMode("?invite=1&seed=8"), true);
   assert.equal(inviteMode("?invite=1&seed=8&spawn=dusk"), true);
+  assert.equal(inviteMode("?invite=1&seed=8&spawn=dusk&look=dusk"), true);
   assert.equal(inviteMode("?look=dusk"), false);
   assert.equal(inviteMode("?invite=true"), false);
   assert.equal(inviteMode(""), false);
@@ -82,6 +83,16 @@ test("o convite da partida junta a seed sem fingir quem jogou", () => {
     inviteHref({ seed: 8, spawn: "dusk" }, "http://192.168.1.40:8080"),
     "http://192.168.1.40:8080/?invite=1&seed=8&spawn=dusk",
   );
+  assert.equal(inviteHref({ seed: 8, look: "normal" }), "/?invite=1&seed=8");
+  assert.equal(inviteHref({ seed: 8, look: "contrast" }), "/?invite=1&seed=8");
+  assert.equal(inviteHref({ seed: 8, look: "dusk" }), "/?invite=1&seed=8&look=dusk");
+  assert.equal(inviteHref({ seed: 8, spawn: "dusk", look: "dusk" }), "/?invite=1&seed=8&spawn=dusk&look=dusk");
+  assert.equal(inviteHref({ seed: 8, spawn: "dusk", look: "calm" }), "/?invite=1&seed=8&spawn=dusk&look=calm");
+  assert.equal(inviteHref({ seed: 8, look: "../x" }), "/?invite=1&seed=8");
+  assert.equal(
+    inviteHref({ seed: 8, spawn: "dusk", look: "dusk" }, "http://192.168.1.40:8080"),
+    "http://192.168.1.40:8080/?invite=1&seed=8&spawn=dusk&look=dusk",
+  );
   const hrefNode = { textContent: "" };
   const wrap = { hidden: true };
   assert.equal(applyShare({ hrefNode, wrap, run: { seed: 8 } }), "/?invite=1&seed=8");
@@ -89,6 +100,11 @@ test("o convite da partida junta a seed sem fingir quem jogou", () => {
   assert.equal(wrap.hidden, false);
   assert.equal(applyShare({ hrefNode, wrap, run: { seed: 8, spawn: "dusk" } }), "/?invite=1&seed=8&spawn=dusk");
   assert.equal(hrefNode.textContent, "/?invite=1&seed=8&spawn=dusk");
+  assert.equal(wrap.hidden, false);
+  assert.equal(
+    applyShare({ hrefNode, wrap, run: { seed: 8, spawn: "dusk", look: "dusk" } }),
+    "/?invite=1&seed=8&spawn=dusk&look=dusk",
+  );
   assert.equal(wrap.hidden, false);
   assert.equal(applyShare({ hrefNode, wrap, run: { score: 3 } }), "/?invite=1");
   assert.equal(wrap.hidden, true);

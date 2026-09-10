@@ -11,6 +11,7 @@ test("o recibo nasce sem observar e a simulação não se mistura com a partida"
   const played = playReport({
     seed: 9,
     spawn: "dusk",
+    look: "dusk",
     run: { seed: 9, ticks: 120, score: 4, banks: 1 },
     curve: { never_banked: false },
     policy: "played",
@@ -21,6 +22,7 @@ test("o recibo nasce sem observar e a simulação não se mistura com a partida"
   assert.equal(played.observed, false);
   assert.equal(played.felt, false);
   assert.equal(played.spawn, "dusk");
+  assert.equal(played.look, "dusk");
   assert.equal(played.curve.never_banked, false);
   assert.match(played.scope, /não é causa/);
   assert.doesNotMatch(played.scope, /aprovado|verified|LUFS|-14|4\.5|enough|consistent/);
@@ -32,6 +34,7 @@ test("o recibo nasce sem observar e a simulação não se mistura com a partida"
     policy: "nearest-orb",
   });
   assert.equal(simulated.policy, "nearest-orb");
+  assert.equal(simulated.look, "normal");
   assert.equal(simulated.observed, false);
   assert.match(simulated.scope, /nearest-orb/);
 });
@@ -44,6 +47,7 @@ test("o POST só aceita run com ticks e apaga observed do cliente", () => {
     run: { ticks: 80, score: 2, seed: 3 },
     seed: 3,
     spawn: "calm",
+    look: "dusk",
     curve: { never_hit: true },
   }));
   assert.equal(accepted.ok, true);
@@ -51,6 +55,7 @@ test("o POST só aceita run com ticks e apaga observed do cliente", () => {
   assert.equal(accepted.report.felt, false);
   assert.equal(accepted.report.policy, "played");
   assert.equal(accepted.report.spawn, "calm");
+  assert.equal(accepted.report.look, "dusk");
   assert.equal(accepted.report.run.ticks, 80);
 
   assert.equal(acceptLastRun("não-json").ok, false);
@@ -114,6 +119,7 @@ test("o anexo do achado nasce do candidato e não observa", () => {
   const attached = findingAttachment({
     seed: 8,
     spawn: "dusk",
+    look: "dusk",
     run: { ticks: 40, score: 3, seed: 8 },
     curve: { never_banked: false },
     finding: "20260910T000000Z-achado.md",
@@ -128,6 +134,7 @@ test("o anexo do achado nasce do candidato e não observa", () => {
   assert.equal(attached.finding, "20260910T000000Z-achado.md");
   assert.equal(attached.run.ticks, 40);
   assert.equal(attached.spawn, "dusk");
+  assert.equal(attached.look, "dusk");
   assert.match(attached.scope, /não é causa/);
   assert.doesNotMatch(attached.scope, /aprovado|verified|LUFS|-14|4\.5|enough|consistent/);
 });
@@ -151,6 +158,7 @@ test("gravar o achado anexa last-run e sem partida não inventa anexo", async ()
       schema: 2,
       seed: 8,
       spawn: "dusk",
+      look: "dusk",
       policy: "played",
       run: { ticks: 40, score: 3, seed: 8 },
       curve: { never_banked: false },
@@ -167,6 +175,7 @@ test("gravar o achado anexa last-run e sem partida não inventa anexo", async ()
     assert.equal(attached.policy, "played");
     assert.equal(attached.run.ticks, 40);
     assert.equal(attached.spawn, "dusk");
+    assert.equal(attached.look, "dusk");
     assert.equal(attached.finding, dest.split(/[/\\]/).pop());
     assert.doesNotMatch(JSON.stringify(attached), /aprovado|verified|LUFS|-14|4\.5|enough|consistent/);
   } finally {

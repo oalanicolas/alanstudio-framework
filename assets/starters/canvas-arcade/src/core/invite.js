@@ -1,8 +1,8 @@
 // Superfície de convite. A tabela da página ensina o verbo; quem nunca
 // viu o jogo não deveria lê-la. `?invite=1` some o painel. Com seed no
-// last-run, `?invite=1&seed=<n>&spawn=<mesa>` some a tabela e abre
-// essa partida com a chuva que o candidato nomeou. Sem mesa, a
-// chuva fica a do aparelho.
+// last-run, `?invite=1&seed=<n>&spawn=<mesa>&look=<paleta>` some a
+// tabela e abre essa partida com a chuva e o look que o candidato
+// nomeou. Sem mesa ou sem paleta, o aparelho decide o eixo omitido.
 // Depois do fim, a página do maker aponta esse endereço. Copiar o
 // endereço não grava e não é quem jogou. Juntar o número não é
 // alguém de fora. Esconder a
@@ -25,12 +25,23 @@ function runSpawn(run) {
   return spawn;
 }
 
+function runLook(run) {
+  if (!run || typeof run !== "object" || Array.isArray(run)) return null;
+  const look = typeof run.look === "string" ? run.look : run.run && typeof run.run === "object" ? run.run.look : null;
+  if (typeof look !== "string" || !/^[a-z][a-z0-9]{0,31}$/.test(look) || look === "normal" || look === "contrast") {
+    return null;
+  }
+  return look;
+}
+
 export function inviteHref(run, origin) {
   const parts = ["invite=1"];
   const seed = runSeed(run);
   if (seed !== null) parts.push(`seed=${seed}`);
   const spawn = runSpawn(run);
   if (spawn) parts.push(`spawn=${spawn}`);
+  const look = runLook(run);
+  if (look) parts.push(`look=${look}`);
   const path = `/?${parts.join("&")}`;
   if (typeof origin === "string" && origin) {
     try {

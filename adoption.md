@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.128 — O convite também leva o look
+
+O convite já juntava a chuva. Quem jogou com
+`?mood=dusk` gerava `/?invite=1&seed=<n>&spawn=dusk`
+e o outsider abria a paleta do aparelho. Com look
+no last-run, o endereço junta `&look=<paleta>`.
+Look `normal` ou `contrast` some. `playtest` relata
+`candidate_look`. `outsider` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.128 não afirma: levar a paleta na URL
+não é quem jogou nem direção consistente.
+Assistência, teclas e `gameSpeed` não entram.
+
 ## 0.9.127 — As receitas de entrega também nomeiam a porta
 
 `feel`, rede e o campo já falavam da abertura.

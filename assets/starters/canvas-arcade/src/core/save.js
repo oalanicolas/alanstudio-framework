@@ -120,7 +120,7 @@ function readRun(raw) {
   });
 }
 
-export function recordRun(progress, state) {
+export function recordRun(progress, state, extras = {}) {
   return {
     ...progress,
     schema: PROGRESS_SCHEMA,
@@ -128,7 +128,7 @@ export function recordRun(progress, state) {
     bestChain: Math.max(progress.bestChain, state.stats.bestChain),
     runs: progress.runs + 1,
     lastSeed: state.seed,
-    lastRun: summarizeRun(state),
+    lastRun: extras.lastRun ?? summarizeRun(state, extras),
     hold: null,
   };
 }
@@ -214,12 +214,18 @@ export function readHold(raw) {
 
 // Forma estável para o campo "medição" de um achado de playtest.
 // Números no disco não são causa observada.
-export function summarizeRun(state) {
+export function summarizeRun(state, extras = {}) {
   const stats = state.stats ?? {};
   const number = (value) => (Number.isFinite(value) ? value : 0);
+  const look = typeof extras.look === "string" && extras.look
+    ? extras.look
+    : typeof state.look === "string" && state.look
+      ? state.look
+      : "normal";
   return {
     seed: state.seed ?? null,
     spawn: typeof state.spawnProfile === "string" && state.spawnProfile ? state.spawnProfile : "spawn",
+    look,
     score: number(state.score),
     chain: number(state.chain),
     ticks: number(state.tick),

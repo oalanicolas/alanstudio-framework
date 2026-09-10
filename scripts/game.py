@@ -1981,6 +1981,24 @@ def last_run_spawn(project):
     return None
 
 
+def last_run_look(project):
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    look = data.get("look")
+    if not nonempty(look) and isinstance(data.get("run"), dict):
+        look = data["run"].get("look")
+    if isinstance(look, str) and SPAWN_NAME.fullmatch(look) and look not in {"normal", "contrast"}:
+        return look
+    return None
+
+
 def attach_run_candidate(project, fields=None, source=None):
     project = Path(project)
     path = Path(source) if source else project / LAST_RUN
@@ -2012,6 +2030,7 @@ def playtest_reading(project):
     candidate = last_run_path(project)
     candidate_seed = last_run_seed(project) if candidate else None
     candidate_spawn = last_run_spawn(project) if candidate else None
+    candidate_look = last_run_look(project) if candidate else None
     invite = invite_path(project)
     return {
         "schema_version": 1,
@@ -2023,6 +2042,7 @@ def playtest_reading(project):
         "candidate": candidate,
         "candidate_seed": candidate_seed,
         "candidate_spawn": candidate_spawn,
+        "candidate_look": candidate_look,
         "invite": invite,
         "invite_href": invite_href(project),
         "qa_current": qa_current,
@@ -2046,9 +2066,10 @@ def playtest_reading(project):
             "página pode gravar o markdown dos quatro nomes e anexar o "
             "candidato que estava em last-run.json. Anexo não é sessão "
             "observada. Se o candidato nomeia a seed, `candidate_seed` "
-            "a relata; se nomeia a chuva, `candidate_spawn` a relata. "
-            "`invite_href` junta convite, número e mesa — "
-            "`?invite=1&seed=&spawn=` abre essa partida e ignora o hold. "
+            "a relata; se nomeia a chuva, `candidate_spawn` a relata; "
+            "se nomeia o look, `candidate_look` o relata. "
+            "`invite_href` junta convite, número, mesa e paleta — "
+            "`?invite=1&seed=&spawn=&look=` abre essa partida e ignora o hold. "
             "Não assiste a sessão, não conta jogadores e não "
             "atribui causa. `observed` e `outsider` são sempre falsos."
         ),
@@ -2090,6 +2111,9 @@ def invite_href(project):
     spawn = last_run_spawn(project)
     if spawn:
         parts.append(f"spawn={spawn}")
+    look = last_run_look(project)
+    if look:
+        parts.append(f"look={look}")
     return "/?" + "&".join(parts)
 
 
@@ -2117,7 +2141,8 @@ def invite_playtest(project):
         "scope": (
             "Escreve a página para quem nunca viu o jogo e aponta "
             "`href`. Sem last-run é `/?invite=1`; com seed no disco "
-            "junta o número; com chuva no disco junta a mesa. A tabela "
+            "junta o número; com chuva no disco junta a mesa; com look "
+            "no disco junta a paleta. A tabela "
             "some. Depois do fim a página "
             "oferece os quatro nomes para copiar ou gravar. Copiar não "
             "grava. Esqueleto vazio não é achado. Gravado anexa o "
