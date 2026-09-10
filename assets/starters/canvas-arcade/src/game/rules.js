@@ -951,6 +951,26 @@ export function approaching(state) {
   return approachingScratch;
 }
 
+// Estilhaço no alcance do telegraph e no x do corpo. Não reusa o
+// scratch de `approaching`. Texto no DOM não é sessão de alcance.
+export function threatCue(state) {
+  if (!state || state.phase !== "playing" || !state.player) return null;
+  const list = state.entities;
+  if (!Array.isArray(list)) return null;
+  const reach = CONFIG.feel.telegraphReach;
+  const band = CONFIG.collect.reachY;
+  const px = state.player.x;
+  const half = CONFIG.player.halfWidth + CONFIG.hazard.radius;
+  for (let index = 0; index < list.length; index += 1) {
+    const entity = list[index];
+    if (!entity || entity.kind !== "shard") continue;
+    const gap = PLAYER_Y - entity.y;
+    if (gap <= band || gap > reach) continue;
+    if (Math.abs(entity.x - px) <= half) return "ahead";
+  }
+  return null;
+}
+
 function punch(state, x, y) {
   state.camera.x += x;
   state.camera.y += y;

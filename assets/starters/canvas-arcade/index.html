@@ -63,6 +63,17 @@
         font: inherit;
       }
       .remap button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
       .invite-strip { display: none; color: var(--muted); font-size: 0.9rem; margin: 0; }
       html.invite #commands { display: none; }
       html.invite .invite-strip { display: block; }
@@ -130,6 +141,7 @@
 
     <canvas id="stage" width="640" height="360" tabindex="0"
       aria-label="Área de jogo. Colete orbes para formar corrente e guarde antes de ser atingido."></canvas>
+    <p id="live" class="sr-only" aria-live="polite" aria-atomic="true"></p>
 
     <noscript>
       <p class="panel">Este jogo precisa de JavaScript. O código das regras fica em <code>src/game/rules.js</code>.</p>

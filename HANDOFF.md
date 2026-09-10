@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.148: no over a página traz o painel.
+**HEAD:** ver `git log -1` — vigente 0.9.149: a página fala o perigo à frente.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 262 OK.
-`cd assets/starters/canvas-arcade && npm test` → 322 OK.
+`cd assets/starters/canvas-arcade && npm test` → 326 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.148)
+## O que o HEAD já entrega (0.9.91–0.9.149)
 
 | Ver | Salto |
 | --- | --- |
@@ -92,6 +92,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.146 | `VERSION.json` na raiz some o Gravar do achado e do recibo. Copiar permanece. `outsider` continua falso. |
 | 0.9.147 | Sem clipboard, ou se `writeText` recusa, o Copiar baixa `achado.md`. Baixar não grava. `outsider` continua falso. |
 | 0.9.148 | No primeiro `over` a página rola até `#finding` / `#note` e foca o primeiro campo. Título com last-run não rola. `outsider` continua falso. |
+| 0.9.149 | Estilhaço no trilho do corpo vira `perigo à frente` na região viva, com a última legenda. Sem SFX novo. `verified` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -181,7 +182,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `url` da abertura, `artifact_open`
   do dist/, some o Gravar no
   artefato, fallback do Copiar,
-  rolar o painel no over
+  rolar o painel no over,
+  região viva do perigo
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -330,7 +332,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `colorblind` é alcance, não look. `dressPalette` aplica
   `COLORBLIND_INKS` (orbe/estilhaço/corrente/perigo do `normal`)
   sobre o look vigente. Alto contraste vence. Não entra no href.
-  Não promover `accessibility`.
+  `threatCue` é estilhaço no x do corpo dentro do telegraph.
+  `#live` espelha fase, perigo e a última legenda. Texto no DOM
+  não é sessão. Não promover `accessibility`.
 
 ---
 
@@ -348,6 +352,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais some o Gravar no artefato.
 **Não** mais fallback de clipboard do achado.
 **Não** mais rolar o painel no over.
+**Não** mais região viva do perigo.
 
 Candidatos, do que ainda dói:
 
@@ -388,7 +393,8 @@ Candidatos, do que ainda dói:
    `artifact_open` do dist/ e some
    o Gravar no artefato e o
    fallback do Copiar e rolar
-   o painel no over não
+   o painel no over e a
+   região viva do perigo não
    fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
@@ -410,6 +416,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `bringPanel` em `invite.js`.
-No primeiro over a página rola até o painel. Título com last-run
-não rola. Não é alguém de fora.
+Arquivos quentes da última sessão: `threatCue` e `live.js`.
+Estilhaço no x do corpo vira `perigo à frente` na região viva.
+Texto no DOM não é sessão.

@@ -1383,6 +1383,7 @@ A11Y_OPTIONS = {
     "assist": re.compile(r"\bassist\b|assistMode|assistencia|assistência"),
     "game_speed": re.compile(r"gameSpeed|game-speed|velocidade da partida"),
     "colorblind": re.compile(r"colorblind|COLORBLIND_INKS|dressPalette|tinta estável"),
+    "live": re.compile(r"aria-live|liveText|applyLive|região viva"),
 }
 PERSIST_USE = re.compile(
     r"localStorage|sessionStorage|indexedDB|saveProgress|loadProgress|PROGRESS_KEY|SETTINGS_KEY"
@@ -1449,9 +1450,10 @@ def access_reading(project):
         ),
         "scope": (
             "Procura highContrast, reducedMotion, captions, remapeamento, "
-            "uiScale, preset de uma mão, assistência, velocidade da partida "
-            "e tinta estável no código. Não mede contraste, não joga com o "
-            "modo ativo e não aprova alcance. `verified` é sempre falso."
+            "uiScale, preset de uma mão, assistência, velocidade da partida, "
+            "tinta estável e região viva no código. Não mede contraste, não "
+            "joga com o modo ativo e não aprova alcance. `verified` é sempre "
+            "falso."
         ),
     }
 

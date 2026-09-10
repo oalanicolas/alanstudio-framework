@@ -38,7 +38,7 @@ Uma opção sem consumidor no código não é uma opção.
 
 `access <projeto>` lê as opções que o código declara (highContrast,
 reducedMotion, captions, remapeamento, uiScale, preset de uma mão,
-assistência, velocidade da partida e tinta estável). `verified` é sempre falso: chave no fonte não é sessão
+assistência, velocidade da partida, tinta estável e região viva). `verified` é sempre falso: chave no fonte não é sessão
 com o modo ativo. O starter `canvas-arcade` expõe `assist`, `gameSpeed` e o remapeamento
 das seis ações do teclado na página; a tabela `#commands`
 nomeia as teclas vigentes e mantém toque e controle no
@@ -47,7 +47,9 @@ sufixo. Declara em
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
 Estilhaço no trilho pede o dash; toque e controle ganham passo depois
 do movimento. Overlay e HUD confirmam o aparelho que falou por último;
-o overlay segue `uiScale` e as legendas vencem a cortina no stub. O harness não joga com o
+o overlay segue `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
+x do corpo, no alcance do telegraph, vira `perigo à frente` na região viva
+junto da última legenda. Texto no DOM não é sessão. O harness não joga com o
 modo ativo.
 
 Não declare cobertura que não observou. Verificação automática de contraste é útil

@@ -18,7 +18,8 @@ import { createHaptics } from "./game/haptics.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { createTrace, finishCurve, traceTick } from "./game/curve.js";
-import { advance as advanceRules, attractTick, beginRun, createState, restoreState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
+import { applyLive, liveText } from "./core/live.js";
+import { advance as advanceRules, attractTick, beginRun, createState, restoreState, neutralIntent, threatCue, FIELD, TICK_HZ } from "./game/rules.js";
 import { copy, resolveLookName, resolveMoodName, resolveSpawnName } from "./game/tables.js";
 import { coachHint } from "./game/coach.js";
 
@@ -62,6 +63,7 @@ export function readSeedQuery(options = {}) {
 
 export function createGame(options = {}) {
   const canvas = options.canvas ?? null;
+  const live = options.live ?? null;
   const storage = options.storage ?? browserStorage("canvas-arcade");
   const environment = options.environment ?? detectEnvironment();
   const eventTarget = options.eventTarget ?? (typeof window !== "undefined" ? window : null);
@@ -246,9 +248,18 @@ export function createGame(options = {}) {
   function present(frame) {
     readCommands();
     audio.update();
+    const captions = audio.captions();
+    applyLive({
+      node: live,
+      text: liveText({
+        captions,
+        phase: state.phase,
+        threat: threatCue(state),
+      }),
+    });
     if (!renderer) return;
     renderer.draw(state, frame, settings, {
-      captions: audio.captions(),
+      captions,
       best: progress.best,
       hint: coachHint(state, copy, { surface: input.lastSource }),
       surface: input.lastSource,
@@ -470,7 +481,7 @@ function withoutVolatile(snapshot) {
 if (typeof document !== "undefined" && typeof window !== "undefined") {
   const canvas = document.querySelector("#stage");
   if (canvas) {
-    const game = createGame({ canvas });
+    const game = createGame({ canvas, live: document.getElementById("live") });
     const fit = () => {
       const width = Math.min(window.innerWidth - 24, 960);
       game.resize(width, Math.round((width * FIELD.height) / FIELD.width));

@@ -3,6 +3,22 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.149 — A página fala o perigo à frente
+
+O telegraph só pintava o
+trilho. Quem não via o canvas
+não recebia o aviso. Estilhaço
+no x do corpo, no alcance do
+telegraph, vira `perigo à
+frente` na região viva, com a
+última legenda. Sem SFX novo.
+`verified` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.149 não afirma: texto
+no DOM não é sessão de alcance
+nem alguém de fora.
+
 ## 0.9.148 — No over a página traz o painel
 
 O achado e a nota ficavam

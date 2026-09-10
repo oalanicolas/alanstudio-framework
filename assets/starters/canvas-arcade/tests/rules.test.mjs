@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, attractEntities, attractTick, beginRun, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse } from "../src/game/rules.js";
+import { advance, approaching, attractEntities, attractTick, beginRun, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse, recoveringWindow, recoveryPulse, threatCue } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -371,6 +371,25 @@ test("a corrente no corpo conta o que o HUD já sabe, com teto", () => {
   assert.ok(chainPlaybackRate(1) > 1);
   assert.ok(chainPlaybackRate(5) > chainPlaybackRate(1));
   assert.equal(chainPlaybackRate(20), CONFIG.feel.chainRateMax);
+});
+
+test("threatCue só nomeia o estilhaço no x do corpo", () => {
+  const state = createState(1);
+  state.phase = "playing";
+  state.player.x = 80;
+  state.entities = [
+    { id: 1, kind: "orb", x: 80, y: PLAYER_Y - 24, vy: 1 },
+    { id: 2, kind: "shard", x: 200, y: PLAYER_Y - 24, vy: 1 },
+    { id: 3, kind: "shard", x: 80, y: -8, vy: 1 },
+  ];
+  assert.equal(threatCue(state), null);
+  state.entities[2].y = PLAYER_Y - 24;
+  assert.equal(threatCue(state), "ahead");
+  state.phase = "title";
+  assert.equal(threatCue(state), null);
+  state.phase = "playing";
+  state.entities[2].y = PLAYER_Y;
+  assert.equal(threatCue(state), null, "na faixa o aviso já é o próprio contato");
 });
 
 test("a ameaça marca o trilho antes do contato e some na faixa", () => {

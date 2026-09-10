@@ -213,7 +213,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    achado. Não joga e não sente. Achar o único jogo não é ter sentido.
    **`access` / `save` / `budget`** leem opção de alcance (incluindo
    uiScale, remapeamento das seis ações do teclado na página, preset de
-   uma mão, assistência, velocidade da partida e tinta estável), versão de save e artefato
+   uma mão, assistência, velocidade da partida, tinta estável e região viva), versão de save e artefato
    de orçamento. A porta nomeia sessão volátil e gravação que não ficou;
    nomear não é `trusted`. Trocar no stub não é sessão observada.
    `verified`/`trusted`/`measured` são sempre falsos.
