@@ -434,6 +434,29 @@ test("a porta nomeia o estilhaço da mostra no trilho", () => {
   assert.equal(threatCue(ended), null);
 });
 
+test("reduced na porta trava o aviso na mostra visível", () => {
+  const door = createState(1, { entry: "title" });
+  let drop = null;
+  for (let step = 0; step < 400; step += 1) {
+    const rain = attractEntities(door);
+    const shard = rain.find((item, index) => {
+      if (item.kind !== "shard" || index !== 1) return false;
+      const gap = PLAYER_Y - item.y;
+      return gap > CONFIG.collect.reachY && gap <= CONFIG.feel.telegraphReach;
+    });
+    if (shard) {
+      drop = shard;
+      door.player.x = shard.x;
+      break;
+    }
+    attractTick(door);
+  }
+  assert.ok(drop, "esperava o estilhaço do meio no telegraph");
+  assert.equal(threatCue(door), "ahead");
+  assert.equal(threatCue(door, true), null, "reduced lê a mostra parada, não a chuva que o canvas some");
+  assert.equal(door.entities.length, 0);
+});
+
 test("a porta marca a mostra no trilho sem ler a chuva da partida", () => {
   const door = createState(1, { entry: "title" });
   door.entities = [{ id: 99, kind: "orb", x: 80, y: PLAYER_Y - 24, vy: 1 }];
@@ -809,6 +832,19 @@ test("a assistência na porta também alarga o toque da mostra", () => {
   stillOut.player.x = far.x + CONFIG.player.halfWidth + CONFIG.collect.pad + CONFIG.assist.collectPad + 1;
   attractTouch(stillOut);
   assert.equal(stillOut.flash, 0, "assistência na porta não é alcance infinito");
+});
+
+test("reduced na porta trava o toque na mostra visível", () => {
+  const state = createState(1, { entry: "title" });
+  assert.ok(seatOnShow(state, "orb"), "esperava o orbe na faixa");
+  attractTouch(state);
+  assert.equal(state.flash, CONFIG.feel.flashMissed);
+  state.flash = 0;
+  state.attractTouch = "";
+  attractTouch(state, true);
+  assert.equal(state.flash, 0, "reduced trava o toque na mostra parada");
+  assert.equal(state.chain, 0);
+  assert.equal(state.score, 0);
 });
 
 test("o orbe da mostra acende sem fingir coleta", () => {

@@ -205,7 +205,7 @@ export function createGame(options = {}) {
       } else {
         attractMove(state, intent);
         attractTick(state);
-        attractTouch(state);
+        attractTouch(state, settings.reducedMotion);
       }
       for (const event of state.events) {
         audio.play(event.type, event);
@@ -275,7 +275,7 @@ export function createGame(options = {}) {
       text: liveText({
         captions,
         phase: state.phase,
-        threat: threatCue(state),
+        threat: threatCue(state, settings.reducedMotion),
         paused: loop.paused,
         score: state.score,
         best: progress.best,

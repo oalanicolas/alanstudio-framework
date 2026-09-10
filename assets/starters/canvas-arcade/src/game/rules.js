@@ -536,9 +536,11 @@ export function attractEntities(state, reduced = false) {
 // A mostra atravessava o corpo. Quem andava na porta não via
 // a mesa. O contato acende e estreita sem pontuar, sem punch
 // e sem comer a seed. Toque no disco não é feel observado.
-export function attractTouch(state) {
+export function attractTouch(state, reduced = false) {
   if (!state || state.phase !== "title" || !state.player) return state;
-  const rain = attractEntities(state);
+  // Reduced já trava o desenho. Sem isto o toque lia a
+  // chuva que o canvas some. Quadro no disco não é sessão.
+  const rain = attractEntities(state, reduced);
   const player = state.player;
   const pad = CONFIG.collect.pad + (state.assist ? CONFIG.assist.collectPad : 0);
   const reachY = CONFIG.collect.reachY + (state.assist ? CONFIG.assist.collectReachY : 0);
@@ -1125,10 +1127,12 @@ export function approaching(state, reduced = false) {
 
 // Estilhaço no alcance do telegraph e no x do corpo. Não reusa o
 // scratch de `approaching`. Texto no DOM não é sessão de alcance.
-export function threatCue(state) {
+export function threatCue(state, reduced = false) {
   if (!state || !state.player) return null;
   if (state.phase !== "playing" && state.phase !== "title") return null;
-  const list = state.phase === "title" ? attractEntities(state) : state.entities;
+  // Na porta o live nomeia o mesmo trilho que o canvas
+  // marca. Reduced trava os dois. Texto no DOM não é sessão.
+  const list = state.phase === "title" ? attractEntities(state, reduced) : state.entities;
   if (!Array.isArray(list)) return null;
   const reach = CONFIG.feel.telegraphReach;
   const band = CONFIG.collect.reachY;

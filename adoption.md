@@ -3,6 +3,31 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.201 — Reduced trava o toque da mostra
+
+O canvas já
+parava a chuva
+da porta. O
+toque e o live
+liam a queda
+invisível.
+Agora os três
+leem a mesma
+mostra parada.
+O campo
+continua
+caindo.
+`verified`
+continua falso.
+Só `release`
+fica no piso.
+
+O que 0.9.201 não afirma:
+checkbox no
+disco não é
+sessão
+observada.
+
 ## 0.9.200 — A assistência também cede a mostra
 
 O rótulo já
