@@ -6,8 +6,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
+import { readFileSync } from "node:fs";
+
 import { BED_FADE_MS, DUCK_BUSES, DUCK_LEVEL, MIX_HEADROOM, SOUNDS, createAudio, stereoPan } from "../src/game/audio.js";
 import { FIELD } from "../src/game/rules.js";
+
+const main = readFileSync(new URL("../src/main.js", import.meta.url), "utf8");
 
 function fakeContext() {
   const gains = [];
@@ -442,6 +446,26 @@ test("o campo tem lugar: esquerda e direita não ocupam o mesmo ponto", () => {
   assert.equal(context.panners.length, 2, "fecho, prática e cama ficam no centro");
   const lines = audio.captions().map((item) => item.text).join(" ");
   assert.doesNotMatch(lines, /pan|LUFS|-14|aprovado|verified|heard/);
+});
+
+test("a pausa corta o verbo que ainda soava sem fingir mix ouvido", () => {
+  const { audio, context } = build();
+  audio.register("hit", { duration: 1 });
+  audio.register("bed", { duration: 4 });
+  assert.equal(audio.play("bed"), true);
+  assert.equal(audio.play("hit"), true);
+  assert.equal(context.sources[1].stopped, false);
+  assert.equal(audio.hush(), true);
+  assert.equal(context.sources[1].stopped, true, "o hit não atravessa o overlay");
+  assert.equal(context.sources[0].stopped, false, "a cama espera o stop seco");
+  assert.equal(audio.play("hit"), false, "hushed, o verbo não nasce");
+  assert.equal(audio.play("bed"), true, "a cama não entra no hush");
+  audio.lift();
+  assert.equal(audio.play("hit"), true);
+  assert.equal(context.sources.at(-1).started, true);
+  assert.match(main, /if \(loop\.paused\) \{\s*audio\.hush/);
+  assert.match(main, /togglePause[\s\S]*syncBed\(\)/);
+  assert.doesNotMatch(main, /aprovado|verified|heard|LUFS|-14/);
 });
 
 test("dispose encerra as vozes e o contexto", () => {

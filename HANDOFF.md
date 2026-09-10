@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.177 (confirmado): sfx serve gera a página de escuta se ui/ faltar.
+**HEAD:** ver `git log -1` — vigente 0.9.178: a pausa corta as vozes do verbo.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 270 OK.
-`cd assets/starters/canvas-arcade && npm test` → 357 OK.
+`cd assets/starters/canvas-arcade && npm test` → 358 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.177)
+## O que o HEAD já entrega (0.9.91–0.9.178)
 
 | Ver | Salto |
 | --- | --- |
@@ -121,6 +121,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.175 | A região viva nomeia placar e recorde no fim e na porta. Overlay do canvas não chega ao leitor. Não promove `accessibility`. |
 | 0.9.176 | O `over` senta tremor, flash e punch. O corpo já sentava. Pose no disco não é felt. Não promove feel. |
 | 0.9.177 | `sfx serve` gera a página de escuta se `shared/sfx/ui` faltar. Tocar não é `heard`. Catálogo vazio continua recusado. |
+| 0.9.178 | A pausa corta as vozes do verbo (`hush`). A cama continua no stop seco. Overlay Pausado com hit no ar era a mesma partida. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -136,7 +137,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | corpo e quadro sentam no over no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
-| audio_mix | slice | fade no over + página de escuta do acervo; `heard` falso |
+| audio_mix | slice | fade no over + pausa corta o verbo; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -331,7 +332,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `music` (`DUCK_BUSES`). `update({ bedRate })` desloca o tom da
   cama; `bedRateFor` lê o pulso do fecho. Não é duck. O `over`
   pede `stop("bed", { fadeMs: BED_FADE_MS })`; pause, title e aba
-  escondida cortam seco. Play no meio do fade corta o leftover.
+  escondida cortam a cama seco. Na pausa `hush()` corta as vozes
+  do verbo; `lift()` no resume. Play no meio do fade corta o leftover.
   `heard` falso.
 - Jogador: `fillRect` do squash **permanece** (testes `playerFill` /
   `playerBox`). Na graça (`invuln`) o corpo pulsa com
@@ -484,6 +486,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma região viva que some o placar enquanto o overlay já o nomeia.
 **Não** mais uma câmera em pose de golpe enquanto o relógio já derrubou a aposta.
 **Não** mais um `sfx serve` que promete ouvir e devolve 400 porque `ui/` não embarcou.
+**Não** mais um overlay Pausado com o hit ainda no ar.
 
 Candidatos, do que ainda dói:
 
@@ -574,7 +577,9 @@ Candidatos, do que ainda dói:
   quadro sentado
   no over e a
   página gerada
-  do serve
+  do serve e o
+  hush da
+  pausa
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -598,5 +603,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `sfx serve` gera a página de escuta
-se `ui/` faltar. Tocar na página não é mix ouvida. Não promove `heard`.
+Arquivos quentes da última sessão: a pausa `hush()` corta as vozes do
+verbo. A cama continua no stop seco. Não promove `heard`.

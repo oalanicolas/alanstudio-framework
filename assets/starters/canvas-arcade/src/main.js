@@ -243,7 +243,13 @@ export function createGame(options = {}) {
 
   function syncBed() {
     if (disposed) return;
-    if (loop.paused || state.phase === "over" || state.phase === "title") audio.stop("bed");
+    if (loop.paused) {
+      audio.hush();
+      audio.stop("bed");
+      return;
+    }
+    audio.lift();
+    if (state.phase === "over" || state.phase === "title") audio.stop("bed");
     else audio.play("bed");
   }
 
@@ -284,6 +290,7 @@ export function createGame(options = {}) {
       loop.pause();
       haptics.mute();
     }
+    syncBed();
   }
 
   function flush() {
@@ -301,8 +308,8 @@ export function createGame(options = {}) {
     if (hidden) {
       flush();
       loop.pause();
-      audio.stop("bed");
       haptics.mute();
+      syncBed();
     }
   };
   const onPageHide = () => {

@@ -3,6 +3,22 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.178 — A pausa corta o verbo
+
+O overlay já dizia
+Pausado. A cama já
+cortava. O hit
+continuava no ar.
+`hush` para as vozes.
+A cama fica no stop
+seco. `heard` continua
+falso. Só `release`
+fica no piso.
+
+O que 0.9.178 não afirma:
+corte no stub não é
+mix ouvida.
+
 ## 0.9.177 — O serve gera a escuta
 
 `sfx serve` já recusava

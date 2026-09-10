@@ -20,7 +20,10 @@
 // retomar, fila e paralelo não são mix ouvido.
 // `missing()` ainda lista o papel se o decode falhar ou o fetch 404.
 // O `over` pede fade na cama; pause, title e aba escondida
-// continuam cortando seco. Número no disco não é mix ouvido.
+// continuam cortando a cama seco. Na pausa o mixer também
+// corta as vozes do verbo que ainda soavam — overlay
+// Pausado com hit no ar era a mesma partida. Número no
+// disco não é mix ouvido.
 //
 // Toda informação sonora tem legenda equivalente: o jogo precisa ser
 // completável com o áudio desligado.
@@ -90,6 +93,7 @@ export function createAudio(options = {}) {
   const captions = [];
   let duckUntil = 0;
   let disposed = false;
+  let hushed = false;
 
   function ensureContext() {
     if (disposed) return context;
@@ -156,9 +160,15 @@ export function createAudio(options = {}) {
     }
   }
 
+  function cutVoices() {
+    for (const voice of voices) voice.stop();
+    voices.length = 0;
+  }
+
   function emitVoice(id, extra = {}) {
     const definition = SOUNDS[id];
     if (!definition || disposed) return false;
+    if (hushed && !definition.loop) return false;
     const pack = buffers.get(id) ?? [];
     if (!pack.length) return false;
     unlock();
@@ -230,9 +240,21 @@ export function createAudio(options = {}) {
       const copy = bytes instanceof ArrayBuffer ? bytes.slice(0) : bytes;
       return ctx.decodeAudioData(copy);
     },
+    hush() {
+      if (disposed) return false;
+      hushed = true;
+      cutVoices();
+      return true;
+    },
+    lift() {
+      if (disposed) return false;
+      hushed = false;
+      return true;
+    },
     play(id, extra = {}) {
       const definition = SOUNDS[id];
       if (!definition || disposed) return false;
+      if (hushed && !definition.loop) return false;
       if (definition.caption && settings.captions !== false) {
         captions.push({ id, text: definition.caption, at: now() });
         while (captions.length > captionLimit) captions.shift();
