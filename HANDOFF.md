@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.149: a página fala o perigo à frente.
+**HEAD:** ver `git log -1` — vigente 0.9.150: o aviso crítico abaixa só a cama.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 262 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.149)
+## O que o HEAD já entrega (0.9.91–0.9.150)
 
 | Ver | Salto |
 | --- | --- |
@@ -93,6 +93,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.147 | Sem clipboard, ou se `writeText` recusa, o Copiar baixa `achado.md`. Baixar não grava. `outsider` continua falso. |
 | 0.9.148 | No primeiro `over` a página rola até `#finding` / `#note` e foca o primeiro campo. Título com last-run não rola. `outsider` continua falso. |
 | 0.9.149 | Estilhaço no trilho do corpo vira `perigo à frente` na região viva, com a última legenda. Sem SFX novo. `verified` continua falso. |
+| 0.9.150 | `duckMs` abaixa só `music`. Hit e guarda não somem sob o próprio aviso. `heard` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -183,7 +184,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   do dist/, some o Gravar no
   artefato, fallback do Copiar,
   rolar o painel no over,
-  região viva do perigo
+  região viva do perigo,
+  duck só na cama
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -258,7 +260,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   Pedido sem buffer: last-wins na fila; `register` toca sem segunda
   legenda. `dispose` esquece. Tecla ligada e toque chamam
   `audio.unlock()` no gesto. Stems sobem juntos (`Promise.all`);
-  extensão seguinte só se a atual falhou. `heard` falso.
+  extensão seguinte só se a atual falhou. `duckMs` abaixa só
+  `music` (`DUCK_BUSES`). `heard` falso.
 - Jogador: `fillRect` do squash **permanece** (testes `playerFill` /
   `playerBox`). A ponta é path (`lineTos`). Halo do estilhaço **não**
   é `arc` (`orb.arcs > shard.arcs`).
@@ -353,6 +356,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais fallback de clipboard do achado.
 **Não** mais rolar o painel no over.
 **Não** mais região viva do perigo.
+**Não** mais duck só na cama.
 
 Candidatos, do que ainda dói:
 
@@ -394,7 +398,8 @@ Candidatos, do que ainda dói:
    o Gravar no artefato e o
    fallback do Copiar e rolar
    o painel no over e a
-   região viva do perigo não
+   região viva do perigo e o
+   duck só na cama não
    fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
 6. **Volume de conteúdo:** três chuvas + `pair` ainda não são volume.
@@ -416,6 +421,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `threatCue` e `live.js`.
-Estilhaço no x do corpo vira `perigo à frente` na região viva.
-Texto no DOM não é sessão.
+Arquivos quentes da última sessão: `DUCK_BUSES` em `audio.js`.
+O aviso crítico abaixa só a cama. Hit não some sob o hit.
+`heard` continua falso.

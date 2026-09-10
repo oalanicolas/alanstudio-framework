@@ -46,6 +46,10 @@ export const BUSES = ["master", "music", "sfx", "ui"];
 // Folga no master: overlap de vozes não senta no teto digital.
 // Não é loudness aprovado e não substitui sessão no dispositivo.
 export const MIX_HEADROOM = 0.82;
+// O aviso crítico abaixa a cama, não o próprio verbo. Duck em sfx/ui
+// some o hit sob o hit. Número no disco não é mix ouvido.
+export const DUCK_BUSES = ["music"];
+export const DUCK_LEVEL = 0.35;
 
 export const SOUNDS = {
   dash: { bus: "sfx", caption: "avanço", priority: 1 },
@@ -131,10 +135,11 @@ export function createAudio(options = {}) {
   function applyBusLevels() {
     if (!gains) return;
     const levels = settings.buses ?? {};
-    const ducked = now() < duckUntil ? 0.35 : 1;
+    const ducking = now() < duckUntil;
     for (const bus of BUSES) {
       const level = Number.isFinite(levels[bus]) ? levels[bus] : 1;
-      gains[bus].gain.value = bus === "master" ? level * MIX_HEADROOM : level * ducked;
+      const duck = ducking && DUCK_BUSES.includes(bus) ? DUCK_LEVEL : 1;
+      gains[bus].gain.value = bus === "master" ? level * MIX_HEADROOM : level * duck;
     }
   }
 

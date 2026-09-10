@@ -9,7 +9,7 @@ import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { MIX_HEADROOM, SOUNDS } from "../src/game/audio.js";
+import { DUCK_BUSES, DUCK_LEVEL, MIX_HEADROOM, SOUNDS } from "../src/game/audio.js";
 import { DEFAULT_BUSES } from "../src/core/settings.js";
 import { advance, chainPlaybackRate, createState, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
 import { createRng } from "../src/core/rng.js";
@@ -67,9 +67,10 @@ function sampleAt(samples, offset) {
   return a + (b - a) * frac;
 }
 
-function gainAt(bus, ducked) {
+function gainAt(bus, ducking) {
   const level = Number.isFinite(DEFAULT_BUSES[bus]) ? DEFAULT_BUSES[bus] : 1;
-  return DEFAULT_BUSES.master * MIX_HEADROOM * level * ducked;
+  const duck = ducking && DUCK_BUSES.includes(bus) ? DUCK_LEVEL : 1;
+  return DEFAULT_BUSES.master * MIX_HEADROOM * level * duck;
 }
 
 for (let run = 0; run < runs; run += 1) {
@@ -119,7 +120,7 @@ for (let run = 0; run < runs; run += 1) {
       voicesPlayed += 1;
     }
 
-    const ducked = timeMs < duckUntil ? 0.35 : 1;
+    const ducking = timeMs < duckUntil;
     for (let sample = 0; sample < tickSamples; sample += 1) {
       let sum = 0;
       for (let index = voices.length - 1; index >= 0; index -= 1) {
@@ -129,11 +130,11 @@ for (let run = 0; run < runs; run += 1) {
           voices.splice(index, 1);
           continue;
         }
-        sum += value * gainAt(voice.bus, ducked);
+        sum += value * gainAt(voice.bus, ducking);
         voice.offset += voice.rate;
       }
       if (bedSamples) {
-        sum += bedSamples[bedOffset] * gainAt("music", ducked);
+        sum += bedSamples[bedOffset] * gainAt("music", ducking);
         bedOffset = (bedOffset + 1) % bedSamples.length;
       }
       const abs = Math.abs(sum);
@@ -157,9 +158,9 @@ const report = {
   samples_at_or_over_unity: overUnity,
   heard: false,
   scope:
-    "Soma das vozes numa partida simulada, com o mesmo palco, folga e " +
-    "taxa da corrente do mixer. Sem dispositivo, sem limiar, sem aprovação, " +
-    "sem loudness percebido.",
+    "Soma das vozes numa partida simulada, com o mesmo palco, folga, " +
+    "duck só na cama e taxa da corrente do mixer. Sem dispositivo, sem " +
+    "limiar, sem aprovação, sem loudness percebido.",
 };
 
 console.log(JSON.stringify(report, null, 2));

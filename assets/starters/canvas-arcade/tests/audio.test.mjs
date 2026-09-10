@@ -6,7 +6,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { MIX_HEADROOM, SOUNDS, createAudio, stereoPan } from "../src/game/audio.js";
+import { DUCK_BUSES, DUCK_LEVEL, MIX_HEADROOM, SOUNDS, createAudio, stereoPan } from "../src/game/audio.js";
 import { FIELD } from "../src/game/rules.js";
 
 function fakeContext() {
@@ -331,18 +331,21 @@ test("sob pressão, o aviso importante corta o som menor", () => {
   assert.equal(context.sources.length, 3);
 });
 
-test("o evento crítico abaixa os outros barramentos e o ducking volta sozinho", () => {
+test("o evento crítico abaixa só a cama e o ducking volta sozinho", () => {
+  assert.deepEqual(DUCK_BUSES, ["music"]);
   const { audio, context, tick } = build();
   audio.register("hit", { duration: 0.3 });
   audio.play("hit");
-  const [master, music, sfx] = context.gains;
+  const [master, music, sfx, ui] = context.gains;
   assert.equal(master.gain.value, 0.8 * MIX_HEADROOM, "o volume geral não é alterado pelo ducking");
-  assert.ok(sfx.gain.value < 0.9);
-  assert.ok(music.gain.value < 0.6);
+  assert.equal(sfx.gain.value, 0.9, "o verbo não some sob o próprio aviso");
+  assert.equal(ui.gain.value, 0.7, "o ui não some sob o aviso");
+  assert.equal(music.gain.value, 0.6 * DUCK_LEVEL);
   tick(SOUNDS.hit.duckMs + 1);
   audio.update();
   assert.equal(master.gain.value, 0.8 * MIX_HEADROOM);
   assert.equal(sfx.gain.value, 0.9);
+  assert.equal(ui.gain.value, 0.7);
   assert.equal(music.gain.value, 0.6);
 });
 

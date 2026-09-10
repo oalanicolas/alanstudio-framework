@@ -3,6 +3,19 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.150 — O aviso crítico abaixa só a cama
+
+Hit, guarda e fim
+afundavam SFX e UI. O verbo
+sumia sob o próprio aviso.
+`duckMs` abaixa só `music`.
+`heard` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.150 não afirma: cama
+mais baixa não é mix ouvido
+nem sessão no dispositivo.
+
 ## 0.9.149 — A página fala o perigo à frente
 
 O telegraph só pintava o
