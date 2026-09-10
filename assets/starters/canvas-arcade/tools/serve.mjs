@@ -9,6 +9,7 @@ import { spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
+import { networkInterfaces } from "node:os";
 import { extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -19,6 +20,52 @@ export function shouldOpenBrowser(env = process.env, stdout = process.stdout) {
   if (env.CI === "true" || env.CI === "1") return false;
   if (env.BROWSER === "0" || env.BROWSER === "none") return false;
   return Boolean(stdout && stdout.isTTY);
+}
+
+// HOST=127.0.0.1 prende o bind e cala a rede. Sem HOST o listen continua
+// o padrão do Node (todas as interfaces) — o que já era alcançável na
+// LAN, só não era anunciado. Anunciar não é alguém de fora.
+export function listenHost(env = process.env) {
+  const host = env.HOST || env.LISTEN_HOST;
+  if (host === "127.0.0.1" || host === "localhost") return "127.0.0.1";
+  if (host === "0.0.0.0" || host === "*") return "0.0.0.0";
+  return undefined;
+}
+
+function isLanV4(addr) {
+  if (!addr || addr.internal) return false;
+  const family = addr.family;
+  if (family !== "IPv4" && family !== 4) return false;
+  const ip = addr.address;
+  return Boolean(ip) && !ip.startsWith("169.254.");
+}
+
+export function advertisedOrigins(port, interfaces = networkInterfaces(), env = process.env) {
+  const origins = [`http://localhost:${port}`];
+  if (listenHost(env) === "127.0.0.1") return origins;
+  for (const list of Object.values(interfaces || {})) {
+    for (const addr of list || []) {
+      if (!isLanV4(addr)) continue;
+      origins.push(`http://${addr.address}:${port}`);
+    }
+  }
+  return [...new Set(origins)];
+}
+
+export function listenBanner(port, interfaces = networkInterfaces(), env = process.env) {
+  const origins = advertisedOrigins(port, interfaces, env);
+  const local = origins[0];
+  const lines = [
+    `Jogo em ${local}/  (Ctrl+C encerra)`,
+    `Look: ${local}/?look=dusk`,
+    `Chuva: ${local}/?spawn=dusk`,
+    `Convite: ${local}/?invite=1`,
+  ];
+  for (const origin of origins.slice(1)) {
+    lines.push(`Rede: ${origin}/`);
+    lines.push(`Convite na rede: ${origin}/?invite=1`);
+  }
+  return lines.join("\n");
 }
 
 function openBrowser(url) {
@@ -83,13 +130,14 @@ const server = createServer(async (request, response) => {
 
 const invoked = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
 if (invoked) {
-  server.listen(PORT, () => {
+  const host = listenHost();
+  const onListen = () => {
     // A porta anunciada é a que o sistema abriu, não a pedida: com PORT=0 elas
     // são diferentes, e um endereço errado no console custa uma depuração inteira.
-    const origin = `http://localhost:${server.address().port}`;
-    console.log(
-      `Jogo em ${origin}/  (Ctrl+C encerra)\nLook: ${origin}/?look=dusk\nChuva: ${origin}/?spawn=dusk\nConvite: ${origin}/?invite=1`,
-    );
-    if (shouldOpenBrowser()) openBrowser(`${origin}/`);
-  });
+    const port = server.address().port;
+    console.log(listenBanner(port));
+    if (shouldOpenBrowser()) openBrowser(`http://localhost:${port}/`);
+  };
+  if (host) server.listen(PORT, host, onListen);
+  else server.listen(PORT, onListen);
 }

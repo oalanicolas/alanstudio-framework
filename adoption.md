@@ -3,6 +3,31 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.75 — O serve anuncia a rede
+
+O bind já alcançava a LAN. O banner só dizia localhost, e o
+convite pedia para abrir `/?invite=1` na mesma máquina. O serve
+anuncia o IPv4 da rede e a URL do convite; `HOST=127.0.0.1`
+prende o bind e cala a rede. `observed` e `outsider` continuam
+falsos. `pacing` permanece `slice`: um endereço na rede não é
+alguém de fora. Só `release` fica no piso.
+
+O que 0.9.75 não afirma: o harness não convidou ninguém e
+ninguém de fora jogou.
+
+## 0.9.74 — O mapa nomeia a pasta
+
+`guide --idea` já punha a frase no comando do start e pedia
+`<destino>`. Sem pasta nomeada, o primeiro passo não cola.
+A frase deriva o nome — ao lado do framework se o mapa corre
+de dentro desta árvore; no diretório atual se corre de fora.
+`--idea` no comando sem subcomando é o mesmo mapa. Não cria a
+pasta e não grava a frase. `executed` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.74 não afirma: o harness não abriu o ciclo e nomear
+a pasta não é um jogo.
+
 ## 0.9.73 — A página também veste o look
 
 O campo já mudava com `?look=dusk`. A casca do HTML ficava no token

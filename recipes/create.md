@@ -7,7 +7,8 @@ o projeto atual.
 
 O caminho curto está em [ambição](../references/ambition.md): um ciclo jogável
 na primeira sessão, depois feel e áudio do verbo, depois receita de conteúdo.
-`start` e `guide` mapeiam start → jogar → `note`. Sem destino, se o
+`start` e `guide` mapeiam start → jogar → `note`. Sem destino, `--idea`
+nomeia a pasta no comando do start e não grava a frase. Sem destino, se o
 diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
 Depois do recibo, o
 mesmo `start` e o `next` apontam look, chuva e voz se o projeto declara
@@ -39,10 +40,13 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
 
 1. Consulte o [playground](https://games.alanicolas.com/) e o acervo local.
    Identifique uma família compatível. Procure código, contratos e conteúdo
-   reutilizável.    Sem destino no disco, o candidato local é um starter: `start <destino>
-   --starter <starter> --idea "<fantasia>"` monta o projeto, põe a frase
-   na tela do primeiro ciclo e devolve o comando que abre o jogo. A
-   frase não muda o verbo. `init` faz a mesma cópia sem apontar o ciclo.
+   reutilizável.    Sem destino no disco, o candidato local é um starter.
+   `python3 scripts/game.py --idea "<fantasia>"` mapeia o start com a
+   pasta nomeada pela frase (ao lado do framework se o mapa corre de
+   dentro desta árvore). `start <destino> --starter <starter> --idea
+   "<fantasia>"` monta o projeto, põe a frase na tela do primeiro ciclo
+   e devolve o comando que abre o jogo. A frase não muda o verbo.
+   `init` faz a mesma cópia sem apontar o ciclo.
    O projeto nasce com laço de passo fixo, save versionado, entrada
    abstraída e testes que já rodam.
    Partir dele é REUSE; recomeçar essa infraestrutura é CREATE e pede lacuna

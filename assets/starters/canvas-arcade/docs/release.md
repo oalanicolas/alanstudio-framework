@@ -24,8 +24,11 @@ node tools/serve.mjs
 
 Node 20 ou mais novo. Não rode `npm install`: o artefato não tem
 dependências. Módulos ES não carregam por `file://`. Servir essa pasta
-é o que a torna jogável. A prova de `playable` nesta dimensão é outra pessoa
-seguindo estes dois blocos numa máquina que não é a de desenvolvimento.
+é o que a torna jogável. O serve anuncia localhost e, se a máquina
+tiver outro endereço IPv4, a URL da rede — um endereço alcançável
+não é outra máquina tendo corrido o `dist/`. A prova de `playable`
+nesta dimensão é outra pessoa seguindo estes dois blocos numa
+máquina que não é a de desenvolvimento.
 
 ## O que falta para o degrau seguinte
 

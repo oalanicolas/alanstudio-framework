@@ -11,7 +11,9 @@ com o que o próprio projeto declarou, zero dígitos nos rótulos. `observed` e
 `granted` são sempre `false`. `next` só levanta o gate que o projeto pediu.
 
 **Primeiro ciclo:** `guide` (também sem subcomando) mapeia start →
-jogar → note sem executar. Sem destino, se o diretório atual é um
+jogar → note sem executar. Sem destino, `--idea` nomeia a pasta no
+comando do start — ao lado do framework se o mapa corre de dentro
+desta árvore — e não grava a frase. Sem destino, se o diretório atual é um
 jogo fora do framework, o mapa usa esse caminho. `start` cria o projeto e devolve `play` +
 `then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo,
 as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look, chuva e convite. Se o projeto declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt e o `next` (`cycle.craft`) as apontam. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
@@ -86,7 +88,9 @@ bytes sem teto.
 **Playtest:** `playtest` lê o formato problema/evidência/hipótese/medição.
 `observed` e `outsider` são sempre falsos. `--invite` escreve a página
 e aponta `/?invite=1`, onde a tabela some; `next` a aponta depois do
-recibo de quem fez. Esconder a tabela não é alguém de fora.
+recibo de quem fez. O serve anuncia a URL da rede se a máquina
+tiver outro endereço IPv4. Esconder a tabela e anunciar a rede
+não são alguém de fora.
 Nota de partida sem os quatro campos vira
 `playtest.unstructured`. O starter grava `docs/playtest/last-run.json`
 com `npm run session` (totais e curva); `note --from-run` anexa o

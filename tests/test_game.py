@@ -2659,6 +2659,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("npm run serve", page)
         self.assertIn("invite=1", page)
         self.assertIn("nunca viu", page.casefold())
+        self.assertIn("rede", page.casefold())
         self.assertNotIn("Não leia a tabela", page)
         self.assertNotRegex(page, game.FINDING_FIELDS)
         again = game.invite_playtest(destination)
@@ -2876,6 +2877,59 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(hosted["here"])
         self.assertFalse(hosted["exists"])
         self.assertEqual(len(hosted["steps"]), 3)
+
+    def test_guide_names_the_folder_from_the_idea_without_writing_it(self):
+        self.assertEqual(game.idea_slug("atravessar estilhaços"), "atravessar-estilhacos")
+        self.assertEqual(game.idea_slug("!!!"), None)
+        self.assertIsNone(game.idea_slug("   "))
+        long = "guardar a corrente " * 8
+        self.assertLessEqual(len(game.idea_slug(long)), game.IDEA_SLUG_LIMIT)
+        self.assertFalse(game.idea_slug(long).endswith("-"))
+        inside = game.guide_cycle(
+            None, "canvas-arcade", idea="atravessar estilhaços", cwd=game.FRAMEWORK,
+        )
+        self.assertEqual(inside["suggest"], str(Path("..") / "atravessar-estilhacos"))
+        self.assertIsNone(inside["path"])
+        self.assertFalse(inside["exists"])
+        self.assertFalse(inside["executed"])
+        self.assertEqual(len(inside["steps"]), 3)
+        self.assertIn("atravessar-estilhacos", inside["steps"][0]["command"])
+        self.assertIn("atravessar estilhaços", inside["steps"][0]["command"])
+        self.assertIn("atravessar-estilhacos", inside["steps"][1]["command"])
+        self.assertIn("atravessar-estilhacos", inside["steps"][2]["command"])
+        planted = game.FRAMEWORK.parent / "atravessar-estilhacos"
+        self.assertFalse(planted.exists(), "o mapa não cria a pasta que nomeia")
+        outside = game.guide_cycle(
+            None, "canvas-arcade", idea="atravessar estilhaços", cwd=self.root,
+        )
+        self.assertEqual(outside["suggest"], "atravessar-estilhacos")
+        self.assertFalse((self.root / "atravessar-estilhacos").exists())
+        named = game.guide_cycle(self.root / "nomeado", "canvas-arcade", idea="atravessar estilhaços")
+        self.assertIsNone(named["suggest"])
+        self.assertIn("nomeado", named["steps"][0]["command"])
+        empty = game.guide_cycle(None, "canvas-arcade", idea="!!!")
+        self.assertIsNone(empty["suggest"])
+        self.assertIn("<destino>", empty["steps"][0]["command"])
+        bare = subprocess.run(
+            [sys.executable, str(SCRIPT), "--idea", "atravessar estilhaços"],
+            capture_output=True, text=True, cwd=str(game.FRAMEWORK),
+        )
+        self.assertEqual(bare.returncode, 0, bare.stderr)
+        payload = json.loads(bare.stdout)
+        self.assertEqual(payload["command"], "guide")
+        self.assertIn("atravessar-estilhacos", payload["steps"][0]["command"])
+        self.assertFalse(payload["executed"])
+        self.assertFalse(payload["here"])
+        self.assertFalse(planted.exists())
+        guided = subprocess.run(
+            [sys.executable, str(SCRIPT), "guide", "--idea", "atravessar estilhaços"],
+            capture_output=True, text=True, cwd=str(game.FRAMEWORK),
+        )
+        self.assertEqual(guided.returncode, 0, guided.stderr)
+        mapped = json.loads(guided.stdout)
+        self.assertEqual(mapped["suggest"], payload["suggest"])
+        self.assertFalse(mapped["executed"])
+        self.assertFalse(planted.exists())
 
     def test_start_omits_the_cycle_when_the_starter_does_not_declare_it(self):
         self.fake_starter("mudo", {

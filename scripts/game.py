@@ -1973,8 +1973,9 @@ def invite_playtest(project):
         "reading": reading,
         "scope": (
             "Escreve a página para quem nunca viu o jogo e aponta "
-            "`/?invite=1`, onde a tabela some. Não ensina o verbo, "
-            "não assiste e não sobe pacing. outsider continua falso."
+            "`/?invite=1`, onde a tabela some. O serve anuncia a URL "
+            "da rede se a máquina tiver outro endereço IPv4. Não ensina "
+            "o verbo, não assiste e não sobe pacing. outsider continua falso."
         ),
     }
 
@@ -2002,7 +2003,9 @@ def invite_page(project):
         "## Superfície\n"
         "\n"
         "No navegador, abra `/?invite=1`. A tabela de comandos some.\n"
-        "Quem fez o jogo fica em `/`. O serve anuncia as duas URLs.\n"
+        "Quem fez o jogo fica em `/`. O serve anuncia localhost e, se a\n"
+        "máquina tiver outro endereço IPv4, a URL da rede. Compartilhar\n"
+        "essa URL não é alguém de fora.\n"
         "\n"
         "## Instrução\n"
         "\n"
@@ -3212,7 +3215,36 @@ def here_project(explicit=None, root=None):
     return None
 
 
-def guide_cycle(destination=None, starter=None, idea=None):
+# Teto do nome derivado da frase. Mais que isso vira caminho ilegível;
+# menos obriga a inventar o resto. A pasta só existe depois do `start`.
+IDEA_SLUG_LIMIT = 48
+
+
+def idea_slug(idea, limit=IDEA_SLUG_LIMIT):
+    if not isinstance(idea, str) or not idea.strip():
+        return None
+    folded = unicodedata.normalize("NFKD", idea.strip().casefold())
+    folded = "".join(ch for ch in folded if not unicodedata.combining(ch))
+    text = re.sub(r"[^a-z0-9]+", "-", folded).strip("-")
+    if not text:
+        return None
+    return text[:limit].strip("-") or None
+
+
+def suggested_start_target(idea, cwd=None, framework=None):
+    slug = idea_slug(idea)
+    if not slug:
+        return None
+    here = Path(cwd or Path.cwd()).resolve()
+    root = Path(framework or FRAMEWORK).resolve()
+    # Dentro desta árvore o mapa sem destino não usa o chão, e uma pasta
+    # filha também não vira `here`. O nome fica ao lado do framework.
+    if here == root or here.is_relative_to(root):
+        return Path("..") / slug
+    return Path(slug)
+
+
+def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
     available = starters()
     chosen = starter or (available[0] if available else "canvas-arcade")
     dest = Path(destination) if destination is not None else None
@@ -3223,7 +3255,8 @@ def guide_cycle(destination=None, starter=None, idea=None):
         and (dest / "package.json").is_file()
     )
     phrase = idea.strip() if nonempty(idea) else None
-    start_target = dest if dest is not None else Path("<destino>")
+    suggested = suggested_start_target(phrase, cwd=cwd) if dest is None else None
+    start_target = dest if dest is not None else (suggested or Path("<destino>"))
     start_parts = ["start", start_target, "--starter", chosen]
     if phrase:
         start_parts.extend(["--idea", phrase])
@@ -3236,12 +3269,13 @@ def guide_cycle(destination=None, starter=None, idea=None):
             scripts, manager = {}, None
         play = play_command(dest, scripts, manager)
         nxt = next_step(dest, "feel")
+    named = dest if dest is not None else suggested
     play_fallback = (
-        f"cd {shlex.quote(str(dest))} && npm run serve"
-        if dest is not None
+        f"cd {shlex.quote(str(named))} && npm run serve"
+        if named is not None
         else "npm run serve"
     )
-    next_target = dest if dest is not None else Path("<destino>")
+    next_target = named if named is not None else Path("<destino>")
     play_cmd = play or play_fallback
     then = cycle_then(next_target, play_cmd)
     cycle = starter_cycle(chosen)
@@ -3267,6 +3301,7 @@ def guide_cycle(destination=None, starter=None, idea=None):
         "idea": phrase,
         "starter": chosen,
         "path": str(dest) if dest is not None else None,
+        "suggest": str(suggested) if suggested is not None else None,
         "exists": exists,
         "cycle": cycle,
         "then": then,
@@ -3288,13 +3323,16 @@ def guide_cycle(destination=None, starter=None, idea=None):
         ],
         "scope": (
             "Três passos ideia→ciclo: start, jogar, note. Se o starter declara "
-            "o verbo e as teclas, o passo 2 as nomeia. `then` nomeia look, "
-            "chuva e voz quando o projeto declara essas ferramentas. `next` "
-            "fica para quando o ciclo já correu e você não sabe o que falta. "
-            "Sem destino, se o diretório atual é um jogo fora do framework, "
-            "o mapa usa esse caminho. Não cria o projeto, não abre o jogo e "
-            "não avalia a proposta. Passos 2 e 3 permanecem `executed` "
-            "falsos mesmo quando o destino já existe."
+            "o verbo e as teclas, o passo 2 as nomeia. Sem destino, a frase "
+            "nomeia a pasta no comando do start — ao lado do framework se o "
+            "mapa corre de dentro desta árvore; no diretório atual se corre "
+            "de fora. `guide --idea` continua só no comando, não no disco. "
+            "`then` nomeia look, chuva e voz quando o projeto declara essas "
+            "ferramentas. `next` fica para quando o ciclo já correu e você "
+            "não sabe o que falta. Sem destino, se o diretório atual é um "
+            "jogo fora do framework, o mapa usa esse caminho. Não cria o "
+            "projeto, não abre o jogo e não avalia a proposta. Passos 2 e 3 "
+            "permanecem `executed` falsos mesmo quando o destino já existe."
         ),
     }
 
@@ -4162,6 +4200,11 @@ def main():
     common.add_argument("--root", type=Path, default=argparse.SUPPRESS, help="raiz para descobrir projetos e resolver caminhos")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT, help="raiz para descobrir projetos e resolver caminhos")
+    parser.add_argument(
+        "--idea",
+        default=None,
+        help="frase da fantasia; sem subcomando, só entra no comando do start, não no disco",
+    )
     commands = parser.add_subparsers(dest="action", required=False)
     gate_cmd = commands.add_parser(
         "gate", parents=[common],
@@ -4344,7 +4387,7 @@ def main():
         root = args.root.resolve()
         if args.action is None:
             dest = here_project()
-            report = guide_cycle(dest)
+            report = guide_cycle(dest, idea=args.idea)
             report["here"] = dest is not None
             emit(report)
         elif args.action == "discover":

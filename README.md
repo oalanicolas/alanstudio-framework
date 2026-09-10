@@ -56,9 +56,10 @@ python3 scripts/game.py start /caminho/do/laboratorio/meu-jogo --starter canvas-
 
 O JSON devolve `play` (o comando que **abre** o jogo), `then.note` (o próximo comando do harness **depois** de uma partida) e, se o starter declara, `cycle` (verbo, teclas, cluster de uma mão, toque, controle e as queries de look, chuva e convite). Se o projeto declara as ferramentas, `then` também nomeia `look`, `table` e `sfx`. Depois de um recibo de observação, o prompt aponta esses três em vez de repetir só o primeiro ciclo. Não executa o jogo. `--idea` entra no brief e, se houver `data/copy.json`, na tela do primeiro ciclo. O brief continua rascunho. A frase na tela não muda o verbo. Depois do `init`, `?look=dusk` troca a paleta (campo e a página), `?spawn=dusk` troca a chuva e `?invite=1` some a tabela — as três sem recomeçar o projeto. Ferramenta no disco não é alguém de fora nem mix ouvido.
 
-`guide` (também sem subcomando: `python3 scripts/game.py`) mapeia os três passos — start → jogar → `note` — sem executar nenhum. Sem destino, se o diretório atual é um jogo fora deste repositório, o mapa usa esse caminho. Dentro do framework o comando sem argumentos continua o convite a começar:
+`guide` (também sem subcomando: `python3 scripts/game.py`) mapeia os três passos — start → jogar → `note` — sem executar nenhum. Sem destino, a frase nomeia a pasta no comando do start (ao lado do framework se você está dentro desta árvore; no diretório atual se está fora). Não grava a frase nem cria a pasta. Sem destino, se o diretório atual é um jogo fora deste repositório, o mapa usa esse caminho. Dentro do framework o comando sem argumentos continua o convite a começar:
 
 ```sh
+python3 scripts/game.py --idea "atravessar estilhaços para guardar a corrente"
 python3 scripts/game.py guide /caminho/do/laboratorio/meu-jogo --idea "atravessar estilhaços para guardar a corrente"
 ```
 

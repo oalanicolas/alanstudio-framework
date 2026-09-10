@@ -14,7 +14,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { shouldOpenBrowser } from "../tools/serve.mjs";
+import { advertisedOrigins, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
 
 const STARTER = fileURLToPath(new URL("..", import.meta.url));
 
@@ -91,4 +91,32 @@ test("o serve só tenta abrir o navegador no terminal", () => {
   assert.equal(shouldOpenBrowser({ BROWSER: "0" }, { isTTY: true }), false);
   assert.equal(shouldOpenBrowser({}, { isTTY: false }), false);
   assert.equal(shouldOpenBrowser({}, { isTTY: true }), true);
+});
+
+test("o serve anuncia a rede sem fingir que alguém de fora jogou", () => {
+  const interfaces = {
+    lo: [{ address: "127.0.0.1", family: "IPv4", internal: true }],
+    wlan0: [
+      { address: "192.168.1.40", family: "IPv4", internal: false },
+      { address: "fe80::1", family: "IPv6", internal: false },
+      { address: "169.254.1.2", family: "IPv4", internal: false },
+    ],
+  };
+  assert.deepEqual(advertisedOrigins(8080, interfaces, {}), [
+    "http://localhost:8080",
+    "http://192.168.1.40:8080",
+  ]);
+  assert.deepEqual(advertisedOrigins(8080, interfaces, { HOST: "127.0.0.1" }), [
+    "http://localhost:8080",
+  ]);
+  assert.equal(listenHost({ HOST: "localhost" }), "127.0.0.1");
+  assert.equal(listenHost({}), undefined);
+  const banner = listenBanner(8080, interfaces, {});
+  assert.match(banner, /Convite: http:\/\/localhost:8080\/\?invite=1/);
+  assert.match(banner, /Rede: http:\/\/192\.168\.1\.40:8080\//);
+  assert.match(banner, /Convite na rede: http:\/\/192\.168\.1\.40:8080\/\?invite=1/);
+  assert.doesNotMatch(banner, /169\.254/);
+  assert.doesNotMatch(banner, /outsider|aprovado|verified|alguém de fora jogou/i);
+  const local = listenBanner(8080, { lo: [{ address: "127.0.0.1", family: "IPv4", internal: true }] }, {});
+  assert.doesNotMatch(local, /Rede:/);
 });

@@ -20,7 +20,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | --- | --- |
 | Primeira vez ou raiz em dúvida | `doctor --root <lab>`; corrija itens `missing`. Ele nomeia os projetos e lista os starters |
 | Laboratório com jogos (o caso normal) | `discover --root <lab>` lê cada jogo e devolve o que os distingue; a ordem é a do disco — **não trate a primeira linha como prioridade** |
-| Jogo novo | Destino inexistente e engine web: `start <novo> --starter <starter> --idea "<fantasia>"` cria o projeto, põe a frase na tela do primeiro ciclo e devolve `play` + `then.note` sem executar. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive o cluster de uma mão, o toque, o controle e as queries de look, chuva e convite, se houver. Se o projeto declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt as aponta. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando) mapeia start → jogar → note. Sem destino, se o diretório atual é um jogo fora do framework, o mapa usa esse caminho. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
+| Jogo novo | Destino inexistente e engine web: `start <novo> --starter <starter> --idea "<fantasia>"` cria o projeto, põe a frase na tela do primeiro ciclo e devolve `play` + `then.note` sem executar. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive o cluster de uma mão, o toque, o controle e as queries de look, chuva e convite, se houver. Se o projeto declara as ferramentas, `then` nomeia look, chuva e voz; depois de um recibo, o prompt as aponta. A frase não muda o verbo. `guide [<novo>] --idea "<fantasia>"` (também sem subcomando: `python3 scripts/game.py --idea "<fantasia>"`) mapeia start → jogar → note. Sem destino, a frase nomeia a pasta no comando do start — ao lado do framework se o mapa corre de dentro desta árvore; no diretório atual se corre de fora. Não grava a frase nem cria a pasta. Sem destino, se o diretório atual é um jogo fora do framework, o mapa usa esse caminho. `next` só se o ciclo já correu e você não sabe o que falta. Sem `start`: `init` e depois o comando em `play`. Jogo pequeno em qualquer engine: `template game-design --project <novo> --output <novo>/docs/game-design.md` e `--stage game-design`. Não gere nove templates |
 | Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, `note <projeto> --author … --note "o que o verbo sentiu"`. Depois `roles` e `context --focus audio` |
 | Paleta, conteúdo no código ou jogo só na máquina de quem construiu | `art` / `content` / `ship` <projeto>; `consistent`/`enough`/`shipped` ficam `false` |
@@ -155,10 +155,13 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    reescreve.
    **`guide [<projeto>]`** devolve os três passos ideia→ciclo (start,
    jogar, note) sem executar nenhum. Sem subcomando, o harness é o
-   próprio `guide`. Destino existente preenche o comando que abre o
-   jogo e o `kind` do passo de jogar; se o starter declara o verbo, o
-   passo 2 o nomeia; `then` nomeia look, chuva e voz quando o projeto
-   as declara; `executed` fica `false`. `next` fica em `then.lost`.
+   próprio `guide`; `--idea` no mapa (com ou sem o verbo `guide`) só
+   entra no comando do start. Sem destino, a frase nomeia a pasta —
+   ao lado do framework se o mapa corre de dentro desta árvore.
+   Destino existente preenche o comando que abre o jogo e o `kind`
+   do passo de jogar; se o starter declara o verbo, o passo 2 o
+   nomeia; `then` nomeia look, chuva e voz quando o projeto as
+   declara; `executed` fica `false`. `next` fica em `then.lost`.
    **`start <projeto>`** cria se o destino estiver livre e devolve
    `play` + `then.note`. Se o starter declara o verbo e as teclas, o
    prompt as nomeia — inclusive o cluster de uma mão, o toque, o
@@ -193,7 +196,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    **`playtest <projeto>`** lê se o achado tem problema, evidência, hipótese
    e medição. `observed` e `outsider` são sempre falsos. `--invite` escreve
    a página para quem nunca viu o jogo; `next` a aponta depois do recibo
-   de quem fez. Recibo sem forma entra no `next` como `playtest.unstructured`.
+   de quem fez. O serve anuncia localhost e, se a máquina tiver outro
+   endereço IPv4, a URL da rede — compartilhar essa URL não é alguém de
+   fora. Recibo sem forma entra no `next` como `playtest.unstructured`.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

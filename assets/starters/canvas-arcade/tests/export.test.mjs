@@ -41,6 +41,8 @@ test("o export copia o jogo e deixa de fora o que só serve para desenvolver", a
     assert.match(readme, /Node 20/);
     assert.match(readme, /Não rode `npm install`/);
     assert.match(readme, /file:\/\//);
+    assert.match(readme, /endereço\s+IPv4/);
+    assert.match(readme, /não é outra máquina/);
     const version = JSON.parse(await readFile(join(dist, "VERSION.json"), "utf8"));
     assert.equal(version.version, "0.1.0");
     assert.match(version.scope, /Não prova/);

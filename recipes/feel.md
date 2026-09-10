@@ -7,8 +7,9 @@ Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured`. `playtest --invite`
 escreve a página e aponta `/?invite=1`, onde a tabela some; `next` a
-aponta depois do recibo de quem fez. Esconder a tabela não é alguém
-de fora. `observed` e `outsider` são sempre
+aponta depois do recibo de quem fez. O serve anuncia a URL da rede
+se a máquina tiver outro endereço IPv4. Esconder a tabela e anunciar
+a rede não são alguém de fora. `observed` e `outsider` são sempre
 falsos: o harness não assiste à sessão. O starter grava um candidato com
 `npm run session` em `docs/playtest/last-run.json`; `note --from-run`
 anexa o resumo e, se houver, a curva. Número no disco não é causa nem
