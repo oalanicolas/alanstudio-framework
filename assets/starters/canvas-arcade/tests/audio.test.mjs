@@ -6,7 +6,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { MIX_HEADROOM, SOUNDS, createAudio } from "../src/game/audio.js";
+import { MIX_HEADROOM, SOUNDS, createAudio, stereoPan } from "../src/game/audio.js";
+import { FIELD } from "../src/game/rules.js";
 
 function fakeContext() {
   const gains = [];
@@ -15,6 +16,7 @@ function fakeContext() {
     closed: false,
     gains,
     sources,
+    panners: [],
     destination: {},
     createGain() {
       const node = { gain: { value: 1 }, connect() {} };
@@ -30,6 +32,11 @@ function fakeContext() {
         release: { value: 0 },
         connect() {},
       };
+    },
+    createStereoPanner() {
+      const node = { pan: { value: 0 }, connect() {} };
+      context.panners.push(node);
+      return node;
     },
     createBufferSource() {
       const node = {
@@ -273,6 +280,26 @@ test("a cama entra em loop no barramento de música sem legenda e sem roubar voz
   assert.equal(audio.captions().some((item) => item.id === "bed"), false);
   assert.equal(audio.stop("bed"), true);
   assert.equal(context.sources[0].stopped, true);
+});
+
+test("o campo tem lugar: esquerda e direita não ocupam o mesmo ponto", () => {
+  assert.equal(stereoPan(0), -1);
+  assert.equal(stereoPan(FIELD.width), 1);
+  assert.equal(stereoPan(FIELD.width / 2), 0);
+  assert.equal(stereoPan(Number.NaN), 0);
+  const { audio, context } = build();
+  audio.register("collect", { duration: 0.2 });
+  audio.register("missed", { duration: 0.2 });
+  audio.register("close", { duration: 0.2 });
+  assert.equal(audio.play("collect", { x: 0 }), true);
+  assert.equal(context.panners.length, 1);
+  assert.equal(context.panners[0].pan.value, -1);
+  assert.equal(audio.play("missed", { x: FIELD.width }), true);
+  assert.equal(context.panners[1].pan.value, 1);
+  assert.equal(audio.play("close"), true);
+  assert.equal(context.panners.length, 2, "fecho, prática e cama ficam no centro");
+  const lines = audio.captions().map((item) => item.text).join(" ");
+  assert.doesNotMatch(lines, /pan|LUFS|-14|aprovado|verified|heard/);
 });
 
 test("dispose encerra as vozes e o contexto", () => {

@@ -7,8 +7,9 @@
 // de jogo e não ganha legenda.
 // 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão — esses
 // arquivos não usam nenhum dos quatro. Coleta e guarda sobem de tom
-// com a corrente; o erro não herda. Arquivo no disco não é mixagem
-// ouvida: `heard` no harness continua falso.
+// com a corrente; o erro não herda. Coleta, queda, raspo, impacto e
+// avanço levam o x do campo; o panner marca o lugar. Arquivo no disco
+// não é mixagem ouvida: `heard` no harness continua falso.
 //
 // O jogo carrega o arquivo no mixer. Sem esse consumidor, arquivo no
 // disco e jogo mudo eram a mesma coisa. `missing()` ainda lista o
@@ -18,7 +19,14 @@
 // completável com o áudio desligado.
 
 import { DEFAULT_BUSES } from "../core/settings.js";
-import { chainPlaybackRate } from "./rules.js";
+import { chainPlaybackRate, FIELD } from "./rules.js";
+
+// O campo tem lugar. Sem isto, coleta à esquerda e à direita
+// ocupam o mesmo ponto. Número no panner não é mix ouvido.
+export function stereoPan(x, width = FIELD.width) {
+  if (!Number.isFinite(x) || !Number.isFinite(width) || !(width > 0)) return 0;
+  return Math.max(-1, Math.min(1, (x / width) * 2 - 1));
+}
 
 const CHAIN_ROLES = new Set(["collect", "bank"]);
 
@@ -161,7 +169,16 @@ export function createAudio(options = {}) {
       source.buffer = buffer;
       const rate = resolveRate(id, extra);
       if (source.playbackRate) source.playbackRate.value = rate;
-      source.connect(gains[definition.bus] ?? gains.master);
+      const bus = gains[definition.bus] ?? gains.master;
+      const placed = Number.isFinite(extra.pan) || Number.isFinite(extra.x);
+      if (placed && typeof context.createStereoPanner === "function") {
+        const panner = context.createStereoPanner();
+        panner.pan.value = Number.isFinite(extra.pan) ? Math.max(-1, Math.min(1, extra.pan)) : stereoPan(extra.x);
+        source.connect(panner);
+        panner.connect(bus);
+      } else {
+        source.connect(bus);
+      }
       source.start();
       const voice = {
         priority: definition.priority,

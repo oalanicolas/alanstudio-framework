@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.98 — A voz também marca o lugar
+
+Coleta, queda, raspo, impacto e avanço levavam o mesmo
+ponto no mixer. O panner lê o x do campo. Fecho, prática,
+guarda e cama ficam no centro. `heard` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.98 não afirma: o harness não ouviu e o panner
+não é loudness percebido.
+
 ## 0.9.97 — O aviso também nomeia o orbe perdido
 
 A queda já falava e marcava o lugar. O aviso do primeiro

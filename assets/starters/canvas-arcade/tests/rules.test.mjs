@@ -46,7 +46,7 @@ test("ser atingido zera a corrente inteira e concede graça", () => {
   assert.equal(state.player.invuln, CONFIG.player.invulnTicks);
   assert.deepEqual(
     state.events.find((event) => event.type === "hit"),
-    { type: "hit", lost: 5 },
+    { type: "hit", lost: 5, x: state.player.x },
   );
   const shards = state.motes.filter((mote) => mote.kind === "break");
   assert.equal(shards.length, 5, "a corrente quebra no corpo, não some");
@@ -305,7 +305,9 @@ test("evento reusado não carrega campo do verbo anterior", () => {
   }
   advance(state, { move: 1, dash: true, bank: false });
   const dash = state.events.find((event) => event.type === "dash");
-  assert.deepEqual(dash, { type: "dash" });
+  assert.equal(dash.type, "dash");
+  assert.equal(typeof dash.x, "number");
+  assert.ok(Number.isFinite(dash.x), "o avanço marca o lugar no campo");
   assert.equal("chain" in dash, false);
   assert.equal("gain" in dash, false);
   assert.equal(eventPoolStats().created, before.created, "reusar o evento não cria outro objeto");
@@ -470,7 +472,9 @@ test("orbe perdido é contado, não silencioso", () => {
   advance(state, neutralIntent());
   assert.equal(state.stats.missed, 1);
   assert.equal(state.entities.length, 0);
-  assert.ok(state.events.some((event) => event.type === "missed"));
+  const missed = state.events.find((event) => event.type === "missed");
+  assert.ok(missed);
+  assert.equal(missed.x, 20, "a voz precisa do lugar da queda");
   assert.ok(state.flash >= CONFIG.feel.flashMissed, "perder o orbe acende o campo");
   const stains = state.motes.filter((mote) => mote.kind === "missed");
   assert.equal(stains.length, CONFIG.feel.moteMissed, "perder o orbe marca o lugar");

@@ -530,7 +530,7 @@ export function advance(state, intent = neutralIntent()) {
     player.squash = CONFIG.feel.squashDash;
     if (intent.move !== 0) player.dir = intent.move;
     punch(state, CONFIG.feel.punchDashX * player.dir, 0);
-    emit(state, "dash");
+    emit(state, "dash", { x: player.x });
     state.stats.dashes += 1;
   }
 
@@ -663,7 +663,7 @@ function resolveEntities(state) {
         continue;
       }
       if (invulnerable) {
-        emit(state, "graze");
+        emit(state, "graze", { x: entity.x });
         releaseEntity(entity);
         continue;
       }
@@ -674,7 +674,7 @@ function resolveEntities(state) {
     if (entity.y > FIELD.height + 8) {
       if (entity.kind === "orb") {
         state.stats.missed += 1;
-        emit(state, "missed");
+        emit(state, "missed", { x: entity.x });
         dropMiss(state, entity.x);
       }
       releaseEntity(entity);
@@ -696,7 +696,7 @@ function collect(state, fromX, fromY) {
   state.player.squash = CONFIG.feel.squashCollect;
   punch(state, 0, CONFIG.feel.punchCollectY);
   joinChain(state, before, fromX, fromY);
-  emit(state, "collect", { chain: state.chain });
+  emit(state, "collect", { chain: state.chain, x: fromX });
 }
 
 function joinChain(state, before, fromX, fromY) {
@@ -779,7 +779,7 @@ function hit(state) {
   state.flash = CONFIG.feel.flashHit;
   state.player.squash = CONFIG.feel.squashHit;
   punch(state, 0, CONFIG.feel.punchHitY);
-  emit(state, "hit", { lost });
+  emit(state, "hit", { lost, x: state.player.x });
 }
 
 export function approaching(state) {

@@ -43,7 +43,8 @@ perdido, no fecho, na prática, na guarda e na cama e carrega no mixer. A cama e
 `npm run mix` soma cama e vozes na partida simulada com o mesmo palco,
 folga e taxa da corrente do mixer. `sfx --from` / `--as` desloca a voz
 no papel que o mixer já toca. Coleta e guarda sobem de tom com a
-corrente; o erro não herda. `heard` é sempre falso.
+corrente; o erro não herda. Coleta, queda, raspo, impacto e avanço
+levam o x do campo; o panner marca o lugar. `heard` é sempre falso.
 
 **Feel (`feel`):** lê `const CONFIG` (perdão, graça, hitstop, punch,
 telegraph, flash, rumble) e `record.json` de observação. `note` grava o recibo
