@@ -252,7 +252,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    come a tecla que escolhe o verbo e o botão focado não dispara o
    ofício —, faixas que nomeiam o percentual vigente, pedido do sistema
    no meio da sessão (desligar o SO não apaga a caixa), preset de
-   uma mão (desligar devolve o remap; save antigo não inventa tecla), assistência, velocidade da partida, tinta estável e região viva), versão de save e artefato
+   uma mão (desligar devolve o remap; save antigo não inventa tecla), assistência, velocidade da partida, tinta estável, região viva e pulso no aparelho), versão de save e artefato
    de orçamento. `save` relata `warned` se o disco nomeia sessão volátil
    (`persistLine`, `title_volatile`, `title_unsaved`) ou preferências
    ilegíveis (`settings_recovered`, `settings.broken`). A receita

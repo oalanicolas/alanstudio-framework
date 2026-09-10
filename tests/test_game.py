@@ -3114,6 +3114,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("game_speed", [item["key"] for item in access["options"]])
         self.assertIn("colorblind", [item["key"] for item in access["options"]])
         self.assertIn("live", [item["key"] for item in access["options"]])
+        self.assertIn("haptics", [item["key"] for item in access["options"]])
         self.assertTrue(persist["used"])
         self.assertTrue(persist["versioned"])
         self.assertFalse(persist["unversioned"])
@@ -3130,6 +3131,29 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(perf["unbudgeted"])
         self.assertFalse(perf["measured"])
         self.assertIn("budget", perf["scripts"])
+
+    def test_access_recipe_names_the_pulse_the_starter_already_has(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        declared = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/docs/access.md"
+        ).read_text(encoding="utf-8")
+        pulse = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/src/game/haptics.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("pulso no aparelho", recipe.casefold())
+        self.assertIn("pulso no aparelho", declared.casefold())
+        self.assertIn("createHaptics", pulse)
+        self.assertIn("rumbleRole", pulse)
+        reach = game.access_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        self.assertIn("haptics", [item["key"] for item in reach["options"]])
+        self.assertEqual(reach["missing"], [])
+        self.assertFalse(reach["verified"])
+        self.assertIn("pulso no aparelho", reach["scope"])
+        self.assertTrue(reach["guide"].endswith("recipes/accessibility.md"))
+        self.assertNotIn("aprovado", recipe)
+        self.assertNotIn("aprovado", declared)
 
     def test_performance_recipe_names_the_door_the_budget_already_times(self):
         recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")

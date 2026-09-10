@@ -31,7 +31,9 @@ Examine as barreiras que o jogo realmente cria:
   na faixa não é sessão observada.
 - **Movimento:** redução de movimento desligando tremor de câmera, paralaxe
   agressiva, flashes e transições longas — sem remover o feedback de causa, que
-  precisa migrar para um sinal estático equivalente.
+  precisa migrar para um sinal estático equivalente. No starter o pulso do
+  aparelho também some com `reducedMotion` e com a pausa. Pulso no disco
+  não é sessão no controle.
 - **Tempo e reação:** dificuldade ou assistência que **não** escondem conteúdo,
   velocidade ajustável quando o gênero permite, pausa disponível em qualquer
   momento seguro, e nenhuma exigência de precisão que não tenha alternativa.
@@ -44,7 +46,8 @@ Uma opção sem consumidor no código não é uma opção.
 
 `access <projeto>` lê as opções que o código declara (highContrast,
 reducedMotion, captions, remapeamento, uiScale, preset de uma mão,
-assistência, velocidade da partida, tinta estável e região viva). `verified` é sempre falso: chave no fonte não é sessão
+assistência, velocidade da partida, tinta estável, região viva e
+pulso no aparelho). `verified` é sempre falso: chave no fonte não é sessão
 com o modo ativo. O starter `canvas-arcade` expõe `assist`, `gameSpeed` e o remapeamento
 das seis ações do teclado na página; a tabela `#commands`
 nomeia as teclas vigentes e mantém toque e controle no

@@ -18,12 +18,14 @@ Declaração vigente. Opção no código não é sessão observada.
 - Assistência que não esconde orbe nem pontuação (`assist`): na partida e na mostra da porta, alcance maior e chuva mais lenta. A graça extra fica no campo. Isso não é sessão observada
 - Velocidade da partida (`gameSpeed`): o relógio da partida anda mais devagar; a mostra da porta e o fim ficam no relógio cheio. A assistência continua sendo alcance e queda, não este knob. `advance()` headless não dilata. Isso não é sessão observada
 - Região viva (`#live`): fase, pausa, perigo, última legenda, o aviso do primeiro ciclo que o canvas já pinta e, no fim e na porta, o placar e o recorde que o canvas já mostra; no fim, a corrente que caiu se o overlay a nomeia; na porta o toque da mostra (`a mostra toca` / `a mostra raspa`) sem fingir coleta; no fim e na porta a recuperação das preferências que o painel já mostra também nasce no canvas. No fim o aviso do ciclo some. Texto no DOM não é sessão observada
+- Pulso no aparelho (`haptics`): dash, land, collect, bank, hit, over e o fecho pulsam com peso distinto; queda, raspo e voz da mostra não; `reducedMotion` e pausa cancelam; sem knob separado. Stub não é sessão no controle
 
 ## O que o recorte não atende
 
 - Contraste medido no dispositivo e em movimento — `npm run contrast` amostra pixels do stub após `draw()` e relata o par sem limiar; o aparelho alvo não foi observado
 - Jogo completável com uma só mão, observado
 - Sessão com cada modo ativo, observada
+- Sessão com o pulso no controle, observada — `reducedMotion` cancela no disco; o aparelho não foi observado
 - Leitura em escala de cinza no dispositivo alvo, observada — `npm run contrast` relata pixels que só o orbe ou só o estilhaço pintam com a mesma tinta no stub; o aparelho não foi observado
 
 Esta página não sobe o degrau. Ela impede de fingir que o recorte é completo.

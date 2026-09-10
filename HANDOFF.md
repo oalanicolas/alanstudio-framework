@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.279: o playtest nomeia a política do candidato. Serve é `played`; session é `nearest-orb`. Não promove `outsider`.
+**HEAD:** ver `git log -1` — vigente 0.9.280: o contrato de alcance nomeia o pulso. `haptics` entra no `access`. Stub ≠ sessão no controle. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 297 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.279)
+## O que o HEAD já entrega (0.9.91–0.9.280)
 
 | Ver | Salto |
 | --- | --- |
@@ -223,6 +223,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.277 | A perda de foco grava o hold. O blur senta o relógio no campo e no fim. Na porta só descarrega. Não promove `trusted`. |
 | 0.9.278 | O orçamento cronometra a porta. `title.attract` entra ao lado de `playing.run`. Stub ≠ dispositivo. Não promove `measured`. |
 | 0.9.279 | O playtest nomeia a política do candidato. `played` e `nearest-orb` deixam de ser a mesma origem. A simulação não apaga a jogada. Não promove `outsider`. |
+| 0.9.280 | O contrato de alcance nomeia o pulso. `haptics` entra no `access`. A receita e o `docs/access.md` deixam de omitir o aparelho. Não promove `verified`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -243,7 +244,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
-| accessibility | slice | a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
+| accessibility | slice | o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão no controle pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -945,6 +946,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma perda de foco que deixa o tick só na RAM.
 **Não** mais um orçamento que cronometra só o campo e some a porta.
 **Não** mais um playtest que some a origem do candidato.
+**Não** mais um contrato de alcance que omite o pulso que o código já tem.
 
 Candidatos, do que ainda dói:
 
@@ -1030,7 +1032,7 @@ Candidatos, do que ainda dói:
    licença.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
-   estável no disco, estilhaço dusk no disco, intenção warmer no
+   estável no disco, pulso no disco, estilhaço dusk no disco, intenção warmer no
    disco, copiar o achado,
    gravar os quatro nomes, mostrar seed/pontos/eixos na faixa,
    anexar last-run, `play` achar o único jogo, `note` achar
@@ -1598,6 +1600,14 @@ Candidatos, do que ainda dói:
   a origem
   do
   candidato
+  e um
+  contrato
+  de
+  alcance
+  que
+  omite
+  o
+  pulso
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1621,10 +1631,11 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o playtest
-nomeia a política do candidato.
-Serve é `played`; session é `nearest-orb`.
-A simulação não apaga a jogada. Não promove `outsider`.
+Arquivos quentes da última sessão: o contrato de
+alcance nomeia o pulso. `haptics` entra no `access`.
+A receita e o `docs/access.md` deixam de omitir
+o aparelho. Stub ≠ sessão no controle. Não promove
+`verified`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1639,3 +1650,4 @@ A família blur ghost press / perda de foco deixa o ofício pendente está satur
 A família blur grava o hold / perda de foco deixa o tick na RAM está saturada.
 A família orçamento só o campo / porta some do budget está saturada.
 A família política do candidato / session apaga played está saturada.
+A família contrato de alcance omite o pulso está saturada.

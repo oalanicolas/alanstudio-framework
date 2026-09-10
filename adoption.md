@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.280 — O contrato de alcance nomeia o pulso
+
+O
+código
+já
+pulsava
+dash,
+land,
+collect,
+bank,
+hit,
+over
+e
+o
+fecho.
+O
+`access`
+omitia
+a
+chave.
+A
+receita
+calava
+o
+aparelho.
+Agora
+`haptics`
+entra
+e
+a
+declaração
+nomeia
+o
+que
+o
+recorte
+já
+atende.
+Não
+promove
+`verified`.
+
+O que 0.9.280 não afirma:
+nomear
+o
+pulso
+não
+é
+sessão
+no
+controle.
+
 ## 0.9.279 — O playtest nomeia a política do candidato
 
 O
