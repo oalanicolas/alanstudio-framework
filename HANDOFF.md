@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.240 (confirmado): o `start` escreve `AGENTS.md` com o comando que abre. Não lista rascunhos que não plantou. Não é GDD.
+**HEAD:** ver `git log -1` — vigente 0.9.241: o pedido no contexto suspenso espera o gesto. Live da porta e avanço não disparam no vazio. `heard` falso.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 282 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.240)
+## O que o HEAD já entrega (0.9.91–0.9.241)
 
 | Ver | Salto |
 | --- | --- |
@@ -184,6 +184,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.238 | O rumble do quadro toca o verbo mais pesado, não o último. Porta fala dash; commit fala guarda. Não promove feel. |
 | 0.9.239 | O avanço é o aperto, não o segurar. Segurar na porta não dispara o ofício; no campo o cooldown não metralha. A guarda continua nível. Não promove feel. |
 | 0.9.240 | O `start` escreve `AGENTS.md` com o comando que abre. Sem rascunhos, a memória não lista GDD. `documents` continua vazio. Não executa. |
+| 0.9.241 | O pedido no contexto suspenso espera o gesto. A porta e o primeiro avanço não disparam no vazio. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -200,7 +201,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
-| audio_mix | slice | a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
+| audio_mix | slice | o pedido suspenso espera o gesto; a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | live nomeia o aviso na porta e no fim; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -344,7 +345,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou avanço que lê o hold e metralha no cooldown
   ou o mesmo aperto da porta que dispara o ofício no campo
   ou o `start` que deixa a próxima sessão sem memória
-  ou o AGENTS do start que lista GDD que não plantou.
+  ou o AGENTS do start que lista GDD que não plantou
+  ou o pedido no contexto suspenso que dispara no vazio.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -497,7 +499,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `heard` falso.
   A guarda emite `x` no campo — sem isto a aposta falava no centro.
   Pedido sem buffer: last-wins na fila; `register` toca sem segunda
-  legenda. `dispose` esquece. Tecla ligada e toque chamam
+  legenda. Pedido com buffer no contexto suspenso também espera;
+  `unlock` / o resume toca sem segunda legenda. Disparar no
+  vazio comia a mostra da porta e o primeiro avanço. `dispose`
+  esquece. Tecla ligada e toque chamam
   `audio.unlock()` no gesto. Stems sobem juntos (`Promise.all`);
   extensão seguinte só se a atual falhou.   `duckMs` abaixa só
   `music` (`DUCK_BUSES`). `update({ bedRate })` desloca o tom da
@@ -795,6 +800,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais o mesmo aperto da porta que dispara o ofício no campo.
 **Não** mais um `start` que deixa a próxima sessão sem memória.
 **Não** mais um AGENTS do start que lista GDD que não plantou.
+**Não** mais um pedido no contexto suspenso que dispara no vazio.
 
 Candidatos, do que ainda dói:
 
@@ -1229,6 +1235,12 @@ Candidatos, do que ainda dói:
   lista GDD
   que não
   plantou
+  e o
+  pedido no
+  contexto
+  suspenso que
+  dispara no
+  vazio
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1252,7 +1264,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o `start`
-escreve `AGENTS.md` com o comando que abre.
-Sem rascunhos a memória não lista GDD.
-`documents` continua vazio. Não executa.
+Arquivos quentes da última sessão: o pedido
+no contexto suspenso espera o gesto. Live
+da porta e o primeiro avanço não disparam
+no vazio. `heard` falso.

@@ -20,8 +20,9 @@ stem do starter que casa; `--apply` copia o id do acervo ou o stem
 do starter com créditos. `sfx copy` continua o caminho explícito.
 O starter `canvas-arcade`
 já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
-mixer. O pedido que chega antes do WAV fica na fila e toca quando o
-buffer entra — sem segunda legenda. Os stems sobem juntos: collect
+mixer. O pedido que chega antes do WAV — ou enquanto o contexto
+ainda está suspenso — fica na fila e toca quando o buffer entra ou
+o gesto retoma, sem segunda legenda. Os stems sobem juntos: collect
 não espera dash terminar. Wav no lugar não pede ogg. O gesto
 (tecla ou toque) retoma o contexto suspenso. Retomar, fila e
 paralelo não são mix ouvido.

@@ -364,8 +364,25 @@ test("resume recusado não derruba o quadro", () => {
   };
   assert.equal(audio.unlock(), false);
   context.resume = () => Promise.reject(new Error("NotAllowedError"));
-  assert.equal(audio.play("dash"), true);
-  assert.equal(context.sources[0].started, true);
+  assert.equal(audio.play("dash"), false, "disparar no vazio não é ouvir");
+  assert.equal(context.sources.length, 0, "contexto suspenso não come o verbo");
+});
+
+test("o pedido no contexto suspenso toca quando o gesto retoma", () => {
+  const { audio, context } = build();
+  audio.register("live", { duration: 0.2 });
+  audio.register("dash", { duration: 0.2 });
+  context.state = "suspended";
+  context.resume = () => Promise.resolve();
+  assert.equal(audio.play("live"), false, "a mostra na porta não dispara no vazio");
+  assert.equal(audio.play("dash", { x: 0 }), false, "o avanço no gesto ainda suspenso espera");
+  assert.equal(context.sources.length, 0);
+  assert.equal(audio.captions().length, 2, "a faixa já nomeia o que vai tocar");
+  context.state = "running";
+  assert.equal(audio.unlock(), true);
+  assert.equal(context.sources.length, 2, "live e dash esperavam o gesto");
+  assert.equal(context.sources.every((node) => node.started), true);
+  assert.equal(audio.captions().length, 2, "retomar não duplica a legenda");
 });
 
 test("dispose esquece a fila e recusa o registro", () => {

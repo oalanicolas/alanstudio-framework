@@ -18,7 +18,8 @@
 //
 // O jogo carrega o arquivo no mixer. Sem esse consumidor, arquivo no
 // disco e jogo mudo eram a mesma coisa. O pedido que chega antes do
-// WAV fica na fila e toca quando o buffer entra — sem segunda
+// WAV — ou enquanto o contexto ainda está suspenso — fica na fila e
+// toca quando o buffer entra ou o gesto retoma, sem segunda
 // legenda. Os stems sobem juntos; wav no lugar não pede ogg.
 // O gesto (tecla ou toque) retoma o contexto suspenso;
 // retomar, fila e paralelo não são mix ouvido.
@@ -111,6 +112,7 @@ export function createAudio(options = {}) {
   const cursors = new Map();
   const missing = new Set();
   const pending = new Map();
+  let flushing = false;
   const voices = [];
   const loops = new Map();
   const captions = [];
@@ -149,19 +151,43 @@ export function createAudio(options = {}) {
   // Chrome e Safari nascem suspensos. `decode` no boot cria o
   // contexto fora do gesto; o avanço da porta já é o gesto — se
   // o resume ficar para o quadro, o primeiro verbo continua mudo.
-  // Pedir resume não é mix ouvido.
+  // Sem isto o mixer disparava no vazio e a fila só esperava o
+  // WAV. Pedir resume não é mix ouvido.
+  function asleep() {
+    return Boolean(context && context.state === "suspended");
+  }
+
+  function flushPending() {
+    if (disposed || asleep() || flushing) return;
+    flushing = true;
+    try {
+      for (const [id, extra] of [...pending]) {
+        if (!(buffers.get(id) ?? []).length) continue;
+        pending.delete(id);
+        emitVoice(id, extra);
+      }
+    } finally {
+      flushing = false;
+    }
+  }
+
   function unlock() {
     if (disposed) return false;
     const ctx = ensureContext();
     if (!ctx) return false;
     if (ctx.state === "suspended" && typeof ctx.resume === "function") {
       try {
-        const pending = ctx.resume();
-        if (pending && typeof pending.catch === "function") pending.catch(() => {});
+        const work = ctx.resume();
+        if (work && typeof work.then === "function") {
+          work.then(() => {
+            if (!disposed) flushPending();
+          }).catch(() => {});
+        }
       } catch {
         return false;
       }
     }
+    if (!asleep()) flushPending();
     return true;
   }
 
@@ -196,6 +222,10 @@ export function createAudio(options = {}) {
     if (!pack.length) return false;
     unlock();
     if (!context) return false;
+    if (asleep()) {
+      pending.set(id, extra);
+      return false;
+    }
     applyBusLevels();
     if (definition.loop) return startLoop(id, definition, pack[0]);
     const cursor = cursors.get(id) ?? 0;

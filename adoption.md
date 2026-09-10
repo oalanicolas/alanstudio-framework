@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.241 — O pedido no contexto suspenso espera o gesto
+
+Chrome
+e
+Safari
+nascem
+suspensos.
+O
+mixer
+disparava
+no
+vazio:
+a
+mostra
+da
+porta
+e
+o
+primeiro
+avanço
+sumiam.
+A
+fila
+já
+esperava
+o
+WAV.
+Agora
+espera
+o
+gesto
+também.
+Não
+promove
+`heard`.
+
+O que 0.9.241 não afirma:
+retomar
+o
+contexto
+não
+é
+mix
+ouvido.
+
 ## 0.9.240 — O start escreve a memória do agente sem fingir rascunho
 
 O
