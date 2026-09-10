@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { applyInvite, inviteMode, INVITE_LABEL } from "../src/core/invite.js";
+import { applyFinding, applyInvite, composeFinding, inviteMode, INVITE_LABEL } from "../src/core/invite.js";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -43,6 +43,38 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /id="remap"/, "o convite não some o remapeamento");
   assert.match(html, /id="gameSpeed"/, "o convite não some a velocidade da partida");
   assert.doesNotMatch(html, /html\.invite\s+#remap/, "só a tabela some");
+  assert.match(html, /id="finding"/);
+  assert.match(html, /html\.invite\.finding\s+#finding/);
+  assert.match(html, /id="finding-copy"/);
+  assert.match(html, /composeFinding/);
+  assert.doesNotMatch(html, /html\.invite\s+#finding\s*\{/);
+});
+
+test("o achado só aparece no convite depois do fim", () => {
+  const root = { classList: { finding: false, toggle(name, on) { this[name] = on; } } };
+  assert.equal(applyFinding({ root, phase: "title", invite: true }), false);
+  assert.equal(root.classList.finding, false);
+  assert.equal(applyFinding({ root, phase: "playing", invite: true }), false);
+  assert.equal(applyFinding({ root, phase: "over", invite: false }), false);
+  assert.equal(applyFinding({ root, phase: "over", invite: true }), true);
+  assert.equal(root.classList.finding, true);
+});
+
+test("copiar o achado preenchido tem forma; o vazio não finge", () => {
+  const blank = composeFinding();
+  assert.match(blank, /Problema:/);
+  assert.match(blank, /Evidência:/);
+  assert.match(blank, /Hipótese:/);
+  assert.match(blank, /Medição:/);
+  assert.equal(blank.includes("o dash"), false);
+  const filled = composeFinding({
+    problema: "o dash não comunica o contato",
+    evidencia: "três sessões, pergunta se atravessou",
+    hipotese: "o hitstop some no movimento",
+    medicao: "repetir o graze com hitstop 5 e 2",
+  });
+  assert.match(filled, /o dash não comunica o contato/);
+  assert.match(filled, /três sessões/);
 });
 
 test("a página nomeia o par sem fingir que alguém de fora escolheu", () => {

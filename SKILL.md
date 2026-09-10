@@ -25,7 +25,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, `note <projeto> --author … --note "o que o verbo sentiu"`. Depois `roles` e `context --focus audio` |
 | Paleta, conteúdo no código ou jogo só na máquina de quem construiu | `art` / `content` / `ship` <projeto>; `consistent`/`enough`/`shipped` ficam `false` |
-| Observou uma partida e só tem uma nota | `playtest <projeto>`; se `unstructured`, escreva problema, evidência, hipótese e medição. Depois do recibo, `playtest --invite` escreve a página e aponta `/?invite=1`, onde a tabela some — não é alguém de fora |
+| Observou uma partida e só tem uma nota | `playtest <projeto>`; se `unstructured`, escreva problema, evidência, hipótese e medição. Depois do recibo, `playtest --invite` escreve a página e aponta `/?invite=1`, onde a tabela some; depois do fim a página oferece os quatro nomes para copiar — copiar não grava e não é alguém de fora |
 | “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
 | Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
 | “continue” / “vamos avançar” | `context <projeto> --focus <foco> --event resume` e leia `continuity.sources`, preservando o foco da tarefa |
@@ -213,10 +213,12 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    incompleta é `ship.incomplete`; artefato de outro commit é `ship.stale`.
    **`playtest <projeto>`** lê se o achado tem problema, evidência, hipótese
    e medição. `observed` e `outsider` são sempre falsos. `--invite` escreve
-   a página para quem nunca viu o jogo; `next` a aponta depois do recibo
-   de quem fez. O serve anuncia localhost e, se a máquina tiver outro
-   endereço IPv4, a URL da rede — compartilhar essa URL não é alguém de
-   fora. Recibo sem forma entra no `next` como `playtest.unstructured`.
+   a página para quem nunca viu o jogo; depois do fim a página oferece
+   os quatro nomes para copiar. Copiar não grava e não é alguém de fora.
+   `next` aponta o convite depois do recibo de quem fez. O serve anuncia
+   localhost e, se a máquina tiver outro endereço IPv4, a URL da rede —
+   compartilhar essa URL não é alguém de fora. Recibo sem forma entra no
+   `next` como `playtest.unstructured`.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

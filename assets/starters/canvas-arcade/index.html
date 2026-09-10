@@ -66,6 +66,30 @@
       .invite-strip { display: none; color: var(--muted); font-size: 0.9rem; margin: 0; }
       html.invite #commands { display: none; }
       html.invite .invite-strip { display: block; }
+      #finding { display: none; }
+      html.invite.finding #finding { display: block; }
+      #finding textarea {
+        width: 100%;
+        min-height: 3.2rem;
+        resize: vertical;
+        background: var(--page);
+        color: inherit;
+        border: 1px solid var(--edge);
+        border-radius: 6px;
+        padding: 0.4rem 0.55rem;
+        font: inherit;
+      }
+      #finding button {
+        appearance: none;
+        background: transparent;
+        color: inherit;
+        border: 1px solid var(--edge);
+        border-radius: 6px;
+        padding: 0.4rem 0.75rem;
+        cursor: pointer;
+        font: inherit;
+      }
+      #finding button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
     </style>
     <script>
@@ -85,6 +109,18 @@
     <noscript>
       <p class="panel">Este jogo precisa de JavaScript. O código das regras fica em <code>src/game/rules.js</code>.</p>
     </noscript>
+
+    <section class="panel" id="finding" aria-labelledby="finding-title">
+      <h2 id="finding-title">Depois da partida</h2>
+      <p class="note">Copie o que jogou. Isto não grava no projeto.</p>
+      <div class="grid">
+        <label><span>Problema</span><textarea id="finding-problema" name="problema" rows="2"></textarea></label>
+        <label><span>Evidência</span><textarea id="finding-evidencia" name="evidencia" rows="2"></textarea></label>
+        <label><span>Hipótese</span><textarea id="finding-hipotese" name="hipotese" rows="2"></textarea></label>
+        <label><span>Medição</span><textarea id="finding-medicao" name="medicao" rows="2"></textarea></label>
+      </div>
+      <p><button type="button" id="finding-copy">Copiar</button></p>
+    </section>
 
     <section class="panel" id="commands" aria-labelledby="controls-title">
       <h2 id="controls-title">Comandos</h2>
@@ -142,7 +178,7 @@
     <script type="module" src="./src/main.js"></script>
     <script type="module">
       import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "./src/core/settings.js";
-      import { applyInvite } from "./src/core/invite.js";
+      import { applyFinding, applyInvite, composeFinding, inviteMode } from "./src/core/invite.js";
       import { applyShell } from "./src/core/shell.js";
       import { LOOK_LABELS, SPAWN_LABELS, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch, PALETTES, resolveLookName } from "./src/game/tables.js";
       import { paintCommands } from "./src/core/keys.js";
@@ -154,6 +190,25 @@
       });
       const game = window.__game;
       if (game) {
+        const invited = inviteMode(location.search);
+        const revealFinding = (phase) => applyFinding({
+          root: document.documentElement,
+          phase,
+          invite: invited,
+        });
+        if (typeof game.watch === "function") game.watch(revealFinding);
+        else revealFinding(game.observe().phase);
+        document.getElementById("finding-copy").addEventListener("click", () => {
+          const text = composeFinding({
+            problema: document.getElementById("finding-problema").value,
+            evidencia: document.getElementById("finding-evidencia").value,
+            hipotese: document.getElementById("finding-hipotese").value,
+            medicao: document.getElementById("finding-medicao").value,
+          });
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+            navigator.clipboard.writeText(text);
+          }
+        });
         const toggles = ["reducedMotion", "highContrast", "captions", "assist"];
         const buses = ["master", "sfx", "music", "ui"];
         const spawnSelect = document.getElementById("spawnProfile");

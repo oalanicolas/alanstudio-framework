@@ -280,6 +280,31 @@ test("com tela o fim volta à abertura", () => {
   game.dispose();
 });
 
+test("watch anuncia a fase sem gravar achado", () => {
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  const seen = [];
+  const stop = game.watch((phase) => seen.push(phase));
+  assert.deepEqual(seen, ["title"]);
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(seen.at(-1), "playing");
+  game.advance(CONFIG.runTicks);
+  assert.equal(seen.at(-1), "over");
+  game.reset();
+  assert.equal(seen.at(-1), "title");
+  stop();
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(seen.at(-1), "title", "depois de parar não anuncia");
+  game.dispose();
+});
+
 function playFields(obs) {
   return {
     tick: obs.tick,

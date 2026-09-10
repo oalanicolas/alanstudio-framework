@@ -1861,13 +1861,13 @@ def ship_reading(project):
 # checklist. Uma observação solta ("o dash não tem peso") não é achado.
 # O leitor abaixo pergunta se a forma está no disco — não se alguém jogou.
 FINDING_FIELDS = re.compile(
-    r"(?is)(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:problema|problem)\*?\*?\s*[:—]"
-    r".{2,400}?"
-    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:evid[eê]ncia|evidence)\*?\*?\s*[:—]"
-    r".{2,400}?"
-    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:hip[oó]tese|hypothesis)\*?\*?\s*[:—]"
-    r".{2,400}?"
-    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:medi[cç][aã]o|measurement)\*?\*?\s*[:—]"
+    r"(?is)(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:problema|problem)\*?\*?\s*[:—]\s*\S"
+    r".{0,400}?"
+    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:evid[eê]ncia|evidence)\*?\*?\s*[:—]\s*\S"
+    r".{0,400}?"
+    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:hip[oó]tese|hypothesis)\*?\*?\s*[:—]\s*\S"
+    r".{0,400}?"
+    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:medi[cç][aã]o|measurement)\*?\*?\s*[:—]\s*\S"
 )
 FINDING_TABLE = re.compile(
     r"(?i)\|\s*(?:problema|problem)\s*\|\s*(?:evid[eê]ncia|evidence)\s*\|\s*"
@@ -2025,9 +2025,11 @@ def invite_playtest(project):
         "reading": reading,
         "scope": (
             "Escreve a página para quem nunca viu o jogo e aponta "
-            "`/?invite=1`, onde a tabela some. O serve anuncia a URL "
-            "da rede se a máquina tiver outro endereço IPv4. Não ensina "
-            "o verbo, não assiste e não sobe pacing. outsider continua falso."
+            "`/?invite=1`, onde a tabela some. Depois do fim a página "
+            "oferece os quatro nomes para copiar. Copiar não grava e "
+            "não é alguém de fora. O serve anuncia a URL da rede se a "
+            "máquina tiver outro endereço IPv4. Não ensina o verbo, "
+            "não assiste e não sobe pacing. outsider continua falso."
         ),
     }
 
@@ -2066,9 +2068,10 @@ def invite_page(project):
         "\n"
         "## Depois\n"
         "\n"
-        "Grave o achado em `docs/playtest/` com os quatro nomes que o\n"
-        "harness já sabe ler — sem preenchê-los aqui, senão o arquivo\n"
-        "finge forma. Quem escreveu precisa ser quem jogou.\n"
+        "A página oferece os quatro nomes para copiar. Copiar não\n"
+        "grava no projeto. Cole noutro arquivo em `docs/playtest/`\n"
+        "só se quem jogou preencheu. Esqueleto vazio não é achado.\n"
+        "Quem escreveu precisa ser quem jogou.\n"
         "\n"
         "Convite no disco não sobe `pacing` e não conta jogador.\n"
     )

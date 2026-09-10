@@ -3,13 +3,16 @@
 Entrada: verbo central, referência de sensação (aprovada ou proposta) e a
 diferença percebida entre intenção e resposta atual.
 
-Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
+Com tela, a primeira superfície é a porta. O campo começa depois do
+avanço. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured`. `playtest --invite`
-escreve a página e aponta `/?invite=1`, onde a tabela some; `next` a
-aponta depois do recibo de quem fez. O serve anuncia a URL da rede
-se a máquina tiver outro endereço IPv4. Esconder a tabela e anunciar
-a rede não são alguém de fora. `observed` e `outsider` são sempre
+escreve a página e aponta `/?invite=1`, onde a tabela some; depois do
+fim a página oferece os quatro nomes para copiar. Copiar não grava
+e não é alguém de fora. `next` aponta o convite depois do recibo de
+quem fez. O serve anuncia a URL da rede
+se a máquina tiver outro endereço IPv4. Esconder a tabela, anunciar
+a rede e copiar o achado não são alguém de fora. `observed` e `outsider` são sempre
 falsos: o harness não assiste à sessão. O starter grava um candidato com
 `npm run session` em `docs/playtest/last-run.json`. Se o projeto (ou o
 starter) declara `session`, `then` a aponta. `note --from-run` anexa o

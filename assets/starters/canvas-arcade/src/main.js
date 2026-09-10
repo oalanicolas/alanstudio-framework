@@ -81,6 +81,13 @@ export function createGame(options = {}) {
   let recorded = false;
   let lastRun = progress.lastRun ?? null;
   let disposed = false;
+  let lastPhase = state.phase;
+  const watchers = new Set();
+  function emitPhase() {
+    if (state.phase === lastPhase) return;
+    lastPhase = state.phase;
+    for (const fn of watchers) fn(state.phase);
+  }
   function doorOpen() {
     return canContinue(progress) && (forcedSeed === undefined || forcedSeed === progress.lastSeed);
   }
@@ -141,6 +148,7 @@ export function createGame(options = {}) {
       } else {
         attractTick(state);
       }
+      emitPhase();
       return;
     }
     advanceRules(state, intent);
@@ -155,6 +163,7 @@ export function createGame(options = {}) {
       saveProgress(storage, progress, progressLoad);
       audio.stop("bed");
     }
+    emitPhase();
   }
 
   function syncBed() {
@@ -260,7 +269,14 @@ export function createGame(options = {}) {
       loop.resume();
       haptics.unmute();
       syncBed();
+      emitPhase();
       return handle.observe();
+    },
+    watch(fn) {
+      if (typeof fn !== "function") return () => {};
+      watchers.add(fn);
+      fn(state.phase);
+      return () => watchers.delete(fn);
     },
     seed(value) {
       if (value === undefined) return state.seed;
@@ -292,6 +308,7 @@ export function createGame(options = {}) {
     dispose() {
       if (disposed) return false;
       disposed = true;
+      watchers.clear();
       loop.dispose();
       input.dispose();
       audio.dispose();

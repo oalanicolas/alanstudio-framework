@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.112 — O convite também devolve o achado
+
+Quem nunca viu o jogo jogava e não tinha onde
+escrever. Depois do fim, `?invite=1` oferece os
+quatro nomes para copiar. Esqueleto vazio não é
+achado. `outsider` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.112 não afirma: copiar não é sessão
+observada e a página não gravou o achado.
+
 ## 0.9.111 — O play também é um verbo
 
 O `start` devolvia `open` no JSON. Quem perdia o

@@ -2740,6 +2740,18 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(after["structured"])
         self.assertFalse(after["observed"])
 
+    def test_a_blank_finding_skeleton_is_not_a_finding(self):
+        (self.project / "docs").mkdir()
+        (self.project / "docs/card.md").write_text(
+            "- Problema: \n- Evidência: \n- Hipótese: \n- Medição: \n",
+            encoding="utf-8",
+        )
+        report = game.playtest_reading(self.project)
+        self.assertFalse(report["structured"])
+        self.assertEqual(report["findings"], [])
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+
     def test_a_structured_finding_is_form_not_an_observed_session(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "docs").mkdir()
@@ -2773,8 +2785,12 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("invite=1", page)
         self.assertIn("nunca viu", page.casefold())
         self.assertIn("rede", page.casefold())
+        self.assertIn("copiar", page.casefold())
+        self.assertIn("quatro nomes", page.casefold())
         self.assertNotIn("Não leia a tabela", page)
         self.assertNotRegex(page, game.FINDING_FIELDS)
+        self.assertNotIn("aprovado", page)
+        self.assertNotIn("verified", page)
         again = game.invite_playtest(destination)
         self.assertFalse(again["created"])
         reading = game.playtest_reading(destination)
