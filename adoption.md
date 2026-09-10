@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.326 — o art nomeia o risco da chuva
+
+A
+porta
+já
+lia
+o
+teto.
+O
+art
+listava
+a
+mesa
+e
+calava
+o
+perigo.
+Dusk
+e
+calm
+já
+separam
+o
+risco.
+Agora
+o
+comando
+o
+nomeia.
+Não
+promove
+`consistent`.
+
+O que 0.9.326 não afirma:
+número
+no
+disco
+não
+é
+comparação
+em
+movimento.
+
 ## 0.9.325 — o compromisso da guarda veste a aposta
 
 O

@@ -1806,10 +1806,22 @@ def rain_tables(project):
             if not name or name in seen:
                 continue
             seen.add(name)
-            found.append({
+            # A porta já lê o teto do risco. Sem isto o art
+            # listava a mesa e calava o perigo que dusk e
+            # calm já separam. Número no disco não é
+            # comparação em movimento.
+            row = {
                 "key": name,
                 "source": path.relative_to(project).as_posix(),
-            })
+            }
+            try:
+                data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+            except (OSError, json.JSONDecodeError):
+                data = {}
+            hazard = data.get("hazardChanceEnd") if isinstance(data, dict) else None
+            if isinstance(hazard, (int, float)) and not isinstance(hazard, bool) and hazard == hazard:
+                row["hazard"] = hazard
+            found.append(row)
     return found
 
 
@@ -1904,7 +1916,7 @@ def art_reading(project):
         "scope": (
             "Procura `const PALETTES`, tokens.json, data/palettes.json, "
             "docs/art-bible.md sem marcador de rascunho e mesas de chuva "
-            "(intervalTicks e fallSpeed) em data/, tables/ e content/. Não "
+            "(intervalTicks, fallSpeed e hazardChance) em data/, tables/ e content/. Não "
             "compara silhueta, não mede contraste e não aprova estilo. "
             "`consistent` é sempre falso."
         ),

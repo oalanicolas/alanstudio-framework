@@ -3773,7 +3773,21 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.art_reading(self.project)
         self.assertEqual([item["key"] for item in report["rains"]], ["gale"])
         self.assertEqual(report["rains"][0]["source"], "data/gale.json")
+        self.assertEqual(report["rains"][0]["hazard"], 0.6)
         self.assertFalse(report["declared"])
+        self.assertFalse(report["consistent"])
+
+    def test_art_names_the_rain_risk_the_door_already_reads(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.art_reading(starter)
+        by_key = {item["key"]: item for item in report["rains"]}
+        self.assertGreater(
+            by_key["dusk"]["hazard"],
+            by_key["calm"]["hazard"],
+            "o art calava o risco que a porta já lê",
+        )
+        self.assertGreater(by_key["dusk"]["hazard"], by_key["spawn"]["hazard"])
+        self.assertIn("hazardChance", report["scope"])
         self.assertFalse(report["consistent"])
 
     def test_art_does_not_treat_a_nested_object_as_another_palette(self):
