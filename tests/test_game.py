@@ -3178,6 +3178,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(report["invite"])
         self.assertEqual(report["finding_href"], "/#finding")
         self.assertIsNone(report["qa"])
+        self.assertEqual(report["fields"], ["problema", "evidencia", "hipotese", "medicao"])
+        self.assertTrue(Path(report["form"]).is_file())
+        self.assertTrue(report["form"].endswith("assets/templates/qa.md"))
+        self.assertNotIn("then", report)
         self.assertIn("só lê", report["scope"])
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("verified", report["scope"])
@@ -3191,6 +3195,19 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(any(" feel " in f" {command} " for command in proposal["commands"]))
         self.assertTrue(any(" --field " in command and "problema=" in command for command in proposal["commands"]))
         self.assertTrue(any(" play " in f" {command} " or "serve" in command for command in proposal["commands"]))
+
+    def test_playtest_names_the_form_without_writing_the_finding(self):
+        report = game.playtest_reading(self.project)
+        self.assertEqual(report["fields"], list(game.PLAYTEST_FIELDS))
+        self.assertEqual(report["form"], str(game.PLAYTEST_FORM))
+        self.assertTrue(Path(report["form"]).is_file())
+        skeleton = Path(report["form"]).read_text(encoding="utf-8")
+        for label in ("Problema:", "Evidência:", "Hipótese:", "Medição:"):
+            self.assertIn(label, skeleton)
+        self.assertNotIn("then", report)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertIn("Esqueleto no disco não é achado", report["scope"])
 
     def test_note_from_run_attaches_the_candidate_without_closing_the_finding(self):
         destination = self.root / "com-corrida"

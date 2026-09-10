@@ -3,6 +3,38 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.207 — O playtest nomeia o esqueleto dos quatro
+
+O
+`playtest`
+já lia se
+o achado
+tinha forma.
+O `guide`
+apontava a
+receita de
+feel. Os
+quatro nomes
+ficavam no
+`next`. Agora
+nomeia `form`
+e `fields`.
+Sem `then`.
+Esqueleto no
+disco não é
+achado.
+`outsider`
+continua
+falso. Só
+`release`
+fica no piso.
+
+O que 0.9.207 não afirma:
+esqueleto no
+disco não é
+sessão de
+fora.
+
 ## 0.9.206 — O discover nomeia os sinais do next
 
 O

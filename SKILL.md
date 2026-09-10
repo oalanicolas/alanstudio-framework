@@ -270,6 +270,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    dois é sessão observada.    Recibo sem forma entra no
    `next` como `playtest.unstructured`: a proposta aponta a
    página (`#finding`) e `note --field`. `playtest` só lê.
+   Nomeia `form` (esqueleto dos quatro) e `fields`. Sem `then`.
+   Esqueleto no disco não é achado.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
 Comandos, limites e adoção: [README](README.md).

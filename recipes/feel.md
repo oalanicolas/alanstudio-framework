@@ -7,7 +7,8 @@ Com tela, a primeira superfície é a porta. O campo começa depois do
 avanço. A mostra da porta marca o trilho no mesmo alcance do campo. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured` e aponta a página
-(`#finding`) e `note --field`. `playtest` só lê. `playtest --invite`
+(`#finding`) e `note --field`. `playtest` só lê. Nomeia `form` e
+`fields`. Sem `then`. Esqueleto no disco não é achado. `playtest --invite`
 escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco,
 `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, e com look nomeado `&look=<paleta>`), onde a tabela some; depois do
 fim a página oferece os quatro nomes para copiar ou gravar e

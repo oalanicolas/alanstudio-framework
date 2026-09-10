@@ -1971,6 +1971,10 @@ FINDING_FIELD_KEYS = {
     "hypothesis": {"hypothesis", "hipotese"},
     "measurement": {"measurement", "medicao", "metrica"},
 }
+# Os quatro nomes que `note --field` grava. O esqueleto mora no
+# template; `guide` continua a receita. Sem `then`: este leitor só lê.
+PLAYTEST_FIELDS = ("problema", "evidencia", "hipotese", "medicao")
+PLAYTEST_FORM = FRAMEWORK / "assets/templates/qa.md"
 
 
 def fold_key(value):
@@ -2140,6 +2144,8 @@ def playtest_reading(project):
         "unstructured": expected and not structured,
         "observed": False,
         "outsider": False,
+        "form": str(PLAYTEST_FORM),
+        "fields": list(PLAYTEST_FIELDS),
         "guide": str(FRAMEWORK / "recipes/feel.md"),
         "rule": (
             "Recibo de observação sem problema, evidência, hipótese e medição "
@@ -2162,7 +2168,9 @@ def playtest_reading(project):
             "`finding_href` aponta o painel `#finding` depois do fim; "
             "com seed no disco junta o número e os eixos. "
             "`qa` nomeia `docs/qa.md` se o arquivo existir. "
-            "`playtest` só lê. A página e `note --field` escrevem. "
+            "`form` aponta o esqueleto dos quatro nomes; `fields` os lista. "
+            "Esqueleto no disco não é achado. "
+            "`playtest` só lê. Sem `then`. A página e `note --field` escrevem. "
             "Escrever não é sessão observada. "
             "Não assiste a sessão, não conta jogadores e não "
             "atribui causa. `observed` e `outsider` são sempre falsos."
