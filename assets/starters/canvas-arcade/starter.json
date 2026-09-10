@@ -11,7 +11,7 @@
     "touch": "arrastar move; cima avança; baixo guarda",
     "pad": "analógico move; A avança; X guarda; Start pausa; Select reinicia",
     "look": "?look=dusk troca a paleta",
-    "spawn": "?spawn=dusk troca a chuva",
+    "spawn": "?spawn=dusk ou ?spawn=calm troca a chuva",
     "invite": "?invite=1 esconde a tabela"
   },
   "substitutions": [

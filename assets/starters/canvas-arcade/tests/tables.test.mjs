@@ -9,10 +9,11 @@ import {
 } from "../src/game/tables.js";
 
 test("as mesas passam pelo mesmo carregador", () => {
-  assert.deepEqual(Object.keys(TABLES).sort(), ["copy", "dusk", "palettes", "spawn"]);
+  assert.deepEqual(Object.keys(TABLES).sort(), ["calm", "copy", "dusk", "palettes", "spawn"]);
   assert.equal(loadTable("spawn").intervalTicks, 22);
   assert.equal(loadTable("spawn").schema, SPAWN_SCHEMA);
   assert.equal(loadTable("dusk").intervalTicks, 16);
+  assert.equal(loadTable("calm").intervalTicks, 30);
   assert.equal(loadTable("copy").chain, "Corrente");
   assert.equal(loadTable("copy").schema, COPY_SCHEMA);
   assert.equal(loadTable("palettes").schema, PALETTE_SCHEMA);
@@ -27,9 +28,11 @@ test("as mesas passam pelo mesmo carregador", () => {
 });
 
 test("só mesa com forma de chuva entra na família jogável", () => {
-  assert.deepEqual(listSpawnProfiles(), ["dusk", "spawn"]);
+  assert.deepEqual(listSpawnProfiles(), ["calm", "dusk", "spawn"]);
   assert.equal(loadSpawn("dusk").intervalTicks, 16);
   assert.equal(loadSpawn("dusk").practiceTicks, 90);
+  assert.equal(loadSpawn("calm").intervalTicks, 30);
+  assert.equal(loadSpawn("calm").practiceTicks, 420);
   assert.equal(resolveSpawnName("dusk"), "dusk");
   assert.equal(resolveSpawnName("copy"), "spawn");
   assert.equal(resolveSpawnName("inventada"), "spawn");
@@ -73,6 +76,26 @@ test("a intenção desloca knobs sem inventar mesa nem aprovar chuva", () => {
   assert.deepEqual(Object.keys(spawnRecord(denser)), ["schema", ...SPAWN_FIELDS]);
   assert.equal(spawnRecord(denser).schema, SPAWN_SCHEMA);
   assert.throws(() => applySpawnIntent(spawn, "melhor"), /intenção desconhecida/);
+});
+
+test("calm é chuva autoral, não o calmer aplicado em spawn", () => {
+  const spawn = loadSpawn("spawn");
+  const dusk = loadSpawn("dusk");
+  const calm = loadSpawn("calm");
+  const calmer = applySpawnIntent(spawn, "calmer");
+  assert.ok(calm.intervalTicks > spawn.intervalTicks);
+  assert.ok(calm.intervalTicks > dusk.intervalTicks);
+  assert.ok(calm.practiceTicks > spawn.practiceTicks);
+  assert.ok(calm.practiceTicks > dusk.practiceTicks);
+  assert.ok(calm.hazardChanceEnd < spawn.hazardChanceEnd);
+  assert.ok(calm.fallSpeedMax < spawn.fallSpeedMax);
+  assert.ok(calm.rampTicks > spawn.rampTicks);
+  assert.ok(calm.recoveryTicks > spawn.recoveryTicks);
+  assert.notEqual(calm.intervalTicks, calmer.intervalTicks);
+  assert.notEqual(calm.minIntervalTicks, calmer.minIntervalTicks);
+  assert.notEqual(calm.practiceTicks, calmer.practiceTicks);
+  assert.notEqual(calm.hazardChanceEnd, calmer.hazardChanceEnd);
+  assert.notEqual(calm.rampTicks, calmer.rampTicks);
 });
 
 test("copy sem schema migra; schema futuro e campo ausente falham com o nome", () => {

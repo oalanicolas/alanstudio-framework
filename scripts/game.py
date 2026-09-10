@@ -2777,7 +2777,7 @@ CRAFT_EXAMPLES = {
     "sfx": ("--from", "dash", "--as", "brighter"),
 }
 STARTER_LOOKS = frozenset({"normal", "contrast", "dusk"})
-STARTER_TABLES = frozenset({"copy", "palettes", "spawn", "dusk"})
+STARTER_TABLES = frozenset({"copy", "palettes", "spawn", "dusk", "calm"})
 CRAFT_LABELS = {"look": "Look", "table": "Chuva", "sfx": "Voz"}
 
 

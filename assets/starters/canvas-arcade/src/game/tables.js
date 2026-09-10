@@ -4,9 +4,9 @@
 // escreve o JSON com schema e registra o nome abaixo. Alterar um JSON
 // não republica o verbo. Sem consumidor a mesa existe e o jogo não muda.
 //
-// Perfil de chuva é o consumidor que já existe: `dusk` e qualquer mesa
-// com a forma de spawn entram por `?spawn=<nome>` ou settings.spawnProfile.
-// `npm run table -- <nome> --from spawn|dusk` copia essa forma; `--as`
+// Perfil de chuva é o consumidor que já existe: `dusk`, `calm` e qualquer
+// mesa com a forma de spawn entram por `?spawn=<nome>` ou settings.spawnProfile.
+// `npm run table -- <nome> --from spawn|dusk|calm` copia essa forma; `--as`
 // aplica uma intenção nomeada e deixa a chuva distinta. `copy.fantasy`
 // tem consumidor: o coach do primeiro ciclo. `resume`, `restart` e
 // `hint_bank` reservam o lugar da tecla viva; `hint_dash` ensina o
@@ -29,6 +29,7 @@
 import spawnRaw from "../../data/spawn.json" with { type: "json" };
 import copyRaw from "../../data/copy.json" with { type: "json" };
 import duskRaw from "../../data/dusk.json" with { type: "json" };
+import calmRaw from "../../data/calm.json" with { type: "json" };
 import palettesRaw from "../../data/palettes.json" with { type: "json" };
 
 export const SPAWN_SCHEMA = 2;
@@ -219,10 +220,11 @@ export function migratePalettes(raw) {
 const spawn = migrateSpawn(spawnRaw);
 const copy = migrateCopy(copyRaw);
 const dusk = migrateSpawn(duskRaw, "dusk");
+const calm = migrateSpawn(calmRaw, "calm");
 const palettes = migratePalettes(palettesRaw);
 export const PALETTES = palettes.palettes;
 
-const TABLES = { spawn, copy, dusk, palettes };
+const TABLES = { spawn, copy, dusk, calm, palettes };
 
 export function loadTable(name) {
   if (!(name in TABLES)) {
@@ -372,4 +374,4 @@ export function loadSpawn(name) {
   return migrateSpawn(TABLES[resolved], resolved);
 }
 
-export { spawn, copy, dusk, palettes, TABLES };
+export { spawn, copy, dusk, calm, palettes, TABLES };

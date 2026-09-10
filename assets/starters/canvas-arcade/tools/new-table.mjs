@@ -27,7 +27,7 @@ const FROM = fromIndex >= 0 ? String(args[fromIndex + 1] ?? "").trim() : "";
 const asIndex = args.indexOf("--as");
 const AS = asIndex >= 0 ? String(args[asIndex + 1] ?? "").trim() : "";
 const RESERVED = new Set([
-  "spawn", "copy", "dusk", "tables", "loadtable", "requirefields", "migratetable",
+  "spawn", "copy", "dusk", "calm", "tables", "loadtable", "requirefields", "migratetable",
   "loadspawn", "listspawnprofiles", "resolvespawnname", "lookslikespawn", "default",
   "applyspawnintent", "spawnrecord", "listspawnintents",
   "palettes", "migratepalettes", "palettefields",
@@ -38,7 +38,7 @@ const intents = listSpawnIntents();
 
 if (!/^[a-z][a-z0-9]{0,31}$/.test(NAME) || RESERVED.has(NAME)) {
   console.error("uso: node tools/new-table.mjs <nome> [--from <chuva>] [--as denser|calmer|brief]");
-  console.error("nome: minúsculas, sem hífen; spawn, copy, dusk e palettes já existem.");
+  console.error("nome: minúsculas, sem hífen; spawn, copy, dusk, calm e palettes já existem.");
   process.exit(2);
 }
 

@@ -50,6 +50,8 @@ test("o comando registra a mesa no mesmo carregador", async () => {
     assert.equal(reserved.code, 2);
     const duskReserved = await runTable(project, "dusk");
     assert.equal(duskReserved.code, 2);
+    const calmReserved = await runTable(project, "calm");
+    assert.equal(calmReserved.code, 2);
     const paletteReserved = await runTable(project, "palettes");
     assert.equal(paletteReserved.code, 2);
     const invalid = await runTable(project, "Tempo-1");
@@ -65,6 +67,10 @@ test("o comando registra a mesa no mesmo carregador", async () => {
     assert.equal(fromDusk.code, 0, fromDusk.stderr);
     const { loadSpawn: loadAfterDusk } = await import(`${pathToFileURL(join(project, "src/game/tables.js")).href}?t=3`);
     assert.equal(loadAfterDusk("night").intervalTicks, 16);
+    const fromCalm = await runTable(project, "breeze", ["--from", "calm"]);
+    assert.equal(fromCalm.code, 0, fromCalm.stderr);
+    const { loadSpawn: loadAfterCalm } = await import(`${pathToFileURL(join(project, "src/game/tables.js")).href}?t=5`);
+    assert.equal(loadAfterCalm("breeze").intervalTicks, 30);
     const shifted = await runTable(project, "gale", ["--from", "spawn", "--as", "denser"]);
     assert.equal(shifted.code, 0, shifted.stderr);
     assert.match(shifted.stdout, /intenção denser/);

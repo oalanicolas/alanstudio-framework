@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.80 — A terceira chuva também é autoral
+
+`dusk` era o único desvio da chuva padrão. `calm` é o inverso:
+prática mais longa, menos risco, queda mais lenta. Não é o
+`calmer` aplicado em `spawn`. A partida lê `?spawn=calm` no mesmo
+consumidor. `enough` continua falso. `content_scale` permanece
+`shippable`: três chuvas não são volume e ninguém de fora
+produziu no piso. Só `release` fica no piso.
+
+O que 0.9.80 não afirma: o harness não jogou a chuva no
+dispositivo, não cronometrou um autor de fora e não conta itens.
+
 ## 0.9.79 — O recibo também nomeia quem anota
 
 O terceiro passo do mapa pedia `--author NOME`. Sem nome o comando

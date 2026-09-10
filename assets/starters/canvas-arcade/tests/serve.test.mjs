@@ -52,7 +52,8 @@ for (const name of ["farol", "Farol do Sul"]) {
     try {
       assert.ok(Number.isInteger(server.port) && server.port > 0, "porta não anunciada");
       assert.match(server.banner, /\?look=dusk/, "o serve precisa apontar o look");
-      assert.match(server.banner, /\?spawn=dusk/, "o serve precisa apontar a chuva");
+      assert.match(server.banner, /\?spawn=dusk/, "o serve precisa apontar a chuva densa");
+      assert.match(server.banner, /\?spawn=calm/, "o serve precisa apontar a chuva calma");
       assert.match(server.banner, /\?invite=1/, "o serve precisa apontar o convite");
       const root = await fetch(`http://localhost:${server.port}/`);
       assert.equal(root.status, 200, "a raiz precisa entregar o index.html");
@@ -72,6 +73,9 @@ for (const name of ["farol", "Farol do Sul"]) {
       const dusk = await fetch(`http://localhost:${server.port}/data/dusk.json`);
       assert.equal(dusk.status, 200);
       assert.equal((await dusk.json()).intervalTicks, 16);
+      const calm = await fetch(`http://localhost:${server.port}/data/calm.json`);
+      assert.equal(calm.status, 200);
+      assert.equal((await calm.json()).intervalTicks, 30);
 
       const sound = await fetch(`http://localhost:${server.port}/public/sfx/dash.wav`);
       assert.equal(sound.status, 200);

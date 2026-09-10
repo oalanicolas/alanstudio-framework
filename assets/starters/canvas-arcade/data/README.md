@@ -6,18 +6,21 @@ forma de `spawn`. `copy.fantasy` alimenta o aviso do primeiro ciclo.
 `palettes` alimenta o desenho: trocar um token não exige abrir
 `render.js`. O look `dusk` mora nessa mesa; `?look=` / `settings.look`
 o consomem. `dusk` na chuva é outra mesa (`dusk.json`) e outro
-consumidor (`?spawn=`). Nasça o próximo look com o comando; mesas
+consumidor (`?spawn=`). `calm` é a terceira chuva — prática mais
+longa, menos risco, queda mais lenta; não é o `calmer` aplicado
+em `spawn`. Nasça o próximo look com o comando; mesas
 genéricas ainda pedem consumidor.
 
 ```sh
 npm run table -- <nome> --from spawn
 npm run table -- <nome> --from dusk --as denser
+npm run table -- <nome> --from calm --as brief
 npm run session -- --spawn <nome>
 npm run look -- <nome> --from dusk --as warmer
 npm run sfx -- --from dash --as brighter
 ```
 
-`--from` copia um perfil de chuva que já existe (`spawn` ou `dusk`).
+`--from` copia um perfil de chuva que já existe (`spawn`, `dusk` ou `calm`).
 `--as denser|calmer|brief` desloca os knobs sem pedir o schema de
 cabeça: a chuva nova não é um clone. Sem `--from`, o comando escreve
 `{ "schema": 1 }` e `loadTable("<nome>")` resolve; o jogo não muda até
@@ -28,8 +31,8 @@ jogo já pinta. `--from` é obrigatório; `contrast` não é look.
 `--as warmer|cooler|night` desloca os tokens. Sem `--as` a cópia é
 idêntica até alguém editar. Intenção não é look aprovado.
 
-A partida lê `?spawn=<nome>` ou `settings.spawnProfile`. `dusk` já é o
-segundo perfil: prática mais curta, chuva mais densa. Intenção nomeada
+A partida lê `?spawn=<nome>` ou `settings.spawnProfile`. `dusk` é o
+perfil denso; `calm` é o inverso autoral. Intenção nomeada
 não é chuva melhor nem alguém de fora no piso.
 
 `npm run sfx -- --from dash --as brighter|darker|tighter` reescreve
@@ -52,5 +55,5 @@ de jogar; `loadSpawn` recusa.
 | `practiceTicks` | Primeiros ticks só com orbe |
 | `recoveryTicks` / `recoveryIntervalScale` | Folga depois de guardar |
 
-Duas chuvas mais o texto do HUD não são volume. `enough` no harness
+Três chuvas mais o texto do HUD não são volume. `enough` no harness
 continua falso. Alguém de fora ainda não produziu no piso.

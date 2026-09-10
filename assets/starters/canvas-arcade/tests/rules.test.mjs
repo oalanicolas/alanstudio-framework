@@ -608,3 +608,25 @@ test("o perfil dusk muda a chuva sem republicar o verbo", () => {
   assert.equal(calmKinds.has("shard"), false, "o padrão ainda está em prática aos 120");
   assert.equal(lateKinds.has("shard"), true, "crepúsculo encerra a prática aos 90");
 });
+
+test("o perfil calm alonga a prática sem republicar o verbo", () => {
+  const base = createState(7);
+  const soft = createState(7, { spawnProfile: "calm" });
+  assert.equal(soft.spawnProfile, "calm");
+  assert.equal(soft.spawn.intervalTicks, 30);
+  assert.equal(soft.spawn.practiceTicks, 420);
+  assert.equal(soft.spawnTimer, 30);
+  assert.ok(soft.spawn.intervalTicks > base.spawn.intervalTicks);
+  assert.ok(soft.spawn.practiceTicks > base.spawn.practiceTicks);
+  assert.ok(soft.spawn.hazardChanceEnd < base.spawn.hazardChanceEnd);
+  while (base.tick < 80) advance(base, neutralIntent());
+  while (soft.tick < 80) advance(soft, neutralIntent());
+  assert.ok(soft.nextId < base.nextId, "intervalo maior nasce menos itens");
+  const kinds = new Set();
+  const practice = createState(11, { spawnProfile: "calm" });
+  while (practice.tick < 200) {
+    advance(practice, neutralIntent());
+    for (const entity of practice.entities) kinds.add(entity.kind);
+  }
+  assert.equal(kinds.has("shard"), false, "calm ainda está em prática aos 200");
+});

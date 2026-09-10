@@ -279,6 +279,14 @@ test("a query escolhe o perfil de chuva sem inventar mesa", () => {
   const { game } = harness({ query: "?spawn=dusk" });
   assert.equal(game.observe().spawnProfile, "dusk");
   assert.equal(game.settings.spawnProfile, "dusk");
+  const soft = createGame({
+    seed: 5,
+    query: "?spawn=calm",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(soft.observe().spawnProfile, "calm");
+  assert.equal(soft.observe().spawn.intervalTicks, 30);
   const ignored = createGame({
     seed: 5,
     query: "?spawn=inventada",
@@ -287,6 +295,7 @@ test("a query escolhe o perfil de chuva sem inventar mesa", () => {
   });
   assert.equal(ignored.observe().spawnProfile, "spawn");
   ignored.dispose();
+  soft.dispose();
   game.dispose();
 });
 
