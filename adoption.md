@@ -3,6 +3,22 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.154 — O prompt nomeia a sessão
+
+O `then` já apontava
+`npm run session`. O prompt
+só colava o serve. Sem tela
+o caminho parava. `Sessão:`
+entra no mapa. A chave sobe
+ao recibo. Não executa.
+Simulação não é partida
+observada. Só `release` fica
+no piso.
+
+O que 0.9.154 não afirma:
+simular a partida não é
+alguém jogar nem `observed`.
+
 ## 0.9.153 — O mapa lê o Node sem servir
 
 O caminho feliz cola

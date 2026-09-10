@@ -16,7 +16,7 @@ nomeia a pasta no comando do start e não grava a frase. Sem destino, se o
 diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
 `then` nomeia par, look, chuva e voz se o projeto — ou o starter, antes do
 destino existir — declara essas ferramentas. Se declara `session`,
-`then` a aponta. Se o disco tem last-run com seed, `then` aponta a
+`then` a aponta e o prompt a nomeia (`Sessão:`). Não executa e não observa. Se o disco tem last-run com seed, `then` aponta a
 seed e o convite; nomear o endereço não observa. A partida no serve grava o candidato; a simulação
 também. Depois do fim, a página grava o recibo se você escrever
 e aponta o convite desta partida se a seed ficou no recibo. Copiar
@@ -67,6 +67,8 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    o projeto — sem caminho, a frase nomeia e cria a pasta —, põe a
    frase na abertura e no aviso do primeiro ciclo e devolve o comando que abre o jogo.
    Perdeu o JSON? `play` (ou `open`) aponta o serve de novo, sem executar.
+   Se o manifesto declara `session`, o prompt também nomeia a partida
+   simulada. Não executa e não observa.
    Sem caminho, o único jogo do laboratório basta; dois pedem o caminho.
    Com tela, o avanço abre a porta e, depois do fim, um avanço novo volta; sem tela o headless já joga.
    `?seed=<n>` abre essa partida e ignora o hold.

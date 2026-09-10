@@ -2,11 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.153: start/play/guide leem o Node.
+**HEAD:** ver `git log -1` — vigente 0.9.154: o prompt nomeia a sessão.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 264 OK.
-`cd assets/starters/canvas-arcade && npm test` → 327 OK.
+**Testes no HEAD:** rodar as duas suítes neste checkout.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +31,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.153)
+## O que o HEAD já entrega (0.9.91–0.9.154)
 
 | Ver | Salto |
 | --- | --- |
@@ -97,6 +96,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.151 | `dashWindup` também é graça: o coil atravessa o estilhaço. Sem punch novo. `felt` continua falso. |
 | 0.9.152 | `start` não planta os seis rascunhos. `fresh_starter_cycle` aceita zero do ciclo. `areas.not_located` só bloqueia quem ainda não abre. `init` e `--docs` continuam plantando. |
 | 0.9.153 | `start` / `play` / `guide` devolvem `runtime`: Node no PATH se o play pede npm ou node. Sem 20+ o prompt avisa. Não executa o serve. `usable` é só o binário. |
+| 0.9.154 | O prompt nomeia `Sessão:` quando o manifesto declara `session`. `start` / `play` / `guide` devolvem a chave. Não executa. Simulação não é partida observada. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -227,6 +227,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `need`, `asked`, `usable`, `executed` falso). `asked` se o play
   casa `npm|node`. `usable` é major ≥ 20 ou o play não pede Node.
   Sem usable o prompt avisa. Não executa o serve.
+- Se `then.session` existe, o recibo sobe `session` e o prompt do
+  primeiro ciclo nomeia `Sessão:`. Sem script, a chave é nula e a
+  linha some. Não entra em `CYCLE_KEYS`. Depois de um recibo o
+  prompt de ofício não repete a sessão. Não executa. Simulação
+  não é partida observada.
 - `start` devolve `open` (= `play`), `url` e `steps` (3, passo 1 feito).
   `guide` sem destino: `open` é o start. Os dois: `executed` falso.
   `url` é `http://localhost:<PORT>/` só se o script for `serve`
@@ -375,6 +380,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais plantar os seis rascunhos no `start`.
 **Não** mais exigir `FRESH_DRAFTS` para o atalho do primeiro ciclo.
 **Não** mais um campo que só relê o `doctor` sem mudar o prompt.
+**Não** mais esconder a sessão no `then` enquanto o prompt só cola o serve.
 
 Candidatos, do que ainda dói:
 
@@ -394,6 +400,7 @@ Candidatos, do que ainda dói:
    look quando o candidato os nomeia) e o convite junta os
    mesmos eixos.    Nomear `url` não serve. Não auto-servir.
    `runtime` lê o Node do PATH; sem 20+ o prompt avisa.
+   O prompt nomeia `Sessão:` se o manifesto declara `session`.
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. A porta nomeia sessão
    volátil e gravação recusada. Falta aba fechada real.
@@ -442,6 +449,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `node_runtime` / `runtime_line`
-em `start` / `play` / `guide`. Sem executar o serve. `usable` não
-é partida.
+Arquivos quentes da última sessão: `session_line` no prompt de
+`start` / `play` / `guide`. Chave `session` no recibo. Não executa.
+Simulação não é partida observada.

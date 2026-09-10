@@ -3352,6 +3352,13 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ausente", report["prompt"])
         self.assertNotIn("aprovado", report["runtime"]["scope"])
         self.assertNotIn("verified", report["runtime"]["scope"])
+        self.assertEqual(report["session"], report["then"]["session"])
+        self.assertIn("session", report["session"])
+        self.assertIn("Sessão:", report["prompt"])
+        self.assertIn(report["session"], report["prompt"])
+        self.assertIn("não é partida observada", report["prompt"])
+        self.assertNotIn("aprovado", report["prompt"])
+        self.assertNotIn("verified", report["prompt"])
 
     def test_start_docs_still_plants_the_drafts(self):
         destination = self.root / "com-rascunhos"
@@ -3429,6 +3436,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["executed"])
         self.assertTrue(report["runtime"]["asked"])
         self.assertFalse(report["runtime"]["executed"])
+        self.assertEqual(report["session"], report["then"]["session"])
+        self.assertIn("Sessão:", report["prompt"])
+        self.assertIn(report["session"], report["prompt"])
         self.assertEqual(report["open"], report["play"])
         self.assertEqual(report["url"], "http://localhost:8080/")
         self.assertIn(report["url"], report["prompt"])
@@ -3794,6 +3804,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("start", report["prompt"])
         self.assertIn("atravessar estilhaços", report["prompt"])
         self.assertIn("não cria a pasta", report["prompt"])
+        self.assertEqual(report["session"], report["then"]["session"])
+        self.assertIn("Sessão:", report["prompt"])
+        self.assertIn(report["session"], report["prompt"])
         self.assertNotIn("aprovado", report["prompt"])
         self.assertNotIn("verified", report["prompt"])
         destination = self.root / "guiado"
@@ -3810,6 +3823,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn(after["open"], after["prompt"])
         self.assertIn("serve", after["prompt"])
         self.assertIn("O jogo não foi aberto", after["prompt"])
+        self.assertEqual(after["session"], after["then"]["session"])
+        self.assertIn("Sessão:", after["prompt"])
+        self.assertIn(after["session"], after["prompt"])
         self.assertFalse(after["executed"])
         self.assertFalse((destination / "docs/brief.md").exists())
         self.assertEqual(
@@ -4025,6 +4041,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("sfx", report["then"])
         self.assertNotIn("pair", report["then"])
         self.assertNotIn("session", report["then"])
+        self.assertIsNone(report["session"])
+        self.assertNotIn("Sessão:", report["prompt"])
 
     def test_start_names_craft_tools_in_then_without_playing(self):
         destination = self.root / "segundo ciclo"

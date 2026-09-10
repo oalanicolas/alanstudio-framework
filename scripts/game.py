@@ -3195,9 +3195,11 @@ def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, ur
 
 def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None):
     hole = runtime_line(runtime)
+    simulated = session_line(then)
     if not play:
         return (
             hole
+            + simulated
             + "Sem comando de abrir: identifique o entrypoint e rode `next`. "
             "O harness não executa o jogo."
         )
@@ -3229,6 +3231,7 @@ def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None):
     return (
         hole
         + f"O jogo não foi aberto. Cole e rode: {play}. "
+        + simulated
         + surface
         + (f"{how} " if how else "")
         + (f"{extra} " if extra else "")
@@ -3241,11 +3244,13 @@ def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None
     if exists:
         return cycle_prompt(play, then, cycle, noted, url, runtime)
     hole = runtime_line(runtime)
+    simulated = session_line(then)
     surface = f"Abra {url} no navegador — file:// não carrega. " if url else ""
     return (
         hole
         + f"O ciclo ainda não existe. Cole e rode: {start_command}. "
         f"Depois, no próprio dispositivo: {play}. "
+        + simulated
         + surface
         + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
         "O harness não cria a pasta, não abre o jogo e não joga."
@@ -3623,6 +3628,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "play": play,
         "open": play,
         "url": url,
+        "session": then.get("session"),
         "runtime": runtime,
         "steps": steps,
         "init": init_report,
@@ -3660,7 +3666,9 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "abertura se houver `data/copy.json`. O brief só nasce com `--docs`; "
             "sem ele o `start` não planta rascunhos. A frase na tela não "
             "muda o verbo. `runtime` lê o `node` do PATH se o play pede "
-            "npm ou node; não executa o serve. `usable` é só o binário."
+            "npm ou node; não executa o serve. `usable` é só o binário. "
+            "`session` aponta a partida simulada se o manifesto a declara; "
+            "o prompt a nomeia. Não executa e não observa."
         ),
     }
 
@@ -3696,6 +3704,7 @@ def play_cycle(destination=None, starter=None):
         "play": play,
         "open": play,
         "url": url,
+        "session": then.get("session"),
         "runtime": runtime,
         "then": then,
         "cycle": cycle,
@@ -3712,7 +3721,9 @@ def play_cycle(destination=None, starter=None):
             "de uma partida, a página grava o recibo se você escrever; o "
             "próximo comando do harness continua `note`, não `next`. "
             "Se o disco tem last-run com seed, `then` aponta a seed e o "
-            "convite; nomear o endereço não observa. `runtime` lê o `node` "
+            "convite; nomear o endereço não observa. `session` aponta a "
+            "partida simulada se o manifesto a declara; o prompt a nomeia. "
+            "Não executa e não observa. `runtime` lê o `node` "
             "do PATH se o play pede npm ou node; não executa o serve. "
             "O `prompt` também "
             "sai em stderr; o JSON fica no stdout. `executed` fica falso."
@@ -3897,6 +3908,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         "noted": noted,
         "open": start_command if not exists else play_cmd,
         "url": url,
+        "session": then.get("session"),
         "runtime": runtime,
         "prompt": guide_prompt(exists, start_command, play_cmd, then, cycle, noted, url, runtime),
         "steps": steps,
@@ -3919,7 +3931,9 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "`next` fica para quando o ciclo já correu e você não sabe o "
             "que falta. Sem destino, se o diretório atual é um jogo fora "
             "do framework, o mapa usa esse caminho. Não cria o projeto, "
-            "não abre o jogo e não avalia a proposta. `runtime` lê o `node` "
+            "não abre o jogo e não avalia a proposta. `session` aponta a "
+            "partida simulada se o manifesto a declara; o prompt a nomeia. "
+            "Não executa e não observa. `runtime` lê o `node` "
             "do PATH se o play pede npm ou node; não executa o serve. "
             "Passos 2 e 3 "
             "permanecem `executed` falsos mesmo quando o destino já existe."
@@ -3978,6 +3992,13 @@ def runtime_line(runtime):
     if not runtime.get("node"):
         return f"Node {need}+ ausente: o serve não sobe. "
     return f"Node {runtime['node']} no PATH: o starter pede {need}+. "
+
+
+def session_line(then):
+    command = then.get("session") if then else None
+    if not nonempty(command):
+        return ""
+    return f"Sessão: {command}. Simulação não é partida observada. "
 
 
 def skill_targets(root):
