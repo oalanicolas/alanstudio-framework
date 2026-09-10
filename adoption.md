@@ -3,6 +3,50 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.281 — O art nomeia a chuva
+
+O
+disco
+já
+tinha
+`spawn`,
+`dusk`
+e
+`calm`.
+O
+`content`
+listava
+o
+arquivo.
+O
+`art`
+só
+lia
+paleta.
+Agora
+a
+mesa
+com
+`intervalTicks`
+entra
+no
+leitor.
+Não
+promove
+`consistent`.
+
+O que 0.9.281 não afirma:
+nomear
+a
+chuva
+não
+é
+volume
+nem
+comparação
+em
+movimento.
+
 ## 0.9.280 — O contrato de alcance nomeia o pulso
 
 O

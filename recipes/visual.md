@@ -14,6 +14,10 @@ abrir. Sem tela o headless já joga.
 O harness lê paleta e art-bible vigentes com `art <projeto>`. Paleta no
 código ou em `data/palettes.json` não é direção consistente — `consistent` é sempre falso. Rascunho
 do `init` não conta. Sem declaração, `next` propõe `art.missing`.
+`art` também nomeia as mesas de chuva que o disco já tem
+(`intervalTicks` e `fallSpeed` em `data/`, `tables/` ou `content/`).
+Mesa no disco não é volume nem comparação em movimento. Paleta sem
+chuva continua direção declarada; chuva sem paleta não declara.
 No starter, `look --from` / `--as` nasce um look que o jogo já pinta —
 campo, cortina, a casca da página e os knobs (select, faixa, foco). `pair --from` nasce look e chuva
 no mesmo nome e `?mood=` aplica. `dusk` e `calm` já são o segundo

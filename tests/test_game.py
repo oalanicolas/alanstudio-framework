@@ -3243,6 +3243,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(art["missing"])
         self.assertFalse(art["consistent"])
         self.assertEqual({item["key"] for item in art["palettes"]}, {"normal", "contrast", "dusk", "calm"})
+        self.assertEqual({item["key"] for item in art["rains"]}, {"spawn", "dusk", "calm"})
         self.assertEqual(art["bible"], "docs/art-bible.md")
         self.assertTrue(art["bible_current"])
         self.assertFalse(art["bible_draft"])
@@ -3325,7 +3326,45 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.art_reading(self.project)
         self.assertTrue(report["declared"])
         self.assertEqual([item["key"] for item in report["palettes"]], ["dusk"])
+        self.assertEqual(report["rains"], [])
         self.assertIn("data/palettes.json", report["manifests"])
+        self.assertFalse(report["consistent"])
+
+    def test_art_recipe_names_the_rains_the_starter_already_has(self):
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        dusk = (starter / "data/dusk.json").read_text(encoding="utf-8")
+        self.assertIn("mesas de chuva", recipe.casefold())
+        self.assertIn("intervalTicks", dusk)
+        report = game.art_reading(starter)
+        self.assertEqual({item["key"] for item in report["rains"]}, {"spawn", "dusk", "calm"})
+        self.assertNotIn("palettes", {item["key"] for item in report["rains"]})
+        self.assertNotIn("copy", {item["key"] for item in report["rains"]})
+        self.assertFalse(report["consistent"])
+        self.assertIn("chuva", report["scope"])
+        self.assertTrue(report["guide"].endswith("recipes/visual.md"))
+        self.assertNotIn("aprovado", recipe)
+
+    def test_art_names_a_spawn_shaped_table_and_ignores_copy(self):
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "data").mkdir()
+        (self.project / "data/copy.json").write_text('{"schema": 3, "title": "porta"}\n')
+        (self.project / "data/gale.json").write_text(
+            json.dumps({
+                "schema": 4,
+                "intervalTicks": 18,
+                "minIntervalTicks": 9,
+                "rampTicks": 800,
+                "hazardChanceStart": 0.3,
+                "hazardChanceEnd": 0.6,
+                "fallSpeedMin": 1.2,
+                "fallSpeedMax": 2.2,
+            })
+        )
+        report = game.art_reading(self.project)
+        self.assertEqual([item["key"] for item in report["rains"]], ["gale"])
+        self.assertEqual(report["rains"][0]["source"], "data/gale.json")
+        self.assertFalse(report["declared"])
         self.assertFalse(report["consistent"])
 
     def test_art_does_not_treat_a_nested_object_as_another_palette(self):

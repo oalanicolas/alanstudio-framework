@@ -657,8 +657,9 @@ python3 scripts/game.py content /caminho/do/laboratorio/meu-jogo
 python3 scripts/game.py ship /caminho/do/laboratorio/meu-jogo
 ```
 
-`art` procura `const PALETTES`, tokens.json, `data/palettes.json` e `docs/art-bible.md` vigente.
-`consistent` é sempre `false`. Rascunho do `init` não conta. `content`
+`art` procura `const PALETTES`, tokens.json, `data/palettes.json`, `docs/art-bible.md` vigente
+e mesas de chuva (`intervalTicks` e `fallSpeed` em `data/`, `tables/` ou `content/`).
+`consistent` é sempre `false`. Mesa no disco não é volume. Rascunho do `init` não conta. `content`
 procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 `enough` é sempre `false`. `ship` procura script `build`/`export`/`package`/
 `release`, `docs/release.md` vigente ou CI. Se `dist/VERSION.json`

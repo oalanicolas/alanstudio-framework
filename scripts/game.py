@@ -1624,6 +1624,16 @@ ART_MANIFESTS = (
     "data/palettes.json", "data/tokens.json",
 )
 ART_BIBLE = "docs/art-bible.md"
+RAIN_DIRS = ("data", "tables", "content")
+RAIN_CORE_FIELDS = (
+    "intervalTicks",
+    "minIntervalTicks",
+    "rampTicks",
+    "hazardChanceStart",
+    "hazardChanceEnd",
+    "fallSpeedMin",
+    "fallSpeedMax",
+)
 CONTENT_DIRS = ("data", "content", "levels", "maps", "tables")
 CONTENT_SUFFIXES = {".json", ".ldtk", ".tmx", ".csv", ".ink"}
 CONTENT_LOOSE_SUFFIXES = {".ldtk", ".tmx", ".ink"}
@@ -1707,6 +1717,47 @@ def _palette_names_from_manifest(path):
     return []
 
 
+def _rain_table_name(path):
+    # Paleta e copy moram no mesmo data/. Só a mesa com o núcleo da
+    # chuva conta. Arquivo sem os sete campos não é perfil jogável.
+    try:
+        data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict) or "palettes" in data:
+        return None
+    if any(field not in data for field in RAIN_CORE_FIELDS):
+        return None
+    return path.stem
+
+
+def rain_tables(project):
+    found = []
+    seen = set()
+    for folder in RAIN_DIRS:
+        root = project / folder
+        if not root.is_dir() or root.is_symlink():
+            continue
+        try:
+            entries = sorted(root.iterdir(), key=lambda item: item.name)
+        except OSError:
+            continue
+        for path in entries:
+            if path.is_symlink() or not path.is_file():
+                continue
+            if path.suffix.casefold() != ".json":
+                continue
+            name = _rain_table_name(path)
+            if not name or name in seen:
+                continue
+            seen.add(name)
+            found.append({
+                "key": name,
+                "source": path.relative_to(project).as_posix(),
+            })
+    return found
+
+
 def art_reading(project):
     project = Path(project)
     palettes = []
@@ -1732,6 +1783,7 @@ def art_reading(project):
         for name in names:
             if name not in {item["key"] for item in palettes}:
                 palettes.append({"key": name, "source": relative})
+    rains = rain_tables(project)
     bible = project / ART_BIBLE
     bible_present = bible.is_file() and not bible.is_symlink()
     bible_current = document_is_current(bible)
@@ -1741,6 +1793,7 @@ def art_reading(project):
         "project": str(project),
         "exists": project.is_dir(),
         "palettes": palettes,
+        "rains": rains,
         "manifests": manifests,
         "sources": sources[:8],
         "bible": ART_BIBLE if bible_present else None,
@@ -1752,12 +1805,15 @@ def art_reading(project):
         "guide": str(FRAMEWORK / "recipes/visual.md"),
         "rule": (
             "Paleta no código ou art-bible vigente é direção declarada, não "
-            "direção consistente. Moodboard e rascunho do `init` não contam."
+            "direção consistente. Moodboard e rascunho do `init` não contam. "
+            "Mesa de chuva no disco não é volume nem comparação em movimento."
         ),
         "scope": (
-            "Procura `const PALETTES`, tokens.json, data/palettes.json e docs/art-bible.md sem "
-            "marcador de rascunho. Não compara silhueta, não mede contraste "
-            "e não aprova estilo. `consistent` é sempre falso."
+            "Procura `const PALETTES`, tokens.json, data/palettes.json, "
+            "docs/art-bible.md sem marcador de rascunho e mesas de chuva "
+            "(intervalTicks e fallSpeed) em data/, tables/ e content/. Não "
+            "compara silhueta, não mede contraste e não aprova estilo. "
+            "`consistent` é sempre falso."
         ),
     }
 
