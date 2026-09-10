@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { applyFinding, applyInvite, applyNote, applyShare, composeFinding, inviteHref, inviteMode, INVITE_LABEL } from "../src/core/invite.js";
+import { applyFinding, applyInvite, applyNote, applyShare, composeFinding, inviteHref, inviteMode, INVITE_LABEL, seedHref } from "../src/core/invite.js";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -68,6 +68,32 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /NOTE_ROUTE/);
   assert.doesNotMatch(html, /html\.invite\s+#note/);
   assert.match(html, /game\.lastRun/, "a porta relê a partida para manter o recibo");
+});
+
+test("a seed da partida junta chuva e look sem fingir que observou", () => {
+  assert.equal(seedHref(null), null);
+  assert.equal(seedHref({ score: 3 }), null);
+  assert.equal(seedHref({ seed: 8 }), "/?seed=8");
+  assert.equal(seedHref({ run: { seed: 8 } }), "/?seed=8");
+  assert.equal(seedHref({ seed: 8, spawn: "spawn" }), "/?seed=8");
+  assert.equal(seedHref({ seed: 8, spawn: "dusk" }), "/?seed=8&spawn=dusk");
+  assert.equal(seedHref({ seed: 8, run: { spawn: "calm" } }), "/?seed=8&spawn=calm");
+  assert.equal(seedHref({ seed: 8, spawn: "../x" }), "/?seed=8");
+  assert.equal(seedHref({ seed: 8 }, "http://192.168.1.40:8080"), "http://192.168.1.40:8080/?seed=8");
+  assert.equal(
+    seedHref({ seed: 8, spawn: "dusk" }, "http://192.168.1.40:8080"),
+    "http://192.168.1.40:8080/?seed=8&spawn=dusk",
+  );
+  assert.equal(seedHref({ seed: 8, look: "normal" }), "/?seed=8");
+  assert.equal(seedHref({ seed: 8, look: "contrast" }), "/?seed=8");
+  assert.equal(seedHref({ seed: 8, look: "dusk" }), "/?seed=8&look=dusk");
+  assert.equal(seedHref({ seed: 8, spawn: "dusk", look: "dusk" }), "/?seed=8&spawn=dusk&look=dusk");
+  assert.equal(seedHref({ seed: 8, spawn: "dusk", look: "calm" }), "/?seed=8&spawn=dusk&look=calm");
+  assert.equal(seedHref({ seed: 8, look: "../x" }), "/?seed=8");
+  assert.equal(
+    seedHref({ seed: 8, spawn: "dusk", look: "dusk" }, "http://192.168.1.40:8080"),
+    "http://192.168.1.40:8080/?seed=8&spawn=dusk&look=dusk",
+  );
 });
 
 test("o convite da partida junta a seed sem fingir quem jogou", () => {

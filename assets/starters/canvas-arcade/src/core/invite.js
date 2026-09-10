@@ -2,8 +2,9 @@
 // viu o jogo não deveria lê-la. `?invite=1` some o painel. Com seed no
 // last-run, `?invite=1&seed=<n>&spawn=<mesa>&look=<paleta>` some a
 // tabela e abre essa partida com a chuva e o look que o candidato
-// nomeou. Sem mesa ou sem paleta, o aparelho decide o eixo omitido.
-// Depois do fim, a página do maker aponta esse endereço. Copiar o
+// nomeou. `seedHref` é o mesmo endereço sem o convite — o caminho
+// do maker. Sem mesa ou sem paleta, o aparelho decide o eixo omitido.
+// Depois do fim, a página do maker aponta o convite. Copiar o
 // endereço não grava e não é quem jogou. Juntar o número não é
 // alguém de fora. Esconder a
 // tabela não é alguém de fora nem curva observada. Depois do fim, a
@@ -34,14 +35,18 @@ function runLook(run) {
   return look;
 }
 
-export function inviteHref(run, origin) {
-  const parts = ["invite=1"];
+function runQuery(run) {
+  const parts = [];
   const seed = runSeed(run);
   if (seed !== null) parts.push(`seed=${seed}`);
   const spawn = runSpawn(run);
   if (spawn) parts.push(`spawn=${spawn}`);
   const look = runLook(run);
   if (look) parts.push(`look=${look}`);
+  return parts;
+}
+
+function hrefFromParts(parts, origin) {
   const path = `/?${parts.join("&")}`;
   if (typeof origin === "string" && origin) {
     try {
@@ -51,6 +56,16 @@ export function inviteHref(run, origin) {
     }
   }
   return path;
+}
+
+export function seedHref(run, origin) {
+  const seed = runSeed(run);
+  if (seed === null) return null;
+  return hrefFromParts(runQuery(run), origin);
+}
+
+export function inviteHref(run, origin) {
+  return hrefFromParts(["invite=1", ...runQuery(run)], origin);
 }
 
 export function applyShare({ hrefNode, wrap, run, origin } = {}) {

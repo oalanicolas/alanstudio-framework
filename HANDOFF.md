@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.129: a tinta estável também é alcance.
+**HEAD:** ver `git log -1` — vigente 0.9.130: a seed também leva chuva e look.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 252 OK.
-`cd assets/starters/canvas-arcade && npm test` → 296 OK.
+`cd assets/starters/canvas-arcade && npm test` → 297 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.129)
+## O que o HEAD já entrega (0.9.91–0.9.130)
 
 | Ver | Salto |
 | --- | --- |
@@ -73,6 +73,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.127 | `production.md`, `architecture.md` e `release.md` nomeiam a porta. Nomear a abertura não entrega o artefato nem fecha marco. `elsewhere` continua falso. |
 | 0.9.128 | Com look no last-run, o convite junta `&look=<paleta>`. `then.invite`, `invite_href`, `#note` e o banner do serve levam a paleta. Look `normal` ou `contrast` some. Sem last-run, continua `/?invite=1`. `playtest` relata `candidate_look`. `outsider` continua falso. |
 | 0.9.129 | `colorblind` fixa orbe azul e estilhaço laranja sem trocar o campo do look. Não é look. Alto contraste vence. `access` relata a chave. `verified` continua falso. |
+| 0.9.130 | Com chuva ou look no last-run, `then.seed` junta `&spawn=` e `&look=`. `seed_href`, o banner do serve e o prompt usam o mesmo endereço. Sem mesa ou paleta nomeada, continua `/?seed=<n>`. `then.seed` não é ofício. `observed` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -148,7 +149,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   coil/windup no disco, copiar ou gravar o achado, last-run,
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
   `then.invite`, `invite_href`, copiar o endereço do convite,
-  levar a chuva ou o look na URL do convite, tinta estável no disco
+  levar a chuva ou o look na URL, tinta estável no disco
   ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
@@ -186,18 +187,17 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `next` / `doctor` / `feel` não têm `prompt` e não escrevem frase.
 - `then` sempre tem `play`, `note`, `lost`.
 - Se `last_run_seed` devolver um `int` (não bool), `then.seed`
-  é `/?seed=<n>` e `then.invite` é `invite_href` (`/?invite=1&seed=<n>`
-  ou, com chuva nomeada e ≠ `spawn`, `/?invite=1&seed=<n>&spawn=<mesa>`,
-  e com look nomeado e ≠ `normal`/`contrast`, `&look=<paleta>`).
-  Sem last-run ou sem seed, as duas chaves somem. `then.seed` não
-  leva a mesa nem o look.
-  `then.seed` e `then.invite` **não** entram em `CRAFT_EXAMPLES` /
-  `CRAFT_LABELS`. `next` não ganha basis nova na frente de
-  `cycle.craft`.
-- `invite_href` / `playtest --invite` / banner do serve / `#note`
-  usam o mesmo endereço. Com `candidate_spawn`, juntam a mesa.
-  Com `candidate_look`, juntam a paleta. Página já escrita não é
-  reescrita; o JSON aponta o href vigente.
+  é `seed_href` (`/?seed=<n>` ou, com chuva nomeada e ≠ `spawn`,
+  `/?seed=<n>&spawn=<mesa>`, e com look nomeado e ≠ `normal`/`contrast`,
+  `&look=<paleta>`) e `then.invite` é `invite_href` (`/?invite=1`
+  mais os mesmos eixos). Sem last-run ou sem seed, as duas chaves
+  somem. `then.seed` e `then.invite` **não** entram em
+  `CRAFT_EXAMPLES` / `CRAFT_LABELS`. `next` não ganha basis nova
+  na frente de `cycle.craft`.
+- `seed_href` / banner `Seed:` do serve usam o mesmo endereço da
+  partida. `invite_href` / `playtest --invite` / banner `Convite:` /
+  `#note` usam o convite com os mesmos eixos. Página já escrita
+  não é reescrita; o JSON aponta o href vigente.
 - Sem caminho e sem ideia (ou ideia que não vira slug): `ValueError` “sem destino”.
 
 **Starter**
@@ -288,8 +288,9 @@ Candidatos, do que ainda dói:
    página grava o achado se os quatro tiverem texto e anexa o
    candidato se last-run existir. `?seed=` abre a seed do
    candidato. Depois de um last-run, `then.seed` aponta o
-   número e o convite junta seed, chuva e look quando o
-   candidato os nomeia. O comando `note` continua. Não auto-servir.
+   endereço da partida (número, chuva e look quando o
+   candidato os nomeia) e o convite junta os mesmos eixos.
+   O comando `note` continua. Não auto-servir.
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.

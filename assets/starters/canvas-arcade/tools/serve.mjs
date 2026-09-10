@@ -27,7 +27,7 @@ import {
   playNote,
   playReport,
 } from "../src/core/run-report.js";
-import { inviteHref } from "../src/core/invite.js";
+import { inviteHref, seedHref } from "../src/core/invite.js";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 
@@ -131,6 +131,14 @@ export function inviteQuery(seed, spawn, look) {
   });
 }
 
+export function seedQuery(seed, spawn, look) {
+  return seedHref({
+    seed: Number.isInteger(seed) ? seed : undefined,
+    spawn: typeof spawn === "string" ? spawn : undefined,
+    look: typeof look === "string" ? look : undefined,
+  });
+}
+
 export function listenBanner(port, interfaces = networkInterfaces(), env = process.env, root = ROOT) {
   const origins = advertisedOrigins(port, interfaces, env);
   const local = origins[0];
@@ -138,7 +146,7 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
   const spawn = lastRunSpawn(root);
   const look = lastRunLook(root);
   const invite = inviteQuery(seed, spawn, look);
-  const seedPath = Number.isInteger(seed) ? `/?seed=${seed}` : "/?seed=7";
+  const seedPath = seedQuery(seed, spawn, look) ?? "/?seed=7";
   const lines = [
     `Jogo em ${local}/  (Ctrl+C encerra)`,
     `Look: ${local}/?look=dusk  ${local}/?look=calm`,

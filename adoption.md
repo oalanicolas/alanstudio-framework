@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.130 — A seed também leva chuva e look
+
+O convite já juntava mesa e paleta. Quem colava
+`then.seed` depois de um dusk abria a chuva do
+aparelho. Com last-run, `/?seed=<n>` junta
+`&spawn=` e `&look=` quando o candidato os
+nomeia. O banner do serve usa o mesmo endereço.
+`observed` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.130 não afirma: apontar a partida
+completa não é quem jogou nem curva observada.
+Assistência, teclas e `gameSpeed` não entram.
+
 ## 0.9.129 — A tinta estável também é alcance
 
 O look dusk pinta orbe e estilhaço no mesmo

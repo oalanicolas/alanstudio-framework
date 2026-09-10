@@ -71,7 +71,7 @@ python3 scripts/game.py play /caminho/do/laboratorio/meu-jogo
 python3 scripts/game.py open /caminho/do/laboratorio/meu-jogo
 ```
 
-`play` e `open` são o mesmo verbo. Com tela, o avanço abre a porta. Depois de uma partida, a página grava o recibo se você escrever; o próximo comando do harness continua `note`. Se o disco tem last-run com seed, `then.seed` aponta `/?seed=<n>` e `then.invite` aponta o convite com o número e, se o candidato nomeou a chuva ou o look, a mesa e a paleta. Nomear o endereço não observa. `executed` fica `false`. Não cria pasta e não serve. A frase de agora sai em stderr; encanar o stdout continua o recibo.
+`play` e `open` são o mesmo verbo. Com tela, o avanço abre a porta. Depois de uma partida, a página grava o recibo se você escrever; o próximo comando do harness continua `note`. Se o disco tem last-run com seed, `then.seed` aponta `/?seed=<n>` e, se o candidato nomeou a chuva ou o look, junta a mesa e a paleta. `then.invite` aponta o convite com os mesmos eixos. Nomear o endereço não observa. `executed` fica `false`. Não cria pasta e não serve. A frase de agora sai em stderr; encanar o stdout continua o recibo.
 
 `guide` não cria o projeto. `next` sai do caminho feliz: só entra em `then.lost`, quando o ciclo já correu e você não sabe o que falta. Com destino existente, preenche o comando que abre o jogo e o `kind` do passo de jogar. `executed` fica `false`. Sem `start`, o caminho em dois passos continua valendo:
 
@@ -665,8 +665,8 @@ depois do recibo de quem fez (e depois do segundo ciclo, se houver).
 como `candidate` e, se nomear a seed, como `candidate_seed`.
 Se nomear a chuva, como `candidate_spawn`. Se nomear o look,
 como `candidate_look`. `?seed=<n>` abre essa partida e ignora
-o hold. O convite junta a mesa e a paleta quando o candidato
-as nomeia. O `next` aponta
+o hold; se o candidato nomeou a chuva ou o look, junta a mesa
+e a paleta. O convite usa os mesmos eixos. O `next` aponta
 `note --from-run`. A partida no serve grava esse arquivo;
 `npm run session` grava a simulação.
 Nenhum dos dois é sessão observada. Se o candidato

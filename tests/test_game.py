@@ -3271,6 +3271,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         destination = self.root / "com-seed"
         game.start_project(destination, "canvas-arcade")
         fresh = game.start_project(destination, "canvas-arcade")
+        self.assertIsNone(game.seed_href(destination))
         self.assertNotIn("seed", fresh["then"])
         self.assertNotIn("invite", fresh["then"])
         self.assertNotIn("/?seed=", fresh["prompt"])
@@ -3283,6 +3284,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "run": {"ticks": 1},
         }), encoding="utf-8")
         self.assertNotIn("seed", game.guide_cycle(destination, "canvas-arcade")["then"])
+        self.assertIsNone(game.seed_href(destination))
         (destination / "docs/playtest/last-run.json").write_text(json.dumps({
             "schema": 2,
             "seed": 8,
@@ -3291,6 +3293,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "felt": False,
         }), encoding="utf-8")
         after = game.guide_cycle(destination, "canvas-arcade")
+        self.assertEqual(game.seed_href(destination), "/?seed=8")
         self.assertEqual(after["then"]["seed"], "/?seed=8")
         self.assertEqual(after["then"]["invite"], "/?invite=1&seed=8")
         self.assertIn("?seed=8", after["prompt"])
@@ -3329,8 +3332,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "felt": False,
         }), encoding="utf-8")
         rained = game.guide_cycle(destination, "canvas-arcade")
-        self.assertEqual(rained["then"]["seed"], "/?seed=8")
+        self.assertEqual(game.seed_href(destination), "/?seed=8&spawn=dusk")
+        self.assertEqual(rained["then"]["seed"], "/?seed=8&spawn=dusk")
         self.assertEqual(rained["then"]["invite"], "/?invite=1&seed=8&spawn=dusk")
+        self.assertIn("?seed=8&spawn=dusk", rained["prompt"])
         self.assertIn("?invite=1&seed=8&spawn=dusk", rained["prompt"])
         self.assertFalse(rained["executed"])
         (destination / "docs/playtest/last-run.json").write_text(json.dumps({
@@ -3343,8 +3348,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "felt": False,
         }), encoding="utf-8")
         painted = game.guide_cycle(destination, "canvas-arcade")
-        self.assertEqual(painted["then"]["seed"], "/?seed=8")
+        self.assertEqual(game.seed_href(destination), "/?seed=8&spawn=dusk&look=dusk")
+        self.assertEqual(painted["then"]["seed"], "/?seed=8&spawn=dusk&look=dusk")
         self.assertEqual(painted["then"]["invite"], "/?invite=1&seed=8&spawn=dusk&look=dusk")
+        self.assertIn("?seed=8&spawn=dusk&look=dusk", painted["prompt"])
         self.assertIn("?invite=1&seed=8&spawn=dusk&look=dusk", painted["prompt"])
         self.assertFalse(painted["executed"])
         nxt = game.next_step(destination)

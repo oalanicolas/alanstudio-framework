@@ -2104,17 +2104,30 @@ def invite_path(project):
     return None
 
 
-def invite_href(project):
-    parts = ["invite=1"]
-    seed = last_run_seed(project)
-    if isinstance(seed, int) and not isinstance(seed, bool):
-        parts.append(f"seed={seed}")
+def last_run_axes(project):
+    parts = []
     spawn = last_run_spawn(project)
     if spawn:
         parts.append(f"spawn={spawn}")
     look = last_run_look(project)
     if look:
         parts.append(f"look={look}")
+    return parts
+
+
+def seed_href(project):
+    seed = last_run_seed(project)
+    if not (isinstance(seed, int) and not isinstance(seed, bool)):
+        return None
+    return "/?" + "&".join([f"seed={seed}", *last_run_axes(project)])
+
+
+def invite_href(project):
+    parts = ["invite=1"]
+    seed = last_run_seed(project)
+    if isinstance(seed, int) and not isinstance(seed, bool):
+        parts.append(f"seed={seed}")
+    parts.extend(last_run_axes(project))
     return "/?" + "&".join(parts)
 
 
@@ -3059,9 +3072,9 @@ def cycle_then(project, play, starter=None):
     session = session_command(project, starter)
     if session:
         then["session"] = session
-    seed = last_run_seed(project)
-    if isinstance(seed, int) and not isinstance(seed, bool):
-        then["seed"] = f"/?seed={seed}"
+    href = seed_href(project)
+    if href:
+        then["seed"] = href
         then["invite"] = invite_href(project)
     return then
 
