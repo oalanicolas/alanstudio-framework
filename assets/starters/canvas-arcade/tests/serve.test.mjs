@@ -14,7 +14,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { advertisedOrigins, FINDING_ROUTE, inviteQuery, isArtifactRoot, LAST_RUN_FILE, LAST_RUN_ROUTE, lastRunSeed, NOTE_DIR, NOTE_ROUTE, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
+import { advertisedOrigins, FINDING_ROUTE, inviteQuery, isArtifactRoot, LAST_RUN_FILE, LAST_RUN_ROUTE, lastRunSeed, lastRunSpawn, NOTE_DIR, NOTE_ROUTE, listenBanner, listenHost, shouldOpenBrowser } from "../tools/serve.mjs";
 
 const STARTER = fileURLToPath(new URL("..", import.meta.url));
 
@@ -235,7 +235,9 @@ test("o serve junta convite e seed do last-run sem fingir quem jogou", async () 
       felt: false,
     }));
     assert.equal(lastRunSeed(base), 8);
+    assert.equal(lastRunSpawn(base), null);
     assert.equal(inviteQuery(8), "/?invite=1&seed=8");
+    assert.equal(inviteQuery(8, "dusk"), "/?invite=1&seed=8&spawn=dusk");
     const banner = listenBanner(8080, {
       wlan0: [{ address: "192.168.1.40", family: "IPv4", internal: false }],
     }, {}, base);
@@ -244,6 +246,19 @@ test("o serve junta convite e seed do last-run sem fingir quem jogou", async () 
     assert.match(banner, /Convite na rede: http:\/\/192\.168\.1\.40:8080\/\?invite=1&seed=8/);
     assert.doesNotMatch(banner, /\?seed=7/);
     assert.doesNotMatch(banner, /outsider|aprovado|verified/);
+    await writeFile(join(base, LAST_RUN_FILE), JSON.stringify({
+      schema: 2,
+      seed: 8,
+      spawn: "dusk",
+      run: { ticks: 40, score: 3, seed: 8 },
+    }));
+    assert.equal(lastRunSpawn(base), "dusk");
+    const dusk = listenBanner(8080, {
+      wlan0: [{ address: "192.168.1.40", family: "IPv4", internal: false }],
+    }, {}, base);
+    assert.match(dusk, /Convite: http:\/\/localhost:8080\/\?invite=1&seed=8&spawn=dusk/);
+    assert.match(dusk, /Convite na rede: http:\/\/192\.168\.1\.40:8080\/\?invite=1&seed=8&spawn=dusk/);
+    assert.doesNotMatch(dusk, /outsider|aprovado|verified/);
   } finally {
     await rm(base, { recursive: true, force: true });
   }

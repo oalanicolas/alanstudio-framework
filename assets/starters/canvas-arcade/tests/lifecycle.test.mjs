@@ -189,6 +189,7 @@ test("uma partida completa é registrada no progresso persistido", () => {
   assert.equal(JSON.parse(storage.get("progress")).runs, 1);
   assert.equal(game.lastRun.score, state.score);
   assert.equal(game.lastRun.ticks, state.tick);
+  assert.equal(game.lastRun.spawn, "spawn");
   game.dispose();
 });
 
@@ -431,6 +432,17 @@ test("?seed abre essa partida e ignora o hold", () => {
   assert.equal(screened.observe().phase, "playing");
   assert.equal(screened.observe().seed, 9);
   screened.dispose();
+  const invited = createGame({
+    query: "?invite=1&seed=9&spawn=dusk",
+    eventTarget: recordingTarget(),
+    storage,
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(invited.observe().phase, "title");
+  assert.equal(invited.observe().seed, 9);
+  assert.equal(invited.observe().spawnProfile, "dusk");
+  invited.dispose();
   const kept = createGame({
     seed: 5,
     query: "?seed=9",

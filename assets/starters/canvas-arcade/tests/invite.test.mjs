@@ -11,6 +11,7 @@ test("só invite=1 liga o modo; outro valor não esconde a tabela", () => {
   assert.equal(inviteMode("invite=1"), true);
   assert.equal(inviteMode("?invite=1&look=dusk"), true);
   assert.equal(inviteMode("?invite=1&seed=8"), true);
+  assert.equal(inviteMode("?invite=1&seed=8&spawn=dusk"), true);
   assert.equal(inviteMode("?look=dusk"), false);
   assert.equal(inviteMode("?invite=true"), false);
   assert.equal(inviteMode(""), false);
@@ -72,11 +73,22 @@ test("o convite da partida junta a seed sem fingir quem jogou", () => {
   assert.equal(inviteHref({ score: 3 }), "/?invite=1");
   assert.equal(inviteHref({ seed: 8 }), "/?invite=1&seed=8");
   assert.equal(inviteHref({ run: { seed: 8 } }), "/?invite=1&seed=8");
+  assert.equal(inviteHref({ seed: 8, spawn: "spawn" }), "/?invite=1&seed=8");
+  assert.equal(inviteHref({ seed: 8, spawn: "dusk" }), "/?invite=1&seed=8&spawn=dusk");
+  assert.equal(inviteHref({ seed: 8, run: { spawn: "calm" } }), "/?invite=1&seed=8&spawn=calm");
+  assert.equal(inviteHref({ seed: 8, spawn: "../x" }), "/?invite=1&seed=8");
   assert.equal(inviteHref({ seed: 8 }, "http://192.168.1.40:8080"), "http://192.168.1.40:8080/?invite=1&seed=8");
+  assert.equal(
+    inviteHref({ seed: 8, spawn: "dusk" }, "http://192.168.1.40:8080"),
+    "http://192.168.1.40:8080/?invite=1&seed=8&spawn=dusk",
+  );
   const hrefNode = { textContent: "" };
   const wrap = { hidden: true };
   assert.equal(applyShare({ hrefNode, wrap, run: { seed: 8 } }), "/?invite=1&seed=8");
   assert.equal(hrefNode.textContent, "/?invite=1&seed=8");
+  assert.equal(wrap.hidden, false);
+  assert.equal(applyShare({ hrefNode, wrap, run: { seed: 8, spawn: "dusk" } }), "/?invite=1&seed=8&spawn=dusk");
+  assert.equal(hrefNode.textContent, "/?invite=1&seed=8&spawn=dusk");
   assert.equal(wrap.hidden, false);
   assert.equal(applyShare({ hrefNode, wrap, run: { score: 3 } }), "/?invite=1");
   assert.equal(wrap.hidden, true);

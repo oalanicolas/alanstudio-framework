@@ -27,6 +27,7 @@ import {
   playNote,
   playReport,
 } from "../src/core/run-report.js";
+import { inviteHref } from "../src/core/invite.js";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 
@@ -88,15 +89,36 @@ export function lastRunSeed(root = ROOT) {
   }
 }
 
-export function inviteQuery(seed) {
-  return Number.isInteger(seed) ? `/?invite=1&seed=${seed >>> 0}` : "/?invite=1";
+export function lastRunSpawn(root = ROOT) {
+  try {
+    const data = JSON.parse(readFileSync(join(root, LAST_RUN_FILE), "utf8"));
+    if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+    const nested = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+      ? data.run.spawn
+      : null;
+    const spawn = data.spawn ?? nested;
+    if (typeof spawn !== "string" || !/^[a-z][a-z0-9]{0,31}$/.test(spawn) || spawn === "spawn") {
+      return null;
+    }
+    return spawn;
+  } catch {
+    return null;
+  }
+}
+
+export function inviteQuery(seed, spawn) {
+  return inviteHref({
+    seed: Number.isInteger(seed) ? seed : undefined,
+    spawn: typeof spawn === "string" ? spawn : undefined,
+  });
 }
 
 export function listenBanner(port, interfaces = networkInterfaces(), env = process.env, root = ROOT) {
   const origins = advertisedOrigins(port, interfaces, env);
   const local = origins[0];
   const seed = lastRunSeed(root);
-  const invite = inviteQuery(seed);
+  const spawn = lastRunSpawn(root);
+  const invite = inviteQuery(seed, spawn);
   const seedPath = Number.isInteger(seed) ? `/?seed=${seed}` : "/?seed=7";
   const lines = [
     `Jogo em ${local}/  (Ctrl+C encerra)`,

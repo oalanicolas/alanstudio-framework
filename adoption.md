@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.126 — O convite também leva a chuva
+
+O convite já juntava a seed. Quem jogou com
+`?spawn=dusk` gerava `/?invite=1&seed=<n>` e o
+outsider abria a chuva do aparelho. Com mesa no
+last-run, o endereço junta `&spawn=<mesa>`.
+Spawn padrão ou inválido some. `playtest` relata
+`candidate_spawn`. `outsider` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.126 não afirma: levar a mesa na URL
+não é quem jogou nem curva observada. Look não
+entra no href.
+
 ## 0.9.125 — A página também aponta o convite
 
 O harness já juntava `/?invite=1&seed=<n>`.

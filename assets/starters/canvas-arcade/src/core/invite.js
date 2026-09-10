@@ -1,6 +1,8 @@
 // Superfície de convite. A tabela da página ensina o verbo; quem nunca
 // viu o jogo não deveria lê-la. `?invite=1` some o painel. Com seed no
-// last-run, `?invite=1&seed=<n>` some a tabela e abre essa partida.
+// last-run, `?invite=1&seed=<n>&spawn=<mesa>` some a tabela e abre
+// essa partida com a chuva que o candidato nomeou. Sem mesa, a
+// chuva fica a do aparelho.
 // Depois do fim, a página do maker aponta esse endereço. Copiar o
 // endereço não grava e não é quem jogou. Juntar o número não é
 // alguém de fora. Esconder a
@@ -9,13 +11,27 @@
 // houver partida. Copiar não grava. Esqueleto vazio não é achado.
 // Gravado não é alguém de fora.
 
+function runSeed(run) {
+  if (!run || typeof run !== "object" || Array.isArray(run)) return null;
+  const seed = typeof run.seed === "number" ? run.seed : run.run && typeof run.run === "object" ? run.run.seed : null;
+  if (typeof seed !== "number" || !Number.isSafeInteger(seed) || seed < 0) return null;
+  return seed >>> 0;
+}
+
+function runSpawn(run) {
+  if (!run || typeof run !== "object" || Array.isArray(run)) return null;
+  const spawn = typeof run.spawn === "string" ? run.spawn : run.run && typeof run.run === "object" ? run.run.spawn : null;
+  if (typeof spawn !== "string" || !/^[a-z][a-z0-9]{0,31}$/.test(spawn) || spawn === "spawn") return null;
+  return spawn;
+}
+
 export function inviteHref(run, origin) {
-  const seed = run && typeof run === "object" && !Array.isArray(run)
-    ? (typeof run.seed === "number" ? run.seed : run.run && typeof run.run === "object" ? run.run.seed : null)
-    : null;
-  const path = typeof seed === "number" && Number.isSafeInteger(seed) && seed >= 0
-    ? `/?invite=1&seed=${seed >>> 0}`
-    : "/?invite=1";
+  const parts = ["invite=1"];
+  const seed = runSeed(run);
+  if (seed !== null) parts.push(`seed=${seed}`);
+  const spawn = runSpawn(run);
+  if (spawn) parts.push(`spawn=${spawn}`);
+  const path = `/?${parts.join("&")}`;
   if (typeof origin === "string" && origin) {
     try {
       return new URL(path, origin).href;

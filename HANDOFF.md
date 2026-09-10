@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.125: a página também aponta o convite.
+**HEAD:** ver `git log -1` — vigente 0.9.126: o convite também leva a chuva.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 251 OK.
-`cd assets/starters/canvas-arcade && npm test` → 294 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → conferir a contagem vigente.
+`cd assets/starters/canvas-arcade && npm test` → conferir a contagem vigente.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.125)
+## O que o HEAD já entrega (0.9.91–0.9.126)
 
 | Ver | Salto |
 | --- | --- |
@@ -69,6 +69,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.123 | Com seed no last-run, o convite aponta `/?invite=1&seed=<n>`. `then.invite`, `invite_href` e o banner do serve juntam o número. Sem last-run, continua `/?invite=1`. `then.invite` não é ofício. `outsider` continua falso. |
 | 0.9.124 | A porta chove a mesa vigente: dusk mais denso e rápido, calm mais folgado e lento. Sem RNG, sem `entities`. A mostra do spawn continua a chuva de quatro. `consistent` continua falso. |
 | 0.9.125 | Depois do fim, `#note` aponta `/?invite=1&seed=<n>` e copia o endereço. Sem seed, a linha some. Copiar o endereço não grava. `outsider` continua falso. |
+| 0.9.126 | Com chuva no last-run, o convite junta `/?invite=1&seed=<n>&spawn=<mesa>`. `then.invite`, `invite_href`, `#note` e o banner do serve levam a mesa. Spawn padrão ou inválido some. Sem last-run, continua `/?invite=1`. `playtest` relata `candidate_spawn`. `outsider` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -143,8 +144,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ponta, tela de título, chuva da porta, `gameSpeed` no disco, `hold` no stub,
   coil/windup no disco, copiar ou gravar o achado, last-run,
   anexo do achado, recibo da página, `?seed=`, `then.seed`,
-  `then.invite`, `invite_href`, copiar o endereço do convite ou
-  avanço no overlay.
+  `then.invite`, `invite_href`, copiar o endereço do convite,
+  levar a chuva na URL do convite ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -181,14 +182,16 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `next` / `doctor` / `feel` não têm `prompt` e não escrevem frase.
 - `then` sempre tem `play`, `note`, `lost`.
 - Se `last_run_seed` devolver um `int` (não bool), `then.seed`
-  é `/?seed=<n>` e `then.invite` é `/?invite=1&seed=<n>`. Sem
-  last-run ou sem seed, as duas chaves somem.
+  é `/?seed=<n>` e `then.invite` é `invite_href` (`/?invite=1&seed=<n>`
+  ou, com chuva nomeada e ≠ `spawn`, `/?invite=1&seed=<n>&spawn=<mesa>`).
+  Sem last-run ou sem seed, as duas chaves somem. `then.seed` não
+  leva a mesa.
   `then.seed` e `then.invite` **não** entram em `CRAFT_EXAMPLES` /
   `CRAFT_LABELS`. `next` não ganha basis nova na frente de
   `cycle.craft`.
-- `invite_href` / `playtest --invite` / banner do serve usam o
-  mesmo endereço. Página já escrita não é reescrita; o JSON
-  aponta o href vigente.
+- `invite_href` / `playtest --invite` / banner do serve / `#note`
+  usam o mesmo endereço. Com `candidate_spawn`, juntam a mesa.
+  Página já escrita não é reescrita; o JSON aponta o href vigente.
 - Sem caminho e sem ideia (ou ideia que não vira slug): `ValueError` “sem destino”.
 
 **Starter**
@@ -230,6 +233,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `migrateCopy` preenche default se a mesa antiga não tiver.
 - Invite (`?invite=1`) some `#commands`, não `#remap`. Com seed no
   last-run, `/?invite=1&seed=<n>` some a tabela e abre essa partida.
+  Com chuva nomeada e ≠ `spawn`, junta `&spawn=<mesa>`. Spawn
+  inválido ou o nome padrão some. Look não entra no href.
   `#finding` aparece com `html.invite.finding` no `over` e na `title`
   se houver `lastRun`. Copiar não grava. Gravar só se `playFinding`
   devolver texto. Esqueleto vazio não casa `FINDING_FIELDS`. Achado
@@ -240,8 +245,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Serve POST `/playtest/note` grava `docs/playtest/<utc>/record.json`.
   Nota vazia é 400. Autor vazio vira `página`. Anexa last-run se
   existir. `#note` no `over` e na `title` se houver `lastRun`, fora
-  do convite. Com seed, `#note-invite` aponta o endereço e copia.
-  Sem seed, a linha some. Copiar o endereço não grava. `felt` falso.
+  do convite. Com seed, `#note-invite` aponta o endereço e copia —
+  com a chuva se o last-run a nomeou. Sem seed, a linha some.
+  Copiar o endereço não grava. `felt` falso.
 - Serve POST `/playtest/finding` grava `docs/playtest/<utc>-achado.md`.
   Quatro vazios → 400. Árvore exportada → 403. Se `last-run.json`
   existir, grava `<utc>-achado.run.json` (`kind: finding-attachment`,
@@ -271,8 +277,8 @@ Candidatos, do que ainda dói:
    página grava o achado se os quatro tiverem texto e anexa o
    candidato se last-run existir. `?seed=` abre a seed do
    candidato. Depois de um last-run, `then.seed` aponta o
-   número e o convite junta `/?invite=1&seed=<n>`. O comando
-   `note` continua. Não auto-servir.
+   número e o convite junta seed e chuva quando o candidato
+   as nomeia. O comando `note` continua. Não auto-servir.
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
@@ -305,5 +311,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `inviteHref` / `applyShare` no
-painel `#note`. Copiar o endereço não grava.
+Arquivos quentes da última sessão: `last_run_spawn` / `inviteHref`
+juntam a chuva ao convite. Spawn padrão some. Look não entra.
+Levar a mesa na URL não é outsider.

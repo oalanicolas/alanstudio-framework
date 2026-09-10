@@ -2696,6 +2696,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["finding_attachments"], [])
         self.assertIsNone(report["candidate"])
         self.assertIsNone(report["candidate_seed"])
+        self.assertIsNone(report["candidate_spawn"])
         self.assertIsNone(report["invite"])
         proposal = next(
             item for item in self.proposals(game.next_step(self.project, "feel"))
@@ -2719,6 +2720,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         reading = game.playtest_reading(destination)
         self.assertEqual(reading["candidate"], "docs/playtest/last-run.json")
         self.assertEqual(reading["candidate_seed"], 7)
+        self.assertIsNone(reading["candidate_spawn"])
         self.assertFalse(reading["expected"])
         self.assertFalse(reading["structured"])
         self.assertFalse(reading["observed"])
@@ -2887,8 +2889,48 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         reading = game.playtest_reading(destination)
         self.assertEqual(reading["invite_href"], "/?invite=1&seed=8")
+        self.assertIsNone(reading["candidate_spawn"])
         self.assertFalse(reading["observed"])
         self.assertFalse(reading["outsider"])
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "spawn": "dusk",
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        rained = game.invite_playtest(destination)
+        self.assertFalse(rained["created"])
+        self.assertEqual(rained["href"], "/?invite=1&seed=8&spawn=dusk")
+        self.assertEqual(rained["reading"]["invite_href"], "/?invite=1&seed=8&spawn=dusk")
+        self.assertEqual(rained["reading"]["candidate_spawn"], "dusk")
+        self.assertEqual(rained["reading"]["candidate_seed"], 8)
+        self.assertFalse(rained["outsider"])
+        self.assertNotIn("aprovado", rained["scope"])
+        self.assertNotIn("verified", rained["scope"])
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "spawn": "spawn",
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        defaulted = game.playtest_reading(destination)
+        self.assertEqual(defaulted["invite_href"], "/?invite=1&seed=8")
+        self.assertIsNone(defaulted["candidate_spawn"])
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "spawn": "../x",
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        hollow = game.playtest_reading(destination)
+        self.assertEqual(hollow["invite_href"], "/?invite=1&seed=8")
+        self.assertIsNone(hollow["candidate_spawn"])
 
     def test_a_page_finding_is_form_not_an_outsider(self):
         destination = self.root / "achado-da-pagina"
@@ -3228,6 +3270,19 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("recibo", noted["prompt"])
         self.assertIn("pair", noted["prompt"])
         self.assertNotIn("O jogo não foi aberto", noted["prompt"])
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "spawn": "dusk",
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        rained = game.guide_cycle(destination, "canvas-arcade")
+        self.assertEqual(rained["then"]["seed"], "/?seed=8")
+        self.assertEqual(rained["then"]["invite"], "/?invite=1&seed=8&spawn=dusk")
+        self.assertIn("?invite=1&seed=8&spawn=dusk", rained["prompt"])
+        self.assertFalse(rained["executed"])
         nxt = game.next_step(destination)
         self.assertEqual(nxt["proposal"]["basis"], "cycle.craft")
         self.assertFalse(nxt["executed"])

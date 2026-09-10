@@ -219,6 +219,7 @@ export function summarizeRun(state) {
   const number = (value) => (Number.isFinite(value) ? value : 0);
   return {
     seed: state.seed ?? null,
+    spawn: typeof state.spawnProfile === "string" && state.spawnProfile ? state.spawnProfile : "spawn",
     score: number(state.score),
     chain: number(state.chain),
     ticks: number(state.tick),

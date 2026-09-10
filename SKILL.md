@@ -25,7 +25,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | Em dúvida sobre o próximo passo | `next <projeto> --focus <foco>` deriva uma proposta do estado no disco; `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `feel <projeto>`; se `unobserved`, `note <projeto> --author … --note "o que o verbo sentiu"`. Depois `roles` e `context --focus audio` |
 | Paleta, conteúdo no código ou jogo só na máquina de quem construiu | `art` / `content` / `ship` <projeto>; `consistent`/`enough`/`shipped` ficam `false` |
-| Observou uma partida e só tem uma nota | `playtest <projeto>`; se `unstructured`, escreva problema, evidência, hipótese e medição. Depois do recibo, `playtest --invite` escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`), onde a tabela some; depois do fim a página do maker aponta o convite desta partida se a seed ficou no recibo — copiar o endereço não grava; a página também oferece os quatro nomes para copiar ou gravar — copiar não grava; gravar anexa o candidato se houver last-run; gravado não é alguém de fora |
+| Observou uma partida e só tem uma nota | `playtest <projeto>`; se `unstructured`, escreva problema, evidência, hipótese e medição. Depois do recibo, `playtest --invite` escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`, e com chuva nomeada, `&spawn=<mesa>`), onde a tabela some; depois do fim a página do maker aponta o convite desta partida se a seed ficou no recibo — copiar o endereço não grava; a página também oferece os quatro nomes para copiar ou gravar — copiar não grava; gravar anexa o candidato se houver last-run; gravado não é alguém de fora |
 | “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
 | Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
 | “continue” / “vamos avançar” | `context <projeto> --focus <foco> --event resume` e leia `continuity.sources`, preservando o foco da tarefa |
@@ -228,8 +228,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    compartilhar essa URL não é alguém de fora. A partida no serve grava
    o candidato em `docs/playtest/last-run.json`; a simulação também.
    Se o candidato nomeia a seed, `playtest` relata `candidate_seed`
-   e `?seed=` abre essa partida, ignorando o hold. Nenhum dos dois
-   é sessão observada. Recibo sem forma entra no
+   e `?seed=` abre essa partida, ignorando o hold. Se nomeia a
+   chuva, relata `candidate_spawn` e o convite junta a mesa.
+   Nenhum dos dois é sessão observada. Recibo sem forma entra no
    `next` como `playtest.unstructured`.
 
 Fontes detalhadas sob demanda: [mapa dos estudos](references/sources.md).
