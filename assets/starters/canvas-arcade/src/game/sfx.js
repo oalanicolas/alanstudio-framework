@@ -3,6 +3,11 @@
 // Sem este passo, copiar um .wav preenchia o `roles` e o jogo continuava mudo:
 // a legenda tocava, o buffer não. Arquivo no disco não é voz no contexto —
 // mas sem consumidor o disco também não chega a ser ouvido.
+//
+// Os stems sobem juntos. Em série, collect esperava dash+land+graze
+// terminarem — a abertura da sessão pedia um papel que ainda nem
+// tinha fetch. Extensão seguinte só entra se a atual falhou; wav no
+// lugar não pede ogg. Paralelo não é mix ouvido.
 
 import { SOUNDS } from "./audio.js";
 
@@ -13,25 +18,32 @@ export async function loadRoleFiles(audio, options = {}) {
   const fetchFn = options.fetch;
   if (typeof fetchFn !== "function") return [];
   const base = options.base ?? SFX_FOLDER;
-  const loaded = [];
-  for (const id of Object.keys(SOUNDS)) {
-    for (const stem of [id, `${id}-b`]) {
-      for (const ext of SFX_EXTENSIONS) {
-        const url = `${base}/${stem}${ext}`;
-        try {
-          const response = await fetchFn(url);
-          if (!response || !response.ok) continue;
-          const bytes = await response.arrayBuffer();
-          const buffer = options.decode ? await options.decode(bytes, id) : bytes;
-          if (buffer && audio.register(id, buffer)) {
-            loaded.push({ id, url, variant: stem !== id });
-          }
-          break;
-        } catch {
-          continue;
-        }
+  const jobs = Object.keys(SOUNDS).flatMap((id) => (
+    [id, `${id}-b`].map((stem) => ({ id, stem, variant: stem !== id }))
+  ));
+  const results = await Promise.all(
+    jobs.map((job) => loadStem(job, audio, { ...options, base, fetch: fetchFn })),
+  );
+  return results.filter(Boolean);
+}
+
+async function loadStem(job, audio, options) {
+  const fetchFn = options.fetch;
+  const base = options.base;
+  for (const ext of SFX_EXTENSIONS) {
+    const url = `${base}/${job.stem}${ext}`;
+    try {
+      const response = await fetchFn(url);
+      if (!response || !response.ok) continue;
+      const bytes = await response.arrayBuffer();
+      const buffer = options.decode ? await options.decode(bytes, job.id) : bytes;
+      if (buffer && audio.register(job.id, buffer)) {
+        return { id: job.id, url, variant: job.variant };
       }
+      return null;
+    } catch {
+      continue;
     }
   }
-  return loaded;
+  return null;
 }

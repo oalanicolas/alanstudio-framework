@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.142 — Os stems SFX sobem juntos
+
+O carregador pedia dash, depois
+land, depois graze. Collect na
+abertura esperava a fila serial.
+Os papéis começam o fetch juntos.
+Wav no lugar não pede ogg.
+`heard` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.142 não afirma: stems
+em paralelo não são mix ouvido
+nem peso no aparelho.
+
 ## 0.9.141 — O gesto também retoma o contexto suspenso
 
 O decode no boot cria o AudioContext

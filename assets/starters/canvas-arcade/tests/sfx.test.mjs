@@ -75,3 +75,53 @@ test("404 não inventa buffer e não quebra o restante dos papéis", async () =>
   assert.deepEqual(audio.missing().registered, []);
   assert.deepEqual(audio.missing().declared, Object.keys(SOUNDS));
 });
+
+test("papéis começam juntos: collect não espera dash.wav terminar", async () => {
+  const audio = createAudio({ createContext: () => null });
+  let releaseDash;
+  const dashGate = new Promise((resolve) => {
+    releaseDash = resolve;
+  });
+  let collectStarted = false;
+  const fetchFn = async (url) => {
+    if (url === "public/sfx/dash.wav") {
+      await dashGate;
+      return { ok: true, arrayBuffer: async () => new ArrayBuffer(8) };
+    }
+    if (url === "public/sfx/collect.wav") {
+      collectStarted = true;
+      releaseDash();
+      return { ok: true, arrayBuffer: async () => new ArrayBuffer(8) };
+    }
+    return { ok: false };
+  };
+  const loaded = await loadRoleFiles(audio, {
+    fetch: fetchFn,
+    decode: async () => ({ duration: 0.2 }),
+  });
+  assert.equal(collectStarted, true);
+  const ids = loaded.map((item) => item.id);
+  assert.ok(ids.includes("dash"));
+  assert.ok(ids.includes("collect"));
+});
+
+test("wav no lugar não pede o ogg do mesmo stem", async () => {
+  const audio = createAudio({ createContext: () => null });
+  const seen = [];
+  const fetchFn = async (url) => {
+    seen.push(url);
+    if (url.endsWith(".wav")) {
+      return { ok: true, arrayBuffer: async () => new ArrayBuffer(8) };
+    }
+    return { ok: false };
+  };
+  await loadRoleFiles(audio, {
+    fetch: fetchFn,
+    decode: async () => ({ duration: 0.2 }),
+  });
+  assert.equal(
+    seen.some((url) => url.endsWith(".ogg")),
+    false,
+  );
+  assert.ok(seen.includes("public/sfx/dash.wav"));
+});

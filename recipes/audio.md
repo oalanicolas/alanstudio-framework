@@ -19,8 +19,10 @@ em `public/sfx`. `roles --fill` sugere um candidato do acervo; `--apply`
 copia para `public/sfx/<papel>` com recibo. O starter `canvas-arcade`
 já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
 mixer. O pedido que chega antes do WAV fica na fila e toca quando o
-buffer entra — sem segunda legenda. O gesto (tecla ou toque) retoma
-o contexto suspenso. Retomar e fila no mixer não são mix ouvido.
+buffer entra — sem segunda legenda. Os stems sobem juntos: collect
+não espera dash terminar. Wav no lugar não pede ogg. O gesto
+(tecla ou toque) retoma o contexto suspenso. Retomar, fila e
+paralelo não são mix ouvido.
 Coleta e guarda sobem de tom com a corrente; o erro não herda.
 Coleta, queda, raspo, impacto, avanço e o término levam o x do campo; o panner
 marca o lugar. Número no panner não é mix ouvido. O término (`land`) é

@@ -14,8 +14,9 @@
 // O jogo carrega o arquivo no mixer. Sem esse consumidor, arquivo no
 // disco e jogo mudo eram a mesma coisa. O pedido que chega antes do
 // WAV fica na fila e toca quando o buffer entra — sem segunda
-// legenda. O gesto (tecla ou toque) retoma o contexto suspenso;
-// retomar não é mix ouvido. Fila no disco não é mix ouvido.
+// legenda. Os stems sobem juntos; wav no lugar não pede ogg.
+// O gesto (tecla ou toque) retoma o contexto suspenso;
+// retomar, fila e paralelo não são mix ouvido.
 // `missing()` ainda lista o papel se o decode falhar ou o fetch 404.
 //
 // Toda informação sonora tem legenda equivalente: o jogo precisa ser
