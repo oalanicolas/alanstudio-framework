@@ -33,7 +33,8 @@ npm run sfx -- --from dash --as brighter
 
 `--from` copia um perfil de chuva que já existe (`spawn`, `dusk` ou `calm`).
 `--as denser|calmer|brief` desloca os knobs sem pedir o schema de
-cabeça: a chuva nova não é um clone. Sem `--from`, o comando escreve
+cabeça: a chuva nova não é um clone. `brief` encurta prática e rampa;
+a folga da guarda permanece. Sem `--from`, o comando escreve
 `{ "schema": 1 }` e `loadTable("<nome>")` resolve; o jogo não muda até
 alguém ligar a regra ou a apresentação.
 

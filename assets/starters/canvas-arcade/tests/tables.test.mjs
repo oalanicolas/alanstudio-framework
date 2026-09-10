@@ -164,6 +164,9 @@ test("a intenção desloca knobs sem inventar mesa nem aprovar chuva", () => {
   assert.ok(calmer.practiceTicks > spawn.practiceTicks);
   assert.ok(brief.practiceTicks < spawn.practiceTicks);
   assert.ok(brief.rampTicks < spawn.rampTicks);
+  assert.equal(brief.recoveryTicks, spawn.recoveryTicks, "brief não come a folga da guarda");
+  assert.match(SPAWN_INTENTS.brief, /prática/);
+  assert.doesNotMatch(SPAWN_INTENTS.brief, /folga|recupera/);
   assert.ok(denser.minIntervalTicks <= denser.intervalTicks);
   assert.ok(looksLikeSpawn(denser));
   assert.deepEqual(Object.keys(spawnRecord(denser)), ["schema", ...SPAWN_FIELDS]);

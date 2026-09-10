@@ -3,6 +3,44 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.314 — brief não come a folga da guarda
+
+A
+intenção
+prometia
+prática
+e
+rampa.
+O
+código
+encolhia
+`recoveryTicks`.
+O
+verbo
+mudava
+sem
+o
+ofício
+dizer.
+Agora
+a
+folga
+permanece.
+Não
+promove
+`enough`
+nem
+`felt`.
+
+O que 0.9.314 não afirma:
+knob
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.313 — A receita do look nomeia o perigo
 
 O

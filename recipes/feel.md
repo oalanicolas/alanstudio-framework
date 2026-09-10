@@ -264,6 +264,7 @@ A prática e a guarda falam no mixer quando a janela acaba;
 o aviso nomeia a janela orbe-só enquanto o campo a contorna
 (`hint_practice`) — dash, hit, miss e a superfície vencem;
 depois da prática o aviso pede o orbe; a porta não ensina;
+`--as brief` encurta prática e rampa e deixa a folga da guarda;
 o orbe que cai fala, acende o campo, marca o lugar, desloca
 a câmera para baixo e senta o corpo quando o verbo está parado;
 no avanço, no coil e no sit da guarda a queda marca o chão e

@@ -127,8 +127,10 @@ export function applySpawnIntent(table, intent) {
     next.closeIntervalScale = clamp((next.closeIntervalScale ?? 1) * 1.12, 0.35, 1.25);
     next.closeHazardScale = clamp((next.closeHazardScale ?? 1) * 0.88, 0.8, 1.4);
   } else {
+    // A receita promete prática e rampa. Sem isto a folga da
+    // guarda encolhia e o verbo mudava sem o ofício dizer.
+    // Pose no disco não é peso percebido.
     next.practiceTicks = scaleInt(next.practiceTicks, 0.4, 30);
-    next.recoveryTicks = scaleInt(next.recoveryTicks, 0.7, 20);
     next.rampTicks = scaleInt(next.rampTicks, 0.6, 120);
   }
   if (next.minIntervalTicks > next.intervalTicks) next.minIntervalTicks = next.intervalTicks;

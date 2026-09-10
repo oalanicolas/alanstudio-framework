@@ -13,6 +13,8 @@ falha com o número; campo obrigatório falha com o nome da mesa.
 `npm run table -- <nome>` já nasce com schema. `--from spawn`, `--from dusk` ou `--from calm` copia a forma que o
 starter já consome (`?spawn=` / `settings.spawnProfile`).
 `--as denser|calmer|brief` desloca os knobs e deixa a chuva distinta.
+`brief` encurta prática e rampa; a folga da guarda permanece —
+encolher a abertura não come o verbo.
 Spawn 3 acrescenta `closeIntervalScale`; ausente fica `1` e o fecho
 só pisca. Spawn 4 acrescenta `closeHazardScale`; ausente fica `1` e
 o fecho não muda a mistura. Aperto no disco não é curva observada.
