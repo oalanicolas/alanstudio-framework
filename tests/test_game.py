@@ -179,6 +179,11 @@ class HarnessTest(unittest.TestCase):
         # nem sair da lista como se não existisse.
         self.assertEqual(found["manifesto-torto"]["validators"], [])
         self.assertIn("inteiro", found)
+        broken = game.feel_reading(quebrado)
+        self.assertNotIn("play", broken["then"])
+        self.assertIn("note", broken["then"]["note"])
+        self.assertFalse(broken["felt"])
+        self.assertNotIn("prompt", broken)
 
     def test_doctor_names_the_projects_it_counted(self):
         madura, web, abandonada = self.studio()

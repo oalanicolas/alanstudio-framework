@@ -1366,7 +1366,10 @@ def observation_receipts(project, max_files=80):
 def feel_then(project):
     project = Path(project)
     then = {"note": note_command(project)}
-    scripts, manager = project_commands(project)
+    try:
+        scripts, manager = project_commands(project)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
     play = play_command(project, scripts, manager)
     if play:
         then["play"] = play
