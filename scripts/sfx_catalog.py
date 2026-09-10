@@ -58,7 +58,8 @@ EMPTY_NEXT = (
     "Acervo vazio. O starter já fala em public/sfx; sfx search "
     "nomeia o stem que casa com o termo, sfx info lê a chave, "
     "sfx verify nomeia os stems sem cruzar o que não existe, "
-    "nomeia o stem que o recibo lista e o disco perdeu e "
+    "nomeia o stem que o recibo lista e o disco perdeu, "
+    "sfx info lê a mesma ausência e "
     "sfx summary lista todos. "
     "Arquivo no disco não é mix ouvido. Desloque com "
     "npm run sfx -- --from <papel> --as brighter. sfx serve não ouve "
@@ -87,7 +88,8 @@ IMPORT_NEXT = (
 INFO_EMPTY = (
     "Acervo vazio. O starter já fala em public/sfx. "
     "sfx info lê a ficha de um id do acervo ou a chave do stem do starter. "
-    "Sem id e sem chave que case, não há ficha. "
+    "O recibo que lista um stem e o disco perdeu não é id desconhecido. "
+    "Sem id, sem chave e sem recibo de stem perdido, não há ficha. "
     "Cresça com sfx import ARQUIVO --metadata JSON (ffmpeg)."
 )
 EXPORT_EMPTY = (
@@ -104,6 +106,11 @@ INFO_LOCAL_NEXT = (
     "Ficha do stem do starter. Não é id do acervo. "
     "Arquivo no disco não é mix ouvido. "
     "Ouça no jogo, no papel."
+)
+INFO_MISSING_NEXT = (
+    "O recibo lista este stem e o disco perdeu o arquivo. "
+    "Não é id desconhecido. roles --apply e sfx copy recoloca "
+    "se origem e licença casam. Nomear não é ouvir."
 )
 EXPORT_NEXT = (
     "Exportar preserva bytes e créditos. Não é mix ouvido. "
@@ -150,7 +157,14 @@ def local_stems(folder=None):
                 key = key if isinstance(key, str) and key.strip() else Path(src).stem
                 path = folder / src
                 if not path.is_file() or path.is_symlink():
-                    missing.append({"key": key, "src": src})
+                    missing.append({
+                        "key": key,
+                        "src": src,
+                        "title": item.get("title") if isinstance(item.get("title"), str) else None,
+                        "author": item.get("author") if isinstance(item.get("author"), str) else None,
+                        "license": item.get("license") if isinstance(item.get("license"), str) else None,
+                        "origin": item.get("origin") if isinstance(item.get("origin"), str) else None,
+                    })
                     continue
                 files.append({
                     "src": src,
@@ -202,15 +216,31 @@ def match_local_stems(query, folder=None, limit=40):
     }
 
 
+def _local_identity_match(item, needle):
+    key = audio.fold(item["key"])
+    src = audio.fold(item["src"])
+    stem = audio.fold(Path(item["src"]).stem)
+    return needle in {key, src, stem}
+
+
 def find_local_stem(entry_id, folder=None):
     needle = audio.fold(entry_id) if isinstance(entry_id, str) else ""
     if not needle:
         return None
     for item in local_stems(folder)["files"]:
-        key = audio.fold(item["key"])
-        src = audio.fold(item["src"])
-        stem = audio.fold(Path(item["src"]).stem)
-        if needle in {key, src, stem}:
+        if _local_identity_match(item, needle):
+            return item
+    return None
+
+
+def find_local_missing(entry_id, folder=None):
+    # O verify já nomeava a ausência. O info dizia id
+    # desconhecido e o agente reinventava o papel.
+    needle = audio.fold(entry_id) if isinstance(entry_id, str) else ""
+    if not needle:
+        return None
+    for item in local_stems(folder)["missing"]:
+        if _local_identity_match(item, needle):
             return item
     return None
 
@@ -231,6 +261,26 @@ def local_info_card(item, empty):
         "empty": empty,
         "heard": False,
         "next": INFO_LOCAL_NEXT,
+    }
+
+
+def local_missing_card(item, empty):
+    licenses = [item["license"]] if item.get("license") else []
+    authors = [item["author"]] if item.get("author") else []
+    return {
+        "id": item["key"],
+        "key": item["key"],
+        "title": item.get("title") or item["key"],
+        "src": item["src"],
+        "bytes": None,
+        "licenses": licenses,
+        "authors": authors,
+        "origin": item.get("origin"),
+        "kind": "starter",
+        "missing": True,
+        "empty": empty,
+        "heard": False,
+        "next": INFO_MISSING_NEXT,
     }
 
 
@@ -480,7 +530,7 @@ def import_entry(file, metadata, root=None):
     return result
 
 
-def info_entry(entry_id, root=None):
+def info_entry(entry_id, root=None, folder=None):
     sounds = load_catalog(root)["sounds"]
     empty = len(sounds) == 0
     if sounds:
@@ -503,9 +553,12 @@ def info_entry(entry_id, root=None):
                 "heard": False,
                 "next": INFO_NEXT,
             }
-    local = find_local_stem(entry_id)
+    local = find_local_stem(entry_id, folder)
     if local:
         return local_info_card(local, empty)
+    lost = find_local_missing(entry_id, folder)
+    if lost:
+        return local_missing_card(lost, empty)
     if empty:
         raise ValueError(INFO_EMPTY)
     raise ValueError(f"Seleção vazia ou IDs desconhecidos: {entry_id}")

@@ -85,7 +85,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    loop do zero é CREATE. Se o laboratório tiver `shared/sfx` com sons, use
    `sfx search` antes de baixar. Sem acervo, o starter já fala em
    `public/sfx`; `sfx search` nomeia o stem que casa com o termo,
-   `sfx info` lê a chave, `roles --fill` nomeia o mesmo stem,
+   `sfx info` lê a chave e nomeia o stem que o recibo lista e o
+   disco perdeu, `roles --fill` nomeia o mesmo stem,
    `sfx verify` nomeia os stems sem cruzar
    o que não existe e nomeia o stem que o recibo lista e o
    disco perdeu, `sfx summary` lista todos e `sfx serve`
@@ -95,7 +96,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    página não é mix ouvida no jogo. Arquivo no disco não é mix ouvido. Crescer o acervo é
    `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx seed` lê
    `selection.json` local. `sfx info ID` lê a ficha do acervo ou a
-   chave do stem do starter; `sfx export ID
+   chave do stem do starter — o recibo que lista um stem e o
+   disco perdeu não é id desconhecido; `sfx export ID
    --to PASTA` copia bytes e créditos do acervo ou do stem.
    `sfx copy` leva o stem do starter. Importar e exportar não é
    ouvir. Sem 8-bit,
@@ -228,7 +230,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    do starter com créditos — e recoloca o WAV se o recibo já está
    e origem e licença casam. `sfx copy` continua o caminho explícito. Crescer o acervo é `sfx import` / `sfx seed`
    (ffmpeg); `sfx info` lê a ficha do acervo ou a chave do stem
-   do starter; `sfx verify` nomeia os stems sem cruzar o que não
+   do starter — o recibo que lista um stem e o disco perdeu não
+   é id desconhecido; `sfx verify` nomeia os stems sem cruzar o que não
    existe e nomeia o stem que o recibo lista e o disco perdeu;
    `sfx export` copia bytes e
    créditos. Importar e exportar não é ouvir. `heard` é sempre falso. Papel vazio

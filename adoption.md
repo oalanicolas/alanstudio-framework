@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.282 — O sfx info nomeia o stem perdido
+
+O
+`verify`
+já
+nomeava
+a
+ausência.
+O
+`info`
+dizia
+id
+desconhecido.
+O
+agente
+reinventava
+o
+papel.
+Agora
+a
+ficha
+entra
+com
+`missing`
+e
+aponta
+o
+restore.
+Não
+promove
+`heard`.
+
+O que 0.9.282 não afirma:
+nomear
+o
+WAV
+sumido
+não
+é
+ouvir
+nem
+recolocar.
+
 ## 0.9.281 — O art nomeia a chuva
 
 O

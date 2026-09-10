@@ -558,7 +558,8 @@ python3 scripts/game.py sfx copy ID --to /caminho/do/jogo/public/sfx --root /cam
 
 Sem esse acervo, `sfx search` não inventa id: o catálogo vem vazio e a
 busca nomeia o stem do starter que casa com o termo. `sfx info`
-lê a chave. `sfx copy` e `sfx export` levam bytes e créditos
+lê a chave e nomeia o stem que o recibo lista e o disco perdeu.
+`sfx copy` e `sfx export` levam bytes e créditos
 desse stem. `sfx verify` nomeia os stems sem cruzar o que não
 existe e nomeia o stem que o recibo lista e o disco perdeu.
 `sfx summary` lista todos. `sfx serve` recusa — não
@@ -583,7 +584,8 @@ e os stems do starter em `public/sfx` — arquivo no disco não é mix ouvido.
 `sfx verify` cruza bytes e fichas do acervo; sem acervo nomeia os
 stems do starter e não cruza. Nomeia o stem que o recibo lista e
 o disco perdeu. Não ouve. `sfx info` lê a ficha
-do acervo ou a chave do stem do starter. Arquivo no disco não é
+do acervo ou a chave do stem do starter. O recibo que lista um
+stem e o disco perdeu não é id desconhecido. Arquivo no disco não é
 mix ouvido. `sfx export` de um id do acervo copia
 bytes, `manifest.json` e `CREDITS.txt` para uma pasta fora do acervo.
 De uma chave do starter, copia o WAV, o `.credits.txt` e anexa

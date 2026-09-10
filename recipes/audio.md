@@ -47,7 +47,8 @@ extensão; wav ilegível não esconde o ogg nem o pedido.
 Nomear o 404 não é mix ouvido.
 `heard` é sempre falso. Sem `shared/sfx`, `--fill` nomeia o stem
 do starter que casa, `--apply` o copia ou recoloca o WAV se o recibo já está, `sfx search` nomeia o mesmo stem,
-`sfx info` lê a chave, `sfx verify` nomeia os stems sem cruzar o
+`sfx info` lê a chave e nomeia o stem que o recibo lista e o
+disco perdeu, `sfx verify` nomeia os stems sem cruzar o
 que não existe, `sfx summary` lista todos os stems já no
 `public/sfx` e `sfx serve`
 recusa. Com sons no acervo, `sfx serve` abre a página de escuta —
@@ -55,7 +56,8 @@ se `shared/sfx/ui` faltar, o harness gera a lista. Tocar nessa
 página não é mix ouvida no jogo. Isso não
 autoriza improvisar licença. Arquivo no disco não é mix ouvido. Crescer o acervo é `sfx import ARQUIVO
 --metadata JSON` (ffmpeg) ou `sfx seed` com `selection.json` local.
-`sfx info ID` lê a ficha do acervo ou a chave do stem do starter;
+`sfx info ID` lê a ficha do acervo ou a chave do stem do starter —
+o recibo que lista um stem e o disco perdeu não é id desconhecido;
 `sfx export ID --to PASTA` copia bytes e
 créditos do acervo ou do stem do starter que `sfx info`
 já nomeia. `sfx copy` leva o mesmo stem para a pasta do

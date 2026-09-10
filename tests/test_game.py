@@ -2784,10 +2784,55 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         report = game.sfx_catalog.verify_catalog(self.root, folder=folder)
         self.assertEqual(report["local"]["files"], [])
-        self.assertEqual(report["local"]["missing"], [{"key": "ghost", "src": "ghost.wav"}])
+        self.assertEqual(len(report["local"]["missing"]), 1)
+        lost = report["local"]["missing"][0]
+        self.assertEqual(lost["key"], "ghost")
+        self.assertEqual(lost["src"], "ghost.wav")
+        self.assertEqual(lost["author"], "Ana")
+        self.assertEqual(lost["license"], "CC0-1.0")
+        self.assertEqual(lost["origin"], "teste")
         self.assertFalse(report["heard"])
         self.assertNotIn("aprovado", json.dumps(report))
         self.assertNotIn("verified", json.dumps(report))
+
+    def test_sfx_info_names_a_receipt_whose_file_is_gone(self):
+        folder = self.root / "sfx-ficha-sumida"
+        folder.mkdir()
+        (folder / "sources.json").write_text(
+            json.dumps({
+                "files": [{
+                    "src": "ghost.wav",
+                    "key": "ghost",
+                    "title": "Fantasma",
+                    "author": "Ana",
+                    "license": "CC0-1.0",
+                    "origin": "teste",
+                }],
+            }),
+            encoding="utf-8",
+        )
+        report = game.sfx_catalog.info_entry("ghost", self.root, folder=folder)
+        self.assertEqual(report["id"], "ghost")
+        self.assertEqual(report["key"], "ghost")
+        self.assertEqual(report["src"], "ghost.wav")
+        self.assertEqual(report["kind"], "starter")
+        self.assertTrue(report["missing"])
+        self.assertIsNone(report["bytes"])
+        self.assertEqual(report["licenses"], ["CC0-1.0"])
+        self.assertEqual(report["authors"], ["Ana"])
+        self.assertEqual(report["origin"], "teste")
+        self.assertFalse(report["heard"])
+        self.assertIn("recibo lista", report["next"])
+        self.assertIn("disco perdeu", report["next"])
+        self.assertIn("Não é id desconhecido", report["next"])
+        dumped = json.dumps(report)
+        self.assertNotIn("aprovado", dumped)
+        self.assertNotIn("verified", dumped)
+        by_file = game.sfx_catalog.info_entry("ghost.wav", self.root, folder=folder)
+        self.assertTrue(by_file["missing"])
+        self.assertEqual(by_file["id"], "ghost")
+        with self.assertRaisesRegex(ValueError, "não há ficha|desconhecidos"):
+            game.sfx_catalog.info_entry("nunca-existiu", self.root, folder=folder)
 
     def test_sfx_info_reads_the_card_without_claiming_to_hear_it(self):
         item, _ = self._plant_catalog_sound()
