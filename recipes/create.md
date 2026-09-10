@@ -63,7 +63,8 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    (ou `start <destino> --starter <starter> --idea "<fantasia>"`) monta
    o projeto — sem caminho, a frase nomeia e cria a pasta —, põe a
    frase na abertura e no aviso do primeiro ciclo e devolve o comando que abre o jogo.
-   Perdeu o JSON? `play <projeto>` (ou `open`) aponta o serve de novo, sem executar.
+   Perdeu o JSON? `play` (ou `open`) aponta o serve de novo, sem executar.
+   Sem caminho, o único jogo do laboratório basta; dois pedem o caminho.
    Com tela, o avanço abre a porta e, depois do fim, um avanço novo volta; sem tela o headless já joga.
    `?seed=<n>` abre essa partida e ignora o hold.
    A frase não muda o verbo.

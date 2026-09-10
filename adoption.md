@@ -3,6 +3,20 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.137 — Play sem caminho usa o único jogo do laboratório
+
+Quem perdia o JSON do `start` tinha de
+lembrar o caminho. Sem caminho, o único
+filho jogável do laboratório basta. Dois
+listam os nomes e pedem o caminho. O
+starter desta árvore não é o jogo. A raiz
+do disco não entra na busca. `executed`
+continua falso. Só `release` fica no piso.
+
+O que 0.9.137 não afirma: achar o único
+jogo não é servir, jogar nem outra
+máquina.
+
 ## 0.9.136 — A partida também deixa os números na página do achado
 
 Quem jogou no convite escrevia os quatro nomes

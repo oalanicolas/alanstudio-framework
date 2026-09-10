@@ -64,14 +64,15 @@ python3 scripts/game.py --idea "atravessar estilhaços para guardar a corrente"
 python3 scripts/game.py guide /caminho/do/laboratorio/meu-jogo --idea "atravessar estilhaços para guardar a corrente"
 ```
 
-Perdeu o JSON do `start`? `play` (também `open`) aponta de novo o comando que abre o jogo, sem executar:
+Perdeu o JSON do `start`? `play` (também `open`) aponta de novo o comando que abre o jogo, sem executar. Sem caminho, o único jogo do laboratório basta; dois pedem o caminho.
 
 ```sh
+python3 scripts/game.py play
 python3 scripts/game.py play /caminho/do/laboratorio/meu-jogo
 python3 scripts/game.py open /caminho/do/laboratorio/meu-jogo
 ```
 
-`play` e `open` são o mesmo verbo. Com tela, o avanço abre a porta. Depois de uma partida, a página grava o recibo se você escrever; o próximo comando do harness continua `note`. Se o disco tem last-run com seed, `then.seed` aponta `/?seed=<n>` e, se o candidato nomeou a chuva ou o look, junta a mesa e a paleta. `then.invite` aponta o convite com os mesmos eixos. Nomear o endereço não observa. `executed` fica `false`. Não cria pasta e não serve. A frase de agora sai em stderr; encanar o stdout continua o recibo.
+`play` e `open` são o mesmo verbo. Com tela, o avanço abre a porta. Depois de uma partida, a página grava o recibo se você escrever; o próximo comando do harness continua `note`. Se o disco tem last-run com seed, `then.seed` aponta `/?seed=<n>` e, se o candidato nomeou a chuva ou o look, junta a mesa e a paleta. `then.invite` aponta o convite com os mesmos eixos. Nomear o endereço não observa. `executed` fica `false`. Não cria pasta e não serve. Achar o único jogo do laboratório também não executa. A frase de agora sai em stderr; encanar o stdout continua o recibo.
 
 `guide` não cria o projeto. `next` sai do caminho feliz: só entra em `then.lost`, quando o ciclo já correu e você não sabe o que falta. Com destino existente, preenche o comando que abre o jogo e o `kind` do passo de jogar. `executed` fica `false`. Sem `start`, o caminho em dois passos continua valendo:
 

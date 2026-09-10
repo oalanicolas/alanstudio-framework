@@ -3595,7 +3595,8 @@ def play_cycle(destination=None, starter=None):
         "executed": False,
         "scope": (
             "Aponta o comando que abre o jogo. Não executa, não cria e não "
-            "joga. `open` é o play. Com tela, o avanço abre a porta. Depois "
+            "joga. Sem caminho, o único jogo do laboratório basta; dois "
+            "pedem o caminho. `open` é o play. Com tela, o avanço abre a porta. Depois "
             "de uma partida, a página grava o recibo se você escrever; o "
             "próximo comando do harness continua `note`, não `next`. "
             "Se o disco tem last-run com seed, `then` aponta a seed e o "
@@ -3617,6 +3618,58 @@ def here_project(explicit=None, root=None):
         return None
     if cwd.is_dir() and not cwd.is_symlink() and (cwd / "package.json").is_file():
         return cwd
+    return None
+
+
+def is_fs_root(path):
+    path = Path(path).resolve()
+    return path.parent == path
+
+
+def playable_neighbors(root, framework=None):
+    # Filhos diretos do laboratório. Não entra no framework — o starter
+    # não é o seu jogo — e não varre a raiz do disco.
+    framework = Path(framework or FRAMEWORK).resolve()
+    root = Path(root).resolve()
+    if is_fs_root(root):
+        return []
+    if root == framework or root.is_relative_to(framework):
+        home = framework.parent
+        if is_fs_root(home):
+            return []
+    else:
+        home = root
+    found = []
+    try:
+        children = sorted(home.iterdir(), key=lambda item: item.name)
+    except OSError:
+        return []
+    for path in children:
+        if not path.is_dir() or path.is_symlink() or path.name.startswith("."):
+            continue
+        target = path.resolve()
+        if target == framework or target.is_relative_to(framework):
+            continue
+        if path.name in SKIP:
+            continue
+        if not (path / "package.json").is_file():
+            continue
+        if identify(path) != "package.json":
+            continue
+        found.append(target)
+    return found
+
+
+def resolve_play_destination(explicit=None, root=None):
+    dest = here_project(explicit, root)
+    if explicit is not None or dest is not None:
+        return dest
+    found = playable_neighbors(root or ROOT)
+    if len(found) == 1:
+        return found[0]
+    if len(found) > 1:
+        names = ", ".join(path.name for path in found)
+        raise ValueError(f"sem destino: {names}. passe o caminho ou rode start --idea")
     return None
 
 
@@ -4670,7 +4723,7 @@ def main():
         "play",
         aliases=["open"],
         parents=[common],
-        help="aponta o comando que abre o jogo, sem executar",
+        help="aponta o comando que abre o jogo, sem executar; sem caminho, o único jogo do laboratório basta",
     )
     played.add_argument("project", nargs="?", default=None)
     upcoming = commands.add_parser("next", parents=[common], help="proposta ordenada de próxima ação, a partir do estado no disco")
@@ -4840,7 +4893,7 @@ def main():
             report["here"] = args.project is None and dest is not None
             emit(report)
         elif args.action in ("play", "open"):
-            dest = here_project(args.project, root)
+            dest = resolve_play_destination(args.project, root)
             emit(play_cycle(dest))
         elif args.action == "next":
             emit(next_step(resolve(args.project, root), args.focus, studies_root=default_studies_root(root)))
