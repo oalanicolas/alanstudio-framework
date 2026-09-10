@@ -283,6 +283,53 @@ test("a query escolhe o look sem inventar mesa", () => {
   game.dispose();
 });
 
+test("?mood aplica o par look e chuva sem inventar mesa", () => {
+  const { game } = harness({ query: "?mood=calm" });
+  assert.equal(game.settings.look, "calm");
+  assert.equal(game.settings.spawnProfile, "calm");
+  assert.equal(game.observe().spawnProfile, "calm");
+  const dusk = createGame({
+    seed: 5,
+    query: "?mood=dusk",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(dusk.settings.look, "dusk");
+  assert.equal(dusk.settings.spawnProfile, "dusk");
+  const ignored = createGame({
+    seed: 5,
+    query: "?mood=inventada",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(ignored.settings.look, "normal");
+  assert.equal(ignored.settings.spawnProfile, "spawn");
+  ignored.dispose();
+  dusk.dispose();
+  game.dispose();
+});
+
+test("look e spawn explícitos vencem o mood no próprio eixo", () => {
+  const lookWins = createGame({
+    seed: 5,
+    query: "?mood=calm&look=dusk",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(lookWins.settings.look, "dusk");
+  assert.equal(lookWins.settings.spawnProfile, "calm");
+  const spawnWins = createGame({
+    seed: 5,
+    query: "?mood=calm&spawn=dusk",
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+  });
+  assert.equal(spawnWins.settings.look, "calm");
+  assert.equal(spawnWins.settings.spawnProfile, "dusk");
+  lookWins.dispose();
+  spawnWins.dispose();
+});
+
 test("a query escolhe o perfil de chuva sem inventar mesa", () => {
   const { game } = harness({ query: "?spawn=dusk" });
   assert.equal(game.observe().spawnProfile, "dusk");

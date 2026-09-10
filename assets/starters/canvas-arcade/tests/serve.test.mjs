@@ -55,6 +55,8 @@ for (const name of ["farol", "Farol do Sul"]) {
       assert.match(server.banner, /\?look=calm/, "o serve precisa apontar o look calmo");
       assert.match(server.banner, /\?spawn=dusk/, "o serve precisa apontar a chuva densa");
       assert.match(server.banner, /\?spawn=calm/, "o serve precisa apontar a chuva calma");
+      assert.match(server.banner, /\?mood=calm/, "o serve precisa apontar o par calmo");
+      assert.match(server.banner, /\?mood=dusk/, "o serve precisa apontar o par denso");
       assert.match(server.banner, /\?invite=1/, "o serve precisa apontar o convite");
       const root = await fetch(`http://localhost:${server.port}/`);
       assert.equal(root.status, 200, "a raiz precisa entregar o index.html");
@@ -117,6 +119,7 @@ test("o serve anuncia a rede sem fingir que alguém de fora jogou", () => {
   assert.equal(listenHost({ HOST: "localhost" }), "127.0.0.1");
   assert.equal(listenHost({}), undefined);
   const banner = listenBanner(8080, interfaces, {});
+  assert.match(banner, /Par: http:\/\/localhost:8080\/\?mood=calm  http:\/\/localhost:8080\/\?mood=dusk/);
   assert.match(banner, /Convite: http:\/\/localhost:8080\/\?invite=1/);
   assert.match(banner, /Rede: http:\/\/192\.168\.1\.40:8080\//);
   assert.match(banner, /Convite na rede: http:\/\/192\.168\.1\.40:8080\/\?invite=1/);

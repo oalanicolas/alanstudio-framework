@@ -17,9 +17,10 @@ Requer Node 20 ou mais recente. Não há dependências a instalar.
 npm run serve      # serve em http://localhost:8080; no terminal, tenta abrir o navegador
 ```
 
-`?look=dusk` ou `?look=calm` troca a paleta (campo e a página) e `?spawn=dusk` ou
-`?spawn=calm` troca a chuva, sem recomeçar
-o projeto. O `start` do harness nomeia as queries quando o manifesto
+`?look=dusk` ou `?look=calm` troca a paleta (campo e a página), `?spawn=dusk` ou
+`?spawn=calm` troca a chuva e `?mood=calm` ou `?mood=dusk` troca o par,
+sem recomeçar o projeto. Look ou chuva explícitos vencem o mood no
+próprio eixo. O `start` do harness nomeia as queries quando o manifesto
 as declara. Depois de um `note`, `start` e `next` apontam
 `look --from`, `table --from` e `sfx --from` — o segundo ciclo. Ferramenta
 no disco não é alguém de fora nem mix ouvido. No campo, o aviso do

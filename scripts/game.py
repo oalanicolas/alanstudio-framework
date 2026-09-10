@@ -3032,7 +3032,7 @@ def starter_manifest(starter):
     return manifest
 
 
-CYCLE_KEYS = ("verb", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn", "invite")
+CYCLE_KEYS = ("verb", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn", "mood", "invite")
 
 
 def starter_cycle(starter):
@@ -3073,6 +3073,8 @@ def cycle_line(cycle):
         parts.append(f"Look: {cycle['look']}.")
     if cycle.get("spawn"):
         parts.append(f"Chuva: {cycle['spawn']}.")
+    if cycle.get("mood"):
+        parts.append(f"Par: {cycle['mood']}.")
     if cycle.get("invite"):
         parts.append(f"Convite: {cycle['invite']}.")
     return " ".join(parts)

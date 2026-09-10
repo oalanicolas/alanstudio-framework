@@ -17,7 +17,7 @@ import { createHaptics } from "./game/haptics.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { advance as advanceRules, createState, neutralIntent, FIELD, TICK_HZ } from "./game/rules.js";
-import { copy, resolveLookName, resolveSpawnName } from "./game/tables.js";
+import { copy, resolveLookName, resolveMoodName, resolveSpawnName } from "./game/tables.js";
 import { coachHint } from "./game/coach.js";
 
 function readQueryName(options, key, resolve) {
@@ -39,6 +39,10 @@ function readLookQuery(options) {
   return readQueryName(options, "look", resolveLookName);
 }
 
+function readMoodQuery(options) {
+  return readQueryName(options, "mood", resolveMoodName);
+}
+
 export function createGame(options = {}) {
   const canvas = options.canvas ?? null;
   const storage = options.storage ?? browserStorage("canvas-arcade");
@@ -46,8 +50,9 @@ export function createGame(options = {}) {
   const eventTarget = options.eventTarget ?? (typeof window !== "undefined" ? window : null);
 
   let settings = loadSettings(storage, environment).settings;
-  const querySpawn = readSpawnQuery(options);
-  const queryLook = readLookQuery(options);
+  const queryMood = readMoodQuery(options);
+  const querySpawn = readSpawnQuery(options) ?? queryMood;
+  const queryLook = readLookQuery(options) ?? queryMood;
   if (querySpawn || queryLook) {
     settings = normalizeSettings(
       {

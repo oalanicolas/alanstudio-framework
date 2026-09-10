@@ -19,8 +19,9 @@
 // não um look. `npm run look -- <nome> --from normal|dusk|calm` copia um
 // look que o jogo já consome; `--as` desloca os tokens sem pedir a
 // receita de cabeça. `dusk` e `calm` na chuva e no look compartilham
-// o nome e não a mesa. Mesas genéricas continuam sem consumidor
-// automático.
+// o nome e não a mesa. `?mood=<nome>` aplica o par quando o nome é
+// look e chuva; look ou chuva explícitos vencem no próprio eixo.
+// Mesas genéricas continuam sem consumidor automático.
 //
 // Toda mesa tem schema: formato antigo (sem campo) vira o vigente;
 // schema futuro falha com o número, não com undefined no meio do tick.
@@ -246,6 +247,16 @@ export function listLooks() {
   return Object.keys(PALETTES)
     .filter((name) => name !== "contrast")
     .sort();
+}
+
+export function listMoods() {
+  const looks = new Set(listLooks());
+  return listSpawnProfiles().filter((name) => looks.has(name));
+}
+
+export function resolveMoodName(name) {
+  const moods = listMoods();
+  return moods.includes(name) ? name : moods[0] ?? "";
 }
 
 export function resolveLookName(name) {

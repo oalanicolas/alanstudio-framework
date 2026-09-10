@@ -6,11 +6,12 @@ forma de `spawn`. `copy.fantasy` alimenta o aviso do primeiro ciclo.
 `palettes` alimenta o desenho: trocar um token não exige abrir
 `render.js`. Os looks `dusk` e `calm` moram nessa mesa; `?look=` /
 `settings.look` os consomem. `dusk` e `calm` na chuva são outras
-mesas e outro consumidor (`?spawn=`). A chuva `calm` é prática mais
-longa, menos risco, queda mais lenta; não é o `calmer` aplicado
-em `spawn`. O look `calm` é sálvia quieta; não é o `cooler` aplicado
-em `normal`. Nasça o próximo look com o comando; mesas
-genéricas ainda pedem consumidor.
+mesas e outro consumidor (`?spawn=`). `?mood=` aplica o par quando o
+nome é look e chuva; look ou chuva explícitos vencem no próprio
+eixo. A chuva `calm` é prática mais longa, menos risco, queda mais
+lenta; não é o `calmer` aplicado em `spawn`. O look `calm` é sálvia
+quieta; não é o `cooler` aplicado em `normal`. Nasça o próximo look
+com o comando; mesas genéricas ainda pedem consumidor.
 
 ```sh
 npm run table -- <nome> --from spawn
@@ -34,7 +35,8 @@ jogo já pinta. `--from` é obrigatório; `contrast` não é look.
 idêntica até alguém editar. Intenção não é look aprovado.
 
 A partida lê `?spawn=<nome>` ou `settings.spawnProfile`. `dusk` é o
-perfil denso; `calm` é o inverso autoral. Intenção nomeada
+perfil denso; `calm` é o inverso autoral. `?mood=<nome>` aplica look
+e chuva do mesmo nome quando os dois existem. Intenção nomeada
 não é chuva melhor nem alguém de fora no piso.
 
 `npm run sfx -- --from dash --as brighter|darker|tighter` reescreve

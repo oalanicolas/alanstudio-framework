@@ -59,6 +59,7 @@ export function listenBanner(port, interfaces = networkInterfaces(), env = proce
     `Jogo em ${local}/  (Ctrl+C encerra)`,
     `Look: ${local}/?look=dusk  ${local}/?look=calm`,
     `Chuva: ${local}/?spawn=dusk  ${local}/?spawn=calm`,
+    `Par: ${local}/?mood=calm  ${local}/?mood=dusk`,
     `Convite: ${local}/?invite=1`,
   ];
   for (const origin of origins.slice(1)) {

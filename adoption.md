@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.84 — O par também tem endereço
+
+O par autoral ainda pedia duas queries. `?mood=calm` e `?mood=dusk`
+aplicam look e chuva do mesmo nome. Look ou chuva explícitos vencem
+o mood no próprio eixo. `outsider` continua falso. Um endereço no
+disco não é alguém de fora. Só `release` fica no piso.
+
+O que 0.9.84 não afirma: o harness não abriu o par e um endereço
+não aprova pacing nem direção.
+
 ## 0.9.83 — O fecho também fala
 
 O campo já contornava o fim e o controle já pulsava. O mixer calava:

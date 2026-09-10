@@ -2,8 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  applyLookIntent, applySpawnIntent, loadTable, loadSpawn, listLookIntents, listLooks, listSpawnIntents, listSpawnProfiles, looksLikeSpawn, lookRecord,
-  resolveLookName,
+  applyLookIntent, applySpawnIntent, loadTable, loadSpawn, listLookIntents, listLooks, listMoods, listSpawnIntents, listSpawnProfiles, looksLikeSpawn, lookRecord,
+  resolveLookName, resolveMoodName,
   migrateCopy, migratePalettes, migrateSpawn, migrateTable, requireFields, resolveSpawnName, spawnRecord, TABLES,
   SPAWN_FIELDS, SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS, PALETTE_SCHEMA, PALETTE_FIELDS, LOOK_INTENTS, SPAWN_INTENTS, PALETTES,
 } from "../src/game/tables.js";
@@ -43,6 +43,16 @@ test("só mesa com forma de chuva entra na família jogável", () => {
   assert.equal(resolveSpawnName("palettes"), "spawn");
   assert.throws(() => loadSpawn("copy"), /não é perfil de chuva/);
   assert.throws(() => loadSpawn("inventada"), /não é perfil de chuva/);
+});
+
+test("o par só existe quando o nome é look e chuva", () => {
+  assert.deepEqual(listMoods(), ["calm", "dusk"]);
+  assert.equal(resolveMoodName("calm"), "calm");
+  assert.equal(resolveMoodName("dusk"), "dusk");
+  assert.equal(resolveMoodName("normal"), "calm");
+  assert.equal(resolveMoodName("spawn"), "calm");
+  assert.equal(resolveMoodName("contrast"), "calm");
+  assert.equal(resolveMoodName("inventada"), "calm");
 });
 
 test("campo obrigatório ausente falha com o nome da mesa e do campo", () => {
