@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.277: a perda de foco grava o hold. Barra e DevTools não deixam o tick só na RAM. Não promove `trusted`.
+**HEAD:** ver `git log -1` — vigente 0.9.278: o orçamento cronometra a porta. Orçar só o campo escondia o primeiro quadro. Não promove `measured`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 295 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.277)
+## O que o HEAD já entrega (0.9.91–0.9.278)
 
 | Ver | Salto |
 | --- | --- |
@@ -221,6 +221,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.275 | A aba escondida não deixa o verbo preso. O keyup some; o corpo não segue. O pad continua no poll. Não promove `felt`. |
 | 0.9.276 | A perda de foco não deixa o ofício pendente. O blur solta hold e pressed. Voltar a focar ainda avança. O pad continua no poll. Não promove `felt`. |
 | 0.9.277 | A perda de foco grava o hold. O blur senta o relógio no campo e no fim. Na porta só descarrega. Não promove `trusted`. |
+| 0.9.278 | O orçamento cronometra a porta. `title.attract` entra ao lado de `playing.run`. Stub ≠ dispositivo. Não promove `measured`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -240,7 +241,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | audio_mix | slice | o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
-| performance | playable | poços + stub ≠ dispositivo |
+| performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
@@ -941,6 +942,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma aba escondida que deixa o verbo preso.
 **Não** mais uma perda de foco que deixa o ofício pendente.
 **Não** mais uma perda de foco que deixa o tick só na RAM.
+**Não** mais um orçamento que cronometra só o campo e some a porta.
 
 Candidatos, do que ainda dói:
 
@@ -1582,6 +1584,12 @@ Candidatos, do que ainda dói:
   deixa o
   tick só
   na RAM
+  e um
+  orçamento
+  que
+  cronometra
+  só o
+  campo
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1605,10 +1613,10 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a perda
-de foco grava o hold.
-Barra e DevTools não deixam o tick só na RAM.
-Na porta o blur só descarrega. Não promove `trusted`.
+Arquivos quentes da última sessão: o orçamento
+cronometra a porta.
+`title.attract` entra ao lado de `playing.run`.
+Stub ≠ dispositivo. Não promove `measured`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1621,3 +1629,4 @@ A família receita vs canvas da porta está saturada.
 A família visibility ghost hold / aba escondida está saturada.
 A família blur ghost press / perda de foco deixa o ofício pendente está saturada.
 A família blur grava o hold / perda de foco deixa o tick na RAM está saturada.
+A família orçamento só o campo / porta some do budget está saturada.

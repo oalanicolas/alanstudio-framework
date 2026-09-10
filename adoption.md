@@ -3,6 +3,50 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.278 — O orçamento cronometra a porta
+
+A
+receita
+já
+pedia
+a
+abertura.
+O
+`budget`
+só
+cronometrava
+`playing.run`.
+Orçar
+só
+o
+campo
+escondia
+o
+primeiro
+quadro.
+Agora
+`title.attract`
+entra
+ao
+lado.
+Stub
+não
+é
+dispositivo.
+Não
+promove
+`measured`.
+
+O que 0.9.278 não afirma:
+percentil
+no
+stub
+não
+é
+quadro
+no
+aparelho.
+
 ## 0.9.277 — A perda de foco grava o hold
 
 A

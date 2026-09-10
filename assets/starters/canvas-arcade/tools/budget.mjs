@@ -1,4 +1,5 @@
 // Orçamento: mede a simulação e o caminho de desenho num canvas stub.
+// A porta também entra: orçar só o campo esconde o primeiro quadro.
 //
 // Isola o custo das regras do custo de desenhar. Se a simulação já não cabe no
 // orçamento headless, nenhuma otimização de render resolve. O draw no stub
@@ -8,7 +9,7 @@
 //
 // Uso: node tools/budget.mjs [--runs 20] [--seed 7]
 
-import { advance, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
+import { advance, attractMove, attractTick, attractTouch, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
 import { createRenderer } from "../src/game/render.js";
 import { fingerprint } from "../src/core/hash.js";
 import { createRng } from "../src/core/rng.js";
@@ -21,6 +22,10 @@ const argument = (name, fallback) => {
 const runs = argument("runs", 20);
 const baseSeed = argument("seed", 7);
 const stepBudgetMs = 1000 / TICK_HZ;
+// A receita pede a porta. Sem isto só o campo entra no
+// relatório e o primeiro quadro some. 120 ticks cobrem
+// a frase e o mover. Stub não é dispositivo.
+const TITLE_TICKS = 120;
 
 function stubCanvas() {
   const context = {
@@ -63,6 +68,8 @@ function stubCanvas() {
 
 const samples = [];
 const presents = [];
+const titleSamples = [];
+const titlePresents = [];
 let prints = new Set();
 let totalSteps = 0;
 const poolStart = entityPoolStats();
@@ -74,6 +81,24 @@ const renderer = createRenderer(stubCanvas(), { devicePixelRatio: 1 });
 renderer.resize(640, 360);
 
 for (let run = 0; run < runs; run += 1) {
+  const door = createState(baseSeed + run, { entry: "title" });
+  const doorRng = createRng(baseSeed + run + 2000);
+  const doorIntent = neutralIntent();
+  for (let tick = 0; tick < TITLE_TICKS; tick += 1) {
+    doorIntent.move = doorRng.next() < 0.55 ? (doorRng.next() < 0.5 ? -1 : 1) : 0;
+    doorIntent.dash = false;
+    doorIntent.bank = false;
+    const started = process.hrtime.bigint();
+    attractMove(door, doorIntent);
+    attractTick(door);
+    attractTouch(door, false);
+    titleSamples.push(Number(process.hrtime.bigint() - started) / 1e6);
+    const drawn = process.hrtime.bigint();
+    renderer.draw(door, {}, {}, { captions: [], best: 0, hint: "move" });
+    titlePresents.push(Number(process.hrtime.bigint() - drawn) / 1e6);
+    totalSteps += 1;
+  }
+
   const state = createState(baseSeed + run);
   // Intenções pseudo-aleatórias mas reprodutíveis: exercita dash, guardar e
   // movimento sem depender de uma pessoa jogando.
@@ -107,6 +132,8 @@ const percentile = (list) => {
 
 const simulation = percentile(samples);
 const presentation = percentile(presents);
+const titleSimulation = percentile(titleSamples);
+const titlePresentation = percentile(titlePresents);
 const pool = entityPoolStats();
 const events = eventPoolStats();
 const motes = motePoolStats();
@@ -120,6 +147,22 @@ const report = {
     ticks: CONFIG.runTicks,
     draw: "stub",
   },
+  scenes: [
+    {
+      name: "title.attract",
+      ticks: TITLE_TICKS,
+      draw: "stub",
+      simulation_ms: titleSimulation,
+      presentation_ms: titlePresentation,
+    },
+    {
+      name: "playing.run",
+      ticks: CONFIG.runTicks,
+      draw: "stub",
+      simulation_ms: simulation,
+      presentation_ms: presentation,
+    },
+  ],
   step_budget_ms: Number(stepBudgetMs.toFixed(4)),
   simulation_ms: simulation,
   presentation_ms: presentation,
@@ -149,14 +192,16 @@ const report = {
   },
   measured: false,
   scope:
-    "Cena playing.run: partida inteira + draw() num canvas stub. Não mede " +
-    "compositor, áudio, carregamento nem o dispositivo alvo. Orçamento de " +
-    "quadro real exige medir no artefato exportado. O poço e o gerador " +
-    "relatam reuso, não velocidade. Sem limiar de apresentação.",
+    "Cenas title.attract e playing.run: abertura (mostra) e partida " +
+    "inteira + draw() num canvas stub. Orçar só o campo esconde o " +
+    "primeiro quadro. Não mede compositor, áudio, carregamento nem o " +
+    "dispositivo alvo. Orçamento de quadro real exige medir no artefato " +
+    "exportado. O poço e o gerador relatam reuso, não velocidade. Sem " +
+    "limiar de apresentação.",
 };
 
 console.log(JSON.stringify(report, null, 2));
-if (simulation.p99 > stepBudgetMs) {
+if (titleSimulation.p99 > stepBudgetMs || simulation.p99 > stepBudgetMs) {
   console.error("Simulação acima do orçamento de passo no percentil 99.");
   process.exit(1);
 }

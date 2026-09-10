@@ -3131,6 +3131,22 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(perf["measured"])
         self.assertIn("budget", perf["scripts"])
 
+    def test_performance_recipe_names_the_door_the_budget_already_times(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        tool = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/tools/budget.mjs"
+        ).read_text(encoding="utf-8")
+        self.assertIn("title.attract", recipe)
+        self.assertIn("title.attract", tool)
+        self.assertIn("playing.run", recipe)
+        self.assertIn("Orçar só o campo", recipe)
+        perf = game.budget_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        self.assertFalse(perf["measured"])
+        self.assertFalse(perf["unbudgeted"])
+        self.assertNotIn("aprovado", recipe)
+        self.assertNotIn("16 ms", recipe)
+
     def test_persistence_recipe_names_the_focus_loss_the_starter_already_flushes(self):
         persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
