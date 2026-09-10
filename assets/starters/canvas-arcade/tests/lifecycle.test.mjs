@@ -1026,6 +1026,25 @@ test("remapear uma ação persiste e recusa uma lista vazia", () => {
   game.dispose();
 });
 
+test("com tela a porta pulsa o avanço, não o land", () => {
+  const played = [];
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    canvas: silentCanvas(),
+    haptics: silentHaptics(played),
+    loadSfx: false,
+  });
+  assert.equal(game.observe().phase, "title");
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "playing");
+  assert.ok(played.includes("dash"), `esperava o pulso da porta: ${JSON.stringify(played)}`);
+  assert.equal(played.includes("land"), false, "o land não come o pulso da abertura");
+  game.dispose();
+});
+
 test("o avanço pulsa no aparelho e a pausa cala o que ainda vibrava", () => {
   const played = [];
   const { game } = harness({ haptics: silentHaptics(played) });

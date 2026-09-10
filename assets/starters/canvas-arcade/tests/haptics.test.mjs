@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { createHaptics } from "../src/game/haptics.js";
+import { createHaptics, rumbleRole } from "../src/game/haptics.js";
 import { CONFIG } from "../src/game/rules.js";
 
 function stubActuator() {
@@ -22,6 +22,15 @@ function stubActuator() {
     },
   };
 }
+
+test("dois verbos no mesmo quadro pulsam o peso maior, não o último", () => {
+  assert.equal(rumbleRole(["dash", "land"]), "dash", "na porta o land não come o avanço");
+  assert.equal(rumbleRole(["bank", "collect"]), "bank", "a coleta no commit não come a guarda");
+  assert.equal(rumbleRole(["collect", "hit"]), "hit", "o erro vence a coleta");
+  assert.equal(rumbleRole(["land", "collect"]), "collect");
+  assert.equal(rumbleRole(["graze", "live"]), "", "sem pulso não inventa verbo");
+  assert.equal(rumbleRole([]), "");
+});
 
 test("cada verbo pulsa com duração e magnitude distintas", () => {
   const { plays, actuator } = stubActuator();

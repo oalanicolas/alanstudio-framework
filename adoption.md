@@ -3,6 +3,62 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.238 — O rumble do quadro toca o verbo mais pesado, não o último
+
+Dois
+verbos
+no
+mesmo
+tick:
+o
+último
+pulso
+comia
+o
+peso.
+A
+porta
+falava
+land.
+A
+coleta
+no
+commit
+falava
+orbe.
+Graça,
+queda
+e
+cama
+continuam
+sem
+pulso.
+Agora
+o
+quadro
+toca
+o
+verbo
+mais
+pesado.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.238 não afirma:
+pulso
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.237 — O pedido de dash sobrevive ao lock da guarda
 
 O

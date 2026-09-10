@@ -36,6 +36,24 @@ function patternFor(role) {
   };
 }
 
+// Dois verbos no mesmo quadro: o último pulso comia o peso.
+// Sem isto a porta falava land e a coleta no commit falava
+// orbe — o compromisso sumia. Pulso no disco não é felt.
+export function rumbleRole(roles) {
+  let best = "";
+  let weight = -1;
+  for (const id of roles ?? []) {
+    const keys = ROLES[id];
+    if (!keys) continue;
+    const next = CONFIG.feel[keys.magnitude];
+    if (Number.isFinite(next) && next > weight) {
+      weight = next;
+      best = id;
+    }
+  }
+  return best;
+}
+
 export function createHaptics(options = {}) {
   const readGamepads = options.gamepads ?? defaultGamepads;
   const vibrate = options.vibrate ?? defaultVibrate();

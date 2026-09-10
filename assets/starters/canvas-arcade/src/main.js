@@ -14,7 +14,7 @@ import { canContinue, canResume, captureHold, loadProgress, persistLine, persist
 import { detectEnvironment, loadSettings, normalizeSettings, saveSettings } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
 import { BED_FADE_MS, createAudio } from "./game/audio.js";
-import { createHaptics } from "./game/haptics.js";
+import { createHaptics, rumbleRole } from "./game/haptics.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
 import { createTrace, finishCurve, traceTick } from "./game/curve.js";
@@ -206,6 +206,11 @@ export function createGame(options = {}) {
     else if (command.pause) togglePause();
   }
 
+  function pulse(events) {
+    for (const event of events) audio.play(event.type, event);
+    haptics.play(rumbleRole(events.map((event) => event.type)));
+  }
+
   function step(intent) {
     if (state.phase === "title") {
       if (intent?.dash) {
@@ -217,10 +222,7 @@ export function createGame(options = {}) {
         attractTick(state);
         attractTouch(state, settings.reducedMotion);
       }
-      for (const event of state.events) {
-        audio.play(event.type, event);
-        haptics.play(event.type);
-      }
+      pulse(state.events);
       emitPhase();
       return;
     }
@@ -238,10 +240,7 @@ export function createGame(options = {}) {
     }
     advanceRules(state, intent);
     traceTick(trace, state);
-    for (const event of state.events) {
-      audio.play(event.type, event);
-      haptics.play(event.type);
-    }
+    pulse(state.events);
     if (state.phase === "over" && !recorded) {
       recorded = true;
       doorArmed = false;
