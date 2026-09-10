@@ -1427,6 +1427,19 @@ def feel_then(project):
 def feel_reading(project):
     project = Path(project)
     constants, sources = declared_feel_constants(project)
+    # O campo já marca prática, folga e fecho. Sem isto o
+    # comando lia só o CONFIG e calava as janelas da chuva.
+    # Número no disco não é peso percebido.
+    windows, rain_sources = rain_window_constants(project)
+    seen = {item["key"] for item in constants}
+    for item in windows:
+        if item["key"] in seen:
+            continue
+        seen.add(item["key"])
+        constants.append(item)
+    for relative in rain_sources:
+        if relative not in sources:
+            sources.append(relative)
     observations = observation_receipts(project)
     then = feel_then(project)
     return {
@@ -1446,7 +1459,9 @@ def feel_reading(project):
         ),
         "scope": (
             "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch) e "
-            "`record.json` com kind=observation. Nomeia `then.play` e `then.note` "
+            "as janelas da chuva (`practiceTicks`, `recoveryTicks`, o fecho) "
+            "em data/, tables/ e content/. Lê `record.json` com "
+            "kind=observation. Nomeia `then.play` e `then.note` "
             "sem executar. Com last-run, nomeia `then.seed` e `then.invite`. Sem "
             "comando de abrir, a chave some. Sem last-run, seed e invite somem. "
             "Não tem `prompt`. Não mede latência e não atribui degrau. `felt` é "
@@ -1659,6 +1674,16 @@ RAIN_CORE_FIELDS = (
     "fallSpeedMin",
     "fallSpeedMax",
 )
+# Janelas que o campo já marca. Sem isto o `feel` lia só o
+# CONFIG e calava prática, folga e fecho. Número no disco
+# não é peso percebido.
+RAIN_WINDOW_FIELDS = (
+    "practiceTicks",
+    "recoveryTicks",
+    "recoveryIntervalScale",
+    "closeIntervalScale",
+    "closeHazardScale",
+)
 CONTENT_DIRS = ("data", "content", "levels", "maps", "tables")
 CONTENT_SUFFIXES = {".json", ".ldtk", ".tmx", ".csv", ".ink"}
 CONTENT_LOOSE_SUFFIXES = {".ldtk", ".tmx", ".ink"}
@@ -1784,6 +1809,44 @@ def rain_tables(project):
                 "source": path.relative_to(project).as_posix(),
             })
     return found
+
+
+def rain_window_constants(project):
+    found = []
+    sources = []
+    seen = set()
+    for item in rain_tables(project):
+        path = Path(project) / item["source"]
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        listed = False
+        for field in RAIN_WINDOW_FIELDS:
+            value = data.get(field)
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                continue
+            if isinstance(value, float) and not (value == value):
+                continue
+            key = f"{item['key']}.{field}"
+            if key in seen:
+                continue
+            seen.add(key)
+            declared = str(int(value)) if isinstance(value, int) else (
+                str(int(value)) if value.is_integer() else str(value)
+            )
+            found.append({
+                "key": key,
+                "declared": declared,
+                "note": None,
+                "source": item["source"],
+            })
+            listed = True
+        if listed:
+            sources.append(item["source"])
+    return found, sources
 
 
 def art_reading(project):

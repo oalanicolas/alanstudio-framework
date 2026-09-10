@@ -3155,7 +3155,14 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("feel.flashPractice", keys)
         self.assertIn("feel.flashStir", keys)
         self.assertIn("feel.flashMissed", keys)
+        self.assertIn("spawn.practiceTicks", keys, "o feel lia o CONFIG e calava a janela orbe-só")
+        self.assertIn("spawn.recoveryTicks", keys, "o feel calava a folga da guarda")
+        self.assertIn("spawn.closeIntervalScale", keys, "o feel calava o fecho")
+        self.assertIn("dusk.practiceTicks", keys)
+        self.assertIn("calm.recoveryTicks", keys)
         self.assertIn("src/game/rules.js", report["sources"])
+        self.assertIn("data/spawn.json", report["sources"])
+        self.assertIn("janelas da chuva", report["scope"])
         self.assertEqual(report["observations"], [])
         self.assertIn("serve", report["then"]["play"])
         self.assertIn("note", report["then"]["note"])
@@ -3180,6 +3187,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("prompt", payload)
         self.assertIn("serve", payload["then"]["play"])
         self.assertIn("note", payload["then"]["note"])
+        self.assertIn("spawn.practiceTicks", [item["key"] for item in payload["constants"]])
         self.assertFalse((cli.stderr or "").strip())
 
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):

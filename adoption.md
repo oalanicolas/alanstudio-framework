@@ -3,6 +3,46 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.316 — o feel nomeia as janelas da chuva
+
+O
+campo
+já
+marcava
+prática,
+folga
+e
+fecho.
+O
+comando
+lia
+só
+o
+`CONFIG`.
+As
+janelas
+ficavam
+no
+JSON
+e
+o
+ofício
+calava.
+Agora
+nomeia.
+Não
+promove
+`felt`.
+
+O que 0.9.316 não afirma:
+número
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.315 — o corpo na recuperação do dash não veste a prática
 
 A

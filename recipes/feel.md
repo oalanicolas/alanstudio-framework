@@ -72,7 +72,9 @@ o juice vira ruído.
 Leia o verbo no GDD, os tokens de tempo/câmera/áudio no
 [design system](../references/game-design-system.md) e o
 [piso](../references/quality.md). `context --focus feel` seleciona esta
-receita. `feel` lê as constantes nomeadas no `CONFIG` e o
+receita. `feel` lê as constantes nomeadas no `CONFIG` e as
+janelas da chuva (`practiceTicks`, `recoveryTicks`, o fecho) —
+o campo já as marca; o comando calava. Lê o
 recibo de observação no disco; nomeia `then.play` e `then.note`
 sem executar. Com last-run, nomeia `then.seed` e `then.invite`
 — o mesmo endereço que `play` / `guide`. Sem comando de abrir,

@@ -238,7 +238,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    créditos. Importar e exportar não é ouvir. `heard` é sempre falso. Papel vazio
    entra no `next` como `audio.roles` — o verbo mudo não espera os
    rascunhos.
-   **`feel [<projeto>]`** lê constantes de perdão/hitstop/câmera no `CONFIG` e o
+   **`feel [<projeto>]`** lê constantes de perdão/hitstop/câmera no `CONFIG` e
+   as janelas da chuva (`practiceTicks`, `recoveryTicks`, o fecho) — o
+   campo já as marca; o comando calava. Lê o
    recibo de observação no disco. Nomeia `then.play` e `then.note` sem
    executar. Com last-run, nomeia `then.seed` e `then.invite` — o mesmo
    endereço que `play` / `guide`. Sem comando de abrir, `then.play` some.
