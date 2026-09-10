@@ -18,7 +18,8 @@ papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
 em `public/sfx`. `roles --fill` sugere um id do acervo ou a ficha do
 stem do starter que casa; `--apply` copia o id do acervo ou o stem
 do starter com créditos — e recoloca o WAV se o recibo já está e
-origem e licença casam. `sfx copy` continua o caminho explícito.
+origem e licença casam. `sfx copy` do acervo faz o mesmo e
+declara `heard` falso. `sfx copy` continua o caminho explícito.
 O starter `canvas-arcade`
 já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
 mixer. O pedido que chega antes do WAV — ou enquanto o contexto

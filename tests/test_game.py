@@ -2789,6 +2789,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(repeated["status"], "already_exported")
         self.assertFalse(repeated["heard"])
 
+    def test_sfx_copy_from_catalog_restores_the_wav_and_declares_it_did_not_hear(self):
+        item, data = self._plant_catalog_sound()
+        destination = self.root / "jogo" / "public" / "sfx"
+        copied = game.sfx_catalog.copy_entry(item["id"], destination, self.root)
+        self.assertEqual(copied["kind"], "catalog")
+        self.assertEqual(copied["status"], "exported")
+        self.assertFalse(copied["heard"])
+        self.assertIn("não é mix", copied["next"].casefold())
+        self.assertEqual((destination / f"{item['id']}.wav").read_bytes(), data)
+        receipt = destination / "sources.json"
+        payload = json.loads(receipt.read_text(encoding="utf-8"))
+        row = next(entry for entry in payload["files"] if entry.get("key") == item["id"])
+        row["note"] = "copiado no init"
+        receipt.write_text(json.dumps(payload), encoding="utf-8")
+        (destination / f"{item['id']}.wav").unlink()
+        restored = game.sfx_catalog.copy_entry(item["id"], destination, self.root)
+        self.assertEqual(restored["status"], "exported")
+        self.assertFalse(restored["heard"])
+        self.assertTrue((destination / f"{item['id']}.wav").is_file())
+        after = json.loads(receipt.read_text(encoding="utf-8"))
+        kept = next(entry for entry in after["files"] if entry.get("key") == item["id"])
+        self.assertEqual(kept["note"], "copiado no init")
+        self.assertEqual(kept["license"], "CC-BY-4.0")
+        again = game.sfx_catalog.copy_entry(item["id"], destination, self.root)
+        self.assertEqual(again["status"], "already_exported")
+        self.assertFalse(again["heard"])
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "sfx", "copy", item["id"],
+             "--to", str(self.root / "outro"), "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        listed = json.loads(run.stdout)
+        self.assertEqual(listed["kind"], "catalog")
+        self.assertFalse(listed["heard"])
+        dumped = json.dumps(copied)
+        self.assertNotIn("aprovado", dumped)
+        self.assertNotIn("verified", dumped)
+
+    def test_sfx_copy_from_catalog_refuses_when_the_receipt_names_another_license(self):
+        item, _ = self._plant_catalog_sound()
+        destination = self.root / "jogo" / "public" / "sfx"
+        game.sfx_catalog.copy_entry(item["id"], destination, self.root)
+        receipt = destination / "sources.json"
+        payload = json.loads(receipt.read_text(encoding="utf-8"))
+        for row in payload["files"]:
+            if row.get("key") == item["id"]:
+                row["license"] = "CC0-1.0"
+                if isinstance(row.get("sources"), list):
+                    for source in row["sources"]:
+                        source["license"] = "CC0-1.0"
+        receipt.write_text(json.dumps(payload), encoding="utf-8")
+        (destination / f"{item['id']}.wav").unlink()
+        with self.assertRaises(ValueError) as refused:
+            game.sfx_catalog.copy_entry(item["id"], destination, self.root)
+        self.assertIn("Proveniência", str(refused.exception))
+        self.assertFalse((destination / f"{item['id']}.wav").exists())
+
     def test_feel_reads_named_constants_and_never_claims_to_have_felt_them(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.feel_reading(starter)

@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.252: a região viva nomeia a recuperação que o painel já mostra. A porta não. Não promove `trusted`.
+**HEAD:** ver `git log -1` — vigente 0.9.253: `sfx copy` do acervo recoloca o WAV quando o recibo casa origem e licença, e declara que não ouviu. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 286 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.252)
+## O que o HEAD já entrega (0.9.91–0.9.253)
 
 | Ver | Salto |
 | --- | --- |
@@ -196,6 +196,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.250 | O painel nomeia o papel que o fetch perdeu. O loader marca o primário; variante ausente não é lacuna. Não promove `heard`. |
 | 0.9.251 | Decode nulo tenta a próxima extensão. Wav ilegível não esconde o ogg nem o pedido. Não promove `heard`. |
 | 0.9.252 | A região viva nomeia a recuperação que o painel já mostra. A porta não. Jogando a chave some. Não promove `trusted`. |
+| 0.9.253 | `sfx copy` do acervo recoloca o WAV quando origem e licença casam, e declara `heard` falso. Recibo diferente recusa. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -369,7 +370,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um roles --apply que recusa o stem porque o recibo do init tem note
   ou um painel que some o 404 quando outro papel já registrou
   ou um wav ilegível que esconde o ogg e some o pedido
-  ou uma região viva que some a recuperação que o painel já mostra.
+  ou uma região viva que some a recuperação que o painel já mostra
+  ou um `sfx copy` do acervo que recusa o WAV porque o recibo tem `note` e some `heard`.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -477,7 +479,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   id do acervo ou o stem do starter com créditos. Sem
   catálogo, `next` em `audio.roles` aponta `--apply`,
   não `sfx copy`. `sfx export` / `sfx copy` continuam
-  o caminho explícito. Copiar não ouve.
+  o caminho explícito. `sfx copy` do acervo recoloca o
+  WAV se origem e licença casam — também em `sources` —
+  e declara `heard` falso. Recibo diferente recusa.
+  Copiar não ouve.
 - `emit()` escreve `prompt` em stderr quando a chave existe e tem
   texto. stdout continua só o JSON. Falar a frase não executa.
   `next` / `doctor` / `feel` não têm `prompt` e não escrevem frase.
@@ -856,6 +861,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um painel que some o 404 quando outro papel já registrou.
 **Não** mais um wav ilegível que esconde o ogg e some o pedido.
 **Não** mais uma região viva que some a recuperação que o painel já mostra.
+**Não** mais um `sfx copy` do acervo que recusa o WAV porque o recibo tem `note` e some `heard`.
 
 Candidatos, do que ainda dói:
 
@@ -901,7 +907,9 @@ Candidatos, do que ainda dói:
    leitor. Sem `then` no leitor.    Sem acervo, `roles --fill` nomeia o stem
    do starter; `--apply` o copia — e recoloca o WAV se o
    recibo já está e origem e licença casam; `next` aponta
-   `--apply`.    `feel`
+   `--apply`. `sfx copy` do acervo recoloca o WAV se o
+   recibo casa origem e licença, e declara `heard` falso.
+   `feel`
    nomeia `then.play` e `then.note` sem
    executar. Sem serve a chave some. Sem
    `prompt`. `discover` nomeia os mesmos
@@ -1365,6 +1373,16 @@ Candidatos, do que ainda dói:
   recuperação
   que o painel
   já mostra
+  e um
+  sfx copy
+  do acervo
+  que recusa
+  o WAV
+  porque o
+  recibo tem
+  note
+  e some
+  heard
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1388,6 +1406,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a região
-viva nomeia a recuperação que o painel já
-mostra. A porta não. Não promove `trusted`.
+Arquivos quentes da última sessão: `sfx copy`
+do acervo recoloca o WAV quando origem e
+licença casam, e declara que não ouviu. Não
+promove `heard`.

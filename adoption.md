@@ -3,6 +3,63 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.253 — O copy do acervo recoloca o WAV
+
+O
+`sfx
+copy`
+do
+starter
+já
+recolocava
+e
+declarava
+`heard`
+falso.
+O
+do
+acervo
+recusava
+quando
+o
+recibo
+tinha
+`note`
+e
+omitia
+`heard`.
+Agora
+casa
+origem
+e
+licença
+— também
+em
+`sources`
+—
+recoloca
+os
+bytes
+e
+declara
+que
+não
+ouviu.
+Recibo
+diferente
+recusa.
+Não
+promove
+`heard`.
+
+O que 0.9.253 não afirma:
+recolocar
+bytes
+não
+é
+mix
+ouvido.
+
 ## 0.9.252 — A região viva nomeia a recuperação
 
 O
