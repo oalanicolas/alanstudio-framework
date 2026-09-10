@@ -1,11 +1,11 @@
 # Design system — Canvas Arcade
 
-Primitivas por decisão, não placeholder. Orbe e estilhaço se separam por
-**forma** (círculo com anel versus losango), não só por cor. O halo
-segue a mesma primitiva; a vinheta marca o recorte. Com menos
-movimento os dois somem. O stub
-distingue as duas silhuetas com a mesma tinta; o dispositivo alvo
-não foi observado. Paletas canônicas em
+Primitivas por decisão, não placeholder. Orbe, estilhaço e jogador se
+separam por **forma** (círculo com anel, losango, corpo que aponta),
+não só por cor. A ponta segue o último avanço e fica com menos
+movimento: é forma, não brilho. O halo do orbe e do estilhaço some
+com redução; a vinheta também. O stub distingue as silhuetas com a
+mesma tinta; o dispositivo alvo não foi observado. Paletas canônicas em
 `data/palettes.json` (`normal`, `contrast`, `dusk` e `calm`); o desenho consome
 `PALETTES` via `src/game/tables.js`. `look` escolhe `normal`, `dusk` ou `calm`;
 `contrast` continua sendo o modo de alcance.
@@ -27,7 +27,7 @@ e cabe neste recorte.
 
 ## Receita de um primitivo novo
 
-1. Escolha **forma**, não só cor — o par orbe/estilhaço é o piso.
+1. Escolha **forma**, não só cor — o trio orbe/estilhaço/jogador é o piso.
 2. Acrescente o token em `data/palettes.json` (`normal`, `contrast` e
    cada look de arte). Trocar só a cor não exige abrir `render.js`.
    Um look novo entra na mesa e o jogo o consome por `?look=` /

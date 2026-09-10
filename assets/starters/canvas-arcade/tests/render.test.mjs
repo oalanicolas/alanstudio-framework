@@ -22,10 +22,11 @@ const PLATE_EDGE_COLORS = new Set(Object.values(PALETTES).map((palette) => palet
 // algum retângulo" seria sempre verdadeiro. Cada retângulo guarda a cor com
 // que foi pintado, e só os da cor de placa contam.
 function recordingCanvas() {
-  const calls = { rects: [], edges: [], texts: [], order: [], arcs: 0, lineTos: 0, radials: 0 };
+  const calls = { rects: [], edges: [], texts: [], order: [], arcs: 0, lineTos: 0, radials: 0, paths: [] };
   let font = "8px system-ui";
   let align = "left";
   let pending = null;
+  let path = [];
   const size = () => Number.parseFloat(font) || 8;
   const measure = (text) => text.length * size() * 0.62;
   const commit = (rect) => calls.rects.push({ ...rect, style: context.fillStyle });
@@ -38,11 +39,15 @@ function recordingCanvas() {
     restore() {},
     beginPath() {
       pending = null;
+      path = [];
     },
     closePath() {},
-    moveTo() {},
-    lineTo() {
+    moveTo(x, y) {
+      path.push({ x, y });
+    },
+    lineTo(x, y) {
       calls.lineTos += 1;
+      path.push({ x, y });
     },
     arc() {
       calls.arcs += 1;
@@ -53,10 +58,13 @@ function recordingCanvas() {
     stroke() {
       if (pending) commitEdge(pending);
       pending = null;
+      path = [];
     },
     fill() {
       if (pending) commit(pending);
+      if (path.length >= 2) calls.paths.push({ points: path.slice(), style: context.fillStyle });
       pending = null;
+      path = [];
     },
     fillRect(x, y, width, height) {
       commit({ x, y, width, height });
@@ -476,6 +484,29 @@ function playerBox(state) {
   return rects[0];
 }
 
+function playerNose(state, settings = {}) {
+  const box = playerBox(state);
+  const color = playerFill(state);
+  const drawn = paint(state, settings);
+  const noses = drawn.paths.filter((item) => (
+    item.style === color
+    && item.points.some((point) => point.y >= box.y - 2 && point.y <= box.y + box.height + 2)
+  ));
+  assert.ok(noses.length >= 1, "o jogador precisa da ponta");
+  const points = noses[0].points;
+  return {
+    minX: Math.min(...points.map((point) => point.x)),
+    maxX: Math.max(...points.map((point) => point.x)),
+    points,
+  };
+}
+
+function hudBands(drawn) {
+  return drawn.rects.filter((rect) => (
+    rect.height === 2 && rect.y < 20 && !PLATE_COLORS.has(rect.style)
+  )).length;
+}
+
 test("guardar e o erro achatam o corpo diferente da coleta", () => {
   const collected = createState(1);
   collected.player.squash = CONFIG.feel.squashCollect;
@@ -514,6 +545,21 @@ test("a recuperação do dash não se parece com o dash nem com o descanso", () 
   assert.notEqual(playerFill(dash), playerFill(idle));
   assert.notEqual(playerFill(recovery), playerFill(idle));
   assert.notEqual(playerFill(recovery), playerFill(dash));
+});
+
+test("o corpo aponta para o lado do último avanço", () => {
+  const left = createState(1);
+  left.player.dir = -1;
+  const right = createState(1);
+  right.player.dir = 1;
+  const a = playerBox(left);
+  const b = playerBox(right);
+  const noseL = playerNose(left);
+  const noseR = playerNose(right);
+  assert.ok(noseL.minX < a.x - 1, "a ponta esquerda sai do retângulo");
+  assert.ok(noseR.maxX > b.x + b.width + 1, "a ponta direita sai do retângulo");
+  playerNose(left, { reducedMotion: true });
+  assert.equal(hudBands(paint(left)), hudBands(paint(right)), "a ponta não é faixa no HUD");
 });
 
 test("a guarda marca o campo sem inventar faixa no HUD", () => {

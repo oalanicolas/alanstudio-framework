@@ -1,10 +1,12 @@
 // Apresentação. Não decide regra e não altera o estado.
 //
-// Legibilidade antes de estilo: orbe e estilhaço têm **formas** diferentes, não
-// só cores diferentes. O halo segue a mesma primitiva. O stub distingue as
-// silhuetas com a mesma tinta; o dispositivo não foi observado. Tremor,
-// piscada e vinheta respeitam redução de movimento — o sinal de causa
-// migra para uma forma estática, não desaparece.
+// Legibilidade antes de estilo: orbe, estilhaço e jogador têm **formas**
+// diferentes, não só cores diferentes. O halo segue a mesma primitiva do
+// orbe e do estilhaço. O corpo aponta para o último avanço — não é o
+// tijolo da placa. O stub distingue as silhuetas com a mesma tinta; o
+// dispositivo não foi observado. Tremor, piscada e vinheta respeitam
+// redução de movimento — o sinal de causa migra para uma forma estática,
+// não desaparece. A ponta do corpo fica: é forma, não brilho.
 
 import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse, recoveryPulse } from "./rules.js";
 import { copy, PALETTES, resolveLookName } from "./tables.js";
@@ -303,17 +305,37 @@ export function createRenderer(canvas, options = {}) {
     const squash = 1 + player.squash;
     const width = CONFIG.player.halfWidth * 2 * squash;
     const height = 12 / squash;
+    const left = player.x - width / 2;
+    const top = PLAYER_Y - height / 2;
     const dashing = player.dashTicks > 0;
     const recovering = !dashing && player.dashRecovery > 0;
     target.fillStyle = dashing ? palette.chain : recovering ? palette.orb : palette.player;
-    target.fillRect(player.x - width / 2, PLAYER_Y - height / 2, width, height);
+    target.fillRect(left, top, width, height);
+    // O retângulo sozinho era o tijolo da placa. A ponta segue o
+    // último avanço: orbe é círculo, estilhaço é losango, o corpo
+    // aponta. Forma, não faixa. Com menos movimento a ponta fica.
+    // Silhueta no stub não é comparação em movimento.
+    const dir = player.dir < 0 ? -1 : 1;
+    const nose = Math.max(3, height * 0.42);
+    target.beginPath();
+    if (dir < 0) {
+      target.moveTo(left, top);
+      target.lineTo(left - nose, PLAYER_Y);
+      target.lineTo(left, top + height);
+    } else {
+      target.moveTo(left + width, top);
+      target.lineTo(left + width + nose, PLAYER_Y);
+      target.lineTo(left + width, top + height);
+    }
+    target.closePath();
+    target.fill();
     if (player.invuln > 0) {
       // Com redução de movimento, contorno constante em vez de piscar.
       const visible = reduced || Math.floor(player.invuln / 4) % 2 === 0;
       if (visible) {
         target.strokeStyle = palette.danger;
         target.lineWidth = 1;
-        target.strokeRect(player.x - width / 2 - 2, PLAYER_Y - height / 2 - 2, width + 4, height + 4);
+        target.strokeRect(left - 2, top - 2, width + 4, height + 4);
       }
     }
     if (state.bankLock > 0) {

@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.100 — O corpo também aponta
+
+O jogador era o mesmo tijolo da placa. A ponta segue
+o último avanço. Orbe continua círculo, estilhaço
+losango. Com menos movimento a ponta fica: é forma,
+não brilho. `consistent` continua falso. Só `release`
+fica no piso.
+
+O que 0.9.100 não afirma: o harness não comparou em
+movimento e a silhueta não é direção aprovada.
+
 ## 0.9.99 — O campo também tem volume
 
 A chuva era tinta chapada num retângulo. Halo na forma do
