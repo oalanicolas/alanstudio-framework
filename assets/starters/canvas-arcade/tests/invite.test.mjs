@@ -57,6 +57,7 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /id="note-save"/);
   assert.match(html, /NOTE_ROUTE/);
   assert.doesNotMatch(html, /html\.invite\s+#note/);
+  assert.match(html, /game\.lastRun/, "a porta relê a partida para manter o recibo");
 });
 
 test("a nota só aparece depois do fim e some no convite", () => {
@@ -66,6 +67,8 @@ test("a nota só aparece depois do fim e some no convite", () => {
   assert.equal(applyNote({ root, phase: "over", invite: true }), false);
   assert.equal(applyNote({ root, phase: "over", invite: false }), true);
   assert.equal(root.classList.note, true);
+  assert.equal(applyNote({ root, phase: "title", invite: false, run: { score: 3 } }), true);
+  assert.equal(applyNote({ root, phase: "playing", invite: false, run: { score: 3 } }), false);
 });
 
 test("o achado só aparece no convite depois do fim", () => {
@@ -76,6 +79,8 @@ test("o achado só aparece no convite depois do fim", () => {
   assert.equal(applyFinding({ root, phase: "over", invite: false }), false);
   assert.equal(applyFinding({ root, phase: "over", invite: true }), true);
   assert.equal(root.classList.finding, true);
+  assert.equal(applyFinding({ root, phase: "title", invite: true, run: { score: 3 } }), true);
+  assert.equal(applyFinding({ root, phase: "title", invite: false, run: { score: 3 } }), false);
 });
 
 test("copiar o achado preenchido tem forma; o vazio não finge", () => {

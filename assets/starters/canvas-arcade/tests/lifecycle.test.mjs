@@ -311,6 +311,34 @@ test("com tela o fim volta à abertura", () => {
   game.dispose();
 });
 
+test("com tela o avanço novo no fim volta à abertura sem pular o overlay", () => {
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  game.act({ dash: true });
+  game.advance(1);
+  for (let step = 0; step < CONFIG.runTicks; step += 1) {
+    game.act({ dash: true });
+    game.advance(1);
+  }
+  assert.equal(game.observe().phase, "over", "dash apertado no último tick não pula o fim");
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "over", "o mesmo aperto não abre a porta");
+  game.act({ dash: false });
+  game.advance(1);
+  game.act({ dash: true });
+  game.advance(1);
+  assert.equal(game.observe().phase, "title", "um avanço novo volta à porta");
+  assert.equal(game.observe().tick, 0);
+  assert.equal(Number.isFinite(game.lastRun.score), true);
+  game.dispose();
+});
+
 test("watch anuncia a fase sem gravar achado", () => {
   const game = createGame({
     seed: 5,

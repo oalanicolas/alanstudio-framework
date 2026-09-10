@@ -28,7 +28,7 @@ primeiro ciclo nomeia teclado, toque e controle; `npm run serve` tenta
 abrir o navegador quando o terminal é interativo. Abrir a janela não é
 jogar. Com tela, o boot espera o avanço: a abertura nomeia a fantasia,
 a última pontuação, o recorde e repetir a última seed. O fim
-volta à porta. Sem tela o headless começa jogando. Repetir não
+volta à porta com um avanço novo; R também. Sem tela o headless começa jogando. Repetir não
 é o tick interrompido.
 
 Módulos ES não carregam por `file://`, então abrir `index.html` direto no

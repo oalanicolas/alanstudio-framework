@@ -1,8 +1,9 @@
 // Superfície de convite. A tabela da página ensina o verbo; quem nunca
 // viu o jogo não deveria lê-la. `?invite=1` some o painel. Esconder a
 // tabela não é alguém de fora nem curva observada. Depois do fim, a
-// página oferece os quatro nomes para copiar ou gravar. Copiar não
-// grava. Esqueleto vazio não é achado. Gravado não é alguém de fora.
+// porta também oferece os quatro nomes — no overlay e na abertura, se
+// houver partida. Copiar não grava. Esqueleto vazio não é achado.
+// Gravado não é alguém de fora.
 
 export function inviteMode(search = "") {
   const raw = typeof search === "string" ? search : "";
@@ -21,14 +22,18 @@ export function applyInvite({ root, stage, search } = {}) {
   return on;
 }
 
-export function applyFinding({ root, phase, invite } = {}) {
-  const show = Boolean(invite && phase === "over");
+function afterRun(phase, run) {
+  return phase === "over" || (phase === "title" && Boolean(run));
+}
+
+export function applyFinding({ root, phase, invite, run } = {}) {
+  const show = Boolean(invite && afterRun(phase, run));
   root?.classList?.toggle("finding", show);
   return show;
 }
 
-export function applyNote({ root, phase, invite } = {}) {
-  const show = Boolean(!invite && phase === "over");
+export function applyNote({ root, phase, invite, run } = {}) {
+  const show = Boolean(!invite && afterRun(phase, run));
   root?.classList?.toggle("note", show);
   return show;
 }

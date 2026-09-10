@@ -3,6 +3,16 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.117 — O fim também abre com o avanço
+
+O overlay pedia R. O mesmo verbo da porta volta à
+abertura se o avanço for um pedido novo. A página
+mantém o recibo na porta. `felt` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.117 não afirma: o harness não voltou à
+porta e o overlay não é peso percebido.
+
 ## 0.9.116 — O término também fala
 
 O dash sentava, empurrava e deixava puff. O mixer

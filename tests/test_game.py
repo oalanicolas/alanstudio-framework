@@ -2947,6 +2947,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         cycle = game.starter_cycle("canvas-arcade")
         self.assertIn("door", cycle)
         self.assertIn("porta", cycle["door"])
+        self.assertIn("volta", cycle["door"])
         self.assertIn("headless", cycle["door"])
         line = game.cycle_line(cycle)
         self.assertIn("Porta:", line)

@@ -23,6 +23,6 @@
   "title_again": "Repetir a última: {dash}",
   "title_new": "Nova partida: {reset}",
   "title_last": "Última",
-  "over_door": "Abertura: {reset}",
-  "over_door_inline": "abertura: {reset}"
+  "over_door": "Abertura: {dash}",
+  "over_door_inline": "abertura: {dash}"
 }

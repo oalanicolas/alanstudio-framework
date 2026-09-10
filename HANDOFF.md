@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.116: o término também fala.
+**HEAD:** ver `git log -1` — vigente 0.9.117: o fim também abre com o avanço.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 248 OK.
-`cd assets/starters/canvas-arcade && npm test` → 284 OK.
+`cd assets/starters/canvas-arcade && npm test` → 285 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.116)
+## O que o HEAD já entrega (0.9.91–0.9.117)
 
 | Ver | Salto |
 | --- | --- |
@@ -60,6 +60,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.114 | Depois do fim, a página grava o recibo de `note` se você escrever. Convite não oferece. `felt` continua falso. |
 | 0.9.115 | No convite, a página grava `docs/playtest/<utc>-achado.md` se os quatro tiverem texto. Copiar não grava. Esqueleto vazio não é achado. `outsider` continua falso. |
 | 0.9.116 | O término do dash declara `land` no mixer (voz curta, x do campo, legenda). Recipes de mecânica/visual nomeiam a porta. `felt`/`heard` continuam falsos. |
+| 0.9.117 | Um avanço *novo* no fim volta à porta. Dash apertado no último tick não pula o overlay. `#note`/`#finding` também na abertura se houver partida. `felt` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -132,8 +133,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Não promover pacing/art/feel/a11y por convite, CSS, faixa, contorno,
   LAN, caption, marca de queda, botão de remap, panner, halo, vinheta,
   ponta, tela de título, `gameSpeed` no disco, `hold` no stub,
-  coil/windup no disco, copiar ou gravar o achado, last-run ou
-  recibo da página.
+  coil/windup no disco, copiar ou gravar o achado, last-run,
+  recibo da página ou avanço no overlay.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -183,7 +184,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   incrementar `stats.dashes`). Sem dash, `attractTick` anda a chuva da
   porta — sem RNG, sem `entities`. Reduced trava a queda. Reset na title sorteia seed nova
   e vai a `playing`. Pause na title é ignorado. Com tela, `reset()` sem
-  argumento no `over` volta à title; `reset(seed)` explícito joga.
+  argumento no `over` volta à title; um avanço *novo* no over faz o
+  mesmo. Dash ainda apertado no último tick não arma a porta.
+  `reset(seed)` explícito joga.
 - Continuar = **repetir `lastSeed`**, não restaurar o tick. `canContinue`
   exige `runs > 0` e `lastSeed`. `doorOpen()` relê o progresso — não
   congela o valor do boot.
@@ -197,18 +200,20 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   1ª guarda. `coachHint` some se `phase !== "playing"`.
 - `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
 - `title_play` / `title_again` / `title_new` / `title_last` /
-  `over_door` / `over_door_inline` em `COPY_FIELDS`. `migrateCopy`
-  preenche default se a mesa antiga não tiver.
+  `over_door` / `over_door_inline` em `COPY_FIELDS` (default `{dash}`).
+  `migrateCopy` preenche default se a mesa antiga não tiver.
 - Invite (`?invite=1`) some `#commands`, não `#remap`. `#finding`
-  só aparece com `html.invite.finding` depois do `over`. Copiar não
-  grava. Gravar só se `playFinding` devolver texto. Esqueleto vazio
-  não casa `FINDING_FIELDS`. Achado `.md` ≠ recibo `record.json`.
+  aparece com `html.invite.finding` no `over` e na `title` se houver
+  `lastRun`. Copiar não grava. Gravar só se `playFinding` devolver
+  texto. Esqueleto vazio não casa `FINDING_FIELDS`. Achado `.md` ≠
+  recibo `record.json`.
 - Serve POST `/playtest/last-run` grava `docs/playtest/last-run.json`.
   Força `observed`/`felt` falsos e `policy: played`. Árvore
   exportada responde 403. Sem canvas o headless não posta.
 - Serve POST `/playtest/note` grava `docs/playtest/<utc>/record.json`.
   Nota vazia é 400. Autor vazio vira `página`. Anexa last-run se
-  existir. `#note` só depois do `over` e fora do convite. `felt` falso.
+  existir. `#note` no `over` e na `title` se houver `lastRun`, fora
+  do convite. `felt` falso.
 - Serve POST `/playtest/finding` grava `docs/playtest/<utc>-achado.md`.
   Quatro vazios → 400. Árvore exportada → 403. `outsider` falso.
   Não é `record.json` e não limpa `playable.unplayed` sozinho.
@@ -236,10 +241,10 @@ Candidatos, do que ainda dói:
    `len(steps) == 3` e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
-4. **Item 1 residual:** o mapa, `feel.md`, `mechanics.md` e `visual.md`
-   já nomeiam a porta. Recipes de outro foco que ainda falarem só do
-   campo sem a abertura estão velhas — a primeira superfície com tela
-   é a porta.
+4. **Item 1 residual:** o mapa, `feel.md`, `mechanics.md`, `visual.md`
+   e `lifecycle.md` já nomeiam a porta. Recipes de outro foco que
+   ainda falarem só do campo sem a abertura estão velhas — a primeira
+   superfície com tela é a porta.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, copiar o
    achado e gravar os quatro nomes não fecham. A receita de
@@ -263,5 +268,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `SOUNDS.land`, `tools/design-sfx.py`
-`--from land`, `recipes/mechanics.md` e `recipes/visual.md`.
+Arquivos quentes da última sessão: `doorArmed` em `main.js`,
+`applyNote`/`applyFinding` com `run`, `over_door` em `{dash}`.

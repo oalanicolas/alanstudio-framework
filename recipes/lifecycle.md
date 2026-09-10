@@ -18,6 +18,11 @@ leitura da tecla morava dentro da simulação, que não roda em pausa. O comando
 para sair de um estado nunca pode ser lido por um caminho que aquele estado
 desliga. Percorra a ligação real: evento de entrada → quadro → estado.
 
+Com tela, o ciclo deste starter é abertura → partida → fim → abertura.
+O avanço abre a porta e, depois do fim, um avanço *novo* volta a ela.
+R no overlay também. Sem tela o headless já joga. A página oferece o
+recibo no overlay e na porta se houver partida; isso não é observação.
+
 Examine separadamente:
 
 - Pausa da simulação, render visível, input, áudio, callbacks e transições.

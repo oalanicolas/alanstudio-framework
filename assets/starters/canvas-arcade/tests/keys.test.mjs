@@ -26,8 +26,8 @@ test("o padrão preenche o aviso e o overlay com as teclas do manifesto", () => 
   assert.equal(lines.title_play, "Jogar: Espaço");
   assert.equal(lines.title_again, "Repetir a última: Espaço");
   assert.equal(lines.title_new, "Nova partida: R");
-  assert.equal(lines.over_door, "Abertura: R");
-  assert.equal(lines.over_door_inline, "abertura: R");
+  assert.equal(lines.over_door, "Abertura: Espaço");
+  assert.equal(lines.over_door_inline, "abertura: Espaço");
   assert.equal(actionLabel(DEFAULT_BINDINGS, "bank"), "↓");
   assert.deepEqual(actionLabels(DEFAULT_BINDINGS, "pause"), ["Esc", "P"]);
 });

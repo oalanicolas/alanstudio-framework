@@ -977,7 +977,8 @@ test("o aviso ensina as três superfícies e o overlay confirma o controle", () 
   over.phase = "over";
   renderer.draw(over, {}, {}, { surface: "gamepad" });
   const fim = recorder.calls.texts.map((item) => item.text);
-  assert.ok(fim.some((text) => text.includes("Select")), `fim: ${JSON.stringify(fim)}`);
+  assert.ok(fim.some((text) => text.includes("Abertura: A")), `fim: ${JSON.stringify(fim)}`);
+  assert.equal(fim.some((text) => text.includes("Select")), false, "o overlay do fim nomeia o avanço");
 });
 
 test("a recarga do dash enche a faixa sem aprovar o feel", () => {

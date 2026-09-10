@@ -84,6 +84,7 @@ export function createGame(options = {}) {
   let lastRun = progress.lastRun ?? null;
   let disposed = false;
   let lastPhase = state.phase;
+  let doorArmed = true;
   let trace = createTrace();
   const watchers = new Set();
   function resetTrace() {
@@ -168,6 +169,18 @@ export function createGame(options = {}) {
       emitPhase();
       return;
     }
+    if (state.phase === "over") {
+      // O mesmo verbo da porta. Um dash que ainda estava apertado
+      // no último tick não pula o overlay nem o recibo.
+      if (!intent?.dash) doorArmed = true;
+      else if (doorArmed) {
+        handle.reset();
+        return;
+      }
+      advanceRules(state, intent);
+      emitPhase();
+      return;
+    }
     advanceRules(state, intent);
     traceTick(trace, state);
     for (const event of state.events) {
@@ -176,6 +189,7 @@ export function createGame(options = {}) {
     }
     if (state.phase === "over" && !recorded) {
       recorded = true;
+      doorArmed = false;
       lastRun = summarizeRun(state);
       progress = recordRun(progress, state);
       saveProgress(storage, progress, progressLoad);
@@ -279,11 +293,11 @@ export function createGame(options = {}) {
       return loop.paused;
     },
     reset(seed = state.seed) {
-      // Com tela, o fim não pula a porta. R no overlay abre a
-      // abertura — repetir a seed ou sortear outra. Sem tela o
-      // headless continua no tick zero. Reset no meio da partida
-      // não muda de fase. Seed explícita (teste, `seed()`) entra
-      // jogando — não é o botão do overlay.
+      // Com tela, o fim não pula a porta. R no overlay — e um
+      // avanço novo — abrem a abertura. Sem tela o headless
+      // continua no tick zero. Reset no meio da partida não muda
+      // de fase. Seed explícita (teste, `seed()`) entra jogando —
+      // não é o botão do overlay.
       const toTitle = Boolean(canvas) && state.phase === "over" && arguments.length === 0;
       const nextSeed = toTitle ? (progress.lastSeed ?? seed) : seed;
       progress = { ...progress, hold: null };

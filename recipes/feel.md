@@ -4,7 +4,7 @@ Entrada: verbo central, referência de sensação (aprovada ou proposta) e a
 diferença percebida entre intenção e resposta atual.
 
 Com tela, a primeira superfície é a porta. O campo começa depois do
-avanço. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
+avanço. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured`. `playtest --invite`
 escreve a página e aponta `/?invite=1`, onde a tabela some; depois do

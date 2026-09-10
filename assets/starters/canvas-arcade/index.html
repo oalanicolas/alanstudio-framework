@@ -229,8 +229,9 @@
       if (game) {
         const invited = inviteMode(location.search);
         const revealAfter = (phase) => {
-          applyFinding({ root: document.documentElement, phase, invite: invited });
-          applyNote({ root: document.documentElement, phase, invite: invited });
+          const run = game.lastRun;
+          applyFinding({ root: document.documentElement, phase, invite: invited, run });
+          applyNote({ root: document.documentElement, phase, invite: invited, run });
         };
         if (typeof game.watch === "function") game.watch(revealAfter);
         else revealAfter(game.observe().phase);
