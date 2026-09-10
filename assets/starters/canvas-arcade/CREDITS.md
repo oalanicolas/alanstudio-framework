@@ -33,6 +33,7 @@ uso, versão e o consumidor no código.
 | `public/sfx/over.wav` / `over-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 | `public/sfx/close.wav` / `close-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 | `public/sfx/live.wav` / `live-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
+| `public/sfx/stir.wav` / `stir-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 | `public/sfx/bed.wav` / `bed-b.wav` | design original, `tools/design-sfx.py` | CC0-1.0 |
 
 Recibo por arquivo em `public/sfx/<papel>.credits.txt` e lista em

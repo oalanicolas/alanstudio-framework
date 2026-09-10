@@ -19,7 +19,7 @@ from pathlib import Path
 RATE = 44100
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "public" / "sfx"
-ROLES = ("dash", "graze", "collect", "bank", "hit", "over", "close", "live", "bed")
+ROLES = ("dash", "graze", "collect", "bank", "hit", "over", "close", "live", "stir", "bed")
 INTENTS = {
     "brighter": "sobe o tom e abre o brilho",
     "darker": "desce o tom e fecha o grave",
@@ -140,6 +140,13 @@ def live(index: int, total: int) -> float:
     return 0.22 * rise + 0.06 * air
 
 
+def stir(index: int, total: int) -> float:
+    t = index / RATE
+    settle = math.sin(2 * math.pi * (277.18 - 50 * t) * t) * envelope(index, total, 0.006, 0.08)
+    air = noise(index, 31) * envelope(index, total, 0.002, 0.06)
+    return 0.20 * settle + 0.045 * air
+
+
 def bed(index: int, total: int) -> float:
     # Ciclos inteiros em 4s: a junta do loop não pede envelope.
     t = index / RATE
@@ -158,6 +165,7 @@ VOICES = {
     "over": (0.55, over, None, None),
     "close": (0.08, close, 0.62, 0.28),
     "live": (0.14, live, 0.58, 0.24),
+    "stir": (0.12, stir, 0.54, 0.26),
     "bed": (4.0, bed, None, 0.12),
 }
 

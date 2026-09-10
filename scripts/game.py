@@ -3386,7 +3386,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         ],
         "scope": (
             "Três passos ideia→ciclo: start, jogar, note. Se o starter declara "
-            "o verbo e as teclas, o passo 2 as nomeia. Sem destino, a frase "
+            "o verbo e as teclas, o passo 2 as nomeia — inclusive o par. Sem destino, a frase "
             "nomeia a pasta no comando do start — ao lado do framework se o "
             "mapa corre de dentro desta árvore; no diretório atual se corre "
             "de fora. `guide --idea` continua só no comando, não no disco. "

@@ -57,7 +57,7 @@ de jogar; `loadSpawn` recusa.
 | `hazardChanceStart` / `hazardChanceEnd` | Quanto da chuva é estilhaço |
 | `fallSpeedMin` / `fallSpeedMax` | Quão rápido o item atravessa o campo |
 | `practiceTicks` | Primeiros ticks só com orbe; o campo marca a janela |
-| `recoveryTicks` / `recoveryIntervalScale` | Folga depois de guardar; o campo marca a janela |
+| `recoveryTicks` / `recoveryIntervalScale` | Folga depois de guardar; o campo marca a janela e o mixer fala na volta |
 
 Três chuvas mais o texto do HUD não são volume. `enough` no harness
 continua falso. Alguém de fora ainda não produziu no piso.

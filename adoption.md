@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.89 — A guarda também fala
+
+O campo já contornava a folga depois de guardar. O mixer calava:
+`stir` não era papel. A voz e a legenda "a chuva volta" entram no
+barramento de UI, com variante, no tick em que a janela acaba.
+Nasceu com `--from stir`, sem republicar o banco. `heard` continua
+falso. `audio_mix` permanece `slice`: arquivo no disco não é mix
+ouvido. Só `release` fica no piso.
+
+O que 0.9.89 não afirma: o harness não ouviu o tap e a legenda não
+aprova o mix.
+
 ## 0.9.88 — A guarda também marca o campo
 
 Guardar já alongava a chuva. O campo calava: a folga só existia

@@ -61,6 +61,7 @@ export const CONFIG = {
     telegraphReach: 36, // antecipação: a ameaça marca o trilho antes do contato
     flashHit: 0.55, // impacto do erro: o campo acende; coleta não
     flashPractice: 0.28, // a prática some: o campo acende menos que o erro
+    flashStir: 0.18, // a folga acaba: o campo acende menos que a prática
     flashDecay: 0.72,
     closeTicks: 600, // TICK_HZ * 10 — fecho: o campo marca o fim; não é faixa no HUD
     rumbleDashMs: 16, // partida: toque curto
@@ -446,6 +447,14 @@ function markPractice(state) {
   emit(state, "live");
 }
 
+function markRecovery(state) {
+  if (state.phase !== "playing") return;
+  const until = state.recoverUntil;
+  if (!Number.isFinite(until) || until <= 0 || state.tick !== until) return;
+  state.flash = Math.max(state.flash, CONFIG.feel.flashStir);
+  emit(state, "stir");
+}
+
 // Avança exatamente um passo de simulação. Muta e devolve o mesmo estado: o loop
 // de jogo roda isto muitas vezes por segundo e alocar um estado novo por passo
 // produz coleta de lixo perceptível como engasgo. A chuva compacta o array vivo
@@ -483,6 +492,7 @@ export function advance(state, intent = neutralIntent()) {
     state.shake *= CONFIG.feel.shakeDecay;
     decayFlash(state);
     markPractice(state);
+    markRecovery(state);
     decayCamera(state);
     decayMotes(state);
     return state;
@@ -519,6 +529,7 @@ export function advance(state, intent = neutralIntent()) {
   if (state.shake < 0.01) state.shake = 0;
   decayFlash(state);
   markPractice(state);
+  markRecovery(state);
   decayCamera(state);
   player.squash *= CONFIG.feel.squashDecay;
   if (player.squash < 0.01) player.squash = 0;

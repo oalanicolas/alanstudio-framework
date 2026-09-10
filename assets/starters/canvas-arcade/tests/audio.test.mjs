@@ -101,6 +101,15 @@ test("a prática legendas sem fingir que o mix foi ouvido", () => {
   assert.equal("duckMs" in SOUNDS.live, false);
 });
 
+test("a guarda legendas sem fingir que o mix foi ouvido", () => {
+  const { audio } = build();
+  audio.play("stir");
+  assert.equal(audio.captions()[0].text, "a chuva volta");
+  assert.equal(SOUNDS.stir.bus, "ui");
+  assert.equal(SOUNDS.stir.loop, undefined);
+  assert.equal("duckMs" in SOUNDS.stir, false);
+});
+
 test("legenda desligada não produz legenda", () => {
   const { audio } = build({ settings: { buses: { master: 1 }, captions: false } });
   audio.play("hit");

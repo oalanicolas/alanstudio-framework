@@ -60,6 +60,7 @@ test("graze e cama não inventam pulso", () => {
   assert.equal(haptics.play("bed"), false);
   assert.equal(haptics.play("missed"), false);
   assert.equal(haptics.play("live"), false);
+  assert.equal(haptics.play("stir"), false);
   assert.deepEqual(plays, []);
   haptics.dispose();
 });

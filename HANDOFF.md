@@ -36,7 +36,7 @@ acervo é `sfx import` / `sfx seed` (ffmpeg); `sfx info` lê a ficha
 e `sfx export` copia bytes e créditos. Importar e exportar não é ouvir.
 O starter
 já traz design original e variante (`-b`) nos papéis do verbo, no fecho,
-na prática e na cama e carrega no mixer. A cama entra em loop no barramento de música.
+na prática, na guarda e na cama e carrega no mixer. A cama entra em loop no barramento de música.
 `npm run mix` soma cama e vozes na partida simulada com o mesmo palco,
 folga e taxa da corrente do mixer. `sfx --from` / `--as` desloca a voz
 no papel que o mixer já toca. Coleta e guarda sobem de tom com a

@@ -428,6 +428,42 @@ test("guardar abre uma janela de recuperação na chuva", () => {
   assert.equal(recoveringWindow(ended), false);
 });
 
+test("sair da recuperação emite e acende o campo", () => {
+  const state = createState(1);
+  state.chain = 2;
+  advance(state, { move: 0, dash: false, bank: true });
+  assert.equal(state.events.some((event) => event.type === "stir"), false, "guardar não é o tap da volta");
+  const until = state.recoverUntil;
+  state.hitstop = 0;
+  state.bankLock = 0;
+  state.tick = until - 1;
+  advance(state, neutralIntent());
+  assert.equal(state.tick, until);
+  assert.equal(recoveringWindow(state), false);
+  assert.ok(state.events.some((event) => event.type === "stir"), "sair da recuperação precisa emitir");
+  assert.ok(state.flash >= CONFIG.feel.flashStir, "sair da recuperação acende o campo");
+
+  const mid = createState(1);
+  mid.chain = 2;
+  advance(mid, { move: 0, dash: false, bank: true });
+  mid.hitstop = 0;
+  mid.tick = mid.recoverUntil - 10;
+  advance(mid, neutralIntent());
+  assert.equal(mid.events.some((event) => event.type === "stir"), false, "meio da recuperação não é o tap");
+
+  const hold = createState(1);
+  hold.chain = 2;
+  advance(hold, { move: 0, dash: false, bank: true });
+  const first = hold.recoverUntil;
+  hold.hitstop = 0;
+  hold.bankLock = 0;
+  hold.tick = first - 1;
+  hold.chain = 2;
+  advance(hold, { move: 0, dash: false, bank: true });
+  assert.ok(hold.recoverUntil > first);
+  assert.equal(hold.events.some((event) => event.type === "stir"), false, "alongar a folga não é a volta");
+});
+
 test("orbe perdido é contado, não silencioso", () => {
   const state = createState(6);
   state.entities = [orb(20, 190)];

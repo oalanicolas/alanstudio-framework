@@ -1955,7 +1955,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["approved"])
         self.assertEqual(
             [item["id"] for item in report["roles"]],
-            ["dash", "graze", "collect", "bank", "hit", "over", "close", "live", "bed"],
+            ["dash", "graze", "collect", "bank", "hit", "over", "close", "live", "stir", "bed"],
         )
         self.assertEqual(report["empty"], [])
         self.assertTrue(all(item["state"] == "present" for item in report["roles"]))
@@ -2289,6 +2289,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("feel.closeTicks", keys)
         self.assertIn("feel.rumbleCloseMs", keys)
         self.assertIn("feel.flashPractice", keys)
+        self.assertIn("feel.flashStir", keys)
         self.assertIn("src/game/rules.js", report["sources"])
         self.assertEqual(report["observations"], [])
         empty = game.feel_reading(self.project)

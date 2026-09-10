@@ -162,6 +162,24 @@
       "license": "CC0-1.0",
       "origin": "tools/design-sfx.py",
       "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "stir.wav",
+      "key": "stir",
+      "title": "Canvas Arcade / stir",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
+    },
+    {
+      "src": "stir-b.wav",
+      "key": "stir-b",
+      "title": "Canvas Arcade / stir-b",
+      "author": "Alan Studios Framework",
+      "license": "CC0-1.0",
+      "origin": "tools/design-sfx.py",
+      "note": "design contemporâneo original; não é gravação de campo"
     }
   ]
 }
