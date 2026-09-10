@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.226 — A guarda leva o x do campo
+
+A
+aposta
+falava
+sempre
+no
+centro.
+Coleta,
+queda
+e
+avanço
+já
+marcavam
+o
+lugar.
+Agora
+guardar
+emite
+`x`.
+Número
+no
+panner
+não
+é
+mix
+ouvido.
+Não
+promove
+`heard`.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.226 não afirma:
+lugar
+no
+disco
+não
+é
+mix
+percebido.
+
 ## 0.9.225 — A queda não come o verbo em curso
 
 O

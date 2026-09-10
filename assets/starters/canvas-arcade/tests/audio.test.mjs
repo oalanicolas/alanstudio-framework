@@ -191,6 +191,16 @@ test("o término legendas sem fingir que o mix foi ouvido", () => {
   assert.equal("duckMs" in SOUNDS.land, false);
 });
 
+test("a guarda leva o x do campo sem fingir que o mix foi ouvido", () => {
+  const { audio, context } = build();
+  audio.register("bank", { duration: 0.1 });
+  assert.equal(audio.play("bank", { chain: 4, x: 0 }), true);
+  assert.equal(context.panners[0].pan.value, -1);
+  assert.equal(audio.play("bank", { chain: 4, x: FIELD.width }), true);
+  assert.equal(context.panners[1].pan.value, 1);
+  assert.equal(captionFor("bank", { chain: 4, x: 0 }), "corrente guardada, corrente 4");
+});
+
 test("o orbe perdido legendas sem fingir que o mix foi ouvido", () => {
   const { audio } = build();
   audio.play("missed");

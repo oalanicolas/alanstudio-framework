@@ -13,7 +13,7 @@
 // O erro emite `lost`. Sem isto a faixa dizia corrente perdida
 // com aposta zero. Número na legenda não é mix ouvido.
 // Coleta, queda, raspo, impacto,
-// avanço e o término levam o x do campo; o panner marca o lugar. Arquivo no disco
+// avanço, o término e a guarda levam o x do campo; o panner marca o lugar. Arquivo no disco
 // não é mixagem ouvida: `heard` no harness continua falso.
 //
 // O jogo carrega o arquivo no mixer. Sem esse consumidor, arquivo no

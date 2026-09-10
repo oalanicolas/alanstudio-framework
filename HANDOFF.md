@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.225 (confirmado): a queda não come o verbo em curso.
+**HEAD:** ver `git log -1` — vigente 0.9.226: a guarda leva o x do campo.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 279 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.225)
+## O que o HEAD já entrega (0.9.91–0.9.226)
 
 | Ver | Salto |
 | --- | --- |
@@ -169,6 +169,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.223 | O relógio não come a guarda que já sentou. O sit converte antes do `over`. Sem sit a corrente continua caindo. Não promove feel. |
 | 0.9.224 | O hitstop não alonga o relógio no fim. O limite encerra mesmo durante o congelamento. Não promove feel. |
 | 0.9.225 | A queda não come o verbo em curso. Marca o chão; não senta avanço, coil nem sit da guarda. Não promove feel. |
+| 0.9.226 | A guarda leva o x do campo. A aposta não fala no centro. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -185,7 +186,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | a queda não come o verbo em curso; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
-| audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
+| audio_mix | slice | a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | live nomeia o aviso na porta e no fim; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -312,7 +313,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou orbe no arco da guarda que inflama a aposta
   ou relógio que come a guarda que já sentou
   ou hitstop no fim que alonga o relógio
-  ou queda longe que senta o verbo em curso.
+  ou queda longe que senta o verbo em curso
+  ou guarda que fala no centro.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -445,6 +447,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   caiu. Não herda `chain`. Rajada do mesmo id fica com o
   texto vigente. Sem o número o tom falava e a faixa calava.
   `heard` falso.
+  A guarda emite `x` no campo — sem isto a aposta falava no centro.
   Pedido sem buffer: last-wins na fila; `register` toca sem segunda
   legenda. `dispose` esquece. Tecla ligada e toque chamam
   `audio.unlock()` no gesto. Stems sobem juntos (`Promise.all`);
@@ -704,6 +707,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um relógio que come a guarda que já sentou.
 **Não** mais um hitstop no fim que alonga o relógio.
 **Não** mais uma queda longe que senta o verbo em curso.
+**Não** mais uma guarda que fala no centro.
 
 Candidatos, do que ainda dói:
 
@@ -1033,6 +1037,10 @@ Candidatos, do que ainda dói:
   que senta o
   verbo em
   curso
+  e a
+  guarda que
+  fala no
+  centro
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1056,6 +1064,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a queda
-não come o verbo em curso. Marca o chão;
-não senta o compromisso. Não promove feel.
+Arquivos quentes da última sessão: a guarda
+leva o x do campo. A aposta não fala
+no centro. Não promove heard.

@@ -118,8 +118,18 @@ test("guardar converte a corrente ao quadrado e cobra o compromisso", () => {
   assert.ok(state.bankLock > 0, "guardar trava o dash por um instante");
   assert.deepEqual(
     state.events.find((event) => event.type === "bank"),
-    { type: "bank", chain: 4, gain: 16 },
+    { type: "bank", chain: 4, gain: 16, x: state.player.x },
   );
+});
+
+test("a guarda leva o x do campo", () => {
+  const state = createState(1);
+  state.chain = 4;
+  state.player.x = 20;
+  bankOut(state);
+  const banked = state.events.find((event) => event.type === "bank");
+  assert.ok(banked);
+  assert.equal(banked.x, 20, "a voz precisa do lugar da aposta");
 });
 
 test("guardar sem corrente não faz nada e não trava o dash", () => {
@@ -727,7 +737,7 @@ test("evento reusado não carrega campo do verbo anterior", () => {
   state.chain = 4;
   state.spawnTimer = 999;
   bankOut(state);
-  assert.deepEqual(state.events[0], { type: "bank", chain: 4, gain: 16 });
+  assert.deepEqual(state.events[0], { type: "bank", chain: 4, gain: 16, x: state.player.x });
   const before = eventPoolStats();
   while (state.hitstop > 0 || state.bankLock > 0) {
     advance(state, neutralIntent());

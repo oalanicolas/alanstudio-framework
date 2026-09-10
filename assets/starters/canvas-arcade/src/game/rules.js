@@ -858,7 +858,10 @@ function commitBank(state) {
   state.player.squash = CONFIG.feel.squashBank;
   punch(state, 0, CONFIG.feel.punchBankY);
   state.recoverUntil = state.tick + rain(state).recoveryTicks;
-  emit(state, "bank", { chain, gain });
+  // Coleta, queda e avanço já marcam o lugar. Sem isto
+  // a decisão da aposta falava sempre no centro.
+  // Número no panner não é mix ouvido.
+  emit(state, "bank", { chain, gain, x: state.player.x });
 }
 
 function bank(state, intent) {

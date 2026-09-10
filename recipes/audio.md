@@ -30,7 +30,7 @@ A legenda desses dois papéis nomeia a mesma aposta. Sem o número
 o tom falava e a faixa calava. O erro emite `lost`; a faixa nomeia
 a corrente que caiu e cala a aposta quando era zero. Não herda
 `chain`. Número na legenda não é mix ouvido.
-Coleta, queda, raspo, impacto, avanço e o término levam o x do campo; o panner
+Coleta, queda, raspo, impacto, avanço, o término e a guarda levam o x do campo; o panner
 marca o lugar. Número no panner não é mix ouvido. O término (`land`) é
 voz própria, mais curta que o dash; sem o papel o aterrissar é mudo.
 `sfx --from` / `--as` desloca a voz no papel que o mixer já toca;
