@@ -12,7 +12,10 @@ falha com o número; campo obrigatório falha com o nome da mesa.
 starter já consome (`?spawn=` / `settings.spawnProfile`).
 `--as denser|calmer|brief` desloca os knobs e deixa a chuva distinta.
 `npm run pair -- <nome> --from dusk|calm` nasce look e chuva no mesmo
-nome; `listMoods` inclui e `?mood=` aplica. `npm run session -- --spawn <nome>` traça essa chuva. Depois de um
+nome; `listMoods` inclui e `?mood=` aplica. `npm run session -- --spawn <nome>` traça essa chuva. Com tela, a
+porta também chove essa mesa — cadência e queda, sem o RNG da
+partida. Trocar `?spawn=` / `?mood=` troca a mostra. Mesa no disco
+não é volume. Depois de um
 `note`, `start` e `next` apontam `pair --from`, `look --from` e `table --from`. `dusk` e `calm` são
 a segunda e a terceira chuva, não volume — `enough` é sempre
 falso. Alguém de fora ainda não produziu no piso.

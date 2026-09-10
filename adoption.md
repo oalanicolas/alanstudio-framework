@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.124 — A porta também chove a mesa
+
+A mostra da abertura era quatro gotas fixas.
+`?spawn=` / `?mood=` mudavam o campo e a porta
+mentia. A porta lê cadência e queda da mesa,
+sem RNG. `consistent` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.124 não afirma: chuva na porta não é
+comparação em movimento nem direção aprovada.
+
 ## 0.9.123 — O convite também nomeia a seed
 
 O guia já apontava `/?seed=<n>`. Quem nunca viu

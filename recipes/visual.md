@@ -3,7 +3,9 @@
 Entrada: referência aprovada, diferença percebida e percurso/câmera de comparação.
 
 Com tela, a primeira superfície é a porta. Halo, vinheta e a chuva
-da abertura são o primeiro quadro; o campo começa depois do avanço.
+da abertura são o primeiro quadro; a mostra lê a mesa vigente —
+dusk cai mais denso, calm mais folgado — sem comer a seed. O campo
+começa depois do avanço.
 Comparar só o meio da partida esconde a imagem que o jogador vê ao
 abrir. Sem tela o headless já joga.
 

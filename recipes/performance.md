@@ -8,6 +8,10 @@ eficiente do **mesmo** resultado; reduzir sombras, resolução, animação ou ef
 para atingir um número é rebaixar o jogo, não otimizá-lo. Se a única saída for
 cortar acabamento, isso é uma decisão de escopo e precisa ser registrada como tal.
 
+Com tela, a porta também anda: a mostra da mesa vigente cai todo
+tick. Orçar só o campo esconde o primeiro quadro. Sem tela o
+headless já joga.
+
 Meça o que o jogador sente. FPS médio esconde exatamente o problema que importa:
 use a distribuição do tempo de quadro e o pior percentil. Um jogo a 60 quadros com
 um engasgo de 200 ms por minuto é lido como instável; um jogo estável a 30 não é.

@@ -527,6 +527,26 @@ test("perda de foco pausa e descarrega", () => {
   game.dispose();
 });
 
+test("trocar a chuva na porta troca a mostra e não abre o ciclo", () => {
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    canvas: silentCanvas(),
+    loadSfx: false,
+  });
+  assert.equal(game.observe().phase, "title");
+  assert.equal(game.observe().spawnProfile, "spawn");
+  game.updateSettings({ spawnProfile: "dusk" });
+  const after = game.observe();
+  assert.equal(after.phase, "title", "outra mesa na porta não é beginRun");
+  assert.equal(after.spawnProfile, "dusk");
+  assert.equal(after.tick, 0);
+  assert.equal(after.entities.length, 0);
+  assert.equal(after.stats.dashes, 0);
+  game.dispose();
+});
+
 test("trocar o perfil de chuva recomeça a partida com a mesa nova", () => {
   const { game, storage } = harness();
   game.advance(40);

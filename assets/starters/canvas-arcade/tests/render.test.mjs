@@ -614,6 +614,20 @@ test("a abertura chove sem ser a partida", () => {
   assert.ok(hudBands(drawn) <= hudBands(live), "a chuva da porta não é faixa no HUD");
 });
 
+test("a porta chove a mesa sem fingir direção aprovada", () => {
+  const spawn = paint(createState(1, { entry: "title" }));
+  const dusk = paint(createState(1, { entry: "title", spawnProfile: "dusk" }));
+  const calm = paint(createState(1, { entry: "title", spawnProfile: "calm" }));
+  assert.ok(dusk.arcs > spawn.arcs, "dusk na porta pinta mais orbe");
+  assert.ok(dusk.lineTos > spawn.lineTos, "dusk na porta pinta mais estilhaço");
+  assert.ok(calm.lineTos < spawn.lineTos, "calm na porta pinta menos estilhaço");
+  assert.ok(
+    calm.arcs + calm.lineTos < spawn.arcs + spawn.lineTos,
+    "calm na porta pinta menos chuva",
+  );
+  assert.ok(hudBands(dusk) <= hudBands(spawn), "mais chuva na porta não é faixa no HUD");
+});
+
 test("o corpo aponta para o lado do último avanço", () => {
   const left = createState(1);
   left.player.dir = -1;

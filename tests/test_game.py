@@ -3091,6 +3091,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("?look=calm", report["cycle"]["look"])
         self.assertIn("?spawn=dusk", report["cycle"]["spawn"])
         self.assertIn("?spawn=calm", report["cycle"]["spawn"])
+        self.assertIn("porta", report["cycle"]["spawn"])
         self.assertIn("?mood=calm", report["cycle"]["mood"])
         self.assertIn("?mood=dusk", report["cycle"]["mood"])
         self.assertIn("?invite=1", report["cycle"]["invite"])

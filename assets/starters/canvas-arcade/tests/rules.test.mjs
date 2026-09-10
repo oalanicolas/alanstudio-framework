@@ -490,12 +490,42 @@ test("a chuva da porta não come a seed", () => {
   assert.equal(state.rngState, rng);
   assert.equal(state.phase, "title");
   const rain = attractEntities(state);
+  assert.equal(rain.length, 4, "a mostra do spawn continua a chuva de quatro");
+  assert.equal(rain[0].x, 48);
+  assert.equal(rain[1].x, 120);
   assert.ok(rain.some((entity) => entity.kind === "orb"));
   assert.ok(rain.some((entity) => entity.kind === "shard"));
   const frozen = attractEntities(state, true);
   assert.notEqual(frozen[0].y, rain[0].y, "com menos movimento a chuva da porta trava");
   beginRun(state);
   assert.equal(attractEntities(state).length, 0, "abrir a porta some a chuva de mostra");
+});
+
+test("a porta chove a mesa sem comer a seed", () => {
+  const spawn = createState(7, { entry: "title" });
+  const dusk = createState(7, { entry: "title", spawnProfile: "dusk" });
+  const calm = createState(7, { entry: "title", spawnProfile: "calm" });
+  const rng = { spawn: spawn.rngState, dusk: dusk.rngState, calm: calm.rngState };
+  attractTick(spawn);
+  attractTick(dusk);
+  attractTick(calm);
+  const shown = attractEntities(spawn);
+  const late = attractEntities(dusk);
+  const soft = attractEntities(calm);
+  assert.equal(shown.length, 4);
+  assert.ok(late.length > shown.length, "dusk na porta é mais denso");
+  assert.ok(soft.length < shown.length, "calm na porta é mais folgado");
+  assert.ok(late[0].y > shown[0].y, "dusk na porta cai mais rápido");
+  assert.ok(soft[0].y < shown[0].y, "calm na porta cai mais devagar");
+  assert.ok(late.some((entity) => entity.kind === "orb"));
+  assert.ok(late.some((entity) => entity.kind === "shard"));
+  assert.ok(soft.some((entity) => entity.kind === "orb"));
+  assert.ok(soft.some((entity) => entity.kind === "shard"));
+  assert.equal(spawn.rngState, rng.spawn);
+  assert.equal(dusk.rngState, rng.dusk);
+  assert.equal(calm.rngState, rng.calm);
+  assert.equal(spawn.entities.length, 0);
+  assert.equal(dusk.tick, 0);
 });
 
 test("sair da recuperação emite e acende o campo", () => {

@@ -439,9 +439,11 @@ export function beginRun(state) {
   return state;
 }
 
-// Chuva só da porta. Não usa o RNG da partida, não entra em
-// `entities` e some quando o avanço abre o ciclo. Movimento no
-// stub não é comparação em movimento.
+// Chuva só da porta. Lê a mesa vigente — cadência e queda — sem
+// o RNG da partida, sem entrar em `entities`, e some quando o
+// avanço abre o ciclo. A mostra do spawn (intervalo 22, queda
+// 1.1) é a chuva de quatro que já estava aqui. Mesa no disco
+// não é comparação em movimento.
 export function attractTick(state) {
   if (!state || state.phase !== "title") return state;
   state.attractTick = (state.attractTick ?? 0) + 1;
@@ -451,12 +453,21 @@ export function attractTick(state) {
 export function attractEntities(state, reduced = false) {
   if (!state || state.phase !== "title") return [];
   const t = reduced ? 0 : (state.attractTick ?? 0);
+  const table = rain(state);
+  const interval = Number.isFinite(table.intervalTicks) && table.intervalTicks > 0
+    ? table.intervalTicks
+    : 22;
+  const count = Math.max(3, Math.min(6, Math.round((4 * 22) / interval)));
+  const base = Number.isFinite(table.fallSpeedMin) && table.fallSpeedMin > 0
+    ? table.fallSpeedMin
+    : 1.1;
+  const span = 72 * 3;
   const items = [];
-  for (let index = 0; index < 4; index += 1) {
-    const travel = (t * (1.1 + index * 0.15) + index * 44) % (FIELD.height - 28);
+  for (let index = 0; index < count; index += 1) {
+    const travel = (t * (base + index * 0.15) + index * 44) % (FIELD.height - 28);
     items.push({
       kind: index % 2 === 0 ? "orb" : "shard",
-      x: 48 + index * 72,
+      x: 48 + (count === 1 ? 0 : index * (span / (count - 1))),
       y: 18 + travel,
     });
   }
