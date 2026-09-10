@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.121 — A porta também lê a legenda
+
+O mixer guardava o fim. A abertura desenhava e
+voltava antes da faixa. A porta lê a mesma
+legenda. `verified` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.121 não afirma: o harness não leu a
+legenda no dispositivo e a linha no disco não é
+alcance observado.
+
 ## 0.9.120 — A partida também abre pela seed
 
 O achado anexava a seed e a página não abria essa

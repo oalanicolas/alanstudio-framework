@@ -3,6 +3,11 @@
 Entrada: ação ou transição que precisa ser ouvida, silenciada ou misturada,
 e a referência sonora aprovada (ou a lacuna explícita).
 
+Com tela, a primeira superfície é a porta. A cama para nela; o avanço
+que abre dispara `dash` em `beginRun()`. Attract não consome a seed.
+A porta também lê a legenda que o mixer ainda guarda — sem isto o fim
+existia no áudio e sumia na abertura. Texto no disco não é mix ouvido.
+
 Áudio AAA não é quantidade de arquivos. É mix: o jogador ouve a causa, o
 efeito e o espaço, e o silêncio também informa. Um loop 8-bit no lugar de
 uma gravação licenciada não cumpre o piso deste estúdio. jsfxr, chiptune

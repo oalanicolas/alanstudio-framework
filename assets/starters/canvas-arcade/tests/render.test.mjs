@@ -584,6 +584,24 @@ test("a abertura nomeia a fantasia, o recorde e a última seed", () => {
   assert.ok(hudBands(back) <= hudBands(paint(createState(1))), "a abertura não inventa faixa no HUD");
 });
 
+test("a porta também lê a legenda", () => {
+  const state = createState(1, { entry: "title" });
+  const captions = [{ text: "fim da partida", count: 1 }];
+  const drawn = paint(state, {}, { captions, best: 0 });
+  const line = drawn.texts.find((item) => String(item.text).includes("fim da partida"));
+  assert.ok(line, "a porta precisa da legenda que o mixer ainda guarda");
+  const plates = drawn.rects.filter((rect) => PLATE_COLORS.has(rect.style));
+  assert.ok(covered(line, plates), "legenda na porta também cabe na placa");
+  const muted = paint(state, { captions: false }, { captions, best: 0 });
+  assert.equal(
+    muted.texts.some((item) => String(item.text).includes("fim da partida")),
+    false,
+    "captions desligado some a linha",
+  );
+  assert.ok(hudBands(drawn) <= hudBands(paint(createState(1))), "a legenda da porta não é faixa no HUD");
+  assert.ok(line.bottom < PLAYER_Y - 6, `legenda na porta desce até ${line.bottom}`);
+});
+
 test("a abertura chove sem ser a partida", () => {
   const door = createState(1, { entry: "title" });
   const play = createState(1);

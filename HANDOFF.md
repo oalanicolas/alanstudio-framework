@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.120: a partida também abre pela seed.
+**HEAD:** ver `git log -1` — vigente 0.9.121: a porta também lê a legenda.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 249 OK.
-`cd assets/starters/canvas-arcade && npm test` → 288 OK.
+`cd assets/starters/canvas-arcade && npm test` → 289 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.120)
+## O que o HEAD já entrega (0.9.91–0.9.121)
 
 | Ver | Salto |
 | --- | --- |
@@ -64,6 +64,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.118 | `guide` / `start` / `play` escrevem o `prompt` em stderr. O JSON fica no stdout. `executed` continua falso. |
 | 0.9.119 | O achado da página anexa `last-run` em `<utc>-achado.run.json` se a partida deixou candidato. `playtest` relata `finding_attachments`. `outsider` continua falso. |
 | 0.9.120 | `?seed=<n>` abre essa partida. Seed explícita (query ou construtor) ignora o hold. `playtest` relata `candidate_seed`. `CYCLE_KEYS` inclui `seed`. `observed` continua falso. |
+| 0.9.121 | A porta desenha a legenda que o mixer ainda guarda. `captions: false` some a linha. `verified` continua falso. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -187,7 +188,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - `player.dir` default `1`. Ponta some? Não — é forma, não brilho.
 - Fase `title` só com canvas (ou `options.entry === "title"`). Headless
   e `createState()` default = `playing`. `advance` em title não anda o
-  tick. Dash em `step` chama `beginRun` (squash, punch, `dash` sem
+  tick. A porta desenha `drawCaptions` se `captions !== false`.
+  Legenda na abertura não sobe `accessibility`. Dash em `step` chama `beginRun` (squash, punch, `dash` sem
   incrementar `stats.dashes`). Sem dash, `attractTick` anda a chuva da
   porta — sem RNG, sem `entities`. Reduced trava a queda. Reset na title sorteia seed nova
   e vai a `playing`. Pause na title é ignorado. Com tela, `reset()` sem
@@ -255,9 +257,9 @@ Candidatos, do que ainda dói:
 3. **Checkpoint do tick:** `hold` existe. Falta aba fechada real.
    Não promover. Não chamar `hold` de Continuar.
 4. **Item 1 residual:** o mapa, `feel.md`, `mechanics.md`, `visual.md`,
-   `lifecycle.md` e `accessibility.md` já nomeiam a porta. Recipes de
-   outro foco que ainda falarem só do campo sem a abertura estão
-   velhas — a primeira superfície com tela é a porta.
+   `lifecycle.md`, `accessibility.md` e `audio.md` já nomeiam a porta.
+   Recipes de outro foco que ainda falarem só do campo sem a abertura
+   estão velhas — a primeira superfície com tela é a porta.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, copiar o
    achado, gravar os quatro nomes e anexar last-run não fecham.
@@ -281,4 +283,4 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `readSeedQuery()` e `cycle.seed`.
+Arquivos quentes da última sessão: `drawCaptions()` na fase `title`.

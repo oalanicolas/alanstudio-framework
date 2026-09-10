@@ -120,6 +120,15 @@ export function createRenderer(canvas, options = {}) {
         else drawShard(context, palette, entity, reduced);
       }
       drawTitle(context, palette, settings, extra, lines);
+      // A porta também fala. Sem isto a legenda do fim existia no
+      // mixer e sumia na primeira superfície. Texto no disco não
+      // é sessão de alcance.
+      if (settings.captions !== false) {
+        const size = 8 * (settings.uiScale ?? 1);
+        drawCaptions(context, palette, extra.captions ?? [], {
+          timer: { x: FIELD.width - 40, y: 5, width: 34, height: size },
+        }, settings);
+      }
       return;
     }
     drawChain(context, palette, state, reduced);
