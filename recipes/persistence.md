@@ -49,7 +49,7 @@ save em `src/core/save.js` (schema 3), com migração e recuperação de dado in
 `hold` guarda o tick interrompido — seed, `rngState`, chuva e ofício.
 `canResume` lê o hold; `canContinue` continua sendo repetir a última seed.
 `?seed=<n>` abre essa partida e ignora o hold — não é Continuar.
-Pausa, `pagehide` e perda de foco gravam o hold. Terminar ou resetar limpa.
+Pausa, `pagehide`, `beforeunload` e perda de foco gravam o hold. Terminar ou resetar limpa.
 Isto **não** é aba fechada observada e não sobe `state_trust`. Grava
 de forma **verificada** em `src/core/storage.js` — escreve em chave de estágio,
 relê, compara e só então grava na chave real. Isso **não** é a escrita atômica do

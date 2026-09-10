@@ -683,6 +683,27 @@ test("a velocidade da partida sobrevive à reabertura", () => {
   reopened.dispose();
 });
 
+test("beforeunload descarrega o tick sem pausar nem chamar isso de confiável", () => {
+  const storage = memoryStorage();
+  const { game, target } = harness({ storage });
+  game.advance(40);
+  const tick = game.observe().tick;
+  assert.ok(tick > 0);
+  const leave = target.listeners.find((entry) => entry.type === "beforeunload");
+  assert.ok(leave, "beforeunload precisa de ouvinte");
+  leave.handler();
+  assert.equal(game.paused, false, "beforeunload descarrega sem pausar — a pausa é do hidden");
+  const saved = JSON.parse(storage.get("progress"));
+  assert.ok(saved.hold, "o tick precisa ficar no disco");
+  assert.equal(saved.hold.tick, tick);
+  assert.equal(game.persist.trusted, false);
+  const reopened = createGame({ eventTarget: recordingTarget(), storage });
+  assert.equal(reopened.observe().tick, tick, "a reabertura retoma o tick");
+  assert.equal(reopened.persist.trusted, false);
+  game.dispose();
+  reopened.dispose();
+});
+
 test("esconder a página descarrega o progresso e pausa", () => {
   const storage = memoryStorage();
   const { game, target } = harness({ storage });

@@ -305,8 +305,15 @@ export function createGame(options = {}) {
   const onPageHide = () => {
     flush();
   };
+  // pagehide cobre aba escondida e mobile. Fechar ou recarregar
+  // no desktop às vezes só fala beforeunload. Os dois descarregam
+  // o mesmo hold. Stub não é aba fechada; trusted continua falso.
+  const onBeforeUnload = () => {
+    flush();
+  };
   if (eventTarget && typeof eventTarget.addEventListener === "function") {
     eventTarget.addEventListener("pagehide", onPageHide);
+    eventTarget.addEventListener("beforeunload", onBeforeUnload);
     eventTarget.addEventListener("visibilitychange", onVisibility);
   }
   if (
@@ -403,6 +410,7 @@ export function createGame(options = {}) {
       haptics.dispose();
       if (eventTarget && typeof eventTarget.removeEventListener === "function") {
         eventTarget.removeEventListener("pagehide", onPageHide);
+        eventTarget.removeEventListener("beforeunload", onBeforeUnload);
         eventTarget.removeEventListener("visibilitychange", onVisibility);
       }
       if (

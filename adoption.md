@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.172 — O reload descarrega o tick
+
+O `hold` já existia.
+`pagehide` e o hidden
+já gravavam. Fechar ou
+recarregar no desktop
+às vezes só fala
+`beforeunload`. O mesmo
+flush. Sem pausar.
+`trusted` continua
+falso. Só `release`
+fica no piso.
+
+O que 0.9.172 não afirma:
+listener no stub não é
+aba fechada.
+
 ## 0.9.171 — A região viva nomeia a pausa
 
 O overlay já dizia

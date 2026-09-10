@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.171: a região viva nomeia a pausa.
+**HEAD:** ver `git log -1` — vigente 0.9.172: beforeunload descarrega o tick.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 267 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.171)
+## O que o HEAD já entrega (0.9.91–0.9.172)
 
 | Ver | Salto |
 | --- | --- |
@@ -115,6 +115,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.169 | O `over` pede fade na cama. Pause, title e aba escondida cortam seco. Play no meio do fade nasce de novo. Não promove `heard`. |
 | 0.9.170 | O `over` senta o corpo (`squashOver`). Larga dash, graça e arco da guarda. `fillRect` permanece. Não promove feel. |
 | 0.9.171 | A região viva nomeia `pausado`. Overlay do canvas não chega ao leitor. Não promove `accessibility`. |
+| 0.9.172 | `beforeunload` descarrega o mesmo hold do `pagehide`. Não pausa. Stub não é aba fechada. Não promove `trusted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -132,7 +133,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over no disco; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
-| state_trust | slice | `hold` no stub; aba fechada real não observada; `trusted` falso |
+| state_trust | slice | beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
 | accessibility | slice | pausa na região viva no disco; sessão real pendente |
 | content_scale | shippable | dusk+calm+pair; `enough` falso |
@@ -418,7 +419,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `outsider`/`observed` falsos). Não é `record.json` e não limpa
   `playable.unplayed` sozinho. `playtest` relata o anexo em
   `finding_attachments`.
-- `pagehide` flush; hidden pausa.
+- `pagehide` e `beforeunload` flush; hidden pausa. Stub não é aba fechada.
 - `gameSpeed` (0.5–1, padrão 1) dilata o acumulador do laço.
   `advance()` ignora. Assistência não é este knob.
 - `colorblind` é alcance, não look. `dressPalette` aplica
@@ -470,6 +471,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma cama que some seco no over enquanto o loop já tem ganho.
 **Não** mais um corpo em pose de jogo enquanto o relógio já derrubou a aposta.
 **Não** mais uma região viva que some a pausa enquanto o overlay já a nomeia.
+**Não** mais um tick que some no reload enquanto só o `pagehide` descarregava.
 
 Candidatos, do que ainda dói:
 
@@ -544,7 +546,9 @@ Candidatos, do que ainda dói:
   corpo sentado
   no over e a
   pausa na
-  região viva
+  região viva e o
+  beforeunload
+  do tick
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -568,5 +572,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a região viva nomeia a pausa.
-Overlay do canvas não chega ao leitor. Não promove `accessibility`.
+Arquivos quentes da última sessão: `beforeunload` descarrega o tick.
+Não pausa. Stub não é aba fechada. Não promove `trusted`.
