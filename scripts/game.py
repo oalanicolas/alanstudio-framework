@@ -2336,7 +2336,8 @@ def playtest_reading(project):
             "`played` ou `nearest-orb`. "
             "`invite_href` junta convite, número, mesa, paleta e relógio — "
             "`?invite=1&seed=&spawn=&look=&speed=` abre essa partida e ignora o hold. "
-            "`finding_href` aponta o painel `#finding` depois do fim; "
+            "`finding_href` junta o convite e o painel `#finding` — "
+            "sem `invite=1` o âncora some. "
             "com seed no disco junta o número e os eixos. "
             "`qa` nomeia `docs/qa.md` se o arquivo existir. "
             "`form` aponta o esqueleto dos quatro nomes; `fields` os lista. "
@@ -2407,11 +2408,10 @@ def invite_href(project):
 
 
 def finding_href(project):
-    # Painel do maker depois do fim. Não é convite e não é sessão.
-    seed = last_run_seed(project)
-    if isinstance(seed, int) and not isinstance(seed, bool):
-        return "/?" + "&".join([f"seed={seed}", *last_run_axes(project)]) + "#finding"
-    return "/#finding"
+    # O painel só nasce no convite. Sem invite=1 o
+    # âncora cai em display:none. Endereço no disco
+    # não é alguém de fora.
+    return f"{invite_href(project)}#finding"
 
 
 def invite_playtest(project):
@@ -4949,8 +4949,9 @@ def next_step(project, focus="create", studies_root=None):
         propose(
             "Escrever o achado de playtest no formato problema, evidência, hipótese e medição",
             "Há observação (ou um qa.md vigente) e nenhum achado com os quatro "
-            "campos. `playtest` só lê. A página depois do fim (`#finding`) e "
-            "`note --field` escrevem. Nota de partida não é métrica. "
+            "campos. `playtest` só lê. A página do convite (`/?invite=1#finding`) e "
+            "`note --field` escrevem. Sem o convite o âncora some. "
+            "Nota de partida não é métrica. "
             "last-run.json é candidato, não causa. O harness não assistiu "
             "à sessão e não conta jogadores.",
             "Um documento ou o próprio recibo nomeia problema, evidência, "

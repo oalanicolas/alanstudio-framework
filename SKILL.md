@@ -298,7 +298,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    O convite junta mesa e paleta. Nenhum dos
    dois é sessão observada.    Recibo sem forma entra no
    `next` como `playtest.unstructured`: a proposta aponta a
-   página (`#finding`) e `note --field`. `playtest` só lê.
+   página (`/?invite=1#finding`) e `note --field`. Sem o
+   convite o âncora some. `playtest` só lê.
    Nomeia `form` (esqueleto dos quatro) e `fields`. Sem `then`.
    Esqueleto no disco não é achado.
 

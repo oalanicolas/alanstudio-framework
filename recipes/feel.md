@@ -17,7 +17,8 @@ o avanço de cima. Soltar no disco não é
 sessão observada. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured` e aponta a página
-(`#finding`) e `note --field`. `playtest` só lê. Nomeia `form` e
+(`/?invite=1#finding`) e `note --field`. Sem o convite o âncora
+some. `playtest` só lê. Nomeia `form` e
 `fields`. Sem `then`. Esqueleto no disco não é achado. O `note`
 nomeia `finding` e `needed` no próprio recibo. Recibo sem os
 quatro não é achado. `playtest --invite`

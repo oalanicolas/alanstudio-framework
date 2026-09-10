@@ -3891,7 +3891,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(report["candidate_curve"])
         self.assertIsNone(report["candidate_policy"])
         self.assertIsNone(report["invite"])
-        self.assertEqual(report["finding_href"], "/#finding")
+        self.assertEqual(report["finding_href"], "/?invite=1#finding")
         self.assertIsNone(report["qa"])
         self.assertEqual(report["fields"], ["problema", "evidencia", "hipotese", "medicao"])
         self.assertTrue(Path(report["form"]).is_file())
@@ -3906,6 +3906,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertIn("problema", proposal["action"])
         self.assertIn("só lê", proposal["why"])
+        self.assertIn("invite=1#finding", proposal["why"])
         self.assertFalse(any(" playtest " in f" {command} " for command in proposal["commands"]))
         self.assertFalse(any(" feel " in f" {command} " for command in proposal["commands"]))
         self.assertTrue(any(" --field " in command and "problema=" in command for command in proposal["commands"]))
@@ -3924,6 +3925,19 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["outsider"])
         self.assertIn("Esqueleto no disco não é achado", report["scope"])
 
+    def test_finding_href_opens_the_invite_so_the_panel_shows(self):
+        href = game.finding_href(self.project)
+        self.assertEqual(href, game.invite_href(self.project) + "#finding")
+        self.assertTrue(href.startswith("/?invite=1"))
+        self.assertNotEqual(href, "/#finding")
+        html = (game.FRAMEWORK / "assets/starters/canvas-arcade/index.html").read_text(
+            encoding="utf-8",
+        )
+        self.assertIn("#finding { display: none; }", html)
+        self.assertIn("html.invite.finding #finding { display: block; }", html)
+        self.assertIn("sem `invite=1` o âncora some", game.playtest_reading(self.project)["scope"])
+        self.assertFalse(game.playtest_reading(self.project)["outsider"])
+
     def test_note_from_run_attaches_the_candidate_without_closing_the_finding(self):
         destination = self.root / "com-corrida"
         game.init(destination, "canvas-arcade")
@@ -3940,7 +3954,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         reading = game.playtest_reading(destination)
         self.assertEqual(reading["candidate"], "docs/playtest/last-run.json")
         self.assertEqual(reading["candidate_seed"], 7)
-        self.assertEqual(reading["finding_href"], "/?seed=7#finding")
+        self.assertEqual(reading["finding_href"], "/?invite=1&seed=7#finding")
+        self.assertEqual(reading["finding_href"], reading["invite_href"] + "#finding")
         self.assertIsNone(reading["candidate_spawn"])
         self.assertIsNone(reading["candidate_look"])
         self.assertIsNone(reading["candidate_speed"])
@@ -4031,7 +4046,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.playtest_reading(self.project)
         self.assertTrue(report["qa_current"])
         self.assertEqual(report["qa"], "docs/qa.md")
-        self.assertEqual(report["finding_href"], "/#finding")
+        self.assertEqual(report["finding_href"], "/?invite=1#finding")
         self.assertTrue(report["structured"])
         self.assertFalse(report["unstructured"])
         self.assertFalse(report["observed"])

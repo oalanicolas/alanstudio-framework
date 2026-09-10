@@ -717,8 +717,8 @@ Esqueleto vazio não é achado. `next` propõe `playtest.invite`
 depois do recibo de quem fez (e depois do segundo ciclo, se houver).
 `next` propõe `playtest.unstructured` quando há recibo de observação
 (ou um `docs/qa.md` vigente) e o achado ainda não tem forma. A
-proposta aponta a página (`finding_href`, `#finding`) e
-`note --field`. `playtest` só lê. Nomeia `form` (o esqueleto
+proposta aponta a página (`finding_href`, `/?invite=1#finding`) e
+`note --field`. Sem o convite o âncora some. `playtest` só lê. Nomeia `form` (o esqueleto
 dos quatro nomes) e `fields`. Sem `then`. Esqueleto no disco
 não é achado. Se o arquivo `docs/qa.md`
 existir, o recibo o nomeia em `qa`. Escrever não é sessão

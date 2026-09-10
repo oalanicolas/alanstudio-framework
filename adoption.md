@@ -3,6 +3,40 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.297 — O achado abre o convite
+
+O
+playtest
+apontava
+`/#finding`.
+Sem
+`invite=1`
+o
+painel
+some.
+Agora
+o
+endereço
+é
+o
+convite
+mais
+a
+âncora.
+Não
+promove
+`outsider`.
+
+O que 0.9.297 não afirma:
+abrir
+o
+convite
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.296 — A porta não chama o tap de cima
 
 O
