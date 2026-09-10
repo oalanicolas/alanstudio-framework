@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.227 (confirmado): a fantasia na porta não come o aviso de mover.
+**HEAD:** ver `git log -1` — vigente 0.9.228: depois da porta o campo não repete a frase nem o mover.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 279 OK.
-`cd assets/starters/canvas-arcade && npm test` → 402 OK.
+`cd assets/starters/canvas-arcade && npm test` → a confirmar no 0.9.228.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.227)
+## O que o HEAD já entrega (0.9.91–0.9.228)
 
 | Ver | Salto |
 | --- | --- |
@@ -171,6 +171,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.225 | A queda não come o verbo em curso. Marca o chão; não senta avanço, coil nem sit da guarda. Não promove feel. |
 | 0.9.226 | A guarda leva o x do campo. A aposta não fala no centro. Não promove `heard`. |
 | 0.9.227 | A fantasia na porta não come o aviso de mover. Depois da frase a porta ainda ensina a abrir. Não promove feel. |
+| 0.9.228 | Depois da porta o campo não repete a frase nem o mover. Dash e coleta entram. Headless ainda vê a frase. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -184,7 +185,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | a queda não come o verbo em curso; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | depois da porta o campo não repete o ensino; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | a guarda leva o x do campo; fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
@@ -316,7 +317,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou hitstop no fim que alonga o relógio
   ou queda longe que senta o verbo em curso
   ou guarda que fala no centro
-  ou fantasia na porta que come o aviso de mover.
+  ou fantasia na porta que come o aviso de mover
+  ou campo que repete a frase e o mover da porta.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -526,15 +528,21 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Coach: fantasy → move → dash → hit → miss → touch/pad → collect → null após
   1ª guarda. Exceção: `closingWindow` e `chain > 0` devolve `bank`
   mesmo depois da primeira guarda. Sem corrente o fecho não ensina.
-  Pad/touch não voltam. Na porta (`phase === "title"`) o relógio
+  Pad/touch não voltam.   Na porta (`phase === "title"`) o relógio
   é `attractTick`: fantasia e mover; a frase não come o aviso
   de abrir — depois dos 48 ticks de fantasia vem uma janela
   inteira de mover. Sem frase o mover continua os 60 ticks.
-  Depois some. Dash, coleta,
+  Depois some. `beginRun` não zera `attractTick`. Se a porta
+  já deu a frase (`attractTick >= 48`) o campo não a repete.
+  Se a porta já fechou o ensino (`attractTick >= 108` com
+  frase, ou `>= 60` sem) o campo não pede mover de novo —
+  dash e coleta entram. Headless (`attractTick === 0`) ainda
+  vê a frase nos primeiros 48 ticks. Dash, coleta,
   guarda, queda, hit e superfície ficam no campo. `over` continua mudo.
   `hint_hit` nomeia o estilhaço quando `hits > 0` e `chain === 0`.
   Dash no trilho vence. Texto no disco não é `felt`.
-- `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso.
+- `copy.fantasy` alimenta a abertura **e** os 48 ticks do aviso
+  quando a porta ainda não deu a frase.
   Na porta o mover começa depois da frase, não no mesmo orçamento.
 - `title_play` / `title_again` / `title_new` / `title_last` /
   `title_volatile` / `title_unsaved` /
@@ -715,6 +723,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma queda longe que senta o verbo em curso.
 **Não** mais uma guarda que fala no centro.
 **Não** mais uma fantasia na porta que come o aviso de mover.
+**Não** mais um campo que repete a frase e o mover que a porta já deu.
 
 Candidatos, do que ainda dói:
 
@@ -1053,6 +1062,12 @@ Candidatos, do que ainda dói:
   porta que
   come o aviso
   de mover
+  e o
+  campo que
+  repete a
+  frase e o
+  mover da
+  porta
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -1076,6 +1091,7 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a fantasia
-na porta não come o aviso de mover. Depois
-da frase a porta ainda ensina a abrir. Não promove feel.
+Arquivos quentes da última sessão: depois da
+porta o campo não repete a frase nem o mover.
+Dash e coleta entram. Headless ainda vê a
+frase. Não promove feel.

@@ -8,7 +8,8 @@
 // mesa com a forma de spawn entram por `?spawn=<nome>` ou settings.spawnProfile.
 // `npm run table -- <nome> --from spawn|dusk|calm` copia essa forma; `--as`
 // aplica uma intenção nomeada e deixa a chuva distinta. `copy.fantasy`
-// tem consumidor: a abertura e o coach do primeiro ciclo.
+// tem consumidor: a abertura e o coach do primeiro ciclo
+// quando a porta ainda não deu a frase.
 // `title_play`, `title_again` e `title_new` nomeiam a porta.
 // `title_volatile` e `title_unsaved` nomeiam sessão que não
 // grava e gravação que não ficou. Nomear não é `trusted`.

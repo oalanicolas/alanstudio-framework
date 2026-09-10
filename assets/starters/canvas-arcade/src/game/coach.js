@@ -1,6 +1,8 @@
 // Ensino do primeiro ciclo. Sem isto o jogador só aprende pela tabela da
 // página — e a barra chama isso de protótipo. A porta ensina fantasia
 // e mover no relógio da mostra; dash, coleta e guarda ficam no campo.
+// `beginRun` não zera `attractTick`: se a porta já deu a frase
+// e o mover, o campo não os repete.
 // O aviso some depois da primeira vez que o jogador guarda: a decisão
 // já foi jogada.
 //
@@ -46,9 +48,15 @@ export function coachHint(state, lines = {}, extra = {}) {
   if (closingWindow(state) && (state.chain ?? 0) > 0) return "bank";
   if (state.stats.banks > 0) return null;
   const fantasy = typeof lines.fantasy === "string" ? lines.fantasy.trim() : "";
-  if (fantasy && state.tick < FANTASY_TICKS) return "fantasy";
+  const door = state.attractTick ?? 0;
+  // A porta já deu a frase e o mover. Repetir no
+  // campo come o dash e a coleta. Headless não
+  // passa pela porta — a frase continua o primeiro
+  // aviso. Texto no disco não é sessão.
+  if (fantasy && state.tick < FANTASY_TICKS && door < FANTASY_TICKS) return "fantasy";
   if (state.chain >= 2) return "bank";
-  if (state.tick < MOVE_TICKS) return "move";
+  const taughtMove = fantasy ? FANTASY_TICKS + MOVE_TICKS : MOVE_TICKS;
+  if (state.tick < MOVE_TICKS && door < taughtMove) return "move";
   if ((state.stats.dashes ?? 0) === 0 && shardThreat(state)) return "dash";
   if ((state.stats.hits ?? 0) > 0 && (state.chain ?? 0) === 0) return "hit";
   if ((state.stats.missed ?? 0) > 0 && (state.chain ?? 0) === 0) return "miss";

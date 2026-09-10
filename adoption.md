@@ -3,6 +3,62 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.228 — Depois da porta o campo não repete o ensino
+
+A
+porta
+já
+deu
+a
+frase
+e
+o
+mover.
+O
+campo
+repetia
+os
+dois
+e
+comia
+o
+dash
+e
+a
+coleta.
+Agora
+quem
+espera
+a
+porta
+entra
+no
+verbo
+do
+campo.
+Headless
+ainda
+vê
+a
+frase.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.228 não afirma:
+aviso
+no
+campo
+não
+é
+sessão
+observada.
+
 ## 0.9.227 — A fantasia na porta não come o aviso de mover
 
 A

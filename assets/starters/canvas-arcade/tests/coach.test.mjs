@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { coachHint, FANTASY_TICKS, MOVE_TICKS } from "../src/game/coach.js";
-import { CONFIG, createState, PLAYER_Y } from "../src/game/rules.js";
+import { beginRun, CONFIG, createState, PLAYER_Y } from "../src/game/rules.js";
 
 const shardOnRail = () => ({ id: 1, kind: "shard", x: 160, y: PLAYER_Y - 22, vy: 0 });
 const orbOnRail = () => ({ id: 2, kind: "orb", x: 160, y: PLAYER_Y - 22, vy: 0 });
@@ -67,6 +67,38 @@ test("a fantasia na porta não come o aviso de mover", () => {
   assert.equal(coachHint(plain), "move", "sem frase o aviso de mover continua o mesmo");
   plain.attractTick = MOVE_TICKS;
   assert.equal(coachHint(plain), null);
+});
+
+test("depois da porta o campo não repete a frase nem o mover", () => {
+  const lines = { fantasy: "guardar a corrente" };
+  const door = createState(1, { entry: "title" });
+  door.attractTick = FANTASY_TICKS + MOVE_TICKS;
+  beginRun(door);
+  assert.equal(door.phase, "playing");
+  assert.equal(door.tick, 0);
+  assert.equal(coachHint(door, lines), "collect", "depois da porta o campo pede o orbe");
+  door.entities = [shardOnRail()];
+  assert.equal(coachHint(door, lines), "dash", "depois da porta o estilhaço pede o dash");
+
+  const mid = createState(2, { entry: "title" });
+  mid.attractTick = FANTASY_TICKS;
+  beginRun(mid);
+  assert.equal(coachHint(mid, lines), "move", "se a porta só deu a frase o campo ainda pede mover");
+  mid.entities = [shardOnRail()];
+  assert.equal(coachHint(mid, lines), "move", "mover ainda vem antes do dash se a porta não terminou");
+
+  const mash = createState(3, { entry: "title" });
+  mash.attractTick = 10;
+  beginRun(mash);
+  assert.equal(coachHint(mash, lines), "fantasy", "quem fura a porta ainda vê a frase no campo");
+
+  const headless = createState(4);
+  assert.equal(coachHint(headless, lines), "fantasy", "sem porta a frase continua o primeiro aviso");
+
+  const plain = createState(5, { entry: "title" });
+  plain.attractTick = MOVE_TICKS;
+  beginRun(plain);
+  assert.equal(coachHint(plain), "collect", "sem frase a porta que já ensinou mover não pede de novo");
 });
 
 test("a abertura ensina mover sem abrir o ciclo", () => {
