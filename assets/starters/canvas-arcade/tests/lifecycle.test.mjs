@@ -517,11 +517,12 @@ test("advance ignora a velocidade da partida", () => {
 
 test("preferências e progresso vivem em chaves separadas", () => {
   const { game, storage } = harness();
-  game.updateSettings({ highContrast: true, reducedMotion: true });
+  game.updateSettings({ highContrast: true, reducedMotion: true, colorblind: true });
   game.advance(CONFIG.runTicks);
   storage.remove("progress");
   const reopened = createGame({ seed: 5, eventTarget: recordingTarget(), storage });
   assert.equal(reopened.settings.highContrast, true, "apagar a partida não apaga a preferência");
+  assert.equal(reopened.settings.colorblind, true);
   assert.equal(reopened.progress.runs, 0);
   game.dispose();
   reopened.dispose();

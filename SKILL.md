@@ -207,7 +207,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    achado. Não joga e não sente.
    **`access` / `save` / `budget`** leem opção de alcance (incluindo
    uiScale, remapeamento das seis ações do teclado na página, preset de
-   uma mão, assistência e velocidade da partida), versão de save e artefato
+   uma mão, assistência, velocidade da partida e tinta estável), versão de save e artefato
    de orçamento. Trocar no stub não é sessão observada.
    `verified`/`trusted`/`measured` são sempre falsos.
    Falta no disco entra no `next` antes dos rascunhos.

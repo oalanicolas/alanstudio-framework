@@ -8,7 +8,7 @@
 // `render.js`, `audio.js`, `input.js` ou `rules.js`. `spawnProfile` escolhe
 // a mesa de chuva; `look` escolhe o look de arte. Nome desconhecido cai
 // no padrão. `contrast` não é look: alto contraste continua sendo o modo
-// de alcance.
+// de alcance. `colorblind` também é alcance: troca só a tinta da chuva.
 
 import { readJson, writeJson } from "./storage.js";
 
@@ -48,6 +48,7 @@ export function defaultSettings(environment = {}) {
     schema: SETTINGS_SCHEMA,
     reducedMotion: Boolean(environment.prefersReducedMotion),
     highContrast: Boolean(environment.prefersHighContrast),
+    colorblind: false,
     captions: true,
     assist: false,
     gameSpeed: 1,
@@ -92,6 +93,7 @@ export function normalizeSettings(raw, environment = {}, base = defaultSettings(
     schema: SETTINGS_SCHEMA,
     reducedMotion: typeof raw.reducedMotion === "boolean" ? raw.reducedMotion : base.reducedMotion,
     highContrast: typeof raw.highContrast === "boolean" ? raw.highContrast : base.highContrast,
+    colorblind: typeof raw.colorblind === "boolean" ? raw.colorblind : base.colorblind,
     captions: typeof raw.captions === "boolean" ? raw.captions : base.captions,
     assist: typeof raw.assist === "boolean" ? raw.assist : base.assist,
     gameSpeed: Number.isFinite(raw.gameSpeed)

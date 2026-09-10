@@ -8,7 +8,7 @@ com redução; a vinheta também. O stub distingue as silhuetas com a
 mesma tinta; o dispositivo alvo não foi observado. Paletas canônicas em
 `data/palettes.json` (`normal`, `contrast`, `dusk` e `calm`); o desenho consome
 `PALETTES` via `src/game/tables.js`. `look` escolhe `normal`, `dusk` ou `calm`;
-`contrast` continua sendo o modo de alcance.
+`contrast` e a tinta estável (`colorblind`) são alcance, não look.
 
 ## Tokens
 

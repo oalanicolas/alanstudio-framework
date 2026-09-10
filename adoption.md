@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.129 — A tinta estável também é alcance
+
+O look dusk pinta orbe e estilhaço no mesmo
+eixo quente. `colorblind` aplica o par azul/laranja
+do padrão e deixa o campo do look. Não é look.
+Alto contraste vence. `verified` continua falso.
+Só `release` fica no piso.
+
+O que 0.9.129 não afirma: a chave no disco não é
+sessão com o modo ativo nem leitura no aparelho.
+
 ## 0.9.128 — O convite também leva o look
 
 O convite já juntava a chuva. Quem jogou com

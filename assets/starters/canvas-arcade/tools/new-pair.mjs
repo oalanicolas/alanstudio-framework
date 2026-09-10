@@ -20,7 +20,7 @@ const moods = listMoods();
 const lookIntents = listLookIntents();
 const spawnIntents = listSpawnIntents();
 const RESERVED = new Set([
-  "contrast", "look", "palettes", "spawn", "copy", "table", "pair", "mood",
+  "contrast", "colorblind", "look", "palettes", "spawn", "copy", "table", "pair", "mood",
   "dusk", "calm", "normal",
 ]);
 

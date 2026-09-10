@@ -183,6 +183,7 @@
       <div class="grid">
         <label><input type="checkbox" id="reducedMotion" /> <span>Reduzir movimento</span></label>
         <label><input type="checkbox" id="highContrast" /> <span>Alto contraste</span></label>
+        <label><input type="checkbox" id="colorblind" /> <span>Tinta estável (orbe azul, estilhaço laranja)</span></label>
         <label><input type="checkbox" id="captions" /> <span>Legendas de som</span></label>
         <label><input type="checkbox" id="assist" /> <span>Assistência (alcance maior, chuva mais lenta)</span></label>
         <label><span>Velocidade da partida</span><input type="range" id="gameSpeed" min="0.5" max="1" step="0.05" /></label>
@@ -221,7 +222,7 @@
       import { applyFinding, applyInvite, applyNote, applyShare, composeFinding, inviteHref, inviteMode } from "./src/core/invite.js";
       import { FINDING_ROUTE, NOTE_ROUTE, playFinding } from "./src/core/run-report.js";
       import { applyShell } from "./src/core/shell.js";
-      import { LOOK_LABELS, SPAWN_LABELS, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch, PALETTES, resolveLookName } from "./src/game/tables.js";
+      import { LOOK_LABELS, SPAWN_LABELS, dressPalette, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch } from "./src/game/tables.js";
       import { paintCommands } from "./src/core/keys.js";
       import { mountRemap } from "./src/core/remap.js";
       applyInvite({
@@ -295,7 +296,7 @@
             document.getElementById("finding-save").textContent = "Achado no disco";
           }).catch(() => {});
         });
-        const toggles = ["reducedMotion", "highContrast", "captions", "assist"];
+        const toggles = ["reducedMotion", "highContrast", "colorblind", "captions", "assist"];
         const buses = ["master", "sfx", "music", "ui"];
         const spawnSelect = document.getElementById("spawnProfile");
         spawnSelect.replaceChildren();
@@ -342,10 +343,7 @@
         };
         const dress = () => {
           const settings = game.settings;
-          const palette = settings.highContrast
-            ? PALETTES.contrast
-            : PALETTES[resolveLookName(settings.look)];
-          applyShell(document.documentElement, palette);
+          applyShell(document.documentElement, dressPalette(settings));
         };
         const sync = () => {
           const settings = game.settings;
@@ -363,7 +361,7 @@
         for (const name of toggles) {
           document.getElementById(name).addEventListener("change", (event) => {
             game.updateSettings({ [name]: event.target.checked });
-            if (name === "highContrast") dress();
+            if (name === "highContrast" || name === "colorblind") dress();
           });
         }
         document.getElementById("oneHand").addEventListener("change", (event) => {

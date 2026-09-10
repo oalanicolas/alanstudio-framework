@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   applyLookIntent, applySpawnIntent, loadTable, loadSpawn, listLookIntents,   listLooks, listMoods, listSpawnIntents, listSpawnProfiles, looksLikeSpawn, lookRecord,
-  LOOK_LABELS, matchingMood, pairPatch, resolveLookName, resolveMoodName, SPAWN_LABELS,
+  LOOK_LABELS, matchingMood, pairPatch, resolveLookName, resolveMoodName, SPAWN_LABELS, COLORBLIND_INKS, dressPalette,
   migrateCopy, migratePalettes, migrateSpawn, migrateTable, requireFields, resolveSpawnName, spawnRecord, TABLES,
   SPAWN_FIELDS, SPAWN_SCHEMA, COPY_SCHEMA, COPY_FIELDS, PALETTE_SCHEMA, PALETTE_FIELDS, LOOK_INTENTS, SPAWN_INTENTS, PALETTES,
 } from "../src/game/tables.js";
@@ -26,6 +26,15 @@ test("as mesas passam pelo mesmo carregador", () => {
   assert.equal(resolveLookName("calm"), "calm");
   assert.equal(resolveLookName("contrast"), "normal");
   assert.equal(resolveLookName("inventada"), "normal");
+  assert.equal(dressPalette({ look: "dusk" }).orb, PALETTES.dusk.orb);
+  assert.equal(dressPalette({ look: "dusk" }).field, PALETTES.dusk.field);
+  assert.notEqual(PALETTES.dusk.orb, PALETTES.normal.orb, "dusk no eixo quente precisa desta tinta");
+  const stable = dressPalette({ look: "dusk", colorblind: true });
+  assert.equal(stable.orb, COLORBLIND_INKS.orb);
+  assert.equal(stable.shard, COLORBLIND_INKS.shard);
+  assert.equal(stable.field, PALETTES.dusk.field, "a tinta estável não troca o campo");
+  assert.equal(dressPalette({ look: "dusk", colorblind: true, highContrast: true }).field, PALETTES.contrast.field);
+  assert.equal(listLooks().includes("colorblind"), false);
   assert.throws(() => loadTable("inventada"), /mesa desconhecida/);
 });
 

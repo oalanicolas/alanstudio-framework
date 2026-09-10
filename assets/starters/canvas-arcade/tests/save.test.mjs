@@ -221,6 +221,14 @@ test("o look de arte é preferência persistida, não um modo escondido", () => 
   assert.equal(defaultSettings({}).look, "normal");
 });
 
+test("a tinta estável é preferência persistida, não um look", () => {
+  assert.equal(defaultSettings({}).colorblind, false);
+  assert.equal(normalizeSettings({ colorblind: true }).colorblind, true);
+  assert.equal(normalizeSettings({ colorblind: "sim" }).colorblind, false);
+  const current = { ...defaultSettings({}), colorblind: true };
+  assert.equal(normalizeSettings({ colorblind: "sim" }, {}, current).colorblind, true);
+});
+
 test("o preset de uma mão usa o cluster direito sem colidir", () => {
   const codes = Object.values(ONE_HAND_BINDINGS).flat();
   assert.deepEqual(

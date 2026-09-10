@@ -57,6 +57,8 @@ test("o comando registra o look no mesmo consumidor", async () => {
     assert.match(again.stderr, /já existe look dawn/);
     const reserved = await runLook(project, "contrast", ["--from", "dusk"]);
     assert.equal(reserved.code, 2);
+    const reach = await runLook(project, "colorblind", ["--from", "dusk"]);
+    assert.equal(reach.code, 2);
     const existing = await runLook(project, "normal", ["--from", "dusk"]);
     assert.equal(existing.code, 2);
     const calmReserved = await runLook(project, "calm", ["--from", "dusk"]);

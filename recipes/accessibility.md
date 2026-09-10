@@ -38,7 +38,7 @@ Uma opção sem consumidor no código não é uma opção.
 
 `access <projeto>` lê as opções que o código declara (highContrast,
 reducedMotion, captions, remapeamento, uiScale, preset de uma mão,
-assistência e velocidade da partida). `verified` é sempre falso: chave no fonte não é sessão
+assistência, velocidade da partida e tinta estável). `verified` é sempre falso: chave no fonte não é sessão
 com o modo ativo. O starter `canvas-arcade` expõe `assist`, `gameSpeed` e o remapeamento
 das seis ações do teclado na página; a tabela `#commands`
 nomeia as teclas vigentes e mantém toque e controle no

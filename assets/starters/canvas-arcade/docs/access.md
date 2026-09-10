@@ -6,6 +6,7 @@ Declaração vigente. Opção no código não é sessão observada.
 ## O que o recorte atende
 
 - Contraste alto (`highContrast`) com paleta própria
+- Tinta estável (`colorblind`): orbe e estilhaço usam o par azul/laranja do look padrão; o campo do look permanece. Alto contraste vence. Chave no disco não é sessão observada
 - Redução de movimento (`reducedMotion`): tremor e piscada viram forma estática
 - Legendas para toda informação sonora (`captions`); a faixa vence a cortina da pausa e do fim no stub — isso não é sessão observada
 - Remapeamento de ações (`bindings`); a página expõe as seis ações do teclado e a tabela `#commands` nomeia as teclas vigentes — toque e controle ficam no sufixo e não entram no remap; persistir no stub não é sessão observada

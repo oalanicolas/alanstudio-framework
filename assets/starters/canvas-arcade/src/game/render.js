@@ -10,7 +10,7 @@
 // da porta também: com menos movimento ela trava, não some.
 
 import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, attractEntities, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse, recoveryPulse } from "./rules.js";
-import { copy, PALETTES, resolveLookName } from "./tables.js";
+import { copy, dressPalette, PALETTES } from "./tables.js";
 import { bindLines } from "../core/keys.js";
 import { DEFAULT_BINDINGS } from "../core/settings.js";
 
@@ -68,9 +68,7 @@ export function createRenderer(canvas, options = {}) {
     const palette =
       settings.palette && typeof settings.palette.field === "string"
         ? settings.palette
-        : settings.highContrast
-          ? PALETTES.contrast
-          : PALETTES[resolveLookName(settings.look)];
+        : dressPalette(settings);
     const reduced = Boolean(settings.reducedMotion);
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.fillStyle = palette.background;

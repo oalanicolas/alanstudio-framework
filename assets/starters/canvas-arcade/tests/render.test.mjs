@@ -418,6 +418,16 @@ test("o look dusk pinta o campo diferente do padrão e cede ao alto contraste", 
   assert.equal(contrast.style, PALETTES.contrast.field, "alto contraste vence o look");
 });
 
+test("a tinta estável troca orbe e estilhaço e cede ao alto contraste", () => {
+  const state = createState(1);
+  const fieldOf = (calls) => calls.rects.find((rect) => rect.width === FIELD.width && rect.height === FIELD.height);
+  const dusk = fieldOf(paint(state, { look: "dusk" }));
+  const stable = fieldOf(paint(state, { look: "dusk", colorblind: true }));
+  const contrast = fieldOf(paint(state, { look: "dusk", colorblind: true, highContrast: true }));
+  assert.equal(stable.style, dusk.style, "o campo do look permanece");
+  assert.equal(contrast.style, PALETTES.contrast.field, "alto contraste vence a tinta estável");
+});
+
 test("orbe e estilhaço usam primitivas diferentes, não só cores diferentes", () => {
   const orb = createState(1);
   orb.entities = [{ id: 1, kind: "orb", x: 80, y: 70, vy: 0 }];

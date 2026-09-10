@@ -18,8 +18,8 @@
 // Overlay e HUD confirmam o aparelho que falou por último.
 // `palettes` tem consumidor: o desenho lê
 // `PALETTES` daqui, não uma constante no render. `look` escolhe um
-// look de arte (`normal`, `dusk`, `calm`); `contrast` é o modo de alcance,
-// não um look. `npm run look -- <nome> --from normal|dusk|calm` copia um
+// look de arte (`normal`, `dusk`, `calm`); `contrast` e a tinta estável
+// (`colorblind`) são alcance, não look. `npm run look -- <nome> --from normal|dusk|calm` copia um
 // look que o jogo já consome; `--as` desloca os tokens sem pedir a
 // receita de cabeça. `dusk` e `calm` na chuva e no look compartilham
 // o nome e não a mesa. `?mood=<nome>` aplica o par quando o nome é
@@ -303,6 +303,23 @@ export function resolveLookName(name) {
     return name;
   }
   return "normal";
+}
+
+// Orbe azul e estilhaço laranja do look padrão. Não é look: o campo
+// do crepúsculo permanece; só a tinta da chuva deixa o eixo quente.
+// Alto contraste continua vencendo. Chave no disco não é sessão.
+export const COLORBLIND_INKS = {
+  orb: PALETTES.normal.orb,
+  shard: PALETTES.normal.shard,
+  chain: PALETTES.normal.chain,
+  danger: PALETTES.normal.danger,
+};
+
+export function dressPalette(settings = {}) {
+  if (settings.highContrast) return PALETTES.contrast;
+  const look = PALETTES[resolveLookName(settings.look)] ?? PALETTES.normal;
+  if (!settings.colorblind) return look;
+  return { ...look, ...COLORBLIND_INKS };
 }
 
 // Intenções sobre um look já pintável. Não são look melhor — só
