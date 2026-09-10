@@ -15,8 +15,9 @@
 // não preenche os quatro. Copiar não grava. Esqueleto vazio não é
 // achado. Gravado não é alguém de fora. VERSION.json na raiz some
 // o Gravar: o serve da árvore exportada recusa o POST. Copiar
-// permanece. Sem clipboard, o Copiar baixa o markdown. Baixar
-// não grava e não é alguém de fora. Recusar não fecha o achado.
+// permanece. Sem clipboard, o Copiar baixa o markdown. O
+// Copiar nomeia o destino. Baixar não grava e não é alguém
+// de fora. Recusar não fecha o achado.
 // No primeiro over a página rola até o painel e foca o primeiro
 // campo. Trazer o painel não é alguém de fora nem curva observada.
 
@@ -278,6 +279,28 @@ export async function offerFinding(text, { clipboard, save, name } = {}) {
     return "saved";
   }
   return "missed";
+}
+
+// O Gravar já vira "Achado no disco". Sem isto o Copiar
+// calava o destino e o convite some a tabela. Nomear não
+// grava e não é alguém de fora.
+export const FINDING_COPY_LABEL = "Copiar";
+
+export const FINDING_OFFER_LABELS = {
+  copied: "Na área de transferência",
+  saved: "Baixado",
+  missed: "Não copiou",
+};
+
+export function findingOfferLabel(result) {
+  return FINDING_OFFER_LABELS[result] ?? FINDING_COPY_LABEL;
+}
+
+export function applyFindingOffer({ button, live, result } = {}) {
+  const label = findingOfferLabel(result);
+  if (button) button.textContent = label;
+  if (live) live.textContent = label;
+  return label;
 }
 
 export function findingValues(fields = {}) {

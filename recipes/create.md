@@ -32,7 +32,9 @@ tabela some; depois do fim a página mostra seed, pontos, eixos e a
 curva que o last-run já traçou e oferece os quatro nomes para copiar
 ou gravar. Depois do fim a
 página rola até o painel. Rolar não é alguém de fora. Número na faixa não
-preenche os quatro. Copiar não grava. Sem a área de transferência,
+preenche os quatro. Copiar não grava. O Copiar nomeia o
+destino. Gravar já virava Achado no disco; o botão calava.
+Nomear não é alguém de fora. Sem a área de transferência,
 o Copiar baixa o markdown. Gravar anexa o candidato se last-run
 existir. Na árvore exportada o Gravar some; copie os quatro
 nomes. Gravado não é alguém de fora. Não gere todos os templates antes de experimentar. Nove arquivos vazios não

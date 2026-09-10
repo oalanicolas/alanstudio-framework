@@ -284,7 +284,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    seed, pontos, eixos e a curva que o last-run já traçou e oferece
    os quatro nomes para copiar ou gravar.
    Depois do fim a página rola até o painel. Rolar não é alguém de fora.
-   Número na faixa não preenche os quatro. Copiar não grava. Sem a
+   Número na faixa não preenche os quatro. Copiar não grava. O
+   Copiar nomeia o destino. Gravar já virava Achado no disco;
+   o botão calava. Nomear não é alguém de fora. Sem a
    área de transferência, o Copiar baixa o markdown. Gravar anexa
    o candidato se last-run existir. Gravado não é alguém de fora.
    `next` aponta o convite depois do recibo de quem fez. O serve anuncia

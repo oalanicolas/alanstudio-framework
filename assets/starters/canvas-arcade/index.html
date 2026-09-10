@@ -199,6 +199,7 @@
       <p>
         <button type="button" id="finding-copy">Copiar</button>
         <button type="button" id="finding-save">Gravar</button>
+        <span id="finding-offer" class="sr-only" aria-live="polite"></span>
       </p>
     </section>
 
@@ -260,7 +261,7 @@
     <script type="module" src="./src/main.js"></script>
     <script type="module">
       import { applyOneHand, settingsLine } from "./src/core/settings.js";
-      import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, bringPanel, composeFinding, inviteHref, inviteMode, offerFinding, readArtifactMark } from "./src/core/invite.js";
+      import { applyArtifactSurface, applyFinding, applyFindingOffer, applyInvite, applyNote, applyRunFacts, applyShare, bringPanel, composeFinding, inviteHref, inviteMode, offerFinding, readArtifactMark } from "./src/core/invite.js";
       import { FINDING_ROUTE, NOTE_ROUTE, playFinding } from "./src/core/run-report.js";
       import { applyKnobs, applyScale, applyShell } from "./src/core/shell.js";
       import { audioGapLine } from "./src/game/audio.js";
@@ -360,6 +361,12 @@
               link.remove();
               URL.revokeObjectURL(href);
             },
+          }).then((result) => {
+            applyFindingOffer({
+              button: document.getElementById("finding-copy"),
+              live: document.getElementById("finding-offer"),
+              result,
+            });
           });
         });
         document.getElementById("finding-save").addEventListener("click", () => {

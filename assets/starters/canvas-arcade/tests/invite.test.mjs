@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { applyArtifactSurface, applyFinding, applyInvite, applyNote, applyRunFacts, applyShare, ARTIFACT_FINDING_HINT, bringPanel, composeFinding, curveFacts, FINDING_FILE, inviteHref, inviteMode, INVITE_LABEL, offerFinding, findingFile, readArtifactMark, runFacts, seedHref } from "../src/core/invite.js";
+import { applyArtifactSurface, applyFinding, applyFindingOffer, applyInvite, applyNote, applyRunFacts, applyShare, ARTIFACT_FINDING_HINT, bringPanel, composeFinding, curveFacts, FINDING_COPY_LABEL, FINDING_FILE, FINDING_OFFER_LABELS, findingOfferLabel, inviteHref, inviteMode, INVITE_LABEL, offerFinding, findingFile, readArtifactMark, runFacts, seedHref } from "../src/core/invite.js";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -57,6 +57,9 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /html\.invite\.finding\s+#finding/);
   assert.match(html, /id="finding-copy"/);
   assert.match(html, /id="finding-save"/);
+  assert.match(html, /id="finding-offer"/);
+  assert.match(html, /applyFindingOffer/);
+  assert.match(html, /finding-offer"[^>]*aria-live="polite"/);
   assert.match(html, /id="finding-hint"/);
   assert.match(html, /readArtifactMark/);
   assert.match(html, /applyArtifactSurface/);
@@ -351,6 +354,29 @@ test("offerFinding baixa quando não há área de transferência", async () => {
 
 test("offerFinding perde o achado quando ninguém recebe", async () => {
   assert.equal(await offerFinding("Problema: some no toque"), "missed");
+});
+
+test("o Copiar nomeia o destino sem fingir achado", () => {
+  assert.equal(findingOfferLabel("copied"), "Na área de transferência");
+  assert.equal(findingOfferLabel("saved"), "Baixado");
+  assert.equal(findingOfferLabel("missed"), "Não copiou");
+  assert.equal(findingOfferLabel(), FINDING_COPY_LABEL);
+  assert.equal(FINDING_COPY_LABEL, "Copiar");
+  assert.equal(FINDING_OFFER_LABELS.copied.includes("Achado"), false, "copiar não é gravar");
+  const button = { textContent: FINDING_COPY_LABEL };
+  const live = { textContent: "" };
+  assert.equal(applyFindingOffer({ button, live, result: "copied" }), "Na área de transferência");
+  assert.equal(button.textContent, "Na área de transferência");
+  assert.equal(live.textContent, "Na área de transferência");
+  assert.equal(button.textContent === FINDING_COPY_LABEL, false, "o Copiar nu calava o destino");
+  applyFindingOffer({ button, live, result: "saved" });
+  assert.equal(button.textContent, "Baixado");
+  applyFindingOffer({ button, live, result: "missed" });
+  assert.equal(button.textContent, "Não copiou");
+  assert.doesNotMatch(
+    `${button.textContent} ${live.textContent} ${Object.values(FINDING_OFFER_LABELS).join(" ")}`,
+    /aprovado|verified|outsider|alguém de fora|felt|Achado/,
+  );
 });
 
 test("copiar o achado preenchido tem forma; o vazio não finge", () => {

@@ -3,6 +3,47 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.308 — O Copiar nomeia o destino
+
+O
+Gravar
+já
+virava
+Achado
+no
+disco.
+O
+Copiar
+calava.
+O
+convite
+some
+a
+tabela.
+Agora
+o
+botão
+e
+a
+região
+viva
+nomeiam
+o
+destino.
+Não
+promove
+`outsider`.
+
+O que 0.9.308 não afirma:
+texto
+no
+disco
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.307 — O relógio nomeia a pausa
 
 O
