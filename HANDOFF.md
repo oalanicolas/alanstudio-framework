@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.274: a receita não cala a porta que o canvas já pinta. `save` e `access` apontavam um bug fechado. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 293 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 294 OK.
 `cd assets/starters/canvas-arcade && npm test` → 462 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
