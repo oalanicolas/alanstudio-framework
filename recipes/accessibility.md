@@ -35,7 +35,9 @@ Uma opção sem consumidor no código não é uma opção.
 reducedMotion, captions, remapeamento, uiScale, preset de uma mão e
 assistência). `verified` é sempre falso: chave no fonte não é sessão
 com o modo ativo. O starter `canvas-arcade` expõe `assist` e o remapeamento
-das seis ações do teclado na página, e declara em
+das seis ações do teclado na página; a tabela `#commands`
+nomeia as teclas vigentes e mantém toque e controle no
+sufixo. Declara em
 `docs/access.md` o que o recorte não atende. O aviso do primeiro ciclo
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
 Estilhaço no trilho pede o dash; toque e controle ganham passo depois

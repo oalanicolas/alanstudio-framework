@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.94 — A tabela também nomeia as teclas vivas
+
+O remapeamento e o preset de uma mão já mudavam o aviso, o
+overlay e os botões. A tabela `#commands` continuava o
+manifesto. Ela passa a ler as teclas vigentes e mantém toque
+e controle no sufixo. O HTML estático permanece o padrão
+antes do JS. `verified` continua falso. Rótulo na tabela não
+é sessão observada. Só `release` fica no piso.
+
+O que 0.9.94 não afirma: o harness não remapeou e ninguém
+jogou com a tecla nova.
+
 ## 0.9.93 — A página também remapeia
 
 O código já persistia `bindings`. Sem botão, só o console

@@ -1,10 +1,12 @@
 // Rótulo das teclas vivas — e do aparelho que falou por último.
 //
-// O manifesto e a tabela da página ensinam o padrão. O aviso do
-// primeiro ciclo nomeia teclado (ou o remapeamento vigente), toque e
-// controle juntos; o dash e o mapa da superfície que falou também
-// ganham passo no campo. Overlay e HUD confirmam o aparelho que
-// falou por último. Rótulo no texto não é sessão observada.
+// O HTML estático ensina o padrão. A tabela `#commands` passa a
+// nomear o teclado vigente — remapeamento e uma mão — e mantém
+// toque e controle no sufixo. O aviso do primeiro ciclo nomeia
+// teclado (ou o remapeamento), toque e controle juntos; o dash e o
+// mapa da superfície que falou também ganham passo no campo.
+// Overlay e HUD confirmam o aparelho que falou por último.
+// Rótulo no texto não é sessão observada.
 
 const NAMED = {
   Space: "Espaço",
@@ -31,6 +33,56 @@ export function actionLabels(bindings, action) {
 
 export function actionLabel(bindings, action) {
   return actionLabels(bindings, action)[0] ?? "";
+}
+
+export const COMMAND_SURFACES = {
+  move: "analógico ou arrastar na tela",
+  dash: "botão A, ou toque na área superior",
+  bank: "botão X, ou toque na faixa inferior",
+  pause: "Start no controle",
+  reset: "Select no controle",
+};
+
+function joinedKeys(bindings, action) {
+  return actionLabels(bindings, action).join(", ") || "—";
+}
+
+export function commandRows(bindings) {
+  return [
+    {
+      action: "move",
+      title: "Mover",
+      text: `${joinedKeys(bindings, "left")} / ${joinedKeys(bindings, "right")}, ${COMMAND_SURFACES.move}`,
+    },
+    {
+      action: "dash",
+      title: "Avançar (dash)",
+      text: `${joinedKeys(bindings, "dash")}, ${COMMAND_SURFACES.dash}`,
+    },
+    {
+      action: "bank",
+      title: "Guardar corrente",
+      text: `${joinedKeys(bindings, "bank")}, ${COMMAND_SURFACES.bank}`,
+    },
+    {
+      action: "pause",
+      title: "Pausar",
+      text: `${joinedKeys(bindings, "pause")} ou ${COMMAND_SURFACES.pause}`,
+    },
+    {
+      action: "reset",
+      title: "Reiniciar",
+      text: `${joinedKeys(bindings, "reset")} ou ${COMMAND_SURFACES.reset}`,
+    },
+  ];
+}
+
+export function paintCommands(host, bindings) {
+  if (!host || typeof host.querySelector !== "function") return;
+  for (const row of commandRows(bindings)) {
+    const cell = host.querySelector(`[data-command="${row.action}"]`);
+    if (cell) cell.textContent = row.text;
+  }
 }
 
 const SURFACE_TOKENS = {

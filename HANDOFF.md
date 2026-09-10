@@ -67,7 +67,7 @@ descarte.
 código declara — `access` inclui assistência. `verified`/`trusted`/`measured` são sempre falsos. `next`
 só levanta quando falta a declaração. O starter expõe assistência,
 `uiScale` (o overlay também), remapeamento das seis ações do teclado
-na página, preset de uma mão (o aviso, o overlay e o `cycle.hand`
+na página (a tabela `#commands` nomeia as teclas vigentes), preset de uma mão (o aviso, o overlay e o `cycle.hand`
 nomeiam IJKL + P/O; o stub coleta, guarda, pausa e reinicia nesse
 cluster) e `docs/access.md`. Trocar a tecla no stub não é sessão
 observada. O HUD do dash enche a faixa no tempo

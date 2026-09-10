@@ -126,5 +126,8 @@ test("a página declara o remapeamento sem fingir sessão observada", () => {
   assert.match(html, /id="remap"/);
   assert.match(html, /mountRemap/);
   assert.match(html, /applyRebind|setBindings/);
+  assert.match(html, /paintCommands/);
+  assert.match(html, /data-command="dash"/);
+  assert.match(html, /data-command="reset"/);
   assert.doesNotMatch(html, /verified|aprovado|outsider/);
 });

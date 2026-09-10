@@ -1,7 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { actionLabel, actionLabels, bindLines, keyLabel } from "../src/core/keys.js";
+import { actionLabel, actionLabels, bindLines, commandRows, keyLabel, paintCommands } from "../src/core/keys.js";
+import { applyRebind } from "../src/core/remap.js";
 import { DEFAULT_BINDINGS, ONE_HAND_BINDINGS } from "../src/core/settings.js";
 import { copy } from "../src/game/tables.js";
 
@@ -60,4 +61,35 @@ test("superfície desconhecida não inventa mapa", () => {
   const lines = bindLines(copy, DEFAULT_BINDINGS, "inventada");
   assert.equal(lines.resume, "Continuar: Esc ou P");
   assert.equal(lines.hint_bank, "Guarde (↓, baixo ou X) antes de perder a corrente");
+});
+
+test("a tabela nomeia as teclas vivas e mantém toque e controle", () => {
+  const rows = commandRows(DEFAULT_BINDINGS);
+  assert.equal(rows.length, 5);
+  assert.match(rows[1].text, /Espaço, K/);
+  assert.match(rows[1].text, /botão A/);
+  assert.match(rows[1].text, /toque na área superior/);
+  const rebound = commandRows(applyRebind(DEFAULT_BINDINGS, "dash", "KeyZ"));
+  assert.match(rebound[1].text, /^Z,/);
+  assert.equal(rebound[1].text.includes("Espaço"), false);
+  const one = commandRows(ONE_HAND_BINDINGS);
+  assert.match(one[0].text, /^J \/ L,/);
+  assert.match(one[2].text, /^K,/);
+  assert.match(one[2].text, /botão X/);
+});
+
+test("pintar a tabela troca o texto sem inventar sessão", () => {
+  const cells = {};
+  const host = {
+    querySelector(selector) {
+      const action = /data-command="([^"]+)"/.exec(selector)?.[1];
+      if (!action) return null;
+      cells[action] ??= { textContent: "padrão" };
+      return cells[action];
+    },
+  };
+  paintCommands(host, applyRebind(DEFAULT_BINDINGS, "pause", "KeyQ"));
+  assert.match(cells.pause.textContent, /^Q ou Start/);
+  assert.match(cells.dash.textContent, /Espaço, K/);
+  paintCommands(null, DEFAULT_BINDINGS);
 });

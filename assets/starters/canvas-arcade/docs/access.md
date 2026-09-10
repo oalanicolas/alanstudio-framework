@@ -8,7 +8,7 @@ Declaração vigente. Opção no código não é sessão observada.
 - Contraste alto (`highContrast`) com paleta própria
 - Redução de movimento (`reducedMotion`): tremor e piscada viram forma estática
 - Legendas para toda informação sonora (`captions`); a faixa vence a cortina da pausa e do fim no stub — isso não é sessão observada
-- Remapeamento de ações (`bindings`); a página expõe as seis ações do teclado — toque e controle não entram; persistir no stub não é sessão observada
+- Remapeamento de ações (`bindings`); a página expõe as seis ações do teclado e a tabela `#commands` nomeia as teclas vigentes — toque e controle ficam no sufixo e não entram no remap; persistir no stub não é sessão observada
 - Escala da interface (`uiScale`); o overlay do fim e da pausa também cresce — isso não é sessão observada
 - Preset de uma mão no cluster direito (`oneHand`, IJKL + P/O); o aviso, o overlay e o `cycle.hand` nomeiam essas teclas; no stub o cluster coleta, guarda, pausa e reinicia — isso não é sessão observada
 - Toque: arrastar move, faixa de cima avança, faixa de baixo guarda; o `cycle.touch` nomeia o mapa; o stub percorre as três intenções; o aviso do primeiro ciclo nomeia o arraste junto do teclado e do controle e, depois do primeiro toque, o mapa da superfície vira passo — isso não é sessão no aparelho

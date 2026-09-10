@@ -89,11 +89,11 @@
     <section class="panel" id="commands" aria-labelledby="controls-title">
       <h2 id="controls-title">Comandos</h2>
       <dl>
-        <dt>Mover</dt><dd>Setas, A/D, analógico ou arrastar na tela</dd>
-        <dt>Avançar (dash)</dt><dd>Espaço, K, botão A, ou toque na área superior</dd>
-        <dt>Guardar corrente</dt><dd>Seta abaixo, S, J, botão X, ou toque na faixa inferior</dd>
-        <dt>Pausar</dt><dd>Esc, P ou Start no controle</dd>
-        <dt>Reiniciar</dt><dd>R (padrão), O (uma mão) ou Select no controle</dd>
+        <dt>Mover</dt><dd data-command="move">Setas, A/D, analógico ou arrastar na tela</dd>
+        <dt>Avançar (dash)</dt><dd data-command="dash">Espaço, K, botão A, ou toque na área superior</dd>
+        <dt>Guardar corrente</dt><dd data-command="bank">Seta abaixo, S, J, botão X, ou toque na faixa inferior</dd>
+        <dt>Pausar</dt><dd data-command="pause">Esc, P ou Start no controle</dd>
+        <dt>Reiniciar</dt><dd data-command="reset">R (padrão), O (uma mão) ou Select no controle</dd>
       </dl>
       <p class="note">
         Uma mão no cluster direito: J/L mover, I avançar, K guardar, P pausar, O reiniciar.
@@ -144,6 +144,7 @@
       import { applyInvite } from "./src/core/invite.js";
       import { applyShell } from "./src/core/shell.js";
       import { LOOK_LABELS, SPAWN_LABELS, listLooks, listMoods, listSpawnProfiles, matchingMood, pairPatch, PALETTES, resolveLookName } from "./src/game/tables.js";
+      import { paintCommands } from "./src/core/keys.js";
       import { mountRemap } from "./src/core/remap.js";
       applyInvite({
         root: document.documentElement,
@@ -182,6 +183,7 @@
           option.textContent = LOOK_LABELS[name] ?? name;
           moodSelect.appendChild(option);
         }
+        const commandList = document.querySelector("#commands dl");
         const remap = mountRemap(document.getElementById("remap"), {
           document,
           target: window,
@@ -189,8 +191,13 @@
           setBindings: (bindings) => {
             game.updateSettings({ oneHand: false, bindings });
             document.getElementById("oneHand").checked = false;
+            paintCommands(commandList, bindings);
           },
         });
+        const refreshKeys = () => {
+          remap.refresh();
+          paintCommands(commandList, game.settings.bindings);
+        };
         const dress = () => {
           const settings = game.settings;
           const palette = settings.highContrast
@@ -208,7 +215,7 @@
           moodSelect.value = matchingMood(settings.look, settings.spawnProfile);
           for (const bus of buses) document.getElementById(bus).value = settings.buses[bus];
           dress();
-          remap.refresh();
+          refreshKeys();
         };
         for (const name of toggles) {
           document.getElementById(name).addEventListener("change", (event) => {
@@ -221,7 +228,7 @@
             oneHand: event.target.checked,
             bindings: event.target.checked ? ONE_HAND_BINDINGS : DEFAULT_BINDINGS,
           });
-          remap.refresh();
+          refreshKeys();
         });
         document.getElementById("uiScale").addEventListener("input", (event) => {
           game.updateSettings({ uiScale: Number(event.target.value) });
