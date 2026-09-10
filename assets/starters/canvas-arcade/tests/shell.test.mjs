@@ -287,20 +287,22 @@ function textCanvas() {
 test("segurar o avanço na porta não dispara o ofício no campo", () => {
   const view = textCanvas();
   const { game, hold, release, frame } = shell({ canvas: view.canvas, loadSfx: false });
+  const step = 1000 / 60;
   game.start();
   frame();
   assert.equal(game.observe().phase, "title");
   hold("Space");
-  frame();
+  frame(step);
+  frame(step);
   assert.equal(game.observe().phase, "playing", "o aperto abre");
   assert.equal(game.observe().stats.dashes, 0, "abrir não conta o ofício");
-  for (let step = 0; step < 80; step += 1) frame(16);
+  for (let n = 0; n < 80; n += 1) frame(step);
   assert.equal(game.observe().stats.dashes, 0, "o mesmo aperto não é o avanço do campo");
   assert.equal(game.observe().player.dashWindup ?? 0, 0, "segurar não arma o coil");
   release("Space");
-  frame(16);
+  frame(step);
   hold("Space");
-  for (let step = 0; step < 40; step += 1) frame(16);
+  for (let n = 0; n < 40; n += 1) frame(step);
   assert.equal(game.observe().stats.dashes, 1, "um avanço novo conta");
   game.dispose();
 });
