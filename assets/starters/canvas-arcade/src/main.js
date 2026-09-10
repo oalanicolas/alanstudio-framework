@@ -350,6 +350,8 @@ export function createGame(options = {}) {
     // não existem no polegar. O tap já retoma. A
     // placa usa a superfície do toque; o aviso
     // continua o aparelho que falou.
+    // Na porta o canvas já nomeia jogar e seed nova.
+    // Sem isto o live herdava o teclado e mente.
     // Texto no disco não é felt.
     const overlayPaused = loop.paused && state.phase !== "over" && state.phase !== "title";
     const surface = state.phase === "title" || state.phase === "over"
@@ -360,9 +362,14 @@ export function createGame(options = {}) {
     const bound = bindLines(
       copy,
       settings.bindings ?? DEFAULT_BINDINGS,
-      overlayPaused ? pauseSurface(environment, spoken) : spoken,
+      overlayPaused
+        ? pauseSurface(environment, spoken)
+        : state.phase === "title" || state.phase === "over"
+          ? titleSurface(environment, spoken)
+          : spoken,
     );
     const hint = coachHint(state, copy, { surface: spoken });
+    const open = doorOpen();
     applyLive({
       node: live,
       text: liveText({
@@ -380,6 +387,10 @@ export function createGame(options = {}) {
         coach: coachText(state, bound, { surface: spoken, fantasy: copy.fantasy }),
         resume: bound.resume,
         restart: bound.restart,
+        titlePlay: state.phase === "title" && !open ? bound.title_play : undefined,
+        titleAgain: state.phase === "title" && open ? bound.title_again : undefined,
+        titleNew: state.phase === "title" && open ? bound.title_new : undefined,
+        overDoor: state.phase === "over" ? bound.over_door : undefined,
       }),
     });
     if (!renderer) return;

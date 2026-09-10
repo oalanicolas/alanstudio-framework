@@ -11,8 +11,11 @@
 // O canvas já pinta o aviso do primeiro ciclo; a região viva
 // nomeia a mesma linha. Na pausa o canvas já nomeia continuar
 // e reiniciar; a região viva espelha essas linhas. Sem isto
-// quem não vê a tela só ouvia pausado. Jogando sem pausa
-// o número não entra. Texto no DOM não é sessão de alcance.
+// quem não vê a tela só ouvia pausado. Na porta o canvas já
+// nomeia jogar, repetir e seed nova; a região viva espelha
+// essas linhas. Sem isto quem não vê a tela só ouvia abertura.
+// Jogando sem pausa o número não entra. Texto no DOM não é
+// sessão de alcance.
 
 function whole(value) {
   if (!Number.isFinite(value)) return null;
@@ -34,6 +37,10 @@ export function liveText({
   coach,
   resume,
   restart,
+  titlePlay,
+  titleAgain,
+  titleNew,
+  overDoor,
 } = {}) {
   const parts = [];
   const seen = new Set();
@@ -55,6 +62,7 @@ export function liveText({
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
     add(persist);
     add(settings);
+    add(overDoor);
   } else if (phase === "title") {
     add("abertura");
     const last = whole(lastScore);
@@ -63,6 +71,12 @@ export function liveText({
     if (record !== null && Number(best) > 0) add(`recorde ${record}`);
     add(persist);
     add(settings);
+    // O canvas já nomeia jogar, repetir e seed nova.
+    // Sem isto o leitor só ouvia abertura. Texto no
+    // DOM não é sessão.
+    add(titlePlay);
+    add(titleAgain);
+    add(titleNew);
   } else if (overlayPaused) {
     // A cortina cobre o HUD. Sem o número aqui só o canvas
     // o mostrava, e a placa o come. Jogando sem pausa o

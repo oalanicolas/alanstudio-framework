@@ -270,6 +270,43 @@ test("a região viva nomeia o aviso do primeiro ciclo sem fingir sessão", () =>
   );
 });
 
+test("a região viva nomeia como abrir a porta sem fingir sessão", () => {
+  assert.equal(
+    liveText({ phase: "title", titlePlay: "Jogar: toque" }),
+    "abertura. Jogar: toque",
+  );
+  assert.equal(
+    liveText({
+      phase: "title",
+      lastScore: 8,
+      titleAgain: "Repetir a última: toque",
+      titleNew: "Nova partida: baixo",
+    }),
+    "abertura. última 8. Repetir a última: toque. Nova partida: baixo",
+  );
+  assert.equal(
+    liveText({ phase: "title", titlePlay: "Jogar: Espaço" }),
+    "abertura. Jogar: Espaço",
+  );
+  assert.equal(
+    liveText({ phase: "over", score: 12, overDoor: "Abertura: toque" }),
+    "fim da partida. 12. Abertura: toque",
+  );
+  assert.equal(
+    liveText({ phase: "playing", titlePlay: "Jogar: toque", overDoor: "Abertura: toque" }),
+    "",
+  );
+  assert.equal(liveText({ phase: "title" }), "abertura");
+  assert.match(main, /titlePlay:/);
+  assert.match(main, /titleNew:/);
+  assert.match(main, /overDoor:/);
+  assert.match(main, /titleSurface/);
+  assert.doesNotMatch(
+    liveText({ phase: "title", titlePlay: "Jogar: toque", titleNew: "Nova partida: baixo" }),
+    /aprovado|verified|alguém de fora|felt/,
+  );
+});
+
 test("a região viva nomeia como sair da pausa sem fingir sessão", () => {
   assert.equal(
     liveText({

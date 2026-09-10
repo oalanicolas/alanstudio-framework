@@ -374,8 +374,10 @@ test("o overlay nomeia o controle quando ele falou por último", () => {
 
 test("o telefone vê Jogar: toque na porta sem ter apertado", () => {
   const view = textCanvas();
+  const live = { textContent: "" };
   const { game, frame } = shell({
     canvas: view.canvas,
+    live,
     loadSfx: false,
     environment: { pointer: { coarse: true } },
   });
@@ -386,6 +388,8 @@ test("o telefone vê Jogar: toque na porta sem ter apertado", () => {
     view.texts.some((text) => String(text).includes("Jogar: toque")),
     `esperava toque na porta: ${JSON.stringify(view.texts)}`,
   );
+  assert.match(live.textContent, /Jogar: toque/);
+  assert.equal(/Espaço/.test(live.textContent), false, "o live não herda Espaço");
   assert.equal(
     view.texts.some((text) => String(text).includes("Espaço")),
     false,
@@ -424,8 +428,10 @@ test("depois da partida o telefone pede seed nova embaixo", () => {
       }
     },
   };
+  const live = { textContent: "" };
   const { game, frame } = shell({
     canvas,
+    live,
     loadSfx: false,
     environment: { pointer: { coarse: true } },
   });
@@ -443,6 +449,9 @@ test("depois da partida o telefone pede seed nova embaixo", () => {
     view.texts.some((text) => String(text).includes("Nova partida: baixo")),
     `esperava baixo: ${JSON.stringify(view.texts)}`,
   );
+  assert.match(live.textContent, /Nova partida: baixo/);
+  assert.match(live.textContent, /Repetir a última: toque/);
+  assert.equal(/Nova partida: R/.test(live.textContent), false);
   assert.ok(
     view.texts.some((text) => /Repetir a última: toque/.test(String(text))),
     "o campo continua repetindo",

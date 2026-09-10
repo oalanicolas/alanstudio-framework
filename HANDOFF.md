@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.302: depois da partida o telefone pede seed nova embaixo. Não promove `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.303: a região viva nomeia como abrir a porta. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD (0.9.302):** `python3 -m unittest discover -s tests` → 316 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.302)
+## O que o HEAD já entrega (0.9.91–0.9.303)
 
 | Ver | Salto |
 | --- | --- |
@@ -246,6 +246,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.300 | Na pausa o telefone vê Continuar: toque sem ter apertado. lastSource continua teclado; o aviso não ensina cima. Reiniciar continua R. Não promove `felt`. |
 | 0.9.301 | O `next` unstructured nomeia a página do achado. SKILL e README já apontavam `/?invite=1#finding`; o comando mandava o serve nu. Não promove `outsider`. |
 | 0.9.302 | Depois da partida o telefone pede seed nova embaixo. R não existe no polegar e o tap só repetia. A primeira visita continua abrindo na faixa. Não promove `felt`. |
+| 0.9.303 | A região viva nomeia como abrir a porta. O overlay do canvas não chega ao leitor. Jogar, repetir, seed nova e o fim espelham a placa. Não promove `verified`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -266,7 +267,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | pacing | slice | o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
-| accessibility | slice | depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
+| accessibility | slice | a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
 | content_scale | shippable | paleta não finge volume; dusk+calm+pair; `enough` falso |
 | release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
@@ -452,7 +453,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou uma região viva que cala como sair da pausa
   ou uma pausa que ensina Esc no telefone
   ou um `next` unstructured que aponta o serve nu
-  ou uma porta que cala a seed nova no telefone.
+  ou uma porta que cala a seed nova no telefone
+  ou uma região viva que cala como abrir a porta.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -1033,6 +1035,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma pausa que ensina Esc no telefone.
 **Não** mais um `next` unstructured que aponta o serve nu.
 **Não** mais uma porta que cala a seed nova no telefone.
+**Não** mais uma região viva que cala como abrir a porta.
 
 Candidatos, do que ainda dói:
 
@@ -1838,6 +1841,15 @@ Candidatos, do que ainda dói:
   nova
   no
   telefone
+  e uma
+  região
+  viva
+  que
+  cala
+  como
+  abrir
+  a
+  porta
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -1861,11 +1873,11 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: depois da
-partida o telefone pede seed nova embaixo.
-R não existe no polegar e o tap só repetia.
-A primeira visita continua abrindo na faixa.
-Não promove `felt`.
+Arquivos quentes da última sessão: a região
+viva nomeia como abrir a porta. O overlay
+não chega ao leitor. Jogar, repetir, seed
+nova e o fim espelham a placa. Não promove
+`verified`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -1903,3 +1915,4 @@ A família região viva que cala como sair da pausa está saturada.
 A família pausa que ensina Esc no telefone está saturada.
 A família next unstructured aponta o serve nu está saturada.
 A família porta que cala a seed nova no telefone está saturada.
+A família região viva que cala como abrir a porta está saturada.
