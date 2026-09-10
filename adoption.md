@@ -3,6 +3,17 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.95 — O segundo ciclo também nasce o par
+
+Look `noite` e chuva `densa` não viravam `?mood=`: os nomes
+não batiam. `npm run pair` nasce os dois no mesmo nome.
+`then` aponta o par primeiro. `enough` e `consistent` continuam
+falsos. Ferramenta no disco não é alguém de fora. Só `release`
+fica no piso.
+
+O que 0.9.95 não afirma: ninguém de fora produziu no piso e
+três chuvas mais um comando não são volume.
+
 ## 0.9.94 — A tabela também nomeia as teclas vivas
 
 O remapeamento e o preset de uma mão já mudavam o aviso, o

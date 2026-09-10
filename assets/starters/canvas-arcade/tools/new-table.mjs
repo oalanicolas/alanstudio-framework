@@ -33,6 +33,7 @@ const RESERVED = new Set([
   "palettes", "migratepalettes", "palettefields",
   "listlooks", "resolvelookname", "look",
   "applylookintent", "lookrecord", "listlookintents", "lookintents",
+  "pair", "mood",
 ]);
 const intents = listSpawnIntents();
 

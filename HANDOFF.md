@@ -17,7 +17,7 @@ comando do start — ao lado do framework se o mapa corre de dentro
 desta árvore — e não grava a frase. Sem destino, se o diretório atual é um
 jogo fora do framework, o mapa usa esse caminho. `start` cria o projeto e devolve `play` +
 `then.note`. Se o starter declara `cycle`, o prompt nomeia o verbo,
-as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look, chuva, par e convite. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia look, chuva e voz; se declara `session`, `then` a aponta. Depois de um recibo, o prompt e o `next` (`cycle.craft`) apontam o ofício. O autor do `note` é sugestão do git ou do ambiente, não quem jogou. Nomear o ofício não pinta. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
+as teclas, o cluster de uma mão (`hand`), o toque, o controle e as queries de look, chuva, par e convite. Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` nomeia par, look, chuva e voz; se declara `session`, `then` a aponta. Depois de um recibo, o prompt e o `next` (`cycle.craft`) apontam o ofício. O autor do `note` é sugestão do git ou do ambiente, não quem jogou. Nomear o ofício não pinta. `next` continua em `then.lost`, para quando você não sabe o que falta. Depois de um `init` fresco,
 `next` ainda propõe `playable.unplayed` se você estiver perdido. O
 starter ensina mover, avançar, coletar e guardar no campo; toque e
 controle ganham passo quando falam. O art-bible vigente
@@ -90,7 +90,7 @@ a página também veste esses tokens; `contrast` é alcance, não look;
 `look --from` / `--as` nasce o próximo),
 extrai a chuva (`spawn`, `dusk` e `calm`), nasce mesa com `npm run table`
 (`--from spawn|dusk|calm --as` já entra no consumidor; `session --spawn`
-traça) e empacota com `npm run build`.
+traça), nasce o par com `npm run pair` (look e chuva no mesmo nome) e empacota com `npm run build`.
 `ship` relata `dist/VERSION.json` quando existe; o artefato declara
 Node 20 e recusa `npm install` e `file://`. `npm run size` relata
 bytes sem teto.

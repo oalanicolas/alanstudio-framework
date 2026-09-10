@@ -32,11 +32,13 @@ e cabe neste recorte.
    `settings.look` — `dusk` e `calm` já são o segundo e o terceiro.
    Nasça o próximo com
    `npm run look -- <nome> --from dusk|calm --as warmer|cooler|night`.
+   Para look e chuva no mesmo nome, `npm run pair -- <nome> --from dusk|calm`.
    Intenção não é look aprovado nem alguém de fora no piso.
 3. Se o item for forma nova, desenhe o consumidor em `src/game/render.js`.
 4. Registre a linha nesta tabela e a origem em `CREDITS.md`.
 5. Se o item for chuva, nasça com `npm run table -- <nome> --from spawn`
    (ou `--from dusk` / `--from calm`) e, se a chuva não for um clone, `--as denser|calmer|brief`.
+   O par (`npm run pair`) já nasce a chuva junto do look.
    Confira com `npm run session -- --spawn <nome>`. Outro dado:
    `npm run table -- <nome>` e ligue o consumidor.
 6. Se o item for voz, nasça com `npm run sfx -- --from dash --as brighter|darker|tighter`.

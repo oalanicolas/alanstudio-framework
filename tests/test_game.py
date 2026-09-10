@@ -980,7 +980,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "kind=null": "sem entrypoint",
             "areas.not_located": "área não localizada",
             "playable.unplayed": "ciclo jogável ainda sem partida",
-            "cycle.craft": "segundo ciclo de look, chuva e voz",
+            "cycle.craft": "segundo ciclo de par, look, chuva e voz",
             "audio.roles": "papéis de áudio vazios",
             "feel.unobserved": "feel ainda sem observação",
             "playtest.invite": "convite para quem nunca viu o jogo",
@@ -2843,7 +2843,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("look", report["then"])
         self.assertIn("table", report["then"])
         self.assertIn("sfx", report["then"])
+        self.assertIn("pair", report["then"])
         self.assertIn("atravessar-estilhacos", report["then"]["look"])
+        self.assertIn("atravessar-estilhacos", report["then"]["pair"])
         self.assertEqual(report["open"], report["steps"][0]["command"])
         self.assertIn(report["open"], report["prompt"])
         self.assertIn("start", report["prompt"])
@@ -2980,16 +2982,21 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("spawn", report["then"]["table"])
         self.assertIn("--from", report["then"]["sfx"])
         self.assertIn("dash", report["then"]["sfx"])
+        self.assertIn("pair", report["then"])
+        self.assertIn("noite", report["then"]["pair"])
         self.assertIn("atravessar-estilhacos", report["then"]["look"])
         self.assertIn("atravessar-estilhacos", report["then"]["table"])
         self.assertIn("atravessar-estilhacos", report["then"]["sfx"])
+        self.assertIn("atravessar-estilhacos", report["then"]["pair"])
         self.assertIn("session", report["then"])
         self.assertIn("atravessar-estilhacos", report["then"]["session"])
         self.assertNotIn("noite", report["steps"][0]["command"])
         self.assertFalse((game.FRAMEWORK.parent / "atravessar-estilhacos").exists())
         empty = game.guide_cycle(None, "canvas-arcade")
         self.assertIn("<destino>", empty["then"]["look"])
+        self.assertIn("<destino>", empty["then"]["pair"])
         self.assertIn("look", empty["then"])
+        self.assertIn("pair", empty["then"])
         self.assertEqual(len(empty["steps"]), 3)
 
     def test_start_omits_the_cycle_when_the_starter_does_not_declare_it(self):
@@ -3010,6 +3017,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("look", report["then"])
         self.assertNotIn("table", report["then"])
         self.assertNotIn("sfx", report["then"])
+        self.assertNotIn("pair", report["then"])
         self.assertNotIn("session", report["then"])
 
     def test_start_names_craft_tools_in_then_without_playing(self):
@@ -3022,6 +3030,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("spawn", report["then"]["table"])
         self.assertIn("--from", report["then"]["sfx"])
         self.assertIn("dash", report["then"]["sfx"])
+        self.assertIn("pair", report["then"])
+        self.assertIn("noite", report["then"]["pair"])
+        self.assertIn("dusk", report["then"]["pair"])
         self.assertFalse(report["noted"])
         self.assertNotIn("noite", report["prompt"])
         self.assertNotIn("densa", report["prompt"])
@@ -3030,6 +3041,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("look", guided["then"])
         self.assertIn("table", guided["then"])
         self.assertIn("sfx", guided["then"])
+        self.assertIn("pair", guided["then"])
         self.assertIn("session", guided["then"])
         self.assertIn("session", report["then"])
         self.assertFalse(guided["noted"])
@@ -3063,7 +3075,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["created"])
         self.assertFalse(report["executed"])
         self.assertIn("noite", report["prompt"])
-        self.assertIn("densa", report["prompt"])
+        self.assertIn("pair", report["prompt"])
         self.assertIn("brighter", report["prompt"])
         self.assertIn("não pinta", report["prompt"])
         self.assertNotIn("O jogo não foi aberto", report["prompt"])
@@ -3074,14 +3086,16 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("recibo", guided["prompt"])
         self.assertNotIn("O jogo não foi aberto", guided["prompt"])
         self.assertIn("look", guided["then"])
+        self.assertIn("pair", guided["then"])
         self.assertIn("note", guided["steps"][2]["command"])
         nxt = game.next_step(destination)
         self.assertEqual(nxt["proposal"]["basis"], "cycle.craft")
         self.assertTrue(nxt["signals"]["cycle_craft"])
         self.assertFalse(nxt["signals"]["playable_unplayed"])
-        self.assertIn("look", nxt["proposal"]["commands"][0])
-        self.assertIn("table", nxt["proposal"]["commands"][1])
-        self.assertIn("sfx", nxt["proposal"]["commands"][2])
+        self.assertIn("pair", nxt["proposal"]["commands"][0])
+        self.assertIn("look", nxt["proposal"]["commands"][1])
+        self.assertIn("table", nxt["proposal"]["commands"][2])
+        self.assertIn("sfx", nxt["proposal"]["commands"][3])
         palettes = json.loads((destination / "data/palettes.json").read_text(encoding="utf-8"))
         palettes["palettes"]["noite"] = dict(palettes["palettes"]["dusk"])
         (destination / "data/palettes.json").write_text(

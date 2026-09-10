@@ -98,7 +98,7 @@ onde houver Node.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
-→ segundo ciclo de look, chuva e voz
+→ segundo ciclo de par, look, chuva e voz
 → papéis de áudio vazios → feel ainda sem observação → convite para quem nunca viu o jogo → achado sem forma →
 acessibilidade sem opção
 → save sem versão → orçamento ausente → direção de arte ausente → conteúdo
@@ -107,8 +107,8 @@ vigente → continuidade → sem instruções para o agente → validadores → 
 recibo → gate → ofício → barra. Depois de um `init` fresco — nove áreas com
 candidato, seis ainda rascunho (o art-bible do starter já vem vigente), e um script que abre o jogo — a primeira proposta
 é jogar o ciclo, não preencher os templates. Depois do recibo, se o projeto
-declara `look`/`table`/`sfx` e ainda não nasceu look, chuva ou voz deslocada,
-o `next` aponta o segundo ciclo de look, chuva e voz — ferramenta no disco
+declara `pair`/`look`/`table`/`sfx` e ainda não nasceu look, chuva ou voz deslocada,
+o `next` aponta o segundo ciclo de par, look, chuva e voz — ferramenta no disco
 não é alguém de fora. O verbo mudo vem em seguida: papéis
 declarados sem arquivo. Depois, se o código nomeia perdão e hitstop e ninguém
 registrou uma observação no projeto, o `next` pede esse recibo — constante

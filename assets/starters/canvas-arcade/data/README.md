@@ -14,6 +14,7 @@ quieta; não é o `cooler` aplicado em `normal`. Nasça o próximo look
 com o comando; mesas genéricas ainda pedem consumidor.
 
 ```sh
+npm run pair -- <nome> --from dusk --look warmer --spawn denser
 npm run table -- <nome> --from spawn
 npm run table -- <nome> --from dusk --as denser
 npm run table -- <nome> --from calm --as brief
@@ -36,7 +37,8 @@ idêntica até alguém editar. Intenção não é look aprovado.
 
 A partida lê `?spawn=<nome>` ou `settings.spawnProfile`. `dusk` é o
 perfil denso; `calm` é o inverso autoral. `?mood=<nome>` aplica look
-e chuva do mesmo nome quando os dois existem. Intenção nomeada
+e chuva do mesmo nome quando os dois existem. `npm run pair` nasce
+os dois no mesmo nome. Intenção nomeada
 não é chuva melhor nem alguém de fora no piso.
 
 `npm run sfx -- --from dash --as brighter|darker|tighter` reescreve

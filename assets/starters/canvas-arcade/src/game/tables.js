@@ -21,7 +21,8 @@
 // receita de cabeça. `dusk` e `calm` na chuva e no look compartilham
 // o nome e não a mesa. `?mood=<nome>` aplica o par quando o nome é
 // look e chuva; look ou chuva explícitos vencem no próprio eixo.
-// A página nomeia o mesmo par no select; um controle no disco não
+// `npm run pair -- <nome> --from dusk|calm` nasce os dois no mesmo
+// nome. A página nomeia o mesmo par no select; um controle no disco não
 // é alguém de fora.
 // Mesas genéricas continuam sem consumidor automático.
 //

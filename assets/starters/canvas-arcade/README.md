@@ -22,7 +22,7 @@ npm run serve      # serve em http://localhost:8080; no terminal, tenta abrir o 
 A página nomeia o mesmo par no select. Look ou chuva explícitos vencem o mood no
 próprio eixo. Trocar a chuva do par recomeça a partida; trocar só o look não. O `start` do harness nomeia as queries quando o manifesto
 as declara. Depois de um `note`, `start` e `next` apontam
-`look --from`, `table --from` e `sfx --from` — o segundo ciclo. Ferramenta
+`pair --from`, `look --from`, `table --from` e `sfx --from` — o segundo ciclo. O par nasce look e chuva no mesmo nome e vira `?mood=`. Ferramenta
 no disco não é alguém de fora nem mix ouvido. No campo, o aviso do
 primeiro ciclo nomeia teclado, toque e controle; `npm run serve` tenta
 abrir o navegador quando o terminal é interativo. Abrir a janela não é
@@ -126,7 +126,7 @@ junto a condição: dispositivo, versão, cena e quem observou.
 | `state_trust` | `slice` | `shippable`: interrupção abrupta real — aba fechada — além do teste de dado inválido; `pagehide` e perda de foco já descarregam o save |
 | `performance` | `playable` | `slice`: orçamento de quadro declarado e cena representativa medida nele; cada tick compacta a chuva no mesmo array e reusa o poço; evento, telegraph, rastro e o gerador da chuva também reusam; `npm run budget` cronometra a cena `playing.run` (simulação + `draw` num canvas stub) e relata o reuso — não o compositor nem o dispositivo alvo |
 | `accessibility` | `slice` | `shippable`: contraste verificado por medição em cena no dispositivo — `npm run contrast` amostra pixels do stub após `draw()`; o aviso do primeiro ciclo nomeia teclado, toque e controle; o dash e o mapa da superfície que falou também ganham passo no campo; o overlay confirma o mapa da superfície que falou por último e segue `uiScale`; o `cycle.hand` nomeia IJKL + P/O; a página remapeia as seis ações do teclado e a tabela nomeia as teclas vigentes; `docs/access.md` declara o que o recorte não atende; sessão com uma mão ainda não foi observada |
-| `content_scale` | `shippable` | `flagship`: a ferramenta é boa o bastante para alguém de fora produzir no piso — `dusk` e `calm` são a segunda e a terceira chuva e o jogo as consome por `?spawn=` / `settings.spawnProfile`; `table --from` de spawn, dusk ou calm com `--as denser` nasce chuva distinta; `session --spawn` traça essa chuva; três chuvas não são volume; `enough` é falso |
+| `content_scale` | `shippable` | `flagship`: a ferramenta é boa o bastante para alguém de fora produzir no piso — `dusk` e `calm` são a segunda e a terceira chuva e o jogo as consome por `?spawn=` / `settings.spawnProfile`; `table --from` de spawn, dusk ou calm com `--as denser` nasce chuva distinta; `pair --from` nasce look e chuva no mesmo nome e `?mood=` aplica; `session --spawn` traça essa chuva; três chuvas e um comando não são volume; `enough` é falso |
 | `release` | `prototype` | `playable`: outra pessoa executou o artefato a partir do runbook; `dist/VERSION.json` nomeia a versão; o `package.json` do artefato declara Node 20 e o README recusa `npm install` e `file://`; ninguém correu o artefato fora daqui |
 
 **Leitura honesta: este projeto é um protótipo**, porque uma dimensão está
@@ -211,7 +211,8 @@ parte da prática longa; sem `--as` a cópia é idêntica nos knobs.
 `npm run session -- --spawn <nome>` traça essa chuva. Sem `--from`, o
 custo variável continua sendo ligar a regra.
 `dusk` e `calm` compartilham o nome entre chuva e look —
-as mesas não. `npm run look -- <nome> --from dusk|calm --as warmer` nasce o
+as mesas não. `npm run pair -- <nome> --from dusk|calm --look warmer --spawn denser`
+nasce os dois no mesmo nome e `?mood=` passa a aplicar. `npm run look -- <nome> --from dusk|calm --as warmer` nasce só o
 próximo look no mesmo consumidor. Ferramenta que desloca knobs ou
 tokens não é volume, direção consistente nem alguém de fora no piso. `npm run sfx -- --from dash --as brighter` desloca a voz no papel que o mixer já toca; sem `--from` o banco inteiro nasce de novo. Intenção não é mix ouvido. Os papéis do verbo e a cama em `public/sfx` entram no mixer;
 `heard` continua falso. `npm run build` copia a árvore jogável para

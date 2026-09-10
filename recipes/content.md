@@ -11,8 +11,9 @@ falha com o número; campo obrigatório falha com o nome da mesa.
 `npm run table -- <nome>` já nasce com schema. `--from spawn`, `--from dusk` ou `--from calm` copia a forma que o
 starter já consome (`?spawn=` / `settings.spawnProfile`).
 `--as denser|calmer|brief` desloca os knobs e deixa a chuva distinta.
-`npm run session -- --spawn <nome>` traça essa chuva. Depois de um
-`note`, `start` e `next` apontam `table --from`. `dusk` e `calm` são
+`npm run pair -- <nome> --from dusk|calm` nasce look e chuva no mesmo
+nome; `listMoods` inclui e `?mood=` aplica. `npm run session -- --spawn <nome>` traça essa chuva. Depois de um
+`note`, `start` e `next` apontam `pair --from`, `look --from` e `table --from`. `dusk` e `calm` são
 a segunda e a terceira chuva, não volume — `enough` é sempre
 falso. Alguém de fora ainda não produziu no piso.
 

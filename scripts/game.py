@@ -2769,16 +2769,19 @@ def note_command(project):
 
 
 # Exemplos coláveis do segundo ciclo. Os nomes não existem no starter:
-# nascer `noite` / `densa` ou deslocar `dash` é o que o `next` deixa de
-# apontar quando o disco já tem um look, uma chuva ou uma voz deslocada.
+# nascer o par `noite` (look e chuva no mesmo nome) ou deslocar `dash`
+# é o que o `next` deixa de apontar quando o disco já tem um look, uma
+# chuva ou uma voz deslocada. Look e chuva sozinhos continuam no disco;
+# o par é o caminho que vira `?mood=`.
 CRAFT_EXAMPLES = {
+    "pair": ("noite", "--from", "dusk", "--look", "warmer", "--spawn", "denser"),
     "look": ("noite", "--from", "dusk", "--as", "warmer"),
-    "table": ("densa", "--from", "spawn", "--as", "denser"),
+    "table": ("noite", "--from", "spawn", "--as", "denser"),
     "sfx": ("--from", "dash", "--as", "brighter"),
 }
 STARTER_LOOKS = frozenset({"normal", "contrast", "dusk", "calm"})
 STARTER_TABLES = frozenset({"copy", "palettes", "spawn", "dusk", "calm"})
-CRAFT_LABELS = {"look": "Look", "table": "Chuva", "sfx": "Voz"}
+CRAFT_LABELS = {"pair": "Par", "look": "Look", "table": "Chuva", "sfx": "Voz"}
 
 
 def project_run_command(project, manager, name, extra=()):
@@ -3263,7 +3266,7 @@ def start_project(destination, starter=None, title=None, idea=None, documents=Tr
             "o toque, o controle e as queries de look, chuva, par e convite, se o starter as declara. Não "
             "executa o jogo. Depois de uma "
             "partida, o próximo comando do harness é `note`, não `next`. "
-            "`then` já nomeia look, chuva e voz se o projeto declara essas "
+            "`then` já nomeia par, look, chuva e voz se o projeto declara essas "
             "ferramentas; depois de um recibo, o prompt as aponta. Ferramenta "
             "no disco não é alguém de fora nem mix ouvido. Não "
             "instala dependências e não avalia a proposta. `--idea` entra no "
@@ -3407,7 +3410,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "nomeia a pasta no comando do start — ao lado do framework se o "
             "mapa corre de dentro desta árvore; no diretório atual se corre "
             "de fora. `guide --idea` continua só no comando, não no disco. "
-            "`then` nomeia look, chuva e voz quando o projeto — ou o "
+            "`then` nomeia par, look, chuva e voz quando o projeto — ou o "
             "starter, se o destino ainda não existe — declara essas "
             "ferramentas. Se declara `session`, `then` a aponta. Nomear o "
             "ofício não pinta, não chove e não ouve. O autor do `note` é "
@@ -3660,9 +3663,10 @@ def next_step(project, focus="create", studies_root=None):
     wants_craft = bool(noted and craft_cmds and not cycle_crafted(project))
     if wants_craft:
         propose(
-            "Deslocar o look, a chuva ou a voz com as ferramentas que o projeto já declara",
-            "O ciclo já tem um recibo. Look, chuva e voz novos não pedem o schema "
-            "de cabeça. Ferramenta no disco não é alguém de fora nem mix ouvido. "
+            "Deslocar o par, o look, a chuva ou a voz com as ferramentas que o projeto já declara",
+            "O ciclo já tem um recibo. O par nasce look e chuva no mesmo nome "
+            "e vira ?mood=. Look, chuva e voz sozinhos continuam no disco. "
+            "Ferramenta no disco não é alguém de fora nem mix ouvido. "
             "O harness não pinta, não chove e não ouve.",
             "Nasceu um look, uma chuva ou uma voz deslocada — ou a lacuna está "
             "escrita. consistent, enough e heard continuam pendentes.",

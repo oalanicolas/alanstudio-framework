@@ -27,7 +27,7 @@ const FROM = fromIndex >= 0 ? String(args[fromIndex + 1] ?? "").trim() : "";
 const asIndex = args.indexOf("--as");
 const AS = asIndex >= 0 ? String(args[asIndex + 1] ?? "").trim() : "";
 const RESERVED = new Set([
-  "contrast", "look", "palettes", "spawn", "copy", "table",
+  "contrast", "look", "palettes", "spawn", "copy", "table", "pair", "mood",
   "listlooks", "resolvelookname", "applylookintent", "lookrecord",
   "listlookintents", "default",
 ]);
