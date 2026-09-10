@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.168: o corpo pulsa na graça do erro.
+**HEAD:** ver `git log -1` — vigente 0.9.169: o over solta a cama com fade.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 267 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.168)
+## O que o HEAD já entrega (0.9.91–0.9.169)
 
 | Ver | Salto |
 | --- | --- |
@@ -112,6 +112,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.166 | `doctor` no laboratório vazio devolve `then.guide`. Sem starter o aviso nomeia `start --idea`, não `init`. Com jogo a chave some. Sem `prompt`. Não cria e não executa. |
 | 0.9.167 | O aviso do primeiro ciclo nomeia o estilhaço quando a corrente voltou a zero (`hint_hit`). Dash no trilho vence. A porta não ensina. Copy 3. Não promove feel. |
 | 0.9.168 | Na graça do erro o corpo some e volta no relógio do contorno. `fillRect` permanece. Reduced trava o tijolo. Não promove feel. |
+| 0.9.169 | O `over` pede fade na cama. Pause, title e aba escondida cortam seco. Play no meio do fade nasce de novo. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -127,7 +128,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | mostra toca o corpo no disco; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
-| audio_mix | slice | porta fala `live` no disco; `heard` falso |
+| audio_mix | slice | fade no over no disco; `heard` falso |
 | pacing | slice | fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | `hold` no stub; aba fechada real não observada; `trusted` falso |
 | performance | playable | poços + stub ≠ dispositivo |
@@ -320,7 +321,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `audio.unlock()` no gesto. Stems sobem juntos (`Promise.all`);
   extensão seguinte só se a atual falhou.   `duckMs` abaixa só
   `music` (`DUCK_BUSES`). `update({ bedRate })` desloca o tom da
-  cama; `bedRateFor` lê o pulso do fecho. Não é duck. `heard` falso.
+  cama; `bedRateFor` lê o pulso do fecho. Não é duck. O `over`
+  pede `stop("bed", { fadeMs: BED_FADE_MS })`; pause, title e aba
+  escondida cortam seco. Play no meio do fade corta o leftover.
+  `heard` falso.
 - Jogador: `fillRect` do squash **permanece** (testes `playerFill` /
   `playerBox`). Na graça (`invuln`) o corpo pulsa com
   `globalAlpha` no relógio do contorno; o tijolo não some.
@@ -460,6 +464,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `doctor` que ensina `init` e some o mapa quando o laboratório está vazio.
 **Não** mais um aviso que some o custo do estilhaço enquanto o miss já nomeia a queda.
 **Não** mais um corpo sólido enquanto a graça do erro só pisca o contorno.
+**Não** mais uma cama que some seco no over enquanto o loop já tem ganho.
 
 Candidatos, do que ainda dói:
 
@@ -528,6 +533,9 @@ Candidatos, do que ainda dói:
   toque da mostra
   e a
   voz da mostra
+  e o fade
+  da cama no
+  over
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -551,5 +559,5 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: o corpo pulsa na graça do erro.
-`fillRect` permanece. Reduced trava. Não promove feel.
+Arquivos quentes da última sessão: o over solta a cama com fade.
+Pause, title e aba escondida cortam seco. Não promove `heard`.

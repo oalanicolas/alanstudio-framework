@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 import { createGame } from "../src/main.js";
 import { memoryStorage } from "../src/core/storage.js";
 import { canResume } from "../src/core/save.js";
+import { BED_FADE_MS } from "../src/game/audio.js";
 import { CONFIG } from "../src/game/rules.js";
 import { pairPatch } from "../src/game/tables.js";
 
@@ -227,6 +228,39 @@ test("uma partida completa é registrada no progresso persistido", () => {
   assert.equal(painted.lastRun.look, "dusk");
   assert.equal(painted.lastRun.spawn, "spawn");
   painted.dispose();
+  game.dispose();
+});
+
+test("o over pede fade da cama sem fingir mix ouvido", () => {
+  const stops = [];
+  const game = createGame({
+    seed: 5,
+    eventTarget: recordingTarget(),
+    storage: memoryStorage(),
+    audio: {
+      play() {
+        return true;
+      },
+      stop(id, extra = {}) {
+        stops.push({ id, extra });
+      },
+      update() {},
+      captions() {
+        return [];
+      },
+      unlock() {},
+      applySettings() {},
+      missing() {
+        return { declared: [], registered: [] };
+      },
+      dispose() {},
+    },
+  });
+  game.advance(CONFIG.runTicks);
+  assert.equal(game.observe().phase, "over");
+  const bed = stops.find((item) => item.id === "bed" && item.extra.fadeMs === BED_FADE_MS);
+  assert.ok(bed, "esperava soltar a cama");
+  assert.doesNotMatch(String(BED_FADE_MS), /aprovado|verified|heard|LUFS|-14/);
   game.dispose();
 });
 

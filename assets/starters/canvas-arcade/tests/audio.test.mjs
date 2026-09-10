@@ -6,7 +6,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { DUCK_BUSES, DUCK_LEVEL, MIX_HEADROOM, SOUNDS, createAudio, stereoPan } from "../src/game/audio.js";
+import { BED_FADE_MS, DUCK_BUSES, DUCK_LEVEL, MIX_HEADROOM, SOUNDS, createAudio, stereoPan } from "../src/game/audio.js";
 import { FIELD } from "../src/game/rules.js";
 
 function fakeContext() {
@@ -356,6 +356,43 @@ test("alterar preferências reflete nos barramentos", () => {
   audio.applySettings({ buses: { master: 0.2, music: 0, sfx: 0.5, ui: 0.1 }, captions: true });
   assert.equal(context.gains[0].gain.value, 0.2 * MIX_HEADROOM);
   assert.equal(context.gains[2].gain.value, 0.5);
+});
+
+test("parar a cama com fade desce o ganho antes de cortar", () => {
+  const { audio, context, tick } = build();
+  audio.register("bed", { duration: 4 });
+  assert.equal(audio.play("bed"), true);
+  const loopGain = context.gains.at(-1);
+  assert.equal(loopGain.gain.value, 1);
+  assert.equal(audio.stop("bed", { fadeMs: BED_FADE_MS }), true);
+  assert.equal(context.sources[0].stopped, false, "ainda não cortou");
+  audio.update();
+  assert.equal(loopGain.gain.value, 1, "o primeiro quadro ainda não andou");
+  tick(BED_FADE_MS / 2);
+  audio.update();
+  assert.ok(loopGain.gain.value > 0 && loopGain.gain.value < 1, "a cama precisa soltar");
+  assert.equal(context.sources[0].stopped, false);
+  tick(BED_FADE_MS / 2);
+  audio.update();
+  assert.equal(loopGain.gain.value, 0);
+  assert.equal(context.sources[0].stopped, true);
+});
+
+test("play no meio do fade nasce de novo em vez de deixar a cama morrendo", () => {
+  const { audio, context, tick } = build();
+  audio.register("bed", { duration: 4 });
+  assert.equal(audio.play("bed"), true);
+  audio.stop("bed", { fadeMs: BED_FADE_MS });
+  tick(BED_FADE_MS / 2);
+  audio.update();
+  assert.equal(context.sources[0].stopped, false);
+  assert.ok(context.gains.at(-1).gain.value < 1);
+  assert.equal(audio.play("bed"), true);
+  assert.equal(context.sources[0].stopped, true, "o leftover some");
+  assert.equal(context.sources.length, 2);
+  assert.equal(context.sources[1].started, true);
+  assert.equal(context.sources[1].stopped, false);
+  assert.equal(context.gains.at(-1).gain.value, 1);
 });
 
 test("a cama entra em loop no barramento de música sem legenda e sem roubar voz", () => {

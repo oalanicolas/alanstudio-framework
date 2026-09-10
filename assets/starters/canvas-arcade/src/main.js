@@ -13,7 +13,7 @@ import { playReport, LAST_RUN_ROUTE } from "./core/run-report.js";
 import { canContinue, canResume, captureHold, loadProgress, persistStatus, recordRun, saveProgress, summarizeRun } from "./core/save.js";
 import { detectEnvironment, loadSettings, normalizeSettings, saveSettings } from "./core/settings.js";
 import { fingerprint } from "./core/hash.js";
-import { createAudio } from "./game/audio.js";
+import { BED_FADE_MS, createAudio } from "./game/audio.js";
 import { createHaptics } from "./game/haptics.js";
 import { loadRoleFiles } from "./game/sfx.js";
 import { createRenderer } from "./game/render.js";
@@ -228,7 +228,7 @@ export function createGame(options = {}) {
       lastRun = summarizeRun(state, { look: settings.look });
       progress = recordRun(progress, state, { lastRun });
       rememberWrite(saveProgress(storage, progress, progressLoad));
-      audio.stop("bed");
+      audio.stop("bed", { fadeMs: BED_FADE_MS });
       offerLastRun(playReport({
         seed: state.seed,
         spawn: state.spawnProfile,

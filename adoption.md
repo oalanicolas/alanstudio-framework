@@ -3,6 +3,23 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.169 — O over solta a cama
+
+A cama já ocupava o
+barramento e subia o tom
+no fecho. No fim ela
+sumia seco. O `over` pede
+fade. Pause, title e aba
+escondida continuam
+cortando. Play no meio do
+fade nasce de novo.
+`heard` continua falso. Só
+`release` fica no piso.
+
+O que 0.9.169 não afirma:
+rampa no stub não é mix
+ouvido.
+
 ## 0.9.168 — O corpo pulsa na graça do erro
 
 A graça depois do estilhaço

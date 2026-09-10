@@ -19,6 +19,8 @@
 // O gesto (tecla ou toque) retoma o contexto suspenso;
 // retomar, fila e paralelo não são mix ouvido.
 // `missing()` ainda lista o papel se o decode falhar ou o fetch 404.
+// O `over` pede fade na cama; pause, title e aba escondida
+// continuam cortando seco. Número no disco não é mix ouvido.
 //
 // Toda informação sonora tem legenda equivalente: o jogo precisa ser
 // completável com o áudio desligado.
@@ -51,6 +53,9 @@ export const MIX_HEADROOM = 0.82;
 // some o hit sob o hit. Número no disco não é mix ouvido.
 export const DUCK_BUSES = ["music"];
 export const DUCK_LEVEL = 0.35;
+// Solta a cama no over. Pause, title e aba escondida
+// continuam cortando seco. Número no disco não é mix ouvido.
+export const BED_FADE_MS = 280;
 
 export const SOUNDS = {
   dash: { bus: "sfx", caption: "avanço", priority: 1 },
@@ -242,17 +247,29 @@ export function createAudio(options = {}) {
       }
       return emitVoice(id, extra);
     },
-    stop(id) {
+    stop(id, extra = {}) {
       const voice = loops.get(id);
       if (!voice) return false;
+      const fadeMs = Number(extra.fadeMs);
+      if (Number.isFinite(fadeMs) && fadeMs > 0 && voice.gain) {
+        voice.fade = {
+          from: voice.gain.gain.value,
+          to: 0,
+          start: now(),
+          ms: fadeMs,
+        };
+        return true;
+      }
       voice.stop();
       loops.delete(id);
       return true;
     },
     // Chamado a cada quadro: o ducking precisa voltar sozinho.
-    // `bedRate` desloca a cama no fecho; número no disco não é mix ouvido.
+    // `bedRate` desloca a cama no fecho; o fade da cama anda
+    // no mesmo tick. Número no disco não é mix ouvido.
     update(extra = {}) {
       applyBusLevels();
+      tickFades();
       const rate = Number(extra.bedRate);
       if (Number.isFinite(rate) && rate > 0) applyLoopRate("bed", rate);
     },
@@ -297,14 +314,23 @@ export function createAudio(options = {}) {
   };
 
   function startLoop(id, definition, buffer) {
-    if (loops.has(id)) return true;
+    const leftover = loops.get(id);
+    if (leftover) {
+      if (!leftover.fade) return true;
+      leftover.stop();
+      loops.delete(id);
+    }
     const source = context.createBufferSource();
     source.buffer = buffer;
     source.loop = true;
-    source.connect(gains[definition.bus] ?? gains.master);
+    const gain = context.createGain();
+    gain.gain.value = 1;
+    source.connect(gain);
+    gain.connect(gains[definition.bus] ?? gains.master);
     source.start();
     loops.set(id, {
       source,
+      gain,
       stop: () => {
         try {
           source.stop();
@@ -314,6 +340,20 @@ export function createAudio(options = {}) {
       },
     });
     return true;
+  }
+
+  function tickFades() {
+    const time = now();
+    for (const [id, voice] of [...loops]) {
+      if (!voice.fade || !voice.gain) continue;
+      const span = voice.fade.ms;
+      const t = span > 0 ? Math.min(1, (time - voice.fade.start) / span) : 1;
+      voice.gain.gain.value = voice.fade.from + (voice.fade.to - voice.fade.from) * t;
+      if (t >= 1) {
+        voice.stop();
+        loops.delete(id);
+      }
+    }
   }
 
   function applyLoopRate(id, rate) {

@@ -517,7 +517,7 @@ Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
 
 O starter declara os papéis do verbo, o orbe perdido, o fecho, a prática, a guarda e a cama (`const SOUNDS`) e já traz
 design original em `public/sfx/<papel>.wav`. A cama entra em loop no
-barramento de música. `roles` lê a declaração e cruza com
+barramento de música; no `over` ela solta com fade. `roles` lê a declaração e cruza com
 arquivos em `public/sfx` (e equivalentes). Papel vazio continua lacuna:
 
 ```sh
