@@ -60,6 +60,7 @@ export const CONFIG = {
     punchDecay: 0.78,
     telegraphReach: 36, // antecipação: a ameaça marca o trilho antes do contato
     flashHit: 0.55, // impacto do erro: o campo acende; coleta não
+    flashPractice: 0.28, // a prática some: o campo acende menos que o erro
     flashDecay: 0.72,
     closeTicks: 600, // TICK_HZ * 10 — fecho: o campo marca o fim; não é faixa no HUD
     rumbleDashMs: 16, // partida: toque curto
@@ -403,10 +404,32 @@ export function closingPulse(state, config = CONFIG) {
   };
 }
 
+export function practicingWindow(state) {
+  if (!state || state.phase !== "playing") return false;
+  const ticks = rain(state).practiceTicks;
+  return Number.isFinite(ticks) && ticks > 0 && state.tick < ticks;
+}
+
+export function practicePulse(state) {
+  if (!practicingWindow(state)) return { active: false, fill: 0 };
+  const total = rain(state).practiceTicks;
+  return {
+    active: true,
+    fill: Math.max(0, Math.min(1, (total - state.tick) / total)),
+  };
+}
+
 function markClose(state) {
   const left = remainingTicks(state);
   if (left <= 0 || left > CONFIG.feel.closeTicks) return;
   if (left % TICK_HZ === 0) emit(state, "close");
+}
+
+function markPractice(state) {
+  const ticks = rain(state).practiceTicks;
+  if (!Number.isFinite(ticks) || state.tick !== ticks) return;
+  state.flash = Math.max(state.flash, CONFIG.feel.flashPractice);
+  emit(state, "live");
 }
 
 // Avança exatamente um passo de simulação. Muta e devolve o mesmo estado: o loop
@@ -424,6 +447,7 @@ export function advance(state, intent = neutralIntent()) {
   }
   state.tick += 1;
   markClose(state);
+  markPractice(state);
   const player = state.player;
 
   // O pedido de dash é registrado antes de qualquer congelamento, para que uma

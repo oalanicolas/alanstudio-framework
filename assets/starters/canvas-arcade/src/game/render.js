@@ -5,7 +5,7 @@
 // dispositivo não foi observado. Tremor e piscada respeitam redução de
 // movimento — o sinal de causa migra para uma forma estática, não desaparece.
 
-import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, chainPipCount, chainPipAt, closingWindow, closingPulse } from "./rules.js";
+import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse } from "./rules.js";
 import { copy, PALETTES, resolveLookName } from "./tables.js";
 import { bindLines } from "../core/keys.js";
 import { DEFAULT_BINDINGS } from "../core/settings.js";
@@ -74,6 +74,7 @@ export function createRenderer(canvas, options = {}) {
 
     context.fillStyle = palette.field;
     context.fillRect(0, 0, FIELD.width, FIELD.height);
+    drawPractice(context, palette, state, reduced);
     drawClose(context, palette, state, reduced);
     if (state.flash > 0) {
       if (reduced) {
@@ -118,6 +119,25 @@ export function createRenderer(canvas, options = {}) {
     if (settings.captions !== false) {
       drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
     }
+  }
+
+  // A prática era orbe-só e o campo calava. O contorno na tinta do
+  // orbe some à medida que a janela acaba; no último tick o campo
+  // acende. Não é faixa. Com menos movimento vira traço, não some.
+  function drawPractice(target, palette, state, reduced) {
+    const pulse = practicePulse(state);
+    if (!pulse.active) return;
+    target.strokeStyle = palette.orb;
+    if (reduced) {
+      target.lineWidth = 2;
+      target.strokeRect(4, 4, FIELD.width - 8, FIELD.height - 8);
+      return;
+    }
+    const inset = 4 + (1 - pulse.fill) * 6;
+    target.globalAlpha = Math.min(0.42, 0.10 + pulse.fill * 0.28);
+    target.lineWidth = 0.8 + pulse.fill * 1.6;
+    target.strokeRect(inset, inset, FIELD.width - inset * 2, FIELD.height - inset * 2);
+    target.globalAlpha = 1;
   }
 
   // O relógio no HUD já ficava vermelho. O campo agora marca o fecho:

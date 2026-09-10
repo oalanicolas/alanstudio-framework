@@ -56,7 +56,7 @@ de jogar; `loadSpawn` recusa.
 | `rampTicks` | Em quantos ticks a chuva chega no teto |
 | `hazardChanceStart` / `hazardChanceEnd` | Quanto da chuva é estilhaço |
 | `fallSpeedMin` / `fallSpeedMax` | Quão rápido o item atravessa o campo |
-| `practiceTicks` | Primeiros ticks só com orbe |
+| `practiceTicks` | Primeiros ticks só com orbe; o campo marca a janela |
 | `recoveryTicks` / `recoveryIntervalScale` | Folga depois de guardar |
 
 Três chuvas mais o texto do HUD não são volume. `enough` no harness

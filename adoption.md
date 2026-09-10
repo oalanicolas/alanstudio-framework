@@ -3,6 +3,18 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.85 — A prática também marca o campo
+
+A chuva já nascia orbe-só nos primeiros ticks. O campo calava: o
+jogador só descobria a ameaça quando o estilhaço aparecia. O
+contorno na tinta do orbe some à medida que a janela acaba; no
+último tick o campo acende. Não é faixa no HUD. `felt` continua
+falso. `pacing` permanece `slice`: contorno no stub não é curva
+observada. Só `release` fica no piso.
+
+O que 0.9.85 não afirma: o harness não jogou a prática e o
+contorno não aprova o pacing.
+
 ## 0.9.84 — O par também tem endereço
 
 O par autoral ainda pedia duas queries. `?mood=calm` e `?mood=dusk`

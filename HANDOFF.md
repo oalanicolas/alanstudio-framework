@@ -48,7 +48,7 @@ constante e não há recibo. O starter bufferiza guardar no hitstop,
 desloca a câmera por verbo, achata o corpo numa medida por verbo,
 marca a ameaça no trilho, distingue a
 recuperação do dash, enche a faixa do HUD no tempo de espera,
-contorna o campo no fecho da partida,
+contorna o campo na prática e no fecho da partida,
 aterrissa o avanço com squash e rastro próprios,
 pulsa o controle no impacto, deixa um rastro
 por verbo e põe a corrente em órbita no corpo. A coleta leva o

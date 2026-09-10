@@ -2288,6 +2288,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("feel.lapseFall", keys)
         self.assertIn("feel.closeTicks", keys)
         self.assertIn("feel.rumbleCloseMs", keys)
+        self.assertIn("feel.flashPractice", keys)
         self.assertIn("src/game/rules.js", report["sources"])
         self.assertEqual(report["observations"], [])
         empty = game.feel_reading(self.project)

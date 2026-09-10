@@ -492,6 +492,33 @@ test("a recuperação do dash não se parece com o dash nem com o descanso", () 
   assert.notEqual(playerFill(recovery), playerFill(dash));
 });
 
+test("a prática marca o campo sem inventar faixa no HUD", () => {
+  const start = createState(2);
+  const early = paint(start);
+  const edges = early.edges.filter((edge) => edge.style === PALETTES.normal.orb);
+  assert.ok(edges.length >= 1, "a prática precisa contornar o campo");
+  assert.ok(edges.some((edge) => edge.width > FIELD.width * 0.8 && edge.height > FIELD.height * 0.8));
+  const timerStrips = early.rects.filter((rect) => (
+    rect.height === 2
+    && rect.y < 20
+    && !PLATE_COLORS.has(rect.style)
+  ));
+  assert.equal(timerStrips.length, 0, "a prática não é faixa no HUD");
+  const still = paint(start, { reducedMotion: true });
+  assert.ok(
+    still.edges.some((edge) => edge.style === PALETTES.normal.orb && edge.x === 4 && edge.y === 4),
+    "com menos movimento a prática vira traço, não some",
+  );
+  const after = createState(2);
+  after.tick = after.spawn.practiceTicks;
+  const gone = paint(after);
+  assert.equal(
+    gone.edges.filter((edge) => edge.style === PALETTES.normal.orb && edge.width > FIELD.width * 0.8).length,
+    0,
+    "depois da prática o campo não inventa contorno",
+  );
+});
+
 test("o fecho marca o campo sem inventar faixa no HUD", () => {
   const early = paint(createState(2));
   assert.equal(

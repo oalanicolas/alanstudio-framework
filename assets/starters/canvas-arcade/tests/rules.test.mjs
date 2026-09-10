@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse } from "../src/game/rules.js";
+import { advance, approaching, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, PLAYER_Y, chainPipCount, chainPipAt, chainPlaybackRate, remainingTicks, closingWindow, closingPulse, practicingWindow, practicePulse } from "../src/game/rules.js";
 
 const orb = (x, y) => ({ id: 1, kind: "orb", x, y, vy: 0 });
 const shard = (x, y) => ({ id: 2, kind: "shard", x, y, vy: 0 });
@@ -629,6 +629,34 @@ test("o perfil calm alonga a prática sem republicar o verbo", () => {
     for (const entity of practice.entities) kinds.add(entity.kind);
   }
   assert.equal(kinds.has("shard"), false, "calm ainda está em prática aos 200");
+});
+
+test("a prática some no último tick e o campo acende sem inventar shard cedo", () => {
+  const start = createState(3);
+  assert.equal(practicingWindow(start), true);
+  assert.equal(practicePulse(start).active, true);
+  assert.ok(practicePulse(start).fill > 0.9);
+  assert.equal(start.events.some((event) => event.type === "live"), false);
+
+  const late = createState(3);
+  late.tick = start.spawn.practiceTicks - 1;
+  assert.equal(practicingWindow(late), true);
+  advance(late, neutralIntent());
+  assert.equal(late.tick, start.spawn.practiceTicks);
+  assert.equal(practicingWindow(late), false);
+  assert.equal(practicePulse(late).active, false);
+  assert.ok(late.events.some((event) => event.type === "live"), "sair da prática precisa emitir");
+  assert.ok(late.flash >= CONFIG.feel.flashPractice, "sair da prática acende o campo");
+
+  const mid = createState(3);
+  mid.tick = Math.floor(start.spawn.practiceTicks / 2);
+  advance(mid, neutralIntent());
+  assert.equal(mid.events.some((event) => event.type === "live"), false, "meio da prática não é o tap");
+
+  const ended = createState(3);
+  ended.phase = "over";
+  ended.tick = 0;
+  assert.equal(practicingWindow(ended), false);
 });
 
 test("o fecho emite no segundo redondo e não no meio do segundo", () => {
