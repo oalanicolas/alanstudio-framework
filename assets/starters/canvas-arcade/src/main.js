@@ -119,9 +119,19 @@ export function createGame(options = {}) {
       body: JSON.stringify(report),
     }).catch(() => {});
   }
+  function clockSpeed() {
+    // O knob é da partida. A mostra e o fim ficam no relógio
+    // cheio — senão o slider some a porta que o rótulo poupa.
+    // Knob no disco não é sessão observada.
+    return state.phase === "playing" ? settings.gameSpeed : 1;
+  }
+  function syncClock() {
+    loop.setSpeed(clockSpeed());
+  }
   function emitPhase() {
     if (state.phase === lastPhase) return;
     lastPhase = state.phase;
+    syncClock();
     for (const fn of watchers) fn(state.phase);
   }
   function doorOpen() {
@@ -159,7 +169,7 @@ export function createGame(options = {}) {
 
   const loop = createLoop({
     stepMs: 1000 / TICK_HZ,
-    speed: settings.gameSpeed,
+    speed: clockSpeed(),
     now: options.now,
     schedule: options.schedule,
     cancel: options.cancel,
@@ -470,7 +480,7 @@ export function createGame(options = {}) {
       const previousSpawn = settings.spawnProfile;
       settings = normalizeSettings({ ...settings, ...patch }, environment, settings);
       state.assist = settings.assist;
-      loop.setSpeed(settings.gameSpeed);
+      syncClock();
       audio.applySettings(settings);
       haptics.applySettings(settings);
       for (const [action, codes] of Object.entries(settings.bindings)) input.rebind(action, codes);

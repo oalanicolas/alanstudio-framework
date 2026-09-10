@@ -347,6 +347,33 @@ test("a velocidade da partida dilata o relógio, não o passo", () => {
   full.game.dispose();
 });
 
+test("a velocidade da partida não dilata a mostra", () => {
+  const step = 1000 / 60;
+  const view = textCanvas();
+  const { game, press, frame } = shell({ canvas: view.canvas, loadSfx: false });
+  game.updateSettings({ gameSpeed: 0.5 });
+  game.start();
+  frame();
+  assert.equal(game.observe().phase, "title");
+  const shown = game.observe().attractTick;
+  frame(step);
+  assert.equal(
+    game.observe().attractTick,
+    shown + 1,
+    "a mostra anda no relógio cheio",
+  );
+
+  press("dash");
+  frame(step);
+  assert.equal(game.observe().phase, "playing", "o avanço ainda abre");
+  const tick = game.observe().tick;
+  frame(step);
+  assert.equal(game.observe().tick, tick, "meio passo de parede não vira tick da partida");
+  frame(step);
+  assert.equal(game.observe().tick, tick + 1);
+  game.dispose();
+});
+
 test("dispose para de responder ao teclado", () => {
   const { game, press, frame } = shell();
   game.start();

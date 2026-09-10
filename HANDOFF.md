@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.198 (confirmado): `sfx export` / `sfx copy` levam o stem do starter.
+**HEAD:** ver `git log -1` — vigente 0.9.199: `gameSpeed` só dilata a partida; porta e fim ficam no relógio cheio.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 273 OK.
-`cd assets/starters/canvas-arcade && npm test` → 375 OK.
+`cd assets/starters/canvas-arcade && npm test` → 376 esperados (confirmar).
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.198)
+## O que o HEAD já entrega (0.9.91–0.9.199)
 
 | Ver | Salto |
 | --- | --- |
@@ -142,6 +142,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.196 | Na porta o telegraph marca a mostra. O live já nomeava o perigo; o trilho calava. Sem faixa nova. Não promove feel. |
 | 0.9.197 | A câmera inclina para o que o trilho já marca (`lookAheadX`). Menor que o punch do dash. Sem punch novo. Não promove feel. |
 | 0.9.198 | `sfx export` / `sfx copy` levam bytes e créditos do stem do starter. `--apply` continua só o acervo. `next` aponta `sfx copy`. Não promove `heard`. |
+| 0.9.199 | `gameSpeed` só dilata o relógio em `playing`. Porta e fim ficam no relógio cheio. `advance()` continua ignorando. Não promove `accessibility`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. `--idea` no parser
 principal também funciona sem subcomando.
@@ -257,7 +258,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou live que nomeia o aviso
   ou porta que marca a mostra no trilho
   ou câmera que confirma o trilho
-  ou export que some o stem do starter.
+  ou export que some o stem do starter
+  ou relógio da partida que some a mostra.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -495,8 +497,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `finding_attachments`.
 - `pagehide` e `beforeunload` flush; hidden pausa no campo e no fim.
   Na porta só descarrega. Stub não é aba fechada.
-- `gameSpeed` (0.5–1, padrão 1) dilata o acumulador do laço.
-  `advance()` ignora. Assistência não é este knob.
+- `gameSpeed` (0.5–1, padrão 1) dilata o acumulador do laço
+  só em `playing`. Porta e over ficam em 1. `advance()`
+  ignora. Assistência não é este knob. Knob no disco
+  não é sessão observada.
 - `colorblind` é alcance, não look. `dressPalette` aplica
   `COLORBLIND_INKS` (orbe/estilhaço/corrente/perigo do `normal`)
   sobre o look vigente. Alto contraste vence. Não entra no href.
@@ -587,6 +591,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma porta que some o telegraph enquanto a mostra já cai e o live já nomeia o perigo.
 **Não** mais uma câmera que some a antecipação enquanto o trilho já marca.
 **Não** mais um `sfx export` que recusa o stem que `sfx info` já nomeia.
+**Não** mais um relógio da partida que dilata a mostra da porta.
 
 Candidatos, do que ainda dói:
 
@@ -769,7 +774,11 @@ Candidatos, do que ainda dói:
   trilho e o
   export que
   leva o
-  stem
+  stem e o
+  relógio da
+  partida que
+  some a
+  mostra
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -793,6 +802,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: `sfx export` / `sfx copy`
-levam o stem do starter com créditos. `--apply` continua
-só o acervo. `next` aponta `sfx copy`. Não promove `heard`.
+Arquivos quentes da última sessão: `gameSpeed` só dilata
+`playing`. Porta e over ficam no relógio cheio.
+`advance()` continua ignorando. Não promove `accessibility`.

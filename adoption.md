@@ -3,6 +3,32 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.199 — O relógio da partida poupa a mostra
+
+O knob já
+dizia partida.
+O laço dilatava
+a porta e o
+fim. Agora só
+`playing` anda
+devagar. A
+mostra e o
+overlay ficam
+no relógio
+cheio.
+`advance()`
+continua
+ignorando.
+`verified`
+continua falso.
+Só `release`
+fica no piso.
+
+O que 0.9.199 não afirma:
+slider no disco
+não é sessão
+observada.
+
 ## 0.9.198 — O export leva o stem do starter
 
 `sfx info` já
