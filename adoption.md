@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.328 — o rótulo do dash nomeia o avanço no travel
+
+A
+faixa
+no
+travel
+já
+enche.
+O
+rótulo
+dizia
+recarregando.
+O
+verbo
+no
+avanço
+mentia
+a
+recarga.
+Agora
+o
+rótulo
+nomeia
+o
+avanço.
+O
+sit
+da
+guarda
+continua
+sem
+prometer
+o
+dash.
+Não
+promove
+`felt`.
+
+O que 0.9.328 não afirma:
+texto
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.327 — o export nomeia o stem que o disco perdeu
 
 O

@@ -269,6 +269,9 @@ rastro vira marca. O rastro do dash veste a corrente do avanço —
 não o descanso. A corrente mora no corpo em pips; o HUD continua
 com a conta. A faixa do dash enche o tempo de recuperação e
 cooldown e veste o look — rótulo sozinho era o mesmo quadro.
+No travel o rótulo nomeia o avanço; a faixa já enche.
+Recarregando no sit da guarda permanece — o arco não promete
+o dash.
 O fecho da partida contorna o campo e pulsa o controle a cada
 segundo; não é faixa no HUD. Com menos movimento vira traço.
 A prática e a guarda falam no mixer quando a janela acaba;

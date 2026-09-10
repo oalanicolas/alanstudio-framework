@@ -3555,6 +3555,17 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", cycle)
         self.assertNotIn("aprovado", access)
 
+    def test_feel_recipe_names_the_dash_label_the_strip_already_fills(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        render = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/src/game/render.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("rótulo nomeia o avanço", recipe)
+        self.assertIn("a faixa já enche", recipe.casefold())
+        self.assertIn('charge.phase === "dash"', render)
+        self.assertIn("o rótulo", render)
+
     def test_feel_recipe_names_the_touch_resume_the_starter_already_hears(self):
         feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
         cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")

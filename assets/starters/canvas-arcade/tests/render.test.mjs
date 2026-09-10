@@ -1484,6 +1484,16 @@ test("a recarga do dash enche a faixa sem aprovar o feel", () => {
   dash.player.dashTicks = 3;
   assert.equal(dashCharge(dash).phase, "dash");
   assert.equal(dashCharge(dash).fill, 1);
+  const travel = hudTexts(dash);
+  assert.ok(
+    travel.texts.some((item) => item.text.includes("Dash pronto")),
+    "o rótulo calava o avanço que a faixa já enche",
+  );
+  assert.equal(
+    travel.texts.some((item) => item.text.includes("Dash recarregando")),
+    false,
+    "recarregando no travel mente a recarga",
+  );
   const coil = createState(1);
   coil.player.dashWindup = CONFIG.player.dashWindupTicks;
   const winding = dashCharge(coil);

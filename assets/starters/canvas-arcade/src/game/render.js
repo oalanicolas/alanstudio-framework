@@ -547,7 +547,10 @@ export function createRenderer(canvas, options = {}) {
 
     target.textAlign = "left";
     const charge = dashCharge(state);
-    const ready = charge.phase === "ready";
+    // A faixa no travel já enche. Sem isto o rótulo
+    // dizia recarregando e o verbo no avanço mentia
+    // a recarga. Texto no disco não é peso percebido.
+    const ready = charge.phase === "ready" || charge.phase === "dash";
     const dash = ready ? lines.dash_ready : lines.dash_recharging;
     const dashBox = plate(target, palette, 6, FIELD.height - size - 5, width(dash), size);
     const strip = 2;
