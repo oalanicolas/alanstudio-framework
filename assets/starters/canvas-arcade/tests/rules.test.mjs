@@ -40,8 +40,11 @@ test("guardar senta antes de converter e não dispara no pedido", () => {
   assert.equal(state.score, 0);
   assert.equal(state.chain, 4);
   assert.equal(state.bankWindup, CONFIG.bank.windupTicks);
-  assert.equal(state.player.squash, CONFIG.feel.squashCoil * fade);
+  assert.equal(state.player.squash, CONFIG.feel.squashBankCoil * fade);
   assert.equal(state.events.some((event) => event.type === "bank"), false);
+  assert.ok(CONFIG.feel.squashBankCoil > 0, "a guarda senta, não estreita");
+  assert.ok(CONFIG.feel.squashBankCoil !== CONFIG.feel.squashCoil, "o arco não copia o avanço");
+  assert.ok(CONFIG.feel.squashBankCoil < CONFIG.feel.squashBank);
   assert.ok(CONFIG.bank.windupTicks > 0);
   for (let step = 0; step < CONFIG.bank.windupTicks; step += 1) {
     advance(state, { move: 0, dash: false, bank: false });
@@ -485,6 +488,7 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
   assert.equal(new Set(stops).size, 3, "hitstop repetido não distingue o verbo");
   const squashes = [
     CONFIG.feel.squashCoil,
+    CONFIG.feel.squashBankCoil,
     CONFIG.feel.squashGraze,
     CONFIG.feel.squashCollect,
     CONFIG.feel.squashMiss,
@@ -494,7 +498,7 @@ test("cada verbo tem sinal próprio de partida e contato", () => {
     CONFIG.feel.squashOver,
     CONFIG.feel.squashHit,
   ];
-  assert.equal(new Set(squashes).size, 9, "squash repetido não distingue o verbo");
+  assert.equal(new Set(squashes).size, 10, "squash repetido não distingue o verbo");
   assert.notEqual(CONFIG.feel.collectShake, CONFIG.feel.hitShake);
   assert.notEqual(CONFIG.feel.bankShake, CONFIG.feel.collectShake);
   assert.notEqual(dash.camera.x, 0, "dash empurra a câmera na direção");

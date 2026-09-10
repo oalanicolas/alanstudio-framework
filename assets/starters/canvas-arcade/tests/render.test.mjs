@@ -604,6 +604,20 @@ test("o raspo estreita o corpo; o dash alonga", () => {
   assert.ok(rasped.height > launched.height, "o contato alonga na vertical");
 });
 
+test("a antecipação da guarda senta e a do avanço estreita", () => {
+  const idle = createState(1);
+  const dashCoil = createState(1);
+  dashCoil.player.squash = CONFIG.feel.squashCoil;
+  const bankCoil = createState(1);
+  bankCoil.player.squash = CONFIG.feel.squashBankCoil;
+  const rest = playerBox(idle);
+  const wound = playerBox(dashCoil);
+  const seated = playerBox(bankCoil);
+  assert.ok(wound.width < rest.width, "o avanço estreita");
+  assert.ok(seated.width > rest.width, "a guarda senta");
+  assert.ok(seated.width !== wound.width, "os arcos não copiam a pose");
+});
+
 test("a antecipação do avanço estreita o corpo antes de alongar", () => {
   const idle = createState(1);
   const coil = createState(1);

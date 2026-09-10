@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.219 — O arco da guarda senta com pose própria
+
+O
+arco
+da
+guarda
+usava
+o
+mesmo
+`squashCoil`
+do
+avanço.
+Os
+dois
+verbos
+estreitavam
+iguais.
+Agora
+a
+guarda
+senta
+com
+`squashBankCoil`.
+O
+coil
+do
+avanço
+continua
+estreitando.
+Sem
+voz
+nova.
+Não
+promove
+feel.
+Só
+`release`
+fica
+no
+piso.
+
+O que 0.9.219 não afirma:
+pose
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.218 — A legenda do erro lê a corrente que caiu
 
 O

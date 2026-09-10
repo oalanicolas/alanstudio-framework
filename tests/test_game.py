@@ -2722,6 +2722,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("player.dashBufferTicks", keys)
         self.assertIn("player.dashWindupTicks", keys)
         self.assertIn("feel.squashCoil", keys)
+        self.assertIn("feel.squashBankCoil", keys)
         self.assertIn("player.invulnTicks", keys)
         self.assertIn("feel.hitHitstopTicks", keys)
         self.assertIn("bank.bufferTicks", keys)

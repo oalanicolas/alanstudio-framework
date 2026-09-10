@@ -85,7 +85,8 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    Esse quadro também atravessa o estilhaço; a recuperação depois
    do land continua vulnerável.
    Guardar uma corrente que já existe senta os mesmos dois ticks antes
-   de converter; esses ticks já atravessam o estilhaço — o arco da
+   de converter (`squashBankCoil` senta; o coil do avanço estreita);
+   esses ticks já atravessam o estilhaço — o arco da
    guarda não é janela de hit. O quadro que converte também atravessa:
    sentar e pontuar no mesmo impacto não mata. Coleta e guarda no mesmo
    quadro continuam na hora — o contato já foi a antecipação. Dois

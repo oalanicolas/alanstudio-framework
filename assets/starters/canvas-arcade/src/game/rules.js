@@ -54,7 +54,8 @@ export const CONFIG = {
     shakeDecay: 0.86,
     squashCollect: 0.22,
     squashMiss: 0.16, // a queda senta o corpo; menor que a coleta
-    squashCoil: -0.18, // antecipação: estreita antes de alongar
+    squashCoil: -0.18, // antecipação do avanço: estreita antes de alongar
+    squashBankCoil: 0.28, // antecipação da guarda: senta, não estreita; menor que o compromisso
     squashGraze: -0.26, // o contato estreita; o dash alonga
     squashDash: 0.34, // partida do dash: alonga na direção, não achata
     squashLand: 0.40, // término: senta depois de alongar; menor que guardar
@@ -736,7 +737,7 @@ export function advance(state, intent = neutralIntent()) {
 
   if ((state.bankWindup ?? 0) > 0) {
     state.bankWindup -= 1;
-    player.squash = CONFIG.feel.squashCoil;
+    player.squash = CONFIG.feel.squashBankCoil;
     if (state.bankWindup === 0) commitBank(state);
   }
 
@@ -862,7 +863,7 @@ function bank(state, intent) {
     return;
   }
   state.bankWindup = windup;
-  state.player.squash = CONFIG.feel.squashCoil;
+  state.player.squash = CONFIG.feel.squashBankCoil;
 }
 
 export function spawnIntervalScale(state, table = rain(state)) {

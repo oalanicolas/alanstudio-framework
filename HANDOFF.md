@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.218 (confirmado): a legenda do erro lê `lost` e não mente corrente zero.
+**HEAD:** ver `git log -1` — vigente 0.9.219: o arco da guarda senta com `squashBankCoil`, distinto do coil do avanço.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 279 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.218)
+## O que o HEAD já entrega (0.9.91–0.9.219)
 
 | Ver | Salto |
 | --- | --- |
@@ -162,6 +162,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.216 | Na porta o `#live` nomeia o toque da mostra (`a mostra toca` / `a mostra raspa`). Sem fingir coleta. Sem voz nova. Não promove `accessibility`. |
 | 0.9.217 | `roles --apply` copia o stem do starter com créditos. Sem acervo, `next` aponta `--apply`, não `sfx copy`. Não promove `heard`. |
 | 0.9.218 | A legenda do erro lê `lost`. Aposta zero ou ausente fica `atingido`; `lost > 0` nomeia a corrente que caiu. Não herda `chain`. Não promove `heard` nem `accessibility`. |
+| 0.9.219 | O arco da guarda senta com `squashBankCoil`. O coil do avanço continua estreitando. Sem voz nova. Não promove feel. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino`.
@@ -175,7 +176,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | corpo e quadro sentam no over; a porta fecha o arco do avanço; o arco da guarda atravessa; o quadro da conversão também atravessa; o quadro do land também atravessa; o segundo estilhaço do mesmo quadro já é graça; dois orbes no mesmo quadro não inflam a corrente; orbe e estilhaço no mesmo quadro não decidem pela ordem; a queda senta o corpo; a porta marca a mostra no trilho; a câmera confirma o trilho; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o arco da guarda senta com pose própria; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | `consistent` falso |
 | audio_mix | slice | fade no over + hush no campo; no fim a pausa não come o stinger; a legenda nomeia a corrente do tom; o erro lê `lost`; `heard` falso |
@@ -298,7 +299,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou barra de accessibility que atribui medição no dispositivo ao contrast
   ou live que nomeia o toque da mostra
   ou roles --apply que some o stem que o fill já nomeia
-  ou legenda do erro que mente corrente perdida com aposta zero.
+  ou legenda do erro que mente corrente perdida com aposta zero
+  ou arco da guarda que copia o coil do avanço.
 - Não fazer **mais uma faixa de HUD** (`height===2` e `y<20` e não é placa).
 - Não tratar mesa/look first-party novo como craft (atualizar
   `STARTER_TABLES` / `STARTER_LOOKS` + RESERVED).
@@ -486,8 +488,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   (`beginRun`) continua imediata e fecha o arco (`land`)
   no mesmo tick.
   Guardar corrente já existente: `bank.windupTicks` (2) senta
-  antes de converter. Esses ticks também são graça: o arco
-  atravessa o estilhaço. O quadro da conversão (`events`
+  com `squashBankCoil` antes de converter — senta, não estreita;
+  o coil do avanço permanece `squashCoil`. Esses ticks também
+  são graça: o arco atravessa o estilhaço. O quadro da conversão (`events`
   tem `bank`) também atravessa — `bankWindup` já é 0.
   Coleta e guarda no mesmo quadro continuam na hora. Raspo (`grazeContact`): estreita, punch na direção,
   flash menor que a queda. Sem hitstop. Sem rumble.
@@ -679,6 +682,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma região viva que some o toque da mostra enquanto o canvas já acende.
 **Não** mais um `roles --apply` que some o stem que o `--fill` já nomeia.
 **Não** mais uma legenda do erro que mente corrente perdida com aposta zero.
+**Não** mais um arco da guarda que copia o coil do avanço.
 
 Candidatos, do que ainda dói:
 
@@ -968,6 +972,12 @@ Candidatos, do que ainda dói:
   corrente
   perdida com
   aposta zero
+  e o
+  arco da
+  guarda que
+  copia o
+  coil do
+  avanço
   não
   fecham. A receita
    de velocidade ajustável já tem knob; falta a sessão.
@@ -991,6 +1001,6 @@ Inspecionar o working tree **antes** de confiar neste texto. Melhorar,
 trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
-Arquivos quentes da última sessão: a legenda do
-erro lê `lost`. Aposta zero fica `atingido`.
-Não herda `chain`. Não promove `heard`.
+Arquivos quentes da última sessão: o arco da
+guarda senta com `squashBankCoil`. O coil do
+avanço continua estreitando. Não promove feel.
