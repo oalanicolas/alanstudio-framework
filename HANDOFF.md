@@ -6,7 +6,7 @@
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Testes no HEAD:** `python3 -m unittest discover -s tests` → 264 OK.
-`cd assets/starters/canvas-arcade && npm test` → conferir após o 0.9.163.
+`cd assets/starters/canvas-arcade && npm test` → 345 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -296,6 +296,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `pacing`.
 - `listMoods()` = interseção look ∩ spawn (hoje `calm`, `dusk`).
 - `SOUNDS`: dash, land, graze, collect, missed, bank, hit, over, close, live, stir, bed.
+  `live` também nasce uma vez na porta (`attractSpoke`). Sem cama.
+  Sem rumble. `heard` falso.
   Pedido sem buffer: last-wins na fila; `register` toca sem segunda
   legenda. `dispose` esquece. Tecla ligada e toque chamam
   `audio.unlock()` no gesto. Stems sobem juntos (`Promise.all`);
