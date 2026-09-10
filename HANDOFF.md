@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.282: o `sfx info` nomeia o stem que o disco perdeu. Recibo sem WAV não é id desconhecido. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD:** `python3 -m unittest discover -s tests` → 300 OK.
+**Testes no HEAD:** `python3 -m unittest discover -s tests` → 301 OK.
 `cd assets/starters/canvas-arcade && npm test` → 468 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
