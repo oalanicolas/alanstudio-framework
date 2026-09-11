@@ -1190,6 +1190,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("menção seja mecânica obrigatória", game.next_scope())
         self.assertNotIn("menção seja mecânica obrigatória", game.context_scope())
 
+    def test_scale_mentions_name_the_marketing_the_ambition_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/ambition.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.ambition_refuses_marketing_adjective(guide),
+            "a ambição já recusa AAA como adjetivo de marketing",
+        )
+        self.assertEqual(game.scale_mention_marketing_source(), "references/ambition.md")
+        (self.project / "README.md").write_text(
+            "# Jogo\n- Escala: AA / Triple-I (piso de acabamento)\nEscopo local.\n"
+        )
+        report = game.scan(self.project)
+        self.assertTrue(report["scale_mentions"], "o scan já lista o campo Escala")
+        item = report["scale_mentions"][0]
+        self.assertIn(
+            "AAA como adjetivo de marketing",
+            item["scope"],
+            "o campo copiava o valor e calava a recusa",
+        )
+        self.assertIn("(`marketing`)", item["scope"])
+        self.assertNotIn("marketing", item)
+        scale = game.context(self.project, "create")["scale"]
+        self.assertEqual(
+            scale["source"],
+            {"path": "README.md", "line": 2, "value": "AA / Triple-I (piso de acabamento)"},
+        )
+        self.assertNotIn("AAA como adjetivo de marketing", scale["scope"])
+        self.assertFalse(game.ambition_refuses_marketing_adjective(""))
+        with mock.patch.object(game, "scale_mention_marketing_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "AAA como adjetivo de marketing",
+            silent["scale_mentions"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o marketing que a ambição já recusa", guide)
+        self.assertIn("nomeia o marketing que a ambição já recusa", recipe)
+        self.assertIn("nomeia o marketing que a ambição já recusa", skill)
+        self.assertIn("nomeia o marketing que a ambição já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("AAA como adjetivo de marketing", report["scope"])
+        self.assertNotIn("AAA como adjetivo de marketing", report["areas"]["vision"]["scope"])
+        self.assertNotIn("AAA como adjetivo de marketing", game.next_scope())
+        self.assertNotIn("AAA como adjetivo de marketing", game.context_scope())
+
     def test_context_names_the_api_the_lifecycle_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
         self.assertTrue(
@@ -1827,6 +1873,73 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("acessibilidade seja gate de certificação", game.next_scope())
         self.assertNotIn("acessibilidade seja gate de certificação", game.verify_scope())
 
+    def test_access_names_the_option_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_option_without_consumer(recipe),
+            "a receita já recusa que opção sem consumidor seja opção",
+        )
+        self.assertEqual(game.access_option_consumer_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        self.assertTrue(report["options"], "o access já lista opções neste starter")
+        item = report["options"][0]
+        self.assertIn(
+            "opção sem consumidor seja opção",
+            item["scope"],
+            "o item copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`opção`)", item["scope"])
+        self.assertNotIn("opção", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_option_without_consumer(""))
+        with mock.patch.object(game, "access_option_consumer_source", return_value=None):
+            silent = game.access_reading(starter)
+        self.assertNotIn("opção sem consumidor seja opção", silent["options"][0]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a opção que a receita já recusa", recipe)
+        self.assertIn("nomeia a opção que a receita já recusa", skill)
+        self.assertIn("nomeia a opção que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("opção sem consumidor seja opção", report["scope"])
+        self.assertNotIn("opção sem consumidor seja opção", game.origins_reading(self.project)["scope"])
+        self.assertNotIn("opção sem consumidor seja opção", game.gate_item_scope())
+        self.assertNotIn("opção sem consumidor seja opção", game.next_scope())
+        self.assertNotIn("opção sem consumidor seja opção", game.verify_scope())
+
+    def test_commands_name_the_generic_the_menu_already_refuses(self):
+        guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.menu_refuses_generic_work(guide),
+            "o menu já recusa invocar sem carregar a referência",
+        )
+        self.assertEqual(game.command_row_generic_source(), "commands/README.md")
+        report = game.command_listing()
+        self.assertTrue(report["commands"], "o commands já lista o catálogo")
+        item = report["commands"][0]
+        self.assertIn(
+            "invocar sem carregar a referência",
+            item["scope"],
+            "a linha copiava o nome e calava a recusa",
+        )
+        self.assertIn("(`genérico`)", item["scope"])
+        self.assertNotIn("genérico", item)
+        self.assertFalse(game.menu_refuses_generic_work(""))
+        with mock.patch.object(game, "command_row_generic_source", return_value=None):
+            silent = game.command_listing()
+        self.assertNotIn("invocar sem carregar a referência", silent["commands"][0]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o genérico que o menu já recusa", guide)
+        self.assertIn("nomeia o genérico que o menu já recusa", skill)
+        self.assertIn("nomeia o genérico que o menu já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("invocar sem carregar a referência", report["scope"])
+        self.assertNotIn("invocar sem carregar a referência", game.next_scope())
+        self.assertNotIn("invocar sem carregar a referência", game.context_scope())
+        self.assertNotIn("invocar sem carregar a referência", game.doctor_then_scope())
+
     def test_check_plan_names_the_merit_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(
@@ -2357,6 +2470,171 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("prescrever quantas pessoas", game.playtest_reading(self.project)["scope"])
         self.assertNotIn("prescrever quantas pessoas", game.next_scope())
         self.assertNotIn("prescrever quantas pessoas", game.record_scope())
+
+    def test_scan_names_the_telemetry_the_recipe_already_refuses(self):
+        recipe_text = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_silent_telemetry(recipe_text),
+            "a receita já recusa que telemetria seja padrão silencioso",
+        )
+        self.assertEqual(game.runbook_telemetry_source(), "recipes/release.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "telemetria seja padrão silencioso",
+            report["areas"]["runbook"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`telemetria`)", report["areas"]["runbook"]["scope"])
+        self.assertNotIn("telemetria", report["areas"]["runbook"])
+        self.assertFalse(game.recipe_refuses_silent_telemetry(""))
+        with mock.patch.object(game, "runbook_telemetry_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("telemetria seja padrão silencioso", silent["areas"]["runbook"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a telemetria que a receita já recusa", recipe_text)
+        self.assertIn("nomeia a telemetria que a receita já recusa", recipe)
+        self.assertIn("nomeia a telemetria que a receita já recusa", skill)
+        self.assertIn("nomeia a telemetria que a receita já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["runbook"]["scope"])
+        self.assertNotIn("telemetria seja padrão silencioso", report["scope"])
+        self.assertNotIn("telemetria seja padrão silencioso", report["areas"]["qa"]["scope"])
+        self.assertNotIn("telemetria seja padrão silencioso", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("telemetria seja padrão silencioso", game.ship_reading(self.project)["scope"])
+        self.assertNotIn("telemetria seja padrão silencioso", game.next_scope())
+
+    def test_scan_names_the_history_the_recipe_already_refuses(self):
+        recipe_text = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_history_as_rule(recipe_text),
+            "a receita já recusa promover histórico a regra vigente",
+        )
+        self.assertEqual(game.decisions_history_source(), "recipes/architecture.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "promover histórico a regra vigente",
+            report["areas"]["decisions"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`histórico`)", report["areas"]["decisions"]["scope"])
+        self.assertNotIn("histórico", report["areas"]["decisions"])
+        self.assertFalse(game.recipe_refuses_history_as_rule(""))
+        with mock.patch.object(game, "decisions_history_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("promover histórico a regra vigente", silent["areas"]["decisions"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o histórico que a receita já recusa", recipe_text)
+        self.assertIn("nomeia o histórico que a receita já recusa", recipe)
+        self.assertIn("nomeia o histórico que a receita já recusa", skill)
+        self.assertIn("nomeia o histórico que a receita já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["decisions"]["scope"])
+        self.assertNotIn("verified", recipe_text)
+        self.assertNotIn("promover histórico a regra vigente", report["scope"])
+        self.assertNotIn("promover histórico a regra vigente", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("promover histórico a regra vigente", report["areas"]["runbook"]["scope"])
+        self.assertNotIn("promover histórico a regra vigente", game.next_scope())
+
+    def test_scan_names_the_fun_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_isolated_fun(guide),
+            "a guia já recusa que divertido isolado baste",
+        )
+        self.assertEqual(game.gdd_fun_source(), "references/preproduction.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "divertido isolado baste",
+            report["areas"]["gdd"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`divertido`)", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("divertido", report["areas"]["gdd"])
+        self.assertFalse(game.guide_refuses_isolated_fun(""))
+        with mock.patch.object(game, "gdd_fun_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("divertido isolado baste", silent["areas"]["gdd"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o divertido que a guia já recusa", guide)
+        self.assertIn("nomeia o divertido que a guia já recusa", recipe)
+        self.assertIn("nomeia o divertido que a guia já recusa", skill)
+        self.assertIn("nomeia o divertido que a guia já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("divertido isolado baste", report["scope"])
+        self.assertNotIn("divertido isolado baste", report["areas"]["decisions"]["scope"])
+        self.assertNotIn("divertido isolado baste", report["areas"]["mda"]["scope"])
+        self.assertNotIn("divertido isolado baste", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("divertido isolado baste", game.next_scope())
+
+    def test_scan_names_the_score_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_universal_fun_score(guide),
+            "a guia já recusa pontuação universal de diversão",
+        )
+        self.assertEqual(game.mda_score_source(), "references/preproduction.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "pontuação universal de diversão",
+            report["areas"]["mda"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`pontuação`)", report["areas"]["mda"]["scope"])
+        self.assertNotIn("pontuação", report["areas"]["mda"])
+        self.assertFalse(game.guide_refuses_universal_fun_score(""))
+        with mock.patch.object(game, "mda_score_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("pontuação universal de diversão", silent["areas"]["mda"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a pontuação que a guia já recusa", guide)
+        self.assertIn("nomeia a pontuação que a guia já recusa", recipe)
+        self.assertIn("nomeia a pontuação que a guia já recusa", skill)
+        self.assertIn("nomeia a pontuação que a guia já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["mda"]["scope"])
+        self.assertNotIn("pontuação universal de diversão", report["scope"])
+        self.assertNotIn("pontuação universal de diversão", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("pontuação universal de diversão", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("pontuação universal de diversão", game.verify_scope())
+        self.assertNotIn("pontuação universal de diversão", game.next_scope())
+
+    def test_scan_names_the_audience_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_invented_audience(guide),
+            "a guia já recusa inventar público observado",
+        )
+        self.assertEqual(game.vision_audience_source(), "references/preproduction.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "inventar público observado",
+            report["areas"]["vision"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`público`)", report["areas"]["vision"]["scope"])
+        self.assertNotIn("público", report["areas"]["vision"])
+        self.assertFalse(game.guide_refuses_invented_audience(""))
+        with mock.patch.object(game, "vision_audience_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("inventar público observado", silent["areas"]["vision"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o público que a guia já recusa", guide)
+        self.assertIn("nomeia o público que a guia já recusa", recipe)
+        self.assertIn("nomeia o público que a guia já recusa", skill)
+        self.assertIn("nomeia o público que a guia já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["vision"]["scope"])
+        self.assertNotIn("inventar público observado", report["scope"])
+        self.assertNotIn("inventar público observado", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("inventar público observado", report["areas"]["mda"]["scope"])
+        self.assertNotIn("inventar público observado", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("inventar público observado", game.next_scope())
 
     def test_scan_names_the_absence_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
@@ -5990,6 +6268,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(catalog["kind"], "catalog")
         self.assertEqual(catalog["id"], "passo-madeira-01")
         self.assertFalse(catalog["heard"])
+
+    def test_sfx_info_names_the_loose_file_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_loose_file_as_audio(recipe),
+            "a receita já recusa que arquivo sem papel seja áudio do jogo",
+        )
+        self.assertEqual(game.sfx_catalog.info_local_loose_source(), "recipes/audio.md")
+        report = game.sfx_catalog.info_entry("dash", self.root)
+        self.assertEqual(report["kind"], "starter")
+        self.assertNotIn("missing", report)
+        self.assertIn(
+            "arquivo sem papel seja áudio do jogo",
+            report["scope"],
+            "a ficha copiava licença e bytes e calava a recusa",
+        )
+        self.assertIn("(`lixo`)", report["scope"])
+        self.assertNotIn("lixo", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_loose_file_as_audio(""))
+        self.assertNotIn("arquivo sem papel seja áudio do jogo", report["next"])
+        with mock.patch.object(game.sfx_catalog, "info_local_loose_source", return_value=None):
+            silent = game.sfx_catalog.info_entry("dash", self.root)
+        self.assertNotIn("arquivo sem papel seja áudio do jogo", silent["scope"])
+        raw = game.sfx_catalog.local_stems()
+        self.assertTrue(raw["files"])
+        self.assertNotIn("scope", raw["files"][0])
+        lost = game.sfx_catalog.local_missing_card(
+            {"key": "ghost", "src": "ghost.wav", "license": "CC0-1.0", "author": "Ana", "origin": "teste"},
+            True,
+        )
+        self.assertNotIn("scope", lost)
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o lixo que a receita já recusa", recipe)
+        self.assertIn("nomeia o lixo que a receita já recusa", skill)
+        self.assertIn("nomeia o lixo que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        planted, _ = self._plant_catalog_sound()
+        catalog = game.sfx_catalog.info_entry(planted["id"], self.root)
+        self.assertEqual(catalog["kind"], "catalog")
+        self.assertNotIn("arquivo sem papel seja áudio do jogo", catalog.get("scope") or "")
+        self.assertNotIn("arquivo sem papel seja áudio do jogo", catalog.get("next") or "")
 
     def test_sfx_verify_names_starter_stems_without_claiming_to_cross_them(self):
         report = game.sfx_catalog.verify_catalog(self.root)

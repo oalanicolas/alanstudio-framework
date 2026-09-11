@@ -183,7 +183,7 @@ paleta ou feel.
   `--focus create` (início), `--focus feel` ou `--focus audio` (acabamento),
   sem gerar documentos que o recorte não precisa e sem chamar o build de AAA.
 - **Por que agora:** sem a distinção, o agente documenta demais, polida de
-  menos, ou usa “AAA” como adjetivo de marketing.
+  menos, ou usa “AAA” como adjetivo de marketing. Se a ambição recusa AAA como adjetivo de marketing, o `scan` nomeia o marketing que a ambição já recusa. Campo no disco não é campanha. Sem chave `marketing`.
 - **Pronto quando:** a escala está no brief (jam / produto / AA–Triple-I),
   o ciclo existe, o próximo passo da escada está nomeado com prova, e o
   [checklist](aaa-checklist.md) do recorte tem estado ou N/A em cada item

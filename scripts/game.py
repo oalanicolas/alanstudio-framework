@@ -2596,7 +2596,36 @@ def access_option_scope():
             " O disco recusa que acessibilidade seja gate de certificação (`certificação`). "
             "Opção no disco não é certificação."
         )
+    if access_option_consumer_source():
+        scope += (
+            " O disco recusa que opção sem consumidor seja opção (`opção`). "
+            "Chave no disco não é alcance."
+        )
     return scope
+
+
+# A receita já recusa opção sem consumidor. Sem isto o
+# item copiava a chave e calava a recusa.
+# Chave no disco não é alcance.
+A11Y_OPTION = re.compile(r"sem consumidor no código não é uma opção")
+A11Y_RECIPE = FRAMEWORK / "recipes/accessibility.md"
+
+
+def recipe_refuses_option_without_consumer(text):
+    return bool(text and A11Y_OPTION.search(text))
+
+
+def access_option_consumer_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_option_without_consumer(text):
+        return "recipes/accessibility.md"
+    return None
 
 
 def access_reading(project):
@@ -5588,11 +5617,17 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     areas["architecture"]["scope"] = architecture_area_scope()
     areas["provenance"]["scope"] = provenance_area_scope()
     areas["qa"]["scope"] = qa_area_scope()
+    areas["runbook"]["scope"] = runbook_area_scope()
+    areas["decisions"]["scope"] = decisions_area_scope()
+    areas["gdd"]["scope"] = gdd_area_scope()
+    areas["mda"]["scope"] = mda_area_scope()
+    areas["vision"]["scope"] = vision_area_scope()
     candidate_scope = scan_candidate_scope()
     for area in areas.values():
         for item in area["candidates"]:
             item["scope"] = candidate_scope
     mention_scope = genre_mention_scope()
+    scale_scope = scale_mention_scope()
     issue_scope = coverage_issue_scope()
     draft_scope = coverage_draft_scope()
     return {
@@ -5601,7 +5636,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         "areas": areas, "gaps": gaps, "read_first": read_first,
         "continuity_sources": continuity_sources, "continuity_source_count": continuity_source_count,
         "genre_mentions": [dict(item, scope=mention_scope) for item in genre_mentions],
-        "scale_mentions": scale_mentions,
+        "scale_mentions": [dict(item, scope=scale_scope) for item in scale_mentions],
         "agent_context": {
             "status": "found" if local_instructions else "not_located",
             "files": local_instructions,
@@ -5821,7 +5856,11 @@ def read_scale(mentions, declared=None):
         tokens = re.findall(r"[a-z0-9]+(?:-[a-z0-9]+)*", value)
         for scale, keywords in SCALE_KEYWORDS.items():
             if any(keyword in tokens or (" " in keyword and keyword in value) for keyword in keywords):
-                suggested, source = scale, mention
+                suggested, source = scale, {
+                    "path": mention["path"],
+                    "line": mention["line"],
+                    "value": mention["value"],
+                }
                 break
         if suggested:
             break
@@ -5850,6 +5889,7 @@ def command_catalog():
 
 def command_listing():
     catalog = command_catalog()
+    row_scope = command_row_scope()
     rows = []
     for name, entry in catalog["commands"].items():
         reference = FRAMEWORK / f"commands/{name}.md"
@@ -5862,6 +5902,7 @@ def command_listing():
             "reference": str(reference),
             "reference_present": reference.is_file(),
             "foci": list(entry.get("foci", ())),
+            "scope": row_scope,
         })
     return {
         "schema_version": 1,
@@ -5871,6 +5912,43 @@ def command_listing():
         "pinned_marker": PIN_MARKER,
         "scope": catalog.get("scope", ""),
     }
+
+
+# O menu já recusa invocar sem carregar a referência. Sem isto a
+# linha copiava o nome e calava a recusa.
+# Linha no catálogo não é a skill carregada.
+COMMANDS_GUIDE = FRAMEWORK / "commands/README.md"
+COMMAND_GENERIC = re.compile(r"sem carregar a referência produz trabalho genérico")
+
+
+def menu_refuses_generic_work(text):
+    return bool(text and COMMAND_GENERIC.search(text))
+
+
+def command_row_generic_source():
+    path = COMMANDS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if menu_refuses_generic_work(text):
+        return "commands/README.md"
+    return None
+
+
+def command_row_scope():
+    scope = (
+        "Nome, categoria e referência do sub-comando. Não carrega a "
+        "skill e não executa o fluxo."
+    )
+    if command_row_generic_source():
+        scope += (
+            " O disco recusa invocar sem carregar a referência (`genérico`). "
+            "Linha no catálogo não é a skill carregada."
+        )
+    return scope
 
 
 def command_problems():
@@ -6100,6 +6178,43 @@ def genre_mention_scope():
         scope += (
             " O disco recusa que a menção seja mecânica obrigatória (`mecânica`). "
             "Campo no disco não é regra do jogo."
+        )
+    return scope
+
+
+# A ambição já recusa AAA como adjetivo de marketing. Sem isto o
+# campo copiava o valor e calava a recusa.
+# Campo no disco não é campanha.
+AMBITION_GUIDE = FRAMEWORK / "references/ambition.md"
+SCALE_MARKETING = re.compile(r"adjetivo de marketing")
+
+
+def ambition_refuses_marketing_adjective(text):
+    return bool(text and SCALE_MARKETING.search(text))
+
+
+def scale_mention_marketing_source():
+    path = AMBITION_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if ambition_refuses_marketing_adjective(text):
+        return "references/ambition.md"
+    return None
+
+
+def scale_mention_scope():
+    scope = (
+        "Campo Escala localizado no documento. Não classifica e não "
+        "promove o recorte."
+    )
+    if scale_mention_marketing_source():
+        scope += (
+            " O disco recusa AAA como adjetivo de marketing (`marketing`). "
+            "Campo no disco não é campanha."
         )
     return scope
 
@@ -6460,6 +6575,149 @@ def architecture_area_scope():
     return scope
 
 
+# A receita já recusa promover histórico a regra vigente. Sem
+# isto a área localizava o devlog e calava a recusa.
+# Área no disco não é decisão atual.
+ARCHITECTURE_HISTORY = re.compile(r"histórico a regra vigente")
+
+
+def recipe_refuses_history_as_rule(text):
+    return bool(text and ARCHITECTURE_HISTORY.search(text))
+
+
+def decisions_history_source():
+    path = ARCHITECTURE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_history_as_rule(text):
+        return "recipes/architecture.md"
+    return None
+
+
+def decisions_area_scope():
+    scope = (
+        "Localiza o documento de decisões. Não promove histórico e não "
+        "inventa aprovação."
+    )
+    if decisions_history_source():
+        scope += (
+            " O disco recusa promover histórico a regra vigente (`histórico`). "
+            "Área no disco não é decisão atual."
+        )
+    return scope
+
+
+# A guia já recusa que divertido isolado baste. Sem isto a
+# área localizava o GDD e calava a recusa.
+# Área no disco não é o verbo.
+GDD_FUN = re.compile(r"isoladamente não basta")
+
+
+def guide_refuses_isolated_fun(text):
+    return bool(text and GDD_FUN.search(text))
+
+
+def gdd_fun_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_isolated_fun(text):
+        return "references/preproduction.md"
+    return None
+
+
+def gdd_area_scope():
+    scope = (
+        "Localiza o documento de design. Não joga e não aprova o verbo."
+    )
+    if gdd_fun_source():
+        scope += (
+            " O disco recusa que divertido isolado baste (`divertido`). "
+            "Área no disco não é o verbo."
+        )
+    return scope
+
+
+# A guia já recusa pontuação universal de diversão. Sem isto a
+# área localizava o MDA e calava a recusa.
+# Área no disco não é experiência.
+MDA_SCORE = re.compile(r"pontuação universal\s+de diversão")
+
+
+def guide_refuses_universal_fun_score(text):
+    return bool(text and MDA_SCORE.search(text))
+
+
+def mda_score_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_universal_fun_score(text):
+        return "references/preproduction.md"
+    return None
+
+
+def mda_area_scope():
+    scope = (
+        "Localiza o documento de hipóteses. Não observa a sessão e não "
+        "pontua diversão."
+    )
+    if mda_score_source():
+        scope += (
+            " O disco recusa pontuação universal de diversão (`pontuação`). "
+            "Área no disco não é experiência."
+        )
+    return scope
+
+
+# A guia já recusa inventar público observado. Sem isto a
+# área localizava o brief e calava a recusa.
+# Área no disco não é audiência.
+VISION_AUDIENCE = re.compile(r"público observado")
+
+
+def guide_refuses_invented_audience(text):
+    return bool(text and VISION_AUDIENCE.search(text))
+
+
+def vision_audience_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_invented_audience(text):
+        return "references/preproduction.md"
+    return None
+
+
+def vision_area_scope():
+    scope = (
+        "Localiza o documento de visão. Não observa o público e não "
+        "inventa aprovação."
+    )
+    if vision_audience_source():
+        scope += (
+            " O disco recusa inventar público observado (`público`). "
+            "Área no disco não é audiência."
+        )
+    return scope
+
+
 # O roteiro já recusa que o recibo presente seja licença. Sem isto a
 # área localizava CREDITS e calava a recusa.
 # Área no disco não é concessão.
@@ -6528,6 +6786,43 @@ def qa_area_scope():
         scope += (
             " O disco recusa prescrever quantas pessoas (`pessoas`). "
             "Área no disco não é censo."
+        )
+    return scope
+
+
+# A receita já recusa telemetria como padrão silencioso. Sem
+# isto a área localizava o runbook e calava a recusa.
+# Área no disco não é consentimento.
+RELEASE_RECIPE = FRAMEWORK / "recipes/release.md"
+RELEASE_TELEMETRY = re.compile(r"telemetria não é padrão silencioso")
+
+
+def recipe_refuses_silent_telemetry(text):
+    return bool(text and RELEASE_TELEMETRY.search(text))
+
+
+def runbook_telemetry_source():
+    path = RELEASE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_silent_telemetry(text):
+        return "recipes/release.md"
+    return None
+
+
+def runbook_area_scope():
+    scope = (
+        "Localiza o documento de execução. Não executa o artefato e não "
+        "abre outra máquina."
+    )
+    if runbook_telemetry_source():
+        scope += (
+            " O disco recusa que telemetria seja padrão silencioso (`telemetria`). "
+            "Área no disco não é consentimento."
         )
     return scope
 

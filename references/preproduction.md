@@ -40,7 +40,7 @@ piso do verbo. Contrato: [ambição](ambition.md).
 Ao iniciar, resolva o pedido, artefatos atuais e referência aprovada. Extraia o que
 já foi decidido; identifique hipóteses e lacunas. Pergunte somente por decisão
 indispensável que não possa ser inferida; registre suposições rotineiras e continue
-o trabalho autorizado. Não invente aprovação, público observado ou resultado de teste.
+o trabalho autorizado. Não invente aprovação, público observado ou resultado de teste. Se a guia recusa inventar público observado, o `scan` nomeia o público que a guia já recusa. Área no disco não é audiência. Sem chave `público`.
 
 ## Fluxo com retorno
 
@@ -107,7 +107,7 @@ Entrada: sensação e pilares. Saída: hipóteses ligando regra → comportament
 experiência, alternativas e observação capaz de contradizê-las. Pode começar pela
 experiência desejada e trabalhar de volta às regras. **Pronto para testar:** existe
 uma situação que distingue a hipótese de sua alternativa. Não há pontuação universal
-de diversão. [Template](../assets/templates/mda.md), [artigo original](https://www.cs.northwestern.edu/~hunicke/MDA.pdf).
+de diversão. Se a guia recusa pontuação universal de diversão, o `scan` nomeia a pontuação que a guia já recusa. Área no disco não é experiência. Sem chave `pontuação`. [Template](../assets/templates/mda.md), [artigo original](https://www.cs.northwestern.edu/~hunicke/MDA.pdf).
 
 ### `gdd` — Game Design Document
 
@@ -119,7 +119,7 @@ jogável definido, com consequências e situações de teste.
 **Pronto para prototipar:** o implementador consegue explicar o que o jogador faz,
 quais alternativas tem, o que acontece e como termina/reinicia. Com tela, a
 primeira situação é a porta; o campo começa depois do avanço. Pilares precisam
-resolver escolhas concretas; “imersivo” ou “divertido” isoladamente não basta.
+resolver escolhas concretas; “imersivo” ou “divertido” isoladamente não basta. Se a guia recusa que divertido isoladamente baste, o `scan` nomeia o divertido que a guia já recusa. Área no disco não é o verbo. Sem chave `divertido`.
 [Template](../assets/templates/gdd.md).
 
 ### `poc` — Proof of Concept

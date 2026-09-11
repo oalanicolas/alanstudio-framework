@@ -114,7 +114,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Reaproveite
    documentos existentes; um jogo pequeno reúne tudo em `game-design`. O design system
    do jogo (`art-bible`) é conteúdo mínimo; o arquivo separado é opcional se outro
-   canônico cobrir. Contrato: [design system do jogo](references/game-design-system.md). Se o sistema recusa que o scanner certifique tokens, o `scan` nomeia os tokens que o sistema já recusa. Documento no disco não é aprovação artística. Sem chave `tokens`. Se o roteiro recusa que o recibo presente seja licença válida, o `scan` nomeia a licença que o roteiro já recusa. Área no disco não é concessão. Sem chave `licença`. Se o roteiro recusa prescrever quantas pessoas, o `scan` nomeia as pessoas que o roteiro já recusa. Área no disco não é censo. Sem chave `pessoas`. Se o roteiro recusa que reconstruir documentos comprove intenções, o `scan` nomeia as intenções que o roteiro já recusa. Candidato no disco não é autoria. Sem chave `intenções`.
+   canônico cobrir. Contrato: [design system do jogo](references/game-design-system.md). Se o sistema recusa que o scanner certifique tokens, o `scan` nomeia os tokens que o sistema já recusa. Documento no disco não é aprovação artística. Sem chave `tokens`. Se o roteiro recusa que o recibo presente seja licença válida, o `scan` nomeia a licença que o roteiro já recusa. Área no disco não é concessão. Sem chave `licença`. Se o roteiro recusa prescrever quantas pessoas, o `scan` nomeia as pessoas que o roteiro já recusa. Área no disco não é censo. Sem chave `pessoas`. Se a receita recusa que telemetria seja padrão silencioso, o `scan` nomeia a telemetria que a receita já recusa. Área no disco não é consentimento. Sem chave `telemetria`. Se a receita recusa promover histórico a regra vigente, o `scan` nomeia o histórico que a receita já recusa. Área no disco não é decisão atual. Sem chave `histórico`. Se a guia recusa que divertido isoladamente baste, o `scan` nomeia o divertido que a guia já recusa. Área no disco não é o verbo. Sem chave `divertido`. Se a guia recusa pontuação universal de diversão, o `scan` nomeia a pontuação que a guia já recusa. Área no disco não é experiência. Sem chave `pontuação`. Se a guia recusa inventar público observado, o `scan` nomeia o público que a guia já recusa. Área no disco não é audiência. Sem chave `público`. Se a ambição recusa AAA como adjetivo de marketing, o `scan` nomeia o marketing que a ambição já recusa. Campo no disco não é campanha. Sem chave `marketing`. Se o roteiro recusa que reconstruir documentos comprove intenções, o `scan` nomeia as intenções que o roteiro já recusa. Candidato no disco não é autoria. Sem chave `intenções`.
    Direção aprovada: `--event direction-approved` e base mínima sincronizada no mesmo
    turno, mesmo com nove candidatos encontrados.
 3. **REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes pertinentes.
@@ -138,7 +138,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `selection.json` local. `sfx info ID` lê a ficha do acervo ou a
    chave do stem do starter — o recibo que lista um stem e o
    disco perdeu não é id desconhecido; se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede.
-   Pico no recibo não é mix ouvida. `sfx export ID
+   Pico no recibo não é mix ouvida. Se a receita recusa que arquivo sem papel seja áudio do jogo, o `sfx info` do stem nomeia o lixo que a receita já recusa. Arquivo no disco não é mix. Sem chave `lixo`. `sfx export ID
    --to PASTA` copia bytes e créditos do acervo ou do stem —
    o recibo que lista um stem e o disco perdeu não é id
    desconhecido; exportar não inventa bytes. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`.
@@ -348,7 +348,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Texto no DOM não é sessão. Sem chave `threat`.
    Se o disco declara `paintCommands`, o `access` nomeia as teclas que a tabela já lista.
    Tabela no disco não é sessão. Sem chave `commands`.
-   Se a porta lê a legenda que o mixer ainda guarda, o `access` nomeia a legenda que a porta já lê. Texto no disco não é sessão. Sem chave `caption`. Se a pesquisa recusa que acessibilidade seja gate de certificação, o `access` nomeia a certificação que a pesquisa já recusa. Opção no disco não é certificação. Sem chave `certificação`.
+   Se a porta lê a legenda que o mixer ainda guarda, o `access` nomeia a legenda que a porta já lê. Texto no disco não é sessão. Sem chave `caption`. Se a pesquisa recusa que acessibilidade seja gate de certificação, o `access` nomeia a certificação que a pesquisa já recusa. Opção no disco não é certificação. Sem chave `certificação`. Se a receita recusa que opção sem consumidor seja opção, o `access` nomeia a opção que a receita já recusa. Chave no disco não é alcance. Sem chave `opção`.
    Texto no disco não é mix ouvido.
    Nomear não é
    `trusted`. Trocar no stub não é sessão observada.
@@ -539,7 +539,7 @@ a decisões novas, não a rebaixar o que já está shipping.
 
 Contrato das referências e como acrescentar um comando: [commands/README.md](commands/README.md).
 O catálogo em [commands/commands.json](commands/commands.json) alimenta
-`python3 scripts/game.py commands`, os atalhos e a checagem do `doctor`.
+`python3 scripts/game.py commands`, os atalhos e a checagem do `doctor`. Se o menu recusa invocar sem carregar a referência, o `commands` nomeia o genérico que o menu já recusa. Linha no disco não é a skill. Sem chave `genérico`.
 
 ### Regras de roteamento
 

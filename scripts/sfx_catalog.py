@@ -391,6 +391,42 @@ def find_local_missing(entry_id, folder=None):
     return None
 
 
+# A receita já recusa que arquivo sem papel seja áudio do jogo.
+# Sem isto a ficha copiava licença e bytes e calava a recusa.
+# Arquivo no disco não é mix.
+AUDIO_LOOSE = re.compile(r"sem papel e sem consumidor não é áudio")
+
+
+def recipe_refuses_loose_file_as_audio(text):
+    return bool(text and AUDIO_LOOSE.search(text))
+
+
+def info_local_loose_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_loose_file_as_audio(text):
+        return "recipes/audio.md"
+    return None
+
+
+def info_local_scope():
+    scope = (
+        "Ficha do stem do starter. "
+        "Não ouve e não liga o papel ao mixer."
+    )
+    if info_local_loose_source():
+        scope += (
+            " O disco recusa que arquivo sem papel seja áudio do jogo (`lixo`). "
+            "Arquivo no disco não é mix."
+        )
+    return scope
+
+
 def local_info_card(item, empty):
     licenses = [item["license"]] if item.get("license") else []
     authors = [item["author"]] if item.get("author") else []
@@ -407,6 +443,7 @@ def local_info_card(item, empty):
         "empty": empty,
         "heard": False,
         "next": INFO_LOCAL_NEXT,
+        "scope": info_local_scope(),
     }
 
 
