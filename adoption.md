@@ -3,6 +3,57 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.381 — o art nomeia a vinheta que o recorte já marca
+
+A
+receita
+já
+pedia
+halo
+e
+vinheta.
+O
+comando
+listava
+paletas
+e
+calava
+o
+`drawVignette`.
+Agora
+o
+`art`
+nomeia
+a
+vinheta.
+Recorte
+no
+disco
+não
+é
+comparação
+em
+movimento.
+Sem
+chave
+`vignette`.
+Não
+promove
+`consistent`.
+
+O que 0.9.381 não afirma:
+recorte
+no
+disco
+não
+é
+direção
+consistente
+nem
+comparação
+em
+movimento.
+
 ## 0.9.380 — o content nomeia a migração que as mesas já compartilham
 
 A

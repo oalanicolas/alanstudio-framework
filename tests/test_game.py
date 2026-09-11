@@ -4718,6 +4718,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("(`pair`)", report["scope"])
 
+    def test_art_names_the_vignette_the_cut_already_marks(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        render = (starter / "src/game/render.js").read_text(encoding="utf-8")
+        self.assertTrue(game.canvas_marks_cut(render), "o canvas já marca o recorte")
+        self.assertEqual(game.vignette_cut_source(starter), "src/game/render.js")
+        report = game.art_reading(starter)
+        self.assertIn("marca o recorte", report["scope"], "o art listava paletas e calava a vinheta")
+        self.assertIn("(`drawVignette`)", report["scope"])
+        self.assertFalse(report["consistent"])
+        self.assertNotIn("vignette", report)
+        self.assertNotIn("halo", report)
+        self.assertNotIn("volume", report)
+        empty = game.art_reading(self.project)
+        self.assertFalse(game.canvas_marks_cut(""))
+        self.assertIsNone(game.vignette_cut_source(self.project))
+        self.assertNotIn("marca o recorte", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a vinheta que o recorte já marca", recipe)
+        self.assertIn("nomeia a vinheta que o recorte já marca", skill)
+        self.assertIn("nomeia a vinheta que o recorte já marca", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("(`pair`)", report["scope"])
+
     def test_art_names_the_rain_risk_the_door_already_reads(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.art_reading(starter)

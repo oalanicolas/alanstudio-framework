@@ -2515,6 +2515,26 @@ def telegraph_rail_source(project):
     return None
 
 
+# A receita já pinta a vinheta. Sem isto o art
+# listava paletas e calava o recorte. Recorte no
+# disco não é comparação em movimento.
+VIGNETTE_DRAW = re.compile(r"(?:function\s+drawVignette)\b")
+
+
+def canvas_marks_cut(text):
+    return bool(text and VIGNETTE_DRAW.search(text))
+
+
+def vignette_cut_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if canvas_marks_cut(text):
+            return relative
+    return None
+
+
 def art_reading(project):
     project = Path(project)
     palettes = []
@@ -2561,6 +2581,11 @@ def art_reading(project):
         scope += (
             " O disco marca o trilho (`telegraph`). Marca no disco não é "
             "comparação em movimento."
+        )
+    if vignette_cut_source(project):
+        scope += (
+            " O disco marca o recorte (`drawVignette`). Recorte no disco "
+            "não é comparação em movimento."
         )
     return {
         "schema_version": 1,

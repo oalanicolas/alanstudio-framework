@@ -8,7 +8,7 @@ dusk cai mais denso e com mais estilhaço, calm mais folgado e
 com menos risco — sem comer a seed. A ameaça
 da mostra marca o trilho com o mesmo telegraph do campo; a live já
 nomeava o perigo. Se o canvas declara `drawTelegraph`, o `art` nomeia o trilho que o telegraph já marca.
-Marca no disco não é comparação em movimento. Sem chave `telegraph`. O campo
+Marca no disco não é comparação em movimento. Sem chave `telegraph`. Se o canvas declara `drawVignette`, o `art` nomeia a vinheta que o recorte já marca. Recorte no disco não é comparação em movimento. Sem chave `vignette`. O campo
 começa depois do avanço.
 Comparar só o meio da partida esconde a imagem que o jogador vê ao
 abrir. Sem tela o headless já joga.

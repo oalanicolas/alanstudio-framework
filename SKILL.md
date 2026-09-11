@@ -327,7 +327,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    fora do código (`palettes.json` e `tokens.json` não extraem) e passo de empacotar. Se o
    `tools/new-look.*` nasce o look, o `art` nomeia o look que o disco já nasce.
    Ferramenta no disco não é comparação em movimento. Sem chave `look`. Se o canvas declara `drawTelegraph`, o `art` nomeia o trilho que o telegraph já marca.
-   Marca no disco não é comparação em movimento. Sem chave `telegraph`. Se o disco declara `listMoods`, o `content` nomeia o par. Nome no disco não é volume. Sem chave `moods`. Se o `tools/new-table.*` nasce a mesa, o `content` nomeia a mesa que o disco já nasce. Ferramenta no disco não é volume. Sem chave `table`. Se o disco declara `migrateTable`, o `content` nomeia a migração que as mesas já compartilham. Arquivo no disco não é volume. Sem chave `migrate`. Se `dist/VERSION.json` existe,
+   Marca no disco não é comparação em movimento. Sem chave `telegraph`. Se o canvas declara `drawVignette`, o `art` nomeia a vinheta que o recorte já marca. Recorte no disco não é comparação em movimento. Sem chave `vignette`. Se o disco declara `listMoods`, o `content` nomeia o par. Nome no disco não é volume. Sem chave `moods`. Se o `tools/new-table.*` nasce a mesa, o `content` nomeia a mesa que o disco já nasce. Ferramenta no disco não é volume. Sem chave `table`. Se o disco declara `migrateTable`, o `content` nomeia a migração que as mesas já compartilham. Arquivo no disco não é volume. Sem chave `migrate`. Se `dist/VERSION.json` existe,
    `ship` relata nome e versão. Se `dist/` de um jogo web existe, relata
    árvore e HEAD. `consistent`/`enough`/`shipped`/`elsewhere` são
    sempre falsos. Sem declaração, o `next` nomeia `art.missing`,
