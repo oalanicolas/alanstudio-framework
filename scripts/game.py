@@ -10217,6 +10217,41 @@ def play_then_scope(then=None):
     )
 
 
+# A receita já recusa que oferecer o recibo
+# seja observação. Sem isto o then do play
+# sem seed apontava note e calava a recusa.
+# Recibo no disco não é a sessão.
+PLAY_THEN_OBSERVATION = re.compile(r"isso não é observação")
+
+
+def recipe_refuses_receipt_as_observation(text):
+    return bool(text and PLAY_THEN_OBSERVATION.search(text))
+
+
+def play_then_observation_source():
+    path = LIFECYCLE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_receipt_as_observation(text):
+        return "recipes/lifecycle.md"
+    return None
+
+
+def play_then_observation_scope(then=None):
+    if not play_then_observation_source():
+        return None
+    if then and then.get("seed"):
+        return None
+    return (
+        "O disco recusa que oferecer o recibo seja observação "
+        "(`observação`). Recibo no disco não é a sessão."
+    )
+
+
 def play_cycle(destination=None, starter=None):
     if destination is None:
         raise ValueError(missing_destination_hint())
@@ -10236,8 +10271,10 @@ def play_cycle(destination=None, starter=None):
     url = serve_url(scripts)
     then = cycle_then(dest, play, chosen)
     rng = play_then_scope(then)
-    if rng:
-        then = dict(then, scope=rng)
+    seen = play_then_observation_scope(then)
+    named = rng or seen
+    if named:
+        then = dict(then, scope=named)
     cycle = starter_cycle(chosen)
     noted = bool(observation_receipts(dest))
     proposal = next_step(dest, "feel")

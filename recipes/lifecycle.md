@@ -21,7 +21,7 @@ desliga. Percorra a ligação real: evento de entrada → quadro → estado.
 Com tela, o ciclo deste starter é abertura → partida → fim → abertura.
 O avanço abre a porta e, depois do fim, um avanço *novo* volta a ela.
 R no overlay também. Sem tela o headless já joga. A página oferece o
-recibo no overlay e na porta se houver partida; isso não é observação.
+recibo no overlay e na porta se houver partida; isso não é observação. Se a receita recusa que oferecer o recibo seja observação, o then do `play` nomeia a observação que a receita já recusa. Recibo no disco não é a sessão. Sem chave `observação`. Sem seed a frase sai; com seed o then nomeia o RNG.
 Aba escondida pausa no campo e no fim. Na porta só descarrega — P já
 é ignorado e a placa nem nasce. Na pausa o toque retoma; Espaço
 continua só intenção. A placa da pausa nomeia reiniciar.

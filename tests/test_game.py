@@ -13342,6 +13342,63 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("demonstrem qualidade artística", game.next_scope())
         self.assertNotIn("demonstrem qualidade artística", game.play_scope(destination))
 
+    def test_play_then_names_the_observation_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_receipt_as_observation(recipe),
+            "a receita já recusa que oferecer o recibo seja observação",
+        )
+        self.assertEqual(game.play_then_observation_source(), "recipes/lifecycle.md")
+        destination = self.root / "com-observacao"
+        game.start_project(destination, "canvas-arcade")
+        report = game.play_cycle(destination, "canvas-arcade")
+        self.assertNotIn("seed", report["then"])
+        self.assertIn(
+            "oferecer o recibo seja observação",
+            report["then"]["scope"],
+            "o then do play sem seed apontava note e calava a recusa",
+        )
+        self.assertIn("(`observação`)", report["then"]["scope"])
+        self.assertNotIn("observação", report)
+        self.assertNotIn("observação", report["then"])
+        self.assertFalse(report["executed"])
+        self.assertNotIn("observed", report)
+        self.assertFalse(game.recipe_refuses_receipt_as_observation(""))
+        self.assertNotIn("oferecer o recibo seja observação", report["scope"])
+        with mock.patch.object(game, "play_then_observation_source", return_value=None):
+            silent = game.play_cycle(destination, "canvas-arcade")
+        self.assertNotIn("oferecer o recibo seja observação", silent["then"].get("scope") or "")
+        (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+        }), encoding="utf-8")
+        seeded = game.play_cycle(destination, "canvas-arcade")
+        self.assertIn("seed", seeded["then"])
+        self.assertNotIn("oferecer o recibo seja observação", seeded["then"].get("scope") or "")
+        started = game.start_project(destination, "canvas-arcade")
+        self.assertNotIn("oferecer o recibo seja observação", started["then"].get("scope") or "")
+        guided = game.guide_cycle(destination, "canvas-arcade")
+        self.assertNotIn("oferecer o recibo seja observação", guided["then"].get("scope") or "")
+        planted = game.init(self.root / "init-sem-observacao", "canvas-arcade")
+        self.assertNotIn("oferecer o recibo seja observação", planted["then"].get("scope") or "")
+        felt = game.feel_reading(destination)
+        self.assertNotIn("oferecer o recibo seja observação", felt["then"].get("scope") or "")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a observação que a receita já recusa", recipe)
+        self.assertIn("nomeia a observação que a receita já recusa", create)
+        self.assertIn("nomeia a observação que a receita já recusa", skill)
+        self.assertIn("nomeia a observação que a receita já recusa", readme_doc)
+        self.assertNotIn("verified", report["then"]["scope"])
+        self.assertNotIn("aprovado", report["then"]["scope"])
+        self.assertNotIn("oferecer o recibo seja observação", game.next_scope())
+        self.assertNotIn("oferecer o recibo seja observação", game.play_scope(destination))
+        self.assertNotIn("oferecer o recibo seja observação", game.cycle_scope())
+
     def test_play_then_names_the_rng_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
         self.assertTrue(

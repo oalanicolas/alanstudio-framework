@@ -30,6 +30,66 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.532 — o then do play sem seed nomeia a observação que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+oferecer
+o
+recibo
+não
+é
+observação.
+O
+then
+apontava
+note
+e
+calava
+a
+recusa.
+Agora
+o
+then
+sem
+seed
+nomeia
+a
+observação.
+Recibo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`observação`.
+Com
+seed
+o
+then
+nomeia
+o
+RNG.
+Nomear
+não
+observa.
+
+O que 0.9.532 não afirma:
+apontar
+o
+note
+não
+é
+a
+partida
+observada.
+
 ## 0.9.531 — o then do feel nomeia a artística que a receita já recusa
 
 A
