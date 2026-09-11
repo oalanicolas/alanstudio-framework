@@ -4916,6 +4916,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("LOOK_INTENTS", report["scope"])
         self.assertNotIn("(`pair`)", report["scope"])
 
+    def test_art_names_the_contrast_the_look_already_refuses(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/new-look.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.look_refuses_contrast(tool), "o look já recusa contraste")
+        self.assertEqual(game.look_reach_source(starter), "tools/new-look.mjs")
+        report = game.art_reading(starter)
+        self.assertIn("recusa contraste como look", report["scope"], "o art nascia a paleta e calava o alcance")
+        self.assertIn("(`contrast`)", report["scope"])
+        self.assertFalse(report["consistent"])
+        self.assertNotIn("contrast", report)
+        empty = game.art_reading(self.project)
+        self.assertFalse(game.look_refuses_contrast(""))
+        self.assertIsNone(game.look_reach_source(self.project))
+        self.assertNotIn("recusa contraste como look", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o contraste que o look já recusa", recipe)
+        self.assertIn("nomeia o contraste que o look já recusa", skill)
+        self.assertIn("nomeia o contraste que o look já recusa", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("LOOK_INTENTS", report["scope"])
+        self.assertNotIn("(`pair`)", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+
     def test_art_names_the_rail_the_telegraph_already_marks(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         render = (starter / "src/game/render.js").read_text(encoding="utf-8")

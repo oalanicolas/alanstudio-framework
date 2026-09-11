@@ -702,6 +702,7 @@ python3 scripts/game.py ship /caminho/do/laboratorio/meu-jogo
 e mesas de chuva (`intervalTicks` e `fallSpeed` em `data/`, `tables/` ou `content/`).
 Se o `tools/new-look.*` nasce o look, o `art` nomeia o look que o disco já nasce.
 Ferramenta no disco não é comparação em movimento. Sem chave `look`.
+Se o look recusa contraste, o `art` nomeia o contraste que o look já recusa. Alcance no disco não é comparação em movimento. Sem chave `contrast`.
 Se o canvas declara `drawTelegraph`, o `art` nomeia o trilho que o telegraph já marca.
 Marca no disco não é comparação em movimento. Sem chave `telegraph`.
 Se o canvas declara `drawVignette`, o `art` nomeia a vinheta que o recorte já marca.

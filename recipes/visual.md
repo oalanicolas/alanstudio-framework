@@ -23,7 +23,7 @@ chuva continua direção declarada; chuva sem paleta não declara.
 No starter, `look --from` / `--as` nasce um look que o jogo já pinta —
 campo, cortina, a casca da página e os knobs (select, faixa, foco).
 Se o `tools/new-look.*` nasce o look, o `art` nomeia o look que o disco já nasce.
-Ferramenta no disco não é comparação em movimento. Sem chave `look`. `pair --from` nasce look e chuva
+Ferramenta no disco não é comparação em movimento. Sem chave `look`. Se o look recusa contraste, o `art` nomeia o contraste que o look já recusa. Alcance no disco não é comparação em movimento. Sem chave `contrast`. `pair --from` nasce look e chuva
 no mesmo nome e `?mood=` aplica. `dusk` e `calm` já são o segundo
 e o terceiro look; `calm` não é o `cooler` aplicado em `normal`.
 `dusk` pinta orbe âmbar e estilhaço índigo; o campo continua

@@ -3,6 +3,62 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.393 — o art nomeia o contraste que o look já recusa
+
+O
+`new-look`
+já
+dizia
+que
+`contrast`
+é
+alcance,
+não
+look.
+O
+comando
+nascia
+a
+paleta
+e
+calava
+a
+recusa.
+Agora
+o
+`art`
+nomeia
+o
+contraste.
+Alcance
+no
+disco
+não
+é
+comparação
+em
+movimento.
+Sem
+chave
+`contrast`.
+Não
+promove
+`consistent`.
+
+O que 0.9.393 não afirma:
+alcance
+no
+disco
+não
+é
+look
+escolhido
+nem
+contraste
+medido
+no
+dispositivo.
+
 ## 0.9.392 — o craft nomeia a saída de escopo que a tabela já declara
 
 A

@@ -2564,10 +2564,18 @@ LOOK_FILES = (
     "tools/new-look.py",
 )
 LOOK_BIRTH = re.compile(r"Nasce um look|não inventa consumidor", re.IGNORECASE)
+# O look já recusa contraste. Sem isto o art
+# nascia a paleta e calava o alcance.
+# Alcance no disco não é comparação em movimento.
+LOOK_REACH = re.compile(r"é alcance,\s+não look", re.IGNORECASE)
 
 
 def look_births_palette(text):
     return bool(text and LOOK_BIRTH.search(text))
+
+
+def look_refuses_contrast(text):
+    return bool(text and LOOK_REACH.search(text))
 
 
 def look_birth_source(project):
@@ -2581,6 +2589,21 @@ def look_birth_source(project):
         except OSError:
             continue
         if look_births_palette(text):
+            return name
+    return None
+
+
+def look_reach_source(project):
+    project = Path(project)
+    for name in LOOK_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if look_refuses_contrast(text):
             return name
     return None
 
@@ -2666,6 +2689,11 @@ def art_reading(project):
         scope += (
             " O disco nasce o look (`look`). Ferramenta no disco não é "
             "comparação em movimento."
+        )
+    if look_reach_source(project):
+        scope += (
+            " O disco recusa contraste como look (`contrast`). "
+            "Alcance no disco não é comparação em movimento."
         )
     if telegraph_rail_source(project):
         scope += (
