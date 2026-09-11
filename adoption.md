@@ -3,6 +3,52 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.372 — o sfx summary nomeia o pico que o peak já relata
+
+A
+receita
+já
+apontava
+`npm run peak`.
+O
+comando
+listava
+stems
+e
+calava
+o
+tool.
+Agora
+o
+`sfx summary`
+nomeia
+o
+pico.
+Relato
+no
+disco
+não
+é
+mix
+ouvida.
+Sem
+chave
+`peak`.
+Não
+promove
+`heard`.
+
+O que 0.9.372 não afirma:
+relato
+no
+disco
+não
+é
+mix
+ouvida
+no
+dispositivo.
+
 ## 0.9.371 — o note nomeia o last-run que o disco já guarda
 
 A

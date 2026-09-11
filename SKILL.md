@@ -89,7 +89,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    disco perdeu, `roles --fill` nomeia o mesmo stem,
    `sfx verify` nomeia os stems sem cruzar
    o que não existe e nomeia o stem que o recibo lista e o
-   disco perdeu, `sfx summary` lista todos e `sfx serve`
+   disco perdeu, `sfx summary` lista todos. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `sfx serve`
    recusa catálogo vazio.
    Com sons no acervo, `sfx serve` abre a página de escuta — se
    `shared/sfx/ui` faltar, o harness gera a lista e nomeia o som

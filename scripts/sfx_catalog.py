@@ -18,6 +18,30 @@ DEFAULT_ROOT = default_workspace()
 CATALOG_RELATIVE = Path("shared/sfx")
 STARTER_SFX = Path(__file__).resolve().parents[1] / "assets/starters/canvas-arcade/public/sfx"
 STEM_RECEIPT = ("src", "key", "author", "license", "origin")
+# A receita já pede o pico do arquivo. Sem isto o
+# summary listava stems e calava o tool.
+# Relato no disco não é mix ouvida.
+PEAK_FILES = ("tools/peak.mjs", "tools/peak.js", "tools/peak.py")
+PEAK_DISK = re.compile(r"Pico do arquivo no disco|não do mix em cena", re.IGNORECASE)
+
+
+def peak_names_disk(text):
+    return bool(text and PEAK_DISK.search(text))
+
+
+def peak_disk_source(project=None):
+    root = Path(project) if project is not None else STARTER_SFX.parent.parent
+    for name in PEAK_FILES:
+        path = root / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if peak_names_disk(text):
+            return name
+    return None
 
 
 def receipt_field(row, field):
@@ -513,7 +537,7 @@ def summarize(root=None):
         groups[item["category"]] = groups.get(item["category"], 0) + 1
     empty = len(catalog["sounds"]) == 0
     local = local_stems()
-    return {
+    report = {
         "catalog": str(catalog_dir(root) / "catalog.json"),
         "guide": str(catalog_dir(root) / "README.md"),
         "file_count": len(catalog["sounds"]),
@@ -534,6 +558,12 @@ def summarize(root=None):
         "verify": "python3 scripts/game.py sfx verify",
         "next": EMPTY_NEXT if empty else LISTEN_NEXT,
     }
+    if peak_disk_source():
+        report["scope"] = (
+            "O disco relata o pico do arquivo (`peak`). "
+            "Relato no disco não é mix ouvida."
+        )
+    return report
 
 
 def import_entry(file, metadata, root=None):

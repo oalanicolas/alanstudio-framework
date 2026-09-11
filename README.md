@@ -570,7 +570,7 @@ desse stem. `sfx export` nomeia o stem que o recibo lista
 e o disco perdeu — exportar não inventa bytes.
 `sfx verify` nomeia os stems sem cruzar o que não
 existe e nomeia o stem que o recibo lista e o disco perdeu.
-`sfx summary` lista todos. `sfx serve` recusa — não
+`sfx summary` lista todos. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `sfx serve` recusa — não
 há o que ouvir no acervo.
 Com sons, `sfx serve` abre a página de escuta; se `shared/sfx/ui`
 faltar, o harness gera a lista. Tocar nessa página não é mix

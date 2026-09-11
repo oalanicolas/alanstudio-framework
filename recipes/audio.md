@@ -187,7 +187,7 @@ desloca a voz no papel que o mixer já toca; `--as` precisa de `--from`.
 Se o `tools/design-sfx.*` desloca a voz, o `roles` nomeia a voz que o sfx já desloca.
 Arquivo no disco não é mix ouvida. Sem chave `sfx`.
 `npm run peak` relata o pico do
-arquivo; `npm run mix` soma as vozes de uma partida simulada com o mesmo
+arquivo. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `npm run mix` soma as vozes de uma partida simulada com o mesmo
 palco, folga, ducking e taxa da corrente do mixer. Se o `tools/mix.*`
 soma as vozes, o `roles` nomeia a soma. Soma no disco não é mix ouvida.
 Sem chave `mix`. Nenhum dos dois é mix ouvido. `heard` continua falso. Toda

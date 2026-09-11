@@ -2874,6 +2874,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", dumped)
         self.assertNotIn("verified", dumped)
 
+    def test_sfx_summary_names_the_peak_the_tool_already_reports(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/peak.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.sfx_catalog.peak_names_disk(tool), "o tool já relata o pico")
+        self.assertEqual(game.sfx_catalog.peak_disk_source(), "tools/peak.mjs")
+        report = game.sfx_catalog.summarize(self.root)
+        self.assertIn("pico do arquivo", report["scope"], "o summary listava stems e calava o peak")
+        self.assertIn("(`peak`)", report["scope"])
+        self.assertFalse(report["heard"])
+        self.assertNotIn("peak", report)
+        self.assertFalse(game.sfx_catalog.peak_names_disk(""))
+        self.assertIsNone(game.sfx_catalog.peak_disk_source(self.project))
+        recipe = (Path(game.FRAMEWORK) / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (Path(game.FRAMEWORK) / "SKILL.md").read_text(encoding="utf-8")
+        readme = (Path(game.FRAMEWORK) / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o pico que o peak já relata", recipe)
+        self.assertIn("nomeia o pico que o peak já relata", skill)
+        self.assertIn("nomeia o pico que o peak já relata", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("LUFS", report["scope"])
+        self.assertNotIn("-14", report["scope"])
+        roles = game.roles_reading(starter)
+        self.assertNotIn("peak", roles["scope"])
+
     def test_sfx_search_names_matching_starter_stems_without_claiming_to_hear_them(self):
         report = game.sfx_catalog.search_catalog("dash", self.root)
         self.assertTrue(report["empty"])
