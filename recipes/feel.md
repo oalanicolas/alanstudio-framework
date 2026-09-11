@@ -67,7 +67,7 @@ Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.
 Traço no disco não é alguém de fora. Sem chave `session`.
 Se o `tools/serve.*` grava o recado, o `playtest` nomeia o recado que o serve já grava. Texto no disco não é alguém de fora. Sem chave `note`.
 `playtest` relata
-`candidate_policy` e `candidate_tally`. Nenhum dos dois é sessão observada. Se o
+`candidate_policy` e `candidate_tally`. Nenhum dos dois é sessão observada. Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Se o
 projeto (ou o starter) declara `session`, `then` a aponta. `note --from-run`
 anexa o resumo e, se houver, a curva — o mapa já põe `--from-run`
 quando o arquivo existe. Se o disco tem last-run e o comando veio sem --from-run, o note nomeia o last-run que o disco já guarda. Sem o arquivo a frase some. Nomear não anexa. Depois do fim, a página grava o mesmo

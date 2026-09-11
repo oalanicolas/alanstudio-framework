@@ -375,7 +375,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `candidate_look`; se nomeia a curva, relata `candidate_curve`;
    se nomeia a origem, relata `candidate_policy` (`played` ou
    `nearest-orb`); se nomeia a conta, relata `candidate_tally`
-   (pontos, coletas, quedas, erros e guardas). A simulação não
+   (pontos, coletas, quedas, erros e guardas). Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. A simulação não
    sobrescreve `played` sem `--force`.
    O convite junta mesa e paleta. Nenhum dos
    dois é sessão observada.    Recibo sem forma entra no

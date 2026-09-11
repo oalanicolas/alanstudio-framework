@@ -4018,6 +4018,42 @@ def last_run_tally(project):
     return facts or None
 
 
+# A pesquisa já recusa que cinco playtesters sejam critério.
+# Sem isto a conta copiava os verbos e calava a recusa.
+# Conta no disco não é sessão observada.
+PLAYTEST_FIVE = re.compile(r'"Cinco playtesters"\s+não\s+é\s+critério')
+
+
+def research_refuses_five_as_criterion(text):
+    return bool(text and PLAYTEST_FIVE.search(text))
+
+
+def playtest_tally_five_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_five_as_criterion(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def playtest_tally_scope():
+    scope = (
+        "Pontos, coletas, quedas, erros e guardas do last-run. "
+        "Não conta jogadores e não observa a sessão."
+    )
+    if playtest_tally_five_source():
+        scope += (
+            " O disco recusa que cinco playtesters sejam critério (`cinco`). "
+            "Conta no disco não é sessão observada."
+        )
+    return scope
+
+
 def last_run_speed(project):
     # O convite abria a seed no relógio cheio. last-run já
     # guarda o knob. 1 some. Número não é outsider.
@@ -4177,6 +4213,8 @@ def playtest_reading(project):
     candidate_curve = last_run_curve(project) if candidate else None
     candidate_policy = last_run_policy(project) if candidate else None
     candidate_tally = last_run_tally(project) if candidate else None
+    if candidate_tally is not None:
+        candidate_tally = dict(candidate_tally, scope=playtest_tally_scope())
     invite = invite_path(project)
     qa_file = qa.is_file() and not qa.is_symlink()
     try:

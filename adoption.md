@@ -3,6 +3,62 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.459 — o candidate_tally nomeia o cinco que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+cinco
+playtesters
+não
+é
+critério.
+A
+conta
+copiava
+os
+verbos
+e
+calava
+a
+recusa.
+Agora
+o
+`candidate_tally`
+nomeia
+o
+cinco.
+Conta
+no
+disco
+não
+é
+sessão
+observada.
+Sem
+chave
+`cinco`.
+Nomear
+não
+observa.
+
+O que 0.9.459 não afirma:
+conta
+no
+disco
+não
+é
+alguém
+de
+fora
+nem
+curva
+de
+problemas
+novos.
+
 ## 0.9.458 — o artifact do ship nomeia o editor que a receita já recusa
 
 A

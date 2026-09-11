@@ -8523,15 +8523,14 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "felt": False,
         }), encoding="utf-8")
         report = game.playtest_reading(destination)
-        self.assertEqual(report["candidate_tally"], {
-            "score": 12,
-            "collected": 4,
-            "missed": 2,
-            "hits": 1,
-            "banks": 3,
-        })
-        self.assertNotIn("dashes", report["candidate_tally"])
-        self.assertNotIn("ticks", report["candidate_tally"])
+        tally = report["candidate_tally"]
+        self.assertEqual(tally["score"], 12)
+        self.assertEqual(tally["collected"], 4)
+        self.assertEqual(tally["missed"], 2)
+        self.assertEqual(tally["hits"], 1)
+        self.assertEqual(tally["banks"], 3)
+        self.assertNotIn("dashes", tally)
+        self.assertNotIn("ticks", tally)
         self.assertEqual(report["candidate_seed"], 8)
         self.assertEqual(report["candidate_policy"], "played")
         self.assertFalse(report["observed"])
@@ -8554,6 +8553,66 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(hollow["outsider"])
         self.assertNotIn("aprovado", json.dumps(report))
         self.assertNotIn("verified", json.dumps(report))
+
+    def test_playtest_tally_names_the_five_the_research_already_refuses(self):
+        research = (
+            game.FRAMEWORK / "references/observable-criteria-research.md"
+        ).read_text(encoding="utf-8")
+        self.assertTrue(
+            game.research_refuses_five_as_criterion(research),
+            "a pesquisa já recusa que cinco playtesters sejam critério",
+        )
+        self.assertEqual(
+            game.playtest_tally_five_source(),
+            "references/observable-criteria-research.md",
+        )
+        destination = self.root / "com-cinco"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {
+                "seed": 8,
+                "score": 12,
+                "collected": 4,
+                "missed": 2,
+                "hits": 1,
+                "banks": 3,
+            },
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(destination)
+        self.assertIsNotNone(report["candidate_tally"], "o playtest já lista a conta")
+        item = report["candidate_tally"]
+        self.assertIn(
+            "cinco playtesters sejam critério",
+            item["scope"],
+            "a conta copiava os verbos e calava a recusa",
+        )
+        self.assertIn("(`cinco`)", item["scope"])
+        self.assertNotIn("cinco", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.research_refuses_five_as_criterion(""))
+        with mock.patch.object(game, "playtest_tally_five_source", return_value=None):
+            silent = game.playtest_reading(destination)
+        self.assertNotIn("cinco playtesters sejam critério", silent["candidate_tally"]["scope"])
+        raw = game.last_run_tally(destination)
+        self.assertNotIn("scope", raw)
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o cinco que a pesquisa já recusa", feel)
+        self.assertIn("nomeia o cinco que a pesquisa já recusa", skill)
+        self.assertIn("nomeia o cinco que a pesquisa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("cinco playtesters sejam critério", report["scope"])
+        self.assertNotIn("cinco playtesters sejam critério", game.next_scope())
+        invite = game.invite_playtest(destination)
+        self.assertNotIn("cinco playtesters sejam critério", invite["scope"])
 
     def test_invite_names_the_simulated_last_run_without_claiming_an_outsider(self):
         invite = (
