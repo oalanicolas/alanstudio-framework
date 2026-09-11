@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.380: o `content` nomeia a migração que as mesas já compartilham. Arquivo no disco não é volume. Sem chave `migrate`. Não promove `enough`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD anterior (0.9.379):** `python3 -m unittest discover -s tests` → 375 OK.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK. Confirmação do 0.9.380 pendente.
+**Suítes confirmadas no HEAD (0.9.380):** `python3 -m unittest discover -s tests` → 376 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
