@@ -4895,6 +4895,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         notice = f"{project.name}: {findings} {work}, preservando os documentos canônicos e registrando as lacunas."
     areas["art_direction"]["scope"] = art_direction_scope()
     areas["architecture"]["scope"] = architecture_area_scope()
+    areas["provenance"]["scope"] = provenance_area_scope()
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(),
         "minimum_status": "needs_review" if needs_documentation else "candidates_found",
@@ -5368,6 +5369,42 @@ def architecture_area_scope():
         scope += (
             " O disco recusa que o harness infira dependências (`dependências`). "
             "Receita no disco não é decisão."
+        )
+    return scope
+
+
+# O roteiro já recusa que o recibo presente seja licença. Sem isto a
+# área localizava CREDITS e calava a recusa.
+# Área no disco não é concessão.
+GATES_LICENSE = re.compile(r"recibo presente não é licença")
+
+
+def gates_refuse_present_receipt(text):
+    return bool(text and GATES_LICENSE.search(text))
+
+
+def provenance_license_source():
+    path = FRAMEWORK / "references/gates.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gates_refuse_present_receipt(text):
+        return "references/gates.md"
+    return None
+
+
+def provenance_area_scope():
+    scope = (
+        "Localiza o documento de origem. Não consulta titular e não "
+        "valida licença."
+    )
+    if provenance_license_source():
+        scope += (
+            " O disco recusa que o recibo presente seja licença válida (`licença`). "
+            "Área no disco não é concessão."
         )
     return scope
 

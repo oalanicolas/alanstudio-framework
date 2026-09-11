@@ -1695,6 +1695,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("infira dependências", game.context_scope())
         self.assertNotIn("infira dependências", game.next_scope())
 
+    def test_scan_names_the_license_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.gates_refuse_present_receipt(guide),
+            "o roteiro já recusa que o recibo presente seja licença válida",
+        )
+        self.assertEqual(game.provenance_license_source(), "references/gates.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "recibo presente seja licença",
+            report["areas"]["provenance"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`licença`)", report["areas"]["provenance"]["scope"])
+        self.assertNotIn("licença", report["areas"]["provenance"])
+        self.assertFalse(game.gates_refuse_present_receipt(""))
+        with mock.patch.object(game, "provenance_license_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("recibo presente seja licença", silent["areas"]["provenance"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a licença que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a licença que o roteiro já recusa", skill)
+        self.assertIn("nomeia a licença que o roteiro já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["provenance"]["scope"])
+        self.assertNotIn("recibo presente seja licença", report["scope"])
+        self.assertNotIn("recibo presente seja licença", report["areas"]["art_direction"]["scope"])
+        self.assertNotIn("recibo presente seja licença", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("recibo presente seja licença", game.origins_reading(self.project)["scope"])
+        self.assertNotIn("recibo presente seja licença", game.next_scope())
+        self.assertNotIn("recibo presente seja licença", game.gate_reading(self.project)["scope"])
+
     def test_scan_names_the_absence_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(
