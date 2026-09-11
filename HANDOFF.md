@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.506: o `sfx verify` vazio nomeia a lacuna que a receita já recusa. Lista no disco não é mix. Sem chave `lacuna`. Nomear não ouve.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.506): 567 / 516.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
