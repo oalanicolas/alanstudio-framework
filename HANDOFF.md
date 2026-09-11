@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.454: o `genre_mentions[n]` nomeia a mecânica que o mapa já recusa. Campo no disco não é regra do jogo. Sem chave `mecânica`. Nomear não classifica.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** HEAD anterior (0.9.453: 449 / 509) + confirmação pendente.
+**Suítes confirmadas no HEAD (0.9.454):** `python3 -m unittest discover -s tests` → 450 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
