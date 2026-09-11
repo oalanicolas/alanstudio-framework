@@ -60,7 +60,7 @@ das seis ações do teclado na página; a tabela `#commands`
 nomeia as teclas vigentes e mantém toque e controle no
 sufixo. Se o disco declara `paintCommands`, o `access` nomeia as teclas que a tabela já lista.
 Tabela no disco não é sessão. Sem chave `commands`.
-Se a porta lê a legenda que o mixer ainda guarda, o `access` nomeia a legenda que a porta já lê. Texto no disco não é sessão. Sem chave `caption`. Se a receita recusa que o número na legenda seja mix, a opção `captions` do `access` nomeia o número que a receita já recusa. Número no disco não é mix. Sem chave `número`. Se a receita recusa que o pulso seja sessão no controle, a opção `haptics` do `access` nomeia o controle que a receita já recusa. Pulso no disco não é sessão. Sem chave `controle`. Se a pesquisa recusa que acessibilidade seja gate de certificação, o `access` nomeia a certificação que a pesquisa já recusa. Opção no disco não é certificação. Sem chave `certificação`. Se a receita recusa que opção sem consumidor seja opção, o `access` nomeia a opção que a receita já recusa. Chave no disco não é alcance. Sem chave `opção`.
+Se a porta lê a legenda que o mixer ainda guarda, o `access` nomeia a legenda que a porta já lê. Texto no disco não é sessão. Sem chave `caption`. Se a receita recusa que o número na legenda seja mix, a opção `captions` do `access` nomeia o número que a receita já recusa. Número no disco não é mix. Sem chave `número`. Se a receita recusa que o pulso seja sessão no controle, a opção `haptics` do `access` nomeia o controle que a receita já recusa. Pulso no disco não é sessão. Sem chave `controle`. Se a receita recusa que o botão seja sessão, a opção `remap` do `access` nomeia o botão que a receita já recusa. Botão no disco não é sessão. Sem chave `botão`. Se a pesquisa recusa que acessibilidade seja gate de certificação, o `access` nomeia a certificação que a pesquisa já recusa. Opção no disco não é certificação. Sem chave `certificação`. Se a receita recusa que opção sem consumidor seja opção, o `access` nomeia a opção que a receita já recusa. Chave no disco não é alcance. Sem chave `opção`.
 Declara em
 `docs/access.md` o que o recorte não atende. O aviso do primeiro ciclo
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
@@ -114,7 +114,7 @@ Implementação concreta: o starter `canvas-arcade` guarda remapeamento, reduç�
 movimento e velocidade da partida em `src/core/settings.js`. A escuta do remap
 come a tecla que escolhe o verbo — Espaço não avança enquanto a pessoa
 escolhe. O botão focado também é casca: Espaço ativa o controle
-e não avança. Botão no disco não é sessão. `gameSpeed` dilata o
+e não avança. Botão no disco não é sessão. Se a receita recusa que o botão seja sessão, a opção `remap` do `access` nomeia o botão que a receita já recusa. Botão no disco não é sessão. Sem chave `botão`. `gameSpeed` dilata o
 acumulador em `src/core/loop.js` só na partida; a porta e o fim ficam no
 relógio cheio. A cama segue o relógio da sessão; coleta e guarda
 guardam o tom da aposta. `advance()` headless não passa por ele. `assist` cede queda e

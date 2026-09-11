@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.513 — a opção remap do access nomeia o botão que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+botão
+no
+disco
+não
+é
+sessão.
+A
+opção
+`remap`
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+a
+opção
+`remap`
+nomeia
+o
+botão.
+Botão
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`botão`.
+Nomear
+não
+observa.
+
+O que 0.9.513 não afirma:
+o
+botão
+focado
+não
+é
+sessão
+observada
+no
+teclado.
+
 ## 0.9.512 — a opção haptics do access nomeia o controle que a receita já recusa
 
 A

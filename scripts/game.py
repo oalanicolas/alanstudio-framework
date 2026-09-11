@@ -2943,6 +2943,46 @@ def access_haptics_option_scope():
     return scope
 
 
+# A receita já recusa que o botão seja sessão. Sem isto a
+# opção remap copiava a chave e calava a recusa.
+# Botão no disco não é sessão.
+A11Y_REMAP_BUTTON = re.compile(r"Botão no disco não é sessão")
+
+
+def recipe_refuses_button_as_session(text):
+    return bool(text and A11Y_REMAP_BUTTON.search(text))
+
+
+def access_remap_button_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_button_as_session(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_remap_button_scope():
+    if not access_remap_button_source():
+        return None
+    return (
+        "O disco recusa que o botão seja sessão "
+        "(`botão`). Botão no disco não é sessão."
+    )
+
+
+def access_remap_option_scope():
+    scope = access_option_scope()
+    named = access_remap_button_scope()
+    if named:
+        scope += " " + named
+    return scope
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -3000,6 +3040,7 @@ def access_reading(project):
                 "scope": (
                     access_captions_option_scope() if key == "captions"
                     else access_haptics_option_scope() if key == "haptics"
+                    else access_remap_option_scope() if key == "remap"
                     else option_scope
                 ),
             }
