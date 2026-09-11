@@ -78,6 +78,43 @@ class HarnessTest(unittest.TestCase):
         data = {"scripts": {"test": "node --test"}, **extra}
         (self.project / "package.json").write_text(json.dumps(data))
 
+    def test_workspace_names_the_invented_content_the_binding_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/workspace-binding.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.binding_refuses_invented_content(guide),
+            "a ligação já recusa inventar o conteúdo da referência ausente",
+        )
+        self.assertEqual(game.workspace_profile_invented_source(), "references/workspace-binding.md")
+        self.package()
+        report = game.context(self.project, "mechanics")
+        item = report["workspace"]
+        self.assertIn(
+            "inventar o conteúdo da referência ausente",
+            item["scope"],
+            "o workspace copiava os caminhos e calava a recusa",
+        )
+        self.assertIn("(`inventado`)", item["scope"])
+        self.assertNotIn("inventado", item)
+        self.assertFalse(game.binding_refuses_invented_content(""))
+        with mock.patch.object(game, "workspace_profile_invented_source", return_value=None):
+            silent = game.context(self.project, "mechanics")
+        self.assertNotIn("inventar o conteúdo da referência ausente", silent["workspace"]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o inventado que a ligação já recusa", guide)
+        self.assertIn("nomeia o inventado que a ligação já recusa", skill)
+        self.assertIn("nomeia o inventado que a ligação já recusa", readme)
+        self.assertIn("nomeia o inventado que a ligação já recusa", recipe)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("inventar o conteúdo da referência ausente", report["scope"])
+        self.assertNotIn("inventar o conteúdo da referência ausente", report["documentation"]["scope"])
+        module = report.get("workspace_module") or {}
+        self.assertNotIn("inventar o conteúdo da referência ausente", module.get("scope", ""))
+        self.assertNotIn("inventar o conteúdo da referência ausente", report["delivery_review"]["scope"])
+        self.assertNotIn("inventar o conteúdo da referência ausente", game.next_scope())
+        self.assertNotIn("scope", game.workspace_profile(self.root))
+
     def test_delivery_review_names_the_rules_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/delivery.md").read_text(encoding="utf-8")
         self.assertTrue(

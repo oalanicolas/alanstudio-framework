@@ -30,6 +30,61 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.478 — o context nomeia o inventado que a ligação já recusa
+
+A
+ligação
+já
+dizia
+que
+conteúdo
+de
+referência
+ausente
+não
+é
+inventado.
+O
+workspace
+copiava
+os
+caminhos
+e
+calava
+a
+recusa.
+Agora
+o
+bloco
+nomeia
+o
+inventado.
+Lacuna
+no
+disco
+não
+é
+a
+regra.
+Sem
+chave
+`inventado`.
+Nomear
+não
+observa.
+
+O que 0.9.478 não afirma:
+lacuna
+no
+disco
+não
+é
+personalização
+lida
+nem
+partida
+jogada.
+
 ## 0.9.477 — o context nomeia as regras que a entrega já recusa
 
 A

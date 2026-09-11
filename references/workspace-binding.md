@@ -43,7 +43,7 @@ O destino de `framework/core` é o único endereço da implementação compartil
 ```
 
 `context.workspace` informa os arquivos encontrados e os ausentes. Referência não
-localizada permanece uma lacuna; seu conteúdo não é inventado. Caminhos de
+localizada permanece uma lacuna; seu conteúdo não é inventado. Se a ligação recusa inventar o conteúdo da referência ausente, o `context` nomeia o inventado que a ligação já recusa. Lacuna no disco não é a regra. Sem chave `inventado`. Caminhos de
 personalização precisam permanecer dentro do workspace.
 
 AGENTS e os documentos de cada jogo continuam sendo localizados automaticamente.

@@ -7139,6 +7139,7 @@ def workspace_module(project, root=None):
 # Módulo no disco não é o jogo.
 WORKSPACE_GUIDE = FRAMEWORK / "references/workspace-binding.md"
 WORKSPACE_FILL = re.compile(r"não é preenchida pelo\s+starter")
+WORKSPACE_INVENTED = re.compile(r"seu conteúdo não é inventado")
 
 
 def binding_refuses_starter_fill(text):
@@ -7167,6 +7168,36 @@ def workspace_module_scope():
         scope += (
             " O disco recusa preencher pasta não baixada com o starter "
             "(`preenchida`). Módulo no disco não é o jogo."
+        )
+    return scope
+
+
+def binding_refuses_invented_content(text):
+    return bool(text and WORKSPACE_INVENTED.search(text))
+
+
+def workspace_profile_invented_source():
+    path = WORKSPACE_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if binding_refuses_invented_content(text):
+        return "references/workspace-binding.md"
+    return None
+
+
+def workspace_profile_scope():
+    scope = (
+        "Arquivos locais de personalização encontrados ou ausentes. "
+        "Não inventa o texto e não cria a referência."
+    )
+    if workspace_profile_invented_source():
+        scope += (
+            " O disco recusa inventar o conteúdo da referência ausente "
+            "(`inventado`). Lacuna no disco não é a regra."
         )
     return scope
 
@@ -7275,6 +7306,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             references.insert(references.index(recipe) + 1 if recipe in references else len(references), pack)
     references = list(dict.fromkeys(references))
     profile = workspace_profile(root if root is not None else default_root())
+    profile = dict(profile, scope=workspace_profile_scope())
     references.extend(path for path in profile["context_files"] if path not in references)
     if initializing and str(FRAMEWORK / "recipes/architecture.md") not in references:
         references.append(str(FRAMEWORK / "recipes/architecture.md"))

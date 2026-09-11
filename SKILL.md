@@ -14,7 +14,7 @@ repetível), não tier de publisher; o alvo honesto com IA é AA / Triple-I ness
 Todos os comandos do harness são `python3 scripts/game.py ...` a partir deste
 repositório, com `--root <laboratorio>` antes ou depois do subcomando. Num
 [workspace ligado](references/workspace-binding.md), a entrada local é
-`python3 framework/scripts/game.py ...`; leia as personalizações em `context.workspace`. Se a ligação recusa preencher pasta não baixada com o starter, o `context` nomeia a preenchida que a ligação já recusa. Módulo no disco não é o jogo. Sem chave `preenchida`.
+`python3 framework/scripts/game.py ...`; leia as personalizações em `context.workspace`. Se a ligação recusa preencher pasta não baixada com o starter, o `context` nomeia a preenchida que a ligação já recusa. Módulo no disco não é o jogo. Sem chave `preenchida`. Se a ligação recusa inventar o conteúdo da referência ausente, o `context` nomeia o inventado que a ligação já recusa. Lacuna no disco não é a regra. Sem chave `inventado`.
 
 | Situação | Faça |
 | --- | --- |
