@@ -3194,6 +3194,42 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("then.gate", report.get("then") or {})
         self.assertNotIn("declara o gate", game.next_step(self.project)["scope"])
 
+    def test_gate_names_the_silence_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.gates_refuse_silence(guide),
+            "o roteiro já recusa que o silêncio seja aprovação",
+        )
+        self.assertEqual(game.gate_item_silence_source(), "references/gates.md")
+        report = game.gate_reading(self.project)
+        item = report["gates"][0]
+        self.assertIn(
+            "silêncio seja aprovação",
+            item["scope"],
+            "o item do gate listava o pendente e calava a recusa",
+        )
+        self.assertIn("(`silêncio`)", item["scope"])
+        self.assertNotIn("silêncio", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.gates_refuse_silence(""))
+        with mock.patch.object(game, "gate_item_silence_source", return_value=None):
+            silent = game.gate_reading(self.project)
+        self.assertNotIn("silêncio seja aprovação", silent["gates"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o silêncio que o roteiro já recusa", recipe)
+        self.assertIn("nomeia o silêncio que o roteiro já recusa", skill)
+        self.assertIn("nomeia o silêncio que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("silêncio seja aprovação", report["scope"])
+        self.assertNotIn("silêncio seja aprovação", game.next_scope())
+        self.assertNotIn("silêncio seja aprovação", game.check_plan_scope())
+        self.assertNotIn(
+            "silêncio seja aprovação",
+            game.craft_reading(self.project)["scope"],
+        )
+
     def test_a_gate_never_grants_passage_only_reads_what_the_project_claims(self):
         self.declare_gate({("deliver", "runbook"): ("met", "Ana construiu do zero, log em /tmp/qa-07")})
         report = game.gate_reading(self.project, "deliver")

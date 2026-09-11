@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.428 — o gate nomeia o silêncio que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+silêncio
+não
+é
+aprovação.
+O
+item
+listava
+o
+pendente
+e
+calava
+a
+recusa.
+Agora
+o
+`gate`
+nomeia
+o
+silêncio.
+Linha
+vazia
+no
+disco
+não
+é
+passagem.
+Sem
+chave
+`silêncio`.
+Nomear
+não
+observa.
+
+O que 0.9.428 não afirma:
+linha
+vazia
+no
+disco
+não
+é
+passagem
+nem
+gate
+concedido.
+
 ## 0.9.427 — o next nomeia a criação que o roteiro já recusa
 
 O

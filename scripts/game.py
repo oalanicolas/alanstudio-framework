@@ -1004,6 +1004,7 @@ def gate_reading(project, gate=None):
             ],
             # Não é "passou". É o que a declaração do projeto sustenta hoje.
             "held_by_declaration": not pending,
+            "scope": gate_item_scope(),
         })
     return {
         "schema_version": 1,
@@ -1043,6 +1044,42 @@ def gate_row_source(project):
         if gate_declares_row(text):
             return name
     return None
+
+
+# O roteiro já recusa que o silêncio seja aprovação. Sem isto o
+# item do gate listava o pendente e calava a recusa.
+# Linha vazia no disco não é passagem.
+GATES_SILENCE = re.compile(r"silêncio não é aprovação")
+
+
+def gates_refuse_silence(text):
+    return bool(text and GATES_SILENCE.search(text))
+
+
+def gate_item_silence_source():
+    path = FRAMEWORK / "references/gates.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gates_refuse_silence(text):
+        return "references/gates.md"
+    return None
+
+
+def gate_item_scope():
+    scope = (
+        "Critérios do gate segundo a declaração do projeto. "
+        "Não observa e não concede passagem."
+    )
+    if gate_item_silence_source():
+        scope += (
+            " O disco recusa que o silêncio seja aprovação (`silêncio`). "
+            "Linha vazia no disco não é passagem."
+        )
+    return scope
 
 
 def _gate_scope(project):
