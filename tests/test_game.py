@@ -5211,6 +5211,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("LUFS", report["scope"])
 
+    def test_ship_names_the_file_the_export_already_refuses(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/export.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.export_refuses_file(tool), "o export já recusa file://")
+        self.assertEqual(game.ship_file_source(starter), "tools/export.mjs")
+        report = game.ship_reading(starter)
+        self.assertIn("recusa o file://", report["scope"], "o ship empacotava a árvore e calava o protocolo")
+        self.assertIn("(`file://`)", report["scope"])
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertNotIn("file", report)
+        empty = game.ship_reading(self.project)
+        self.assertFalse(game.export_refuses_file(""))
+        self.assertIsNone(game.ship_file_source(self.project))
+        self.assertNotIn("recusa o file://", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o file:// que o export já recusa", recipe)
+        self.assertIn("nomeia o file:// que o export já recusa", skill)
+        self.assertIn("nomeia o file:// que o export já recusa", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("LUFS", report["scope"])
+        self.assertNotIn("then.file", report.get("then") or {})
+
     def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
         # O export já copia src/. Sem isto o ship dizia
         # completa uma dist/ só com identidade e serve.

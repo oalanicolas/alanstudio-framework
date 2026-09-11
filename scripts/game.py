@@ -2990,6 +2990,31 @@ def ship_export_source(project):
     return None
 
 
+# O export já recusa file://. Sem isto o ship
+# empacotava a árvore e calava o protocolo.
+# Recusar no disco não é outra máquina.
+EXPORT_FILE = re.compile(r"file://")
+
+
+def export_refuses_file(text):
+    return bool(text and EXPORT_FILE.search(text))
+
+
+def ship_file_source(project):
+    project = Path(project)
+    for name in EXPORT_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if export_refuses_file(text):
+            return name
+    return None
+
+
 def ship_reading(project):
     project = Path(project)
     try:
@@ -3037,6 +3062,11 @@ def ship_reading(project):
         scope += (
             " O disco empacota a árvore (`export`). "
             "Empacotar no disco não é outra máquina."
+        )
+    if ship_file_source(project):
+        scope += (
+            " O disco recusa o file:// (`file://`). "
+            "Recusar no disco não é outra máquina."
         )
     return {
         "schema_version": 1,
