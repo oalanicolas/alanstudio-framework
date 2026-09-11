@@ -5174,6 +5174,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.craft_reading(self.project)["scope"],
         )
 
+    def test_gate_close_names_the_hypothesis_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.preproduction_refuses_compile_as_hypothesis(guide),
+            "a guia já recusa que código que compila prove a hipótese criativa",
+        )
+        self.assertEqual(game.gate_close_hypothesis_source(), "references/preproduction.md")
+        report = game.gate_reading(self.project)
+        close = next(item for item in report["gates"] if item["key"] == "close")
+        self.assertIn(
+            "código que compila prove a hipótese",
+            close["scope"],
+            "o gate de encerrar listava o veredito e calava a recusa",
+        )
+        self.assertIn("(`hipótese`)", close["scope"])
+        self.assertNotIn("hipótese", close)
+        self.assertFalse(game.preproduction_refuses_compile_as_hypothesis(""))
+        self.assertNotIn("código que compila prove a hipótese", game.gate_item_scope())
+        self.assertNotIn("código que compila prove a hipótese", game.gate_item_scope("design"))
+        self.assertNotIn("código que compila prove a hipótese", game.gate_item_scope("evaluate"))
+        design = next(item for item in report["gates"] if item["key"] == "design")
+        self.assertNotIn("código que compila prove a hipótese", design["scope"])
+        with mock.patch.object(game, "gate_close_hypothesis_source", return_value=None):
+            silent = game.gate_reading(self.project)
+        silent_close = next(item for item in silent["gates"] if item["key"] == "close")
+        self.assertNotIn("código que compila prove a hipótese", silent_close["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a hipótese que a guia já recusa", guide)
+        self.assertIn("nomeia a hipótese que a guia já recusa", recipe)
+        self.assertIn("nomeia a hipótese que a guia já recusa", skill)
+        self.assertIn("nomeia a hipótese que a guia já recusa", readme)
+        self.assertNotIn("verified", close["scope"])
+        self.assertNotIn("código que compila prove a hipótese", report["scope"])
+        self.assertNotIn("código que compila prove a hipótese", game.gate_criterion_scope())
+        self.assertNotIn("código que compila prove a hipótese", game.template_scope("poc"))
+        self.assertNotIn("código que compila prove a hipótese", game.verify_scope())
+        self.assertNotIn("código que compila prove a hipótese", game.next_scope())
+        self.assertNotIn("código que compila prove a hipótese", game.context_scope())
+
     def test_gate_names_the_waiver_the_prose_already_refuses(self):
         guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
         self.assertTrue(

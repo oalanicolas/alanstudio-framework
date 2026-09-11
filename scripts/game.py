@@ -1135,7 +1135,7 @@ def gate_reading(project, gate=None):
             ],
             # Não é "passou". É o que a declaração do projeto sustenta hoje.
             "held_by_declaration": not pending,
-            "scope": gate_item_scope(),
+            "scope": gate_item_scope(key),
         })
     return {
         "schema_version": 1,
@@ -1200,7 +1200,7 @@ def gate_item_silence_source():
     return None
 
 
-def gate_item_scope():
+def gate_item_scope(key=None):
     scope = (
         "Critérios do gate segundo a declaração do projeto. "
         "Não observa e não concede passagem."
@@ -1210,7 +1210,36 @@ def gate_item_scope():
             " O disco recusa que o silêncio seja aprovação (`silêncio`). "
             "Linha vazia no disco não é passagem."
         )
+    if key == "close" and gate_close_hypothesis_source():
+        scope += (
+            " O disco recusa que código que compila prove a hipótese "
+            "(`hipótese`). Linha no disco não é o experimento."
+        )
     return scope
+
+
+# A guia já recusa que código que compila prove a hipótese criativa.
+# Sem isto o gate de encerrar listava o veredito e calava a recusa.
+# Linha no disco não é o experimento.
+PREPRODUCTION_HYPOTHESIS = FRAMEWORK / "references/preproduction.md"
+CLOSE_HYPOTHESIS = re.compile(r"não prova hipótese criativa")
+
+
+def preproduction_refuses_compile_as_hypothesis(text):
+    return bool(text and CLOSE_HYPOTHESIS.search(text))
+
+
+def gate_close_hypothesis_source():
+    path = PREPRODUCTION_HYPOTHESIS
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if preproduction_refuses_compile_as_hypothesis(text):
+        return "references/preproduction.md"
+    return None
 
 
 # O roteiro já recusa que must_meet seja dispensável. Sem isto o

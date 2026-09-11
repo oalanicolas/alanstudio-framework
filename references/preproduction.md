@@ -130,7 +130,7 @@ continuar, ajustar ou abandonar a hipótese. Protótipo pode ser descartável; c
 de experimento só entra na produção após revisão de adequação e consumidores.
 
 **Pronto para encerrar:** o resultado distingue a hipótese, ou explica por que o
-experimento foi inconclusivo. Código que compila não prova hipótese criativa.
+experimento foi inconclusivo. Código que compila não prova hipótese criativa. Se a guia recusa que código que compila prove a hipótese, o `gate` nomeia a hipótese que a guia já recusa. Linha no disco não é o experimento. Sem chave `hipótese`.
 Defina antes o limite de esforço proporcional à tarefa. [Template](../assets/templates/poc.md).
 
 ### `prd` — Product Requirements Document

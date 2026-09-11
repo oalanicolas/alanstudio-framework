@@ -30,6 +30,67 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.486 — o gate close nomeia a hipótese que a guia já recusa
+
+A
+guia
+já
+dizia
+que
+código
+que
+compila
+não
+prova
+hipótese
+criativa.
+O
+item
+do
+gate
+de
+encerrar
+listava
+o
+veredito
+e
+calava
+a
+recusa.
+Agora
+o
+`gate`
+close
+nomeia
+a
+hipótese.
+Linha
+no
+disco
+não
+é
+o
+experimento.
+Sem
+chave
+`hipótese`.
+Nomear
+não
+observa.
+
+O que 0.9.486 não afirma:
+veredito
+no
+disco
+não
+é
+hipótese
+observada
+nem
+jogador
+no
+aparelho.
+
 ## 0.9.485 — o template da vertical-slice nomeia o acabamento que a guia já recusa
 
 A
