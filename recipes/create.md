@@ -98,7 +98,7 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    `sfx search` nomeia o stem que casa com o termo. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`.
    Crescer o acervo é `sfx import` / `sfx seed` (ffmpeg); importar não
    é ouvir. Explique REUSE, ADAPT ou CREATE antes de produzir novos
-   sistemas. Se o processo recusa garantir o mérito, o `check-plan` nomeia o mérito que o processo já recusa. Forma no disco não é adequação. Sem chave `mérito`. Se o processo recusa que claimed seja verified, o `verify` nomeia a verificação que o processo já recusa. Alegação no disco não é cobertura. Sem chave `verified`. Se o processo recusa que o hash seja leitura, o `git` nomeia a leitura que o processo já recusa. Identidade no disco não é inspeção. Sem chave `leitura`.
+   sistemas. Se o processo recusa garantir o mérito, o `check-plan` nomeia o mérito que o processo já recusa. Forma no disco não é adequação. Sem chave `mérito`. Se a guia recusa que a checagem seja validador semântico, o `metadata_issues[n]` nomeia o semântico que a guia já recusa. Parse no disco não é o jogo. Sem chave `semântico`. Se o processo recusa que claimed seja verified, o `verify` nomeia a verificação que o processo já recusa. Alegação no disco não é cobertura. Sem chave `verified`. Se o processo recusa que o hash seja leitura, o `git` nomeia a leitura que o processo já recusa. Identidade no disco não é inspeção. Sem chave `leitura`.
 2. Construa um ciclo jogável com uma decisão característica. Defina entrada,
    objetivo percebido, consequência, término e repetição. Título e cores novos
    não demonstram uma experiência nova.

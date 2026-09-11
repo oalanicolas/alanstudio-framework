@@ -2580,6 +2580,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
                 self.assertEqual(result["scripts"], {})
                 self.assertIsNone(result["package_manager"])
 
+    def test_metadata_issues_name_the_semantic_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_semantic_validator(guide),
+            "a guia já recusa que a checagem seja validador semântico",
+        )
+        self.assertEqual(
+            game.metadata_issue_semantic_source(),
+            "references/preproduction.md",
+        )
+        (self.project / "package.json").write_text("{")
+        report = game.context(self.project, "lifecycle")
+        self.assertTrue(report["metadata_issues"], "o context já lista o manifesto ilegível")
+        item = report["metadata_issues"][0]
+        self.assertIn(
+            "checagem seja validador semântico",
+            item["scope"],
+            "o issue copiava o parse e calava a recusa",
+        )
+        self.assertIn("(`semântico`)", item["scope"])
+        self.assertNotIn("semântico", item)
+        self.assertFalse(game.guide_refuses_semantic_validator(""))
+        with mock.patch.object(game, "metadata_issue_semantic_source", return_value=None):
+            silent = game.context(self.project, "lifecycle")
+        self.assertNotIn(
+            "checagem seja validador semântico",
+            silent["metadata_issues"][0]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o semântico que a guia já recusa", create)
+        self.assertIn("nomeia o semântico que a guia já recusa", skill)
+        self.assertIn("nomeia o semântico que a guia já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("checagem seja validador semântico", report["scope"])
+        self.assertNotIn("checagem seja validador semântico", game.check_plan_scope())
+        self.assertNotIn("checagem seja validador semântico", game.context_scope())
+        self.assertNotIn("checagem seja validador semântico", game.next_scope())
+
     def test_cli_scan_reports_gaps_without_creating_nonexistent_project(self):
         target = self.root / "new-game"
         result = subprocess.run([sys.executable, str(SCRIPT), "scan", str(target)], capture_output=True, text=True)

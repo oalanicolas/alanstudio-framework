@@ -3,6 +3,62 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.461 — o metadata_issues nomeia o semântico que a guia já recusa
+
+A
+guia
+já
+dizia
+que
+a
+checagem
+não
+é
+validador
+semântico
+de
+PRD/GDD.
+O
+issue
+copiava
+o
+parse
+e
+calava
+a
+recusa.
+Agora
+o
+`metadata_issues[n]`
+nomeia
+o
+semântico.
+Parse
+no
+disco
+não
+é
+o
+jogo.
+Sem
+chave
+`semântico`.
+Nomear
+não
+valida.
+
+O que 0.9.461 não afirma:
+parse
+no
+disco
+não
+é
+PRD
+nem
+mérito
+do
+desenho.
+
 ## 0.9.460 — o non_current_documents nomeia as linhas que a guia já recusa
 
 A

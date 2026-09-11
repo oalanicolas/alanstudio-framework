@@ -110,7 +110,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    ouvir. Sem 8-bit,
    chiptune, jsfxr ou Kenney arcade como padrão. Leia candidatos e consumidores.
    CREATE exige lacuna explícita. Para trabalho novo sem registro, use
-   [o contrato](assets/work.example.json); `check-plan` valida a estrutura, não o mérito. Se o processo recusa garantir o mérito, o `check-plan` nomeia o mérito que o processo já recusa. Forma no disco não é adequação. Sem chave `mérito`.
+   [o contrato](assets/work.example.json); `check-plan` valida a estrutura, não o mérito. Se o processo recusa garantir o mérito, o `check-plan` nomeia o mérito que o processo já recusa. Forma no disco não é adequação. Sem chave `mérito`. Se a guia recusa que a checagem seja validador semântico, o `metadata_issues[n]` nomeia o semântico que a guia já recusa. Parse no disco não é o jogo. Sem chave `semântico`.
 4. **Arquitetura e fatia jogável.** Ligue intenção/GDD → requisitos/aceite → decisões
    técnicas → tarefas → evidência. Se a mudança afetar responsabilidades, contratos,
    estado/tempo, saves, renderização ou integrações, aplique

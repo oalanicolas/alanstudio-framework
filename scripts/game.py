@@ -6386,6 +6386,42 @@ def context_scope():
     return scope
 
 
+# A guia já recusa que a checagem seja validador semântico.
+# Sem isto o issue copiava o parse e calava a recusa.
+# Parse no disco não é o jogo.
+PREPRODUCTION_SEMANTIC = re.compile(r"não é validador semântico de\s+PRD/GDD")
+
+
+def guide_refuses_semantic_validator(text):
+    return bool(text and PREPRODUCTION_SEMANTIC.search(text))
+
+
+def metadata_issue_semantic_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_semantic_validator(text):
+        return "references/preproduction.md"
+    return None
+
+
+def metadata_issue_scope():
+    scope = (
+        "Caminho e motivo do manifesto ilegível. Não valida o "
+        "desenho e não executa o jogo."
+    )
+    if metadata_issue_semantic_source():
+        scope += (
+            " O disco recusa que a checagem seja validador semântico (`semântico`). "
+            "Parse no disco não é o jogo."
+        )
+    return scope
+
+
 def context(project, focus, stage=None, studies_root=None, event="task", root=None, genre=None):
     if focus not in FOCI:
         raise ValueError("foco desconhecido")
@@ -6402,7 +6438,11 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         scripts, manager = project_commands(project)
     except (OSError, ValueError, RecursionError) as error:
         scripts, manager = {}, None
-        metadata_issues.append({"path": "package.json", "reason": str(error)})
+        metadata_issues.append({
+            "path": "package.json",
+            "reason": str(error),
+            "scope": metadata_issue_scope(),
+        })
     instructions = instruction_files(project)
     foundation = scan(project)
     records = [str(project / relative) for relative in foundation["read_first"]]
