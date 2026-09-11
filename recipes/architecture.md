@@ -73,7 +73,7 @@ possível. Examine apenas os eixos pertinentes:
   e descarte de GPU, timers/listeners. Contrato lógico correto ainda pode produzir
   regressão perceptível; feel e mix têm receitas próprias.
 - **Rede/serviços, quando presentes:** autoridade, ações recusadas, desconexão e limites
-  externos. Exemplares locais não comprovam comportamento multiplayer.
+  externos. Exemplares locais não comprovam comportamento multiplayer. Se a receita recusa que exemplares locais comprovem comportamento multiplayer, o `scan` nomeia o multiplayer que a receita já recusa. Receita no disco não é sessão real. Sem chave `multiplayer`.
 
 Confirme também o ambiente em que a prova vale: editor versus build/export, plataforma,
 entrada e configuração alvo. Um teste no editor ou em mock não demonstra o jogo exportado.

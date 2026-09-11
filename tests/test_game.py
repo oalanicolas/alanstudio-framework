@@ -2801,6 +2801,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("infira dependências", game.context_scope())
         self.assertNotIn("infira dependências", game.next_scope())
 
+    def test_scan_names_the_multiplayer_the_recipe_already_refuses(self):
+        recipe_text = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_local_as_multiplayer(recipe_text),
+            "a receita já recusa que exemplares locais comprovem comportamento multiplayer",
+        )
+        self.assertEqual(game.architecture_multiplayer_source(), "recipes/architecture.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "exemplares locais comprovem comportamento multiplayer",
+            report["areas"]["architecture"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`multiplayer`)", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("multiplayer", report["areas"]["architecture"])
+        self.assertFalse(game.recipe_refuses_local_as_multiplayer(""))
+        with mock.patch.object(game, "architecture_multiplayer_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "exemplares locais comprovem comportamento multiplayer",
+            silent["areas"]["architecture"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o multiplayer que a receita já recusa", recipe)
+        self.assertIn("nomeia o multiplayer que a receita já recusa", skill)
+        self.assertIn("nomeia o multiplayer que a receita já recusa", readme)
+        self.assertIn("nomeia o multiplayer que a receita já recusa", create)
+        self.assertNotIn("verified", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("verified", recipe)
+        self.assertNotIn("exemplares locais comprovem comportamento multiplayer", report["scope"])
+        self.assertNotIn(
+            "exemplares locais comprovem comportamento multiplayer",
+            report["areas"]["art_direction"]["scope"],
+        )
+        self.assertNotIn("exemplares locais comprovem comportamento multiplayer", game.context_scope())
+        self.assertNotIn("exemplares locais comprovem comportamento multiplayer", game.next_scope())
+        self.foundation_document()
+        with_candidates = game.scan(self.project)
+        item = with_candidates["areas"]["architecture"]["candidates"][0]
+        self.assertNotIn(
+            "exemplares locais comprovem comportamento multiplayer",
+            item.get("scope") or "",
+        )
+
     def test_architecture_candidate_names_the_understanding_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
         self.assertTrue(

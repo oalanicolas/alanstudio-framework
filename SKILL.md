@@ -150,7 +150,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
 4. **Arquitetura e fatia jogável.** Ligue intenção/GDD → requisitos/aceite → decisões
    técnicas → tarefas → evidência. Se a mudança afetar responsabilidades, contratos,
    estado/tempo, saves, renderização ou integrações, aplique
-   [arquitetura](recipes/architecture.md) (`--focus architecture` ou `--stage tdd`). Se a receita recusa que o harness infira dependências, o `scan` nomeia as dependências que a receita já recusa. Receita no disco não é decisão. Sem chave `dependências`. Se a receita recusa que contexto carregado prove a arquitetura compreendida, o candidato da arquitetura nomeia a compreendida que a receita já recusa. Candidato no disco não é a decisão. Sem chave `compreendida`.
+   [arquitetura](recipes/architecture.md) (`--focus architecture` ou `--stage tdd`). Se a receita recusa que o harness infira dependências, o `scan` nomeia as dependências que a receita já recusa. Receita no disco não é decisão. Sem chave `dependências`. Se a receita recusa que exemplares locais comprovem comportamento multiplayer, o `scan` nomeia o multiplayer que a receita já recusa. Receita no disco não é sessão real. Sem chave `multiplayer`. Se a receita recusa que contexto carregado prove a arquitetura compreendida, o candidato da arquitetura nomeia a compreendida que a receita já recusa. Candidato no disco não é a decisão. Sem chave `compreendida`.
    Implemente uma fatia jogável que atravesse regra, apresentação e conteúdo: perceber
    → decidir → agir → consequência → reinício. Em seguida o feel e o áudio **desse**
    verbo (`--focus feel`, `--focus audio`); título e cores novos não demonstram

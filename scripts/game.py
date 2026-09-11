@@ -6931,7 +6931,35 @@ def architecture_area_scope():
             " O disco recusa que o harness infira dependências (`dependências`). "
             "Receita no disco não é decisão."
         )
+    if architecture_multiplayer_source():
+        scope += (
+            " O disco recusa que exemplares locais comprovem comportamento "
+            "multiplayer (`multiplayer`). Receita no disco não é sessão real."
+        )
     return scope
+
+
+# A receita já recusa que exemplares locais comprovem multiplayer.
+# Sem isto a área localizava o TDD e calava a recusa.
+# Receita no disco não é sessão real.
+ARCHITECTURE_MULTIPLAYER = re.compile(r"não comprovam comportamento multiplayer")
+
+
+def recipe_refuses_local_as_multiplayer(text):
+    return bool(text and ARCHITECTURE_MULTIPLAYER.search(text))
+
+
+def architecture_multiplayer_source():
+    path = ARCHITECTURE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_local_as_multiplayer(text):
+        return "recipes/architecture.md"
+    return None
 
 
 # A receita já recusa promover histórico a regra vigente. Sem

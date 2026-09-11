@@ -574,7 +574,7 @@ Quatorze receitas: [criar](recipes/create.md), [mecânicas](recipes/mechanics.md
 [performance](recipes/performance.md), [acessibilidade](recipes/accessibility.md),
 [persistência](recipes/persistence.md), [release](recipes/release.md) e
 [produção](recipes/production.md). `--focus architecture` ou `--stage tdd` carrega a
-receita de arquitetura. Se a receita recusa que o harness infira dependências, o `scan` nomeia as dependências que a receita já recusa. Receita no disco não é decisão. Sem chave `dependências`. Se a receita recusa que contexto carregado prove a arquitetura compreendida, o candidato da arquitetura nomeia a compreendida que a receita já recusa. Candidato no disco não é a decisão. Sem chave `compreendida`. `--focus feel` e `--focus audio` carregam acabamento do verbo;
+receita de arquitetura. Se a receita recusa que o harness infira dependências, o `scan` nomeia as dependências que a receita já recusa. Receita no disco não é decisão. Sem chave `dependências`. Se a receita recusa que exemplares locais comprovem comportamento multiplayer, o `scan` nomeia o multiplayer que a receita já recusa. Receita no disco não é sessão real. Sem chave `multiplayer`. Se a receita recusa que contexto carregado prove a arquitetura compreendida, o candidato da arquitetura nomeia a compreendida que a receita já recusa. Candidato no disco não é a decisão. Sem chave `compreendida`. `--focus feel` e `--focus audio` carregam acabamento do verbo;
 `--focus production`, `--stage production-plan` ou `--stage milestone` carregam a de
 produção. A skill aplica quando a mudança pede; o CLI só seleciona referências.
 
