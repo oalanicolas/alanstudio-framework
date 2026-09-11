@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.376 — o feel nomeia o sit que a guarda já senta
+
+A
+receita
+já
+pedia
+o
+arco.
+O
+comando
+lia
+squash
+e
+calava
+o
+sit.
+Agora
+o
+`feel`
+nomeia
+o
+sit.
+Pose
+no
+disco
+não
+é
+peso
+percebido.
+Sem
+chave
+`bank`.
+Não
+promove
+`felt`.
+
+O que 0.9.376 não afirma:
+pose
+no
+disco
+não
+é
+peso
+percebido
+no
+dispositivo.
+
 ## 0.9.375 — o sfx search nomeia o deslocamento que o sfx já oferece
 
 A

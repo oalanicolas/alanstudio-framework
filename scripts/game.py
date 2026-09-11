@@ -1727,6 +1727,26 @@ def probe_buffer_source(project):
     return None
 
 
+# A receita já senta a guarda. Sem isto o feel
+# lia squash e calava o sit. Pose no disco
+# não é peso percebido.
+BANK_SIT = re.compile(r"bankWindup\s*=\s*windup")
+
+
+def guard_sits_body(text):
+    return bool(text and BANK_SIT.search(text))
+
+
+def bank_sit_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if guard_sits_body(text):
+            return relative
+    return None
+
+
 def _feel_scope(project):
     scope = (
         "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch, "
@@ -1759,6 +1779,11 @@ def _feel_scope(project):
     if probe_buffer_source(project):
         scope += (
             " O disco exercita o perdão (`probe`). Conta no disco não é "
+            "peso percebido."
+        )
+    if bank_sit_source(project):
+        scope += (
+            " A guarda senta o corpo (`bankWindup`). Pose no disco não é "
             "peso percebido."
         )
     return scope

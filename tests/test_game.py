@@ -3717,6 +3717,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("nomeia o perdão que o probe já exercita", readme)
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("then.probe", report.get("then") or {})
+
+    def test_feel_names_the_sit_the_guard_already_sits(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        rules = (starter / "src/game/rules.js").read_text(encoding="utf-8")
+        self.assertTrue(game.guard_sits_body(rules), "a guarda já senta o corpo")
+        self.assertEqual(game.bank_sit_source(starter), "src/game/rules.js")
+        report = game.feel_reading(starter)
+        self.assertIn("guarda senta o corpo", report["scope"], "o feel lia squash e calava o sit")
+        self.assertIn("(`bankWindup`)", report["scope"])
+        self.assertFalse(report["felt"])
+        self.assertNotIn("bank", report)
+        self.assertNotIn("sit", report)
+        self.assertNotIn("windup", report)
+        empty = game.feel_reading(self.project)
+        self.assertFalse(game.guard_sits_body(""))
+        self.assertIsNone(game.bank_sit_source(self.project))
+        self.assertNotIn("guarda senta o corpo", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o sit que a guarda já senta", recipe)
+        self.assertIn("nomeia o sit que a guarda já senta", skill)
+        self.assertIn("nomeia o sit que a guarda já senta", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("then.bank", report.get("then") or {})
         self.assertNotIn("16 ms", report["scope"])
 
     def test_feel_names_the_heading_the_dash_already_aims(self):
