@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.355: o `roles` nomeia a soma que a receita já relata. Soma no disco não é mix ouvida. Sem chave `mix`. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.356: o `playtest` nomeia a simulação que a receita já grava. Traço no disco não é alguém de fora. Sem chave `session`. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Suítes confirmadas no HEAD (0.9.355):** `python3 -m unittest discover -s tests` → 351.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.355)
+## O que o HEAD já entrega (0.9.91–0.9.356)
 
 | Ver | Salto |
 | --- | --- |
@@ -299,6 +299,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.353 | O `ship` nomeia o tamanho que a receita já relata. O tool já dizia sem teto; o comando calava. Sem chave `size`. Não promove `elsewhere`. |
 | 0.9.354 | O `access` nomeia o contraste que a receita já amostra. O tool já lia o stub; o comando calava. Sem chave `contrast`. Não promove `verified`. |
 | 0.9.355 | O `roles` nomeia a soma que a receita já relata. O tool já somava as vozes; o comando calava. Sem chave `mix`. Não promove `heard`. |
+| 0.9.356 | O `playtest` nomeia a simulação que a receita já grava. O tool já gravava `nearest-orb` sem apagar `played`; o comando calava o nome. Sem chave `session`. Não promove `outsider`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -317,7 +318,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o coil do dash marca o rumo no corpo; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o `roles` nomeia a soma que a receita já relata; o `roles` nomeia o `duckMs` que `SOUNDS` já declara; o `sfx verify` nomeia o som que o catálogo perdeu; o `sfx export` nomeia o stem que o disco perdeu; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
-| pacing | slice | o prompt nomeia o `playtest` que o `AGENTS.md` já cita; o achado copiado nomeia o last-run simulado; a faixa nomeia o last-run simulado; o `playtest` nomeia a conta do last-run; a porta chove o risco da mesa; o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
+| pacing | slice | o `playtest` nomeia a simulação que a receita já grava; o prompt nomeia o `playtest` que o `AGENTS.md` já cita; o achado copiado nomeia o last-run simulado; a faixa nomeia o last-run simulado; o `playtest` nomeia a conta do last-run; a porta chove o risco da mesa; o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | o `save` nomeia a recuperação que o canvas já pinta; a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o `budget` nomeia a porta que a receita já cronometra; o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | o `access` nomeia o contraste que a receita já amostra; o `access` nomeia o `:focus-visible` que a casca já declara; o canvas da porta e do fim nomeia a lacuna do som; a região viva nomeia a mesa e o look da porta e do fim; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
@@ -1309,7 +1310,12 @@ Candidatos, do que ainda dói:
    `composeFinding` chama
    `runFacts`. Sem o marcador,
    o `playtest.scope` cala.
-   Sem tally nem relógio no
+   Se o `tools/session.*` grava
+   a simulação, o `playtest`
+   nomeia. Traço no disco não
+   é alguém de fora. Sem chave
+   `session`. Sem `then.session`
+   no leitor. Sem tally nem relógio no
    markdown. Markdown no disco
    não é alguém de fora.
    `next`
@@ -2570,6 +2576,17 @@ Candidatos, do que ainda dói:
   o
   last-run
   simulado
+  e um
+  `playtest`
+  que
+  cala
+  a
+  simulação
+  que
+  a
+  receita
+  já
+  grava
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2594,14 +2611,17 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`roles` nomeia a soma que a
-receita já relata. O tool já
-somava as vozes; o comando
-calava. Soma no disco não é
-mix ouvida. Sem chave `mix`.
-Não promove `heard`. Não
-nomear `peak`. Não importar
-LUFS.
+`playtest` nomeia a simulação
+que a receita já grava. O
+tool já gravava `nearest-orb`
+sem apagar `played`; o
+comando calava o nome. Traço
+no disco não é alguém de
+fora. Sem chave `session`.
+Não promove `outsider`. Não
+adicionar `then.session` ao
+leitor. Não implementar
+`--mood`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2692,6 +2712,7 @@ A família content que lista dusk e calm e cala o par está saturada.
 A família ship que cala o tamanho que a receita já relata está saturada.
 A família access que cala o contraste que a receita já amostra está saturada.
 A família roles que cala a soma que a receita já relata está saturada.
+A família playtest que cala a simulação que a receita já grava está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -2733,5 +2754,8 @@ Não importar limiar de contraste no `access` — irmão de 354 e 215.
 Não inventar chave `mix` no recibo do roles — irmão de 355.
 Não nomear `peak` no `roles` — irmão de 355.
 Não importar LUFS no `roles` — irmão de 355 e 341.
+Não inventar chave `session` no recibo do playtest — irmão de 356.
+Não adicionar `then.session` ao `playtest` — irmão de 356.
+Não implementar `--mood` na sessão — irmão de 356 e 284.
 O rótulo do coil do dash ainda diz recarregando — irmão de 328.
-Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outra linha de persistência no canvas nem outro par no content nem outro tamanho no ship nem outro stub de contraste nem outra soma no roles; atrito ideia→jogo que não seja 332/337/339/342/347; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado.
+Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outra linha de persistência no canvas nem outro par no content nem outro tamanho no ship nem outro stub de contraste nem outra soma no roles nem outra simulação no playtest; atrito ideia→jogo que não seja 332/337/339/342/347; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest.

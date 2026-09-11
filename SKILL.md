@@ -337,8 +337,10 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    o candidato se last-run existir. Gravado não é alguém de fora.
    `next` aponta o convite depois do recibo de quem fez. O serve anuncia
    localhost e, se a máquina tiver outro endereço IPv4, a URL da rede —
-   compartilhar essa URL não é alguém de fora. A partida no serve grava
+   compartilhar essa URL não é alguém de fora.    A partida no serve grava
    o candidato em `docs/playtest/last-run.json`; a simulação também.
+   Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.
+   Traço no disco não é alguém de fora. Sem chave `session`.
    Se o candidato nomeia a seed, `playtest` relata `candidate_seed`
    e `?seed=` abre essa partida, ignorando o hold. Se nomeia a
    chuva, relata `candidate_spawn`; se nomeia o look, relata

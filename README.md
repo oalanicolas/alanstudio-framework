@@ -765,6 +765,8 @@ o hold; se o candidato nomeou a chuva ou o look, junta a mesa
 e a paleta. O convite usa os mesmos eixos. O `next` aponta
 `note --from-run`. A partida no serve grava esse arquivo;
 `npm run session` grava a simulação.
+Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.
+Traço no disco não é alguém de fora. Sem chave `session`.
 Nenhum dos dois é sessão observada. Se o candidato
 tiver curva, o `note` a anexa. Número no disco não é causa. A tabela de
 ofício que *descreve* o formato não conta como

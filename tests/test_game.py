@@ -5404,6 +5404,32 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", feel)
 
+    def test_playtest_names_the_session_the_recipe_already_records(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/session.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.session_records_sim(tool), "o tool já grava a simulação")
+        self.assertEqual(game.session_sim_source(starter), "tools/session.mjs")
+        report = game.playtest_reading(starter)
+        self.assertIn("grava a simulação", report["scope"], "o playtest calava o session que a receita já grava")
+        self.assertIn("(`session`)", report["scope"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(report["observed"])
+        self.assertNotIn("session", report)
+        self.assertNotIn("then", report)
+        empty = game.playtest_reading(self.project)
+        self.assertFalse(game.session_records_sim(""))
+        self.assertIsNone(game.session_sim_source(self.project))
+        self.assertNotIn("grava a simulação", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a simulação", recipe)
+        self.assertIn("nomeia a simulação", skill)
+        self.assertIn("nomeia a simulação", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("--mood", report["scope"])
+        self.assertNotIn("then.session", report["scope"])
+
     def test_next_points_at_the_invite_after_the_maker_already_played(self):
         destination = self.root / "depois-de-jogar"
         game.start_project(destination, "canvas-arcade")

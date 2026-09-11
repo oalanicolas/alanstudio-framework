@@ -3,6 +3,52 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.356 — o playtest nomeia a simulação que a receita já grava
+
+A
+receita
+já
+gravava
+a
+simulação
+com
+`npm run session`.
+O
+comando
+calava
+o
+nome.
+Agora
+o
+`playtest`
+nomeia
+a
+simulação.
+Traço
+no
+disco
+não
+é
+alguém
+de
+fora.
+Sem
+chave
+`session`.
+Não
+promove
+`outsider`.
+
+O que 0.9.356 não afirma:
+traço
+no
+disco
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.355 — o roles nomeia a soma que a receita já relata
 
 A

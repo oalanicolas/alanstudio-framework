@@ -2773,6 +2773,35 @@ def attach_run_candidate(project, fields=None, source=None):
     return payload, path
 
 
+# A receita já grava a simulação. Sem isto o playtest
+# lia last-run e calava o tool. Traço no disco não é
+# alguém de fora.
+SESSION_FILES = ("tools/session.mjs", "tools/session.js", "tools/session.py")
+SESSION_TRACE = re.compile(
+    r"não some sob a simulação|não é sessão observada",
+    re.IGNORECASE,
+)
+
+
+def session_records_sim(text):
+    return bool(text and SESSION_TRACE.search(text))
+
+
+def session_sim_source(project):
+    project = Path(project)
+    for name in SESSION_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if session_records_sim(text):
+            return name
+    return None
+
+
 def playtest_reading(project):
     project = Path(project)
     observations = observation_receipts(project)
@@ -2837,6 +2866,11 @@ def playtest_reading(project):
         scope += (
             " O Copiar e o Gravar levam a faixa do last-run — markdown "
             "no disco não é alguém de fora."
+        )
+    if session_sim_source(project):
+        scope += (
+            " O disco grava a simulação (`session`). "
+            "Traço no disco não é alguém de fora."
         )
     return {
         "schema_version": 1,
