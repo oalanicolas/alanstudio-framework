@@ -4326,6 +4326,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["declared"])
         self.assertFalse(report["consistent"])
 
+    def test_art_names_the_look_the_recipe_already_births(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/new-look.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.look_births_palette(tool), "o tool já nasce o look")
+        self.assertEqual(game.look_birth_source(starter), "tools/new-look.mjs")
+        report = game.art_reading(starter)
+        self.assertIn("nasce o look", report["scope"], "o art listava paletas e calava o look")
+        self.assertIn("(`look`)", report["scope"])
+        self.assertFalse(report["consistent"])
+        self.assertNotIn("look", report)
+        empty = game.art_reading(self.project)
+        self.assertFalse(game.look_births_palette(""))
+        self.assertIsNone(game.look_birth_source(self.project))
+        self.assertNotIn("nasce o look", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o look que o disco já nasce", recipe)
+        self.assertIn("nomeia o look que o disco já nasce", skill)
+        self.assertIn("nomeia o look que o disco já nasce", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("LOOK_INTENTS", report["scope"])
+        self.assertNotIn("(`pair`)", report["scope"])
+
     def test_art_names_the_rain_risk_the_door_already_reads(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.art_reading(starter)

@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.358 — o art nomeia o look que o disco já nasce
+
+A
+receita
+já
+nascia
+o
+look
+com
+`look --from`.
+O
+comando
+listava
+paletas
+e
+calava
+o
+tool.
+Agora
+o
+`art`
+nomeia
+o
+look.
+Ferramenta
+no
+disco
+não
+é
+comparação
+em
+movimento.
+Sem
+chave
+`look`.
+Não
+promove
+`consistent`.
+
+O que 0.9.358 não afirma:
+ferramenta
+no
+disco
+não
+é
+comparação
+em
+movimento.
+
 ## 0.9.357 — o feel nomeia o perdão que o probe já exercita
 
 O

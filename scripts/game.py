@@ -2184,6 +2184,38 @@ def rain_window_constants(project):
     return found, sources
 
 
+# A receita já nasce o look. Sem isto o art
+# listava paletas e calava o tool. Ferramenta
+# no disco não é comparação em movimento.
+LOOK_FILES = (
+    "tools/new-look.mjs",
+    "tools/new-look.js",
+    "tools/look.mjs",
+    "tools/look.js",
+    "tools/new-look.py",
+)
+LOOK_BIRTH = re.compile(r"Nasce um look|não inventa consumidor", re.IGNORECASE)
+
+
+def look_births_palette(text):
+    return bool(text and LOOK_BIRTH.search(text))
+
+
+def look_birth_source(project):
+    project = Path(project)
+    for name in LOOK_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if look_births_palette(text):
+            return name
+    return None
+
+
 def art_reading(project):
     project = Path(project)
     palettes = []
@@ -2214,6 +2246,18 @@ def art_reading(project):
     bible_present = bible.is_file() and not bible.is_symlink()
     bible_current = document_is_current(bible)
     declared = bool(found_const or manifests or bible_current)
+    scope = (
+        "Procura `const PALETTES`, tokens.json, data/palettes.json, "
+        "docs/art-bible.md sem marcador de rascunho e mesas de chuva "
+        "(intervalTicks, fallSpeed e hazardChance) em data/, tables/ e content/. Não "
+        "compara silhueta, não mede contraste e não aprova estilo. "
+        "`consistent` é sempre falso."
+    )
+    if look_birth_source(project):
+        scope += (
+            " O disco nasce o look (`look`). Ferramenta no disco não é "
+            "comparação em movimento."
+        )
     return {
         "schema_version": 1,
         "project": str(project),
@@ -2234,13 +2278,7 @@ def art_reading(project):
             "direção consistente. Moodboard e rascunho do `init` não contam. "
             "Mesa de chuva no disco não é volume nem comparação em movimento."
         ),
-        "scope": (
-            "Procura `const PALETTES`, tokens.json, data/palettes.json, "
-            "docs/art-bible.md sem marcador de rascunho e mesas de chuva "
-            "(intervalTicks, fallSpeed e hazardChance) em data/, tables/ e content/. Não "
-            "compara silhueta, não mede contraste e não aprova estilo. "
-            "`consistent` é sempre falso."
-        ),
+        "scope": scope,
     }
 
 
