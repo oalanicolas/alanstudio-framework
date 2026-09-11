@@ -5,9 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.428: o `gate` nomeia o silêncio que o roteiro já recusa. Linha vazia no disco não é passagem. Sem chave `silêncio`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.427):** `python3 -m unittest discover -s tests` → 423 OK.
+**Suítes confirmadas no HEAD (0.9.428):** `python3 -m unittest discover -s tests` → 424 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
-Confirmação pendente no 0.9.428.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
