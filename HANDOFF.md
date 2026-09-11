@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.417: o `context` nomeia o progresso que o processo já recusa. Contexto no disco não é degrau. Sem chave `progresso`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**HEAD anterior (0.9.416) + confirmação pendente:** `python3 -m unittest discover -s tests` → 412 OK.
+**Suítes confirmadas no HEAD (0.9.417):** `python3 -m unittest discover -s tests` → 413 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
