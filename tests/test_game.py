@@ -4373,6 +4373,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.art_reading(self.project)
         self.assertEqual([item["key"] for item in report["palettes"]], ["normal", "contrast"])
 
+    def test_content_names_the_table_the_recipe_already_births(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/new-table.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.table_births_profile(tool), "o tool já nasce a mesa")
+        self.assertEqual(game.table_birth_source(starter), "tools/new-table.mjs")
+        report = game.content_reading(starter)
+        self.assertIn("nasce a mesa", report["scope"], "o content listava dusk e calm e calava o table")
+        self.assertIn("(`table`)", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("table", report)
+        empty = game.content_reading(self.project)
+        self.assertFalse(game.table_births_profile(""))
+        self.assertIsNone(game.table_birth_source(self.project))
+        self.assertNotIn("nasce a mesa", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a mesa que o disco já nasce", recipe)
+        self.assertIn("nomeia a mesa que o disco já nasce", skill)
+        self.assertIn("nomeia a mesa que o disco já nasce", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("SPAWN_INTENTS", report["scope"])
+        self.assertNotIn("(`pair`)", report["scope"])
+
     def test_content_names_the_pair_the_moods_already_list(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         tables = (starter / "src/game/tables.js").read_text(encoding="utf-8")

@@ -12,6 +12,8 @@ pelo mesmo `migrateTable`. Formato antigo vira schema 1; schema futuro
 falha com o número; campo obrigatório falha com o nome da mesa.
 `npm run table -- <nome>` já nasce com schema. `--from spawn`, `--from dusk` ou `--from calm` copia a forma que o
 starter já consome (`?spawn=` / `settings.spawnProfile`).
+Se o `tools/new-table.*` nasce a mesa, o `content` nomeia a mesa que o disco já nasce.
+Ferramenta no disco não é volume. Sem chave `table`.
 `--as denser|calmer|brief` desloca os knobs e deixa a chuva distinta.
 `brief` encurta prática e rampa; a folga da guarda permanece —
 encolher a abertura não come o verbo.

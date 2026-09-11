@@ -2338,6 +2338,38 @@ def mood_pair_source(project):
     return None
 
 
+# A receita já nasce a mesa. Sem isto o content
+# listava dusk e calm e calava o table. Ferramenta
+# no disco não é volume.
+TABLE_FILES = (
+    "tools/new-table.mjs",
+    "tools/new-table.js",
+    "tools/table.mjs",
+    "tools/table.js",
+    "tools/new-table.py",
+)
+TABLE_BIRTH = re.compile(r"Nasce uma mesa", re.IGNORECASE)
+
+
+def table_births_profile(text):
+    return bool(text and TABLE_BIRTH.search(text))
+
+
+def table_birth_source(project):
+    project = Path(project)
+    for name in TABLE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if table_births_profile(text):
+            return name
+    return None
+
+
 def content_reading(project):
     project = Path(project)
     files = content_files(project)
@@ -2352,6 +2384,11 @@ def content_reading(project):
         scope += (
             " O disco nomeia o par look+chuva (`listMoods`). "
             "Nome no disco não é volume."
+        )
+    if table_birth_source(project):
+        scope += (
+            " O disco nasce a mesa (`table`). "
+            "Ferramenta no disco não é volume."
         )
     return {
         "schema_version": 1,

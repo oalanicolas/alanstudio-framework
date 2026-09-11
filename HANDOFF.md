@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.358: o `art` nomeia o look que o disco já nasce. Ferramenta no disco não é comparação em movimento. Sem chave `look`. Não promove `consistent`.
+**HEAD:** ver `git log -1` — vigente 0.9.359: o `content` nomeia a mesa que o disco já nasce. Ferramenta no disco não é volume. Sem chave `table`. Não promove `enough`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Suítes confirmadas no HEAD (0.9.358):** `python3 -m unittest discover -s tests` → 354.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.358)
+## O que o HEAD já entrega (0.9.91–0.9.359)
 
 | Ver | Salto |
 | --- | --- |
@@ -302,6 +302,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.356 | O `playtest` nomeia a simulação que a receita já grava. O tool já gravava `nearest-orb` sem apagar `played`; o comando calava o nome. Sem chave `session`. Não promove `outsider`. |
 | 0.9.357 | O `feel` nomeia o perdão que o probe já exercita. O tool já contava o buffer; o comando calava. Sem chave `probe`. Não promove `felt`. |
 | 0.9.358 | O `art` nomeia o look que o disco já nasce. A receita já apontava `look --from`; o comando listava paletas e calava o tool. Sem chave `look`. Não promove `consistent`. |
+| 0.9.359 | O `content` nomeia a mesa que o disco já nasce. A receita já apontava `table --from`; o comando listava dusk e calm e calava o tool. Sem chave `table`. Não promove `enough`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -324,7 +325,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | state_trust | slice | o `save` nomeia a recuperação que o canvas já pinta; a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o `budget` nomeia a porta que a receita já cronometra; o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | o `access` nomeia o contraste que a receita já amostra; o `access` nomeia o `:focus-visible` que a casca já declara; o canvas da porta e do fim nomeia a lacuna do som; a região viva nomeia a mesa e o look da porta e do fim; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
-| content_scale | shippable | o `content` nomeia o par que `listMoods` já lista; `brief` não come a folga da guarda; paleta não finge volume; dusk+calm+pair; `enough` falso |
+| content_scale | shippable | o `content` nomeia a mesa que o disco já nasce; o `content` nomeia o par que `listMoods` já lista; `brief` não come a folga da guarda; paleta não finge volume; dusk+calm+pair; `enough` falso |
 | release | **prototype** | o `ship` nomeia o tamanho que a receita já relata; o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem; ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
 ---
@@ -722,7 +723,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `content.scope` nomeia o par look+chuva se o disco
   declara `listMoods`. Sem o marcador, a frase some.
   Nome no disco não é volume. Sem chave `moods` no
-  recibo. `enough` falso.
+  recibo. `content.scope` nomeia a mesa se o
+  `tools/new-table.*` nasce o perfil. Sem o
+  marcador, a frase some. Ferramenta no disco
+  não é volume. Sem chave `table` no recibo.
+  Sem nomear `pair`. `enough` falso.
   `art.scope` nomeia o look se o `tools/new-look.*`
   nasce a paleta. Sem o marcador, a frase some.
   Ferramenta no disco não é comparação em movimento.
@@ -2624,6 +2629,22 @@ Candidatos, do que ainda dói:
   receita
   já
   nasce
+  e um
+  `content`
+  que
+  lista
+  dusk
+  e
+  calm
+  e
+  cala
+  a
+  mesa
+  que
+  a
+  receita
+  já
+  nasce
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2648,16 +2669,16 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`art` nomeia o look que o
-disco já nasce. A receita já
-apontava `look --from`; o
-comando listava paletas e
-calava o tool. Ferramenta no
-disco não é comparação em
-movimento. Sem chave `look`.
-Não promove `consistent`.
-Não nomear `pair`. Não
-nomear `LOOK_INTENTS`.
+`content` nomeia a mesa que
+o disco já nasce. A receita
+já apontava `table --from`;
+o comando listava dusk e
+calm e calava o tool.
+Ferramenta no disco não é
+volume. Sem chave `table`.
+Não promove `enough`. Não
+nomear `pair`. Não nomear
+`SPAWN_INTENTS`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2751,6 +2772,7 @@ A família roles que cala a soma que a receita já relata está saturada.
 A família playtest que cala a simulação que a receita já grava está saturada.
 A família feel que cala o probe que o disco já exercita está saturada.
 A família art que lista paletas e cala o look que a receita já nasce está saturada.
+A família content que lista dusk e calm e cala a mesa que a receita já nasce está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -2801,5 +2823,8 @@ Não importar limiar de buffer no `feel` — irmão de 357 e 349.
 Não inventar chave `look` no recibo do art — irmão de 358.
 Não nomear `pair` no `art` — irmão de 358 e 352.
 Não nomear `LOOK_INTENTS` no `art` — irmão de 358 e 313.
+Não inventar chave `table` no recibo do content — irmão de 359.
+Não nomear `pair` no `content.scope` além do `listMoods` — irmão de 359 e 352.
+Não nomear `SPAWN_INTENTS` no `content` — irmão de 359.
 O rótulo do coil do dash ainda diz recarregando — irmão de 328.
-Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outra linha de persistência no canvas nem outro par no content nem outro tamanho no ship nem outro stub de contraste nem outra soma no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art; atrito ideia→jogo que não seja 332/337/339/342/347; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest.
+Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outra linha de persistência no canvas nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro stub de contraste nem outra soma no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art; atrito ideia→jogo que não seja 332/337/339/342/347; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest.

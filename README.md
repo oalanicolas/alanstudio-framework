@@ -692,6 +692,8 @@ procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 `palettes.json` e `tokens.json` não contam — o `art` lê esses manifestos.
 Se o disco declara `listMoods`, o `content` nomeia o par. Nome no
 disco não é volume. Sem chave `moods`.
+Se o `tools/new-table.*` nasce a mesa, o `content` nomeia a mesa que o disco já nasce.
+Ferramenta no disco não é volume. Sem chave `table`.
 `enough` é sempre `false`. `ship` procura script `build`/`export`/`package`/
 `release`, `docs/release.md` vigente ou CI. Se `dist/VERSION.json`
 existe, relata nome e versão. Se `dist/` de um jogo web existe, relata

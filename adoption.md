@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.359 — o content nomeia a mesa que o disco já nasce
+
+A
+receita
+já
+nascia
+a
+mesa
+com
+`table --from`.
+O
+comando
+listava
+dusk
+e
+calm
+e
+calava
+o
+tool.
+Agora
+o
+`content`
+nomeia
+a
+mesa.
+Ferramenta
+no
+disco
+não
+é
+volume.
+Sem
+chave
+`table`.
+Não
+promove
+`enough`.
+
+O que 0.9.359 não afirma:
+ferramenta
+no
+disco
+não
+é
+volume.
+
 ## 0.9.358 — o art nomeia o look que o disco já nasce
 
 A
