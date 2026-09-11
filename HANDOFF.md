@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.449: o `gate` nomeia o escopo que o roteiro já recusa. Linha no disco não é passagem. Sem chave `escopo`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**HEAD anterior + confirmação pendente:** suítes do 0.9.448 (444 / 509). Confirmação 0.9.449 depois das suítes.
+**Suítes confirmadas no HEAD (0.9.449):** `python3 -m unittest discover -s tests` → 445 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
