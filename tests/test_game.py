@@ -4253,6 +4253,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         (dist / "index.html").write_text("<html></html>")
         (dist / "tools" / "serve.mjs").write_text("ok")
         (dist / "package.json").write_text("{}")
+        (dist / "src").mkdir()
+        (dist / "src" / "main.js").write_text("ok")
         report = game.ship_reading(destination)
         self.assertTrue(report["tree"]["complete"])
         self.assertFalse(report["stale"])
@@ -4279,6 +4281,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertEqual(proposal["commands"][0], report["artifact_open"])
         self.assertNotIn("aprovado", proposal["why"])
+
+    def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
+        # O export já copia src/. Sem isto o ship dizia
+        # completa uma dist/ só com identidade e serve.
+        # Nomear não devolve o jogo. Não promove elsewhere.
+        destination = self.root / "artefato-sem-jogo"
+        game.start_project(destination, "canvas-arcade")
+        self.assertTrue((destination / "src").is_dir())
+        subprocess.run(["git", "init", "-q", str(destination)], check=True)
+        subprocess.run(["git", "-C", str(destination), "add", "-A"], check=True)
+        subprocess.run(
+            ["git", "-C", str(destination), "-c", "user.name=t", "-c", "user.email=t@t",
+             "commit", "-q", "-m", "ciclo"],
+            check=True,
+        )
+        head = subprocess.run(
+            ["git", "-C", str(destination), "rev-parse", "HEAD"],
+            capture_output=True, text=True, check=True,
+        ).stdout.strip()
+        dist = destination / "dist"
+        (dist / "tools").mkdir(parents=True)
+        (dist / "VERSION.json").write_text(
+            json.dumps({"name": "demo", "version": "0.1.0", "git_head": head}),
+            encoding="utf-8",
+        )
+        (dist / "index.html").write_text("<html></html>")
+        (dist / "tools" / "serve.mjs").write_text("ok")
+        (dist / "package.json").write_text("{}")
+        report = game.ship_reading(destination)
+        self.assertFalse(report["tree"]["complete"])
+        self.assertFalse(report["tree"]["parts"]["src"])
+        self.assertTrue(report["incomplete"])
+        self.assertFalse(report["stale"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(report["elsewhere"])
+        self.assertIsNone(report["artifact_open"])
+        self.assertIn("src/", report["scope"])
+        self.assertIn("perdeu", report["scope"])
+        self.assertIn("Nomear não devolve", report["scope"])
+        proposal = next(
+            item for item in self.proposals(game.next_step(destination, "release"))
+            if item["basis"] == "ship.incomplete"
+        )
+        self.assertIn("src", proposal["action"])
+        self.assertIn("src/", proposal["done_when"])
+        self.assertNotIn("ship.artifact_open", [
+            item["basis"] for item in self.proposals(game.next_step(destination, "release"))
+        ])
+        (dist / "src").mkdir()
+        (dist / "src" / "main.js").write_text("ok")
+        filled = game.ship_reading(destination)
+        self.assertTrue(filled["tree"]["complete"])
+        self.assertTrue(filled["tree"]["parts"]["src"])
+        self.assertFalse(filled["incomplete"])
+        self.assertFalse(filled["elsewhere"])
+        self.assertIn("dist", filled["artifact_open"])
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("perdeu o `src/`", recipe)
+        self.assertNotIn("aprovado", report["scope"])
 
     def test_playtest_names_an_observation_without_the_four_fields(self):
         (self.project / "index.html").write_text("<canvas></canvas>")

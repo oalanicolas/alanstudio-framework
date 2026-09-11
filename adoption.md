@@ -3,6 +3,52 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.340 — o ship nomeia a árvore que perdeu o src
+
+O
+export
+já
+copia
+o
+jogo.
+Identidade
+e
+serve
+sozinhos
+diziam
+completa.
+Agora
+`src/`
+que
+o
+projeto
+já
+tem
+e
+a
+dist/
+perdeu
+é
+incompleto.
+Nomear
+não
+devolve
+o
+jogo.
+Não
+promove
+`elsewhere`.
+
+O que 0.9.340 não afirma:
+árvore
+completa
+nesta
+máquina
+não
+é
+outra
+máquina.
+
 ## 0.9.339 — o start não nomeia npm install sem dependências
 
 O

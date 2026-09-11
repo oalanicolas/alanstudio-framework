@@ -1704,6 +1704,9 @@ SHIP_TREE = (
     ("version", "VERSION.json"),
 )
 SHIP_TREE_NEEDED = ("index", "serve", "package", "version")
+# O export já copia src/. Sem isto o ship dizia completa
+# uma dist/ que perdeu o jogo. Nomear não executa.
+SHIP_PAYLOAD_DIRS = ("src",)
 
 
 def optional_text(value):
@@ -2015,6 +2018,32 @@ def ship_expects_web_tree(project):
     return (project / "index.html").is_file() and (project / "package.json").is_file()
 
 
+def ship_dir_present(path):
+    if not path.is_dir() or path.is_symlink():
+        return False
+    try:
+        for item in path.iterdir():
+            if item.name.startswith(".") or item.is_symlink():
+                continue
+            if item.is_file() or item.is_dir():
+                return True
+    except OSError:
+        return False
+    return False
+
+
+def ship_payload_dirs(project):
+    # Só o que o projeto já tem. HTML sem src não ganha a
+    # exigência. Pasta vazia no disco de desenvolvimento
+    # não pede pasta vazia no artefato.
+    found = []
+    root = Path(project)
+    for name in SHIP_PAYLOAD_DIRS:
+        if ship_dir_present(root / name):
+            found.append(name)
+    return found
+
+
 def ship_tree(project):
     dist = Path(project) / "dist"
     if not dist.is_dir() or dist.is_symlink():
@@ -2025,9 +2054,13 @@ def ship_tree(project):
     for key, relative in SHIP_TREE:
         path = dist / relative
         parts[key] = path.is_file() and not path.is_symlink()
+    needed = list(SHIP_TREE_NEEDED)
+    for name in ship_payload_dirs(project):
+        parts[name] = ship_dir_present(dist / name)
+        needed.append(name)
     return {
         "parts": parts,
-        "complete": all(parts[key] for key in SHIP_TREE_NEEDED),
+        "complete": all(parts.get(key) for key in needed),
     }
 
 
@@ -2103,17 +2136,19 @@ def ship_reading(project):
             "Script de build não é artefato que outra pessoa executou. HTML "
             "estático sem manifesto já é o artefato; manifesto sem passo de "
             "empacotar é o que este leitor nomeia. VERSION.json sozinho não "
-            "é árvore jogável; HEAD diferente não é outra máquina."
+            "é árvore jogável. dist/ sem o src/ que o projeto já tem também "
+            "não. HEAD diferente não é outra máquina."
         ),
         "scope": (
             "Procura script build/export/dist/package/release, docs/release.md "
             "vigente e CI. Se dist/VERSION.json existe, relata nome e versão. "
             "Se a pasta dist/ de um jogo web existe, relata se index, serve, "
             "package e VERSION estão lá, e se o HEAD do artefato é o HEAD "
-            "atual. Árvore completa no HEAD atual ganha `artifact_open` — o "
-            "comando que serve dist/. Nomear não executa. Não executa o "
-            "export, não instala o artefato e não autoriza publicar. "
-            "`shipped` e `elsewhere` são sempre falsos."
+            "atual. Nomeia a árvore que perdeu o `src/` que o projeto já tem. "
+            "Nomear não devolve o jogo. Árvore completa no HEAD atual ganha "
+            "`artifact_open` — o comando que serve dist/. Nomear não executa. "
+            "Não executa o export, não instala o artefato e não autoriza "
+            "publicar. `shipped` e `elsewhere` são sempre falsos."
         ),
     }
 
@@ -5377,11 +5412,20 @@ def next_step(project, focus="create", studies_root=None):
             "ship.unpacked",
         )
     elif pack.get("incomplete"):
+        parts = (pack.get("tree") or {}).get("parts") or {}
+        listed = "index, serve, package e VERSION"
+        if "src" in parts:
+            listed = "index, serve, package, VERSION e o src que o projeto já tem"
         propose(
-            "Completar a árvore jogável em dist/ (index, serve, package e VERSION)",
+            f"Completar a árvore jogável em dist/ ({listed})",
             "Há identidade do artefato ou uma pasta dist/ e falta o que outra "
-            "pessoa serve. VERSION.json sozinho não abre o jogo. O harness "
+            "pessoa serve. VERSION.json sozinho não abre o jogo. dist/ sem o "
+            "src/ que o projeto já tem também não. O harness "
             "não executa o export e não autoriza publicar.",
+            "dist/ tem index.html, tools/serve.mjs, package.json, "
+            "VERSION.json e o src/ que o desenvolvimento já tem — outra "
+            "máquina e shipped continuam pendentes."
+            if "src" in parts else
             "dist/ tem index.html, tools/serve.mjs, package.json e "
             "VERSION.json — outra máquina e shipped continuam pendentes.",
             [harness_command("ship", project)],

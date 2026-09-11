@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.339: o `start` não nomeia `npm install` quando o `package.json` não tem dependências. Nomear não instala.
+**HEAD:** ver `git log -1` — vigente 0.9.340: o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem. Não promove `elsewhere`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.339):** `python3 -m unittest discover -s tests` → 335.
+**Testes no HEAD (0.9.340):** `python3 -m unittest discover -s tests` → 336.
 `cd assets/starters/canvas-arcade && npm test` → 504.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.339)
+## O que o HEAD já entrega (0.9.91–0.9.340)
 
 | Ver | Salto |
 | --- | --- |
@@ -283,6 +283,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.337 | O `start` nomeia `npm install` quando `node_modules` falta. O play mandava o serve e o disco ainda não tinha módulos. `play` continua `npm run serve`. O `feel` não ganha a chave. Nomear não instala. |
 | 0.9.338 | O `origins` nomeia a mídia que o recibo lista e o disco perdeu. O JSON já cobria o arquivo presente; o WAV sumido calava. CREDITS.md pela menção continua. Nomear não devolve o arquivo. Não promove `granted`. |
 | 0.9.339 | O `start` não nomeia `npm install` quando o `package.json` não tem dependências. O starter já recusava o passo; o harness pedia install sem ter o que instalar. Com dependências e sem `node_modules`, a chave permanece. `play` continua o serve. O `feel` não ganha a chave. Nomear não instala. |
+| 0.9.340 | O `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem. O export já copia o jogo; identidade e serve sozinhos diziam completa. Nomear não devolve o jogo. Não promove `elsewhere`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -306,7 +307,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | a região viva nomeia a mesa e o look da porta e do fim; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
 | content_scale | shippable | `brief` não come a folga da guarda; paleta não finge volume; dusk+calm+pair; `enough` falso |
-| release | **prototype** | ninguém correu o `dist/` fora daqui; `elsewhere` falso |
+| release | **prototype** | o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem; ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
 ---
 
@@ -677,7 +678,8 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Sem caminho e sem ideia (ou ideia que não vira slug): `ValueError`
   “sem destino” que nomeia o `start --idea` do README. Nomear não cria.
 - `ship` devolve `artifact_open` só se `dist/` está completo e o HEAD
-  do VERSION.json é o checkout. O valor é
+  do VERSION.json é o checkout. Completo inclui o `src/` que o
+  projeto já tem. O valor é
   `cd <dist> && node tools/serve.mjs`. Incompleto ou stale some a
   chave. Não é `url`. Nomear não executa. `elsewhere` falso.
   `next` nomeia `ship.artifact_open` depois de stale, nunca na
@@ -2398,6 +2400,18 @@ Candidatos, do que ainda dói:
   o
   que
   instalar
+  e um
+  `ship`
+  que
+  diz
+  completa
+  a
+  dist
+  sem
+  o
+  src
+  do
+  projeto
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2422,16 +2436,15 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`start` não nomeia `npm install`
-quando o `package.json` não tem
-dependências. O starter já
-recusava o passo; o harness
-pedia install sem ter o que
-instalar. Com dependências e
-sem `node_modules` a chave
-permanece. `play` continua o
-serve. O `feel` não ganha a
-chave. Nomear não instala.
+`ship` nomeia a árvore que
+perdeu o `src/` que o projeto
+já tem. O export já copia o
+jogo; identidade e serve
+sozinhos diziam completa.
+Nomear não devolve o jogo.
+Não promove `elsewhere`.
+Não exigir `data/` nem
+`public/` no mesmo salto.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2506,6 +2519,7 @@ A família playtest que cala a conta que o last-run já conta está saturada.
 A família start que manda o serve e cala o npm install está saturada.
 A família origins que cala a mídia que o recibo lista e o disco perdeu está saturada.
 A família start que nomeia npm install sem ter o que instalar está saturada.
+A família ship que diz completa a dist sem o src do projeto está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -2514,3 +2528,4 @@ Não dobrar o install no `play`.
 Não adicionar `then.install` ao `feel`.
 CREDITS.md pela menção ainda declara — irmão de 334.
 Menção em CREDITS.md de caminho ausente continua calada — irmão de 334 e 338.
+Não exigir `data/` nem `public/` na árvore do ship — irmão de 340.

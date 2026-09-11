@@ -67,7 +67,8 @@ reproduzir e declara o passo de empacotar — não prova que outra máquina
 já executou o artefato. O harness lê o passo com `ship <projeto>`.
 `shipped` é sempre falso. Sem o passo, `next` propõe `ship.unpacked`.
 Árvore incompleta é `ship.incomplete`; artefato de outro commit é
-`ship.stale`. Árvore completa no HEAD atual ganha `artifact_open`
+`ship.stale`. Nomeia a árvore que perdeu o `src/` que o projeto já
+tem. Nomear não devolve o jogo. Árvore completa no HEAD atual ganha `artifact_open`
 — o comando que serve `dist/`. Nomear não executa. HTML estático
 sem manifesto já é o artefato e não dispara esses ramos.
 

@@ -683,8 +683,10 @@ procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 `release`, `docs/release.md` vigente ou CI. Se `dist/VERSION.json`
 existe, relata nome e versão. Se `dist/` de um jogo web existe, relata
 se a árvore jogável está completa e se o HEAD do artefato é o HEAD
-atual. `shipped` e `elsewhere` são sempre `false`. Árvore incompleta
-recebe `ship.incomplete`; artefato de outro commit recebe `ship.stale`.
+atual. Nomeia a árvore que perdeu o `src/` que o projeto já tem. Nomear
+não devolve o jogo. `shipped` e `elsewhere` são sempre `false`. Árvore
+incompleta recebe `ship.incomplete`; artefato de outro commit recebe
+`ship.stale`.
 HTML estático sem manifesto já é o artefato; manifesto sem passo de
 empacotar recebe `ship.unpacked`. O starter declara paleta em
 `data/palettes.json`, escolhe o look por `?look=` / `settings.look`
