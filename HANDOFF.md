@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.362: o `feel` nomeia a inclinação que o lookAhead já marca. Lean no disco não é peso percebido. Sem chave `lookAhead`. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.361):** `python3 -m unittest discover -s tests` → 357.
+**Suítes confirmadas no HEAD (0.9.362):** `python3 -m unittest discover -s tests` → 358.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
