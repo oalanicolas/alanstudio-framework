@@ -5,9 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.426: o `context` nomeia a API que a receita já recusa. Vocabulário no disco não é runtime. Sem chave `api`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.425):** `python3 -m unittest discover -s tests` → 421 OK.
+**Suítes confirmadas no HEAD (0.9.426):** `python3 -m unittest discover -s tests` → 422 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
-Confirmação pendente no 0.9.426.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
