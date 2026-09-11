@@ -709,6 +709,48 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("documento pronto seja PoC", game.scan(self.project)["scope"])
         self.assertNotIn("documento pronto seja PoC", game.next_step(self.project)["scope"])
 
+    def test_scan_names_the_aaa_the_memory_already_refuses(self):
+        mold = (game.FRAMEWORK / "assets/templates/agents.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.agents_memory_refuses_aaa(mold),
+            "a memória já recusa chamar o recorte de AAA",
+        )
+        self.assertTrue(game.agents_memory_refuses_aaa(game.agents_memory_text(self.project)))
+        self.assertIsNone(game.agent_aaa_source(self.project))
+        silent = game.scan(self.project)
+        self.assertNotIn("recorte de AAA", silent["agent_context"]["scope"])
+        written = game.write_agents_memory(self.project)
+        self.assertEqual(written, "AGENTS.md")
+        self.assertEqual(game.agent_aaa_source(self.project), "AGENTS.md")
+        report = game.scan(self.project)
+        self.assertEqual(report["agent_context"]["status"], "found")
+        self.assertIn("AGENTS.md", report["agent_context"]["files"])
+        self.assertIn(
+            "recorte de AAA",
+            report["agent_context"]["scope"],
+            "o scan listava a memória e calava a recusa",
+        )
+        self.assertIn("(`agents`)", report["agent_context"]["scope"])
+        self.assertNotIn("agents", report["agent_context"])
+        self.assertNotIn("aaa", report["agent_context"])
+        context = game.context(self.project, "create")
+        self.assertIn("recorte de AAA", context["foundation"]["agent_context"]["scope"])
+        self.assertFalse(game.agents_memory_refuses_aaa(""))
+        with mock.patch.object(game, "agent_aaa_source", return_value=None):
+            muted = game.scan(self.project)
+        self.assertNotIn("recorte de AAA", muted["agent_context"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o AAA que a memória já recusa", recipe)
+        self.assertIn("nomeia o AAA que a memória já recusa", skill)
+        self.assertIn("nomeia o AAA que a memória já recusa", readme)
+        self.assertNotIn("verified", report["agent_context"]["scope"])
+        self.assertNotIn("recorte de AAA", report["scope"])
+        self.assertNotIn("recorte de AAA", game.next_step(self.project)["scope"])
+        self.assertNotIn("recorte de AAA", game.template_scope("agents"))
+        self.assertNotIn("recorte de AAA", game.continuity_scope())
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

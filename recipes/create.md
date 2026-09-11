@@ -80,6 +80,7 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    quatro não é achado. Sem `then.playtest`. Nomear o leitor não observa.
    Sem memória no disco, `template agents` e o `next` geram o mesmo
    texto a partir do que existe — não o molde que listava GDD.
+   Se a memória recusa o adjetivo, o `scan` nomeia o AAA que a memória já recusa. Memória no disco não é acabamento. Sem chave `agents`.
    Perdeu o JSON? `play` (ou `open`) aponta o serve de novo, sem executar.
    Se o manifesto declara `session`, o prompt também nomeia a partida
    simulada. Não executa e não observa.

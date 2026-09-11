@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.403 — o scan nomeia o AAA que a memória já recusa
+
+A
+memória
+já
+dizia
+para
+não
+chamar
+o
+recorte
+de
+AAA.
+O
+comando
+listava
+`AGENTS.md`
+e
+calava
+a
+recusa.
+Agora
+o
+`scan`
+nomeia
+o
+AAA.
+Memória
+no
+disco
+não
+é
+acabamento.
+Sem
+chave
+`agents`.
+Nomear
+não
+observa.
+
+O que 0.9.403 não afirma:
+memória
+no
+disco
+não
+é
+acabamento
+nem
+observação
+em
+movimento.
+
 ## 0.9.402 — o context nomeia a PoC que o processo já nega
 
 O

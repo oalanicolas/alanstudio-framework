@@ -476,7 +476,7 @@ release. Quatro complementos: `art-bible`, `devlog`, `audit`, `aaa` (checklist d
 o `context` expõe `finish` — núcleo / produto / promessa / mercado; slice, QA, create,
 feel e audio carregam a guia; `template aaa` não certifica). Três de consolidação e
 produção: `game-design` (documento único), `production-plan`, `milestone`.
-O complemento `agents` gera a memória persistente em `AGENTS.md` a partir do disco: o comando que abre, o `note`, o `playtest` e o que ainda não foi plantado. Sem rascunhos do ciclo, não lista GDD. O `playtest` só lê. Sem os quatro não é achado. Nomear o leitor não observa. O `start` já escreve o mesmo arquivo; `template agents` e o `next` em `agent_context.not_located` não voltam ao molde que fingia brief.
+O complemento `agents` gera a memória persistente em `AGENTS.md` a partir do disco: o comando que abre, o `note`, o `playtest` e o que ainda não foi plantado. Sem rascunhos do ciclo, não lista GDD. O `playtest` só lê. Sem os quatro não é achado. Nomear o leitor não observa. O `start` já escreve o mesmo arquivo; `template agents` e o `next` em `agent_context.not_located` não voltam ao molde que fingia brief. Se a memória recusa o adjetivo, o `scan` nomeia o AAA que a memória já recusa. Memória no disco não é acabamento. Sem chave `agents`.
 
 ```sh
 python3 scripts/game.py context /caminho/do/jogo --focus content --stage gdd --root /caminho/do/laboratorio

@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.402: o `context` nomeia a PoC que o processo já nega. Fonte no disco não é jogo implementado. Sem chave `process`. Nomear não executa.
+**HEAD:** ver `git log -1` — vigente 0.9.403: o `scan` nomeia o AAA que a memória já recusa. Memória no disco não é acabamento. Sem chave `agents`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.402):** `python3 -m unittest discover -s tests` → 398 OK.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK.
+**HEAD anterior + confirmação pendente:** `python3 -m unittest discover -s tests` → 398 OK no 0.9.402.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK. Esperado no 0.9.403: 399 / 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.402)
+## O que o HEAD já entrega (0.9.91–0.9.403)
 
 | Ver | Salto |
 | --- | --- |
@@ -346,6 +346,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.400 | O `template` nomeia a publicação que o molde já recusa. O molde já dizia que não autoriza publicar; o comando emitia rascunho e calava a recusa. Sem chave `publicar` no recibo. Não promove `elsewhere`. |
 | 0.9.401 | O `context` nomeia o audit que o roteiro já pede. O roteiro já pedia documentar sem consentimento; o comando apontava o arquivo e calava a política. Sem chave `audit` no recibo. Nomear não escreve. |
 | 0.9.402 | O `context` nomeia a PoC que o processo já nega. O processo já dizia que documentos prontos não são PoC executada; o comando apontava o arquivo e calava a recusa. Sem chave `process` no recibo. Nomear não executa. |
+| 0.9.403 | O `scan` nomeia o AAA que a memória já recusa. A memória já dizia para não chamar o recorte de AAA; o comando listava `AGENTS.md` e calava a recusa. Sem chave `agents` no recibo. Nomear não observa. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -369,7 +370,7 @@ Piso percebido = **mínimo**. O `bar` nomeia o mínimo que a barra já declara. 
 | performance | playable | o `budget` nomeia o percentil que a receita já pede; o `budget` nomeia os bytes que o size já relata; o `budget` nomeia a porta que a receita já cronometra; o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | o `access` nomeia a legenda que a porta já lê; o `access` nomeia as teclas que a tabela já lista; o `access` nomeia o perigo que o live já anuncia; o `access` nomeia o contraste que a receita já amostra; o `access` nomeia o `:focus-visible` que a casca já declara; o canvas da porta e do fim nomeia a lacuna do som; a região viva nomeia a mesa e o look da porta e do fim; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
 | content_scale | shippable | o `content` nomeia a migração que as mesas já compartilham; o `start` nomeia o par que o pair já nasce; o `content` nomeia a mesa que o disco já nasce; o `content` nomeia o par que `listMoods` já lista; `brief` não come a folga da guarda; paleta não finge volume; dusk+calm+pair; `enough` falso |
-| release | **prototype** | o `context` nomeia a PoC que o processo já nega; o `context` nomeia o audit que o roteiro já pede; o `template` nomeia a publicação que o molde já recusa; o `scan` nomeia o serve que o README já aponta; o `gate` nomeia o gate que a tabela já declara; o `init` nomeia o módulo que o package já declara; o `discover` nomeia os scripts que o package já declara; o `play` nomeia a produção que o serve já recusa; o `ship` nomeia o file:// que o export já recusa; o `origins` nomeia o consumidor que o sidecar já declara; o `ship` nomeia o passo que o export já declara; o `ship` nomeia o banner que o serve já imprime; o `ship` nomeia o tamanho que a receita já relata; o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem; ninguém correu o `dist/` fora daqui; `elsewhere` falso |
+| release | **prototype** | o `scan` nomeia o AAA que a memória já recusa; o `context` nomeia a PoC que o processo já nega; o `context` nomeia o audit que o roteiro já pede; o `template` nomeia a publicação que o molde já recusa; o `scan` nomeia o serve que o README já aponta; o `gate` nomeia o gate que a tabela já declara; o `init` nomeia o módulo que o package já declara; o `discover` nomeia os scripts que o package já declara; o `play` nomeia a produção que o serve já recusa; o `ship` nomeia o file:// que o export já recusa; o `origins` nomeia o consumidor que o sidecar já declara; o `ship` nomeia o passo que o export já declara; o `ship` nomeia o banner que o serve já imprime; o `ship` nomeia o tamanho que a receita já relata; o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem; ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
 ---
 
@@ -509,6 +510,15 @@ Piso percebido = **mínimo**. O `bar` nomeia o mínimo que a barra já declara. 
   `process` no recibo. Um leitor só:
   `continuity`, não `documentation` nem
   `scan` nem `next`. `executed` falso.
+- `agent_context.scope` nomeia o AAA se
+  `AGENTS.md` declara `Não chame o recorte
+  de AAA`. Sem o marcador, a frase some.
+  Memória no disco não é acabamento. Sem
+  chave `agents` no recibo. Sem chave
+  `aaa`. Um leitor só: `agent_context`,
+  não `scan.scope` nem `next` nem
+  `template` nem `start`. `enough` e
+  `consistent` ausentes.
 - **Não só adicionar mais um script de medição** se o salto alinhado
   for feel visível/audível, ferramenta de outsider, superfície de
   entrada, auditoria original (item 1) ou facilidade ideia→jogo.
@@ -3370,6 +3380,7 @@ A família convite que anuncia a rede e cala o bind que o serve já prende está
 A família template que emite rascunho e cala a publicação que o molde já recusa está saturada.
 A família context que aponta o roteiro e cala o audit que o roteiro já pede está saturada.
 A família continuity que aponta o processo e cala a PoC que o processo já nega está saturada.
+A família agent_context que aponta a memória e cala o AAA que a memória já recusa está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -3584,5 +3595,10 @@ Não inventar chave `poc` no recibo do `continuity` — irmão de 402.
 Não nomear a PoC no `documentation` nem no `scan.scope` nem no `next.scope` — irmão de 402; um leitor só.
 Não outro audit no `context` — irmão de 402 e 401.
 Não promover `executed` no `continuity` — irmão de 402.
+Não inventar chave `agents` no recibo do `agent_context` — irmão de 403.
+Não inventar chave `aaa` no recibo do `agent_context` — irmão de 403.
+Não nomear o AAA no `scan.scope` nem no `next.scope` nem no `template` nem no `start` — irmão de 403; um leitor só.
+Não outra PoC no `continuity` — irmão de 403 e 402.
+Não promover `enough` nem `consistent` no `agent_context` — irmão de 403.
 O rótulo do coil do dash ainda diz recarregando — irmão de 328.
-Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt nem outro engines no doctor nem outras substituições no doctor nem outro Node no runtime nem outro file:// no play nem outra produção no play nem outro relógio no guide nem outros scripts no discover nem outro módulo no init nem outro gate no gate nem outro serve no scan; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outro percentil no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro passo no ship nem outro file:// no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access nem outro last-run no note nem auto-anexar no note nem outro pico no sfx summary nem outro pico no sfx info nem outro par no start nem extra pair no content nem pair no art nem outra legenda no access nem outro deslocamento no sfx search nem outra voz no sfx search nem outro sit no feel nem outra guarda no feel nem outro recado no playtest nem outro POST no playtest nem outra gravação no save nem outro storage no save nem outro land no feel nem outro término no feel nem outra migração no content nem outro loader no content nem outra vinheta no art nem outro recorte no art nem outro PCM no roles nem outro wav no roles nem outro consumidor no origins nem outro sidecar no origins nem outros créditos no copy nem outra integridade no sfx verify nem outro hash no sfx verify nem outro processamento no sfx export nem outros bytes no sfx export nem outro mínimo no bar nem outro piso no bar nem outro relógio no guide nem outra saída de escopo no craft nem outro contraste no art nem outras substituições no doctor nem outros scripts no discover nem outros scripts no next nem outro módulo no init nem outro gate no gate nem outro gate no next nem outro serve no scan nem outro serve no play nem outro serve no next nem outro bind no invite nem outro HOST no invite nem outra publicação no template nem outro molde no template nem outro audit no context nem outro consentimento no documentation nem outra PoC no continuity nem outro process no continuity; atrito ideia→jogo que não seja 332/337/339/342/347/373/384/387/391/394/395/396/397/398/399/400/401/402; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro nem o sit da guarda nem o land do dash; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest nem o last-run no note nem o recado no playtest nem o bind no invite.
+Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt nem outro engines no doctor nem outras substituições no doctor nem outro Node no runtime nem outro file:// no play nem outra produção no play nem outro relógio no guide nem outros scripts no discover nem outro módulo no init nem outro gate no gate nem outro serve no scan; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outro percentil no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro passo no ship nem outro file:// no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access nem outro last-run no note nem auto-anexar no note nem outro pico no sfx summary nem outro pico no sfx info nem outro par no start nem extra pair no content nem pair no art nem outra legenda no access nem outro deslocamento no sfx search nem outra voz no sfx search nem outro sit no feel nem outra guarda no feel nem outro recado no playtest nem outro POST no playtest nem outra gravação no save nem outro storage no save nem outro land no feel nem outro término no feel nem outra migração no content nem outro loader no content nem outra vinheta no art nem outro recorte no art nem outro PCM no roles nem outro wav no roles nem outro consumidor no origins nem outro sidecar no origins nem outros créditos no copy nem outra integridade no sfx verify nem outro hash no sfx verify nem outro processamento no sfx export nem outros bytes no sfx export nem outro mínimo no bar nem outro piso no bar nem outro relógio no guide nem outra saída de escopo no craft nem outro contraste no art nem outras substituições no doctor nem outros scripts no discover nem outros scripts no next nem outro módulo no init nem outro gate no gate nem outro gate no next nem outro serve no scan nem outro serve no play nem outro serve no next nem outro bind no invite nem outro HOST no invite nem outra publicação no template nem outro molde no template nem outro audit no context nem outro consentimento no documentation nem outra PoC no continuity nem outro process no continuity nem outro AAA no agent_context nem outro agents no scan; atrito ideia→jogo que não seja 332/337/339/342/347/373/384/387/391/394/395/396/397/398/399/400/401/402/403; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro nem o sit da guarda nem o land do dash; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest nem o last-run no note nem o recado no playtest nem o bind no invite.

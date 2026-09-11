@@ -4652,7 +4652,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         "agent_context": {
             "status": "found" if local_instructions else "not_located",
             "files": local_instructions,
-            "scope": "Instruções persistentes para o agente na raiz do projeto. Não é uma das nove áreas; sem elas, cada sessão reaprende convenções. `template agents` gera a memória a partir do disco — o comando que abre e o que não foi plantado.",
+            "scope": agent_context_scope(project),
         },
         "coverage": {
             "documents_inspected": inspected, "documents_located": len(documents), "entries_seen": entries_seen,
@@ -4722,6 +4722,44 @@ def _scan_scope(project):
         scope += (
             " O disco aponta o serve (`serve`). "
             "Página no disco não é partida jogada."
+        )
+    return scope
+
+
+# A memória já recusa o adjetivo. Sem isto o scan
+# listava AGENTS.md e calava a recusa.
+# Memória no disco não é acabamento.
+AGENT_MEMORY = "AGENTS.md"
+AGENT_AAA = re.compile(r"Não chame o recorte de AAA")
+
+
+def agents_memory_refuses_aaa(text):
+    return bool(text and AGENT_AAA.search(text))
+
+
+def agent_aaa_source(project):
+    path = Path(project) / AGENT_MEMORY
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if agents_memory_refuses_aaa(text):
+        return AGENT_MEMORY
+    return None
+
+
+def agent_context_scope(project):
+    scope = (
+        "Instruções persistentes para o agente na raiz do projeto. "
+        "Não é uma das nove áreas; sem elas, cada sessão reaprende convenções. "
+        "`template agents` gera a memória a partir do disco — o comando que abre e o que não foi plantado."
+    )
+    if agent_aaa_source(project):
+        scope += (
+            " O disco recusa chamar o recorte de AAA (`agents`). "
+            "Memória no disco não é acabamento."
         )
     return scope
 
