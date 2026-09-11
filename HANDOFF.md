@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.391: o `guide` nomeia o relógio que o manifesto já declara. Frase no disco não é partida observada. Sem chave `speed`. Não promove `executed`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**HEAD anterior + confirmação pendente (0.9.391):** suítes do 0.9.390 no remoto — 386 harness / 509 starter. Confirmação deste HEAD ainda não correu.
+**Suítes confirmadas no HEAD (0.9.391):** `python3 -m unittest discover -s tests` → 387 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
