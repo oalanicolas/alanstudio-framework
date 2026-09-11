@@ -89,7 +89,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    disco perdeu, `roles --fill` nomeia o mesmo stem,
    `sfx verify` nomeia os stems sem cruzar
    o que não existe e nomeia o stem que o recibo lista e o
-   disco perdeu, `sfx summary` lista todos. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `sfx serve`
+   disco perdeu. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. `sfx summary` lista todos. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `sfx serve`
    recusa catálogo vazio.
    Com sons no acervo, `sfx serve` abre a página de escuta — se
    `shared/sfx/ui` faltar, o harness gera a lista e nomeia o som
@@ -252,8 +252,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    (ffmpeg); `sfx info` lê a ficha do acervo ou a chave do stem
    do starter — o recibo que lista um stem e o disco perdeu não
    é id desconhecido; se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede.
-   Pico no recibo não é mix ouvida. `sfx verify` nomeia os stems sem cruzar o que não
-   existe e nomeia o stem que o recibo lista e o disco perdeu;
+   Pico no recibo não é mix ouvida.    `sfx verify` nomeia os stems sem cruzar o que não
+   existe e nomeia o stem que o recibo lista e o disco perdeu. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`.
    `sfx verify` nomeia o som que o catálogo lista e o disco
    perdeu — não despeja errno;
    `sfx export` copia bytes e

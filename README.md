@@ -571,7 +571,7 @@ lê a chave e nomeia o stem que o recibo lista e o disco perdeu.
 desse stem. Se o sidecar declara licença, o `sfx copy` nomeia os créditos que o copy já leva. Créditos no disco não são mix ouvida. Sem chave `sidecar`. `sfx export` nomeia o stem que o recibo lista
 e o disco perdeu — exportar não inventa bytes.
 `sfx verify` nomeia os stems sem cruzar o que não
-existe e nomeia o stem que o recibo lista e o disco perdeu.
+existe e nomeia o stem que o recibo lista e o disco perdeu. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`.
 `sfx summary` lista todos. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `sfx serve` recusa — não
 há o que ouvir no acervo.
 Com sons, `sfx serve` abre a página de escuta; se `shared/sfx/ui`
@@ -592,7 +592,7 @@ tags, processamento e fontes (licença CC0 ou CC-BY). `sfx seed` lê
 o seed recusa. `sfx summary` (também sem subcomando) lê o acervo, os atalhos
 e os stems do starter em `public/sfx` — arquivo no disco não é mix ouvido.
 `sfx verify` cruza bytes e fichas do acervo; sem acervo nomeia os
-stems do starter e não cruza. Nomeia o stem que o recibo lista e
+stems do starter e não cruza. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. Nomeia o stem que o recibo lista e
 o disco perdeu. Nomeia o som que o catálogo lista e o disco
 perdeu — não despeja errno. Não ouve. `sfx info` lê a ficha
 do acervo ou a chave do stem do starter. O recibo que lista um

@@ -52,7 +52,7 @@ Nomear o 404 não é mix ouvido.
 do starter que casa, `--apply` o copia ou recoloca o WAV se o recibo já está, `sfx search` nomeia o mesmo stem. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`.
 `sfx info` lê a chave e nomeia o stem que o recibo lista e o
 disco perdeu, `sfx verify` nomeia os stems sem cruzar o
-que não existe, `sfx summary` lista todos os stems já no
+que não existe. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. `sfx summary` lista todos os stems já no
 `public/sfx` e `sfx serve`
 recusa. Com sons no acervo, `sfx serve` abre a página de escuta —
 se `shared/sfx/ui` faltar, o harness gera a lista e nomeia o

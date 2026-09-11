@@ -3277,6 +3277,38 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", planted)
         self.assertEqual(item["id"], "passo-madeira-01")
 
+    def test_sfx_verify_names_the_integrity_the_check_already_crosses(self):
+        check = (Path(game.FRAMEWORK) / "scripts/audio.py").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.catalog_crosses_integrity(check),
+            "o check já cruza a integridade",
+        )
+        self.assertEqual(game.sfx_catalog.verify_integrity_source(), "audio.py")
+        empty = game.sfx_catalog.verify_catalog(self.root)
+        self.assertTrue(empty["empty"])
+        self.assertNotIn("cruza a integridade", empty.get("scope", ""))
+        self._plant_catalog_sound()
+        report = game.sfx_catalog.verify_catalog(self.root)
+        self.assertFalse(report["empty"])
+        self.assertIn("cruza a integridade", report["scope"], "o verify lia ok e calava o hash")
+        self.assertIn("(`sha256`)", report["scope"])
+        self.assertFalse(report["heard"])
+        self.assertNotIn("sha256", report)
+        self.assertNotIn("integridade", report)
+        self.assertFalse(game.sfx_catalog.catalog_crosses_integrity(""))
+        with mock.patch.object(game.sfx_catalog, "verify_integrity_source", return_value=None):
+            silent = game.sfx_catalog.verify_catalog(self.root)
+        self.assertNotIn("cruza a integridade", silent.get("scope", ""))
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a integridade que o check já cruza", recipe)
+        self.assertIn("nomeia a integridade que o check já cruza", skill)
+        self.assertIn("nomeia a integridade que o check já cruza", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("then.sha256", report.get("then") or {})
+
     def test_sfx_verify_names_a_receipt_whose_file_is_gone(self):
         folder = self.root / "sfx-sumido"
         folder.mkdir()

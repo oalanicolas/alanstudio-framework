@@ -103,6 +103,30 @@ def stem_credits_source(item, folder=None):
     return None
 
 
+# O check já cruza a integridade. Sem isto o
+# verify lia ok e calava o hash.
+# Hash no disco não é mix ouvida.
+CATALOG_CHECK = Path(__file__).resolve().parent / "audio.py"
+CATALOG_INTEGRITY = re.compile(r"Integridade inválida")
+
+
+def catalog_crosses_integrity(text):
+    return bool(text and CATALOG_INTEGRITY.search(text))
+
+
+def verify_integrity_source():
+    path = CATALOG_CHECK
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    if catalog_crosses_integrity(text):
+        return path.name
+    return None
+
+
 def receipt_field(row, field):
     # O acervo guarda autor e licença em `sources`. O starter,
     # no topo. Identidade lê os dois sem exigir o mesmo envelope.
@@ -793,7 +817,7 @@ def verify_catalog(root=None, folder=None):
             "next": VERIFY_EMPTY,
         }
     result = audio.check(catalog_dir(root))
-    return {
+    report = {
         "ok": result["ok"],
         "empty": False,
         "problems": result["errors"],
@@ -803,6 +827,12 @@ def verify_catalog(root=None, folder=None):
         "heard": False,
         "next": VERIFY_NEXT,
     }
+    if verify_integrity_source():
+        report["scope"] = (
+            "O disco cruza a integridade (`sha256`). "
+            "Hash no disco não é mix ouvida."
+        )
+    return report
 
 
 def serve_catalog(root=None, port=8766):

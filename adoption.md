@@ -3,6 +3,57 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.388 — o sfx verify nomeia a integridade que o check já cruza
+
+O
+check
+já
+comparava
+hash
+e
+bytes.
+O
+comando
+lia
+`ok`
+e
+calava
+o
+cruzamento.
+Agora
+o
+`sfx verify`
+nomeia
+a
+integridade.
+Hash
+no
+disco
+não
+é
+mix
+ouvida.
+Sem
+chave
+`sha256`.
+Não
+promove
+`heard`.
+
+O que 0.9.388 não afirma:
+hash
+no
+disco
+não
+é
+mix
+ouvida
+nem
+pico
+medido
+de
+novo.
+
 ## 0.9.387 — o play nomeia a produção que o serve já recusa
 
 O
