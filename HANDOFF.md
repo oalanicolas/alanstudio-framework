@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.444: o `feel` nomeia o autor que a receita já recusa. Recibo no disco não é sessão. Sem chave `autor`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**HEAD anterior + confirmação pendente**
+**Suítes confirmadas no HEAD (0.9.444):** `python3 -m unittest discover -s tests` → 440 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
