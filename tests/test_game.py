@@ -892,6 +892,40 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("certifique capacidade", game.play_scope(self.project))
         self.assertNotIn("certifique capacidade", game.context_scope())
 
+    def test_guide_names_the_onboarding_the_quality_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.quality_refuses_mural_onboarding(guide),
+            "o roteiro já recusa que o mural seja onboarding",
+        )
+        self.assertEqual(game.play_step_onboarding_source(), "references/quality.md")
+        report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
+        step = report["steps"][1]
+        self.assertIn(
+            "mural seja onboarding",
+            step["scope"],
+            "o passo de jogar copiava o verbo e calava a recusa",
+        )
+        self.assertIn("(`onboarding`)", step["scope"])
+        self.assertNotIn("onboarding", step)
+        self.assertFalse(game.quality_refuses_mural_onboarding(""))
+        with mock.patch.object(game, "play_step_onboarding_source", return_value=None):
+            silent = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
+        self.assertNotIn("mural seja onboarding", silent["steps"][1]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o onboarding que o roteiro já recusa", recipe)
+        self.assertIn("nomeia o onboarding que o roteiro já recusa", skill)
+        self.assertIn("nomeia o onboarding que o roteiro já recusa", readme)
+        self.assertNotIn("verified", step["scope"])
+        self.assertNotIn("scope", report["steps"][0])
+        self.assertNotIn("scope", report["steps"][2])
+        self.assertNotIn("mural seja onboarding", report["scope"])
+        self.assertNotIn("mural seja onboarding", game.guide_scope("canvas-arcade"))
+        self.assertNotIn("mural seja onboarding", game.play_scope(self.project))
+        self.assertNotIn("mural seja onboarding", game.next_scope())
+
     def test_next_names_the_action_the_process_already_asks(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(

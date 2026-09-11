@@ -5801,6 +5801,41 @@ def cycle_then(project, play, starter=None):
     return then
 
 
+# O roteiro já recusa que o mural seja onboarding. Sem isto o
+# passo de jogar copiava o verbo e calava a recusa.
+# Texto no disco não é a primeira ação.
+QUALITY_ONBOARDING = re.compile(r"bloqueia o jogo não é onboarding")
+
+
+def quality_refuses_mural_onboarding(text):
+    return bool(text and QUALITY_ONBOARDING.search(text))
+
+
+def play_step_onboarding_source():
+    path = QUALITY_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if quality_refuses_mural_onboarding(text):
+        return "references/quality.md"
+    return None
+
+
+def play_step_scope():
+    scope = (
+        "Jogar no próprio dispositivo. Não executa o serve e não observa."
+    )
+    if play_step_onboarding_source():
+        scope += (
+            " O disco recusa que o mural seja onboarding (`onboarding`). "
+            "Texto no disco não é a primeira ação."
+        )
+    return scope
+
+
 def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, url=None):
     play_step = {
         "n": 2,
@@ -5808,6 +5843,7 @@ def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, ur
         "command": play_cmd,
         "kind": nxt["proposal"]["basis"] if nxt else "playable.unplayed",
         "executed": False,
+        "scope": play_step_scope(),
     }
     if url:
         play_step["url"] = url

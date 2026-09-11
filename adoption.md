@@ -3,6 +3,66 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.423 — o guide nomeia o onboarding que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+mural
+que
+bloqueia
+o
+jogo
+não
+é
+onboarding.
+O
+passo
+de
+jogar
+copiava
+o
+verbo
+e
+calava
+a
+recusa.
+Agora
+o
+`guide`
+nomeia
+o
+onboarding.
+Texto
+no
+disco
+não
+é
+a
+primeira
+ação.
+Sem
+chave
+`onboarding`.
+Nomear
+não
+observa.
+
+O que 0.9.423 não afirma:
+texto
+no
+disco
+não
+é
+a
+primeira
+ação
+nem
+tutorial
+jogado.
+
 ## 0.9.422 — o context nomeia a capacidade que o índice já recusa
 
 O
