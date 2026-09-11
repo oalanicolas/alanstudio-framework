@@ -195,7 +195,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `copy.json`; a frase não muda o verbo — e a porta, se o manifesto a declara; `then` nomeia par, look, chuva e voz quando o projeto — ou o
    starter, se o destino ainda não existe — as declara; se declara
    `session`, `then` a aponta e o prompt a nomeia; se o disco tem last-run com seed,
-   `then` aponta a partida (número, chuva e look quando o candidato os nomeia) e o convite; nomear o endereço não observa; `executed` fica `false`. `runtime` lê o `node` do PATH se o play pede npm ou node. O autor do
+   `then` aponta a partida (número, chuva e look quando o candidato os nomeia) e o convite; nomear o endereço não observa; se o serve tenta abrir o navegador, o prompt nomeia a tentativa; sem o marcador, pede Abrir; nomear não abre; `executed` fica `false`. `runtime` lê o `node` do PATH se o play pede npm ou node. O autor do
    `note` é sugestão do git ou do ambiente, não quem jogou. Nomear o
    ofício não pinta. `next` fica em `then.lost`.
    **`start [<projeto>]`** cria se o destino estiver livre e devolve
@@ -215,6 +215,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `runtime` lê o `node` do PATH se o play pede npm ou node; sem 20+ o prompt
    avisa. `session` aponta a partida simulada se o manifesto a declara; o
    prompt a nomeia. Não executa e não observa. Nomear não serve.
+   Se o serve tenta abrir o navegador, o prompt nomeia a tentativa.
+   Sem o marcador, pede Abrir. Nomear não abre.
    **`play [<projeto>]`** (também `open`) aponta o comando que abre o
    jogo. Não executa, não cria e não serve. Sem caminho, usa o
    diretório atual se ele for um jogo fora desta árvore; se o
@@ -229,6 +231,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    play pede npm ou node; sem 20+ o prompt avisa. `session` aponta a
    partida simulada se o manifesto a declara; o prompt a nomeia. Não
    executa e não observa. Nomear não serve.
+   Se o serve tenta abrir o navegador, o prompt nomeia a tentativa.
+   Sem o marcador, pede Abrir. Nomear não abre.
    O `prompt` também sai em stderr;
    o JSON fica no stdout.
    **`roles <projeto>`** lê os papéis de áudio que o código declara, o

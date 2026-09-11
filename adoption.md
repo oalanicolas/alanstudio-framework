@@ -3,6 +3,49 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.342 — o prompt nomeia o serve que tenta abrir o navegador
+
+O
+README
+do
+starter
+já
+recusava
+o
+passo
+manual.
+O
+harness
+pedia
+Abrir
+sempre.
+Agora
+no
+terminal
+o
+prompt
+nomeia
+a
+tentativa.
+Sem
+o
+marcador
+pede
+Abrir.
+Nomear
+não
+abre.
+Sem
+`then.browser`.
+
+O que 0.9.342 não afirma:
+o
+harness
+não
+abre
+o
+navegador.
+
 ## 0.9.341 — o roles nomeia o duck que SOUNDS já declara
 
 O

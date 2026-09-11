@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.341: o `roles` nomeia o `duckMs` que `SOUNDS` já declara. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.342: o prompt nomeia o serve que tenta abrir o navegador. Não executa. Sem `then.browser`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.341):** `python3 -m unittest discover -s tests` → 337.
+**Testes no HEAD (0.9.342):** `python3 -m unittest discover -s tests` → 338.
 `cd assets/starters/canvas-arcade && npm test` → 504.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.341)
+## O que o HEAD já entrega (0.9.91–0.9.342)
 
 | Ver | Salto |
 | --- | --- |
@@ -285,6 +285,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.339 | O `start` não nomeia `npm install` quando o `package.json` não tem dependências. O starter já recusava o passo; o harness pedia install sem ter o que instalar. Com dependências e sem `node_modules`, a chave permanece. `play` continua o serve. O `feel` não ganha a chave. Nomear não instala. |
 | 0.9.340 | O `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem. O export já copia o jogo; identidade e serve sozinhos diziam completa. Nomear não devolve o jogo. Não promove `elsewhere`. |
 | 0.9.341 | O `roles` nomeia o `duckMs` que `SOUNDS` já declara. O comando já lia o papel; o aviso que abaixa a cama calava. Sem duck a chave some. Nomear não é mix ouvida. Não promove `heard`. |
+| 0.9.342 | O prompt nomeia o serve que tenta abrir o navegador. O README do starter já recusava o passo manual; o harness pedia Abrir sempre. Sem o marcador, pede Abrir. Nomear não abre. Sem `then.browser`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -1171,6 +1172,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `origins` que cala a mídia que o recibo lista e o disco perdeu.
 **Não** mais um `ship` que diz completa a dist sem o `src/` que o projeto já tem.
 **Não** mais um `roles` que lê `SOUNDS` e cala o `duckMs`.
+**Não** mais um prompt que pede Abrir quando o serve já tenta abrir o navegador.
 
 Candidatos, do que ainda dói:
 
@@ -1189,6 +1191,10 @@ Candidatos, do que ainda dói:
    `then.seed` aponta o endereço da partida (número, chuva e
    look quando o candidato os nomeia) e o convite junta os
    mesmos eixos.    Nomear `url` não serve. Não auto-servir.
+   Se o serve tenta abrir o navegador, o
+   prompt nomeia a tentativa. Sem o
+   marcador, pede Abrir. Nomear não
+   abre. Sem `then.browser`.
    `runtime` lê o Node do PATH; sem 20+ o prompt avisa.
    O prompt nomeia `Sessão:` se o manifesto declara `session`.
    Sem destino, o `guide` também nomeia `Verbo:` / `Porta:` se o
@@ -2434,6 +2440,19 @@ Candidatos, do que ainda dói:
   cala
   o
   `duckMs`
+  e um
+  prompt
+  que
+  pede
+  Abrir
+  quando
+  o
+  serve
+  já
+  tenta
+  abrir
+  o
+  navegador
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2458,16 +2477,13 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`roles` nomeia o `duckMs` que
-`SOUNDS` já declara. O comando
-já lia o papel; o aviso que
-abaixa a cama calava. Sem duck
-a chave some. Nomear não é mix
-ouvida. Não promove `heard`.
-Não pôr o duck no `feel`.
-Não nomear `DUCK_BUSES`,
-`DUCK_LEVEL` nem `MIX_HEADROOM`
-no mesmo salto.
+prompt nomeia o serve que tenta
+abrir o navegador. O README do
+starter já recusava o passo
+manual; o harness pedia Abrir
+sempre. Sem o marcador, pede
+Abrir. Nomear não abre. Sem
+`then.browser`. Não auto-servir.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2544,6 +2560,7 @@ A família origins que cala a mídia que o recibo lista e o disco perdeu está s
 A família start que nomeia npm install sem ter o que instalar está saturada.
 A família ship que diz completa a dist sem o src do projeto está saturada.
 A família roles que lê SOUNDS e cala o duckMs está saturada.
+A família prompt que pede Abrir quando o serve já tenta abrir está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -2555,4 +2572,6 @@ Menção em CREDITS.md de caminho ausente continua calada — irmão de 334 e 33
 Não exigir `data/` nem `public/` na árvore do ship — irmão de 340.
 Não pôr o duck no `feel` — irmão de 341.
 Não nomear `DUCK_BUSES`, `DUCK_LEVEL` nem `MIX_HEADROOM` no `roles` — irmão de 341.
-Próxima ronda: feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel; ferramenta de outsider que não seja tally na faixa; superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer; ou atrito ideia→jogo que não seja 332/337/339.
+Não adicionar `then.browser` — irmão de 342.
+Não auto-servir nem abrir o navegador no harness — irmão de 342.
+Próxima ronda: feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel; ferramenta de outsider que não seja tally na faixa; superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer; ou atrito ideia→jogo que não seja 332/337/339/342.

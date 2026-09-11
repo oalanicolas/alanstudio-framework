@@ -3752,6 +3752,51 @@ def serve_url(scripts=None, play=None, env=None):
     return f"http://localhost:{port}/"
 
 
+# O prompt pedia Abrir sempre. O serve do starter já
+# tenta no terminal. Pedir de novo é cargo-cult.
+# Nomear não abre e não serve.
+SERVE_OPEN_FILES = ("tools/serve.mjs", "tools/serve.js")
+SERVE_OPEN_MARK = ("shouldOpenBrowser", "xdg-open")
+
+
+def serve_opens_browser(project):
+    root = Path(project)
+    if not root.is_dir() or root.is_symlink():
+        return False
+    for relative in SERVE_OPEN_FILES:
+        path = root / relative
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 64000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if any(mark in text for mark in SERVE_OPEN_MARK):
+            return True
+    return False
+
+
+def cycle_opens_browser(project=None, starter=None):
+    if project is not None:
+        return serve_opens_browser(project)
+    if nonempty(starter):
+        return serve_opens_browser(STARTERS_ROOT / starter)
+    return False
+
+
+def browser_surface(url, opens=False):
+    if not url:
+        return ""
+    if opens:
+        return (
+            f"No terminal o serve tenta abrir o navegador. "
+            f"Se não abrir, o endereço é {url} — file:// não carrega. "
+        )
+    return f"Abra {url} no navegador — file:// não carrega. "
+
+
 def note_author(project=None):
     # Sugestão para o comando colar. Não é quem jogou e não fecha o achado.
     targets = []
@@ -3950,7 +3995,7 @@ def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, ur
     ]
 
 
-def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy=None):
+def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy=None, opens=False):
     hole = runtime_line(runtime)
     simulated = session_line(then)
     if not play:
@@ -3984,7 +4029,7 @@ def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy
         return hole + " ".join(parts)
     how = cycle_line(cycle, fantasy)
     extra = " ".join(part for part in (seed_line, invite_line) if part)
-    surface = f"Abra {url} no navegador — file:// não carrega. " if url else ""
+    surface = browser_surface(url, opens)
     modules = (
         f"As dependências ainda não estão no disco. Cole e rode: {then['install']}. "
         if then.get("install")
@@ -4003,12 +4048,12 @@ def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy
     )
 
 
-def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None, runtime=None, fantasy=None):
+def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None, runtime=None, fantasy=None, opens=False):
     if exists:
-        return cycle_prompt(play, then, cycle, noted, url, runtime, fantasy)
+        return cycle_prompt(play, then, cycle, noted, url, runtime, fantasy, opens)
     hole = runtime_line(runtime)
     simulated = session_line(then)
-    surface = f"Abra {url} no navegador — file:// não carrega. " if url else ""
+    surface = browser_surface(url, opens)
     how = cycle_line(cycle, fantasy)
     return (
         hole
@@ -4323,7 +4368,7 @@ def agents_template_text(project):
     )
 
 
-def agents_memory_text(destination, play=None, starter=None, documents=False, idea=None, url=None, cycle=None, fantasy=None):
+def agents_memory_text(destination, play=None, starter=None, documents=False, idea=None, url=None, cycle=None, fantasy=None, opens=False):
     # O `start` não planta brief/GDD. O molde antigo listava esses
     # caminhos como canônicos — na pasta do start isso mentia. Memória
     # do agente não é rascunho do ciclo.
@@ -4347,6 +4392,8 @@ def agents_memory_text(destination, play=None, starter=None, documents=False, id
         lines.append(f"- Rodar o jogo: `{play}`.")
         if nonempty(url):
             lines.append(f"- Superfície: {url}. Nomear não serve.")
+            if opens:
+                lines.append("- No terminal o serve tenta abrir o navegador. Nomear não abre.")
     else:
         lines.append("- Rodar o jogo: o manifesto do projeto declara o comando.")
     lines.append(f"- De novo, sem executar: `{harness_command('play', destination)}`.")
@@ -4391,12 +4438,12 @@ def agents_memory_text(destination, play=None, starter=None, documents=False, id
     return "\n".join(lines)
 
 
-def write_agents_memory(destination, play=None, starter=None, documents=False, idea=None, url=None, cycle=None, fantasy=None):
+def write_agents_memory(destination, play=None, starter=None, documents=False, idea=None, url=None, cycle=None, fantasy=None, opens=False):
     path = Path(destination) / "AGENTS.md"
     if path.exists() or path.is_symlink():
         return None
     path.write_text(
-        agents_memory_text(destination, play, starter, documents, idea, url, cycle, fantasy),
+        agents_memory_text(destination, play, starter, documents, idea, url, cycle, fantasy, opens),
         encoding="utf-8",
     )
     return "AGENTS.md"
@@ -4526,11 +4573,12 @@ def init(destination, starter, title=None, documents=True, idea=None):
     url = serve_url(scripts)
     cycle = starter_cycle(starter)
     fantasy = resolve_fantasy(idea, destination)
+    opens = cycle_opens_browser(destination, starter)
     # O start não planta brief. Sem isto a próxima sessão
     # reaprendia o serve e o template agents listava GDD
     # que não existia. Memória do agente não é rascunho.
     memory = write_agents_memory(
-        destination, play, starter, documents, idea, url, cycle, fantasy,
+        destination, play, starter, documents, idea, url, cycle, fantasy, opens,
     )
     if memory and documents:
         drafts.append(memory)
@@ -4548,7 +4596,7 @@ def init(destination, starter, title=None, documents=True, idea=None):
     # plantava e calava — quem segue o caminho com
     # rascunhos tinha de achar o play depois. Nomear
     # não serve e não observa.
-    prompt = cycle_prompt(play, then, cycle, False, url, runtime, fantasy)
+    prompt = cycle_prompt(play, then, cycle, False, url, runtime, fantasy, opens)
     return {
         "schema_version": 1,
         "project": str(destination),
@@ -4645,14 +4693,19 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "noted": noted,
         "named": named,
         "suggest": str(suggested_start_target(idea, cwd=cwd)) if named else None,
-        "prompt": cycle_prompt(play, then, cycle, noted, url, runtime, fantasy),
+        "prompt": cycle_prompt(
+            play, then, cycle, noted, url, runtime, fantasy,
+            cycle_opens_browser(destination, chosen),
+        ),
         "executed": False,
         "scope": (
             "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
             "aponta o comando que abre o jogo. `open` é o play — o comando de "
             "agora, depois do start. `play` continua o mesmo valor, para quem "
             "já lia essa chave. `url` nomeia a superfície pedida; nomear não "
-            "serve, não abre e não observa. O banner do serve continua a "
+            "serve, não abre e não observa. Se o serve tenta abrir o "
+            "navegador, o prompt nomeia a tentativa. Sem o marcador, pede "
+            "Abrir. Nomear não abre. O banner do serve continua a "
             "porta depois do listen. `steps` é o mesmo mapa de três passos do "
             "guide, com o passo 1 feito. Sem caminho, `--idea` nomeia "
             "a pasta — ao lado do framework se o start corre de dentro desta "
@@ -4722,7 +4775,10 @@ def play_cycle(destination=None, starter=None):
         "then": then,
         "cycle": cycle,
         "fantasy": fantasy,
-        "prompt": cycle_prompt(play, then, cycle, noted, url, runtime, fantasy),
+        "prompt": cycle_prompt(
+            play, then, cycle, noted, url, runtime, fantasy,
+            cycle_opens_browser(dest, chosen),
+        ),
         "steps": steps,
         "noted": noted,
         "executed": False,
@@ -4731,6 +4787,8 @@ def play_cycle(destination=None, starter=None):
             "executa, não cria e não joga. Sem caminho, o único jogo do "
             "laboratório basta; dois pedem o caminho. `open` é o play. "
             "`url` nomeia localhost e a porta pedida; nomear não serve. "
+            "Se o serve tenta abrir o navegador, o prompt nomeia a "
+            "tentativa. Sem o marcador, pede Abrir. Nomear não abre. "
             "Com tela, o avanço abre a porta. Depois "
             "de uma partida, a página grava o recibo se você escrever; o "
             "próximo comando do harness continua `note`, não `next`. "
@@ -4962,12 +5020,17 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         "url": url,
         "session": then.get("session"),
         "runtime": runtime,
-        "prompt": guide_prompt(exists, start_command, play_cmd, then, cycle, noted, url, runtime, fantasy),
+        "prompt": guide_prompt(
+            exists, start_command, play_cmd, then, cycle, noted, url, runtime, fantasy,
+            cycle_opens_browser(dest if exists else None, chosen),
+        ),
         "steps": steps,
         "scope": (
             "Três passos ideia→ciclo: start, jogar, note. `open` é o comando "
             "de agora — o start se o destino ainda não existe, o play se "
             "já existe. `url` nomeia a superfície pedida; nomear não serve. "
+            "Se o serve tenta abrir o navegador, o prompt nomeia a "
+            "tentativa. Sem o marcador, pede Abrir. Nomear não abre. "
             "`prompt` o nomeia para colar e também sai em "
             "stderr; o JSON fica no stdout. Se o starter declara "
             "o verbo e as teclas, o prompt e o passo 2 as nomeiam — inclusive a porta. Sem destino, a frase "
