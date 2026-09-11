@@ -5085,7 +5085,43 @@ def playtest_tally_scope():
             " O disco recusa que cinco playtesters sejam critério (`cinco`). "
             "Conta no disco não é sessão observada."
         )
+    named = playtest_tally_four_scope()
+    if named:
+        scope += named
     return scope
+
+
+# A receita já recusa que o número na faixa
+# preencha os quatro. Sem isto a conta
+# copiava os verbos e calava a recusa.
+# Conta no disco não é achado.
+FEEL_FOUR = re.compile(r"Número na faixa não\s+preenche os quatro")
+
+
+def recipe_refuses_band_as_four(text):
+    return bool(text and FEEL_FOUR.search(text))
+
+
+def playtest_tally_four_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_band_as_four(text):
+        return "recipes/feel.md"
+    return None
+
+
+def playtest_tally_four_scope():
+    if not playtest_tally_four_source():
+        return None
+    return (
+        " O disco recusa que o número na faixa preencha os quatro "
+        "(`quatro`). Conta no disco não é achado."
+    )
 
 
 def last_run_speed(project):

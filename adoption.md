@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.543 — o candidate_tally nomeia o quatro que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+número
+na
+faixa
+não
+preenche
+os
+quatro.
+A
+conta
+copiava
+os
+verbos
+e
+calava
+a
+recusa.
+Agora
+o
+`candidate_tally`
+nomeia
+o
+quatro.
+Conta
+no
+disco
+não
+é
+achado.
+Sem
+chave
+`quatro`.
+Nomear
+não
+observa.
+
+O que 0.9.543 não afirma:
+número
+na
+faixa
+não
+é
+problema,
+evidência,
+hipótese
+e
+medição.
+
 ## 0.9.542 — o art nomeia o enquadramento que a receita já recusa
 
 A

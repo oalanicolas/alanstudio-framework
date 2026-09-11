@@ -839,7 +839,7 @@ grava — e, no convite, mostra seed, pontos, eixos, a curva que o last-run já 
 os quatro nomes para copiar ou gravar. Se o serve prende o bind, o convite nomeia o bind que o serve já prende. Bind no disco não é alguém de fora. Sem chave `HOST`. Se a receita recusa que o endereço seja duas sessões, o convite nomeia as sessões que a receita já recusa. Convite no disco não é alguém de fora. Sem chave `sessões`. Se a receita recusa que rolar seja alguém de fora, o convite nomeia o rolar que a receita já recusa. Página no disco não é a sessão. Sem chave `rolar`.
 Simulada não é alguém de fora. Depois do fim a página
 rola até o painel. Rolar não é alguém de fora. Se a receita recusa que rolar seja alguém de fora, o convite nomeia o rolar que a receita já recusa. Página no disco não é a sessão. Sem chave `rolar`. Número na faixa não
-preenche os quatro. O achado copiado e gravado leva a faixa
+preenche os quatro. Se a receita recusa que o número na faixa preencha os quatro, o `candidate_tally` nomeia o quatro que a receita já recusa. Conta no disco não é achado. Sem chave `quatro`. O achado copiado e gravado leva a faixa
 do last-run. Sem tally nem relógio. Markdown no disco não é
 alguém de fora. Copiar não grava. O Copiar nomeia o
 destino. Gravar já virava Achado no disco; o botão calava.
@@ -877,7 +877,7 @@ e a paleta. O convite usa os mesmos eixos. O `next` aponta
 Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.
 Traço no disco não é alguém de fora. Sem chave `session`.
 Se o `tools/serve.*` grava o recado, o `playtest` nomeia o recado que o serve já grava. Texto no disco não é alguém de fora. Sem chave `note`.
-Nenhum dos dois é sessão observada. Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Se a receita recusa que o aperto seja curva observada, o `candidate_curve` nomeia o aperto que a receita já recusa. Número no disco não é sessão. Sem chave `aperto`. Se o candidato
+Nenhum dos dois é sessão observada. Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Se a receita recusa que o número na faixa preencha os quatro, o `candidate_tally` nomeia o quatro que a receita já recusa. Conta no disco não é achado. Sem chave `quatro`. Se a receita recusa que o aperto seja curva observada, o `candidate_curve` nomeia o aperto que a receita já recusa. Número no disco não é sessão. Sem chave `aperto`. Se o candidato
 tiver curva, o `note` a anexa. Número no disco não é causa. A tabela de
 ofício que *descreve* o formato não conta como
 achado. O harness não assiste à sessão e não conta jogadores.

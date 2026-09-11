@@ -389,7 +389,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    some). A faixa não leva a conta nem o relógio. Simulada não é
    alguém de fora. Oferece os quatro nomes para copiar ou gravar.
    Depois do fim a página rola até o painel. Rolar não é alguém de fora. Se a receita recusa que rolar seja alguém de fora, o convite nomeia o rolar que a receita já recusa. Página no disco não é a sessão. Sem chave `rolar`.
-   Número na faixa não preenche os quatro. O achado copiado e
+   Número na faixa não preenche os quatro. Se a receita recusa que o número na faixa preencha os quatro, o `candidate_tally` nomeia o quatro que a receita já recusa. Conta no disco não é achado. Sem chave `quatro`. O achado copiado e
    gravado leva a faixa do last-run (seed, pontos, eixos e se
    foi simulado). Sem tally nem relógio. Markdown no disco não
    é alguém de fora. Copiar não grava. O
@@ -411,7 +411,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `candidate_look`; se nomeia a curva, relata `candidate_curve`;
    se nomeia a origem, relata `candidate_policy` (`played` ou
    `nearest-orb`); se nomeia a conta, relata `candidate_tally`
-   (pontos, coletas, quedas, erros e guardas). Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Se a receita recusa que o aperto seja curva observada, o `candidate_curve` nomeia o aperto que a receita já recusa. Número no disco não é sessão. Sem chave `aperto`. A simulação não
+   (pontos, coletas, quedas, erros e guardas). Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Se a receita recusa que o número na faixa preencha os quatro, o `candidate_tally` nomeia o quatro que a receita já recusa. Conta no disco não é achado. Sem chave `quatro`. Se a receita recusa que o aperto seja curva observada, o `candidate_curve` nomeia o aperto que a receita já recusa. Número no disco não é sessão. Sem chave `aperto`. A simulação não
    sobrescreve `played` sem `--force`.
    O convite junta mesa e paleta. Nenhum dos
    dois é sessão observada.    Recibo sem forma entra no

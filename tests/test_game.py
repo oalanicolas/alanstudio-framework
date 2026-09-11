@@ -12057,6 +12057,63 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         invite = game.invite_playtest(destination)
         self.assertNotIn("cinco playtesters sejam critério", invite["scope"])
 
+    def test_playtest_tally_names_the_four_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_band_as_four(recipe),
+            "a receita já recusa que o número na faixa preencha os quatro",
+        )
+        self.assertEqual(game.playtest_tally_four_source(), "recipes/feel.md")
+        destination = self.root / "com-quatro"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {
+                "seed": 8,
+                "score": 12,
+                "collected": 4,
+                "missed": 2,
+                "hits": 1,
+                "banks": 3,
+            },
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(destination)
+        self.assertIsNotNone(report["candidate_tally"], "o playtest já lista a conta")
+        item = report["candidate_tally"]
+        self.assertIn(
+            "número na faixa preencha os quatro",
+            item["scope"],
+            "a conta copiava os verbos e calava a recusa",
+        )
+        self.assertIn("(`quatro`)", item["scope"])
+        self.assertNotIn("quatro", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_band_as_four(""))
+        with mock.patch.object(game, "playtest_tally_four_source", return_value=None):
+            silent = game.playtest_reading(destination)
+        self.assertNotIn("número na faixa preencha os quatro", silent["candidate_tally"]["scope"])
+        raw = game.last_run_tally(destination)
+        self.assertNotIn("scope", raw)
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o quatro que a receita já recusa", recipe)
+        self.assertIn("nomeia o quatro que a receita já recusa", skill)
+        self.assertIn("nomeia o quatro que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("número na faixa preencha os quatro", report["scope"])
+        self.assertNotIn("número na faixa preencha os quatro", game.next_scope())
+        invite = game.invite_playtest(destination)
+        self.assertNotIn("número na faixa preencha os quatro", invite["scope"])
+        self.assertNotIn("número na faixa preencha os quatro", game.feel_reading(destination)["scope"])
+        note = game.note_observation(destination, "autora", "impressão")
+        self.assertNotIn("número na faixa preencha os quatro", note.get("scope") or "")
+
     def test_invite_names_the_simulated_last_run_without_claiming_an_outsider(self):
         invite = (
             Path(game.FRAMEWORK)
