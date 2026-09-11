@@ -2983,6 +2983,46 @@ def access_remap_option_scope():
     return scope
 
 
+# A receita já recusa que o movimento reduzido apague a causa. Sem isto a
+# opção reduced_motion copiava a chave e calava a recusa.
+# Causa no disco não é sessão.
+A11Y_REDUCED_CAUSE = re.compile(r"sem remover o\s+feedback de causa")
+
+
+def recipe_refuses_reduced_motion_erasing_cause(text):
+    return bool(text and A11Y_REDUCED_CAUSE.search(text))
+
+
+def access_reduced_motion_cause_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_reduced_motion_erasing_cause(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_reduced_motion_cause_scope():
+    if not access_reduced_motion_cause_source():
+        return None
+    return (
+        "O disco recusa que o movimento reduzido apague a causa "
+        "(`causa`). Causa no disco não é sessão."
+    )
+
+
+def access_reduced_motion_option_scope():
+    scope = access_option_scope()
+    named = access_reduced_motion_cause_scope()
+    if named:
+        scope += " " + named
+    return scope
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -3041,6 +3081,7 @@ def access_reading(project):
                     access_captions_option_scope() if key == "captions"
                     else access_haptics_option_scope() if key == "haptics"
                     else access_remap_option_scope() if key == "remap"
+                    else access_reduced_motion_option_scope() if key == "reduced_motion"
                     else option_scope
                 ),
             }

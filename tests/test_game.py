@@ -2452,6 +2452,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("botão seja sessão", game.feel_reading(starter)["scope"])
         self.assertNotIn("botão seja sessão", game.roles_reading(starter)["scope"])
 
+    def test_access_reduced_motion_names_the_cause_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_reduced_motion_erasing_cause(recipe),
+            "a receita já recusa que o movimento reduzido apague a causa",
+        )
+        self.assertEqual(game.access_reduced_motion_cause_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = next(option for option in report["options"] if option["key"] == "reduced_motion")
+        self.assertIn(
+            "movimento reduzido apague a causa",
+            item["scope"],
+            "a opção reduced_motion copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`causa`)", item["scope"])
+        self.assertNotIn("causa", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_reduced_motion_erasing_cause(""))
+        self.assertNotIn("movimento reduzido apague a causa", report["scope"])
+        self.assertNotIn("movimento reduzido apague a causa", report.get("next") or "")
+        for option in report["options"]:
+            if option["key"] == "reduced_motion":
+                continue
+            self.assertNotIn("movimento reduzido apague a causa", option["scope"])
+        with mock.patch.object(game, "access_reduced_motion_cause_source", return_value=None):
+            silent = game.access_reading(starter)
+        silent_item = next(option for option in silent["options"] if option["key"] == "reduced_motion")
+        self.assertNotIn("movimento reduzido apague a causa", silent_item["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a causa que a receita já recusa", recipe)
+        self.assertIn("nomeia a causa que a receita já recusa", skill)
+        self.assertIn("nomeia a causa que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("movimento reduzido apague a causa", game.next_scope())
+        self.assertNotIn("movimento reduzido apague a causa", game.feel_reading(starter)["scope"])
+        self.assertNotIn("movimento reduzido apague a causa", game.roles_reading(starter)["scope"])
+
     def test_commands_name_the_generic_the_menu_already_refuses(self):
         guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.514 — a opção reduced_motion do access nomeia a causa que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+reduzir
+o
+movimento
+não
+apaga
+a
+causa.
+A
+opção
+`reduced_motion`
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+a
+opção
+`reduced_motion`
+nomeia
+a
+causa.
+Causa
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`causa`.
+Nomear
+não
+observa.
+
+O que 0.9.514 não afirma:
+o
+movimento
+reduzido
+não
+é
+sessão
+observada
+com
+o
+modo
+ativo.
+
 ## 0.9.513 — a opção remap do access nomeia o botão que a receita já recusa
 
 A
