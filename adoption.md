@@ -3,6 +3,68 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.465 — o sfx info do stem nomeia o lixo que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+arquivo
+sem
+papel
+e
+sem
+consumidor
+não
+é
+áudio
+do
+jogo.
+A
+ficha
+copiava
+licença
+e
+bytes
+e
+calava
+a
+recusa.
+Agora
+o
+`sfx info`
+do
+stem
+nomeia
+o
+lixo.
+Arquivo
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`lixo`.
+Nomear
+não
+ouve.
+
+O que 0.9.465 não afirma:
+arquivo
+no
+disco
+não
+é
+papel
+no
+mixer
+nem
+mix
+ouvida.
+
 ## 0.9.464 — o sfx import nomeia a improvisação que a receita já recusa
 
 A

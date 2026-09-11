@@ -84,7 +84,7 @@ as que o jogo tem:
 - **Stinger / one-shot** — marco (descoberta, morte, checkpoint).
 - **Silêncio** — ausência deliberada após impacto, em menu, na morte.
 
-Um arquivo sem papel e sem consumidor não é áudio do jogo; é lixo no disco.
+Um arquivo sem papel e sem consumidor não é áudio do jogo; é lixo no disco. Se a receita recusa que arquivo sem papel seja áudio do jogo, o `sfx info` do stem nomeia o lixo que a receita já recusa. Arquivo no disco não é mix. Sem chave `lixo`.
 Token de áudio no Art Bible precisa apontar o consumidor real (bus, evento,
 cena), como qualquer outro token.
 

@@ -599,7 +599,7 @@ perdeu — não despeja errno. Não ouve. `sfx info` lê a ficha
 do acervo ou a chave do stem do starter. O recibo que lista um
 stem e o disco perdeu não é id desconhecido. Se o inspect já mediu
 o pico, o `sfx info` nomeia o pico que o inspect já mede. Pico no
-recibo não é mix ouvida. Arquivo no disco não é
+recibo não é mix ouvida. Se a receita recusa que arquivo sem papel seja áudio do jogo, o `sfx info` do stem nomeia o lixo que a receita já recusa. Arquivo no disco não é mix. Sem chave `lixo`. Arquivo no disco não é
 mix ouvido. `sfx export` de um id do acervo copia
 bytes, `manifest.json` e `CREDITS.txt` para uma pasta fora do acervo. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`.
 De uma chave do starter, copia o WAV, o `.credits.txt` e anexa
