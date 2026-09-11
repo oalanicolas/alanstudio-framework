@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.379: o `feel` nomeia o land que o dash já emite. Pose no disco não é peso percebido. Sem chave `land`. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD anterior (0.9.378):** `python3 -m unittest discover -s tests` → 374 OK.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK. Confirmação do 0.9.379 pendente.
+**Suítes confirmadas no HEAD (0.9.379):** `python3 -m unittest discover -s tests` → 375 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
