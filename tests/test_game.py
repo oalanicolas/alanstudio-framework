@@ -5873,6 +5873,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.playtest_reading(destination)["scope"],
         )
 
+    def test_feel_names_the_universal_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_universal_constants(recipe),
+            "a receita já recusa que o valor seja constante universal",
+        )
+        self.assertEqual(game.feel_constant_universal_source(), "recipes/feel.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.feel_reading(starter)
+        self.assertTrue(report["constants"], "o feel já lista constantes neste starter")
+        item = report["constants"][0]
+        self.assertIn(
+            "valor seja constante universal",
+            item["scope"],
+            "o item copiava o número e calava a recusa",
+        )
+        self.assertIn("(`universais`)", item["scope"])
+        self.assertNotIn("universais", item)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_universal_constants(""))
+        with mock.patch.object(game, "feel_constant_universal_source", return_value=None):
+            silent = game.feel_reading(starter)
+        self.assertNotIn("valor seja constante universal", silent["constants"][0]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o universal que a receita já recusa", recipe)
+        self.assertIn("nomeia o universal que a receita já recusa", skill)
+        self.assertIn("nomeia o universal que a receita já recusa", readme)
+        self.assertNotIn("valor seja constante universal", report["scope"])
+        self.assertNotIn("valor seja constante universal", game.observation_item_scope())
+        self.assertNotIn("valor seja constante universal", game.next_scope())
+        self.assertNotIn("valor seja constante universal", game.note_step_scope())
+
     def test_feel_names_the_last_run_seed_without_claiming_it_felt(self):
         destination = self.root / "feel-com-seed"
         game.start_project(destination, "canvas-arcade")

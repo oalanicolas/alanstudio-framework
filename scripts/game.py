@@ -1997,6 +1997,42 @@ def observation_item_scope():
     return scope
 
 
+# A receita já recusa que o valor seja constante universal. Sem isto o
+# item copiava o número e calava a recusa.
+# Número no disco não é lei.
+FEEL_UNIVERSAL = re.compile(r"não\s+constantes universais")
+
+
+def recipe_refuses_universal_constants(text):
+    return bool(text and FEEL_UNIVERSAL.search(text))
+
+
+def feel_constant_universal_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_universal_constants(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_constant_scope():
+    scope = (
+        "Chave e valor da constante nomeada. Não joga e não "
+        "atribui peso percebido."
+    )
+    if feel_constant_universal_source():
+        scope += (
+            " O disco recusa que o valor seja constante universal (`universais`). "
+            "Número no disco não é lei."
+        )
+    return scope
+
+
 def feel_then(project):
     project = Path(project)
     then = {"note": note_command(project)}
@@ -2038,6 +2074,9 @@ def feel_reading(project):
     item_scope = observation_item_scope()
     for item in observations:
         item["scope"] = item_scope
+    constant_scope = feel_constant_scope()
+    for item in constants:
+        item["scope"] = constant_scope
     then = feel_then(project)
     return {
         "schema_version": 1,

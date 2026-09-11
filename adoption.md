@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.447 — o feel nomeia o universal que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+valores
+iniciais
+não
+são
+constantes
+universais.
+O
+item
+copiava
+o
+número
+e
+calava
+a
+recusa.
+Agora
+o
+`feel`
+nomeia
+o
+universal.
+Número
+no
+disco
+não
+é
+lei.
+Sem
+chave
+`universais`.
+Nomear
+não
+observa.
+
+O que 0.9.447 não afirma:
+número
+no
+disco
+não
+é
+lei
+nem
+peso
+percebido.
+
 ## 0.9.446 — o gate nomeia a dispensa que o roteiro já recusa
 
 O
