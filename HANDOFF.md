@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.348: o `access` nomeia o `:focus-visible` que a casca já declara. Outline no disco não é sessão com o teclado. Sem chave `focus`. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.348):** `python3 -m unittest discover -s tests` → a confirmar.
-`cd assets/starters/canvas-arcade && npm test` → a confirmar.
+**Testes no HEAD (0.9.348):** `python3 -m unittest discover -s tests` → 344.
+`cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
