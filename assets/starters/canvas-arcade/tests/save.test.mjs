@@ -97,6 +97,15 @@ test("valor que não é objeto também vira recuperação", () => {
   assert.equal(storage.get("chave.broken"), "42");
 });
 
+test("a outra aba nomeia a chave desta página", () => {
+  assert.equal(foreignKey({ key: "lab:settings" }, "lab", "settings"), true);
+  assert.equal(foreignKey({ key: "lab:settings.tmp" }, "lab", "settings"), false);
+  assert.equal(foreignKey({ key: "lab:progress" }, "lab", "settings"), false);
+  assert.equal(foreignKey({ key: "outro:settings" }, "lab", "settings"), false);
+  assert.equal(foreignKey({ key: "lab:settings" }, "", "settings"), false);
+  assert.equal(foreignKey({}, "lab", "settings"), false);
+});
+
 for (const key of ["progress", "settings"]) {
   test(`o jogo abre com ${key} corrompido e sem espaço para o backup`, (t) => {
     const original = "{" + "x".repeat(500);
@@ -161,15 +170,6 @@ test("backup que não persiste também impede apagar o save original", () => {
   assert.equal(read.backupSaved, false);
   assert.equal(writeJson(storage, "progress", defaultProgress()).reason, "backup_failed");
   assert.equal(storage.get("progress"), original);
-});
-
-test("a outra aba nomeia a chave desta página", () => {
-  assert.equal(foreignKey({ key: "lab:settings" }, "lab", "settings"), true);
-  assert.equal(foreignKey({ key: "lab:settings.tmp" }, "lab", "settings"), false);
-  assert.equal(foreignKey({ key: "lab:progress" }, "lab", "settings"), false);
-  assert.equal(foreignKey({ key: "outro:settings" }, "lab", "settings"), false);
-  assert.equal(foreignKey({ key: "lab:settings" }, "", "settings"), false);
-  assert.equal(foreignKey({}, "lab", "settings"), false);
 });
 
 test("a gravação verifica antes de promover e não deixa rastro temporário", () => {

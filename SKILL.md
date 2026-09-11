@@ -134,7 +134,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    nomeia o som que o catálogo lista e o disco perdeu —
    não despeja errno. Tocar nessa
    página não é mix ouvida no jogo. Arquivo no disco não é mix ouvido. Crescer o acervo é
-   `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx seed` lê
+   `sfx import ARQUIVO --metadata JSON` (ffmpeg); se a receita recusa improvisar licença, o `sfx import` nomeia a improvisação que a receita já recusa. Importar no disco não é licença. Sem chave `improvisar`. `sfx seed` lê
    `selection.json` local. `sfx info ID` lê a ficha do acervo ou a
    chave do stem do starter — o recibo que lista um stem e o
    disco perdeu não é id desconhecido; se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede.
@@ -188,7 +188,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    a média — antes de melhorar o que já está alto, procure o que está baixo
    ([barra de acabamento](references/production-bar.md)). Declare em tabela, uma linha
    por dimensão, com degrau atual, seguinte e o critério que falta; `bar <projeto>` lê
-   e diz o piso, `next` propõe subir a dimensão pelo nome. Se a prosa declara o mínimo, o `bar` nomeia o mínimo que a barra já declara. Degrau no disco não é acabamento observado. Sem chave `mínimo`. Se a barra recusa que o degrau seja prazo, o `bar` nomeia os prazos que a barra já recusa. Linha no disco não é calendário. Sem chave `prazos`. Se a barra recusa que o nome seja uma das dez, o `bar` nomeia a dimensão que a barra já recusa. Linha no disco não é acabamento. Sem chave `dimensão`. Se a barra recusa promover o degrau, o `context` nomeia a promoção que a barra já recusa. Guia no disco não é acabamento. Sem chave `promove`. Nenhum comando atribui
+   e diz o piso, `next` propõe subir a dimensão pelo nome. Se a prosa declara o mínimo, o `bar` nomeia o mínimo que a barra já declara. Degrau no disco não é acabamento observado. Sem chave `mínimo`. Se a barra recusa que o degrau seja prazo, o `bar` nomeia os prazos que a barra já recusa. Linha no disco não é calendário. Sem chave `prazos`. Se a barra recusa que o nome seja uma das dez, o `bar` nomeia a dimensão que a barra já recusa. Linha no disco não é acabamento. Sem chave `dimensão`. Se a barra recusa que duas linhas discordantes se resolvam por precedência, o `conflicts[n]` do `bar` nomeia a precedência que a barra já recusa. Linha no disco não é acabamento. Sem chave `precedência`. Se a barra recusa promover o degrau, o `context` nomeia a promoção que a barra já recusa. Guia no disco não é acabamento. Sem chave `promove`. Nenhum comando atribui
    degrau; ao declarar um, declare dispositivo, versão, cena e quem observou.
    **A barra descreve, o gate recusa.** [Os dez gates](references/gates.md) formalizam
    as linhas “Pronto para…” do ciclo: ao pedir a próxima permissão, declare uma linha
@@ -411,7 +411,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `candidate_look`; se nomeia a curva, relata `candidate_curve`;
    se nomeia a origem, relata `candidate_policy` (`played` ou
    `nearest-orb`); se nomeia a conta, relata `candidate_tally`
-   (pontos, coletas, quedas, erros e guardas). Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. A simulação não
+   (pontos, coletas, quedas, erros e guardas). Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Se a receita recusa que o aperto seja curva observada, o `candidate_curve` nomeia o aperto que a receita já recusa. Número no disco não é sessão. Sem chave `aperto`. A simulação não
    sobrescreve `played` sem `--force`.
    O convite junta mesa e paleta. Nenhum dos
    dois é sessão observada.    Recibo sem forma entra no

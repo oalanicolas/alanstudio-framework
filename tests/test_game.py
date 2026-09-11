@@ -1,6 +1,7 @@
 import copy
 import hashlib
 import importlib.util
+import inspect
 from html.parser import HTMLParser
 import json
 import os
@@ -4357,6 +4358,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(feel["source"], "docs/qa.md:5")
         self.assertEqual(report["at_floor"], ["feel"])
 
+    def test_bar_conflict_names_the_precedence_the_bar_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.bar_refuses_precedence(guide),
+            "a barra já recusa que duas linhas se resolvam por precedência",
+        )
+        self.assertEqual(game.bar_conflict_precedence_source(), "references/production-bar.md")
+        self.declare_bar({key: ("shippable", "flagship") for key in game.BAR_DIMENSIONS})
+        self.declare_bar({"feel": ("prototype", "playable")}, path="docs/qa.md")
+        report = game.bar_reading(self.project)
+        self.assertEqual([item["dimension"] for item in report["conflicts"]], ["feel"])
+        item = report["conflicts"][0]
+        self.assertEqual(item["dimension"], "feel")
+        self.assertEqual(len(item["sources"]), 2)
+        self.assertIn(
+            "duas linhas discordantes se resolvam por precedência",
+            item["scope"],
+            "o conflito copiava as fontes e calava a recusa",
+        )
+        self.assertIn("(`precedência`)", item["scope"])
+        self.assertNotIn("precedência", item)
+        self.assertFalse(report["assessed"])
+        self.assertFalse(game.bar_refuses_precedence(""))
+        raw = game.bar_declaration(self.project)
+        self.assertNotIn("scope", raw["conflicts"][0])
+        with mock.patch.object(game, "bar_conflict_precedence_source", return_value=None):
+            silent = game.bar_reading(self.project)
+        self.assertNotIn(
+            "duas linhas discordantes se resolvam por precedência",
+            silent["conflicts"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a precedência que a barra já recusa", recipe)
+        self.assertIn("nomeia a precedência que a barra já recusa", skill)
+        self.assertIn("nomeia a precedência que a barra já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", report["scope"])
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", game.bar_item_scope())
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", game.bar_problem_scope())
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", game.production_bar_scope())
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", game.next_scope())
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", game.context_scope())
+        nested = game.production_bar("feel", project=self.project)["declaration"]["conflicts"][0]
+        self.assertNotIn("scope", nested)
+
     # Os dez gates são a formalização de linhas que já existiam em prosa. Se um
     # gate perder a sua, ele passa a ser critério inventado aqui — que é
     # exatamente o que este framework não pode fazer.
@@ -5739,6 +5787,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         catalog = json.loads((self.root / "shared/sfx/catalog.json").read_text(encoding="utf-8"))
         self.assertEqual(catalog["sounds"][0]["id"], "passo-madeira-01")
         self.assertTrue((self.root / "shared/sfx" / catalog["sounds"][0]["file"]).is_file())
+
+    def test_sfx_import_names_the_improvisation_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_improvised_license(recipe),
+            "a receita já recusa improvisar licença",
+        )
+        self.assertEqual(game.sfx_catalog.import_license_source(), "recipes/audio.md")
+        fake = {
+            "sample_rate": 44100, "duration": 0.2, "channels": 1,
+            "codec": "pcm_s16le", "bits_per_sample": 16, "bit_rate": 705600,
+            "peak_dbfs": -6, "rms_dbfs": -18, "waveform": [0], "warnings": [],
+        }
+        original = game.sfx_catalog.audio.inspect_audio
+        game.sfx_catalog.audio.inspect_audio = lambda path: fake
+        self.addCleanup(lambda: setattr(game.sfx_catalog.audio, "inspect_audio", original))
+        source = self.root / "passo.wav"
+        source.write_bytes(b"RIFF" + b"\x00" * 24)
+        meta_path = self.root / "passo.json"
+        meta_path.write_text(json.dumps({
+            "id": "passo-madeira-01",
+            "title": "Passo em madeira",
+            "category": "Passos",
+            "tags": ["pé", "madeira"],
+            "style": "recorded",
+            "processing": "Corte do original; sem conversão adicional.",
+            "sources": [{
+                "title": "Original Footstep",
+                "author": "Autora",
+                "url": "https://example.com/source",
+                "license": "CC-BY-4.0",
+            }],
+        }), encoding="utf-8")
+        report = game.sfx_catalog.import_entry(source, meta_path, self.root)
+        self.assertEqual(report["added"], 1)
+        self.assertIn(
+            "improvisar licença",
+            report["scope"],
+            "o import copiava a conta e calava a recusa",
+        )
+        self.assertIn("(`improvisar`)", report["scope"])
+        self.assertNotIn("improvisar", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_improvised_license(""))
+        self.assertNotIn("improvisar licença", report["next"])
+        with mock.patch.object(game.sfx_catalog, "import_license_source", return_value=None):
+            silent = game.sfx_catalog.import_entry(source, meta_path, self.root)
+        self.assertNotIn("improvisar licença", silent["scope"])
+        self.assertNotIn("import_license_scope", inspect.getsource(game.sfx_catalog.seed_catalog))
+        self.assertNotIn("improvisar licença", game.sfx_catalog.IMPORT_NEXT)
+        feel = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a improvisação que a receita já recusa", feel)
+        self.assertIn("nomeia a improvisação que a receita já recusa", skill)
+        self.assertIn("nomeia a improvisação que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        summary = game.sfx_catalog.summarize(self.root)
+        self.assertNotIn("improvisar licença", summary.get("scope") or "")
 
     def test_sfx_import_rejects_retro_before_writing_the_catalog(self):
         source = self.root / "bleep.wav"
@@ -8918,16 +9025,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "felt": False,
         }), encoding="utf-8")
         report = game.playtest_reading(destination)
-        self.assertEqual(report["candidate_curve"], {
-            "never_banked": True,
-            "unbanked_at_end": 3,
-        })
+        curve = report["candidate_curve"]
+        self.assertTrue(curve["never_banked"])
+        self.assertEqual(curve["unbanked_at_end"], 3)
         self.assertEqual(report["candidate_seed"], 8)
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
         self.assertIn("candidate_curve", report["scope"])
         self.assertNotIn("aprovado", json.dumps(report))
         self.assertNotIn("verified", json.dumps(report))
+
+    def test_playtest_curve_names_the_squeeze_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_squeeze_as_curve(recipe),
+            "a receita já recusa que o aperto seja curva observada",
+        )
+        self.assertEqual(game.playtest_curve_squeeze_source(), "recipes/content.md")
+        destination = self.root / "com-aperto"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"seed": 8, "score": 12, "ticks": 400},
+            "curve": {"never_banked": True, "unbanked_at_end": 3},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(destination)
+        self.assertIsNotNone(report["candidate_curve"], "o playtest já lista a curva")
+        item = report["candidate_curve"]
+        self.assertIn(
+            "aperto seja curva observada",
+            item["scope"],
+            "a curva copiava never_banked e calava a recusa",
+        )
+        self.assertIn("(`aperto`)", item["scope"])
+        self.assertNotIn("aperto", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_squeeze_as_curve(""))
+        with mock.patch.object(game, "playtest_curve_squeeze_source", return_value=None):
+            silent = game.playtest_reading(destination)
+        self.assertNotIn("aperto seja curva observada", silent["candidate_curve"]["scope"])
+        raw = game.last_run_curve(destination)
+        self.assertNotIn("scope", raw)
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o aperto que a receita já recusa", feel)
+        self.assertIn("nomeia o aperto que a receita já recusa", skill)
+        self.assertIn("nomeia o aperto que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aperto seja curva observada", report["scope"])
+        self.assertNotIn("aperto seja curva observada", report["candidate_tally"]["scope"] if report.get("candidate_tally") else "")
+        self.assertNotIn("aperto seja curva observada", game.next_scope())
+        invite = game.invite_playtest(destination)
+        self.assertNotIn("aperto seja curva observada", invite["scope"])
 
     def test_playtest_names_the_tally_the_last_run_already_counts(self):
         destination = self.root / "com-conta"

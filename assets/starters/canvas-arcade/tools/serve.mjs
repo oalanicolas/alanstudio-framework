@@ -29,7 +29,7 @@ import {
 } from "../src/core/run-report.js";
 import { inviteHref, seedHref } from "../src/core/invite.js";
 
-const ROOT = await realpath(resolve(fileURLToPath(new URL("..", import.meta.url))));
+const ROOT = await realpath(fileURLToPath(new URL("..", import.meta.url)));
 
 // Abrir o navegador é cortesia do terminal, não o jogo executado.
 // Testes encanaram o stdout: sem TTY, ninguém ganha uma janela.

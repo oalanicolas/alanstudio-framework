@@ -727,10 +727,47 @@ def summarize(root=None):
     return report
 
 
+# A receita já recusa improvisar licença. Sem isto o
+# import copiava a conta e calava a recusa.
+# Importar no disco não é licença.
+AUDIO_RECIPE = Path(__file__).resolve().parents[1] / "recipes/audio.md"
+AUDIO_IMPROVISE = re.compile(r"não\s+autoriza improvisar licença")
+
+
+def recipe_refuses_improvised_license(text):
+    return bool(text and AUDIO_IMPROVISE.search(text))
+
+
+def import_license_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_improvised_license(text):
+        return "recipes/audio.md"
+    return None
+
+
+def import_license_scope():
+    scope = (
+        "Acrescenta entradas ao catálogo. "
+        "Não ouve e não concede licença."
+    )
+    if import_license_source():
+        scope += (
+            " O disco recusa improvisar licença (`improvisar`). "
+            "Importar no disco não é licença."
+        )
+    return scope
+
+
 def import_entry(file, metadata, root=None):
     prepared = audio.prepare_import(Path(file), audio.read_json(metadata), audio.import_policy(root))
     result = audio.save_imports([prepared], catalog_dir(root))
-    result.update(heard=False, next=IMPORT_NEXT)
+    result.update(heard=False, next=IMPORT_NEXT, scope=import_license_scope())
     return result
 
 

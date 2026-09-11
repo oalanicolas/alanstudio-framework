@@ -314,7 +314,7 @@ uma tabela com uma linha por dimensão: degrau atual, degrau seguinte e o crité
 que falta. É o formato que o [README do
 starter](assets/starters/canvas-arcade/README.md) já usa. O comando devolve o
 piso, quais dimensões estão nele e o degrau percebido — este último **só** quando
-as dez tiverem linha, porque dimensão não declarada não é dimensão alta. Se a prosa declara o mínimo, o `bar` nomeia o mínimo que a barra já declara. Degrau no disco não é acabamento observado. Sem chave `mínimo`. Se a barra recusa que o degrau seja prazo, o `bar` nomeia os prazos que a barra já recusa. Linha no disco não é calendário. Sem chave `prazos`. Se a barra recusa que o nome seja uma das dez, o `bar` nomeia a dimensão que a barra já recusa. Linha no disco não é acabamento. Sem chave `dimensão`.
+as dez tiverem linha, porque dimensão não declarada não é dimensão alta. Se a prosa declara o mínimo, o `bar` nomeia o mínimo que a barra já declara. Degrau no disco não é acabamento observado. Sem chave `mínimo`. Se a barra recusa que o degrau seja prazo, o `bar` nomeia os prazos que a barra já recusa. Linha no disco não é calendário. Sem chave `prazos`. Se a barra recusa que o nome seja uma das dez, o `bar` nomeia a dimensão que a barra já recusa. Linha no disco não é acabamento. Sem chave `dimensão`. Se a barra recusa que duas linhas discordantes se resolvam por precedência, o `conflicts[n]` do `bar` nomeia a precedência que a barra já recusa. Linha no disco não é acabamento. Sem chave `precedência`.
 
 Ele confere a forma da declaração, não o jogo, e relata em `problems` o que
 encontra com arquivo, linha e motivo: dimensão fora das dez (o caso típico é erro
@@ -652,6 +652,7 @@ python3 scripts/game.py sfx info passo-madeira-01 --root /caminho/do/laboratorio
 python3 scripts/game.py sfx export passo-madeira-01 --to /caminho/do/jogo/public/audio --root /caminho/do/laboratorio
 ```
 
+Se a receita recusa improvisar licença, o `sfx import` nomeia a improvisação que a receita já recusa. Importar no disco não é licença. Sem chave `improvisar`.
 `sfx import` exige ffmpeg e um JSON com id, título, categoria, estilo,
 tags, processamento e fontes (licença CC0 ou CC-BY). `sfx seed` lê
 `shared/sfx/selection.json` com `local_path` já no disco. Sem seleção,
@@ -872,7 +873,7 @@ e a paleta. O convite usa os mesmos eixos. O `next` aponta
 Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.
 Traço no disco não é alguém de fora. Sem chave `session`.
 Se o `tools/serve.*` grava o recado, o `playtest` nomeia o recado que o serve já grava. Texto no disco não é alguém de fora. Sem chave `note`.
-Nenhum dos dois é sessão observada. Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Se o candidato
+Nenhum dos dois é sessão observada. Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Se a receita recusa que o aperto seja curva observada, o `candidate_curve` nomeia o aperto que a receita já recusa. Número no disco não é sessão. Sem chave `aperto`. Se o candidato
 tiver curva, o `note` a anexa. Número no disco não é causa. A tabela de
 ofício que *descreve* o formato não conta como
 achado. O harness não assiste à sessão e não conta jogadores.
