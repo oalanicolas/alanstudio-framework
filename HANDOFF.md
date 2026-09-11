@@ -5,9 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.440: o `doctor` nomeia o publisher que a skill já recusa. Atalho no disco não é orçamento. Sem chave `publisher`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.439):** `python3 -m unittest discover -s tests` → 435 OK.
+**Suítes confirmadas no HEAD (0.9.440):** `python3 -m unittest discover -s tests` → 436 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
-Confirmação pendente no 0.9.440.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
