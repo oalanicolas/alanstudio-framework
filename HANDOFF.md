@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.459: o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** HEAD anterior (0.9.458: 454 / 509) + confirmação pendente.
+**Suítes confirmadas no HEAD (0.9.459):** `python3 -m unittest discover -s tests` → 455 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
