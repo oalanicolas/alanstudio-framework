@@ -118,7 +118,7 @@ que `init` aponta é o que serve o jogo. `open`, `url` e `prompt` nomeiam
 a mesma superfície do `start` — o `prompt` também sai em stderr. Nomear
 não serve. `verify` roda os validadores do starter onde houver Node.
 
-`next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
+`next` deriva **uma** proposta do estado no disco e ordena por dependência. Se o processo pede uma ação recomendada, o `next` nomeia a ação que o processo já pede. Proposta no disco não é autorização. Sem chave `ação`. Sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
 → segundo ciclo de par, look, chuva e voz
 → papéis de áudio vazios → feel ainda sem observação → convite para quem nunca viu o jogo → achado sem forma →

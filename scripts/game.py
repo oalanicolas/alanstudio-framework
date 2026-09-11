@@ -7020,6 +7020,45 @@ def doctor_then(ready, starters, empty):
     return {"guide": harness_command("guide", "--idea", "<fantasia>")}
 
 
+# O processo já pede uma ação recomendada. Sem isto o
+# next propunha e calava o pedido.
+# Proposta no disco não é autorização.
+NEXT_PROCESS = FRAMEWORK / "references/process.md"
+NEXT_ACTION = re.compile(r"uma ação recomendada")
+
+
+def process_asks_one_action(text):
+    return bool(text and NEXT_ACTION.search(text))
+
+
+def next_action_source():
+    path = NEXT_PROCESS
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_asks_one_action(text):
+        return "references/process.md"
+    return None
+
+
+def next_scope():
+    scope = (
+        "Proposta ordenada por dependência, derivada só do que é observável no disco. "
+        "Não é fila validada, não conhece a conversa, a direção do usuário nem o backlog, "
+        "e não concede autorização. "
+        "O agente confronta a proposta com o pedido real e decide; `alternatives` existe para ser escolhida."
+    )
+    if next_action_source():
+        scope += (
+            " O disco pede uma ação recomendada (`ação`). "
+            "Proposta no disco não é autorização."
+        )
+    return scope
+
+
 def next_step(project, focus="create", studies_root=None):
     payload = context(project, focus, studies_root=studies_root)
     foundation = payload["foundation"]
@@ -7544,11 +7583,7 @@ def next_step(project, focus="create", studies_root=None):
         "context_command": harness_command("context", project, "--focus", focus),
         "authority": "agent_resolves",
         "executed": False,
-        "scope": (
-            "Proposta ordenada por dependência, derivada só do que é observável no disco. Não é fila validada, "
-            "não conhece a conversa, a direção do usuário nem o backlog, e não concede autorização. "
-            "O agente confronta a proposta com o pedido real e decide; `alternatives` existe para ser escolhida."
-        ),
+        "scope": next_scope(),
     }
 
 

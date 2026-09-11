@@ -855,6 +855,38 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("prove o navegador", report["production_bar"]["scope"])
         self.assertNotIn("prove o navegador", report["documentation"]["scope"])
 
+    def test_next_names_the_action_the_process_already_asks(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_asks_one_action(guide),
+            "o processo já pede uma ação recomendada",
+        )
+        self.assertEqual(game.next_action_source(), "references/process.md")
+        report = game.next_step(self.project)
+        self.assertIn(
+            "ação recomendada",
+            report["scope"],
+            "o next propunha e calava o pedido",
+        )
+        self.assertIn("(`ação`)", report["scope"])
+        self.assertNotIn("ação", report)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.process_asks_one_action(""))
+        with mock.patch.object(game, "next_action_source", return_value=None):
+            silent = game.next_step(self.project)
+        self.assertNotIn("ação recomendada", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a ação que o processo já pede", recipe)
+        self.assertIn("nomeia a ação que o processo já pede", skill)
+        self.assertIn("nomeia a ação que o processo já pede", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("ação recomendada", game.continuity_scope())
+        self.assertNotIn("ação recomendada", game.context(self.project, "create")["documentation"]["scope"])
+        self.assertNotIn("ação recomendada", game.context(self.project, "create")["finish"]["scope"])
+        self.assertNotIn("ação recomendada", game.scan(self.project)["scope"])
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

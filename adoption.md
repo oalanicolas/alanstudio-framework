@@ -3,6 +3,52 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.407 — o next nomeia a ação que o processo já pede
+
+O
+processo
+já
+pedia
+uma
+ação
+recomendada.
+O
+comando
+propunha
+e
+calava
+o
+pedido.
+Agora
+o
+`next`
+nomeia
+a
+ação.
+Proposta
+no
+disco
+não
+é
+autorização.
+Sem
+chave
+`ação`.
+Nomear
+não
+executa.
+
+O que 0.9.407 não afirma:
+proposta
+no
+disco
+não
+é
+autorização
+nem
+fila
+validada.
+
 ## 0.9.406 — o context nomeia o navegador que o pacote já recusa provar
 
 O
