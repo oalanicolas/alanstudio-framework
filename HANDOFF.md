@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.352: o `content` nomeia o par que `listMoods` já lista. Nome no disco não é volume. Sem chave `moods`. Não promove `enough`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.352):** `python3 -m unittest discover -s tests` → 348.
+**Suítes confirmadas no HEAD (0.9.352):** `python3 -m unittest discover -s tests` → 348.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
