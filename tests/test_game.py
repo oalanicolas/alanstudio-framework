@@ -3763,6 +3763,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", access)
 
+    def test_access_names_the_focus_the_page_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        page = (starter / "index.html").read_text(encoding="utf-8")
+        self.assertTrue(game.page_names_focus(page), "a casca já declara :focus-visible")
+        self.assertEqual(game.focus_visible_source(starter), "index.html")
+        report = game.access_reading(starter)
+        self.assertIn(":focus-visible", report["scope"], "o access calava o foco que a página já declara")
+        self.assertIn("foco visível", report["scope"].casefold())
+        self.assertFalse(report["verified"])
+        self.assertNotIn("focus", report)
+        self.assertNotIn("focus_visible", report)
+        self.assertNotIn("focus_visible", [item["key"] for item in report["options"]])
+        empty = game.access_reading(self.project)
+        self.assertFalse(game.page_names_focus(""))
+        self.assertIsNone(game.focus_visible_source(self.project))
+        self.assertNotIn(":focus-visible", empty["scope"])
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn(":focus-visible", recipe)
+        self.assertIn(":focus-visible", access)
+        self.assertIn(":focus-visible", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", access)
+
     def test_audio_recipe_names_the_session_clock_the_bed_already_follows(self):
         recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
         access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")

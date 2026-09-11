@@ -284,8 +284,10 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    (`persistLine`, `title_volatile`, `title_unsaved`) ou preferências
    ilegíveis (`settings_recovered`, `settings.broken`). A receita
    de persistência e alcance ensina o canvas da porta e do fim; a
-   pausa não. Na porta e no fim o canvas nomeia a lacuna do som
-   que o painel já mostra. Texto no disco não é mix ouvido.
+   pausa não.    Na porta e no fim o canvas nomeia a lacuna do som
+   que o painel já mostra. Se a casca declara `:focus-visible`,
+   o `access` nomeia o foco que a receita já pede. Outline no
+   disco não é sessão com o teclado. Texto no disco não é mix ouvido.
    Nomear não é
    `trusted`. Trocar no stub não é sessão observada.
    `verified`/`trusted`/`measured` são sempre falsos.

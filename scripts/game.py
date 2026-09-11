@@ -1636,6 +1636,24 @@ def canvas_audio_gap_source(project):
     return None
 
 
+# A receita já pede foco visível. Sem isto o access
+# lia knobs e calava o outline que a casca já declara.
+# Outline no disco não é sessão com o teclado.
+FOCUS_VISIBLE = re.compile(r":focus-visible")
+
+
+def page_names_focus(text):
+    return bool(text and FOCUS_VISIBLE.search(text))
+
+
+def focus_visible_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if page_names_focus(text):
+            return relative
+    return None
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -1655,6 +1673,11 @@ def access_reading(project):
         scope += (
             " Na porta e no fim o canvas nomeia a lacuna do som que o "
             "painel já mostra. Texto no disco não é mix ouvido."
+        )
+    if focus_visible_source(project):
+        scope += (
+            " A casca declara foco visível (`:focus-visible`) que a "
+            "receita já pede. Outline no disco não é sessão com o teclado."
         )
     return {
         "schema_version": 1,

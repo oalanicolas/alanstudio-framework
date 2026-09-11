@@ -3,6 +3,46 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.348 — o access nomeia o foco que a casca já declara
+
+A
+receita
+já
+pedia
+foco
+visível.
+A
+casca
+já
+declara
+`:focus-visible`.
+O
+comando
+calava.
+Agora
+o
+`access`
+nomeia
+o
+outline.
+Sem
+chave
+`focus`.
+Não
+promove
+`verified`.
+
+O que 0.9.348 não afirma:
+outline
+no
+disco
+não
+é
+sessão
+com
+o
+teclado.
+
 ## 0.9.347 — o prompt nomeia o playtest que o AGENTS.md já cita
 
 O
