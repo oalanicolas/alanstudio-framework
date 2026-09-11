@@ -4460,6 +4460,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", persist)
 
+    def test_save_names_the_write_the_storage_already_verifies(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        storage = (starter / "src/core/storage.js").read_text(encoding="utf-8")
+        self.assertTrue(game.storage_verifies_write(storage), "o storage já verifica a gravação")
+        self.assertEqual(game.verified_write_source(starter), "src/core/storage.js")
+        report = game.save_reading(starter)
+        self.assertIn("verifica a gravação", report["scope"], "o save lia persistLine e calava o estágio")
+        self.assertIn("(`storage`)", report["scope"])
+        self.assertFalse(report["trusted"])
+        self.assertNotIn("storage", report)
+        self.assertNotIn("write", report)
+        self.assertNotIn("stage", report)
+        empty = game.save_reading(self.project)
+        self.assertFalse(game.storage_verifies_write(""))
+        self.assertIsNone(game.verified_write_source(self.project))
+        self.assertNotIn("verifica a gravação", empty["scope"])
+        persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a gravação que o storage já verifica", persist)
+        self.assertIn("nomeia a gravação que o storage já verifica", skill)
+        self.assertIn("nomeia a gravação que o storage já verifica", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("LUFS", report["scope"])
+
     def test_save_names_storage_without_a_schema_as_unversioned(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "store.js").write_text("localStorage.setItem('score', value)\n")

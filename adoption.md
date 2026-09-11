@@ -3,6 +3,54 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.378 — o save nomeia a gravação que o storage já verifica
+
+A
+receita
+já
+pedia
+o
+estágio.
+O
+comando
+lia
+persistLine
+e
+calava
+o
+`writeJson`.
+Agora
+o
+`save`
+nomeia
+a
+gravação.
+Escrita
+no
+disco
+não
+é
+aba
+fechada.
+Sem
+chave
+`storage`.
+Não
+promove
+`trusted`.
+
+O que 0.9.378 não afirma:
+escrita
+no
+disco
+não
+é
+substituição
+atômica
+nem
+aba
+fechada.
+
 ## 0.9.377 — o playtest nomeia o recado que o serve já grava
 
 A

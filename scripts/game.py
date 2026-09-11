@@ -2017,6 +2017,26 @@ def unload_hold_source(project):
     return None
 
 
+# A receita já verifica a gravação. Sem isto o
+# save lia persistLine e calava o estágio. Escrita
+# no disco não é aba fechada.
+VERIFIED_WRITE = re.compile(r"const staging = `\$\{key\}\.tmp`")
+
+
+def storage_verifies_write(text):
+    return bool(text and VERIFIED_WRITE.search(text))
+
+
+def verified_write_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
+        if "tests" in Path(relative).parts:
+            continue
+        if storage_verifies_write(text):
+            return relative
+    return None
+
+
 def save_reading(project):
     project = Path(project)
     used, versioned, warned, sources = [], [], [], []
@@ -2046,6 +2066,11 @@ def save_reading(project):
         scope += (
             " O disco grava o hold no fechamento (`beforeunload`). "
             "Gancho no disco não é aba fechada."
+        )
+    if verified_write_source(project):
+        scope += (
+            " O disco verifica a gravação (`storage`). "
+            "Escrita no disco não é aba fechada."
         )
     return {
         "schema_version": 1,

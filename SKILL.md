@@ -298,7 +298,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    pinta `settingsLine`, o `save` nomeia a recuperação. A pausa não.
    Texto no disco não é aba fechada. Sem chave `recovery`. Se o disco
    escuta `beforeunload`, o `save` nomeia o fechamento que o disco já grava.
-   Gancho no disco não é aba fechada. Sem chave `beforeunload`. A receita
+   Gancho no disco não é aba fechada. Sem chave `beforeunload`. Se o disco verifica a gravação, o `save` nomeia a gravação que o storage já verifica. Escrita no disco não é aba fechada. Sem chave `storage`. A receita
    de persistência e alcance ensina o canvas da porta e do fim; a
    pausa não.    Na porta e no fim o canvas nomeia a lacuna do som
    que o painel já mostra. Se a casca declara `:focus-visible`,
