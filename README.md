@@ -676,7 +676,9 @@ não é aba fechada. `trusted` é sempre `false`.
 `budget` nomeia a porta que a receita já cronometra. Stub no
 disco não é dispositivo. Sem chave `door`. Se o `tools/size.*`
 declara sem teto, o `budget` nomeia os bytes que o size já relata.
-Bytes no disco não são o quadro medido. Sem chave `size`.
+Bytes no disco não são o quadro medido. Sem chave `size`. Se o
+`tools/budget.*` relata o pior percentil, o `budget` nomeia o percentil que a receita já pede.
+Relato no disco não é dispositivo. Sem chave `percentile`.
 `measured` é sempre `false`. O starter declara
 os três; um canvas sem opção de alcance recebe `access.missing` antes da
 barra.

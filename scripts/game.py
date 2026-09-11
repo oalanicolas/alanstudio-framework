@@ -2057,6 +2057,31 @@ def budget_door_source(project):
     return None
 
 
+# A receita já pede a distribuição. Sem isto o budget
+# cronometrava a porta e calava o pior quadro.
+# Relato no disco não é dispositivo.
+BUDGET_PERCENTILE = re.compile(r"não a média|pior percentil", re.IGNORECASE)
+
+
+def budget_names_percentile(text):
+    return bool(text and BUDGET_PERCENTILE.search(text))
+
+
+def budget_percentile_source(project):
+    project = Path(project)
+    for name in BUDGET_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if budget_names_percentile(text):
+            return name
+    return None
+
+
 def budget_reading(project):
     project = Path(project)
     try:
@@ -2089,6 +2114,11 @@ def budget_reading(project):
         scope += (
             " O disco relata os bytes (`size`) sem teto. "
             "Bytes no disco não são o quadro medido."
+        )
+    if budget_percentile_source(project):
+        scope += (
+            " O disco relata o pior percentil, não a média. "
+            "Relato no disco não é dispositivo."
         )
     return {
         "schema_version": 1,

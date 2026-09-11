@@ -317,7 +317,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    nomeia a porta que a receita já cronometra. Stub no disco
    não é dispositivo. Sem chave `door`. Se o `tools/size.*`
    declara sem teto, o `budget` nomeia os bytes que o size já relata.
-   Bytes no disco não são o quadro medido. Sem chave `size`.
+   Bytes no disco não são o quadro medido. Sem chave `size`. Se o `tools/budget.*` relata o pior percentil, o `budget` nomeia o percentil que a receita já pede.
+   Relato no disco não é dispositivo. Sem chave `percentile`.
    `verified`/`trusted`/`measured` são sempre falsos.
    Falta no disco entra no `next` antes dos rascunhos.
    **`art` / `content` / `ship`** leem paleta ou art-bible vigente, mesas

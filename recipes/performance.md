@@ -49,7 +49,8 @@ dispositivo. Sem chave `door`. `measured` é sempre falso: o harness não execut
 medição.
 
 Implementação concreta: `tools/budget.mjs` do starter `canvas-arcade` mede a
-simulação e o `draw` num canvas stub, por percentil, não por média, e declara
+simulação e o `draw` num canvas stub, por percentil, não por média. Se o `tools/budget.*` relata o pior percentil, o `budget` nomeia o percentil que a receita já pede.
+Relato no disco não é dispositivo. Sem chave `percentile`. A ferramenta declara
 no próprio resultado que não cobre compositor, áudio, carregamento nem o
 dispositivo alvo. A chuva compacta o array vivo e reusa um poço de
 entidades; o evento volta ao poço no passo seguinte, o telegraph

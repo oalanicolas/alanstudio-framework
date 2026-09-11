@@ -4156,6 +4156,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("playing.run", report["scope"])
         self.assertNotIn("16 ms", report["scope"])
 
+    def test_budget_names_the_percentile_the_recipe_already_asks(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/budget.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.budget_names_percentile(tool), "o tool já relata o percentil")
+        self.assertEqual(game.budget_percentile_source(starter), "tools/budget.mjs")
+        report = game.budget_reading(starter)
+        self.assertIn("pior percentil", report["scope"], "o budget cronometrava a porta e calava a distribuição")
+        self.assertIn("não a média", report["scope"])
+        self.assertFalse(report["measured"])
+        self.assertNotIn("percentile", report)
+        self.assertNotIn("p99", report)
+        empty = game.budget_reading(self.project)
+        self.assertFalse(game.budget_names_percentile(""))
+        self.assertIsNone(game.budget_percentile_source(self.project))
+        self.assertNotIn("pior percentil", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o percentil que a receita já pede", recipe)
+        self.assertIn("nomeia o percentil que a receita já pede", skill)
+        self.assertIn("nomeia o percentil que a receita já pede", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("playing.run", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+
     def test_persistence_recipe_names_the_pad_loss_the_starter_already_flushes(self):
         persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")

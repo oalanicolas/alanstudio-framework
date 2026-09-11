@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.370 — o budget nomeia o percentil que a receita já pede
+
+A
+receita
+já
+pedia
+a
+distribuição,
+não
+a
+média.
+O
+comando
+cronometrava
+a
+porta
+e
+calava
+o
+pior
+quadro.
+Agora
+o
+`budget`
+nomeia
+o
+percentil.
+Relato
+no
+disco
+não
+é
+dispositivo.
+Sem
+chave
+`percentile`.
+Não
+promove
+`measured`.
+
+O que 0.9.370 não afirma:
+relato
+no
+disco
+não
+é
+quadro
+no
+dispositivo.
+
 ## 0.9.369 — o ship nomeia o passo que o export já declara
 
 A
