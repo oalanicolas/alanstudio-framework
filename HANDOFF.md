@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/runbook-telemetria-1083` (base `main`)
 **PR:** [#6](https://github.com/oalanicolas/alanstudio-framework/pull/6) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.483: o `limits` da coverage nomeia a prioridade que o roteiro já recusa. Limite no disco não é a base. Sem chave `prioridade`. Nomear não observa. Confirmação pendente.
+**HEAD:** ver `git log -1` — vigente 0.9.483: o `limits` da coverage nomeia a prioridade que o roteiro já recusa. Limite no disco não é a base. Sem chave `prioridade`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** confirmação pendente no 0.9.483 (anterior 0.9.482: 543 / 516).
+**Suítes:** confirmadas no HEAD (0.9.483): 544 / 516.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
