@@ -1306,6 +1306,41 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("screenshot isolado comprove animação", game.feel_reading(self.project)["scope"])
         self.assertNotIn("screenshot isolado comprove animação", game.next_scope())
 
+    def test_art_names_the_palette_the_system_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/game-design-system.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.system_refuses_shared_palette(guide),
+            "o sistema já recusa que a paleta compartilhada seja o contrato",
+        )
+        self.assertEqual(game.art_palette_system_source(), "references/game-design-system.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.art_reading(starter)
+        self.assertTrue(report["palettes"], "o art já lista paletas neste starter")
+        item = report["palettes"][0]
+        self.assertIn(
+            "paleta compartilhada seja o sistema",
+            item["scope"],
+            "o item copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`paleta`)", item["scope"])
+        self.assertNotIn("paleta", item)
+        self.assertFalse(report["consistent"])
+        self.assertFalse(game.system_refuses_shared_palette(""))
+        with mock.patch.object(game, "art_palette_system_source", return_value=None):
+            silent = game.art_reading(starter)
+        self.assertNotIn("paleta compartilhada seja o sistema", silent["palettes"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a paleta que o sistema já recusa", recipe)
+        self.assertIn("nomeia a paleta que o sistema já recusa", skill)
+        self.assertIn("nomeia a paleta que o sistema já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("paleta compartilhada seja o sistema", report["scope"])
+        self.assertNotIn("paleta compartilhada seja o sistema", game.art_direction_scope())
+        self.assertNotIn("paleta compartilhada seja o sistema", game.next_scope())
+        self.assertNotIn("paleta compartilhada seja o sistema", game.scan(self.project)["scope"])
+
     def test_check_plan_names_the_merit_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(

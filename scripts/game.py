@@ -2956,6 +2956,9 @@ def art_reading(project):
             " O disco marca o recorte (`drawVignette`). Recorte no disco "
             "não é comparação em movimento."
         )
+    palette_scope = art_palette_scope()
+    for item in palettes:
+        item["scope"] = palette_scope
     return {
         "schema_version": 1,
         "project": str(project),
@@ -5370,6 +5373,42 @@ def art_direction_scope():
         scope += (
             " O disco recusa que o scanner certifique tokens (`tokens`). "
             "Documento no disco não é aprovação artística."
+        )
+    return scope
+
+
+# O contrato já recusa que a paleta compartilhada seja o sistema. Sem isto o
+# item copiava a chave e calava a recusa.
+# Lista no disco não é contrato.
+SYSTEM_PALETTE = re.compile(r"não é uma paleta compartilhada")
+
+
+def system_refuses_shared_palette(text):
+    return bool(text and SYSTEM_PALETTE.search(text))
+
+
+def art_palette_system_source():
+    path = SYSTEM_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if system_refuses_shared_palette(text):
+        return "references/game-design-system.md"
+    return None
+
+
+def art_palette_scope():
+    scope = (
+        "Nome e origem da paleta listada. Não compara silhueta e não "
+        "aprova o sistema."
+    )
+    if art_palette_system_source():
+        scope += (
+            " O disco recusa que a paleta compartilhada seja o sistema (`paleta`). "
+            "Lista no disco não é contrato."
         )
     return scope
 

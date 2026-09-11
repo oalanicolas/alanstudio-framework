@@ -707,6 +707,7 @@ Se o canvas declara `drawTelegraph`, o `art` nomeia o trilho que o telegraph já
 Marca no disco não é comparação em movimento. Sem chave `telegraph`.
 Se o canvas declara `drawVignette`, o `art` nomeia a vinheta que o recorte já marca.
 Recorte no disco não é comparação em movimento. Sem chave `vignette`.
+Se o sistema recusa que a paleta compartilhada seja o contrato, o `art` nomeia a paleta que o sistema já recusa. Lista no disco não é contrato. Sem chave `paleta`.
 `consistent` é sempre `false`. Mesa no disco não é volume. Rascunho do `init` não conta. `content`
 procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 `palettes.json` e `tokens.json` não contam — o `art` lê esses manifestos.

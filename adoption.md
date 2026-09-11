@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.439 — o art nomeia a paleta que o sistema já recusa
+
+O
+contrato
+já
+dizia
+que
+o
+design
+system
+não
+é
+uma
+paleta
+compartilhada.
+O
+item
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+o
+`art`
+nomeia
+a
+paleta.
+Lista
+no
+disco
+não
+é
+contrato.
+Sem
+chave
+`paleta`.
+Nomear
+não
+observa.
+
+O que 0.9.439 não afirma:
+lista
+no
+disco
+não
+é
+contrato
+nem
+direção
+aprovada.
+
 ## 0.9.438 — o record nomeia a animação que o roteiro já recusa
 
 O
