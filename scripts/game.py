@@ -10641,6 +10641,42 @@ def capabilities_scope():
     return scope
 
 
+# A receita já recusa que o registro declarado prove suporte real.
+# Sem isto o item copiava claimed e calava a recusa.
+# Registro no disco não é o consumidor.
+ARCHITECTURE_SUPPORT = re.compile(r"registro declarado não prova suporte real")
+
+
+def architecture_refuses_declared_support(text):
+    return bool(text and ARCHITECTURE_SUPPORT.search(text))
+
+
+def capability_claim_support_source():
+    path = ARCHITECTURE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if architecture_refuses_declared_support(text):
+        return "recipes/architecture.md"
+    return None
+
+
+def capability_claim_scope():
+    scope = (
+        "Alegação desta capacidade no recibo. Não confirma o "
+        "consumidor e não exercita o runtime."
+    )
+    if capability_claim_support_source():
+        scope += (
+            " O disco recusa que o registro declarado prove suporte "
+            "real (`suporte`). Registro no disco não é o consumidor."
+        )
+    return scope
+
+
 def verify(project, scripts, command, output, timeout, proves=()):
     if not project.is_dir():
         raise ValueError("projeto ausente")
@@ -10689,6 +10725,7 @@ def verify(project, scripts, command, output, timeout, proves=()):
             "logs": [item["log"] for item in report["commands"]],
             "claimed_by": "operator",
             "limit": "Alegação de quem executou, apoiada em recibo verde. Recibo verde não é cobertura da capacidade.",
+            "scope": capability_claim_scope(),
         }
         for name in claimed
     }

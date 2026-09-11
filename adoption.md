@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.481 — o verify nomeia o suporte que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+registro
+declarado
+não
+prova
+suporte
+real.
+O
+item
+copiava
+claimed
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+o
+suporte.
+Registro
+no
+disco
+não
+é
+o
+consumidor.
+Sem
+chave
+`suporte`.
+Nomear
+não
+observa.
+
+O que 0.9.481 não afirma:
+recibo
+verde
+não
+é
+suporte
+no
+consumidor
+nem
+capacidade
+exercitada.
+
 ## 0.9.480 — o context nomeia a pergunta que o roteiro já recusa
 
 O

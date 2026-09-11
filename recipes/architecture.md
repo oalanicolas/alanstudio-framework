@@ -52,7 +52,7 @@ fontes e consumidores; anote caminho/símbolo e **por que cada um importa**:
 - Restrições e lacunas capazes de mudar a decisão, com a próxima investigação.
 
 Use os catálogos, manifestos e registros que já existem para localizar candidatos.
-Confirme suas capacidades no consumidor; registro declarado não prova suporte real.
+Confirme suas capacidades no consumidor; registro declarado não prova suporte real. Se a receita recusa que o registro declarado prove suporte real, o `capabilities[n]` do `verify` nomeia o suporte que a receita já recusa. Registro no disco não é o consumidor. Sem chave `suporte`.
 
 Use o registro atual, sem gerar cópias de todo o contexto do projeto. Busca por nome,
 import ou marcador produz candidatos. Resolva aliases, conteúdo serializado, eventos,

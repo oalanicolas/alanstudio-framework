@@ -2267,6 +2267,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("claimed seja verified", game.next_scope())
         self.assertNotIn("claimed seja verified", game.check_plan_scope())
 
+    def test_capability_claim_names_the_support_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.architecture_refuses_declared_support(recipe),
+            "a receita já recusa que o registro declarado prove suporte real",
+        )
+        self.assertEqual(game.capability_claim_support_source(), "recipes/architecture.md")
+        report = game.verify(
+            self.project, [], [sys.executable, "-c", "pass"],
+            self.root / "verify-481", 5, ["pause"],
+        )
+        item = report["capabilities"]["pause"]
+        self.assertIn(
+            "registro declarado prove suporte",
+            item["scope"],
+            "o item copiava claimed e calava a recusa",
+        )
+        self.assertIn("(`suporte`)", item["scope"])
+        self.assertNotIn("suporte", item)
+        self.assertEqual(item["status"], "claimed")
+        self.assertFalse(game.architecture_refuses_declared_support(""))
+        with mock.patch.object(game, "capability_claim_support_source", return_value=None):
+            silent = game.verify(
+                self.project, [], [sys.executable, "-c", "pass"],
+                self.root / "verify-481-silent", 5, ["pause"],
+            )
+        self.assertNotIn(
+            "registro declarado prove suporte",
+            silent["capabilities"]["pause"]["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o suporte que a receita já recusa", recipe)
+        self.assertIn("nomeia o suporte que a receita já recusa", production)
+        self.assertIn("nomeia o suporte que a receita já recusa", skill)
+        self.assertIn("nomeia o suporte que a receita já recusa", readme)
+        self.assertIn("nomeia o suporte que a receita já recusa", create)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("registro declarado prove suporte", report["capabilities_scope"])
+        self.assertNotIn("registro declarado prove suporte", report["scope"])
+        self.assertNotIn("registro declarado prove suporte", report["commands"][0]["scope"])
+        self.assertNotIn("registro declarado prove suporte", game.architecture_area_scope())
+        self.assertNotIn("registro declarado prove suporte", game.next_scope())
+
     def test_git_names_the_reading_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(

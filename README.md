@@ -914,7 +914,7 @@ O que ele acrescenta é uma alegação com autor, data, argv e log: `claimed` qu
 os comandos passaram, `unsupported` quando falharam. Em vez de sumir na prosa, a
 afirmação fica anexada a um recibo e pode ser contestada por quem ler. A declaração
 é de **quem executa**, nunca do repositório: nenhum arquivo do projeto seleciona
-capacidade, e `claimed` continua não sendo `verified`. Se o processo recusa que claimed seja verified, o `verify` nomeia a verificação que o processo já recusa. Alegação no disco não é cobertura. Sem chave `verified`.
+capacidade, e `claimed` continua não sendo `verified`. Se o processo recusa que claimed seja verified, o `verify` nomeia a verificação que o processo já recusa. Alegação no disco não é cobertura. Sem chave `verified`. Se a receita recusa que o registro declarado prove suporte real, o `capabilities[n]` do `verify` nomeia o suporte que a receita já recusa. Registro no disco não é o consumidor. Sem chave `suporte`.
 
 ## Registrar evidência declarada
 

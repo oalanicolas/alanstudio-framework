@@ -167,7 +167,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    advance, capture, dispose), porque lê arquivos sem executá-los. Quando os testes do
    projeto de fato exercitarem alguma delas, anexe a alegação ao recibo com
    `verify --proves <capacidade>`: sai como `claimed`, com autor, argv e log, nunca
-   como verificada; declare só o que os comandos cobrirem. Se o processo recusa que claimed seja verified, o `verify` nomeia a verificação que o processo já recusa. Alegação no disco não é cobertura. Sem chave `verified`. `experience_status`
+   como verificada; declare só o que os comandos cobrirem. Se o processo recusa que claimed seja verified, o `verify` nomeia a verificação que o processo já recusa. Alegação no disco não é cobertura. Sem chave `verified`. Se a receita recusa que o registro declarado prove suporte real, o `capabilities[n]` do `verify` nomeia o suporte que a receita já recusa. Registro no disco não é o consumidor. Sem chave `suporte`. `experience_status`
    continua `not_assessed` até haver observação em movimento.
 6. **Comparar, registrar, continuar.** Compare antes/depois em condições equivalentes
    e em movimento quando houver efeito visual. Corrija regressões, registre decisões e
