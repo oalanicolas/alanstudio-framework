@@ -8658,6 +8658,48 @@ def starter_cycle(starter):
     return cycle if "verb" in cycle else None
 
 
+# A receita já recusa que estar em run prove estar livre.
+# Sem isto o ciclo anunciava o verbo e calava a recusa.
+# Estado no disco não é a janela.
+FEEL_FREEDOM = re.compile(r"n[aã]o prova estar livre para\s+atacar")
+
+
+def recipe_refuses_run_as_free(text):
+    return bool(text and FEEL_FREEDOM.search(text))
+
+
+def cycle_freedom_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_run_as_free(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_scope():
+    if not cycle_freedom_source():
+        return None
+    return (
+        "O disco recusa que estar em run prove estar livre para atacar (`livre`). "
+        "Estado no disco não é a janela."
+    )
+
+
+def named_cycle(cycle):
+    if cycle is None:
+        return None
+    named = dict(cycle)
+    scope = cycle_scope()
+    if scope:
+        named["scope"] = scope
+    return named
+
+
 def cycle_line(cycle, fantasy=None):
     parts = []
     phrase = surface_fantasy(fantasy)
@@ -9055,7 +9097,7 @@ def init(destination, starter, title=None, documents=True, idea=None):
         "runtime": runtime,
         "then": then,
         "fantasy": fantasy,
-        "cycle": cycle,
+        "cycle": named_cycle(cycle),
         "prompt": prompt,
         "executed": False,
         "scope": init_scope(documents, idea),
@@ -9113,7 +9155,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "fantasy": fantasy,
         "brief": planted["brief"],
         "surface": planted["surface"],
-        "cycle": cycle,
+        "cycle": named_cycle(cycle),
         "play": play,
         "open": play,
         "url": url,
@@ -9216,7 +9258,7 @@ def play_cycle(destination=None, starter=None):
         "session": then.get("session"),
         "runtime": runtime,
         "then": then,
-        "cycle": cycle,
+        "cycle": named_cycle(cycle),
         "fantasy": fantasy,
         "prompt": cycle_prompt(
             play, then, cycle, noted, url, runtime, fantasy,
@@ -9470,7 +9512,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         "path": str(dest) if dest is not None else None,
         "suggest": str(suggested) if suggested is not None else None,
         "exists": exists,
-        "cycle": cycle,
+        "cycle": named_cycle(cycle),
         "then": then,
         "noted": noted,
         "open": start_command if not exists else play_cmd,

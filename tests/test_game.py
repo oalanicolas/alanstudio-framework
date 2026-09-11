@@ -10436,6 +10436,57 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", line)
         self.assertNotIn("verified", line)
 
+    def test_cycle_names_the_freedom_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_run_as_free(recipe),
+            "a receita já recusa que estar em run prove estar livre para atacar",
+        )
+        self.assertEqual(game.cycle_freedom_source(), "recipes/feel.md")
+        raw = game.starter_cycle("canvas-arcade")
+        self.assertIn("verb", raw)
+        self.assertNotIn("scope", raw)
+        self.assertNotIn("livre", raw)
+        self.assertNotIn("scope", game.CYCLE_KEYS)
+        self.assertNotIn("livre", game.CYCLE_KEYS)
+        destination = self.root / "ciclo-nomeia-livre"
+        report = game.start_project(destination, "canvas-arcade")
+        cycle = report["cycle"]
+        self.assertIn("verb", cycle)
+        self.assertIn(
+            "estar em run prove estar livre",
+            cycle["scope"],
+            "o ciclo anunciava o verbo e calava a recusa",
+        )
+        self.assertIn("(`livre`)", cycle["scope"])
+        self.assertNotIn("livre", cycle)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_run_as_free(""))
+        with mock.patch.object(game, "cycle_freedom_source", return_value=None):
+            silent = game.start_project(self.root / "ciclo-cala-livre", "canvas-arcade")
+        self.assertNotIn(
+            "estar em run prove estar livre",
+            (silent.get("cycle") or {}).get("scope", ""),
+        )
+        guided = game.guide_cycle(self.root / "mapa-livre", "canvas-arcade")
+        self.assertIn("estar em run prove estar livre", guided["cycle"]["scope"])
+        played = game.play_cycle(destination)
+        self.assertIn("estar em run prove estar livre", played["cycle"]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o livre que a receita já recusa", recipe)
+        self.assertIn("nomeia o livre que a receita já recusa", skill)
+        self.assertIn("nomeia o livre que a receita já recusa", readme)
+        self.assertIn("nomeia o livre que a receita já recusa", create)
+        self.assertNotIn("verified", cycle["scope"])
+        self.assertNotIn("estar em run prove estar livre", report["scope"])
+        self.assertNotIn("estar em run prove estar livre", game.play_scope(destination))
+        self.assertNotIn("estar em run prove estar livre", game.guide_scope("canvas-arcade"))
+        self.assertNotIn("estar em run prove estar livre", game.feel_reading(destination)["scope"])
+        self.assertNotIn("estar em run prove estar livre", game.next_scope())
+        self.assertNotIn("estar em run prove estar livre", game.note_step_scope())
+
     def test_serve_banner_names_the_clock_the_game_already_reads(self):
         destination = self.root / "banner-nomeia-relogio"
         game.init(destination, "canvas-arcade")

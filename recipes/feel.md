@@ -220,7 +220,7 @@ nem tornam um giro completo adequado a todos os saltos.
 Quando movimento e ataque são liberados em momentos diferentes, reproduza input
 durante a trava residual: a captura do buffer precisa considerar todas as
 condições que realmente impedem a ação. Estar em `run` não prova estar livre para
-atacar. Ao adaptar teclado/analógico, confira se cada ação anunciada continua
+atacar. Se a receita recusa que estar em run prove estar livre, o ciclo nomeia o livre que a receita já recusa. Estado no disco não é a janela. Sem chave `livre`. Ao adaptar teclado/analógico, confira se cada ação anunciada continua
 selecionável por um gesto deliberado; mudar corrida por padrão pode alterar a
 prioridade entre tilt, dash-attack e smash sem remover nenhum deles dos dados.
 
