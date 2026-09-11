@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.386: o `sfx copy` nomeia os créditos que o copy já leva. Créditos no disco não são mix ouvida. Sem chave `sidecar`. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD anterior (0.9.385):** `python3 -m unittest discover -s tests` → 381 OK.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK. Confirmação do 0.9.386 pendente.
+**Suítes confirmadas no HEAD (0.9.386):** `python3 -m unittest discover -s tests` → 382 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
