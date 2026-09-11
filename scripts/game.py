@@ -3103,6 +3103,46 @@ def access_colorblind_option_scope():
     return scope
 
 
+# A receita já recusa que completar o jogo peça as duas mãos. Sem isto a
+# opção one_hand copiava a chave e calava a recusa.
+# Mão no disco não é sessão.
+A11Y_ONE_HAND = re.compile(r"uma das mãos")
+
+
+def recipe_refuses_two_hands_to_finish(text):
+    return bool(text and A11Y_ONE_HAND.search(text))
+
+
+def access_one_hand_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_two_hands_to_finish(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_one_hand_scope():
+    if not access_one_hand_source():
+        return None
+    return (
+        "O disco recusa que completar o jogo peça as duas mãos "
+        "(`mão`). Mão no disco não é sessão."
+    )
+
+
+def access_one_hand_option_scope():
+    scope = access_option_scope()
+    named = access_one_hand_scope()
+    if named:
+        scope += " " + named
+    return scope
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -3164,6 +3204,7 @@ def access_reading(project):
                     else access_reduced_motion_option_scope() if key == "reduced_motion"
                     else access_high_contrast_option_scope() if key == "high_contrast"
                     else access_colorblind_option_scope() if key == "colorblind"
+                    else access_one_hand_option_scope() if key == "one_hand"
                     else option_scope
                 ),
             }

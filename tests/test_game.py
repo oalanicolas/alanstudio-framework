@@ -2572,6 +2572,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("estado dependa só da cor", game.feel_reading(starter)["scope"])
         self.assertNotIn("estado dependa só da cor", game.roles_reading(starter)["scope"])
 
+    def test_access_one_hand_names_the_hand_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_two_hands_to_finish(recipe),
+            "a receita já recusa que completar o jogo peça as duas mãos",
+        )
+        self.assertEqual(game.access_one_hand_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = next(option for option in report["options"] if option["key"] == "one_hand")
+        self.assertIn(
+            "completar o jogo peça as duas mãos",
+            item["scope"],
+            "a opção one_hand copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`mão`)", item["scope"])
+        self.assertNotIn("mão", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_two_hands_to_finish(""))
+        self.assertNotIn("completar o jogo peça as duas mãos", report["scope"])
+        self.assertNotIn("completar o jogo peça as duas mãos", report.get("next") or "")
+        for option in report["options"]:
+            if option["key"] == "one_hand":
+                continue
+            self.assertNotIn("completar o jogo peça as duas mãos", option["scope"])
+        with mock.patch.object(game, "access_one_hand_source", return_value=None):
+            silent = game.access_reading(starter)
+        silent_item = next(option for option in silent["options"] if option["key"] == "one_hand")
+        self.assertNotIn("completar o jogo peça as duas mãos", silent_item["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a mão que a receita já recusa", recipe)
+        self.assertIn("nomeia a mão que a receita já recusa", skill)
+        self.assertIn("nomeia a mão que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("completar o jogo peça as duas mãos", game.next_scope())
+        self.assertNotIn("completar o jogo peça as duas mãos", game.feel_reading(starter)["scope"])
+        self.assertNotIn("completar o jogo peça as duas mãos", game.roles_reading(starter)["scope"])
+
     def test_commands_name_the_generic_the_menu_already_refuses(self):
         guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
         self.assertTrue(

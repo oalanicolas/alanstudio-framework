@@ -30,6 +30,66 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.517 — a opção one_hand do access nomeia a mão que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+jogo
+se
+completa
+com
+uma
+das
+mãos.
+A
+opção
+`one_hand`
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+a
+opção
+`one_hand`
+nomeia
+a
+mão.
+Mão
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`mão`.
+Nomear
+não
+observa.
+
+O que 0.9.517 não afirma:
+o
+preset
+de
+uma
+mão
+não
+é
+sessão
+observada
+com
+o
+modo
+ativo.
+
 ## 0.9.516 — a opção colorblind do access nomeia o ícone que a receita já recusa
 
 A
