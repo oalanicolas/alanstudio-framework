@@ -3255,6 +3255,31 @@ def session_sim_source(project):
     return None
 
 
+# A página já pede o recado. Sem isto o playtest
+# dizia que a página escreve e calava a rota.
+# Texto no disco não é alguém de fora.
+NOTE_POST = re.compile(r"pathname === NOTE_ROUTE")
+
+
+def serve_writes_note(text):
+    return bool(text and NOTE_POST.search(text))
+
+
+def note_post_source(project):
+    project = Path(project)
+    for name in SERVE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if serve_writes_note(text):
+            return name
+    return None
+
+
 def playtest_reading(project):
     project = Path(project)
     observations = observation_receipts(project)
@@ -3324,6 +3349,11 @@ def playtest_reading(project):
         scope += (
             " O disco grava a simulação (`session`). "
             "Traço no disco não é alguém de fora."
+        )
+    if note_post_source(project):
+        scope += (
+            " O disco grava o recado (`note`). "
+            "Texto no disco não é alguém de fora."
         )
     return {
         "schema_version": 1,

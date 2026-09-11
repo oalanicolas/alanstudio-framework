@@ -365,6 +365,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    o candidato em `docs/playtest/last-run.json`; a simulação também.
    Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.
    Traço no disco não é alguém de fora. Sem chave `session`.
+   Se o `tools/serve.*` grava o recado, o `playtest` nomeia o recado que o serve já grava. Texto no disco não é alguém de fora. Sem chave `note`.
    Se o candidato nomeia a seed, `playtest` relata `candidate_seed`
    e `?seed=` abre essa partida, ignorando o hold. Se nomeia a
    chuva, relata `candidate_spawn`; se nomeia o look, relata

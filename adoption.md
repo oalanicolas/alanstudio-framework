@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.377 — o playtest nomeia o recado que o serve já grava
+
+A
+página
+já
+pedia
+o
+POST.
+O
+comando
+dizia
+que
+a
+página
+escreve
+e
+calava
+a
+rota.
+Agora
+o
+`playtest`
+nomeia
+o
+recado.
+Texto
+no
+disco
+não
+é
+alguém
+de
+fora.
+Sem
+chave
+`note`.
+Não
+promove
+`outsider`.
+
+O que 0.9.377 não afirma:
+texto
+no
+disco
+não
+é
+sessão
+observada.
+
 ## 0.9.376 — o feel nomeia o sit que a guarda já senta
 
 A

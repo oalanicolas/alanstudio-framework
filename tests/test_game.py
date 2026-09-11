@@ -5902,6 +5902,32 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("--mood", report["scope"])
         self.assertNotIn("then.session", report["scope"])
 
+    def test_playtest_names_the_note_the_serve_already_writes(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/serve.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.serve_writes_note(tool), "o serve já grava o recado")
+        self.assertEqual(game.note_post_source(starter), "tools/serve.mjs")
+        report = game.playtest_reading(starter)
+        self.assertIn("grava o recado", report["scope"], "o playtest dizia que a página escreve e calava a rota")
+        self.assertIn("(`note`)", report["scope"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(report["observed"])
+        self.assertNotIn("note", report)
+        self.assertNotIn("playNote", report)
+        self.assertNotIn("then", report)
+        empty = game.playtest_reading(self.project)
+        self.assertFalse(game.serve_writes_note(""))
+        self.assertIsNone(game.note_post_source(self.project))
+        self.assertNotIn("grava o recado", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o recado que o serve já grava", recipe)
+        self.assertIn("nomeia o recado que o serve já grava", skill)
+        self.assertIn("nomeia o recado que o serve já grava", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("then.note", report["scope"])
+
     def test_next_points_at_the_invite_after_the_maker_already_played(self):
         destination = self.root / "depois-de-jogar"
         game.start_project(destination, "canvas-arcade")

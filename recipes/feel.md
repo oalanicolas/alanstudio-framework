@@ -64,6 +64,7 @@ sobrescreve `played` sem `--force`. `session --look` e
 no relógio cheio não observa.
 Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.
 Traço no disco não é alguém de fora. Sem chave `session`.
+Se o `tools/serve.*` grava o recado, o `playtest` nomeia o recado que o serve já grava. Texto no disco não é alguém de fora. Sem chave `note`.
 `playtest` relata
 `candidate_policy` e `candidate_tally`. Nenhum dos dois é sessão observada. Se o
 projeto (ou o starter) declara `session`, `then` a aponta. `note --from-run`

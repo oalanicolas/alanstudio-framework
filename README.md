@@ -791,6 +791,7 @@ e a paleta. O convite usa os mesmos eixos. O `next` aponta
 `npm run session` grava a simulação.
 Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.
 Traço no disco não é alguém de fora. Sem chave `session`.
+Se o `tools/serve.*` grava o recado, o `playtest` nomeia o recado que o serve já grava. Texto no disco não é alguém de fora. Sem chave `note`.
 Nenhum dos dois é sessão observada. Se o candidato
 tiver curva, o `note` a anexa. Número no disco não é causa. A tabela de
 ofício que *descreve* o formato não conta como
