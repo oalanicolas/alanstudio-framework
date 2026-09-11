@@ -5451,6 +5451,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
             item["scope"] = candidate_scope
     mention_scope = genre_mention_scope()
     issue_scope = coverage_issue_scope()
+    draft_scope = coverage_draft_scope()
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(),
         "minimum_status": "needs_review" if needs_documentation else "candidates_found",
@@ -5465,7 +5466,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         "coverage": {
             "documents_inspected": inspected, "documents_located": len(documents), "entries_seen": entries_seen,
             "documents_deferred": deferred[:20], "documents_deferred_count": len(deferred),
-            "non_current_documents": non_current[:20], "non_current_document_count": len(non_current),
+            "non_current_documents": [dict(item, scope=draft_scope) for item in non_current[:20]], "non_current_document_count": len(non_current),
             "issues": [dict(item, scope=issue_scope) for item in issues[:20]],
             "issue_count": len(issues), "issues_truncated": len(issues) > 20,
             "excluded_directory_names": sorted(excluded_dirs),
@@ -5964,6 +5965,42 @@ def coverage_issue_scope():
         scope += (
             " O disco recusa que a cobertura desigual seja acidente (`acidente`). "
             "Recorte no disco não é falha."
+        )
+    return scope
+
+
+# A guia já recusa que preencher linhas certifique o jogo.
+# Sem isto o rascunho copiava o estado e calava a recusa.
+# Documento no disco não é o jogo.
+PREPRODUCTION_LINES = re.compile(r"preencher linhas não certifica o jogo")
+
+
+def guide_refuses_lines_as_game(text):
+    return bool(text and PREPRODUCTION_LINES.search(text))
+
+
+def coverage_draft_lines_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_lines_as_game(text):
+        return "references/preproduction.md"
+    return None
+
+
+def coverage_draft_scope():
+    scope = (
+        "Caminho e estado do documento que deixou de ser vigente. "
+        "Não certifica o jogo e não observa a sessão."
+    )
+    if coverage_draft_lines_source():
+        scope += (
+            " O disco recusa que preencher linhas certifique o jogo (`linhas`). "
+            "Documento no disco não é o jogo."
         )
     return scope
 

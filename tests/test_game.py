@@ -2435,7 +2435,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         result = game.scan(self.project)
         self.assertEqual(result["areas"]["gdd"]["status"], "reference_only")
         self.assertNotIn("GDD.md", result["read_first"])
-        self.assertEqual(result["coverage"]["non_current_documents"], [{"path": "GDD.md", "status": "reference"}])
+        drafts = result["coverage"]["non_current_documents"]
+        self.assertEqual(len(drafts), 1)
+        self.assertEqual(drafts[0]["path"], "GDD.md")
+        self.assertEqual(drafts[0]["status"], "reference")
+
+    def test_coverage_drafts_name_the_lines_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_lines_as_game(guide),
+            "a guia já recusa que preencher linhas certifique o jogo",
+        )
+        self.assertEqual(game.coverage_draft_lines_source(), "references/preproduction.md")
+        (self.project / "README.md").write_text("# Documentação\n- [GDD](GDD.md): material de referência para estudo.\n")
+        (self.project / "GDD.md").write_text("# GDD\nRegras de outro jogo.\n")
+        report = game.scan(self.project)
+        self.assertTrue(report["coverage"]["non_current_documents"], "o scan já lista o documento não vigente")
+        item = report["coverage"]["non_current_documents"][0]
+        self.assertIn(
+            "preencher linhas certifique o jogo",
+            item["scope"],
+            "o rascunho copiava o estado e calava a recusa",
+        )
+        self.assertIn("(`linhas`)", item["scope"])
+        self.assertNotIn("linhas", item)
+        self.assertFalse(game.guide_refuses_lines_as_game(""))
+        with mock.patch.object(game, "coverage_draft_lines_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "preencher linhas certifique o jogo",
+            silent["coverage"]["non_current_documents"][0]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia as linhas que a guia já recusa", create)
+        self.assertIn("nomeia as linhas que a guia já recusa", skill)
+        self.assertIn("nomeia as linhas que a guia já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("preencher linhas certifique o jogo", report["coverage"]["scope"])
+        self.assertNotIn("preencher linhas certifique o jogo", report["scope"])
+        self.assertNotIn("preencher linhas certifique o jogo", game.coverage_issue_scope())
+        self.assertNotIn("preencher linhas certifique o jogo", game.next_scope())
+        self.assertNotIn("preencher linhas certifique o jogo", game.context_scope())
 
     def test_index_link_budget_reports_only_real_truncation(self):
         (self.project / "GDD.md").write_text("# GDD\nTrês chaves abrem o farol.\n")

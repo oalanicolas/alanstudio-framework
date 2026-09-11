@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.460 — o non_current_documents nomeia as linhas que a guia já recusa
+
+A
+guia
+já
+dizia
+que
+preencher
+linhas
+não
+certifica
+o
+jogo.
+O
+rascunho
+copiava
+o
+estado
+e
+calava
+a
+recusa.
+Agora
+o
+`non_current_documents[n]`
+nomeia
+as
+linhas.
+Documento
+no
+disco
+não
+é
+o
+jogo.
+Sem
+chave
+`linhas`.
+Nomear
+não
+certifica.
+
+O que 0.9.460 não afirma:
+documento
+no
+disco
+não
+é
+acabamento
+AAA
+nem
+inventário
+completo.
+
 ## 0.9.459 — o candidate_tally nomeia o cinco que a pesquisa já recusa
 
 A
