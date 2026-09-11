@@ -957,6 +957,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("garantir o mérito", game.record_scope())
         self.assertNotIn("garantir o mérito", game.documentation_scope(True))
 
+    def test_verify_names_the_creativity_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.preproduction_refuses_creativity(guide),
+            "o roteiro já recusa aprovar a criatividade",
+        )
+        self.assertEqual(game.verify_creativity_source(), "references/preproduction.md")
+        report = game.verify(
+            self.project, [], [sys.executable, "-c", "pass"],
+            self.root / "verify-410", 5,
+        )
+        self.assertIn(
+            "aprovar a criatividade",
+            report["scope"],
+            "o verify executava o comando e calava a recusa",
+        )
+        self.assertIn("(`criatividade`)", report["scope"])
+        self.assertNotIn("criatividade", report)
+        self.assertEqual(report["experience_status"], "not_assessed")
+        self.assertFalse(game.preproduction_refuses_creativity(""))
+        with mock.patch.object(game, "verify_creativity_source", return_value=None):
+            silent = game.verify(
+                self.project, [], [sys.executable, "-c", "pass"],
+                self.root / "verify-410-silent", 5,
+            )
+        self.assertNotIn("aprovar a criatividade", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a criatividade que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a criatividade que o roteiro já recusa", skill)
+        self.assertIn("nomeia a criatividade que o roteiro já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovar a criatividade", game.record_scope())
+        self.assertNotIn("aprovar a criatividade", game.check_plan_scope())
+        self.assertNotIn("aprovar a criatividade", game.next_scope())
+        self.assertNotIn("aprovar a criatividade", game.template_scope("release"))
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

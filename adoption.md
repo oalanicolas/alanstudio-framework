@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.410 — o verify nomeia a criatividade que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+o
+verify
+não
+aprova
+criatividade.
+O
+comando
+executava
+e
+calava
+a
+recusa.
+Agora
+o
+`verify`
+nomeia
+a
+criatividade.
+Recibo
+verde
+não
+é
+aprovação.
+Sem
+chave
+`criatividade`.
+Nomear
+não
+observa.
+
+O que 0.9.410 não afirma:
+recibo
+verde
+não
+é
+aprovação
+nem
+capacidade
+verificada.
+
 ## 0.9.409 — o check-plan nomeia o mérito que o processo já recusa
 
 O

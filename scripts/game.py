@@ -7702,6 +7702,43 @@ def run_command(argv, project, log, timeout):
     return {"argv": argv, "exit_code": code, "seconds": round(time.monotonic() - started, 3), "log": log.name, "log_sha256": hashlib.sha256(log.read_bytes()).hexdigest()}
 
 
+# O roteiro já recusa aprovar a criatividade. Sem isto o
+# verify executava o comando e calava a recusa.
+# Recibo verde não é aprovação.
+PREPRODUCTION_GUIDE = FRAMEWORK / "references/preproduction.md"
+VERIFY_CREATIVITY = re.compile(r"não aprova criatividade")
+
+
+def preproduction_refuses_creativity(text):
+    return bool(text and VERIFY_CREATIVITY.search(text))
+
+
+def verify_creativity_source():
+    path = PREPRODUCTION_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if preproduction_refuses_creativity(text):
+        return "references/preproduction.md"
+    return None
+
+
+def verify_scope():
+    scope = (
+        "Execução dos comandos solicitados. Não aprova arte, diversão, direitos, "
+        "release nem capacidades do runtime."
+    )
+    if verify_creativity_source():
+        scope += (
+            " O disco recusa aprovar a criatividade (`criatividade`). "
+            "Recibo verde não é aprovação."
+        )
+    return scope
+
+
 def verify(project, scripts, command, output, timeout, proves=()):
     if not project.is_dir():
         raise ValueError("projeto ausente")
@@ -7725,7 +7762,7 @@ def verify(project, scripts, command, output, timeout, proves=()):
         raise ValueError("destino de evidência existente; escolha um novo")
     before = git_version(project)
     output.mkdir(parents=True, exist_ok=False)
-    report = {"schema_version": 1, "project": str(project), "started_at": datetime.now(timezone.utc).isoformat(), "version": before, "technical_status": "running", "experience_status": "not_assessed", "commands": [], "scope": "Execução dos comandos solicitados. Não aprova arte, diversão, direitos, release nem capacidades do runtime."}
+    report = {"schema_version": 1, "project": str(project), "started_at": datetime.now(timezone.utc).isoformat(), "version": before, "technical_status": "running", "experience_status": "not_assessed", "commands": [], "scope": verify_scope()}
     receipt = output / "verification.json"
     receipt.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     for index, argv in enumerate(commands):
