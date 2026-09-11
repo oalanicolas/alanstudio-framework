@@ -142,6 +142,32 @@ class HarnessTest(unittest.TestCase):
         self.assertFalse(found["corrida-lunar"]["signals"]["feel_unobserved"])
         self.assertNotIn("proposal", found["corrida-lunar"])
 
+    def test_review_names_the_scripts_the_package_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        pack = (starter / "package.json").read_text(encoding="utf-8")
+        self.assertTrue(game.package_declares_scripts(pack), "o package já declara os scripts")
+        self.assertEqual(game.review_scripts_source(starter), "package.json")
+        fresh = self.root / "arcade-com-scripts"
+        game.init(fresh, "canvas-arcade", documents=False)
+        report = game.review(self.root)
+        self.assertIn("declara os scripts", report["scope"], "o review lia os validadores e calava o campo")
+        self.assertIn("(`scripts`)", report["scope"])
+        self.assertNotIn("scripts", report)
+        self.assertFalse(game.package_declares_scripts(""))
+        self.assertFalse(game.package_declares_scripts("{}"))
+        self.assertIsNone(game.review_scripts_source(self.project))
+        with mock.patch.object(game, "review_scripts_source", return_value=None):
+            silent = game.review(self.root)
+        self.assertNotIn("declara os scripts", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os scripts que o package já declara", recipe)
+        self.assertIn("nomeia os scripts que o package já declara", skill)
+        self.assertIn("nomeia os scripts que o package já declara", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("then.scripts", report.get("then") or {})
+
     def test_the_review_names_the_signals_next_uses_without_choosing(self):
         fresh = self.root / "ainda-nao-jogou"
         game.init(fresh, "canvas-arcade", documents=False)

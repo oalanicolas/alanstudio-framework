@@ -628,20 +628,56 @@ def review(root, limit=REVIEW_LIMIT):
         # Ordenar por urgência exigiria julgar qual jogo importa mais, e nada aqui
         # observa isso. A ordem é a do disco, e a escolha continua sendo de quem lê.
         "order": "caminho, em ordem determinística; o harness não classifica os jogos por urgência",
-        "scope": (
-            "Conta documentos por localização e lê a declaração de degrau de cada projeto. "
-            "Relata os mesmos sinais que o `next` usa para o primeiro ciclo, o ofício, "
-            "o feel sem recibo, o achado sem forma, o convite, a origem sem recibo "
-            "e as lacunas de dimensão. "
-            "Não executa jogo "
-            "nenhum, não mede acabamento e não diz qual merece atenção primeiro. "
-            "Sinal verdadeiro não é partida jogada nem alguém de fora. "
-            "Lista de arquivo sem recibo não é licença. "
-            "Lista de chave ausente não é alcance observado. "
-            "Área localizada é candidato "
-            "por nome ou título, não conteúdo aprovado; degrau é o que o projeto afirma de si."
-        ),
+        "scope": _review_scope(reviewed),
     }
+
+
+# O package já declara os scripts. Sem isto o
+# review lia os validadores e calava o campo.
+# Lista no disco não é passo executado.
+PACKAGE_SCRIPTS = re.compile(r'"scripts"\s*:\s*\{')
+
+
+def package_declares_scripts(text):
+    return bool(text and PACKAGE_SCRIPTS.search(text))
+
+
+def review_scripts_source(project):
+    project = Path(project)
+    path = project / "package.json"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        if path.stat().st_size > 400_000:
+            return None
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    if package_declares_scripts(text):
+        return "package.json"
+    return None
+
+
+def _review_scope(projects):
+    scope = (
+        "Conta documentos por localização e lê a declaração de degrau de cada projeto. "
+        "Relata os mesmos sinais que o `next` usa para o primeiro ciclo, o ofício, "
+        "o feel sem recibo, o achado sem forma, o convite, a origem sem recibo "
+        "e as lacunas de dimensão. "
+        "Não executa jogo "
+        "nenhum, não mede acabamento e não diz qual merece atenção primeiro. "
+        "Sinal verdadeiro não é partida jogada nem alguém de fora. "
+        "Lista de arquivo sem recibo não é licença. "
+        "Lista de chave ausente não é alcance observado. "
+        "Área localizada é candidato "
+        "por nome ou título, não conteúdo aprovado; degrau é o que o projeto afirma de si."
+    )
+    if any(review_scripts_source(entry.get("project", "")) for entry in projects):
+        scope += (
+            " O disco declara os scripts (`scripts`). "
+            "Lista no disco não é passo executado."
+        )
+    return scope
 
 
 def package_commands(project):

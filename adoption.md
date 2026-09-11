@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.395 — o discover nomeia os scripts que o package já declara
+
+O
+`package.json`
+já
+listava
+os
+scripts.
+O
+comando
+lia
+os
+validadores
+e
+calava
+o
+campo.
+Agora
+o
+`discover`
+nomeia
+os
+scripts.
+Lista
+no
+disco
+não
+é
+passo
+executado.
+Sem
+chave
+`scripts`.
+Nomear
+não
+executa.
+
+O que 0.9.395 não afirma:
+lista
+no
+disco
+não
+é
+passo
+executado
+nem
+`next`
+escolhido.
+
 ## 0.9.394 — o doctor nomeia as substituições que o manifesto já declara
 
 O
