@@ -2066,6 +2066,75 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ganho na média demonstre redução de engasgos", game.budget_reading(self.project)["scope"])
         self.assertNotIn("ganho na média demonstre redução de engasgos", game.next_scope())
 
+    def test_record_milestone_fields_name_the_gate_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_receipt_as_milestone(recipe),
+            "a receita já recusa que o recibo feche o marco",
+        )
+        self.assertEqual(game.record_milestone_gate_source(), "recipes/production.md")
+        fields = {
+            "milestone": "alpha",
+            "decision": "declared",
+            "declared_by": "Alan",
+            "role": "human",
+        }
+        report = game.record(
+            self.project, "milestone", "Alan", "Critérios do alpha com evidência ligada.",
+            fields, [], self.root / "marco-recibo",
+        )
+        self.assertEqual(report["kind"], "milestone")
+        self.assertIn(
+            "o recibo feche o marco",
+            report["fields"]["scope"],
+            "o fields do milestone copiava a decisão e calava a recusa",
+        )
+        self.assertIn("(`marco`)", report["fields"]["scope"])
+        self.assertNotIn("marco", report["fields"])
+        self.assertNotIn("marco", report)
+        self.assertNotIn("elsewhere", report)
+        self.assertEqual(report["status"], "declared")
+        self.assertFalse(game.recipe_refuses_receipt_as_milestone(""))
+        with mock.patch.object(game, "record_milestone_gate_source", return_value=None):
+            silent = game.record(
+                self.project, "milestone", "Alan", "Critérios do alpha com evidência ligada.",
+                {
+                    "milestone": "alpha",
+                    "decision": "declared",
+                    "declared_by": "Alan",
+                    "role": "human",
+                },
+                [], self.root / "marco-recibo-silent",
+            )
+        self.assertNotIn("o recibo feche o marco", silent["fields"].get("scope") or "")
+        seen = game.record(
+            self.project, "budget", "Alan", "cena da fábrica, 60 s",
+            {
+                "metric": "frame_p99",
+                "value": "14.2",
+                "unit": "ms",
+                "platform": "web",
+                "tool": "devtools",
+            },
+            [], self.root / "budget-sem-marco",
+        )
+        self.assertNotIn("o recibo feche o marco", seen["fields"].get("scope") or "")
+        observed = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            game.parse_fields(["scenario=primeira travessia", "role=human"]),
+            [], self.root / "obs-sem-marco",
+        )
+        self.assertNotIn("o recibo feche o marco", observed["fields"].get("scope") or "")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o marco que a receita já recusa", recipe)
+        self.assertIn("nomeia o marco que a receita já recusa", skill)
+        self.assertIn("nomeia o marco que a receita já recusa", readme)
+        self.assertNotIn("verified", report["fields"]["scope"])
+        self.assertNotIn("aprovado", report["fields"]["scope"])
+        self.assertNotIn("o recibo feche o marco", report["scope"])
+        self.assertNotIn("o recibo feche o marco", game.next_scope())
+
     def test_art_names_the_palette_the_system_already_refuses(self):
         guide = (game.FRAMEWORK / "references/game-design-system.md").read_text(encoding="utf-8")
         self.assertTrue(

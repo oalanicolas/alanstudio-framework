@@ -19,7 +19,7 @@ sobrevive à escala, ao tempo e à plataforma.
 
 No starter, com tela, a primeira superfície do recorte é a porta.
 Convite, last-run e recibo no disco não fecham marco nem certificam
-acabamento.
+acabamento. Se a receita recusa que o recibo feche o marco, o `fields` do `record --kind milestone` nomeia o marco que a receita já recusa. Recibo no disco não é a passagem. Sem chave `marco`.
 
 ## 0. Três instrumentos, três perguntas
 
@@ -137,7 +137,7 @@ projeto: `verify` para comandos técnicos; se o roteiro recusa aprovar a criativ
 pessoa (ou o agente, com `role=agent`) viu em movimento; `record --kind budget` para
 cada medição de orçamento com plataforma e ferramenta; `record --kind milestone` para
 a decisão de passagem, com quem declarou. O recibo guarda o fato declarado; não o
-valida. Exemplo completo: [da trilha ao capítulo acabado](../examples/era-uma-vez-production.md).
+valida. Se a receita recusa que o recibo feche o marco, o `fields` do `record --kind milestone` nomeia o marco que a receita já recusa. Recibo no disco não é a passagem. Sem chave `marco`. Exemplo completo: [da trilha ao capítulo acabado](../examples/era-uma-vez-production.md).
 
 ## Limites
 

@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.537 — o fields do record milestone nomeia o marco que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+convite,
+last-run
+e
+recibo
+não
+fecham
+marco.
+O
+fields
+do
+milestone
+copiava
+a
+decisão
+e
+calava
+a
+recusa.
+Agora
+o
+`fields`
+do
+`record --kind milestone`
+nomeia
+o
+marco.
+Recibo
+no
+disco
+não
+é
+a
+passagem.
+Sem
+chave
+`marco`.
+Nomear
+não
+fecha.
+
+O que 0.9.537 não afirma:
+declarar
+a
+passagem
+não
+é
+fechar
+o
+marco.
+
 ## 0.9.536 — o quality_bar do sfx summary nomeia a alocação que a receita já recusa
 
 A

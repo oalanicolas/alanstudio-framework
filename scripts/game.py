@@ -12345,6 +12345,42 @@ def record_budget_fields_scope(kind):
     )
 
 
+# A receita já recusa que o recibo feche o
+# marco. Sem isto o fields do milestone
+# copiava a decisão e calava a recusa.
+# Recibo no disco não é a passagem.
+PROD_RECIPE = FRAMEWORK / "recipes/production.md"
+PROD_MILESTONE = re.compile(r"não fecham marco nem certificam")
+
+
+def recipe_refuses_receipt_as_milestone(text):
+    return bool(text and PROD_MILESTONE.search(text))
+
+
+def record_milestone_gate_source():
+    path = PROD_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_receipt_as_milestone(text):
+        return "recipes/production.md"
+    return None
+
+
+def record_milestone_fields_scope(kind):
+    if kind != "milestone":
+        return None
+    if not record_milestone_gate_source():
+        return None
+    return (
+        "O disco recusa que o recibo feche o marco "
+        "(`marco`). Recibo no disco não é a passagem."
+    )
+
+
 # O roteiro já recusa que o screenshot isolado comprove animação. Sem isto o
 # anexo copiava o hash e calava a recusa.
 # Anexo no disco não é controle.
@@ -12401,7 +12437,7 @@ def record(project, kind, author, note, fields, attachments, output):
             fields["value"] = float(fields["value"])
         except ValueError:
             raise ValueError("value precisa ser numérico") from None
-    named = record_budget_fields_scope(kind)
+    named = record_budget_fields_scope(kind) or record_milestone_fields_scope(kind)
     if named:
         fields = dict(fields, scope=named)
     files = []
