@@ -6152,20 +6152,57 @@ def production_bar_scope():
     return scope
 
 
+# A barra já recusa que o degrau sem condição
+# seja observação. Sem isto o item copiava o
+# degrau e calava a recusa. Linha no disco
+# não é acabamento.
+BAR_OPINION = re.compile(r"Degrau sem condição é opinião")
+
+
+def bar_refuses_tier_without_condition(text):
+    return bool(text and BAR_OPINION.search(text))
+
+
+def production_bar_dimension_opinion_source():
+    path = BAR_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_tier_without_condition(text):
+        return "references/production-bar.md"
+    return None
+
+
+def production_bar_dimension_scope():
+    if not production_bar_dimension_opinion_source():
+        return None
+    return (
+        "O disco recusa que o degrau sem condição seja observação "
+        "(`opinião`). Linha no disco não é acabamento."
+    )
+
+
 def production_bar(focus, stage=None, project=None):
     dimensions = FOCUS_DIMENSIONS.get(focus, ())
     declaration = bar_declaration(project) if project is not None else None
+    named = production_bar_dimension_scope()
+    items = []
+    for key in dimensions:
+        item = {
+            "key": key,
+            "label": BAR_DIMENSIONS[key],
+            "declared": (declaration["declared"].get(key) if declaration else None),
+        }
+        if named:
+            item["scope"] = named
+        items.append(item)
     return {
         "tiers": list(BAR_TIERS),
         "tier_target": STAGE_TIERS.get(stage),
-        "dimensions": [
-            {
-                "key": key,
-                "label": BAR_DIMENSIONS[key],
-                "declared": (declaration["declared"].get(key) if declaration else None),
-            }
-            for key in dimensions
-        ],
+        "dimensions": items,
         "rule": "O degrau percebido de um jogo é o mínimo entre suas dimensões, não a média.",
         "guide": str(FRAMEWORK / "references/production-bar.md"),
         "declaration": declaration,

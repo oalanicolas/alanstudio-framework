@@ -1288,6 +1288,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("promover o degrau", game.next_step(self.project)["scope"])
         self.assertNotIn("promover o degrau", report["documentation"]["scope"])
 
+    def test_production_bar_dimensions_name_the_opinion_the_bar_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.bar_refuses_tier_without_condition(guide),
+            "a barra já recusa que o degrau sem condição seja observação",
+        )
+        self.assertEqual(game.production_bar_dimension_opinion_source(), "references/production-bar.md")
+        report = game.context(self.project, "create")
+        self.assertTrue(report["production_bar"]["dimensions"], "o production_bar já lista as dimensões do foco")
+        item = report["production_bar"]["dimensions"][0]
+        self.assertIn(
+            "degrau sem condição seja observação",
+            item["scope"],
+            "o item copiava o degrau e calava a recusa",
+        )
+        self.assertIn("(`opinião`)", item["scope"])
+        self.assertNotIn("opinião", item)
+        self.assertNotIn("opinião", report["production_bar"])
+        self.assertFalse(report["production_bar"]["assessed"])
+        self.assertIsNone(report["production_bar"]["observed"])
+        self.assertFalse(game.bar_refuses_tier_without_condition(""))
+        with mock.patch.object(game, "production_bar_dimension_opinion_source", return_value=None):
+            silent = game.context(self.project, "create")
+        self.assertNotIn("degrau sem condição seja observação", silent["production_bar"]["dimensions"][0].get("scope") or "")
+        raw = game.bar_reading(self.project)["dimensions"][0]
+        self.assertNotIn("degrau sem condição seja observação", raw.get("scope") or "")
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a opinião que a barra já recusa", guide)
+        self.assertIn("nomeia a opinião que a barra já recusa", recipe)
+        self.assertIn("nomeia a opinião que a barra já recusa", skill)
+        self.assertIn("nomeia a opinião que a barra já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("degrau sem condição seja observação", report["production_bar"]["scope"])
+        self.assertNotIn("degrau sem condição seja observação", game.bar_reading(self.project)["scope"])
+        self.assertNotIn("degrau sem condição seja observação", report.get("scope") or "")
+        self.assertNotIn("degrau sem condição seja observação", game.next_step(self.project)["scope"])
+
     def test_context_names_the_browser_the_pack_already_refuses_to_prove(self):
         pack = (game.FRAMEWORK / "packs/platforms/web.md").read_text(encoding="utf-8")
         self.assertTrue(

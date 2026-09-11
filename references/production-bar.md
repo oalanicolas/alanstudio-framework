@@ -231,7 +231,7 @@ a de desenvolvimento. Receita: [release](../recipes/release.md).
 2. Antes de subir uma dimensão que já está alta, procure a mais baixa entre as
    pertinentes. Registre o degrau observado e a evidência no QA ou no Devlog.
 3. Ao declarar um degrau, declare também a condição: dispositivo, versão, cena e
-   quem observou. Degrau sem condição é opinião.
+   quem observou. Degrau sem condição é opinião. Se a barra recusa que o degrau sem condição seja observação, o `dimensions[n]` do `production_bar` nomeia a opinião que a barra já recusa. Linha no disco não é acabamento. Sem chave `opinião`.
 4. Uma dimensão intencionalmente fora do jogo é registrada como decisão, com motivo.
    “Não aplicável” não pode esconder desconhecimento.
 

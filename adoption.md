@@ -30,6 +30,56 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.533 — o dimensions do production_bar nomeia a opinião que a barra já recusa
+
+A
+barra
+já
+dizia
+que
+degrau
+sem
+condição
+é
+opinião.
+O
+item
+copiava
+o
+degrau
+e
+calava
+a
+recusa.
+Agora
+o
+`dimensions[n]`
+do
+`production_bar`
+nomeia
+a
+opinião.
+Linha
+no
+disco
+não
+é
+acabamento.
+Sem
+chave
+`opinião`.
+Nomear
+não
+observa.
+
+O que 0.9.533 não afirma:
+copiar
+o
+degrau
+não
+é
+observação.
+
 ## 0.9.532 — o then do play sem seed nomeia a observação que a receita já recusa
 
 A
