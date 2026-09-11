@@ -5991,6 +5991,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(catalog["id"], "passo-madeira-01")
         self.assertFalse(catalog["heard"])
 
+    def test_sfx_info_names_the_loose_file_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_loose_file_as_audio(recipe),
+            "a receita já recusa que arquivo sem papel seja áudio do jogo",
+        )
+        self.assertEqual(game.sfx_catalog.info_local_loose_source(), "recipes/audio.md")
+        report = game.sfx_catalog.info_entry("dash", self.root)
+        self.assertEqual(report["kind"], "starter")
+        self.assertNotIn("missing", report)
+        self.assertIn(
+            "arquivo sem papel seja áudio do jogo",
+            report["scope"],
+            "a ficha copiava licença e bytes e calava a recusa",
+        )
+        self.assertIn("(`lixo`)", report["scope"])
+        self.assertNotIn("lixo", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_loose_file_as_audio(""))
+        self.assertNotIn("arquivo sem papel seja áudio do jogo", report["next"])
+        with mock.patch.object(game.sfx_catalog, "info_local_loose_source", return_value=None):
+            silent = game.sfx_catalog.info_entry("dash", self.root)
+        self.assertNotIn("arquivo sem papel seja áudio do jogo", silent["scope"])
+        raw = game.sfx_catalog.local_stems()
+        self.assertTrue(raw["files"])
+        self.assertNotIn("scope", raw["files"][0])
+        lost = game.sfx_catalog.local_missing_card(
+            {"key": "ghost", "src": "ghost.wav", "license": "CC0-1.0", "author": "Ana", "origin": "teste"},
+            True,
+        )
+        self.assertNotIn("scope", lost)
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o lixo que a receita já recusa", recipe)
+        self.assertIn("nomeia o lixo que a receita já recusa", skill)
+        self.assertIn("nomeia o lixo que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        planted, _ = self._plant_catalog_sound()
+        catalog = game.sfx_catalog.info_entry(planted["id"], self.root)
+        self.assertEqual(catalog["kind"], "catalog")
+        self.assertNotIn("arquivo sem papel seja áudio do jogo", catalog.get("scope") or "")
+        self.assertNotIn("arquivo sem papel seja áudio do jogo", catalog.get("next") or "")
+
     def test_sfx_verify_names_starter_stems_without_claiming_to_cross_them(self):
         report = game.sfx_catalog.verify_catalog(self.root)
         self.assertTrue(report["empty"])

@@ -30,6 +30,68 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.465 — o sfx info do stem nomeia o lixo que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+arquivo
+sem
+papel
+e
+sem
+consumidor
+não
+é
+áudio
+do
+jogo.
+A
+ficha
+copiava
+licença
+e
+bytes
+e
+calava
+a
+recusa.
+Agora
+o
+`sfx info`
+do
+stem
+nomeia
+o
+lixo.
+Arquivo
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`lixo`.
+Nomear
+não
+ouve.
+
+O que 0.9.465 não afirma:
+arquivo
+no
+disco
+não
+é
+papel
+no
+mixer
+nem
+mix
+ouvida.
+
 ## 0.9.464 — o sfx import nomeia a improvisação que a receita já recusa
 
 A
