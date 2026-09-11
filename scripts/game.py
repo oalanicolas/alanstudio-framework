@@ -2168,6 +2168,11 @@ SHIP_PAYLOAD_DIRS = ("src",)
 # não são outra máquina.
 SIZE_FILES = ("tools/size.mjs", "tools/size.js", "tools/size.py")
 SIZE_BYTES = re.compile(r"sem teto", re.IGNORECASE)
+# A receita já declara o passo. Sem isto o ship
+# listava build e calava o tool. Empacotar no
+# disco não é outra máquina.
+EXPORT_FILES = ("tools/export.mjs", "tools/export.js", "tools/export.py")
+EXPORT_PACK = re.compile(r"não prova execução em outra máquina", re.IGNORECASE)
 
 
 def optional_text(value):
@@ -2724,6 +2729,25 @@ def ship_serve_source(project):
     return None
 
 
+def export_packs_tree(text):
+    return bool(text and EXPORT_PACK.search(text))
+
+
+def ship_export_source(project):
+    project = Path(project)
+    for name in EXPORT_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if export_packs_tree(text):
+            return name
+    return None
+
+
 def ship_reading(project):
     project = Path(project)
     try:
@@ -2766,6 +2790,11 @@ def ship_reading(project):
         scope += (
             " O disco nomeia a árvore exportada (`serve`). "
             "Banner no disco não é outra máquina."
+        )
+    if ship_export_source(project):
+        scope += (
+            " O disco empacota a árvore (`export`). "
+            "Empacotar no disco não é outra máquina."
         )
     return {
         "schema_version": 1,

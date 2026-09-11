@@ -3,6 +3,50 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.369 — o ship nomeia o passo que o export já declara
+
+A
+receita
+já
+apontava
+`npm run build`.
+O
+comando
+listava
+`build`
+e
+calava
+o
+tool.
+Agora
+o
+`ship`
+nomeia
+o
+passo.
+Empacotar
+no
+disco
+não
+é
+outra
+máquina.
+Sem
+chave
+`export`.
+Não
+promove
+`elsewhere`.
+
+O que 0.9.369 não afirma:
+empacotar
+no
+disco
+não
+é
+outra
+máquina.
+
 ## 0.9.368 — o access nomeia as teclas que a tabela já lista
 
 A

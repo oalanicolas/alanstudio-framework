@@ -713,7 +713,9 @@ atual. Nomeia a árvore que perdeu o `src/` que o projeto já tem. Se o
 `tools/size.*` declara sem teto, o `ship` nomeia o tamanho. Bytes no
 disco não são outra máquina. Sem chave `size`. Se o `tools/serve.*`
 nomeia a árvore exportada, o `ship` nomeia o banner que o serve já imprime.
-Banner no disco não é outra máquina. Sem chave `serve`. Nomear
+Banner no disco não é outra máquina. Sem chave `serve`. Se o
+`tools/export.*` declara o empacote, o `ship` nomeia o passo que o export já declara.
+Empacotar no disco não é outra máquina. Sem chave `export`. Nomear
 não devolve o jogo. `shipped` e `elsewhere` são sempre `false`. Árvore
 incompleta recebe `ship.incomplete`; artefato de outro commit recebe
 `ship.stale`.

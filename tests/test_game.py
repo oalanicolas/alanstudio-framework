@@ -4884,6 +4884,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("LUFS", report["scope"])
 
+    def test_ship_names_the_pack_the_export_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/export.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.export_packs_tree(tool), "o export já declara o passo")
+        self.assertEqual(game.ship_export_source(starter), "tools/export.mjs")
+        report = game.ship_reading(starter)
+        self.assertIn("empacota a árvore", report["scope"], "o ship listava build e calava o export")
+        self.assertIn("(`export`)", report["scope"])
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertNotIn("export", report)
+        empty = game.ship_reading(self.project)
+        self.assertFalse(game.export_packs_tree(""))
+        self.assertIsNone(game.ship_export_source(self.project))
+        self.assertNotIn("empacota a árvore", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o passo que o export já declara", recipe)
+        self.assertIn("nomeia o passo que o export já declara", skill)
+        self.assertIn("nomeia o passo que o export já declara", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("LUFS", report["scope"])
+
     def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
         # O export já copia src/. Sem isto o ship dizia
         # completa uma dist/ só com identidade e serve.

@@ -66,7 +66,8 @@ Implementação concreta a adaptar: o starter `canvas-arcade` não tem dependên
 e serve por `tools/serve.mjs`. `npm run build` copia a árvore jogável para
 `dist/` (index, src, data, serve). Isso torna o clone limpo trivial de
 reproduzir e declara o passo de empacotar — não prova que outra máquina
-já executou o artefato. O harness lê o passo com `ship <projeto>`.
+já executou o artefato. Se o `tools/export.*` declara o empacote, o `ship` nomeia o passo que o export já declara.
+Empacotar no disco não é outra máquina. Sem chave `export`. O harness lê o passo com `ship <projeto>`.
 `shipped` é sempre falso. Sem o passo, `next` propõe `ship.unpacked`.
 Árvore incompleta é `ship.incomplete`; artefato de outro commit é
 `ship.stale`. Nomeia a árvore que perdeu o `src/` que o projeto já

@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.368: o `access` nomeia as teclas que a tabela já lista. Tabela no disco não é sessão. Sem chave `commands`. Não promove `verified`.
+**HEAD:** ver `git log -1` — vigente 0.9.369: o `ship` nomeia o passo que o export já declara. Empacotar no disco não é outra máquina. Sem chave `export`. Não promove `elsewhere`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.368):** `python3 -m unittest discover -s tests` → 364 OK.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK.
+**Suítes do 0.9.369 (antes da confirmação):** `python3 -m unittest discover -s tests` → 365 esperado.
+`cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.368)
+## O que o HEAD já entrega (0.9.91–0.9.369)
 
 | Ver | Salto |
 | --- | --- |
@@ -312,6 +312,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.366 | O `art` nomeia o trilho que o telegraph já marca. A receita já apontava a mostra; o comando listava paletas e calava o aviso no canvas. Sem chave `telegraph`. Não promove `consistent`. |
 | 0.9.367 | O `sfx info` nomeia o pico que o inspect já mede. O inspect já gravava `peak_dbfs`; o comando lia id e créditos e calava o número. Sem `rms`. Não promove `heard`. |
 | 0.9.368 | O `access` nomeia as teclas que a tabela já lista. A receita já pedia `#commands`; o comando lia remap e calava o preenchimento. Sem chave `commands`. Não promove `verified`. |
+| 0.9.369 | O `ship` nomeia o passo que o export já declara. A receita já apontava `npm run build`; o comando listava `build` e calava o tool. Sem chave `export`. Não promove `elsewhere`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -335,7 +336,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | performance | playable | o `budget` nomeia os bytes que o size já relata; o `budget` nomeia a porta que a receita já cronometra; o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | o `access` nomeia as teclas que a tabela já lista; o `access` nomeia o perigo que o live já anuncia; o `access` nomeia o contraste que a receita já amostra; o `access` nomeia o `:focus-visible` que a casca já declara; o canvas da porta e do fim nomeia a lacuna do som; a região viva nomeia a mesa e o look da porta e do fim; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
 | content_scale | shippable | o `content` nomeia a mesa que o disco já nasce; o `content` nomeia o par que `listMoods` já lista; `brief` não come a folga da guarda; paleta não finge volume; dusk+calm+pair; `enough` falso |
-| release | **prototype** | o `ship` nomeia o banner que o serve já imprime; o `ship` nomeia o tamanho que a receita já relata; o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem; ninguém correu o `dist/` fora daqui; `elsewhere` falso |
+| release | **prototype** | o `ship` nomeia o passo que o export já declara; o `ship` nomeia o banner que o serve já imprime; o `ship` nomeia o tamanho que a receita já relata; o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem; ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
 ---
 
@@ -776,6 +777,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   o `tools/serve.*` nomeia a árvore exportada. Sem
   o marcador, a frase some. Banner no disco não é
   outra máquina. Sem chave `serve` no recibo.
+  `ship.scope` nomeia o passo se o `tools/export.*`
+  declara o empacote. Sem o marcador, a frase some.
+  Empacotar no disco não é outra máquina. Sem chave
+  `export` no recibo.
   `elsewhere` falso.
   `roles.scope` nomeia a soma se o `tools/mix.*` soma
   as vozes. Sem o marcador, a frase some. Soma no
@@ -1326,6 +1331,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `art` que lista paletas e cala o trilho que o telegraph já marca.
 **Não** mais um `sfx info` que lê a ficha e cala o pico que o inspect já mede.
 **Não** mais um `access` que lê remap e cala as teclas que a tabela já lista.
+**Não** mais um `ship` que lista build e cala o passo que o export já declara.
 
 Candidatos, do que ainda dói:
 
@@ -2858,6 +2864,20 @@ Candidatos, do que ainda dói:
   tabela
   já
   lista
+  e um
+  `ship`
+  que
+  lista
+  build
+  e
+  cala
+  o
+  passo
+  que
+  o
+  export
+  já
+  declara
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2882,15 +2902,15 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`access` nomeia as teclas que
-a tabela já lista. A receita
-já pedia `#commands`; o
-comando lia remap e calava
-o preenchimento. Tabela no
-disco não é sessão. Sem chave
-`commands`. Não promove
-`verified`. Não outro remap
-na tabela.
+`ship` nomeia o passo que
+o export já declara. A receita
+já apontava `npm run build`;
+o comando listava `build` e
+calava o tool. Empacotar no
+disco não é outra máquina.
+Sem chave `export`. Não
+promove `elsewhere`. Não
+outro banner no ship.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2994,6 +3014,7 @@ A família save que lê persistLine e cala o fechamento que o disco já grava es
 A família art que lista paletas e cala o trilho que o telegraph já marca está saturada.
 A família sfx info que lê a ficha e cala o pico que o inspect já mede está saturada.
 A família access que lê remap e cala as teclas que a tabela já lista está saturada.
+A família ship que lista build e cala o passo que o export já declara está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -3077,5 +3098,8 @@ Não inventar pico no stem do starter — irmão de 367.
 Não inventar chave `commands` no recibo do access — irmão de 368 e 348.
 Não outro remap na tabela — irmão de 368; a família recado/remap/botão está saturada.
 Não pintar as teclas no canvas — irmão de 368.
+Não inventar chave `export` no recibo do ship — irmão de 369 e 363.
+Não outro banner no `ship` — irmão de 369 e 363.
+Não importar teto no `export` — irmão de 369 e 353.
 O rótulo do coil do dash ainda diz recarregando — irmão de 328.
-Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access; atrito ideia→jogo que não seja 332/337/339/342/347; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest.
+Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro passo no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access; atrito ideia→jogo que não seja 332/337/339/342/347; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest.
