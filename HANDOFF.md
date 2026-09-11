@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.369: o `ship` nomeia o passo que o export já declara. Empacotar no disco não é outra máquina. Sem chave `export`. Não promove `elsewhere`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes do 0.9.369 (antes da confirmação):** `python3 -m unittest discover -s tests` → 365 esperado.
-`cd assets/starters/canvas-arcade && npm test` → 509.
+**Suítes confirmadas no HEAD (0.9.369):** `python3 -m unittest discover -s tests` → 365 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
