@@ -183,6 +183,8 @@ também corta as vozes do verbo que ainda soavam. No fim e na
 porta o `hush` não corre: a cortina já venceu e o stinger
 precisa atravessar. Arquivo no disco não é mix ouvido. `npm run sfx -- --from dash --as brighter`
 desloca a voz no papel que o mixer já toca; `--as` precisa de `--from`.
+Se o `tools/design-sfx.*` desloca a voz, o `roles` nomeia a voz que o sfx já desloca.
+Arquivo no disco não é mix ouvida. Sem chave `sfx`.
 `npm run peak` relata o pico do
 arquivo; `npm run mix` soma as vozes de uma partida simulada com o mesmo
 palco, folga, ducking e taxa da corrente do mixer. Se o `tools/mix.*`

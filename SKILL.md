@@ -241,7 +241,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `duckMs` que a tabela já lista, e os arquivos que os preenchem.
    Sem duck a chave some. Nomear não é mix ouvida. Se o
    `tools/mix.*` soma as vozes, o `roles` nomeia a soma. Soma no
-   disco não é mix ouvida. Sem chave `mix`. `--fill` sugere o acervo ou a ficha
+   disco não é mix ouvida. Sem chave `mix`. Se o `tools/design-sfx.*`
+   desloca a voz, o `roles` nomeia a voz que o sfx já desloca.
+   Arquivo no disco não é mix ouvida. Sem chave `sfx`. `--fill` sugere o acervo ou a ficha
    do stem do starter; `--apply` copia o id do acervo ou o stem
    do starter com créditos — e recoloca o WAV se o recibo já está
    e origem e licença casam. `sfx copy` continua o caminho explícito. Crescer o acervo é `sfx import` / `sfx seed`

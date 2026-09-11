@@ -2598,6 +2598,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("LUFS", report["scope"])
         self.assertNotIn("-14", report["scope"])
 
+    def test_roles_names_the_sfx_the_recipe_already_shifts(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/design-sfx.py").read_text(encoding="utf-8")
+        self.assertTrue(game.sfx_shifts_voice(tool), "o tool já desloca a voz")
+        self.assertEqual(game.sfx_shift_source(starter), "tools/design-sfx.py")
+        report = game.roles_reading(starter)
+        self.assertIn("desloca a voz", report["scope"], "o roles somava o mix e calava o sfx")
+        self.assertIn("(`sfx`)", report["scope"])
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertNotIn("sfx", report)
+        empty = game.roles_reading(self.project)
+        self.assertFalse(game.sfx_shifts_voice(""))
+        self.assertIsNone(game.sfx_shift_source(self.project))
+        self.assertNotIn("desloca a voz", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a voz que o sfx já desloca", recipe)
+        self.assertIn("nomeia a voz que o sfx já desloca", skill)
+        self.assertIn("nomeia a voz que o sfx já desloca", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("peak", report["scope"])
+        self.assertNotIn("LUFS", report["scope"])
+
     def test_roles_names_the_duck_the_sounds_already_declare(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.roles_reading(starter)

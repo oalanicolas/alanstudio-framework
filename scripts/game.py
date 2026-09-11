@@ -1247,6 +1247,37 @@ def mix_sum_source(project):
     return None
 
 
+# A receita já desloca a voz. Sem isto o roles
+# lia SOUNDS e calava o sfx. Arquivo no disco
+# não é mix ouvida.
+SFX_FILES = (
+    "tools/design-sfx.py",
+    "tools/sfx.py",
+    "tools/design-sfx.js",
+    "tools/sfx.js",
+)
+SFX_SHIFT = re.compile(r"desloca a voz", re.IGNORECASE)
+
+
+def sfx_shifts_voice(text):
+    return bool(text and SFX_SHIFT.search(text))
+
+
+def sfx_shift_source(project):
+    project = Path(project)
+    for name in SFX_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if sfx_shifts_voice(text):
+            return name
+    return None
+
+
 def roles_reading(project, root=None):
     project = Path(project)
     entries, sources = declared_sound_roles(project)
@@ -1273,6 +1304,10 @@ def roles_reading(project, root=None):
     if mix_sum_source(project):
         scope += (
             " O disco soma as vozes (`mix`). Soma no disco não é mix ouvida."
+        )
+    if sfx_shift_source(project):
+        scope += (
+            " O disco desloca a voz (`sfx`). Arquivo no disco não é mix ouvida."
         )
     return {
         "schema_version": 1,

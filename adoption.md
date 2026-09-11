@@ -3,6 +3,54 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.361 — o roles nomeia a voz que o sfx já desloca
+
+A
+receita
+já
+deslocava
+a
+voz
+com
+`sfx --from/--as`.
+O
+comando
+somava
+o
+mix
+e
+calava
+o
+tool.
+Agora
+o
+`roles`
+nomeia
+a
+voz.
+Arquivo
+no
+disco
+não
+é
+mix
+ouvida.
+Sem
+chave
+`sfx`.
+Não
+promove
+`heard`.
+
+O que 0.9.361 não afirma:
+arquivo
+no
+disco
+não
+é
+mixagem
+ouvida.
+
 ## 0.9.360 — o budget nomeia os bytes que o size já relata
 
 A
