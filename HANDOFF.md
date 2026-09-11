@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.378: o `save` nomeia a gravação que o storage já verifica. Escrita no disco não é aba fechada. Sem chave `storage`. Não promove `trusted`.
+**HEAD:** ver `git log -1` — vigente 0.9.379: o `feel` nomeia o land que o dash já emite. Pose no disco não é peso percebido. Sem chave `land`. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.378):** `python3 -m unittest discover -s tests` → 374 OK.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK.
+**Suítes confirmadas no HEAD anterior (0.9.378):** `python3 -m unittest discover -s tests` → 374 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK. Confirmação do 0.9.379 pendente.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.378)
+## O que o HEAD já entrega (0.9.91–0.9.379)
 
 | Ver | Salto |
 | --- | --- |
@@ -322,6 +322,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.376 | O `feel` nomeia o sit que a guarda já senta. A receita já pedia o arco; o comando lia squash e calava o sit. Sem chave `bank`. Não promove `felt`. |
 | 0.9.377 | O `playtest` nomeia o recado que o serve já grava. A página já pedia o POST; o comando dizia que a página escreve e calava a rota. Sem chave `note`. Não promove `outsider`. |
 | 0.9.378 | O `save` nomeia a gravação que o storage já verifica. A receita já pedia o estágio; o comando lia persistLine e calava o `writeJson`. Sem chave `storage`. Não promove `trusted`. |
+| 0.9.379 | O `feel` nomeia o land que o dash já emite. A receita já pedia o término; o comando lia squash e calava o `landDash`. Sem chave `land`. Não promove `felt`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -336,7 +337,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | o `feel` nomeia o sit que a guarda já senta; o `feel` nomeia a inclinação que o lookAhead já marca; o `feel` nomeia o perdão que o probe já exercita; o `feel` nomeia o corpo que a porta já desloca; o `feel` nomeia o peso do passo que o CONFIG já declara; o `feel` nomeia o rumble que já lê; o rótulo do dash nomeia o avanço no travel; o compromisso da guarda veste a aposta; o coil da guarda veste a aposta; o coil do dash veste o avanço; o coil do dash marca o rumo no corpo; o rastro do dash veste o avanço; o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o `feel` nomeia o land que o dash já emite; o `feel` nomeia o sit que a guarda já senta; o `feel` nomeia a inclinação que o lookAhead já marca; o `feel` nomeia o perdão que o probe já exercita; o `feel` nomeia o corpo que a porta já desloca; o `feel` nomeia o peso do passo que o CONFIG já declara; o `feel` nomeia o rumble que já lê; o rótulo do dash nomeia o avanço no travel; o compromisso da guarda veste a aposta; o coil da guarda veste a aposta; o coil do dash veste o avanço; o coil do dash marca o rumo no corpo; o rastro do dash veste o avanço; o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | o `art` nomeia o trilho que o telegraph já marca; o `art` nomeia o look que o disco já nasce; o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o coil do dash marca o rumo no corpo; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o `sfx search` nomeia o deslocamento que o sfx já oferece; o `sfx summary` nomeia o pico que o peak já relata; o `sfx info` nomeia o pico que o inspect já mede; o `roles` nomeia a voz que o sfx já desloca; o `roles` nomeia a soma que a receita já relata; o `roles` nomeia o `duckMs` que `SOUNDS` já declara; o `sfx verify` nomeia o som que o catálogo perdeu; o `sfx export` nomeia o stem que o disco perdeu; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
@@ -732,6 +733,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   frase some. Conta no disco não é peso
   percebido. Sem chave `probe` no recibo.
   Sem `then.probe`.
+  Se o laço declara `function landDash`,
+  `feel.scope` nomeia o término. Sem o
+  marcador, a frase some. Pose no disco
+  não é peso percebido. Sem chave `land`
+  no recibo. Sem `then.land`.
   `felt` falso.
   `save` relata `warned` / `warnings` se o disco tem
   `persistLine`, `title_volatile` ou `title_unsaved`. Nomear
@@ -853,6 +859,12 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   Escrita no disco não é aba fechada.
   Sem chave `storage` no recibo. Sem
   chamar de atômico. `trusted` falso.
+  `feel.scope` nomeia o land se o laço
+  declara `function landDash`. Sem o
+  marcador, a frase some. Pose no
+  disco não é peso percebido. Sem
+  chave `land` no recibo. Sem
+  `then.land`. `felt` falso.
 - `then` do ciclo (`guide` / `start` / `play`) sempre tem `play`, `note`, `lost`.
   Sem `playtest`. O prompt nomeia o comando; a chave não entra.
 - Se `last_run_seed` devolver um `int` (não bool), `then.seed`
@@ -1493,9 +1505,10 @@ Candidatos, do que ainda dói:
    executar. Lê as janelas da chuva que o
    campo já marca, o rumble que a tabela
    já lista, o peso do passo que o
-   CONFIG já declara e a inclinação que
-   o `lookAhead` já marca. Sem chave
-   `lookAhead`. Com last-run, nomeia
+   CONFIG já declara, a inclinação que
+   o `lookAhead` já marca e o land que
+   o dash já emite. Sem chave
+   `lookAhead`. Sem chave `land`. Com last-run, nomeia
    `then.seed` e `then.invite`. O `next`
    (`feel.unobserved`) aponta o mesmo
    `note` — com `--from-run` se o
@@ -3284,5 +3297,8 @@ Não inventar chave `storage` no recibo do save — irmão de 378 e 365.
 Não inventar chave `write` no recibo do save — irmão de 378.
 Não chamar a gravação de atômica — irmão de 378; o estágio não é substituição.
 Não outra linha de persistência no canvas — irmão de 378 e 350.
+Não inventar chave `land` no recibo do feel — irmão de 379 e 376.
+Não inventar chave `then.land` no recibo do feel — irmão de 379.
+Não usar “senta” no scope do land — irmão de 379 e 376.
 O rótulo do coil do dash ainda diz recarregando — irmão de 328.
-Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outro percentil no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro passo no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access nem outro last-run no note nem auto-anexar no note nem outro pico no sfx summary nem outro pico no sfx info nem outro par no start nem extra pair no content nem pair no art nem outra legenda no access nem outro deslocamento no sfx search nem outra voz no sfx search nem outro sit no feel nem outra guarda no feel nem outro recado no playtest nem outro POST no playtest nem outra gravação no save nem outro storage no save; atrito ideia→jogo que não seja 332/337/339/342/347/373; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro nem o sit da guarda; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest nem o last-run no note nem o recado no playtest.
+Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outro percentil no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro passo no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access nem outro last-run no note nem auto-anexar no note nem outro pico no sfx summary nem outro pico no sfx info nem outro par no start nem extra pair no content nem pair no art nem outra legenda no access nem outro deslocamento no sfx search nem outra voz no sfx search nem outro sit no feel nem outra guarda no feel nem outro recado no playtest nem outro POST no playtest nem outra gravação no save nem outro storage no save nem outro land no feel nem outro término no feel; atrito ideia→jogo que não seja 332/337/339/342/347/373; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro nem o sit da guarda nem o land do dash; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest nem o last-run no note nem o recado no playtest.

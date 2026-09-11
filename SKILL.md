@@ -270,7 +270,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `lookAhead`, o `feel` nomeia a inclinação que o lookAhead já marca.
    Lean no disco não é peso percebido. Sem chave `lookAhead`. Se o `tools/probe.*`
    exercita as janelas de perdão, o `feel` nomeia o perdão que o probe já exercita.
-   Conta no disco não é peso percebido. Sem chave `probe`. Se o laço senta a guarda, o `feel` nomeia o sit que a guarda já senta. Pose no disco não é peso percebido. Sem chave `bank`. Traço no disco não é peso percebido. Lê o
+   Conta no disco não é peso percebido. Sem chave `probe`. Se o laço senta a guarda, o `feel` nomeia o sit que a guarda já senta. Pose no disco não é peso percebido. Sem chave `bank`. Se o laço emite o término, o `feel` nomeia o land que o dash já emite. Pose no disco não é peso percebido. Sem chave `land`. Traço no disco não é peso percebido. Lê o
    recibo de observação no disco. Nomeia `then.play` e `then.note` sem
    executar. Com last-run, nomeia `then.seed` e `then.invite` — o mesmo
    endereço que `play` / `guide`. Sem comando de abrir, `then.play` some.

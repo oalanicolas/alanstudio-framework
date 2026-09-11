@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.379 — o feel nomeia o land que o dash já emite
+
+A
+receita
+já
+pedia
+o
+término.
+O
+comando
+lia
+squash
+e
+calava
+o
+`landDash`.
+Agora
+o
+`feel`
+nomeia
+o
+land.
+Pose
+no
+disco
+não
+é
+peso
+percebido.
+Sem
+chave
+`land`.
+Não
+promove
+`felt`.
+
+O que 0.9.379 não afirma:
+pose
+no
+disco
+não
+é
+peso
+percebido
+no
+dispositivo.
+
 ## 0.9.378 — o save nomeia a gravação que o storage já verifica
 
 A

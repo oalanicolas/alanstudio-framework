@@ -1747,6 +1747,26 @@ def bank_sit_source(project):
     return None
 
 
+# A receita já emite o land. Sem isto o feel
+# lia squash e calava o término. Pose no disco
+# não é peso percebido.
+LAND_DASH = re.compile(r"(?:export\s+)?function\s+landDash\b")
+
+
+def dash_emits_land(text):
+    return bool(text and LAND_DASH.search(text))
+
+
+def land_dash_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if dash_emits_land(text):
+            return relative
+    return None
+
+
 def _feel_scope(project):
     scope = (
         "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch, "
@@ -1784,6 +1804,11 @@ def _feel_scope(project):
     if bank_sit_source(project):
         scope += (
             " A guarda senta o corpo (`bankWindup`). Pose no disco não é "
+            "peso percebido."
+        )
+    if land_dash_source(project):
+        scope += (
+            " O dash emite o término (`landDash`). Pose no disco não é "
             "peso percebido."
         )
     return scope

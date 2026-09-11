@@ -3744,6 +3744,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("then.bank", report.get("then") or {})
         self.assertNotIn("16 ms", report["scope"])
 
+    def test_feel_names_the_land_the_dash_already_emits(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        rules = (starter / "src/game/rules.js").read_text(encoding="utf-8")
+        self.assertTrue(game.dash_emits_land(rules), "o dash já emite o término")
+        self.assertEqual(game.land_dash_source(starter), "src/game/rules.js")
+        report = game.feel_reading(starter)
+        self.assertIn("dash emite o término", report["scope"], "o feel lia squash e calava o land")
+        self.assertIn("(`landDash`)", report["scope"])
+        self.assertFalse(report["felt"])
+        self.assertNotIn("land", report)
+        empty = game.feel_reading(self.project)
+        self.assertFalse(game.dash_emits_land(""))
+        self.assertIsNone(game.land_dash_source(self.project))
+        self.assertNotIn("dash emite o término", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o land que o dash já emite", recipe)
+        self.assertIn("nomeia o land que o dash já emite", skill)
+        self.assertIn("nomeia o land que o dash já emite", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("then.land", report.get("then") or {})
+        self.assertNotIn("16 ms", report["scope"])
+
     def test_feel_names_the_heading_the_dash_already_aims(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.feel_reading(starter)
