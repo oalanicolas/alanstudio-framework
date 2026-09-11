@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.519 — a opção game_speed do access nomeia a precisão que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+precisão
+sem
+alternativa
+não
+é
+alcance.
+A
+opção
+`game_speed`
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+a
+opção
+`game_speed`
+nomeia
+a
+precisão.
+Precisão
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`precisão`.
+Nomear
+não
+observa.
+
+O que 0.9.519 não afirma:
+a
+velocidade
+da
+partida
+não
+é
+sessão
+observada
+com
+o
+modo
+ativo.
+
 ## 0.9.518 — a opção assist do access nomeia o oculto que a receita já recusa
 
 A

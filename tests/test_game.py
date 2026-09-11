@@ -2652,6 +2652,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("assistência esconda conteúdo", game.feel_reading(starter)["scope"])
         self.assertNotIn("assistência esconda conteúdo", game.roles_reading(starter)["scope"])
 
+    def test_access_game_speed_names_the_precision_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_precision_without_alternative(recipe),
+            "a receita já recusa que a precisão fique sem alternativa",
+        )
+        self.assertEqual(game.access_game_speed_precision_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = next(option for option in report["options"] if option["key"] == "game_speed")
+        self.assertIn(
+            "precisão fique sem alternativa",
+            item["scope"],
+            "a opção game_speed copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`precisão`)", item["scope"])
+        self.assertNotIn("precisão", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_precision_without_alternative(""))
+        self.assertNotIn("precisão fique sem alternativa", report["scope"])
+        self.assertNotIn("precisão fique sem alternativa", report.get("next") or "")
+        for option in report["options"]:
+            if option["key"] == "game_speed":
+                continue
+            self.assertNotIn("precisão fique sem alternativa", option["scope"])
+        with mock.patch.object(game, "access_game_speed_precision_source", return_value=None):
+            silent = game.access_reading(starter)
+        silent_item = next(option for option in silent["options"] if option["key"] == "game_speed")
+        self.assertNotIn("precisão fique sem alternativa", silent_item["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a precisão que a receita já recusa", recipe)
+        self.assertIn("nomeia a precisão que a receita já recusa", skill)
+        self.assertIn("nomeia a precisão que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("precisão fique sem alternativa", game.next_scope())
+        self.assertNotIn("precisão fique sem alternativa", game.feel_reading(starter)["scope"])
+        self.assertNotIn("precisão fique sem alternativa", game.roles_reading(starter)["scope"])
+
     def test_commands_name_the_generic_the_menu_already_refuses(self):
         guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
         self.assertTrue(

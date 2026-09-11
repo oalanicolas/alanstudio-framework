@@ -3183,6 +3183,46 @@ def access_assist_option_scope():
     return scope
 
 
+# A receita já recusa que a precisão fique sem alternativa. Sem isto a
+# opção game_speed copiava a chave e calava a recusa.
+# Precisão no disco não é sessão.
+A11Y_SPEED_PRECISION = re.compile(r"exigência de precisão")
+
+
+def recipe_refuses_precision_without_alternative(text):
+    return bool(text and A11Y_SPEED_PRECISION.search(text))
+
+
+def access_game_speed_precision_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_precision_without_alternative(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_game_speed_precision_scope():
+    if not access_game_speed_precision_source():
+        return None
+    return (
+        "O disco recusa que a precisão fique sem alternativa "
+        "(`precisão`). Precisão no disco não é sessão."
+    )
+
+
+def access_game_speed_option_scope():
+    scope = access_option_scope()
+    named = access_game_speed_precision_scope()
+    if named:
+        scope += " " + named
+    return scope
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -3246,6 +3286,7 @@ def access_reading(project):
                     else access_colorblind_option_scope() if key == "colorblind"
                     else access_one_hand_option_scope() if key == "one_hand"
                     else access_assist_option_scope() if key == "assist"
+                    else access_game_speed_option_scope() if key == "game_speed"
                     else option_scope
                 ),
             }
