@@ -58,7 +58,8 @@ sessão com o teclado. Sem chave `focus`. `verified` é sempre falso: chave no f
 com o modo ativo. O starter `canvas-arcade` expõe `assist`, `gameSpeed` e o remapeamento
 das seis ações do teclado na página; a tabela `#commands`
 nomeia as teclas vigentes e mantém toque e controle no
-sufixo. Declara em
+sufixo. Se o disco declara `paintCommands`, o `access` nomeia as teclas que a tabela já lista.
+Tabela no disco não é sessão. Sem chave `commands`. Declara em
 `docs/access.md` o que o recorte não atende. O aviso do primeiro ciclo
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
 A prática orbe-só também ganha passo no campo enquanto o canvas a

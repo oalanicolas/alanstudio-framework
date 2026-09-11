@@ -1846,6 +1846,26 @@ def threat_live_source(project):
     return None
 
 
+# A receita já pede a tabela viva. Sem isto o access
+# lia remap e calava o preenchimento. Tabela no
+# disco não é sessão.
+COMMANDS_PAINT = re.compile(r"(?:export\s+)?function\s+paintCommands\b")
+
+
+def page_lists_keys(text):
+    return bool(text and COMMANDS_PAINT.search(text))
+
+
+def commands_table_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if page_lists_keys(text):
+            return relative
+    return None
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -1880,6 +1900,11 @@ def access_reading(project):
         scope += (
             " A região viva nomeia o perigo à frente que a receita já "
             "pede. Texto no DOM não é sessão."
+        )
+    if commands_table_source(project):
+        scope += (
+            " A tabela nomeia as teclas vigentes (`#commands`). "
+            "Tabela no disco não é sessão."
         )
     return {
         "schema_version": 1,

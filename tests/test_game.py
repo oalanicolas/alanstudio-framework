@@ -3993,6 +3993,29 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("4.5", report["scope"])
 
+    def test_access_names_the_keys_the_table_already_lists(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        keys = (starter / "src/core/keys.js").read_text(encoding="utf-8")
+        self.assertTrue(game.page_lists_keys(keys), "a tabela já lista as teclas")
+        self.assertEqual(game.commands_table_source(starter), "src/core/keys.js")
+        report = game.access_reading(starter)
+        self.assertIn("teclas vigentes", report["scope"], "o access lia remap e calava a tabela")
+        self.assertIn("(`#commands`)", report["scope"])
+        self.assertFalse(report["verified"])
+        self.assertNotIn("commands", report)
+        empty = game.access_reading(self.project)
+        self.assertFalse(game.page_lists_keys(""))
+        self.assertIsNone(game.commands_table_source(self.project))
+        self.assertNotIn("teclas vigentes", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia as teclas que a tabela já lista", recipe)
+        self.assertIn("nomeia as teclas que a tabela já lista", skill)
+        self.assertIn("nomeia as teclas que a tabela já lista", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+
     def test_audio_recipe_names_the_session_clock_the_bed_already_follows(self):
         recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
         access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")

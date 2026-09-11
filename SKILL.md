@@ -308,6 +308,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    disco não é sessão com o modo ativo. Sem chave `contrast`.
    Se o live anuncia o perigo à frente, o `access` nomeia o perigo que o live já anuncia.
    Texto no DOM não é sessão. Sem chave `threat`.
+   Se o disco declara `paintCommands`, o `access` nomeia as teclas que a tabela já lista.
+   Tabela no disco não é sessão. Sem chave `commands`.
    Texto no disco não é mix ouvido.
    Nomear não é
    `trusted`. Trocar no stub não é sessão observada.

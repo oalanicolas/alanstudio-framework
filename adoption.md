@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.368 — o access nomeia as teclas que a tabela já lista
+
+A
+receita
+já
+pedia
+`#commands`.
+O
+comando
+lia
+remap
+e
+calava
+o
+preenchimento.
+Agora
+o
+`access`
+nomeia
+as
+teclas.
+Tabela
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`commands`.
+Não
+promove
+`verified`.
+
+O que 0.9.368 não afirma:
+tabela
+no
+disco
+não
+é
+sessão
+com
+o
+teclado.
+
 ## 0.9.367 — o sfx info nomeia o pico que o inspect já mede
 
 O
