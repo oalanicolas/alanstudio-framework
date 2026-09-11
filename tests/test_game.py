@@ -2245,6 +2245,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("importação sem erro comprove aparência equivalente", game.next_scope())
         self.assertNotIn("importação sem erro comprove aparência equivalente", game.scan(starter)["scope"])
 
+    def test_art_names_the_framing_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_local_as_framing(recipe),
+            "a receita já recusa que uma correção local valide o enquadramento",
+        )
+        self.assertEqual(game.art_framing_source(), "recipes/visual.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.art_reading(starter)
+        self.assertIn(
+            "uma correção local valide o enquadramento",
+            report["scope"],
+            "o art listava paletas e calava a recusa",
+        )
+        self.assertIn("(`enquadramento`)", report["scope"])
+        self.assertNotIn("enquadramento", report)
+        self.assertFalse(report["consistent"])
+        self.assertFalse(game.recipe_refuses_local_as_framing(""))
+        with mock.patch.object(game, "art_framing_source", return_value=None):
+            silent = game.art_reading(starter)
+        self.assertNotIn("uma correção local valide o enquadramento", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o enquadramento que a receita já recusa", recipe)
+        self.assertIn("nomeia o enquadramento que a receita já recusa", skill)
+        self.assertIn("nomeia o enquadramento que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertTrue(report["palettes"])
+        self.assertNotIn(
+            "uma correção local valide o enquadramento",
+            report["palettes"][0].get("scope") or "",
+        )
+        self.assertTrue(report["rains"])
+        self.assertNotIn(
+            "uma correção local valide o enquadramento",
+            report["rains"][0].get("scope") or "",
+        )
+        self.assertNotIn("uma correção local valide o enquadramento", game.art_direction_scope())
+        self.assertNotIn("uma correção local valide o enquadramento", game.next_scope())
+        self.assertNotIn("uma correção local valide o enquadramento", game.scan(starter)["scope"])
+
     def test_doctor_names_the_publisher_the_skill_already_refuses(self):
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         self.assertTrue(

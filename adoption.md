@@ -30,6 +30,61 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.542 — o art nomeia o enquadramento que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+uma
+correção
+local
+não
+valida
+o
+enquadramento.
+O
+art
+listava
+paletas
+e
+calava
+a
+recusa.
+Agora
+o
+`art`
+nomeia
+o
+enquadramento.
+Correção
+no
+disco
+não
+é
+o
+conjunto.
+Sem
+chave
+`enquadramento`.
+Nomear
+não
+observa.
+
+O que 0.9.542 não afirma:
+corrigir
+um
+asset
+não
+é
+ver
+o
+elenco
+na
+luz
+final.
+
 ## 0.9.541 — o convite nomeia o rolar que a receita já recusa
 
 A

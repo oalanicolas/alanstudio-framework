@@ -4105,6 +4105,9 @@ def art_reading(project):
     named = art_appearance_scope()
     if named:
         scope += named
+    framed = art_framing_scope()
+    if framed:
+        scope += framed
     palette_scope = art_palette_scope()
     for item in palettes:
         item["scope"] = palette_scope
@@ -7781,6 +7784,39 @@ def art_appearance_scope():
     return (
         " O disco recusa que importação sem erro comprove aparência "
         "equivalente (`aparência`). Importar no disco não é o renderer."
+    )
+
+
+# A receita já recusa que uma correção local
+# valide o enquadramento. Sem isto o art
+# listava paletas e calava a recusa.
+# Correção no disco não é o conjunto.
+VISUAL_FRAME = re.compile(r"correção local não valida o enquadramento")
+
+
+def recipe_refuses_local_as_framing(text):
+    return bool(text and VISUAL_FRAME.search(text))
+
+
+def art_framing_source():
+    path = VISUAL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_local_as_framing(text):
+        return "recipes/visual.md"
+    return None
+
+
+def art_framing_scope():
+    if not art_framing_source():
+        return None
+    return (
+        " O disco recusa que uma correção local valide o enquadramento "
+        "(`enquadramento`). Correção no disco não é o conjunto."
     )
 
 
