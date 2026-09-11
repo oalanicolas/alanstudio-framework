@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.524 — o then do start nomeia a experiência que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+título
+e
+cores
+novos
+não
+demonstram
+uma
+experiência
+nova.
+O
+then
+do
+start
+apontava
+play
+e
+calava
+a
+recusa.
+Agora
+o
+then
+nomeia
+a
+experiência.
+Nome
+no
+disco
+não
+é
+o
+ciclo
+jogado.
+Sem
+chave
+`experiência`.
+Nomear
+não
+observa.
+
+O que 0.9.524 não afirma:
+criar
+a
+pasta
+não
+é
+a
+primeira
+partida.
+
 ## 0.9.523 — o record do sfx copy do acervo nomeia o consumido que a receita já recusa
 
 A

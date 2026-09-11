@@ -9856,6 +9856,40 @@ def init(destination, starter, title=None, documents=True, idea=None):
     }
 
 
+# A receita já recusa que título e cores novos
+# sejam experiência. Sem isto o then do start
+# apontava play e calava a recusa. Nome no
+# disco não é o ciclo jogado.
+CREATE_RECIPE = FRAMEWORK / "recipes/create.md"
+CREATE_EXPERIENCE = re.compile(r"não demonstram uma experiência nova")
+
+
+def recipe_refuses_title_as_new_experience(text):
+    return bool(text and CREATE_EXPERIENCE.search(text))
+
+
+def start_then_experience_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_title_as_new_experience(text):
+        return "recipes/create.md"
+    return None
+
+
+def start_then_scope():
+    if not start_then_experience_source():
+        return None
+    return (
+        "O disco recusa que título e cores novos sejam experiência "
+        "(`experiência`). Nome no disco não é o ciclo jogado."
+    )
+
+
 def start_project(destination=None, starter=None, title=None, idea=None, documents=False, cwd=None):
     named = destination is None
     if destination is None:
@@ -9887,6 +9921,9 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
     play = play_command(destination, scripts, manager)
     url = serve_url(scripts)
     then = cycle_then(destination, play, chosen)
+    experience = start_then_scope()
+    if experience:
+        then = dict(then, scope=experience)
     cycle = starter_cycle(chosen)
     noted = bool(observation_receipts(destination))
     start_parts = ["start", destination]

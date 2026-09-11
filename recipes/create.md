@@ -104,7 +104,7 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    sistemas. Se o processo recusa garantir o mérito, o `check-plan` nomeia o mérito que o processo já recusa. Forma no disco não é adequação. Sem chave `mérito`. Se a guia recusa que a checagem seja validador semântico, o `metadata_issues[n]` nomeia o semântico que a guia já recusa. Parse no disco não é o jogo. Sem chave `semântico`. Se o processo recusa que claimed seja verified, o `verify` nomeia a verificação que o processo já recusa. Alegação no disco não é cobertura. Sem chave `verified`. Se a receita recusa que o registro declarado prove suporte real, o `capabilities[n]` do `verify` nomeia o suporte que a receita já recusa. Registro no disco não é o consumidor. Sem chave `suporte`. Se o processo recusa que o hash seja leitura, o `git` nomeia a leitura que o processo já recusa. Identidade no disco não é inspeção. Sem chave `leitura`.
 2. Construa um ciclo jogável com uma decisão característica. Defina entrada,
    objetivo percebido, consequência, término e repetição. Título e cores novos
-   não demonstram uma experiência nova.
+não demonstram uma experiência nova. Se a receita recusa que título e cores novos sejam experiência, o then do start nomeia a experiência que a receita já recusa. Nome no disco não é o ciclo jogado. Sem chave `experiência`.
 3. Faça essa fatia atravessar controles, estado, apresentação e conteúdo.
    Valide a integração antes de multiplicar fases, itens ou personagens.
 4. Aplique o feel e o áudio **desse** verbo. Use `--focus feel` e

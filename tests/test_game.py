@@ -13048,6 +13048,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         art = game.art_reading(destination)
         self.assertNotIn("(`pair`)", art["scope"])
 
+    def test_start_then_names_the_experience_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_title_as_new_experience(recipe),
+            "a receita já recusa que título e cores novos sejam experiência",
+        )
+        self.assertEqual(game.start_then_experience_source(), "recipes/create.md")
+        destination = self.root / "com-experiencia"
+        report = game.start_project(destination, "canvas-arcade")
+        self.assertIn(
+            "título e cores novos sejam experiência",
+            report["then"]["scope"],
+            "o then do start apontava play e calava a recusa",
+        )
+        self.assertIn("(`experiência`)", report["then"]["scope"])
+        self.assertNotIn("experiência", report)
+        self.assertNotIn("experiência", report["then"])
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_title_as_new_experience(""))
+        self.assertNotIn("título e cores novos sejam experiência", report["scope"])
+        with mock.patch.object(game, "start_then_experience_source", return_value=None):
+            silent = game.start_project(destination, "canvas-arcade")
+        self.assertNotIn("título e cores novos sejam experiência", silent["then"].get("scope") or "")
+        played = game.play_cycle(destination, "canvas-arcade")
+        self.assertNotIn("título e cores novos sejam experiência", played["then"].get("scope") or "")
+        guided = game.guide_cycle(destination, "canvas-arcade")
+        self.assertNotIn("título e cores novos sejam experiência", guided["then"].get("scope") or "")
+        planted = game.init(self.root / "init-sem-experiencia", "canvas-arcade")
+        self.assertNotIn("título e cores novos sejam experiência", planted["then"].get("scope") or "")
+        felt = game.feel_reading(destination)
+        self.assertNotIn("título e cores novos sejam experiência", felt["then"].get("scope") or "")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a experiência que a receita já recusa", recipe)
+        self.assertIn("nomeia a experiência que a receita já recusa", skill)
+        self.assertIn("nomeia a experiência que a receita já recusa", readme_doc)
+        self.assertNotIn("verified", report["then"]["scope"])
+        self.assertNotIn("aprovado", report["then"]["scope"])
+        self.assertNotIn("título e cores novos sejam experiência", game.next_scope())
+        self.assertNotIn("título e cores novos sejam experiência", game.play_scope(destination))
+
     def test_note_command_names_the_author_and_points_at_a_run_without_claiming_it(self):
         destination = self.root / "autor-git"
         game.start_project(destination, "canvas-arcade")
