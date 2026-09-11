@@ -3512,6 +3512,40 @@ def verified_write_source(project):
     return None
 
 
+# A receita já recusa que o estágio seja
+# atomicidade. Sem isto o save nomeava o
+# storage e calava a recusa. Estágio no
+# disco não é substituição.
+PERSIST_RECIPE = FRAMEWORK / "recipes/persistence.md"
+PERSIST_ATOMIC = re.compile(r"não atomicidade")
+
+
+def recipe_refuses_staging_as_atomicity(text):
+    return bool(text and PERSIST_ATOMIC.search(text))
+
+
+def save_atomicity_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_staging_as_atomicity(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_atomicity_scope():
+    if not save_atomicity_source():
+        return None
+    return (
+        " O disco recusa que o estágio seja atomicidade (`atomicidade`). "
+        "Estágio no disco não é substituição."
+    )
+
+
 def save_reading(project):
     project = Path(project)
     used, versioned, warned, sources = [], [], [], []
@@ -3547,6 +3581,9 @@ def save_reading(project):
             " O disco verifica a gravação (`storage`). "
             "Escrita no disco não é aba fechada."
         )
+    named = save_atomicity_scope()
+    if named:
+        scope += named
     return {
         "schema_version": 1,
         "project": str(project),

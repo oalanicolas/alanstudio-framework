@@ -30,6 +30,56 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.535 — o save nomeia a atomicidade que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+estágio
+compra
+detecção,
+não
+atomicidade.
+O
+save
+nomeava
+o
+storage
+e
+calava
+a
+recusa.
+Agora
+o
+`save`
+nomeia
+a
+atomicidade.
+Estágio
+no
+disco
+não
+é
+substituição.
+Sem
+chave
+`atomicidade`.
+Nomear
+não
+confia.
+
+O que 0.9.535 não afirma:
+verificar
+a
+gravação
+não
+é
+escrita
+atômica.
+
 ## 0.9.534 — o fields do record budget nomeia os engasgos que a receita já recusa
 
 A

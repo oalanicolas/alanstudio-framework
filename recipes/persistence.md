@@ -74,7 +74,7 @@ de forma **verificada** em `src/core/storage.js` — escreve em chave de estági
 relê, compara e só então grava na chave real. Isso **não** é a escrita atômica do
 parágrafo acima: `localStorage` não tem substituição, então a gravação final é
 uma escrita comum, com a mesma exposição a interrupção que uma escrita direta. O
-estágio compra detecção de cota e de truncamento, não atomicidade. Para ter
+estágio compra detecção de cota e de truncamento, não atomicidade. Se a receita recusa que o estágio seja atomicidade, o `save` nomeia a atomicidade que a receita já recusa. Estágio no disco não é substituição. Sem chave `atomicidade`. Para ter
 atomicidade de verdade nesse alvo é preciso outro armazenamento — IndexedDB tem
 transação. `tests/save.test.mjs` exercita migração, dado corrompido, preferência
 fora de faixa e o aviso da recuperação; interrupção abrupta real, ninguém exercitou.

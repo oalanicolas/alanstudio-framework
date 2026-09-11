@@ -745,7 +745,7 @@ ilegíveis (`settings_recovered`, `settings.broken`); relata `warned`. Se o
 canvas pinta `settingsLine`, o `save` nomeia a recuperação. A pausa não.
 Texto no disco não é aba fechada. Sem chave `recovery`. Se o disco
 escuta `beforeunload`, o `save` nomeia o fechamento que o disco já grava.
-Gancho no disco não é aba fechada. Sem chave `beforeunload`. Se o disco verifica a gravação, o `save` nomeia a gravação que o storage já verifica. Escrita no disco não é aba fechada. Sem chave `storage`. Nomear
+Gancho no disco não é aba fechada. Sem chave `beforeunload`. Se o disco verifica a gravação, o `save` nomeia a gravação que o storage já verifica. Escrita no disco não é aba fechada. Sem chave `storage`. Se a receita recusa que o estágio seja atomicidade, o `save` nomeia a atomicidade que a receita já recusa. Estágio no disco não é substituição. Sem chave `atomicidade`. Nomear
 não é aba fechada. `trusted` é sempre `false`.
 `budget` procura script `budget`/`bench`, `tools/budget.*` ou
 `record --kind budget`. Se o tool declara `title.attract`, o

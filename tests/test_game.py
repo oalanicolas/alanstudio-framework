@@ -9863,6 +9863,37 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("LUFS", report["scope"])
 
+    def test_save_names_the_atomicity_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_staging_as_atomicity(recipe),
+            "a receita já recusa que o estágio seja atomicidade",
+        )
+        self.assertEqual(game.save_atomicity_source(), "recipes/persistence.md")
+        report = game.save_reading(self.project)
+        self.assertIn(
+            "estágio seja atomicidade",
+            report["scope"],
+            "o save nomeava o storage e calava a recusa",
+        )
+        self.assertIn("(`atomicidade`)", report["scope"])
+        self.assertNotIn("atomicidade", report)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_staging_as_atomicity(""))
+        with mock.patch.object(game, "save_atomicity_source", return_value=None):
+            silent = game.save_reading(self.project)
+        self.assertNotIn("estágio seja atomicidade", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a atomicidade que a receita já recusa", recipe)
+        self.assertIn("nomeia a atomicidade que a receita já recusa", skill)
+        self.assertIn("nomeia a atomicidade que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("estágio seja atomicidade", game.next_scope())
+        self.assertNotIn("estágio seja atomicidade", game.budget_reading(self.project)["scope"])
+        self.assertNotIn("estágio seja atomicidade", game.record_scope())
+
     def test_save_names_storage_without_a_schema_as_unversioned(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "store.js").write_text("localStorage.setItem('score', value)\n")
