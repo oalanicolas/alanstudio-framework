@@ -3,6 +3,61 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.429 — o guide nomeia a abertura que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+nomear
+o
+comando
+não
+abre
+o
+jogo.
+O
+passo
+de
+abrir
+copiava
+o
+start
+e
+calava
+a
+recusa.
+Agora
+o
+`guide`
+nomeia
+a
+abertura.
+Nome
+no
+disco
+não
+é
+partida.
+Sem
+chave
+`abertura`.
+Nomear
+não
+abre.
+
+O que 0.9.429 não afirma:
+nome
+no
+disco
+não
+é
+partida
+nem
+pasta
+criada.
+
 ## 0.9.428 — o gate nomeia o silêncio que o roteiro já recusa
 
 O

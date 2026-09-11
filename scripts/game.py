@@ -5982,6 +5982,41 @@ def note_step_scope():
     return scope
 
 
+# O processo já recusa que o comando abra o jogo. Sem isto o
+# passo de abrir copiava o start e calava a recusa.
+# Nome no disco não é partida.
+PROCESS_OPEN = re.compile(r"Nomear o comando não abre")
+
+
+def process_refuses_open(text):
+    return bool(text and PROCESS_OPEN.search(text))
+
+
+def open_step_source():
+    path = FRAMEWORK / "references/process.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_open(text):
+        return "references/process.md"
+    return None
+
+
+def open_step_scope():
+    scope = (
+        "Abrir o ciclo. Não executa o start e não observa."
+    )
+    if open_step_source():
+        scope += (
+            " O disco recusa que o comando abra o jogo (`abertura`). "
+            "Nome no disco não é partida."
+        )
+    return scope
+
+
 def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, url=None):
     play_step = {
         "n": 2,
@@ -6006,6 +6041,7 @@ def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, ur
             "do": "abrir o ciclo",
             "command": start_command,
             "done": exists,
+            "scope": open_step_scope(),
         },
         play_step,
         {

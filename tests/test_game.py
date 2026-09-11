@@ -998,7 +998,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("nomeia o onboarding que o roteiro já recusa", skill)
         self.assertIn("nomeia o onboarding que o roteiro já recusa", readme)
         self.assertNotIn("verified", step["scope"])
-        self.assertNotIn("scope", report["steps"][0])
+        self.assertNotIn("mural seja onboarding", report["steps"][0]["scope"])
         self.assertNotIn("mural seja onboarding", report["steps"][2]["scope"])
         self.assertNotIn("mural seja onboarding", report["scope"])
         self.assertNotIn("mural seja onboarding", game.guide_scope("canvas-arcade"))
@@ -1034,7 +1034,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("nomeia o screenshot que a receita já recusa", skill)
         self.assertIn("nomeia o screenshot que a receita já recusa", readme)
         self.assertNotIn("verified", step["scope"])
-        self.assertNotIn("scope", report["steps"][0])
+        self.assertNotIn("screenshot comprove feel", report["steps"][0]["scope"])
         self.assertNotIn("screenshot comprove feel", report["steps"][1]["scope"])
         self.assertNotIn("screenshot comprove feel", report["scope"])
         self.assertNotIn("screenshot comprove feel", game.guide_scope("canvas-arcade"))
@@ -1049,6 +1049,43 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "screenshot comprove feel",
             game.playtest_reading(self.project)["scope"],
         )
+
+    def test_guide_names_the_opening_the_process_already_refuses(self):
+        process = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_open(process),
+            "o processo já recusa que o comando abra o jogo",
+        )
+        self.assertEqual(game.open_step_source(), "references/process.md")
+        report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
+        step = report["steps"][0]
+        self.assertIn(
+            "comando abra o jogo",
+            step["scope"],
+            "o passo de abrir copiava o start e calava a recusa",
+        )
+        self.assertIn("(`abertura`)", step["scope"])
+        self.assertNotIn("abertura", step)
+        self.assertFalse(step["done"])
+        self.assertEqual(len(report["steps"]), 3)
+        self.assertFalse(game.process_refuses_open(""))
+        with mock.patch.object(game, "open_step_source", return_value=None):
+            silent = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
+        self.assertNotIn("comando abra o jogo", silent["steps"][0]["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a abertura que o processo já recusa", create)
+        self.assertIn("nomeia a abertura que o processo já recusa", skill)
+        self.assertIn("nomeia a abertura que o processo já recusa", readme)
+        self.assertNotIn("verified", step["scope"])
+        self.assertNotIn("comando abra o jogo", report["steps"][1]["scope"])
+        self.assertNotIn("comando abra o jogo", report["steps"][2]["scope"])
+        self.assertNotIn("comando abra o jogo", report["scope"])
+        self.assertNotIn("comando abra o jogo", game.guide_scope("canvas-arcade"))
+        self.assertNotIn("comando abra o jogo", game.play_scope(self.project))
+        self.assertNotIn("comando abra o jogo", game.next_scope())
+        self.assertNotIn("comando abra o jogo", game.init_scope(False))
 
     def test_next_names_the_action_the_process_already_asks(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
