@@ -1190,6 +1190,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("menção seja mecânica obrigatória", game.next_scope())
         self.assertNotIn("menção seja mecânica obrigatória", game.context_scope())
 
+    def test_scale_mentions_name_the_marketing_the_ambition_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/ambition.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.ambition_refuses_marketing_adjective(guide),
+            "a ambição já recusa AAA como adjetivo de marketing",
+        )
+        self.assertEqual(game.scale_mention_marketing_source(), "references/ambition.md")
+        (self.project / "README.md").write_text(
+            "# Jogo\n- Escala: AA / Triple-I (piso de acabamento)\nEscopo local.\n"
+        )
+        report = game.scan(self.project)
+        self.assertTrue(report["scale_mentions"], "o scan já lista o campo Escala")
+        item = report["scale_mentions"][0]
+        self.assertIn(
+            "AAA como adjetivo de marketing",
+            item["scope"],
+            "o campo copiava o valor e calava a recusa",
+        )
+        self.assertIn("(`marketing`)", item["scope"])
+        self.assertNotIn("marketing", item)
+        scale = game.context(self.project, "create")["scale"]
+        self.assertEqual(
+            scale["source"],
+            {"path": "README.md", "line": 2, "value": "AA / Triple-I (piso de acabamento)"},
+        )
+        self.assertNotIn("AAA como adjetivo de marketing", scale["scope"])
+        self.assertFalse(game.ambition_refuses_marketing_adjective(""))
+        with mock.patch.object(game, "scale_mention_marketing_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "AAA como adjetivo de marketing",
+            silent["scale_mentions"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o marketing que a ambição já recusa", guide)
+        self.assertIn("nomeia o marketing que a ambição já recusa", recipe)
+        self.assertIn("nomeia o marketing que a ambição já recusa", skill)
+        self.assertIn("nomeia o marketing que a ambição já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("AAA como adjetivo de marketing", report["scope"])
+        self.assertNotIn("AAA como adjetivo de marketing", report["areas"]["vision"]["scope"])
+        self.assertNotIn("AAA como adjetivo de marketing", game.next_scope())
+        self.assertNotIn("AAA como adjetivo de marketing", game.context_scope())
+
     def test_context_names_the_api_the_lifecycle_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
         self.assertTrue(

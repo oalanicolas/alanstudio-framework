@@ -5598,6 +5598,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         for item in area["candidates"]:
             item["scope"] = candidate_scope
     mention_scope = genre_mention_scope()
+    scale_scope = scale_mention_scope()
     issue_scope = coverage_issue_scope()
     draft_scope = coverage_draft_scope()
     return {
@@ -5606,7 +5607,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         "areas": areas, "gaps": gaps, "read_first": read_first,
         "continuity_sources": continuity_sources, "continuity_source_count": continuity_source_count,
         "genre_mentions": [dict(item, scope=mention_scope) for item in genre_mentions],
-        "scale_mentions": scale_mentions,
+        "scale_mentions": [dict(item, scope=scale_scope) for item in scale_mentions],
         "agent_context": {
             "status": "found" if local_instructions else "not_located",
             "files": local_instructions,
@@ -5826,7 +5827,11 @@ def read_scale(mentions, declared=None):
         tokens = re.findall(r"[a-z0-9]+(?:-[a-z0-9]+)*", value)
         for scale, keywords in SCALE_KEYWORDS.items():
             if any(keyword in tokens or (" " in keyword and keyword in value) for keyword in keywords):
-                suggested, source = scale, mention
+                suggested, source = scale, {
+                    "path": mention["path"],
+                    "line": mention["line"],
+                    "value": mention["value"],
+                }
                 break
         if suggested:
             break
@@ -6105,6 +6110,43 @@ def genre_mention_scope():
         scope += (
             " O disco recusa que a menção seja mecânica obrigatória (`mecânica`). "
             "Campo no disco não é regra do jogo."
+        )
+    return scope
+
+
+# A ambição já recusa AAA como adjetivo de marketing. Sem isto o
+# campo copiava o valor e calava a recusa.
+# Campo no disco não é campanha.
+AMBITION_GUIDE = FRAMEWORK / "references/ambition.md"
+SCALE_MARKETING = re.compile(r"adjetivo de marketing")
+
+
+def ambition_refuses_marketing_adjective(text):
+    return bool(text and SCALE_MARKETING.search(text))
+
+
+def scale_mention_marketing_source():
+    path = AMBITION_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if ambition_refuses_marketing_adjective(text):
+        return "references/ambition.md"
+    return None
+
+
+def scale_mention_scope():
+    scope = (
+        "Campo Escala localizado no documento. Não classifica e não "
+        "promove o recorte."
+    )
+    if scale_mention_marketing_source():
+        scope += (
+            " O disco recusa AAA como adjetivo de marketing (`marketing`). "
+            "Campo no disco não é campanha."
         )
     return scope
 

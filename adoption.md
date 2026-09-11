@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.471 — o scale_mentions do scan nomeia o marketing que a ambição já recusa
+
+A
+ambição
+já
+dizia
+que
+AAA
+não
+é
+adjetivo
+de
+marketing.
+O
+campo
+copiava
+o
+valor
+e
+calava
+a
+recusa.
+Agora
+o
+`scale_mentions[n]`
+do
+`scan`
+nomeia
+o
+marketing.
+Campo
+no
+disco
+não
+é
+campanha.
+Sem
+chave
+`marketing`.
+Nomear
+não
+observa.
+
+O que 0.9.471 não afirma:
+campo
+no
+disco
+não
+é
+tier
+de
+publisher
+nem
+piso
+percebido.
+
 ## 0.9.470 — o vision do scan nomeia o público que a guia já recusa
 
 A
