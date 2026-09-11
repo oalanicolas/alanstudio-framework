@@ -5311,6 +5311,50 @@ def playtest_tally_four_scope():
     )
 
 
+# A receita já recusa que a origem no last-run
+# seja sessão observada. Sem isto o playtest
+# relatava played/nearest-orb e calava a recusa.
+# Texto no disco não é alguém de fora.
+FEEL_ORIGIN = re.compile(r"Nenhum dos dois é sessão observada")
+
+
+def recipe_refuses_policy_as_observed_session(text):
+    return bool(text and FEEL_ORIGIN.search(text))
+
+
+def playtest_policy_origin_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_policy_as_observed_session(text):
+        return "recipes/feel.md"
+    return None
+
+
+def playtest_policy_origin_scope():
+    if not playtest_policy_origin_source():
+        return None
+    return (
+        " O disco recusa que a origem no last-run seja sessão "
+        "observada (`origem`). Texto no disco não é alguém de fora."
+    )
+
+
+def playtest_policy_scope():
+    scope = (
+        "played ou nearest-orb no last-run. "
+        "Não observa a sessão e não atribui causa."
+    )
+    named = playtest_policy_origin_scope()
+    if named:
+        scope += named
+    return scope
+
+
 def last_run_speed(project):
     # O convite abria a seed no relógio cheio. last-run já
     # guarda o knob. 1 some. Número não é outsider.
@@ -5471,6 +5515,11 @@ def playtest_reading(project):
     if candidate_curve is not None:
         candidate_curve = dict(candidate_curve, scope=playtest_curve_scope())
     candidate_policy = last_run_policy(project) if candidate else None
+    if candidate_policy is not None:
+        candidate_policy = {
+            "policy": candidate_policy,
+            "scope": playtest_policy_scope(),
+        }
     candidate_tally = last_run_tally(project) if candidate else None
     if candidate_tally is not None:
         candidate_tally = dict(candidate_tally, scope=playtest_tally_scope())

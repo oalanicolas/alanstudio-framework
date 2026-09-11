@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.555 — o candidate_policy nomeia a origem que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+played
+e
+nearest-orb
+não
+são
+sessão
+observada.
+O
+playtest
+relatava
+a
+string
+e
+calava
+a
+recusa.
+Agora
+o
+`candidate_policy`
+nomeia
+a
+origem.
+Texto
+no
+disco
+não
+é
+alguém
+de
+fora.
+Sem
+chave
+`origem`.
+Nomear
+não
+observa.
+
+O que 0.9.555 não afirma:
+relatar
+played
+não
+é
+assistir
+à
+sessão.
+
 ## 0.9.554 — a opção captions do access nomeia o mudo que a receita já recusa
 
 A

@@ -11900,7 +11900,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(reading["candidate_look"])
         self.assertIsNone(reading["candidate_speed"])
         self.assertIsNone(reading["candidate_curve"])
-        self.assertEqual(reading["candidate_policy"], "nearest-orb")
+        self.assertEqual(reading["candidate_policy"]["policy"], "nearest-orb")
         self.assertFalse(reading["expected"])
         self.assertFalse(reading["structured"])
         self.assertFalse(reading["observed"])
@@ -12344,7 +12344,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         reading = game.playtest_reading(destination)
         self.assertEqual(reading["candidate_look"], "dusk")
         self.assertEqual(reading["candidate_speed"], 0.75)
-        self.assertEqual(reading["candidate_policy"], "nearest-orb")
+        self.assertEqual(reading["candidate_policy"]["policy"], "nearest-orb")
         self.assertEqual(
             reading["invite_href"],
             "/?invite=1&seed=8&spawn=dusk&look=dusk&speed=0.75",
@@ -12445,7 +12445,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "felt": False,
         }), encoding="utf-8")
         played = game.playtest_reading(destination)
-        self.assertEqual(played["candidate_policy"], "played")
+        self.assertEqual(played["candidate_policy"]["policy"], "played")
         self.assertEqual(played["candidate_seed"], 8)
         self.assertFalse(played["observed"])
         self.assertFalse(played["outsider"])
@@ -12462,6 +12462,66 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(hollow["observed"])
         self.assertNotIn("aprovado", json.dumps(played))
         self.assertNotIn("verified", json.dumps(played))
+
+    def test_playtest_policy_names_the_origin_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_policy_as_observed_session(recipe),
+            "a receita já recusa que a origem no last-run seja sessão observada",
+        )
+        self.assertEqual(game.playtest_policy_origin_source(), "recipes/feel.md")
+        destination = self.root / "com-origem"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "policy": "played",
+            "run": {"seed": 8, "score": 3, "ticks": 40},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(destination)
+        item = report["candidate_policy"]
+        self.assertEqual(item["policy"], "played")
+        self.assertIn(
+            "origem no last-run seja sessão observada",
+            item["scope"],
+            "o playtest relatava played e calava a recusa",
+        )
+        self.assertIn("(`origem`)", item["scope"])
+        self.assertNotIn("origem", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_policy_as_observed_session(""))
+        self.assertEqual(game.last_run_policy(destination), "played")
+        with mock.patch.object(game, "playtest_policy_origin_source", return_value=None):
+            silent = game.playtest_reading(destination)
+        self.assertNotIn(
+            "origem no last-run seja sessão observada",
+            silent["candidate_policy"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a origem que a receita já recusa", recipe)
+        self.assertIn("nomeia a origem que a receita já recusa", skill)
+        self.assertIn("nomeia a origem que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("origem no last-run seja sessão observada", report["scope"])
+        if report.get("candidate_tally"):
+            self.assertNotIn(
+                "origem no last-run seja sessão observada",
+                report["candidate_tally"]["scope"],
+            )
+        self.assertNotIn("origem no last-run seja sessão observada", game.next_scope())
+        self.assertNotIn(
+            "origem no last-run seja sessão observada",
+            game.feel_reading(destination)["scope"],
+        )
+        invite = game.invite_playtest(destination)
+        self.assertNotIn("origem no last-run seja sessão observada", invite["scope"])
 
     def test_playtest_names_the_curve_the_last_run_already_traced(self):
         destination = self.root / "com-curva"
@@ -12570,7 +12630,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("dashes", tally)
         self.assertNotIn("ticks", tally)
         self.assertEqual(report["candidate_seed"], 8)
-        self.assertEqual(report["candidate_policy"], "played")
+        self.assertEqual(report["candidate_policy"]["policy"], "played")
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
         self.assertIn("candidate_tally", report["scope"])
@@ -12737,7 +12797,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "felt": False,
         }), encoding="utf-8")
         report = game.playtest_reading(destination)
-        self.assertEqual(report["candidate_policy"], "nearest-orb")
+        self.assertEqual(report["candidate_policy"]["policy"], "nearest-orb")
         self.assertFalse(report["outsider"])
         self.assertFalse(report["observed"])
         self.assertNotIn("aprovado", report["scope"])
