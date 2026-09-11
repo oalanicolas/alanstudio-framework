@@ -2612,6 +2612,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("completar o jogo peça as duas mãos", game.feel_reading(starter)["scope"])
         self.assertNotIn("completar o jogo peça as duas mãos", game.roles_reading(starter)["scope"])
 
+    def test_access_assist_names_the_hidden_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_assist_hiding_content(recipe),
+            "a receita já recusa que a assistência esconda conteúdo",
+        )
+        self.assertEqual(game.access_assist_hidden_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = next(option for option in report["options"] if option["key"] == "assist")
+        self.assertIn(
+            "assistência esconda conteúdo",
+            item["scope"],
+            "a opção assist copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`oculto`)", item["scope"])
+        self.assertNotIn("oculto", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_assist_hiding_content(""))
+        self.assertNotIn("assistência esconda conteúdo", report["scope"])
+        self.assertNotIn("assistência esconda conteúdo", report.get("next") or "")
+        for option in report["options"]:
+            if option["key"] == "assist":
+                continue
+            self.assertNotIn("assistência esconda conteúdo", option["scope"])
+        with mock.patch.object(game, "access_assist_hidden_source", return_value=None):
+            silent = game.access_reading(starter)
+        silent_item = next(option for option in silent["options"] if option["key"] == "assist")
+        self.assertNotIn("assistência esconda conteúdo", silent_item["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o oculto que a receita já recusa", recipe)
+        self.assertIn("nomeia o oculto que a receita já recusa", skill)
+        self.assertIn("nomeia o oculto que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("assistência esconda conteúdo", game.next_scope())
+        self.assertNotIn("assistência esconda conteúdo", game.feel_reading(starter)["scope"])
+        self.assertNotIn("assistência esconda conteúdo", game.roles_reading(starter)["scope"])
+
     def test_commands_name_the_generic_the_menu_already_refuses(self):
         guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
         self.assertTrue(

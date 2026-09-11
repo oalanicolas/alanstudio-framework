@@ -3143,6 +3143,46 @@ def access_one_hand_option_scope():
     return scope
 
 
+# A receita já recusa que a assistência esconda conteúdo. Sem isto a
+# opção assist copiava a chave e calava a recusa.
+# Oculto no disco não é sessão.
+A11Y_ASSIST_HIDDEN = re.compile(r"escondem conteúdo")
+
+
+def recipe_refuses_assist_hiding_content(text):
+    return bool(text and A11Y_ASSIST_HIDDEN.search(text))
+
+
+def access_assist_hidden_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_assist_hiding_content(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_assist_hidden_scope():
+    if not access_assist_hidden_source():
+        return None
+    return (
+        "O disco recusa que a assistência esconda conteúdo "
+        "(`oculto`). Oculto no disco não é sessão."
+    )
+
+
+def access_assist_option_scope():
+    scope = access_option_scope()
+    named = access_assist_hidden_scope()
+    if named:
+        scope += " " + named
+    return scope
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -3205,6 +3245,7 @@ def access_reading(project):
                     else access_high_contrast_option_scope() if key == "high_contrast"
                     else access_colorblind_option_scope() if key == "colorblind"
                     else access_one_hand_option_scope() if key == "one_hand"
+                    else access_assist_option_scope() if key == "assist"
                     else option_scope
                 ),
             }
