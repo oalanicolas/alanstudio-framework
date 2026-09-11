@@ -3989,7 +3989,35 @@ def ship_artifact_scope():
             " O disco recusa que o teste no editor demonstre o jogo exportado (`editor`). "
             "Manifesto no disco não é o jogo exportado."
         )
+    if ship_artifact_current_source():
+        scope += (
+            " O disco recusa que uma pasta de build existente corresponda "
+            "à fonte atual (`atual`). Manifesto no disco não é o HEAD."
+        )
     return scope
+
+
+# A receita já recusa que a pasta de build seja a fonte atual. Sem
+# isto o manifesto copiava o git_head e calava a recusa.
+# Manifesto no disco não é o HEAD.
+SHIP_SOURCE = re.compile(r"não prova que corresponde à fonte atual")
+
+
+def recipe_refuses_build_as_current_source(text):
+    return bool(text and SHIP_SOURCE.search(text))
+
+
+def ship_artifact_current_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_build_as_current_source(text):
+        return "recipes/release.md"
+    return None
 
 
 def ship_reading(project):

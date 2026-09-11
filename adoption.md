@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.499 — o artifact do ship nomeia a atual que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+uma
+pasta
+de
+build
+existente
+não
+prova
+a
+fonte
+atual.
+O
+manifesto
+copiava
+o
+git_head
+e
+calava
+a
+recusa.
+Agora
+o
+`artifact`
+do
+ship
+nomeia
+a
+atual.
+Manifesto
+no
+disco
+não
+é
+o
+HEAD.
+Sem
+chave
+`atual`.
+Nomear
+não
+observa.
+
+O que 0.9.499 não afirma:
+o
+HEAD
+do
+artefato
+não
+é
+outra
+máquina.
+
 ## 0.9.498 — o tree do ship nomeia a portabilidade que a receita já recusa
 
 A

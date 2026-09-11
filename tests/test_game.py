@@ -9475,6 +9475,45 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("teste no editor demonstre o jogo exportado", game.next_scope())
         self.assertNotIn("teste no editor demonstre o jogo exportado", game.play_scope(self.project))
 
+    def test_ship_artifact_names_the_current_source_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_build_as_current_source(recipe),
+            "a receita já recusa que uma pasta de build existente corresponda à fonte atual",
+        )
+        self.assertEqual(game.ship_artifact_current_source(), "recipes/release.md")
+        self._web_manifest()
+        self._artifact_tree(complete=False)
+        report = game.ship_reading(self.project)
+        self.assertIsNotNone(report["artifact"], "o ship já lista o VERSION.json")
+        item = report["artifact"]
+        self.assertIn(
+            "pasta de build existente corresponda à fonte atual",
+            item["scope"],
+            "o manifesto copiava o git_head e calava a recusa",
+        )
+        self.assertIn("(`atual`)", item["scope"])
+        self.assertNotIn("atual", item)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_build_as_current_source(""))
+        with mock.patch.object(game, "ship_artifact_current_source", return_value=None):
+            silent = game.ship_reading(self.project)
+        self.assertNotIn("pasta de build existente corresponda à fonte atual", silent["artifact"]["scope"])
+        raw = game.ship_artifact(self.project)
+        self.assertNotIn("scope", raw)
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a atual que a receita já recusa", recipe)
+        self.assertIn("nomeia a atual que a receita já recusa", skill)
+        self.assertIn("nomeia a atual que a receita já recusa", readme)
+        self.assertNotIn("verified", recipe)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("pasta de build existente corresponda à fonte atual", report["scope"])
+        self.assertNotIn("pasta de build existente corresponda à fonte atual", report["tree"]["scope"])
+        self.assertNotIn("pasta de build existente corresponda à fonte atual", game.next_scope())
+        self.assertNotIn("pasta de build existente corresponda à fonte atual", game.play_scope(self.project))
+
     def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
         # O export já copia src/. Sem isto o ship dizia
         # completa uma dist/ só com identidade e serve.
