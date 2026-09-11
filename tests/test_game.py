@@ -1263,6 +1263,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("medir os critérios", game.feel_reading(self.project)["scope"])
         self.assertNotIn("medir os critérios", game.budget_reading(self.project)["scope"])
 
+    def test_record_names_the_animation_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.quality_refuses_isolated_still(guide),
+            "o roteiro já recusa que o screenshot isolado comprove animação",
+        )
+        self.assertEqual(game.record_attachment_still_source(), "references/quality.md")
+        capture = self.root / "shot-438.png"
+        capture.write_bytes(b"frame")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [str(capture)], self.root / "obs-438",
+        )
+        self.assertTrue(report["attachments"], "o record já devolve anexos neste destino")
+        item = report["attachments"][0]
+        self.assertIn(
+            "screenshot isolado comprove animação",
+            item["scope"],
+            "o anexo copiava o hash e calava a recusa",
+        )
+        self.assertIn("(`animação`)", item["scope"])
+        self.assertNotIn("animação", item)
+        self.assertFalse(game.quality_refuses_isolated_still(""))
+        with mock.patch.object(game, "record_attachment_still_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [str(capture)], self.root / "obs-438-silent",
+            )
+        self.assertNotIn("screenshot isolado comprove animação", silent["attachments"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a animação que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a animação que o roteiro já recusa", skill)
+        self.assertIn("nomeia a animação que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("screenshot isolado comprove animação", report["scope"])
+        self.assertNotIn("screenshot isolado comprove animação", game.record_scope())
+        self.assertNotIn("screenshot isolado comprove animação", game.note_step_scope())
+        self.assertNotIn("screenshot isolado comprove animação", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("screenshot isolado comprove animação", game.next_scope())
+
     def test_check_plan_names_the_merit_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(

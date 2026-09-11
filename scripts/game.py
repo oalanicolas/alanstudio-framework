@@ -8803,6 +8803,42 @@ def record_scope():
     return scope
 
 
+# O roteiro já recusa que o screenshot isolado comprove animação. Sem isto o
+# anexo copiava o hash e calava a recusa.
+# Anexo no disco não é controle.
+QUALITY_STILL = re.compile(r"não comprova animação")
+
+
+def quality_refuses_isolated_still(text):
+    return bool(text and QUALITY_STILL.search(text))
+
+
+def record_attachment_still_source():
+    path = QUALITY_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if quality_refuses_isolated_still(text):
+        return "references/quality.md"
+    return None
+
+
+def record_attachment_scope():
+    scope = (
+        "Bytes e hash do arquivo anexado. Não observa o jogo e não "
+        "aprova o movimento."
+    )
+    if record_attachment_still_source():
+        scope += (
+            " O disco recusa que o screenshot isolado comprove animação (`animação`). "
+            "Anexo no disco não é controle."
+        )
+    return scope
+
+
 def record(project, kind, author, note, fields, attachments, output):
     """Recibo de evidência declarada (observação, orçamento medido ou decisão de marco), ligado à versão do projeto."""
     if not project.is_dir():
@@ -8829,7 +8865,12 @@ def record(project, kind, author, note, fields, attachments, output):
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"anexo inexistente ou symlink: {item}")
         data = path.read_bytes()
-        files.append({"path": str(path.resolve()), "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+        files.append({
+            "path": str(path.resolve()),
+            "bytes": len(data),
+            "sha256": hashlib.sha256(data).hexdigest(),
+            "scope": record_attachment_scope(),
+        })
     if output.exists() or output.is_symlink():
         raise ValueError("destino de evidência existente; escolha um novo")
     report = {

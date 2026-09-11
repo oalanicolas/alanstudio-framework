@@ -3,6 +3,57 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.438 — o record nomeia a animação que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+screenshot
+isolada
+não
+comprova
+animação.
+O
+anexo
+copiava
+o
+hash
+e
+calava
+a
+recusa.
+Agora
+o
+`record`
+nomeia
+a
+animação.
+Anexo
+no
+disco
+não
+é
+controle.
+Sem
+chave
+`animação`.
+Nomear
+não
+observa.
+
+O que 0.9.438 não afirma:
+anexo
+no
+disco
+não
+é
+controle
+nem
+peso
+percebido.
+
 ## 0.9.437 — o discover nomeia a qualidade que o roteiro já recusa
 
 O
