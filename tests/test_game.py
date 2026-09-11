@@ -13298,6 +13298,50 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("mostrar a estrutura seja a slice", game.play_scope(destination))
         self.assertNotIn("mostrar a estrutura seja a slice", game.guide_scope("canvas-arcade"))
 
+    def test_feel_then_names_the_artistic_quality_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_tests_as_artistic_quality(recipe),
+            "a receita já recusa que esses testes demonstrem qualidade artística",
+        )
+        self.assertEqual(game.feel_then_artistic_source(), "recipes/feel.md")
+        destination = self.root / "com-artistica"
+        game.start_project(destination, "canvas-arcade")
+        report = game.feel_reading(destination)
+        self.assertIn(
+            "demonstrem qualidade artística",
+            report["then"]["scope"],
+            "o then do feel apontava play e calava a recusa",
+        )
+        self.assertIn("(`artística`)", report["then"]["scope"])
+        self.assertNotIn("artística", report)
+        self.assertNotIn("artística", report["then"])
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_tests_as_artistic_quality(""))
+        self.assertNotIn("demonstrem qualidade artística", report["scope"])
+        with mock.patch.object(game, "feel_then_artistic_source", return_value=None):
+            silent = game.feel_reading(destination)
+        self.assertNotIn("demonstrem qualidade artística", silent["then"].get("scope") or "")
+        started = game.start_project(destination, "canvas-arcade")
+        self.assertNotIn("demonstrem qualidade artística", started["then"].get("scope") or "")
+        guided = game.guide_cycle(destination, "canvas-arcade")
+        self.assertNotIn("demonstrem qualidade artística", guided["then"].get("scope") or "")
+        planted = game.init(self.root / "init-sem-artistica", "canvas-arcade")
+        self.assertNotIn("demonstrem qualidade artística", planted["then"].get("scope") or "")
+        played = game.play_cycle(destination, "canvas-arcade")
+        self.assertNotIn("demonstrem qualidade artística", played["then"].get("scope") or "")
+        for item in report["constants"]:
+            self.assertNotIn("demonstrem qualidade artística", item.get("scope") or "")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a artística que a receita já recusa", recipe)
+        self.assertIn("nomeia a artística que a receita já recusa", skill)
+        self.assertIn("nomeia a artística que a receita já recusa", readme_doc)
+        self.assertNotIn("verified", report["then"]["scope"])
+        self.assertNotIn("aprovado", report["then"]["scope"])
+        self.assertNotIn("demonstrem qualidade artística", game.next_scope())
+        self.assertNotIn("demonstrem qualidade artística", game.play_scope(destination))
+
     def test_play_then_names_the_rng_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
         self.assertTrue(

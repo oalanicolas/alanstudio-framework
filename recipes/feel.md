@@ -215,7 +215,7 @@ rebote ou reação. Uma interrupção deve encerrar o gesto, não só escondê-l
 o ataque terminar. Confira se a entrada do clipe cabe em sua janela visível e se
 o relógio descarta o tempo de pausa/hitstop, sem recuperá-lo num salto na retomada.
 Esses testes verificam integração e continuidade; não demonstram qualidade artística
-nem tornam um giro completo adequado a todos os saltos.
+nem tornam um giro completo adequado a todos os saltos. Se a receita recusa que esses testes demonstrem qualidade artística, o then do `feel` nomeia a artística que a receita já recusa. Número no disco não é direção. Sem chave `artística`.
 
 Quando movimento e ataque são liberados em momentos diferentes, reproduza input
 durante a trava residual: a captura do buffer precisa considerar todas as

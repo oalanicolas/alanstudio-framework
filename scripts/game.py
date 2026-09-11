@@ -2426,6 +2426,39 @@ def feel_constant_position_source():
     return None
 
 
+# A receita já recusa que os testes demonstrem
+# qualidade artística. Sem isto o then do feel
+# apontava play e calava a recusa. Número no
+# disco não é direção.
+FEEL_ARTISTIC = re.compile(r"não demonstram qualidade artística")
+
+
+def recipe_refuses_tests_as_artistic_quality(text):
+    return bool(text and FEEL_ARTISTIC.search(text))
+
+
+def feel_then_artistic_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_tests_as_artistic_quality(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_then_scope():
+    if not feel_then_artistic_source():
+        return None
+    return (
+        "O disco recusa que esses testes demonstrem qualidade artística "
+        "(`artística`). Número no disco não é direção."
+    )
+
+
 def feel_then(project):
     project = Path(project)
     then = {"note": note_command(project)}
@@ -2471,6 +2504,9 @@ def feel_reading(project):
     for item in constants:
         item["scope"] = constant_scope
     then = feel_then(project)
+    artistic = feel_then_scope()
+    if artistic:
+        then = dict(then, scope=artistic)
     return {
         "schema_version": 1,
         "project": str(project),
