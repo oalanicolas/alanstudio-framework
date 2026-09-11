@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.365: o `save` nomeia o fechamento que o disco já grava. Gancho no disco não é aba fechada. Sem chave `beforeunload`. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.364):** `python3 -m unittest discover -s tests` → 360.
+**Suítes confirmadas no HEAD (0.9.365):** `python3 -m unittest discover -s tests` → 361.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
