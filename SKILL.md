@@ -574,7 +574,7 @@ retome o comando original com o mesmo alvo.
 `pin` cria um atalho próprio do host para um comando (`/critique` invoca
 `$game-dev critique`); `unpin` o remove. Só escreve nos diretórios de skills onde a
 `game-dev` está instalada, marca o arquivo e nunca sobrescreve uma skill sua com o
-mesmo nome.
+mesmo nome. Se o README recusa sobrescrever skill sua com o mesmo nome, o `pin` nomeia a própria que o README já recusa. Atalho no disco não é a skill. Sem chave `própria`.
 
 ```sh
 python3 scripts/game.py pin critique --root <lab>

@@ -137,6 +137,46 @@ class CommandCliTest(unittest.TestCase):
         self.assertEqual(removed["removed"], [])
         self.assertTrue(own.is_file())
 
+    def test_pin_names_the_own_skill_the_readme_already_refuses(self):
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.readme_refuses_own_skill_overwrite(readme),
+            "o README já recusa sobrescrever skill sua com o mesmo nome",
+        )
+        self.assertEqual(game.pin_own_source(), "README.md")
+        skills = self.install_skill(".agents")
+        own = skills / "polish/SKILL.md"
+        own.parent.mkdir()
+        own.write_text("---\nname: polish\n---\nskill própria do usuário\n", encoding="utf-8")
+        result = game.pin(self.root, "polish")
+        self.assertTrue(result["skipped"], "o pin já recusa a skill própria")
+        item = result["skipped"][0]
+        self.assertIn(
+            "sobrescrever uma skill sua com o mesmo nome",
+            item["scope"],
+            "o skipped copiava o path e calava a recusa",
+        )
+        self.assertIn("(`própria`)", item["scope"])
+        self.assertNotIn("própria", item)
+        self.assertFalse(game.readme_refuses_own_skill_overwrite(""))
+        with patch.object(game, "pin_own_source", return_value=None):
+            silent = game.pin(self.root, "polish")
+        self.assertNotIn("sobrescrever uma skill sua com o mesmo nome", silent["skipped"][0]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a própria que o README já recusa", readme)
+        self.assertIn("nomeia a própria que o README já recusa", skill)
+        self.assertIn("nomeia a própria que o README já recusa", guide)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("sobrescrever uma skill sua com o mesmo nome", result["scope"])
+        self.assertNotIn("sobrescrever uma skill sua com o mesmo nome", game.unpin(self.root, "polish")["scope"])
+        self.assertNotIn("sobrescrever uma skill sua com o mesmo nome", game.command_listing()["scope"])
+        self.assertNotIn("sobrescrever uma skill sua com o mesmo nome", game.next_scope())
+        self.assertNotIn("sobrescrever uma skill sua com o mesmo nome", game.context_scope())
+        unpinned = game.unpin(self.root, "polish")
+        self.assertIn("sobrescrever uma skill sua com o mesmo nome", unpinned["skipped"][0]["scope"])
+        self.assertNotIn("própria", unpinned["skipped"][0])
+
     def test_unpin_removes_only_pinned_shortcuts_and_is_idempotent(self):
         skills = self.install_skill(".claude")
         game.pin(self.root, "feel")

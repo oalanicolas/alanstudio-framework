@@ -6051,7 +6051,11 @@ def pin(root, name):
         skill_dir = skills_dir / name
         skill_file = skill_dir / "SKILL.md"
         if skill_file.is_file() and PIN_MARKER not in skill_file.read_text(encoding="utf-8"):
-            skipped.append({"path": str(skill_file), "reason": "skill_not_pinned_by_game_dev"})
+            skipped.append({
+                "path": str(skill_file),
+                "reason": "skill_not_pinned_by_game_dev",
+                "scope": pin_skipped_scope(),
+            })
             continue
         skill_dir.mkdir(parents=True, exist_ok=True)
         skill_file.write_text(pinned_skill(name, catalog["commands"][name]), encoding="utf-8")
@@ -6073,7 +6077,11 @@ def unpin(root, name):
         if not skill_file.is_file():
             continue
         if PIN_MARKER not in skill_file.read_text(encoding="utf-8"):
-            skipped.append({"path": str(skill_file), "reason": "skill_not_pinned_by_game_dev"})
+            skipped.append({
+                "path": str(skill_file),
+                "reason": "skill_not_pinned_by_game_dev",
+                "scope": pin_skipped_scope(),
+            })
             continue
         shutil.rmtree(skill_file.parent)
         removed.append(str(skill_file))
@@ -6081,6 +6089,42 @@ def unpin(root, name):
         "command": name, "removed": removed, "skipped": skipped,
         "scope": "Remove só atalhos com o marcador deste harness; uma skill própria do usuário com o mesmo nome fica intacta.",
     }
+
+
+# O README já recusa sobrescrever skill sua com o mesmo nome. Sem
+# isto o skipped copiava o path e calava a recusa.
+# Atalho no disco não é a skill.
+PIN_OWN = re.compile(r"uma skill sua com o mesmo nome nunca é\s+sobrescrita")
+
+
+def readme_refuses_own_skill_overwrite(text):
+    return bool(text and PIN_OWN.search(text))
+
+
+def pin_own_source():
+    path = FRAMEWORK / "README.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_refuses_own_skill_overwrite(text):
+        return "README.md"
+    return None
+
+
+def pin_skipped_scope():
+    scope = (
+        "Caminho e motivo do atalho recusado. Não lê a skill e não "
+        "altera o arquivo."
+    )
+    if pin_own_source():
+        scope += (
+            " O disco recusa sobrescrever uma skill sua com o mesmo nome "
+            "(`própria`). Atalho no disco não é a skill."
+        )
+    return scope
 
 
 def select_packs(kind, genre, mentions):

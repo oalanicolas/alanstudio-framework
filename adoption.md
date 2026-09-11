@@ -30,6 +30,65 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.475 — o pin nomeia a própria que o README já recusa
+
+O
+README
+já
+dizia
+que
+uma
+skill
+sua
+com
+o
+mesmo
+nome
+nunca
+é
+sobrescrita.
+O
+skipped
+copiava
+o
+path
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+a
+própria.
+Atalho
+no
+disco
+não
+é
+a
+skill.
+Sem
+chave
+`própria`.
+Nomear
+não
+observa.
+
+O que 0.9.475 não afirma:
+atalho
+no
+disco
+não
+é
+a
+skill
+carregada
+nem
+partida
+jogada.
+
 ## 0.9.474 — o discover nomeia a listagem que o README já recusa
 
 O
