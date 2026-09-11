@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.455 — o issues[n] da coverage nomeia o acidente que o mapa já recusa
+
+O
+mapa
+já
+dizia
+que
+cobertura
+desigual
+não
+é
+acidente.
+O
+issue
+copiava
+o
+motivo
+e
+calava
+a
+recusa.
+Agora
+o
+`issues[n]`
+da
+coverage
+nomeia
+o
+acidente.
+Recorte
+no
+disco
+não
+é
+falha.
+Sem
+chave
+`acidente`.
+Nomear
+não
+inventaria.
+
+O que 0.9.455 não afirma:
+recorte
+no
+disco
+não
+é
+inventário
+completo
+nem
+jogo
+observado.
+
 ## 0.9.454 — o genre_mentions[n] nomeia a mecânica que o mapa já recusa
 
 O

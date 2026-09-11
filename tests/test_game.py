@@ -2217,6 +2217,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("não percorrido seja inexistente", game.context_scope())
         self.assertNotIn("não percorrido seja inexistente", game.next_scope())
 
+    def test_coverage_issues_name_the_accident_the_map_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sources_refuse_uneven_accident(guide),
+            "o mapa já recusa que a cobertura desigual seja acidente",
+        )
+        self.assertEqual(game.coverage_issue_accident_source(), "references/sources.md")
+        outside = self.root / "private.md"
+        outside.write_text("# GDD\nconteúdo externo\n")
+        (self.project / "GDD.md").symlink_to(outside)
+        report = game.scan(self.project)
+        self.assertTrue(report["coverage"]["issues"], "o scan já lista o recorte que não cobriu")
+        item = report["coverage"]["issues"][0]
+        self.assertIn(
+            "cobertura desigual seja acidente",
+            item["scope"],
+            "o issue copiava o motivo e calava a recusa",
+        )
+        self.assertIn("(`acidente`)", item["scope"])
+        self.assertNotIn("acidente", item)
+        self.assertFalse(game.sources_refuse_uneven_accident(""))
+        with mock.patch.object(game, "coverage_issue_accident_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "cobertura desigual seja acidente",
+            silent["coverage"]["issues"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o acidente que o mapa já recusa", recipe)
+        self.assertIn("nomeia o acidente que o mapa já recusa", skill)
+        self.assertIn("nomeia o acidente que o mapa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("cobertura desigual seja acidente", report["coverage"]["scope"])
+        self.assertNotIn("cobertura desigual seja acidente", report["scope"])
+        self.assertNotIn("cobertura desigual seja acidente", report["audit"]["scope"])
+        self.assertNotIn("cobertura desigual seja acidente", game.next_scope())
+        self.assertNotIn("cobertura desigual seja acidente", game.context_scope())
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")
@@ -2385,7 +2425,12 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         (self.project / "GDD.md").symlink_to(outside)
         result = game.scan(self.project)
         self.assertEqual(result["areas"]["gdd"]["status"], "not_located")
-        self.assertIn({"path": "GDD.md", "reason": "symlink_not_followed"}, result["coverage"]["issues"])
+        self.assertTrue(
+            any(
+                item["path"] == "GDD.md" and item["reason"] == "symlink_not_followed"
+                for item in result["coverage"]["issues"]
+            )
+        )
         self.assertNotIn("DO-NOT-READ", json.dumps(result))
         self.assertEqual(result["coverage"]["documents_inspected"], 0)
 

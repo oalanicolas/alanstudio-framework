@@ -5300,6 +5300,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         for item in area["candidates"]:
             item["scope"] = candidate_scope
     mention_scope = genre_mention_scope()
+    issue_scope = coverage_issue_scope()
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(),
         "minimum_status": "needs_review" if needs_documentation else "candidates_found",
@@ -5315,7 +5316,8 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
             "documents_inspected": inspected, "documents_located": len(documents), "entries_seen": entries_seen,
             "documents_deferred": deferred[:20], "documents_deferred_count": len(deferred),
             "non_current_documents": non_current[:20], "non_current_document_count": len(non_current),
-            "issues": issues[:20], "issue_count": len(issues), "issues_truncated": len(issues) > 20,
+            "issues": [dict(item, scope=issue_scope) for item in issues[:20]],
+            "issue_count": len(issues), "issues_truncated": len(issues) > 20,
             "excluded_directory_names": sorted(excluded_dirs),
             "limits": {"entries": max_entries, "documents": max_documents, "bytes_per_document": max_bytes, "depth": 4, "index_links": max_links, "candidates_per_area": 3, "continuity_sources": 5},
             "scope": coverage_scope(),
@@ -5776,6 +5778,42 @@ def coverage_scope():
         scope += (
             " O disco recusa que o local não percorrido seja inexistente (`inexistente`). "
             "Contagem no disco não é inventário."
+        )
+    return scope
+
+
+# O mapa já recusa que a cobertura desigual seja acidente.
+# Sem isto o issue copiava o motivo e calava a recusa.
+# Recorte no disco não é falha.
+SOURCES_ACCIDENT = re.compile(r"não é acidente")
+
+
+def sources_refuse_uneven_accident(text):
+    return bool(text and SOURCES_ACCIDENT.search(text))
+
+
+def coverage_issue_accident_source():
+    path = FRAMEWORK / "references/sources.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if sources_refuse_uneven_accident(text):
+        return "references/sources.md"
+    return None
+
+
+def coverage_issue_scope():
+    scope = (
+        "Limite, leitura ou ligação que o recorte não cobriu. Não "
+        "completa o inventário e não observa o jogo."
+    )
+    if coverage_issue_accident_source():
+        scope += (
+            " O disco recusa que a cobertura desigual seja acidente (`acidente`). "
+            "Recorte no disco não é falha."
         )
     return scope
 
