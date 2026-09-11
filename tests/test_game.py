@@ -1032,6 +1032,38 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("claimed seja verified", game.next_scope())
         self.assertNotIn("claimed seja verified", game.check_plan_scope())
 
+    def test_git_names_the_reading_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_hash_as_reading(guide),
+            "o processo já recusa que o hash seja leitura",
+        )
+        self.assertEqual(game.git_identity_source(), "references/process.md")
+        report = game.git_summary(game.FRAMEWORK)
+        self.assertIsNotNone(report)
+        self.assertIn(
+            "hash seja leitura",
+            report["scope"],
+            "o git relatava o HEAD e calava a recusa",
+        )
+        self.assertIn("(`leitura`)", report["scope"])
+        self.assertNotIn("leitura", report)
+        self.assertFalse(game.process_refuses_hash_as_reading(""))
+        with mock.patch.object(game, "git_identity_source", return_value=None):
+            silent = game.git_summary(game.FRAMEWORK)
+        self.assertNotIn("hash seja leitura", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a leitura que o processo já recusa", recipe)
+        self.assertIn("nomeia a leitura que o processo já recusa", skill)
+        self.assertIn("nomeia a leitura que o processo já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("hash seja leitura", game.verify_scope())
+        self.assertNotIn("hash seja leitura", game.next_scope())
+        self.assertNotIn("hash seja leitura", game.documentation_scope(True))
+        self.assertNotIn("hash seja leitura", game.scan(self.project)["scope"])
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

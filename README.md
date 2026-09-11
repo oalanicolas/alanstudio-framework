@@ -159,7 +159,7 @@ python3 scripts/game.py context /caminho/do/laboratorio/meu-jogo --focus create 
 ```
 
 O template `game-design`, preenchido, é reconhecido pelo `scan` como cobertura das
-nove áreas. `context` entrega o recorte de leitura e a checagem documental. Itens
+nove áreas. `context` entrega o recorte de leitura e a checagem documental. Se o processo recusa que o hash seja leitura, o `git` nomeia a leitura que o processo já recusa. Identidade no disco não é inspeção. Sem chave `leitura`. Itens
 `optional` do `doctor` não bloqueiam. `--root` pode vir antes ou depois do subcomando.
 
 No Codex ou no Claude, invoque **`$game-dev`** com o projeto e a mudança desejada:

@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.412 — o git nomeia a leitura que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+hash
+prova
+identidade,
+não
+leitura.
+O
+comando
+relatava
+o
+HEAD
+e
+calava
+a
+recusa.
+Agora
+o
+`git`
+nomeia
+a
+leitura.
+Identidade
+no
+disco
+não
+é
+inspeção.
+Sem
+chave
+`leitura`.
+Nomear
+não
+observa.
+
+O que 0.9.412 não afirma:
+identidade
+no
+disco
+não
+é
+inspeção
+nem
+revisão.
+
 ## 0.9.411 — o verify nomeia a verificação que o processo já recusa
 
 O

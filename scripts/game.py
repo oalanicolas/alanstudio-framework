@@ -478,6 +478,42 @@ def instruction_files(project):
     return found
 
 
+# O processo já recusa que o hash seja leitura. Sem isto o
+# git relatava o HEAD e calava a recusa.
+# Identidade no disco não é inspeção.
+PROCESS_READING = re.compile(r"prova identidade, não leitura")
+
+
+def process_refuses_hash_as_reading(text):
+    return bool(text and PROCESS_READING.search(text))
+
+
+def git_identity_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_hash_as_reading(text):
+        return "references/process.md"
+    return None
+
+
+def git_summary_scope():
+    scope = (
+        "Estado do repositório na hora do comando; commits não provam que a mudança "
+        "funciona nem que foi revisada."
+    )
+    if git_identity_source():
+        scope += (
+            " O disco recusa que o hash seja leitura (`leitura`). "
+            "Identidade no disco não é inspeção."
+        )
+    return scope
+
+
 def git_summary(project):
     """Versão, sujeira e últimos assuntos do repositório que contém o projeto; None fora de um repositório."""
     def run(*args):
@@ -494,7 +530,7 @@ def git_summary(project):
         "branch": run("rev-parse", "--abbrev-ref", "HEAD") or None,
         "dirty_paths": len(dirty),
         "recent": run("log", "-5", "--format=%h %s", "--", ".").splitlines(),
-        "scope": "Estado do repositório na hora do comando; commits não provam que a mudança funciona nem que foi revisada.",
+        "scope": git_summary_scope(),
     }
 
 

@@ -55,7 +55,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    com `--genre`; pacotes são convenções a confirmar no código, não capacidades. Se o pacote recusa que teste unitário prove o navegador, o `context` nomeia o navegador que o pacote já recusa provar. Pacote no disco não é comportamento no aparelho. Sem chave `navegador`.
    `capabilities.mentioned` aponta
    arquivo local; não prova pause, reset, seed nem determinismo. Confira `basis`,
-   `via` e os limites. `context` já executa `scan`: se `foundation.audit.required`
+   `via` e os limites. Se o processo recusa que o hash seja leitura, o `git` nomeia a leitura que o processo já recusa. Identidade no disco não é inspeção. Sem chave `leitura`. `context` já executa `scan`: se `foundation.audit.required`
    for verdadeiro, avise as lacunas com `audit.notice` e comece o levantamento conforme
    [auditoria de projeto](references/project-audit.md), sem pedir um segundo
    consentimento; respeite restrição explícita na conversa atual. Se
