@@ -116,7 +116,7 @@ etapa chegar. Não instala dependências, não toca no starter de origem e recus
 destino ocupado. `scan` reconhece o resultado no mesmo turno; o primeiro comando
 que `init` aponta é o que serve o jogo. `open`, `url` e `prompt` nomeiam
 a mesma superfície do `start` — o `prompt` também sai em stderr. Nomear
-não serve. `verify` roda os validadores do starter onde houver Node. Se o roteiro recusa aprovar a criatividade, o `verify` nomeia a criatividade que o roteiro já recusa. Recibo verde não é aprovação. Sem chave `criatividade`.
+não serve. `verify` roda os validadores do starter onde houver Node. Se o roteiro recusa aprovar a criatividade, o `verify` nomeia a criatividade que o roteiro já recusa. Recibo verde não é aprovação. Sem chave `criatividade`. Se a ambição recusa que o recibo comprove diversão, o `verify` nomeia a diversão que a ambição já recusa. Log no disco não é experiência. Sem chave `diversão`.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida

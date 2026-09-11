@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.434 — o verify nomeia a diversão que a ambição já recusa
+
+A
+ambição
+já
+dizia
+que
+build
+verde
+não
+comprova
+diversão.
+O
+comando
+copiava
+o
+exit
+code
+e
+calava
+a
+recusa.
+Agora
+o
+`verify`
+nomeia
+a
+diversão.
+Log
+no
+disco
+não
+é
+experiência.
+Sem
+chave
+`diversão`.
+Nomear
+não
+observa.
+
+O que 0.9.434 não afirma:
+log
+no
+disco
+não
+é
+experiência
+nem
+aprovação
+de
+feel.
+
 ## 0.9.433 — o next nomeia a fabricação que o processo já recusa
 
 O

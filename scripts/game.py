@@ -8509,6 +8509,42 @@ def verify_scope():
     return scope
 
 
+# A ambição já recusa que o recibo comprove diversão. Sem isto o
+# comando copiava o exit code e calava a recusa.
+# Log no disco não é experiência.
+AMBITION_FUN = re.compile(r"não comprova diversão")
+
+
+def ambition_refuses_fun(text):
+    return bool(text and AMBITION_FUN.search(text))
+
+
+def verify_command_fun_source():
+    path = FRAMEWORK / "references/ambition.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if ambition_refuses_fun(text):
+        return "references/ambition.md"
+    return None
+
+
+def verify_command_scope():
+    scope = (
+        "Saída de um comando técnico. Não observa o jogo e não avalia "
+        "experiência."
+    )
+    if verify_command_fun_source():
+        scope += (
+            " O disco recusa que o recibo comprove diversão (`diversão`). "
+            "Log no disco não é experiência."
+        )
+    return scope
+
+
 # O processo já recusa que claimed seja verified. Sem isto o
 # verify alegava a capacidade e calava a recusa.
 # Alegação no disco não é cobertura.
@@ -8575,6 +8611,7 @@ def verify(project, scripts, command, output, timeout, proves=()):
     for index, argv in enumerate(commands):
         print(f"Executando: {argv} em {project}", file=sys.stderr, flush=True)
         result = run_command(argv, project, output / f"{index + 1:02d}.log", timeout)
+        result["scope"] = verify_command_scope()
         report["commands"].append(result)
         if result["exit_code"]:
             break

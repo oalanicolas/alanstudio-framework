@@ -1298,6 +1298,48 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovar a criatividade", game.next_scope())
         self.assertNotIn("aprovar a criatividade", game.template_scope("release"))
 
+    def test_verify_names_the_fun_the_ambition_already_refuses(self):
+        ambition = (game.FRAMEWORK / "references/ambition.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.ambition_refuses_fun(ambition),
+            "a ambição já recusa que o recibo comprove diversão",
+        )
+        self.assertEqual(game.verify_command_fun_source(), "references/ambition.md")
+        report = game.verify(
+            self.project, [], [sys.executable, "-c", "pass"],
+            self.root / "verify-434", 5,
+        )
+        self.assertTrue(report["commands"], "o verify já devolve comandos neste destino")
+        item = report["commands"][0]
+        self.assertIn(
+            "recibo comprove diversão",
+            item["scope"],
+            "o comando copiava o exit code e calava a recusa",
+        )
+        self.assertIn("(`diversão`)", item["scope"])
+        self.assertNotIn("diversão", item)
+        self.assertEqual(report["experience_status"], "not_assessed")
+        self.assertFalse(game.ambition_refuses_fun(""))
+        with mock.patch.object(game, "verify_command_fun_source", return_value=None):
+            silent = game.verify(
+                self.project, [], [sys.executable, "-c", "pass"],
+                self.root / "verify-434-silent", 5,
+            )
+        self.assertNotIn("recibo comprove diversão", silent["commands"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a diversão que a ambição já recusa", recipe)
+        self.assertIn("nomeia a diversão que a ambição já recusa", skill)
+        self.assertIn("nomeia a diversão que a ambição já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("recibo comprove diversão", report["scope"])
+        self.assertNotIn("recibo comprove diversão", game.verify_scope())
+        self.assertNotIn("recibo comprove diversão", game.capabilities_scope())
+        self.assertNotIn("recibo comprove diversão", game.record_scope())
+        self.assertNotIn("recibo comprove diversão", game.next_scope())
+        self.assertNotIn("recibo comprove diversão", game.doctor_then_scope())
+
     def test_verify_names_the_verified_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(
