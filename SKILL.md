@@ -110,7 +110,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    e [qualidade](references/quality.md). Para criação ou pré-produção, siga
    [o ciclo criativo](references/preproduction.md): Game Brief, MDA/GDD, PoC, PRD/TDD,
    vertical slice, MVP, QA/playtest e release. `--stage <etapa>` carrega só o template
-   pertinente; `template <etapa> --project <projeto>` imprime um rascunho. Se o molde recusa publicar, o `template` nomeia a publicação que o molde já recusa. Molde no disco não é autorização. Sem chave `publicar`. Se a guia recusa que o MVP prove a hipótese de valor, o `template` nomeia o valor que a guia já recusa. Molde no disco não é validação. Sem chave `valor`.
+   pertinente; `template <etapa> --project <projeto>` imprime um rascunho. Se o molde recusa publicar, o `template` nomeia a publicação que o molde já recusa. Molde no disco não é autorização. Sem chave `publicar`. Se a guia recusa que o MVP prove a hipótese de valor, o `template` nomeia o valor que a guia já recusa. Molde no disco não é validação. Sem chave `valor`. Se a guia recusa que placeholders certifiquem o acabamento, o `template` nomeia o acabamento que a guia já recusa. Molde no disco não é a fatia. Sem chave `acabamento`.
    Reaproveite
    documentos existentes; um jogo pequeno reúne tudo em `game-design`. O design system
    do jogo (`art-bible`) é conteúdo mínimo; o arquivo separado é opcional se outro

@@ -178,7 +178,7 @@ repetível, clareza do produto. Forte num eixo não compensa vermelho noutro.
 Cobertura parcial e avaliação do agente permanecem distintas de aprovação do
 usuário. Placeholders podem servir a uma PoC; não certificam o acabamento da
 vertical slice. Scaffold com HUD bonito, ou slice “hand-tuned” que ignora o
-pipeline, também não.
+pipeline, também não. Se a guia recusa que placeholders certifiquem o acabamento, o `template` nomeia o acabamento que a guia já recusa. Molde no disco não é a fatia. Sem chave `acabamento`.
 [Template](../assets/templates/vertical-slice.md).
 
 ### `mvp` — Minimum Viable Product

@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.485 — o template da vertical-slice nomeia o acabamento que a guia já recusa
+
+A
+guia
+já
+dizia
+que
+placeholders
+não
+certificam
+o
+acabamento
+da
+fatia.
+O
+molde
+emitia
+o
+rascunho
+e
+calava
+a
+recusa.
+Agora
+o
+template
+da
+etapa
+vertical-slice
+nomeia
+o
+acabamento.
+Molde
+no
+disco
+não
+é
+a
+fatia.
+Sem
+chave
+`acabamento`.
+Nomear
+não
+observa.
+
+O que 0.9.485 não afirma:
+rascunho
+no
+disco
+não
+é
+fatia
+aprovada
+nem
+jogador
+observado.
+
 ## 0.9.484 — o template do MVP nomeia o valor que a guia já recusa
 
 A

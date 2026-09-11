@@ -7579,6 +7579,11 @@ def template_scope(stage):
             " O disco recusa que o MVP prove a hipótese de valor "
             "(`valor`). Molde no disco não é validação."
         )
+    if stage == "vertical-slice" and template_slice_finish_source():
+        scope += (
+            " O disco recusa que placeholders certifiquem o acabamento "
+            "(`acabamento`). Molde no disco não é a fatia."
+        )
     return scope
 
 
@@ -7602,6 +7607,29 @@ def template_mvp_value_source():
     except OSError:
         return None
     if preproduction_refuses_mvp_value(text):
+        return "references/preproduction.md"
+    return None
+
+
+# A guia já recusa que placeholders certifiquem o acabamento da slice.
+# Sem isto o template emitia o rascunho e calava a recusa.
+# Molde no disco não é a fatia.
+SLICE_FINISH = re.compile(r"não certificam o acabamento")
+
+
+def preproduction_refuses_placeholder_finish(text):
+    return bool(text and SLICE_FINISH.search(text))
+
+
+def template_slice_finish_source():
+    path = PREPRODUCTION_VALUE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if preproduction_refuses_placeholder_finish(text):
         return "references/preproduction.md"
     return None
 

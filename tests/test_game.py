@@ -3401,6 +3401,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("MVP prove a hipótese de valor", game.next_scope())
         self.assertNotIn("MVP prove a hipótese de valor", game.verify_scope())
 
+    def test_template_vertical_slice_names_the_finish_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.preproduction_refuses_placeholder_finish(guide),
+            "a guia já recusa que placeholders certifiquem o acabamento",
+        )
+        self.assertEqual(game.template_slice_finish_source(), "references/preproduction.md")
+        scope = game.template_scope("vertical-slice")
+        self.assertIn(
+            "placeholders certifiquem o acabamento",
+            scope,
+            "o template emitia o rascunho e calava a recusa",
+        )
+        self.assertIn("(`acabamento`)", scope)
+        self.assertFalse(game.preproduction_refuses_placeholder_finish(""))
+        self.assertNotIn("placeholders certifiquem o acabamento", game.template_scope("brief"))
+        self.assertNotIn("placeholders certifiquem o acabamento", game.template_scope("mvp"))
+        self.assertNotIn("placeholders certifiquem o acabamento", game.template_scope("aaa"))
+        with mock.patch.object(game, "template_slice_finish_source", return_value=None):
+            self.assertNotIn("placeholders certifiquem o acabamento", game.template_scope("vertical-slice"))
+        output = self.root / "planning" / "vertical-slice.md"
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT), "template", "vertical-slice", "--project", str(self.project), "--output", str(output)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        receipt = json.loads(result.stdout)
+        self.assertIn("placeholders certifiquem o acabamento", receipt["scope"])
+        self.assertNotIn("acabamento", receipt)
+        self.assertEqual(receipt["status"], "draft")
+        self.assertNotIn("verified", receipt["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o acabamento que a guia já recusa", guide)
+        self.assertIn("nomeia o acabamento que a guia já recusa", recipe)
+        self.assertIn("nomeia o acabamento que a guia já recusa", skill)
+        self.assertIn("nomeia o acabamento que a guia já recusa", readme)
+        self.assertNotIn("placeholders certifiquem o acabamento", game.context(self.project, "create")["finish"]["scope"])
+        self.assertNotIn("placeholders certifiquem o acabamento", game.context_scope())
+        self.assertNotIn("placeholders certifiquem o acabamento", game.next_scope())
+        self.assertNotIn("placeholders certifiquem o acabamento", game.verify_scope())
+
     def test_template_cli_renders_every_artifact_as_draft_in_new_files(self):
         target = self.root / "new-game"
         for stage in game.STAGES:
