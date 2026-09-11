@@ -52,7 +52,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `read_next` inclui o [pacote de plataforma](packs/README.md) quando a engine foi
    identificada e o de gênero quando você passou `--genre`. Se `packs.genre.suggested`
    trouxer um gênero lido de documento, confirme com a conversa e repita o `context`
-   com `--genre`; pacotes são convenções a confirmar no código, não capacidades. Se o pacote recusa que teste unitário prove o navegador, o `context` nomeia o navegador que o pacote já recusa provar. Pacote no disco não é comportamento no aparelho. Sem chave `navegador`. Se o índice recusa que o pacote certifique capacidade, o `context` nomeia a capacidade que o índice já recusa. Pacote no disco não é comportamento. Sem chave `capacidade`.
+   com `--genre`; pacotes são convenções a confirmar no código, não capacidades. Se o pacote recusa que teste unitário prove o navegador, o `context` nomeia o navegador que o pacote já recusa provar. Pacote no disco não é comportamento no aparelho. Sem chave `navegador`. Se o índice recusa que o pacote certifique capacidade, o `context` nomeia a capacidade que o índice já recusa. Pacote no disco não é comportamento. Sem chave `capacidade`. Se o mapa recusa que o pacote seja extração, o `context` nomeia a extração que o mapa já recusa. Convenção no disco não é repositório executado. Sem chave `extração`.
    `capabilities.mentioned` aponta
    arquivo local; não prova pause, reset, seed nem determinismo. Confira `basis`,
    `via` e os limites. Se o processo recusa que o hash seja leitura, o `git` nomeia a leitura que o processo já recusa. Identidade no disco não é inspeção. Sem chave `leitura`. `context` já executa `scan`: se `foundation.audit.required`

@@ -892,6 +892,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("certifique capacidade", game.play_scope(self.project))
         self.assertNotIn("certifique capacidade", game.context_scope())
 
+    def test_context_names_the_extraction_the_map_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sources_refuse_extraction(guide),
+            "o mapa já recusa que o pacote seja extração",
+        )
+        self.assertIsNone(game.genre_extraction_source(None))
+        silent = game.context(self.project, "create")
+        self.assertIsNone(silent["packs"]["genre"]["name"])
+        self.assertNotIn("seja extração", silent["packs"]["genre"]["scope"])
+        self.assertEqual(game.genre_extraction_source("platformer"), "references/sources.md")
+        report = game.context(self.project, "create", genre="platformer")
+        genre = report["packs"]["genre"]
+        self.assertEqual(genre["name"], "platformer")
+        self.assertIn(
+            "seja extração",
+            genre["scope"],
+            "o context apontava o gênero e calava a recusa",
+        )
+        self.assertIn("(`extração`)", genre["scope"])
+        self.assertNotIn("extração", genre)
+        self.assertFalse(game.sources_refuse_extraction(""))
+        with mock.patch.object(game, "genre_extraction_source", return_value=None):
+            muted = game.context(self.project, "create", genre="platformer")
+        self.assertNotIn("seja extração", muted["packs"]["genre"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a extração que o mapa já recusa", recipe)
+        self.assertIn("nomeia a extração que o mapa já recusa", skill)
+        self.assertIn("nomeia a extração que o mapa já recusa", readme)
+        self.assertNotIn("verified", genre["scope"])
+        self.assertNotIn("seja extração", report["packs"]["scope"])
+        self.assertNotIn("seja extração", report["packs"]["platform"]["scope"])
+        self.assertNotIn("seja extração", game.next_scope())
+        self.assertNotIn("seja extração", game.play_scope(self.project))
+        self.assertNotIn("seja extração", game.context_scope())
+
     def test_guide_names_the_onboarding_the_quality_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(

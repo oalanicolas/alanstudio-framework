@@ -4968,6 +4968,7 @@ def select_packs(kind, genre, mentions):
             "name": genre, "pack": str(genre_path) if genre_path and genre_path.is_file() else None,
             "basis": "--genre declarado na conversa" if genre else ("campo Gênero localizado em documento; confirme e passe --genre" if suggested else "não declarado; passe --genre quando o jogo tiver gênero definido"),
             "suggested": suggested, "mentions": mentions, "available": list(GENRES),
+            "scope": genre_scope(genre),
         },
         "scope": packs_scope(kind),
     }
@@ -5008,6 +5009,44 @@ def platform_scope(kind):
         scope += (
             " O disco recusa que o pacote certifique capacidade (`capacidade`). "
             "Pacote no disco não é comportamento."
+        )
+    return scope
+
+
+# O mapa já recusa que o pacote seja extração. Sem isto o
+# gênero apontava o arquivo e calava a recusa.
+# Convenção no disco não é repositório executado.
+SOURCES_EXTRACTION = re.compile(r"Não são extração\s+de repositório")
+
+
+def sources_refuse_extraction(text):
+    return bool(text and SOURCES_EXTRACTION.search(text))
+
+
+def genre_extraction_source(genre):
+    if not genre or genre not in GENRES:
+        return None
+    path = FRAMEWORK / "references/sources.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if sources_refuse_extraction(text):
+        return "references/sources.md"
+    return None
+
+
+def genre_scope(genre):
+    scope = (
+        "Seleciona o pacote pelo --genre declarado. "
+        "Não substitui o GDD nem o que o código faz."
+    )
+    if genre_extraction_source(genre):
+        scope += (
+            " O disco recusa que o pacote seja extração (`extração`). "
+            "Convenção no disco não é repositório executado."
         )
     return scope
 
