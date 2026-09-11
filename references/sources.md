@@ -388,3 +388,52 @@ e não substituem observar o consumidor final. Os números, arquivos brutos e
 aprovações específicas ficam nos registros do jogo; o framework não depende de
 acesso ao laboratório para usar as orientações. Revisão futura incorpora a
 contraprova à fonte canônica conforme [o procedimento](learning.md).
+
+## Autoria UGC pública
+
+Estudo do laboratório de 09/09/2026: Rezona e Crayon. Inspeção estática de quatro
+jogos públicos, frontend/iframe Crayon e pacote npm `rezona@0.2.0`; observações limitadas
+de interface/partida. Não executamos o kit, geração paga, exportação, multiplayer ou
+benchmark de autoria. Fontes públicas: [pacote versionado Rezona](https://registry.npmjs.org/rezona/-/rezona-0.2.0.tgz),
+[Lab](https://rezona.ai/studio/game), [Crayon Arcade](https://app.usecrayon.ai/),
+[ciclo do SDK CrazyGames](https://docs.crazygames.com/sdk/game/).
+
+Foram adaptados critérios de [edição](../recipes/architecture.md#edição-estruturada-e-convivência-com-código),
+[assets assíncronos](../recipes/content.md), [exportação](../recipes/release.md) e
+[host/prévia web](../packs/platforms/web.md#jogo-embutido-e-troca-de-versão).
+São procedimentos condicionais de engenharia, não implementação copiada ou prova de
+vantagem econômica. Preservam contratos e escolhas artísticas do projeto. Heurísticas
+de cena, limites universais e degradação automática não foram incorporados.
+
+Hashes, amostras, observações e plano de contraprova ficam no laboratório em
+`docs/estudo-profundo-rezona-crayon-framework.md` e
+`docs/pesquisas/rezona-crayon-2026-09-09.json`. Os métodos acima são utilizáveis sem esses
+arquivos e devem ser revistos quando o consumidor ou o contrato invalidar a hipótese.
+
+## Skill impeccable (0.10)
+
+Estudo de 10/09/2026 da skill `impeccable` (design e iteração de interfaces de
+frontend, instalada em `~/.claude/skills/impeccable`): `SKILL.md`, 36 referências,
+scripts (`load-context`, `pin`, `critique-storage`, detector de anti-padrões, modo
+`live`). Lida integralmente; scripts não executados neste repositório.
+
+O que foi adaptado é a **forma de operar**: preparação obrigatória (carregar
+contexto → identificar register → carregar a referência do sub-comando), leis
+compartilhadas separadas das recusas absolutas (match-and-refuse), teste de slop em
+dois níveis de reflexo, tabela de comandos por categoria com regras de roteamento,
+uma referência por comando com forma fixa (avaliar → planejar → executar →
+verificar → nunca → entregar), catálogo em JSON, atalhos fixáveis com marcador,
+critique com dois olhares independentes e severidade P0–P3, arquétipos de usuário
+como lente. O register brand/product virou a escala jam/product/aa já existente em
+[ambição](ambition.md); PRODUCT.md/DESIGN.md correspondem ao brief e ao design system
+do jogo; `teach`/`document` correspondem à inicialização e ao Art Bible.
+
+O que **não** foi adaptado, com motivo: pontuação Nielsen 0–40 (a barra recusa
+somar dimensões: [production-bar](production-bar.md)); detector determinístico
+(opera sobre CSS/DOM estático; o análogo em jogo exige executar o jogo, que o
+harness não faz — hipótese registrada); modo `live` e geração de mocks (dependem
+de HMR e de geração de imagem no host; sem consumidor no laboratório hoje);
+`.impeccable/critique/` como armazenamento próprio (aqui a persistência é `record`,
+ligado ao HEAD). Registro: [story](../docs/stories/2026-09-10-impeccable-study.md).
+Conteúdo de design de UI (OKLCH, tipografia, bans de CSS) não foi transposto: não
+é domínio deste harness.

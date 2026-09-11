@@ -13,6 +13,24 @@ recebe uma licença nova pelo simples reuso.
 Geração externa (Magnific e similares) distingue capacidades documentadas de
 integração comprovada. Não torna o fornecedor obrigatório.
 
+Quando a geração ou importação for assíncrona, registre no manifesto/recibo já usado:
+pedido e referência autoral, tarefa do fornecedor, estado remoto, arquivo local e
+hash, derivação e consumidor integrado. **Pronto no serviço, baixado, validado e
+consumido são estados diferentes.** Uma tarefa omitida numa consulta não equivale a
+falha; siga o contrato de consulta e limite de tentativas do fornecedor.
+
+Use a identidade e o caminho efetivamente retornados. Não presuma nomes quando o
+serviço versiona ou renomeia assets. No download, validar resposta e integridade
+antes de promover o arquivo temporário evita que uma transferência parcial ou uma
+página HTML ocupe o lugar do recurso válido. Preserve master e versão anterior.
+
+Verificadores de sprites/texturas localizam candidatos a defeito; correções que
+apagam pixels, quantizam cores ou redimensionam não são consequência automática de
+um alerta. Confira recorte, alpha, sequência e aparência no jogo conforme sua política
+artística. Prova: falha preserva o recurso anterior; sucesso chega ao consumidor certo,
+com origem/licença e acabamento conferidos. Este procedimento não comprova consistência
+do gerador. [Origem e limites](../references/sources.md#autoria-ugc-pública).
+
 Para níveis, examine identidade estável, referências a entidades, arquivos externos,
 spawn e rotas legíveis. Teste carregamento ausente/incompatível e retorno a um nível
 já visitado. Não troque o formato inteiro para absorver uma validação de outro editor.

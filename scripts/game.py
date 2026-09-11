@@ -105,6 +105,19 @@ GENRE_KEYWORDS = {
     "casual": ("casual", "hypercasual", "hyper casual", "party game", "minigame"),
 }
 GENRE_FIELD = re.compile(r"^\s*(?:[-*]\s+)?(?:g[eê]nero(?: do jogo)?|genre)\s*:\s*(.+?)\s*$", re.IGNORECASE)
+# Escala de ambição (references/ambition.md): governa quantidade de artefatos e de
+# conteúdo, nunca o piso do verbo. É o "register" da skill: o brief declara uma,
+# a conversa pode sobrescrever por tarefa, e o harness só lê o campo.
+SCALES = ("jam", "product", "aa")
+SCALE_KEYWORDS = {
+    "jam": ("jam", "conto", "game jam", "protótipo de uma sessão", "prototipo de uma sessao"),
+    "product": ("produto", "product"),
+    "aa": ("aa", "triple-i", "triple i", "aaa-shaped", "piso de acabamento", "aaa"),
+}
+SCALE_FIELD = re.compile(r"^\s*(?:[-*]\s+)?(?:escala(?: de ambi[cç][aã]o)?|scale)\s*:\s*(.+?)\s*$", re.IGNORECASE)
+# Sub-comandos da skill: o catálogo vive ao lado das referências que ele aponta.
+COMMANDS_PATH = FRAMEWORK / "commands/commands.json"
+PIN_MARKER = "<!-- game-dev-pinned-skill -->"
 # Ordem importa: engines com marcador próprio primeiro (RPG Maker MZ e outras também trazem package.json),
 # depois manifestos de ecossistema, por último marcadores genéricos.
 ENGINE_MARKERS = (
@@ -572,13 +585,46 @@ def studies_for(focus, studies_root):
 # formato canônico deste framework e a tabela já existia lá escrita à mão.
 BAR_ROW = re.compile(r"^\|\s*`(\w+)`\s*\|\s*`(\w+)`\s*\|\s*(?:`(\w+)`\s*:)?\s*(.*?)\s*\|\s*$")
 BAR_SOURCES = ("README.md", "docs/qa.md", "docs/devlog.md", "docs/gdd.md", "docs/art-bible.md")
+DECLARATION_DEPTH = 4
+# `SKIP` serve à descoberta de projetos e exclui `docs`; aqui `docs` é justamente onde procurar.
+DECLARATION_SKIP = SKIP - {"docs"}
+
+
+def declaration_sources(project, fixed):
+    """Documentos onde uma declaração (barra, gate) pode viver: os caminhos fixos e os
+    homônimos em qualquer subpasta de documentação.
+
+    O Rabisco Boom guarda o QA em `docs/planning/qa.md`; `scan` o localizava e `bar` não,
+    então a tabela declarada ficava invisível para o harness. A busca é pelo mesmo nome de
+    arquivo (`qa.md`, `devlog.md`…), até quatro níveis, fora das pastas de build.
+    """
+    # Os caminhos fixos entram sempre, existindo ou não: `sources[0]` é onde `next`
+    # manda declarar quando ainda não há tabela. README só conta na raiz — um
+    # README por pasta de validação de arte não é documento de declaração.
+    names = {Path(item).name.casefold() for item in fixed} - {"readme.md"}
+    found = list(fixed)
+    if not project.is_dir():
+        return found
+    base_depth = len(project.parts)
+    for current, dirs, files in os.walk(project):
+        here = Path(current)
+        if len(here.parts) - base_depth >= DECLARATION_DEPTH:
+            dirs[:] = []
+        dirs[:] = sorted(d for d in dirs if d not in DECLARATION_SKIP and not d.startswith("."))
+        for name in sorted(files):
+            if name.casefold() in names:
+                relative = (here / name).relative_to(project).as_posix()
+                if relative not in found:
+                    found.append(relative)
+    return found
 
 
 def bar_declaration(project):
     declared = {}
     conflicts = []
     problems = []
-    for relative in BAR_SOURCES:
+    sources_read = declaration_sources(project, BAR_SOURCES)
+    for relative in sources_read:
         path = project / relative
         if not path.is_file() or path.is_symlink():
             continue
@@ -650,7 +696,7 @@ def bar_declaration(project):
         # Dimensão não declarada não é dimensão alta: enquanto faltar uma, o
         # mínimo entre as dez é desconhecido, e o degrau percebido não sai.
         "perceived_tier": None if undeclared or not declared else floor,
-        "sources": list(BAR_SOURCES),
+        "sources": sources_read,
     }
 
 
@@ -664,7 +710,7 @@ def gate_declaration(project):
     declared = {}
     problems = []
     sources = []
-    for relative in GATE_SOURCES:
+    for relative in declaration_sources(project, GATE_SOURCES):
         path = project / relative
         if not path.is_file() or path.is_symlink():
             continue
@@ -906,7 +952,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     json_docs = {"brief.json", "state.json", "decisions.json", "sources.json", "licenses.json", "provenance.json", "package.json"}
     text_docs = {"license", "licence", "copying", "credits", "authors"}
     indexes, documents, links, statuses = [], {}, {}, {}
-    deferred, non_current, continuity_sources, genre_mentions = [], [], [], []
+    deferred, non_current, continuity_sources, genre_mentions, scale_mentions = [], [], [], [], []
     link_count, max_links, links_limited = 0, 128, False
     inline_link = re.compile(r'(?<!!)\[[^\]\n]+\]\((?:<([^>\n]+)>|([^\s)]+))(?:\s+"[^"]*")?\)')
     navigation = re.compile(r"^\s*(?:(?:[-*]|\d+[.)])\s+)?\[[^\]]+\](?:\(|\[)")
@@ -1063,6 +1109,9 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
                 genre = GENRE_FIELD.match(line)
                 if genre and status in {"candidate", "draft"} and len(genre_mentions) < 5:
                     genre_mentions.append({"path": relative, "line": number, "value": genre.group(1)})
+                scale = SCALE_FIELD.match(line)
+                if scale and status in {"candidate", "draft"} and len(scale_mentions) < 5:
+                    scale_mentions.append({"path": relative, "line": number, "value": scale.group(1)})
         for key, _, pattern in FOUNDATION_AREAS:
             hits = [(number, basis) for number, label, basis in labels if re.search(pattern, label)]
             if hits:
@@ -1132,6 +1181,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         "areas": areas, "gaps": gaps, "read_first": read_first,
         "continuity_sources": continuity_sources, "continuity_source_count": continuity_source_count,
         "genre_mentions": genre_mentions,
+        "scale_mentions": scale_mentions,
         "agent_context": {
             "status": "found" if local_instructions else "not_located",
             "files": local_instructions,
@@ -1193,6 +1243,170 @@ def suggest_genres(mentions):
             if genre not in suggested and any(keyword in value for keyword in keywords):
                 suggested.append(genre)
     return suggested
+
+
+def read_scale(mentions, declared=None):
+    """Escala de ambição: declarada na conversa vence; senão, o campo `Escala:` de um documento sugere.
+
+    A palavra "aaa" num brief é lida como a terceira escala (piso de acabamento em escopo
+    focado), porque é o único sentido que este harness aceita para ela; a nota diz isso.
+    """
+    if declared is not None and declared not in SCALES:
+        raise ValueError("escala desconhecida")
+    suggested, source = None, None
+    for mention in mentions:
+        raw = mention["value"].strip()
+        # Um template traz o campo com as três opções entre colchetes; isso é a
+        # pergunta, não a resposta, e lê-lo como "jam" faria todo rascunho parecer
+        # decidido. Placeholder é ignorado; o valor real vem de outro documento.
+        if raw.startswith(("[", "{{", "<")) or "preencher" in normalize_text(raw):
+            continue
+        value = normalize_text(raw)
+        tokens = re.findall(r"[a-z0-9]+(?:-[a-z0-9]+)*", value)
+        for scale, keywords in SCALE_KEYWORDS.items():
+            if any(keyword in tokens or (" " in keyword and keyword in value) for keyword in keywords):
+                suggested, source = scale, mention
+                break
+        if suggested:
+            break
+    chosen = declared or suggested
+    return {
+        "name": chosen,
+        "available": list(SCALES),
+        "basis": (
+            "--scale declarado na conversa" if declared
+            else "campo Escala localizado em documento; confirme na conversa" if suggested
+            else "não declarada; infira uma vez pelo pedido e pelo estado, e registre no brief com `teach`"
+        ),
+        "source": None if declared else source,
+        "guide": str(FRAMEWORK / "references/ambition.md"),
+        "scope": "Governa quantidade de artefatos e de conteúdo, nunca o piso do verbo. 'aaa' em documento é lido como a escala aa (piso de acabamento), não como tier de publisher. O comando lê o campo; não classifica o jogo.",
+    }
+
+
+def command_catalog():
+    """Catálogo dos sub-comandos da skill, lido do JSON ao lado das referências."""
+    data = read_json(COMMANDS_PATH)
+    if not isinstance(data.get("commands"), dict) or not isinstance(data.get("categories"), dict):
+        raise ValueError(f"catálogo de comandos malformado: {COMMANDS_PATH}")
+    return data
+
+
+def command_listing():
+    catalog = command_catalog()
+    rows = []
+    for name, entry in catalog["commands"].items():
+        reference = FRAMEWORK / f"commands/{name}.md"
+        rows.append({
+            "name": name,
+            "category": entry["category"],
+            "category_label": catalog["categories"].get(entry["category"], entry["category"]),
+            "description": entry["description"],
+            "argument_hint": entry.get("argument_hint", ""),
+            "reference": str(reference),
+            "reference_present": reference.is_file(),
+            "foci": list(entry.get("foci", ())),
+        })
+    return {
+        "schema_version": 1,
+        "skill": str(FRAMEWORK / "SKILL.md"),
+        "categories": catalog["categories"],
+        "commands": rows,
+        "pinned_marker": PIN_MARKER,
+        "scope": catalog.get("scope", ""),
+    }
+
+
+def command_problems():
+    """Catálogo, arquivos e SKILL.md precisam andar juntos; a lista sai vazia quando andam."""
+    problems = []
+    try:
+        catalog = command_catalog()
+    except (OSError, ValueError) as error:
+        return [str(error)]
+    names = list(catalog["commands"])
+    for name, entry in catalog["commands"].items():
+        if entry.get("category") not in catalog["categories"]:
+            problems.append(f"{name}: categoria desconhecida {entry.get('category')!r}")
+        if not (FRAMEWORK / f"commands/{name}.md").is_file():
+            problems.append(f"{name}: referência commands/{name}.md ausente")
+        for relative in entry.get("reads", ()):
+            if not (FRAMEWORK / relative).is_file():
+                problems.append(f"{name}: leitura {relative} ausente")
+    for path in sorted((FRAMEWORK / "commands").glob("*.md")):
+        if path.stem != "README" and path.stem not in names:
+            problems.append(f"commands/{path.name} sem entrada no catálogo")
+    skill = FRAMEWORK / "SKILL.md"
+    text = skill.read_text(encoding="utf-8") if skill.is_file() else ""
+    for name in names:
+        if f"commands/{name}.md" not in text:
+            problems.append(f"SKILL.md não lista `{name}`")
+    return problems
+
+
+def harness_skill_dirs(root):
+    """Diretórios de skills do host onde a game-dev está instalada: só neles faz sentido fixar atalho."""
+    return [target.parent.parent for target in skill_targets(root) if target.parent.is_dir()]
+
+
+def pinned_skill(name, entry):
+    description = entry["description"].replace('"', "'")
+    hint = entry.get("argument_hint", "")
+    reference = FRAMEWORK / f"commands/{name}.md"
+    return (
+        f"---\nname: {name}\ndescription: \"{description}\"\nargument-hint: \"{hint}\"\nuser-invocable: true\n---\n\n"
+        f"{PIN_MARKER}\n\n"
+        f"Atalho fixado para `$game-dev {name}`.\n\n"
+        f"Invoque `$game-dev {name}` passando os argumentos recebidos aqui: leia a skill em `{FRAMEWORK / 'SKILL.md'}`, "
+        f"cumpra a preparação (contexto, escala) e siga a referência do comando em `{reference}`.\n"
+    )
+
+
+def pin(root, name):
+    catalog = command_catalog()
+    if name not in catalog["commands"]:
+        raise ValueError(f"comando desconhecido: {name}. Disponíveis: {', '.join(catalog['commands'])}")
+    targets = harness_skill_dirs(root)
+    if not targets:
+        raise ValueError(
+            f"nenhum diretório de skills com game-dev instalada em {root} "
+            f"({', '.join(str(t.parent) for t in skill_targets(root))}); instale a skill antes de fixar atalhos."
+        )
+    created, skipped = [], []
+    for skills_dir in targets:
+        skill_dir = skills_dir / name
+        skill_file = skill_dir / "SKILL.md"
+        if skill_file.is_file() and PIN_MARKER not in skill_file.read_text(encoding="utf-8"):
+            skipped.append({"path": str(skill_file), "reason": "skill_not_pinned_by_game_dev"})
+            continue
+        skill_dir.mkdir(parents=True, exist_ok=True)
+        skill_file.write_text(pinned_skill(name, catalog["commands"][name]), encoding="utf-8")
+        created.append(str(skill_file))
+    return {
+        "command": name, "created": created, "skipped": skipped,
+        "invoke": f"/{name}" if created else None,
+        "scope": "Cria um atalho que redireciona para `$game-dev <comando>`; não copia a skill nem altera a referência do comando.",
+    }
+
+
+def unpin(root, name):
+    catalog = command_catalog()
+    if name not in catalog["commands"]:
+        raise ValueError(f"comando desconhecido: {name}. Disponíveis: {', '.join(catalog['commands'])}")
+    removed, skipped = [], []
+    for skills_dir in harness_skill_dirs(root):
+        skill_file = skills_dir / name / "SKILL.md"
+        if not skill_file.is_file():
+            continue
+        if PIN_MARKER not in skill_file.read_text(encoding="utf-8"):
+            skipped.append({"path": str(skill_file), "reason": "skill_not_pinned_by_game_dev"})
+            continue
+        shutil.rmtree(skill_file.parent)
+        removed.append(str(skill_file))
+    return {
+        "command": name, "removed": removed, "skipped": skipped,
+        "scope": "Remove só atalhos com o marcador deste harness; uma skill própria do usuário com o mesmo nome fica intacta.",
+    }
 
 
 def select_packs(kind, genre, mentions):
@@ -1261,11 +1475,13 @@ def workspace_profile(root):
     return result
 
 
-def context(project, focus, stage=None, studies_root=None, event="task", root=None, genre=None):
+def context(project, focus, stage=None, studies_root=None, event="task", root=None, genre=None, scale=None):
     if focus not in FOCI:
         raise ValueError("foco desconhecido")
     if genre is not None and genre not in GENRES:
         raise ValueError("gênero desconhecido")
+    if scale is not None and scale not in SCALES:
+        raise ValueError("escala desconhecida")
     if stage is not None and stage not in STAGES:
         raise ValueError("etapa desconhecida")
     if event not in EVENTS:
@@ -1306,6 +1522,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         "workspace_module": module,
         "workspace": profile,
         "focus": focus, "stage": stage, "event": event, "instructions": instructions, "records": records,
+        "scale": read_scale(foundation["scale_mentions"], scale),
         "read_next": references, "packs": packs, "studies": studies,
         "git": git_summary(project) if project.is_dir() else None,
         "source_index": str(FRAMEWORK / "references/sources.md"),
@@ -1724,6 +1941,19 @@ def doctor(root):
         else f"faltando receitas={missing_recipes} templates={missing_templates} referências={missing_references} pacotes={missing_packs}",
         "Um foco sem receita, uma etapa sem template ou um kind sem pacote quebra `context`.",
     )
+    # Os sub-comandos da skill são três coisas que precisam concordar: o catálogo,
+    # um arquivo de referência por comando e a tabela do SKILL.md. Um comando no
+    # menu sem referência manda o agente ler um arquivo que não existe.
+    command_issues = command_problems()
+    try:
+        command_names = list(command_catalog()["commands"])
+    except (OSError, ValueError):
+        command_names = []
+    add(
+        "commands", True, not command_issues,
+        f"{len(command_names)} sub-comandos com catálogo, referência e linha no SKILL.md" if not command_issues else "; ".join(command_issues),
+        "Alinhe commands/commands.json, commands/<nome>.md e a tabela de comandos do SKILL.md.",
+    )
     add(
         "starters", False, bool(available),
         ", ".join(available) or "nenhum",
@@ -1825,9 +2055,11 @@ def doctor(root):
         "checks": checks,
         "skill_targets": installed,
         "starters": available,
+        "commands": command_names,
         "foci": list(FOCI),
         "stages": list(STAGES),
         "genres": list(GENRES),
+        "scales": list(SCALES),
         "known_markers": [marker for marker, _ in ENGINE_MARKERS],
         "scope": (
             "Presença e versão de ferramentas, presença dos arquivos deste repositório e conteúdo dos atalhos da skill no host. "
@@ -2301,6 +2533,12 @@ def main():
     ctx.add_argument("--stage", choices=STAGES)
     ctx.add_argument("--event", choices=EVENTS, default="task", help="evento observado na conversa pelo agente; não concede aprovação")
     ctx.add_argument("--genre", choices=GENRES, help="gênero declarado na conversa; carrega o pacote de gênero após o de plataforma")
+    ctx.add_argument("--scale", choices=SCALES, help="escala de ambição declarada na conversa (jam, product, aa); sem ela, o campo Escala: do brief só sugere")
+    commands.add_parser("commands", parents=[common], help="catálogo dos sub-comandos da skill, com categoria, descrição e referência")
+    pin_cmd = commands.add_parser("pin", parents=[common], help="fixa um sub-comando como skill própria do host (/<comando>) nos diretórios onde a game-dev está instalada")
+    pin_cmd.add_argument("command")
+    unpin_cmd = commands.add_parser("unpin", parents=[common], help="remove o atalho fixado por `pin`; skills próprias do usuário ficam intactas")
+    unpin_cmd.add_argument("command")
     doc = commands.add_parser("template", parents=[common])
     doc.add_argument("stage", choices=STAGES)
     doc.add_argument("--project", required=True)
@@ -2364,7 +2602,13 @@ def main():
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":
-            emit(context(resolve(args.project, root), args.focus, args.stage, studies_root=default_studies_root(root), event=args.event, root=root, genre=args.genre))
+            emit(context(resolve(args.project, root), args.focus, args.stage, studies_root=default_studies_root(root), event=args.event, root=root, genre=args.genre, scale=args.scale))
+        elif args.action == "commands":
+            emit(command_listing())
+        elif args.action == "pin":
+            emit(pin(root, args.command))
+        elif args.action == "unpin":
+            emit(unpin(root, args.command))
         elif args.action == "template":
             document = template(args.stage, resolve(args.project, root), args.output)
             if args.output:

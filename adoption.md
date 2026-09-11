@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.10 — Skill roteada por comando, no modelo da impeccable
+
+Estudo da skill `impeccable` (frontend) e transposição da sua **forma de operar**
+para jogos, sem copiar o conteúdo: registro em
+[docs/stories/2026-09-10-impeccable-study.md](docs/stories/2026-09-10-impeccable-study.md).
+
+- **Preparação obrigatória** antes de qualquer trabalho: contexto pelo harness,
+  escala identificada, referência do sub-comando carregada. O `SKILL.md` deixa de
+  ser um processo em sete passos e vira roteador: preparação, leis compartilhadas,
+  recusas absolutas, teste de slop para jogos, tabela de comandos, regras de
+  roteamento (sem argumento → menu; primeira palavra → referência; texto livre →
+  situação) e fixar/desafixar. As sete etapas do processo migraram para
+  `commands/craft.md`; nenhuma regra foi removida.
+- **Escala como register.** `jam` / `product` / `aa` é o análogo de brand/product:
+  muda o que se cobra, nunca o piso do verbo. `context` passa a devolver `scale`
+  (`--scale` na conversa vence; campo `Escala:` em documento sugere; "AAA" no
+  brief é lido como `aa`); `scan` coleta `scale_mentions`.
+- **Vinte e três sub-comandos** em seis categorias, um arquivo cada em `commands/`,
+  com a mesma forma (Escala, Avaliar, Executar, Verificar, Nunca, Entregar) e a
+  regra de apontar o canônico em vez de repeti-lo. `critique` e `playtest`
+  ganharam o que a impeccable tem em `critique`/`personas`: dois olhares
+  independentes, achado com quatro partes, arquétipos de jogador
+  ([personas](references/personas.md)), severidade P0–P3, persistência por `record`
+  e tendência por recorte — **sem nota**: a leitura é a barra, e o piso é o mínimo.
+- **Catálogo e atalhos.** `commands/commands.json` alimenta `game.py commands`
+  (menu em JSON), `pin`/`unpin` (skill própria do host que redireciona ao comando,
+  com marcador, sem sobrescrever skill do usuário) e a checagem `commands` do
+  `doctor` (catálogo, arquivo e tabela do `SKILL.md` em acordo).
+- **Testes:** `tests/test_commands.py` (catálogo ↔ arquivos ↔ SKILL, forma das
+  referências, pin/unpin, escala, doctor); a suíte inteira continua verde.
+- **Primeiro `critique` num jogo real (Rabisco Boom)** expôs uma lacuna do harness:
+  `bar` e `gate` só liam `docs/qa.md`, e o QA daquele jogo vive em `docs/planning/qa.md`;
+  a tabela recém-declarada era invisível e `next` propunha declarar o que já estava
+  declarado. `declaration_sources` passa a procurar os mesmos nomes de arquivo em qualquer
+  subpasta de documentação (até quatro níveis, fora de pastas de build; `README.md` só na
+  raiz) e a saída diz em `sources` o que foi lido. Teste: declaração aninhada lida, cópia
+  em `node_modules` ignorada.
+
+O que 0.10 **não** traz da impeccable, por decisão: o detector determinístico de
+anti-padrões (é um motor de CSS/DOM; o equivalente em jogo exige executar o jogo,
+que o harness não faz), o modo `live` de variantes no navegador, a geração de
+mocks por imagem e a pontuação Nielsen 0–40 (soma de dimensões é o que a barra
+recusa). Os motivos estão na story; os três primeiros ficam como hipótese a
+avaliar quando houver um jogo que os peça.
+
 ## 0.9.6 — Memória do agente entre sessões (parcial)
 
 Handoff: [HANDOFF.md](HANDOFF.md). `instruction_files` localiza AGENTS.md e equivalentes

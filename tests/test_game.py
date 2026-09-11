@@ -1795,6 +1795,37 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(pacing["next_tier"], "slice")
         self.assertTrue(pacing["source"].startswith("README.md:"))
 
+    # O Rabisco Boom guarda o QA em docs/planning/qa.md. `scan` o encontrava e
+    # `bar` não, então a tabela declarada era invisível para o harness — e `next`
+    # propunha declarar o que já estava declarado. A declaração vive onde o
+    # projeto guarda o documento, não onde o harness gostaria.
+    def test_bar_and_gate_read_declarations_in_nested_docs_folders(self):
+        nested = self.project / "docs/planning"
+        nested.mkdir(parents=True)
+        (nested / "qa.md").write_text(
+            "# QA\n\n| Dimensão | Degrau | Critério do degrau seguinte |\n| --- | --- | --- |\n"
+            "| `feel` | `playable` | `slice`: cada ação com sinal próprio |\n", encoding="utf-8",
+        )
+        (nested / "release.md").write_text(
+            "# Release\n\n| Gate | Critério | Estado | Evidência |\n| --- | --- | --- | --- |\n"
+            "| `deliver` | `runbook` | `met` | Ana construiu do zero em 2026-09-02 |\n", encoding="utf-8",
+        )
+        # Uma cópia em node_modules não é declaração do projeto.
+        stray = self.project / "node_modules/pkg/docs/qa.md"
+        stray.parent.mkdir(parents=True)
+        stray.write_text("| `feel` | `flagship` | |\n", encoding="utf-8")
+        report = game.bar_reading(self.project)
+        self.assertEqual(report["floor"], "playable")
+        self.assertEqual(report["at_floor"], ["feel"])
+        self.assertIn("docs/planning/qa.md", report["sources"])
+        self.assertNotIn("node_modules/pkg/docs/qa.md", report["sources"])
+        feel = next(item for item in report["dimensions"] if item["key"] == "feel")
+        self.assertTrue(feel["source"].startswith("docs/planning/qa.md:"))
+        gates = game.gate_reading(self.project, "deliver")
+        runbook = next(c for c in gates["gates"][0]["criteria"] if c["key"] == "runbook")
+        self.assertEqual(runbook["state"], "met")
+        self.assertTrue(runbook["source"].startswith("docs/planning/release.md:"))
+
     # Dimensão sem linha não é dimensão alta: o mínimo entre as dez fica
     # desconhecido, e um degrau percebido ali seria invenção.
     def test_bar_withholds_the_perceived_tier_while_a_dimension_has_no_line(self):

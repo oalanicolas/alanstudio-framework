@@ -1,4 +1,4 @@
-# Alan Studios Framework · 0.9
+# Alan Studios Framework · 0.10
 
 Harness thin para criar, evoluir e produzir games com IA. Compartilha conceitos,
 processo, seleção de contexto, marcos de produção e evidência. Cada jogo continua
@@ -116,6 +116,48 @@ A fonte é [SKILL.md](SKILL.md). Copie-a para o atalho do host
 aponte um symlink para ela e nunca mais pense nisso; `doctor` avisa quando a cópia
 ficou para trás.
 
+## Comandos da skill
+
+A skill roteia por intenção, no modelo da skill `impeccable` de frontend: uma
+preparação obrigatória (contexto e escala), leis e recusas que valem em todo
+trabalho, e vinte e três sub-comandos em seis categorias, cada um com uma
+referência própria em [`commands/`](commands/README.md) que a skill carrega antes
+de agir. `$game-dev` sem argumento mostra o menu; `$game-dev critique <jogo>` carrega
+`commands/critique.md` e segue o fluxo dele; texto livre cai no comando mais
+próximo pela situação.
+
+| Categoria | Comandos |
+| --- | --- |
+| Construir | `craft`, `shape`, `teach`, `document`, `init` |
+| Avaliar | `critique`, `audit`, `playtest` |
+| Refinar | `polish`, `feel`, `audio`, `harden`, `onboard`, `distill` |
+| Ampliar | `juice`, `visual`, `content` |
+| Corrigir | `adapt`, `optimize`, `clarify` |
+| Produzir | `next`, `produce`, `release` |
+
+O catálogo é [`commands/commands.json`](commands/commands.json): categoria,
+descrição, dica de argumentos, focos e leituras canônicas de cada comando. Três
+comandos do harness o servem:
+
+```sh
+python3 scripts/game.py commands --root /caminho/do/laboratorio
+python3 scripts/game.py pin critique --root /caminho/do/laboratorio
+python3 scripts/game.py unpin critique --root /caminho/do/laboratorio
+```
+
+`commands` imprime o catálogo em JSON, com o caminho de cada referência e se ela
+existe. `pin` cria um atalho próprio do host (`/critique` passa a invocar
+`$game-dev critique`) em cada diretório de skills onde a `game-dev` já está
+instalada; o arquivo leva um marcador, e uma skill sua com o mesmo nome nunca é
+sobrescrita. `unpin` remove só o que tem o marcador. `doctor` ganhou a checagem
+`commands`: catálogo, arquivo de referência e linha na tabela do `SKILL.md`
+precisam concordar, senão o menu manda o agente ler um arquivo que não existe.
+
+Uma referência de comando é um orquestrador fino, não uma receita nova: diz qual
+`context` rodar, qual receita ler, onde parar para o usuário, o que prova conclusão
+e o que não fazer ([contrato](commands/README.md)). As receitas continuam sendo
+selecionadas por `--focus`; o comando acrescenta o fluxo.
+
 ## Contexto por foco
 
 ```sh
@@ -132,6 +174,14 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
 `production`. Jogo novo começa em `create`. Acabamento do verbo usa `feel` e `audio`;
 contrato: [ambição](references/ambition.md). `--root` é aceito antes ou depois do
 subcomando.
+
+A **escala** de ambição (`jam`, `product`, `aa`) é o "register" da skill: governa
+quantidade de artefatos e de conteúdo, nunca o piso do verbo. `context` a devolve
+em `scale`: `--scale` declarado na conversa vence; sem ele, um campo `Escala:` num
+documento do projeto só **sugere**, com arquivo e linha; sem nenhum dos dois, o
+campo vem nulo e a skill infere uma vez e pede para gravar no brief. "AAA" escrito
+num brief é lido como `aa`, porque é o único sentido que este harness aceita para
+a palavra. O comando lê o campo; não classifica o jogo.
 
 O contexto entrega caminhos para leitura, registros já existentes, catálogos de
 estudo (se um irmão `Games-Frameworks` existir, ou `GAMES_FRAMEWORKS_ROOT`),
@@ -227,8 +277,9 @@ Um gate tem nome do que você está pedindo, não da etapa que acabou: `design`,
 `conclude`, `deliver`. A ordem é a do ciclo, e o ciclo tem retorno — reprovar em
 `scale` devolve para `build`, o que é uso normal.
 
-O projeto declara uma linha por critério, em `README.md`, `docs/qa.md`,
-`docs/devlog.md`, `docs/release.md` ou `docs/prd.md`:
+O projeto declara uma linha por critério, em `README.md` ou num `qa.md`,
+`devlog.md`, `release.md` ou `prd.md` em qualquer subpasta de documentação
+(o Rabisco Boom guarda o seu em `docs/planning/`; `sources` na saída diz o que foi lido):
 
 ```markdown
 | Gate | Critério | Estado | Evidência |

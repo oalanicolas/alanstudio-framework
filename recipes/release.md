@@ -42,6 +42,20 @@ O que precisa estar resolvido antes de chamar uma versão entregável:
   condição e autor. Uma dimensão abaixo do pretendido é lacuna registrada, não
   surpresa depois da entrega.
 
+Quando exportar envolver adaptação para outro host, identifique separadamente fonte,
+build, transformação/adaptador e artefato distribuído. Confira o conteúdo real do pacote:
+uma pasta de build existente não prova que corresponde à fonte atual, nem que só ela
+será enviada. Prévia, upload de versão e publicação têm efeitos e públicos distintos;
+link não listado não comprova controle de acesso.
+
+Mapeie os serviços usados pelo jogo para o destino: início/fim de carregamento e
+partida, pausa/áudio, identidade, save e rede quando presentes. Consulte a versão atual
+do SDK do destino; evento de foco não tem necessariamente a semântica de pausa do jogo.
+Registre disponível, adaptado, ausente ou não verificado por serviço. Teste o artefato
+transformado, inclusive recuperação e falha do serviço; abrir o menu ou obter um ZIP
+não comprova portabilidade. Preserve a fonte autoral e confira suas invariantes após
+exportar. [Origem e limites](../references/sources.md#autoria-ugc-pública).
+
 Registre a versão entregue, o conteúdo dela, o que ficou de fora e as lacunas
 conhecidas. Uma entrega sem essa nota impede diagnosticar o primeiro relato de
 problema, porque ninguém sabe o que estava dentro dela.

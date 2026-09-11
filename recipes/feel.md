@@ -80,6 +80,38 @@ Não importe um “juice pack” universal. Feel copiado de outro jogo sem ADAPT
 e proveniência dilui a instância. O estilo, a intensidade e a continuidade dos
 efeitos seguem a referência aprovada deste jogo.
 
+Ao integrar animações a outro motor, rastreie cada estado até o consumidor que
+realmente aplica a pose: clipe importado e fase calculada podem existir sem dono
+ativo. Compare deslocamento e articulações durante transições, inclusive preparação
+da ação; velocidade não nula não prova que a posição foi integrada. Use o evento
+aceito pelo motor para gestos específicos, distinguindo novo impulso de queda,
+rebote ou reação. Uma interrupção deve encerrar o gesto, não só escondê-lo até
+o ataque terminar. Confira se a entrada do clipe cabe em sua janela visível e se
+o relógio descarta o tempo de pausa/hitstop, sem recuperá-lo num salto na retomada.
+Esses testes verificam integração e continuidade; não demonstram qualidade artística
+nem tornam um giro completo adequado a todos os saltos.
+
+Quando movimento e ataque são liberados em momentos diferentes, reproduza input
+durante a trava residual: a captura do buffer precisa considerar todas as
+condições que realmente impedem a ação. Estar em `run` não prova estar livre para
+atacar. Ao adaptar teclado/analógico, confira se cada ação anunciada continua
+selecionável por um gesto deliberado; mudar corrida por padrão pode alterar a
+prioridade entre tilt, dash-attack e smash sem remover nenhum deles dos dados.
+
+O buffer deve preservar a intenção no instante do pedido, inclusive se uma nova
+direção chega no primeiro tick legal. Teste esse limite exato e mantenha arestas
+de movimento/técnicas independentes; limpar o input inteiro pode corrigir o golpe
+e perder a queda rápida. Em poses com restrições de contato, repetir o mesmo frame
+pausado deve produzir a mesma saída: um solver parcial reaplicado sobre sua própria
+saída pode continuar movendo o membro. Verifique startup, ativo e recuperação.
+
+Compare gesto, hitbox, hurtbox e efeito no mesmo snapshot real, em ambos os lados
+e nas proporções de cada avatar. Meça o sólido visível, sem esticar ossos para
+passar no teste. Uma cápsula central pode excluir acessórios e membros estendidos
+por contrato explícito; registre essa diferença antes de mudar arte ou balanceamento.
+Inspecione também o corpo cruzando plataformas e pendurado na borda, na câmera
+da partida: câmera próxima e geometria numericamente correta não provam leitura.
+
 ## 4. Ajustar uma variável por vez
 
 Feel é causal. Altere duração, escala ou intensidade de **um** elo e

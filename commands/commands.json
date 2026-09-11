@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "scope": "Catálogo dos sub-comandos da skill game-dev. Cada entrada aponta uma referência em commands/<nome>.md, que a skill carrega antes de agir. O catálogo alimenta o menu, os atalhos fixados (pin) e a checagem de integridade do doctor; não executa nada.",
+  "categories": {
+    "build": "Construir",
+    "evaluate": "Avaliar",
+    "refine": "Refinar",
+    "enhance": "Ampliar",
+    "fix": "Corrigir",
+    "produce": "Produzir"
+  },
+  "commands": {
+    "craft": {
+      "category": "build",
+      "description": "Fluxo completo: shape com brief confirmado, depois a fatia jogável de ponta a ponta — regra, apresentação, feel e áudio do verbo — com prova em movimento e prompt de continuidade. Use ao criar ou mudar um jogo.",
+      "argument_hint": "[projeto] [mudança]",
+      "foci": ["create", "mechanics", "feel", "audio"],
+      "reads": ["references/process.md", "recipes/create.md", "recipes/feel.md", "recipes/audio.md"]
+    },
+    "shape": {
+      "category": "build",
+      "description": "Definir antes de codar: fantasia, verbo central, escala, plataforma, maior incerteza e prova de conclusão. Produz o brief da rodada e para para confirmação. Não escreve código.",
+      "argument_hint": "[projeto] [mudança]",
+      "foci": ["create"],
+      "reads": ["references/creative-workflow.md", "references/ambition.md", "references/preproduction.md"]
+    },
+    "teach": {
+      "category": "build",
+      "description": "Base documental do jogo: inicialização com análise profunda, nove áreas mínimas com fato ou lacuna, AGENTS.md e escala no brief. Roda sozinho quando o contexto acusa lacuna; não pede segundo consentimento.",
+      "argument_hint": "[projeto]",
+      "foci": ["architecture"],
+      "reads": ["references/project-audit.md", "assets/templates/agents.md", "assets/templates/game-design.md"]
+    },
+    "document": {
+      "category": "build",
+      "description": "Design system do jogo a partir do que existe no código: tokens com consumidor real, famílias do mundo, feel, mix, UI/acesso, receita de item novo e proveniência. Gera ou atualiza o Art Bible; não aprova arte.",
+      "argument_hint": "[projeto]",
+      "foci": ["visual"],
+      "reads": ["references/game-design-system.md", "assets/templates/art-bible.md", "recipes/visual.md"]
+    },
+    "init": {
+      "category": "build",
+      "description": "Jogo novo a partir de um starter do acervo (REUSE): copia, renomeia, cria rascunhos declarados em docs/ e AGENTS.md. Não instala dependências e recusa destino ocupado.",
+      "argument_hint": "[destino] [--starter nome]",
+      "foci": ["create"],
+      "reads": ["recipes/create.md", "assets/starters/canvas-arcade/README.md"]
+    },
+    "critique": {
+      "category": "evaluate",
+      "description": "Revisão de experiência pela barra de acabamento: observa o jogo em movimento, nomeia o degrau de cada dimensão pertinente com condição e autor, encontra o piso, tria achados P0–P3 e persiste por record. Não atribui nota.",
+      "argument_hint": "[projeto] [recorte]",
+      "foci": ["feel", "audio", "visual"],
+      "reads": ["references/production-bar.md", "references/quality.md", "references/aaa-checklist.md"]
+    },
+    "audit": {
+      "category": "evaluate",
+      "description": "Checagem técnica sem corrigir: ambiente, base documental, forma da barra e dos gates, validadores e capacidades alegadas. Relata problemas com arquivo e linha, tria P0–P3 e mapeia cada um a um comando.",
+      "argument_hint": "[projeto]",
+      "foci": ["architecture", "lifecycle"],
+      "reads": ["references/gates.md", "references/production-bar.md", "references/project-audit.md"]
+    },
+    "playtest": {
+      "category": "evaluate",
+      "description": "Observação com pessoas: cenário, hipótese, regra de parada declarada, achado com evidência e medição, arquétipos de jogador, e recibo com role=human. Avaliação do agente nunca vira playtest.",
+      "argument_hint": "[projeto] [cenário]",
+      "foci": ["mechanics"],
+      "reads": ["references/quality.md", "references/personas.md", "assets/templates/qa.md"]
+    },
+    "polish": {
+      "category": "refine",
+      "description": "Passagem final que sobe a dimensão mais baixa da barra, não a mais visível. Exige fatia funcionalmente completa, lê a declaração de degraus e corrige por causa. Não polir scaffold.",
+      "argument_hint": "[projeto]",
+      "foci": ["feel", "audio", "visual", "accessibility"],
+      "reads": ["references/production-bar.md", "references/quality.md"]
+    },
+    "feel": {
+      "category": "refine",
+      "description": "Peso, timing e recuperação da ação central: cadeia intenção → input → antecipação → corpo → impacto → câmera → áudio → recuperação, um elo por vez, comparado em movimento. Use quando o verbo funciona mas não convence.",
+      "argument_hint": "[projeto] [verbo]",
+      "foci": ["feel"],
+      "reads": ["recipes/feel.md", "references/game-design-system.md"]
+    },
+    "audio": {
+      "category": "refine",
+      "description": "Som que informa: camadas, prioridade, ducking, silêncio como recurso, origem e licença. Busca no acervo antes de baixar e prova com e sem som. Use quando a ação é muda ou o mix é uma pasta de arquivos.",
+      "argument_hint": "[projeto] [ação]",
+      "foci": ["audio"],
+      "reads": ["recipes/audio.md", "references/game-design-system.md"]
+    },
+    "harden": {
+      "category": "refine",
+      "description": "Confiança no estado e no pior momento: pausar, perder, reiniciar, sair, save inválido e antigo, interrupção abrupta, cena de pior caso, build exportado. Use antes de chamar algo de publicável.",
+      "argument_hint": "[projeto]",
+      "foci": ["lifecycle", "persistence", "performance", "release"],
+      "reads": ["recipes/lifecycle.md", "recipes/persistence.md", "recipes/performance.md", "recipes/release.md"]
+    },
+    "onboard": {
+      "category": "refine",
+      "description": "Primeiro minuto: a primeira ação ensina o verbo sem mural de texto; prática antes de combinação de riscos; latência e stutter observados no trecho real. Use quando quem nunca viu o jogo trava no início.",
+      "argument_hint": "[projeto]",
+      "foci": ["mechanics", "content"],
+      "reads": ["references/quality.md", "references/production-bar.md", "recipes/mechanics.md"]
+    },
+    "distill": {
+      "category": "refine",
+      "description": "Cortar escopo até o que sustenta o verbo: remover sistemas, conteúdo e opções que não mudam decisão. Abandonar é saída legítima do gate. Use quando o jogo ficou grande e irregular.",
+      "argument_hint": "[projeto]",
+      "foci": ["mechanics", "production"],
+      "reads": ["references/gates.md", "references/ambition.md", "recipes/mechanics.md"]
+    },
+    "juice": {
+      "category": "enhance",
+      "description": "Sinal da consequência no mesmo quadro do contato: flash, hitstop, shake, partícula, stinger e câmera trabalhando juntos, sem esconder a ação. Use quando o feel está certo e o impacto ainda passa despercebido.",
+      "argument_hint": "[projeto] [ação]",
+      "foci": ["feel", "visual"],
+      "reads": ["recipes/feel.md", "recipes/visual.md"]
+    },
+    "visual": {
+      "category": "enhance",
+      "description": "Direção de arte e mundo: silhueta, material, luz e animação legíveis em movimento; item novo nasce pertencendo ao jogo; referência aprovada sincronizada na base no mesmo turno. Use para arte, HUD e câmera.",
+      "argument_hint": "[projeto] [alvo]",
+      "foci": ["visual"],
+      "reads": ["recipes/visual.md", "references/game-design-system.md", "references/project-audit.md"]
+    },
+    "content": {
+      "category": "enhance",
+      "description": "Receita e pipeline de conteúdo: o próximo nível, inimigo ou item nasce pela receita com custo cronometrado, identidade estável e falha legível para dado inválido. Use quando o segundo trecho custa tanto quanto o primeiro.",
+      "argument_hint": "[projeto] [família]",
+      "foci": ["content"],
+      "reads": ["recipes/content.md", "references/game-design-system.md"]
+    },
+    "adapt": {
+      "category": "fix",
+      "description": "Entrada, dispositivo e alcance: toque, gamepad, remapeamento, contraste, forma além da cor, movimento reduzido, legendas e alvos de toque. Use ao levar o jogo a outro dispositivo ou público.",
+      "argument_hint": "[projeto] [dispositivo ou público]",
+      "foci": ["accessibility"],
+      "reads": ["recipes/accessibility.md", "packs/README.md"]
+    },
+    "optimize": {
+      "category": "fix",
+      "description": "Estabilidade sob orçamento: distribuição de tempo de quadro pelo pior percentil, cena de pior caso, carregamento frio, comparação em condições equivalentes. A arte aprovada é o piso; cortar arte para número não sobe degrau.",
+      "argument_hint": "[projeto] [cena]",
+      "foci": ["performance"],
+      "reads": ["recipes/performance.md", "references/production-bar.md"]
+    },
+    "clarify": {
+      "category": "fix",
+      "description": "Legibilidade do estado: onde estou, o que me ameaça, o que posso fazer — em movimento, por silhueta e forma antes de cor e texto; teste em escala de cinza e sessão muda. Use quando o jogador não entende o que aconteceu.",
+      "argument_hint": "[projeto] [cena]",
+      "foci": ["visual", "accessibility"],
+      "reads": ["references/production-bar.md", "recipes/visual.md", "recipes/accessibility.md"]
+    },
+    "next": {
+      "category": "produce",
+      "description": "Uma próxima ação derivada do estado no disco, ordenada por dependência, com alternativas descartadas. O agente confirma, resolve o passo e entrega o prompt de continuidade pronto. Nunca executa sozinho.",
+      "argument_hint": "[projeto] [--focus foco]",
+      "foci": ["create"],
+      "reads": ["references/process.md", "references/gauntlet.md"]
+    },
+    "produce": {
+      "category": "produce",
+      "description": "Da fatia ao acabamento: plano de produção com marcos por evidência, lentes de disciplina, orçamentos medidos, pipeline de conteúdo e estabilidade; barra e gates lidos antes de ampliar. Nenhum comando promove marco.",
+      "argument_hint": "[projeto] [marco]",
+      "foci": ["production"],
+      "reads": ["recipes/production.md", "references/gates.md", "references/production-bar.md"]
+    },
+    "release": {
+      "category": "produce",
+      "description": "Caminho repetível entre repositório e jogador: build limpo de um clone, artefato exportado em máquina alheia, proveniência, reversão e o gate deliver com evidência. Prepara; não publica nem concede autorização.",
+      "argument_hint": "[projeto]",
+      "foci": ["release"],
+      "reads": ["recipes/release.md", "references/gates.md", "assets/templates/release.md"]
+    }
+  }
+}

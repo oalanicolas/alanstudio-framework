@@ -21,10 +21,34 @@ AGENTS, `package.json` nem a documentação oficial dos navegadores e biblioteca
 - Pausa: `visibilitychange`/Page Visibility, `blur`/`focus`; `AudioContext` entra em
   `suspended` e precisa de gesto do usuário para retomar. Aba em segundo plano reduz
   rAF a zero ou poucos Hz.
+- Na abertura, um prazo que inclui espera por `requestAnimationFrame` deve pausar
+  enquanto a página está oculta, preservando o tempo restante. Não substituir a
+  pintura final por um timer. Barreiras de imagens devem cobrir os elementos do
+  jogo, sem incluir imagens de extensões ou ferramentas inseridas no documento.
+  Provar retomada, timeout real em primeiro plano e descarte dos listeners.
 - Perda de contexto: `webglcontextlost`/`webglcontextrestored`; recursos de GPU devem
   ser recriáveis. Descarte: remover listeners, cancelar rAF, `dispose()` de geometrias,
   materiais e texturas (three.js/Babylon), fechar `AudioContext`.
 - Entrada: Pointer Events unificam mouse/toque/caneta; Gamepad API por polling.
+
+### Jogo embutido e troca de versão
+
+Quando uma prévia roda dentro de um host, confira permissões do iframe, origem e
+contrato das mensagens na implementação real. Associe respostas à instância,
+requisição e revisão correntes; uma resposta atrasada da prévia anterior não pode
+editar ou salvar a nova. Valide remetente e payload no consumidor conforme o mecanismo
+de isolamento adotado; não transplante um tratamento de origem para outro sandbox.
+
+Distinga armazenamento do jogo, memória de contingência e persistência oferecida pelo
+host. Um método chamado save pode apenas reter dados até recarregar. Prove recarga,
+troca de versão e indisponibilidade do host nos percursos suportados. Reabrir a prévia
+também exige conferir descarte de loops/listeners/recursos e retomada do áudio.
+
+No smoke, escolha uma ação e um resultado próprios do jogo, além de carregamento e
+erros. Temporizador andando, canvas alterado, texto com score e nomes de objetos são
+sinais parciais; não comprovam interação correta, semântica de cena ou qualidade
+artística. Registre versão, cenário, ação e limite da observação. Adaptar essas provas
+não exige adotar o runtime do fornecedor. [Origem](../../references/sources.md#autoria-ugc-pública).
 
 ## Conteúdo e pipeline
 
