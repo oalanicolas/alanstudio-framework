@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.453 — o sources[n] do continuity nomeia a fila que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+`sources_found`
+não
+comprova
+fila
+atual.
+A
+fonte
+copiava
+o
+caminho
+e
+calava
+a
+recusa.
+Agora
+o
+`sources[n]`
+do
+continuity
+nomeia
+a
+fila.
+Fonte
+no
+disco
+não
+é
+backlog.
+Sem
+chave
+`fila`.
+Nomear
+não
+executa.
+
+O que 0.9.453 não afirma:
+fonte
+no
+disco
+não
+é
+passo
+resolvido
+nem
+jogo
+implementado.
+
 ## 0.9.452 — o doctor nomeia a ausência que o mapa já recusa
 
 O

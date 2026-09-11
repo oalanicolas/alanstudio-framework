@@ -747,6 +747,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("documento pronto seja PoC", game.scan(self.project)["scope"])
         self.assertNotIn("documento pronto seja PoC", game.next_step(self.project)["scope"])
 
+    def test_continuity_sources_name_the_queue_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_found_as_queue(guide),
+            "o processo já recusa que sources_found comprove a fila",
+        )
+        self.assertEqual(game.continuity_source_queue_source(), "references/process.md")
+        (self.project / "docs").mkdir()
+        plan = self.project / "docs/production-plan.md"
+        plan.write_text(
+            "# Plano de produção\nEscopo local.\n## Continuidade\n"
+            "Próximo passo: TASK-01 — provar transporte.\n"
+            "Pronto quando: nenhum item é perdido ou duplicado.\n"
+        )
+        report = game.context(self.project, "mechanics")
+        self.assertTrue(report["continuity"]["sources"], "o continuity já lista fontes candidatas")
+        item = report["continuity"]["sources"][0]
+        self.assertIn(
+            "sources_found comprove fila",
+            item["scope"],
+            "a fonte copiava o caminho e calava a recusa",
+        )
+        self.assertIn("(`fila`)", item["scope"])
+        self.assertNotIn("fila", item)
+        self.assertFalse(report["continuity"]["executed"])
+        self.assertIsNone(report["continuity"]["next_step"])
+        self.assertFalse(game.process_refuses_found_as_queue(""))
+        with mock.patch.object(game, "continuity_source_queue_source", return_value=None):
+            silent = game.context(self.project, "mechanics")
+        self.assertNotIn(
+            "sources_found comprove fila",
+            silent["continuity"]["sources"][0]["scope"],
+        )
+        self.assertNotIn("scope", game.scan(self.project)["continuity_sources"][0])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a fila que o processo já recusa", recipe)
+        self.assertIn("nomeia a fila que o processo já recusa", skill)
+        self.assertIn("nomeia a fila que o processo já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("sources_found comprove fila", report["continuity"]["scope"])
+        self.assertNotIn("sources_found comprove fila", report["documentation"]["scope"])
+        self.assertNotIn("sources_found comprove fila", game.next_scope())
+        self.assertNotIn("sources_found comprove fila", game.check_plan_scope())
+
     def test_scan_names_the_aaa_the_memory_already_refuses(self):
         mold = (game.FRAMEWORK / "assets/templates/agents.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -6008,6 +6008,42 @@ def continuity_scope():
     return scope
 
 
+# O processo já recusa que sources_found comprove a fila.
+# Sem isto a fonte copiava o caminho e calava a recusa.
+# Fonte no disco não é backlog.
+CONTINUITY_QUEUE = re.compile(r"`sources_found`\s+não\s+comprova\s+fila\s+atual")
+
+
+def process_refuses_found_as_queue(text):
+    return bool(text and CONTINUITY_QUEUE.search(text))
+
+
+def continuity_source_queue_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_found_as_queue(text):
+        return "references/process.md"
+    return None
+
+
+def continuity_source_scope():
+    scope = (
+        "Caminho, linha, estado e base da fonte candidata. Não resolve "
+        "a fila e não executa o passo."
+    )
+    if continuity_source_queue_source():
+        scope += (
+            " O disco recusa que sources_found comprove fila (`fila`). "
+            "Fonte no disco não é backlog."
+        )
+    return scope
+
+
 # A guia já recusa preencher o checklist. Sem isto o
 # context apontava o arquivo e calava a recusa.
 # Guia no disco não é observação.
@@ -6114,6 +6150,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             references.insert(references.index(recipe) + 1 if recipe in references else len(references), pack)
     references = list(dict.fromkeys(references))
     studies = studies_for(focus, STUDIES_ROOT if studies_root is None else studies_root)
+    source_scope = continuity_source_scope()
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(), "kind": kind,
         "focus": focus, "stage": stage, "event": event, "instructions": instructions, "records": records,
@@ -6127,7 +6164,10 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         "production_bar": production_bar(focus, stage, project),
         "continuity": {
             "status": "sources_found" if foundation["continuity_sources"] else "not_located",
-            "sources": [dict(item, path=str(project / item["path"])) for item in foundation["continuity_sources"]],
+            "sources": [
+                dict(item, path=str(project / item["path"]), scope=source_scope)
+                for item in foundation["continuity_sources"]
+            ],
             "source_count": foundation["continuity_source_count"],
             "action": "resolve_and_continue" if event == "resume" else "record_and_present_next_step",
             "next_step": None, "executed": False,
