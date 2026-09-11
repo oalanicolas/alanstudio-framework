@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.361: o `roles` nomeia a voz que o sfx já desloca. Arquivo no disco não é mix ouvida. Sem chave `sfx`. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.360):** `python3 -m unittest discover -s tests` → 356.
+**Suítes confirmadas no HEAD (0.9.361):** `python3 -m unittest discover -s tests` → 357.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
