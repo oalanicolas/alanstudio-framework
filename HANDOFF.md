@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.455: o `issues[n]` da coverage nomeia o acidente que o mapa já recusa. Recorte no disco não é falha. Sem chave `acidente`. Nomear não inventaria.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** HEAD anterior (0.9.454: 450 / 509) + confirmação pendente.
+**Suítes confirmadas no HEAD (0.9.455):** `python3 -m unittest discover -s tests` → 451 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
