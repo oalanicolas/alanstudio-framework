@@ -5,9 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.421: o `scan` nomeia a inexistência que o roteiro já recusa. Contagem no disco não é inventário. Sem chave `inexistente`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.420):** `python3 -m unittest discover -s tests` → 416 OK.
+**Suítes confirmadas no HEAD (0.9.421):** `python3 -m unittest discover -s tests` → 417 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
-Confirmação pendente no 0.9.421.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
