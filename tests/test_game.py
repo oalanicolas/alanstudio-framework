@@ -3307,6 +3307,36 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(listed["heard"])
         self.assertEqual(listed["authors"], ["Autora"])
 
+    def test_sfx_info_names_the_peak_the_inspect_already_measures(self):
+        item, _ = self._plant_catalog_sound()
+        silent = game.sfx_catalog.info_entry(item["id"], self.root)
+        self.assertNotIn("peak_dbfs", silent, "sem pico no recibo o info não inventa")
+        self.assertNotIn("pico que o inspect já mede", silent["next"].casefold())
+        catalog_path = self.root / "shared/sfx/catalog.json"
+        catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+        catalog["sounds"][0]["technical"]["peak_dbfs"] = -6.25
+        catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+        report = game.sfx_catalog.info_entry(item["id"], self.root)
+        self.assertEqual(report["peak_dbfs"], -6.25, "o info lia a ficha e calava o pico")
+        self.assertIn("nomeia o pico que o inspect já mede", report["next"].casefold())
+        self.assertFalse(report["heard"])
+        dumped = json.dumps(report)
+        self.assertNotIn("aprovado", dumped)
+        self.assertNotIn("verified", dumped)
+        self.assertNotIn("LUFS", dumped)
+        self.assertNotIn("-14", dumped)
+        self.assertNotIn("rms_dbfs", report)
+        starter = game.sfx_catalog.info_entry("dash", self.root)
+        self.assertNotIn("peak_dbfs", starter)
+        recipe = (Path(game.FRAMEWORK) / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (Path(game.FRAMEWORK) / "SKILL.md").read_text(encoding="utf-8")
+        readme = (Path(game.FRAMEWORK) / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o pico que o inspect já mede", recipe)
+        self.assertIn("nomeia o pico que o inspect já mede", skill)
+        self.assertIn("nomeia o pico que o inspect já mede", readme)
+        roles = game.roles_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        self.assertNotIn("peak", roles["scope"])
+
     def test_sfx_export_copies_starter_stem_bytes_and_credits_without_claiming_to_hear_them(self):
         destination = self.root / "jogo" / "public" / "sfx"
         source = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade/public/sfx/dash.wav"

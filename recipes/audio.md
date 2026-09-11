@@ -64,6 +64,7 @@ autoriza improvisar licença. Arquivo no disco não é mix ouvido. Crescer o ace
 --metadata JSON` (ffmpeg) ou `sfx seed` com `selection.json` local.
 `sfx info ID` lê a ficha do acervo ou a chave do stem do starter —
 o recibo que lista um stem e o disco perdeu não é id desconhecido;
+se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede. Pico no recibo não é mix ouvida.
 `sfx export ID --to PASTA` copia bytes e
 créditos do acervo ou do stem do starter que `sfx info`
 já nomeia — o recibo que lista um stem e o disco perdeu

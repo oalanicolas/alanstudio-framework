@@ -594,7 +594,9 @@ stems do starter e não cruza. Nomeia o stem que o recibo lista e
 o disco perdeu. Nomeia o som que o catálogo lista e o disco
 perdeu — não despeja errno. Não ouve. `sfx info` lê a ficha
 do acervo ou a chave do stem do starter. O recibo que lista um
-stem e o disco perdeu não é id desconhecido. Arquivo no disco não é
+stem e o disco perdeu não é id desconhecido. Se o inspect já mediu
+o pico, o `sfx info` nomeia o pico que o inspect já mede. Pico no
+recibo não é mix ouvida. Arquivo no disco não é
 mix ouvido. `sfx export` de um id do acervo copia
 bytes, `manifest.json` e `CREDITS.txt` para uma pasta fora do acervo.
 De uma chave do starter, copia o WAV, o `.credits.txt` e anexa

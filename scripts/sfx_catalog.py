@@ -1,6 +1,7 @@
 """Entrada do harness para o acervo em shared/sfx, se existir no laboratório."""
 from pathlib import Path
 import json
+import math
 import re
 
 import audio
@@ -109,6 +110,10 @@ EXPORT_MISSING = (
 INFO_NEXT = (
     "Ficha lida no disco. Não é mix ouvido. "
     "Ouça no jogo, no papel."
+)
+INFO_PEAK = (
+    " Nomeia o pico que o inspect já mede. "
+    "Pico no recibo não é mix ouvida."
 )
 INFO_LOCAL_NEXT = (
     "Ficha do stem do starter. Não é id do acervo. "
@@ -538,6 +543,23 @@ def import_entry(file, metadata, root=None):
     return result
 
 
+def receipt_peak(item):
+    # O inspect grava o pico no recibo. O info
+    # lia id e créditos e calava o número.
+    # Pico no recibo não é mix ouvida.
+    if not isinstance(item, dict):
+        return None
+    technical = item.get("technical")
+    if not isinstance(technical, dict):
+        return None
+    peak = technical.get("peak_dbfs")
+    if isinstance(peak, bool) or not isinstance(peak, (int, float)):
+        return None
+    if not math.isfinite(peak):
+        return None
+    return peak
+
+
 def info_entry(entry_id, root=None, folder=None):
     sounds = load_catalog(root)["sounds"]
     empty = len(sounds) == 0
@@ -547,7 +569,7 @@ def info_entry(entry_id, root=None, folder=None):
         except ValueError:
             item = None
         if item:
-            return {
+            card = {
                 "id": item["id"],
                 "title": item["title"],
                 "category": item["category"],
@@ -561,6 +583,11 @@ def info_entry(entry_id, root=None, folder=None):
                 "heard": False,
                 "next": INFO_NEXT,
             }
+            peak = receipt_peak(item)
+            if peak is not None:
+                card["peak_dbfs"] = peak
+                card["next"] = INFO_NEXT + INFO_PEAK
+            return card
     local = find_local_stem(entry_id, folder)
     if local:
         return local_info_card(local, empty)

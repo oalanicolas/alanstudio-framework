@@ -3,6 +3,54 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.367 — o sfx info nomeia o pico que o inspect já mede
+
+O
+inspect
+já
+grava
+o
+pico
+no
+recibo.
+O
+comando
+lia
+id
+e
+créditos
+e
+calava
+o
+número.
+Agora
+o
+`sfx info`
+nomeia
+o
+pico.
+Pico
+no
+recibo
+não
+é
+mix
+ouvida.
+Sem
+`rms`.
+Não
+promove
+`heard`.
+
+O que 0.9.367 não afirma:
+pico
+no
+recibo
+não
+é
+mix
+ouvida.
+
 ## 0.9.366 — o art nomeia o trilho que o telegraph já marca
 
 A

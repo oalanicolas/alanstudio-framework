@@ -100,7 +100,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx seed` lê
    `selection.json` local. `sfx info ID` lê a ficha do acervo ou a
    chave do stem do starter — o recibo que lista um stem e o
-   disco perdeu não é id desconhecido; `sfx export ID
+   disco perdeu não é id desconhecido; se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede.
+   Pico no recibo não é mix ouvida. `sfx export ID
    --to PASTA` copia bytes e créditos do acervo ou do stem —
    o recibo que lista um stem e o disco perdeu não é id
    desconhecido; exportar não inventa bytes.
@@ -249,7 +250,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    e origem e licença casam. `sfx copy` continua o caminho explícito. Crescer o acervo é `sfx import` / `sfx seed`
    (ffmpeg); `sfx info` lê a ficha do acervo ou a chave do stem
    do starter — o recibo que lista um stem e o disco perdeu não
-   é id desconhecido; `sfx verify` nomeia os stems sem cruzar o que não
+   é id desconhecido; se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede.
+   Pico no recibo não é mix ouvida. `sfx verify` nomeia os stems sem cruzar o que não
    existe e nomeia o stem que o recibo lista e o disco perdeu;
    `sfx verify` nomeia o som que o catálogo lista e o disco
    perdeu — não despeja errno;
