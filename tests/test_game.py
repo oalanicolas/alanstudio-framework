@@ -3821,6 +3821,45 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("verified", report["scope"])
 
+    def test_craft_names_the_ladder_the_research_already_refuses(self):
+        research = (
+            game.FRAMEWORK / "references/observable-criteria-research.md"
+        ).read_text(encoding="utf-8")
+        self.assertTrue(
+            game.research_refuses_ladder(research),
+            "a pesquisa já recusa ser escada de acabamento",
+        )
+        self.assertEqual(
+            game.craft_item_ladder_source(),
+            "references/observable-criteria-research.md",
+        )
+        report = game.craft_reading(self.project)
+        item = report["checks"][0]
+        self.assertIn(
+            "checklist seja escada",
+            item["scope"],
+            "o item do craft listava o checklist e calava a recusa",
+        )
+        self.assertIn("(`escada`)", item["scope"])
+        self.assertNotIn("escada", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.research_refuses_ladder(""))
+        with mock.patch.object(game, "craft_item_ladder_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn("checklist seja escada", silent["checks"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a escada que a pesquisa já recusa", recipe)
+        self.assertIn("nomeia a escada que a pesquisa já recusa", skill)
+        self.assertIn("nomeia a escada que a pesquisa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("checklist seja escada", report["scope"])
+        self.assertNotIn("checklist seja escada", game.next_scope())
+        self.assertNotIn("checklist seja escada", game.gate_reading(self.project)["scope"])
+        self.assertNotIn("checklist seja escada", game.bar_reading(self.project)["scope"])
+
     def test_craft_never_claims_to_have_observed_the_game(self):
         report = game.craft_reading(self.project)
         self.assertFalse(report["granted"])

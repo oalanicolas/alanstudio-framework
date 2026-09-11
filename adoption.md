@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.430 — o craft nomeia a escada que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+não
+é
+escada
+de
+acabamento.
+O
+item
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+`craft`
+nomeia
+a
+escada.
+Pesquisa
+no
+disco
+não
+é
+ofício
+observado.
+Sem
+chave
+`escada`.
+Nomear
+não
+observa.
+
+O que 0.9.430 não afirma:
+pesquisa
+no
+disco
+não
+é
+ofício
+observado
+nem
+gate
+concedido.
+
 ## 0.9.429 — o guide nomeia a abertura que o processo já recusa
 
 O

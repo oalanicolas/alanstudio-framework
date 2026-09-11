@@ -178,7 +178,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    desconhecida, e `next` aponta `--declare` antes de seguir.
    **`craft <projeto>`** lê checklists de ofício (paleta, perdão, percentil,
    regra de parada) — conformidade com o que o projeto declarou, sem limiar
-   importado. Se a tabela declara saída de escopo, o `craft` nomeia a saída de escopo que a tabela já declara. Linha no disco não é ofício observado. Sem chave `out_of_scope`. `observed` é sempre falso. Só levanta o gate que o projeto pediu.
+   importado. Se a tabela declara saída de escopo, o `craft` nomeia a saída de escopo que a tabela já declara. Linha no disco não é ofício observado. Sem chave `out_of_scope`. Se a pesquisa recusa ser escada de acabamento, o `craft` nomeia a escada que a pesquisa já recusa. Pesquisa no disco não é ofício observado. Sem chave `escada`. `observed` é sempre falso. Só levanta o gate que o projeto pediu.
    Depois de um `init` fresco ou de um `start` sem rascunhos, `next` propõe
    **abrir o ciclo** antes de documentar o que falta: o starter já é um jogo que abre. Com tela,
    o avanço abre a porta; no campo o aviso ensina mover, avançar,

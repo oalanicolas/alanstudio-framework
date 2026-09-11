@@ -1183,6 +1183,7 @@ def craft_reading(project, gate=None):
             "state": row["state"] if row else "undeclared",
             "evidence": row["note"] if row else None,
             "source": row["source"] if row else None,
+            "scope": craft_item_scope(),
         })
     pending = [item["key"] for item in checks if item["state"] in ("undeclared", "unmet")]
     return {
@@ -1204,6 +1205,42 @@ def craft_reading(project, gate=None):
         ),
         "scope": _craft_scope(project),
     }
+
+
+# A pesquisa já recusa ser escada de acabamento. Sem isto o
+# item do craft listava o checklist e calava a recusa.
+# Pesquisa no disco não é ofício observado.
+CRAFT_LADDER = re.compile(r"não é\s+uma escada")
+
+
+def research_refuses_ladder(text):
+    return bool(text and CRAFT_LADDER.search(text))
+
+
+def craft_item_ladder_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_ladder(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_scope():
+    scope = (
+        "Checklist de ofício segundo a declaração do projeto. "
+        "Não observa e não concede passagem."
+    )
+    if craft_item_ladder_source():
+        scope += (
+            " O disco recusa que o checklist seja escada (`escada`). "
+            "Pesquisa no disco não é ofício observado."
+        )
+    return scope
 
 
 def craft_declares_out(text):

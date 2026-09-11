@@ -35,7 +35,7 @@ Este framework usa três vocabulários que não se substituem, e esta receita li
 - **Os [gates](../references/gates.md)** respondem *o que ainda não pode passar* — dez
   recusas por etapa do ciclo, com critérios `met`/`unmet`/`waived`. `gate <projeto>` lê.
   Se a tabela declara o gate, o `gate` nomeia o gate que a tabela já declara. Linha no disco não é passagem concedida. Sem chave `gate`. Se o roteiro recusa que o silêncio seja aprovação, o `gate` nomeia o silêncio que o roteiro já recusa. Linha vazia no disco não é passagem. Sem chave `silêncio`.
-  Se a tabela declara saída de escopo, o `craft` nomeia a saída de escopo que a tabela já declara. Linha no disco não é ofício observado. Sem chave `out_of_scope`.
+  Se a tabela declara saída de escopo, o `craft` nomeia a saída de escopo que a tabela já declara. Linha no disco não é ofício observado. Sem chave `out_of_scope`. Se a pesquisa recusa ser escada de acabamento, o `craft` nomeia a escada que a pesquisa já recusa. Pesquisa no disco não é ofício observado. Sem chave `escada`.
 
 Correspondência usual, a confirmar em cada jogo: first playable fecha o gate `prototype`
 e pede a barra em `playable`; vertical slice fecha `scale` e pede `slice` em todas as
