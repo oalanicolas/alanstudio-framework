@@ -659,7 +659,9 @@ armazenamento, PROGRESS_SCHEMA/migrate e se o disco nomeia sessão volátil
 ilegíveis (`settings_recovered`, `settings.broken`); relata `warned`. Nomear
 não é aba fechada. `trusted` é sempre `false`.
 `budget` procura script `budget`/`bench`, `tools/budget.*` ou
-`record --kind budget`; `measured` é sempre `false`. O starter declara
+`record --kind budget`. Se o tool declara `title.attract`, o
+`budget` nomeia a porta que a receita já cronometra. Stub no
+disco não é dispositivo. Sem chave `door`. `measured` é sempre `false`. O starter declara
 os três; um canvas sem opção de alcance recebe `access.missing` antes da
 barra.
 

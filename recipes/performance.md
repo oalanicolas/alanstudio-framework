@@ -43,7 +43,9 @@ quente não é máquina do jogador fria. Aquecimento, cache e ferramentas de per
 alteram o próprio resultado que estão medindo.
 
 `budget <projeto>` lê se existe script `budget`/`bench`, `tools/budget.*` ou
-`record --kind budget`. `measured` é sempre falso: o harness não executa a
+`record --kind budget`. Se o tool declara `title.attract`, o `budget`
+nomeia a porta que a receita já cronometra. Stub no disco não é
+dispositivo. Sem chave `door`. `measured` é sempre falso: o harness não executa a
 medição.
 
 Implementação concreta: `tools/budget.mjs` do starter `canvas-arcade` mede a

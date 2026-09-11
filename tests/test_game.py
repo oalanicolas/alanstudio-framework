@@ -3879,6 +3879,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", recipe)
         self.assertNotIn("16 ms", recipe)
 
+    def test_budget_names_the_door_the_recipe_already_times(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/budget.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.budget_times_door(tool), "o tool já cronometra a porta")
+        self.assertEqual(game.budget_door_source(starter), "tools/budget.mjs")
+        report = game.budget_reading(starter)
+        self.assertIn("title.attract", report["scope"], "o budget calava a porta que a receita já cronometra")
+        self.assertIn("porta", report["scope"])
+        self.assertFalse(report["measured"])
+        self.assertNotIn("door", report)
+        self.assertNotIn("title_attract", report)
+        self.assertNotIn("16 ms", report["scope"])
+        empty = game.budget_reading(self.project)
+        self.assertFalse(game.budget_times_door(""))
+        self.assertIsNone(game.budget_door_source(self.project))
+        self.assertNotIn("title.attract", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a porta", recipe)
+        self.assertIn("nomeia a porta", skill)
+        self.assertIn("nomeia a porta", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", recipe)
+
     def test_persistence_recipe_names_the_pad_loss_the_starter_already_flushes(self):
         persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")

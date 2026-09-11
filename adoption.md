@@ -3,6 +3,40 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.349 — o budget nomeia a porta que a receita já cronometra
+
+A
+receita
+e
+o
+tool
+já
+cronometravam
+`title.attract`.
+O
+comando
+calava.
+Agora
+o
+`budget`
+nomeia
+a
+porta.
+Sem
+chave
+`door`.
+Não
+promove
+`measured`.
+
+O que 0.9.349 não afirma:
+stub
+no
+disco
+não
+é
+dispositivo.
+
 ## 0.9.348 — o access nomeia o foco que a casca já declara
 
 A

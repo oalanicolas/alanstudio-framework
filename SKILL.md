@@ -290,6 +290,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    disco não é sessão com o teclado. Texto no disco não é mix ouvido.
    Nomear não é
    `trusted`. Trocar no stub não é sessão observada.
+   Se o `tools/budget.*` declara `title.attract`, o `budget`
+   nomeia a porta que a receita já cronometra. Stub no disco
+   não é dispositivo. Sem chave `door`.
    `verified`/`trusted`/`measured` são sempre falsos.
    Falta no disco entra no `next` antes dos rascunhos.
    **`art` / `content` / `ship`** leem paleta ou art-bible vigente, mesas

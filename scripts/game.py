@@ -1753,6 +1753,31 @@ def budget_receipts(project):
     return found
 
 
+# A receita e o tool já cronometram a porta. Sem isto o
+# budget lia o script e calava o primeiro quadro.
+# Stub no disco não é dispositivo.
+BUDGET_DOOR = re.compile(r"title\.attract")
+
+
+def budget_times_door(text):
+    return bool(text and BUDGET_DOOR.search(text))
+
+
+def budget_door_source(project):
+    project = Path(project)
+    for name in BUDGET_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if budget_times_door(text):
+            return name
+    return None
+
+
 def budget_reading(project):
     project = Path(project)
     try:
@@ -1768,6 +1793,16 @@ def budget_reading(project):
     receipts = budget_receipts(project)
     expected = bool(scripts) or (project / "Cargo.toml").is_file()
     declared = bool(named or files or receipts)
+    scope = (
+        "Procura script `budget`/`bench`, tools/budget.* e record kind=budget. "
+        "Não executa o orçamento e não compara com build anterior. "
+        "`measured` é sempre falso."
+    )
+    if budget_door_source(project):
+        scope += (
+            " O orçamento cronometra a porta (`title.attract`). "
+            "Stub no disco não é dispositivo."
+        )
     return {
         "schema_version": 1,
         "project": str(project),
@@ -1784,11 +1819,7 @@ def budget_reading(project):
             "Script de orçamento não é medição no dispositivo alvo. Sem artefato "
             "que meça, não existe ‘rápido o suficiente’."
         ),
-        "scope": (
-            "Procura script `budget`/`bench`, tools/budget.* e record kind=budget. "
-            "Não executa o orçamento e não compara com build anterior. "
-            "`measured` é sempre falso."
-        ),
+        "scope": scope,
     }
 
 
