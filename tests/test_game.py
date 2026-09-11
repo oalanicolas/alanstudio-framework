@@ -3772,6 +3772,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.craft_reading(self.project)["scope"],
         )
 
+    def test_gate_names_the_waiver_the_prose_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.prose_refuses_must_meet_waiver(guide),
+            "o roteiro já recusa que must_meet seja dispensável",
+        )
+        self.assertEqual(game.gate_criterion_waiver_source(), "references/gates.md")
+        report = game.gate_reading(self.project)
+        must = None
+        for gate in report["gates"]:
+            for item in gate["criteria"]:
+                if item["kind"] == "must_meet":
+                    must = item
+                    break
+            if must:
+                break
+        self.assertTrue(must, "o gate já lista must_meet neste projeto")
+        self.assertIn(
+            "must_meet seja dispensável",
+            must["scope"],
+            "o critério copiava o tipo e calava a recusa",
+        )
+        self.assertIn("(`dispensa`)", must["scope"])
+        self.assertNotIn("dispensa", must)
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.prose_refuses_must_meet_waiver(""))
+        with mock.patch.object(game, "gate_criterion_waiver_source", return_value=None):
+            silent = game.gate_reading(self.project)
+        self.assertNotIn(
+            "must_meet seja dispensável",
+            silent["gates"][0]["criteria"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a dispensa que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a dispensa que o roteiro já recusa", skill)
+        self.assertIn("nomeia a dispensa que o roteiro já recusa", readme)
+        self.assertNotIn("must_meet seja dispensável", report["scope"])
+        self.assertNotIn("must_meet seja dispensável", game.gate_item_scope())
+        self.assertNotIn("must_meet seja dispensável", game.next_scope())
+        self.assertNotIn("must_meet seja dispensável", game.check_plan_scope())
+        self.assertNotIn(
+            "must_meet seja dispensável",
+            game.craft_reading(self.project)["scope"],
+        )
+
     def test_a_gate_never_grants_passage_only_reads_what_the_project_claims(self):
         self.declare_gate({("deliver", "runbook"): ("met", "Ana construiu do zero, log em /tmp/qa-07")})
         report = game.gate_reading(self.project, "deliver")

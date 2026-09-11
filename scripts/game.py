@@ -1010,6 +1010,7 @@ def gate_reading(project, gate=None):
         spec = GATES[key]
         rows = declaration["declared"].get(key, {})
         criteria = []
+        criterion_scope = gate_criterion_scope()
         for criterion, label, waivable, kind in spec["criteria"]:
             row = rows.get(criterion)
             criteria.append({
@@ -1020,6 +1021,7 @@ def gate_reading(project, gate=None):
                 "state": row["state"] if row else "undeclared",
                 "evidence": row["note"] if row else None,
                 "source": row["source"] if row else None,
+                "scope": criterion_scope,
             })
         pending = [item["key"] for item in criteria if item["state"] in ("undeclared", "unmet")]
         waived = [item["key"] for item in criteria if item["state"] == "waived"]
@@ -1115,6 +1117,43 @@ def gate_item_scope():
         scope += (
             " O disco recusa que o silêncio seja aprovação (`silêncio`). "
             "Linha vazia no disco não é passagem."
+        )
+    return scope
+
+
+# O roteiro já recusa que must_meet seja dispensável. Sem isto o
+# critério copiava o tipo e calava a recusa.
+# Linha no disco não é passagem.
+GATES_GUIDE = FRAMEWORK / "references/gates.md"
+GATES_WAIVE = re.compile(r"não é dispensável")
+
+
+def prose_refuses_must_meet_waiver(text):
+    return bool(text and GATES_WAIVE.search(text))
+
+
+def gate_criterion_waiver_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if prose_refuses_must_meet_waiver(text):
+        return "references/gates.md"
+    return None
+
+
+def gate_criterion_scope():
+    scope = (
+        "Chave, tipo e estado do critério declarado. Não observa "
+        "e não concede passagem."
+    )
+    if gate_criterion_waiver_source():
+        scope += (
+            " O disco recusa que must_meet seja dispensável (`dispensa`). "
+            "Linha no disco não é passagem."
         )
     return scope
 

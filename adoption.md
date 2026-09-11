@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.446 — o gate nomeia a dispensa que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+must_meet
+não
+é
+dispensável.
+O
+critério
+copiava
+o
+tipo
+e
+calava
+a
+recusa.
+Agora
+o
+`gate`
+nomeia
+a
+dispensa.
+Linha
+no
+disco
+não
+é
+passagem.
+Sem
+chave
+`dispensa`.
+Nomear
+não
+observa.
+
+O que 0.9.446 não afirma:
+linha
+no
+disco
+não
+é
+passagem
+concedida
+nem
+observação
+do
+jogo.
+
 ## 0.9.445 — o art nomeia o volume que a receita já recusa
 
 A
