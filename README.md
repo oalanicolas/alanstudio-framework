@@ -508,7 +508,7 @@ Quatorze receitas: [criar](recipes/create.md), [mecânicas](recipes/mechanics.md
 [performance](recipes/performance.md), [acessibilidade](recipes/accessibility.md),
 [persistência](recipes/persistence.md), [release](recipes/release.md) e
 [produção](recipes/production.md). `--focus architecture` ou `--stage tdd` carrega a
-receita de arquitetura; `--focus feel` e `--focus audio` carregam acabamento do verbo;
+receita de arquitetura. Se a receita recusa que o harness infira dependências, o `scan` nomeia as dependências que a receita já recusa. Receita no disco não é decisão. Sem chave `dependências`. `--focus feel` e `--focus audio` carregam acabamento do verbo;
 `--focus production`, `--stage production-plan` ou `--stage milestone` carregam a de
 produção. A skill aplica quando a mudança pede; o CLI só seleciona referências.
 

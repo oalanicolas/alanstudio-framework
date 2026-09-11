@@ -4748,6 +4748,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
             work = "Vou documentar a base disponível e a proposta, distinguindo o que ainda não foi implementado"
         notice = f"{project.name}: {findings} {work}, preservando os documentos canônicos e registrando as lacunas."
     areas["art_direction"]["scope"] = art_direction_scope()
+    areas["architecture"]["scope"] = architecture_area_scope()
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(),
         "minimum_status": "needs_review" if needs_documentation else "candidates_found",
@@ -5068,6 +5069,43 @@ def art_direction_scope():
         scope += (
             " O disco recusa que o scanner certifique tokens (`tokens`). "
             "Documento no disco não é aprovação artística."
+        )
+    return scope
+
+
+# A receita já recusa que o harness infira dependências. Sem isto a
+# área localizava o TDD e calava a recusa.
+# Receita no disco não é decisão.
+ARCHITECTURE_RECIPE = FRAMEWORK / "recipes/architecture.md"
+ARCHITECTURE_DEPS = re.compile(r"não infere dependências")
+
+
+def architecture_refuses_inference(text):
+    return bool(text and ARCHITECTURE_DEPS.search(text))
+
+
+def architecture_deps_source():
+    path = ARCHITECTURE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if architecture_refuses_inference(text):
+        return "recipes/architecture.md"
+    return None
+
+
+def architecture_area_scope():
+    scope = (
+        "Localiza o documento técnico. Não escolhe stack e não "
+        "aprova a decisão."
+    )
+    if architecture_deps_source():
+        scope += (
+            " O disco recusa que o harness infira dependências (`dependências`). "
+            "Receita no disco não é decisão."
         )
     return scope
 

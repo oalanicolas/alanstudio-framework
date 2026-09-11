@@ -3,6 +3,57 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.420 — o scan nomeia as dependências que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+harness
+não
+infere
+dependências.
+A
+área
+apontava
+o
+TDD
+e
+calava
+a
+recusa.
+Agora
+o
+`scan`
+nomeia
+as
+dependências.
+Receita
+no
+disco
+não
+é
+decisão.
+Sem
+chave
+`dependências`.
+Nomear
+não
+observa.
+
+O que 0.9.420 não afirma:
+receita
+no
+disco
+não
+é
+decisão
+nem
+stack
+escolhida.
+
 ## 0.9.419 — o scan nomeia os tokens que o sistema já recusa
 
 O

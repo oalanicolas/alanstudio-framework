@@ -1285,6 +1285,38 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("certifique tokens", game.art_reading(self.project)["scope"])
         self.assertNotIn("certifique tokens", game.next_scope())
 
+    def test_scan_names_the_dependencies_the_recipe_already_refuses(self):
+        recipe_text = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.architecture_refuses_inference(recipe_text),
+            "a receita já recusa que o harness infira dependências",
+        )
+        self.assertEqual(game.architecture_deps_source(), "recipes/architecture.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "infira dependências",
+            report["areas"]["architecture"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`dependências`)", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("dependências", report["areas"]["architecture"])
+        self.assertFalse(game.architecture_refuses_inference(""))
+        with mock.patch.object(game, "architecture_deps_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("infira dependências", silent["areas"]["architecture"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia as dependências que a receita já recusa", recipe)
+        self.assertIn("nomeia as dependências que a receita já recusa", skill)
+        self.assertIn("nomeia as dependências que a receita já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("verified", recipe)
+        self.assertNotIn("infira dependências", report["scope"])
+        self.assertNotIn("infira dependências", report["areas"]["art_direction"]["scope"])
+        self.assertNotIn("infira dependências", game.context_scope())
+        self.assertNotIn("infira dependências", game.next_scope())
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

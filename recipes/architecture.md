@@ -9,7 +9,7 @@ um TDD. O agente identifica essa necessidade na tarefa; o usuário não precisa 
 Saída: decisão suficiente para implementar e verificar **o recorte autorizado**,
 registrada no TDD/decisions/plano já adotado. Um ADR separado só quando for a convenção
 do projeto ou quando a decisão precisar de histórico próprio. A receita orienta o
-agente; o harness não infere dependências, escolhe arquitetura nem aprova decisões.
+agente; o harness não infere dependências, escolhe arquitetura nem aprova decisões. Se a receita recusa que o harness infira dependências, o `scan` nomeia as dependências que a receita já recusa. Receita no disco não é decisão. Sem chave `dependências`.
 
 ## 1. Dimensionar a análise
 
