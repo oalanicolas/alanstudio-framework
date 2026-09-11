@@ -1103,6 +1103,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("arquivo de prompts seja a fonte de status", report["delivery_review"]["scope"])
         self.assertNotIn("arquivo de prompts seja a fonte de status", game.next_scope())
 
+    def test_continuity_prompt_names_the_readiness_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_found_as_readiness(guide),
+            "o processo já recusa que arquivos encontrados comprovem prontidão",
+        )
+        self.assertEqual(game.continuity_prompt_readiness_source(), "references/process.md")
+        self.package()
+        report = game.context(self.project, "mechanics")
+        item = report["continuity"]["prompt"]
+        self.assertIn(
+            "arquivos encontrados comprovem prontidão",
+            item["scope"],
+            "o prompt copiava readiness e calava a recusa",
+        )
+        self.assertIn("(`prontidão`)", item["scope"])
+        self.assertNotIn("prontidão", item)
+        self.assertFalse(game.process_refuses_found_as_readiness(""))
+        with mock.patch.object(game, "continuity_prompt_readiness_source", return_value=None):
+            silent = game.context(self.project, "mechanics")
+        self.assertNotIn(
+            "arquivos encontrados comprovem prontidão",
+            silent["continuity"]["prompt"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a prontidão que o processo já recusa", guide)
+        self.assertIn("nomeia a prontidão que o processo já recusa", skill)
+        self.assertIn("nomeia a prontidão que o processo já recusa", readme)
+        self.assertIn("nomeia a prontidão que o processo já recusa", recipe)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("executed", item["scope"])
+        self.assertNotIn("arquivos encontrados comprovem prontidão", report["continuity"]["scope"])
+        self.assertNotIn("arquivos encontrados comprovem prontidão", game.continuity_source_scope())
+        self.assertNotIn("arquivos encontrados comprovem prontidão", report["scope"])
+        self.assertNotIn("arquivos encontrados comprovem prontidão", report["documentation"]["scope"])
+        self.assertNotIn("arquivos encontrados comprovem prontidão", report["delivery_review"]["scope"])
+        self.assertNotIn("arquivos encontrados comprovem prontidão", game.next_scope())
+
     def test_scan_names_the_aaa_the_memory_already_refuses(self):
         mold = (game.FRAMEWORK / "assets/templates/agents.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -7191,7 +7191,35 @@ def continuity_prompt_scope():
             " O disco recusa que o arquivo de prompts seja a fonte de "
             "status (`receita`). Prompt no disco não é o estado."
         )
+    if continuity_prompt_readiness_source():
+        scope += (
+            " O disco recusa que arquivos encontrados comprovem prontidão "
+            "(`prontidão`). Arquivo no disco não é o recorte."
+        )
     return scope
+
+
+# O processo já recusa que arquivos encontrados comprovem prontidão.
+# Sem isto o prompt copiava readiness e calava a recusa.
+# Arquivo no disco não é o recorte.
+PROCESS_READY = re.compile(r"não comprovam prontidão")
+
+
+def process_refuses_found_as_readiness(text):
+    return bool(text and PROCESS_READY.search(text))
+
+
+def continuity_prompt_readiness_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_found_as_readiness(text):
+        return "references/process.md"
+    return None
 
 
 # A guia já recusa preencher o checklist. Sem isto o

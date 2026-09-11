@@ -191,7 +191,7 @@ recomendada e pronta para copiar. “Vamos avançar” também a retoma. O
 [roteiro de continuidade](gauntlet.md#prontidão-e-prompt-pronto) define prontidão e
 formato; o agente preenche o conteúdo com fontes reais. Se faltar uma decisão essencial,
 resolva a lacuna antes de sugerir implementação; uma investigação delimitada também
-pode ser o próximo recorte. Arquivos encontrados não comprovam prontidão.
+pode ser o próximo recorte. Arquivos encontrados não comprovam prontidão. Se o processo recusa que arquivos encontrados comprovem prontidão, o `prompt` do continuity nomeia a prontidão que o processo já recusa. Arquivo no disco não é o recorte. Sem chave `prontidão`.
 
 Preparar o prompt não acrescenta uma aprovação obrigatória: se a próxima ação já
 está autorizada, registre e execute no mesmo turno. Apresente o prompt de retomada

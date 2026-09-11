@@ -30,6 +30,61 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.489 — o prompt do continuity nomeia a prontidão que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+arquivos
+encontrados
+não
+comprovam
+prontidão.
+O
+bloco
+copiava
+readiness
+e
+calava
+a
+recusa.
+Agora
+o
+`prompt`
+do
+continuity
+nomeia
+a
+prontidão.
+Arquivo
+no
+disco
+não
+é
+o
+recorte.
+Sem
+chave
+`prontidão`.
+Nomear
+não
+observa.
+
+O que 0.9.489 não afirma:
+lista
+de
+fontes
+não
+é
+próximo
+passo
+autorizado
+nem
+execução
+iniciada.
+
 ## 0.9.488 — o content nomeia a composição que a receita já recusa
 
 A
