@@ -6776,6 +6776,13 @@ def note_observation(project, author, note, fields=None, output=None, role="huma
     report["needed"] = [] if complete else list(PLAYTEST_FIELDS)
     if attached is not None:
         report["from_run"] = attached.as_posix() if attached.is_absolute() else attached.as_posix()
+    # A partida já grava o candidato. Sem isto o note
+    # escrevia o recibo e calava o arquivo.
+    # Nomear não anexa. Disco não é sessão.
+    if not from_run and last_run_path(project):
+        report["scope"] += (
+            " O disco tem um last-run. Sem --from-run o recibo não anexa o candidato."
+        )
     return report
 
 

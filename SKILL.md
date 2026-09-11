@@ -285,7 +285,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    (resumo e, se houver, a curva) como candidato de medição e não fecha o
    achado. Nomeia `finding` (os quatro no recibo), `form` e `needed`.
    Sem `then`. Recibo sem os quatro não é achado. Os quatro no disco
-   não observam. Não joga e não sente. Achar o único jogo não é ter sentido.
+   não observam. Se o disco tem last-run e o comando veio sem --from-run, o note nomeia o last-run que o disco já guarda. Sem o arquivo a frase some. Nomear não anexa. Não joga e não sente. Achar o único jogo não é ter sentido.
    **`access` / `save` / `budget`** leem opção de alcance (incluindo
    uiScale, remapeamento das seis ações do teclado na página — a escuta
    come a tecla que escolhe o verbo e o botão focado não dispara o

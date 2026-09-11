@@ -5246,6 +5246,38 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(after["structured"])
         self.assertFalse(after["observed"])
 
+    def test_note_names_the_last_run_the_disk_already_keeps(self):
+        destination = self.root / "com-last-run"
+        game.init(destination, "canvas-arcade")
+        run = destination / "docs/playtest/last-run.json"
+        run.parent.mkdir(parents=True, exist_ok=True)
+        run.write_text("{}\n", encoding="utf-8")
+        report = game.note_observation(destination, "Ana", "o verbo pesa")
+        self.assertIn(
+            "O disco tem um last-run",
+            report["scope"],
+            "o note gravava o recibo e calava o candidato no disco",
+        )
+        self.assertIn("não anexa o candidato", report["scope"])
+        self.assertNotIn("last_run", report)
+        self.assertFalse(report["observed"])
+        self.assertNotIn("then", report)
+        attached = game.note_observation(
+            destination, "Ana", "o verbo pesa", from_run=True,
+        )
+        self.assertNotIn("O disco tem um last-run", attached["scope"])
+        empty = self.root / "sem-last-run"
+        game.init(empty, "canvas-arcade")
+        silent = game.note_observation(empty, "Ana", "nada no disco")
+        self.assertNotIn("O disco tem um last-run", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o last-run que o disco já guarda", recipe)
+        self.assertIn("nomeia o last-run que o disco já guarda", skill)
+        self.assertIn("nomeia o last-run que o disco já guarda", readme)
+        self.assertNotIn("aprovado", report["scope"])
+
     def test_a_blank_finding_skeleton_is_not_a_finding(self):
         (self.project / "docs").mkdir()
         (self.project / "docs/card.md").write_text(

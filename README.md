@@ -643,7 +643,7 @@ sentido nem assistir.
 papel por omissão. `--from-run` anexa `docs/playtest/last-run.json` (resumo
 e, se houver, a curva) como candidato de medição e não fecha o achado.
 Nomeia `finding` (os quatro no recibo), `form` e `needed`. Sem `then`.
-Recibo sem os quatro não é achado. Os quatro no disco não observam.
+Recibo sem os quatro não é achado. Os quatro no disco não observam. Se o disco tem last-run e o comando veio sem --from-run, o note nomeia o last-run que o disco já guarda. Sem o arquivo a frase some. Nomear não anexa.
 Não joga. `felt` é sempre
 `false`. `next` propõe `feel.unobserved` quando há constante e não há
 recibo; o comando que ele aponta é o mesmo `note` que `then.note` —
