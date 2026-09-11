@@ -127,6 +127,29 @@ def verify_integrity_source():
     return None
 
 
+# O export já recusa processamento. Sem isto o
+# comando copiava bytes e calava a recusa.
+# Bytes no disco não são mix ouvida.
+CATALOG_PROCESS = re.compile(r"sem processamento adicional", re.IGNORECASE)
+
+
+def export_refuses_processing(text):
+    return bool(text and CATALOG_PROCESS.search(text))
+
+
+def export_process_source():
+    path = CATALOG_CHECK
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    if export_refuses_processing(text):
+        return path.name
+    return None
+
+
 def receipt_field(row, field):
     # O acervo guarda autor e licença em `sources`. O starter,
     # no topo. Identidade lê os dois sem exigir o mesmo envelope.
@@ -766,6 +789,11 @@ def export_entries(ids, destination, root=None, folder=None):
             ids=[item["id"] for item in catalog_items],
             kind="catalog",
         )
+        if export_process_source():
+            result["scope"] = (
+                "O disco recusa o processamento (`processamento`). "
+                "Bytes no disco não são mix ouvida."
+            )
         return result
     copied = [copy_local_stem(item, destination, root=root, folder=folder) for item in local_items]
     already = bool(copied) and all(item.get("status") == "already_exported" for item in copied)

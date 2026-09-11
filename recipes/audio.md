@@ -68,7 +68,7 @@ se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede
 `sfx export ID --to PASTA` copia bytes e
 créditos do acervo ou do stem do starter que `sfx info`
 já nomeia — o recibo que lista um stem e o disco perdeu
-não é id desconhecido; exportar não inventa bytes.
+não é id desconhecido; exportar não inventa bytes. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`.
 `sfx copy` leva o mesmo stem para a pasta do
 jogo. Se o sidecar declara licença, o `sfx copy` nomeia os créditos que o copy já leva. Créditos no disco não são mix ouvida. Sem chave `sidecar`. `--apply` também leva o stem do starter. Importar e exportar não é ouvir. O acervo compartilhado é ADAPT, não o
 primeiro ciclo.

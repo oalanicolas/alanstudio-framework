@@ -600,7 +600,7 @@ stem e o disco perdeu não é id desconhecido. Se o inspect já mediu
 o pico, o `sfx info` nomeia o pico que o inspect já mede. Pico no
 recibo não é mix ouvida. Arquivo no disco não é
 mix ouvido. `sfx export` de um id do acervo copia
-bytes, `manifest.json` e `CREDITS.txt` para uma pasta fora do acervo.
+bytes, `manifest.json` e `CREDITS.txt` para uma pasta fora do acervo. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`.
 De uma chave do starter, copia o WAV, o `.credits.txt` e anexa
 `sources.json`. O recibo que lista um stem e o disco perdeu
 não é id desconhecido; exportar não inventa bytes.

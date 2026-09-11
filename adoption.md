@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.389 — o sfx export nomeia o processamento que o export já recusa
+
+O
+payload
+já
+preservava
+os
+bytes
+sem
+processamento.
+O
+comando
+copiava
+e
+calava
+a
+recusa.
+Agora
+o
+`sfx export`
+nomeia
+o
+processamento.
+Bytes
+no
+disco
+não
+são
+mix
+ouvida.
+Sem
+chave
+`processamento`.
+Não
+promove
+`heard`.
+
+O que 0.9.389 não afirma:
+bytes
+no
+disco
+não
+são
+mix
+ouvida
+nem
+créditos
+validados.
+
 ## 0.9.388 — o sfx verify nomeia a integridade que o check já cruza
 
 O

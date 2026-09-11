@@ -3548,6 +3548,42 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(listed["heard"])
         self.assertTrue((self.root / "out" / "dash.wav").is_file())
 
+    def test_sfx_export_names_the_processing_the_export_already_refuses(self):
+        check = (Path(game.FRAMEWORK) / "scripts/audio.py").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.export_refuses_processing(check),
+            "o export já recusa processamento",
+        )
+        self.assertEqual(game.sfx_catalog.export_process_source(), "audio.py")
+        item, _ = self._plant_catalog_sound()
+        report = game.sfx_catalog.export_entries(
+            [item["id"]], self.root / "acervo-out", self.root,
+        )
+        self.assertEqual(report["kind"], "catalog")
+        self.assertIn("recusa o processamento", report["scope"], "o export copiava bytes e calava a recusa")
+        self.assertIn("(`processamento`)", report["scope"])
+        self.assertFalse(report["heard"])
+        self.assertNotIn("processamento", report)
+        self.assertNotIn("processing", report)
+        local = game.sfx_catalog.export_entries(["dash"], self.root / "starter-out", self.root)
+        self.assertEqual(local["kind"], "starter")
+        self.assertNotIn("recusa o processamento", local.get("scope", ""))
+        self.assertFalse(game.sfx_catalog.export_refuses_processing(""))
+        with mock.patch.object(game.sfx_catalog, "export_process_source", return_value=None):
+            silent = game.sfx_catalog.export_entries(
+                [item["id"]], self.root / "acervo-out", self.root,
+            )
+        self.assertNotIn("recusa o processamento", silent.get("scope", ""))
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o processamento que o export já recusa", recipe)
+        self.assertIn("nomeia o processamento que o export já recusa", skill)
+        self.assertIn("nomeia o processamento que o export já recusa", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("then.processamento", report.get("then") or {})
+
     def test_sfx_export_copies_bytes_and_credits_without_claiming_to_hear_them(self):
         item, data = self._plant_catalog_sound()
         destination = self.root / "jogo" / "public" / "audio"

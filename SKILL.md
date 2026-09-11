@@ -104,7 +104,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Pico no recibo não é mix ouvida. `sfx export ID
    --to PASTA` copia bytes e créditos do acervo ou do stem —
    o recibo que lista um stem e o disco perdeu não é id
-   desconhecido; exportar não inventa bytes.
+   desconhecido; exportar não inventa bytes. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`.
    `sfx copy` leva o stem do starter. Importar e exportar não é
    ouvir. Sem 8-bit,
    chiptune, jsfxr ou Kenney arcade como padrão. Leia candidatos e consumidores.
@@ -258,7 +258,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    perdeu — não despeja errno;
    `sfx export` copia bytes e
    créditos e nomeia o stem que o recibo lista e o disco perdeu —
-   exportar não inventa bytes. Importar e exportar não é ouvir. `heard` é sempre falso. Papel vazio
+   exportar não inventa bytes. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`. Importar e exportar não é ouvir. `heard` é sempre falso. Papel vazio
    entra no `next` como `audio.roles` — o verbo mudo não espera os
    rascunhos.
    **`feel [<projeto>]`** lê constantes de perdão/hitstop/câmera no `CONFIG`,
