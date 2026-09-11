@@ -10041,6 +10041,41 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
     return report
 
 
+# A receita já recusa que aceitar o parâmetro prove que ele afeta o RNG.
+# Sem isto o then do play apontava a seed e calava a recusa.
+# Endereço no disco não é a simulação.
+LIFECYCLE_RECIPE = FRAMEWORK / "recipes/lifecycle.md"
+PLAY_THEN_RNG = re.compile(r"não prova que ele afeta RNG")
+
+
+def recipe_refuses_parameter_as_rng(text):
+    return bool(text and PLAY_THEN_RNG.search(text))
+
+
+def play_then_rng_source():
+    path = LIFECYCLE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_parameter_as_rng(text):
+        return "recipes/lifecycle.md"
+    return None
+
+
+def play_then_scope(then=None):
+    if not play_then_rng_source():
+        return None
+    if not then or not then.get("seed"):
+        return None
+    return (
+        "O disco recusa que aceitar o parâmetro prove que ele afete "
+        "o RNG (`RNG`). Endereço no disco não é a simulação."
+    )
+
+
 def play_cycle(destination=None, starter=None):
     if destination is None:
         raise ValueError(missing_destination_hint())
@@ -10059,6 +10094,9 @@ def play_cycle(destination=None, starter=None):
     )
     url = serve_url(scripts)
     then = cycle_then(dest, play, chosen)
+    rng = play_then_scope(then)
+    if rng:
+        then = dict(then, scope=rng)
     cycle = starter_cycle(chosen)
     noted = bool(observation_receipts(dest))
     proposal = next_step(dest, "feel")

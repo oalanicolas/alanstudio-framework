@@ -48,7 +48,7 @@ Examine separadamente:
 - Tempo real versus relógio controlado. Verifique se avançar o relógio realmente
   move todos os sistemas relevantes, inclusive callbacks.
 - Seed: repita estado inicial e sequência de ações, compare observações. Aceitar
-  um parâmetro não prova que ele afeta RNG ou que toda a simulação é determinística.
+  um parâmetro não prova que ele afeta RNG ou que toda a simulação é determinística. Se a receita recusa que aceitar o parâmetro prove que ele afeta o RNG, o then do `play` nomeia o RNG que a receita já recusa. Endereço no disco não é a simulação. Sem chave `RNG`.
 
 Adapte o teste que já existe; crie um controle novo somente se o caso exigir e a
 capacidade não estiver disponível. Observação de estado deve conter o necessário

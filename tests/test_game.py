@@ -13130,6 +13130,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("título e cores novos sejam experiência", game.next_scope())
         self.assertNotIn("título e cores novos sejam experiência", game.play_scope(destination))
 
+    def test_play_then_names_the_rng_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_parameter_as_rng(recipe),
+            "a receita já recusa que aceitar o parâmetro prove que ele afeta o RNG",
+        )
+        self.assertEqual(game.play_then_rng_source(), "recipes/lifecycle.md")
+        destination = self.root / "com-rng"
+        game.start_project(destination, "canvas-arcade")
+        fresh = game.play_cycle(destination, "canvas-arcade")
+        self.assertNotIn("seed", fresh["then"])
+        self.assertNotIn("aceitar o parâmetro prove que ele afete", fresh["then"].get("scope") or "")
+        (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (destination / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+        }), encoding="utf-8")
+        report = game.play_cycle(destination, "canvas-arcade")
+        self.assertEqual(report["then"]["seed"], "/?seed=8")
+        self.assertIn(
+            "aceitar o parâmetro prove que ele afete",
+            report["then"]["scope"],
+            "o then do play apontava a seed e calava a recusa",
+        )
+        self.assertIn("(`RNG`)", report["then"]["scope"])
+        self.assertNotIn("RNG", report)
+        self.assertNotIn("RNG", report["then"])
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_parameter_as_rng(""))
+        self.assertNotIn("aceitar o parâmetro prove que ele afete", report["scope"])
+        with mock.patch.object(game, "play_then_rng_source", return_value=None):
+            silent = game.play_cycle(destination, "canvas-arcade")
+        self.assertNotIn("aceitar o parâmetro prove que ele afete", silent["then"].get("scope") or "")
+        started = game.start_project(destination, "canvas-arcade")
+        self.assertNotIn("aceitar o parâmetro prove que ele afete", started["then"].get("scope") or "")
+        guided = game.guide_cycle(destination, "canvas-arcade")
+        self.assertNotIn("aceitar o parâmetro prove que ele afete", guided["then"].get("scope") or "")
+        planted = game.init(self.root / "init-sem-rng", "canvas-arcade")
+        self.assertNotIn("aceitar o parâmetro prove que ele afete", planted["then"].get("scope") or "")
+        felt = game.feel_reading(destination)
+        self.assertNotIn("aceitar o parâmetro prove que ele afete", felt["then"].get("scope") or "")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o RNG que a receita já recusa", recipe)
+        self.assertIn("nomeia o RNG que a receita já recusa", create)
+        self.assertIn("nomeia o RNG que a receita já recusa", skill)
+        self.assertIn("nomeia o RNG que a receita já recusa", readme_doc)
+        self.assertNotIn("verified", report["then"]["scope"])
+        self.assertNotIn("aprovado", report["then"]["scope"])
+        self.assertNotIn("aceitar o parâmetro prove que ele afete", game.next_scope())
+        self.assertNotIn("aceitar o parâmetro prove que ele afete", game.play_scope(destination))
+        self.assertNotIn("aceitar o parâmetro prove que ele afete", game.cycle_scope())
+
     def test_note_command_names_the_author_and_points_at_a_run_without_claiming_it(self):
         destination = self.root / "autor-git"
         game.start_project(destination, "canvas-arcade")
