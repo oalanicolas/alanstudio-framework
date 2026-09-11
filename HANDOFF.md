@@ -5,9 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.429: o `guide` nomeia a abertura que o processo já recusa. Nome no disco não é partida. Sem chave `abertura`. Nomear não abre.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.428):** `python3 -m unittest discover -s tests` → 424 OK.
+**Suítes confirmadas no HEAD (0.9.429):** `python3 -m unittest discover -s tests` → 425 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
-Confirmação pendente no 0.9.429.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
