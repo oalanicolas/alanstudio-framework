@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.375: o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.375):** `python3 -m unittest discover -s tests` → pendente (371 esperados).
+**Suítes confirmadas no HEAD (0.9.375):** `python3 -m unittest discover -s tests` → 371 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
