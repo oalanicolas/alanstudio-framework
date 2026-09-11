@@ -1317,6 +1317,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("infira dependências", game.context_scope())
         self.assertNotIn("infira dependências", game.next_scope())
 
+    def test_scan_names_the_absence_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.audit_refuses_unwalked_absence(guide),
+            "o roteiro já recusa que o local não percorrido seja inexistente",
+        )
+        self.assertEqual(game.coverage_absence_source(), "references/project-audit.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "não percorrido seja inexistente",
+            report["coverage"]["scope"],
+            "o scan contava documentos e calava a recusa",
+        )
+        self.assertIn("(`inexistente`)", report["coverage"]["scope"])
+        self.assertNotIn("inexistente", report["coverage"])
+        self.assertFalse(game.audit_refuses_unwalked_absence(""))
+        with mock.patch.object(game, "coverage_absence_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("não percorrido seja inexistente", silent["coverage"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a inexistência que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a inexistência que o roteiro já recusa", skill)
+        self.assertIn("nomeia a inexistência que o roteiro já recusa", readme)
+        self.assertNotIn("verified", report["coverage"]["scope"])
+        self.assertNotIn("não percorrido seja inexistente", report["scope"])
+        self.assertNotIn("não percorrido seja inexistente", report["areas"]["art_direction"]["scope"])
+        self.assertNotIn("não percorrido seja inexistente", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("não percorrido seja inexistente", report["audit"]["scope"])
+        self.assertNotIn("não percorrido seja inexistente", game.context_scope())
+        self.assertNotIn("não percorrido seja inexistente", game.next_scope())
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

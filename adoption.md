@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.421 — o scan nomeia a inexistência que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+local
+não
+percorrido
+não
+equivale
+a
+conteúdo
+inexistente.
+A
+cobertura
+contava
+documentos
+e
+calava
+a
+recusa.
+Agora
+o
+`scan`
+nomeia
+a
+inexistência.
+Contagem
+no
+disco
+não
+é
+inventário.
+Sem
+chave
+`inexistente`.
+Nomear
+não
+observa.
+
+O que 0.9.421 não afirma:
+contagem
+no
+disco
+não
+é
+inventário
+nem
+base
+lida.
+
 ## 0.9.420 — o scan nomeia as dependências que a receita já recusa
 
 A

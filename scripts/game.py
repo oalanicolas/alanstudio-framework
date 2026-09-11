@@ -4767,6 +4767,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
             "issues": issues[:20], "issue_count": len(issues), "issues_truncated": len(issues) > 20,
             "excluded_directory_names": sorted(excluded_dirs),
             "limits": {"entries": max_entries, "documents": max_documents, "bytes_per_document": max_bytes, "depth": 4, "index_links": max_links, "candidates_per_area": 3, "continuity_sources": 5},
+            "scope": coverage_scope(),
         },
         "next_action": (
             "defer_until_playable_cycle" if waiting
@@ -5032,6 +5033,42 @@ def audit_scope():
         scope += (
             " O disco recusa que a checagem seja daemon (`daemon`). "
             "Roteiro no disco não é interceptação."
+        )
+    return scope
+
+
+# O roteiro já recusa que o local não percorrido seja inexistente. Sem isto o
+# scan contava documentos e calava a recusa.
+# Contagem no disco não é inventário.
+AUDIT_ABSENCE = re.compile(r"não percorrido não equivale\s+a conteúdo inexistente")
+
+
+def audit_refuses_unwalked_absence(text):
+    return bool(text and AUDIT_ABSENCE.search(text))
+
+
+def coverage_absence_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_refuses_unwalked_absence(text):
+        return "references/project-audit.md"
+    return None
+
+
+def coverage_scope():
+    scope = (
+        "Conta documentos localizados, lidos e adiados no recorte. "
+        "Não afirma suficiência nem qualidade."
+    )
+    if coverage_absence_source():
+        scope += (
+            " O disco recusa que o local não percorrido seja inexistente (`inexistente`). "
+            "Contagem no disco não é inventário."
         )
     return scope
 
