@@ -2903,6 +2903,46 @@ def access_option_consumer_source():
     return None
 
 
+# A receita já recusa que o pulso seja sessão no controle. Sem isto a
+# opção haptics copiava a chave e calava a recusa.
+# Pulso no disco não é sessão.
+A11Y_HAPTICS_CONTROL = re.compile(r"Pulso no disco\s+não é sessão no controle")
+
+
+def recipe_refuses_pulse_as_controller_session(text):
+    return bool(text and A11Y_HAPTICS_CONTROL.search(text))
+
+
+def access_haptics_control_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_pulse_as_controller_session(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_haptics_control_scope():
+    if not access_haptics_control_source():
+        return None
+    return (
+        "O disco recusa que o pulso seja sessão no controle "
+        "(`controle`). Pulso no disco não é sessão."
+    )
+
+
+def access_haptics_option_scope():
+    scope = access_option_scope()
+    named = access_haptics_control_scope()
+    if named:
+        scope += " " + named
+    return scope
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -2957,7 +2997,11 @@ def access_reading(project):
             {
                 "key": key,
                 "sources": found[key][:4],
-                "scope": access_captions_option_scope() if key == "captions" else option_scope,
+                "scope": (
+                    access_captions_option_scope() if key == "captions"
+                    else access_haptics_option_scope() if key == "haptics"
+                    else option_scope
+                ),
             }
             for key in A11Y_OPTIONS if found[key]
         ],

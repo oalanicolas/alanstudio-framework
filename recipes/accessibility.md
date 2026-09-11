@@ -37,8 +37,8 @@ Examine as barreiras que o jogo realmente cria:
   agressiva, flashes e transições longas — sem remover o feedback de causa, que
   precisa migrar para um sinal estático equivalente. No starter o pulso do
   aparelho também some com `reducedMotion` e com a pausa. O controle que some
-  senta o relógio se a sessão falou no pad. Pulso no disco
-  não é sessão no controle.
+  senta o relógio se a sessão falou no pad.   Pulso no disco
+  não é sessão no controle. Se a receita recusa que o pulso seja sessão no controle, a opção `haptics` do `access` nomeia o controle que a receita já recusa. Pulso no disco não é sessão. Sem chave `controle`.
 - **Tempo e reação:** dificuldade ou assistência que **não** escondem conteúdo,
   velocidade ajustável quando o gênero permite, pausa disponível em qualquer
   momento seguro, e nenhuma exigência de precisão que não tenha alternativa.
@@ -60,7 +60,7 @@ das seis ações do teclado na página; a tabela `#commands`
 nomeia as teclas vigentes e mantém toque e controle no
 sufixo. Se o disco declara `paintCommands`, o `access` nomeia as teclas que a tabela já lista.
 Tabela no disco não é sessão. Sem chave `commands`.
-Se a porta lê a legenda que o mixer ainda guarda, o `access` nomeia a legenda que a porta já lê. Texto no disco não é sessão. Sem chave `caption`. Se a receita recusa que o número na legenda seja mix, a opção `captions` do `access` nomeia o número que a receita já recusa. Número no disco não é mix. Sem chave `número`. Se a pesquisa recusa que acessibilidade seja gate de certificação, o `access` nomeia a certificação que a pesquisa já recusa. Opção no disco não é certificação. Sem chave `certificação`. Se a receita recusa que opção sem consumidor seja opção, o `access` nomeia a opção que a receita já recusa. Chave no disco não é alcance. Sem chave `opção`.
+Se a porta lê a legenda que o mixer ainda guarda, o `access` nomeia a legenda que a porta já lê. Texto no disco não é sessão. Sem chave `caption`. Se a receita recusa que o número na legenda seja mix, a opção `captions` do `access` nomeia o número que a receita já recusa. Número no disco não é mix. Sem chave `número`. Se a receita recusa que o pulso seja sessão no controle, a opção `haptics` do `access` nomeia o controle que a receita já recusa. Pulso no disco não é sessão. Sem chave `controle`. Se a pesquisa recusa que acessibilidade seja gate de certificação, o `access` nomeia a certificação que a pesquisa já recusa. Opção no disco não é certificação. Sem chave `certificação`. Se a receita recusa que opção sem consumidor seja opção, o `access` nomeia a opção que a receita já recusa. Chave no disco não é alcance. Sem chave `opção`.
 Declara em
 `docs/access.md` o que o recorte não atende. O aviso do primeiro ciclo
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.

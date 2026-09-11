@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.512 — a opção haptics do access nomeia o controle que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+pulso
+no
+disco
+não
+é
+sessão
+no
+controle.
+A
+opção
+`haptics`
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+a
+opção
+`haptics`
+nomeia
+o
+controle.
+Pulso
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`controle`.
+Nomear
+não
+observa.
+
+O que 0.9.512 não afirma:
+o
+pulso
+no
+aparelho
+não
+é
+sessão
+observada
+no
+controle.
+
 ## 0.9.511 — o roles nomeia o retomar que a receita já recusa
 
 A

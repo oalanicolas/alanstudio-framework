@@ -2372,6 +2372,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("número na legenda seja mix", game.next_scope())
         self.assertNotIn("número na legenda seja mix", game.feel_reading(starter)["scope"])
 
+    def test_access_haptics_names_the_control_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_pulse_as_controller_session(recipe),
+            "a receita já recusa que o pulso seja sessão no controle",
+        )
+        self.assertEqual(game.access_haptics_control_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = next(option for option in report["options"] if option["key"] == "haptics")
+        self.assertIn(
+            "pulso seja sessão no controle",
+            item["scope"],
+            "a opção haptics copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`controle`)", item["scope"])
+        self.assertNotIn("controle", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_pulse_as_controller_session(""))
+        self.assertNotIn("pulso seja sessão no controle", report["scope"])
+        self.assertNotIn("pulso seja sessão no controle", report.get("next") or "")
+        for option in report["options"]:
+            if option["key"] == "haptics":
+                continue
+            self.assertNotIn("pulso seja sessão no controle", option["scope"])
+        with mock.patch.object(game, "access_haptics_control_source", return_value=None):
+            silent = game.access_reading(starter)
+        silent_item = next(option for option in silent["options"] if option["key"] == "haptics")
+        self.assertNotIn("pulso seja sessão no controle", silent_item["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o controle que a receita já recusa", recipe)
+        self.assertIn("nomeia o controle que a receita já recusa", skill)
+        self.assertIn("nomeia o controle que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("pulso seja sessão no controle", game.next_scope())
+        self.assertNotIn("pulso seja sessão no controle", game.feel_reading(starter)["scope"])
+        self.assertNotIn("pulso seja sessão no controle", game.roles_reading(starter)["scope"])
+
     def test_commands_name_the_generic_the_menu_already_refuses(self):
         guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
         self.assertTrue(
