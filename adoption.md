@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.353 — o ship nomeia o tamanho que a receita já relata
+
+A
+receita
+e
+o
+tool
+já
+relatavam
+os
+bytes
+sem
+teto.
+O
+comando
+calava.
+Agora
+o
+`ship`
+nomeia
+o
+tamanho.
+Bytes
+no
+disco
+não
+são
+outra
+máquina.
+Sem
+chave
+`size`.
+Não
+promove
+`elsewhere`.
+
+O que 0.9.353 não afirma:
+bytes
+no
+disco
+não
+são
+outra
+máquina.
+
 ## 0.9.352 — o content nomeia o par que listMoods já lista
 
 A

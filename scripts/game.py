@@ -1923,6 +1923,11 @@ SHIP_TREE_NEEDED = ("index", "serve", "package", "version")
 # O export já copia src/. Sem isto o ship dizia completa
 # uma dist/ que perdeu o jogo. Nomear não executa.
 SHIP_PAYLOAD_DIRS = ("src",)
+# A receita e o tool já relatam os bytes. Sem isto o
+# ship lia a árvore e calava o tamanho. Bytes no disco
+# não são outra máquina.
+SIZE_FILES = ("tools/size.mjs", "tools/size.js", "tools/size.py")
+SIZE_BYTES = re.compile(r"sem teto", re.IGNORECASE)
 
 
 def optional_text(value):
@@ -2331,6 +2336,25 @@ def artifact_open_command(project):
     return f"cd {shlex.quote(str(project / 'dist'))} && node tools/serve.mjs"
 
 
+def size_names_bytes(text):
+    return bool(text and SIZE_BYTES.search(text))
+
+
+def ship_size_source(project):
+    project = Path(project)
+    for name in SIZE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if size_names_bytes(text):
+            return name
+    return None
+
+
 def ship_reading(project):
     project = Path(project)
     try:
@@ -2353,6 +2377,22 @@ def ship_reading(project):
     declared = bool(named or ci or release_current)
     incomplete = bool(tree) and not tree["complete"]
     artifact_open = artifact_open_command(project)
+    scope = (
+        "Procura script build/export/dist/package/release, docs/release.md "
+        "vigente e CI. Se dist/VERSION.json existe, relata nome e versão. "
+        "Se a pasta dist/ de um jogo web existe, relata se index, serve, "
+        "package e VERSION estão lá, e se o HEAD do artefato é o HEAD "
+        "atual. Nomeia a árvore que perdeu o `src/` que o projeto já tem. "
+        "Nomear não devolve o jogo. Árvore completa no HEAD atual ganha "
+        "`artifact_open` — o comando que serve dist/. Nomear não executa. "
+        "Não executa o export, não instala o artefato e não autoriza "
+        "publicar. `shipped` e `elsewhere` são sempre falsos."
+    )
+    if ship_size_source(project):
+        scope += (
+            " O disco relata os bytes (`size`) sem teto. "
+            "Bytes no disco não são outra máquina."
+        )
     return {
         "schema_version": 1,
         "project": str(project),
@@ -2379,17 +2419,7 @@ def ship_reading(project):
             "é árvore jogável. dist/ sem o src/ que o projeto já tem também "
             "não. HEAD diferente não é outra máquina."
         ),
-        "scope": (
-            "Procura script build/export/dist/package/release, docs/release.md "
-            "vigente e CI. Se dist/VERSION.json existe, relata nome e versão. "
-            "Se a pasta dist/ de um jogo web existe, relata se index, serve, "
-            "package e VERSION estão lá, e se o HEAD do artefato é o HEAD "
-            "atual. Nomeia a árvore que perdeu o `src/` que o projeto já tem. "
-            "Nomear não devolve o jogo. Árvore completa no HEAD atual ganha "
-            "`artifact_open` — o comando que serve dist/. Nomear não executa. "
-            "Não executa o export, não instala o artefato e não autoriza "
-            "publicar. `shipped` e `elsewhere` são sempre falsos."
-        ),
+        "scope": scope,
     }
 
 

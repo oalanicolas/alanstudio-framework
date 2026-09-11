@@ -307,7 +307,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    sempre falsos. Sem declaração, o `next` nomeia `art.missing`,
    `content.inline` e `ship.unpacked` antes dos rascunhos. Árvore
    incompleta é `ship.incomplete`; artefato de outro commit é `ship.stale`.
-   Nomeia a árvore que perdeu o `src/` que o projeto já tem. Nomear não
+   Nomeia a árvore que perdeu o `src/` que o projeto já tem. Se o
+   `tools/size.*` declara sem teto, o `ship` nomeia o tamanho. Bytes
+   no disco não são outra máquina. Sem chave `size`. Nomear não
    devolve o jogo. Árvore completa no HEAD atual ganha `artifact_open` e o
    `next` nomeia `ship.artifact_open`. Nomear não executa. `elsewhere`
    continua falso.

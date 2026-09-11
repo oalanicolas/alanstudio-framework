@@ -692,7 +692,9 @@ disco não é volume. Sem chave `moods`.
 `release`, `docs/release.md` vigente ou CI. Se `dist/VERSION.json`
 existe, relata nome e versão. Se `dist/` de um jogo web existe, relata
 se a árvore jogável está completa e se o HEAD do artefato é o HEAD
-atual. Nomeia a árvore que perdeu o `src/` que o projeto já tem. Nomear
+atual. Nomeia a árvore que perdeu o `src/` que o projeto já tem. Se o
+`tools/size.*` declara sem teto, o `ship` nomeia o tamanho. Bytes no
+disco não são outra máquina. Sem chave `size`. Nomear
 não devolve o jogo. `shipped` e `elsewhere` são sempre `false`. Árvore
 incompleta recebe `ship.incomplete`; artefato de outro commit recebe
 `ship.stale`.

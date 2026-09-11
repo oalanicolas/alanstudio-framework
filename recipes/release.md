@@ -19,7 +19,9 @@ quatro é `incomplete`. HEAD do artefato diferente do checkout é
 sempre falso. O serve anuncia a URL da rede se a
 máquina tiver outro endereço IPv4; um endereço alcançável não é outra
 máquina. Na árvore exportada o banner nomeia o artefato. `npm run size`
-relata os bytes de `dist/` sem teto. `shipped` é sempre falso.
+relata os bytes de `dist/` sem teto. Se o `tools/size.*` declara sem
+teto, o `ship` nomeia o tamanho. Bytes no disco não são outra
+máquina. Sem chave `size`. `shipped` é sempre falso.
 
 Com tela, a primeira superfície do artefato também é a porta. O serve
 de desenvolvimento apontar `/?invite=1&seed=&spawn=` não é o `dist/`

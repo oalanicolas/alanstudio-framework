@@ -4510,6 +4510,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(proposal["commands"][0], report["artifact_open"])
         self.assertNotIn("aprovado", proposal["why"])
 
+    def test_ship_names_the_size_the_recipe_already_reports(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/size.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.size_names_bytes(tool), "o tool já relata os bytes sem teto")
+        self.assertEqual(game.ship_size_source(starter), "tools/size.mjs")
+        report = game.ship_reading(starter)
+        self.assertIn("size", report["scope"], "o ship calava o tamanho que a receita já relata")
+        self.assertIn("sem teto", report["scope"])
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertNotIn("size", report)
+        self.assertNotIn("bytes", report)
+        empty = game.ship_reading(self.project)
+        self.assertFalse(game.size_names_bytes(""))
+        self.assertIsNone(game.ship_size_source(self.project))
+        self.assertNotIn("sem teto", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o tamanho", recipe)
+        self.assertIn("nomeia o tamanho", skill)
+        self.assertIn("nomeia o tamanho", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", recipe)
+
     def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
         # O export já copia src/. Sem isto o ship dizia
         # completa uma dist/ só com identidade e serve.
