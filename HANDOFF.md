@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/runbook-telemetria-1083` (base `main`)
 **PR:** [#6](https://github.com/oalanicolas/alanstudio-framework/pull/6) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.489: o `prompt` do continuity nomeia a prontidão que o processo já recusa. Arquivo no disco não é o recorte. Sem chave `prontidão`. Nomear não observa. Confirmação pendente.
+**HEAD:** ver `git log -1` — vigente 0.9.489: o `prompt` do continuity nomeia a prontidão que o processo já recusa. Arquivo no disco não é o recorte. Sem chave `prontidão`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** confirmação pendente no 0.9.489 (anterior 0.9.488: 549 / 516).
+**Suítes:** confirmadas no HEAD (0.9.489): 550 / 516.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
