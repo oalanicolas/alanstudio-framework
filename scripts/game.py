@@ -1004,6 +1004,10 @@ def gate_declaration(project):
 
 def gate_reading(project, gate=None):
     declaration = gate_declaration(project)
+    problems = [dict(item) for item in declaration["problems"]]
+    problem_scope = gate_problem_scope()
+    for item in problems:
+        item["scope"] = problem_scope
     wanted = (gate,) if gate else tuple(GATES)
     gates = []
     for key in wanted:
@@ -1050,7 +1054,7 @@ def gate_reading(project, gate=None):
         "project": str(project),
         "exists": project.is_dir(),
         "gates": gates,
-        "problems": declaration["problems"],
+        "problems": problems,
         "sources": declaration["sources"],
         "granted": False,
         "guide": str(FRAMEWORK / "references/gates.md"),
@@ -1153,6 +1157,42 @@ def gate_criterion_scope():
     if gate_criterion_waiver_source():
         scope += (
             " O disco recusa que must_meet seja dispensável (`dispensa`). "
+            "Linha no disco não é passagem."
+        )
+    return scope
+
+
+# O roteiro já recusa que fora de escopo seja dispensa. Sem
+# isto o problema copiava o achado e calava a recusa.
+# Linha no disco não é passagem.
+GATES_OUT = re.compile(r"Fora de escopo não é dispensa")
+
+
+def gates_refuse_scope_waiver(text):
+    return bool(text and GATES_OUT.search(text))
+
+
+def gate_problem_scope_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gates_refuse_scope_waiver(text):
+        return "references/gates.md"
+    return None
+
+
+def gate_problem_scope():
+    scope = (
+        "Motivo e fonte do problema de forma. Não observa e não "
+        "concede passagem."
+    )
+    if gate_problem_scope_source():
+        scope += (
+            " O disco recusa que fora de escopo seja dispensa (`escopo`). "
             "Linha no disco não é passagem."
         )
     return scope

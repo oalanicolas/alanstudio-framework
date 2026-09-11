@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.449 — o gate nomeia o escopo que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+fora
+de
+escopo
+não
+é
+dispensa.
+O
+problema
+copiava
+o
+achado
+e
+calava
+a
+recusa.
+Agora
+o
+`gate`
+nomeia
+o
+escopo.
+Linha
+no
+disco
+não
+é
+passagem.
+Sem
+chave
+`escopo`.
+Nomear
+não
+observa.
+
+O que 0.9.449 não afirma:
+linha
+no
+disco
+não
+é
+passagem
+concedida
+nem
+licença
+válida.
+
 ## 0.9.448 — o bar nomeia a dimensão que a barra já recusa
 
 A

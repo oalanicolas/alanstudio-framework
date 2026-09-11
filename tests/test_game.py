@@ -3858,6 +3858,48 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.craft_reading(self.project)["scope"],
         )
 
+    def test_gate_names_the_scope_the_prose_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.gates_refuse_scope_waiver(guide),
+            "o roteiro já recusa que fora de escopo seja dispensa",
+        )
+        self.assertEqual(game.gate_problem_scope_source(), "references/gates.md")
+        self.declare_gate({("deliver", "licensing"): ("out_of_scope", "não se aplica aqui")})
+        report = game.gate_reading(self.project, "deliver")
+        self.assertEqual([item["reason"] for item in report["problems"]], ["always_applies"])
+        item = report["problems"][0]
+        self.assertIn(
+            "fora de escopo seja dispensa",
+            item["scope"],
+            "o problema copiava o achado e calava a recusa",
+        )
+        self.assertIn("(`escopo`)", item["scope"])
+        self.assertNotIn("escopo", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.gates_refuse_scope_waiver(""))
+        raw = game.gate_declaration(self.project)
+        self.assertNotIn("scope", raw["problems"][0])
+        with mock.patch.object(game, "gate_problem_scope_source", return_value=None):
+            silent = game.gate_reading(self.project, "deliver")
+        self.assertNotIn("fora de escopo seja dispensa", silent["problems"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o escopo que o roteiro já recusa", recipe)
+        self.assertIn("nomeia o escopo que o roteiro já recusa", skill)
+        self.assertIn("nomeia o escopo que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("fora de escopo seja dispensa", report["scope"])
+        self.assertNotIn("fora de escopo seja dispensa", game.gate_item_scope())
+        self.assertNotIn("fora de escopo seja dispensa", game.gate_criterion_scope())
+        self.assertNotIn("fora de escopo seja dispensa", game.next_scope())
+        self.assertNotIn("fora de escopo seja dispensa", game.check_plan_scope())
+        self.assertNotIn(
+            "fora de escopo seja dispensa",
+            game.craft_reading(self.project)["scope"],
+        )
+
     def test_a_gate_never_grants_passage_only_reads_what_the_project_claims(self):
         self.declare_gate({("deliver", "runbook"): ("met", "Ana construiu do zero, log em /tmp/qa-07")})
         report = game.gate_reading(self.project, "deliver")
