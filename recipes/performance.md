@@ -88,7 +88,7 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
 - Faça contraprovas que deveriam falhar: trocar a variante, zerar o dado suspeito,
   desativar o diagnóstico ou comparar reconstrução completa com atualização parcial.
   Uma ferramenta de medição também pode desenhar na cena e falsificar seu resultado.
-- Ganho na média não demonstra redução de engasgos. Custos de build, compilação
+- Ganho na média não demonstra redução de engasgos. Se a receita recusa que ganho na média demonstre redução de engasgos, o `fields` do `record --kind budget` nomeia os engasgos que a receita já recusa. Número no disco não é o quadro estável. Sem chave `engasgos`. Custos de build, compilação
   aquecida e serialização não são FPS. Uma melhoria visual pode aumentar o custo;
   registre ambos sem chamar a correção artística de otimização.
 

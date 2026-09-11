@@ -30,6 +30,66 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.534 — o fields do record budget nomeia os engasgos que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+ganho
+na
+média
+não
+demonstra
+redução
+de
+engasgos.
+O
+fields
+copiava
+o
+número
+e
+calava
+a
+recusa.
+Agora
+o
+`fields`
+do
+`record --kind budget`
+nomeia
+os
+engasgos.
+Número
+no
+disco
+não
+é
+o
+quadro
+estável.
+Sem
+chave
+`engasgos`.
+Só
+no
+budget.
+Nomear
+não
+mede.
+
+O que 0.9.534 não afirma:
+copiar
+o
+número
+não
+é
+o
+quadro
+medido.
+
 ## 0.9.533 — o dimensions do production_bar nomeia a opinião que a barra já recusa
 
 A

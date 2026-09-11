@@ -2004,6 +2004,68 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("screenshot isolado comprove animação", game.feel_reading(self.project)["scope"])
         self.assertNotIn("screenshot isolado comprove animação", game.next_scope())
 
+    def test_record_budget_fields_name_the_stutters_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_average_as_stutter_reduction(recipe),
+            "a receita já recusa que ganho na média demonstre redução de engasgos",
+        )
+        self.assertEqual(game.record_budget_stutter_source(), "recipes/performance.md")
+        fields = {
+            "metric": "frame_p99",
+            "value": "14.2",
+            "unit": "ms",
+            "platform": "web",
+            "tool": "devtools",
+        }
+        report = game.record(
+            self.project, "budget", "Alan", "cena da fábrica, 60 s",
+            fields, [], self.root / "budget-engasgos",
+        )
+        self.assertEqual(report["kind"], "budget")
+        self.assertIn(
+            "ganho na média demonstre redução de engasgos",
+            report["fields"]["scope"],
+            "o fields do budget copiava o número e calava a recusa",
+        )
+        self.assertIn("(`engasgos`)", report["fields"]["scope"])
+        self.assertNotIn("engasgos", report["fields"])
+        self.assertNotIn("engasgos", report)
+        self.assertNotIn("measured", report)
+        self.assertEqual(report["status"], "declared")
+        self.assertFalse(game.recipe_refuses_average_as_stutter_reduction(""))
+        with mock.patch.object(game, "record_budget_stutter_source", return_value=None):
+            silent = game.record(
+                self.project, "budget", "Alan", "cena da fábrica, 60 s",
+                {
+                    "metric": "frame_p99",
+                    "value": "14.2",
+                    "unit": "ms",
+                    "platform": "web",
+                    "tool": "devtools",
+                },
+                [], self.root / "budget-engasgos-silent",
+            )
+        self.assertNotIn("ganho na média demonstre redução de engasgos", silent["fields"].get("scope") or "")
+        seen = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            game.parse_fields(["scenario=primeira travessia", "role=human"]),
+            [], self.root / "obs-sem-engasgos",
+        )
+        self.assertNotIn("ganho na média demonstre redução de engasgos", seen["fields"].get("scope") or "")
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os engasgos que a receita já recusa", recipe)
+        self.assertIn("nomeia os engasgos que a receita já recusa", production)
+        self.assertIn("nomeia os engasgos que a receita já recusa", skill)
+        self.assertIn("nomeia os engasgos que a receita já recusa", readme)
+        self.assertNotIn("verified", report["fields"]["scope"])
+        self.assertNotIn("aprovado", report["fields"]["scope"])
+        self.assertNotIn("ganho na média demonstre redução de engasgos", report["scope"])
+        self.assertNotIn("ganho na média demonstre redução de engasgos", game.budget_reading(self.project)["scope"])
+        self.assertNotIn("ganho na média demonstre redução de engasgos", game.next_scope())
+
     def test_art_names_the_palette_the_system_already_refuses(self):
         guide = (game.FRAMEWORK / "references/game-design-system.md").read_text(encoding="utf-8")
         self.assertTrue(

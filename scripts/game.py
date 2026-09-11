@@ -12271,6 +12271,43 @@ def record_scope():
     return scope
 
 
+# A receita já recusa que ganho na média
+# demonstre redução de engasgos. Sem isto o
+# fields do budget copiava o número e calava
+# a recusa. Número no disco não é o quadro
+# estável.
+PERF_RECIPE = FRAMEWORK / "recipes/performance.md"
+PERF_STUTTER = re.compile(r"não demonstra redução de engasgos")
+
+
+def recipe_refuses_average_as_stutter_reduction(text):
+    return bool(text and PERF_STUTTER.search(text))
+
+
+def record_budget_stutter_source():
+    path = PERF_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_average_as_stutter_reduction(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_budget_fields_scope(kind):
+    if kind != "budget":
+        return None
+    if not record_budget_stutter_source():
+        return None
+    return (
+        "O disco recusa que ganho na média demonstre redução de engasgos "
+        "(`engasgos`). Número no disco não é o quadro estável."
+    )
+
+
 # O roteiro já recusa que o screenshot isolado comprove animação. Sem isto o
 # anexo copiava o hash e calava a recusa.
 # Anexo no disco não é controle.
@@ -12327,6 +12364,9 @@ def record(project, kind, author, note, fields, attachments, output):
             fields["value"] = float(fields["value"])
         except ValueError:
             raise ValueError("value precisa ser numérico") from None
+    named = record_budget_fields_scope(kind)
+    if named:
+        fields = dict(fields, scope=named)
     files = []
     for item in attachments:
         path = Path(item)
