@@ -54,7 +54,7 @@ não é alguém de fora. Nomear o endereço não observa. Depois do
 fim, a página aponta o convite desta partida se a seed ficou no
 recibo. Copiar o endereço não grava. `next` aponta o convite
 depois do recibo de quem fez. O serve anuncia a URL da rede
-se a máquina tiver outro endereço IPv4. Se o serve prende o bind, o convite nomeia o bind que o serve já prende. Bind no disco não é alguém de fora. Sem chave `HOST`.
+se a máquina tiver outro endereço IPv4. Se o serve prende o bind, o convite nomeia o bind que o serve já prende. Bind no disco não é alguém de fora. Sem chave `HOST`. Se a receita recusa que o endereço seja duas sessões, o convite nomeia as sessões que a receita já recusa. Convite no disco não é alguém de fora. Sem chave `sessões`.
 Esconder a tabela, anunciar
 a rede, mostrar os números, copiar o achado e gravar os quatro nomes não são alguém de fora. `observed` e `outsider` são sempre
 falsos: o harness não assiste à sessão. A partida no serve grava o

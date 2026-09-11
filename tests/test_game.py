@@ -10897,6 +10897,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("prende o bind", game.next_step(destination)["scope"])
         self.assertNotIn("prende o bind", game.ship_reading(destination)["scope"])
 
+    def test_invite_names_the_sessions_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/network.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_address_as_two_sessions(recipe),
+            "a receita já recusa que o endereço seja duas sessões",
+        )
+        self.assertEqual(game.invite_sessions_source(), "recipes/network.md")
+        destination = self.root / "convite-com-sessoes"
+        game.init(destination, "canvas-arcade")
+        report = game.invite_playtest(destination)
+        self.assertIn(
+            "endereço seja duas sessões",
+            report["scope"],
+            "o convite anunciava a rede e calava a recusa",
+        )
+        self.assertIn("(`sessões`)", report["scope"])
+        self.assertNotIn("sessões", report)
+        self.assertFalse(report["outsider"])
+        self.assertFalse(report["observed"])
+        self.assertFalse(game.recipe_refuses_address_as_two_sessions(""))
+        with mock.patch.object(game, "invite_sessions_source", return_value=None):
+            silent = game.invite_playtest(destination)
+        self.assertNotIn("endereço seja duas sessões", silent["scope"])
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia as sessões que a receita já recusa", recipe)
+        self.assertIn("nomeia as sessões que a receita já recusa", feel)
+        self.assertIn("nomeia as sessões que a receita já recusa", skill)
+        self.assertIn("nomeia as sessões que a receita já recusa", readme_doc)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("endereço seja duas sessões", game.play_scope(destination))
+        self.assertNotIn("endereço seja duas sessões", game.playtest_reading(destination)["scope"])
+        self.assertNotIn("endereço seja duas sessões", game.next_step(destination)["scope"])
+        self.assertNotIn("endereço seja duas sessões", game.ship_reading(destination)["scope"])
+        self.assertNotIn("endereço seja duas sessões", game.feel_reading(destination)["scope"])
+
     def test_invite_names_the_last_run_seed_without_claiming_an_outsider(self):
         destination = self.root / "convite-com-seed"
         game.init(destination, "canvas-arcade")

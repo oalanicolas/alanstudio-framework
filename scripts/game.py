@@ -5306,6 +5306,40 @@ def invite_bind_source(project):
     return None
 
 
+# A receita já recusa duas sessões reais. Sem
+# isto o convite anunciava o endereço e calava
+# as sessões. Convite no disco não é alguém
+# de fora.
+NETWORK_RECIPE = FRAMEWORK / "recipes/network.md"
+NETWORK_SESSIONS = re.compile(r"duas sessões reais")
+
+
+def recipe_refuses_address_as_two_sessions(text):
+    return bool(text and NETWORK_SESSIONS.search(text))
+
+
+def invite_sessions_source():
+    path = NETWORK_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    if recipe_refuses_address_as_two_sessions(text):
+        return "recipes/network.md"
+    return None
+
+
+def invite_sessions_scope():
+    if not invite_sessions_source():
+        return None
+    return (
+        "O disco recusa que o endereço seja duas sessões "
+        "(`sessões`). Convite no disco não é alguém de fora."
+    )
+
+
 def invite_playtest(project):
     project = Path(project)
     if not project.is_dir() or project.is_symlink():
@@ -5336,6 +5370,9 @@ def invite_playtest(project):
             " O disco prende o bind (`HOST`). "
             "Bind no disco não é alguém de fora."
         )
+    named = invite_sessions_scope()
+    if named:
+        scope += " " + named
     return {
         "schema_version": 1,
         "project": str(project),

@@ -6,7 +6,7 @@ No starter, a rede que existe é o serve anunciando a LAN e, depois
 do fim, a página apontando `/?invite=1&seed=<n>` — e `&spawn=<mesa>`
 e `&look=<paleta>` se o last-run nomeou a chuva ou o look — para
 enviar essa partida. Compartilhar o endereço não é alguém de fora
-nem duas sessões reais. Com tela, a primeira superfície continua a
+nem duas sessões reais. Se a receita recusa que o endereço seja duas sessões, o convite nomeia as sessões que a receita já recusa. Convite no disco não é alguém de fora. Sem chave `sessões`. Com tela, a primeira superfície continua a
 porta.
 
 Leia o protocolo existente e quem o consome. Identifique quem aceita a ação, valida

@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.522 — o convite nomeia as sessões que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+compartilhar
+o
+endereço
+não
+é
+duas
+sessões
+reais.
+O
+convite
+anunciava
+a
+rede
+e
+calava
+a
+recusa.
+Agora
+o
+convite
+nomeia
+as
+sessões.
+Convite
+no
+disco
+não
+é
+alguém
+de
+fora.
+Sem
+chave
+`sessões`.
+Nomear
+não
+observa.
+
+O que 0.9.522 não afirma:
+duas
+sessões
+reais
+não
+foram
+observadas.
+
 ## 0.9.521 — a opção live do access nomeia o leitor que a receita já recusa
 
 A
