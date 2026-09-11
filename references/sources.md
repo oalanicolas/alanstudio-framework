@@ -416,7 +416,7 @@ Hashes, amostras, observações e plano de contraprova ficam no laboratório em
 `docs/pesquisas/rezona-crayon-2026-09-09.json`. Os métodos acima são utilizáveis sem esses
 arquivos e devem ser revistos quando o consumidor ou o contrato invalidar a hipótese.
 
-## Skill impeccable (0.10)
+## Skill impeccable (0.10.1; referência atualizada em 2026-09-11)
 
 Estudo de 10/09/2026 da skill `impeccable` (design e iteração de interfaces de
 frontend, instalada em `~/.claude/skills/impeccable`): `SKILL.md`, 36 referências,
@@ -443,3 +443,11 @@ de HMR e de geração de imagem no host; sem consumidor no laboratório hoje);
 ligado ao HEAD). Registro: [story](../docs/stories/2026-09-10-impeccable-study.md).
 Conteúdo de design de UI (OKLCH, tipografia, bans de CSS) não foi transposto: não
 é domínio deste harness.
+
+Na atualização de 11/09, o instalador oficial `4.1.0` entregou o payload da skill
+com `metadata.version: 4.3.1` e launcher engine `4.0.0`. A nova forma separa a
+entrada fina (83 linhas), navegação guiada por sinais, trabalho novo e
+`craft-floor` just-in-time. O `game-dev` adotou essa separação em
+[SKILL](../SKILL.md), [rota](routing.md), [trabalho novo](new-work.md),
+[piso de execução](craft-floor.md) e [manual operacional](operations.md), sem
+copiar modos, bans ou agentes específicos de frontend.

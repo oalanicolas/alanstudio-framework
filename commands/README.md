@@ -2,7 +2,8 @@
 
 A skill `game-dev` roteia por **intenção**: `$game-dev craft`, `$game-dev critique`,
 `$game-dev feel`. Cada comando tem uma referência aqui, carregada depois da
-[preparação](../SKILL.md) (contexto e escala) e antes de qualquer ação. O modelo é a
+[preparação](../SKILL.md) (contexto, rota e escala). Imediatamente antes de editar o
+jogo, carregue o [piso de execução](../references/craft-floor.md). O modelo é a
 skill `impeccable`: menu por categoria, uma referência por comando, atalhos fixáveis,
 e a regra de que invocar sem carregar a referência produz trabalho genérico.
 
@@ -23,7 +24,7 @@ receita; aponta o canônico. Seções obrigatórias, nesta ordem (o teste confer
    execução (`STOP` e pergunta estruturada) e as que se assumem com registro.
 4. `## Executar` — passos, apontando receitas, templates e comandos do harness.
 5. `## Verificar` — a prova que encerra o comando e o que **não** conta como prova.
-6. `## Nunca` — recusas específicas do comando, além das do `SKILL.md`.
+6. `## Nunca` — recusas específicas do comando, além das do `craft-floor.md`.
 7. `## Entregar` — o que apresentar, o registro canônico a atualizar e o comando
    seguinte natural (a maioria passa por `polish` ou `next`).
 

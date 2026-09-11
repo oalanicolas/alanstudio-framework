@@ -59,12 +59,22 @@ class CommandCatalogTest(unittest.TestCase):
                 # Nenhuma referência de comando pode conceder o que o harness recusa.
                 self.assertNotIn("verified", text.casefold().replace("não é `verified`", "").replace("claimed` não é verified", ""))
 
-    def test_skill_carries_setup_laws_bans_and_routing(self):
+    def test_skill_is_a_thin_router_to_navigation_and_the_craft_floor(self):
         text = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
-        for marker in ("## Preparação", "## Leis compartilhadas", "## Recusas absolutas", "## Comandos", "### Regras de roteamento", "## Fixar e desafixar"):
+        routing = (game.FRAMEWORK / "references/routing.md").read_text(encoding="utf-8")
+        floor = (game.FRAMEWORK / "references/craft-floor.md").read_text(encoding="utf-8")
+        operations = (game.FRAMEWORK / "references/operations.md").read_text(encoding="utf-8")
+        for marker in ("## Preparação", "## Como decidir", "## Comandos", "## Roteamento", "## Fixar e desafixar"):
             self.assertIn(marker, text, marker)
+        self.assertLessEqual(len(text.splitlines()), 140)
+        for reference in ("references/routing.md", "references/new-work.md", "references/craft-floor.md", "references/operations.md"):
+            self.assertIn(reference, text)
+        self.assertIn("## Leitura única de sinais", routing)
+        self.assertIn("## Passagem de qualidade limitada", floor)
+        self.assertIn("## Leis compartilhadas", operations)
+        self.assertIn("## Recusas absolutas", operations)
         for scale in game.SCALES:
-            self.assertIn(f"`{scale}`", text)
+            self.assertIn(f"`{scale}`", text + floor)
         # Cada categoria do catálogo aparece como grupo na tabela.
         for label in self.catalog["categories"].values():
             self.assertIn(label, text)

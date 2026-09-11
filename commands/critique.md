@@ -28,7 +28,8 @@ antes de multiplicar conteúdo.
      observado e a observação que o sustenta. Cinco eixos além da barra: leitura
      do estado em movimento, jornada emocional (pico e fim; onde o jogador é
      traído), carga cognitiva (decisões com mais de quatro opções visíveis ao mesmo
-     tempo), teste de slop de jogo (`SKILL.md`), dois ou três arquétipos.
+     tempo), [teste de slop de jogo](../references/operations.md#o-teste-de-slop-para-jogos),
+     dois ou três arquétipos.
    - **B — evidência técnica:** `verify` nos validadores existentes, recibos e
      `record` anteriores, `gate` e `bar` (forma das declarações), captura do pior
      quadro se houver ferramenta. B é evidência de defeito; nunca prova de acerto.

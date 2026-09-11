@@ -184,13 +184,20 @@ ficou para trás.
 
 ## Comandos da skill
 
-A skill roteia por intenção, no modelo da skill `impeccable` de frontend: uma
-preparação obrigatória (contexto e escala), leis e recusas que valem em todo
-trabalho, e vinte e três sub-comandos em seis categorias, cada um com uma
-referência própria em [`commands/`](commands/README.md) que a skill carrega antes
-de agir. `$game-dev` sem argumento mostra o menu; `$game-dev critique <jogo>` carrega
-`commands/critique.md` e segue o fluxo dele; texto livre cai no comando mais
-próximo pela situação.
+A skill roteia por intenção, no modelo da skill `impeccable` de frontend. O
+[`SKILL.md`](SKILL.md) é uma entrada curta: resolve contexto uma vez, escolhe a
+rota e carrega o [piso de execução](references/craft-floor.md) somente antes de
+editar o jogo. Navegação sem subcomando usa sinais do laboratório para liderar
+com duas ou três recomendações e depois mostrar o menu completo
+([rota](references/routing.md)); direção ou jogo realmente novos usam um contrato
+separado ([trabalho novo](references/new-work.md)). Os contratos minuciosos do
+harness continuam no [manual operacional](references/operations.md).
+
+São vinte e três sub-comandos em seis categorias, cada um com uma referência
+própria em [`commands/`](commands/README.md). `$game-dev critique <jogo>` carrega
+`commands/critique.md` e segue seu fluxo; texto livre cai no comando mais próximo
+pela situação. Binding ou contexto divergente é reportado, nunca reparado como
+efeito colateral.
 
 | Categoria | Comandos |
 | --- | --- |

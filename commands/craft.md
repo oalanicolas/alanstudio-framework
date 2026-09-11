@@ -65,7 +65,8 @@ sincronizada no mesmo turno ([roteiro](../references/project-audit.md#aprovaçã
 - **Jogue o recorte** com as ferramentas do harness (navegador, captura, execução).
   Compare antes/depois em condições equivalentes e **em movimento**. Leia a captura
   de volta; uma captura que você não leu não conta.
-- Critique o resultado contra o brief e contra as recusas do `SKILL.md`; corrija o
+- Critique o resultado contra o brief e contra as recusas do
+  [piso de execução](../references/craft-floor.md); corrija o
   material e reinspecione. Não invente defeito para parecer iteração: "primeira
   passagem limpa" é resposta válida quando é verdade.
 - Não conta como prova: build verde para diversão, screenshot para feel, typecheck

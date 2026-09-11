@@ -1,12 +1,15 @@
 # Estudo da skill impeccable e transposição da sua forma para o game-dev
 
-Status: Ready for Review — estudo, transposição e validação concluídos.
+Status: atualizado em 2026-09-11 — benchmark renovado, transposição e validação
+concluídas.
 
 Pedido: "estude profundamente a skill impeccable, quero que nosso framework de
 games funcione que nem ela". A impeccable é uma skill de design de interfaces
 de frontend (`~/.claude/skills/impeccable`: `SKILL.md`, 36 referências, ~19 mil
 linhas com scripts). Este registro diz o que ela é, por que funciona, o que foi
-transposto para o `game-dev` e o que ficou de fora com motivo.
+transposto para o `game-dev` e o que ficou de fora com motivo. As seções 1–7
+preservam a primeira leitura de 2026-09-10; a seção abaixo registra a atualização
+da referência e a arquitetura vigente.
 
 - [x] Ler `SKILL.md`, as 36 referências e os scripts centrais (`load-context`,
   `pin`, `critique-storage`, registro do detector, `live.mjs`).
@@ -17,6 +20,43 @@ transposto para o `game-dev` e o que ficou de fora com motivo.
 - [x] Implementar: `SKILL.md` roteador, 23 referências de comando, catálogo,
   `commands`/`pin`/`unpin`, `scale` no `context`, checagem no `doctor`, testes.
 - [x] Validar: suíte inteira verde, links internos, catálogo ↔ arquivos ↔ tabela.
+
+## Atualização 2026-09-11 — benchmark vigente
+
+A instalação global foi atualizada com o comando oficial
+`npx impeccable@latest update --global --yes`, antes de reutilizar a skill como
+referência. O pacote instalador reportou `4.1.0`, o payload da skill passou a
+`metadata.version: 4.3.1` e o launcher reporta engine `4.0.0`; são versões de
+camadas diferentes. A cópia usada pelo Codex está em
+`~/.agents/skills/impeccable` e a do Claude em `~/.claude/skills/impeccable`.
+
+A mudança mais importante desde o snapshot anterior é arquitetural: o
+`SKILL.md` da Impeccable caiu de aproximadamente 180 para 83 linhas e virou um
+roteador ainda mais estrito. Contexto, trabalho novo, piso de craft e operação
+detalhada deixaram de disputar atenção no mesmo arquivo.
+
+| Impeccable atual | Game Dev 0.10.1 | Decisão |
+| --- | --- | --- |
+| `SKILL.md` com 83 linhas | `SKILL.md` com 107 linhas | Adotar entrada fina; manter os 23 comandos do domínio |
+| Contexto uma vez por sessão | `context` uma vez, com exceções explícitas | Adotar |
+| Comando, `new-work` ou rota livre | `commands/`, `new-work.md` e `routing.md` | Adotar |
+| Menu guiado por sinais, 2–3 recomendações antes do catálogo | `doctor`/`discover`/`context`, depois recomendações e menu | Adotar sem detector redundante |
+| Modos Persuade, Operate, Read, Experience por superfície | Lentes Jogar, Criar, Operar, Aprender | Adaptar ao jogador, autor, estúdio e leitor |
+| `craft-floor` carregado imediatamente antes da edição | `craft-floor.md` para design, código, conteúdo, arte e áudio | Adotar e ampliar ao domínio de jogos |
+| `new-work` separa verdade durável, visual e brief da superfície | `new-work.md` separa jogo novo, extensão, identidade incompleta e substituição | Adaptar |
+| Uma inspeção agrupada, uma confirmação e parada | passagem de qualidade limitada, preservando regressão material | Adotar |
+| Contexto stale é relatado, não reparado silenciosamente | binding/contexto divergente é reportado, sem mutação lateral | Adotar |
+| Reviewers/documenter auxiliares | revisão de entrega e evidência existentes | Não adotar sem consumidores reais; evitar hierarquia por default |
+
+O antigo `SKILL.md` de 595 linhas virou
+[`references/operations.md`](../../references/operations.md): nenhuma distinção
+de evidência foi descartada, mas ela agora é lida só quando a rota específica não
+resolve o caso. A navegação vive em
+[`references/routing.md`](../../references/routing.md), trabalho novo em
+[`references/new-work.md`](../../references/new-work.md) e o piso compartilhado em
+[`references/craft-floor.md`](../../references/craft-floor.md). Testes lexicais
+passaram a validar o manual roteado; um teste estrutural separado limita a entrada
+a 140 linhas e exige os quatro destinos.
 
 ## 1. Anatomia da impeccable
 
