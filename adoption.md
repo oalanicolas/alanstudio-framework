@@ -3,6 +3,62 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.454 — o genre_mentions[n] nomeia a mecânica que o mapa já recusa
+
+O
+mapa
+já
+dizia
+que
+nenhuma
+regra
+foi
+copiada
+como
+mecânica
+obrigatória.
+O
+campo
+copiava
+o
+valor
+e
+calava
+a
+recusa.
+Agora
+o
+`genre_mentions[n]`
+nomeia
+a
+mecânica.
+Campo
+no
+disco
+não
+é
+regra
+do
+jogo.
+Sem
+chave
+`mecânica`.
+Nomear
+não
+classifica.
+
+O que 0.9.454 não afirma:
+campo
+no
+disco
+não
+é
+pacote
+carregado
+nem
+gênero
+jogado.
+
 ## 0.9.453 — o sources[n] do continuity nomeia a fila que o processo já recusa
 
 O

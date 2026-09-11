@@ -1014,6 +1014,51 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("seja extração", game.play_scope(self.project))
         self.assertNotIn("seja extração", game.context_scope())
 
+    def test_genre_mentions_name_the_mechanic_the_map_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sources_refuse_obligatory_mechanic(guide),
+            "o mapa já recusa que a menção seja mecânica obrigatória",
+        )
+        self.assertEqual(game.genre_mention_mechanic_source(), "references/sources.md")
+        (self.project / "README.md").write_text(
+            "# Jogo\n- Gênero: corrida arcade de kart\nEscopo local.\n"
+        )
+        report = game.scan(self.project)
+        self.assertTrue(report["genre_mentions"], "o scan já lista o campo Gênero")
+        item = report["genre_mentions"][0]
+        self.assertIn(
+            "menção seja mecânica obrigatória",
+            item["scope"],
+            "o campo copiava o valor e calava a recusa",
+        )
+        self.assertIn("(`mecânica`)", item["scope"])
+        self.assertNotIn("mecânica", item)
+        packs = game.context(self.project, "create")["packs"]["genre"]
+        self.assertEqual(
+            packs["mentions"],
+            [{"path": "README.md", "line": 2, "value": "corrida arcade de kart"}],
+        )
+        self.assertFalse(game.sources_refuse_obligatory_mechanic(""))
+        with mock.patch.object(game, "genre_mention_mechanic_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "menção seja mecânica obrigatória",
+            silent["genre_mentions"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a mecânica que o mapa já recusa", recipe)
+        self.assertIn("nomeia a mecânica que o mapa já recusa", skill)
+        self.assertIn("nomeia a mecânica que o mapa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("menção seja mecânica obrigatória", report["scope"])
+        self.assertNotIn("menção seja mecânica obrigatória", game.genre_scope("platformer"))
+        self.assertNotIn("menção seja mecânica obrigatória", game.packs_scope("package.json"))
+        self.assertNotIn("menção seja mecânica obrigatória", game.next_scope())
+        self.assertNotIn("menção seja mecânica obrigatória", game.context_scope())
+
     def test_context_names_the_api_the_lifecycle_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
         self.assertTrue(

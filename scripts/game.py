@@ -5299,12 +5299,13 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     for area in areas.values():
         for item in area["candidates"]:
             item["scope"] = candidate_scope
+    mention_scope = genre_mention_scope()
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(),
         "minimum_status": "needs_review" if needs_documentation else "candidates_found",
         "areas": areas, "gaps": gaps, "read_first": read_first,
         "continuity_sources": continuity_sources, "continuity_source_count": continuity_source_count,
-        "genre_mentions": genre_mentions,
+        "genre_mentions": [dict(item, scope=mention_scope) for item in genre_mentions],
         "agent_context": {
             "status": "found" if local_instructions else "not_located",
             "files": local_instructions,
@@ -5517,7 +5518,12 @@ def select_packs(kind, genre, mentions):
         "genre": {
             "name": genre, "pack": str(genre_path) if genre_path and genre_path.is_file() else None,
             "basis": "--genre declarado na conversa" if genre else ("campo Gênero localizado em documento; confirme e passe --genre" if suggested else "não declarado; passe --genre quando o jogo tiver gênero definido"),
-            "suggested": suggested, "mentions": mentions, "available": list(GENRES),
+            "suggested": suggested,
+            "mentions": [
+                {"path": item["path"], "line": item["line"], "value": item["value"]}
+                for item in mentions
+            ],
+            "available": list(GENRES),
             "scope": genre_scope(genre),
         },
         "scope": packs_scope(kind),
@@ -5597,6 +5603,42 @@ def genre_scope(genre):
         scope += (
             " O disco recusa que o pacote seja extração (`extração`). "
             "Convenção no disco não é repositório executado."
+        )
+    return scope
+
+
+# O mapa já recusa que a menção seja mecânica obrigatória.
+# Sem isto o campo copiava o valor e calava a recusa.
+# Campo no disco não é regra do jogo.
+SOURCES_MECHANIC = re.compile(r"mecânica obrigatória")
+
+
+def sources_refuse_obligatory_mechanic(text):
+    return bool(text and SOURCES_MECHANIC.search(text))
+
+
+def genre_mention_mechanic_source():
+    path = FRAMEWORK / "references/sources.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if sources_refuse_obligatory_mechanic(text):
+        return "references/sources.md"
+    return None
+
+
+def genre_mention_scope():
+    scope = (
+        "Campo Gênero localizado no documento. Não classifica e não "
+        "carrega o pacote."
+    )
+    if genre_mention_mechanic_source():
+        scope += (
+            " O disco recusa que a menção seja mecânica obrigatória (`mecânica`). "
+            "Campo no disco não é regra do jogo."
         )
     return scope
 
