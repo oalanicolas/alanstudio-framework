@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.365 — o save nomeia o fechamento que o disco já grava
+
+A
+receita
+já
+apontava
+`beforeunload`.
+O
+comando
+lia
+persistLine
+e
+calava
+o
+gancho.
+Agora
+o
+`save`
+nomeia
+o
+fechamento.
+Gancho
+no
+disco
+não
+é
+aba
+fechada.
+Sem
+chave
+`beforeunload`.
+Não
+promove
+`trusted`.
+
+O que 0.9.365 não afirma:
+gancho
+no
+disco
+não
+é
+aba
+fechada
+real.
+
 ## 0.9.364 — o access nomeia o perigo que o live já anuncia
 
 A

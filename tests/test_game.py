@@ -4261,6 +4261,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", persist)
 
+    def test_save_names_the_unload_the_disk_already_flushes(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        main = (starter / "src/main.js").read_text(encoding="utf-8")
+        self.assertTrue(game.disk_flushes_unload(main), "o disco já grava o hold no fechamento")
+        self.assertEqual(game.unload_hold_source(starter), "src/main.js")
+        report = game.save_reading(starter)
+        self.assertIn("grava o hold no fechamento", report["scope"], "o save calava o gancho que a receita já grava")
+        self.assertIn("(`beforeunload`)", report["scope"])
+        self.assertFalse(report["trusted"])
+        self.assertNotIn("beforeunload", report)
+        self.assertNotIn("unload", report)
+        empty = game.save_reading(self.project)
+        self.assertFalse(game.disk_flushes_unload(""))
+        self.assertIsNone(game.unload_hold_source(self.project))
+        self.assertNotIn("grava o hold no fechamento", empty["scope"])
+        persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o fechamento que o disco já grava", persist)
+        self.assertIn("nomeia o fechamento que o disco já grava", skill)
+        self.assertIn("nomeia o fechamento que o disco já grava", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", persist)
+
     def test_save_names_storage_without_a_schema_as_unversioned(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "store.js").write_text("localStorage.setItem('score', value)\n")

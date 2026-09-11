@@ -665,7 +665,9 @@ armazenamento, PROGRESS_SCHEMA/migrate e se o disco nomeia sessão volátil
 (`persistLine`, `title_volatile`, `title_unsaved`) ou preferências
 ilegíveis (`settings_recovered`, `settings.broken`); relata `warned`. Se o
 canvas pinta `settingsLine`, o `save` nomeia a recuperação. A pausa não.
-Texto no disco não é aba fechada. Sem chave `recovery`. Nomear
+Texto no disco não é aba fechada. Sem chave `recovery`. Se o disco
+escuta `beforeunload`, o `save` nomeia o fechamento que o disco já grava.
+Gancho no disco não é aba fechada. Sem chave `beforeunload`. Nomear
 não é aba fechada. `trusted` é sempre `false`.
 `budget` procura script `budget`/`bench`, `tools/budget.*` ou
 `record --kind budget`. Se o tool declara `title.attract`, o

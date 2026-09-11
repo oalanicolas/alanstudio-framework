@@ -1919,6 +1919,29 @@ def canvas_recovery_source(project):
     return None
 
 
+# A receita já grava o hold no fechamento. Sem isto o
+# save lia persistLine e calava o gancho. Gancho no
+# disco não é aba fechada.
+UNLOAD_HOLD = re.compile(
+    r"addEventListener\(\s*[\"']beforeunload[\"']",
+    re.IGNORECASE,
+)
+
+
+def disk_flushes_unload(text):
+    return bool(text and UNLOAD_HOLD.search(text))
+
+
+def unload_hold_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
+        if "tests" in Path(relative).parts:
+            continue
+        if disk_flushes_unload(text):
+            return relative
+    return None
+
+
 def save_reading(project):
     project = Path(project)
     used, versioned, warned, sources = [], [], [], []
@@ -1943,6 +1966,11 @@ def save_reading(project):
         scope += (
             " Na porta e no fim o canvas pinta a recuperação que o "
             "painel já mostra. A pausa não. Texto no disco não é aba fechada."
+        )
+    if unload_hold_source(project):
+        scope += (
+            " O disco grava o hold no fechamento (`beforeunload`). "
+            "Gancho no disco não é aba fechada."
         )
     return {
         "schema_version": 1,
