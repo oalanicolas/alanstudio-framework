@@ -596,12 +596,52 @@ def studio_assets_scope():
     return scope
 
 
+# O mapa já recusa que um workspace
+# herde silenciosamente as preferências
+# de outro. Sem isto o policy copiava
+# estilo e calava a recusa. Política
+# no disco não é o outro laboratório.
+WORKSPACE_BIND = Path(__file__).resolve().parents[1] / "references/workspace-binding.md"
+WORKSPACE_INHERIT = re.compile(r"não herda\s+silenciosamente")
+
+
+def bind_refuses_silent_inherit(text):
+    return bool(text and WORKSPACE_INHERIT.search(text))
+
+
+def studio_assets_policy_inherit_source():
+    path = WORKSPACE_BIND
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bind_refuses_silent_inherit(text):
+        return "references/workspace-binding.md"
+    return None
+
+
+def studio_assets_policy_scope():
+    if not studio_assets_policy_inherit_source():
+        return None
+    return (
+        "O disco recusa que um workspace herde silenciosamente "
+        "as preferências de outro (`herança`). "
+        "Política no disco não é o outro laboratório."
+    )
+
+
 def studio_assets(root=None):
     base = catalog_dir(root)
     catalog = load_catalog(root)
+    policy = audio.audio_policy(root)
+    named = studio_assets_policy_scope()
+    if named:
+        policy = dict(policy, scope=named)
     return {"sfx": {
         "catalog": str(base / "catalog.json"), "guide": str(base / "README.md"),
-        "exists": (base / "catalog.json").is_file(), "policy": audio.audio_policy(root),
+        "exists": (base / "catalog.json").is_file(), "policy": policy,
         "file_count": len(catalog["sounds"]), "updated": catalog.get("updated"),
         "rule": "shared/sfx é ADAPT. Sem acervo o catálogo vem vazio; o starter já fala em public/sfx.",
         "scope": studio_assets_scope(),

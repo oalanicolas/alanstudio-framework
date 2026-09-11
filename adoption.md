@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.538 — o policy do studio_assets nomeia a herança que o mapa já recusa
+
+O
+mapa
+já
+dizia
+que
+um
+workspace
+não
+herda
+silenciosamente
+as
+preferências
+de
+outro.
+O
+policy
+copiava
+estilo
+e
+calava
+a
+recusa.
+Agora
+o
+`policy`
+do
+`studio_assets`
+nomeia
+a
+herança.
+Política
+no
+disco
+não
+é
+o
+outro
+laboratório.
+Sem
+chave
+`herança`.
+Nomear
+não
+ouve.
+
+O que 0.9.538 não afirma:
+a
+política
+local
+não
+é
+licença
+concedida.
+
 ## 0.9.537 — o fields do record milestone nomeia o marco que a receita já recusa
 
 A

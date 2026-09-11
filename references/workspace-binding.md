@@ -96,7 +96,7 @@ diferença de caixa/acentos; o piso técnico é configurável. A política apare
 `studio_assets.sfx.policy` e `sfx summary`, e é aplicada na importação, verificação e
 exportação. O piso numérico é conferido na importação e verificação; a exportação
 preserva bytes e confere estilo, origem e integridade. Um workspace não herda
-silenciosamente as preferências de outro.
+silenciosamente as preferências de outro. Se o mapa recusa que um workspace herde silenciosamente as preferências de outro, o `policy` do `studio_assets` nomeia a herança que o mapa já recusa. Política no disco não é o outro laboratório. Sem chave `herança`.
 As APIs Python recebem `policy` explicitamente; os comandos carregam a configuração
 da raiz selecionada. `audio.py --root <workspace>` também permite uma raiz explícita.
 

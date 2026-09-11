@@ -3468,6 +3468,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ouça o starter", game.context_scope())
         self.assertNotIn("ouça o starter", game.next_scope())
 
+    def test_studio_assets_policy_names_the_inherit_the_map_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/workspace-binding.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.bind_refuses_silent_inherit(guide),
+            "o mapa já recusa que um workspace herde silenciosamente as preferências de outro",
+        )
+        self.assertEqual(
+            game.sfx_catalog.studio_assets_policy_inherit_source(),
+            "references/workspace-binding.md",
+        )
+        raw = game.sfx_catalog.audio.audio_policy(self.root)
+        self.assertNotIn("scope", raw)
+        report = game.context(self.project, "create")
+        policy = report["studio_assets"]["sfx"]["policy"]
+        self.assertIn(
+            "herde silenciosamente as preferências de outro",
+            policy["scope"],
+            "o policy copiava estilo e calava a recusa",
+        )
+        self.assertIn("(`herança`)", policy["scope"])
+        self.assertNotIn("herança", policy)
+        self.assertNotIn("herança", report["studio_assets"]["sfx"])
+        self.assertNotIn("herança", report)
+        self.assertNotIn("granted", report["studio_assets"]["sfx"])
+        self.assertFalse(game.sfx_catalog.bind_refuses_silent_inherit(""))
+        self.assertNotIn(
+            "herde silenciosamente as preferências de outro",
+            report["studio_assets"]["sfx"]["scope"],
+        )
+        with mock.patch.object(game.sfx_catalog, "studio_assets_policy_inherit_source", return_value=None):
+            silent = game.context(self.project, "create")
+        self.assertNotIn(
+            "herde silenciosamente as preferências de outro",
+            silent["studio_assets"]["sfx"]["policy"].get("scope") or "",
+        )
+        bar = game.sfx_catalog.quality_bar(self.root)
+        self.assertNotIn("scope", bar)
+        self.assertNotIn("scope", bar["policy"])
+        summary = game.sfx_catalog.summarize(self.root)
+        self.assertNotIn(
+            "herde silenciosamente as preferências de outro",
+            summary["quality_bar"].get("scope") or "",
+        )
+        self.assertNotIn(
+            "herde silenciosamente as preferências de outro",
+            summary["quality_bar"]["policy"].get("scope") or "",
+        )
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a herança que o mapa já recusa", recipe)
+        self.assertIn("nomeia a herança que o mapa já recusa", skill)
+        self.assertIn("nomeia a herança que o mapa já recusa", readme)
+        self.assertIn("nomeia a herança que o mapa já recusa", guide)
+        self.assertNotIn("verified", policy["scope"])
+        self.assertNotIn("herde silenciosamente as preferências de outro", game.next_scope())
+        self.assertNotIn("herde silenciosamente as preferências de outro", game.roles_reading(self.project)["scope"])
+
     def test_scan_names_the_tokens_the_system_already_refuses(self):
         guide = (game.FRAMEWORK / "references/game-design-system.md").read_text(encoding="utf-8")
         self.assertTrue(
