@@ -3941,7 +3941,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             # `dist/` é gitignorado. Um export local não é o starter
             # commitado — o leitor nomeia a árvore que está no disco.
             self.assertIsNotNone(pack["tree"])
-            self.assertEqual(set(pack["tree"]["parts"]), {"index", "serve", "package", "version"})
+            self.assertEqual(set(pack["tree"]["parts"]), {"index", "serve", "package", "version", "src"})
         else:
             self.assertIsNone(pack["tree"])
             self.assertFalse(pack["incomplete"])
