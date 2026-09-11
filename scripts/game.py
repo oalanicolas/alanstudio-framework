@@ -4825,6 +4825,44 @@ def documentation_scope(document_minimum):
     return scope
 
 
+# O processo já nega que documento pronto seja PoC. Sem isto o
+# context apontava o arquivo e calava a recusa.
+# Fonte no disco não é jogo implementado.
+PROCESS_GUIDE = FRAMEWORK / "references/process.md"
+PROCESS_POC = re.compile(r"Documentos prontos não significam PoC executada")
+
+
+def process_denies_ready_docs_are_poc(text):
+    return bool(text and PROCESS_POC.search(text))
+
+
+def continuity_poc_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_denies_ready_docs_are_poc(text):
+        return "references/process.md"
+    return None
+
+
+def continuity_scope():
+    scope = (
+        "Fontes são candidatos, não fila validada. "
+        "O agente resolve next_step antes de responder; o comando não escolhe "
+        "tarefa, infere etapa concluída nem concede autorização a partir de documentos."
+    )
+    if continuity_poc_source():
+        scope += (
+            " O disco nega que documento pronto seja PoC (`process`). "
+            "Fonte no disco não é jogo implementado."
+        )
+    return scope
+
+
 def context(project, focus, stage=None, studies_root=None, event="task", root=None, genre=None):
     if focus not in FOCI:
         raise ValueError("foco desconhecido")
@@ -4876,7 +4914,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "guide": str(FRAMEWORK / "references/process.md") + "#continuidade-e-retomada",
             "before_close": "Atualizar o registro canônico e dizer onde chegamos, uma próxima ação concreta, por que vem primeiro e qual evidência a conclui; dependências/decisões só quando reais. Se o objetivo terminou, declarar conclusão sem inventar trabalho.",
             "on_resume": "Ler o registro e a conversa, conferir o estado real, resolver a próxima ação e executá-la dentro do escopo autorizado. Não repetir briefing, auditoria já válida ou pergunta genérica de permissão.",
-            "scope": "Fontes são candidatos, não fila validada. O agente resolve next_step antes de responder; o comando não escolhe tarefa, infere etapa concluída nem concede autorização a partir de documentos.",
+            "scope": continuity_scope(),
         },
         "documentation": {
             "action": (

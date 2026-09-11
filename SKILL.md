@@ -64,7 +64,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    turno. Se o README aponta o serve, o `scan` nomeia o serve que o README já aponta. Página no disco não é partida jogada. Sem chave `serve`. Se o roteiro pede documentar sem consentimento, o `context` nomeia o audit que o roteiro já pede. Roteiro no disco não é base escrita. Sem chave `audit`. `--event direction-approved` e `--stage audit` continuam
    pedindo a base. Sem projeto
    identificável, não invente um alvo. Em retomada, fonte encontrada não é tarefa
-   validada: siga [continuidade e retomada](references/process.md#continuidade-e-retomada).
+   validada: siga [continuidade e retomada](references/process.md#continuidade-e-retomada). Se o processo nega que documento pronto seja PoC, o `context` nomeia a PoC que o processo já nega. Fonte no disco não é jogo implementado. Sem chave `process`.
 2. **Intenção e prontidão.** Defina fantasia, verbo central, plataforma, cenário,
    restrições, a maior incerteza e a prova de conclusão; assuma o resto com registro e
    pergunte só o que impede de jogar. A escala (jam/conto, produto, AA / Triple-I)

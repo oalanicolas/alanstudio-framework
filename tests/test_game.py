@@ -676,6 +676,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("documentar sem consentimento", game.next_step(self.project)["scope"])
         self.assertNotIn("documentar sem consentimento", game.template_scope("aaa"))
 
+    def test_context_names_the_poc_the_process_already_denies(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_denies_ready_docs_are_poc(guide),
+            "o processo já nega que documento pronto seja PoC",
+        )
+        self.assertEqual(game.continuity_poc_source(), "references/process.md")
+        report = game.context(self.project, "create")
+        self.assertEqual(report["read_next"][0], str(game.FRAMEWORK / "references/process.md"))
+        self.assertIn("#continuidade-e-retomada", report["continuity"]["guide"])
+        self.assertIn(
+            "documento pronto seja PoC",
+            report["continuity"]["scope"],
+            "o context apontava o processo e calava a PoC",
+        )
+        self.assertIn("(`process`)", report["continuity"]["scope"])
+        self.assertNotIn("process", report["continuity"])
+        self.assertFalse(report["continuity"]["executed"])
+        self.assertFalse(game.process_denies_ready_docs_are_poc(""))
+        with mock.patch.object(game, "continuity_poc_source", return_value=None):
+            silent = game.context(self.project, "create")
+        self.assertNotIn("documento pronto seja PoC", silent["continuity"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a PoC que o processo já nega", recipe)
+        self.assertIn("nomeia a PoC que o processo já nega", skill)
+        self.assertIn("nomeia a PoC que o processo já nega", readme)
+        self.assertNotIn("verified", report["continuity"]["scope"])
+        self.assertNotIn("documento pronto seja PoC", report["documentation"]["scope"])
+        self.assertNotIn("documento pronto seja PoC", game.scan(self.project)["scope"])
+        self.assertNotIn("documento pronto seja PoC", game.next_step(self.project)["scope"])
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

@@ -456,7 +456,7 @@ python3 scripts/game.py context /caminho/do/jogo --focus mechanics --event resum
 
 `direction-approved` sincroniza a base mínima no mesmo turno. `resume` localiza
 fontes de continuidade; o agente resolve o próximo passo. O harness deixa
-`next_step: null` e `executed: false`.
+`next_step: null` e `executed: false`. Se o processo nega que documento pronto seja PoC, o `context` nomeia a PoC que o processo já nega. Fonte no disco não é jogo implementado. Sem chave `process`.
 
 Fonte encontrada não é tarefa validada — e fonte em rascunho não é nem passo. Num
 projeto recém-criado, as fontes que `scan` lista são os campos de template

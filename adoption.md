@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.402 — o context nomeia a PoC que o processo já nega
+
+O
+processo
+já
+dizia
+que
+documentos
+prontos
+não
+são
+PoC
+executada.
+O
+comando
+apontava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`context`
+nomeia
+a
+PoC.
+Fonte
+no
+disco
+não
+é
+jogo
+implementado.
+Sem
+chave
+`process`.
+Nomear
+não
+executa.
+
+O que 0.9.402 não afirma:
+fonte
+no
+disco
+não
+é
+jogo
+implementado
+nem
+PoC
+executada.
+
 ## 0.9.401 — o context nomeia o audit que o roteiro já pede
 
 O
