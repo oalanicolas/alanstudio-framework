@@ -5591,6 +5591,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     areas["runbook"]["scope"] = runbook_area_scope()
     areas["decisions"]["scope"] = decisions_area_scope()
     areas["gdd"]["scope"] = gdd_area_scope()
+    areas["mda"]["scope"] = mda_area_scope()
     candidate_scope = scan_candidate_scope()
     for area in areas.values():
         for item in area["candidates"]:
@@ -6530,6 +6531,42 @@ def gdd_area_scope():
         scope += (
             " O disco recusa que divertido isolado baste (`divertido`). "
             "Área no disco não é o verbo."
+        )
+    return scope
+
+
+# A guia já recusa pontuação universal de diversão. Sem isto a
+# área localizava o MDA e calava a recusa.
+# Área no disco não é experiência.
+MDA_SCORE = re.compile(r"pontuação universal\s+de diversão")
+
+
+def guide_refuses_universal_fun_score(text):
+    return bool(text and MDA_SCORE.search(text))
+
+
+def mda_score_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_universal_fun_score(text):
+        return "references/preproduction.md"
+    return None
+
+
+def mda_area_scope():
+    scope = (
+        "Localiza o documento de hipóteses. Não observa a sessão e não "
+        "pontua diversão."
+    )
+    if mda_score_source():
+        scope += (
+            " O disco recusa pontuação universal de diversão (`pontuação`). "
+            "Área no disco não é experiência."
         )
     return scope
 

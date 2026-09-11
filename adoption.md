@@ -30,6 +30,61 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.469 — o mda do scan nomeia a pontuação que a guia já recusa
+
+A
+guia
+já
+dizia
+que
+não
+há
+pontuação
+universal
+de
+diversão.
+A
+área
+copiava
+o
+rótulo
+e
+calava
+a
+recusa.
+Agora
+o
+`mda`
+do
+`scan`
+nomeia
+a
+pontuação.
+Área
+no
+disco
+não
+é
+experiência.
+Sem
+chave
+`pontuação`.
+Nomear
+não
+observa.
+
+O que 0.9.469 não afirma:
+número
+no
+disco
+não
+é
+diversão
+percebida
+nem
+sessão
+observada.
+
 ## 0.9.468 — o gdd do scan nomeia o divertido que a guia já recusa
 
 A

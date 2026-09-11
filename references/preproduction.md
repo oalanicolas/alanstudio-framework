@@ -107,7 +107,7 @@ Entrada: sensação e pilares. Saída: hipóteses ligando regra → comportament
 experiência, alternativas e observação capaz de contradizê-las. Pode começar pela
 experiência desejada e trabalhar de volta às regras. **Pronto para testar:** existe
 uma situação que distingue a hipótese de sua alternativa. Não há pontuação universal
-de diversão. [Template](../assets/templates/mda.md), [artigo original](https://www.cs.northwestern.edu/~hunicke/MDA.pdf).
+de diversão. Se a guia recusa pontuação universal de diversão, o `scan` nomeia a pontuação que a guia já recusa. Área no disco não é experiência. Sem chave `pontuação`. [Template](../assets/templates/mda.md), [artigo original](https://www.cs.northwestern.edu/~hunicke/MDA.pdf).
 
 ### `gdd` — Game Design Document
 

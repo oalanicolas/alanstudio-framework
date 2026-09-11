@@ -2453,9 +2453,42 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", report["areas"]["gdd"]["scope"])
         self.assertNotIn("divertido isolado baste", report["scope"])
         self.assertNotIn("divertido isolado baste", report["areas"]["decisions"]["scope"])
-        self.assertNotIn("divertido isolado baste", report["areas"]["mda"]["scope"] if "scope" in report["areas"]["mda"] else "")
+        self.assertNotIn("divertido isolado baste", report["areas"]["mda"]["scope"])
         self.assertNotIn("divertido isolado baste", game.feel_reading(self.project)["scope"])
         self.assertNotIn("divertido isolado baste", game.next_scope())
+
+    def test_scan_names_the_score_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_universal_fun_score(guide),
+            "a guia já recusa pontuação universal de diversão",
+        )
+        self.assertEqual(game.mda_score_source(), "references/preproduction.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "pontuação universal de diversão",
+            report["areas"]["mda"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`pontuação`)", report["areas"]["mda"]["scope"])
+        self.assertNotIn("pontuação", report["areas"]["mda"])
+        self.assertFalse(game.guide_refuses_universal_fun_score(""))
+        with mock.patch.object(game, "mda_score_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("pontuação universal de diversão", silent["areas"]["mda"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a pontuação que a guia já recusa", guide)
+        self.assertIn("nomeia a pontuação que a guia já recusa", recipe)
+        self.assertIn("nomeia a pontuação que a guia já recusa", skill)
+        self.assertIn("nomeia a pontuação que a guia já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["mda"]["scope"])
+        self.assertNotIn("pontuação universal de diversão", report["scope"])
+        self.assertNotIn("pontuação universal de diversão", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("pontuação universal de diversão", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("pontuação universal de diversão", game.verify_scope())
+        self.assertNotIn("pontuação universal de diversão", game.next_scope())
 
     def test_scan_names_the_absence_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
