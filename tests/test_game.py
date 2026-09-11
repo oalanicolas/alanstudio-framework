@@ -1908,6 +1908,38 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("opção sem consumidor seja opção", game.next_scope())
         self.assertNotIn("opção sem consumidor seja opção", game.verify_scope())
 
+    def test_commands_name_the_generic_the_menu_already_refuses(self):
+        guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.menu_refuses_generic_work(guide),
+            "o menu já recusa invocar sem carregar a referência",
+        )
+        self.assertEqual(game.command_row_generic_source(), "commands/README.md")
+        report = game.command_listing()
+        self.assertTrue(report["commands"], "o commands já lista o catálogo")
+        item = report["commands"][0]
+        self.assertIn(
+            "invocar sem carregar a referência",
+            item["scope"],
+            "a linha copiava o nome e calava a recusa",
+        )
+        self.assertIn("(`genérico`)", item["scope"])
+        self.assertNotIn("genérico", item)
+        self.assertFalse(game.menu_refuses_generic_work(""))
+        with mock.patch.object(game, "command_row_generic_source", return_value=None):
+            silent = game.command_listing()
+        self.assertNotIn("invocar sem carregar a referência", silent["commands"][0]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o genérico que o menu já recusa", guide)
+        self.assertIn("nomeia o genérico que o menu já recusa", skill)
+        self.assertIn("nomeia o genérico que o menu já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("invocar sem carregar a referência", report["scope"])
+        self.assertNotIn("invocar sem carregar a referência", game.next_scope())
+        self.assertNotIn("invocar sem carregar a referência", game.context_scope())
+        self.assertNotIn("invocar sem carregar a referência", game.doctor_then_scope())
+
     def test_check_plan_names_the_merit_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(

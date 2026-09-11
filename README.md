@@ -217,7 +217,7 @@ existe. `pin` cria um atalho próprio do host (`/critique` passa a invocar
 instalada; o arquivo leva um marcador, e uma skill sua com o mesmo nome nunca é
 sobrescrita. `unpin` remove só o que tem o marcador. `doctor` ganhou a checagem
 `commands`: catálogo, arquivo de referência e linha na tabela do `SKILL.md`
-precisam concordar, senão o menu manda o agente ler um arquivo que não existe.
+precisam concordar, senão o menu manda o agente ler um arquivo que não existe. Se o menu recusa invocar sem carregar a referência, o `commands` nomeia o genérico que o menu já recusa. Linha no disco não é a skill. Sem chave `genérico`.
 
 Uma referência de comando é um orquestrador fino, não uma receita nova: diz qual
 `context` rodar, qual receita ler, onde parar para o usuário, o que prova conclusão

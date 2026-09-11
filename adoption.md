@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.473 — o commands nomeia o genérico que o menu já recusa
+
+O
+menu
+já
+dizia
+que
+invocar
+sem
+carregar
+a
+referência
+produz
+trabalho
+genérico.
+A
+linha
+copiava
+o
+nome
+e
+calava
+a
+recusa.
+Agora
+o
+`commands[n]`
+do
+catálogo
+nomeia
+o
+genérico.
+Linha
+no
+disco
+não
+é
+a
+skill.
+Sem
+chave
+`genérico`.
+Nomear
+não
+observa.
+
+O que 0.9.473 não afirma:
+menu
+no
+disco
+não
+é
+fluxo
+executado
+nem
+referência
+carregada.
+
 ## 0.9.472 — o access nomeia a opção que a receita já recusa
 
 A

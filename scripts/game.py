@@ -5889,6 +5889,7 @@ def command_catalog():
 
 def command_listing():
     catalog = command_catalog()
+    row_scope = command_row_scope()
     rows = []
     for name, entry in catalog["commands"].items():
         reference = FRAMEWORK / f"commands/{name}.md"
@@ -5901,6 +5902,7 @@ def command_listing():
             "reference": str(reference),
             "reference_present": reference.is_file(),
             "foci": list(entry.get("foci", ())),
+            "scope": row_scope,
         })
     return {
         "schema_version": 1,
@@ -5910,6 +5912,43 @@ def command_listing():
         "pinned_marker": PIN_MARKER,
         "scope": catalog.get("scope", ""),
     }
+
+
+# O menu já recusa invocar sem carregar a referência. Sem isto a
+# linha copiava o nome e calava a recusa.
+# Linha no catálogo não é a skill carregada.
+COMMANDS_GUIDE = FRAMEWORK / "commands/README.md"
+COMMAND_GENERIC = re.compile(r"sem carregar a referência produz trabalho genérico")
+
+
+def menu_refuses_generic_work(text):
+    return bool(text and COMMAND_GENERIC.search(text))
+
+
+def command_row_generic_source():
+    path = COMMANDS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if menu_refuses_generic_work(text):
+        return "commands/README.md"
+    return None
+
+
+def command_row_scope():
+    scope = (
+        "Nome, categoria e referência do sub-comando. Não carrega a "
+        "skill e não executa o fluxo."
+    )
+    if command_row_generic_source():
+        scope += (
+            " O disco recusa invocar sem carregar a referência (`genérico`). "
+            "Linha no catálogo não é a skill carregada."
+        )
+    return scope
 
 
 def command_problems():

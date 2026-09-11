@@ -539,7 +539,7 @@ a decisões novas, não a rebaixar o que já está shipping.
 
 Contrato das referências e como acrescentar um comando: [commands/README.md](commands/README.md).
 O catálogo em [commands/commands.json](commands/commands.json) alimenta
-`python3 scripts/game.py commands`, os atalhos e a checagem do `doctor`.
+`python3 scripts/game.py commands`, os atalhos e a checagem do `doctor`. Se o menu recusa invocar sem carregar a referência, o `commands` nomeia o genérico que o menu já recusa. Linha no disco não é a skill. Sem chave `genérico`.
 
 ### Regras de roteamento
 
