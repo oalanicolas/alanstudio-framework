@@ -71,7 +71,7 @@ python3 framework/scripts/game.py gauntlet games/era-uma-vez \
 ```
 
 Acrescente `--hours 4` somente se essa duração tiver sido informada. Sem horas,
-`budget_hours` é `null`: não significa prazo infinito nem apaga um prazo vigente.
+`budget_hours` é `null`: não significa prazo infinito nem apaga um prazo vigente. Se o gauntlet recusa que horas nulas sejam prazo infinito, o contrato do `gauntlet` nomeia o infinito que o gauntlet já recusa. Contrato no disco não é o orçamento. Sem chave `infinito`.
 É um exemplo de geração, não uma execução realizada. Sem `--output`, imprime o
 pacote; com ele, escreve somente arquivo novo e recusa sobrescrita/symlink. Caminhos
 de projeto relativos usam a raiz do harness (`--root` permite outra raiz); o destino

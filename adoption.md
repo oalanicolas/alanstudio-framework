@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.482 — o gauntlet nomeia o infinito que o guia já recusa
+
+O
+gauntlet
+já
+dizia
+que
+horas
+nulas
+não
+significam
+prazo
+infinito.
+O
+contrato
+copiava
+budget_hours
+e
+calava
+a
+recusa.
+Agora
+o
+contrato
+nomeia
+o
+infinito.
+Contrato
+no
+disco
+não
+é
+o
+orçamento.
+Sem
+chave
+`infinito`.
+Nomear
+não
+observa.
+
+O que 0.9.482 não afirma:
+horas
+nulas
+no
+disco
+não
+iniciam
+a
+sessão
+nem
+apagaram
+um
+prazo
+vigente.
+
 ## 0.9.481 — o verify nomeia o suporte que a receita já recusa
 
 A

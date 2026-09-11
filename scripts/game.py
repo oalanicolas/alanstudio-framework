@@ -7541,6 +7541,42 @@ def template_scope(stage):
     return scope
 
 
+# O gauntlet já recusa que horas nulas sejam prazo infinito.
+# Sem isto o contrato copiava budget_hours e calava a recusa.
+# Contrato no disco não é o orçamento.
+GAUNTLET_INFINITE = re.compile(r"não significa prazo infinito")
+
+
+def gauntlet_refuses_null_as_infinite(text):
+    return bool(text and GAUNTLET_INFINITE.search(text))
+
+
+def gauntlet_contract_infinite_source():
+    path = GAUNTLET_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gauntlet_refuses_null_as_infinite(text):
+        return "references/gauntlet.md"
+    return None
+
+
+def gauntlet_contract_scope():
+    scope = (
+        "Contrato do pacote de continuidade. Não inicia execução e "
+        "não inventa orçamento."
+    )
+    if gauntlet_contract_infinite_source():
+        scope += (
+            " O disco recusa que horas nulas sejam prazo infinito "
+            "(`infinito`). Contrato no disco não é o orçamento."
+        )
+    return scope
+
+
 def gauntlet(project, objective, hours=None, focus="create", output=None):
     if not nonempty(objective):
         raise ValueError("objetivo deve conter texto")
@@ -7562,6 +7598,7 @@ def gauntlet(project, objective, hours=None, focus="create", output=None):
         "skill": str(FRAMEWORK / "SKILL.md"),
         "guide": str(FRAMEWORK / "references/gauntlet.md"),
         "context_argv": shlex.split(harness_command("context", project, "--focus", focus, "--event", "resume")),
+        "scope": gauntlet_contract_scope(),
     }
     document = (FRAMEWORK / "assets/gauntlet.md").read_text(encoding="utf-8")
     document = document.replace("{{CONTRACT}}", json.dumps(contract, ensure_ascii=False, indent=2))

@@ -3386,6 +3386,50 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         clock.assert_not_called()
         self.assertEqual(before, {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()})
 
+    def test_gauntlet_contract_names_the_infinite_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gauntlet.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.gauntlet_refuses_null_as_infinite(guide),
+            "o gauntlet já recusa que horas nulas sejam prazo infinito",
+        )
+        self.assertEqual(game.gauntlet_contract_infinite_source(), "references/gauntlet.md")
+        document = game.gauntlet(self.project, "Provar o recorte")
+        contract = json.loads(document.split("```json\n", 1)[1].split("\n```", 1)[0])
+        self.assertIn(
+            "horas nulas sejam prazo infinito",
+            contract["scope"],
+            "o contrato copiava budget_hours e calava a recusa",
+        )
+        self.assertIn("(`infinito`)", contract["scope"])
+        self.assertNotIn("infinito", contract)
+        self.assertIsNone(contract["budget_hours"])
+        self.assertFalse(contract["execution_started"])
+        self.assertFalse(game.gauntlet_refuses_null_as_infinite(""))
+        with mock.patch.object(game, "gauntlet_contract_infinite_source", return_value=None):
+            silent = json.loads(
+                game.gauntlet(self.project, "Provar o recorte").split("```json\n", 1)[1].split("\n```", 1)[0]
+            )
+        self.assertNotIn("horas nulas sejam prazo infinito", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o infinito que o gauntlet já recusa", guide)
+        self.assertIn("nomeia o infinito que o gauntlet já recusa", skill)
+        self.assertIn("nomeia o infinito que o gauntlet já recusa", readme)
+        self.assertIn("nomeia o infinito que o gauntlet já recusa", recipe)
+        self.assertNotIn("verified", contract["scope"])
+        self.assertNotIn("horas nulas sejam prazo infinito", game.continuity_prompt_scope())
+        self.assertNotIn("horas nulas sejam prazo infinito", game.continuity_scope())
+        self.assertNotIn("horas nulas sejam prazo infinito", game.next_scope())
+        output = self.root / "prompts/gauntlet-482.md"
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT), "gauntlet", str(self.project), "--objective", "Provar o recorte", "--output", str(output)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        receipt = json.loads(result.stdout)
+        self.assertNotIn("horas nulas sejam prazo infinito", receipt["scope"])
+
     def test_gauntlet_context_argv_round_trips_unusual_project_paths_for_every_focus(self):
         project = self.root / "ação 'dupla' $(touch injected); `touch injected2`\n```"
         project.mkdir()
