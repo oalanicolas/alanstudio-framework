@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.359: o `content` nomeia a mesa que o disco já nasce. Ferramenta no disco não é volume. Sem chave `table`. Não promove `enough`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.358):** `python3 -m unittest discover -s tests` → 354.
+**Suítes confirmadas no HEAD (0.9.359):** `python3 -m unittest discover -s tests` → 355.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
