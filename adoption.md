@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.424 — o guide nomeia o screenshot que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+screenshot
+não
+comprova
+feel.
+O
+passo
+de
+gravar
+copiava
+o
+note
+e
+calava
+a
+recusa.
+Agora
+o
+`guide`
+nomeia
+o
+screenshot.
+Recibo
+no
+disco
+não
+é
+peso
+percebido.
+Sem
+chave
+`screenshot`.
+Nomear
+não
+observa.
+
+O que 0.9.424 não afirma:
+recibo
+no
+disco
+não
+é
+peso
+percebido
+nem
+feel
+jogado.
+
 ## 0.9.423 — o guide nomeia o onboarding que o roteiro já recusa
 
 O

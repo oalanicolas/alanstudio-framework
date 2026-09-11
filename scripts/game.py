@@ -5836,6 +5836,41 @@ def play_step_scope():
     return scope
 
 
+# A receita já recusa que o screenshot comprove feel. Sem isto o
+# passo de gravar copiava o note e calava a recusa.
+# Recibo no disco não é peso percebido.
+FEEL_SCREENSHOT = re.compile(r"Screenshot não comprova feel")
+
+
+def feel_refuses_screenshot(text):
+    return bool(text and FEEL_SCREENSHOT.search(text))
+
+
+def note_step_screenshot_source():
+    path = FRAMEWORK / "recipes/feel.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if feel_refuses_screenshot(text):
+        return "recipes/feel.md"
+    return None
+
+
+def note_step_scope():
+    scope = (
+        "Gravar o que o verbo sentiu. Não executa o note e não observa."
+    )
+    if note_step_screenshot_source():
+        scope += (
+            " O disco recusa que o screenshot comprove feel (`screenshot`). "
+            "Recibo no disco não é peso percebido."
+        )
+    return scope
+
+
 def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, url=None):
     play_step = {
         "n": 2,
@@ -5867,6 +5902,7 @@ def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, ur
             "do": "gravar o que o verbo sentiu",
             "command": then["note"],
             "executed": False,
+            "scope": note_step_scope(),
         },
     ]
 

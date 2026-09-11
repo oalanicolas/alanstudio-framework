@@ -920,11 +920,56 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("nomeia o onboarding que o roteiro já recusa", readme)
         self.assertNotIn("verified", step["scope"])
         self.assertNotIn("scope", report["steps"][0])
-        self.assertNotIn("scope", report["steps"][2])
+        self.assertNotIn("mural seja onboarding", report["steps"][2]["scope"])
         self.assertNotIn("mural seja onboarding", report["scope"])
         self.assertNotIn("mural seja onboarding", game.guide_scope("canvas-arcade"))
         self.assertNotIn("mural seja onboarding", game.play_scope(self.project))
         self.assertNotIn("mural seja onboarding", game.next_scope())
+
+    def test_guide_names_the_screenshot_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.feel_refuses_screenshot(recipe),
+            "a receita já recusa que o screenshot comprove feel",
+        )
+        self.assertEqual(game.note_step_screenshot_source(), "recipes/feel.md")
+        report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
+        step = report["steps"][2]
+        self.assertIn(
+            "screenshot comprove feel",
+            step["scope"],
+            "o passo de gravar copiava o note e calava a recusa",
+        )
+        self.assertIn("(`screenshot`)", step["scope"])
+        self.assertNotIn("screenshot", step)
+        self.assertFalse(step["executed"])
+        self.assertEqual(len(report["steps"]), 3)
+        self.assertFalse(game.feel_refuses_screenshot(""))
+        with mock.patch.object(game, "note_step_screenshot_source", return_value=None):
+            silent = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
+        self.assertNotIn("screenshot comprove feel", silent["steps"][2]["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o screenshot que a receita já recusa", create)
+        self.assertIn("nomeia o screenshot que a receita já recusa", skill)
+        self.assertIn("nomeia o screenshot que a receita já recusa", readme)
+        self.assertNotIn("verified", step["scope"])
+        self.assertNotIn("scope", report["steps"][0])
+        self.assertNotIn("screenshot comprove feel", report["steps"][1]["scope"])
+        self.assertNotIn("screenshot comprove feel", report["scope"])
+        self.assertNotIn("screenshot comprove feel", game.guide_scope("canvas-arcade"))
+        self.assertNotIn("screenshot comprove feel", game.play_scope(self.project))
+        self.assertNotIn("screenshot comprove feel", game.next_scope())
+        self.assertNotIn("screenshot comprove feel", game.record_scope())
+        self.assertNotIn(
+            "comprove feel",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "screenshot comprove feel",
+            game.playtest_reading(self.project)["scope"],
+        )
 
     def test_next_names_the_action_the_process_already_asks(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
