@@ -7782,6 +7782,70 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             filled["local"].get("scope") or "",
         )
 
+    def test_sfx_summary_local_names_the_compressed_the_recipe_already_refuses(self):
+        recipe = (Path(game.FRAMEWORK) / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_compressed_as_decoded(recipe),
+            "a receita já recusa que o tamanho comprimido meça áudio decodificado",
+        )
+        self.assertEqual(game.sfx_catalog.summarize_local_compressed_source(), "recipes/audio.md")
+        raw = game.sfx_catalog.local_stems()
+        self.assertNotIn("scope", raw)
+        if raw["files"]:
+            self.assertNotIn("scope", raw["files"][0])
+        if raw["missing"]:
+            self.assertNotIn("scope", raw["missing"][0])
+        report = game.sfx_catalog.summarize(self.root)
+        local = report["local"]
+        self.assertIn(
+            "tamanho comprimido meça áudio decodificado",
+            local["scope"],
+            "o local do summary listava bytes e calava a recusa",
+        )
+        self.assertIn("(`comprimido`)", local["scope"])
+        self.assertNotIn("comprimido", local)
+        self.assertNotIn("comprimido", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(local["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_compressed_as_decoded(""))
+        self.assertNotIn("tamanho comprimido meça áudio decodificado", report.get("scope") or "")
+        self.assertNotIn("tamanho comprimido meça áudio decodificado", report["next"])
+        with mock.patch.object(game.sfx_catalog, "summarize_local_compressed_source", return_value=None):
+            silent = game.sfx_catalog.summarize(self.root)
+        self.assertNotIn("tamanho comprimido meça áudio decodificado", silent["local"].get("scope") or "")
+        self.assertNotIn("scope", game.sfx_catalog.local_stems())
+        skill = (Path(game.FRAMEWORK) / "SKILL.md").read_text(encoding="utf-8")
+        readme = (Path(game.FRAMEWORK) / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o comprimido que a receita já recusa", recipe)
+        self.assertIn("nomeia o comprimido que a receita já recusa", skill)
+        self.assertIn("nomeia o comprimido que a receita já recusa", readme)
+        self.assertNotIn("verified", local["scope"])
+        self.assertNotIn("aprovado", local["scope"])
+        self.assertNotIn("tamanho comprimido meça áudio decodificado", game.next_scope())
+        searched = game.sfx_catalog.search_catalog("dash", self.root)
+        self.assertNotIn(
+            "tamanho comprimido meça áudio decodificado",
+            searched["local"].get("scope") or "",
+        )
+        verified = game.sfx_catalog.verify_catalog(self.root)
+        self.assertNotIn(
+            "tamanho comprimido meça áudio decodificado",
+            verified["local"].get("scope") or "",
+        )
+        self.assertNotIn(
+            "tamanho comprimido meça áudio decodificado",
+            report["quality_bar"].get("scope") or "",
+        )
+        self._plant_catalog_sound()
+        filled = game.sfx_catalog.summarize(self.root)
+        self.assertTrue(filled["categories"])
+        self.assertNotIn(
+            "tamanho comprimido meça áudio decodificado",
+            filled["categories"][0].get("scope") or "",
+        )
+        if filled["local"].get("files"):
+            self.assertNotIn("scope", filled["local"]["files"][0])
+
     def test_sfx_search_names_matching_starter_stems_without_claiming_to_hear_them(self):
         report = game.sfx_catalog.search_catalog("dash", self.root)
         self.assertTrue(report["empty"])

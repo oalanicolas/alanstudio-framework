@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.544 — o local do sfx summary nomeia o comprimido que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+tamanho
+comprimido
+não
+mede
+áudio
+decodificado.
+O
+local
+do
+summary
+listava
+bytes
+e
+calava
+a
+recusa.
+Agora
+o
+`local`
+do
+`sfx summary`
+nomeia
+o
+comprimido.
+Bytes
+no
+disco
+não
+são
+mix.
+Sem
+chave
+`comprimido`.
+Nomear
+não
+ouve.
+
+O que 0.9.544 não afirma:
+tamanho
+de
+arquivo
+não
+é
+PCM
+no
+contexto
+real.
+
 ## 0.9.543 — o candidate_tally nomeia o quatro que a receita já recusa
 
 A

@@ -76,7 +76,7 @@ primeiro ciclo.
 ## 1. Nomear a camada
 
 Antes de importar, diga qual papel o som cumpre. Camadas típicas; use só
-as que o jogo tem. Se a receita recusa que a categoria do catálogo seja a camada que o jogo mistura, o `categories[n]` do `sfx summary` nomeia a camada que a receita já recusa. Lista no disco não é mix. Sem chave `camada`. Se a receita recusa que medir alocação com canais em zero seja ouvir, o `quality_bar` do `sfx summary` nomeia a alocação que a receita já recusa. Barra no disco não é mix ouvida. Sem chave `alocação`. As camadas típicas:
+as que o jogo tem. Se a receita recusa que a categoria do catálogo seja a camada que o jogo mistura, o `categories[n]` do `sfx summary` nomeia a camada que a receita já recusa. Lista no disco não é mix. Sem chave `camada`. Se a receita recusa que medir alocação com canais em zero seja ouvir, o `quality_bar` do `sfx summary` nomeia a alocação que a receita já recusa. Barra no disco não é mix ouvida. Sem chave `alocação`. Se a receita recusa que o tamanho comprimido meça áudio decodificado, o `local` do `sfx summary` nomeia o comprimido que a receita já recusa. Bytes no disco não são mix. Sem chave `comprimido`. As camadas típicas:
 
 - **Ação / Foley** — passos, impactos, recusas, UI que é verbo.
 - **Mundo** — ambiente, ocupação do espaço, clima, máquinas.
@@ -198,7 +198,7 @@ informação sonora precisa de equivalente visual — requisito de
 
 Casos e limites em [aprendizados de aplicações](../references/sources.md#aprendizados-de-aplicações).
 
-- O tamanho comprimido não mede áudio decodificado. Conte frames, canais e formato
+- O tamanho comprimido não mede áudio decodificado. Se a receita recusa que o tamanho comprimido meça áudio decodificado, o `local` do `sfx summary` nomeia o comprimido que a receita já recusa. Bytes no disco não são mix. Sem chave `comprimido`. Conte frames, canais e formato
   dos buffers no contexto real; a taxa de saída pode diferir da taxa do arquivo.
   Registre PCM separadamente de heap JavaScript, download e memória total.
 - Dividir o transporte e remontar bytes por hash pode atender a um limite individual

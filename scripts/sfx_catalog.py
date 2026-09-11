@@ -798,6 +798,9 @@ def summarize(root=None):
         groups[item["category"]] = groups.get(item["category"], 0) + 1
     empty = len(catalog["sounds"]) == 0
     local = local_stems()
+    compressed = summarize_local_scope()
+    if compressed:
+        local = dict(local, scope=compressed)
     bar = quality_bar(root)
     named = summarize_quality_bar_scope()
     if named:
@@ -906,6 +909,40 @@ def summarize_quality_bar_scope():
     return (
         "O disco recusa que medir alocação com canais em zero seja ouvir "
         "(`alocação`). Barra no disco não é mix ouvida."
+    )
+
+
+# A receita já recusa que o tamanho
+# comprimido meça áudio decodificado.
+# Sem isto o local do summary listava
+# bytes e calava a recusa. Bytes no
+# disco não são mix.
+AUDIO_COMPRESSED = re.compile(r"tamanho comprimido não mede áudio decodificado")
+
+
+def recipe_refuses_compressed_as_decoded(text):
+    return bool(text and AUDIO_COMPRESSED.search(text))
+
+
+def summarize_local_compressed_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_compressed_as_decoded(text):
+        return "recipes/audio.md"
+    return None
+
+
+def summarize_local_scope():
+    if not summarize_local_compressed_source():
+        return None
+    return (
+        "O disco recusa que o tamanho comprimido meça áudio decodificado "
+        "(`comprimido`). Bytes no disco não são mix."
     )
 
 
