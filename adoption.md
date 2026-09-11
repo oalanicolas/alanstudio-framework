@@ -3,6 +3,63 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.419 — o scan nomeia os tokens que o sistema já recusa
+
+O
+contrato
+já
+dizia
+que
+o
+scanner
+localiza
+o
+documento
+e
+não
+certifica
+tokens.
+A
+área
+apontava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`scan`
+nomeia
+os
+tokens.
+Documento
+no
+disco
+não
+é
+aprovação
+artística.
+Sem
+chave
+`tokens`.
+Nomear
+não
+observa.
+
+O que 0.9.419 não afirma:
+documento
+no
+disco
+não
+é
+aprovação
+artística
+nem
+direção
+consistente.
+
 ## 0.9.418 — o context nomeia a escuta que o mapa já recusa
 
 O

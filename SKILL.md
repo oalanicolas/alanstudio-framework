@@ -78,7 +78,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Reaproveite
    documentos existentes; um jogo pequeno reúne tudo em `game-design`. O design system
    do jogo (`art-bible`) é conteúdo mínimo; o arquivo separado é opcional se outro
-   canônico cobrir. Contrato: [design system do jogo](references/game-design-system.md).
+   canônico cobrir. Contrato: [design system do jogo](references/game-design-system.md). Se o sistema recusa que o scanner certifique tokens, o `scan` nomeia os tokens que o sistema já recusa. Documento no disco não é aprovação artística. Sem chave `tokens`.
    Direção aprovada: `--event direction-approved` e base mínima sincronizada no mesmo
    turno, mesmo com nove candidatos encontrados.
 3. **REUSE → ADAPT → CREATE.** Busque no jogo, no acervo e nas fontes pertinentes.

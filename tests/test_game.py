@@ -1255,6 +1255,36 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ouça o starter", game.context_scope())
         self.assertNotIn("ouça o starter", game.next_scope())
 
+    def test_scan_names_the_tokens_the_system_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/game-design-system.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.system_refuses_token_certification(guide),
+            "o contrato já recusa que o scanner certifique tokens",
+        )
+        self.assertEqual(game.art_direction_tokens_source(), "references/game-design-system.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "certifique tokens",
+            report["areas"]["art_direction"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`tokens`)", report["areas"]["art_direction"]["scope"])
+        self.assertNotIn("tokens", report["areas"]["art_direction"])
+        self.assertFalse(game.system_refuses_token_certification(""))
+        with mock.patch.object(game, "art_direction_tokens_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("certifique tokens", silent["areas"]["art_direction"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os tokens que o sistema já recusa", recipe)
+        self.assertIn("nomeia os tokens que o sistema já recusa", skill)
+        self.assertIn("nomeia os tokens que o sistema já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["art_direction"]["scope"])
+        self.assertNotIn("certifique tokens", report["scope"])
+        self.assertNotIn("certifique tokens", game.art_reading(self.project)["scope"])
+        self.assertNotIn("certifique tokens", game.next_scope())
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

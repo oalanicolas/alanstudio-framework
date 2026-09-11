@@ -4747,6 +4747,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         else:
             work = "Vou documentar a base disponível e a proposta, distinguindo o que ainda não foi implementado"
         notice = f"{project.name}: {findings} {work}, preservando os documentos canônicos e registrando as lacunas."
+    areas["art_direction"]["scope"] = art_direction_scope()
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(),
         "minimum_status": "needs_review" if needs_documentation else "candidates_found",
@@ -5030,6 +5031,43 @@ def audit_scope():
         scope += (
             " O disco recusa que a checagem seja daemon (`daemon`). "
             "Roteiro no disco não é interceptação."
+        )
+    return scope
+
+
+# O contrato já recusa que o scanner certifique tokens. Sem isto a
+# área localizava o documento e calava a recusa.
+# Documento no disco não é aprovação artística.
+SYSTEM_GUIDE = FRAMEWORK / "references/game-design-system.md"
+SYSTEM_TOKENS = re.compile(r"não\s+certifica tokens")
+
+
+def system_refuses_token_certification(text):
+    return bool(text and SYSTEM_TOKENS.search(text))
+
+
+def art_direction_tokens_source():
+    path = SYSTEM_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if system_refuses_token_certification(text):
+        return "references/game-design-system.md"
+    return None
+
+
+def art_direction_scope():
+    scope = (
+        "Localiza o documento da direção. Não compara silhueta e não "
+        "aprova estilo."
+    )
+    if art_direction_tokens_source():
+        scope += (
+            " O disco recusa que o scanner certifique tokens (`tokens`). "
+            "Documento no disco não é aprovação artística."
         )
     return scope
 
