@@ -78,7 +78,7 @@ progresso conforme o requisito; não apague saves reais para fazer o teste passa
 
 Prova: recurso correto carregado no cenário real, comportamento preservado, caminho
 alternativo e referência visual quando afetada. Arquivo gerado ou importado não
-comprova que está sendo consumido.
+comprova que está sendo consumido. Se a receita recusa que o arquivo importado esteja sendo consumido, o `record` do `sfx copy` do acervo nomeia o consumido que a receita já recusa. Recibo no disco não é mix. Sem chave `consumido`.
 
 ## Aprendizados de produção e transporte de assets
 

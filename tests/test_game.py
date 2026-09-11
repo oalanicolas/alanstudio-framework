@@ -8449,6 +8449,60 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", copied["scope"])
         self.assertNotIn("aprovado", copied["scope"])
 
+    def test_sfx_copy_catalog_record_names_the_consumed_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_import_as_consumed(recipe),
+            "a receita já recusa que o arquivo importado esteja sendo consumido",
+        )
+        self.assertEqual(game.sfx_catalog.copy_record_consumed_source(), "recipes/content.md")
+        item, _ = self._plant_catalog_sound()
+        destination = self.root / "jogo" / "public" / "sfx"
+        copied = game.sfx_catalog.copy_entry(item["id"], destination, self.root)
+        self.assertEqual(copied["kind"], "catalog")
+        self.assertIn(
+            "arquivo importado esteja sendo consumido",
+            copied["record"]["scope"],
+            "o record copiava autor e licença e calava a recusa",
+        )
+        self.assertIn("(`consumido`)", copied["record"]["scope"])
+        self.assertNotIn("consumido", copied)
+        self.assertNotIn("consumido", copied["record"])
+        self.assertFalse(copied["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_import_as_consumed(""))
+        written = json.loads((destination / "sources.json").read_text(encoding="utf-8"))
+        row = next(entry for entry in written["files"] if entry.get("key") == item["id"])
+        self.assertNotIn("scope", row)
+        self.assertNotIn("arquivo importado esteja sendo consumido", copied.get("scope") or "")
+        with mock.patch.object(game.sfx_catalog, "copy_record_consumed_source", return_value=None):
+            silent = game.sfx_catalog.copy_entry(item["id"], destination, self.root)
+        self.assertNotIn("arquivo importado esteja sendo consumido", silent["record"].get("scope") or "")
+        local = game.sfx_catalog.copy_entry("dash", self.root / "voz", self.root)
+        self.assertEqual(local["kind"], "starter")
+        self.assertNotIn(
+            "arquivo importado esteja sendo consumido",
+            (local.get("record") or {}).get("scope") or "",
+        )
+        audio = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o consumido que a receita já recusa", recipe)
+        self.assertIn("nomeia o consumido que a receita já recusa", audio)
+        self.assertIn("nomeia o consumido que a receita já recusa", skill)
+        self.assertIn("nomeia o consumido que a receita já recusa", readme_doc)
+        self.assertNotIn("verified", copied["record"]["scope"])
+        self.assertNotIn("aprovado", copied["record"]["scope"])
+        self.assertNotIn(
+            "arquivo importado esteja sendo consumido",
+            game.content_reading(self.project).get("scope") or "",
+        )
+        self.assertNotIn(
+            "arquivo importado esteja sendo consumido",
+            game.origins_reading(self.project).get("scope") or "",
+        )
+        self.assertNotIn("arquivo importado esteja sendo consumido", game.next_scope())
+        self.assertNotIn("arquivo importado esteja sendo consumido", game.roles_fill_scope())
+
     def test_sfx_copy_from_catalog_refuses_when_the_receipt_names_another_license(self):
         item, _ = self._plant_catalog_sound()
         destination = self.root / "jogo" / "public" / "sfx"

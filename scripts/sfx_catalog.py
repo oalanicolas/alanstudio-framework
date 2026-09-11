@@ -743,6 +743,9 @@ def copy_entry(entry_id, destination, root=None, sources=None, as_name=None):
     named = copy_catalog_scope()
     if named:
         report["scope"] = named
+    consumed = copy_record_scope()
+    if consumed:
+        report["record"] = dict(record, scope=consumed)
     return report
 
 
@@ -906,6 +909,40 @@ def copy_catalog_scope():
     return (
         "O disco recusa que importar e exportar seja ouvir "
         "(`ouvir`). Cópia no disco não é mix."
+    )
+
+
+# A receita já recusa que o arquivo importado esteja
+# sendo consumido. Sem isto o record copiava autor
+# e licença e calava a recusa. Recibo no disco não
+# é mix.
+CONTENT_RECIPE = Path(__file__).resolve().parents[1] / "recipes/content.md"
+CONTENT_CONSUMED = re.compile(r"não\s+comprova que está sendo consumido")
+
+
+def recipe_refuses_import_as_consumed(text):
+    return bool(text and CONTENT_CONSUMED.search(text))
+
+
+def copy_record_consumed_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    if recipe_refuses_import_as_consumed(text):
+        return "recipes/content.md"
+    return None
+
+
+def copy_record_scope():
+    if not copy_record_consumed_source():
+        return None
+    return (
+        "O disco recusa que o arquivo importado esteja sendo consumido "
+        "(`consumido`). Recibo no disco não é mix."
     )
 
 

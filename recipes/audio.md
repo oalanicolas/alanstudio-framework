@@ -70,7 +70,7 @@ créditos do acervo ou do stem do starter que `sfx info`
 já nomeia — o recibo que lista um stem e o disco perdeu
 não é id desconhecido; exportar não inventa bytes. Se a receita recusa que o export invente bytes, o `sfx export` do stem nomeia a invenção que a receita já recusa. Cópia no disco não é mix. Sem chave `invenção`. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`.
 `sfx copy` leva o mesmo stem para a pasta do
-jogo. Se o sidecar declara licença, o `sfx copy` nomeia os créditos que o copy já leva. Créditos no disco não são mix ouvida. Sem chave `sidecar`. `--apply` também leva o stem do starter. Importar e exportar não é ouvir. Se a receita recusa que importar e exportar seja ouvir, o `sfx copy` do acervo nomeia o ouvir que a receita já recusa. Cópia no disco não é mix. Sem chave `ouvir`. O acervo compartilhado é ADAPT, não o
+jogo. Se o sidecar declara licença, o `sfx copy` nomeia os créditos que o copy já leva. Créditos no disco não são mix ouvida. Sem chave `sidecar`. `--apply` também leva o stem do starter. Importar e exportar não é ouvir. Se a receita recusa que importar e exportar seja ouvir, o `sfx copy` do acervo nomeia o ouvir que a receita já recusa. Cópia no disco não é mix. Sem chave `ouvir`. Se a receita recusa que o arquivo importado esteja sendo consumido, o `record` do `sfx copy` do acervo nomeia o consumido que a receita já recusa. Recibo no disco não é mix. Sem chave `consumido`. O acervo compartilhado é ADAPT, não o
 primeiro ciclo.
 
 ## 1. Nomear a camada

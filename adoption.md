@@ -30,6 +30,61 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.523 — o record do sfx copy do acervo nomeia o consumido que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+arquivo
+gerado
+ou
+importado
+não
+comprova
+que
+está
+sendo
+consumido.
+O
+record
+copiava
+autor
+e
+licença
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+o
+consumido.
+Recibo
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`consumido`.
+Nomear
+não
+ouve.
+
+O que 0.9.523 não afirma:
+o
+stem
+copiado
+não
+está
+no
+mixer.
+
 ## 0.9.522 — o convite nomeia as sessões que a receita já recusa
 
 A
