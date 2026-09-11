@@ -5689,7 +5689,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
             "issues": [dict(item, scope=issue_scope) for item in issues[:20]],
             "issue_count": len(issues), "issues_truncated": len(issues) > 20,
             "excluded_directory_names": sorted(excluded_dirs),
-            "limits": {"entries": max_entries, "documents": max_documents, "bytes_per_document": max_bytes, "depth": 4, "index_links": max_links, "candidates_per_area": 3, "continuity_sources": 5},
+            "limits": {"entries": max_entries, "documents": max_documents, "bytes_per_document": max_bytes, "depth": 4, "index_links": max_links, "candidates_per_area": 3, "continuity_sources": 5, "scope": coverage_limits_scope()},
             "scope": coverage_scope(),
         },
         "next_action": (
@@ -6436,6 +6436,42 @@ def coverage_scope():
         scope += (
             " O disco recusa que o local não percorrido seja inexistente (`inexistente`). "
             "Contagem no disco não é inventário."
+        )
+    return scope
+
+
+# O roteiro já recusa que o recorte de estudo tome a prioridade.
+# Sem isto os limites copiavam os tetos e calavam a recusa.
+# Limite no disco não é a base.
+AUDIT_PRIORITY = re.compile(r"não toma a prioridade")
+
+
+def audit_refuses_study_priority(text):
+    return bool(text and AUDIT_PRIORITY.search(text))
+
+
+def coverage_limits_priority_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_refuses_study_priority(text):
+        return "references/project-audit.md"
+    return None
+
+
+def coverage_limits_scope():
+    scope = (
+        "Tetos do recorte documental. Não afirma que o inventário "
+        "está completo e não lê o que ficou de fora."
+    )
+    if coverage_limits_priority_source():
+        scope += (
+            " O disco recusa que o recorte de estudo tome a prioridade "
+            "(`prioridade`). Limite no disco não é a base."
         )
     return scope
 

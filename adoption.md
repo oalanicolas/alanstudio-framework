@@ -30,6 +30,66 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.483 — o scan nomeia a prioridade que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+o
+recorte
+de
+estudo
+não
+toma
+a
+prioridade
+da
+base.
+Os
+limites
+copiavam
+os
+tetos
+e
+calavam
+a
+recusa.
+Agora
+os
+tetos
+nomeiam
+a
+prioridade.
+Limite
+no
+disco
+não
+é
+a
+base.
+Sem
+chave
+`prioridade`.
+Nomear
+não
+observa.
+
+O que 0.9.483 não afirma:
+teto
+no
+disco
+não
+é
+inventário
+completo
+nem
+a
+base
+do
+projeto.
+
 ## 0.9.482 — o gauntlet nomeia o infinito que o guia já recusa
 
 O

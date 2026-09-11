@@ -131,7 +131,7 @@ Primeiro inventaria raiz e pastas `docs`, `production`, `design`, `art`, `audio`
 `documentation`, até profundidade quatro, com limite de 2.000 entradas. Lê até 64
 documentos de 64 KB cada, priorizando README/INDEX, destinos de índices e nomes
 convencionais. Assim, uma árvore extensa de material de estudo não toma a prioridade
-da base indicada pelo projeto. Examina também JSONs documentais conhecidos e arquivos convencionais
+da base indicada pelo projeto. Se o roteiro recusa que o recorte de estudo tome a prioridade, o `limits` da coverage nomeia a prioridade que o roteiro já recusa. Limite no disco não é a base. Sem chave `prioridade`. Examina também JSONs documentais conhecidos e arquivos convencionais
 sem extensão, como `LICENSE` e `CREDITS`. Não segue symlinks nem lê
 pastas ocultas, dependências, templates, diretórios convencionais de evidência/
 baseline ou de recursos binários, nem arquivos-fonte do runtime. Os nomes excluídos

@@ -2894,6 +2894,43 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("não percorrido seja inexistente", game.context_scope())
         self.assertNotIn("não percorrido seja inexistente", game.next_scope())
 
+    def test_coverage_limits_name_the_priority_the_audit_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.audit_refuses_study_priority(guide),
+            "o roteiro já recusa que o recorte de estudo tome a prioridade",
+        )
+        self.assertEqual(game.coverage_limits_priority_source(), "references/project-audit.md")
+        report = game.scan(self.project)
+        item = report["coverage"]["limits"]
+        self.assertIn(
+            "recorte de estudo tome a prioridade",
+            item["scope"],
+            "os limites copiavam os tetos e calavam a recusa",
+        )
+        self.assertIn("(`prioridade`)", item["scope"])
+        self.assertNotIn("prioridade", item)
+        self.assertFalse(game.audit_refuses_study_priority(""))
+        with mock.patch.object(game, "coverage_limits_priority_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "recorte de estudo tome a prioridade",
+            silent["coverage"]["limits"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a prioridade que o roteiro já recusa", guide)
+        self.assertIn("nomeia a prioridade que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a prioridade que o roteiro já recusa", skill)
+        self.assertIn("nomeia a prioridade que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("recorte de estudo tome a prioridade", report["coverage"]["scope"])
+        self.assertNotIn("recorte de estudo tome a prioridade", report["scope"])
+        self.assertNotIn("recorte de estudo tome a prioridade", report["audit"]["scope"])
+        self.assertNotIn("recorte de estudo tome a prioridade", game.context_scope())
+        self.assertNotIn("recorte de estudo tome a prioridade", game.next_scope())
+
     def test_coverage_issues_name_the_accident_the_map_already_refuses(self):
         guide = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
         self.assertTrue(
