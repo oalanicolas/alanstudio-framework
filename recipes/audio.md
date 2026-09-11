@@ -16,7 +16,7 @@ origem, licença, integridade e adequação ao consumidor continuam obrigatória
 `context --focus audio` seleciona esta receita. `roles <projeto>` lê os
 papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
 em `public/sfx`. Nomeia o `duckMs` que a tabela já declara. Sem duck a
-chave some. Nomear não é mix ouvida. Se a receita recusa que áudio AAA seja quantidade de arquivos, o `roles` nomeia a quantidade que a receita já recusa. Lista no disco não é mix. Sem chave `quantidade`. Se o processo recusa o reuso automático, o `roles --fill` nomeia o reuso que o processo já recusa. Arquivo no disco não é licença. Sem chave `reuso`. Se o mapa recusa que o catálogo ouça o starter, o `context` nomeia a escuta que o mapa já recusa. Acervo no disco não é mix ouvida. Sem chave `ouve`. `roles --fill` sugere um id do acervo ou a ficha do
+chave some. Nomear não é mix ouvida. Se a receita recusa que áudio AAA seja quantidade de arquivos, o `roles` nomeia a quantidade que a receita já recusa. Lista no disco não é mix. Sem chave `quantidade`. Se a receita recusa que o número no panner seja mix, o papel do x do campo nomeia o panner que a receita já recusa. Número no disco não é mix. Sem chave `panner`. Se o processo recusa o reuso automático, o `roles --fill` nomeia o reuso que o processo já recusa. Arquivo no disco não é licença. Sem chave `reuso`. Se o mapa recusa que o catálogo ouça o starter, o `context` nomeia a escuta que o mapa já recusa. Acervo no disco não é mix ouvida. Sem chave `ouve`. `roles --fill` sugere um id do acervo ou a ficha do
 stem do starter que casa; `--apply` copia o id do acervo ou o stem
 do starter com créditos — e recoloca o WAV se o recibo já está e
 origem e licença casam. `sfx copy` do acervo faz o mesmo e
@@ -35,7 +35,7 @@ o tom falava e a faixa calava. O erro emite `lost`; a faixa nomeia
 a corrente que caiu e cala a aposta quando era zero. Não herda
 `chain`. Número na legenda não é mix ouvido. Se a receita recusa que o número na legenda seja mix, a opção `captions` do `access` nomeia o número que a receita já recusa. Número no disco não é mix. Sem chave `número`.
 Coleta, queda, raspo, impacto, avanço, o término, a guarda e o fim levam o x do campo; o panner
-marca o lugar. Número no panner não é mix ouvido. O término (`land`) é
+marca o lugar. Número no panner não é mix ouvido. Se a receita recusa que o número no panner seja mix, o papel do x do campo nomeia o panner que a receita já recusa. Número no disco não é mix. Sem chave `panner`. O término (`land`) é
 voz própria, mais curta que o dash; sem o papel o aterrissar é mudo.
 `sfx --from` / `--as` desloca a voz no papel que o mixer já toca;
 depois de um `note`, `start` e `next` apontam esse comando.

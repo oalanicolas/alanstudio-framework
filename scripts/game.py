@@ -1919,6 +1919,41 @@ def role_item_scope():
     return scope
 
 
+# A receita já recusa que o número no panner seja mix. Sem isto o
+# papel do x do campo copiava o id e calava a recusa.
+# Número no disco não é mix.
+AUDIO_PANNER = re.compile(r"Número no panner não é mix")
+PANNER_ROLES = frozenset({
+    "collect", "missed", "graze", "hit", "dash", "land", "bank", "over",
+})
+
+
+def recipe_refuses_panner_number_as_mix(text):
+    return bool(text and AUDIO_PANNER.search(text))
+
+
+def role_panner_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_panner_number_as_mix(text):
+        return "recipes/audio.md"
+    return None
+
+
+def role_panner_scope():
+    if not role_panner_source():
+        return None
+    return (
+        "O disco recusa que o número no panner seja mix "
+        "(`panner`). Número no disco não é mix."
+    )
+
+
 def roles_reading(project, root=None):
     project = Path(project)
     entries, sources = declared_sound_roles(project)
@@ -1933,6 +1968,10 @@ def roles_reading(project, root=None):
         if "duckMs" in entry:
             row["duckMs"] = entry["duckMs"]
         row["scope"] = role_item_scope()
+        if entry["id"] in PANNER_ROLES:
+            named = role_panner_scope()
+            if named:
+                row["scope"] += " " + named
         roles.append(row)
     empty = [item["id"] for item in roles if item["state"] == "empty"]
     catalog = sfx_catalog.catalog_dir(root)

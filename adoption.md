@@ -30,6 +30,68 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.510 — o papel do x do campo nomeia o panner que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+número
+no
+panner
+não
+é
+mix
+ouvido.
+O
+papel
+do
+x
+do
+campo
+copiava
+o
+id
+e
+calava
+a
+recusa.
+Agora
+o
+papel
+do
+x
+do
+campo
+nomeia
+o
+panner.
+Número
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`panner`.
+Nomear
+não
+ouve.
+
+O que 0.9.510 não afirma:
+o
+número
+no
+panner
+não
+é
+o
+primeiro
+ciclo
+ouvido.
+
 ## 0.9.509 — a opção captions do access nomeia o número que a receita já recusa
 
 A

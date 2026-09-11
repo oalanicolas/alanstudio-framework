@@ -2138,6 +2138,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("áudio AAA seja quantidade de arquivos", game.feel_reading(self.project)["scope"])
         self.assertNotIn("áudio AAA seja quantidade de arquivos", game.roles_fill_scope())
 
+    def test_roles_panner_names_the_place_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_panner_number_as_mix(recipe),
+            "a receita já recusa que o número no panner seja mix",
+        )
+        self.assertEqual(game.role_panner_source(), "recipes/audio.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.roles_reading(starter)
+        item = next(role for role in report["roles"] if role["id"] == "dash")
+        self.assertIn(
+            "número no panner seja mix",
+            item["scope"],
+            "o papel do x do campo copiava o id e calava a recusa",
+        )
+        self.assertIn("(`panner`)", item["scope"])
+        self.assertNotIn("panner", item)
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertFalse(game.recipe_refuses_panner_number_as_mix(""))
+        self.assertNotIn("número no panner seja mix", report["scope"])
+        bed = next(role for role in report["roles"] if role["id"] == "bed")
+        self.assertNotIn("número no panner seja mix", bed["scope"])
+        close = next(role for role in report["roles"] if role["id"] == "close")
+        self.assertNotIn("número no panner seja mix", close["scope"])
+        with mock.patch.object(game, "role_panner_source", return_value=None):
+            silent = game.roles_reading(starter)
+        silent_dash = next(role for role in silent["roles"] if role["id"] == "dash")
+        self.assertNotIn("número no panner seja mix", silent_dash["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o panner que a receita já recusa", recipe)
+        self.assertIn("nomeia o panner que a receita já recusa", skill)
+        self.assertIn("nomeia o panner que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("número no panner seja mix", game.next_scope())
+        self.assertNotIn("número no panner seja mix", game.feel_reading(starter)["scope"])
+        self.assertNotIn("número no panner seja mix", game.access_reading(starter)["scope"])
+        self.assertNotIn("número no panner seja mix", game.roles_fill_scope())
+
     def test_scan_names_the_intent_the_audit_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(
