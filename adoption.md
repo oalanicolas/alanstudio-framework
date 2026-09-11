@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.511 — o roles nomeia o retomar que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+retomar,
+fila
+e
+paralelo
+não
+são
+mix
+ouvido.
+O
+`roles`
+lia
+SOUNDS
+e
+calava
+a
+recusa.
+Agora
+o
+`roles`
+nomeia
+o
+retomar.
+Pedido
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`retomar`.
+Nomear
+não
+ouve.
+
+O que 0.9.511 não afirma:
+retomar,
+fila
+e
+paralelo
+não
+são
+o
+primeiro
+ciclo
+ouvido.
+
 ## 0.9.510 — o papel do x do campo nomeia o panner que a receita já recusa
 
 A

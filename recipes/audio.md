@@ -16,7 +16,7 @@ origem, licença, integridade e adequação ao consumidor continuam obrigatória
 `context --focus audio` seleciona esta receita. `roles <projeto>` lê os
 papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
 em `public/sfx`. Nomeia o `duckMs` que a tabela já declara. Sem duck a
-chave some. Nomear não é mix ouvida. Se a receita recusa que áudio AAA seja quantidade de arquivos, o `roles` nomeia a quantidade que a receita já recusa. Lista no disco não é mix. Sem chave `quantidade`. Se a receita recusa que o número no panner seja mix, o papel do x do campo nomeia o panner que a receita já recusa. Número no disco não é mix. Sem chave `panner`. Se o processo recusa o reuso automático, o `roles --fill` nomeia o reuso que o processo já recusa. Arquivo no disco não é licença. Sem chave `reuso`. Se o mapa recusa que o catálogo ouça o starter, o `context` nomeia a escuta que o mapa já recusa. Acervo no disco não é mix ouvida. Sem chave `ouve`. `roles --fill` sugere um id do acervo ou a ficha do
+chave some. Nomear não é mix ouvida. Se a receita recusa que áudio AAA seja quantidade de arquivos, o `roles` nomeia a quantidade que a receita já recusa. Lista no disco não é mix. Sem chave `quantidade`. Se a receita recusa que o número no panner seja mix, o papel do x do campo nomeia o panner que a receita já recusa. Número no disco não é mix. Sem chave `panner`. Se a receita recusa que retomar, fila e paralelo sejam mix, o `roles` nomeia o retomar que a receita já recusa. Pedido no disco não é mix. Sem chave `retomar`. Se o processo recusa o reuso automático, o `roles --fill` nomeia o reuso que o processo já recusa. Arquivo no disco não é licença. Sem chave `reuso`. Se o mapa recusa que o catálogo ouça o starter, o `context` nomeia a escuta que o mapa já recusa. Acervo no disco não é mix ouvida. Sem chave `ouve`. `roles --fill` sugere um id do acervo ou a ficha do
 stem do starter que casa; `--apply` copia o id do acervo ou o stem
 do starter com créditos — e recoloca o WAV se o recibo já está e
 origem e licença casam. `sfx copy` do acervo faz o mesmo e
@@ -28,7 +28,7 @@ ainda está suspenso — fica na fila e toca quando o buffer entra ou
 o gesto retoma, sem segunda legenda. Os stems sobem juntos: collect
 não espera dash terminar. Wav no lugar não pede ogg. O gesto
 (tecla, toque ou controle) retoma o contexto suspenso. Retomar, fila e
-paralelo não são mix ouvido.
+paralelo não são mix ouvido. Se a receita recusa que retomar, fila e paralelo sejam mix, o `roles` nomeia o retomar que a receita já recusa. Pedido no disco não é mix. Sem chave `retomar`.
 Coleta e guarda sobem de tom com a corrente; o erro não herda o tom.
 A legenda desses dois papéis nomeia a mesma aposta. Sem o número
 o tom falava e a faixa calava. O erro emite `lost`; a faixa nomeia

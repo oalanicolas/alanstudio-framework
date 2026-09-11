@@ -2179,6 +2179,45 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("número no panner seja mix", game.access_reading(starter)["scope"])
         self.assertNotIn("número no panner seja mix", game.roles_fill_scope())
 
+    def test_roles_resume_names_the_queue_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_resume_queue_parallel_as_mix(recipe),
+            "a receita já recusa que retomar, fila e paralelo sejam mix",
+        )
+        self.assertEqual(game.roles_resume_source(), "recipes/audio.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.roles_reading(starter)
+        self.assertIn(
+            "retomar, fila e paralelo sejam mix",
+            report["scope"],
+            "o roles lia SOUNDS e calava a recusa",
+        )
+        self.assertIn("(`retomar`)", report["scope"])
+        self.assertNotIn("retomar", report)
+        self.assertNotIn("fila", report)
+        self.assertNotIn("paralelo", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertFalse(game.recipe_refuses_resume_queue_parallel_as_mix(""))
+        item = report["roles"][0]
+        self.assertNotIn("retomar, fila e paralelo sejam mix", item["scope"])
+        with mock.patch.object(game, "roles_resume_source", return_value=None):
+            silent = game.roles_reading(starter)
+        self.assertNotIn("retomar, fila e paralelo sejam mix", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o retomar que a receita já recusa", recipe)
+        self.assertIn("nomeia o retomar que a receita já recusa", skill)
+        self.assertIn("nomeia o retomar que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("retomar, fila e paralelo sejam mix", item["scope"])
+        self.assertNotIn("retomar, fila e paralelo sejam mix", game.next_scope())
+        self.assertNotIn("retomar, fila e paralelo sejam mix", game.feel_reading(starter)["scope"])
+        self.assertNotIn("retomar, fila e paralelo sejam mix", game.access_reading(starter)["scope"])
+        self.assertNotIn("retomar, fila e paralelo sejam mix", game.roles_fill_scope())
+
     def test_scan_names_the_intent_the_audit_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(

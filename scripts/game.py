@@ -1954,6 +1954,38 @@ def role_panner_scope():
     )
 
 
+# A receita já recusa que retomar, fila e paralelo sejam mix. Sem isto o
+# roles lia SOUNDS e calava a recusa.
+# Pedido no disco não é mix.
+AUDIO_RESUME = re.compile(r"Retomar,\s+fila e\s+paralelo não são mix")
+
+
+def recipe_refuses_resume_queue_parallel_as_mix(text):
+    return bool(text and AUDIO_RESUME.search(text))
+
+
+def roles_resume_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_resume_queue_parallel_as_mix(text):
+        return "recipes/audio.md"
+    return None
+
+
+def roles_resume_scope():
+    if not roles_resume_source():
+        return None
+    return (
+        "O disco recusa que retomar, fila e paralelo sejam mix "
+        "(`retomar`). Pedido no disco não é mix."
+    )
+
+
 def roles_reading(project, root=None):
     project = Path(project)
     entries, sources = declared_sound_roles(project)
@@ -1994,6 +2026,9 @@ def roles_reading(project, root=None):
         scope += (
             " O disco lê o PCM (`wav`). Bytes no disco não são mix ouvida."
         )
+    named = roles_resume_scope()
+    if named:
+        scope += " " + named
     return {
         "schema_version": 1,
         "project": str(project),
