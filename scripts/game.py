@@ -3660,6 +3660,42 @@ def ship_file_source(project):
     return None
 
 
+# A receita já recusa que a identidade seja outra máquina.
+# Sem isto a árvore copiava as partes e calava a recusa.
+# Árvore no disco não é entrega.
+SHIP_IDENTITY = re.compile(r"Identidade do artefato não é outra máquina")
+
+
+def recipe_refuses_identity_as_elsewhere(text):
+    return bool(text and SHIP_IDENTITY.search(text))
+
+
+def ship_tree_identity_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_identity_as_elsewhere(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_tree_scope():
+    scope = (
+        "Partes e completeza da pasta dist/. Não executa o serve "
+        "e não entrega o artefato."
+    )
+    if ship_tree_identity_source():
+        scope += (
+            " O disco recusa que a identidade seja outra máquina (`identidade`). "
+            "Árvore no disco não é entrega."
+        )
+    return scope
+
+
 def ship_reading(project):
     project = Path(project)
     try:
@@ -3677,6 +3713,8 @@ def ship_reading(project):
     release_current = document_is_current(release)
     artifact = ship_artifact(project)
     tree = ship_tree(project)
+    if tree is not None:
+        tree = dict(tree, scope=ship_tree_scope())
     stale = ship_stale(artifact, project)
     expected = (project / "package.json").is_file() or (project / "Cargo.toml").is_file()
     declared = bool(named or ci or release_current)

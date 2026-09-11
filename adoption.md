@@ -3,6 +3,64 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.456 — o tree do ship nomeia a identidade que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+identidade
+do
+artefato
+não
+é
+outra
+máquina.
+A
+árvore
+copiava
+as
+partes
+e
+calava
+a
+recusa.
+Agora
+o
+`tree`
+do
+ship
+nomeia
+a
+identidade.
+Árvore
+no
+disco
+não
+é
+entrega.
+Sem
+chave
+`identidade`.
+Nomear
+não
+executa.
+
+O que 0.9.456 não afirma:
+árvore
+no
+disco
+não
+é
+jogador
+em
+outra
+máquina
+nem
+artefato
+servido.
+
 ## 0.9.455 — o issues[n] da coverage nomeia o acidente que o mapa já recusa
 
 O

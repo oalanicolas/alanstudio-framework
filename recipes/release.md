@@ -67,7 +67,7 @@ e serve por `tools/serve.mjs`. `npm run build` copia a árvore jogável para
 `dist/` (index, src, data, serve). Isso torna o clone limpo trivial de
 reproduzir e declara o passo de empacotar — não prova que outra máquina
 já executou o artefato. Se o `tools/export.*` declara o empacote, o `ship` nomeia o passo que o export já declara.
-Empacotar no disco não é outra máquina. Sem chave `export`. Se o `tools/export.*` recusa `file://`, o `ship` nomeia o file:// que o export já recusa. Recusar no disco não é outra máquina. Sem chave `file`. O harness lê o passo com `ship <projeto>`.
+Empacotar no disco não é outra máquina. Sem chave `export`. Se o `tools/export.*` recusa `file://`, o `ship` nomeia o file:// que o export já recusa. Recusar no disco não é outra máquina. Sem chave `file`. Se a receita recusa que a identidade seja outra máquina, o `tree` do ship nomeia a identidade que a receita já recusa. Árvore no disco não é entrega. Sem chave `identidade`. O harness lê o passo com `ship <projeto>`.
 `shipped` é sempre falso. Sem o passo, `next` propõe `ship.unpacked`.
 Árvore incompleta é `ship.incomplete`; artefato de outro commit é
 `ship.stale`. Nomeia a árvore que perdeu o `src/` que o projeto já

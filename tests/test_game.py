@@ -7614,6 +7614,43 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("LUFS", report["scope"])
         self.assertNotIn("then.file", report.get("then") or {})
 
+    def test_ship_tree_names_the_identity_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_identity_as_elsewhere(recipe),
+            "a receita já recusa que a identidade seja outra máquina",
+        )
+        self.assertEqual(game.ship_tree_identity_source(), "recipes/release.md")
+        self._web_manifest()
+        self._artifact_tree(complete=False)
+        report = game.ship_reading(self.project)
+        self.assertIsNotNone(report["tree"], "o ship já lista a árvore de dist/")
+        item = report["tree"]
+        self.assertIn(
+            "identidade seja outra máquina",
+            item["scope"],
+            "a árvore copiava as partes e calava a recusa",
+        )
+        self.assertIn("(`identidade`)", item["scope"])
+        self.assertNotIn("identidade", item)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_identity_as_elsewhere(""))
+        with mock.patch.object(game, "ship_tree_identity_source", return_value=None):
+            silent = game.ship_reading(self.project)
+        self.assertNotIn("identidade seja outra máquina", silent["tree"]["scope"])
+        raw = game.ship_tree(self.project)
+        self.assertNotIn("scope", raw)
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a identidade que a receita já recusa", recipe)
+        self.assertIn("nomeia a identidade que a receita já recusa", skill)
+        self.assertIn("nomeia a identidade que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("identidade seja outra máquina", report["scope"])
+        self.assertNotIn("identidade seja outra máquina", game.next_scope())
+        self.assertNotIn("identidade seja outra máquina", game.play_scope(self.project))
+
     def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
         # O export já copia src/. Sem isto o ship dizia
         # completa uma dist/ só com identidade e serve.
