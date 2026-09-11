@@ -3263,6 +3263,46 @@ def access_ui_scale_option_scope():
     return scope
 
 
+# A receita já recusa que o overlay substitua o leitor. Sem isto a
+# opção live copiava a chave e calava a recusa.
+# Overlay no disco não é sessão.
+A11Y_LIVE_READER = re.compile(r"não chega ao\s+leitor")
+
+
+def recipe_refuses_overlay_as_reader(text):
+    return bool(text and A11Y_LIVE_READER.search(text))
+
+
+def access_live_reader_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_overlay_as_reader(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_live_reader_scope():
+    if not access_live_reader_source():
+        return None
+    return (
+        "O disco recusa que o overlay substitua o leitor "
+        "(`leitor`). Overlay no disco não é sessão."
+    )
+
+
+def access_live_option_scope():
+    scope = access_option_scope()
+    named = access_live_reader_scope()
+    if named:
+        scope += " " + named
+    return scope
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -3328,6 +3368,7 @@ def access_reading(project):
                     else access_assist_option_scope() if key == "assist"
                     else access_game_speed_option_scope() if key == "game_speed"
                     else access_ui_scale_option_scope() if key == "ui_scale"
+                    else access_live_option_scope() if key == "live"
                     else option_scope
                 ),
             }

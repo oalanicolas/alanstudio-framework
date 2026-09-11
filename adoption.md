@@ -30,6 +30,65 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.521 — a opção live do access nomeia o leitor que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+overlay
+do
+canvas
+não
+chega
+ao
+leitor.
+A
+opção
+`live`
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+a
+opção
+`live`
+nomeia
+o
+leitor.
+Overlay
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`leitor`.
+Nomear
+não
+observa.
+
+O que 0.9.521 não afirma:
+a
+região
+viva
+declarada
+não
+é
+sessão
+observada
+com
+o
+modo
+ativo.
+
 ## 0.9.520 — a opção ui_scale do access nomeia a tipografia que a receita já recusa
 
 A

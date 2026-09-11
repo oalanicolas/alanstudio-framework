@@ -2732,6 +2732,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("escala substitua a tipografia", game.feel_reading(starter)["scope"])
         self.assertNotIn("escala substitua a tipografia", game.roles_reading(starter)["scope"])
 
+    def test_access_live_names_the_reader_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_overlay_as_reader(recipe),
+            "a receita já recusa que o overlay substitua o leitor",
+        )
+        self.assertEqual(game.access_live_reader_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = next(option for option in report["options"] if option["key"] == "live")
+        self.assertIn(
+            "overlay substitua o leitor",
+            item["scope"],
+            "a opção live copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`leitor`)", item["scope"])
+        self.assertNotIn("leitor", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_overlay_as_reader(""))
+        self.assertNotIn("overlay substitua o leitor", report["scope"])
+        self.assertNotIn("overlay substitua o leitor", report.get("next") or "")
+        for option in report["options"]:
+            if option["key"] == "live":
+                continue
+            self.assertNotIn("overlay substitua o leitor", option["scope"])
+        with mock.patch.object(game, "access_live_reader_source", return_value=None):
+            silent = game.access_reading(starter)
+        silent_item = next(option for option in silent["options"] if option["key"] == "live")
+        self.assertNotIn("overlay substitua o leitor", silent_item["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o leitor que a receita já recusa", recipe)
+        self.assertIn("nomeia o leitor que a receita já recusa", skill)
+        self.assertIn("nomeia o leitor que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("overlay substitua o leitor", game.next_scope())
+        self.assertNotIn("overlay substitua o leitor", game.feel_reading(starter)["scope"])
+        self.assertNotIn("overlay substitua o leitor", game.roles_reading(starter)["scope"])
+
     def test_commands_name_the_generic_the_menu_already_refuses(self):
         guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
         self.assertTrue(
