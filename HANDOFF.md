@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.366: o `art` nomeia o trilho que o telegraph já marca. Marca no disco não é comparação em movimento. Sem chave `telegraph`. Não promove `consistent`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.365):** `python3 -m unittest discover -s tests` → 361.
+**Suítes confirmadas no HEAD (0.9.366):** `python3 -m unittest discover -s tests` → 362.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
