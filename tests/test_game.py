@@ -1064,6 +1064,43 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("hash seja leitura", game.documentation_scope(True))
         self.assertNotIn("hash seja leitura", game.scan(self.project)["scope"])
 
+    def test_doctor_names_the_example_the_readme_already_prints(self):
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.readme_prints_idea_example(readme),
+            "o README já imprime o exemplo da ideia",
+        )
+        self.assertEqual(game.doctor_idea_source(), "README.md")
+        self.assertEqual(game.doctor_guide_idea(), game.START_IDEA_EXAMPLE)
+        report = game.doctor(self.root)
+        self.assertIn(game.START_IDEA_EXAMPLE, report["then"]["guide"])
+        self.assertNotIn("<fantasia>", report["then"]["guide"])
+        self.assertIn(
+            "exemplo que o then cola",
+            report["scope"],
+            "o doctor.then colava <fantasia> e calava o exemplo",
+        )
+        self.assertIn("(`exemplo`)", report["scope"])
+        self.assertNotIn("exemplo", report)
+        self.assertNotIn("exemplo", report["then"])
+        self.assertFalse(game.readme_prints_idea_example(""))
+        with mock.patch.object(game, "doctor_idea_source", return_value=None):
+            silent = game.doctor(self.root)
+            self.assertEqual(game.doctor_guide_idea(), "<fantasia>")
+        self.assertIn("<fantasia>", silent["then"]["guide"])
+        self.assertNotIn("exemplo que o then cola", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        page = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o exemplo que o README já imprime", recipe)
+        self.assertIn("nomeia o exemplo que o README já imprime", skill)
+        self.assertIn("nomeia o exemplo que o README já imprime", page)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("exemplo que o then cola", game.next_scope())
+        self.assertNotIn("exemplo que o then cola", game.guide_scope("canvas-arcade"))
+        self.assertNotIn("exemplo que o then cola", game.play_scope(self.project))
+        self.assertNotIn("exemplo que o then cola", game.git_summary_scope())
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")
@@ -2021,7 +2058,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(empty["empty"])
         self.assertIn("guide", empty["then"]["guide"])
         self.assertIn("--idea", empty["then"]["guide"])
-        self.assertIn("<fantasia>", empty["then"]["guide"])
+        self.assertIn(game.START_IDEA_EXAMPLE, empty["then"]["guide"])
+        self.assertNotIn("<fantasia>", empty["then"]["guide"])
         followed = subprocess.run(
             shlex.split(empty["then"]["guide"]),
             capture_output=True, text=True, cwd=str(game.FRAMEWORK),

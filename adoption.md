@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.413 — o doctor nomeia o exemplo que o README já imprime
+
+O
+README
+já
+imprimia
+a
+frase
+da
+ideia.
+O
+`then.guide`
+colava
+`<fantasia>`
+e
+calava
+o
+exemplo.
+Agora
+o
+`doctor`
+nomeia
+o
+exemplo.
+Frase
+no
+then
+não
+é
+pasta
+criada.
+Sem
+chave
+`exemplo`.
+Nomear
+não
+cria.
+
+O que 0.9.413 não afirma:
+frase
+no
+then
+não
+é
+pasta
+criada
+nem
+partida
+jogada.
+
 ## 0.9.412 — o git nomeia a leitura que o processo já recusa
 
 O

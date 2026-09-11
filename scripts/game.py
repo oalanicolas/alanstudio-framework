@@ -6863,6 +6863,33 @@ def skill_targets(root):
     return [root / ".agents/skills/game-dev/SKILL.md", root / ".claude/skills/game-dev/SKILL.md"]
 
 
+# O README já imprime o exemplo. Sem isto o
+# doctor.then colava <fantasia> e calava a frase.
+# Frase no then não é pasta criada.
+README_FILE = FRAMEWORK / "README.md"
+
+
+def readme_prints_idea_example(text):
+    return bool(text and START_IDEA_EXAMPLE and START_IDEA_EXAMPLE in text)
+
+
+def doctor_idea_source():
+    path = README_FILE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_prints_idea_example(text):
+        return "README.md"
+    return None
+
+
+def doctor_guide_idea():
+    return START_IDEA_EXAMPLE if doctor_idea_source() else "<fantasia>"
+
+
 def doctor(root):
     source = FRAMEWORK / "SKILL.md"
     digest = hashlib.sha256(source.read_bytes()).hexdigest() if source.is_file() else None
@@ -7026,6 +7053,11 @@ def doctor(root):
             " O disco declara as substituições (`substitutions`). "
             "Manifesto no disco não é projeto criado."
         )
+    if doctor_idea_source():
+        scope += (
+            " O disco imprime o exemplo que o then cola (`exemplo`). "
+            "Frase no then não é pasta criada."
+        )
     return {
         "schema_version": 1,
         "framework": str(FRAMEWORK),
@@ -7053,7 +7085,8 @@ def doctor_then(ready, starters, empty):
         return None
     # Sem --idea o guide na raiz do framework recusa. Apontar o
     # comando nu era o primeiro passo quebrado depois do doctor.
-    return {"guide": harness_command("guide", "--idea", "<fantasia>")}
+    # O README já imprime o exemplo; <fantasia> calava a frase.
+    return {"guide": harness_command("guide", "--idea", doctor_guide_idea())}
 
 
 # O processo já pede uma ação recomendada. Sem isto o
