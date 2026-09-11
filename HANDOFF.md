@@ -5,9 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.442: o `scan` nomeia as intenções que o roteiro já recusa. Candidato no disco não é autoria. Sem chave `intenções`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.441):** `python3 -m unittest discover -s tests` → 437 OK.
+**Suítes confirmadas no HEAD (0.9.442):** `python3 -m unittest discover -s tests` → 438 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
-Confirmação pendente no 0.9.442.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
