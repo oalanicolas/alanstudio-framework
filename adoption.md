@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.472 — o access nomeia a opção que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+opção
+sem
+consumidor
+não
+é
+uma
+opção.
+O
+item
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+o
+`options[n]`
+do
+`access`
+nomeia
+a
+opção.
+Chave
+no
+disco
+não
+é
+alcance.
+Sem
+chave
+`opção`.
+Nomear
+não
+observa.
+
+O que 0.9.472 não afirma:
+chave
+no
+fonte
+não
+é
+sessão
+com
+o
+modo
+ativo
+nem
+certificação.
+
 ## 0.9.471 — o scale_mentions do scan nomeia o marketing que a ambição já recusa
 
 A

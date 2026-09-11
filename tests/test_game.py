@@ -1873,6 +1873,41 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("acessibilidade seja gate de certificação", game.next_scope())
         self.assertNotIn("acessibilidade seja gate de certificação", game.verify_scope())
 
+    def test_access_names_the_option_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_option_without_consumer(recipe),
+            "a receita já recusa que opção sem consumidor seja opção",
+        )
+        self.assertEqual(game.access_option_consumer_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        self.assertTrue(report["options"], "o access já lista opções neste starter")
+        item = report["options"][0]
+        self.assertIn(
+            "opção sem consumidor seja opção",
+            item["scope"],
+            "o item copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`opção`)", item["scope"])
+        self.assertNotIn("opção", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_option_without_consumer(""))
+        with mock.patch.object(game, "access_option_consumer_source", return_value=None):
+            silent = game.access_reading(starter)
+        self.assertNotIn("opção sem consumidor seja opção", silent["options"][0]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a opção que a receita já recusa", recipe)
+        self.assertIn("nomeia a opção que a receita já recusa", skill)
+        self.assertIn("nomeia a opção que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("opção sem consumidor seja opção", report["scope"])
+        self.assertNotIn("opção sem consumidor seja opção", game.origins_reading(self.project)["scope"])
+        self.assertNotIn("opção sem consumidor seja opção", game.gate_item_scope())
+        self.assertNotIn("opção sem consumidor seja opção", game.next_scope())
+        self.assertNotIn("opção sem consumidor seja opção", game.verify_scope())
+
     def test_check_plan_names_the_merit_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -2596,7 +2596,36 @@ def access_option_scope():
             " O disco recusa que acessibilidade seja gate de certificação (`certificação`). "
             "Opção no disco não é certificação."
         )
+    if access_option_consumer_source():
+        scope += (
+            " O disco recusa que opção sem consumidor seja opção (`opção`). "
+            "Chave no disco não é alcance."
+        )
     return scope
+
+
+# A receita já recusa opção sem consumidor. Sem isto o
+# item copiava a chave e calava a recusa.
+# Chave no disco não é alcance.
+A11Y_OPTION = re.compile(r"sem consumidor no código não é uma opção")
+A11Y_RECIPE = FRAMEWORK / "recipes/accessibility.md"
+
+
+def recipe_refuses_option_without_consumer(text):
+    return bool(text and A11Y_OPTION.search(text))
+
+
+def access_option_consumer_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_option_without_consumer(text):
+        return "recipes/accessibility.md"
+    return None
 
 
 def access_reading(project):
