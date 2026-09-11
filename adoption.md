@@ -3,6 +3,63 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.457 — o capabilities desconhecido nomeia o determinismo que a barra já recusa
+
+A
+barra
+já
+dizia
+que
+determinismo
+não
+é
+uma
+capacidade
+nomeada.
+O
+item
+desconhecido
+copiava
+o
+estado
+e
+calava
+a
+recusa.
+Agora
+o
+`capabilities`
+desconhecido
+nomeia
+o
+determinismo.
+Lista
+no
+disco
+não
+é
+ciclo
+demonstrado.
+Sem
+chave
+`determinismo`.
+Nomear
+não
+prova.
+
+O que 0.9.457 não afirma:
+lista
+no
+disco
+não
+é
+`verify
+--proves`
+nem
+ciclo
+no
+dispositivo.
+
 ## 0.9.456 — o tree do ship nomeia a identidade que a receita já recusa
 
 A

@@ -5062,8 +5062,44 @@ def capability_mention_scope():
     return scope
 
 
+# A barra já recusa que o determinismo seja capacidade.
+# Sem isto o item desconhecido copiava o estado e calava a recusa.
+# Lista no disco não é ciclo demonstrado.
+BAR_DETERMINISM = re.compile(r"Determinismo não é uma capacidade")
+
+
+def bar_refuses_determinism_capability(text):
+    return bool(text and BAR_DETERMINISM.search(text))
+
+
+def capability_unknown_determinism_source():
+    path = FRAMEWORK / "references/production-bar.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_determinism_capability(text):
+        return "references/production-bar.md"
+    return None
+
+
+def capability_unknown_scope():
+    scope = (
+        "Capacidade ainda não mencionada neste recorte. Não executa "
+        "e não anexa determinismo."
+    )
+    if capability_unknown_determinism_source():
+        scope += (
+            " O disco recusa que o determinismo seja capacidade (`determinismo`). "
+            "Lista no disco não é ciclo demonstrado."
+        )
+    return scope
+
+
 def mention_capabilities(project):
-    found = {name: {"status": "unknown"} for name in CAPABILITIES}
+    found = {name: {"status": "unknown", "scope": capability_unknown_scope()} for name in CAPABILITIES}
     if not project.is_dir():
         return found
     for relative in HINT_FILES:

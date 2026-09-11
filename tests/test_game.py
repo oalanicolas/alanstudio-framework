@@ -1068,7 +1068,6 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(game.capability_api_source(), "recipes/lifecycle.md")
         empty = game.context(self.project, "lifecycle")
         self.assertEqual(empty["capabilities"]["pause"]["status"], "unknown")
-        self.assertNotIn("scope", empty["capabilities"]["pause"])
         (self.project / "game.test.mjs").write_text(
             "test('pause and restart keep the story', () => {})\n"
         )
@@ -1082,7 +1081,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertIn("(`api`)", mentioned["scope"])
         self.assertNotIn("api", mentioned)
-        self.assertNotIn("scope", report["capabilities"]["seed"])
+        self.assertNotIn("nome seja API", report["capabilities"]["seed"]["scope"])
         self.assertFalse(game.lifecycle_refuses_api(""))
         with mock.patch.object(game, "capability_api_source", return_value=None):
             silent = game.context(self.project, "lifecycle")
@@ -1099,6 +1098,50 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("nome seja API", game.capabilities_scope())
         self.assertNotIn("nome seja API", game.next_scope())
         self.assertNotIn("nome seja API", game.play_scope(self.project))
+
+    def test_unknown_capabilities_name_the_determinism_the_bar_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.bar_refuses_determinism_capability(guide),
+            "a barra já recusa que o determinismo seja capacidade",
+        )
+        self.assertEqual(game.capability_unknown_determinism_source(), "references/production-bar.md")
+        report = game.context(self.project, "lifecycle")
+        item = report["capabilities"]["seed"]
+        self.assertEqual(item["status"], "unknown")
+        self.assertIn(
+            "determinismo seja capacidade",
+            item["scope"],
+            "o item desconhecido copiava o estado e calava a recusa",
+        )
+        self.assertIn("(`determinismo`)", item["scope"])
+        self.assertNotIn("determinismo", item)
+        (self.project / "game.test.mjs").write_text(
+            "test('pause and restart keep the story', () => {})\n"
+        )
+        mentioned = game.context(self.project, "lifecycle")["capabilities"]["pause"]
+        self.assertEqual(mentioned["status"], "mentioned")
+        self.assertNotIn("determinismo seja capacidade", mentioned["scope"])
+        self.assertFalse(game.bar_refuses_determinism_capability(""))
+        with mock.patch.object(game, "capability_unknown_determinism_source", return_value=None):
+            silent = game.context(self.project, "lifecycle")
+        self.assertNotIn(
+            "determinismo seja capacidade",
+            silent["capabilities"]["seed"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o determinismo que a barra já recusa", recipe)
+        self.assertIn("nomeia o determinismo que a barra já recusa", skill)
+        self.assertIn("nomeia o determinismo que a barra já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("determinismo seja capacidade", report["scope"])
+        self.assertNotIn("determinismo seja capacidade", game.capability_mention_scope())
+        self.assertNotIn("determinismo seja capacidade", game.capabilities_scope())
+        self.assertNotIn("determinismo seja capacidade", game.context_scope())
+        self.assertNotIn("determinismo seja capacidade", game.next_scope())
+        self.assertNotIn("determinismo seja capacidade", game.production_bar_scope())
 
     def test_guide_names_the_onboarding_the_quality_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
