@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.387 — o play nomeia a produção que o serve já recusa
+
+O
+serve
+já
+avisava
+que
+não
+é
+servidor
+de
+produção.
+O
+comando
+apontava
+o
+url
+e
+calava
+o
+aviso.
+Agora
+o
+`play`
+nomeia
+a
+produção.
+Serve
+no
+disco
+não
+é
+publicação.
+Sem
+chave
+`produção`.
+Não
+promove
+`executed`.
+
+O que 0.9.387 não afirma:
+serve
+no
+disco
+não
+é
+outra
+máquina
+nem
+publicação
+autorizada.
+
 ## 0.9.386 — o sfx copy nomeia os créditos que o copy já leva
 
 O

@@ -6666,6 +6666,34 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(silent["asked"])
         self.assertEqual(game.runtime_line(silent), "")
 
+    def test_play_names_the_production_the_serve_already_refuses(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/serve.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.serve_refuses_production(tool), "o serve já recusa produção")
+        self.assertEqual(game.play_production_source(starter), "tools/serve.mjs")
+        report = game.play_cycle(starter)
+        self.assertIn("recusa produção", report["scope"], "o play apontava o url e calava o aviso")
+        self.assertIn("(`produção`)", report["scope"])
+        self.assertFalse(report["executed"])
+        self.assertNotIn("produção", report)
+        self.assertNotIn("production", report)
+        empty_dir = self.root / "sem-serve"
+        empty_dir.mkdir()
+        (empty_dir / "package.json").write_text("{}", encoding="utf-8")
+        self.assertFalse(game.serve_refuses_production(""))
+        self.assertIsNone(game.play_production_source(empty_dir))
+        silent = game.play_cycle(empty_dir)
+        self.assertNotIn("recusa produção", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a produção que o serve já recusa", recipe)
+        self.assertIn("nomeia a produção que o serve já recusa", skill)
+        self.assertIn("nomeia a produção que o serve já recusa", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("then.produção", report.get("then") or {})
+
     def test_play_points_at_serve_without_creating_or_playing(self):
         destination = self.root / "ja-criado"
         game.start_project(destination, "canvas-arcade", idea="guardar a corrente")

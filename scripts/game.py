@@ -2971,6 +2971,31 @@ def ship_serve_source(project):
     return None
 
 
+# O serve já recusa produção. Sem isto o play
+# apontava o url e calava o aviso. Serve no
+# disco não é publicação.
+SERVE_PRODUCTION = re.compile(r"Não é servidor de produção", re.IGNORECASE)
+
+
+def serve_refuses_production(text):
+    return bool(text and SERVE_PRODUCTION.search(text))
+
+
+def play_production_source(project):
+    project = Path(project)
+    for name in SERVE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if serve_refuses_production(text):
+            return name
+    return None
+
+
 def export_packs_tree(text):
     return bool(text and EXPORT_PACK.search(text))
 
@@ -5805,31 +5830,41 @@ def play_cycle(destination=None, starter=None):
         "steps": steps,
         "noted": noted,
         "executed": False,
-        "scope": (
-            "Aponta o comando que abre o jogo e a superfície pedida. Não "
-            "executa, não cria e não joga. Sem caminho, o único jogo do "
-            "laboratório basta; dois pedem o caminho. `open` é o play. "
-            "`url` nomeia localhost e a porta pedida; nomear não serve. "
-            "Se o serve tenta abrir o navegador, o prompt nomeia a "
-            "tentativa. Sem o marcador, pede Abrir. Nomear não abre. "
-            "Com tela, o avanço abre a porta. Depois "
-            "de uma partida, a página grava o recibo se você escrever; o "
-            "próximo comando do harness continua `note`, não `next`. "
-            "O prompt nomeia o `playtest` que o `AGENTS.md` já cita. Só lê. "
-            "Sem os quatro não é achado. Sem `then.playtest`. Nomear o "
-            "leitor não observa. "
-            "Se o disco tem last-run com seed, `then` aponta a seed e o "
-            "convite; nomear o endereço não observa. `session` aponta a "
-            "partida simulada se o manifesto a declara; o prompt a nomeia. "
-            "Não executa e não observa. Se o play pede npm, o "
-            "`package.json` tem dependências e `node_modules` falta, "
-            "`then.install` nomeia `npm install`. Sem dependências a chave "
-            "some. Nomear não instala. `runtime` lê o `node` "
-            "do PATH se o play pede npm ou node; não executa o serve. "
-            "O `prompt` também "
-            "sai em stderr; o JSON fica no stdout. `executed` fica falso."
-        ),
+        "scope": play_scope(dest),
     }
+
+
+def play_scope(project):
+    scope = (
+        "Aponta o comando que abre o jogo e a superfície pedida. Não "
+        "executa, não cria e não joga. Sem caminho, o único jogo do "
+        "laboratório basta; dois pedem o caminho. `open` é o play. "
+        "`url` nomeia localhost e a porta pedida; nomear não serve. "
+        "Se o serve tenta abrir o navegador, o prompt nomeia a "
+        "tentativa. Sem o marcador, pede Abrir. Nomear não abre. "
+        "Com tela, o avanço abre a porta. Depois "
+        "de uma partida, a página grava o recibo se você escrever; o "
+        "próximo comando do harness continua `note`, não `next`. "
+        "O prompt nomeia o `playtest` que o `AGENTS.md` já cita. Só lê. "
+        "Sem os quatro não é achado. Sem `then.playtest`. Nomear o "
+        "leitor não observa. "
+        "Se o disco tem last-run com seed, `then` aponta a seed e o "
+        "convite; nomear o endereço não observa. `session` aponta a "
+        "partida simulada se o manifesto a declara; o prompt a nomeia. "
+        "Não executa e não observa. Se o play pede npm, o "
+        "`package.json` tem dependências e `node_modules` falta, "
+        "`then.install` nomeia `npm install`. Sem dependências a chave "
+        "some. Nomear não instala. `runtime` lê o `node` "
+        "do PATH se o play pede npm ou node; não executa o serve. "
+        "O `prompt` também "
+        "sai em stderr; o JSON fica no stdout. `executed` fica falso."
+    )
+    if play_production_source(project):
+        scope += (
+            " O disco recusa produção (`produção`). "
+            "Serve no disco não é publicação."
+        )
+    return scope
 
 
 def here_project(explicit=None, root=None):
