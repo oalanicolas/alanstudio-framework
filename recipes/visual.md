@@ -18,7 +18,7 @@ código ou em `data/palettes.json` não é direção consistente — `consistent
 do `init` não conta. Sem declaração, `next` propõe `art.missing`.
 `art` também nomeia as mesas de chuva que o disco já tem
 (`intervalTicks`, `fallSpeed` e `hazardChance` em `data/`, `tables/` ou `content/`).
-Mesa no disco não é volume nem comparação em movimento. Paleta sem
+Mesa no disco não é volume nem comparação em movimento. Se a receita recusa que a mesa seja volume, o `art` nomeia o volume que a receita já recusa. Lista no disco não é comparação. Sem chave `volume`. Paleta sem
 chuva continua direção declarada; chuva sem paleta não declara.
 No starter, `look --from` / `--as` nasce um look que o jogo já pinta —
 campo, cortina, a casca da página e os knobs (select, faixa, foco).

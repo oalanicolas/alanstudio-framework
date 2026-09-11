@@ -3,6 +3,61 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.445 — o art nomeia o volume que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+mesa
+no
+disco
+não
+é
+volume.
+O
+item
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+o
+`art`
+nomeia
+o
+volume.
+Lista
+no
+disco
+não
+é
+comparação.
+Sem
+chave
+`volume`.
+Nomear
+não
+observa.
+
+O que 0.9.445 não afirma:
+lista
+no
+disco
+não
+é
+comparação
+em
+movimento
+nem
+volume
+de
+conteúdo.
+
 ## 0.9.444 — o feel nomeia o autor que a receita já recusa
 
 A

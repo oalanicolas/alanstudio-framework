@@ -3075,6 +3075,9 @@ def art_reading(project):
     palette_scope = art_palette_scope()
     for item in palettes:
         item["scope"] = palette_scope
+    rain_scope = art_rain_scope()
+    for item in rains:
+        item["scope"] = rain_scope
     return {
         "schema_version": 1,
         "project": str(project),
@@ -5565,6 +5568,43 @@ def art_palette_scope():
         scope += (
             " O disco recusa que a paleta compartilhada seja o sistema (`paleta`). "
             "Lista no disco não é contrato."
+        )
+    return scope
+
+
+# A receita já recusa que a mesa seja volume. Sem isto o
+# item copiava a chave e calava a recusa.
+# Lista no disco não é comparação.
+VISUAL_RECIPE = FRAMEWORK / "recipes/visual.md"
+VISUAL_VOLUME = re.compile(r"Mesa no disco não é volume")
+
+
+def recipe_refuses_table_volume(text):
+    return bool(text and VISUAL_VOLUME.search(text))
+
+
+def art_rain_volume_source():
+    path = VISUAL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_table_volume(text):
+        return "recipes/visual.md"
+    return None
+
+
+def art_rain_scope():
+    scope = (
+        "Chave e fonte da mesa de chuva. Não compara em "
+        "movimento e não conta volume."
+    )
+    if art_rain_volume_source():
+        scope += (
+            " O disco recusa que a mesa seja volume (`volume`). "
+            "Lista no disco não é comparação."
         )
     return scope
 
