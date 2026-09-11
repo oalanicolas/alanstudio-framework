@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.371: o `note` nomeia o last-run que o disco já guarda. Nomear não anexa. Sem chave `last_run`. Não promove `observed`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.370):** `python3 -m unittest discover -s tests` → 366 OK.
+**Suítes confirmadas no HEAD (0.9.371):** `python3 -m unittest discover -s tests` → 367 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
