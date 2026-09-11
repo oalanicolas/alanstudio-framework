@@ -1225,6 +1225,36 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("certifique o progresso", game.template_scope("mvp"))
         self.assertNotIn("certifique o progresso", game.next_scope())
 
+    def test_studio_assets_names_the_hearing_the_map_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.sources_refuse_hearing(guide),
+            "o mapa já recusa que o catálogo ouça o starter",
+        )
+        self.assertEqual(game.sfx_catalog.studio_assets_hear_source(), "references/sources.md")
+        report = game.context(self.project, "create")
+        self.assertIn(
+            "ouça o starter",
+            report["studio_assets"]["sfx"]["scope"],
+            "o context apontava o acervo e calava a recusa",
+        )
+        self.assertIn("(`ouve`)", report["studio_assets"]["sfx"]["scope"])
+        self.assertNotIn("ouve", report["studio_assets"]["sfx"])
+        self.assertFalse(game.sfx_catalog.sources_refuse_hearing(""))
+        with mock.patch.object(game.sfx_catalog, "studio_assets_hear_source", return_value=None):
+            silent = game.context(self.project, "create")
+        self.assertNotIn("ouça o starter", silent["studio_assets"]["sfx"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a escuta que o mapa já recusa", recipe)
+        self.assertIn("nomeia a escuta que o mapa já recusa", skill)
+        self.assertIn("nomeia a escuta que o mapa já recusa", readme)
+        self.assertNotIn("verified", report["studio_assets"]["sfx"]["scope"])
+        self.assertNotIn("ouça o starter", game.roles_reading(self.project)["scope"])
+        self.assertNotIn("ouça o starter", game.context_scope())
+        self.assertNotIn("ouça o starter", game.next_scope())
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

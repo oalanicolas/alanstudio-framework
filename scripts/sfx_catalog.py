@@ -519,6 +519,43 @@ def load_catalog(root=None):
     return audio.load_catalog(catalog_dir(root))
 
 
+# O mapa já recusa que o catálogo ouça. Sem isto o
+# context apontava o acervo e calava a recusa.
+# Acervo no disco não é mix ouvida.
+SOURCES_GUIDE = Path(__file__).resolve().parents[1] / "references/sources.md"
+SOURCES_HEAR = re.compile(r"não ouve o starter")
+
+
+def sources_refuse_hearing(text):
+    return bool(text and SOURCES_HEAR.search(text))
+
+
+def studio_assets_hear_source():
+    path = SOURCES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if sources_refuse_hearing(text):
+        return "references/sources.md"
+    return None
+
+
+def studio_assets_scope():
+    scope = (
+        "Aponta o catálogo compartilhado se existir. "
+        "Não toca o som e não valida licença."
+    )
+    if studio_assets_hear_source():
+        scope += (
+            " O disco recusa que o catálogo ouça o starter (`ouve`). "
+            "Acervo no disco não é mix ouvida."
+        )
+    return scope
+
+
 def studio_assets(root=None):
     base = catalog_dir(root)
     catalog = load_catalog(root)
@@ -527,6 +564,7 @@ def studio_assets(root=None):
         "exists": (base / "catalog.json").is_file(),
         "file_count": len(catalog["sounds"]), "updated": catalog.get("updated"),
         "rule": "shared/sfx é ADAPT. Sem acervo o catálogo vem vazio; o starter já fala em public/sfx.",
+        "scope": studio_assets_scope(),
     }}
 
 

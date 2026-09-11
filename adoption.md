@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.418 — o context nomeia a escuta que o mapa já recusa
+
+O
+mapa
+já
+dizia
+que
+o
+catálogo
+não
+ouve
+o
+starter.
+O
+comando
+apontava
+o
+acervo
+e
+calava
+a
+recusa.
+Agora
+o
+`context`
+nomeia
+a
+escuta.
+Acervo
+no
+disco
+não
+é
+mix
+ouvida.
+Sem
+chave
+`ouve`.
+Nomear
+não
+ouve.
+
+O que 0.9.418 não afirma:
+acervo
+no
+disco
+não
+é
+mix
+ouvida
+nem
+licença
+válida.
+
 ## 0.9.417 — o context nomeia o progresso que o processo já recusa
 
 O
