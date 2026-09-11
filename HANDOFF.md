@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.353: o `ship` nomeia o tamanho que a receita já relata. Bytes no disco não são outra máquina. Sem chave `size`. Não promove `elsewhere`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.353):** `python3 -m unittest discover -s tests` → 349.
+**Suítes confirmadas no HEAD (0.9.353):** `python3 -m unittest discover -s tests` → 349.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
