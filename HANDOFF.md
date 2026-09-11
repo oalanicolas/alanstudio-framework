@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.420: o `scan` nomeia as dependências que a receita já recusa. Receita no disco não é decisão. Sem chave `dependências`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**HEAD anterior (0.9.419) + confirmação pendente:** `python3 -m unittest discover -s tests` → 415 OK.
+**Suítes confirmadas no HEAD (0.9.420):** `python3 -m unittest discover -s tests` → 416 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
