@@ -163,6 +163,7 @@ Siga a [continuidade](../references/process.md#continuidade-e-retomada): onde es
 uma próxima ação, por que agora, pronto quando e retomar por. Confira resultado real,
 inclusive falha, rejeição ou trabalho de outra sessão, antes de avançar. Nome de
 comando, arquivo existente ou fase salva não comprovam conclusão nem aprovação.
+Se a receita recusa que nome de comando prove a conclusão, o `signals` do next nomeia a conclusão que a receita já recusa. Sinal no disco não é o término. Sem chave `conclusão`.
 Execute o que ainda pertence ao pedido; apresente o próximo passo do projeto quando
 o escopo desta entrega terminar.
 

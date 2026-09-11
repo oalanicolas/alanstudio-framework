@@ -10152,6 +10152,38 @@ def next_scope():
     return scope
 
 
+# A receita já recusa que nome de comando prove a conclusão.
+# Sem isto o next copiava os sinais e calava a recusa.
+# Sinal no disco não é o término.
+ARCHITECTURE_CONCLUSION = re.compile(r"não comprovam conclusão nem aprovação")
+
+
+def recipe_refuses_name_as_conclusion(text):
+    return bool(text and ARCHITECTURE_CONCLUSION.search(text))
+
+
+def next_signals_conclusion_source():
+    path = ARCHITECTURE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_name_as_conclusion(text):
+        return "recipes/architecture.md"
+    return None
+
+
+def next_signals_scope():
+    if not next_signals_conclusion_source():
+        return None
+    return (
+        "O disco recusa que nome de comando, arquivo ou fase prove a conclusão "
+        "(`conclusão`). Sinal no disco não é o término."
+    )
+
+
 # O roteiro já recusa que o comando crie o jogo. Sem isto a
 # proposta copiava a ação e calava a recusa.
 # Proposta no disco não é pasta criada.
@@ -10762,6 +10794,9 @@ def next_step(project, focus="create", studies_root=None):
         report["proposal"]["scope"] = proposal_scope()
     for item in report["alternatives"]:
         item["scope"] = alternative_scope()
+    named = next_signals_scope()
+    if named:
+        report["signals"]["scope"] = named
     return report
 
 

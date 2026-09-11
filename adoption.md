@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.495 — o signals do next nomeia a conclusão que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+nome
+de
+comando,
+arquivo
+ou
+fase
+não
+comprovam
+conclusão.
+O
+next
+copiava
+os
+sinais
+e
+calava
+a
+recusa.
+Agora
+o
+`signals`
+do
+next
+nomeia
+a
+conclusão.
+Sinal
+no
+disco
+não
+é
+o
+término.
+Sem
+chave
+`conclusão`.
+Nomear
+não
+observa.
+
+O que 0.9.495 não afirma:
+arquivo
+no
+disco
+não
+é
+o
+pedido
+terminado.
+
 ## 0.9.494 — o candidato da arquitetura nomeia a compreendida que a receita já recusa
 
 A

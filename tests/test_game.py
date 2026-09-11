@@ -1763,6 +1763,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         for item in report["alternatives"]:
             self.assertNotIn("crie o jogo", item.get("scope", ""))
 
+    def test_next_signals_name_the_conclusion_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_name_as_conclusion(recipe),
+            "a receita já recusa que nome de comando, arquivo ou fase prove a conclusão",
+        )
+        self.assertEqual(game.next_signals_conclusion_source(), "recipes/architecture.md")
+        report = game.next_step(self.project)
+        signals = report["signals"]
+        self.assertIn(
+            "nome de comando, arquivo ou fase prove a conclusão",
+            signals["scope"],
+            "o next copiava os sinais e calava a recusa",
+        )
+        self.assertIn("(`conclusão`)", signals["scope"])
+        self.assertNotIn("conclusão", signals)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_name_as_conclusion(""))
+        with mock.patch.object(game, "next_signals_conclusion_source", return_value=None):
+            silent = game.next_step(self.project)
+        self.assertNotIn(
+            "nome de comando, arquivo ou fase prove a conclusão",
+            silent["signals"].get("scope", ""),
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a conclusão que a receita já recusa", recipe)
+        self.assertIn("nomeia a conclusão que a receita já recusa", create)
+        self.assertIn("nomeia a conclusão que a receita já recusa", skill)
+        self.assertIn("nomeia a conclusão que a receita já recusa", readme)
+        self.assertNotIn("verified", signals["scope"])
+        self.assertNotIn("verified", recipe)
+        self.assertNotIn("nome de comando, arquivo ou fase prove a conclusão", report["scope"])
+        self.assertNotIn("nome de comando, arquivo ou fase prove a conclusão", game.next_scope())
+        self.assertNotIn("nome de comando, arquivo ou fase prove a conclusão", game.proposal_scope())
+        self.assertNotIn("nome de comando, arquivo ou fase prove a conclusão", game.alternative_scope())
+        self.assertNotIn("nome de comando, arquivo ou fase prove a conclusão", game.context_scope())
+        self.package()
+        reviewed = game.review(self.root)
+        self.assertTrue(reviewed["projects"], "o laboratório já tem o jogo da fixture")
+        discovered = reviewed["projects"][0].get("signals") or {}
+        self.assertNotIn(
+            "nome de comando, arquivo ou fase prove a conclusão",
+            discovered.get("scope", ""),
+        )
+
     def test_next_names_the_fabrication_the_process_already_refuses(self):
         process = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(
