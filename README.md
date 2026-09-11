@@ -719,7 +719,7 @@ sentido nem assistir.
 papel por omissão. `--from-run` anexa `docs/playtest/last-run.json` (resumo
 e, se houver, a curva) como candidato de medição e não fecha o achado.
 Nomeia `finding` (os quatro no recibo), `form` e `needed`. Sem `then`.
-Recibo sem os quatro não é achado. Os quatro no disco não observam. Se o disco tem last-run e o comando veio sem --from-run, o note nomeia o last-run que o disco já guarda. Sem o arquivo a frase some. Nomear não anexa.
+Recibo sem os quatro não é achado. Se a receita recusa que o recibo sem os quatro seja achado, o `fields` do `record --kind observation` nomeia a impressão que a receita já recusa. Recibo no disco não é playtest. Sem chave `impressão`. Os quatro no disco não observam. Se o disco tem last-run e o comando veio sem --from-run, o note nomeia o last-run que o disco já guarda. Sem o arquivo a frase some. Nomear não anexa.
 Não joga. `felt` é sempre
 `false`. `next` propõe `feel.unobserved` quando há constante e não há
 recibo; o comando que ele aponta é o mesmo `note` que `then.note` —
@@ -819,7 +819,7 @@ consistente, escala nem entrega.
 
 ## Playtest
 
-Observação sem os quatro campos é impressão. `playtest` lê se o disco tem
+Observação sem os quatro campos é impressão. Se a receita recusa que o recibo sem os quatro seja achado, o `fields` do `record --kind observation` nomeia a impressão que a receita já recusa. Recibo no disco não é playtest. Sem chave `impressão`. `playtest` lê se o disco tem
 problema, evidência, hipótese e medição — num documento ou no próprio
 recibo:
 
@@ -935,7 +935,7 @@ Campos obrigatórios por tipo: `observation` → `scenario`, `role` (`human`/`ag
 `budget` → `metric`, `value` numérico, `unit`, `platform`, `tool`; `milestone` →
 `milestone`, `decision` (`declared`/`denied`/`deferred`), `declared_by`, `role`. Anexos
 entram por caminho e SHA-256. O recibo guarda o que foi declarado; não valida, não
-mede e não aprova. Se o roteiro recusa medir os critérios, o `record` nomeia a medição que o roteiro já recusa. Recibo no disco não é observação. Sem chave `mede`. Se a receita recusa que ganho na média demonstre redução de engasgos, o `fields` do `record --kind budget` nomeia os engasgos que a receita já recusa. Número no disco não é o quadro estável. Sem chave `engasgos`. Se a receita recusa que o recibo feche o marco, o `fields` do `record --kind milestone` nomeia o marco que a receita já recusa. Recibo no disco não é a passagem. Sem chave `marco`. Se o roteiro recusa que o screenshot isolado comprove animação, o `record` nomeia a animação que o roteiro já recusa. Anexo no disco não é controle. Sem chave `animação`. Se o roteiro recusa que o HEAD substitua o julgamento, o `version` nomeia o julgamento que o roteiro já recusa. Identidade no disco não é avaliação. Sem chave `julgamento`. `role=agent` é avaliação do agente, não aprovação do usuário.
+mede e não aprova. Se o roteiro recusa medir os critérios, o `record` nomeia a medição que o roteiro já recusa. Recibo no disco não é observação. Sem chave `mede`. Se a receita recusa que ganho na média demonstre redução de engasgos, o `fields` do `record --kind budget` nomeia os engasgos que a receita já recusa. Número no disco não é o quadro estável. Sem chave `engasgos`. Se a receita recusa que o recibo feche o marco, o `fields` do `record --kind milestone` nomeia o marco que a receita já recusa. Recibo no disco não é a passagem. Sem chave `marco`. Se a receita recusa que o recibo sem os quatro seja achado, o `fields` do `record --kind observation` nomeia a impressão que a receita já recusa. Recibo no disco não é playtest. Sem chave `impressão`. Se o roteiro recusa que o screenshot isolado comprove animação, o `record` nomeia a animação que o roteiro já recusa. Anexo no disco não é controle. Sem chave `animação`. Se o roteiro recusa que o HEAD substitua o julgamento, o `version` nomeia o julgamento que o roteiro já recusa. Identidade no disco não é avaliação. Sem chave `julgamento`. `role=agent` é avaliação do agente, não aprovação do usuário.
 
 ## Três camadas
 

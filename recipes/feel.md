@@ -24,7 +24,7 @@ seed nova embaixo; o campo repete a última. A primeira
 visita continua abrindo na faixa. Soltar no disco não é
 sessão observada. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
-impressão — `next` propõe `playtest.unstructured` e aponta a página
+impressão. Se a receita recusa que o recibo sem os quatro seja achado, o `fields` do `record --kind observation` nomeia a impressão que a receita já recusa. Recibo no disco não é playtest. Sem chave `impressão`. `next` propõe `playtest.unstructured` e aponta a página
 (`/?invite=1#finding`) e `note --field`. Sem o convite o âncora
 some. `playtest` só lê. O prompt nomeia o `playtest`
 que o `AGENTS.md` já cita. Só lê. Sem os quatro não é achado.
@@ -32,7 +32,7 @@ Sem `then.playtest`. Nomear o leitor não observa. Nomeia `finding_open` (a url 
 serve com o convite, ou o mesmo endereço sem serve), `form` e
 `fields`. Sem `then`. Esqueleto no disco não é achado. O `note`
 nomeia `finding` e `needed` no próprio recibo. Recibo sem os
-quatro não é achado. `playtest --invite`
+quatro não é achado. Se a receita recusa que o recibo sem os quatro seja achado, o `fields` do `record --kind observation` nomeia a impressão que a receita já recusa. Recibo no disco não é playtest. Sem chave `impressão`. `playtest --invite`
 escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco,
 `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, com look nomeado `&look=<paleta>`, e com relógio nomeado e ≠ 1 `&speed=<relógio>`), onde a tabela some; depois do
 fim a página oferece os quatro nomes para copiar ou gravar e

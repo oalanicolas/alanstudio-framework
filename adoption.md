@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.545 — o fields do record observation nomeia a impressão que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+recibo
+sem
+os
+quatro
+é
+impressão.
+O
+fields
+da
+observation
+copiava
+cenário
+e
+papel
+e
+calava
+a
+recusa.
+Agora
+o
+`fields`
+do
+`record --kind observation`
+nomeia
+a
+impressão.
+Recibo
+no
+disco
+não
+é
+playtest.
+Sem
+chave
+`impressão`.
+Nomear
+não
+observa.
+
+O que 0.9.545 não afirma:
+cenário
+e
+papel
+não
+são
+problema,
+evidência,
+hipótese
+e
+medição.
+
 ## 0.9.544 — o local do sfx summary nomeia o comprimido que a receita já recusa
 
 A

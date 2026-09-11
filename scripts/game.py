@@ -12562,6 +12562,42 @@ def record_milestone_fields_scope(kind):
     )
 
 
+# A receita já recusa que o recibo sem os
+# quatro seja achado. Sem isto o fields da
+# observation copiava cenário e papel e
+# calava a recusa. Recibo no disco não é
+# playtest.
+FEEL_IMPRESSION = re.compile(r"Recibo sem os quatro é\s+impressão")
+
+
+def recipe_refuses_receipt_as_finding(text):
+    return bool(text and FEEL_IMPRESSION.search(text))
+
+
+def record_observation_impression_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_receipt_as_finding(text):
+        return "recipes/feel.md"
+    return None
+
+
+def record_observation_fields_scope(kind):
+    if kind != "observation":
+        return None
+    if not record_observation_impression_source():
+        return None
+    return (
+        "O disco recusa que o recibo sem os quatro seja achado "
+        "(`impressão`). Recibo no disco não é playtest."
+    )
+
+
 # O roteiro já recusa que o screenshot isolado comprove animação. Sem isto o
 # anexo copiava o hash e calava a recusa.
 # Anexo no disco não é controle.
@@ -12618,7 +12654,11 @@ def record(project, kind, author, note, fields, attachments, output):
             fields["value"] = float(fields["value"])
         except ValueError:
             raise ValueError("value precisa ser numérico") from None
-    named = record_budget_fields_scope(kind) or record_milestone_fields_scope(kind)
+    named = (
+        record_budget_fields_scope(kind)
+        or record_milestone_fields_scope(kind)
+        or record_observation_fields_scope(kind)
+    )
     if named:
         fields = dict(fields, scope=named)
     files = []

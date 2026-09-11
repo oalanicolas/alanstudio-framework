@@ -2135,6 +2135,87 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("o recibo feche o marco", report["scope"])
         self.assertNotIn("o recibo feche o marco", game.next_scope())
 
+    def test_record_observation_fields_name_the_impression_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_receipt_as_finding(recipe),
+            "a receita já recusa que o recibo sem os quatro seja achado",
+        )
+        self.assertEqual(game.record_observation_impression_source(), "recipes/feel.md")
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            game.parse_fields(["scenario=primeira travessia", "role=human"]),
+            [], self.root / "obs-impressao",
+        )
+        self.assertEqual(report["kind"], "observation")
+        self.assertIn(
+            "recibo sem os quatro seja achado",
+            report["fields"]["scope"],
+            "o fields da observation copiava cenário e papel e calava a recusa",
+        )
+        self.assertIn("(`impressão`)", report["fields"]["scope"])
+        self.assertNotIn("impressão", report["fields"])
+        self.assertNotIn("impressão", report)
+        self.assertEqual(report["status"], "declared")
+        noted = game.note_observation(self.project, "Alan", "virou a curva sem ajuda.")
+        self.assertIn("recibo sem os quatro seja achado", noted["fields"]["scope"])
+        self.assertFalse(noted["observed"])
+        self.assertFalse(noted["felt"])
+        self.assertFalse(game.recipe_refuses_receipt_as_finding(""))
+        with mock.patch.object(game, "record_observation_impression_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                game.parse_fields(["scenario=primeira travessia", "role=human"]),
+                [], self.root / "obs-impressao-silent",
+            )
+        self.assertNotIn("recibo sem os quatro seja achado", silent["fields"].get("scope") or "")
+        budget = game.record(
+            self.project, "budget", "Alan", "cena da fábrica, 60 s",
+            {
+                "metric": "frame_p99",
+                "value": "14.2",
+                "unit": "ms",
+                "platform": "web",
+                "tool": "devtools",
+            },
+            [], self.root / "budget-sem-impressao",
+        )
+        self.assertNotIn("recibo sem os quatro seja achado", budget["fields"].get("scope") or "")
+        gate = game.record(
+            self.project, "milestone", "Alan", "Critérios do alpha com evidência ligada.",
+            {
+                "milestone": "alpha",
+                "decision": "declared",
+                "declared_by": "Alan",
+                "role": "human",
+            },
+            [], self.root / "marco-sem-impressao",
+        )
+        self.assertNotIn("recibo sem os quatro seja achado", gate["fields"].get("scope") or "")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a impressão que a receita já recusa", recipe)
+        self.assertIn("nomeia a impressão que a receita já recusa", skill)
+        self.assertIn("nomeia a impressão que a receita já recusa", readme)
+        self.assertNotIn("verified", report["fields"]["scope"])
+        self.assertNotIn("aprovado", report["fields"]["scope"])
+        self.assertNotIn("recibo sem os quatro seja achado", report["scope"])
+        self.assertNotIn("recibo sem os quatro seja achado", game.next_scope())
+        playtest = game.playtest_reading(self.project)
+        self.assertNotIn("recibo sem os quatro seja achado", playtest["scope"])
+        if playtest.get("candidate_tally"):
+            self.assertNotIn(
+                "recibo sem os quatro seja achado",
+                playtest["candidate_tally"].get("scope") or "",
+            )
+        felt = game.feel_reading(self.project)
+        self.assertNotIn("recibo sem os quatro seja achado", felt["scope"])
+        if felt["observations"]:
+            self.assertNotIn(
+                "recibo sem os quatro seja achado",
+                felt["observations"][0].get("scope") or "",
+            )
+
     def test_art_names_the_palette_the_system_already_refuses(self):
         guide = (game.FRAMEWORK / "references/game-design-system.md").read_text(encoding="utf-8")
         self.assertTrue(
