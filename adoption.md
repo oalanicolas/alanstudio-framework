@@ -3,6 +3,52 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.364 — o access nomeia o perigo que o live já anuncia
+
+A
+receita
+já
+pedia
+`perigo
+à
+frente`.
+O
+comando
+lia
+região
+viva
+e
+calava
+o
+aviso.
+Agora
+o
+`access`
+nomeia
+o
+perigo.
+Texto
+no
+DOM
+não
+é
+sessão.
+Sem
+chave
+`threat`.
+Não
+promove
+`verified`.
+
+O que 0.9.364 não afirma:
+texto
+no
+DOM
+não
+é
+alcance
+observado.
+
 ## 0.9.363 — o ship nomeia o banner que o serve já imprime
 
 A

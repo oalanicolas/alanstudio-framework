@@ -84,7 +84,8 @@ do primeiro ciclo continua teclado até o gesto. Depois do
 tap a porta e o fim não chamam o avanço de cima.
 O overlay e a casca da página seguem `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
 x do corpo, no alcance do telegraph, vira `perigo à frente` na região viva
-junto da última legenda. Na porta o canvas também marca a mostra no
+junto da última legenda. Se o live anuncia o perigo à frente, o `access` nomeia o perigo que o live já anuncia.
+Texto no DOM não é sessão. Sem chave `threat`. Na porta o canvas também marca a mostra no
 trilho — o mesmo aviso do campo. Texto no DOM não é sessão. A pausa entra como `pausado` só quando o
 overlay diz Pausado — no fim a cortina do over vence; na porta a
 placa nem nasce. Com a cortina no campo, nomeia o placar e o

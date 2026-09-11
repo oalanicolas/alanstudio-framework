@@ -3940,6 +3940,29 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("4.5", report["scope"])
         self.assertNotIn("WCAG", report["scope"])
 
+    def test_access_names_the_threat_the_live_already_announces(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        live = (starter / "src/core/live.js").read_text(encoding="utf-8")
+        self.assertTrue(game.live_names_threat(live), "o live já anuncia o perigo à frente")
+        self.assertEqual(game.threat_live_source(starter), "src/core/live.js")
+        report = game.access_reading(starter)
+        self.assertIn("perigo à frente", report["scope"], "o access calava o perigo que o live já anuncia")
+        self.assertFalse(report["verified"])
+        self.assertNotIn("threat", report)
+        self.assertNotIn("threatCue", report)
+        empty = game.access_reading(self.project)
+        self.assertFalse(game.live_names_threat(""))
+        self.assertIsNone(game.threat_live_source(self.project))
+        self.assertNotIn("perigo à frente", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o perigo que o live já anuncia", recipe)
+        self.assertIn("nomeia o perigo que o live já anuncia", skill)
+        self.assertIn("nomeia o perigo que o live já anuncia", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+
     def test_audio_recipe_names_the_session_clock_the_bed_already_follows(self):
         recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
         access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")

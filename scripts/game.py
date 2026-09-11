@@ -1826,6 +1826,26 @@ def contrast_stub_source(project):
     return None
 
 
+# A receita já pede o aviso. Sem isto o access
+# lia região viva e calava o perigo que o live
+# já anuncia. Texto no DOM não é sessão.
+THREAT_LIVE = re.compile(r"perigo à frente")
+
+
+def live_names_threat(text):
+    return bool(text and THREAT_LIVE.search(text))
+
+
+def threat_live_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if live_names_threat(text):
+            return relative
+    return None
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -1855,6 +1875,11 @@ def access_reading(project):
         scope += (
             " O disco amostra o contraste no stub (`contrast`). "
             "Stub no disco não é sessão com o modo ativo."
+        )
+    if threat_live_source(project):
+        scope += (
+            " A região viva nomeia o perigo à frente que a receita já "
+            "pede. Texto no DOM não é sessão."
         )
     return {
         "schema_version": 1,
