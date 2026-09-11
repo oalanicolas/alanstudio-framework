@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.350: o `save` nomeia a recuperação que o canvas já pinta. A pausa não. Texto no disco não é aba fechada. Sem chave `recovery`. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.350):** `python3 -m unittest discover -s tests` → a confirmar.
-`cd assets/starters/canvas-arcade && npm test` → a confirmar.
+**Testes no HEAD (0.9.350):** `python3 -m unittest discover -s tests` → 346.
+`cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
