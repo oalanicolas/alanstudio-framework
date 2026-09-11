@@ -10905,7 +10905,35 @@ def verify_command_scope():
             " O disco recusa que o recibo comprove diversão (`diversão`). "
             "Log no disco não é experiência."
         )
+    if verify_command_meaning_source():
+        scope += (
+            " O disco recusa que o hash comprove o significado "
+            "(`significado`). Hash no disco não é o critério."
+        )
     return scope
+
+
+# A entrega já recusa que o hash comprove o significado. Sem isto o
+# comando copiava o sha256 e calava a recusa.
+# Hash no disco não é o critério.
+DELIVERY_MEANING = re.compile(r"não comprova seu significado")
+
+
+def delivery_refuses_hash_as_meaning(text):
+    return bool(text and DELIVERY_MEANING.search(text))
+
+
+def verify_command_meaning_source():
+    path = DELIVERY_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if delivery_refuses_hash_as_meaning(text):
+        return "references/delivery.md"
+    return None
 
 
 # O processo já recusa que claimed seja verified. Sem isto o

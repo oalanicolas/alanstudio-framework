@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.492 — o comando do verify nomeia o significado que a entrega já recusa
+
+A
+entrega
+já
+dizia
+que
+o
+hash
+não
+comprova
+o
+significado.
+O
+comando
+copiava
+o
+sha256
+e
+calava
+a
+recusa.
+Agora
+o
+comando
+do
+verify
+nomeia
+o
+significado.
+Hash
+no
+disco
+não
+é
+o
+critério.
+Sem
+chave
+`significado`.
+Nomear
+não
+observa.
+
+O que 0.9.492 não afirma:
+recibo
+verde
+não
+é
+experiência
+nem
+aprovação.
+
 ## 0.9.491 — a plataforma nomeia os quadros que o pacote já recusa
 
 O

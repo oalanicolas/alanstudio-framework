@@ -46,7 +46,7 @@ depende da autorização aplicável; revisão própria deve ser identificada com
 
 Guarde entrada, versão da skill, artefatos, comandos/resultados e resposta final.
 Revise cada critério com localizadores, inclusive os que falharam ou permaneceram
-desconhecidos. Hash ajuda a identificar o conteúdo; não comprova seu significado.
+desconhecidos. Hash ajuda a identificar o conteúdo; não comprova seu significado. Se a entrega recusa que o hash comprove o significado, o comando do verify nomeia o significado que a entrega já recusa. Hash no disco não é o critério. Sem chave `significado`.
 Reexecute o caso afetado após uma correção observada. Não transforme dois exemplos
 aprovados em garantia de obediência universal ou de trabalho por horas.
 

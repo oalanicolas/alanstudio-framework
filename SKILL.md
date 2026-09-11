@@ -159,7 +159,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
 5. **Verificar.** Use os validadores existentes e o cenário real. `verify` registra
    comandos explícitos e logs (scripts de `package.json` ou alvos Cargo; outras engines
    por `--command`). Build verde não comprova diversão, arte, reinício, rede, direitos
-   de assets nem aprovação humana. Se o roteiro recusa aprovar a criatividade, o `verify` nomeia a criatividade que o roteiro já recusa. Recibo verde não é aprovação. Sem chave `criatividade`. Se a ambição recusa que o recibo comprove diversão, o `verify` nomeia a diversão que a ambição já recusa. Log no disco não é experiência. Sem chave `diversão`. O que uma pessoa observou em movimento, uma medição
+   de assets nem aprovação humana. Se o roteiro recusa aprovar a criatividade, o `verify` nomeia a criatividade que o roteiro já recusa. Recibo verde não é aprovação. Sem chave `criatividade`. Se a ambição recusa que o recibo comprove diversão, o `verify` nomeia a diversão que a ambição já recusa. Log no disco não é experiência. Sem chave `diversão`. Se a entrega recusa que o hash comprove o significado, o comando do verify nomeia o significado que a entrega já recusa. Hash no disco não é o critério. Sem chave `significado`. O que uma pessoa observou em movimento, uma medição
    de orçamento ou uma decisão de marco entra por `record`, com `role=human` ou
    `role=agent`; avaliação do agente não é aprovação do usuário. Capacidade
    desconhecida permanece desconhecida até ser demonstrada: `context` só sabe dizer

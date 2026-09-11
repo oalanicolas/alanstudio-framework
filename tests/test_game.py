@@ -2310,6 +2310,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("recibo comprove diversão", game.next_scope())
         self.assertNotIn("recibo comprove diversão", game.doctor_then_scope())
 
+    def test_verify_command_names_the_meaning_the_delivery_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/delivery.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.delivery_refuses_hash_as_meaning(guide),
+            "a entrega já recusa que o hash comprove o significado",
+        )
+        self.assertEqual(game.verify_command_meaning_source(), "references/delivery.md")
+        report = game.verify(
+            self.project, [], [sys.executable, "-c", "pass"],
+            self.root / "verify-492", 5,
+        )
+        self.assertTrue(report["commands"], "o verify já devolve comandos neste destino")
+        item = report["commands"][0]
+        self.assertIn("log_sha256", item, "o comando já copia o hash do log")
+        self.assertIn(
+            "hash comprove o significado",
+            item["scope"],
+            "o comando copiava o sha256 e calava a recusa",
+        )
+        self.assertIn("(`significado`)", item["scope"])
+        self.assertNotIn("significado", item)
+        self.assertEqual(report["experience_status"], "not_assessed")
+        self.assertFalse(game.delivery_refuses_hash_as_meaning(""))
+        with mock.patch.object(game, "verify_command_meaning_source", return_value=None):
+            silent = game.verify(
+                self.project, [], [sys.executable, "-c", "pass"],
+                self.root / "verify-492-silent", 5,
+            )
+        self.assertNotIn("hash comprove o significado", silent["commands"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o significado que a entrega já recusa", guide)
+        self.assertIn("nomeia o significado que a entrega já recusa", recipe)
+        self.assertIn("nomeia o significado que a entrega já recusa", skill)
+        self.assertIn("nomeia o significado que a entrega já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("hash comprove o significado", report["scope"])
+        self.assertNotIn("hash comprove o significado", game.verify_scope())
+        self.assertNotIn("hash comprove o significado", game.git_summary_scope())
+        self.assertNotIn("hash comprove o significado", game.record_attachment_scope())
+        self.assertNotIn("hash comprove o significado", game.next_scope())
+
     def test_verify_names_the_verified_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(
