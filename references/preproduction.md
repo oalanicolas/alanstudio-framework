@@ -56,9 +56,13 @@ coincidir com a vertical slice em um jogo muito pequeno, se cumprir ambos os obj
 REUSE → ADAPT → CREATE vale para documentos, mecânicas, ferramentas, código e assets.
 Leia candidatos e consumidores, adapte o canônico e explique lacunas antes de criar.
 Para um jogo que ainda não existe no disco, o candidato de reuso é um starter do
-acervo: `init <destino> --starter <starter>` monta o projeto e cria estes
-documentos como rascunho declarado, para serem substituídos por decisão — não para
-serem entregues como se fossem uma.
+acervo: `start --idea "<fantasia>"` (ou `start <destino> --starter <starter>`)
+monta o projeto, escreve `AGENTS.md` com o comando que abre, o `note` e o `playtest` (sem listar estes documentos) e aponta o serve, sem plantar estes documentos.
+O `playtest` só lê. Sem os quatro não é achado. Nomear o leitor não observa.
+Sem memória no disco, `template agents` gera o mesmo texto a partir do que existe.
+`init <destino> --starter <starter>` faz a mesma cópia e cria os rascunhos — para
+serem substituídos por decisão, não para serem entregues como se fossem uma.
+`--docs` no start também os planta.
 
 Cada etapa pretende um degrau da [barra de acabamento](production-bar.md): PoC
 responde uma pergunta em degrau de protótipo, o MVP entrega um ciclo jogável, a
@@ -113,14 +117,15 @@ ao jogo. Entrada: brief, hipóteses MDA e observações existentes. Saída: reco
 jogável definido, com consequências e situações de teste.
 
 **Pronto para prototipar:** o implementador consegue explicar o que o jogador faz,
-quais alternativas tem, o que acontece e como termina/reinicia. Pilares precisam
+quais alternativas tem, o que acontece e como termina/reinicia. Com tela, a
+primeira situação é a porta; o campo começa depois do avanço. Pilares precisam
 resolver escolhas concretas; “imersivo” ou “divertido” isoladamente não basta.
 [Template](../assets/templates/gdd.md).
 
 ### `poc` — Proof of Concept
 
 Experimento para reduzir uma incerteza criativa ou técnica. Entrada: pergunta
-delimitada. Saída: comportamento observado, condições, evidência e decisão de
+delimitada. Com tela, o cenário começa na porta. Saída: comportamento observado, condições, evidência e decisão de
 continuar, ajustar ou abandonar a hipótese. Protótipo pode ser descartável; código
 de experimento só entra na produção após revisão de adequação e consumidores.
 

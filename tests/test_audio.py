@@ -142,6 +142,60 @@ class AudioCatalogTests(unittest.TestCase):
                 self.assertEqual(manifest["files"][0]["src"], "passo-madeira-01.wav")
                 self.assertIn(b"Autora", archive.read("CREDITS.txt"))
 
+    def test_http_preview_page_lists_sounds_without_claiming_to_hear_them(self):
+        self.assertFalse((self.root / "ui" / "index.html").exists())
+        page = audio.preview_page(self.root).decode()
+        self.assertIn(self.item["id"], page)
+        self.assertIn(self.item["file"], page)
+        self.assertIn("<audio", page)
+        self.assertIn("não é mix", page.casefold())
+        self.assertNotIn("aprovado", page)
+        self.assertNotIn("verified", page)
+        server = audio.ThreadingHTTPServer(("127.0.0.1", 0), partial(audio.CatalogHandler, root=self.root))
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        self.addCleanup(server.server_close)
+        self.addCleanup(server.shutdown)
+        base = f"http://127.0.0.1:{server.server_port}"
+        with urlopen(base + "/", timeout=5) as response:
+            self.assertEqual(response.status, 200)
+            self.assertIn("text/html", response.headers.get("Content-Type", ""))
+            listed = response.read().decode()
+        self.assertIn(self.item["id"], listed)
+        self.assertIn("<audio", listed)
+        self.assertNotIn("aprovado", listed)
+        self.assertNotIn("verified", listed)
+        with self.assertRaises(HTTPError) as error:
+            urlopen(base + "/catalog.js", timeout=5)
+        self.assertEqual(error.exception.code, 404)
+        error.exception.close()
+
+    def test_preview_names_the_catalog_sound_the_disk_lost(self):
+        lost = self.root / self.item["file"]
+        self.assertTrue(lost.is_file())
+        lost.unlink()
+        page = audio.preview_page(self.root).decode()
+        self.assertIn(self.item["id"], page)
+        self.assertIn("o disco perdeu", page.casefold())
+        self.assertNotIn("<audio", page)
+        self.assertNotIn("aprovado", page)
+        self.assertNotIn("verified", page)
+        self.assertFalse(audio.catalog_bytes_present(self.root, self.item["file"]))
+
+    def test_check_names_the_catalog_sound_the_disk_lost(self):
+        lost = self.root / self.item["file"]
+        self.assertTrue(lost.is_file())
+        lost.unlink()
+        report = audio.check(self.root)
+        self.assertFalse(report["ok"])
+        blob = " ".join(report["errors"])
+        self.assertIn(self.item["id"], blob)
+        self.assertIn("catálogo lista", blob.casefold())
+        self.assertIn("disco perdeu", blob.casefold())
+        self.assertNotIn("No such file", blob)
+        self.assertNotIn("aprovado", blob)
+        self.assertNotIn("verified", blob)
+
 
 if __name__ == "__main__":
     unittest.main()

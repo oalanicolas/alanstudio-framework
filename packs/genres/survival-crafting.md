@@ -14,6 +14,8 @@ perguntas, riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Coleta e construção com resposta imediata (som por material, partícula, snap de
   peça); inventário rápido (arrastar, empilhar, filtros); crafting com receitas
   legíveis e "posso fazer agora" visível.

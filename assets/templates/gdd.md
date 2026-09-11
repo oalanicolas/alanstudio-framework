@@ -10,8 +10,8 @@ Adapte seções ao gênero; registre por que uma dimensão material não se apli
 
 ## Ciclo principal e experiência
 
-- Situação inicial e objetivo percebido: [preencher].
-- Ciclo: [informação → alternativas → ação → consequência → próxima decisão].
+- Situação inicial e objetivo percebido: [com tela, a primeira superfície é a porta].
+- Ciclo: [abrir → informação → alternativas → ação → consequência → próxima decisão].
 - Condição de término e reinício: [vitória/derrota/conclusão, ou continuidade intencional].
 - Hipóteses MDA: [ligações entre regras, comportamento e sensação; casos que podem contrariá-las].
 

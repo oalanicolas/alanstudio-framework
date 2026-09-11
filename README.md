@@ -32,7 +32,17 @@ python3 scripts/game.py next /caminho/do/laboratorio/um-dos-jogos --focus feel
 `discover` lê cada jogo da raiz e devolve o que os distingue: quantas das nove
 áreas mínimas têm candidato, quantas estão em rascunho, se há um passo registrado
 para retomar e onde, o piso de acabamento que o projeto declara e quantas
-dimensões ainda não têm linha, e quais validadores existem. É essa diferença que
+dimensões ainda não têm linha, quais validadores existem, quantos papéis de
+áudio estão declarados e vazios, se o feel tem constante e recibo de
+observação, se o achado de playtest tem forma, se alcance, save e orçamento
+estão declarados no código, se a
+direção de arte aparece no disco, se o conteúdo saiu do código e se existe
+passo de empacotar. `signals` nomeia os mesmos flags que o `next` usa
+para o primeiro ciclo, o ofício, o feel sem recibo, o achado sem forma,
+o convite, a origem sem recibo e as lacunas de dimensão — sem propor e
+sem ranquear. Se o package declara os scripts, o `discover` nomeia os scripts que o package já declara. Lista no disco não é passo executado. Sem chave `scripts`. Se o roteiro recusa que o documento comprove qualidade, o `discover` nomeia a qualidade que o roteiro já recusa. Conta no disco não é acabamento. Sem chave `qualidade`. Sinal
+verdadeiro não é partida jogada. Lista de arquivo sem recibo não é
+licença. Lista de chave ausente não é alcance observado. É essa diferença que
 uma listagem de caminho e tipo apagava — três jogos em estados incomparáveis saíam
 iguais. `--plain` volta ao caminho e tipo, sem ler documento nenhum.
 
@@ -46,8 +56,33 @@ vez de derrubar a revisão ou desaparecer da lista.
 Com starter (REUSE de infraestrutura já testada):
 
 ```sh
-python3 scripts/game.py doctor --root /caminho/do/laboratorio
-python3 scripts/game.py init /caminho/do/laboratorio/meu-jogo --starter canvas-arcade
+python3 scripts/game.py start --idea "atravessar estilhaços para guardar a corrente"
+python3 scripts/game.py start /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
+```
+
+Sem caminho, `--idea` nomeia e cria a pasta (ao lado do framework se o start corre de dentro desta árvore; no diretório atual se corre de fora). `guide --idea` continua só no comando, não no disco. O JSON devolve `open` (o comando de agora, igual a `play`), `then.note` (o próximo comando do harness **depois** de uma partida), os mesmos `steps` do `guide` com o passo 1 feito e, se o starter declara, `cycle` (verbo, porta, teclas, cluster de uma mão, toque, controle e as queries de look, chuva, par, seed, relógio e convite). Se o projeto — ou o starter, antes do destino existir — declara as ferramentas, `then` também nomeia `pair`, `look`, `table` e `sfx`. Se o `tools/new-pair.*` nasce look e chuva, o `start` nomeia o par que o pair já nasce. Ferramenta no disco não é alguém de fora. Sem chave `pair` no recibo. Se declara `session`, `then` a aponta e o prompt a nomeia (`Sessão:`). Não executa e não observa. Se o disco tem last-run com seed, `then` aponta a seed e o convite; nomear o endereço não observa. O `note` do mapa sugere o autor do git ou do ambiente; não é quem jogou. Nomear o ofício não pinta. Depois de um recibo de observação, o prompt aponta esses três em vez de repetir só o primeiro ciclo. Não executa o jogo. `--idea` entra na abertura se houver `data/copy.json`. O `start` não planta os rascunhos; `--docs` os cria. O `init` continua plantando. A frase na tela não muda o verbo. `runtime` lê o `node` do PATH se o play pede npm ou node; sem 20+ o prompt avisa. Nomear não serve. Depois do `init`, `?look=dusk` ou `?look=calm` troca a paleta (campo e a página), `?spawn=dusk` ou `?spawn=calm` troca a chuva, `?mood=calm` ou `?mood=dusk` troca o par e `?invite=1` some a tabela — as quatro sem recomeçar o projeto. `?seed=<n>` abre essa partida e ignora o hold. `?speed=0.75` dilata o relógio da partida; 1 e fora da faixa somem. A página nomeia o par no select. Look ou chuva explícitos vencem o mood no próprio eixo. Trocar a chuva do par recomeça a partida; trocar só o look não. Ferramenta no disco não é alguém de fora nem mix ouvido.
+
+`guide` (também sem subcomando: `python3 scripts/game.py`) mapeia os três passos — start → jogar → `note` — sem executar nenhum. `open` é o comando de agora (o start se o destino ainda não existe, o play se já existe); `prompt` o nomeia para colar e também sai em stderr — o JSON fica no stdout. Se o starter declara o verbo e as teclas, o prompt as nomeia — inclusive a porta — antes do destino existir. Se o manifesto declara o relógio, o `guide` nomeia o relógio que o manifesto já declara. Frase no disco não é partida observada. Sem chave `speed`. Se o roteiro recusa que o mural seja onboarding, o `guide` nomeia o onboarding que o roteiro já recusa. Texto no disco não é a primeira ação. Sem chave `onboarding`. Se a receita recusa que o screenshot comprove feel, o `guide` nomeia o screenshot que a receita já recusa. Recibo no disco não é peso percebido. Sem chave `screenshot`. Se o processo recusa que o comando abra o jogo, o `guide` nomeia a abertura que o processo já recusa. Nome no disco não é partida. Sem chave `abertura`. Sem destino, a frase nomeia a pasta no comando do start (ao lado do framework se você está dentro desta árvore; no diretório atual se está fora). Não grava a frase nem cria a pasta. Sem destino, se o diretório atual é um jogo fora deste repositório, o mapa usa esse caminho. Na raiz deste repositório, sem `--idea` e sem caminho, o mapa recusa — o mesmo `sem destino` do `start`. A recusa nomeia o `start --idea` que este README já imprime. Nomear não cria. Não devolve mais `start '<destino>'`. De uma subpasta (o starter) ou de um jogo, o comando sem argumentos continua o mapa. O convite a começar na raiz leva a frase:
+
+```sh
+python3 scripts/game.py --idea "atravessar estilhaços para guardar a corrente"
+python3 scripts/game.py guide /caminho/do/laboratorio/meu-jogo --idea "atravessar estilhaços para guardar a corrente"
+```
+
+Perdeu o JSON do `start`? `play` (também `open`) aponta de novo o comando que abre o jogo, sem executar. Sem caminho, o único jogo do laboratório basta; dois pedem o caminho.
+
+```sh
+python3 scripts/game.py play
+python3 scripts/game.py play /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py open /caminho/do/laboratorio/meu-jogo
+```
+
+`play` e `open` são o mesmo verbo. Se o play pede npm, o `package.json` tem dependências e `node_modules` falta, `then.install` nomeia `npm install`. Sem dependências a chave some. Nomear não instala. Se o serve recusa produção, o `play` nomeia a produção que o serve já recusa. Serve no disco não é publicação. Sem chave `produção`. `url` nomeia a superfície pedida (`http://localhost:8080/` quando o script é `serve` e não há `PORT`). Nomear não serve. Se o serve tenta abrir o navegador, o prompt nomeia a tentativa. Sem o marcador, pede Abrir. Nomear não abre. Com tela, o avanço abre a porta. Depois de uma partida, a página grava o recibo se você escrever; o próximo comando do harness continua `note`. O prompt nomeia o `playtest` que o `AGENTS.md` já cita. Só lê. Sem os quatro não é achado. Sem `then.playtest`. Nomear o leitor não observa. `note`, `next`, `feel` e `playtest` sem caminho usam o mesmo resolvedor. Se o disco tem last-run com seed, `then.seed` aponta `/?seed=<n>` e, se o candidato nomeou a chuva ou o look, junta a mesa e a paleta. `then.invite` aponta o convite com os mesmos eixos. Nomear o endereço não observa. Vestir a query não grava. A chuva da query não retoma o hold. Na porta e no fim a região viva nomeia a mesa e o look que a chuva já veste — spawn e normal somem. Na porta o telefone vê Jogar: toque sem ter apertado. Depois do tap a porta não chama o avanço de cima. `executed` fica `false`. `runtime` lê o `node` do PATH se o play pede npm ou node; sem 20+ o prompt avisa. `session` aponta a partida simulada se o manifesto a declara; o prompt a nomeia. Não executa e não observa. Nomear não serve. Não cria pasta e não serve. Achar o único jogo do laboratório também não executa e não sente. A frase de agora sai em stderr; encanar o stdout continua o recibo.
+
+`guide` não cria o projeto. `next` sai do caminho feliz: só entra em `then.lost`, quando o ciclo já correu e você não sabe o que falta. Com destino existente, preenche o comando que abre o jogo e o `kind` do passo de jogar. `executed` fica `false`. Sem `start`, o caminho em dois passos continua valendo:
+
+```sh
+python3 scripts/game.py init /caminho/do/laboratorio/meu-jogo --starter canvas-arcade --idea "atravessar estilhaços para guardar a corrente"
 python3 scripts/game.py next /caminho/do/laboratorio/meu-jogo --focus feel
 ```
 
@@ -55,29 +90,60 @@ python3 scripts/game.py next /caminho/do/laboratorio/meu-jogo --focus feel
 templates, referências e pacotes), raiz, projetos reconhecidos, estudos, acervo
 sonoro, starters disponíveis e os atalhos de skill do host — vigente, desatualizado
 ou ausente, comparando conteúdo.
+Sem jogo reconhecido e com starter, `then.guide` aponta o mapa ideia→ciclo com `--idea`. Se o README imprime o exemplo, o `doctor` nomeia o exemplo que o README já imprime. Frase no then não é pasta criada. Sem chave `exemplo`. Se a ambição recusa que o harness seja motor, o `doctor` nomeia o motor que a ambição já recusa. Convite no then não é runtime. Sem chave `motor`. Se a skill recusa que AAA seja tier de publisher, o `doctor` nomeia o publisher que a skill já recusa. Atalho no disco não é orçamento. Sem chave `publisher`. Se o mapa recusa que a ausência seja evidência negativa, o `doctor` nomeia a ausência que o mapa já recusa. Lista no disco não é laboratório. Sem chave `ausência`. Sem frase a raiz recusa.
+Se o package pede Node, o `doctor` nomeia o engines que o package já declara. Pedido no disco não é binário no PATH. Sem chave `engines`. Nomear não instala. Se o manifesto declara as trocas, o `doctor` nomeia as substituições que o manifesto já declara. Manifesto no disco não é projeto criado. Sem chave `substitutions`.
+Não cria e não executa. Sem starter, o aviso nomeia `start --idea`, não `init`.
 Symlink apontando para o `SKILL.md` deste repositório conta como vigente: é o
 atalho que não tem como ficar para trás. Não escreve nada; sinaliza bloqueio pelo
 código de saída, e a correção que ele sugere roda como está — inclusive criando a
 pasta do atalho.
 
 `init` copia um starter, troca pelo nome do projeto os valores que o
-`starter.json` dele declara e cria em `docs/` sete documentos — brief, gdd, mda,
-tdd, art-bible, devlog e qa — como **rascunho declarado**, além de `AGENTS.md` na
-raiz para instruções persistentes. Os sete documentos em `docs/` cobrem sete das
-nove áreas mínimas que `scan` cobra; as outras duas, origem e execução, ficam com o
-README e o CREDITS do starter, então depois do `init` as nove têm candidato. Com
-`--no-docs`, sobram três. Os demais templates do ciclo entram depois, com `template`, quando a
+`starter.json` dele declara e cria em `docs/` os rascunhos que ainda faltam —
+brief, gdd, mda, tdd, devlog e qa — além de `AGENTS.md` na raiz. Se o package declara o módulo, o `init` nomeia o módulo que o package já declara. Tipo no disco não é runtime instalado. Sem chave `type`. O MDA
+nomeia a porta; brief e GDD já falavam e o cenário do MDA começava no
+campo. Nomear a abertura não observa. Documento
+vigente que o starter já trouxe (o art-bible do `canvas-arcade`) não é
+reescrito: o `template` recusaria o destino e a decisão vigente sumiria.
+Os seis rascunhos mais o art-bible cobrem sete das nove áreas mínimas que
+`scan` cobra; as outras duas, origem e execução, ficam com o README e o
+CREDITS do starter, então depois do `init` as nove têm candidato. Com
+`--no-docs`, o art-bible permanece e os rascunhos não são criados; README,
+CREDITS e art-bible cobrem três áreas. `--idea` escreve a frase da fantasia
+no brief e em `data/copy.json`; o brief continua rascunho e a frase na tela
+não muda o verbo. Os demais templates do ciclo entram depois, com `template`, quando a
 etapa chegar. Não instala dependências, não toca no starter de origem e recusa
-destino ocupado. `scan` reconhece o resultado no mesmo turno, e `verify` roda os
-validadores do starter onde houver Node.
+destino ocupado. `scan` reconhece o resultado no mesmo turno; o primeiro comando
+que `init` aponta é o que serve o jogo. `open`, `url` e `prompt` nomeiam
+a mesma superfície do `start` — o `prompt` também sai em stderr. Nomear
+não serve. `verify` roda os validadores do starter onde houver Node. Se o roteiro recusa aprovar a criatividade, o `verify` nomeia a criatividade que o roteiro já recusa. Recibo verde não é aprovação. Sem chave `criatividade`. Se a ambição recusa que o recibo comprove diversão, o `verify` nomeia a diversão que a ambição já recusa. Log no disco não é experiência. Sem chave `diversão`.
 
 `next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
-destino → sem entrypoint → área não localizada → rascunho → documento sem versão
-vigente → continuidade → sem instruções para o agente → validadores → gate → barra.
-O gate tem três ramos: linha
+destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
+→ segundo ciclo de par, look, chuva e voz
+→ papéis de áudio vazios → feel ainda sem observação → convite para quem nunca viu o jogo → achado sem forma →
+acessibilidade sem opção
+→ save sem versão → orçamento ausente → direção de arte ausente → conteúdo
+ainda no código → empacotar ainda sem passo → artefato incompleto → artefato de outro HEAD → árvore pronta para servir → rascunho → documento sem versão
+vigente → continuidade → sem instruções para o agente → validadores → origens sem
+recibo → gate → ofício → barra. Se o processo pede uma ação recomendada, o `next` nomeia a ação que o processo já pede. Proposta no disco não é autorização. Sem chave `ação`. Se o roteiro recusa que o comando crie o jogo, o `next` nomeia a criação que o roteiro já recusa. Proposta no disco não é pasta criada. Sem chave `criação`. Se o processo recusa fabricar tarefa para cumprir o formato, o `next` nomeia a fabricação que o processo já recusa. Lista no disco não é backlog. Sem chave `fabricação`. Depois de um `init` fresco — nove áreas com
+candidato, seis ainda rascunho (o art-bible do starter já vem vigente), e um script que abre o jogo — a primeira proposta
+é jogar o ciclo, não preencher os templates. Depois de um `start` — sem os seis rascunhos — a primeira proposta continua jogar o ciclo: jogo que abre não espera área localizada. Depois do recibo, se o projeto
+declara `pair`/`look`/`table`/`sfx` e ainda não nasceu look, chuva ou voz deslocada,
+o `next` aponta o segundo ciclo de par, look, chuva e voz — ferramenta no disco
+não é alguém de fora. O verbo mudo vem em seguida: papéis
+declarados sem arquivo. Depois, se o código nomeia perdão e hitstop e ninguém
+registrou uma observação no projeto, o `next` pede esse recibo — constante
+nomeada não é peso percebido. Depois do recibo, se o achado não nomeia
+problema, evidência, hipótese e medição, o `next` pede a forma — nota de
+partida não é métrica. Sem opção de alcance no código, sem versão de
+save ou sem artefato de orçamento, esses ramos vêm antes dos rascunhos. Sem
+paleta ou art-bible vigente, com conteúdo só no código, ou com manifesto e
+nenhum passo de empacotar, esses ramos também vêm antes dos rascunhos. O gate tem três ramos: linha
 de gate malformada, pergunta de valor e critério pendente — nessa ordem, porque
 terminar o que talvez não devesse existir é o desperdício que um gate existe para
-interromper. A barra tem quatro, na ordem: linha de
+interromper. O ofício tem dois: linha de ofício malformada e checklist pendente.
+A barra tem quatro, na ordem: linha de
 degrau malformada, dimensão sem linha, duas linhas em conflito e — só então —
 subir a dimensão mais baixa. Num projeto sem tabela, portanto, a última proposta
 é declarar os degraus, não subir um deles. Devolve
@@ -93,7 +159,7 @@ python3 scripts/game.py context /caminho/do/laboratorio/meu-jogo --focus create 
 ```
 
 O template `game-design`, preenchido, é reconhecido pelo `scan` como cobertura das
-nove áreas. `context` entrega o recorte de leitura e a checagem documental. Itens
+nove áreas. `context` entrega o recorte de leitura e a checagem documental. Se o processo recusa que o hash seja leitura, o `git` nomeia a leitura que o processo já recusa. Identidade no disco não é inspeção. Sem chave `leitura`. Itens
 `optional` do `doctor` não bloqueiam. `--root` pode vir antes ou depois do subcomando.
 
 No Codex ou no Claude, invoque **`$game-dev`** com o projeto e a mudança desejada:
@@ -131,7 +197,7 @@ O contexto entrega caminhos para leitura, registros já existentes, catálogos d
 estudo (se um irmão `Games-Frameworks` existir, ou `GAMES_FRAMEWORKS_ROOT`),
 menções locais de pause/reset/seed, `foundation` (nove áreas documentais),
 `production_bar` (as dimensões de acabamento pertinentes ao foco), `finish` (perfil
-do checklist de piso) e o acervo `shared/sfx` da raiz informada. Não executa o jogo.
+do checklist de piso) e o acervo `shared/sfx` da raiz informada. Não executa o jogo. Se o mapa recusa que o catálogo ouça o starter, o `context` nomeia a escuta que o mapa já recusa. Acervo no disco não é mix ouvida. Sem chave `ouve`. Se a guia recusa preencher o checklist, o `context` nomeia o checklist que a guia já recusa preencher. Guia no disco não é observação. Sem chave `checklist`.
 `mentioned` não é `verified`. `candidate_found` não prova suficiência, atualidade
 nem aprovação.
 
@@ -160,7 +226,7 @@ Plataformas (18): `web`, `unity`, `godot`, `unreal`, `defold`, `gamemaker`, `con
 `deckbuilder`, `strategy`, `tower-defense`, `puzzle`, `simulation`, `survival-crafting`,
 `rpg`, `roguelike`, `multiplayer-competitive`, `idle`, `casual`. Cada pacote traz comandos
 reais de execução/teste, ciclo de vida, pipeline, ferramentas de medição e riscos do
-gênero — como convenções a confirmar no projeto, não como capacidade certificada.
+gênero — como convenções a confirmar no projeto, não como capacidade certificada. Se o pacote recusa que teste unitário prove o navegador, o `context` nomeia o navegador que o pacote já recusa provar. Pacote no disco não é comportamento no aparelho. Sem chave `navegador`. Se o índice recusa que o pacote certifique capacidade, o `context` nomeia a capacidade que o índice já recusa. Pacote no disco não é comportamento. Sem chave `capacidade`. Se o mapa recusa que o pacote seja extração, o `context` nomeia a extração que o mapa já recusa. Convenção no disco não é repositório executado. Sem chave `extração`. Se o mapa recusa que a menção seja mecânica obrigatória, o `genre_mentions[n]` nomeia a mecânica que o mapa já recusa. Campo no disco não é regra do jogo. Sem chave `mecânica`. Se a receita recusa que o nome seja API, o `context` nomeia a API que a receita já recusa. Vocabulário no disco não é runtime. Sem chave `api`. Se a barra recusa que o determinismo seja capacidade, o `capabilities` desconhecido nomeia o determinismo que a barra já recusa. Lista no disco não é ciclo demonstrado. Sem chave `determinismo`.
 Um campo `Gênero:` em documento do projeto aparece em `packs.genre.suggested`; só
 `--genre` carrega o pacote. `context.packs` explica cada seleção.
 
@@ -192,7 +258,7 @@ uma tabela com uma linha por dimensão: degrau atual, degrau seguinte e o crité
 que falta. É o formato que o [README do
 starter](assets/starters/canvas-arcade/README.md) já usa. O comando devolve o
 piso, quais dimensões estão nele e o degrau percebido — este último **só** quando
-as dez tiverem linha, porque dimensão não declarada não é dimensão alta.
+as dez tiverem linha, porque dimensão não declarada não é dimensão alta. Se a prosa declara o mínimo, o `bar` nomeia o mínimo que a barra já declara. Degrau no disco não é acabamento observado. Sem chave `mínimo`. Se a barra recusa que o degrau seja prazo, o `bar` nomeia os prazos que a barra já recusa. Linha no disco não é calendário. Sem chave `prazos`. Se a barra recusa que o nome seja uma das dez, o `bar` nomeia a dimensão que a barra já recusa. Linha no disco não é acabamento. Sem chave `dimensão`.
 
 Ele confere a forma da declaração, não o jogo, e relata em `problems` o que
 encontra com arquivo, linha e motivo: dimensão fora das dez (o caso típico é erro
@@ -222,7 +288,7 @@ Um gate tem nome do que você está pedindo, não da etapa que acabou: `design`,
 `scale` devolve para `build`, o que é uso normal.
 
 O projeto declara uma linha por critério, em `README.md`, `docs/qa.md`,
-`docs/devlog.md`, `docs/release.md` ou `docs/prd.md`:
+`docs/devlog.md`, `docs/release.md` ou `docs/prd.md`. Se a tabela declara o gate, o `gate` nomeia o gate que a tabela já declara. Linha no disco não é passagem concedida. Sem chave `gate`. Se o roteiro recusa que o silêncio seja aprovação, o `gate` nomeia o silêncio que o roteiro já recusa. Linha vazia no disco não é passagem. Sem chave `silêncio`. Se o roteiro recusa que must_meet seja dispensável, o `gate` nomeia a dispensa que o roteiro já recusa. Linha no disco não é passagem. Sem chave `dispensa`. Se o roteiro recusa que fora de escopo seja dispensa, o `gate` nomeia o escopo que o roteiro já recusa. Linha no disco não é passagem. Sem chave `escopo`.
 
 ```markdown
 | Gate | Critério | Estado | Evidência |
@@ -273,6 +339,62 @@ cumprir, não que alguém conferiu. **Nenhum comando concede passagem** (`grante
 é sempre `false`), e uma tabela bem formada e otimista sai daí intacta, como sai
 da barra.
 
+## Origens
+
+`deliver.licensing` é um dos quatro critérios que a prosa não deixa dispensar, e
+até aqui o harness só lia a linha da tabela. Uma frase otimista fechava o gate.
+`origins` percorre o disco:
+
+```sh
+python3 scripts/game.py origins /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py origins /caminho/do/laboratorio/meu-jogo --declare textures/hero.png --origin "foto própria" --author "Ana" --license CC0-1.0
+```
+
+Lista arquivos de mídia embarcados (som, imagem, fonte, vídeo, modelo) e cruza
+com recibos: `sources.json`, `licenses.json`, `CREDITS` e sidecar
+`.credits.txt`. JSON sem origem, autor e licença não declara. Sidecar sem
+os três rótulos também não. Se o sidecar declara `Consumidor:`, o `origins` nomeia o consumidor que o sidecar já declara. Consumidor no disco não é licença válida. Sem chave `consumer`. Se o roteiro recusa que o sidecar sem rótulos declare, o `origins` nomeia os rótulos que o roteiro já recusa. Recibo no disco não é licença. Sem chave `rótulos`.
+Nomeia a mídia que o recibo lista e o disco
+perdeu. Nomear não devolve o arquivo. Entra em
+`textures/`, `fonts/`, `models/` e `videos/` — pastas
+que o `scan` de documentos ignora de propósito. Nomeia `form` e `fields`
+(origem, autor, licença). `--declare` escreve o sidecar. Sem `then`.
+**Não valida a licença.** Não
+consulta titular, não interpreta texto jurídico e não distingue licença válida
+de inválida. O que falta é recibo de origem; o que o recibo afirma continua
+sendo alegação de quem escreveu. Recibo no disco não é licença válida.
+
+`granted` e `validated` são sempre `false`. Se o projeto declara
+`deliver.licensing` como `met` e o disco ainda tem arquivo sem recibo, a saída
+marca `contradicts_licensing`. `next` aponta `--declare` — ou tirar o
+arquivo do embarque — antes de seguir o restante do gate.
+
+## Ofício
+
+Os gates perguntam se o trabalho está feito e se ainda vale o que custa. Isso
+não cobre paleta, janela de perdão, definição de percentil nem regra de parada
+de playtest. Esses checklists vêm do [levantamento de critérios
+observáveis](references/observable-criteria-research.md) §7 — o único conjunto
+que a pesquisa chamou de “não precisa de autoridade externa”: conformidade com
+o que o **próprio projeto** declarou.
+
+```sh
+python3 scripts/game.py craft /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py craft /caminho/do/laboratorio/meu-jogo --gate scale
+```
+
+```markdown
+| Check | Estado | Evidência |
+| --- | --- | --- |
+| `palette` | `met` | paleta em docs/art-bible.md; cores de src/game/render.js listadas lá — Ana |
+| `playtest_stop` | `unmet` | regra de parada ainda não escrita |
+```
+
+**Nenhum checklist cita dígito.** Um limiar aqui seria o harness afirmando, para
+este jogo, o que ninguém verificou. Se a tabela declara saída de escopo, o `craft` nomeia a saída de escopo que a tabela já declara. Linha no disco não é ofício observado. Sem chave `out_of_scope`. Se a pesquisa recusa ser escada de acabamento, o `craft` nomeia a escada que a pesquisa já recusa. Pesquisa no disco não é ofício observado. Sem chave `escada`. Se a pesquisa recusa que o número sem definição seja critério, o `craft` nomeia a definição que a pesquisa já recusa. Pesquisa no disco não é ofício observado. Sem chave `definição`. `observed` e `granted` são sempre `false`.
+`next` só levanta um checklist do gate que o projeto **declarou** — o mesmo
+silêncio dos gates: quem não pediu a permissão não recebe a lista.
+
 ## Starters
 
 `assets/starters/` guarda projetos de referência completos para o passo REUSE.
@@ -285,7 +407,9 @@ migração e gravação verificada, e renderizador com alto contraste e reduçã
 movimento. Expõe `pause`, `reset`, `seed`, `observe`, `act`, `advance`, `capture`
 e `dispose`, e **exercita** as oito em testes headless (`npm test`) — com uma
 ressalva: `capture` só na guarda de ausência de tela, porque `toDataURL` não
-existe em headless. Também tem `npm run budget` para o orçamento de simulação. O
+existe em headless. A chuva compacta o array vivo e reusa um poço de
+entidades; evento, telegraph e o gerador da chuva também reusam. Também tem `npm run budget` para o orçamento das cenas `title.attract` e `playing.run` (mostra da porta e partida + draw num
+canvas stub) — relata o reuso, sem teto — e `npm run size` para os bytes de `dist/`. O
 README do starter declara em que degrau cada dimensão está, incluindo as que
 ainda não subiram.
 
@@ -318,7 +442,10 @@ nem escreve arquivo.
 
 Se faltar base, `foundation.audit.required` pede ao agente **avisar e documentar
 sem esperar um segundo pedido**. Restrição explícita na conversa continua valendo.
-O scanner não executa a auditoria (`audit.executed: false`).
+Exceção: ciclo fresco que já abre (`audit.deferred`) — o `next` pede jogar
+primeiro; o `context` não manda preencher template. `--event direction-approved`
+e `--stage audit` continuam pedindo a base. O scanner não executa a auditoria
+(`audit.executed: false`). Se o README aponta o serve, o `scan` nomeia o serve que o README já aponta. Página no disco não é partida jogada. Sem chave `serve`. Se o sistema recusa que o scanner certifique tokens, o `scan` nomeia os tokens que o sistema já recusa. Documento no disco não é aprovação artística. Sem chave `tokens`. Se o roteiro recusa que o recibo presente seja licença válida, o `scan` nomeia a licença que o roteiro já recusa. Área no disco não é concessão. Sem chave `licença`. Se o roteiro recusa prescrever quantas pessoas, o `scan` nomeia as pessoas que o roteiro já recusa. Área no disco não é censo. Sem chave `pessoas`. Se o roteiro recusa que reconstruir documentos comprove intenções, o `scan` nomeia as intenções que o roteiro já recusa. Candidato no disco não é autoria. Sem chave `intenções`. Se o roteiro pede documentar sem consentimento, o `context` nomeia o audit que o roteiro já pede. Roteiro no disco não é base escrita. Sem chave `audit`. Se o roteiro recusa que a checagem seja daemon, o `audit` nomeia o daemon que o roteiro já recusa. Roteiro no disco não é interceptação. Sem chave `daemon`. Se o roteiro recusa que o local não percorrido seja inexistente, o `scan` nomeia a inexistência que o roteiro já recusa. Contagem no disco não é inventário. Sem chave `inexistente`. Se o mapa recusa que a cobertura desigual seja acidente, o `issues[n]` da coverage nomeia o acidente que o mapa já recusa. Recorte no disco não é falha. Sem chave `acidente`. Se a guia recusa que preencher linhas certifique o jogo, o `non_current_documents[n]` nomeia as linhas que a guia já recusa. Documento no disco não é o jogo. Sem chave `linhas`. Se o processo recusa que a etapa certifique o progresso, o `context` nomeia o progresso que o processo já recusa. Contexto no disco não é degrau. Sem chave `progresso`.
 
 Eventos de conversa, interpretados pelo agente — o comando não concede aprovação:
 
@@ -329,7 +456,7 @@ python3 scripts/game.py context /caminho/do/jogo --focus mechanics --event resum
 
 `direction-approved` sincroniza a base mínima no mesmo turno. `resume` localiza
 fontes de continuidade; o agente resolve o próximo passo. O harness deixa
-`next_step: null` e `executed: false`.
+`next_step: null` e `executed: false`. Se o processo nega que documento pronto seja PoC, o `context` nomeia a PoC que o processo já nega. Fonte no disco não é jogo implementado. Sem chave `process`. Se o processo recusa que sources_found comprove a fila, o `sources[n]` do continuity nomeia a fila que o processo já recusa. Fonte no disco não é backlog. Sem chave `fila`.
 
 Fonte encontrada não é tarefa validada — e fonte em rascunho não é nem passo. Num
 projeto recém-criado, as fontes que `scan` lista são os campos de template
@@ -349,7 +476,7 @@ release. Quatro complementos: `art-bible`, `devlog`, `audit`, `aaa` (checklist d
 o `context` expõe `finish` — núcleo / produto / promessa / mercado; slice, QA, create,
 feel e audio carregam a guia; `template aaa` não certifica). Três de consolidação e
 produção: `game-design` (documento único), `production-plan`, `milestone`.
-O complemento `agents` gera as instruções persistentes em `AGENTS.md`.
+O complemento `agents` gera a memória persistente em `AGENTS.md` a partir do disco: o comando que abre, o `note`, o `playtest` e o que ainda não foi plantado. Sem rascunhos do ciclo, não lista GDD. O `playtest` só lê. Sem os quatro não é achado. Nomear o leitor não observa. O `start` já escreve o mesmo arquivo; `template agents` e o `next` em `agent_context.not_located` não voltam ao molde que fingia brief. Se a memória recusa o adjetivo, o `scan` nomeia o AAA que a memória já recusa. Memória no disco não é acabamento. Sem chave `agents`.
 
 ```sh
 python3 scripts/game.py context /caminho/do/jogo --focus content --stage gdd --root /caminho/do/laboratorio
@@ -362,11 +489,11 @@ python3 scripts/game.py context /caminho/do/jogo --stage aaa --root /caminho/do/
 Sem `--output`, `template` só imprime. Com ele, cria um rascunho novo e recusa
 sobrescrita, inclusive de symlinks. Gerar `template audit` não executa auditoria. Gerar
 `template aaa` não certifica acabamento nem publisher. Gerar `template release` não
-concede autorização de publicação.
+concede autorização de publicação. Se o molde recusa publicar, o `template` nomeia a publicação que o molde já recusa. Molde no disco não é autorização. Sem chave `publicar`.
 
 **REUSE → ADAPT → CREATE.** CREATE só entra com lacuna explícita.
 O [contrato JSON](assets/work.example.json) formaliza uma decisão nova;
-`check-plan` valida a forma, não o mérito. O arquivo de exemplo é um formulário em
+`check-plan` valida a forma, não o mérito. Se o processo recusa garantir o mérito, o `check-plan` nomeia o mérito que o processo já recusa. Forma no disco não é adequação. Sem chave `mérito`. Se a guia recusa que a checagem seja validador semântico, o `metadata_issues[n]` nomeia o semântico que a guia já recusa. Parse no disco não é o jogo. Sem chave `semântico`. O arquivo de exemplo é um formulário em
 branco, de propósito: rodá-lo no validador devolve os oito campos que faltam, que
 é a lista do que preencher.
 
@@ -374,14 +501,14 @@ branco, de propósito: rodá-lo no validador devolve os oito campos que faltam, 
 python3 scripts/game.py check-plan caminho/do/trabalho.json --root /caminho/do/laboratorio
 ```
 
-Treze receitas: [criar](recipes/create.md), [mecânicas](recipes/mechanics.md),
+Quatorze receitas: [criar](recipes/create.md), [mecânicas](recipes/mechanics.md),
 [ciclo de vida](recipes/lifecycle.md), [conteúdo](recipes/content.md),
 [visual](recipes/visual.md), [áudio](recipes/audio.md), [feel](recipes/feel.md),
 [rede](recipes/network.md), [arquitetura](recipes/architecture.md),
 [performance](recipes/performance.md), [acessibilidade](recipes/accessibility.md),
 [persistência](recipes/persistence.md), [release](recipes/release.md) e
 [produção](recipes/production.md). `--focus architecture` ou `--stage tdd` carrega a
-receita de arquitetura; `--focus feel` e `--focus audio` carregam acabamento do verbo;
+receita de arquitetura. Se a receita recusa que o harness infira dependências, o `scan` nomeia as dependências que a receita já recusa. Receita no disco não é decisão. Sem chave `dependências`. `--focus feel` e `--focus audio` carregam acabamento do verbo;
 `--focus production`, `--stage production-plan` ou `--stage milestone` carregam a de
 produção. A skill aplica quando a mudança pede; o CLI só seleciona referências.
 
@@ -405,18 +532,284 @@ orçamento, executa soak, promove marco ou certifica requisito de plataforma; a
 passagem é declarada por pessoa com a prova ligada (`record --kind milestone`).
 Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
 
-## Áudio (opcional)
+## Áudio
 
-Se o laboratório tiver `shared/sfx` na raiz passada em `--root`:
+O starter declara os papéis do verbo, o orbe perdido, o fecho, a prática, a guarda e a cama (`const SOUNDS`) e já traz
+design original em `public/sfx/<papel>.wav`. A cama entra em loop no
+barramento de música; no `over` ela solta com fade. `roles` lê a declaração — inclusive o `duckMs` que a tabela já lista — e cruza com
+arquivos em `public/sfx` (e equivalentes). Sem duck a chave some. Nomear não é mix ouvida. Se o `tools/mix.*` soma as vozes, o `roles` nomeia a soma. Soma no disco não é mix ouvida. Sem chave `mix`. Se o `tools/design-sfx.*` desloca a voz, o `roles` nomeia a voz que o sfx já desloca. Arquivo no disco não é mix ouvida. Sem chave `sfx`. Se o `tools/wav.*` lê o PCM, o `roles` nomeia o PCM que o wav já lê. Bytes no disco não são mix ouvida. Sem chave `wav`. Se a receita recusa que áudio AAA seja quantidade de arquivos, o `roles` nomeia a quantidade que a receita já recusa. Lista no disco não é mix. Sem chave `quantidade`. Papel vazio continua lacuna:
+
+```sh
+python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo --fill
+python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo --fill --apply --root /caminho/do/laboratorio
+```
+
+`heard` e `approved` são sempre `false`: arquivo presente não é mixagem ouvida.
+`next` propõe `audio.roles` quando um papel está vazio. Se o processo recusa o reuso automático, o `roles --fill` nomeia o reuso que o processo já recusa. Arquivo no disco não é licença. Sem chave `reuso`. `roles --fill` sugere
+um id do acervo ou a ficha do stem do starter; `--apply` copia o id do
+acervo ou o stem do starter para `public/sfx/<papel>` com recibo —
+e recoloca o WAV se o recibo já está e origem e licença casam.
+`sfx copy` continua o caminho explícito. Copiar não é ouvir.
+O starter carrega esse arquivo no mixer. `npm run mix` soma cama e vozes
+de uma partida simulada com a mesma taxa da corrente; isso também não é
+mix ouvida. Primeiro resultado da
+busca não é mixagem. Silêncio deliberado é o papel fora da declaração, não
+o slot sem arquivo.
+
+Se o laboratório tiver `shared/sfx` **com sons** na raiz passada em `--root`:
 
 ```sh
 python3 scripts/game.py sfx search passos --root /caminho/do/laboratorio
 python3 scripts/game.py sfx copy ID --to /caminho/do/jogo/public/sfx --root /caminho/do/laboratorio
 ```
 
-Sem esse acervo, o catálogo vem vazio. Piso: gravação licenciada ou design
-contemporâneo. 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.
-Este repositório **não inclui** os arquivos de som.
+Sem esse acervo, `sfx search` não inventa id: o catálogo vem vazio e a
+busca nomeia o stem do starter que casa com o termo. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`. `sfx info`
+lê a chave e nomeia o stem que o recibo lista e o disco perdeu.
+`sfx copy` e `sfx export` levam bytes e créditos
+desse stem. Se o sidecar declara licença, o `sfx copy` nomeia os créditos que o copy já leva. Créditos no disco não são mix ouvida. Sem chave `sidecar`. `sfx export` nomeia o stem que o recibo lista
+e o disco perdeu — exportar não inventa bytes.
+`sfx verify` nomeia os stems sem cruzar o que não
+existe e nomeia o stem que o recibo lista e o disco perdeu. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`.
+`sfx summary` lista todos. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `sfx serve` recusa — não
+há o que ouvir no acervo.
+Com sons, `sfx serve` abre a página de escuta; se `shared/sfx/ui`
+faltar, o harness gera a lista. Tocar nessa página não é mix
+ouvida no jogo. Arquivo no disco não é mix ouvido. Crescer o
+acervo é arquivo local com recibo:
+
+```sh
+python3 scripts/game.py sfx import /caminho/do.wav --metadata /caminho/meta.json --root /caminho/do/laboratorio
+python3 scripts/game.py sfx seed --root /caminho/do/laboratorio
+python3 scripts/game.py sfx info passo-madeira-01 --root /caminho/do/laboratorio
+python3 scripts/game.py sfx export passo-madeira-01 --to /caminho/do/jogo/public/audio --root /caminho/do/laboratorio
+```
+
+`sfx import` exige ffmpeg e um JSON com id, título, categoria, estilo,
+tags, processamento e fontes (licença CC0 ou CC-BY). `sfx seed` lê
+`shared/sfx/selection.json` com `local_path` já no disco. Sem seleção,
+o seed recusa. `sfx summary` (também sem subcomando) lê o acervo, os atalhos
+e os stems do starter em `public/sfx` — arquivo no disco não é mix ouvido.
+`sfx verify` cruza bytes e fichas do acervo; sem acervo nomeia os
+stems do starter e não cruza. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. Nomeia o stem que o recibo lista e
+o disco perdeu. Nomeia o som que o catálogo lista e o disco
+perdeu — não despeja errno. Não ouve. `sfx info` lê a ficha
+do acervo ou a chave do stem do starter. O recibo que lista um
+stem e o disco perdeu não é id desconhecido. Se o inspect já mediu
+o pico, o `sfx info` nomeia o pico que o inspect já mede. Pico no
+recibo não é mix ouvida. Arquivo no disco não é
+mix ouvido. `sfx export` de um id do acervo copia
+bytes, `manifest.json` e `CREDITS.txt` para uma pasta fora do acervo. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`.
+De uma chave do starter, copia o WAV, o `.credits.txt` e anexa
+`sources.json`. O recibo que lista um stem e o disco perdeu
+não é id desconhecido; exportar não inventa bytes.
+Copiar não é mix ouvido.
+Importar e exportar não é mix ouvido. O primeiro ciclo já tem voz
+no starter (`public/sfx/<papel>.wav`). `shared/sfx` é ADAPT, não
+pré-requisito. Piso: gravação licenciada ou design contemporâneo.
+8-bit, chiptune, jsfxr e Kenney arcade não são o padrão. Este
+repositório **não inclui** o acervo `shared/sfx` do laboratório.
+
+## Feel
+
+O starter nomeia perdão, graça, hitstop, buffer de guardar, punch de
+câmera, rumble e o peso do passo no `CONFIG`. As janelas da chuva (prática, folga, fecho) moram
+na mesa. O coil do dash marca o rumo no corpo. Se o laço declara
+`attractMove`, o `feel` nomeia o corpo que a porta já desloca.
+Pose no disco não é peso percebido. Sem chave `attract`.
+Se o laço declara `lookAhead`, o `feel` nomeia a inclinação que o lookAhead já marca.
+Lean no disco não é peso percebido. Sem chave `lookAhead`.
+Se o `tools/probe.*` exercita as janelas de perdão, o `feel` nomeia o perdão que o probe já exercita.
+Conta no disco não é peso percebido. Sem chave `probe`.
+Se o laço senta a guarda, o `feel` nomeia o sit que a guarda já senta. Pose no disco não é peso percebido. Sem chave `bank`.
+Se o laço emite o término, o `feel` nomeia o land que o dash já emite. Pose no disco não é peso percebido. Sem chave `land`.
+Se a receita recusa que o autor sugerido seja quem jogou, o `feel` nomeia o autor que a receita já recusa. Recibo no disco não é sessão. Sem chave `autor`.
+Se a receita recusa que o valor seja constante universal, o `feel` nomeia o universal que a receita já recusa. Número no disco não é lei. Sem chave `universais`.
+Constante nomeada não é peso percebido. `feel` lê as
+constantes — inclusive o pulso e o passo — essas janelas e o rumo, procura um `record.json` de observação no projeto e nomeia
+`then.play` e `then.note` sem executar. Com last-run, nomeia `then.seed`
+e `then.invite` — o mesmo endereço que `play` / `guide`. Sem comando de
+abrir, a chave some. Sem last-run, seed e invite somem. Não tem
+`prompt`. `felt` é sempre falso:
+
+```sh
+python3 scripts/game.py feel
+python3 scripts/game.py feel /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py note --author "NOME" --note "o que o verbo sentiu"
+python3 scripts/game.py note /caminho/do/laboratorio/meu-jogo --author "NOME" --note "o que o verbo sentiu"
+# o mapa preenche --author com git ou o ambiente; NOME só se os dois faltarem
+```
+
+Sem caminho, o único jogo do laboratório basta; dois pedem o caminho.
+`next` e `playtest` usam o mesmo resolvedor. Achar o jogo não é ter
+sentido nem assistir.
+
+`note` grava o recibo de observação em `docs/playtest/<utc>/` com cenário e
+papel por omissão. `--from-run` anexa `docs/playtest/last-run.json` (resumo
+e, se houver, a curva) como candidato de medição e não fecha o achado.
+Nomeia `finding` (os quatro no recibo), `form` e `needed`. Sem `then`.
+Recibo sem os quatro não é achado. Os quatro no disco não observam. Se o disco tem last-run e o comando veio sem --from-run, o note nomeia o last-run que o disco já guarda. Sem o arquivo a frase some. Nomear não anexa.
+Não joga. `felt` é sempre
+`false`. `next` propõe `feel.unobserved` quando há constante e não há
+recibo; o comando que ele aponta é o mesmo `note` que `then.note` —
+com `--from-run` se last-run existir. O harness não atribui peso.
+
+## Alcance, save e orçamento
+
+Três leituras do disco, no mesmo formato honesto: o que o código declara, não
+o que alguém observou.
+
+```sh
+python3 scripts/game.py access /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py save /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py budget /caminho/do/laboratorio/meu-jogo
+```
+
+`access` procura highContrast, reducedMotion, captions, remapeamento
+(a página do starter lista as seis ações do teclado; toque e controle não entram),
+uiScale, preset de uma mão (o ciclo nomeia IJKL + P/O quando o starter declara `hand`), assistência, velocidade da partida, tinta estável, região viva e pulso no aparelho. Na porta e no fim o canvas nomeia a lacuna do som que o painel já mostra. Se a casca declara `:focus-visible`, o `access` nomeia o foco que a receita já pede. Outline no disco não é sessão com o teclado. Sem chave `focus`. Se o `tools/contrast.*` amostra o stub, o `access` nomeia o contraste. Stub no disco não é sessão com o modo ativo. Sem chave `contrast`. Se o live anuncia o perigo à frente, o `access` nomeia o perigo que o live já anuncia. Texto no DOM não é sessão. Sem chave `threat`. Se o disco declara `paintCommands`, o `access` nomeia as teclas que a tabela já lista. Tabela no disco não é sessão. Sem chave `commands`. Se a porta lê a legenda que o mixer ainda guarda, o `access` nomeia a legenda que a porta já lê. Texto no disco não é sessão. Sem chave `caption`. Se a pesquisa recusa que acessibilidade seja gate de certificação, o `access` nomeia a certificação que a pesquisa já recusa. Opção no disco não é certificação. Sem chave `certificação`. `verified` é sempre `false`. Trocar no stub não é sessão observada. `save` procura
+armazenamento, PROGRESS_SCHEMA/migrate e se o disco nomeia sessão volátil
+(`persistLine`, `title_volatile`, `title_unsaved`) ou preferências
+ilegíveis (`settings_recovered`, `settings.broken`); relata `warned`. Se o
+canvas pinta `settingsLine`, o `save` nomeia a recuperação. A pausa não.
+Texto no disco não é aba fechada. Sem chave `recovery`. Se o disco
+escuta `beforeunload`, o `save` nomeia o fechamento que o disco já grava.
+Gancho no disco não é aba fechada. Sem chave `beforeunload`. Se o disco verifica a gravação, o `save` nomeia a gravação que o storage já verifica. Escrita no disco não é aba fechada. Sem chave `storage`. Nomear
+não é aba fechada. `trusted` é sempre `false`.
+`budget` procura script `budget`/`bench`, `tools/budget.*` ou
+`record --kind budget`. Se o tool declara `title.attract`, o
+`budget` nomeia a porta que a receita já cronometra. Stub no
+disco não é dispositivo. Sem chave `door`. Se o `tools/size.*`
+declara sem teto, o `budget` nomeia os bytes que o size já relata.
+Bytes no disco não são o quadro medido. Sem chave `size`. Se o
+`tools/budget.*` relata o pior percentil, o `budget` nomeia o percentil que a receita já pede.
+Relato no disco não é dispositivo. Sem chave `percentile`.
+`measured` é sempre `false`. O starter declara
+os três; um canvas sem opção de alcance recebe `access.missing` antes da
+barra.
+
+## Arte, conteúdo e empacotar
+
+Três dimensões que separam protótipo de produto, no mesmo formato: o que o
+disco declara, não o que alguém aprovou.
+
+```sh
+python3 scripts/game.py art /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py content /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py ship /caminho/do/laboratorio/meu-jogo
+```
+
+`art` procura `const PALETTES`, tokens.json, `data/palettes.json`, `docs/art-bible.md` vigente
+e mesas de chuva (`intervalTicks` e `fallSpeed` em `data/`, `tables/` ou `content/`).
+Se o `tools/new-look.*` nasce o look, o `art` nomeia o look que o disco já nasce.
+Ferramenta no disco não é comparação em movimento. Sem chave `look`.
+Se o look recusa contraste, o `art` nomeia o contraste que o look já recusa. Alcance no disco não é comparação em movimento. Sem chave `contrast`.
+Se o canvas declara `drawTelegraph`, o `art` nomeia o trilho que o telegraph já marca.
+Marca no disco não é comparação em movimento. Sem chave `telegraph`.
+Se o canvas declara `drawVignette`, o `art` nomeia a vinheta que o recorte já marca.
+Recorte no disco não é comparação em movimento. Sem chave `vignette`.
+Se o sistema recusa que a paleta compartilhada seja o contrato, o `art` nomeia a paleta que o sistema já recusa. Lista no disco não é contrato. Sem chave `paleta`.
+Se a receita recusa que a mesa seja volume, o `art` nomeia o volume que a receita já recusa. Lista no disco não é comparação. Sem chave `volume`.
+`consistent` é sempre `false`. Mesa no disco não é volume. Rascunho do `init` não conta. `content`
+procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
+`palettes.json` e `tokens.json` não contam — o `art` lê esses manifestos.
+Se o disco declara `listMoods`, o `content` nomeia o par. Nome no
+disco não é volume. Sem chave `moods`.
+Se o `tools/new-table.*` nasce a mesa, o `content` nomeia a mesa que o disco já nasce.
+Ferramenta no disco não é volume. Sem chave `table`.
+Se o disco declara `migrateTable`, o `content` nomeia a migração que as mesas já compartilham.
+Arquivo no disco não é volume. Sem chave `migrate`.
+`enough` é sempre `false`. `ship` procura script `build`/`export`/`package`/
+`release`, `docs/release.md` vigente ou CI. Se `dist/VERSION.json`
+existe, relata nome e versão. Se `dist/` de um jogo web existe, relata
+se a árvore jogável está completa e se o HEAD do artefato é o HEAD
+atual. Nomeia a árvore que perdeu o `src/` que o projeto já tem. Se o
+`tools/size.*` declara sem teto, o `ship` nomeia o tamanho. Bytes no
+disco não são outra máquina. Sem chave `size`. Se o `tools/serve.*`
+nomeia a árvore exportada, o `ship` nomeia o banner que o serve já imprime.
+Banner no disco não é outra máquina. Sem chave `serve`. Se o
+`tools/export.*` declara o empacote, o `ship` nomeia o passo que o export já declara.
+Empacotar no disco não é outra máquina. Sem chave `export`. Se o
+`tools/export.*` recusa `file://`, o `ship` nomeia o file:// que o export já recusa. Recusar no disco não é outra máquina. Sem chave `file`. Se a receita recusa que a identidade seja outra máquina, o `tree` do ship nomeia a identidade que a receita já recusa. Árvore no disco não é entrega. Sem chave `identidade`. Se a receita recusa que o teste no editor demonstre o jogo exportado, o `artifact` do ship nomeia o editor que a receita já recusa. Manifesto no disco não é o jogo exportado. Sem chave `editor`. Nomear
+não devolve o jogo. `shipped` e `elsewhere` são sempre `false`. Árvore
+incompleta recebe `ship.incomplete`; artefato de outro commit recebe
+`ship.stale`.
+HTML estático sem manifesto já é o artefato; manifesto sem passo de
+empacotar recebe `ship.unpacked`. O starter declara paleta em
+`data/palettes.json`, escolhe o look por `?look=` / `settings.look`
+(`dusk` já é o segundo; `contrast` é alcance, não look), nasce o
+próximo com `look --from` / `--as`, extrai a chuva
+para `data/spawn.json` e `data/dusk.json`, escolhe o perfil por `?spawn=`,
+nasce a próxima com `table --from` / `--as` e `session --spawn`, e
+empacota com `npm run build` — look no disco, ferramenta que desloca knobs
+ou tokens e um export na máquina de quem construiu não são direção
+consistente, escala nem entrega.
+
+## Playtest
+
+Observação sem os quatro campos é impressão. `playtest` lê se o disco tem
+problema, evidência, hipótese e medição — num documento ou no próprio
+recibo:
+
+```sh
+python3 scripts/game.py playtest /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py playtest /caminho/do/laboratorio/meu-jogo --invite
+```
+
+`observed` e `outsider` são sempre `false`. `--invite` escreve
+`docs/playtest/invite.md` e aponta `href` (`/?invite=1` ou, com seed
+no disco, `/?invite=1&seed=<n>`, com chuva nomeada
+`&spawn=<mesa>`, com look nomeado `&look=<paleta>`, e com
+relógio nomeado e ≠ 1 `&speed=<relógio>`), onde a tabela de
+comandos some; depois do fim a página do maker aponta o convite
+desta partida se a seed ficou no recibo — copiar o endereço não
+grava — e, no convite, mostra seed, pontos, eixos, a curva que o last-run já traçou e se o candidato foi simulado (`nearest-orb` vira `simulada`; `played` some; a faixa não leva a conta nem o relógio) e oferece
+os quatro nomes para copiar ou gravar. Se o serve prende o bind, o convite nomeia o bind que o serve já prende. Bind no disco não é alguém de fora. Sem chave `HOST`.
+Simulada não é alguém de fora. Depois do fim a página
+rola até o painel. Rolar não é alguém de fora. Número na faixa não
+preenche os quatro. O achado copiado e gravado leva a faixa
+do last-run. Sem tally nem relógio. Markdown no disco não é
+alguém de fora. Copiar não grava. O Copiar nomeia o
+destino. Gravar já virava Achado no disco; o botão calava.
+Nomear não é alguém de fora. Sem a área de
+transferência, o Copiar baixa o markdown. Baixar não grava.
+Gravado vira
+`docs/playtest/<utc>-achado.md` se os quatro tiverem texto.
+Se last-run existir, o serve anexa
+`docs/playtest/<utc>-achado.run.json`. `playtest` relata esses
+anexos em `finding_attachments`. Anexo não é sessão observada.
+Página no disco, texto na área de transferência, markdown
+baixado e markdown preenchido não são alguém de fora e não sobem `pacing`.
+Esqueleto vazio não é achado. `next` propõe `playtest.invite`
+depois do recibo de quem fez (e depois do segundo ciclo, se houver).
+`next` propõe `playtest.unstructured` quando há recibo de observação
+(ou um `docs/qa.md` vigente) e o achado ainda não tem forma. A
+proposta aponta a página (`finding_href` / `finding_open`,
+`/?invite=1#finding` ou a url do serve com o convite) e
+`note --field`. O comando nomeia o endereço; o serve nu não
+abre o painel. Sem o convite o âncora some. `playtest` só lê.
+Nomeia `finding_open` (a url do serve com o convite, ou o mesmo
+endereço sem serve), `form` (o esqueleto dos quatro nomes) e
+`fields`. Sem `then`. Esqueleto no disco
+não é achado. Se o arquivo `docs/qa.md`
+existir, o recibo o nomeia em `qa`. Escrever não é sessão
+observada. Se
+`docs/playtest/last-run.json` existir, `playtest` o relata
+como `candidate` e, se nomear a seed, como `candidate_seed`.
+Se nomear a chuva, como `candidate_spawn`. Se nomear o look,
+como `candidate_look`. `?seed=<n>` abre essa partida e ignora
+o hold; se o candidato nomeou a chuva ou o look, junta a mesa
+e a paleta. O convite usa os mesmos eixos. O `next` aponta
+`note --from-run`. A partida no serve grava esse arquivo;
+`npm run session` grava a simulação.
+Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.
+Traço no disco não é alguém de fora. Sem chave `session`.
+Se o `tools/serve.*` grava o recado, o `playtest` nomeia o recado que o serve já grava. Texto no disco não é alguém de fora. Sem chave `note`.
+Nenhum dos dois é sessão observada. Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Se o candidato
+tiver curva, o `note` a anexa. Número no disco não é causa. A tabela de
+ofício que *descreve* o formato não conta como
+achado. O harness não assiste à sessão e não conta jogadores.
 
 ## Verificar
 
@@ -449,7 +842,7 @@ O que ele acrescenta é uma alegação com autor, data, argv e log: `claimed` qu
 os comandos passaram, `unsupported` quando falharam. Em vez de sumir na prosa, a
 afirmação fica anexada a um recibo e pode ser contestada por quem ler. A declaração
 é de **quem executa**, nunca do repositório: nenhum arquivo do projeto seleciona
-capacidade, e `claimed` continua não sendo `verified`.
+capacidade, e `claimed` continua não sendo `verified`. Se o processo recusa que claimed seja verified, o `verify` nomeia a verificação que o processo já recusa. Alegação no disco não é cobertura. Sem chave `verified`.
 
 ## Registrar evidência declarada
 
@@ -466,7 +859,7 @@ Campos obrigatórios por tipo: `observation` → `scenario`, `role` (`human`/`ag
 `budget` → `metric`, `value` numérico, `unit`, `platform`, `tool`; `milestone` →
 `milestone`, `decision` (`declared`/`denied`/`deferred`), `declared_by`, `role`. Anexos
 entram por caminho e SHA-256. O recibo guarda o que foi declarado; não valida, não
-mede e não aprova. `role=agent` é avaliação do agente, não aprovação do usuário.
+mede e não aprova. Se o roteiro recusa medir os critérios, o `record` nomeia a medição que o roteiro já recusa. Recibo no disco não é observação. Sem chave `mede`. Se o roteiro recusa que o screenshot isolado comprove animação, o `record` nomeia a animação que o roteiro já recusa. Anexo no disco não é controle. Sem chave `animação`. Se o roteiro recusa que o HEAD substitua o julgamento, o `version` nomeia o julgamento que o roteiro já recusa. Identidade no disco não é avaliação. Sem chave `julgamento`. `role=agent` é avaliação do agente, não aprovação do usuário.
 
 ## Três camadas
 
@@ -489,7 +882,7 @@ harness não reivindica tê-los produzido.
 
 A barra de acabamento descreve o que observar; ela não observa. Nenhum comando
 promove um jogo a um degrau, e cumprir todos os critérios não garante que o jogo
-interesse a alguém — acabamento é condição necessária, não suficiente.
+interesse a alguém — acabamento é condição necessária, não suficiente. Se a barra recusa promover o degrau, o `context` nomeia a promoção que a barra já recusa. Guia no disco não é acabamento. Sem chave `promove`.
 
 Os oito frameworks externos foram estudados em recortes; seus testes não foram
 executados. Os conceitos são adaptações desses estudos, não garantias universais.
@@ -501,7 +894,7 @@ Recibos brutos de execução e o acervo sonoro ficam no laboratório.
 
 ```sh
 python3 -m unittest discover -s tests -v
-cd assets/starters/canvas-arcade && npm test && npm run budget
+cd assets/starters/canvas-arcade && npm test && npm run budget && npm run size
 ```
 
 Histórico 0.1–0.9: [adoção](adoption.md).

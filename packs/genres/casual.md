@@ -14,6 +14,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Primeiro toque ensina tudo: sem tutorial em texto; feedback exagerado (squash,
   partículas, som "juicy"); falha rápida e reinício instantâneo (< 1 s).
 - Toque: alvos ≥ 44 pt, tolerância de gesto, sem exigir precisão que o dedo não dá;

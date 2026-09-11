@@ -2,19 +2,364 @@
 //
 // Módulos ES não carregam por `file://`, então abrir o index.html direto no
 // navegador falha. Este servidor existe só para jogar e comparar localmente.
-// Não é servidor de produção: serve apenas o diretório do projeto, por método
-// GET, e recusa qualquer caminho que escape dele.
+// Não é servidor de produção: serve o diretório do projeto por GET e aceita
+// POST em `/playtest/last-run` (candidato), `/playtest/note` (recibo) e
+// `/playtest/finding` (achado preenchido; anexa last-run se existir). Recusa
+// caminho que escape do projeto e não grava na árvore exportada.
 
+import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { createReadStream } from "node:fs";
-import { realpath, stat } from "node:fs/promises";
-import { extname, join, normalize, sep } from "node:path";
+import { createReadStream, existsSync, readFileSync } from "node:fs";
+import { mkdir, readFile, realpath, stat, writeFile } from "node:fs/promises";
+import { networkInterfaces } from "node:os";
+import { dirname, extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import {
+  LAST_RUN_FILE,
+  LAST_RUN_ROUTE,
+  NOTE_DIR,
+  NOTE_ROUTE,
+  noteStamp,
+  FINDING_ROUTE,
+  findingAttachment,
+  playFinding,
+  playNote,
+  playReport,
+} from "../src/core/run-report.js";
+import { inviteHref, seedHref } from "../src/core/invite.js";
+
+const ROOT = await realpath(resolve(fileURLToPath(new URL("..", import.meta.url))));
+
+// Abrir o navegador é cortesia do terminal, não o jogo executado.
+// Testes encanaram o stdout: sem TTY, ninguém ganha uma janela.
+// CI e BROWSER=0 também recusam. Falha ao abrir não derruba o serve.
+export function shouldOpenBrowser(env = process.env, stdout = process.stdout) {
+  if (env.CI === "true" || env.CI === "1") return false;
+  if (env.BROWSER === "0" || env.BROWSER === "none") return false;
+  return Boolean(stdout && stdout.isTTY);
+}
+
+// HOST=127.0.0.1 prende o bind e cala a rede. Sem HOST o listen continua
+// o padrão do Node (todas as interfaces) — o que já era alcançável na
+// LAN, só não era anunciado. Anunciar não é alguém de fora.
+export function listenHost(env = process.env) {
+  const host = env.HOST || env.LISTEN_HOST;
+  if (host === "127.0.0.1" || host === "localhost") return "127.0.0.1";
+  if (host === "0.0.0.0" || host === "*") return "0.0.0.0";
+  return undefined;
+}
+
+function isLanV4(addr) {
+  if (!addr || addr.internal) return false;
+  const family = addr.family;
+  if (family !== "IPv4" && family !== 4) return false;
+  const ip = addr.address;
+  return Boolean(ip) && !ip.startsWith("169.254.");
+}
+
+export function advertisedOrigins(port, interfaces = networkInterfaces(), env = process.env) {
+  const origins = [`http://localhost:${port}`];
+  if (listenHost(env) === "127.0.0.1") return origins;
+  for (const list of Object.values(interfaces || {})) {
+    for (const addr of list || []) {
+      if (!isLanV4(addr)) continue;
+      origins.push(`http://${addr.address}:${port}`);
+    }
+  }
+  return [...new Set(origins)];
+}
+
+export function isArtifactRoot(root = ROOT) {
+  return existsSync(join(root, "VERSION.json"));
+}
+
+export function lastRunSeed(root = ROOT) {
+  try {
+    const data = JSON.parse(readFileSync(join(root, LAST_RUN_FILE), "utf8"));
+    if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+    const nested = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+      ? data.run.seed
+      : null;
+    const seed = data.seed ?? nested;
+    if (typeof seed !== "number" || !Number.isSafeInteger(seed) || seed < 0) return null;
+    return seed >>> 0;
+  } catch {
+    return null;
+  }
+}
+
+export function lastRunSpawn(root = ROOT) {
+  try {
+    const data = JSON.parse(readFileSync(join(root, LAST_RUN_FILE), "utf8"));
+    if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+    const nested = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+      ? data.run.spawn
+      : null;
+    const spawn = data.spawn ?? nested;
+    if (typeof spawn !== "string" || !/^[a-z][a-z0-9]{0,31}$/.test(spawn) || spawn === "spawn") {
+      return null;
+    }
+    return spawn;
+  } catch {
+    return null;
+  }
+}
+
+export function lastRunLook(root = ROOT) {
+  try {
+    const data = JSON.parse(readFileSync(join(root, LAST_RUN_FILE), "utf8"));
+    if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+    const nested = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+      ? data.run.look
+      : null;
+    const look = data.look ?? nested;
+    if (typeof look !== "string" || !/^[a-z][a-z0-9]{0,31}$/.test(look) || look === "normal" || look === "contrast") {
+      return null;
+    }
+    return look;
+  } catch {
+    return null;
+  }
+}
+
+export function lastRunSpeed(root = ROOT) {
+  try {
+    const data = JSON.parse(readFileSync(join(root, LAST_RUN_FILE), "utf8"));
+    if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+    const nested = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+      ? data.run.speed
+      : null;
+    const speed = data.speed ?? nested;
+    if (!Number.isFinite(speed) || speed === 1 || speed < 0.5 || speed > 1) return null;
+    return speed;
+  } catch {
+    return null;
+  }
+}
+
+export function inviteQuery(seed, spawn, look, speed) {
+  return inviteHref({
+    seed: Number.isInteger(seed) ? seed : undefined,
+    spawn: typeof spawn === "string" ? spawn : undefined,
+    look: typeof look === "string" ? look : undefined,
+    speed: Number.isFinite(speed) ? speed : undefined,
+  });
+}
+
+export function seedQuery(seed, spawn, look, speed) {
+  return seedHref({
+    seed: Number.isInteger(seed) ? seed : undefined,
+    spawn: typeof spawn === "string" ? spawn : undefined,
+    look: typeof look === "string" ? look : undefined,
+    speed: Number.isFinite(speed) ? speed : undefined,
+  });
+}
+
+export function listenBanner(port, interfaces = networkInterfaces(), env = process.env, root = ROOT) {
+  // O ciclo já nomeia o relógio. Sem isto o banner ensinava
+  // look, chuva e par e calava a query que o jogo já lê.
+  // Nomear não observa.
+  const origins = advertisedOrigins(port, interfaces, env);
+  const local = origins[0];
+  const seed = lastRunSeed(root);
+  const spawn = lastRunSpawn(root);
+  const look = lastRunLook(root);
+  const speed = lastRunSpeed(root);
+  const invite = inviteQuery(seed, spawn, look, speed);
+  const seedPath = seedQuery(seed, spawn, look, speed) ?? "/?seed=7";
+  const lines = [
+    `Jogo em ${local}/  (Ctrl+C encerra)`,
+    `Look: ${local}/?look=dusk  ${local}/?look=calm`,
+    `Chuva: ${local}/?spawn=dusk  ${local}/?spawn=calm`,
+    `Par: ${local}/?mood=calm  ${local}/?mood=dusk`,
+    `Relógio: ${local}/?speed=0.75`,
+    `Convite: ${local}${invite}`,
+    `Seed: ${local}${seedPath}`,
+    "Candidato: a partida grava docs/playtest/last-run.json",
+    "Nota: depois do fim a página grava o recibo em docs/playtest/",
+    "Achado: no convite a página grava os quatro nomes e anexa o candidato se houver partida",
+  ];
+  for (const origin of origins.slice(1)) {
+    lines.push(`Rede: ${origin}/`);
+    lines.push(`Convite na rede: ${origin}${invite}`);
+  }
+  if (isArtifactRoot(root)) {
+    lines.push("Árvore exportada. Servir aqui não é outra máquina.");
+  }
+  return lines.join("\n");
+}
+
+function openBrowser(url) {
+  const command = process.platform === "darwin" ? "open" : process.platform === "win32" ? "cmd" : "xdg-open";
+  const args = process.platform === "win32" ? ["/c", "start", "", url] : [url];
+  try {
+    spawn(command, args, { detached: true, stdio: "ignore" }).unref();
+  } catch {
+    // o endereço continua no console
+  }
+}
 
 // `pathname` de uma URL mantém a codificação percentual: um projeto em
 // "Farol do Sul" viraria "Farol%20do%20Sul", uma pasta que não existe, e todo
 // pedido responderia 404. `fileURLToPath` decodifica.
-const ROOT = await realpath(fileURLToPath(new URL("..", import.meta.url)));
+export { FINDING_ROUTE, LAST_RUN_FILE, LAST_RUN_ROUTE, NOTE_DIR, NOTE_ROUTE };
+
+export const LAST_RUN_LIMIT = 32 * 1024;
+
+export function acceptLastRun(raw) {
+  let data;
+  try {
+    data = typeof raw === "string" ? JSON.parse(raw) : raw;
+  } catch {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  const run = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+    ? data.run
+    : null;
+  if (!run || !Number.isFinite(run.ticks)) {
+    return { ok: false, status: 400, reason: "sem run" };
+  }
+  return {
+    ok: true,
+    report: playReport({
+      seed: data.seed ?? run.seed,
+      spawn: data.spawn,
+      look: data.look ?? run.look,
+      run,
+      curve: data.curve,
+      policy: "played",
+    }),
+  };
+}
+
+export async function writeLastRun(root, report) {
+  const dest = join(root, LAST_RUN_FILE);
+  await mkdir(dirname(dest), { recursive: true });
+  await writeFile(dest, `${JSON.stringify(report, null, 2)}\n`);
+  return dest;
+}
+
+export function acceptNote(raw) {
+  let data;
+  try {
+    data = typeof raw === "string" ? JSON.parse(raw) : raw;
+  } catch {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  const note = String(data.note ?? "").trim();
+  if (!note) return { ok: false, status: 400, reason: "sem nota" };
+  const author = String(data.author ?? "").trim() || "página";
+  return { ok: true, author, note };
+}
+
+async function attachedRun(root) {
+  try {
+    const data = JSON.parse(await readFile(join(root, LAST_RUN_FILE), "utf8"));
+    if (!data || typeof data !== "object") return {};
+    const run = data.run && typeof data.run === "object" && !Array.isArray(data.run)
+      ? data.run
+      : null;
+    const curve = data.curve && typeof data.curve === "object" && !Array.isArray(data.curve)
+      ? data.curve
+      : null;
+    return {
+      run,
+      curve,
+      seed: data.seed ?? run?.seed ?? null,
+      spawn: typeof data.spawn === "string" && data.spawn ? data.spawn : undefined,
+      look: typeof data.look === "string" && data.look ? data.look : undefined,
+    };
+  } catch {
+    return {};
+  }
+}
+
+export async function writeNote(root, { author, note }) {
+  const extra = await attachedRun(root);
+  const report = playNote({
+    author,
+    note,
+    project: String(root),
+    run: extra.run,
+    curve: extra.curve,
+  });
+  let folder = join(root, NOTE_DIR, noteStamp());
+  try {
+    await mkdir(folder, { recursive: true });
+  } catch {
+    folder = join(root, NOTE_DIR, `${noteStamp()}-b`);
+    await mkdir(folder, { recursive: true });
+  }
+  const dest = join(folder, "record.json");
+  await writeFile(dest, `${JSON.stringify(report, null, 2)}\n`, { flag: "wx" });
+  return dest;
+}
+
+export function acceptFinding(raw) {
+  let data;
+  try {
+    data = typeof raw === "string" ? JSON.parse(raw) : raw;
+  } catch {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return { ok: false, status: 400, reason: "json ilegível" };
+  }
+  const text = playFinding(data);
+  if (!text) return { ok: false, status: 400, reason: "sem achado" };
+  return { ok: true, text };
+}
+
+export async function writeFinding(root, text) {
+  await mkdir(join(root, NOTE_DIR), { recursive: true });
+  let dest = join(root, NOTE_DIR, `${noteStamp()}-achado.md`);
+  try {
+    await writeFile(dest, text, { flag: "wx" });
+  } catch {
+    dest = join(root, NOTE_DIR, `${noteStamp()}-b-achado.md`);
+    await writeFile(dest, text, { flag: "wx" });
+  }
+  const extra = await attachedRun(root);
+  if (extra.run) {
+    const companion = dest.replace(/-achado\.md$/, "-achado.run.json");
+    const report = findingAttachment({
+      seed: extra.seed ?? extra.run.seed,
+      spawn: extra.spawn,
+      look: extra.look,
+      run: extra.run,
+      curve: extra.curve,
+      finding: dest.split(/[/\\]/).pop(),
+    });
+    await writeFile(companion, `${JSON.stringify(report, null, 2)}\n`, { flag: "wx" });
+  }
+  return dest;
+}
+
+function collectBody(request, limit) {
+  return new Promise((done) => {
+    const chunks = [];
+    let size = 0;
+    request.on("data", (chunk) => {
+      size += chunk.length;
+      if (size > limit) {
+        request.destroy();
+        done(null);
+        return;
+      }
+      chunks.push(chunk);
+    });
+    request.on("end", () => done(Buffer.concat(chunks).toString("utf8")));
+    request.on("error", () => done(null));
+  });
+}
+
 const PORT = Number(process.env.PORT ?? 8080);
 const TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -32,8 +377,66 @@ const TYPES = {
 };
 
 const server = createServer(async (request, response) => {
+  const pathname = new URL(request.url, "http://localhost").pathname;
+  if (request.method === "POST" && pathname === LAST_RUN_ROUTE) {
+    if (isArtifactRoot()) {
+      response.writeHead(403, { "content-type": "text/plain; charset=utf-8" }).end("árvore exportada");
+      return;
+    }
+    const raw = await collectBody(request, LAST_RUN_LIMIT);
+    if (raw === null) {
+      response.writeHead(413, { "content-type": "text/plain; charset=utf-8" }).end("corpo grande");
+      return;
+    }
+    const accepted = acceptLastRun(raw);
+    if (!accepted.ok) {
+      response.writeHead(accepted.status, { "content-type": "text/plain; charset=utf-8" }).end(accepted.reason);
+      return;
+    }
+    await writeLastRun(ROOT, accepted.report);
+    response.writeHead(204).end();
+    return;
+  }
+  if (request.method === "POST" && pathname === NOTE_ROUTE) {
+    if (isArtifactRoot()) {
+      response.writeHead(403, { "content-type": "text/plain; charset=utf-8" }).end("árvore exportada");
+      return;
+    }
+    const raw = await collectBody(request, LAST_RUN_LIMIT);
+    if (raw === null) {
+      response.writeHead(413, { "content-type": "text/plain; charset=utf-8" }).end("corpo grande");
+      return;
+    }
+    const accepted = acceptNote(raw);
+    if (!accepted.ok) {
+      response.writeHead(accepted.status, { "content-type": "text/plain; charset=utf-8" }).end(accepted.reason);
+      return;
+    }
+    await writeNote(ROOT, accepted);
+    response.writeHead(204).end();
+    return;
+  }
+  if (request.method === "POST" && pathname === FINDING_ROUTE) {
+    if (isArtifactRoot()) {
+      response.writeHead(403, { "content-type": "text/plain; charset=utf-8" }).end("árvore exportada");
+      return;
+    }
+    const raw = await collectBody(request, LAST_RUN_LIMIT);
+    if (raw === null) {
+      response.writeHead(413, { "content-type": "text/plain; charset=utf-8" }).end("corpo grande");
+      return;
+    }
+    const accepted = acceptFinding(raw);
+    if (!accepted.ok) {
+      response.writeHead(accepted.status, { "content-type": "text/plain; charset=utf-8" }).end(accepted.reason);
+      return;
+    }
+    await writeFinding(ROOT, accepted.text);
+    response.writeHead(204).end();
+    return;
+  }
   if (request.method !== "GET" && request.method !== "HEAD") {
-    response.writeHead(405, { allow: "GET, HEAD" }).end();
+    response.writeHead(405, { allow: "GET, HEAD, POST" }).end();
     return;
   }
   let requested;
@@ -73,8 +476,16 @@ const server = createServer(async (request, response) => {
   }
 });
 
-server.listen(PORT, () => {
-  // A porta anunciada é a que o sistema abriu, não a pedida: com PORT=0 elas
-  // são diferentes, e um endereço errado no console custa uma depuração inteira.
-  console.log(`Jogo em http://localhost:${server.address().port}/  (Ctrl+C encerra)`);
-});
+const invoked = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
+if (invoked) {
+  const host = listenHost();
+  const onListen = () => {
+    // A porta anunciada é a que o sistema abriu, não a pedida: com PORT=0 elas
+    // são diferentes, e um endereço errado no console custa uma depuração inteira.
+    const port = server.address().port;
+    console.log(listenBanner(port));
+    if (shouldOpenBrowser()) openBrowser(`http://localhost:${port}/`);
+  };
+  if (host) server.listen(PORT, host, onListen);
+  else server.listen(PORT, onListen);
+}

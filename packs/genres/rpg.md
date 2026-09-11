@@ -12,6 +12,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Combate: acerto legível (hitstop, número, som por tipo de dano), telegraph de
   inimigos, cancelamento e buffer; por turnos, ver [turno](turn-based.md).
 - Recompensa: som e animação de level up/loot proporcionais à raridade; UI que

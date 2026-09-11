@@ -19,7 +19,7 @@ Substitua cada `[preencher]`; uma área intencionalmente não aplicável recebe 
 
 ## Game design e mecânicas
 
-- Ciclo principal: [informação → alternativas → ação → consequência → próxima decisão].
+- Ciclo principal: [com tela, a porta; depois informação → alternativas → ação → consequência → próxima decisão].
 - GDD-M01: [estado inicial e ação → alternativas e custo → novo estado e feedback → recusas].
 - Controles, câmera e legibilidade: [verbo central por dispositivo, resposta, enquadramento, cancelamento].
 - Ritmo e progressão: [primeira aprendizagem, prática, combinação de riscos, recuperação].
@@ -65,6 +65,11 @@ Substitua cada `[preencher]`; uma área intencionalmente não aplicável recebe 
 
 - QA-001 (AC-001): [condição, ações, esperado, comando real; resultado: não executado].
 - PLAY-001: [hipótese MDA, perfil do jogador, sinais a observar; observação: não coletada].
+- Achado (esqueleto vazio não é achado):
+  - Problema:
+  - Evidência:
+  - Hipótese:
+  - Medição:
 - Comparação em movimento: [referência e condições equivalentes].
 - Aprovação: [autor e origem; avaliação do agente não é aprovação do usuário].
 

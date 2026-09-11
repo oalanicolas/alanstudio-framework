@@ -8,6 +8,10 @@ eficiente do **mesmo** resultado; reduzir sombras, resolução, animação ou ef
 para atingir um número é rebaixar o jogo, não otimizá-lo. Se a única saída for
 cortar acabamento, isso é uma decisão de escopo e precisa ser registrada como tal.
 
+Com tela, a porta também anda: a mostra da mesa vigente cai todo
+tick. Orçar só o campo esconde o primeiro quadro. Sem tela o
+headless já joga.
+
 Meça o que o jogador sente. FPS médio esconde exatamente o problema que importa:
 use a distribuição do tempo de quadro e o pior percentil. Um jogo a 60 quadros com
 um engasgo de 200 ms por minuto é lido como instável; um jogo estável a 30 não é.
@@ -38,10 +42,26 @@ Confirme onde a prova vale. Editor não é build exportado; máquina de desenvol
 quente não é máquina do jogador fria. Aquecimento, cache e ferramentas de perfil
 alteram o próprio resultado que estão medindo.
 
+`budget <projeto>` lê se existe script `budget`/`bench`, `tools/budget.*` ou
+`record --kind budget`. Se o tool declara `title.attract`, o `budget`
+nomeia a porta que a receita já cronometra. Stub no disco não é
+dispositivo. Sem chave `door`. `measured` é sempre falso: o harness não executa a
+medição.
+
 Implementação concreta: `tools/budget.mjs` do starter `canvas-arcade` mede a
-simulação por percentil, não por média, e declara no próprio resultado que não
-cobre render, áudio, carregamento nem o dispositivo alvo. O laço de passo fixo em
-`src/core/loop.js` é o que torna essa medição comparável entre execuções.
+simulação e o `draw` num canvas stub, por percentil, não por média. Se o `tools/budget.*` relata o pior percentil, o `budget` nomeia o percentil que a receita já pede.
+Relato no disco não é dispositivo. Sem chave `percentile`. A ferramenta declara
+no próprio resultado que não cobre compositor, áudio, carregamento nem o
+dispositivo alvo. A chuva compacta o array vivo e reusa um poço de
+entidades; o evento volta ao poço no passo seguinte, o telegraph
+reusa um buffer e o gerador da chuva reusa o mesmo objeto — o
+orçamento declara as cenas `title.attract` e `playing.run` e relata esse reuso, sem teto
+e sem aprovação. Orçar só o campo escondia o primeiro quadro.
+O laço de passo fixo em `src/core/loop.js` é o que torna
+a medição da simulação comparável entre execuções. `npm run size` relata
+os bytes de `dist/` sem teto. Se o `tools/size.*` declara sem teto, o
+`budget` nomeia os bytes que o size já relata. Bytes no disco não são
+o quadro medido. Sem chave `size`.
 
 Prova: distribuição de tempo de quadro na cena de pior caso, primeiro carregamento
 em ambiente frio, comparação visual em movimento confirmando que o acabamento

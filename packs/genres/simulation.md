@@ -12,6 +12,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Feedback de fluxo: itens visíveis em esteiras/tubos, indicadores de gargalo, som de
   atividade proporcional; construção com snap, preview e desfazer.
 - Câmera livre com limites; zoom com nível de detalhe coerente; hora do dia e clima

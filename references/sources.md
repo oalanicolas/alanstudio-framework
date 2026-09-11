@@ -296,7 +296,8 @@ comprovada não é.
 Escrito neste repositório, sem dependências de terceiros. `mulberry32`, em
 `src/core/rng.js`, é algoritmo de domínio público amplamente publicado; o
 embaralhamento de bits em `src/core/hash.js` pertence à mesma família. O starter
-não embarca imagem, som nem fonte — proveniência completa em
+não embarca imagem nem fonte. O som dos seis papéis é design original
+em `public/sfx` (CC0-1.0, `tools/design-sfx.py`) — proveniência completa em
 [CREDITS.md](../assets/starters/canvas-arcade/CREDITS.md).
 
 Seus testes rodam neste repositório e exercitam o ciclo de vida, o determinismo e
@@ -306,9 +307,14 @@ meio. Nada disso alcança um jogo derivado depois que ele for adaptado.
 
 ## Áudio
 
-O acervo `shared/sfx` é do laboratório, não deste repositório. O harness expõe
-`sfx search` / `sfx copy` quando essa pasta existir na raiz de `--root`.
-A receita de áudio orienta mix e interrupção; o catálogo só localiza arquivos.
+O acervo `shared/sfx` é do laboratório, não deste repositório. O harness
+expõe `sfx search` mesmo sem essa pasta: o catálogo vem vazio e a busca
+nomeia o stem do starter que casa com o termo. `sfx copy` e
+`sfx export` levam bytes e créditos desse stem, ou de um id do
+acervo. Com sons, `sfx serve` abre a página de escuta; se `ui/`
+faltar, o harness gera a lista. Tocar nessa página não é mix ouvida.
+A receita de áudio orienta mix e interrupção; o catálogo só
+localiza arquivos do acervo — não ouve o starter.
 
 ## Playground
 

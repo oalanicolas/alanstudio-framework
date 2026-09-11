@@ -1,0 +1,5 @@
+docs/playtest/last-run.json
+docs/playtest/*-achado.md
+docs/playtest/*-achado.run.json
+dist/
+__pycache__/

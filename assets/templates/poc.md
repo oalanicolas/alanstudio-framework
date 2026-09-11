@@ -16,7 +16,7 @@ Hipótese/requisito de origem: [MDA/GDD/PRD/TDD ou questão do brief].
 
 - Reuso: [código/cena/teste existente, consumidor e adequação].
 - Mudança necessária: [adaptar ou criar só a capacidade ausente].
-- Cenário e entrada: [estado, ações e condições de repetição].
+- Cenário e entrada: [com tela, a porta; estado, ações e condições de repetição].
 - Comparação: [variável alterada e condições equivalentes].
 - Procedimento: [comandos e observação; distinguir fixture de caminho real].
 - Evidência a coletar: [logs, estado, captura em movimento ou comportamento].

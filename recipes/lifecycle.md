@@ -18,6 +18,27 @@ leitura da tecla morava dentro da simulação, que não roda em pausa. O comando
 para sair de um estado nunca pode ser lido por um caminho que aquele estado
 desliga. Percorra a ligação real: evento de entrada → quadro → estado.
 
+Com tela, o ciclo deste starter é abertura → partida → fim → abertura.
+O avanço abre a porta e, depois do fim, um avanço *novo* volta a ela.
+R no overlay também. Sem tela o headless já joga. A página oferece o
+recibo no overlay e na porta se houver partida; isso não é observação.
+Aba escondida pausa no campo e no fim. Na porta só descarrega — P já
+é ignorado e a placa nem nasce. Na pausa o toque retoma; Espaço
+continua só intenção. A placa da pausa nomeia reiniciar.
+A região viva espelha continuar e reiniciar. Depois da partida
+o telefone pede seed nova embaixo; o campo repete a última.
+Na porta o telefone vê Jogar: toque
+sem ter apertado; lastSource continua teclado. Depois do
+tap a porta e o fim não chamam o avanço de cima. Perda de foco da janela grava o hold
+e senta o mesmo relógio; na porta só descarrega. O controle que some
+senta o mesmo relógio se a sessão falou no pad; teclado e toque não
+sentam porque um pad na gaveta desconectou. Na porta só descarrega.
+Hidden que pausa sem P para retomar
+congela a mostra. A query de look, chuva e relógio veste a
+sessão; `pagehide` e `flush` não a gravam. Escolher no painel
+grava. `?spawn=` não retoma o hold de outra mesa; look e
+relógio vestem o tick que já está. Stub não é aba fechada nem sessão no controle.
+
 Examine separadamente:
 
 - Pausa da simulação, render visível, input, áudio, callbacks e transições.

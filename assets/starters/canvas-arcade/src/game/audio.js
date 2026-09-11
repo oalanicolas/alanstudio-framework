@@ -1,27 +1,143 @@
 // Mixagem: barramentos, prioridade, ducking e legenda.
 //
-// Este starter **não embarca arquivos de som**. O piso do estúdio é gravação
-// licenciada ou design contemporâneo — 8-bit, chiptune, jsfxr e Kenney arcade
-// não são o padrão — então sintetizar bipes aqui seria escolher a estética
-// errada por conveniência. Em vez disso os slots ficam declarados e vazios, e
-// `missing()` transforma a ausência em uma lacuna observável.
+// Os papéis do verbo, do orbe perdido, do fecho, da prática, da guarda e a cama têm design original em `public/sfx/<papel>.wav`
+// e variante `public/sfx/<papel>-b.wav`: seno e ruído filtrado,
+// gerados por tools/design-sfx.py. O mixer alterna as variantes do verbo.
+// A cama (`bed`) ocupa o barramento de música em loop; não é informação
+// de jogo e não ganha legenda. No fecho o mixer desloca o tom da cama
+// (`bedRate`); o relógio da sessão (`gameSpeed`) dilata a
+// mesma cama só na partida — coleta e guarda guardam o tom
+// da aposta. Número no disco não é mix ouvido.
+// 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão — esses
+// arquivos não usam nenhum dos quatro. Coleta e guarda sobem de tom
+// com a corrente; o erro não herda o tom. A legenda desses dois papéis
+// nomeia a mesma aposta — sem isto o tom falava e a faixa calava.
+// O erro emite `lost`. Sem isto a faixa dizia corrente perdida
+// com aposta zero. Número na legenda não é mix ouvido.
+// Coleta, queda, raspo, impacto,
+// avanço, o término, a guarda e o fim levam o x do campo; o panner marca o lugar. Arquivo no disco
+// não é mixagem ouvida: `heard` no harness continua falso.
 //
-// Para preencher, a partir da raiz do framework:
-//   python3 scripts/game.py sfx search <termo> --root <laboratorio>
-//   python3 scripts/game.py sfx copy <id> --to <projeto>/public/sfx --root <laboratorio>
+// O jogo carrega o arquivo no mixer. Sem esse consumidor, arquivo no
+// disco e jogo mudo eram a mesma coisa. O pedido que chega antes do
+// WAV — ou enquanto o contexto ainda está suspenso — fica na fila e
+// toca quando o buffer entra ou o gesto retoma, sem segunda
+// legenda. Os stems sobem juntos; wav no lugar não pede ogg.
+// O gesto (tecla, toque ou controle) retoma o contexto suspenso;
+// retomar, fila e paralelo não são mix ouvido.
+// `missing()` lista o papel se o decode falhar ou o fetch 404 —
+// o loader marca o primário; decode nulo tenta a próxima extensão
+// antes de marcar. O play também marca o pedido sem buffer.
+// O painel nomeia os vazios mesmo quando outro papel já registrou.
+// Relê quando o fetch termina — pintar só no boot some o que chegou.
+// O `over` pede fade na cama; pause, title e aba escondida
+// continuam cortando a cama seco. Na pausa o mixer também
+// corta as vozes do verbo que ainda soavam — overlay
+// Pausado com hit no ar era a mesma partida. Número no
+// disco não é mix ouvido.
 //
 // Toda informação sonora tem legenda equivalente: o jogo precisa ser
 // completável com o áudio desligado.
 
+import { DEFAULT_BUSES } from "../core/settings.js";
+import { chainPlaybackRate, FIELD } from "./rules.js";
+
+// O campo tem lugar. Sem isto, coleta à esquerda e à direita
+// ocupam o mesmo ponto. Número no panner não é mix ouvido.
+export function audioGapLine(gaps) {
+  const declared = Array.isArray(gaps?.declared) ? gaps.declared : [];
+  const registered = Array.isArray(gaps?.registered) ? gaps.registered : [];
+  const empty = declared.filter((id) => !registered.includes(id));
+  if (!declared.length) return "";
+  if (!registered.length) {
+    return (
+      `Nenhum arquivo de som embarcado. Papéis declarados e vazios: ${declared.join(", ")}. `
+      + "As legendas cobrem a informação sonora até o acervo ser preenchido."
+    );
+  }
+  if (!empty.length) return `Sons registrados: ${registered.join(", ")}.`;
+  return `Sons registrados: ${registered.join(", ")}. Ainda vazios: ${empty.join(", ")}.`;
+}
+
+// O painel já nomeia o vazio. Sem isto a região viva
+// calava e o convite some a tabela. Catálogo completo
+// não entra — não é lacuna. Nomear não é mix ouvido.
+export function audioGapLive(gaps) {
+  const declared = Array.isArray(gaps?.declared) ? gaps.declared : [];
+  const registered = Array.isArray(gaps?.registered) ? gaps.registered : [];
+  const empty = declared.filter((id) => !registered.includes(id));
+  if (!declared.length || !empty.length) return "";
+  return audioGapLine(gaps);
+}
+
+export function stereoPan(x, width = FIELD.width) {
+  if (!Number.isFinite(x) || !Number.isFinite(width) || !(width > 0)) return 0;
+  return Math.max(-1, Math.min(1, (x / width) * 2 - 1));
+}
+
+const CHAIN_ROLES = new Set(["collect", "bank"]);
+
+function resolveRate(id, extra = {}) {
+  if (Number.isFinite(extra.rate)) return extra.rate;
+  if (CHAIN_ROLES.has(id) && Number.isFinite(extra.chain)) {
+    return chainPlaybackRate(extra.chain);
+  }
+  return 1;
+}
+
+// O tom já nomeia a aposta. Sem isto a faixa só dizia o verbo.
+// Número na legenda não é mix ouvido nem sessão de alcance.
+export function captionFor(id, extra = {}) {
+  const definition = SOUNDS[id];
+  const base = definition?.caption;
+  if (!base) return "";
+  if (id === "hit") {
+    const lost = Number(extra.lost);
+    if (Number.isFinite(lost) && lost > 0) {
+      return `${base}: corrente ${Math.trunc(lost)} perdida`;
+    }
+    return base;
+  }
+  // A porta fala a mostra. Sem isto a prática acabava e
+  // a faixa chamava orbe de chuva que começa. O aviso já
+  // nomeia a ameaça. Legenda no disco não é mix ouvido.
+  if (id === "live" && extra.threat === true) {
+    return "a ameaça começa";
+  }
+  if (CHAIN_ROLES.has(id) && Number.isFinite(extra.chain) && extra.chain > 0) {
+    return `${base}, corrente ${Math.trunc(extra.chain)}`;
+  }
+  return base;
+}
+
 export const BUSES = ["master", "music", "sfx", "ui"];
+// Folga no master: overlap de vozes não senta no teto digital.
+// Não é loudness aprovado e não substitui sessão no dispositivo.
+export const MIX_HEADROOM = 0.82;
+// O aviso crítico abaixa a cama, não o próprio verbo. Duck em sfx/ui
+// some o hit sob o hit. Número no disco não é mix ouvido.
+export const DUCK_BUSES = ["music"];
+export const DUCK_LEVEL = 0.35;
+// Solta a cama no over. Pause, title e aba escondida
+// continuam cortando seco. Número no disco não é mix ouvido.
+export const BED_FADE_MS = 280;
 
 export const SOUNDS = {
   dash: { bus: "sfx", caption: "avanço", priority: 1 },
+  land: { bus: "sfx", caption: "o avanço senta", priority: 1 },
   graze: { bus: "sfx", caption: "passou raspando", priority: 1 },
   collect: { bus: "sfx", caption: "orbe coletado", priority: 2 },
+  missed: { bus: "sfx", caption: "orbe perdido", priority: 1 },
   bank: { bus: "sfx", caption: "corrente guardada", priority: 3, duckMs: 180 },
-  hit: { bus: "sfx", caption: "atingido: corrente perdida", priority: 4, duckMs: 260 },
+  hit: { bus: "sfx", caption: "atingido", priority: 4, duckMs: 260 },
   over: { bus: "ui", caption: "fim da partida", priority: 5, duckMs: 400 },
+  close: { bus: "ui", caption: "últimos segundos", priority: 2 },
+  live: { bus: "ui", caption: "a chuva começa", priority: 2 }, // porta; prática passa threat e vira ameaça
+  // A chuva não some na folga — só afrouxa. Sem isto a
+  // faixa dizia que a chuva voltava. O campo já some o
+  // contorno da folga. Legenda no disco não é mix ouvido.
+  stir: { bus: "ui", caption: "a folga acaba", priority: 2 },
+  bed: { bus: "music", caption: null, priority: 0, loop: true },
 };
 
 export function createAudio(options = {}) {
@@ -30,23 +146,41 @@ export function createAudio(options = {}) {
   const now = options.now ?? (() => Date.now());
   const createContext = options.createContext ?? defaultContext;
 
-  let settings = options.settings ?? { buses: { master: 0.8, music: 0.6, sfx: 0.9, ui: 0.7 }, captions: true };
+  let settings = options.settings ?? { buses: { ...DEFAULT_BUSES }, captions: true };
   let context = null;
   let gains = null;
   const buffers = new Map();
+  const cursors = new Map();
   const missing = new Set();
+  const pending = new Map();
+  let flushing = false;
   const voices = [];
+  const loops = new Map();
   const captions = [];
   let duckUntil = 0;
   let disposed = false;
+  let hushed = false;
 
   function ensureContext() {
-    if (disposed || context) return context;
+    if (disposed) return context;
+    if (context) return context;
     context = createContext();
     if (!context) return null;
     gains = {};
     gains.master = context.createGain();
-    gains.master.connect(context.destination);
+    const limiter =
+      typeof context.createDynamicsCompressor === "function" ? context.createDynamicsCompressor() : null;
+    if (limiter) {
+      limiter.threshold.value = -6;
+      limiter.knee.value = 8;
+      limiter.ratio.value = 8;
+      limiter.attack.value = 0.003;
+      limiter.release.value = 0.12;
+      gains.master.connect(limiter);
+      limiter.connect(context.destination);
+    } else {
+      gains.master.connect(context.destination);
+    }
     for (const bus of BUSES.slice(1)) {
       gains[bus] = context.createGain();
       gains[bus].connect(gains.master);
@@ -55,13 +189,57 @@ export function createAudio(options = {}) {
     return context;
   }
 
+  // Chrome e Safari nascem suspensos. `decode` no boot cria o
+  // contexto fora do gesto; o avanço da porta já é o gesto — se
+  // o resume ficar para o quadro, o primeiro verbo continua mudo.
+  // Sem isto o mixer disparava no vazio e a fila só esperava o
+  // WAV. Pedir resume não é mix ouvido.
+  function asleep() {
+    return Boolean(context && context.state === "suspended");
+  }
+
+  function flushPending() {
+    if (disposed || asleep() || flushing) return;
+    flushing = true;
+    try {
+      for (const [id, extra] of [...pending]) {
+        if (!(buffers.get(id) ?? []).length) continue;
+        pending.delete(id);
+        emitVoice(id, extra);
+      }
+    } finally {
+      flushing = false;
+    }
+  }
+
+  function unlock() {
+    if (disposed) return false;
+    const ctx = ensureContext();
+    if (!ctx) return false;
+    if (ctx.state === "suspended" && typeof ctx.resume === "function") {
+      try {
+        const work = ctx.resume();
+        if (work && typeof work.then === "function") {
+          work.then(() => {
+            if (!disposed) flushPending();
+          }).catch(() => {});
+        }
+      } catch {
+        return false;
+      }
+    }
+    if (!asleep()) flushPending();
+    return true;
+  }
+
   function applyBusLevels() {
     if (!gains) return;
     const levels = settings.buses ?? {};
-    const ducked = now() < duckUntil ? 0.35 : 1;
+    const ducking = now() < duckUntil;
     for (const bus of BUSES) {
       const level = Number.isFinite(levels[bus]) ? levels[bus] : 1;
-      gains[bus].gain.value = bus === "master" ? level : level * ducked;
+      const duck = ducking && DUCK_BUSES.includes(bus) ? DUCK_LEVEL : 1;
+      gains[bus].gain.value = bus === "master" ? level * MIX_HEADROOM : level * duck;
     }
   }
 
@@ -72,61 +250,158 @@ export function createAudio(options = {}) {
     }
   }
 
+  function cutVoices() {
+    for (const voice of voices) voice.stop();
+    voices.length = 0;
+  }
+
+  function emitVoice(id, extra = {}) {
+    const definition = SOUNDS[id];
+    if (!definition || disposed) return false;
+    if (hushed && !definition.loop) return false;
+    const pack = buffers.get(id) ?? [];
+    if (!pack.length) return false;
+    unlock();
+    if (!context) return false;
+    if (asleep()) {
+      pending.set(id, extra);
+      return false;
+    }
+    applyBusLevels();
+    if (definition.loop) return startLoop(id, definition, pack[0]);
+    const cursor = cursors.get(id) ?? 0;
+    const buffer = pack[cursor % pack.length];
+    cursors.set(id, cursor + 1);
+    retire();
+    if (voices.length >= maxVoices) {
+      // Sob pressão, o som menos importante é o que desaparece — não o aviso.
+      const weakest = voices.reduce((low, voice) => (voice.priority < low.priority ? voice : low), voices[0]);
+      if (weakest.priority >= definition.priority) return false;
+      weakest.stop();
+      voices.splice(voices.indexOf(weakest), 1);
+    }
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    const rate = resolveRate(id, extra);
+    if (source.playbackRate) source.playbackRate.value = rate;
+    const bus = gains[definition.bus] ?? gains.master;
+    const placed = Number.isFinite(extra.pan) || Number.isFinite(extra.x);
+    if (placed && typeof context.createStereoPanner === "function") {
+      const panner = context.createStereoPanner();
+      panner.pan.value = Number.isFinite(extra.pan) ? Math.max(-1, Math.min(1, extra.pan)) : stereoPan(extra.x);
+      source.connect(panner);
+      panner.connect(bus);
+    } else {
+      source.connect(bus);
+    }
+    source.start();
+    const voice = {
+      priority: definition.priority,
+      until: now() + Math.ceil((buffer.duration ?? 0.2) * 1000),
+      stop: () => {
+        try {
+          source.stop();
+        } catch {
+          /* já terminou */
+        }
+      },
+    };
+    voices.push(voice);
+    return true;
+  }
+
   return {
     get available() {
       return Boolean(context);
     },
+    unlock,
     register(id, buffer) {
-      if (!(id in SOUNDS)) return false;
-      buffers.set(id, buffer);
+      if (!(id in SOUNDS) || disposed) return false;
+      const pack = buffers.get(id) ?? [];
+      pack.push(buffer);
+      buffers.set(id, pack);
       missing.delete(id);
+      const waiting = pending.get(id);
+      if (waiting !== undefined) {
+        pending.delete(id);
+        emitVoice(id, waiting);
+      }
       return true;
     },
-    play(id) {
+    fail(id) {
+      if (!(id in SOUNDS) || disposed || buffers.has(id)) return false;
+      missing.add(id);
+      return true;
+    },
+    async decode(bytes) {
+      const ctx = ensureContext();
+      if (!ctx || typeof ctx.decodeAudioData !== "function") return null;
+      const copy = bytes instanceof ArrayBuffer ? bytes.slice(0) : bytes;
+      return ctx.decodeAudioData(copy);
+    },
+    hush() {
+      if (disposed) return false;
+      hushed = true;
+      cutVoices();
+      return true;
+    },
+    lift() {
+      if (disposed) return false;
+      hushed = false;
+      return true;
+    },
+    play(id, extra = {}) {
       const definition = SOUNDS[id];
       if (!definition || disposed) return false;
-      if (settings.captions !== false) {
-        captions.push({ id, text: definition.caption, at: now() });
-        while (captions.length > captionLimit) captions.shift();
+      if (hushed && !definition.loop) return false;
+      const text = captionFor(id, extra);
+      if (text && settings.captions !== false) {
+        const last = captions[captions.length - 1];
+        // O fecho pulsa a cada segundo. Empilhar a mesma linha come
+        // collect/bank/hit no teto da faixa. Flash e voz continuam;
+        // a faixa só refresca o instante da linha que já está lá.
+        if (id === "close" && last && last.id === id && last.text === text) {
+          last.at = now();
+        } else {
+          captions.push({ id, text, at: now() });
+          while (captions.length > captionLimit) captions.shift();
+        }
       }
       if (definition.duckMs) duckUntil = now() + definition.duckMs;
-      const buffer = buffers.get(id);
-      if (!buffer) {
+      const pack = buffers.get(id) ?? [];
+      if (!pack.length) {
         missing.add(id);
+        pending.set(id, extra);
+        unlock();
         return false;
       }
-      ensureContext();
-      if (!context) return false;
-      retire();
-      if (voices.length >= maxVoices) {
-        // Sob pressão, o som menos importante é o que desaparece — não o aviso.
-        const weakest = voices.reduce((low, voice) => (voice.priority < low.priority ? voice : low), voices[0]);
-        if (weakest.priority >= definition.priority) return false;
-        weakest.stop();
-        voices.splice(voices.indexOf(weakest), 1);
+      return emitVoice(id, extra);
+    },
+    stop(id, extra = {}) {
+      const voice = loops.get(id);
+      if (!voice) return false;
+      const fadeMs = Number(extra.fadeMs);
+      if (Number.isFinite(fadeMs) && fadeMs > 0 && voice.gain) {
+        voice.fade = {
+          from: voice.gain.gain.value,
+          to: 0,
+          start: now(),
+          ms: fadeMs,
+        };
+        return true;
       }
-      applyBusLevels();
-      const source = context.createBufferSource();
-      source.buffer = buffer;
-      source.connect(gains[definition.bus] ?? gains.master);
-      source.start();
-      const voice = {
-        priority: definition.priority,
-        until: now() + Math.ceil((buffer.duration ?? 0.2) * 1000),
-        stop: () => {
-          try {
-            source.stop();
-          } catch {
-            /* já terminou */
-          }
-        },
-      };
-      voices.push(voice);
+      voice.stop();
+      loops.delete(id);
       return true;
     },
     // Chamado a cada quadro: o ducking precisa voltar sozinho.
-    update() {
+    // `bedRate` desloca a cama no fecho; o fade da cama anda
+    // no mesmo tick. Número no disco não é mix ouvido.
+    update(extra = {}) {
       applyBusLevels();
+      tickFades();
+      const rate = Number(extra.bedRate);
+      if (Number.isFinite(rate) && rate > 0) applyLoopRate("bed", rate);
     },
     applySettings(next) {
       settings = next;
@@ -144,6 +419,7 @@ export function createAudio(options = {}) {
         if (last && last.id === entry.id) {
           last.count += 1;
           last.at = entry.at;
+          last.text = entry.text;
           continue;
         }
         merged.push({ ...entry, count: 1 });
@@ -156,14 +432,67 @@ export function createAudio(options = {}) {
     },
     dispose() {
       disposed = true;
+      pending.clear();
       for (const voice of voices) voice.stop();
       voices.length = 0;
+      for (const voice of loops.values()) voice.stop();
+      loops.clear();
       captions.length = 0;
       if (context && typeof context.close === "function") context.close();
       context = null;
       gains = null;
     },
   };
+
+  function startLoop(id, definition, buffer) {
+    const leftover = loops.get(id);
+    if (leftover) {
+      if (!leftover.fade) return true;
+      leftover.stop();
+      loops.delete(id);
+    }
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    const gain = context.createGain();
+    gain.gain.value = 1;
+    source.connect(gain);
+    gain.connect(gains[definition.bus] ?? gains.master);
+    source.start();
+    loops.set(id, {
+      source,
+      gain,
+      stop: () => {
+        try {
+          source.stop();
+        } catch {
+          /* já parou */
+        }
+      },
+    });
+    return true;
+  }
+
+  function tickFades() {
+    const time = now();
+    for (const [id, voice] of [...loops]) {
+      if (!voice.fade || !voice.gain) continue;
+      const span = voice.fade.ms;
+      const t = span > 0 ? Math.min(1, (time - voice.fade.start) / span) : 1;
+      voice.gain.gain.value = voice.fade.from + (voice.fade.to - voice.fade.from) * t;
+      if (t >= 1) {
+        voice.stop();
+        loops.delete(id);
+      }
+    }
+  }
+
+  function applyLoopRate(id, rate) {
+    const voice = loops.get(id);
+    if (!voice?.source?.playbackRate) return false;
+    voice.source.playbackRate.value = rate;
+    return true;
+  }
 }
 
 function defaultContext() {

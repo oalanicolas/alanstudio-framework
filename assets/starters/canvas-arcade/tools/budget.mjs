@@ -1,14 +1,16 @@
-// Orçamento: mede a simulação sem apresentação.
+// Orçamento: mede a simulação e o caminho de desenho num canvas stub.
+// A porta também entra: orçar só o campo esconde o primeiro quadro.
 //
 // Isola o custo das regras do custo de desenhar. Se a simulação já não cabe no
-// orçamento headless, nenhuma otimização de render resolve. Reporta a
-// distribuição do tempo de passo — não a média — porque é o pior percentil que
-// o jogador sente, e a impressão determinística da partida, para que uma
-// alteração de desempenho que mude o comportamento seja detectada aqui.
+// orçamento headless, nenhuma otimização de render resolve. O draw no stub
+// exercita o caminho de apresentação — não o compositor nem o dispositivo.
+// Reporta a distribuição do tempo — não a média — porque é o pior percentil
+// que o jogador sente, e a impressão determinística da partida.
 //
 // Uso: node tools/budget.mjs [--runs 20] [--seed 7]
 
-import { advance, createState, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
+import { advance, attractMove, attractTick, attractTouch, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
+import { createRenderer } from "../src/game/render.js";
 import { fingerprint } from "../src/core/hash.js";
 import { createRng } from "../src/core/rng.js";
 
@@ -20,12 +22,83 @@ const argument = (name, fallback) => {
 const runs = argument("runs", 20);
 const baseSeed = argument("seed", 7);
 const stepBudgetMs = 1000 / TICK_HZ;
+// A receita pede a porta. Sem isto só o campo entra no
+// relatório e o primeiro quadro some. 120 ticks cobrem
+// a frase e o mover. Stub não é dispositivo.
+const TITLE_TICKS = 120;
+
+function stubCanvas() {
+  const context = {
+    setTransform() {},
+    save() {},
+    restore() {},
+    beginPath() {},
+    closePath() {},
+    moveTo() {},
+    lineTo() {},
+    arc() {},
+    ellipse() {},
+    quadraticCurveTo() {},
+    stroke() {},
+    fill() {},
+    fillRect() {},
+    roundRect() {},
+    strokeRect() {},
+    clearRect() {},
+    rect() {},
+    createLinearGradient: () => ({ addColorStop() {} }),
+    createRadialGradient: () => ({ addColorStop() {} }),
+    measureText: (text) => ({ width: String(text).length * 5 }),
+    fillText() {},
+    font: "8px system-ui",
+    textAlign: "left",
+    textBaseline: "top",
+    fillStyle: "",
+    strokeStyle: "",
+    lineWidth: 1,
+    globalAlpha: 1,
+  };
+  return {
+    width: 640,
+    height: 360,
+    style: {},
+    getContext: () => context,
+  };
+}
 
 const samples = [];
+const presents = [];
+const titleSamples = [];
+const titlePresents = [];
 let prints = new Set();
 let totalSteps = 0;
+const poolStart = entityPoolStats();
+const eventStart = eventPoolStats();
+const moteStart = motePoolStats();
+const rngStart = rngPoolStats();
+
+const renderer = createRenderer(stubCanvas(), { devicePixelRatio: 1 });
+renderer.resize(640, 360);
 
 for (let run = 0; run < runs; run += 1) {
+  const door = createState(baseSeed + run, { entry: "title" });
+  const doorRng = createRng(baseSeed + run + 2000);
+  const doorIntent = neutralIntent();
+  for (let tick = 0; tick < TITLE_TICKS; tick += 1) {
+    doorIntent.move = doorRng.next() < 0.55 ? (doorRng.next() < 0.5 ? -1 : 1) : 0;
+    doorIntent.dash = false;
+    doorIntent.bank = false;
+    const started = process.hrtime.bigint();
+    attractMove(door, doorIntent);
+    attractTick(door);
+    attractTouch(door, false);
+    titleSamples.push(Number(process.hrtime.bigint() - started) / 1e6);
+    const drawn = process.hrtime.bigint();
+    renderer.draw(door, {}, {}, { captions: [], best: 0, hint: "move" });
+    titlePresents.push(Number(process.hrtime.bigint() - drawn) / 1e6);
+    totalSteps += 1;
+  }
+
   const state = createState(baseSeed + run);
   // Intenções pseudo-aleatórias mas reprodutíveis: exercita dash, guardar e
   // movimento sem depender de uma pessoa jogando.
@@ -38,28 +111,97 @@ for (let run = 0; run < runs; run += 1) {
     const started = process.hrtime.bigint();
     advance(state, intent);
     samples.push(Number(process.hrtime.bigint() - started) / 1e6);
+    const drawn = process.hrtime.bigint();
+    renderer.draw(state, {}, {}, { captions: [], best: 0, hint: "" });
+    presents.push(Number(process.hrtime.bigint() - drawn) / 1e6);
     totalSteps += 1;
   }
   prints.add(fingerprint({ score: state.score, tick: state.tick, stats: state.stats }));
 }
 
-samples.sort((a, b) => a - b);
-const at = (fraction) => samples[Math.min(samples.length - 1, Math.floor(samples.length * fraction))];
+const percentile = (list) => {
+  const ordered = [...list].sort((a, b) => a - b);
+  const at = (fraction) => ordered[Math.min(ordered.length - 1, Math.floor(ordered.length * fraction))];
+  return {
+    p50: at(0.5),
+    p95: at(0.95),
+    p99: at(0.99),
+    worst: ordered[ordered.length - 1],
+  };
+};
+
+const simulation = percentile(samples);
+const presentation = percentile(presents);
+const titleSimulation = percentile(titleSamples);
+const titlePresentation = percentile(titlePresents);
+const pool = entityPoolStats();
+const events = eventPoolStats();
+const motes = motePoolStats();
+const rng = rngPoolStats();
 const report = {
   runs,
   ticks_per_run: CONFIG.runTicks,
   steps: totalSteps,
+  scene: {
+    name: "playing.run",
+    ticks: CONFIG.runTicks,
+    draw: "stub",
+  },
+  scenes: [
+    {
+      name: "title.attract",
+      ticks: TITLE_TICKS,
+      draw: "stub",
+      simulation_ms: titleSimulation,
+      presentation_ms: titlePresentation,
+    },
+    {
+      name: "playing.run",
+      ticks: CONFIG.runTicks,
+      draw: "stub",
+      simulation_ms: simulation,
+      presentation_ms: presentation,
+    },
+  ],
   step_budget_ms: Number(stepBudgetMs.toFixed(4)),
-  simulation_ms: { p50: at(0.5), p95: at(0.95), p99: at(0.99), worst: samples[samples.length - 1] },
-  headroom_p99: Number((1 - at(0.99) / stepBudgetMs).toFixed(4)),
+  simulation_ms: simulation,
+  presentation_ms: presentation,
+  headroom_p99: Number((1 - simulation.p99 / stepBudgetMs).toFixed(4)),
   distinct_outcomes: prints.size,
+  entity_pool: {
+    created: pool.created - poolStart.created,
+    acquired: pool.acquired - poolStart.acquired,
+    released: pool.released - poolStart.released,
+    idle: pool.idle,
+  },
+  event_pool: {
+    created: events.created - eventStart.created,
+    acquired: events.acquired - eventStart.acquired,
+    released: events.released - eventStart.released,
+    idle: events.idle,
+  },
+  mote_pool: {
+    created: motes.created - moteStart.created,
+    acquired: motes.acquired - moteStart.acquired,
+    released: motes.released - moteStart.released,
+    idle: motes.idle,
+  },
+  rng: {
+    created: rng.created,
+    reseeds: rng.reseeds - rngStart.reseeds,
+  },
+  measured: false,
   scope:
-    "Somente simulação: não mede render, áudio, carregamento nem o dispositivo alvo. " +
-    "Orçamento de quadro real exige medir no artefato exportado.",
+    "Cenas title.attract e playing.run: abertura (mostra) e partida " +
+    "inteira + draw() num canvas stub. Orçar só o campo esconde o " +
+    "primeiro quadro. Não mede compositor, áudio, carregamento nem o " +
+    "dispositivo alvo. Orçamento de quadro real exige medir no artefato " +
+    "exportado. O poço e o gerador relatam reuso, não velocidade. Sem " +
+    "limiar de apresentação.",
 };
 
 console.log(JSON.stringify(report, null, 2));
-if (at(0.99) > stepBudgetMs) {
+if (titleSimulation.p99 > stepBudgetMs || simulation.p99 > stepBudgetMs) {
   console.error("Simulação acima do orçamento de passo no percentil 99.");
   process.exit(1);
 }

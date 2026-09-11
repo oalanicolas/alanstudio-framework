@@ -12,6 +12,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Sincronia audiovisual absoluta: relógio do jogo derivado do áudio (posição de
   reprodução), não do frame; calibração de latência de áudio e de input separadas,
   com teste guiado.

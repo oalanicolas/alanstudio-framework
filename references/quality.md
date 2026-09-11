@@ -21,7 +21,8 @@ uma curva e uma escolha narrativa podem cumprir esse contrato de maneiras distin
 ## Controle e feedback
 
 Entrada, movimento e câmera sustentam o verbo central. Observe resposta, continuidade,
-orientação, precisão e recuperação de erro. Movimento bom com mouse pode falhar no
+orientação, precisão e recuperação de erro. No starter a câmera
+inclina para o que o trilho já marca — antecipação, não punch. Movimento bom com mouse pode falhar no
 toque; cancelar um gesto, perder foco e reconectar um controle são cenários próprios.
 Som, animação, luz, efeitos e interface devem tornar causa e consequência perceptíveis
 sem esconder a ação. Efeito novo sai de `shared/sfx` no laboratório, se existir; o
@@ -68,8 +69,11 @@ direção: tokens, famílias, feel e receita de conteúdo novo, não só o moodb
 
 ## Primeiro minuto e acesso
 
-A primeira ação ensina o verbo. Mural de texto que bloqueia o jogo não é
-onboarding. Contraste, forma além da cor, foco, alvos de toque e movimento
+Com tela, a primeira superfície é a porta. A chuva que cai ali é a
+mesma mesa da partida; o trilho marca a mostra no mesmo alcance
+do campo; o avanço abre o campo. Mural de texto que
+bloqueia o jogo não é onboarding. A primeira ação ensina o verbo.
+Contraste, forma além da cor, foco, alvos de toque e movimento
 reduzido entram quando o recorte os exige — não como anexo depois do “polimento”.
 
 O primeiro minuto também denuncia **latência e pacing**. Spike de frametime

@@ -2,11 +2,27 @@
   "schema_version": 1,
   "title": "Canvas Arcade",
   "summary": "Arcade de uma tela em Canvas: passo fixo, determinismo verificável, ciclo de vida sem vazamento, save versionado e acesso desde o início.",
+  "cycle": {
+    "verb": "coletar orbes e guardar a corrente antes do estilhaço",
+    "door": "com tela, o avanço abre a porta e, depois do fim, um avanço novo volta; sem tela o headless já joga",
+    "move": "A/D ou setas",
+    "dash": "Espaço ou K",
+    "bank": "S ou J",
+    "hand": "IJKL + P/O",
+    "touch": "arrastar move; cima avança; baixo guarda",
+    "pad": "analógico move; A avança; X guarda; Start pausa; Select reinicia",
+    "look": "?look=dusk ou ?look=calm troca a paleta",
+    "spawn": "?spawn=dusk ou ?spawn=calm troca a chuva; a porta também chove essa mesa",
+    "mood": "?mood=calm ou ?mood=dusk troca o par",
+    "seed": "?seed=<n> abre essa partida; seed explícita ignora o hold",
+    "speed": "?speed=0.75 dilata o relógio da partida; 1 e fora da faixa somem",
+    "invite": "?invite=1 esconde a tabela; depois do fim a página aponta o endereço desta partida, com a chuva, o look e o relógio se o last-run os nomeou"
+  },
   "substitutions": [
     {
       "field": "project_title",
       "value": "Canvas Arcade",
-      "files": ["README.md", "CREDITS.md", "index.html", "package.json"]
+      "files": ["README.md", "CREDITS.md", "index.html", "package.json", "docs/art-bible.md", "docs/release.md"]
     },
     {
       "field": "project_slug",

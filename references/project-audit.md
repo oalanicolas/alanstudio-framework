@@ -95,6 +95,10 @@ locais já previstos pelo harness; isso não é rastreamento de comportamento.
 Lacunas, rascunhos, apenas históricos/referências ou limitações produzem `next_action: notify_and_document` e
 `audit.required: true`. `audit.notice` fornece um aviso com o projeto e os itens
 não confirmados; `audit.policy: notify_and_proceed` encaminha a execução pelo agente.
+Exceção: se o destino já abre e o ciclo ainda é o atalho do `next` (`playable.unplayed`),
+`audit.required` fica falso, `audit.deferred` verdadeiro e `next_action` é
+`defer_until_playable_cycle`. As lacunas continuam listadas. Jogue primeiro.
+`--event direction-approved` e `--stage audit` continuam pedindo a base neste turno.
 Mesmo com todos os candidatos, a estrutura não recebe selo de suficiente, atual
 ou aprovada. Se a leitura necessária à tarefa revelar contradição ou desatualização,
 avise e faça o levantamento delimitado também. O scanner retorna JSON, sem escrever relatório,

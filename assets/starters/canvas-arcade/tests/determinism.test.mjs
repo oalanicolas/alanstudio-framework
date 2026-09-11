@@ -5,8 +5,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advance, createState } from "../src/game/rules.js";
+import { advance, createState, restoreState } from "../src/game/rules.js";
 import { createRng, hashSeed } from "../src/core/rng.js";
+import { captureHold } from "../src/core/save.js";
 import { fingerprint } from "../src/core/hash.js";
 
 function script(seed, length) {
@@ -36,6 +37,27 @@ function continueWith(state, intents) {
   return state;
 }
 
+test("reseed devolve o mesmo objeto à mesma sequência", () => {
+  const rng = createRng(42);
+  const first = [rng.next(), rng.next(), rng.next()];
+  const same = rng.reseed(42);
+  assert.equal(same, rng);
+  assert.deepEqual([rng.next(), rng.next(), rng.next()], first);
+});
+
+test("partidas intercaladas não contaminam o gerador compartilhado", () => {
+  const first = script(11, 240);
+  const second = script(12, 240);
+  const a = createState(11);
+  const b = createState(12);
+  for (let index = 0; index < first.length; index += 1) {
+    advance(a, first[index]);
+    advance(b, second[index]);
+  }
+  assert.equal(print(a), print(play(11, first)));
+  assert.equal(print(b), print(play(12, second)));
+});
+
 test("a mesma seed com as mesmas intenções produz o mesmo estado", () => {
   const intents = script(11, 900);
   assert.equal(print(play(11, intents)), print(play(11, intents)));
@@ -56,6 +78,32 @@ test("retomar um estado serializado continua a mesma partida", () => {
   const straight = continueWith(live, rest);
   const resumed = continueWith(JSON.parse(saved), rest);
   assert.equal(print(straight), print(resumed));
+});
+
+function playFields(state) {
+  return {
+    tick: state.tick,
+    seed: state.seed,
+    score: state.score,
+    chain: state.chain,
+    rngState: state.rngState,
+    player: state.player,
+    entities: state.entities,
+    stats: state.stats,
+    spawnTimer: state.spawnTimer,
+    nextId: state.nextId,
+  };
+}
+
+test("o hold retoma a chuva, não a seed do zero", () => {
+  const first = script(21, 180);
+  const rest = script(23, 80);
+  const live = play(21, first);
+  const hold = captureHold(live);
+  assert.ok(hold, "a chuva no meio precisa caber no hold");
+  const straight = continueWith(live, rest);
+  const resumed = continueWith(restoreState(hold), rest);
+  assert.deepEqual(playFields(resumed), playFields(straight));
 });
 
 test("o estado é JSON simples, sem referências vivas", () => {

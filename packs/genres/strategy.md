@@ -14,6 +14,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Seleção e ordens instantâneas: hitbox generosa, feedback de ordem (marcador, voz),
   pathfinding que não trava grupos; hotkeys e control groups.
 - Legibilidade: silhuetas por facção, ícones sobre a arte, minimapa que é jogável,

@@ -1,0 +1,15 @@
+{
+  "schema": 4,
+  "intervalTicks": 16,
+  "minIntervalTicks": 8,
+  "rampTicks": 600,
+  "hazardChanceStart": 0.34,
+  "hazardChanceEnd": 0.62,
+  "fallSpeedMin": 1.3,
+  "fallSpeedMax": 2.4,
+  "practiceTicks": 90,
+  "recoveryTicks": 70,
+  "recoveryIntervalScale": 1.4,
+  "closeIntervalScale": 0.58,
+  "closeHazardScale": 1.36
+}

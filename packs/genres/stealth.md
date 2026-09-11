@@ -12,6 +12,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Regras de percepção legíveis: cones de visão visualizáveis (ou aprendidos com
   consistência), estados de alerta com feedback (ícone, som, voz), luz e sombra que
   significam algo, ruído por superfície e velocidade.

@@ -13,6 +13,8 @@ perguntas, riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Combate: cancel windows, hitstop, recuo por peso da arma, i-frames legíveis,
   lock-on que não rouba câmera, feedback de bloqueio/parry distinto.
 - Câmera: terceira pessoa com colisão, reposicionamento suave em espaços apertados,

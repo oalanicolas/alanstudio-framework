@@ -8,7 +8,7 @@ receita; `--stage production-plan` e `--stage milestone` também a incluem.
 Saída: plano de produção com marcos, orçamentos, pipeline de conteúdo e riscos no
 documento canônico do jogo, e revisões de marco com evidência ligada. O harness
 localiza o plano como fonte de continuidade; não mede orçamentos, não promove marcos
-nem certifica acabamento.
+nem certifica acabamento. Se a barra recusa promover o degrau, o `context` nomeia a promoção que a barra já recusa. Guia no disco não é acabamento. Sem chave `promove`.
 
 “AAA” aqui não é orçamento nem tamanho de equipe. É um **padrão de acabamento
 observável**: cada disciplina atinge o piso definido no plano, medido na plataforma
@@ -16,6 +16,10 @@ alvo, em movimento, e o jogo permanece estável sob uso prolongado. Um jogo pequ
 pode alcançá-lo num recorte pequeno; um jogo grande falha nele com muito conteúdo
 desigual. A pré-produção prova que a experiência vale; a produção prova que ela
 sobrevive à escala, ao tempo e à plataforma.
+
+No starter, com tela, a primeira superfície do recorte é a porta.
+Convite, last-run e recibo no disco não fecham marco nem certificam
+acabamento.
 
 ## 0. Três instrumentos, três perguntas
 
@@ -27,9 +31,11 @@ Este framework usa três vocabulários que não se substituem, e esta receita li
 - **A [barra de acabamento](../references/production-bar.md)** responde *quão longe
   cada dimensão de ofício foi levada* — dez dimensões, cinco degraus, e o degrau
   percebido é o mínimo entre elas. `bar <projeto>` lê a declaração; `next` propõe subir
-  a dimensão mais baixa.
+  a dimensão mais baixa. Se a prosa declara o mínimo, o `bar` nomeia o mínimo que a barra já declara. Degrau no disco não é acabamento observado. Sem chave `mínimo`. Se a barra recusa que o degrau seja prazo, o `bar` nomeia os prazos que a barra já recusa. Linha no disco não é calendário. Sem chave `prazos`. Se a barra recusa que o nome seja uma das dez, o `bar` nomeia a dimensão que a barra já recusa. Linha no disco não é acabamento. Sem chave `dimensão`.
 - **Os [gates](../references/gates.md)** respondem *o que ainda não pode passar* — dez
   recusas por etapa do ciclo, com critérios `met`/`unmet`/`waived`. `gate <projeto>` lê.
+  Se a tabela declara o gate, o `gate` nomeia o gate que a tabela já declara. Linha no disco não é passagem concedida. Sem chave `gate`. Se o roteiro recusa que o silêncio seja aprovação, o `gate` nomeia o silêncio que o roteiro já recusa. Linha vazia no disco não é passagem. Sem chave `silêncio`. Se o roteiro recusa que must_meet seja dispensável, o `gate` nomeia a dispensa que o roteiro já recusa. Linha no disco não é passagem. Sem chave `dispensa`. Se o roteiro recusa que fora de escopo seja dispensa, o `gate` nomeia o escopo que o roteiro já recusa. Linha no disco não é passagem. Sem chave `escopo`.
+  Se a tabela declara saída de escopo, o `craft` nomeia a saída de escopo que a tabela já declara. Linha no disco não é ofício observado. Sem chave `out_of_scope`. Se a pesquisa recusa ser escada de acabamento, o `craft` nomeia a escada que a pesquisa já recusa. Pesquisa no disco não é ofício observado. Sem chave `escada`. Se a pesquisa recusa que o número sem definição seja critério, o `craft` nomeia a definição que a pesquisa já recusa. Pesquisa no disco não é ofício observado. Sem chave `definição`.
 
 Correspondência usual, a confirmar em cada jogo: first playable fecha o gate `prototype`
 e pede a barra em `playable`; vertical slice fecha `scale` e pede `slice` em todas as
@@ -127,7 +133,7 @@ Atualize-o a cada entrega; não crie planos paralelos. Ao fechar uma fatia, siga
 ## 7. Evidência ligada
 
 Cada critério de marco aponta para um recibo em pasta inédita, ligado ao HEAD do
-projeto: `verify` para comandos técnicos; `record --kind observation` para o que uma
+projeto: `verify` para comandos técnicos; se o roteiro recusa aprovar a criatividade, o `verify` nomeia a criatividade que o roteiro já recusa. Recibo verde não é aprovação. Sem chave `criatividade`. Se a ambição recusa que o recibo comprove diversão, o `verify` nomeia a diversão que a ambição já recusa. Log no disco não é experiência. Sem chave `diversão`. `record --kind observation` para o que uma
 pessoa (ou o agente, com `role=agent`) viu em movimento; `record --kind budget` para
 cada medição de orçamento com plataforma e ferramenta; `record --kind milestone` para
 a decisão de passagem, com quem declarou. O recibo guarda o fato declarado; não o
@@ -138,6 +144,6 @@ valida. Exemplo completo: [da trilha ao capítulo acabado](../examples/era-uma-v
 O harness localiza o plano de produção e o inclui em `continuity.sources`; a leitura
 dos marcos, a medição dos orçamentos e a declaração de passagem são do agente e da
 pessoa. `record` escreve o que lhe foi declarado e recusa sobrescrita; nenhum comando
-mede desempenho, executa soak ou certifica requisitos de plataforma. Os termos first playable, alpha, beta e gold seguem o uso corrente da
+mede desempenho, executa soak ou certifica requisitos de plataforma. Se o roteiro recusa medir os critérios, o `record` nomeia a medição que o roteiro já recusa. Recibo no disco não é observação. Sem chave `mede`. Se o roteiro recusa que o screenshot isolado comprove animação, o `record` nomeia a animação que o roteiro já recusa. Anexo no disco não é controle. Sem chave `animação`. Se o roteiro recusa que o HEAD substitua o julgamento, o `version` nomeia o julgamento que o roteiro já recusa. Identidade no disco não é avaliação. Sem chave `julgamento`. Os termos first playable, alpha, beta e gold seguem o uso corrente da
 indústria; cada estúdio e plataforma define detalhes próprios, e o plano do jogo
 registra a definição adotada. Ver [fontes](../references/sources.md#produção-09).

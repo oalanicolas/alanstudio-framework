@@ -36,13 +36,19 @@ referência e pela diferença percebida. Defina a prova de parada antes de ampli
 ## 2. REUSE → ADAPT → CREATE
 
 Busque primeiro no próprio jogo; depois em jogos parecidos e nos estudos pertinentes.
-Para efeito sonoro novo, se o laboratório tiver `shared/sfx`, busque com
-`python3 scripts/game.py sfx search <termo>` antes de baixar. Leia a implementação
+Para efeito sonoro novo, se o laboratório tiver `shared/sfx` com sons, busque com
+`python3 scripts/game.py sfx search <termo>` antes de baixar. Sem acervo, o
+starter já fala em `public/sfx`; a busca nomeia o stem que casa com o
+termo. Leia a implementação
 **e um consumidor real**. Registre comando/resultado da busca, candidato e adequação.
 A busca é delimitada à necessidade, não uma auditoria de tudo.
 
 Para um jogo que ainda não existe no disco, o candidato é um starter: `doctor`
-lista os disponíveis e `init` monta o projeto. Partir de um starter é REUSE;
+lista os disponíveis e `start --idea` monta o projeto sem plantar os
+rascunhos. O `-h` lista `start` antes de `init`. `init` continua plantando. Com tela, a primeira superfície é
+a porta; `play` (ou `open`) aponta o serve sem executar. O mapa tem
+três passos: start → jogar → `note`. Nomear o comando não abre o jogo.
+Partir de um starter é REUSE;
 escrever um laço, um save e uma abstração de entrada do zero é CREATE, e CREATE
 pede a lacuna explícita como qualquer outra.
 
@@ -71,7 +77,8 @@ Use decisão curta para alteração localizada e PoC para incerteza que pode inv
 o recorte; adapte o TDD/plano existente, com reversibilidade e gatilho de revisão.
 
 Produza um ciclo curto com entrada, decisão, consequência e reinício, adequado ao
-gênero. Resolva primeiro a incerteza que pode invalidar a experiência. Use valores
+gênero. Com tela, a fatia começa na porta; o campo começa depois do
+avanço. Resolva primeiro a incerteza que pode invalidar a experiência. Use valores
 existentes como ponto de partida, não como constantes universais. Transforme uma
 variável relevante por vez quando precisar atribuir causa a um resultado.
 O ciclo sem feel e sem áudio da ação continua incompleto: trate `--focus feel`

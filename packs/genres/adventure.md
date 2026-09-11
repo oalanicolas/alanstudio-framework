@@ -14,6 +14,8 @@ visual novel, ver [narrativa](narrative.md).
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Hotspots claros (highlight opcional, cursor que muda, tecla para revelar) sem
   pixel hunting; caminhar rápido (duplo clique para pular travessia); diálogo com
   histórico e pulo por linha.

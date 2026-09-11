@@ -1,0 +1,4 @@
+{{FILE}} — origem: [de onde veio o arquivo].
+Autor: [quem fez]. Licença: [condição de uso].
+Consumidor: [quem lê o arquivo no projeto].
+Recibo no disco não é licença válida.

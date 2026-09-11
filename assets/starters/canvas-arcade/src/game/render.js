@@ -1,46 +1,55 @@
 // Apresentação. Não decide regra e não altera o estado.
 //
-// Legibilidade antes de estilo: orbe e estilhaço têm **formas** diferentes, não
-// só cores diferentes, então o jogo continua jogável em escala de cinza e para
-// quem não distingue as duas cores. Tremor e piscada respeitam redução de
-// movimento — o sinal de causa migra para uma forma estática, não desaparece.
+// Legibilidade antes de estilo: orbe, estilhaço e jogador têm **formas**
+// diferentes, não só cores diferentes. O halo segue a mesma primitiva do
+// orbe e do estilhaço. O corpo aponta para o último avanço — não é o
+// tijolo da placa. O stub distingue as silhuetas com a mesma tinta; o
+// dispositivo não foi observado. Tremor, piscada e vinheta respeitam
+// redução de movimento — o sinal de causa migra para uma forma estática,
+// não desaparece. A ponta do corpo fica: é forma, não brilho. A chuva
+// da porta também: com menos movimento ela trava, não some.
 
-import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ } from "./rules.js";
+import { FIELD, PLAYER_Y, CONFIG, remainingTicks, TICK_HZ, approaching, attractEntities, lookAhead, chainPipCount, chainPipAt, closingWindow, closingPulse, practicePulse, recoveryPulse } from "./rules.js";
+import { copy, dressPalette, PALETTES } from "./tables.js";
+import { persistLine } from "../core/save.js";
+import { bindLines } from "../core/keys.js";
+import { DEFAULT_BINDINGS, settingsLine } from "../core/settings.js";
 
-// Exportadas para terem consumidor além do desenho: é assim que um teste
-// distingue a placa do HUD do preenchimento do campo, e é o gancho para o
-// design system do jogo quando ele passar de moodboard a token.
-export const PALETTES = {
-  normal: {
-    background: "#10131a",
-    field: "#171b26",
-    player: "#f2f4f8",
-    orb: "#4ea8ff",
-    shard: "#ff8a3d",
-    chain: "#ffd166",
-    text: "#e7ebf3",
-    muted: "#8a93a6",
-    danger: "#ff5d5d",
-    plate: "rgba(7,9,13,0.86)",
-    plateEdge: "rgba(231,235,243,0.22)",
-  },
-  contrast: {
-    background: "#000000",
-    field: "#000000",
-    player: "#ffffff",
-    orb: "#00d2ff",
-    shard: "#ff6a00",
-    chain: "#ffe600",
-    text: "#ffffff",
-    muted: "#c9c9c9",
-    danger: "#ff2b2b",
-    // Campo preto e placa preta: aqui o preenchimento não tem como separar nada,
-    // e quem separa é a borda. Ela é branca e opaca porque em alto contraste
-    // separar é o objetivo, não a discrição.
-    plate: "rgba(0,0,0,0.9)",
-    plateEdge: "#ffffff",
-  },
-};
+// Reexporta a mesa: o token mora em data/palettes.json. Quem não
+// desenhou o render troca o look sem republicar o verbo. `consistent`
+// continua falso — JSON no disco não é comparação em movimento.
+export { PALETTES };
+
+// A recarga do dash era só um rótulo. A faixa enche o tempo inteiro de
+// recuperação + cooldown — o verbo some e volta no mesmo sítio. Faixa no
+// stub não é peso percebido.
+export function dashCharge(state, config = CONFIG) {
+  const player = state?.player;
+  if (!player) return { phase: "ready", fill: 1 };
+  const recoveryTicks = config.player.dashRecoveryTicks;
+  const cooldownTicks = config.player.dashCooldownTicks;
+  const total = recoveryTicks + cooldownTicks;
+  if ((player.dashTicks ?? 0) > 0) return { phase: "dash", fill: 1 };
+  if ((player.dashWindup ?? 0) > 0) {
+    const total = config.player.dashWindupTicks || 1;
+    return {
+      phase: "windup",
+      fill: Math.max(0, Math.min(1, (total - player.dashWindup) / total)),
+    };
+  }
+  // O arco da guarda também trava o dash. Sem isto a
+  // faixa dizia pronto e o avanço não saía. Rótulo no
+  // disco não é felt.
+  if ((state.bankLock ?? 0) > 0 || (state.bankWindup ?? 0) > 0) {
+    return { phase: "lock", fill: 0 };
+  }
+  const remaining = (player.dashRecovery ?? 0) > 0
+    ? player.dashRecovery + cooldownTicks
+    : (player.dashCooldown ?? 0);
+  if (remaining <= 0 || total <= 0) return { phase: "ready", fill: 1 };
+  const phase = (player.dashRecovery ?? 0) > 0 ? "recovery" : "cooldown";
+  return { phase, fill: Math.max(0, Math.min(1, 1 - remaining / total)) };
+}
 
 export function createRenderer(canvas, options = {}) {
   const context = canvas.getContext("2d", { alpha: false });
@@ -61,19 +70,36 @@ export function createRenderer(canvas, options = {}) {
   }
 
   function draw(state, frame = {}, settings = {}, extra = {}) {
-    const palette = settings.highContrast ? PALETTES.contrast : PALETTES.normal;
+    const lines = bindLines(copy, settings.bindings ?? DEFAULT_BINDINGS, extra.surface);
+    const palette =
+      settings.palette && typeof settings.palette.field === "string"
+        ? settings.palette
+        : dressPalette(settings);
     const reduced = Boolean(settings.reducedMotion);
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.fillStyle = palette.background;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    const shake = reduced ? 0 : state.shake;
-    const jitterX = shake ? (Math.sin(state.tick * 12.9898) * shake * 3) : 0;
-    const jitterY = shake ? (Math.cos(state.tick * 7.233) * shake * 3) : 0;
+    const ending = state.phase === "over";
+    const held = ending || Boolean(frame?.paused);
+    // No fim e na pausa o relógio senta o quadro. Tremor, punch
+    // e o lean do trilho não atravessam o overlay. Lean no
+    // disco não é felt.
+    const shake = reduced || held ? 0 : state.shake;
+    const punchX = reduced || held ? 0 : (state.camera?.x ?? 0);
+    const punchY = reduced || held ? 0 : (state.camera?.y ?? 0);
+    const leanX = reduced || held ? 0 : lookAhead(state).x;
+    const jitterX = (shake ? (Math.sin(state.tick * 12.9898) * shake * 3) : 0) + punchX + leanX;
+    const jitterY = (shake ? (Math.cos(state.tick * 7.233) * shake * 3) : 0) + punchY;
     context.setTransform(scale, 0, 0, scale, offsetX + jitterX * scale, offsetY + jitterY * scale);
 
     context.fillStyle = palette.field;
     context.fillRect(0, 0, FIELD.width, FIELD.height);
+    drawVignette(context, reduced);
+    drawPractice(context, palette, state, reduced);
+    drawRecovery(context, palette, state, reduced);
+    drawClose(context, palette, state, reduced);
+    paintFlash(context, palette, held ? 0 : state.flash, reduced);
     context.strokeStyle = palette.muted;
     context.lineWidth = 0.5;
     context.beginPath();
@@ -81,27 +107,177 @@ export function createRenderer(canvas, options = {}) {
     context.lineTo(FIELD.width, PLAYER_Y + 10);
     context.stroke();
 
+    for (const entity of approaching(state, reduced)) {
+      drawTelegraph(context, palette, entity, reduced);
+    }
     for (const entity of state.entities) {
-      if (entity.kind === "orb") drawOrb(context, palette, entity);
-      else drawShard(context, palette, entity);
+      if (entity.kind === "orb") drawOrb(context, palette, entity, reduced);
+      else drawShard(context, palette, entity, reduced);
     }
     drawPlayer(context, palette, state, reduced);
-    const reserved = drawHud(context, palette, state, settings, extra);
-    if (settings.captions !== false) {
-      drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
+    if (state.phase === "title") {
+      for (const entity of attractEntities(state, reduced)) {
+        if (entity.kind === "orb") drawOrb(context, palette, entity, reduced);
+        else drawShard(context, palette, entity, reduced);
+      }
+      drawTitle(context, palette, settings, extra, lines);
+      // O pulso da mostra nascia sob a cortina e sumia. O mesmo
+      // flash do campo vence o véu. Luz no disco não é felt.
+      paintFlash(context, palette, state.flash, reduced);
+      // A porta também ensina. Sem isto o aviso de mover existia
+      // no campo e sumia na primeira superfície. Texto no disco
+      // não é sessão observada.
+      const size = 8 * (settings.uiScale ?? 1);
+      drawCoach(context, palette, extra.hint, {
+        score: { x: 6, y: 5, width: 1, height: size },
+      }, settings, extra, lines);
+      if (settings.captions !== false) {
+        drawCaptions(context, palette, extra.captions ?? [], {
+          timer: { x: FIELD.width - 40, y: 5, width: 34, height: size },
+        }, settings);
+      }
+      return;
     }
-    if (frame.paused) drawOverlay(context, palette, "Pausado", "Continuar: Esc ou P");
-    else if (state.phase === "over") {
+    drawChain(context, palette, state, reduced);
+    // No fim a cortina cobre o campo. A queda da aposta — o verbo que o
+    // overlay vai nomear — precisa nascer depois, senão a conta existe
+    // e o corpo some. Os outros rastros ficam embaixo: não são o fim.
+    drawMotes(context, palette, state, reduced, ending ? (mote) => mote.kind !== "lapse" : null);
+    const reserved = drawHud(context, palette, state, settings, extra, lines);
+    drawCoach(context, palette, extra.hint, reserved, settings, extra, lines);
+    if (ending) {
+      // Aba escondida e P pausam o laço. Sem isto a placa
+      // Pausado comia Fim, a corrente e a porta. O relógio
+      // já derrubou a aposta; a cortina do over vence.
+      // Pose no disco não é felt.
       drawOverlay(
         context,
         palette,
-        `Fim — ${state.score}`,
-        state.stats.bestChain ? `Maior corrente: ${state.stats.bestChain} · reiniciar: R` : "Reiniciar: R",
+        `${lines.over} — ${state.score}`,
+        overHint(state, lines, extra),
+        settings,
+        persistLine(extra.persist, lines),
+        settingsLine(extra.settingsLoad, lines),
+        extra.audio || "",
       );
+      drawMotes(context, palette, state, reduced, (mote) => mote.kind === "lapse");
+    } else if (frame.paused) {
+      // A cortina cobre o HUD. Sem o número aqui o placar que a
+      // partida inteira mostrou some atrás de Pausado. Recorde 0
+      // some. Texto no disco não é sessão de alcance.
+      drawOverlay(
+        context,
+        palette,
+        `${lines.paused} — ${state.score}`,
+        pauseHint(lines, extra),
+        settings,
+      );
+    }
+    // A cortina cobria a faixa. Com o áudio desligado a informação
+    // existia e sumia no fim e na pausa. A legenda nasce depois.
+    if (settings.captions !== false) {
+      drawCaptions(context, palette, extra.captions ?? [], reserved, settings);
     }
   }
 
-  function drawOrb(target, palette, entity) {
+  function paintFlash(target, palette, amount, reduced) {
+    if (!(amount > 0)) return;
+    if (reduced) {
+      target.strokeStyle = palette.danger;
+      target.lineWidth = 2;
+      target.strokeRect(1, 1, FIELD.width - 2, FIELD.height - 2);
+      return;
+    }
+    target.fillStyle = `rgba(255,245,235,${Math.min(0.32, amount * 0.5)})`;
+    target.fillRect(0, 0, FIELD.width, FIELD.height);
+  }
+
+  // A prática era orbe-só e o campo calava. O contorno na tinta do
+  // orbe some à medida que a janela acaba; no último tick o campo
+  // acende. Não é faixa. Com menos movimento vira traço, não some.
+  function drawPractice(target, palette, state, reduced) {
+    const pulse = practicePulse(state);
+    if (!pulse.active) return;
+    target.strokeStyle = palette.orb;
+    if (reduced) {
+      target.lineWidth = 2;
+      target.strokeRect(4, 4, FIELD.width - 8, FIELD.height - 8);
+      return;
+    }
+    const inset = 4 + (1 - pulse.fill) * 6;
+    target.globalAlpha = Math.min(0.42, 0.10 + pulse.fill * 0.28);
+    target.lineWidth = 0.8 + pulse.fill * 1.6;
+    target.strokeRect(inset, inset, FIELD.width - inset * 2, FIELD.height - inset * 2);
+    target.globalAlpha = 1;
+  }
+
+  // A guarda já alongava a chuva. O campo calava. O contorno na tinta
+  // da corrente some à medida que a folga acaba. Não é faixa. Com menos
+  // movimento vira traço, não some.
+  function drawRecovery(target, palette, state, reduced) {
+    const pulse = recoveryPulse(state);
+    if (!pulse.active) return;
+    target.strokeStyle = palette.chain;
+    if (reduced) {
+      target.lineWidth = 2;
+      target.strokeRect(6, 6, FIELD.width - 12, FIELD.height - 12);
+      return;
+    }
+    const inset = 6 + (1 - pulse.fill) * 5;
+    target.globalAlpha = Math.min(0.40, 0.10 + pulse.fill * 0.26);
+    target.lineWidth = 0.8 + pulse.fill * 1.4;
+    target.strokeRect(inset, inset, FIELD.width - inset * 2, FIELD.height - inset * 2);
+    target.globalAlpha = 1;
+  }
+
+  // O relógio no HUD já ficava vermelho. O campo agora marca o fecho:
+  // contorno que aperta e pulsa a cada segundo. Não é faixa. Com menos
+  // movimento vira um traço estático, como o flash do erro.
+  function drawClose(target, palette, state, reduced) {
+    const pulse = closingPulse(state);
+    if (!pulse.active) return;
+    target.strokeStyle = palette.danger;
+    if (reduced) {
+      target.lineWidth = 2;
+      target.strokeRect(2, 2, FIELD.width - 4, FIELD.height - 4);
+      return;
+    }
+    const inset = 1 + pulse.fill * 3;
+    target.globalAlpha = Math.min(0.55, 0.14 + pulse.fill * 0.22 + pulse.beat * 0.18);
+    target.lineWidth = 1.2 + pulse.fill * 1.8 + pulse.beat * 1.2;
+    target.strokeRect(inset, inset, FIELD.width - inset * 2, FIELD.height - inset * 2);
+    target.globalAlpha = 1;
+  }
+
+  // O campo era um retângulo chapado. A vinheta marca o recorte
+  // sem ser faixa no HUD. Com menos movimento some: o sinal de
+  // causa fica na forma, não no brilho. JSON no disco não é
+  // comparação em movimento.
+  function drawVignette(target, reduced) {
+    if (reduced || typeof target.createRadialGradient !== "function") return;
+    const glow = target.createRadialGradient(
+      FIELD.width / 2,
+      FIELD.height / 2,
+      FIELD.height * 0.28,
+      FIELD.width / 2,
+      FIELD.height / 2,
+      FIELD.height * 0.78,
+    );
+    glow.addColorStop(0, "rgba(0,0,0,0)");
+    glow.addColorStop(1, "rgba(0,0,0,0.32)");
+    target.fillStyle = glow;
+    target.fillRect(0, 0, FIELD.width, FIELD.height);
+  }
+
+  function drawOrb(target, palette, entity, reduced) {
+    if (!reduced) {
+      target.globalAlpha = 0.22;
+      target.fillStyle = palette.orb;
+      target.beginPath();
+      target.arc(entity.x, entity.y, 10, 0, Math.PI * 2);
+      target.fill();
+      target.globalAlpha = 1;
+    }
     target.fillStyle = palette.orb;
     target.beginPath();
     target.arc(entity.x, entity.y, 4, 0, Math.PI * 2);
@@ -113,7 +289,18 @@ export function createRenderer(canvas, options = {}) {
     target.stroke();
   }
 
-  function drawShard(target, palette, entity) {
+  function drawShard(target, palette, entity, reduced) {
+    if (!reduced) {
+      target.globalAlpha = 0.2;
+      target.fillStyle = palette.shard;
+      target.beginPath();
+      target.moveTo(entity.x, entity.y - 9);
+      target.lineTo(entity.x + 8, entity.y + 7.5);
+      target.lineTo(entity.x - 8, entity.y + 7.5);
+      target.closePath();
+      target.fill();
+      target.globalAlpha = 1;
+    }
     target.fillStyle = palette.shard;
     target.beginPath();
     target.moveTo(entity.x, entity.y - 6);
@@ -126,29 +313,179 @@ export function createRenderer(canvas, options = {}) {
     target.stroke();
   }
 
+  // A porta também marca. Sem isto o trilho só falava no
+  // campo e a mostra — que o live já nomeia — caía muda.
+  // Marca no disco não é felt.
+  function drawTelegraph(target, palette, entity, reduced) {
+    const y = PLAYER_Y + 10;
+    target.globalAlpha = reduced ? 1 : 0.62;
+    if (entity.kind === "orb") {
+      target.strokeStyle = palette.orb;
+      target.lineWidth = 1.2;
+      target.beginPath();
+      target.arc(entity.x, y, 3.5, 0, Math.PI * 2);
+      target.stroke();
+    } else {
+      target.strokeStyle = palette.shard;
+      target.lineWidth = 1.2;
+      target.beginPath();
+      target.moveTo(entity.x, y - 4);
+      target.lineTo(entity.x + 3.5, y + 3);
+      target.lineTo(entity.x - 3.5, y + 3);
+      target.closePath();
+      target.stroke();
+    }
+    target.globalAlpha = 1;
+  }
+
+  function moteFill(palette, kind) {
+    if (kind === "collect" || kind === "land" || kind === "join" || kind === "missed") return palette.orb;
+    // O corpo no avanço veste a corrente. Sem isto o rastro
+    // vestia o descanso e o verbo não se distinguia. Pose
+    // no disco não é peso percebido.
+    if (kind === "dash" || kind === "bank" || kind === "break" || kind === "deposit" || kind === "lapse") {
+      return palette.chain;
+    }
+    if (kind === "hit" || kind === "over" || kind === "graze") return palette.danger;
+    return palette.player;
+  }
+
+  function drawMotes(target, palette, state, reduced, allow) {
+    const motes = state.motes;
+    if (!motes || !motes.length) return;
+    for (const mote of motes) {
+      if (allow && !allow(mote)) continue;
+      const x = reduced ? mote.sx : mote.x;
+      const y = reduced ? mote.sy : mote.y;
+      target.fillStyle = moteFill(palette, mote.kind);
+      if (reduced) {
+        target.fillRect(x - 1, y - 1, 2, 2);
+      } else if (mote.kind === "hit") {
+        target.fillRect(x - 1.6, y - 0.6, 3.2, 1.2);
+        target.fillRect(x - 0.6, y - 1.6, 1.2, 3.2);
+      } else if (mote.kind === "missed") {
+        target.fillRect(x - 2.4, y - 0.5, 4.8, 1.2);
+      } else if (mote.kind === "deposit" || mote.kind === "join" || mote.kind === "lapse") {
+        const size = CONFIG.feel.chainPipSize;
+        target.fillRect(x - size / 2, y - size / 2, size, size);
+      } else {
+        target.fillRect(x - 1.2, y - 1.2, 2.4, 2.4);
+      }
+    }
+  }
+
   function drawPlayer(target, palette, state, reduced) {
     const player = state.player;
     const squash = 1 + player.squash;
     const width = CONFIG.player.halfWidth * 2 * squash;
     const height = 12 / squash;
-    const dashing = player.dashTicks > 0;
-    target.fillStyle = dashing ? palette.chain : palette.player;
-    target.fillRect(player.x - width / 2, PLAYER_Y - height / 2, width, height);
-    if (player.invuln > 0) {
+    const left = player.x - width / 2;
+    const top = PLAYER_Y - height / 2;
+    const ending = state.phase === "over";
+    const dashing = !ending && player.dashTicks > 0;
+    const winding = !ending && !dashing && (player.dashWindup ?? 0) > 0;
+    // O arco do sit e do lock já vestem a corrente. Sem
+    // isto o corpo no compromisso vestia o descanso e o
+    // hold mentia a aposta — o avanço no travel já veste
+    // a corrente. Pose no disco não é peso percebido.
+    const banking = !ending && !dashing && (
+      (state.bankWindup ?? 0) > 0 || (state.bankLock ?? 0) > 0
+    );
+    const recovering = !ending && !dashing && !winding && !banking && player.dashRecovery > 0;
+    // A graça do erro já existia. Só o contorno piscava; o tijolo
+    // sólido tapava a leitura. O corpo some e volta no mesmo
+    // relógio — o fillRect permanece. Com menos movimento o
+    // tijolo fica e o contorno não pisca. No fim a graça some:
+    // o relógio já sentou o corpo. Luz no disco não é felt.
+    const invuln = !ending && player.invuln > 0;
+    const pulse = invuln && !reduced && Math.floor(player.invuln / 4) % 2 !== 0;
+    if (pulse) target.globalAlpha = 0.38;
+    // A regra já diz vulnerável. Sem isto o corpo vestia a
+    // tinta da prática — orbe-só, sem ameaça — e a silhueta
+    // mentia folga. Apoio marca o verbo frio, não a janela.
+    // Pose no disco não é peso percebido.
+    // A faixa do coil já veste a corrente. Sem isto o corpo
+    // no coil vestia o descanso e a antecipação mentia o
+    // verbo. Pose no disco não é peso percebido.
+    target.fillStyle = dashing || winding || banking ? palette.chain : recovering ? palette.muted : palette.player;
+    target.fillRect(left, top, width, height);
+    // O retângulo sozinho era o tijolo da placa. A ponta segue o
+    // último avanço: orbe é círculo, estilhaço é losango, o corpo
+    // aponta. Forma, não faixa. Com menos movimento a ponta fica.
+    // Silhueta no stub não é comparação em movimento.
+    const dir = player.dir < 0 ? -1 : 1;
+    const nose = Math.max(3, height * 0.42);
+    target.beginPath();
+    if (dir < 0) {
+      target.moveTo(left, top);
+      target.lineTo(left - nose, PLAYER_Y);
+      target.lineTo(left, top + height);
+    } else {
+      target.moveTo(left + width, top);
+      target.lineTo(left + width + nose, PLAYER_Y);
+      target.lineTo(left + width, top + height);
+    }
+    target.closePath();
+    target.fill();
+    if (pulse) target.globalAlpha = 1;
+    if (invuln) {
       // Com redução de movimento, contorno constante em vez de piscar.
       const visible = reduced || Math.floor(player.invuln / 4) % 2 === 0;
       if (visible) {
         target.strokeStyle = palette.danger;
         target.lineWidth = 1;
-        target.strokeRect(player.x - width / 2 - 2, PLAYER_Y - height / 2 - 2, width + 4, height + 4);
+        target.strokeRect(left - 2, top - 2, width + 4, height + 4);
       }
     }
-    if (state.bankLock > 0) {
+    if (!ending && (state.bankWindup ?? 0) > 0) {
+      const total = CONFIG.bank.windupTicks || 1;
+      const fill = Math.max(0, Math.min(1, (total - state.bankWindup + 1) / total));
+      target.strokeStyle = palette.chain;
+      target.lineWidth = 1;
+      target.beginPath();
+      target.arc(player.x, PLAYER_Y, 11, 0, Math.PI * 2 * fill);
+      target.stroke();
+    } else if (!ending && state.bankLock > 0) {
       target.strokeStyle = palette.chain;
       target.lineWidth = 1;
       target.beginPath();
       target.arc(player.x, PLAYER_Y, 11, 0, (Math.PI * 2 * state.bankLock) / CONFIG.bank.lockTicks);
       target.stroke();
+    }
+    if (winding) {
+      // A faixa do coil já enche e o corpo já veste a corrente.
+      // Sem isto a antecipação calava o rumo — a guarda já
+      // contorna; o avanço só tingia. Traço no disco não é
+      // peso percebido.
+      const total = CONFIG.player.dashWindupTicks || 1;
+      const clock = Math.max(0, Math.min(1, (total - (player.dashWindup ?? 0) + 1) / total));
+      const reach = 5 + 7 * clock;
+      const tipX = dir < 0 ? left - nose : left + width + nose;
+      target.strokeStyle = palette.chain;
+      target.lineWidth = 2;
+      target.beginPath();
+      target.moveTo(tipX, PLAYER_Y);
+      target.lineTo(tipX + dir * reach, PLAYER_Y);
+      target.stroke();
+    }
+  }
+
+  // A corrente no HUD é conta. No corpo ela é a aposta: cada elo vira um
+  // pip em órbita. A coleta leva o orbe ao slot; guardar leva o pip ao
+  // placar; o erro espalha; no fim a aposta não guardada cai e o overlay
+  // nomeia o que caiu. Com menos movimento a formação trava, não some.
+  // Número no disco não é peso percebido. A conta no estado sobrevive
+  // ao fim — a órbita não.
+  function drawChain(target, palette, state, reduced) {
+    if (state.phase === "over") return;
+    const count = chainPipCount(state.chain);
+    if (count <= 0) return;
+    const size = CONFIG.feel.chainPipSize;
+    const tick = Number.isFinite(state.tick) ? state.tick : 0;
+    target.fillStyle = palette.chain;
+    for (let index = 0; index < count; index += 1) {
+      const pip = chainPipAt(index, count, state.player.x, PLAYER_Y, tick, reduced);
+      target.fillRect(pip.x - size / 2, pip.y - size / 2, size, size);
     }
   }
 
@@ -188,7 +525,7 @@ export function createRenderer(canvas, options = {}) {
   // Devolve os retângulos que reservou. É deles que a faixa de legenda tira a
   // sua posição, em vez de repetir os números do HUD e sair de sincronia na
   // primeira vez que alguém mexer na escala da interface.
-  function drawHud(target, palette, state, settings, extra) {
+  function drawHud(target, palette, state, settings, extra, lines) {
     const size = 8 * (settings.uiScale ?? 1);
     target.font = `${size}px system-ui, sans-serif`;
     target.textBaseline = "top";
@@ -197,10 +534,10 @@ export function createRenderer(canvas, options = {}) {
     // "1 → 1", que não é erro de conta — é ruído, e um revisor leu como bug.
     // Ela aparece quando guardar rende mais do que a corrente já vale.
     const payoff = state.chain * state.chain;
-    const chain = `Corrente ${state.chain}${payoff > state.chain ? ` → ${payoff}` : ""}`;
-    const score = `Pontos ${state.score}`;
+    const chain = `${lines.chain} ${state.chain}${payoff > state.chain ? ` → ${payoff}` : ""}`;
+    const score = `${lines.score} ${state.score}`;
     const seconds = Math.ceil(remainingTicks(state) / TICK_HZ);
-    const best = extra.best === undefined ? null : `Recorde ${extra.best}`;
+    const best = extra.best === undefined ? null : `${lines.record} ${extra.best}`;
     const width = (text) => target.measureText(text).width;
 
     target.textAlign = "left";
@@ -210,35 +547,184 @@ export function createRenderer(canvas, options = {}) {
     target.fillStyle = state.chain > 0 ? palette.chain : palette.muted;
     target.fillText(chain, 6, second);
 
-    const rightWidth = Math.max(width(`${seconds}s`), best ? width(best) : 0);
+    // O relógio mora neste canto. O toque ali pausa —
+    // Esc e P não existem no polegar. Sem o || o canto
+    // calava o verbo e o convite some a tabela. Texto
+    // no disco não é sessão observada.
+    const clock = `|| ${seconds}s`;
+    const rightWidth = Math.max(width(clock), best ? width(best) : 0);
     const timerBox = plate(target, palette, FIELD.width - 6 - rightWidth, 5, rightWidth, best ? second + size - 5 : size);
     target.textAlign = "right";
-    target.fillStyle = seconds <= 10 ? palette.danger : palette.muted;
-    target.fillText(`${seconds}s`, FIELD.width - 6, 5);
+    target.fillStyle = closingWindow(state) ? palette.danger : palette.muted;
+    target.fillText(clock, FIELD.width - 6, 5);
     if (best) {
       target.fillStyle = palette.muted;
       target.fillText(best, FIELD.width - 6, second);
     }
 
     target.textAlign = "left";
-    const ready = state.player.dashCooldown === 0 && state.player.dashRecovery === 0 && state.bankLock === 0;
-    const dash = ready ? "Dash pronto" : "Dash recarregando";
+    const charge = dashCharge(state);
+    // A faixa no travel já enche. Sem isto o rótulo
+    // dizia recarregando e o verbo no avanço mentia
+    // a recarga. Texto no disco não é peso percebido.
+    const ready = charge.phase === "ready" || charge.phase === "dash";
+    const dash = ready ? lines.dash_ready : lines.dash_recharging;
     const dashBox = plate(target, palette, 6, FIELD.height - size - 5, width(dash), size);
+    const strip = 2;
+    const ink = charge.phase === "ready" || charge.phase === "dash"
+      ? palette.orb
+      : charge.phase === "windup"
+        ? palette.chain
+        : charge.phase === "recovery"
+          ? palette.player
+          : palette.muted;
+    target.fillStyle = ink;
+    target.fillRect(dashBox.x, dashBox.y + dashBox.height - strip, dashBox.width * charge.fill, strip);
     target.fillStyle = ready ? palette.orb : palette.muted;
     target.fillText(dash, 6, FIELD.height - size - 5);
     return { score: scoreBox, timer: timerBox, dash: dashBox };
   }
 
-  function drawOverlay(target, palette, title, hint) {
-    target.fillStyle = "rgba(0,0,0,0.62)";
+  function drawCoach(target, palette, hint, reserved, settings, extra = {}, lines = copy) {
+    const text = hint === "fantasy" ? (extra.fantasy || lines.fantasy) : lines[`hint_${hint}`];
+    if (!hint || !text) return;
+    const size = 7 * (settings.uiScale ?? 1);
+    target.font = `${size}px system-ui, sans-serif`;
+    target.textBaseline = "top";
+    const width = target.measureText(text).width;
+    const x = (FIELD.width - width) / 2;
+    const y = reserved.score.y + reserved.score.height + 6;
+    plate(target, palette, x, y, width, size);
+    target.textAlign = "left";
+    target.fillStyle = palette.text;
+    target.fillText(text, x, y);
+  }
+
+  // A conta no HUD fica sob a cortina. O overlay reusa `chain`,
+  // `best_chain` e `record` — sem campo novo — para nomear a aposta
+  // que caiu e o recorde que o HUD mostrou a partida inteira.
+  // Sem corrente o fim não inventa o rótulo. Recorde 0 some.
+  // O avanço abre a porta, não recomeça em silêncio. Texto no
+  // disco não é peso percebido.
+  function pauseHint(lines, extra = {}) {
+    const parts = [];
+    const best = Number(extra.best);
+    if (Number.isFinite(best) && best > 0) parts.push(`${lines.record} ${best}`);
+    parts.push(lines.resume);
+    // R e Select já saem da pausa. Sem isto a placa
+    // só ensinava continuar e o reinício falava no
+    // vazio. Texto no disco não é felt.
+    if (lines.restart) parts.push(lines.restart);
+    return parts.join(" · ");
+  }
+
+  function overHint(state, lines, extra = {}) {
+    const parts = [];
+    if (state.chain > 0) parts.push(`${lines.chain} ${state.chain}`);
+    if (state.stats.bestChain) parts.push(`${lines.best_chain}: ${state.stats.bestChain}`);
+    const best = Number(extra.best);
+    if (Number.isFinite(best) && best > 0) parts.push(`${lines.record} ${best}`);
+    parts.push(parts.length ? lines.over_door_inline : lines.over_door);
+    return parts.join(" · ");
+  }
+
+  // A abertura lê o que o save já guardava. Recorde e última
+  // seed — não o tick interrompido. Fantasia do `--idea` mora
+  // aqui, não só nos 48 ticks do aviso. Tela no stub não é
+  // alguém que voltou.
+  function drawTitle(target, palette, settings, extra, lines) {
+    const scale = settings.uiScale ?? 1;
+    target.fillStyle = palette.plate;
+    target.globalAlpha = 0.62;
+    target.fillRect(0, 0, FIELD.width, FIELD.height);
+    target.globalAlpha = 1;
+    target.textAlign = "center";
+    const fantasy = String(extra.fantasy || lines.fantasy || "").trim();
+    let line = FIELD.height / 2 - 22 * scale;
+    if (fantasy) {
+      target.fillStyle = palette.text;
+      target.font = `${10 * scale}px system-ui, sans-serif`;
+      target.fillText(fantasy, FIELD.width / 2, line);
+      line += 16 * scale;
+    }
+    const last = extra.lastRun;
+    if (last && Number.isFinite(last.score)) {
+      target.fillStyle = palette.muted;
+      target.font = `${8 * scale}px system-ui, sans-serif`;
+      target.fillText(`${lines.title_last} ${last.score}`, FIELD.width / 2, line);
+      line += 12 * scale;
+    }
+    const best = Number.isFinite(extra.best) ? extra.best : 0;
+    if (best > 0) {
+      target.fillStyle = palette.muted;
+      target.font = `${8 * scale}px system-ui, sans-serif`;
+      target.fillText(`${lines.record} ${best}`, FIELD.width / 2, line);
+      line += 12 * scale;
+    }
+    target.fillStyle = palette.text;
+    target.font = `${8 * scale}px system-ui, sans-serif`;
+    target.fillText(extra.canContinue ? lines.title_again : lines.title_play, FIELD.width / 2, line);
+    if (extra.canContinue) {
+      target.fillStyle = palette.muted;
+      target.fillText(lines.title_new, FIELD.width / 2, line + 12 * scale);
+      line += 12 * scale;
+    }
+    const persist = persistLine(extra.persist, lines);
+    const recovered = settingsLine(extra.settingsLoad, lines);
+    // persistLine continua só sessão. A recuperação das
+    // preferências mora em settingsLine — o painel e o live
+    // já falavam; o canvas da porta calava.
+    let notice = line + 12 * scale;
+    target.fillStyle = palette.muted;
+    target.font = `${7 * scale}px system-ui, sans-serif`;
+    if (persist) {
+      target.fillText(persist, FIELD.width / 2, notice);
+      notice += 12 * scale;
+    }
+    if (recovered) {
+      target.fillText(recovered, FIELD.width / 2, notice);
+      notice += 12 * scale;
+    }
+    const audio = String(extra.audio || "").trim();
+    if (audio) {
+      // O painel e o live já nomeiam o vazio. Sem isto o
+      // canvas da porta calava a lacuna. Texto no disco
+      // não é mix ouvido.
+      target.fillText(audio, FIELD.width / 2, notice);
+    }
+    target.textAlign = "left";
+  }
+
+  function drawOverlay(target, palette, title, hint, settings = {}, persist = "", recovered = "", audio = "") {
+    // A cortina reusa a placa do look — dusk não herda o preto frio.
+    // Token no disco não é direção observada. O texto segue uiScale
+    // como o HUD; escala no stub não é sessão de alcance.
+    const scale = settings.uiScale ?? 1;
+    target.fillStyle = palette.plate;
     target.fillRect(0, 0, FIELD.width, FIELD.height);
     target.textAlign = "center";
     target.fillStyle = palette.text;
-    target.font = "16px system-ui, sans-serif";
-    target.fillText(title, FIELD.width / 2, FIELD.height / 2 - 14);
-    target.font = "8px system-ui, sans-serif";
+    target.font = `${16 * scale}px system-ui, sans-serif`;
+    target.fillText(title, FIELD.width / 2, FIELD.height / 2 - 14 * scale);
+    target.font = `${8 * scale}px system-ui, sans-serif`;
     target.fillStyle = palette.muted;
-    target.fillText(hint, FIELD.width / 2, FIELD.height / 2 + 8);
+    target.fillText(hint, FIELD.width / 2, FIELD.height / 2 + 8 * scale);
+    let notice = FIELD.height / 2 + 20 * scale;
+    if (persist) {
+      target.fillText(persist, FIELD.width / 2, notice);
+      notice += 12 * scale;
+    }
+    if (recovered) {
+      target.fillText(recovered, FIELD.width / 2, notice);
+      notice += 12 * scale;
+    }
+    const gap = String(audio || "").trim();
+    if (gap) {
+      // A cortina do fim cobria o painel. Sem isto o live
+      // falava a lacuna e o canvas calava. A pausa continua
+      // sem esta linha — o live da pausa também cala o som.
+      target.fillText(gap, FIELD.width / 2, notice);
+    }
     target.textAlign = "left";
   }
 

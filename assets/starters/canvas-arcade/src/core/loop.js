@@ -11,8 +11,16 @@
 const defaultNow = () =>
   typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
 
+function finiteSpeed(value, fallback = 1) {
+  return Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
 export function createLoop(options = {}) {
   const stepMs = options.stepMs ?? 1000 / 60;
+  // Velocidade de parede: 1 é o relógio cheio. Abaixo de 1 o acumulador
+  // anda menos por milissegundo real. O passo da simulação continua
+  // `stepMs` — `advance()` headless não passa por aqui.
+  let speed = finiteSpeed(options.speed);
   const maxCatchUp = options.maxCatchUp ?? 5;
   const sampleSize = options.sampleSize ?? 240;
   const now = options.now ?? defaultNow;
@@ -49,7 +57,7 @@ export function createLoop(options = {}) {
     if (last !== null) record(time - last);
     // Retomar sem zerar `last` produziria uma rajada de passos de recuperação
     // equivalente ao tempo em pausa.
-    if (last !== null && !paused) accumulator += time - last;
+    if (last !== null && !paused) accumulator += (time - last) * speed;
     last = time;
     counters.frames += 1;
 
@@ -100,10 +108,17 @@ export function createLoop(options = {}) {
     get disposed() {
       return disposed;
     },
+    setSpeed(next) {
+      speed = finiteSpeed(next, speed);
+      return speed;
+    },
+    get speed() {
+      return speed;
+    },
     // Passo manual, para teste headless e para reproduzir um replay.
     feed(elapsedMs) {
       if (disposed || paused) return 0;
-      accumulator += elapsedMs;
+      accumulator += elapsedMs * speed;
       let steps = 0;
       while (accumulator >= stepMs && steps < maxCatchUp) {
         accumulator -= stepMs;

@@ -29,7 +29,7 @@ Fonte canônica anterior e direção do usuário: [localizar; adaptar se já exi
 - Escala de ambição: [jam/conto · produto · AA / Triple-I (piso de acabamento)].
   Quantidade de artefatos e de conteúdo segue a escala; o piso do verbo não.
   “AAA” não é adjetivo do build. Ver `framework/references/ambition.md`.
-- Primeira situação jogável: [ação, decisão, consequência e reinício].
+- Primeira situação jogável: [com tela, a porta; depois ação, decisão, consequência e reinício].
 - Feel e áudio desse verbo: [o que deve ser percebido no primeiro ciclo; lacuna se ainda for PoC].
 - Escopo essencial e adiado: [limites e motivos, respeitando exigências do usuário].
 - Hipótese mais arriscada: [o que pode invalidar a experiência].

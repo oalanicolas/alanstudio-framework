@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "palettes": {
+    "normal": {
+      "background": "#10131a",
+      "field": "#171b26",
+      "player": "#f2f4f8",
+      "orb": "#4ea8ff",
+      "shard": "#ff8a3d",
+      "chain": "#ffd166",
+      "text": "#e7ebf3",
+      "muted": "#8a93a6",
+      "danger": "#ff5d5d",
+      "plate": "rgba(7,9,13,0.86)",
+      "plateEdge": "rgba(231,235,243,0.22)"
+    },
+    "contrast": {
+      "background": "#000000",
+      "field": "#000000",
+      "player": "#ffffff",
+      "orb": "#00d2ff",
+      "shard": "#ff6a00",
+      "chain": "#ffe600",
+      "text": "#ffffff",
+      "muted": "#c9c9c9",
+      "danger": "#ff2b2b",
+      "plate": "rgba(0,0,0,0.9)",
+      "plateEdge": "#ffffff"
+    },
+    "dusk": {
+      "background": "#1a1210",
+      "field": "#241816",
+      "player": "#f6efe6",
+      "orb": "#ffb35a",
+      "shard": "#6878b4",
+      "chain": "#f0c36a",
+      "text": "#f3e6d8",
+      "muted": "#a89080",
+      "danger": "#ff6b5a",
+      "plate": "rgba(18,10,8,0.88)",
+      "plateEdge": "rgba(243,230,216,0.24)"
+    },
+    "calm": {
+      "background": "#0e1616",
+      "field": "#15201e",
+      "player": "#e8f0ee",
+      "orb": "#6ab8a4",
+      "shard": "#d07868",
+      "chain": "#c4d4a0",
+      "text": "#dce8e4",
+      "muted": "#7a8c88",
+      "danger": "#e07068",
+      "plate": "rgba(6,12,11,0.88)",
+      "plateEdge": "rgba(220,232,228,0.20)"
+    }
+  }
+}

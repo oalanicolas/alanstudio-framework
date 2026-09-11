@@ -13,6 +13,8 @@ perguntas, riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Colocação: preview com alcance, snap, validação instantânea de caminho bloqueado;
   som e animação de construção; venda com feedback.
 - Ondas legíveis: preview da próxima onda, contagem, inimigos com silhueta por tipo

@@ -3,15 +3,75 @@
 Entrada: ação ou transição que precisa ser ouvida, silenciada ou misturada,
 e a referência sonora aprovada (ou a lacuna explícita).
 
+Com tela, a primeira superfície é a porta. A cama para nela; o avanço
+que abre dispara `dash` e fecha com `land` em `beginRun()`. Attract não consome a seed.
+A porta também lê a legenda que o mixer ainda guarda — sem isto o fim
+existia no áudio e sumia na abertura. Texto no disco não é mix ouvido.
+
 Áudio AAA não é quantidade de arquivos. É mix: o jogador ouve a causa, o
 efeito e o espaço, e o silêncio também informa. Um loop 8-bit no lugar de
 uma gravação licenciada não cumpre o piso deste estúdio. jsfxr, chiptune
 e Kenney arcade não são o padrão.
 
-`context --focus audio` seleciona esta receita. Som novo no laboratório:
-`sfx search` antes de qualquer download; `sfx copy` leva o arquivo e a
-proveniência. Sem `shared/sfx`, o catálogo vem vazio — isso não autoriza
-improvisar licença.
+`context --focus audio` seleciona esta receita. `roles <projeto>` lê os
+papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
+em `public/sfx`. Nomeia o `duckMs` que a tabela já declara. Sem duck a
+chave some. Nomear não é mix ouvida. Se a receita recusa que áudio AAA seja quantidade de arquivos, o `roles` nomeia a quantidade que a receita já recusa. Lista no disco não é mix. Sem chave `quantidade`. Se o processo recusa o reuso automático, o `roles --fill` nomeia o reuso que o processo já recusa. Arquivo no disco não é licença. Sem chave `reuso`. Se o mapa recusa que o catálogo ouça o starter, o `context` nomeia a escuta que o mapa já recusa. Acervo no disco não é mix ouvida. Sem chave `ouve`. `roles --fill` sugere um id do acervo ou a ficha do
+stem do starter que casa; `--apply` copia o id do acervo ou o stem
+do starter com créditos — e recoloca o WAV se o recibo já está e
+origem e licença casam. `sfx copy` do acervo faz o mesmo e
+declara `heard` falso. `sfx copy` continua o caminho explícito.
+O starter `canvas-arcade`
+já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
+mixer. O pedido que chega antes do WAV — ou enquanto o contexto
+ainda está suspenso — fica na fila e toca quando o buffer entra ou
+o gesto retoma, sem segunda legenda. Os stems sobem juntos: collect
+não espera dash terminar. Wav no lugar não pede ogg. O gesto
+(tecla, toque ou controle) retoma o contexto suspenso. Retomar, fila e
+paralelo não são mix ouvido.
+Coleta e guarda sobem de tom com a corrente; o erro não herda o tom.
+A legenda desses dois papéis nomeia a mesma aposta. Sem o número
+o tom falava e a faixa calava. O erro emite `lost`; a faixa nomeia
+a corrente que caiu e cala a aposta quando era zero. Não herda
+`chain`. Número na legenda não é mix ouvido.
+Coleta, queda, raspo, impacto, avanço, o término, a guarda e o fim levam o x do campo; o panner
+marca o lugar. Número no panner não é mix ouvido. O término (`land`) é
+voz própria, mais curta que o dash; sem o papel o aterrissar é mudo.
+`sfx --from` / `--as` desloca a voz no papel que o mixer já toca;
+depois de um `note`, `start` e `next` apontam esse comando.
+Arquivo ausente é lacuna do verbo, não silêncio deliberado.
+O loader marca o primário que esgota as extensões; o painel
+nomeia os vazios mesmo quando outro papel já registrou.
+A região viva espelha a lacuna na porta e no fim — o convite
+some a tabela. Catálogo completo não entra. Relê quando o
+fetch termina — pintar só no boot some o que chegou.
+Variante ausente não é lacuna. Decode nulo tenta a próxima
+extensão; wav ilegível não esconde o ogg nem o pedido.
+Nomear o 404 não é mix ouvido.
+`heard` é sempre falso. Sem `shared/sfx`, `--fill` nomeia o stem
+do starter que casa, `--apply` o copia ou recoloca o WAV se o recibo já está, `sfx search` nomeia o mesmo stem. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`.
+`sfx info` lê a chave e nomeia o stem que o recibo lista e o
+disco perdeu, `sfx verify` nomeia os stems sem cruzar o
+que não existe. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. `sfx summary` lista todos os stems já no
+`public/sfx` e `sfx serve`
+recusa. Com sons no acervo, `sfx serve` abre a página de escuta —
+se `shared/sfx/ui` faltar, o harness gera a lista e nomeia o
+som que o catálogo lista e o disco perdeu. `sfx verify`
+nomeia o som que o catálogo lista e o disco perdeu —
+não despeja errno. Tocar nessa
+página não é mix ouvida no jogo. Isso não
+autoriza improvisar licença. Arquivo no disco não é mix ouvido. Crescer o acervo é `sfx import ARQUIVO
+--metadata JSON` (ffmpeg) ou `sfx seed` com `selection.json` local.
+`sfx info ID` lê a ficha do acervo ou a chave do stem do starter —
+o recibo que lista um stem e o disco perdeu não é id desconhecido;
+se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede. Pico no recibo não é mix ouvida.
+`sfx export ID --to PASTA` copia bytes e
+créditos do acervo ou do stem do starter que `sfx info`
+já nomeia — o recibo que lista um stem e o disco perdeu
+não é id desconhecido; exportar não inventa bytes. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`.
+`sfx copy` leva o mesmo stem para a pasta do
+jogo. Se o sidecar declara licença, o `sfx copy` nomeia os créditos que o copy já leva. Créditos no disco não são mix ouvida. Sem chave `sidecar`. `--apply` também leva o stem do starter. Importar e exportar não é ouvir. O acervo compartilhado é ADAPT, não o
+primeiro ciclo.
 
 ## 1. Nomear a camada
 
@@ -101,14 +161,36 @@ aprovação do usuário. Sem referência sonora, a lacuna permanece explícita.
 Origem: piso de áudio do [README](../README.md),
 [qualidade](../references/quality.md),
 [ambição](../references/ambition.md) e catálogo `shared/sfx` do laboratório.
-Este repositório não inclui os arquivos de som.
+O acervo `shared/sfx` do laboratório não vive neste repositório. O
+starter `canvas-arcade` inclui design original em `public/sfx`.
 
 ## Implementação de referência e degraus
 
-`src/game/audio.js` do starter `canvas-arcade` traz barramentos, prioridade, ducking,
-limite de vozes e legenda, com os seis papéis sonoros declarados e **vazios**. O acesso
-`audioGaps()`, exposto em `src/main.js`, transforma essa ausência em lacuna observável
-pela interface e pelos testes, em vez de escondê-la atrás de bipes sintetizados. Toda
+`src/game/audio.js` do starter `canvas-arcade` traz barramentos, prioridade, ducking
+só na cama (`music`), limite de vozes, rodízio de variantes e legenda.
+O aviso crítico não some o próprio verbo. Os papéis do verbo e a
+cama (`bed`, loop no barramento de música; o relógio da sessão dilata
+a cama só na partida — o fecho sobe em cima dele), o fecho (`close`, tap e
+legenda "últimos segundos"), a prática (`live` com `threat`,
+"a ameaça começa" — a porta reusa a voz sem o tap e continua
+"a chuva começa"),
+a guarda (`stir`, "a folga acaba" — a chuva não some, só
+afrouxa),
+o orbe perdido (`missed`,
+"orbe perdido") têm design original e variante
+(`-b`) em `public/sfx`. No `over` a cama solta com fade; pause, title
+e aba escondida continuam cortando a cama seco. No campo a pausa
+também corta as vozes do verbo que ainda soavam. No fim e na
+porta o `hush` não corre: a cortina já venceu e o stinger
+precisa atravessar. Arquivo no disco não é mix ouvido. `npm run sfx -- --from dash --as brighter`
+desloca a voz no papel que o mixer já toca; `--as` precisa de `--from`.
+Se o `tools/design-sfx.*` desloca a voz, o `roles` nomeia a voz que o sfx já desloca.
+Arquivo no disco não é mix ouvida. Sem chave `sfx`.
+`npm run peak` relata o pico do
+arquivo. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `npm run mix` soma as vozes de uma partida simulada com o mesmo
+palco, folga, ducking e taxa da corrente do mixer. Se o `tools/mix.*`
+soma as vozes, o `roles` nomeia a soma. Soma no disco não é mix ouvida.
+Sem chave `mix`. Se o `tools/wav.*` lê o PCM, o `roles` nomeia o PCM que o wav já lê. Bytes no disco não são mix ouvida. Sem chave `wav`. Nenhum dos dois é mix ouvido. `heard` continua falso. Toda
 informação sonora precisa de equivalente visual — requisito de
 [acessibilidade](accessibility.md), não recurso extra. Degraus da dimensão `audio_mix`:
 [barra de acabamento](../references/production-bar.md#audio_mix--mixagem-não-arquivos).

@@ -8,7 +8,7 @@ Fontes: [brief, GDD, PRD e resultados de protótipo/vertical slice].
 
 - Jogador/contexto: [para quem esta versão precisa fazer sentido].
 - Hipótese de valor: [por que a pessoa jogaria; não confundir com “abre sem erro”].
-- Experiência completa mínima: [entrada no jogo, ciclo, resultado, repetição/retomada].
+- Experiência completa mínima: [com tela, a porta; depois ciclo, resultado, repetição/retomada].
 
 ## Fronteira da entrega
 

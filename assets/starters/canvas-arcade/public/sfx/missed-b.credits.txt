@@ -1,0 +1,3 @@
+missed-b.wav — origem: variante para evitar fadiga do starter Canvas Arcade, 2026-09-09.
+Gerado por tools/design-sfx.py. Autor: Alan Studios Framework. Licença: CC0-1.0. Sem samples de terceiros, sem jsfxr, sem Kenney, sem chiptune.
+Consumidor: src/game/audio.js (papel `missed`) via src/game/sfx.js.

@@ -13,6 +13,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Som acima de tudo: silêncio com propósito, camadas que sobem com proximidade, sons
   diegéticos ambíguos, mixagem que não cansa. Iluminação: escuro legível, fontes
   controláveis (lanterna com bateria), sombras que informam.

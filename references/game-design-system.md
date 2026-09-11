@@ -47,7 +47,8 @@ ativo; localize o uso real.
 3. **Componentes do mundo:** famílias recorrentes e como um item novo nasce.
 4. **Feel / feedback:** sinal percebido da ação central; ligar ao verbo do GDD.
    Cadeia: intenção → input → antecipação → corpo → impacto → câmera → áudio
-   → recuperação. Receita: [feel](../recipes/feel.md).
+   → recuperação. Com tela, a primeira superfície é a porta; o campo
+   começa depois do avanço. Receita: [feel](../recipes/feel.md).
 5. **Áudio / mix:** papéis (ação, mundo, música, stinger, silêncio), consumidor
    real e interrupção. Piso de gravação licenciada salvo direção explícita em
    contrário. Receita: [áudio](../recipes/audio.md).
@@ -55,6 +56,7 @@ ativo; localize o uso real.
 7. **Fazer / não fazer:** um exemplo que cabe e um que quebra a direção.
 8. **Proveniência:** origem, crédito e condição de uso dos recursos.
 9. **Verificação:** cenário de comparação em movimento, nas mesmas condições.
+   Com tela, o cenário começa na porta.
 
 GDD define o que o jogador faz. O design system define como isso se parece, soa,
 pesa e se multiplica. MDA continua sendo hipótese de experiência, não paleta.

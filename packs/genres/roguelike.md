@@ -13,6 +13,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Morte rápida e reinício imediato (segundos); leitura do build em uma tela; recompensa
   com peso (som, luz, pausa curta) proporcional à raridade.
 - Combate/ação com feel do subgênero (ver [shooter](shooter.md), [plataforma](platformer.md)).

@@ -33,7 +33,7 @@ Versão/arquivos, ambiente e referência: [localizadores e limites de identifica
 
 - Hipótese: [compreensão, decisão, controle, ritmo ou experiência].
 - Perfil do jogador e papel do observador: [real ou avaliação do agente, sem confundi-los].
-- Sessão: [contexto, duração pretendida e instrução neutra].
+- Sessão: [com tela, começa na porta; contexto, duração pretendida e instrução neutra].
 - Intervenção: [quando ajudar e como registrar que isso alterou a observação].
 - Situação/comparação: [percurso, entrada, câmera e referência em condições equivalentes].
 - Sinais a observar: [hesitação, descoberta, estratégia, erro repetido, recuperação].
@@ -45,8 +45,11 @@ Versão/arquivos, ambiente e referência: [localizadores e limites de identifica
   sem mudança necessária. Escrever antes de começar; não é número de participantes].
 - Recorrência: [quantas sessões distintas mostraram o mesmo problema; um relato é
   observação, não causa demonstrada].
-- Achado: [problema, evidência, hipótese e medição. Sem os quatro, registre como
-  impressão].
+- Achado (esqueleto vazio não é achado; os quatro no disco não observam):
+  - Problema:
+  - Evidência:
+  - Hipótese:
+  - Medição:
 
 ## Problemas e reteste
 

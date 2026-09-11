@@ -362,6 +362,59 @@ GATES = {
 # como "Applicable" — references/gates-research.md, §3.4 e §4.2.
 GATE_STATES = ("met", "unmet", "waived", "out_of_scope")
 GATE_KINDS = ("readiness", "must_meet")
+# Conformidade com o que o próprio projeto declarou. Não são os critérios de
+# `preproduction.md` — esses já estão nos gates — e não são limiares importados.
+# A lista vem de references/observable-criteria-research.md §7, o único conjunto
+# que a pesquisa chamou de "não precisa de autoridade externa". Um teste exige
+# que cada rótulo continue sem dígito e que a frase-âncora ainda exista no
+# levantamento. Cada item pende do gate em que a pergunta passa a doer.
+CRAFT_CHECKS = {
+    "canvas_scale": {
+        "gate": "build",
+        "label": "A resolução de apresentação está declarada, e a escala tela sobre canvas é inteira ou o fallback está escrito",
+        "anchor": "resolução de canvas está declarada",
+    },
+    "forgiveness": {
+        "gate": "build",
+        "label": "Cada janela de perdão tem constante nomeada, num só lugar, com unidade declarada",
+        "anchor": "janela de perdão tem constante nomeada",
+    },
+    "palette": {
+        "gate": "scale",
+        "label": "Cada cor usada consta da paleta declarada",
+        "anchor": "cor usada consta da paleta declarada",
+    },
+    "style_factor": {
+        "gate": "scale",
+        "label": "Todo asset do mesmo mundo de estilo usa o mesmo fator inteiro, e nenhum asset aparece em dois mundos",
+        "anchor": "mesmo fator inteiro",
+    },
+    "percentile_def": {
+        "gate": "scale",
+        "label": "O percentil de tempo de quadro está definido pela definição, não pelo apelido",
+        "anchor": "Percentil está declarado por definição",
+    },
+    "budget_delta": {
+        "gate": "scale",
+        "label": "Tempo de quadro por cena está registrado por build e comparado com o anterior",
+        "anchor": "comparados com o build anterior",
+    },
+    "playtest_stop": {
+        "gate": "evaluate",
+        "label": "A rodada de playtest tem regra de parada declarada, em vez de conta de participantes",
+        "anchor": "regra de parada declarada",
+    },
+    "playtest_finding": {
+        "gate": "evaluate",
+        "label": "Cada achado de playtest nomeia problema, evidência, hipótese e medição",
+        "anchor": "problema, a evidência, a hipótese e a medição",
+    },
+    "evidence_kind": {
+        "gate": "conclude",
+        "label": "Cada evidência diz se o lastro é log de comando ou observação de pessoa",
+        "anchor": "log de comando",
+    },
+}
 
 STAGE_TIERS = {
     "brief": "prototype", "mda": "prototype", "poc": "prototype",
@@ -374,7 +427,13 @@ STARTERS_ROOT = FRAMEWORK / "assets/starters"
 STARTER_MANIFEST = "starter.json"
 STARTER_FIELDS = ("project", "project_slug", "project_title", "project_path", "framework_path")
 INIT_DOCUMENTS = ("brief", "gdd", "mda", "tdd", "art-bible", "devlog", "qa")
+# O ciclo fresco pede rascunho só no que ainda é decisão em aberto. Art-bible
+# vigente do starter não entra: direção já escrita não é atrito de template.
+FRESH_DRAFTS = ("brief", "gdd", "mda", "tdd", "devlog", "qa")
 INIT_TEXT_SUFFIXES = {".md", ".txt", ".html", ".css", ".js", ".mjs", ".json", ".svg"}
+# Marcador que o `init` deixa nos templates. Um documento com ele não é
+# decisão vigente — nem art-bible, nem release, nem brief.
+DRAFT_MARKERS = re.compile(r"\{\{|\[preencher|status[^\n]{0,30}(rascunho|draft)", re.IGNORECASE)
 CAPABILITY_TOKENS = {
     "pause": ("pause", "paused"),
     "reset": ("reset", "restart"),
@@ -396,7 +455,13 @@ def normalize_text(text):
 
 
 def emit(value):
-    print(json.dumps(value, ensure_ascii=False, indent=2))
+    # A frase de agora sai em stderr para quem cola. O JSON fica no
+    # stdout para quem encana. Falar a frase não executa o jogo.
+    if isinstance(value, dict):
+        prompt = value.get("prompt")
+        if isinstance(prompt, str) and prompt.strip():
+            print(prompt, file=sys.stderr, flush=True)
+    print(json.dumps(value, ensure_ascii=False, indent=2), flush=True)
 
 
 def resolve(value, root=ROOT):
@@ -412,6 +477,42 @@ def instruction_files(project):
             if path.is_file() or (name == ".cursor/rules" and path.is_dir() and any(path.iterdir())):
                 found.append(str(path))
     return found
+
+
+# O processo já recusa que o hash seja leitura. Sem isto o
+# git relatava o HEAD e calava a recusa.
+# Identidade no disco não é inspeção.
+PROCESS_READING = re.compile(r"prova identidade, não leitura")
+
+
+def process_refuses_hash_as_reading(text):
+    return bool(text and PROCESS_READING.search(text))
+
+
+def git_identity_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_hash_as_reading(text):
+        return "references/process.md"
+    return None
+
+
+def git_summary_scope():
+    scope = (
+        "Estado do repositório na hora do comando; commits não provam que a mudança "
+        "funciona nem que foi revisada."
+    )
+    if git_identity_source():
+        scope += (
+            " O disco recusa que o hash seja leitura (`leitura`). "
+            "Identidade no disco não é inspeção."
+        )
+    return scope
 
 
 def git_summary(project):
@@ -430,7 +531,7 @@ def git_summary(project):
         "branch": run("rev-parse", "--abbrev-ref", "HEAD") or None,
         "dirty_paths": len(dirty),
         "recent": run("log", "-5", "--format=%h %s", "--", ".").splitlines(),
-        "scope": "Estado do repositório na hora do comando; commits não provam que a mudança funciona nem que foi revisada.",
+        "scope": git_summary_scope(),
     }
 
 
@@ -474,7 +575,7 @@ def review(root, limit=REVIEW_LIMIT):
         try:
             found = scan(path)
         except (OSError, ValueError) as error:
-            reviewed.append(dict(entry, unreadable=str(error)))
+            reviewed.append(dict(entry, unreadable=str(error), scope=review_item_scope()))
             continue
         areas = found["areas"]
         located = [key for key, area in areas.items() if area["status"] == "candidate_found"]
@@ -484,9 +585,47 @@ def review(root, limit=REVIEW_LIMIT):
         # `next`: campo de template em branco não é trabalho interrompido.
         registered = [item for item in found["continuity_sources"] if item["status"] != "draft"]
         try:
-            scripts = validators(project_commands(path)[0])
+            commands, manager = project_commands(path)
+            scripts = validators(commands)
         except ValueError:
+            commands, manager = {}, None
             scripts = []
+        origins = origins_reading(path)
+        roles = roles_reading(path, root)
+        feel_report = feel_reading(path)
+        access_report = access_reading(path)
+        persist_report = save_reading(path)
+        perf_report = budget_reading(path)
+        art_report = art_reading(path)
+        content_report = content_reading(path)
+        ship_report = ship_reading(path)
+        playtest_report = playtest_reading(path)
+        # Contar constantes e rascunhos não diz qual jogo o `next` abriria.
+        # Sem estes sinais, dois destinos com a mesma conta saíam iguais e
+        # o laboratório pedia `next` em cada um só para escolher. Sinal no
+        # disco não é partida jogada. `access_declared` também esconde a
+        # lista: um jogo com legendas e sem pulso saía igual ao starter.
+        play = play_command(path, commands, manager)
+        missing = [key for key, area in areas.items() if area["status"] == "not_located"]
+        noted = bool(feel_report["observations"])
+        kind = entry.get("kind")
+        signals = {
+            "playable_unplayed": fresh_starter_cycle(path, missing, play) and not noted,
+            "cycle_craft": bool(noted and craft_commands(path) and not cycle_crafted(path)),
+            "feel_unobserved": feel_report["unobserved"],
+            "playtest_unstructured": playtest_report["unstructured"],
+            "playtest_invite": bool(noted and not playtest_report.get("invite")),
+            "origins_undeclared": origins["undeclared"],
+            "origins_contradicts_licensing": origins["contradicts_licensing"],
+            "access_missing": access_report["missing"] if kind else [],
+            "save_unversioned": persist_report["unversioned"],
+            "performance_unbudgeted": perf_report["unbudgeted"],
+            "art_missing": bool(kind) and not art_report["declared"],
+            "content_inline": content_report["inline"],
+            "ship_unpacked": ship_report["unpacked"],
+            "audio_roles_empty": roles["empty"],
+            "playtest_candidate": playtest_report.get("candidate"),
+        }
         reviewed.append(dict(
             entry,
             areas_located=len(located),
@@ -498,6 +637,23 @@ def review(root, limit=REVIEW_LIMIT):
             bar_undeclared=len(declaration["undeclared"]),
             bar_problems=len(declaration["problems"]),
             validators=scripts,
+            origins_embedded=len(origins["embedded"]),
+            origins_undeclared=len(origins["undeclared"]),
+            audio_roles=len(roles["roles"]),
+            audio_roles_empty=len(roles["empty"]),
+            feel_constants=len(feel_report["constants"]),
+            feel_observations=len(feel_report["observations"]),
+            access_declared=access_report["declared"],
+            save_unversioned=persist_report["unversioned"],
+            performance_unbudgeted=perf_report["unbudgeted"],
+            art_declared=art_report["declared"],
+            content_files=len(content_report["files"]),
+            content_inline=content_report["inline"],
+            ship_unpacked=ship_report["unpacked"],
+            playtest_expected=playtest_report["expected"],
+            playtest_structured=playtest_report["structured"],
+            signals=signals,
+            scope=review_item_scope(),
         ))
     return {
         "schema_version": 1,
@@ -510,12 +666,92 @@ def review(root, limit=REVIEW_LIMIT):
         # Ordenar por urgência exigiria julgar qual jogo importa mais, e nada aqui
         # observa isso. A ordem é a do disco, e a escolha continua sendo de quem lê.
         "order": "caminho, em ordem determinística; o harness não classifica os jogos por urgência",
-        "scope": (
-            "Conta documentos por localização e lê a declaração de degrau de cada projeto. Não executa jogo "
-            "nenhum, não mede acabamento e não diz qual merece atenção primeiro. Área localizada é candidato "
-            "por nome ou título, não conteúdo aprovado; degrau é o que o projeto afirma de si."
-        ),
+        "scope": _review_scope(reviewed),
     }
+
+
+# O package já declara os scripts. Sem isto o
+# review lia os validadores e calava o campo.
+# Lista no disco não é passo executado.
+PACKAGE_SCRIPTS = re.compile(r'"scripts"\s*:\s*\{')
+
+
+def package_declares_scripts(text):
+    return bool(text and PACKAGE_SCRIPTS.search(text))
+
+
+def review_scripts_source(project):
+    project = Path(project)
+    path = project / "package.json"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        if path.stat().st_size > 400_000:
+            return None
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    if package_declares_scripts(text):
+        return "package.json"
+    return None
+
+
+def _review_scope(projects):
+    scope = (
+        "Conta documentos por localização e lê a declaração de degrau de cada projeto. "
+        "Relata os mesmos sinais que o `next` usa para o primeiro ciclo, o ofício, "
+        "o feel sem recibo, o achado sem forma, o convite, a origem sem recibo "
+        "e as lacunas de dimensão. "
+        "Não executa jogo "
+        "nenhum, não mede acabamento e não diz qual merece atenção primeiro. "
+        "Sinal verdadeiro não é partida jogada nem alguém de fora. "
+        "Lista de arquivo sem recibo não é licença. "
+        "Lista de chave ausente não é alcance observado. "
+        "Área localizada é candidato "
+        "por nome ou título, não conteúdo aprovado; degrau é o que o projeto afirma de si."
+    )
+    if any(review_scripts_source(entry.get("project", "")) for entry in projects):
+        scope += (
+            " O disco declara os scripts (`scripts`). "
+            "Lista no disco não é passo executado."
+        )
+    return scope
+
+
+# O roteiro já recusa que o documento comprove qualidade. Sem isto o
+# item do review copiava a conta e calava a recusa.
+# Conta no disco não é acabamento.
+PREPRODUCTION_QUALITY = re.compile(r"não comprova qualidade")
+
+
+def preproduction_refuses_document_quality(text):
+    return bool(text and PREPRODUCTION_QUALITY.search(text))
+
+
+def review_item_quality_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if preproduction_refuses_document_quality(text):
+        return "references/preproduction.md"
+    return None
+
+
+def review_item_scope():
+    scope = (
+        "Conta deste jogo. Não mede acabamento e não "
+        "aprova o documento."
+    )
+    if review_item_quality_source():
+        scope += (
+            " O disco recusa que o documento comprove qualidade (`qualidade`). "
+            "Conta no disco não é acabamento."
+        )
+    return scope
 
 
 def package_commands(project):
@@ -573,6 +809,31 @@ def studies_for(focus, studies_root):
 # formato canônico deste framework e a tabela já existia lá escrita à mão.
 BAR_ROW = re.compile(r"^\|\s*`(\w+)`\s*\|\s*`(\w+)`\s*\|\s*(?:`(\w+)`\s*:)?\s*(.*?)\s*\|\s*$")
 BAR_SOURCES = ("README.md", "docs/qa.md", "docs/devlog.md", "docs/gdd.md", "docs/art-bible.md")
+# A prosa já declara o mínimo. Sem isto o
+# bar lia a tabela e calava a regra.
+# Degrau no disco não é acabamento observado.
+BAR_FLOOR_MARK = re.compile(r"mínimo\*{0,2}\s+entre", re.IGNORECASE)
+
+
+def bar_declares_floor(text):
+    return bool(text and BAR_FLOOR_MARK.search(text))
+
+
+def bar_floor_source(project):
+    project = Path(project)
+    for name in BAR_SOURCES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if bar_declares_floor(text):
+            return name
+    return None
 
 
 def bar_declaration(project):
@@ -659,6 +920,9 @@ GATE_ROW = re.compile(
     r"^\|\s*`([\w-]+)`\s*\|\s*`([\w-]+)`\s*\|\s*`(\w+)`\s*\|\s*(.*?)\s*\|\s*$"
 )
 GATE_SOURCES = ("README.md", "docs/qa.md", "docs/devlog.md", "docs/release.md", "docs/prd.md")
+# A tabela já declara o gate. Sem isto o
+# gate lia a linha e calava o campo.
+# Linha no disco não é passagem concedida.
 
 
 def gate_declaration(project):
@@ -741,12 +1005,17 @@ def gate_declaration(project):
 
 def gate_reading(project, gate=None):
     declaration = gate_declaration(project)
+    problems = [dict(item) for item in declaration["problems"]]
+    problem_scope = gate_problem_scope()
+    for item in problems:
+        item["scope"] = problem_scope
     wanted = (gate,) if gate else tuple(GATES)
     gates = []
     for key in wanted:
         spec = GATES[key]
         rows = declaration["declared"].get(key, {})
         criteria = []
+        criterion_scope = gate_criterion_scope()
         for criterion, label, waivable, kind in spec["criteria"]:
             row = rows.get(criterion)
             criteria.append({
@@ -757,6 +1026,7 @@ def gate_reading(project, gate=None):
                 "state": row["state"] if row else "undeclared",
                 "evidence": row["note"] if row else None,
                 "source": row["source"] if row else None,
+                "scope": criterion_scope,
             })
         pending = [item["key"] for item in criteria if item["state"] in ("undeclared", "unmet")]
         waived = [item["key"] for item in criteria if item["state"] == "waived"]
@@ -778,13 +1048,14 @@ def gate_reading(project, gate=None):
             ],
             # Não é "passou". É o que a declaração do projeto sustenta hoje.
             "held_by_declaration": not pending,
+            "scope": gate_item_scope(),
         })
     return {
         "schema_version": 1,
         "project": str(project),
         "exists": project.is_dir(),
         "gates": gates,
-        "problems": declaration["problems"],
+        "problems": problems,
         "sources": declaration["sources"],
         "granted": False,
         "guide": str(FRAMEWORK / "references/gates.md"),
@@ -794,20 +1065,3883 @@ def gate_reading(project, gate=None):
             "Critério de `readiness` pendente diz que falta trabalho; `must_meet` pendente pergunta se "
             "isto ainda vale o que custa, e é a essa pergunta que abandonar responde."
         ),
+        "scope": _gate_scope(project),
+    }
+
+
+def gate_declares_row(text):
+    return bool(text and any(GATE_ROW.match(line) for line in text.splitlines()))
+
+
+def gate_row_source(project):
+    project = Path(project)
+    for name in GATE_SOURCES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if gate_declares_row(text):
+            return name
+    return None
+
+
+# O roteiro já recusa que o silêncio seja aprovação. Sem isto o
+# item do gate listava o pendente e calava a recusa.
+# Linha vazia no disco não é passagem.
+GATES_SILENCE = re.compile(r"silêncio não é aprovação")
+
+
+def gates_refuse_silence(text):
+    return bool(text and GATES_SILENCE.search(text))
+
+
+def gate_item_silence_source():
+    path = FRAMEWORK / "references/gates.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gates_refuse_silence(text):
+        return "references/gates.md"
+    return None
+
+
+def gate_item_scope():
+    scope = (
+        "Critérios do gate segundo a declaração do projeto. "
+        "Não observa e não concede passagem."
+    )
+    if gate_item_silence_source():
+        scope += (
+            " O disco recusa que o silêncio seja aprovação (`silêncio`). "
+            "Linha vazia no disco não é passagem."
+        )
+    return scope
+
+
+# O roteiro já recusa que must_meet seja dispensável. Sem isto o
+# critério copiava o tipo e calava a recusa.
+# Linha no disco não é passagem.
+GATES_GUIDE = FRAMEWORK / "references/gates.md"
+GATES_WAIVE = re.compile(r"não é dispensável")
+
+
+def prose_refuses_must_meet_waiver(text):
+    return bool(text and GATES_WAIVE.search(text))
+
+
+def gate_criterion_waiver_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if prose_refuses_must_meet_waiver(text):
+        return "references/gates.md"
+    return None
+
+
+def gate_criterion_scope():
+    scope = (
+        "Chave, tipo e estado do critério declarado. Não observa "
+        "e não concede passagem."
+    )
+    if gate_criterion_waiver_source():
+        scope += (
+            " O disco recusa que must_meet seja dispensável (`dispensa`). "
+            "Linha no disco não é passagem."
+        )
+    return scope
+
+
+# O roteiro já recusa que fora de escopo seja dispensa. Sem
+# isto o problema copiava o achado e calava a recusa.
+# Linha no disco não é passagem.
+GATES_OUT = re.compile(r"Fora de escopo não é dispensa")
+
+
+def gates_refuse_scope_waiver(text):
+    return bool(text and GATES_OUT.search(text))
+
+
+def gate_problem_scope_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gates_refuse_scope_waiver(text):
+        return "references/gates.md"
+    return None
+
+
+def gate_problem_scope():
+    scope = (
+        "Motivo e fonte do problema de forma. Não observa e não "
+        "concede passagem."
+    )
+    if gate_problem_scope_source():
+        scope += (
+            " O disco recusa que fora de escopo seja dispensa (`escopo`). "
+            "Linha no disco não é passagem."
+        )
+    return scope
+
+
+def _gate_scope(project):
+    scope = (
+        "Lê a declaração do próprio projeto e confere só a forma dela, relatando em `problems`: gate "
+        "desconhecido, critério que não pertence ao gate, estado fora de met/unmet/waived/out_of_scope, "
+        "dispensa ou saída de escopo de critério que a prosa não deixa dispensar, met/waived/out_of_scope "
+        "sem nada escrito ao lado, e duas linhas discordantes. Não observa o jogo, não executa nada e "
+        "**não concede passagem**: `held_by_declaration` diz que o projeto afirma cumprir, não que alguém "
+        "conferiu."
+    )
+    if gate_row_source(project):
+        scope += (
+            " O disco declara o gate (`gate`). "
+            "Linha no disco não é passagem concedida."
+        )
+    return scope
+
+
+CRAFT_ROW = re.compile(r"^\|\s*`([\w-]+)`\s*\|\s*`(\w+)`\s*\|\s*(.*?)\s*\|\s*$")
+CRAFT_SOURCES = GATE_SOURCES
+# A tabela já declara saída de escopo. Sem isto o
+# craft lia a linha e calava o estado.
+# Linha no disco não é ofício observado.
+CRAFT_OUT_MARK = re.compile(r"`out_of_scope`")
+
+
+def craft_declaration(project):
+    declared = {}
+    problems = []
+    sources = []
+    for relative in CRAFT_SOURCES:
+        path = project / relative
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        seen_here = False
+        for number, line in enumerate(text.splitlines(), start=1):
+            match = CRAFT_ROW.match(line)
+            if not match:
+                continue
+            check, state, note = match.groups()
+            source = f"{relative}:{number}"
+            known_check = check in CRAFT_CHECKS
+            known_state = state in GATE_STATES
+            if not known_check and not known_state:
+                continue
+            if not known_check:
+                problems.append({"source": source, "reason": "unknown_check", "found": check})
+                continue
+            if not known_state:
+                problems.append({
+                    "source": source, "reason": "unknown_state",
+                    "gate": CRAFT_CHECKS[check]["gate"], "found": state,
+                })
+                continue
+            if state in ("waived", "out_of_scope", "met") and not note:
+                reason = {
+                    "waived": "waiver_without_reason",
+                    "out_of_scope": "scope_without_reason",
+                    "met": "met_without_evidence",
+                }[state]
+                problems.append({
+                    "source": source, "reason": reason,
+                    "gate": CRAFT_CHECKS[check]["gate"], "found": check,
+                })
+                continue
+            previous = declared.get(check)
+            rank = {"unmet": 0, "waived": 1, "met": 2, "out_of_scope": 3}
+            entry = {"state": state, "note": note or None, "source": source}
+            if previous is None or rank[state] < rank[previous["state"]]:
+                declared[check] = entry
+            if previous is not None and previous["state"] != state:
+                problems.append({
+                    "source": source, "reason": "conflicting_state",
+                    "gate": CRAFT_CHECKS[check]["gate"], "found": check,
+                })
+            seen_here = True
+        if seen_here:
+            sources.append(relative)
+    return {"declared": declared, "problems": problems, "sources": sources}
+
+
+def craft_reading(project, gate=None):
+    declaration = craft_declaration(project)
+    wanted = tuple(
+        key for key, spec in CRAFT_CHECKS.items()
+        if gate is None or spec["gate"] == gate
+    )
+    checks = []
+    for key in wanted:
+        spec = CRAFT_CHECKS[key]
+        row = declaration["declared"].get(key)
+        checks.append({
+            "key": key,
+            "check": spec["label"],
+            "gate": spec["gate"],
+            "state": row["state"] if row else "undeclared",
+            "evidence": row["note"] if row else None,
+            "source": row["source"] if row else None,
+            "scope": craft_item_scope(),
+        })
+    pending = [item["key"] for item in checks if item["state"] in ("undeclared", "unmet")]
+    problems = [dict(item) for item in declaration["problems"]]
+    problem_scope = craft_problem_scope()
+    for item in problems:
+        item["scope"] = problem_scope
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "checks": checks,
+        "pending": pending,
+        "problems": problems,
+        "sources": declaration["sources"],
+        "granted": False,
+        "observed": False,
+        "guide": str(FRAMEWORK / "references/observable-criteria-research.md"),
+        "rule": (
+            "Checklist de ofício pergunta se o projeto corresponde ao que ele mesmo "
+            "declarou. Não importa limiar externo: paleta, constante de perdão, "
+            "definição de percentil, regra de parada. Um dígito aqui seria a escada "
+            "afirmando, para este jogo, o que ninguém verificou."
+        ),
+        "scope": _craft_scope(project),
+    }
+
+
+# A pesquisa já recusa ser escada de acabamento. Sem isto o
+# item do craft listava o checklist e calava a recusa.
+# Pesquisa no disco não é ofício observado.
+CRAFT_LADDER = re.compile(r"não é\s+uma escada")
+
+
+def research_refuses_ladder(text):
+    return bool(text and CRAFT_LADDER.search(text))
+
+
+def craft_item_ladder_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_ladder(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_scope():
+    scope = (
+        "Checklist de ofício segundo a declaração do projeto. "
+        "Não observa e não concede passagem."
+    )
+    if craft_item_ladder_source():
+        scope += (
+            " O disco recusa que o checklist seja escada (`escada`). "
+            "Pesquisa no disco não é ofício observado."
+        )
+    return scope
+
+
+# A pesquisa já recusa que o número sem definição seja
+# critério. Sem isto o problema copiava o achado e
+# calava a recusa. Pesquisa no disco não é ofício.
+CRAFT_RESEARCH = FRAMEWORK / "references/observable-criteria-research.md"
+CRAFT_DEFINITION = re.compile(r"sem definição declarada não é critério")
+
+
+def research_refuses_undefined_number(text):
+    return bool(text and CRAFT_DEFINITION.search(text))
+
+
+def craft_problem_definition_source():
+    path = CRAFT_RESEARCH
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_undefined_number(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_problem_scope():
+    scope = (
+        "Motivo e fonte do problema de forma. Não observa e não "
+        "concede passagem."
+    )
+    if craft_problem_definition_source():
+        scope += (
+            " O disco recusa que o número sem definição seja critério (`definição`). "
+            "Pesquisa no disco não é ofício observado."
+        )
+    return scope
+
+
+def craft_declares_out(text):
+    return bool(text and CRAFT_OUT_MARK.search(text))
+
+
+def craft_out_source(project):
+    project = Path(project)
+    for name in CRAFT_SOURCES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if craft_declares_out(text):
+            return name
+    return None
+
+
+def _craft_scope(project):
+    scope = (
+        "Lê a declaração do próprio projeto e confere só a forma. Não observa o "
+        "jogo, não mede contraste nem tempo de quadro e **não concede passagem**. "
+        "`observed` é sempre falso: tabela bem formada e otimista sai intacta."
+    )
+    if craft_out_source(project):
+        scope += (
+            " O disco declara a saída de escopo (`out_of_scope`). "
+            "Linha no disco não é ofício observado."
+        )
+    return scope
+
+
+# Papéis de áudio: o starter declara SOUNDS e, neste recorte, já traz
+# arquivo por papel. Mixagem AAA não é pasta cheia — é cada papel do
+# verbo ter arquivo ou silêncio deliberado (papel removido). O harness
+# só vê declaração e arquivo no disco. Não ouve, não aprova estética e
+# não confunde arquivo presente com mixagem boa.
+ROLE_FOLDERS = ("public/sfx", "assets/sfx", "sfx", "audio", "public/audio")
+ROLE_EXTENSIONS = {".wav", ".ogg", ".mp3", ".flac", ".m4a", ".webm"}
+SOUNDS_OPEN = re.compile(r"(?:export\s+)?const\s+SOUNDS\s*=\s*\{")
+ROLE_OBJECT = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*\{")
+# O mixer já abaixa a cama no aviso. Sem isto o roles
+# lia o papel e calava o duck. Número no disco não é mix ouvida.
+ROLE_DUCK = re.compile(r"\bduckMs\s*:\s*(\d+)")
+ROLE_CODE_SUFFIXES = {".js", ".mjs", ".ts"}
+ROLE_MANIFESTS = ("sounds.json", "audio-roles.json", "docs/audio-roles.json")
+ROLE_WALK_SKIP = {
+    "node_modules", "dist", "build", ".git", "__pycache__", "coverage",
+    "library", "temp", ".venv", "venv", "target",
+}
+
+
+def role_duck_ms(value):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    if isinstance(value, float) and (not value == value or not value.is_integer()):
+        return None
+    if value < 0:
+        return None
+    return int(value)
+
+
+def _role_entry(name, duck=None):
+    entry = {"id": name}
+    if duck is not None:
+        entry["duckMs"] = duck
+    return entry
+
+
+def _role_entries_from_manifest(path):
+    try:
+        data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    if isinstance(data, list):
+        return [_role_entry(item) for item in data if isinstance(item, str) and item.strip()]
+    if not isinstance(data, dict):
+        return []
+    listed = data.get("roles")
+    if isinstance(listed, list):
+        entries = []
+        for item in listed:
+            if isinstance(item, str) and item.strip():
+                entries.append(_role_entry(item))
+                continue
+            if not isinstance(item, dict):
+                continue
+            name = item.get("id") or item.get("role") or item.get("key")
+            if not isinstance(name, str) or not name.strip():
+                continue
+            entries.append(_role_entry(name.strip(), role_duck_ms(item.get("duckMs"))))
+        return entries
+    return [
+        _role_entry(key, role_duck_ms(value.get("duckMs")) if isinstance(value, dict) else None)
+        for key, value in data.items()
+        if key != "schema_version" and isinstance(value, (dict, str, bool, int))
+    ]
+
+
+def _role_entries_from_code(text):
+    start = SOUNDS_OPEN.search(text)
+    if not start:
+        return []
+    entries = []
+    current = None
+    depth = 0
+    for line in text[start.end():].splitlines():
+        stripped = line.strip()
+        if current is None:
+            if stripped.startswith("}"):
+                break
+            match = ROLE_OBJECT.match(stripped)
+            if not match:
+                continue
+            found = ROLE_DUCK.search(stripped)
+            current = _role_entry(
+                match.group(1),
+                role_duck_ms(int(found.group(1))) if found else None,
+            )
+            depth = stripped.count("{") - stripped.count("}")
+            if depth <= 0:
+                entries.append(current)
+                current = None
+            continue
+        found = ROLE_DUCK.search(stripped)
+        if found and "duckMs" not in current:
+            duck = role_duck_ms(int(found.group(1)))
+            if duck is not None:
+                current["duckMs"] = duck
+        depth += stripped.count("{") - stripped.count("}")
+        if depth <= 0:
+            entries.append(current)
+            current = None
+    return entries
+
+
+def _role_names_from_code(text):
+    return [item["id"] for item in _role_entries_from_code(text)]
+
+
+def declared_sound_roles(project, max_files=80, max_bytes=64000):
+    found = []
+    sources = []
+    seen = set()
+
+    def add(entries, source):
+        added = False
+        for entry in entries:
+            name = entry["id"]
+            if name in seen:
+                continue
+            seen.add(name)
+            found.append(entry)
+            added = True
+        if added:
+            sources.append(source)
+
+    for relative in ROLE_MANIFESTS:
+        path = project / relative
+        if not path.is_file() or path.is_symlink():
+            continue
+        add(_role_entries_from_manifest(path), relative)
+    pending = [(project, 0)] if project.is_dir() else []
+    inspected = 0
+    while pending and inspected < max_files:
+        directory, depth = pending.pop(0)
+        try:
+            entries = sorted(directory.iterdir(), key=lambda item: item.name)
+        except OSError:
+            continue
+        for path in entries:
+            if inspected >= max_files:
+                break
+            if path.name.startswith(".") or path.name in ROLE_WALK_SKIP:
+                continue
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                if depth >= 4:
+                    continue
+                pending.append((path, depth + 1))
+                continue
+            if path.suffix.casefold() not in ROLE_CODE_SUFFIXES:
+                continue
+            inspected += 1
+            try:
+                if path.stat().st_size > max_bytes:
+                    continue
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            entries = _role_entries_from_code(text)
+            if entries:
+                add(entries, path.relative_to(project).as_posix())
+    return found, sources
+
+
+def role_files(project, role):
+    present = []
+    for folder in ROLE_FOLDERS:
+        directory = project / folder
+        if not directory.is_dir() or directory.is_symlink():
+            continue
+        try:
+            entries = directory.iterdir()
+        except OSError:
+            continue
+        for path in entries:
+            if path.is_symlink() or not path.is_file():
+                continue
+            if path.stem == role and path.suffix.casefold() in ROLE_EXTENSIONS:
+                present.append(f"{folder}/{path.name}")
+    return present
+
+
+# A receita já soma as vozes. Sem isto o roles
+# lia SOUNDS e calava o mix. Soma no disco não é
+# mix ouvida.
+MIX_FILES = ("tools/mix.mjs", "tools/mix.js", "tools/mix.py")
+MIX_SUM = re.compile(r"soma as vozes", re.IGNORECASE)
+
+
+def mix_sums_voices(text):
+    return bool(text and MIX_SUM.search(text))
+
+
+def mix_sum_source(project):
+    project = Path(project)
+    for name in MIX_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if mix_sums_voices(text):
+            return name
+    return None
+
+
+# A receita já desloca a voz. Sem isto o roles
+# lia SOUNDS e calava o sfx. Arquivo no disco
+# não é mix ouvida.
+SFX_FILES = (
+    "tools/design-sfx.py",
+    "tools/sfx.py",
+    "tools/design-sfx.js",
+    "tools/sfx.js",
+)
+SFX_SHIFT = re.compile(r"desloca a voz", re.IGNORECASE)
+
+
+def sfx_shifts_voice(text):
+    return bool(text and SFX_SHIFT.search(text))
+
+
+def sfx_shift_source(project):
+    project = Path(project)
+    for name in SFX_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if sfx_shifts_voice(text):
+            return name
+    return None
+
+
+# O tool já lê o PCM. Sem isto o roles
+# somava o mix e calava o wav. Bytes no
+# disco não são mix ouvida.
+WAV_FILES = ("tools/wav.mjs", "tools/wav.js", "tools/wav.py")
+WAV_READ = re.compile(r"Não decodifica compressão e não ouve", re.IGNORECASE)
+
+
+def wav_reads_pcm(text):
+    return bool(text and WAV_READ.search(text))
+
+
+def wav_read_source(project):
+    project = Path(project)
+    for name in WAV_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if wav_reads_pcm(text):
+            return name
+    return None
+
+
+# A receita já recusa que áudio AAA seja quantidade de arquivos. Sem isto o
+# item copiava a lista e calava a recusa.
+# Lista no disco não é mix.
+AUDIO_RECIPE = FRAMEWORK / "recipes/audio.md"
+AUDIO_QUANTITY = re.compile(r"não é quantidade de arquivos")
+
+
+def audio_refuses_file_quantity(text):
+    return bool(text and AUDIO_QUANTITY.search(text))
+
+
+def role_item_quantity_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audio_refuses_file_quantity(text):
+        return "recipes/audio.md"
+    return None
+
+
+def role_item_scope():
+    scope = (
+        "Id, arquivos e estado do papel. Não toca o som e não "
+        "aprova a mixagem."
+    )
+    if role_item_quantity_source():
+        scope += (
+            " O disco recusa que áudio AAA seja quantidade de arquivos (`quantidade`). "
+            "Lista no disco não é mix."
+        )
+    return scope
+
+
+def roles_reading(project, root=None):
+    project = Path(project)
+    entries, sources = declared_sound_roles(project)
+    roles = []
+    for entry in entries:
+        files = role_files(project, entry["id"])
+        row = {
+            "id": entry["id"],
+            "files": files,
+            "state": "present" if files else "empty",
+        }
+        if "duckMs" in entry:
+            row["duckMs"] = entry["duckMs"]
+        row["scope"] = role_item_scope()
+        roles.append(row)
+    empty = [item["id"] for item in roles if item["state"] == "empty"]
+    catalog = sfx_catalog.catalog_dir(root)
+    scope = (
+        "Lê `const SOUNDS` e manifestos de papéis, e cruza com arquivos em "
+        "public/sfx e equivalentes. Nomeia o `duckMs` que a tabela já "
+        "declara. Sem duck a chave some. Nomear não é mix ouvida. Não toca "
+        "o som, não valida mixagem e não aprova estética. `heard` e "
+        "`approved` são sempre falsos: arquivo presente não é mixagem ouvida."
+    )
+    if mix_sum_source(project):
+        scope += (
+            " O disco soma as vozes (`mix`). Soma no disco não é mix ouvida."
+        )
+    if sfx_shift_source(project):
+        scope += (
+            " O disco desloca a voz (`sfx`). Arquivo no disco não é mix ouvida."
+        )
+    if wav_read_source(project):
+        scope += (
+            " O disco lê o PCM (`wav`). Bytes no disco não são mix ouvida."
+        )
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "roles": roles,
+        "empty": empty,
+        "sources": sources,
+        "catalog_exists": (catalog / "catalog.json").is_file(),
+        "heard": False,
+        "approved": False,
+        "guide": str(FRAMEWORK / "recipes/audio.md"),
+        "rule": (
+            "Papel declarado sem arquivo é lacuna do verbo, não silêncio deliberado. "
+            "Silêncio deliberado é o papel ausente da declaração."
+        ),
+        "scope": scope,
+    }
+
+
+# O processo já recusa o reuso automático. Sem isto o
+# roles --fill sugeria o primeiro match e calava a recusa.
+# Arquivo no disco não é licença.
+PROCESS_REUSE_GUIDE = FRAMEWORK / "references/process.md"
+PROCESS_REUSE = re.compile(r"não é automaticamente reutilizável")
+
+
+def process_refuses_automatic_reuse(text):
+    return bool(text and PROCESS_REUSE.search(text))
+
+
+def roles_reuse_source():
+    path = PROCESS_REUSE_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_automatic_reuse(text):
+        return "references/process.md"
+    return None
+
+
+def roles_fill_scope():
+    scope = (
+        "Para cada papel vazio, busca o id no acervo shared/sfx e, com "
+        "`--apply`, copia para public/sfx com o nome do papel. Sem "
+        "acervo, ou sem id que case, nomeia o stem do starter que casa "
+        "(`kind: starter`) e o `--apply` também o copia com créditos. "
+        "Se o recibo já está e o WAV sumiu, recoloca os bytes quando "
+        "origem e licença casam; recibo diferente recusa. "
+        "`sfx copy` / `sfx export` continuam o caminho explícito. "
+        "`heard` é sempre falso."
+    )
+    if roles_reuse_source():
+        scope += (
+            " O disco recusa o reuso automático (`reuso`). "
+            "Arquivo no disco não é licença."
+        )
+    return scope
+
+
+def roles_fill(project, root=None, apply=False):
+    project = Path(project)
+    reading = roles_reading(project, root)
+    suggestions = []
+    copied = []
+    for role in reading["empty"]:
+        match = None
+        if reading["catalog_exists"]:
+            try:
+                found = sfx_catalog.search_catalog(role, root, limit=1)
+            except ValueError:
+                found = {"matches": []}
+            if found["matches"]:
+                hit = found["matches"][0]
+                match = {
+                    "id": hit["id"],
+                    "title": hit["title"],
+                    "src": hit["src"],
+                    "kind": "catalog",
+                }
+        if match is None:
+            local = sfx_catalog.find_local_stem(role)
+            if local:
+                match = {
+                    "id": local["key"],
+                    "key": local["key"],
+                    "title": local.get("title") or local["key"],
+                    "src": local["src"],
+                    "license": local.get("license"),
+                    "origin": local.get("origin"),
+                    "kind": "starter",
+                    "heard": False,
+                }
+        item = {"role": role, "query": role, "match": match, "copied": False}
+        if apply and match:
+            result = sfx_catalog.copy_entry(
+                match["id"], project / "public" / "sfx", root, as_name=role,
+            )
+            item["copied"] = True
+            item["file"] = Path(result["copied"]).relative_to(project).as_posix()
+            copied.append(role)
+        suggestions.append(item)
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "empty": reading["empty"],
+        "catalog_exists": reading["catalog_exists"],
+        "suggestions": suggestions,
+        "applied": bool(apply),
+        "copied": copied,
+        "heard": False,
+        "approved": False,
+        "guide": str(FRAMEWORK / "recipes/audio.md"),
+        "rule": (
+            "Primeiro resultado da busca não é o som certo e não é mixagem "
+            "ouvida. `--apply` copia o id do acervo ou o stem do starter "
+            "com créditos. Não toca e não aprova."
+        ),
+        "scope": roles_fill_scope(),
+    }
+
+
+# Feel: o starter nomeia perdão, graça e hitstop no CONFIG. Até aqui o harness
+# só via a tabela de ofício, não as constantes. A pergunta é estreita — o
+# projeto declara janelas de feel, e alguém registrou uma observação no disco?
+# O harness não joga e não atribui peso.
+CONFIG_OPEN = re.compile(r"(?:export\s+)?const\s+CONFIG\s*=\s*\{")
+CONFIG_NESTED = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*\{")
+CONFIG_LEAF = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*(-?[\d.]+)\s*,?\s*(?://\s*(.*))?")
+FEEL_KEY = re.compile(
+    r"(buffer|invuln|pad|reach|lock|hitstop|shake|squash|punch|grace|forgiv|cooldown|recovery|dashticks|flash|telegraph|windup|dashspeed|\bspeed\b)",
+    re.IGNORECASE,
+)
+FEEL_NOTE = re.compile(r"(perd[aã]o|gra[cç]a|contato|peso|feel|juice)", re.IGNORECASE)
+# O coil do dash já veste a corrente. Sem isto o feel
+# lia squash e calava o rumo que o corpo já marca.
+# Traço no disco não é peso percebido.
+HEADING_MARK = re.compile(
+    r"if\s*\(\s*winding\s*\)[\s\S]{0,1200}?\.lineTo\([\s\S]{0,240}?\.stroke\("
+)
+
+
+def dash_aims_heading(text):
+    return bool(text and HEADING_MARK.search(text))
+
+
+def _feel_constants_from_code(text):
+    start = CONFIG_OPEN.search(text)
+    if not start:
+        return []
+    constants = []
+    stack = []
+    depth = 1
+    for line in text[start.end():].splitlines():
+        stripped = line.strip()
+        opens = stripped.count("{")
+        closes = stripped.count("}")
+        nested = CONFIG_NESTED.match(stripped)
+        leaf = CONFIG_LEAF.match(stripped)
+        if nested:
+            stack.append(nested.group(1))
+            if closes >= opens and stack:
+                stack.pop()
+        elif leaf and stack:
+            name, value, note = leaf.group(1), leaf.group(2), (leaf.group(3) or "").strip()
+            if stack[0] == "feel" or FEEL_KEY.search(name) or FEEL_NOTE.search(note):
+                constants.append({
+                    "key": ".".join([*stack, name]),
+                    "declared": value,
+                    "note": note or None,
+                })
+        elif stripped.startswith("}") and stack:
+            stack.pop()
+        depth += opens - closes
+        if depth <= 0:
+            break
+    return constants
+
+
+def declared_feel_constants(project, max_files=80, max_bytes=64000):
+    found = []
+    sources = []
+    seen = set()
+    pending = [(project, 0)] if project.is_dir() else []
+    inspected = 0
+    while pending and inspected < max_files:
+        directory, depth = pending.pop(0)
+        try:
+            entries = sorted(directory.iterdir(), key=lambda item: item.name)
+        except OSError:
+            continue
+        for path in entries:
+            if inspected >= max_files:
+                break
+            if path.name.startswith(".") or path.name in ROLE_WALK_SKIP:
+                continue
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                if depth >= 4:
+                    continue
+                pending.append((path, depth + 1))
+                continue
+            if path.suffix.casefold() not in ROLE_CODE_SUFFIXES:
+                continue
+            inspected += 1
+            try:
+                if path.stat().st_size > max_bytes:
+                    continue
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            constants = _feel_constants_from_code(text)
+            if not constants:
+                continue
+            relative = path.relative_to(project).as_posix()
+            for item in constants:
+                if item["key"] in seen:
+                    continue
+                seen.add(item["key"])
+                found.append(dict(item, source=relative))
+            sources.append(relative)
+    return found, sources
+
+
+def observation_receipts(project, max_files=80):
+    found = []
+    pending = [(project, 0)] if project.is_dir() else []
+    inspected = 0
+    while pending and inspected < max_files:
+        directory, depth = pending.pop(0)
+        try:
+            entries = sorted(directory.iterdir(), key=lambda item: item.name)
+        except OSError:
+            continue
+        for path in entries:
+            if inspected >= max_files:
+                break
+            if path.name.startswith(".") or path.name in ROLE_WALK_SKIP:
+                continue
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                if depth >= 4:
+                    continue
+                pending.append((path, depth + 1))
+                continue
+            if path.name != "record.json":
+                continue
+            inspected += 1
+            try:
+                data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            if not isinstance(data, dict) or data.get("kind") != "observation":
+                continue
+            found.append({
+                "path": path.relative_to(project).as_posix(),
+                "author": data.get("author"),
+                "note": data.get("note"),
+            })
+    return found
+
+
+# A receita já recusa que o autor sugerido seja quem jogou. Sem isto o
+# item copiava o autor e calava a recusa.
+# Recibo no disco não é sessão.
+FEEL_RECIPE = FRAMEWORK / "recipes/feel.md"
+FEEL_AUTHOR = re.compile(r"autor sugerido no comando não é quem jogou")
+
+
+def recipe_refuses_suggested_author(text):
+    return bool(text and FEEL_AUTHOR.search(text))
+
+
+def observation_author_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_suggested_author(text):
+        return "recipes/feel.md"
+    return None
+
+
+def observation_item_scope():
+    scope = (
+        "Caminho, autor e nota do recibo. Não joga e não "
+        "atribui peso percebido."
+    )
+    if observation_author_source():
+        scope += (
+            " O disco recusa que o autor sugerido seja quem jogou (`autor`). "
+            "Recibo no disco não é sessão."
+        )
+    return scope
+
+
+# A receita já recusa que o valor seja constante universal. Sem isto o
+# item copiava o número e calava a recusa.
+# Número no disco não é lei.
+FEEL_UNIVERSAL = re.compile(r"não\s+constantes universais")
+
+
+def recipe_refuses_universal_constants(text):
+    return bool(text and FEEL_UNIVERSAL.search(text))
+
+
+def feel_constant_universal_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_universal_constants(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_constant_scope():
+    scope = (
+        "Chave e valor da constante nomeada. Não joga e não "
+        "atribui peso percebido."
+    )
+    if feel_constant_universal_source():
+        scope += (
+            " O disco recusa que o valor seja constante universal (`universais`). "
+            "Número no disco não é lei."
+        )
+    return scope
+
+
+def feel_then(project):
+    project = Path(project)
+    then = {"note": note_command(project)}
+    try:
+        scripts, manager = project_commands(project)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
+    play = play_command(project, scripts, manager)
+    if play:
+        then["play"] = play
+    # O play/guide já nomeiam a partida do last-run.
+    # Sem isto o feel mandava só o serve nu — a seed
+    # do candidato ficava no disco e o comando calava.
+    # Endereço no disco não é peso percebido.
+    href = seed_href(project)
+    if href:
+        then["seed"] = href
+        then["invite"] = invite_href(project)
+    return then
+
+
+def feel_reading(project):
+    project = Path(project)
+    constants, sources = declared_feel_constants(project)
+    # O campo já marca prática, folga e fecho. Sem isto o
+    # comando lia só o CONFIG e calava as janelas da chuva.
+    # Número no disco não é peso percebido.
+    windows, rain_sources = rain_window_constants(project)
+    seen = {item["key"] for item in constants}
+    for item in windows:
+        if item["key"] in seen:
+            continue
+        seen.add(item["key"])
+        constants.append(item)
+    for relative in rain_sources:
+        if relative not in sources:
+            sources.append(relative)
+    observations = observation_receipts(project)
+    item_scope = observation_item_scope()
+    for item in observations:
+        item["scope"] = item_scope
+    constant_scope = feel_constant_scope()
+    for item in constants:
+        item["scope"] = constant_scope
+    then = feel_then(project)
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "constants": constants,
+        "sources": sources,
+        "observations": observations,
+        "unobserved": bool(constants) and not observations,
+        "felt": False,
+        "then": then,
+        "guide": str(FRAMEWORK / "recipes/feel.md"),
+        "rule": (
+            "Constante nomeada não é peso percebido. Recibo de observação no "
+            "projeto é o que o harness consegue ver; ele não joga."
+        ),
+        "scope": _feel_scope(project),
+    }
+
+
+SURFACE_SUFFIXES = {".js", ".mjs", ".ts", ".html", ".css"}
+A11Y_OPTIONS = {
+    "high_contrast": re.compile(r"highContrast|high-contrast|prefersHighContrast|prefers-contrast"),
+    "reduced_motion": re.compile(r"reducedMotion|reduced-motion|prefersReducedMotion"),
+    "captions": re.compile(r"\bcaptions\b|captionLimit|\blegendas?\b"),
+    "remap": re.compile(r"\bbindings\b|remap|rebind"),
+    "ui_scale": re.compile(r"uiScale|ui-scale|interfaceScale"),
+    "one_hand": re.compile(r"ONE_HAND_BINDINGS|oneHand|one-hand|umaMao|uma-mao"),
+    "assist": re.compile(r"\bassist\b|assistMode|assistencia|assistência"),
+    "game_speed": re.compile(r"gameSpeed|game-speed|velocidade da partida"),
+    "colorblind": re.compile(r"colorblind|COLORBLIND_INKS|dressPalette|tinta estável"),
+    "live": re.compile(r"aria-live|liveText|applyLive|região viva"),
+    "haptics": re.compile(r"createHaptics|rumbleRole|vibrationActuator|navigator\.vibrate"),
+}
+PERSIST_USE = re.compile(
+    r"localStorage|sessionStorage|indexedDB|saveProgress|loadProgress|PROGRESS_KEY|SETTINGS_KEY"
+)
+PERSIST_VERSION = re.compile(r"PROGRESS_SCHEMA|SETTINGS_SCHEMA|SAVE_VERSION|function migrate\b|\bmigrate\s*\(")
+PERSIST_WARN = re.compile(r"persistLine|title_volatile|title_unsaved|settings_recovered|settings\.broken")
+BUDGET_FILES = ("tools/budget.mjs", "tools/budget.js", "tools/budget.py")
+
+
+def walk_project_files(project, suffixes, max_files=80, max_bytes=64000):
+    pending = [(project, 0)] if project.is_dir() else []
+    inspected = 0
+    while pending and inspected < max_files:
+        directory, depth = pending.pop(0)
+        try:
+            entries = sorted(directory.iterdir(), key=lambda item: item.name)
+        except OSError:
+            continue
+        for path in entries:
+            if inspected >= max_files:
+                return
+            if path.name.startswith(".") or path.name in ROLE_WALK_SKIP:
+                continue
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                if depth < 4:
+                    pending.append((path, depth + 1))
+                continue
+            if path.suffix.casefold() not in suffixes:
+                continue
+            inspected += 1
+            try:
+                if path.stat().st_size > max_bytes:
+                    continue
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            yield path.relative_to(project).as_posix(), text
+
+
+def heading_mark_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if dash_aims_heading(text):
+            return relative
+    return None
+
+
+# A porta já desloca o corpo. Sem isto o feel
+# lia CONFIG e calava a mostra. Pose no disco
+# não é peso percebido.
+ATTRACT_MOVE = re.compile(r"(?:export\s+)?function\s+attractMove\b")
+
+
+def door_moves_body(text):
+    return bool(text and ATTRACT_MOVE.search(text))
+
+
+def attract_move_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if door_moves_body(text):
+            return relative
+    return None
+
+
+# A receita já inclina o quadro. Sem isto o feel
+# lia lookAheadX e calava o laço. Lean no disco
+# não é peso percebido.
+LOOK_AHEAD = re.compile(r"(?:export\s+)?function\s+lookAhead\b")
+
+
+def camera_leans(text):
+    return bool(text and LOOK_AHEAD.search(text))
+
+
+def look_ahead_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if camera_leans(text):
+            return relative
+    return None
+
+
+# O tool já exercita o perdão. Sem isto o feel
+# lia CONFIG e calava o probe. Conta no disco
+# não é peso percebido.
+PROBE_FILES = ("tools/probe.mjs", "tools/probe.js", "tools/probe.py")
+PROBE_BUFFERS = re.compile(
+    r"não atribui peso percebido|janelas de perdão",
+    re.IGNORECASE,
+)
+
+
+def probe_counts_buffers(text):
+    return bool(text and PROBE_BUFFERS.search(text))
+
+
+def probe_buffer_source(project):
+    project = Path(project)
+    for name in PROBE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if probe_counts_buffers(text):
+            return name
+    return None
+
+
+# A receita já senta a guarda. Sem isto o feel
+# lia squash e calava o sit. Pose no disco
+# não é peso percebido.
+BANK_SIT = re.compile(r"bankWindup\s*=\s*windup")
+
+
+def guard_sits_body(text):
+    return bool(text and BANK_SIT.search(text))
+
+
+def bank_sit_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if guard_sits_body(text):
+            return relative
+    return None
+
+
+# A receita já emite o land. Sem isto o feel
+# lia squash e calava o término. Pose no disco
+# não é peso percebido.
+LAND_DASH = re.compile(r"(?:export\s+)?function\s+landDash\b")
+
+
+def dash_emits_land(text):
+    return bool(text and LAND_DASH.search(text))
+
+
+def land_dash_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if dash_emits_land(text):
+            return relative
+    return None
+
+
+def _feel_scope(project):
+    scope = (
+        "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch, "
+        "rumble e o peso do passo) e as janelas da chuva (`practiceTicks`, "
+        "`recoveryTicks`, o fecho) em data/, tables/ e content/. Lê "
+        "`record.json` com kind=observation. Nomeia `then.play` e "
+        "`then.note` sem executar. Com last-run, nomeia `then.seed` e "
+        "`then.invite`. O `next` (`feel.unobserved`) aponta o mesmo `note` "
+        "— com `--from-run` se o candidato existir. Sem "
+        "comando de abrir, a chave some. Sem last-run, seed e invite somem. "
+        "Não tem `prompt`. Não mede latência, não segura o controle e não "
+        "atribui degrau. `felt` é "
+        "sempre falso: tabela de constantes e recibo otimista saem intactos."
+    )
+    if heading_mark_source(project):
+        scope += (
+            " O coil do dash marca o rumo no corpo — traço no disco não é "
+            "peso percebido."
+        )
+    if attract_move_source(project):
+        scope += (
+            " A porta desloca o corpo (`attractMove`). Pose no disco não é "
+            "peso percebido."
+        )
+    if look_ahead_source(project):
+        scope += (
+            " O disco inclina o quadro (`lookAhead`). Lean no disco não é "
+            "peso percebido."
+        )
+    if probe_buffer_source(project):
+        scope += (
+            " O disco exercita o perdão (`probe`). Conta no disco não é "
+            "peso percebido."
+        )
+    if bank_sit_source(project):
+        scope += (
+            " A guarda senta o corpo (`bankWindup`). Pose no disco não é "
+            "peso percebido."
+        )
+    if land_dash_source(project):
+        scope += (
+            " O dash emite o término (`landDash`). Pose no disco não é "
+            "peso percebido."
+        )
+    return scope
+
+
+# O painel e o live já nomeiam o vazio. Sem isto o
+# access lia região viva e calava o canvas da porta.
+# Texto no disco não é mix ouvido.
+CANVAS_AUDIO_GAP = re.compile(r"extra\.audio[\s\S]{0,400}?fillText\(\s*audio\b")
+
+
+def canvas_names_audio_gap(text):
+    return bool(text and CANVAS_AUDIO_GAP.search(text))
+
+
+def canvas_audio_gap_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if canvas_names_audio_gap(text):
+            return relative
+    return None
+
+
+# A receita já pede foco visível. Sem isto o access
+# lia knobs e calava o outline que a casca já declara.
+# Outline no disco não é sessão com o teclado.
+FOCUS_VISIBLE = re.compile(r":focus-visible")
+
+
+def page_names_focus(text):
+    return bool(text and FOCUS_VISIBLE.search(text))
+
+
+def focus_visible_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if page_names_focus(text):
+            return relative
+    return None
+
+
+# A receita já amostra o stub. Sem isto o access
+# lia highContrast e calava o tool. Stub no disco
+# não é sessão com o modo ativo.
+CONTRAST_FILES = ("tools/contrast.mjs", "tools/contrast.js", "tools/contrast.py")
+CONTRAST_STUB = re.compile(r"pixels depois do\s+draw\(\)|não aprova contraste", re.IGNORECASE)
+
+
+def contrast_samples_stub(text):
+    return bool(text and CONTRAST_STUB.search(text))
+
+
+def contrast_stub_source(project):
+    project = Path(project)
+    for name in CONTRAST_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if contrast_samples_stub(text):
+            return name
+    return None
+
+
+# A receita já pede o aviso. Sem isto o access
+# lia região viva e calava o perigo que o live
+# já anuncia. Texto no DOM não é sessão.
+THREAT_LIVE = re.compile(r"perigo à frente")
+
+
+def live_names_threat(text):
+    return bool(text and THREAT_LIVE.search(text))
+
+
+def threat_live_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if live_names_threat(text):
+            return relative
+    return None
+
+
+# A receita já pede a tabela viva. Sem isto o access
+# lia remap e calava o preenchimento. Tabela no
+# disco não é sessão.
+COMMANDS_PAINT = re.compile(r"(?:export\s+)?function\s+paintCommands\b")
+
+
+def page_lists_keys(text):
+    return bool(text and COMMANDS_PAINT.search(text))
+
+
+def commands_table_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if page_lists_keys(text):
+            return relative
+    return None
+
+
+# A receita já pede a legenda na porta. Sem isto o
+# access lia captions e calava o canvas da abertura.
+# Texto no disco não é sessão.
+CAPTION_DOOR = re.compile(r"drawTitle[\s\S]{0,1200}?drawCaptions")
+
+
+def door_reads_caption(text):
+    return bool(text and CAPTION_DOOR.search(text))
+
+
+def caption_door_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if door_reads_caption(text):
+            return relative
+    return None
+
+
+# A pesquisa já recusa que acessibilidade seja gate de certificação. Sem isto o
+# item copiava a chave e calava a recusa.
+# Opção no disco não é certificação.
+A11Y_RESEARCH = FRAMEWORK / "references/gates-research.md"
+A11Y_CERT = re.compile(r"não é gate de certificação")
+
+
+def research_refuses_a11y_certification(text):
+    return bool(text and A11Y_CERT.search(text))
+
+
+def access_option_cert_source():
+    path = A11Y_RESEARCH
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_a11y_certification(text):
+        return "references/gates-research.md"
+    return None
+
+
+def access_option_scope():
+    scope = (
+        "Chave e fontes da opção declarada. Não joga com o modo "
+        "ativo e não aprova alcance."
+    )
+    if access_option_cert_source():
+        scope += (
+            " O disco recusa que acessibilidade seja gate de certificação (`certificação`). "
+            "Opção no disco não é certificação."
+        )
+    return scope
+
+
+def access_reading(project):
+    project = Path(project)
+    found = {key: [] for key in A11Y_OPTIONS}
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        for key, pattern in A11Y_OPTIONS.items():
+            if pattern.search(text):
+                found[key].append(relative)
+    options = [key for key, sources in found.items() if sources]
+    scope = (
+        "Procura highContrast, reducedMotion, captions, remapeamento, "
+        "uiScale, preset de uma mão, assistência, velocidade da partida, "
+        "tinta estável, região viva e pulso no aparelho no código. Não "
+        "mede contraste, não joga com o modo ativo e não aprova alcance. "
+        "`verified` é sempre falso."
+    )
+    if canvas_audio_gap_source(project):
+        scope += (
+            " Na porta e no fim o canvas nomeia a lacuna do som que o "
+            "painel já mostra. Texto no disco não é mix ouvido."
+        )
+    if focus_visible_source(project):
+        scope += (
+            " A casca declara foco visível (`:focus-visible`) que a "
+            "receita já pede. Outline no disco não é sessão com o teclado."
+        )
+    if contrast_stub_source(project):
+        scope += (
+            " O disco amostra o contraste no stub (`contrast`). "
+            "Stub no disco não é sessão com o modo ativo."
+        )
+    if threat_live_source(project):
+        scope += (
+            " A região viva nomeia o perigo à frente que a receita já "
+            "pede. Texto no DOM não é sessão."
+        )
+    if commands_table_source(project):
+        scope += (
+            " A tabela nomeia as teclas vigentes (`#commands`). "
+            "Tabela no disco não é sessão."
+        )
+    if caption_door_source(project):
+        scope += (
+            " A porta lê a legenda que o mixer ainda guarda. "
+            "Texto no disco não é sessão."
+        )
+    option_scope = access_option_scope()
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "options": [
+            {"key": key, "sources": found[key][:4], "scope": option_scope}
+            for key in A11Y_OPTIONS if found[key]
+        ],
+        "missing": [key for key in A11Y_OPTIONS if not found[key]],
+        "declared": bool(options),
+        "verified": False,
+        "guide": str(FRAMEWORK / "recipes/accessibility.md"),
+        "rule": (
+            "Opção declarada no código não é opção observada. Uma chave sem "
+            "consumidor também não é alcance."
+        ),
+        "scope": scope,
+    }
+
+
+# A receita e o canvas já pintam a recuperação. Sem isto o
+# save lia persistLine e calava a porta. Texto no disco
+# não é aba fechada.
+CANVAS_RECOVERY = re.compile(r"settingsLine[\s\S]{0,800}?fillText\(\s*recovered\b")
+
+
+def canvas_names_recovery(text):
+    return bool(text and CANVAS_RECOVERY.search(text))
+
+
+def canvas_recovery_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if canvas_names_recovery(text):
+            return relative
+    return None
+
+
+# A receita já grava o hold no fechamento. Sem isto o
+# save lia persistLine e calava o gancho. Gancho no
+# disco não é aba fechada.
+UNLOAD_HOLD = re.compile(
+    r"addEventListener\(\s*[\"']beforeunload[\"']",
+    re.IGNORECASE,
+)
+
+
+def disk_flushes_unload(text):
+    return bool(text and UNLOAD_HOLD.search(text))
+
+
+def unload_hold_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
+        if "tests" in Path(relative).parts:
+            continue
+        if disk_flushes_unload(text):
+            return relative
+    return None
+
+
+# A receita já verifica a gravação. Sem isto o
+# save lia persistLine e calava o estágio. Escrita
+# no disco não é aba fechada.
+VERIFIED_WRITE = re.compile(r"const staging = `\$\{key\}\.tmp`")
+
+
+def storage_verifies_write(text):
+    return bool(text and VERIFIED_WRITE.search(text))
+
+
+def verified_write_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
+        if "tests" in Path(relative).parts:
+            continue
+        if storage_verifies_write(text):
+            return relative
+    return None
+
+
+def save_reading(project):
+    project = Path(project)
+    used, versioned, warned, sources = [], [], [], []
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
+        if PERSIST_USE.search(text):
+            used.append(relative)
+        if PERSIST_VERSION.search(text):
+            versioned.append(relative)
+        if PERSIST_WARN.search(text):
+            warned.append(relative)
+        if PERSIST_USE.search(text) or PERSIST_VERSION.search(text) or PERSIST_WARN.search(text):
+            sources.append(relative)
+    scope = (
+        "Procura localStorage/saveProgress, PROGRESS_SCHEMA/migrate e se o "
+        "disco nomeia sessão volátil (`persistLine`, `title_volatile`, "
+        "`title_unsaved`) e preferências ilegíveis (`settings_recovered`, "
+        "`settings.broken`). Relata `warned`. Nomear não é aba fechada. Não "
+        "executa migração, não interrompe a aba e não chama o save de "
+        "atômico. `trusted` é sempre falso."
+    )
+    if canvas_recovery_source(project):
+        scope += (
+            " Na porta e no fim o canvas pinta a recuperação que o "
+            "painel já mostra. A pausa não. Texto no disco não é aba fechada."
+        )
+    if unload_hold_source(project):
+        scope += (
+            " O disco grava o hold no fechamento (`beforeunload`). "
+            "Gancho no disco não é aba fechada."
+        )
+    if verified_write_source(project):
+        scope += (
+            " O disco verifica a gravação (`storage`). "
+            "Escrita no disco não é aba fechada."
+        )
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "used": bool(used),
+        "versioned": bool(versioned),
+        "unversioned": bool(used) and not versioned,
+        "warned": bool(warned),
+        "warnings": warned[:8],
+        "sources": sources[:8],
+        "trusted": False,
+        "guide": str(FRAMEWORK / "recipes/persistence.md"),
+        "rule": (
+            "Uso de armazenamento sem versão e sem migração é contrato sem data. "
+            "Nomear sessão volátil no disco não é aba fechada. "
+            "O harness não abre o save e não confirma escrita."
+        ),
+        "scope": scope,
+    }
+
+
+def budget_receipts(project):
+    found = []
+    for relative, text in walk_project_files(project, {".json"}):
+        if not relative.endswith("record.json"):
+            continue
+        try:
+            data = json.loads(text)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(data, dict) and data.get("kind") == "budget":
+            found.append(relative)
+    return found
+
+
+# A receita e o tool já cronometram a porta. Sem isto o
+# budget lia o script e calava o primeiro quadro.
+# Stub no disco não é dispositivo.
+BUDGET_DOOR = re.compile(r"title\.attract")
+
+
+def budget_times_door(text):
+    return bool(text and BUDGET_DOOR.search(text))
+
+
+def budget_door_source(project):
+    project = Path(project)
+    for name in BUDGET_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if budget_times_door(text):
+            return name
+    return None
+
+
+# A receita já pede a distribuição. Sem isto o budget
+# cronometrava a porta e calava o pior quadro.
+# Relato no disco não é dispositivo.
+BUDGET_PERCENTILE = re.compile(r"não a média|pior percentil", re.IGNORECASE)
+
+
+def budget_names_percentile(text):
+    return bool(text and BUDGET_PERCENTILE.search(text))
+
+
+def budget_percentile_source(project):
+    project = Path(project)
+    for name in BUDGET_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if budget_names_percentile(text):
+            return name
+    return None
+
+
+def budget_reading(project):
+    project = Path(project)
+    try:
+        scripts, _ = project_commands(project)
+    except (OSError, ValueError):
+        scripts = {}
+    named = [
+        name for name in scripts
+        if name == "budget" or name.startswith("budget:") or name.startswith("budget-")
+        or name == "bench" or name.startswith("bench:")
+    ]
+    files = [name for name in BUDGET_FILES if (project / name).is_file() and not (project / name).is_symlink()]
+    receipts = budget_receipts(project)
+    expected = bool(scripts) or (project / "Cargo.toml").is_file()
+    declared = bool(named or files or receipts)
+    scope = (
+        "Procura script `budget`/`bench`, tools/budget.* e record kind=budget. "
+        "Não executa o orçamento e não compara com build anterior. "
+        "`measured` é sempre falso."
+    )
+    if budget_door_source(project):
+        scope += (
+            " O orçamento cronometra a porta (`title.attract`). "
+            "Stub no disco não é dispositivo."
+        )
+    # A receita já relata os bytes. Sem isto o budget
+    # cronometrava a porta e calava o size. Bytes no
+    # disco não são dispositivo.
+    if ship_size_source(project):
+        scope += (
+            " O disco relata os bytes (`size`) sem teto. "
+            "Bytes no disco não são o quadro medido."
+        )
+    if budget_percentile_source(project):
+        scope += (
+            " O disco relata o pior percentil, não a média. "
+            "Relato no disco não é dispositivo."
+        )
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "expected": expected,
+        "scripts": named,
+        "files": files,
+        "receipts": receipts,
+        "declared": declared,
+        "unbudgeted": expected and not declared,
+        "measured": False,
+        "guide": str(FRAMEWORK / "recipes/performance.md"),
+        "rule": (
+            "Script de orçamento não é medição no dispositivo alvo. Sem artefato "
+            "que meça, não existe ‘rápido o suficiente’."
+        ),
+        "scope": scope,
+    }
+
+
+# Direção de arte, conteúdo em escala e o passo de empacotar: o starter já
+# declara paleta, admite conteúdo no código e serve sem export. Até aqui o
+# harness só via a tabela da barra. Os três leitores abaixo perguntam o que
+# o disco tem — não se a paleta é consistente, se o conteúdo basta ou se
+# alguém recebeu um build.
+PALETTES_OPEN = re.compile(r"(?:export\s+)?const\s+PALETTES?\s*=\s*\{")
+PALETTE_KEY = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*\{")
+ART_MANIFESTS = (
+    "palettes.json", "tokens.json", "art-tokens.json", "design-tokens.json",
+    "docs/palettes.json", "docs/tokens.json",
+    "data/palettes.json", "data/tokens.json",
+)
+ART_BIBLE = "docs/art-bible.md"
+RAIN_DIRS = ("data", "tables", "content")
+RAIN_CORE_FIELDS = (
+    "intervalTicks",
+    "minIntervalTicks",
+    "rampTicks",
+    "hazardChanceStart",
+    "hazardChanceEnd",
+    "fallSpeedMin",
+    "fallSpeedMax",
+)
+# Janelas que o campo já marca. Sem isto o `feel` lia só o
+# CONFIG e calava prática, folga e fecho. Número no disco
+# não é peso percebido.
+RAIN_WINDOW_FIELDS = (
+    "practiceTicks",
+    "recoveryTicks",
+    "recoveryIntervalScale",
+    "closeIntervalScale",
+    "closeHazardScale",
+)
+CONTENT_DIRS = ("data", "content", "levels", "maps", "tables")
+CONTENT_SUFFIXES = {".json", ".ldtk", ".tmx", ".csv", ".ink"}
+CONTENT_LOOSE_SUFFIXES = {".ldtk", ".tmx", ".ink"}
+CONTENT_ART_SKIP = frozenset({
+    "palettes.json", "tokens.json", "art-tokens.json", "design-tokens.json",
+})
+SHIP_WORDS = ("build", "export", "dist", "package", "release")
+SHIP_CI = (".gitlab-ci.yml", ".circleci/config.yml", "azure-pipelines.yml")
+SHIP_RELEASE = "docs/release.md"
+SHIP_VERSION = "dist/VERSION.json"
+SHIP_TREE = (
+    ("index", "index.html"),
+    ("serve", "tools/serve.mjs"),
+    ("package", "package.json"),
+    ("version", "VERSION.json"),
+)
+SHIP_TREE_NEEDED = ("index", "serve", "package", "version")
+# O export já copia src/. Sem isto o ship dizia completa
+# uma dist/ que perdeu o jogo. Nomear não executa.
+SHIP_PAYLOAD_DIRS = ("src",)
+# A receita e o tool já relatam os bytes. Sem isto o
+# ship lia a árvore e calava o tamanho. Bytes no disco
+# não são outra máquina.
+SIZE_FILES = ("tools/size.mjs", "tools/size.js", "tools/size.py")
+SIZE_BYTES = re.compile(r"sem teto", re.IGNORECASE)
+# A receita já declara o passo. Sem isto o ship
+# listava build e calava o tool. Empacotar no
+# disco não é outra máquina.
+EXPORT_FILES = ("tools/export.mjs", "tools/export.js", "tools/export.py")
+EXPORT_PACK = re.compile(r"não prova execução em outra máquina", re.IGNORECASE)
+
+
+def optional_text(value):
+    return value if isinstance(value, str) and value else None
+
+
+def ship_artifact(project):
+    path = Path(project) / SHIP_VERSION
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+    except (OSError, json.JSONDecodeError):
+        return {"path": SHIP_VERSION, "readable": False}
+    if not isinstance(data, dict):
+        return {"path": SHIP_VERSION, "readable": False}
+    return {
+        "path": SHIP_VERSION,
+        "readable": True,
+        "name": optional_text(data.get("name")),
+        "version": optional_text(data.get("version")),
+        "git_head": optional_text(data.get("git_head")),
+    }
+
+
+def document_is_current(path):
+    if not path.is_file() or path.is_symlink():
+        return False
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+    return not DRAFT_MARKERS.search(text)
+
+
+def _palette_names_from_code(text):
+    start = PALETTES_OPEN.search(text)
+    if not start:
+        return None
+    names = []
+    depth = 1
+    for line in text[start.end():].splitlines():
+        stripped = line.strip()
+        match = PALETTE_KEY.match(stripped)
+        # Só a chave no nível da paleta. Objeto numa linha dentro de `normal`
+        # (`glow: { color: "#fff" }`) não vira uma paleta nova.
+        if match and depth == 1:
+            names.append(match.group(1))
+        depth += stripped.count("{") - stripped.count("}")
+        if depth <= 0:
+            break
+    return names
+
+
+def _palette_names_from_manifest(path):
+    try:
+        data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    if isinstance(data, dict):
+        palettes = data.get("palettes")
+        if isinstance(palettes, dict):
+            return [key for key in palettes if isinstance(key, str)]
+        return [key for key in data if key != "schema_version" and isinstance(key, str)]
+    if isinstance(data, list):
+        return [item for item in data if isinstance(item, str) and item.strip()]
+    return []
+
+
+def _rain_table_name(path):
+    # Paleta e copy moram no mesmo data/. Só a mesa com o núcleo da
+    # chuva conta. Arquivo sem os sete campos não é perfil jogável.
+    try:
+        data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict) or "palettes" in data:
+        return None
+    if any(field not in data for field in RAIN_CORE_FIELDS):
+        return None
+    return path.stem
+
+
+def rain_tables(project):
+    found = []
+    seen = set()
+    for folder in RAIN_DIRS:
+        root = project / folder
+        if not root.is_dir() or root.is_symlink():
+            continue
+        try:
+            entries = sorted(root.iterdir(), key=lambda item: item.name)
+        except OSError:
+            continue
+        for path in entries:
+            if path.is_symlink() or not path.is_file():
+                continue
+            if path.suffix.casefold() != ".json":
+                continue
+            name = _rain_table_name(path)
+            if not name or name in seen:
+                continue
+            seen.add(name)
+            # A porta já lê o teto do risco. Sem isto o art
+            # listava a mesa e calava o perigo que dusk e
+            # calm já separam. Número no disco não é
+            # comparação em movimento.
+            row = {
+                "key": name,
+                "source": path.relative_to(project).as_posix(),
+            }
+            try:
+                data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+            except (OSError, json.JSONDecodeError):
+                data = {}
+            hazard = data.get("hazardChanceEnd") if isinstance(data, dict) else None
+            if isinstance(hazard, (int, float)) and not isinstance(hazard, bool) and hazard == hazard:
+                row["hazard"] = hazard
+            found.append(row)
+    return found
+
+
+def rain_window_constants(project):
+    found = []
+    sources = []
+    seen = set()
+    for item in rain_tables(project):
+        path = Path(project) / item["source"]
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        listed = False
+        for field in RAIN_WINDOW_FIELDS:
+            value = data.get(field)
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                continue
+            if isinstance(value, float) and not (value == value):
+                continue
+            key = f"{item['key']}.{field}"
+            if key in seen:
+                continue
+            seen.add(key)
+            declared = str(int(value)) if isinstance(value, int) else (
+                str(int(value)) if value.is_integer() else str(value)
+            )
+            found.append({
+                "key": key,
+                "declared": declared,
+                "note": None,
+                "source": item["source"],
+            })
+            listed = True
+        if listed:
+            sources.append(item["source"])
+    return found, sources
+
+
+# A receita já nasce o look. Sem isto o art
+# listava paletas e calava o tool. Ferramenta
+# no disco não é comparação em movimento.
+LOOK_FILES = (
+    "tools/new-look.mjs",
+    "tools/new-look.js",
+    "tools/look.mjs",
+    "tools/look.js",
+    "tools/new-look.py",
+)
+LOOK_BIRTH = re.compile(r"Nasce um look|não inventa consumidor", re.IGNORECASE)
+# O look já recusa contraste. Sem isto o art
+# nascia a paleta e calava o alcance.
+# Alcance no disco não é comparação em movimento.
+LOOK_REACH = re.compile(r"é alcance,\s+não look", re.IGNORECASE)
+
+
+def look_births_palette(text):
+    return bool(text and LOOK_BIRTH.search(text))
+
+
+def look_refuses_contrast(text):
+    return bool(text and LOOK_REACH.search(text))
+
+
+def look_birth_source(project):
+    project = Path(project)
+    for name in LOOK_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if look_births_palette(text):
+            return name
+    return None
+
+
+def look_reach_source(project):
+    project = Path(project)
+    for name in LOOK_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if look_refuses_contrast(text):
+            return name
+    return None
+
+
+# A receita já marca o trilho. Sem isto o art
+# listava paletas e calava o telegraph. Marca no
+# disco não é comparação em movimento.
+TELEGRAPH_DRAW = re.compile(r"(?:function\s+drawTelegraph)\b")
+
+
+def canvas_marks_rail(text):
+    return bool(text and TELEGRAPH_DRAW.search(text))
+
+
+def telegraph_rail_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if canvas_marks_rail(text):
+            return relative
+    return None
+
+
+# A receita já pinta a vinheta. Sem isto o art
+# listava paletas e calava o recorte. Recorte no
+# disco não é comparação em movimento.
+VIGNETTE_DRAW = re.compile(r"(?:function\s+drawVignette)\b")
+
+
+def canvas_marks_cut(text):
+    return bool(text and VIGNETTE_DRAW.search(text))
+
+
+def vignette_cut_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if canvas_marks_cut(text):
+            return relative
+    return None
+
+
+def art_reading(project):
+    project = Path(project)
+    palettes = []
+    sources = []
+    found_const = False
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        names = _palette_names_from_code(text)
+        if names is None:
+            continue
+        found_const = True
+        sources.append(relative)
+        for name in names:
+            if name not in {item["key"] for item in palettes}:
+                palettes.append({"key": name, "source": relative})
+    manifests = []
+    for relative in ART_MANIFESTS:
+        path = project / relative
+        if not path.is_file() or path.is_symlink():
+            continue
+        names = _palette_names_from_manifest(path)
+        manifests.append(relative)
+        sources.append(relative)
+        for name in names:
+            if name not in {item["key"] for item in palettes}:
+                palettes.append({"key": name, "source": relative})
+    rains = rain_tables(project)
+    bible = project / ART_BIBLE
+    bible_present = bible.is_file() and not bible.is_symlink()
+    bible_current = document_is_current(bible)
+    declared = bool(found_const or manifests or bible_current)
+    scope = (
+        "Procura `const PALETTES`, tokens.json, data/palettes.json, "
+        "docs/art-bible.md sem marcador de rascunho e mesas de chuva "
+        "(intervalTicks, fallSpeed e hazardChance) em data/, tables/ e content/. Não "
+        "compara silhueta, não mede contraste e não aprova estilo. "
+        "`consistent` é sempre falso."
+    )
+    if look_birth_source(project):
+        scope += (
+            " O disco nasce o look (`look`). Ferramenta no disco não é "
+            "comparação em movimento."
+        )
+    if look_reach_source(project):
+        scope += (
+            " O disco recusa contraste como look (`contrast`). "
+            "Alcance no disco não é comparação em movimento."
+        )
+    if telegraph_rail_source(project):
+        scope += (
+            " O disco marca o trilho (`telegraph`). Marca no disco não é "
+            "comparação em movimento."
+        )
+    if vignette_cut_source(project):
+        scope += (
+            " O disco marca o recorte (`drawVignette`). Recorte no disco "
+            "não é comparação em movimento."
+        )
+    palette_scope = art_palette_scope()
+    for item in palettes:
+        item["scope"] = palette_scope
+    rain_scope = art_rain_scope()
+    for item in rains:
+        item["scope"] = rain_scope
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "palettes": palettes,
+        "rains": rains,
+        "manifests": manifests,
+        "sources": sources[:8],
+        "bible": ART_BIBLE if bible_present else None,
+        "bible_current": bible_current,
+        "bible_draft": bible_present and not bible_current,
+        "declared": declared,
+        "missing": not declared,
+        "consistent": False,
+        "guide": str(FRAMEWORK / "recipes/visual.md"),
+        "rule": (
+            "Paleta no código ou art-bible vigente é direção declarada, não "
+            "direção consistente. Moodboard e rascunho do `init` não contam. "
+            "Mesa de chuva no disco não é volume nem comparação em movimento."
+        ),
+        "scope": scope,
+    }
+
+
+def content_files(project):
+    found = []
+    seen = set()
+
+    def add(relative):
+        if relative not in seen:
+            seen.add(relative)
+            found.append(relative)
+
+    for folder in CONTENT_DIRS:
+        root = project / folder
+        if not root.is_dir() or root.is_symlink():
+            continue
+        pending = [(root, 0)]
+        while pending:
+            directory, depth = pending.pop(0)
+            try:
+                entries = sorted(directory.iterdir(), key=lambda item: item.name)
+            except OSError:
+                continue
+            for path in entries:
+                if path.name.startswith(".") or path.name in ROLE_WALK_SKIP:
+                    continue
+                if path.is_symlink():
+                    continue
+                if path.is_dir():
+                    if depth < 3:
+                        pending.append((path, depth + 1))
+                    continue
+                if path.suffix.casefold() in CONTENT_SUFFIXES:
+                    if path.name.casefold() in CONTENT_ART_SKIP:
+                        continue
+                    add(path.relative_to(project).as_posix())
+    for relative, _ in walk_project_files(project, CONTENT_LOOSE_SUFFIXES):
+        add(relative)
+    return found
+
+
+# A receita e o jogo já nomeiam o par. Sem isto o
+# content listava dusk e calm e calava `listMoods`.
+# Nome no disco não é volume.
+LIST_MOODS = re.compile(r"(?:export\s+)?function\s+listMoods\b")
+
+
+def names_mood_pair(text):
+    return bool(text and LIST_MOODS.search(text))
+
+
+def mood_pair_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if names_mood_pair(text):
+            return relative
+    return None
+
+
+# A receita já nasce a mesa. Sem isto o content
+# listava dusk e calm e calava o table. Ferramenta
+# no disco não é volume.
+TABLE_FILES = (
+    "tools/new-table.mjs",
+    "tools/new-table.js",
+    "tools/table.mjs",
+    "tools/table.js",
+    "tools/new-table.py",
+)
+TABLE_BIRTH = re.compile(r"Nasce uma mesa", re.IGNORECASE)
+
+
+def table_births_profile(text):
+    return bool(text and TABLE_BIRTH.search(text))
+
+
+def table_birth_source(project):
+    project = Path(project)
+    for name in TABLE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if table_births_profile(text):
+            return name
+    return None
+
+
+# A receita já compartilha o migrate. Sem isto o
+# content listava dusk e calm e calava o loader.
+# Arquivo no disco não é volume.
+MIGRATE_TABLE = re.compile(r"(?:export\s+)?function\s+migrateTable\b")
+
+
+def tables_share_migrate(text):
+    return bool(text and MIGRATE_TABLE.search(text))
+
+
+def migrate_table_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if tables_share_migrate(text):
+            return relative
+    return None
+
+
+# A receita já nasce look e chuva. Sem isto o
+# start apontava then.pair e calava o tool.
+# Ferramenta no disco não é alguém de fora.
+PAIR_FILES = (
+    "tools/new-pair.mjs",
+    "tools/new-pair.js",
+    "tools/pair.mjs",
+    "tools/pair.js",
+    "tools/new-pair.py",
+)
+PAIR_BIRTH = re.compile(r"Nasce look e chuva", re.IGNORECASE)
+
+
+def pair_births_mood(text):
+    return bool(text and PAIR_BIRTH.search(text))
+
+
+def pair_birth_source(project):
+    project = Path(project)
+    for name in PAIR_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if pair_births_mood(text):
+            return name
+    return None
+
+
+def content_reading(project):
+    project = Path(project)
+    files = content_files(project)
+    kind = identify(project) if project.is_dir() else None
+    scope = (
+        "Procura .json/.csv em data/, content/, levels/, maps/, tables/ e "
+        ".ldtk/.tmx/.ink em qualquer pasta do projeto. Não conta "
+        "palettes.json nem tokens.json — o `art` lê esses manifestos. "
+        "Não carrega o formato e não conta itens. `enough` é sempre falso."
+    )
+    if mood_pair_source(project):
+        scope += (
+            " O disco nomeia o par look+chuva (`listMoods`). "
+            "Nome no disco não é volume."
+        )
+    if table_birth_source(project):
+        scope += (
+            " O disco nasce a mesa (`table`). "
+            "Ferramenta no disco não é volume."
+        )
+    if migrate_table_source(project):
+        scope += (
+            " O disco migra a mesa (`migrateTable`). "
+            "Arquivo no disco não é volume."
+        )
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "kind": kind,
+        "files": files[:24],
+        "external": bool(files),
+        "inline": bool(kind) and not files,
+        "enough": False,
+        "guide": str(FRAMEWORK / "recipes/content.md"),
+        "rule": (
+            "Conteúdo no código não escala. Arquivo em data/levels não é "
+            "volume suficiente nem consumidor comprovado. Paleta e token "
+            "não extraem conteúdo."
+        ),
+        "scope": scope,
+    }
+
+
+def ship_ci(project):
+    found = []
+    workflows = project / ".github" / "workflows"
+    if workflows.is_dir() and not workflows.is_symlink():
+        try:
+            entries = sorted(workflows.iterdir(), key=lambda item: item.name)
+        except OSError:
+            entries = []
+        for path in entries:
+            if path.is_symlink() or not path.is_file():
+                continue
+            if path.suffix.casefold() in {".yml", ".yaml"}:
+                found.append(path.relative_to(project).as_posix())
+    for relative in SHIP_CI:
+        path = project / relative
+        if path.is_file() and not path.is_symlink():
+            found.append(relative)
+    return found
+
+
+def ship_expects_web_tree(project):
+    project = Path(project)
+    return (project / "index.html").is_file() and (project / "package.json").is_file()
+
+
+def ship_dir_present(path):
+    if not path.is_dir() or path.is_symlink():
+        return False
+    try:
+        for item in path.iterdir():
+            if item.name.startswith(".") or item.is_symlink():
+                continue
+            if item.is_file() or item.is_dir():
+                return True
+    except OSError:
+        return False
+    return False
+
+
+def ship_payload_dirs(project):
+    # Só o que o projeto já tem. HTML sem src não ganha a
+    # exigência. Pasta vazia no disco de desenvolvimento
+    # não pede pasta vazia no artefato.
+    found = []
+    root = Path(project)
+    for name in SHIP_PAYLOAD_DIRS:
+        if ship_dir_present(root / name):
+            found.append(name)
+    return found
+
+
+def ship_tree(project):
+    dist = Path(project) / "dist"
+    if not dist.is_dir() or dist.is_symlink():
+        return None
+    if not ship_expects_web_tree(project):
+        return None
+    parts = {}
+    for key, relative in SHIP_TREE:
+        path = dist / relative
+        parts[key] = path.is_file() and not path.is_symlink()
+    needed = list(SHIP_TREE_NEEDED)
+    for name in ship_payload_dirs(project):
+        parts[name] = ship_dir_present(dist / name)
+        needed.append(name)
+    return {
+        "parts": parts,
+        "complete": all(parts.get(key) for key in needed),
+    }
+
+
+def ship_stale(artifact, project):
+    if not artifact or not artifact.get("readable"):
+        return False
+    head = artifact.get("git_head")
+    if not nonempty(head):
+        return False
+    current = git_version(project).get("head")
+    if not nonempty(current):
+        return False
+    return head != current
+
+
+def artifact_open_command(project):
+    # Superfície do artefato, não a de desenvolvimento. Árvore incompleta
+    # ou HEAD velho não ganham comando. Nomear não executa.
+    project = Path(project)
+    tree = ship_tree(project)
+    if not tree or not tree.get("complete"):
+        return None
+    if ship_stale(ship_artifact(project), project):
+        return None
+    serve = project / "dist" / "tools" / "serve.mjs"
+    if not serve.is_file() or serve.is_symlink():
+        return None
+    return f"cd {shlex.quote(str(project / 'dist'))} && node tools/serve.mjs"
+
+
+def size_names_bytes(text):
+    return bool(text and SIZE_BYTES.search(text))
+
+
+def ship_size_source(project):
+    project = Path(project)
+    for name in SIZE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if size_names_bytes(text):
+            return name
+    return None
+
+
+# A receita já imprime o banner. Sem isto o ship
+# relata dist/ e calava o serve. Banner no disco
+# não é outra máquina.
+SERVE_FILES = ("tools/serve.mjs", "tools/serve.js", "tools/serve.py")
+SERVE_EXPORT = re.compile(
+    r"Árvore exportada\. Servir aqui não é outra máquina",
+    re.IGNORECASE,
+)
+
+
+def serve_names_export(text):
+    return bool(text and SERVE_EXPORT.search(text))
+
+
+def ship_serve_source(project):
+    project = Path(project)
+    for name in SERVE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if serve_names_export(text):
+            return name
+    return None
+
+
+# O serve já recusa produção. Sem isto o play
+# apontava o url e calava o aviso. Serve no
+# disco não é publicação.
+SERVE_PRODUCTION = re.compile(r"Não é servidor de produção", re.IGNORECASE)
+
+
+def serve_refuses_production(text):
+    return bool(text and SERVE_PRODUCTION.search(text))
+
+
+def play_production_source(project):
+    project = Path(project)
+    for name in SERVE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if serve_refuses_production(text):
+            return name
+    return None
+
+
+def export_packs_tree(text):
+    return bool(text and EXPORT_PACK.search(text))
+
+
+def ship_export_source(project):
+    project = Path(project)
+    for name in EXPORT_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if export_packs_tree(text):
+            return name
+    return None
+
+
+# O export já recusa file://. Sem isto o ship
+# empacotava a árvore e calava o protocolo.
+# Recusar no disco não é outra máquina.
+EXPORT_FILE = re.compile(r"file://")
+
+
+def export_refuses_file(text):
+    return bool(text and EXPORT_FILE.search(text))
+
+
+def ship_file_source(project):
+    project = Path(project)
+    for name in EXPORT_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if export_refuses_file(text):
+            return name
+    return None
+
+
+# A receita já recusa que a identidade seja outra máquina.
+# Sem isto a árvore copiava as partes e calava a recusa.
+# Árvore no disco não é entrega.
+SHIP_IDENTITY = re.compile(r"Identidade do artefato não é outra máquina")
+
+
+def recipe_refuses_identity_as_elsewhere(text):
+    return bool(text and SHIP_IDENTITY.search(text))
+
+
+def ship_tree_identity_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_identity_as_elsewhere(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_tree_scope():
+    scope = (
+        "Partes e completeza da pasta dist/. Não executa o serve "
+        "e não entrega o artefato."
+    )
+    if ship_tree_identity_source():
+        scope += (
+            " O disco recusa que a identidade seja outra máquina (`identidade`). "
+            "Árvore no disco não é entrega."
+        )
+    return scope
+
+
+# A receita já recusa que o teste no editor demonstre o exportado.
+# Sem isto o manifesto copiava nome e versão e calava a recusa.
+# Manifesto no disco não é o jogo exportado.
+SHIP_EDITOR = re.compile(r"Um teste no editor não demonstra o jogo exportado")
+
+
+def recipe_refuses_editor_as_export(text):
+    return bool(text and SHIP_EDITOR.search(text))
+
+
+def ship_artifact_editor_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_editor_as_export(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_artifact_scope():
+    scope = (
+        "Nome, versão e HEAD do dist/VERSION.json. Não executa o serve "
+        "e não demonstra o jogo exportado."
+    )
+    if ship_artifact_editor_source():
+        scope += (
+            " O disco recusa que o teste no editor demonstre o jogo exportado (`editor`). "
+            "Manifesto no disco não é o jogo exportado."
+        )
+    return scope
+
+
+def ship_reading(project):
+    project = Path(project)
+    try:
+        scripts, _ = project_commands(project)
+    except (OSError, ValueError):
+        scripts = {}
+    named = []
+    for name in scripts:
+        for word in SHIP_WORDS:
+            if name == word or name.startswith(f"{word}:") or name.startswith(f"{word}-"):
+                if name not in named:
+                    named.append(name)
+    ci = ship_ci(project)
+    release = project / SHIP_RELEASE
+    release_current = document_is_current(release)
+    artifact = ship_artifact(project)
+    if artifact is not None:
+        artifact = dict(artifact, scope=ship_artifact_scope())
+    tree = ship_tree(project)
+    if tree is not None:
+        tree = dict(tree, scope=ship_tree_scope())
+    stale = ship_stale(artifact, project)
+    expected = (project / "package.json").is_file() or (project / "Cargo.toml").is_file()
+    declared = bool(named or ci or release_current)
+    incomplete = bool(tree) and not tree["complete"]
+    artifact_open = artifact_open_command(project)
+    scope = (
+        "Procura script build/export/dist/package/release, docs/release.md "
+        "vigente e CI. Se dist/VERSION.json existe, relata nome e versão. "
+        "Se a pasta dist/ de um jogo web existe, relata se index, serve, "
+        "package e VERSION estão lá, e se o HEAD do artefato é o HEAD "
+        "atual. Nomeia a árvore que perdeu o `src/` que o projeto já tem. "
+        "Nomear não devolve o jogo. Árvore completa no HEAD atual ganha "
+        "`artifact_open` — o comando que serve dist/. Nomear não executa. "
+        "Não executa o export, não instala o artefato e não autoriza "
+        "publicar. `shipped` e `elsewhere` são sempre falsos."
+    )
+    if ship_size_source(project):
+        scope += (
+            " O disco relata os bytes (`size`) sem teto. "
+            "Bytes no disco não são outra máquina."
+        )
+    if ship_serve_source(project):
+        scope += (
+            " O disco nomeia a árvore exportada (`serve`). "
+            "Banner no disco não é outra máquina."
+        )
+    if ship_export_source(project):
+        scope += (
+            " O disco empacota a árvore (`export`). "
+            "Empacotar no disco não é outra máquina."
+        )
+    if ship_file_source(project):
+        scope += (
+            " O disco recusa o file:// (`file://`). "
+            "Recusar no disco não é outra máquina."
+        )
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "expected": expected,
+        "scripts": named,
+        "ci": ci,
+        "release": SHIP_RELEASE if release.is_file() and not release.is_symlink() else None,
+        "release_current": release_current,
+        "artifact": artifact,
+        "tree": tree,
+        "incomplete": incomplete,
+        "stale": stale,
+        "artifact_open": artifact_open,
+        "elsewhere": False,
+        "declared": declared,
+        "unpacked": expected and not declared,
+        "shipped": False,
+        "guide": str(FRAMEWORK / "recipes/release.md"),
+        "rule": (
+            "Script de build não é artefato que outra pessoa executou. HTML "
+            "estático sem manifesto já é o artefato; manifesto sem passo de "
+            "empacotar é o que este leitor nomeia. VERSION.json sozinho não "
+            "é árvore jogável. dist/ sem o src/ que o projeto já tem também "
+            "não. HEAD diferente não é outra máquina."
+        ),
+        "scope": scope,
+    }
+
+
+# Playtest com métricas: a tabela de ofício já pede problema, evidência,
+# hipótese e medição. Até aqui o harness só via se o projeto declarava o
+# checklist. Uma observação solta ("o dash não tem peso") não é achado.
+# O leitor abaixo pergunta se a forma está no disco — não se alguém jogou.
+FINDING_FIELDS = re.compile(
+    r"(?is)(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:problema|problem)\*?\*?\s*[:—]\s*\S"
+    r".{0,400}?"
+    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:evid[eê]ncia|evidence)\*?\*?\s*[:—]\s*\S"
+    r".{0,400}?"
+    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:hip[oó]tese|hypothesis)\*?\*?\s*[:—]\s*\S"
+    r".{0,400}?"
+    r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:medi[cç][aã]o|measurement)\*?\*?\s*[:—]\s*\S"
+)
+# O Copiar já levava os quatro nomes. Sem isto o markdown
+# calava a faixa que a página já mostra. Número no disco
+# não é alguém de fora.
+FINDING_RUN_MARK = re.compile(
+    r"(?:function\s+)?composeFinding\([\s\S]{0,800}?runFacts\("
+)
+
+
+def finding_carries_run_facts(text):
+    return bool(text and FINDING_RUN_MARK.search(text))
+
+
+def finding_run_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if finding_carries_run_facts(text):
+            return relative
+    return None
+
+
+FINDING_TABLE = re.compile(
+    r"(?i)\|\s*(?:problema|problem)\s*\|\s*(?:evid[eê]ncia|evidence)\s*\|\s*"
+    r"(?:hip[oó]tese|hypothesis)\s*\|\s*(?:medi[cç][aã]o|measurement)\s*\|"
+)
+FINDING_FIELD_KEYS = {
+    "problem": {"problem", "problema"},
+    "evidence": {"evidence", "evidencia"},
+    "hypothesis": {"hypothesis", "hipotese"},
+    "measurement": {"measurement", "medicao", "metrica"},
+}
+# Os quatro nomes que `note --field` grava. O esqueleto mora no
+# template; `guide` continua a receita. Sem `then`: este leitor só lê.
+PLAYTEST_FIELDS = ("problema", "evidencia", "hipotese", "medicao")
+PLAYTEST_FORM = FRAMEWORK / "assets/templates/qa.md"
+
+
+def fold_key(value):
+    return "".join(
+        char for char in unicodedata.normalize("NFKD", str(value).casefold())
+        if not unicodedata.combining(char)
+    )
+
+
+def fields_have_finding(fields):
+    if not isinstance(fields, dict):
+        return False
+    present = {fold_key(key) for key, value in fields.items() if nonempty(str(value or ""))}
+    return all(names & present for names in FINDING_FIELD_KEYS.values())
+
+
+def playtest_findings(project):
+    found = []
+    seen = set()
+
+    def add(relative):
+        if relative not in seen:
+            seen.add(relative)
+            found.append(relative)
+
+    for relative, text in walk_project_files(project, {".md", ".txt"}):
+        if FINDING_TABLE.search(text) or FINDING_FIELDS.search(text):
+            add(relative)
+    for item in observation_receipts(project):
+        path = project / item["path"]
+        try:
+            data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        fields = data.get("fields") or {}
+        blob = "\n".join(
+            str(value) for value in (data.get("note"), *fields.values()) if value
+        )
+        if fields_have_finding(fields) or FINDING_TABLE.search(blob) or FINDING_FIELDS.search(blob):
+            add(item["path"])
+    return found
+
+
+LAST_RUN = "docs/playtest/last-run.json"
+INVITE = "docs/playtest/invite.md"
+INIT_COPY_SKIP = {"dist", "node_modules", ".git", "__pycache__"}
+
+
+def last_run_path(project):
+    path = Path(project) / LAST_RUN
+    if path.is_file() and not path.is_symlink():
+        return LAST_RUN
+    return None
+
+
+def last_run_seed(project):
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    seed = data.get("seed")
+    if seed is None and isinstance(data.get("run"), dict):
+        seed = data["run"].get("seed")
+    if isinstance(seed, int) and not isinstance(seed, bool):
+        return seed
+    return None
+
+
+SPAWN_NAME = re.compile(r"^[a-z][a-z0-9]{0,31}$")
+
+
+def last_run_spawn(project):
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    spawn = data.get("spawn")
+    if not nonempty(spawn) and isinstance(data.get("run"), dict):
+        spawn = data["run"].get("spawn")
+    if isinstance(spawn, str) and SPAWN_NAME.fullmatch(spawn) and spawn != "spawn":
+        return spawn
+    return None
+
+
+def last_run_curve(project):
+    # A faixa e o leitor viam seed e some a curva.
+    # last-run.json já a traçou. Número não é outsider.
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    curve = data.get("curve")
+    if not isinstance(curve, dict) and isinstance(data.get("run"), dict):
+        curve = data["run"].get("curve")
+    if not isinstance(curve, dict):
+        return None
+    facts = {}
+    if isinstance(curve.get("never_banked"), bool):
+        facts["never_banked"] = curve["never_banked"]
+    unbanked = curve.get("unbanked_at_end")
+    if isinstance(unbanked, (int, float)) and not isinstance(unbanked, bool) and unbanked > 0:
+        facts["unbanked_at_end"] = unbanked
+    return facts or None
+
+
+TALLY_FIELDS = ("score", "collected", "missed", "hits", "banks")
+
+
+def last_run_tally(project):
+    # A faixa e o last-run já têm a conta. Sem isto o
+    # playtest nomeava curva e origem e calava os verbos.
+    # Número no disco não é alguém de fora.
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    run = data["run"] if isinstance(data.get("run"), dict) else data
+    if not isinstance(run, dict):
+        return None
+    facts = {}
+    for field in TALLY_FIELDS:
+        value = run.get(field)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            continue
+        if isinstance(value, float) and not (value == value):
+            continue
+        facts[field] = int(value) if isinstance(value, int) or value.is_integer() else value
+    return facts or None
+
+
+# A pesquisa já recusa que cinco playtesters sejam critério.
+# Sem isto a conta copiava os verbos e calava a recusa.
+# Conta no disco não é sessão observada.
+PLAYTEST_FIVE = re.compile(r'"Cinco playtesters"\s+não\s+é\s+critério')
+
+
+def research_refuses_five_as_criterion(text):
+    return bool(text and PLAYTEST_FIVE.search(text))
+
+
+def playtest_tally_five_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_five_as_criterion(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def playtest_tally_scope():
+    scope = (
+        "Pontos, coletas, quedas, erros e guardas do last-run. "
+        "Não conta jogadores e não observa a sessão."
+    )
+    if playtest_tally_five_source():
+        scope += (
+            " O disco recusa que cinco playtesters sejam critério (`cinco`). "
+            "Conta no disco não é sessão observada."
+        )
+    return scope
+
+
+def last_run_speed(project):
+    # O convite abria a seed no relógio cheio. last-run já
+    # guarda o knob. 1 some. Número não é outsider.
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    speed = data.get("speed")
+    if speed is None and isinstance(data.get("run"), dict):
+        speed = data["run"].get("speed")
+    if (
+        isinstance(speed, (int, float))
+        and not isinstance(speed, bool)
+        and 0.5 <= speed <= 1
+        and speed != 1
+    ):
+        return speed
+    return None
+
+
+def last_run_policy(project):
+    # Serve grava played; session grava nearest-orb.
+    # Sem a chave o leitor fingia a mesma origem.
+    # Nomear não é sessão observada.
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    policy = data.get("policy")
+    if policy is None and isinstance(data.get("run"), dict):
+        policy = data["run"].get("policy")
+    if policy in {"played", "nearest-orb"}:
+        return policy
+    return None
+
+
+def last_run_look(project):
+    path = Path(project) / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    look = data.get("look")
+    if not nonempty(look) and isinstance(data.get("run"), dict):
+        look = data["run"].get("look")
+    if isinstance(look, str) and SPAWN_NAME.fullmatch(look) and look not in {"normal", "contrast"}:
+        return look
+    return None
+
+
+def attach_run_candidate(project, fields=None, source=None):
+    project = Path(project)
+    path = Path(source) if source else project / LAST_RUN
+    if not path.is_file() or path.is_symlink():
+        raise ValueError(f"sem partida no disco: {path.as_posix()}")
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"partida ilegível: {path.as_posix()}") from error
+    if not isinstance(data, dict):
+        raise ValueError(f"partida ilegível: {path.as_posix()}")
+    run = data["run"] if isinstance(data.get("run"), dict) else data
+    payload = dict(fields or {})
+    payload["run"] = json.dumps(run, ensure_ascii=False, separators=(",", ":"))
+    curve = data.get("curve")
+    if isinstance(curve, dict):
+        payload["curve"] = json.dumps(curve, ensure_ascii=False, separators=(",", ":"))
+    policy = data.get("policy")
+    if policy is None and isinstance(run, dict):
+        policy = run.get("policy")
+    if policy in {"played", "nearest-orb"}:
+        payload["policy"] = policy
+    return payload, path
+
+
+# A receita já grava a simulação. Sem isto o playtest
+# lia last-run e calava o tool. Traço no disco não é
+# alguém de fora.
+SESSION_FILES = ("tools/session.mjs", "tools/session.js", "tools/session.py")
+SESSION_TRACE = re.compile(
+    r"não some sob a simulação|não é sessão observada",
+    re.IGNORECASE,
+)
+
+
+def session_records_sim(text):
+    return bool(text and SESSION_TRACE.search(text))
+
+
+def session_sim_source(project):
+    project = Path(project)
+    for name in SESSION_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if session_records_sim(text):
+            return name
+    return None
+
+
+# A página já pede o recado. Sem isto o playtest
+# dizia que a página escreve e calava a rota.
+# Texto no disco não é alguém de fora.
+NOTE_POST = re.compile(r"pathname === NOTE_ROUTE")
+
+
+def serve_writes_note(text):
+    return bool(text and NOTE_POST.search(text))
+
+
+def note_post_source(project):
+    project = Path(project)
+    for name in SERVE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if serve_writes_note(text):
+            return name
+    return None
+
+
+def playtest_reading(project):
+    project = Path(project)
+    observations = observation_receipts(project)
+    findings = playtest_findings(project)
+    qa = project / "docs/qa.md"
+    qa_current = document_is_current(qa)
+    expected = bool(observations) or qa_current
+    structured = bool(findings)
+    candidate = last_run_path(project)
+    candidate_seed = last_run_seed(project) if candidate else None
+    candidate_spawn = last_run_spawn(project) if candidate else None
+    candidate_look = last_run_look(project) if candidate else None
+    candidate_speed = last_run_speed(project) if candidate else None
+    candidate_curve = last_run_curve(project) if candidate else None
+    candidate_policy = last_run_policy(project) if candidate else None
+    candidate_tally = last_run_tally(project) if candidate else None
+    if candidate_tally is not None:
+        candidate_tally = dict(candidate_tally, scope=playtest_tally_scope())
+    invite = invite_path(project)
+    qa_file = qa.is_file() and not qa.is_symlink()
+    try:
+        scripts, _manager = project_commands(project)
+    except (OSError, ValueError):
+        scripts = {}
+    # O next já apontava finding_open. Sem isto o
+    # playtest mandava só o caminho relativo — o
+    # serve ficava no disco e o leitor calava.
+    # Endereço no disco não é alguém de fora.
+    opened = finding_open(project, scripts)
+    scope = (
+        "Procura os quatro campos num documento ou num record de "
+        "observação, e se docs/qa.md deixou de ser rascunho. Relata "
+        f"`{LAST_RUN}` e `{INVITE}` quando existem. A partida no serve "
+        "pode gravar o candidato; a simulação também. No convite a "
+        "página pode gravar o markdown dos quatro nomes e anexar o "
+        "candidato que estava em last-run.json. Anexo não é sessão "
+        "observada. Se o candidato nomeia a seed, `candidate_seed` "
+        "a relata; se nomeia a chuva, `candidate_spawn` a relata; "
+        "se nomeia o look, `candidate_look` o relata; "
+        "se nomeia o relógio, `candidate_speed` o relata; "
+        "se nomeia a curva, `candidate_curve` relata "
+        "`never_banked` e a aposta que ficou; "
+        "se nomeia a origem, `candidate_policy` relata "
+        "`played` ou `nearest-orb`; "
+        "se nomeia a conta, `candidate_tally` relata "
+        "pontos, coletas, quedas, erros e guardas. "
+        "`invite_href` junta convite, número, mesa, paleta e relógio — "
+        "`?invite=1&seed=&spawn=&look=&speed=` abre essa partida e ignora o hold. "
+        "`finding_href` junta o convite e o painel `#finding` — "
+        "sem `invite=1` o âncora some. "
+        "`finding_open` é a url do serve com o convite, ou o "
+        "mesmo endereço sem serve. O `next` aponta o mesmo "
+        "endereço. O serve nu não abre o painel. "
+        "com seed no disco junta o número e os eixos. "
+        "`qa` nomeia `docs/qa.md` se o arquivo existir. "
+        "`form` aponta o esqueleto dos quatro nomes; `fields` os lista. "
+        "Esqueleto no disco não é achado. "
+        "`playtest` só lê. Sem `then`. A página e `note --field` escrevem. "
+        "Escrever não é sessão observada. "
+        "Não assiste a sessão, não conta jogadores e não "
+        "atribui causa. `observed` e `outsider` são sempre falsos."
+    )
+    if finding_run_source(project):
+        scope += (
+            " O Copiar e o Gravar levam a faixa do last-run — markdown "
+            "no disco não é alguém de fora."
+        )
+    if session_sim_source(project):
+        scope += (
+            " O disco grava a simulação (`session`). "
+            "Traço no disco não é alguém de fora."
+        )
+    if note_post_source(project):
+        scope += (
+            " O disco grava o recado (`note`). "
+            "Texto no disco não é alguém de fora."
+        )
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "observations": [item["path"] for item in observations],
+        "findings": findings,
+        "finding_attachments": playtest_finding_attachments(project, findings),
+        "candidate": candidate,
+        "candidate_seed": candidate_seed,
+        "candidate_spawn": candidate_spawn,
+        "candidate_look": candidate_look,
+        "candidate_speed": candidate_speed,
+        "candidate_curve": candidate_curve,
+        "candidate_policy": candidate_policy,
+        "candidate_tally": candidate_tally,
+        "invite": invite,
+        "invite_href": invite_href(project),
+        "finding_href": finding_href(project),
+        "finding_open": opened,
+        "qa": "docs/qa.md" if qa_file else None,
+        "qa_current": qa_current,
+        "expected": expected,
+        "structured": structured,
+        "unstructured": expected and not structured,
+        "observed": False,
+        "outsider": False,
+        "form": str(PLAYTEST_FORM),
+        "fields": list(PLAYTEST_FIELDS),
+        "guide": str(FRAMEWORK / "recipes/feel.md"),
+        "rule": (
+            "Recibo de observação sem problema, evidência, hipótese e medição "
+            "é impressão. Os quatro no disco não são playtest observado. "
+            "last-run.json é candidato, não causa — venha da simulação ou "
+            "da partida no serve. Convite no disco não é alguém de fora."
+        ),
+        "scope": scope,
+    }
+
+
+def playtest_finding_attachments(project, findings=None):
+    project = Path(project)
+    attached = []
+    names = findings if findings is not None else playtest_findings(project)
+    for relative in names:
+        if not relative.endswith("-achado.md"):
+            continue
+        companion = f"{relative[:-len('.md')]}.run.json"
+        path = project / companion
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(data, dict) and isinstance(data.get("run"), dict):
+            attached.append(companion)
+    return attached
+
+
+def invite_path(project):
+    path = Path(project) / INVITE
+    if path.is_file() and not path.is_symlink():
+        return INVITE
+    return None
+
+
+def last_run_axes(project):
+    parts = []
+    spawn = last_run_spawn(project)
+    if spawn:
+        parts.append(f"spawn={spawn}")
+    look = last_run_look(project)
+    if look:
+        parts.append(f"look={look}")
+    speed = last_run_speed(project)
+    if speed is not None:
+        parts.append(f"speed={speed}")
+    return parts
+
+
+def seed_href(project):
+    seed = last_run_seed(project)
+    if not (isinstance(seed, int) and not isinstance(seed, bool)):
+        return None
+    return "/?" + "&".join([f"seed={seed}", *last_run_axes(project)])
+
+
+def invite_href(project):
+    parts = ["invite=1"]
+    seed = last_run_seed(project)
+    if isinstance(seed, int) and not isinstance(seed, bool):
+        parts.append(f"seed={seed}")
+    parts.extend(last_run_axes(project))
+    return "/?" + "&".join(parts)
+
+
+def finding_href(project):
+    # O painel só nasce no convite. Sem invite=1 o
+    # âncora cai em display:none. Endereço no disco
+    # não é alguém de fora.
+    return f"{invite_href(project)}#finding"
+
+
+def finding_open(project, scripts=None, play=None, env=None):
+    # O next apontava o serve nu. Sem o convite o
+    # âncora some. SKILL e README já nomeiam a
+    # página; o comando tem de apontá-la. Endereço
+    # no disco não é alguém de fora.
+    href = finding_href(project)
+    base = serve_url(scripts, play, env)
+    if not base:
+        return href
+    return f"{base.rstrip('/')}{href}"
+
+
+# O serve já prende o bind. Sem isto o
+# convite anunciava a rede e calava o HOST.
+# Bind no disco não é alguém de fora.
+SERVE_BIND = re.compile(r"HOST=127\.0\.0\.1 prende o bind")
+
+
+def serve_pins_bind(text):
+    return bool(text and SERVE_BIND.search(text))
+
+
+def invite_bind_source(project):
+    project = Path(project)
+    for name in SERVE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if serve_pins_bind(text):
+            return name
+    return None
+
+
+def invite_playtest(project):
+    project = Path(project)
+    if not project.is_dir() or project.is_symlink():
+        raise ValueError("projeto inexistente")
+    path = project / INVITE
+    created = not path.exists()
+    if path.is_symlink() or (path.exists() and not path.is_file()):
+        raise ValueError(f"convite inválido: {INVITE}")
+    if created:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(invite_page(project), encoding="utf-8")
+    reading = playtest_reading(project)
+    scope = (
+        "Escreve a página para quem nunca viu o jogo e aponta "
+        "`href`. Sem last-run é `/?invite=1`; com seed no disco "
+        "junta o número; com chuva no disco junta a mesa; com look "
+        "no disco junta a paleta. A tabela "
+        "some. Depois do fim a página "
+        "oferece os quatro nomes para copiar ou gravar. Copiar não "
+        "grava. Esqueleto vazio não é achado. Gravado anexa o "
+        "candidato se last-run existir — não é alguém de fora. "
+        "Nomear o endereço não observa. O serve anuncia a URL da rede se a "
+        "máquina tiver outro endereço IPv4. Não ensina o verbo, "
+        "não assiste e não sobe pacing. outsider continua falso."
+    )
+    if invite_bind_source(project):
+        scope += (
+            " O disco prende o bind (`HOST`). "
+            "Bind no disco não é alguém de fora."
+        )
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "path": INVITE,
+        "created": created,
+        "href": invite_href(project),
+        "observed": False,
+        "outsider": False,
+        "reading": reading,
+        "scope": scope,
+    }
+
+
+def invite_page(project):
+    project = Path(project)
+    try:
+        scripts, manager = project_commands(project)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
+    artifact_open = artifact_open_command(project)
+    play = artifact_open or play_command(project, scripts, manager) or (
+        f"cd {shlex.quote(str(project))} && npm run serve"
+    )
+    href = invite_href(project)
+    seed = last_run_seed(project)
+    seed_line = (
+        f"Esta partida abre em `/?seed={seed}` e ignora o hold."
+        if isinstance(seed, int) and not isinstance(seed, bool)
+        else "Se a partida deixou seed, `/?seed=<n>` abre essa partida e ignora o hold."
+    )
+    page = (
+        "# Convite — quem nunca viu o jogo\n"
+        "\n"
+        "Esta página não é playtest observado. `observed` e `outsider`\n"
+        "continuam falsos até alguém que **não fez** o jogo jogar e\n"
+        "escrever o achado noutro arquivo.\n"
+        "\n"
+        "## Abrir\n"
+        "\n"
+        "```\n"
+        f"{play}\n"
+        "```\n"
+        "\n"
+    )
+    if artifact_open:
+        page += (
+            "Esse comando serve `dist/`, não a árvore de desenvolvimento.\n"
+            "Na árvore exportada o serve recusa gravar o achado: copie os\n"
+            "quatro nomes e devolva ao maker. Sem a área de transferência,\n"
+            "o Copiar baixa o markdown. Recusar não é alguém de fora.\n"
+            "\n"
+        )
+    page += (
+        "## Superfície\n"
+        "\n"
+        f"No navegador, abra `{href}`. A tabela de comandos some.\n"
+        "Quem fez o jogo fica em `/`. O serve anuncia localhost e, se a\n"
+        "máquina tiver outro endereço IPv4, a URL da rede. Compartilhar\n"
+        "essa URL não é alguém de fora.\n"
+        "\n"
+        "## Instrução\n"
+        "\n"
+        "Jogue uma partida. Com tela, o avanço abre a porta — a tabela\n"
+        f"some, a abertura não. {seed_line} Quem fez o jogo não ensina\n"
+        "o verbo e não fica atrás da cadeira.\n"
+        "\n"
+        "## Depois\n"
+        "\n"
+        "A página oferece os quatro nomes para copiar ou gravar.\n"
+        "Depois do fim ela rola até o painel e foca o primeiro campo.\n"
+        "Rolar não é alguém de fora. Trazer o painel não observa.\n"
+        "Depois do fim ela mostra seed, pontos e eixos da partida.\n"
+        "Número na faixa não preenche os quatro nomes. Copiar não grava.\n"
+        "Sem a área de transferência, o Copiar baixa o markdown.\n"
+        "Grave só se os quatro tiverem texto. Esqueleto vazio não é\n"
+        "achado. Se a partida deixou last-run, o serve anexa o candidato\n"
+        "ao lado do markdown. Anexo não é sessão observada. Gravado não\n"
+        "sobe pacing.\n"
+        "Quem escreveu precisa ser quem jogou.\n"
+        "\n"
+        "Convite no disco não sobe `pacing` e não conta jogador.\n"
+    )
+    return page
+
+
+# `scan` lê documentos e, de propósito, não entra em textures/fonts/models/videos.
+# É exatamente aí que mora o asset embarcado. O gate `deliver.licensing` recusa
+# dispensa e, até este comando, ninguém lia o disco: uma linha otimista fechava
+# a tabela. Aqui a pergunta é outra e mais estreita — o arquivo tem recibo de
+# origem? — e a resposta negativa não é "licença inválida". Validar licença
+# exigiria titular, texto e jurisdição, e nada disso cabe num walk.
+EMBEDDED_SUFFIXES = {
+    ".wav", ".ogg", ".mp3", ".flac", ".m4a", ".aac",
+    ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".svg", ".ico",
+    ".ttf", ".otf", ".woff", ".woff2",
+    ".mp4", ".webm", ".mov",
+    ".glb", ".gltf", ".fbx", ".obj",
+}
+ORIGIN_SKIP = {
+    "node_modules", "dist", "build", ".git", "__pycache__", "evidence", "outputs",
+    "library", "temp", "coverage", ".venv", "venv", "archives", "archive",
+}
+ORIGIN_RECEIPTS = {
+    "sources.json", "licenses.json", "credits.md", "credits.txt", "licence",
+    "license", "copying", "authors",
+}
+# Os três nomes que o sidecar declara. Recibo no disco não é licença válida.
+ORIGIN_FIELDS = ("origin", "author", "license")
+ORIGIN_FORM = FRAMEWORK / "assets/templates/credits.txt"
+ORIGIN_ROW = re.compile(r"`([^`]+)`")
+ORIGIN_LINK = re.compile(r"\[[^\]]+\]\((?:<([^>\n]+)>|([^\s)]+))")
+
+
+def origin_record_complete(record):
+    # O JSON listava o arquivo e declarava. Sem origem o
+    # harness fingia recibo. Os três campos são o que
+    # `--declare` já exige. Nome no disco não é licença.
+    if not isinstance(record, dict):
+        return False
+    return all(nonempty(sfx_catalog.receipt_field(record, field)) for field in ORIGIN_FIELDS)
+
+
+# O esqueleto já pede o consumidor. Sem isto o
+# origins lia os três rótulos e calava o sidecar.
+# Consumidor no disco não é licença válida.
+SIDECAR_CONSUMER = re.compile(r"Consumidor\s*:", re.IGNORECASE)
+
+
+def sidecar_names_consumer(text):
+    return bool(text and SIDECAR_CONSUMER.search(text))
+
+
+# O roteiro já recusa que o sidecar sem rótulos declare. Sem
+# isto o problema copiava o achado e calava a recusa.
+# Recibo no disco não é licença.
+ORIGIN_LABELS = re.compile(r"Sidecar sem\s+os três rótulos")
+
+
+def gates_refuse_unlabeled_sidecar(text):
+    return bool(text and ORIGIN_LABELS.search(text))
+
+
+def origin_problem_label_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gates_refuse_unlabeled_sidecar(text):
+        return "references/gates.md"
+    return None
+
+
+def origin_problem_scope():
+    scope = (
+        "Motivo e fonte do problema de forma. Não consulta titular "
+        "e não concede licença."
+    )
+    if origin_problem_label_source():
+        scope += (
+            " O disco recusa que o sidecar sem rótulos declare (`rótulos`). "
+            "Recibo no disco não é licença."
+        )
+    return scope
+
+
+def sidecar_consumer_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, {".txt"}):
+        if "tests" in Path(relative).parts:
+            continue
+        if sidecar_names_consumer(text):
+            return relative
+    return None
+
+
+def sidecar_declares(text):
+    # O JSON já exigia os três campos. O sidecar ao lado
+    # declarava só por existir — inclusive vazio. Nome no
+    # disco não é licença.
+    if not isinstance(text, str) or not text.strip():
+        return False
+    folded = text.casefold()
+    return bool(
+        re.search(r"\b(?:origem|origin)\s*:", folded)
+        and re.search(r"\b(?:autor|author)\s*:", folded)
+        and re.search(r"\b(?:licen[cç]a|license)\s*:", folded)
+    )
+
+
+def sidecar_text(path):
+    try:
+        return path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+
+
+def origin_ref(name):
+    return str(name).replace("\\", "/").strip().lstrip("./")
+
+
+def local_media_ref(name):
+    # O JSON listava o arquivo e o scan só via o que
+    # ainda estava no disco. URL e id sem sufixo não
+    # são mídia embarcada. Nomear não devolve o arquivo.
+    text = origin_ref(name)
+    if not text or "://" in text:
+        return None
+    parts = Path(text).parts
+    if not parts or ".." in parts:
+        return None
+    if Path(text).suffix.casefold() not in EMBEDDED_SUFFIXES:
+        return None
+    return text
+
+
+def origins_reading(project, max_entries=2000):
+    project = Path(project).resolve()
+    embedded, receipts, problems = [], [], []
+    mentioned = set()
+    listed = []
+    pending = [(project, 0)] if project.is_dir() else []
+    seen = 0
+    stopped = False
+
+    def remember(name, receipt=None):
+        text = origin_ref(name)
+        if not text:
+            return
+        mentioned.add(text)
+        mentioned.add(Path(text).name)
+        if receipt is None:
+            return
+        ref = local_media_ref(text)
+        if ref is None or any(item["path"] == ref for item in listed):
+            return
+        listed.append({"source": receipt, "path": ref})
+
+    def ingest_json(path, relative):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
+        except (OSError, json.JSONDecodeError):
+            problems.append({"source": relative, "reason": "unreadable_receipt"})
+            return
+        records = data.get("files") if isinstance(data, dict) else data
+        if not isinstance(records, list):
+            problems.append({"source": relative, "reason": "receipt_without_files"})
+            return
+        for record in records:
+            if not isinstance(record, dict):
+                continue
+            if not origin_record_complete(record):
+                continue
+            for key in ("src", "path", "file", "id", "key"):
+                if isinstance(record.get(key), str):
+                    remember(record[key], receipt=relative)
+
+    def ingest_text(path, relative):
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            problems.append({"source": relative, "reason": "unreadable_receipt"})
+            return
+        for match in ORIGIN_ROW.findall(text):
+            remember(match)
+        for first, second in ORIGIN_LINK.findall(text):
+            remember(unquote(first or second).split("#", 1)[0])
+
+    while pending:
+        directory, depth = pending.pop(0)
+        try:
+            entries = sorted(directory.iterdir(), key=lambda item: item.name.casefold())
+        except OSError:
+            problems.append({
+                "source": str(directory.relative_to(project)) if directory != project else ".",
+                "reason": "unreadable_directory",
+            })
+            continue
+        for path in entries:
+            if seen >= max_entries:
+                problems.append({"reason": "scan_limit", "limit": "entries"})
+                pending.clear()
+                stopped = True
+                break
+            seen += 1
+            if path.name.startswith("."):
+                continue
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                if path.name.casefold() in ORIGIN_SKIP:
+                    continue
+                if depth >= 6:
+                    problems.append({
+                        "source": str(path.relative_to(project)), "reason": "depth_limit",
+                    })
+                else:
+                    pending.append((path, depth + 1))
+                continue
+            if not path.is_file():
+                continue
+            relative = path.relative_to(project).as_posix()
+            suffix = path.suffix.casefold()
+            stem = path.name.casefold()
+            if suffix in EMBEDDED_SUFFIXES:
+                embedded.append(relative)
+                sidecar = path.with_name(path.name + ".credits.txt")
+                alt = path.with_suffix(path.suffix + ".credits.txt")
+                near = path.with_name(path.stem + ".credits.txt")
+                for candidate in (sidecar, alt, near):
+                    if not candidate.is_file() or candidate.is_symlink():
+                        continue
+                    text = sidecar_text(candidate)
+                    if text is None or not sidecar_declares(text):
+                        continue
+                    remember(relative)
+                    remember(path.name)
+                    break
+            if stem in ORIGIN_RECEIPTS or stem.endswith(".credits.txt"):
+                receipts.append(relative)
+                if suffix == ".json":
+                    ingest_json(path, relative)
+                elif stem.endswith(".credits.txt") and stem not in ORIGIN_RECEIPTS:
+                    text = sidecar_text(path)
+                    if text is None:
+                        problems.append({"source": relative, "reason": "unreadable_receipt"})
+                    elif not sidecar_declares(text):
+                        problems.append({"source": relative, "reason": "incomplete_sidecar"})
+                    else:
+                        ingest_text(path, relative)
+                else:
+                    ingest_text(path, relative)
+
+    declared, undeclared = [], []
+    for relative in embedded:
+        name = Path(relative).name
+        if relative in mentioned or name in mentioned:
+            declared.append(relative)
+        else:
+            undeclared.append(relative)
+
+    embedded_names = {Path(item).name for item in embedded}
+    missing = []
+    for item in listed:
+        ref = item["path"]
+        if Path(ref).name in embedded_names:
+            continue
+        candidate = project / ref
+        try:
+            present = candidate.is_file() and not candidate.is_symlink()
+        except OSError:
+            present = False
+        if present:
+            continue
+        missing.append(ref)
+        problems.append({
+            "source": item["source"],
+            "reason": "missing_media",
+            "path": ref,
+        })
+
+    licensing = gate_declaration(project)["declared"].get("deliver", {}).get("licensing")
+    contradicts = bool(
+        licensing and licensing["state"] == "met" and undeclared
+    )
+    scope = (
+        "Percorre o projeto, lista arquivos de mídia embarcados e cruza com recibos "
+        "(sources.json, licenses.json, CREDITS, sidecar `.credits.txt`). Relata ausência "
+        "de recibo, recibo ilegível e declaração `deliver.licensing` = `met` que o disco "
+        "contradiz. Nomeia a mídia que o recibo lista e o disco perdeu. "
+        "Nomear não devolve o arquivo. JSON sem origem, autor e licença — no topo ou "
+        "em `sources[0]` — não cobre o arquivo. Sidecar sem os três rótulos também não. "
+        "`form` aponta o esqueleto; `fields` lista origem, autor e licença. "
+        "`--declare` escreve o sidecar. Sem `then`. Recibo no disco não é licença "
+        "válida. Não consulta titular, não interpreta texto de licença, não distingue "
+        "licença válida de inválida e **não concede passagem**."
+    )
+    if sidecar_consumer_source(project):
+        scope += (
+            " O disco nomeia o consumidor (`Consumidor`). "
+            "Consumidor no disco não é licença válida."
+        )
+    problems = [dict(item) for item in problems]
+    problem_scope = origin_problem_scope()
+    for item in problems:
+        item["scope"] = problem_scope
+    return {
+        "schema_version": 1,
+        "project": str(project),
+        "exists": project.is_dir(),
+        "embedded": embedded,
+        "declared": declared,
+        "undeclared": undeclared,
+        "missing": missing,
+        "receipts": receipts,
+        "problems": problems,
+        "contradicts_licensing": contradicts,
+        "truncated": stopped,
+        "granted": False,
+        "validated": False,
+        "form": str(ORIGIN_FORM),
+        "fields": list(ORIGIN_FIELDS),
+        "guide": str(FRAMEWORK / "references/gates.md"),
+        "rule": (
+            "Arquivo embarcado sem recibo de origem conta como licença desconhecida. "
+            "O recibo declara origem, autor e condição de uso; não prova que a condição vale. "
+            "JSON sem os três campos não declara. "
+            "Sidecar sem origem, autor e licença também não. "
+            "Mídia que o recibo lista e o disco perdeu não some."
+        ),
+        "scope": scope,
+    }
+
+
+def origins_declare(project, relative, origin, author, license_name):
+    # O `next` pedia `origins` de novo. Relê não declara. Este caminho
+    # escreve o sidecar; não valida titular nem texto jurídico.
+    project = Path(project)
+    if not project.is_dir() or project.is_symlink():
+        raise ValueError("projeto ausente")
+    if not all(nonempty(value) for value in (relative, origin, author, license_name)):
+        raise ValueError("declare exige arquivo, origem, autor e licença")
+    rel = Path(relative)
+    if rel.is_absolute() or ".." in rel.parts:
+        raise ValueError("arquivo precisa ser relativo ao projeto")
+    path = (project / rel).resolve()
+    try:
+        path.relative_to(project.resolve())
+    except ValueError as error:
+        raise ValueError("arquivo precisa ficar dentro do projeto") from error
+    if path.is_symlink() or not path.is_file():
+        raise ValueError("arquivo embarcado inexistente")
+    if path.suffix.casefold() not in EMBEDDED_SUFFIXES:
+        raise ValueError("arquivo não é mídia embarcada")
+    posix = path.relative_to(project.resolve()).as_posix()
+    reading = origins_reading(project)
+    if posix not in reading["undeclared"]:
+        raise ValueError("arquivo já tem recibo ou não está sem origem")
+    sidecar = path.with_name(path.name + ".credits.txt")
+    if sidecar.exists() or sidecar.is_symlink():
+        if sidecar.is_symlink() or not sidecar.is_file():
+            raise ValueError("sidecar já existe")
+        existing = sidecar_text(sidecar)
+        if existing is not None and sidecar_declares(existing):
+            raise ValueError("sidecar já existe")
+    sidecar.write_text(
+        f"{path.name} — origem: {origin.strip()}.\n"
+        f"Autor: {author.strip()}. Licença: {license_name.strip()}.\n",
+        encoding="utf-8",
+    )
+    after = origins_reading(project)
+    return {
+        "schema_version": 1,
+        "command": "origins",
+        "project": str(project),
+        "declared": posix,
+        "sidecar": sidecar.relative_to(project.resolve()).as_posix(),
+        "fields": {
+            "origin": origin.strip(),
+            "author": author.strip(),
+            "license": license_name.strip(),
+        },
+        "undeclared": after["undeclared"],
+        "granted": False,
+        "validated": False,
         "scope": (
-            "Lê a declaração do próprio projeto e confere só a forma dela, relatando em `problems`: gate "
-            "desconhecido, critério que não pertence ao gate, estado fora de met/unmet/waived/out_of_scope, "
-            "dispensa ou saída de escopo de critério que a prosa não deixa dispensar, met/waived/out_of_scope "
-            "sem nada escrito ao lado, e duas linhas discordantes. Não observa o jogo, não executa nada e "
-            "**não concede passagem**: `held_by_declaration` diz que o projeto afirma cumprir, não que alguém "
-            "conferiu."
+            "Escreveu o sidecar ao lado do arquivo. Recibo no disco não é "
+            "licença válida. `granted` e `validated` continuam falsos."
         ),
     }
+
+
+def _bar_scope(project):
+    scope = (
+        "Lê a declaração do próprio projeto e confere só a forma dela, relatando em `problems`: dimensão "
+        "fora das dez, degrau fora dos cinco e alvo que não é o degrau imediatamente seguinte. Não observa "
+        "o jogo, não mede nada e não corrige a declaração — uma tabela bem formada e otimista sai daqui "
+        "intacta, porque o degrau é afirmação de quem escreveu. `perceived_tier` só aparece quando as dez "
+        "dimensões têm linha, porque dimensão não declarada não é dimensão alta."
+    )
+    if bar_floor_source(project):
+        scope += (
+            " O disco declara o mínimo (`mínimo`). "
+            "Degrau no disco não é acabamento observado."
+        )
+    return scope
 
 
 def bar_reading(project):
     declaration = bar_declaration(project)
     declared = declaration["declared"]
+    problems = [dict(item) for item in declaration["problems"]]
+    problem_scope = bar_problem_scope()
+    for item in problems:
+        item["scope"] = problem_scope
     return {
         "schema_version": 1,
         "project": str(project),
@@ -818,6 +4952,7 @@ def bar_reading(project):
                 "key": key,
                 "label": BAR_DIMENSIONS[key],
                 **(declared.get(key) or {"tier": None, "next_tier": None, "gap": None, "source": None}),
+                "scope": bar_item_scope(),
             }
             for key in BAR_DIMENSIONS
         ],
@@ -825,20 +4960,125 @@ def bar_reading(project):
         "at_floor": declaration["at_floor"],
         "undeclared": declaration["undeclared"],
         "conflicts": declaration["conflicts"],
-        "problems": declaration["problems"],
+        "problems": problems,
         "perceived_tier": declaration["perceived_tier"],
         "rule": "O degrau percebido de um jogo é o mínimo entre suas dimensões, não a média.",
         "guide": str(FRAMEWORK / "references/production-bar.md"),
         "sources": declaration["sources"],
         "assessed": False,
-        "scope": (
-            "Lê a declaração do próprio projeto e confere só a forma dela, relatando em `problems`: dimensão "
-            "fora das dez, degrau fora dos cinco e alvo que não é o degrau imediatamente seguinte. Não observa "
-            "o jogo, não mede nada e não corrige a declaração — uma tabela bem formada e otimista sai daqui "
-            "intacta, porque o degrau é afirmação de quem escreveu. `perceived_tier` só aparece quando as dez "
-            "dimensões têm linha, porque dimensão não declarada não é dimensão alta."
-        ),
+        "scope": _bar_scope(project),
     }
+
+
+# A barra já recusa que o degrau seja prazo. Sem isto o
+# item listava o degrau e calava a recusa.
+# Linha no disco não é calendário.
+BAR_DEADLINE = re.compile(r"Degraus não são prazos")
+
+
+def bar_refuses_deadline(text):
+    return bool(text and BAR_DEADLINE.search(text))
+
+
+def bar_item_deadline_source():
+    path = FRAMEWORK / "references/production-bar.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_deadline(text):
+        return "references/production-bar.md"
+    return None
+
+
+def bar_item_scope():
+    scope = (
+        "Degrau da dimensão segundo a declaração do projeto. "
+        "Não observa e não atribui calendário."
+    )
+    if bar_item_deadline_source():
+        scope += (
+            " O disco recusa que o degrau seja prazo (`prazos`). "
+            "Linha no disco não é calendário."
+        )
+    return scope
+
+
+# A barra já recusa que o nome seja uma das dez. Sem isto o
+# problema copiava o achado e calava a recusa.
+# Linha no disco não é acabamento.
+BAR_TEN = re.compile(r"não é uma das dez")
+
+
+def bar_refuses_unknown_dimension(text):
+    return bool(text and BAR_TEN.search(text))
+
+
+def bar_problem_dimension_source():
+    path = FRAMEWORK / "references/production-bar.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_unknown_dimension(text):
+        return "references/production-bar.md"
+    return None
+
+
+def bar_problem_scope():
+    scope = (
+        "Motivo e fonte do problema de forma. Não observa e não "
+        "corrige a declaração."
+    )
+    if bar_problem_dimension_source():
+        scope += (
+            " O disco recusa que o nome seja uma das dez (`dimensão`). "
+            "Linha no disco não é acabamento."
+        )
+    return scope
+
+
+# A barra já recusa promover o degrau. Sem isto o
+# context apontava a guia e calava a recusa.
+# Guia no disco não é acabamento.
+BAR_GUIDE = FRAMEWORK / "references/production-bar.md"
+BAR_PROMOTE = re.compile(r"Nenhum comando promove um jogo a um degrau")
+
+
+def bar_guide_refuses_promote(text):
+    return bool(text and BAR_PROMOTE.search(text))
+
+
+def production_bar_promote_source():
+    path = BAR_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_guide_refuses_promote(text):
+        return "references/production-bar.md"
+    return None
+
+
+def production_bar_scope():
+    scope = (
+        "Seleção das dimensões pertinentes ao foco e à etapa, mais o degrau que o próprio projeto declara "
+        "nos documentos listados em `declaration.sources`. O harness lê a declaração e confere só a forma "
+        "dela: não atribui degrau, não mede acabamento e não aprova entrega. Declarar um degrau exige "
+        "observação com condição, evidência e autor — a tabela é a afirmação, não a prova."
+    )
+    if production_bar_promote_source():
+        scope += (
+            " O disco recusa promover o degrau (`promove`). "
+            "Guia no disco não é acabamento."
+        )
+    return scope
 
 
 def production_bar(focus, stage=None, project=None):
@@ -860,17 +5100,83 @@ def production_bar(focus, stage=None, project=None):
         "declaration": declaration,
         "observed": None,
         "assessed": False,
-        "scope": (
-            "Seleção das dimensões pertinentes ao foco e à etapa, mais o degrau que o próprio projeto declara "
-            "nos documentos listados em `declaration.sources`. O harness lê a declaração e confere só a forma "
-            "dela: não atribui degrau, não mede acabamento e não aprova entrega. Declarar um degrau exige "
-            "observação com condição, evidência e autor — a tabela é a afirmação, não a prova."
-        ),
+        "scope": production_bar_scope(),
     }
 
 
+# A receita já recusa que o nome seja API. Sem isto a
+# menção apontava o arquivo e calava a recusa.
+# Vocabulário no disco não é runtime.
+LIFECYCLE_API = re.compile(r"não uma API\s+implementada")
+
+
+def lifecycle_refuses_api(text):
+    return bool(text and LIFECYCLE_API.search(text))
+
+
+def capability_api_source():
+    path = FRAMEWORK / "recipes/lifecycle.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if lifecycle_refuses_api(text):
+        return "recipes/lifecycle.md"
+    return None
+
+
+def capability_mention_scope():
+    scope = (
+        "Menção em arquivo local de inspeção; não executado, não comprovado."
+    )
+    if capability_api_source():
+        scope += (
+            " O disco recusa que o nome seja API (`api`). "
+            "Vocabulário no disco não é runtime."
+        )
+    return scope
+
+
+# A barra já recusa que o determinismo seja capacidade.
+# Sem isto o item desconhecido copiava o estado e calava a recusa.
+# Lista no disco não é ciclo demonstrado.
+BAR_DETERMINISM = re.compile(r"Determinismo não é uma capacidade")
+
+
+def bar_refuses_determinism_capability(text):
+    return bool(text and BAR_DETERMINISM.search(text))
+
+
+def capability_unknown_determinism_source():
+    path = FRAMEWORK / "references/production-bar.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_determinism_capability(text):
+        return "references/production-bar.md"
+    return None
+
+
+def capability_unknown_scope():
+    scope = (
+        "Capacidade ainda não mencionada neste recorte. Não executa "
+        "e não anexa determinismo."
+    )
+    if capability_unknown_determinism_source():
+        scope += (
+            " O disco recusa que o determinismo seja capacidade (`determinismo`). "
+            "Lista no disco não é ciclo demonstrado."
+        )
+    return scope
+
+
 def mention_capabilities(project):
-    found = {name: {"status": "unknown"} for name in CAPABILITIES}
+    found = {name: {"status": "unknown", "scope": capability_unknown_scope()} for name in CAPABILITIES}
     if not project.is_dir():
         return found
     for relative in HINT_FILES:
@@ -890,9 +5196,23 @@ def mention_capabilities(project):
                 found[name] = {
                     "status": "mentioned",
                     "path": relative,
-                    "scope": "Menção em arquivo local de inspeção; não executado, não comprovado.",
+                    "scope": capability_mention_scope(),
                 }
     return found
+
+
+def playable_unplayed(project, areas):
+    # O mesmo atalho do `next`. Jogo que já abre e ainda
+    # não tem recibo não pede auditoria de rascunho.
+    # Lacuna no disco não some — só deixa de mandar
+    # preencher template antes do serve.
+    try:
+        scripts, manager = project_commands(project)
+    except (OSError, ValueError, RecursionError):
+        scripts, manager = {}, None
+    play = play_command(project, scripts, manager)
+    missing = [key for key, area in areas.items() if area["status"] == "not_located"]
+    return fresh_starter_cycle(project, missing, play) and not observation_receipts(project)
 
 
 def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
@@ -1107,43 +5427,154 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     gaps = [key for key, area in areas.items() if area["status"] != "candidate_found"]
     local_instructions = [name for name in INSTRUCTION_FILES if (project / name).is_file() or (project / name).is_dir()] if project.is_dir() else []
     needs_documentation = bool(gaps or issues)
+    waiting = playable_unplayed(project, areas) if project.is_dir() else False
+    require_audit = needs_documentation and not waiting
     notice = None
     if needs_documentation:
         missing = "; ".join(areas[key]["label"] for key in gaps)
         findings = f"Não localizei documentação confirmável para: {missing}." if gaps else "A checagem documental teve cobertura incompleta."
         if gaps and issues:
             findings += " A cobertura da checagem também foi limitada."
-        work = "Vou levantar o código e os registros e organizar a documentação mínima" if project.is_dir() else "Vou documentar a base disponível e a proposta, distinguindo o que ainda não foi implementado"
+        if waiting:
+            work = "O destino já abre. Jogue primeiro; rascunhos de template antes da primeira partida são o atrito. O harness não executa o jogo"
+        elif project.is_dir():
+            work = "Vou levantar o código e os registros e organizar a documentação mínima"
+        else:
+            work = "Vou documentar a base disponível e a proposta, distinguindo o que ainda não foi implementado"
         notice = f"{project.name}: {findings} {work}, preservando os documentos canônicos e registrando as lacunas."
+    areas["art_direction"]["scope"] = art_direction_scope()
+    areas["architecture"]["scope"] = architecture_area_scope()
+    areas["provenance"]["scope"] = provenance_area_scope()
+    areas["qa"]["scope"] = qa_area_scope()
+    candidate_scope = scan_candidate_scope()
+    for area in areas.values():
+        for item in area["candidates"]:
+            item["scope"] = candidate_scope
+    mention_scope = genre_mention_scope()
+    issue_scope = coverage_issue_scope()
+    draft_scope = coverage_draft_scope()
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(),
         "minimum_status": "needs_review" if needs_documentation else "candidates_found",
         "areas": areas, "gaps": gaps, "read_first": read_first,
         "continuity_sources": continuity_sources, "continuity_source_count": continuity_source_count,
-        "genre_mentions": genre_mentions,
+        "genre_mentions": [dict(item, scope=mention_scope) for item in genre_mentions],
         "agent_context": {
             "status": "found" if local_instructions else "not_located",
             "files": local_instructions,
-            "scope": "Instruções persistentes para o agente na raiz do projeto. Não é uma das nove áreas; sem elas, cada sessão reaprende convenções. `template agents` gera um rascunho.",
+            "scope": agent_context_scope(project),
         },
         "coverage": {
             "documents_inspected": inspected, "documents_located": len(documents), "entries_seen": entries_seen,
             "documents_deferred": deferred[:20], "documents_deferred_count": len(deferred),
-            "non_current_documents": non_current[:20], "non_current_document_count": len(non_current),
-            "issues": issues[:20], "issue_count": len(issues), "issues_truncated": len(issues) > 20,
+            "non_current_documents": [dict(item, scope=draft_scope) for item in non_current[:20]], "non_current_document_count": len(non_current),
+            "issues": [dict(item, scope=issue_scope) for item in issues[:20]],
+            "issue_count": len(issues), "issues_truncated": len(issues) > 20,
             "excluded_directory_names": sorted(excluded_dirs),
             "limits": {"entries": max_entries, "documents": max_documents, "bytes_per_document": max_bytes, "depth": 4, "index_links": max_links, "candidates_per_area": 3, "continuity_sources": 5},
+            "scope": coverage_scope(),
         },
-        "next_action": "notify_and_document" if needs_documentation else "continue_requested_task",
+        "next_action": (
+            "defer_until_playable_cycle" if waiting
+            else "notify_and_document" if needs_documentation
+            else "continue_requested_task"
+        ),
         "audit": {
             "policy": "notify_and_proceed", "executed": False,
-            "required": needs_documentation,
+            "required": require_audit,
+            "deferred": waiting,
             "notice": notice,
-            "reason": "Direção do usuário: avisar e iniciar o levantamento/documentação automaticamente; respeitar restrição explícita na conversa atual.",
+            "reason": (
+                "O next já pede jogar primeiro. Lacuna de rascunho depois do start não é auditoria neste turno. --event direction-approved e --stage audit continuam pedindo a base."
+                if waiting else
+                "Direção do usuário: avisar e iniciar o levantamento/documentação automaticamente; respeitar restrição explícita na conversa atual."
+            ),
             "guide": str(FRAMEWORK / "references/project-audit.md"),
+            "scope": audit_scope(),
         },
-        "scope": "Localização lexical limitada, priorizada por índices e nomes; links de navegação não são conteúdo. Marcadores de histórico/referência/rascunho são indícios, não certificação de atualidade. Não rastreia comportamento, executa código, escreve arquivos ou comprova suficiência e qualidade. Ausência significa não localizado neste recorte.",
+        "scope": _scan_scope(project),
     }
+
+
+# O README já aponta o serve. Sem isto o
+# scan lia as áreas e calava o ciclo.
+# Página no disco não é partida jogada.
+SCAN_CYCLE_FILES = ("README.md",)
+SCAN_CYCLE_MARK = re.compile(r"npm run serve")
+
+
+def readme_points_serve(text):
+    return bool(text and SCAN_CYCLE_MARK.search(text))
+
+
+def scan_serve_source(project):
+    project = Path(project)
+    for name in SCAN_CYCLE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if readme_points_serve(text):
+            return name
+    return None
+
+
+def _scan_scope(project):
+    scope = (
+        "Localização lexical limitada, priorizada por índices e nomes; links de navegação não são conteúdo. "
+        "Marcadores de histórico/referência/rascunho são indícios, não certificação de atualidade. "
+        "Não rastreia comportamento, executa código, escreve arquivos ou comprova suficiência e qualidade. "
+        "Ausência significa não localizado neste recorte."
+    )
+    if scan_serve_source(project):
+        scope += (
+            " O disco aponta o serve (`serve`). "
+            "Página no disco não é partida jogada."
+        )
+    return scope
+
+
+# A memória já recusa o adjetivo. Sem isto o scan
+# listava AGENTS.md e calava a recusa.
+# Memória no disco não é acabamento.
+AGENT_MEMORY = "AGENTS.md"
+AGENT_AAA = re.compile(r"Não chame o recorte de AAA")
+
+
+def agents_memory_refuses_aaa(text):
+    return bool(text and AGENT_AAA.search(text))
+
+
+def agent_aaa_source(project):
+    path = Path(project) / AGENT_MEMORY
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if agents_memory_refuses_aaa(text):
+        return AGENT_MEMORY
+    return None
+
+
+def agent_context_scope(project):
+    scope = (
+        "Instruções persistentes para o agente na raiz do projeto. "
+        "Não é uma das nove áreas; sem elas, cada sessão reaprende convenções. "
+        "`template agents` gera a memória a partir do disco — o comando que abre e o que não foi plantado."
+    )
+    if agent_aaa_source(project):
+        scope += (
+            " O disco recusa chamar o recorte de AAA (`agents`). "
+            "Memória no disco não é acabamento."
+        )
+    return scope
 
 
 def select_references(focus, stage, document_minimum):
@@ -1184,6 +5615,49 @@ def suggest_genres(mentions):
     return suggested
 
 
+# O pacote já recusa que teste unitário prove o navegador. Sem isto o
+# context apontava o arquivo e calava a recusa.
+# Pacote no disco não é comportamento no aparelho.
+PACK_BROWSER = re.compile(
+    r"teste unitário não prova\s+comportamento no navegador",
+    re.IGNORECASE,
+)
+
+
+def pack_refuses_unit_as_browser(text):
+    return bool(text and PACK_BROWSER.search(text))
+
+
+def packs_browser_source(kind):
+    pack_name = PLATFORM_PACKS.get(kind)
+    if not pack_name:
+        return None
+    path = FRAMEWORK / f"packs/platforms/{pack_name}.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if pack_refuses_unit_as_browser(text):
+        return f"packs/platforms/{pack_name}.md"
+    return None
+
+
+def packs_scope(kind):
+    scope = (
+        "Pacotes são convenções de plataforma/gênero para orientar leitura e verificação. "
+        "Não substituem AGENTS, a documentação oficial nem o que o projeto realmente faz; "
+        "confirme cada convenção no código."
+    )
+    if packs_browser_source(kind):
+        scope += (
+            " O disco recusa que teste unitário prove o navegador (`navegador`). "
+            "Pacote no disco não é comportamento no aparelho."
+        )
+    return scope
+
+
 def select_packs(kind, genre, mentions):
     pack_name = PLATFORM_PACKS.get(kind)
     platform_path = FRAMEWORK / f"packs/platforms/{pack_name}.md" if pack_name else None
@@ -1193,14 +5667,760 @@ def select_packs(kind, genre, mentions):
         "platform": {
             "kind": kind, "pack": str(platform_path) if platform_path and platform_path.is_file() else None,
             "basis": "identify: marcador de manifesto/engine no diretório do projeto" if kind else "projeto sem marcador reconhecido; núcleo agnóstico apenas",
+            "scope": platform_scope(kind),
         },
         "genre": {
             "name": genre, "pack": str(genre_path) if genre_path and genre_path.is_file() else None,
             "basis": "--genre declarado na conversa" if genre else ("campo Gênero localizado em documento; confirme e passe --genre" if suggested else "não declarado; passe --genre quando o jogo tiver gênero definido"),
-            "suggested": suggested, "mentions": mentions, "available": list(GENRES),
+            "suggested": suggested,
+            "mentions": [
+                {"path": item["path"], "line": item["line"], "value": item["value"]}
+                for item in mentions
+            ],
+            "available": list(GENRES),
+            "scope": genre_scope(genre),
         },
-        "scope": "Pacotes são convenções de plataforma/gênero para orientar leitura e verificação. Não substituem AGENTS, a documentação oficial nem o que o projeto realmente faz; confirme cada convenção no código.",
+        "scope": packs_scope(kind),
     }
+
+
+# O índice já recusa que o pacote certifique capacidade. Sem isto a
+# plataforma apontava o arquivo e calava a recusa.
+# Pacote no disco não é comportamento.
+PACKS_INDEX = FRAMEWORK / "packs/README.md"
+PACKS_CAPACITY = re.compile(r"não certifica capacidade")
+
+
+def packs_refuse_capacity(text):
+    return bool(text and PACKS_CAPACITY.search(text))
+
+
+def platform_capacity_source(kind):
+    if not kind or kind not in PLATFORM_PACKS:
+        return None
+    path = PACKS_INDEX
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if packs_refuse_capacity(text):
+        return "packs/README.md"
+    return None
+
+
+def platform_scope(kind):
+    scope = (
+        "Seleciona o pacote pelo marcador do projeto. "
+        "Não substitui o que o código faz."
+    )
+    if platform_capacity_source(kind):
+        scope += (
+            " O disco recusa que o pacote certifique capacidade (`capacidade`). "
+            "Pacote no disco não é comportamento."
+        )
+    return scope
+
+
+# O mapa já recusa que o pacote seja extração. Sem isto o
+# gênero apontava o arquivo e calava a recusa.
+# Convenção no disco não é repositório executado.
+SOURCES_EXTRACTION = re.compile(r"Não são extração\s+de repositório")
+
+
+def sources_refuse_extraction(text):
+    return bool(text and SOURCES_EXTRACTION.search(text))
+
+
+def genre_extraction_source(genre):
+    if not genre or genre not in GENRES:
+        return None
+    path = FRAMEWORK / "references/sources.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if sources_refuse_extraction(text):
+        return "references/sources.md"
+    return None
+
+
+def genre_scope(genre):
+    scope = (
+        "Seleciona o pacote pelo --genre declarado. "
+        "Não substitui o GDD nem o que o código faz."
+    )
+    if genre_extraction_source(genre):
+        scope += (
+            " O disco recusa que o pacote seja extração (`extração`). "
+            "Convenção no disco não é repositório executado."
+        )
+    return scope
+
+
+# O mapa já recusa que a menção seja mecânica obrigatória.
+# Sem isto o campo copiava o valor e calava a recusa.
+# Campo no disco não é regra do jogo.
+SOURCES_MECHANIC = re.compile(r"mecânica obrigatória")
+
+
+def sources_refuse_obligatory_mechanic(text):
+    return bool(text and SOURCES_MECHANIC.search(text))
+
+
+def genre_mention_mechanic_source():
+    path = FRAMEWORK / "references/sources.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if sources_refuse_obligatory_mechanic(text):
+        return "references/sources.md"
+    return None
+
+
+def genre_mention_scope():
+    scope = (
+        "Campo Gênero localizado no documento. Não classifica e não "
+        "carrega o pacote."
+    )
+    if genre_mention_mechanic_source():
+        scope += (
+            " O disco recusa que a menção seja mecânica obrigatória (`mecânica`). "
+            "Campo no disco não é regra do jogo."
+        )
+    return scope
+
+
+# O roteiro já pede documentar sem consentimento. Sem isto o
+# context apontava o arquivo e calava a política.
+# Roteiro no disco não é base escrita.
+AUDIT_GUIDE = FRAMEWORK / "references/project-audit.md"
+AUDIT_CONSENT = re.compile(
+    r"avisar e começar a documentar,\s*sem pedir\s+consentimento",
+    re.IGNORECASE,
+)
+
+
+def audit_guide_declares(text):
+    return bool(text and AUDIT_CONSENT.search(text))
+
+
+def documentation_audit_source(document_minimum):
+    if not document_minimum:
+        return None
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_guide_declares(text):
+        return "references/project-audit.md"
+    return None
+
+
+# O roteiro já recusa que a checagem seja daemon. Sem isto o
+# audit apontava o arquivo e calava a recusa.
+# Roteiro no disco não é interceptação.
+AUDIT_DAEMON = re.compile(r"não é um daemon nem um hook")
+
+
+def project_audit_refuses_daemon(text):
+    return bool(text and AUDIT_DAEMON.search(text))
+
+
+def audit_daemon_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if project_audit_refuses_daemon(text):
+        return "references/project-audit.md"
+    return None
+
+
+def audit_scope():
+    scope = (
+        "Aviso e levantamento documental. Não executa o jogo e não "
+        "intercepta o host."
+    )
+    if audit_daemon_source():
+        scope += (
+            " O disco recusa que a checagem seja daemon (`daemon`). "
+            "Roteiro no disco não é interceptação."
+        )
+    return scope
+
+
+# O roteiro já recusa que reconstruir documentos comprove intenções. Sem isto o
+# candidato copiava o path e calava a recusa.
+# Candidato no disco não é autoria.
+AUDIT_INTENT = re.compile(r"não comprova intenções autorais")
+
+
+def audit_refuses_rebuilt_intent(text):
+    return bool(text and AUDIT_INTENT.search(text))
+
+
+def scan_candidate_intent_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_refuses_rebuilt_intent(text):
+        return "references/project-audit.md"
+    return None
+
+
+def scan_candidate_scope():
+    scope = (
+        "Path, linha e estado do documento candidato. Não observa o "
+        "jogo e não atribui autoria."
+    )
+    if scan_candidate_intent_source():
+        scope += (
+            " O disco recusa que reconstruir documentos comprove intenções (`intenções`). "
+            "Candidato no disco não é autoria."
+        )
+    return scope
+
+
+# O roteiro já recusa que o local não percorrido seja inexistente. Sem isto o
+# scan contava documentos e calava a recusa.
+# Contagem no disco não é inventário.
+AUDIT_ABSENCE = re.compile(r"não percorrido não equivale\s+a conteúdo inexistente")
+
+
+def audit_refuses_unwalked_absence(text):
+    return bool(text and AUDIT_ABSENCE.search(text))
+
+
+def coverage_absence_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_refuses_unwalked_absence(text):
+        return "references/project-audit.md"
+    return None
+
+
+def coverage_scope():
+    scope = (
+        "Conta documentos localizados, lidos e adiados no recorte. "
+        "Não afirma suficiência nem qualidade."
+    )
+    if coverage_absence_source():
+        scope += (
+            " O disco recusa que o local não percorrido seja inexistente (`inexistente`). "
+            "Contagem no disco não é inventário."
+        )
+    return scope
+
+
+# O mapa já recusa que a cobertura desigual seja acidente.
+# Sem isto o issue copiava o motivo e calava a recusa.
+# Recorte no disco não é falha.
+SOURCES_ACCIDENT = re.compile(r"não é acidente")
+
+
+def sources_refuse_uneven_accident(text):
+    return bool(text and SOURCES_ACCIDENT.search(text))
+
+
+def coverage_issue_accident_source():
+    path = FRAMEWORK / "references/sources.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if sources_refuse_uneven_accident(text):
+        return "references/sources.md"
+    return None
+
+
+def coverage_issue_scope():
+    scope = (
+        "Limite, leitura ou ligação que o recorte não cobriu. Não "
+        "completa o inventário e não observa o jogo."
+    )
+    if coverage_issue_accident_source():
+        scope += (
+            " O disco recusa que a cobertura desigual seja acidente (`acidente`). "
+            "Recorte no disco não é falha."
+        )
+    return scope
+
+
+# A guia já recusa que preencher linhas certifique o jogo.
+# Sem isto o rascunho copiava o estado e calava a recusa.
+# Documento no disco não é o jogo.
+PREPRODUCTION_LINES = re.compile(r"preencher linhas não certifica o jogo")
+
+
+def guide_refuses_lines_as_game(text):
+    return bool(text and PREPRODUCTION_LINES.search(text))
+
+
+def coverage_draft_lines_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_lines_as_game(text):
+        return "references/preproduction.md"
+    return None
+
+
+def coverage_draft_scope():
+    scope = (
+        "Caminho e estado do documento que deixou de ser vigente. "
+        "Não certifica o jogo e não observa a sessão."
+    )
+    if coverage_draft_lines_source():
+        scope += (
+            " O disco recusa que preencher linhas certifique o jogo (`linhas`). "
+            "Documento no disco não é o jogo."
+        )
+    return scope
+
+
+# O contrato já recusa que o scanner certifique tokens. Sem isto a
+# área localizava o documento e calava a recusa.
+# Documento no disco não é aprovação artística.
+SYSTEM_GUIDE = FRAMEWORK / "references/game-design-system.md"
+SYSTEM_TOKENS = re.compile(r"não\s+certifica tokens")
+
+
+def system_refuses_token_certification(text):
+    return bool(text and SYSTEM_TOKENS.search(text))
+
+
+def art_direction_tokens_source():
+    path = SYSTEM_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if system_refuses_token_certification(text):
+        return "references/game-design-system.md"
+    return None
+
+
+def art_direction_scope():
+    scope = (
+        "Localiza o documento da direção. Não compara silhueta e não "
+        "aprova estilo."
+    )
+    if art_direction_tokens_source():
+        scope += (
+            " O disco recusa que o scanner certifique tokens (`tokens`). "
+            "Documento no disco não é aprovação artística."
+        )
+    return scope
+
+
+# O contrato já recusa que a paleta compartilhada seja o sistema. Sem isto o
+# item copiava a chave e calava a recusa.
+# Lista no disco não é contrato.
+SYSTEM_PALETTE = re.compile(r"não é uma paleta compartilhada")
+
+
+def system_refuses_shared_palette(text):
+    return bool(text and SYSTEM_PALETTE.search(text))
+
+
+def art_palette_system_source():
+    path = SYSTEM_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if system_refuses_shared_palette(text):
+        return "references/game-design-system.md"
+    return None
+
+
+def art_palette_scope():
+    scope = (
+        "Nome e origem da paleta listada. Não compara silhueta e não "
+        "aprova o sistema."
+    )
+    if art_palette_system_source():
+        scope += (
+            " O disco recusa que a paleta compartilhada seja o sistema (`paleta`). "
+            "Lista no disco não é contrato."
+        )
+    return scope
+
+
+# A receita já recusa que a mesa seja volume. Sem isto o
+# item copiava a chave e calava a recusa.
+# Lista no disco não é comparação.
+VISUAL_RECIPE = FRAMEWORK / "recipes/visual.md"
+VISUAL_VOLUME = re.compile(r"Mesa no disco não é volume")
+
+
+def recipe_refuses_table_volume(text):
+    return bool(text and VISUAL_VOLUME.search(text))
+
+
+def art_rain_volume_source():
+    path = VISUAL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_table_volume(text):
+        return "recipes/visual.md"
+    return None
+
+
+def art_rain_scope():
+    scope = (
+        "Chave e fonte da mesa de chuva. Não compara em "
+        "movimento e não conta volume."
+    )
+    if art_rain_volume_source():
+        scope += (
+            " O disco recusa que a mesa seja volume (`volume`). "
+            "Lista no disco não é comparação."
+        )
+    return scope
+
+
+# A receita já recusa que o harness infira dependências. Sem isto a
+# área localizava o TDD e calava a recusa.
+# Receita no disco não é decisão.
+ARCHITECTURE_RECIPE = FRAMEWORK / "recipes/architecture.md"
+ARCHITECTURE_DEPS = re.compile(r"não infere dependências")
+
+
+def architecture_refuses_inference(text):
+    return bool(text and ARCHITECTURE_DEPS.search(text))
+
+
+def architecture_deps_source():
+    path = ARCHITECTURE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if architecture_refuses_inference(text):
+        return "recipes/architecture.md"
+    return None
+
+
+def architecture_area_scope():
+    scope = (
+        "Localiza o documento técnico. Não escolhe stack e não "
+        "aprova a decisão."
+    )
+    if architecture_deps_source():
+        scope += (
+            " O disco recusa que o harness infira dependências (`dependências`). "
+            "Receita no disco não é decisão."
+        )
+    return scope
+
+
+# O roteiro já recusa que o recibo presente seja licença. Sem isto a
+# área localizava CREDITS e calava a recusa.
+# Área no disco não é concessão.
+GATES_LICENSE = re.compile(r"recibo presente não é licença")
+
+
+def gates_refuse_present_receipt(text):
+    return bool(text and GATES_LICENSE.search(text))
+
+
+def provenance_license_source():
+    path = FRAMEWORK / "references/gates.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gates_refuse_present_receipt(text):
+        return "references/gates.md"
+    return None
+
+
+def provenance_area_scope():
+    scope = (
+        "Localiza o documento de origem. Não consulta titular e não "
+        "valida licença."
+    )
+    if provenance_license_source():
+        scope += (
+            " O disco recusa que o recibo presente seja licença válida (`licença`). "
+            "Área no disco não é concessão."
+        )
+    return scope
+
+
+# O roteiro já recusa prescrever quantas pessoas. Sem isto a
+# área localizava o QA e calava a recusa.
+# Área no disco não é censo.
+QUALITY_PEOPLE = re.compile(r"não prescreve quantas pessoas")
+
+
+def quality_refuses_people_count(text):
+    return bool(text and QUALITY_PEOPLE.search(text))
+
+
+def qa_people_source():
+    path = FRAMEWORK / "references/quality.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if quality_refuses_people_count(text):
+        return "references/quality.md"
+    return None
+
+
+def qa_area_scope():
+    scope = (
+        "Localiza o documento de QA. Não assiste a sessão e não "
+        "conta jogadores."
+    )
+    if qa_people_source():
+        scope += (
+            " O disco recusa prescrever quantas pessoas (`pessoas`). "
+            "Área no disco não é censo."
+        )
+    return scope
+
+
+def documentation_scope(document_minimum):
+    scope = (
+        "O agente executa a ação e respeita restrições atuais do usuário. "
+        "O comando não escreve documentos, concede aprovação ou certifica sua suficiência."
+    )
+    if documentation_audit_source(document_minimum):
+        scope += (
+            " O disco pede documentar sem consentimento (`audit`). "
+            "Roteiro no disco não é base escrita."
+        )
+    return scope
+
+
+# O processo já nega que documento pronto seja PoC. Sem isto o
+# context apontava o arquivo e calava a recusa.
+# Fonte no disco não é jogo implementado.
+PROCESS_GUIDE = FRAMEWORK / "references/process.md"
+PROCESS_POC = re.compile(r"Documentos prontos não significam PoC executada")
+
+
+def process_denies_ready_docs_are_poc(text):
+    return bool(text and PROCESS_POC.search(text))
+
+
+def continuity_poc_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_denies_ready_docs_are_poc(text):
+        return "references/process.md"
+    return None
+
+
+def continuity_scope():
+    scope = (
+        "Fontes são candidatos, não fila validada. "
+        "O agente resolve next_step antes de responder; o comando não escolhe "
+        "tarefa, infere etapa concluída nem concede autorização a partir de documentos."
+    )
+    if continuity_poc_source():
+        scope += (
+            " O disco nega que documento pronto seja PoC (`process`). "
+            "Fonte no disco não é jogo implementado."
+        )
+    return scope
+
+
+# O processo já recusa que sources_found comprove a fila.
+# Sem isto a fonte copiava o caminho e calava a recusa.
+# Fonte no disco não é backlog.
+CONTINUITY_QUEUE = re.compile(r"`sources_found`\s+não\s+comprova\s+fila\s+atual")
+
+
+def process_refuses_found_as_queue(text):
+    return bool(text and CONTINUITY_QUEUE.search(text))
+
+
+def continuity_source_queue_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_found_as_queue(text):
+        return "references/process.md"
+    return None
+
+
+def continuity_source_scope():
+    scope = (
+        "Caminho, linha, estado e base da fonte candidata. Não resolve "
+        "a fila e não executa o passo."
+    )
+    if continuity_source_queue_source():
+        scope += (
+            " O disco recusa que sources_found comprove fila (`fila`). "
+            "Fonte no disco não é backlog."
+        )
+    return scope
+
+
+# A guia já recusa preencher o checklist. Sem isto o
+# context apontava o arquivo e calava a recusa.
+# Guia no disco não é observação.
+FINISH_GUIDE = FRAMEWORK / "references/aaa-checklist.md"
+FINISH_FILL = re.compile(r"O harness não preenche o checklist")
+
+
+def finish_guide_refuses_fill(text):
+    return bool(text and FINISH_FILL.search(text))
+
+
+def finish_checklist_source():
+    path = FINISH_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if finish_guide_refuses_fill(text):
+        return "references/aaa-checklist.md"
+    return None
+
+
+def finish_scope():
+    scope = (
+        "Núcleo em qualquer escala após um ciclo jogável. "
+        "Produto/AA soma product_groups. Promessa só se o brief prometeu. "
+        "Mercado (CHK-16) nunca reprova jam. Completar o template não certifica. "
+        "O comando não observa o jogo."
+    )
+    if finish_checklist_source():
+        scope += (
+            " O disco recusa preencher o checklist (`checklist`). "
+            "Guia no disco não é observação."
+        )
+    return scope
+
+
+# O processo já recusa que a etapa certifique o progresso. Sem isto o
+# context selecionava o recorte e calava a recusa.
+# Contexto no disco não é degrau.
+PROCESS_PROGRESS = re.compile(r"não certifica progresso")
+
+
+def process_refuses_stage_progress(text):
+    return bool(text and PROCESS_PROGRESS.search(text))
+
+
+def context_progress_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_stage_progress(text):
+        return "references/process.md"
+    return None
+
+
+def context_scope():
+    scope = (
+        "Seleciona leituras do framework para o foco e a etapa. "
+        "Não executa o jogo e não escreve documentos."
+    )
+    if context_progress_source():
+        scope += (
+            " O disco recusa que a etapa certifique o progresso (`progresso`). "
+            "Contexto no disco não é degrau."
+        )
+    return scope
+
+
+# A guia já recusa que a checagem seja validador semântico.
+# Sem isto o issue copiava o parse e calava a recusa.
+# Parse no disco não é o jogo.
+PREPRODUCTION_SEMANTIC = re.compile(r"não é validador semântico de\s+PRD/GDD")
+
+
+def guide_refuses_semantic_validator(text):
+    return bool(text and PREPRODUCTION_SEMANTIC.search(text))
+
+
+def metadata_issue_semantic_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_semantic_validator(text):
+        return "references/preproduction.md"
+    return None
+
+
+def metadata_issue_scope():
+    scope = (
+        "Caminho e motivo do manifesto ilegível. Não valida o "
+        "desenho e não executa o jogo."
+    )
+    if metadata_issue_semantic_source():
+        scope += (
+            " O disco recusa que a checagem seja validador semântico (`semântico`). "
+            "Parse no disco não é o jogo."
+        )
+    return scope
 
 
 def context(project, focus, stage=None, studies_root=None, event="task", root=None, genre=None):
@@ -1219,10 +6439,15 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         scripts, manager = project_commands(project)
     except (OSError, ValueError, RecursionError) as error:
         scripts, manager = {}, None
-        metadata_issues.append({"path": "package.json", "reason": str(error)})
+        metadata_issues.append({
+            "path": "package.json",
+            "reason": str(error),
+            "scope": metadata_issue_scope(),
+        })
     instructions = instruction_files(project)
     foundation = scan(project)
     records = [str(project / relative) for relative in foundation["read_first"]]
+    deferred = bool(foundation["audit"].get("deferred"))
     document_minimum = foundation["audit"]["required"] or event == "direction-approved" or stage == "audit"
     kind = identify(project)
     packs = select_packs(kind, genre, foundation["genre_mentions"])
@@ -1233,6 +6458,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             references.insert(references.index(recipe) + 1 if recipe in references else len(references), pack)
     references = list(dict.fromkeys(references))
     studies = studies_for(focus, STUDIES_ROOT if studies_root is None else studies_root)
+    source_scope = continuity_source_scope()
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(), "kind": kind,
         "focus": focus, "stage": stage, "event": event, "instructions": instructions, "records": records,
@@ -1246,21 +6472,28 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         "production_bar": production_bar(focus, stage, project),
         "continuity": {
             "status": "sources_found" if foundation["continuity_sources"] else "not_located",
-            "sources": [dict(item, path=str(project / item["path"])) for item in foundation["continuity_sources"]],
+            "sources": [
+                dict(item, path=str(project / item["path"]), scope=source_scope)
+                for item in foundation["continuity_sources"]
+            ],
             "source_count": foundation["continuity_source_count"],
             "action": "resolve_and_continue" if event == "resume" else "record_and_present_next_step",
             "next_step": None, "executed": False,
             "guide": str(FRAMEWORK / "references/process.md") + "#continuidade-e-retomada",
             "before_close": "Atualizar o registro canônico e dizer onde chegamos, uma próxima ação concreta, por que vem primeiro e qual evidência a conclui; dependências/decisões só quando reais. Se o objetivo terminou, declarar conclusão sem inventar trabalho.",
             "on_resume": "Ler o registro e a conversa, conferir o estado real, resolver a próxima ação e executá-la dentro do escopo autorizado. Não repetir briefing, auditoria já válida ou pergunta genérica de permissão.",
-            "scope": "Fontes são candidatos, não fila validada. O agente resolve next_step antes de responder; o comando não escolhe tarefa, infere etapa concluída nem concede autorização a partir de documentos.",
+            "scope": continuity_scope(),
         },
         "documentation": {
-            "action": "document_minimum" if document_minimum else "maintain_affected_documents",
+            "action": (
+                "document_minimum" if document_minimum
+                else "defer_until_playable_cycle" if deferred
+                else "maintain_affected_documents"
+            ),
             "executed": False,
             "on_direction_approved": "Aprovação na conversa exige sincronizar a base mínima neste turno, mesmo com todos os candidatos encontrados; use --event direction-approved.",
             "before_close": "Registrar conteúdo e fontes nos documentos canônicos; cobrir cada área mínima com decisão/fato ou lacuna e próxima ação. Referência salva e templates vazios não concluem a documentação.",
-            "scope": "O agente executa a ação e respeita restrições atuais do usuário. O comando não escreve documentos, concede aprovação ou certifica sua suficiência.",
+            "scope": documentation_scope(document_minimum),
         },
         "finish": {
             "guide": str(FRAMEWORK / "references/aaa-checklist.md"),
@@ -1271,7 +6504,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "market_groups": list(FINISH_MARKET),
             "action": "observe_core_on_slice" if stage in ("aaa", "vertical-slice", "qa", "milestone") or focus in ("feel", "audio", "production") else "defer_until_playable_cycle",
             "executed": False,
-            "scope": "Núcleo em qualquer escala após um ciclo jogável. Produto/AA soma product_groups. Promessa só se o brief prometeu. Mercado (CHK-16) nunca reprova jam. Completar o template não certifica. O comando não observa o jogo.",
+            "scope": finish_scope(),
         },
         "studio_assets": sfx_catalog.studio_assets(root),
         "limits": [
@@ -1282,11 +6515,12 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "studies lista catálogos do foco se existirem no irmão Games-Frameworks; ausência não é evidência negativa.",
             "capabilities.mentioned é só token em arquivo de inspeção. Não prova pause, reset, seed nem determinismo.",
             "capabilities.unknown significa não localizado na lista fixa de arquivos de inspeção, não capacidade ausente; rastreie o entrypoint e os consumidores na auditoria.",
-            "Áudio novo: busque em shared/sfx (`sfx search`) antes de baixar. Piso de gravação licenciada; 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.",
+            "Áudio novo: se shared/sfx tiver sons, busque (`sfx search`) antes de baixar. Sem acervo, o starter já fala em public/sfx; sfx search nomeia o stem que casa, sfx info lê a chave e nomeia o stem que o recibo lista e o disco perdeu, roles --fill nomeia o mesmo stem, roles --apply e sfx copy levam bytes e créditos, sfx verify nomeia os stems sem cruzar o que não existe, nomeia o stem que o recibo lista e o disco perdeu e sfx serve recusa. Com sons, sfx serve abre a página de escuta — se ui/ faltar, o harness gera a lista — e sfx verify nomeia o som que o catálogo lista e o disco perdeu. Tocar nessa página não é mix ouvida. Crescer o acervo é `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx info` lê a ficha do acervo ou a chave do stem — o recibo que lista um stem e o disco perdeu não é id desconhecido; se o inspect já mediu o pico, o sfx info nomeia o pico que o inspect já mede — e `sfx export ID --to PASTA` copia bytes e créditos do acervo ou do stem e nomeia o stem que o recibo lista e o disco perdeu; exportar não inventa bytes. Importar e exportar não é ouvir. Piso de gravação licenciada; 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão.",
             "Feel e áudio são focos próprios (`--focus feel`, `--focus audio`). Sem observação em movimento, experience_status permanece not_assessed; scaffold não é vertical slice.",
             "“AAA” neste harness é piso de acabamento da slice, não tier de publisher. Sem feel sincronizado, pacing e repeatability, não use o adjetivo.",
             "Checklist: ver finish no JSON. Jam observa core_groups; produto/AA soma product_groups; promise_groups só se prometidos. `template aaa` não certifica; N/A exige motivo.",
         ],
+        "scope": context_scope(),
     }
 
 
@@ -1295,8 +6529,11 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
 def template(stage, project, output=None):
     if stage not in STAGES:
         raise ValueError("etapa desconhecida")
-    text = (FRAMEWORK / f"assets/templates/{stage}.md").read_text(encoding="utf-8")
-    text = text.replace("{{PROJECT}}", project.name).replace("{{PROJECT_PATH}}", str(project))
+    if stage == "agents":
+        text = agents_template_text(project)
+    else:
+        text = (FRAMEWORK / f"assets/templates/{stage}.md").read_text(encoding="utf-8")
+        text = text.replace("{{PROJECT}}", project.name).replace("{{PROJECT_PATH}}", str(project))
     if output is not None:
         if output.exists() or output.is_symlink():
             raise ValueError("documento existente; adapte a fonte canônica sem sobrescrever")
@@ -1304,6 +6541,44 @@ def template(stage, project, output=None):
         with output.open("x", encoding="utf-8") as document:
             document.write(text)
     return text
+
+
+# O molde já recusa publicar. Sem isto o
+# template emitia rascunho e calava a recusa.
+# Molde no disco não é autorização.
+TEMPLATE_PUBLISH = re.compile(
+    r"não autoriza publicar|não concedida neste template",
+    re.IGNORECASE,
+)
+
+
+def template_refuses_publish(text):
+    return bool(text and TEMPLATE_PUBLISH.search(text))
+
+
+def template_refusal_source(stage):
+    if stage == "agents" or stage not in STAGES:
+        return None
+    path = FRAMEWORK / f"assets/templates/{stage}.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if template_refuses_publish(text):
+        return f"assets/templates/{stage}.md"
+    return None
+
+
+def template_scope(stage):
+    scope = "Template inicial; decisões, revisão e prova continuam pendentes."
+    if template_refusal_source(stage):
+        scope += (
+            " O disco recusa a publicação (`publicar`). "
+            "Molde no disco não é autorização."
+        )
+    return scope
 
 
 # Todo comando que o harness sugere existe para ser copiado e colado. Caminho de
@@ -1320,7 +6595,654 @@ def harness_command(*parts):
 # o `--timeout` inteiro e sai como `failed`. E um benchmark não é o primeiro
 # validador a rodar — só vinha na frente por ordem alfabética.
 LONG_RUNNING = ("serve", "start", "dev", "watch", "preview", "storybook", "docs")
+PLAY_SCRIPTS = ("serve", "start", "dev", "preview")
 VALIDATOR_ORDER = ("test", "check", "lint", "typecheck", "types", "verify", "audit", "build", "budget", "bench")
+BRIEF_IDEA_MARKER = "[quem o jogador é e o que realiza]"
+
+
+def play_script_names(scripts):
+    names = list(scripts)
+    found = []
+    for word in PLAY_SCRIPTS:
+        for name in names:
+            if name == word or name.startswith(f"{word}:") or name.startswith(f"{word}-"):
+                if name not in found:
+                    found.append(name)
+    return found
+
+
+def play_command(project, scripts, manager):
+    names = play_script_names(scripts)
+    if not names or not manager:
+        return None
+    name = names[0]
+    info = scripts[name] if isinstance(scripts, dict) else {}
+    argv = info.get("argv") if isinstance(info, dict) else None
+    body = " ".join(shlex.quote(str(part)) for part in argv) if argv else f"{manager} run {shlex.quote(name)}"
+    return f"cd {shlex.quote(str(project))} && {body}"
+
+
+PACKAGE_INSTALL_KEYS = ("dependencies", "devDependencies", "optionalDependencies")
+
+
+def package_has_dependencies(project):
+    # O start nomeava npm install no starter sem
+    # dependências. O README já recusava o passo.
+    # Lista vazia não é o que instalar. Nomear não instala.
+    package = Path(project) / "package.json"
+    if not package.is_file() or package.is_symlink():
+        return False
+    try:
+        data = json.loads(package.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, UnicodeError):
+        return False
+    if not isinstance(data, dict):
+        return False
+    for key in PACKAGE_INSTALL_KEYS:
+        value = data.get(key)
+        if isinstance(value, dict) and value:
+            return True
+    return False
+
+
+def install_command(project, play=None):
+    # O play pede npm. Sem isto o start mandava o serve
+    # e o disco ainda não tinha módulos. Sem dependências
+    # o passo some — o starter não tem o que instalar.
+    # Nomear não instala.
+    if not isinstance(play, str) or not re.search(r"\bnpm\b", play):
+        return None
+    root = Path(project)
+    package = root / "package.json"
+    modules = root / "node_modules"
+    if not package.is_file() or package.is_symlink():
+        return None
+    if not package_has_dependencies(root):
+        return None
+    if modules.is_dir() and not modules.is_symlink():
+        return None
+    return f"cd {shlex.quote(str(root))} && npm install"
+
+
+# A superfície pedida, não a que o sistema abriu. PORT=0 e listen
+# dinâmico continuam no banner do serve. Nomear não serve.
+DEFAULT_SERVE_PORT = 8080
+
+
+def default_serve_port(env=None):
+    env = os.environ if env is None else env
+    raw = env.get("PORT")
+    if raw in (None, ""):
+        return DEFAULT_SERVE_PORT
+    try:
+        port = int(raw)
+    except (TypeError, ValueError):
+        return DEFAULT_SERVE_PORT
+    if port <= 0:
+        return None
+    return port
+
+
+def serve_script_name(scripts=None, play=None):
+    names = play_script_names(scripts or {})
+    if names:
+        return names[0]
+    if isinstance(play, str) and re.search(r"\bserve\b", play):
+        return "serve"
+    return None
+
+
+def serve_url(scripts=None, play=None, env=None):
+    name = serve_script_name(scripts, play)
+    if name is None:
+        return None
+    if name != "serve" and not name.startswith("serve:") and not name.startswith("serve-"):
+        return None
+    port = default_serve_port(env)
+    if port is None:
+        return None
+    return f"http://localhost:{port}/"
+
+
+# O prompt pedia Abrir sempre. O serve do starter já
+# tenta no terminal. Pedir de novo é cargo-cult.
+# Nomear não abre e não serve.
+SERVE_OPEN_FILES = ("tools/serve.mjs", "tools/serve.js")
+SERVE_OPEN_MARK = ("shouldOpenBrowser", "xdg-open")
+
+
+def serve_opens_browser(project):
+    root = Path(project)
+    if not root.is_dir() or root.is_symlink():
+        return False
+    for relative in SERVE_OPEN_FILES:
+        path = root / relative
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 64000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if any(mark in text for mark in SERVE_OPEN_MARK):
+            return True
+    return False
+
+
+def cycle_opens_browser(project=None, starter=None):
+    if project is not None:
+        return serve_opens_browser(project)
+    if nonempty(starter):
+        return serve_opens_browser(STARTERS_ROOT / starter)
+    return False
+
+
+def browser_surface(url, opens=False):
+    if not url:
+        return ""
+    if opens:
+        return (
+            f"No terminal o serve tenta abrir o navegador. "
+            f"Se não abrir, o endereço é {url} — file:// não carrega. "
+        )
+    return f"Abra {url} no navegador — file:// não carrega. "
+
+
+def note_author(project=None):
+    # Sugestão para o comando colar. Não é quem jogou e não fecha o achado.
+    targets = []
+    if project is not None:
+        path = Path(project)
+        if path.is_dir() and not path.is_symlink():
+            targets.append(["git", "-C", str(path), "config", "user.name"])
+    targets.append(["git", "config", "user.name"])
+    for argv in targets:
+        try:
+            run = subprocess.run(argv, capture_output=True, text=True, timeout=5, check=False)
+        except (OSError, subprocess.TimeoutExpired):
+            continue
+        name = (run.stdout or "").strip()
+        if run.returncode == 0 and nonempty(name):
+            return name
+    env = os.environ.get("GIT_AUTHOR_NAME") or os.environ.get("USER") or os.environ.get("USERNAME")
+    if nonempty(env):
+        return env.strip()
+    return "NOME"
+
+
+def session_command(project, starter=None):
+    project = Path(project)
+    scripts, manager = {}, None
+    if project.is_dir() and not project.is_symlink():
+        try:
+            scripts, manager = project_commands(project)
+        except (OSError, ValueError):
+            scripts, manager = {}, None
+    elif starter:
+        scripts, manager = starter_package_commands(starter)
+    if not manager or "session" not in scripts:
+        return None
+    return project_run_command(project, manager, "session")
+
+
+def note_command(project):
+    parts = ["note", project, "--author", note_author(project), "--note", "o que o verbo sentiu"]
+    if last_run_path(project):
+        parts.append("--from-run")
+    return harness_command(*parts)
+
+
+def playtest_command(project):
+    return harness_command("playtest", project)
+
+
+def playtest_line(playtest):
+    if not playtest:
+        return ""
+    return f"O achado: {playtest}. Só lê. Sem os quatro não é achado. "
+
+
+# Exemplos coláveis do segundo ciclo. Os nomes não existem no starter:
+# nascer o par `noite` (look e chuva no mesmo nome) ou deslocar `dash`
+# é o que o `next` deixa de apontar quando o disco já tem um look, uma
+# chuva ou uma voz deslocada. Look e chuva sozinhos continuam no disco;
+# o par é o caminho que vira `?mood=`.
+CRAFT_EXAMPLES = {
+    "pair": ("noite", "--from", "dusk", "--look", "warmer", "--spawn", "denser"),
+    "look": ("noite", "--from", "dusk", "--as", "warmer"),
+    "table": ("noite", "--from", "spawn", "--as", "denser"),
+    "sfx": ("--from", "dash", "--as", "brighter"),
+}
+STARTER_LOOKS = frozenset({"normal", "contrast", "dusk", "calm"})
+STARTER_TABLES = frozenset({"copy", "palettes", "spawn", "dusk", "calm"})
+CRAFT_LABELS = {"pair": "Par", "look": "Look", "table": "Chuva", "sfx": "Voz"}
+
+
+def project_run_command(project, manager, name, extra=()):
+    argv = [manager, "run", name]
+    if extra:
+        argv.append("--")
+        argv.extend(extra)
+    body = " ".join(shlex.quote(str(part)) for part in argv)
+    return f"cd {shlex.quote(str(project))} && {body}"
+
+
+def starter_package_commands(starter):
+    source = STARTERS_ROOT / starter
+    if not source.is_dir() or source.is_symlink():
+        return {}, None
+    try:
+        return package_commands(source)
+    except (OSError, ValueError):
+        return {}, None
+
+
+def craft_from_scripts(project, scripts, manager):
+    if not manager or not scripts:
+        return {}
+    found = {}
+    for name, extra in CRAFT_EXAMPLES.items():
+        if name in scripts:
+            found[name] = project_run_command(project, manager, name, extra)
+    return found
+
+
+def craft_commands(project, starter=None):
+    project = Path(project)
+    if project.is_dir() and not project.is_symlink():
+        try:
+            scripts, manager = project_commands(project)
+        except (OSError, ValueError):
+            return {}
+        return craft_from_scripts(project, scripts, manager)
+    if not starter:
+        return {}
+    scripts, manager = starter_package_commands(starter)
+    return craft_from_scripts(project, scripts, manager)
+
+
+def cycle_crafted(project):
+    project = Path(project)
+    palettes = project / "data/palettes.json"
+    if palettes.is_file() and not palettes.is_symlink():
+        try:
+            data = json.loads(palettes.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            data = None
+        mapping = data.get("palettes") if isinstance(data, dict) else None
+        if isinstance(mapping, dict) and set(mapping) - STARTER_LOOKS:
+            return True
+    folder = project / "data"
+    if folder.is_dir() and not folder.is_symlink():
+        try:
+            entries = list(folder.iterdir())
+        except OSError:
+            entries = []
+        for path in entries:
+            if path.is_symlink() or not path.is_file() or path.suffix != ".json":
+                continue
+            if path.stem not in STARTER_TABLES:
+                return True
+    sources = project / "public/sfx/sources.json"
+    if sources.is_file() and not sources.is_symlink():
+        try:
+            data = json.loads(sources.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            data = None
+        files = data.get("files") if isinstance(data, dict) else None
+        if isinstance(files, list):
+            for item in files:
+                note = item.get("note") if isinstance(item, dict) else None
+                if isinstance(note, str) and "intenção" in note:
+                    return True
+    return False
+
+
+def cycle_then(project, play, starter=None):
+    then = {
+        "play": play,
+        "note": note_command(project),
+        "lost": harness_command("next", project, "--focus", "feel"),
+    }
+    then.update(craft_commands(project, starter))
+    session = session_command(project, starter)
+    if session:
+        then["session"] = session
+    href = seed_href(project)
+    if href:
+        then["seed"] = href
+        then["invite"] = invite_href(project)
+    install = install_command(project, play)
+    if install:
+        then["install"] = install
+    return then
+
+
+# O roteiro já recusa que o mural seja onboarding. Sem isto o
+# passo de jogar copiava o verbo e calava a recusa.
+# Texto no disco não é a primeira ação.
+QUALITY_ONBOARDING = re.compile(r"bloqueia o jogo não é onboarding")
+
+
+def quality_refuses_mural_onboarding(text):
+    return bool(text and QUALITY_ONBOARDING.search(text))
+
+
+def play_step_onboarding_source():
+    path = QUALITY_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if quality_refuses_mural_onboarding(text):
+        return "references/quality.md"
+    return None
+
+
+def play_step_scope():
+    scope = (
+        "Jogar no próprio dispositivo. Não executa o serve e não observa."
+    )
+    if play_step_onboarding_source():
+        scope += (
+            " O disco recusa que o mural seja onboarding (`onboarding`). "
+            "Texto no disco não é a primeira ação."
+        )
+    return scope
+
+
+# A receita já recusa que o screenshot comprove feel. Sem isto o
+# passo de gravar copiava o note e calava a recusa.
+# Recibo no disco não é peso percebido.
+FEEL_SCREENSHOT = re.compile(r"Screenshot não comprova feel")
+
+
+def feel_refuses_screenshot(text):
+    return bool(text and FEEL_SCREENSHOT.search(text))
+
+
+def note_step_screenshot_source():
+    path = FRAMEWORK / "recipes/feel.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if feel_refuses_screenshot(text):
+        return "recipes/feel.md"
+    return None
+
+
+def note_step_scope():
+    scope = (
+        "Gravar o que o verbo sentiu. Não executa o note e não observa."
+    )
+    if note_step_screenshot_source():
+        scope += (
+            " O disco recusa que o screenshot comprove feel (`screenshot`). "
+            "Recibo no disco não é peso percebido."
+        )
+    return scope
+
+
+# O processo já recusa que o comando abra o jogo. Sem isto o
+# passo de abrir copiava o start e calava a recusa.
+# Nome no disco não é partida.
+PROCESS_OPEN = re.compile(r"Nomear o comando não abre")
+
+
+def process_refuses_open(text):
+    return bool(text and PROCESS_OPEN.search(text))
+
+
+def open_step_source():
+    path = FRAMEWORK / "references/process.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_open(text):
+        return "references/process.md"
+    return None
+
+
+def open_step_scope():
+    scope = (
+        "Abrir o ciclo. Não executa o start e não observa."
+    )
+    if open_step_source():
+        scope += (
+            " O disco recusa que o comando abra o jogo (`abertura`). "
+            "Nome no disco não é partida."
+        )
+    return scope
+
+
+def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, url=None):
+    play_step = {
+        "n": 2,
+        "do": "jogar no próprio dispositivo",
+        "command": play_cmd,
+        "kind": nxt["proposal"]["basis"] if nxt else "playable.unplayed",
+        "executed": False,
+        "scope": play_step_scope(),
+    }
+    if url:
+        play_step["url"] = url
+    if cycle:
+        play_step["verb"] = cycle["verb"]
+        play_step["controls"] = {
+            key: cycle[key]
+            for key in CYCLE_KEYS
+            if key != "verb" and key in cycle
+        }
+    return [
+        {
+            "n": 1,
+            "do": "abrir o ciclo",
+            "command": start_command,
+            "done": exists,
+            "scope": open_step_scope(),
+        },
+        play_step,
+        {
+            "n": 3,
+            "do": "gravar o que o verbo sentiu",
+            "command": then["note"],
+            "executed": False,
+            "scope": note_step_scope(),
+        },
+    ]
+
+
+def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy=None, opens=False, playtest=None):
+    hole = runtime_line(runtime)
+    simulated = session_line(then)
+    if not play:
+        return (
+            hole
+            + simulated
+            + "Sem comando de abrir: identifique o entrypoint e rode `next`. "
+            "O harness não executa o jogo."
+        )
+    seed_line = (
+        f"A última partida no disco abre em {then['seed']}. Seed explícita ignora o hold."
+        if then.get("seed")
+        else ""
+    )
+    invite_line = (
+        f"O convite desta partida abre em {then['invite']}. Nomear o endereço não observa."
+        if then.get("invite")
+        else ""
+    )
+    found = playtest_line(playtest)
+    craft = [key for key in CRAFT_EXAMPLES if then.get(key)]
+    if noted and craft:
+        parts = ["O ciclo já tem um recibo."]
+        for key in craft:
+            parts.append(f"{CRAFT_LABELS[key]}: {then[key]}.")
+        if seed_line:
+            parts.append(seed_line)
+        if invite_line:
+            parts.append(invite_line)
+        if found:
+            parts.append(found.strip())
+        parts.append("O harness não pinta, não chove e não ouve.")
+        parts.append(f"`next` só se você não sabe o que falta: {then['lost']}.")
+        return hole + " ".join(parts)
+    how = cycle_line(cycle, fantasy)
+    extra = " ".join(part for part in (seed_line, invite_line) if part)
+    surface = browser_surface(url, opens)
+    modules = (
+        f"As dependências ainda não estão no disco. Cole e rode: {then['install']}. "
+        if then.get("install")
+        else ""
+    )
+    return (
+        hole
+        + modules
+        + f"O jogo não foi aberto. Cole e rode: {play}. "
+        + simulated
+        + surface
+        + (f"{how} " if how else "")
+        + (f"{extra} " if extra else "")
+        + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
+        + found
+        + "`next` só se o ciclo já correu e você não sabe o que falta."
+    )
+
+
+def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None, runtime=None, fantasy=None, opens=False, playtest=None):
+    if exists:
+        return cycle_prompt(play, then, cycle, noted, url, runtime, fantasy, opens, playtest)
+    hole = runtime_line(runtime)
+    simulated = session_line(then)
+    surface = browser_surface(url, opens)
+    how = cycle_line(cycle, fantasy)
+    return (
+        hole
+        + f"O ciclo ainda não existe. Cole e rode: {start_command}. "
+        f"Depois, no próprio dispositivo: {play}. "
+        + simulated
+        + surface
+        + (f"{how} " if how else "")
+        + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
+        + playtest_line(playtest)
+        + "O harness não cria a pasta, não abre o jogo e não joga."
+    )
+
+
+def fresh_starter_cycle(project, missing, play):
+    # Dois jeitos de nascer jogável: o `init` planta os seis rascunhos do
+    # ciclo (e some as lacunas) ou o `start` não planta nenhum. Exigir os
+    # seis só para o `next` dizer "não os preencha" era o atrito. Qualquer
+    # rascunho já escrito — ou um dos seis sem marcador — encerra o atalho.
+    if not play:
+        return False
+    docs = project / "docs"
+    present = []
+    drafted = 0
+    if docs.is_dir() and not docs.is_symlink():
+        for stage in FRESH_DRAFTS:
+            path = docs / f"{stage}.md"
+            if not path.is_file() or path.is_symlink():
+                continue
+            present.append(stage)
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                return False
+            if not DRAFT_MARKERS.search(text):
+                return False
+            drafted += 1
+    if not present:
+        return True
+    if missing:
+        return False
+    return drafted == len(FRESH_DRAFTS)
+
+
+SURFACE_IDEA_LIMIT = 72
+
+
+def seed_brief_idea(project, phrase):
+    path = Path(project) / "docs/brief.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    text = path.read_text(encoding="utf-8")
+    if BRIEF_IDEA_MARKER in text:
+        text = text.replace(BRIEF_IDEA_MARKER, phrase, 1)
+    else:
+        text = text.replace("## Visão e jogador", f"## Visão e jogador\n\n- Fantasia em uma frase: {phrase}.", 1)
+    path.write_text(text, encoding="utf-8")
+    return "docs/brief.md"
+
+
+def surface_fantasy(phrase):
+    if not nonempty(phrase):
+        return None
+    text = phrase.strip()
+    if len(text) <= SURFACE_IDEA_LIMIT:
+        return text
+    return f"{text[: SURFACE_IDEA_LIMIT - 3].rstrip()}..."
+
+
+def read_copy_fantasy(project):
+    path = Path(project) / "data/copy.json"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    return surface_fantasy(data.get("fantasy"))
+
+
+def resolve_fantasy(idea=None, project=None):
+    if nonempty(idea):
+        return surface_fantasy(idea)
+    if project is not None:
+        return read_copy_fantasy(project)
+    return None
+
+
+def seed_copy_fantasy(project, phrase):
+    path = Path(project) / "data/copy.json"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    surface = surface_fantasy(phrase)
+    if surface is None:
+        return None
+    data["fantasy"] = surface
+    schema = data.get("schema")
+    if not isinstance(schema, int) or schema < 2:
+        data["schema"] = 2
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return "data/copy.json"
+
+
+def seed_idea(project, idea):
+    if not nonempty(idea):
+        return {"brief": None, "surface": None}
+    phrase = idea.strip()
+    return {
+        "brief": seed_brief_idea(project, phrase),
+        "surface": seed_copy_fantasy(project, phrase),
+    }
 
 
 def validators(names):
@@ -1392,6 +7314,89 @@ def starter_manifest(starter):
     return manifest
 
 
+CYCLE_KEYS = ("verb", "door", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn", "mood", "seed", "speed", "invite")
+# O manifesto já declara o relógio. Sem isto o
+# guide lia o ciclo e calava o `speed`.
+# Frase no disco não é partida observada.
+CYCLE_SPEED_MARK = re.compile(r'"speed"\s*:\s*"')
+
+
+def cycle_names_speed(text):
+    return bool(text and CYCLE_SPEED_MARK.search(text))
+
+
+def guide_speed_source(starter):
+    if not nonempty(starter):
+        return None
+    path = STARTERS_ROOT / starter / STARTER_MANIFEST
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        if path.stat().st_size > 400_000:
+            return None
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    if cycle_names_speed(text):
+        return f"assets/starters/{starter}/{STARTER_MANIFEST}"
+    return None
+
+
+def starter_cycle(starter):
+    if not nonempty(starter):
+        return None
+    try:
+        manifest = starter_manifest(starter)
+    except ValueError:
+        return None
+    raw = manifest.get("cycle") if isinstance(manifest, dict) else None
+    if not isinstance(raw, dict):
+        return None
+    cycle = {}
+    for key in CYCLE_KEYS:
+        value = raw.get(key)
+        if nonempty(value) and isinstance(value, str):
+            cycle[key] = value.strip()
+    return cycle if "verb" in cycle else None
+
+
+def cycle_line(cycle, fantasy=None):
+    parts = []
+    phrase = surface_fantasy(fantasy)
+    if phrase:
+        parts.append(f"Fantasia: {phrase}.")
+    if not cycle:
+        return " ".join(parts)
+    parts.append(f"Verbo: {cycle['verb']}.")
+    if cycle.get("door"):
+        parts.append(f"Porta: {cycle['door']}.")
+    if cycle.get("move"):
+        parts.append(f"Mover {cycle['move']}.")
+    if cycle.get("dash"):
+        parts.append(f"Avançar {cycle['dash']}.")
+    if cycle.get("bank"):
+        parts.append(f"Guardar {cycle['bank']}.")
+    if cycle.get("hand"):
+        parts.append(f"Uma mão: {cycle['hand']}.")
+    if cycle.get("touch"):
+        parts.append(f"Toque: {cycle['touch']}.")
+    if cycle.get("pad"):
+        parts.append(f"Controle: {cycle['pad']}.")
+    if cycle.get("look"):
+        parts.append(f"Look: {cycle['look']}.")
+    if cycle.get("spawn"):
+        parts.append(f"Chuva: {cycle['spawn']}.")
+    if cycle.get("mood"):
+        parts.append(f"Par: {cycle['mood']}.")
+    if cycle.get("seed"):
+        parts.append(f"Seed: {cycle['seed']}.")
+    if cycle.get("speed"):
+        parts.append(f"Relógio: {cycle['speed']}.")
+    if cycle.get("invite"):
+        parts.append(f"Convite: {cycle['invite']}.")
+    return " ".join(parts)
+
+
 # Substituição em passo único, do valor mais longo para o mais curto, para que
 # o texto recém-inserido nunca seja candidato da próxima troca.
 def substitute(text, pairs):
@@ -1430,7 +7435,196 @@ def substitute_document(path, pairs):
     return substitute(text, pairs)
 
 
-def init(destination, starter, title=None, documents=True):
+# Os seis rascunhos que o `start` não copia. art-bible do starter
+# sozinho não conta — o start fresco já o traz e a memória não
+# afirma que o ciclo foi plantado.
+CYCLE_DRAFT_FILES = ("brief.md", "gdd.md", "mda.md", "tdd.md", "devlog.md", "qa.md")
+
+
+def cycle_drafts_planted(project):
+    docs = Path(project) / "docs"
+    return any((docs / name).is_file() for name in CYCLE_DRAFT_FILES)
+
+
+def project_cycle(project):
+    path = Path(project) / STARTER_MANIFEST
+    if not path.is_file():
+        return None
+    try:
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    raw = manifest.get("cycle") if isinstance(manifest, dict) else None
+    if not isinstance(raw, dict):
+        return None
+    cycle = {}
+    for key in CYCLE_KEYS:
+        value = raw.get(key)
+        if nonempty(value) and isinstance(value, str):
+            cycle[key] = value.strip()
+    return cycle if "verb" in cycle else None
+
+
+def agents_template_text(project):
+    # O esqueleto listava GDD. O `start` já escreve a memória
+    # honesta; o `next` em not_located ainda gerava o molde.
+    # Template não é rascunho do ciclo.
+    destination = Path(project)
+    try:
+        scripts, manager = project_commands(destination)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
+    play = play_command(destination, scripts, manager)
+    url = serve_url(scripts, play)
+    fantasy = resolve_fantasy(project=destination) if destination.is_dir() else None
+    return agents_memory_text(
+        destination,
+        play,
+        documents=cycle_drafts_planted(destination),
+        url=url,
+        cycle=project_cycle(destination),
+        fantasy=fantasy,
+    )
+
+
+def agents_memory_text(destination, play=None, starter=None, documents=False, idea=None, url=None, cycle=None, fantasy=None, opens=False):
+    # O `start` não planta brief/GDD. O molde antigo listava esses
+    # caminhos como canônicos — na pasta do start isso mentia. Memória
+    # do agente não é rascunho do ciclo.
+    destination = Path(destination)
+    cycle = cycle or starter_cycle(starter) or {}
+    fantasy = fantasy if fantasy is not None else resolve_fantasy(idea, destination)
+    verb = cycle.get("verb") or cycle.get("door")
+    lines = [
+        f"# AGENTS — {destination.name}",
+        "",
+        f"Projeto: {destination}",
+        "Status: memória do agente. Não é GDD nem rascunho do ciclo.",
+        "",
+        "## Executar e verificar",
+        "",
+    ]
+    if nonempty(play):
+        install = install_command(destination, play)
+        if install:
+            lines.append(f"- Antes de rodar: `{install}`. Nomear não instala.")
+        lines.append(f"- Rodar o jogo: `{play}`.")
+        if nonempty(url):
+            lines.append(f"- Superfície: {url}. Nomear não serve.")
+            if opens:
+                lines.append("- No terminal o serve tenta abrir o navegador. Nomear não abre.")
+    else:
+        lines.append("- Rodar o jogo: o manifesto do projeto declara o comando.")
+    lines.append(f"- De novo, sem executar: `{harness_command('play', destination)}`.")
+    lines.append(f"- O que o verbo sentiu: `{note_command(destination)}`.")
+    # O start já nomeava o serve e o note. Sem isto a
+    # próxima sessão calava o leitor que o `next` já
+    # aponta. Só lê. Sem os quatro não é achado.
+    lines.append(
+        f"- O achado: `{playtest_command(destination)}`. Só lê. Sem os quatro não é achado."
+    )
+    if destination.joinpath("package.json").is_file():
+        lines.append(f"- Validadores: `cd {shlex.quote(str(destination))} && npm test`. Build verde não prova diversão.")
+    lines.append("- Não publicar, não apagar saves e não rodar `python3 tools/design-sfx.py` sem `--from`.")
+    lines.extend(["", "## O que este jogo já é", ""])
+    if starter:
+        lines.append(f"- Starter: `{starter}`. Partir dele é REUSE.")
+    if nonempty(verb):
+        lines.append(f"- Verbo: {verb}")
+    if nonempty(cycle.get("door")) and cycle.get("door") != verb:
+        lines.append(f"- Porta: {cycle['door']}")
+    if nonempty(fantasy):
+        lines.append(f"- Fantasia: {fantasy} — a frase não muda o verbo.")
+    if documents:
+        lines.append(
+            "- Rascunhos do ciclo estão em `docs/` com marcador de preenchimento. "
+            "Template não é decisão."
+        )
+    else:
+        lines.append(
+            "- Brief, GDD, QA e os outros rascunhos do ciclo não foram plantados. "
+            "`start --docs` ou `init` os cria. Não os invente para fechar auditoria."
+        )
+    lines.extend([
+        "",
+        "## Como trabalhar",
+        "",
+        "- Um salto por vez. REUSE → ADAPT → CREATE. CREATE pede lacuna escrita.",
+        "- Nenhum comando do harness joga, ouve ou sente o jogo no dispositivo.",
+        "- Leitores de observação continuam falsos. Não chame o recorte de AAA.",
+        "",
+    ])
+    return "\n".join(lines)
+
+
+def write_agents_memory(destination, play=None, starter=None, documents=False, idea=None, url=None, cycle=None, fantasy=None, opens=False):
+    path = Path(destination) / "AGENTS.md"
+    if path.exists() or path.is_symlink():
+        return None
+    path.write_text(
+        agents_memory_text(destination, play, starter, documents, idea, url, cycle, fantasy, opens),
+        encoding="utf-8",
+    )
+    return "AGENTS.md"
+
+
+def init_scope(documents, idea=None):
+    # O `start` chama `init` com documents=False. Afirmar rascunhos, brief ou
+    # draft_only nesse ramo mentia no JSON que o agente lê depois de criar.
+    copied = (
+        "Copiou o starter, trocou os valores que `starter.json` declara"
+    )
+    if documents:
+        drafts = (
+            " e criou rascunhos a partir dos templates. Escreveu AGENTS.md "
+            "com o comando que abre, o note e o playtest; não é GDD. "
+            "O playtest só lê. O ciclo já abre: o primeiro "
+            "comando apontado é o que serve o jogo, não o que preenche os rascunhos. "
+            "`open` e `url` nomeiam o mesmo serve; o `prompt` também sai em stderr. "
+        )
+        scan = "`scan` ainda reporta `draft_only` nas áreas sem decisão. "
+        planted = (
+            "`--idea` entra no brief como frase e, se houver `data/copy.json`, na "
+            "abertura e no aviso do primeiro ciclo. O brief continua rascunho. "
+            if nonempty(idea)
+            else ""
+        )
+    else:
+        drafts = (
+            " sem plantar os rascunhos do ciclo. Escreveu AGENTS.md com o "
+            "comando que abre, o note e o playtest; não é GDD nem rascunho. "
+            "O playtest só lê. `start` faz o mesmo; "
+            "`init` sem `--no-docs` ou `start --docs` cria os rascunhos. O ciclo "
+            "já abre: o primeiro comando apontado é o que serve o jogo. "
+            "`open` e `url` nomeiam o mesmo serve; o `prompt` também sai em stderr. "
+        )
+        scan = (
+            "`scan` ainda reporta lacuna nas áreas sem candidato; "
+            "`areas.not_located` não bloqueia quem já abre. "
+        )
+        planted = (
+            "`--idea` entra na abertura se houver `data/copy.json`; o brief só nasce "
+            "se os rascunhos forem plantados. "
+            if nonempty(idea)
+            else ""
+        )
+    scope = (
+        copied + drafts
+        + "Documento vigente que o starter já trouxe (art-bible) não é reescrito. "
+        + scan + planted
+        + "A frase na tela não muda o verbo. O starter é material de "
+        "ADAPT, não uma engine nem uma base aprovada; o comando não executa o jogo, não instala "
+        "dependências e não avalia a proposta."
+    )
+    if starter_module_source():
+        scope += (
+            " O disco declara o módulo (`type`). "
+            "Tipo no disco não é runtime instalado."
+        )
+    return scope
+
+
+def init(destination, starter, title=None, documents=True, idea=None):
     available = starters()
     if starter not in available:
         raise ValueError(f"starter desconhecido: {starter}; disponíveis: {', '.join(available) or 'nenhum'}")
@@ -1471,6 +7665,8 @@ def init(destination, starter, title=None, documents=True):
         relative = path.relative_to(source).as_posix()
         if relative == STARTER_MANIFEST:
             continue
+        if any(part in INIT_COPY_SKIP for part in path.relative_to(source).parts):
+            continue
         target = destination / path.relative_to(source)
         if path.is_dir():
             target.mkdir(parents=True, exist_ok=True)
@@ -1490,12 +7686,49 @@ def init(destination, starter, title=None, documents=True):
     if documents:
         for stage in INIT_DOCUMENTS:
             output = destination / "docs" / f"{stage}.md"
+            # O starter pode trazer um documento vigente (art-bible). Sobrescrever
+            # com o template apagaria a decisão e o `template` já recusa destino
+            # existente — pular é o que impede o init de quebrar e de rebaixar.
+            if output.exists():
+                continue
             template(stage, destination, output)
             drafts.append(output.relative_to(destination).as_posix())
-        if not (destination / "AGENTS.md").exists():
-            template("agents", destination, destination / "AGENTS.md")
-            drafts.append("AGENTS.md")
-    manager = package_commands(destination)[1]
+    planted = seed_idea(destination, idea)
+    try:
+        scripts, manager = project_commands(destination)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
+    play = play_command(destination, scripts, manager)
+    url = serve_url(scripts)
+    cycle = starter_cycle(starter)
+    fantasy = resolve_fantasy(idea, destination)
+    opens = cycle_opens_browser(destination, starter)
+    # O start não planta brief. Sem isto a próxima sessão
+    # reaprendia o serve e o template agents listava GDD
+    # que não existia. Memória do agente não é rascunho.
+    memory = write_agents_memory(
+        destination, play, starter, documents, idea, url, cycle, fantasy, opens,
+    )
+    if memory and documents:
+        drafts.append(memory)
+    commands = []
+    if play:
+        commands.append(play)
+    # O mapa é start → jogar → note. Sem isto o init
+    # apontava um segundo `next --focus feel` e o
+    # passo 3 sumia. O `play` já diz que o próximo
+    # comando é note. then.lost continua o next.
+    commands.append(note_command(destination))
+    then = cycle_then(destination, play, starter)
+    runtime = node_runtime(play)
+    # O start já nomeava a superfície. Sem isto o init
+    # plantava e calava — quem segue o caminho com
+    # rascunhos tinha de achar o play depois. Nomear
+    # não serve e não observa.
+    prompt = cycle_prompt(
+        play, then, cycle, False, url, runtime, fantasy, opens,
+        playtest_command(destination),
+    )
     return {
         "schema_version": 1,
         "project": str(destination),
@@ -1505,24 +7738,496 @@ def init(destination, starter, title=None, documents=True):
         "files": files,
         "documents": drafts,
         "document_status": "draft",
+        "idea": idea.strip() if nonempty(idea) else None,
+        "brief": planted["brief"],
+        "surface": planted["surface"],
         "substitutions": applied,
         "read_next": [
             str(FRAMEWORK / "references/production-bar.md"),
             str(FRAMEWORK / "references/preproduction.md"),
             str(destination / "README.md"),
         ],
-        "next_commands": [
-            f"{manager or 'npm'} test" if manager else "node --test",
-            harness_command("scan", destination),
-            harness_command("next", destination),
-        ],
+        "next_commands": commands,
+        "play": play,
+        "open": play,
+        "url": url,
+        "runtime": runtime,
+        "then": then,
+        "fantasy": fantasy,
+        "cycle": cycle,
+        "prompt": prompt,
+        "executed": False,
+        "scope": init_scope(documents, idea),
+    }
+
+
+def start_project(destination=None, starter=None, title=None, idea=None, documents=False, cwd=None):
+    named = destination is None
+    if destination is None:
+        destination = start_destination_from_idea(idea, cwd=cwd)
+    else:
+        destination = Path(destination)
+    available = starters()
+    chosen = starter or (available[0] if available else None)
+    created = False
+    init_report = None
+    planted = {"brief": None, "surface": None}
+    if not destination.exists() or (
+        destination.is_dir() and not destination.is_symlink() and not any(destination.iterdir())
+    ):
+        if not chosen:
+            raise ValueError("nenhum starter disponível neste repositório")
+        init_report = init(destination, chosen, title, documents, idea)
+        created = True
+        planted = {"brief": init_report.get("brief"), "surface": init_report.get("surface")}
+    elif destination.exists() and not destination.is_dir():
+        raise ValueError("destino existente; escolha um caminho novo")
+    elif nonempty(idea):
+        planted = seed_idea(destination, idea)
+    proposal = next_step(destination, "feel")
+    try:
+        scripts, manager = project_commands(destination)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
+    play = play_command(destination, scripts, manager)
+    url = serve_url(scripts)
+    then = cycle_then(destination, play, chosen)
+    cycle = starter_cycle(chosen)
+    noted = bool(observation_receipts(destination))
+    start_parts = ["start", destination]
+    if chosen:
+        start_parts.extend(["--starter", chosen])
+    if nonempty(idea):
+        start_parts.extend(["--idea", idea.strip()])
+    start_command = harness_command(*start_parts)
+    steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True, url=url)
+    runtime = node_runtime(play)
+    fantasy = resolve_fantasy(idea, destination)
+    report = {
+        "schema_version": 1,
+        "project": str(destination),
+        "created": created,
+        "starter": init_report["starter"] if init_report else None,
+        "idea": idea.strip() if nonempty(idea) else None,
+        "fantasy": fantasy,
+        "brief": planted["brief"],
+        "surface": planted["surface"],
+        "cycle": cycle,
+        "play": play,
+        "open": play,
+        "url": url,
+        "session": then.get("session"),
+        "runtime": runtime,
+        "steps": steps,
+        "init": init_report,
+        "next": proposal,
+        "then": then,
+        "noted": noted,
+        "named": named,
+        "suggest": str(suggested_start_target(idea, cwd=cwd)) if named else None,
+        "prompt": cycle_prompt(
+            play, then, cycle, noted, url, runtime, fantasy,
+            cycle_opens_browser(destination, chosen),
+            playtest_command(destination),
+        ),
+        "executed": False,
         "scope": (
-            "Copiou o starter, trocou os valores que `starter.json` declara e criou rascunhos a partir dos "
-            "templates. Os documentos estão vazios de decisão: `scan` vai reportar `draft_only` até que cada área "
-            "receba fato, hipótese ou lacuna com próxima ação. O starter é material de ADAPT, não uma engine nem "
-            "uma base aprovada; o comando não executa o jogo, não instala dependências e não avalia a proposta."
+            "Caminho ideia→ciclo: cria o projeto se o destino estiver livre e "
+            "aponta o comando que abre o jogo. `open` é o play — o comando de "
+            "agora, depois do start. `play` continua o mesmo valor, para quem "
+            "já lia essa chave. `url` nomeia a superfície pedida; nomear não "
+            "serve, não abre e não observa. Se o serve tenta abrir o "
+            "navegador, o prompt nomeia a tentativa. Sem o marcador, pede "
+            "Abrir. Nomear não abre. O banner do serve continua a "
+            "porta depois do listen. `steps` é o mesmo mapa de três passos do "
+            "guide, com o passo 1 feito. Sem caminho, `--idea` nomeia "
+            "a pasta — ao lado do framework se o start corre de dentro desta "
+            "árvore — e cria. `guide --idea` continua só no comando, não no "
+            "disco. Se o starter declara o verbo e "
+            "as teclas, o prompt as nomeia — inclusive a porta, o cluster de "
+            "uma mão, o toque, o controle e as queries de look, chuva, par, "
+            "seed e convite, se o starter as declara. Não "
+            "executa o jogo. O `prompt` também sai em stderr; o JSON "
+            "fica no stdout. Depois de uma "
+            "partida, a página grava o recibo se você escrever; o próximo "
+            "comando do harness continua `note`, não `next`. "
+            "O prompt nomeia o `playtest` que o `AGENTS.md` já cita. Só lê. "
+            "Sem os quatro não é achado. Sem `then.playtest`. Nomear o "
+            "leitor não observa. "
+            "`then` já nomeia par, look, chuva e voz se o projeto declara essas "
+            "ferramentas; depois de um recibo, o prompt as aponta. Se o disco "
+            "tem last-run com seed, `then` aponta a seed e o convite; "
+            "nomear o endereço não observa. Ferramenta "
+            "no disco não é alguém de fora nem mix ouvido. Não "
+            "instala dependências e não avalia a proposta. Se o play pede "
+            "npm, o `package.json` tem dependências e `node_modules` falta, "
+            "`then.install` nomeia `npm install`. Sem dependências a chave "
+            "some. Nomear não instala. `--idea` entra na "
+            "abertura se houver `data/copy.json` e o prompt nomeia `Fantasia:` "
+            "à parte de `Verbo:`. O brief só nasce com `--docs`; "
+            "sem ele o `start` não planta rascunhos. A frase na tela não "
+            "muda o verbo. `runtime` lê o `node` do PATH se o play pede "
+            "npm ou node; não executa o serve. `usable` é só o binário. "
+            "`session` aponta a partida simulada se o manifesto a declara; "
+            "o prompt a nomeia. Não executa e não observa."
         ),
     }
+    if pair_birth_source(destination):
+        report["scope"] += (
+            " O disco nasce look e chuva no mesmo nome (`pair`). "
+            "Ferramenta no disco não é alguém de fora."
+        )
+    return report
+
+
+def play_cycle(destination=None, starter=None):
+    if destination is None:
+        raise ValueError(missing_destination_hint())
+    dest = Path(destination)
+    if dest.is_symlink() or not dest.is_dir() or not (dest / "package.json").is_file():
+        raise ValueError(missing_game_hint())
+    available = starters()
+    chosen = starter or (available[0] if available else "canvas-arcade")
+    try:
+        scripts, manager = project_commands(dest)
+    except (OSError, ValueError):
+        scripts, manager = {}, None
+    asked = play_command(dest, scripts, manager)
+    play = asked or (
+        f"cd {shlex.quote(str(dest))} && npm run serve"
+    )
+    url = serve_url(scripts)
+    then = cycle_then(dest, play, chosen)
+    cycle = starter_cycle(chosen)
+    noted = bool(observation_receipts(dest))
+    proposal = next_step(dest, "feel")
+    start_command = harness_command("start", dest, "--starter", chosen)
+    steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True, url=url)
+    runtime = node_runtime(play)
+    fantasy = resolve_fantasy(project=dest)
+    return {
+        "schema_version": 1,
+        "command": "play",
+        "project": str(dest),
+        "play": play,
+        "open": play,
+        "url": url,
+        "session": then.get("session"),
+        "runtime": runtime,
+        "then": then,
+        "cycle": cycle,
+        "fantasy": fantasy,
+        "prompt": cycle_prompt(
+            play, then, cycle, noted, url, runtime, fantasy,
+            cycle_opens_browser(dest, chosen),
+            playtest_command(dest),
+        ),
+        "steps": steps,
+        "noted": noted,
+        "executed": False,
+        "scope": play_scope(dest),
+    }
+
+
+def play_scope(project):
+    scope = (
+        "Aponta o comando que abre o jogo e a superfície pedida. Não "
+        "executa, não cria e não joga. Sem caminho, o único jogo do "
+        "laboratório basta; dois pedem o caminho. `open` é o play. "
+        "`url` nomeia localhost e a porta pedida; nomear não serve. "
+        "Se o serve tenta abrir o navegador, o prompt nomeia a "
+        "tentativa. Sem o marcador, pede Abrir. Nomear não abre. "
+        "Com tela, o avanço abre a porta. Depois "
+        "de uma partida, a página grava o recibo se você escrever; o "
+        "próximo comando do harness continua `note`, não `next`. "
+        "O prompt nomeia o `playtest` que o `AGENTS.md` já cita. Só lê. "
+        "Sem os quatro não é achado. Sem `then.playtest`. Nomear o "
+        "leitor não observa. "
+        "Se o disco tem last-run com seed, `then` aponta a seed e o "
+        "convite; nomear o endereço não observa. `session` aponta a "
+        "partida simulada se o manifesto a declara; o prompt a nomeia. "
+        "Não executa e não observa. Se o play pede npm, o "
+        "`package.json` tem dependências e `node_modules` falta, "
+        "`then.install` nomeia `npm install`. Sem dependências a chave "
+        "some. Nomear não instala. `runtime` lê o `node` "
+        "do PATH se o play pede npm ou node; não executa o serve. "
+        "O `prompt` também "
+        "sai em stderr; o JSON fica no stdout. `executed` fica falso."
+    )
+    if play_production_source(project):
+        scope += (
+            " O disco recusa produção (`produção`). "
+            "Serve no disco não é publicação."
+        )
+    return scope
+
+
+def here_project(explicit=None, root=None):
+    # Sem destino, o mapa usa o diretório atual só se ele for um jogo
+    # fora desta árvore. Dentro do framework o comando sem argumentos
+    # continua o convite a começar — não o starter como se fosse o seu.
+    if explicit is not None:
+        return resolve(explicit, root or ROOT)
+    cwd = Path.cwd().resolve()
+    framework = FRAMEWORK.resolve()
+    if cwd == framework or cwd.is_relative_to(framework):
+        return None
+    if cwd.is_dir() and not cwd.is_symlink() and (cwd / "package.json").is_file():
+        return cwd
+    return None
+
+
+def is_fs_root(path):
+    path = Path(path).resolve()
+    return path.parent == path
+
+
+def playable_neighbors(root, framework=None):
+    # Filhos diretos do laboratório. Não entra no framework — o starter
+    # não é o seu jogo — e não varre a raiz do disco.
+    framework = Path(framework or FRAMEWORK).resolve()
+    root = Path(root).resolve()
+    if is_fs_root(root):
+        return []
+    if root == framework or root.is_relative_to(framework):
+        home = framework.parent
+        if is_fs_root(home):
+            return []
+    else:
+        home = root
+    found = []
+    try:
+        children = sorted(home.iterdir(), key=lambda item: item.name)
+    except OSError:
+        return []
+    for path in children:
+        if not path.is_dir() or path.is_symlink() or path.name.startswith("."):
+            continue
+        target = path.resolve()
+        if target == framework or target.is_relative_to(framework):
+            continue
+        if path.name in SKIP:
+            continue
+        if not (path / "package.json").is_file():
+            continue
+        if identify(path) != "package.json":
+            continue
+        found.append(target)
+    return found
+
+
+def resolve_project_destination(explicit=None, root=None):
+    dest = here_project(explicit, root)
+    if explicit is not None or dest is not None:
+        return dest
+    found = playable_neighbors(root or ROOT)
+    if len(found) == 1:
+        return found[0]
+    if len(found) > 1:
+        names = ", ".join(path.name for path in found)
+        raise ValueError(missing_destination_hint(names))
+    return None
+
+
+# O 0.9.137 nasceu neste nome. Os verbos do ciclo depois do play
+# usam o mesmo resolvedor; o alias evita partir os testes que já o leem.
+resolve_play_destination = resolve_project_destination
+
+
+def require_project_destination(explicit=None, root=None):
+    dest = resolve_project_destination(explicit, root)
+    if dest is None:
+        raise ValueError(missing_destination_hint())
+    return dest
+
+
+# Teto do nome derivado da frase. Mais que isso vira caminho ilegível;
+# menos obriga a inventar o resto. A pasta só existe depois do `start`.
+IDEA_SLUG_LIMIT = 48
+# A recusa explicava --idea e calava o comando que o README
+# já imprime. Nomear não cria.
+START_IDEA_EXAMPLE = "atravessar estilhaços para guardar a corrente"
+
+
+def start_idea_command(idea=None):
+    phrase = idea.strip() if isinstance(idea, str) and idea.strip() else START_IDEA_EXAMPLE
+    return harness_command("start", "--idea", phrase)
+
+
+def missing_destination_hint(names=None):
+    command = start_idea_command()
+    if names:
+        return f"sem destino: {names}. passe o caminho ou rode {command}"
+    return f"sem destino: passe o caminho ou rode {command}"
+
+
+def missing_game_hint():
+    return f"sem jogo: rode {start_idea_command()} ou passe o caminho do projeto"
+
+
+def idea_slug(idea, limit=IDEA_SLUG_LIMIT):
+    if not isinstance(idea, str) or not idea.strip():
+        return None
+    folded = unicodedata.normalize("NFKD", idea.strip().casefold())
+    folded = "".join(ch for ch in folded if not unicodedata.combining(ch))
+    text = re.sub(r"[^a-z0-9]+", "-", folded).strip("-")
+    if not text:
+        return None
+    return text[:limit].strip("-") or None
+
+
+def suggested_start_target(idea, cwd=None, framework=None):
+    slug = idea_slug(idea)
+    if not slug:
+        return None
+    here = Path(cwd or Path.cwd()).resolve()
+    root = Path(framework or FRAMEWORK).resolve()
+    # Dentro desta árvore o mapa sem destino não usa o chão, e uma pasta
+    # filha também não vira `here`. O nome fica ao lado do framework.
+    if here == root or here.is_relative_to(root):
+        return Path("..") / slug
+    return Path(slug)
+
+
+def start_destination_from_idea(idea, cwd=None, framework=None):
+    target = suggested_start_target(idea, cwd=cwd, framework=framework)
+    if target is None:
+        raise ValueError(missing_destination_hint())
+    here = Path(cwd or Path.cwd()).resolve()
+    return (here / target).resolve()
+
+
+def require_guide_idea(project, idea, cwd=None):
+    # O mapa sem destino devolvia `start '<destino>'` com saída 0 na raiz
+    # do framework — o primeiro passo quebrava. A recusa explicava
+    # --idea e calava o comando que o README já imprime. Subpastas
+    # (starter incluído) e a API `guide_cycle` continuam pedindo o
+    # mapa sem frase. Recusar cedo não cria e não executa.
+    if project is not None:
+        return
+    here = Path(cwd or Path.cwd()).resolve()
+    if here != FRAMEWORK.resolve():
+        return
+    if suggested_start_target(idea, cwd=cwd, framework=FRAMEWORK) is not None:
+        return
+    raise ValueError(missing_destination_hint())
+
+
+def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
+    available = starters()
+    chosen = starter or (available[0] if available else "canvas-arcade")
+    dest = Path(destination) if destination is not None else None
+    exists = bool(
+        dest is not None
+        and dest.is_dir()
+        and not dest.is_symlink()
+        and (dest / "package.json").is_file()
+    )
+    phrase = idea.strip() if nonempty(idea) else None
+    suggested = suggested_start_target(phrase, cwd=cwd) if dest is None else None
+    start_target = dest if dest is not None else (suggested or Path("<destino>"))
+    start_parts = ["start", start_target, "--starter", chosen]
+    if phrase:
+        start_parts.extend(["--idea", phrase])
+    play = None
+    nxt = None
+    url = None
+    if exists:
+        try:
+            scripts, manager = project_commands(dest)
+        except (OSError, ValueError):
+            scripts, manager = {}, None
+        play = play_command(dest, scripts, manager)
+        url = serve_url(scripts)
+        nxt = next_step(dest, "feel")
+    else:
+        starter_scripts, _starter_manager = starter_package_commands(chosen)
+        url = serve_url(starter_scripts)
+    named = dest if dest is not None else suggested
+    play_fallback = (
+        f"cd {shlex.quote(str(named))} && npm run serve"
+        if named is not None
+        else "npm run serve"
+    )
+    next_target = named if named is not None else Path("<destino>")
+    play_cmd = play or play_fallback
+    then = cycle_then(next_target, play_cmd, chosen)
+    cycle = starter_cycle(chosen)
+    start_command = harness_command(*start_parts)
+    noted = bool(exists and observation_receipts(dest))
+    steps = cycle_steps(start_command, play_cmd, then, cycle, nxt, exists, url)
+    runtime = node_runtime(play_cmd)
+    fantasy = resolve_fantasy(phrase, dest if exists else None)
+    return {
+        "schema_version": 1,
+        "command": "guide",
+        "executed": False,
+        "here": False,
+        "idea": phrase,
+        "fantasy": fantasy,
+        "starter": chosen,
+        "path": str(dest) if dest is not None else None,
+        "suggest": str(suggested) if suggested is not None else None,
+        "exists": exists,
+        "cycle": cycle,
+        "then": then,
+        "noted": noted,
+        "open": start_command if not exists else play_cmd,
+        "url": url,
+        "session": then.get("session"),
+        "runtime": runtime,
+        "prompt": guide_prompt(
+            exists, start_command, play_cmd, then, cycle, noted, url, runtime, fantasy,
+            cycle_opens_browser(dest if exists else None, chosen),
+            playtest_command(next_target),
+        ),
+        "steps": steps,
+        "scope": guide_scope(chosen),
+    }
+
+
+def guide_scope(starter):
+    scope = (
+        "Três passos ideia→ciclo: start, jogar, note. `open` é o comando "
+        "de agora — o start se o destino ainda não existe, o play se "
+        "já existe. `url` nomeia a superfície pedida; nomear não serve. "
+        "Se o serve tenta abrir o navegador, o prompt nomeia a "
+        "tentativa. Sem o marcador, pede Abrir. Nomear não abre. "
+        "`prompt` o nomeia para colar e também sai em "
+        "stderr; o JSON fica no stdout. Se o starter declara "
+        "o verbo e as teclas, o prompt e o passo 2 as nomeiam — inclusive a porta. Sem destino, a frase "
+        "nomeia a pasta no comando do start — ao lado do framework se o "
+        "mapa corre de dentro desta árvore; no diretório atual se corre "
+        "de fora. `guide --idea` continua só no comando, não no disco. "
+        "O prompt nomeia `Fantasia:` à parte de `Verbo:` quando há frase "
+        "ou `copy.json`; a frase não muda o verbo. "
+        "`then` nomeia par, look, chuva e voz quando o projeto — ou o "
+        "starter, se o destino ainda não existe — declara essas "
+        "ferramentas. Se declara `session`, `then` a aponta. Se o disco "
+        "tem last-run com seed, `then` aponta a seed e o convite; "
+        "nomear o endereço não observa. Nomear o ofício não pinta, não chove e não ouve. O autor do `note` é "
+        "sugestão do git ou do ambiente, não quem jogou. "
+        "`next` fica para quando o ciclo já correu e você não sabe o "
+        "que falta. O prompt nomeia o `playtest` que o `AGENTS.md` já "
+        "cita. Só lê. Sem os quatro não é achado. Sem `then.playtest`. "
+        "Nomear o leitor não observa. Sem destino, se o diretório atual é um jogo fora "
+        "do framework, o mapa usa esse caminho. Não cria o projeto, "
+        "não abre o jogo e não avalia a proposta. `session` aponta a "
+        "partida simulada se o manifesto a declara; o prompt a nomeia. "
+        "Não executa e não observa. Se o play pede npm, o "
+        "`package.json` tem dependências e `node_modules` falta, "
+        "`then.install` nomeia `npm install`. Sem dependências a chave "
+        "some. Nomear não instala. `runtime` lê o `node` "
+        "do PATH se o play pede npm ou node; não executa o serve. "
+        "Passos 2 e 3 "
+        "permanecem `executed` falsos mesmo quando o destino já existe."
+    )
+    if guide_speed_source(starter):
+        scope += (
+            " O disco nomeia o relógio (`speed`). "
+            "Frase no disco não é partida observada."
+        )
+    return scope
 
 
 def tool_report(name, args=("--version",), timeout=15):
@@ -1537,8 +8242,240 @@ def tool_report(name, args=("--version",), timeout=15):
     return {"path": path, "version": lines[0].strip() if lines else None}
 
 
+STARTER_NODE_MAJOR = 20
+
+# O package já pede Node. Sem isto o doctor
+# lia a major do PATH e calava o engines.
+# Pedido no disco não é binário no PATH.
+STARTER_PACKAGE = "package.json"
+STARTER_ENGINES = re.compile(
+    r'"engines"\s*:\s*\{[^{}]*"node"\s*:',
+    re.DOTALL,
+)
+
+
+def package_asks_node(text):
+    return bool(text and STARTER_ENGINES.search(text))
+
+
+def starter_engines_source():
+    if not STARTERS_ROOT.is_dir() or STARTERS_ROOT.is_symlink():
+        return None
+    for name in starters():
+        path = STARTERS_ROOT / name / STARTER_PACKAGE
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if package_asks_node(text):
+            return f"assets/starters/{name}/{STARTER_PACKAGE}"
+    return None
+
+
+# O manifesto já declara as trocas. Sem isto o
+# doctor lia a integridade e calava o campo.
+# Manifesto no disco não é projeto criado.
+STARTER_SUBSTITUTIONS = re.compile(r'"substitutions"\s*:\s*\[')
+# O package já declara o módulo. Sem isto o
+# init copiava o manifesto e calava o `type`.
+# Tipo no disco não é runtime instalado.
+PACKAGE_MODULE = re.compile(r'"type"\s*:\s*"module"')
+
+
+def manifest_declares_substitutions(text):
+    return bool(text and STARTER_SUBSTITUTIONS.search(text))
+
+
+def package_declares_module(text):
+    return bool(text and PACKAGE_MODULE.search(text))
+
+
+def starter_module_source():
+    if not STARTERS_ROOT.is_dir() or STARTERS_ROOT.is_symlink():
+        return None
+    for name in starters():
+        path = STARTERS_ROOT / name / STARTER_PACKAGE
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if package_declares_module(text):
+            return f"assets/starters/{name}/{STARTER_PACKAGE}"
+    return None
+
+
+def starter_substitutions_source():
+    if not STARTERS_ROOT.is_dir() or STARTERS_ROOT.is_symlink():
+        return None
+    for name in starters():
+        path = STARTERS_ROOT / name / STARTER_MANIFEST
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if manifest_declares_substitutions(text):
+            return f"assets/starters/{name}/{STARTER_MANIFEST}"
+    return None
+
+
+def node_major(version):
+    if not isinstance(version, str) or not version.strip():
+        return 0
+    match = re.match(r"^v?(\d+)", version.strip())
+    return int(match.group(1)) if match else 0
+
+
+def node_runtime(play=None):
+    asked = bool(isinstance(play, str) and re.search(r"\b(npm|node)\b", play))
+    report = tool_report("node")
+    version = report["version"]
+    major = node_major(version)
+    usable = (not asked) or major >= STARTER_NODE_MAJOR
+    return {
+        "schema_version": 1,
+        "node": version,
+        "major": major or None,
+        "need": STARTER_NODE_MAJOR if asked else None,
+        "asked": asked,
+        "usable": usable,
+        "executed": False,
+        "scope": (
+            "Presença e major do `node` no PATH. Não executa o serve, não "
+            "instala e não observa o jogo. `usable` é só o binário; não é "
+            "partida, mix nem dispositivo."
+        ),
+    }
+
+
+def runtime_line(runtime):
+    if not runtime or not runtime.get("asked") or runtime.get("usable"):
+        return ""
+    need = runtime.get("need") or STARTER_NODE_MAJOR
+    if not runtime.get("node"):
+        return f"Node {need}+ ausente: o serve não sobe. "
+    return f"Node {runtime['node']} no PATH: o starter pede {need}+. "
+
+
+def session_line(then):
+    command = then.get("session") if then else None
+    if not nonempty(command):
+        return ""
+    return f"Sessão: {command}. Simulação não é partida observada. "
+
+
 def skill_targets(root):
     return [root / ".agents/skills/game-dev/SKILL.md", root / ".claude/skills/game-dev/SKILL.md"]
+
+
+# A skill já recusa que AAA seja tier de publisher. Sem isto o
+# atalho copiava o hash e calava a recusa.
+# Atalho no disco não é orçamento.
+SKILL_FILE = FRAMEWORK / "SKILL.md"
+SKILL_PUBLISHER = re.compile(r"não tier de publisher")
+
+
+def skill_refuses_publisher_tier(text):
+    return bool(text and SKILL_PUBLISHER.search(text))
+
+
+def skill_target_publisher_source():
+    path = SKILL_FILE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if skill_refuses_publisher_tier(text):
+        return "SKILL.md"
+    return None
+
+
+def skill_target_scope():
+    scope = (
+        "Caminho, vigência e symlink do atalho da skill. Não copia a "
+        "skill e não cria o projeto."
+    )
+    if skill_target_publisher_source():
+        scope += (
+            " O disco recusa que AAA seja tier de publisher (`publisher`). "
+            "Atalho no disco não é orçamento."
+        )
+    return scope
+
+
+# O mapa já recusa que a ausência seja evidência negativa.
+# Sem isto o check copiava o estado e calava a recusa.
+# Lista no disco não é laboratório.
+SOURCES_MAP = FRAMEWORK / "references/sources.md"
+STUDIES_ABSENCE = re.compile(r"não é evidência\s+negativa")
+
+
+def map_refuses_absence_as_evidence(text):
+    return bool(text and STUDIES_ABSENCE.search(text))
+
+
+def doctor_check_absence_source():
+    path = SOURCES_MAP
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if map_refuses_absence_as_evidence(text):
+        return "references/sources.md"
+    return None
+
+
+def doctor_check_scope():
+    scope = (
+        "Nome, exigência e estado da ferramenta. Não instala e não "
+        "cria o projeto."
+    )
+    if doctor_check_absence_source():
+        scope += (
+            " O disco recusa que a ausência seja evidência negativa (`ausência`). "
+            "Lista no disco não é laboratório."
+        )
+    return scope
+
+
+# O README já imprime o exemplo. Sem isto o
+# doctor.then colava <fantasia> e calava a frase.
+# Frase no then não é pasta criada.
+README_FILE = FRAMEWORK / "README.md"
+
+
+def readme_prints_idea_example(text):
+    return bool(text and START_IDEA_EXAMPLE and START_IDEA_EXAMPLE in text)
+
+
+def doctor_idea_source():
+    path = README_FILE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_prints_idea_example(text):
+        return "README.md"
+    return None
+
+
+def doctor_guide_idea():
+    return START_IDEA_EXAMPLE if doctor_idea_source() else "<fantasia>"
 
 
 def doctor(root):
@@ -1562,11 +8499,11 @@ def doctor(root):
         None if version >= (3, 10) else "Instale Python 3.10 ou mais recente.",
     )
     node = tool_report("node")
-    node_major = int(re.sub(r"^v?(\d+).*", r"\1", node["version"])) if node["version"] else 0
+    major = node_major(node["version"])
     add(
-        "node", False, node_major >= 20,
+        "node", False, major >= STARTER_NODE_MAJOR,
         node["version"] or "ausente",
-        None if node_major >= 20 else "Node 20+ é exigido pelo starter canvas-arcade e pelos validadores de package.json.",
+        None if major >= STARTER_NODE_MAJOR else "Node 20+ é exigido pelo starter canvas-arcade e pelos validadores de package.json.",
     )
     git = tool_report("git")
     add("git", False, bool(git["path"]), git["version"] or "ausente", "Sem git, `verify` registra versão nula no recibo.")
@@ -1595,11 +8532,12 @@ def doctor(root):
     add(
         "starters", False, bool(available),
         ", ".join(available) or "nenhum",
-        "Sem starter, `init` não tem de onde partir e REUSE não tem candidato local.",
+        "Sem starter, `start --idea` não tem de onde partir e REUSE não tem candidato local.",
     )
-    # `init` só falha na hora de copiar; aqui a divergência entre o manifesto e
-    # os arquivos do starter é diagnosticável antes de alguém tentar criar um
-    # projeto, que é quando ela custaria caro.
+    # O primeiro comando da skill não ensina `init`: o laboratório vazio
+    # segue `start --idea`. `init` só falha na hora de copiar; aqui a
+    # divergência entre o manifesto e os arquivos do starter é
+    # diagnosticável antes de alguém tentar criar um projeto.
     broken = []
     for name in available:
         try:
@@ -1630,6 +8568,7 @@ def doctor(root):
             "path": str(target),
             "status": state,
             "link": target.is_symlink() or None,
+            "scope": skill_target_scope(),
         })
     current = [item for item in installed if item["status"] == "current"]
     stale = [item for item in installed if item["status"] != "current"]
@@ -1680,16 +8619,45 @@ def doctor(root):
     add(
         "shared/sfx", False, library.is_dir(),
         str(library) if library.is_dir() else "ausente",
-        "Sem esse acervo o catálogo vem vazio; `sfx search` não é erro, só não tem o que listar.",
+        "Sem esse acervo o catálogo vem vazio; `sfx search` nomeia o stem do starter que casa com o termo. Arquivo no disco não é mix ouvido.",
     )
 
     blocking = [check["name"] for check in checks if check["required"] and check["status"] != "ok"]
+    ready = not blocking
+    empty = not projects
+    then = doctor_then(ready, available, empty)
+    check_scope = doctor_check_scope()
+    for item in checks:
+        item["scope"] = check_scope
+    scope = (
+        "Presença e versão de ferramentas, presença dos arquivos deste repositório e conteúdo dos atalhos da skill no host. "
+        "Com starter e laboratório sem jogo, `then.guide` aponta o mapa "
+        "com `--idea`. Sem frase a raiz recusa. "
+        "Não instala nada, não copia a skill, não cria o projeto, não executa o jogo e não comprova que um projeto funciona."
+    )
+    if starter_engines_source():
+        scope += (
+            " O disco nomeia o engines (`engines`). "
+            "Pedido no disco não é binário no PATH."
+        )
+    if starter_substitutions_source():
+        scope += (
+            " O disco declara as substituições (`substitutions`). "
+            "Manifesto no disco não é projeto criado."
+        )
+    if doctor_idea_source():
+        scope += (
+            " O disco imprime o exemplo que o then cola (`exemplo`). "
+            "Frase no then não é pasta criada."
+        )
     return {
         "schema_version": 1,
         "framework": str(FRAMEWORK),
         "root": str(root),
-        "ready": not blocking,
+        "ready": ready,
         "blocking": blocking,
+        "empty": empty,
+        "then": then,
         "checks": checks,
         "skill_targets": installed,
         "starters": available,
@@ -1697,11 +8665,167 @@ def doctor(root):
         "stages": list(STAGES),
         "genres": list(GENRES),
         "known_markers": [marker for marker, _ in ENGINE_MARKERS],
-        "scope": (
-            "Presença e versão de ferramentas, presença dos arquivos deste repositório e conteúdo dos atalhos da skill no host. "
-            "Não instala nada, não copia a skill, não executa o jogo e não comprova que um projeto funciona."
-        ),
+        "scope": scope,
     }
+
+
+# A ambição já recusa que o harness seja motor. Sem isto o
+# then apontava o mapa e calava a recusa.
+# Convite no then não é runtime.
+AMBITION_ENGINE = re.compile(r"não é um motor AAA")
+
+
+def ambition_refuses_engine(text):
+    return bool(text and AMBITION_ENGINE.search(text))
+
+
+def doctor_then_engine_source():
+    path = FRAMEWORK / "references/ambition.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if ambition_refuses_engine(text):
+        return "references/ambition.md"
+    return None
+
+
+def doctor_then_scope():
+    scope = (
+        "Convite ao mapa ideia→ciclo. Não cria o projeto e não executa o jogo."
+    )
+    if doctor_then_engine_source():
+        scope += (
+            " O disco recusa que o harness seja motor (`motor`). "
+            "Convite no then não é runtime."
+        )
+    return scope
+
+
+def doctor_then(ready, starters, empty):
+    # Sem jogo e com starter, o primeiro comando aponta o mapa. Com jogo,
+    # `play` sem caminho já resolve. Sem starter não há o que mapear.
+    # Sem `prompt`: o CLI do doctor não escreve stderr.
+    if not ready or not starters or not empty:
+        return None
+    # Sem --idea o guide na raiz do framework recusa. Apontar o
+    # comando nu era o primeiro passo quebrado depois do doctor.
+    # O README já imprime o exemplo; <fantasia> calava a frase.
+    report = {"guide": harness_command("guide", "--idea", doctor_guide_idea())}
+    report["scope"] = doctor_then_scope()
+    return report
+
+
+# O processo já pede uma ação recomendada. Sem isto o
+# next propunha e calava o pedido.
+# Proposta no disco não é autorização.
+NEXT_PROCESS = FRAMEWORK / "references/process.md"
+NEXT_ACTION = re.compile(r"uma ação recomendada")
+
+
+def process_asks_one_action(text):
+    return bool(text and NEXT_ACTION.search(text))
+
+
+def next_action_source():
+    path = NEXT_PROCESS
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_asks_one_action(text):
+        return "references/process.md"
+    return None
+
+
+def next_scope():
+    scope = (
+        "Proposta ordenada por dependência, derivada só do que é observável no disco. "
+        "Não é fila validada, não conhece a conversa, a direção do usuário nem o backlog, "
+        "e não concede autorização. "
+        "O agente confronta a proposta com o pedido real e decide; `alternatives` existe para ser escolhida."
+    )
+    if next_action_source():
+        scope += (
+            " O disco pede uma ação recomendada (`ação`). "
+            "Proposta no disco não é autorização."
+        )
+    return scope
+
+
+# O roteiro já recusa que o comando crie o jogo. Sem isto a
+# proposta copiava a ação e calava a recusa.
+# Proposta no disco não é pasta criada.
+PREPRODUCTION_CREATE = re.compile(r"não preenche design")
+
+
+def preproduction_refuses_create(text):
+    return bool(text and PREPRODUCTION_CREATE.search(text))
+
+
+def proposal_create_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if preproduction_refuses_create(text):
+        return "references/preproduction.md"
+    return None
+
+
+def proposal_scope():
+    scope = (
+        "Uma ação derivada do disco. Não executa o comando e não cria o projeto."
+    )
+    if proposal_create_source():
+        scope += (
+            " O disco recusa que o comando crie o jogo (`criação`). "
+            "Proposta no disco não é pasta criada."
+        )
+    return scope
+
+
+# O processo já recusa fabricar tarefa para cumprir o formato.
+# Sem isto a alternativa copiava a ação e calava a recusa.
+# Lista no disco não é backlog.
+PROCESS_TASK = re.compile(r"não fabrique uma tarefa")
+
+
+def process_refuses_task(text):
+    return bool(text and PROCESS_TASK.search(text))
+
+
+def alternative_task_source():
+    path = FRAMEWORK / "references/process.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_task(text):
+        return "references/process.md"
+    return None
+
+
+def alternative_scope():
+    scope = (
+        "Outra ação derivada do disco. Não executa o comando e não "
+        "fabrica backlog."
+    )
+    if alternative_task_source():
+        scope += (
+            " O disco recusa que a alternativa fabrique tarefa (`fabricação`). "
+            "Lista no disco não é backlog."
+        )
+    return scope
 
 
 def next_step(project, focus="create", studies_root=None):
@@ -1721,10 +8845,10 @@ def next_step(project, focus="create", studies_root=None):
 
     if not payload["exists"]:
         propose(
-            f"Criar o projeto em {project} a partir de um starter e adaptá-lo à proposta",
+            f"Criar o projeto em {project} a partir de um starter e abrir o ciclo",
             "Sem destino no disco não há candidato para REUSE, e qualquer decisão de design fica sem consumidor.",
-            "O jogo abre, `npm test` passa e o README descreve a decisão característica desta proposta.",
-            [harness_command("init", project, "--starter", starters()[0] if starters() else "NOME_DO_STARTER")],
+            "O jogo abre, o verbo da proposta foi jogado uma vez e o brief registra o que muda — ou a lacuna.",
+            [harness_command("start", project, "--starter", starters()[0] if starters() else "NOME_DO_STARTER")],
             "exists=false",
         )
     elif payload["kind"] is None:
@@ -1737,15 +8861,244 @@ def next_step(project, focus="create", studies_root=None):
         )
     missing = [key for key, area in areas.items() if area["status"] == "not_located"]
     labels = lambda keys: ", ".join(areas[key]["label"] for key in keys)
+    play = play_command(project, payload["scripts"], payload["package_manager"])
     # Não localizado, rascunho e histórico são três problemas diferentes, e todos
     # aparecem em `gaps`. Propor os três de uma vez repetiria a mesma tarefa.
-    if missing:
+    # Jogo que já abre não espera template: o buraco só bloqueia quem ainda
+    # não tem comando de jogar. Senão o `start` teria de plantar sete
+    # rascunhos só para o `next` recusar preenchê-los.
+    if missing and not play:
         propose(
             "Avisar as lacunas e documentar as áreas não localizadas: " + labels(missing),
             "A política do estúdio é documentar sem pedir um segundo consentimento; sem essa base as mesmas decisões se repetem a cada sessão.",
             "Cada área tem decisão com fonte, hipótese identificada ou lacuna com motivo e próxima ação.",
             [harness_command("context", project, "--focus", focus, "--event", "direction-approved")],
             "areas.not_located",
+        )
+    noted = bool(observation_receipts(project))
+    fresh = fresh_starter_cycle(project, missing, play) and not noted
+    if fresh:
+        propose(
+            "Abrir o ciclo do starter e escrever o que a proposta muda no verbo",
+            "O destino já é um jogo que abre. Com tela, o avanço abre a porta; "
+            "sem tela o headless já joga. Rascunhos de template antes da primeira "
+            "partida são o atrito que este passo existe para cortar. O `start` "
+            "não os planta. O harness não executa o jogo.",
+            "O ciclo correu uma vez, e o brief (ou um recibo de observação) registra o que "
+            "esta proposta muda no verbo — ou a lacuna, se ainda não souber.",
+            [play, note_command(project)],
+            "playable.unplayed",
+        )
+    craft_cmds = craft_commands(project)
+    wants_craft = bool(noted and craft_cmds and not cycle_crafted(project))
+    if wants_craft:
+        propose(
+            "Deslocar o par, o look, a chuva ou a voz com as ferramentas que o projeto já declara",
+            "O ciclo já tem um recibo. O par nasce look e chuva no mesmo nome "
+            "e vira ?mood=. Look, chuva e voz sozinhos continuam no disco. "
+            "Ferramenta no disco não é alguém de fora nem mix ouvido. "
+            "O harness não pinta, não chove e não ouve.",
+            "Nasceu um look, uma chuva ou uma voz deslocada — ou a lacuna está "
+            "escrita. consistent, enough e heard continuam pendentes.",
+            [craft_cmds[key] for key in CRAFT_EXAMPLES if key in craft_cmds],
+            "cycle.craft",
+        )
+    roles = roles_reading(project)
+    if roles["empty"]:
+        sample = ", ".join(f"`{name}`" for name in roles["empty"][:4])
+        extra = " e mais" if len(roles["empty"]) > 4 else ""
+        commands = [harness_command("roles", project, "--fill")]
+        can_apply = roles["catalog_exists"] or any(
+            sfx_catalog.find_local_stem(name) for name in roles["empty"]
+        )
+        if can_apply:
+            commands.append(harness_command("roles", project, "--fill", "--apply"))
+        propose(
+            f"Preencher os papéis de áudio declarados e vazios: {sample}{extra}",
+            "O verbo já dispara esses papéis. Arquivo ausente não é silêncio "
+            "deliberado — silêncio deliberado é o papel fora da declaração. "
+            "O harness não ouve o som e não aprova mixagem.",
+            "Cada papel declarado tem um arquivo no disco (public/sfx ou "
+            "equivalente), ou o papel saiu da declaração.",
+            commands,
+            "audio.roles",
+        )
+    feel = feel_reading(project)
+    if feel["unobserved"]:
+        sample = ", ".join(f"`{item['key']}`" for item in feel["constants"][:4])
+        extra = " e mais" if len(feel["constants"]) > 4 else ""
+        propose(
+            f"Registrar o que o verbo sentiu numa partida ({sample}{extra})",
+            "Há constantes de feel no código e nenhum recibo de observação no "
+            "projeto. Constante nomeada não é peso percebido. O harness não joga.",
+            "Existe um `note` (ou `record --kind observation`) sob o projeto, "
+            "com cenário, role e o que mudou (ou não) no verbo — ou a lacuna, "
+            "se ainda não souber.",
+            [
+                harness_command("feel", project),
+                # O then.note já anexa o candidato. Sem isto o next
+                # do feel calava o last-run e o ofício pedia a nota
+                # sem a partida. Recibo sem corrida não é felt.
+                note_command(project),
+            ],
+            "feel.unobserved",
+        )
+    playtest = playtest_reading(project)
+    wants_invite = bool(noted and not playtest.get("invite"))
+    if wants_invite:
+        propose(
+            "Escrever o convite para quem nunca viu o jogo",
+            "O ciclo já tem um recibo de quem fez. A curva com quem nunca "
+            "viu o jogo continua pendente. `/?invite=1` some a tabela. "
+            "Página no disco não é alguém de fora e não sobe pacing. "
+            "O harness não assiste.",
+            "Existe docs/playtest/invite.md. observed e outsider continuam "
+            "falsos até alguém que não fez o jogo jogar e escrever o achado.",
+            [harness_command("playtest", project, "--invite")],
+            "playtest.invite",
+        )
+    if playtest["unstructured"]:
+        propose(
+            "Escrever o achado de playtest no formato problema, evidência, hipótese e medição",
+            "Há observação (ou um qa.md vigente) e nenhum achado com os quatro "
+            "campos. `playtest` só lê. A página do convite (`/?invite=1#finding`) e "
+            "`note --field` escrevem. Sem o convite o âncora some. "
+            "O serve nu não abre o painel. O comando nomeia o endereço. "
+            "Nota de partida não é métrica. "
+            "last-run.json é candidato, não causa. O harness não assistiu "
+            "à sessão e não conta jogadores.",
+            "Um documento ou o próprio recibo nomeia problema, evidência, "
+            "hipótese e medição — a causa e o tamanho do efeito continuam "
+            "pendentes.",
+            [
+                play or harness_command("play", project),
+                finding_open(project, payload["scripts"], play),
+                harness_command(
+                    "note", project, "--author", note_author(project),
+                    "--note", "o achado com os quatro nomes",
+                    "--field", "problema=o que quebrou o verbo",
+                    "--field", "evidencia=o que a partida mostrou",
+                    "--field", "hipotese=por que isso acontece",
+                    "--field", "medicao=como repetir o recorte",
+                    *(["--from-run"] if playtest.get("candidate") else []),
+                ),
+            ],
+            "playtest.unstructured",
+        )
+    access = access_reading(project)
+    if payload["kind"] and not access["declared"]:
+        propose(
+            "Declarar no código as opções de alcance que o recorte precisa",
+            "O jogo já tem ponto de entrada e nenhuma opção de contraste, "
+            "movimento, legenda ou remapeamento aparece no código. Opção só "
+            "existe com consumidor. O harness não mede contraste.",
+            "highContrast, reducedMotion, captions ou remapeamento têm "
+            "consumidor no código — ou a ausência está escrita no canônico.",
+            [harness_command("access", project)],
+            "access.missing",
+        )
+    persist = save_reading(project)
+    if persist["unversioned"]:
+        propose(
+            "Versionar o save e escrever a migração junto do formato",
+            "O projeto grava progresso ou preferência e não declara schema nem "
+            "migrate. Atualização sem migração é perda de progresso. O harness "
+            "não abre o save.",
+            "O formato tem versão nomeada e uma migração que a acompanha, ou o "
+            "armazenamento sai do recorte.",
+            [harness_command("save", project)],
+            "save.unversioned",
+        )
+    perf = budget_reading(project)
+    if perf["unbudgeted"]:
+        propose(
+            "Declarar um orçamento mensurável (script budget/bench ou tools/budget)",
+            "Há manifesto de execução e nenhum artefato que meça tempo de quadro "
+            "ou simulação. Sem orçamento, ‘rápido o suficiente’ é opinião. O "
+            "harness não mede.",
+            "Existe `budget`/`bench` no manifesto, um tools/budget.* ou um "
+            "`record --kind budget` — a medição em si continua pendente.",
+            [harness_command("budget", project)],
+            "performance.unbudgeted",
+        )
+    art = art_reading(project)
+    if payload["kind"] and not art["declared"]:
+        propose(
+            "Declarar a direção de arte no código (PALETTES) ou num art-bible vigente",
+            "O jogo já tem ponto de entrada e nenhuma paleta, token ou art-bible "
+            "vigente aparece no disco. Rascunho do `init` não é direção. O "
+            "harness não compara silhueta e não aprova estilo.",
+            "Existe `const PALETTES`, um tokens.json, data/palettes.json ou docs/art-bible.md sem "
+            "marcador de rascunho — a consistência em movimento continua pendente.",
+            [harness_command("art", project)],
+            "art.missing",
+        )
+    inventory = content_reading(project)
+    if inventory["inline"]:
+        propose(
+            "Extrair o conteúdo do código para dado (data/, levels/ ou .ldtk/.tmx/.ink)",
+            "O verbo já tem ponto de entrada e o conteúdo ainda mora no código. "
+            "Conteúdo no código não escala. O harness não carrega o formato e "
+            "não conta itens.",
+            "Há arquivo em data/, content/, levels/, maps/ ou tables/, ou um "
+            ".ldtk/.tmx/.ink no projeto — volume e consumo continuam pendentes.",
+            [harness_command("content", project)],
+            "content.inline",
+        )
+    pack = ship_reading(project)
+    if pack["unpacked"]:
+        propose(
+            "Declarar o passo que empacota o jogo (script build/export ou docs/release.md)",
+            "Há manifesto de execução e nenhum passo de build, export, release "
+            "vigente ou CI. Servir na máquina de quem construiu não é entregar. "
+            "O harness não executa o export e não autoriza publicar.",
+            "Existe script `build`/`export`/`package`/`release`, um "
+            "docs/release.md vigente ou um workflow de CI — o artefato em "
+            "outra máquina continua pendente.",
+            [harness_command("ship", project)],
+            "ship.unpacked",
+        )
+    elif pack.get("incomplete"):
+        parts = (pack.get("tree") or {}).get("parts") or {}
+        listed = "index, serve, package e VERSION"
+        if "src" in parts:
+            listed = "index, serve, package, VERSION e o src que o projeto já tem"
+        propose(
+            f"Completar a árvore jogável em dist/ ({listed})",
+            "Há identidade do artefato ou uma pasta dist/ e falta o que outra "
+            "pessoa serve. VERSION.json sozinho não abre o jogo. dist/ sem o "
+            "src/ que o projeto já tem também não. O harness "
+            "não executa o export e não autoriza publicar.",
+            "dist/ tem index.html, tools/serve.mjs, package.json, "
+            "VERSION.json e o src/ que o desenvolvimento já tem — outra "
+            "máquina e shipped continuam pendentes."
+            if "src" in parts else
+            "dist/ tem index.html, tools/serve.mjs, package.json e "
+            "VERSION.json — outra máquina e shipped continuam pendentes.",
+            [harness_command("ship", project)],
+            "ship.incomplete",
+        )
+    elif pack.get("stale"):
+        propose(
+            "Gerar de novo o artefato a partir do HEAD atual",
+            "dist/VERSION.json nomeia um HEAD que não é o deste checkout. "
+            "Artefato de outro commit não é esta entrega. O harness não "
+            "executa o export e não autoriza publicar.",
+            "O git_head do VERSION.json é o HEAD atual — outra máquina e "
+            "shipped continuam pendentes.",
+            [harness_command("ship", project)],
+            "ship.stale",
+        )
+    elif pack.get("artifact_open"):
+        propose(
+            "Servir a árvore em dist/ no próprio dispositivo",
+            "A árvore exportada está completa e no HEAD atual. "
+            "Servir aqui não é outra máquina. O harness não executa o "
+            "artefato e não autoriza publicar.",
+            "Alguém correu o dist/ fora daqui — elsewhere e shipped "
+            "continuam pendentes.",
+            [pack["artifact_open"], harness_command("ship", project)],
+            "ship.artifact_open",
         )
     if drafts:
         propose(
@@ -1783,7 +9136,7 @@ def next_step(project, focus="create", studies_root=None):
         propose(
             "Escrever as instruções para o agente na raiz do projeto (AGENTS.md)",
             "Sem AGENTS.md, convenções, comandos e limites ficam só na conversa e se perdem na próxima sessão; é a causa mais barata de retrabalho com IA.",
-            "AGENTS.md cita como executar e verificar, os documentos canônicos, o que não mudar e onde registrar continuidade.",
+            "AGENTS.md cita o comando que abre, o note, o playtest e o que o disco ainda não tem. Sem rascunhos plantados, não lista GDD.",
             [harness_command("template", "agents", "--project", project, "--output", project / "AGENTS.md")],
             "agent_context.not_located",
         )
@@ -1794,6 +9147,35 @@ def next_step(project, focus="create", studies_root=None):
             "Existe uma pasta de evidência com recibo e log de cada comando escolhido.",
             [harness_command("verify", project, "--script", scripts[0], "--output", "CAMINHO_NOVO")],
             "scripts",
+        )
+    origins = origins_reading(project)
+    if origins["undeclared"]:
+        sample = ", ".join(f"`{path}`" for path in origins["undeclared"][:4])
+        extra = " e mais" if len(origins["undeclared"]) > 4 else ""
+        why = (
+            "Arquivo embarcado sem recibo conta como licença desconhecida, e o critério "
+            "`deliver.licensing` não se dispensa. O harness não valida a licença: só vê "
+            "que a origem não foi declarada."
+        )
+        if origins["contradicts_licensing"]:
+            why = (
+                "O projeto declara `deliver.licensing` como `met`, e o disco ainda tem "
+                "arquivo embarcado sem recibo. A linha da tabela não sobrevive à leitura "
+                "do próprio projeto."
+            )
+        first = origins["undeclared"][0]
+        propose(
+            f"Declarar origem dos arquivos embarcados sem recibo: {sample}{extra}",
+            why,
+            "Cada arquivo listado tem recibo ao lado (sources.json, CREDITS ou "
+            "`.credits.txt`) com origem, autor e condição de uso — ou sai do embarque.",
+            [harness_command(
+                "origins", project, "--declare", first,
+                "--origin", "de onde veio o arquivo",
+                "--author", note_author(project),
+                "--license", "condição de uso",
+            )],
+            "origins.undeclared",
         )
     # Um gate só está em jogo quando o projeto o declara: ninguém pede uma
     # permissão que não mencionou, e listar os dez num projeto que declarou um
@@ -1845,6 +9227,32 @@ def next_step(project, focus="create", studies_root=None):
                     [harness_command("gate", project, "--gate", blocked["key"])],
                     "gates.pending",
                 )
+    craft = craft_declaration(project)
+    if craft["problems"]:
+        propose(
+            "Corrigir a forma da declaração de ofício em: "
+            + ", ".join(f"{item['source']} ({item['reason']})" for item in craft["problems"][:4]),
+            "Linha malformada não entra na leitura, e o checklist que ela pretendia "
+            "declarar continua pendente.",
+            "Cada linha nomeia um dos checklists de ofício, um estado e o que sustenta o estado.",
+            [harness_command("craft", project)],
+            "craft.problems",
+        )
+    else:
+        reading = craft_reading(project)
+        live = [item for item in reading["checks"] if item["gate"] in gates["declared"]]
+        blocked = next((item for item in live if item["state"] in ("undeclared", "unmet")), None)
+        if blocked:
+            propose(
+                f"Declarar o checklist `{blocked['key']}` do gate `{blocked['gate']}`: {blocked['check']}",
+                "Isto não pergunta se um número externo se cumpriu. Pergunta se o projeto "
+                "corresponde ao que ele mesmo declarou — paleta, constante, definição, "
+                "regra de parada. O harness não observa o jogo.",
+                "A linha sai de `undeclared`/`unmet` com o que sustenta o estado, ou é "
+                "dispensada com motivo e autor, ou marcada fora de escopo com motivo.",
+                [harness_command("craft", project, "--gate", blocked["gate"])],
+                "craft.pending",
+            )
 
     bar = payload["production_bar"]
     dimensions = [item["key"] for item in bar["dimensions"]]
@@ -1897,7 +9305,7 @@ def next_step(project, focus="create", studies_root=None):
             [harness_command("context", project, "--focus", focus)],
             "production_bar.floor",
         )
-    return {
+    report = {
         "schema_version": 1,
         "project": str(project),
         "exists": payload["exists"],
@@ -1920,20 +9328,85 @@ def next_step(project, focus="create", studies_root=None):
             "production_bar_problems": declaration["problems"],
             "gates_declared": sorted(gates["declared"]),
             "gates_problems": gates["problems"],
+            "origins_undeclared": origins["undeclared"],
+            "origins_contradicts_licensing": origins["contradicts_licensing"],
+            "playable_unplayed": fresh,
+            "cycle_craft": wants_craft,
+            "audio_roles_empty": roles["empty"],
+            "feel_unobserved": feel["unobserved"],
+            "playtest_unstructured": playtest["unstructured"],
+            "playtest_invite": wants_invite,
+            "playtest_candidate": playtest.get("candidate"),
+            "access_missing": access["missing"] if payload["kind"] else [],
+            "save_unversioned": persist["unversioned"],
+            "performance_unbudgeted": perf["unbudgeted"],
+            "art_missing": bool(payload["kind"]) and not art["declared"],
+            "content_inline": inventory["inline"],
+            "ship_unpacked": pack["unpacked"],
+            "craft_pending": [
+                key for key, spec in CRAFT_CHECKS.items()
+                if spec["gate"] in gates["declared"]
+                and craft["declared"].get(key, {}).get("state", "undeclared") in ("undeclared", "unmet")
+            ],
         },
         "context_command": harness_command("context", project, "--focus", focus),
         "authority": "agent_resolves",
         "executed": False,
-        "scope": (
-            "Proposta ordenada por dependência, derivada só do que é observável no disco. Não é fila validada, "
-            "não conhece a conversa, a direção do usuário nem o backlog, e não concede autorização. "
-            "O agente confronta a proposta com o pedido real e decide; `alternatives` existe para ser escolhida."
-        ),
+        "scope": next_scope(),
     }
+    if report["proposal"]:
+        report["proposal"]["scope"] = proposal_scope()
+    for item in report["alternatives"]:
+        item["scope"] = alternative_scope()
+    return report
 
 
 def nonempty(value):
     return isinstance(value, str) and bool(value.strip())
+
+
+# O processo já recusa garantir o mérito. Sem isto o
+# check-plan validava a forma e calava a recusa.
+# Forma no disco não é adequação.
+PROCESS_MERIT = re.compile(r"não garantem mérito")
+
+
+def process_refuses_merit(text):
+    return bool(text and PROCESS_MERIT.search(text))
+
+
+def check_plan_merit_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_merit(text):
+        return "references/process.md"
+    return None
+
+
+def check_plan_scope():
+    scope = (
+        "Estrutura e existência dos candidatos; busca, adequação e qualidade exigem revisão."
+    )
+    if check_plan_merit_source():
+        scope += (
+            " O disco recusa garantir o mérito (`mérito`). "
+            "Forma no disco não é adequação."
+        )
+    return scope
+
+
+def check_plan_report(plan, root):
+    errors = check_plan(plan, root)
+    return {
+        "contract_valid": not errors,
+        "errors": errors,
+        "scope": check_plan_scope(),
+    }
 
 
 def check_plan(plan, root):
@@ -1976,12 +9449,46 @@ def check_plan(plan, root):
     return errors
 
 
+# O roteiro já recusa que o HEAD substitua o julgamento. Sem isto
+# o version relatava o HEAD e calava a recusa.
+# Identidade no disco não é avaliação.
+JUDGMENT_GUIDE = FRAMEWORK / "references/quality.md"
+VERSION_JUDGMENT = re.compile(r"não substitui o julgamento")
+
+
+def quality_refuses_judgment(text):
+    return bool(text and VERSION_JUDGMENT.search(text))
+
+
+def git_judgment_source():
+    path = JUDGMENT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if quality_refuses_judgment(text):
+        return "references/quality.md"
+    return None
+
+
+def git_version_scope():
+    scope = "HEAD e nomes alterados; não é fingerprint completo das fontes."
+    if git_judgment_source():
+        scope += (
+            " O disco recusa que o HEAD substitua o julgamento (`julgamento`). "
+            "Identidade no disco não é avaliação."
+        )
+    return scope
+
+
 def git_version(project):
     result = {}
     for key, args in (("head", ["rev-parse", "HEAD"]), ("status", ["status", "--porcelain", "--", "."])):
         run = subprocess.run(["git", "-C", str(project), *args], capture_output=True, text=True, check=False)
         result[key] = run.stdout.strip() if run.returncode == 0 else None
-    result["scope"] = "HEAD e nomes alterados; não é fingerprint completo das fontes."
+    result["scope"] = git_version_scope()
     return result
 
 
@@ -2001,6 +9508,116 @@ def run_command(argv, project, log, timeout):
             output.write(f"{error}\n")
             code = 127
     return {"argv": argv, "exit_code": code, "seconds": round(time.monotonic() - started, 3), "log": log.name, "log_sha256": hashlib.sha256(log.read_bytes()).hexdigest()}
+
+
+# O roteiro já recusa aprovar a criatividade. Sem isto o
+# verify executava o comando e calava a recusa.
+# Recibo verde não é aprovação.
+PREPRODUCTION_GUIDE = FRAMEWORK / "references/preproduction.md"
+VERIFY_CREATIVITY = re.compile(r"não aprova criatividade")
+
+
+def preproduction_refuses_creativity(text):
+    return bool(text and VERIFY_CREATIVITY.search(text))
+
+
+def verify_creativity_source():
+    path = PREPRODUCTION_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if preproduction_refuses_creativity(text):
+        return "references/preproduction.md"
+    return None
+
+
+def verify_scope():
+    scope = (
+        "Execução dos comandos solicitados. Não aprova arte, diversão, direitos, "
+        "release nem capacidades do runtime."
+    )
+    if verify_creativity_source():
+        scope += (
+            " O disco recusa aprovar a criatividade (`criatividade`). "
+            "Recibo verde não é aprovação."
+        )
+    return scope
+
+
+# A ambição já recusa que o recibo comprove diversão. Sem isto o
+# comando copiava o exit code e calava a recusa.
+# Log no disco não é experiência.
+AMBITION_FUN = re.compile(r"não comprova diversão")
+
+
+def ambition_refuses_fun(text):
+    return bool(text and AMBITION_FUN.search(text))
+
+
+def verify_command_fun_source():
+    path = FRAMEWORK / "references/ambition.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if ambition_refuses_fun(text):
+        return "references/ambition.md"
+    return None
+
+
+def verify_command_scope():
+    scope = (
+        "Saída de um comando técnico. Não observa o jogo e não avalia "
+        "experiência."
+    )
+    if verify_command_fun_source():
+        scope += (
+            " O disco recusa que o recibo comprove diversão (`diversão`). "
+            "Log no disco não é experiência."
+        )
+    return scope
+
+
+# O processo já recusa que claimed seja verified. Sem isto o
+# verify alegava a capacidade e calava a recusa.
+# Alegação no disco não é cobertura.
+PROCESS_CLAIMED = re.compile(r"claimed` não é `verified")
+
+
+def process_refuses_claimed_as_verified(text):
+    return bool(text and PROCESS_CLAIMED.search(text))
+
+
+def verify_claimed_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_claimed_as_verified(text):
+        return "references/process.md"
+    return None
+
+
+def capabilities_scope():
+    scope = (
+        "Capacidade só aparece aqui porque quem executou a declarou em --proves. O harness confere que o nome "
+        "pertence ao conjunto conhecido e que os comandos passaram; não confere que eles a exercitam. "
+        "`claimed` é alegação registrada, não verificação: continua valendo que mentioned não é verified."
+    )
+    if verify_claimed_source():
+        scope += (
+            " O disco recusa que claimed seja verified (`verified`). "
+            "Alegação no disco não é cobertura."
+        )
+    return scope
 
 
 def verify(project, scripts, command, output, timeout, proves=()):
@@ -2026,12 +9643,13 @@ def verify(project, scripts, command, output, timeout, proves=()):
         raise ValueError("destino de evidência existente; escolha um novo")
     before = git_version(project)
     output.mkdir(parents=True, exist_ok=False)
-    report = {"schema_version": 1, "project": str(project), "started_at": datetime.now(timezone.utc).isoformat(), "version": before, "technical_status": "running", "experience_status": "not_assessed", "commands": [], "scope": "Execução dos comandos solicitados. Não aprova arte, diversão, direitos, release nem capacidades do runtime."}
+    report = {"schema_version": 1, "project": str(project), "started_at": datetime.now(timezone.utc).isoformat(), "version": before, "technical_status": "running", "experience_status": "not_assessed", "commands": [], "scope": verify_scope()}
     receipt = output / "verification.json"
     receipt.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     for index, argv in enumerate(commands):
         print(f"Executando: {argv} em {project}", file=sys.stderr, flush=True)
         result = run_command(argv, project, output / f"{index + 1:02d}.log", timeout)
+        result["scope"] = verify_command_scope()
         report["commands"].append(result)
         if result["exit_code"]:
             break
@@ -2053,11 +9671,7 @@ def verify(project, scripts, command, output, timeout, proves=()):
         }
         for name in claimed
     }
-    report["capabilities_scope"] = (
-        "Capacidade só aparece aqui porque quem executou a declarou em --proves. O harness confere que o nome "
-        "pertence ao conjunto conhecido e que os comandos passaram; não confere que eles a exercitam. "
-        "`claimed` é alegação registrada, não verificação: continua valendo que mentioned não é verified."
-    )
+    report["capabilities_scope"] = capabilities_scope()
     receipt.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     return report
 
@@ -2077,6 +9691,79 @@ def parse_fields(pairs):
             raise ValueError(f"campo precisa ter a forma chave=valor: {pair}")
         fields[key.strip()] = value.strip()
     return fields
+
+
+# O roteiro já recusa medir os critérios. Sem isto o
+# record gravava o recibo e calava a recusa.
+# Recibo no disco não é observação.
+QUALITY_GUIDE = FRAMEWORK / "references/quality.md"
+QUALITY_MEASURE = re.compile(r"O harness não os\s+mede")
+
+
+def quality_refuses_measure(text):
+    return bool(text and QUALITY_MEASURE.search(text))
+
+
+def quality_measure_source():
+    path = QUALITY_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if quality_refuses_measure(text):
+        return "references/quality.md"
+    return None
+
+
+def record_scope():
+    scope = (
+        "Registro declarado por quem assina; o harness não valida o conteúdo, não mede e não aprova. "
+        "role=agent é avaliação do agente, não aprovação do usuário."
+    )
+    if quality_measure_source():
+        scope += (
+            " O disco recusa medir os critérios (`mede`). "
+            "Recibo no disco não é observação."
+        )
+    return scope
+
+
+# O roteiro já recusa que o screenshot isolado comprove animação. Sem isto o
+# anexo copiava o hash e calava a recusa.
+# Anexo no disco não é controle.
+QUALITY_STILL = re.compile(r"não comprova animação")
+
+
+def quality_refuses_isolated_still(text):
+    return bool(text and QUALITY_STILL.search(text))
+
+
+def record_attachment_still_source():
+    path = QUALITY_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if quality_refuses_isolated_still(text):
+        return "references/quality.md"
+    return None
+
+
+def record_attachment_scope():
+    scope = (
+        "Bytes e hash do arquivo anexado. Não observa o jogo e não "
+        "aprova o movimento."
+    )
+    if record_attachment_still_source():
+        scope += (
+            " O disco recusa que o screenshot isolado comprove animação (`animação`). "
+            "Anexo no disco não é controle."
+        )
+    return scope
 
 
 def record(project, kind, author, note, fields, attachments, output):
@@ -2105,17 +9792,57 @@ def record(project, kind, author, note, fields, attachments, output):
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"anexo inexistente ou symlink: {item}")
         data = path.read_bytes()
-        files.append({"path": str(path.resolve()), "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+        files.append({
+            "path": str(path.resolve()),
+            "bytes": len(data),
+            "sha256": hashlib.sha256(data).hexdigest(),
+            "scope": record_attachment_scope(),
+        })
     if output.exists() or output.is_symlink():
         raise ValueError("destino de evidência existente; escolha um novo")
     report = {
         "schema_version": 1, "kind": kind, "project": str(project), "recorded_at": datetime.now(timezone.utc).isoformat(),
         "version": git_version(project), "author": author, "note": note, "fields": fields, "attachments": files,
         "status": "declared",
-        "scope": "Registro declarado por quem assina; o harness não valida o conteúdo, não mede e não aprova. role=agent é avaliação do agente, não aprovação do usuário.",
+        "scope": record_scope(),
     }
     output.mkdir(parents=True, exist_ok=False)
     (output / "record.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return report
+
+
+def note_observation(project, author, note, fields=None, output=None, role="human", scenario="primeira partida", from_run=False):
+    project = Path(project)
+    payload = dict(fields or {})
+    attached = None
+    if from_run:
+        source = from_run if from_run is not True else None
+        payload, attached = attach_run_candidate(project, payload, source)
+    if nonempty(scenario) and not nonempty(payload.get("scenario")):
+        payload["scenario"] = scenario
+    if nonempty(role) and not nonempty(payload.get("role")):
+        payload["role"] = role
+    dest = Path(output) if output else project / "docs" / "playtest" / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    report = record(project, "observation", author, note, payload, [], dest)
+    report["command"] = "note"
+    report["felt"] = False
+    report["observed"] = False
+    # O playtest já nomeia o esqueleto. Sem isto o note gravava e
+    # some se os quatro fecharam o achado. Recibo sem forma não é
+    # achado. Sem `then`: este comando escreve, não aponta o leitor.
+    complete = fields_have_finding(payload)
+    report["finding"] = complete
+    report["form"] = str(PLAYTEST_FORM)
+    report["needed"] = [] if complete else list(PLAYTEST_FIELDS)
+    if attached is not None:
+        report["from_run"] = attached.as_posix() if attached.is_absolute() else attached.as_posix()
+    # A partida já grava o candidato. Sem isto o note
+    # escrevia o recibo e calava o arquivo.
+    # Nomear não anexa. Disco não é sessão.
+    if not from_run and last_run_path(project):
+        report["scope"] += (
+            " O disco tem um last-run. Sem --from-run o recibo não anexa o candidato."
+        )
     return report
 
 
@@ -2128,7 +9855,12 @@ def main():
     common.add_argument("--root", type=Path, default=argparse.SUPPRESS, help="raiz para descobrir projetos e resolver caminhos")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT, help="raiz para descobrir projetos e resolver caminhos")
-    commands = parser.add_subparsers(dest="action", required=True)
+    parser.add_argument(
+        "--idea",
+        default=None,
+        help="frase da fantasia; sem subcomando, só entra no comando do start, não no disco",
+    )
+    commands = parser.add_subparsers(dest="action", required=False)
     gate_cmd = commands.add_parser(
         "gate", parents=[common],
         help="critérios que o projeto declara cumprir para pedir a próxima permissão",
@@ -2142,18 +9874,132 @@ def main():
         help="só caminho e tipo, sem ler os documentos de cada projeto",
     )
     commands.add_parser("doctor", parents=[common], help="ambiente, integridade do framework e atalhos da skill")
+    # O ofício já é start → jogar → note. Sem isto o -h
+    # listava init primeiro e quem lia a ajuda via o
+    # ADAPT antes do ciclo. Listar não é criar.
+    begin = commands.add_parser(
+        "start", parents=[common],
+        help="caminho ideia→ciclo: cria se o destino estiver livre e aponta o comando que abre o jogo",
+    )
+    begin.add_argument("project", nargs="?", default=None)
+    begin.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
+    begin.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
+    begin.add_argument("--idea", help="frase da fantasia; entra na abertura se houver data/copy.json, sem mudar o verbo. Sem caminho, nomeia e cria a pasta. Brief só com --docs")
+    begin.add_argument("--docs", action="store_true", help="criar os rascunhos em docs/; o padrão do start é não plantá-los")
+    begin.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/ (já é o padrão do start)")
+    guided = commands.add_parser(
+        "guide",
+        parents=[common],
+        help="três passos ideia→ciclo sem executar: start, jogar, note",
+    )
+    guided.add_argument("project", nargs="?", default=None)
+    guided.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
+    guided.add_argument("--idea", help="frase da fantasia; só entra no comando do start, não no disco")
+    played = commands.add_parser(
+        "play",
+        aliases=["open"],
+        parents=[common],
+        help="aponta o comando que abre o jogo, sem executar; sem caminho, o único jogo do laboratório basta",
+    )
+    played.add_argument("project", nargs="?", default=None)
     start = commands.add_parser("init", parents=[common], help="cria um projeto novo a partir de um starter, para ADAPT")
     start.add_argument("project")
     start.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
     start.add_argument("--title", help="título legível; por omissão, derivado do nome da pasta")
+    start.add_argument("--idea", help="frase da fantasia; entra no brief, na abertura e no aviso do primeiro ciclo, sem mudar o verbo")
     start.add_argument("--no-docs", action="store_true", help="não criar os rascunhos em docs/")
     upcoming = commands.add_parser("next", parents=[common], help="proposta ordenada de próxima ação, a partir do estado no disco")
-    upcoming.add_argument("project")
+    upcoming.add_argument("project", nargs="?", default=None)
     upcoming.add_argument("--focus", choices=FOCI, default="create")
     initial_scan = commands.add_parser("scan", parents=[common])
     initial_scan.add_argument("project")
     reading = commands.add_parser("bar", parents=[common], help="degrau de acabamento que o projeto declara, e qual dimensão é o piso")
     reading.add_argument("project")
+    origins_cmd = commands.add_parser(
+        "origins", parents=[common],
+        help="arquivos embarcados, o recibo de origem e a mídia que o recibo lista e o disco perdeu",
+        description=(
+            "arquivos embarcados, o recibo de origem e a mídia que o recibo lista e o disco perdeu"
+        ),
+    )
+    origins_cmd.add_argument("project")
+    origins_cmd.add_argument(
+        "--declare", metavar="ARQUIVO",
+        help="escreve o sidecar .credits.txt do arquivo embarcado; não valida licença",
+    )
+    origins_cmd.add_argument("--origin", help="de onde veio o arquivo")
+    origins_cmd.add_argument("--author", help="quem fez o arquivo")
+    origins_cmd.add_argument("--license", dest="license_name", help="condição de uso declarada")
+    craft_cmd = commands.add_parser(
+        "craft", parents=[common],
+        help="checklists de ofício que o projeto declara cumprir, sem limiar importado",
+    )
+    craft_cmd.add_argument("project")
+    craft_cmd.add_argument("--gate", choices=sorted(GATES), help="só os checklists daquele gate")
+    roles_cmd = commands.add_parser(
+        "roles", parents=[common],
+        help="papéis de áudio que o projeto declara — inclusive o duck — e os arquivos que os preenchem",
+        description=(
+            "Lê papéis e o duckMs que SOUNDS já declara; nomear não é heard."
+        ),
+    )
+    roles_cmd.add_argument("project")
+    roles_cmd.add_argument(
+        "--fill", action="store_true",
+        help="sugere id do acervo ou a ficha do stem do starter; não copia",
+    )
+    roles_cmd.add_argument(
+        "--apply", action="store_true",
+        help="com --fill, copia o id do acervo ou o stem do starter com créditos",
+    )
+    feel_cmd = commands.add_parser(
+        "feel", parents=[common],
+        help="constantes de feel que o projeto declara — inclusive rumble, o peso do passo, as janelas da chuva e o rumo que o coil do dash marca — e o recibo de observação no disco",
+        description=(
+            "Lê constantes de feel (inclusive rumble e o peso do passo), as "
+            "janelas da chuva e o rumo que o coil do dash marca; nomear não é felt."
+        ),
+    )
+    feel_cmd.add_argument("project", nargs="?", default=None)
+    access_cmd = commands.add_parser(
+        "access", parents=[common],
+        help="opções de alcance que o código declara, sem medição",
+    )
+    access_cmd.add_argument("project")
+    save_cmd = commands.add_parser(
+        "save", parents=[common],
+        help="uso de persistência e se o formato tem versão e migração",
+    )
+    save_cmd.add_argument("project")
+    budget_cmd = commands.add_parser(
+        "budget", parents=[common],
+        help="artefato de orçamento que o projeto declara, sem medir",
+    )
+    budget_cmd.add_argument("project")
+    art_cmd = commands.add_parser(
+        "art", parents=[common],
+        help="paleta, tokens e art-bible vigentes, sem aprovar estilo",
+    )
+    art_cmd.add_argument("project")
+    content_cmd = commands.add_parser(
+        "content", parents=[common],
+        help="conteúdo fora do código (data/levels ou .ldtk/.tmx/.ink), sem contar volume",
+    )
+    content_cmd.add_argument("project")
+    ship_cmd = commands.add_parser(
+        "ship", parents=[common],
+        help="passo de empacotar que o projeto declara, sem exportar nem publicar",
+    )
+    ship_cmd.add_argument("project")
+    playtest_cmd = commands.add_parser(
+        "playtest", parents=[common],
+        help="lê se o achado tem problema/evidência/hipótese/medição; não grava e não assiste",
+    )
+    playtest_cmd.add_argument("project", nargs="?", default=None)
+    playtest_cmd.add_argument(
+        "--invite", action="store_true",
+        help="escreve docs/playtest/invite.md para quem nunca viu o jogo; não é alguém de fora",
+    )
     ctx = commands.add_parser("context", parents=[common])
     ctx.add_argument("project")
     ctx.add_argument("--focus", choices=FOCI, default="create")
@@ -2181,6 +10027,22 @@ def main():
     rec.add_argument("--field", action="append", default=[], help="chave=valor; campos obrigatórios variam por tipo")
     rec.add_argument("--attach", action="append", default=[], help="arquivo anexado por caminho; o recibo guarda o SHA-256")
     rec.add_argument("--output", type=Path, required=True)
+    noted = commands.add_parser(
+        "note",
+        parents=[common],
+        help="recibo curto de observação: o que o verbo sentiu, sem jogar; sem caminho, o único jogo do laboratório basta",
+    )
+    noted.add_argument("project", nargs="?", default=None)
+    noted.add_argument("--author", required=True)
+    noted.add_argument("--note", required=True)
+    noted.add_argument("--role", choices=("human", "agent"), default="human")
+    noted.add_argument("--scenario", default="primeira partida")
+    noted.add_argument("--field", action="append", default=[], help="chave=valor extra; problema/evidência/hipótese/medição fecham o achado")
+    noted.add_argument(
+        "--from-run", nargs="?", const=True, default=False, metavar="ARQUIVO",
+        help="anexa docs/playtest/last-run.json (resumo e, se houver, a curva) como candidato de medição; não fecha o achado",
+    )
+    noted.add_argument("--output", type=Path, help="pasta nova; por omissão, docs/playtest/<utc>")
     sfx = commands.add_parser("sfx", parents=[common], help="catálogo compartilhado de efeitos sonoros")
     sfx_cmd = sfx.add_subparsers(dest="sfx_action")
     sfx_cmd.add_parser("summary", parents=[common])
@@ -2192,12 +10054,27 @@ def main():
     sfx_copy.add_argument("--to", required=True)
     sfx_copy.add_argument("--sources")
     sfx_cmd.add_parser("verify", parents=[common])
+    sfx_import = sfx_cmd.add_parser("import", parents=[common])
+    sfx_import.add_argument("file", type=Path)
+    sfx_import.add_argument("--metadata", type=Path, required=True)
+    sfx_cmd.add_parser("seed", parents=[common])
+    sfx_info = sfx_cmd.add_parser("info", parents=[common])
+    sfx_info.add_argument("id")
+    sfx_export = sfx_cmd.add_parser("export", parents=[common])
+    sfx_export.add_argument("ids", nargs="+")
+    sfx_export.add_argument("--to", required=True, type=Path)
     sfx_serve = sfx_cmd.add_parser("serve", parents=[common])
     sfx_serve.add_argument("--port", type=int, default=8766)
     args = parser.parse_args()
     try:
         root = args.root.resolve()
-        if args.action == "discover":
+        if args.action is None:
+            dest = here_project()
+            require_guide_idea(None, args.idea)
+            report = guide_cycle(dest, idea=args.idea)
+            report["here"] = dest is not None
+            emit(report)
+        elif args.action == "discover":
             emit(discover(root) if args.plain else review(root))
         elif args.action == "doctor":
             report = doctor(root)
@@ -2206,13 +10083,60 @@ def main():
         elif args.action == "init":
             if not args.starter:
                 raise ValueError("nenhum starter disponível neste repositório")
-            emit(init((root / args.project).absolute(), args.starter, args.title, not args.no_docs))
+            emit(init((root / args.project).absolute(), args.starter, args.title, not args.no_docs, args.idea))
+        elif args.action == "start":
+            dest = None if args.project is None else resolve(args.project, root)
+            emit(start_project(dest, args.starter, args.title, args.idea, args.docs and not args.no_docs))
+        elif args.action == "guide":
+            dest = here_project(args.project, root)
+            require_guide_idea(args.project, args.idea)
+            report = guide_cycle(dest, args.starter, args.idea)
+            report["here"] = args.project is None and dest is not None
+            emit(report)
+        elif args.action in ("play", "open"):
+            dest = resolve_play_destination(args.project, root)
+            emit(play_cycle(dest))
         elif args.action == "next":
-            emit(next_step(resolve(args.project, root), args.focus, studies_root=default_studies_root(root)))
+            emit(next_step(require_project_destination(args.project, root), args.focus, studies_root=default_studies_root(root)))
         elif args.action == "scan":
             emit(scan(resolve(args.project, root)))
         elif args.action == "bar":
             emit(bar_reading(resolve(args.project, root)))
+        elif args.action == "origins":
+            target = resolve(args.project, root)
+            declared = getattr(args, "declare", None)
+            origin = getattr(args, "origin", None)
+            author = getattr(args, "author", None)
+            license_name = getattr(args, "license_name", None)
+            if declared or origin or author or license_name:
+                emit(origins_declare(target, declared, origin, author, license_name))
+            else:
+                emit(origins_reading(target))
+        elif args.action == "craft":
+            emit(craft_reading(resolve(args.project, root), args.gate))
+        elif args.action == "roles":
+            target = resolve(args.project, root)
+            if args.fill or args.apply:
+                emit(roles_fill(target, root, apply=args.apply))
+            else:
+                emit(roles_reading(target, root))
+        elif args.action == "feel":
+            emit(feel_reading(require_project_destination(args.project, root)))
+        elif args.action == "access":
+            emit(access_reading(resolve(args.project, root)))
+        elif args.action == "save":
+            emit(save_reading(resolve(args.project, root)))
+        elif args.action == "budget":
+            emit(budget_reading(resolve(args.project, root)))
+        elif args.action == "art":
+            emit(art_reading(resolve(args.project, root)))
+        elif args.action == "content":
+            emit(content_reading(resolve(args.project, root)))
+        elif args.action == "ship":
+            emit(ship_reading(resolve(args.project, root)))
+        elif args.action == "playtest":
+            dest = require_project_destination(args.project, root)
+            emit(invite_playtest(dest) if args.invite else playtest_reading(dest))
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":
@@ -2220,13 +10144,19 @@ def main():
         elif args.action == "template":
             document = template(args.stage, resolve(args.project, root), args.output)
             if args.output:
-                emit({"document": str(args.output.resolve()), "status": "draft", "scope": "Template inicial; decisões, revisão e prova continuam pendentes."})
+                emit({"document": str(args.output.resolve()), "status": "draft", "scope": template_scope(args.stage)})
             else:
                 print(document, end="")
         elif args.action == "check-plan":
-            errors = check_plan(read_json(args.plan), root)
-            emit({"contract_valid": not errors, "errors": errors, "scope": "Estrutura e existência dos candidatos; busca, adequação e qualidade exigem revisão."})
-            return int(bool(errors))
+            report = check_plan_report(read_json(args.plan), root)
+            emit(report)
+            return int(bool(report["errors"]))
+        elif args.action == "note":
+            emit(note_observation(
+                require_project_destination(args.project, root), args.author, args.note,
+                parse_fields(args.field), args.output, args.role, args.scenario,
+                args.from_run,
+            ))
         elif args.action == "record":
             emit(record(resolve(args.project, root), args.kind, args.author, args.note, parse_fields(args.field), args.attach, args.output.absolute()))
         elif args.action == "sfx":
@@ -2236,6 +10166,14 @@ def main():
                 emit(sfx_catalog.search_catalog(args.query, root, limit=args.limit))
             elif args.sfx_action == "copy":
                 emit(sfx_catalog.copy_entry(args.id, args.to, root, sources=args.sources))
+            elif args.sfx_action == "import":
+                emit(sfx_catalog.import_entry(args.file, args.metadata, root))
+            elif args.sfx_action == "seed":
+                emit(sfx_catalog.seed_catalog(root))
+            elif args.sfx_action == "info":
+                emit(sfx_catalog.info_entry(args.id, root))
+            elif args.sfx_action == "export":
+                emit(sfx_catalog.export_entries(args.ids, args.to, root))
             elif args.sfx_action == "serve":
                 sfx_catalog.serve_catalog(root, port=args.port)
             else:

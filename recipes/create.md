@@ -7,12 +7,43 @@ o projeto atual.
 
 O caminho curto está em [ambição](../references/ambition.md): um ciclo jogável
 na primeira sessão, depois feel e áudio do verbo, depois receita de conteúdo.
-Não gere todos os templates antes de experimentar. Nove arquivos vazios não
+`start` e `guide` mapeiam start → jogar → `note`. Se o manifesto declara o relógio, o `guide` nomeia o relógio que o manifesto já declara. Frase no disco não é partida observada. Sem chave `speed`. Se o roteiro recusa que o mural seja onboarding, o `guide` nomeia o onboarding que o roteiro já recusa. Texto no disco não é a primeira ação. Sem chave `onboarding`. Se a receita recusa que o screenshot comprove feel, o `guide` nomeia o screenshot que a receita já recusa. Recibo no disco não é peso percebido. Sem chave `screenshot`. Se o processo recusa que o comando abra o jogo, o `guide` nomeia a abertura que o processo já recusa. Nome no disco não é partida. Sem chave `abertura`. Se o package pede Node, o `doctor` nomeia o engines que o package já declara. Pedido no disco não é binário no PATH. Sem chave `engines`. Nomear não instala. Se o manifesto declara as trocas, o `doctor` nomeia as substituições que o manifesto já declara. Manifesto no disco não é projeto criado. Sem chave `substitutions`. Se o README imprime o exemplo, o `doctor` nomeia o exemplo que o README já imprime. Frase no then não é pasta criada. Sem chave `exemplo`. Se a ambição recusa que o harness seja motor, o `doctor` nomeia o motor que a ambição já recusa. Convite no then não é runtime. Sem chave `motor`. Se a skill recusa que AAA seja tier de publisher, o `doctor` nomeia o publisher que a skill já recusa. Atalho no disco não é orçamento. Sem chave `publisher`. Se o mapa recusa que a ausência seja evidência negativa, o `doctor` nomeia a ausência que o mapa já recusa. Lista no disco não é laboratório. Sem chave `ausência`. Se o package declara o módulo, o `init` nomeia o módulo que o package já declara. Tipo no disco não é runtime instalado. Sem chave `type`. Se o package declara os scripts, o `discover` nomeia os scripts que o package já declara. Lista no disco não é passo executado. Sem chave `scripts`. Se o roteiro recusa que o documento comprove qualidade, o `discover` nomeia a qualidade que o roteiro já recusa. Conta no disco não é acabamento. Sem chave `qualidade`. Se o serve recusa produção, o `play` nomeia a produção que o serve já recusa. Serve no disco não é publicação. Sem chave `produção`. Se o README aponta o serve, o `scan` nomeia o serve que o README já aponta. Página no disco não é partida jogada. Sem chave `serve`. O [processo comum](../references/process.md)
+também nomeia a porta nesse mapa. Os dois devolvem
+`open` (o comando de agora) e `prompt` (a frase para colar; também
+sai em stderr). Depois do
+`start`, `open` é o play e `steps` é o mesmo mapa de três passos, com
+o passo 1 feito. Sem destino, `--idea`
+nomeia a pasta no comando do start e não grava a frase. Sem destino, se o
+diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
+`then` nomeia par, look, chuva e voz se o projeto — ou o starter, antes do
+destino existir — declara essas ferramentas. Se o `tools/new-pair.*` nasce look e chuva, o `start` nomeia o par que o pair já nasce. Ferramenta no disco não é alguém de fora. Sem chave `pair` no recibo. Se declara `session`,
+`then` a aponta e o prompt a nomeia (`Sessão:`). Não executa e não observa. Se o disco tem last-run com seed, `then` aponta a
+seed e o convite; nomear o endereço não observa. A partida no serve grava o candidato; a simulação
+também. Depois do fim, a página grava o recibo se você escrever
+e aponta o convite desta partida se a seed ficou no recibo. Copiar
+o endereço não grava.
+Depois do recibo, o mesmo `start` e o `next` apontam
+o ofício. Se o processo pede uma ação recomendada, o `next` nomeia a ação que o processo já pede. Proposta no disco não é autorização. Sem chave `ação`. Se o roteiro recusa que o comando crie o jogo, o `next` nomeia a criação que o roteiro já recusa. Proposta no disco não é pasta criada. Sem chave `criação`. Se o processo recusa fabricar tarefa para cumprir o formato, o `next` nomeia a fabricação que o processo já recusa. Lista no disco não é backlog. Sem chave `fabricação`. O autor do `note` é sugestão do git ou do ambiente, não
+quem jogou. Nomear o ofício não pinta. `playtest --invite` aponta `href`
+(`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`, com
+chuva nomeada `&spawn=<mesa>`, com look nomeado `&look=<paleta>`,
+e com relógio nomeado e ≠ 1 `&speed=<relógio>`), onde a
+tabela some; depois do fim a página mostra seed, pontos, eixos e a
+curva que o last-run já traçou e oferece os quatro nomes para copiar
+ou gravar. Depois do fim a
+página rola até o painel. Rolar não é alguém de fora. Número na faixa não
+preenche os quatro. Copiar não grava. O Copiar nomeia o
+destino. Gravar já virava Achado no disco; o botão calava.
+Nomear não é alguém de fora. Sem a área de transferência,
+o Copiar baixa o markdown. Gravar anexa o candidato se last-run
+existir. Na árvore exportada o Gravar some; copie os quatro
+nomes. Gravado não é alguém de fora. Não gere todos os templates antes de experimentar. Nove arquivos vazios não
 aumentam a qualidade; uma fatia sem feel continua sendo protótipo.
 
 Siga [o ciclo de pré-produção](../references/preproduction.md) para escolher o
 próximo artefato e revisar sua prontidão. Brief e GDD definem a experiência; MDA
-explicita a hipótese; PoC a investiga; PRD/TDD delimitam requisitos e implementação;
+explicita a hipótese e, com tela, começa na porta; PoC a investiga; PRD/TDD delimitam requisitos e implementação;
+MVP e PRD também nomeiam a abertura. Nomear a porta não observa.
 vertical slice e MVP têm objetivos distintos; QA e playtest alimentam o design.
 Carregue o template da etapa com `context <projeto> --stage <etapa>` e adapte o
 documento canônico. Jogo pequeno: `template game-design --project <novo> --output <arquivo-novo.md>`
@@ -22,6 +53,7 @@ antes de começar a experimentar. Quando a fatia demonstrar a experiência, a
 [receita de produção](production.md) leva do recorte ao acabamento por marcos.
 Uma direção aprovada exige sincronizar a base oficial no mesmo turno, conforme
 [o roteiro](../references/project-audit.md#aprovação-de-direção-materializar-e-continuar).
+Se o roteiro pede documentar sem consentimento, o `context` nomeia o audit que o roteiro já pede. Roteiro no disco não é base escrita. Sem chave `audit`. Se o roteiro recusa que a checagem seja daemon, o `audit` nomeia o daemon que o roteiro já recusa. Roteiro no disco não é interceptação. Sem chave `daemon`. Se o roteiro recusa que o local não percorrido seja inexistente, o `scan` nomeia a inexistência que o roteiro já recusa. Contagem no disco não é inventário. Sem chave `inexistente`. Se o mapa recusa que a cobertura desigual seja acidente, o `issues[n]` da coverage nomeia o acidente que o mapa já recusa. Recorte no disco não é falha. Sem chave `acidente`. Se a guia recusa que preencher linhas certifique o jogo, o `non_current_documents[n]` nomeia as linhas que a guia já recusa. Documento no disco não é o jogo. Sem chave `linhas`. Se o roteiro recusa que o recibo presente seja licença válida, o `scan` nomeia a licença que o roteiro já recusa. Área no disco não é concessão. Sem chave `licença`. Se o roteiro recusa prescrever quantas pessoas, o `scan` nomeia as pessoas que o roteiro já recusa. Área no disco não é censo. Sem chave `pessoas`. Se o roteiro recusa que reconstruir documentos comprove intenções, o `scan` nomeia as intenções que o roteiro já recusa. Candidato no disco não é autoria. Sem chave `intenções`. Se o processo recusa que a etapa certifique o progresso, o `context` nomeia o progresso que o processo já recusa. Contexto no disco não é degrau. Sem chave `progresso`. Se o processo nega que documento pronto seja PoC, o `context` nomeia a PoC que o processo já nega. Fonte no disco não é jogo implementado. Sem chave `process`. Se o processo recusa que sources_found comprove a fila, o `sources[n]` do continuity nomeia a fila que o processo já recusa. Fonte no disco não é backlog. Sem chave `fila`. Se o pacote recusa que teste unitário prove o navegador, o `context` nomeia o navegador que o pacote já recusa provar. Pacote no disco não é comportamento no aparelho. Sem chave `navegador`. Se o índice recusa que o pacote certifique capacidade, o `context` nomeia a capacidade que o índice já recusa. Pacote no disco não é comportamento. Sem chave `capacidade`. Se o mapa recusa que o pacote seja extração, o `context` nomeia a extração que o mapa já recusa. Convenção no disco não é repositório executado. Sem chave `extração`. Se o mapa recusa que a menção seja mecânica obrigatória, o `genre_mentions[n]` nomeia a mecânica que o mapa já recusa. Campo no disco não é regra do jogo. Sem chave `mecânica`. Se a receita recusa que o nome seja API, o `context` nomeia a API que a receita já recusa. Vocabulário no disco não é runtime. Sem chave `api`. Se a barra recusa que o determinismo seja capacidade, o `capabilities` desconhecido nomeia o determinismo que a barra já recusa. Lista no disco não é ciclo demonstrado. Sem chave `determinismo`.
 Cubra as nove áreas com conteúdo ou lacunas explícitas, em documentos proporcionais
 ao projeto, e prossiga com o recorte solicitado. O usuário não precisa pedir essa base.
 
@@ -34,13 +66,39 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
 
 1. Consulte o [playground](https://games.alanicolas.com/) e o acervo local.
    Identifique uma família compatível. Procure código, contratos e conteúdo
-   reutilizável. Sem destino no disco, o candidato local é um starter: `doctor`
-   lista os disponíveis e `init <destino> --starter <starter>` monta o projeto com
-   laço de passo fixo, save versionado, entrada abstraída e testes que já rodam.
+   reutilizável.    Sem destino no disco, o candidato local é um starter.
+   `python3 scripts/game.py --idea "<fantasia>"` mapeia o start com a
+   pasta nomeada pela frase (ao lado do framework se o mapa corre de
+   dentro desta árvore) e não cria a pasta. Sem frase, a recusa nomeia
+   o `start --idea` do README; nomear não cria. `start --idea "<fantasia>"`
+   (ou `start <destino> --starter <starter> --idea "<fantasia>"`) monta
+   o projeto — sem caminho, a frase nomeia e cria a pasta —, põe a
+   frase na abertura e no aviso do primeiro ciclo, escreve `AGENTS.md`
+   com o comando que abre, o `note` e o `playtest` (não lista rascunhos que não plantou) e devolve o comando que abre o jogo.
+   O `playtest` só lê. Sem os quatro não é achado. Nomear o leitor não observa.
+   O prompt nomeia o `playtest` que o `AGENTS.md` já cita. Só lê. Sem os
+   quatro não é achado. Sem `then.playtest`. Nomear o leitor não observa.
+   Sem memória no disco, `template agents` e o `next` geram o mesmo
+   texto a partir do que existe — não o molde que listava GDD.
+   Se a memória recusa o adjetivo, o `scan` nomeia o AAA que a memória já recusa. Memória no disco não é acabamento. Sem chave `agents`.
+   Perdeu o JSON? `play` (ou `open`) aponta o serve de novo, sem executar.
+   Se o manifesto declara `session`, o prompt também nomeia a partida
+   simulada. Não executa e não observa.
+   Sem caminho, o único jogo do laboratório basta; dois pedem o caminho.
+   Com tela, o avanço abre a porta e, depois do fim, um avanço novo volta; sem tela o headless já joga.
+   `?seed=<n>` abre essa partida e ignora o hold.
+   `?spawn=` abre essa chuva e ignora o hold da outra mesa.
+   A frase não muda o verbo.
+   `init` faz a mesma cópia sem apontar o ciclo.
+   O projeto nasce com laço de passo fixo, save versionado, entrada
+   abstraída e testes que já rodam.
    Partir dele é REUSE; recomeçar essa infraestrutura é CREATE e pede lacuna
-   explícita. Som: se o laboratório tiver `shared/sfx`, use `sfx search` antes de
-   qualquer download. Explique REUSE, ADAPT ou CREATE antes de produzir novos
-   sistemas.
+   explícita.    Som: se o laboratório tiver `shared/sfx` com sons, use `sfx search`
+   antes de baixar. Sem acervo, o starter já fala em `public/sfx`;
+   `sfx search` nomeia o stem que casa com o termo. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`.
+   Crescer o acervo é `sfx import` / `sfx seed` (ffmpeg); importar não
+   é ouvir. Explique REUSE, ADAPT ou CREATE antes de produzir novos
+   sistemas. Se o processo recusa garantir o mérito, o `check-plan` nomeia o mérito que o processo já recusa. Forma no disco não é adequação. Sem chave `mérito`. Se a guia recusa que a checagem seja validador semântico, o `metadata_issues[n]` nomeia o semântico que a guia já recusa. Parse no disco não é o jogo. Sem chave `semântico`. Se o processo recusa que claimed seja verified, o `verify` nomeia a verificação que o processo já recusa. Alegação no disco não é cobertura. Sem chave `verified`. Se o processo recusa que o hash seja leitura, o `git` nomeia a leitura que o processo já recusa. Identidade no disco não é inspeção. Sem chave `leitura`.
 2. Construa um ciclo jogável com uma decisão característica. Defina entrada,
    objetivo percebido, consequência, término e repetição. Título e cores novos
    não demonstram uma experiência nova.
@@ -53,6 +111,7 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    foi pedido. Registre herdado versus produzido e **uma** próxima ação.
    Não gere o template `aaa` nesta sessão. O `finish.action` permanece
    `defer_until_playable_cycle` até existir o ciclo.
+   Se a guia recusa preencher o checklist, o `context` nomeia o checklist que a guia já recusa preencher. Guia no disco não é observação. Sem chave `checklist`.
 
 ## Da fatia à produção
 

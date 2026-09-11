@@ -11,6 +11,22 @@ O ciclo criativo do framework terminava em QA, e essa lacuna produz um padrão
 conhecido: um jogo que funciona na máquina de quem construiu e falha em qualquer
 outra. Release é a etapa que converte “funciona aqui” em “funciona para alguém”.
 
+O starter `canvas-arcade` grava `dist/VERSION.json` no export: versão e
+HEAD. `ship` relata esse arquivo quando ele existe, e se a pasta `dist/`
+de um jogo web tem index, serve, package e VERSION. Árvore sem esses
+quatro é `incomplete`. HEAD do artefato diferente do checkout é
+`stale`. Identidade do artefato não é outra máquina. `elsewhere` é
+sempre falso. O serve anuncia a URL da rede se a
+máquina tiver outro endereço IPv4; um endereço alcançável não é outra
+máquina. Na árvore exportada o banner nomeia o artefato. Se o `tools/serve.*` nomeia a árvore exportada, o `ship` nomeia o banner que o serve já imprime. Banner no disco não é outra máquina. Sem chave `serve`. `npm run size`
+relata os bytes de `dist/` sem teto. Se o `tools/size.*` declara sem
+teto, o `ship` nomeia o tamanho. Bytes no disco não são outra
+máquina. Sem chave `size`. `shipped` é sempre falso.
+
+Com tela, a primeira superfície do artefato também é a porta. O serve
+de desenvolvimento apontar `/?invite=1&seed=&spawn=` não é o `dist/`
+em outra máquina. Compartilhar o convite não é `elsewhere`.
+
 Verifique o artefato, não o ambiente de desenvolvimento. Editor, servidor de
 desenvolvimento e build de depuração têm caminhos, permissões, recursos e tempos
 diferentes do export. Um teste no editor não demonstra o jogo exportado.
@@ -47,9 +63,17 @@ conhecidas. Uma entrega sem essa nota impede diagnosticar o primeiro relato de
 problema, porque ninguém sabe o que estava dentro dela.
 
 Implementação concreta a adaptar: o starter `canvas-arcade` não tem dependências
-e serve por `tools/serve.mjs`, o que torna o clone limpo trivial de reproduzir —
-e também significa que o passo de export ainda não existe ali. Esse é justamente o
-primeiro trabalho de release em um projeto derivado dele.
+e serve por `tools/serve.mjs`. `npm run build` copia a árvore jogável para
+`dist/` (index, src, data, serve). Isso torna o clone limpo trivial de
+reproduzir e declara o passo de empacotar — não prova que outra máquina
+já executou o artefato. Se o `tools/export.*` declara o empacote, o `ship` nomeia o passo que o export já declara.
+Empacotar no disco não é outra máquina. Sem chave `export`. Se o `tools/export.*` recusa `file://`, o `ship` nomeia o file:// que o export já recusa. Recusar no disco não é outra máquina. Sem chave `file`. Se a receita recusa que a identidade seja outra máquina, o `tree` do ship nomeia a identidade que a receita já recusa. Árvore no disco não é entrega. Sem chave `identidade`. Se a receita recusa que o teste no editor demonstre o jogo exportado, o `artifact` do ship nomeia o editor que a receita já recusa. Manifesto no disco não é o jogo exportado. Sem chave `editor`. O harness lê o passo com `ship <projeto>`.
+`shipped` é sempre falso. Sem o passo, `next` propõe `ship.unpacked`.
+Árvore incompleta é `ship.incomplete`; artefato de outro commit é
+`ship.stale`. Nomeia a árvore que perdeu o `src/` que o projeto já
+tem. Nomear não devolve o jogo. Árvore completa no HEAD atual ganha `artifact_open`
+— o comando que serve `dist/`. Nomear não executa. HTML estático
+sem manifesto já é o artefato e não dispara esses ramos.
 
 Prova: build a partir de clone limpo, execução do artefato exportado em máquina
 que não é a de desenvolvimento, primeira execução sem estado anterior, medição de
@@ -57,4 +81,4 @@ tamanho e tempo de carga, e a lista de proveniência do que foi embarcado. `veri
 registra esses comandos com recibo; recibo verde não aprova a entrega nem
 substitui a autorização do usuário. Degraus:
 [barra de acabamento](../references/production-bar.md#release--confiança-operacional).
-Template da etapa: [release](../assets/templates/release.md).
+Template da etapa: [release](../assets/templates/release.md). Se o molde recusa publicar, o `template` nomeia a publicação que o molde já recusa. Molde no disco não é autorização. Sem chave `publicar`.

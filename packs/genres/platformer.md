@@ -12,6 +12,8 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 ## Feel que importa
 
+Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
+
 - Coyote time, jump buffer, altura variável por tempo de botão, aceleração/fricção
   assimétricas, cantos perdoados (ledge forgiveness), curva de gravidade na descida.
 - Câmera: lookahead na direção do movimento, zonas mortas, limites de sala, sem

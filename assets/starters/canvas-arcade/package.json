@@ -7,7 +7,18 @@
   "scripts": {
     "test": "node --test",
     "serve": "node tools/serve.mjs",
-    "budget": "node tools/budget.mjs"
+    "budget": "node tools/budget.mjs",
+    "build": "node tools/export.mjs",
+    "table": "node tools/new-table.mjs",
+    "look": "node tools/new-look.mjs",
+    "pair": "node tools/new-pair.mjs",
+    "sfx": "python3 tools/design-sfx.py",
+    "contrast": "node tools/contrast.mjs",
+    "peak": "node tools/peak.mjs",
+    "mix": "node tools/mix.mjs",
+    "probe": "node tools/probe.mjs",
+    "session": "node tools/session.mjs",
+    "size": "node tools/size.mjs"
   },
   "engines": {
     "node": ">=20"
