@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.550 — o roles nomeia o heap que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+heap
+JavaScript
+sozinho
+não
+mede
+PCM
+nem
+VRAM.
+O
+roles
+nomeava
+o
+PCM
+e
+calava
+a
+recusa.
+Agora
+o
+`roles`
+nomeia
+o
+heap.
+Contador
+no
+disco
+não
+é
+o
+mix.
+Sem
+chave
+`heap`.
+Nomear
+não
+ouve.
+
+O que 0.9.550 não afirma:
+ler
+o
+PCM
+não
+é
+medir
+VRAM.
+
 ## 0.9.549 — o save nomeia os contratos que a receita já recusa
 
 A

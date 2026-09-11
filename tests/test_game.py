@@ -2678,6 +2678,43 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("retomar, fila e paralelo sejam mix", game.access_reading(starter)["scope"])
         self.assertNotIn("retomar, fila e paralelo sejam mix", game.roles_fill_scope())
 
+    def test_roles_names_the_heap_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_heap_as_pcm(recipe),
+            "a receita já recusa que o heap JavaScript sozinho meça PCM ou VRAM",
+        )
+        self.assertEqual(game.roles_heap_source(), "recipes/performance.md")
+        report = game.roles_reading(self.project)
+        self.assertIn(
+            "heap JavaScript sozinho meça PCM",
+            report["scope"],
+            "o roles nomeava o PCM e calava a recusa",
+        )
+        self.assertIn("(`heap`)", report["scope"])
+        self.assertNotIn("heap", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertFalse(game.recipe_refuses_heap_as_pcm(""))
+        with mock.patch.object(game, "roles_heap_source", return_value=None):
+            silent = game.roles_reading(self.project)
+        self.assertNotIn("heap JavaScript sozinho meça PCM", silent["scope"])
+        audio = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o heap que a receita já recusa", recipe)
+        self.assertIn("nomeia o heap que a receita já recusa", audio)
+        self.assertIn("nomeia o heap que a receita já recusa", skill)
+        self.assertIn("nomeia o heap que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        if report["roles"]:
+            self.assertNotIn("heap JavaScript sozinho meça PCM", report["roles"][0]["scope"])
+        self.assertNotIn("heap JavaScript sozinho meça PCM", game.budget_reading(self.project)["scope"])
+        self.assertNotIn("heap JavaScript sozinho meça PCM", game.content_reading(self.project)["scope"])
+        self.assertNotIn("heap JavaScript sozinho meça PCM", game.next_scope())
+        self.assertNotIn("heap JavaScript sozinho meça PCM", game.roles_fill_scope())
+
     def test_scan_names_the_intent_the_audit_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(

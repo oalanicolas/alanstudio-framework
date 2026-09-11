@@ -83,7 +83,7 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
   CPU, GPU, carregamento e tempo de captura/exportação são medidas diferentes.
   Leituras GPU, escrita de PNG e tempo simulado alteram a própria execução.
 - Separe bytes transferidos, buffers decodificados, heap, recursos GPU e memória total.
-  Contador de objetos ou heap JavaScript sozinho não mede PCM nem VRAM. Remover
+  Contador de objetos ou heap JavaScript sozinho não mede PCM nem VRAM. Se a receita recusa que o heap JavaScript sozinho meça PCM ou VRAM, o `roles` nomeia o heap que a receita já recusa. Contador no disco não é o mix. Sem chave `heap`. Remover
   referências e desconectar áudio não demonstram coleta imediata pelo sistema.
 - Faça contraprovas que deveriam falhar: trocar a variante, zerar o dado suspeito,
   desativar o diagnóstico ou comparar reconstrução completa com atualização parcial.

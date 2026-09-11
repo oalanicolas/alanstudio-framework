@@ -189,7 +189,7 @@ Arquivo no disco não é mix ouvida. Sem chave `sfx`.
 arquivo. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `npm run mix` soma as vozes de uma partida simulada com o mesmo
 palco, folga, ducking e taxa da corrente do mixer. Se o `tools/mix.*`
 soma as vozes, o `roles` nomeia a soma. Soma no disco não é mix ouvida.
-Sem chave `mix`. Se o `tools/wav.*` lê o PCM, o `roles` nomeia o PCM que o wav já lê. Bytes no disco não são mix ouvida. Sem chave `wav`. Nenhum dos dois é mix ouvido. `heard` continua falso. Toda
+Sem chave `mix`. Se o `tools/wav.*` lê o PCM, o `roles` nomeia o PCM que o wav já lê. Bytes no disco não são mix ouvida. Sem chave `wav`. Se a receita recusa que o heap JavaScript sozinho meça PCM ou VRAM, o `roles` nomeia o heap que a receita já recusa. Contador no disco não é o mix. Sem chave `heap`. Nenhum dos dois é mix ouvido. `heard` continua falso. Toda
 informação sonora precisa de equivalente visual — requisito de
 [acessibilidade](accessibility.md), não recurso extra. Degraus da dimensão `audio_mix`:
 [barra de acabamento](../references/production-bar.md#audio_mix--mixagem-não-arquivos).
@@ -200,7 +200,7 @@ Casos e limites em [aprendizados de aplicações](../references/sources.md#apren
 
 - O tamanho comprimido não mede áudio decodificado. Se a receita recusa que o tamanho comprimido meça áudio decodificado, o `local` do `sfx summary` nomeia o comprimido que a receita já recusa. Bytes no disco não são mix. Sem chave `comprimido`. Conte frames, canais e formato
   dos buffers no contexto real; a taxa de saída pode diferir da taxa do arquivo.
-  Registre PCM separadamente de heap JavaScript, download e memória total.
+  Registre PCM separadamente de heap JavaScript, download e memória total. Se a receita recusa que o heap JavaScript sozinho meça PCM ou VRAM, o `roles` nomeia o heap que a receita já recusa. Contador no disco não é o mix. Sem chave `heap`.
 - Dividir o transporte e remontar bytes por hash pode atender a um limite individual
   de arquivo sem cortar a gravação. Isso não reduz, por si, a memória após decodificar.
 - Desconectar um nó, liberar referências e fechar o contexto são sinais distintos;

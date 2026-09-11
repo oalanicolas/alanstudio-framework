@@ -2015,6 +2015,39 @@ def roles_resume_scope():
     )
 
 
+# A receita já recusa que o heap sozinho
+# meça PCM ou VRAM. Sem isto o roles
+# nomeava o PCM e calava a recusa.
+# Contador no disco não é o mix.
+AUDIO_HEAP = re.compile(r"heap JavaScript sozinho não mede PCM")
+
+
+def recipe_refuses_heap_as_pcm(text):
+    return bool(text and AUDIO_HEAP.search(text))
+
+
+def roles_heap_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_heap_as_pcm(text):
+        return "recipes/performance.md"
+    return None
+
+
+def roles_heap_scope():
+    if not roles_heap_source():
+        return None
+    return (
+        "O disco recusa que o heap JavaScript sozinho meça PCM ou VRAM "
+        "(`heap`). Contador no disco não é o mix."
+    )
+
+
 def roles_reading(project, root=None):
     project = Path(project)
     entries, sources = declared_sound_roles(project)
@@ -2058,6 +2091,9 @@ def roles_reading(project, root=None):
     named = roles_resume_scope()
     if named:
         scope += " " + named
+    heap = roles_heap_scope()
+    if heap:
+        scope += " " + heap
     return {
         "schema_version": 1,
         "project": str(project),
