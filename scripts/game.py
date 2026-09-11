@@ -4896,6 +4896,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     areas["art_direction"]["scope"] = art_direction_scope()
     areas["architecture"]["scope"] = architecture_area_scope()
     areas["provenance"]["scope"] = provenance_area_scope()
+    areas["qa"]["scope"] = qa_area_scope()
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(),
         "minimum_status": "needs_review" if needs_documentation else "candidates_found",
@@ -5405,6 +5406,42 @@ def provenance_area_scope():
         scope += (
             " O disco recusa que o recibo presente seja licença válida (`licença`). "
             "Área no disco não é concessão."
+        )
+    return scope
+
+
+# O roteiro já recusa prescrever quantas pessoas. Sem isto a
+# área localizava o QA e calava a recusa.
+# Área no disco não é censo.
+QUALITY_PEOPLE = re.compile(r"não prescreve quantas pessoas")
+
+
+def quality_refuses_people_count(text):
+    return bool(text and QUALITY_PEOPLE.search(text))
+
+
+def qa_people_source():
+    path = FRAMEWORK / "references/quality.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if quality_refuses_people_count(text):
+        return "references/quality.md"
+    return None
+
+
+def qa_area_scope():
+    scope = (
+        "Localiza o documento de QA. Não assiste a sessão e não "
+        "conta jogadores."
+    )
+    if qa_people_source():
+        scope += (
+            " O disco recusa prescrever quantas pessoas (`pessoas`). "
+            "Área no disco não é censo."
         )
     return scope
 

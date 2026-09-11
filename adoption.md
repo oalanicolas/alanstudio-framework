@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.436 — o scan nomeia as pessoas que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+não
+prescreve
+quantas
+pessoas.
+A
+área
+de
+QA
+apontava
+o
+documento
+e
+calava
+a
+recusa.
+Agora
+o
+`scan`
+nomeia
+as
+pessoas.
+Área
+no
+disco
+não
+é
+censo.
+Sem
+chave
+`pessoas`.
+Nomear
+não
+observa.
+
+O que 0.9.436 não afirma:
+área
+no
+disco
+não
+é
+censo
+nem
+sessão
+observada.
+
 ## 0.9.435 — o scan nomeia a licença que o roteiro já recusa
 
 O

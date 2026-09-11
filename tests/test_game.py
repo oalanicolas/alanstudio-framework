@@ -1728,6 +1728,38 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("recibo presente seja licença", game.next_scope())
         self.assertNotIn("recibo presente seja licença", game.gate_reading(self.project)["scope"])
 
+    def test_scan_names_the_people_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.quality_refuses_people_count(guide),
+            "o roteiro já recusa prescrever quantas pessoas",
+        )
+        self.assertEqual(game.qa_people_source(), "references/quality.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "prescrever quantas pessoas",
+            report["areas"]["qa"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`pessoas`)", report["areas"]["qa"]["scope"])
+        self.assertNotIn("pessoas", report["areas"]["qa"])
+        self.assertFalse(game.quality_refuses_people_count(""))
+        with mock.patch.object(game, "qa_people_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("prescrever quantas pessoas", silent["areas"]["qa"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia as pessoas que o roteiro já recusa", recipe)
+        self.assertIn("nomeia as pessoas que o roteiro já recusa", skill)
+        self.assertIn("nomeia as pessoas que o roteiro já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["qa"]["scope"])
+        self.assertNotIn("prescrever quantas pessoas", report["scope"])
+        self.assertNotIn("prescrever quantas pessoas", report["areas"]["provenance"]["scope"])
+        self.assertNotIn("prescrever quantas pessoas", game.playtest_reading(self.project)["scope"])
+        self.assertNotIn("prescrever quantas pessoas", game.next_scope())
+        self.assertNotIn("prescrever quantas pessoas", game.record_scope())
+
     def test_scan_names_the_absence_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(
