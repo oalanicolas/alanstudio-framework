@@ -7739,6 +7739,43 @@ def verify_scope():
     return scope
 
 
+# O processo já recusa que claimed seja verified. Sem isto o
+# verify alegava a capacidade e calava a recusa.
+# Alegação no disco não é cobertura.
+PROCESS_CLAIMED = re.compile(r"claimed` não é `verified")
+
+
+def process_refuses_claimed_as_verified(text):
+    return bool(text and PROCESS_CLAIMED.search(text))
+
+
+def verify_claimed_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_claimed_as_verified(text):
+        return "references/process.md"
+    return None
+
+
+def capabilities_scope():
+    scope = (
+        "Capacidade só aparece aqui porque quem executou a declarou em --proves. O harness confere que o nome "
+        "pertence ao conjunto conhecido e que os comandos passaram; não confere que eles a exercitam. "
+        "`claimed` é alegação registrada, não verificação: continua valendo que mentioned não é verified."
+    )
+    if verify_claimed_source():
+        scope += (
+            " O disco recusa que claimed seja verified (`verified`). "
+            "Alegação no disco não é cobertura."
+        )
+    return scope
+
+
 def verify(project, scripts, command, output, timeout, proves=()):
     if not project.is_dir():
         raise ValueError("projeto ausente")
@@ -7789,11 +7826,7 @@ def verify(project, scripts, command, output, timeout, proves=()):
         }
         for name in claimed
     }
-    report["capabilities_scope"] = (
-        "Capacidade só aparece aqui porque quem executou a declarou em --proves. O harness confere que o nome "
-        "pertence ao conjunto conhecido e que os comandos passaram; não confere que eles a exercitam. "
-        "`claimed` é alegação registrada, não verificação: continua valendo que mentioned não é verified."
-    )
+    report["capabilities_scope"] = capabilities_scope()
     receipt.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     return report
 

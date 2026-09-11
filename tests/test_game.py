@@ -995,6 +995,43 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovar a criatividade", game.next_scope())
         self.assertNotIn("aprovar a criatividade", game.template_scope("release"))
 
+    def test_verify_names_the_verified_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_claimed_as_verified(guide),
+            "o processo já recusa que claimed seja verified",
+        )
+        self.assertEqual(game.verify_claimed_source(), "references/process.md")
+        report = game.verify(
+            self.project, [], [sys.executable, "-c", "pass"],
+            self.root / "verify-411", 5, ["pause"],
+        )
+        self.assertIn(
+            "claimed seja verified",
+            report["capabilities_scope"],
+            "o verify alegava a capacidade e calava a recusa",
+        )
+        self.assertIn("(`verified`)", report["capabilities_scope"])
+        self.assertNotIn("verified", report)
+        self.assertEqual(report["capabilities"]["pause"]["status"], "claimed")
+        self.assertFalse(game.process_refuses_claimed_as_verified(""))
+        with mock.patch.object(game, "verify_claimed_source", return_value=None):
+            silent = game.verify(
+                self.project, [], [sys.executable, "-c", "pass"],
+                self.root / "verify-411-silent", 5, ["pause"],
+            )
+        self.assertNotIn("claimed seja verified", silent["capabilities_scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a verificação que o processo já recusa", recipe)
+        self.assertIn("nomeia a verificação que o processo já recusa", skill)
+        self.assertIn("nomeia a verificação que o processo já recusa", readme)
+        self.assertNotIn("claimed seja verified", report["scope"])
+        self.assertNotIn("claimed seja verified", game.record_scope())
+        self.assertNotIn("claimed seja verified", game.next_scope())
+        self.assertNotIn("claimed seja verified", game.check_plan_scope())
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.411 — o verify nomeia a verificação que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+claimed
+não
+é
+verified.
+O
+comando
+alegava
+a
+capacidade
+e
+calava
+a
+recusa.
+Agora
+o
+`capabilities_scope`
+nomeia
+a
+verificação.
+Alegação
+no
+disco
+não
+é
+cobertura.
+Sem
+chave
+`verified`.
+Nomear
+não
+observa.
+
+O que 0.9.411 não afirma:
+alegação
+no
+disco
+não
+é
+cobertura
+nem
+capacidade
+exercitada.
+
 ## 0.9.410 — o verify nomeia a criatividade que o roteiro já recusa
 
 O
