@@ -2598,6 +2598,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
                 self.assertTrue(spec["label"][0].isupper(), spec["label"])
                 self.assertNotRegex(spec["label"], r"\d", spec["label"])
 
+    def test_craft_names_the_scope_exit_the_table_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        prose = (starter / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(game.craft_declares_out(prose), "a tabela já declara out_of_scope")
+        self.assertEqual(game.craft_out_source(starter), "README.md")
+        report = game.craft_reading(starter)
+        self.assertIn("declara a saída de escopo", report["scope"], "o craft lia a linha e calava o estado")
+        self.assertIn("(`out_of_scope`)", report["scope"])
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertNotIn("out_of_scope", report)
+        self.assertFalse(game.craft_declares_out(""))
+        self.assertIsNone(game.craft_out_source(self.root / "sem-oficio"))
+        silent = game.craft_reading(self.root / "sem-oficio")
+        self.assertNotIn("declara a saída de escopo", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a saída de escopo que a tabela já declara", recipe)
+        self.assertIn("nomeia a saída de escopo que a tabela já declara", skill)
+        self.assertIn("nomeia a saída de escopo que a tabela já declara", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+
     def test_craft_never_claims_to_have_observed_the_game(self):
         report = game.craft_reading(self.project)
         self.assertFalse(report["granted"])

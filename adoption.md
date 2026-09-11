@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.392 — o craft nomeia a saída de escopo que a tabela já declara
+
+A
+tabela
+já
+marcava
+`style_factor`
+como
+`out_of_scope`.
+O
+comando
+parseava
+a
+linha
+e
+calava
+o
+estado.
+Agora
+o
+`craft`
+nomeia
+a
+saída
+de
+escopo.
+Linha
+no
+disco
+não
+é
+ofício
+observado.
+Sem
+chave
+`out_of_scope`.
+Não
+promove
+`observed`.
+
+O que 0.9.392 não afirma:
+linha
+no
+disco
+não
+é
+ofício
+observado
+nem
+dispensa
+conferida.
+
 ## 0.9.391 — o guide nomeia o relógio que o manifesto já declara
 
 O

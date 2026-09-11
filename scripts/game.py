@@ -958,6 +958,10 @@ def gate_reading(project, gate=None):
 
 CRAFT_ROW = re.compile(r"^\|\s*`([\w-]+)`\s*\|\s*`(\w+)`\s*\|\s*(.*?)\s*\|\s*$")
 CRAFT_SOURCES = GATE_SOURCES
+# A tabela já declara saída de escopo. Sem isto o
+# craft lia a linha e calava o estado.
+# Linha no disco não é ofício observado.
+CRAFT_OUT_MARK = re.compile(r"`out_of_scope`")
 
 
 def craft_declaration(project):
@@ -1055,12 +1059,43 @@ def craft_reading(project, gate=None):
             "definição de percentil, regra de parada. Um dígito aqui seria a escada "
             "afirmando, para este jogo, o que ninguém verificou."
         ),
-        "scope": (
-            "Lê a declaração do próprio projeto e confere só a forma. Não observa o "
-            "jogo, não mede contraste nem tempo de quadro e **não concede passagem**. "
-            "`observed` é sempre falso: tabela bem formada e otimista sai intacta."
-        ),
+        "scope": _craft_scope(project),
     }
+
+
+def craft_declares_out(text):
+    return bool(text and CRAFT_OUT_MARK.search(text))
+
+
+def craft_out_source(project):
+    project = Path(project)
+    for name in CRAFT_SOURCES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if craft_declares_out(text):
+            return name
+    return None
+
+
+def _craft_scope(project):
+    scope = (
+        "Lê a declaração do próprio projeto e confere só a forma. Não observa o "
+        "jogo, não mede contraste nem tempo de quadro e **não concede passagem**. "
+        "`observed` é sempre falso: tabela bem formada e otimista sai intacta."
+    )
+    if craft_out_source(project):
+        scope += (
+            " O disco declara a saída de escopo (`out_of_scope`). "
+            "Linha no disco não é ofício observado."
+        )
+    return scope
 
 
 # Papéis de áudio: o starter declara SOUNDS e, neste recorte, já traz

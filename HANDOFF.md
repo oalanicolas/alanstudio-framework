@@ -2,11 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.391: o `guide` nomeia o relógio que o manifesto já declara. Frase no disco não é partida observada. Sem chave `speed`. Não promove `executed`.
+**HEAD:** ver `git log -1` — vigente 0.9.392: o `craft` nomeia a saída de escopo que a tabela já declara. Linha no disco não é ofício observado. Sem chave `out_of_scope`. Não promove `observed`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.391):** `python3 -m unittest discover -s tests` → 387 OK.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK.
+**HEAD anterior + confirmação pendente (0.9.392):** suítes do 0.9.391 no remoto — 387 harness / 509 starter. Confirmação deste HEAD ainda não correu.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +31,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.391)
+## O que o HEAD já entrega (0.9.91–0.9.392)
 
 | Ver | Salto |
 | --- | --- |
@@ -335,6 +334,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.389 | O `sfx export` nomeia o processamento que o export já recusa. O payload já preservava os bytes sem processamento; o comando copiava e calava a recusa. Sem chave `processamento`. Não promove `heard`. |
 | 0.9.390 | O `bar` nomeia o mínimo que a barra já declara. A prosa já dizia que o degrau percebido é o mínimo; o comando lia a tabela e calava a regra. Sem chave `mínimo`. Não promove `assessed`. |
 | 0.9.391 | O `guide` nomeia o relógio que o manifesto já declara. O `starter.json` já trazia `speed`; o comando lia o ciclo e calava o relógio no `scope`. Sem chave `speed` no recibo. Não promove `executed`. |
+| 0.9.392 | O `craft` nomeia a saída de escopo que a tabela já declara. O README do starter já marcava `style_factor` como `out_of_scope`; o comando parseava a linha e calava o estado. Sem chave `out_of_scope` no recibo. Não promove `observed`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -419,6 +419,13 @@ Piso percebido = **mínimo**. O `bar` nomeia o mínimo que a barra já declara. 
   no recibo (`cycle.speed` já existe).
   Sem `then.speed`. Um leitor só: `guide`,
   não `start`. `executed` falso.
+- `craft.scope` nomeia a saída de escopo
+  se a tabela declara `` `out_of_scope` ``.
+  Sem o marcador, a frase some. Linha no
+  disco não é ofício observado. Sem chave
+  `out_of_scope` no recibo. Um leitor só:
+  `craft`, não `gate` nem `review`.
+  `observed` e `granted` falsos.
 - **Não só adicionar mais um script de medição** se o salto alinhado
   for feel visível/audível, ferramenta de outsider, superfície de
   entrada, auditoria original (item 1) ou facilidade ideia→jogo.
@@ -3269,6 +3276,7 @@ A família sfx verify que lê ok e cala a integridade que o check já cruza est�
 A família sfx export que copia bytes e cala o processamento que o export já recusa está saturada.
 A família bar que lê a tabela e cala o mínimo que a prosa já declara está saturada.
 A família guide que lê o ciclo e cala o relógio que o manifesto já declara está saturada.
+A família craft que parseia a linha e cala a saída de escopo que a tabela já declara está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -3436,5 +3444,8 @@ Não inventar chave `speed` no topo do recibo do `guide` — irmão de 391.
 Não adicionar `then.speed` — irmão de 391; `then.speed` é last-run.
 Não nomear o relógio no `start.scope` — irmão de 391; um leitor só.
 Não promover `executed` nem `observed` no `guide` — irmão de 391.
+Não inventar chave `out_of_scope` no recibo do `craft` — irmão de 392.
+Não promover `observed` nem `granted` no `craft` — irmão de 392.
+Não nomear a saída de escopo no `gate` nem no `review` — irmão de 392; um leitor só.
 O rótulo do coil do dash ainda diz recarregando — irmão de 328.
-Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt nem outro engines no doctor nem outro Node no runtime nem outro file:// no play nem outra produção no play nem outro relógio no guide; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outro percentil no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro passo no ship nem outro file:// no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access nem outro last-run no note nem auto-anexar no note nem outro pico no sfx summary nem outro pico no sfx info nem outro par no start nem extra pair no content nem pair no art nem outra legenda no access nem outro deslocamento no sfx search nem outra voz no sfx search nem outro sit no feel nem outra guarda no feel nem outro recado no playtest nem outro POST no playtest nem outra gravação no save nem outro storage no save nem outro land no feel nem outro término no feel nem outra migração no content nem outro loader no content nem outra vinheta no art nem outro recorte no art nem outro PCM no roles nem outro wav no roles nem outro consumidor no origins nem outro sidecar no origins nem outros créditos no copy nem outra integridade no sfx verify nem outro hash no sfx verify nem outro processamento no sfx export nem outros bytes no sfx export nem outro mínimo no bar nem outro piso no bar nem outro relógio no guide; atrito ideia→jogo que não seja 332/337/339/342/347/373/384/387/391; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro nem o sit da guarda nem o land do dash; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest nem o last-run no note nem o recado no playtest.
+Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt nem outro engines no doctor nem outro Node no runtime nem outro file:// no play nem outra produção no play nem outro relógio no guide; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outro percentil no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro passo no ship nem outro file:// no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access nem outro last-run no note nem auto-anexar no note nem outro pico no sfx summary nem outro pico no sfx info nem outro par no start nem extra pair no content nem pair no art nem outra legenda no access nem outro deslocamento no sfx search nem outra voz no sfx search nem outro sit no feel nem outra guarda no feel nem outro recado no playtest nem outro POST no playtest nem outra gravação no save nem outro storage no save nem outro land no feel nem outro término no feel nem outra migração no content nem outro loader no content nem outra vinheta no art nem outro recorte no art nem outro PCM no roles nem outro wav no roles nem outro consumidor no origins nem outro sidecar no origins nem outros créditos no copy nem outra integridade no sfx verify nem outro hash no sfx verify nem outro processamento no sfx export nem outros bytes no sfx export nem outro mínimo no bar nem outro piso no bar nem outro relógio no guide nem outra saída de escopo no craft; atrito ideia→jogo que não seja 332/337/339/342/347/373/384/387/391; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro nem o sit da guarda nem o land do dash; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest nem o last-run no note nem o recado no playtest.
