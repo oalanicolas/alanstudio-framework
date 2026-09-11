@@ -1524,6 +1524,49 @@ def roles_reading(project, root=None):
     }
 
 
+# O processo já recusa o reuso automático. Sem isto o
+# roles --fill sugeria o primeiro match e calava a recusa.
+# Arquivo no disco não é licença.
+PROCESS_REUSE_GUIDE = FRAMEWORK / "references/process.md"
+PROCESS_REUSE = re.compile(r"não é automaticamente reutilizável")
+
+
+def process_refuses_automatic_reuse(text):
+    return bool(text and PROCESS_REUSE.search(text))
+
+
+def roles_reuse_source():
+    path = PROCESS_REUSE_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_automatic_reuse(text):
+        return "references/process.md"
+    return None
+
+
+def roles_fill_scope():
+    scope = (
+        "Para cada papel vazio, busca o id no acervo shared/sfx e, com "
+        "`--apply`, copia para public/sfx com o nome do papel. Sem "
+        "acervo, ou sem id que case, nomeia o stem do starter que casa "
+        "(`kind: starter`) e o `--apply` também o copia com créditos. "
+        "Se o recibo já está e o WAV sumiu, recoloca os bytes quando "
+        "origem e licença casam; recibo diferente recusa. "
+        "`sfx copy` / `sfx export` continuam o caminho explícito. "
+        "`heard` é sempre falso."
+    )
+    if roles_reuse_source():
+        scope += (
+            " O disco recusa o reuso automático (`reuso`). "
+            "Arquivo no disco não é licença."
+        )
+    return scope
+
+
 def roles_fill(project, root=None, apply=False):
     project = Path(project)
     reading = roles_reading(project, root)
@@ -1583,16 +1626,7 @@ def roles_fill(project, root=None, apply=False):
             "ouvida. `--apply` copia o id do acervo ou o stem do starter "
             "com créditos. Não toca e não aprova."
         ),
-        "scope": (
-            "Para cada papel vazio, busca o id no acervo shared/sfx e, com "
-            "`--apply`, copia para public/sfx com o nome do papel. Sem "
-            "acervo, ou sem id que case, nomeia o stem do starter que casa "
-            "(`kind: starter`) e o `--apply` também o copia com créditos. "
-            "Se o recibo já está e o WAV sumiu, recoloca os bytes quando "
-            "origem e licença casam; recibo diferente recusa. "
-            "`sfx copy` / `sfx export` continuam o caminho explícito. "
-            "`heard` é sempre falso."
-        ),
+        "scope": roles_fill_scope(),
     }
 
 

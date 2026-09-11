@@ -87,7 +87,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `sfx search` antes de baixar. Sem acervo, o starter já fala em
    `public/sfx`; `sfx search` nomeia o stem que casa com o termo. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`.
    `sfx info` lê a chave e nomeia o stem que o recibo lista e o
-   disco perdeu, `roles --fill` nomeia o mesmo stem,
+   disco perdeu, `roles --fill` nomeia o mesmo stem. Se o processo recusa o reuso automático, o `roles --fill` nomeia o reuso que o processo já recusa. Arquivo no disco não é licença. Sem chave `reuso`.
    `sfx verify` nomeia os stems sem cruzar
    o que não existe e nomeia o stem que o recibo lista e o
    disco perdeu. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. `sfx summary` lista todos. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `sfx serve`

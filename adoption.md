@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.415 — o roles fill nomeia o reuso que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+asset
+no
+disco
+não
+é
+automaticamente
+reutilizável.
+O
+comando
+sugeria
+o
+primeiro
+match
+e
+calava
+a
+recusa.
+Agora
+o
+`roles --fill`
+nomeia
+o
+reuso.
+Arquivo
+no
+disco
+não
+é
+licença.
+Sem
+chave
+`reuso`.
+Nomear
+não
+ouve.
+
+O que 0.9.415 não afirma:
+arquivo
+no
+disco
+não
+é
+licença
+nem
+mix
+ouvida.
+
 ## 0.9.414 — o version nomeia o julgamento que o roteiro já recusa
 
 O

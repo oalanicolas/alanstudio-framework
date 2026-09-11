@@ -546,7 +546,7 @@ python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo --fill --apply --
 ```
 
 `heard` e `approved` são sempre `false`: arquivo presente não é mixagem ouvida.
-`next` propõe `audio.roles` quando um papel está vazio. `roles --fill` sugere
+`next` propõe `audio.roles` quando um papel está vazio. Se o processo recusa o reuso automático, o `roles --fill` nomeia o reuso que o processo já recusa. Arquivo no disco não é licença. Sem chave `reuso`. `roles --fill` sugere
 um id do acervo ou a ficha do stem do starter; `--apply` copia o id do
 acervo ou o stem do starter para `public/sfx/<papel>` com recibo —
 e recoloca o WAV se o recibo já está e origem e licença casam.

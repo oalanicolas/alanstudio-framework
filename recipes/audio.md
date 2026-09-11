@@ -16,7 +16,7 @@ e Kenney arcade não são o padrão.
 `context --focus audio` seleciona esta receita. `roles <projeto>` lê os
 papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
 em `public/sfx`. Nomeia o `duckMs` que a tabela já declara. Sem duck a
-chave some. Nomear não é mix ouvida. `roles --fill` sugere um id do acervo ou a ficha do
+chave some. Nomear não é mix ouvida. Se o processo recusa o reuso automático, o `roles --fill` nomeia o reuso que o processo já recusa. Arquivo no disco não é licença. Sem chave `reuso`. `roles --fill` sugere um id do acervo ou a ficha do
 stem do starter que casa; `--apply` copia o id do acervo ou o stem
 do starter com créditos — e recoloca o WAV se o recibo já está e
 origem e licença casam. `sfx copy` do acervo faz o mesmo e

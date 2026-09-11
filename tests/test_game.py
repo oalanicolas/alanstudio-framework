@@ -1132,6 +1132,37 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("HEAD substitua o julgamento", game.git_summary_scope())
         self.assertNotIn("HEAD substitua o julgamento", game.next_scope())
 
+    def test_roles_fill_names_the_reuse_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_automatic_reuse(guide),
+            "o processo já recusa o reuso automático",
+        )
+        self.assertEqual(game.roles_reuse_source(), "references/process.md")
+        report = game.roles_fill(self.project)
+        self.assertIn(
+            "reuso automático",
+            report["scope"],
+            "o roles --fill sugeria o primeiro match e calava a recusa",
+        )
+        self.assertIn("(`reuso`)", report["scope"])
+        self.assertNotIn("reuso", report)
+        self.assertFalse(game.process_refuses_automatic_reuse(""))
+        with mock.patch.object(game, "roles_reuse_source", return_value=None):
+            silent = game.roles_fill(self.project)
+        self.assertNotIn("reuso automático", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o reuso que o processo já recusa", recipe)
+        self.assertIn("nomeia o reuso que o processo já recusa", skill)
+        self.assertIn("nomeia o reuso que o processo já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("reuso automático", game.roles_reading(self.project)["scope"])
+        self.assertNotIn("reuso automático", game.next_scope())
+        self.assertNotIn("reuso automático", game.record_scope())
+        self.assertNotIn("reuso automático", game.git_summary_scope())
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")
