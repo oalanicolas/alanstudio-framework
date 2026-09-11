@@ -4702,6 +4702,10 @@ def _bar_scope(project):
 def bar_reading(project):
     declaration = bar_declaration(project)
     declared = declaration["declared"]
+    problems = [dict(item) for item in declaration["problems"]]
+    problem_scope = bar_problem_scope()
+    for item in problems:
+        item["scope"] = problem_scope
     return {
         "schema_version": 1,
         "project": str(project),
@@ -4720,7 +4724,7 @@ def bar_reading(project):
         "at_floor": declaration["at_floor"],
         "undeclared": declaration["undeclared"],
         "conflicts": declaration["conflicts"],
-        "problems": declaration["problems"],
+        "problems": problems,
         "perceived_tier": declaration["perceived_tier"],
         "rule": "O degrau percebido de um jogo é o mínimo entre suas dimensões, não a média.",
         "guide": str(FRAMEWORK / "references/production-bar.md"),
@@ -4762,6 +4766,42 @@ def bar_item_scope():
         scope += (
             " O disco recusa que o degrau seja prazo (`prazos`). "
             "Linha no disco não é calendário."
+        )
+    return scope
+
+
+# A barra já recusa que o nome seja uma das dez. Sem isto o
+# problema copiava o achado e calava a recusa.
+# Linha no disco não é acabamento.
+BAR_TEN = re.compile(r"não é uma das dez")
+
+
+def bar_refuses_unknown_dimension(text):
+    return bool(text and BAR_TEN.search(text))
+
+
+def bar_problem_dimension_source():
+    path = FRAMEWORK / "references/production-bar.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_unknown_dimension(text):
+        return "references/production-bar.md"
+    return None
+
+
+def bar_problem_scope():
+    scope = (
+        "Motivo e fonte do problema de forma. Não observa e não "
+        "corrige a declaração."
+    )
+    if bar_problem_dimension_source():
+        scope += (
+            " O disco recusa que o nome seja uma das dez (`dimensão`). "
+            "Linha no disco não é acabamento."
         )
     return scope
 

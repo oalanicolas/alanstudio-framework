@@ -152,7 +152,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    a média — antes de melhorar o que já está alto, procure o que está baixo
    ([barra de acabamento](references/production-bar.md)). Declare em tabela, uma linha
    por dimensão, com degrau atual, seguinte e o critério que falta; `bar <projeto>` lê
-   e diz o piso, `next` propõe subir a dimensão pelo nome. Se a prosa declara o mínimo, o `bar` nomeia o mínimo que a barra já declara. Degrau no disco não é acabamento observado. Sem chave `mínimo`. Se a barra recusa que o degrau seja prazo, o `bar` nomeia os prazos que a barra já recusa. Linha no disco não é calendário. Sem chave `prazos`. Se a barra recusa promover o degrau, o `context` nomeia a promoção que a barra já recusa. Guia no disco não é acabamento. Sem chave `promove`. Nenhum comando atribui
+   e diz o piso, `next` propõe subir a dimensão pelo nome. Se a prosa declara o mínimo, o `bar` nomeia o mínimo que a barra já declara. Degrau no disco não é acabamento observado. Sem chave `mínimo`. Se a barra recusa que o degrau seja prazo, o `bar` nomeia os prazos que a barra já recusa. Linha no disco não é calendário. Sem chave `prazos`. Se a barra recusa que o nome seja uma das dez, o `bar` nomeia a dimensão que a barra já recusa. Linha no disco não é acabamento. Sem chave `dimensão`. Se a barra recusa promover o degrau, o `context` nomeia a promoção que a barra já recusa. Guia no disco não é acabamento. Sem chave `promove`. Nenhum comando atribui
    degrau; ao declarar um, declare dispositivo, versão, cena e quem observou.
    **A barra descreve, o gate recusa.** [Os dez gates](references/gates.md) formalizam
    as linhas “Pronto para…” do ciclo: ao pedir a próxima permissão, declare uma linha

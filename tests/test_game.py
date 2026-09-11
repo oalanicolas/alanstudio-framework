@@ -3635,6 +3635,45 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("degrau seja prazo", game.next_scope())
         self.assertNotIn("degrau seja prazo", game.context_scope())
 
+    def test_bar_names_the_dimension_the_bar_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.bar_refuses_unknown_dimension(guide),
+            "a barra já recusa que o nome seja uma das dez",
+        )
+        self.assertEqual(game.bar_problem_dimension_source(), "references/production-bar.md")
+        self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS})
+        self.declare_bar({"fell": ("slice", "shippable")}, path="docs/qa.md")
+        report = game.bar_reading(self.project)
+        self.assertEqual([item["reason"] for item in report["problems"]], ["unknown_dimension"])
+        item = report["problems"][0]
+        self.assertIn(
+            "nome seja uma das dez",
+            item["scope"],
+            "o problema copiava o achado e calava a recusa",
+        )
+        self.assertIn("(`dimensão`)", item["scope"])
+        self.assertNotIn("dimensão", item)
+        self.assertFalse(report["assessed"])
+        self.assertFalse(game.bar_refuses_unknown_dimension(""))
+        raw = game.bar_declaration(self.project)
+        self.assertNotIn("scope", raw["problems"][0])
+        with mock.patch.object(game, "bar_problem_dimension_source", return_value=None):
+            silent = game.bar_reading(self.project)
+        self.assertNotIn("nome seja uma das dez", silent["problems"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a dimensão que a barra já recusa", recipe)
+        self.assertIn("nomeia a dimensão que a barra já recusa", skill)
+        self.assertIn("nomeia a dimensão que a barra já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("nome seja uma das dez", report["scope"])
+        self.assertNotIn("nome seja uma das dez", game.bar_item_scope())
+        self.assertNotIn("nome seja uma das dez", game.production_bar_scope())
+        self.assertNotIn("nome seja uma das dez", game.next_scope())
+        self.assertNotIn("nome seja uma das dez", game.context_scope())
+
     def test_bar_reads_the_tier_the_project_declares_and_never_assigns_one(self):
         self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS} | {"pacing": ("playable", "slice")})
         report = game.bar_reading(self.project)
