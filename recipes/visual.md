@@ -8,7 +8,7 @@ dusk cai mais denso e com mais estilhaço, calm mais folgado e
 com menos risco — sem comer a seed. A ameaça
 da mostra marca o trilho com o mesmo telegraph do campo; a live já
 nomeava o perigo. Se o canvas declara `drawTelegraph`, o `art` nomeia o trilho que o telegraph já marca.
-Marca no disco não é comparação em movimento. Sem chave `telegraph`. Se o canvas declara `drawVignette`, o `art` nomeia a vinheta que o recorte já marca. Recorte no disco não é comparação em movimento. Sem chave `vignette`. Se o sistema recusa que a paleta compartilhada seja o contrato, o `art` nomeia a paleta que o sistema já recusa. Lista no disco não é contrato. Sem chave `paleta`. O campo
+Marca no disco não é comparação em movimento. Sem chave `telegraph`. Se o canvas declara `drawVignette`, o `art` nomeia a vinheta que o recorte já marca. Recorte no disco não é comparação em movimento. Sem chave `vignette`. Se o sistema recusa que a paleta compartilhada seja o contrato, o `art` nomeia a paleta que o sistema já recusa. Lista no disco não é contrato. Sem chave `paleta`. Se a receita recusa que importação sem erro comprove aparência equivalente, o `art` nomeia a aparência que a receita já recusa. Importar no disco não é o renderer. Sem chave `aparência`. O campo
 começa depois do avanço.
 Comparar só o meio da partida esconde a imagem que o jogador vê ao
 abrir. Sem tela o headless já joga.
@@ -82,7 +82,7 @@ de terminais fechados quando representam tecido; hachuras devem permanecer na
 superfície efetiva, inclusive em domos parciais. Compare o asset isolado e o elenco
 na luz final: uma correção local não valida o enquadramento e a iluminação do conjunto.
 No glTF, confira também UVs, pixels embutidos e espaço de cor de baseColor/normal;
-importação sem erro não comprova aparência equivalente entre renderers.
+importação sem erro não comprova aparência equivalente entre renderers. Se a receita recusa que importação sem erro comprove aparência equivalente, o `art` nomeia a aparência que a receita já recusa. Importar no disco não é o renderer. Sem chave `aparência`.
 
 Para tinta desenhada sobre volumes, calibre a espessura aparente por família no
 export, com uma vista isolada da referência e o modelo à mesma altura. Expansão

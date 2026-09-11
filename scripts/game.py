@@ -4102,6 +4102,9 @@ def art_reading(project):
             " O disco marca o recorte (`drawVignette`). Recorte no disco "
             "não é comparação em movimento."
         )
+    named = art_appearance_scope()
+    if named:
+        scope += named
     palette_scope = art_palette_scope()
     for item in palettes:
         item["scope"] = palette_scope
@@ -7673,6 +7676,40 @@ def art_rain_scope():
             "Lista no disco não é comparação."
         )
     return scope
+
+
+# A receita já recusa que importação sem
+# erro comprove aparência equivalente.
+# Sem isto o art listava paletas e calava
+# a recusa. Importar no disco não é o
+# renderer.
+VISUAL_APPEAR = re.compile(r"importação sem erro não comprova aparência")
+
+
+def recipe_refuses_import_as_appearance(text):
+    return bool(text and VISUAL_APPEAR.search(text))
+
+
+def art_appearance_source():
+    path = VISUAL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_import_as_appearance(text):
+        return "recipes/visual.md"
+    return None
+
+
+def art_appearance_scope():
+    if not art_appearance_source():
+        return None
+    return (
+        " O disco recusa que importação sem erro comprove aparência "
+        "equivalente (`aparência`). Importar no disco não é o renderer."
+    )
 
 
 # A receita já recusa que o harness infira dependências. Sem isto a

@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.539 — o art nomeia a aparência que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+importação
+sem
+erro
+não
+comprova
+aparência
+equivalente
+entre
+renderers.
+O
+art
+listava
+paletas
+e
+calava
+a
+recusa.
+Agora
+o
+`art`
+nomeia
+a
+aparência.
+Importar
+no
+disco
+não
+é
+o
+renderer.
+Sem
+chave
+`aparência`.
+Nomear
+não
+observa.
+
+O que 0.9.539 não afirma:
+importar
+sem
+erro
+não
+é
+o
+mesmo
+quadro
+em
+outro
+renderer.
+
 ## 0.9.538 — o policy do studio_assets nomeia a herança que o mapa já recusa
 
 O

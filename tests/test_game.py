@@ -2204,6 +2204,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("mesa seja volume", game.content_reading(starter)["scope"])
         self.assertNotIn("mesa seja volume", game.scan(starter)["scope"])
 
+    def test_art_names_the_appearance_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_import_as_appearance(recipe),
+            "a receita já recusa que importação sem erro comprove aparência equivalente",
+        )
+        self.assertEqual(game.art_appearance_source(), "recipes/visual.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.art_reading(starter)
+        self.assertIn(
+            "importação sem erro comprove aparência equivalente",
+            report["scope"],
+            "o art listava paletas e calava a recusa",
+        )
+        self.assertIn("(`aparência`)", report["scope"])
+        self.assertNotIn("aparência", report)
+        self.assertFalse(report["consistent"])
+        self.assertFalse(game.recipe_refuses_import_as_appearance(""))
+        with mock.patch.object(game, "art_appearance_source", return_value=None):
+            silent = game.art_reading(starter)
+        self.assertNotIn("importação sem erro comprove aparência equivalente", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a aparência que a receita já recusa", recipe)
+        self.assertIn("nomeia a aparência que a receita já recusa", skill)
+        self.assertIn("nomeia a aparência que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertTrue(report["palettes"])
+        self.assertNotIn(
+            "importação sem erro comprove aparência equivalente",
+            report["palettes"][0].get("scope") or "",
+        )
+        self.assertTrue(report["rains"])
+        self.assertNotIn(
+            "importação sem erro comprove aparência equivalente",
+            report["rains"][0].get("scope") or "",
+        )
+        self.assertNotIn("importação sem erro comprove aparência equivalente", game.art_direction_scope())
+        self.assertNotIn("importação sem erro comprove aparência equivalente", game.next_scope())
+        self.assertNotIn("importação sem erro comprove aparência equivalente", game.scan(starter)["scope"])
+
     def test_doctor_names_the_publisher_the_skill_already_refuses(self):
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         self.assertTrue(
