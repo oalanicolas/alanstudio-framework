@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.398: o `scan` nomeia o serve que o README já aponta. Página no disco não é partida jogada. Sem chave `serve`. Nomear não executa. Confirmação pendente.
+**HEAD:** ver `git log -1` — vigente 0.9.398: o `scan` nomeia o serve que o README já aponta. Página no disco não é partida jogada. Sem chave `serve`. Nomear não executa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.397):** `python3 -m unittest discover -s tests` → 393 OK.
+**Suítes confirmadas no HEAD (0.9.398):** `python3 -m unittest discover -s tests` → 394 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
