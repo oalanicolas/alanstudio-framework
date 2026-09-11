@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.362 — o feel nomeia a inclinação que o lookAhead já marca
+
+A
+receita
+já
+inclinava
+o
+quadro
+com
+`lookAhead`.
+O
+comando
+lia
+`lookAheadX`
+e
+calava
+o
+laço.
+Agora
+o
+`feel`
+nomeia
+a
+inclinação.
+Lean
+no
+disco
+não
+é
+peso
+percebido.
+Sem
+chave
+`lookAhead`.
+Não
+promove
+`felt`.
+
+O que 0.9.362 não afirma:
+lean
+no
+disco
+não
+é
+câmera
+sentida.
+
 ## 0.9.361 — o roles nomeia a voz que o sfx já desloca
 
 A

@@ -1680,6 +1680,24 @@ def attract_move_source(project):
     return None
 
 
+# A receita já inclina o quadro. Sem isto o feel
+# lia lookAheadX e calava o laço. Lean no disco
+# não é peso percebido.
+LOOK_AHEAD = re.compile(r"(?:export\s+)?function\s+lookAhead\b")
+
+
+def camera_leans(text):
+    return bool(text and LOOK_AHEAD.search(text))
+
+
+def look_ahead_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if camera_leans(text):
+            return relative
+    return None
+
+
 # O tool já exercita o perdão. Sem isto o feel
 # lia CONFIG e calava o probe. Conta no disco
 # não é peso percebido.
@@ -1731,6 +1749,11 @@ def _feel_scope(project):
     if attract_move_source(project):
         scope += (
             " A porta desloca o corpo (`attractMove`). Pose no disco não é "
+            "peso percebido."
+        )
+    if look_ahead_source(project):
+        scope += (
+            " O disco inclina o quadro (`lookAhead`). Lean no disco não é "
             "peso percebido."
         )
     if probe_buffer_source(project):

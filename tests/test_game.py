@@ -3591,6 +3591,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", recipe)
 
+    def test_feel_names_the_lookahead_the_disk_already_leans(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        rules = (starter / "src/game/rules.js").read_text(encoding="utf-8")
+        self.assertTrue(game.camera_leans(rules), "o laço já inclina o quadro")
+        self.assertEqual(game.look_ahead_source(starter), "src/game/rules.js")
+        report = game.feel_reading(starter)
+        self.assertIn("inclina o quadro", report["scope"], "o feel lia lookAheadX e calava o laço")
+        self.assertIn("(`lookAhead`)", report["scope"])
+        self.assertFalse(report["felt"])
+        self.assertNotIn("lookAhead", report)
+        self.assertNotIn("lean", report)
+        empty = game.feel_reading(self.project)
+        self.assertFalse(game.camera_leans(""))
+        self.assertIsNone(game.look_ahead_source(self.project))
+        self.assertNotIn("inclina o quadro", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a inclinação que o lookAhead já marca", recipe)
+        self.assertIn("nomeia a inclinação que o lookAhead já marca", skill)
+        self.assertIn("nomeia a inclinação que o lookAhead já marca", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("then.lookAhead", report.get("then") or {})
+
     def test_feel_names_the_probe_the_disk_already_runs(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         tool = (starter / "tools/probe.mjs").read_text(encoding="utf-8")
