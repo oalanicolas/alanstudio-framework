@@ -133,7 +133,7 @@ pixels do stub depois do `draw()` além dos pares hex e, em cinza, conta
 o que só o orbe ou só o estilhaço pinta — relata, não aprova,
 e não substitui o dispositivo. Se o `tools/contrast.*` amostra o
 stub, o `access` nomeia o contraste. Stub no disco não é
-sessão com o modo ativo. Sem chave `contrast`.
+sessão com o modo ativo. Sem chave `contrast`. Se a receita recusa que tamanho CSS igual garanta pixels, o `access` nomeia os pixels que a receita já recusa. Tamanho no disco não é o buffer. Sem chave `pixels`.
 
 Prova: uma sessão completa com cada modo ativado, o jogo terminado sem áudio,
 verificação de contraste na cena de pior caso, remapeamento aplicado e

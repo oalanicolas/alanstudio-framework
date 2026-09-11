@@ -2838,6 +2838,39 @@ def contrast_stub_source(project):
     return None
 
 
+# A receita já recusa que tamanho CSS igual
+# garanta pixels. Sem isto o access amostrava
+# o stub e calava a recusa. Tamanho no disco
+# não é o buffer.
+PERF_PIXELS = re.compile(r"Tamanho CSS igual não garante pixels")
+
+
+def recipe_refuses_css_size_as_pixels(text):
+    return bool(text and PERF_PIXELS.search(text))
+
+
+def access_contrast_pixels_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_css_size_as_pixels(text):
+        return "recipes/performance.md"
+    return None
+
+
+def access_contrast_pixels_scope():
+    if not access_contrast_pixels_source():
+        return None
+    return (
+        " O disco recusa que tamanho CSS igual garanta pixels "
+        "(`pixels`). Tamanho no disco não é o buffer."
+    )
+
+
 # A receita já pede o aviso. Sem isto o access
 # lia região viva e calava o perigo que o live
 # já anuncia. Texto no DOM não é sessão.
@@ -3471,6 +3504,9 @@ def access_reading(project):
             " O disco amostra o contraste no stub (`contrast`). "
             "Stub no disco não é sessão com o modo ativo."
         )
+        named = access_contrast_pixels_scope()
+        if named:
+            scope += named
     if threat_live_source(project):
         scope += (
             " A região viva nomeia o perigo à frente que a receita já "

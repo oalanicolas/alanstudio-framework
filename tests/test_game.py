@@ -10156,6 +10156,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("4.5", report["scope"])
         self.assertNotIn("WCAG", report["scope"])
 
+    def test_access_names_the_pixels_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_css_size_as_pixels(recipe),
+            "a receita já recusa que tamanho CSS igual garanta pixels",
+        )
+        self.assertEqual(game.access_contrast_pixels_source(), "recipes/performance.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        self.assertIn(
+            "tamanho CSS igual garanta pixels",
+            report["scope"],
+            "o access amostrava o stub e calava a recusa",
+        )
+        self.assertIn("(`pixels`)", report["scope"])
+        self.assertIn("amostra o contraste no stub", report["scope"])
+        self.assertNotIn("pixels", report)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_css_size_as_pixels(""))
+        empty = game.access_reading(self.project)
+        self.assertNotIn("tamanho CSS igual garanta pixels", empty["scope"])
+        with mock.patch.object(game, "access_contrast_pixels_source", return_value=None):
+            silent = game.access_reading(starter)
+        self.assertNotIn("tamanho CSS igual garanta pixels", silent["scope"])
+        self.assertIn("amostra o contraste no stub", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        access_recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os pixels que a receita já recusa", recipe)
+        self.assertIn("nomeia os pixels que a receita já recusa", access_recipe)
+        self.assertIn("nomeia os pixels que a receita já recusa", skill)
+        self.assertIn("nomeia os pixels que a receita já recusa", readme)
+        self.assertNotIn("verified", game.access_contrast_pixels_scope())
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("WCAG", report["scope"])
+        for option in report["options"]:
+            self.assertNotIn("tamanho CSS igual garanta pixels", option["scope"])
+        self.assertNotIn("tamanho CSS igual garanta pixels", game.budget_reading(starter)["scope"])
+        self.assertNotIn("tamanho CSS igual garanta pixels", game.art_reading(starter)["scope"])
+        self.assertNotIn("tamanho CSS igual garanta pixels", game.feel_reading(starter)["scope"])
+        self.assertNotIn("tamanho CSS igual garanta pixels", game.next_scope())
+
     def test_access_names_the_threat_the_live_already_announces(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         live = (starter / "src/core/live.js").read_text(encoding="utf-8")

@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.556 — o access nomeia os pixels que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+tamanho
+CSS
+igual
+não
+garante
+pixels.
+O
+access
+amostrava
+o
+stub
+e
+calava
+a
+recusa.
+Agora
+o
+`access`
+nomeia
+os
+pixels.
+Tamanho
+no
+disco
+não
+é
+o
+buffer.
+Sem
+chave
+`pixels`.
+Nomear
+não
+mede.
+
+O que 0.9.556 não afirma:
+amostrar
+o
+stub
+não
+é
+medir
+o
+dispositivo.
+
 ## 0.9.555 — o candidate_policy nomeia a origem que a receita já recusa
 
 A

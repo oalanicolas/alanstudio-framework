@@ -75,7 +75,7 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
 
 - Identifique o build servido, backend gráfico, dispositivo, visibilidade da página,
   dimensões do buffer, DPR e escala interna. Tamanho CSS igual não garante pixels
-  iguais; renderização por software e HMR concorrente mudam o ensaio.
+  iguais; renderização por software e HMR concorrente mudam o ensaio. Se a receita recusa que tamanho CSS igual garanta pixels, o `access` nomeia os pixels que a receita já recusa. Tamanho no disco não é o buffer. Sem chave `pixels`.
 - Compare câmera, semente, relógio, vento, física e estado de aquecimento equivalentes.
   Preserve amostras brutas e configuração. Uma captura diferente pode revelar uma
   abertura ou um efeito que a fixture geométrica não cobre.
