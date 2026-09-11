@@ -1341,6 +1341,40 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("paleta compartilhada seja o sistema", game.next_scope())
         self.assertNotIn("paleta compartilhada seja o sistema", game.scan(self.project)["scope"])
 
+    def test_doctor_names_the_publisher_the_skill_already_refuses(self):
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.skill_refuses_publisher_tier(skill),
+            "a skill já recusa que AAA seja tier de publisher",
+        )
+        self.assertEqual(game.skill_target_publisher_source(), "SKILL.md")
+        report = game.doctor(self.root)
+        self.assertTrue(report["skill_targets"], "o doctor já lista os atalhos da skill")
+        item = report["skill_targets"][0]
+        self.assertIn(
+            "AAA seja tier de publisher",
+            item["scope"],
+            "o atalho copiava o hash e calava a recusa",
+        )
+        self.assertIn("(`publisher`)", item["scope"])
+        self.assertNotIn("publisher", item)
+        self.assertFalse(report.get("executed", False))
+        self.assertFalse(game.skill_refuses_publisher_tier(""))
+        with mock.patch.object(game, "skill_target_publisher_source", return_value=None):
+            silent = game.doctor(self.root)
+        self.assertNotIn("AAA seja tier de publisher", silent["skill_targets"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        page = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o publisher que a skill já recusa", recipe)
+        self.assertIn("nomeia o publisher que a skill já recusa", skill)
+        self.assertIn("nomeia o publisher que a skill já recusa", page)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("AAA seja tier de publisher", report["scope"])
+        self.assertNotIn("AAA seja tier de publisher", game.doctor_then_scope())
+        self.assertNotIn("AAA seja tier de publisher", game.next_scope())
+        self.assertNotIn("AAA seja tier de publisher", game.guide_scope("canvas-arcade"))
+        self.assertNotIn("AAA seja tier de publisher", game.init_scope(False))
+
     def test_check_plan_names_the_merit_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -7567,6 +7567,43 @@ def skill_targets(root):
     return [root / ".agents/skills/game-dev/SKILL.md", root / ".claude/skills/game-dev/SKILL.md"]
 
 
+# A skill já recusa que AAA seja tier de publisher. Sem isto o
+# atalho copiava o hash e calava a recusa.
+# Atalho no disco não é orçamento.
+SKILL_FILE = FRAMEWORK / "SKILL.md"
+SKILL_PUBLISHER = re.compile(r"não tier de publisher")
+
+
+def skill_refuses_publisher_tier(text):
+    return bool(text and SKILL_PUBLISHER.search(text))
+
+
+def skill_target_publisher_source():
+    path = SKILL_FILE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if skill_refuses_publisher_tier(text):
+        return "SKILL.md"
+    return None
+
+
+def skill_target_scope():
+    scope = (
+        "Caminho, vigência e symlink do atalho da skill. Não copia a "
+        "skill e não cria o projeto."
+    )
+    if skill_target_publisher_source():
+        scope += (
+            " O disco recusa que AAA seja tier de publisher (`publisher`). "
+            "Atalho no disco não é orçamento."
+        )
+    return scope
+
+
 # O README já imprime o exemplo. Sem isto o
 # doctor.then colava <fantasia> e calava a frase.
 # Frase no then não é pasta criada.
@@ -7684,6 +7721,7 @@ def doctor(root):
             "path": str(target),
             "status": state,
             "link": target.is_symlink() or None,
+            "scope": skill_target_scope(),
         })
     current = [item for item in installed if item["status"] == "current"]
     stale = [item for item in installed if item["status"] != "current"]

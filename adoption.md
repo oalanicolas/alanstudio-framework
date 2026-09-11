@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.440 — o doctor nomeia o publisher que a skill já recusa
+
+A
+skill
+já
+dizia
+que
+AAA
+não
+é
+tier
+de
+publisher.
+O
+atalho
+copiava
+o
+hash
+e
+calava
+a
+recusa.
+Agora
+o
+`doctor`
+nomeia
+o
+publisher.
+Atalho
+no
+disco
+não
+é
+orçamento.
+Sem
+chave
+`publisher`.
+Nomear
+não
+observa.
+
+O que 0.9.440 não afirma:
+atalho
+no
+disco
+não
+é
+orçamento
+nem
+acabamento
+de
+publisher.
+
 ## 0.9.439 — o art nomeia a paleta que o sistema já recusa
 
 O
