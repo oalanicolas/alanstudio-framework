@@ -58,7 +58,9 @@ orçamento declara as cenas `title.attract` e `playing.run` e relata esse reuso,
 e sem aprovação. Orçar só o campo escondia o primeiro quadro.
 O laço de passo fixo em `src/core/loop.js` é o que torna
 a medição da simulação comparável entre execuções. `npm run size` relata
-os bytes de `dist/` sem teto.
+os bytes de `dist/` sem teto. Se o `tools/size.*` declara sem teto, o
+`budget` nomeia os bytes que o size já relata. Bytes no disco não são
+o quadro medido. Sem chave `size`.
 
 Prova: distribuição de tempo de quadro na cena de pior caso, primeiro carregamento
 em ambiente frio, comparação visual em movimento confirmando que o acabamento

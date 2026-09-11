@@ -4007,6 +4007,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", recipe)
 
+    def test_budget_names_the_size_the_recipe_already_reports(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/size.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.size_names_bytes(tool), "o tool já relata os bytes")
+        self.assertEqual(game.ship_size_source(starter), "tools/size.mjs")
+        report = game.budget_reading(starter)
+        self.assertIn("relata os bytes", report["scope"], "o budget cronometrava a porta e calava o size")
+        self.assertIn("(`size`)", report["scope"])
+        self.assertFalse(report["measured"])
+        self.assertNotIn("size", report)
+        empty = game.budget_reading(self.project)
+        self.assertFalse(game.size_names_bytes(""))
+        self.assertIsNone(game.ship_size_source(self.project))
+        self.assertNotIn("relata os bytes", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os bytes que o size já relata", recipe)
+        self.assertIn("nomeia os bytes que o size já relata", skill)
+        self.assertIn("nomeia os bytes que o size já relata", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("playing.run", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+
     def test_persistence_recipe_names_the_pad_loss_the_starter_already_flushes(self):
         persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")

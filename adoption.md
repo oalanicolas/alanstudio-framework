@@ -3,6 +3,54 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.360 — o budget nomeia os bytes que o size já relata
+
+A
+receita
+já
+relatava
+os
+bytes
+com
+`npm run size`.
+O
+comando
+cronometrava
+a
+porta
+e
+calava
+o
+tool.
+Agora
+o
+`budget`
+nomeia
+os
+bytes.
+Bytes
+no
+disco
+não
+são
+o
+quadro
+medido.
+Sem
+chave
+`size`.
+Não
+promove
+`measured`.
+
+O que 0.9.360 não afirma:
+bytes
+no
+disco
+não
+são
+dispositivo.
+
 ## 0.9.359 — o content nomeia a mesa que o disco já nasce
 
 A

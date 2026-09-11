@@ -1946,6 +1946,14 @@ def budget_reading(project):
             " O orçamento cronometra a porta (`title.attract`). "
             "Stub no disco não é dispositivo."
         )
+    # A receita já relata os bytes. Sem isto o budget
+    # cronometrava a porta e calava o size. Bytes no
+    # disco não são dispositivo.
+    if ship_size_source(project):
+        scope += (
+            " O disco relata os bytes (`size`) sem teto. "
+            "Bytes no disco não são o quadro medido."
+        )
     return {
         "schema_version": 1,
         "project": str(project),

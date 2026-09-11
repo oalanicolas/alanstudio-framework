@@ -668,7 +668,10 @@ não é aba fechada. `trusted` é sempre `false`.
 `budget` procura script `budget`/`bench`, `tools/budget.*` ou
 `record --kind budget`. Se o tool declara `title.attract`, o
 `budget` nomeia a porta que a receita já cronometra. Stub no
-disco não é dispositivo. Sem chave `door`. `measured` é sempre `false`. O starter declara
+disco não é dispositivo. Sem chave `door`. Se o `tools/size.*`
+declara sem teto, o `budget` nomeia os bytes que o size já relata.
+Bytes no disco não são o quadro medido. Sem chave `size`.
+`measured` é sempre `false`. O starter declara
 os três; um canvas sem opção de alcance recebe `access.missing` antes da
 barra.
 

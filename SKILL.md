@@ -303,7 +303,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `trusted`. Trocar no stub não é sessão observada.
    Se o `tools/budget.*` declara `title.attract`, o `budget`
    nomeia a porta que a receita já cronometra. Stub no disco
-   não é dispositivo. Sem chave `door`.
+   não é dispositivo. Sem chave `door`. Se o `tools/size.*`
+   declara sem teto, o `budget` nomeia os bytes que o size já relata.
+   Bytes no disco não são o quadro medido. Sem chave `size`.
    `verified`/`trusted`/`measured` são sempre falsos.
    Falta no disco entra no `next` antes dos rascunhos.
    **`art` / `content` / `ship`** leem paleta ou art-bible vigente, mesas
