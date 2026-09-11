@@ -2490,6 +2490,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("pontuação universal de diversão", game.verify_scope())
         self.assertNotIn("pontuação universal de diversão", game.next_scope())
 
+    def test_scan_names_the_audience_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_invented_audience(guide),
+            "a guia já recusa inventar público observado",
+        )
+        self.assertEqual(game.vision_audience_source(), "references/preproduction.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "inventar público observado",
+            report["areas"]["vision"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`público`)", report["areas"]["vision"]["scope"])
+        self.assertNotIn("público", report["areas"]["vision"])
+        self.assertFalse(game.guide_refuses_invented_audience(""))
+        with mock.patch.object(game, "vision_audience_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("inventar público observado", silent["areas"]["vision"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o público que a guia já recusa", guide)
+        self.assertIn("nomeia o público que a guia já recusa", recipe)
+        self.assertIn("nomeia o público que a guia já recusa", skill)
+        self.assertIn("nomeia o público que a guia já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["vision"]["scope"])
+        self.assertNotIn("inventar público observado", report["scope"])
+        self.assertNotIn("inventar público observado", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("inventar público observado", report["areas"]["mda"]["scope"])
+        self.assertNotIn("inventar público observado", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("inventar público observado", game.next_scope())
+
     def test_scan_names_the_absence_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(

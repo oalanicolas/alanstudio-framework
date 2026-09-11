@@ -40,7 +40,7 @@ piso do verbo. Contrato: [ambição](ambition.md).
 Ao iniciar, resolva o pedido, artefatos atuais e referência aprovada. Extraia o que
 já foi decidido; identifique hipóteses e lacunas. Pergunte somente por decisão
 indispensável que não possa ser inferida; registre suposições rotineiras e continue
-o trabalho autorizado. Não invente aprovação, público observado ou resultado de teste.
+o trabalho autorizado. Não invente aprovação, público observado ou resultado de teste. Se a guia recusa inventar público observado, o `scan` nomeia o público que a guia já recusa. Área no disco não é audiência. Sem chave `público`.
 
 ## Fluxo com retorno
 

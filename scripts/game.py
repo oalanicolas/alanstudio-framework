@@ -5592,6 +5592,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     areas["decisions"]["scope"] = decisions_area_scope()
     areas["gdd"]["scope"] = gdd_area_scope()
     areas["mda"]["scope"] = mda_area_scope()
+    areas["vision"]["scope"] = vision_area_scope()
     candidate_scope = scan_candidate_scope()
     for area in areas.values():
         for item in area["candidates"]:
@@ -6567,6 +6568,42 @@ def mda_area_scope():
         scope += (
             " O disco recusa pontuação universal de diversão (`pontuação`). "
             "Área no disco não é experiência."
+        )
+    return scope
+
+
+# A guia já recusa inventar público observado. Sem isto a
+# área localizava o brief e calava a recusa.
+# Área no disco não é audiência.
+VISION_AUDIENCE = re.compile(r"público observado")
+
+
+def guide_refuses_invented_audience(text):
+    return bool(text and VISION_AUDIENCE.search(text))
+
+
+def vision_audience_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_invented_audience(text):
+        return "references/preproduction.md"
+    return None
+
+
+def vision_area_scope():
+    scope = (
+        "Localiza o documento de visão. Não observa o público e não "
+        "inventa aprovação."
+    )
+    if vision_audience_source():
+        scope += (
+            " O disco recusa inventar público observado (`público`). "
+            "Área no disco não é audiência."
         )
     return scope
 
