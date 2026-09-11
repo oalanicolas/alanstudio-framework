@@ -1645,6 +1645,35 @@ def attract_move_source(project):
     return None
 
 
+# O tool já exercita o perdão. Sem isto o feel
+# lia CONFIG e calava o probe. Conta no disco
+# não é peso percebido.
+PROBE_FILES = ("tools/probe.mjs", "tools/probe.js", "tools/probe.py")
+PROBE_BUFFERS = re.compile(
+    r"não atribui peso percebido|janelas de perdão",
+    re.IGNORECASE,
+)
+
+
+def probe_counts_buffers(text):
+    return bool(text and PROBE_BUFFERS.search(text))
+
+
+def probe_buffer_source(project):
+    project = Path(project)
+    for name in PROBE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if probe_counts_buffers(text):
+            return name
+    return None
+
+
 def _feel_scope(project):
     scope = (
         "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch, "
@@ -1667,6 +1696,11 @@ def _feel_scope(project):
     if attract_move_source(project):
         scope += (
             " A porta desloca o corpo (`attractMove`). Pose no disco não é "
+            "peso percebido."
+        )
+    if probe_buffer_source(project):
+        scope += (
+            " O disco exercita o perdão (`probe`). Conta no disco não é "
             "peso percebido."
         )
     return scope

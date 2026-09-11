@@ -3566,6 +3566,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", recipe)
 
+    def test_feel_names_the_probe_the_disk_already_runs(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/probe.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.probe_counts_buffers(tool), "o tool já exercita o perdão")
+        self.assertEqual(game.probe_buffer_source(starter), "tools/probe.mjs")
+        report = game.feel_reading(starter)
+        self.assertIn("exercita o perdão", report["scope"], "o feel calava o probe que o disco já corre")
+        self.assertIn("(`probe`)", report["scope"])
+        self.assertFalse(report["felt"])
+        self.assertNotIn("probe", report)
+        empty = game.feel_reading(self.project)
+        self.assertFalse(game.probe_counts_buffers(""))
+        self.assertIsNone(game.probe_buffer_source(self.project))
+        self.assertNotIn("exercita o perdão", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o perdão que o probe já exercita", recipe)
+        self.assertIn("nomeia o perdão que o probe já exercita", skill)
+        self.assertIn("nomeia o perdão que o probe já exercita", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("then.probe", report.get("then") or {})
+        self.assertNotIn("16 ms", report["scope"])
+
     def test_feel_names_the_heading_the_dash_already_aims(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.feel_reading(starter)

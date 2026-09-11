@@ -614,6 +614,8 @@ câmera, rumble e o peso do passo no `CONFIG`. As janelas da chuva (prática, fo
 na mesa. O coil do dash marca o rumo no corpo. Se o laço declara
 `attractMove`, o `feel` nomeia o corpo que a porta já desloca.
 Pose no disco não é peso percebido. Sem chave `attract`.
+Se o `tools/probe.*` exercita as janelas de perdão, o `feel` nomeia o perdão que o probe já exercita.
+Conta no disco não é peso percebido. Sem chave `probe`.
 Constante nomeada não é peso percebido. `feel` lê as
 constantes — inclusive o pulso e o passo — essas janelas e o rumo, procura um `record.json` de observação no projeto e nomeia
 `then.play` e `then.note` sem executar. Com last-run, nomeia `then.seed`

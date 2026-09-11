@@ -262,7 +262,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    campo já as marca; o comando calava o passo — e o rumo que o
    coil do dash marca no corpo. Se o laço declara `attractMove`, o
    `feel` nomeia o corpo que a porta já desloca. Pose no disco
-   não é peso percebido. Sem chave `attract`. Traço no disco não é peso percebido. Lê o
+   não é peso percebido. Sem chave `attract`. Se o `tools/probe.*`
+   exercita as janelas de perdão, o `feel` nomeia o perdão que o probe já exercita.
+   Conta no disco não é peso percebido. Sem chave `probe`. Traço no disco não é peso percebido. Lê o
    recibo de observação no disco. Nomeia `then.play` e `then.note` sem
    executar. Com last-run, nomeia `then.seed` e `then.invite` — o mesmo
    endereço que `play` / `guide`. Sem comando de abrir, `then.play` some.

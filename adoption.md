@@ -3,6 +3,48 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.357 — o feel nomeia o perdão que o probe já exercita
+
+O
+tool
+já
+exercitava
+as
+janelas
+de
+perdão.
+O
+comando
+calava.
+Agora
+o
+`feel`
+nomeia
+o
+perdão.
+Conta
+no
+disco
+não
+é
+peso
+percebido.
+Sem
+chave
+`probe`.
+Não
+promove
+`felt`.
+
+O que 0.9.357 não afirma:
+conta
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.356 — o playtest nomeia a simulação que a receita já grava
 
 A
