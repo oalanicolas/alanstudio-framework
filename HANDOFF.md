@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.418: o `context` nomeia a escuta que o mapa já recusa. Acervo no disco não é mix ouvida. Sem chave `ouve`. Nomear não ouve.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**HEAD anterior (0.9.417) + confirmação pendente:** `python3 -m unittest discover -s tests` → 413 OK.
+**Suítes confirmadas no HEAD (0.9.418):** `python3 -m unittest discover -s tests` → 414 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
