@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.382: o `roles` nomeia o PCM que o wav já lê. Bytes no disco não são mix ouvida. Sem chave `wav`. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD anterior (0.9.381):** `python3 -m unittest discover -s tests` → 377 OK.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK. Confirmação do 0.9.382 pendente.
+**Suítes confirmadas no HEAD (0.9.382):** `python3 -m unittest discover -s tests` → 378 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
