@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.364: o `access` nomeia o perigo que o live já anuncia. Texto no DOM não é sessão. Sem chave `threat`. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.363):** `python3 -m unittest discover -s tests` → 359.
+**Suítes confirmadas no HEAD (0.9.364):** `python3 -m unittest discover -s tests` → 360.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
