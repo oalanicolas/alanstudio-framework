@@ -4,7 +4,8 @@
 // negada, valor truncado por outra aba. Nada disso pode derrubar o jogo nem
 // apagar o que já estava salvo. A gravação escreve em uma chave temporária,
 // relê, compara e só então promove — e um valor ilegível é preservado em
-// `<chave>.broken` em vez de descartado.
+// `<chave>.broken` em vez de descartado. Se a cópia falhar, a chave original
+// fica intacta e novas gravações são recusadas até que ela possa ser preservada.
 // A outra aba dispara `storage`. Sem isto esta página
 // ficava com o look e o mix velhos. Ouvir não é aba
 // fechada; `trusted` continua falso.
@@ -91,6 +92,10 @@ export function writeJson(storage, key, value) {
   }
   const staging = `${key}.tmp`;
   try {
+    const current = readJson(storage, key);
+    if (current.status === "unreadable" && !current.backupSaved) {
+      return { ok: false, reason: "backup_failed", detail: current.backupError };
+    }
     storage.set(staging, text);
     if (storage.get(staging) !== text) {
       storage.remove(staging);
@@ -117,7 +122,15 @@ export function readJson(storage, key) {
   } catch (error) {
     // Preserva o original: um save ilegível para este código pode ser legível
     // para uma investigação ou para uma versão futura.
-    storage.set(`${key}.broken`, raw);
-    return { value: null, status: "unreadable", detail: String(error) };
+    try {
+      storage.set(`${key}.broken`, raw);
+      if (storage.get(`${key}.broken`) !== raw) throw new Error("backup não persistiu");
+      return { value: null, status: "unreadable", detail: String(error), backupSaved: true };
+    } catch (backupError) {
+      return {
+        value: null, status: "unreadable", detail: String(error),
+        backupSaved: false, backupError: String(backupError),
+      };
+    }
   }
 }

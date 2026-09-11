@@ -1,6 +1,7 @@
 import copy
 import hashlib
 import importlib.util
+from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
@@ -3407,6 +3408,61 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("Meu jogo novo", readme)
         self.assertIn(str(Path(game.FRAMEWORK).name), readme)
 
+    def test_init_handles_quotes_and_markup_without_corrupting_the_project(self):
+        title = 'Farol "do Sul" & <img src=x> \\ primeiro\ncapítulo'
+        destination = self.root / "titulo-especial"
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "init", str(destination), "--starter", "canvas-arcade", "--title", title],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertEqual(json.loads(run.stdout)["title"], title)
+        package = json.loads((destination / "package.json").read_text())
+        self.assertTrue(package["description"].startswith(title + " —"))
+
+        class Page(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.tags, self.title, self.in_title = [], "", False
+
+            def handle_starttag(self, tag, attrs):
+                self.tags.append(tag)
+                if tag == "title":
+                    self.in_title = True
+
+            def handle_endtag(self, tag):
+                if tag == "title":
+                    self.in_title = False
+
+            def handle_data(self, data):
+                if self.in_title:
+                    self.title += data
+
+        original, generated = Page(), Page()
+        original.feed((game.STARTERS_ROOT / "canvas-arcade/index.html").read_text())
+        generated.feed((destination / "index.html").read_text())
+        self.assertEqual(generated.title, title)
+        self.assertEqual(generated.tags, original.tags, "o título não pode adicionar elementos HTML")
+
+    def test_init_cli_refuses_existing_and_dangling_destination_symlinks(self):
+        for exists in (False, True):
+            with self.subTest(target_exists=exists):
+                target = self.root / f"outside-{exists}"
+                if exists:
+                    target.mkdir()
+                link = self.root / f"link-{exists}"
+                link.symlink_to(target, target_is_directory=True)
+                run = subprocess.run(
+                    [sys.executable, str(SCRIPT), "init", link.name, "--root", str(self.root), "--starter", "canvas-arcade"],
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(run.returncode, 1, run.stdout)
+                self.assertIn("destino existente", run.stderr)
+                self.assertTrue(link.is_symlink())
+                self.assertEqual(target.exists(), exists)
+                if exists:
+                    self.assertEqual(list(target.iterdir()), [])
+
     # Um starter cheio de token não abre: quem serve a pasta lê `{{PROJECT_TITLE}}`
     # na aba do navegador em vez do nome do jogo. O starter é referência
     # executável, então ele precisa carregar valores reais.
@@ -3486,6 +3542,15 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("não contém", check["fix"])
         self.assertIn("starter_manifest", report["blocking"])
         self.assertFalse(report["ready"])
+
+    def test_init_validates_json_substitutions_before_creating_the_destination(self):
+        self.fake_starter("json-invalido", {"substitutions": [
+            {"field": "project_title", "value": "Nome Real", "files": ["package.json"]},
+        ]}, {"package.json": '{"description": "Nome Real",}'})
+        destination = self.root / "nao-criado"
+        with self.assertRaises(ValueError):
+            game.init(destination, "json-invalido", documents=False)
+        self.assertFalse(destination.exists())
 
     # A tabela do starter é a única declaração de degrau que o repositório
     # publica. Escrita em prosa livre, ela derivava: linhas citavam o critério de

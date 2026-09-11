@@ -10,7 +10,7 @@
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { createReadStream, existsSync, readFileSync } from "node:fs";
-import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, realpath, stat, writeFile } from "node:fs/promises";
 import { networkInterfaces } from "node:os";
 import { dirname, extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -29,7 +29,7 @@ import {
 } from "../src/core/run-report.js";
 import { inviteHref, seedHref } from "../src/core/invite.js";
 
-const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const ROOT = await realpath(fileURLToPath(new URL("..", import.meta.url)));
 
 // Abrir o navegador é cortesia do terminal, não o jogo executado.
 // Testes encanaram o stdout: sem TTY, ninguém ganha uma janela.
@@ -439,7 +439,14 @@ const server = createServer(async (request, response) => {
     response.writeHead(405, { allow: "GET, HEAD, POST" }).end();
     return;
   }
-  const requested = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
+  let requested;
+  try {
+    requested = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
+    if (requested.includes("\0")) throw new URIError("caminho inválido");
+  } catch {
+    response.writeHead(400, { "content-type": "text/plain; charset=utf-8" }).end("URL inválida");
+    return;
+  }
   const relative = normalize(requested === "/" ? "index.html" : requested.replace(/^\/+/, ""));
   const target = join(ROOT, relative);
   if (!target.startsWith(ROOT + sep) && target !== ROOT) {
@@ -447,7 +454,12 @@ const server = createServer(async (request, response) => {
     return;
   }
   try {
-    const info = await stat(target);
+    const actual = await realpath(target);
+    if (!actual.startsWith(ROOT + sep) && actual !== ROOT) {
+      response.writeHead(403).end("fora do projeto");
+      return;
+    }
+    const info = await stat(actual);
     if (!info.isFile()) throw new Error("não é arquivo");
     response.writeHead(200, {
       "content-type": TYPES[extname(target).toLowerCase()] ?? "application/octet-stream",
@@ -458,7 +470,7 @@ const server = createServer(async (request, response) => {
       response.end();
       return;
     }
-    createReadStream(target).pipe(response);
+    createReadStream(actual).on("error", () => response.destroy()).pipe(response);
   } catch {
     response.writeHead(404, { "content-type": "text/plain; charset=utf-8" }).end("não encontrado");
   }

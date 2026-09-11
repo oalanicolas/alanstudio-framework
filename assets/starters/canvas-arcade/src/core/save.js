@@ -97,7 +97,9 @@ export function loadProgress(storage) {
       progress: defaultProgress(),
       status: "recovered",
       from: null,
-      notes: ["save ilegível preservado em progress.broken; progresso reiniciado"],
+      notes: [read.backupSaved
+        ? "save ilegível preservado em progress.broken; progresso reiniciado"
+        : "save ilegível mantido em progress; gravação bloqueada até conseguir preservar uma cópia"],
     };
   }
   return migrate(read.value);

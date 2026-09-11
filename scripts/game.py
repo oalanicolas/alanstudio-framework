@@ -2,6 +2,7 @@
 """Games harness: contexto sob demanda, contrato de reuso e execução com recibo."""
 import argparse
 import hashlib
+from html import escape
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -7600,6 +7601,29 @@ def init_scope(documents, idea=None):
     return scope
 
 
+def substitute_document(path, pairs):
+    text = path.read_text(encoding="utf-8")
+    if path.suffix.casefold() == ".json":
+        counted = {}
+
+        def replace(value):
+            if isinstance(value, str):
+                result, counts = substitute(value, pairs)
+                for old, count in counts.items():
+                    counted[old] = counted.get(old, 0) + count
+                return result
+            if isinstance(value, list):
+                return [replace(item) for item in value]
+            if isinstance(value, dict):
+                return {replace(key): replace(item) for key, item in value.items()}
+            return value
+
+        return json.dumps(replace(json.loads(text)), ensure_ascii=False, indent=2) + "\n", counted
+    if path.suffix.casefold() in (".html", ".htm"):
+        pairs = [(old, escape(new, quote=True)) for old, new in pairs]
+    return substitute(text, pairs)
+
+
 def init(destination, starter, title=None, documents=True, idea=None):
     available = starters()
     if starter not in available:
@@ -7608,6 +7632,7 @@ def init(destination, starter, title=None, documents=True, idea=None):
         raise ValueError("destino existente; escolha um caminho novo")
     if destination.is_dir() and any(destination.iterdir()):
         raise ValueError("destino existente e não vazio; adapte o projeto atual em vez de sobrescrevê-lo")
+    destination = destination.resolve()
     manifest = starter_manifest(starter)
     source = STARTERS_ROOT / starter
     entries = sorted(source.rglob("*"))
@@ -7626,6 +7651,15 @@ def init(destination, starter, title=None, documents=True, idea=None):
         for name in entry["files"]:
             plan.setdefault(name, []).append((entry["value"], values[entry["field"]]))
     applied = {}
+    rendered = {}
+    # Prepare e valide as substituições antes de criar qualquer arquivo.
+    for relative, pairs in plan.items():
+        text, counted = substitute_document(source / relative, pairs)
+        missed = [old for old, _ in pairs if not counted.get(old)]
+        if missed:
+            raise ValueError(f"{starter}/{STARTER_MANIFEST}: {relative} não contém {missed!r}")
+        rendered[relative] = text
+        applied[relative] = counted
     files = []
     for path in entries:
         relative = path.relative_to(source).as_posix()
@@ -7638,15 +7672,9 @@ def init(destination, starter, title=None, documents=True, idea=None):
             target.mkdir(parents=True, exist_ok=True)
             continue
         target.parent.mkdir(parents=True, exist_ok=True)
-        pairs = plan.get(relative)
-        if pairs:
-            text, counted = substitute(path.read_text(encoding="utf-8"), pairs)
-            missed = [old for old, _ in pairs if not counted.get(old)]
-            if missed:
-                raise ValueError(f"{starter}/{STARTER_MANIFEST}: {relative} não contém {missed!r}")
-            applied[relative] = counted
+        if relative in rendered:
             with target.open("x", encoding="utf-8") as document:
-                document.write(text)
+                document.write(rendered[relative])
         elif path.suffix.casefold() in INIT_TEXT_SUFFIXES:
             with target.open("x", encoding="utf-8") as document:
                 document.write(path.read_text(encoding="utf-8"))
@@ -10055,7 +10083,7 @@ def main():
         elif args.action == "init":
             if not args.starter:
                 raise ValueError("nenhum starter disponível neste repositório")
-            emit(init(resolve(args.project, root), args.starter, args.title, not args.no_docs, args.idea))
+            emit(init((root / args.project).absolute(), args.starter, args.title, not args.no_docs, args.idea))
         elif args.action == "start":
             dest = None if args.project is None else resolve(args.project, root)
             emit(start_project(dest, args.starter, args.title, args.idea, args.docs and not args.no_docs))

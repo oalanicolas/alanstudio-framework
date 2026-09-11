@@ -6,7 +6,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { foreignKey, memoryStorage, readJson, writeJson } from "../src/core/storage.js";
+import { browserStorage, foreignKey, memoryStorage, readJson, writeJson } from "../src/core/storage.js";
+import { createGame } from "../src/main.js";
 import {
   PROGRESS_KEY,
   PROGRESS_SCHEMA,
@@ -103,6 +104,72 @@ test("a outra aba nomeia a chave desta página", () => {
   assert.equal(foreignKey({ key: "outro:settings" }, "lab", "settings"), false);
   assert.equal(foreignKey({ key: "lab:settings" }, "", "settings"), false);
   assert.equal(foreignKey({}, "lab", "settings"), false);
+});
+
+for (const key of ["progress", "settings"]) {
+  test(`o jogo abre com ${key} corrompido e sem espaço para o backup`, (t) => {
+    const original = "{" + "x".repeat(500);
+    const prefix = "recovery-fixture";
+    const fullKey = `${prefix}:${key}`;
+    const data = new Map([[fullKey, original]]);
+    let capacity = original.length + 1; // cabe o probe, mas não a cópia do save
+    const previous = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+    Object.defineProperty(globalThis, "localStorage", {
+      configurable: true,
+      value: {
+        getItem: (name) => data.get(name) ?? null,
+        removeItem: (name) => data.delete(name),
+        setItem(name, value) {
+          const proposed = new Map(data).set(name, String(value));
+          const size = [...proposed.values()].reduce((sum, item) => sum + item.length, 0);
+          if (size > capacity) throw new Error("QuotaExceededError");
+          data.set(name, String(value));
+        },
+      },
+    });
+    t.after(() => {
+      if (previous) Object.defineProperty(globalThis, "localStorage", previous);
+      else delete globalThis.localStorage;
+    });
+    const storage = browserStorage(prefix);
+    assert.equal(storage.persistent, true);
+    const game = createGame({ storage, seed: 42 });
+    t.after(() => game.dispose());
+    assert.equal(game.observe().tick, 0);
+    if (key === "progress") {
+      assert.match(game.progress.notes.join(" "), /gravação bloqueada/);
+      game.advance(3600);
+      assert.equal(game.progress.runs, 1);
+    } else {
+      game.updateSettings({ uiScale: 1.5 });
+      assert.equal(game.settings.uiScale, 1.5);
+    }
+    assert.equal(data.get(fullKey), original, "o uso do jogo não apaga o único original");
+    assert.equal(data.has(`${fullKey}.broken`), false);
+    const blocked = writeJson(storage, key, { recovered: true });
+    assert.equal(blocked.ok, false);
+    assert.equal(blocked.reason, "backup_failed");
+    capacity = 10_000;
+    assert.deepEqual(writeJson(storage, key, { recovered: true }), { ok: true });
+    assert.equal(data.get(`${fullKey}.broken`), original);
+    assert.deepEqual(JSON.parse(data.get(fullKey)), { recovered: true });
+  });
+}
+
+test("backup que não persiste também impede apagar o save original", () => {
+  const original = "{save corrompido";
+  const stored = memoryStorage({ progress: original });
+  const storage = {
+    ...stored,
+    set(key, value) {
+      if (key !== "progress.broken") stored.set(key, value);
+    },
+  };
+  const read = readJson(storage, "progress");
+  assert.equal(read.status, "unreadable");
+  assert.equal(read.backupSaved, false);
+  assert.equal(writeJson(storage, "progress", defaultProgress()).reason, "backup_failed");
+  assert.equal(storage.get("progress"), original);
 });
 
 test("a gravação verifica antes de promover e não deixa rastro temporário", () => {
