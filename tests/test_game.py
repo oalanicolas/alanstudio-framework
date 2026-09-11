@@ -2492,6 +2492,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("movimento reduzido apague a causa", game.feel_reading(starter)["scope"])
         self.assertNotIn("movimento reduzido apague a causa", game.roles_reading(starter)["scope"])
 
+    def test_access_high_contrast_names_the_neutral_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_neutral_as_worst_case(recipe),
+            "a receita já recusa que o fundo neutro seja o pior caso",
+        )
+        self.assertEqual(game.access_high_contrast_neutral_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = next(option for option in report["options"] if option["key"] == "high_contrast")
+        self.assertIn(
+            "fundo neutro seja o pior caso",
+            item["scope"],
+            "a opção high_contrast copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`neutro`)", item["scope"])
+        self.assertNotIn("neutro", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_neutral_as_worst_case(""))
+        self.assertNotIn("fundo neutro seja o pior caso", report["scope"])
+        self.assertNotIn("fundo neutro seja o pior caso", report.get("next") or "")
+        for option in report["options"]:
+            if option["key"] == "high_contrast":
+                continue
+            self.assertNotIn("fundo neutro seja o pior caso", option["scope"])
+        with mock.patch.object(game, "access_high_contrast_neutral_source", return_value=None):
+            silent = game.access_reading(starter)
+        silent_item = next(option for option in silent["options"] if option["key"] == "high_contrast")
+        self.assertNotIn("fundo neutro seja o pior caso", silent_item["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o neutro que a receita já recusa", recipe)
+        self.assertIn("nomeia o neutro que a receita já recusa", skill)
+        self.assertIn("nomeia o neutro que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("fundo neutro seja o pior caso", game.next_scope())
+        self.assertNotIn("fundo neutro seja o pior caso", game.feel_reading(starter)["scope"])
+        self.assertNotIn("fundo neutro seja o pior caso", game.roles_reading(starter)["scope"])
+
     def test_commands_name_the_generic_the_menu_already_refuses(self):
         guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
         self.assertTrue(

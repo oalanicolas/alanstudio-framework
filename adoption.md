@@ -30,6 +30,66 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.515 — a opção high_contrast do access nomeia o neutro que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+contraste
+em
+fundo
+neutro
+não
+é
+o
+pior
+caso.
+A
+opção
+`high_contrast`
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+a
+opção
+`high_contrast`
+nomeia
+o
+neutro.
+Neutro
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`neutro`.
+Nomear
+não
+observa.
+
+O que 0.9.515 não afirma:
+o
+contraste
+no
+stub
+não
+é
+sessão
+observada
+com
+o
+modo
+ativo.
+
 ## 0.9.514 — a opção reduced_motion do access nomeia a causa que a receita já recusa
 
 A

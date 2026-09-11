@@ -3023,6 +3023,46 @@ def access_reduced_motion_option_scope():
     return scope
 
 
+# A receita já recusa que o fundo neutro seja o pior caso. Sem isto a
+# opção high_contrast copiava a chave e calava a recusa.
+# Neutro no disco não é sessão.
+A11Y_CONTRAST_NEUTRAL = re.compile(r"não em\s+fundo neutro")
+
+
+def recipe_refuses_neutral_as_worst_case(text):
+    return bool(text and A11Y_CONTRAST_NEUTRAL.search(text))
+
+
+def access_high_contrast_neutral_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_neutral_as_worst_case(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_high_contrast_neutral_scope():
+    if not access_high_contrast_neutral_source():
+        return None
+    return (
+        "O disco recusa que o fundo neutro seja o pior caso "
+        "(`neutro`). Neutro no disco não é sessão."
+    )
+
+
+def access_high_contrast_option_scope():
+    scope = access_option_scope()
+    named = access_high_contrast_neutral_scope()
+    if named:
+        scope += " " + named
+    return scope
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -3082,6 +3122,7 @@ def access_reading(project):
                     else access_haptics_option_scope() if key == "haptics"
                     else access_remap_option_scope() if key == "remap"
                     else access_reduced_motion_option_scope() if key == "reduced_motion"
+                    else access_high_contrast_option_scope() if key == "high_contrast"
                     else option_scope
                 ),
             }
