@@ -7744,12 +7744,46 @@ def check_plan(plan, root):
     return errors
 
 
+# O roteiro já recusa que o HEAD substitua o julgamento. Sem isto
+# o version relatava o HEAD e calava a recusa.
+# Identidade no disco não é avaliação.
+JUDGMENT_GUIDE = FRAMEWORK / "references/quality.md"
+VERSION_JUDGMENT = re.compile(r"não substitui o julgamento")
+
+
+def quality_refuses_judgment(text):
+    return bool(text and VERSION_JUDGMENT.search(text))
+
+
+def git_judgment_source():
+    path = JUDGMENT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if quality_refuses_judgment(text):
+        return "references/quality.md"
+    return None
+
+
+def git_version_scope():
+    scope = "HEAD e nomes alterados; não é fingerprint completo das fontes."
+    if git_judgment_source():
+        scope += (
+            " O disco recusa que o HEAD substitua o julgamento (`julgamento`). "
+            "Identidade no disco não é avaliação."
+        )
+    return scope
+
+
 def git_version(project):
     result = {}
     for key, args in (("head", ["rev-parse", "HEAD"]), ("status", ["status", "--porcelain", "--", "."])):
         run = subprocess.run(["git", "-C", str(project), *args], capture_output=True, text=True, check=False)
         result[key] = run.stdout.strip() if run.returncode == 0 else None
-    result["scope"] = "HEAD e nomes alterados; não é fingerprint completo das fontes."
+    result["scope"] = git_version_scope()
     return result
 
 

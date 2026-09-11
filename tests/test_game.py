@@ -1101,6 +1101,37 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("exemplo que o then cola", game.play_scope(self.project))
         self.assertNotIn("exemplo que o then cola", game.git_summary_scope())
 
+    def test_version_names_the_judgment_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.quality_refuses_judgment(guide),
+            "o roteiro já recusa que o HEAD substitua o julgamento",
+        )
+        self.assertEqual(game.git_judgment_source(), "references/quality.md")
+        report = game.git_version(game.FRAMEWORK)
+        self.assertIn(
+            "HEAD substitua o julgamento",
+            report["scope"],
+            "o version relatava o HEAD e calava a recusa",
+        )
+        self.assertIn("(`julgamento`)", report["scope"])
+        self.assertNotIn("julgamento", report)
+        self.assertFalse(game.quality_refuses_judgment(""))
+        with mock.patch.object(game, "git_judgment_source", return_value=None):
+            silent = game.git_version(game.FRAMEWORK)
+        self.assertNotIn("HEAD substitua o julgamento", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o julgamento que o roteiro já recusa", recipe)
+        self.assertIn("nomeia o julgamento que o roteiro já recusa", skill)
+        self.assertIn("nomeia o julgamento que o roteiro já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("HEAD substitua o julgamento", game.record_scope())
+        self.assertNotIn("HEAD substitua o julgamento", game.verify_scope())
+        self.assertNotIn("HEAD substitua o julgamento", game.git_summary_scope())
+        self.assertNotIn("HEAD substitua o julgamento", game.next_scope())
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

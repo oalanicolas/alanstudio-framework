@@ -3,6 +3,57 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.414 — o version nomeia o julgamento que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+o
+HEAD
+não
+substitui
+o
+julgamento.
+O
+recibo
+relatava
+o
+hash
+e
+calava
+a
+recusa.
+Agora
+o
+`version`
+nomeia
+o
+julgamento.
+Identidade
+no
+disco
+não
+é
+avaliação.
+Sem
+chave
+`julgamento`.
+Nomear
+não
+observa.
+
+O que 0.9.414 não afirma:
+identidade
+no
+disco
+não
+é
+avaliação
+nem
+observação.
+
 ## 0.9.413 — o doctor nomeia o exemplo que o README já imprime
 
 O
