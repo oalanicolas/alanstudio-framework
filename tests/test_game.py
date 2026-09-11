@@ -2424,6 +2424,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("promover histórico a regra vigente", report["areas"]["runbook"]["scope"])
         self.assertNotIn("promover histórico a regra vigente", game.next_scope())
 
+    def test_scan_names_the_fun_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_isolated_fun(guide),
+            "a guia já recusa que divertido isolado baste",
+        )
+        self.assertEqual(game.gdd_fun_source(), "references/preproduction.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "divertido isolado baste",
+            report["areas"]["gdd"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`divertido`)", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("divertido", report["areas"]["gdd"])
+        self.assertFalse(game.guide_refuses_isolated_fun(""))
+        with mock.patch.object(game, "gdd_fun_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("divertido isolado baste", silent["areas"]["gdd"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o divertido que a guia já recusa", guide)
+        self.assertIn("nomeia o divertido que a guia já recusa", recipe)
+        self.assertIn("nomeia o divertido que a guia já recusa", skill)
+        self.assertIn("nomeia o divertido que a guia já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("divertido isolado baste", report["scope"])
+        self.assertNotIn("divertido isolado baste", report["areas"]["decisions"]["scope"])
+        self.assertNotIn("divertido isolado baste", report["areas"]["mda"]["scope"] if "scope" in report["areas"]["mda"] else "")
+        self.assertNotIn("divertido isolado baste", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("divertido isolado baste", game.next_scope())
+
     def test_scan_names_the_absence_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -5590,6 +5590,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     areas["qa"]["scope"] = qa_area_scope()
     areas["runbook"]["scope"] = runbook_area_scope()
     areas["decisions"]["scope"] = decisions_area_scope()
+    areas["gdd"]["scope"] = gdd_area_scope()
     candidate_scope = scan_candidate_scope()
     for area in areas.values():
         for item in area["candidates"]:
@@ -6494,6 +6495,41 @@ def decisions_area_scope():
         scope += (
             " O disco recusa promover histórico a regra vigente (`histórico`). "
             "Área no disco não é decisão atual."
+        )
+    return scope
+
+
+# A guia já recusa que divertido isolado baste. Sem isto a
+# área localizava o GDD e calava a recusa.
+# Área no disco não é o verbo.
+GDD_FUN = re.compile(r"isoladamente não basta")
+
+
+def guide_refuses_isolated_fun(text):
+    return bool(text and GDD_FUN.search(text))
+
+
+def gdd_fun_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_isolated_fun(text):
+        return "references/preproduction.md"
+    return None
+
+
+def gdd_area_scope():
+    scope = (
+        "Localiza o documento de design. Não joga e não aprova o verbo."
+    )
+    if gdd_fun_source():
+        scope += (
+            " O disco recusa que divertido isolado baste (`divertido`). "
+            "Área no disco não é o verbo."
         )
     return scope
 

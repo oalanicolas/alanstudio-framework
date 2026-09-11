@@ -119,7 +119,7 @@ jogável definido, com consequências e situações de teste.
 **Pronto para prototipar:** o implementador consegue explicar o que o jogador faz,
 quais alternativas tem, o que acontece e como termina/reinicia. Com tela, a
 primeira situação é a porta; o campo começa depois do avanço. Pilares precisam
-resolver escolhas concretas; “imersivo” ou “divertido” isoladamente não basta.
+resolver escolhas concretas; “imersivo” ou “divertido” isoladamente não basta. Se a guia recusa que divertido isoladamente baste, o `scan` nomeia o divertido que a guia já recusa. Área no disco não é o verbo. Sem chave `divertido`.
 [Template](../assets/templates/gdd.md).
 
 ### `poc` — Proof of Concept
