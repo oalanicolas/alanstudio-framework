@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.351 — o feel nomeia o corpo que a porta já desloca
+
+O
+laço
+já
+corria
+`attractMove`.
+O
+comando
+calava
+a
+mostra.
+Agora
+o
+`feel`
+nomeia
+o
+corpo
+que
+a
+porta
+desloca.
+Pose
+no
+disco
+não
+é
+peso
+percebido.
+Sem
+chave
+`attract`.
+Não
+promove
+`felt`.
+
+O que 0.9.351 não afirma:
+pose
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.350 — o save nomeia a recuperação que o canvas já pinta
 
 A

@@ -1596,6 +1596,24 @@ def heading_mark_source(project):
     return None
 
 
+# A porta já desloca o corpo. Sem isto o feel
+# lia CONFIG e calava a mostra. Pose no disco
+# não é peso percebido.
+ATTRACT_MOVE = re.compile(r"(?:export\s+)?function\s+attractMove\b")
+
+
+def door_moves_body(text):
+    return bool(text and ATTRACT_MOVE.search(text))
+
+
+def attract_move_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if door_moves_body(text):
+            return relative
+    return None
+
+
 def _feel_scope(project):
     scope = (
         "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch, "
@@ -1613,6 +1631,11 @@ def _feel_scope(project):
     if heading_mark_source(project):
         scope += (
             " O coil do dash marca o rumo no corpo — traço no disco não é "
+            "peso percebido."
+        )
+    if attract_move_source(project):
+        scope += (
+            " A porta desloca o corpo (`attractMove`). Pose no disco não é "
             "peso percebido."
         )
     return scope

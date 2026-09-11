@@ -3516,6 +3516,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", feel)
 
+    def test_feel_names_the_door_body_the_loop_already_moves(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        rules = (starter / "src/game/rules.js").read_text(encoding="utf-8")
+        self.assertTrue(game.door_moves_body(rules), "o laço da porta já desloca o corpo")
+        self.assertEqual(game.attract_move_source(starter), "src/game/rules.js")
+        report = game.feel_reading(starter)
+        self.assertIn("attractMove", report["scope"], "o feel calava a porta que o laço já corre")
+        self.assertIn("desloca o corpo", report["scope"])
+        self.assertFalse(report["felt"])
+        self.assertNotIn("attract", report)
+        self.assertNotIn("heading", report)
+        empty = game.feel_reading(self.project)
+        self.assertFalse(game.door_moves_body(""))
+        self.assertIsNone(game.attract_move_source(self.project))
+        self.assertNotIn("attractMove", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o corpo que a porta já desloca", recipe)
+        self.assertIn("nomeia o corpo que a porta já desloca", skill)
+        self.assertIn("nomeia o corpo que a porta já desloca", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", recipe)
+
     def test_feel_names_the_heading_the_dash_already_aims(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.feel_reading(starter)

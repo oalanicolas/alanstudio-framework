@@ -85,7 +85,9 @@ shake, squash, punch e rumble), o peso do passo
 janelas da chuva (`practiceTicks`, `recoveryTicks`, o fecho) —
 o campo já as marca; o comando calava o pulso e o passo que a
 tabela já lista. O coil do dash marca o rumo no corpo; o
-comando calava o traço. Número no disco não é peso percebido. Lê o
+comando calava o traço. Se o laço declara `attractMove`, o
+`feel` nomeia o corpo que a porta já desloca. Pose no disco
+não é peso percebido. Sem chave `attract`. Número no disco não é peso percebido. Lê o
 recibo de observação no disco; nomeia `then.play` e `then.note`
 sem executar. Com last-run, nomeia `then.seed` e `then.invite`
 — o mesmo endereço que `play` / `guide` — e o `note` do `next`
