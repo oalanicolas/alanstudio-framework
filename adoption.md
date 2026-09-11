@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.450 — o origins nomeia os rótulos que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+sidecar
+sem
+os
+três
+rótulos
+não
+declara.
+O
+problema
+copiava
+o
+achado
+e
+calava
+a
+recusa.
+Agora
+o
+`origins`
+nomeia
+os
+rótulos.
+Recibo
+no
+disco
+não
+é
+licença.
+Sem
+chave
+`rótulos`.
+Nomear
+não
+observa.
+
+O que 0.9.450 não afirma:
+recibo
+no
+disco
+não
+é
+licença
+válida
+nem
+titular
+consultado.
+
 ## 0.9.449 — o gate nomeia o escopo que o roteiro já recusa
 
 O

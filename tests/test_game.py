@@ -4335,6 +4335,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("then.consumer", report.get("then") or {})
 
+    def test_origins_names_the_labels_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.gates_refuse_unlabeled_sidecar(guide),
+            "o roteiro já recusa que o sidecar sem rótulos declare",
+        )
+        self.assertEqual(game.origin_problem_label_source(), "references/gates.md")
+        asset = self.project / "fonts" / "display.ttf"
+        asset.parent.mkdir()
+        asset.write_bytes(b"OTTO")
+        (self.project / "fonts" / "display.credits.txt").write_text(
+            "SIL Open Font License — Ana, 2026-09-09\n", encoding="utf-8",
+        )
+        report = game.origins_reading(self.project)
+        self.assertTrue(
+            any(item.get("reason") == "incomplete_sidecar" for item in report["problems"]),
+            "o sidecar incompleto já vira problema",
+        )
+        item = next(item for item in report["problems"] if item["reason"] == "incomplete_sidecar")
+        self.assertIn(
+            "sidecar sem rótulos declare",
+            item["scope"],
+            "o problema copiava o achado e calava a recusa",
+        )
+        self.assertIn("(`rótulos`)", item["scope"])
+        self.assertNotIn("rótulos", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertFalse(game.gates_refuse_unlabeled_sidecar(""))
+        with mock.patch.object(game, "origin_problem_label_source", return_value=None):
+            silent = game.origins_reading(self.project)
+        silent_item = next(
+            item for item in silent["problems"] if item["reason"] == "incomplete_sidecar"
+        )
+        self.assertNotIn("sidecar sem rótulos declare", silent_item["scope"])
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os rótulos que o roteiro já recusa", recipe)
+        self.assertIn("nomeia os rótulos que o roteiro já recusa", skill)
+        self.assertIn("nomeia os rótulos que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("sidecar sem rótulos declare", report["scope"])
+        self.assertNotIn("sidecar sem rótulos declare", game.provenance_area_scope())
+        self.assertNotIn("sidecar sem rótulos declare", game.next_scope())
+        self.assertNotIn("sidecar sem rótulos declare", game.gate_item_scope())
+
     def test_origins_ignores_vendor_trees_and_a_project_without_media(self):
         vendor = self.project / "node_modules" / "pack" / "icon.png"
         vendor.parent.mkdir(parents=True)

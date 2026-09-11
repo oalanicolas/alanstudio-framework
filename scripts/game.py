@@ -4421,6 +4421,42 @@ def sidecar_names_consumer(text):
     return bool(text and SIDECAR_CONSUMER.search(text))
 
 
+# O roteiro já recusa que o sidecar sem rótulos declare. Sem
+# isto o problema copiava o achado e calava a recusa.
+# Recibo no disco não é licença.
+ORIGIN_LABELS = re.compile(r"Sidecar sem\s+os três rótulos")
+
+
+def gates_refuse_unlabeled_sidecar(text):
+    return bool(text and ORIGIN_LABELS.search(text))
+
+
+def origin_problem_label_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gates_refuse_unlabeled_sidecar(text):
+        return "references/gates.md"
+    return None
+
+
+def origin_problem_scope():
+    scope = (
+        "Motivo e fonte do problema de forma. Não consulta titular "
+        "e não concede licença."
+    )
+    if origin_problem_label_source():
+        scope += (
+            " O disco recusa que o sidecar sem rótulos declare (`rótulos`). "
+            "Recibo no disco não é licença."
+        )
+    return scope
+
+
 def sidecar_consumer_source(project):
     project = Path(project)
     for relative, text in walk_project_files(project, {".txt"}):
@@ -4637,6 +4673,10 @@ def origins_reading(project, max_entries=2000):
             " O disco nomeia o consumidor (`Consumidor`). "
             "Consumidor no disco não é licença válida."
         )
+    problems = [dict(item) for item in problems]
+    problem_scope = origin_problem_scope()
+    for item in problems:
+        item["scope"] = problem_scope
     return {
         "schema_version": 1,
         "project": str(project),

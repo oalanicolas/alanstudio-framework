@@ -173,7 +173,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    o sidecar `.credits.txt`. Sem `then`. Não valida licença. Recibo no disco
    não é licença válida. JSON sem origem, autor e licença não declara.
    Sidecar sem os três rótulos também não.
-   Se o sidecar declara `Consumidor:`, o `origins` nomeia o consumidor que o sidecar já declara. Consumidor no disco não é licença válida. Sem chave `consumer`.
+   Se o sidecar declara `Consumidor:`, o `origins` nomeia o consumidor que o sidecar já declara. Consumidor no disco não é licença válida. Sem chave `consumer`. Se o roteiro recusa que o sidecar sem rótulos declare, o `origins` nomeia os rótulos que o roteiro já recusa. Recibo no disco não é licença. Sem chave `rótulos`.
    Arquivo sem recibo conta como licença
    desconhecida, e `next` aponta `--declare` antes de seguir.
    **`craft <projeto>`** lê checklists de ofício (paleta, perdão, percentil,
