@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.463: o `conflicts[n]` do `bar` nomeia a precedência que a barra já recusa. Linha no disco não é acabamento. Sem chave `precedência`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** HEAD anterior (0.9.462: 461 / 515) + confirmação pendente.
+**Suítes confirmadas no HEAD (0.9.463):** `python3 -m unittest discover -s tests` → 462 OK.
+`cd assets/starters/canvas-arcade && npm test` → 515 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
