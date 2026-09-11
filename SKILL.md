@@ -586,7 +586,7 @@ Relate o resultado em uma linha; erro sai em `stderr` como está.
 ## Ao encerrar qualquer comando
 
 Faça a [revisão de entrega](references/delivery.md): pedido → aceite → artefato →
-prova → continuidade, no registro existente. Cumpra `continuity.before_close` e
+prova → continuidade, no registro existente. Se a entrega recusa que templates preenchidos comprovem regras, o `context` nomeia as regras que a entrega já recusa. Critério no disco não é a entrega. Sem chave `regras`. Cumpra `continuity.before_close` e
 `documentation.before_close`. Diga o resultado, a evidência, a limitação material e
 a próxima ação com prompt pronto, em linguagem de produto; a pessoa não precisa
 conhecer o harness. Processo detalhado: [processo](references/process.md),

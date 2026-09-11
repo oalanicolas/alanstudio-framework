@@ -527,7 +527,7 @@ alguma fonte deixa de ser rascunho.
 `context --event initialize` prepara uma análise profunda e documental quando esse
 for o pedido ou a convenção do workspace. O evento não cria um jogo nem executa a
 auditoria. [Inicialização](references/project-audit.md#inicializar-o-projeto).
-`delivery_review` orienta a conferência do pedido, artefato, prova e continuidade.
+`delivery_review` orienta a conferência do pedido, artefato, prova e continuidade. Se a entrega recusa que templates preenchidos comprovem regras, o `context` nomeia as regras que a entrega já recusa. Critério no disco não é a entrega. Sem chave `regras`.
 O comando `python3 scripts/game.py gauntlet <projeto> --objective "recorte definido"` prepara um prompt de
 continuidade; duração é opcional e preparação não inicia execução.
 [Continuidade](references/gauntlet.md) · [Revisão de entrega](references/delivery.md).

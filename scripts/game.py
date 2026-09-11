@@ -7171,6 +7171,43 @@ def workspace_module_scope():
     return scope
 
 
+# A entrega já recusa que templates preenchidos comprovem regras.
+# Sem isto o delivery_review copiava os critérios e calava a recusa.
+# Critério no disco não é a entrega.
+DELIVERY_GUIDE = FRAMEWORK / "references/delivery.md"
+DELIVERY_RULES = re.compile(r"templates preenchidos não comprovam regras")
+
+
+def delivery_refuses_filled_templates(text):
+    return bool(text and DELIVERY_RULES.search(text))
+
+
+def delivery_rules_source():
+    path = DELIVERY_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if delivery_refuses_filled_templates(text):
+        return "references/delivery.md"
+    return None
+
+
+def delivery_review_scope():
+    scope = (
+        "Critérios da conferência do pedido. Não lê a conversa e não "
+        "certifica a entrega."
+    )
+    if delivery_rules_source():
+        scope += (
+            " O disco recusa que templates preenchidos comprovem regras "
+            "(`regras`). Critério no disco não é a entrega."
+        )
+    return scope
+
+
 def workspace_profile(root):
     """Read local context references; all reusable rules remain in this repository."""
     root = Path(root).resolve()
@@ -7262,6 +7299,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "guide": str(FRAMEWORK / "references/delivery.md"),
             "before_close": "Confrontar pedido e aceite com artefatos, localizadores, prova e resposta final no QA/plano existente. Corrigir divergências; critério desconhecido não está atendido.",
             "limits": "Context não lê a conversa, executa a revisão ou certifica a entrega. Testes do harness não comprovam comportamento do agente.",
+            "scope": delivery_review_scope(),
         },
         "production_bar": production_bar(focus, stage, project),
         "continuity": {

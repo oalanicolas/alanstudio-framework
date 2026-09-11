@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.477 — o context nomeia as regras que a entrega já recusa
+
+A
+entrega
+já
+dizia
+que
+templates
+preenchidos
+não
+comprovam
+regras.
+O
+delivery_review
+copiava
+os
+critérios
+e
+calava
+a
+recusa.
+Agora
+o
+bloco
+nomeia
+as
+regras.
+Critério
+no
+disco
+não
+é
+a
+entrega.
+Sem
+chave
+`regras`.
+Nomear
+não
+observa.
+
+O que 0.9.477 não afirma:
+critério
+no
+disco
+não
+é
+aceitação
+do
+pedido
+nem
+partida
+jogada.
+
 ## 0.9.476 — o context nomeia a preenchida que a ligação já recusa
 
 A

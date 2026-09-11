@@ -78,6 +78,41 @@ class HarnessTest(unittest.TestCase):
         data = {"scripts": {"test": "node --test"}, **extra}
         (self.project / "package.json").write_text(json.dumps(data))
 
+    def test_delivery_review_names_the_rules_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/delivery.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.delivery_refuses_filled_templates(guide),
+            "a entrega já recusa que templates preenchidos comprovem regras",
+        )
+        self.assertEqual(game.delivery_rules_source(), "references/delivery.md")
+        self.package()
+        report = game.context(self.project, "mechanics")
+        item = report["delivery_review"]
+        self.assertIn(
+            "templates preenchidos comprovem regras",
+            item["scope"],
+            "o delivery_review copiava os critérios e calava a recusa",
+        )
+        self.assertIn("(`regras`)", item["scope"])
+        self.assertNotIn("regras", item)
+        self.assertFalse(game.delivery_refuses_filled_templates(""))
+        with mock.patch.object(game, "delivery_rules_source", return_value=None):
+            silent = game.context(self.project, "mechanics")
+        self.assertNotIn("templates preenchidos comprovem regras", silent["delivery_review"]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia as regras que a entrega já recusa", guide)
+        self.assertIn("nomeia as regras que a entrega já recusa", skill)
+        self.assertIn("nomeia as regras que a entrega já recusa", readme)
+        self.assertIn("nomeia as regras que a entrega já recusa", recipe)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("templates preenchidos comprovem regras", report["scope"])
+        self.assertNotIn("templates preenchidos comprovem regras", report["documentation"]["scope"])
+        self.assertNotIn("templates preenchidos comprovem regras", report["finish"]["scope"])
+        self.assertNotIn("templates preenchidos comprovem regras", game.next_scope())
+        self.assertNotIn("templates preenchidos comprovem regras", game.context_scope())
+
     def test_delivery_review_is_pending_even_when_local_records_claim_success(self):
         self.package()
         (self.project / "README.md").write_text("# QA\nTodos os testes passaram. Auditoria e entrega concluídas.\n")

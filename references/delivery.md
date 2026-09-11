@@ -15,7 +15,7 @@ motivo relacionado ao escopo, nunca apenas de evidência ausente.
   “inicie o servidor” exige a operação; “vamos avançar” retoma o recorte vigente.
 - **Artefato:** o conteúdo ou comportamento necessário existe e está ligado à fonte
   canônica? Leia o resultado e seus consumidores. Lista de arquivos, títulos e
-  templates preenchidos não comprovam regras ou arquitetura corretas.
+  templates preenchidos não comprovam regras ou arquitetura corretas. Se a entrega recusa que templates preenchidos comprovem regras, o `context` nomeia as regras que a entrega já recusa. Critério no disco não é a entrega. Sem chave `regras`.
 - **Prova:** o cenário exercita o resultado pedido? Localize fonte, trecho, teste,
   recibo ou observação. Teste do harness comprova seu mecanismo; execução do agente
   exige pedido, ações e resultado reais. Arte e experiência continuam separadas.
