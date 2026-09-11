@@ -23,7 +23,7 @@ também. Depois do fim, a página grava o recibo se você escrever
 e aponta o convite desta partida se a seed ficou no recibo. Copiar
 o endereço não grava.
 Depois do recibo, o mesmo `start` e o `next` apontam
-o ofício. Se o processo pede uma ação recomendada, o `next` nomeia a ação que o processo já pede. Proposta no disco não é autorização. Sem chave `ação`. Se o roteiro recusa que o comando crie o jogo, o `next` nomeia a criação que o roteiro já recusa. Proposta no disco não é pasta criada. Sem chave `criação`. O autor do `note` é sugestão do git ou do ambiente, não
+o ofício. Se o processo pede uma ação recomendada, o `next` nomeia a ação que o processo já pede. Proposta no disco não é autorização. Sem chave `ação`. Se o roteiro recusa que o comando crie o jogo, o `next` nomeia a criação que o roteiro já recusa. Proposta no disco não é pasta criada. Sem chave `criação`. Se o processo recusa fabricar tarefa para cumprir o formato, o `next` nomeia a fabricação que o processo já recusa. Lista no disco não é backlog. Sem chave `fabricação`. O autor do `note` é sugestão do git ou do ambiente, não
 quem jogou. Nomear o ofício não pinta. `playtest --invite` aponta `href`
 (`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`, com
 chuva nomeada `&spawn=<mesa>`, com look nomeado `&look=<paleta>`,

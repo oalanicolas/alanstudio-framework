@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.433 — o next nomeia a fabricação que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+não
+se
+fabrica
+tarefa
+para
+cumprir
+o
+formato.
+A
+alternativa
+copiava
+a
+ação
+e
+calava
+a
+recusa.
+Agora
+o
+`next`
+nomeia
+a
+fabricação.
+Lista
+no
+disco
+não
+é
+backlog.
+Sem
+chave
+`fabricação`.
+Nomear
+não
+executa.
+
+O que 0.9.433 não afirma:
+lista
+no
+disco
+não
+é
+backlog
+nem
+passo
+autorizado.
+
 ## 0.9.432 — o doctor nomeia o motor que a ambição já recusa
 
 A

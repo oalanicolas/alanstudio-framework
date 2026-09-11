@@ -7754,6 +7754,42 @@ def proposal_scope():
     return scope
 
 
+# O processo já recusa fabricar tarefa para cumprir o formato.
+# Sem isto a alternativa copiava a ação e calava a recusa.
+# Lista no disco não é backlog.
+PROCESS_TASK = re.compile(r"não fabrique uma tarefa")
+
+
+def process_refuses_task(text):
+    return bool(text and PROCESS_TASK.search(text))
+
+
+def alternative_task_source():
+    path = FRAMEWORK / "references/process.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_task(text):
+        return "references/process.md"
+    return None
+
+
+def alternative_scope():
+    scope = (
+        "Outra ação derivada do disco. Não executa o comando e não "
+        "fabrica backlog."
+    )
+    if alternative_task_source():
+        scope += (
+            " O disco recusa que a alternativa fabrique tarefa (`fabricação`). "
+            "Lista no disco não é backlog."
+        )
+    return scope
+
+
 def next_step(project, focus="create", studies_root=None):
     payload = context(project, focus, studies_root=studies_root)
     foundation = payload["foundation"]
@@ -8282,6 +8318,8 @@ def next_step(project, focus="create", studies_root=None):
     }
     if report["proposal"]:
         report["proposal"]["scope"] = proposal_scope()
+    for item in report["alternatives"]:
+        item["scope"] = alternative_scope()
     return report
 
 

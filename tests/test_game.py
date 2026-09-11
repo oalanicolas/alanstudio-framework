@@ -1155,6 +1155,41 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         for item in report["alternatives"]:
             self.assertNotIn("crie o jogo", item.get("scope", ""))
 
+    def test_next_names_the_fabrication_the_process_already_refuses(self):
+        process = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_task(process),
+            "o processo já recusa fabricar tarefa para cumprir o formato",
+        )
+        self.assertEqual(game.alternative_task_source(), "references/process.md")
+        report = game.next_step(self.project)
+        self.assertTrue(report["alternatives"], "o next já devolve alternativas neste destino")
+        item = report["alternatives"][0]
+        self.assertIn(
+            "fabrique tarefa",
+            item["scope"],
+            "a alternativa copiava a ação e calava a recusa",
+        )
+        self.assertIn("(`fabricação`)", item["scope"])
+        self.assertNotIn("fabricação", item)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.process_refuses_task(""))
+        with mock.patch.object(game, "alternative_task_source", return_value=None):
+            silent = game.next_step(self.project)
+        self.assertNotIn("fabrique tarefa", silent["alternatives"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a fabricação que o processo já recusa", recipe)
+        self.assertIn("nomeia a fabricação que o processo já recusa", skill)
+        self.assertIn("nomeia a fabricação que o processo já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("fabrique tarefa", report["proposal"]["scope"])
+        self.assertNotIn("fabrique tarefa", report["scope"])
+        self.assertNotIn("fabrique tarefa", game.next_scope())
+        self.assertNotIn("fabrique tarefa", game.context_scope())
+        self.assertNotIn("fabrique tarefa", game.check_plan_scope())
+
     def test_record_names_the_measure_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(
