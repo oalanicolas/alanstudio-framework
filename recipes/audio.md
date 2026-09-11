@@ -68,7 +68,7 @@ se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede
 `sfx export ID --to PASTA` copia bytes e
 créditos do acervo ou do stem do starter que `sfx info`
 já nomeia — o recibo que lista um stem e o disco perdeu
-não é id desconhecido; exportar não inventa bytes. Se a receita recusa que o export invente bytes, o `sfx export` do stem nomeia a invenção que a receita já recusa. Cópia no disco não é mix. Sem chave `invenção`. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`.
+não é id desconhecido; exportar não inventa bytes. Se a receita recusa que o export invente bytes, o `sfx export` do stem nomeia a invenção que a receita já recusa. Cópia no disco não é mix. Sem chave `invenção`. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`. Se a receita recusa que remontar bytes por hash reduza a memória após decodificar, o `sfx export` do acervo nomeia a memória que a receita já recusa. Hash no disco não é o buffer. Sem chave `memória`.
 `sfx copy` leva o mesmo stem para a pasta do
 jogo. Se o sidecar declara licença, o `sfx copy` nomeia os créditos que o copy já leva. Créditos no disco não são mix ouvida. Sem chave `sidecar`. `--apply` também leva o stem do starter. Importar e exportar não é ouvir. Se a receita recusa que importar e exportar seja ouvir, o `sfx copy` do acervo nomeia o ouvir que a receita já recusa. Cópia no disco não é mix. Sem chave `ouvir`. Se a receita recusa que o arquivo importado esteja sendo consumido, o `record` do `sfx copy` do acervo nomeia o consumido que a receita já recusa. Recibo no disco não é mix. Sem chave `consumido`. O acervo compartilhado é ADAPT, não o
 primeiro ciclo.
@@ -202,7 +202,7 @@ Casos e limites em [aprendizados de aplicações](../references/sources.md#apren
   dos buffers no contexto real; a taxa de saída pode diferir da taxa do arquivo.
   Registre PCM separadamente de heap JavaScript, download e memória total. Se a receita recusa que o heap JavaScript sozinho meça PCM ou VRAM, o `roles` nomeia o heap que a receita já recusa. Contador no disco não é o mix. Sem chave `heap`.
 - Dividir o transporte e remontar bytes por hash pode atender a um limite individual
-  de arquivo sem cortar a gravação. Isso não reduz, por si, a memória após decodificar.
+  de arquivo sem cortar a gravação. Isso não reduz, por si, a memória após decodificar. Se a receita recusa que remontar bytes por hash reduza a memória após decodificar, o `sfx export` do acervo nomeia a memória que a receita já recusa. Hash no disco não é o buffer. Sem chave `memória`.
 - Desconectar um nó, liberar referências e fechar o contexto são sinais distintos;
   nenhum isoladamente comprova coleta imediata. Teste pausa, reinício e desmontagem.
 - Callback de áudio, capacidade de render e silêncio durante um teste técnico não

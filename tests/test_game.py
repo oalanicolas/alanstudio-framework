@@ -9138,6 +9138,70 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", report["scope"])
         self.assertNotIn("then.processamento", report.get("then") or {})
 
+    def test_sfx_export_names_the_memory_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_hash_as_decode_memory(recipe),
+            "a receita já recusa que remontar bytes por hash reduza a memória após decodificar",
+        )
+        self.assertEqual(game.sfx_catalog.export_memory_source(), "recipes/audio.md")
+        item, _ = self._plant_catalog_sound()
+        report = game.sfx_catalog.export_entries(
+            [item["id"]], self.root / "acervo-mem", self.root,
+        )
+        self.assertEqual(report["kind"], "catalog")
+        self.assertIn(
+            "remontar bytes por hash reduza a memória após decodificar",
+            report["scope"],
+            "o export copiava o hash e calava a recusa",
+        )
+        self.assertIn("(`memória`)", report["scope"])
+        self.assertIn("recusa o processamento", report["scope"])
+        self.assertFalse(report["heard"])
+        self.assertNotIn("memória", report)
+        self.assertNotIn("memory", report)
+        self.assertFalse(game.sfx_catalog.recipe_refuses_hash_as_decode_memory(""))
+        with mock.patch.object(game.sfx_catalog, "export_memory_source", return_value=None):
+            silent = game.sfx_catalog.export_entries(
+                [item["id"]], self.root / "acervo-mem-silent", self.root,
+            )
+        self.assertNotIn(
+            "remontar bytes por hash reduza a memória após decodificar",
+            silent.get("scope") or "",
+        )
+        local = game.sfx_catalog.export_entries(["dash"], self.root / "starter-mem", self.root)
+        self.assertEqual(local["kind"], "starter")
+        self.assertNotIn(
+            "remontar bytes por hash reduza a memória após decodificar",
+            local.get("scope") or "",
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a memória que a receita já recusa", recipe)
+        self.assertIn("nomeia a memória que a receita já recusa", skill)
+        self.assertIn("nomeia a memória que a receita já recusa", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("then.memória", report.get("then") or {})
+        summary = game.sfx_catalog.summarize(self.root)
+        self.assertNotIn(
+            "remontar bytes por hash reduza a memória após decodificar",
+            (summary.get("local") or {}).get("scope") or "",
+        )
+        checked = game.sfx_catalog.verify_catalog(self.root)
+        self.assertNotIn(
+            "remontar bytes por hash reduza a memória após decodificar",
+            checked.get("scope") or "",
+        )
+        self.assertNotIn(
+            "remontar bytes por hash reduza a memória após decodificar",
+            game.roles_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "remontar bytes por hash reduza a memória após decodificar",
+            game.next_scope(),
+        )
+
     def test_sfx_export_starter_names_the_invention_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
         self.assertTrue(

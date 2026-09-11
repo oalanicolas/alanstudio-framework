@@ -1299,6 +1299,41 @@ def export_starter_scope():
     )
 
 
+# A receita já recusa que remontar bytes
+# por hash reduza a memória após
+# decodificar. Sem isto o export do
+# acervo copiava o hash e calava a
+# recusa. Hash no disco não é o buffer.
+AUDIO_MEMORY = re.compile(r"não reduz,\s+por si,\s+a memória após decodificar")
+
+
+def recipe_refuses_hash_as_decode_memory(text):
+    return bool(text and AUDIO_MEMORY.search(text))
+
+
+def export_memory_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hash_as_decode_memory(text):
+        return "recipes/audio.md"
+    return None
+
+
+def export_memory_scope():
+    if not export_memory_source():
+        return None
+    return (
+        "O disco recusa que remontar bytes por hash reduza a "
+        "memória após decodificar (`memória`). Hash no disco "
+        "não é o buffer."
+    )
+
+
 def info_entry(entry_id, root=None, folder=None):
     sounds = load_catalog(root)["sounds"]
     empty = len(sounds) == 0
@@ -1385,11 +1420,17 @@ def export_entries(ids, destination, root=None, folder=None):
             ids=[item["id"] for item in catalog_items],
             kind="catalog",
         )
+        scope = ""
         if export_process_source():
-            result["scope"] = (
+            scope = (
                 "O disco recusa o processamento (`processamento`). "
                 "Bytes no disco não são mix ouvida."
             )
+        named = export_memory_scope()
+        if named:
+            scope += (" " if scope else "") + named
+        if scope:
+            result["scope"] = scope
         return result
     copied = [copy_local_stem(item, destination, root=root, folder=folder) for item in local_items]
     already = bool(copied) and all(item.get("status") == "already_exported" for item in copied)

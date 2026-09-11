@@ -30,6 +30,68 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.552 — o sfx export do acervo nomeia a memória que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+remontar
+bytes
+por
+hash
+não
+reduz
+a
+memória
+após
+decodificar.
+O
+export
+do
+acervo
+copiava
+o
+hash
+e
+calava
+a
+recusa.
+Agora
+o
+`sfx
+export`
+do
+acervo
+nomeia
+a
+memória.
+Hash
+no
+disco
+não
+é
+o
+buffer.
+Sem
+chave
+`memória`.
+Nomear
+não
+ouve.
+
+O que 0.9.552 não afirma:
+copiar
+bytes
+por
+hash
+não
+é
+ouvir
+o
+mix.
+
 ## 0.9.551 — o art nomeia a geometria que a receita já recusa
 
 A
