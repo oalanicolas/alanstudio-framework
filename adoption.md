@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.529 — o then do init nomeia o scaffold que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+scaffold
+ou
+cópia
+que
+inicia
+continua
+sendo
+ponto
+de
+partida.
+O
+then
+apontava
+play
+e
+calava
+a
+recusa.
+Agora
+o
+then
+nomeia
+o
+scaffold.
+Cópia
+no
+disco
+não
+é
+a
+slice.
+Sem
+chave
+`scaffold`.
+Nomear
+não
+observa.
+
+O que 0.9.529 não afirma:
+copiar
+o
+starter
+não
+é
+a
+slice.
+
 ## 0.9.528 — o fields do origins declare nomeia a consistência que a receita já recusa
 
 A

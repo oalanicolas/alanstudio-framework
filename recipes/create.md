@@ -147,7 +147,7 @@ textuais não são uma garantia de execução. [Fonte](../references/sources.md)
 Concluir o pedido exige conteúdo distintivo, cenário real e QA. Scaffold ou
 cópia que inicia continua sendo ponto de partida — um projeto recém-criado por
 `init` é exatamente isso, com documentos em rascunho e a decisão característica
-ainda por fazer. Esta receita não copia nem publica projetos por si. Não chame o
+ainda por fazer. Se a receita recusa que o scaffold ou a cópia que inicia seja mais que ponto de partida, o then do `init` nomeia o scaffold que a receita já recusa. Cópia no disco não é a slice. Sem chave `scaffold`. Esta receita não copia nem publica projetos por si. Não chame o
 recorte de AAA se as barras da escala — feel sincronizado, mix, pacing,
 repeatability — não foram demonstradas na slice.
 

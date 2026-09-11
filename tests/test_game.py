@@ -13215,6 +13215,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("título e cores novos sejam experiência", game.next_scope())
         self.assertNotIn("título e cores novos sejam experiência", game.play_scope(destination))
 
+    def test_init_then_names_the_scaffold_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_scaffold_as_more_than_start(recipe),
+            "a receita já recusa que o scaffold ou a cópia que inicia seja mais que ponto de partida",
+        )
+        self.assertEqual(game.init_then_scaffold_source(), "recipes/create.md")
+        report = game.init(self.root / "com-scaffold", "canvas-arcade")
+        self.assertIn(
+            "seja mais que ponto de partida",
+            report["then"]["scope"],
+            "o then do init apontava play e calava a recusa",
+        )
+        self.assertIn("(`scaffold`)", report["then"]["scope"])
+        self.assertNotIn("scaffold", report)
+        self.assertNotIn("scaffold", report["then"])
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_scaffold_as_more_than_start(""))
+        self.assertNotIn("seja mais que ponto de partida", report["scope"])
+        with mock.patch.object(game, "init_then_scaffold_source", return_value=None):
+            silent = game.init(self.root / "init-sem-scaffold", "canvas-arcade")
+        self.assertNotIn("seja mais que ponto de partida", silent["then"].get("scope") or "")
+        started = game.start_project(self.root / "start-sem-scaffold", "canvas-arcade")
+        self.assertNotIn("seja mais que ponto de partida", started["then"].get("scope") or "")
+        guided = game.guide_cycle(self.root / "com-scaffold", "canvas-arcade")
+        self.assertNotIn("seja mais que ponto de partida", guided["then"].get("scope") or "")
+        played = game.play_cycle(self.root / "com-scaffold", "canvas-arcade")
+        self.assertNotIn("seja mais que ponto de partida", played["then"].get("scope") or "")
+        felt = game.feel_reading(self.root / "com-scaffold")
+        self.assertNotIn("seja mais que ponto de partida", felt["then"].get("scope") or "")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o scaffold que a receita já recusa", recipe)
+        self.assertIn("nomeia o scaffold que a receita já recusa", skill)
+        self.assertIn("nomeia o scaffold que a receita já recusa", readme_doc)
+        self.assertNotIn("verified", report["then"]["scope"])
+        self.assertNotIn("aprovado", report["then"]["scope"])
+        self.assertNotIn("seja mais que ponto de partida", game.next_scope())
+        self.assertNotIn("seja mais que ponto de partida", game.play_scope(self.root / "com-scaffold"))
+
     def test_play_then_names_the_rng_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
         self.assertTrue(

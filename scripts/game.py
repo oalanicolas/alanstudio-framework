@@ -9880,6 +9880,9 @@ def init(destination, starter, title=None, documents=True, idea=None):
     # comando é note. then.lost continua o next.
     commands.append(note_command(destination))
     then = cycle_then(destination, play, starter)
+    scaffold = init_then_scope()
+    if scaffold:
+        then = dict(then, scope=scaffold)
     runtime = node_runtime(play)
     # O start já nomeava a superfície. Sem isto o init
     # plantava e calava — quem segue o caminho com
@@ -9952,6 +9955,39 @@ def start_then_scope():
     return (
         "O disco recusa que título e cores novos sejam experiência "
         "(`experiência`). Nome no disco não é o ciclo jogado."
+    )
+
+
+# A receita já recusa que o scaffold ou a cópia
+# que inicia seja mais que ponto de partida.
+# Sem isto o then do init apontava play e
+# calava a recusa. Cópia no disco não é a slice.
+CREATE_SCAFFOLD = re.compile(r"continua sendo ponto de partida")
+
+
+def recipe_refuses_scaffold_as_more_than_start(text):
+    return bool(text and CREATE_SCAFFOLD.search(text))
+
+
+def init_then_scaffold_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_scaffold_as_more_than_start(text):
+        return "recipes/create.md"
+    return None
+
+
+def init_then_scope():
+    if not init_then_scaffold_source():
+        return None
+    return (
+        "O disco recusa que o scaffold ou a cópia que inicia seja mais que "
+        "ponto de partida (`scaffold`). Cópia no disco não é a slice."
     )
 
 
