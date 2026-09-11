@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.398 — o scan nomeia o serve que o README já aponta
+
+O
+README
+já
+dizia
+`npm
+run
+serve`.
+O
+comando
+lia
+as
+áreas
+e
+calava
+o
+ciclo.
+Agora
+o
+`scan`
+nomeia
+o
+serve.
+Página
+no
+disco
+não
+é
+partida
+jogada.
+Sem
+chave
+`serve`.
+Nomear
+não
+executa.
+
+O que 0.9.398 não afirma:
+página
+no
+disco
+não
+é
+partida
+jogada
+nem
+`play`
+executado.
+
 ## 0.9.397 — o gate nomeia o gate que a tabela já declara
 
 A

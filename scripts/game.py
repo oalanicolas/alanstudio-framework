@@ -4648,8 +4648,51 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
             ),
             "guide": str(FRAMEWORK / "references/project-audit.md"),
         },
-        "scope": "Localização lexical limitada, priorizada por índices e nomes; links de navegação não são conteúdo. Marcadores de histórico/referência/rascunho são indícios, não certificação de atualidade. Não rastreia comportamento, executa código, escreve arquivos ou comprova suficiência e qualidade. Ausência significa não localizado neste recorte.",
+        "scope": _scan_scope(project),
     }
+
+
+# O README já aponta o serve. Sem isto o
+# scan lia as áreas e calava o ciclo.
+# Página no disco não é partida jogada.
+SCAN_CYCLE_FILES = ("README.md",)
+SCAN_CYCLE_MARK = re.compile(r"npm run serve")
+
+
+def readme_points_serve(text):
+    return bool(text and SCAN_CYCLE_MARK.search(text))
+
+
+def scan_serve_source(project):
+    project = Path(project)
+    for name in SCAN_CYCLE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if readme_points_serve(text):
+            return name
+    return None
+
+
+def _scan_scope(project):
+    scope = (
+        "Localização lexical limitada, priorizada por índices e nomes; links de navegação não são conteúdo. "
+        "Marcadores de histórico/referência/rascunho são indícios, não certificação de atualidade. "
+        "Não rastreia comportamento, executa código, escreve arquivos ou comprova suficiência e qualidade. "
+        "Ausência significa não localizado neste recorte."
+    )
+    if scan_serve_source(project):
+        scope += (
+            " O disco aponta o serve (`serve`). "
+            "Página no disco não é partida jogada."
+        )
+    return scope
 
 
 def select_references(focus, stage, document_minimum):

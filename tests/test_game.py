@@ -555,6 +555,33 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
 """, encoding="utf-8")
         return document
 
+    def test_scan_names_the_serve_the_readme_already_points_at(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        readme = (starter / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(game.readme_points_serve(readme), "o README já aponta o serve")
+        self.assertEqual(game.scan_serve_source(starter), "README.md")
+        report = game.scan(starter)
+        self.assertIn("aponta o serve", report["scope"], "o scan lia as áreas e calava o ciclo")
+        self.assertIn("(`serve`)", report["scope"])
+        self.assertNotIn("serve", report)
+        self.assertFalse(game.readme_points_serve(""))
+        self.assertIsNone(game.scan_serve_source(self.project))
+        empty = game.scan(self.project)
+        self.assertNotIn("aponta o serve", empty["scope"])
+        with mock.patch.object(game, "scan_serve_source", return_value=None):
+            silent = game.scan(starter)
+        self.assertNotIn("aponta o serve", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o serve que o README já aponta", recipe)
+        self.assertIn("nomeia o serve que o README já aponta", skill)
+        self.assertIn("nomeia o serve que o README já aponta", readme_doc)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("then.serve", report.get("then") or {})
+        self.assertNotIn("aponta o serve", game.next_step(starter)["scope"])
+        self.assertNotIn("aponta o serve", game.play_scope(starter))
+
     def test_scan_accepts_combined_document_as_candidates_without_certifying_it(self):
         document = self.foundation_document()
         before = document.read_bytes()

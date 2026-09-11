@@ -61,7 +61,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    consentimento; respeite restrição explícita na conversa atual. Se
    `foundation.audit.deferred` for verdadeiro, o destino já abre — jogue
    primeiro; lacuna de rascunho depois do `start` não é auditoria neste
-   turno. `--event direction-approved` e `--stage audit` continuam
+   turno. Se o README aponta o serve, o `scan` nomeia o serve que o README já aponta. Página no disco não é partida jogada. Sem chave `serve`. `--event direction-approved` e `--stage audit` continuam
    pedindo a base. Sem projeto
    identificável, não invente um alvo. Em retomada, fonte encontrada não é tarefa
    validada: siga [continuidade e retomada](references/process.md#continuidade-e-retomada).
