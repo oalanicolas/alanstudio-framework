@@ -10964,6 +10964,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("pasta de build existente corresponda à fonte atual", game.next_scope())
         self.assertNotIn("pasta de build existente corresponda à fonte atual", game.play_scope(self.project))
 
+    def test_ship_names_the_access_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_link_as_access(recipe),
+            "a receita já recusa que link não listado comprove controle de acesso",
+        )
+        self.assertEqual(game.ship_access_source(), "recipes/release.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.ship_reading(starter)
+        self.assertIn(
+            "link não listado comprove controle de acesso",
+            report["scope"],
+            "o ship listava o passo e calava a recusa",
+        )
+        self.assertIn("(`acesso`)", report["scope"])
+        self.assertNotIn("acesso", report)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_link_as_access(""))
+        with mock.patch.object(game, "ship_access_source", return_value=None):
+            silent = game.ship_reading(starter)
+        self.assertNotIn("link não listado comprove controle de acesso", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o acesso que a receita já recusa", recipe)
+        self.assertIn("nomeia o acesso que a receita já recusa", skill)
+        self.assertIn("nomeia o acesso que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("verified", recipe)
+        self._web_manifest()
+        self._artifact_tree(complete=False)
+        nested = game.ship_reading(self.project)
+        self.assertNotIn(
+            "link não listado comprove controle de acesso",
+            nested["tree"]["scope"],
+        )
+        self.assertNotIn(
+            "link não listado comprove controle de acesso",
+            nested["artifact"]["scope"],
+        )
+        self.assertNotIn("link não listado comprove controle de acesso", game.next_scope())
+        self.assertNotIn("link não listado comprove controle de acesso", game.play_scope(self.project))
+        self.assertNotIn(
+            "link não listado comprove controle de acesso",
+            game.playtest_reading(starter)["scope"],
+        )
+
     def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
         # O export já copia src/. Sem isto o ship dizia
         # completa uma dist/ só com identidade e serve.

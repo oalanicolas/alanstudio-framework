@@ -4691,6 +4691,39 @@ def ship_artifact_current_source():
     return None
 
 
+# A receita já recusa que link não listado
+# comprove controle de acesso. Sem isto o
+# ship listava o passo e calava a recusa.
+# Link no disco não é outra máquina.
+SHIP_ACCESS = re.compile(r"link não listado não comprova controle de acesso")
+
+
+def recipe_refuses_link_as_access(text):
+    return bool(text and SHIP_ACCESS.search(text))
+
+
+def ship_access_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_link_as_access(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_access_scope():
+    if not ship_access_source():
+        return None
+    return (
+        " O disco recusa que link não listado comprove controle de "
+        "acesso (`acesso`). Link no disco não é outra máquina."
+    )
+
+
 def ship_reading(project):
     project = Path(project)
     try:
@@ -4748,6 +4781,9 @@ def ship_reading(project):
             " O disco recusa o file:// (`file://`). "
             "Recusar no disco não é outra máquina."
         )
+    named = ship_access_scope()
+    if named:
+        scope += named
     return {
         "schema_version": 1,
         "project": str(project),
