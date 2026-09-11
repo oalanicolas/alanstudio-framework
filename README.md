@@ -118,7 +118,7 @@ que `init` aponta é o que serve o jogo. `open`, `url` e `prompt` nomeiam
 a mesma superfície do `start` — o `prompt` também sai em stderr. Nomear
 não serve. `verify` roda os validadores do starter onde houver Node.
 
-`next` deriva **uma** proposta do estado no disco e ordena por dependência. Se o processo pede uma ação recomendada, o `next` nomeia a ação que o processo já pede. Proposta no disco não é autorização. Sem chave `ação`. Sem
+`next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
 → segundo ciclo de par, look, chuva e voz
 → papéis de áudio vazios → feel ainda sem observação → convite para quem nunca viu o jogo → achado sem forma →
@@ -126,7 +126,7 @@ acessibilidade sem opção
 → save sem versão → orçamento ausente → direção de arte ausente → conteúdo
 ainda no código → empacotar ainda sem passo → artefato incompleto → artefato de outro HEAD → árvore pronta para servir → rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
-recibo → gate → ofício → barra. Depois de um `init` fresco — nove áreas com
+recibo → gate → ofício → barra. Se o processo pede uma ação recomendada, o `next` nomeia a ação que o processo já pede. Proposta no disco não é autorização. Sem chave `ação`. Depois de um `init` fresco — nove áreas com
 candidato, seis ainda rascunho (o art-bible do starter já vem vigente), e um script que abre o jogo — a primeira proposta
 é jogar o ciclo, não preencher os templates. Depois de um `start` — sem os seis rascunhos — a primeira proposta continua jogar o ciclo: jogo que abre não espera área localizada. Depois do recibo, se o projeto
 declara `pair`/`look`/`table`/`sfx` e ainda não nasceu look, chuva ou voz deslocada,
