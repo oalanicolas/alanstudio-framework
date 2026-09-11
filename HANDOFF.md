@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.413: o `doctor` nomeia o exemplo que o README já imprime. Frase no then não é pasta criada. Sem chave `exemplo`. Nomear não cria.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**HEAD anterior + confirmação pendente:** `python3 -m unittest discover -s tests` → 408 OK no 0.9.412.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK. Esperado no 0.9.413: 409 / 509.
+**Suítes confirmadas no HEAD (0.9.413):** `python3 -m unittest discover -s tests` → 409 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
