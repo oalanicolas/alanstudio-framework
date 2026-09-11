@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.509 — a opção captions do access nomeia o número que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+número
+na
+legenda
+não
+é
+mix
+ouvido.
+A
+opção
+`captions`
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+a
+opção
+`captions`
+do
+`access`
+nomeia
+o
+número.
+Número
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`número`.
+Nomear
+não
+ouve.
+
+O que 0.9.509 não afirma:
+o
+número
+na
+faixa
+não
+é
+o
+primeiro
+ciclo
+ouvido.
+
 ## 0.9.508 — o missing do sfx verify nomeia o 404 que a receita já recusa
 
 A

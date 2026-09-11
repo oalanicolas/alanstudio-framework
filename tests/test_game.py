@@ -2251,6 +2251,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("opção sem consumidor seja opção", game.next_scope())
         self.assertNotIn("opção sem consumidor seja opção", game.verify_scope())
 
+    def test_access_captions_names_the_number_the_recipe_already_refuses(self):
+        audio_recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_caption_number_as_mix(audio_recipe),
+            "a receita já recusa que o número na legenda seja mix",
+        )
+        self.assertEqual(game.access_caption_number_source(), "recipes/audio.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = next(option for option in report["options"] if option["key"] == "captions")
+        self.assertIn(
+            "número na legenda seja mix",
+            item["scope"],
+            "a opção captions copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`número`)", item["scope"])
+        self.assertNotIn("número", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_caption_number_as_mix(""))
+        self.assertNotIn("número na legenda seja mix", report["scope"])
+        self.assertNotIn("número na legenda seja mix", report.get("next") or "")
+        for option in report["options"]:
+            if option["key"] == "captions":
+                continue
+            self.assertNotIn("número na legenda seja mix", option["scope"])
+        with mock.patch.object(game, "access_caption_number_source", return_value=None):
+            silent = game.access_reading(starter)
+        silent_item = next(option for option in silent["options"] if option["key"] == "captions")
+        self.assertNotIn("número na legenda seja mix", silent_item["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        access_recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o número que a receita já recusa", audio_recipe)
+        self.assertIn("nomeia o número que a receita já recusa", access_recipe)
+        self.assertIn("nomeia o número que a receita já recusa", skill)
+        self.assertIn("nomeia o número que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("número na legenda seja mix", game.next_scope())
+        self.assertNotIn("número na legenda seja mix", game.feel_reading(starter)["scope"])
+
     def test_commands_name_the_generic_the_menu_already_refuses(self):
         guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
         self.assertTrue(

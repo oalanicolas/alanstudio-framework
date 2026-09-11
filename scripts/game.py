@@ -2765,6 +2765,46 @@ def access_option_scope():
     return scope
 
 
+# A receita já recusa que o número na legenda seja mix. Sem isto a
+# opção captions copiava a chave e calava a recusa.
+# Número no disco não é mix.
+AUDIO_CAPTION_NUMBER = re.compile(r"Número na legenda não é mix")
+
+
+def recipe_refuses_caption_number_as_mix(text):
+    return bool(text and AUDIO_CAPTION_NUMBER.search(text))
+
+
+def access_caption_number_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_caption_number_as_mix(text):
+        return "recipes/audio.md"
+    return None
+
+
+def access_caption_number_scope():
+    if not access_caption_number_source():
+        return None
+    return (
+        "O disco recusa que o número na legenda seja mix "
+        "(`número`). Número no disco não é mix."
+    )
+
+
+def access_captions_option_scope():
+    scope = access_option_scope()
+    named = access_caption_number_scope()
+    if named:
+        scope += " " + named
+    return scope
+
+
 # A receita já recusa opção sem consumidor. Sem isto o
 # item copiava a chave e calava a recusa.
 # Chave no disco não é alcance.
@@ -2840,7 +2880,11 @@ def access_reading(project):
         "project": str(project),
         "exists": project.is_dir(),
         "options": [
-            {"key": key, "sources": found[key][:4], "scope": option_scope}
+            {
+                "key": key,
+                "sources": found[key][:4],
+                "scope": access_captions_option_scope() if key == "captions" else option_scope,
+            }
             for key in A11Y_OPTIONS if found[key]
         ],
         "missing": [key for key in A11Y_OPTIONS if not found[key]],
