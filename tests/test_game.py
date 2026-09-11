@@ -1400,6 +1400,34 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", drafted)
         self.assertIsNone(game.FINDING_FIELDS.search(drafted))
 
+    def test_doctor_names_the_engines_the_package_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        pack = (starter / "package.json").read_text(encoding="utf-8")
+        self.assertTrue(game.package_asks_node(pack), "o package já pede Node")
+        source = game.starter_engines_source()
+        self.assertEqual(source, "assets/starters/canvas-arcade/package.json")
+        report = game.doctor(self.root)
+        self.assertIn("nomeia o engines", report["scope"], "o doctor lia a major do PATH e calava o package")
+        self.assertIn("(`engines`)", report["scope"])
+        self.assertTrue(report["ready"])
+        self.assertNotIn("engines", report)
+        self.assertNotIn("engines", {check["name"] for check in report["checks"]})
+        self.assertFalse(game.package_asks_node(""))
+        self.assertFalse(game.package_asks_node("{}"))
+        self.assertFalse(game.package_asks_node('{"engines": {}}'))
+        with mock.patch.object(game, "starter_engines_source", return_value=None):
+            silent = game.doctor(self.root)
+        self.assertNotIn("nomeia o engines", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o engines que o package já declara", recipe)
+        self.assertIn("nomeia o engines que o package já declara", skill)
+        self.assertIn("nomeia o engines que o package já declara", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("then.engines", report.get("then") or {})
+
     def test_doctor_reports_environment_and_integrity_without_changing_anything(self):
         before = set(self.root.iterdir())
         report = game.doctor(self.root)

@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.384 — o doctor nomeia o engines que o package já declara
+
+O
+starter
+já
+pedia
+Node
+20.
+O
+comando
+lia
+a
+major
+do
+PATH
+e
+calava
+o
+`engines`.
+Agora
+o
+`doctor`
+nomeia
+o
+engines.
+Pedido
+no
+disco
+não
+é
+binário
+no
+PATH.
+Sem
+chave
+`engines`.
+Nomear
+não
+instala.
+
+O que 0.9.384 não afirma:
+pedido
+no
+disco
+não
+é
+Node
+instalado
+nem
+serve
+no
+ar.
+
 ## 0.9.383 — o origins nomeia o consumidor que o sidecar já declara
 
 O

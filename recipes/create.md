@@ -7,7 +7,7 @@ o projeto atual.
 
 O caminho curto está em [ambição](../references/ambition.md): um ciclo jogável
 na primeira sessão, depois feel e áudio do verbo, depois receita de conteúdo.
-`start` e `guide` mapeiam start → jogar → `note`. O [processo comum](../references/process.md)
+`start` e `guide` mapeiam start → jogar → `note`. Se o package pede Node, o `doctor` nomeia o engines que o package já declara. Pedido no disco não é binário no PATH. Sem chave `engines`. Nomear não instala. O [processo comum](../references/process.md)
 também nomeia a porta nesse mapa. Os dois devolvem
 `open` (o comando de agora) e `prompt` (a frase para colar; também
 sai em stderr). Depois do

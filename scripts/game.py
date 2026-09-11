@@ -6074,6 +6074,35 @@ def tool_report(name, args=("--version",), timeout=15):
 
 STARTER_NODE_MAJOR = 20
 
+# O package já pede Node. Sem isto o doctor
+# lia a major do PATH e calava o engines.
+# Pedido no disco não é binário no PATH.
+STARTER_PACKAGE = "package.json"
+STARTER_ENGINES = re.compile(
+    r'"engines"\s*:\s*\{[^{}]*"node"\s*:',
+    re.DOTALL,
+)
+
+
+def package_asks_node(text):
+    return bool(text and STARTER_ENGINES.search(text))
+
+
+def starter_engines_source():
+    if not STARTERS_ROOT.is_dir() or STARTERS_ROOT.is_symlink():
+        return None
+    for name in starters():
+        path = STARTERS_ROOT / name / STARTER_PACKAGE
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if package_asks_node(text):
+            return f"assets/starters/{name}/{STARTER_PACKAGE}"
+    return None
+
 
 def node_major(version):
     if not isinstance(version, str) or not version.strip():
@@ -6271,6 +6300,17 @@ def doctor(root):
     ready = not blocking
     empty = not projects
     then = doctor_then(ready, available, empty)
+    scope = (
+        "Presença e versão de ferramentas, presença dos arquivos deste repositório e conteúdo dos atalhos da skill no host. "
+        "Com starter e laboratório sem jogo, `then.guide` aponta o mapa "
+        "com `--idea`. Sem frase a raiz recusa. "
+        "Não instala nada, não copia a skill, não cria o projeto, não executa o jogo e não comprova que um projeto funciona."
+    )
+    if starter_engines_source():
+        scope += (
+            " O disco nomeia o engines (`engines`). "
+            "Pedido no disco não é binário no PATH."
+        )
     return {
         "schema_version": 1,
         "framework": str(FRAMEWORK),
@@ -6286,12 +6326,7 @@ def doctor(root):
         "stages": list(STAGES),
         "genres": list(GENRES),
         "known_markers": [marker for marker, _ in ENGINE_MARKERS],
-        "scope": (
-            "Presença e versão de ferramentas, presença dos arquivos deste repositório e conteúdo dos atalhos da skill no host. "
-            "Com starter e laboratório sem jogo, `then.guide` aponta o mapa "
-            "com `--idea`. Sem frase a raiz recusa. "
-            "Não instala nada, não copia a skill, não cria o projeto, não executa o jogo e não comprova que um projeto funciona."
-        ),
+        "scope": scope,
     }
 
 

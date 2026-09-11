@@ -91,6 +91,7 @@ templates, referências e pacotes), raiz, projetos reconhecidos, estudos, acervo
 sonoro, starters disponíveis e os atalhos de skill do host — vigente, desatualizado
 ou ausente, comparando conteúdo.
 Sem jogo reconhecido e com starter, `then.guide` aponta o mapa ideia→ciclo com `--idea`. Sem frase a raiz recusa.
+Se o package pede Node, o `doctor` nomeia o engines que o package já declara. Pedido no disco não é binário no PATH. Sem chave `engines`. Nomear não instala.
 Não cria e não executa. Sem starter, o aviso nomeia `start --idea`, não `init`.
 Symlink apontando para o `SKILL.md` deste repositório conta como vigente: é o
 atalho que não tem como ficar para trás. Não escreve nada; sinaliza bloqueio pelo
