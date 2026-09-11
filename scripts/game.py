@@ -7535,6 +7535,41 @@ def next_scope():
     return scope
 
 
+# O roteiro já recusa que o comando crie o jogo. Sem isto a
+# proposta copiava a ação e calava a recusa.
+# Proposta no disco não é pasta criada.
+PREPRODUCTION_CREATE = re.compile(r"não preenche design")
+
+
+def preproduction_refuses_create(text):
+    return bool(text and PREPRODUCTION_CREATE.search(text))
+
+
+def proposal_create_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if preproduction_refuses_create(text):
+        return "references/preproduction.md"
+    return None
+
+
+def proposal_scope():
+    scope = (
+        "Uma ação derivada do disco. Não executa o comando e não cria o projeto."
+    )
+    if proposal_create_source():
+        scope += (
+            " O disco recusa que o comando crie o jogo (`criação`). "
+            "Proposta no disco não é pasta criada."
+        )
+    return scope
+
+
 def next_step(project, focus="create", studies_root=None):
     payload = context(project, focus, studies_root=studies_root)
     foundation = payload["foundation"]
@@ -8012,7 +8047,7 @@ def next_step(project, focus="create", studies_root=None):
             [harness_command("context", project, "--focus", focus)],
             "production_bar.floor",
         )
-    return {
+    report = {
         "schema_version": 1,
         "project": str(project),
         "exists": payload["exists"],
@@ -8061,6 +8096,9 @@ def next_step(project, focus="create", studies_root=None):
         "executed": False,
         "scope": next_scope(),
     }
+    if report["proposal"]:
+        report["proposal"]["scope"] = proposal_scope()
+    return report
 
 
 def nonempty(value):

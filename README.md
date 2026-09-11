@@ -126,7 +126,7 @@ acessibilidade sem opção
 → save sem versão → orçamento ausente → direção de arte ausente → conteúdo
 ainda no código → empacotar ainda sem passo → artefato incompleto → artefato de outro HEAD → árvore pronta para servir → rascunho → documento sem versão
 vigente → continuidade → sem instruções para o agente → validadores → origens sem
-recibo → gate → ofício → barra. Se o processo pede uma ação recomendada, o `next` nomeia a ação que o processo já pede. Proposta no disco não é autorização. Sem chave `ação`. Depois de um `init` fresco — nove áreas com
+recibo → gate → ofício → barra. Se o processo pede uma ação recomendada, o `next` nomeia a ação que o processo já pede. Proposta no disco não é autorização. Sem chave `ação`. Se o roteiro recusa que o comando crie o jogo, o `next` nomeia a criação que o roteiro já recusa. Proposta no disco não é pasta criada. Sem chave `criação`. Depois de um `init` fresco — nove áreas com
 candidato, seis ainda rascunho (o art-bible do starter já vem vigente), e um script que abre o jogo — a primeira proposta
 é jogar o ciclo, não preencher os templates. Depois de um `start` — sem os seis rascunhos — a primeira proposta continua jogar o ciclo: jogo que abre não espera área localizada. Depois do recibo, se o projeto
 declara `pair`/`look`/`table`/`sfx` e ainda não nasceu look, chuva ou voz deslocada,

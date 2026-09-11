@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.427 — o next nomeia a criação que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+o
+comando
+não
+cria
+um
+jogo.
+A
+proposta
+copiava
+a
+ação
+e
+calava
+a
+recusa.
+Agora
+o
+`next`
+nomeia
+a
+criação.
+Proposta
+no
+disco
+não
+é
+pasta
+criada.
+Sem
+chave
+`criação`.
+Nomear
+não
+cria.
+
+O que 0.9.427 não afirma:
+proposta
+no
+disco
+não
+é
+pasta
+criada
+nem
+jogo
+jogado.
+
 ## 0.9.426 — o context nomeia a API que a receita já recusa
 
 A

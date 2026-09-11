@@ -1082,6 +1082,42 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ação recomendada", game.context(self.project, "create")["finish"]["scope"])
         self.assertNotIn("ação recomendada", game.scan(self.project)["scope"])
 
+    def test_next_names_the_creation_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.preproduction_refuses_create(guide),
+            "o roteiro já recusa que o comando crie o jogo",
+        )
+        self.assertEqual(game.proposal_create_source(), "references/preproduction.md")
+        report = game.next_step(self.project)
+        proposal = report["proposal"]
+        self.assertIn(
+            "crie o jogo",
+            proposal["scope"],
+            "a proposta copiava a ação e calava a recusa",
+        )
+        self.assertIn("(`criação`)", proposal["scope"])
+        self.assertNotIn("criação", proposal)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.preproduction_refuses_create(""))
+        with mock.patch.object(game, "proposal_create_source", return_value=None):
+            silent = game.next_step(self.project)
+        self.assertNotIn("crie o jogo", silent["proposal"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a criação que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a criação que o roteiro já recusa", skill)
+        self.assertIn("nomeia a criação que o roteiro já recusa", readme)
+        self.assertNotIn("verified", proposal["scope"])
+        self.assertNotIn("crie o jogo", report["scope"])
+        self.assertNotIn("crie o jogo", game.next_scope())
+        self.assertNotIn("crie o jogo", game.context_scope())
+        self.assertNotIn("crie o jogo", game.guide_scope("canvas-arcade"))
+        self.assertNotIn("crie o jogo", game.init_scope(False))
+        for item in report["alternatives"]:
+            self.assertNotIn("crie o jogo", item.get("scope", ""))
+
     def test_record_names_the_measure_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(
