@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/runbook-telemetria-1083` (base `main`)
 **PR:** [#6](https://github.com/oalanicolas/alanstudio-framework/pull/6) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.487: o `gate` deliver nomeia o lançamento que o fluxo já recusa. Linha no disco não é outra máquina. Sem chave `lançamento`. Nomear não observa. Confirmação pendente.
+**HEAD:** ver `git log -1` — vigente 0.9.487: o `gate` deliver nomeia o lançamento que o fluxo já recusa. Linha no disco não é outra máquina. Sem chave `lançamento`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** confirmação pendente no 0.9.487 (anterior 0.9.486: 547 / 516).
+**Suítes:** confirmadas no HEAD (0.9.487): 548 / 516.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
