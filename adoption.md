@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.551 — o art nomeia a geometria que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+câmera
+próxima
+e
+geometria
+numericamente
+correta
+não
+provam
+leitura.
+O
+art
+listava
+paletas
+e
+calava
+a
+recusa.
+Agora
+o
+`art`
+nomeia
+a
+geometria.
+Número
+no
+disco
+não
+é
+a
+silhueta.
+Sem
+chave
+`geometria`.
+Nomear
+não
+observa.
+
+O que 0.9.551 não afirma:
+listar
+a
+paleta
+não
+é
+comparar
+o
+corpo
+em
+movimento.
+
 ## 0.9.550 — o roles nomeia o heap que a receita já recusa
 
 A

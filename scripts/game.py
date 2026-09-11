@@ -4181,6 +4181,9 @@ def art_reading(project):
     framed = art_framing_scope()
     if framed:
         scope += framed
+    geometry = art_geometry_scope()
+    if geometry:
+        scope += geometry
     palette_scope = art_palette_scope()
     for item in palettes:
         item["scope"] = palette_scope
@@ -7963,6 +7966,41 @@ def art_framing_scope():
     return (
         " O disco recusa que uma correção local valide o enquadramento "
         "(`enquadramento`). Correção no disco não é o conjunto."
+    )
+
+
+# A receita já recusa que câmera próxima
+# e geometria numericamente correta
+# provem leitura. Sem isto o art listava
+# paletas e calava a recusa. Número no
+# disco não é a silhueta.
+FEEL_GEOMETRY = re.compile(r"geometria numericamente correta não provam leitura")
+
+
+def recipe_refuses_geometry_as_reading(text):
+    return bool(text and FEEL_GEOMETRY.search(text))
+
+
+def art_geometry_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_geometry_as_reading(text):
+        return "recipes/feel.md"
+    return None
+
+
+def art_geometry_scope():
+    if not art_geometry_source():
+        return None
+    return (
+        " O disco recusa que câmera próxima e geometria numericamente "
+        "correta provem leitura (`geometria`). Número no disco não é a "
+        "silhueta."
     )
 
 

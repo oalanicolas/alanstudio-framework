@@ -236,7 +236,7 @@ e nas proporções de cada avatar. Meça o sólido visível, sem esticar ossos p
 passar no teste. Uma cápsula central pode excluir acessórios e membros estendidos
 por contrato explícito; registre essa diferença antes de mudar arte ou balanceamento.
 Inspecione também o corpo cruzando plataformas e pendurado na borda, na câmera
-da partida: câmera próxima e geometria numericamente correta não provam leitura.
+da partida: câmera próxima e geometria numericamente correta não provam leitura. Se a receita recusa que câmera próxima e geometria numericamente correta provem leitura, o `art` nomeia a geometria que a receita já recusa. Número no disco não é a silhueta. Sem chave `geometria`.
 
 ## 4. Ajustar uma variável por vez
 

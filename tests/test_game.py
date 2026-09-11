@@ -2493,6 +2493,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("uma correção local valide o enquadramento", game.next_scope())
         self.assertNotIn("uma correção local valide o enquadramento", game.scan(starter)["scope"])
 
+    def test_art_names_the_geometry_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_geometry_as_reading(recipe),
+            "a receita já recusa que câmera próxima e geometria numericamente correta provem leitura",
+        )
+        self.assertEqual(game.art_geometry_source(), "recipes/feel.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.art_reading(starter)
+        self.assertIn(
+            "câmera próxima e geometria numericamente correta provem leitura",
+            report["scope"],
+            "o art listava paletas e calava a recusa",
+        )
+        self.assertIn("(`geometria`)", report["scope"])
+        self.assertNotIn("geometria", report)
+        self.assertFalse(report["consistent"])
+        self.assertFalse(game.recipe_refuses_geometry_as_reading(""))
+        with mock.patch.object(game, "art_geometry_source", return_value=None):
+            silent = game.art_reading(starter)
+        self.assertNotIn(
+            "câmera próxima e geometria numericamente correta provem leitura",
+            silent["scope"],
+        )
+        visual = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a geometria que a receita já recusa", recipe)
+        self.assertIn("nomeia a geometria que a receita já recusa", visual)
+        self.assertIn("nomeia a geometria que a receita já recusa", skill)
+        self.assertIn("nomeia a geometria que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertTrue(report["palettes"])
+        self.assertNotIn(
+            "câmera próxima e geometria numericamente correta provem leitura",
+            report["palettes"][0].get("scope") or "",
+        )
+        self.assertTrue(report["rains"])
+        self.assertNotIn(
+            "câmera próxima e geometria numericamente correta provem leitura",
+            report["rains"][0].get("scope") or "",
+        )
+        self.assertNotIn(
+            "câmera próxima e geometria numericamente correta provem leitura",
+            game.art_direction_scope(),
+        )
+        self.assertNotIn(
+            "câmera próxima e geometria numericamente correta provem leitura",
+            game.feel_reading(starter)["scope"],
+        )
+        self.assertNotIn(
+            "câmera próxima e geometria numericamente correta provem leitura",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "câmera próxima e geometria numericamente correta provem leitura",
+            game.scan(starter)["scope"],
+        )
+
     def test_doctor_names_the_publisher_the_skill_already_refuses(self):
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         self.assertTrue(
