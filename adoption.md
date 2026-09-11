@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.431 — o bar nomeia os prazos que a barra já recusa
+
+A
+barra
+já
+dizia
+que
+degraus
+não
+são
+prazos.
+O
+item
+listava
+o
+degrau
+e
+calava
+a
+recusa.
+Agora
+o
+`bar`
+nomeia
+os
+prazos.
+Linha
+no
+disco
+não
+é
+calendário.
+Sem
+chave
+`prazos`.
+Nomear
+não
+observa.
+
+O que 0.9.431 não afirma:
+linha
+no
+disco
+não
+é
+calendário
+nem
+acabamento
+observado.
+
 ## 0.9.430 — o craft nomeia a escada que a pesquisa já recusa
 
 A

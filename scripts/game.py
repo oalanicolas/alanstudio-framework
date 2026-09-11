@@ -4475,6 +4475,7 @@ def bar_reading(project):
                 "key": key,
                 "label": BAR_DIMENSIONS[key],
                 **(declared.get(key) or {"tier": None, "next_tier": None, "gap": None, "source": None}),
+                "scope": bar_item_scope(),
             }
             for key in BAR_DIMENSIONS
         ],
@@ -4490,6 +4491,42 @@ def bar_reading(project):
         "assessed": False,
         "scope": _bar_scope(project),
     }
+
+
+# A barra já recusa que o degrau seja prazo. Sem isto o
+# item listava o degrau e calava a recusa.
+# Linha no disco não é calendário.
+BAR_DEADLINE = re.compile(r"Degraus não são prazos")
+
+
+def bar_refuses_deadline(text):
+    return bool(text and BAR_DEADLINE.search(text))
+
+
+def bar_item_deadline_source():
+    path = FRAMEWORK / "references/production-bar.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_deadline(text):
+        return "references/production-bar.md"
+    return None
+
+
+def bar_item_scope():
+    scope = (
+        "Degrau da dimensão segundo a declaração do projeto. "
+        "Não observa e não atribui calendário."
+    )
+    if bar_item_deadline_source():
+        scope += (
+            " O disco recusa que o degrau seja prazo (`prazos`). "
+            "Linha no disco não é calendário."
+        )
+    return scope
 
 
 # A barra já recusa promover o degrau. Sem isto o

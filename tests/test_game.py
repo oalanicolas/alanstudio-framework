@@ -3130,6 +3130,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("verified", report["scope"])
 
+    def test_bar_names_the_deadline_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.bar_refuses_deadline(guide),
+            "a barra já recusa que o degrau seja prazo",
+        )
+        self.assertEqual(game.bar_item_deadline_source(), "references/production-bar.md")
+        report = game.bar_reading(self.project)
+        item = report["dimensions"][0]
+        self.assertIn(
+            "degrau seja prazo",
+            item["scope"],
+            "o item do bar listava o degrau e calava a recusa",
+        )
+        self.assertIn("(`prazos`)", item["scope"])
+        self.assertNotIn("prazos", item)
+        self.assertFalse(report["assessed"])
+        self.assertFalse(game.bar_refuses_deadline(""))
+        with mock.patch.object(game, "bar_item_deadline_source", return_value=None):
+            silent = game.bar_reading(self.project)
+        self.assertNotIn("degrau seja prazo", silent["dimensions"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os prazos que a barra já recusa", recipe)
+        self.assertIn("nomeia os prazos que a barra já recusa", skill)
+        self.assertIn("nomeia os prazos que a barra já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("degrau seja prazo", report["scope"])
+        self.assertNotIn("degrau seja prazo", game.production_bar_scope())
+        self.assertNotIn("degrau seja prazo", game.next_scope())
+        self.assertNotIn("degrau seja prazo", game.context_scope())
+
     def test_bar_reads_the_tier_the_project_declares_and_never_assigns_one(self):
         self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS} | {"pacing": ("playable", "slice")})
         report = game.bar_reading(self.project)
