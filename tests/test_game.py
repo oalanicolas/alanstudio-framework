@@ -1788,6 +1788,34 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["url"], "http://localhost:8080/")
         self.assertEqual(run.stderr.strip(), report["prompt"])
 
+    def test_init_names_the_module_the_package_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        pack = (starter / "package.json").read_text(encoding="utf-8")
+        self.assertTrue(game.package_declares_module(pack), "o package já declara o módulo")
+        self.assertEqual(
+            game.starter_module_source(),
+            "assets/starters/canvas-arcade/package.json",
+        )
+        report = game.init(self.root / "arcade-modulo", "canvas-arcade", documents=False)
+        self.assertIn("declara o módulo", report["scope"], "o init copiava o manifesto e calava o type")
+        self.assertIn("(`type`)", report["scope"])
+        self.assertNotIn("type", report)
+        self.assertFalse(game.package_declares_module(""))
+        self.assertFalse(game.package_declares_module("{}"))
+        with mock.patch.object(game, "starter_module_source", return_value=None):
+            silent = game.init_scope(False)
+        self.assertNotIn("declara o módulo", silent)
+        started = game.start_project(self.root / "arcade-start-modulo", "canvas-arcade")
+        self.assertNotIn("declara o módulo", started["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o módulo que o package já declara", recipe)
+        self.assertIn("nomeia o módulo que o package já declara", skill)
+        self.assertIn("nomeia o módulo que o package já declara", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("then.type", report.get("then") or {})
+
     def test_init_scope_names_drafts_only_when_they_were_planted(self):
         bare = game.init_scope(False, "atravessar estilhaços")
         self.assertIn("sem plantar", bare)

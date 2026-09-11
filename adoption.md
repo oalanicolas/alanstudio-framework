@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.396 — o init nomeia o módulo que o package já declara
+
+O
+`package.json`
+já
+trazia
+`"type":
+"module"`.
+O
+comando
+copiava
+o
+manifesto
+e
+calava
+o
+campo.
+Agora
+o
+`init`
+nomeia
+o
+módulo.
+Tipo
+no
+disco
+não
+é
+runtime
+instalado.
+Sem
+chave
+`type`.
+Nomear
+não
+instala.
+
+O que 0.9.396 não afirma:
+tipo
+no
+disco
+não
+é
+runtime
+instalado
+nem
+`start`
+executado.
+
 ## 0.9.395 — o discover nomeia os scripts que o package já declara
 
 O

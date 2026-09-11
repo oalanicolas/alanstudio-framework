@@ -5682,7 +5682,7 @@ def init_scope(documents, idea=None):
             if nonempty(idea)
             else ""
         )
-    return (
+    scope = (
         copied + drafts
         + "Documento vigente que o starter já trouxe (art-bible) não é reescrito. "
         + scan + planted
@@ -5690,6 +5690,12 @@ def init_scope(documents, idea=None):
         "ADAPT, não uma engine nem uma base aprovada; o comando não executa o jogo, não instala "
         "dependências e não avalia a proposta."
     )
+    if starter_module_source():
+        scope += (
+            " O disco declara o módulo (`type`). "
+            "Tipo no disco não é runtime instalado."
+        )
+    return scope
 
 
 def init(destination, starter, title=None, documents=True, idea=None):
@@ -6342,10 +6348,36 @@ def starter_engines_source():
 # doctor lia a integridade e calava o campo.
 # Manifesto no disco não é projeto criado.
 STARTER_SUBSTITUTIONS = re.compile(r'"substitutions"\s*:\s*\[')
+# O package já declara o módulo. Sem isto o
+# init copiava o manifesto e calava o `type`.
+# Tipo no disco não é runtime instalado.
+PACKAGE_MODULE = re.compile(r'"type"\s*:\s*"module"')
 
 
 def manifest_declares_substitutions(text):
     return bool(text and STARTER_SUBSTITUTIONS.search(text))
+
+
+def package_declares_module(text):
+    return bool(text and PACKAGE_MODULE.search(text))
+
+
+def starter_module_source():
+    if not STARTERS_ROOT.is_dir() or STARTERS_ROOT.is_symlink():
+        return None
+    for name in starters():
+        path = STARTERS_ROOT / name / STARTER_PACKAGE
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if package_declares_module(text):
+            return f"assets/starters/{name}/{STARTER_PACKAGE}"
+    return None
 
 
 def starter_substitutions_source():
