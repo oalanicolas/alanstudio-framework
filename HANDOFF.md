@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.354: o `access` nomeia o contraste que a receita já amostra. Stub no disco não é sessão com o modo ativo. Sem chave `contrast`. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.354):** `python3 -m unittest discover -s tests` → 350.
+**Suítes confirmadas no HEAD (0.9.354):** `python3 -m unittest discover -s tests` → 350.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
