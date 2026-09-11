@@ -624,6 +624,7 @@ Se o `tools/probe.*` exercita as janelas de perdão, o `feel` nomeia o perdão q
 Conta no disco não é peso percebido. Sem chave `probe`.
 Se o laço senta a guarda, o `feel` nomeia o sit que a guarda já senta. Pose no disco não é peso percebido. Sem chave `bank`.
 Se o laço emite o término, o `feel` nomeia o land que o dash já emite. Pose no disco não é peso percebido. Sem chave `land`.
+Se a receita recusa que o autor sugerido seja quem jogou, o `feel` nomeia o autor que a receita já recusa. Recibo no disco não é sessão. Sem chave `autor`.
 Constante nomeada não é peso percebido. `feel` lê as
 constantes — inclusive o pulso e o passo — essas janelas e o rumo, procura um `record.json` de observação no projeto e nomeia
 `then.play` e `then.note` sem executar. Com last-run, nomeia `then.seed`

@@ -5746,6 +5746,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("feel.unobserved", bases)
         self.assertIn("playtest.unstructured", bases)
 
+    def test_feel_names_the_author_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_suggested_author(recipe),
+            "a receita já recusa que o autor sugerido seja quem jogou",
+        )
+        self.assertEqual(game.observation_author_source(), "recipes/feel.md")
+        destination = self.root / "feel-com-autor"
+        game.init(destination, "canvas-arcade")
+        receipt = destination / "qa" / "partida-1"
+        receipt.mkdir(parents=True)
+        (receipt / "record.json").write_text(json.dumps({
+            "kind": "observation",
+            "author": "Ana",
+            "note": "o dash ainda não tem peso",
+            "fields": {"scenario": "primeira partida", "role": "human"},
+        }), encoding="utf-8")
+        report = game.feel_reading(destination)
+        self.assertTrue(report["observations"], "o feel já lista o recibo neste projeto")
+        item = report["observations"][0]
+        self.assertIn(
+            "autor sugerido seja quem jogou",
+            item["scope"],
+            "o item copiava o autor e calava a recusa",
+        )
+        self.assertIn("(`autor`)", item["scope"])
+        self.assertNotIn("autor", item)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_suggested_author(""))
+        with mock.patch.object(game, "observation_author_source", return_value=None):
+            silent = game.feel_reading(destination)
+        self.assertNotIn("autor sugerido seja quem jogou", silent["observations"][0]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o autor que a receita já recusa", recipe)
+        self.assertIn("nomeia o autor que a receita já recusa", skill)
+        self.assertIn("nomeia o autor que a receita já recusa", readme)
+        self.assertNotIn("autor sugerido seja quem jogou", report["scope"])
+        self.assertNotIn("autor sugerido seja quem jogou", game.note_step_scope())
+        self.assertNotIn("autor sugerido seja quem jogou", game.next_scope())
+        self.assertNotIn("autor sugerido seja quem jogou", game.record_scope())
+        self.assertNotIn(
+            "autor sugerido seja quem jogou",
+            game.playtest_reading(destination)["scope"],
+        )
+
     def test_feel_names_the_last_run_seed_without_claiming_it_felt(self):
         destination = self.root / "feel-com-seed"
         game.start_project(destination, "canvas-arcade")

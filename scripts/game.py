@@ -1921,6 +1921,43 @@ def observation_receipts(project, max_files=80):
     return found
 
 
+# A receita já recusa que o autor sugerido seja quem jogou. Sem isto o
+# item copiava o autor e calava a recusa.
+# Recibo no disco não é sessão.
+FEEL_RECIPE = FRAMEWORK / "recipes/feel.md"
+FEEL_AUTHOR = re.compile(r"autor sugerido no comando não é quem jogou")
+
+
+def recipe_refuses_suggested_author(text):
+    return bool(text and FEEL_AUTHOR.search(text))
+
+
+def observation_author_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_suggested_author(text):
+        return "recipes/feel.md"
+    return None
+
+
+def observation_item_scope():
+    scope = (
+        "Caminho, autor e nota do recibo. Não joga e não "
+        "atribui peso percebido."
+    )
+    if observation_author_source():
+        scope += (
+            " O disco recusa que o autor sugerido seja quem jogou (`autor`). "
+            "Recibo no disco não é sessão."
+        )
+    return scope
+
+
 def feel_then(project):
     project = Path(project)
     then = {"note": note_command(project)}
@@ -1959,6 +1996,9 @@ def feel_reading(project):
         if relative not in sources:
             sources.append(relative)
     observations = observation_receipts(project)
+    item_scope = observation_item_scope()
+    for item in observations:
+        item["scope"] = item_scope
     then = feel_then(project)
     return {
         "schema_version": 1,

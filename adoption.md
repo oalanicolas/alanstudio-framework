@@ -3,6 +3,61 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.444 — o feel nomeia o autor que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+autor
+sugerido
+no
+comando
+não
+é
+quem
+jogou.
+O
+item
+copiava
+o
+autor
+e
+calava
+a
+recusa.
+Agora
+o
+`feel`
+nomeia
+o
+autor.
+Recibo
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`autor`.
+Nomear
+não
+observa.
+
+O que 0.9.444 não afirma:
+recibo
+no
+disco
+não
+é
+sessão
+nem
+peso
+percebido.
+
 ## 0.9.443 — o access nomeia a certificação que a pesquisa já recusa
 
 A
