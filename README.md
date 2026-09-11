@@ -709,6 +709,8 @@ Se o disco declara `listMoods`, o `content` nomeia o par. Nome no
 disco não é volume. Sem chave `moods`.
 Se o `tools/new-table.*` nasce a mesa, o `content` nomeia a mesa que o disco já nasce.
 Ferramenta no disco não é volume. Sem chave `table`.
+Se o disco declara `migrateTable`, o `content` nomeia a migração que as mesas já compartilham.
+Arquivo no disco não é volume. Sem chave `migrate`.
 `enough` é sempre `false`. `ship` procura script `build`/`export`/`package`/
 `release`, `docs/release.md` vigente ou CI. Se `dist/VERSION.json`
 existe, relata nome e versão. Se `dist/` de um jogo web existe, relata

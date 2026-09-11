@@ -4765,6 +4765,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("SPAWN_INTENTS", report["scope"])
         self.assertNotIn("(`pair`)", report["scope"])
 
+    def test_content_names_the_migrate_the_tables_already_share(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tables = (starter / "src/game/tables.js").read_text(encoding="utf-8")
+        self.assertTrue(game.tables_share_migrate(tables), "as mesas já compartilham o migrate")
+        self.assertEqual(game.migrate_table_source(starter), "src/game/tables.js")
+        report = game.content_reading(starter)
+        self.assertIn("migra a mesa", report["scope"], "o content listava dusk e calm e calava o migrate")
+        self.assertIn("(`migrateTable`)", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("migrate", report)
+        self.assertNotIn("schema", report)
+        empty = game.content_reading(self.project)
+        self.assertFalse(game.tables_share_migrate(""))
+        self.assertIsNone(game.migrate_table_source(self.project))
+        self.assertNotIn("migra a mesa", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a migração que as mesas já compartilham", recipe)
+        self.assertIn("nomeia a migração que as mesas já compartilham", skill)
+        self.assertIn("nomeia a migração que as mesas já compartilham", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("SPAWN_INTENTS", report["scope"])
+        self.assertNotIn("(`pair`)", report["scope"])
+
     def test_content_names_the_pair_the_moods_already_list(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         tables = (starter / "src/game/tables.js").read_text(encoding="utf-8")

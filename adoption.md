@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.380 — o content nomeia a migração que as mesas já compartilham
+
+A
+receita
+já
+pedia
+o
+`migrateTable`.
+O
+comando
+listava
+dusk
+e
+calm
+e
+calava
+o
+loader.
+Agora
+o
+`content`
+nomeia
+a
+migração.
+Arquivo
+no
+disco
+não
+é
+volume.
+Sem
+chave
+`migrate`.
+Não
+promove
+`enough`.
+
+O que 0.9.380 não afirma:
+arquivo
+no
+disco
+não
+é
+volume
+suficiente
+nem
+consumidor
+comprovado.
+
 ## 0.9.379 — o feel nomeia o land que o dash já emite
 
 A

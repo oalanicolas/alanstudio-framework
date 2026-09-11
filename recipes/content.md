@@ -14,6 +14,7 @@ falha com o número; campo obrigatório falha com o nome da mesa.
 starter já consome (`?spawn=` / `settings.spawnProfile`).
 Se o `tools/new-table.*` nasce a mesa, o `content` nomeia a mesa que o disco já nasce.
 Ferramenta no disco não é volume. Sem chave `table`.
+Se o disco declara `migrateTable`, o `content` nomeia a migração que as mesas já compartilham. Arquivo no disco não é volume. Sem chave `migrate`.
 `--as denser|calmer|brief` desloca os knobs e deixa a chuva distinta.
 `brief` encurta prática e rampa; a folga da guarda permanece —
 encolher a abertura não come o verbo.

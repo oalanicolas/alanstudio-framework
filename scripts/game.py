@@ -2674,6 +2674,26 @@ def table_birth_source(project):
     return None
 
 
+# A receita já compartilha o migrate. Sem isto o
+# content listava dusk e calm e calava o loader.
+# Arquivo no disco não é volume.
+MIGRATE_TABLE = re.compile(r"(?:export\s+)?function\s+migrateTable\b")
+
+
+def tables_share_migrate(text):
+    return bool(text and MIGRATE_TABLE.search(text))
+
+
+def migrate_table_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if tables_share_migrate(text):
+            return relative
+    return None
+
+
 # A receita já nasce look e chuva. Sem isto o
 # start apontava then.pair e calava o tool.
 # Ferramenta no disco não é alguém de fora.
@@ -2725,6 +2745,11 @@ def content_reading(project):
         scope += (
             " O disco nasce a mesa (`table`). "
             "Ferramenta no disco não é volume."
+        )
+    if migrate_table_source(project):
+        scope += (
+            " O disco migra a mesa (`migrateTable`). "
+            "Arquivo no disco não é volume."
         )
     return {
         "schema_version": 1,
