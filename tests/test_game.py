@@ -7710,6 +7710,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", report["scope"])
         self.assertNotIn("then.processamento", report.get("then") or {})
 
+    def test_sfx_export_starter_names_the_invention_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_export_inventing_bytes(recipe),
+            "a receita já recusa que o export invente bytes",
+        )
+        self.assertEqual(game.sfx_catalog.export_starter_invent_source(), "recipes/audio.md")
+        report = game.sfx_catalog.export_entries(["dash"], self.root / "starter-out", self.root)
+        self.assertEqual(report["kind"], "starter")
+        self.assertIn(
+            "o export invente bytes",
+            report["scope"],
+            "o export do stem copiava o WAV e calava a recusa",
+        )
+        self.assertIn("(`invenção`)", report["scope"])
+        self.assertNotIn("invenção", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_export_inventing_bytes(""))
+        self.assertNotIn("o export invente bytes", report["next"])
+        self.assertNotIn("recusa o processamento", report["scope"])
+        with mock.patch.object(game.sfx_catalog, "export_starter_invent_source", return_value=None):
+            silent = game.sfx_catalog.export_entries(["dash"], self.root / "starter-out", self.root)
+        self.assertNotIn("o export invente bytes", silent.get("scope") or "")
+        item, _ = self._plant_catalog_sound()
+        catalog = game.sfx_catalog.export_entries([item["id"]], self.root / "acervo-out", self.root)
+        self.assertEqual(catalog["kind"], "catalog")
+        self.assertNotIn("o export invente bytes", catalog.get("scope") or "")
+        copied = game.sfx_catalog.copy_entry("land", self.root / "voz", self.root)
+        self.assertEqual(copied["kind"], "starter")
+        self.assertNotIn("o export invente bytes", copied.get("scope") or "")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a invenção que a receita já recusa", recipe)
+        self.assertIn("nomeia a invenção que a receita já recusa", skill)
+        self.assertIn("nomeia a invenção que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+
     def test_sfx_export_copies_bytes_and_credits_without_claiming_to_hear_them(self):
         item, data = self._plant_catalog_sound()
         destination = self.root / "jogo" / "public" / "audio"

@@ -1037,6 +1037,38 @@ def verify_empty_scope():
     )
 
 
+# A receita já recusa que o export invente bytes. Sem isto o
+# export do stem copiava o WAV e calava a recusa.
+# Cópia no disco não é mix.
+AUDIO_INVENT = re.compile(r"exportar não inventa bytes")
+
+
+def recipe_refuses_export_inventing_bytes(text):
+    return bool(text and AUDIO_INVENT.search(text))
+
+
+def export_starter_invent_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_export_inventing_bytes(text):
+        return "recipes/audio.md"
+    return None
+
+
+def export_starter_scope():
+    if not export_starter_invent_source():
+        return None
+    return (
+        "O disco recusa que o export invente bytes "
+        "(`invenção`). Cópia no disco não é mix."
+    )
+
+
 def info_entry(entry_id, root=None, folder=None):
     sounds = load_catalog(root)["sounds"]
     empty = len(sounds) == 0
@@ -1131,7 +1163,7 @@ def export_entries(ids, destination, root=None, folder=None):
         return result
     copied = [copy_local_stem(item, destination, root=root, folder=folder) for item in local_items]
     already = bool(copied) and all(item.get("status") == "already_exported" for item in copied)
-    return {
+    report = {
         "files": len(local_items),
         "status": "already_exported" if already else "exported",
         "destination": str(Path(destination).resolve()),
@@ -1141,6 +1173,10 @@ def export_entries(ids, destination, root=None, folder=None):
         "next": EXPORT_NEXT,
         "copied": [item["copied"] for item in copied],
     }
+    named = export_starter_scope()
+    if named:
+        report["scope"] = named
+    return report
 
 
 def seed_catalog(root=None):

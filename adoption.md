@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.507 — o sfx export do stem nomeia a invenção que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+exportar
+não
+inventa
+bytes.
+O
+export
+do
+stem
+copiava
+o
+WAV
+e
+calava
+a
+recusa.
+Agora
+o
+`sfx export`
+do
+stem
+nomeia
+a
+invenção.
+Cópia
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`invenção`.
+Nomear
+não
+ouve.
+
+O que 0.9.507 não afirma:
+exportar
+o
+stem
+do
+jogo
+não
+é
+o
+primeiro
+ciclo
+ouvido.
+
 ## 0.9.506 — o sfx verify vazio nomeia a lacuna que a receita já recusa
 
 A
