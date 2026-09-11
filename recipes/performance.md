@@ -112,7 +112,7 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
   Meça o aumento de consultas físicas em taxas baixas.
 - Grave trajetórias na precisão necessária e meça erro de posição/orientação antes
   de reduzir frequência. Escolha armazenamento e retenção conforme o contrato; uma
-  falha de gravação deve preservar o registro anterior. Bytes menores não provam fidelidade.
+  falha de gravação deve preservar o registro anterior. Bytes menores não provam fidelidade. Se a receita recusa que bytes menores provem fidelidade, o `record` nomeia a fidelidade que a receita já recusa. Anexo no disco não é a trajetória. Sem chave `fidelidade`.
 
 Os detalhes de carregador, sombras e migração ficam nos packages de
 [web](../packs/platforms/web.md) e [Unity](../packs/platforms/unity.md).

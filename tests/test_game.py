@@ -2004,6 +2004,50 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("screenshot isolado comprove animação", game.feel_reading(self.project)["scope"])
         self.assertNotIn("screenshot isolado comprove animação", game.next_scope())
 
+    def test_record_names_the_fidelity_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_smaller_bytes_as_fidelity(recipe),
+            "a receita já recusa que bytes menores provem fidelidade",
+        )
+        self.assertEqual(game.record_attachment_fidelity_source(), "recipes/performance.md")
+        capture = self.root / "shot-547.bin"
+        capture.write_bytes(b"trail")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [str(capture)], self.root / "obs-547",
+        )
+        self.assertTrue(report["attachments"], "o record já devolve anexos neste destino")
+        item = report["attachments"][0]
+        self.assertIn("bytes", item)
+        self.assertIn(
+            "bytes menores provem fidelidade",
+            item["scope"],
+            "o anexo copiava os bytes e calava a recusa",
+        )
+        self.assertIn("(`fidelidade`)", item["scope"])
+        self.assertNotIn("fidelidade", item)
+        self.assertFalse(game.recipe_refuses_smaller_bytes_as_fidelity(""))
+        with mock.patch.object(game, "record_attachment_fidelity_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [str(capture)], self.root / "obs-547-silent",
+            )
+        self.assertNotIn("bytes menores provem fidelidade", silent["attachments"][0]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a fidelidade que a receita já recusa", recipe)
+        self.assertIn("nomeia a fidelidade que a receita já recusa", skill)
+        self.assertIn("nomeia a fidelidade que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("bytes menores provem fidelidade", report["scope"])
+        self.assertNotIn("bytes menores provem fidelidade", game.record_scope())
+        self.assertNotIn("bytes menores provem fidelidade", report["fields"].get("scope", ""))
+        self.assertNotIn("bytes menores provem fidelidade", game.budget_reading(self.project)["scope"])
+        self.assertNotIn("bytes menores provem fidelidade", game.save_reading(self.project)["scope"])
+        self.assertNotIn("bytes menores provem fidelidade", game.next_scope())
+
     def test_record_budget_fields_name_the_stutters_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -12668,7 +12668,43 @@ def record_attachment_scope():
             " O disco recusa que o screenshot isolado comprove animação (`animação`). "
             "Anexo no disco não é controle."
         )
+    fidelity = record_attachment_fidelity_scope()
+    if fidelity:
+        scope += fidelity
     return scope
+
+
+# A receita já recusa que bytes menores
+# provem fidelidade. Sem isto o anexo
+# copiava os bytes e calava a recusa.
+# Anexo no disco não é a trajetória.
+PERF_FIDELITY = re.compile(r"Bytes menores não provam fidelidade")
+
+
+def recipe_refuses_smaller_bytes_as_fidelity(text):
+    return bool(text and PERF_FIDELITY.search(text))
+
+
+def record_attachment_fidelity_source():
+    path = PERF_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_smaller_bytes_as_fidelity(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_attachment_fidelity_scope():
+    if not record_attachment_fidelity_source():
+        return None
+    return (
+        " O disco recusa que bytes menores provem fidelidade (`fidelidade`). "
+        "Anexo no disco não é a trajetória."
+    )
 
 
 def record(project, kind, author, note, fields, attachments, output):
