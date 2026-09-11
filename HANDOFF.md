@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.351: o `feel` nomeia o corpo que a porta já desloca. Pose no disco não é peso percebido. Sem chave `attract`. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.351):** `python3 -m unittest discover -s tests` → 347.
+**Suítes confirmadas no HEAD (0.9.351):** `python3 -m unittest discover -s tests` → 347.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
