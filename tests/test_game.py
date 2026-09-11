@@ -4735,6 +4735,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", recipe)
 
+    def test_ship_names_the_banner_the_serve_already_prints(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/serve.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.serve_names_export(tool), "o serve já nomeia a árvore exportada")
+        self.assertEqual(game.ship_serve_source(starter), "tools/serve.mjs")
+        report = game.ship_reading(starter)
+        self.assertNotIn("serve", report)
+        self.assertIn("nomeia a árvore exportada", report["scope"], "o ship relata dist e calava o banner")
+        self.assertIn("(`serve`)", report["scope"])
+        self.assertIn("Banner no disco", report["scope"])
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        empty = game.ship_reading(self.project)
+        self.assertFalse(game.serve_names_export(""))
+        self.assertIsNone(game.ship_serve_source(self.project))
+        self.assertNotIn("nomeia a árvore exportada", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o banner que o serve já imprime", recipe)
+        self.assertIn("nomeia o banner que o serve já imprime", skill)
+        self.assertIn("nomeia o banner que o serve já imprime", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("LUFS", report["scope"])
+
     def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
         # O export já copia src/. Sem isto o ship dizia
         # completa uma dist/ só com identidade e serve.

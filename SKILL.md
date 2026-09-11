@@ -324,7 +324,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    incompleta é `ship.incomplete`; artefato de outro commit é `ship.stale`.
    Nomeia a árvore que perdeu o `src/` que o projeto já tem. Se o
    `tools/size.*` declara sem teto, o `ship` nomeia o tamanho. Bytes
-   no disco não são outra máquina. Sem chave `size`. Nomear não
+   no disco não são outra máquina. Sem chave `size`. Se o
+   `tools/serve.*` nomeia a árvore exportada, o `ship` nomeia o banner que o serve já imprime.
+   Banner no disco não é outra máquina. Sem chave `serve`. Nomear não
    devolve o jogo. Árvore completa no HEAD atual ganha `artifact_open` e o
    `next` nomeia `ship.artifact_open`. Nomear não executa. `elsewhere`
    continua falso.

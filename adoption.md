@@ -3,6 +3,54 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.363 — o ship nomeia o banner que o serve já imprime
+
+A
+receita
+já
+apontava
+o
+banner
+da
+árvore
+exportada.
+O
+comando
+relatava
+dist/
+e
+calava
+o
+tool.
+Agora
+o
+`ship`
+nomeia
+o
+banner.
+Banner
+no
+disco
+não
+é
+outra
+máquina.
+Sem
+chave
+`serve`.
+Não
+promove
+`elsewhere`.
+
+O que 0.9.363 não afirma:
+banner
+no
+disco
+não
+é
+outra
+máquina.
+
 ## 0.9.362 — o feel nomeia a inclinação que o lookAhead já marca
 
 A

@@ -2592,6 +2592,35 @@ def ship_size_source(project):
     return None
 
 
+# A receita já imprime o banner. Sem isto o ship
+# relata dist/ e calava o serve. Banner no disco
+# não é outra máquina.
+SERVE_FILES = ("tools/serve.mjs", "tools/serve.js", "tools/serve.py")
+SERVE_EXPORT = re.compile(
+    r"Árvore exportada\. Servir aqui não é outra máquina",
+    re.IGNORECASE,
+)
+
+
+def serve_names_export(text):
+    return bool(text and SERVE_EXPORT.search(text))
+
+
+def ship_serve_source(project):
+    project = Path(project)
+    for name in SERVE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if serve_names_export(text):
+            return name
+    return None
+
+
 def ship_reading(project):
     project = Path(project)
     try:
@@ -2629,6 +2658,11 @@ def ship_reading(project):
         scope += (
             " O disco relata os bytes (`size`) sem teto. "
             "Bytes no disco não são outra máquina."
+        )
+    if ship_serve_source(project):
+        scope += (
+            " O disco nomeia a árvore exportada (`serve`). "
+            "Banner no disco não é outra máquina."
         )
     return {
         "schema_version": 1,
