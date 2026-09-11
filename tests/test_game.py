@@ -817,6 +817,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("promover o degrau", game.next_step(self.project)["scope"])
         self.assertNotIn("promover o degrau", report["documentation"]["scope"])
 
+    def test_context_names_the_browser_the_pack_already_refuses_to_prove(self):
+        pack = (game.FRAMEWORK / "packs/platforms/web.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.pack_refuses_unit_as_browser(pack),
+            "o pacote já recusa que teste unitário prove o navegador",
+        )
+        self.assertIsNone(game.packs_browser_source(None))
+        silent = game.context(self.project, "create")
+        self.assertIsNone(silent["kind"])
+        self.assertNotIn("prove o navegador", silent["packs"]["scope"])
+        self.package()
+        self.assertEqual(game.packs_browser_source("package.json"), "packs/platforms/web.md")
+        report = game.context(self.project, "create")
+        self.assertEqual(report["kind"], "package.json")
+        self.assertIn(str(game.FRAMEWORK / "packs/platforms/web.md"), report["read_next"])
+        self.assertIn(
+            "prove o navegador",
+            report["packs"]["scope"],
+            "o context apontava o pacote e calava a recusa",
+        )
+        self.assertIn("(`navegador`)", report["packs"]["scope"])
+        self.assertNotIn("navegador", report["packs"])
+        self.assertFalse(game.pack_refuses_unit_as_browser(""))
+        with mock.patch.object(game, "packs_browser_source", return_value=None):
+            muted = game.context(self.project, "create")
+        self.assertNotIn("prove o navegador", muted["packs"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o navegador que o pacote já recusa provar", recipe)
+        self.assertIn("nomeia o navegador que o pacote já recusa provar", skill)
+        self.assertIn("nomeia o navegador que o pacote já recusa provar", readme)
+        self.assertNotIn("verified", report["packs"]["scope"])
+        self.assertNotIn("prove o navegador", game.next_step(self.project)["scope"])
+        self.assertNotIn("prove o navegador", report["finish"]["scope"])
+        self.assertNotIn("prove o navegador", report["production_bar"]["scope"])
+        self.assertNotIn("prove o navegador", report["documentation"]["scope"])
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

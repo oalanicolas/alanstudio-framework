@@ -4836,6 +4836,49 @@ def suggest_genres(mentions):
     return suggested
 
 
+# O pacote já recusa que teste unitário prove o navegador. Sem isto o
+# context apontava o arquivo e calava a recusa.
+# Pacote no disco não é comportamento no aparelho.
+PACK_BROWSER = re.compile(
+    r"teste unitário não prova\s+comportamento no navegador",
+    re.IGNORECASE,
+)
+
+
+def pack_refuses_unit_as_browser(text):
+    return bool(text and PACK_BROWSER.search(text))
+
+
+def packs_browser_source(kind):
+    pack_name = PLATFORM_PACKS.get(kind)
+    if not pack_name:
+        return None
+    path = FRAMEWORK / f"packs/platforms/{pack_name}.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if pack_refuses_unit_as_browser(text):
+        return f"packs/platforms/{pack_name}.md"
+    return None
+
+
+def packs_scope(kind):
+    scope = (
+        "Pacotes são convenções de plataforma/gênero para orientar leitura e verificação. "
+        "Não substituem AGENTS, a documentação oficial nem o que o projeto realmente faz; "
+        "confirme cada convenção no código."
+    )
+    if packs_browser_source(kind):
+        scope += (
+            " O disco recusa que teste unitário prove o navegador (`navegador`). "
+            "Pacote no disco não é comportamento no aparelho."
+        )
+    return scope
+
+
 def select_packs(kind, genre, mentions):
     pack_name = PLATFORM_PACKS.get(kind)
     platform_path = FRAMEWORK / f"packs/platforms/{pack_name}.md" if pack_name else None
@@ -4851,7 +4894,7 @@ def select_packs(kind, genre, mentions):
             "basis": "--genre declarado na conversa" if genre else ("campo Gênero localizado em documento; confirme e passe --genre" if suggested else "não declarado; passe --genre quando o jogo tiver gênero definido"),
             "suggested": suggested, "mentions": mentions, "available": list(GENRES),
         },
-        "scope": "Pacotes são convenções de plataforma/gênero para orientar leitura e verificação. Não substituem AGENTS, a documentação oficial nem o que o projeto realmente faz; confirme cada convenção no código.",
+        "scope": packs_scope(kind),
     }
 
 

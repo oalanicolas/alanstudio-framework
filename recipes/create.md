@@ -53,7 +53,7 @@ antes de começar a experimentar. Quando a fatia demonstrar a experiência, a
 [receita de produção](production.md) leva do recorte ao acabamento por marcos.
 Uma direção aprovada exige sincronizar a base oficial no mesmo turno, conforme
 [o roteiro](../references/project-audit.md#aprovação-de-direção-materializar-e-continuar).
-Se o roteiro pede documentar sem consentimento, o `context` nomeia o audit que o roteiro já pede. Roteiro no disco não é base escrita. Sem chave `audit`. Se o processo nega que documento pronto seja PoC, o `context` nomeia a PoC que o processo já nega. Fonte no disco não é jogo implementado. Sem chave `process`.
+Se o roteiro pede documentar sem consentimento, o `context` nomeia o audit que o roteiro já pede. Roteiro no disco não é base escrita. Sem chave `audit`. Se o processo nega que documento pronto seja PoC, o `context` nomeia a PoC que o processo já nega. Fonte no disco não é jogo implementado. Sem chave `process`. Se o pacote recusa que teste unitário prove o navegador, o `context` nomeia o navegador que o pacote já recusa provar. Pacote no disco não é comportamento no aparelho. Sem chave `navegador`.
 Cubra as nove áreas com conteúdo ou lacunas explícitas, em documentos proporcionais
 ao projeto, e prossiga com o recorte solicitado. O usuário não precisa pedir essa base.
 

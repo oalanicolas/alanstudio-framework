@@ -3,6 +3,64 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.406 — o context nomeia o navegador que o pacote já recusa provar
+
+O
+pacote
+web
+já
+dizia
+que
+teste
+unitário
+não
+prova
+o
+navegador.
+O
+comando
+apontava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`context`
+nomeia
+o
+navegador.
+Pacote
+no
+disco
+não
+é
+comportamento
+no
+aparelho.
+Sem
+chave
+`navegador`.
+Nomear
+não
+observa.
+
+O que 0.9.406 não afirma:
+pacote
+no
+disco
+não
+é
+comportamento
+no
+aparelho
+nem
+teste
+no
+navegador.
+
 ## 0.9.405 — o context nomeia a promoção que a barra já recusa
 
 A
