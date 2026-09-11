@@ -563,7 +563,7 @@ python3 scripts/game.py sfx copy ID --to /caminho/do/jogo/public/sfx --root /cam
 ```
 
 Sem esse acervo, `sfx search` não inventa id: o catálogo vem vazio e a
-busca nomeia o stem do starter que casa com o termo. `sfx info`
+busca nomeia o stem do starter que casa com o termo. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`. `sfx info`
 lê a chave e nomeia o stem que o recibo lista e o disco perdeu.
 `sfx copy` e `sfx export` levam bytes e créditos
 desse stem. `sfx export` nomeia o stem que o recibo lista

@@ -49,7 +49,7 @@ Variante ausente não é lacuna. Decode nulo tenta a próxima
 extensão; wav ilegível não esconde o ogg nem o pedido.
 Nomear o 404 não é mix ouvido.
 `heard` é sempre falso. Sem `shared/sfx`, `--fill` nomeia o stem
-do starter que casa, `--apply` o copia ou recoloca o WAV se o recibo já está, `sfx search` nomeia o mesmo stem,
+do starter que casa, `--apply` o copia ou recoloca o WAV se o recibo já está, `sfx search` nomeia o mesmo stem. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`.
 `sfx info` lê a chave e nomeia o stem que o recibo lista e o
 disco perdeu, `sfx verify` nomeia os stems sem cruzar o
 que não existe, `sfx summary` lista todos os stems já no

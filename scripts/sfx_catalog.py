@@ -44,6 +44,37 @@ def peak_disk_source(project=None):
     return None
 
 
+# A receita já desloca a voz. Sem isto o
+# search achava o stem e calava o tool.
+# Arquivo no disco não é mix ouvida.
+SFX_FILES = (
+    "tools/design-sfx.py",
+    "tools/sfx.py",
+    "tools/design-sfx.js",
+    "tools/sfx.js",
+)
+SFX_SHIFT = re.compile(r"desloca a voz", re.IGNORECASE)
+
+
+def sfx_shifts_voice(text):
+    return bool(text and SFX_SHIFT.search(text))
+
+
+def sfx_shift_source(project=None):
+    root = Path(project) if project is not None else STARTER_SFX.parent.parent
+    for name in SFX_FILES:
+        path = root / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if sfx_shifts_voice(text):
+            return name
+    return None
+
+
 def receipt_field(row, field):
     # O acervo guarda autor e licença em `sources`. O starter,
     # no topo. Identidade lê os dois sem exigir o mesmo envelope.
@@ -433,7 +464,7 @@ def search_catalog(query, root=None, limit=40):
         nxt = LOCAL_HIT_NEXT
     else:
         nxt = MISS_NEXT
-    return {
+    report = {
         "query": query, "count": len(matches),
         "empty": empty,
         "matches": [{"id": s["id"], "aliases": s.get("aliases", []), "src": s["file"],
@@ -445,6 +476,12 @@ def search_catalog(query, root=None, limit=40):
         "rule": QUALITY_BAR["note"],
         "next": nxt,
     }
+    if sfx_shift_source():
+        report["scope"] = (
+            "O disco desloca a voz (`sfx`). "
+            "Arquivo no disco não é mix ouvida."
+        )
+    return report
 
 
 def copy_entry(entry_id, destination, root=None, sources=None, as_name=None):

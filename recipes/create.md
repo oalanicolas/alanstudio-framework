@@ -93,7 +93,7 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    Partir dele é REUSE; recomeçar essa infraestrutura é CREATE e pede lacuna
    explícita.    Som: se o laboratório tiver `shared/sfx` com sons, use `sfx search`
    antes de baixar. Sem acervo, o starter já fala em `public/sfx`;
-   `sfx search` nomeia o stem que casa com o termo.
+   `sfx search` nomeia o stem que casa com o termo. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`.
    Crescer o acervo é `sfx import` / `sfx seed` (ffmpeg); importar não
    é ouvir. Explique REUSE, ADAPT ou CREATE antes de produzir novos
    sistemas.

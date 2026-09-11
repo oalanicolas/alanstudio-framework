@@ -2941,6 +2941,32 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("Ouça com sfx serve", hit["next"])
         self.assertIn("starter já fala", hit["next"])
 
+    def test_sfx_search_names_the_shift_the_tool_already_offers(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/design-sfx.py").read_text(encoding="utf-8")
+        self.assertTrue(game.sfx_catalog.sfx_shifts_voice(tool), "o tool já desloca a voz")
+        self.assertEqual(game.sfx_catalog.sfx_shift_source(), "tools/design-sfx.py")
+        report = game.sfx_catalog.search_catalog("dash", self.root)
+        self.assertIn("desloca a voz", report["scope"], "o search achava o stem e calava o sfx")
+        self.assertIn("(`sfx`)", report["scope"])
+        self.assertFalse(report["heard"])
+        self.assertNotIn("sfx", report)
+        self.assertNotIn("peak", report)
+        self.assertFalse(game.sfx_catalog.sfx_shifts_voice(""))
+        self.assertIsNone(game.sfx_catalog.sfx_shift_source(self.project))
+        recipe = (Path(game.FRAMEWORK) / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (Path(game.FRAMEWORK) / "SKILL.md").read_text(encoding="utf-8")
+        readme = (Path(game.FRAMEWORK) / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o deslocamento que o sfx já oferece", recipe)
+        self.assertIn("nomeia o deslocamento que o sfx já oferece", skill)
+        self.assertIn("nomeia o deslocamento que o sfx já oferece", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("LUFS", report["scope"])
+        self.assertNotIn("-14", report["scope"])
+        roles = game.roles_reading(starter)
+        self.assertIn("desloca a voz", roles["scope"])
+        self.assertNotIn("peak", roles["scope"])
+
     def test_sfx_import_grows_the_catalog_without_claiming_to_hear_it(self):
         fake = {
             "sample_rate": 44100, "duration": 0.2, "channels": 1,

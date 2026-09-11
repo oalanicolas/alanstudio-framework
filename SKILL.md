@@ -84,7 +84,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `doctor` lista os starters disponíveis; começar por um deles é REUSE, escrever um
    loop do zero é CREATE. Se o laboratório tiver `shared/sfx` com sons, use
    `sfx search` antes de baixar. Sem acervo, o starter já fala em
-   `public/sfx`; `sfx search` nomeia o stem que casa com o termo,
+   `public/sfx`; `sfx search` nomeia o stem que casa com o termo. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`.
    `sfx info` lê a chave e nomeia o stem que o recibo lista e o
    disco perdeu, `roles --fill` nomeia o mesmo stem,
    `sfx verify` nomeia os stems sem cruzar

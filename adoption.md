@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.375 — o sfx search nomeia o deslocamento que o sfx já oferece
+
+A
+receita
+já
+apontava
+`--from`
+/
+`--as`.
+O
+comando
+achava
+o
+stem
+e
+calava
+o
+tool.
+Agora
+o
+`sfx search`
+nomeia
+o
+deslocamento.
+Arquivo
+no
+disco
+não
+é
+mix
+ouvida.
+Sem
+chave
+`sfx`.
+Não
+promove
+`heard`.
+
+O que 0.9.375 não afirma:
+arquivo
+no
+disco
+não
+é
+mix
+ouvida
+no
+dispositivo.
+
 ## 0.9.374 — o access nomeia a legenda que a porta já lê
 
 A
