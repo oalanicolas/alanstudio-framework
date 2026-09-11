@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.383: o `origins` nomeia o consumidor que o sidecar já declara. Consumidor no disco não é licença válida. Sem chave `consumer`. Não promove `granted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD anterior (0.9.382):** `python3 -m unittest discover -s tests` → 378 OK.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK. Confirmação do 0.9.383 pendente.
+**Suítes confirmadas no HEAD (0.9.383):** `python3 -m unittest discover -s tests` → 379 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
