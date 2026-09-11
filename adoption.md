@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.339 — o start não nomeia npm install sem dependências
+
+O
+starter
+já
+recusava
+o
+passo.
+O
+harness
+pedia
+`npm install`
+sem
+ter
+o
+que
+instalar.
+Agora
+sem
+dependências
+a
+chave
+some.
+Com
+dependências
+e
+sem
+`node_modules`
+permanece.
+`play`
+continua
+o
+serve.
+O
+`feel`
+não
+ganha
+a
+chave.
+Nomear
+não
+instala.
+
+O que 0.9.339 não afirma:
+o
+harness
+não
+roda
+`npm install`.
+
 ## 0.9.338 — o origins nomeia a mídia que o recibo lista e o disco perdeu
 
 O

@@ -5230,31 +5230,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("criou rascunhos", report["init"]["scope"])
         self.assertNotIn("draft_only", report["init"]["scope"])
 
-    def test_start_names_npm_install_without_installing(self):
+    def test_start_names_npm_install_only_when_the_package_has_dependencies(self):
+        # O play pede npm. O starter não tem o que
+        # instalar e o README já recusava o passo.
+        # Nomear install era cargo-cult. Nomear não instala.
         destination = self.root / "sem-modulos"
         report = game.start_project(destination, "canvas-arcade", idea="atravessar estilhaços")
         self.assertTrue(report["created"])
         self.assertFalse((destination / "node_modules").exists())
-        self.assertIn("npm install", report["then"]["install"])
-        self.assertIn(str(destination), report["then"]["install"])
+        self.assertNotIn("install", report["then"])
+        self.assertNotIn("npm install", report["prompt"])
         self.assertNotIn("npm install", report["play"])
         self.assertIn("npm run serve", report["play"])
         self.assertEqual(report["then"]["play"], report["play"])
-        self.assertIn(report["then"]["install"], report["prompt"])
-        self.assertLess(
-            report["prompt"].index(report["then"]["install"]),
-            report["prompt"].index(report["play"]),
-        )
         self.assertFalse(report["executed"])
         self.assertIn("then.install", report["scope"])
+        self.assertIn("Sem dependências a chave some", report["scope"])
         self.assertIn("Nomear não instala", report["scope"])
         memory = (destination / "AGENTS.md").read_text(encoding="utf-8")
-        self.assertIn("npm install", memory)
-        self.assertIn("Nomear não instala", memory)
+        self.assertNotIn("npm install", memory)
         self.assertIn("npm run serve", memory)
         feel = game.feel_reading(destination)
         self.assertNotIn("install", feel["then"])
         self.assertIn("serve", feel["then"]["play"])
+        package_path = destination / "package.json"
+        package = json.loads(package_path.read_text(encoding="utf-8"))
+        package["dependencies"] = {}
+        package_path.write_text(json.dumps(package), encoding="utf-8")
+        vacant = game.start_project(destination, "canvas-arcade")
+        self.assertNotIn("install", vacant["then"])
+        package["dependencies"] = {"left-pad": "1.3.0"}
+        package_path.write_text(json.dumps(package), encoding="utf-8")
+        needed = game.start_project(destination, "canvas-arcade")
+        self.assertFalse(needed["created"])
+        self.assertIn("npm install", needed["then"]["install"])
+        self.assertIn(str(destination), needed["then"]["install"])
+        self.assertNotIn("npm install", needed["play"])
+        self.assertIn(needed["then"]["install"], needed["prompt"])
+        self.assertLess(
+            needed["prompt"].index(needed["then"]["install"]),
+            needed["prompt"].index(needed["play"]),
+        )
+        self.assertFalse(needed["executed"])
+        self.assertFalse((destination / "node_modules").exists())
         (destination / "node_modules").mkdir()
         dressed = game.start_project(destination, "canvas-arcade")
         self.assertFalse(dressed["created"])
@@ -5264,6 +5282,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(dressed["executed"])
         recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         self.assertIn("then.install", recipe)
+        self.assertIn("Sem dependências a chave some", recipe)
         self.assertNotIn("aprovado", report["scope"])
 
     def test_context_defers_audit_on_fresh_start_until_after_first_play(self):

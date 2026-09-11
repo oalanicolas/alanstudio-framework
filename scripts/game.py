@@ -3572,15 +3572,42 @@ def play_command(project, scripts, manager):
     return f"cd {shlex.quote(str(project))} && {body}"
 
 
+PACKAGE_INSTALL_KEYS = ("dependencies", "devDependencies", "optionalDependencies")
+
+
+def package_has_dependencies(project):
+    # O start nomeava npm install no starter sem
+    # dependências. O README já recusava o passo.
+    # Lista vazia não é o que instalar. Nomear não instala.
+    package = Path(project) / "package.json"
+    if not package.is_file() or package.is_symlink():
+        return False
+    try:
+        data = json.loads(package.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, UnicodeError):
+        return False
+    if not isinstance(data, dict):
+        return False
+    for key in PACKAGE_INSTALL_KEYS:
+        value = data.get(key)
+        if isinstance(value, dict) and value:
+            return True
+    return False
+
+
 def install_command(project, play=None):
     # O play pede npm. Sem isto o start mandava o serve
-    # e o disco ainda não tinha módulos. Nomear não instala.
+    # e o disco ainda não tinha módulos. Sem dependências
+    # o passo some — o starter não tem o que instalar.
+    # Nomear não instala.
     if not isinstance(play, str) or not re.search(r"\bnpm\b", play):
         return None
     root = Path(project)
     package = root / "package.json"
     modules = root / "node_modules"
     if not package.is_file() or package.is_symlink():
+        return None
+    if not package_has_dependencies(root):
         return None
     if modules.is_dir() and not modules.is_symlink():
         return None
@@ -4546,8 +4573,9 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "nomear o endereço não observa. Ferramenta "
             "no disco não é alguém de fora nem mix ouvido. Não "
             "instala dependências e não avalia a proposta. Se o play pede "
-            "npm e `node_modules` falta, `then.install` nomeia `npm install`. "
-            "Nomear não instala. `--idea` entra na "
+            "npm, o `package.json` tem dependências e `node_modules` falta, "
+            "`then.install` nomeia `npm install`. Sem dependências a chave "
+            "some. Nomear não instala. `--idea` entra na "
             "abertura se houver `data/copy.json` e o prompt nomeia `Fantasia:` "
             "à parte de `Verbo:`. O brief só nasce com `--docs`; "
             "sem ele o `start` não planta rascunhos. A frase na tela não "
@@ -4611,9 +4639,10 @@ def play_cycle(destination=None, starter=None):
             "Se o disco tem last-run com seed, `then` aponta a seed e o "
             "convite; nomear o endereço não observa. `session` aponta a "
             "partida simulada se o manifesto a declara; o prompt a nomeia. "
-            "Não executa e não observa. Se o play pede npm e "
-            "`node_modules` falta, `then.install` nomeia `npm install`. "
-            "Nomear não instala. `runtime` lê o `node` "
+            "Não executa e não observa. Se o play pede npm, o "
+            "`package.json` tem dependências e `node_modules` falta, "
+            "`then.install` nomeia `npm install`. Sem dependências a chave "
+            "some. Nomear não instala. `runtime` lê o `node` "
             "do PATH se o play pede npm ou node; não executa o serve. "
             "O `prompt` também "
             "sai em stderr; o JSON fica no stdout. `executed` fica falso."
@@ -4860,9 +4889,10 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "do framework, o mapa usa esse caminho. Não cria o projeto, "
             "não abre o jogo e não avalia a proposta. `session` aponta a "
             "partida simulada se o manifesto a declara; o prompt a nomeia. "
-            "Não executa e não observa. Se o play pede npm e "
-            "`node_modules` falta, `then.install` nomeia `npm install`. "
-            "Nomear não instala. `runtime` lê o `node` "
+            "Não executa e não observa. Se o play pede npm, o "
+            "`package.json` tem dependências e `node_modules` falta, "
+            "`then.install` nomeia `npm install`. Sem dependências a chave "
+            "some. Nomear não instala. `runtime` lê o `node` "
             "do PATH se o play pede npm ou node; não executa o serve. "
             "Passos 2 e 3 "
             "permanecem `executed` falsos mesmo quando o destino já existe."
