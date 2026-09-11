@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.491 — a plataforma nomeia os quadros que o pacote já recusa
+
+O
+pacote
+já
+dizia
+que
+métricas
+RAF
+não
+comprovam
+quadros
+da
+GPU.
+A
+plataforma
+apontava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+a
+plataforma
+nomeia
+os
+quadros.
+Callback
+no
+disco
+não
+é
+quadro
+apresentado.
+Sem
+chave
+`quadros`.
+Nomear
+não
+observa.
+
+O que 0.9.491 não afirma:
+pacote
+no
+disco
+não
+é
+quadro
+medido
+no
+dispositivo.
+
 ## 0.9.490 — o item da constante nomeia a posição que a receita já recusa
 
 A

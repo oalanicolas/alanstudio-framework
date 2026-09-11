@@ -1326,6 +1326,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("certifique capacidade", game.play_scope(self.project))
         self.assertNotIn("certifique capacidade", game.context_scope())
 
+    def test_platform_names_the_frames_the_pack_already_refuses(self):
+        pack = (game.FRAMEWORK / "packs/platforms/web.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.pack_refuses_raf_as_gpu(pack),
+            "o pacote já recusa que métricas RAF comprovem os quadros da GPU",
+        )
+        self.assertIsNone(game.platform_gpu_source(None))
+        silent = game.context(self.project, "create")
+        self.assertIsNone(silent["kind"])
+        self.assertNotIn("métricas RAF comprovem os quadros", silent["packs"]["platform"]["scope"])
+        self.package()
+        self.assertEqual(game.platform_gpu_source("package.json"), "packs/platforms/web.md")
+        report = game.context(self.project, "create")
+        self.assertEqual(report["kind"], "package.json")
+        item = report["packs"]["platform"]
+        self.assertIn(
+            "métricas RAF comprovem os quadros",
+            item["scope"],
+            "a plataforma apontava o arquivo e calava a recusa",
+        )
+        self.assertIn("(`quadros`)", item["scope"])
+        self.assertNotIn("quadros", item)
+        self.assertFalse(game.pack_refuses_raf_as_gpu(""))
+        with mock.patch.object(game, "platform_gpu_source", return_value=None):
+            muted = game.context(self.project, "create")
+        self.assertNotIn("métricas RAF comprovem os quadros", muted["packs"]["platform"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os quadros que o pacote já recusa", pack)
+        self.assertIn("nomeia os quadros que o pacote já recusa", recipe)
+        self.assertIn("nomeia os quadros que o pacote já recusa", skill)
+        self.assertIn("nomeia os quadros que o pacote já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("métricas RAF comprovem os quadros", report["packs"]["scope"])
+        self.assertNotIn("métricas RAF comprovem os quadros", report["packs"]["genre"]["scope"])
+        self.assertNotIn("métricas RAF comprovem os quadros", game.next_scope())
+        self.assertNotIn("métricas RAF comprovem os quadros", game.play_scope(self.project))
+        self.assertNotIn("métricas RAF comprovem os quadros", game.context_scope())
+
     def test_context_names_the_extraction_the_map_already_refuses(self):
         guide = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -6304,7 +6304,38 @@ def platform_scope(kind):
             " O disco recusa que o pacote certifique capacidade (`capacidade`). "
             "Pacote no disco não é comportamento."
         )
+    if platform_gpu_source(kind):
+        scope += (
+            " O disco recusa que métricas RAF comprovem os quadros "
+            "(`quadros`). Callback no disco não é quadro apresentado."
+        )
     return scope
+
+
+# O pacote já recusa que RAF prove quadro da GPU. Sem isto a
+# plataforma apontava o arquivo e calava a recusa.
+# Callback no disco não é quadro apresentado.
+WEB_GPU = re.compile(r"não comprovam quadros apresentados pela GPU")
+
+
+def pack_refuses_raf_as_gpu(text):
+    return bool(text and WEB_GPU.search(text))
+
+
+def platform_gpu_source(kind):
+    pack_name = PLATFORM_PACKS.get(kind)
+    if not pack_name:
+        return None
+    path = FRAMEWORK / f"packs/platforms/{pack_name}.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if pack_refuses_raf_as_gpu(text):
+        return f"packs/platforms/{pack_name}.md"
+    return None
 
 
 # O mapa já recusa que o pacote seja extração. Sem isto o

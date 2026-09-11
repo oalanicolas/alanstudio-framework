@@ -114,7 +114,7 @@ backend instalado. [Origem](../../references/sources.md#aprendizados-de-aplicaç
   Variar intensidade mantendo o conjunto de luzes estável é candidato a medir.
 - Uma falha HTTP/cache antes da criação do renderer não demonstra falta de suporte
   gráfico. Isole cache do bundler e use build estável para comparar; registre o backend.
-- Métricas RAF e de callback não comprovam quadros apresentados pela GPU. Compare
+- Métricas RAF e de callback não comprovam quadros apresentados pela GPU. Se o pacote recusa que métricas RAF comprovem os quadros, a plataforma nomeia os quadros que o pacote já recusa. Callback no disco não é quadro apresentado. Sem chave `quadros`. Compare
   também dimensões internas e escala da página; ferramentas e HMR podem alterar ambas.
 
 Persistência, pausa e descarte dos buffers de animação/áudio seguem as receitas de
