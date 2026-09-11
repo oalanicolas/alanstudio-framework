@@ -3,6 +3,70 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.458 — o artifact do ship nomeia o editor que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+um
+teste
+no
+editor
+não
+demonstra
+o
+jogo
+exportado.
+O
+manifesto
+copiava
+nome
+e
+versão
+e
+calava
+a
+recusa.
+Agora
+o
+`artifact`
+do
+ship
+nomeia
+o
+editor.
+Manifesto
+no
+disco
+não
+é
+o
+jogo
+exportado.
+Sem
+chave
+`editor`.
+Nomear
+não
+executa.
+
+O que 0.9.458 não afirma:
+manifesto
+no
+disco
+não
+é
+jogador
+no
+exportado
+nem
+teste
+em
+outra
+máquina.
+
 ## 0.9.457 — o capabilities desconhecido nomeia o determinismo que a barra já recusa
 
 A

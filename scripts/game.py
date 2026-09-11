@@ -3696,6 +3696,42 @@ def ship_tree_scope():
     return scope
 
 
+# A receita já recusa que o teste no editor demonstre o exportado.
+# Sem isto o manifesto copiava nome e versão e calava a recusa.
+# Manifesto no disco não é o jogo exportado.
+SHIP_EDITOR = re.compile(r"Um teste no editor não demonstra o jogo exportado")
+
+
+def recipe_refuses_editor_as_export(text):
+    return bool(text and SHIP_EDITOR.search(text))
+
+
+def ship_artifact_editor_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_editor_as_export(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_artifact_scope():
+    scope = (
+        "Nome, versão e HEAD do dist/VERSION.json. Não executa o serve "
+        "e não demonstra o jogo exportado."
+    )
+    if ship_artifact_editor_source():
+        scope += (
+            " O disco recusa que o teste no editor demonstre o jogo exportado (`editor`). "
+            "Manifesto no disco não é o jogo exportado."
+        )
+    return scope
+
+
 def ship_reading(project):
     project = Path(project)
     try:
@@ -3712,6 +3748,8 @@ def ship_reading(project):
     release = project / SHIP_RELEASE
     release_current = document_is_current(release)
     artifact = ship_artifact(project)
+    if artifact is not None:
+        artifact = dict(artifact, scope=ship_artifact_scope())
     tree = ship_tree(project)
     if tree is not None:
         tree = dict(tree, scope=ship_tree_scope())

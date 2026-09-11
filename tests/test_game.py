@@ -7694,6 +7694,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("identidade seja outra máquina", game.next_scope())
         self.assertNotIn("identidade seja outra máquina", game.play_scope(self.project))
 
+    def test_ship_artifact_names_the_editor_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_editor_as_export(recipe),
+            "a receita já recusa que o teste no editor demonstre o jogo exportado",
+        )
+        self.assertEqual(game.ship_artifact_editor_source(), "recipes/release.md")
+        self._web_manifest()
+        self._artifact_tree(complete=False)
+        report = game.ship_reading(self.project)
+        self.assertIsNotNone(report["artifact"], "o ship já lista o VERSION.json")
+        item = report["artifact"]
+        self.assertIn(
+            "teste no editor demonstre o jogo exportado",
+            item["scope"],
+            "o manifesto copiava nome e versão e calava a recusa",
+        )
+        self.assertIn("(`editor`)", item["scope"])
+        self.assertNotIn("editor", item)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_editor_as_export(""))
+        with mock.patch.object(game, "ship_artifact_editor_source", return_value=None):
+            silent = game.ship_reading(self.project)
+        self.assertNotIn("teste no editor demonstre o jogo exportado", silent["artifact"]["scope"])
+        raw = game.ship_artifact(self.project)
+        self.assertNotIn("scope", raw)
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o editor que a receita já recusa", recipe)
+        self.assertIn("nomeia o editor que a receita já recusa", skill)
+        self.assertIn("nomeia o editor que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("teste no editor demonstre o jogo exportado", report["scope"])
+        self.assertNotIn("teste no editor demonstre o jogo exportado", report["tree"]["scope"])
+        self.assertNotIn("teste no editor demonstre o jogo exportado", game.next_scope())
+        self.assertNotIn("teste no editor demonstre o jogo exportado", game.play_scope(self.project))
+
     def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
         # O export já copia src/. Sem isto o ship dizia
         # completa uma dist/ só com identidade e serve.
