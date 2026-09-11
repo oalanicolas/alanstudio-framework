@@ -126,7 +126,7 @@ Em escala AA / Triple-I, feel, mix, luz, animação, pacing e a receita do
 próximo item são requisitos do recorte, não “polimento depois”. Reduza
 quantidade de conteúdo; não reduza o piso aprovado. Se a slice não demonstra
 repeatability — outro trecho nasce no mesmo padrão, sem heroísmo — ainda
-não está pronta para ampliar. Isso é piso de acabamento, não tier de
+não está pronta para ampliar. Se a receita recusa que a slice sem repeatability esteja pronta para ampliar, o `gate` scale nomeia a repeatability que a receita já recusa. Linha no disco não é o próximo trecho. Sem chave `repeatability`. Isso é piso de acabamento, não tier de
 publisher.
 
 Pontos de partida a **examinar**, não bases aprovadas automaticamente:

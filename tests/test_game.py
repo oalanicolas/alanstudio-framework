@@ -6120,6 +6120,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("teste local concluído seja lançamento", game.next_scope())
         self.assertNotIn("teste local concluído seja lançamento", game.verify_scope())
 
+    def test_gate_scale_names_the_repeatability_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_slice_without_repeatability(recipe),
+            "a receita já recusa que a slice sem repeatability esteja pronta para ampliar",
+        )
+        self.assertEqual(game.gate_scale_repeatability_source(), "recipes/create.md")
+        report = game.gate_reading(self.project)
+        scale = next(item for item in report["gates"] if item["key"] == "scale")
+        self.assertIn(
+            "slice sem repeatability esteja pronta",
+            scale["scope"],
+            "o gate de ampliar listava o readiness e calava a recusa",
+        )
+        self.assertIn("(`repeatability`)", scale["scope"])
+        self.assertNotIn("repeatability", scale)
+        self.assertFalse(game.recipe_refuses_slice_without_repeatability(""))
+        self.assertNotIn("slice sem repeatability esteja pronta", game.gate_item_scope())
+        self.assertNotIn("slice sem repeatability esteja pronta", game.gate_item_scope("close"))
+        self.assertNotIn("slice sem repeatability esteja pronta", game.gate_item_scope("deliver"))
+        close = next(item for item in report["gates"] if item["key"] == "close")
+        self.assertNotIn("slice sem repeatability esteja pronta", close["scope"])
+        with mock.patch.object(game, "gate_scale_repeatability_source", return_value=None):
+            silent = game.gate_reading(self.project)
+        silent_scale = next(item for item in silent["gates"] if item["key"] == "scale")
+        self.assertNotIn("slice sem repeatability esteja pronta", silent_scale["scope"])
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a repeatability que a receita já recusa", recipe)
+        self.assertIn("nomeia a repeatability que a receita já recusa", production)
+        self.assertIn("nomeia a repeatability que a receita já recusa", skill)
+        self.assertIn("nomeia a repeatability que a receita já recusa", readme)
+        self.assertNotIn("verified", scale["scope"])
+        self.assertNotIn("slice sem repeatability esteja pronta", report["scope"])
+        self.assertNotIn("slice sem repeatability esteja pronta", game.gate_criterion_scope())
+        self.assertNotIn("slice sem repeatability esteja pronta", game.template_scope("vertical-slice"))
+        self.assertNotIn("slice sem repeatability esteja pronta", game.content_reading(self.project)["scope"])
+        self.assertNotIn("slice sem repeatability esteja pronta", game.next_scope())
+        self.assertNotIn("slice sem repeatability esteja pronta", game.context_scope())
+
     def test_gate_names_the_waiver_the_prose_already_refuses(self):
         guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -1255,6 +1255,11 @@ def gate_item_scope(key=None):
             " O disco recusa que um teste local concluído seja lançamento "
             "(`lançamento`). Linha no disco não é outra máquina."
         )
+    if key == "scale" and gate_scale_repeatability_source():
+        scope += (
+            " O disco recusa que a slice sem repeatability esteja pronta "
+            "para ampliar (`repeatability`). Linha no disco não é o próximo trecho."
+        )
     return scope
 
 
@@ -1303,6 +1308,30 @@ def gate_deliver_launch_source():
         return None
     if workflow_refuses_local_test_as_launch(text):
         return "references/creative-workflow.md"
+    return None
+
+
+# A receita já recusa que a slice sem repeatability esteja pronta para ampliar.
+# Sem isto o gate de ampliar listava o readiness e calava a recusa.
+# Linha no disco não é o próximo trecho.
+CREATE_REPEATABILITY = FRAMEWORK / "recipes/create.md"
+SCALE_REPEATABILITY = re.compile(r"não demonstra\s+repeatability")
+
+
+def recipe_refuses_slice_without_repeatability(text):
+    return bool(text and SCALE_REPEATABILITY.search(text))
+
+
+def gate_scale_repeatability_source():
+    path = CREATE_REPEATABILITY
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_slice_without_repeatability(text):
+        return "recipes/create.md"
     return None
 
 
