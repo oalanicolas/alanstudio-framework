@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.394 — o doctor nomeia as substituições que o manifesto já declara
+
+O
+`starter.json`
+já
+listava
+as
+trocas.
+O
+comando
+validava
+o
+manifesto
+e
+calava
+o
+campo.
+Agora
+o
+`doctor`
+nomeia
+as
+substituições.
+Manifesto
+no
+disco
+não
+é
+projeto
+criado.
+Sem
+chave
+`substitutions`.
+Nomear
+não
+cria.
+
+O que 0.9.394 não afirma:
+manifesto
+no
+disco
+não
+é
+projeto
+criado
+nem
+`init`
+executado.
+
 ## 0.9.393 — o art nomeia o contraste que o look já recusa
 
 O

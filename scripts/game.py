@@ -6302,6 +6302,34 @@ def starter_engines_source():
     return None
 
 
+# O manifesto já declara as trocas. Sem isto o
+# doctor lia a integridade e calava o campo.
+# Manifesto no disco não é projeto criado.
+STARTER_SUBSTITUTIONS = re.compile(r'"substitutions"\s*:\s*\[')
+
+
+def manifest_declares_substitutions(text):
+    return bool(text and STARTER_SUBSTITUTIONS.search(text))
+
+
+def starter_substitutions_source():
+    if not STARTERS_ROOT.is_dir() or STARTERS_ROOT.is_symlink():
+        return None
+    for name in starters():
+        path = STARTERS_ROOT / name / STARTER_MANIFEST
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if manifest_declares_substitutions(text):
+            return f"assets/starters/{name}/{STARTER_MANIFEST}"
+    return None
+
+
 def node_major(version):
     if not isinstance(version, str) or not version.strip():
         return 0
@@ -6508,6 +6536,11 @@ def doctor(root):
         scope += (
             " O disco nomeia o engines (`engines`). "
             "Pedido no disco não é binário no PATH."
+        )
+    if starter_substitutions_source():
+        scope += (
+            " O disco declara as substituições (`substitutions`). "
+            "Manifesto no disco não é projeto criado."
         )
     return {
         "schema_version": 1,

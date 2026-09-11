@@ -1428,6 +1428,35 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", report["scope"])
         self.assertNotIn("then.engines", report.get("then") or {})
 
+    def test_doctor_names_the_substitutions_the_manifest_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        manifest = (starter / "starter.json").read_text(encoding="utf-8")
+        self.assertTrue(game.manifest_declares_substitutions(manifest), "o manifesto já declara as trocas")
+        self.assertEqual(
+            game.starter_substitutions_source(),
+            "assets/starters/canvas-arcade/starter.json",
+        )
+        report = game.doctor(self.root)
+        self.assertIn("declara as substituições", report["scope"], "o doctor lia a integridade e calava o campo")
+        self.assertIn("(`substitutions`)", report["scope"])
+        self.assertTrue(report["ready"])
+        self.assertNotIn("substitutions", report)
+        self.assertNotIn("substitutions", {check["name"] for check in report["checks"]})
+        self.assertFalse(game.manifest_declares_substitutions(""))
+        self.assertFalse(game.manifest_declares_substitutions("{}"))
+        with mock.patch.object(game, "starter_substitutions_source", return_value=None):
+            silent = game.doctor(self.root)
+        self.assertNotIn("declara as substituições", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia as substituições que o manifesto já declara", recipe)
+        self.assertIn("nomeia as substituições que o manifesto já declara", skill)
+        self.assertIn("nomeia as substituições que o manifesto já declara", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("then.substitutions", report.get("then") or {})
+
     def test_doctor_reports_environment_and_integrity_without_changing_anything(self):
         before = set(self.root.iterdir())
         report = game.doctor(self.root)
