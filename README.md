@@ -1,4 +1,4 @@
-# Alan Studios Framework · 0.9
+# Alan Studios Framework · 0.10
 
 Harness thin para criar, evoluir e produzir games com IA. Compartilha conceitos,
 processo, seleção de contexto, marcos de produção e evidência. Cada jogo continua
@@ -19,6 +19,12 @@ dependências. Testes do harness usam também Node/npm quando exercitam
 Playground: [games.alanicolas.com/framework](https://games.alanicolas.com/framework)
 
 ## Chegar num laboratório que já tem jogos
+
+O framework pode ser usado por vários workspaces com uma única implementação.
+Cada laboratório mantém um link `framework/core` para este checkout e um
+encaminhador curto em `framework/scripts/game.py`. Regras e evidências locais
+ficam no laboratório; recipes, packages, templates e testes compartilhados ficam
+aqui. [Ligação e personalização](references/workspace-binding.md).
 
 Este é o caso normal: a raiz de trabalho não está vazia. O primeiro movimento é
 revisar o que existe, não criar mais um.
@@ -118,7 +124,7 @@ que `init` aponta é o que serve o jogo. `open`, `url` e `prompt` nomeiam
 a mesma superfície do `start` — o `prompt` também sai em stderr. Nomear
 não serve. `verify` roda os validadores do starter onde houver Node. Se o roteiro recusa aprovar a criatividade, o `verify` nomeia a criatividade que o roteiro já recusa. Recibo verde não é aprovação. Sem chave `criatividade`. Se a ambição recusa que o recibo comprove diversão, o `verify` nomeia a diversão que a ambição já recusa. Log no disco não é experiência. Sem chave `diversão`.
 
-`next` deriva **uma** proposta do estado no disco e ordena por dependência: sem
+`next` deriva **uma** proposta do estado no disco e ordena por dependência: módulo não baixado → sem
 destino → sem entrypoint → área não localizada → ciclo jogável ainda sem partida
 → segundo ciclo de par, look, chuva e voz
 → papéis de áudio vazios → feel ainda sem observação → convite para quem nunca viu o jogo → achado sem forma →
@@ -176,6 +182,48 @@ A fonte é [SKILL.md](SKILL.md). Copie-a para o atalho do host
 aponte um symlink para ela e nunca mais pense nisso; `doctor` avisa quando a cópia
 ficou para trás.
 
+## Comandos da skill
+
+A skill roteia por intenção, no modelo da skill `impeccable` de frontend: uma
+preparação obrigatória (contexto e escala), leis e recusas que valem em todo
+trabalho, e vinte e três sub-comandos em seis categorias, cada um com uma
+referência própria em [`commands/`](commands/README.md) que a skill carrega antes
+de agir. `$game-dev` sem argumento mostra o menu; `$game-dev critique <jogo>` carrega
+`commands/critique.md` e segue o fluxo dele; texto livre cai no comando mais
+próximo pela situação.
+
+| Categoria | Comandos |
+| --- | --- |
+| Construir | `craft`, `shape`, `teach`, `document`, `init` |
+| Avaliar | `critique`, `audit`, `playtest` |
+| Refinar | `polish`, `feel`, `audio`, `harden`, `onboard`, `distill` |
+| Ampliar | `juice`, `visual`, `content` |
+| Corrigir | `adapt`, `optimize`, `clarify` |
+| Produzir | `next`, `produce`, `release` |
+
+O catálogo é [`commands/commands.json`](commands/commands.json): categoria,
+descrição, dica de argumentos, focos e leituras canônicas de cada comando. Três
+comandos do harness o servem:
+
+```sh
+python3 scripts/game.py commands --root /caminho/do/laboratorio
+python3 scripts/game.py pin critique --root /caminho/do/laboratorio
+python3 scripts/game.py unpin critique --root /caminho/do/laboratorio
+```
+
+`commands` imprime o catálogo em JSON, com o caminho de cada referência e se ela
+existe. `pin` cria um atalho próprio do host (`/critique` passa a invocar
+`$game-dev critique`) em cada diretório de skills onde a `game-dev` já está
+instalada; o arquivo leva um marcador, e uma skill sua com o mesmo nome nunca é
+sobrescrita. `unpin` remove só o que tem o marcador. `doctor` ganhou a checagem
+`commands`: catálogo, arquivo de referência e linha na tabela do `SKILL.md`
+precisam concordar, senão o menu manda o agente ler um arquivo que não existe.
+
+Uma referência de comando é um orquestrador fino, não uma receita nova: diz qual
+`context` rodar, qual receita ler, onde parar para o usuário, o que prova conclusão
+e o que não fazer ([contrato](commands/README.md)). As receitas continuam sendo
+selecionadas por `--focus`; o comando acrescenta o fluxo.
+
 ## Contexto por foco
 
 ```sh
@@ -192,6 +240,14 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
 `production`. Jogo novo começa em `create`. Acabamento do verbo usa `feel` e `audio`;
 contrato: [ambição](references/ambition.md). `--root` é aceito antes ou depois do
 subcomando.
+
+A **escala** de ambição (`jam`, `product`, `aa`) é o "register" da skill: governa
+quantidade de artefatos e de conteúdo, nunca o piso do verbo. `context` a devolve
+em `scale`: `--scale` declarado na conversa vence; sem ele, um campo `Escala:` num
+documento do projeto só **sugere**, com arquivo e linha; sem nenhum dos dois, o
+campo vem nulo e a skill infere uma vez e pede para gravar no brief. "AAA" escrito
+num brief é lido como `aa`, porque é o único sentido que este harness aceita para
+a palavra. O comando lê o campo; não classifica o jogo.
 
 O contexto entrega caminhos para leitura, registros já existentes, catálogos de
 estudo (se um irmão `Games-Frameworks` existir, ou `GAMES_FRAMEWORKS_ROOT`),
@@ -287,8 +343,10 @@ Um gate tem nome do que você está pedindo, não da etapa que acabou: `design`,
 `conclude`, `deliver`. A ordem é a do ciclo, e o ciclo tem retorno — reprovar em
 `scale` devolve para `build`, o que é uso normal.
 
-O projeto declara uma linha por critério, em `README.md`, `docs/qa.md`,
-`docs/devlog.md`, `docs/release.md` ou `docs/prd.md`. Se a tabela declara o gate, o `gate` nomeia o gate que a tabela já declara. Linha no disco não é passagem concedida. Sem chave `gate`. Se o roteiro recusa que o silêncio seja aprovação, o `gate` nomeia o silêncio que o roteiro já recusa. Linha vazia no disco não é passagem. Sem chave `silêncio`. Se o roteiro recusa que must_meet seja dispensável, o `gate` nomeia a dispensa que o roteiro já recusa. Linha no disco não é passagem. Sem chave `dispensa`. Se o roteiro recusa que fora de escopo seja dispensa, o `gate` nomeia o escopo que o roteiro já recusa. Linha no disco não é passagem. Sem chave `escopo`.
+O projeto declara uma linha por critério, em `README.md` ou num `qa.md`,
+`devlog.md`, `release.md` ou `prd.md` em qualquer subpasta de documentação
+(o Rabisco Boom guarda o seu em `docs/planning/`; `sources` na saída diz o que foi lido).
+Se a tabela declara o gate, o `gate` nomeia o gate que a tabela já declara. Linha no disco não é passagem concedida. Sem chave `gate`. Se o roteiro recusa que o silêncio seja aprovação, o `gate` nomeia o silêncio que o roteiro já recusa. Linha vazia no disco não é passagem. Sem chave `silêncio`. Se o roteiro recusa que must_meet seja dispensável, o `gate` nomeia a dispensa que o roteiro já recusa. Linha no disco não é passagem. Sem chave `dispensa`. Se o roteiro recusa que fora de escopo seja dispensa, o `gate` nomeia o escopo que o roteiro já recusa. Linha no disco não é passagem. Sem chave `escopo`:
 
 ```markdown
 | Gate | Critério | Estado | Evidência |
@@ -465,6 +523,14 @@ nenhuma delas, porque não há nada escrito para retomar. Ele volta a propor qua
 alguma fonte deixa de ser rascunho.
 
 ## Processo
+
+`context --event initialize` prepara uma análise profunda e documental quando esse
+for o pedido ou a convenção do workspace. O evento não cria um jogo nem executa a
+auditoria. [Inicialização](references/project-audit.md#inicializar-o-projeto).
+`delivery_review` orienta a conferência do pedido, artefato, prova e continuidade.
+O comando `python3 scripts/game.py gauntlet <projeto> --objective "recorte definido"` prepara um prompt de
+continuidade; duração é opcional e preparação não inicia execução.
+[Continuidade](references/gauntlet.md) · [Revisão de entrega](references/delivery.md).
 
 [Pré-produção](references/preproduction.md): Game Brief → GDD/MDA ↔ protótipo/PoC
 e playtest → PRD/TDD → vertical slice → produção/MVP → QA → release. Orientação de
@@ -810,6 +876,11 @@ Nenhum dos dois é sessão observada. Se a pesquisa recusa que cinco playtesters
 tiver curva, o `note` a anexa. Número no disco não é causa. A tabela de
 ofício que *descreve* o formato não conta como
 achado. O harness não assiste à sessão e não conta jogadores.
+
+Sem esse acervo, o catálogo vem vazio. A origem e a licença continuam obrigatórias.
+Estilos, fornecedores excluídos e piso técnico são [configuração do workspace](references/workspace-binding.md#áudio),
+preservando a direção sonora de cada jogo.
+Este repositório **não inclui** os arquivos de som.
 
 ## Verificar
 

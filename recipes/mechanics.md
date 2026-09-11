@@ -26,6 +26,18 @@ Para ajuste de dificuldade ou economia, registre situação inicial, comportamen
 observado e variável alterada. Compare alternativas sob o mesmo cenário. Não deduza
 equilíbrio da ausência de exceções ou de uma partida vencida pela própria IA.
 
+Ao adaptar IA de grade para movimento contínuo, compare o primeiro trecho da rota
+com a posição real do corpo. Recomeçar cada busca como se o agente estivesse no
+centro da célula pode acrescentar tempo fictício e fazê-lo abandonar uma fuga em
+andamento. Também distinga entrada na célula de chegada ao centro: prever que um
+perigo terá acabado na chegada não garante travessia segura da borda. Reproduza
+ameaças próximas com posições fracionárias, em vários passos consecutivos; uma
+rota válida somente no instante do plantio não comprova fuga executável.
+
+Caso e contraprovas: Rabisco Boom, revisão de gameplay de 2026-09-09 no laboratório,
+`tests/gameplay-v2.test.js` (fogo ativo na borda e replanejamento entre duas bombas).
+A condição é técnica; não estabelece pesos universais de IA nem comprova diversão.
+
 Referências: testes de Era Uma Vez e simulação de Brasa-Pista no laboratório;
 boardgame.io `RE-BGIO-003`, `RE-BGIO-006`, `RE-BGIO-011`
 ([fonte](https://github.com/boardgameio/boardgame.io)).

@@ -237,8 +237,9 @@ a de desenvolvimento. Receita: [release](../recipes/release.md).
 
 ## Como declarar, para o harness ler
 
-Uma tabela em Markdown, uma linha por dimensão, em `README.md`, `docs/qa.md`,
-`docs/devlog.md`, `docs/gdd.md` ou `docs/art-bible.md`:
+Uma tabela em Markdown, uma linha por dimensão, em `README.md` ou num documento
+chamado `qa.md`, `devlog.md`, `gdd.md` ou `art-bible.md` em qualquer subpasta de
+documentação (`docs/`, `docs/planning/`…, até quatro níveis, fora de pastas de build):
 
 ```
 | Dimensão | Degrau | Critério do degrau seguinte |

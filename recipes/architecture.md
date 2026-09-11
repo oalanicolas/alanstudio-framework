@@ -93,6 +93,26 @@ data e quem estimou. Quando a contagem real cruzar a linha, a decisão já está
 tomada e datada, em vez de ser adiada por inércia. Estimativa declarada e errada
 é revisável; estimativa implícita não é nem discutível.
 
+### Edição estruturada e convivência com código
+
+Quando humano ou agente alteram parâmetros, objetos ou cenas, declare a identidade do
+alvo e a revisão a que a operação se aplica. Tipo, unidade, faixa e relações entre
+campos precisam de validação no consumidor; um slider ou schema descritivo não impede
+uma chamada direta inválida. Reuse o formato e o executor atuais antes de criar outro.
+
+Separe definição autoral, alterações aplicadas, versão em prévia e estado da partida.
+Uma alteração rejeitada preserva a versão válida. Uma aceita declara o que muda e o
+que permanece: alvo, objetos não selecionados, referências, saves e acabamento.
+Se código regenerado mudar identidade, geometria ou schema, detectar incompatibilidade
+é preferível a reaplicar silenciosamente uma alteração sobre outro alvo.
+
+Prove uma edição válida, uma incompatível/obsoleta e a recuperação; confira o consumidor
+e o cenário percebido. Recuperar a cena não implica recuperar contadores ou progresso.
+Humano e agente podem compartilhar operações quando os contratos coincidirem; isso
+não exige uma engine comum nem elimina uma saída para código. Ganho de produtividade
+é hipótese até comparar pedidos inéditos, incluindo preparação, falhas e regressões.
+Origem e limites: [autoria UGC pública](../references/sources.md#autoria-ugc-pública).
+
 ## 4. Decidir com alternativas e contraprova
 
 No [TDD existente](../assets/templates/tdd.md), reúna: problema e requisito de origem,

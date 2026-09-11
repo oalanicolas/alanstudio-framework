@@ -3,6 +3,7 @@ import hashlib
 import importlib.util
 from html.parser import HTMLParser
 import json
+import os
 from pathlib import Path
 import re
 import shlex
@@ -11,6 +12,7 @@ import sys
 import tempfile
 import unittest
 from unittest import mock
+from unittest.mock import patch
 
 LINK = re.compile(r"\[[^\]]*\]\((?!https?://|mailto:)([^)\s]+)\)")
 HEADING = re.compile(r"^#{1,6}\s+(.*?)\s*$", re.MULTILINE)
@@ -55,6 +57,9 @@ class HarnessTest(unittest.TestCase):
         temp = tempfile.TemporaryDirectory(prefix="games-harness-")
         self.addCleanup(temp.cleanup)
         self.root = Path(temp.name).resolve()
+        workspace = patch.dict(os.environ, {"GAMES_WORKSPACE_ROOT": str(self.root)})
+        workspace.start()
+        self.addCleanup(workspace.stop)
         self.project = self.root / "jogo com espaços"
         self.project.mkdir()
         (self.project / "core.py").write_text("state = 0\n")
@@ -71,6 +76,21 @@ class HarnessTest(unittest.TestCase):
     def package(self, **extra):
         data = {"scripts": {"test": "node --test"}, **extra}
         (self.project / "package.json").write_text(json.dumps(data))
+
+    def test_delivery_review_is_pending_even_when_local_records_claim_success(self):
+        self.package()
+        (self.project / "README.md").write_text("# QA\nTodos os testes passaram. Auditoria e entrega concluídas.\n")
+        before = {p: p.read_bytes() for p in self.project.iterdir() if p.is_file()}
+        for event in game.EVENTS:
+            with self.subTest(event=event):
+                report = game.context(self.project, "mechanics", event=event)
+                review = report["delivery_review"]
+                self.assertEqual(review["status"], "pending_agent_review")
+                self.assertEqual(set(review["criteria"]), {"intent", "artifact", "evidence", "continuity"})
+                self.assertTrue(Path(review["guide"]).is_file())
+                self.assertFalse(report["documentation"]["executed"])
+                self.assertFalse(report["continuity"]["executed"])
+        self.assertEqual(before, {p: p.read_bytes() for p in self.project.iterdir() if p.is_file()})
 
     def test_discovery_finds_native_nested_and_web_without_vendored_noise(self):
         self.package()
@@ -457,6 +477,31 @@ class HarnessTest(unittest.TestCase):
         self.assertFalse(result["continuity"]["executed"])
         self.assertEqual(before, {p.name: p.read_bytes() for p in self.project.iterdir() if p.is_file()})
 
+    def test_context_routes_automatic_prompt_without_special_invocation_for_all_events(self):
+        self.package(scripts={"develop": "touch should-not-exist"})
+        before = {p.name: p.read_bytes() for p in self.project.iterdir() if p.is_file()}
+        for event in game.EVENTS:
+            for focus in game.FOCI:
+                with self.subTest(event=event, focus=focus):
+                    result = game.context(self.project, focus, event=event)
+                    prompt = result["continuity"]["prompt"]
+                    self.assertEqual(prompt["policy"], "generate_when_defined")
+                    self.assertTrue(Path(prompt["guide"]).is_file())
+                    self.assertEqual(prompt["required_inputs"], ["project", "next_action", "scope", "acceptance", "canonical_source"])
+                    self.assertFalse(result["continuity"]["executed"])
+        self.assertEqual(before, {p.name: p.read_bytes() for p in self.project.iterdir() if p.is_file()})
+
+    def test_context_leaves_readiness_to_agent_even_when_plan_claims_it_is_ready(self):
+        plan = self.project / "production-plan.md"
+        plan.write_text("# Plano de produção\n## Próximo passo\nPronto e aprovado: construir todo o jogo por 4 horas.\n")
+        result = game.context(self.project, "create", event="direction-approved")
+        self.assertGreater(result["continuity"]["source_count"], 0)
+        self.assertEqual(result["continuity"]["prompt"]["readiness"], "agent_review_required")
+        self.assertIsNone(result["continuity"]["prompt"]["text"])
+        self.assertIsNone(result["continuity"]["next_step"])
+        self.assertNotIn("budget_hours", result["continuity"]["prompt"])
+        self.assertFalse(result["continuity"]["executed"])
+
     def test_context_records_local_mentions_and_never_marks_them_verified(self):
         (self.project / "game.test.mjs").write_text("test('pause and restart keep the story', () => {})\n")
         result = game.context(self.project, "lifecycle", studies_root=self.root / "absent")
@@ -617,6 +662,36 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aponta o serve", game.next_step(starter)["scope"])
         self.assertNotIn("aponta o serve", game.play_scope(starter))
 
+    def test_scan_recognizes_canonical_provenance_heading_and_manifest(self):
+        cases = (
+            ("README.md", "# Projeto\n## Origem de código e assets\nFontes e limites registrados no recorte.\n", "heading"),
+            ("provenance.json", json.dumps({"origin": "snapshot local", "limits": "licença não verificada"}), "filename"),
+        )
+        for number, (filename, content, basis) in enumerate(cases):
+            with self.subTest(filename=filename):
+                project = self.project / str(number)
+                project.mkdir()
+                path = project / filename
+                path.write_text(content)
+                report = game.scan(project)
+                area = report["areas"]["provenance"]
+                self.assertEqual(area["status"], "candidate_found")
+                self.assertEqual(area["candidates"][0]["path"], filename)
+                self.assertEqual(area["candidates"][0]["basis"], basis)
+                self.assertEqual(path.read_text(), content)
+
+    def test_recorded_scan_fields_and_example_headings_in_fences_are_not_coverage(self):
+        for fence in ("```", "~~~~"):
+            with self.subTest(fence=fence):
+                (self.project / "README.md").write_text(
+                    "# QA\nSaída histórica, não é documentação de origem.\n"
+                    + fence + "json\n  \"provenance\": {\"status\": \"not_located\"}\n" + fence + "\n"
+                    + fence + "md\n## Origem de código e assets\nExemplo de uma seção futura.\n" + fence + "\n"
+                )
+                report = game.scan(self.project)
+                self.assertEqual(report["areas"]["provenance"]["status"], "not_located")
+                self.assertEqual(report["areas"]["qa"]["status"], "candidate_found")
+
     def test_scan_accepts_combined_document_as_candidates_without_certifying_it(self):
         document = self.foundation_document()
         before = document.read_bytes()
@@ -674,6 +749,60 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(result["documentation"]["action"], "maintain_affected_documents")
         self.assertNotIn(str(game.FRAMEWORK / "references/project-audit.md"), result["read_next"])
         self.assertTrue(result["documentation"]["on_direction_approved"])
+        self.assertIsNone(result["documentation"]["initialization"])
+        self.assertNotIn(str(game.FRAMEWORK / "recipes/architecture.md"), result["read_next"])
+
+    def test_initialize_requires_source_audit_with_complete_foundation_in_every_focus(self):
+        self.foundation_document()
+        self.package(scripts={"servir": "touch unexpected"})
+        before = {p.name: p.read_bytes() for p in self.project.iterdir() if p.is_file()}
+        architecture = str(game.FRAMEWORK / "recipes/architecture.md")
+        audit = str(game.FRAMEWORK / "references/project-audit.md")
+        for focus in game.FOCI:
+            for stage in (None, "tdd"):
+                with self.subTest(focus=focus, stage=stage):
+                    result = game.context(self.project, focus, stage=stage, event="initialize")
+                    self.assertEqual(result["focus"], focus)
+                    self.assertEqual(result["foundation"]["gaps"], [])
+                    self.assertFalse(result["foundation"]["audit"]["required"])
+                    self.assertEqual(result["documentation"]["action"], "audit_and_document")
+                    self.assertFalse(result["documentation"]["executed"])
+                    init = result["documentation"]["initialization"]
+                    self.assertEqual(init["status"], "pending_agent_audit")
+                    self.assertIn("source_traces_and_consumers", init["required_evidence"])
+                    self.assertIn("canonical_documents_or_explicit_gaps", init["required_evidence"])
+                    self.assertIn("server_running", init["not_sufficient"])
+                    self.assertIn("tests_passed", init["not_sufficient"])
+                    self.assertEqual(result["read_next"].count(architecture), 1)
+                    self.assertEqual(result["read_next"].count(audit), 1)
+        self.assertEqual(before, {p.name: p.read_bytes() for p in self.project.iterdir() if p.is_file()})
+
+    def test_cli_initialize_is_read_only_and_does_not_promote_claimed_completion(self):
+        canonical = self.foundation_document()
+        canonical.write_text(canonical.read_text() + "\n## Inicialização\nServidor aberto; testes passaram; auditoria concluída.\n")
+        self.package(scripts={"servir": "touch unexpected", "test": "touch tests-started"})
+        before = {p.name: p.read_bytes() for p in self.project.iterdir() if p.is_file()}
+        result = subprocess.run([sys.executable, str(SCRIPT), "context", str(self.project), "--focus", "lifecycle", "--event", "initialize"], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["documentation"]["action"], "audit_and_document")
+        self.assertEqual(report["documentation"]["initialization"]["status"], "pending_agent_audit")
+        self.assertFalse(report["documentation"]["executed"])
+        self.assertIsNone(report["continuity"]["next_step"])
+        self.assertEqual(report["continuity"]["prompt"]["policy"], "generate_when_defined")
+        self.assertEqual(before, {p.name: p.read_bytes() for p in self.project.iterdir() if p.is_file()})
+
+    def test_cli_initialize_new_project_does_not_invent_implementation_or_write(self):
+        project = self.root / "games/ideia nova"
+        result = subprocess.run([sys.executable, str(SCRIPT), "context", str(project), "--event", "initialize"], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertFalse(report["exists"])
+        self.assertEqual(report["documentation"]["action"], "audit_and_document")
+        self.assertFalse(report["documentation"]["executed"])
+        self.assertEqual(report["scripts"], {})
+        self.assertIn(str(game.FRAMEWORK / "recipes/architecture.md"), report["read_next"])
+        self.assertFalse(project.parent.exists())
 
     def test_context_names_the_audit_the_guide_already_asks(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
@@ -2732,6 +2861,128 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         with self.assertRaisesRegex(ValueError, "desconhecida"):
             game.context(self.project, "create", "missing")
 
+    def test_gauntlet_preview_preserves_literals_and_does_not_execute_or_write(self):
+        objective = 'Revisar "áudio"\n```\n{{CONTRACT}}; $(touch injected); `touch injected2`'
+        self.package(scripts={"test": "touch unexpected"})
+        before = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()}
+        with patch.object(game.subprocess, "run") as run, patch.object(game.time, "time") as clock:
+            document = game.gauntlet(self.project, objective, 2.5, "visual")
+        contract = json.loads(document.split("```json\n", 1)[1].split("\n```", 1)[0])
+        self.assertEqual(contract["objective"], objective)
+        self.assertEqual(contract["project"], str(self.project))
+        self.assertEqual(contract["budget_hours"], 2.5)
+        self.assertEqual(contract["focus"], "visual")
+        self.assertEqual(contract["status"], "prepared")
+        self.assertFalse(contract["execution_started"])
+        self.assertTrue(Path(contract["guide"]).is_file())
+        self.assertTrue(Path(contract["skill"]).is_file())
+        self.assertNotIn("started_at", contract)
+        self.assertNotIn("deadline", contract)
+        run.assert_not_called()
+        clock.assert_not_called()
+        self.assertEqual(before, {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()})
+
+    def test_gauntlet_context_argv_round_trips_unusual_project_paths_for_every_focus(self):
+        project = self.root / "ação 'dupla' $(touch injected); `touch injected2`\n```"
+        project.mkdir()
+        for focus in game.FOCI:
+            with self.subTest(focus=focus):
+                document = game.gauntlet(project, "Conferir o reinício", 1, focus)
+                contract = json.loads(document.split("```json\n", 1)[1].split("\n```", 1)[0])
+                result = subprocess.run(contract["context_argv"], cwd=self.root, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                context = json.loads(result.stdout)
+                self.assertEqual(context["project"], str(project))
+                self.assertEqual(context["focus"], focus)
+                self.assertEqual(context["event"], "resume")
+                self.assertFalse(context["continuity"]["executed"])
+        self.assertEqual(list(project.iterdir()), [])
+        self.assertFalse((self.root / "injected").exists())
+        self.assertFalse((self.root / "injected2").exists())
+
+    def test_gauntlet_cli_uses_explicit_root_and_only_writes_requested_prompt(self):
+        project = self.root / "games/new-game"
+        output = self.root / "prompts/gauntlet.md"
+        argv = [sys.executable, str(SCRIPT), "--root", str(self.root), "gauntlet", "games/new-game", "--objective", "Provar um recorte", "--hours", "0.5", "--focus", "architecture"]
+        preview = subprocess.run(argv, capture_output=True, text=True)
+        self.assertEqual(preview.returncode, 0, preview.stderr)
+        self.assertFalse(project.exists())
+        self.assertFalse(output.parent.exists())
+        result = subprocess.run([*argv, "--output", str(output)], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        receipt = json.loads(result.stdout)
+        self.assertEqual(receipt["status"], "prepared")
+        self.assertFalse(receipt["execution_started"])
+        self.assertEqual(receipt["document"], str(output))
+        self.assertEqual(output.read_text(), preview.stdout)
+        self.assertFalse(project.exists())
+        contract = json.loads(preview.stdout.split("```json\n", 1)[1].split("\n```", 1)[0])
+        self.assertEqual(contract["project"], str(project))
+        self.assertEqual(contract["budget_hours"], 0.5)
+
+    def test_gauntlet_cli_and_api_accept_missing_hours_without_inventing_budget(self):
+        project = self.root / "games/novo jogo"
+        output = self.root / "continuidade.md"
+        objective = 'Implementar o reinício definido no plano; {{CONTRACT}}'
+        document = game.gauntlet(project, objective)
+        contract = json.loads(document.split("```json\n", 1)[1].split("\n```", 1)[0])
+        self.assertIsNone(contract["budget_hours"])
+        self.assertEqual(contract["objective"], objective)
+        self.assertFalse(contract["execution_started"])
+        self.assertFalse(project.exists())
+        result = subprocess.run([sys.executable, str(SCRIPT), "gauntlet", str(project), "--objective", objective, "--output", str(output)], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(json.loads(result.stdout)["execution_started"])
+        self.assertEqual(output.read_text(), document)
+        self.assertFalse(project.exists())
+
+    def test_gauntlet_refuses_invalid_contract_before_writing(self):
+        output = self.root / "prompts/gauntlet.md"
+        cases = [("", 1, "create"), (" \n", 1, "create"), (None, 1, "create"),
+                 ("objetivo", 0, "create"), ("objetivo", -1, "create"),
+                 ("objetivo", float("nan"), "create"), ("objetivo", float("inf"), "create"),
+                 ("objetivo", True, "create"), ("objetivo", "4", "create"),
+                 ("objetivo", 4, "../../SKILL")]
+        for objective, hours, focus in cases:
+            with self.subTest(objective=objective, hours=hours, focus=focus):
+                with self.assertRaises(ValueError):
+                    game.gauntlet(self.project, objective, hours, focus, output)
+                self.assertFalse(output.parent.exists())
+        with self.assertRaisesRegex(ValueError, "diretório"):
+            game.gauntlet(self.project / "core.py", "objetivo", 1, output=output)
+        self.assertFalse(output.parent.exists())
+
+    def test_gauntlet_preserves_existing_file_directory_and_symlinks(self):
+        canonical = self.project / "devlog.md"
+        canonical.write_text("continuidade anterior; prazo original")
+        link = self.root / "alias.md"
+        link.symlink_to(canonical)
+        missing = self.root / "absent.md"
+        dangling = self.root / "dangling.md"
+        dangling.symlink_to(missing)
+        for output in (canonical, self.project, link, dangling):
+            with self.subTest(output=output), self.assertRaisesRegex(ValueError, "existente"):
+                game.gauntlet(self.project, "Provar o reinício", 1, output=output)
+        self.assertEqual(canonical.read_text(), "continuidade anterior; prazo original")
+        self.assertTrue(link.is_symlink())
+        self.assertTrue(dangling.is_symlink())
+        self.assertFalse(missing.exists())
+
+    def test_gauntlet_cli_rejects_invalid_hours_and_overwrite_without_traceback(self):
+        output = self.root / "prompt.md"
+        argv = [sys.executable, str(SCRIPT), "gauntlet", str(self.project), "--objective", "Provar o ciclo", "--output", str(output)]
+        for hours in ("0", "-1", "nan", "inf", "abc"):
+            with self.subTest(hours=hours):
+                result = subprocess.run([*argv, "--hours", hours], capture_output=True, text=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertFalse(output.exists())
+        output.write_text("pacote anterior")
+        result = subprocess.run([*argv, "--hours", "4"], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("existente", result.stderr)
+        self.assertEqual(output.read_text(), "pacote anterior")
+
     def test_manager_respects_declaration_and_refuses_ambiguous_locks(self):
         self.package(packageManager="pnpm@10.0.0")
         (self.project / "package-lock.json").write_text("{}")
@@ -2970,6 +3221,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         # Cada ramo é nomeado em português na prosa; o mapa amarra os dois lados,
         # então um ramo novo no código sem linha no README quebra o teste.
         described = {
+            "workspace_module.not_downloaded": "módulo não baixado",
             "exists=false": "sem destino",
             "kind=null": "sem entrypoint",
             "areas.not_located": "área não localizada",
@@ -4048,6 +4300,37 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         pacing = next(item for item in report["dimensions"] if item["key"] == "pacing")
         self.assertEqual(pacing["next_tier"], "slice")
         self.assertTrue(pacing["source"].startswith("README.md:"))
+
+    # O Rabisco Boom guarda o QA em docs/planning/qa.md. `scan` o encontrava e
+    # `bar` não, então a tabela declarada era invisível para o harness — e `next`
+    # propunha declarar o que já estava declarado. A declaração vive onde o
+    # projeto guarda o documento, não onde o harness gostaria.
+    def test_bar_and_gate_read_declarations_in_nested_docs_folders(self):
+        nested = self.project / "docs/planning"
+        nested.mkdir(parents=True)
+        (nested / "qa.md").write_text(
+            "# QA\n\n| Dimensão | Degrau | Critério do degrau seguinte |\n| --- | --- | --- |\n"
+            "| `feel` | `playable` | `slice`: cada ação com sinal próprio |\n", encoding="utf-8",
+        )
+        (nested / "release.md").write_text(
+            "# Release\n\n| Gate | Critério | Estado | Evidência |\n| --- | --- | --- | --- |\n"
+            "| `deliver` | `runbook` | `met` | Ana construiu do zero em 2026-09-02 |\n", encoding="utf-8",
+        )
+        # Uma cópia em node_modules não é declaração do projeto.
+        stray = self.project / "node_modules/pkg/docs/qa.md"
+        stray.parent.mkdir(parents=True)
+        stray.write_text("| `feel` | `flagship` | |\n", encoding="utf-8")
+        report = game.bar_reading(self.project)
+        self.assertEqual(report["floor"], "playable")
+        self.assertEqual(report["at_floor"], ["feel"])
+        self.assertIn("docs/planning/qa.md", report["sources"])
+        self.assertNotIn("node_modules/pkg/docs/qa.md", report["sources"])
+        feel = next(item for item in report["dimensions"] if item["key"] == "feel")
+        self.assertTrue(feel["source"].startswith("docs/planning/qa.md:"))
+        gates = game.gate_reading(self.project, "deliver")
+        runbook = next(c for c in gates["gates"][0]["criteria"] if c["key"] == "runbook")
+        self.assertEqual(runbook["state"], "met")
+        self.assertTrue(runbook["source"].startswith("docs/planning/release.md:"))
 
     # Dimensão sem linha não é dimensão alta: o mínimo entre as dez fica
     # desconhecido, e um degrau percebido ali seria invenção.
@@ -9603,7 +9886,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotEqual(empty.returncode, 0)
         self.assertIn("sem destino", empty.stderr)
-        self.assertIn(game.start_idea_command(), empty.stderr)
+        self.assertIn("start --idea", empty.stderr)
+        self.assertIn(f"--root {self.root / 'vazio'}", empty.stderr)
         self.assertNotIn("um", empty.stderr)
 
     def test_playable_neighbors_looks_beside_the_framework_not_inside_it(self):

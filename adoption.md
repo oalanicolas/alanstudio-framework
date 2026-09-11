@@ -3,6 +3,33 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.10 — Skill roteada por comando, no modelo da impeccable
+
+Estudo da skill `impeccable` (frontend) e transposição da sua **forma de operar**
+para jogos, sem copiar o conteúdo: registro em
+[docs/stories/2026-09-10-impeccable-study.md](docs/stories/2026-09-10-impeccable-study.md).
+
+- **Preparação obrigatória** antes de qualquer trabalho: contexto pelo harness,
+  escala identificada, referência do sub-comando carregada. O `SKILL.md` passa a
+  rotear por preparação, leis compartilhadas, recusas absolutas, teste de slop,
+  tabela de comandos, regras de roteamento e fixar/desafixar.
+- **Escala como register.** `jam` / `product` / `aa` muda o que se cobra, nunca o
+  piso do verbo. `context` devolve `scale`: `--scale` na conversa vence, um campo
+  `Escala:` no documento sugere e “AAA” no brief é lido como `aa`.
+- **Vinte e três sub-comandos** em seis categorias, um arquivo cada em `commands/`,
+  com a mesma forma (Escala, Avaliar, Executar, Verificar, Nunca, Entregar) e a
+  regra de apontar o canônico em vez de repeti-lo.
+- **Catálogo e atalhos.** `commands/commands.json` alimenta `game.py commands`,
+  `pin`/`unpin` e a checagem `commands` do `doctor`, sem sobrescrever skills do
+  usuário.
+- **Declarações aninhadas.** `bar` e `gate` procuram os mesmos nomes de arquivo em
+  subpastas de documentação até quatro níveis, fora das pastas de build; o
+  `README.md` só conta na raiz.
+
+O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrões de
+CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
+Esses mecanismos não equivalem a executar e observar um jogo.
+
 ## 0.9.461 — o metadata_issues nomeia o semântico que a guia já recusa
 
 A

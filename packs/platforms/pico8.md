@@ -45,5 +45,5 @@ Não substitui AGENTS nem a documentação oficial.
   e observações.
 
 Núcleo: [mecânicas](../../recipes/mechanics.md), [feel](../../recipes/feel.md),
-[produção](../../recipes/production.md). O piso sonoro "sem 8-bit por padrão" não se
-aplica a um fantasy console: aqui o chiptune é a plataforma; registre a decisão.
+[produção](../../recipes/production.md). Registre a direção sonora própria deste
+fantasy console; o framework não impõe a estética de outro workspace.

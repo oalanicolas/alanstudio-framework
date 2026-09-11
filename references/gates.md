@@ -128,8 +128,9 @@ de cobrar qualquer coisa, e a TRC histórica marcava seção como “Applicable�
 
 ## Como declarar, para o harness ler
 
-Uma tabela em `README.md`, `docs/qa.md`, `docs/devlog.md`, `docs/release.md` ou
-`docs/prd.md`. Uma linha por critério:
+Uma tabela em `README.md` ou num documento chamado `qa.md`, `devlog.md`,
+`release.md` ou `prd.md` em qualquer subpasta de documentação (`docs/`,
+`docs/planning/`…). Uma linha por critério:
 
 ```markdown
 | Gate | Critério | Estado | Evidência |

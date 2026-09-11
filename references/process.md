@@ -5,6 +5,20 @@ de documentação acompanha o risco: um ajuste pequeno cabe no registro atual; u
 criação nova precisa de briefing e decisões retomáveis. Não há número obrigatório
 de agentes, stories ou rodadas.
 
+O ciclo de trabalho é: **definir → materializar → testar e jogar → decidir e registrar**.
+Protótipo e código compartilham o loop; arte, áudio e comportamento o abastecem.
+QA ocorre em toda rodada. Os passos operacionais abaixo detalham esse ciclo;
+sua numeração não corresponde à dos quatro passos do mapa conceitual.
+O [workflow de criação](creative-workflow.md) detalha esse mapa e o papel do criador.
+
+Após definir o próximo recorte, gere automaticamente o [prompt de continuidade](gauntlet.md)
+em linguagem comum, sem exigir vocabulário do framework. A execução repete este
+processo com objetivo e critério de conclusão; duração só entra se informada.
+Cada resultado determina a próxima fatia; revisão volta
+à intenção, especificação, código ou prova conforme a causa. O checkpoint canônico
+preserva o orçamento entre retomadas e a melhor versão demonstrada. Gerar o pacote
+de prompts não executa o trabalho.
+
 Para concepção e produção de um jogo novo, o [ciclo criativo](preproduction.md)
 detalha Game Brief, MDA, GDD, PoC, PRD, TDD, vertical slice, MVP, QA/playtest e
 release, com templates, critérios de prontidão e rastreabilidade. Em correções
@@ -20,6 +34,12 @@ dimensão. O harness confere a forma da declaração — dimensão entre as dez,
 entre os cinco, alvo no seguinte — e nunca o jogo.
 
 ## 1. Estado e intenção
+
+Resolva a intenção antes de escolher o comando técnico. “Inicie/inicialize [projeto]”
+sem alvo operacional específico aciona [análise profunda e documentação](project-audit.md#inicializar-o-projeto)
+com `--event initialize`. “Inicie o servidor/partida” segue a operação explícita;
+iniciar uma etapa previamente definida retoma o recorte. O objeto e a conversa
+prevalecem sobre a palavra isolada. Servidor aberto não conclui inicialização documental.
 
 Leia a direção atual do usuário, AGENTS, versão do jogo, brief, decisões e referência
 aprovada. Diferencie original, variante e experimento. Uma hipótese do agente não
@@ -115,6 +135,10 @@ e `claimed` não é `verified`.
 
 ## 5. Encerrar e aprender
 
+Faça a [revisão de entrega](delivery.md) no registro atual: confronte pedido e aceite
+com artefatos, prova e resposta final. Resolva divergências antes de declarar conclusão.
+O resultado de cada critério permanece separado da execução técnica e da experiência.
+
 Confira `documentation.before_close`: decisões e fontes estão nos documentos canônicos,
 ligados ao índice, e as áreas mínimas têm conteúdo ou lacuna com próxima ação.
 Referência aprovada salva e lista de entregas futuras deixam essa ação pendente.
@@ -125,6 +149,13 @@ Declare mudança, partes herdadas/adaptadas/criadas, comandos/resultados, observ
 da experiência e lacunas. Conclusão da IA é uma alegação sustentada por evidência.
 Registre tentativas descartadas, motivo das decisões e como reproduzir a comparação
 no registro existente. Performance tem registro próprio no laboratório, quando existir.
+
+Antes de encerrar, se houve aprendizado transferível, aplique [a extração](learning.md):
+registre a regra, suas condições e sua contraprova na receita, package, checklist ou
+ferramenta canônica do framework. O registro local conserva o caso e suas evidências.
+Preferências do criador e decisões do jogo continuam locais. Aprendizado reutilizável
+não pode existir somente no Devlog do jogo; uma hipótese ainda sem prova mantém esse
+estado explícito, sem virar recomendação universal.
 
 ## Continuidade e retomada
 
@@ -144,12 +175,28 @@ uma seção de continuidade, sem criar arquivo paralelo quando já há fonte can
 - **Pronto quando:** comportamento ou evidência observável que encerra esse passo.
 - **Retomar por:** arquivo/seção/tarefa e candidatos/consumidores a reaproveitar.
   Dependência ou decisão do usuário somente quando existe; identificar quem resolve.
+- **Prompt para continuar:** texto pronto em linguagem comum, preenchido pelo agente
+  após conferir projeto, próximo recorte, limites, fonte e prova. Sem variáveis,
+  comandos internos ou necessidade de conhecer “gauntlet”. Duração só se informada.
 
 Atualize o estado e os links ao concluir ou mudar a prioridade, preservando decisões
 e evidências históricas. A fonte canônica é a memória entre sessões. Na resposta
 final, diga o resultado e o próximo passo com motivo e prova em linguagem de produto;
 o usuário não precisa conhecer comandos do harness. Evite terminar só com arquivos,
 contagens de testes, lista de três frentes ou “posso continuar?”.
+
+**Geração automática:** sempre que houver próximo trabalho bem definido, escreva
+o prompt, sem esperar que a pessoa peça por ele. Na entrega, mostre uma única opção
+recomendada e pronta para copiar. “Vamos avançar” também a retoma. O
+[roteiro de continuidade](gauntlet.md#prontidão-e-prompt-pronto) define prontidão e
+formato; o agente preenche o conteúdo com fontes reais. Se faltar uma decisão essencial,
+resolva a lacuna antes de sugerir implementação; uma investigação delimitada também
+pode ser o próximo recorte. Arquivos encontrados não comprovam prontidão.
+
+Preparar o prompt não acrescenta uma aprovação obrigatória: se a próxima ação já
+está autorizada, registre e execute no mesmo turno. Apresente o prompt de retomada
+quando encerrar uma entrega com sequência real; objetivo concluído não exige inventar
+mais trabalho nem pedir que o usuário escolha tempo.
 
 Exemplo de encerramento depois de documentar o Satisfactory, antes das PoCs:
 
@@ -160,8 +207,8 @@ Exemplo de encerramento depois de documentar o Satisfactory, antes das PoCs:
 > pausa/save/recarga preservarem o estado, com resultado equivalente em 30/60/144 FPS.
 > Ao dizer “vamos avançar”, retomo essa tarefa pelo plano de produção.
 
-Esse recorte é exemplo de continuidade a partir de um plano de produção real,
-não autorização de implementação nesta manutenção do framework.
+Esse recorte é um exemplo baseado em um plano de produção do laboratório.
+É exemplo de continuidade, não autorização de implementação nesta manutenção do framework.
 
 **Retomada:** o agente identifica “continue”, “vamos avançar” ou equivalente na conversa
 e executa `context <projeto> --event resume`. Leia as fontes de `continuity` e os

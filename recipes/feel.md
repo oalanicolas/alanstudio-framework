@@ -185,6 +185,11 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
 Registre o elo fraco antes de adicionar mais partículas. Três efeitos no
 impacto não compensam input que ignora o botão.
 
+Legibilidade respeita o contrato de informação do jogo. Se memória e incerteza
+são parte da disputa, revelar alcance futuro, autoria ou consequências ocultas
+pode retirar decisões em vez de melhorar o feedback. Distinga antecipação da ação
+e confirmação do impacto de uma previsão que o jogador deve construir sozinho.
+
 ## 3. REUSE → ADAPT → CREATE
 
 Procure o feel já existente no jogo: hitstop, easing, impulse de câmera,
@@ -198,8 +203,40 @@ não só o utilitário. Um tween genérico sem dono não é feel reutilizável.
   estranho. Explicite a lacuna; crie só o elo que falta.
 
 Não importe um “juice pack” universal. Feel copiado de outro jogo sem ADAPT
-e proveniência dilui a instância. 8-bit, bounce cartoon ou screen-shake
-contínuo não são o padrão; o padrão é a referência aprovada deste jogo.
+e proveniência dilui a instância. O estilo, a intensidade e a continuidade dos
+efeitos seguem a referência aprovada deste jogo.
+
+Ao integrar animações a outro motor, rastreie cada estado até o consumidor que
+realmente aplica a pose: clipe importado e fase calculada podem existir sem dono
+ativo. Compare deslocamento e articulações durante transições, inclusive preparação
+da ação; velocidade não nula não prova que a posição foi integrada. Use o evento
+aceito pelo motor para gestos específicos, distinguindo novo impulso de queda,
+rebote ou reação. Uma interrupção deve encerrar o gesto, não só escondê-lo até
+o ataque terminar. Confira se a entrada do clipe cabe em sua janela visível e se
+o relógio descarta o tempo de pausa/hitstop, sem recuperá-lo num salto na retomada.
+Esses testes verificam integração e continuidade; não demonstram qualidade artística
+nem tornam um giro completo adequado a todos os saltos.
+
+Quando movimento e ataque são liberados em momentos diferentes, reproduza input
+durante a trava residual: a captura do buffer precisa considerar todas as
+condições que realmente impedem a ação. Estar em `run` não prova estar livre para
+atacar. Ao adaptar teclado/analógico, confira se cada ação anunciada continua
+selecionável por um gesto deliberado; mudar corrida por padrão pode alterar a
+prioridade entre tilt, dash-attack e smash sem remover nenhum deles dos dados.
+
+O buffer deve preservar a intenção no instante do pedido, inclusive se uma nova
+direção chega no primeiro tick legal. Teste esse limite exato e mantenha arestas
+de movimento/técnicas independentes; limpar o input inteiro pode corrigir o golpe
+e perder a queda rápida. Em poses com restrições de contato, repetir o mesmo frame
+pausado deve produzir a mesma saída: um solver parcial reaplicado sobre sua própria
+saída pode continuar movendo o membro. Verifique startup, ativo e recuperação.
+
+Compare gesto, hitbox, hurtbox e efeito no mesmo snapshot real, em ambos os lados
+e nas proporções de cada avatar. Meça o sólido visível, sem esticar ossos para
+passar no teste. Uma cápsula central pode excluir acessórios e membros estendidos
+por contrato explícito; registre essa diferença antes de mudar arte ou balanceamento.
+Inspecione também o corpo cruzando plataformas e pendurado na borda, na câmera
+da partida: câmera próxima e geometria numericamente correta não provam leitura.
 
 ## 4. Ajustar uma variável por vez
 
@@ -228,6 +265,12 @@ Screenshot não comprova feel. Compare o antes/depois no percurso real.
 Observe também pause, perda de foco, o controle que some, reinício e troca de entrada: um
 hitstop que sobrevive à pausa ou um rumble que não morre no descarte é
 regressão de [ciclo de vida](lifecycle.md).
+
+Em Canvas, teste também alterações de layout causadas por HUD, mensagens e
+reinício. Atribuir `width`/`height` apaga o bitmap; `ResizeObserver` pode executar
+depois do rAF de desenho. Garanta redimensionamento e repintura antes da próxima
+apresentação. Reproduza a mesma sequência antes/depois, amostrando o canvas após
+os callbacks de layout; contar quadros vazios separa apagão de efeito intencional.
 
 No QA, um caso de feel declara: ação, elo sob teste, duração/escala
 esperada, condição equivalente e julgamento (agente ou pessoa, sem

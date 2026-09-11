@@ -50,8 +50,8 @@ ativo; localize o uso real.
    → recuperação. Com tela, a primeira superfície é a porta; o campo
    começa depois do avanço. Receita: [feel](../recipes/feel.md).
 5. **Áudio / mix:** papéis (ação, mundo, música, stinger, silêncio), consumidor
-   real e interrupção. Piso de gravação licenciada salvo direção explícita em
-   contrário. Receita: [áudio](../recipes/audio.md).
+   real e interrupção. Estilo definido pela direção e origem compatível com o uso.
+   Receita: [áudio](../recipes/audio.md).
 6. **UI / HUD / acesso:** ou a decisão explícita de não ter interface tradicional.
 7. **Fazer / não fazer:** um exemplo que cabe e um que quebra a direção.
 8. **Proveniência:** origem, crédito e condição de uso dos recursos.

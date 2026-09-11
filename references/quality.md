@@ -26,7 +26,7 @@ inclina para o que o trilho já marca — antecipação, não punch. Movimento b
 toque; cancelar um gesto, perder foco e reconectar um controle são cenários próprios.
 Som, animação, luz, efeitos e interface devem tornar causa e consequência perceptíveis
 sem esconder a ação. Efeito novo sai de `shared/sfx` no laboratório, se existir; o
-piso é gravação licenciada, não 8-bit, chiptune, jsfxr nem Kenney arcade. Verifique
+piso é a direção sonora aprovada, com origem e licença compatíveis. Verifique
 também silêncio, contraste e formas além da cor quando forem necessários para
 interpretar o estado.
 
@@ -51,8 +51,8 @@ comprova feel. Receita: [feel](../recipes/feel.md).
 
 O jogador ouve causa e efeito. Camadas (ação, ambiente, música, UI) têm
 prioridade; pause/reinício não deixam voz fantasma. Silêncio é design, não
-arquivo ausente. Piso: gravação licenciada ou direção contemporânea explícita
-— 8-bit, chiptune, jsfxr e Kenney arcade não são o padrão. Receita:
+arquivo ausente. Estética e restrições a fornecedores seguem o projeto e a
+configuração do workspace. Receita:
 [áudio](../recipes/audio.md).
 
 ## Mundo, luz e animação

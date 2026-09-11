@@ -9,9 +9,9 @@ A porta também lê a legenda que o mixer ainda guarda — sem isto o fim
 existia no áudio e sumia na abertura. Texto no disco não é mix ouvido.
 
 Áudio AAA não é quantidade de arquivos. É mix: o jogador ouve a causa, o
-efeito e o espaço, e o silêncio também informa. Um loop 8-bit no lugar de
-uma gravação licenciada não cumpre o piso deste estúdio. jsfxr, chiptune
-e Kenney arcade não são o padrão.
+efeito e o espaço, e o silêncio também informa. A referência do jogo define a
+estética. Restrições a estilos e fornecedores pertencem à configuração local;
+origem, licença, integridade e adequação ao consumidor continuam obrigatórias.
 
 `context --focus audio` seleciona esta receita. `roles <projeto>` lê os
 papéis que o código declara (`const SOUNDS` ou `sounds.json`) e os arquivos
@@ -128,9 +128,8 @@ Adapte pitch, volume e envelope no canônico antes de duplicar o arquivo.
 Trocar um wav sem atualizar pivot rítmico, ducking ou interrupção é
 regressão. Conteúdo baixado não ganha licença nova pelo reuso.
 
-Piso: gravação licenciada ou design contemporâneo coerente com a Art
-Bible. Se o jogo **escolhe** chip/lo-fi, isso é direção explícita, não o
-padrão do estúdio — registre no design system.
+Registre a direção sonora no design system. Gravação, síntese, chip/lo-fi e outros
+estilos são escolhas do projeto; consulte a política local antes de importar.
 
 ## 4. Música como design
 
@@ -194,3 +193,20 @@ Sem chave `mix`. Se o `tools/wav.*` lê o PCM, o `roles` nomeia o PCM que o wav 
 informação sonora precisa de equivalente visual — requisito de
 [acessibilidade](accessibility.md), não recurso extra. Degraus da dimensão `audio_mix`:
 [barra de acabamento](../references/production-bar.md#audio_mix--mixagem-não-arquivos).
+
+## Aprendizados de memória e transporte
+
+Casos e limites em [aprendizados de aplicações](../references/sources.md#aprendizados-de-aplicações).
+
+- O tamanho comprimido não mede áudio decodificado. Conte frames, canais e formato
+  dos buffers no contexto real; a taxa de saída pode diferir da taxa do arquivo.
+  Registre PCM separadamente de heap JavaScript, download e memória total.
+- Dividir o transporte e remontar bytes por hash pode atender a um limite individual
+  de arquivo sem cortar a gravação. Isso não reduz, por si, a memória após decodificar.
+- Desconectar um nó, liberar referências e fechar o contexto são sinais distintos;
+  nenhum isoladamente comprova coleta imediata. Teste pausa, reinício e desmontagem.
+- Callback de áudio, capacidade de render e silêncio durante um teste técnico não
+  demonstram FPS nem aprovação sonora. Medir alocação com canais em zero não é ouvir.
+- Streaming é candidato quando o contrato permite; valide continuidade, latência,
+  interrupção e qualidade antes de trocar o carregamento integral. Sem esse teste,
+  registre a hipótese e o custo atual, sem anunciar ganho ainda não observado.
