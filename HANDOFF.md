@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.377: o `playtest` nomeia o recado que o serve já grava. Texto no disco não é alguém de fora. Sem chave `note`. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.377):** `python3 -m unittest discover -s tests` → pendente (373 esperados).
+**Suítes confirmadas no HEAD (0.9.377):** `python3 -m unittest discover -s tests` → 373 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
