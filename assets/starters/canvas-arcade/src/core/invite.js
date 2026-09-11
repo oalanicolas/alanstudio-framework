@@ -10,8 +10,8 @@
 // alguém de fora. Esconder a
 // tabela não é alguém de fora nem curva observada. Depois do fim, a
 // porta também oferece os quatro nomes — no overlay e na abertura, se
-// houver partida — e mostra seed, pontos, eixos e a curva que o
-// last-run já traçou. Número na faixa
+// houver partida — e mostra seed, pontos, eixos, a curva que o
+// last-run já traçou e se o candidato foi simulado. Número na faixa
 // não preenche os quatro. Copiar não grava. Esqueleto vazio não é
 // achado. Gravado não é alguém de fora. VERSION.json na raiz some
 // o Gravar: o serve da árvore exportada recusa o POST. Copiar
@@ -67,6 +67,18 @@ function runQuery(run) {
   return parts;
 }
 
+function runPolicy(run) {
+  // A faixa lia seed e some a origem. O last-run já
+  // marca nearest-orb. Número no disco não é outsider.
+  if (!run || typeof run !== "object" || Array.isArray(run)) return "";
+  const policy = typeof run.policy === "string"
+    ? run.policy
+    : run.run && typeof run.run === "object" && !Array.isArray(run.run)
+      ? run.run.policy
+      : null;
+  return policy === "nearest-orb" ? "simulada" : "";
+}
+
 function runScore(run) {
   if (!run || typeof run !== "object" || Array.isArray(run)) return null;
   if (typeof run.score === "number" && Number.isFinite(run.score)) return run.score;
@@ -99,6 +111,8 @@ export function runFacts(run) {
   if (seed !== null) parts.push(`seed ${seed}`);
   const score = runScore(run);
   if (score !== null) parts.push(String(score));
+  const policy = runPolicy(run);
+  if (policy) parts.push(policy);
   const spawn = runSpawn(run);
   if (spawn) parts.push(spawn);
   const look = runLook(run);

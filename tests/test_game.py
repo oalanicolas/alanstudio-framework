@@ -5096,6 +5096,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", json.dumps(report))
         self.assertNotIn("verified", json.dumps(report))
 
+    def test_invite_names_the_simulated_last_run_without_claiming_an_outsider(self):
+        invite = (
+            Path(game.FRAMEWORK)
+            / "assets/starters/canvas-arcade/src/core/invite.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn('policy === "nearest-orb" ? "simulada"', invite, "a faixa lia seed e calava a origem")
+        self.assertIn("A faixa lia seed e some a origem", invite)
+        self.assertNotIn("candidate_tally", invite)
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("simulada", recipe)
+        self.assertIn("simulada", feel)
+        self.assertIn("simulada", readme)
+        self.assertIn("a faixa não leva a conta", feel.casefold())
+        destination = self.root / "com-simulacao"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "policy": "nearest-orb",
+            "run": {"seed": 8, "score": 12},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(destination)
+        self.assertEqual(report["candidate_policy"], "nearest-orb")
+        self.assertFalse(report["outsider"])
+        self.assertFalse(report["observed"])
+        self.assertNotIn("aprovado", report["scope"])
+
     def test_next_points_at_the_invite_after_the_maker_already_played(self):
         destination = self.root / "depois-de-jogar"
         game.start_project(destination, "canvas-arcade")

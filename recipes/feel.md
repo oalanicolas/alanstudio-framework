@@ -34,7 +34,10 @@ quatro não é achado. `playtest --invite`
 escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco,
 `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, com look nomeado `&look=<paleta>`, e com relógio nomeado e ≠ 1 `&speed=<relógio>`), onde a tabela some; depois do
 fim a página oferece os quatro nomes para copiar ou gravar e
-mostra seed, pontos, eixos e a curva que o last-run já traçou.
+mostra seed, pontos, eixos, a curva que o last-run já traçou e se o
+candidato foi simulado. `nearest-orb` vira `simulada` na faixa; `played`
+some. A faixa não leva a conta nem o relógio. Simulada não é alguém de
+fora.
 Depois do fim a página
 rola até o painel e foca o campo. Escrever não dispara o
 verbo — Espaço e R ficam no recado. Rolar não é alguém de fora. Número na faixa não

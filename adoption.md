@@ -3,6 +3,48 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.343 — a faixa nomeia o last-run simulado
+
+O
+`playtest`
+já
+lia
+`candidate_policy`.
+A
+faixa
+mostrava
+seed
+e
+curva
+como
+se
+alguém
+tivesse
+jogado.
+Agora
+`nearest-orb`
+vira
+`simulada`.
+`played`
+some.
+Sem
+tally
+nem
+relógio.
+Não
+promove
+`outsider`.
+
+O que 0.9.343 não afirma:
+número
+na
+faixa
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.342 — o prompt nomeia o serve que tenta abrir o navegador
 
 O

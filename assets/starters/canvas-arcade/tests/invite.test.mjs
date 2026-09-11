@@ -304,6 +304,23 @@ test("a faixa nomeia a curva que o last-run já traçou", () => {
   }).includes("Problema:"), false);
 });
 
+test("a faixa nomeia o last-run simulado sem levar a conta", () => {
+  assert.equal(
+    runFacts({ seed: 8, score: 12, policy: "nearest-orb" }),
+    "seed 8 · 12 · simulada",
+    "a faixa lia seed e calava a origem",
+  );
+  assert.equal(runFacts({ seed: 8, score: 12, policy: "played" }), "seed 8 · 12");
+  assert.equal(runFacts({ seed: 8, score: 12 }).includes("simulada"), false);
+  assert.equal(
+    runFacts({ seed: 8, run: { score: 12, policy: "nearest-orb" } }),
+    "seed 8 · 12 · simulada",
+  );
+  assert.equal(runFacts({ seed: 8, policy: "nearest-orb", speed: 0.75 }), "seed 8 · simulada");
+  assert.equal(runFacts({ seed: 8, policy: "nearest-orb" }).includes("coletas"), false);
+  assert.equal(runFacts({ seed: 8, policy: "nearest-orb" }).includes("Problema:"), false);
+});
+
 test("findingFile nomeia o markdown que a página pode baixar", () => {
   const file = findingFile("Problema: some no toque");
   assert.equal(file.name, FINDING_FILE);
