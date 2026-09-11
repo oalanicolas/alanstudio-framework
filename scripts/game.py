@@ -3063,6 +3063,46 @@ def access_high_contrast_option_scope():
     return scope
 
 
+# A receita já recusa que o estado dependa só da cor. Sem isto a
+# opção colorblind copiava a chave e calava a recusa.
+# Ícone no disco não é sessão.
+A11Y_COLORBLIND_ICON = re.compile(r"forma,\s+ícone")
+
+
+def recipe_refuses_color_only_state(text):
+    return bool(text and A11Y_COLORBLIND_ICON.search(text))
+
+
+def access_colorblind_icon_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_color_only_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_colorblind_icon_scope():
+    if not access_colorblind_icon_source():
+        return None
+    return (
+        "O disco recusa que o estado dependa só da cor "
+        "(`ícone`). Ícone no disco não é sessão."
+    )
+
+
+def access_colorblind_option_scope():
+    scope = access_option_scope()
+    named = access_colorblind_icon_scope()
+    if named:
+        scope += " " + named
+    return scope
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -3123,6 +3163,7 @@ def access_reading(project):
                     else access_remap_option_scope() if key == "remap"
                     else access_reduced_motion_option_scope() if key == "reduced_motion"
                     else access_high_contrast_option_scope() if key == "high_contrast"
+                    else access_colorblind_option_scope() if key == "colorblind"
                     else option_scope
                 ),
             }

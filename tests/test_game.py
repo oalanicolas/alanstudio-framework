@@ -2532,6 +2532,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("fundo neutro seja o pior caso", game.feel_reading(starter)["scope"])
         self.assertNotIn("fundo neutro seja o pior caso", game.roles_reading(starter)["scope"])
 
+    def test_access_colorblind_names_the_icon_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_color_only_state(recipe),
+            "a receita já recusa que o estado dependa só da cor",
+        )
+        self.assertEqual(game.access_colorblind_icon_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = next(option for option in report["options"] if option["key"] == "colorblind")
+        self.assertIn(
+            "estado dependa só da cor",
+            item["scope"],
+            "a opção colorblind copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`ícone`)", item["scope"])
+        self.assertNotIn("ícone", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_color_only_state(""))
+        self.assertNotIn("estado dependa só da cor", report["scope"])
+        self.assertNotIn("estado dependa só da cor", report.get("next") or "")
+        for option in report["options"]:
+            if option["key"] == "colorblind":
+                continue
+            self.assertNotIn("estado dependa só da cor", option["scope"])
+        with mock.patch.object(game, "access_colorblind_icon_source", return_value=None):
+            silent = game.access_reading(starter)
+        silent_item = next(option for option in silent["options"] if option["key"] == "colorblind")
+        self.assertNotIn("estado dependa só da cor", silent_item["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o ícone que a receita já recusa", recipe)
+        self.assertIn("nomeia o ícone que a receita já recusa", skill)
+        self.assertIn("nomeia o ícone que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("estado dependa só da cor", game.next_scope())
+        self.assertNotIn("estado dependa só da cor", game.feel_reading(starter)["scope"])
+        self.assertNotIn("estado dependa só da cor", game.roles_reading(starter)["scope"])
+
     def test_commands_name_the_generic_the_menu_already_refuses(self):
         guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
         self.assertTrue(
