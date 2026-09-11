@@ -1005,6 +1005,38 @@ def search_match_scope():
     )
 
 
+# A receita já recusa que variante ausente seja lacuna. Sem isto o
+# verify vazio listava stems e calava a recusa.
+# Lista no disco não é mix.
+AUDIO_GAP = re.compile(r"Variante ausente não é lacuna")
+
+
+def recipe_refuses_missing_variant_as_gap(text):
+    return bool(text and AUDIO_GAP.search(text))
+
+
+def verify_empty_gap_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_missing_variant_as_gap(text):
+        return "recipes/audio.md"
+    return None
+
+
+def verify_empty_scope():
+    if not verify_empty_gap_source():
+        return None
+    return (
+        "O disco recusa que variante ausente seja lacuna "
+        "(`lacuna`). Lista no disco não é mix."
+    )
+
+
 def info_entry(entry_id, root=None, folder=None):
     sounds = load_catalog(root)["sounds"]
     empty = len(sounds) == 0
@@ -1141,7 +1173,7 @@ def verify_catalog(root=None, folder=None):
     empty = len(sounds) == 0
     local = local_stems(folder)
     if empty:
-        return {
+        report = {
             "ok": False,
             "empty": True,
             "file_count": 0,
@@ -1151,6 +1183,10 @@ def verify_catalog(root=None, folder=None):
             "heard": False,
             "next": VERIFY_EMPTY,
         }
+        named = verify_empty_scope()
+        if named:
+            report["scope"] = named
+        return report
     result = audio.check(catalog_dir(root), policy=audio.audio_policy(root))
     report = {
         "ok": result["ok"],

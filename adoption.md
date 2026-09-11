@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.506 — o sfx verify vazio nomeia a lacuna que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+variante
+ausente
+não
+é
+lacuna.
+O
+verify
+vazio
+listava
+stems
+e
+calava
+a
+recusa.
+Agora
+o
+`sfx verify`
+vazio
+nomeia
+a
+lacuna.
+Lista
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`lacuna`.
+Nomear
+não
+ouve.
+
+O que 0.9.506 não afirma:
+o
+acervo
+vazio
+não
+é
+o
+primeiro
+ciclo
+jogado.
+
 ## 0.9.505 — o matches do sfx search nomeia a triagem que a barra já recusa
 
 A

@@ -7398,6 +7398,43 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", report["scope"])
         self.assertNotIn("then.sha256", report.get("then") or {})
 
+    def test_sfx_verify_empty_names_the_gap_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_missing_variant_as_gap(recipe),
+            "a receita já recusa que variante ausente seja lacuna",
+        )
+        self.assertEqual(game.sfx_catalog.verify_empty_gap_source(), "recipes/audio.md")
+        report = game.sfx_catalog.verify_catalog(self.root)
+        self.assertTrue(report["empty"])
+        self.assertIn(
+            "variante ausente seja lacuna",
+            report["scope"],
+            "o verify vazio listava stems e calava a recusa",
+        )
+        self.assertIn("(`lacuna`)", report["scope"])
+        self.assertNotIn("lacuna", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["ok"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_missing_variant_as_gap(""))
+        self.assertNotIn("variante ausente seja lacuna", report["next"])
+        self.assertNotIn("variante ausente seja lacuna", report["local"].get("scope") or "")
+        self.assertNotIn("cruza a integridade", report["scope"])
+        with mock.patch.object(game.sfx_catalog, "verify_empty_gap_source", return_value=None):
+            silent = game.sfx_catalog.verify_catalog(self.root)
+        self.assertNotIn("variante ausente seja lacuna", silent.get("scope") or "")
+        item, _ = self._plant_catalog_sound()
+        crossed = game.sfx_catalog.verify_catalog(self.root)
+        self.assertFalse(crossed["empty"])
+        self.assertNotIn("variante ausente seja lacuna", crossed.get("scope") or "")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a lacuna que a receita já recusa", recipe)
+        self.assertIn("nomeia a lacuna que a receita já recusa", skill)
+        self.assertIn("nomeia a lacuna que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+
     def test_sfx_verify_names_a_receipt_whose_file_is_gone(self):
         folder = self.root / "sfx-sumido"
         folder.mkdir()
