@@ -656,7 +656,7 @@ Se a receita recusa improvisar licença, o `sfx import` nomeia a improvisação 
 `sfx import` exige ffmpeg e um JSON com id, título, categoria, estilo,
 tags, processamento e fontes (licença CC0 ou CC-BY). `sfx seed` lê
 `shared/sfx/selection.json` com `local_path` já no disco. Sem seleção,
-o seed recusa. `sfx summary` (também sem subcomando) lê o acervo, os atalhos
+o seed recusa. Se a receita recusa que avaliação do agente seja aprovação do usuário, o `sfx seed` nomeia a aprovação que a receita já recusa. Seed no disco não é mix. Sem chave `aprovação`. `sfx summary` (também sem subcomando) lê o acervo, os atalhos
 e os stems do starter em `public/sfx` — arquivo no disco não é mix ouvido.
 `sfx verify` cruza bytes e fichas do acervo; sem acervo nomeia os
 stems do starter e não cruza. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. Nomeia o stem que o recibo lista e

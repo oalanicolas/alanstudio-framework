@@ -928,6 +928,38 @@ def search_local_scope():
     )
 
 
+# A receita já recusa que avaliação do agente seja aprovação do
+# usuário. Sem isto o seed importava a seleção e calava a recusa.
+# Seed no disco não é mix.
+AUDIO_APPROVAL = re.compile(r"Avaliação do agente não é\s+aprovação do usuário")
+
+
+def recipe_refuses_agent_as_user_approval(text):
+    return bool(text and AUDIO_APPROVAL.search(text))
+
+
+def seed_approval_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_agent_as_user_approval(text):
+        return "recipes/audio.md"
+    return None
+
+
+def seed_catalog_scope():
+    if not seed_approval_source():
+        return None
+    return (
+        "O disco recusa que avaliação do agente seja aprovação do usuário "
+        "(`aprovação`). Seed no disco não é mix."
+    )
+
+
 def info_entry(entry_id, root=None, folder=None):
     sounds = load_catalog(root)["sounds"]
     empty = len(sounds) == 0
@@ -1053,6 +1085,9 @@ def seed_catalog(root=None):
         )
     result = audio.save_imports(prepared, catalog_dir(root))
     result.update(heard=False, next=IMPORT_NEXT)
+    named = seed_catalog_scope()
+    if named:
+        result["scope"] = named
     return result
 
 

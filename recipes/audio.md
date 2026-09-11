@@ -61,7 +61,7 @@ nomeia o som que o catálogo lista e o disco perdeu —
 não despeja errno. Tocar nessa
 página não é mix ouvida no jogo. Isso não
 autoriza improvisar licença. Se a receita recusa improvisar licença, o `sfx import` nomeia a improvisação que a receita já recusa. Importar no disco não é licença. Sem chave `improvisar`. Arquivo no disco não é mix ouvido. Crescer o acervo é `sfx import ARQUIVO
---metadata JSON` (ffmpeg) ou `sfx seed` com `selection.json` local.
+--metadata JSON` (ffmpeg) ou `sfx seed` com `selection.json` local. Se a receita recusa que avaliação do agente seja aprovação do usuário, o `sfx seed` nomeia a aprovação que a receita já recusa. Seed no disco não é mix. Sem chave `aprovação`.
 `sfx info ID` lê a ficha do acervo ou a chave do stem do starter —
 o recibo que lista um stem e o disco perdeu não é id desconhecido;
 se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede. Pico no recibo não é mix ouvida. Se a receita recusa que teste técnico de decode aprove o mix, o `sfx info` do acervo nomeia o decode que a receita já recusa. Ficha no disco não é mix ouvida. Sem chave `decode`.

@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.504 — o sfx seed nomeia a aprovação que a receita já recusa
+
+O
+disco
+já
+dizia
+que
+avaliação
+do
+agente
+não
+é
+aprovação
+do
+usuário.
+O
+seed
+importava
+a
+seleção
+e
+calava
+a
+recusa.
+Agora
+o
+`sfx seed`
+nomeia
+a
+aprovação.
+Seed
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`aprovação`.
+Nomear
+não
+ouve.
+
+O que 0.9.504 não afirma:
+a
+seleção
+no
+disco
+não
+é
+mix
+aprovada.
+
 ## 0.9.503 — o local do sfx search nomeia o adapt que a receita já recusa
 
 O

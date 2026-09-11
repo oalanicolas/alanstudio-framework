@@ -7062,6 +7062,70 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["heard"])
         self.assertNotIn("Ouça com sfx serve", report["next"])
 
+    def test_sfx_seed_names_the_approval_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_agent_as_user_approval(recipe),
+            "a receita já recusa que avaliação do agente seja aprovação do usuário",
+        )
+        self.assertEqual(game.sfx_catalog.seed_approval_source(), "recipes/audio.md")
+        fake = {
+            "sample_rate": 44100, "duration": 0.2, "channels": 1,
+            "codec": "pcm_s16le", "bits_per_sample": 16, "bit_rate": 705600,
+            "peak_dbfs": -6, "rms_dbfs": -18, "waveform": [0], "warnings": [],
+        }
+        original = game.sfx_catalog.audio.inspect_audio
+        game.sfx_catalog.audio.inspect_audio = lambda path: fake
+        self.addCleanup(lambda: setattr(game.sfx_catalog.audio, "inspect_audio", original))
+        payload = b"RIFF" + b"\x00" * 24
+        inbox = self.root / "inbox"
+        inbox.mkdir()
+        (inbox / "passo.wav").write_bytes(payload)
+        library = self.root / "shared/sfx"
+        library.mkdir(parents=True)
+        (library / "selection.json").write_text(json.dumps({
+            "sounds": [{
+                "id": "passo-madeira-01",
+                "title": "Passo em madeira",
+                "category": "Passos",
+                "tags": ["pé", "madeira"],
+                "style": "recorded",
+                "processing": "Corte do original; sem conversão adicional.",
+                "local_path": "inbox/passo.wav",
+                "sources": [{
+                    "title": "Original Footstep",
+                    "author": "Autora",
+                    "url": "https://example.com/source",
+                    "license": "CC-BY-4.0",
+                }],
+            }],
+        }), encoding="utf-8")
+        report = game.sfx_catalog.seed_catalog(self.root)
+        self.assertIn(
+            "avaliação do agente seja aprovação do usuário",
+            report["scope"],
+            "o seed importava a seleção e calava a recusa",
+        )
+        self.assertIn("(`aprovação`)", report["scope"])
+        self.assertNotIn("aprovação", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_agent_as_user_approval(""))
+        self.assertNotIn("avaliação do agente seja aprovação do usuário", report["next"])
+        self.assertNotIn("improvisar licença", report["scope"])
+        with mock.patch.object(game.sfx_catalog, "seed_approval_source", return_value=None):
+            silent = game.sfx_catalog.seed_catalog(self.root)
+        self.assertNotIn("avaliação do agente seja aprovação do usuário", silent.get("scope") or "")
+        self.assertNotIn("import_license_scope", inspect.getsource(game.sfx_catalog.seed_catalog))
+        imported = game.sfx_catalog.import_license_scope()
+        self.assertNotIn("avaliação do agente seja aprovação do usuário", imported or "")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a aprovação que a receita já recusa", recipe)
+        self.assertIn("nomeia a aprovação que a receita já recusa", skill)
+        self.assertIn("nomeia a aprovação que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+
     def _plant_catalog_sound(self):
         audio = game.sfx_catalog.audio
         data = b"same source bytes"
