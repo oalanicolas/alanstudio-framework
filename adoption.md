@@ -30,6 +30,66 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.553 — o ship nomeia o teto que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+tamanho
+e
+tempo
+até
+jogar
+têm
+teto
+declarado
+e
+medido.
+O
+ship
+relatava
+os
+bytes
+sem
+teto
+e
+calava
+a
+recusa.
+Agora
+o
+`ship`
+nomeia
+o
+teto.
+Relato
+no
+disco
+não
+é
+a
+plataforma
+alvo.
+Sem
+chave
+`teto`.
+Nomear
+não
+entrega.
+
+O que 0.9.553 não afirma:
+relatar
+bytes
+não
+é
+medir
+o
+tempo
+até
+jogar.
+
 ## 0.9.552 — o sfx export do acervo nomeia a memória que a receita já recusa
 
 A

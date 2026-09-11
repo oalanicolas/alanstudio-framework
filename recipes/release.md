@@ -21,7 +21,7 @@ máquina tiver outro endereço IPv4; um endereço alcançável não é outra
 máquina. Na árvore exportada o banner nomeia o artefato. Se o `tools/serve.*` nomeia a árvore exportada, o `ship` nomeia o banner que o serve já imprime. Banner no disco não é outra máquina. Sem chave `serve`. `npm run size`
 relata os bytes de `dist/` sem teto. Se o `tools/size.*` declara sem
 teto, o `ship` nomeia o tamanho. Bytes no disco não são outra
-máquina. Sem chave `size`. `shipped` é sempre falso.
+máquina. Sem chave `size`. Se a receita recusa que o tamanho sem teto seja o orçamento de entrega, o `ship` nomeia o teto que a receita já recusa. Relato no disco não é a plataforma alvo. Sem chave `teto`. `shipped` é sempre falso.
 
 Com tela, a primeira superfície do artefato também é a porta. O serve
 de desenvolvimento apontar `/?invite=1&seed=&spawn=` não é o `dist/`
@@ -38,7 +38,7 @@ O que precisa estar resolvido antes de chamar uma versão entregável:
   não fixada, recurso local não versionado e passo manual não documentado
   são as três causas usuais de build que só funciona em uma máquina.
 - **Orçamento de entrega:** tamanho do artefato e tempo até jogar têm teto
-  declarado e medido na plataforma alvo, em rede e máquina realistas.
+  declarado e medido na plataforma alvo, em rede e máquina realistas. Se a receita recusa que o tamanho sem teto seja o orçamento de entrega, o `ship` nomeia o teto que a receita já recusa. Relato no disco não é a plataforma alvo. Sem chave `teto`.
 - **Plataforma real:** execução em dispositivo que não é o de desenvolvimento,
   com a entrada, a resolução e o sistema pretendidos. Emulação e redimensionar
   uma janela não substituem isso.
@@ -81,7 +81,7 @@ e serve por `tools/serve.mjs`. `npm run build` copia a árvore jogável para
 `dist/` (index, src, data, serve). Isso torna o clone limpo trivial de
 reproduzir e declara o passo de empacotar — não prova que outra máquina
 já executou o artefato. Se o `tools/export.*` declara o empacote, o `ship` nomeia o passo que o export já declara.
-Empacotar no disco não é outra máquina. Sem chave `export`. Se o `tools/export.*` recusa `file://`, o `ship` nomeia o file:// que o export já recusa. Recusar no disco não é outra máquina. Sem chave `file`. Se a receita recusa que a identidade seja outra máquina, o `tree` do ship nomeia a identidade que a receita já recusa. Árvore no disco não é entrega. Sem chave `identidade`. Se a receita recusa que abrir o menu ou obter um ZIP comprove portabilidade, o `tree` do ship nomeia a portabilidade que a receita já recusa. ZIP no disco não é o destino. Sem chave `portabilidade`. Se a receita recusa que o teste no editor demonstre o jogo exportado, o `artifact` do ship nomeia o editor que a receita já recusa. Manifesto no disco não é o jogo exportado. Sem chave `editor`. Se a receita recusa que uma pasta de build existente corresponda à fonte atual, o `artifact` do ship nomeia a atual que a receita já recusa. Manifesto no disco não é o HEAD. Sem chave `atual`. Se a receita recusa que link não listado comprove controle de acesso, o `ship` nomeia o acesso que a receita já recusa. Link no disco não é outra máquina. Sem chave `acesso`. O harness lê o passo com `ship <projeto>`.
+Empacotar no disco não é outra máquina. Sem chave `export`. Se o `tools/export.*` recusa `file://`, o `ship` nomeia o file:// que o export já recusa. Recusar no disco não é outra máquina. Sem chave `file`. Se a receita recusa que a identidade seja outra máquina, o `tree` do ship nomeia a identidade que a receita já recusa. Árvore no disco não é entrega. Sem chave `identidade`. Se a receita recusa que abrir o menu ou obter um ZIP comprove portabilidade, o `tree` do ship nomeia a portabilidade que a receita já recusa. ZIP no disco não é o destino. Sem chave `portabilidade`. Se a receita recusa que o teste no editor demonstre o jogo exportado, o `artifact` do ship nomeia o editor que a receita já recusa. Manifesto no disco não é o jogo exportado. Sem chave `editor`. Se a receita recusa que uma pasta de build existente corresponda à fonte atual, o `artifact` do ship nomeia a atual que a receita já recusa. Manifesto no disco não é o HEAD. Sem chave `atual`. Se a receita recusa que link não listado comprove controle de acesso, o `ship` nomeia o acesso que a receita já recusa. Link no disco não é outra máquina. Sem chave `acesso`. Se a receita recusa que o tamanho sem teto seja o orçamento de entrega, o `ship` nomeia o teto que a receita já recusa. Relato no disco não é a plataforma alvo. Sem chave `teto`. O harness lê o passo com `ship <projeto>`.
 `shipped` é sempre falso. Sem o passo, `next` propõe `ship.unpacked`.
 Árvore incompleta é `ship.incomplete`; artefato de outro commit é
 `ship.stale`. Nomeia a árvore que perdeu o `src/` que o projeto já

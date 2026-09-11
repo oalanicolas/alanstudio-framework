@@ -11549,6 +11549,58 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.playtest_reading(starter)["scope"],
         )
 
+    def test_ship_names_the_ceiling_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_size_without_ceiling_as_budget(recipe),
+            "a receita já recusa que o tamanho sem teto seja o orçamento de entrega",
+        )
+        self.assertEqual(game.ship_ceiling_source(), "recipes/release.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.ship_reading(starter)
+        self.assertIn(
+            "relato de bytes cumpra o orçamento de entrega",
+            report["scope"],
+            "o ship relatava os bytes e calava a recusa",
+        )
+        self.assertIn("(`teto`)", report["scope"])
+        self.assertIn("sem teto", report["scope"])
+        self.assertNotIn("teto", report)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_size_without_ceiling_as_budget(""))
+        with mock.patch.object(game, "ship_ceiling_source", return_value=None):
+            silent = game.ship_reading(starter)
+        self.assertNotIn("relato de bytes cumpra o orçamento de entrega", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o teto que a receita já recusa", recipe)
+        self.assertIn("nomeia o teto que a receita já recusa", skill)
+        self.assertIn("nomeia o teto que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("verified", recipe)
+        self._web_manifest()
+        self._artifact_tree(complete=False)
+        nested = game.ship_reading(self.project)
+        self.assertNotIn(
+            "relato de bytes cumpra o orçamento de entrega",
+            nested["tree"]["scope"],
+        )
+        self.assertNotIn(
+            "relato de bytes cumpra o orçamento de entrega",
+            nested["artifact"]["scope"],
+        )
+        self.assertNotIn(
+            "relato de bytes cumpra o orçamento de entrega",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn("relato de bytes cumpra o orçamento de entrega", game.next_scope())
+        self.assertNotIn("relato de bytes cumpra o orçamento de entrega", game.play_scope(self.project))
+        self.assertNotIn(
+            "relato de bytes cumpra o orçamento de entrega",
+            game.playtest_reading(starter)["scope"],
+        )
+
     def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
         # O export já copia src/. Sem isto o ship dizia
         # completa uma dist/ só com identidade e serve.

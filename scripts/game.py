@@ -4840,6 +4840,40 @@ def ship_access_scope():
     )
 
 
+# A receita já recusa que o tamanho sem
+# teto seja o orçamento de entrega. Sem
+# isto o ship relatava os bytes e calava
+# a recusa. Relato no disco não é a
+# plataforma alvo.
+RELEASE_CEILING = re.compile(r"têm teto\s+declarado e medido")
+
+
+def recipe_refuses_size_without_ceiling_as_budget(text):
+    return bool(text and RELEASE_CEILING.search(text))
+
+
+def ship_ceiling_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_size_without_ceiling_as_budget(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_ceiling_scope():
+    if not ship_ceiling_source():
+        return None
+    return (
+        " O disco recusa que o relato de bytes cumpra o orçamento de "
+        "entrega (`teto`). Relato no disco não é a plataforma alvo."
+    )
+
+
 def ship_reading(project):
     project = Path(project)
     try:
@@ -4900,6 +4934,9 @@ def ship_reading(project):
     access = ship_access_scope()
     if access:
         scope += access
+    ceiling = ship_ceiling_scope()
+    if ceiling:
+        scope += ceiling
     return {
         "schema_version": 1,
         "project": str(project),
