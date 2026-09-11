@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.419: o `scan` nomeia os tokens que o sistema já recusa. Documento no disco não é aprovação artística. Sem chave `tokens`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**HEAD anterior (0.9.418) + confirmação pendente:** `python3 -m unittest discover -s tests` → 414 OK.
+**Suítes confirmadas no HEAD (0.9.419):** `python3 -m unittest discover -s tests` → 415 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
