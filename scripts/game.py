@@ -2181,10 +2181,39 @@ def content_files(project):
     return found
 
 
+# A receita e o jogo já nomeiam o par. Sem isto o
+# content listava dusk e calm e calava `listMoods`.
+# Nome no disco não é volume.
+LIST_MOODS = re.compile(r"(?:export\s+)?function\s+listMoods\b")
+
+
+def names_mood_pair(text):
+    return bool(text and LIST_MOODS.search(text))
+
+
+def mood_pair_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if names_mood_pair(text):
+            return relative
+    return None
+
+
 def content_reading(project):
     project = Path(project)
     files = content_files(project)
     kind = identify(project) if project.is_dir() else None
+    scope = (
+        "Procura .json/.csv em data/, content/, levels/, maps/, tables/ e "
+        ".ldtk/.tmx/.ink em qualquer pasta do projeto. Não conta "
+        "palettes.json nem tokens.json — o `art` lê esses manifestos. "
+        "Não carrega o formato e não conta itens. `enough` é sempre falso."
+    )
+    if mood_pair_source(project):
+        scope += (
+            " O disco nomeia o par look+chuva (`listMoods`). "
+            "Nome no disco não é volume."
+        )
     return {
         "schema_version": 1,
         "project": str(project),
@@ -2200,12 +2229,7 @@ def content_reading(project):
             "volume suficiente nem consumidor comprovado. Paleta e token "
             "não extraem conteúdo."
         ),
-        "scope": (
-            "Procura .json/.csv em data/, content/, levels/, maps/, tables/ e "
-            ".ldtk/.tmx/.ink em qualquer pasta do projeto. Não conta "
-            "palettes.json nem tokens.json — o `art` lê esses manifestos. "
-            "Não carrega o formato e não conta itens. `enough` é sempre falso."
-        ),
+        "scope": scope,
     }
 
 

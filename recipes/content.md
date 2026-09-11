@@ -22,7 +22,9 @@ o fecho não muda a mistura. Aperto no disco não é curva observada.
 nome; `listMoods` inclui e `?mood=` aplica. `npm run session -- --spawn <nome>` traça essa chuva. Com tela, a
 porta também chove essa mesa — cadência, queda e risco, sem o RNG da
 partida. Trocar `?spawn=` / `?mood=` troca a mostra. Mesa no disco
-não é volume. O `art` nomeia essas mesas. Depois de um
+não é volume. O `art` nomeia essas mesas. Se o disco declara
+`listMoods`, o `content` nomeia o par. Nome no disco não é
+volume. Sem chave `moods`. Depois de um
 `note`, `start` e `next` apontam `pair --from`, `look --from` e `table --from`. `dusk` e `calm` são
 a segunda e a terceira chuva, não volume — `enough` é sempre
 falso. Alguém de fora ainda não produziu no piso.

@@ -686,6 +686,8 @@ e mesas de chuva (`intervalTicks` e `fallSpeed` em `data/`, `tables/` ou `conten
 `consistent` é sempre `false`. Mesa no disco não é volume. Rascunho do `init` não conta. `content`
 procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 `palettes.json` e `tokens.json` não contam — o `art` lê esses manifestos.
+Se o disco declara `listMoods`, o `content` nomeia o par. Nome no
+disco não é volume. Sem chave `moods`.
 `enough` é sempre `false`. `ship` procura script `build`/`export`/`package`/
 `release`, `docs/release.md` vigente ou CI. Se `dist/VERSION.json`
 existe, relata nome e versão. Se `dist/` de um jogo web existe, relata

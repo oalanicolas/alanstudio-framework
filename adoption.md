@@ -3,6 +3,54 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.352 — o content nomeia o par que listMoods já lista
+
+A
+receita
+já
+dizia
+`listMoods`
+e
+`?mood=`.
+O
+comando
+listava
+dusk
+e
+calm
+e
+calava
+o
+par.
+Agora
+o
+`content`
+nomeia
+o
+par.
+Nome
+no
+disco
+não
+é
+volume.
+Sem
+chave
+`moods`.
+Não
+promove
+`enough`.
+
+O que 0.9.352 não afirma:
+três
+chuvas
+e
+um
+par
+não
+são
+volume.
+
 ## 0.9.351 — o feel nomeia o corpo que a porta já desloca
 
 O

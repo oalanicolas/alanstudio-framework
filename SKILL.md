@@ -301,7 +301,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Falta no disco entra no `next` antes dos rascunhos.
    **`art` / `content` / `ship`** leem paleta ou art-bible vigente, mesas
    de chuva (`intervalTicks` e `fallSpeed` em data/tables/content), conteúdo
-   fora do código (`palettes.json` e `tokens.json` não extraem) e passo de empacotar. Se `dist/VERSION.json` existe,
+   fora do código (`palettes.json` e `tokens.json` não extraem) e passo de empacotar. Se o disco declara `listMoods`, o `content` nomeia o par. Nome no disco não é volume. Sem chave `moods`. Se `dist/VERSION.json` existe,
    `ship` relata nome e versão. Se `dist/` de um jogo web existe, relata
    árvore e HEAD. `consistent`/`enough`/`shipped`/`elsewhere` são
    sempre falsos. Sem declaração, o `next` nomeia `art.missing`,

@@ -4270,6 +4270,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.art_reading(self.project)
         self.assertEqual([item["key"] for item in report["palettes"]], ["normal", "contrast"])
 
+    def test_content_names_the_pair_the_moods_already_list(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tables = (starter / "src/game/tables.js").read_text(encoding="utf-8")
+        self.assertTrue(game.names_mood_pair(tables), "o jogo já lista o par")
+        self.assertEqual(game.mood_pair_source(starter), "src/game/tables.js")
+        report = game.content_reading(starter)
+        self.assertIn("listMoods", report["scope"], "o content listava dusk e calm e calava o par")
+        self.assertIn("par look+chuva", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("moods", report)
+        self.assertNotIn("pairs", report)
+        empty = game.content_reading(self.project)
+        self.assertFalse(game.names_mood_pair(""))
+        self.assertIsNone(game.mood_pair_source(self.project))
+        self.assertNotIn("listMoods", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o par", recipe)
+        self.assertIn("nomeia o par", skill)
+        self.assertIn("nomeia o par", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", recipe)
+
     def test_content_names_data_files_as_external(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "data").mkdir()
