@@ -7463,6 +7463,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", json.dumps(report))
         self.assertNotIn("verified", json.dumps(report))
 
+    def test_sfx_verify_missing_names_the_404_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_naming_404_as_mix(recipe),
+            "a receita já recusa que nomear o 404 seja mix",
+        )
+        self.assertEqual(game.sfx_catalog.verify_missing_404_source(), "recipes/audio.md")
+        folder = self.root / "sfx-404"
+        folder.mkdir()
+        (folder / "sources.json").write_text(
+            json.dumps({
+                "files": [{
+                    "src": "ghost.wav",
+                    "key": "ghost",
+                    "author": "Ana",
+                    "license": "CC0-1.0",
+                    "origin": "teste",
+                }],
+            }),
+            encoding="utf-8",
+        )
+        report = game.sfx_catalog.verify_catalog(self.root, folder=folder)
+        lost = report["local"]["missing"][0]
+        self.assertIn(
+            "nomear o 404 seja mix",
+            lost["scope"],
+            "o verify listava o stem ausente e calava a recusa",
+        )
+        self.assertIn("(`404`)", lost["scope"])
+        self.assertNotIn("404", lost)
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_naming_404_as_mix(""))
+        self.assertNotIn("nomear o 404 seja mix", report.get("scope") or "")
+        self.assertNotIn("nomear o 404 seja mix", report["local"].get("scope") or "")
+        self.assertNotIn("nomear o 404 seja mix", report["next"])
+        with mock.patch.object(game.sfx_catalog, "verify_missing_404_source", return_value=None):
+            silent = game.sfx_catalog.verify_catalog(self.root, folder=folder)
+        self.assertNotIn("nomear o 404 seja mix", silent["local"]["missing"][0].get("scope") or "")
+        raw = game.sfx_catalog.local_stems(folder)
+        self.assertNotIn("scope", raw["missing"][0])
+        self.assertNotIn("scope", raw)
+        card = game.sfx_catalog.local_missing_card(raw["missing"][0], True)
+        self.assertNotIn("scope", card)
+        present = game.sfx_catalog.local_stems()
+        self.assertNotIn("nomear o 404 seja mix", present["files"][0].get("scope") or "")
+        summary = game.sfx_catalog.summarize(self.root)
+        self.assertNotIn("nomear o 404 seja mix", summary.get("scope") or "")
+        self.assertNotIn("nomear o 404 seja mix", summary["local"].get("scope") or "")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o 404 que a receita já recusa", recipe)
+        self.assertIn("nomeia o 404 que a receita já recusa", skill)
+        self.assertIn("nomeia o 404 que a receita já recusa", readme)
+        self.assertNotIn("verified", lost["scope"])
+        self.assertNotIn("aprovado", lost["scope"])
+
     def test_sfx_verify_names_the_catalog_sound_the_disk_lost(self):
         item, _ = self._plant_catalog_sound()
         lost = self.root / "shared/sfx" / item["file"]

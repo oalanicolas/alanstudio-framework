@@ -1037,6 +1037,47 @@ def verify_empty_scope():
     )
 
 
+# A receita já recusa que nomear o 404 seja mix. Sem isto o
+# verify listava o stem ausente e calava a recusa.
+# Lista no disco não é mix.
+AUDIO_404 = re.compile(r"Nomear o 404 não é mix")
+
+
+def recipe_refuses_naming_404_as_mix(text):
+    return bool(text and AUDIO_404.search(text))
+
+
+def verify_missing_404_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_naming_404_as_mix(text):
+        return "recipes/audio.md"
+    return None
+
+
+def verify_missing_scope():
+    if not verify_missing_404_source():
+        return None
+    return (
+        "O disco recusa que nomear o 404 seja mix "
+        "(`404`). Lista no disco não é mix."
+    )
+
+
+def mark_verify_missing(local):
+    named = verify_missing_scope()
+    if not named:
+        return local
+    for item in local.get("missing") or []:
+        item["scope"] = named
+    return local
+
+
 # A receita já recusa que o export invente bytes. Sem isto o
 # export do stem copiava o WAV e calava a recusa.
 # Cópia no disco não é mix.
@@ -1207,7 +1248,7 @@ def seed_catalog(root=None):
 def verify_catalog(root=None, folder=None):
     sounds = load_catalog(root)["sounds"]
     empty = len(sounds) == 0
-    local = local_stems(folder)
+    local = mark_verify_missing(local_stems(folder))
     if empty:
         report = {
             "ok": False,

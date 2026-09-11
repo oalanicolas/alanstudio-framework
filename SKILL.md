@@ -126,7 +126,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    disco perdeu, `roles --fill` nomeia o mesmo stem. Se o processo recusa o reuso automático, o `roles --fill` nomeia o reuso que o processo já recusa. Arquivo no disco não é licença. Sem chave `reuso`. Se o mapa recusa que o catálogo ouça o starter, o `context` nomeia a escuta que o mapa já recusa. Acervo no disco não é mix ouvida. Sem chave `ouve`.
    `sfx verify` nomeia os stems sem cruzar
    o que não existe e nomeia o stem que o recibo lista e o
-   disco perdeu. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. Se a receita recusa que variante ausente seja lacuna, o `sfx verify` vazio nomeia a lacuna que a receita já recusa. Lista no disco não é mix. Sem chave `lacuna`. `sfx summary` lista todos. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `sfx serve`
+   disco perdeu. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. Se a receita recusa que variante ausente seja lacuna, o `sfx verify` vazio nomeia a lacuna que a receita já recusa. Lista no disco não é mix. Sem chave `lacuna`. Se a receita recusa que nomear o 404 seja mix, o `missing` do `sfx verify` nomeia o 404 que a receita já recusa. Lista no disco não é mix. Sem chave `404`. `sfx summary` lista todos. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `sfx serve`
    recusa catálogo vazio.
    Com sons no acervo, `sfx serve` abre a página de escuta — se
    `shared/sfx/ui` faltar, o harness gera a lista e nomeia o som
@@ -290,7 +290,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    do starter — o recibo que lista um stem e o disco perdeu não
    é id desconhecido; se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede.
    Pico no recibo não é mix ouvida. Se a receita recusa que teste técnico de decode aprove o mix, o `sfx info` do acervo nomeia o decode que a receita já recusa. Ficha no disco não é mix ouvida. Sem chave `decode`.    `sfx verify` nomeia os stems sem cruzar o que não
-   existe e nomeia o stem que o recibo lista e o disco perdeu. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`.
+   existe e nomeia o stem que o recibo lista e o disco perdeu. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. Se a receita recusa que nomear o 404 seja mix, o `missing` do `sfx verify` nomeia o 404 que a receita já recusa. Lista no disco não é mix. Sem chave `404`.
    `sfx verify` nomeia o som que o catálogo lista e o disco
    perdeu — não despeja errno;
    `sfx export` copia bytes e

@@ -47,7 +47,7 @@ some a tabela. Catálogo completo não entra. Relê quando o
 fetch termina — pintar só no boot some o que chegou.
 Variante ausente não é lacuna. Decode nulo tenta a próxima
 extensão; wav ilegível não esconde o ogg nem o pedido.
-Nomear o 404 não é mix ouvido.
+Nomear o 404 não é mix ouvido. Se a receita recusa que nomear o 404 seja mix, o `missing` do `sfx verify` nomeia o 404 que a receita já recusa. Lista no disco não é mix. Sem chave `404`.
 `heard` é sempre falso. Sem `shared/sfx`, `--fill` nomeia o stem
 do starter que casa, `--apply` o copia ou recoloca o WAV se o recibo já está, `sfx search` nomeia o mesmo stem. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`. Se a receita recusa que o acervo compartilhado seja o primeiro ciclo, o `local` do `sfx search` nomeia o adapt que a receita já recusa. Stem no disco não é mix. Sem chave `adapt`. Se a barra recusa que triagem documental/técnica seja aprovação artística, o `matches` do `sfx search` nomeia a triagem que a barra já recusa. Ficha no disco não é mix. Sem chave `triagem`.
 `sfx info` lê a chave e nomeia o stem que o recibo lista e o
