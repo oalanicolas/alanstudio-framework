@@ -2692,6 +2692,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("precisão fique sem alternativa", game.feel_reading(starter)["scope"])
         self.assertNotIn("precisão fique sem alternativa", game.roles_reading(starter)["scope"])
 
+    def test_access_ui_scale_names_the_type_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_scale_as_typography(recipe),
+            "a receita já recusa que a escala substitua a tipografia",
+        )
+        self.assertEqual(game.access_ui_scale_type_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = next(option for option in report["options"] if option["key"] == "ui_scale")
+        self.assertIn(
+            "escala substitua a tipografia",
+            item["scope"],
+            "a opção ui_scale copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`tipografia`)", item["scope"])
+        self.assertNotIn("tipografia", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_scale_as_typography(""))
+        self.assertNotIn("escala substitua a tipografia", report["scope"])
+        self.assertNotIn("escala substitua a tipografia", report.get("next") or "")
+        for option in report["options"]:
+            if option["key"] == "ui_scale":
+                continue
+            self.assertNotIn("escala substitua a tipografia", option["scope"])
+        with mock.patch.object(game, "access_ui_scale_type_source", return_value=None):
+            silent = game.access_reading(starter)
+        silent_item = next(option for option in silent["options"] if option["key"] == "ui_scale")
+        self.assertNotIn("escala substitua a tipografia", silent_item["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a tipografia que a receita já recusa", recipe)
+        self.assertIn("nomeia a tipografia que a receita já recusa", skill)
+        self.assertIn("nomeia a tipografia que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("escala substitua a tipografia", game.next_scope())
+        self.assertNotIn("escala substitua a tipografia", game.feel_reading(starter)["scope"])
+        self.assertNotIn("escala substitua a tipografia", game.roles_reading(starter)["scope"])
+
     def test_commands_name_the_generic_the_menu_already_refuses(self):
         guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
         self.assertTrue(

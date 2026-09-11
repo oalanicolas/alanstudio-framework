@@ -3223,6 +3223,46 @@ def access_game_speed_option_scope():
     return scope
 
 
+# A receita já recusa que a escala substitua a tipografia. Sem isto a
+# opção ui_scale copiava a chave e calava a recusa.
+# Tipografia no disco não é sessão.
+A11Y_SCALE_TYPE = re.compile(r"tipografia legível")
+
+
+def recipe_refuses_scale_as_typography(text):
+    return bool(text and A11Y_SCALE_TYPE.search(text))
+
+
+def access_ui_scale_type_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_scale_as_typography(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_ui_scale_type_scope():
+    if not access_ui_scale_type_source():
+        return None
+    return (
+        "O disco recusa que a escala substitua a tipografia "
+        "(`tipografia`). Tipografia no disco não é sessão."
+    )
+
+
+def access_ui_scale_option_scope():
+    scope = access_option_scope()
+    named = access_ui_scale_type_scope()
+    if named:
+        scope += " " + named
+    return scope
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -3287,6 +3327,7 @@ def access_reading(project):
                     else access_one_hand_option_scope() if key == "one_hand"
                     else access_assist_option_scope() if key == "assist"
                     else access_game_speed_option_scope() if key == "game_speed"
+                    else access_ui_scale_option_scope() if key == "ui_scale"
                     else option_scope
                 ),
             }
