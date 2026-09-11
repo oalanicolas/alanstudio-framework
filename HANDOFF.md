@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.467: o `decisions` do `scan` nomeia o histórico que a receita já recusa. Área no disco não é decisão atual. Sem chave `histórico`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** HEAD anterior (0.9.466: 527 / 516) + confirmação pendente.
+**Suítes confirmadas no HEAD (0.9.467):** `python3 -m unittest discover -s tests` → 528 OK.
+`cd assets/starters/canvas-arcade && npm test` → 516 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
