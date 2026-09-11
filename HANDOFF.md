@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.465: o `sfx info` do stem nomeia o lixo que a receita já recusa. Arquivo no disco não é mix. Sem chave `lixo`. Nomear não ouve.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** HEAD anterior (0.9.464: 463 / 515) + confirmação pendente.
+**Suítes confirmadas no HEAD (0.9.465):** `python3 -m unittest discover -s tests` → 464 OK.
+`cd assets/starters/canvas-arcade && npm test` → 515 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
