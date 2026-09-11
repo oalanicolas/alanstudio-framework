@@ -825,6 +825,38 @@ def receipt_peak(item):
     return peak
 
 
+# A receita já recusa que decode aprove o mix. Sem isto a
+# ficha do acervo copiava id e créditos e calava a recusa.
+# Ficha no disco não é mix ouvida.
+AUDIO_DECODE = re.compile(r"decode não aprova mix")
+
+
+def recipe_refuses_decode_as_mix(text):
+    return bool(text and AUDIO_DECODE.search(text))
+
+
+def info_catalog_decode_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_decode_as_mix(text):
+        return "recipes/audio.md"
+    return None
+
+
+def info_catalog_scope():
+    if not info_catalog_decode_source():
+        return None
+    return (
+        "O disco recusa que teste técnico de decode aprove o mix "
+        "(`decode`). Ficha no disco não é mix ouvida."
+    )
+
+
 def info_entry(entry_id, root=None, folder=None):
     sounds = load_catalog(root)["sounds"]
     empty = len(sounds) == 0
@@ -852,6 +884,9 @@ def info_entry(entry_id, root=None, folder=None):
             if peak is not None:
                 card["peak_dbfs"] = peak
                 card["next"] = INFO_NEXT + INFO_PEAK
+            named = info_catalog_scope()
+            if named:
+                card["scope"] = named
             return card
     local = find_local_stem(entry_id, folder)
     if local:

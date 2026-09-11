@@ -7045,6 +7045,48 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("arquivo sem papel seja áudio do jogo", catalog.get("scope") or "")
         self.assertNotIn("arquivo sem papel seja áudio do jogo", catalog.get("next") or "")
 
+    def test_sfx_info_catalog_names_the_decode_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_decode_as_mix(recipe),
+            "a receita já recusa que teste técnico de decode aprove o mix",
+        )
+        self.assertEqual(game.sfx_catalog.info_catalog_decode_source(), "recipes/audio.md")
+        item, _ = self._plant_catalog_sound()
+        report = game.sfx_catalog.info_entry(item["id"], self.root)
+        self.assertEqual(report["kind"], "catalog")
+        self.assertIn(
+            "teste técnico de decode aprove o mix",
+            report["scope"],
+            "a ficha copiava id e créditos e calava a recusa",
+        )
+        self.assertIn("(`decode`)", report["scope"])
+        self.assertNotIn("decode", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_decode_as_mix(""))
+        self.assertNotIn("teste técnico de decode aprove o mix", report["next"])
+        with mock.patch.object(game.sfx_catalog, "info_catalog_decode_source", return_value=None):
+            silent = game.sfx_catalog.info_entry(item["id"], self.root)
+        self.assertNotIn("teste técnico de decode aprove o mix", silent.get("scope") or "")
+        starter = game.sfx_catalog.info_entry("dash", self.root)
+        self.assertEqual(starter["kind"], "starter")
+        self.assertNotIn("teste técnico de decode aprove o mix", starter.get("scope") or "")
+        lost = game.sfx_catalog.local_missing_card(
+            {"key": "ghost", "src": "ghost.wav", "license": "CC0-1.0", "author": "Ana", "origin": "teste"},
+            True,
+        )
+        self.assertNotIn("scope", lost)
+        found = game.sfx_catalog.search_catalog(item["id"], self.root)
+        for match in found["matches"]:
+            self.assertNotIn("scope", match)
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o decode que a receita já recusa", recipe)
+        self.assertIn("nomeia o decode que a receita já recusa", skill)
+        self.assertIn("nomeia o decode que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+
     def test_sfx_verify_names_starter_stems_without_claiming_to_cross_them(self):
         report = game.sfx_catalog.verify_catalog(self.root)
         self.assertTrue(report["empty"])

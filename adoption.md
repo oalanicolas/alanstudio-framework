@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.497 — o sfx info do acervo nomeia o decode que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+teste
+técnico
+de
+decode
+não
+aprova
+mix.
+A
+ficha
+copiava
+id
+e
+créditos
+e
+calava
+a
+recusa.
+Agora
+o
+`sfx info`
+do
+acervo
+nomeia
+o
+decode.
+Ficha
+no
+disco
+não
+é
+mix
+ouvida.
+Sem
+chave
+`decode`.
+Nomear
+não
+observa.
+
+O que 0.9.497 não afirma:
+o
+arquivo
+no
+disco
+não
+é
+o
+mix.
+
 ## 0.9.496 — o contrato do gauntlet nomeia a independência que o gauntlet já recusa
 
 O

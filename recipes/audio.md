@@ -64,7 +64,7 @@ autoriza improvisar licença. Se a receita recusa improvisar licença, o `sfx im
 --metadata JSON` (ffmpeg) ou `sfx seed` com `selection.json` local.
 `sfx info ID` lê a ficha do acervo ou a chave do stem do starter —
 o recibo que lista um stem e o disco perdeu não é id desconhecido;
-se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede. Pico no recibo não é mix ouvida.
+se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede. Pico no recibo não é mix ouvida. Se a receita recusa que teste técnico de decode aprove o mix, o `sfx info` do acervo nomeia o decode que a receita já recusa. Ficha no disco não é mix ouvida. Sem chave `decode`.
 `sfx export ID --to PASTA` copia bytes e
 créditos do acervo ou do stem do starter que `sfx info`
 já nomeia — o recibo que lista um stem e o disco perdeu
@@ -154,7 +154,7 @@ Verifique:
 - Save/load ou troca de nível sem overlap.
 - Volume relativo: UI não grita sobre o mundo; impacto não estoura.
 
-Teste técnico de decode não aprova mix. Avaliação do agente não é
+Teste técnico de decode não aprova mix. Se a receita recusa que teste técnico de decode aprove o mix, o `sfx info` do acervo nomeia o decode que a receita já recusa. Ficha no disco não é mix ouvida. Sem chave `decode`. Avaliação do agente não é
 aprovação do usuário. Sem referência sonora, a lacuna permanece explícita.
 
 Origem: piso de áudio do [README](../README.md),
