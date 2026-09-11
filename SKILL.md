@@ -205,9 +205,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `budget`). Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
    **`origins <projeto>` lê o disco**, não a tabela: lista mídia embarcada sem
    recibo de origem. Nomeia a mídia que o recibo lista e o disco perdeu.
-   Nomear não devolve o arquivo. Nomeia `form` e `fields`. `--declare` escreve
+   Nomear não devolve o arquivo.    Nomeia `form` e `fields`. `--declare` escreve
    o sidecar `.credits.txt`. Sem `then`. Não valida licença. Recibo no disco
-   não é licença válida. JSON sem origem, autor e licença não declara.
+   não é licença válida. Se a receita recusa que o recibo comprove a consistência do gerador, o `fields` do `origins --declare` nomeia a consistência que a receita já recusa. Recibo no disco não é o asset. Sem chave `consistência`. JSON sem origem, autor e licença não declara.
    Sidecar sem os três rótulos também não.
    Se o sidecar declara `Consumidor:`, o `origins` nomeia o consumidor que o sidecar já declara. Consumidor no disco não é licença válida. Sem chave `consumer`. Se o roteiro recusa que o sidecar sem rótulos declare, o `origins` nomeia os rótulos que o roteiro já recusa. Recibo no disco não é licença. Sem chave `rótulos`.
    Arquivo sem recibo conta como licença

@@ -6811,6 +6811,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         with self.assertRaisesRegex(ValueError, "relativo"):
             game.origins_declare(self.project, "../hero.png", "x", "Ana", "CC0-1.0")
 
+    def test_origins_declare_fields_name_the_consistency_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_receipt_as_generator_consistency(recipe),
+            "a receita já recusa que o recibo comprove a consistência do gerador",
+        )
+        self.assertEqual(game.origins_declare_consistency_source(), "recipes/content.md")
+        asset = self.project / "textures" / "hero.png"
+        asset.parent.mkdir()
+        asset.write_bytes(b"\x89PNG\r\n\x1a\nnot-a-real-png")
+        report = game.origins_declare(
+            self.project, "textures/hero.png",
+            "foto própria, 2026-09-10", "Ana", "CC0-1.0",
+        )
+        self.assertIn(
+            "recibo comprove a consistência",
+            report["fields"]["scope"],
+            "o declare copiava origem e licença e calava a recusa",
+        )
+        self.assertIn("(`consistência`)", report["fields"]["scope"])
+        self.assertNotIn("consistência", report)
+        self.assertNotIn("consistência", report["fields"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertFalse(game.recipe_refuses_receipt_as_generator_consistency(""))
+        self.assertNotIn("recibo comprove a consistência", report["scope"])
+        with mock.patch.object(game, "origins_declare_consistency_source", return_value=None):
+            other = self.project / "textures" / "extra.png"
+            other.write_bytes(b"\x89PNG\r\n\x1a\nnot-a-real-png")
+            silent = game.origins_declare(
+                self.project, "textures/extra.png",
+                "foto própria, 2026-09-10", "Ana", "CC0-1.0",
+            )
+        self.assertNotIn("recibo comprove a consistência", silent["fields"].get("scope") or "")
+        reading = game.origins_reading(self.project)
+        self.assertNotIn("recibo comprove a consistência", reading["scope"])
+        self.assertEqual(reading["fields"], ["origin", "author", "license"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a consistência que a receita já recusa", recipe)
+        self.assertIn("nomeia a consistência que a receita já recusa", skill)
+        self.assertIn("nomeia a consistência que a receita já recusa", readme)
+        self.assertNotIn("verified", report["fields"]["scope"])
+        self.assertNotIn("aprovado", report["fields"]["scope"])
+        self.assertNotIn("recibo comprove a consistência", game.next_scope())
+        self.assertNotIn("recibo comprove a consistência", game.content_reading(self.project)["scope"])
+
     def test_every_craft_check_still_points_at_the_research_it_came_from(self):
         corpus = " ".join(
             (game.FRAMEWORK / "references" / name).read_text(encoding="utf-8")

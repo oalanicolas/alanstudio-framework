@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.528 — o fields do origins declare nomeia a consistência que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+procedimento
+não
+comprova
+consistência
+do
+gerador.
+O
+declare
+copiava
+origem
+e
+licença
+e
+calava
+a
+recusa.
+Agora
+o
+fields
+nomeia
+a
+consistência.
+Recibo
+no
+disco
+não
+é
+o
+asset.
+Sem
+chave
+`consistência`.
+Nomear
+não
+observa.
+
+O que 0.9.528 não afirma:
+escrever
+o
+sidecar
+não
+é
+o
+gerador
+estável.
+
 ## 0.9.527 — o categories do sfx summary nomeia a camada que a receita já recusa
 
 A

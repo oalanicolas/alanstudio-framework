@@ -417,6 +417,7 @@ perdeu. Nomear não devolve o arquivo. Entra em
 `textures/`, `fonts/`, `models/` e `videos/` — pastas
 que o `scan` de documentos ignora de propósito. Nomeia `form` e `fields`
 (origem, autor, licença). `--declare` escreve o sidecar. Sem `then`.
+Se a receita recusa que o recibo comprove a consistência do gerador, o `fields` do `origins --declare` nomeia a consistência que a receita já recusa. Recibo no disco não é o asset. Sem chave `consistência`.
 **Não valida a licença.** Não
 consulta titular, não interpreta texto jurídico e não distingue licença válida
 de inválida. O que falta é recibo de origem; o que o recibo afirma continua

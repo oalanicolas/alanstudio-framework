@@ -5818,6 +5818,38 @@ def origins_reading(project, max_entries=2000):
     }
 
 
+# A receita já recusa que o recibo comprove a consistência do gerador.
+# Sem isto o declare copiava origem e licença e calava a recusa.
+# Recibo no disco não é o asset.
+CONTENT_CONSISTENCY = re.compile(r"não comprova consistência")
+
+
+def recipe_refuses_receipt_as_generator_consistency(text):
+    return bool(text and CONTENT_CONSISTENCY.search(text))
+
+
+def origins_declare_consistency_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_receipt_as_generator_consistency(text):
+        return "recipes/content.md"
+    return None
+
+
+def origins_declare_fields_scope():
+    if not origins_declare_consistency_source():
+        return None
+    return (
+        "O disco recusa que o recibo comprove a consistência do gerador "
+        "(`consistência`). Recibo no disco não é o asset."
+    )
+
+
 def origins_declare(project, relative, origin, author, license_name):
     # O `next` pedia `origins` de novo. Relê não declara. Este caminho
     # escreve o sidecar; não valida titular nem texto jurídico.
@@ -5855,17 +5887,21 @@ def origins_declare(project, relative, origin, author, license_name):
         encoding="utf-8",
     )
     after = origins_reading(project)
+    fields = {
+        "origin": origin.strip(),
+        "author": author.strip(),
+        "license": license_name.strip(),
+    }
+    named = origins_declare_fields_scope()
+    if named:
+        fields = dict(fields, scope=named)
     return {
         "schema_version": 1,
         "command": "origins",
         "project": str(project),
         "declared": posix,
         "sidecar": sidecar.relative_to(project.resolve()).as_posix(),
-        "fields": {
-            "origin": origin.strip(),
-            "author": author.strip(),
-            "license": license_name.strip(),
-        },
+        "fields": fields,
         "undeclared": after["undeclared"],
         "granted": False,
         "validated": False,
