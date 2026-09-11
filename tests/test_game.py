@@ -8674,6 +8674,38 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", recipe)
 
+    def test_content_names_the_composition_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_modules_as_composition(recipe),
+            "a receita já recusa que mais módulos provem composição natural",
+        )
+        self.assertEqual(game.content_composition_source(), "recipes/content.md")
+        report = game.content_reading(self.project)
+        self.assertIn(
+            "mais módulos provem a composição",
+            report["scope"],
+            "o content listava arquivos e calava a recusa",
+        )
+        self.assertIn("(`composição`)", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("composição", report)
+        self.assertFalse(game.recipe_refuses_modules_as_composition(""))
+        with mock.patch.object(game, "content_composition_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn("mais módulos provem a composição", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a composição que a receita já recusa", recipe)
+        self.assertIn("nomeia a composição que a receita já recusa", skill)
+        self.assertIn("nomeia a composição que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("mais módulos provem a composição", game.art_reading(self.project)["scope"])
+        self.assertNotIn("mais módulos provem a composição", game.ship_reading(self.project)["scope"])
+        self.assertNotIn("mais módulos provem a composição", game.next_scope())
+        self.assertNotIn("mais módulos provem a composição", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("mais módulos provem a composição", game.gate_item_scope("scale"))
+
     def test_content_names_data_files_as_external(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "data").mkdir()

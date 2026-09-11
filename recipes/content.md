@@ -110,7 +110,7 @@ conforme o contrato do consumidor e repetir a prova no projeto de destino.
   regenerar bancos animados intactos. Compare manifestos e inventário distribuído
   separadamente antes de afirmar aumento ou redução de download.
 - Variação de material não substitui detalhe funcional de forma, e distribuir mais
-  módulos não prova composição natural. Observe repetição, escala e leitura no jogo;
+  módulos não prova composição natural. Se a receita recusa que mais módulos provem a composição, o `content` nomeia a composição que a receita já recusa. Arquivo no disco não é o mundo. Sem chave `composição`. Observe repetição, escala e leitura no jogo;
   uma mudança artística não deve ser anunciada como otimização técnica.
 
 Referências: Era Uma Vez no playground, troca de assets em protótipo Unity, Ink `RE-INK-004/007/009`

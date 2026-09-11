@@ -3576,6 +3576,30 @@ def pair_birth_source(project):
     return None
 
 
+# A receita já recusa que mais módulos provem composição natural.
+# Sem isto o content listava arquivos e calava a recusa.
+# Arquivo no disco não é o mundo.
+CONTENT_RECIPE = FRAMEWORK / "recipes/content.md"
+CONTENT_COMPOSITION = re.compile(r"não prova composição natural")
+
+
+def recipe_refuses_modules_as_composition(text):
+    return bool(text and CONTENT_COMPOSITION.search(text))
+
+
+def content_composition_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_modules_as_composition(text):
+        return "recipes/content.md"
+    return None
+
+
 def content_reading(project):
     project = Path(project)
     files = content_files(project)
@@ -3600,6 +3624,11 @@ def content_reading(project):
         scope += (
             " O disco migra a mesa (`migrateTable`). "
             "Arquivo no disco não é volume."
+        )
+    if content_composition_source():
+        scope += (
+            " O disco recusa que mais módulos provem a composição "
+            "(`composição`). Arquivo no disco não é o mundo."
         )
     return {
         "schema_version": 1,
