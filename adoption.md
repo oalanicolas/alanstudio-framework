@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.490 — o item da constante nomeia a posição que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+velocidade
+não
+nula
+não
+prova
+a
+posição
+integrada.
+O
+item
+copiava
+o
+número
+e
+calava
+a
+recusa.
+Agora
+o
+item
+da
+constante
+nomeia
+a
+posição.
+Número
+no
+disco
+não
+é
+a
+pose.
+Sem
+chave
+`posição`.
+Nomear
+não
+observa.
+
+O que 0.9.490 não afirma:
+número
+no
+disco
+não
+é
+peso
+percebido
+nem
+pose
+integrada.
+
 ## 0.9.489 — o prompt do continuity nomeia a prontidão que o processo já recusa
 
 O

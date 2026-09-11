@@ -95,7 +95,7 @@ não é peso percebido. Sem chave `attract`. Se o laço declara
 `lookAhead`, o `feel` nomeia a inclinação que o lookAhead já marca.
 Lean no disco não é peso percebido. Sem chave `lookAhead`. Se o `tools/probe.*`
 exercita as janelas de perdão, o `feel` nomeia o perdão que o probe já exercita.
-Conta no disco não é peso percebido. Sem chave `probe`. Se o laço senta a guarda, o `feel` nomeia o sit que a guarda já senta. Pose no disco não é peso percebido. Sem chave `bank`. Se o laço emite o término, o `feel` nomeia o land que o dash já emite. Pose no disco não é peso percebido. Sem chave `land`. Se a receita recusa que o autor sugerido seja quem jogou, o `feel` nomeia o autor que a receita já recusa. Recibo no disco não é sessão. Sem chave `autor`. Se a receita recusa que o valor seja constante universal, o `feel` nomeia o universal que a receita já recusa. Número no disco não é lei. Sem chave `universais`. Número no disco não é peso percebido. Lê o
+Conta no disco não é peso percebido. Sem chave `probe`. Se o laço senta a guarda, o `feel` nomeia o sit que a guarda já senta. Pose no disco não é peso percebido. Sem chave `bank`. Se o laço emite o término, o `feel` nomeia o land que o dash já emite. Pose no disco não é peso percebido. Sem chave `land`. Se a receita recusa que o autor sugerido seja quem jogou, o `feel` nomeia o autor que a receita já recusa. Recibo no disco não é sessão. Sem chave `autor`. Se a receita recusa que o valor seja constante universal, o `feel` nomeia o universal que a receita já recusa. Número no disco não é lei. Sem chave `universais`. Se a receita recusa que velocidade não nula prove a posição, o item da constante nomeia a posição que a receita já recusa. Número no disco não é a pose. Sem chave `posição`. Número no disco não é peso percebido. Lê o
 recibo de observação no disco; nomeia `then.play` e `then.note`
 sem executar. Com last-run, nomeia `then.seed` e `then.invite`
 — o mesmo endereço que `play` / `guide` — e o `note` do `next`
@@ -209,7 +209,7 @@ efeitos seguem a referência aprovada deste jogo.
 Ao integrar animações a outro motor, rastreie cada estado até o consumidor que
 realmente aplica a pose: clipe importado e fase calculada podem existir sem dono
 ativo. Compare deslocamento e articulações durante transições, inclusive preparação
-da ação; velocidade não nula não prova que a posição foi integrada. Use o evento
+da ação; velocidade não nula não prova que a posição foi integrada. Se a receita recusa que velocidade não nula prove a posição, o item da constante nomeia a posição que a receita já recusa. Número no disco não é a pose. Sem chave `posição`. Use o evento
 aceito pelo motor para gestos específicos, distinguindo novo impulso de queda,
 rebote ou reação. Uma interrupção deve encerrar o gesto, não só escondê-lo até
 o ataque terminar. Confira se a entrada do clipe cabe em sua janela visível e se

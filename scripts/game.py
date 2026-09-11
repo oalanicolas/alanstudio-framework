@@ -2257,7 +2257,35 @@ def feel_constant_scope():
             " O disco recusa que o valor seja constante universal (`universais`). "
             "Número no disco não é lei."
         )
+    if feel_constant_position_source():
+        scope += (
+            " O disco recusa que velocidade não nula prove a posição "
+            "(`posição`). Número no disco não é a pose."
+        )
     return scope
+
+
+# A receita já recusa que velocidade não nula prove a posição.
+# Sem isto o item copiava o número e calava a recusa.
+# Número no disco não é a pose.
+FEEL_POSITION = re.compile(r"não prova que a posição foi integrada")
+
+
+def recipe_refuses_velocity_as_position(text):
+    return bool(text and FEEL_POSITION.search(text))
+
+
+def feel_constant_position_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_velocity_as_position(text):
+        return "recipes/feel.md"
+    return None
 
 
 def feel_then(project):

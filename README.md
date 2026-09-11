@@ -693,6 +693,7 @@ Se o laço senta a guarda, o `feel` nomeia o sit que a guarda já senta. Pose no
 Se o laço emite o término, o `feel` nomeia o land que o dash já emite. Pose no disco não é peso percebido. Sem chave `land`.
 Se a receita recusa que o autor sugerido seja quem jogou, o `feel` nomeia o autor que a receita já recusa. Recibo no disco não é sessão. Sem chave `autor`.
 Se a receita recusa que o valor seja constante universal, o `feel` nomeia o universal que a receita já recusa. Número no disco não é lei. Sem chave `universais`.
+Se a receita recusa que velocidade não nula prove a posição, o item da constante nomeia a posição que a receita já recusa. Número no disco não é a pose. Sem chave `posição`.
 Constante nomeada não é peso percebido. `feel` lê as
 constantes — inclusive o pulso e o passo — essas janelas e o rumo, procura um `record.json` de observação no projeto e nomeia
 `then.play` e `then.note` sem executar. Com last-run, nomeia `then.seed`
