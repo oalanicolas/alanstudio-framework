@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.393: o `art` nomeia o contraste que o look já recusa. Alcance no disco não é comparação em movimento. Sem chave `contrast`. Não promove `consistent`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**HEAD anterior + confirmação pendente (0.9.393):** suítes do 0.9.392 no remoto — 388 harness / 509 starter. Confirmação deste HEAD ainda não correu.
+**Suítes confirmadas no HEAD (0.9.393):** `python3 -m unittest discover -s tests` → 389 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
