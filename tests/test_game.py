@@ -3538,6 +3538,31 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(repeated["status"], "already_exported")
         self.assertFalse(repeated["heard"])
 
+    def test_sfx_copy_names_the_credits_the_sidecar_already_carries(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        item = game.sfx_catalog.find_local_stem("dash")
+        credit = (starter / "public/sfx/dash.credits.txt").read_text(encoding="utf-8")
+        self.assertTrue(game.sfx_catalog.stem_declares_credits(credit), "o sidecar já carrega os créditos")
+        self.assertEqual(game.sfx_catalog.stem_credits_source(item), "dash.credits.txt")
+        copied = game.sfx_catalog.copy_entry("dash", self.root / "voz", self.root)
+        self.assertIn("copia os créditos", copied["scope"], "o copy levava o caminho e calava o sidecar")
+        self.assertIn("`.credits.txt`", copied["scope"])
+        self.assertFalse(copied["heard"])
+        self.assertIn("credits", copied)
+        self.assertNotIn("sidecar", copied)
+        self.assertNotIn("consumer", copied)
+        self.assertFalse(game.sfx_catalog.stem_declares_credits(""))
+        self.assertIsNone(game.sfx_catalog.stem_credits_source({"src": "ghost.wav"}, self.root))
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os créditos que o copy já leva", recipe)
+        self.assertIn("nomeia os créditos que o copy já leva", skill)
+        self.assertIn("nomeia os créditos que o copy já leva", readme)
+        self.assertNotIn("aprovado", copied["scope"])
+        self.assertNotIn("verified", copied["scope"])
+        self.assertNotIn("then.credits", copied.get("then") or {})
+
     def test_sfx_copy_from_catalog_restores_the_wav_and_declares_it_did_not_hear(self):
         item, data = self._plant_catalog_sound()
         destination = self.root / "jogo" / "public" / "sfx"

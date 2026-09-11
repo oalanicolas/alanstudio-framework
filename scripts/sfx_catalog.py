@@ -75,6 +75,34 @@ def sfx_shift_source(project=None):
     return None
 
 
+# O sidecar já carrega os créditos. Sem isto o
+# copy levava o caminho e calava o arquivo.
+# Créditos no disco não são mix ouvida.
+STEM_CREDIT_MARK = re.compile(r"Licen[cç]a\s*:", re.IGNORECASE)
+
+
+def stem_declares_credits(text):
+    return bool(text and STEM_CREDIT_MARK.search(text))
+
+
+def stem_credits_source(item, folder=None):
+    folder = Path(folder or STARTER_SFX)
+    src = item.get("src") if isinstance(item, dict) else None
+    if not isinstance(src, str) or not src.strip():
+        return None
+    name = Path(src).stem + ".credits.txt"
+    path = folder / name
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    if stem_declares_credits(text):
+        return name
+    return None
+
+
 def receipt_field(row, field):
     # O acervo guarda autor e licença em `sources`. O starter,
     # no topo. Identidade lê os dois sem exigir o mesmo envelope.
@@ -421,7 +449,7 @@ def copy_local_stem(item, destination, root=None, sources=None, as_name=None, fo
         receipt.write_bytes(audio.json_bytes(previous))
     if not credit_path.exists():
         credit_path.write_bytes(credit_bytes)
-    return {
+    report = {
         "copied": str(target),
         "bytes": item["bytes"],
         "record": record,
@@ -432,6 +460,12 @@ def copy_local_stem(item, destination, root=None, sources=None, as_name=None, fo
         "heard": False,
         "next": EXPORT_NEXT,
     }
+    if stem_credits_source(item, folder):
+        report["scope"] = (
+            "O disco copia os créditos (`.credits.txt`). "
+            "Créditos no disco não são mix ouvida."
+        )
+    return report
 
 
 def load_catalog(root=None):

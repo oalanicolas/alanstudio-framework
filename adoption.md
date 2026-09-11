@@ -3,6 +3,54 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.386 — o sfx copy nomeia os créditos que o copy já leva
+
+O
+sidecar
+já
+declarava
+licença.
+O
+comando
+copiava
+o
+caminho
+e
+calava
+o
+arquivo.
+Agora
+o
+`sfx copy`
+nomeia
+os
+créditos.
+Créditos
+no
+disco
+não
+são
+mix
+ouvida.
+Sem
+chave
+`sidecar`.
+Não
+promove
+`heard`.
+
+O que 0.9.386 não afirma:
+créditos
+no
+disco
+não
+são
+titular
+consultado
+nem
+mix
+ouvida.
+
 ## 0.9.385 — o ship nomeia o file:// que o export já recusa
 
 O

@@ -70,7 +70,7 @@ créditos do acervo ou do stem do starter que `sfx info`
 já nomeia — o recibo que lista um stem e o disco perdeu
 não é id desconhecido; exportar não inventa bytes.
 `sfx copy` leva o mesmo stem para a pasta do
-jogo. `--apply` também leva o stem do starter. Importar e exportar não é ouvir. O acervo compartilhado é ADAPT, não o
+jogo. Se o sidecar declara licença, o `sfx copy` nomeia os créditos que o copy já leva. Créditos no disco não são mix ouvida. Sem chave `sidecar`. `--apply` também leva o stem do starter. Importar e exportar não é ouvir. O acervo compartilhado é ADAPT, não o
 primeiro ciclo.
 
 ## 1. Nomear a camada
