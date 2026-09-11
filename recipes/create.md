@@ -111,6 +111,7 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    foi pedido. Registre herdado versus produzido e **uma** próxima ação.
    Não gere o template `aaa` nesta sessão. O `finish.action` permanece
    `defer_until_playable_cycle` até existir o ciclo.
+   Se a guia recusa preencher o checklist, o `context` nomeia o checklist que a guia já recusa preencher. Guia no disco não é observação. Sem chave `checklist`.
 
 ## Da fatia à produção
 

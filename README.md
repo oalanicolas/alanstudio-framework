@@ -197,7 +197,7 @@ O contexto entrega caminhos para leitura, registros já existentes, catálogos d
 estudo (se um irmão `Games-Frameworks` existir, ou `GAMES_FRAMEWORKS_ROOT`),
 menções locais de pause/reset/seed, `foundation` (nove áreas documentais),
 `production_bar` (as dimensões de acabamento pertinentes ao foco), `finish` (perfil
-do checklist de piso) e o acervo `shared/sfx` da raiz informada. Não executa o jogo.
+do checklist de piso) e o acervo `shared/sfx` da raiz informada. Não executa o jogo. Se a guia recusa preencher o checklist, o `context` nomeia o checklist que a guia já recusa preencher. Guia no disco não é observação. Sem chave `checklist`.
 `mentioned` não é `verified`. `candidate_found` não prova suficiência, atualidade
 nem aprovação.
 

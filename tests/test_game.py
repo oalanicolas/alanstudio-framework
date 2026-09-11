@@ -751,6 +751,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("recorte de AAA", game.template_scope("agents"))
         self.assertNotIn("recorte de AAA", game.continuity_scope())
 
+    def test_context_names_the_checklist_the_guide_already_refuses_to_fill(self):
+        guide = (game.FRAMEWORK / "references/aaa-checklist.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.finish_guide_refuses_fill(guide),
+            "a guia já recusa preencher o checklist",
+        )
+        self.assertEqual(game.finish_checklist_source(), "references/aaa-checklist.md")
+        report = game.context(self.project, "create")
+        self.assertEqual(report["finish"]["guide"], str(game.FRAMEWORK / "references/aaa-checklist.md"))
+        self.assertIn(
+            "preencher o checklist",
+            report["finish"]["scope"],
+            "o context apontava a guia e calava a recusa",
+        )
+        self.assertIn("(`checklist`)", report["finish"]["scope"])
+        self.assertNotIn("checklist", report["finish"])
+        self.assertFalse(report["finish"]["executed"])
+        self.assertFalse(game.finish_guide_refuses_fill(""))
+        with mock.patch.object(game, "finish_checklist_source", return_value=None):
+            silent = game.context(self.project, "create")
+        self.assertNotIn("preencher o checklist", silent["finish"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o checklist que a guia já recusa preencher", recipe)
+        self.assertIn("nomeia o checklist que a guia já recusa preencher", skill)
+        self.assertIn("nomeia o checklist que a guia já recusa preencher", readme)
+        self.assertNotIn("verified", report["finish"]["scope"])
+        self.assertNotIn("preencher o checklist", report["documentation"]["scope"])
+        self.assertNotIn("preencher o checklist", game.template_scope("aaa"))
+        self.assertNotIn("preencher o checklist", game.next_step(self.project)["scope"])
+        self.assertNotIn("preencher o checklist", game.scan(self.project)["agent_context"]["scope"])
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

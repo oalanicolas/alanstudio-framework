@@ -3,6 +3,61 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.404 — o context nomeia o checklist que a guia já recusa preencher
+
+A
+guia
+já
+dizia
+que
+o
+harness
+não
+preenche
+o
+checklist.
+O
+comando
+apontava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`context`
+nomeia
+o
+checklist.
+Guia
+no
+disco
+não
+é
+observação.
+Sem
+chave
+`checklist`.
+Nomear
+não
+observa.
+
+O que 0.9.404 não afirma:
+guia
+no
+disco
+não
+é
+observação
+em
+movimento
+nem
+certificado
+de
+acabamento.
+
 ## 0.9.403 — o scan nomeia o AAA que a memória já recusa
 
 A

@@ -4901,6 +4901,45 @@ def continuity_scope():
     return scope
 
 
+# A guia já recusa preencher o checklist. Sem isto o
+# context apontava o arquivo e calava a recusa.
+# Guia no disco não é observação.
+FINISH_GUIDE = FRAMEWORK / "references/aaa-checklist.md"
+FINISH_FILL = re.compile(r"O harness não preenche o checklist")
+
+
+def finish_guide_refuses_fill(text):
+    return bool(text and FINISH_FILL.search(text))
+
+
+def finish_checklist_source():
+    path = FINISH_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if finish_guide_refuses_fill(text):
+        return "references/aaa-checklist.md"
+    return None
+
+
+def finish_scope():
+    scope = (
+        "Núcleo em qualquer escala após um ciclo jogável. "
+        "Produto/AA soma product_groups. Promessa só se o brief prometeu. "
+        "Mercado (CHK-16) nunca reprova jam. Completar o template não certifica. "
+        "O comando não observa o jogo."
+    )
+    if finish_checklist_source():
+        scope += (
+            " O disco recusa preencher o checklist (`checklist`). "
+            "Guia no disco não é observação."
+        )
+    return scope
+
+
 def context(project, focus, stage=None, studies_root=None, event="task", root=None, genre=None):
     if focus not in FOCI:
         raise ValueError("foco desconhecido")
@@ -4974,7 +5013,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "market_groups": list(FINISH_MARKET),
             "action": "observe_core_on_slice" if stage in ("aaa", "vertical-slice", "qa", "milestone") or focus in ("feel", "audio", "production") else "defer_until_playable_cycle",
             "executed": False,
-            "scope": "Núcleo em qualquer escala após um ciclo jogável. Produto/AA soma product_groups. Promessa só se o brief prometeu. Mercado (CHK-16) nunca reprova jam. Completar o template não certifica. O comando não observa o jogo.",
+            "scope": finish_scope(),
         },
         "studio_assets": sfx_catalog.studio_assets(root),
         "limits": [

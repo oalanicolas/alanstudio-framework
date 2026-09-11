@@ -141,7 +141,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `finish` (núcleo; produto se a escala pedir; promessas só se o brief as tiver) não
    foi observado; na slice ou em “está AAA?”, leia `finish` e
    [o guia](references/aaa-checklist.md) e grave no canônico — completar linhas não
-   certifica e `N/A` exige motivo. Não publique nem delegue sem autorização aplicável.
+   certifica e `N/A` exige motivo. Se a guia recusa preencher o checklist, o `context` nomeia o checklist que a guia já recusa preencher. Guia no disco não é observação. Sem chave `checklist`. Não publique nem delegue sem autorização aplicável.
 7. **Produzir até o acabamento, pela dimensão mais baixa.** Quando o recorte já
    demonstrou a experiência, siga [produção](recipes/production.md): plano de produção
    com marcos com critérios de evidência (first playable → vertical slice → alpha → beta →
