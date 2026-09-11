@@ -636,6 +636,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(str(game.FRAMEWORK / "references/project-audit.md"), result["read_next"])
         self.assertTrue(result["documentation"]["on_direction_approved"])
 
+    def test_context_names_the_audit_the_guide_already_asks(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(game.audit_guide_declares(guide), "o roteiro já pede documentar sem consentimento")
+        self.assertEqual(game.documentation_audit_source(True), "references/project-audit.md")
+        self.assertIsNone(game.documentation_audit_source(False))
+        report = game.context(self.project, "create")
+        self.assertEqual(report["documentation"]["action"], "document_minimum")
+        self.assertIn(str(game.FRAMEWORK / "references/project-audit.md"), report["read_next"])
+        self.assertIn(
+            "documentar sem consentimento",
+            report["documentation"]["scope"],
+            "o context apontava o arquivo e calava a política",
+        )
+        self.assertIn("(`audit`)", report["documentation"]["scope"])
+        self.assertNotIn("audit", report["documentation"])
+        self.assertFalse(report["documentation"]["executed"])
+        self.assertFalse(game.audit_guide_declares(""))
+        self.foundation_document()
+        maintained = game.context(self.project, "mechanics")
+        self.assertEqual(maintained["documentation"]["action"], "maintain_affected_documents")
+        self.assertNotIn("documentar sem consentimento", maintained["documentation"]["scope"])
+        destination = self.root / "ciclo-sem-auditoria"
+        game.init(destination, "canvas-arcade", documents=False)
+        deferred = game.context(destination, "create")
+        self.assertEqual(deferred["documentation"]["action"], "defer_until_playable_cycle")
+        self.assertNotIn("documentar sem consentimento", deferred["documentation"]["scope"])
+        with mock.patch.object(game, "documentation_audit_source", return_value=None):
+            silent = game.context(self.project, "create", event="direction-approved")
+        self.assertNotIn("documentar sem consentimento", silent["documentation"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o audit que o roteiro já pede", recipe)
+        self.assertIn("nomeia o audit que o roteiro já pede", skill)
+        self.assertIn("nomeia o audit que o roteiro já pede", readme)
+        self.assertNotIn("verified", report["documentation"]["scope"])
+        self.assertNotIn("documentar sem consentimento", game.scan(self.project)["scope"])
+        self.assertNotIn("documentar sem consentimento", game.next_step(self.project)["scope"])
+        self.assertNotIn("documentar sem consentimento", game.template_scope("aaa"))
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

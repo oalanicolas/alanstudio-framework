@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.401 — o context nomeia o audit que o roteiro já pede
+
+O
+roteiro
+já
+pedia
+documentar
+sem
+consentimento.
+O
+comando
+apontava
+o
+arquivo
+e
+calava
+a
+política.
+Agora
+o
+`context`
+nomeia
+o
+audit.
+Roteiro
+no
+disco
+não
+é
+base
+escrita.
+Sem
+chave
+`audit`.
+Nomear
+não
+escreve.
+
+O que 0.9.401 não afirma:
+roteiro
+no
+disco
+não
+é
+base
+escrita
+nem
+auditoria
+executada.
+
 ## 0.9.400 — o template nomeia a publicação que o molde já recusa
 
 O

@@ -4783,6 +4783,48 @@ def select_packs(kind, genre, mentions):
     }
 
 
+# O roteiro já pede documentar sem consentimento. Sem isto o
+# context apontava o arquivo e calava a política.
+# Roteiro no disco não é base escrita.
+AUDIT_GUIDE = FRAMEWORK / "references/project-audit.md"
+AUDIT_CONSENT = re.compile(
+    r"avisar e começar a documentar,\s*sem pedir\s+consentimento",
+    re.IGNORECASE,
+)
+
+
+def audit_guide_declares(text):
+    return bool(text and AUDIT_CONSENT.search(text))
+
+
+def documentation_audit_source(document_minimum):
+    if not document_minimum:
+        return None
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_guide_declares(text):
+        return "references/project-audit.md"
+    return None
+
+
+def documentation_scope(document_minimum):
+    scope = (
+        "O agente executa a ação e respeita restrições atuais do usuário. "
+        "O comando não escreve documentos, concede aprovação ou certifica sua suficiência."
+    )
+    if documentation_audit_source(document_minimum):
+        scope += (
+            " O disco pede documentar sem consentimento (`audit`). "
+            "Roteiro no disco não é base escrita."
+        )
+    return scope
+
+
 def context(project, focus, stage=None, studies_root=None, event="task", root=None, genre=None):
     if focus not in FOCI:
         raise ValueError("foco desconhecido")
@@ -4845,7 +4887,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "executed": False,
             "on_direction_approved": "Aprovação na conversa exige sincronizar a base mínima neste turno, mesmo com todos os candidatos encontrados; use --event direction-approved.",
             "before_close": "Registrar conteúdo e fontes nos documentos canônicos; cobrir cada área mínima com decisão/fato ou lacuna e próxima ação. Referência salva e templates vazios não concluem a documentação.",
-            "scope": "O agente executa a ação e respeita restrições atuais do usuário. O comando não escreve documentos, concede aprovação ou certifica sua suficiência.",
+            "scope": documentation_scope(document_minimum),
         },
         "finish": {
             "guide": str(FRAMEWORK / "references/aaa-checklist.md"),

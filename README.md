@@ -445,7 +445,7 @@ sem esperar um segundo pedido**. Restrição explícita na conversa continua val
 Exceção: ciclo fresco que já abre (`audit.deferred`) — o `next` pede jogar
 primeiro; o `context` não manda preencher template. `--event direction-approved`
 e `--stage audit` continuam pedindo a base. O scanner não executa a auditoria
-(`audit.executed: false`). Se o README aponta o serve, o `scan` nomeia o serve que o README já aponta. Página no disco não é partida jogada. Sem chave `serve`.
+(`audit.executed: false`). Se o README aponta o serve, o `scan` nomeia o serve que o README já aponta. Página no disco não é partida jogada. Sem chave `serve`. Se o roteiro pede documentar sem consentimento, o `context` nomeia o audit que o roteiro já pede. Roteiro no disco não é base escrita. Sem chave `audit`.
 
 Eventos de conversa, interpretados pelo agente — o comando não concede aprovação:
 
