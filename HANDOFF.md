@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.378: o `save` nomeia a gravação que o storage já verifica. Escrita no disco não é aba fechada. Sem chave `storage`. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.378):** `python3 -m unittest discover -s tests` → pendente (374 esperados).
+**Suítes confirmadas no HEAD (0.9.378):** `python3 -m unittest discover -s tests` → 374 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
