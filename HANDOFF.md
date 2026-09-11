@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.492: o comando do verify nomeia o significado que a entrega já recusa. Hash no disco não é o critério. Sem chave `significado`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** confirmação pendente no 0.9.492.
+**Suítes:** confirmadas no HEAD (0.9.492): 553 / 516.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
