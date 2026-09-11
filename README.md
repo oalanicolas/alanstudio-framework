@@ -761,7 +761,8 @@ relógio nomeado e ≠ 1 `&speed=<relógio>`), onde a tabela de
 comandos some; depois do fim a página do maker aponta o convite
 desta partida se a seed ficou no recibo — copiar o endereço não
 grava — e, no convite, mostra seed, pontos, eixos, a curva que o last-run já traçou e se o candidato foi simulado (`nearest-orb` vira `simulada`; `played` some; a faixa não leva a conta nem o relógio) e oferece
-os quatro nomes para copiar ou gravar. Simulada não é alguém de fora. Depois do fim a página
+os quatro nomes para copiar ou gravar. Se o serve prende o bind, o convite nomeia o bind que o serve já prende. Bind no disco não é alguém de fora. Sem chave `HOST`.
+Simulada não é alguém de fora. Depois do fim a página
 rola até o painel. Rolar não é alguém de fora. Número na faixa não
 preenche os quatro. O achado copiado e gravado leva a faixa
 do last-run. Sem tally nem relógio. Markdown no disco não é

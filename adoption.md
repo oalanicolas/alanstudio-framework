@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.399 — o convite nomeia o bind que o serve já prende
+
+O
+serve
+já
+avisava
+`HOST=127.0.0.1
+prende
+o
+bind`.
+O
+comando
+anunciava
+a
+rede
+e
+calava
+o
+HOST.
+Agora
+o
+convite
+nomeia
+o
+bind.
+Bind
+no
+disco
+não
+é
+alguém
+de
+fora.
+Sem
+chave
+`HOST`.
+Não
+promove
+`outsider`.
+
+O que 0.9.399 não afirma:
+bind
+no
+disco
+não
+é
+alguém
+de
+fora
+nem
+partida
+observada.
+
 ## 0.9.398 — o scan nomeia o serve que o README já aponta
 
 O

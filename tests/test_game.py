@@ -5970,6 +5970,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(payload["created"])
         self.assertFalse(payload["outsider"])
 
+    def test_invite_names_the_bind_the_serve_already_pins(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        serve = (starter / "tools/serve.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.serve_pins_bind(serve), "o serve já prende o bind")
+        self.assertEqual(game.invite_bind_source(starter), "tools/serve.mjs")
+        destination = self.root / "convite-com-bind"
+        game.init(destination, "canvas-arcade")
+        report = game.invite_playtest(destination)
+        self.assertIn("prende o bind", report["scope"], "o convite anunciava a rede e calava o HOST")
+        self.assertIn("(`HOST`)", report["scope"])
+        self.assertNotIn("HOST", report)
+        self.assertFalse(report["outsider"])
+        self.assertFalse(report["observed"])
+        self.assertFalse(game.serve_pins_bind(""))
+        self.assertIsNone(game.invite_bind_source(self.project))
+        empty = game.invite_playtest(self.project)
+        self.assertNotIn("prende o bind", empty["scope"])
+        with mock.patch.object(game, "invite_bind_source", return_value=None):
+            silent = game.invite_playtest(destination)
+        self.assertNotIn("prende o bind", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o bind que o serve já prende", recipe)
+        self.assertIn("nomeia o bind que o serve já prende", skill)
+        self.assertIn("nomeia o bind que o serve já prende", readme_doc)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("then.bind", report.get("then") or {})
+        self.assertNotIn("prende o bind", game.play_scope(destination))
+        self.assertNotIn("prende o bind", game.playtest_reading(destination)["scope"])
+        self.assertNotIn("prende o bind", game.next_step(destination)["scope"])
+        self.assertNotIn("prende o bind", game.ship_reading(destination)["scope"])
+
     def test_invite_names_the_last_run_seed_without_claiming_an_outsider(self):
         destination = self.root / "convite-com-seed"
         game.init(destination, "canvas-arcade")

@@ -3813,6 +3813,31 @@ def finding_open(project, scripts=None, play=None, env=None):
     return f"{base.rstrip('/')}{href}"
 
 
+# O serve já prende o bind. Sem isto o
+# convite anunciava a rede e calava o HOST.
+# Bind no disco não é alguém de fora.
+SERVE_BIND = re.compile(r"HOST=127\.0\.0\.1 prende o bind")
+
+
+def serve_pins_bind(text):
+    return bool(text and SERVE_BIND.search(text))
+
+
+def invite_bind_source(project):
+    project = Path(project)
+    for name in SERVE_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if serve_pins_bind(text):
+            return name
+    return None
+
+
 def invite_playtest(project):
     project = Path(project)
     if not project.is_dir() or project.is_symlink():
@@ -3825,6 +3850,24 @@ def invite_playtest(project):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(invite_page(project), encoding="utf-8")
     reading = playtest_reading(project)
+    scope = (
+        "Escreve a página para quem nunca viu o jogo e aponta "
+        "`href`. Sem last-run é `/?invite=1`; com seed no disco "
+        "junta o número; com chuva no disco junta a mesa; com look "
+        "no disco junta a paleta. A tabela "
+        "some. Depois do fim a página "
+        "oferece os quatro nomes para copiar ou gravar. Copiar não "
+        "grava. Esqueleto vazio não é achado. Gravado anexa o "
+        "candidato se last-run existir — não é alguém de fora. "
+        "Nomear o endereço não observa. O serve anuncia a URL da rede se a "
+        "máquina tiver outro endereço IPv4. Não ensina o verbo, "
+        "não assiste e não sobe pacing. outsider continua falso."
+    )
+    if invite_bind_source(project):
+        scope += (
+            " O disco prende o bind (`HOST`). "
+            "Bind no disco não é alguém de fora."
+        )
     return {
         "schema_version": 1,
         "project": str(project),
@@ -3834,19 +3877,7 @@ def invite_playtest(project):
         "observed": False,
         "outsider": False,
         "reading": reading,
-        "scope": (
-            "Escreve a página para quem nunca viu o jogo e aponta "
-            "`href`. Sem last-run é `/?invite=1`; com seed no disco "
-            "junta o número; com chuva no disco junta a mesa; com look "
-            "no disco junta a paleta. A tabela "
-            "some. Depois do fim a página "
-            "oferece os quatro nomes para copiar ou gravar. Copiar não "
-            "grava. Esqueleto vazio não é achado. Gravado anexa o "
-            "candidato se last-run existir — não é alguém de fora. "
-            "Nomear o endereço não observa. O serve anuncia a URL da rede se a "
-            "máquina tiver outro endereço IPv4. Não ensina o verbo, "
-            "não assiste e não sobe pacing. outsider continua falso."
-        ),
+        "scope": scope,
     }
 
 
