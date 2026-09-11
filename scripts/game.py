@@ -5313,6 +5313,31 @@ def starter_manifest(starter):
 
 
 CYCLE_KEYS = ("verb", "door", "move", "dash", "bank", "hand", "touch", "pad", "look", "spawn", "mood", "seed", "speed", "invite")
+# O manifesto já declara o relógio. Sem isto o
+# guide lia o ciclo e calava o `speed`.
+# Frase no disco não é partida observada.
+CYCLE_SPEED_MARK = re.compile(r'"speed"\s*:\s*"')
+
+
+def cycle_names_speed(text):
+    return bool(text and CYCLE_SPEED_MARK.search(text))
+
+
+def guide_speed_source(starter):
+    if not nonempty(starter):
+        return None
+    path = STARTERS_ROOT / starter / STARTER_MANIFEST
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        if path.stat().st_size > 400_000:
+            return None
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    if cycle_names_speed(text):
+        return f"assets/starters/{starter}/{STARTER_MANIFEST}"
+    return None
 
 
 def starter_cycle(starter):
@@ -6122,42 +6147,52 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             playtest_command(next_target),
         ),
         "steps": steps,
-        "scope": (
-            "Três passos ideia→ciclo: start, jogar, note. `open` é o comando "
-            "de agora — o start se o destino ainda não existe, o play se "
-            "já existe. `url` nomeia a superfície pedida; nomear não serve. "
-            "Se o serve tenta abrir o navegador, o prompt nomeia a "
-            "tentativa. Sem o marcador, pede Abrir. Nomear não abre. "
-            "`prompt` o nomeia para colar e também sai em "
-            "stderr; o JSON fica no stdout. Se o starter declara "
-            "o verbo e as teclas, o prompt e o passo 2 as nomeiam — inclusive a porta. Sem destino, a frase "
-            "nomeia a pasta no comando do start — ao lado do framework se o "
-            "mapa corre de dentro desta árvore; no diretório atual se corre "
-            "de fora. `guide --idea` continua só no comando, não no disco. "
-            "O prompt nomeia `Fantasia:` à parte de `Verbo:` quando há frase "
-            "ou `copy.json`; a frase não muda o verbo. "
-            "`then` nomeia par, look, chuva e voz quando o projeto — ou o "
-            "starter, se o destino ainda não existe — declara essas "
-            "ferramentas. Se declara `session`, `then` a aponta. Se o disco "
-            "tem last-run com seed, `then` aponta a seed e o convite; "
-            "nomear o endereço não observa. Nomear o ofício não pinta, não chove e não ouve. O autor do `note` é "
-            "sugestão do git ou do ambiente, não quem jogou. "
-            "`next` fica para quando o ciclo já correu e você não sabe o "
-            "que falta. O prompt nomeia o `playtest` que o `AGENTS.md` já "
-            "cita. Só lê. Sem os quatro não é achado. Sem `then.playtest`. "
-            "Nomear o leitor não observa. Sem destino, se o diretório atual é um jogo fora "
-            "do framework, o mapa usa esse caminho. Não cria o projeto, "
-            "não abre o jogo e não avalia a proposta. `session` aponta a "
-            "partida simulada se o manifesto a declara; o prompt a nomeia. "
-            "Não executa e não observa. Se o play pede npm, o "
-            "`package.json` tem dependências e `node_modules` falta, "
-            "`then.install` nomeia `npm install`. Sem dependências a chave "
-            "some. Nomear não instala. `runtime` lê o `node` "
-            "do PATH se o play pede npm ou node; não executa o serve. "
-            "Passos 2 e 3 "
-            "permanecem `executed` falsos mesmo quando o destino já existe."
-        ),
+        "scope": guide_scope(chosen),
     }
+
+
+def guide_scope(starter):
+    scope = (
+        "Três passos ideia→ciclo: start, jogar, note. `open` é o comando "
+        "de agora — o start se o destino ainda não existe, o play se "
+        "já existe. `url` nomeia a superfície pedida; nomear não serve. "
+        "Se o serve tenta abrir o navegador, o prompt nomeia a "
+        "tentativa. Sem o marcador, pede Abrir. Nomear não abre. "
+        "`prompt` o nomeia para colar e também sai em "
+        "stderr; o JSON fica no stdout. Se o starter declara "
+        "o verbo e as teclas, o prompt e o passo 2 as nomeiam — inclusive a porta. Sem destino, a frase "
+        "nomeia a pasta no comando do start — ao lado do framework se o "
+        "mapa corre de dentro desta árvore; no diretório atual se corre "
+        "de fora. `guide --idea` continua só no comando, não no disco. "
+        "O prompt nomeia `Fantasia:` à parte de `Verbo:` quando há frase "
+        "ou `copy.json`; a frase não muda o verbo. "
+        "`then` nomeia par, look, chuva e voz quando o projeto — ou o "
+        "starter, se o destino ainda não existe — declara essas "
+        "ferramentas. Se declara `session`, `then` a aponta. Se o disco "
+        "tem last-run com seed, `then` aponta a seed e o convite; "
+        "nomear o endereço não observa. Nomear o ofício não pinta, não chove e não ouve. O autor do `note` é "
+        "sugestão do git ou do ambiente, não quem jogou. "
+        "`next` fica para quando o ciclo já correu e você não sabe o "
+        "que falta. O prompt nomeia o `playtest` que o `AGENTS.md` já "
+        "cita. Só lê. Sem os quatro não é achado. Sem `then.playtest`. "
+        "Nomear o leitor não observa. Sem destino, se o diretório atual é um jogo fora "
+        "do framework, o mapa usa esse caminho. Não cria o projeto, "
+        "não abre o jogo e não avalia a proposta. `session` aponta a "
+        "partida simulada se o manifesto a declara; o prompt a nomeia. "
+        "Não executa e não observa. Se o play pede npm, o "
+        "`package.json` tem dependências e `node_modules` falta, "
+        "`then.install` nomeia `npm install`. Sem dependências a chave "
+        "some. Nomear não instala. `runtime` lê o `node` "
+        "do PATH se o play pede npm ou node; não executa o serve. "
+        "Passos 2 e 3 "
+        "permanecem `executed` falsos mesmo quando o destino já existe."
+    )
+    if guide_speed_source(starter):
+        scope += (
+            " O disco nomeia o relógio (`speed`). "
+            "Frase no disco não é partida observada."
+        )
+    return scope
 
 
 def tool_report(name, args=("--version",), timeout=15):

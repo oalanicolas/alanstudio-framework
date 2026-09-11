@@ -7175,6 +7175,43 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(found["executed"])
         self.assertEqual(nearby.stderr.strip(), found["prompt"])
 
+    def test_guide_names_the_clock_the_manifest_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        manifest = (starter / "starter.json").read_text(encoding="utf-8")
+        self.assertTrue(game.cycle_names_speed(manifest), "o manifesto já declara o relógio")
+        self.assertEqual(
+            game.guide_speed_source("canvas-arcade"),
+            "assets/starters/canvas-arcade/starter.json",
+        )
+        report = game.guide_cycle(None, "canvas-arcade")
+        self.assertIn("nomeia o relógio", report["scope"], "o guide lia o ciclo e calava o speed")
+        self.assertIn("(`speed`)", report["scope"])
+        self.assertIn("speed", report["cycle"])
+        self.assertFalse(report["executed"])
+        self.assertNotIn("speed", report)
+        self.assertNotIn("speed", report.get("then") or {})
+        self.assertFalse(game.cycle_names_speed(""))
+        self.assertIsNone(game.guide_speed_source(""))
+        self.assertIsNone(game.guide_speed_source(None))
+        self.fake_starter("sem-relogio", {
+            "schema_version": 1,
+            "title": "Nome Real",
+            "cycle": {"verb": "coletar"},
+            "substitutions": [{"field": "project_title", "value": "Nome Real", "files": ["README.md"]}],
+        })
+        self.assertIsNone(game.guide_speed_source("sem-relogio"))
+        silent = game.guide_cycle(None, "sem-relogio")
+        self.assertNotIn("nomeia o relógio", silent["scope"])
+        self.assertNotIn("speed", silent.get("cycle") or {})
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o relógio que o manifesto já declara", recipe)
+        self.assertIn("nomeia o relógio que o manifesto já declara", skill)
+        self.assertIn("nomeia o relógio que o manifesto já declara", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+
     def test_guide_maps_the_cycle_without_creating_or_playing(self):
         report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
         self.assertFalse(report["executed"])

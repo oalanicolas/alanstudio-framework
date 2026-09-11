@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.391 — o guide nomeia o relógio que o manifesto já declara
+
+O
+`starter.json`
+já
+trazia
+`speed`.
+O
+comando
+lia
+o
+ciclo
+e
+calava
+o
+relógio
+no
+`scope`.
+Agora
+o
+`guide`
+nomeia
+o
+relógio.
+Frase
+no
+disco
+não
+é
+partida
+observada.
+Sem
+chave
+`speed`.
+Não
+promove
+`executed`.
+
+O que 0.9.391 não afirma:
+frase
+no
+disco
+não
+é
+partida
+observada
+nem
+relógio
+medido
+no
+dispositivo.
+
 ## 0.9.390 — o bar nomeia o mínimo que a barra já declara
 
 A
