@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.474: o `discover --plain` nomeia a listagem que o README já recusa. Caminho no disco não é o jogo. Sem chave `listagem`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** HEAD anterior (0.9.473: 534 / 516) + confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.474): 535 / 516.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
