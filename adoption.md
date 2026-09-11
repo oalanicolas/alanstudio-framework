@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.498 — o tree do ship nomeia a portabilidade que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+abrir
+o
+menu
+ou
+obter
+um
+ZIP
+não
+comprova
+portabilidade.
+A
+árvore
+copiava
+as
+partes
+e
+calava
+a
+recusa.
+Agora
+o
+`tree`
+do
+ship
+nomeia
+a
+portabilidade.
+ZIP
+no
+disco
+não
+é
+o
+destino.
+Sem
+chave
+`portabilidade`.
+Nomear
+não
+observa.
+
+O que 0.9.498 não afirma:
+o
+`dist/`
+não
+correu
+fora
+daqui.
+
 ## 0.9.497 — o sfx info do acervo nomeia o decode que a receita já recusa
 
 A

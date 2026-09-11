@@ -9398,6 +9398,45 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("identidade seja outra máquina", game.next_scope())
         self.assertNotIn("identidade seja outra máquina", game.play_scope(self.project))
 
+    def test_ship_tree_names_the_portability_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_zip_as_portable(recipe),
+            "a receita já recusa que abrir o menu ou obter um ZIP comprove portabilidade",
+        )
+        self.assertEqual(game.ship_tree_portability_source(), "recipes/release.md")
+        self._web_manifest()
+        self._artifact_tree(complete=False)
+        report = game.ship_reading(self.project)
+        self.assertIsNotNone(report["tree"], "o ship já lista a árvore de dist/")
+        item = report["tree"]
+        self.assertIn(
+            "abrir o menu ou obter um ZIP comprove portabilidade",
+            item["scope"],
+            "a árvore copiava as partes e calava a recusa",
+        )
+        self.assertIn("(`portabilidade`)", item["scope"])
+        self.assertNotIn("portabilidade", item)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_zip_as_portable(""))
+        with mock.patch.object(game, "ship_tree_portability_source", return_value=None):
+            silent = game.ship_reading(self.project)
+        self.assertNotIn("abrir o menu ou obter um ZIP comprove portabilidade", silent["tree"]["scope"])
+        raw = game.ship_tree(self.project)
+        self.assertNotIn("scope", raw)
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a portabilidade que a receita já recusa", recipe)
+        self.assertIn("nomeia a portabilidade que a receita já recusa", skill)
+        self.assertIn("nomeia a portabilidade que a receita já recusa", readme)
+        self.assertNotIn("verified", recipe)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("abrir o menu ou obter um ZIP comprove portabilidade", report["scope"])
+        self.assertNotIn("abrir o menu ou obter um ZIP comprove portabilidade", report["artifact"]["scope"])
+        self.assertNotIn("abrir o menu ou obter um ZIP comprove portabilidade", game.next_scope())
+        self.assertNotIn("abrir o menu ou obter um ZIP comprove portabilidade", game.play_scope(self.project))
+
     def test_ship_artifact_names_the_editor_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
         self.assertTrue(

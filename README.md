@@ -800,7 +800,7 @@ nomeia a árvore exportada, o `ship` nomeia o banner que o serve já imprime.
 Banner no disco não é outra máquina. Sem chave `serve`. Se o
 `tools/export.*` declara o empacote, o `ship` nomeia o passo que o export já declara.
 Empacotar no disco não é outra máquina. Sem chave `export`. Se o
-`tools/export.*` recusa `file://`, o `ship` nomeia o file:// que o export já recusa. Recusar no disco não é outra máquina. Sem chave `file`. Se a receita recusa que a identidade seja outra máquina, o `tree` do ship nomeia a identidade que a receita já recusa. Árvore no disco não é entrega. Sem chave `identidade`. Se a receita recusa que o teste no editor demonstre o jogo exportado, o `artifact` do ship nomeia o editor que a receita já recusa. Manifesto no disco não é o jogo exportado. Sem chave `editor`. Nomear
+`tools/export.*` recusa `file://`, o `ship` nomeia o file:// que o export já recusa. Recusar no disco não é outra máquina. Sem chave `file`. Se a receita recusa que a identidade seja outra máquina, o `tree` do ship nomeia a identidade que a receita já recusa. Árvore no disco não é entrega. Sem chave `identidade`. Se a receita recusa que abrir o menu ou obter um ZIP comprove portabilidade, o `tree` do ship nomeia a portabilidade que a receita já recusa. ZIP no disco não é o destino. Sem chave `portabilidade`. Se a receita recusa que o teste no editor demonstre o jogo exportado, o `artifact` do ship nomeia o editor que a receita já recusa. Manifesto no disco não é o jogo exportado. Sem chave `editor`. Nomear
 não devolve o jogo. `shipped` e `elsewhere` são sempre `false`. Árvore
 incompleta recebe `ship.incomplete`; artefato de outro commit recebe
 `ship.stale`.

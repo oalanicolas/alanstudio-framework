@@ -69,7 +69,7 @@ partida, pausa/áudio, identidade, save e rede quando presentes. Consulte a vers
 do SDK do destino; evento de foco não tem necessariamente a semântica de pausa do jogo.
 Registre disponível, adaptado, ausente ou não verificado por serviço. Teste o artefato
 transformado, inclusive recuperação e falha do serviço; abrir o menu ou obter um ZIP
-não comprova portabilidade. Preserve a fonte autoral e confira suas invariantes após
+não comprova portabilidade. Se a receita recusa que abrir o menu ou obter um ZIP comprove portabilidade, o `tree` do ship nomeia a portabilidade que a receita já recusa. ZIP no disco não é o destino. Sem chave `portabilidade`. Preserve a fonte autoral e confira suas invariantes após
 exportar. [Origem e limites](../references/sources.md#autoria-ugc-pública).
 
 Registre a versão entregue, o conteúdo dela, o que ficou de fora e as lacunas
@@ -81,7 +81,7 @@ e serve por `tools/serve.mjs`. `npm run build` copia a árvore jogável para
 `dist/` (index, src, data, serve). Isso torna o clone limpo trivial de
 reproduzir e declara o passo de empacotar — não prova que outra máquina
 já executou o artefato. Se o `tools/export.*` declara o empacote, o `ship` nomeia o passo que o export já declara.
-Empacotar no disco não é outra máquina. Sem chave `export`. Se o `tools/export.*` recusa `file://`, o `ship` nomeia o file:// que o export já recusa. Recusar no disco não é outra máquina. Sem chave `file`. Se a receita recusa que a identidade seja outra máquina, o `tree` do ship nomeia a identidade que a receita já recusa. Árvore no disco não é entrega. Sem chave `identidade`. Se a receita recusa que o teste no editor demonstre o jogo exportado, o `artifact` do ship nomeia o editor que a receita já recusa. Manifesto no disco não é o jogo exportado. Sem chave `editor`. O harness lê o passo com `ship <projeto>`.
+Empacotar no disco não é outra máquina. Sem chave `export`. Se o `tools/export.*` recusa `file://`, o `ship` nomeia o file:// que o export já recusa. Recusar no disco não é outra máquina. Sem chave `file`. Se a receita recusa que a identidade seja outra máquina, o `tree` do ship nomeia a identidade que a receita já recusa. Árvore no disco não é entrega. Sem chave `identidade`. Se a receita recusa que abrir o menu ou obter um ZIP comprove portabilidade, o `tree` do ship nomeia a portabilidade que a receita já recusa. ZIP no disco não é o destino. Sem chave `portabilidade`. Se a receita recusa que o teste no editor demonstre o jogo exportado, o `artifact` do ship nomeia o editor que a receita já recusa. Manifesto no disco não é o jogo exportado. Sem chave `editor`. O harness lê o passo com `ship <projeto>`.
 `shipped` é sempre falso. Sem o passo, `next` propõe `ship.unpacked`.
 Árvore incompleta é `ship.incomplete`; artefato de outro commit é
 `ship.stale`. Nomeia a árvore que perdeu o `src/` que o projeto já

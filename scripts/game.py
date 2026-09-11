@@ -3925,7 +3925,35 @@ def ship_tree_scope():
             " O disco recusa que a identidade seja outra máquina (`identidade`). "
             "Árvore no disco não é entrega."
         )
+    if ship_tree_portability_source():
+        scope += (
+            " O disco recusa que abrir o menu ou obter um ZIP comprove "
+            "portabilidade (`portabilidade`). ZIP no disco não é o destino."
+        )
     return scope
+
+
+# A receita já recusa que um ZIP comprove portabilidade. Sem isto a
+# árvore copiava as partes e calava a recusa.
+# ZIP no disco não é o destino.
+SHIP_PORTABILITY = re.compile(r"não\s+comprova portabilidade")
+
+
+def recipe_refuses_zip_as_portable(text):
+    return bool(text and SHIP_PORTABILITY.search(text))
+
+
+def ship_tree_portability_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_zip_as_portable(text):
+        return "recipes/release.md"
+    return None
 
 
 # A receita já recusa que o teste no editor demonstre o exportado.
