@@ -8635,16 +8635,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "felt": False,
         }), encoding="utf-8")
         report = game.playtest_reading(destination)
-        self.assertEqual(report["candidate_curve"], {
-            "never_banked": True,
-            "unbanked_at_end": 3,
-        })
+        curve = report["candidate_curve"]
+        self.assertTrue(curve["never_banked"])
+        self.assertEqual(curve["unbanked_at_end"], 3)
         self.assertEqual(report["candidate_seed"], 8)
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
         self.assertIn("candidate_curve", report["scope"])
         self.assertNotIn("aprovado", json.dumps(report))
         self.assertNotIn("verified", json.dumps(report))
+
+    def test_playtest_curve_names_the_squeeze_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_squeeze_as_curve(recipe),
+            "a receita já recusa que o aperto seja curva observada",
+        )
+        self.assertEqual(game.playtest_curve_squeeze_source(), "recipes/content.md")
+        destination = self.root / "com-aperto"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"seed": 8, "score": 12, "ticks": 400},
+            "curve": {"never_banked": True, "unbanked_at_end": 3},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(destination)
+        self.assertIsNotNone(report["candidate_curve"], "o playtest já lista a curva")
+        item = report["candidate_curve"]
+        self.assertIn(
+            "aperto seja curva observada",
+            item["scope"],
+            "a curva copiava never_banked e calava a recusa",
+        )
+        self.assertIn("(`aperto`)", item["scope"])
+        self.assertNotIn("aperto", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_squeeze_as_curve(""))
+        with mock.patch.object(game, "playtest_curve_squeeze_source", return_value=None):
+            silent = game.playtest_reading(destination)
+        self.assertNotIn("aperto seja curva observada", silent["candidate_curve"]["scope"])
+        raw = game.last_run_curve(destination)
+        self.assertNotIn("scope", raw)
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o aperto que a receita já recusa", feel)
+        self.assertIn("nomeia o aperto que a receita já recusa", skill)
+        self.assertIn("nomeia o aperto que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aperto seja curva observada", report["scope"])
+        self.assertNotIn("aperto seja curva observada", report["candidate_tally"]["scope"] if report.get("candidate_tally") else "")
+        self.assertNotIn("aperto seja curva observada", game.next_scope())
+        invite = game.invite_playtest(destination)
+        self.assertNotIn("aperto seja curva observada", invite["scope"])
 
     def test_playtest_names_the_tally_the_last_run_already_counts(self):
         destination = self.root / "com-conta"

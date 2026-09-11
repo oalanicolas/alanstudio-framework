@@ -3989,6 +3989,42 @@ def last_run_curve(project):
     return facts or None
 
 
+# A receita já recusa que o aperto seja curva observada.
+# Sem isto a curva copiava never_banked e calava a recusa.
+# Número no disco não é sessão.
+CONTENT_SQUEEZE = re.compile(r"Aperto no disco não é curva observada")
+
+
+def recipe_refuses_squeeze_as_curve(text):
+    return bool(text and CONTENT_SQUEEZE.search(text))
+
+
+def playtest_curve_squeeze_source():
+    path = FRAMEWORK / "recipes/content.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_squeeze_as_curve(text):
+        return "recipes/content.md"
+    return None
+
+
+def playtest_curve_scope():
+    scope = (
+        "never_banked e a aposta que ficou no last-run. "
+        "Não observa a sessão e não mede o fecho."
+    )
+    if playtest_curve_squeeze_source():
+        scope += (
+            " O disco recusa que o aperto seja curva observada (`aperto`). "
+            "Número no disco não é sessão."
+        )
+    return scope
+
+
 TALLY_FIELDS = ("score", "collected", "missed", "hits", "banks")
 
 
@@ -4212,6 +4248,8 @@ def playtest_reading(project):
     candidate_look = last_run_look(project) if candidate else None
     candidate_speed = last_run_speed(project) if candidate else None
     candidate_curve = last_run_curve(project) if candidate else None
+    if candidate_curve is not None:
+        candidate_curve = dict(candidate_curve, scope=playtest_curve_scope())
     candidate_policy = last_run_policy(project) if candidate else None
     candidate_tally = last_run_tally(project) if candidate else None
     if candidate_tally is not None:

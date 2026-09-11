@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.462 — o candidate_curve nomeia o aperto que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+aperto
+no
+disco
+não
+é
+curva
+observada.
+A
+curva
+copiava
+never_banked
+e
+calava
+a
+recusa.
+Agora
+o
+`candidate_curve`
+nomeia
+o
+aperto.
+Número
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`aperto`.
+Nomear
+não
+observa.
+
+O que 0.9.462 não afirma:
+número
+no
+disco
+não
+é
+sessão
+observada
+nem
+fecho
+medido.
+
 ## 0.9.461 — o metadata_issues nomeia o semântico que a guia já recusa
 
 A
