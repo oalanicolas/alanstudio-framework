@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.462: o `candidate_curve` nomeia o aperto que a receita já recusa. Número no disco não é sessão. Sem chave `aperto`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** HEAD anterior (0.9.461: 457 / 509; merge PR #5 em `c3cf880`) + confirmação pendente.
+**Suítes confirmadas no HEAD (0.9.462):** `python3 -m unittest discover -s tests` → 461 OK.
+`cd assets/starters/canvas-arcade && npm test` → 515 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
