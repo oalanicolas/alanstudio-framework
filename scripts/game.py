@@ -4975,6 +4975,10 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     areas["architecture"]["scope"] = architecture_area_scope()
     areas["provenance"]["scope"] = provenance_area_scope()
     areas["qa"]["scope"] = qa_area_scope()
+    candidate_scope = scan_candidate_scope()
+    for area in areas.values():
+        for item in area["candidates"]:
+            item["scope"] = candidate_scope
     return {
         "schema_version": 3, "project": str(project), "exists": project.is_dir(),
         "minimum_status": "needs_review" if needs_documentation else "candidates_found",
@@ -5338,6 +5342,42 @@ def audit_scope():
         scope += (
             " O disco recusa que a checagem seja daemon (`daemon`). "
             "Roteiro no disco não é interceptação."
+        )
+    return scope
+
+
+# O roteiro já recusa que reconstruir documentos comprove intenções. Sem isto o
+# candidato copiava o path e calava a recusa.
+# Candidato no disco não é autoria.
+AUDIT_INTENT = re.compile(r"não comprova intenções autorais")
+
+
+def audit_refuses_rebuilt_intent(text):
+    return bool(text and AUDIT_INTENT.search(text))
+
+
+def scan_candidate_intent_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_refuses_rebuilt_intent(text):
+        return "references/project-audit.md"
+    return None
+
+
+def scan_candidate_scope():
+    scope = (
+        "Path, linha e estado do documento candidato. Não observa o "
+        "jogo e não atribui autoria."
+    )
+    if scan_candidate_intent_source():
+        scope += (
+            " O disco recusa que reconstruir documentos comprove intenções (`intenções`). "
+            "Candidato no disco não é autoria."
         )
     return scope
 

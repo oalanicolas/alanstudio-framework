@@ -629,7 +629,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(result["audit"]["notice"])
         self.assertTrue(all(area["status"] == "candidate_found" for area in result["areas"].values()))
         candidate = result["areas"]["architecture"]["candidates"][0]
-        self.assertEqual(candidate, {"path": "README.md", "line": 7, "status": "candidate", "basis": "heading", "via": []})
+        self.assertEqual(candidate["path"], "README.md")
+        self.assertEqual(candidate["line"], 7)
+        self.assertEqual(candidate["status"], "candidate")
+        self.assertEqual(candidate["basis"], "heading")
+        self.assertEqual(candidate["via"], [])
         self.assertEqual(document.read_bytes(), before)
 
     def test_context_scans_foundation_for_every_focus_without_audit_request(self):
@@ -1409,6 +1413,50 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("áudio AAA seja quantidade de arquivos", game.next_scope())
         self.assertNotIn("áudio AAA seja quantidade de arquivos", game.feel_reading(self.project)["scope"])
         self.assertNotIn("áudio AAA seja quantidade de arquivos", game.roles_fill_scope())
+
+    def test_scan_names_the_intent_the_audit_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.audit_refuses_rebuilt_intent(guide),
+            "o roteiro já recusa que reconstruir documentos comprove intenções",
+        )
+        self.assertEqual(game.scan_candidate_intent_source(), "references/project-audit.md")
+        self.foundation_document()
+        report = game.scan(self.project)
+        item = next(
+            candidate
+            for area in report["areas"].values()
+            for candidate in area["candidates"]
+        )
+        self.assertIn(
+            "reconstruir documentos comprove intenções",
+            item["scope"],
+            "o candidato copiava o path e calava a recusa",
+        )
+        self.assertIn("(`intenções`)", item["scope"])
+        self.assertNotIn("intenções", item)
+        self.assertFalse(report["audit"]["executed"])
+        self.assertFalse(game.audit_refuses_rebuilt_intent(""))
+        with mock.patch.object(game, "scan_candidate_intent_source", return_value=None):
+            silent = game.scan(self.project)
+        silent_item = next(
+            candidate
+            for area in silent["areas"].values()
+            for candidate in area["candidates"]
+        )
+        self.assertNotIn("reconstruir documentos comprove intenções", silent_item["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia as intenções que o roteiro já recusa", recipe)
+        self.assertIn("nomeia as intenções que o roteiro já recusa", skill)
+        self.assertIn("nomeia as intenções que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("reconstruir documentos comprove intenções", report["scope"])
+        self.assertNotIn("reconstruir documentos comprove intenções", game.audit_scope())
+        self.assertNotIn("reconstruir documentos comprove intenções", game.coverage_scope())
+        self.assertNotIn("reconstruir documentos comprove intenções", game.next_scope())
+        self.assertNotIn("reconstruir documentos comprove intenções", game.documentation_scope(True))
 
     def test_check_plan_names_the_merit_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")

@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.442 — o scan nomeia as intenções que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+reconstruir
+documentos
+não
+comprova
+intenções
+autorais.
+O
+candidato
+copiava
+o
+path
+e
+calava
+a
+recusa.
+Agora
+o
+`scan`
+nomeia
+as
+intenções.
+Candidato
+no
+disco
+não
+é
+autoria.
+Sem
+chave
+`intenções`.
+Nomear
+não
+observa.
+
+O que 0.9.442 não afirma:
+candidato
+no
+disco
+não
+é
+autoria
+nem
+diversão
+observada.
+
 ## 0.9.441 — o roles nomeia a quantidade que a receita já recusa
 
 A
