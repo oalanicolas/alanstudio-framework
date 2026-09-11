@@ -158,6 +158,7 @@ export function createRenderer(canvas, options = {}) {
         settings,
         persistLine(extra.persist, lines),
         settingsLine(extra.settingsLoad, lines),
+        extra.audio || "",
       );
       drawMotes(context, palette, state, reduced, (mote) => mote.kind === "lapse");
     } else if (frame.paused) {
@@ -682,11 +683,19 @@ export function createRenderer(canvas, options = {}) {
     }
     if (recovered) {
       target.fillText(recovered, FIELD.width / 2, notice);
+      notice += 12 * scale;
+    }
+    const audio = String(extra.audio || "").trim();
+    if (audio) {
+      // O painel e o live já nomeiam o vazio. Sem isto o
+      // canvas da porta calava a lacuna. Texto no disco
+      // não é mix ouvido.
+      target.fillText(audio, FIELD.width / 2, notice);
     }
     target.textAlign = "left";
   }
 
-  function drawOverlay(target, palette, title, hint, settings = {}, persist = "", recovered = "") {
+  function drawOverlay(target, palette, title, hint, settings = {}, persist = "", recovered = "", audio = "") {
     // A cortina reusa a placa do look — dusk não herda o preto frio.
     // Token no disco não é direção observada. O texto segue uiScale
     // como o HUD; escala no stub não é sessão de alcance.
@@ -707,6 +716,14 @@ export function createRenderer(canvas, options = {}) {
     }
     if (recovered) {
       target.fillText(recovered, FIELD.width / 2, notice);
+      notice += 12 * scale;
+    }
+    const gap = String(audio || "").trim();
+    if (gap) {
+      // A cortina do fim cobria o painel. Sem isto o live
+      // falava a lacuna e o canvas calava. A pausa continua
+      // sem esta linha — o live da pausa também cala o som.
+      target.fillText(gap, FIELD.width / 2, notice);
     }
     target.textAlign = "left";
   }

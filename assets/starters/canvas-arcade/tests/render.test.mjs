@@ -798,6 +798,45 @@ test("a porta nomeia a recuperação que o painel já mostra", () => {
   );
 });
 
+test("a porta e o fim nomeiam a lacuna do som que o painel já mostra", () => {
+  const gap = "Nenhum arquivo de som embarcado. Papéis declarados e vazios: dash.";
+  const state = createState(1, { entry: "title" });
+  const door = paint(state, {}, { best: 0, audio: gap });
+  assert.ok(
+    door.texts.some((item) => String(item.text).includes("arquivo de som embarcado")),
+    "o canvas da porta calava a lacuna",
+  );
+  assert.ok(hudBands(door) <= hudBands(paint(state)), "a lacuna do som não é faixa no HUD");
+  const quiet = paint(state, {}, { best: 0 });
+  assert.equal(
+    quiet.texts.some((item) => String(item.text).includes("arquivo de som")),
+    false,
+  );
+  const ended = createState(1);
+  ended.phase = "over";
+  const over = paint(ended, {}, { audio: gap });
+  assert.ok(
+    over.texts.some((item) => String(item.text).includes("arquivo de som embarcado")),
+    "o canvas do fim calava a lacuna",
+  );
+  const paused = paint(createState(1), {}, { audio: gap }, { paused: true });
+  assert.equal(
+    paused.texts.some((item) => String(item.text).includes("arquivo de som")),
+    false,
+    "a pausa não nomeia a lacuna do som",
+  );
+  const field = paint(createState(1), {}, { audio: gap });
+  assert.equal(
+    field.texts.some((item) => String(item.text).includes("arquivo de som")),
+    false,
+    "no campo a lacuna não inventa aviso",
+  );
+  assert.doesNotMatch(
+    [...door.texts, ...over.texts].map((item) => item.text).join(" "),
+    /aprovado|verified|heard/,
+  );
+});
+
 test("a abertura nomeia sessão volátil e gravação recusada sem inventar faixa", () => {
   const state = createState(1, { entry: "title" });
   const volatile = paint(state, {}, { best: 0, persist: { durable: false, wrote: true, trusted: false } });

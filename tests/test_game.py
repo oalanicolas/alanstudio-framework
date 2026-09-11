@@ -3741,6 +3741,28 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(perf["measured"])
         self.assertIn("budget", perf["scripts"])
 
+    def test_access_names_the_canvas_gap_the_panel_already_shows(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        render = (starter / "src/game/render.js").read_text(encoding="utf-8")
+        self.assertTrue(game.canvas_names_audio_gap(render), "o canvas da porta calava a lacuna")
+        self.assertEqual(game.canvas_audio_gap_source(starter), "src/game/render.js")
+        report = game.access_reading(starter)
+        self.assertIn("lacuna do som", report["scope"])
+        self.assertFalse(report["verified"])
+        self.assertNotIn("audio_gap", report)
+        empty = game.access_reading(self.project)
+        self.assertFalse(game.canvas_names_audio_gap(""))
+        self.assertIsNone(game.canvas_audio_gap_source(self.project))
+        self.assertNotIn("lacuna do som", empty["scope"])
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("lacuna do som", recipe.casefold())
+        self.assertIn("lacuna do som", access.casefold())
+        self.assertIn("lacuna do som", readme.casefold())
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", access)
+
     def test_audio_recipe_names_the_session_clock_the_bed_already_follows(self):
         recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
         access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")

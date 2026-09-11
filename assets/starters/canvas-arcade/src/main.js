@@ -410,6 +410,7 @@ export function createGame(options = {}) {
       lastRun,
       persist: persist(),
       settingsLoad,
+      audio: audioGapLive(audio.missing()),
     });
   }
 

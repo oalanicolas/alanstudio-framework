@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.346 — o canvas da porta nomeia a lacuna do som
+
+O
+painel
+e
+o
+live
+já
+falavam
+o
+vazio.
+O
+canvas
+da
+porta
+e
+do
+fim
+calava.
+Agora
+a
+mesma
+linha
+aparece
+na
+abertura
+e
+no
+overlay.
+Sem
+faixa
+no
+HUD.
+A
+pausa
+não
+nomeia.
+Não
+promove
+`verified`.
+
+O que 0.9.346 não afirma:
+texto
+no
+disco
+não
+é
+mix
+ouvido.
+
 ## 0.9.345 — o achado copiado nomeia o last-run simulado
 
 A

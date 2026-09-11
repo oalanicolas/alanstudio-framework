@@ -11,6 +11,9 @@ tinha a tabela, e o convite some `#commands`. Overlay, HUD da abertura, a
 legenda e a casca da página também seguem `uiScale`. Os knobs da casca
 vestem o look e têm foco visível. O canvas continua no
 desenho. A porta lê a legenda que o mixer ainda guarda.
+Na porta e no fim o canvas nomeia a lacuna do som que o
+painel e o live já mostram. A pausa não. Texto no disco
+não é mix ouvido.
 Sem tela o headless já joga.
 
 Acesso é decisão de design, não camada final. Tratado no GDD, custa uma escolha;

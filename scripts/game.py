@@ -1618,6 +1618,24 @@ def _feel_scope(project):
     return scope
 
 
+# O painel e o live já nomeiam o vazio. Sem isto o
+# access lia região viva e calava o canvas da porta.
+# Texto no disco não é mix ouvido.
+CANVAS_AUDIO_GAP = re.compile(r"extra\.audio[\s\S]{0,400}?fillText\(\s*audio\b")
+
+
+def canvas_names_audio_gap(text):
+    return bool(text and CANVAS_AUDIO_GAP.search(text))
+
+
+def canvas_audio_gap_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if canvas_names_audio_gap(text):
+            return relative
+    return None
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -1626,6 +1644,18 @@ def access_reading(project):
             if pattern.search(text):
                 found[key].append(relative)
     options = [key for key, sources in found.items() if sources]
+    scope = (
+        "Procura highContrast, reducedMotion, captions, remapeamento, "
+        "uiScale, preset de uma mão, assistência, velocidade da partida, "
+        "tinta estável, região viva e pulso no aparelho no código. Não "
+        "mede contraste, não joga com o modo ativo e não aprova alcance. "
+        "`verified` é sempre falso."
+    )
+    if canvas_audio_gap_source(project):
+        scope += (
+            " Na porta e no fim o canvas nomeia a lacuna do som que o "
+            "painel já mostra. Texto no disco não é mix ouvido."
+        )
     return {
         "schema_version": 1,
         "project": str(project),
@@ -1642,13 +1672,7 @@ def access_reading(project):
             "Opção declarada no código não é opção observada. Uma chave sem "
             "consumidor também não é alcance."
         ),
-        "scope": (
-            "Procura highContrast, reducedMotion, captions, remapeamento, "
-            "uiScale, preset de uma mão, assistência, velocidade da partida, "
-            "tinta estável, região viva e pulso no aparelho no código. Não "
-            "mede contraste, não joga com o modo ativo e não aprova alcance. "
-            "`verified` é sempre falso."
-        ),
+        "scope": scope,
     }
 
 

@@ -236,6 +236,7 @@ test("na porta e no fim a região viva nomeia a lacuna do som que o painel já m
     "pausado. 12",
   );
   assert.match(main, /audioGapLive\(audio\.missing\(\)\)/);
+  assert.match(main, /audio:\s*audioGapLive\(audio\.missing\(\)\)/, "o draw calava a lacuna que o live já leva");
   assert.equal(liveText({ phase: "title", audio: gap }).includes(gap), true, "o painel falava e o live calava");
   assert.doesNotMatch(
     liveText({ phase: "title", audio: gap }),
