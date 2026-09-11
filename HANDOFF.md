@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.340: o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem. Não promove `elsewhere`.
+**HEAD:** ver `git log -1` — vigente 0.9.341: o `roles` nomeia o `duckMs` que `SOUNDS` já declara. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.340):** `python3 -m unittest discover -s tests` → 336.
+**Testes no HEAD (0.9.341):** `python3 -m unittest discover -s tests` → 337.
 `cd assets/starters/canvas-arcade && npm test` → 504.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.340)
+## O que o HEAD já entrega (0.9.91–0.9.341)
 
 | Ver | Salto |
 | --- | --- |
@@ -284,6 +284,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.338 | O `origins` nomeia a mídia que o recibo lista e o disco perdeu. O JSON já cobria o arquivo presente; o WAV sumido calava. CREDITS.md pela menção continua. Nomear não devolve o arquivo. Não promove `granted`. |
 | 0.9.339 | O `start` não nomeia `npm install` quando o `package.json` não tem dependências. O starter já recusava o passo; o harness pedia install sem ter o que instalar. Com dependências e sem `node_modules`, a chave permanece. `play` continua o serve. O `feel` não ganha a chave. Nomear não instala. |
 | 0.9.340 | O `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem. O export já copia o jogo; identidade e serve sozinhos diziam completa. Nomear não devolve o jogo. Não promove `elsewhere`. |
+| 0.9.341 | O `roles` nomeia o `duckMs` que `SOUNDS` já declara. O comando já lia o papel; o aviso que abaixa a cama calava. Sem duck a chave some. Nomear não é mix ouvida. Não promove `heard`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -301,7 +302,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | feel | playable | o `feel` nomeia o peso do passo que o CONFIG já declara; o `feel` nomeia o rumble que já lê; o rótulo do dash nomeia o avanço no travel; o compromisso da guarda veste a aposta; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
-| audio_mix | slice | o `sfx verify` nomeia o som que o catálogo perdeu; o `sfx export` nomeia o stem que o disco perdeu; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
+| audio_mix | slice | o `roles` nomeia o `duckMs` que `SOUNDS` já declara; o `sfx verify` nomeia o som que o catálogo perdeu; o `sfx export` nomeia o stem que o disco perdeu; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | o `playtest` nomeia a conta do last-run; a porta chove o risco da mesa; o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
@@ -1167,6 +1168,9 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `playtest` que cala a conta que o last-run já conta.
 **Não** mais um `start` que manda o serve e cala o `npm install`.
 **Não** mais um `start` que nomeia `npm install` sem ter o que instalar.
+**Não** mais um `origins` que cala a mídia que o recibo lista e o disco perdeu.
+**Não** mais um `ship` que diz completa a dist sem o `src/` que o projeto já tem.
+**Não** mais um `roles` que lê `SOUNDS` e cala o `duckMs`.
 
 Candidatos, do que ainda dói:
 
@@ -1225,7 +1229,10 @@ Candidatos, do que ainda dói:
    `dashes` e `ticks` ficam de fora.
    `next`
    aponta o serve, a página (`finding_open`) e `note --field`, não relê o
-   leitor. Sem `then` no leitor.    Sem acervo, `roles --fill` nomeia o stem
+   leitor. Sem `then` no leitor.    `roles` nomeia o `duckMs` que
+   `SOUNDS` já declara. Sem duck a
+   chave some. Nomear não é mix
+   ouvida. Sem acervo, `roles --fill` nomeia o stem
    do starter; `--apply` o copia — e recoloca o WAV se o
    recibo já está e origem e licença casam; `next` aponta
    `--apply`. `sfx copy` do acervo recoloca o WAV se o
@@ -1281,7 +1288,13 @@ Candidatos, do que ainda dói:
    sem cruzar e nomeia o stem que o recibo lista e o disco
    perdeu. `sfx verify` nomeia o som que o catálogo lista
    e o disco perdeu — não despeja errno. Nomear não entrega. Copiar não é `heard`. Tocar não
-   é `heard`. `sfx copy` de stem local perdido ainda trata
+   é `heard`.    `roles` já nomeia o `duckMs` que
+   `SOUNDS` declara — não pôr o duck
+   no `feel` (irmão, não o próximo
+   salto). Não nomear `DUCK_BUSES`,
+   `DUCK_LEVEL` nem `MIX_HEADROOM`
+   no mesmo leitor (irmão, não o
+   próximo salto). `sfx copy` de stem local perdido ainda trata
    a ausência como id desconhecido — irmão, não o próximo
    salto. O rótulo do coil do dash ainda diz recarregando —
    irmão do travel, não o próximo salto. `sfx export` de
@@ -2412,6 +2425,15 @@ Candidatos, do que ainda dói:
   src
   do
   projeto
+  e um
+  `roles`
+  que
+  lê
+  `SOUNDS`
+  e
+  cala
+  o
+  `duckMs`
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2436,15 +2458,16 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`ship` nomeia a árvore que
-perdeu o `src/` que o projeto
-já tem. O export já copia o
-jogo; identidade e serve
-sozinhos diziam completa.
-Nomear não devolve o jogo.
-Não promove `elsewhere`.
-Não exigir `data/` nem
-`public/` no mesmo salto.
+`roles` nomeia o `duckMs` que
+`SOUNDS` já declara. O comando
+já lia o papel; o aviso que
+abaixa a cama calava. Sem duck
+a chave some. Nomear não é mix
+ouvida. Não promove `heard`.
+Não pôr o duck no `feel`.
+Não nomear `DUCK_BUSES`,
+`DUCK_LEVEL` nem `MIX_HEADROOM`
+no mesmo salto.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2520,6 +2543,7 @@ A família start que manda o serve e cala o npm install está saturada.
 A família origins que cala a mídia que o recibo lista e o disco perdeu está saturada.
 A família start que nomeia npm install sem ter o que instalar está saturada.
 A família ship que diz completa a dist sem o src do projeto está saturada.
+A família roles que lê SOUNDS e cala o duckMs está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -2529,3 +2553,6 @@ Não adicionar `then.install` ao `feel`.
 CREDITS.md pela menção ainda declara — irmão de 334.
 Menção em CREDITS.md de caminho ausente continua calada — irmão de 334 e 338.
 Não exigir `data/` nem `public/` na árvore do ship — irmão de 340.
+Não pôr o duck no `feel` — irmão de 341.
+Não nomear `DUCK_BUSES`, `DUCK_LEVEL` nem `MIX_HEADROOM` no `roles` — irmão de 341.
+Próxima ronda: feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel; ferramenta de outsider que não seja tally na faixa; superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer; ou atrito ideia→jogo que não seja 332/337/339.

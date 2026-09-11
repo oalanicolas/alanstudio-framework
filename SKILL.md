@@ -231,8 +231,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    executa e não observa. Nomear não serve.
    O `prompt` também sai em stderr;
    o JSON fica no stdout.
-   **`roles <projeto>`** lê os papéis de áudio que o código declara e os
-   arquivos que os preenchem. `--fill` sugere o acervo ou a ficha
+   **`roles <projeto>`** lê os papéis de áudio que o código declara, o
+   `duckMs` que a tabela já lista, e os arquivos que os preenchem.
+   Sem duck a chave some. Nomear não é mix ouvida. `--fill` sugere o acervo ou a ficha
    do stem do starter; `--apply` copia o id do acervo ou o stem
    do starter com créditos — e recoloca o WAV se o recibo já está
    e origem e licença casam. `sfx copy` continua o caminho explícito. Crescer o acervo é `sfx import` / `sfx seed`

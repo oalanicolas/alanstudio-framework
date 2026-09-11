@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.341 — o roles nomeia o duck que SOUNDS já declara
+
+O
+comando
+já
+lia
+o
+papel.
+O
+aviso
+que
+abaixa
+a
+cama
+calava.
+Agora
+`duckMs`
+entra
+no
+recibo.
+Sem
+duck
+a
+chave
+some.
+Nomear
+não
+é
+mix
+ouvida.
+Não
+promove
+`heard`.
+
+O que 0.9.341 não afirma:
+número
+no
+disco
+não
+é
+cama
+abaixada
+no
+aparelho.
+
 ## 0.9.340 — o ship nomeia a árvore que perdeu o src
 
 O

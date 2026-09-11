@@ -534,8 +534,8 @@ Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
 
 O starter declara os papéis do verbo, o orbe perdido, o fecho, a prática, a guarda e a cama (`const SOUNDS`) e já traz
 design original em `public/sfx/<papel>.wav`. A cama entra em loop no
-barramento de música; no `over` ela solta com fade. `roles` lê a declaração e cruza com
-arquivos em `public/sfx` (e equivalentes). Papel vazio continua lacuna:
+barramento de música; no `over` ela solta com fade. `roles` lê a declaração — inclusive o `duckMs` que a tabela já lista — e cruza com
+arquivos em `public/sfx` (e equivalentes). Sem duck a chave some. Nomear não é mix ouvida. Papel vazio continua lacuna:
 
 ```sh
 python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo

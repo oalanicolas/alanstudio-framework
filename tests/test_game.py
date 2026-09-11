@@ -2572,6 +2572,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("hit", report["empty"])
         self.assertFalse(report["heard"])
 
+    def test_roles_names_the_duck_the_sounds_already_declare(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.roles_reading(starter)
+        by_id = {item["id"]: item for item in report["roles"]}
+        self.assertEqual(by_id["bank"]["duckMs"], 180, "o roles lia o papel e calava o duck")
+        self.assertEqual(by_id["hit"]["duckMs"], 260)
+        self.assertEqual(by_id["over"]["duckMs"], 400)
+        self.assertNotIn("duckMs", by_id["dash"])
+        self.assertNotIn("duckMs", by_id["bed"])
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertIn("duckms", report["scope"].casefold())
+        self.assertIn("não é mix ouvida", report["scope"])
+        extracted = game._role_entries_from_code(
+            "export const SOUNDS = {\n"
+            "  dash: { bus: \"sfx\", caption: \"avanço\", priority: 1 },\n"
+            "  hit: { bus: \"sfx\", caption: \"atingido\", priority: 4, duckMs: 260 },\n"
+            "  bank: {\n"
+            "    bus: \"sfx\",\n"
+            "    duckMs: 180,\n"
+            "  },\n"
+            "};\n"
+        )
+        self.assertEqual(
+            extracted,
+            [
+                {"id": "dash"},
+                {"id": "hit", "duckMs": 260},
+                {"id": "bank", "duckMs": 180},
+            ],
+        )
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        audio = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("duckms", recipe.casefold())
+        self.assertIn("duckms", audio.casefold())
+        self.assertIn("duckms", readme.casefold())
+        help_cli = subprocess.run(
+            [sys.executable, str(SCRIPT), "roles", "-h", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(help_cli.returncode, 0, help_cli.stderr)
+        self.assertIn("duck", (help_cli.stdout + help_cli.stderr).casefold())
+        self.assertNotIn("aprovado", report["scope"])
+        destination = self.root / "com-duck"
+        destination.mkdir()
+        (destination / "sounds.json").write_text(json.dumps({
+            "dash": {"bus": "sfx"},
+            "hit": {"bus": "sfx", "duckMs": 200},
+        }), encoding="utf-8")
+        listed = game.roles_reading(destination)
+        by_listed = {item["id"]: item for item in listed["roles"]}
+        self.assertEqual(by_listed["hit"]["duckMs"], 200)
+        self.assertNotIn("duckMs", by_listed["dash"])
+        self.assertFalse(listed["heard"])
+
     def test_roles_fill_suggests_from_the_catalog_and_apply_copies_as_the_role_name(self):
         destination = self.root / "com-acervo"
         game.init(destination, "canvas-arcade")

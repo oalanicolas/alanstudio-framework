@@ -1047,6 +1047,9 @@ ROLE_FOLDERS = ("public/sfx", "assets/sfx", "sfx", "audio", "public/audio")
 ROLE_EXTENSIONS = {".wav", ".ogg", ".mp3", ".flac", ".m4a", ".webm"}
 SOUNDS_OPEN = re.compile(r"(?:export\s+)?const\s+SOUNDS\s*=\s*\{")
 ROLE_OBJECT = re.compile(r"^([A-Za-z_][\w]*)\s*:\s*\{")
+# O mixer já abaixa a cama no aviso. Sem isto o roles
+# lia o papel e calava o duck. Número no disco não é mix ouvida.
+ROLE_DUCK = re.compile(r"\bduckMs\s*:\s*(\d+)")
 ROLE_CODE_SUFFIXES = {".js", ".mjs", ".ts"}
 ROLE_MANIFESTS = ("sounds.json", "audio-roles.json", "docs/audio-roles.json")
 ROLE_WALK_SKIP = {
@@ -1055,37 +1058,92 @@ ROLE_WALK_SKIP = {
 }
 
 
-def _role_names_from_manifest(path):
+def role_duck_ms(value):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    if isinstance(value, float) and (not value == value or not value.is_integer()):
+        return None
+    if value < 0:
+        return None
+    return int(value)
+
+
+def _role_entry(name, duck=None):
+    entry = {"id": name}
+    if duck is not None:
+        entry["duckMs"] = duck
+    return entry
+
+
+def _role_entries_from_manifest(path):
     try:
         data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
     except (OSError, json.JSONDecodeError):
         return []
     if isinstance(data, list):
-        return [item for item in data if isinstance(item, str) and item.strip()]
+        return [_role_entry(item) for item in data if isinstance(item, str) and item.strip()]
     if not isinstance(data, dict):
         return []
     listed = data.get("roles")
     if isinstance(listed, list):
-        return [item for item in listed if isinstance(item, str) and item.strip()]
+        entries = []
+        for item in listed:
+            if isinstance(item, str) and item.strip():
+                entries.append(_role_entry(item))
+                continue
+            if not isinstance(item, dict):
+                continue
+            name = item.get("id") or item.get("role") or item.get("key")
+            if not isinstance(name, str) or not name.strip():
+                continue
+            entries.append(_role_entry(name.strip(), role_duck_ms(item.get("duckMs"))))
+        return entries
     return [
-        key for key, value in data.items()
+        _role_entry(key, role_duck_ms(value.get("duckMs")) if isinstance(value, dict) else None)
+        for key, value in data.items()
         if key != "schema_version" and isinstance(value, (dict, str, bool, int))
     ]
 
 
-def _role_names_from_code(text):
+def _role_entries_from_code(text):
     start = SOUNDS_OPEN.search(text)
     if not start:
         return []
-    names = []
+    entries = []
+    current = None
+    depth = 0
     for line in text[start.end():].splitlines():
         stripped = line.strip()
-        if stripped.startswith("}"):
-            break
-        match = ROLE_OBJECT.match(stripped)
-        if match:
-            names.append(match.group(1))
-    return names
+        if current is None:
+            if stripped.startswith("}"):
+                break
+            match = ROLE_OBJECT.match(stripped)
+            if not match:
+                continue
+            found = ROLE_DUCK.search(stripped)
+            current = _role_entry(
+                match.group(1),
+                role_duck_ms(int(found.group(1))) if found else None,
+            )
+            depth = stripped.count("{") - stripped.count("}")
+            if depth <= 0:
+                entries.append(current)
+                current = None
+            continue
+        found = ROLE_DUCK.search(stripped)
+        if found and "duckMs" not in current:
+            duck = role_duck_ms(int(found.group(1)))
+            if duck is not None:
+                current["duckMs"] = duck
+        depth += stripped.count("{") - stripped.count("}")
+        if depth <= 0:
+            entries.append(current)
+            current = None
+    return entries
+
+
+def _role_names_from_code(text):
+    return [item["id"] for item in _role_entries_from_code(text)]
 
 
 def declared_sound_roles(project, max_files=80, max_bytes=64000):
@@ -1093,13 +1151,14 @@ def declared_sound_roles(project, max_files=80, max_bytes=64000):
     sources = []
     seen = set()
 
-    def add(names, source):
+    def add(entries, source):
         added = False
-        for name in names:
+        for entry in entries:
+            name = entry["id"]
             if name in seen:
                 continue
             seen.add(name)
-            found.append(name)
+            found.append(entry)
             added = True
         if added:
             sources.append(source)
@@ -1108,7 +1167,7 @@ def declared_sound_roles(project, max_files=80, max_bytes=64000):
         path = project / relative
         if not path.is_file() or path.is_symlink():
             continue
-        add(_role_names_from_manifest(path), relative)
+        add(_role_entries_from_manifest(path), relative)
     pending = [(project, 0)] if project.is_dir() else []
     inspected = 0
     while pending and inspected < max_files:
@@ -1138,9 +1197,9 @@ def declared_sound_roles(project, max_files=80, max_bytes=64000):
                 text = path.read_text(encoding="utf-8", errors="replace")
             except OSError:
                 continue
-            names = _role_names_from_code(text)
-            if names:
-                add(names, path.relative_to(project).as_posix())
+            entries = _role_entries_from_code(text)
+            if entries:
+                add(entries, path.relative_to(project).as_posix())
     return found, sources
 
 
@@ -1164,15 +1223,18 @@ def role_files(project, role):
 
 def roles_reading(project, root=None):
     project = Path(project)
-    names, sources = declared_sound_roles(project)
+    entries, sources = declared_sound_roles(project)
     roles = []
-    for name in names:
-        files = role_files(project, name)
-        roles.append({
-            "id": name,
+    for entry in entries:
+        files = role_files(project, entry["id"])
+        row = {
+            "id": entry["id"],
             "files": files,
             "state": "present" if files else "empty",
-        })
+        }
+        if "duckMs" in entry:
+            row["duckMs"] = entry["duckMs"]
+        roles.append(row)
     empty = [item["id"] for item in roles if item["state"] == "empty"]
     catalog = sfx_catalog.catalog_dir(root)
     return {
@@ -1192,9 +1254,10 @@ def roles_reading(project, root=None):
         ),
         "scope": (
             "Lê `const SOUNDS` e manifestos de papéis, e cruza com arquivos em "
-            "public/sfx e equivalentes. Não toca o som, não valida mixagem e não "
-            "aprova estética. `heard` e `approved` são sempre falsos: arquivo "
-            "presente não é mixagem ouvida."
+            "public/sfx e equivalentes. Nomeia o `duckMs` que a tabela já "
+            "declara. Sem duck a chave some. Nomear não é mix ouvida. Não toca "
+            "o som, não valida mixagem e não aprova estética. `heard` e "
+            "`approved` são sempre falsos: arquivo presente não é mixagem ouvida."
         ),
     }
 
@@ -6020,7 +6083,10 @@ def main():
     craft_cmd.add_argument("--gate", choices=sorted(GATES), help="só os checklists daquele gate")
     roles_cmd = commands.add_parser(
         "roles", parents=[common],
-        help="papéis de áudio que o projeto declara e os arquivos que os preenchem",
+        help="papéis de áudio que o projeto declara — inclusive o duck — e os arquivos que os preenchem",
+        description=(
+            "Lê papéis e o duckMs que SOUNDS já declara; nomear não é heard."
+        ),
     )
     roles_cmd.add_argument("project")
     roles_cmd.add_argument(
