@@ -3358,6 +3358,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("recusa a publicação", game.next_step(self.project)["scope"])
         self.assertNotIn("recusa a publicação", game.ship_reading(self.project)["scope"])
 
+    def test_template_mvp_names_the_value_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.preproduction_refuses_mvp_value(guide),
+            "a guia já recusa que o MVP prove a hipótese de valor",
+        )
+        self.assertEqual(game.template_mvp_value_source(), "references/preproduction.md")
+        scope = game.template_scope("mvp")
+        self.assertIn(
+            "MVP prove a hipótese de valor",
+            scope,
+            "o template emitia o rascunho e calava a recusa",
+        )
+        self.assertIn("(`valor`)", scope)
+        self.assertFalse(game.preproduction_refuses_mvp_value(""))
+        self.assertNotIn("MVP prove a hipótese de valor", game.template_scope("brief"))
+        self.assertNotIn("MVP prove a hipótese de valor", game.template_scope("aaa"))
+        self.assertNotIn("MVP prove a hipótese de valor", game.template_scope("vertical-slice"))
+        with mock.patch.object(game, "template_mvp_value_source", return_value=None):
+            self.assertNotIn("MVP prove a hipótese de valor", game.template_scope("mvp"))
+        output = self.root / "planning" / "mvp.md"
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT), "template", "mvp", "--project", str(self.project), "--output", str(output)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        receipt = json.loads(result.stdout)
+        self.assertIn("MVP prove a hipótese de valor", receipt["scope"])
+        self.assertNotIn("valor", receipt)
+        self.assertEqual(receipt["status"], "draft")
+        self.assertNotIn("verified", receipt["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o valor que a guia já recusa", guide)
+        self.assertIn("nomeia o valor que a guia já recusa", recipe)
+        self.assertIn("nomeia o valor que a guia já recusa", skill)
+        self.assertIn("nomeia o valor que a guia já recusa", readme)
+        self.assertNotIn("MVP prove a hipótese de valor", game.context(self.project, "create")["finish"]["scope"])
+        self.assertNotIn("MVP prove a hipótese de valor", game.context_scope())
+        self.assertNotIn("MVP prove a hipótese de valor", game.next_scope())
+        self.assertNotIn("MVP prove a hipótese de valor", game.verify_scope())
+
     def test_template_cli_renders_every_artifact_as_draft_in_new_files(self):
         target = self.root / "new-game"
         for stage in game.STAGES:

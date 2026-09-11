@@ -7574,7 +7574,36 @@ def template_scope(stage):
             " O disco recusa a publicação (`publicar`). "
             "Molde no disco não é autorização."
         )
+    if stage == "mvp" and template_mvp_value_source():
+        scope += (
+            " O disco recusa que o MVP prove a hipótese de valor "
+            "(`valor`). Molde no disco não é validação."
+        )
     return scope
+
+
+# A guia já recusa que o MVP prove a hipótese de valor.
+# Sem isto o template emitia o rascunho e calava a recusa.
+# Molde no disco não é validação.
+PREPRODUCTION_VALUE = FRAMEWORK / "references/preproduction.md"
+MVP_VALUE = re.compile(r"não prova que sua hipótese de valor")
+
+
+def preproduction_refuses_mvp_value(text):
+    return bool(text and MVP_VALUE.search(text))
+
+
+def template_mvp_value_source():
+    path = PREPRODUCTION_VALUE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if preproduction_refuses_mvp_value(text):
+        return "references/preproduction.md"
+    return None
 
 
 # O gauntlet já recusa que horas nulas sejam prazo infinito.

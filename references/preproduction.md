@@ -190,7 +190,7 @@ um recorte. Entrada: hipótese de valor, escopo e evidência já obtida.
 **Pronto para avaliar a entrega:** ciclo completo, requisitos essenciais atendidos,
 acesso ao jogo e método de observação definidos. Reduza a quantidade de conteúdo
 quando adequado; preserve a qualidade aprovada e o que o usuário exigiu. Entregar
-um MVP não prova que sua hipótese de valor foi validada.
+um MVP não prova que sua hipótese de valor foi validada. Se a guia recusa que o MVP prove a hipótese de valor, o `template` nomeia o valor que a guia já recusa. Molde no disco não é validação. Sem chave `valor`.
 [Template](../assets/templates/mvp.md).
 
 ### `production-plan` e `milestone` — Produção até o acabamento

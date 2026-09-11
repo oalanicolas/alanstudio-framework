@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.484 — o template do MVP nomeia o valor que a guia já recusa
+
+A
+guia
+já
+dizia
+que
+um
+MVP
+não
+prova
+a
+hipótese
+de
+valor.
+O
+molde
+emitia
+o
+rascunho
+e
+calava
+a
+recusa.
+Agora
+o
+template
+da
+etapa
+mvp
+nomeia
+o
+valor.
+Molde
+no
+disco
+não
+é
+validação.
+Sem
+chave
+`valor`.
+Nomear
+não
+observa.
+
+O que 0.9.484 não afirma:
+rascunho
+no
+disco
+não
+é
+hipótese
+validada
+nem
+jogador
+observado.
+
 ## 0.9.483 — o scan nomeia a prioridade que o roteiro já recusa
 
 O
