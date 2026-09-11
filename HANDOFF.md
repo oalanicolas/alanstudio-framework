@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.372: o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.371):** `python3 -m unittest discover -s tests` → 367 OK.
+**Suítes confirmadas no HEAD (0.9.372):** `python3 -m unittest discover -s tests` → 368 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
