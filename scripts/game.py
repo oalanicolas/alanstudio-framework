@@ -4781,9 +4781,9 @@ def ship_reading(project):
             " O disco recusa o file:// (`file://`). "
             "Recusar no disco não é outra máquina."
         )
-    named = ship_access_scope()
-    if named:
-        scope += named
+    access = ship_access_scope()
+    if access:
+        scope += access
     return {
         "schema_version": 1,
         "project": str(project),
