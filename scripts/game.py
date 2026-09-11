@@ -1866,6 +1866,26 @@ def commands_table_source(project):
     return None
 
 
+# A receita já pede a legenda na porta. Sem isto o
+# access lia captions e calava o canvas da abertura.
+# Texto no disco não é sessão.
+CAPTION_DOOR = re.compile(r"drawTitle[\s\S]{0,1200}?drawCaptions")
+
+
+def door_reads_caption(text):
+    return bool(text and CAPTION_DOOR.search(text))
+
+
+def caption_door_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if door_reads_caption(text):
+            return relative
+    return None
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -1905,6 +1925,11 @@ def access_reading(project):
         scope += (
             " A tabela nomeia as teclas vigentes (`#commands`). "
             "Tabela no disco não é sessão."
+        )
+    if caption_door_source(project):
+        scope += (
+            " A porta lê a legenda que o mixer ainda guarda. "
+            "Texto no disco não é sessão."
         )
     return {
         "schema_version": 1,

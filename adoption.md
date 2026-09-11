@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.374 — o access nomeia a legenda que a porta já lê
+
+A
+receita
+já
+pedia
+o
+canvas
+da
+abertura.
+O
+comando
+listava
+`captions`
+e
+calava
+a
+porta.
+Agora
+o
+`access`
+nomeia
+a
+legenda.
+Texto
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`caption`.
+Não
+promove
+`verified`.
+
+O que 0.9.374 não afirma:
+texto
+no
+disco
+não
+é
+sessão
+com
+o
+modo
+ativo.
+
 ## 0.9.373 — o start nomeia o par que o pair já nasce
 
 O

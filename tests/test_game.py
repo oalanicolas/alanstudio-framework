@@ -4040,6 +4040,28 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("4.5", report["scope"])
 
+    def test_access_names_the_caption_the_door_already_reads(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        render = (starter / "src/game/render.js").read_text(encoding="utf-8")
+        self.assertTrue(game.door_reads_caption(render), "a porta já lê a legenda")
+        self.assertEqual(game.caption_door_source(starter), "src/game/render.js")
+        report = game.access_reading(starter)
+        self.assertIn("porta lê a legenda", report["scope"], "o access lia captions e calava a abertura")
+        self.assertFalse(report["verified"])
+        self.assertNotIn("caption", report)
+        empty = game.access_reading(self.project)
+        self.assertFalse(game.door_reads_caption(""))
+        self.assertIsNone(game.caption_door_source(self.project))
+        self.assertNotIn("porta lê a legenda", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a legenda que a porta já lê", recipe)
+        self.assertIn("nomeia a legenda que a porta já lê", skill)
+        self.assertIn("nomeia a legenda que a porta já lê", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+
     def test_audio_recipe_names_the_session_clock_the_bed_already_follows(self):
         recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
         access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")

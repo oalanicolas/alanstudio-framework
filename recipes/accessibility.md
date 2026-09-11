@@ -59,7 +59,9 @@ com o modo ativo. O starter `canvas-arcade` expõe `assist`, `gameSpeed` e o rem
 das seis ações do teclado na página; a tabela `#commands`
 nomeia as teclas vigentes e mantém toque e controle no
 sufixo. Se o disco declara `paintCommands`, o `access` nomeia as teclas que a tabela já lista.
-Tabela no disco não é sessão. Sem chave `commands`. Declara em
+Tabela no disco não é sessão. Sem chave `commands`.
+Se a porta lê a legenda que o mixer ainda guarda, o `access` nomeia a legenda que a porta já lê. Texto no disco não é sessão. Sem chave `caption`.
+Declara em
 `docs/access.md` o que o recorte não atende. O aviso do primeiro ciclo
 nomeia teclado (ou o remapeamento vigente), toque e controle juntos.
 A prática orbe-só também ganha passo no campo enquanto o canvas a

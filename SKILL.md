@@ -310,6 +310,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Texto no DOM não é sessão. Sem chave `threat`.
    Se o disco declara `paintCommands`, o `access` nomeia as teclas que a tabela já lista.
    Tabela no disco não é sessão. Sem chave `commands`.
+   Se a porta lê a legenda que o mixer ainda guarda, o `access` nomeia a legenda que a porta já lê. Texto no disco não é sessão. Sem chave `caption`.
    Texto no disco não é mix ouvido.
    Nomear não é
    `trusted`. Trocar no stub não é sessão observada.
