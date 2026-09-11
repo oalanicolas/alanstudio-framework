@@ -30,6 +30,65 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.503 — o local do sfx search nomeia o adapt que a receita já recusa
+
+O
+disco
+já
+dizia
+que
+o
+acervo
+compartilhado
+é
+ADAPT,
+não
+o
+primeiro
+ciclo.
+O
+local
+do
+search
+listava
+stems
+e
+calava
+a
+recusa.
+Agora
+o
+`local`
+do
+`sfx search`
+nomeia
+o
+adapt.
+Stem
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`adapt`.
+Nomear
+não
+ouve.
+
+O que 0.9.503 não afirma:
+a
+lista
+no
+disco
+não
+é
+o
+primeiro
+ciclo
+jogado.
+
 ## 0.9.502 — o sfx copy do acervo nomeia o ouvir que a receita já recusa
 
 O

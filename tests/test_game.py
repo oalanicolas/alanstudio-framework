@@ -6846,6 +6846,50 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("desloca a voz", roles["scope"])
         self.assertNotIn("peak", roles["scope"])
 
+    def test_sfx_search_local_names_the_adapt_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_catalog_as_first_cycle(recipe),
+            "a receita já recusa que o acervo compartilhado seja o primeiro ciclo",
+        )
+        self.assertEqual(game.sfx_catalog.search_local_adapt_source(), "recipes/audio.md")
+        report = game.sfx_catalog.search_catalog("dash", self.root)
+        local = report["local"]
+        self.assertEqual(local["kind"], "starter")
+        self.assertIn(
+            "acervo compartilhado seja o primeiro ciclo",
+            local["scope"],
+            "o local do search listava stems e calava a recusa",
+        )
+        self.assertIn("(`adapt`)", local["scope"])
+        self.assertNotIn("adapt", local)
+        self.assertNotIn("adapt", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(local["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_catalog_as_first_cycle(""))
+        self.assertNotIn("acervo compartilhado seja o primeiro ciclo", report.get("scope") or "")
+        self.assertNotIn("acervo compartilhado seja o primeiro ciclo", report["next"])
+        with mock.patch.object(game.sfx_catalog, "search_local_adapt_source", return_value=None):
+            silent = game.sfx_catalog.search_catalog("dash", self.root)
+        self.assertNotIn("acervo compartilhado seja o primeiro ciclo", silent["local"].get("scope") or "")
+        raw = game.sfx_catalog.match_local_stems("dash")
+        self.assertNotIn("scope", raw)
+        summary = game.sfx_catalog.summarize(self.root)
+        self.assertNotIn("acervo compartilhado seja o primeiro ciclo", summary["local"].get("scope") or "")
+        verified = game.sfx_catalog.verify_catalog(self.root)
+        self.assertNotIn("acervo compartilhado seja o primeiro ciclo", verified["local"].get("scope") or "")
+        item, _ = self._plant_catalog_sound()
+        found = game.sfx_catalog.search_catalog(item["id"], self.root)
+        for match in found["matches"]:
+            self.assertNotIn("scope", match)
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o adapt que a receita já recusa", recipe)
+        self.assertIn("nomeia o adapt que a receita já recusa", skill)
+        self.assertIn("nomeia o adapt que a receita já recusa", readme)
+        self.assertNotIn("verified", local["scope"])
+        self.assertNotIn("aprovado", local["scope"])
+
     def test_sfx_import_grows_the_catalog_without_claiming_to_hear_it(self):
         fake = {
             "sample_rate": 44100, "duration": 0.2, "channels": 1,

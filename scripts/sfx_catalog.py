@@ -623,6 +623,9 @@ def search_catalog(query, root=None, limit=40):
         nxt = LOCAL_HIT_NEXT
     else:
         nxt = MISS_NEXT
+    named = search_local_scope()
+    if named:
+        local["scope"] = named
     report = {
         "query": query, "count": len(matches),
         "empty": empty,
@@ -890,6 +893,38 @@ def copy_catalog_scope():
     return (
         "O disco recusa que importar e exportar seja ouvir "
         "(`ouvir`). Cópia no disco não é mix."
+    )
+
+
+# A receita já recusa que o acervo compartilhado seja o primeiro
+# ciclo. Sem isto o local do search listava stems e calava a recusa.
+# Stem no disco não é mix.
+AUDIO_ADAPT = re.compile(r"é ADAPT, não o\s+primeiro ciclo")
+
+
+def recipe_refuses_catalog_as_first_cycle(text):
+    return bool(text and AUDIO_ADAPT.search(text))
+
+
+def search_local_adapt_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_catalog_as_first_cycle(text):
+        return "recipes/audio.md"
+    return None
+
+
+def search_local_scope():
+    if not search_local_adapt_source():
+        return None
+    return (
+        "O disco recusa que o acervo compartilhado seja o primeiro ciclo "
+        "(`adapt`). Stem no disco não é mix."
     )
 
 
