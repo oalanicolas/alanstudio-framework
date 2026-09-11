@@ -348,6 +348,7 @@
             evidencia: document.getElementById("finding-evidencia").value,
             hipotese: document.getElementById("finding-hipotese").value,
             medicao: document.getElementById("finding-medicao").value,
+            run: game.lastRun,
           });
           offerFinding(text, {
             clipboard: navigator.clipboard,
@@ -375,6 +376,7 @@
             evidencia: document.getElementById("finding-evidencia").value,
             hipotese: document.getElementById("finding-hipotese").value,
             medicao: document.getElementById("finding-medicao").value,
+            run: game.lastRun,
           };
           if (!playFinding(fields)) return;
           fetch(FINDING_ROUTE, {

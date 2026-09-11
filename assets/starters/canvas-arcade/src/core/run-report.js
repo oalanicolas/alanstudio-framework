@@ -3,6 +3,8 @@
 // grava a simulação. Os dois usam este recibo. `observed` e `felt`
 // nascem falsos.
 
+import { composeFinding } from "./invite.js";
+
 export const LAST_RUN_ROUTE = "/playtest/last-run";
 export const LAST_RUN_FILE = "docs/playtest/last-run.json";
 export const NOTE_ROUTE = "/playtest/note";
@@ -14,6 +16,7 @@ export function playFinding({
   evidencia = "",
   hipotese = "",
   medicao = "",
+  run,
 } = {}) {
   const fields = {
     problema: String(problema).trim(),
@@ -24,12 +27,7 @@ export function playFinding({
   if (!fields.problema || !fields.evidencia || !fields.hipotese || !fields.medicao) {
     return null;
   }
-  return (
-    `- Problema: ${fields.problema}\n` +
-    `- Evidência: ${fields.evidencia}\n` +
-    `- Hipótese: ${fields.hipotese}\n` +
-    `- Medição: ${fields.medicao}\n`
-  );
+  return composeFinding({ ...fields, run });
 }
 
 export function noteStamp(now = new Date()) {

@@ -2257,6 +2257,26 @@ FINDING_FIELDS = re.compile(
     r".{0,400}?"
     r"(?:^|\n)\s*(?:[-*]|\d+\.)?\s*\*?\*?(?:medi[cç][aã]o|measurement)\*?\*?\s*[:—]\s*\S"
 )
+# O Copiar já levava os quatro nomes. Sem isto o markdown
+# calava a faixa que a página já mostra. Número no disco
+# não é alguém de fora.
+FINDING_RUN_MARK = re.compile(
+    r"(?:function\s+)?composeFinding\([\s\S]{0,800}?runFacts\("
+)
+
+
+def finding_carries_run_facts(text):
+    return bool(text and FINDING_RUN_MARK.search(text))
+
+
+def finding_run_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if finding_carries_run_facts(text):
+            return relative
+    return None
+
+
 FINDING_TABLE = re.compile(
     r"(?i)\|\s*(?:problema|problem)\s*\|\s*(?:evid[eê]ncia|evidence)\s*\|\s*"
     r"(?:hip[oó]tese|hypothesis)\s*\|\s*(?:medi[cç][aã]o|measurement)\s*\|"
@@ -2539,6 +2559,44 @@ def playtest_reading(project):
     # serve ficava no disco e o leitor calava.
     # Endereço no disco não é alguém de fora.
     opened = finding_open(project, scripts)
+    scope = (
+        "Procura os quatro campos num documento ou num record de "
+        "observação, e se docs/qa.md deixou de ser rascunho. Relata "
+        f"`{LAST_RUN}` e `{INVITE}` quando existem. A partida no serve "
+        "pode gravar o candidato; a simulação também. No convite a "
+        "página pode gravar o markdown dos quatro nomes e anexar o "
+        "candidato que estava em last-run.json. Anexo não é sessão "
+        "observada. Se o candidato nomeia a seed, `candidate_seed` "
+        "a relata; se nomeia a chuva, `candidate_spawn` a relata; "
+        "se nomeia o look, `candidate_look` o relata; "
+        "se nomeia o relógio, `candidate_speed` o relata; "
+        "se nomeia a curva, `candidate_curve` relata "
+        "`never_banked` e a aposta que ficou; "
+        "se nomeia a origem, `candidate_policy` relata "
+        "`played` ou `nearest-orb`; "
+        "se nomeia a conta, `candidate_tally` relata "
+        "pontos, coletas, quedas, erros e guardas. "
+        "`invite_href` junta convite, número, mesa, paleta e relógio — "
+        "`?invite=1&seed=&spawn=&look=&speed=` abre essa partida e ignora o hold. "
+        "`finding_href` junta o convite e o painel `#finding` — "
+        "sem `invite=1` o âncora some. "
+        "`finding_open` é a url do serve com o convite, ou o "
+        "mesmo endereço sem serve. O `next` aponta o mesmo "
+        "endereço. O serve nu não abre o painel. "
+        "com seed no disco junta o número e os eixos. "
+        "`qa` nomeia `docs/qa.md` se o arquivo existir. "
+        "`form` aponta o esqueleto dos quatro nomes; `fields` os lista. "
+        "Esqueleto no disco não é achado. "
+        "`playtest` só lê. Sem `then`. A página e `note --field` escrevem. "
+        "Escrever não é sessão observada. "
+        "Não assiste a sessão, não conta jogadores e não "
+        "atribui causa. `observed` e `outsider` são sempre falsos."
+    )
+    if finding_run_source(project):
+        scope += (
+            " O Copiar e o Gravar levam a faixa do last-run — markdown "
+            "no disco não é alguém de fora."
+        )
     return {
         "schema_version": 1,
         "project": str(project),
@@ -2574,39 +2632,7 @@ def playtest_reading(project):
             "last-run.json é candidato, não causa — venha da simulação ou "
             "da partida no serve. Convite no disco não é alguém de fora."
         ),
-        "scope": (
-            "Procura os quatro campos num documento ou num record de "
-            "observação, e se docs/qa.md deixou de ser rascunho. Relata "
-            f"`{LAST_RUN}` e `{INVITE}` quando existem. A partida no serve "
-            "pode gravar o candidato; a simulação também. No convite a "
-            "página pode gravar o markdown dos quatro nomes e anexar o "
-            "candidato que estava em last-run.json. Anexo não é sessão "
-            "observada. Se o candidato nomeia a seed, `candidate_seed` "
-            "a relata; se nomeia a chuva, `candidate_spawn` a relata; "
-            "se nomeia o look, `candidate_look` o relata; "
-            "se nomeia o relógio, `candidate_speed` o relata; "
-            "se nomeia a curva, `candidate_curve` relata "
-            "`never_banked` e a aposta que ficou; "
-            "se nomeia a origem, `candidate_policy` relata "
-            "`played` ou `nearest-orb`; "
-            "se nomeia a conta, `candidate_tally` relata "
-            "pontos, coletas, quedas, erros e guardas. "
-            "`invite_href` junta convite, número, mesa, paleta e relógio — "
-            "`?invite=1&seed=&spawn=&look=&speed=` abre essa partida e ignora o hold. "
-            "`finding_href` junta o convite e o painel `#finding` — "
-            "sem `invite=1` o âncora some. "
-            "`finding_open` é a url do serve com o convite, ou o "
-            "mesmo endereço sem serve. O `next` aponta o mesmo "
-            "endereço. O serve nu não abre o painel. "
-            "com seed no disco junta o número e os eixos. "
-            "`qa` nomeia `docs/qa.md` se o arquivo existir. "
-            "`form` aponta o esqueleto dos quatro nomes; `fields` os lista. "
-            "Esqueleto no disco não é achado. "
-            "`playtest` só lê. Sem `then`. A página e `note --field` escrevem. "
-            "Escrever não é sessão observada. "
-            "Não assiste a sessão, não conta jogadores e não "
-            "atribui causa. `observed` e `outsider` são sempre falsos."
-        ),
+        "scope": scope,
     }
 
 

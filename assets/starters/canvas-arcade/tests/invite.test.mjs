@@ -69,6 +69,7 @@ test("a página declara o gancho que some a tabela sem preencher o achado", () =
   assert.match(html, /Copie ou grave/);
   assert.match(html, /anexa o candidato/);
   assert.match(html, /composeFinding/);
+  assert.match(html, /run:\s*game\.lastRun/);
   assert.match(html, /offerFinding/);
   assert.match(html, /bringPanel/);
   assert.match(html, /wasShown/);
@@ -411,6 +412,31 @@ test("copiar o achado preenchido tem forma; o vazio não finge", () => {
   });
   assert.match(filled, /o dash não comunica o contato/);
   assert.match(filled, /três sessões/);
+});
+
+test("o achado copiado nomeia o last-run simulado que a faixa já mostra", () => {
+  const text = composeFinding({
+    problema: "o dash some no toque",
+    evidencia: "três sessões",
+    hipotese: "o hitstop some",
+    medicao: "repetir o graze",
+    run: { seed: 8, score: 12, policy: "nearest-orb" },
+  });
+  assert.match(text, /simulada/, "o markdown calava a origem que a faixa já nomeia");
+  assert.match(text, /seed 8/);
+  assert.match(text, /Problema: o dash some no toque/);
+  assert.equal(text.includes("coletas"), false, "sem tally no achado");
+  assert.equal(text.includes("0.75"), false, "sem relógio no achado");
+  const played = composeFinding({
+    problema: "o dash some no toque",
+    evidencia: "três sessões",
+    hipotese: "o hitstop some",
+    medicao: "repetir o graze",
+    run: { seed: 8, score: 12, policy: "played" },
+  });
+  assert.equal(played.includes("simulada"), false, "played some");
+  assert.match(played, /seed 8/);
+  assert.match(html, /run:\s*game\.lastRun/, "a página calava o last-run no Copiar");
 });
 
 test("a página nomeia o par sem fingir que alguém de fora escolheu", () => {

@@ -3,6 +3,47 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.345 — o achado copiado nomeia o last-run simulado
+
+A
+faixa
+já
+dizia
+`simulada`.
+O
+markdown
+levava
+só
+os
+quatro
+nomes.
+Agora
+o
+Copiar
+e
+o
+Gravar
+levam
+a
+faixa.
+Sem
+tally
+nem
+relógio.
+Não
+promove
+`outsider`.
+
+O que 0.9.345 não afirma:
+markdown
+no
+disco
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.344 — o coil do dash marca o rumo no corpo
 
 A

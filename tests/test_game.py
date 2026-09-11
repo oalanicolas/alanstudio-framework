@@ -5157,6 +5157,29 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["observed"])
         self.assertNotIn("aprovado", report["scope"])
 
+    def test_playtest_names_the_copied_finding_that_carries_the_simulated_run(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        invite = (starter / "src/core/invite.js").read_text(encoding="utf-8")
+        self.assertTrue(game.finding_carries_run_facts(invite), "o markdown calava a faixa")
+        self.assertEqual(game.finding_run_source(starter), "src/core/invite.js")
+        report = game.playtest_reading(starter)
+        self.assertIn("Copiar e o Gravar levam a faixa", report["scope"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(report["observed"])
+        self.assertNotIn("finding_run", report)
+        empty = game.playtest_reading(self.project)
+        self.assertFalse(game.finding_carries_run_facts(""))
+        self.assertIsNone(game.finding_run_source(self.project))
+        self.assertNotIn("Copiar e o Gravar levam a faixa", empty["scope"])
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("achado copiado", recipe.casefold())
+        self.assertIn("achado copiado", feel.casefold())
+        self.assertIn("achado copiado", readme.casefold())
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", feel)
+
     def test_next_points_at_the_invite_after_the_maker_already_played(self):
         destination = self.root / "depois-de-jogar"
         game.start_project(destination, "canvas-arcade")

@@ -25,7 +25,7 @@ script), com `--root <laboratorio>` antes ou depois do subcomando.
 | Em dúvida sobre o próximo passo | `next --focus <foco>` deriva uma proposta do estado no disco; sem caminho, o único jogo do laboratório basta. `executed` fica `false` e a escolha é sua |
 | O verbo funciona mas não convence | `feel`; se `unobserved`, `note --author … --note "o que o verbo sentiu"`. Sem caminho, o único jogo do laboratório basta. Lê rumble, o peso do passo, as janelas da chuva e o rumo que o coil do dash marca; nomear não é `felt`. Depois `roles` e `context --focus audio` |
 | Paleta, conteúdo no código ou jogo só na máquina de quem construiu | `art` / `content` / `ship` <projeto>; `consistent`/`enough`/`shipped` ficam `false` |
-| Observou uma partida e só tem uma nota | `playtest`; se `unstructured`, escreva problema, evidência, hipótese e medição. Sem caminho, o único jogo do laboratório basta. Depois do recibo, `playtest --invite` escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, com look nomeado `&look=<paleta>`, e com relógio nomeado e ≠ 1 `&speed=<relógio>`), onde a tabela some; depois do fim a página do maker aponta o convite desta partida se a seed ficou no recibo — copiar o endereço não grava; a página também mostra seed, pontos, eixos, a curva que o last-run já traçou e se o candidato foi simulado (`nearest-orb` vira `simulada`; `played` some; a faixa não leva a conta nem o relógio) e oferece os quatro nomes para copiar ou gravar — depois do fim ela rola até o painel; rolar não é alguém de fora; número na faixa não preenche os quatro; copiar não grava; sem a área de transferência o Copiar baixa o markdown; baixar não grava; gravar anexa o candidato se houver last-run; gravado não é alguém de fora |
+| Observou uma partida e só tem uma nota | `playtest`; se `unstructured`, escreva problema, evidência, hipótese e medição. Sem caminho, o único jogo do laboratório basta. Depois do recibo, `playtest --invite` escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco, `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, com look nomeado `&look=<paleta>`, e com relógio nomeado e ≠ 1 `&speed=<relógio>`), onde a tabela some; depois do fim a página do maker aponta o convite desta partida se a seed ficou no recibo — copiar o endereço não grava; a página também mostra seed, pontos, eixos, a curva que o last-run já traçou e se o candidato foi simulado (`nearest-orb` vira `simulada`; `played` some; a faixa não leva a conta nem o relógio) e oferece os quatro nomes para copiar ou gravar — o achado copiado e gravado leva essa faixa; sem tally nem relógio; markdown no disco não é alguém de fora; depois do fim ela rola até o painel; rolar não é alguém de fora; número na faixa não preenche os quatro; copiar não grava; sem a área de transferência o Copiar baixa o markdown; baixar não grava; gravar anexa o candidato se houver last-run; gravado não é alguém de fora |
 | “Está AAA?” ou slice pronta | `context <projeto> --stage vertical-slice` e leia `finish`; só então `template aaa` |
 | Mudança em jogo existente | `context <projeto> --focus <foco>`; com gênero definido, `--genre <g>` |
 | “continue” / “vamos avançar” | `context <projeto> --focus <foco> --event resume` e leia `continuity.sources`, preservando o foco da tarefa |
@@ -307,7 +307,10 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    some). A faixa não leva a conta nem o relógio. Simulada não é
    alguém de fora. Oferece os quatro nomes para copiar ou gravar.
    Depois do fim a página rola até o painel. Rolar não é alguém de fora.
-   Número na faixa não preenche os quatro. Copiar não grava. O
+   Número na faixa não preenche os quatro. O achado copiado e
+   gravado leva a faixa do last-run (seed, pontos, eixos e se
+   foi simulado). Sem tally nem relógio. Markdown no disco não
+   é alguém de fora. Copiar não grava. O
    Copiar nomeia o destino. Gravar já virava Achado no disco;
    o botão calava. Nomear não é alguém de fora. Sem a
    área de transferência, o Copiar baixa o markdown. Gravar anexa

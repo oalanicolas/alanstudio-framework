@@ -41,7 +41,9 @@ fora.
 Depois do fim a página
 rola até o painel e foca o campo. Escrever não dispara o
 verbo — Espaço e R ficam no recado. Rolar não é alguém de fora. Número na faixa não
-preenche os quatro. Copiar não grava. O Copiar nomeia o
+preenche os quatro. O achado copiado e gravado leva a
+faixa do last-run. Sem tally nem relógio. Markdown no
+disco não é alguém de fora. Copiar não grava. O Copiar nomeia o
 destino. Gravar já virava Achado no disco; o botão calava.
 Nomear não é alguém de fora. Sem a área de
 transferência, o Copiar baixa o markdown. Gravar anexa o candidato

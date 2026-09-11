@@ -256,13 +256,20 @@ export function composeFinding({
   evidencia = "",
   hipotese = "",
   medicao = "",
+  run,
 } = {}) {
-  return (
+  // A faixa já nomeia seed, pontos, eixos e se o last-run
+  // foi simulado. Sem isto o Copiar e o Gravar levavam só
+  // os quatro nomes e o markdown fingia partida jogada.
+  // Número no disco não é alguém de fora.
+  const facts = runFacts(run);
+  const body = (
     `- Problema: ${String(problema)}\n` +
     `- Evidência: ${String(evidencia)}\n` +
     `- Hipótese: ${String(hipotese)}\n` +
     `- Medição: ${String(medicao)}\n`
   );
+  return facts ? `${facts}\n${body}` : body;
 }
 
 export function findingFile(text) {

@@ -118,6 +118,36 @@ test("o achado só nasce com os quatro nomes preenchidos", () => {
   assert.equal(accepted.text, text);
 });
 
+test("o achado gravado nomeia o last-run simulado que a faixa já mostra", () => {
+  const text = playFinding({
+    problema: "o dash some no toque",
+    evidencia: "três sessões",
+    hipotese: "o hitstop some",
+    medicao: "repetir o graze",
+    run: { seed: 8, score: 12, policy: "nearest-orb" },
+  });
+  assert.match(text, /simulada/, "o markdown calava a origem que a faixa já nomeia");
+  assert.match(text, /seed 8/);
+  assert.equal(text.includes("coletas"), false, "sem tally no achado");
+  const played = playFinding({
+    problema: "o dash some no toque",
+    evidencia: "três sessões",
+    hipotese: "o hitstop some",
+    medicao: "repetir o graze",
+    run: { seed: 8, policy: "played" },
+  });
+  assert.equal(played.includes("simulada"), false, "played some");
+  const accepted = acceptFinding({
+    problema: "o dash some no toque",
+    evidencia: "três sessões",
+    hipotese: "o hitstop some",
+    medicao: "repetir o graze",
+    run: { seed: 8, score: 12, policy: "nearest-orb" },
+  });
+  assert.equal(accepted.ok, true);
+  assert.match(accepted.text, /simulada/);
+});
+
 test("o anexo do achado nasce do candidato e não observa", () => {
   const attached = findingAttachment({
     seed: 8,
