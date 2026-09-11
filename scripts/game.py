@@ -12555,11 +12555,51 @@ def record_budget_stutter_source():
 def record_budget_fields_scope(kind):
     if kind != "budget":
         return None
-    if not record_budget_stutter_source():
+    scope = None
+    if record_budget_stutter_source():
+        scope = (
+            "O disco recusa que ganho na média demonstre redução de engasgos "
+            "(`engasgos`). Número no disco não é o quadro estável."
+        )
+    named = record_budget_hot_scope()
+    if named:
+        scope = (scope + " " + named) if scope else named
+    return scope
+
+
+# A receita já recusa que a máquina
+# quente seja a máquina do jogador
+# fria. Sem isto o fields do budget
+# copiava a plataforma e calava a
+# recusa. Plataforma no disco não é
+# a máquina fria.
+PERF_HOT = re.compile(r"máquina de desenvolvimento\s+quente não é máquina do jogador fria")
+
+
+def recipe_refuses_hot_as_cold_player(text):
+    return bool(text and PERF_HOT.search(text))
+
+
+def record_budget_hot_source():
+    path = PERF_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hot_as_cold_player(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_budget_hot_scope():
+    if not record_budget_hot_source():
         return None
     return (
-        "O disco recusa que ganho na média demonstre redução de engasgos "
-        "(`engasgos`). Número no disco não é o quadro estável."
+        "O disco recusa que a máquina de desenvolvimento quente seja a "
+        "máquina do jogador fria (`quente`). Plataforma no disco não é a "
+        "máquina fria."
     )
 
 

@@ -30,6 +30,68 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.548 — o fields do record budget nomeia a quente que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+a
+máquina
+de
+desenvolvimento
+quente
+não
+é
+a
+máquina
+do
+jogador
+fria.
+O
+fields
+copiava
+a
+plataforma
+e
+calava
+a
+recusa.
+Agora
+o
+`fields`
+do
+`record --kind budget`
+nomeia
+a
+quente.
+Plataforma
+no
+disco
+não
+é
+a
+máquina
+fria.
+Sem
+chave
+`quente`.
+Nomear
+não
+mede.
+
+O que 0.9.548 não afirma:
+declarar
+a
+plataforma
+não
+é
+medir
+no
+dispositivo
+frio.
+
 ## 0.9.547 — o record nomeia a fidelidade que a receita já recusa
 
 A

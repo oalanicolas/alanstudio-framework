@@ -2110,6 +2110,88 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ganho na média demonstre redução de engasgos", game.budget_reading(self.project)["scope"])
         self.assertNotIn("ganho na média demonstre redução de engasgos", game.next_scope())
 
+    def test_record_budget_fields_name_the_hot_machine_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_hot_as_cold_player(recipe),
+            "a receita já recusa que a máquina de desenvolvimento quente seja a máquina do jogador fria",
+        )
+        self.assertEqual(game.record_budget_hot_source(), "recipes/performance.md")
+        fields = {
+            "metric": "frame_p99",
+            "value": "14.2",
+            "unit": "ms",
+            "platform": "web",
+            "tool": "devtools",
+        }
+        report = game.record(
+            self.project, "budget", "Alan", "cena da fábrica, 60 s",
+            fields, [], self.root / "budget-quente",
+        )
+        self.assertEqual(report["kind"], "budget")
+        self.assertIn("platform", report["fields"])
+        self.assertIn(
+            "máquina de desenvolvimento quente seja a máquina do jogador fria",
+            report["fields"]["scope"],
+            "o fields do budget copiava a plataforma e calava a recusa",
+        )
+        self.assertIn("(`quente`)", report["fields"]["scope"])
+        self.assertNotIn("quente", report["fields"])
+        self.assertNotIn("quente", report)
+        self.assertNotIn("measured", report)
+        self.assertFalse(game.recipe_refuses_hot_as_cold_player(""))
+        with mock.patch.object(game, "record_budget_hot_source", return_value=None):
+            silent = game.record(
+                self.project, "budget", "Alan", "cena da fábrica, 60 s",
+                {
+                    "metric": "frame_p99",
+                    "value": "14.2",
+                    "unit": "ms",
+                    "platform": "web",
+                    "tool": "devtools",
+                },
+                [], self.root / "budget-quente-silent",
+            )
+        self.assertNotIn(
+            "máquina de desenvolvimento quente seja a máquina do jogador fria",
+            silent["fields"].get("scope") or "",
+        )
+        seen = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            game.parse_fields(["scenario=primeira travessia", "role=human"]),
+            [], self.root / "obs-sem-quente",
+        )
+        self.assertNotIn(
+            "máquina de desenvolvimento quente seja a máquina do jogador fria",
+            seen["fields"].get("scope") or "",
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a quente que a receita já recusa", recipe)
+        self.assertIn("nomeia a quente que a receita já recusa", skill)
+        self.assertIn("nomeia a quente que a receita já recusa", readme)
+        self.assertNotIn("verified", report["fields"]["scope"])
+        self.assertNotIn(
+            "máquina de desenvolvimento quente seja a máquina do jogador fria",
+            report["scope"],
+        )
+        self.assertNotIn(
+            "máquina de desenvolvimento quente seja a máquina do jogador fria",
+            game.record_scope(),
+        )
+        self.assertNotIn(
+            "máquina de desenvolvimento quente seja a máquina do jogador fria",
+            game.budget_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "máquina de desenvolvimento quente seja a máquina do jogador fria",
+            game.save_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "máquina de desenvolvimento quente seja a máquina do jogador fria",
+            game.next_scope(),
+        )
+
     def test_record_milestone_fields_name_the_gate_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
         self.assertTrue(
