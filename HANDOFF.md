@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.370: o `budget` nomeia o percentil que a receita já pede. Relato no disco não é dispositivo. Sem chave `percentile`. Não promove `measured`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes do 0.9.370 (antes da confirmação):** `python3 -m unittest discover -s tests` → 366 esperado.
-`cd assets/starters/canvas-arcade && npm test` → 509.
+**Suítes confirmadas no HEAD (0.9.370):** `python3 -m unittest discover -s tests` → 366 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
