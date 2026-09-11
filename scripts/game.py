@@ -7134,6 +7134,43 @@ def workspace_module(project, root=None):
     return None
 
 
+# A ligação já recusa preencher pasta não baixada com o starter.
+# Sem isto o context copiava o estado e calava a recusa.
+# Módulo no disco não é o jogo.
+WORKSPACE_GUIDE = FRAMEWORK / "references/workspace-binding.md"
+WORKSPACE_FILL = re.compile(r"não é preenchida pelo\s+starter")
+
+
+def binding_refuses_starter_fill(text):
+    return bool(text and WORKSPACE_FILL.search(text))
+
+
+def workspace_module_fill_source():
+    path = WORKSPACE_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if binding_refuses_starter_fill(text):
+        return "references/workspace-binding.md"
+    return None
+
+
+def workspace_module_scope():
+    scope = (
+        "Id, caminho e estado do módulo opcional. Não baixa e não "
+        "cria a pasta."
+    )
+    if workspace_module_fill_source():
+        scope += (
+            " O disco recusa preencher pasta não baixada com o starter "
+            "(`preenchida`). Módulo no disco não é o jogo."
+        )
+    return scope
+
+
 def workspace_profile(root):
     """Read local context references; all reusable rules remain in this repository."""
     root = Path(root).resolve()
@@ -7182,6 +7219,8 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
     instructions = instruction_files(project)
     foundation = scan(project)
     module = workspace_module(project, root)
+    if module is not None:
+        module = dict(module, scope=workspace_module_scope())
     module_pending = module is not None and module["state"] == "not_downloaded"
     if module_pending:
         foundation["audit"]["required"] = False

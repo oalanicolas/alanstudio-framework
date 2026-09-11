@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts/game.py"
@@ -23,6 +24,39 @@ class LabIntegrationTest(unittest.TestCase):
             "modules": [{"id": "existing", "path": "games/existing",
                          "repository": "games-existing"}],
         }))
+
+    def test_context_names_the_fill_the_binding_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/workspace-binding.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.binding_refuses_starter_fill(guide),
+            "a ligação já recusa preencher pasta não baixada com o starter",
+        )
+        self.assertEqual(game.workspace_module_fill_source(), "references/workspace-binding.md")
+        payload = game.context(self.project, "feel", root=self.root)
+        item = payload["workspace_module"]
+        self.assertIn(
+            "preencher pasta não baixada com o starter",
+            item["scope"],
+            "o context copiava o estado e calava a recusa",
+        )
+        self.assertIn("(`preenchida`)", item["scope"])
+        self.assertNotIn("preenchida", item)
+        self.assertFalse(game.binding_refuses_starter_fill(""))
+        with mock.patch.object(game, "workspace_module_fill_source", return_value=None):
+            silent = game.context(self.project, "feel", root=self.root)
+        self.assertNotIn("preencher pasta não baixada com o starter", silent["workspace_module"]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a preenchida que a ligação já recusa", guide)
+        self.assertIn("nomeia a preenchida que a ligação já recusa", skill)
+        self.assertIn("nomeia a preenchida que a ligação já recusa", readme)
+        self.assertIn("nomeia a preenchida que a ligação já recusa", recipe)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("preencher pasta não baixada com o starter", payload["scope"])
+        self.assertNotIn("preencher pasta não baixada com o starter", payload["documentation"]["scope"])
+        self.assertNotIn("preencher pasta não baixada com o starter", game.next_scope())
+        self.assertIsNone(game.workspace_module(self.project, self.root).get("scope"))
 
     def test_uninitialized_module_requests_download_without_documenting_or_recreating(self):
         before = sorted(str(p.relative_to(self.root)) for p in self.root.rglob("*"))

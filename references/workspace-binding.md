@@ -54,7 +54,7 @@ workflow, checklist e aprendizado genérico entram no núcleo, não nessa config
 
 O manifesto opcional `workspace.json` declara módulos com `id` e `path`.
 Uma pasta ainda não baixada é relatada como `not_downloaded`; não é preenchida pelo
-starter. [workspace.py](../scripts/workspace.py) obtém os módulos selecionados,
+starter. Se a ligação recusa preencher pasta não baixada com o starter, o `context` nomeia a preenchida que a ligação já recusa. Módulo no disco não é o jogo. Sem chave `preenchida`. [workspace.py](../scripts/workspace.py) obtém os módulos selecionados,
 incluindo seus pais, e preserva checkouts presentes. [split_workspace.py](../scripts/split_workspace.py)
 prepara extrações em pasta nova, com recibo, sem publicar nem alterar o original.
 

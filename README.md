@@ -24,7 +24,7 @@ O framework pode ser usado por vários workspaces com uma única implementação
 Cada laboratório mantém um link `framework/core` para este checkout e um
 encaminhador curto em `framework/scripts/game.py`. Regras e evidências locais
 ficam no laboratório; recipes, packages, templates e testes compartilhados ficam
-aqui. [Ligação e personalização](references/workspace-binding.md).
+aqui. [Ligação e personalização](references/workspace-binding.md). Se a ligação recusa preencher pasta não baixada com o starter, o `context` nomeia a preenchida que a ligação já recusa. Módulo no disco não é o jogo. Sem chave `preenchida`.
 
 Este é o caso normal: a raiz de trabalho não está vazia. O primeiro movimento é
 revisar o que existe, não criar mais um.
