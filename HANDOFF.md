@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.396: o `init` nomeia o módulo que o package já declara. Tipo no disco não é runtime instalado. Sem chave `type`. Nomear não instala.
+**HEAD:** ver `git log -1` — vigente 0.9.397: o `gate` nomeia o gate que a tabela já declara. Linha no disco não é passagem concedida. Sem chave `gate`. Nomear não concede. Confirmação pendente.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Suítes confirmadas no HEAD (0.9.396):** `python3 -m unittest discover -s tests` → 392 OK.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.396)
+## O que o HEAD já entrega (0.9.91–0.9.397)
 
 | Ver | Salto |
 | --- | --- |
@@ -340,6 +340,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.394 | O `doctor` nomeia as substituições que o manifesto já declara. O `starter.json` já listava as trocas; o comando validava o manifesto e calava o campo. Sem chave `substitutions` no recibo. Nomear não cria. |
 | 0.9.395 | O `discover` nomeia os scripts que o package já declara. O `package.json` já listava `scripts`; o comando lia os validadores e calava o campo. Sem chave `scripts` no recibo. Nomear não executa. |
 | 0.9.396 | O `init` nomeia o módulo que o package já declara. O `package.json` já trazia `"type": "module"`; o comando copiava o manifesto e calava o campo. Sem chave `type` no recibo. Nomear não instala. |
+| 0.9.397 | O `gate` nomeia o gate que a tabela já declara. A linha já existia no parser; o comando lia a forma e calava o campo. Sem chave `gate` no recibo. Não promove `granted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -363,7 +364,7 @@ Piso percebido = **mínimo**. O `bar` nomeia o mínimo que a barra já declara. 
 | performance | playable | o `budget` nomeia o percentil que a receita já pede; o `budget` nomeia os bytes que o size já relata; o `budget` nomeia a porta que a receita já cronometra; o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | o `access` nomeia a legenda que a porta já lê; o `access` nomeia as teclas que a tabela já lista; o `access` nomeia o perigo que o live já anuncia; o `access` nomeia o contraste que a receita já amostra; o `access` nomeia o `:focus-visible` que a casca já declara; o canvas da porta e do fim nomeia a lacuna do som; a região viva nomeia a mesa e o look da porta e do fim; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
 | content_scale | shippable | o `content` nomeia a migração que as mesas já compartilham; o `start` nomeia o par que o pair já nasce; o `content` nomeia a mesa que o disco já nasce; o `content` nomeia o par que `listMoods` já lista; `brief` não come a folga da guarda; paleta não finge volume; dusk+calm+pair; `enough` falso |
-| release | **prototype** | o `init` nomeia o módulo que o package já declara; o `discover` nomeia os scripts que o package já declara; o `play` nomeia a produção que o serve já recusa; o `ship` nomeia o file:// que o export já recusa; o `origins` nomeia o consumidor que o sidecar já declara; o `ship` nomeia o passo que o export já declara; o `ship` nomeia o banner que o serve já imprime; o `ship` nomeia o tamanho que a receita já relata; o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem; ninguém correu o `dist/` fora daqui; `elsewhere` falso |
+| release | **prototype** | o `gate` nomeia o gate que a tabela já declara; o `init` nomeia o módulo que o package já declara; o `discover` nomeia os scripts que o package já declara; o `play` nomeia a produção que o serve já recusa; o `ship` nomeia o file:// que o export já recusa; o `origins` nomeia o consumidor que o sidecar já declara; o `ship` nomeia o passo que o export já declara; o `ship` nomeia o banner que o serve já imprime; o `ship` nomeia o tamanho que a receita já relata; o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem; ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
 ---
 
@@ -460,6 +461,12 @@ Piso percebido = **mínimo**. O `bar` nomeia o mínimo que a barra já declara. 
   é runtime instalado. Sem chave `type` no
   recibo. Um leitor só: `init`, não `start`
   nem `doctor`. `executed` falso.
+- `gate.scope` nomeia o gate se um `GATE_SOURCES`
+  declara uma linha `GATE_ROW`. Sem o
+  marcador, a frase some. Linha no disco não
+  é passagem concedida. Sem chave `gate` no
+  recibo. Um leitor só: `gate`, não `next`
+  nem `craft`. `granted` falso.
 - **Não só adicionar mais um script de medição** se o salto alinhado
   for feel visível/audível, ferramenta de outsider, superfície de
   entrada, auditoria original (item 1) ou facilidade ideia→jogo.
@@ -3315,6 +3322,7 @@ A família art que nasce a paleta e cala o contraste que o look já recusa está
 A família doctor que valida o manifesto e cala as substituições que o starter.json já declara está saturada.
 A família discover que lê os validadores e cala os scripts que o package já declara está saturada.
 A família init que copia o package e cala o módulo que o manifesto já declara está saturada.
+A família gate que lê a forma e cala o gate que a tabela já declara está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -3501,5 +3509,9 @@ Não inventar chave `type` no recibo do `init` — irmão de 396.
 Não nomear o módulo no `start.scope` nem no `doctor` — irmão de 396; um leitor só.
 Não outro engines no `init` — irmão de 396 e 384.
 Não outras substituições no `init.scope` — irmão de 396 e 394.
+Não inventar chave `gate` no recibo do `gate` — irmão de 397.
+Não nomear o gate no `next.scope` nem no `craft` — irmão de 397; um leitor só.
+Não nomear a saída de escopo no `gate` — irmão de 397 e 392.
+Não promover `granted` no `gate` — irmão de 397.
 O rótulo do coil do dash ainda diz recarregando — irmão de 328.
-Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt nem outro engines no doctor nem outras substituições no doctor nem outro Node no runtime nem outro file:// no play nem outra produção no play nem outro relógio no guide nem outros scripts no discover nem outro módulo no init; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outro percentil no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro passo no ship nem outro file:// no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access nem outro last-run no note nem auto-anexar no note nem outro pico no sfx summary nem outro pico no sfx info nem outro par no start nem extra pair no content nem pair no art nem outra legenda no access nem outro deslocamento no sfx search nem outra voz no sfx search nem outro sit no feel nem outra guarda no feel nem outro recado no playtest nem outro POST no playtest nem outra gravação no save nem outro storage no save nem outro land no feel nem outro término no feel nem outra migração no content nem outro loader no content nem outra vinheta no art nem outro recorte no art nem outro PCM no roles nem outro wav no roles nem outro consumidor no origins nem outro sidecar no origins nem outros créditos no copy nem outra integridade no sfx verify nem outro hash no sfx verify nem outro processamento no sfx export nem outros bytes no sfx export nem outro mínimo no bar nem outro piso no bar nem outro relógio no guide nem outra saída de escopo no craft nem outro contraste no art nem outras substituições no doctor nem outros scripts no discover nem outros scripts no next nem outro módulo no init; atrito ideia→jogo que não seja 332/337/339/342/347/373/384/387/391/394/395/396; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro nem o sit da guarda nem o land do dash; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest nem o last-run no note nem o recado no playtest.
+Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt nem outro engines no doctor nem outras substituições no doctor nem outro Node no runtime nem outro file:// no play nem outra produção no play nem outro relógio no guide nem outros scripts no discover nem outro módulo no init nem outro gate no gate; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outro percentil no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro passo no ship nem outro file:// no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access nem outro last-run no note nem auto-anexar no note nem outro pico no sfx summary nem outro pico no sfx info nem outro par no start nem extra pair no content nem pair no art nem outra legenda no access nem outro deslocamento no sfx search nem outra voz no sfx search nem outro sit no feel nem outra guarda no feel nem outro recado no playtest nem outro POST no playtest nem outra gravação no save nem outro storage no save nem outro land no feel nem outro término no feel nem outra migração no content nem outro loader no content nem outra vinheta no art nem outro recorte no art nem outro PCM no roles nem outro wav no roles nem outro consumidor no origins nem outro sidecar no origins nem outros créditos no copy nem outra integridade no sfx verify nem outro hash no sfx verify nem outro processamento no sfx export nem outros bytes no sfx export nem outro mínimo no bar nem outro piso no bar nem outro relógio no guide nem outra saída de escopo no craft nem outro contraste no art nem outras substituições no doctor nem outros scripts no discover nem outros scripts no next nem outro módulo no init nem outro gate no gate nem outro gate no next; atrito ideia→jogo que não seja 332/337/339/342/347/373/384/387/391/394/395/396/397; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro nem o sit da guarda nem o land do dash; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest nem o last-run no note nem o recado no playtest.

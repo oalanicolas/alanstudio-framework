@@ -2151,6 +2151,37 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("monta o projeto e cria estes", cycle)
         self.assertIn("init <destino>", cycle)
 
+    def test_gate_names_the_row_the_table_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        readme = (starter / "README.md").read_text(encoding="utf-8")
+        self.assertFalse(game.gate_declares_row(readme), "o starter ainda não declara linha de gate")
+        self.assertIsNone(game.gate_row_source(starter))
+        self.declare_gate({("deliver", "runbook"): ("unmet", "ninguém correu o artefato fora daqui")})
+        table = (self.project / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(game.gate_declares_row(table), "a tabela já declara o gate")
+        self.assertEqual(game.gate_row_source(self.project), "README.md")
+        report = game.gate_reading(self.project)
+        self.assertIn("declara o gate", report["scope"], "o gate lia a linha e calava o campo")
+        self.assertIn("(`gate`)", report["scope"])
+        self.assertFalse(report["granted"])
+        self.assertNotIn("gate", report)
+        self.assertFalse(game.gate_declares_row(""))
+        empty = game.gate_reading(self.root / "sem-gate")
+        self.assertIsNone(game.gate_row_source(self.root / "sem-gate"))
+        self.assertNotIn("declara o gate", empty["scope"])
+        with mock.patch.object(game, "gate_row_source", return_value=None):
+            silent = game.gate_reading(self.project)
+        self.assertNotIn("declara o gate", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o gate que a tabela já declara", recipe)
+        self.assertIn("nomeia o gate que a tabela já declara", skill)
+        self.assertIn("nomeia o gate que a tabela já declara", readme_doc)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("then.gate", report.get("then") or {})
+        self.assertNotIn("declara o gate", game.next_step(self.project)["scope"])
+
     def test_a_gate_never_grants_passage_only_reads_what_the_project_claims(self):
         self.declare_gate({("deliver", "runbook"): ("met", "Ana construiu do zero, log em /tmp/qa-07")})
         report = game.gate_reading(self.project, "deliver")

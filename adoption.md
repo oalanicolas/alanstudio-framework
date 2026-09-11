@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.397 — o gate nomeia o gate que a tabela já declara
+
+A
+tabela
+já
+tinha
+a
+linha.
+O
+comando
+lia
+a
+forma
+e
+calava
+o
+campo.
+Agora
+o
+`gate`
+nomeia
+o
+gate.
+Linha
+no
+disco
+não
+é
+passagem
+concedida.
+Sem
+chave
+`gate`.
+Não
+promove
+`granted`.
+
+O que 0.9.397 não afirma:
+linha
+no
+disco
+não
+é
+passagem
+concedida
+nem
+`next`
+escolhido.
+
 ## 0.9.396 — o init nomeia o módulo que o package já declara
 
 O

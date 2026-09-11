@@ -846,6 +846,9 @@ GATE_ROW = re.compile(
     r"^\|\s*`([\w-]+)`\s*\|\s*`([\w-]+)`\s*\|\s*`(\w+)`\s*\|\s*(.*?)\s*\|\s*$"
 )
 GATE_SOURCES = ("README.md", "docs/qa.md", "docs/devlog.md", "docs/release.md", "docs/prd.md")
+# A tabela já declara o gate. Sem isto o
+# gate lia a linha e calava o campo.
+# Linha no disco não é passagem concedida.
 
 
 def gate_declaration(project):
@@ -981,15 +984,46 @@ def gate_reading(project, gate=None):
             "Critério de `readiness` pendente diz que falta trabalho; `must_meet` pendente pergunta se "
             "isto ainda vale o que custa, e é a essa pergunta que abandonar responde."
         ),
-        "scope": (
-            "Lê a declaração do próprio projeto e confere só a forma dela, relatando em `problems`: gate "
-            "desconhecido, critério que não pertence ao gate, estado fora de met/unmet/waived/out_of_scope, "
-            "dispensa ou saída de escopo de critério que a prosa não deixa dispensar, met/waived/out_of_scope "
-            "sem nada escrito ao lado, e duas linhas discordantes. Não observa o jogo, não executa nada e "
-            "**não concede passagem**: `held_by_declaration` diz que o projeto afirma cumprir, não que alguém "
-            "conferiu."
-        ),
+        "scope": _gate_scope(project),
     }
+
+
+def gate_declares_row(text):
+    return bool(text and any(GATE_ROW.match(line) for line in text.splitlines()))
+
+
+def gate_row_source(project):
+    project = Path(project)
+    for name in GATE_SOURCES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if gate_declares_row(text):
+            return name
+    return None
+
+
+def _gate_scope(project):
+    scope = (
+        "Lê a declaração do próprio projeto e confere só a forma dela, relatando em `problems`: gate "
+        "desconhecido, critério que não pertence ao gate, estado fora de met/unmet/waived/out_of_scope, "
+        "dispensa ou saída de escopo de critério que a prosa não deixa dispensar, met/waived/out_of_scope "
+        "sem nada escrito ao lado, e duas linhas discordantes. Não observa o jogo, não executa nada e "
+        "**não concede passagem**: `held_by_declaration` diz que o projeto afirma cumprir, não que alguém "
+        "conferiu."
+    )
+    if gate_row_source(project):
+        scope += (
+            " O disco declara o gate (`gate`). "
+            "Linha no disco não é passagem concedida."
+        )
+    return scope
 
 
 CRAFT_ROW = re.compile(r"^\|\s*`([\w-]+)`\s*\|\s*`(\w+)`\s*\|\s*(.*?)\s*\|\s*$")
