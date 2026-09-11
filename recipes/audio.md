@@ -33,7 +33,7 @@ Coleta e guarda sobem de tom com a corrente; o erro não herda o tom.
 A legenda desses dois papéis nomeia a mesma aposta. Sem o número
 o tom falava e a faixa calava. O erro emite `lost`; a faixa nomeia
 a corrente que caiu e cala a aposta quando era zero. Não herda
-`chain`. Número na legenda não é mix ouvido. Se a receita recusa que o número na legenda seja mix, a opção `captions` do `access` nomeia o número que a receita já recusa. Número no disco não é mix. Sem chave `número`.
+`chain`. Número na legenda não é mix ouvido. Se a receita recusa que o número na legenda seja mix, a opção `captions` do `access` nomeia o número que a receita já recusa. Número no disco não é mix. Sem chave `número`. Se a receita recusa que a legenda prove o jogo completável sem áudio, a opção `captions` do `access` nomeia o mudo que a receita já recusa. Texto no disco não é a partida muda. Sem chave `mudo`.
 Coleta, queda, raspo, impacto, avanço, o término, a guarda e o fim levam o x do campo; o panner
 marca o lugar. Número no panner não é mix ouvido. Se a receita recusa que o número no panner seja mix, o papel do x do campo nomeia o panner que a receita já recusa. Número no disco não é mix. Sem chave `panner`. O término (`land`) é
 voz própria, mais curta que o dash; sem o papel o aterrissar é mudo.

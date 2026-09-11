@@ -2928,6 +2928,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("número na legenda seja mix", game.next_scope())
         self.assertNotIn("número na legenda seja mix", game.feel_reading(starter)["scope"])
 
+    def test_access_captions_names_the_mute_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_caption_as_muted_completable(recipe),
+            "a receita já recusa que a legenda prove o jogo completável sem áudio",
+        )
+        self.assertEqual(game.access_caption_muted_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = next(option for option in report["options"] if option["key"] == "captions")
+        self.assertIn(
+            "legenda prove o jogo completável sem áudio",
+            item["scope"],
+            "a opção captions nomeava o número e calava a recusa",
+        )
+        self.assertIn("(`mudo`)", item["scope"])
+        self.assertIn("número na legenda seja mix", item["scope"])
+        self.assertNotIn("mudo", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_caption_as_muted_completable(""))
+        self.assertNotIn("legenda prove o jogo completável sem áudio", report["scope"])
+        self.assertNotIn("legenda prove o jogo completável sem áudio", report.get("next") or "")
+        for option in report["options"]:
+            if option["key"] == "captions":
+                continue
+            self.assertNotIn("legenda prove o jogo completável sem áudio", option["scope"])
+        with mock.patch.object(game, "access_caption_muted_source", return_value=None):
+            silent = game.access_reading(starter)
+        silent_item = next(option for option in silent["options"] if option["key"] == "captions")
+        self.assertNotIn("legenda prove o jogo completável sem áudio", silent_item["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        audio_recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o mudo que a receita já recusa", recipe)
+        self.assertIn("nomeia o mudo que a receita já recusa", audio_recipe)
+        self.assertIn("nomeia o mudo que a receita já recusa", skill)
+        self.assertIn("nomeia o mudo que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("legenda prove o jogo completável sem áudio", game.next_scope())
+        self.assertNotIn("legenda prove o jogo completável sem áudio", game.feel_reading(starter)["scope"])
+        self.assertNotIn(
+            "legenda prove o jogo completável sem áudio",
+            game.roles_reading(starter)["scope"],
+        )
+
     def test_access_haptics_names_the_control_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
         self.assertTrue(

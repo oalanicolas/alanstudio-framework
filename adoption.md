@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.554 — a opção captions do access nomeia o mudo que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+jogo
+permanece
+completável
+com
+o
+áudio
+desligado.
+A
+opção
+captions
+nomeava
+o
+número
+e
+calava
+a
+recusa.
+Agora
+a
+opção
+`captions`
+nomeia
+o
+mudo.
+Texto
+no
+disco
+não
+é
+a
+partida
+muda.
+Sem
+chave
+`mudo`.
+Nomear
+não
+verifica.
+
+O que 0.9.554 não afirma:
+declarar
+legendas
+não
+é
+terminar
+o
+jogo
+sem
+som.
+
 ## 0.9.553 — o ship nomeia o teto que a receita já recusa
 
 A

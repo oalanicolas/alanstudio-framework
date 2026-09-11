@@ -2977,7 +2977,44 @@ def access_captions_option_scope():
     named = access_caption_number_scope()
     if named:
         scope += " " + named
+    muted = access_caption_muted_scope()
+    if muted:
+        scope += " " + muted
     return scope
+
+
+# A receita já recusa que a legenda prove o
+# jogo completável sem áudio. Sem isto a
+# opção captions nomeava o número e calava
+# a recusa. Texto no disco não é a partida
+# muda.
+A11Y_MUTED = re.compile(r"completável com o áudio desligado")
+
+
+def recipe_refuses_caption_as_muted_completable(text):
+    return bool(text and A11Y_MUTED.search(text))
+
+
+def access_caption_muted_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_caption_as_muted_completable(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_caption_muted_scope():
+    if not access_caption_muted_source():
+        return None
+    return (
+        "O disco recusa que a legenda prove o jogo completável sem "
+        "áudio (`mudo`). Texto no disco não é a partida muda."
+    )
 
 
 # A receita já recusa opção sem consumidor. Sem isto o
