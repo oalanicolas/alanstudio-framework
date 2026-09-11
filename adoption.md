@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.347 — o prompt nomeia o playtest que o AGENTS.md já cita
+
+O
+`AGENTS.md`
+já
+citava
+o
+leitor.
+O
+caminho
+ideia→jogo
+calava.
+Agora
+o
+prompt
+de
+`start`,
+`play`,
+`guide`
+e
+`init`
+nomeia
+o
+mesmo
+comando.
+Só
+lê.
+Sem
+os
+quatro
+não
+é
+achado.
+Sem
+`then.playtest`.
+Não
+promove
+`outsider`.
+
+O que 0.9.347 não afirma:
+nomear
+o
+leitor
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.346 — o canvas da porta nomeia a lacuna do som
 
 O

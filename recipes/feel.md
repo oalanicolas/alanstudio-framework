@@ -26,7 +26,9 @@ sessão observada. Depois do fim, um avanço novo volta à porta; R também. Dep
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão — `next` propõe `playtest.unstructured` e aponta a página
 (`/?invite=1#finding`) e `note --field`. Sem o convite o âncora
-some. `playtest` só lê. Nomeia `finding_open` (a url do
+some. `playtest` só lê. O prompt nomeia o `playtest`
+que o `AGENTS.md` já cita. Só lê. Sem os quatro não é achado.
+Sem `then.playtest`. Nomear o leitor não observa. Nomeia `finding_open` (a url do
 serve com o convite, ou o mesmo endereço sem serve), `form` e
 `fields`. Sem `then`. Esqueleto no disco não é achado. O `note`
 nomeia `finding` e `needed` no próprio recibo. Recibo sem os

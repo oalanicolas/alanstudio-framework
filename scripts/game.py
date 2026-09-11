@@ -3923,6 +3923,12 @@ def playtest_command(project):
     return harness_command("playtest", project)
 
 
+def playtest_line(playtest):
+    if not playtest:
+        return ""
+    return f"O achado: {playtest}. Só lê. Sem os quatro não é achado. "
+
+
 # Exemplos coláveis do segundo ciclo. Os nomes não existem no starter:
 # nascer o par `noite` (look e chuva no mesmo nome) ou deslocar `dash`
 # é o que o `next` deixa de apontar quando o disco já tem um look, uma
@@ -4073,7 +4079,7 @@ def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, ur
     ]
 
 
-def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy=None, opens=False):
+def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy=None, opens=False, playtest=None):
     hole = runtime_line(runtime)
     simulated = session_line(then)
     if not play:
@@ -4093,6 +4099,7 @@ def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy
         if then.get("invite")
         else ""
     )
+    found = playtest_line(playtest)
     craft = [key for key in CRAFT_EXAMPLES if then.get(key)]
     if noted and craft:
         parts = ["O ciclo já tem um recibo."]
@@ -4102,6 +4109,8 @@ def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy
             parts.append(seed_line)
         if invite_line:
             parts.append(invite_line)
+        if found:
+            parts.append(found.strip())
         parts.append("O harness não pinta, não chove e não ouve.")
         parts.append(f"`next` só se você não sabe o que falta: {then['lost']}.")
         return hole + " ".join(parts)
@@ -4122,13 +4131,14 @@ def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy
         + (f"{how} " if how else "")
         + (f"{extra} " if extra else "")
         + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
-        "`next` só se o ciclo já correu e você não sabe o que falta."
+        + found
+        + "`next` só se o ciclo já correu e você não sabe o que falta."
     )
 
 
-def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None, runtime=None, fantasy=None, opens=False):
+def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None, runtime=None, fantasy=None, opens=False, playtest=None):
     if exists:
-        return cycle_prompt(play, then, cycle, noted, url, runtime, fantasy, opens)
+        return cycle_prompt(play, then, cycle, noted, url, runtime, fantasy, opens, playtest)
     hole = runtime_line(runtime)
     simulated = session_line(then)
     surface = browser_surface(url, opens)
@@ -4141,7 +4151,8 @@ def guide_prompt(exists, start_command, play, then, cycle, noted=False, url=None
         + surface
         + (f"{how} " if how else "")
         + f"Depois de uma partida, a página grava o recibo se você escrever; no harness: {then['note']}. "
-        "O harness não cria a pasta, não abre o jogo e não joga."
+        + playtest_line(playtest)
+        + "O harness não cria a pasta, não abre o jogo e não joga."
     )
 
 
@@ -4674,7 +4685,10 @@ def init(destination, starter, title=None, documents=True, idea=None):
     # plantava e calava — quem segue o caminho com
     # rascunhos tinha de achar o play depois. Nomear
     # não serve e não observa.
-    prompt = cycle_prompt(play, then, cycle, False, url, runtime, fantasy, opens)
+    prompt = cycle_prompt(
+        play, then, cycle, False, url, runtime, fantasy, opens,
+        playtest_command(destination),
+    )
     return {
         "schema_version": 1,
         "project": str(destination),
@@ -4774,6 +4788,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "prompt": cycle_prompt(
             play, then, cycle, noted, url, runtime, fantasy,
             cycle_opens_browser(destination, chosen),
+            playtest_command(destination),
         ),
         "executed": False,
         "scope": (
@@ -4796,6 +4811,9 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "fica no stdout. Depois de uma "
             "partida, a página grava o recibo se você escrever; o próximo "
             "comando do harness continua `note`, não `next`. "
+            "O prompt nomeia o `playtest` que o `AGENTS.md` já cita. Só lê. "
+            "Sem os quatro não é achado. Sem `then.playtest`. Nomear o "
+            "leitor não observa. "
             "`then` já nomeia par, look, chuva e voz se o projeto declara essas "
             "ferramentas; depois de um recibo, o prompt as aponta. Se o disco "
             "tem last-run com seed, `then` aponta a seed e o convite; "
@@ -4856,6 +4874,7 @@ def play_cycle(destination=None, starter=None):
         "prompt": cycle_prompt(
             play, then, cycle, noted, url, runtime, fantasy,
             cycle_opens_browser(dest, chosen),
+            playtest_command(dest),
         ),
         "steps": steps,
         "noted": noted,
@@ -4870,6 +4889,9 @@ def play_cycle(destination=None, starter=None):
             "Com tela, o avanço abre a porta. Depois "
             "de uma partida, a página grava o recibo se você escrever; o "
             "próximo comando do harness continua `note`, não `next`. "
+            "O prompt nomeia o `playtest` que o `AGENTS.md` já cita. Só lê. "
+            "Sem os quatro não é achado. Sem `then.playtest`. Nomear o "
+            "leitor não observa. "
             "Se o disco tem last-run com seed, `then` aponta a seed e o "
             "convite; nomear o endereço não observa. `session` aponta a "
             "partida simulada se o manifesto a declara; o prompt a nomeia. "
@@ -5101,6 +5123,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         "prompt": guide_prompt(
             exists, start_command, play_cmd, then, cycle, noted, url, runtime, fantasy,
             cycle_opens_browser(dest if exists else None, chosen),
+            playtest_command(next_target),
         ),
         "steps": steps,
         "scope": (
@@ -5124,7 +5147,9 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "nomear o endereço não observa. Nomear o ofício não pinta, não chove e não ouve. O autor do `note` é "
             "sugestão do git ou do ambiente, não quem jogou. "
             "`next` fica para quando o ciclo já correu e você não sabe o "
-            "que falta. Sem destino, se o diretório atual é um jogo fora "
+            "que falta. O prompt nomeia o `playtest` que o `AGENTS.md` já "
+            "cita. Só lê. Sem os quatro não é achado. Sem `then.playtest`. "
+            "Nomear o leitor não observa. Sem destino, se o diretório atual é um jogo fora "
             "do framework, o mapa usa esse caminho. Não cria o projeto, "
             "não abre o jogo e não avalia a proposta. `session` aponta a "
             "partida simulada se o manifesto a declara; o prompt a nomeia. "
