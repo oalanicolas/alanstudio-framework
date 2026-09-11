@@ -855,7 +855,7 @@ Campos obrigatórios por tipo: `observation` → `scenario`, `role` (`human`/`ag
 `budget` → `metric`, `value` numérico, `unit`, `platform`, `tool`; `milestone` →
 `milestone`, `decision` (`declared`/`denied`/`deferred`), `declared_by`, `role`. Anexos
 entram por caminho e SHA-256. O recibo guarda o que foi declarado; não valida, não
-mede e não aprova. `role=agent` é avaliação do agente, não aprovação do usuário.
+mede e não aprova. Se o roteiro recusa medir os critérios, o `record` nomeia a medição que o roteiro já recusa. Recibo no disco não é observação. Sem chave `mede`. `role=agent` é avaliação do agente, não aprovação do usuário.
 
 ## Três camadas
 

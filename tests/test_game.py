@@ -887,6 +887,45 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ação recomendada", game.context(self.project, "create")["finish"]["scope"])
         self.assertNotIn("ação recomendada", game.scan(self.project)["scope"])
 
+    def test_record_names_the_measure_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.quality_refuses_measure(guide),
+            "o roteiro já recusa medir os critérios",
+        )
+        self.assertEqual(game.quality_measure_source(), "references/quality.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-408",
+        )
+        self.assertIn(
+            "medir os critérios",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`mede`)", report["scope"])
+        self.assertNotIn("mede", report)
+        self.assertNotIn("measured", report)
+        self.assertFalse(game.quality_refuses_measure(""))
+        with mock.patch.object(game, "quality_measure_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-408-silent",
+            )
+        self.assertNotIn("medir os critérios", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a medição que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a medição que o roteiro já recusa", skill)
+        self.assertIn("nomeia a medição que o roteiro já recusa", readme)
+        self.assertNotIn("measured", report["scope"])
+        self.assertNotIn("medir os critérios", game.next_scope())
+        self.assertNotIn("medir os critérios", game.production_bar_scope())
+        self.assertNotIn("medir os critérios", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("medir os critérios", game.budget_reading(self.project)["scope"])
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

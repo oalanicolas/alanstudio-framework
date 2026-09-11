@@ -7734,6 +7734,43 @@ def parse_fields(pairs):
     return fields
 
 
+# O roteiro já recusa medir os critérios. Sem isto o
+# record gravava o recibo e calava a recusa.
+# Recibo no disco não é observação.
+QUALITY_GUIDE = FRAMEWORK / "references/quality.md"
+QUALITY_MEASURE = re.compile(r"O harness não os\s+mede")
+
+
+def quality_refuses_measure(text):
+    return bool(text and QUALITY_MEASURE.search(text))
+
+
+def quality_measure_source():
+    path = QUALITY_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if quality_refuses_measure(text):
+        return "references/quality.md"
+    return None
+
+
+def record_scope():
+    scope = (
+        "Registro declarado por quem assina; o harness não valida o conteúdo, não mede e não aprova. "
+        "role=agent é avaliação do agente, não aprovação do usuário."
+    )
+    if quality_measure_source():
+        scope += (
+            " O disco recusa medir os critérios (`mede`). "
+            "Recibo no disco não é observação."
+        )
+    return scope
+
+
 def record(project, kind, author, note, fields, attachments, output):
     """Recibo de evidência declarada (observação, orçamento medido ou decisão de marco), ligado à versão do projeto."""
     if not project.is_dir():
@@ -7767,7 +7804,7 @@ def record(project, kind, author, note, fields, attachments, output):
         "schema_version": 1, "kind": kind, "project": str(project), "recorded_at": datetime.now(timezone.utc).isoformat(),
         "version": git_version(project), "author": author, "note": note, "fields": fields, "attachments": files,
         "status": "declared",
-        "scope": "Registro declarado por quem assina; o harness não valida o conteúdo, não mede e não aprova. role=agent é avaliação do agente, não aprovação do usuário.",
+        "scope": record_scope(),
     }
     output.mkdir(parents=True, exist_ok=False)
     (output / "record.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

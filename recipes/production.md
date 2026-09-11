@@ -144,6 +144,6 @@ valida. Exemplo completo: [da trilha ao capítulo acabado](../examples/era-uma-v
 O harness localiza o plano de produção e o inclui em `continuity.sources`; a leitura
 dos marcos, a medição dos orçamentos e a declaração de passagem são do agente e da
 pessoa. `record` escreve o que lhe foi declarado e recusa sobrescrita; nenhum comando
-mede desempenho, executa soak ou certifica requisitos de plataforma. Os termos first playable, alpha, beta e gold seguem o uso corrente da
+mede desempenho, executa soak ou certifica requisitos de plataforma. Se o roteiro recusa medir os critérios, o `record` nomeia a medição que o roteiro já recusa. Recibo no disco não é observação. Sem chave `mede`. Os termos first playable, alpha, beta e gold seguem o uso corrente da
 indústria; cada estúdio e plataforma define detalhes próprios, e o plano do jogo
 registra a definição adotada. Ver [fontes](../references/sources.md#produção-09).
