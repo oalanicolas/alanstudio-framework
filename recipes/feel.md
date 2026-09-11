@@ -56,7 +56,7 @@ sobrescreve `played` sem `--force`. `session --look` e
 `session --speed` nomeiam o que o convite já lê. Simular
 no relógio cheio não observa.
 `playtest` relata
-`candidate_policy`. Nenhum dos dois é sessão observada. Se o
+`candidate_policy` e `candidate_tally`. Nenhum dos dois é sessão observada. Se o
 projeto (ou o starter) declara `session`, `then` a aponta. `note --from-run`
 anexa o resumo e, se houver, a curva — o mapa já põe `--from-run`
 quando o arquivo existe. Depois do fim, a página grava o mesmo

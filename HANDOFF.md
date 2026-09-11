@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.335: o `feel` nomeia o peso do passo. Não promove `felt`.
+**HEAD:** ver `git log -1` — vigente 0.9.336: o `playtest` nomeia a conta do last-run. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.335):** `python3 -m unittest discover -s tests` → 332.
+**Testes no HEAD (0.9.336):** `python3 -m unittest discover -s tests` → 333.
 `cd assets/starters/canvas-arcade && npm test` → 504.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.335)
+## O que o HEAD já entrega (0.9.91–0.9.336)
 
 | Ver | Salto |
 | --- | --- |
@@ -279,6 +279,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.333 | No fim a região viva nomeia a mesa e o look que a partida já vestiu. O last-run já gravava; o live só dizia o placar. Spawn e normal somem. Não promove `verified`. |
 | 0.9.334 | O sidecar sem origem, autor e licença não declara. O JSON já exigia os três campos; o arquivo ao lado declarava só por existir. CREDITS.md pela menção continua. Não promove `granted`. |
 | 0.9.335 | O `feel` nomeia o peso do passo. O CONFIG já declarava `player.speed` e o avanço; o comando lia perdão e rumble e calava o passo. `halfWidth` continua de fora. Não promove `felt`. |
+| 0.9.336 | O `playtest` nomeia a conta do last-run. A faixa e o recibo já tinham pontos e verbos; o leitor nomeava curva e origem e calava a conta. `dashes` e `ticks` ficam de fora. Não promove `outsider`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -297,7 +298,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | legibility | playable | stub ≠ dispositivo |
 | art_direction | slice | o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o `sfx verify` nomeia o som que o catálogo perdeu; o `sfx export` nomeia o stem que o disco perdeu; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
-| pacing | slice | a porta chove o risco da mesa; o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
+| pacing | slice | o `playtest` nomeia a conta do last-run; a porta chove o risco da mesa; o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | a região viva nomeia a mesa e o look da porta e do fim; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
@@ -1152,6 +1153,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais uma região viva que cala a mesa e o look do fim.
 **Não** mais um sidecar que declara só por existir.
 **Não** mais um `feel` que cala o peso do passo que o CONFIG já declara.
+**Não** mais um `playtest` que cala a conta que o last-run já conta.
 
 Candidatos, do que ainda dói:
 
@@ -1200,7 +1202,11 @@ Candidatos, do que ainda dói:
    disco perdeu. `count` continua o acervo.    Sem os quatro campos,
    `playtest` nomeia `finding_href`, `finding_open`,
    `qa`, `form`
-   e `fields`; `next`
+   e `fields`. Com last-run, nomeia
+   também `candidate_tally` se a
+   conta dos verbos ficou no recibo.
+   `dashes` e `ticks` ficam de fora.
+   `next`
    aponta o serve, a página (`finding_open`) e `note --field`, não relê o
    leitor. Sem `then` no leitor.    Sem acervo, `roles --fill` nomeia o stem
    do starter; `--apply` o copia — e recoloca o WAV se o
@@ -1283,7 +1289,12 @@ Candidatos, do que ainda dói:
    cria. Não trocar a
    `description` do `-h` (irmão
    de 322) nem a ordem dos
-   verbos.
+   verbos. O `playtest` já nomeia
+   a conta do last-run — não
+   levar `candidate_tally` à faixa
+   do convite (irmão, não o
+   próximo salto). Não incluir
+   `dashes` nem `ticks` na conta.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
    estável no disco, pulso no disco, chuva no disco, estilhaço dusk no disco, intenção warmer no
@@ -2327,12 +2338,12 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`feel` nomeia o peso do passo. O
-CONFIG já declarava `player.speed` e
-o avanço; o comando lia perdão e
-rumble e calava o passo. `halfWidth`
-continua de fora. Não promove
-`felt`.
+`playtest` nomeia a conta do
+last-run. A faixa e o recibo já
+tinham pontos e verbos; o leitor
+nomeava curva e origem e calava a
+conta. `dashes` e `ticks` ficam de
+fora. Não promove `outsider`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2403,6 +2414,9 @@ A família sem destino que cala o start do README está saturada.
 A família região viva que cala a mesa e o look do fim está saturada.
 A família sidecar que declara só por existir está saturada.
 A família feel que cala o peso do passo que o CONFIG já declara está saturada.
+A família playtest que cala a conta que o last-run já conta está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
+Não levar `candidate_tally` à faixa do convite.
+Não incluir `dashes` nem `ticks` na conta.
 CREDITS.md pela menção ainda declara — irmão de 334.

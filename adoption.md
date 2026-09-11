@@ -3,6 +3,57 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.336 — o playtest nomeia a conta do last-run
+
+A
+faixa
+e
+o
+recibo
+já
+tinham
+pontos
+e
+verbos.
+O
+leitor
+nomeava
+curva
+e
+origem
+e
+calava
+a
+conta.
+Agora
+`candidate_tally`
+lista
+pontos,
+coletas,
+quedas,
+erros
+e
+guardas.
+`dashes`
+e
+`ticks`
+ficam
+de
+fora.
+Não
+promove
+`outsider`.
+
+O que 0.9.336 não afirma:
+número
+no
+disco
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.335 — o feel nomeia o peso do passo
 
 O

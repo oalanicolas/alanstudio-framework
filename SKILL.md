@@ -310,7 +310,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    chuva, relata `candidate_spawn`; se nomeia o look, relata
    `candidate_look`; se nomeia a curva, relata `candidate_curve`;
    se nomeia a origem, relata `candidate_policy` (`played` ou
-   `nearest-orb`). A simulação não sobrescreve `played` sem `--force`.
+   `nearest-orb`); se nomeia a conta, relata `candidate_tally`
+   (pontos, coletas, quedas, erros e guardas). A simulação não
+   sobrescreve `played` sem `--force`.
    O convite junta mesa e paleta. Nenhum dos
    dois é sessão observada.    Recibo sem forma entra no
    `next` como `playtest.unstructured`: a proposta aponta a

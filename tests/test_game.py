@@ -4235,6 +4235,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(report["candidate_speed"])
         self.assertIsNone(report["candidate_curve"])
         self.assertIsNone(report["candidate_policy"])
+        self.assertIsNone(report["candidate_tally"])
         self.assertIsNone(report["invite"])
         self.assertEqual(report["finding_href"], "/?invite=1#finding")
         self.assertEqual(report["finding_open"], report["finding_href"])
@@ -4850,6 +4851,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
         self.assertIn("candidate_curve", report["scope"])
+        self.assertNotIn("aprovado", json.dumps(report))
+        self.assertNotIn("verified", json.dumps(report))
+
+    def test_playtest_names_the_tally_the_last_run_already_counts(self):
+        destination = self.root / "com-conta"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "policy": "played",
+            "run": {
+                "seed": 8,
+                "score": 12,
+                "ticks": 400,
+                "collected": 4,
+                "missed": 2,
+                "hits": 1,
+                "banks": 3,
+                "dashes": 7,
+            },
+            "curve": {"never_banked": False, "unbanked_at_end": 0},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(destination)
+        self.assertEqual(report["candidate_tally"], {
+            "score": 12,
+            "collected": 4,
+            "missed": 2,
+            "hits": 1,
+            "banks": 3,
+        })
+        self.assertNotIn("dashes", report["candidate_tally"])
+        self.assertNotIn("ticks", report["candidate_tally"])
+        self.assertEqual(report["candidate_seed"], 8)
+        self.assertEqual(report["candidate_policy"], "played")
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertIn("candidate_tally", report["scope"])
+        self.assertIn("guardas", report["scope"])
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertIn("candidate_tally", recipe)
+        self.assertIn("candidate_tally", feel)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"seed": 8, "ticks": 40},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        hollow = game.playtest_reading(destination)
+        self.assertIsNone(hollow["candidate_tally"])
+        self.assertFalse(hollow["outsider"])
         self.assertNotIn("aprovado", json.dumps(report))
         self.assertNotIn("verified", json.dumps(report))
 
