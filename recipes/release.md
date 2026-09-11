@@ -81,4 +81,4 @@ tamanho e tempo de carga, e a lista de proveniência do que foi embarcado. `veri
 registra esses comandos com recibo; recibo verde não aprova a entrega nem
 substitui a autorização do usuário. Degraus:
 [barra de acabamento](../references/production-bar.md#release--confiança-operacional).
-Template da etapa: [release](../assets/templates/release.md).
+Template da etapa: [release](../assets/templates/release.md). Se o molde recusa publicar, o `template` nomeia a publicação que o molde já recusa. Molde no disco não é autorização. Sem chave `publicar`.

@@ -4894,6 +4894,44 @@ def template(stage, project, output=None):
     return text
 
 
+# O molde já recusa publicar. Sem isto o
+# template emitia rascunho e calava a recusa.
+# Molde no disco não é autorização.
+TEMPLATE_PUBLISH = re.compile(
+    r"não autoriza publicar|não concedida neste template",
+    re.IGNORECASE,
+)
+
+
+def template_refuses_publish(text):
+    return bool(text and TEMPLATE_PUBLISH.search(text))
+
+
+def template_refusal_source(stage):
+    if stage == "agents" or stage not in STAGES:
+        return None
+    path = FRAMEWORK / f"assets/templates/{stage}.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if template_refuses_publish(text):
+        return f"assets/templates/{stage}.md"
+    return None
+
+
+def template_scope(stage):
+    scope = "Template inicial; decisões, revisão e prova continuam pendentes."
+    if template_refusal_source(stage):
+        scope += (
+            " O disco recusa a publicação (`publicar`). "
+            "Molde no disco não é autorização."
+        )
+    return scope
+
+
 # Todo comando que o harness sugere existe para ser copiado e colado. Caminho de
 # projeto com espaço é comum — "Farol do Sul" é um nome de jogo, não um caso de
 # borda — e sem citação o shell o parte em dois argumentos. Construir tudo por
@@ -7800,7 +7838,7 @@ def main():
         elif args.action == "template":
             document = template(args.stage, resolve(args.project, root), args.output)
             if args.output:
-                emit({"document": str(args.output.resolve()), "status": "draft", "scope": "Template inicial; decisões, revisão e prova continuam pendentes."})
+                emit({"document": str(args.output.resolve()), "status": "draft", "scope": template_scope(args.stage)})
             else:
                 print(document, end="")
         elif args.action == "check-plan":

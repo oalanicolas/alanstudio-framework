@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.400 — o template nomeia a publicação que o molde já recusa
+
+O
+molde
+já
+dizia
+que
+não
+autoriza
+publicar.
+O
+comando
+emitia
+rascunho
+e
+calava
+a
+recusa.
+Agora
+o
+`template`
+nomeia
+a
+publicação.
+Molde
+no
+disco
+não
+é
+autorização.
+Sem
+chave
+`publicar`.
+Não
+promove
+`elsewhere`.
+
+O que 0.9.400 não afirma:
+molde
+no
+disco
+não
+é
+autorização
+nem
+artefato
+em
+outra
+máquina.
+
 ## 0.9.399 — o convite nomeia o bind que o serve já prende
 
 O

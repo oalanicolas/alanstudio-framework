@@ -74,7 +74,8 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    e [qualidade](references/quality.md). Para criação ou pré-produção, siga
    [o ciclo criativo](references/preproduction.md): Game Brief, MDA/GDD, PoC, PRD/TDD,
    vertical slice, MVP, QA/playtest e release. `--stage <etapa>` carrega só o template
-   pertinente; `template <etapa> --project <projeto>` imprime um rascunho. Reaproveite
+   pertinente; `template <etapa> --project <projeto>` imprime um rascunho. Se o molde recusa publicar, o `template` nomeia a publicação que o molde já recusa. Molde no disco não é autorização. Sem chave `publicar`.
+   Reaproveite
    documentos existentes; um jogo pequeno reúne tudo em `game-design`. O design system
    do jogo (`art-bible`) é conteúdo mínimo; o arquivo separado é opcional se outro
    canônico cobrir. Contrato: [design system do jogo](references/game-design-system.md).

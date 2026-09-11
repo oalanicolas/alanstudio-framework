@@ -897,6 +897,45 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         for relative in ("GDD.md", "PRD.md", "TDD.md", "docs/game-design.md"):
             self.assertIn(str(self.project / relative), result["records"])
 
+    def test_template_names_the_publish_the_mold_already_refuses(self):
+        aaa = (game.FRAMEWORK / "assets/templates/aaa.md").read_text(encoding="utf-8")
+        release = (game.FRAMEWORK / "assets/templates/release.md").read_text(encoding="utf-8")
+        brief = (game.FRAMEWORK / "assets/templates/brief.md").read_text(encoding="utf-8")
+        self.assertTrue(game.template_refuses_publish(aaa), "o molde já recusa publicar")
+        self.assertTrue(game.template_refuses_publish(release), "o molde de release já recusa publicar")
+        self.assertEqual(game.template_refusal_source("aaa"), "assets/templates/aaa.md")
+        self.assertEqual(game.template_refusal_source("release"), "assets/templates/release.md")
+        scope = game.template_scope("aaa")
+        self.assertIn("recusa a publicação", scope, "o template emitia rascunho e calava a recusa")
+        self.assertIn("(`publicar`)", scope)
+        self.assertFalse(game.template_refuses_publish(brief))
+        self.assertFalse(game.template_refuses_publish(""))
+        self.assertIsNone(game.template_refusal_source("brief"))
+        self.assertIsNone(game.template_refusal_source("agents"))
+        self.assertNotIn("recusa a publicação", game.template_scope("brief"))
+        with mock.patch.object(game, "template_refusal_source", return_value=None):
+            self.assertNotIn("recusa a publicação", game.template_scope("aaa"))
+        output = self.root / "planning" / "aaa.md"
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT), "template", "aaa", "--project", str(self.project), "--output", str(output)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        receipt = json.loads(result.stdout)
+        self.assertIn("recusa a publicação", receipt["scope"])
+        self.assertNotIn("publicar", receipt)
+        self.assertEqual(receipt["status"], "draft")
+        self.assertNotIn("verified", receipt["scope"])
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a publicação que o molde já recusa", recipe)
+        self.assertIn("nomeia a publicação que o molde já recusa", skill)
+        self.assertIn("nomeia a publicação que o molde já recusa", readme)
+        self.assertNotIn("recusa a publicação", game.context(self.project, "create")["finish"]["scope"])
+        self.assertNotIn("recusa a publicação", game.next_step(self.project)["scope"])
+        self.assertNotIn("recusa a publicação", game.ship_reading(self.project)["scope"])
+
     def test_template_cli_renders_every_artifact_as_draft_in_new_files(self):
         target = self.root / "new-game"
         for stage in game.STAGES:
