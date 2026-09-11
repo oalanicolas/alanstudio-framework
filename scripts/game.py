@@ -2335,6 +2335,26 @@ def look_birth_source(project):
     return None
 
 
+# A receita já marca o trilho. Sem isto o art
+# listava paletas e calava o telegraph. Marca no
+# disco não é comparação em movimento.
+TELEGRAPH_DRAW = re.compile(r"(?:function\s+drawTelegraph)\b")
+
+
+def canvas_marks_rail(text):
+    return bool(text and TELEGRAPH_DRAW.search(text))
+
+
+def telegraph_rail_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if "tests" in Path(relative).parts:
+            continue
+        if canvas_marks_rail(text):
+            return relative
+    return None
+
+
 def art_reading(project):
     project = Path(project)
     palettes = []
@@ -2375,6 +2395,11 @@ def art_reading(project):
     if look_birth_source(project):
         scope += (
             " O disco nasce o look (`look`). Ferramenta no disco não é "
+            "comparação em movimento."
+        )
+    if telegraph_rail_source(project):
+        scope += (
+            " O disco marca o trilho (`telegraph`). Marca no disco não é "
             "comparação em movimento."
         )
     return {

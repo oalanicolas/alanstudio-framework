@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.365: o `save` nomeia o fechamento que o disco já grava. Gancho no disco não é aba fechada. Sem chave `beforeunload`. Não promove `trusted`.
+**HEAD:** ver `git log -1` — vigente 0.9.366: o `art` nomeia o trilho que o telegraph já marca. Marca no disco não é comparação em movimento. Sem chave `telegraph`. Não promove `consistent`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
 **Suítes confirmadas no HEAD (0.9.365):** `python3 -m unittest discover -s tests` → 361.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.365)
+## O que o HEAD já entrega (0.9.91–0.9.366)
 
 | Ver | Salto |
 | --- | --- |
@@ -309,6 +309,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.363 | O `ship` nomeia o banner que o serve já imprime. A receita já apontava a árvore exportada; o comando relatava dist/ e calava o tool. Sem chave `serve`. Não promove `elsewhere`. |
 | 0.9.364 | O `access` nomeia o perigo que o live já anuncia. A receita já pedia `perigo à frente`; o comando lia região viva e calava o aviso. Sem chave `threat`. Não promove `verified`. |
 | 0.9.365 | O `save` nomeia o fechamento que o disco já grava. A receita já apontava `beforeunload`; o comando lia persistLine e calava o gancho. Sem chave `beforeunload`. Não promove `trusted`. |
+| 0.9.366 | O `art` nomeia o trilho que o telegraph já marca. A receita já apontava a mostra; o comando listava paletas e calava o aviso no canvas. Sem chave `telegraph`. Não promove `consistent`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -325,7 +326,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | --- | --- | --- |
 | feel | playable | o `feel` nomeia a inclinação que o lookAhead já marca; o `feel` nomeia o perdão que o probe já exercita; o `feel` nomeia o corpo que a porta já desloca; o `feel` nomeia o peso do passo que o CONFIG já declara; o `feel` nomeia o rumble que já lê; o rótulo do dash nomeia o avanço no travel; o compromisso da guarda veste a aposta; o coil da guarda veste a aposta; o coil do dash veste o avanço; o coil do dash marca o rumo no corpo; o rastro do dash veste o avanço; o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
-| art_direction | slice | o `art` nomeia o look que o disco já nasce; o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o coil do dash marca o rumo no corpo; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
+| art_direction | slice | o `art` nomeia o trilho que o telegraph já marca; o `art` nomeia o look que o disco já nasce; o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o coil do dash marca o rumo no corpo; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o `roles` nomeia a voz que o sfx já desloca; o `roles` nomeia a soma que a receita já relata; o `roles` nomeia o `duckMs` que `SOUNDS` já declara; o `sfx verify` nomeia o som que o catálogo perdeu; o `sfx export` nomeia o stem que o disco perdeu; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | o `playtest` nomeia a simulação que a receita já grava; o prompt nomeia o `playtest` que o `AGENTS.md` já cita; o achado copiado nomeia o last-run simulado; a faixa nomeia o last-run simulado; o `playtest` nomeia a conta do last-run; a porta chove o risco da mesa; o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | o `save` nomeia o fechamento que o disco já grava; o `save` nomeia a recuperação que o canvas já pinta; a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
@@ -756,6 +757,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   nasce a paleta. Sem o marcador, a frase some.
   Ferramenta no disco não é comparação em movimento.
   Sem chave `look` no recibo. Sem nomear `pair`.
+  `art.scope` nomeia o trilho se o canvas declara
+  `drawTelegraph`. Sem o marcador, a frase some.
+  Marca no disco não é comparação em movimento.
+  Sem chave `telegraph` no recibo. Sem chave `rail`.
+  Sem nomear `pair`.
   `consistent` falso.
   `ship.scope` nomeia o tamanho se o `tools/size.*`
   declara sem teto. Sem o marcador, a frase some.
@@ -1306,6 +1312,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `ship` que relata dist/ e cala o banner que o serve já imprime.
 **Não** mais um `access` que lê região viva e cala o perigo que o live já anuncia.
 **Não** mais um `save` que lê persistLine e cala o fechamento que o disco já grava.
+**Não** mais um `art` que lista paletas e cala o trilho que o telegraph já marca.
 
 Candidatos, do que ainda dói:
 
@@ -2790,6 +2797,20 @@ Candidatos, do que ainda dói:
   disco
   já
   grava
+  e um
+  `art`
+  que
+  lista
+  paletas
+  e
+  cala
+  o
+  trilho
+  que
+  o
+  telegraph
+  já
+  marca
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2814,15 +2835,15 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`save` nomeia o fechamento que
-o disco já grava. A receita
-já apontava `beforeunload`; o
-comando lia persistLine e
-calava o gancho. Gancho no
-disco não é aba fechada. Sem
-chave `beforeunload`. Não
-promove `trusted`. Não outro
-flush no `pagehide`.
+`art` nomeia o trilho que
+o telegraph já marca. A receita
+já apontava a mostra; o
+comando listava paletas e
+calava o aviso no canvas.
+Marca no disco não é
+comparação em movimento. Sem
+chave `telegraph`. Não promove
+`consistent`. Não nomear `pair`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2923,6 +2944,7 @@ A família feel que lê lookAheadX e cala o laço que já inclina o quadro está
 A família ship que relata dist/ e cala o banner que o serve já imprime está saturada.
 A família access que lê região viva e cala o perigo que o live já anuncia está saturada.
 A família save que lê persistLine e cala o fechamento que o disco já grava está saturada.
+A família art que lista paletas e cala o trilho que o telegraph já marca está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -2994,5 +3016,9 @@ Não pintar o perigo no canvas da pausa — irmão de 364 e 346.
 Não inventar chave `beforeunload` no recibo do save — irmão de 365 e 350.
 Não inventar chave `unload` no recibo do save — irmão de 365.
 Não outro flush só no `pagehide` — irmão de 365 e 172.
+Não inventar chave `telegraph` no recibo do art — irmão de 366 e 358.
+Não inventar chave `rail` no recibo do art — irmão de 366.
+Não nomear `pair` no `art` — irmão de 366, 358 e 352.
+Não fatiar `intervalTicks`/`fallSpeed` no `art.rains` — irmão de 366 e 326.
 O rótulo do coil do dash ainda diz recarregando — irmão de 328.
-Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro lean no feel; atrito ideia→jogo que não seja 332/337/339/342/347; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest.
+Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel; atrito ideia→jogo que não seja 332/337/339/342/347; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest.

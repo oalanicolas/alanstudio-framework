@@ -7,7 +7,8 @@ da abertura são o primeiro quadro; a mostra lê a mesa vigente —
 dusk cai mais denso e com mais estilhaço, calm mais folgado e
 com menos risco — sem comer a seed. A ameaça
 da mostra marca o trilho com o mesmo telegraph do campo; a live já
-nomeava o perigo. Marca no disco não é comparação em movimento. O campo
+nomeava o perigo. Se o canvas declara `drawTelegraph`, o `art` nomeia o trilho que o telegraph já marca.
+Marca no disco não é comparação em movimento. Sem chave `telegraph`. O campo
 começa depois do avanço.
 Comparar só o meio da partida esconde a imagem que o jogador vê ao
 abrir. Sem tela o headless já joga.

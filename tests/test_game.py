@@ -4470,6 +4470,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("LOOK_INTENTS", report["scope"])
         self.assertNotIn("(`pair`)", report["scope"])
 
+    def test_art_names_the_rail_the_telegraph_already_marks(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        render = (starter / "src/game/render.js").read_text(encoding="utf-8")
+        self.assertTrue(game.canvas_marks_rail(render), "o canvas já marca o trilho")
+        self.assertEqual(game.telegraph_rail_source(starter), "src/game/render.js")
+        report = game.art_reading(starter)
+        self.assertIn("marca o trilho", report["scope"], "o art listava paletas e calava o telegraph")
+        self.assertIn("(`telegraph`)", report["scope"])
+        self.assertFalse(report["consistent"])
+        self.assertNotIn("telegraph", report)
+        self.assertNotIn("rail", report)
+        empty = game.art_reading(self.project)
+        self.assertFalse(game.canvas_marks_rail(""))
+        self.assertIsNone(game.telegraph_rail_source(self.project))
+        self.assertNotIn("marca o trilho", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o trilho que o telegraph já marca", recipe)
+        self.assertIn("nomeia o trilho que o telegraph já marca", skill)
+        self.assertIn("nomeia o trilho que o telegraph já marca", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("(`pair`)", report["scope"])
+
     def test_art_names_the_rain_risk_the_door_already_reads(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.art_reading(starter)

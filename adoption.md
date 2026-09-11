@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.366 — o art nomeia o trilho que o telegraph já marca
+
+A
+receita
+já
+apontava
+a
+mostra
+no
+trilho.
+O
+comando
+listava
+paletas
+e
+calava
+o
+aviso
+no
+canvas.
+Agora
+o
+`art`
+nomeia
+o
+trilho.
+Marca
+no
+disco
+não
+é
+comparação
+em
+movimento.
+Sem
+chave
+`telegraph`.
+Não
+promove
+`consistent`.
+
+O que 0.9.366 não afirma:
+marca
+no
+disco
+não
+é
+direção
+observada.
+
 ## 0.9.365 — o save nomeia o fechamento que o disco já grava
 
 A

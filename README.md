@@ -694,6 +694,8 @@ python3 scripts/game.py ship /caminho/do/laboratorio/meu-jogo
 e mesas de chuva (`intervalTicks` e `fallSpeed` em `data/`, `tables/` ou `content/`).
 Se o `tools/new-look.*` nasce o look, o `art` nomeia o look que o disco já nasce.
 Ferramenta no disco não é comparação em movimento. Sem chave `look`.
+Se o canvas declara `drawTelegraph`, o `art` nomeia o trilho que o telegraph já marca.
+Marca no disco não é comparação em movimento. Sem chave `telegraph`.
 `consistent` é sempre `false`. Mesa no disco não é volume. Rascunho do `init` não conta. `content`
 procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 `palettes.json` e `tokens.json` não contam — o `art` lê esses manifestos.
