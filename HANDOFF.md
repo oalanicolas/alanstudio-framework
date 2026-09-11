@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.516: a opção `colorblind` do `access` nomeia o ícone que a receita já recusa. Ícone no disco não é sessão. Sem chave `ícone`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.516): 577 / 516.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
