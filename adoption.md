@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.426 — o context nomeia a API que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+os
+oito
+nomes
+não
+são
+uma
+API
+implementada.
+A
+menção
+apontava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`context`
+nomeia
+a
+API.
+Vocabulário
+no
+disco
+não
+é
+runtime.
+Sem
+chave
+`api`.
+Nomear
+não
+observa.
+
+O que 0.9.426 não afirma:
+vocabulário
+no
+disco
+não
+é
+runtime
+nem
+pausa
+jogada.
+
 ## 0.9.425 — o context nomeia a extração que o mapa já recusa
 
 O

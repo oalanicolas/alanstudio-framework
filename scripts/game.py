@@ -4480,6 +4480,41 @@ def production_bar(focus, stage=None, project=None):
     }
 
 
+# A receita já recusa que o nome seja API. Sem isto a
+# menção apontava o arquivo e calava a recusa.
+# Vocabulário no disco não é runtime.
+LIFECYCLE_API = re.compile(r"não uma API\s+implementada")
+
+
+def lifecycle_refuses_api(text):
+    return bool(text and LIFECYCLE_API.search(text))
+
+
+def capability_api_source():
+    path = FRAMEWORK / "recipes/lifecycle.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if lifecycle_refuses_api(text):
+        return "recipes/lifecycle.md"
+    return None
+
+
+def capability_mention_scope():
+    scope = (
+        "Menção em arquivo local de inspeção; não executado, não comprovado."
+    )
+    if capability_api_source():
+        scope += (
+            " O disco recusa que o nome seja API (`api`). "
+            "Vocabulário no disco não é runtime."
+        )
+    return scope
+
+
 def mention_capabilities(project):
     found = {name: {"status": "unknown"} for name in CAPABILITIES}
     if not project.is_dir():
@@ -4501,7 +4536,7 @@ def mention_capabilities(project):
                 found[name] = {
                     "status": "mentioned",
                     "path": relative,
-                    "scope": "Menção em arquivo local de inspeção; não executado, não comprovado.",
+                    "scope": capability_mention_scope(),
                 }
     return found
 

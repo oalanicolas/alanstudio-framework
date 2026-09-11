@@ -930,6 +930,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("seja extração", game.play_scope(self.project))
         self.assertNotIn("seja extração", game.context_scope())
 
+    def test_context_names_the_api_the_lifecycle_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.lifecycle_refuses_api(recipe),
+            "a receita já recusa que o nome seja API",
+        )
+        self.assertEqual(game.capability_api_source(), "recipes/lifecycle.md")
+        empty = game.context(self.project, "lifecycle")
+        self.assertEqual(empty["capabilities"]["pause"]["status"], "unknown")
+        self.assertNotIn("scope", empty["capabilities"]["pause"])
+        (self.project / "game.test.mjs").write_text(
+            "test('pause and restart keep the story', () => {})\n"
+        )
+        report = game.context(self.project, "lifecycle")
+        mentioned = report["capabilities"]["pause"]
+        self.assertEqual(mentioned["status"], "mentioned")
+        self.assertIn(
+            "nome seja API",
+            mentioned["scope"],
+            "a menção apontava o arquivo e calava a recusa",
+        )
+        self.assertIn("(`api`)", mentioned["scope"])
+        self.assertNotIn("api", mentioned)
+        self.assertNotIn("scope", report["capabilities"]["seed"])
+        self.assertFalse(game.lifecycle_refuses_api(""))
+        with mock.patch.object(game, "capability_api_source", return_value=None):
+            silent = game.context(self.project, "lifecycle")
+        self.assertNotIn("nome seja API", silent["capabilities"]["pause"]["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a API que a receita já recusa", create)
+        self.assertIn("nomeia a API que a receita já recusa", skill)
+        self.assertIn("nomeia a API que a receita já recusa", readme)
+        self.assertNotIn("verified", mentioned["scope"])
+        self.assertNotIn("nome seja API", report["scope"])
+        self.assertNotIn("nome seja API", game.context_scope())
+        self.assertNotIn("nome seja API", game.capabilities_scope())
+        self.assertNotIn("nome seja API", game.next_scope())
+        self.assertNotIn("nome seja API", game.play_scope(self.project))
+
     def test_guide_names_the_onboarding_the_quality_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(
