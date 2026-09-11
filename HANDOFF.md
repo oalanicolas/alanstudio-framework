@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.349: o `budget` nomeia a porta que a receita já cronometra. Stub no disco não é dispositivo. Sem chave `door`. Não promove `measured`.
+**HEAD:** ver `git log -1` — vigente 0.9.350: o `save` nomeia a recuperação que o canvas já pinta. A pausa não. Texto no disco não é aba fechada. Sem chave `recovery`. Não promove `trusted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.349):** `python3 -m unittest discover -s tests` → 345.
-`cd assets/starters/canvas-arcade && npm test` → 509.
+**Testes no HEAD (0.9.350):** `python3 -m unittest discover -s tests` → a confirmar.
+`cd assets/starters/canvas-arcade && npm test` → a confirmar.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.349)
+## O que o HEAD já entrega (0.9.91–0.9.350)
 
 | Ver | Salto |
 | --- | --- |
@@ -293,6 +293,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.347 | O prompt nomeia o `playtest` que o `AGENTS.md` já cita. O caminho ideia→jogo calava o leitor. Só lê. Sem os quatro não é achado. Sem `then.playtest`. Não promove `outsider`. |
 | 0.9.348 | O `access` nomeia o `:focus-visible` que a casca já declara. A receita já pedia foco visível; o comando calava. Sem chave `focus`. Não promove `verified`. |
 | 0.9.349 | O `budget` nomeia a porta que a receita já cronometra. O tool já media `title.attract`; o comando calava. Sem chave `door`. Não promove `measured`. |
+| 0.9.350 | O `save` nomeia a recuperação que o canvas já pinta. A receita já falava; o comando calava. A pausa não. Sem chave `recovery`. Não promove `trusted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -312,7 +313,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | art_direction | slice | o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o coil do dash marca o rumo no corpo; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o `roles` nomeia o `duckMs` que `SOUNDS` já declara; o `sfx verify` nomeia o som que o catálogo perdeu; o `sfx export` nomeia o stem que o disco perdeu; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | o prompt nomeia o `playtest` que o `AGENTS.md` já cita; o achado copiado nomeia o last-run simulado; a faixa nomeia o last-run simulado; o `playtest` nomeia a conta do last-run; a porta chove o risco da mesa; o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
-| state_trust | slice | a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
+| state_trust | slice | o `save` nomeia a recuperação que o canvas já pinta; a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
 | performance | playable | o `budget` nomeia a porta que a receita já cronometra; o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | o `access` nomeia o `:focus-visible` que a casca já declara; o canvas da porta e do fim nomeia a lacuna do som; a região viva nomeia a mesa e o look da porta e do fim; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
 | content_scale | shippable | `brief` não come a folga da guarda; paleta não finge volume; dusk+calm+pair; `enough` falso |
@@ -680,6 +681,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   `save` relata `warned` / `warnings` se o disco tem
   `persistLine`, `title_volatile` ou `title_unsaved`. Nomear
   não é aba fechada. `trusted` falso. Sem `prompt`.
+  `save.scope` nomeia a recuperação se o canvas pinta
+  `settingsLine`. Sem o marcador, a frase some. A pausa
+  não pinta. Texto no disco não é aba fechada. Sem
+  chave `recovery` no recibo.
   `access.scope` nomeia `:focus-visible` se a casca declara
   o outline. Sem o marcador, a frase some. Outline no
   disco não é sessão com o teclado. Sem chave `focus`
@@ -1206,6 +1211,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um prompt que cala o `playtest` que o `AGENTS.md` já cita.
 **Não** mais um `access` que cala o `:focus-visible` que a casca já declara.
 **Não** mais um `budget` que cala a porta que a receita já cronometra.
+**Não** mais um `save` que cala a recuperação que o canvas já pinta.
 
 Candidatos, do que ainda dói:
 
@@ -1367,7 +1373,13 @@ Candidatos, do que ainda dói:
    — não inventar chave `door`
    no recibo (irmão, não o
    próximo salto). Não importar
-   limiar de quadro.    O `feel`
+   limiar de quadro. O `save` já
+   nomeia a recuperação que o
+   canvas pinta — não inventar
+   chave `recovery` no recibo
+   (irmão, não o próximo salto).
+   Não pintar a recuperação na
+   pausa.    O `feel`
    já nomeia o rumble e o peso do passo —
    não inventar chave `haptics` no
    recibo (irmão, não o próximo salto).
@@ -2646,6 +2658,7 @@ A família canvas da porta que cala a lacuna do som está saturada.
 A família prompt que cala o playtest que o AGENTS.md já cita está saturada.
 A família access que cala o focus-visible que a casca já declara está saturada.
 A família budget que cala a porta que a receita já cronometra está saturada.
+A família save que cala a recuperação que o canvas já pinta está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -2674,5 +2687,7 @@ Não inventar chave `focus` no recibo do access — irmão de 348.
 Não outro outline de foco na casca — irmão de 348.
 Não inventar chave `door` no recibo do budget — irmão de 349.
 Não importar limiar de quadro no `budget` — irmão de 349.
+Não inventar chave `recovery` no recibo do save — irmão de 350.
+Não pintar a recuperação na pausa — irmão de 350 e 346.
 O rótulo do coil do dash ainda diz recarregando — irmão de 328.
-Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget; atrito ideia→jogo que não seja 332/337/339/342/347; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem outra linha de lacuna no canvas; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado.
+Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outra linha de persistência no canvas; atrito ideia→jogo que não seja 332/337/339/342/347; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem outra linha de lacuna no canvas; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado.

@@ -1699,6 +1699,24 @@ def access_reading(project):
     }
 
 
+# A receita e o canvas já pintam a recuperação. Sem isto o
+# save lia persistLine e calava a porta. Texto no disco
+# não é aba fechada.
+CANVAS_RECOVERY = re.compile(r"settingsLine[\s\S]{0,800}?fillText\(\s*recovered\b")
+
+
+def canvas_names_recovery(text):
+    return bool(text and CANVAS_RECOVERY.search(text))
+
+
+def canvas_recovery_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if canvas_names_recovery(text):
+            return relative
+    return None
+
+
 def save_reading(project):
     project = Path(project)
     used, versioned, warned, sources = [], [], [], []
@@ -1711,6 +1729,19 @@ def save_reading(project):
             warned.append(relative)
         if PERSIST_USE.search(text) or PERSIST_VERSION.search(text) or PERSIST_WARN.search(text):
             sources.append(relative)
+    scope = (
+        "Procura localStorage/saveProgress, PROGRESS_SCHEMA/migrate e se o "
+        "disco nomeia sessão volátil (`persistLine`, `title_volatile`, "
+        "`title_unsaved`) e preferências ilegíveis (`settings_recovered`, "
+        "`settings.broken`). Relata `warned`. Nomear não é aba fechada. Não "
+        "executa migração, não interrompe a aba e não chama o save de "
+        "atômico. `trusted` é sempre falso."
+    )
+    if canvas_recovery_source(project):
+        scope += (
+            " Na porta e no fim o canvas pinta a recuperação que o "
+            "painel já mostra. A pausa não. Texto no disco não é aba fechada."
+        )
     return {
         "schema_version": 1,
         "project": str(project),
@@ -1728,14 +1759,7 @@ def save_reading(project):
             "Nomear sessão volátil no disco não é aba fechada. "
             "O harness não abre o save e não confirma escrita."
         ),
-        "scope": (
-            "Procura localStorage/saveProgress, PROGRESS_SCHEMA/migrate e se o "
-            "disco nomeia sessão volátil (`persistLine`, `title_volatile`, "
-            "`title_unsaved`) e preferências ilegíveis (`settings_recovered`, "
-            "`settings.broken`). Relata `warned`. Nomear não é aba fechada. Não "
-            "executa migração, não interrompe a aba e não chama o save de "
-            "atômico. `trusted` é sempre falso."
-        ),
+        "scope": scope,
     }
 
 

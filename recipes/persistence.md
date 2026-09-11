@@ -30,7 +30,9 @@ legível para o jogador. A porta e o fim nomeiam sessão volátil e
 gravação que não ficou. Preferências ilegíveis avisam no painel
 (`settings_recovered`); o arquivo fica em `settings.broken`. A porta
 e o fim no canvas pintam a mesma linha (`settingsLine`). A pausa
-não. `persistLine` continua só sessão volátil e gravação recusada.
+não. Se o canvas pinta `settingsLine`, o `save` nomeia a recuperação.
+A pausa não. Texto no disco não é aba fechada. Sem chave `recovery`.
+`persistLine` continua só sessão volátil e gravação recusada.
 A região viva, na porta e no fim, nomeia a mesma linha do painel.
 Jogando a chave some. Nomear não é aba fechada. `save` relata `warned` se o disco tem
 `persistLine`, `title_volatile`, `title_unsaved`, `settings_recovered`

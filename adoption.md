@@ -3,6 +3,48 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.350 — o save nomeia a recuperação que o canvas já pinta
+
+A
+receita
+já
+dizia
+que
+a
+porta
+e
+o
+fim
+pintam
+`settingsLine`.
+O
+comando
+calava.
+Agora
+o
+`save`
+nomeia
+a
+recuperação.
+A
+pausa
+não.
+Sem
+chave
+`recovery`.
+Não
+promove
+`trusted`.
+
+O que 0.9.350 não afirma:
+texto
+no
+disco
+não
+é
+aba
+fechada.
+
 ## 0.9.349 — o budget nomeia a porta que a receita já cronometra
 
 A

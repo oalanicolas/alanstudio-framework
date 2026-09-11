@@ -656,7 +656,9 @@ python3 scripts/game.py budget /caminho/do/laboratorio/meu-jogo
 uiScale, preset de uma mão (o ciclo nomeia IJKL + P/O quando o starter declara `hand`), assistência, velocidade da partida, tinta estável, região viva e pulso no aparelho. Na porta e no fim o canvas nomeia a lacuna do som que o painel já mostra. Se a casca declara `:focus-visible`, o `access` nomeia o foco que a receita já pede. Outline no disco não é sessão com o teclado. Sem chave `focus`. `verified` é sempre `false`. Trocar no stub não é sessão observada. `save` procura
 armazenamento, PROGRESS_SCHEMA/migrate e se o disco nomeia sessão volátil
 (`persistLine`, `title_volatile`, `title_unsaved`) ou preferências
-ilegíveis (`settings_recovered`, `settings.broken`); relata `warned`. Nomear
+ilegíveis (`settings_recovered`, `settings.broken`); relata `warned`. Se o
+canvas pinta `settingsLine`, o `save` nomeia a recuperação. A pausa não.
+Texto no disco não é aba fechada. Sem chave `recovery`. Nomear
 não é aba fechada. `trusted` é sempre `false`.
 `budget` procura script `budget`/`bench`, `tools/budget.*` ou
 `record --kind budget`. Se o tool declara `title.attract`, o

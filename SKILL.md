@@ -282,7 +282,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    uma mão (desligar devolve o remap; save antigo não inventa tecla), assistência, velocidade da partida, tinta estável, região viva e pulso no aparelho), versão de save e artefato
    de orçamento. `save` relata `warned` se o disco nomeia sessão volátil
    (`persistLine`, `title_volatile`, `title_unsaved`) ou preferências
-   ilegíveis (`settings_recovered`, `settings.broken`). A receita
+   ilegíveis (`settings_recovered`, `settings.broken`). Se o canvas
+   pinta `settingsLine`, o `save` nomeia a recuperação. A pausa não.
+   Texto no disco não é aba fechada. Sem chave `recovery`. A receita
    de persistência e alcance ensina o canvas da porta e do fim; a
    pausa não.    Na porta e no fim o canvas nomeia a lacuna do som
    que o painel já mostra. Se a casca declara `:focus-visible`,

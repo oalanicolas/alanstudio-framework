@@ -4038,6 +4038,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", persist)
         self.assertNotIn("aprovado", access)
 
+    def test_save_names_the_canvas_recovery_the_recipe_already_paints(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        render = (starter / "src/game/render.js").read_text(encoding="utf-8")
+        self.assertTrue(game.canvas_names_recovery(render), "o canvas da porta já pinta a recuperação")
+        self.assertEqual(game.canvas_recovery_source(starter), "src/game/render.js")
+        report = game.save_reading(starter)
+        self.assertIn("recuperação", report["scope"], "o save calava a porta que a receita já pinta")
+        self.assertIn("pausa não", report["scope"].casefold())
+        self.assertFalse(report["trusted"])
+        self.assertNotIn("recovery", report)
+        self.assertNotIn("canvas_persist", report)
+        empty = game.save_reading(self.project)
+        self.assertFalse(game.canvas_names_recovery(""))
+        self.assertIsNone(game.canvas_recovery_source(self.project))
+        self.assertNotIn("recuperação", empty["scope"])
+        persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a recuperação", persist)
+        self.assertIn("nomeia a recuperação", skill)
+        self.assertIn("nomeia a recuperação", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", persist)
+
     def test_save_names_storage_without_a_schema_as_unversioned(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "store.js").write_text("localStorage.setItem('score', value)\n")
