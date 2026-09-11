@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.373: o `start` nomeia o par que o pair já nasce. Ferramenta no disco não é alguém de fora. Sem chave `pair`. Não promove `enough`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.372):** `python3 -m unittest discover -s tests` → 368 OK.
+**Suítes confirmadas no HEAD (0.9.373):** `python3 -m unittest discover -s tests` → 369 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
