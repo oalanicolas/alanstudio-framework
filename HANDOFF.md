@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.355: o `roles` nomeia a soma que a receita já relata. Soma no disco não é mix ouvida. Sem chave `mix`. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.355):** `python3 -m unittest discover -s tests` → 351.
+**Suítes confirmadas no HEAD (0.9.355):** `python3 -m unittest discover -s tests` → 351.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
