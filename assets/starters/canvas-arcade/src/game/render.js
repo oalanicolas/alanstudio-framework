@@ -451,6 +451,22 @@ export function createRenderer(canvas, options = {}) {
       target.arc(player.x, PLAYER_Y, 11, 0, (Math.PI * 2 * state.bankLock) / CONFIG.bank.lockTicks);
       target.stroke();
     }
+    if (winding) {
+      // A faixa do coil já enche e o corpo já veste a corrente.
+      // Sem isto a antecipação calava o rumo — a guarda já
+      // contorna; o avanço só tingia. Traço no disco não é
+      // peso percebido.
+      const total = CONFIG.player.dashWindupTicks || 1;
+      const clock = Math.max(0, Math.min(1, (total - (player.dashWindup ?? 0) + 1) / total));
+      const reach = 5 + 7 * clock;
+      const tipX = dir < 0 ? left - nose : left + width + nose;
+      target.strokeStyle = palette.chain;
+      target.lineWidth = 2;
+      target.beginPath();
+      target.moveTo(tipX, PLAYER_Y);
+      target.lineTo(tipX + dir * reach, PLAYER_Y);
+      target.stroke();
+    }
   }
 
   // A corrente no HUD é conta. No corpo ela é a aposta: cada elo vira um

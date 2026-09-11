@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.343: a faixa nomeia o last-run simulado. Não promove `outsider`. Sem tally nem relógio na faixa.
+**HEAD:** ver `git log -1` — vigente 0.9.344: o coil do dash marca o rumo no corpo. Não promove `felt`. Sem faixa no HUD. Sem chave `heading` no recibo.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.343):** `python3 -m unittest discover -s tests` → 339.
-`cd assets/starters/canvas-arcade && npm test` → 505.
+**Testes no HEAD (0.9.344):** `python3 -m unittest discover -s tests` → 340.
+`cd assets/starters/canvas-arcade && npm test` → 506.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.343)
+## O que o HEAD já entrega (0.9.91–0.9.344)
 
 | Ver | Salto |
 | --- | --- |
@@ -287,6 +287,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.341 | O `roles` nomeia o `duckMs` que `SOUNDS` já declara. O comando já lia o papel; o aviso que abaixa a cama calava. Sem duck a chave some. Nomear não é mix ouvida. Não promove `heard`. |
 | 0.9.342 | O prompt nomeia o serve que tenta abrir o navegador. O README do starter já recusava o passo manual; o harness pedia Abrir sempre. Sem o marcador, pede Abrir. Nomear não abre. Sem `then.browser`. |
 | 0.9.343 | A faixa nomeia o last-run simulado. O `playtest` já lia `candidate_policy`; a faixa mostrava seed e curva como se alguém tivesse jogado. `nearest-orb` vira `simulada`; `played` some. Sem tally nem relógio. Não promove `outsider`. |
+| 0.9.344 | O coil do dash marca o rumo no corpo. A faixa já enchia e o corpo já vestia a corrente; a antecipação calava a direção. Sem faixa no HUD. Sem chave `heading`. Não promove `felt`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -301,9 +302,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 
 | Dimensão | Degrau | Lacuna seguinte |
 | --- | --- | --- |
-| feel | playable | o `feel` nomeia o peso do passo que o CONFIG já declara; o `feel` nomeia o rumble que já lê; o rótulo do dash nomeia o avanço no travel; o compromisso da guarda veste a aposta; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
+| feel | playable | o `feel` nomeia o peso do passo que o CONFIG já declara; o `feel` nomeia o rumble que já lê; o rótulo do dash nomeia o avanço no travel; o compromisso da guarda veste a aposta; o coil da guarda veste a aposta; o coil do dash veste o avanço; o coil do dash marca o rumo no corpo; o rastro do dash veste o avanço; o `next` do feel anexa o candidato; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o `feel` nomeia as janelas da chuva; o corpo na recuperação do dash não veste a prática; `brief` não come a folga da guarda; o aviso nomeia a prática; o relógio nomeia a pausa; no campo o telefone pausa no relógio; o feel nomeia a partida do last-run; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; o controle que some não deixa a partida correr; a perda de foco não deixa o ofício pendente; a aba escondida não deixa o verbo preso; o botão focado não dispara o verbo; a tecla do remap não dispara o verbo; o toque que sai do campo ainda solta; o recado não dispara o verbo; o hold leva o relógio da porta; o hitstop não come o perdão; a guarda espera o land; o tap na faixa da porta abre; o avanço é o aperto; peso no dispositivo; coil no disco ≠ felt |
 | legibility | playable | stub ≠ dispositivo |
-| art_direction | slice | o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
+| art_direction | slice | o `art` nomeia o risco da chuva; o compromisso da guarda veste a aposta; a porta chove o risco da mesa; o coil da guarda veste a aposta; o coil do dash veste o avanço; o coil do dash marca o rumo no corpo; o rastro do dash veste o avanço; o corpo na recuperação do dash não veste a prática; a receita do look nomeia o perigo; o art-bible nomeia as janelas do campo; o `art` nomeia a chuva; os knobs vestem o look; tinta estável não esmaga dusk/calm; `consistent` falso |
 | audio_mix | slice | o `roles` nomeia o `duckMs` que `SOUNDS` já declara; o `sfx verify` nomeia o som que o catálogo perdeu; o `sfx export` nomeia o stem que o disco perdeu; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; a região viva nomeia a lacuna do som; a escuta nomeia o som que o catálogo perdeu; a cama segue o relógio da sessão; o `sfx info` nomeia o stem que o disco perdeu; o pulso do fecho não come a legenda do verbo; o painel relê a lacuna quando o fetch termina; decode nulo tenta a próxima extensão; o painel nomeia o 404 mesmo quando outro papel registrou; o fim leva o x do campo; o controle também pede o resume; o pedido suspenso espera o gesto; `heard` falso |
 | pacing | slice | a faixa nomeia o last-run simulado; o `playtest` nomeia a conta do last-run; a porta chove o risco da mesa; o `next` do feel anexa o candidato; o `feel` nomeia as janelas da chuva; o aviso nomeia a prática; o Copiar nomeia o destino; o `playtest` nomeia a página do achado; o `next` unstructured nomeia a página do achado; finding_href abre o convite; o banner do serve nomeia o relógio que o jogo já lê; a sessão nomeia o look e o relógio que o convite já lê; o convite nomeia o relógio da partida; a faixa nomeia a curva que o last-run já traçou; fecho aperta intervalo e risco no disco; curva com outsider pendente |
 | state_trust | slice | a query de chuva não retoma o hold de outra mesa; o convite não grava o look, a chuva nem o relógio que só vestiu; o controle que some grava o hold; a perda de foco grava o hold; a receita não cala a porta que o canvas já pinta; a porta nomeia a recuperação que o painel já mostra; o preset de uma mão não some o remap; a outra aba veste as preferências; o hold leva o relógio da porta; live nomeia a mesma recuperação; `persistLine` continua só sessão; `save` relata `warned`; beforeunload no disco; aba fechada real não observada; `trusted` falso |
@@ -517,6 +518,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   ou um `next` do feel que cala o candidato que o `then.note` já anexa
   ou um rastro do dash que veste o descanso
   ou um coil do dash que veste o descanso
+  ou um coil do dash que veste a corrente e cala o rumo
   ou um `-h` que lista init antes de start
   ou um coil da guarda que veste o descanso
   ou uma porta que chove meio a meio e cala o risco da mesa
@@ -660,7 +662,11 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   seed e invite somem. Não ganha `lost`.
   `feel.scope` nomeia rumble — as constantes já listavam
   `feel.rumble*`; o texto calava. Número no disco não é
-  peso percebido. `felt` falso.
+  peso percebido. Com o traço no desenho, `feel.scope`
+  nomeia o rumo que o coil do dash marca. Sem o
+  marcador, a frase some. Traço no disco não é
+  peso percebido. Sem chave `heading` no recibo.
+  `felt` falso.
   `save` relata `warned` / `warnings` se o disco tem
   `persistLine`, `title_volatile` ou `title_unsaved`. Nomear
   não é aba fechada. `trusted` falso. Sem `prompt`.
@@ -1153,6 +1159,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um `next` do feel que cala o candidato que o `then.note` já anexa.
 **Não** mais um rastro do dash que veste o descanso.
 **Não** mais um coil do dash que veste o descanso.
+**Não** mais um coil do dash que veste a corrente e cala o rumo.
 **Não** mais um `-h` que lista init antes de start.
 **Não** mais um coil da guarda que veste o descanso.
 **Não** mais uma porta que chove meio a meio e cala o risco da mesa.
@@ -1315,6 +1322,11 @@ Candidatos, do que ainda dói:
    já nomeia o rumble e o peso do passo —
    não inventar chave `haptics` no
    recibo (irmão, não o próximo salto).
+   O coil do dash já marca o rumo no
+   corpo — não inventar chave
+   `heading` no recibo (irmão, não
+   o próximo salto). Não outro
+   traço de rumo no coil.
    Não incluir `player.halfWidth` em
    `FEEL_KEY` (irmão, não o próximo
    salto).    `origins --declare`
@@ -2579,6 +2591,7 @@ A família ship que diz completa a dist sem o src do projeto está saturada.
 A família roles que lê SOUNDS e cala o duckMs está saturada.
 A família prompt que pede Abrir quando o serve já tenta abrir está saturada.
 A família faixa que cala o last-run simulado está saturada.
+A família coil do dash que veste a corrente e cala o rumo está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -2594,4 +2607,7 @@ Não adicionar `then.browser` — irmão de 342.
 Não auto-servir nem abrir o navegador no harness — irmão de 342.
 Não nomear a origem no live — irmão de 343.
 Não levar `speed` a `runFacts` — invariante de 0.9.271 e irmão de 343.
-Próxima ronda: feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel; ferramenta de outsider que não seja tally na faixa nem outra origem na faixa; superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer; ou atrito ideia→jogo que não seja 332/337/339/342.
+Não inventar chave `heading` no recibo do feel — irmão de 344.
+Não outro traço de rumo no coil — irmão de 344.
+O rótulo do coil do dash ainda diz recarregando — irmão de 328.
+Próxima ronda: ferramenta de outsider que não seja tally na faixa nem outra origem na faixa; superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer; atrito ideia→jogo que não seja 332/337/339/342; ou feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil.

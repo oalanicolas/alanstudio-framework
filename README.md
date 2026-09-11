@@ -611,8 +611,8 @@ repositório **não inclui** o acervo `shared/sfx` do laboratório.
 
 O starter nomeia perdão, graça, hitstop, buffer de guardar, punch de
 câmera, rumble e o peso do passo no `CONFIG`. As janelas da chuva (prática, folga, fecho) moram
-na mesa. Constante nomeada não é peso percebido. `feel` lê as
-constantes — inclusive o pulso e o passo — e essas janelas, procura um `record.json` de observação no projeto e nomeia
+na mesa. O coil do dash marca o rumo no corpo. Constante nomeada não é peso percebido. `feel` lê as
+constantes — inclusive o pulso e o passo — essas janelas e o rumo, procura um `record.json` de observação no projeto e nomeia
 `then.play` e `then.note` sem executar. Com last-run, nomeia `then.seed`
 e `then.invite` — o mesmo endereço que `play` / `guide`. Sem comando de
 abrir, a chave some. Sem last-run, seed e invite somem. Não tem

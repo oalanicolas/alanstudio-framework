@@ -76,11 +76,12 @@ Leia o verbo no GDD, os tokens de tempo/câmera/áudio no
 [design system](../references/game-design-system.md) e o
 [piso](../references/quality.md). `context --focus feel` seleciona esta
 receita. `feel` lê as constantes nomeadas no `CONFIG` (perdão, graça, hitstop,
-shake, squash, punch e rumble) e o peso do passo
+shake, squash, punch e rumble), o peso do passo
 (`player.speed`, o avanço); as
 janelas da chuva (`practiceTicks`, `recoveryTicks`, o fecho) —
 o campo já as marca; o comando calava o pulso e o passo que a
-tabela já lista. Número no disco não é peso percebido. Lê o
+tabela já lista. O coil do dash marca o rumo no corpo; o
+comando calava o traço. Número no disco não é peso percebido. Lê o
 recibo de observação no disco; nomeia `then.play` e `then.note`
 sem executar. Com last-run, nomeia `then.seed` e `then.invite`
 — o mesmo endereço que `play` / `guide` — e o `note` do `next`
@@ -122,6 +123,8 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    do impacto. Sem ela, a ação chega “de graça” ou atrasada demais.
    No starter o avanço senta (`squashCoil`) dois ticks antes de alongar;
    esses ticks já atravessam o estilhaço — o coil não é janela de hit.
+   O coil marca o rumo no corpo (traço na ponta, na direção do
+   último avanço). Sem faixa no HUD. Traço no disco não é peso percebido.
    O término emite `land` (squash, câmera, puff, rumble e voz).
    Esse quadro também atravessa o estilhaço; a recuperação depois
    do land continua vulnerável.

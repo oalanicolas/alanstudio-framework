@@ -1015,6 +1015,40 @@ test("a antecipação de guardar contorna o corpo sem inventar faixa no HUD", ()
   assert.equal(hudBands(drawn), 0, "a antecipação não é faixa no HUD");
 });
 
+function headingStroke(drawn) {
+  return drawn.strokes.filter((stroke) => (
+    stroke.style === PALETTES.normal.chain
+    && stroke.points.length === 2
+    && stroke.points.every((point) => Math.abs(point.y - PLAYER_Y) < 0.6)
+    && Math.abs(stroke.points[1].x - stroke.points[0].x) < 40
+  ));
+}
+
+test("a antecipação do avanço marca o rumo sem inventar faixa no HUD", () => {
+  const idle = createState(1);
+  const coil = createState(1);
+  coil.player.dashWindup = CONFIG.player.dashWindupTicks;
+  coil.player.dir = 1;
+  const rest = paint(idle);
+  const drawn = paint(coil);
+  const marks = headingStroke(drawn);
+  assert.equal(headingStroke(rest).length, 0, "parado não inventa rumo");
+  assert.equal(marks.length, 1, "o coil precisa marcar o rumo");
+  assert.ok(marks[0].points[1].x > marks[0].points[0].x, "o traço segue a direita");
+  assert.equal(hudBands(drawn), 0, "a antecipação não é faixa no HUD");
+  const left = createState(1);
+  left.player.dashWindup = CONFIG.player.dashWindupTicks;
+  left.player.dir = -1;
+  const leftMarks = headingStroke(paint(left));
+  assert.equal(leftMarks.length, 1, "o coil à esquerda também marca o rumo");
+  assert.ok(leftMarks[0].points[1].x < leftMarks[0].points[0].x, "o traço segue a esquerda");
+  const still = paint(coil, { reducedMotion: true });
+  assert.equal(headingStroke(still).length, 1, "com menos movimento o rumo fica, não some");
+  const travel = createState(1);
+  travel.player.dashTicks = 3;
+  assert.equal(headingStroke(paint(travel)).length, 0, "no travel o rumo do coil some");
+});
+
 test("a prática marca o campo sem inventar faixa no HUD", () => {
   const start = createState(2);
   const early = paint(start);

@@ -3,6 +3,53 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.344 — o coil do dash marca o rumo no corpo
+
+A
+faixa
+do
+coil
+já
+enchia.
+O
+corpo
+já
+vestia
+a
+corrente.
+A
+antecipação
+calava
+o
+rumo.
+Agora
+o
+coil
+marca
+a
+direção
+na
+ponta.
+Sem
+faixa
+no
+HUD.
+Sem
+chave
+`heading`.
+Não
+promove
+`felt`.
+
+O que 0.9.344 não afirma:
+traço
+no
+disco
+não
+é
+peso
+percebido.
+
 ## 0.9.343 — a faixa nomeia o last-run simulado
 
 O

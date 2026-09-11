@@ -3516,6 +3516,34 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", feel)
 
+    def test_feel_names_the_heading_the_dash_already_aims(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.feel_reading(starter)
+        self.assertTrue(game.dash_aims_heading((starter / "src/game/render.js").read_text(encoding="utf-8")))
+        self.assertEqual(game.heading_mark_source(starter), "src/game/render.js")
+        self.assertIn("rumo", report["scope"])
+        self.assertFalse(report["felt"])
+        self.assertNotIn("haptics", report)
+        self.assertNotIn("heading", report)
+        empty = game.feel_reading(self.project)
+        self.assertFalse(game.dash_aims_heading(""))
+        self.assertIsNone(game.heading_mark_source(self.project))
+        self.assertNotIn("rumo", empty["scope"])
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("rumo", recipe.casefold())
+        self.assertIn("rumo", feel.casefold())
+        self.assertIn("rumo", readme.casefold())
+        help_cli = subprocess.run(
+            [sys.executable, str(SCRIPT), "feel", "-h", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(help_cli.returncode, 0, help_cli.stderr)
+        self.assertIn("rumo", (help_cli.stdout + help_cli.stderr).casefold())
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", feel)
+
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
         destination = self.root / "com-observacao"
         game.init(destination, "canvas-arcade")

@@ -1346,6 +1346,16 @@ FEEL_KEY = re.compile(
     re.IGNORECASE,
 )
 FEEL_NOTE = re.compile(r"(perd[aã]o|gra[cç]a|contato|peso|feel|juice)", re.IGNORECASE)
+# O coil do dash já veste a corrente. Sem isto o feel
+# lia squash e calava o rumo que o corpo já marca.
+# Traço no disco não é peso percebido.
+HEADING_MARK = re.compile(
+    r"if\s*\(\s*winding\s*\)[\s\S]{0,1200}?\.lineTo\([\s\S]{0,240}?\.stroke\("
+)
+
+
+def dash_aims_heading(text):
+    return bool(text and HEADING_MARK.search(text))
 
 
 def _feel_constants_from_code(text):
@@ -1520,19 +1530,7 @@ def feel_reading(project):
             "Constante nomeada não é peso percebido. Recibo de observação no "
             "projeto é o que o harness consegue ver; ele não joga."
         ),
-        "scope": (
-            "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch, "
-            "rumble e o peso do passo) e as janelas da chuva (`practiceTicks`, "
-            "`recoveryTicks`, o fecho) em data/, tables/ e content/. Lê "
-            "`record.json` com kind=observation. Nomeia `then.play` e "
-            "`then.note` sem executar. Com last-run, nomeia `then.seed` e "
-            "`then.invite`. O `next` (`feel.unobserved`) aponta o mesmo `note` "
-            "— com `--from-run` se o candidato existir. Sem "
-            "comando de abrir, a chave some. Sem last-run, seed e invite somem. "
-            "Não tem `prompt`. Não mede latência, não segura o controle e não "
-            "atribui degrau. `felt` é "
-            "sempre falso: tabela de constantes e recibo otimista saem intactos."
-        ),
+        "scope": _feel_scope(project),
     }
 
 
@@ -1588,6 +1586,36 @@ def walk_project_files(project, suffixes, max_files=80, max_bytes=64000):
             except OSError:
                 continue
             yield path.relative_to(project).as_posix(), text
+
+
+def heading_mark_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, ROLE_CODE_SUFFIXES):
+        if dash_aims_heading(text):
+            return relative
+    return None
+
+
+def _feel_scope(project):
+    scope = (
+        "Lê `const CONFIG` (perdão, graça, hitstop, shake, squash, punch, "
+        "rumble e o peso do passo) e as janelas da chuva (`practiceTicks`, "
+        "`recoveryTicks`, o fecho) em data/, tables/ e content/. Lê "
+        "`record.json` com kind=observation. Nomeia `then.play` e "
+        "`then.note` sem executar. Com last-run, nomeia `then.seed` e "
+        "`then.invite`. O `next` (`feel.unobserved`) aponta o mesmo `note` "
+        "— com `--from-run` se o candidato existir. Sem "
+        "comando de abrir, a chave some. Sem last-run, seed e invite somem. "
+        "Não tem `prompt`. Não mede latência, não segura o controle e não "
+        "atribui degrau. `felt` é "
+        "sempre falso: tabela de constantes e recibo otimista saem intactos."
+    )
+    if heading_mark_source(project):
+        scope += (
+            " O coil do dash marca o rumo no corpo — traço no disco não é "
+            "peso percebido."
+        )
+    return scope
 
 
 def access_reading(project):
@@ -6162,10 +6190,10 @@ def main():
     )
     feel_cmd = commands.add_parser(
         "feel", parents=[common],
-        help="constantes de feel que o projeto declara — inclusive rumble, o peso do passo e as janelas da chuva — e o recibo de observação no disco",
+        help="constantes de feel que o projeto declara — inclusive rumble, o peso do passo, as janelas da chuva e o rumo que o coil do dash marca — e o recibo de observação no disco",
         description=(
-            "Lê constantes de feel (inclusive rumble e o peso do passo) e as "
-            "janelas da chuva; nomear não é felt."
+            "Lê constantes de feel (inclusive rumble e o peso do passo), as "
+            "janelas da chuva e o rumo que o coil do dash marca; nomear não é felt."
         ),
     )
     feel_cmd.add_argument("project", nargs="?", default=None)
