@@ -3,6 +3,62 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.451 — o craft nomeia a definição que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+número
+sem
+definição
+declarada
+não
+é
+critério.
+O
+problema
+copiava
+o
+achado
+e
+calava
+a
+recusa.
+Agora
+o
+`craft`
+nomeia
+a
+definição.
+Pesquisa
+no
+disco
+não
+é
+ofício
+observado.
+Sem
+chave
+`definição`.
+Nomear
+não
+observa.
+
+O que 0.9.451 não afirma:
+pesquisa
+no
+disco
+não
+é
+percentil
+medido
+nem
+quadro
+no
+dispositivo.
+
 ## 0.9.450 — o origins nomeia os rótulos que o roteiro já recusa
 
 O

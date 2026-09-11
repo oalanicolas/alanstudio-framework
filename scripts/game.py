@@ -1302,13 +1302,17 @@ def craft_reading(project, gate=None):
             "scope": craft_item_scope(),
         })
     pending = [item["key"] for item in checks if item["state"] in ("undeclared", "unmet")]
+    problems = [dict(item) for item in declaration["problems"]]
+    problem_scope = craft_problem_scope()
+    for item in problems:
+        item["scope"] = problem_scope
     return {
         "schema_version": 1,
         "project": str(project),
         "exists": project.is_dir(),
         "checks": checks,
         "pending": pending,
-        "problems": declaration["problems"],
+        "problems": problems,
         "sources": declaration["sources"],
         "granted": False,
         "observed": False,
@@ -1354,6 +1358,43 @@ def craft_item_scope():
     if craft_item_ladder_source():
         scope += (
             " O disco recusa que o checklist seja escada (`escada`). "
+            "Pesquisa no disco não é ofício observado."
+        )
+    return scope
+
+
+# A pesquisa já recusa que o número sem definição seja
+# critério. Sem isto o problema copiava o achado e
+# calava a recusa. Pesquisa no disco não é ofício.
+CRAFT_RESEARCH = FRAMEWORK / "references/observable-criteria-research.md"
+CRAFT_DEFINITION = re.compile(r"sem definição declarada não é critério")
+
+
+def research_refuses_undefined_number(text):
+    return bool(text and CRAFT_DEFINITION.search(text))
+
+
+def craft_problem_definition_source():
+    path = CRAFT_RESEARCH
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_undefined_number(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_problem_scope():
+    scope = (
+        "Motivo e fonte do problema de forma. Não observa e não "
+        "concede passagem."
+    )
+    if craft_problem_definition_source():
+        scope += (
+            " O disco recusa que o número sem definição seja critério (`definição`). "
             "Pesquisa no disco não é ofício observado."
         )
     return scope

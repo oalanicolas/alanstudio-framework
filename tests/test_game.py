@@ -4540,6 +4540,50 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("checklist seja escada", game.gate_reading(self.project)["scope"])
         self.assertNotIn("checklist seja escada", game.bar_reading(self.project)["scope"])
 
+    def test_craft_names_the_definition_the_research_already_refuses(self):
+        research = (
+            game.FRAMEWORK / "references/observable-criteria-research.md"
+        ).read_text(encoding="utf-8")
+        self.assertTrue(
+            game.research_refuses_undefined_number(research),
+            "a pesquisa já recusa que o número sem definição seja critério",
+        )
+        self.assertEqual(
+            game.craft_problem_definition_source(),
+            "references/observable-criteria-research.md",
+        )
+        self.declare_craft({"percentile_def": ("met", "")})
+        report = game.craft_reading(self.project)
+        self.assertEqual([item["reason"] for item in report["problems"]], ["met_without_evidence"])
+        item = report["problems"][0]
+        self.assertIn(
+            "número sem definição seja critério",
+            item["scope"],
+            "o problema copiava o achado e calava a recusa",
+        )
+        self.assertIn("(`definição`)", item["scope"])
+        self.assertNotIn("definição", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.research_refuses_undefined_number(""))
+        raw = game.craft_declaration(self.project)
+        self.assertNotIn("scope", raw["problems"][0])
+        with mock.patch.object(game, "craft_problem_definition_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn("número sem definição seja critério", silent["problems"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a definição que a pesquisa já recusa", recipe)
+        self.assertIn("nomeia a definição que a pesquisa já recusa", skill)
+        self.assertIn("nomeia a definição que a pesquisa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("número sem definição seja critério", report["scope"])
+        self.assertNotIn("número sem definição seja critério", game.craft_item_scope())
+        self.assertNotIn("número sem definição seja critério", game.next_scope())
+        self.assertNotIn("número sem definição seja critério", game.gate_reading(self.project)["scope"])
+        self.assertNotIn("número sem definição seja critério", game.bar_reading(self.project)["scope"])
+
     def test_craft_never_claims_to_have_observed_the_game(self):
         report = game.craft_reading(self.project)
         self.assertFalse(report["granted"])
