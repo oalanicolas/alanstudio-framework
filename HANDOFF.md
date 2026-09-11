@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.490: o item da constante nomeia a posição que a receita já recusa. Número no disco não é a pose. Sem chave `posição`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** confirmação pendente no 0.9.490.
+**Suítes:** confirmadas no HEAD (0.9.490): 551 / 516.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
