@@ -3812,6 +3812,35 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", access)
 
+    def test_access_names_the_contrast_the_recipe_already_samples(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/contrast.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.contrast_samples_stub(tool), "o tool já amostra o stub")
+        self.assertEqual(game.contrast_stub_source(starter), "tools/contrast.mjs")
+        report = game.access_reading(starter)
+        self.assertIn(
+            "amostra o contraste no stub",
+            report["scope"],
+            "o access calava o stub que a receita já amostra",
+        )
+        self.assertFalse(report["verified"])
+        self.assertNotIn("contrast", report)
+        self.assertNotIn("contrast", [item["key"] for item in report["options"]])
+        empty = game.access_reading(self.project)
+        self.assertFalse(game.contrast_samples_stub(""))
+        self.assertIsNone(game.contrast_stub_source(self.project))
+        self.assertNotIn("amostra o contraste", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o contraste", recipe)
+        self.assertIn("nomeia o contraste", skill)
+        self.assertIn("nomeia o contraste", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("aprovado", recipe)
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("WCAG", report["scope"])
+
     def test_audio_recipe_names_the_session_clock_the_bed_already_follows(self):
         recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
         access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")

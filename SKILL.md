@@ -291,7 +291,10 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    pausa não.    Na porta e no fim o canvas nomeia a lacuna do som
    que o painel já mostra. Se a casca declara `:focus-visible`,
    o `access` nomeia o foco que a receita já pede. Outline no
-   disco não é sessão com o teclado. Texto no disco não é mix ouvido.
+   disco não é sessão com o teclado. Se o `tools/contrast.*`
+   amostra o stub, o `access` nomeia o contraste. Stub no
+   disco não é sessão com o modo ativo. Sem chave `contrast`.
+   Texto no disco não é mix ouvido.
    Nomear não é
    `trusted`. Trocar no stub não é sessão observada.
    Se o `tools/budget.*` declara `title.attract`, o `budget`

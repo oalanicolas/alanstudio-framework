@@ -1677,6 +1677,32 @@ def focus_visible_source(project):
     return None
 
 
+# A receita já amostra o stub. Sem isto o access
+# lia highContrast e calava o tool. Stub no disco
+# não é sessão com o modo ativo.
+CONTRAST_FILES = ("tools/contrast.mjs", "tools/contrast.js", "tools/contrast.py")
+CONTRAST_STUB = re.compile(r"pixels depois do\s+draw\(\)|não aprova contraste", re.IGNORECASE)
+
+
+def contrast_samples_stub(text):
+    return bool(text and CONTRAST_STUB.search(text))
+
+
+def contrast_stub_source(project):
+    project = Path(project)
+    for name in CONTRAST_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if contrast_samples_stub(text):
+            return name
+    return None
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -1701,6 +1727,11 @@ def access_reading(project):
         scope += (
             " A casca declara foco visível (`:focus-visible`) que a "
             "receita já pede. Outline no disco não é sessão com o teclado."
+        )
+    if contrast_stub_source(project):
+        scope += (
+            " O disco amostra o contraste no stub (`contrast`). "
+            "Stub no disco não é sessão com o modo ativo."
         )
     return {
         "schema_version": 1,

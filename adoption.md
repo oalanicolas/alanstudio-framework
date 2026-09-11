@@ -3,6 +3,51 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.354 — o access nomeia o contraste que a receita já amostra
+
+A
+receita
+já
+amostrava
+o
+stub
+depois
+do
+`draw()`.
+O
+comando
+calava.
+Agora
+o
+`access`
+nomeia
+o
+contraste.
+Stub
+no
+disco
+não
+é
+sessão
+com
+o
+modo
+ativo.
+Sem
+chave
+`contrast`.
+Não
+promove
+`verified`.
+
+O que 0.9.354 não afirma:
+stub
+no
+disco
+não
+é
+dispositivo.
+
 ## 0.9.353 — o ship nomeia o tamanho que a receita já relata
 
 A

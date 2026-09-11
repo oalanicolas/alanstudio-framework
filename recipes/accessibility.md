@@ -127,7 +127,9 @@ ciclo que o canvas já pinta; no fim a linha some. Texto no DOM
 não é sessão observada. `npm run contrast` amostra
 pixels do stub depois do `draw()` além dos pares hex e, em cinza, conta
 o que só o orbe ou só o estilhaço pinta — relata, não aprova,
-e não substitui o dispositivo.
+e não substitui o dispositivo. Se o `tools/contrast.*` amostra o
+stub, o `access` nomeia o contraste. Stub no disco não é
+sessão com o modo ativo. Sem chave `contrast`.
 
 Prova: uma sessão completa com cada modo ativado, o jogo terminado sem áudio,
 verificação de contraste na cena de pior caso, remapeamento aplicado e
