@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.422 — o context nomeia a capacidade que o índice já recusa
+
+O
+índice
+já
+dizia
+que
+o
+pacote
+não
+certifica
+capacidade.
+A
+plataforma
+apontava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`context`
+nomeia
+a
+capacidade.
+Pacote
+no
+disco
+não
+é
+comportamento.
+Sem
+chave
+`capacidade`.
+Nomear
+não
+observa.
+
+O que 0.9.422 não afirma:
+pacote
+no
+disco
+não
+é
+comportamento
+nem
+capacidade
+no
+aparelho.
+
 ## 0.9.421 — o scan nomeia a inexistência que o roteiro já recusa
 
 O

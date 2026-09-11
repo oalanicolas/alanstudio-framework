@@ -4962,6 +4962,7 @@ def select_packs(kind, genre, mentions):
         "platform": {
             "kind": kind, "pack": str(platform_path) if platform_path and platform_path.is_file() else None,
             "basis": "identify: marcador de manifesto/engine no diretório do projeto" if kind else "projeto sem marcador reconhecido; núcleo agnóstico apenas",
+            "scope": platform_scope(kind),
         },
         "genre": {
             "name": genre, "pack": str(genre_path) if genre_path and genre_path.is_file() else None,
@@ -4970,6 +4971,45 @@ def select_packs(kind, genre, mentions):
         },
         "scope": packs_scope(kind),
     }
+
+
+# O índice já recusa que o pacote certifique capacidade. Sem isto a
+# plataforma apontava o arquivo e calava a recusa.
+# Pacote no disco não é comportamento.
+PACKS_INDEX = FRAMEWORK / "packs/README.md"
+PACKS_CAPACITY = re.compile(r"não certifica capacidade")
+
+
+def packs_refuse_capacity(text):
+    return bool(text and PACKS_CAPACITY.search(text))
+
+
+def platform_capacity_source(kind):
+    if not kind or kind not in PLATFORM_PACKS:
+        return None
+    path = PACKS_INDEX
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if packs_refuse_capacity(text):
+        return "packs/README.md"
+    return None
+
+
+def platform_scope(kind):
+    scope = (
+        "Seleciona o pacote pelo marcador do projeto. "
+        "Não substitui o que o código faz."
+    )
+    if platform_capacity_source(kind):
+        scope += (
+            " O disco recusa que o pacote certifique capacidade (`capacidade`). "
+            "Pacote no disco não é comportamento."
+        )
+    return scope
 
 
 # O roteiro já pede documentar sem consentimento. Sem isto o

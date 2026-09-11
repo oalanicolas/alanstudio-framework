@@ -855,6 +855,43 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("prove o navegador", report["production_bar"]["scope"])
         self.assertNotIn("prove o navegador", report["documentation"]["scope"])
 
+    def test_context_names_the_capacity_the_index_already_refuses(self):
+        index = (game.FRAMEWORK / "packs/README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.packs_refuse_capacity(index),
+            "o índice já recusa que o pacote certifique capacidade",
+        )
+        self.assertIsNone(game.platform_capacity_source(None))
+        silent = game.context(self.project, "create")
+        self.assertIsNone(silent["kind"])
+        self.assertNotIn("certifique capacidade", silent["packs"]["platform"]["scope"])
+        self.package()
+        self.assertEqual(game.platform_capacity_source("package.json"), "packs/README.md")
+        report = game.context(self.project, "create")
+        self.assertEqual(report["kind"], "package.json")
+        self.assertIn(
+            "certifique capacidade",
+            report["packs"]["platform"]["scope"],
+            "o context apontava a plataforma e calava a recusa",
+        )
+        self.assertIn("(`capacidade`)", report["packs"]["platform"]["scope"])
+        self.assertNotIn("capacidade", report["packs"]["platform"])
+        self.assertFalse(game.packs_refuse_capacity(""))
+        with mock.patch.object(game, "platform_capacity_source", return_value=None):
+            muted = game.context(self.project, "create")
+        self.assertNotIn("certifique capacidade", muted["packs"]["platform"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a capacidade que o índice já recusa", recipe)
+        self.assertIn("nomeia a capacidade que o índice já recusa", skill)
+        self.assertIn("nomeia a capacidade que o índice já recusa", readme)
+        self.assertNotIn("verified", report["packs"]["platform"]["scope"])
+        self.assertNotIn("certifique capacidade", report["packs"]["scope"])
+        self.assertNotIn("certifique capacidade", game.next_scope())
+        self.assertNotIn("certifique capacidade", game.play_scope(self.project))
+        self.assertNotIn("certifique capacidade", game.context_scope())
+
     def test_next_names_the_action_the_process_already_asks(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(

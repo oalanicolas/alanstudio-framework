@@ -226,7 +226,7 @@ Plataformas (18): `web`, `unity`, `godot`, `unreal`, `defold`, `gamemaker`, `con
 `deckbuilder`, `strategy`, `tower-defense`, `puzzle`, `simulation`, `survival-crafting`,
 `rpg`, `roguelike`, `multiplayer-competitive`, `idle`, `casual`. Cada pacote traz comandos
 reais de execução/teste, ciclo de vida, pipeline, ferramentas de medição e riscos do
-gênero — como convenções a confirmar no projeto, não como capacidade certificada. Se o pacote recusa que teste unitário prove o navegador, o `context` nomeia o navegador que o pacote já recusa provar. Pacote no disco não é comportamento no aparelho. Sem chave `navegador`.
+gênero — como convenções a confirmar no projeto, não como capacidade certificada. Se o pacote recusa que teste unitário prove o navegador, o `context` nomeia o navegador que o pacote já recusa provar. Pacote no disco não é comportamento no aparelho. Sem chave `navegador`. Se o índice recusa que o pacote certifique capacidade, o `context` nomeia a capacidade que o índice já recusa. Pacote no disco não é comportamento. Sem chave `capacidade`.
 Um campo `Gênero:` em documento do projeto aparece em `packs.genre.suggested`; só
 `--genre` carrega o pacote. `context.packs` explica cada seleção.
 
