@@ -566,10 +566,50 @@ def discover(root, depth=3):
             continue
         kind = identify(path)
         if kind:
-            projects.append({"project": str(path), "kind": kind})
+            projects.append({
+                "project": str(path),
+                "kind": kind,
+                "scope": discover_item_scope(),
+            })
         elif depth > 1:
             projects.extend(discover(path, depth - 1))
     return projects
+
+
+# O README já recusa que listagem de caminho e tipo apague o estado. Sem
+# isto o --plain copiava o path e calava a recusa.
+# Caminho no disco não é o jogo.
+DISCOVER_PLAIN = re.compile(r"listagem de caminho e tipo apagava")
+
+
+def readme_refuses_plain_listing(text):
+    return bool(text and DISCOVER_PLAIN.search(text))
+
+
+def discover_plain_source():
+    path = FRAMEWORK / "README.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_refuses_plain_listing(text):
+        return "README.md"
+    return None
+
+
+def discover_item_scope():
+    scope = (
+        "Caminho e tipo do jogo. Não lê documento e não distingue o "
+        "estado."
+    )
+    if discover_plain_source():
+        scope += (
+            " O disco recusa que listagem de caminho e tipo apague o estado "
+            "(`listagem`). Caminho no disco não é o jogo."
+        )
+    return scope
 
 
 # Um laboratório de trabalho já tem jogos, e é por isso que o primeiro movimento

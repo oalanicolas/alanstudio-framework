@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.474 — o discover nomeia a listagem que o README já recusa
+
+O
+README
+já
+dizia
+que
+listagem
+de
+caminho
+e
+tipo
+apagava
+o
+estado.
+O
+`--plain`
+copiava
+o
+path
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+a
+listagem.
+Caminho
+no
+disco
+não
+é
+o
+jogo.
+Sem
+chave
+`listagem`.
+Nomear
+não
+observa.
+
+O que 0.9.474 não afirma:
+caminho
+no
+disco
+não
+é
+revisão
+do
+laboratório
+nem
+partida
+jogada.
+
 ## 0.9.473 — o commands nomeia o genérico que o menu já recusa
 
 O

@@ -46,7 +46,7 @@ direção de arte aparece no disco, se o conteúdo saiu do código e se existe
 passo de empacotar. `signals` nomeia os mesmos flags que o `next` usa
 para o primeiro ciclo, o ofício, o feel sem recibo, o achado sem forma,
 o convite, a origem sem recibo e as lacunas de dimensão — sem propor e
-sem ranquear. Se o package declara os scripts, o `discover` nomeia os scripts que o package já declara. Lista no disco não é passo executado. Sem chave `scripts`. Se o roteiro recusa que o documento comprove qualidade, o `discover` nomeia a qualidade que o roteiro já recusa. Conta no disco não é acabamento. Sem chave `qualidade`. Sinal
+sem ranquear. Se o package declara os scripts, o `discover` nomeia os scripts que o package já declara. Lista no disco não é passo executado. Sem chave `scripts`. Se o roteiro recusa que o documento comprove qualidade, o `discover` nomeia a qualidade que o roteiro já recusa. Conta no disco não é acabamento. Sem chave `qualidade`. Se o README recusa que listagem de caminho e tipo apague o estado, o `discover` nomeia a listagem que o README já recusa. Caminho no disco não é o jogo. Sem chave `listagem`. Sinal
 verdadeiro não é partida jogada. Lista de arquivo sem recibo não é
 licença. Lista de chave ausente não é alcance observado. É essa diferença que
 uma listagem de caminho e tipo apagava — três jogos em estados incomparáveis saíam

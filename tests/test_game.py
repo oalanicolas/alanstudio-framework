@@ -105,6 +105,38 @@ class HarnessTest(unittest.TestCase):
         self.assertEqual(len(projects), 4)
         self.assertNotIn("shared", {Path(item["project"]).name for item in projects})
 
+    def test_discover_names_the_listing_the_readme_already_refuses(self):
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.readme_refuses_plain_listing(readme),
+            "o README já recusa que listagem de caminho e tipo apague o estado",
+        )
+        self.assertEqual(game.discover_plain_source(), "README.md")
+        self.package()
+        report = game.discover(self.root)
+        self.assertTrue(report, "o discover já lista o jogo pelo manifesto")
+        item = report[0]
+        self.assertIn(
+            "listagem de caminho e tipo apague o estado",
+            item["scope"],
+            "o --plain copiava o path e calava a recusa",
+        )
+        self.assertIn("(`listagem`)", item["scope"])
+        self.assertNotIn("listagem", item)
+        self.assertFalse(game.readme_refuses_plain_listing(""))
+        with mock.patch.object(game, "discover_plain_source", return_value=None):
+            silent = game.discover(self.root)
+        self.assertNotIn("listagem de caminho e tipo apague o estado", silent[0]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a listagem que o README já recusa", readme)
+        self.assertIn("nomeia a listagem que o README já recusa", skill)
+        self.assertNotIn("verified", item["scope"])
+        reviewed = game.review(self.root)["projects"][0]
+        self.assertNotIn("listagem de caminho e tipo apague o estado", reviewed["scope"])
+        self.assertNotIn("listagem de caminho e tipo apague o estado", game.review_item_scope())
+        self.assertNotIn("listagem de caminho e tipo apague o estado", game.next_scope())
+        self.assertNotIn("listagem de caminho e tipo apague o estado", game.context_scope())
+
     # O laboratório onde este harness roda de verdade já tem jogos, e o primeiro
     # movimento nele é revisar o que existe. Caminho e tipo não servem para isso:
     # quatro jogos em estados muito diferentes saem idênticos numa listagem.
