@@ -2,10 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.388: o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. Não promove `heard`. Confirmação pendente.
+**HEAD:** ver `git log -1` — vigente 0.9.388: o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. Não promove `heard`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** HEAD anterior confirmado (0.9.387: 383 / 509). Confirmação do 0.9.388 pendente.
+**Suítes confirmadas no HEAD (0.9.388):** `python3 -m unittest discover -s tests` → 384 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
