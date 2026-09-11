@@ -4302,6 +4302,40 @@ def content_composition_source():
     return None
 
 
+# A receita já recusa que o tamanho
+# codificado meça custo decodificado
+# ou GPU. Sem isto o content listava
+# arquivos e calava a recusa. Arquivo
+# no disco não é o quadro.
+CONTENT_ENCODED = re.compile(r"Tamanho codificado não mede custo decodificado")
+
+
+def recipe_refuses_encoded_as_gpu(text):
+    return bool(text and CONTENT_ENCODED.search(text))
+
+
+def content_encoded_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_encoded_as_gpu(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_encoded_scope():
+    if not content_encoded_source():
+        return None
+    return (
+        " O disco recusa que o tamanho codificado meça custo decodificado "
+        "ou GPU (`codificado`). Arquivo no disco não é o quadro."
+    )
+
+
 def content_reading(project):
     project = Path(project)
     files = content_files(project)
@@ -4332,6 +4366,9 @@ def content_reading(project):
             " O disco recusa que mais módulos provem a composição "
             "(`composição`). Arquivo no disco não é o mundo."
         )
+    encoded = content_encoded_scope()
+    if encoded:
+        scope += encoded
     return {
         "schema_version": 1,
         "project": str(project),

@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.546 — o content nomeia o codificado que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+tamanho
+codificado
+não
+mede
+custo
+decodificado
+ou
+GPU.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+`content`
+nomeia
+o
+codificado.
+Arquivo
+no
+disco
+não
+é
+o
+quadro.
+Sem
+chave
+`codificado`.
+Nomear
+não
+observa.
+
+O que 0.9.546 não afirma:
+listar
+o
+arquivo
+não
+é
+medir
+VRAM.
+
 ## 0.9.545 — o fields do record observation nomeia a impressão que a receita já recusa
 
 A

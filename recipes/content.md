@@ -100,7 +100,7 @@ conforme o contrato do consumidor e repetir a prova no projeto de destino.
   exportação. Preserve o arquivo autoral e diferencie tempo de preparação, render e IO.
 - Para limites de arquivo, considere dividir transporte mantendo os payloads originais
   e conferir a remontagem por hash. Limite de hospedagem não exige reduzir quadros,
-  resolução ou duração. Tamanho codificado não mede custo decodificado ou GPU.
+  resolução ou duração. Tamanho codificado não mede custo decodificado ou GPU. Se a receita recusa que o tamanho codificado meça custo decodificado ou GPU, o `content` nomeia o codificado que a receita já recusa. Arquivo no disco não é o quadro. Sem chave `codificado`.
 - Animação de máquinas e efeitos deve seguir o relógio e o trabalho da simulação:
   pausa, bloqueio, save e retomada precisam escolher a mesma pose. Um animador autônomo
   de imagem pode quebrar esse contrato. Teste também o caminho de compatibilidade.
@@ -110,7 +110,7 @@ conforme o contrato do consumidor e repetir a prova no projeto de destino.
   regenerar bancos animados intactos. Compare manifestos e inventário distribuído
   separadamente antes de afirmar aumento ou redução de download.
 - Variação de material não substitui detalhe funcional de forma, e distribuir mais
-  módulos não prova composição natural. Se a receita recusa que mais módulos provem a composição, o `content` nomeia a composição que a receita já recusa. Arquivo no disco não é o mundo. Sem chave `composição`. Observe repetição, escala e leitura no jogo;
+  módulos não prova composição natural. Se a receita recusa que mais módulos provem a composição, o `content` nomeia a composição que a receita já recusa. Arquivo no disco não é o mundo. Sem chave `composição`. Se a receita recusa que o tamanho codificado meça custo decodificado ou GPU, o `content` nomeia o codificado que a receita já recusa. Arquivo no disco não é o quadro. Sem chave `codificado`. Observe repetição, escala e leitura no jogo;
   uma mudança artística não deve ser anunciada como otimização técnica.
 
 Referências: Era Uma Vez no playground, troca de assets em protótipo Unity, Ink `RE-INK-004/007/009`

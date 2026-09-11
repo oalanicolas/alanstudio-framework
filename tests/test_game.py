@@ -10682,6 +10682,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("mais módulos provem a composição", game.feel_reading(self.project)["scope"])
         self.assertNotIn("mais módulos provem a composição", game.gate_item_scope("scale"))
 
+    def test_content_names_the_encoded_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_encoded_as_gpu(recipe),
+            "a receita já recusa que o tamanho codificado meça custo decodificado ou GPU",
+        )
+        self.assertEqual(game.content_encoded_source(), "recipes/content.md")
+        report = game.content_reading(self.project)
+        self.assertIn(
+            "tamanho codificado meça custo decodificado",
+            report["scope"],
+            "o content listava arquivos e calava a recusa",
+        )
+        self.assertIn("(`codificado`)", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("codificado", report)
+        self.assertFalse(game.recipe_refuses_encoded_as_gpu(""))
+        with mock.patch.object(game, "content_encoded_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn("tamanho codificado meça custo decodificado", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o codificado que a receita já recusa", recipe)
+        self.assertIn("nomeia o codificado que a receita já recusa", skill)
+        self.assertIn("nomeia o codificado que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("tamanho codificado meça custo decodificado", game.art_reading(self.project)["scope"])
+        self.assertNotIn("tamanho codificado meça custo decodificado", game.ship_reading(self.project)["scope"])
+        self.assertNotIn("tamanho codificado meça custo decodificado", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("tamanho codificado meça custo decodificado", game.budget_reading(self.project)["scope"])
+        self.assertNotIn("tamanho codificado meça custo decodificado", game.next_scope())
+        self.assertNotIn("tamanho codificado meça custo decodificado", game.gate_item_scope("scale"))
+
     def test_content_names_data_files_as_external(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "data").mkdir()
