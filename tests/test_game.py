@@ -857,6 +857,43 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIsNone(result["documentation"]["initialization"])
         self.assertNotIn(str(game.FRAMEWORK / "recipes/architecture.md"), result["read_next"])
 
+    def test_initialization_names_the_question_the_audit_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.audit_refuses_notice_as_question(guide),
+            "o roteiro já recusa que o aviso seja uma pergunta",
+        )
+        self.assertEqual(game.documentation_initialization_question_source(), "references/project-audit.md")
+        self.package()
+        report = game.context(self.project, "mechanics", event="initialize")
+        item = report["documentation"]["initialization"]
+        self.assertIn(
+            "aviso seja uma pergunta",
+            item["scope"],
+            "a inicialização copiava o notice e calava a recusa",
+        )
+        self.assertIn("(`pergunta`)", item["scope"])
+        self.assertNotIn("pergunta", item)
+        self.assertFalse(game.audit_refuses_notice_as_question(""))
+        with mock.patch.object(game, "documentation_initialization_question_source", return_value=None):
+            silent = game.context(self.project, "mechanics", event="initialize")
+        self.assertNotIn("aviso seja uma pergunta", silent["documentation"]["initialization"]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a pergunta que o roteiro já recusa", guide)
+        self.assertIn("nomeia a pergunta que o roteiro já recusa", skill)
+        self.assertIn("nomeia a pergunta que o roteiro já recusa", readme)
+        self.assertIn("nomeia a pergunta que o roteiro já recusa", recipe)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aviso seja uma pergunta", report["documentation"]["scope"])
+        self.assertNotIn("aviso seja uma pergunta", report["scope"])
+        self.assertNotIn("aviso seja uma pergunta", report["continuity"]["prompt"]["scope"])
+        self.assertNotIn("aviso seja uma pergunta", report["delivery_review"]["scope"])
+        self.assertNotIn("aviso seja uma pergunta", game.next_scope())
+        ordinary = game.context(self.project, "mechanics")
+        self.assertIsNone(ordinary["documentation"]["initialization"])
+
     def test_initialize_requires_source_audit_with_complete_foundation_in_every_focus(self):
         self.foundation_document()
         self.package(scripts={"servir": "touch unexpected"})

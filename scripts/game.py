@@ -6924,6 +6924,42 @@ def documentation_scope(document_minimum):
     return scope
 
 
+# O roteiro já recusa que o aviso seja uma pergunta. Sem isto a
+# inicialização copiava o notice e calava a recusa.
+# Aviso no disco não é espera.
+AUDIT_QUESTION = re.compile(r"o aviso não é uma pergunta")
+
+
+def audit_refuses_notice_as_question(text):
+    return bool(text and AUDIT_QUESTION.search(text))
+
+
+def documentation_initialization_question_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_refuses_notice_as_question(text):
+        return "references/project-audit.md"
+    return None
+
+
+def documentation_initialization_scope():
+    scope = (
+        "Aviso e evidência da inicialização. Não pergunta e não espera "
+        "resposta."
+    )
+    if documentation_initialization_question_source():
+        scope += (
+            " O disco recusa que o aviso seja uma pergunta (`pergunta`). "
+            "Aviso no disco não é espera."
+        )
+    return scope
+
+
 # O processo já nega que documento pronto seja PoC. Sem isto o
 # context apontava o arquivo e calava a recusa.
 # Fonte no disco não é jogo implementado.
@@ -7412,6 +7448,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
                 "not_sufficient": ["server_running", "http_ok", "tests_passed", "documents_found"],
                 "guide": str(FRAMEWORK / "references/project-audit.md") + "#inicializar-o-projeto",
                 "runtime_role": "Observar o jogo pode apoiar o diagnóstico; abrir navegador ou servidor não é a entrega da inicialização. Não alterar gameplay apenas por esse pedido.",
+                "scope": documentation_initialization_scope(),
             } if initializing else None,
             "on_direction_approved": "Aprovação na conversa exige sincronizar a base mínima neste turno, mesmo com todos os candidatos encontrados; use --event direction-approved.",
             "before_close": "Registrar conteúdo e fontes nos documentos canônicos; cobrir cada área mínima com decisão/fato ou lacuna e próxima ação. Referência salva e templates vazios não concluem a documentação.",

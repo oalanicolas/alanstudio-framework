@@ -189,7 +189,7 @@ executar código ou começar auditoria. Saída zero significa checagem executada
 Informe projeto, itens não confirmados e recorte observado. Exemplo: “Não localizei
 o MDA e a arquitetura documentados neste projeto. Vou levantar o código e os registros
 e organizar essa base, reaproveitando a documentação existente.” Execute no mesmo
-turno; o aviso não é uma pergunta nem um motivo para aguardar resposta.
+turno; o aviso não é uma pergunta nem um motivo para aguardar resposta. Se o roteiro recusa que o aviso seja uma pergunta, o `context` nomeia a pergunta que o roteiro já recusa. Aviso no disco não é espera. Sem chave `pergunta`.
 
 Essa autorização cobre leitura e reconstrução da documentação do projeto em pauta.
 Reaproveite levantamentos atuais para não repetir uma auditoria inteira em cada
