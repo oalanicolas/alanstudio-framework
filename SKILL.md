@@ -143,7 +143,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    o recibo que lista um stem e o disco perdeu não é id
    desconhecido; exportar não inventa bytes. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`.
    `sfx copy` leva o stem do starter. Importar e exportar não é
-   ouvir. Sem 8-bit,
+   ouvir. Se a receita recusa que importar e exportar seja ouvir, o `sfx copy` do acervo nomeia o ouvir que a receita já recusa. Cópia no disco não é mix. Sem chave `ouvir`. Sem 8-bit,
    chiptune, jsfxr ou Kenney arcade como padrão. Leia candidatos e consumidores.
    CREATE exige lacuna explícita. Para trabalho novo sem registro, use
    [o contrato](assets/work.example.json); `check-plan` valida a estrutura, não o mérito. Se o processo recusa garantir o mérito, o `check-plan` nomeia o mérito que o processo já recusa. Forma no disco não é adequação. Sem chave `mérito`. Se a guia recusa que a checagem seja validador semântico, o `metadata_issues[n]` nomeia o semântico que a guia já recusa. Parse no disco não é o jogo. Sem chave `semântico`.
@@ -295,7 +295,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    perdeu — não despeja errno;
    `sfx export` copia bytes e
    créditos e nomeia o stem que o recibo lista e o disco perdeu —
-   exportar não inventa bytes. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`. Importar e exportar não é ouvir. `heard` é sempre falso. Papel vazio
+   exportar não inventa bytes. Se o export recusa processamento, o `sfx export` nomeia o processamento que o export já recusa. Bytes no disco não são mix ouvida. Sem chave `processamento`. Importar e exportar não é ouvir. Se a receita recusa que importar e exportar seja ouvir, o `sfx copy` do acervo nomeia o ouvir que a receita já recusa. Cópia no disco não é mix. Sem chave `ouvir`. `heard` é sempre falso. Papel vazio
    entra no `next` como `audio.roles` — o verbo mudo não espera os
    rascunhos.
    **`feel [<projeto>]`** lê constantes de perdão/hitstop/câmera no `CONFIG`,

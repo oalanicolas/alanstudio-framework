@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.502 — o sfx copy do acervo nomeia o ouvir que a receita já recusa
+
+O
+disco
+já
+dizia
+que
+importar
+e
+exportar
+não
+é
+ouvir.
+O
+copy
+do
+acervo
+levava
+bytes
+e
+créditos
+e
+calava
+a
+recusa.
+Agora
+o
+`sfx copy`
+do
+acervo
+nomeia
+o
+ouvir.
+Cópia
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`ouvir`.
+Nomear
+não
+ouve.
+
+O que 0.9.502 não afirma:
+a
+cópia
+no
+disco
+não
+é
+mix
+ouvida.
+
 ## 0.9.501 — o signals do review nomeia a partida que o README já recusa
 
 O

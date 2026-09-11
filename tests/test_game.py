@@ -7611,6 +7611,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", dumped)
         self.assertNotIn("verified", dumped)
 
+    def test_sfx_copy_from_catalog_names_the_hearing_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_export_as_hearing(recipe),
+            "a receita já recusa que importar e exportar seja ouvir",
+        )
+        self.assertEqual(game.sfx_catalog.copy_catalog_hearing_source(), "recipes/audio.md")
+        item, _ = self._plant_catalog_sound()
+        destination = self.root / "jogo" / "public" / "sfx"
+        copied = game.sfx_catalog.copy_entry(item["id"], destination, self.root)
+        self.assertEqual(copied["kind"], "catalog")
+        self.assertIn(
+            "importar e exportar seja ouvir",
+            copied["scope"],
+            "o copy do acervo levava bytes e créditos e calava a recusa",
+        )
+        self.assertIn("(`ouvir`)", copied["scope"])
+        self.assertNotIn("ouvir", copied)
+        self.assertFalse(copied["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_export_as_hearing(""))
+        self.assertNotIn("importar e exportar seja ouvir", copied["next"])
+        with mock.patch.object(game.sfx_catalog, "copy_catalog_hearing_source", return_value=None):
+            silent = game.sfx_catalog.copy_entry(item["id"], destination, self.root)
+        self.assertNotIn("importar e exportar seja ouvir", silent.get("scope") or "")
+        local = game.sfx_catalog.copy_entry("dash", self.root / "voz", self.root)
+        self.assertEqual(local["kind"], "starter")
+        self.assertNotIn("importar e exportar seja ouvir", local.get("scope") or "")
+        exported = game.sfx_catalog.export_entries([item["id"]], self.root / "lote", self.root)
+        self.assertEqual(exported["kind"], "catalog")
+        self.assertNotIn("importar e exportar seja ouvir", exported.get("scope") or "")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o ouvir que a receita já recusa", recipe)
+        self.assertIn("nomeia o ouvir que a receita já recusa", skill)
+        self.assertIn("nomeia o ouvir que a receita já recusa", readme)
+        self.assertNotIn("verified", copied["scope"])
+        self.assertNotIn("aprovado", copied["scope"])
+
     def test_sfx_copy_from_catalog_refuses_when_the_receipt_names_another_license(self):
         item, _ = self._plant_catalog_sound()
         destination = self.root / "jogo" / "public" / "sfx"

@@ -634,7 +634,7 @@ Sem esse acervo, `sfx search` não inventa id: o catálogo vem vazio e a
 busca nomeia o stem do starter que casa com o termo. Se o `tools/design-sfx.*` desloca a voz, o `sfx search` nomeia o deslocamento que o sfx já oferece. Arquivo no disco não é mix ouvida. Sem chave `sfx`. `sfx info`
 lê a chave e nomeia o stem que o recibo lista e o disco perdeu.
 `sfx copy` e `sfx export` levam bytes e créditos
-desse stem. Se o sidecar declara licença, o `sfx copy` nomeia os créditos que o copy já leva. Créditos no disco não são mix ouvida. Sem chave `sidecar`. `sfx export` nomeia o stem que o recibo lista
+desse stem. Se o sidecar declara licença, o `sfx copy` nomeia os créditos que o copy já leva. Créditos no disco não são mix ouvida. Sem chave `sidecar`. Se a receita recusa que importar e exportar seja ouvir, o `sfx copy` do acervo nomeia o ouvir que a receita já recusa. Cópia no disco não é mix. Sem chave `ouvir`. `sfx export` nomeia o stem que o recibo lista
 e o disco perdeu — exportar não inventa bytes.
 `sfx verify` nomeia os stems sem cruzar o que não
 existe e nomeia o stem que o recibo lista e o disco perdeu. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`.

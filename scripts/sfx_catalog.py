@@ -713,7 +713,7 @@ def copy_entry(entry_id, destination, root=None, sources=None, as_name=None):
         receipt.write_bytes(audio.json_bytes(previous))
     if not credit_path.exists():
         credit_path.write_bytes(payload["CREDITS.txt"])
-    return {
+    report = {
         "copied": str(target),
         "bytes": item["bytes"],
         "record": record,
@@ -724,6 +724,10 @@ def copy_entry(entry_id, destination, root=None, sources=None, as_name=None):
         "heard": False,
         "next": EXPORT_NEXT,
     }
+    named = copy_catalog_scope()
+    if named:
+        report["scope"] = named
+    return report
 
 
 def summarize(root=None):
@@ -854,6 +858,38 @@ def info_catalog_scope():
     return (
         "O disco recusa que teste técnico de decode aprove o mix "
         "(`decode`). Ficha no disco não é mix ouvida."
+    )
+
+
+# A receita já recusa que importar e exportar seja ouvir. Sem isto o
+# copy do acervo levava bytes e créditos e calava a recusa.
+# Cópia no disco não é mix.
+AUDIO_HEARING = re.compile(r"Importar e exportar não é ouvir")
+
+
+def recipe_refuses_export_as_hearing(text):
+    return bool(text and AUDIO_HEARING.search(text))
+
+
+def copy_catalog_hearing_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_export_as_hearing(text):
+        return "recipes/audio.md"
+    return None
+
+
+def copy_catalog_scope():
+    if not copy_catalog_hearing_source():
+        return None
+    return (
+        "O disco recusa que importar e exportar seja ouvir "
+        "(`ouvir`). Cópia no disco não é mix."
     )
 
 
