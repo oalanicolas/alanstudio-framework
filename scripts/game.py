@@ -5778,9 +5778,12 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     areas["mda"]["scope"] = mda_area_scope()
     areas["vision"]["scope"] = vision_area_scope()
     candidate_scope = scan_candidate_scope()
-    for area in areas.values():
+    understood = architecture_candidate_understood_scope()
+    for key, area in areas.items():
         for item in area["candidates"]:
             item["scope"] = candidate_scope
+            if key == "architecture" and understood:
+                item["scope"] += understood
     mention_scope = genre_mention_scope()
     scale_scope = scale_mention_scope()
     issue_scope = coverage_issue_scope()
@@ -6548,6 +6551,40 @@ def scan_candidate_scope():
             "Candidato no disco não é autoria."
         )
     return scope
+
+
+# A receita já recusa que contexto carregado prove a arquitetura
+# compreendida. Sem isto o candidato copiava o path e calava a recusa.
+# Candidato no disco não é a decisão.
+ARCHITECTURE_UNDERSTOOD = re.compile(
+    r"n[aã]o significa.{0,4}arquitetura compreendida",
+)
+
+
+def recipe_refuses_loaded_as_understood(text):
+    return bool(text and ARCHITECTURE_UNDERSTOOD.search(text))
+
+
+def architecture_understood_source():
+    path = ARCHITECTURE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_loaded_as_understood(text):
+        return "recipes/architecture.md"
+    return None
+
+
+def architecture_candidate_understood_scope():
+    if not architecture_understood_source():
+        return ""
+    return (
+        " O disco recusa que contexto carregado prove a arquitetura compreendida "
+        "(`compreendida`). Candidato no disco não é a decisão."
+    )
 
 
 # O roteiro já recusa que o local não percorrido seja inexistente. Sem isto o

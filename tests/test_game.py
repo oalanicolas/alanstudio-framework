@@ -2754,6 +2754,51 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("infira dependências", game.context_scope())
         self.assertNotIn("infira dependências", game.next_scope())
 
+    def test_architecture_candidate_names_the_understanding_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_loaded_as_understood(recipe),
+            "a receita já recusa que contexto carregado prove a arquitetura compreendida",
+        )
+        self.assertEqual(game.architecture_understood_source(), "recipes/architecture.md")
+        self.foundation_document()
+        report = game.scan(self.project)
+        item = report["areas"]["architecture"]["candidates"][0]
+        self.assertIn(
+            "contexto carregado prove a arquitetura compreendida",
+            item["scope"],
+            "o candidato copiava o path e calava a recusa",
+        )
+        self.assertIn("(`compreendida`)", item["scope"])
+        self.assertNotIn("compreendida", item)
+        self.assertFalse(game.recipe_refuses_loaded_as_understood(""))
+        with mock.patch.object(game, "architecture_understood_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "contexto carregado prove a arquitetura compreendida",
+            silent["areas"]["architecture"]["candidates"][0]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a compreendida que a receita já recusa", recipe)
+        self.assertIn("nomeia a compreendida que a receita já recusa", skill)
+        self.assertIn("nomeia a compreendida que a receita já recusa", readme)
+        self.assertIn("nomeia a compreendida que a receita já recusa", create)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("verified", recipe)
+        self.assertNotIn("contexto carregado prove a arquitetura compreendida", report["scope"])
+        self.assertNotIn(
+            "contexto carregado prove a arquitetura compreendida",
+            report["areas"]["architecture"]["scope"],
+        )
+        self.assertNotIn(
+            "contexto carregado prove a arquitetura compreendida",
+            report["areas"]["art_direction"]["candidates"][0]["scope"],
+        )
+        self.assertNotIn("contexto carregado prove a arquitetura compreendida", game.context_scope())
+        self.assertNotIn("contexto carregado prove a arquitetura compreendida", game.next_scope())
+
     def test_scan_names_the_license_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.494 — o candidato da arquitetura nomeia a compreendida que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+contexto
+carregado
+não
+significa
+arquitetura
+compreendida.
+O
+candidato
+copiava
+o
+path
+e
+calava
+a
+recusa.
+Agora
+o
+candidato
+da
+arquitetura
+nomeia
+a
+compreendida.
+Candidato
+no
+disco
+não
+é
+a
+decisão.
+Sem
+chave
+`compreendida`.
+Nomear
+não
+observa.
+
+O que 0.9.494 não afirma:
+achar
+o
+TDD
+não
+é
+entender
+a
+arquitetura.
+
 ## 0.9.493 — o ciclo nomeia o livre que a receita já recusa
 
 A

@@ -57,7 +57,7 @@ Confirme suas capacidades no consumidor; registro declarado não prova suporte r
 Use o registro atual, sem gerar cópias de todo o contexto do projeto. Busca por nome,
 import ou marcador produz candidatos. Resolva aliases, conteúdo serializado, eventos,
 cenas e carregamento dinâmico pertinentes antes de declarar a cobertura. Se parte não
-foi lida, explicite-a; “contexto carregado” não significa “arquitetura compreendida”.
+foi lida, explicite-a; “contexto carregado” não significa “arquitetura compreendida”. Se a receita recusa que contexto carregado prove a arquitetura compreendida, o candidato da arquitetura nomeia a compreendida que a receita já recusa. Candidato no disco não é a decisão. Sem chave `compreendida`.
 
 ## 3. Rastrear impacto e contratos
 
