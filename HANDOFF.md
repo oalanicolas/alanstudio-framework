@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.387: o `play` nomeia a produção que o serve já recusa. Serve no disco não é publicação. Sem chave `produção`. Não promove `executed`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD anterior (0.9.386):** `python3 -m unittest discover -s tests` → 382 OK.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK. Confirmação do 0.9.387 pendente.
+**Suítes confirmadas no HEAD (0.9.387):** `python3 -m unittest discover -s tests` → 383 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
