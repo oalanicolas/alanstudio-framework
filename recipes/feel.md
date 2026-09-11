@@ -42,7 +42,7 @@ some. A faixa não leva a conta nem o relógio. Simulada não é alguém de
 fora.
 Depois do fim a página
 rola até o painel e foca o campo. Escrever não dispara o
-verbo — Espaço e R ficam no recado. Rolar não é alguém de fora. Número na faixa não
+verbo — Espaço e R ficam no recado. Rolar não é alguém de fora. Se a receita recusa que rolar seja alguém de fora, o convite nomeia o rolar que a receita já recusa. Página no disco não é a sessão. Sem chave `rolar`. Número na faixa não
 preenche os quatro. O achado copiado e gravado leva a
 faixa do last-run. Sem tally nem relógio. Markdown no
 disco não é alguém de fora. Copiar não grava. O Copiar nomeia o

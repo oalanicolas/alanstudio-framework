@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.541 — o convite nomeia o rolar que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+rolar
+não
+é
+alguém
+de
+fora.
+O
+convite
+anunciava
+o
+painel
+e
+calava
+a
+recusa.
+Agora
+o
+convite
+nomeia
+o
+rolar.
+Página
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`rolar`.
+Nomear
+não
+observa.
+
+O que 0.9.541 não afirma:
+rolar
+até
+o
+painel
+não
+é
+quem
+jogou.
+
 ## 0.9.540 — o ship nomeia o acesso que a receita já recusa
 
 A

@@ -5481,6 +5481,39 @@ def invite_sessions_scope():
     )
 
 
+# A receita já recusa que rolar seja alguém
+# de fora. Sem isto o convite anunciava o
+# painel e calava a recusa. Página no disco
+# não é a sessão.
+FEEL_SCROLL = re.compile(r"Rolar não é alguém de fora")
+
+
+def recipe_refuses_scroll_as_outsider(text):
+    return bool(text and FEEL_SCROLL.search(text))
+
+
+def invite_scroll_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_scroll_as_outsider(text):
+        return "recipes/feel.md"
+    return None
+
+
+def invite_scroll_scope():
+    if not invite_scroll_source():
+        return None
+    return (
+        "O disco recusa que rolar seja alguém de fora "
+        "(`rolar`). Página no disco não é a sessão."
+    )
+
+
 def invite_playtest(project):
     project = Path(project)
     if not project.is_dir() or project.is_symlink():
@@ -5514,6 +5547,9 @@ def invite_playtest(project):
     named = invite_sessions_scope()
     if named:
         scope += " " + named
+    scroll = invite_scroll_scope()
+    if scroll:
+        scope += " " + scroll
     return {
         "schema_version": 1,
         "project": str(project),

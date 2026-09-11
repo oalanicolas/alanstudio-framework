@@ -11510,6 +11510,42 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("endereço seja duas sessões", game.ship_reading(destination)["scope"])
         self.assertNotIn("endereço seja duas sessões", game.feel_reading(destination)["scope"])
 
+    def test_invite_names_the_scroll_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_scroll_as_outsider(recipe),
+            "a receita já recusa que rolar seja alguém de fora",
+        )
+        self.assertEqual(game.invite_scroll_source(), "recipes/feel.md")
+        destination = self.root / "convite-com-rolar"
+        game.init(destination, "canvas-arcade")
+        report = game.invite_playtest(destination)
+        self.assertIn(
+            "rolar seja alguém de fora",
+            report["scope"],
+            "o convite anunciava o painel e calava a recusa",
+        )
+        self.assertIn("(`rolar`)", report["scope"])
+        self.assertNotIn("rolar", report)
+        self.assertFalse(report["outsider"])
+        self.assertFalse(report["observed"])
+        self.assertFalse(game.recipe_refuses_scroll_as_outsider(""))
+        with mock.patch.object(game, "invite_scroll_source", return_value=None):
+            silent = game.invite_playtest(destination)
+        self.assertNotIn("rolar seja alguém de fora", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o rolar que a receita já recusa", recipe)
+        self.assertIn("nomeia o rolar que a receita já recusa", skill)
+        self.assertIn("nomeia o rolar que a receita já recusa", readme_doc)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("rolar seja alguém de fora", game.play_scope(destination))
+        self.assertNotIn("rolar seja alguém de fora", game.playtest_reading(destination)["scope"])
+        self.assertNotIn("rolar seja alguém de fora", game.next_step(destination)["scope"])
+        self.assertNotIn("rolar seja alguém de fora", game.ship_reading(destination)["scope"])
+        self.assertNotIn("rolar seja alguém de fora", game.feel_reading(destination)["scope"])
+
     def test_invite_names_the_last_run_seed_without_claiming_an_outsider(self):
         destination = self.root / "convite-com-seed"
         game.init(destination, "canvas-arcade")
