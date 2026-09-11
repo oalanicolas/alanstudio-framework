@@ -465,7 +465,7 @@ Valem em todo comando e em toda escala.
   mesmo com nove candidatos encontrados. Salvar a imagem não é o trabalho.
 - **Uma próxima ação, com prompt pronto.** Toda entrega com sequência termina com um
   passo, motivo, prova e o [prompt de continuidade](references/gauntlet.md) em
-  linguagem comum; “vamos avançar” o retoma. `next_step: null` significa que o
+  linguagem comum; “vamos avançar” o retoma. Se o gauntlet recusa que o arquivo de prompts seja a fonte de status, o `context` nomeia a receita que o gauntlet já recusa. Prompt no disco não é o estado. Sem chave `receita`. `next_step: null` significa que o
   agente ainda resolve o passo. Objetivo concluído não inventa tarefa.
 - **Memória nos lugares certos.** Decisões, provas e preferências no canônico do
   jogo; regra transferível no framework ([aprendizados](references/learning.md)).

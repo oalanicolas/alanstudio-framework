@@ -113,7 +113,7 @@ O mínimo no **registro já existente**, sem novo banco de tarefas:
 
 Atualize após resultados relevantes, antes de compactar contexto e ao interromper.
 Reaproveite recibos de `verify`, QA e fontes de continuidade. O arquivo de prompts
-permanece uma receita; não é a fonte de status. Se o host perder a sessão, o arquivo
+permanece uma receita; não é a fonte de status. Se o gauntlet recusa que o arquivo de prompts seja a fonte de status, o `context` nomeia a receita que o gauntlet já recusa. Prompt no disco não é o estado. Sem chave `receita`. Se o host perder a sessão, o arquivo
 não a reinicia sozinho. Retomada automática exige recurso do host solicitado à parte;
 esta capacidade não presume agendamento, delegação nem credenciais externas.
 

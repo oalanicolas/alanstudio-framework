@@ -1028,6 +1028,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("sources_found comprove fila", game.next_scope())
         self.assertNotIn("sources_found comprove fila", game.check_plan_scope())
 
+    def test_continuity_prompt_names_the_recipe_the_gauntlet_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gauntlet.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.gauntlet_refuses_prompt_as_status(guide),
+            "o gauntlet já recusa que o arquivo de prompts seja a fonte de status",
+        )
+        self.assertEqual(game.continuity_prompt_recipe_source(), "references/gauntlet.md")
+        self.package()
+        report = game.context(self.project, "mechanics")
+        item = report["continuity"]["prompt"]
+        self.assertIn(
+            "arquivo de prompts seja a fonte de status",
+            item["scope"],
+            "o prompt copiava a política e calava a recusa",
+        )
+        self.assertIn("(`receita`)", item["scope"])
+        self.assertNotIn("receita", item)
+        self.assertFalse(game.gauntlet_refuses_prompt_as_status(""))
+        with mock.patch.object(game, "continuity_prompt_recipe_source", return_value=None):
+            silent = game.context(self.project, "mechanics")
+        self.assertNotIn(
+            "arquivo de prompts seja a fonte de status",
+            silent["continuity"]["prompt"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a receita que o gauntlet já recusa", guide)
+        self.assertIn("nomeia a receita que o gauntlet já recusa", skill)
+        self.assertIn("nomeia a receita que o gauntlet já recusa", readme)
+        self.assertIn("nomeia a receita que o gauntlet já recusa", recipe)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("arquivo de prompts seja a fonte de status", report["continuity"]["scope"])
+        self.assertNotIn("arquivo de prompts seja a fonte de status", report["scope"])
+        self.assertNotIn("arquivo de prompts seja a fonte de status", report["documentation"]["scope"])
+        self.assertNotIn("arquivo de prompts seja a fonte de status", report["delivery_review"]["scope"])
+        self.assertNotIn("arquivo de prompts seja a fonte de status", game.next_scope())
+
     def test_scan_names_the_aaa_the_memory_already_refuses(self):
         mold = (game.FRAMEWORK / "assets/templates/agents.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -529,7 +529,7 @@ for o pedido ou a convenção do workspace. O evento não cria um jogo nem execu
 auditoria. [Inicialização](references/project-audit.md#inicializar-o-projeto).
 `delivery_review` orienta a conferência do pedido, artefato, prova e continuidade. Se a entrega recusa que templates preenchidos comprovem regras, o `context` nomeia as regras que a entrega já recusa. Critério no disco não é a entrega. Sem chave `regras`.
 O comando `python3 scripts/game.py gauntlet <projeto> --objective "recorte definido"` prepara um prompt de
-continuidade; duração é opcional e preparação não inicia execução.
+continuidade; duração é opcional e preparação não inicia execução. Se o gauntlet recusa que o arquivo de prompts seja a fonte de status, o `context` nomeia a receita que o gauntlet já recusa. Prompt no disco não é o estado. Sem chave `receita`.
 [Continuidade](references/gauntlet.md) · [Revisão de entrega](references/delivery.md).
 
 [Pré-produção](references/preproduction.md): Game Brief → GDD/MDA ↔ protótipo/PoC

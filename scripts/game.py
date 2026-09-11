@@ -6998,6 +6998,43 @@ def continuity_source_scope():
     return scope
 
 
+# O gauntlet já recusa que o arquivo de prompts seja a fonte de status.
+# Sem isto o prompt copiava a política e calava a recusa.
+# Prompt no disco não é o estado.
+GAUNTLET_GUIDE = FRAMEWORK / "references/gauntlet.md"
+GAUNTLET_RECIPE = re.compile(r"permanece uma receita;\s+não é a fonte de status")
+
+
+def gauntlet_refuses_prompt_as_status(text):
+    return bool(text and GAUNTLET_RECIPE.search(text))
+
+
+def continuity_prompt_recipe_source():
+    path = GAUNTLET_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gauntlet_refuses_prompt_as_status(text):
+        return "references/gauntlet.md"
+    return None
+
+
+def continuity_prompt_scope():
+    scope = (
+        "Política e prontidão do prompt de continuidade. Não inicia "
+        "relógio e não registra o estado."
+    )
+    if continuity_prompt_recipe_source():
+        scope += (
+            " O disco recusa que o arquivo de prompts seja a fonte de "
+            "status (`receita`). Prompt no disco não é o estado."
+        )
+    return scope
+
+
 # A guia já recusa preencher o checklist. Sem isto o
 # context apontava o arquivo e calava a recusa.
 # Guia no disco não é observação.
@@ -7351,6 +7388,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
                 "presentation": "Um prompt pronto para copiar, em linguagem comum, preenchido com o próximo recorte real; não exigir gauntlet, skill, comandos ou variáveis do usuário.",
                 "budget": "Opcional, somente se informado na conversa; sem horas, concluir o recorte definido. Retomada preserva prazo já vigente.",
                 "guide": str(FRAMEWORK / "references/gauntlet.md"),
+                "scope": continuity_prompt_scope(),
             },
             "guide": str(FRAMEWORK / "references/process.md") + "#continuidade-e-retomada",
             "before_close": "Atualizar o registro canônico e dizer onde chegamos, uma próxima ação concreta, por que vem primeiro e qual evidência a conclui. Quando esse recorte estiver definido, gerar e apresentar automaticamente seu prompt de continuidade pronto para copiar; sem jargão, variáveis ou pedido de horas. Continuar trabalho já autorizado. Se o objetivo terminou, declarar conclusão sem inventar trabalho.",

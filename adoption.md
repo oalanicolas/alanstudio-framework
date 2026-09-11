@@ -30,6 +30,68 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.479 — o context nomeia a receita que o gauntlet já recusa
+
+O
+gauntlet
+já
+dizia
+que
+o
+arquivo
+de
+prompts
+permanece
+uma
+receita
+e
+não
+é
+a
+fonte
+de
+status.
+O
+prompt
+copiava
+a
+política
+e
+calava
+a
+recusa.
+Agora
+o
+bloco
+nomeia
+a
+receita.
+Prompt
+no
+disco
+não
+é
+o
+estado.
+Sem
+chave
+`receita`.
+Nomear
+não
+observa.
+
+O que 0.9.479 não afirma:
+prompt
+no
+disco
+não
+é
+retomada
+executada
+nem
+partida
+jogada.
+
 ## 0.9.478 — o context nomeia o inventado que a ligação já recusa
 
 A
