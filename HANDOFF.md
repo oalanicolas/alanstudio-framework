@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.376: o `feel` nomeia o sit que a guarda já senta. Pose no disco não é peso percebido. Sem chave `bank`. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.376):** `python3 -m unittest discover -s tests` → pendente (372 esperados).
+**Suítes confirmadas no HEAD (0.9.376):** `python3 -m unittest discover -s tests` → 372 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
