@@ -168,6 +168,40 @@ class HarnessTest(unittest.TestCase):
         self.assertNotIn("verified", report["scope"])
         self.assertNotIn("then.scripts", report.get("then") or {})
 
+    def test_review_names_the_quality_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.preproduction_refuses_document_quality(guide),
+            "o roteiro já recusa que o documento comprove qualidade",
+        )
+        self.assertEqual(game.review_item_quality_source(), "references/preproduction.md")
+        self.package()
+        report = game.review(self.root)
+        self.assertTrue(report["projects"], "o review já devolve projetos neste laboratório")
+        item = report["projects"][0]
+        self.assertIn(
+            "documento comprove qualidade",
+            item["scope"],
+            "o item copiava a conta e calava a recusa",
+        )
+        self.assertIn("(`qualidade`)", item["scope"])
+        self.assertNotIn("qualidade", item)
+        self.assertFalse(game.preproduction_refuses_document_quality(""))
+        with mock.patch.object(game, "review_item_quality_source", return_value=None):
+            silent = game.review(self.root)
+        self.assertNotIn("documento comprove qualidade", silent["projects"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a qualidade que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a qualidade que o roteiro já recusa", skill)
+        self.assertIn("nomeia a qualidade que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("documento comprove qualidade", report["scope"])
+        self.assertNotIn("documento comprove qualidade", game.next_scope())
+        self.assertNotIn("documento comprove qualidade", game.documentation_scope(True))
+        self.assertNotIn("documento comprove qualidade", game.scan(self.project)["scope"])
+
     def test_the_review_names_the_signals_next_uses_without_choosing(self):
         fresh = self.root / "ainda-nao-jogou"
         game.init(fresh, "canvas-arcade", documents=False)

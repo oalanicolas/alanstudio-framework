@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.437 — o discover nomeia a qualidade que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+a
+existência
+de
+documentos
+não
+comprova
+qualidade.
+O
+item
+copiava
+a
+conta
+e
+calava
+a
+recusa.
+Agora
+o
+`discover`
+nomeia
+a
+qualidade.
+Conta
+no
+disco
+não
+é
+acabamento.
+Sem
+chave
+`qualidade`.
+Nomear
+não
+observa.
+
+O que 0.9.437 não afirma:
+conta
+no
+disco
+não
+é
+acabamento
+nem
+jogo
+aprovado.
+
 ## 0.9.436 — o scan nomeia as pessoas que o roteiro já recusa
 
 O

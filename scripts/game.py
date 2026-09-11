@@ -574,7 +574,7 @@ def review(root, limit=REVIEW_LIMIT):
         try:
             found = scan(path)
         except (OSError, ValueError) as error:
-            reviewed.append(dict(entry, unreadable=str(error)))
+            reviewed.append(dict(entry, unreadable=str(error), scope=review_item_scope()))
             continue
         areas = found["areas"]
         located = [key for key, area in areas.items() if area["status"] == "candidate_found"]
@@ -652,6 +652,7 @@ def review(root, limit=REVIEW_LIMIT):
             playtest_expected=playtest_report["expected"],
             playtest_structured=playtest_report["structured"],
             signals=signals,
+            scope=review_item_scope(),
         ))
     return {
         "schema_version": 1,
@@ -712,6 +713,42 @@ def _review_scope(projects):
         scope += (
             " O disco declara os scripts (`scripts`). "
             "Lista no disco não é passo executado."
+        )
+    return scope
+
+
+# O roteiro já recusa que o documento comprove qualidade. Sem isto o
+# item do review copiava a conta e calava a recusa.
+# Conta no disco não é acabamento.
+PREPRODUCTION_QUALITY = re.compile(r"não comprova qualidade")
+
+
+def preproduction_refuses_document_quality(text):
+    return bool(text and PREPRODUCTION_QUALITY.search(text))
+
+
+def review_item_quality_source():
+    path = FRAMEWORK / "references/preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if preproduction_refuses_document_quality(text):
+        return "references/preproduction.md"
+    return None
+
+
+def review_item_scope():
+    scope = (
+        "Conta deste jogo. Não mede acabamento e não "
+        "aprova o documento."
+    )
+    if review_item_quality_source():
+        scope += (
+            " O disco recusa que o documento comprove qualidade (`qualidade`). "
+            "Conta no disco não é acabamento."
         )
     return scope
 
