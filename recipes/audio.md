@@ -60,7 +60,7 @@ som que o catálogo lista e o disco perdeu. `sfx verify`
 nomeia o som que o catálogo lista e o disco perdeu —
 não despeja errno. Tocar nessa
 página não é mix ouvida no jogo. Isso não
-autoriza improvisar licença. Arquivo no disco não é mix ouvido. Crescer o acervo é `sfx import ARQUIVO
+autoriza improvisar licença. Se a receita recusa improvisar licença, o `sfx import` nomeia a improvisação que a receita já recusa. Importar no disco não é licença. Sem chave `improvisar`. Arquivo no disco não é mix ouvido. Crescer o acervo é `sfx import ARQUIVO
 --metadata JSON` (ffmpeg) ou `sfx seed` com `selection.json` local.
 `sfx info ID` lê a ficha do acervo ou a chave do stem do starter —
 o recibo que lista um stem e o disco perdeu não é id desconhecido;

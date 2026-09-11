@@ -3,6 +3,60 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.464 — o sfx import nomeia a improvisação que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+tocar
+na
+página
+não
+autoriza
+improvisar
+licença.
+O
+import
+copiava
+a
+conta
+e
+calava
+a
+recusa.
+Agora
+o
+`sfx import`
+nomeia
+a
+improvisação.
+Importar
+no
+disco
+não
+é
+licença.
+Sem
+chave
+`improvisar`.
+Nomear
+não
+ouve.
+
+O que 0.9.464 não afirma:
+importar
+no
+disco
+não
+é
+mix
+ouvida
+nem
+licença
+válida.
+
 ## 0.9.463 — o conflicts do bar nomeia a precedência que a barra já recusa
 
 A

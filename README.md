@@ -586,6 +586,7 @@ python3 scripts/game.py sfx info passo-madeira-01 --root /caminho/do/laboratorio
 python3 scripts/game.py sfx export passo-madeira-01 --to /caminho/do/jogo/public/audio --root /caminho/do/laboratorio
 ```
 
+Se a receita recusa improvisar licença, o `sfx import` nomeia a improvisação que a receita já recusa. Importar no disco não é licença. Sem chave `improvisar`.
 `sfx import` exige ffmpeg e um JSON com id, título, categoria, estilo,
 tags, processamento e fontes (licença CC0 ou CC-BY). `sfx seed` lê
 `shared/sfx/selection.json` com `local_path` já no disco. Sem seleção,

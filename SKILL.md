@@ -98,7 +98,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    nomeia o som que o catálogo lista e o disco perdeu —
    não despeja errno. Tocar nessa
    página não é mix ouvida no jogo. Arquivo no disco não é mix ouvido. Crescer o acervo é
-   `sfx import ARQUIVO --metadata JSON` (ffmpeg); `sfx seed` lê
+   `sfx import ARQUIVO --metadata JSON` (ffmpeg); se a receita recusa improvisar licença, o `sfx import` nomeia a improvisação que a receita já recusa. Importar no disco não é licença. Sem chave `improvisar`. `sfx seed` lê
    `selection.json` local. `sfx info ID` lê a ficha do acervo ou a
    chave do stem do starter — o recibo que lista um stem e o
    disco perdeu não é id desconhecido; se o inspect já mediu o pico, o `sfx info` nomeia o pico que o inspect já mede.

@@ -1,6 +1,7 @@
 import copy
 import hashlib
 import importlib.util
+import inspect
 from html.parser import HTMLParser
 import json
 from pathlib import Path
@@ -5503,6 +5504,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         catalog = json.loads((self.root / "shared/sfx/catalog.json").read_text(encoding="utf-8"))
         self.assertEqual(catalog["sounds"][0]["id"], "passo-madeira-01")
         self.assertTrue((self.root / "shared/sfx" / catalog["sounds"][0]["file"]).is_file())
+
+    def test_sfx_import_names_the_improvisation_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_improvised_license(recipe),
+            "a receita já recusa improvisar licença",
+        )
+        self.assertEqual(game.sfx_catalog.import_license_source(), "recipes/audio.md")
+        fake = {
+            "sample_rate": 44100, "duration": 0.2, "channels": 1,
+            "codec": "pcm_s16le", "bits_per_sample": 16, "bit_rate": 705600,
+            "peak_dbfs": -6, "rms_dbfs": -18, "waveform": [0], "warnings": [],
+        }
+        original = game.sfx_catalog.audio.inspect_audio
+        game.sfx_catalog.audio.inspect_audio = lambda path: fake
+        self.addCleanup(lambda: setattr(game.sfx_catalog.audio, "inspect_audio", original))
+        source = self.root / "passo.wav"
+        source.write_bytes(b"RIFF" + b"\x00" * 24)
+        meta_path = self.root / "passo.json"
+        meta_path.write_text(json.dumps({
+            "id": "passo-madeira-01",
+            "title": "Passo em madeira",
+            "category": "Passos",
+            "tags": ["pé", "madeira"],
+            "style": "recorded",
+            "processing": "Corte do original; sem conversão adicional.",
+            "sources": [{
+                "title": "Original Footstep",
+                "author": "Autora",
+                "url": "https://example.com/source",
+                "license": "CC-BY-4.0",
+            }],
+        }), encoding="utf-8")
+        report = game.sfx_catalog.import_entry(source, meta_path, self.root)
+        self.assertEqual(report["added"], 1)
+        self.assertIn(
+            "improvisar licença",
+            report["scope"],
+            "o import copiava a conta e calava a recusa",
+        )
+        self.assertIn("(`improvisar`)", report["scope"])
+        self.assertNotIn("improvisar", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_improvised_license(""))
+        self.assertNotIn("improvisar licença", report["next"])
+        with mock.patch.object(game.sfx_catalog, "import_license_source", return_value=None):
+            silent = game.sfx_catalog.import_entry(source, meta_path, self.root)
+        self.assertNotIn("improvisar licença", silent["scope"])
+        self.assertNotIn("import_license_scope", inspect.getsource(game.sfx_catalog.seed_catalog))
+        self.assertNotIn("improvisar licença", game.sfx_catalog.IMPORT_NEXT)
+        feel = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a improvisação que a receita já recusa", feel)
+        self.assertIn("nomeia a improvisação que a receita já recusa", skill)
+        self.assertIn("nomeia a improvisação que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        summary = game.sfx_catalog.summarize(self.root)
+        self.assertNotIn("improvisar licença", summary.get("scope") or "")
 
     def test_sfx_import_rejects_retro_before_writing_the_catalog(self):
         source = self.root / "bleep.wav"
