@@ -5,8 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.416: o `audit` nomeia o daemon que o roteiro já recusa. Roteiro no disco não é interceptação. Sem chave `daemon`. Nomear não escreve.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**HEAD anterior + confirmação pendente:** `python3 -m unittest discover -s tests` → 411 OK no 0.9.415.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK. Esperado no 0.9.416: 412 / 509.
+**Suítes confirmadas no HEAD (0.9.416):** `python3 -m unittest discover -s tests` → 412 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
