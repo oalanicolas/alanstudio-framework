@@ -784,6 +784,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("preencher o checklist", game.next_step(self.project)["scope"])
         self.assertNotIn("preencher o checklist", game.scan(self.project)["agent_context"]["scope"])
 
+    def test_context_names_the_promotion_the_bar_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.bar_guide_refuses_promote(guide),
+            "a barra já recusa promover o degrau",
+        )
+        self.assertEqual(game.production_bar_promote_source(), "references/production-bar.md")
+        report = game.context(self.project, "create")
+        self.assertEqual(report["production_bar"]["guide"], str(game.FRAMEWORK / "references/production-bar.md"))
+        self.assertIn(
+            "promover o degrau",
+            report["production_bar"]["scope"],
+            "o context apontava a guia e calava a recusa",
+        )
+        self.assertIn("(`promove`)", report["production_bar"]["scope"])
+        self.assertNotIn("promove", report["production_bar"])
+        self.assertFalse(report["production_bar"]["assessed"])
+        self.assertFalse(game.bar_guide_refuses_promote(""))
+        with mock.patch.object(game, "production_bar_promote_source", return_value=None):
+            silent = game.context(self.project, "create")
+        self.assertNotIn("promover o degrau", silent["production_bar"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a promoção que a barra já recusa", recipe)
+        self.assertIn("nomeia a promoção que a barra já recusa", skill)
+        self.assertIn("nomeia a promoção que a barra já recusa", readme)
+        self.assertNotIn("verified", report["production_bar"]["scope"])
+        self.assertNotIn("promover o degrau", game.bar_reading(self.project)["scope"])
+        self.assertNotIn("promover o degrau", report["finish"]["scope"])
+        self.assertNotIn("promover o degrau", game.next_step(self.project)["scope"])
+        self.assertNotIn("promover o degrau", report["documentation"]["scope"])
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

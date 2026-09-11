@@ -878,7 +878,7 @@ harness não reivindica tê-los produzido.
 
 A barra de acabamento descreve o que observar; ela não observa. Nenhum comando
 promove um jogo a um degrau, e cumprir todos os critérios não garante que o jogo
-interesse a alguém — acabamento é condição necessária, não suficiente.
+interesse a alguém — acabamento é condição necessária, não suficiente. Se a barra recusa promover o degrau, o `context` nomeia a promoção que a barra já recusa. Guia no disco não é acabamento. Sem chave `promove`.
 
 Os oito frameworks externos foram estudados em recortes; seus testes não foram
 executados. Os conceitos são adaptações desses estudos, não garantias universais.

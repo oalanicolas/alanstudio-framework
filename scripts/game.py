@@ -4348,6 +4348,45 @@ def bar_reading(project):
     }
 
 
+# A barra já recusa promover o degrau. Sem isto o
+# context apontava a guia e calava a recusa.
+# Guia no disco não é acabamento.
+BAR_GUIDE = FRAMEWORK / "references/production-bar.md"
+BAR_PROMOTE = re.compile(r"Nenhum comando promove um jogo a um degrau")
+
+
+def bar_guide_refuses_promote(text):
+    return bool(text and BAR_PROMOTE.search(text))
+
+
+def production_bar_promote_source():
+    path = BAR_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_guide_refuses_promote(text):
+        return "references/production-bar.md"
+    return None
+
+
+def production_bar_scope():
+    scope = (
+        "Seleção das dimensões pertinentes ao foco e à etapa, mais o degrau que o próprio projeto declara "
+        "nos documentos listados em `declaration.sources`. O harness lê a declaração e confere só a forma "
+        "dela: não atribui degrau, não mede acabamento e não aprova entrega. Declarar um degrau exige "
+        "observação com condição, evidência e autor — a tabela é a afirmação, não a prova."
+    )
+    if production_bar_promote_source():
+        scope += (
+            " O disco recusa promover o degrau (`promove`). "
+            "Guia no disco não é acabamento."
+        )
+    return scope
+
+
 def production_bar(focus, stage=None, project=None):
     dimensions = FOCUS_DIMENSIONS.get(focus, ())
     declaration = bar_declaration(project) if project is not None else None
@@ -4367,12 +4406,7 @@ def production_bar(focus, stage=None, project=None):
         "declaration": declaration,
         "observed": None,
         "assessed": False,
-        "scope": (
-            "Seleção das dimensões pertinentes ao foco e à etapa, mais o degrau que o próprio projeto declara "
-            "nos documentos listados em `declaration.sources`. O harness lê a declaração e confere só a forma "
-            "dela: não atribui degrau, não mede acabamento e não aprova entrega. Declarar um degrau exige "
-            "observação com condição, evidência e autor — a tabela é a afirmação, não a prova."
-        ),
+        "scope": production_bar_scope(),
     }
 
 

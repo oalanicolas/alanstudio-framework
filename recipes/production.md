@@ -8,7 +8,7 @@ receita; `--stage production-plan` e `--stage milestone` também a incluem.
 Saída: plano de produção com marcos, orçamentos, pipeline de conteúdo e riscos no
 documento canônico do jogo, e revisões de marco com evidência ligada. O harness
 localiza o plano como fonte de continuidade; não mede orçamentos, não promove marcos
-nem certifica acabamento.
+nem certifica acabamento. Se a barra recusa promover o degrau, o `context` nomeia a promoção que a barra já recusa. Guia no disco não é acabamento. Sem chave `promove`.
 
 “AAA” aqui não é orçamento nem tamanho de equipe. É um **padrão de acabamento
 observável**: cada disciplina atinge o piso definido no plano, medido na plataforma

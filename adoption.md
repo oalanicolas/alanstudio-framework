@@ -3,6 +3,58 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.405 — o context nomeia a promoção que a barra já recusa
+
+A
+guia
+já
+dizia
+que
+nenhum
+comando
+promove
+um
+degrau.
+O
+comando
+apontava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`context`
+nomeia
+a
+promoção.
+Guia
+no
+disco
+não
+é
+acabamento.
+Sem
+chave
+`promove`.
+Nomear
+não
+observa.
+
+O que 0.9.405 não afirma:
+guia
+no
+disco
+não
+é
+acabamento
+observado
+nem
+degrau
+atribuído.
+
 ## 0.9.404 — o context nomeia o checklist que a guia já recusa preencher
 
 A
