@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.336: o `playtest` nomeia a conta do last-run. Não promove `outsider`.
+**HEAD:** ver `git log -1` — vigente 0.9.337: o `start` nomeia `npm install` sem instalar. Não promove `executed`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.336):** `python3 -m unittest discover -s tests` → 333.
+**Testes no HEAD (0.9.337):** `python3 -m unittest discover -s tests` → 334.
 `cd assets/starters/canvas-arcade && npm test` → 504.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.336)
+## O que o HEAD já entrega (0.9.91–0.9.337)
 
 | Ver | Salto |
 | --- | --- |
@@ -280,6 +280,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.334 | O sidecar sem origem, autor e licença não declara. O JSON já exigia os três campos; o arquivo ao lado declarava só por existir. CREDITS.md pela menção continua. Não promove `granted`. |
 | 0.9.335 | O `feel` nomeia o peso do passo. O CONFIG já declarava `player.speed` e o avanço; o comando lia perdão e rumble e calava o passo. `halfWidth` continua de fora. Não promove `felt`. |
 | 0.9.336 | O `playtest` nomeia a conta do last-run. A faixa e o recibo já tinham pontos e verbos; o leitor nomeava curva e origem e calava a conta. `dashes` e `ticks` ficam de fora. Não promove `outsider`. |
+| 0.9.337 | O `start` nomeia `npm install` quando `node_modules` falta. O play mandava o serve e o disco ainda não tinha módulos. `play` continua `npm run serve`. O `feel` não ganha a chave. Nomear não instala. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -547,7 +548,10 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   A frase não muda o verbo. Sem frase a linha some.
 - `CRAFT_EXAMPLES` ordem: pair → look → table → sfx. Look e chuva do
   exemplo compartilham o nome `noite`.
-- `play` após `start` é `cd … && npm run serve`. Não há `npm install`.
+- `play` após `start` é `cd … && npm run serve`. Se
+  `node_modules` falta, `then.install` nomeia
+  `cd … && npm install`. Nomear não instala. Não
+  dobrar o install no `play`. O `feel` não ganha a chave.
 - `start` não planta os rascunhos (`documents=False`). CLI `--docs`
   opta; `--no-docs` permanece e é o padrão. `init` continua
   plantando. `--idea` entra em `data/copy.json`; brief só com `--docs`.
@@ -1154,6 +1158,7 @@ aviso de save na porta. **Não** mais resume do contexto.
 **Não** mais um sidecar que declara só por existir.
 **Não** mais um `feel` que cala o peso do passo que o CONFIG já declara.
 **Não** mais um `playtest` que cala a conta que o last-run já conta.
+**Não** mais um `start` que manda o serve e cala o `npm install`.
 
 Candidatos, do que ainda dói:
 
@@ -1178,7 +1183,10 @@ Candidatos, do que ainda dói:
    starter declara. Com `--idea` ou `copy.json`, o prompt nomeia
    `Fantasia:` antes de `Verbo:`. A frase não muda o verbo.
    `init_scope` só afirma rascunhos quando `documents` é verdadeiro;
-   o `start` embute esse recibo.    Os dois escrevem `AGENTS.md` com
+   o `start` embute esse recibo. Se o play pede npm e
+   `node_modules` falta, `then.install` nomeia
+   `npm install`. Nomear não instala. `play` continua
+   o serve.    Os dois escrevem `AGENTS.md` com
    o serve, o `note` e o `playtest`; sem rascunhos a memória não
    lista GDD. O `playtest` só lê. Sem os quatro não é achado.
    Nomear o leitor não observa. `template agents`
@@ -1295,6 +1303,10 @@ Candidatos, do que ainda dói:
    do convite (irmão, não o
    próximo salto). Não incluir
    `dashes` nem `ticks` na conta.
+   O `start` já nomeia `npm install`
+   — não dobrar no `play` (irmão,
+   não o próximo salto). O `feel`
+   não ganha `then.install`.
 5. **Outsider / pacing / a11y real / feel no dispositivo:** não
    promover. Convite, LAN, stub, `gameSpeed` no disco, tinta
    estável no disco, pulso no disco, chuva no disco, estilhaço dusk no disco, intenção warmer no
@@ -2338,12 +2350,12 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`playtest` nomeia a conta do
-last-run. A faixa e o recibo já
-tinham pontos e verbos; o leitor
-nomeava curva e origem e calava a
-conta. `dashes` e `ticks` ficam de
-fora. Não promove `outsider`.
+`start` nomeia `npm install` quando
+`node_modules` falta. O play
+mandava o serve e o disco ainda
+não tinha módulos. `play` continua
+`npm run serve`. O `feel` não
+ganha a chave. Nomear não instala.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2415,8 +2427,11 @@ A família região viva que cala a mesa e o look do fim está saturada.
 A família sidecar que declara só por existir está saturada.
 A família feel que cala o peso do passo que o CONFIG já declara está saturada.
 A família playtest que cala a conta que o last-run já conta está saturada.
+A família start que manda o serve e cala o npm install está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
 Não incluir `dashes` nem `ticks` na conta.
+Não dobrar o install no `play`.
+Não adicionar `then.install` ao `feel`.
 CREDITS.md pela menção ainda declara — irmão de 334.

@@ -5161,6 +5161,42 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("criou rascunhos", report["init"]["scope"])
         self.assertNotIn("draft_only", report["init"]["scope"])
 
+    def test_start_names_npm_install_without_installing(self):
+        destination = self.root / "sem-modulos"
+        report = game.start_project(destination, "canvas-arcade", idea="atravessar estilhaços")
+        self.assertTrue(report["created"])
+        self.assertFalse((destination / "node_modules").exists())
+        self.assertIn("npm install", report["then"]["install"])
+        self.assertIn(str(destination), report["then"]["install"])
+        self.assertNotIn("npm install", report["play"])
+        self.assertIn("npm run serve", report["play"])
+        self.assertEqual(report["then"]["play"], report["play"])
+        self.assertIn(report["then"]["install"], report["prompt"])
+        self.assertLess(
+            report["prompt"].index(report["then"]["install"]),
+            report["prompt"].index(report["play"]),
+        )
+        self.assertFalse(report["executed"])
+        self.assertIn("then.install", report["scope"])
+        self.assertIn("Nomear não instala", report["scope"])
+        memory = (destination / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertIn("npm install", memory)
+        self.assertIn("Nomear não instala", memory)
+        self.assertIn("npm run serve", memory)
+        feel = game.feel_reading(destination)
+        self.assertNotIn("install", feel["then"])
+        self.assertIn("serve", feel["then"]["play"])
+        (destination / "node_modules").mkdir()
+        dressed = game.start_project(destination, "canvas-arcade")
+        self.assertFalse(dressed["created"])
+        self.assertNotIn("install", dressed["then"])
+        self.assertNotIn("npm install", dressed["prompt"])
+        self.assertIn("npm run serve", dressed["play"])
+        self.assertFalse(dressed["executed"])
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("then.install", recipe)
+        self.assertNotIn("aprovado", report["scope"])
+
     def test_context_defers_audit_on_fresh_start_until_after_first_play(self):
         destination = self.root / "ideia-fresca"
         game.start_project(destination, "canvas-arcade", idea="guardar a corrente")

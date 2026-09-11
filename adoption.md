@@ -3,6 +3,44 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.337 — o start nomeia npm install sem instalar
+
+O
+play
+mandava
+o
+serve
+e
+o
+disco
+ainda
+não
+tinha
+módulos.
+Agora
+`then.install`
+nomeia
+`npm install`.
+`play`
+continua
+`npm run serve`.
+O
+`feel`
+não
+ganha
+a
+chave.
+Nomear
+não
+instala.
+
+O que 0.9.337 não afirma:
+o
+harness
+não
+roda
+`npm install`.
+
 ## 0.9.336 — o playtest nomeia a conta do last-run
 
 A

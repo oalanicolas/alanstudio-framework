@@ -3522,6 +3522,21 @@ def play_command(project, scripts, manager):
     return f"cd {shlex.quote(str(project))} && {body}"
 
 
+def install_command(project, play=None):
+    # O play pede npm. Sem isto o start mandava o serve
+    # e o disco ainda não tinha módulos. Nomear não instala.
+    if not isinstance(play, str) or not re.search(r"\bnpm\b", play):
+        return None
+    root = Path(project)
+    package = root / "package.json"
+    modules = root / "node_modules"
+    if not package.is_file() or package.is_symlink():
+        return None
+    if modules.is_dir() and not modules.is_symlink():
+        return None
+    return f"cd {shlex.quote(str(root))} && npm install"
+
+
 # A superfície pedida, não a que o sistema abriu. PORT=0 e listen
 # dinâmico continuam no banner do serve. Nomear não serve.
 DEFAULT_SERVE_PORT = 8080
@@ -3720,6 +3735,9 @@ def cycle_then(project, play, starter=None):
     if href:
         then["seed"] = href
         then["invite"] = invite_href(project)
+    install = install_command(project, play)
+    if install:
+        then["install"] = install
     return then
 
 
@@ -3792,8 +3810,14 @@ def cycle_prompt(play, then, cycle, noted=False, url=None, runtime=None, fantasy
     how = cycle_line(cycle, fantasy)
     extra = " ".join(part for part in (seed_line, invite_line) if part)
     surface = f"Abra {url} no navegador — file:// não carrega. " if url else ""
+    modules = (
+        f"As dependências ainda não estão no disco. Cole e rode: {then['install']}. "
+        if then.get("install")
+        else ""
+    )
     return (
         hole
+        + modules
         + f"O jogo não foi aberto. Cole e rode: {play}. "
         + simulated
         + surface
@@ -4142,6 +4166,9 @@ def agents_memory_text(destination, play=None, starter=None, documents=False, id
         "",
     ]
     if nonempty(play):
+        install = install_command(destination, play)
+        if install:
+            lines.append(f"- Antes de rodar: `{install}`. Nomear não instala.")
         lines.append(f"- Rodar o jogo: `{play}`.")
         if nonempty(url):
             lines.append(f"- Superfície: {url}. Nomear não serve.")
@@ -4468,7 +4495,9 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "tem last-run com seed, `then` aponta a seed e o convite; "
             "nomear o endereço não observa. Ferramenta "
             "no disco não é alguém de fora nem mix ouvido. Não "
-            "instala dependências e não avalia a proposta. `--idea` entra na "
+            "instala dependências e não avalia a proposta. Se o play pede "
+            "npm e `node_modules` falta, `then.install` nomeia `npm install`. "
+            "Nomear não instala. `--idea` entra na "
             "abertura se houver `data/copy.json` e o prompt nomeia `Fantasia:` "
             "à parte de `Verbo:`. O brief só nasce com `--docs`; "
             "sem ele o `start` não planta rascunhos. A frase na tela não "
@@ -4532,7 +4561,9 @@ def play_cycle(destination=None, starter=None):
             "Se o disco tem last-run com seed, `then` aponta a seed e o "
             "convite; nomear o endereço não observa. `session` aponta a "
             "partida simulada se o manifesto a declara; o prompt a nomeia. "
-            "Não executa e não observa. `runtime` lê o `node` "
+            "Não executa e não observa. Se o play pede npm e "
+            "`node_modules` falta, `then.install` nomeia `npm install`. "
+            "Nomear não instala. `runtime` lê o `node` "
             "do PATH se o play pede npm ou node; não executa o serve. "
             "O `prompt` também "
             "sai em stderr; o JSON fica no stdout. `executed` fica falso."
@@ -4779,7 +4810,9 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
             "do framework, o mapa usa esse caminho. Não cria o projeto, "
             "não abre o jogo e não avalia a proposta. `session` aponta a "
             "partida simulada se o manifesto a declara; o prompt a nomeia. "
-            "Não executa e não observa. `runtime` lê o `node` "
+            "Não executa e não observa. Se o play pede npm e "
+            "`node_modules` falta, `then.install` nomeia `npm install`. "
+            "Nomear não instala. `runtime` lê o `node` "
             "do PATH se o play pede npm ou node; não executa o serve. "
             "Passos 2 e 3 "
             "permanecem `executed` falsos mesmo quando o destino já existe."
