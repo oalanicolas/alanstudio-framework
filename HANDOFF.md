@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.374: o `access` nomeia a legenda que a porta já lê. Texto no disco não é sessão. Sem chave `caption`. Não promove `verified`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.373):** `python3 -m unittest discover -s tests` → 369 OK.
+**Suítes confirmadas no HEAD (0.9.374):** `python3 -m unittest discover -s tests` → 370 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
