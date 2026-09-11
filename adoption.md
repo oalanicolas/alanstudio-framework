@@ -3,6 +3,61 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.390 — o bar nomeia o mínimo que a barra já declara
+
+A
+prosa
+já
+dizia
+que
+o
+degrau
+percebido
+é
+o
+mínimo.
+O
+comando
+lia
+a
+tabela
+e
+calava
+a
+regra.
+Agora
+o
+`bar`
+nomeia
+o
+mínimo.
+Degrau
+no
+disco
+não
+é
+acabamento
+observado.
+Sem
+chave
+`mínimo`.
+Não
+promove
+`assessed`.
+
+O que 0.9.390 não afirma:
+tabela
+no
+disco
+não
+é
+acabamento
+observado
+nem
+média
+de
+dimensões.
+
 ## 0.9.389 — o sfx export nomeia o processamento que o export já recusa
 
 O

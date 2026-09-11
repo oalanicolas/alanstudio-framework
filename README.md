@@ -258,7 +258,7 @@ uma tabela com uma linha por dimensão: degrau atual, degrau seguinte e o crité
 que falta. É o formato que o [README do
 starter](assets/starters/canvas-arcade/README.md) já usa. O comando devolve o
 piso, quais dimensões estão nele e o degrau percebido — este último **só** quando
-as dez tiverem linha, porque dimensão não declarada não é dimensão alta.
+as dez tiverem linha, porque dimensão não declarada não é dimensão alta. Se a prosa declara o mínimo, o `bar` nomeia o mínimo que a barra já declara. Degrau no disco não é acabamento observado. Sem chave `mínimo`.
 
 Ele confere a forma da declaração, não o jogo, e relata em `problems` o que
 encontra com arquivo, linha e motivo: dimensão fora das dez (o caso típico é erro

@@ -31,7 +31,7 @@ Este framework usa três vocabulários que não se substituem, e esta receita li
 - **A [barra de acabamento](../references/production-bar.md)** responde *quão longe
   cada dimensão de ofício foi levada* — dez dimensões, cinco degraus, e o degrau
   percebido é o mínimo entre elas. `bar <projeto>` lê a declaração; `next` propõe subir
-  a dimensão mais baixa.
+  a dimensão mais baixa. Se a prosa declara o mínimo, o `bar` nomeia o mínimo que a barra já declara. Degrau no disco não é acabamento observado. Sem chave `mínimo`.
 - **Os [gates](../references/gates.md)** respondem *o que ainda não pode passar* — dez
   recusas por etapa do ciclo, com critérios `met`/`unmet`/`waived`. `gate <projeto>` lê.
 

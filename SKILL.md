@@ -151,7 +151,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    a média — antes de melhorar o que já está alto, procure o que está baixo
    ([barra de acabamento](references/production-bar.md)). Declare em tabela, uma linha
    por dimensão, com degrau atual, seguinte e o critério que falta; `bar <projeto>` lê
-   e diz o piso, `next` propõe subir a dimensão pelo nome. Nenhum comando atribui
+   e diz o piso, `next` propõe subir a dimensão pelo nome. Se a prosa declara o mínimo, o `bar` nomeia o mínimo que a barra já declara. Degrau no disco não é acabamento observado. Sem chave `mínimo`. Nenhum comando atribui
    degrau; ao declarar um, declare dispositivo, versão, cena e quem observou.
    **A barra descreve, o gate recusa.** [Os dez gates](references/gates.md) formalizam
    as linhas “Pronto para…” do ciclo: ao pedir a próxima permissão, declare uma linha

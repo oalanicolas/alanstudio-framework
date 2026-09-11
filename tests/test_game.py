@@ -1975,6 +1975,29 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             handle.write(f"{header}\n| Dimensão | Degrau | Seguinte |\n| --- | --- | --- |\n" + "\n".join(rows) + "\n")
         return document
 
+    def test_bar_names_the_floor_the_bar_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        prose = (starter / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(game.bar_declares_floor(prose), "a prosa já declara o mínimo")
+        self.assertEqual(game.bar_floor_source(starter), "README.md")
+        report = game.bar_reading(starter)
+        self.assertIn("declara o mínimo", report["scope"], "o bar lia a tabela e calava a regra")
+        self.assertIn("(`mínimo`)", report["scope"])
+        self.assertFalse(report["assessed"])
+        self.assertNotIn("mínimo", report)
+        self.assertFalse(game.bar_declares_floor(""))
+        self.assertIsNone(game.bar_floor_source(self.root / "sem-barra"))
+        silent = game.bar_reading(self.root / "sem-barra")
+        self.assertNotIn("declara o mínimo", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o mínimo que a barra já declara", recipe)
+        self.assertIn("nomeia o mínimo que a barra já declara", skill)
+        self.assertIn("nomeia o mínimo que a barra já declara", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+
     def test_bar_reads_the_tier_the_project_declares_and_never_assigns_one(self):
         self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS} | {"pacing": ("playable", "slice")})
         report = game.bar_reading(self.project)

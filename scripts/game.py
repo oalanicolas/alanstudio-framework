@@ -699,6 +699,31 @@ def studies_for(focus, studies_root):
 # formato canônico deste framework e a tabela já existia lá escrita à mão.
 BAR_ROW = re.compile(r"^\|\s*`(\w+)`\s*\|\s*`(\w+)`\s*\|\s*(?:`(\w+)`\s*:)?\s*(.*?)\s*\|\s*$")
 BAR_SOURCES = ("README.md", "docs/qa.md", "docs/devlog.md", "docs/gdd.md", "docs/art-bible.md")
+# A prosa já declara o mínimo. Sem isto o
+# bar lia a tabela e calava a regra.
+# Degrau no disco não é acabamento observado.
+BAR_FLOOR_MARK = re.compile(r"mínimo entre", re.IGNORECASE)
+
+
+def bar_declares_floor(text):
+    return bool(text and BAR_FLOOR_MARK.search(text))
+
+
+def bar_floor_source(project):
+    project = Path(project)
+    for name in BAR_SOURCES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            if path.stat().st_size > 400_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if bar_declares_floor(text):
+            return name
+    return None
 
 
 def bar_declaration(project):
@@ -4113,6 +4138,22 @@ def origins_declare(project, relative, origin, author, license_name):
     }
 
 
+def _bar_scope(project):
+    scope = (
+        "Lê a declaração do próprio projeto e confere só a forma dela, relatando em `problems`: dimensão "
+        "fora das dez, degrau fora dos cinco e alvo que não é o degrau imediatamente seguinte. Não observa "
+        "o jogo, não mede nada e não corrige a declaração — uma tabela bem formada e otimista sai daqui "
+        "intacta, porque o degrau é afirmação de quem escreveu. `perceived_tier` só aparece quando as dez "
+        "dimensões têm linha, porque dimensão não declarada não é dimensão alta."
+    )
+    if bar_floor_source(project):
+        scope += (
+            " O disco declara o mínimo (`mínimo`). "
+            "Degrau no disco não é acabamento observado."
+        )
+    return scope
+
+
 def bar_reading(project):
     declaration = bar_declaration(project)
     declared = declaration["declared"]
@@ -4139,13 +4180,7 @@ def bar_reading(project):
         "guide": str(FRAMEWORK / "references/production-bar.md"),
         "sources": declaration["sources"],
         "assessed": False,
-        "scope": (
-            "Lê a declaração do próprio projeto e confere só a forma dela, relatando em `problems`: dimensão "
-            "fora das dez, degrau fora dos cinco e alvo que não é o degrau imediatamente seguinte. Não observa "
-            "o jogo, não mede nada e não corrige a declaração — uma tabela bem formada e otimista sai daqui "
-            "intacta, porque o degrau é afirmação de quem escreveu. `perceived_tier` só aparece quando as dez "
-            "dimensões têm linha, porque dimensão não declarada não é dimensão alta."
-        ),
+        "scope": _bar_scope(project),
     }
 
 
