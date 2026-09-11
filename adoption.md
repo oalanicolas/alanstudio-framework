@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.417 — o context nomeia o progresso que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+`--stage`
+só
+seleciona
+contexto,
+não
+certifica
+progresso.
+O
+comando
+escolhia
+o
+recorte
+e
+calava
+a
+recusa.
+Agora
+o
+`context`
+nomeia
+o
+progresso.
+Contexto
+no
+disco
+não
+é
+degrau.
+Sem
+chave
+`progresso`.
+Nomear
+não
+observa.
+
+O que 0.9.417 não afirma:
+contexto
+no
+disco
+não
+é
+degrau
+nem
+avanço
+observado.
+
 ## 0.9.416 — o audit nomeia o daemon que o roteiro já recusa
 
 O

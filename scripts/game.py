@@ -5124,6 +5124,42 @@ def finish_scope():
     return scope
 
 
+# O processo já recusa que a etapa certifique o progresso. Sem isto o
+# context selecionava o recorte e calava a recusa.
+# Contexto no disco não é degrau.
+PROCESS_PROGRESS = re.compile(r"não certifica progresso")
+
+
+def process_refuses_stage_progress(text):
+    return bool(text and PROCESS_PROGRESS.search(text))
+
+
+def context_progress_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_stage_progress(text):
+        return "references/process.md"
+    return None
+
+
+def context_scope():
+    scope = (
+        "Seleciona leituras do framework para o foco e a etapa. "
+        "Não executa o jogo e não escreve documentos."
+    )
+    if context_progress_source():
+        scope += (
+            " O disco recusa que a etapa certifique o progresso (`progresso`). "
+            "Contexto no disco não é degrau."
+        )
+    return scope
+
+
 def context(project, focus, stage=None, studies_root=None, event="task", root=None, genre=None):
     if focus not in FOCI:
         raise ValueError("foco desconhecido")
@@ -5213,6 +5249,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
             "“AAA” neste harness é piso de acabamento da slice, não tier de publisher. Sem feel sincronizado, pacing e repeatability, não use o adjetivo.",
             "Checklist: ver finish no JSON. Jam observa core_groups; produto/AA soma product_groups; promise_groups só se prometidos. `template aaa` não certifica; N/A exige motivo.",
         ],
+        "scope": context_scope(),
     }
 
 

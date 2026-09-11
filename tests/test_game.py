@@ -1194,6 +1194,37 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("seja daemon", game.next_scope())
         self.assertNotIn("seja daemon", game._scan_scope(self.project))
 
+    def test_context_names_the_progress_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_stage_progress(guide),
+            "o processo já recusa que a etapa certifique o progresso",
+        )
+        self.assertEqual(game.context_progress_source(), "references/process.md")
+        report = game.context(self.project, "create")
+        self.assertIn(
+            "certifique o progresso",
+            report["scope"],
+            "o context selecionava o recorte e calava a recusa",
+        )
+        self.assertIn("(`progresso`)", report["scope"])
+        self.assertNotIn("progresso", report)
+        self.assertFalse(game.process_refuses_stage_progress(""))
+        with mock.patch.object(game, "context_progress_source", return_value=None):
+            silent = game.context(self.project, "create")
+        self.assertNotIn("certifique o progresso", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o progresso que o processo já recusa", recipe)
+        self.assertIn("nomeia o progresso que o processo já recusa", skill)
+        self.assertIn("nomeia o progresso que o processo já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("certifique o progresso", game.production_bar_scope())
+        self.assertNotIn("certifique o progresso", game.finish_scope())
+        self.assertNotIn("certifique o progresso", game.template_scope("mvp"))
+        self.assertNotIn("certifique o progresso", game.next_scope())
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")
