@@ -1021,7 +1021,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
                 self.root / "verify-411-silent", 5, ["pause"],
             )
         self.assertNotIn("claimed seja verified", silent["capabilities_scope"])
-        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
         self.assertIn("nomeia a verificação que o processo já recusa", recipe)

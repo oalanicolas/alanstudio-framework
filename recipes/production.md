@@ -133,7 +133,7 @@ Atualize-o a cada entrega; não crie planos paralelos. Ao fechar uma fatia, siga
 ## 7. Evidência ligada
 
 Cada critério de marco aponta para um recibo em pasta inédita, ligado ao HEAD do
-projeto: `verify` para comandos técnicos; se o roteiro recusa aprovar a criatividade, o `verify` nomeia a criatividade que o roteiro já recusa. Recibo verde não é aprovação. Sem chave `criatividade`. Se o processo recusa que claimed seja verified, o `verify` nomeia a verificação que o processo já recusa. Alegação no disco não é cobertura. Sem chave `verified`. `record --kind observation` para o que uma
+projeto: `verify` para comandos técnicos; se o roteiro recusa aprovar a criatividade, o `verify` nomeia a criatividade que o roteiro já recusa. Recibo verde não é aprovação. Sem chave `criatividade`. `record --kind observation` para o que uma
 pessoa (ou o agente, com `role=agent`) viu em movimento; `record --kind budget` para
 cada medição de orçamento com plataforma e ferramenta; `record --kind milestone` para
 a decisão de passagem, com quem declarou. O recibo guarda o fato declarado; não o
