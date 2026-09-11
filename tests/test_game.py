@@ -1369,6 +1369,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("exemplo que o then cola", game.play_scope(self.project))
         self.assertNotIn("exemplo que o then cola", game.git_summary_scope())
 
+    def test_doctor_names_the_engine_the_ambition_already_refuses(self):
+        ambition = (game.FRAMEWORK / "references/ambition.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.ambition_refuses_engine(ambition),
+            "a ambição já recusa que o harness seja motor",
+        )
+        self.assertEqual(game.doctor_then_engine_source(), "references/ambition.md")
+        report = game.doctor(self.root)
+        then = report["then"]
+        self.assertIn(
+            "harness seja motor",
+            then["scope"],
+            "o then apontava o mapa e calava a recusa",
+        )
+        self.assertIn("(`motor`)", then["scope"])
+        self.assertNotIn("motor", then)
+        self.assertFalse(report.get("executed", False))
+        self.assertFalse(game.ambition_refuses_engine(""))
+        with mock.patch.object(game, "doctor_then_engine_source", return_value=None):
+            silent = game.doctor(self.root)
+        self.assertNotIn("harness seja motor", silent["then"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o motor que a ambição já recusa", recipe)
+        self.assertIn("nomeia o motor que a ambição já recusa", skill)
+        self.assertIn("nomeia o motor que a ambição já recusa", readme)
+        self.assertNotIn("verified", then["scope"])
+        self.assertNotIn("harness seja motor", report["scope"])
+        self.assertNotIn("harness seja motor", game.next_scope())
+        self.assertNotIn("harness seja motor", game.guide_scope("canvas-arcade"))
+        self.assertNotIn("harness seja motor", game.init_scope(False))
+
     def test_version_names_the_judgment_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(
@@ -2566,7 +2599,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual({i["path"]: i["status"] for i in game.doctor(self.root)["skill_targets"]}[str(target)], "outdated")
 
     def test_doctor_points_at_guide_only_when_the_lab_has_no_game(self):
-        self.assertEqual(list(game.doctor_then(True, ["canvas-arcade"], True)), ["guide"])
+        self.assertEqual(list(game.doctor_then(True, ["canvas-arcade"], True))[0], "guide")
         self.assertIsNone(game.doctor_then(True, ["canvas-arcade"], False))
         self.assertIsNone(game.doctor_then(True, [], True))
         self.assertIsNone(game.doctor_then(False, ["canvas-arcade"], True))

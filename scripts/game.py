@@ -7631,6 +7631,41 @@ def doctor(root):
     }
 
 
+# A ambição já recusa que o harness seja motor. Sem isto o
+# then apontava o mapa e calava a recusa.
+# Convite no then não é runtime.
+AMBITION_ENGINE = re.compile(r"não é um motor AAA")
+
+
+def ambition_refuses_engine(text):
+    return bool(text and AMBITION_ENGINE.search(text))
+
+
+def doctor_then_engine_source():
+    path = FRAMEWORK / "references/ambition.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if ambition_refuses_engine(text):
+        return "references/ambition.md"
+    return None
+
+
+def doctor_then_scope():
+    scope = (
+        "Convite ao mapa ideia→ciclo. Não cria o projeto e não executa o jogo."
+    )
+    if doctor_then_engine_source():
+        scope += (
+            " O disco recusa que o harness seja motor (`motor`). "
+            "Convite no then não é runtime."
+        )
+    return scope
+
+
 def doctor_then(ready, starters, empty):
     # Sem jogo e com starter, o primeiro comando aponta o mapa. Com jogo,
     # `play` sem caminho já resolve. Sem starter não há o que mapear.
@@ -7640,7 +7675,9 @@ def doctor_then(ready, starters, empty):
     # Sem --idea o guide na raiz do framework recusa. Apontar o
     # comando nu era o primeiro passo quebrado depois do doctor.
     # O README já imprime o exemplo; <fantasia> calava a frase.
-    return {"guide": harness_command("guide", "--idea", doctor_guide_idea())}
+    report = {"guide": harness_command("guide", "--idea", doctor_guide_idea())}
+    report["scope"] = doctor_then_scope()
+    return report
 
 
 # O processo já pede uma ação recomendada. Sem isto o

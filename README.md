@@ -90,7 +90,7 @@ python3 scripts/game.py next /caminho/do/laboratorio/meu-jogo --focus feel
 templates, referências e pacotes), raiz, projetos reconhecidos, estudos, acervo
 sonoro, starters disponíveis e os atalhos de skill do host — vigente, desatualizado
 ou ausente, comparando conteúdo.
-Sem jogo reconhecido e com starter, `then.guide` aponta o mapa ideia→ciclo com `--idea`. Se o README imprime o exemplo, o `doctor` nomeia o exemplo que o README já imprime. Frase no then não é pasta criada. Sem chave `exemplo`. Sem frase a raiz recusa.
+Sem jogo reconhecido e com starter, `then.guide` aponta o mapa ideia→ciclo com `--idea`. Se o README imprime o exemplo, o `doctor` nomeia o exemplo que o README já imprime. Frase no then não é pasta criada. Sem chave `exemplo`. Se a ambição recusa que o harness seja motor, o `doctor` nomeia o motor que a ambição já recusa. Convite no then não é runtime. Sem chave `motor`. Sem frase a raiz recusa.
 Se o package pede Node, o `doctor` nomeia o engines que o package já declara. Pedido no disco não é binário no PATH. Sem chave `engines`. Nomear não instala. Se o manifesto declara as trocas, o `doctor` nomeia as substituições que o manifesto já declara. Manifesto no disco não é projeto criado. Sem chave `substitutions`.
 Não cria e não executa. Sem starter, o aviso nomeia `start --idea`, não `init`.
 Symlink apontando para o `SKILL.md` deste repositório conta como vigente: é o
