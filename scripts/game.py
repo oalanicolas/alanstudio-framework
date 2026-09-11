@@ -1278,6 +1278,32 @@ def sfx_shift_source(project):
     return None
 
 
+# O tool já lê o PCM. Sem isto o roles
+# somava o mix e calava o wav. Bytes no
+# disco não são mix ouvida.
+WAV_FILES = ("tools/wav.mjs", "tools/wav.js", "tools/wav.py")
+WAV_READ = re.compile(r"Não decodifica compressão e não ouve", re.IGNORECASE)
+
+
+def wav_reads_pcm(text):
+    return bool(text and WAV_READ.search(text))
+
+
+def wav_read_source(project):
+    project = Path(project)
+    for name in WAV_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if wav_reads_pcm(text):
+            return name
+    return None
+
+
 def roles_reading(project, root=None):
     project = Path(project)
     entries, sources = declared_sound_roles(project)
@@ -1308,6 +1334,10 @@ def roles_reading(project, root=None):
     if sfx_shift_source(project):
         scope += (
             " O disco desloca a voz (`sfx`). Arquivo no disco não é mix ouvida."
+        )
+    if wav_read_source(project):
+        scope += (
+            " O disco lê o PCM (`wav`). Bytes no disco não são mix ouvida."
         )
     return {
         "schema_version": 1,

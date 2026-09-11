@@ -3,6 +3,54 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.382 — o roles nomeia o PCM que o wav já lê
+
+O
+tool
+já
+lia
+o
+arquivo.
+O
+comando
+somava
+o
+mix
+e
+calava
+o
+decoder.
+Agora
+o
+`roles`
+nomeia
+o
+PCM.
+Bytes
+no
+disco
+não
+são
+mix
+ouvida.
+Sem
+chave
+`wav`.
+Não
+promove
+`heard`.
+
+O que 0.9.382 não afirma:
+bytes
+no
+disco
+não
+são
+mix
+ouvida
+no
+dispositivo.
+
 ## 0.9.381 — o art nomeia a vinheta que o recorte já marca
 
 A

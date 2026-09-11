@@ -244,7 +244,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    `tools/mix.*` soma as vozes, o `roles` nomeia a soma. Soma no
    disco não é mix ouvida. Sem chave `mix`. Se o `tools/design-sfx.*`
    desloca a voz, o `roles` nomeia a voz que o sfx já desloca.
-   Arquivo no disco não é mix ouvida. Sem chave `sfx`. `--fill` sugere o acervo ou a ficha
+   Arquivo no disco não é mix ouvida. Sem chave `sfx`. Se o `tools/wav.*` lê o PCM, o `roles` nomeia o PCM que o wav já lê. Bytes no disco não são mix ouvida. Sem chave `wav`. `--fill` sugere o acervo ou a ficha
    do stem do starter; `--apply` copia o id do acervo ou o stem
    do starter com créditos — e recoloca o WAV se o recibo já está
    e origem e licença casam. `sfx copy` continua o caminho explícito. Crescer o acervo é `sfx import` / `sfx seed`

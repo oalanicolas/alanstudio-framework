@@ -190,7 +190,7 @@ Arquivo no disco não é mix ouvida. Sem chave `sfx`.
 arquivo. Se o `tools/peak.*` relata o pico do arquivo, o `sfx summary` nomeia o pico que o peak já relata. Relato no disco não é mix ouvida. Sem chave `peak`. `npm run mix` soma as vozes de uma partida simulada com o mesmo
 palco, folga, ducking e taxa da corrente do mixer. Se o `tools/mix.*`
 soma as vozes, o `roles` nomeia a soma. Soma no disco não é mix ouvida.
-Sem chave `mix`. Nenhum dos dois é mix ouvido. `heard` continua falso. Toda
+Sem chave `mix`. Se o `tools/wav.*` lê o PCM, o `roles` nomeia o PCM que o wav já lê. Bytes no disco não são mix ouvida. Sem chave `wav`. Nenhum dos dois é mix ouvido. `heard` continua falso. Toda
 informação sonora precisa de equivalente visual — requisito de
 [acessibilidade](accessibility.md), não recurso extra. Degraus da dimensão `audio_mix`:
 [barra de acabamento](../references/production-bar.md#audio_mix--mixagem-não-arquivos).

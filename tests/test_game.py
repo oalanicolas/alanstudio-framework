@@ -2623,6 +2623,33 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("peak", report["scope"])
         self.assertNotIn("LUFS", report["scope"])
 
+    def test_roles_names_the_pcm_the_wav_already_reads(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/wav.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.wav_reads_pcm(tool), "o tool já lê o PCM")
+        self.assertEqual(game.wav_read_source(starter), "tools/wav.mjs")
+        report = game.roles_reading(starter)
+        self.assertIn("lê o PCM", report["scope"], "o roles somava o mix e calava o wav")
+        self.assertIn("(`wav`)", report["scope"])
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertNotIn("wav", report)
+        self.assertNotIn("pcm", report)
+        self.assertNotIn("decode", report)
+        empty = game.roles_reading(self.project)
+        self.assertFalse(game.wav_reads_pcm(""))
+        self.assertIsNone(game.wav_read_source(self.project))
+        self.assertNotIn("lê o PCM", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o PCM que o wav já lê", recipe)
+        self.assertIn("nomeia o PCM que o wav já lê", skill)
+        self.assertIn("nomeia o PCM que o wav já lê", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("peak", report["scope"])
+        self.assertNotIn("LUFS", report["scope"])
+
     def test_roles_names_the_duck_the_sounds_already_declare(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.roles_reading(starter)
