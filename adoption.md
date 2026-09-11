@@ -3,6 +3,61 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.443 — o access nomeia a certificação que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+acessibilidade
+não
+é
+gate
+de
+certificação.
+O
+item
+copiava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+o
+`access`
+nomeia
+a
+certificação.
+Opção
+no
+disco
+não
+é
+certificação.
+Sem
+chave
+`certificação`.
+Nomear
+não
+observa.
+
+O que 0.9.443 não afirma:
+opção
+no
+disco
+não
+é
+certificação
+nem
+sessão
+com
+o
+modo
+ativo.
+
 ## 0.9.442 — o scan nomeia as intenções que o roteiro já recusa
 
 O

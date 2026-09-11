@@ -1458,6 +1458,40 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("reconstruir documentos comprove intenções", game.next_scope())
         self.assertNotIn("reconstruir documentos comprove intenções", game.documentation_scope(True))
 
+    def test_access_names_the_certification_the_research_already_refuses(self):
+        research = (game.FRAMEWORK / "references/gates-research.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.research_refuses_a11y_certification(research),
+            "a pesquisa já recusa que acessibilidade seja gate de certificação",
+        )
+        self.assertEqual(game.access_option_cert_source(), "references/gates-research.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        self.assertTrue(report["options"], "o access já lista opções neste starter")
+        item = report["options"][0]
+        self.assertIn(
+            "acessibilidade seja gate de certificação",
+            item["scope"],
+            "o item copiava a chave e calava a recusa",
+        )
+        self.assertIn("(`certificação`)", item["scope"])
+        self.assertNotIn("certificação", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.research_refuses_a11y_certification(""))
+        with mock.patch.object(game, "access_option_cert_source", return_value=None):
+            silent = game.access_reading(starter)
+        self.assertNotIn("acessibilidade seja gate de certificação", silent["options"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a certificação que a pesquisa já recusa", recipe)
+        self.assertIn("nomeia a certificação que a pesquisa já recusa", skill)
+        self.assertIn("nomeia a certificação que a pesquisa já recusa", readme)
+        self.assertNotIn("acessibilidade seja gate de certificação", report["scope"])
+        self.assertNotIn("acessibilidade seja gate de certificação", game.gate_item_scope())
+        self.assertNotIn("acessibilidade seja gate de certificação", game.next_scope())
+        self.assertNotIn("acessibilidade seja gate de certificação", game.verify_scope())
+
     def test_check_plan_names_the_merit_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(

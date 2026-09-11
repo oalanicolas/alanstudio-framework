@@ -2315,6 +2315,43 @@ def caption_door_source(project):
     return None
 
 
+# A pesquisa já recusa que acessibilidade seja gate de certificação. Sem isto o
+# item copiava a chave e calava a recusa.
+# Opção no disco não é certificação.
+A11Y_RESEARCH = FRAMEWORK / "references/gates-research.md"
+A11Y_CERT = re.compile(r"não é gate de certificação")
+
+
+def research_refuses_a11y_certification(text):
+    return bool(text and A11Y_CERT.search(text))
+
+
+def access_option_cert_source():
+    path = A11Y_RESEARCH
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_a11y_certification(text):
+        return "references/gates-research.md"
+    return None
+
+
+def access_option_scope():
+    scope = (
+        "Chave e fontes da opção declarada. Não joga com o modo "
+        "ativo e não aprova alcance."
+    )
+    if access_option_cert_source():
+        scope += (
+            " O disco recusa que acessibilidade seja gate de certificação (`certificação`). "
+            "Opção no disco não é certificação."
+        )
+    return scope
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -2360,12 +2397,13 @@ def access_reading(project):
             " A porta lê a legenda que o mixer ainda guarda. "
             "Texto no disco não é sessão."
         )
+    option_scope = access_option_scope()
     return {
         "schema_version": 1,
         "project": str(project),
         "exists": project.is_dir(),
         "options": [
-            {"key": key, "sources": found[key][:4]}
+            {"key": key, "sources": found[key][:4], "scope": option_scope}
             for key in A11Y_OPTIONS if found[key]
         ],
         "missing": [key for key in A11Y_OPTIONS if not found[key]],
