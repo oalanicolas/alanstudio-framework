@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.358: o `art` nomeia o look que o disco já nasce. Ferramenta no disco não é comparação em movimento. Sem chave `look`. Não promove `consistent`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.357):** `python3 -m unittest discover -s tests` → 353.
+**Suítes confirmadas no HEAD (0.9.358):** `python3 -m unittest discover -s tests` → 354.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
