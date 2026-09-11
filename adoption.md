@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.536 — o quality_bar do sfx summary nomeia a alocação que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+medir
+alocação
+com
+canais
+em
+zero
+não
+é
+ouvir.
+A
+`quality_bar`
+do
+summary
+copiava
+a
+política
+e
+calava
+a
+recusa.
+Agora
+o
+`quality_bar`
+do
+`sfx summary`
+nomeia
+a
+alocação.
+Barra
+no
+disco
+não
+é
+mix
+ouvida.
+Sem
+chave
+`alocação`.
+Nomear
+não
+ouve.
+
+O que 0.9.536 não afirma:
+medir
+alocação
+não
+é
+ouvir
+o
+mix.
+
 ## 0.9.535 — o save nomeia a atomicidade que a receita já recusa
 
 A

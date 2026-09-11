@@ -76,7 +76,7 @@ primeiro ciclo.
 ## 1. Nomear a camada
 
 Antes de importar, diga qual papel o som cumpre. Camadas típicas; use só
-as que o jogo tem. Se a receita recusa que a categoria do catálogo seja a camada que o jogo mistura, o `categories[n]` do `sfx summary` nomeia a camada que a receita já recusa. Lista no disco não é mix. Sem chave `camada`. As camadas típicas:
+as que o jogo tem. Se a receita recusa que a categoria do catálogo seja a camada que o jogo mistura, o `categories[n]` do `sfx summary` nomeia a camada que a receita já recusa. Lista no disco não é mix. Sem chave `camada`. Se a receita recusa que medir alocação com canais em zero seja ouvir, o `quality_bar` do `sfx summary` nomeia a alocação que a receita já recusa. Barra no disco não é mix ouvida. Sem chave `alocação`. As camadas típicas:
 
 - **Ação / Foley** — passos, impactos, recusas, UI que é verbo.
 - **Mundo** — ambiente, ocupação do espaço, clima, máquinas.
@@ -206,7 +206,7 @@ Casos e limites em [aprendizados de aplicações](../references/sources.md#apren
 - Desconectar um nó, liberar referências e fechar o contexto são sinais distintos;
   nenhum isoladamente comprova coleta imediata. Teste pausa, reinício e desmontagem.
 - Callback de áudio, capacidade de render e silêncio durante um teste técnico não
-  demonstram FPS nem aprovação sonora. Medir alocação com canais em zero não é ouvir.
+  demonstram FPS nem aprovação sonora. Medir alocação com canais em zero não é ouvir. Se a receita recusa que medir alocação com canais em zero seja ouvir, o `quality_bar` do `sfx summary` nomeia a alocação que a receita já recusa. Barra no disco não é mix ouvida. Sem chave `alocação`.
 - Streaming é candidato quando o contrato permite; valide continuidade, latência,
   interrupção e qualidade antes de trocar o carregamento integral. Sem esse teste,
   registre a hipótese e o custo atual, sem anunciar ganho ainda não observado.

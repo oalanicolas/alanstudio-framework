@@ -7526,6 +7526,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("categoria do catálogo seja a camada", game.sfx_catalog.copy_catalog_scope() or "")
         self.assertNotIn("categoria do catálogo seja a camada", game.sfx_catalog.copy_record_scope() or "")
 
+    def test_sfx_summary_quality_bar_names_the_allocation_the_recipe_already_refuses(self):
+        recipe = (Path(game.FRAMEWORK) / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_allocation_as_hearing(recipe),
+            "a receita já recusa que medir alocação com canais em zero seja ouvir",
+        )
+        self.assertEqual(game.sfx_catalog.summarize_quality_bar_allocation_source(), "recipes/audio.md")
+        raw = game.sfx_catalog.quality_bar(self.root)
+        self.assertNotIn("scope", raw)
+        report = game.sfx_catalog.summarize(self.root)
+        bar = report["quality_bar"]
+        self.assertIn(
+            "medir alocação com canais em zero seja ouvir",
+            bar["scope"],
+            "a quality_bar do summary copiava a política e calava a recusa",
+        )
+        self.assertIn("(`alocação`)", bar["scope"])
+        self.assertNotIn("alocação", bar)
+        self.assertNotIn("alocação", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_allocation_as_hearing(""))
+        self.assertNotIn("medir alocação com canais em zero seja ouvir", report.get("scope") or "")
+        self.assertNotIn("medir alocação com canais em zero seja ouvir", report["next"])
+        with mock.patch.object(game.sfx_catalog, "summarize_quality_bar_allocation_source", return_value=None):
+            silent = game.sfx_catalog.summarize(self.root)
+        self.assertNotIn("medir alocação com canais em zero seja ouvir", silent["quality_bar"].get("scope") or "")
+        self.assertNotIn("scope", game.sfx_catalog.quality_bar(self.root))
+        skill = (Path(game.FRAMEWORK) / "SKILL.md").read_text(encoding="utf-8")
+        readme = (Path(game.FRAMEWORK) / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a alocação que a receita já recusa", recipe)
+        self.assertIn("nomeia a alocação que a receita já recusa", skill)
+        self.assertIn("nomeia a alocação que a receita já recusa", readme)
+        self.assertNotIn("verified", bar["scope"])
+        self.assertNotIn("aprovado", bar["scope"])
+        self.assertNotIn("medir alocação com canais em zero seja ouvir", game.next_scope())
+        self._plant_catalog_sound()
+        filled = game.sfx_catalog.summarize(self.root)
+        self.assertTrue(filled["categories"])
+        self.assertNotIn(
+            "medir alocação com canais em zero seja ouvir",
+            filled["categories"][0].get("scope") or "",
+        )
+        self.assertNotIn(
+            "medir alocação com canais em zero seja ouvir",
+            filled["local"].get("scope") or "",
+        )
+
     def test_sfx_search_names_matching_starter_stems_without_claiming_to_hear_them(self):
         report = game.sfx_catalog.search_catalog("dash", self.root)
         self.assertTrue(report["empty"])

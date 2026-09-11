@@ -758,6 +758,10 @@ def summarize(root=None):
         groups[item["category"]] = groups.get(item["category"], 0) + 1
     empty = len(catalog["sounds"]) == 0
     local = local_stems()
+    bar = quality_bar(root)
+    named = summarize_quality_bar_scope()
+    if named:
+        bar = dict(bar, scope=named)
     layer = summarize_category_scope()
     categories = []
     for name, count in sorted(groups.items()):
@@ -772,7 +776,7 @@ def summarize(root=None):
         "empty": empty,
         "total_bytes": sum(s["bytes"] for s in catalog["sounds"]),
         "originals": sum(s.get("edition") == "original" for s in catalog["sounds"]),
-        "updated": catalog.get("updated"), "quality_bar": quality_bar(root),
+        "updated": catalog.get("updated"), "quality_bar": bar,
         "categories": categories,
         "local": local,
         "heard": False,
@@ -828,6 +832,40 @@ def summarize_category_scope():
     return (
         "O disco recusa que a categoria do catálogo seja a camada "
         "que o jogo mistura (`camada`). Lista no disco não é mix."
+    )
+
+
+# A receita já recusa que medir alocação
+# com canais em zero seja ouvir. Sem isto
+# a quality_bar do summary copiava a
+# política e calava a recusa. Barra no
+# disco não é mix ouvida.
+AUDIO_ALLOC = re.compile(r"Medir alocação com canais em zero não é ouvir")
+
+
+def recipe_refuses_allocation_as_hearing(text):
+    return bool(text and AUDIO_ALLOC.search(text))
+
+
+def summarize_quality_bar_allocation_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_allocation_as_hearing(text):
+        return "recipes/audio.md"
+    return None
+
+
+def summarize_quality_bar_scope():
+    if not summarize_quality_bar_allocation_source():
+        return None
+    return (
+        "O disco recusa que medir alocação com canais em zero seja ouvir "
+        "(`alocação`). Barra no disco não é mix ouvida."
     )
 
 
