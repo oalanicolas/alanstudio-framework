@@ -1,11 +1,12 @@
 # Handoff — fácil + AAA honesto
 
 **Branch:** `cursor/runbook-telemetria-1083` (base `main`)
-**PR:** pendente
+**PR:** [#6](https://github.com/oalanicolas/alanstudio-framework/pull/6) (draft)
 **HEAD:** ver `git log -1` — vigente 0.9.466: o `runbook` do `scan` nomeia a telemetria que a receita já recusa. Área no disco não é consentimento. Sem chave `telemetria`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** HEAD anterior (0.9.465: 464 / 515) + confirmação pendente.
+**Suítes confirmadas no HEAD (0.9.466):** `python3 -m unittest discover -s tests` → 527 OK.
+`cd assets/starters/canvas-arcade && npm test` → 516 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
