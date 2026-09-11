@@ -2574,6 +2574,38 @@ def table_birth_source(project):
     return None
 
 
+# A receita já nasce look e chuva. Sem isto o
+# start apontava then.pair e calava o tool.
+# Ferramenta no disco não é alguém de fora.
+PAIR_FILES = (
+    "tools/new-pair.mjs",
+    "tools/new-pair.js",
+    "tools/pair.mjs",
+    "tools/pair.js",
+    "tools/new-pair.py",
+)
+PAIR_BIRTH = re.compile(r"Nasce look e chuva", re.IGNORECASE)
+
+
+def pair_births_mood(text):
+    return bool(text and PAIR_BIRTH.search(text))
+
+
+def pair_birth_source(project):
+    project = Path(project)
+    for name in PAIR_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if pair_births_mood(text):
+            return name
+    return None
+
+
 def content_reading(project):
     project = Path(project)
     files = content_files(project)
@@ -5385,7 +5417,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
     steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True, url=url)
     runtime = node_runtime(play)
     fantasy = resolve_fantasy(idea, destination)
-    return {
+    report = {
         "schema_version": 1,
         "project": str(destination),
         "created": created,
@@ -5454,6 +5486,12 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             "o prompt a nomeia. Não executa e não observa."
         ),
     }
+    if pair_birth_source(destination):
+        report["scope"] += (
+            " O disco nasce look e chuva no mesmo nome (`pair`). "
+            "Ferramenta no disco não é alguém de fora."
+        )
+    return report
 
 
 def play_cycle(destination=None, starter=None):

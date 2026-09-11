@@ -7142,6 +7142,33 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("session", report["then"])
         self.assertFalse(guided["noted"])
 
+    def test_start_names_the_pair_the_tool_already_births(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/new-pair.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.pair_births_mood(tool), "o tool já nasce look e chuva")
+        self.assertEqual(game.pair_birth_source(starter), "tools/new-pair.mjs")
+        destination = self.root / "com-par"
+        report = game.start_project(destination, "canvas-arcade")
+        self.assertIn("nasce look e chuva", report["scope"], "o start apontava then.pair e calava o tool")
+        self.assertIn("(`pair`)", report["scope"])
+        self.assertFalse(report["executed"])
+        self.assertNotIn("pair", report)
+        self.assertFalse(game.pair_births_mood(""))
+        self.assertIsNone(game.pair_birth_source(self.project))
+        silent = game.start_project(self.project)
+        self.assertNotIn("nasce look e chuva", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o par que o pair já nasce", recipe)
+        self.assertIn("nomeia o par que o pair já nasce", skill)
+        self.assertIn("nomeia o par que o pair já nasce", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        content = game.content_reading(destination)
+        self.assertNotIn("(`pair`)", content["scope"])
+        art = game.art_reading(destination)
+        self.assertNotIn("(`pair`)", art["scope"])
+
     def test_note_command_names_the_author_and_points_at_a_run_without_claiming_it(self):
         destination = self.root / "autor-git"
         game.start_project(destination, "canvas-arcade")
