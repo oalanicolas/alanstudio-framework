@@ -758,6 +758,13 @@ def summarize(root=None):
         groups[item["category"]] = groups.get(item["category"], 0) + 1
     empty = len(catalog["sounds"]) == 0
     local = local_stems()
+    layer = summarize_category_scope()
+    categories = []
+    for name, count in sorted(groups.items()):
+        item = {"title": name, "count": count}
+        if layer:
+            item["scope"] = layer
+        categories.append(item)
     report = {
         "catalog": str(catalog_dir(root) / "catalog.json"),
         "guide": str(catalog_dir(root) / "README.md"),
@@ -766,7 +773,7 @@ def summarize(root=None):
         "total_bytes": sum(s["bytes"] for s in catalog["sounds"]),
         "originals": sum(s.get("edition") == "original" for s in catalog["sounds"]),
         "updated": catalog.get("updated"), "quality_bar": quality_bar(root),
-        "categories": [{"title": name, "count": count} for name, count in sorted(groups.items())],
+        "categories": categories,
         "local": local,
         "heard": False,
         "search": f"{command} search TERMO",
@@ -792,6 +799,36 @@ def summarize(root=None):
 # Importar no disco não é licença.
 AUDIO_RECIPE = Path(__file__).resolve().parents[1] / "recipes/audio.md"
 AUDIO_IMPROVISE = re.compile(r"não\s+autoriza improvisar licença")
+AUDIO_LAYER = re.compile(r"use só\s+as que o jogo tem")
+
+
+# A receita já recusa que a categoria do catálogo seja a camada
+# que o jogo mistura. Sem isto o summary listava o título e
+# calava a recusa. Lista no disco não é mix.
+def recipe_refuses_catalog_as_mix_layer(text):
+    return bool(text and AUDIO_LAYER.search(text))
+
+
+def summarize_category_layer_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_catalog_as_mix_layer(text):
+        return "recipes/audio.md"
+    return None
+
+
+def summarize_category_scope():
+    if not summarize_category_layer_source():
+        return None
+    return (
+        "O disco recusa que a categoria do catálogo seja a camada "
+        "que o jogo mistura (`camada`). Lista no disco não é mix."
+    )
 
 
 def recipe_refuses_improvised_license(text):

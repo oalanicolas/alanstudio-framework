@@ -76,7 +76,7 @@ primeiro ciclo.
 ## 1. Nomear a camada
 
 Antes de importar, diga qual papel o som cumpre. Camadas típicas; use só
-as que o jogo tem:
+as que o jogo tem. Se a receita recusa que a categoria do catálogo seja a camada que o jogo mistura, o `categories[n]` do `sfx summary` nomeia a camada que a receita já recusa. Lista no disco não é mix. Sem chave `camada`. As camadas típicas:
 
 - **Ação / Foley** — passos, impactos, recusas, UI que é verbo.
 - **Mundo** — ambiente, ocupação do espaço, clima, máquinas.

@@ -7339,6 +7339,44 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         roles = game.roles_reading(starter)
         self.assertNotIn("peak", roles["scope"])
 
+    def test_sfx_summary_category_names_the_layer_the_recipe_already_refuses(self):
+        recipe = (Path(game.FRAMEWORK) / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_catalog_as_mix_layer(recipe),
+            "a receita já recusa que a categoria do catálogo seja a camada que o jogo mistura",
+        )
+        self.assertEqual(game.sfx_catalog.summarize_category_layer_source(), "recipes/audio.md")
+        empty = game.sfx_catalog.summarize(self.root)
+        self.assertEqual(empty["categories"], [])
+        self._plant_catalog_sound()
+        report = game.sfx_catalog.summarize(self.root)
+        self.assertTrue(report["categories"])
+        item = report["categories"][0]
+        self.assertEqual(item["title"], "Passos")
+        self.assertIn(
+            "categoria do catálogo seja a camada",
+            item["scope"],
+            "o summary listava o título e calava a recusa",
+        )
+        self.assertIn("(`camada`)", item["scope"])
+        self.assertNotIn("camada", item)
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_catalog_as_mix_layer(""))
+        self.assertNotIn("categoria do catálogo seja a camada", report.get("scope") or "")
+        with mock.patch.object(game.sfx_catalog, "summarize_category_layer_source", return_value=None):
+            silent = game.sfx_catalog.summarize(self.root)
+        self.assertNotIn("categoria do catálogo seja a camada", silent["categories"][0].get("scope") or "")
+        skill = (Path(game.FRAMEWORK) / "SKILL.md").read_text(encoding="utf-8")
+        readme = (Path(game.FRAMEWORK) / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a camada que a receita já recusa", recipe)
+        self.assertIn("nomeia a camada que a receita já recusa", skill)
+        self.assertIn("nomeia a camada que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("categoria do catálogo seja a camada", game.next_scope())
+        self.assertNotIn("categoria do catálogo seja a camada", game.sfx_catalog.copy_catalog_scope() or "")
+        self.assertNotIn("categoria do catálogo seja a camada", game.sfx_catalog.copy_record_scope() or "")
+
     def test_sfx_search_names_matching_starter_stems_without_claiming_to_hear_them(self):
         report = game.sfx_catalog.search_catalog("dash", self.root)
         self.assertTrue(report["empty"])

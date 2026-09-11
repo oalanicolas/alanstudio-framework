@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.527 — o categories do sfx summary nomeia a camada que a receita já recusa
+
+A
+receita
+já
+dizia
+para
+usar
+só
+as
+camadas
+que
+o
+jogo
+tem.
+O
+summary
+listava
+o
+título
+e
+calava
+a
+recusa.
+Agora
+a
+categoria
+nomeia
+a
+camada.
+Lista
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`camada`.
+Nomear
+não
+ouve.
+
+O que 0.9.527 não afirma:
+listar
+a
+categoria
+não
+é
+o
+mix
+que
+o
+jogo
+mistura.
+
 ## 0.9.526 — o then do play nomeia o RNG que a receita já recusa
 
 A
