@@ -2358,6 +2358,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("prescrever quantas pessoas", game.next_scope())
         self.assertNotIn("prescrever quantas pessoas", game.record_scope())
 
+    def test_scan_names_the_telemetry_the_recipe_already_refuses(self):
+        recipe_text = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_silent_telemetry(recipe_text),
+            "a receita já recusa que telemetria seja padrão silencioso",
+        )
+        self.assertEqual(game.runbook_telemetry_source(), "recipes/release.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "telemetria seja padrão silencioso",
+            report["areas"]["runbook"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`telemetria`)", report["areas"]["runbook"]["scope"])
+        self.assertNotIn("telemetria", report["areas"]["runbook"])
+        self.assertFalse(game.recipe_refuses_silent_telemetry(""))
+        with mock.patch.object(game, "runbook_telemetry_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("telemetria seja padrão silencioso", silent["areas"]["runbook"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a telemetria que a receita já recusa", recipe_text)
+        self.assertIn("nomeia a telemetria que a receita já recusa", recipe)
+        self.assertIn("nomeia a telemetria que a receita já recusa", skill)
+        self.assertIn("nomeia a telemetria que a receita já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["runbook"]["scope"])
+        self.assertNotIn("telemetria seja padrão silencioso", report["scope"])
+        self.assertNotIn("telemetria seja padrão silencioso", report["areas"]["qa"]["scope"])
+        self.assertNotIn("telemetria seja padrão silencioso", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("telemetria seja padrão silencioso", game.ship_reading(self.project)["scope"])
+        self.assertNotIn("telemetria seja padrão silencioso", game.next_scope())
+
     def test_scan_names_the_absence_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(

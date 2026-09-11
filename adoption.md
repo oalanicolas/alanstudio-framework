@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.466 — o runbook do scan nomeia a telemetria que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+telemetria
+não
+é
+padrão
+silencioso.
+A
+área
+copiava
+o
+rótulo
+e
+calava
+a
+recusa.
+Agora
+o
+`runbook`
+do
+`scan`
+nomeia
+a
+telemetria.
+Área
+no
+disco
+não
+é
+consentimento.
+Sem
+chave
+`telemetria`.
+Nomear
+não
+observa.
+
+O que 0.9.466 não afirma:
+documento
+no
+disco
+não
+é
+consentimento
+nem
+máquina
+que
+já
+recebeu
+o
+artefato.
+
 ## 0.9.465 — o sfx info do stem nomeia o lixo que a receita já recusa
 
 A

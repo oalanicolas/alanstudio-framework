@@ -5588,6 +5588,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     areas["architecture"]["scope"] = architecture_area_scope()
     areas["provenance"]["scope"] = provenance_area_scope()
     areas["qa"]["scope"] = qa_area_scope()
+    areas["runbook"]["scope"] = runbook_area_scope()
     candidate_scope = scan_candidate_scope()
     for area in areas.values():
         for item in area["candidates"]:
@@ -6528,6 +6529,43 @@ def qa_area_scope():
         scope += (
             " O disco recusa prescrever quantas pessoas (`pessoas`). "
             "Área no disco não é censo."
+        )
+    return scope
+
+
+# A receita já recusa telemetria como padrão silencioso. Sem
+# isto a área localizava o runbook e calava a recusa.
+# Área no disco não é consentimento.
+RELEASE_RECIPE = FRAMEWORK / "recipes/release.md"
+RELEASE_TELEMETRY = re.compile(r"telemetria não é padrão silencioso")
+
+
+def recipe_refuses_silent_telemetry(text):
+    return bool(text and RELEASE_TELEMETRY.search(text))
+
+
+def runbook_telemetry_source():
+    path = RELEASE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_silent_telemetry(text):
+        return "recipes/release.md"
+    return None
+
+
+def runbook_area_scope():
+    scope = (
+        "Localiza o documento de execução. Não executa o artefato e não "
+        "abre outra máquina."
+    )
+    if runbook_telemetry_source():
+        scope += (
+            " O disco recusa que telemetria seja padrão silencioso (`telemetria`). "
+            "Área no disco não é consentimento."
         )
     return scope
 

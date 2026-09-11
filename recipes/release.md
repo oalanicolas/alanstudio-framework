@@ -49,7 +49,7 @@ O que precisa estar resolvido antes de chamar uma versão entregável:
   pretendida. Licença desconhecida bloqueia a entrega, não recebe uma suposição.
 - **Registro de falha:** quando o jogo quebra no dispositivo de alguém, existe
   como saber. Coleta de erro precisa de decisão explícita sobre o que é enviado e
-  do consentimento aplicável; telemetria não é padrão silencioso.
+  do consentimento aplicável; telemetria não é padrão silencioso. Se a receita recusa que telemetria seja padrão silencioso, o `scan` nomeia a telemetria que a receita já recusa. Área no disco não é consentimento. Sem chave `telemetria`.
 - **Reversão:** como voltar à versão anterior e o que acontece com saves criados
   pela versão nova. Reverter código não recupera dado já transformado; veja
   [persistence](persistence.md).

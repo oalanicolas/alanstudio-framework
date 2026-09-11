@@ -37,7 +37,7 @@ sistema pretendidos → instalação limpa sem save, cache ou permissão → sav
 anterior migrando ([persistência](../recipes/persistence.md)) → procedimento de
 reversão escrito, com o que acontece aos saves novos → nota da versão com o que
 não atende. Registro de falha exige decisão explícita sobre o que é enviado e
-consentimento; telemetria não é padrão silencioso.
+consentimento; telemetria não é padrão silencioso. Se a receita recusa que telemetria seja padrão silencioso, o `scan` nomeia a telemetria que a receita já recusa. Área no disco não é consentimento. Sem chave `telemetria`.
 
 ## Verificar
 
