@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.530 — o then do guide nomeia a estrutura que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+scaffold
+mostra
+estrutura
+e
+slice
+mostra
+experiência.
+O
+then
+apontava
+play
+e
+calava
+a
+recusa.
+Agora
+o
+then
+nomeia
+a
+estrutura.
+Mapa
+no
+disco
+não
+é
+a
+fatia.
+Sem
+chave
+`estrutura`.
+Nomear
+não
+observa.
+
+O que 0.9.530 não afirma:
+mapear
+os
+três
+passos
+não
+é
+a
+slice.
+
 ## 0.9.529 — o then do init nomeia o scaffold que a receita já recusa
 
 A

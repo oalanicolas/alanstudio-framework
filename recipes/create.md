@@ -120,7 +120,7 @@ não demonstram uma experiência nova. Se a receita recusa que título e cores n
 
 A escada: fantasia → ciclo → feel → áudio → receita de conteúdo → vertical
 slice no piso → produção sem diluir. PoC reduz incerteza; scaffold mostra
-estrutura; slice mostra experiência no acabamento pretendido.
+estrutura; slice mostra experiência no acabamento pretendido. Se a receita recusa que mostrar a estrutura seja a slice, o then do `guide` nomeia a estrutura que a receita já recusa. Mapa no disco não é a fatia. Sem chave `estrutura`.
 
 Em escala AA / Triple-I, feel, mix, luz, animação, pacing e a receita do
 próximo item são requisitos do recorte, não “polimento depois”. Reduza

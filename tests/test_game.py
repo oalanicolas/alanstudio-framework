@@ -13255,6 +13255,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("seja mais que ponto de partida", game.next_scope())
         self.assertNotIn("seja mais que ponto de partida", game.play_scope(self.root / "com-scaffold"))
 
+    def test_guide_then_names_the_structure_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_showing_structure_as_slice(recipe),
+            "a receita já recusa que mostrar a estrutura seja a slice",
+        )
+        self.assertEqual(game.guide_then_structure_source(), "recipes/create.md")
+        destination = self.root / "com-estrutura"
+        game.start_project(destination, "canvas-arcade")
+        report = game.guide_cycle(destination, "canvas-arcade")
+        self.assertIn(
+            "mostrar a estrutura seja a slice",
+            report["then"]["scope"],
+            "o then do guide apontava play e calava a recusa",
+        )
+        self.assertIn("(`estrutura`)", report["then"]["scope"])
+        self.assertNotIn("estrutura", report)
+        self.assertNotIn("estrutura", report["then"])
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_showing_structure_as_slice(""))
+        self.assertNotIn("mostrar a estrutura seja a slice", report["scope"])
+        with mock.patch.object(game, "guide_then_structure_source", return_value=None):
+            silent = game.guide_cycle(destination, "canvas-arcade")
+        self.assertNotIn("mostrar a estrutura seja a slice", silent["then"].get("scope") or "")
+        started = game.start_project(destination, "canvas-arcade")
+        self.assertNotIn("mostrar a estrutura seja a slice", started["then"].get("scope") or "")
+        planted = game.init(self.root / "init-sem-estrutura", "canvas-arcade")
+        self.assertNotIn("mostrar a estrutura seja a slice", planted["then"].get("scope") or "")
+        played = game.play_cycle(destination, "canvas-arcade")
+        self.assertNotIn("mostrar a estrutura seja a slice", played["then"].get("scope") or "")
+        felt = game.feel_reading(destination)
+        self.assertNotIn("mostrar a estrutura seja a slice", felt["then"].get("scope") or "")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a estrutura que a receita já recusa", recipe)
+        self.assertIn("nomeia a estrutura que a receita já recusa", skill)
+        self.assertIn("nomeia a estrutura que a receita já recusa", readme_doc)
+        self.assertNotIn("verified", report["then"]["scope"])
+        self.assertNotIn("aprovado", report["then"]["scope"])
+        self.assertNotIn("mostrar a estrutura seja a slice", game.next_scope())
+        self.assertNotIn("mostrar a estrutura seja a slice", game.play_scope(destination))
+        self.assertNotIn("mostrar a estrutura seja a slice", game.guide_scope("canvas-arcade"))
+
     def test_play_then_names_the_rng_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
         self.assertTrue(

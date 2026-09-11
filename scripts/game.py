@@ -9991,6 +9991,39 @@ def init_then_scope():
     )
 
 
+# A receita já recusa que mostrar a estrutura
+# seja a slice. Sem isto o then do guide
+# apontava play e calava a recusa. Mapa no
+# disco não é a fatia.
+CREATE_STRUCTURE = re.compile(r"mostra\s+estrutura")
+
+
+def recipe_refuses_showing_structure_as_slice(text):
+    return bool(text and CREATE_STRUCTURE.search(text))
+
+
+def guide_then_structure_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_showing_structure_as_slice(text):
+        return "recipes/create.md"
+    return None
+
+
+def guide_then_scope():
+    if not guide_then_structure_source():
+        return None
+    return (
+        "O disco recusa que mostrar a estrutura seja a slice "
+        "(`estrutura`). Mapa no disco não é a fatia."
+    )
+
+
 def start_project(destination=None, starter=None, title=None, idea=None, documents=False, cwd=None):
     named = destination is None
     if destination is None:
@@ -10423,6 +10456,9 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
     next_target = named if named is not None else Path("<destino>")
     play_cmd = play or play_fallback
     then = cycle_then(next_target, play_cmd, chosen)
+    structure = guide_then_scope()
+    if structure:
+        then = dict(then, scope=structure)
     cycle = starter_cycle(chosen)
     start_command = harness_command(*start_parts)
     noted = bool(exists and observation_receipts(dest))
