@@ -2425,6 +2425,33 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(run.returncode, 0)
         self.assertIn("disco perdeu", " ".join(run.stdout.split()))
 
+    def test_origins_names_the_consumer_the_sidecar_already_declares(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        credit = (starter / "public/sfx/dash.credits.txt").read_text(encoding="utf-8")
+        self.assertTrue(game.sidecar_names_consumer(credit), "o sidecar já declara o consumidor")
+        source = game.sidecar_consumer_source(starter)
+        self.assertTrue(source and source.startswith("public/sfx/") and source.endswith(".credits.txt"))
+        report = game.origins_reading(starter)
+        self.assertIn("nomeia o consumidor", report["scope"], "o origins lia os três rótulos e calava o sidecar")
+        self.assertIn("(`Consumidor`)", report["scope"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertNotIn("consumer", report)
+        self.assertNotIn("consumidor", report)
+        self.assertEqual(report["fields"], ["origin", "author", "license"])
+        empty = game.origins_reading(self.project)
+        self.assertFalse(game.sidecar_names_consumer(""))
+        self.assertIsNone(game.sidecar_consumer_source(self.project))
+        self.assertNotIn("nomeia o consumidor", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o consumidor que o sidecar já declara", recipe)
+        self.assertIn("nomeia o consumidor que o sidecar já declara", skill)
+        self.assertIn("nomeia o consumidor que o sidecar já declara", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("then.consumer", report.get("then") or {})
+
     def test_origins_ignores_vendor_trees_and_a_project_without_media(self):
         vendor = self.project / "node_modules" / "pack" / "icon.png"
         vendor.parent.mkdir(parents=True)

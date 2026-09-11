@@ -3746,6 +3746,26 @@ def origin_record_complete(record):
     return all(nonempty(sfx_catalog.receipt_field(record, field)) for field in ORIGIN_FIELDS)
 
 
+# O esqueleto já pede o consumidor. Sem isto o
+# origins lia os três rótulos e calava o sidecar.
+# Consumidor no disco não é licença válida.
+SIDECAR_CONSUMER = re.compile(r"Consumidor\s*:", re.IGNORECASE)
+
+
+def sidecar_names_consumer(text):
+    return bool(text and SIDECAR_CONSUMER.search(text))
+
+
+def sidecar_consumer_source(project):
+    project = Path(project)
+    for relative, text in walk_project_files(project, {".txt"}):
+        if "tests" in Path(relative).parts:
+            continue
+        if sidecar_names_consumer(text):
+            return relative
+    return None
+
+
 def sidecar_declares(text):
     # O JSON já exigia os três campos. O sidecar ao lado
     # declarava só por existir — inclusive vazio. Nome no
@@ -3935,6 +3955,23 @@ def origins_reading(project, max_entries=2000):
     contradicts = bool(
         licensing and licensing["state"] == "met" and undeclared
     )
+    scope = (
+        "Percorre o projeto, lista arquivos de mídia embarcados e cruza com recibos "
+        "(sources.json, licenses.json, CREDITS, sidecar `.credits.txt`). Relata ausência "
+        "de recibo, recibo ilegível e declaração `deliver.licensing` = `met` que o disco "
+        "contradiz. Nomeia a mídia que o recibo lista e o disco perdeu. "
+        "Nomear não devolve o arquivo. JSON sem origem, autor e licença — no topo ou "
+        "em `sources[0]` — não cobre o arquivo. Sidecar sem os três rótulos também não. "
+        "`form` aponta o esqueleto; `fields` lista origem, autor e licença. "
+        "`--declare` escreve o sidecar. Sem `then`. Recibo no disco não é licença "
+        "válida. Não consulta titular, não interpreta texto de licença, não distingue "
+        "licença válida de inválida e **não concede passagem**."
+    )
+    if sidecar_consumer_source(project):
+        scope += (
+            " O disco nomeia o consumidor (`Consumidor`). "
+            "Consumidor no disco não é licença válida."
+        )
     return {
         "schema_version": 1,
         "project": str(project),
@@ -3959,18 +3996,7 @@ def origins_reading(project, max_entries=2000):
             "Sidecar sem origem, autor e licença também não. "
             "Mídia que o recibo lista e o disco perdeu não some."
         ),
-        "scope": (
-            "Percorre o projeto, lista arquivos de mídia embarcados e cruza com recibos "
-            "(sources.json, licenses.json, CREDITS, sidecar `.credits.txt`). Relata ausência "
-            "de recibo, recibo ilegível e declaração `deliver.licensing` = `met` que o disco "
-            "contradiz. Nomeia a mídia que o recibo lista e o disco perdeu. "
-            "Nomear não devolve o arquivo. JSON sem origem, autor e licença — no topo ou "
-            "em `sources[0]` — não cobre o arquivo. Sidecar sem os três rótulos também não. "
-            "`form` aponta o esqueleto; `fields` lista origem, autor e licença. "
-            "`--declare` escreve o sidecar. Sem `then`. Recibo no disco não é licença "
-            "válida. Não consulta titular, não interpreta texto de licença, não distingue "
-            "licença válida de inválida e **não concede passagem**."
-        ),
+        "scope": scope,
     }
 
 

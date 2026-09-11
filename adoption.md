@@ -3,6 +3,55 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.383 — o origins nomeia o consumidor que o sidecar já declara
+
+O
+esqueleto
+já
+pedia
+`Consumidor:`.
+O
+comando
+lia
+os
+três
+rótulos
+e
+calava
+o
+sidecar.
+Agora
+o
+`origins`
+nomeia
+o
+consumidor.
+Consumidor
+no
+disco
+não
+é
+licença
+válida.
+Sem
+chave
+`consumer`.
+Não
+promove
+`granted`.
+
+O que 0.9.383 não afirma:
+consumidor
+no
+disco
+não
+é
+titular
+consultado
+nem
+licença
+válida.
+
 ## 0.9.382 — o roles nomeia o PCM que o wav já lê
 
 O

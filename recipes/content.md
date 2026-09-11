@@ -40,7 +40,7 @@ ele, o starter já fala em `public/sfx` e a busca nomeia o stem que
 casa com o termo. Copie o arquivo e a
 proveniência. Mix, interrupção e silêncio seguem [áudio](audio.md), não apenas
 a cópia do arquivo. Registre origem e condições de uso; conteúdo baixado não
-recebe uma licença nova pelo simples reuso.
+recebe uma licença nova pelo simples reuso. Se o sidecar declara `Consumidor:`, o `origins` nomeia o consumidor que o sidecar já declara. Consumidor no disco não é licença válida. Sem chave `consumer`.
 
 Geração externa (Magnific e similares) distingue capacidades documentadas de
 integração comprovada. Não torna o fornecedor obrigatório.

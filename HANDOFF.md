@@ -2,11 +2,11 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.382: o `roles` nomeia o PCM que o wav já lê. Bytes no disco não são mix ouvida. Sem chave `wav`. Não promove `heard`.
+**HEAD:** ver `git log -1` — vigente 0.9.383: o `origins` nomeia o consumidor que o sidecar já declara. Consumidor no disco não é licença válida. Sem chave `consumer`. Não promove `granted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.382):** `python3 -m unittest discover -s tests` → 378 OK.
-`cd assets/starters/canvas-arcade && npm test` → 509 OK.
+**Suítes confirmadas no HEAD anterior (0.9.382):** `python3 -m unittest discover -s tests` → 378 OK.
+`cd assets/starters/canvas-arcade && npm test` → 509 OK. Confirmação do 0.9.383 pendente.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.382)
+## O que o HEAD já entrega (0.9.91–0.9.383)
 
 | Ver | Salto |
 | --- | --- |
@@ -326,6 +326,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.380 | O `content` nomeia a migração que as mesas já compartilham. A receita já pedia o `migrateTable`; o comando listava dusk e calm e calava o loader. Sem chave `migrate`. Não promove `enough`. |
 | 0.9.381 | O `art` nomeia a vinheta que o recorte já marca. A receita já pedia halo e vinheta; o comando listava paletas e calava o `drawVignette`. Sem chave `vignette`. Não promove `consistent`. |
 | 0.9.382 | O `roles` nomeia o PCM que o wav já lê. O tool já lia o arquivo; o comando somava o mix e calava o decoder. Sem chave `wav`. Não promove `heard`. |
+| 0.9.383 | O `origins` nomeia o consumidor que o sidecar já declara. O esqueleto já pedia `Consumidor:`; o comando lia os três rótulos e calava o sidecar. Sem chave `consumer`. Não promove `granted`. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -349,7 +350,7 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 | performance | playable | o `budget` nomeia o percentil que a receita já pede; o `budget` nomeia os bytes que o size já relata; o `budget` nomeia a porta que a receita já cronometra; o orçamento cronometra a porta; poços + stub ≠ dispositivo |
 | accessibility | slice | o `access` nomeia a legenda que a porta já lê; o `access` nomeia as teclas que a tabela já lista; o `access` nomeia o perigo que o live já anuncia; o `access` nomeia o contraste que a receita já amostra; o `access` nomeia o `:focus-visible` que a casca já declara; o canvas da porta e do fim nomeia a lacuna do som; a região viva nomeia a mesa e o look da porta e do fim; a folga que acaba nomeia a folga; a prática que acaba nomeia a ameaça; o aviso nomeia a prática; a região viva nomeia a lacuna do som; o Copiar nomeia o destino; o relógio nomeia a pausa; no campo o telefone pausa no relógio; a região viva nomeia como abrir a porta; depois da partida o baixo pede seed nova; na pausa o telefone vê toque; a região viva nomeia como sair da pausa; a pausa nomeia reiniciar; depois do tap a porta não chama cima; na porta o telefone vê toque; na pausa o toque retoma; a cama segue o relógio da sessão; o controle que some senta o relógio se a sessão falou no pad; o contrato nomeia o pulso que o código já tem; a porta nomeia a recuperação que o painel já mostra; o pulso do fecho não come a legenda do verbo; o sistema que pede reduce no meio da sessão veste a caixa; as faixas nomeiam o valor vigente; o preset de uma mão não some o remap; os knobs vestem o look e têm foco visível; a escala veste a casca da página; live nomeia o aviso do primeiro ciclo; live nomeia a mesma recuperação; tinta estável não esmaga dusk/calm; live nomeia o toque da mostra; sessão observada no controle pendente |
 | content_scale | shippable | o `content` nomeia a migração que as mesas já compartilham; o `start` nomeia o par que o pair já nasce; o `content` nomeia a mesa que o disco já nasce; o `content` nomeia o par que `listMoods` já lista; `brief` não come a folga da guarda; paleta não finge volume; dusk+calm+pair; `enough` falso |
-| release | **prototype** | o `ship` nomeia o passo que o export já declara; o `ship` nomeia o banner que o serve já imprime; o `ship` nomeia o tamanho que a receita já relata; o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem; ninguém correu o `dist/` fora daqui; `elsewhere` falso |
+| release | **prototype** | o `origins` nomeia o consumidor que o sidecar já declara; o `ship` nomeia o passo que o export já declara; o `ship` nomeia o banner que o serve já imprime; o `ship` nomeia o tamanho que a receita já relata; o `ship` nomeia a árvore que perdeu o `src/` que o projeto já tem; ninguém correu o `dist/` fora daqui; `elsewhere` falso |
 
 ---
 
@@ -385,6 +386,12 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
   Mídia que o recibo JSON lista e o disco perdeu é nomeada; menção
   em CREDITS.md de caminho ausente continua calada. Nomear não
   devolve o arquivo. Os três campos não validam a licença.
+  `origins.scope` nomeia o consumidor se o sidecar
+  declara `Consumidor:`. Sem o marcador, a frase some.
+  Consumidor no disco não é licença válida. Sem chave
+  `consumer` no recibo. Sem chave `consumidor`.
+  `fields` continua origem, autor e licença.
+  `granted` falso.
 - **Não só adicionar mais um script de medição** se o salto alinhado
   for feel visível/audível, ferramenta de outsider, superfície de
   entrada, auditoria original (item 1) ou facilidade ideia→jogo.
@@ -3331,5 +3338,9 @@ Não inventar chave `wav` no recibo do roles — irmão de 382 e 361.
 Não inventar chave `pcm` no recibo do roles — irmão de 382.
 Não nomear `peak` no `roles` — irmão de 382, 372, 367, 361 e 355.
 Não outra leitura no sfx info — irmão de 382 e 367.
+Não inventar chave `consumer` no recibo do origins — irmão de 383 e 334.
+Não inventar chave `consumidor` no recibo do origins — irmão de 383.
+Não exigir consumidor para declarar — irmão de 383 e 334; os três rótulos continuam origem, autor e licença.
+Não outra menção em CREDITS.md — irmão de 383, 334 e 338.
 O rótulo do coil do dash ainda diz recarregando — irmão de 328.
-Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outro percentil no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro passo no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access nem outro last-run no note nem auto-anexar no note nem outro pico no sfx summary nem outro pico no sfx info nem outro par no start nem extra pair no content nem pair no art nem outra legenda no access nem outro deslocamento no sfx search nem outra voz no sfx search nem outro sit no feel nem outra guarda no feel nem outro recado no playtest nem outro POST no playtest nem outra gravação no save nem outro storage no save nem outro land no feel nem outro término no feel nem outra migração no content nem outro loader no content nem outra vinheta no art nem outro recorte no art nem outro PCM no roles nem outro wav no roles; atrito ideia→jogo que não seja 332/337/339/342/347/373; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro nem o sit da guarda nem o land do dash; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest nem o last-run no note nem o recado no playtest.
+Próxima ronda: superfície de entrada que não seja ordem/descrição do `-h` nem outro `sem destino` nem outro install nem outro Abrir nem outro `playtest` no prompt; auditoria item 1 que não seja outro sfx de arquivo sumido nem CREDITS nem origins.missing nem data/public no ship nem outro campo do mixer nem outro foco visível nem outra cena do budget nem outros bytes no budget nem outro percentil no budget nem outra linha de persistência no canvas nem outro fechamento no save nem outro par no content nem outra mesa no content nem outro tamanho no ship nem outro banner no ship nem outro passo no ship nem outro stub de contraste nem outro perigo no access nem outra soma no roles nem outra voz no roles nem outra simulação no playtest nem outro probe no feel nem outro look no art nem outro trilho no art nem outro lean no feel nem outro pico no sfx info nem outro rms no sfx info nem outra tabela de teclas no access nem outro last-run no note nem auto-anexar no note nem outro pico no sfx summary nem outro pico no sfx info nem outro par no start nem extra pair no content nem pair no art nem outra legenda no access nem outro deslocamento no sfx search nem outra voz no sfx search nem outro sit no feel nem outra guarda no feel nem outro recado no playtest nem outro POST no playtest nem outra gravação no save nem outro storage no save nem outro land no feel nem outro término no feel nem outra migração no content nem outro loader no content nem outra vinheta no art nem outro recorte no art nem outro PCM no roles nem outro wav no roles nem outro consumidor no origins nem outro sidecar no origins; atrito ideia→jogo que não seja 332/337/339/342/347/373; feel visível/audível que não seja tinta nem rótulo do HUD do dash nem rumble de graze/miss nem outro leaf do player nem duck no feel nem outro traço de rumo no coil nem o corpo da porta nem outra linha de lacuna no canvas nem o exercício do perdão nem a inclinação do quadro nem o sit da guarda nem o land do dash; ou ferramenta de outsider que não seja tally na faixa nem outra origem na faixa nem outro prefixo no achado copiado nem o nome do `session` no playtest nem o last-run no note nem o recado no playtest.
