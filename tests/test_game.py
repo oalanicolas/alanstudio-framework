@@ -1375,6 +1375,41 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("AAA seja tier de publisher", game.guide_scope("canvas-arcade"))
         self.assertNotIn("AAA seja tier de publisher", game.init_scope(False))
 
+    def test_roles_names_the_quantity_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.audio_refuses_file_quantity(recipe),
+            "a receita já recusa que áudio AAA seja quantidade de arquivos",
+        )
+        self.assertEqual(game.role_item_quantity_source(), "recipes/audio.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.roles_reading(starter)
+        self.assertTrue(report["roles"], "o roles já lista papéis neste starter")
+        item = report["roles"][0]
+        self.assertIn(
+            "áudio AAA seja quantidade de arquivos",
+            item["scope"],
+            "o item copiava a lista e calava a recusa",
+        )
+        self.assertIn("(`quantidade`)", item["scope"])
+        self.assertNotIn("quantidade", item)
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertFalse(game.audio_refuses_file_quantity(""))
+        with mock.patch.object(game, "role_item_quantity_source", return_value=None):
+            silent = game.roles_reading(starter)
+        self.assertNotIn("áudio AAA seja quantidade de arquivos", silent["roles"][0]["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a quantidade que a receita já recusa", recipe)
+        self.assertIn("nomeia a quantidade que a receita já recusa", skill)
+        self.assertIn("nomeia a quantidade que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("áudio AAA seja quantidade de arquivos", report["scope"])
+        self.assertNotIn("áudio AAA seja quantidade de arquivos", game.next_scope())
+        self.assertNotIn("áudio AAA seja quantidade de arquivos", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("áudio AAA seja quantidade de arquivos", game.roles_fill_scope())
+
     def test_check_plan_names_the_merit_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -537,7 +537,7 @@ Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
 O starter declara os papéis do verbo, o orbe perdido, o fecho, a prática, a guarda e a cama (`const SOUNDS`) e já traz
 design original em `public/sfx/<papel>.wav`. A cama entra em loop no
 barramento de música; no `over` ela solta com fade. `roles` lê a declaração — inclusive o `duckMs` que a tabela já lista — e cruza com
-arquivos em `public/sfx` (e equivalentes). Sem duck a chave some. Nomear não é mix ouvida. Se o `tools/mix.*` soma as vozes, o `roles` nomeia a soma. Soma no disco não é mix ouvida. Sem chave `mix`. Se o `tools/design-sfx.*` desloca a voz, o `roles` nomeia a voz que o sfx já desloca. Arquivo no disco não é mix ouvida. Sem chave `sfx`. Se o `tools/wav.*` lê o PCM, o `roles` nomeia o PCM que o wav já lê. Bytes no disco não são mix ouvida. Sem chave `wav`. Papel vazio continua lacuna:
+arquivos em `public/sfx` (e equivalentes). Sem duck a chave some. Nomear não é mix ouvida. Se o `tools/mix.*` soma as vozes, o `roles` nomeia a soma. Soma no disco não é mix ouvida. Sem chave `mix`. Se o `tools/design-sfx.*` desloca a voz, o `roles` nomeia a voz que o sfx já desloca. Arquivo no disco não é mix ouvida. Sem chave `sfx`. Se o `tools/wav.*` lê o PCM, o `roles` nomeia o PCM que o wav já lê. Bytes no disco não são mix ouvida. Sem chave `wav`. Se a receita recusa que áudio AAA seja quantidade de arquivos, o `roles` nomeia a quantidade que a receita já recusa. Lista no disco não é mix. Sem chave `quantidade`. Papel vazio continua lacuna:
 
 ```sh
 python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo

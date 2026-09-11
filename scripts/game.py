@@ -1581,6 +1581,43 @@ def wav_read_source(project):
     return None
 
 
+# A receita já recusa que áudio AAA seja quantidade de arquivos. Sem isto o
+# item copiava a lista e calava a recusa.
+# Lista no disco não é mix.
+AUDIO_RECIPE = FRAMEWORK / "recipes/audio.md"
+AUDIO_QUANTITY = re.compile(r"não é quantidade de arquivos")
+
+
+def audio_refuses_file_quantity(text):
+    return bool(text and AUDIO_QUANTITY.search(text))
+
+
+def role_item_quantity_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audio_refuses_file_quantity(text):
+        return "recipes/audio.md"
+    return None
+
+
+def role_item_scope():
+    scope = (
+        "Id, arquivos e estado do papel. Não toca o som e não "
+        "aprova a mixagem."
+    )
+    if role_item_quantity_source():
+        scope += (
+            " O disco recusa que áudio AAA seja quantidade de arquivos (`quantidade`). "
+            "Lista no disco não é mix."
+        )
+    return scope
+
+
 def roles_reading(project, root=None):
     project = Path(project)
     entries, sources = declared_sound_roles(project)
@@ -1594,6 +1631,7 @@ def roles_reading(project, root=None):
         }
         if "duckMs" in entry:
             row["duckMs"] = entry["duckMs"]
+        row["scope"] = role_item_scope()
         roles.append(row)
     empty = [item["id"] for item in roles if item["state"] == "empty"]
     catalog = sfx_catalog.catalog_dir(root)

@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.441 — o roles nomeia a quantidade que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+áudio
+AAA
+não
+é
+quantidade
+de
+arquivos.
+O
+item
+copiava
+a
+lista
+e
+calava
+a
+recusa.
+Agora
+o
+`roles`
+nomeia
+a
+quantidade.
+Lista
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`quantidade`.
+Nomear
+não
+observa.
+
+O que 0.9.441 não afirma:
+lista
+no
+disco
+não
+é
+mix
+nem
+espaço
+ouvido.
+
 ## 0.9.440 — o doctor nomeia o publisher que a skill já recusa
 
 A
