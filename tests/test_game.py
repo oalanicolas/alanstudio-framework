@@ -2224,6 +2224,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("Sidecar sem origem, autor e licença também não", report["rule"])
         self.assertIn("JSON sem origem, autor e licença", report["scope"])
         self.assertIn("Sidecar sem os três rótulos também não", report["scope"])
+        self.assertEqual(report["missing"], [])
 
     def test_origins_accepts_a_receipt_without_calling_it_a_valid_license(self):
         asset = self.project / "audio" / "jump.wav"
@@ -2359,15 +2360,82 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["undeclared"], [])
         self.assertEqual(report["declared"], ["models/tree.glb"])
 
+    def test_origins_names_the_media_the_receipt_lists_and_the_disk_lost(self):
+        # O JSON já cobria o arquivo presente. O recibo
+        # que listava um WAV sumido calava. Nomear não
+        # devolve o arquivo. Recibo não é licença.
+        (self.project / "sources.json").write_text(
+            json.dumps({
+                "files": [{
+                    "src": "audio/ghost.wav",
+                    "license": "CC0-1.0",
+                    "author": "Ana",
+                    "origin": "gravação própria",
+                }],
+            }),
+            encoding="utf-8",
+        )
+        report = game.origins_reading(self.project)
+        self.assertEqual(report["missing"], ["audio/ghost.wav"])
+        self.assertEqual(report["embedded"], [])
+        self.assertEqual(report["undeclared"], [])
+        self.assertEqual(report["declared"], [])
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertTrue(
+            any(
+                item.get("reason") == "missing_media"
+                and item.get("path") == "audio/ghost.wav"
+                for item in report["problems"]
+            )
+        )
+        self.assertIn("recibo lista", report["scope"])
+        self.assertIn("disco perdeu", report["scope"])
+        self.assertIn("Nomear não devolve", report["scope"])
+        self.assertIn("Mídia que o recibo lista e o disco perdeu não some", report["rule"])
+        asset = self.project / "audio" / "ghost.wav"
+        asset.parent.mkdir()
+        asset.write_bytes(b"RIFF")
+        found = game.origins_reading(self.project)
+        self.assertEqual(found["missing"], [])
+        self.assertEqual(found["declared"], ["audio/ghost.wav"])
+        self.assertFalse(found["granted"])
+        short = self.root / "recibo-curto"
+        short.mkdir()
+        (short / "sources.json").write_text(
+            json.dumps({"files": [{"src": "gone.wav", "author": "Ana", "license": "CC0-1.0"}]}),
+            encoding="utf-8",
+        )
+        incomplete = game.origins_reading(short)
+        self.assertEqual(incomplete["missing"], [])
+        mention = self.root / "so-credits"
+        mention.mkdir()
+        (mention / "CREDITS.md").write_text(
+            "Fantasma em `models/ghost.glb` — CC-BY-4.0.\n", encoding="utf-8",
+        )
+        credits = game.origins_reading(mention)
+        self.assertEqual(credits["missing"], [])
+        self.assertFalse(credits["granted"])
+        recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("Nomeia a mídia que o recibo lista e o disco perdeu", recipe)
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "origins", "-h", "--root", str(self.root)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(run.returncode, 0)
+        self.assertIn("disco perdeu", " ".join(run.stdout.split()))
+
     def test_origins_ignores_vendor_trees_and_a_project_without_media(self):
         vendor = self.project / "node_modules" / "pack" / "icon.png"
         vendor.parent.mkdir(parents=True)
         vendor.write_bytes(b"png")
         report = game.origins_reading(self.project)
         self.assertEqual(report["embedded"], [])
+        self.assertEqual(report["missing"], [])
         empty = game.origins_reading(self.root / "ainda-nao-existe")
         self.assertFalse(empty["exists"])
         self.assertEqual(empty["undeclared"], [])
+        self.assertEqual(empty["missing"], [])
 
     def test_met_licensing_does_not_survive_an_undeclared_file(self):
         (self.project / "hero.png").write_bytes(b"png")
@@ -2381,6 +2449,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         game.init(destination, "canvas-arcade")
         report = game.origins_reading(destination)
         self.assertEqual(report["undeclared"], [])
+        self.assertEqual(report["missing"], [])
         self.assertFalse(report["contradicts_licensing"])
 
     def test_next_asks_for_a_receipt_before_chasing_the_rest_of_the_gate(self):

@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/framework-0-9-facil-e-aaa-1083` (base `main`)
 **PR:** [#4](https://github.com/oalanicolas/alanstudio-framework/pull/4) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.337: o `start` nomeia `npm install` sem instalar. Não promove `executed`.
+**HEAD:** ver `git log -1` — vigente 0.9.338: o `origins` nomeia a mídia que o recibo lista e o disco perdeu. Não promove `granted`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Testes no HEAD (0.9.337):** `python3 -m unittest discover -s tests` → 334.
+**Testes no HEAD (0.9.338):** `python3 -m unittest discover -s tests` → 335.
 `cd assets/starters/canvas-arcade && npm test` → 504.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
@@ -32,7 +32,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.337)
+## O que o HEAD já entrega (0.9.91–0.9.338)
 
 | Ver | Salto |
 | --- | --- |
@@ -281,6 +281,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.335 | O `feel` nomeia o peso do passo. O CONFIG já declarava `player.speed` e o avanço; o comando lia perdão e rumble e calava o passo. `halfWidth` continua de fora. Não promove `felt`. |
 | 0.9.336 | O `playtest` nomeia a conta do last-run. A faixa e o recibo já tinham pontos e verbos; o leitor nomeava curva e origem e calava a conta. `dashes` e `ticks` ficam de fora. Não promove `outsider`. |
 | 0.9.337 | O `start` nomeia `npm install` quando `node_modules` falta. O play mandava o serve e o disco ainda não tinha módulos. `play` continua `npm run serve`. O `feel` não ganha a chave. Nomear não instala. |
+| 0.9.338 | O `origins` nomeia a mídia que o recibo lista e o disco perdeu. O JSON já cobria o arquivo presente; o WAV sumido calava. CREDITS.md pela menção continua. Nomear não devolve o arquivo. Não promove `granted`. | |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
@@ -337,7 +338,9 @@ Piso percebido = **mínimo**. Só `release` está em `prototype`.
 - Recibo otimista ainda passa em `origins` e `feel` de propósito.
   JSON incompleto (sem origem, autor e licença) não declara; sidecar
   sem os três rótulos também não. Menção em CREDITS.md ainda declara.
-  Os três campos não validam a licença.
+  Mídia que o recibo JSON lista e o disco perdeu é nomeada; menção
+  em CREDITS.md de caminho ausente continua calada. Nomear não
+  devolve o arquivo. Os três campos não validam a licença.
 - **Não só adicionar mais um script de medição** se o salto alinhado
   for feel visível/audível, ferramenta de outsider, superfície de
   entrada, auditoria original (item 1) ou facilidade ideia→jogo.
@@ -1233,10 +1236,13 @@ Candidatos, do que ainda dói:
    candidato existir. Sem serve a
    chave some. Sem last-run, seed e invite
    somem. Sem
-   `prompt`. `discover` nomeia os mesmos
+   `prompt`.    `discover` nomeia os mesmos
    sinais que o `next` usa, inclusive origem
    sem recibo, sem propor e
-   sem ranquear. Sinal verdadeiro não é
+   sem ranquear. `origins` nomeia a
+   mídia que o recibo lista e o
+   disco perdeu. Nomear não
+   devolve o arquivo. Sinal verdadeiro não é
    partida jogada. `len(steps) == 3`
    e `executed: false` continuam.
 3. **Checkpoint do tick:** `hold` existe e leva o relógio da
@@ -1288,8 +1294,15 @@ Candidatos, do que ainda dói:
    escreve o sidecar. Sidecar sem
    os três rótulos não declara.
    Recibo não é
-   licença. CREDITS.md pela menção
-   ainda declara (irmão, não o
+   licença. O `origins` nomeia a
+   mídia que o recibo lista e o
+   disco perdeu. Nomear não
+   devolve o arquivo. CREDITS.md
+   pela menção ainda declara
+   (irmão, não o próximo salto).
+   Menção em CREDITS.md de
+   caminho ausente continua
+   calada (irmão, não o
    próximo salto). O `sem destino` do
    `start` e do `guide` na raiz
    nomeia o `start --idea` que o
@@ -2326,6 +2339,47 @@ Candidatos, do que ainda dói:
   só
   por
   existir
+  e um
+  `feel`
+  que
+  cala
+  o
+  peso
+  do
+  passo
+  e um
+  `playtest`
+  que
+  cala
+  a
+  conta
+  do
+  last-run
+  e um
+  `start`
+  que
+  manda
+  o
+  serve
+  e
+  cala
+  o
+  npm
+  install
+  e um
+  `origins`
+  que
+  cala
+  a
+  mídia
+  que
+  o
+  recibo
+  lista
+  e
+  o
+  disco
+  perdeu
   não
   fecham. A receita
    de velocidade ajustável já tem knob e a cama o segue; sessão observada continua pendente.
@@ -2350,12 +2404,14 @@ trocar ou apagar o que estiver velho. Um salto por vez, commit
 descritivo, push, atualizar o PR #4. Não marcar o goal complete.
 
 Arquivos quentes da última sessão: o
-`start` nomeia `npm install` quando
-`node_modules` falta. O play
-mandava o serve e o disco ainda
-não tinha módulos. `play` continua
-`npm run serve`. O `feel` não
-ganha a chave. Nomear não instala.
+`origins` nomeia a mídia que o
+recibo lista e o disco perdeu.
+O JSON já cobria o arquivo
+presente; o WAV sumido calava.
+`missing` lista o caminho.
+CREDITS.md pela menção continua.
+Nomear não devolve o arquivo.
+Não promove `granted`.
 A família recado/remap/botão está saturada.
 A família curva do last-run está saturada.
 A família oneHand/remap restore está saturada.
@@ -2428,6 +2484,7 @@ A família sidecar que declara só por existir está saturada.
 A família feel que cala o peso do passo que o CONFIG já declara está saturada.
 A família playtest que cala a conta que o last-run já conta está saturada.
 A família start que manda o serve e cala o npm install está saturada.
+A família origins que cala a mídia que o recibo lista e o disco perdeu está saturada.
 Não incluir `player.halfWidth` em `FEEL_KEY`.
 Não outro leaf do `player` no extrator.
 Não levar `candidate_tally` à faixa do convite.
@@ -2435,3 +2492,4 @@ Não incluir `dashes` nem `ticks` na conta.
 Não dobrar o install no `play`.
 Não adicionar `then.install` ao `feel`.
 CREDITS.md pela menção ainda declara — irmão de 334.
+Menção em CREDITS.md de caminho ausente continua calada — irmão de 334 e 338.

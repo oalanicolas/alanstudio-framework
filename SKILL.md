@@ -166,9 +166,10 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    prova ligada (`record --kind milestone`, recibos de `verify`, `observation` e
    `budget`). Exemplo: [da trilha ao capítulo acabado](examples/era-uma-vez-production.md).
    **`origins <projeto>` lê o disco**, não a tabela: lista mídia embarcada sem
-   recibo de origem. Nomeia `form` e `fields`. `--declare` escreve o sidecar
-   `.credits.txt`. Sem `then`. Não valida licença. Recibo no disco não é
-   licença válida. JSON sem origem, autor e licença não declara.
+   recibo de origem. Nomeia a mídia que o recibo lista e o disco perdeu.
+   Nomear não devolve o arquivo. Nomeia `form` e `fields`. `--declare` escreve
+   o sidecar `.credits.txt`. Sem `then`. Não valida licença. Recibo no disco
+   não é licença válida. JSON sem origem, autor e licença não declara.
    Sidecar sem os três rótulos também não.
    Arquivo sem recibo conta como licença
    desconhecida, e `next` aponta `--declare` antes de seguir.

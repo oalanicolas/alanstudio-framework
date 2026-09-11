@@ -176,7 +176,8 @@ coisa nem outra, e nada neste repositório mede isso.
 `deliver.licensing` é o critério em que a prosa é mais dura, e o gate **ainda
 não lê o disco**. Quem lê é `origins`: cruza arquivos embarcados com recibos e
 relata ausência. JSON sem origem, autor e licença não declara. Sidecar sem
-os três rótulos também não. `--declare`
+os três rótulos também não. Nomeia a mídia que o recibo lista e o disco
+perdeu. Nomear não devolve o arquivo. `--declare`
 escreve o sidecar; recibo presente não é licença válida — é origem declarada.
 Uma tabela que afirma `met` enquanto `origins` lista arquivo sem recibo não
 sobrevive à leitura do próprio projeto.

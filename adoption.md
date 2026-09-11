@@ -3,6 +3,50 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.338 — o origins nomeia a mídia que o recibo lista e o disco perdeu
+
+O
+JSON
+já
+cobria
+o
+arquivo
+presente.
+O
+recibo
+que
+listava
+um
+WAV
+sumido
+calava.
+Agora
+`missing`
+nomeia
+o
+caminho.
+CREDITS.md
+pela
+menção
+continua.
+Nomear
+não
+devolve
+o
+arquivo.
+Não
+promove
+`granted`.
+
+O que 0.9.338 não afirma:
+recibo
+no
+disco
+não
+é
+licença
+válida.
+
 ## 0.9.337 — o start nomeia npm install sem instalar
 
 O

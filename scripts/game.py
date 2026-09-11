@@ -2727,19 +2727,46 @@ def sidecar_text(path):
         return None
 
 
+def origin_ref(name):
+    return str(name).replace("\\", "/").strip().lstrip("./")
+
+
+def local_media_ref(name):
+    # O JSON listava o arquivo e o scan só via o que
+    # ainda estava no disco. URL e id sem sufixo não
+    # são mídia embarcada. Nomear não devolve o arquivo.
+    text = origin_ref(name)
+    if not text or "://" in text:
+        return None
+    parts = Path(text).parts
+    if not parts or ".." in parts:
+        return None
+    if Path(text).suffix.casefold() not in EMBEDDED_SUFFIXES:
+        return None
+    return text
+
+
 def origins_reading(project, max_entries=2000):
     project = Path(project).resolve()
     embedded, receipts, problems = [], [], []
     mentioned = set()
+    listed = []
     pending = [(project, 0)] if project.is_dir() else []
     seen = 0
     stopped = False
 
-    def remember(name):
-        text = str(name).replace("\\", "/").strip().lstrip("./")
-        if text:
-            mentioned.add(text)
-            mentioned.add(Path(text).name)
+    def remember(name, receipt=None):
+        text = origin_ref(name)
+        if not text:
+            return
+        mentioned.add(text)
+        mentioned.add(Path(text).name)
+        if receipt is None:
+            return
+        ref = local_media_ref(text)
+        if ref is None or any(item["path"] == ref for item in listed):
+            return
+        listed.append({"source": receipt, "path": ref})
 
     def ingest_json(path, relative):
         try:
@@ -2758,7 +2785,7 @@ def origins_reading(project, max_entries=2000):
                 continue
             for key in ("src", "path", "file", "id", "key"):
                 if isinstance(record.get(key), str):
-                    remember(record[key])
+                    remember(record[key], receipt=relative)
 
     def ingest_text(path, relative):
         try:
@@ -2844,6 +2871,26 @@ def origins_reading(project, max_entries=2000):
         else:
             undeclared.append(relative)
 
+    embedded_names = {Path(item).name for item in embedded}
+    missing = []
+    for item in listed:
+        ref = item["path"]
+        if Path(ref).name in embedded_names:
+            continue
+        candidate = project / ref
+        try:
+            present = candidate.is_file() and not candidate.is_symlink()
+        except OSError:
+            present = False
+        if present:
+            continue
+        missing.append(ref)
+        problems.append({
+            "source": item["source"],
+            "reason": "missing_media",
+            "path": ref,
+        })
+
     licensing = gate_declaration(project)["declared"].get("deliver", {}).get("licensing")
     contradicts = bool(
         licensing and licensing["state"] == "met" and undeclared
@@ -2855,6 +2902,7 @@ def origins_reading(project, max_entries=2000):
         "embedded": embedded,
         "declared": declared,
         "undeclared": undeclared,
+        "missing": missing,
         "receipts": receipts,
         "problems": problems,
         "contradicts_licensing": contradicts,
@@ -2868,14 +2916,16 @@ def origins_reading(project, max_entries=2000):
             "Arquivo embarcado sem recibo de origem conta como licença desconhecida. "
             "O recibo declara origem, autor e condição de uso; não prova que a condição vale. "
             "JSON sem os três campos não declara. "
-            "Sidecar sem origem, autor e licença também não."
+            "Sidecar sem origem, autor e licença também não. "
+            "Mídia que o recibo lista e o disco perdeu não some."
         ),
         "scope": (
             "Percorre o projeto, lista arquivos de mídia embarcados e cruza com recibos "
             "(sources.json, licenses.json, CREDITS, sidecar `.credits.txt`). Relata ausência "
             "de recibo, recibo ilegível e declaração `deliver.licensing` = `met` que o disco "
-            "contradiz. JSON sem origem, autor e licença — no topo ou em `sources[0]` — "
-            "não cobre o arquivo. Sidecar sem os três rótulos também não. "
+            "contradiz. Nomeia a mídia que o recibo lista e o disco perdeu. "
+            "Nomear não devolve o arquivo. JSON sem origem, autor e licença — no topo ou "
+            "em `sources[0]` — não cobre o arquivo. Sidecar sem os três rótulos também não. "
             "`form` aponta o esqueleto; `fields` lista origem, autor e licença. "
             "`--declare` escreve o sidecar. Sem `then`. Recibo no disco não é licença "
             "válida. Não consulta titular, não interpreta texto de licença, não distingue "
@@ -5875,7 +5925,10 @@ def main():
     reading.add_argument("project")
     origins_cmd = commands.add_parser(
         "origins", parents=[common],
-        help="arquivos embarcados e o recibo de origem que o projeto declara",
+        help="arquivos embarcados, o recibo de origem e a mídia que o recibo lista e o disco perdeu",
+        description=(
+            "arquivos embarcados, o recibo de origem e a mídia que o recibo lista e o disco perdeu"
+        ),
     )
     origins_cmd.add_argument("project")
     origins_cmd.add_argument(
