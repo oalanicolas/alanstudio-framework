@@ -9,10 +9,17 @@
 //
 // Uso: node tools/budget.mjs [--runs 20] [--seed 7]
 
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { advance, attractMove, attractTick, attractTouch, createState, entityPoolStats, eventPoolStats, motePoolStats, rngPoolStats, neutralIntent, CONFIG, TICK_HZ } from "../src/game/rules.js";
 import { createRenderer } from "../src/game/render.js";
 import { fingerprint } from "../src/core/hash.js";
 import { createRng } from "../src/core/rng.js";
+
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
+const BASELINE_PATH = join(ROOT, "docs/performance/budget-last.json");
 
 const argument = (name, fallback) => {
   const index = process.argv.indexOf(`--${name}`);
@@ -134,6 +141,37 @@ const simulation = percentile(samples);
 const presentation = percentile(presents);
 const titleSimulation = percentile(titleSamples);
 const titlePresentation = percentile(titlePresents);
+
+function readBaseline() {
+  try {
+    const parsed = JSON.parse(readFileSync(BASELINE_PATH, "utf8"));
+    if (!parsed || typeof parsed !== "object") return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function metricDelta(current, previous, key) {
+  const left = current?.[key]?.p99;
+  const right = previous?.[key]?.p99;
+  if (!Number.isFinite(left) || !Number.isFinite(right)) return null;
+  return Number((left - right).toFixed(4));
+}
+
+const previous = readBaseline();
+const delta = previous
+  ? {
+      path: "docs/performance/budget-last.json",
+      simulation_p99: metricDelta({ simulation_ms: simulation }, previous, "simulation_ms"),
+      presentation_p99: metricDelta({ presentation_ms: presentation }, previous, "presentation_ms"),
+      compared: true,
+    }
+  : {
+      path: "docs/performance/budget-last.json",
+      compared: false,
+    };
+
 const pool = entityPoolStats();
 const events = eventPoolStats();
 const motes = motePoolStats();
@@ -190,15 +228,30 @@ const report = {
     created: rng.created,
     reseeds: rng.reseeds - rngStart.reseeds,
   },
+  delta,
   measured: false,
   scope:
     "Cenas title.attract e playing.run: abertura (mostra) e partida " +
     "inteira + draw() num canvas stub. Orçar só o campo esconde o " +
     "primeiro quadro. Não mede compositor, áudio, carregamento nem o " +
     "dispositivo alvo. Orçamento de quadro real exige medir no artefato " +
-    "exportado. O poço e o gerador relatam reuso, não velocidade. Sem " +
-    "limiar de apresentação.",
+    "exportado. O poço e o gerador relatam reuso, não velocidade. Com " +
+    "baseline no disco, relata delta " +
+    "contra docs/performance/budget-last.json — sem limiar de apresentação.",
 };
+
+const snapshot = {
+  runs: report.runs,
+  seed: baseSeed,
+  scene: report.scene,
+  step_budget_ms: report.step_budget_ms,
+  simulation_ms: report.simulation_ms,
+  presentation_ms: report.presentation_ms,
+  recorded_at: new Date().toISOString(),
+};
+
+mkdirSync(dirname(BASELINE_PATH), { recursive: true });
+writeFileSync(BASELINE_PATH, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 
 console.log(JSON.stringify(report, null, 2));
 if (titleSimulation.p99 > stepBudgetMs || simulation.p99 > stepBudgetMs) {

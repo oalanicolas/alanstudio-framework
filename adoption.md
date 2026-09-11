@@ -11934,7 +11934,7 @@ frase não
 abre o
 serve.
 
-## 0.9.213 — O guide na raiz sem ideia recusa como o start
+## 0.9.213 — O guide na raiz sem ideia recusa como o start; budget relata delta
 
 Na raiz
 do
@@ -11966,6 +11966,25 @@ não cria o
 jogo nem
 abre o
 serve.
+
+`npm run budget`
+grava
+`docs/performance/budget-last.json`
+e, na corrida
+seguinte, relata
+o delta de
+simulação e draw
+no stub. Sem
+limiar nem
+aprovação;
+`measured`
+continua falso.
+
+O delta no stub
+não é medição
+do dispositivo
+nem regressão
+aprovada.
 
 ## 0.9.212 — Orbe e estilhaço no mesmo quadro não decidem pela ordem
 

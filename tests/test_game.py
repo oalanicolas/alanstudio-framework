@@ -10154,6 +10154,32 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotEqual(default.returncode, 0)
         self.assertIn(command, default.stderr)
 
+    def test_guide_without_idea_matches_start_rejection_at_framework_root(self):
+        with self.assertRaisesRegex(ValueError, "sem destino"):
+            game.require_guide_idea(None, None, cwd=game.FRAMEWORK)
+        with self.assertRaisesRegex(ValueError, "sem destino"):
+            game.require_guide_idea(None, "!!!", cwd=game.FRAMEWORK)
+        game.require_guide_idea(None, "atravessar estilhaços", cwd=game.FRAMEWORK)
+        game.require_guide_idea(None, None, cwd=game.FRAMEWORK / "assets/starters/canvas-arcade")
+        bare = subprocess.run(
+            [sys.executable, str(SCRIPT), "guide"],
+            capture_output=True, text=True, cwd=str(game.FRAMEWORK),
+        )
+        self.assertNotEqual(bare.returncode, 0)
+        self.assertIn("sem destino", bare.stderr)
+        default = subprocess.run(
+            [sys.executable, str(SCRIPT)],
+            capture_output=True, text=True, cwd=str(game.FRAMEWORK),
+        )
+        self.assertNotEqual(default.returncode, 0)
+        self.assertIn("sem destino", default.stderr)
+        starter = subprocess.run(
+            [sys.executable, str(SCRIPT), "guide"],
+            capture_output=True, text=True,
+            cwd=str(game.FRAMEWORK / "assets/starters/canvas-arcade"),
+        )
+        self.assertEqual(starter.returncode, 0, starter.stderr)
+
     def test_guide_names_craft_from_the_starter_before_the_project_exists(self):
         report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
         self.assertFalse(report["exists"])
@@ -10178,8 +10204,6 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         empty = game.guide_cycle(None, "canvas-arcade")
         self.assertIn("<destino>", empty["then"]["look"])
         self.assertIn("<destino>", empty["then"]["pair"])
-        self.assertIn("look", empty["then"])
-        self.assertIn("pair", empty["then"])
         self.assertEqual(len(empty["steps"]), 3)
 
     def test_start_omits_the_cycle_when_the_starter_does_not_declare_it(self):

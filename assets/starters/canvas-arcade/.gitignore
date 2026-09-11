@@ -1,4 +1,5 @@
 docs/playtest/last-run.json
+docs/performance/budget-last.json
 docs/playtest/*-achado.md
 docs/playtest/*-achado.run.json
 dist/

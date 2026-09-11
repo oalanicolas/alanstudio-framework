@@ -46,9 +46,39 @@ test("o orçamento relata simulação e desenho sem aprovar quadro", async () =>
   assert.ok(report.rng.reseeds > report.rng.created);
   assert.equal(report.measured, false);
   assert.match(report.scope, /canvas stub/);
-  assert.match(report.scope, /Sem limiar de apresentação/);
+  assert.match(report.scope, /sem limiar de apresentação/i);
   assert.match(report.scope, /playing.run/);
   assert.match(report.scope, /title\.attract/);
   assert.match(report.scope, /primeiro quadro/);
+  assert.match(report.scope, /budget-last.json/);
   assert.doesNotMatch(stdout, /aprovado|verified|16 ms|16ms/);
+});
+
+test("o orçamento relata delta contra a corrida anterior no disco", async () => {
+  const child = spawn(process.execPath, ["tools/budget.mjs", "--runs", "2", "--seed", "7"], {
+    cwd: ROOT,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  let stdout = "";
+  child.stdout.on("data", (chunk) => {
+    stdout += chunk;
+  });
+  const [firstCode] = await once(child, "exit");
+  assert.equal(firstCode, 0, stdout);
+
+  const again = spawn(process.execPath, ["tools/budget.mjs", "--runs", "2", "--seed", "7"], {
+    cwd: ROOT,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  let secondOut = "";
+  again.stdout.on("data", (chunk) => {
+    secondOut += chunk;
+  });
+  const [secondCode] = await once(again, "exit");
+  assert.equal(secondCode, 0, secondOut);
+  const report = JSON.parse(secondOut);
+  assert.equal(report.delta.compared, true);
+  assert.ok(Number.isFinite(report.delta.simulation_p99));
+  assert.ok(Number.isFinite(report.delta.presentation_p99));
+  assert.equal(report.measured, false);
 });

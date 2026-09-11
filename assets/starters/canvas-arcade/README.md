@@ -164,7 +164,7 @@ falso — a linha é afirmação de quem escreveu.
 | `percentile_def` | `met` | tools/budget.mjs declara o percentil por definição, não por apelido — starter |
 | `palette` | `met` | tokens em docs/art-bible.md e data/palettes.json; o desenho consome PALETTES via tables.js — starter |
 | `style_factor` | `out_of_scope` | sem assets de mundo de estilo; só primitivas — starter |
-| `budget_delta` | `unmet` | npm run budget cronometra simulação e draw no stub; comparação com o build anterior ainda não existe — starter |
+| `budget_delta` | `met` | npm run budget grava docs/performance/budget-last.json e relata delta no segundo run — stub, sem limiar — starter |
 | `playtest_stop` | `unmet` | regra de parada ainda não escrita — starter |
 | `playtest_finding` | `unmet` | nenhum achado no formato problema/evidência/hipótese/medição — starter |
 | `evidence_kind` | `unmet` | lastro ainda não classificado como log ou observação — starter |
