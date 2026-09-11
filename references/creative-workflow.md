@@ -189,7 +189,7 @@ e confira o conjunto na versão de publicação.
 
 **Avança quando:** a entrega atende aos critérios de lançamento e, quando a publicação
 faz parte do pedido, o acesso público foi conferido. Publicação tem escopo próprio;
-um teste local concluído não significa lançamento. Use o [processo de release](../recipes/release.md) e o destino configurado pelo projeto.
+um teste local concluído não significa lançamento. Se o fluxo recusa que um teste local concluído seja lançamento, o `gate` nomeia o lançamento que o fluxo já recusa. Linha no disco não é outra máquina. Sem chave `lançamento`. Use o [processo de release](../recipes/release.md) e o destino configurado pelo projeto.
 
 ### F. Observar o uso e evoluir
 

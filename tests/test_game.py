@@ -5215,6 +5215,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("código que compila prove a hipótese", game.next_scope())
         self.assertNotIn("código que compila prove a hipótese", game.context_scope())
 
+    def test_gate_deliver_names_the_launch_the_workflow_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/creative-workflow.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.workflow_refuses_local_test_as_launch(guide),
+            "o fluxo já recusa que um teste local concluído seja lançamento",
+        )
+        self.assertEqual(game.gate_deliver_launch_source(), "references/creative-workflow.md")
+        report = game.gate_reading(self.project)
+        deliver = next(item for item in report["gates"] if item["key"] == "deliver")
+        self.assertIn(
+            "teste local concluído seja lançamento",
+            deliver["scope"],
+            "o gate de entregar listava o runbook e calava a recusa",
+        )
+        self.assertIn("(`lançamento`)", deliver["scope"])
+        self.assertNotIn("lançamento", deliver)
+        self.assertFalse(game.workflow_refuses_local_test_as_launch(""))
+        self.assertNotIn("teste local concluído seja lançamento", game.gate_item_scope())
+        self.assertNotIn("teste local concluído seja lançamento", game.gate_item_scope("close"))
+        self.assertNotIn("teste local concluído seja lançamento", game.gate_item_scope("design"))
+        close = next(item for item in report["gates"] if item["key"] == "close")
+        self.assertNotIn("teste local concluído seja lançamento", close["scope"])
+        with mock.patch.object(game, "gate_deliver_launch_source", return_value=None):
+            silent = game.gate_reading(self.project)
+        silent_deliver = next(item for item in silent["gates"] if item["key"] == "deliver")
+        self.assertNotIn("teste local concluído seja lançamento", silent_deliver["scope"])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o lançamento que o fluxo já recusa", guide)
+        self.assertIn("nomeia o lançamento que o fluxo já recusa", recipe)
+        self.assertIn("nomeia o lançamento que o fluxo já recusa", skill)
+        self.assertIn("nomeia o lançamento que o fluxo já recusa", readme)
+        self.assertNotIn("verified", deliver["scope"])
+        self.assertNotIn("teste local concluído seja lançamento", report["scope"])
+        self.assertNotIn("teste local concluído seja lançamento", game.gate_criterion_scope())
+        self.assertNotIn("teste local concluído seja lançamento", game.template_scope("release"))
+        self.assertNotIn("teste local concluído seja lançamento", game.ship_reading(self.project)["scope"])
+        self.assertNotIn("teste local concluído seja lançamento", game.next_scope())
+        self.assertNotIn("teste local concluído seja lançamento", game.verify_scope())
+
     def test_gate_names_the_waiver_the_prose_already_refuses(self):
         guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
         self.assertTrue(

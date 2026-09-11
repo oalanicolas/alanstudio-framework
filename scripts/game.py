@@ -1215,6 +1215,11 @@ def gate_item_scope(key=None):
             " O disco recusa que código que compila prove a hipótese "
             "(`hipótese`). Linha no disco não é o experimento."
         )
+    if key == "deliver" and gate_deliver_launch_source():
+        scope += (
+            " O disco recusa que um teste local concluído seja lançamento "
+            "(`lançamento`). Linha no disco não é outra máquina."
+        )
     return scope
 
 
@@ -1239,6 +1244,30 @@ def gate_close_hypothesis_source():
         return None
     if preproduction_refuses_compile_as_hypothesis(text):
         return "references/preproduction.md"
+    return None
+
+
+# O fluxo já recusa que um teste local concluído seja lançamento.
+# Sem isto o gate de entregar listava o runbook e calava a recusa.
+# Linha no disco não é outra máquina.
+CREATIVE_WORKFLOW = FRAMEWORK / "references/creative-workflow.md"
+DELIVER_LAUNCH = re.compile(r"não significa lançamento")
+
+
+def workflow_refuses_local_test_as_launch(text):
+    return bool(text and DELIVER_LAUNCH.search(text))
+
+
+def gate_deliver_launch_source():
+    path = CREATIVE_WORKFLOW
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if workflow_refuses_local_test_as_launch(text):
+        return "references/creative-workflow.md"
     return None
 
 

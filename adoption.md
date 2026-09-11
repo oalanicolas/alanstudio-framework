@@ -30,6 +30,67 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.487 — o gate deliver nomeia o lançamento que o fluxo já recusa
+
+O
+fluxo
+já
+dizia
+que
+um
+teste
+local
+concluído
+não
+é
+lançamento.
+O
+item
+do
+gate
+de
+entregar
+listava
+o
+runbook
+e
+calava
+a
+recusa.
+Agora
+o
+`gate`
+deliver
+nomeia
+o
+lançamento.
+Linha
+no
+disco
+não
+é
+outra
+máquina.
+Sem
+chave
+`lançamento`.
+Nomear
+não
+observa.
+
+O que 0.9.487 não afirma:
+runbook
+no
+disco
+não
+é
+artefato
+corrido
+fora
+daqui
+nem
+`elsewhere`.
+
 ## 0.9.486 — o gate close nomeia a hipótese que a guia já recusa
 
 A
