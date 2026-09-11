@@ -61,7 +61,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    consentimento; respeite restrição explícita na conversa atual. Se
    `foundation.audit.deferred` for verdadeiro, o destino já abre — jogue
    primeiro; lacuna de rascunho depois do `start` não é auditoria neste
-   turno. Se o README aponta o serve, o `scan` nomeia o serve que o README já aponta. Página no disco não é partida jogada. Sem chave `serve`. Se o roteiro pede documentar sem consentimento, o `context` nomeia o audit que o roteiro já pede. Roteiro no disco não é base escrita. Sem chave `audit`. `--event direction-approved` e `--stage audit` continuam
+   turno. Se o README aponta o serve, o `scan` nomeia o serve que o README já aponta. Página no disco não é partida jogada. Sem chave `serve`. Se o roteiro pede documentar sem consentimento, o `context` nomeia o audit que o roteiro já pede. Roteiro no disco não é base escrita. Sem chave `audit`. Se o roteiro recusa que a checagem seja daemon, o `audit` nomeia o daemon que o roteiro já recusa. Roteiro no disco não é interceptação. Sem chave `daemon`. `--event direction-approved` e `--stage audit` continuam
    pedindo a base. Sem projeto
    identificável, não invente um alvo. Em retomada, fonte encontrada não é tarefa
    validada: siga [continuidade e retomada](references/process.md#continuidade-e-retomada). Se o processo nega que documento pronto seja PoC, o `context` nomeia a PoC que o processo já nega. Fonte no disco não é jogo implementado. Sem chave `process`. Se a memória recusa o adjetivo, o `scan` nomeia o AAA que a memória já recusa. Memória no disco não é acabamento. Sem chave `agents`.

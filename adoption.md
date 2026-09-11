@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.416 — o audit nomeia o daemon que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+a
+checagem
+não
+é
+daemon
+nem
+hook.
+O
+objeto
+apontava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`audit`
+nomeia
+o
+daemon.
+Roteiro
+no
+disco
+não
+é
+interceptação.
+Sem
+chave
+`daemon`.
+Nomear
+não
+escreve.
+
+O que 0.9.416 não afirma:
+roteiro
+no
+disco
+não
+é
+interceptação
+nem
+base
+escrita.
+
 ## 0.9.415 — o roles fill nomeia o reuso que o processo já recusa
 
 O

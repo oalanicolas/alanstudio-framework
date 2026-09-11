@@ -4782,6 +4782,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
                 "Direção do usuário: avisar e iniciar o levantamento/documentação automaticamente; respeitar restrição explícita na conversa atual."
             ),
             "guide": str(FRAMEWORK / "references/project-audit.md"),
+            "scope": audit_scope(),
         },
         "scope": _scan_scope(project),
     }
@@ -4995,6 +4996,42 @@ def documentation_audit_source(document_minimum):
     if audit_guide_declares(text):
         return "references/project-audit.md"
     return None
+
+
+# O roteiro já recusa que a checagem seja daemon. Sem isto o
+# audit apontava o arquivo e calava a recusa.
+# Roteiro no disco não é interceptação.
+AUDIT_DAEMON = re.compile(r"não é um daemon nem um hook")
+
+
+def project_audit_refuses_daemon(text):
+    return bool(text and AUDIT_DAEMON.search(text))
+
+
+def audit_daemon_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if project_audit_refuses_daemon(text):
+        return "references/project-audit.md"
+    return None
+
+
+def audit_scope():
+    scope = (
+        "Aviso e levantamento documental. Não executa o jogo e não "
+        "intercepta o host."
+    )
+    if audit_daemon_source():
+        scope += (
+            " O disco recusa que a checagem seja daemon (`daemon`). "
+            "Roteiro no disco não é interceptação."
+        )
+    return scope
 
 
 def documentation_scope(document_minimum):

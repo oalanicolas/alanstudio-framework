@@ -1163,6 +1163,37 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("reuso automático", game.record_scope())
         self.assertNotIn("reuso automático", game.git_summary_scope())
 
+    def test_audit_names_the_daemon_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.project_audit_refuses_daemon(guide),
+            "o roteiro já recusa que a checagem seja daemon",
+        )
+        self.assertEqual(game.audit_daemon_source(), "references/project-audit.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "seja daemon",
+            report["audit"]["scope"],
+            "o audit apontava o arquivo e calava a recusa",
+        )
+        self.assertIn("(`daemon`)", report["audit"]["scope"])
+        self.assertNotIn("daemon", report["audit"])
+        self.assertFalse(game.project_audit_refuses_daemon(""))
+        with mock.patch.object(game, "audit_daemon_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("seja daemon", silent["audit"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o daemon que o roteiro já recusa", recipe)
+        self.assertIn("nomeia o daemon que o roteiro já recusa", skill)
+        self.assertIn("nomeia o daemon que o roteiro já recusa", readme)
+        self.assertNotIn("verified", report["audit"]["scope"])
+        self.assertNotIn("seja daemon", game.documentation_scope(True))
+        self.assertNotIn("seja daemon", report["scope"])
+        self.assertNotIn("seja daemon", game.next_scope())
+        self.assertNotIn("seja daemon", game._scan_scope(self.project))
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")
