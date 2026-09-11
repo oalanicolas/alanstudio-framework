@@ -3,6 +3,61 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.463 — o conflicts do bar nomeia a precedência que a barra já recusa
+
+A
+barra
+já
+dizia
+que
+duas
+linhas
+discordantes
+não
+se
+resolvem
+por
+precedência.
+O
+conflito
+copiava
+as
+fontes
+e
+calava
+a
+recusa.
+Agora
+o
+`conflicts[n]`
+nomeia
+a
+precedência.
+Linha
+no
+disco
+não
+é
+acabamento.
+Sem
+chave
+`precedência`.
+Nomear
+não
+observa.
+
+O que 0.9.463 não afirma:
+linha
+no
+disco
+não
+é
+degrau
+percebido
+nem
+acabamento
+AAA.
+
 ## 0.9.462 — o candidate_curve nomeia o aperto que a receita já recusa
 
 A

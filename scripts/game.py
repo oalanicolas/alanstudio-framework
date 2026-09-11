@@ -4980,6 +4980,10 @@ def bar_reading(project):
     problem_scope = bar_problem_scope()
     for item in problems:
         item["scope"] = problem_scope
+    conflicts = [dict(item) for item in declaration["conflicts"]]
+    conflict_scope = bar_conflict_scope()
+    for item in conflicts:
+        item["scope"] = conflict_scope
     return {
         "schema_version": 1,
         "project": str(project),
@@ -4997,7 +5001,7 @@ def bar_reading(project):
         "floor": declaration["floor"],
         "at_floor": declaration["at_floor"],
         "undeclared": declaration["undeclared"],
-        "conflicts": declaration["conflicts"],
+        "conflicts": conflicts,
         "problems": problems,
         "perceived_tier": declaration["perceived_tier"],
         "rule": "O degrau percebido de um jogo é o mínimo entre suas dimensões, não a média.",
@@ -5006,6 +5010,44 @@ def bar_reading(project):
         "assessed": False,
         "scope": _bar_scope(project),
     }
+
+
+# A barra já recusa que duas linhas se resolvam por precedência.
+# Sem isto o conflito copiava as fontes e calava a recusa.
+# Linha no disco não é acabamento.
+BAR_PRECEDENCE = re.compile(
+    r"Duas linhas discordantes sobre a mesma dimensão não se resolvem por\s+precedência"
+)
+
+
+def bar_refuses_precedence(text):
+    return bool(text and BAR_PRECEDENCE.search(text))
+
+
+def bar_conflict_precedence_source():
+    path = FRAMEWORK / "references/production-bar.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_precedence(text):
+        return "references/production-bar.md"
+    return None
+
+
+def bar_conflict_scope():
+    scope = (
+        "Duas declarações da mesma dimensão. "
+        "Não observa e não resolve a discordância."
+    )
+    if bar_conflict_precedence_source():
+        scope += (
+            " O disco recusa que duas linhas discordantes se resolvam por precedência (`precedência`). "
+            "Linha no disco não é acabamento."
+        )
+    return scope
 
 
 # A barra já recusa que o degrau seja prazo. Sem isto o

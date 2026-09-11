@@ -4074,6 +4074,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(feel["source"], "docs/qa.md:5")
         self.assertEqual(report["at_floor"], ["feel"])
 
+    def test_bar_conflict_names_the_precedence_the_bar_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.bar_refuses_precedence(guide),
+            "a barra já recusa que duas linhas se resolvam por precedência",
+        )
+        self.assertEqual(game.bar_conflict_precedence_source(), "references/production-bar.md")
+        self.declare_bar({key: ("shippable", "flagship") for key in game.BAR_DIMENSIONS})
+        self.declare_bar({"feel": ("prototype", "playable")}, path="docs/qa.md")
+        report = game.bar_reading(self.project)
+        self.assertEqual([item["dimension"] for item in report["conflicts"]], ["feel"])
+        item = report["conflicts"][0]
+        self.assertEqual(item["dimension"], "feel")
+        self.assertEqual(len(item["sources"]), 2)
+        self.assertIn(
+            "duas linhas discordantes se resolvam por precedência",
+            item["scope"],
+            "o conflito copiava as fontes e calava a recusa",
+        )
+        self.assertIn("(`precedência`)", item["scope"])
+        self.assertNotIn("precedência", item)
+        self.assertFalse(report["assessed"])
+        self.assertFalse(game.bar_refuses_precedence(""))
+        raw = game.bar_declaration(self.project)
+        self.assertNotIn("scope", raw["conflicts"][0])
+        with mock.patch.object(game, "bar_conflict_precedence_source", return_value=None):
+            silent = game.bar_reading(self.project)
+        self.assertNotIn(
+            "duas linhas discordantes se resolvam por precedência",
+            silent["conflicts"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a precedência que a barra já recusa", recipe)
+        self.assertIn("nomeia a precedência que a barra já recusa", skill)
+        self.assertIn("nomeia a precedência que a barra já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", report["scope"])
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", game.bar_item_scope())
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", game.bar_problem_scope())
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", game.production_bar_scope())
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", game.next_scope())
+        self.assertNotIn("duas linhas discordantes se resolvam por precedência", game.context_scope())
+        nested = game.production_bar("feel", project=self.project)["declaration"]["conflicts"][0]
+        self.assertNotIn("scope", nested)
+
     # Os dez gates são a formalização de linhas que já existiam em prosa. Se um
     # gate perder a sua, ele passa a ser critério inventado aqui — que é
     # exatamente o que este framework não pode fazer.
