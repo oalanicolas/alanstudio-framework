@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.505 — o matches do sfx search nomeia a triagem que a barra já recusa
+
+A
+barra
+já
+dizia
+que
+triagem
+documental/técnica
+não
+é
+aprovação
+artística.
+O
+match
+listava
+licenças
+e
+calava
+a
+recusa.
+Agora
+o
+`matches`
+do
+`sfx search`
+nomeia
+a
+triagem.
+Ficha
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`triagem`.
+Nomear
+não
+ouve.
+
+O que 0.9.505 não afirma:
+a
+ficha
+no
+disco
+não
+é
+mix
+aprovada.
+
 ## 0.9.504 — o sfx seed nomeia a aprovação que a receita já recusa
 
 O

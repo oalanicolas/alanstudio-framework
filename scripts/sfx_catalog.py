@@ -626,13 +626,26 @@ def search_catalog(query, root=None, limit=40):
     named = search_local_scope()
     if named:
         local["scope"] = named
+    triage = search_match_scope()
+    cards = []
+    for item in matches:
+        card = {
+            "id": item["id"],
+            "aliases": item.get("aliases", []),
+            "src": item["file"],
+            "title": item["title"],
+            "category": item["category"],
+            "tags": item["tags"],
+            "licenses": sorted({source["license"] for source in item["sources"]}),
+            "authors": sorted({source["author"] for source in item["sources"]}),
+        }
+        if triage:
+            card["scope"] = triage
+        cards.append(card)
     report = {
         "query": query, "count": len(matches),
         "empty": empty,
-        "matches": [{"id": s["id"], "aliases": s.get("aliases", []), "src": s["file"],
-                     "title": s["title"], "category": s["category"], "tags": s["tags"],
-                     "licenses": sorted({x["license"] for x in s["sources"]}),
-                     "authors": sorted({x["author"] for x in s["sources"]})} for s in matches],
+        "matches": cards,
         "local": local,
         "heard": False,
         "rule": QUALITY_BAR["note"],
@@ -957,6 +970,38 @@ def seed_catalog_scope():
     return (
         "O disco recusa que avaliação do agente seja aprovação do usuário "
         "(`aprovação`). Seed no disco não é mix."
+    )
+
+
+# A barra já recusa que a triagem documental aprove a mix.
+# Sem isto o match listava licenças e calava a recusa.
+# Ficha no disco não é mix.
+QUALITY_TRIAGE = re.compile(r"Triagem documental/técnica não é aprovação artística")
+
+
+def bar_refuses_triage_as_art(text):
+    return bool(text and QUALITY_TRIAGE.search(text))
+
+
+def search_match_triage_source():
+    path = Path(__file__).resolve()
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_triage_as_art(text):
+        return "scripts/sfx_catalog.py"
+    return None
+
+
+def search_match_scope():
+    if not search_match_triage_source():
+        return None
+    return (
+        "O disco recusa que triagem documental/técnica seja aprovação artística "
+        "(`triagem`). Ficha no disco não é mix."
     )
 
 

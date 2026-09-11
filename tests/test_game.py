@@ -6881,7 +6881,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         item, _ = self._plant_catalog_sound()
         found = game.sfx_catalog.search_catalog(item["id"], self.root)
         for match in found["matches"]:
-            self.assertNotIn("scope", match)
+            self.assertNotIn("acervo compartilhado seja o primeiro ciclo", match.get("scope") or "")
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
         self.assertIn("nomeia o adapt que a receita já recusa", recipe)
@@ -6889,6 +6889,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("nomeia o adapt que a receita já recusa", readme)
         self.assertNotIn("verified", local["scope"])
         self.assertNotIn("aprovado", local["scope"])
+
+    def test_sfx_search_matches_name_the_triage_the_bar_already_refuses(self):
+        bar = game.sfx_catalog.QUALITY_BAR["note"]
+        self.assertTrue(
+            game.sfx_catalog.bar_refuses_triage_as_art(bar),
+            "a barra já recusa que triagem documental/técnica seja aprovação artística",
+        )
+        self.assertEqual(game.sfx_catalog.search_match_triage_source(), "scripts/sfx_catalog.py")
+        item, _ = self._plant_catalog_sound()
+        report = game.sfx_catalog.search_catalog(item["id"], self.root)
+        self.assertTrue(report["matches"])
+        match = report["matches"][0]
+        self.assertIn(
+            "triagem documental/técnica seja aprovação artística",
+            match["scope"],
+            "o match listava licenças e calava a recusa",
+        )
+        self.assertIn("(`triagem`)", match["scope"])
+        self.assertNotIn("triagem", match)
+        self.assertNotIn("triagem", report)
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.bar_refuses_triage_as_art(""))
+        self.assertNotIn("triagem documental/técnica seja aprovação artística", report.get("scope") or "")
+        self.assertNotIn("triagem documental/técnica seja aprovação artística", report["local"].get("scope") or "")
+        self.assertNotIn("triagem documental/técnica seja aprovação artística", report["next"])
+        with mock.patch.object(game.sfx_catalog, "search_match_triage_source", return_value=None):
+            silent = game.sfx_catalog.search_catalog(item["id"], self.root)
+        self.assertNotIn("triagem documental/técnica seja aprovação artística", silent["matches"][0].get("scope") or "")
+        raw = game.sfx_catalog.quality_bar(self.root)
+        self.assertNotIn("scope", raw)
+        empty = game.sfx_catalog.search_catalog("dash", self.root)
+        self.assertEqual(empty["matches"], [])
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a triagem que a barra já recusa", recipe)
+        self.assertIn("nomeia a triagem que a barra já recusa", skill)
+        self.assertIn("nomeia a triagem que a barra já recusa", readme)
+        self.assertNotIn("verified", match["scope"])
+        self.assertNotIn("aprovado", match["scope"])
 
     def test_sfx_import_grows_the_catalog_without_claiming_to_hear_it(self):
         fake = {
@@ -7270,7 +7310,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("scope", lost)
         found = game.sfx_catalog.search_catalog(item["id"], self.root)
         for match in found["matches"]:
-            self.assertNotIn("scope", match)
+            self.assertNotIn("teste técnico de decode aprove o mix", match.get("scope") or "")
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
         self.assertIn("nomeia o decode que a receita já recusa", recipe)
