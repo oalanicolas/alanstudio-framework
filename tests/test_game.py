@@ -2391,6 +2391,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("telemetria seja padrão silencioso", game.ship_reading(self.project)["scope"])
         self.assertNotIn("telemetria seja padrão silencioso", game.next_scope())
 
+    def test_scan_names_the_history_the_recipe_already_refuses(self):
+        recipe_text = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_history_as_rule(recipe_text),
+            "a receita já recusa promover histórico a regra vigente",
+        )
+        self.assertEqual(game.decisions_history_source(), "recipes/architecture.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "promover histórico a regra vigente",
+            report["areas"]["decisions"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`histórico`)", report["areas"]["decisions"]["scope"])
+        self.assertNotIn("histórico", report["areas"]["decisions"])
+        self.assertFalse(game.recipe_refuses_history_as_rule(""))
+        with mock.patch.object(game, "decisions_history_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("promover histórico a regra vigente", silent["areas"]["decisions"]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o histórico que a receita já recusa", recipe_text)
+        self.assertIn("nomeia o histórico que a receita já recusa", recipe)
+        self.assertIn("nomeia o histórico que a receita já recusa", skill)
+        self.assertIn("nomeia o histórico que a receita já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["decisions"]["scope"])
+        self.assertNotIn("verified", recipe_text)
+        self.assertNotIn("promover histórico a regra vigente", report["scope"])
+        self.assertNotIn("promover histórico a regra vigente", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("promover histórico a regra vigente", report["areas"]["runbook"]["scope"])
+        self.assertNotIn("promover histórico a regra vigente", game.next_scope())
+
     def test_scan_names_the_absence_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(

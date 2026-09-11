@@ -25,7 +25,7 @@ Descubra as decisões vigentes que governam o recorte e confira seus caminhos e 
 atual; não fixe uma lista de ADRs no prompt. A fonte canônica orienta a mudança.
 Contradição entre documento, código e direção atual pede registrar e resolver a
 divergência, sem promover histórico a regra vigente nem inventar aprovação. Uma nova
-direção explícita do usuário pode revisar uma decisão anterior.
+direção explícita do usuário pode revisar uma decisão anterior. Se a receita recusa promover histórico a regra vigente, o `scan` nomeia o histórico que a receita já recusa. Área no disco não é decisão atual. Sem chave `histórico`.
 
 - **Alteração localizada, contrato preservado e resultado conhecido:** leitura do
   caminho/consumidor afetado, decisão curta e prova correspondente no registro atual.

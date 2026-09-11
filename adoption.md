@@ -30,6 +30,65 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.467 — o decisions do scan nomeia o histórico que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+histórico
+não
+se
+promove
+a
+regra
+vigente.
+A
+área
+copiava
+o
+rótulo
+e
+calava
+a
+recusa.
+Agora
+o
+`decisions`
+do
+`scan`
+nomeia
+o
+histórico.
+Área
+no
+disco
+não
+é
+decisão
+atual.
+Sem
+chave
+`histórico`.
+Nomear
+não
+observa.
+
+O que 0.9.467 não afirma:
+documento
+no
+disco
+não
+é
+regra
+vigente
+nem
+aprovação
+da
+direção
+atual.
+
 ## 0.9.466 — o runbook do scan nomeia a telemetria que a receita já recusa
 
 A
