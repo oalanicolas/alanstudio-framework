@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.356: o `playtest` nomeia a simulação que a receita já grava. Traço no disco não é alguém de fora. Sem chave `session`. Não promove `outsider`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.355):** `python3 -m unittest discover -s tests` → 351.
+**Suítes confirmadas no HEAD (0.9.356):** `python3 -m unittest discover -s tests` → 352.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
