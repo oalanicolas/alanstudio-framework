@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.357: o `feel` nomeia o perdão que o probe já exercita. Conta no disco não é peso percebido. Sem chave `probe`. Não promove `felt`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.356):** `python3 -m unittest discover -s tests` → 352.
+**Suítes confirmadas no HEAD (0.9.357):** `python3 -m unittest discover -s tests` → 353.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
