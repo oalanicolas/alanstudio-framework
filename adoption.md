@@ -3,6 +3,59 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.452 — o doctor nomeia a ausência que o mapa já recusa
+
+O
+mapa
+já
+dizia
+que
+studies
+vazio
+não
+é
+evidência
+negativa.
+O
+check
+copiava
+o
+estado
+e
+calava
+a
+recusa.
+Agora
+o
+`doctor`
+nomeia
+a
+ausência.
+Lista
+no
+disco
+não
+é
+laboratório.
+Sem
+chave
+`ausência`.
+Nomear
+não
+observa.
+
+O que 0.9.452 não afirma:
+lista
+no
+disco
+não
+é
+catálogo
+lido
+nem
+projeto
+criado.
+
 ## 0.9.451 — o craft nomeia a definição que a pesquisa já recusa
 
 A

@@ -8039,6 +8039,43 @@ def skill_target_scope():
     return scope
 
 
+# O mapa já recusa que a ausência seja evidência negativa.
+# Sem isto o check copiava o estado e calava a recusa.
+# Lista no disco não é laboratório.
+SOURCES_MAP = FRAMEWORK / "references/sources.md"
+STUDIES_ABSENCE = re.compile(r"não é evidência\s+negativa")
+
+
+def map_refuses_absence_as_evidence(text):
+    return bool(text and STUDIES_ABSENCE.search(text))
+
+
+def doctor_check_absence_source():
+    path = SOURCES_MAP
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if map_refuses_absence_as_evidence(text):
+        return "references/sources.md"
+    return None
+
+
+def doctor_check_scope():
+    scope = (
+        "Nome, exigência e estado da ferramenta. Não instala e não "
+        "cria o projeto."
+    )
+    if doctor_check_absence_source():
+        scope += (
+            " O disco recusa que a ausência seja evidência negativa (`ausência`). "
+            "Lista no disco não é laboratório."
+        )
+    return scope
+
+
 # O README já imprime o exemplo. Sem isto o
 # doctor.then colava <fantasia> e calava a frase.
 # Frase no then não é pasta criada.
@@ -8214,6 +8251,9 @@ def doctor(root):
     ready = not blocking
     empty = not projects
     then = doctor_then(ready, available, empty)
+    check_scope = doctor_check_scope()
+    for item in checks:
+        item["scope"] = check_scope
     scope = (
         "Presença e versão de ferramentas, presença dos arquivos deste repositório e conteúdo dos atalhos da skill no host. "
         "Com starter e laboratório sem jogo, `then.guide` aponta o mapa "

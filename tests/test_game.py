@@ -1413,6 +1413,42 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("AAA seja tier de publisher", game.guide_scope("canvas-arcade"))
         self.assertNotIn("AAA seja tier de publisher", game.init_scope(False))
 
+    def test_doctor_names_the_absence_the_map_already_refuses(self):
+        mapping = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.map_refuses_absence_as_evidence(mapping),
+            "o mapa já recusa que a ausência seja evidência negativa",
+        )
+        self.assertEqual(game.doctor_check_absence_source(), "references/sources.md")
+        report = game.doctor(self.root)
+        self.assertTrue(report["checks"], "o doctor já lista as ferramentas")
+        item = report["checks"][0]
+        self.assertIn(
+            "ausência seja evidência negativa",
+            item["scope"],
+            "o check copiava o estado e calava a recusa",
+        )
+        self.assertIn("(`ausência`)", item["scope"])
+        self.assertNotIn("ausência", item)
+        self.assertFalse(report.get("executed", False))
+        self.assertFalse(game.map_refuses_absence_as_evidence(""))
+        with mock.patch.object(game, "doctor_check_absence_source", return_value=None):
+            silent = game.doctor(self.root)
+        self.assertNotIn("ausência seja evidência negativa", silent["checks"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        page = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a ausência que o mapa já recusa", recipe)
+        self.assertIn("nomeia a ausência que o mapa já recusa", skill)
+        self.assertIn("nomeia a ausência que o mapa já recusa", page)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("ausência seja evidência negativa", report["scope"])
+        self.assertNotIn("ausência seja evidência negativa", game.skill_target_scope())
+        self.assertNotIn("ausência seja evidência negativa", game.doctor_then_scope())
+        self.assertNotIn("ausência seja evidência negativa", game.next_scope())
+        self.assertNotIn("ausência seja evidência negativa", game.guide_scope("canvas-arcade"))
+        self.assertNotIn("ausência seja evidência negativa", game.init_scope(False))
+
     def test_roles_names_the_quantity_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
         self.assertTrue(
