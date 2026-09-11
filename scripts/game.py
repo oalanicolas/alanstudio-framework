@@ -678,6 +678,9 @@ def review(root, limit=REVIEW_LIMIT):
             "audio_roles_empty": roles["empty"],
             "playtest_candidate": playtest_report.get("candidate"),
         }
+        named = review_signals_scope()
+        if named:
+            signals["scope"] = named
         reviewed.append(dict(
             entry,
             areas_located=len(located),
@@ -804,6 +807,38 @@ def review_item_scope():
             "Conta no disco não é acabamento."
         )
     return scope
+
+
+# O README já recusa que sinal verdadeiro seja partida jogada. Sem
+# isto o signals copiava os flags e calava a recusa.
+# Sinal no disco não é alguém de fora.
+README_PLAYED = re.compile(r"não é partida jogada")
+
+
+def readme_refuses_signal_as_played(text):
+    return bool(text and README_PLAYED.search(text))
+
+
+def review_signals_play_source():
+    path = FRAMEWORK / "README.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_refuses_signal_as_played(text):
+        return "README.md"
+    return None
+
+
+def review_signals_scope():
+    if not review_signals_play_source():
+        return None
+    return (
+        "O disco recusa que sinal verdadeiro seja partida jogada (`partida`). "
+        "Sinal no disco não é alguém de fora."
+    )
 
 
 def package_commands(project):

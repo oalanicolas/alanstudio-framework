@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.501 — o signals do review nomeia a partida que o README já recusa
+
+O
+README
+já
+dizia
+que
+sinal
+verdadeiro
+não
+é
+partida
+jogada.
+O
+signals
+copiava
+os
+flags
+e
+calava
+a
+recusa.
+Agora
+o
+`signals`
+do
+review
+nomeia
+a
+partida.
+Sinal
+no
+disco
+não
+é
+alguém
+de
+fora.
+Sem
+chave
+`partida`.
+Nomear
+não
+observa.
+
+O que 0.9.501 não afirma:
+o
+flag
+no
+disco
+não
+é
+playtest.
+
 ## 0.9.500 — o scan nomeia o multiplayer que a receita já recusa
 
 A

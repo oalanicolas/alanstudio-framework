@@ -328,6 +328,43 @@ class HarnessTest(unittest.TestCase):
         self.assertNotIn("documento comprove qualidade", game.documentation_scope(True))
         self.assertNotIn("documento comprove qualidade", game.scan(self.project)["scope"])
 
+    def test_review_signals_name_the_play_the_readme_already_refuses(self):
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.readme_refuses_signal_as_played(readme),
+            "o README já recusa que sinal verdadeiro seja partida jogada",
+        )
+        self.assertEqual(game.review_signals_play_source(), "README.md")
+        self.package()
+        report = game.review(self.root)
+        self.assertTrue(report["projects"], "o review já devolve projetos neste laboratório")
+        signals = report["projects"][0]["signals"]
+        self.assertIn(
+            "sinal verdadeiro seja partida jogada",
+            signals["scope"],
+            "o signals copiava os flags e calava a recusa",
+        )
+        self.assertIn("(`partida`)", signals["scope"])
+        self.assertNotIn("partida", signals)
+        self.assertFalse(game.readme_refuses_signal_as_played(""))
+        with mock.patch.object(game, "review_signals_play_source", return_value=None):
+            silent = game.review(self.root)
+        self.assertNotIn(
+            "sinal verdadeiro seja partida jogada",
+            silent["projects"][0]["signals"].get("scope") or "",
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a partida que o README já recusa", recipe)
+        self.assertIn("nomeia a partida que o README já recusa", skill)
+        self.assertIn("nomeia a partida que o README já recusa", readme)
+        self.assertNotIn("verified", signals["scope"])
+        self.assertNotIn("(`partida`)", report["scope"])
+        self.assertNotIn("sinal verdadeiro seja partida jogada", report["projects"][0]["scope"])
+        self.assertNotIn("sinal verdadeiro seja partida jogada", game.next_signals_scope() or "")
+        self.assertNotIn("sinal verdadeiro seja partida jogada", game.next_scope())
+        self.assertNotIn("sinal verdadeiro seja partida jogada", game.review_item_scope())
+
     def test_the_review_names_the_signals_next_uses_without_choosing(self):
         fresh = self.root / "ainda-nao-jogou"
         game.init(fresh, "canvas-arcade", documents=False)
