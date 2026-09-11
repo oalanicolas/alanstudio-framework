@@ -3,6 +3,48 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.355 — o roles nomeia a soma que a receita já relata
+
+A
+receita
+já
+somava
+as
+vozes
+com
+`npm run mix`.
+O
+comando
+calava.
+Agora
+o
+`roles`
+nomeia
+a
+soma.
+Soma
+no
+disco
+não
+é
+mix
+ouvida.
+Sem
+chave
+`mix`.
+Não
+promove
+`heard`.
+
+O que 0.9.355 não afirma:
+soma
+no
+disco
+não
+é
+mix
+ouvida.
+
 ## 0.9.354 — o access nomeia o contraste que a receita já amostra
 
 A

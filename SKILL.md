@@ -239,7 +239,9 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    o JSON fica no stdout.
    **`roles <projeto>`** lê os papéis de áudio que o código declara, o
    `duckMs` que a tabela já lista, e os arquivos que os preenchem.
-   Sem duck a chave some. Nomear não é mix ouvida. `--fill` sugere o acervo ou a ficha
+   Sem duck a chave some. Nomear não é mix ouvida. Se o
+   `tools/mix.*` soma as vozes, o `roles` nomeia a soma. Soma no
+   disco não é mix ouvida. Sem chave `mix`. `--fill` sugere o acervo ou a ficha
    do stem do starter; `--apply` copia o id do acervo ou o stem
    do starter com créditos — e recoloca o WAV se o recibo já está
    e origem e licença casam. `sfx copy` continua o caminho explícito. Crescer o acervo é `sfx import` / `sfx seed`

@@ -1221,6 +1221,32 @@ def role_files(project, role):
     return present
 
 
+# A receita já soma as vozes. Sem isto o roles
+# lia SOUNDS e calava o mix. Soma no disco não é
+# mix ouvida.
+MIX_FILES = ("tools/mix.mjs", "tools/mix.js", "tools/mix.py")
+MIX_SUM = re.compile(r"soma as vozes", re.IGNORECASE)
+
+
+def mix_sums_voices(text):
+    return bool(text and MIX_SUM.search(text))
+
+
+def mix_sum_source(project):
+    project = Path(project)
+    for name in MIX_FILES:
+        path = project / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if mix_sums_voices(text):
+            return name
+    return None
+
+
 def roles_reading(project, root=None):
     project = Path(project)
     entries, sources = declared_sound_roles(project)
@@ -1237,6 +1263,17 @@ def roles_reading(project, root=None):
         roles.append(row)
     empty = [item["id"] for item in roles if item["state"] == "empty"]
     catalog = sfx_catalog.catalog_dir(root)
+    scope = (
+        "Lê `const SOUNDS` e manifestos de papéis, e cruza com arquivos em "
+        "public/sfx e equivalentes. Nomeia o `duckMs` que a tabela já "
+        "declara. Sem duck a chave some. Nomear não é mix ouvida. Não toca "
+        "o som, não valida mixagem e não aprova estética. `heard` e "
+        "`approved` são sempre falsos: arquivo presente não é mixagem ouvida."
+    )
+    if mix_sum_source(project):
+        scope += (
+            " O disco soma as vozes (`mix`). Soma no disco não é mix ouvida."
+        )
     return {
         "schema_version": 1,
         "project": str(project),
@@ -1252,13 +1289,7 @@ def roles_reading(project, root=None):
             "Papel declarado sem arquivo é lacuna do verbo, não silêncio deliberado. "
             "Silêncio deliberado é o papel ausente da declaração."
         ),
-        "scope": (
-            "Lê `const SOUNDS` e manifestos de papéis, e cruza com arquivos em "
-            "public/sfx e equivalentes. Nomeia o `duckMs` que a tabela já "
-            "declara. Sem duck a chave some. Nomear não é mix ouvida. Não toca "
-            "o som, não valida mixagem e não aprova estética. `heard` e "
-            "`approved` são sempre falsos: arquivo presente não é mixagem ouvida."
-        ),
+        "scope": scope,
     }
 
 

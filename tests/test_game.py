@@ -2572,6 +2572,32 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("hit", report["empty"])
         self.assertFalse(report["heard"])
 
+    def test_roles_names_the_mix_the_recipe_already_sums(self):
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        tool = (starter / "tools/mix.mjs").read_text(encoding="utf-8")
+        self.assertTrue(game.mix_sums_voices(tool), "o tool já soma as vozes")
+        self.assertEqual(game.mix_sum_source(starter), "tools/mix.mjs")
+        report = game.roles_reading(starter)
+        self.assertIn("soma as vozes", report["scope"], "o roles calava o mix que a receita já soma")
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertNotIn("mix", report)
+        self.assertNotIn("DUCK_BUSES", report["scope"])
+        self.assertNotIn("MIX_HEADROOM", report["scope"])
+        empty = game.roles_reading(self.project)
+        self.assertFalse(game.mix_sums_voices(""))
+        self.assertIsNone(game.mix_sum_source(self.project))
+        self.assertNotIn("soma as vozes", empty["scope"])
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a soma", recipe)
+        self.assertIn("nomeia a soma", skill)
+        self.assertIn("nomeia a soma", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("LUFS", report["scope"])
+        self.assertNotIn("-14", report["scope"])
+
     def test_roles_names_the_duck_the_sounds_already_declare(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.roles_reading(starter)
