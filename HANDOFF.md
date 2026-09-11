@@ -5,7 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.472: o `options[n]` do `access` nomeia a opção que a receita já recusa. Chave no disco não é alcance. Sem chave `opção`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** HEAD anterior (0.9.471: 532 / 516) + confirmação pendente.
+**Suítes confirmadas no HEAD (0.9.472):** `python3 -m unittest discover -s tests` → 533 OK.
+`cd assets/starters/canvas-arcade && npm test` → 516 OK.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
