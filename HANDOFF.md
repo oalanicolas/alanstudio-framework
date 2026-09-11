@@ -5,9 +5,8 @@
 **HEAD:** ver `git log -1` — vigente 0.9.433: o `next` nomeia a fabricação que o processo já recusa. Lista no disco não é backlog. Sem chave `fabricação`. Nomear não executa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.432):** `python3 -m unittest discover -s tests` → 428 OK.
+**Suítes confirmadas no HEAD (0.9.433):** `python3 -m unittest discover -s tests` → 429 OK.
 `cd assets/starters/canvas-arcade && npm test` → 509 OK.
-Confirmação pendente no 0.9.433.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
