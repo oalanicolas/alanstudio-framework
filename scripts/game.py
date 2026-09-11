@@ -3546,6 +3546,40 @@ def save_atomicity_scope():
     )
 
 
+# A receita já recusa que um único
+# número una a versão do conteúdo e
+# a do save. Sem isto o save listava
+# o schema e calava a recusa. Schema
+# no disco não é a história.
+PERSIST_CONTRACTS = re.compile(r"Versão do conteúdo e versão do save são contratos")
+
+
+def recipe_refuses_one_number_as_both_contracts(text):
+    return bool(text and PERSIST_CONTRACTS.search(text))
+
+
+def save_contracts_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_one_number_as_both_contracts(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_contracts_scope():
+    if not save_contracts_source():
+        return None
+    return (
+        " O disco recusa que um único número una a versão do conteúdo "
+        "e a do save (`contratos`). Schema no disco não é a história."
+    )
+
+
 def save_reading(project):
     project = Path(project)
     used, versioned, warned, sources = [], [], [], []
@@ -3584,6 +3618,9 @@ def save_reading(project):
     named = save_atomicity_scope()
     if named:
         scope += named
+    contracts = save_contracts_scope()
+    if contracts:
+        scope += contracts
     return {
         "schema_version": 1,
         "project": str(project),

@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.549 — o save nomeia os contratos que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+versão
+do
+conteúdo
+e
+versão
+do
+save
+são
+contratos
+distintos.
+O
+save
+listava
+o
+schema
+e
+calava
+a
+recusa.
+Agora
+o
+`save`
+nomeia
+os
+contratos.
+Schema
+no
+disco
+não
+é
+a
+história.
+Sem
+chave
+`contratos`.
+Nomear
+não
+confia.
+
+O que 0.9.549 não afirma:
+listar
+o
+schema
+não
+é
+migrar
+as
+duas
+versões.
+
 ## 0.9.548 — o fields do record budget nomeia a quente que a receita já recusa
 
 A

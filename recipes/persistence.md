@@ -49,7 +49,7 @@ encerrado, bateria, perda de foco, suspensão do dispositivo.
 Identidade estável é o que permite migrar. Se entidades, níveis ou itens são
 referenciados por índice ou por nome de arquivo, qualquer reordenação corrompe
 saves antigos silenciosamente. Versão do conteúdo e versão do save são contratos
-distintos; não os una em um número por conveniência.
+distintos; não os una em um número por conveniência. Se a receita recusa que um único número una a versão do conteúdo e a do save, o `save` nomeia os contratos que a receita já recusa. Schema no disco não é a história. Sem chave `contratos`.
 
 `save <projeto>` lê se o código usa armazenamento e se declara schema/migrate.
 `trusted` é sempre falso: o harness não abre o save e não confirma escrita.

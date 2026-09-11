@@ -10421,6 +10421,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("estágio seja atomicidade", game.budget_reading(self.project)["scope"])
         self.assertNotIn("estágio seja atomicidade", game.record_scope())
 
+    def test_save_names_the_contracts_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_one_number_as_both_contracts(recipe),
+            "a receita já recusa que um único número una a versão do conteúdo e a do save",
+        )
+        self.assertEqual(game.save_contracts_source(), "recipes/persistence.md")
+        report = game.save_reading(self.project)
+        self.assertIn("versioned", report)
+        self.assertIn(
+            "um único número una a versão do conteúdo",
+            report["scope"],
+            "o save listava o schema e calava a recusa",
+        )
+        self.assertIn("(`contratos`)", report["scope"])
+        self.assertNotIn("contratos", report)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_one_number_as_both_contracts(""))
+        with mock.patch.object(game, "save_contracts_source", return_value=None):
+            silent = game.save_reading(self.project)
+        self.assertNotIn("um único número una a versão do conteúdo", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os contratos que a receita já recusa", recipe)
+        self.assertIn("nomeia os contratos que a receita já recusa", skill)
+        self.assertIn("nomeia os contratos que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("um único número una a versão do conteúdo", game.content_reading(self.project)["scope"])
+        self.assertNotIn("um único número una a versão do conteúdo", game.budget_reading(self.project)["scope"])
+        self.assertNotIn("um único número una a versão do conteúdo", game.record_scope())
+        self.assertNotIn("um único número una a versão do conteúdo", game.next_scope())
+
     def test_save_names_storage_without_a_schema_as_unversioned(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "store.js").write_text("localStorage.setItem('score', value)\n")
