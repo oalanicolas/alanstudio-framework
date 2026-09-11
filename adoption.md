@@ -3,6 +3,56 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.9.409 — o check-plan nomeia o mérito que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+o
+contrato
+não
+garante
+mérito.
+O
+comando
+validava
+a
+forma
+e
+calava
+a
+recusa.
+Agora
+o
+`check-plan`
+nomeia
+o
+mérito.
+Forma
+no
+disco
+não
+é
+adequação.
+Sem
+chave
+`mérito`.
+Nomear
+não
+valida.
+
+O que 0.9.409 não afirma:
+forma
+no
+disco
+não
+é
+adequação
+nem
+obediência.
+
 ## 0.9.408 — o record nomeia a medição que o roteiro já recusa
 
 O

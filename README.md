@@ -493,7 +493,7 @@ concede autorização de publicação. Se o molde recusa publicar, o `template` 
 
 **REUSE → ADAPT → CREATE.** CREATE só entra com lacuna explícita.
 O [contrato JSON](assets/work.example.json) formaliza uma decisão nova;
-`check-plan` valida a forma, não o mérito. O arquivo de exemplo é um formulário em
+`check-plan` valida a forma, não o mérito. Se o processo recusa garantir o mérito, o `check-plan` nomeia o mérito que o processo já recusa. Forma no disco não é adequação. Sem chave `mérito`. O arquivo de exemplo é um formulário em
 branco, de propósito: rodá-lo no validador devolve os oito campos que faltam, que
 é a lista do que preencher.
 

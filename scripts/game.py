@@ -7591,6 +7591,50 @@ def nonempty(value):
     return isinstance(value, str) and bool(value.strip())
 
 
+# O processo já recusa garantir o mérito. Sem isto o
+# check-plan validava a forma e calava a recusa.
+# Forma no disco não é adequação.
+PROCESS_MERIT = re.compile(r"não garantem mérito")
+
+
+def process_refuses_merit(text):
+    return bool(text and PROCESS_MERIT.search(text))
+
+
+def check_plan_merit_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_merit(text):
+        return "references/process.md"
+    return None
+
+
+def check_plan_scope():
+    scope = (
+        "Estrutura e existência dos candidatos; busca, adequação e qualidade exigem revisão."
+    )
+    if check_plan_merit_source():
+        scope += (
+            " O disco recusa garantir o mérito (`mérito`). "
+            "Forma no disco não é adequação."
+        )
+    return scope
+
+
+def check_plan_report(plan, root):
+    errors = check_plan(plan, root)
+    return {
+        "contract_valid": not errors,
+        "errors": errors,
+        "scope": check_plan_scope(),
+    }
+
+
 def check_plan(plan, root):
     errors = []
     if not isinstance(plan, dict):
@@ -8148,9 +8192,9 @@ def main():
             else:
                 print(document, end="")
         elif args.action == "check-plan":
-            errors = check_plan(read_json(args.plan), root)
-            emit({"contract_valid": not errors, "errors": errors, "scope": "Estrutura e existência dos candidatos; busca, adequação e qualidade exigem revisão."})
-            return int(bool(errors))
+            report = check_plan_report(read_json(args.plan), root)
+            emit(report)
+            return int(bool(report["errors"]))
         elif args.action == "note":
             emit(note_observation(
                 require_project_destination(args.project, root), args.author, args.note,
