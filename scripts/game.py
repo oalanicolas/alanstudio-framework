@@ -702,7 +702,7 @@ BAR_SOURCES = ("README.md", "docs/qa.md", "docs/devlog.md", "docs/gdd.md", "docs
 # A prosa já declara o mínimo. Sem isto o
 # bar lia a tabela e calava a regra.
 # Degrau no disco não é acabamento observado.
-BAR_FLOOR_MARK = re.compile(r"mínimo entre", re.IGNORECASE)
+BAR_FLOOR_MARK = re.compile(r"mínimo\*{0,2}\s+entre", re.IGNORECASE)
 
 
 def bar_declares_floor(text):
