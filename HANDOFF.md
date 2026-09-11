@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.363: o `ship` nomeia o banner que o serve já imprime. Banner no disco não é outra máquina. Sem chave `serve`. Não promove `elsewhere`.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes confirmadas no HEAD (0.9.362):** `python3 -m unittest discover -s tests` → 358.
+**Suítes confirmadas no HEAD (0.9.363):** `python3 -m unittest discover -s tests` → 359.
 `cd assets/starters/canvas-arcade && npm test` → 509.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
