@@ -142,7 +142,7 @@ Não invente defeitos, testes, documentos ou tarefas para sustentar a execução
 Uma sessão é suficiente para o modo básico. Revisão própria continua sendo revisão
 própria. Crítico independente é opcional, depende de autorização e execução isolada;
 recebe objetivo, critérios, diff e evidências, sem obrigação de concordar com o autor.
-Papéis simulados no mesmo contexto não comprovam independência. Não se exige número
+Papéis simulados no mesmo contexto não comprovam independência. Se o gauntlet recusa que papéis simulados comprovem independência, o contrato do `gauntlet` nomeia a independência que o gauntlet já recusa. Papel no disco não é crítico isolado. Sem chave `independência`. Não se exige número
 fixo de agentes, pareceres, tokens, notas ou iterações.
 
 ## Como os oito estudos orientam as provas

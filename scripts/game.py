@@ -7878,7 +7878,35 @@ def gauntlet_contract_scope():
             " O disco recusa que horas nulas sejam prazo infinito "
             "(`infinito`). Contrato no disco não é o orçamento."
         )
+    if gauntlet_contract_independence_source():
+        scope += (
+            " O disco recusa que papéis simulados comprovem independência "
+            "(`independência`). Papel no disco não é crítico isolado."
+        )
     return scope
+
+
+# O gauntlet já recusa que papéis simulados comprovem independência.
+# Sem isto o contrato copiava o objetivo e calava a recusa.
+# Papel no disco não é crítico isolado.
+GAUNTLET_INDEPENDENCE = re.compile(r"não comprovam independência")
+
+
+def gauntlet_refuses_roles_as_independent(text):
+    return bool(text and GAUNTLET_INDEPENDENCE.search(text))
+
+
+def gauntlet_contract_independence_source():
+    path = GAUNTLET_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gauntlet_refuses_roles_as_independent(text):
+        return "references/gauntlet.md"
+    return None
 
 
 def gauntlet(project, objective, hours=None, focus="create", output=None):

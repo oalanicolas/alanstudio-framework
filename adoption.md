@@ -30,6 +30,56 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.496 — o contrato do gauntlet nomeia a independência que o gauntlet já recusa
+
+O
+gauntlet
+já
+dizia
+que
+papéis
+simulados
+não
+comprovam
+independência.
+O
+contrato
+copiava
+o
+objetivo
+e
+calava
+a
+recusa.
+Agora
+o
+contrato
+nomeia
+a
+independência.
+Papel
+no
+disco
+não
+é
+crítico
+isolado.
+Sem
+chave
+`independência`.
+Nomear
+não
+observa.
+
+O que 0.9.496 não afirma:
+o
+mesmo
+contexto
+não
+é
+parecer
+independente.
+
 ## 0.9.495 — o signals do next nomeia a conclusão que a receita já recusa
 
 A

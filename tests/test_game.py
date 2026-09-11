@@ -3768,6 +3768,50 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         receipt = json.loads(result.stdout)
         self.assertNotIn("horas nulas sejam prazo infinito", receipt["scope"])
 
+    def test_gauntlet_contract_names_the_independence_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gauntlet.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.gauntlet_refuses_roles_as_independent(guide),
+            "o gauntlet já recusa que papéis simulados comprovem independência",
+        )
+        self.assertEqual(game.gauntlet_contract_independence_source(), "references/gauntlet.md")
+        document = game.gauntlet(self.project, "Provar o recorte")
+        contract = json.loads(document.split("```json\n", 1)[1].split("\n```", 1)[0])
+        self.assertIn(
+            "papéis simulados comprovem independência",
+            contract["scope"],
+            "o contrato copiava o objetivo e calava a recusa",
+        )
+        self.assertIn("(`independência`)", contract["scope"])
+        self.assertNotIn("independência", contract)
+        self.assertFalse(contract["execution_started"])
+        self.assertFalse(game.gauntlet_refuses_roles_as_independent(""))
+        with mock.patch.object(game, "gauntlet_contract_independence_source", return_value=None):
+            silent = json.loads(
+                game.gauntlet(self.project, "Provar o recorte").split("```json\n", 1)[1].split("\n```", 1)[0]
+            )
+        self.assertNotIn("papéis simulados comprovem independência", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a independência que o gauntlet já recusa", guide)
+        self.assertIn("nomeia a independência que o gauntlet já recusa", skill)
+        self.assertIn("nomeia a independência que o gauntlet já recusa", readme)
+        self.assertIn("nomeia a independência que o gauntlet já recusa", recipe)
+        self.assertNotIn("verified", contract["scope"])
+        self.assertNotIn("papéis simulados comprovem independência", game.continuity_prompt_scope())
+        self.assertNotIn("papéis simulados comprovem independência", game.continuity_scope())
+        self.assertNotIn("papéis simulados comprovem independência", game.next_scope())
+        self.assertNotIn("papéis simulados comprovem independência", game.context_scope())
+        output = self.root / "prompts/gauntlet-496.md"
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT), "gauntlet", str(self.project), "--objective", "Provar o recorte", "--output", str(output)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        receipt = json.loads(result.stdout)
+        self.assertNotIn("papéis simulados comprovem independência", receipt["scope"])
+
     def test_gauntlet_context_argv_round_trips_unusual_project_paths_for_every_focus(self):
         project = self.root / "ação 'dupla' $(touch injected); `touch injected2`\n```"
         project.mkdir()
