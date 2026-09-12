@@ -21195,6 +21195,9 @@ def record_scope():
     one = record_variable_scope()
     if one:
         scope += one
+    cut = record_cut_scope()
+    if cut:
+        scope += cut
     return scope
 
 
@@ -21340,6 +21343,41 @@ def record_variable_scope():
     return (
         " O disco recusa que várias variáveis atribuam a causa "
         "(`variável`). Variável no disco não é a causa."
+    )
+
+
+# A receita já recusa que reduzir
+# acabamento para um número seja
+# otimizar. Sem isto o record
+# gravava o recibo e calava a
+# recusa. Corte no disco não é
+# o mesmo resultado.
+PERF_CUT = re.compile(r"rebaixar o jogo,\s+não otimizá-lo")
+
+
+def recipe_refuses_cutting_finish_as_optimization(text):
+    return bool(text and PERF_CUT.search(text))
+
+
+def record_cut_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_cutting_finish_as_optimization(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_cut_scope():
+    if not record_cut_source():
+        return None
+    return (
+        " O disco recusa que reduzir acabamento para um número seja otimizar "
+        "(`rebaixar`). Corte no disco não é o mesmo resultado."
     )
 
 

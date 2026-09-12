@@ -30,6 +30,54 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.741 — o record nomeia o rebaixar que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+reduzir
+acabamento
+para
+um
+número
+é
+rebaixar
+o
+jogo,
+não
+otimizá-lo.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+o
+rebaixar.
+Corte
+no
+disco
+não
+é
+o
+mesmo
+resultado.
+Sem
+chave
+`rebaixar`.
+Nomear
+não
+mede.
+
 ## 0.9.740 — o save nomeia a observada que a receita já recusa
 
 A
