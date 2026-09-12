@@ -10,7 +10,7 @@ documento canônico do jogo, e revisões de marco com evidência ligada. O harne
 localiza o plano como fonte de continuidade; não mede orçamentos, não promove marcos
 nem certifica acabamento. Se a barra recusa promover o degrau, o `context` nomeia a promoção que a barra já recusa. Guia no disco não é acabamento. Sem chave `promove`. Se a barra recusa que o degrau sem condição seja observação, o `dimensions[n]` do `production_bar` nomeia a opinião que a barra já recusa. Linha no disco não é acabamento. Sem chave `opinião`.
 
-“AAA” aqui não é orçamento nem tamanho de equipe. É um **padrão de acabamento
+“AAA” aqui não é orçamento nem tamanho de equipe. Se a receita recusa que AAA seja orçamento ou tamanho de equipe, o `production_bar` nomeia a equipe que a receita já recusa. Receita no disco não é acabamento. Sem chave `equipe`. É um **padrão de acabamento
 observável**: cada disciplina atinge o piso definido no plano, medido na plataforma
 alvo, em movimento, e o jogo permanece estável sob uso prolongado. Um jogo pequeno
 pode alcançá-lo num recorte pequeno; um jogo grande falha nele com muito conteúdo

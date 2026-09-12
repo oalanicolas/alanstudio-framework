@@ -10646,7 +10646,44 @@ def production_bar_scope():
             " O disco recusa promover o degrau (`promove`). "
             "Guia no disco não é acabamento."
         )
+    named = production_bar_team_scope()
+    if named:
+        scope += named
     return scope
+
+
+# A receita já recusa que AAA seja
+# orçamento ou tamanho de equipe.
+# Sem isto o production_bar apontava
+# as dimensões e calava a recusa.
+# Receita no disco não é acabamento.
+PRODUCTION_TEAM = re.compile(r"não é orçamento nem tamanho de equipe")
+
+
+def recipe_refuses_aaa_as_team_budget(text):
+    return bool(text and PRODUCTION_TEAM.search(text))
+
+
+def production_bar_team_source():
+    path = FRAMEWORK / "recipes/production.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_aaa_as_team_budget(text):
+        return "recipes/production.md"
+    return None
+
+
+def production_bar_team_scope():
+    if not production_bar_team_source():
+        return None
+    return (
+        " O disco recusa que AAA seja orçamento ou tamanho de equipe "
+        "(`equipe`). Receita no disco não é acabamento."
+    )
 
 
 # A barra já recusa que o degrau sem condição

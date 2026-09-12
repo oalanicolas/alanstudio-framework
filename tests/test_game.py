@@ -1388,6 +1388,59 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("promover o degrau", game.next_step(self.project)["scope"])
         self.assertNotIn("promover o degrau", report["documentation"]["scope"])
 
+    def test_production_bar_names_the_team_the_recipe_already_refuses(self):
+        recipe_text = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_aaa_as_team_budget(recipe_text),
+            "a receita já recusa que AAA seja orçamento ou tamanho de equipe",
+        )
+        self.assertEqual(game.production_bar_team_source(), "recipes/production.md")
+        report = game.context(self.project, "create")
+        self.assertIn(
+            "AAA seja orçamento ou tamanho de equipe",
+            report["production_bar"]["scope"],
+            "o production_bar apontava as dimensões e calava a recusa",
+        )
+        self.assertIn("(`equipe`)", report["production_bar"]["scope"])
+        self.assertNotIn("equipe", report["production_bar"])
+        self.assertFalse(report["production_bar"]["assessed"])
+        self.assertFalse(game.recipe_refuses_aaa_as_team_budget(""))
+        with mock.patch.object(game, "production_bar_team_source", return_value=None):
+            silent = game.context(self.project, "create")
+        self.assertNotIn(
+            "AAA seja orçamento ou tamanho de equipe",
+            silent["production_bar"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a equipe que a receita já recusa", recipe)
+        self.assertIn("nomeia a equipe que a receita já recusa", skill)
+        self.assertIn("nomeia a equipe que a receita já recusa", readme)
+        self.assertNotIn("verified", report["production_bar"]["scope"])
+        self.assertNotIn("aprovado", report["production_bar"]["scope"])
+        self.assertNotIn("4.5", report["production_bar"]["scope"])
+        self.assertNotIn(
+            "AAA seja orçamento ou tamanho de equipe",
+            game.bar_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "AAA seja orçamento ou tamanho de equipe",
+            report["finish"]["scope"],
+        )
+        self.assertNotIn(
+            "AAA seja orçamento ou tamanho de equipe",
+            report["scope"],
+        )
+        self.assertNotIn(
+            "AAA seja orçamento ou tamanho de equipe",
+            game.scan(self.project)["areas"]["architecture"]["scope"],
+        )
+        self.assertNotIn(
+            "AAA seja orçamento ou tamanho de equipe",
+            game.next_step(self.project)["scope"],
+        )
+
     def test_production_bar_dimensions_name_the_opinion_the_bar_already_refuses(self):
         guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
         self.assertTrue(
