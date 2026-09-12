@@ -3475,6 +3475,69 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovar a criatividade", game.next_scope())
         self.assertNotIn("aprovar a criatividade", game.template_scope("release"))
 
+    def test_verify_names_the_connectivity_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/network.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_unit_test_as_connectivity(recipe),
+            "a receita já recusa que teste unitário de serialização prove conectividade real",
+        )
+        self.assertEqual(game.verify_connectivity_source(), "recipes/network.md")
+        report = game.verify(
+            self.project, [], [sys.executable, "-c", "pass"],
+            self.root / "verify-561", 5,
+        )
+        self.assertIn(
+            "teste unitário de serialização prove conectividade real",
+            report["scope"],
+            "o verify executava o comando e calava a recusa",
+        )
+        self.assertIn("(`conectividade`)", report["scope"])
+        self.assertNotIn("conectividade", report)
+        self.assertEqual(report["experience_status"], "not_assessed")
+        self.assertFalse(game.recipe_refuses_unit_test_as_connectivity(""))
+        with mock.patch.object(game, "verify_connectivity_source", return_value=None):
+            silent = game.verify(
+                self.project, [], [sys.executable, "-c", "pass"],
+                self.root / "verify-561-silent", 5,
+            )
+        self.assertNotIn(
+            "teste unitário de serialização prove conectividade real",
+            silent["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a conectividade que a receita já recusa", recipe)
+        self.assertIn("nomeia a conectividade que a receita já recusa", production)
+        self.assertIn("nomeia a conectividade que a receita já recusa", skill)
+        self.assertIn("nomeia a conectividade que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertTrue(report["commands"], "o verify já devolve comandos neste destino")
+        self.assertNotIn(
+            "teste unitário de serialização prove conectividade real",
+            report["commands"][0]["scope"],
+        )
+        self.assertNotIn(
+            "teste unitário de serialização prove conectividade real",
+            game.record_scope(),
+        )
+        self.assertNotIn(
+            "teste unitário de serialização prove conectividade real",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "teste unitário de serialização prove conectividade real",
+            game.ship_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "teste unitário de serialização prove conectividade real",
+            game.playtest_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "teste unitário de serialização prove conectividade real",
+            game.invite_playtest(self.project)["scope"],
+        )
+
     def test_verify_names_the_fun_the_ambition_already_refuses(self):
         ambition = (game.FRAMEWORK / "references/ambition.md").read_text(encoding="utf-8")
         self.assertTrue(

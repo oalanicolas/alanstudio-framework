@@ -17,7 +17,7 @@ equivale a recusa no executor autoritativo.
 Preserve namespaces, isolamento de sala e estado local/persistente. Use duas sessões
 reais para validar conexão, entrada, saída, reinício e reconexão. Examine mensagens
 duplicadas, atrasadas, fora de ordem e após término quando o protocolo permitir esses
-eventos. Teste unitário de serialização não prova conectividade real.
+eventos. Teste unitário de serialização não prova conectividade real. Se a receita recusa que teste unitário de serialização prove conectividade real, o `verify` nomeia a conectividade que a receita já recusa. Recibo verde não é sessão real. Sem chave `conectividade`.
 
 Para agentes que jogam, defina observação, ações permitidas, retorno de erro e término
 de acordo com o jogo. Reutilize o ambiente existente antes de criar um servidor.

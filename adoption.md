@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.561 — o verify nomeia a conectividade que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+teste
+unitário
+de
+serialização
+não
+prova
+conectividade
+real.
+O
+verify
+executava
+o
+comando
+e
+calava
+a
+recusa.
+Agora
+o
+`verify`
+nomeia
+a
+conectividade.
+Recibo
+verde
+não
+é
+sessão
+real.
+Sem
+chave
+`conectividade`.
+Nomear
+não
+observa.
+
+O que 0.9.561 não afirma:
+executar
+o
+comando
+não
+é
+sessão
+real.
+
 ## 0.9.560 — o ci do ship nomeia a primeira que a receita já recusa
 
 A

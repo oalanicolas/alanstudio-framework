@@ -12752,7 +12752,44 @@ def verify_scope():
             " O disco recusa aprovar a criatividade (`criatividade`). "
             "Recibo verde não é aprovação."
         )
+    named = verify_connectivity_scope()
+    if named:
+        scope += named
     return scope
+
+
+# A receita já recusa que teste unitário
+# de serialização prove conectividade real.
+# Sem isto o verify executava o comando e
+# calava a recusa. Recibo verde não é
+# sessão real.
+NETWORK_CONNECTIVITY = re.compile(r"não prova conectividade real")
+
+
+def recipe_refuses_unit_test_as_connectivity(text):
+    return bool(text and NETWORK_CONNECTIVITY.search(text))
+
+
+def verify_connectivity_source():
+    path = FRAMEWORK / "recipes/network.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_unit_test_as_connectivity(text):
+        return "recipes/network.md"
+    return None
+
+
+def verify_connectivity_scope():
+    if not verify_connectivity_source():
+        return None
+    return (
+        " O disco recusa que teste unitário de serialização prove "
+        "conectividade real (`conectividade`). Recibo verde não é sessão real."
+    )
 
 
 # A ambição já recusa que o recibo comprove diversão. Sem isto o
