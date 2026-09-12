@@ -111,7 +111,7 @@ class CommandCliTest(unittest.TestCase):
         (self.root / ".agents").mkdir()  # host presente, skill ausente: não recebe atalho
         result = game.pin(self.root, "critique")
         pinned = skills / "critique/SKILL.md"
-        self.assertEqual(result["created"], [str(pinned)])
+        self.assertEqual(game.pin_created_paths(result), [str(pinned)])
         self.assertEqual(result["invoke"], "/critique")
         self.assertFalse((self.root / ".agents/skills/critique").exists())
         text = pinned.read_text(encoding="utf-8")
@@ -121,7 +121,58 @@ class CommandCliTest(unittest.TestCase):
         self.assertIn(str(game.FRAMEWORK / "SKILL.md"), text)
         # Fixar de novo é idempotente: sobrescreve o próprio atalho, sem duplicar.
         again = game.pin(self.root, "critique")
-        self.assertEqual(again["created"], [str(pinned)])
+        self.assertEqual(game.pin_created_paths(again), [str(pinned)])
+
+    def test_pin_created_names_the_copy_the_readme_already_refuses(self):
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.readme_refuses_pin_as_copying_skill(readme),
+            "o README já recusa que o pin copie a skill",
+        )
+        self.assertEqual(game.pin_created_copy_source(), "README.md")
+        skills = self.install_skill(".agents")
+        own = skills / "polish/SKILL.md"
+        own.parent.mkdir()
+        own.write_text("---\nname: polish\n---\nskill própria do usuário\n", encoding="utf-8")
+        empty = game.pin(self.root, "polish")
+        self.assertEqual(empty["created"], [])
+        self.assertEqual(game.pin_created_paths(empty), [])
+        result = game.pin(self.root, "critique")
+        pinned = skills / "critique/SKILL.md"
+        item = result["created"]
+        self.assertEqual(item["created"], [str(pinned)], "o pin já escreve o atalho neste chamado")
+        self.assertEqual(item["created"], game.pin_created_paths(result))
+        self.assertIn(
+            "o pin copie a skill",
+            item["scope"],
+            "o pin relatava o created e calava a recusa",
+        )
+        self.assertIn("(`cópia`)", item["scope"])
+        self.assertNotIn("cópia", item)
+        self.assertEqual(result["invoke"], "/critique")
+        self.assertFalse(game.readme_refuses_pin_as_copying_skill(""))
+        with patch.object(game, "pin_created_copy_source", return_value=None):
+            silent = game.pin(self.root, "feel")
+        self.assertNotIn(
+            "o pin copie a skill",
+            silent["created"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a cópia que o README já recusa", readme)
+        self.assertIn("nomeia a cópia que o README já recusa", skill)
+        self.assertIn("nomeia a cópia que o README já recusa", guide)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o pin copie a skill", result["scope"])
+        self.assertNotIn("o pin copie a skill", empty["skipped"][0]["scope"])
+        self.assertNotIn("o pin copie a skill", game.unpin(self.root, "critique")["scope"])
+        self.assertNotIn("o pin copie a skill", game.command_listing()["scope"])
+        self.assertNotIn("o pin copie a skill", game.next_scope())
+        removed = game.unpin(self.root, "feel")
+        self.assertIsInstance(removed["removed"], list)
+        self.assertNotIsInstance(removed["removed"], dict)
 
     def test_pin_never_overwrites_a_skill_the_user_wrote(self):
         skills = self.install_skill(".agents")

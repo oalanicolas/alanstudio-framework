@@ -10856,7 +10856,7 @@ def pin(root, name):
         skill_file.write_text(pinned_skill(name, catalog["commands"][name]), encoding="utf-8")
         created.append(str(skill_file))
     return {
-        "command": name, "created": created, "skipped": skipped,
+        "command": name, "created": pin_created_reading(created), "skipped": skipped,
         "invoke": f"/{name}" if created else None,
         "scope": "Cria um atalho que redireciona para `$game-dev <comando>`; não copia a skill nem altera a referência do comando.",
     }
@@ -10920,6 +10920,67 @@ def pin_skipped_scope():
             "(`própria`). Atalho no disco não é a skill."
         )
     return scope
+
+
+# O README já recusa que o pin
+# copie a skill. Sem isto o pin
+# relatava o created e calava a
+# recusa. Atalho no disco não é
+# a skill.
+PIN_COPY = re.compile(r"não copia a skill")
+
+
+def readme_refuses_pin_as_copying_skill(text):
+    return bool(text and PIN_COPY.search(text))
+
+
+def pin_created_copy_source():
+    path = FRAMEWORK / "README.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_refuses_pin_as_copying_skill(text):
+        return "README.md"
+    return None
+
+
+def pin_created_copy_scope():
+    if not pin_created_copy_source():
+        return None
+    return (
+        " O disco recusa que o pin copie a skill "
+        "(`cópia`). Atalho no disco não é a skill."
+    )
+
+
+def pin_created_scope():
+    scope = (
+        "atalho escrito no host. "
+        "O pin não copia a skill."
+    )
+    named = pin_created_copy_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def pin_created_paths(reading):
+    created = (reading or {}).get("created") if isinstance(reading, dict) else reading
+    if isinstance(created, dict):
+        return list(created.get("created") or [])
+    return list(created or [])
+
+
+def pin_created_reading(created):
+    if not created:
+        return created
+    return {
+        "created": list(created),
+        "scope": pin_created_scope(),
+    }
 
 
 def select_packs(kind, genre, mentions):
