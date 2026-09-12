@@ -370,6 +370,64 @@ class CommandCliTest(unittest.TestCase):
         self.assertIn("sobrescrever uma skill sua com o mesmo nome", unpinned["skipped"][0]["scope"])
         self.assertNotIn("própria", unpinned["skipped"][0])
 
+    def test_pin_skipped_names_the_marker_the_readme_already_refuses(self):
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertRegex(readme, r"`unpin` remove só o que tem o marcador")
+        self.assertTrue(
+            game.readme_refuses_unpin_without_marker(readme),
+            "o README já recusa que o unpin remova o que não tem o marcador",
+        )
+        self.assertEqual(game.pin_skipped_mark_source(), "README.md")
+        skills = self.install_skill(".agents")
+        own = skills / "polish/SKILL.md"
+        own.parent.mkdir()
+        own.write_text("---\nname: polish\n---\nskill própria do usuário\n", encoding="utf-8")
+        result = game.pin(self.root, "polish")
+        self.assertTrue(result["skipped"], "o pin já recusa a skill própria")
+        item = result["skipped"][0]
+        self.assertIn(
+            "o unpin remova o que não tem o marcador",
+            item["scope"],
+            "o skipped copiava o path e calava a recusa",
+        )
+        self.assertIn("(`marcador`)", item["scope"])
+        self.assertIn("Skill no disco não é o atalho.", item["scope"])
+        self.assertNotIn("marcador", item)
+        self.assertFalse(game.readme_refuses_unpin_without_marker(""))
+        with patch.object(game, "pin_skipped_mark_source", return_value=None):
+            silent = game.pin(self.root, "polish")
+        self.assertNotIn(
+            "o unpin remova o que não tem o marcador",
+            silent["skipped"][0]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o marcador que o README já recusa", readme)
+        self.assertIn("nomeia o marcador que o README já recusa", skill)
+        self.assertIn("nomeia o marcador que o README já recusa", guide)
+        self.assertIn("nomeia o marcador que o README já recusa", create)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        phrase = "o unpin remova o que não tem o marcador"
+        self.assertNotIn(phrase, result["scope"])
+        self.assertNotIn(phrase, game.unpin(self.root, "polish")["scope"])
+        self.assertNotIn(phrase, game.command_listing()["scope"])
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.context_scope())
+        self.assertNotIn(phrase, game.feel_reading(self.root).get("scope") or "")
+        self.assertNotIn(phrase, game.budget_reading(self.root).get("scope") or "")
+        self.assertNotIn(phrase, game.content_reading(self.root).get("scope") or "")
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.save_reading(self.root).get("scope") or "")
+        self.assertNotIn("marcador", game.CYCLE_KEYS)
+        unpinned = game.unpin(self.root, "polish")
+        self.assertIn(phrase, unpinned["skipped"][0]["scope"])
+        self.assertNotIn("marcador", unpinned["skipped"][0])
+
     def test_unpin_removes_only_pinned_shortcuts_and_is_idempotent(self):
         skills = self.install_skill(".claude")
         game.pin(self.root, "feel")

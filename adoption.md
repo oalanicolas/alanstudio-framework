@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.721 — o skipped do pin nomeia o marcador que o README já recusa
+
+O
+README
+já
+dizia
+que
+o
+unpin
+remove
+só
+o
+que
+tem
+o
+marcador.
+O
+skipped
+copiava
+o
+path
+e
+calava
+a
+recusa.
+Agora
+o
+skipped
+nomeia
+o
+marcador.
+Skill
+no
+disco
+não
+é
+o
+atalho.
+Sem
+chave
+`marcador`.
+Nomear
+não
+remove.
+
 ## 0.9.720 — o ciclo nomeia o segurar que a receita já recusa
 
 A

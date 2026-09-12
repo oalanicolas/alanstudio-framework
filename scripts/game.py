@@ -12962,7 +12962,44 @@ def pin_skipped_scope():
             " O disco recusa sobrescrever uma skill sua com o mesmo nome "
             "(`própria`). Atalho no disco não é a skill."
         )
+    mark = pin_skipped_mark_scope()
+    if mark:
+        scope += mark
     return scope
+
+
+# O README já recusa que o unpin
+# remova o que não tem o marcador.
+# Sem isto o skipped copiava o path
+# e calava a recusa.
+# Skill no disco não é o atalho.
+PIN_MARK = re.compile(r"`unpin` remove só o que tem o marcador")
+
+
+def readme_refuses_unpin_without_marker(text):
+    return bool(text and PIN_MARK.search(text))
+
+
+def pin_skipped_mark_source():
+    path = FRAMEWORK / "README.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_refuses_unpin_without_marker(text):
+        return "README.md"
+    return None
+
+
+def pin_skipped_mark_scope():
+    if not pin_skipped_mark_source():
+        return None
+    return (
+        " O disco recusa que o unpin remova o que não tem o marcador "
+        "(`marcador`). Skill no disco não é o atalho."
+    )
 
 
 # O README já recusa que o pin

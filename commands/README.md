@@ -9,7 +9,7 @@ e a regra de que invocar sem carregar a referência produz trabalho genérico. S
 [`commands.json`](commands.json) é o catálogo: categoria, descrição, dica de
 argumentos, focos do `context` e leituras canônicas. Ele alimenta `game.py commands`
 (menu em JSON), `pin`/`unpin` (atalhos no host) e a checagem `commands` do `doctor`,
-que exige catálogo, arquivo e linha na tabela do `SKILL.md` em acordo. `pin` não copia a skill. Se o README recusa que o pin copie a skill, o `created` do `pin` nomeia a cópia que o README já recusa. Atalho no disco não é a skill. Sem chave `cópia`. Se o README recusa sobrescrever skill sua com o mesmo nome, o `pin` nomeia a própria que o README já recusa. Atalho no disco não é a skill. Sem chave `própria`.
+que exige catálogo, arquivo e linha na tabela do `SKILL.md` em acordo. `pin` não copia a skill. Se o README recusa que o pin copie a skill, o `created` do `pin` nomeia a cópia que o README já recusa. Atalho no disco não é a skill. Sem chave `cópia`. Se o README recusa sobrescrever skill sua com o mesmo nome, o `pin` nomeia a própria que o README já recusa. Atalho no disco não é a skill. Sem chave `própria`. Se o README recusa que o unpin remova o que não tem o marcador, o `skipped` do `pin` nomeia o marcador que o README já recusa. Skill no disco não é o atalho. Sem chave `marcador`.
 
 ## Contrato de uma referência
 
