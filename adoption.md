@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.717 — o used do save nomeia o original que a receita já recusa
+
+A
+receita
+já
+dizia
+não
+apague
+save
+real
+para
+fazer
+um
+teste
+passar.
+O
+save
+relatava
+o
+uso
+e
+calava
+a
+recusa.
+Agora
+o
+`used`
+do
+`save`
+nomeia
+o
+original.
+Teste
+no
+disco
+não
+é
+o
+save.
+Sem
+chave
+`original`.
+Nomear
+não
+observa.
+
 ## 0.9.716 — o item do craft nomeia o folclore que a pesquisa já recusa
 
 A

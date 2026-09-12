@@ -16595,6 +16595,75 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         empty = game.save_reading(self.project)
         self.assertFalse(empty["used"])
 
+    def test_save_used_names_the_original_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertRegex(
+            recipe,
+            r"Não apague save real para fazer um teste passar",
+        )
+        self.assertTrue(
+            game.recipe_refuses_deleting_real_save_to_pass_a_test(recipe),
+            "a receita já recusa que apagar o save real faça um teste passar",
+        )
+        self.assertEqual(game.save_used_keep_source(), "recipes/persistence.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.save_reading(starter)
+        item = report["used"]
+        self.assertTrue(item["used"], "o save já relata uso neste starter")
+        self.assertIn(
+            "apagar o save real faça um teste passar",
+            item["scope"],
+            "o save relatava o uso e calava a recusa",
+        )
+        self.assertIn("(`original`)", item["scope"])
+        self.assertIn("Teste no disco não é o save.", item["scope"])
+        self.assertNotIn("original", item)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_deleting_real_save_to_pass_a_test(""))
+        with mock.patch.object(game, "save_used_keep_source", return_value=None):
+            silent = game.save_reading(starter)
+        self.assertNotIn(
+            "apagar o save real faça um teste passar",
+            silent["used"]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o original que a receita já recusa", recipe)
+        self.assertIn("nomeia o original que a receita já recusa", create)
+        self.assertIn("nomeia o original que a receita já recusa", skill)
+        self.assertIn("nomeia o original que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        phrase = "apagar o save real faça um teste passar"
+        self.assertNotIn(phrase, report["scope"])
+        warned = report.get("warned")
+        if isinstance(warned, dict):
+            self.assertNotIn(phrase, warned.get("scope") or "")
+        warnings = report.get("warnings")
+        if isinstance(warnings, dict):
+            self.assertNotIn(phrase, warnings.get("scope") or "")
+        sources = report.get("sources")
+        if isinstance(sources, dict):
+            self.assertNotIn(phrase, sources.get("scope") or "")
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.craft_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.art_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.play_scope(starter))
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.git_summary_scope())
+        self.assertNotIn("original", game.CYCLE_KEYS)
+        empty = game.save_reading(self.project)
+        self.assertFalse(empty["used"])
+
     def test_save_versioned_names_the_version_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         self.assertTrue(

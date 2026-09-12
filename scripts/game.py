@@ -5373,6 +5373,9 @@ def save_used_scope():
     tab = save_used_tab_scope()
     if tab:
         scope += tab
+    keep = save_used_keep_scope()
+    if keep:
+        scope += keep
     return scope
 
 
@@ -5442,6 +5445,43 @@ def save_used_tab_scope():
     return (
         " O disco recusa que o número no disco seja aba fechada "
         "(`aba`). Número no disco não é a aba."
+    )
+
+
+# A receita já recusa que apagar
+# o save real faça um teste
+# passar. Sem isto o save
+# relatava o uso e calava a
+# recusa. Teste no disco não
+# é o save.
+PERSIST_KEEP = re.compile(
+    r"Não apague save real para fazer um teste passar"
+)
+
+
+def recipe_refuses_deleting_real_save_to_pass_a_test(text):
+    return bool(text and PERSIST_KEEP.search(text))
+
+
+def save_used_keep_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_deleting_real_save_to_pass_a_test(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_used_keep_scope():
+    if not save_used_keep_source():
+        return None
+    return (
+        " O disco recusa que apagar o save real faça um teste passar "
+        "(`original`). Teste no disco não é o save."
     )
 
 

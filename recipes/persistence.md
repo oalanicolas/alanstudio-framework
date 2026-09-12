@@ -39,7 +39,7 @@ Jogando a chave some. Nomear não é aba fechada. Se a receita recusa que o avis
 ou `settings.broken`. Nomear não é
 aba fechada nem `trusted`. Se a receita recusa que o nomear seja trusted, o `warned` do `save` nomeia a confiança que a receita já recusa. Arquivo no disco não é a aba. Sem chave `confiança`.
 **Não apague save real para fazer um teste passar**; ao
-migrar, preserve o original até a nova gravação estar confirmada.
+migrar, preserve o original até a nova gravação estar confirmada. Se a receita recusa que apagar o save real faça um teste passar, o `used` do `save` nomeia o original que a receita já recusa. Teste no disco não é o save. Sem chave `original`.
 
 Grave em escrita atômica — arquivo temporário e substituição — para que uma
 interrupção no meio não deixe um save pela metade. Defina os momentos de gravação
