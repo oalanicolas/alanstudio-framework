@@ -13829,7 +13829,45 @@ def runbook_area_scope():
             " O disco recusa que telemetria seja padrão silencioso (`telemetria`). "
             "Área no disco não é consentimento."
         )
+    server = runbook_init_scope()
+    if server:
+        scope += server
     return scope
+
+
+# O processo já recusa que servidor
+# aberto conclua inicialização
+# documental. Sem isto a área
+# localizava o runbook e calava a
+# recusa. Servidor no disco não é
+# o documento.
+PROCESS_SERVER = re.compile(r"Servidor aberto não conclui inicialização documental")
+
+
+def process_refuses_open_server_as_documentary_init(text):
+    return bool(text and PROCESS_SERVER.search(text))
+
+
+def runbook_init_source():
+    path = FRAMEWORK / "references" / "process.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_open_server_as_documentary_init(text):
+        return "references/process.md"
+    return None
+
+
+def runbook_init_scope():
+    if not runbook_init_source():
+        return ""
+    return (
+        " O disco recusa que servidor aberto conclua inicialização "
+        "documental (`inicialização`). Servidor no disco não é o documento."
+    )
 
 
 def documentation_scope(document_minimum):

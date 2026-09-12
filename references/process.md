@@ -39,7 +39,7 @@ Resolva a intenção antes de escolher o comando técnico. “Inicie/inicialize 
 sem alvo operacional específico aciona [análise profunda e documentação](project-audit.md#inicializar-o-projeto)
 com `--event initialize`. “Inicie o servidor/partida” segue a operação explícita;
 iniciar uma etapa previamente definida retoma o recorte. O objeto e a conversa
-prevalecem sobre a palavra isolada. Servidor aberto não conclui inicialização documental.
+prevalecem sobre a palavra isolada. Servidor aberto não conclui inicialização documental. Se o processo recusa que servidor aberto conclua inicialização documental, a área `runbook` do `scan` nomeia a inicialização que o processo já recusa. Servidor no disco não é o documento. Sem chave `inicialização`.
 
 Leia a direção atual do usuário, AGENTS, versão do jogo, brief, decisões e referência
 aprovada. Diferencie original, variante e experimento. Uma hipótese do agente não

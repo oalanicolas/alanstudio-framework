@@ -5760,6 +5760,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("telemetria seja padrão silencioso", game.ship_reading(self.project)["scope"])
         self.assertNotIn("telemetria seja padrão silencioso", game.next_scope())
 
+    def test_scan_runbook_names_the_init_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_open_server_as_documentary_init(guide),
+            "o processo já recusa que servidor aberto conclua inicialização documental",
+        )
+        self.assertEqual(game.runbook_init_source(), "references/process.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "servidor aberto conclua inicialização documental",
+            report["areas"]["runbook"]["scope"],
+            "a área localizava o runbook e calava a recusa",
+        )
+        self.assertIn("(`inicialização`)", report["areas"]["runbook"]["scope"])
+        self.assertNotIn("inicialização", report["areas"]["runbook"])
+        self.assertFalse(game.process_refuses_open_server_as_documentary_init(""))
+        with mock.patch.object(game, "runbook_init_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "servidor aberto conclua inicialização documental",
+            silent["areas"]["runbook"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a inicialização que o processo já recusa", guide)
+        self.assertIn("nomeia a inicialização que o processo já recusa", recipe)
+        self.assertIn("nomeia a inicialização que o processo já recusa", skill)
+        self.assertIn("nomeia a inicialização que o processo já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["runbook"]["scope"])
+        self.assertNotIn("aprovado", report["areas"]["runbook"]["scope"])
+        self.assertNotIn("4.5", report["areas"]["runbook"]["scope"])
+        self.assertNotIn("servidor aberto conclua inicialização documental", report["scope"])
+        self.assertNotIn("servidor aberto conclua inicialização documental", report["areas"]["qa"]["scope"])
+        self.assertNotIn("servidor aberto conclua inicialização documental", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("servidor aberto conclua inicialização documental", report["areas"]["provenance"]["scope"])
+        self.assertNotIn("servidor aberto conclua inicialização documental", game.ship_reading(self.project)["scope"])
+        self.assertNotIn("servidor aberto conclua inicialização documental", game.next_scope())
+        self.assertNotIn(
+            "servidor aberto conclua inicialização documental",
+            game.documentation_initialization_scope(),
+        )
+
     def test_scan_names_the_history_the_recipe_already_refuses(self):
         recipe_text = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
         self.assertTrue(

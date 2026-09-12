@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.688 — a área runbook nomeia a inicialização que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+servidor
+aberto
+não
+conclui
+inicialização
+documental.
+A
+área
+localizava
+o
+runbook
+e
+calava
+a
+recusa.
+Agora
+a
+área
+`runbook`
+nomeia
+a
+inicialização.
+Servidor
+no
+disco
+não
+é
+o
+documento.
+Sem
+chave
+`inicialização`.
+Nomear
+não
+observa.
+
 ## 0.9.687 — a área provenance nomeia a localização que o release já recusa
 
 O
