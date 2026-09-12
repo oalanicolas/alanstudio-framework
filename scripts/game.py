@@ -6045,6 +6045,58 @@ def last_run_spawn(project):
     return None
 
 
+# A receita já recusa que a chuva
+# da outra mesa retome o hold. Sem
+# isto o playtest relatava a mesa e
+# calava a recusa. Mesa no disco
+# não é a sessão.
+LIFECYCLE_RESUME = re.compile(r"não retoma o hold")
+
+
+def recipe_refuses_spawn_as_resume(text):
+    return bool(text and LIFECYCLE_RESUME.search(text))
+
+
+def playtest_spawn_resume_source():
+    path = FRAMEWORK / "recipes/lifecycle.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_spawn_as_resume(text):
+        return "recipes/lifecycle.md"
+    return None
+
+
+def playtest_spawn_resume_scope():
+    if not playtest_spawn_resume_source():
+        return None
+    return (
+        " O disco recusa que a chuva da outra mesa retome o hold "
+        "(`retoma`). Mesa no disco não é a sessão."
+    )
+
+
+def playtest_spawn_scope():
+    scope = (
+        "mesa no last-run. "
+        "Não observa a sessão."
+    )
+    named = playtest_spawn_resume_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def playtest_candidate_spawn(reading):
+    spawn = (reading or {}).get("candidate_spawn")
+    if isinstance(spawn, dict):
+        return spawn.get("spawn")
+    return spawn
+
+
 def last_run_curve(project):
     # A faixa e o leitor viam seed e some a curva.
     # last-run.json já a traçou. Número não é outsider.
@@ -6456,6 +6508,11 @@ def playtest_reading(project):
             "scope": playtest_seed_scope(),
         }
     candidate_spawn = last_run_spawn(project) if candidate else None
+    if candidate_spawn is not None:
+        candidate_spawn = {
+            "spawn": candidate_spawn,
+            "scope": playtest_spawn_scope(),
+        }
     candidate_look = last_run_look(project) if candidate else None
     candidate_speed = last_run_speed(project) if candidate else None
     if candidate_speed is not None:

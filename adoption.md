@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.579 — o candidate_spawn nomeia a retoma que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+`?spawn=`
+não
+retoma
+o
+hold
+de
+outra
+mesa.
+O
+playtest
+relatava
+a
+mesa
+e
+calava
+a
+recusa.
+Agora
+o
+`candidate_spawn`
+nomeia
+a
+retoma.
+Mesa
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`retoma`.
+Nomear
+não
+observa.
+
+O que 0.9.579 não afirma:
+nomear
+a
+mesa
+não
+é
+retomar
+o
+hold.
+
 ## 0.9.578 — o artifact_open do ship nomeia a execução que a receita já recusa
 
 A

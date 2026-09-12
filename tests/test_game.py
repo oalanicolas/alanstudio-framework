@@ -13184,6 +13184,71 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["findings"], [])
         self.assertEqual(report["finding_attachments"], [])
 
+    def test_candidate_spawn_names_the_resume_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_spawn_as_resume(recipe),
+            "a receita já recusa que a chuva da outra mesa retome o hold",
+        )
+        self.assertEqual(game.playtest_spawn_resume_source(), "recipes/lifecycle.md")
+        empty = game.playtest_reading(self.project)
+        self.assertIsNone(empty["candidate_spawn"])
+        self.assertIsNone(game.playtest_candidate_spawn(empty))
+        run = self.project / "docs/playtest"
+        run.mkdir(parents=True)
+        (run / "last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "spawn": "dusk",
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        self.assertEqual(game.last_run_spawn(self.project), "dusk")
+        report = game.playtest_reading(self.project)
+        item = report["candidate_spawn"]
+        self.assertEqual(item["spawn"], "dusk")
+        self.assertEqual(item["spawn"], game.playtest_candidate_spawn(report))
+        self.assertIn(
+            "a chuva da outra mesa retome o hold",
+            item["scope"],
+            "o playtest relatava a mesa e calava a recusa",
+        )
+        self.assertIn("(`retoma`)", item["scope"])
+        self.assertNotIn("retoma", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_spawn_as_resume(""))
+        with mock.patch.object(game, "playtest_spawn_resume_source", return_value=None):
+            silent = game.playtest_reading(self.project)
+        self.assertNotIn(
+            "a chuva da outra mesa retome o hold",
+            silent["candidate_spawn"]["scope"],
+        )
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a retoma que a receita já recusa", feel)
+        self.assertIn("nomeia a retoma que a receita já recusa", skill)
+        self.assertIn("nomeia a retoma que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a chuva da outra mesa retome o hold", report["scope"])
+        if report.get("candidate_seed"):
+            self.assertNotIn(
+                "a chuva da outra mesa retome o hold",
+                report["candidate_seed"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "a chuva da outra mesa retome o hold",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn("a chuva da outra mesa retome o hold", game.next_scope())
+        self.assertEqual(report["findings"], [])
+        self.assertEqual(report["finding_attachments"], [])
+        self.assertEqual(report["observations"], [])
+
     def test_a_structured_finding_is_form_not_an_observed_session(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "docs").mkdir()
@@ -13411,7 +13476,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(rained["created"])
         self.assertEqual(rained["href"], "/?invite=1&seed=8&spawn=dusk")
         self.assertEqual(rained["reading"]["invite_href"], "/?invite=1&seed=8&spawn=dusk")
-        self.assertEqual(rained["reading"]["candidate_spawn"], "dusk")
+        self.assertEqual(rained["reading"]["candidate_spawn"]["spawn"], "dusk")
         self.assertEqual(rained["reading"]["candidate_seed"]["seed"], 8)
         self.assertFalse(rained["outsider"])
         self.assertNotIn("aprovado", rained["scope"])
@@ -13453,7 +13518,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(painted["href"], "/?invite=1&seed=8&spawn=dusk&look=dusk")
         self.assertEqual(painted["reading"]["invite_href"], "/?invite=1&seed=8&spawn=dusk&look=dusk")
         self.assertEqual(painted["reading"]["candidate_look"], "dusk")
-        self.assertEqual(painted["reading"]["candidate_spawn"], "dusk")
+        self.assertEqual(painted["reading"]["candidate_spawn"]["spawn"], "dusk")
         self.assertFalse(painted["outsider"])
         (destination / "docs/playtest/last-run.json").write_text(json.dumps({
             "schema": 2,

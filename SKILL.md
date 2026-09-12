@@ -408,7 +408,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    Se o `tools/serve.*` grava o recado, o `playtest` nomeia o recado que o serve já grava. Texto no disco não é alguém de fora. Sem chave `note`.
    Se o candidato nomeia a seed, `playtest` relata `candidate_seed`
    e `?seed=` abre essa partida, ignorando o hold. Se nomeia a
-   chuva, relata `candidate_spawn`; se nomeia o look, relata
+   chuva, relata `candidate_spawn`; se a receita recusa que a chuva da outra mesa retome o hold, o `candidate_spawn` nomeia a retoma que a receita já recusa. Mesa no disco não é a sessão. Sem chave `retoma`. Se nomeia o look, relata
    `candidate_look`; se nomeia a curva, relata `candidate_curve`;
    se nomeia a origem, relata `candidate_policy` (`played` ou
    `nearest-orb`); se nomeia a conta, relata `candidate_tally`

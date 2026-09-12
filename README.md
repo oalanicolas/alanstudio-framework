@@ -869,7 +869,7 @@ existir, o recibo o nomeia em `qa`. Escrever não é sessão
 observada. Se
 `docs/playtest/last-run.json` existir, `playtest` o relata
 como `candidate` e, se nomear a seed, como `candidate_seed`.
-Se nomear a chuva, como `candidate_spawn`. Se nomear o look,
+Se nomear a chuva, como `candidate_spawn`. Se a receita recusa que a chuva da outra mesa retome o hold, o `candidate_spawn` nomeia a retoma que a receita já recusa. Mesa no disco não é a sessão. Sem chave `retoma`. Se nomear o look,
 como `candidate_look`. `?seed=<n>` abre essa partida e ignora
 o hold; se o candidato nomeou a chuva ou o look, junta a mesa
 e a paleta. O convite usa os mesmos eixos. O `next` aponta
