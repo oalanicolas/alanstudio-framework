@@ -17168,6 +17168,9 @@ def play_scope(project):
     named = play_verb_scope()
     if named:
         scope += named
+    arc = play_arc_scope()
+    if arc:
+        scope += arc
     return scope
 
 
@@ -17203,6 +17206,40 @@ def play_verb_scope():
     return (
         " O disco recusa que verbo mudo ou sem peso seja "
         "(`verbo`). Abrir no disco não é o verbo."
+    )
+
+
+# A receita já recusa que o arco
+# prometa o dash. Sem isto o play
+# apontava o url e calava a
+# recusa. Arco no disco não é o
+# dash.
+FEEL_ARC = re.compile(r"o arco não promete\s+o dash")
+
+
+def recipe_refuses_arc_as_dash_promise(text):
+    return bool(text and FEEL_ARC.search(text))
+
+
+def play_arc_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_arc_as_dash_promise(text):
+        return "recipes/feel.md"
+    return None
+
+
+def play_arc_scope():
+    if not play_arc_source():
+        return None
+    return (
+        " O disco recusa que o arco prometa o dash "
+        "(`arco`). Arco no disco não é o dash."
     )
 
 

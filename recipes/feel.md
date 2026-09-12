@@ -10,7 +10,7 @@ Captura no disco não é sessão observada. Se a receita recusa que captura no d
 hold — o keyup some e o corpo não segue. Perder o foco da janela
 solta o ofício pendente — Space e R não disparam no quadro
 seguinte. Na pausa o toque retoma — Esc e P não existem no
-polegar; o tap não é o avanço. Se a receita recusa que o tap seja o avanço, o ciclo nomeia o tap que a receita já recusa. Polegar no disco não é o dash. Sem chave `tap`. Se a receita recusa que o lock seja o descanso, o ciclo nomeia o lock que a receita já recusa. Lock no disco não é o descanso. Sem chave `lock`. No campo o telefone
+polegar; o tap não é o avanço. Se a receita recusa que o tap seja o avanço, o ciclo nomeia o tap que a receita já recusa. Polegar no disco não é o dash. Sem chave `tap`. Se a receita recusa que o lock seja o descanso, o ciclo nomeia o lock que a receita já recusa. Lock no disco não é o descanso. Sem chave `lock`. Se a receita recusa que o arco prometa o dash, o `play` nomeia o arco que a receita já recusa. Arco no disco não é o dash. Sem chave `arco`. No campo o telefone
 pausa no relógio; o resto da tela continua o avanço.
 O relógio nomeia a pausa — sem o || o canto calava o
 verbo e o convite some a tabela. Na porta o canto
@@ -337,7 +337,7 @@ com a conta. A faixa do dash enche o tempo de recuperação e
 cooldown e veste o look — rótulo sozinho era o mesmo quadro.
 No travel o rótulo nomeia o avanço; a faixa já enche.
 Recarregando no sit da guarda permanece — o arco não promete
-o dash.
+o dash. Se a receita recusa que o arco prometa o dash, o `play` nomeia o arco que a receita já recusa. Arco no disco não é o dash. Sem chave `arco`.
 O fecho da partida contorna o campo e pulsa o controle a cada
 segundo; não é faixa no HUD. Com menos movimento vira traço.
 A prática e a guarda falam no mixer quando a janela acaba;

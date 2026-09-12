@@ -112,7 +112,7 @@ não demonstram uma experiência nova. Se a receita recusa que título e cores n
    Valide a integração antes de multiplicar fases, itens ou personagens.
 4. Aplique o feel e o áudio **desse** verbo. Use `--focus feel` e
    `--focus audio`. Arte provisória é aceitável se a direção estiver
-   declarada; verbo mudo ou sem peso não é. Se a receita recusa que verbo mudo ou sem peso seja, o `play` nomeia o verbo que a receita já recusa. Abrir no disco não é o verbo. Sem chave `verbo`.
+   declarada; verbo mudo ou sem peso não é. Se a receita recusa que verbo mudo ou sem peso seja, o `play` nomeia o verbo que a receita já recusa. Abrir no disco não é o verbo. Sem chave `verbo`. Se a receita recusa que o arco prometa o dash, o `play` nomeia o arco que a receita já recusa. Arco no disco não é o dash. Sem chave `arco`.
 5. Compare com a intenção e com a referência, em movimento. Preserve o que
    foi pedido. Registre herdado versus produzido e **uma** próxima ação.
    Não gere o template `aaa` nesta sessão. O `finish.action` permanece

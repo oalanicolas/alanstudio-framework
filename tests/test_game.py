@@ -21179,6 +21179,54 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.feel_constants_scope(),
         )
 
+    def test_play_names_the_arc_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_arc_as_dash_promise(recipe),
+            "a receita já recusa que o arco prometa o dash",
+        )
+        self.assertEqual(game.play_arc_source(), "recipes/feel.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.play_cycle(starter)
+        self.assertIn(
+            "o arco prometa o dash",
+            report["scope"],
+            "o play apontava o url e calava a recusa",
+        )
+        self.assertIn("(`arco`)", report["scope"])
+        self.assertNotIn("arco", report)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_arc_as_dash_promise(""))
+        with mock.patch.object(game, "play_arc_source", return_value=None):
+            silent = game.play_cycle(starter)
+        self.assertNotIn("o arco prometa o dash", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o arco que a receita já recusa", recipe)
+        self.assertIn("nomeia o arco que a receita já recusa", create)
+        self.assertIn("nomeia o arco que a receita já recusa", skill)
+        self.assertIn("nomeia o arco que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "o arco prometa o dash",
+            report["then"].get("scope") or "",
+        )
+        self.assertNotIn("o arco prometa o dash", game.feel_unobserved_scope())
+        self.assertNotIn("o arco prometa o dash", game.feel_constants_scope())
+        feel = game.feel_reading(starter)
+        self.assertNotIn("o arco prometa o dash", feel["scope"])
+        cycle = report.get("cycle") or {}
+        self.assertNotIn("o arco prometa o dash", cycle.get("scope") or "")
+        self.assertNotIn("o arco prometa o dash", game.git_summary_scope())
+        self.assertNotIn("o arco prometa o dash", game.craft_reading(self.project)["scope"])
+        self.assertNotIn("o arco prometa o dash", game.next_scope())
+        used = game.save_reading(starter).get("used")
+        if isinstance(used, dict):
+            self.assertNotIn("o arco prometa o dash", used.get("scope") or "")
+
     def test_play_noted_names_the_writing_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
         self.assertTrue(
