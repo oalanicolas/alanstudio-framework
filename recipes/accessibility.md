@@ -88,7 +88,7 @@ tap a porta e o fim não chamam o avanço de cima.
 O overlay e a casca da página seguem `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
 x do corpo, no alcance do telegraph, vira `perigo à frente` na região viva
 junto da última legenda. Se o live anuncia o perigo à frente, o `access` nomeia o perigo que o live já anuncia.
-Texto no DOM não é sessão. Sem chave `threat`. Se a receita recusa que o texto no DOM seja sessão, o item da observação nomeia a sessão que a receita já recusa. Texto no DOM não é a sessão. Sem chave `sessão`. Na porta o canvas também marca a mostra no
+Texto no DOM não é sessão. Sem chave `threat`. Se a receita recusa que o texto no DOM seja sessão, o item da observação nomeia a sessão que a receita já recusa. Texto no DOM não é a sessão. Sem chave `sessão`. Se a receita recusa que o harness jogue com o modo ativo, o item da observação nomeia o ativo que a receita já recusa. Recibo no disco não é o modo. Sem chave `ativo`. Na porta o canvas também marca a mostra no
 trilho — o mesmo aviso do campo. Texto no DOM não é sessão. A pausa entra como `pausado` só quando o
 overlay diz Pausado — no fim a cortina do over vence; na porta a
 placa nem nasce. Com a cortina no campo, nomeia o placar e o
@@ -104,7 +104,7 @@ Lacuna de som: o painel avisa; a região viva nomeia a
 mesma lacuna na porta e no fim. Catálogo completo não
 entra. Nomear o 404 não é mix ouvido.
 Nomear não é aba fechada. O overlay do canvas não chega ao leitor. Texto no
-DOM não é sessão. O harness não joga com o modo ativo.
+DOM não é sessão. O harness não joga com o modo ativo. Se a receita recusa que o harness jogue com o modo ativo, o item da observação nomeia o ativo que a receita já recusa. Recibo no disco não é o modo. Sem chave `ativo`.
 
 Não declare cobertura que não observou. Se a receita recusa que se declare cobertura não observada, o `missing` do `access` nomeia a cobertura que a receita já recusa. Lista no disco não é sessão. Sem chave `cobertura`. Verificação automática de contraste é útil
 e não substitui uma sessão com o modo ativo. Se a receita recusa que a verificação automática substitua uma sessão, o `access` nomeia a automática que a receita já recusa. Checagem no disco não é o modo ativo. Sem chave `automática`. Se o README recusa que a lista de chave ausente seja alcance observado, o item do discover nomeia o alcance que o README já recusa. Lista no disco não é o alcance. Sem chave `alcance`. Uma lacuna registrada com motivo vale

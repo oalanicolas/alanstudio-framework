@@ -3275,6 +3275,9 @@ def observation_item_scope():
     talk = observation_session_scope()
     if talk:
         scope += talk
+    mode = observation_active_scope()
+    if mode:
+        scope += mode
     return scope
 
 
@@ -3344,6 +3347,41 @@ def observation_session_scope():
     return (
         " O disco recusa que o texto no DOM seja sessão "
         "(`sessão`). Texto no DOM não é a sessão."
+    )
+
+
+# A receita já recusa que o
+# harness jogue com o modo
+# ativo. Sem isto o item
+# copiava a nota e calava a
+# recusa. Recibo no disco
+# não é o modo.
+A11Y_ACTIVE = re.compile(r"O harness não joga com o modo ativo")
+
+
+def recipe_refuses_harness_as_playing_with_active_mode(text):
+    return bool(text and A11Y_ACTIVE.search(text))
+
+
+def observation_active_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_harness_as_playing_with_active_mode(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_active_scope():
+    if not observation_active_source():
+        return None
+    return (
+        " O disco recusa que o harness jogue com o modo ativo "
+        "(`ativo`). Recibo no disco não é o modo."
     )
 
 
