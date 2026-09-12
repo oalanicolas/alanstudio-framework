@@ -6783,14 +6783,66 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         partial = {key: ("shippable", "flagship") for key in list(game.BAR_DIMENSIONS)[:9]}
         self.declare_bar(partial)
         report = game.bar_reading(self.project)
-        self.assertEqual(report["undeclared"], [list(game.BAR_DIMENSIONS)[9]])
+        self.assertEqual(report["undeclared"]["keys"], [list(game.BAR_DIMENSIONS)[9]])
         self.assertEqual(report["floor"], "shippable")
         self.assertIsNone(report["perceived_tier"])
         empty = game.bar_reading(self.root / "sem-nada")
-        self.assertEqual(empty["undeclared"], list(game.BAR_DIMENSIONS))
+        self.assertEqual(empty["undeclared"]["keys"], list(game.BAR_DIMENSIONS))
         self.assertIsNone(empty["floor"])
         self.assertIsNone(empty["perceived_tier"])
         self.assertFalse(empty["exists"])
+
+    def test_bar_undeclared_names_the_high_tier_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.bar_refuses_undeclared_as_high_dimension(guide),
+            "a barra já recusa que dimensão não declarada seja dimensão alta",
+        )
+        self.assertEqual(game.bar_high_source(), "references/production-bar.md")
+        empty = game.bar_reading(self.project)
+        self.assertEqual(empty["undeclared"]["keys"], list(game.BAR_DIMENSIONS))
+        self.assertEqual(empty["undeclared"]["keys"], game.bar_undeclared_keys(empty))
+        item = empty["undeclared"]
+        self.assertIn(
+            "dimensão não declarada seja dimensão alta",
+            item["scope"],
+            "o bar listava a chave e calava a recusa",
+        )
+        self.assertIn("(`alta`)", item["scope"])
+        self.assertNotIn("alta", item)
+        self.assertFalse(empty["assessed"])
+        self.assertFalse(game.bar_refuses_undeclared_as_high_dimension(""))
+        with mock.patch.object(game, "bar_high_source", return_value=None):
+            silent = game.bar_reading(self.project)
+        self.assertNotIn(
+            "dimensão não declarada seja dimensão alta",
+            silent["undeclared"]["scope"],
+        )
+        self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS})
+        filled = game.bar_reading(self.project)
+        self.assertEqual(filled["undeclared"], [])
+        self.assertEqual(game.bar_undeclared_keys(filled), [])
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a alta que a barra já recusa", guide)
+        self.assertIn("nomeia a alta que a barra já recusa", recipe)
+        self.assertIn("nomeia a alta que a barra já recusa", skill)
+        self.assertIn("nomeia a alta que a barra já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("dimensão não declarada seja dimensão alta", empty["scope"])
+        self.assertNotIn(
+            "dimensão não declarada seja dimensão alta",
+            empty["dimensions"][0].get("scope") or "",
+        )
+        self.assertNotIn("dimensão não declarada seja dimensão alta", game.next_scope())
+        self.assertNotIn(
+            "dimensão não declarada seja dimensão alta",
+            game.production_bar_scope(),
+        )
+        self.assertNotIn("dimensão não declarada seja dimensão alta", game.record_scope())
 
     def test_bar_keeps_the_lower_tier_when_two_documents_disagree(self):
         self.declare_bar({key: ("shippable", "flagship") for key in game.BAR_DIMENSIONS})

@@ -253,7 +253,7 @@ transforma a tarefa em aspiração, e ela sai da lista do que fazer amanhã.
 
 `bar <projeto>` devolve o piso, quais dimensões estão nele e o degrau percebido —
 este só quando as dez tiverem linha, porque dimensão não declarada não é dimensão
-alta. Duas linhas discordantes sobre a mesma dimensão não se resolvem por
+alta. Se a barra recusa que dimensão não declarada seja dimensão alta, o `undeclared` do `bar` nomeia a alta que a barra já recusa. Linha no disco não é acabamento. Sem chave `alta`. Duas linhas discordantes sobre a mesma dimensão não se resolvem por
 precedência: a mais baixa vale e o conflito fica listado para ser resolvido.
 `next` usa isso para propor subir a dimensão mais baixa pelo nome, citando o
 critério escrito e a linha de onde veio.

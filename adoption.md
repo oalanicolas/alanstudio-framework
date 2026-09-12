@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.577 — o undeclared do bar nomeia a alta que a barra já recusa
+
+A
+barra
+já
+dizia
+que
+dimensão
+não
+declarada
+não
+é
+dimensão
+alta.
+O
+bar
+listava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+o
+`undeclared`
+do
+`bar`
+nomeia
+a
+alta.
+Linha
+no
+disco
+não
+é
+acabamento.
+Sem
+chave
+`alta`.
+Nomear
+não
+observa.
+
+O que 0.9.577 não afirma:
+listar
+a
+chave
+não
+é
+dimensão
+alta.
+
 ## 0.9.576 — o warnings do save nomeia o volátil que a receita já recusa
 
 A
