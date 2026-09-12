@@ -52,7 +52,7 @@ saves antigos silenciosamente. Versão do conteúdo e versão do save são contr
 distintos; não os una em um número por conveniência. Se a receita recusa que um único número una a versão do conteúdo e a do save, o `save` nomeia os contratos que a receita já recusa. Schema no disco não é a história. Sem chave `contratos`.
 
 `save <projeto>` lê se o código usa armazenamento e se declara schema/migrate.
-`trusted` é sempre falso: o harness não abre o save e não confirma escrita. Se a receita recusa que o harness abra o save, o `used` do `save` nomeia o abre que a receita já recusa. Texto no disco não é a aba. Sem chave `abre`.
+`trusted` é sempre falso: o harness não abre o save e não confirma escrita. Se a receita recusa que o harness abra o save, o `used` do `save` nomeia o abre que a receita já recusa. Texto no disco não é a aba. Sem chave `abre`. Se a receita recusa que ouvir seja aba fechada, o `used` do `save` nomeia a audição que a receita já recusa. Ouvir no disco não é a aba. Sem chave `audição`.
 
 Implementação concreta, com o limite dito: o starter `canvas-arcade` versiona o
 save em `src/core/save.js` (schema 3), com migração e recuperação de dado inválido.
@@ -69,7 +69,7 @@ ou `flush` não grava esses eixos — o convite é candidato, não
 preferência. Se a receita recusa que o convite seja preferência, o `invite` do `playtest` nomeia a preferência que a receita já recusa. Convite no disco não é a sessão. Sem chave `preferência`. Escolher no painel grava. Query no disco não é
 aba fechada nem `trusted`. Se a receita recusa que query no disco seja aba fechada, o `warned` do `save` nomeia a query que a receita já recusa. Endereço no disco não é a aba. Sem chave `query`.
 A outra aba veste as preferências desta página (`storage`); o progresso
-em curso não. Ouvir não é aba fechada. Isto **não** é aba fechada observada e não sobe `state_trust`. Grava
+em curso não. Ouvir não é aba fechada. Se a receita recusa que ouvir seja aba fechada, o `used` do `save` nomeia a audição que a receita já recusa. Ouvir no disco não é a aba. Sem chave `audição`. Isto **não** é aba fechada observada e não sobe `state_trust`. Grava
 de forma **verificada** em `src/core/storage.js` — escreve em chave de estágio,
 relê, compara e só então grava na chave real. Isso **não** é a escrita atômica do
 parágrafo acima: `localStorage` não tem substituição, então a gravação final é

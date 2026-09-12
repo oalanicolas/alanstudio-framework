@@ -4960,7 +4960,44 @@ def save_used_scope():
     named = save_used_open_scope()
     if named:
         scope += named
+    listen = save_used_listen_scope()
+    if listen:
+        scope += listen
     return scope
+
+
+# A receita já recusa que ouvir
+# seja aba fechada. Sem isto o
+# save relatava o uso e calava
+# a recusa. Ouvir no disco não
+# é a aba.
+PERSIST_LISTEN = re.compile(r"Ouvir não é aba fechada")
+
+
+def recipe_refuses_listening_as_closed_tab(text):
+    return bool(text and PERSIST_LISTEN.search(text))
+
+
+def save_used_listen_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_listening_as_closed_tab(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_used_listen_scope():
+    if not save_used_listen_source():
+        return ""
+    return (
+        " O disco recusa que ouvir seja aba fechada "
+        "(`audição`). Ouvir no disco não é a aba."
+    )
 
 
 def save_used_flag(reading):

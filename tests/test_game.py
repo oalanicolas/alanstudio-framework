@@ -15646,6 +15646,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.content_reading(starter)["scope"],
         )
 
+    def test_save_used_names_the_listen_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_listening_as_closed_tab(recipe),
+            "a receita já recusa que ouvir seja aba fechada",
+        )
+        self.assertEqual(game.save_used_listen_source(), "recipes/persistence.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.save_reading(starter)
+        item = report["used"]
+        self.assertTrue(item["used"], "o save já relata uso neste starter")
+        self.assertIn(
+            "ouvir seja aba fechada",
+            item["scope"],
+            "o save relatava o uso e calava a recusa",
+        )
+        self.assertIn("(`audição`)", item["scope"])
+        self.assertNotIn("audição", item)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_listening_as_closed_tab(""))
+        with mock.patch.object(game, "save_used_listen_source", return_value=None):
+            silent = game.save_reading(starter)
+        self.assertNotIn("ouvir seja aba fechada", silent["used"]["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a audição que a receita já recusa", recipe)
+        self.assertIn("nomeia a audição que a receita já recusa", create)
+        self.assertIn("nomeia a audição que a receita já recusa", skill)
+        self.assertIn("nomeia a audição que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("ouvir seja aba fechada", report["scope"])
+        self.assertNotIn(
+            "ouvir seja aba fechada",
+            report["warnings"].get("scope") or "",
+        )
+        self.assertNotIn(
+            "ouvir seja aba fechada",
+            report["warned"].get("scope") if isinstance(report.get("warned"), dict) else "",
+        )
+        self.assertNotIn("ouvir seja aba fechada", game.next_scope())
+        self.assertNotIn("ouvir seja aba fechada", game.feel_constants_scope())
+        self.assertNotIn("ouvir seja aba fechada", game.craft_reading(self.project)["scope"])
+
     def test_save_versioned_names_the_version_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         self.assertTrue(
