@@ -7790,6 +7790,43 @@ def content_resolution_scope():
     )
 
 
+# A receita já recusa que o limite
+# de hospedagem exija reduzir
+# quadros. Sem isto o content
+# listava arquivos e calava a
+# recusa. Limite no disco não
+# é o corte.
+CONTENT_HOST = re.compile(
+    r"Limite de hospedagem não\s+exige reduzir quadros"
+)
+
+
+def recipe_refuses_hosting_limit_as_quality_cut(text):
+    return bool(text and CONTENT_HOST.search(text))
+
+
+def content_host_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hosting_limit_as_quality_cut(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_host_scope():
+    if not content_host_source():
+        return None
+    return (
+        " O disco recusa que o limite de hospedagem exija reduzir quadros "
+        "(`hospedagem`). Limite no disco não é o corte."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -8046,6 +8083,9 @@ def content_reading(project):
     res = content_resolution_scope()
     if res:
         scope += res
+    host = content_host_scope()
+    if host:
+        scope += host
     encoded = content_encoded_scope()
     if encoded:
         scope += encoded

@@ -18369,6 +18369,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.next_scope())
         self.assertNotIn("resolução", game.CYCLE_KEYS)
 
+    def test_content_names_the_hosting_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertRegex(
+            recipe,
+            r"Limite de hospedagem não\s+exige reduzir quadros",
+        )
+        self.assertTrue(
+            game.recipe_refuses_hosting_limit_as_quality_cut(recipe),
+            "a receita já recusa que o limite de hospedagem exija reduzir quadros",
+        )
+        self.assertEqual(game.content_host_source(), "recipes/content.md")
+        report = game.content_reading(self.project)
+        self.assertIn(
+            "o limite de hospedagem exija reduzir quadros",
+            report["scope"],
+            "o content listava arquivos e calava a recusa",
+        )
+        self.assertIn("(`hospedagem`)", report["scope"])
+        self.assertIn("Limite no disco não é o corte.", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("hospedagem", report)
+        self.assertFalse(game.recipe_refuses_hosting_limit_as_quality_cut(""))
+        with mock.patch.object(game, "content_host_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn(
+            "o limite de hospedagem exija reduzir quadros",
+            silent["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a hospedagem que a receita já recusa"), 2)
+        self.assertIn("nomeia a hospedagem que a receita já recusa", create)
+        self.assertIn("nomeia a hospedagem que a receita já recusa", skill)
+        self.assertIn("nomeia a hospedagem que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        files = report.get("files")
+        if isinstance(files, dict):
+            self.assertNotIn(
+                "o limite de hospedagem exija reduzir quadros",
+                files.get("scope") or "",
+            )
+        phrase = "o limite de hospedagem exija reduzir quadros"
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("hospedagem", game.CYCLE_KEYS)
+
     def test_content_names_the_rain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
         self.assertTrue(

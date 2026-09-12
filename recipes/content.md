@@ -58,7 +58,7 @@ página HTML ocupe o lugar do recurso válido. Preserve master e versão anterio
 
 Verificadores de sprites/texturas localizam candidatos a defeito; correções que
 apagam pixels, quantizam cores ou redimensionam não são consequência automática de
-um alerta. Se a receita recusa que o alerta autorize apagar pixels, quantizar cores ou redimensionar, o `content` nomeia o alerta que a receita já recusa. Alerta no disco não é a correção. Sem chave `alerta`. Se a receita recusa que mais resolução mude as dimensões no mundo, o `content` nomeia a resolução que a receita já recusa. Resolução no disco não é a escala. Sem chave `resolução`. Confira recorte, alpha, sequência e aparência no jogo conforme sua política
+um alerta. Se a receita recusa que o alerta autorize apagar pixels, quantizar cores ou redimensionar, o `content` nomeia o alerta que a receita já recusa. Alerta no disco não é a correção. Sem chave `alerta`. Se a receita recusa que mais resolução mude as dimensões no mundo, o `content` nomeia a resolução que a receita já recusa. Resolução no disco não é a escala. Sem chave `resolução`. Se a receita recusa que o limite de hospedagem exija reduzir quadros, o `content` nomeia a hospedagem que a receita já recusa. Limite no disco não é o corte. Sem chave `hospedagem`. Confira recorte, alpha, sequência e aparência no jogo conforme sua política
 artística. Prova: falha preserva o recurso anterior; sucesso chega ao consumidor certo,
 com origem/licença e acabamento conferidos. Este procedimento não comprova consistência
 do gerador. Se a receita recusa que o recibo comprove a consistência do gerador, o `fields` do `origins --declare` nomeia a consistência que a receita já recusa. Recibo no disco não é o asset. Sem chave `consistência`. [Origem e limites](../references/sources.md#autoria-ugc-pública).
@@ -100,7 +100,7 @@ conforme o contrato do consumidor e repetir a prova no projeto de destino.
   exportação. Preserve o arquivo autoral e diferencie tempo de preparação, render e IO.
 - Para limites de arquivo, considere dividir transporte mantendo os payloads originais
   e conferir a remontagem por hash. Limite de hospedagem não exige reduzir quadros,
-  resolução ou duração. Tamanho codificado não mede custo decodificado ou GPU. Se a receita recusa que o tamanho codificado meça custo decodificado ou GPU, o `content` nomeia o codificado que a receita já recusa. Arquivo no disco não é o quadro. Sem chave `codificado`.
+  resolução ou duração. Se a receita recusa que o limite de hospedagem exija reduzir quadros, o `content` nomeia a hospedagem que a receita já recusa. Limite no disco não é o corte. Sem chave `hospedagem`. Tamanho codificado não mede custo decodificado ou GPU. Se a receita recusa que o tamanho codificado meça custo decodificado ou GPU, o `content` nomeia o codificado que a receita já recusa. Arquivo no disco não é o quadro. Sem chave `codificado`.
 - Animação de máquinas e efeitos deve seguir o relógio e o trabalho da simulação:
   pausa, bloqueio, save e retomada precisam escolher a mesma pose. Um animador autônomo
   de imagem pode quebrar esse contrato. Teste também o caminho de compatibilidade.
