@@ -14,7 +14,7 @@ que exige catálogo, arquivo e linha na tabela do `SKILL.md` em acordo. `pin` n�
 ## Contrato de uma referência
 
 Uma referência é um **orquestrador fino**: diz qual `context` rodar, qual receita ler,
-onde parar para o usuário, o que prova conclusão e o que não fazer. Ela não repete a
+onde parar para o usuário, o que prova conclusão e o que não fazer. Se o README recusa que a referência de comando seja uma receita nova, o `created` do `pin` nomeia o orquestrador que o README já recusa. Atalho no disco não é a receita. Sem chave `orquestrador`. Ela não repete a
 receita; aponta o canônico. Seções obrigatórias, nesta ordem (o teste confere):
 
 1. Uma frase de abertura: o que o comando faz e quando usá-lo.

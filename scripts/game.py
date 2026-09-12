@@ -13109,6 +13109,41 @@ def pin_created_swap_scope():
     )
 
 
+# O README já recusa que a
+# referência de comando seja
+# uma receita nova. Sem isto
+# o pin relatava o created e
+# calava a recusa. Atalho no
+# disco não é a receita.
+PIN_ORCH = re.compile(r"orquestrador fino, não uma receita nova")
+
+
+def readme_refuses_command_ref_as_new_recipe(text):
+    return bool(text and PIN_ORCH.search(text))
+
+
+def pin_created_orch_source():
+    path = FRAMEWORK / "README.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_refuses_command_ref_as_new_recipe(text):
+        return "README.md"
+    return None
+
+
+def pin_created_orch_scope():
+    if not pin_created_orch_source():
+        return None
+    return (
+        " O disco recusa que a referência de comando seja uma receita nova "
+        "(`orquestrador`). Atalho no disco não é a receita."
+    )
+
+
 def pin_created_scope():
     scope = (
         "atalho escrito no host. "
@@ -13120,6 +13155,9 @@ def pin_created_scope():
     swap = pin_created_swap_scope()
     if swap:
         scope += swap
+    thin = pin_created_orch_scope()
+    if thin:
+        scope += thin
     return scope
 
 

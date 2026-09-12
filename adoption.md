@@ -30,6 +30,54 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.723 — o created do pin nomeia o orquestrador que o README já recusa
+
+O
+README
+já
+dizia
+que
+a
+referência
+de
+comando
+é
+um
+orquestrador
+fino,
+não
+uma
+receita
+nova.
+O
+pin
+relatava
+o
+created
+e
+calava
+a
+recusa.
+Agora
+o
+created
+nomeia
+o
+orquestrador.
+Atalho
+no
+disco
+não
+é
+a
+receita.
+Sem
+chave
+`orquestrador`.
+Nomear
+não
+cria.
+
 ## 0.9.722 — o feel nomeia o percebido que a receita já recusa
 
 A

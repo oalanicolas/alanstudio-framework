@@ -316,6 +316,64 @@ class CommandCliTest(unittest.TestCase):
         )
         self.assertNotIn("substitutibilidade", game.CYCLE_KEYS)
 
+    def test_pin_created_names_the_orchestrator_the_readme_already_refuses(self):
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertRegex(readme, r"orquestrador fino, não uma receita nova")
+        self.assertTrue(
+            game.readme_refuses_command_ref_as_new_recipe(readme),
+            "o README já recusa que a referência de comando seja uma receita nova",
+        )
+        self.assertEqual(game.pin_created_orch_source(), "README.md")
+        skills = self.install_skill(".agents")
+        own = skills / "polish/SKILL.md"
+        own.parent.mkdir()
+        own.write_text("---\nname: polish\n---\nskill própria do usuário\n", encoding="utf-8")
+        empty = game.pin(self.root, "polish")
+        self.assertEqual(empty["created"], [])
+        result = game.pin(self.root, "critique")
+        pinned = skills / "critique/SKILL.md"
+        item = result["created"]
+        self.assertEqual(item["created"], [str(pinned)], "o pin já escreve o atalho neste chamado")
+        self.assertIn(
+            "a referência de comando seja uma receita nova",
+            item["scope"],
+            "o pin relatava o created e calava a recusa",
+        )
+        self.assertIn("(`orquestrador`)", item["scope"])
+        self.assertIn("Atalho no disco não é a receita.", item["scope"])
+        self.assertNotIn("orquestrador", item)
+        self.assertFalse(game.readme_refuses_command_ref_as_new_recipe(""))
+        with patch.object(game, "pin_created_orch_source", return_value=None):
+            silent = game.pin(self.root, "feel")
+        self.assertNotIn(
+            "a referência de comando seja uma receita nova",
+            silent["created"]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o orquestrador que o README já recusa", readme)
+        self.assertIn("nomeia o orquestrador que o README já recusa", create)
+        self.assertIn("nomeia o orquestrador que o README já recusa", skill)
+        self.assertIn("nomeia o orquestrador que o README já recusa", guide)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        phrase = "a referência de comando seja uma receita nova"
+        self.assertNotIn(phrase, result["scope"])
+        self.assertNotIn(phrase, empty["skipped"][0]["scope"])
+        self.assertNotIn(phrase, game.unpin(self.root, "critique")["scope"])
+        self.assertNotIn(phrase, game.command_listing()["scope"])
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.feel_reading(self.root).get("scope") or "")
+        self.assertNotIn(phrase, game.budget_reading(self.root).get("scope") or "")
+        self.assertNotIn(phrase, game.content_reading(self.root).get("scope") or "")
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.save_reading(self.root).get("scope") or "")
+        self.assertNotIn("orquestrador", game.CYCLE_KEYS)
+
     def test_pin_never_overwrites_a_skill_the_user_wrote(self):
         skills = self.install_skill(".agents")
         own = skills / "polish/SKILL.md"

@@ -221,7 +221,7 @@ precisam concordar, senão o menu manda o agente ler um arquivo que não existe.
 
 Uma referência de comando é um orquestrador fino, não uma receita nova: diz qual
 `context` rodar, qual receita ler, onde parar para o usuário, o que prova conclusão
-e o que não fazer ([contrato](commands/README.md)). As receitas continuam sendo
+e o que não fazer ([contrato](commands/README.md)). Se o README recusa que a referência de comando seja uma receita nova, o `created` do `pin` nomeia o orquestrador que o README já recusa. Atalho no disco não é a receita. Sem chave `orquestrador`. As receitas continuam sendo
 selecionadas por `--focus`; o comando acrescenta o fluxo.
 
 ## Contexto por foco
