@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.645 — o bible_draft do art nomeia o esboço que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+art-bible
+com
+marcador
+de
+rascunho
+não
+é
+comparação.
+O
+art
+relatava
+o
+bible_draft
+e
+calava
+a
+recusa.
+Agora
+o
+`bible_draft`
+do
+`art`
+nomeia
+o
+esboço.
+Arquivo
+no
+disco
+não
+é
+o
+quadro.
+Sem
+chave
+`esboço`.
+Preencher
+não
+compara.
+
 ## 0.9.644 — o unbudgeted do budget nomeia o dispositivo que a receita já recusa
 
 A

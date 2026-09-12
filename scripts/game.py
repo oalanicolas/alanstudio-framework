@@ -5939,6 +5939,68 @@ def art_bible_scope():
     return scope
 
 
+# A receita já recusa que o
+# art-bible com marcador de
+# rascunho seja comparação. Sem
+# isto o art relatava o bible_draft
+# e calava a recusa. Arquivo no
+# disco não é o quadro.
+VISUAL_SKETCH = re.compile(r"Art-bible com marcador de rascunho não é comparação")
+
+
+def recipe_refuses_draft_bible_as_comparison(text):
+    return bool(text and VISUAL_SKETCH.search(text))
+
+
+def art_bible_draft_sketch_source():
+    path = FRAMEWORK / "recipes/visual.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_draft_bible_as_comparison(text):
+        return "recipes/visual.md"
+    return None
+
+
+def art_bible_draft_sketch_scope():
+    if not art_bible_draft_sketch_source():
+        return None
+    return (
+        " O disco recusa que o art-bible com marcador de rascunho seja comparação "
+        "(`esboço`). Arquivo no disco não é o quadro."
+    )
+
+
+def art_draft_scope():
+    scope = (
+        "art-bible com marcador de rascunho. "
+        "Não é comparação em movimento."
+    )
+    named = art_bible_draft_sketch_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def art_bible_draft_flag(reading):
+    draft = (reading or {}).get("bible_draft") if isinstance(reading, dict) else reading
+    if isinstance(draft, dict):
+        return bool(draft.get("bible_draft"))
+    return bool(draft)
+
+
+def art_bible_draft_reading(draft):
+    if not draft:
+        return False
+    return {
+        "bible_draft": True,
+        "scope": art_draft_scope(),
+    }
+
+
 # A receita já recusa que isso seja
 # direção consistente. Sem isto o
 # art relatava o vigente e calava a
@@ -6111,7 +6173,7 @@ def art_reading(project):
             }
             if bible_current else False
         ),
-        "bible_draft": bible_draft,
+        "bible_draft": art_bible_draft_reading(bible_draft),
         "declared": declared,
         "missing": not declared,
         "consistent": False,

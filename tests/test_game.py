@@ -13745,6 +13745,68 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "visual"))]
         self.assertIn("art.missing", bases)
 
+    def test_art_bible_draft_names_the_sketch_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_draft_bible_as_comparison(recipe),
+            "a receita já recusa que o art-bible com marcador de rascunho seja comparação",
+        )
+        self.assertEqual(game.art_bible_draft_sketch_source(), "recipes/visual.md")
+        empty = game.art_reading(self.project)
+        self.assertFalse(empty["bible_draft"])
+        self.assertFalse(game.art_bible_draft_flag(empty))
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "docs").mkdir()
+        (self.project / "docs/art-bible.md").write_text("# Design system\n\n- Paleta: [preencher]\n")
+        report = game.art_reading(self.project)
+        item = report["bible_draft"]
+        self.assertTrue(item["bible_draft"], "o art já relata o rascunho neste recorte")
+        self.assertEqual(item["bible_draft"], game.art_bible_draft_flag(report))
+        self.assertIn(
+            "o art-bible com marcador de rascunho seja comparação",
+            item["scope"],
+            "o art relatava o bible_draft e calava a recusa",
+        )
+        self.assertIn("(`esboço`)", item["scope"])
+        self.assertNotIn("esboço", item)
+        self.assertFalse(report["consistent"])
+        self.assertFalse(game.recipe_refuses_draft_bible_as_comparison(""))
+        with mock.patch.object(game, "art_bible_draft_sketch_source", return_value=None):
+            silent = game.art_bible_draft_reading(True)
+        self.assertNotIn(
+            "o art-bible com marcador de rascunho seja comparação",
+            silent["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o esboço que a receita já recusa", recipe)
+        self.assertIn("nomeia o esboço que a receita já recusa", skill)
+        self.assertIn("nomeia o esboço que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o art-bible com marcador de rascunho seja comparação", report["scope"])
+        if report.get("bible") and isinstance(report["bible"], dict):
+            self.assertNotIn(
+                "o art-bible com marcador de rascunho seja comparação",
+                report["bible"].get("scope") or "",
+            )
+        if isinstance(report.get("bible_current"), dict):
+            self.assertNotIn(
+                "o art-bible com marcador de rascunho seja comparação",
+                report["bible_current"].get("scope") or "",
+            )
+        if isinstance(report.get("sources"), dict):
+            self.assertNotIn(
+                "o art-bible com marcador de rascunho seja comparação",
+                report["sources"].get("scope") or "",
+            )
+        self.assertNotIn("o art-bible com marcador de rascunho seja comparação", game.next_scope())
+        self.assertIs(report["declared"], False)
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        current = game.art_reading(starter)
+        self.assertIs(current["bible_draft"], False)
+
     def test_a_current_art_bible_counts_as_declared_direction(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "docs").mkdir()
