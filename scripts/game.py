@@ -5613,6 +5613,40 @@ def save_derived_scope():
     )
 
 
+# A receita já recusa que isto
+# seja aba fechada observada.
+# Sem isto o save lia o schema
+# e calava a recusa. Save no
+# disco não é a aba observada.
+PERSIST_OBSERVED = re.compile(r"Isto \*\*não\*\* é aba fechada observada")
+
+
+def recipe_refuses_save_as_observed_closed_tab(text):
+    return bool(text and PERSIST_OBSERVED.search(text))
+
+
+def save_observed_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_save_as_observed_closed_tab(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_observed_scope():
+    if not save_observed_source():
+        return None
+    return (
+        " O disco recusa que isto seja aba fechada observada "
+        "(`observada`). Save no disco não é a aba observada."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -6235,6 +6269,9 @@ def save_reading(project):
     derived = save_derived_scope()
     if derived:
         scope += derived
+    seen = save_observed_scope()
+    if seen:
+        scope += seen
     used_flag = bool(used)
     if used_flag:
         used_flag = {
