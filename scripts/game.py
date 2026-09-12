@@ -3316,6 +3316,9 @@ def observation_item_scope():
     mode = observation_active_scope()
     if mode:
         scope += mode
+    tally = observation_count_scope()
+    if tally:
+        scope += tally
     return scope
 
 
@@ -3420,6 +3423,41 @@ def observation_active_scope():
     return (
         " O disco recusa que o harness jogue com o modo ativo "
         "(`ativo`). Recibo no disco não é o modo."
+    )
+
+
+# A receita já recusa que o
+# número na faixa seja sessão
+# observada. Sem isto o item
+# copiava a nota e calava a
+# recusa. Contagem no disco
+# não é a sessão.
+A11Y_COUNT = re.compile(r"na faixa não é sessão observada")
+
+
+def recipe_refuses_strip_number_as_observed_session(text):
+    return bool(text and A11Y_COUNT.search(text))
+
+
+def observation_count_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_strip_number_as_observed_session(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_count_scope():
+    if not observation_count_source():
+        return None
+    return (
+        " O disco recusa que o número na faixa seja sessão observada "
+        "(`contagem`). Contagem no disco não é a sessão."
     )
 
 

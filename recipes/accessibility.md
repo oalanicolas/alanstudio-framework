@@ -32,7 +32,7 @@ Examine as barreiras que o jogo realmente cria:
   no som, incluindo aviso de ameaça fora da tela; nomes de quem fala em diálogo;
   o jogo permanece completável com o áudio desligado. Se a receita recusa que a legenda prove o jogo completável sem áudio, a opção `captions` do `access` nomeia o mudo que a receita já recusa. Texto no disco não é a partida muda. Sem chave `mudo`. No starter a coleta e a
   guarda sobem de tom com a corrente; a legenda nomeia essa aposta. Número
-  na faixa não é sessão observada.
+  na faixa não é sessão observada. Se a receita recusa que o número na faixa seja sessão observada, o item da observação nomeia a contagem que a receita já recusa. Contagem no disco não é a sessão. Sem chave `contagem`.
 - **Movimento:** redução de movimento desligando tremor de câmera, paralaxe
   agressiva, flashes e transições longas — sem remover o feedback de causa, que
   precisa migrar para um sinal estático equivalente. Causa no disco não é sessão. Se a receita recusa que o movimento reduzido apague a causa, a opção `reduced_motion` do `access` nomeia a causa que a receita já recusa. Causa no disco não é sessão. Sem chave `causa`. No starter o pulso do
@@ -88,7 +88,7 @@ tap a porta e o fim não chamam o avanço de cima.
 O overlay e a casca da página seguem `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
 x do corpo, no alcance do telegraph, vira `perigo à frente` na região viva
 junto da última legenda. Se o live anuncia o perigo à frente, o `access` nomeia o perigo que o live já anuncia.
-Texto no DOM não é sessão. Sem chave `threat`. Se a receita recusa que o texto no DOM seja sessão, o item da observação nomeia a sessão que a receita já recusa. Texto no DOM não é a sessão. Sem chave `sessão`. Se a receita recusa que o harness jogue com o modo ativo, o item da observação nomeia o ativo que a receita já recusa. Recibo no disco não é o modo. Sem chave `ativo`. Na porta o canvas também marca a mostra no
+Texto no DOM não é sessão. Sem chave `threat`. Se a receita recusa que o texto no DOM seja sessão, o item da observação nomeia a sessão que a receita já recusa. Texto no DOM não é a sessão. Sem chave `sessão`. Se a receita recusa que o harness jogue com o modo ativo, o item da observação nomeia o ativo que a receita já recusa. Recibo no disco não é o modo. Sem chave `ativo`. Se a receita recusa que o número na faixa seja sessão observada, o item da observação nomeia a contagem que a receita já recusa. Contagem no disco não é a sessão. Sem chave `contagem`. Na porta o canvas também marca a mostra no
 trilho — o mesmo aviso do campo. Texto no DOM não é sessão. A pausa entra como `pausado` só quando o
 overlay diz Pausado — no fim a cortina do over vence; na porta a
 placa nem nasce. Com a cortina no campo, nomeia o placar e o
