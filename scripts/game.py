@@ -2019,7 +2019,45 @@ def _craft_scope(project):
     named = craft_precision_scope()
     if named:
         scope += named
+    skip = craft_skip_scope()
+    if skip:
+        scope += skip
     return scope
+
+
+# O craft já recusa que shape
+# confirmado seja licença para
+# pular feel e áudio. Sem isto o
+# craft lia a declaração e calava
+# a recusa. Confirmação no disco
+# não é o ofício.
+CRAFT_SKIP = re.compile(r"não é licença para pular feel e áudio")
+
+
+def craft_refuses_shape_as_license_to_skip(text):
+    return bool(text and CRAFT_SKIP.search(text))
+
+
+def craft_skip_source():
+    path = FRAMEWORK / "commands" / "craft.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if craft_refuses_shape_as_license_to_skip(text):
+        return "commands/craft.md"
+    return None
+
+
+def craft_skip_scope():
+    if not craft_skip_source():
+        return ""
+    return (
+        " O disco recusa que shape confirmado seja licença para pular "
+        "feel e áudio (`pular`). Confirmação no disco não é o ofício."
+    )
 
 
 # O mapa já recusa que o número com

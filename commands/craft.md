@@ -32,7 +32,7 @@ pacing — não é negociável em nenhuma escala ([ambição](../references/ambi
    prova sem ambiguidade real, o shape pode ser **compacto** (3–5 linhas: o que se
    constrói, o verbo, a prova, "confirme ou corrija"). Se há ambiguidade material,
    rode [`shape`](shape.md) inteiro. **Pare e espere a confirmação.** Shape confirmado
-   é sinal verde para construir; não é licença para pular feel e áudio.
+   é sinal verde para construir; não é licença para pular feel e áudio. Se o craft recusa que shape confirmado seja licença para pular feel e áudio, o `craft` nomeia o pular que o craft já recusa. Confirmação no disco não é o ofício. Sem chave `pular`.
 
 Portões que não se comprimem: (1) brief confirmado; (2) referência visual ou sonora
 aprovada quando a mudança é de direção — `--event direction-approved` e base

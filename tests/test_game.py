@@ -10882,6 +10882,67 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.context(self.project, "create")["production_bar"]["scope"],
         )
 
+    def test_craft_names_the_skip_the_craft_already_refuses(self):
+        guide = (game.FRAMEWORK / "commands/craft.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.craft_refuses_shape_as_license_to_skip(guide),
+            "o craft já recusa que shape confirmado seja licença para pular feel e áudio",
+        )
+        self.assertEqual(game.craft_skip_source(), "commands/craft.md")
+        report = game.craft_reading(self.project)
+        self.assertIn(
+            "shape confirmado seja licença para pular feel e áudio",
+            report["scope"],
+            "o craft lia a declaração e calava a recusa",
+        )
+        self.assertIn("(`pular`)", report["scope"])
+        self.assertNotIn("pular", report)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.craft_refuses_shape_as_license_to_skip(""))
+        with mock.patch.object(game, "craft_skip_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn(
+            "shape confirmado seja licença para pular feel e áudio",
+            silent["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o pular que o craft já recusa", guide)
+        self.assertIn("nomeia o pular que o craft já recusa", recipe)
+        self.assertIn("nomeia o pular que o craft já recusa", production)
+        self.assertIn("nomeia o pular que o craft já recusa", skill)
+        self.assertIn("nomeia o pular que o craft já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "shape confirmado seja licença para pular feel e áudio",
+            game.craft_item_scope(),
+        )
+        self.assertNotIn(
+            "shape confirmado seja licença para pular feel e áudio",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "shape confirmado seja licença para pular feel e áudio",
+            game.bar_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "shape confirmado seja licença para pular feel e áudio",
+            game.gate_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "shape confirmado seja licença para pular feel e áudio",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "shape confirmado seja licença para pular feel e áudio",
+            game.alternative_scope(),
+        )
+
     def test_craft_names_the_ladder_the_research_already_refuses(self):
         research = (
             game.FRAMEWORK / "references/observable-criteria-research.md"
