@@ -3852,6 +3852,41 @@ def feel_observations_chain_scope():
     )
 
 
+# A receita já recusa que coleta,
+# queda e erro compartilhem
+# squash. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Medida no disco não
+# é o squash.
+FEEL_SQUASH = re.compile(r"não compartilham\s+squash")
+
+
+def recipe_refuses_verbs_as_sharing_squash(text):
+    return bool(text and FEEL_SQUASH.search(text))
+
+
+def feel_observations_squash_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_verbs_as_sharing_squash(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_squash_scope():
+    if not feel_observations_squash_source():
+        return None
+    return (
+        " O disco recusa que coleta, queda e erro compartilhem squash "
+        "(`squash`). Medida no disco não é o squash."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -3878,6 +3913,9 @@ def feel_observations_scope():
     cord = feel_observations_chain_scope()
     if cord:
         scope += cord
+    crush = feel_observations_squash_scope()
+    if crush:
+        scope += crush
     return scope
 
 
