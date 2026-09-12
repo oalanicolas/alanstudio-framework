@@ -77,7 +77,7 @@ uma escrita comum, com a mesma exposição a interrupção que uma escrita diret
 estágio compra detecção de cota e de truncamento, não atomicidade. Se a receita recusa que o estágio seja atomicidade, o `save` nomeia a atomicidade que a receita já recusa. Estágio no disco não é substituição. Sem chave `atomicidade`. Para ter
 atomicidade de verdade nesse alvo é preciso outro armazenamento — IndexedDB tem
 transação. `tests/save.test.mjs` exercita migração, dado corrompido, preferência
-fora de faixa e o aviso da recuperação; interrupção abrupta real, ninguém exercitou.
+fora de faixa e o aviso da recuperação; interrupção abrupta real, ninguém exercitou. Se a receita recusa que o teste de dado inválido prove a interrupção abrupta, o `save` nomeia a interrupção que a receita já recusa. Teste no disco não é a interrupção. Sem chave `interrupção`.
 
 Prova: cadeia de migração desde a versão mais antiga em uso, carregamento de cada
 forma de dado inválido, interrupção forçada durante a gravação, progresso real

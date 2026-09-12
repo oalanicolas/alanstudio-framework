@@ -5162,6 +5162,43 @@ def save_teaching_scope():
     )
 
 
+# A receita já recusa que o teste
+# de dado inválido prove a
+# interrupção abrupta. Sem isto
+# o save lia o schema e calava a
+# recusa. Teste no disco não é
+# a interrupção.
+PERSIST_CUT = re.compile(
+    r"interrupção abrupta real,\s+ninguém exercitou"
+)
+
+
+def recipe_refuses_invalid_data_test_as_real_interruption(text):
+    return bool(text and PERSIST_CUT.search(text))
+
+
+def save_interrupt_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_invalid_data_test_as_real_interruption(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_interrupt_scope():
+    if not save_interrupt_source():
+        return None
+    return (
+        " O disco recusa que o teste de dado inválido prove a interrupção abrupta "
+        "(`interrupção`). Teste no disco não é a interrupção."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -5661,6 +5698,9 @@ def save_reading(project):
     lesson = save_teaching_scope()
     if lesson:
         scope += lesson
+    halt = save_interrupt_scope()
+    if halt:
+        scope += halt
     used_flag = bool(used)
     if used_flag:
         used_flag = {

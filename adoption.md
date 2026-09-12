@@ -30,6 +30,47 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.715 — o save nomeia a interrupção que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+interrupção
+abrupta
+real
+ninguém
+exercitou.
+O
+save
+lia
+o
+schema
+e
+calava
+a
+recusa.
+Agora
+o
+`save`
+nomeia
+a
+interrupção.
+Teste
+no
+disco
+não
+é
+a
+interrupção.
+Sem
+chave
+`interrupção`.
+Nomear
+não
+observa.
+
 ## 0.9.714 — o content nomeia o alerta que a receita já recusa
 
 A
