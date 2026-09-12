@@ -3634,6 +3634,41 @@ def feel_observations_fall_scope():
     )
 
 
+# A receita já recusa que o
+# segundo estilhaço empilhe
+# impacto. Sem isto o feel
+# listava o recibo e calava
+# a recusa. Estilhaço no
+# disco não é a pilha.
+FEEL_STACK = re.compile(r"não empilha impacto")
+
+
+def recipe_refuses_second_shard_as_stacking_impact(text):
+    return bool(text and FEEL_STACK.search(text))
+
+
+def feel_observations_stack_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_second_shard_as_stacking_impact(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_stack_scope():
+    if not feel_observations_stack_source():
+        return None
+    return (
+        " O disco recusa que o segundo estilhaço empilhe impacto "
+        "(`empilha`). Estilhaço no disco não é a pilha."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -3654,6 +3689,9 @@ def feel_observations_scope():
     fall = feel_observations_fall_scope()
     if fall:
         scope += fall
+    pile = feel_observations_stack_scope()
+    if pile:
+        scope += pile
     return scope
 
 
