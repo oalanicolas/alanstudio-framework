@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.682 — o studio_assets nomeia o tocar que o mapa já recusa
+
+O
+mapa
+já
+dizia
+que
+tocar
+nessa
+página
+não
+é
+mix
+ouvida.
+O
+context
+apontava
+o
+acervo
+e
+calava
+a
+recusa.
+Agora
+o
+`studio_assets`
+nomeia
+o
+tocar.
+Página
+no
+disco
+não
+é
+o
+mix.
+Sem
+chave
+`tocar`.
+Nomear
+não
+observa.
+
 ## 0.9.681 — a área art_direction nomeia a imagem que o visual já recusa
 
 O

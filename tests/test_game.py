@@ -5091,6 +5091,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ouça o starter", game.context_scope())
         self.assertNotIn("ouça o starter", game.next_scope())
 
+    def test_studio_assets_names_the_touch_the_map_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.sources_refuse_touching_page_as_heard_mix(guide),
+            "o mapa já recusa que tocar nessa página seja mix ouvida",
+        )
+        self.assertEqual(game.sfx_catalog.studio_assets_touch_source(), "references/sources.md")
+        report = game.context(self.project, "create")
+        self.assertIn(
+            "tocar nessa página seja mix ouvida",
+            report["studio_assets"]["sfx"]["scope"],
+            "o context apontava o acervo e calava a recusa",
+        )
+        self.assertIn("(`tocar`)", report["studio_assets"]["sfx"]["scope"])
+        self.assertNotIn("tocar", report["studio_assets"]["sfx"])
+        self.assertFalse(game.sfx_catalog.sources_refuse_touching_page_as_heard_mix(""))
+        with mock.patch.object(game.sfx_catalog, "studio_assets_touch_source", return_value=None):
+            silent = game.context(self.project, "create")
+        self.assertNotIn(
+            "tocar nessa página seja mix ouvida",
+            silent["studio_assets"]["sfx"]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o tocar que o mapa já recusa", guide)
+        self.assertIn("nomeia o tocar que o mapa já recusa", create)
+        self.assertIn("nomeia o tocar que o mapa já recusa", skill)
+        self.assertIn("nomeia o tocar que o mapa já recusa", readme)
+        self.assertNotIn("verified", report["studio_assets"]["sfx"]["scope"])
+        self.assertNotIn("aprovado", report["studio_assets"]["sfx"]["scope"])
+        self.assertNotIn("4.5", report["studio_assets"]["sfx"]["scope"])
+        self.assertNotIn("tocar nessa página seja mix ouvida", game.roles_reading(self.project)["scope"])
+        self.assertNotIn("tocar nessa página seja mix ouvida", game.context_scope())
+        self.assertNotIn("tocar nessa página seja mix ouvida", game.next_scope())
+        self.assertNotIn(
+            "tocar nessa página seja mix ouvida",
+            game.scan(self.project)["areas"]["art_direction"]["scope"],
+        )
+        exists = report["studio_assets"]["sfx"].get("exists")
+        if isinstance(exists, dict):
+            self.assertNotIn(
+                "tocar nessa página seja mix ouvida",
+                exists.get("scope") or "",
+            )
+
     def test_studio_assets_policy_names_the_inherit_the_map_already_refuses(self):
         guide = (game.FRAMEWORK / "references/workspace-binding.md").read_text(encoding="utf-8")
         self.assertTrue(

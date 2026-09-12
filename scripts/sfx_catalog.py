@@ -593,7 +593,44 @@ def studio_assets_scope():
             " O disco recusa que o catálogo ouça o starter (`ouve`). "
             "Acervo no disco não é mix ouvida."
         )
+    touch = studio_assets_touch_scope()
+    if touch:
+        scope += touch
     return scope
+
+
+# O mapa já recusa que tocar nessa
+# página seja mix ouvida. Sem isto
+# o context apontava o acervo e
+# calava a recusa. Página no disco
+# não é o mix.
+SOURCES_TOUCH = re.compile(r"Tocar nessa página não é mix ouvida")
+
+
+def sources_refuse_touching_page_as_heard_mix(text):
+    return bool(text and SOURCES_TOUCH.search(text))
+
+
+def studio_assets_touch_source():
+    path = SOURCES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if sources_refuse_touching_page_as_heard_mix(text):
+        return "references/sources.md"
+    return None
+
+
+def studio_assets_touch_scope():
+    if not studio_assets_touch_source():
+        return None
+    return (
+        " O disco recusa que tocar nessa página seja mix ouvida "
+        "(`tocar`). Página no disco não é o mix."
+    )
 
 
 # O mapa já recusa que um workspace

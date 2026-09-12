@@ -312,7 +312,7 @@ expõe `sfx search` mesmo sem essa pasta: o catálogo vem vazio e a busca
 nomeia o stem do starter que casa com o termo. `sfx copy` e
 `sfx export` levam bytes e créditos desse stem, ou de um id do
 acervo. Com sons, `sfx serve` abre a página de escuta; se `ui/`
-faltar, o harness gera a lista. Tocar nessa página não é mix ouvida.
+faltar, o harness gera a lista. Tocar nessa página não é mix ouvida. Se o mapa recusa que tocar nessa página seja mix ouvida, o `sfx` do `studio_assets` nomeia o tocar que o mapa já recusa. Página no disco não é o mix. Sem chave `tocar`.
 A receita de áudio orienta mix e interrupção; o catálogo só
 localiza arquivos do acervo — não ouve o starter.
 
