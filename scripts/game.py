@@ -8015,6 +8015,43 @@ def content_host_scope():
     )
 
 
+# A receita já recusa que o
+# refinamento estático exija
+# regenerar bancos. Sem isto
+# o content listava arquivos
+# e calava a recusa. Refino
+# no disco não é o banco.
+CONTENT_BANKS = re.compile(
+    r"refinamento estático não exige\s+regenerar bancos"
+)
+
+
+def recipe_refuses_static_refine_as_regenerating_banks(text):
+    return bool(text and CONTENT_BANKS.search(text))
+
+
+def content_banks_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_static_refine_as_regenerating_banks(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_banks_scope():
+    if not content_banks_source():
+        return None
+    return (
+        " O disco recusa que o refinamento estático exija regenerar bancos "
+        "(`bancos`). Refino no disco não é o banco."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -8274,6 +8311,9 @@ def content_reading(project):
     host = content_host_scope()
     if host:
         scope += host
+    banks = content_banks_scope()
+    if banks:
+        scope += banks
     encoded = content_encoded_scope()
     if encoded:
         scope += encoded
