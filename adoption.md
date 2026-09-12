@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.589 — o at_floor do bar nomeia a otimista que a barra já recusa
+
+A
+barra
+já
+dizia
+que
+a
+tabela
+otimista
+sai
+intacta.
+O
+bar
+listava
+o
+piso
+e
+calava
+a
+recusa.
+Agora
+o
+`at_floor`
+do
+`bar`
+nomeia
+a
+otimista.
+Linha
+no
+disco
+não
+é
+acabamento.
+Sem
+chave
+`otimista`.
+Nomear
+não
+observa.
+
+O que 0.9.589 não afirma:
+listar
+o
+piso
+não
+é
+observar
+o
+jogo.
+
 ## 0.9.588 — o form do origins nomeia o crédito que o molde já recusa
 
 O

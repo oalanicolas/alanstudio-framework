@@ -8096,6 +8096,58 @@ def bar_source_paths(bar):
     return list(sources)
 
 
+# A barra já recusa que a tabela
+# otimista seja observação. Sem isto
+# o bar listava o piso e calava a
+# recusa. Linha no disco não é
+# acabamento.
+BAR_OPTIMIST = re.compile(r"otimista sai de lá\s+intacta")
+
+
+def bar_refuses_optimistic_table_as_observation(text):
+    return bool(text and BAR_OPTIMIST.search(text))
+
+
+def bar_optimist_source():
+    path = FRAMEWORK / "references/production-bar.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_optimistic_table_as_observation(text):
+        return "references/production-bar.md"
+    return None
+
+
+def bar_optimist_scope():
+    if not bar_optimist_source():
+        return None
+    return (
+        " O disco recusa que a tabela otimista seja observação "
+        "(`otimista`). Linha no disco não é acabamento."
+    )
+
+
+def bar_floor_scope():
+    scope = (
+        "dimensão no piso declarado. "
+        "Não observa o degrau."
+    )
+    named = bar_optimist_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def bar_at_floor_keys(bar):
+    at_floor = (bar or {}).get("at_floor") or []
+    if isinstance(at_floor, dict):
+        return list(at_floor.get("keys") or [])
+    return list(at_floor)
+
+
 def bar_reading(project):
     declaration = bar_declaration(project)
     declared = declaration["declared"]
@@ -8128,7 +8180,13 @@ def bar_reading(project):
             for key in BAR_DIMENSIONS
         ],
         "floor": declaration["floor"],
-        "at_floor": declaration["at_floor"],
+        "at_floor": (
+            {
+                "keys": declaration["at_floor"],
+                "scope": bar_floor_scope(),
+            }
+            if declaration["at_floor"] else []
+        ),
         "undeclared": undeclared,
         "conflicts": conflicts,
         "problems": problems,

@@ -275,7 +275,7 @@ precisa aparecer em `problems` — some da declaração, mas não da saída.
 
 Nada disso observa o jogo. Uma tabela **bem formada** e otimista sai de lá
 intacta, porque o degrau é afirmação de quem escreveu — e é por isso que o item 3
-acima, condição, evidência e autor, continua sendo o trabalho de verdade.
+acima, condição, evidência e autor, continua sendo o trabalho de verdade. Se a barra recusa que a tabela otimista seja observação, o `at_floor` do `bar` nomeia a otimista que a barra já recusa. Linha no disco não é acabamento. Sem chave `otimista`.
 
 ## Conferir sem importar número
 
