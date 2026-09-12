@@ -19822,6 +19822,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", report["scope"])
         self.assertNotIn("then.produção", report.get("then") or {})
 
+    def test_play_names_the_verb_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_mute_weightless_verb(recipe),
+            "a receita já recusa que verbo mudo ou sem peso seja",
+        )
+        self.assertEqual(game.play_verb_source(), "recipes/create.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.play_cycle(starter)
+        self.assertIn(
+            "verbo mudo ou sem peso seja",
+            report["scope"],
+            "o play apontava o url e calava a recusa",
+        )
+        self.assertIn("(`verbo`)", report["scope"])
+        self.assertNotIn("verbo", report)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_mute_weightless_verb(""))
+        with mock.patch.object(game, "play_verb_source", return_value=None):
+            silent = game.play_cycle(starter)
+        self.assertNotIn("verbo mudo ou sem peso seja", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o verbo que a receita já recusa", recipe)
+        self.assertIn("nomeia o verbo que a receita já recusa", skill)
+        self.assertIn("nomeia o verbo que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "verbo mudo ou sem peso seja",
+            report["then"].get("scope") or "",
+        )
+        noted = report.get("noted") or {}
+        self.assertNotIn(
+            "verbo mudo ou sem peso seja",
+            (noted.get("scope") or "") if isinstance(noted, dict) else "",
+        )
+        self.assertNotIn(
+            "verbo mudo ou sem peso seja",
+            game.play_noted_scope(),
+        )
+        self.assertNotIn(
+            "verbo mudo ou sem peso seja",
+            game.start_project(self.root / "sem-verbo", "canvas-arcade")["scope"],
+        )
+        self.assertNotIn(
+            "verbo mudo ou sem peso seja",
+            game.guide_scope("canvas-arcade"),
+        )
+        self.assertNotIn(
+            "verbo mudo ou sem peso seja",
+            game.continuity_prompt_scope() or "",
+        )
+        self.assertNotIn(
+            "verbo mudo ou sem peso seja",
+            game.feel_constants_scope(),
+        )
+
     def test_play_noted_names_the_writing_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -16304,7 +16304,45 @@ def play_scope(project):
             " O disco recusa produção (`produção`). "
             "Serve no disco não é publicação."
         )
+    named = play_verb_scope()
+    if named:
+        scope += named
     return scope
+
+
+# A receita já recusa que
+# verbo mudo ou sem peso
+# seja. Sem isto o play
+# apontava o url e calava
+# a recusa. Abrir no disco
+# não é o verbo.
+CREATE_VERB = re.compile(r"verbo mudo ou sem peso não é")
+
+
+def recipe_refuses_mute_weightless_verb(text):
+    return bool(text and CREATE_VERB.search(text))
+
+
+def play_verb_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_mute_weightless_verb(text):
+        return "recipes/create.md"
+    return None
+
+
+def play_verb_scope():
+    if not play_verb_source():
+        return None
+    return (
+        " O disco recusa que verbo mudo ou sem peso seja "
+        "(`verbo`). Abrir no disco não é o verbo."
+    )
 
 
 def here_project(explicit=None, root=None):

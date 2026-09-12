@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.671 — o play nomeia o verbo que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+verbo
+mudo
+ou
+sem
+peso
+não
+é.
+O
+play
+apontava
+o
+url
+e
+calava
+a
+recusa.
+Agora
+o
+`play`
+nomeia
+o
+verbo.
+Abrir
+no
+disco
+não
+é
+o
+verbo.
+Sem
+chave
+`verbo`.
+Nomear
+não
+observa.
+
 ## 0.9.670 — o start nomeia os vazios que a receita já recusa
 
 A
