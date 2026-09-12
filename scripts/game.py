@@ -3154,7 +3154,45 @@ def observation_item_scope():
             " O disco recusa que o autor sugerido seja quem jogou (`autor`). "
             "Recibo no disco não é sessão."
         )
+    markup = observation_dom_scope()
+    if markup:
+        scope += markup
     return scope
+
+
+# A receita já recusa que o
+# texto no DOM seja direção
+# observada. Sem isto o item
+# copiava a nota e calava a
+# recusa. Texto no DOM não é
+# a direção.
+A11Y_DOM = re.compile(r"Texto no DOM\s+não é direção observada")
+
+
+def recipe_refuses_dom_text_as_observed_direction(text):
+    return bool(text and A11Y_DOM.search(text))
+
+
+def observation_dom_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_dom_text_as_observed_direction(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_dom_scope():
+    if not observation_dom_source():
+        return None
+    return (
+        " O disco recusa que o texto no DOM seja direção observada "
+        "(`dom`). Texto no DOM não é a direção."
+    )
 
 
 # A receita já recusa que o soltar

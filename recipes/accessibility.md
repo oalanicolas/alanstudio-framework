@@ -82,7 +82,7 @@ viva espelha jogar, repetir, seed nova e a abertura do fim — o
 overlay do canvas não chega ao leitor. Na porta e no fim a região viva
 nomeia a mesa e o look que a chuva já veste — spawn e
 normal somem; contrast não é look de arte. Se a receita recusa que o contrast seja look de arte, o `candidate_look` do `playtest` nomeia a arte que a receita já recusa. Paleta no disco não é a sessão. Sem chave `arte`. Texto no DOM
-não é direção observada. O aviso
+não é direção observada. Se a receita recusa que o texto no DOM seja direção observada, o item da observação nomeia o dom que a receita já recusa. Texto no DOM não é a direção. Sem chave `dom`. O aviso
 do primeiro ciclo continua teclado até o gesto. Depois do
 tap a porta e o fim não chamam o avanço de cima.
 O overlay e a casca da página seguem `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
