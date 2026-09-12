@@ -164,7 +164,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    resolve; o orbe espera. Ordem do array não decide a aposta. A graça
    após dano também vale no mesmo quadro: o segundo estilhaço raspa,
    não empilha impacto. Pose e
-   arquivo no disco não são peso percebido.
+   arquivo no disco não são peso percebido. Se a receita recusa que pose e arquivo no disco sejam peso percebido, o `feel` nomeia a pose que a receita já recusa. Arquivo no disco não é o peso. Sem chave `pose`.
 4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
 5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.

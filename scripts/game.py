@@ -3921,6 +3921,9 @@ def _feel_scope(project):
     rule = feel_rule_scope()
     if rule:
         scope += rule
+    stance = feel_pose_scope()
+    if stance:
+        scope += stance
     return scope
 
 
@@ -4023,6 +4026,40 @@ def feel_rule_scope():
     return (
         " O disco recusa que corrigir a regra substitua o feel "
         "(`regra`). Regra no disco não é o feel."
+    )
+
+
+# A receita já recusa que pose e
+# arquivo no disco sejam peso
+# percebido. Sem isto o feel lia
+# o CONFIG e calava a recusa.
+# Arquivo no disco não é o peso.
+FEEL_POSE = re.compile(r"Pose e\s+arquivo no disco não são peso percebido")
+
+
+def recipe_refuses_pose_file_as_felt_weight(text):
+    return bool(text and FEEL_POSE.search(text))
+
+
+def feel_pose_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_pose_file_as_felt_weight(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_pose_scope():
+    if not feel_pose_source():
+        return None
+    return (
+        " O disco recusa que pose e arquivo no disco sejam peso percebido "
+        "(`pose`). Arquivo no disco não é o peso."
     )
 
 
