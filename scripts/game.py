@@ -14619,6 +14619,67 @@ def play_then_observation_scope(then=None):
     )
 
 
+# A receita já recusa que o recibo
+# escrito observe. Sem isto o play
+# relatava o noted e calava a
+# recusa. Arquivo no disco não é
+# a sessão.
+PLAY_WRITTEN = re.compile(r"o recibo escrito não observa")
+
+
+def recipe_refuses_written_receipt_as_observing(text):
+    return bool(text and PLAY_WRITTEN.search(text))
+
+
+def play_noted_written_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_written_receipt_as_observing(text):
+        return "recipes/create.md"
+    return None
+
+
+def play_noted_written_scope():
+    if not play_noted_written_source():
+        return None
+    return (
+        " O disco recusa que o recibo escrito observe "
+        "(`escrito`). Arquivo no disco não é a sessão."
+    )
+
+
+def play_noted_scope():
+    scope = (
+        "recibo de observação no disco. "
+        "O recibo escrito não observa."
+    )
+    named = play_noted_written_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def play_noted_flag(reading):
+    noted = (reading or {}).get("noted")
+    if isinstance(noted, dict):
+        return bool(noted.get("noted"))
+    return bool(noted)
+
+
+def play_noted_reading(noted):
+    if not noted:
+        return False
+    return {
+        "noted": True,
+        "scope": play_noted_scope(),
+    }
+
+
 def play_cycle(destination=None, starter=None):
     if destination is None:
         raise ValueError(missing_destination_hint())
@@ -14667,7 +14728,7 @@ def play_cycle(destination=None, starter=None):
             playtest_command(dest),
         ),
         "steps": steps,
-        "noted": noted,
+        "noted": play_noted_reading(noted),
         "executed": False,
         "scope": play_scope(dest),
     }

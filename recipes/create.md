@@ -25,6 +25,7 @@ seed e o convite; nomear o endereço não observa. A partida no serve grava o ca
 também. Depois do fim, a página grava o recibo se você escrever
 e aponta o convite desta partida se a seed ficou no recibo. Copiar
 o endereço não grava.
+o recibo escrito não observa. Se a receita recusa que o recibo escrito observe, o `noted` do `play` nomeia o escrito que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `escrito`.
 Depois do recibo, o mesmo `start` e o `next` apontam
 o ofício. Se o processo pede uma ação recomendada, o `next` nomeia a ação que o processo já pede. Proposta no disco não é autorização. Sem chave `ação`. Se o roteiro recusa que o comando crie o jogo, o `next` nomeia a criação que o roteiro já recusa. Proposta no disco não é pasta criada. Sem chave `criação`. Se o processo recusa fabricar tarefa para cumprir o formato, o `next` nomeia a fabricação que o processo já recusa. Lista no disco não é backlog. Sem chave `fabricação`. Se a receita recusa que nome de comando prove a conclusão, o `signals` do next nomeia a conclusão que a receita já recusa. Sinal no disco não é o término. Sem chave `conclusão`. O autor do `note` é sugestão do git ou do ambiente, não
 quem jogou. Nomear o ofício não pinta. `playtest --invite` aponta `href`

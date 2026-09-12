@@ -17656,6 +17656,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", report["scope"])
         self.assertNotIn("then.produção", report.get("then") or {})
 
+    def test_play_noted_names_the_writing_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_written_receipt_as_observing(recipe),
+            "a receita já recusa que o recibo escrito observe",
+        )
+        self.assertEqual(game.play_noted_written_source(), "recipes/create.md")
+        destination = self.root / "ciclo-escrito"
+        game.start_project(destination, "canvas-arcade")
+        empty = game.play_cycle(destination, "canvas-arcade")
+        self.assertFalse(empty["noted"])
+        self.assertFalse(game.play_noted_flag(empty))
+        game.note_observation(destination, "Ana", "o verbo pesa no guarda")
+        report = game.play_cycle(destination, "canvas-arcade")
+        item = report["noted"]
+        self.assertTrue(item["noted"], "o play já acha o recibo no disco")
+        self.assertEqual(item["noted"], game.play_noted_flag(report))
+        self.assertIn(
+            "o recibo escrito observe",
+            item["scope"],
+            "o play relatava o noted e calava a recusa",
+        )
+        self.assertIn("(`escrito`)", item["scope"])
+        self.assertNotIn("escrito", item)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_written_receipt_as_observing(""))
+        with mock.patch.object(game, "play_noted_written_source", return_value=None):
+            silent = game.play_cycle(destination, "canvas-arcade")
+        self.assertNotIn(
+            "o recibo escrito observe",
+            silent["noted"]["scope"],
+        )
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o escrito que a receita já recusa", readme)
+        self.assertIn("nomeia o escrito que a receita já recusa", recipe)
+        self.assertIn("nomeia o escrito que a receita já recusa", skill)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o recibo escrito observe", report["scope"])
+        if report.get("then"):
+            self.assertNotIn(
+                "o recibo escrito observe",
+                report["then"].get("scope") or "",
+            )
+        started = game.start_project(destination, "canvas-arcade")
+        self.assertIs(started["noted"], True)
+        self.assertNotIsInstance(started["noted"], dict)
+        guided = game.guide_cycle(destination, "canvas-arcade")
+        self.assertIs(guided["noted"], True)
+        self.assertNotIsInstance(guided["noted"], dict)
+        self.assertNotIn("o recibo escrito observe", started["scope"])
+        self.assertNotIn("o recibo escrito observe", guided["scope"])
+        self.assertNotIn("o recibo escrito observe", game.next_scope())
+
     def test_play_points_at_serve_without_creating_or_playing(self):
         destination = self.root / "ja-criado"
         game.start_project(destination, "canvas-arcade", idea="guardar a corrente")
