@@ -8666,6 +8666,57 @@ def bar_at_floor_keys(bar):
     return list(at_floor)
 
 
+# A barra já recusa que o piso seja
+# uma nota. Sem isto o bar relatava
+# o mínimo e calava a recusa. Linha
+# no disco não é acabamento.
+BAR_NOTE = re.compile(r"Não é uma nota")
+
+
+def bar_refuses_floor_as_note(text):
+    return bool(text and BAR_NOTE.search(text))
+
+
+def bar_floor_note_source():
+    path = FRAMEWORK / "references/production-bar.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_floor_as_note(text):
+        return "references/production-bar.md"
+    return None
+
+
+def bar_floor_note_scope():
+    if not bar_floor_note_source():
+        return None
+    return (
+        " O disco recusa que o piso seja uma nota "
+        "(`nota`). Linha no disco não é acabamento."
+    )
+
+
+def bar_declared_floor_scope():
+    scope = (
+        "mínimo entre as dimensões declaradas. "
+        "Não observa o acabamento."
+    )
+    named = bar_floor_note_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def bar_floor_tier(reading):
+    floor = (reading or {}).get("floor")
+    if isinstance(floor, dict):
+        return floor.get("tier")
+    return floor
+
+
 def bar_reading(project):
     declaration = bar_declaration(project)
     declared = declaration["declared"]
@@ -8697,7 +8748,14 @@ def bar_reading(project):
             }
             for key in BAR_DIMENSIONS
         ],
-        "floor": declaration["floor"],
+        "floor": (
+            {
+                "tier": declaration["floor"],
+                "scope": bar_declared_floor_scope(),
+            }
+            if declaration["floor"] is not None
+            else None
+        ),
         "at_floor": (
             {
                 "keys": declaration["at_floor"],

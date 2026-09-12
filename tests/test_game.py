@@ -6868,7 +6868,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS} | {"pacing": ("playable", "slice")})
         report = game.bar_reading(self.project)
         self.assertFalse(report["assessed"])
-        self.assertEqual(report["floor"], "playable")
+        self.assertEqual(report["floor"]["tier"], "playable")
         self.assertEqual(report["at_floor"]["keys"], ["pacing"])
         self.assertEqual(game.bar_at_floor_keys(report), ["pacing"])
         self.assertEqual(game.bar_declaration(self.project)["at_floor"], ["pacing"])
@@ -6899,7 +6899,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         stray.parent.mkdir(parents=True)
         stray.write_text("| `feel` | `flagship` | |\n", encoding="utf-8")
         report = game.bar_reading(self.project)
-        self.assertEqual(report["floor"], "playable")
+        self.assertEqual(report["floor"]["tier"], "playable")
         self.assertEqual(report["at_floor"]["keys"], ["feel"])
         self.assertEqual(game.bar_at_floor_keys(report), ["feel"])
         self.assertIn("docs/planning/qa.md", report["sources"]["paths"])
@@ -6918,7 +6918,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.declare_bar(partial)
         report = game.bar_reading(self.project)
         self.assertEqual(report["undeclared"]["keys"], [list(game.BAR_DIMENSIONS)[9]])
-        self.assertEqual(report["floor"], "shippable")
+        self.assertEqual(report["floor"]["tier"], "shippable")
         self.assertIsNone(report["perceived_tier"])
         empty = game.bar_reading(self.root / "sem-nada")
         self.assertEqual(empty["undeclared"]["keys"], list(game.BAR_DIMENSIONS))
@@ -7088,6 +7088,70 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn("a tabela otimista seja observação", game.next_scope())
         self.assertNotIn("a tabela otimista seja observação", game.production_bar_scope())
+
+    def test_bar_floor_names_the_note_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.bar_refuses_floor_as_note(guide),
+            "a barra já recusa que o piso seja uma nota",
+        )
+        self.assertEqual(game.bar_floor_note_source(), "references/production-bar.md")
+        empty = game.bar_reading(self.project)
+        self.assertIsNone(empty["floor"])
+        self.assertIsNone(game.bar_floor_tier(empty))
+        self.declare_bar({key: ("slice", "shippable") for key in game.BAR_DIMENSIONS} | {"pacing": ("playable", "slice")})
+        report = game.bar_reading(self.project)
+        item = report["floor"]
+        self.assertEqual(item["tier"], "playable")
+        self.assertEqual(item["tier"], game.bar_floor_tier(report))
+        self.assertEqual(game.bar_declaration(self.project)["floor"], "playable")
+        self.assertIn(
+            "o piso seja uma nota",
+            item["scope"],
+            "o bar relatava o mínimo e calava a recusa",
+        )
+        self.assertIn("(`nota`)", item["scope"])
+        self.assertNotIn("nota", item)
+        self.assertFalse(report["assessed"])
+        self.assertFalse(game.bar_refuses_floor_as_note(""))
+        with mock.patch.object(game, "bar_floor_note_source", return_value=None):
+            silent = game.bar_reading(self.project)
+        self.assertNotIn(
+            "o piso seja uma nota",
+            silent["floor"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a nota que a barra já recusa", guide)
+        self.assertIn("nomeia a nota que a barra já recusa", recipe)
+        self.assertIn("nomeia a nota que a barra já recusa", skill)
+        self.assertIn("nomeia a nota que a barra já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o piso seja uma nota", report["scope"])
+        if report.get("at_floor"):
+            self.assertNotIn(
+                "o piso seja uma nota",
+                report["at_floor"].get("scope") or "",
+            )
+        if report.get("undeclared"):
+            self.assertNotIn(
+                "o piso seja uma nota",
+                report["undeclared"].get("scope") or "",
+            )
+        if report.get("sources"):
+            self.assertNotIn(
+                "o piso seja uma nota",
+                report["sources"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o piso seja uma nota",
+            report["dimensions"][0].get("scope") or "",
+        )
+        self.assertNotIn("o piso seja uma nota", game.next_scope())
+        self.assertNotIn("o piso seja uma nota", game.production_bar_scope())
 
     def test_bar_keeps_the_lower_tier_when_two_documents_disagree(self):
         self.declare_bar({key: ("shippable", "flagship") for key in game.BAR_DIMENSIONS})
@@ -17529,7 +17593,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         declared = {item["key"]: item["tier"] for item in report["dimensions"]}
         self.assertEqual(declared["feel"], "prototype")
         self.assertEqual(declared["art_direction"], "shippable")
-        self.assertEqual(report["floor"], "prototype")
+        self.assertEqual(report["floor"]["tier"], "prototype")
 
     def test_bar_reports_the_typo_instead_of_swallowing_the_line(self):
         # Quem declarou `feel` com erro de digitação recebia de volta a instrução
