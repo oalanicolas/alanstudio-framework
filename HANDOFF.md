@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.743: o item do craft nomeia o limiar que a pesquisa já recusa. Palestra no disco não é o critério. Sem chave `limiar`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.743): **804 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
