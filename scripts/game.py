@@ -15350,6 +15350,68 @@ def guide_exists_reading(exists):
     }
 
 
+# A receita já recusa que o
+# diretório atual seja o ciclo
+# jogado. Sem isto o guide
+# relatava o here e calava a
+# recusa. Pasta no disco não é
+# a partida.
+CREATE_HERE_PLAYED = re.compile(r"Diretório atual não é o ciclo jogado")
+
+
+def recipe_refuses_current_directory_as_played_cycle(text):
+    return bool(text and CREATE_HERE_PLAYED.search(text))
+
+
+def guide_here_aqui_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_current_directory_as_played_cycle(text):
+        return "recipes/create.md"
+    return None
+
+
+def guide_here_aqui_scope():
+    if not guide_here_aqui_source():
+        return None
+    return (
+        " O disco recusa que o diretório atual seja o ciclo jogado "
+        "(`aqui`). Pasta no disco não é a partida."
+    )
+
+
+def guide_here_scope():
+    scope = (
+        "diretório atual é o jogo. "
+        "Não é o ciclo jogado."
+    )
+    named = guide_here_aqui_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def guide_here_flag(reading):
+    here = (reading or {}).get("here") if isinstance(reading, dict) else reading
+    if isinstance(here, dict):
+        return bool(here.get("here"))
+    return bool(here)
+
+
+def guide_here_reading(here):
+    if not here:
+        return False
+    return {
+        "here": True,
+        "scope": guide_here_scope(),
+    }
+
+
 def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
     available = starters()
     chosen = starter or (available[0] if available else "canvas-arcade")
@@ -17985,7 +18047,7 @@ def main():
             dest = here_project()
             require_guide_idea(None, args.idea)
             report = guide_cycle(dest, idea=args.idea)
-            report["here"] = dest is not None
+            report["here"] = guide_here_reading(dest is not None)
             emit(report)
         elif args.action == "discover":
             emit(discover(root) if args.plain else review(root))
@@ -18004,7 +18066,9 @@ def main():
             dest = here_project(args.project, root)
             require_guide_idea(args.project, args.idea)
             report = guide_cycle(dest, args.starter, args.idea)
-            report["here"] = args.project is None and dest is not None
+            report["here"] = guide_here_reading(
+                args.project is None and dest is not None
+            )
             emit(report)
         elif args.action in ("play", "open"):
             dest = resolve_play_destination(args.project, root)

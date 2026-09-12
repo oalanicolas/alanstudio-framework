@@ -18835,6 +18835,78 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(hosted["exists"])
         self.assertEqual(len(hosted["steps"]), 3)
 
+    def test_guide_here_names_the_here_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_current_directory_as_played_cycle(recipe),
+            "a receita já recusa que o diretório atual seja o ciclo jogado",
+        )
+        self.assertEqual(game.guide_here_aqui_source(), "recipes/create.md")
+        empty = game.guide_cycle(None, "canvas-arcade")
+        self.assertFalse(empty["here"])
+        self.assertFalse(game.guide_here_flag(empty))
+        destination = self.root / "ciclo-aqui"
+        game.start_project(destination, "canvas-arcade")
+        mapped = game.guide_cycle(destination, "canvas-arcade")
+        self.assertFalse(mapped["here"])
+        self.assertFalse(game.guide_here_flag(mapped))
+        run = subprocess.run(
+            [sys.executable, str(SCRIPT), "guide"],
+            capture_output=True, text=True, cwd=str(destination),
+        )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        item = report["here"]
+        self.assertTrue(item["here"], "o guide já usa o diretório atual neste jogo")
+        self.assertEqual(item["here"], game.guide_here_flag(report))
+        self.assertIn(
+            "o diretório atual seja o ciclo jogado",
+            item["scope"],
+            "o guide relatava o here e calava a recusa",
+        )
+        self.assertIn("(`aqui`)", item["scope"])
+        self.assertNotIn("aqui", item)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_current_directory_as_played_cycle(""))
+        with mock.patch.object(game, "guide_here_aqui_source", return_value=None):
+            silent = game.guide_here_reading(True)
+        self.assertNotIn(
+            "o diretório atual seja o ciclo jogado",
+            silent["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o aqui que a receita já recusa", recipe)
+        self.assertIn("nomeia o aqui que a receita já recusa", skill)
+        self.assertIn("nomeia o aqui que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o diretório atual seja o ciclo jogado", report["scope"])
+        if report.get("then"):
+            self.assertNotIn(
+                "o diretório atual seja o ciclo jogado",
+                report["then"].get("scope") or "",
+            )
+        if report.get("exists") and isinstance(report["exists"], dict):
+            self.assertNotIn(
+                "o diretório atual seja o ciclo jogado",
+                report["exists"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o diretório atual seja o ciclo jogado",
+            game.start_project(self.root / "ciclo-cala-aqui", "canvas-arcade")["scope"],
+        )
+        self.assertNotIn(
+            "o diretório atual seja o ciclo jogado",
+            game.play_cycle(destination)["scope"],
+        )
+        self.assertNotIn("o diretório atual seja o ciclo jogado", game.next_scope())
+        self.assertNotIn(
+            "o diretório atual seja o ciclo jogado",
+            mapped["scope"],
+        )
+
     def test_guide_names_the_folder_from_the_idea_without_writing_it(self):
         self.assertEqual(game.idea_slug("atravessar estilhaços"), "atravessar-estilhacos")
         self.assertEqual(game.idea_slug("!!!"), None)

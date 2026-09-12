@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.639 — o here do guide nomeia o aqui que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+diretório
+atual
+não
+é
+o
+ciclo
+jogado.
+O
+guide
+relatava
+o
+here
+e
+calava
+a
+recusa.
+Agora
+o
+`here`
+do
+`guide`
+nomeia
+o
+aqui.
+Pasta
+no
+disco
+não
+é
+a
+partida.
+Sem
+chave
+`aqui`.
+Estar
+não
+observa.
+
 ## 0.9.638 — o named do start nomeia a frase que a receita já recusa
 
 A
