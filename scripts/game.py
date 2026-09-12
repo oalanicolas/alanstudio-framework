@@ -4900,7 +4900,44 @@ def save_warned_scope():
     named = save_warned_trust_scope()
     if named:
         scope += named
+    query = save_warned_query_scope()
+    if query:
+        scope += query
     return scope
+
+
+# A receita já recusa que query no
+# disco seja aba fechada. Sem isto
+# o save relatava o aviso e calava
+# a recusa. Endereço no disco não
+# é a aba.
+PERSIST_QUERY = re.compile(r"Query no disco não é")
+
+
+def recipe_refuses_query_as_closed_tab(text):
+    return bool(text and PERSIST_QUERY.search(text))
+
+
+def save_warned_query_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_query_as_closed_tab(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_warned_query_scope():
+    if not save_warned_query_source():
+        return None
+    return (
+        " O disco recusa que query no disco seja aba fechada "
+        "(`query`). Endereço no disco não é a aba."
+    )
 
 
 def save_warned_flag(reading):

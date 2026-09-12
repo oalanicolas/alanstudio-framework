@@ -67,7 +67,7 @@ Pausa, `pagehide`, `beforeunload`, perda de foco e o controle que some gravam o 
 `?look=` / `?spawn=` / `?speed=` vestem a sessão. Fechar, esconder
 ou `flush` não grava esses eixos — o convite é candidato, não
 preferência. Se a receita recusa que o convite seja preferência, o `invite` do `playtest` nomeia a preferência que a receita já recusa. Convite no disco não é a sessão. Sem chave `preferência`. Escolher no painel grava. Query no disco não é
-aba fechada nem `trusted`.
+aba fechada nem `trusted`. Se a receita recusa que query no disco seja aba fechada, o `warned` do `save` nomeia a query que a receita já recusa. Endereço no disco não é a aba. Sem chave `query`.
 A outra aba veste as preferências desta página (`storage`); o progresso
 em curso não. Ouvir não é aba fechada. Isto **não** é aba fechada observada e não sobe `state_trust`. Grava
 de forma **verificada** em `src/core/storage.js` — escreve em chave de estágio,

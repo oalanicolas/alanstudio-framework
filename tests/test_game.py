@@ -14873,6 +14873,72 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.content_reading(starter)["scope"],
         )
 
+    def test_save_warned_names_the_query_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_query_as_closed_tab(recipe),
+            "a receita já recusa que query no disco seja aba fechada",
+        )
+        self.assertEqual(game.save_warned_query_source(), "recipes/persistence.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.save_reading(starter)
+        item = report["warned"]
+        self.assertTrue(item["warned"], "o save já relata o aviso neste starter")
+        self.assertEqual(item["warned"], game.save_warned_flag(report))
+        self.assertIn(
+            "query no disco seja aba fechada",
+            item["scope"],
+            "o save relatava o aviso e calava a recusa",
+        )
+        self.assertIn("(`query`)", item["scope"])
+        self.assertNotIn("query", item)
+        self.assertFalse(report["trusted"])
+        self.assertIs(report["unversioned"], False)
+        self.assertFalse(game.recipe_refuses_query_as_closed_tab(""))
+        empty = game.save_reading(self.project)
+        self.assertFalse(empty["warned"])
+        self.assertFalse(game.save_warned_flag(empty))
+        with mock.patch.object(game, "save_warned_query_source", return_value=None):
+            silent = game.save_reading(starter)
+        self.assertNotIn(
+            "query no disco seja aba fechada",
+            silent["warned"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a query que a receita já recusa", recipe)
+        self.assertIn("nomeia a query que a receita já recusa", skill)
+        self.assertIn("nomeia a query que a receita já recusa", readme)
+        self.assertIn("nomeia a query que a receita já recusa", create)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("query no disco seja aba fechada", report["scope"])
+        self.assertNotIn(
+            "query no disco seja aba fechada",
+            report["warnings"].get("scope") or "",
+        )
+        self.assertNotIn(
+            "query no disco seja aba fechada",
+            report["sources"].get("scope") or "",
+        )
+        if isinstance(report.get("used"), dict):
+            self.assertNotIn(
+                "query no disco seja aba fechada",
+                report["used"].get("scope") or "",
+            )
+        self.assertNotIn("query no disco seja aba fechada", game.next_scope())
+        self.assertNotIn(
+            "query no disco seja aba fechada",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn("query no disco seja aba fechada", game.coverage_scope())
+        self.assertNotIn(
+            "query no disco seja aba fechada",
+            game.scan(self.project)["areas"]["decisions"]["scope"],
+        )
+
     def test_save_used_names_the_open_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         self.assertTrue(

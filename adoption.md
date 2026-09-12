@@ -30,6 +30,55 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.679 — o warned do save nomeia a query que a receita já recusa
+
+O
+warned
+do
+`save`
+nomeia
+a
+query
+que
+a
+receita
+já
+recusa.
+A
+receita
+já
+dizia
+que
+query
+no
+disco
+não
+é
+aba
+fechada.
+O
+save
+relatava
+o
+aviso
+e
+calava
+a
+recusa.
+Endereço
+no
+disco
+não
+é
+a
+aba.
+Sem
+chave
+`query`.
+Nomear
+não
+observa.
+
 ## 0.9.678 — a área decisions nomeia a eficácia que o mapa já recusa
 
 O
