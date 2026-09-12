@@ -5622,9 +5622,9 @@ def budget_reading(project):
             " O disco relata o pior percentil, não a média. "
             "Relato no disco não é dispositivo."
         )
-    named = budget_stable_scope()
-    if named:
-        scope += named
+    stable = budget_stable_scope()
+    if stable:
+        scope += stable
     return {
         "schema_version": 1,
         "project": str(project),
