@@ -2609,6 +2609,73 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.next_scope(),
         )
 
+    def test_art_sources_names_the_direction_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_palette_as_consistent_direction(recipe),
+            "a receita já recusa que paleta no código seja direção consistente",
+        )
+        self.assertEqual(game.art_direction_source(), "recipes/visual.md")
+        empty = game.art_reading(self.project)
+        self.assertEqual(empty["sources"], [])
+        self.assertEqual(game.art_source_files(self.project), [])
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertIn("data/palettes.json", game.art_source_files(starter))
+        report = game.art_reading(starter)
+        item = report["sources"]
+        self.assertIn("data/palettes.json", item["paths"])
+        self.assertEqual(item["paths"], game.art_source_files(starter))
+        self.assertIn(
+            "paleta no código ou em palettes.json seja direção consistente",
+            item["scope"],
+            "o art listava o fonte e calava a recusa",
+        )
+        self.assertIn("(`direção`)", item["scope"])
+        self.assertNotIn("direção", item)
+        self.assertFalse(report["consistent"])
+        self.assertFalse(game.recipe_refuses_palette_as_consistent_direction(""))
+        with mock.patch.object(game, "art_direction_source", return_value=None):
+            silent = game.art_reading(starter)
+        self.assertNotIn(
+            "paleta no código ou em palettes.json seja direção consistente",
+            silent["sources"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a direção que a receita já recusa", recipe)
+        self.assertIn("nomeia a direção que a receita já recusa", skill)
+        self.assertIn("nomeia a direção que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn(
+            "paleta no código ou em palettes.json seja direção consistente",
+            report["scope"],
+        )
+        if report.get("manifests"):
+            self.assertNotIn(
+                "paleta no código ou em palettes.json seja direção consistente",
+                report["manifests"].get("scope") or "",
+            )
+        if report.get("palettes"):
+            self.assertNotIn(
+                "paleta no código ou em palettes.json seja direção consistente",
+                report["palettes"][0].get("scope") or "",
+            )
+        if report.get("rains"):
+            self.assertNotIn(
+                "paleta no código ou em palettes.json seja direção consistente",
+                report["rains"][0].get("scope") or "",
+            )
+        self.assertNotIn(
+            "paleta no código ou em palettes.json seja direção consistente",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn(
+            "paleta no código ou em palettes.json seja direção consistente",
+            game.next_scope(),
+        )
+
     def test_doctor_names_the_publisher_the_skill_already_refuses(self):
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         self.assertTrue(

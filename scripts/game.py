@@ -4536,6 +4536,63 @@ def vignette_cut_source(project):
     return None
 
 
+# A receita já recusa que paleta no
+# código ou em palettes.json seja
+# direção consistente. Sem isto o
+# art listava o fonte e calava a
+# recusa. Arquivo no disco não é
+# comparação.
+VISUAL_DIRECTION = re.compile(r"não é direção consistente")
+
+
+def recipe_refuses_palette_as_consistent_direction(text):
+    return bool(text and VISUAL_DIRECTION.search(text))
+
+
+def art_direction_source():
+    path = FRAMEWORK / "recipes/visual.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_palette_as_consistent_direction(text):
+        return "recipes/visual.md"
+    return None
+
+
+def art_direction_refusal_scope():
+    if not art_direction_source():
+        return None
+    return (
+        " O disco recusa que paleta no código ou em palettes.json seja "
+        "direção consistente (`direção`). Arquivo no disco não é comparação."
+    )
+
+
+def art_sources_scope():
+    scope = (
+        "fonte de paleta no disco. "
+        "Não compara silhueta."
+    )
+    named = art_direction_refusal_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def art_source_files(project):
+    project = Path(project)
+    found = []
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES):
+        if _palette_names_from_code(text) is None:
+            continue
+        found.append(relative)
+    found.extend(art_manifest_files(project))
+    return found[:8]
+
+
 def art_reading(project):
     project = Path(project)
     palettes = []
@@ -4609,6 +4666,11 @@ def art_reading(project):
     rain_scope = art_rain_scope()
     for item in rains:
         item["scope"] = rain_scope
+    if sources:
+        sources = {
+            "paths": sources[:8],
+            "scope": art_sources_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
@@ -4616,7 +4678,7 @@ def art_reading(project):
         "palettes": palettes,
         "rains": rains,
         "manifests": manifests,
-        "sources": sources[:8],
+        "sources": sources,
         "bible": ART_BIBLE if bible_present else None,
         "bible_current": bible_current,
         "bible_draft": bible_present and not bible_current,

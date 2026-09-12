@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.571 — o sources do art nomeia a direção que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+paleta
+no
+código
+ou
+em
+palettes.json
+não
+é
+direção
+consistente.
+O
+art
+listava
+o
+fonte
+e
+calava
+a
+recusa.
+Agora
+o
+`sources`
+do
+`art`
+nomeia
+a
+direção.
+Arquivo
+no
+disco
+não
+é
+comparação.
+Sem
+chave
+`direção`.
+Nomear
+não
+observa.
+
+O que 0.9.571 não afirma:
+listar
+o
+fonte
+não
+é
+direção
+consistente.
+
 ## 0.9.570 — o files do content nomeia os dados que a receita já recusa
 
 A

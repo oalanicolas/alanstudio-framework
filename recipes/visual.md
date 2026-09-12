@@ -14,7 +14,7 @@ Comparar só o meio da partida esconde a imagem que o jogador vê ao
 abrir. Sem tela o headless já joga.
 
 O harness lê paleta e art-bible vigentes com `art <projeto>`. Paleta no
-código ou em `data/palettes.json` não é direção consistente — `consistent` é sempre falso. Rascunho
+código ou em `data/palettes.json` não é direção consistente — `consistent` é sempre falso. Se a receita recusa que paleta no código ou em palettes.json seja direção consistente, o `sources` do `art` nomeia a direção que a receita já recusa. Arquivo no disco não é comparação. Sem chave `direção`. Rascunho
 do `init` não conta. Sem declaração, `next` propõe `art.missing`.
 `art` também nomeia as mesas de chuva que o disco já tem
 (`intervalTicks`, `fallSpeed` e `hazardChance` em `data/`, `tables/` ou `content/`).
