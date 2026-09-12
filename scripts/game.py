@@ -13878,7 +13878,43 @@ def continuity_source_scope():
             " O disco recusa que sources_found comprove fila (`fila`). "
             "Fonte no disco não é backlog."
         )
+    draft = continuity_source_step_scope()
+    if draft:
+        scope += draft
     return scope
+
+
+# O next já recusa que fonte em rascunho
+# seja passo. Sem isto a fonte copiava o
+# caminho e calava a recusa.
+# Rascunho no disco não é o passo.
+NEXT_DRAFT_STEP = re.compile(r"fonte em rascunho não é passo")
+
+
+def next_refuses_draft_source_as_step(text):
+    return bool(text and NEXT_DRAFT_STEP.search(text))
+
+
+def continuity_source_step_source():
+    path = FRAMEWORK / "commands" / "next.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if next_refuses_draft_source_as_step(text):
+        return "commands/next.md"
+    return None
+
+
+def continuity_source_step_scope():
+    if not continuity_source_step_source():
+        return ""
+    return (
+        " O disco recusa que fonte em rascunho seja passo (`passo`). "
+        "Rascunho no disco não é o passo."
+    )
 
 
 # O gauntlet já recusa que o arquivo de prompts seja a fonte de status.

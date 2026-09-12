@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.684 — o sources do continuity nomeia o passo que o next já recusa
+
+O
+next
+já
+dizia
+que
+fonte
+em
+rascunho
+não
+é
+passo.
+A
+fonte
+copiava
+o
+caminho
+e
+calava
+a
+recusa.
+Agora
+o
+`sources[n]`
+do
+continuity
+nomeia
+o
+passo.
+Rascunho
+no
+disco
+não
+é
+o
+passo.
+Sem
+chave
+`passo`.
+Nomear
+não
+observa.
+
 ## 0.9.683 — o next nomeia a validada que o next já recusa
 
 O

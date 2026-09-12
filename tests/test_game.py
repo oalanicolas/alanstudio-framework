@@ -1286,6 +1286,56 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("sources_found comprove fila", game.next_scope())
         self.assertNotIn("sources_found comprove fila", game.check_plan_scope())
 
+    def test_continuity_sources_name_the_step_the_next_already_refuses(self):
+        guide = (game.FRAMEWORK / "commands/next.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.next_refuses_draft_source_as_step(guide),
+            "o next já recusa que fonte em rascunho seja passo",
+        )
+        self.assertEqual(game.continuity_source_step_source(), "commands/next.md")
+        (self.project / "docs").mkdir()
+        plan = self.project / "docs/production-plan.md"
+        plan.write_text(
+            "# Plano de produção\nEscopo local.\n## Continuidade\n"
+            "Próximo passo: TASK-01 — provar transporte.\n"
+            "Pronto quando: nenhum item é perdido ou duplicado.\n"
+        )
+        report = game.context(self.project, "mechanics")
+        self.assertTrue(report["continuity"]["sources"], "o continuity já lista fontes candidatas")
+        item = report["continuity"]["sources"][0]
+        self.assertIn(
+            "fonte em rascunho seja passo",
+            item["scope"],
+            "a fonte copiava o caminho e calava a recusa",
+        )
+        self.assertIn("(`passo`)", item["scope"])
+        self.assertNotIn("passo", item)
+        self.assertFalse(report["continuity"]["executed"])
+        self.assertIsNone(report["continuity"]["next_step"])
+        self.assertFalse(game.next_refuses_draft_source_as_step(""))
+        with mock.patch.object(game, "continuity_source_step_source", return_value=None):
+            silent = game.context(self.project, "mechanics")
+        self.assertNotIn(
+            "fonte em rascunho seja passo",
+            silent["continuity"]["sources"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o passo que o next já recusa", guide)
+        self.assertIn("nomeia o passo que o next já recusa", recipe)
+        self.assertIn("nomeia o passo que o next já recusa", skill)
+        self.assertIn("nomeia o passo que o next já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("fonte em rascunho seja passo", report["continuity"]["scope"])
+        self.assertNotIn("fonte em rascunho seja passo", report["documentation"]["scope"])
+        self.assertNotIn("fonte em rascunho seja passo", game.next_scope())
+        self.assertNotIn("fonte em rascunho seja passo", game.proposal_scope())
+        self.assertNotIn("fonte em rascunho seja passo", game.check_plan_scope())
+        self.assertNotIn("fonte em rascunho seja passo", game.guide_scope("canvas-arcade"))
+
     def test_continuity_prompt_names_the_recipe_the_gauntlet_already_refuses(self):
         guide = (game.FRAMEWORK / "references/gauntlet.md").read_text(encoding="utf-8")
         self.assertTrue(
