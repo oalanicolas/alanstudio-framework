@@ -10664,7 +10664,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.feel_reading(starter)
         self.assertFalse(report["felt"])
         self.assertTrue(report["unobserved"])
-        keys = [item["key"] for item in report["constants"]]
+        keys = [item["key"] for item in game.feel_constant_items(report)]
         self.assertIn("player.dashBufferTicks", keys)
         self.assertIn("player.speed", keys, "o feel lia o CONFIG e calava o passo")
         self.assertIn("player.dashSpeed", keys, "o feel calava a velocidade do avanço")
@@ -10731,13 +10731,13 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("prompt", payload)
         self.assertIn("serve", payload["then"]["play"])
         self.assertIn("note", payload["then"]["note"])
-        self.assertIn("spawn.practiceTicks", [item["key"] for item in payload["constants"]])
+        self.assertIn("spawn.practiceTicks", [item["key"] for item in game.feel_constant_items(payload)])
         self.assertFalse((cli.stderr or "").strip())
 
     def test_feel_scope_names_the_rumble_the_constants_already_list(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.feel_reading(starter)
-        keys = [item["key"] for item in report["constants"]]
+        keys = [item["key"] for item in game.feel_constant_items(report)]
         self.assertIn("feel.rumbleHitMs", keys)
         self.assertIn("feel.rumbleCloseMs", keys)
         self.assertIn("rumble", report["scope"].casefold())
@@ -10760,7 +10760,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     def test_feel_names_the_step_weight_the_config_already_declares(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.feel_reading(starter)
-        keys = [item["key"] for item in report["constants"]]
+        keys = [item["key"] for item in game.feel_constant_items(report)]
         self.assertIn("player.speed", keys, "o feel lia o CONFIG e calava o passo")
         self.assertIn("player.dashSpeed", keys, "o feel calava a velocidade do avanço")
         self.assertNotIn("player.halfWidth", keys)
@@ -11076,7 +11076,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         if report["constants"]:
             self.assertNotIn(
                 "o soltar no disco seja sessão observada",
-                report["constants"][0].get("scope") or "",
+                game.feel_constant_items(report)[0].get("scope") or "",
             )
         if report.get("sources"):
             self.assertNotIn(
@@ -11113,7 +11113,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.feel_reading(starter)
         self.assertTrue(report["constants"], "o feel já lista constantes neste starter")
-        item = report["constants"][0]
+        item = game.feel_constant_items(report)[0]
         self.assertIn(
             "valor seja constante universal",
             item["scope"],
@@ -11125,7 +11125,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(game.recipe_refuses_universal_constants(""))
         with mock.patch.object(game, "feel_constant_universal_source", return_value=None):
             silent = game.feel_reading(starter)
-        self.assertNotIn("valor seja constante universal", silent["constants"][0]["scope"])
+        self.assertNotIn("valor seja constante universal", game.feel_constant_items(silent)[0]["scope"])
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
         self.assertIn("nomeia o universal que a receita já recusa", recipe)
@@ -11146,12 +11146,12 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.feel_reading(starter)
         self.assertTrue(report["constants"], "o feel já lista constantes neste starter")
-        keys = [item["key"] for item in report["constants"]]
+        keys = [item["key"] for item in game.feel_constant_items(report)]
         self.assertTrue(
             any("speed" in key.casefold() for key in keys),
             "o feel já lista velocidade",
         )
-        item = report["constants"][0]
+        item = game.feel_constant_items(report)[0]
         self.assertIn(
             "velocidade não nula prove a posição",
             item["scope"],
@@ -11163,7 +11163,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(game.recipe_refuses_velocity_as_position(""))
         with mock.patch.object(game, "feel_constant_position_source", return_value=None):
             silent = game.feel_reading(starter)
-        self.assertNotIn("velocidade não nula prove a posição", silent["constants"][0]["scope"])
+        self.assertNotIn("velocidade não nula prove a posição", game.feel_constant_items(silent)[0]["scope"])
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
         self.assertIn("nomeia a posição que a receita já recusa", recipe)
@@ -11174,6 +11174,69 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("velocidade não nula prove a posição", game.observation_item_scope())
         self.assertNotIn("velocidade não nula prove a posição", game.next_scope())
         self.assertNotIn("velocidade não nula prove a posição", game.note_step_scope())
+
+    def test_feel_constants_name_the_weight_the_readme_already_refuses(self):
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.readme_refuses_constant_as_weight(readme),
+            "o README já recusa que a constante nomeada seja peso percebido",
+        )
+        self.assertEqual(game.feel_constants_weight_source(), "README.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.feel_reading(starter)
+        item = report["constants"]
+        self.assertTrue(item["items"], "o feel já lista constantes neste starter")
+        self.assertEqual(item["items"], game.feel_constant_items(report))
+        self.assertIn(
+            "a constante nomeada seja peso percebido",
+            item["scope"],
+            "o feel listava o CONFIG e calava a recusa",
+        )
+        self.assertIn("(`peso`)", item["scope"])
+        self.assertNotIn("peso", item)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.readme_refuses_constant_as_weight(""))
+        empty = game.feel_reading(self.project)
+        self.assertEqual(empty["constants"], [])
+        with mock.patch.object(game, "feel_constants_weight_source", return_value=None):
+            silent = game.feel_reading(starter)
+        self.assertNotIn(
+            "a constante nomeada seja peso percebido",
+            silent["constants"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o peso que o README já recusa", readme)
+        self.assertIn("nomeia o peso que o README já recusa", recipe)
+        self.assertIn("nomeia o peso que o README já recusa", skill)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a constante nomeada seja peso percebido", report["scope"])
+        if report.get("sources"):
+            self.assertNotIn(
+                "a constante nomeada seja peso percebido",
+                report["sources"].get("scope") or "",
+            )
+        if report.get("observations"):
+            self.assertNotIn(
+                "a constante nomeada seja peso percebido",
+                report["observations"].get("scope") or "",
+            )
+        if report.get("then"):
+            self.assertNotIn(
+                "a constante nomeada seja peso percebido",
+                report["then"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "a constante nomeada seja peso percebido",
+            game.feel_constant_items(report)[0].get("scope") or "",
+        )
+        self.assertNotIn(
+            "a constante nomeada seja peso percebido",
+            game.playtest_reading(starter)["scope"],
+        )
+        self.assertNotIn("a constante nomeada seja peso percebido", game.next_scope())
 
     def test_feel_names_the_last_run_seed_without_claiming_it_felt(self):
         destination = self.root / "feel-com-seed"
@@ -17262,7 +17325,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("demonstrem qualidade artística", planted["then"].get("scope") or "")
         played = game.play_cycle(destination, "canvas-arcade")
         self.assertNotIn("demonstrem qualidade artística", played["then"].get("scope") or "")
-        for item in report["constants"]:
+        for item in game.feel_constant_items(report):
             self.assertNotIn("demonstrem qualidade artística", item.get("scope") or "")
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
@@ -17321,7 +17384,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         if report["constants"]:
             self.assertNotIn(
                 "captura no disco seja sessão observada",
-                report["constants"][0].get("scope") or "",
+                game.feel_constant_items(report)[0].get("scope") or "",
             )
         self.assertNotIn(
             "captura no disco seja sessão observada",

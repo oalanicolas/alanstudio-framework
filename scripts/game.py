@@ -697,7 +697,7 @@ def review(root, limit=REVIEW_LIMIT):
             origins_undeclared=len(origin_undeclared_paths(origins)),
             audio_roles=len(roles["roles"]),
             audio_roles_empty=len(roles_empty_ids(roles)),
-            feel_constants=len(feel_report["constants"]),
+            feel_constants=len(feel_constant_items(feel_report)),
             feel_observations=len(observations),
             access_declared=access_report["declared"],
             save_unversioned=persist_report["unversioned"],
@@ -2744,6 +2744,58 @@ def feel_observation_items(feel):
     return list(observations)
 
 
+# O README já recusa que a constante
+# nomeada seja peso percebido. Sem
+# isto o feel listava o CONFIG e
+# calava a recusa. Número no disco
+# não é o verbo.
+FEEL_WEIGHT = re.compile(r"Constante nomeada não é peso percebido")
+
+
+def readme_refuses_constant_as_weight(text):
+    return bool(text and FEEL_WEIGHT.search(text))
+
+
+def feel_constants_weight_source():
+    path = FRAMEWORK / "README.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_refuses_constant_as_weight(text):
+        return "README.md"
+    return None
+
+
+def feel_constants_weight_scope():
+    if not feel_constants_weight_source():
+        return None
+    return (
+        " O disco recusa que a constante nomeada seja peso percebido "
+        "(`peso`). Número no disco não é o verbo."
+    )
+
+
+def feel_constants_scope():
+    scope = (
+        "constantes nomeadas no disco. "
+        "Não atribui peso percebido."
+    )
+    named = feel_constants_weight_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def feel_constant_items(feel):
+    constants = (feel or {}).get("constants") or []
+    if isinstance(constants, dict):
+        return list(constants.get("items") or [])
+    return list(constants)
+
+
 # A receita já recusa que o valor seja constante universal. Sem isto o
 # item copiava o número e calava a recusa.
 # Número no disco não é lei.
@@ -2953,6 +3005,11 @@ def feel_reading(project):
         observations = {
             "items": observations,
             "scope": feel_observations_scope(),
+        }
+    if constants:
+        constants = {
+            "items": constants,
+            "scope": feel_constants_scope(),
         }
     return {
         "schema_version": 1,
@@ -14386,8 +14443,9 @@ def next_step(project, focus="create", studies_root=None):
         )
     feel = feel_reading(project)
     if feel["unobserved"]:
-        sample = ", ".join(f"`{item['key']}`" for item in feel["constants"][:4])
-        extra = " e mais" if len(feel["constants"]) > 4 else ""
+        named = feel_constant_items(feel)
+        sample = ", ".join(f"`{item['key']}`" for item in named[:4])
+        extra = " e mais" if len(named) > 4 else ""
         propose(
             f"Registrar o que o verbo sentiu numa partida ({sample}{extra})",
             "Há constantes de feel no código e nenhum recibo de observação no "
