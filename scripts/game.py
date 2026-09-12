@@ -6205,6 +6205,58 @@ def last_run_path(project):
     return None
 
 
+# A receita já recusa que ?seed=
+# no disco seja Continuar. Sem isto
+# o playtest relatava o last-run e
+# calava a recusa. Arquivo no disco
+# não é a sessão.
+PERSIST_CONTINUE = re.compile(r"não é Continuar")
+
+
+def recipe_refuses_seed_as_continue(text):
+    return bool(text and PERSIST_CONTINUE.search(text))
+
+
+def playtest_candidate_continue_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_seed_as_continue(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def playtest_candidate_continue_scope():
+    if not playtest_candidate_continue_source():
+        return None
+    return (
+        " O disco recusa que o last-run seja Continuar "
+        "(`continuar`). Arquivo no disco não é a sessão."
+    )
+
+
+def playtest_candidate_scope():
+    scope = (
+        "last-run no disco. "
+        "Não observa a sessão."
+    )
+    named = playtest_candidate_continue_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def playtest_candidate_path(reading):
+    candidate = (reading or {}).get("candidate")
+    if isinstance(candidate, dict):
+        return candidate.get("path")
+    return candidate
+
+
 def last_run_seed(project):
     path = Path(project) / LAST_RUN
     if not path.is_file() or path.is_symlink():
@@ -6745,6 +6797,11 @@ def playtest_reading(project):
     expected = bool(observations) or qa_current
     structured = bool(findings)
     candidate = last_run_path(project)
+    if candidate:
+        candidate = {
+            "path": candidate,
+            "scope": playtest_candidate_scope(),
+        }
     candidate_seed = last_run_seed(project) if candidate else None
     if candidate_seed is not None:
         candidate_seed = {
@@ -13585,7 +13642,7 @@ def next_step(project, focus="create", studies_root=None):
                     "--field", "evidencia=o que a partida mostrou",
                     "--field", "hipotese=por que isso acontece",
                     "--field", "medicao=como repetir o recorte",
-                    *(["--from-run"] if playtest.get("candidate") else []),
+                    *(["--from-run"] if playtest_candidate_path(playtest) else []),
                 ),
             ],
             "playtest.unstructured",
@@ -13942,7 +13999,7 @@ def next_step(project, focus="create", studies_root=None):
             "feel_unobserved": feel["unobserved"],
             "playtest_unstructured": playtest["unstructured"],
             "playtest_invite": wants_invite,
-            "playtest_candidate": playtest.get("candidate"),
+            "playtest_candidate": playtest_candidate_path(playtest),
             "access_missing": access_missing_keys(access) if payload["kind"] else [],
             "save_unversioned": persist["unversioned"],
             "performance_unbudgeted": perf["unbudgeted"],

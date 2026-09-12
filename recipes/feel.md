@@ -72,7 +72,7 @@ projeto (ou o starter) declara `session`, `then` a aponta. `note --from-run`
 anexa o resumo e, se houver, a curva — o mapa já põe `--from-run`
 quando o arquivo existe. Se o disco tem last-run e o comando veio sem --from-run, o note nomeia o last-run que o disco já guarda. Sem o arquivo a frase some. Nomear não anexa. Depois do fim, a página grava o mesmo
 recibo de `note` se você escrever — `felt` continua falso. Número
-no disco não é causa. Se a receita recusa que o número no disco seja causa, o `candidate_seed` nomeia a atribuição que a receita já recusa. Número no disco não é a sessão. Sem chave `atribuição`. O autor sugerido no comando não é quem jogou.
+no disco não é causa. Se a receita recusa que o número no disco seja causa, o `candidate_seed` nomeia a atribuição que a receita já recusa. Número no disco não é a sessão. Sem chave `atribuição`. Se a receita recusa que o last-run seja Continuar, o `candidate` do `playtest` nomeia o Continuar que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `continuar`. O autor sugerido no comando não é quem jogou.
 
 Feel é o intervalo entre o input e a certeza de que o mundo respondeu.
 Swink: controle em tempo real, espaço simulado, polish. Jam e piso de

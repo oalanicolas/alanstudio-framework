@@ -13161,7 +13161,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "felt": False,
         }), encoding="utf-8")
         reading = game.playtest_reading(destination)
-        self.assertEqual(reading["candidate"], "docs/playtest/last-run.json")
+        self.assertEqual(reading["candidate"]["path"], "docs/playtest/last-run.json")
+        self.assertEqual(game.playtest_candidate_path(reading), "docs/playtest/last-run.json")
+        self.assertEqual(game.last_run_path(destination), "docs/playtest/last-run.json")
         self.assertEqual(reading["candidate_seed"]["seed"], 7)
         self.assertEqual(reading["finding_href"], "/?invite=1&seed=7#finding")
         self.assertEqual(reading["finding_href"], reading["invite_href"] + "#finding")
@@ -13591,6 +13593,75 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["findings"], [])
         self.assertEqual(report["finding_attachments"], [])
         self.assertEqual(report["observations"], [])
+
+    def test_playtest_candidate_names_the_continue_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_seed_as_continue(recipe),
+            "a receita já recusa que ?seed= seja Continuar",
+        )
+        self.assertEqual(game.playtest_candidate_continue_source(), "recipes/persistence.md")
+        empty = game.playtest_reading(self.project)
+        self.assertIsNone(empty["candidate"])
+        self.assertIsNone(game.playtest_candidate_path(empty))
+        page = self.project / "docs/playtest"
+        page.mkdir(parents=True)
+        (page / "last-run.json").write_text("{}", encoding="utf-8")
+        self.assertEqual(game.last_run_path(self.project), "docs/playtest/last-run.json")
+        report = game.playtest_reading(self.project)
+        item = report["candidate"]
+        self.assertEqual(item["path"], "docs/playtest/last-run.json")
+        self.assertEqual(item["path"], game.playtest_candidate_path(report))
+        self.assertEqual(
+            game.next_step(self.project)["signals"]["playtest_candidate"],
+            "docs/playtest/last-run.json",
+        )
+        self.assertIn(
+            "o last-run seja Continuar",
+            item["scope"],
+            "o playtest relatava o last-run e calava a recusa",
+        )
+        self.assertIn("(`continuar`)", item["scope"])
+        self.assertNotIn("continuar", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_seed_as_continue(""))
+        with mock.patch.object(game, "playtest_candidate_continue_source", return_value=None):
+            silent = game.playtest_reading(self.project)
+        self.assertNotIn(
+            "o last-run seja Continuar",
+            silent["candidate"]["scope"],
+        )
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o Continuar que a receita já recusa", recipe)
+        self.assertIn("nomeia o Continuar que a receita já recusa", feel)
+        self.assertIn("nomeia o Continuar que a receita já recusa", skill)
+        self.assertIn("nomeia o Continuar que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o last-run seja Continuar", report["scope"])
+        if report.get("candidate_seed"):
+            self.assertNotIn(
+                "o last-run seja Continuar",
+                report["candidate_seed"].get("scope") or "",
+            )
+        if report.get("invite"):
+            self.assertNotIn(
+                "o last-run seja Continuar",
+                report["invite"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o last-run seja Continuar",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "o last-run seja Continuar",
+            game.save_reading(self.project)["scope"],
+        )
+        self.assertNotIn("o last-run seja Continuar", game.next_scope())
 
     def test_a_structured_finding_is_form_not_an_observed_session(self):
         (self.project / "index.html").write_text("<canvas></canvas>")

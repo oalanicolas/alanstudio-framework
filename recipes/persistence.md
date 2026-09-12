@@ -60,7 +60,7 @@ save em `src/core/save.js` (schema 3), com migração e recuperação de dado in
 e o relógio da porta (`attractTick`). Sem o relógio o campo
 repetia a frase e o mover. `canResume` lê o hold; `canContinue`
 continua sendo repetir a última seed.
-`?seed=<n>` abre essa partida e ignora o hold — não é Continuar.
+`?seed=<n>` abre essa partida e ignora o hold — não é Continuar. Se a receita recusa que o last-run seja Continuar, o `candidate` do `playtest` nomeia o Continuar que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `continuar`.
 `?spawn=` abre essa chuva e ignora o hold da outra mesa.
 `?look=` e `?speed=` vestem o hold que já está.
 Pausa, `pagehide`, `beforeunload`, perda de foco e o controle que some gravam o hold. Se o disco escuta `beforeunload`, o `save` nomeia o fechamento que o disco já grava. Gancho no disco não é aba fechada. Sem chave `beforeunload`. Se o disco verifica a gravação, o `save` nomeia a gravação que o storage já verifica. Escrita no disco não é aba fechada. Sem chave `storage`. Terminar ou resetar limpa.

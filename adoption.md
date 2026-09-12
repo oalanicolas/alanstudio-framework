@@ -30,6 +30,57 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.586 — o candidate do playtest nomeia o Continuar que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+`?seed=`
+não
+é
+Continuar.
+O
+playtest
+relatava
+o
+last-run
+e
+calava
+a
+recusa.
+Agora
+o
+`candidate`
+do
+`playtest`
+nomeia
+o
+Continuar.
+Arquivo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`continuar`.
+Nomear
+não
+observa.
+
+O que 0.9.586 não afirma:
+relatar
+o
+last-run
+não
+é
+Continuar
+observado.
+
 ## 0.9.585 — o sources do craft nomeia o conjunto que a pesquisa já recusa
 
 A
