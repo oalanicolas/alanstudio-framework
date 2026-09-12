@@ -5253,6 +5253,57 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("certifique tokens", game.art_reading(self.project)["scope"])
         self.assertNotIn("certifique tokens", game.next_scope())
 
+    def test_scan_art_direction_names_the_image_the_visual_already_refuses(self):
+        command = (game.FRAMEWORK / "commands/visual.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.visual_refuses_saving_image_as_the_work(command),
+            "o visual já recusa que salvar a imagem seja o trabalho",
+        )
+        self.assertEqual(game.art_direction_image_source(), "commands/visual.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "salvar a imagem seja o trabalho",
+            report["areas"]["art_direction"]["scope"],
+            "a área localizava o bible e calava a recusa",
+        )
+        self.assertIn("(`imagem`)", report["areas"]["art_direction"]["scope"])
+        self.assertNotIn("imagem", report["areas"]["art_direction"])
+        self.assertFalse(game.visual_refuses_saving_image_as_the_work(""))
+        with mock.patch.object(game, "art_direction_image_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "salvar a imagem seja o trabalho",
+            silent["areas"]["art_direction"]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a imagem que o visual já recusa", command)
+        self.assertIn("nomeia a imagem que o visual já recusa", create)
+        self.assertIn("nomeia a imagem que o visual já recusa", skill)
+        self.assertIn("nomeia a imagem que o visual já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["art_direction"]["scope"])
+        self.assertNotIn("aprovado", report["areas"]["art_direction"]["scope"])
+        self.assertNotIn("4.5", report["areas"]["art_direction"]["scope"])
+        self.assertNotIn("salvar a imagem seja o trabalho", report["scope"])
+        self.assertNotIn(
+            "salvar a imagem seja o trabalho",
+            report["areas"]["vision"]["scope"],
+        )
+        self.assertNotIn(
+            "salvar a imagem seja o trabalho",
+            report["areas"]["decisions"]["scope"],
+        )
+        self.assertNotIn(
+            "salvar a imagem seja o trabalho",
+            game.art_reading(self.project)["scope"],
+        )
+        self.assertNotIn("salvar a imagem seja o trabalho", game.next_scope())
+        self.assertNotIn(
+            "salvar a imagem seja o trabalho",
+            game.coverage_scope(),
+        )
+
     def test_scan_names_the_dependencies_the_recipe_already_refuses(self):
         recipe_text = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
         self.assertTrue(

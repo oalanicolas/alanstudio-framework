@@ -12933,7 +12933,44 @@ def art_direction_scope():
             " O disco recusa que o scanner certifique tokens (`tokens`). "
             "Documento no disco não é aprovação artística."
         )
+    image = art_direction_image_scope()
+    if image:
+        scope += image
     return scope
+
+
+# O visual já recusa que salvar
+# a imagem seja o trabalho. Sem
+# isto a área localizava o bible
+# e calava a recusa. Imagem no
+# disco não é a aprovação.
+VISUAL_IMAGE = re.compile(r"Salvar a imagem não é o trabalho")
+
+
+def visual_refuses_saving_image_as_the_work(text):
+    return bool(text and VISUAL_IMAGE.search(text))
+
+
+def art_direction_image_source():
+    path = FRAMEWORK / "commands/visual.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if visual_refuses_saving_image_as_the_work(text):
+        return "commands/visual.md"
+    return None
+
+
+def art_direction_image_scope():
+    if not art_direction_image_source():
+        return None
+    return (
+        " O disco recusa que salvar a imagem seja o trabalho "
+        "(`imagem`). Imagem no disco não é a aprovação."
+    )
 
 
 # O contrato já recusa que a paleta compartilhada seja o sistema. Sem isto o

@@ -29,7 +29,7 @@ movimento confirma.
 4. Aprovação é evento da conversa: quando o usuário aprovar imagem, conceito ou
    recorte, `--event direction-approved` e a base sincronizada **neste turno**
    ([roteiro](../references/project-audit.md#aprovação-de-direção-materializar-e-continuar)).
-   Salvar a imagem não é o trabalho.
+   Salvar a imagem não é o trabalho. Se o visual recusa que salvar a imagem seja o trabalho, a área `art_direction` do `scan` nomeia a imagem que o visual já recusa. Imagem no disco não é a aprovação. Sem chave `imagem`.
 5. Pergunte só o que a referência não diz: o que não pode degradar; anti-referências
    nomeadas; o hero asset que serve de régua.
 

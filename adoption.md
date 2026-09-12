@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.681 — a área art_direction nomeia a imagem que o visual já recusa
+
+O
+visual
+já
+dizia
+que
+salvar
+a
+imagem
+não
+é
+o
+trabalho.
+A
+área
+localizava
+o
+bible
+e
+calava
+a
+recusa.
+Agora
+a
+área
+`art_direction`
+nomeia
+a
+imagem.
+Imagem
+no
+disco
+não
+é
+a
+aprovação.
+Sem
+chave
+`imagem`.
+Nomear
+não
+observa.
+
 ## 0.9.680 — a área vision nomeia a executada que o shape já recusa
 
 O

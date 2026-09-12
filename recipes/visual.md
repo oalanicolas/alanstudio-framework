@@ -44,7 +44,7 @@ do laboratório, quando existirem.
 Reutilize materiais, modelos, efeitos, tokens e métodos coerentes com essa direção;
 adapte seus consumidores antes de criar variantes paralelas. A instância canônica
 é o design system do jogo (Art Bible); o contrato do estúdio está no
-[design system do jogo](../references/game-design-system.md). Se o sistema recusa que o scanner certifique tokens, o `scan` nomeia os tokens que o sistema já recusa. Documento no disco não é aprovação artística. Sem chave `tokens`.
+[design system do jogo](../references/game-design-system.md). Se o sistema recusa que o scanner certifique tokens, o `scan` nomeia os tokens que o sistema já recusa. Documento no disco não é aprovação artística. Sem chave `tokens`. Se o visual recusa que salvar a imagem seja o trabalho, a área `art_direction` do `scan` nomeia a imagem que o visual já recusa. Imagem no disco não é a aprovação. Sem chave `imagem`.
 
 Quando o usuário aprovar uma referência durante criação/evolução, use `context
 <projeto> --focus visual --event direction-approved` e sincronize a base documental
