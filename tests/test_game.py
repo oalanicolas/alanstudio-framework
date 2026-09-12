@@ -14343,6 +14343,69 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ship.stale", bases)
         self.assertNotIn("ship.artifact_open", bases)
 
+    def test_ship_artifact_readable_names_the_readable_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_readable_json_as_elsewhere(recipe),
+            "a receita já recusa que o JSON legível seja outra máquina",
+        )
+        self.assertEqual(game.ship_artifact_readable_source(), "recipes/release.md")
+        empty = game.ship_reading(self.project)
+        self.assertIsNone(empty["artifact"])
+        broken = self.project / "dist" / "VERSION.json"
+        broken.parent.mkdir()
+        broken.write_text("nao-e-json", encoding="utf-8")
+        unreadable = game.ship_reading(self.project)
+        self.assertFalse(unreadable["artifact"]["readable"])
+        self.assertFalse(game.ship_artifact_readable_flag(unreadable["artifact"]))
+        self._web_manifest()
+        self._release_note()
+        self._artifact_tree(complete=False)
+        report = game.ship_reading(self.project)
+        item = report["artifact"]["readable"]
+        self.assertTrue(item["readable"], "o ship já abre o VERSION.json neste recorte")
+        self.assertEqual(item["readable"], game.ship_artifact_readable_flag(report["artifact"]))
+        self.assertIn(
+            "o JSON legível seja outra máquina",
+            item["scope"],
+            "o ship relatava o readable e calava a recusa",
+        )
+        self.assertIn("(`legível`)", item["scope"])
+        self.assertNotIn("legível", item)
+        self.assertNotIn("legível", report["artifact"])
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_readable_json_as_elsewhere(""))
+        with mock.patch.object(game, "ship_artifact_readable_source", return_value=None):
+            silent = game.ship_artifact_readable_reading(True)
+        self.assertNotIn(
+            "o JSON legível seja outra máquina",
+            silent["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o legível que a receita já recusa", recipe)
+        self.assertIn("nomeia o legível que a receita já recusa", skill)
+        self.assertIn("nomeia o legível que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o JSON legível seja outra máquina", report["scope"])
+        self.assertNotIn(
+            "o JSON legível seja outra máquina",
+            report["artifact"].get("scope") or "",
+        )
+        if report.get("tree"):
+            self.assertNotIn(
+                "o JSON legível seja outra máquina",
+                report["tree"].get("scope") or "",
+            )
+        self.assertNotIn("o JSON legível seja outra máquina", game.next_scope())
+        self.assertIs(report["unpacked"], False)
+        raw = game.ship_artifact(self.project)
+        self.assertNotIn("scope", raw)
+        self.assertTrue(raw["readable"]["readable"])
+
     def test_ship_names_a_stale_artifact_without_calling_it_elsewhere(self):
         self._web_manifest()
         self.foundation_document()

@@ -5415,10 +5415,71 @@ def ship_artifact(project):
         return {"path": SHIP_VERSION, "readable": False}
     return {
         "path": SHIP_VERSION,
-        "readable": True,
+        "readable": ship_artifact_readable_reading(True),
         "name": optional_text(data.get("name")),
         "version": optional_text(data.get("version")),
         "git_head": optional_text(data.get("git_head")),
+    }
+
+
+# A receita já recusa que o JSON
+# legível seja outra máquina. Sem
+# isto o ship relatava o readable
+# e calava a recusa. Manifesto no
+# disco não é outra máquina.
+SHIP_READABLE = re.compile(r"JSON legível não é outra máquina")
+
+
+def recipe_refuses_readable_json_as_elsewhere(text):
+    return bool(text and SHIP_READABLE.search(text))
+
+
+def ship_artifact_readable_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_readable_json_as_elsewhere(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_artifact_readable_json_scope():
+    if not ship_artifact_readable_source():
+        return None
+    return (
+        " O disco recusa que o JSON legível seja outra máquina "
+        "(`legível`). Manifesto no disco não é outra máquina."
+    )
+
+
+def ship_artifact_readable_scope():
+    scope = (
+        "dist/VERSION.json abriu como objeto. "
+        "Não é outra máquina."
+    )
+    named = ship_artifact_readable_json_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def ship_artifact_readable_flag(reading):
+    readable = (reading or {}).get("readable") if isinstance(reading, dict) else reading
+    if isinstance(readable, dict):
+        return bool(readable.get("readable"))
+    return bool(readable)
+
+
+def ship_artifact_readable_reading(readable):
+    if not readable:
+        return False
+    return {
+        "readable": True,
+        "scope": ship_artifact_readable_scope(),
     }
 
 
@@ -6429,7 +6490,7 @@ def ship_tree(project):
 
 
 def ship_stale(artifact, project):
-    if not artifact or not artifact.get("readable"):
+    if not artifact or not ship_artifact_readable_flag(artifact):
         return False
     head = artifact.get("git_head")
     if not nonempty(head):

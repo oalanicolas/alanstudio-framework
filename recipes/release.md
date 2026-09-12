@@ -13,7 +13,7 @@ outra. Release é a etapa que converte “funciona aqui” em “funciona para a
 
 O starter `canvas-arcade` grava `dist/VERSION.json` no export: versão e
 HEAD. `ship` relata esse arquivo quando ele existe, e se a pasta `dist/`
-de um jogo web tem index, serve, package e VERSION. Árvore sem esses
+de um jogo web tem index, serve, package e VERSION. JSON legível não é outra máquina. Se a receita recusa que o JSON legível seja outra máquina, o `readable` do artifact do `ship` nomeia o legível que a receita já recusa. Manifesto no disco não é outra máquina. Sem chave `legível`. Árvore sem esses
 quatro é `incomplete`. Se a receita recusa que a árvore sem os quatro seja jogável, o `incomplete` do `ship` nomeia o jogável que a receita já recusa. Arquivo no disco não é outra máquina. Sem chave `jogável`. HEAD do artefato diferente do checkout é
 `stale`. HEAD diferente não é outra máquina. Se a receita recusa que o HEAD diferente seja outra máquina, o `stale` do `ship` nomeia o velho que a receita já recusa. Arquivo no disco não é outra máquina. Sem chave `velho`. Identidade do artefato não é outra máquina. `elsewhere` é
 sempre falso. O serve anuncia a URL da rede se a

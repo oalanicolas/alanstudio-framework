@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.642 — o readable do artifact do ship nomeia o legível que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+JSON
+legível
+não
+é
+outra
+máquina.
+O
+ship
+relatava
+o
+readable
+e
+calava
+a
+recusa.
+Agora
+o
+`readable`
+do
+artifact
+do
+`ship`
+nomeia
+o
+legível.
+Manifesto
+no
+disco
+não
+é
+outra
+máquina.
+Sem
+chave
+`legível`.
+Ler
+não
+entrega.
+
 ## 0.9.641 — o applied do roles --fill nomeia o aplica que a receita já recusa
 
 A
