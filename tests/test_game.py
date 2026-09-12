@@ -17722,6 +17722,75 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.git_summary_scope())
         self.assertNotIn("eixos", game.CYCLE_KEYS)
 
+    def test_save_names_the_course_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"o progresso\s+em curso não")
+        self.assertTrue(
+            game.recipe_refuses_other_tab_as_wearing_in_progress(recipe),
+            "a receita já recusa que a outra aba vista o progresso em curso",
+        )
+        self.assertEqual(game.save_course_source(), "recipes/persistence.md")
+        report = game.save_reading(self.project)
+        self.assertIn(
+            "a outra aba vista o progresso em curso",
+            report["scope"],
+            "o save lia o schema e calava a recusa",
+        )
+        self.assertIn("(`curso`)", report["scope"])
+        self.assertIn("Preferência no disco não é o curso.", report["scope"])
+        self.assertNotIn("curso", report)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_other_tab_as_wearing_in_progress(""))
+        with mock.patch.object(game, "save_course_source", return_value=None):
+            silent = game.save_reading(self.project)
+        self.assertNotIn("a outra aba vista o progresso em curso", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o curso que a receita já recusa"), 2)
+        self.assertIn("nomeia o curso que a receita já recusa", create)
+        self.assertIn("nomeia o curso que a receita já recusa", skill)
+        self.assertIn("nomeia o curso que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        used = report.get("used")
+        if isinstance(used, dict):
+            self.assertNotIn(
+                "a outra aba vista o progresso em curso",
+                used.get("scope") or "",
+            )
+        warned = report.get("warned")
+        if isinstance(warned, dict):
+            self.assertNotIn(
+                "a outra aba vista o progresso em curso",
+                warned.get("scope") or "",
+            )
+        sources = report.get("sources")
+        if isinstance(sources, dict):
+            self.assertNotIn(
+                "a outra aba vista o progresso em curso",
+                sources.get("scope") or "",
+            )
+        phrase = "a outra aba vista o progresso em curso"
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.craft_reading(self.project)["scope"])
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertNotIn(phrase, game.art_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.play_scope(starter))
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.git_summary_scope())
+        self.assertNotIn("curso", game.CYCLE_KEYS)
+
     def test_save_sources_names_the_chain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         self.assertTrue(

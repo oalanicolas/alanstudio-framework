@@ -5981,6 +5981,40 @@ def save_axes_scope():
     )
 
 
+# A receita já recusa que a outra
+# aba vista o progresso em curso.
+# Sem isto o save lia o schema e
+# calava a recusa. Preferência no
+# disco não é o curso.
+PERSIST_COURSE = re.compile(r"o progresso\s+em curso não")
+
+
+def recipe_refuses_other_tab_as_wearing_in_progress(text):
+    return bool(text and PERSIST_COURSE.search(text))
+
+
+def save_course_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_other_tab_as_wearing_in_progress(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_course_scope():
+    if not save_course_source():
+        return None
+    return (
+        " O disco recusa que a outra aba vista o progresso em curso "
+        "(`curso`). Preferência no disco não é o curso."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -6609,6 +6643,9 @@ def save_reading(project):
     axes = save_axes_scope()
     if axes:
         scope += axes
+    course = save_course_scope()
+    if course:
+        scope += course
     used_flag = bool(used)
     if used_flag:
         used_flag = {
