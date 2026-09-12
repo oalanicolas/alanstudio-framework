@@ -86,7 +86,7 @@ Empacotar no disco não é outra máquina. Sem chave `export`. Se o `tools/expor
 Árvore incompleta é `ship.incomplete`; artefato de outro commit é
 `ship.stale`. Nomeia a árvore que perdeu o `src/` que o projeto já
 tem. Nomear não devolve o jogo. Árvore completa no HEAD atual ganha `artifact_open`
-— o comando que serve `dist/`. Nomear não executa. HTML estático
+— o comando que serve `dist/`. Nomear não executa. Se a receita recusa que nomear o comando execute, o `artifact_open` do `ship` nomeia a execução que a receita já recusa. Comando no disco não é outra máquina. Sem chave `execução`. HTML estático
 sem manifesto já é o artefato e não dispara esses ramos.
 
 Prova: build a partir de clone limpo, execução do artefato exportado em máquina

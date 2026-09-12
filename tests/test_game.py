@@ -12041,12 +12041,79 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["stale"])
         self.assertFalse(report["shipped"])
         self.assertFalse(report["elsewhere"])
-        self.assertIn("dist", report["artifact_open"])
-        self.assertIn("node tools/serve.mjs", report["artifact_open"])
+        self.assertIn("dist", report["artifact_open"]["command"])
+        self.assertIn("node tools/serve.mjs", report["artifact_open"]["command"])
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "release"))]
         self.assertNotIn("ship.incomplete", bases)
         self.assertNotIn("ship.stale", bases)
         self.assertIn("ship.artifact_open", bases)
+
+    def test_ship_artifact_open_names_the_execution_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_naming_as_execution(recipe),
+            "a receita já recusa que nomear o comando execute",
+        )
+        self.assertEqual(game.ship_execute_source(), "recipes/release.md")
+        empty = game.ship_reading(self.project)
+        self.assertIsNone(empty["artifact_open"])
+        self.assertIsNone(game.ship_open_command(empty))
+        self._web_manifest()
+        self.foundation_document()
+        self._release_note()
+        head = self._commit_project()
+        self._artifact_tree(git_head=head, complete=True)
+        report = game.ship_reading(self.project)
+        item = report["artifact_open"]
+        self.assertEqual(item["command"], game.artifact_open_command(self.project))
+        self.assertEqual(item["command"], game.ship_open_command(report))
+        self.assertIn(
+            "nomear o comando execute",
+            item["scope"],
+            "o ship relatava a linha e calava a recusa",
+        )
+        self.assertIn("(`execução`)", item["scope"])
+        self.assertNotIn("execução", item)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_naming_as_execution(""))
+        with mock.patch.object(game, "ship_execute_source", return_value=None):
+            silent = game.ship_reading(self.project)
+        self.assertNotIn(
+            "nomear o comando execute",
+            silent["artifact_open"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a execução que a receita já recusa", recipe)
+        self.assertIn("nomeia a execução que a receita já recusa", skill)
+        self.assertIn("nomeia a execução que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("nomear o comando execute", report["scope"])
+        if report.get("scripts"):
+            self.assertNotIn(
+                "nomear o comando execute",
+                report["scripts"].get("scope") or "",
+            )
+        if report.get("ci"):
+            self.assertNotIn(
+                "nomear o comando execute",
+                report["ci"].get("scope") or "",
+            )
+        if report.get("tree"):
+            self.assertNotIn(
+                "nomear o comando execute",
+                report["tree"].get("scope") or "",
+            )
+        if report.get("artifact"):
+            self.assertNotIn(
+                "nomear o comando execute",
+                report["artifact"].get("scope") or "",
+            )
+        self.assertNotIn("nomear o comando execute", game.next_scope())
+        self.assertNotIn("nomear o comando execute", game.record_scope())
 
     def test_ship_names_how_to_serve_dist_without_calling_it_elsewhere(self):
         destination = self.root / "artefato-pronto"
@@ -12078,9 +12145,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["stale"])
         self.assertFalse(report["elsewhere"])
         self.assertFalse(report["shipped"])
-        self.assertIn(str(dist), report["artifact_open"])
-        self.assertIn("node tools/serve.mjs", report["artifact_open"])
-        self.assertNotIn("npm run serve", report["artifact_open"])
+        self.assertIn(str(dist), report["artifact_open"]["command"])
+        self.assertIn("node tools/serve.mjs", report["artifact_open"]["command"])
+        self.assertNotIn("npm run serve", report["artifact_open"]["command"])
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("verified", report["scope"])
         page = game.invite_page(destination)
@@ -12097,7 +12164,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             item for item in self.proposals(game.next_step(destination, "release"))
             if item["basis"] == "ship.artifact_open"
         )
-        self.assertEqual(proposal["commands"][0], report["artifact_open"])
+        self.assertEqual(proposal["commands"][0], report["artifact_open"]["command"])
         self.assertNotIn("aprovado", proposal["why"])
 
     def test_ship_names_the_size_the_recipe_already_reports(self):
@@ -12625,7 +12692,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(filled["tree"]["parts"]["src"])
         self.assertFalse(filled["incomplete"])
         self.assertFalse(filled["elsewhere"])
-        self.assertIn("dist", filled["artifact_open"])
+        self.assertIn("dist", filled["artifact_open"]["command"])
         recipe = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         self.assertIn("perdeu o `src/`", recipe)
         self.assertNotIn("aprovado", report["scope"])

@@ -5558,6 +5558,57 @@ def ship_scripts_scope():
     return scope
 
 
+# A receita já recusa que nomear o
+# comando execute. Sem isto o ship
+# relatava a linha e calava a recusa.
+# Comando no disco não é outra máquina.
+RELEASE_EXECUTE = re.compile(r"Nomear não executa")
+
+
+def recipe_refuses_naming_as_execution(text):
+    return bool(text and RELEASE_EXECUTE.search(text))
+
+
+def ship_execute_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_naming_as_execution(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_execute_scope():
+    if not ship_execute_source():
+        return None
+    return (
+        " O disco recusa que nomear o comando execute "
+        "(`execução`). Comando no disco não é outra máquina."
+    )
+
+
+def ship_open_scope():
+    scope = (
+        "comando que serve dist/ no disco. "
+        "Não executa o artefato."
+    )
+    named = ship_execute_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def ship_open_command(pack):
+    opened = (pack or {}).get("artifact_open")
+    if isinstance(opened, dict):
+        return opened.get("command")
+    return opened
+
+
 def ship_script_names(project):
     try:
         scripts, _ = project_commands(project)
@@ -5599,6 +5650,11 @@ def ship_reading(project):
         }
     incomplete = bool(tree) and not tree["complete"]
     artifact_open = artifact_open_command(project)
+    if artifact_open:
+        artifact_open = {
+            "command": artifact_open,
+            "scope": ship_open_scope(),
+        }
     scope = (
         "Procura script build/export/dist/package/release, docs/release.md "
         "vigente e CI. Se dist/VERSION.json existe, relata nome e versão. "
@@ -13219,7 +13275,7 @@ def next_step(project, focus="create", studies_root=None):
             [harness_command("ship", project)],
             "ship.stale",
         )
-    elif pack.get("artifact_open"):
+    elif ship_open_command(pack):
         propose(
             "Servir a árvore em dist/ no próprio dispositivo",
             "A árvore exportada está completa e no HEAD atual. "
@@ -13227,7 +13283,7 @@ def next_step(project, focus="create", studies_root=None):
             "artefato e não autoriza publicar.",
             "Alguém correu o dist/ fora daqui — elsewhere e shipped "
             "continuam pendentes.",
-            [pack["artifact_open"], harness_command("ship", project)],
+            [ship_open_command(pack), harness_command("ship", project)],
             "ship.artifact_open",
         )
     if drafts:
