@@ -7176,6 +7176,43 @@ def content_material_scope():
     )
 
 
+# A receita já recusa que o alerta
+# autorize apagar pixels, quantizar
+# cores ou redimensionar. Sem isto
+# o content listava arquivos e
+# calava a recusa. Alerta no disco
+# não é a correção.
+CONTENT_ALERT = re.compile(
+    r"não são consequência automática de\s+um alerta"
+)
+
+
+def recipe_refuses_alert_as_automatic_fix(text):
+    return bool(text and CONTENT_ALERT.search(text))
+
+
+def content_alert_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_alert_as_automatic_fix(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_alert_scope():
+    if not content_alert_source():
+        return None
+    return (
+        " O disco recusa que o alerta autorize apagar pixels, quantizar cores ou redimensionar "
+        "(`alerta`). Alerta no disco não é a correção."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -7426,6 +7463,9 @@ def content_reading(project):
     skin = content_material_scope()
     if skin:
         scope += skin
+    warn = content_alert_scope()
+    if warn:
+        scope += warn
     encoded = content_encoded_scope()
     if encoded:
         scope += encoded
