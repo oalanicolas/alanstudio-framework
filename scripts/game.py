@@ -11099,7 +11099,8 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
             "documents_deferred": deferred[:20], "documents_deferred_count": len(deferred),
             "non_current_documents": [dict(item, scope=draft_scope) for item in non_current[:20]], "non_current_document_count": len(non_current),
             "issues": [dict(item, scope=issue_scope) for item in issues[:20]],
-            "issue_count": len(issues), "issues_truncated": len(issues) > 20,
+            "issue_count": len(issues),
+            "issues_truncated": coverage_issues_truncated_reading(len(issues) > 20),
             "excluded_directory_names": sorted(excluded_dirs),
             "limits": {"entries": max_entries, "documents": max_documents, "bytes_per_document": max_bytes, "depth": 4, "index_links": max_links, "candidates_per_area": 3, "continuity_sources": 5, "scope": coverage_limits_scope()},
             "scope": coverage_scope(),
@@ -12234,6 +12235,72 @@ def coverage_issue_scope():
             "Recorte no disco não é falha."
         )
     return scope
+
+
+# O roteiro já recusa que a lista
+# cortada seja a cobertura. Sem
+# isto o scan relatava o truncated
+# e calava a recusa. Recorte no
+# disco não é o inventário.
+COVERAGE_TRUNCATED = re.compile(r"Lista cortada não é a cobertura")
+
+
+def recipe_refuses_cut_issue_list_as_coverage(text):
+    return bool(text and COVERAGE_TRUNCATED.search(text))
+
+
+def coverage_issues_truncated_lack_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_cut_issue_list_as_coverage(text):
+        return "references/project-audit.md"
+    return None
+
+
+def coverage_issues_truncated_lack_scope():
+    if not coverage_issues_truncated_lack_source():
+        return None
+    return (
+        " O disco recusa que a lista cortada seja a cobertura "
+        "(`falta`). Recorte no disco não é o inventário."
+    )
+
+
+def coverage_issues_truncated_scope():
+    scope = (
+        "a lista de issues parou no vigésimo. "
+        "O scan não completa o inventário."
+    )
+    named = coverage_issues_truncated_lack_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def coverage_issues_truncated_flag(reading):
+    truncated = reading
+    if isinstance(reading, dict):
+        if "issues_truncated" in reading:
+            truncated = reading.get("issues_truncated")
+        elif "coverage" in reading and isinstance(reading.get("coverage"), dict):
+            truncated = reading["coverage"].get("issues_truncated")
+    if isinstance(truncated, dict):
+        return bool(truncated.get("issues_truncated"))
+    return bool(truncated)
+
+
+def coverage_issues_truncated_reading(truncated):
+    if not truncated:
+        return False
+    return {
+        "issues_truncated": True,
+        "scope": coverage_issues_truncated_scope(),
+    }
 
 
 # A guia já recusa que preencher linhas certifique o jogo.

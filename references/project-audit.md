@@ -142,7 +142,7 @@ locais já previstos pelo harness; isso não é rastreamento de comportamento.
 - Índices: reconhece links Markdown diretos, relativos, com destino simples ou entre
   `<...>`, inclusive espaços codificados. Só considera destinos já inventariados,
   com a grafia exata do disco. Não consulta URLs, expande symlinks ou muda as exclusões.
-  Link local documental não localizado aparece com índice, linha e destino. Âncoras,
+  Link local documental não localizado aparece com índice, linha e destino. A lista de issues no recibo para no vigésimo. Lista cortada não é a cobertura. Se o roteiro recusa que a lista cortada seja a cobertura, o `issues_truncated` da coverage nomeia a falta que o roteiro já recusa. Recorte no disco não é o inventário. Sem chave `falta`. Âncoras,
   links por referência e outras sintaxes exigem leitura pelo agente.
 - Navegação: linhas de links e títulos sem corpo não contam como conteúdo de uma
   área. Um README com seções preenchidas continua candidato; um índice sozinho não.

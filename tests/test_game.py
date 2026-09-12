@@ -4934,6 +4934,73 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("cobertura desigual seja acidente", game.next_scope())
         self.assertNotIn("cobertura desigual seja acidente", game.context_scope())
 
+    def test_coverage_issues_truncated_names_the_lack_the_audit_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_cut_issue_list_as_coverage(guide),
+            "o roteiro já recusa que a lista cortada seja a cobertura",
+        )
+        self.assertEqual(
+            game.coverage_issues_truncated_lack_source(),
+            "references/project-audit.md",
+        )
+        empty = game.scan(self.project)
+        self.assertFalse(empty["coverage"]["issues_truncated"])
+        self.assertFalse(game.coverage_issues_truncated_flag(empty))
+        links = "\n".join(f"[doc{i}](docs/missing-{i}.md)" for i in range(21))
+        (self.project / "README.md").write_text(f"# Índice\n\n{links}\n")
+        report = game.scan(self.project)
+        item = report["coverage"]["issues_truncated"]
+        self.assertTrue(
+            item["issues_truncated"],
+            "o scan já corta a lista depois de vinte issues",
+        )
+        self.assertEqual(item["issues_truncated"], game.coverage_issues_truncated_flag(report))
+        self.assertGreater(report["coverage"]["issue_count"], 20)
+        self.assertEqual(len(report["coverage"]["issues"]), 20)
+        self.assertIn(
+            "a lista cortada seja a cobertura",
+            item["scope"],
+            "o scan relatava o truncated e calava a recusa",
+        )
+        self.assertIn("(`falta`)", item["scope"])
+        self.assertNotIn("falta", item)
+        self.assertFalse(game.recipe_refuses_cut_issue_list_as_coverage(""))
+        with mock.patch.object(game, "coverage_issues_truncated_lack_source", return_value=None):
+            silent = game.coverage_issues_truncated_reading(True)
+        self.assertNotIn(
+            "a lista cortada seja a cobertura",
+            silent["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a falta que o roteiro já recusa", guide)
+        self.assertIn("nomeia a falta que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a falta que o roteiro já recusa", skill)
+        self.assertIn("nomeia a falta que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a lista cortada seja a cobertura", report["coverage"]["scope"])
+        self.assertNotIn("a lista cortada seja a cobertura", report["scope"])
+        if isinstance(report["coverage"].get("limits"), dict):
+            self.assertNotIn(
+                "a lista cortada seja a cobertura",
+                report["coverage"]["limits"].get("scope") or "",
+            )
+        if report["coverage"]["issues"]:
+            self.assertNotIn(
+                "a lista cortada seja a cobertura",
+                report["coverage"]["issues"][0].get("scope") or "",
+            )
+        self.assertNotIn("a lista cortada seja a cobertura", report["audit"]["scope"])
+        self.assertNotIn("a lista cortada seja a cobertura", game.next_scope())
+        self.assertNotIn("a lista cortada seja a cobertura", game.context_scope())
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        current = game.scan(starter)
+        self.assertIs(current["coverage"]["issues_truncated"], False)
+
     def test_explicit_audit_loads_documentation_work_despite_complete_candidates(self):
         self.foundation_document()
         result = game.context(self.project, "create", "audit")

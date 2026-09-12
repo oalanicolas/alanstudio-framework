@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.647 — o issues_truncated da coverage nomeia a falta que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+lista
+cortada
+não
+é
+a
+cobertura.
+O
+scan
+relatava
+o
+truncated
+e
+calava
+a
+recusa.
+Agora
+o
+`issues_truncated`
+da
+coverage
+nomeia
+a
+falta.
+Recorte
+no
+disco
+não
+é
+o
+inventário.
+Sem
+chave
+`falta`.
+Cortar
+não
+inventaria.
+
 ## 0.9.646 — o unpacked do ship nomeia o empacote que a receita já recusa
 
 A
