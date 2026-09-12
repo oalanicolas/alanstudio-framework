@@ -13604,6 +13604,77 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "performance"))]
         self.assertIn("performance.unbudgeted", bases)
 
+    def test_budget_unbudgeted_names_the_device_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_package_without_budget_as_device(recipe),
+            "a receita já recusa que o pacote sem orçamento seja o dispositivo",
+        )
+        self.assertEqual(game.budget_unbudgeted_device_source(), "recipes/performance.md")
+        empty = game.budget_reading(self.project)
+        self.assertFalse(empty["unbudgeted"])
+        self.assertFalse(game.budget_unbudgeted_flag(empty))
+        self.package()
+        self.foundation_document()
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        report = game.budget_reading(self.project)
+        item = report["unbudgeted"]
+        self.assertTrue(item["unbudgeted"], "o budget já relata o pacote sem artefato neste recorte")
+        self.assertEqual(item["unbudgeted"], game.budget_unbudgeted_flag(report))
+        self.assertIn(
+            "o pacote sem orçamento seja o dispositivo",
+            item["scope"],
+            "o budget relatava o unbudgeted e calava a recusa",
+        )
+        self.assertIn("(`dispositivo`)", item["scope"])
+        self.assertNotIn("dispositivo", item)
+        self.assertFalse(report["measured"])
+        self.assertFalse(game.recipe_refuses_package_without_budget_as_device(""))
+        with mock.patch.object(game, "budget_unbudgeted_device_source", return_value=None):
+            silent = game.budget_unbudgeted_reading(True)
+        self.assertNotIn(
+            "o pacote sem orçamento seja o dispositivo",
+            silent["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o dispositivo que a receita já recusa", recipe)
+        self.assertIn("nomeia o dispositivo que a receita já recusa", skill)
+        self.assertIn("nomeia o dispositivo que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o pacote sem orçamento seja o dispositivo", report["scope"])
+        if isinstance(report.get("expected"), dict):
+            self.assertNotIn(
+                "o pacote sem orçamento seja o dispositivo",
+                report["expected"].get("scope") or "",
+            )
+        if isinstance(report.get("declared"), dict):
+            self.assertNotIn(
+                "o pacote sem orçamento seja o dispositivo",
+                report["declared"].get("scope") or "",
+            )
+        if isinstance(report.get("scripts"), dict):
+            self.assertNotIn(
+                "o pacote sem orçamento seja o dispositivo",
+                report["scripts"].get("scope") or "",
+            )
+        if isinstance(report.get("files"), dict):
+            self.assertNotIn(
+                "o pacote sem orçamento seja o dispositivo",
+                report["files"].get("scope") or "",
+            )
+        if isinstance(report.get("receipts"), dict):
+            self.assertNotIn(
+                "o pacote sem orçamento seja o dispositivo",
+                report["receipts"].get("scope") or "",
+            )
+        self.assertNotIn("o pacote sem orçamento seja o dispositivo", game.next_scope())
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        current = game.budget_reading(starter)
+        self.assertIs(current["unbudgeted"], False)
+
     def test_art_content_and_ship_read_the_starter_without_claiming_proof(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         art = game.art_reading(starter)

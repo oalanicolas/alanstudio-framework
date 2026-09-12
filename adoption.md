@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.644 — o unbudgeted do budget nomeia o dispositivo que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+pacote
+sem
+orçamento
+não
+é
+o
+dispositivo.
+O
+budget
+relatava
+o
+unbudgeted
+e
+calava
+a
+recusa.
+Agora
+o
+`unbudgeted`
+do
+`budget`
+nomeia
+o
+dispositivo.
+Manifesto
+no
+disco
+não
+é
+o
+quadro
+medido.
+Sem
+chave
+`dispositivo`.
+Listar
+não
+mede.
+
 ## 0.9.643 — o unversioned do save nomeia o formato que a receita já recusa
 
 A

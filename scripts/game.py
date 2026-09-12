@@ -672,7 +672,7 @@ def review(root, limit=REVIEW_LIMIT):
             "origins_contradicts_licensing": origins["contradicts_licensing"],
             "access_missing": access_missing_keys(access_report) if kind else [],
             "save_unversioned": save_unversioned_flag(persist_report),
-            "performance_unbudgeted": perf_report["unbudgeted"],
+            "performance_unbudgeted": budget_unbudgeted_flag(perf_report),
             "art_missing": bool(kind) and not art_report["declared"],
             "content_inline": content_inline_flag(content_report),
             "ship_unpacked": ship_report["unpacked"],
@@ -701,7 +701,7 @@ def review(root, limit=REVIEW_LIMIT):
             feel_observations=len(observations),
             access_declared=access_declared_flag(access_report),
             save_unversioned=save_unversioned_flag(persist_report),
-            performance_unbudgeted=perf_report["unbudgeted"],
+            performance_unbudgeted=budget_unbudgeted_flag(perf_report),
             art_declared=art_report["declared"],
             content_files=len(content_files(path)),
             content_inline=content_inline_flag(content_report),
@@ -5316,6 +5316,68 @@ def budget_expected_flag(reading):
     return bool(expected)
 
 
+# A receita já recusa que o
+# pacote sem orçamento seja o
+# dispositivo. Sem isto o budget
+# relatava o unbudgeted e calava
+# a recusa. Manifesto no disco
+# não é o quadro medido.
+PERF_DEVICE = re.compile(r"Pacote sem orçamento não é o dispositivo")
+
+
+def recipe_refuses_package_without_budget_as_device(text):
+    return bool(text and PERF_DEVICE.search(text))
+
+
+def budget_unbudgeted_device_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_package_without_budget_as_device(text):
+        return "recipes/performance.md"
+    return None
+
+
+def budget_unbudgeted_device_scope():
+    if not budget_unbudgeted_device_source():
+        return None
+    return (
+        " O disco recusa que o pacote sem orçamento seja o dispositivo "
+        "(`dispositivo`). Manifesto no disco não é o quadro medido."
+    )
+
+
+def budget_unbudgeted_scope():
+    scope = (
+        "package ou Cargo sem artefato de orçamento. "
+        "Não é o dispositivo."
+    )
+    named = budget_unbudgeted_device_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def budget_unbudgeted_flag(reading):
+    unbudgeted = (reading or {}).get("unbudgeted") if isinstance(reading, dict) else reading
+    if isinstance(unbudgeted, dict):
+        return bool(unbudgeted.get("unbudgeted"))
+    return bool(unbudgeted)
+
+
+def budget_unbudgeted_reading(unbudgeted):
+    if not unbudgeted:
+        return False
+    return {
+        "unbudgeted": True,
+        "scope": budget_unbudgeted_scope(),
+    }
+
+
 def budget_reading(project):
     project = Path(project)
     try:
@@ -5385,7 +5447,7 @@ def budget_reading(project):
         "files": files,
         "receipts": receipts,
         "declared": declared_flag,
-        "unbudgeted": unbudgeted,
+        "unbudgeted": budget_unbudgeted_reading(unbudgeted),
         "measured": False,
         "guide": str(FRAMEWORK / "recipes/performance.md"),
         "rule": (
@@ -16798,7 +16860,7 @@ def next_step(project, focus="create", studies_root=None):
             "save.unversioned",
         )
     perf = budget_reading(project)
-    if perf["unbudgeted"]:
+    if budget_unbudgeted_flag(perf):
         propose(
             "Declarar um orçamento mensurável (script budget/bench ou tools/budget)",
             "Há manifesto de execução e nenhum artefato que meça tempo de quadro "
@@ -17128,7 +17190,7 @@ def next_step(project, focus="create", studies_root=None):
             "playtest_candidate": playtest_candidate_path(playtest),
             "access_missing": access_missing_keys(access) if payload["kind"] else [],
             "save_unversioned": save_unversioned_flag(persist),
-            "performance_unbudgeted": perf["unbudgeted"],
+            "performance_unbudgeted": budget_unbudgeted_flag(perf),
             "art_missing": bool(payload["kind"]) and not art["declared"],
             "content_inline": content_inline_flag(inventory),
             "ship_unpacked": pack["unpacked"],
