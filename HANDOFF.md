@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.654: o `context` nomeia o inferido que o roteiro já recusa. Arquivo no disco não é a conversa. Sem chave `inferido`. Nomear não aprova.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.654): **715 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
