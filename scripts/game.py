@@ -3377,6 +3377,42 @@ def feel_observations_animate_scope():
     )
 
 
+# A receita já recusa que a
+# recovery invisível ou
+# infinita seja o retorno.
+# Sem isto o feel listava o
+# recibo e calava a recusa.
+# Recovery no disco não é o
+# controle.
+FEEL_JUST = re.compile(r"Recovery\s+invisível ou infinito quebra confiança")
+
+
+def recipe_refuses_invisible_recovery_as_return(text):
+    return bool(text and FEEL_JUST.search(text))
+
+
+def feel_observations_just_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_invisible_recovery_as_return(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_just_scope():
+    if not feel_observations_just_source():
+        return None
+    return (
+        " O disco recusa que a recovery invisível ou infinita seja o retorno "
+        "(`justo`). Recovery no disco não é o controle."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -3388,6 +3424,9 @@ def feel_observations_scope():
     motion = feel_observations_animate_scope()
     if motion:
         scope += motion
+    fair = feel_observations_just_scope()
+    if fair:
+        scope += fair
     return scope
 
 

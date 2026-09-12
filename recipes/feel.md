@@ -119,7 +119,7 @@ Separe:
 - **Apresentação** — a mudança é perceptível.
 - **Feel** — a percepção tem peso, timing e recuperação.
 
-Corrigir a regra não substitui o feel. Se a receita recusa que corrigir a regra substitua o feel, o `feel` nomeia a regra que a receita já recusa. Regra no disco não é o feel. Sem chave `regra`. Animar demais não substitui a regra. Se a receita recusa que animar demais substitua a regra, o `observations` do `feel` nomeia o animar que a receita já recusa. Animar no disco não é a regra. Sem chave `animar`.
+Corrigir a regra não substitui o feel. Se a receita recusa que corrigir a regra substitua o feel, o `feel` nomeia a regra que a receita já recusa. Regra no disco não é o feel. Sem chave `regra`. Animar demais não substitui a regra. Se a receita recusa que animar demais substitua a regra, o `observations` do `feel` nomeia o animar que a receita já recusa. Animar no disco não é a regra. Sem chave `animar`. Se a receita recusa que a recovery invisível ou infinita seja o retorno, o `observations` do `feel` nomeia o justo que a receita já recusa. Recovery no disco não é o controle. Sem chave `justo`.
 Se a ação ainda não existe, volte a [criar](create.md) ou a
 [mecânicas](mechanics.md); esta receita assume um ciclo jogável.
 
@@ -180,7 +180,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
 7. **Áudio** — ataque, corpo, impacto, cauda e silêncio. Sem camada que
    marque o verbo, o feel fica visual-only; use [áudio](audio.md).
 8. **Recuperação** — o jogador volta ao controle num tempo justo. Recovery
-   invisível ou infinito quebra confiança.
+   invisível ou infinito quebra confiança. Se a receita recusa que a recovery invisível ou infinita seja o retorno, o `observations` do `feel` nomeia o justo que a receita já recusa. Recovery no disco não é o controle. Sem chave `justo`.
 
 Registre o elo fraco antes de adicionar mais partículas. Três efeitos no
 impacto não compensam input que ignora o botão. Se a receita recusa que três efeitos no impacto compensem input que ignora o botão, o ciclo nomeia os efeitos que a receita já recusa. Efeitos no disco não são o input. Sem chave `efeitos`.
