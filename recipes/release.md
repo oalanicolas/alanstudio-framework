@@ -72,6 +72,19 @@ transformado, inclusive recuperação e falha do serviço; abrir o menu ou obter
 não comprova portabilidade. Preserve a fonte autoral e confira suas invariantes após
 exportar. [Origem e limites](../references/sources.md#autoria-ugc-pública).
 
+Para uma primeira prova de jogo web instalado, separe o cliente da preparação
+da hospedagem e mantenha uma origem local estável para os assets. Adapte somente
+os serviços com dois consumidores reais: cookies e retornos OAuth web não se
+tornam autenticação nativa por estarem em um wrapper. Use perfil de dados próprio;
+prove reabertura do processo, falha de escrita e preservação de save incompatível.
+Converta eventos do host em pausa/cancelamento de entrada, sem retomar combate só
+porque a janela voltou ao foco. Extraia o arquivo final em outra pasta e execute
+com perfil limpo; registre hashes, runtime, avisos de licença e serviços ausentes.
+Essa prova perde validade quando muda o runtime, o adaptador ou o pacote; gamepad,
+toque e suspensão simulados não certificam periférico ou dispositivo físico.
+Runtime fixado de cache permite repetir o experimento, mas suporte, segurança,
+assinatura e distribuição pública exigem revisão para a versão de release.
+
 Registre a versão entregue, o conteúdo dela, o que ficou de fora e as lacunas
 conhecidas. Uma entrega sem essa nota impede diagnosticar o primeiro relato de
 problema, porque ninguém sabe o que estava dentro dela.
@@ -96,3 +109,37 @@ registra esses comandos com recibo; recibo verde não aprova a entrega nem
 substitui a autorização do usuário. Degraus:
 [barra de acabamento](../references/production-bar.md#release--confiança-operacional).
 Template da etapa: [release](../assets/templates/release.md). Se o molde recusa publicar, o `template` nomeia a publicação que o molde já recusa. Molde no disco não é autorização. Sem chave `publicar`.
+
+## Idiomas: um registro, um arquivo por língua, fonte por escrita
+
+Entrada: o jogo vai ganhar um idioma, ou já tem dois e o texto começou a nascer fora
+do dicionário. Caso de origem: quarto idioma (chinês) do Distrito Rabisco, 2026-09-12.
+
+- **Um registro.** Uma lista de definições por idioma (código, `lang` do HTML, locale
+  do Open Graph, nome no seletor, expressão do `navigator.language`, escrita). Seletor,
+  `html.lang`, metadados, allowlist de analytics, testes e scripts de QA derivam dela;
+  nenhuma outra lista de códigos no repositório. A primeira linha é a língua fonte:
+  fallback dos dicionários e padrão sem pista do navegador.
+- **Um arquivo por língua, tudo dentro dele.** Cada namespace de tela (placar, conta,
+  loading, editor, conquistas) mora no dicionário da língua, não num objeto `copy.pt`
+  ao lado da UI. Um teste percorre a UI e recusa objeto com chaves de idioma fora de
+  `src/i18n`; outro exige as mesmas chaves, os mesmos `{placeholders}`, nenhum valor
+  vazio e nenhum travessão em todos os idiomas. Dicionário registrado sem arquivo
+  quebra no import, não em produção com chave crua.
+- **Fonte é propriedade da escrita, não da língua.** Faces extras ficam num mapa por
+  escrita (`hans`, `cyrl`), cada uma com a amostra na própria escrita. Uma face com
+  `unicode-range` só resolve em `document.fonts.load` quando o texto de amostra tem
+  glifos daquela faixa; sem amostra a lista volta vazia e o boot falha. Boot, cartão
+  de compartilhamento e QA leem o mesmo mapa. CSS que distingue escrita usa um
+  atributo derivado (`data-script`), não uma lista de `:lang()`.
+- **Plural e número.** `Intl.NumberFormat` com o `lang` do registro. Plural manual
+  (`n === 1`) vale para pt, en, es e zh; um idioma com outra regra (fr trata zero como
+  singular; ru, pl, ar têm mais formas) pede `Intl.PluralRules` no `t()`, não ICU.
+- **Bundle.** Dicionários no grafo inicial enquanto pesarem menos que o motor;
+  carregamento por locale só a partir de seis ou mais idiomas medidos.
+
+Custo de um idioma novo: o arquivo, uma linha no registro e o import. Escrita nova:
+mais uma linha no mapa de fontes e a face subsetada com licença registrada. Nomes
+próprios do jogo não se traduzem; a decisão fica no documento do jogo.
+O que invalida: TMS ou JSON externo (o registro deixa de ser o arquivo JS), RTL
+(layout, não só texto) e hub multi-jogo, que precisam de contrato próprio.
