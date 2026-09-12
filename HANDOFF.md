@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.643: o `unversioned` do `save` nomeia o formato que a receita já recusa. Disco sem schema não é o contrato. Sem chave `formato`. Listar não versiona.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.643): **704 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
