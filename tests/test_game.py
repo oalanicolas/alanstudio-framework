@@ -23219,6 +23219,63 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.play_scope(destination))
         self.assertNotIn(phrase, game.next_scope())
 
+    def test_cycle_names_the_stretch_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"hitstop no fim não alonga o relógio")
+        self.assertTrue(
+            game.recipe_refuses_end_hitstop_as_stretching_the_clock(recipe),
+            "a receita já recusa que o hitstop no fim alongue o relógio",
+        )
+        self.assertEqual(game.cycle_stretch_source(), "recipes/feel.md")
+        destination = self.root / "ciclo-nomeia-alonga"
+        report = game.start_project(destination, "canvas-arcade")
+        cycle = report["cycle"]
+        self.assertIn(
+            "o hitstop no fim alongue o relógio",
+            cycle["scope"],
+            "o ciclo anunciava o verbo e calava a recusa",
+        )
+        self.assertIn("(`alonga`)", cycle["scope"])
+        self.assertIn("Hitstop no disco não é o limite.", cycle["scope"])
+        self.assertNotIn("alonga", cycle)
+        self.assertNotIn("alonga", game.CYCLE_KEYS)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_end_hitstop_as_stretching_the_clock(""))
+        with mock.patch.object(game, "cycle_stretch_source", return_value=None):
+            silent = game.start_project(self.root / "ciclo-cala-alonga", "canvas-arcade")
+        self.assertNotIn(
+            "o hitstop no fim alongue o relógio",
+            (silent.get("cycle") or {}).get("scope") or "",
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o alonga que a receita já recusa"), 2)
+        self.assertIn("nomeia o alonga que a receita já recusa", skill)
+        self.assertIn("nomeia o alonga que a receita já recusa", readme)
+        self.assertIn("nomeia o alonga que a receita já recusa", create)
+        self.assertNotIn("verified", cycle["scope"])
+        self.assertNotIn("aprovado", cycle["scope"])
+        self.assertNotIn("4.5", cycle["scope"])
+        self.assertNotIn("16 ms", cycle["scope"])
+        phrase = "o hitstop no fim alongue o relógio"
+        self.assertNotIn(phrase, report["scope"])
+        self.assertNotIn(phrase, game.feel_reading(destination)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.content_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        used = game.save_reading(destination).get("used")
+        if isinstance(used, dict):
+            self.assertNotIn(phrase, used.get("scope") or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.play_scope(destination))
+        self.assertNotIn(phrase, game.next_scope())
+
     def test_serve_banner_names_the_clock_the_game_already_reads(self):
         destination = self.root / "banner-nomeia-relogio"
         game.init(destination, "canvas-arcade")

@@ -17446,6 +17446,9 @@ def cycle_scope():
     order = cycle_order_scope()
     if order:
         scope += order
+    cap = cycle_stretch_scope()
+    if cap:
+        scope += cap
     return scope or None
 
 
@@ -17658,6 +17661,41 @@ def cycle_order_scope():
     return (
         " O disco recusa que a ordem do array decida a aposta "
         "(`ordem`). Ordem no disco não é a escolha."
+    )
+
+
+# A receita já recusa que o
+# hitstop no fim alongue o
+# relógio. Sem isto o ciclo
+# anunciava o verbo e calava
+# a recusa. Hitstop no disco
+# não é o limite.
+FEEL_STRETCH = re.compile(r"hitstop no fim não alonga o relógio")
+
+
+def recipe_refuses_end_hitstop_as_stretching_the_clock(text):
+    return bool(text and FEEL_STRETCH.search(text))
+
+
+def cycle_stretch_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_end_hitstop_as_stretching_the_clock(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_stretch_scope():
+    if not cycle_stretch_source():
+        return None
+    return (
+        " O disco recusa que o hitstop no fim alongue o relógio "
+        "(`alonga`). Hitstop no disco não é o limite."
     )
 
 

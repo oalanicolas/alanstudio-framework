@@ -10,7 +10,7 @@ Captura no disco não é sessão observada. Se a receita recusa que captura no d
 hold — o keyup some e o corpo não segue. Perder o foco da janela
 solta o ofício pendente — Space e R não disparam no quadro
 seguinte. Na pausa o toque retoma — Esc e P não existem no
-polegar; o tap não é o avanço. Se a receita recusa que o tap seja o avanço, o ciclo nomeia o tap que a receita já recusa. Polegar no disco não é o dash. Sem chave `tap`. Se a receita recusa que o segurar seja o avanço, o ciclo nomeia o segurar que a receita já recusa. Segurar no disco não é o dash. Sem chave `segurar`. Se a receita recusa que o toque sem corrente decida o orbe, o ciclo nomeia o orbe que a receita já recusa. Toque no disco não é a escolha. Sem chave `orbe`. Se a receita recusa que a ordem do array decida a aposta, o ciclo nomeia a ordem que a receita já recusa. Ordem no disco não é a escolha. Sem chave `ordem`. Se a receita recusa que o lock seja o descanso, o ciclo nomeia o lock que a receita já recusa. Lock no disco não é o descanso. Sem chave `lock`. Se a receita recusa que o arco prometa o dash, o `play` nomeia o arco que a receita já recusa. Arco no disco não é o dash. Sem chave `arco`. No campo o telefone
+polegar; o tap não é o avanço. Se a receita recusa que o tap seja o avanço, o ciclo nomeia o tap que a receita já recusa. Polegar no disco não é o dash. Sem chave `tap`. Se a receita recusa que o segurar seja o avanço, o ciclo nomeia o segurar que a receita já recusa. Segurar no disco não é o dash. Sem chave `segurar`. Se a receita recusa que o toque sem corrente decida o orbe, o ciclo nomeia o orbe que a receita já recusa. Toque no disco não é a escolha. Sem chave `orbe`. Se a receita recusa que a ordem do array decida a aposta, o ciclo nomeia a ordem que a receita já recusa. Ordem no disco não é a escolha. Sem chave `ordem`. Se a receita recusa que o hitstop no fim alongue o relógio, o ciclo nomeia o alonga que a receita já recusa. Hitstop no disco não é o limite. Sem chave `alonga`. Se a receita recusa que o lock seja o descanso, o ciclo nomeia o lock que a receita já recusa. Lock no disco não é o descanso. Sem chave `lock`. Se a receita recusa que o arco prometa o dash, o `play` nomeia o arco que a receita já recusa. Arco no disco não é o dash. Sem chave `arco`. No campo o telefone
 pausa no relógio; o resto da tela continua o avanço.
 O relógio nomeia a pausa — sem o || o canto calava o
 verbo e o convite some a tabela. Na porta o canto
@@ -155,7 +155,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    que você já pediu; depois do commit o orbe entra. O relógio
    não come a guarda que já sentou: o sit converte antes do
    `over`.    O hitstop no fim não alonga o relógio: o limite
-   encerra mesmo durante o congelamento.    A queda
+   encerra mesmo durante o congelamento. Se a receita recusa que o hitstop no fim alongue o relógio, o ciclo nomeia o alonga que a receita já recusa. Hitstop no disco não é o limite. Sem chave `alonga`.    A queda
    longe não come o verbo em curso: marca o chão
    e não senta o avanço, o coil nem o sit da guarda. Se a receita recusa que a queda longe coma o verbo em curso, o `observations` do `feel` nomeia a queda que a receita já recusa. Queda no disco não é o ofício. Sem chave `queda`.
    Parado, a queda ainda senta. Dois
