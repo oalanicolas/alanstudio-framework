@@ -12421,6 +12421,61 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("aprovado", feel)
 
+    def test_feel_names_the_tween_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_generic_tween_as_reusable_feel(recipe),
+            "a receita já recusa que um tween genérico sem dono seja feel reutilizável",
+        )
+        self.assertEqual(game.feel_tween_source(), "recipes/feel.md")
+        report = game.feel_reading(self.project)
+        self.assertIn(
+            "um tween genérico sem dono seja feel reutilizável",
+            report["scope"],
+            "o feel lia as constantes e calava a recusa",
+        )
+        self.assertIn("(`tween`)", report["scope"])
+        self.assertNotIn("tween", report)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_generic_tween_as_reusable_feel(""))
+        with mock.patch.object(game, "feel_tween_source", return_value=None):
+            silent = game.feel_reading(self.project)
+        self.assertNotIn("um tween genérico sem dono seja feel reutilizável", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o tween que a receita já recusa", recipe)
+        self.assertIn("nomeia o tween que a receita já recusa", create)
+        self.assertIn("nomeia o tween que a receita já recusa", skill)
+        self.assertIn("nomeia o tween que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "um tween genérico sem dono seja feel reutilizável",
+            game.feel_constants_scope(),
+        )
+        self.assertNotIn(
+            "um tween genérico sem dono seja feel reutilizável",
+            game.observation_item_scope(),
+        )
+        self.assertNotIn(
+            "um tween genérico sem dono seja feel reutilizável",
+            game.feel_unobserved_scope(),
+        )
+        self.assertNotIn(
+            "um tween genérico sem dono seja feel reutilizável",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "um tween genérico sem dono seja feel reutilizável",
+            game.scan(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "um tween genérico sem dono seja feel reutilizável",
+            game.context(self.project, "create")["scope"],
+        )
+
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
         destination = self.root / "com-observacao"
         game.init(destination, "canvas-arcade")

@@ -194,7 +194,7 @@ e confirmação do impacto de uma previsão que o jogador deve construir sozinho
 
 Procure o feel já existente no jogo: hitstop, easing, impulse de câmera,
 envelope de som, rumble. Leia o **consumidor** (o golpe, o pulo, o clique),
-não só o utilitário. Um tween genérico sem dono não é feel reutilizável.
+não só o utilitário. Um tween genérico sem dono não é feel reutilizável. Se a receita recusa que um tween genérico sem dono seja feel reutilizável, o `feel` nomeia o tween que a receita já recusa. Receita no disco não é peso percebido. Sem chave `tween`.
 
 - **REUSE:** o envelope atual atende com outros parâmetros.
 - **ADAPT:** estenda o canônico (mesmo hitstop, outra curva) e preserve quem

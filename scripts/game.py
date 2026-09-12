@@ -3612,7 +3612,44 @@ def _feel_scope(project):
             " O dash emite o término (`landDash`). Pose no disco não é "
             "peso percebido."
         )
+    named = feel_tween_scope()
+    if named:
+        scope += named
     return scope
+
+
+# A receita já recusa que um tween
+# genérico sem dono seja feel
+# reutilizável. Sem isto o feel lia
+# as constantes e calava a recusa.
+# Receita no disco não é peso percebido.
+FEEL_TWEEN = re.compile(r"não é feel reutilizável")
+
+
+def recipe_refuses_generic_tween_as_reusable_feel(text):
+    return bool(text and FEEL_TWEEN.search(text))
+
+
+def feel_tween_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_generic_tween_as_reusable_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_tween_scope():
+    if not feel_tween_source():
+        return None
+    return (
+        " O disco recusa que um tween genérico sem dono seja feel reutilizável "
+        "(`tween`). Receita no disco não é peso percebido."
+    )
 
 
 # O painel e o live já nomeiam o vazio. Sem isto o
