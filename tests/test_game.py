@@ -328,6 +328,46 @@ class HarnessTest(unittest.TestCase):
         self.assertNotIn("documento comprove qualidade", game.documentation_scope(True))
         self.assertNotIn("documento comprove qualidade", game.scan(self.project)["scope"])
 
+    def test_review_item_names_the_authorize_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_generating_document_as_authorize(guide),
+            "a guia já recusa que gerar o documento seja autorizar",
+        )
+        self.assertEqual(game.review_item_authorize_source(), "references/preproduction.md")
+        self.package()
+        report = game.review(self.root)
+        self.assertTrue(report["projects"], "o review já devolve projetos neste laboratório")
+        item = report["projects"][0]
+        self.assertIn(
+            "gerar o documento seja autorizar",
+            item["scope"],
+            "o item copiava a conta e calava a recusa",
+        )
+        self.assertIn("(`autorizar`)", item["scope"])
+        self.assertNotIn("autorizar", item)
+        self.assertFalse(game.guide_refuses_generating_document_as_authorize(""))
+        with mock.patch.object(game, "review_item_authorize_source", return_value=None):
+            silent = game.review(self.root)
+        self.assertNotIn("gerar o documento seja autorizar", silent["projects"][0]["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o autorizar que a guia já recusa", guide)
+        self.assertIn("nomeia o autorizar que a guia já recusa", recipe)
+        self.assertIn("nomeia o autorizar que a guia já recusa", skill)
+        self.assertIn("nomeia o autorizar que a guia já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("gerar o documento seja autorizar", report["scope"])
+        self.assertNotIn("gerar o documento seja autorizar", report["projects"][0]["signals"].get("scope", ""))
+        self.assertNotIn("gerar o documento seja autorizar", game.next_scope())
+        self.assertNotIn("gerar o documento seja autorizar", game.documentation_scope(True))
+        self.assertNotIn("gerar o documento seja autorizar", game.scan(self.project)["scope"])
+        self.assertNotIn("gerar o documento seja autorizar", game.ship_reading(self.project)["scope"])
+        self.assertNotIn("gerar o documento seja autorizar", game.gate_reading(self.project)["scope"])
+
     def test_review_signals_name_the_play_the_readme_already_refuses(self):
         readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
         self.assertTrue(

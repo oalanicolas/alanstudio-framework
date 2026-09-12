@@ -234,7 +234,7 @@ em máquina que não é a de desenvolvimento, save migra da versão anterior e n
 recurso embarcado tem licença desconhecida. Licença desconhecida bloqueia a entrega. Se a guia recusa que o embarcado sem recibo seja licença conhecida, o `undeclared` do `origins` nomeia a desconhecida que a guia já recusa. Arquivo no disco não é a concessão. Sem chave `desconhecida`.
 localização de um arquivo não atribui autoria. O template registra o degrau observado
 por dimensão; **nenhum comando concede autorização de publicação**, e gerar o
-documento não é autorizar.
+documento não é autorizar. Se a guia recusa que gerar o documento seja autorizar, o item do review nomeia o autorizar que a guia já recusa. Documento no disco não é a autorização. Sem chave `autorizar`.
 [Template](../assets/templates/release.md), [receita](../recipes/release.md).
 
 ## Revisão, rastreabilidade e retomada

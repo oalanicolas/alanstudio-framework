@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.689 — o item do review nomeia o autorizar que a guia já recusa
+
+A
+guia
+já
+dizia
+que
+gerar
+o
+documento
+não
+é
+autorizar.
+O
+item
+copiava
+a
+conta
+e
+calava
+a
+recusa.
+Agora
+o
+item
+do
+`review`
+nomeia
+o
+autorizar.
+Documento
+no
+disco
+não
+é
+a
+autorização.
+Sem
+chave
+`autorizar`.
+Nomear
+não
+observa.
+
 ## 0.9.688 — a área runbook nomeia a inicialização que o processo já recusa
 
 O

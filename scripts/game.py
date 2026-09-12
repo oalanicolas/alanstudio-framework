@@ -807,7 +807,44 @@ def review_item_scope():
             " O disco recusa que o documento comprove qualidade (`qualidade`). "
             "Conta no disco não é acabamento."
         )
+    paper = review_item_authorize_scope()
+    if paper:
+        scope += paper
     return scope
+
+
+# A guia já recusa que gerar o
+# documento autorize. Sem isto o
+# item copiava a conta e calava a
+# recusa. Documento no disco não é
+# a autorização.
+PREPRODUCTION_AUTHORIZE = re.compile(r"gerar o\s+documento não é autorizar")
+
+
+def guide_refuses_generating_document_as_authorize(text):
+    return bool(text and PREPRODUCTION_AUTHORIZE.search(text))
+
+
+def review_item_authorize_source():
+    path = FRAMEWORK / "references" / "preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_generating_document_as_authorize(text):
+        return "references/preproduction.md"
+    return None
+
+
+def review_item_authorize_scope():
+    if not review_item_authorize_source():
+        return ""
+    return (
+        " O disco recusa que gerar o documento seja autorizar "
+        "(`autorizar`). Documento no disco não é a autorização."
+    )
 
 
 # O README já recusa que sinal verdadeiro seja partida jogada. Sem
