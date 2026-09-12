@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.573 — o finding_attachments do playtest nomeia o gravado que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+gravado
+não
+é
+alguém
+de
+fora.
+O
+playtest
+listava
+o
+anexo
+e
+calava
+a
+recusa.
+Agora
+o
+`finding_attachments`
+do
+`playtest`
+nomeia
+o
+gravado.
+Arquivo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`gravado`.
+Nomear
+não
+observa.
+
+O que 0.9.573 não afirma:
+listar
+o
+anexo
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.572 — o findings do playtest nomeia o esqueleto que a receita já recusa
 
 A

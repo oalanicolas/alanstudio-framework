@@ -5742,6 +5742,51 @@ def playtest_findings_scope():
     return scope
 
 
+# A receita já recusa que o gravado
+# seja alguém de fora. Sem isto o
+# playtest listava o anexo e calava
+# a recusa. Arquivo no disco não é
+# a sessão.
+FEEL_RECORDED = re.compile(r"Gravado\s+não é alguém de fora")
+
+
+def recipe_refuses_recorded_as_outsider(text):
+    return bool(text and FEEL_RECORDED.search(text))
+
+
+def playtest_recorded_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_recorded_as_outsider(text):
+        return "recipes/feel.md"
+    return None
+
+
+def playtest_recorded_scope():
+    if not playtest_recorded_source():
+        return None
+    return (
+        " O disco recusa que o gravado seja alguém de fora "
+        "(`gravado`). Arquivo no disco não é a sessão."
+    )
+
+
+def playtest_attachments_scope():
+    scope = (
+        "anexo no disco. "
+        "Não assiste a sessão."
+    )
+    named = playtest_recorded_scope()
+    if named:
+        scope += named
+    return scope
+
+
 LAST_RUN = "docs/playtest/last-run.json"
 INVITE = "docs/playtest/invite.md"
 INIT_COPY_SKIP = {"dist", "node_modules", ".git", "__pycache__"}
@@ -6332,6 +6377,11 @@ def playtest_reading(project):
         findings = {
             "paths": findings,
             "scope": playtest_findings_scope(),
+        }
+    if attachments:
+        attachments = {
+            "paths": attachments,
+            "scope": playtest_attachments_scope(),
         }
     return {
         "schema_version": 1,

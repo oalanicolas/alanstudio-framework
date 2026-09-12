@@ -12820,6 +12820,84 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.feel_reading(self.project)["scope"],
         )
 
+    def test_playtest_attachments_names_the_recorded_file_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_recorded_as_outsider(recipe),
+            "a receita já recusa que o gravado seja alguém de fora",
+        )
+        self.assertEqual(game.playtest_recorded_source(), "recipes/feel.md")
+        empty = game.playtest_reading(self.project)
+        self.assertEqual(empty["finding_attachments"], [])
+        self.assertEqual(game.playtest_finding_attachments(self.project), [])
+        destination = self.root / "anexo-gravado"
+        game.init(destination, "canvas-arcade")
+        (destination / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (destination / "docs/playtest/20260910T120000Z-achado.md").write_text(
+            "- Problema: o dash não comunica o contato\n"
+            "- Evidência: três sessões, pergunta se atravessou\n"
+            "- Hipótese: o hitstop some no movimento\n"
+            "- Medição: repetir o graze com hitstop 5 e 2\n",
+            encoding="utf-8",
+        )
+        (destination / "docs/playtest/20260910T120000Z-achado.run.json").write_text(
+            json.dumps({
+                "schema": 2,
+                "kind": "finding-attachment",
+                "seed": 8,
+                "run": {"ticks": 40, "score": 3, "seed": 8},
+                "observed": False,
+                "felt": False,
+                "outsider": False,
+            }),
+            encoding="utf-8",
+        )
+        self.assertEqual(
+            game.playtest_finding_attachments(destination),
+            ["docs/playtest/20260910T120000Z-achado.run.json"],
+        )
+        report = game.playtest_reading(destination)
+        item = report["finding_attachments"]
+        self.assertEqual(
+            item["paths"],
+            ["docs/playtest/20260910T120000Z-achado.run.json"],
+        )
+        self.assertEqual(item["paths"], game.playtest_finding_attachments(destination))
+        self.assertIn(
+            "gravado seja alguém de fora",
+            item["scope"],
+            "o playtest listava o anexo e calava a recusa",
+        )
+        self.assertIn("(`gravado`)", item["scope"])
+        self.assertNotIn("gravado", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_recorded_as_outsider(""))
+        with mock.patch.object(game, "playtest_recorded_source", return_value=None):
+            silent = game.playtest_reading(destination)
+        self.assertNotIn(
+            "gravado seja alguém de fora",
+            silent["finding_attachments"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o gravado que a receita já recusa", recipe)
+        self.assertIn("nomeia o gravado que a receita já recusa", skill)
+        self.assertIn("nomeia o gravado que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("gravado seja alguém de fora", report["scope"])
+        self.assertNotIn("gravado seja alguém de fora", game.next_scope())
+        self.assertNotIn(
+            "gravado seja alguém de fora",
+            game.feel_reading(destination)["scope"],
+        )
+        self.assertNotIn(
+            "gravado seja alguém de fora",
+            report["findings"]["scope"],
+        )
+
     def test_a_structured_finding_is_form_not_an_observed_session(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "docs").mkdir()
@@ -13236,7 +13314,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         report = game.playtest_reading(destination)
         self.assertEqual(report["findings"]["paths"], ["docs/playtest/20260910T120000Z-achado.md"])
-        self.assertEqual(report["finding_attachments"], [
+        self.assertEqual(report["finding_attachments"]["paths"], [
             "docs/playtest/20260910T120000Z-achado.run.json",
         ])
         self.assertEqual(report["candidate_seed"]["seed"], 8)
