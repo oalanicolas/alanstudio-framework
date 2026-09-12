@@ -2065,6 +2065,41 @@ def craft_item_jump_scope():
     )
 
 
+# A pesquisa já recusa que o que
+# não tem critério finja ter.
+# Sem isto o item do craft
+# listava o checklist e calava
+# a recusa. Lista no disco não
+# é o critério.
+CRAFT_FEIGN = re.compile(r"não deve fingir ter")
+
+
+def research_refuses_missing_criterion_as_pretending(text):
+    return bool(text and CRAFT_FEIGN.search(text))
+
+
+def craft_item_feign_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_missing_criterion_as_pretending(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_feign_scope():
+    if not craft_item_feign_source():
+        return None
+    return (
+        " O disco recusa que o que não tem critério finja ter "
+        "(`fingir`). Lista no disco não é o critério."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2103,6 +2138,9 @@ def craft_item_scope():
     jump = craft_item_jump_scope()
     if jump:
         scope += jump
+    feign = craft_item_feign_scope()
+    if feign:
+        scope += feign
     return scope
 
 

@@ -16,7 +16,7 @@ A distinção que organiza tudo aqui:
 - **Opinião disfarçada de critério** — parece regra, decide por gosto. *"A arte
   está consistente."*
 - **Número folclórico** — tem casas decimais e nenhuma medição atrás. É o mais
-  perigoso dos três, porque passa por observável. Se a pesquisa recusa que o número folclórico seja critério observável, o item do craft nomeia o folclore que a pesquisa já recusa. Folclore no disco não é o critério. Sem chave `folclore`. Se a pesquisa recusa que três métricas com o mesmo nome sejam um critério, o item do craft nomeia as métricas que a pesquisa já recusa. Nome no disco não é a métrica. Sem chave `métricas`. Se a pesquisa recusa que as palestras dêem limiar, o item do craft nomeia o limiar que a pesquisa já recusa. Palestra no disco não é o critério. Sem chave `limiar`. Se a pesquisa recusa que esses valores sejam um padrão, o item do craft nomeia o padrão que a pesquisa já recusa. Valor no disco não é o padrão. Sem chave `padrão`. Se a pesquisa recusa que o pulo bom seja critério, o item do craft nomeia o pulo que a pesquisa já recusa. Frase no disco não é o critério. Sem chave `pulo`.
+  perigoso dos três, porque passa por observável. Se a pesquisa recusa que o número folclórico seja critério observável, o item do craft nomeia o folclore que a pesquisa já recusa. Folclore no disco não é o critério. Sem chave `folclore`. Se a pesquisa recusa que três métricas com o mesmo nome sejam um critério, o item do craft nomeia as métricas que a pesquisa já recusa. Nome no disco não é a métrica. Sem chave `métricas`. Se a pesquisa recusa que as palestras dêem limiar, o item do craft nomeia o limiar que a pesquisa já recusa. Palestra no disco não é o critério. Sem chave `limiar`. Se a pesquisa recusa que esses valores sejam um padrão, o item do craft nomeia o padrão que a pesquisa já recusa. Valor no disco não é o padrão. Sem chave `padrão`. Se a pesquisa recusa que o pulo bom seja critério, o item do craft nomeia o pulo que a pesquisa já recusa. Frase no disco não é o critério. Sem chave `pulo`. Se a pesquisa recusa que o que não tem critério finja ter, o item do craft nomeia o fingir que a pesquisa já recusa. Lista no disco não é o critério. Sem chave `fingir`.
 
 ## Como ler as fontes deste arquivo
 
@@ -1256,7 +1256,7 @@ número ser verdadeiro em geral:
 - O playtest tem regra de parada declarada — N sessões consecutivas sem mudança
   necessária — em vez de número fixo de participantes.
 
-**O que não tem critério e não deve fingir ter:** tamanho de paleta em geral,
+**O que não tem critério e não deve fingir ter:** Se a pesquisa recusa que o que não tem critério finja ter, o item do craft nomeia o fingir que a pesquisa já recusa. Lista no disco não é o critério. Sem chave `fingir`. tamanho de paleta em geral,
 orçamento de draw calls, orçamento de memória de textura, convenção de pivot e escala
 em arte não-pixel, limiar de latência universal, número de playtesters, e limiar de
 repetição de feedback.
