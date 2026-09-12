@@ -14731,6 +14731,67 @@ def start_created_flag(reading):
     return bool(created)
 
 
+# A receita já recusa que nomear a
+# pasta grave a frase. Sem isto o
+# start relatava o named e calava
+# a recusa. Slug no disco não é
+# o documento.
+CREATE_NAMED_PHRASE = re.compile(r"não grava a frase")
+
+
+def recipe_refuses_naming_folder_as_writing_the_phrase(text):
+    return bool(text and CREATE_NAMED_PHRASE.search(text))
+
+
+def start_named_phrase_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_naming_folder_as_writing_the_phrase(text):
+        return "recipes/create.md"
+    return None
+
+
+def start_named_phrase_scope():
+    if not start_named_phrase_source():
+        return None
+    return (
+        " O disco recusa que nomear a pasta grave a frase "
+        "(`frase`). Slug no disco não é o documento."
+    )
+
+
+def start_named_scope():
+    scope = (
+        "pasta nomeada pela ideia. "
+        "Não grava a frase."
+    )
+    named = start_named_phrase_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def start_named_flag(reading):
+    named = (reading or {}).get("named") if isinstance(reading, dict) else reading
+    if isinstance(named, dict):
+        return bool(named.get("named"))
+    return bool(named)
+
+
+def start_named_reading(named):
+    if not named:
+        return False
+    return {
+        "named": True,
+        "scope": start_named_scope(),
+    }
+
+
 def start_project(destination=None, starter=None, title=None, idea=None, documents=False, cwd=None):
     named = destination is None
     if destination is None:
@@ -14802,7 +14863,7 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
         "next": proposal,
         "then": then,
         "noted": noted,
-        "named": named,
+        "named": start_named_reading(named),
         "suggest": str(suggested_start_target(idea, cwd=cwd)) if named else None,
         "prompt": cycle_prompt(
             play, then, cycle, noted, url, runtime, fantasy,

@@ -18952,6 +18952,67 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("sem destino", missing.stderr)
         self.assertIn(game.start_idea_command(), missing.stderr)
 
+    def test_start_named_names_the_phrase_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_naming_folder_as_writing_the_phrase(recipe),
+            "a receita já recusa que nomear a pasta grave a frase",
+        )
+        self.assertEqual(game.start_named_phrase_source(), "recipes/create.md")
+        occupied = self.root / "ciclo-nomeado-ocupado"
+        game.start_project(occupied, "canvas-arcade")
+        empty = game.start_project(occupied, "canvas-arcade")
+        self.assertFalse(empty["named"])
+        self.assertFalse(game.start_named_flag(empty))
+        report = game.start_project(
+            None, "canvas-arcade", idea="atravessar estilhaços", cwd=self.root,
+        )
+        item = report["named"]
+        self.assertTrue(item["named"], "o start já nomeia a pasta neste --idea")
+        self.assertEqual(item["named"], game.start_named_flag(report))
+        self.assertIn(
+            "nomear a pasta grave a frase",
+            item["scope"],
+            "o start relatava o named e calava a recusa",
+        )
+        self.assertIn("(`frase`)", item["scope"])
+        self.assertNotIn("frase", item)
+        self.assertFalse(report["executed"])
+        self.assertEqual(report["suggest"], "atravessar-estilhacos")
+        self.assertFalse(game.recipe_refuses_naming_folder_as_writing_the_phrase(""))
+        with mock.patch.object(game, "start_named_phrase_source", return_value=None):
+            silent = game.start_project(
+                None, "canvas-arcade", idea="guardar a corrente", cwd=self.root,
+            )
+        self.assertNotIn(
+            "nomear a pasta grave a frase",
+            silent["named"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a frase que a receita já recusa", recipe)
+        self.assertIn("nomeia a frase que a receita já recusa", skill)
+        self.assertIn("nomeia a frase que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("nomear a pasta grave a frase", report["scope"])
+        if report.get("created"):
+            self.assertNotIn(
+                "nomear a pasta grave a frase",
+                report["created"].get("scope") or "",
+            )
+        if report.get("then"):
+            self.assertNotIn(
+                "nomear a pasta grave a frase",
+                report["then"].get("scope") or "",
+            )
+        self.assertNotIn("nomear a pasta grave a frase", game.next_scope())
+        self.assertNotIn(
+            "nomear a pasta grave a frase",
+            game.guide_cycle(None, "canvas-arcade", idea="mapear o ciclo", cwd=self.root)["scope"],
+        )
+
     def test_guide_without_idea_matches_start_rejection_at_framework_root(self):
         with self.assertRaisesRegex(ValueError, "sem destino"):
             game.require_guide_idea(None, None, cwd=game.FRAMEWORK)

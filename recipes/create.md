@@ -16,7 +16,7 @@ também nomeia a porta nesse mapa. Os dois devolvem
 sai em stderr). Depois do
 `start`, `open` é o play e `steps` é o mesmo mapa de três passos, com
 o passo 1 feito. Sem destino, `--idea`
-nomeia a pasta no comando do start e não grava a frase. Sem destino, se o
+nomeia a pasta no comando do start e não grava a frase. Se a receita recusa que nomear a pasta grave a frase, o `named` do `start` nomeia a frase que a receita já recusa. Slug no disco não é o documento. Sem chave `frase`. Sem destino, se o
 diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
 `then` nomeia par, look, chuva e voz se o projeto — ou o starter, antes do
 destino existir — declara essas ferramentas. Se o `tools/new-pair.*` nasce look e chuva, o `start` nomeia o par que o pair já nasce. Ferramenta no disco não é alguém de fora. Sem chave `pair` no recibo. Se declara `session`,

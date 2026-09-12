@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.638 — o named do start nomeia a frase que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+nomear
+a
+pasta
+não
+grava
+a
+frase.
+O
+start
+relatava
+o
+named
+e
+calava
+a
+recusa.
+Agora
+o
+`named`
+do
+`start`
+nomeia
+a
+frase.
+Slug
+no
+disco
+não
+é
+o
+documento.
+Sem
+chave
+`frase`.
+Nomear
+não
+observa.
+
 ## 0.9.637 — o empty do sfx summary nomeia o acervo que a receita já recusa
 
 A
