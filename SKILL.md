@@ -239,7 +239,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    ofício não pinta. `next` fica em `then.lost`.
    **`start [<projeto>]`** cria se o destino estiver livre e devolve
    `open` (= `play`) + `then.note` e os mesmos `steps` do `guide`, com
-   o passo 1 feito. Se o `tools/new-pair.*` nasce look e chuva, o `start` nomeia o par que o pair já nasce. Ferramenta no disco não é alguém de fora. Sem chave `pair` no recibo. Se a receita recusa que título e cores novos sejam experiência, o then do start nomeia a experiência que a receita já recusa. Nome no disco não é o ciclo jogado. Sem chave `experiência`. Sem caminho, `--idea` nomeia e cria a pasta —
+   o passo 1 feito. Se o `tools/new-pair.*` nasce look e chuva, o `start` nomeia o par que o pair já nasce. Ferramenta no disco não é alguém de fora. Sem chave `pair` no recibo. Se a receita recusa que título e cores novos sejam experiência, o then do start nomeia a experiência que a receita já recusa. Nome no disco não é o ciclo jogado. Sem chave `experiência`. Se a receita recusa que o start execute e observe, o `created` do `start` nomeia o executa que a receita já recusa. Pasta no disco não é a partida. Sem chave `executa`. Sem caminho, `--idea` nomeia e cria a pasta —
    ao lado do framework se o start corre de dentro desta árvore.
    `guide --idea` continua só no comando, não no disco. Se o starter declara o verbo e as teclas, o
    prompt as nomeia — inclusive a porta, o cluster de uma mão, o toque, o

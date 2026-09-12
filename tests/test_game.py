@@ -17136,6 +17136,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("criou rascunhos", report["init"]["scope"])
         self.assertNotIn("draft_only", report["init"]["scope"])
 
+    def test_start_created_names_the_execute_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_start_as_execute_and_observe(recipe),
+            "a receita já recusa que o start execute e observe",
+        )
+        self.assertEqual(game.start_created_execute_source(), "recipes/create.md")
+        occupied = self.root / "ciclo-ocupado"
+        game.start_project(occupied, "canvas-arcade")
+        empty = game.start_project(occupied, "canvas-arcade")
+        self.assertFalse(empty["created"])
+        self.assertFalse(game.start_created_flag(empty))
+        destination = self.root / "ciclo-cria"
+        report = game.start_project(destination, "canvas-arcade")
+        item = report["created"]
+        self.assertTrue(item["created"], "o start já cria a pasta neste chamado")
+        self.assertEqual(item["created"], game.start_created_flag(report))
+        self.assertIn(
+            "o start execute e observe",
+            item["scope"],
+            "o start relatava o created e calava a recusa",
+        )
+        self.assertIn("(`executa`)", item["scope"])
+        self.assertNotIn("executa", item)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_start_as_execute_and_observe(""))
+        with mock.patch.object(game, "start_created_execute_source", return_value=None):
+            silent = game.start_project(self.root / "ciclo-cala-executa", "canvas-arcade")
+        self.assertNotIn(
+            "o start execute e observe",
+            silent["created"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o executa que a receita já recusa", recipe)
+        self.assertIn("nomeia o executa que a receita já recusa", skill)
+        self.assertIn("nomeia o executa que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o start execute e observe", report["scope"])
+        if report.get("then"):
+            self.assertNotIn(
+                "o start execute e observe",
+                report["then"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o start execute e observe",
+            game.guide_cycle(destination, "canvas-arcade")["scope"],
+        )
+        self.assertNotIn(
+            "o start execute e observe",
+            game.play_cycle(destination, "canvas-arcade")["scope"],
+        )
+        self.assertNotIn("o start execute e observe", game.next_scope())
+
     def test_start_names_npm_install_only_when_the_package_has_dependencies(self):
         # O play pede npm. O starter não tem o que
         # instalar e o README já recusava o passo.

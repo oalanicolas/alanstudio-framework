@@ -14186,6 +14186,58 @@ def guide_then_scope():
     )
 
 
+# A receita já recusa que o start
+# execute e observe. Sem isto o
+# start relatava o created e calava
+# a recusa. Pasta no disco não é a
+# partida.
+CREATE_EXECUTE = re.compile(r"Não executa e não observa")
+
+
+def recipe_refuses_start_as_execute_and_observe(text):
+    return bool(text and CREATE_EXECUTE.search(text))
+
+
+def start_created_execute_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_start_as_execute_and_observe(text):
+        return "recipes/create.md"
+    return None
+
+
+def start_created_execute_scope():
+    if not start_created_execute_source():
+        return None
+    return (
+        " O disco recusa que o start execute e observe "
+        "(`executa`). Pasta no disco não é a partida."
+    )
+
+
+def start_created_scope():
+    scope = (
+        "pasta criada no disco. "
+        "Não executa e não observa."
+    )
+    named = start_created_execute_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def start_created_flag(reading):
+    created = (reading or {}).get("created")
+    if isinstance(created, dict):
+        return bool(created.get("created"))
+    return bool(created)
+
+
 def start_project(destination=None, starter=None, title=None, idea=None, documents=False, cwd=None):
     named = destination is None
     if destination is None:
@@ -14231,10 +14283,16 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
     steps = cycle_steps(start_command, play, then, cycle, proposal, exists=True, url=url)
     runtime = node_runtime(play)
     fantasy = resolve_fantasy(idea, destination)
+    created_flag = created
+    if created_flag:
+        created_flag = {
+            "created": True,
+            "scope": start_created_scope(),
+        }
     report = {
         "schema_version": 1,
         "project": str(destination),
-        "created": created,
+        "created": created_flag,
         "starter": init_report["starter"] if init_report else None,
         "idea": idea.strip() if nonempty(idea) else None,
         "fantasy": fantasy,

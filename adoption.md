@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.621 — o created do start nomeia o executa que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+não
+executa
+e
+não
+observa.
+O
+start
+relatava
+o
+created
+e
+calava
+a
+recusa.
+Agora
+o
+`created`
+do
+`start`
+nomeia
+o
+executa.
+Pasta
+no
+disco
+não
+é
+a
+partida.
+Sem
+chave
+`executa`.
+Nomear
+não
+executa.
+
 ## 0.9.620 — o unobserved do feel nomeia o sentido que a receita já recusa
 
 A

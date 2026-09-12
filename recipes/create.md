@@ -20,7 +20,7 @@ nomeia a pasta no comando do start e não grava a frase. Sem destino, se o
 diretório atual é um jogo fora do framework, o `guide` usa esse caminho.
 `then` nomeia par, look, chuva e voz se o projeto — ou o starter, antes do
 destino existir — declara essas ferramentas. Se o `tools/new-pair.*` nasce look e chuva, o `start` nomeia o par que o pair já nasce. Ferramenta no disco não é alguém de fora. Sem chave `pair` no recibo. Se declara `session`,
-`then` a aponta e o prompt a nomeia (`Sessão:`). Não executa e não observa. Se o disco tem last-run com seed, `then` aponta a
+`then` a aponta e o prompt a nomeia (`Sessão:`). Não executa e não observa. Se a receita recusa que o start execute e observe, o `created` do `start` nomeia o executa que a receita já recusa. Pasta no disco não é a partida. Sem chave `executa`. Se o disco tem last-run com seed, `then` aponta a
 seed e o convite; nomear o endereço não observa. A partida no serve grava o candidato; a simulação
 também. Depois do fim, a página grava o recibo se você escrever
 e aponta o convite desta partida se a seed ficou no recibo. Copiar
