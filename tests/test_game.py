@@ -15552,6 +15552,57 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("um único número una a versão do conteúdo", game.record_scope())
         self.assertNotIn("um único número una a versão do conteúdo", game.next_scope())
 
+    def test_save_names_the_teaching_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_hold_without_number_as_teaching(recipe),
+            "a receita já recusa que o hold sem o número invente ensino feito",
+        )
+        self.assertEqual(game.save_teaching_source(), "recipes/feel.md")
+        report = game.save_reading(self.project)
+        self.assertIn(
+            "o hold sem o número invente ensino feito",
+            report["scope"],
+            "o save lia o schema e calava a recusa",
+        )
+        self.assertIn("(`ensino`)", report["scope"])
+        self.assertNotIn("ensino", report)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_hold_without_number_as_teaching(""))
+        with mock.patch.object(game, "save_teaching_source", return_value=None):
+            silent = game.save_reading(self.project)
+        self.assertNotIn("o hold sem o número invente ensino feito", silent["scope"])
+        persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o ensino que a receita já recusa", recipe)
+        self.assertIn("nomeia o ensino que a receita já recusa", persist)
+        self.assertIn("nomeia o ensino que a receita já recusa", create)
+        self.assertIn("nomeia o ensino que a receita já recusa", skill)
+        self.assertIn("nomeia o ensino que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        used = report.get("used")
+        if isinstance(used, dict):
+            self.assertNotIn("o hold sem o número invente ensino feito", used.get("scope") or "")
+        warned = report.get("warned")
+        if isinstance(warned, dict):
+            self.assertNotIn("o hold sem o número invente ensino feito", warned.get("scope") or "")
+        sources = report.get("sources")
+        if isinstance(sources, dict):
+            self.assertNotIn("o hold sem o número invente ensino feito", sources.get("scope") or "")
+        self.assertNotIn("o hold sem o número invente ensino feito", game.next_scope())
+        self.assertNotIn("o hold sem o número invente ensino feito", game.craft_reading(self.project)["scope"])
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertNotIn("o hold sem o número invente ensino feito", game.art_reading(starter)["scope"])
+        self.assertNotIn("o hold sem o número invente ensino feito", game.feel_reading(starter)["scope"])
+        self.assertNotIn("o hold sem o número invente ensino feito", game.play_scope(starter))
+        self.assertNotIn("o hold sem o número invente ensino feito", game.cycle_scope() or "")
+        self.assertNotIn("o hold sem o número invente ensino feito", game.git_summary_scope())
+        self.assertNotIn("ensino", game.CYCLE_KEYS)
+
     def test_save_sources_names_the_chain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         self.assertTrue(

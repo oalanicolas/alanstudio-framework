@@ -4979,6 +4979,40 @@ def save_contracts_scope():
     )
 
 
+# A receita já recusa que o hold
+# sem o número invente ensino
+# feito. Sem isto o save lia o
+# schema e calava a recusa. Hold
+# no disco não é o ensino.
+FEEL_TEACHING = re.compile(r"não\s+inventa ensino feito")
+
+
+def recipe_refuses_hold_without_number_as_teaching(text):
+    return bool(text and FEEL_TEACHING.search(text))
+
+
+def save_teaching_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hold_without_number_as_teaching(text):
+        return "recipes/feel.md"
+    return None
+
+
+def save_teaching_scope():
+    if not save_teaching_source():
+        return None
+    return (
+        " O disco recusa que o hold sem o número invente ensino feito "
+        "(`ensino`). Hold no disco não é o ensino."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -5437,6 +5471,9 @@ def save_reading(project):
     contracts = save_contracts_scope()
     if contracts:
         scope += contracts
+    lesson = save_teaching_scope()
+    if lesson:
+        scope += lesson
     used_flag = bool(used)
     if used_flag:
         used_flag = {

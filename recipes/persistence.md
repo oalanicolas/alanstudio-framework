@@ -59,7 +59,7 @@ save em `src/core/save.js` (schema 3), com migração e recuperação de dado in
 `hold` guarda o tick interrompido — seed, `rngState`, chuva, ofício
 e o relógio da porta (`attractTick`). Sem o relógio o campo
 repetia a frase e o mover. `canResume` lê o hold; `canContinue`
-continua sendo repetir a última seed.
+continua sendo repetir a última seed. Se a receita recusa que o hold sem o número invente ensino feito, o `save` nomeia o ensino que a receita já recusa. Hold no disco não é o ensino. Sem chave `ensino`.
 `?seed=<n>` abre essa partida e ignora o hold — não é Continuar. Se a receita recusa que o last-run seja Continuar, o `candidate` do `playtest` nomeia o Continuar que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `continuar`.
 `?spawn=` abre essa chuva e ignora o hold da outra mesa.
 `?look=` e `?speed=` vestem o hold que já está.

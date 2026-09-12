@@ -311,7 +311,7 @@ percebido. A porta
 fecha o mesmo arco no tick que abre, sem contar o ofício. O hold
 leva o relógio da mostra: retomar no campo não devolve a frase
 nem o mover que a porta já deu. Hold antigo sem o número não
-inventa ensino feito. Número no disco não é aba fechada.
+inventa ensino feito. Se a receita recusa que o hold sem o número invente ensino feito, o `save` nomeia o ensino que a receita já recusa. Hold no disco não é o ensino. Sem chave `ensino`. Número no disco não é aba fechada.
 A guarda
 que já tem corrente senta os mesmos dois ticks e também atravessa
 o estilhaço. Corrente já existente espera o land do avanço —

@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.702 — o save nomeia o ensino que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+hold
+antigo
+sem
+o
+número
+não
+inventa
+ensino
+feito.
+O
+save
+lia
+o
+schema
+e
+calava
+a
+recusa.
+Agora
+o
+`save`
+nomeia
+o
+ensino.
+Hold
+no
+disco
+não
+é
+o
+ensino.
+Sem
+chave
+`ensino`.
+Nomear
+não
+observa.
+
 ## 0.9.701 — o craft nomeia o delegar que o craft já recusa
 
 O
