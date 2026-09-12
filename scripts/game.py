@@ -15082,6 +15082,67 @@ def node_major(version):
     return int(match.group(1)) if match else 0
 
 
+# A receita já recusa que o usable
+# seja mais que o binário. Sem
+# isto o runtime relatava o usable
+# e calava a recusa. Node no PATH
+# não é o dispositivo.
+RUNTIME_BINARY = re.compile(r"só o binário")
+
+
+def recipe_refuses_usable_as_more_than_binary(text):
+    return bool(text and RUNTIME_BINARY.search(text))
+
+
+def runtime_usable_binary_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_usable_as_more_than_binary(text):
+        return "recipes/create.md"
+    return None
+
+
+def runtime_usable_binary_scope():
+    if not runtime_usable_binary_source():
+        return None
+    return (
+        " O disco recusa que o usable seja mais que o binário "
+        "(`binário`). Node no PATH não é o dispositivo."
+    )
+
+
+def runtime_usable_scope():
+    scope = (
+        "binário no PATH. "
+        "`usable` é só o binário."
+    )
+    named = runtime_usable_binary_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def runtime_usable_flag(reading):
+    usable = (reading or {}).get("usable")
+    if isinstance(usable, dict):
+        return bool(usable.get("usable"))
+    return bool(usable)
+
+
+def runtime_usable_reading(usable):
+    if not usable:
+        return False
+    return {
+        "usable": True,
+        "scope": runtime_usable_scope(),
+    }
+
+
 def node_runtime(play=None):
     asked = bool(isinstance(play, str) and re.search(r"\b(npm|node)\b", play))
     report = tool_report("node")
@@ -15094,7 +15155,7 @@ def node_runtime(play=None):
         "major": major or None,
         "need": STARTER_NODE_MAJOR if asked else None,
         "asked": asked,
-        "usable": usable,
+        "usable": runtime_usable_reading(usable),
         "executed": False,
         "scope": (
             "Presença e major do `node` no PATH. Não executa o serve, não "

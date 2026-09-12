@@ -17568,6 +17568,66 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(silent["asked"])
         self.assertEqual(game.runtime_line(silent), "")
 
+    def test_runtime_usable_names_the_binary_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_usable_as_more_than_binary(recipe),
+            "a receita já recusa que o usable seja mais que o binário",
+        )
+        self.assertEqual(game.runtime_usable_binary_source(), "recipes/create.md")
+        with mock.patch.object(
+            game, "tool_report", return_value={"path": "/bin/node", "version": "v18.20.4"},
+        ):
+            empty = game.node_runtime("cd . && npm run serve")
+        self.assertFalse(empty["usable"])
+        self.assertFalse(game.runtime_usable_flag(empty))
+        destination = self.root / "ciclo-binario"
+        report = game.start_project(destination, "canvas-arcade")
+        item = report["runtime"]["usable"]
+        self.assertTrue(item["usable"], "o Node 20+ no PATH já basta ao play")
+        self.assertEqual(item["usable"], game.runtime_usable_flag(report["runtime"]))
+        self.assertIn(
+            "o usable seja mais que o binário",
+            item["scope"],
+            "o runtime relatava o usable e calava a recusa",
+        )
+        self.assertIn("(`binário`)", item["scope"])
+        self.assertNotIn("binário", item)
+        self.assertFalse(report["runtime"]["executed"])
+        self.assertIs(report["runtime"]["asked"], True)
+        self.assertNotIsInstance(report["runtime"]["asked"], dict)
+        self.assertFalse(game.recipe_refuses_usable_as_more_than_binary(""))
+        with mock.patch.object(game, "runtime_usable_binary_source", return_value=None):
+            silent = game.start_project(self.root / "ciclo-cala-binario", "canvas-arcade")
+        self.assertNotIn(
+            "o usable seja mais que o binário",
+            silent["runtime"]["usable"]["scope"],
+        )
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o binário que a receita já recusa", readme)
+        self.assertIn("nomeia o binário que a receita já recusa", recipe)
+        self.assertIn("nomeia o binário que a receita já recusa", skill)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o usable seja mais que o binário", report["scope"])
+        self.assertNotIn("o usable seja mais que o binário", report["runtime"]["scope"])
+        if report.get("then"):
+            self.assertNotIn(
+                "o usable seja mais que o binário",
+                report["then"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o usable seja mais que o binário",
+            game.guide_cycle(destination, "canvas-arcade")["scope"],
+        )
+        self.assertNotIn(
+            "o usable seja mais que o binário",
+            game.play_cycle(destination, "canvas-arcade")["scope"],
+        )
+        self.assertNotIn("o usable seja mais que o binário", game.next_scope())
+
     def test_play_names_the_production_the_serve_already_refuses(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         tool = (starter / "tools/serve.mjs").read_text(encoding="utf-8")
