@@ -18,7 +18,7 @@ dimensões de um conto é ruído, e `next` não cobra o que o projeto não decla
    versão vigente → continuidade → sem instruções para o agente → validadores →
    gate (linha malformada, pergunta de valor, critério pendente) → barra (linha
    malformada, dimensão sem linha, conflito, subir a mais baixa).
-2. Confronte com a conversa e o código: fonte encontrada não é tarefa validada;
+2. Confronte com a conversa e o código: fonte encontrada não é tarefa validada. Se o next recusa que fonte encontrada seja tarefa validada, o `next` nomeia a validada que o next já recusa. Fonte no disco não é a tarefa. Sem chave `validada`.
    fonte em rascunho não é passo; um comando registrado com falha não conclui etapa.
    Em "continue"/"vamos avançar", use `context --event resume` e leia
    `continuity.sources` ([processo](../references/process.md#continuidade-e-retomada)).

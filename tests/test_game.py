@@ -2447,6 +2447,55 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         for item in report["alternatives"]:
             self.assertNotIn("crie o jogo", item.get("scope", ""))
 
+    def test_next_names_the_validated_the_next_already_refuses(self):
+        guide = (game.FRAMEWORK / "commands/next.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.next_refuses_found_source_as_validated_task(guide),
+            "o next já recusa que fonte encontrada seja tarefa validada",
+        )
+        self.assertEqual(game.proposal_validated_source(), "commands/next.md")
+        report = game.next_step(self.project)
+        proposal = report["proposal"]
+        self.assertIn(
+            "fonte encontrada seja tarefa validada",
+            proposal["scope"],
+            "a proposta copiava a ação e calava a recusa",
+        )
+        self.assertIn("(`validada`)", proposal["scope"])
+        self.assertNotIn("validada", proposal)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.next_refuses_found_source_as_validated_task(""))
+        with mock.patch.object(game, "proposal_validated_source", return_value=None):
+            silent = game.next_step(self.project)
+        self.assertNotIn(
+            "fonte encontrada seja tarefa validada",
+            silent["proposal"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a validada que o next já recusa", guide)
+        self.assertIn("nomeia a validada que o next já recusa", recipe)
+        self.assertIn("nomeia a validada que o next já recusa", skill)
+        self.assertIn("nomeia a validada que o next já recusa", readme)
+        self.assertNotIn("verified", proposal["scope"])
+        self.assertNotIn("aprovado", proposal["scope"])
+        self.assertNotIn("4.5", proposal["scope"])
+        self.assertNotIn("fonte encontrada seja tarefa validada", report["scope"])
+        self.assertNotIn("fonte encontrada seja tarefa validada", game.next_scope())
+        self.assertNotIn("fonte encontrada seja tarefa validada", game.context_scope())
+        self.assertNotIn("fonte encontrada seja tarefa validada", game.guide_scope("canvas-arcade"))
+        self.assertNotIn("fonte encontrada seja tarefa validada", game.init_scope(False))
+        self.assertNotIn(
+            "fonte encontrada seja tarefa validada",
+            game.alternative_scope(),
+        )
+        for item in report["alternatives"]:
+            self.assertNotIn(
+                "fonte encontrada seja tarefa validada",
+                item.get("scope", ""),
+            )
+
     def test_next_signals_name_the_conclusion_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
         self.assertTrue(

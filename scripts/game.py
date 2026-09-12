@@ -17970,6 +17970,39 @@ def proposal_create_source():
     return None
 
 
+# O next já recusa que fonte encontrada seja
+# tarefa validada. Sem isto a proposta
+# copiava a ação e calava a recusa.
+# Fonte no disco não é a tarefa.
+NEXT_VALIDATED = re.compile(r"fonte encontrada não é tarefa validada")
+
+
+def next_refuses_found_source_as_validated_task(text):
+    return bool(text and NEXT_VALIDATED.search(text))
+
+
+def proposal_validated_source():
+    path = FRAMEWORK / "commands" / "next.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if next_refuses_found_source_as_validated_task(text):
+        return "commands/next.md"
+    return None
+
+
+def proposal_validated_scope():
+    if not proposal_validated_source():
+        return ""
+    return (
+        " O disco recusa que fonte encontrada seja tarefa validada (`validada`). "
+        "Fonte no disco não é a tarefa."
+    )
+
+
 def proposal_scope():
     scope = (
         "Uma ação derivada do disco. Não executa o comando e não cria o projeto."
@@ -17979,6 +18012,9 @@ def proposal_scope():
             " O disco recusa que o comando crie o jogo (`criação`). "
             "Proposta no disco não é pasta criada."
         )
+    validated = proposal_validated_scope()
+    if validated:
+        scope += validated
     return scope
 
 
