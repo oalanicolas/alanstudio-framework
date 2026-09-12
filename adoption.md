@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.615 — o expected do budget nomeia o suficiente que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+sem
+orçamento
+não
+existe
+rápido
+o
+suficiente.
+O
+budget
+relatava
+o
+pacote
+e
+calava
+a
+recusa.
+Agora
+o
+`expected`
+do
+`budget`
+nomeia
+o
+suficiente.
+Pacote
+no
+disco
+não
+é
+o
+quadro.
+Sem
+chave
+`suficiente`.
+Nomear
+não
+mede.
+
+O que 0.9.615 não afirma:
+o
+package
+não
+mede
+o
+quadro.
+
 ## 0.9.614 — o versioned do save nomeia a versão que a receita já recusa
 
 A

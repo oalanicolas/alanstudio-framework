@@ -4963,6 +4963,59 @@ def budget_declared_flag(reading):
     return bool(declared)
 
 
+# A receita já recusa que sem
+# orçamento exista rápido o
+# suficiente. Sem isto o budget
+# relatava o pacote e calava a
+# recusa. Pacote no disco não é
+# o quadro.
+PERF_ENOUGH = re.compile(r"rápido o suficiente")
+
+
+def recipe_refuses_package_as_fast_enough(text):
+    return bool(text and PERF_ENOUGH.search(text))
+
+
+def budget_expected_enough_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_package_as_fast_enough(text):
+        return "recipes/performance.md"
+    return None
+
+
+def budget_expected_enough_scope():
+    if not budget_expected_enough_source():
+        return None
+    return (
+        " O disco recusa que sem orçamento exista rápido o suficiente "
+        "(`suficiente`). Pacote no disco não é o quadro."
+    )
+
+
+def budget_expected_scope():
+    scope = (
+        "package ou Cargo no disco. "
+        "Não é o quadro medido."
+    )
+    named = budget_expected_enough_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def budget_expected_flag(reading):
+    expected = (reading or {}).get("expected")
+    if isinstance(expected, dict):
+        return bool(expected.get("expected"))
+    return bool(expected)
+
+
 def budget_reading(project):
     project = Path(project)
     try:
@@ -4975,6 +5028,11 @@ def budget_reading(project):
     expected = bool(scripts) or (project / "Cargo.toml").is_file()
     declared_flag = bool(named or files or receipts)
     unbudgeted = expected and not declared_flag
+    if expected:
+        expected = {
+            "expected": True,
+            "scope": budget_expected_scope(),
+        }
     if declared_flag:
         declared_flag = {
             "declared": True,

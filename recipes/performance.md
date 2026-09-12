@@ -18,7 +18,7 @@ um engasgo de 200 ms por minuto é lido como instável; um jogo estável a 30 n�
 
 Declare o orçamento antes de otimizar: dispositivo, resolução, cena representativa,
 tempo de quadro alvo, teto do pior percentil e tempo até jogar. Sem orçamento não
-existe “rápido o suficiente”, e cada medição vira opinião.
+existe “rápido o suficiente”, e cada medição vira opinião. Se a receita recusa que sem orçamento exista rápido o suficiente, o `expected` do `budget` nomeia o suficiente que a receita já recusa. Pacote no disco não é o quadro. Sem chave `suficiente`.
 
 Localize o gargalo no caminho real antes de alterar código. Distinga custo por
 quadro de evento pontual, porque as causas e as correções são diferentes:

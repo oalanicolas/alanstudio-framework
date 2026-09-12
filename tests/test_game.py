@@ -12184,6 +12184,72 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.ship_reading(starter)["scope"],
         )
 
+    def test_budget_expected_names_the_enough_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_package_as_fast_enough(recipe),
+            "a receita já recusa que sem orçamento exista rápido o suficiente",
+        )
+        self.assertEqual(game.budget_expected_enough_source(), "recipes/performance.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.budget_reading(starter)
+        item = report["expected"]
+        self.assertTrue(item["expected"], "o budget já relata o pacote neste starter")
+        self.assertEqual(item["expected"], game.budget_expected_flag(report))
+        self.assertIn(
+            "sem orçamento exista rápido o suficiente",
+            item["scope"],
+            "o budget relatava o pacote e calava a recusa",
+        )
+        self.assertIn("(`suficiente`)", item["scope"])
+        self.assertNotIn("suficiente", item)
+        self.assertFalse(report["measured"])
+        self.assertIs(report["unbudgeted"], False)
+        self.assertFalse(game.recipe_refuses_package_as_fast_enough(""))
+        empty = game.budget_reading(self.project)
+        self.assertFalse(empty["expected"])
+        self.assertFalse(game.budget_expected_flag(empty))
+        with mock.patch.object(game, "budget_expected_enough_source", return_value=None):
+            silent = game.budget_reading(starter)
+        self.assertNotIn(
+            "sem orçamento exista rápido o suficiente",
+            silent["expected"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o suficiente que a receita já recusa", recipe)
+        self.assertIn("nomeia o suficiente que a receita já recusa", skill)
+        self.assertIn("nomeia o suficiente que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("sem orçamento exista rápido o suficiente", report["scope"])
+        if report.get("scripts") and isinstance(report["scripts"], dict):
+            self.assertNotIn(
+                "sem orçamento exista rápido o suficiente",
+                report["scripts"].get("scope") or "",
+            )
+        if report.get("files") and isinstance(report["files"], dict):
+            self.assertNotIn(
+                "sem orçamento exista rápido o suficiente",
+                report["files"].get("scope") or "",
+            )
+        if report.get("receipts") and isinstance(report["receipts"], dict):
+            self.assertNotIn(
+                "sem orçamento exista rápido o suficiente",
+                report["receipts"].get("scope") or "",
+            )
+        if isinstance(report.get("declared"), dict):
+            self.assertNotIn(
+                "sem orçamento exista rápido o suficiente",
+                report["declared"].get("scope") or "",
+            )
+        self.assertNotIn("sem orçamento exista rápido o suficiente", game.next_scope())
+        self.assertNotIn(
+            "sem orçamento exista rápido o suficiente",
+            game.ship_reading(starter)["scope"],
+        )
+
     def test_budget_scripts_names_the_result_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
         self.assertTrue(
