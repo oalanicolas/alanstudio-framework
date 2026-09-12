@@ -8462,6 +8462,42 @@ def content_omitted_scope():
     )
 
 
+# A receita já recusa que a
+# geração externa torne o
+# fornecedor obrigatório. Sem
+# isto o content listava
+# arquivos e calava a recusa.
+# Menção no disco não é a
+# integração.
+CONTENT_VENDOR = re.compile(r"Não torna o fornecedor obrigatório")
+
+
+def recipe_refuses_vendor_as_required(text):
+    return bool(text and CONTENT_VENDOR.search(text))
+
+
+def content_vendor_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_vendor_as_required(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_vendor_scope():
+    if not content_vendor_source():
+        return None
+    return (
+        " O disco recusa que o fornecedor seja obrigatório "
+        "(`fornecedor`). Menção no disco não é a integração."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -8727,6 +8763,9 @@ def content_reading(project):
     skip = content_omitted_scope()
     if skip:
         scope += skip
+    vendor = content_vendor_scope()
+    if vendor:
+        scope += vendor
     encoded = content_encoded_scope()
     if encoded:
         scope += encoded
