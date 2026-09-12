@@ -21127,6 +21127,55 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(result["areas"]["qa"]["status"], "candidate_found")
         self.assertEqual(result["areas"]["qa"]["candidates"][0]["path"], "docs/piso.md")
 
+    def test_scan_qa_names_the_tenth_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/aaa-checklist.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_checklist_as_tenth_area(guide),
+            "a guia já recusa que o checklist seja uma décima área",
+        )
+        self.assertEqual(game.qa_tenth_source(), "references/aaa-checklist.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "o checklist seja uma décima área",
+            report["areas"]["qa"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`décima`)", report["areas"]["qa"]["scope"])
+        self.assertNotIn("décima", report["areas"]["qa"])
+        self.assertFalse(game.guide_refuses_checklist_as_tenth_area(""))
+        with mock.patch.object(game, "qa_tenth_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "o checklist seja uma décima área",
+            silent["areas"]["qa"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a décima que a guia já recusa", guide)
+        self.assertIn("nomeia a décima que a guia já recusa", recipe)
+        self.assertIn("nomeia a décima que a guia já recusa", skill)
+        self.assertIn("nomeia a décima que a guia já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["qa"]["scope"])
+        self.assertNotIn("aprovado", report["areas"]["qa"]["scope"])
+        self.assertNotIn("4.5", report["areas"]["qa"]["scope"])
+        self.assertNotIn("o checklist seja uma décima área", report["scope"])
+        self.assertNotIn(
+            "o checklist seja uma décima área",
+            report["areas"]["provenance"]["scope"],
+        )
+        self.assertNotIn(
+            "o checklist seja uma décima área",
+            game.context(self.project, "create")["finish"]["scope"],
+        )
+        self.assertNotIn(
+            "o checklist seja uma décima área",
+            game.template_scope("aaa"),
+        )
+        self.assertNotIn(
+            "o checklist seja uma décima área",
+            game.next_step(self.project)["scope"],
+        )
 
     # --- memória do agente entre sessões ---
 

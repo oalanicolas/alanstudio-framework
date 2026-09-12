@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.653 — a área qa do scan nomeia a décima que a guia já recusa
+
+A
+guia
+já
+dizia
+que
+o
+checklist
+é
+candidato
+de
+QA,
+não
+uma
+décima
+área.
+O
+scan
+classificava
+e
+calava
+a
+recusa.
+Agora
+a
+área
+`qa`
+nomeia
+a
+décima.
+Área
+no
+disco
+não
+é
+o
+inventário.
+Sem
+chave
+`décima`.
+Classificar
+não
+inventaria.
+
 ## 0.9.652 — o template nomeia o paralelo que a guia já recusa
 
 A

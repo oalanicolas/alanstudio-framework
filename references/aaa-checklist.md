@@ -31,7 +31,7 @@ peças já decidem ou implementam.
 | `--stage vertical-slice` | Fecha o núcleo (+ produto, se a escala pedir) **antes** de ampliar |
 | `--stage qa` | Evidência: CHK-14 liga IDs a casos e playtest |
 | `verify` | Recibo técnico; `experience_status` continua `not_assessed` até movimento |
-| Scan / nove áreas | Um arquivo de checklist é candidato de **QA**, não uma décima área |
+| Scan / nove áreas | Um arquivo de checklist é candidato de **QA**, não uma décima área. Se a guia recusa que o checklist seja uma décima área, a área `qa` do `scan` nomeia a décima que a guia já recusa. Área no disco não é o inventário. Sem chave `décima`. |
 
 Não invente rede, live ops, mocap ou locale para “completar o AAA”.
 Isso já é regra da [auditoria](project-audit.md).

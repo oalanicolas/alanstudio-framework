@@ -12935,7 +12935,44 @@ def qa_area_scope():
             " O disco recusa prescrever quantas pessoas (`pessoas`). "
             "Área no disco não é censo."
         )
+    named = qa_tenth_scope()
+    if named:
+        scope += named
     return scope
+
+
+# A guia já recusa que o checklist
+# seja uma décima área. Sem isto a
+# área localizava o QA e calava a
+# recusa. Área no disco não é o
+# inventário.
+CHECKLIST_TENTH = re.compile(r"não uma décima área")
+
+
+def guide_refuses_checklist_as_tenth_area(text):
+    return bool(text and CHECKLIST_TENTH.search(text))
+
+
+def qa_tenth_source():
+    path = FRAMEWORK / "references/aaa-checklist.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_checklist_as_tenth_area(text):
+        return "references/aaa-checklist.md"
+    return None
+
+
+def qa_tenth_scope():
+    if not qa_tenth_source():
+        return None
+    return (
+        " O disco recusa que o checklist seja uma décima área "
+        "(`décima`). Área no disco não é o inventário."
+    )
 
 
 # A receita já recusa telemetria como padrão silencioso. Sem
