@@ -30,6 +30,55 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.749 — o record nomeia a contraprova que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+uma
+adaptação
+em
+outra
+versão
+precisa
+repetir
+a
+contraprova,
+não
+herdar
+o
+resultado.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+a
+contraprova.
+Adaptação
+no
+disco
+não
+é
+a
+contraprova.
+Sem
+chave
+`contraprova`.
+Nomear
+não
+mede.
+
 ## 0.9.748 — o save nomeia os eixos que a receita já recusa
 
 A

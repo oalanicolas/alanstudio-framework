@@ -21464,6 +21464,9 @@ def record_scope():
     cut = record_cut_scope()
     if cut:
         scope += cut
+    proof = record_reproof_scope()
+    if proof:
+        scope += proof
     return scope
 
 
@@ -21644,6 +21647,41 @@ def record_cut_scope():
     return (
         " O disco recusa que reduzir acabamento para um número seja otimizar "
         "(`rebaixar`). Corte no disco não é o mesmo resultado."
+    )
+
+
+# A receita já recusa que a
+# adaptação herde o resultado.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Adaptação no disco não é a
+# contraprova.
+PERF_REPROOF = re.compile(r"não herdar o resultado")
+
+
+def recipe_refuses_inheriting_result_as_counterproof(text):
+    return bool(text and PERF_REPROOF.search(text))
+
+
+def record_reproof_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_inheriting_result_as_counterproof(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_reproof_scope():
+    if not record_reproof_source():
+        return None
+    return (
+        " O disco recusa que a adaptação herde o resultado "
+        "(`contraprova`). Adaptação no disco não é a contraprova."
     )
 
 

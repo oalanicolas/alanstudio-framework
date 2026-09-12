@@ -39,7 +39,7 @@ resultado e as tentativas descartadas — inclusive as que pareciam óbvias e n�
 mudaram nada.
 
 Confirme onde a prova vale. Editor não é build exportado; máquina de desenvolvimento
-quente não é máquina do jogador fria. Se a receita recusa que o editor seja build exportado, o `record` nomeia o alvo que a receita já recusa. Editor no disco não é o build. Sem chave `alvo`. Se a receita recusa que várias variáveis atribuam a causa, o `record` nomeia a variável que a receita já recusa. Variável no disco não é a causa. Sem chave `variável`. Se a receita recusa que reduzir acabamento para um número seja otimizar, o `record` nomeia o rebaixar que a receita já recusa. Corte no disco não é o mesmo resultado. Sem chave `rebaixar`. Se a receita recusa que a máquina de desenvolvimento quente seja a máquina do jogador fria, o `fields` do `record --kind budget` nomeia a quente que a receita já recusa. Plataforma no disco não é a máquina fria. Sem chave `quente`. Aquecimento, cache e ferramentas de perfil
+quente não é máquina do jogador fria. Se a receita recusa que o editor seja build exportado, o `record` nomeia o alvo que a receita já recusa. Editor no disco não é o build. Sem chave `alvo`. Se a receita recusa que várias variáveis atribuam a causa, o `record` nomeia a variável que a receita já recusa. Variável no disco não é a causa. Sem chave `variável`. Se a receita recusa que reduzir acabamento para um número seja otimizar, o `record` nomeia o rebaixar que a receita já recusa. Corte no disco não é o mesmo resultado. Sem chave `rebaixar`. Se a receita recusa que a adaptação herde o resultado, o `record` nomeia a contraprova que a receita já recusa. Adaptação no disco não é a contraprova. Sem chave `contraprova`. Se a receita recusa que a máquina de desenvolvimento quente seja a máquina do jogador fria, o `fields` do `record --kind budget` nomeia a quente que a receita já recusa. Plataforma no disco não é a máquina fria. Sem chave `quente`. Aquecimento, cache e ferramentas de perfil
 alteram o próprio resultado que estão medindo. Se a receita recusa que o aquecimento, o cache e o perfil deixem o resultado intacto, o `budget` nomeia o perfil que a receita já recusa. Perfil no disco não é a medição. Sem chave `perfil`.
 
 `budget <projeto>` lê se existe script `budget`/`bench`, `tools/budget.*` ou
@@ -116,4 +116,4 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
 
 Os detalhes de carregador, sombras e migração ficam nos packages de
 [web](../packs/platforms/web.md) e [Unity](../packs/platforms/unity.md).
-Uma adaptação em outra versão precisa repetir a contraprova, não herdar o resultado.
+Uma adaptação em outra versão precisa repetir a contraprova, não herdar o resultado. Se a receita recusa que a adaptação herde o resultado, o `record` nomeia a contraprova que a receita já recusa. Adaptação no disco não é a contraprova. Sem chave `contraprova`.
