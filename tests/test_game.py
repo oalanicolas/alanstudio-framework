@@ -7583,7 +7583,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["granted"])
         self.assertFalse(report["validated"])
         self.assertEqual(report["fields"], ["origin", "author", "license"])
-        self.assertTrue(Path(report["form"]).is_file())
+        self.assertTrue(Path(report["form"]["path"]).is_file())
+        self.assertEqual(report["form"]["path"], game.origins_form_path(report))
+        self.assertEqual(game.origins_form_path(report), str(game.ORIGIN_FORM))
         self.assertNotIn("then", report)
         self.assertIn("Não consulta titular", report["scope"])
         self.assertIn("JSON sem os três campos não declara", report["rule"])
@@ -7591,6 +7593,61 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("JSON sem origem, autor e licença", report["scope"])
         self.assertIn("Sidecar sem os três rótulos também não", report["scope"])
         self.assertEqual(report["missing"], [])
+
+    def test_origins_form_names_the_credit_the_template_already_refuses(self):
+        template = game.ORIGIN_FORM.read_text(encoding="utf-8")
+        self.assertTrue(
+            game.form_refuses_credit_as_valid_license(template),
+            "o molde já recusa que o crédito seja licença válida",
+        )
+        self.assertEqual(game.origins_form_credit_source(), "assets/templates/credits.txt")
+        report = game.origins_reading(self.project)
+        item = report["form"]
+        self.assertEqual(item["path"], str(game.ORIGIN_FORM))
+        self.assertEqual(item["path"], game.origins_form_path(report))
+        self.assertTrue(Path(item["path"]).is_file())
+        self.assertIn(
+            "o crédito seja licença válida",
+            item["scope"],
+            "o origins apontava o form e calava a recusa",
+        )
+        self.assertIn("(`crédito`)", item["scope"])
+        self.assertNotIn("crédito", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertFalse(game.form_refuses_credit_as_valid_license(""))
+        with mock.patch.object(game, "origins_form_credit_source", return_value=None):
+            silent = game.origins_reading(self.project)
+        self.assertNotIn(
+            "o crédito seja licença válida",
+            silent["form"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o crédito que o molde já recusa", template)
+        self.assertIn("nomeia o crédito que o molde já recusa", recipe)
+        self.assertIn("nomeia o crédito que o molde já recusa", skill)
+        self.assertIn("nomeia o crédito que o molde já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o crédito seja licença válida", report["scope"])
+        if report.get("receipts"):
+            self.assertNotIn(
+                "o crédito seja licença válida",
+                report["receipts"].get("scope") or "",
+            )
+        if report.get("undeclared"):
+            self.assertNotIn(
+                "o crédito seja licença válida",
+                report["undeclared"].get("scope") or "",
+            )
+        self.assertNotIn("o crédito seja licença válida", game.next_scope())
+        self.assertNotIn(
+            "o crédito seja licença válida",
+            game.gate_reading(self.project)["scope"],
+        )
 
     def test_origins_accepts_a_receipt_without_calling_it_a_valid_license(self):
         asset = self.project / "audio" / "jump.wav"

@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.588 — o form do origins nomeia o crédito que o molde já recusa
+
+O
+molde
+já
+dizia
+que
+recibo
+no
+disco
+não
+é
+licença
+válida.
+O
+origins
+apontava
+o
+form
+e
+calava
+a
+recusa.
+Agora
+o
+`form`
+do
+`origins`
+nomeia
+o
+crédito.
+Arquivo
+no
+disco
+não
+é
+a
+concessão.
+Sem
+chave
+`crédito`.
+Nomear
+não
+concede.
+
+O que 0.9.588 não afirma:
+apontar
+o
+form
+não
+é
+conceder
+licença.
+
 ## 0.9.587 — o release do ship nomeia o compartilhar que a receita já recusa
 
 A

@@ -1,4 +1,4 @@
 {{FILE}} — origem: [de onde veio o arquivo].
 Autor: [quem fez]. Licença: [condição de uso].
 Consumidor: [quem lê o arquivo no projeto].
-Recibo no disco não é licença válida.
+Recibo no disco não é licença válida. Se o molde recusa que o crédito seja licença válida, o `form` do `origins` nomeia o crédito que o molde já recusa. Arquivo no disco não é a concessão. Sem chave `crédito`.

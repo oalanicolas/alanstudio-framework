@@ -7379,6 +7379,56 @@ ORIGIN_FIELDS = ("origin", "author", "license")
 ORIGIN_FORM = FRAMEWORK / "assets/templates/credits.txt"
 ORIGIN_ROW = re.compile(r"`([^`]+)`")
 ORIGIN_LINK = re.compile(r"\[[^\]]+\]\((?:<([^>\n]+)>|([^\s)]+))")
+# O molde já recusa que o crédito
+# seja licença válida. Sem isto o
+# origins apontava o form e calava
+# a recusa. Arquivo no disco não é
+# a concessão.
+ORIGIN_CREDIT = re.compile(r"não é licença válida")
+
+
+def form_refuses_credit_as_valid_license(text):
+    return bool(text and ORIGIN_CREDIT.search(text))
+
+
+def origins_form_credit_source():
+    path = ORIGIN_FORM
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if form_refuses_credit_as_valid_license(text):
+        return "assets/templates/credits.txt"
+    return None
+
+
+def origins_form_credit_scope():
+    if not origins_form_credit_source():
+        return None
+    return (
+        " O disco recusa que o crédito seja licença válida "
+        "(`crédito`). Arquivo no disco não é a concessão."
+    )
+
+
+def origins_form_scope():
+    scope = (
+        "esqueleto de crédito no disco. "
+        "Não concede licença."
+    )
+    named = origins_form_credit_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def origins_form_path(reading):
+    form = (reading or {}).get("form")
+    if isinstance(form, dict):
+        return form.get("path")
+    return form
 
 
 def origin_record_complete(record):
@@ -7812,7 +7862,10 @@ def origins_reading(project, max_entries=2000):
         "truncated": stopped,
         "granted": False,
         "validated": False,
-        "form": str(ORIGIN_FORM),
+        "form": {
+            "path": str(ORIGIN_FORM),
+            "scope": origins_form_scope(),
+        },
         "fields": list(ORIGIN_FIELDS),
         "guide": str(FRAMEWORK / "references/gates.md"),
         "rule": (
