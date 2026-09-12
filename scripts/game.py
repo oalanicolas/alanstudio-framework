@@ -16789,7 +16789,44 @@ def next_scope():
             " O disco pede uma ação recomendada (`ação`). "
             "Proposta no disco não é autorização."
         )
+    named = next_round_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O fluxo já recusa que melhorar o
+# jogo seja uma rodada executável.
+# Sem isto o next propunha e calava
+# a recusa. Pedido no disco não é
+# o recorte.
+WORKFLOW_ROUND = re.compile(r"não é uma rodada executável")
+
+
+def workflow_refuses_improve_as_round(text):
+    return bool(text and WORKFLOW_ROUND.search(text))
+
+
+def next_round_source():
+    path = CREATIVE_WORKFLOW
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if workflow_refuses_improve_as_round(text):
+        return "references/creative-workflow.md"
+    return None
+
+
+def next_round_scope():
+    if not next_round_source():
+        return None
+    return (
+        " O disco recusa que melhorar o jogo seja uma rodada executável "
+        "(`rodada`). Pedido no disco não é o recorte."
+    )
 
 
 # A receita já recusa que nome de comando prove a conclusão.

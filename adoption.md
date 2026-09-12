@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.651 — o next nomeia a rodada que o fluxo já recusa
+
+O
+fluxo
+já
+dizia
+que
+melhorar
+o
+jogo
+não
+é
+uma
+rodada
+executável.
+O
+next
+propunha
+e
+calava
+a
+recusa.
+Agora
+o
+`next`
+nomeia
+a
+rodada.
+Pedido
+no
+disco
+não
+é
+o
+recorte.
+Sem
+chave
+`rodada`.
+Nomear
+não
+executa.
+
 ## 0.9.650 — o finish nomeia o grau que a ambição já recusa
 
 A

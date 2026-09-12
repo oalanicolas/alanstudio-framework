@@ -1904,6 +1904,58 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ação recomendada", game.context(self.project, "create")["finish"]["scope"])
         self.assertNotIn("ação recomendada", game.scan(self.project)["scope"])
 
+    def test_next_names_the_round_the_workflow_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/creative-workflow.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.workflow_refuses_improve_as_round(guide),
+            "o fluxo já recusa que melhorar o jogo seja uma rodada executável",
+        )
+        self.assertEqual(game.next_round_source(), "references/creative-workflow.md")
+        report = game.next_step(self.project)
+        self.assertIn(
+            "melhorar o jogo seja uma rodada executável",
+            report["scope"],
+            "o next propunha e calava a recusa",
+        )
+        self.assertIn("(`rodada`)", report["scope"])
+        self.assertNotIn("rodada", report)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.workflow_refuses_improve_as_round(""))
+        with mock.patch.object(game, "next_round_source", return_value=None):
+            silent = game.next_step(self.project)
+        self.assertNotIn(
+            "melhorar o jogo seja uma rodada executável",
+            silent["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a rodada que o fluxo já recusa", guide)
+        self.assertIn("nomeia a rodada que o fluxo já recusa", recipe)
+        self.assertIn("nomeia a rodada que o fluxo já recusa", skill)
+        self.assertIn("nomeia a rodada que o fluxo já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        if report.get("proposal"):
+            self.assertNotIn(
+                "melhorar o jogo seja uma rodada executável",
+                report["proposal"].get("scope") or "",
+            )
+        if report.get("alternatives"):
+            self.assertNotIn(
+                "melhorar o jogo seja uma rodada executável",
+                report["alternatives"][0].get("scope") or "",
+            )
+        self.assertNotIn(
+            "melhorar o jogo seja uma rodada executável",
+            game.context(self.project, "create")["finish"]["scope"],
+        )
+        self.assertNotIn(
+            "melhorar o jogo seja uma rodada executável",
+            game.gate_reading(self.project)["scope"],
+        )
+
     def test_next_names_the_creation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
         self.assertTrue(

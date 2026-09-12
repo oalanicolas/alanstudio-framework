@@ -76,7 +76,7 @@ Decisões rotineiras seguem o escopo autorizado. Uma nova rodada não exige uma 
 pergunta de permissão.
 
 **Saída:** intenção, hipótese, limite da mudança e prova de conclusão registrados no
-plano ou documento atual. “Melhorar o jogo” ainda não é uma rodada executável.
+plano ou documento atual. “Melhorar o jogo” ainda não é uma rodada executável. Se o fluxo recusa que melhorar o jogo seja uma rodada executável, o `next` nomeia a rodada que o fluxo já recusa. Pedido no disco não é o recorte. Sem chave `rodada`.
 
 ### 2. Materializar com IA
 
