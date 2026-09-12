@@ -4313,6 +4313,9 @@ def _feel_scope(project):
     ice = feel_freeze_scope()
     if ice:
         scope += ice
+    flare = feel_inflame_scope()
+    if flare:
+        scope += flare
     return scope
 
 
@@ -4554,6 +4557,40 @@ def feel_freeze_scope():
     return (
         " O disco recusa que o freeze queime o perdão "
         "(`freeze`). Freeze no disco não é o perdão."
+    )
+
+
+# A receita já recusa que o
+# sit inflame a aposta. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Sit no
+# disco não é a aposta.
+FEEL_INFLAME = re.compile(r"o sit não inflama a aposta")
+
+
+def recipe_refuses_sit_as_inflaming_the_stake(text):
+    return bool(text and FEEL_INFLAME.search(text))
+
+
+def feel_inflame_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_sit_as_inflaming_the_stake(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_inflame_scope():
+    if not feel_inflame_source():
+        return None
+    return (
+        " O disco recusa que o sit inflame a aposta "
+        "(`inflama`). Sit no disco não é a aposta."
     )
 
 

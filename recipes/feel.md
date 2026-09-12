@@ -152,7 +152,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    sentar e pontuar no mesmo impacto não mata. Coleta e guarda no mesmo
    quadro continuam na hora — o contato já foi a antecipação. Orbe
    que cai no arco da guarda espera: o sit não inflama a aposta
-   que você já pediu; depois do commit o orbe entra. O relógio
+   que você já pediu; depois do commit o orbe entra. Se a receita recusa que o sit inflame a aposta, o `feel` nomeia o inflama que a receita já recusa. Sit no disco não é a aposta. Sem chave `inflama`. O relógio
    não come a guarda que já sentou: o sit converte antes do
    `over`.    O hitstop no fim não alonga o relógio: o limite
    encerra mesmo durante o congelamento. Se a receita recusa que o hitstop no fim alongue o relógio, o ciclo nomeia o alonga que a receita já recusa. Hitstop no disco não é o limite. Sem chave `alonga`.    A queda
@@ -164,7 +164,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    resolve; o orbe espera. Ordem do array não decide a aposta. Se a receita recusa que a ordem do array decida a aposta, o ciclo nomeia a ordem que a receita já recusa. Ordem no disco não é a escolha. Sem chave `ordem`. A graça
    após dano também vale no mesmo quadro: o segundo estilhaço raspa,
    não empilha impacto. Pose e
-   arquivo no disco não são peso percebido. Se a receita recusa que pose e arquivo no disco sejam peso percebido, o `feel` nomeia a pose que a receita já recusa. Arquivo no disco não é o peso. Sem chave `pose`. Se a receita recusa que o aperto no disco seja peso percebido, o `feel` nomeia o percebido que a receita já recusa. Aperto no disco não é o percebido. Sem chave `percebido`. Se a receita recusa que o pedido decaia no travel, o `feel` nomeia o pedido que a receita já recusa. Pedido no disco não é o land. Sem chave `pedido`. Se a receita recusa que o freeze queime o perdão, o `feel` nomeia o freeze que a receita já recusa. Freeze no disco não é o perdão. Sem chave `freeze`.
+   arquivo no disco não são peso percebido. Se a receita recusa que pose e arquivo no disco sejam peso percebido, o `feel` nomeia a pose que a receita já recusa. Arquivo no disco não é o peso. Sem chave `pose`. Se a receita recusa que o aperto no disco seja peso percebido, o `feel` nomeia o percebido que a receita já recusa. Aperto no disco não é o percebido. Sem chave `percebido`. Se a receita recusa que o pedido decaia no travel, o `feel` nomeia o pedido que a receita já recusa. Pedido no disco não é o land. Sem chave `pedido`. Se a receita recusa que o freeze queime o perdão, o `feel` nomeia o freeze que a receita já recusa. Freeze no disco não é o perdão. Sem chave `freeze`. Se a receita recusa que o sit inflame a aposta, o `feel` nomeia o inflama que a receita já recusa. Sit no disco não é a aposta. Sem chave `inflama`.
 4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
 5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.
