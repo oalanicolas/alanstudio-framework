@@ -3812,6 +3812,51 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("garantir o mérito", game.record_scope())
         self.assertNotIn("garantir o mérito", game.documentation_scope(True))
 
+    def test_check_plan_valid_names_the_obedience_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_valid_contract_as_obedience(guide),
+            "o processo já recusa que o contrato válido garanta obediência",
+        )
+        self.assertEqual(game.check_plan_valid_obedience_source(), "references/process.md")
+        empty = game.check_plan_report({}, self.root)
+        self.assertFalse(empty["contract_valid"])
+        self.assertFalse(game.check_plan_valid_flag(empty))
+        self.assertTrue(empty["errors"])
+        report = game.check_plan_report(self.plan, self.root)
+        item = report["contract_valid"]
+        self.assertTrue(item["contract_valid"], "o check-plan já aceita a forma deste contrato")
+        self.assertEqual(item["contract_valid"], game.check_plan_valid_flag(report))
+        self.assertEqual(report["errors"], [])
+        self.assertIn(
+            "o contrato válido garanta obediência",
+            item["scope"],
+            "o check-plan relatava o contract_valid e calava a recusa",
+        )
+        self.assertIn("(`obediência`)", item["scope"])
+        self.assertNotIn("obediência", item)
+        self.assertFalse(game.process_refuses_valid_contract_as_obedience(""))
+        with mock.patch.object(game, "check_plan_valid_obedience_source", return_value=None):
+            silent = game.check_plan_report(self.plan, self.root)
+        self.assertNotIn(
+            "o contrato válido garanta obediência",
+            silent["contract_valid"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a obediência que o processo já recusa", guide)
+        self.assertIn("nomeia a obediência que o processo já recusa", recipe)
+        self.assertIn("nomeia a obediência que o processo já recusa", skill)
+        self.assertIn("nomeia a obediência que o processo já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o contrato válido garanta obediência", report["scope"])
+        self.assertNotIn("o contrato válido garanta obediência", game.check_plan_scope())
+        self.assertNotIn("o contrato válido garanta obediência", game.next_scope())
+        self.assertNotIn("o contrato válido garanta obediência", game.continuity_scope())
+
     def test_verify_names_the_creativity_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
         self.assertTrue(

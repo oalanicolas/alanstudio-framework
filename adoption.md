@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.633 — o contract_valid do check-plan nomeia a obediência que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+forma
+e
+caminhos
+não
+garantem
+mérito
+ou
+obediência.
+O
+check-plan
+relatava
+o
+contract_valid
+e
+calava
+a
+recusa.
+Agora
+o
+`contract_valid`
+do
+`check-plan`
+nomeia
+a
+obediência.
+Forma
+no
+disco
+não
+é
+o
+processo.
+Sem
+chave
+`obediência`.
+Nomear
+não
+observa.
+
 ## 0.9.632 — o truncated do review nomeia a urgência que o README já recusa
 
 O

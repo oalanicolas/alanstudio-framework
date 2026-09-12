@@ -16700,10 +16700,71 @@ def check_plan_scope():
     return scope
 
 
+# O processo já recusa que o contrato
+# válido garanta obediência. Sem isto
+# o check-plan relatava o
+# contract_valid e calava a recusa.
+# Forma no disco não é o processo.
+PROCESS_OBEY = re.compile(r"mérito ou obediência")
+
+
+def process_refuses_valid_contract_as_obedience(text):
+    return bool(text and PROCESS_OBEY.search(text))
+
+
+def check_plan_valid_obedience_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_valid_contract_as_obedience(text):
+        return "references/process.md"
+    return None
+
+
+def check_plan_valid_obedience_scope():
+    if not check_plan_valid_obedience_source():
+        return None
+    return (
+        " O disco recusa que o contrato válido garanta obediência "
+        "(`obediência`). Forma no disco não é o processo."
+    )
+
+
+def check_plan_valid_scope():
+    scope = (
+        "forma e caminhos do contrato. "
+        "O check-plan não garante obediência."
+    )
+    named = check_plan_valid_obedience_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def check_plan_valid_flag(reading):
+    valid = (reading or {}).get("contract_valid") if isinstance(reading, dict) else reading
+    if isinstance(valid, dict):
+        return bool(valid.get("contract_valid"))
+    return bool(valid)
+
+
+def check_plan_valid_reading(valid):
+    if not valid:
+        return False
+    return {
+        "contract_valid": True,
+        "scope": check_plan_valid_scope(),
+    }
+
+
 def check_plan_report(plan, root):
     errors = check_plan(plan, root)
     return {
-        "contract_valid": not errors,
+        "contract_valid": check_plan_valid_reading(not errors),
         "errors": errors,
         "scope": check_plan_scope(),
     }

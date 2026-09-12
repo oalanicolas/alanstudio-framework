@@ -86,7 +86,7 @@ responsabilidade justificam examinar uma extração; três nomes parecidos não 
 
 Registro mínimo: **necessidade → candidatos/consumidores → decisão e motivo → limite
 da mudança → prova**. Pode viver em decisions.md ou story existente. O contrato
-opcional e `check-plan` verificam forma e caminhos; não garantem mérito ou obediência.
+opcional e `check-plan` verificam forma e caminhos; não garantem mérito ou obediência. Se o processo recusa que o contrato válido garanta obediência, o `contract_valid` do `check-plan` nomeia a obediência que o processo já recusa. Forma no disco não é o processo. Sem chave `obediência`.
 
 ## 3. Fatia jogável
 
