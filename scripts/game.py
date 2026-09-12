@@ -674,7 +674,7 @@ def review(root, limit=REVIEW_LIMIT):
             "save_unversioned": persist_report["unversioned"],
             "performance_unbudgeted": perf_report["unbudgeted"],
             "art_missing": bool(kind) and not art_report["declared"],
-            "content_inline": content_report["inline"],
+            "content_inline": content_inline_flag(content_report),
             "ship_unpacked": ship_report["unpacked"],
             "audio_roles_empty": roles_empty_ids(roles),
             "playtest_candidate": playtest_report.get("candidate"),
@@ -704,7 +704,7 @@ def review(root, limit=REVIEW_LIMIT):
             performance_unbudgeted=perf_report["unbudgeted"],
             art_declared=art_report["declared"],
             content_files=len(content_files(path)),
-            content_inline=content_report["inline"],
+            content_inline=content_inline_flag(content_report),
             ship_unpacked=ship_report["unpacked"],
             playtest_expected=playtest_report["expected"],
             playtest_structured=playtest_report["structured"],
@@ -6055,6 +6055,58 @@ def content_external_flag(reading):
     return bool(external)
 
 
+# A receita já recusa que o conteúdo
+# no código escale. Sem isto o
+# content relatava o inline e calava
+# a recusa. Código no disco não é
+# volume.
+CONTENT_CODE = re.compile(r"Conteúdo no código não escala")
+
+
+def recipe_refuses_code_as_scale(text):
+    return bool(text and CONTENT_CODE.search(text))
+
+
+def content_inline_code_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_code_as_scale(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_inline_code_scope():
+    if not content_inline_code_source():
+        return None
+    return (
+        " O disco recusa que o conteúdo no código escale "
+        "(`código`). Código no disco não é volume."
+    )
+
+
+def content_inline_scope():
+    scope = (
+        "conteúdo ainda no código. "
+        "Não é volume extraído."
+    )
+    named = content_inline_code_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def content_inline_flag(reading):
+    inline = (reading or {}).get("inline")
+    if isinstance(inline, dict):
+        return bool(inline.get("inline"))
+    return bool(inline)
+
+
 def content_reading(project):
     project = Path(project)
     files = content_files(project)
@@ -6100,6 +6152,12 @@ def content_reading(project):
             "external": True,
             "scope": content_external_scope(),
         }
+    inline = bool(kind) and not files
+    if inline:
+        inline = {
+            "inline": True,
+            "scope": content_inline_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
@@ -6107,7 +6165,7 @@ def content_reading(project):
         "kind": kind,
         "files": listed,
         "external": external,
-        "inline": bool(kind) and not files,
+        "inline": inline,
         "enough": False,
         "guide": str(FRAMEWORK / "recipes/content.md"),
         "rule": (
@@ -15849,7 +15907,7 @@ def next_step(project, focus="create", studies_root=None):
             "save_unversioned": persist["unversioned"],
             "performance_unbudgeted": perf["unbudgeted"],
             "art_missing": bool(payload["kind"]) and not art["declared"],
-            "content_inline": inventory["inline"],
+            "content_inline": content_inline_flag(inventory),
             "ship_unpacked": pack["unpacked"],
             "craft_pending": [
                 key for key, spec in CRAFT_CHECKS.items()

@@ -13604,6 +13604,66 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.art_reading(starter)["scope"],
         )
 
+    def test_content_inline_names_the_code_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_code_as_scale(recipe),
+            "a receita já recusa que o conteúdo no código escale",
+        )
+        self.assertEqual(game.content_inline_code_source(), "recipes/content.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        extracted = game.content_reading(starter)
+        self.assertFalse(extracted["inline"])
+        self.assertFalse(game.content_inline_flag(extracted))
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        report = game.content_reading(self.project)
+        item = report["inline"]
+        self.assertTrue(item["inline"], "o content já relata código neste projeto")
+        self.assertEqual(item["inline"], game.content_inline_flag(report))
+        self.assertIn(
+            "o conteúdo no código escale",
+            item["scope"],
+            "o content relatava o inline e calava a recusa",
+        )
+        self.assertIn("(`código`)", item["scope"])
+        self.assertNotIn("código", item)
+        self.assertFalse(report["enough"])
+        self.assertFalse(game.recipe_refuses_code_as_scale(""))
+        with mock.patch.object(game, "content_inline_code_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn(
+            "o conteúdo no código escale",
+            silent["inline"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o código que a receita já recusa", recipe)
+        self.assertIn("nomeia o código que a receita já recusa", skill)
+        self.assertIn("nomeia o código que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o conteúdo no código escale", report["scope"])
+        if report.get("files") and isinstance(report["files"], dict):
+            self.assertNotIn(
+                "o conteúdo no código escale",
+                report["files"].get("scope") or "",
+            )
+        if report.get("external") and isinstance(report["external"], dict):
+            self.assertNotIn(
+                "o conteúdo no código escale",
+                report["external"].get("scope") or "",
+            )
+        self.assertNotIn("o conteúdo no código escale", game.next_scope())
+        self.assertNotIn(
+            "o conteúdo no código escale",
+            game.art_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "o conteúdo no código escale",
+            game.budget_reading(self.project)["scope"],
+        )
+
     def test_content_does_not_treat_a_palette_table_as_extracted_volume(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "data").mkdir()
