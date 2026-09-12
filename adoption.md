@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.590 — o qa do playtest nomeia a simulada que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+Simulada
+não
+é
+alguém
+de
+fora.
+O
+playtest
+relatava
+o
+qa.md
+e
+calava
+a
+recusa.
+Agora
+o
+`qa`
+do
+`playtest`
+nomeia
+a
+simulada.
+Arquivo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`simulada`.
+Nomear
+não
+observa.
+
+O que 0.9.590 não afirma:
+nomear
+o
+qa.md
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.589 — o at_floor do bar nomeia a otimista que a barra já recusa
 
 A

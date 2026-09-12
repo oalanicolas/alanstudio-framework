@@ -6992,7 +6992,14 @@ def playtest_reading(project):
         "invite_href": invite_href(project),
         "finding_href": finding_href(project),
         "finding_open": opened,
-        "qa": "docs/qa.md" if qa_file else None,
+        "qa": (
+            {
+                "path": "docs/qa.md",
+                "scope": playtest_qa_scope(),
+            }
+            if qa_file
+            else None
+        ),
         "qa_current": qa_current,
         "expected": expected,
         "structured": structured,
@@ -7089,6 +7096,58 @@ def playtest_invite_path(reading):
     if isinstance(invite, dict):
         return invite.get("path")
     return invite
+
+
+# A receita já recusa que a
+# simulação seja alguém de fora.
+# Sem isto o playtest relatava o
+# qa.md e calava a recusa. Arquivo
+# no disco não é a sessão.
+FEEL_SIMULATED = re.compile(r"Simulada não é alguém de\s+fora")
+
+
+def recipe_refuses_sim_as_outsider(text):
+    return bool(text and FEEL_SIMULATED.search(text))
+
+
+def playtest_qa_sim_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_sim_as_outsider(text):
+        return "recipes/feel.md"
+    return None
+
+
+def playtest_qa_sim_scope():
+    if not playtest_qa_sim_source():
+        return None
+    return (
+        " O disco recusa que a simulação seja alguém de fora "
+        "(`simulada`). Arquivo no disco não é a sessão."
+    )
+
+
+def playtest_qa_scope():
+    scope = (
+        "docs/qa.md no disco. "
+        "Não observa a sessão."
+    )
+    named = playtest_qa_sim_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def playtest_qa_path(reading):
+    qa = (reading or {}).get("qa")
+    if isinstance(qa, dict):
+        return qa.get("path")
+    return qa
 
 
 def last_run_axes(project):

@@ -13846,6 +13846,68 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn("o last-run seja Continuar", game.next_scope())
 
+    def test_playtest_qa_names_the_sim_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_sim_as_outsider(recipe),
+            "a receita já recusa que a simulação seja alguém de fora",
+        )
+        self.assertEqual(game.playtest_qa_sim_source(), "recipes/feel.md")
+        empty = game.playtest_reading(self.project)
+        self.assertIsNone(empty["qa"])
+        self.assertIsNone(game.playtest_qa_path(empty))
+        (self.project / "docs").mkdir()
+        (self.project / "docs/qa.md").write_text("# Playtest\n", encoding="utf-8")
+        report = game.playtest_reading(self.project)
+        item = report["qa"]
+        self.assertEqual(item["path"], "docs/qa.md")
+        self.assertEqual(item["path"], game.playtest_qa_path(report))
+        self.assertIn(
+            "a simulação seja alguém de fora",
+            item["scope"],
+            "o playtest relatava o qa.md e calava a recusa",
+        )
+        self.assertIn("(`simulada`)", item["scope"])
+        self.assertNotIn("simulada", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_sim_as_outsider(""))
+        with mock.patch.object(game, "playtest_qa_sim_source", return_value=None):
+            silent = game.playtest_reading(self.project)
+        self.assertNotIn(
+            "a simulação seja alguém de fora",
+            silent["qa"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a simulada que a receita já recusa", recipe)
+        self.assertIn("nomeia a simulada que a receita já recusa", skill)
+        self.assertIn("nomeia a simulada que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a simulação seja alguém de fora", report["scope"])
+        if report.get("candidate"):
+            self.assertNotIn(
+                "a simulação seja alguém de fora",
+                report["candidate"].get("scope") or "",
+            )
+        if report.get("invite"):
+            self.assertNotIn(
+                "a simulação seja alguém de fora",
+                report["invite"].get("scope") or "",
+            )
+        if report.get("findings"):
+            self.assertNotIn(
+                "a simulação seja alguém de fora",
+                report["findings"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "a simulação seja alguém de fora",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn("a simulação seja alguém de fora", game.next_scope())
+
     def test_a_structured_finding_is_form_not_an_observed_session(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "docs").mkdir()
@@ -13859,7 +13921,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         report = game.playtest_reading(self.project)
         self.assertTrue(report["qa_current"])
-        self.assertEqual(report["qa"], "docs/qa.md")
+        self.assertEqual(report["qa"]["path"], "docs/qa.md")
+        self.assertEqual(report["qa"]["path"], game.playtest_qa_path(report))
         self.assertEqual(report["finding_href"], "/?invite=1#finding")
         self.assertTrue(report["structured"])
         self.assertFalse(report["unstructured"])
