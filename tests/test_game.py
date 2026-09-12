@@ -209,6 +209,62 @@ class HarnessTest(unittest.TestCase):
         self.assertNotIn("listagem de caminho e tipo apague o estado", game.next_scope())
         self.assertNotIn("listagem de caminho e tipo apague o estado", game.context_scope())
 
+    def test_discover_item_names_the_reach_the_readme_already_refuses(self):
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertRegex(readme, r"Lista de chave ausente não é alcance observado")
+        self.assertTrue(
+            game.readme_refuses_missing_key_list_as_observed_reach(readme),
+            "o README já recusa que a lista de chave ausente seja alcance observado",
+        )
+        self.assertEqual(game.discover_item_reach_source(), "README.md")
+        self.package()
+        report = game.discover(self.root)
+        self.assertTrue(report, "o discover já lista o jogo pelo manifesto")
+        item = report[0]
+        self.assertIn(
+            "a lista de chave ausente seja alcance observado",
+            item["scope"],
+            "o item do discover copiava o path e calava a recusa",
+        )
+        self.assertIn("(`alcance`)", item["scope"])
+        self.assertIn("Lista no disco não é o alcance.", item["scope"])
+        self.assertNotIn("alcance", item)
+        self.assertFalse(game.readme_refuses_missing_key_list_as_observed_reach(""))
+        with mock.patch.object(game, "discover_item_reach_source", return_value=None):
+            silent = game.discover(self.root)
+        self.assertNotIn(
+            "a lista de chave ausente seja alcance observado",
+            silent[0]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        access = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o alcance que o README já recusa", readme)
+        self.assertIn("nomeia o alcance que o README já recusa", skill)
+        self.assertIn("nomeia o alcance que o README já recusa", create)
+        self.assertIn("nomeia o alcance que o README já recusa", access)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        phrase = "a lista de chave ausente seja alcance observado"
+        reviewed = game.review(self.root)["projects"][0]
+        self.assertNotIn(phrase, reviewed["scope"])
+        self.assertNotIn(phrase, game.review_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.context_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        used = game.save_reading(self.project).get("used")
+        if isinstance(used, dict):
+            self.assertNotIn(phrase, used.get("scope") or "")
+        self.assertNotIn("alcance", game.CYCLE_KEYS)
+
     # O laboratório onde este harness roda de verdade já tem jogos, e o primeiro
     # movimento nele é revisar o que existe. Caminho e tipo não servem para isso:
     # quatro jogos em estados muito diferentes saem idênticos numa listagem.

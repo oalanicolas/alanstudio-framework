@@ -30,6 +30,54 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.718 — o item do discover nomeia o alcance que o README já recusa
+
+O
+README
+já
+dizia
+que
+lista
+de
+chave
+ausente
+não
+é
+alcance
+observado.
+O
+item
+do
+discover
+copiava
+o
+path
+e
+calava
+a
+recusa.
+Agora
+o
+item
+do
+discover
+nomeia
+o
+alcance.
+Lista
+no
+disco
+não
+é
+o
+alcance.
+Sem
+chave
+`alcance`.
+Nomear
+não
+observa.
+
 ## 0.9.717 — o used do save nomeia o original que a receita já recusa
 
 A

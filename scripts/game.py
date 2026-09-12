@@ -637,6 +637,43 @@ def discover_plain_source():
     return None
 
 
+# O README já recusa que a lista
+# de chave ausente seja alcance
+# observado. Sem isto o item do
+# discover copiava o path e
+# calava a recusa. Lista no
+# disco não é o alcance.
+DISCOVER_REACH = re.compile(
+    r"Lista de chave ausente não é alcance observado"
+)
+
+
+def readme_refuses_missing_key_list_as_observed_reach(text):
+    return bool(text and DISCOVER_REACH.search(text))
+
+
+def discover_item_reach_source():
+    path = FRAMEWORK / "README.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_refuses_missing_key_list_as_observed_reach(text):
+        return "README.md"
+    return None
+
+
+def discover_item_reach_scope():
+    if not discover_item_reach_source():
+        return None
+    return (
+        " O disco recusa que a lista de chave ausente seja alcance observado "
+        "(`alcance`). Lista no disco não é o alcance."
+    )
+
+
 def discover_item_scope():
     scope = (
         "Caminho e tipo do jogo. Não lê documento e não distingue o "
@@ -647,6 +684,9 @@ def discover_item_scope():
             " O disco recusa que listagem de caminho e tipo apague o estado "
             "(`listagem`). Caminho no disco não é o jogo."
         )
+    reach = discover_item_reach_scope()
+    if reach:
+        scope += reach
     return scope
 
 

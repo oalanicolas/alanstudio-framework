@@ -48,7 +48,7 @@ para o primeiro ciclo, o ofício, o feel sem recibo, o achado sem forma,
 o convite, a origem sem recibo e as lacunas de dimensão — sem propor e
 sem ranquear. Se o package declara os scripts, o `discover` nomeia os scripts que o package já declara. Lista no disco não é passo executado. Sem chave `scripts`. Se o roteiro recusa que o documento comprove qualidade, o `discover` nomeia a qualidade que o roteiro já recusa. Conta no disco não é acabamento. Sem chave `qualidade`. Se a guia recusa que gerar o documento seja autorizar, o item do review nomeia o autorizar que a guia já recusa. Documento no disco não é a autorização. Sem chave `autorizar`. Se o README recusa que listagem de caminho e tipo apague o estado, o `discover` nomeia a listagem que o README já recusa. Caminho no disco não é o jogo. Sem chave `listagem`. Sinal
 verdadeiro não é partida jogada. Se o README recusa que sinal verdadeiro seja partida jogada, o `signals` do review nomeia a partida que o README já recusa. Sinal no disco não é alguém de fora. Sem chave `partida`. Lista de arquivo sem recibo não é
-licença. Lista de chave ausente não é alcance observado. É essa diferença que
+licença. Lista de chave ausente não é alcance observado. Se o README recusa que a lista de chave ausente seja alcance observado, o item do discover nomeia o alcance que o README já recusa. Lista no disco não é o alcance. Sem chave `alcance`. É essa diferença que
 uma listagem de caminho e tipo apagava — três jogos em estados incomparáveis saíam
 iguais. `--plain` volta ao caminho e tipo, sem ler documento nenhum.
 
