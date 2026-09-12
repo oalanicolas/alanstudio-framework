@@ -3523,6 +3523,41 @@ def feel_observations_stake_scope():
     )
 
 
+# A receita já recusa que a
+# queda longe coma o verbo em
+# curso. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Queda no disco não
+# é o ofício.
+FEEL_FALL = re.compile(r"longe não come o verbo em curso")
+
+
+def recipe_refuses_far_fall_as_eating_the_verb(text):
+    return bool(text and FEEL_FALL.search(text))
+
+
+def feel_observations_fall_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_far_fall_as_eating_the_verb(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_fall_scope():
+    if not feel_observations_fall_source():
+        return None
+    return (
+        " O disco recusa que a queda longe coma o verbo em curso "
+        "(`queda`). Queda no disco não é o ofício."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -3540,6 +3575,9 @@ def feel_observations_scope():
     bet = feel_observations_stake_scope()
     if bet:
         scope += bet
+    fall = feel_observations_fall_scope()
+    if fall:
+        scope += fall
     return scope
 
 

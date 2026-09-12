@@ -119,7 +119,7 @@ Separe:
 - **Apresentação** — a mudança é perceptível.
 - **Feel** — a percepção tem peso, timing e recuperação.
 
-Corrigir a regra não substitui o feel. Se a receita recusa que corrigir a regra substitua o feel, o `feel` nomeia a regra que a receita já recusa. Regra no disco não é o feel. Sem chave `regra`. Animar demais não substitui a regra. Se a receita recusa que animar demais substitua a regra, o `observations` do `feel` nomeia o animar que a receita já recusa. Animar no disco não é a regra. Sem chave `animar`. Se a receita recusa que a recovery invisível ou infinita seja o retorno, o `observations` do `feel` nomeia o justo que a receita já recusa. Recovery no disco não é o controle. Sem chave `justo`. Se a receita recusa que P e aba escondida comam a aposta, o `observations` do `feel` nomeia a aposta que a receita já recusa. Pausa no disco não é o fim. Sem chave `aposta`.
+Corrigir a regra não substitui o feel. Se a receita recusa que corrigir a regra substitua o feel, o `feel` nomeia a regra que a receita já recusa. Regra no disco não é o feel. Sem chave `regra`. Animar demais não substitui a regra. Se a receita recusa que animar demais substitua a regra, o `observations` do `feel` nomeia o animar que a receita já recusa. Animar no disco não é a regra. Sem chave `animar`. Se a receita recusa que a recovery invisível ou infinita seja o retorno, o `observations` do `feel` nomeia o justo que a receita já recusa. Recovery no disco não é o controle. Sem chave `justo`. Se a receita recusa que P e aba escondida comam a aposta, o `observations` do `feel` nomeia a aposta que a receita já recusa. Pausa no disco não é o fim. Sem chave `aposta`. Se a receita recusa que a queda longe coma o verbo em curso, o `observations` do `feel` nomeia a queda que a receita já recusa. Queda no disco não é o ofício. Sem chave `queda`.
 Se a ação ainda não existe, volte a [criar](create.md) ou a
 [mecânicas](mechanics.md); esta receita assume um ciclo jogável.
 
@@ -155,9 +155,9 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    que você já pediu; depois do commit o orbe entra. O relógio
    não come a guarda que já sentou: o sit converte antes do
    `over`.    O hitstop no fim não alonga o relógio: o limite
-   encerra mesmo durante o congelamento. A queda
+   encerra mesmo durante o congelamento.    A queda
    longe não come o verbo em curso: marca o chão
-   e não senta o avanço, o coil nem o sit da guarda.
+   e não senta o avanço, o coil nem o sit da guarda. Se a receita recusa que a queda longe coma o verbo em curso, o `observations` do `feel` nomeia a queda que a receita já recusa. Queda no disco não é o ofício. Sem chave `queda`.
    Parado, a queda ainda senta. Dois
    orbes no mesmo quadro não inflam a corrente: o segundo espera o
    próximo tick. Orbe e estilhaço no mesmo quadro: o estilhaço letal
