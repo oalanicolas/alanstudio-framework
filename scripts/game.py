@@ -6943,6 +6943,58 @@ def last_run_look(project):
     return None
 
 
+# A receita já recusa que o contrast
+# seja look de arte. Sem isto o
+# playtest relatava a paleta e
+# calava a recusa. Paleta no disco
+# não é a sessão.
+ACCESS_ART_LOOK = re.compile(r"contrast não é look de arte")
+
+
+def recipe_refuses_contrast_as_art_look(text):
+    return bool(text and ACCESS_ART_LOOK.search(text))
+
+
+def playtest_look_art_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_contrast_as_art_look(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def playtest_look_art_scope():
+    if not playtest_look_art_source():
+        return None
+    return (
+        " O disco recusa que o contrast seja look de arte "
+        "(`arte`). Paleta no disco não é a sessão."
+    )
+
+
+def playtest_look_scope():
+    scope = (
+        "look no last-run diferente de normal e contrast. "
+        "Não observa a sessão."
+    )
+    named = playtest_look_art_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def playtest_candidate_look(reading):
+    look = (reading or {}).get("candidate_look")
+    if isinstance(look, dict):
+        return look.get("look")
+    return look
+
+
 def attach_run_candidate(project, fields=None, source=None):
     project = Path(project)
     path = Path(source) if source else project / LAST_RUN
@@ -7049,6 +7101,11 @@ def playtest_reading(project):
             "scope": playtest_spawn_scope(),
         }
     candidate_look = last_run_look(project) if candidate else None
+    if candidate_look is not None:
+        candidate_look = {
+            "look": candidate_look,
+            "scope": playtest_look_scope(),
+        }
     candidate_speed = last_run_speed(project) if candidate else None
     if candidate_speed is not None:
         candidate_speed = {

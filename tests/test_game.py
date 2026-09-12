@@ -13730,6 +13730,81 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.note_observation(self.project, "Ana", "o dash ainda não tem peso").get("scope") or "",
         )
 
+    def test_playtest_candidate_look_names_the_art_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_contrast_as_art_look(recipe),
+            "a receita já recusa que o contrast seja look de arte",
+        )
+        self.assertEqual(game.playtest_look_art_source(), "recipes/accessibility.md")
+        (self.project / "docs/playtest").mkdir(parents=True, exist_ok=True)
+        (self.project / "docs/playtest/last-run.json").write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "look": "dusk",
+            "run": {"ticks": 40, "score": 3, "seed": 8},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(self.project)
+        item = report["candidate_look"]
+        self.assertEqual(item["look"], "dusk")
+        self.assertEqual(item["look"], game.playtest_candidate_look(report))
+        self.assertEqual(game.last_run_look(self.project), "dusk")
+        self.assertIn(
+            "o contrast seja look de arte",
+            item["scope"],
+            "o playtest relatava a paleta e calava a recusa",
+        )
+        self.assertIn("(`arte`)", item["scope"])
+        self.assertNotIn("arte", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_contrast_as_art_look(""))
+        empty = game.playtest_reading(self.root / "sem-look")
+        self.assertIsNone(empty["candidate_look"])
+        with mock.patch.object(game, "playtest_look_art_source", return_value=None):
+            silent = game.playtest_reading(self.project)
+        self.assertNotIn(
+            "o contrast seja look de arte",
+            silent["candidate_look"]["scope"],
+        )
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a arte que a receita já recusa", recipe)
+        self.assertIn("nomeia a arte que a receita já recusa", feel)
+        self.assertIn("nomeia a arte que a receita já recusa", skill)
+        self.assertIn("nomeia a arte que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o contrast seja look de arte", report["scope"])
+        if report.get("candidate"):
+            self.assertNotIn(
+                "o contrast seja look de arte",
+                report["candidate"].get("scope") or "",
+            )
+        if report.get("candidate_spawn"):
+            self.assertNotIn(
+                "o contrast seja look de arte",
+                report["candidate_spawn"].get("scope") or "",
+            )
+        if report.get("invite"):
+            self.assertNotIn(
+                "o contrast seja look de arte",
+                report["invite"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o contrast seja look de arte",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "o contrast seja look de arte",
+            game.access_reading(self.project)["scope"],
+        )
+        self.assertNotIn("o contrast seja look de arte", game.next_scope())
+
     def test_finding_href_opens_the_invite_so_the_panel_shows(self):
         href = game.finding_href(self.project)
         self.assertEqual(href, game.invite_href(self.project) + "#finding")
@@ -14683,7 +14758,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(painted["created"])
         self.assertEqual(painted["href"], "/?invite=1&seed=8&spawn=dusk&look=dusk")
         self.assertEqual(painted["reading"]["invite_href"], "/?invite=1&seed=8&spawn=dusk&look=dusk")
-        self.assertEqual(painted["reading"]["candidate_look"], "dusk")
+        self.assertEqual(painted["reading"]["candidate_look"]["look"], "dusk")
         self.assertEqual(painted["reading"]["candidate_spawn"]["spawn"], "dusk")
         self.assertFalse(painted["outsider"])
         (destination / "docs/playtest/last-run.json").write_text(json.dumps({
@@ -14753,7 +14828,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "felt": False,
         }), encoding="utf-8")
         reading = game.playtest_reading(destination)
-        self.assertEqual(reading["candidate_look"], "dusk")
+        self.assertEqual(reading["candidate_look"]["look"], "dusk")
         self.assertEqual(reading["candidate_speed"]["speed"], 0.75)
         self.assertEqual(reading["candidate_policy"]["policy"], "nearest-orb")
         self.assertEqual(

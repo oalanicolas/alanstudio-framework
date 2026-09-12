@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.598 — o candidate_look do playtest nomeia a arte que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+contrast
+não
+é
+look
+de
+arte.
+O
+playtest
+relatava
+a
+paleta
+e
+calava
+a
+recusa.
+Agora
+o
+`candidate_look`
+do
+`playtest`
+nomeia
+a
+arte.
+Paleta
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`arte`.
+Nomear
+não
+observa.
+
+O que 0.9.598 não afirma:
+relatar
+a
+paleta
+não
+observa
+a
+direção.
+
 ## 0.9.597 — o missing do origins nomeia o devolve que o roteiro já recusa
 
 O

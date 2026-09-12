@@ -81,7 +81,7 @@ partida o baixo pede seed nova; o campo repete a última. A região
 viva espelha jogar, repetir, seed nova e a abertura do fim — o
 overlay do canvas não chega ao leitor. Na porta e no fim a região viva
 nomeia a mesa e o look que a chuva já veste — spawn e
-normal somem; contrast não é look de arte. Texto no DOM
+normal somem; contrast não é look de arte. Se a receita recusa que o contrast seja look de arte, o `candidate_look` do `playtest` nomeia a arte que a receita já recusa. Paleta no disco não é a sessão. Sem chave `arte`. Texto no DOM
 não é direção observada. O aviso
 do primeiro ciclo continua teclado até o gesto. Depois do
 tap a porta e o fim não chamam o avanço de cima.
