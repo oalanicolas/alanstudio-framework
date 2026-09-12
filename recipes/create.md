@@ -92,7 +92,7 @@ opcional em nenhuma delas. Se a receita recusa que o piso do verbo seja opcional
    Com tela, o avanço abre a porta e, depois do fim, um avanço novo volta; sem tela o headless já joga.
    `?seed=<n>` abre essa partida e ignora o hold.
    `?spawn=` abre essa chuva e ignora o hold da outra mesa.
-   Se a receita recusa que query no disco seja aba fechada, o `warned` do `save` nomeia a query que a receita já recusa. Endereço no disco não é a aba. Sem chave `query`. Se a receita recusa que ouvir seja aba fechada, o `used` do `save` nomeia a audição que a receita já recusa. Ouvir no disco não é a aba. Sem chave `audição`. Se a receita recusa que o hold sem o número invente ensino feito, o `save` nomeia o ensino que a receita já recusa. Hold no disco não é o ensino. Sem chave `ensino`.
+   Se a receita recusa que query no disco seja aba fechada, o `warned` do `save` nomeia a query que a receita já recusa. Endereço no disco não é a aba. Sem chave `query`. Se a receita recusa que ouvir seja aba fechada, o `used` do `save` nomeia a audição que a receita já recusa. Ouvir no disco não é a aba. Sem chave `audição`. Se a receita recusa que o número no disco seja aba fechada, o `used` do `save` nomeia a aba que a receita já recusa. Número no disco não é a aba. Sem chave `aba`. Se a receita recusa que o hold sem o número invente ensino feito, o `save` nomeia o ensino que a receita já recusa. Hold no disco não é o ensino. Sem chave `ensino`.
    A frase não muda o verbo.
    `init` faz a mesma cópia sem apontar o ciclo.
    rascunho plantado não é GDD. Se a receita recusa que o rascunho plantado seja GDD, o `documents` do `init` nomeia o GDD que a receita já recusa. Rascunho no disco não é o documento. Sem chave `gdd`.

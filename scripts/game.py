@@ -5147,6 +5147,9 @@ def save_used_scope():
     listen = save_used_listen_scope()
     if listen:
         scope += listen
+    tab = save_used_tab_scope()
+    if tab:
+        scope += tab
     return scope
 
 
@@ -5181,6 +5184,41 @@ def save_used_listen_scope():
     return (
         " O disco recusa que ouvir seja aba fechada "
         "(`audição`). Ouvir no disco não é a aba."
+    )
+
+
+# A receita já recusa que o
+# número no disco seja aba
+# fechada. Sem isto o save
+# relatava o uso e calava a
+# recusa. Número no disco
+# não é a aba.
+FEEL_TAB = re.compile(r"Número no disco não é aba fechada")
+
+
+def recipe_refuses_number_as_closed_tab(text):
+    return bool(text and FEEL_TAB.search(text))
+
+
+def save_used_tab_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_number_as_closed_tab(text):
+        return "recipes/feel.md"
+    return None
+
+
+def save_used_tab_scope():
+    if not save_used_tab_source():
+        return None
+    return (
+        " O disco recusa que o número no disco seja aba fechada "
+        "(`aba`). Número no disco não é a aba."
     )
 
 
