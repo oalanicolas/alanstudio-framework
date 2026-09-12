@@ -4327,13 +4327,9 @@ def art_reading(project):
         for name in names:
             if name not in {item["key"] for item in palettes}:
                 palettes.append({"key": name, "source": relative})
-    manifests = []
-    for relative in ART_MANIFESTS:
-        path = project / relative
-        if not path.is_file() or path.is_symlink():
-            continue
-        names = _palette_names_from_manifest(path)
-        manifests.append(relative)
+    manifests = art_manifest_files(project)
+    for relative in manifests:
+        names = _palette_names_from_manifest(project / relative)
         sources.append(relative)
         for name in names:
             if name not in {item["key"] for item in palettes}:
@@ -4379,6 +4375,11 @@ def art_reading(project):
     geometry = art_geometry_scope()
     if geometry:
         scope += geometry
+    if manifests:
+        manifests = {
+            "paths": manifests,
+            "scope": art_manifests_scope(),
+        }
     palette_scope = art_palette_scope()
     for item in palettes:
         item["scope"] = palette_scope
@@ -8432,6 +8433,61 @@ def art_geometry_scope():
         "correta provem leitura (`geometria`). Número no disco não é a "
         "silhueta."
     )
+
+
+# A receita já recusa que a qualidade
+# visual aprovada seja moeda de troca
+# por número. Sem isto o art listava
+# o manifesto e calava a recusa.
+# Manifesto no disco não é comparação.
+VISUAL_CURRENCY = re.compile(r"moeda\s+de troca")
+
+
+def recipe_refuses_quality_as_currency(text):
+    return bool(text and VISUAL_CURRENCY.search(text))
+
+
+def art_currency_source():
+    path = VISUAL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_quality_as_currency(text):
+        return "recipes/visual.md"
+    return None
+
+
+def art_currency_scope():
+    if not art_currency_source():
+        return None
+    return (
+        " O disco recusa que a qualidade visual aprovada seja moeda "
+        "de troca por número (`moeda`). Manifesto no disco não é comparação."
+    )
+
+
+def art_manifests_scope():
+    scope = (
+        "manifesto de paleta no disco. "
+        "Não compara silhueta."
+    )
+    named = art_currency_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def art_manifest_files(project):
+    project = Path(project)
+    found = []
+    for relative in ART_MANIFESTS:
+        path = project / relative
+        if path.is_file() and not path.is_symlink():
+            found.append(relative)
+    return found
 
 
 # A receita já recusa que o harness infira dependências. Sem isto a

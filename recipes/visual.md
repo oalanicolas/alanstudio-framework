@@ -61,7 +61,7 @@ animação como solução automática de FPS.
 Trabalho dedicado a orçamento de quadro, pior percentil, engasgo de carregamento e
 custo por ciclo de vida tem receita própria: [performance](performance.md), por
 `--focus performance`. Aqui o piso é o inverso — a qualidade visual aprovada não é
-moeda de troca por número.
+moeda de troca por número. Se a receita recusa que a qualidade visual aprovada seja moeda de troca por número, o `manifests` do `art` nomeia a moeda que a receita já recusa. Manifesto no disco não é comparação. Sem chave `moeda`.
 
 Na câmera, observe antecipação de curvas/ameaças, oclusão do jogador, estabilidade,
 escala e transição. No starter a câmera inclina para o que o trilho

@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.563 — o manifests do art nomeia a moeda que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+a
+qualidade
+visual
+aprovada
+não
+é
+moeda
+de
+troca
+por
+número.
+O
+art
+listava
+o
+manifesto
+e
+calava
+a
+recusa.
+Agora
+o
+`manifests`
+do
+`art`
+nomeia
+a
+moeda.
+Manifesto
+no
+disco
+não
+é
+comparação.
+Sem
+chave
+`moeda`.
+Nomear
+não
+observa.
+
+O que 0.9.563 não afirma:
+listar
+o
+manifesto
+não
+é
+comparar
+em
+movimento.
+
 ## 0.9.562 — o sources do save nomeia a cadeia que a receita já recusa
 
 A

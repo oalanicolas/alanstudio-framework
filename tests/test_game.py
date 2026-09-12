@@ -2552,6 +2552,63 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.scan(starter)["scope"],
         )
 
+    def test_art_manifests_names_the_currency_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_quality_as_currency(recipe),
+            "a receita já recusa que a qualidade visual aprovada seja moeda de troca por número",
+        )
+        self.assertEqual(game.art_currency_source(), "recipes/visual.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertEqual(game.art_manifest_files(starter), ["data/palettes.json"])
+        report = game.art_reading(starter)
+        item = report["manifests"]
+        self.assertEqual(item["paths"], ["data/palettes.json"])
+        self.assertIn(
+            "qualidade visual aprovada seja moeda de troca por número",
+            item["scope"],
+            "o art listava o manifesto e calava a recusa",
+        )
+        self.assertIn("(`moeda`)", item["scope"])
+        self.assertNotIn("moeda", item)
+        self.assertFalse(report["consistent"])
+        self.assertFalse(game.recipe_refuses_quality_as_currency(""))
+        empty = game.art_reading(self.project)
+        self.assertEqual(empty["manifests"], [])
+        with mock.patch.object(game, "art_currency_source", return_value=None):
+            silent = game.art_reading(starter)
+        self.assertNotIn(
+            "qualidade visual aprovada seja moeda de troca por número",
+            silent["manifests"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a moeda que a receita já recusa", recipe)
+        self.assertIn("nomeia a moeda que a receita já recusa", skill)
+        self.assertIn("nomeia a moeda que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("qualidade visual aprovada seja moeda de troca por número", report["scope"])
+        if report.get("palettes"):
+            self.assertNotIn(
+                "qualidade visual aprovada seja moeda de troca por número",
+                report["palettes"][0].get("scope") or "",
+            )
+        if report.get("rains"):
+            self.assertNotIn(
+                "qualidade visual aprovada seja moeda de troca por número",
+                report["rains"][0].get("scope") or "",
+            )
+        self.assertNotIn(
+            "qualidade visual aprovada seja moeda de troca por número",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn(
+            "qualidade visual aprovada seja moeda de troca por número",
+            game.next_scope(),
+        )
+
     def test_doctor_names_the_publisher_the_skill_already_refuses(self):
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         self.assertTrue(
@@ -10986,7 +11043,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(report["declared"])
         self.assertEqual([item["key"] for item in report["palettes"]], ["dusk"])
         self.assertEqual(report["rains"], [])
-        self.assertIn("data/palettes.json", report["manifests"])
+        self.assertIn("data/palettes.json", report["manifests"]["paths"])
         self.assertFalse(report["consistent"])
 
     def test_art_recipe_names_the_rains_the_starter_already_has(self):
@@ -11314,7 +11371,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("palettes.json", report["scope"])
         art = game.art_reading(self.project)
         self.assertTrue(art["declared"])
-        self.assertIn("data/palettes.json", art["manifests"])
+        self.assertIn("data/palettes.json", art["manifests"]["paths"])
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project))]
         self.assertIn("content.inline", bases)
         self.assertNotIn("art.missing", bases)
