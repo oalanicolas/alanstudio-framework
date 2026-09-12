@@ -9663,6 +9663,58 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", dumped)
         self.assertNotIn("verified", dumped)
 
+    def test_sfx_summary_empty_names_the_archive_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_empty_archive_as_heard_mix(recipe),
+            "a receita já recusa que o acervo vazio seja mix ouvido",
+        )
+        self.assertEqual(game.sfx_catalog.summarize_empty_archive_source(), "recipes/audio.md")
+        report = game.sfx_catalog.summarize(self.root)
+        item = report["empty"]
+        self.assertTrue(item["empty"], "o summary já relata o acervo vazio neste laboratório")
+        self.assertEqual(item["empty"], game.sfx_catalog.summarize_empty_flag(report))
+        self.assertIn(
+            "o acervo vazio seja mix ouvido",
+            item["scope"],
+            "o summary relatava o empty e calava a recusa",
+        )
+        self.assertIn("(`acervo`)", item["scope"])
+        self.assertNotIn("acervo", item)
+        self.assertFalse(report["heard"])
+        self.assertIsNone(report["listen"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_empty_archive_as_heard_mix(""))
+        with mock.patch.object(game.sfx_catalog, "summarize_empty_archive_source", return_value=None):
+            silent = game.sfx_catalog.summarize(self.root)
+        self.assertNotIn(
+            "o acervo vazio seja mix ouvido",
+            silent["empty"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o acervo que a receita já recusa", recipe)
+        self.assertIn("nomeia o acervo que a receita já recusa", skill)
+        self.assertIn("nomeia o acervo que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o acervo vazio seja mix ouvido", report.get("scope") or "")
+        self.assertNotIn("o acervo vazio seja mix ouvido", report["next"])
+        if report.get("local"):
+            self.assertNotIn(
+                "o acervo vazio seja mix ouvido",
+                report["local"].get("scope") or "",
+            )
+        if report.get("quality_bar"):
+            self.assertNotIn(
+                "o acervo vazio seja mix ouvido",
+                report["quality_bar"].get("scope") or "",
+            )
+        self._plant_catalog_sound()
+        filled = game.sfx_catalog.summarize(self.root)
+        self.assertFalse(filled["empty"])
+        self.assertFalse(game.sfx_catalog.summarize_empty_flag(filled))
+
     def test_sfx_summary_names_the_peak_the_tool_already_reports(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         tool = (starter / "tools/peak.mjs").read_text(encoding="utf-8")

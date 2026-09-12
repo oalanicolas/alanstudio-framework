@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.637 — o empty do sfx summary nomeia o acervo que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+acervo
+vazio
+não
+é
+mix
+ouvido.
+O
+summary
+relatava
+o
+empty
+e
+calava
+a
+recusa.
+Agora
+o
+`empty`
+do
+`sfx summary`
+nomeia
+o
+acervo.
+Lista
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`acervo`.
+Nomear
+não
+ouve.
+
 ## 0.9.636 — o stale do ship nomeia o velho que a receita já recusa
 
 A

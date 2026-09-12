@@ -816,7 +816,7 @@ def summarize(root=None):
         "catalog": str(catalog_dir(root) / "catalog.json"),
         "guide": str(catalog_dir(root) / "README.md"),
         "file_count": len(catalog["sounds"]),
-        "empty": empty,
+        "empty": summarize_empty_reading(empty),
         "total_bytes": sum(s["bytes"] for s in catalog["sounds"]),
         "originals": sum(s.get("edition") == "original" for s in catalog["sounds"]),
         "updated": catalog.get("updated"), "quality_bar": bar,
@@ -944,6 +944,66 @@ def summarize_local_scope():
         "O disco recusa que o tamanho comprimido meça áudio decodificado "
         "(`comprimido`). Bytes no disco não são mix."
     )
+
+
+# A receita já recusa que o acervo
+# vazio seja mix ouvido. Sem isto o
+# summary relatava o empty e calava
+# a recusa. Lista no disco não é mix.
+AUDIO_EMPTY_ARCHIVE = re.compile(r"Acervo vazio não é mix ouvido")
+
+
+def recipe_refuses_empty_archive_as_heard_mix(text):
+    return bool(text and AUDIO_EMPTY_ARCHIVE.search(text))
+
+
+def summarize_empty_archive_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_empty_archive_as_heard_mix(text):
+        return "recipes/audio.md"
+    return None
+
+
+def summarize_empty_archive_scope():
+    if not summarize_empty_archive_source():
+        return None
+    return (
+        " O disco recusa que o acervo vazio seja mix ouvido "
+        "(`acervo`). Lista no disco não é mix."
+    )
+
+
+def summarize_empty_scope():
+    scope = (
+        "catálogo sem stems no disco. "
+        "O summary não ouve o mix."
+    )
+    named = summarize_empty_archive_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def summarize_empty_flag(reading):
+    empty = (reading or {}).get("empty") if isinstance(reading, dict) else reading
+    if isinstance(empty, dict):
+        return bool(empty.get("empty"))
+    return bool(empty)
+
+
+def summarize_empty_reading(empty):
+    if not empty:
+        return False
+    return {
+        "empty": True,
+        "scope": summarize_empty_scope(),
+    }
 
 
 def recipe_refuses_improvised_license(text):

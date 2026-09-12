@@ -54,7 +54,7 @@ do starter que casa, `--apply` o copia ou recoloca o WAV se o recibo já está, 
 disco perdeu, `sfx verify` nomeia os stems sem cruzar o
 que não existe. Se o check cruza a integridade, o `sfx verify` nomeia a integridade que o check já cruza. Hash no disco não é mix ouvida. Sem chave `sha256`. Cruzou bytes e fichas do acervo não é mix ouvido. Se a receita recusa que o ok do catálogo seja ouvido, o `ok` do `sfx verify` nomeia o ouvido que a receita já recusa. Cruzou no disco não é o jogo. Sem chave `ouvido`. Se a receita recusa que variante ausente seja lacuna, o `sfx verify` vazio nomeia a lacuna que a receita já recusa. Lista no disco não é mix. Sem chave `lacuna`. `sfx summary` lista todos os stems já no
 `public/sfx` e `sfx serve`
-recusa. Com sons no acervo, `sfx serve` abre a página de escuta —
+recusa. Acervo vazio não é mix ouvido. Se a receita recusa que o acervo vazio seja mix ouvido, o `empty` do `sfx summary` nomeia o acervo que a receita já recusa. Lista no disco não é mix. Sem chave `acervo`. Com sons no acervo, `sfx serve` abre a página de escuta —
 se `shared/sfx/ui` faltar, o harness gera a lista e nomeia o
 som que o catálogo lista e o disco perdeu. `sfx verify`
 nomeia o som que o catálogo lista e o disco perdeu —
