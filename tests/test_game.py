@@ -13418,8 +13418,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["finding_open"], report["finding_href"])
         self.assertIsNone(report["qa"])
         self.assertEqual(report["fields"], ["problema", "evidencia", "hipotese", "medicao"])
-        self.assertTrue(Path(report["form"]).is_file())
-        self.assertTrue(report["form"].endswith("assets/templates/qa.md"))
+        self.assertTrue(Path(game.playtest_form_path(report)).is_file())
+        self.assertTrue(game.playtest_form_path(report).endswith("assets/templates/qa.md"))
         self.assertNotIn("then", report)
         self.assertIn("só lê", report["scope"])
         self.assertNotIn("aprovado", report["scope"])
@@ -13442,15 +13442,88 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     def test_playtest_names_the_form_without_writing_the_finding(self):
         report = game.playtest_reading(self.project)
         self.assertEqual(report["fields"], list(game.PLAYTEST_FIELDS))
-        self.assertEqual(report["form"], str(game.PLAYTEST_FORM))
-        self.assertTrue(Path(report["form"]).is_file())
-        skeleton = Path(report["form"]).read_text(encoding="utf-8")
+        self.assertEqual(game.playtest_form_path(report), str(game.PLAYTEST_FORM))
+        self.assertTrue(Path(game.playtest_form_path(report)).is_file())
+        skeleton = Path(game.playtest_form_path(report)).read_text(encoding="utf-8")
         for label in ("Problema:", "Evidência:", "Hipótese:", "Medição:"):
             self.assertIn(label, skeleton)
         self.assertNotIn("then", report)
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
         self.assertIn("Esqueleto no disco não é achado", report["scope"])
+
+    def test_playtest_form_names_the_participants_the_mold_already_refuses(self):
+        mold = game.PLAYTEST_FORM.read_text(encoding="utf-8")
+        self.assertTrue(
+            game.form_refuses_stop_as_participants(mold),
+            "o molde já recusa que a regra de parada seja número de participantes",
+        )
+        self.assertEqual(game.playtest_form_participants_source(), "assets/templates/qa.md")
+        report = game.playtest_reading(self.project)
+        item = report["form"]
+        self.assertEqual(item["path"], str(game.PLAYTEST_FORM))
+        self.assertEqual(item["path"], game.playtest_form_path(report))
+        self.assertTrue(Path(item["path"]).is_file())
+        self.assertIn(
+            "a regra de parada seja número de participantes",
+            item["scope"],
+            "o playtest apontava o esqueleto e calava a recusa",
+        )
+        self.assertIn("(`participantes`)", item["scope"])
+        self.assertNotIn("participantes", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.form_refuses_stop_as_participants(""))
+        with mock.patch.object(game, "playtest_form_participants_source", return_value=None):
+            silent = game.playtest_reading(self.project)
+        self.assertNotIn(
+            "a regra de parada seja número de participantes",
+            silent["form"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os participantes que o molde já recusa", recipe)
+        self.assertIn("nomeia os participantes que o molde já recusa", skill)
+        self.assertIn("nomeia os participantes que o molde já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a regra de parada seja número de participantes", report["scope"])
+        if report.get("qa"):
+            self.assertNotIn(
+                "a regra de parada seja número de participantes",
+                report["qa"].get("scope") or "",
+            )
+        if report.get("invite"):
+            self.assertNotIn(
+                "a regra de parada seja número de participantes",
+                report["invite"].get("scope") or "",
+            )
+        if report.get("candidate"):
+            self.assertNotIn(
+                "a regra de parada seja número de participantes",
+                report["candidate"].get("scope") or "",
+            )
+        if report.get("fields") and isinstance(report["fields"], dict):
+            self.assertNotIn(
+                "a regra de parada seja número de participantes",
+                report["fields"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "a regra de parada seja número de participantes",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "a regra de parada seja número de participantes",
+            game.next_scope(),
+        )
+        noted = game.note_observation(self.project, "Ana", "o dash ainda não tem peso")
+        self.assertEqual(noted["form"], str(game.PLAYTEST_FORM))
+        self.assertNotIn(
+            "a regra de parada seja número de participantes",
+            noted.get("scope") or "",
+        )
 
     def test_finding_href_opens_the_invite_so_the_panel_shows(self):
         href = game.finding_href(self.project)

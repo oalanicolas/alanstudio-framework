@@ -30,6 +30,61 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.594 — o form do playtest nomeia os participantes que o molde já recusa
+
+O
+molde
+já
+dizia
+que
+não
+é
+número
+de
+participantes.
+O
+playtest
+apontava
+o
+esqueleto
+e
+calava
+a
+recusa.
+Agora
+o
+`form`
+do
+`playtest`
+nomeia
+os
+participantes.
+Arquivo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`participantes`.
+Nomear
+não
+observa.
+
+O que 0.9.594 não afirma:
+apontar
+o
+esqueleto
+não
+é
+sessão
+com
+alguém
+de
+fora.
+
 ## 0.9.593 — o observations do feel nomeia o soltar que a receita já recusa
 
 A

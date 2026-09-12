@@ -7123,7 +7123,10 @@ def playtest_reading(project):
         "unstructured": expected and not structured,
         "observed": False,
         "outsider": False,
-        "form": str(PLAYTEST_FORM),
+        "form": {
+            "path": str(PLAYTEST_FORM),
+            "scope": playtest_form_scope(),
+        },
         "fields": list(PLAYTEST_FIELDS),
         "guide": str(FRAMEWORK / "recipes/feel.md"),
         "rule": (
@@ -7265,6 +7268,58 @@ def playtest_qa_path(reading):
     if isinstance(qa, dict):
         return qa.get("path")
     return qa
+
+
+# O molde já recusa que a regra de
+# parada seja número de participantes.
+# Sem isto o playtest apontava o
+# esqueleto e calava a recusa.
+# Arquivo no disco não é a sessão.
+PLAYTEST_PARTICIPANTS = re.compile(r"não é número de participantes")
+
+
+def form_refuses_stop_as_participants(text):
+    return bool(text and PLAYTEST_PARTICIPANTS.search(text))
+
+
+def playtest_form_participants_source():
+    path = PLAYTEST_FORM
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if form_refuses_stop_as_participants(text):
+        return "assets/templates/qa.md"
+    return None
+
+
+def playtest_form_participants_scope():
+    if not playtest_form_participants_source():
+        return None
+    return (
+        " O disco recusa que a regra de parada seja número de participantes "
+        "(`participantes`). Arquivo no disco não é a sessão."
+    )
+
+
+def playtest_form_scope():
+    scope = (
+        "esqueleto de playtest no disco. "
+        "Não observa a sessão."
+    )
+    named = playtest_form_participants_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def playtest_form_path(reading):
+    form = (reading or {}).get("form")
+    if isinstance(form, dict):
+        return form.get("path")
+    return form
 
 
 def last_run_axes(project):
