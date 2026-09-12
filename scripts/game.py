@@ -9460,6 +9460,68 @@ def local_media_ref(name):
     return text
 
 
+# O roteiro já recusa que a
+# varredura incompleta seja a
+# concessão. Sem isto o origins
+# relatava o truncated e calava
+# a recusa. Recorte no disco
+# não é a concessão.
+GATES_TRUNCATED_GRANT = re.compile(r"Varredura incompleta não é a concessão")
+
+
+def guide_refuses_incomplete_scan_as_grant(text):
+    return bool(text and GATES_TRUNCATED_GRANT.search(text))
+
+
+def origins_truncated_scan_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_incomplete_scan_as_grant(text):
+        return "references/gates.md"
+    return None
+
+
+def origins_truncated_scan_scope():
+    if not origins_truncated_scan_source():
+        return None
+    return (
+        " O disco recusa que a varredura incompleta seja a concessão "
+        "(`varredura`). Recorte no disco não é a concessão."
+    )
+
+
+def origins_truncated_scope():
+    scope = (
+        "varredura parou no limite de entradas. "
+        "Não concede a licença."
+    )
+    named = origins_truncated_scan_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def origins_truncated_flag(reading):
+    truncated = (reading or {}).get("truncated") if isinstance(reading, dict) else reading
+    if isinstance(truncated, dict):
+        return bool(truncated.get("truncated"))
+    return bool(truncated)
+
+
+def origins_truncated_reading(truncated):
+    if not truncated:
+        return False
+    return {
+        "truncated": True,
+        "scope": origins_truncated_scope(),
+    }
+
+
 def origins_reading(project, max_entries=2000):
     project = Path(project).resolve()
     embedded, receipts, problems = [], [], []
@@ -9661,7 +9723,7 @@ def origins_reading(project, max_entries=2000):
         "receipts": receipts,
         "problems": problems,
         "contradicts_licensing": contradicts,
-        "truncated": stopped,
+        "truncated": origins_truncated_reading(stopped),
         "granted": False,
         "validated": False,
         "form": {

@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.640 — o truncated do origins nomeia a varredura que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+a
+varredura
+incompleta
+não
+é
+a
+concessão.
+O
+origins
+relatava
+o
+truncated
+e
+calava
+a
+recusa.
+Agora
+o
+`truncated`
+do
+`origins`
+nomeia
+a
+varredura.
+Recorte
+no
+disco
+não
+é
+a
+concessão.
+Sem
+chave
+`varredura`.
+Parar
+não
+concede.
+
 ## 0.9.639 — o here do guide nomeia o aqui que a receita já recusa
 
 A

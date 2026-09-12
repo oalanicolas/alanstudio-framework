@@ -178,7 +178,7 @@ coisa nem outra, e nada neste repositório mede isso.
 não lê o disco**. Quem lê é `origins`: cruza arquivos embarcados com recibos e
 relata ausência. JSON sem origem, autor e licença não declara. Se o roteiro recusa que o JSON sem os três campos declare, o `fields` do `origins` nomeia os três que o roteiro já recusa. Recibo no disco não é a concessão. Sem chave `três`. Sidecar sem
 os três rótulos também não. Nomeia a mídia que o recibo lista e o disco
-perdeu. Nomear não devolve o arquivo. Se o roteiro recusa que nomear devolva o arquivo, o `missing` do `origins` nomeia o devolve que o roteiro já recusa. Recibo no disco não é a concessão. Sem chave `devolve`. `--declare`
+perdeu. Nomear não devolve o arquivo. Se o roteiro recusa que nomear devolva o arquivo, o `missing` do `origins` nomeia o devolve que o roteiro já recusa. Recibo no disco não é a concessão. Sem chave `devolve`. Varredura incompleta não é a concessão. Se o roteiro recusa que a varredura incompleta seja a concessão, o `truncated` do `origins` nomeia a varredura que o roteiro já recusa. Recorte no disco não é a concessão. Sem chave `varredura`. `--declare`
 escreve o sidecar; recibo presente não é licença válida — é origem declarada. Se o roteiro recusa que o recibo presente seja licença válida, o receipts do origins nomeia a válida que o roteiro já recusa. Arquivo no disco não é a concessão. Sem chave `válida`.
 Uma tabela que afirma `met` enquanto `origins` lista arquivo sem recibo não
 sobrevive à leitura do próprio projeto.

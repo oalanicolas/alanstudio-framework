@@ -8625,6 +8625,90 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn("nomear devolva o arquivo", game.next_scope())
 
+    def test_origins_truncated_names_the_scan_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_incomplete_scan_as_grant(guide),
+            "o roteiro já recusa que a varredura incompleta seja a concessão",
+        )
+        self.assertEqual(game.origins_truncated_scan_source(), "references/gates.md")
+        empty = game.origins_reading(self.project)
+        self.assertFalse(empty["truncated"])
+        self.assertFalse(game.origins_truncated_flag(empty))
+        first = self.project / "audio" / "one.wav"
+        second = self.project / "audio" / "two.wav"
+        first.parent.mkdir()
+        first.write_bytes(b"RIFF")
+        second.write_bytes(b"RIFF")
+        report = game.origins_reading(self.project, max_entries=1)
+        item = report["truncated"]
+        self.assertTrue(item["truncated"], "o origins já para no limite neste recorte")
+        self.assertEqual(item["truncated"], game.origins_truncated_flag(report))
+        self.assertIn(
+            "a varredura incompleta seja a concessão",
+            item["scope"],
+            "o origins relatava o truncated e calava a recusa",
+        )
+        self.assertIn("(`varredura`)", item["scope"])
+        self.assertNotIn("varredura", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertFalse(game.guide_refuses_incomplete_scan_as_grant(""))
+        with mock.patch.object(game, "origins_truncated_scan_source", return_value=None):
+            silent = game.origins_reading(self.project, max_entries=1)
+        self.assertNotIn(
+            "a varredura incompleta seja a concessão",
+            silent["truncated"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a varredura que o roteiro já recusa", guide)
+        self.assertIn("nomeia a varredura que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a varredura que o roteiro já recusa", skill)
+        self.assertIn("nomeia a varredura que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a varredura incompleta seja a concessão", report["scope"])
+        if report.get("undeclared") and isinstance(report["undeclared"], dict):
+            self.assertNotIn(
+                "a varredura incompleta seja a concessão",
+                report["undeclared"].get("scope") or "",
+            )
+        if report.get("embedded") and isinstance(report["embedded"], dict):
+            self.assertNotIn(
+                "a varredura incompleta seja a concessão",
+                report["embedded"].get("scope") or "",
+            )
+        if report.get("missing") and isinstance(report["missing"], dict):
+            self.assertNotIn(
+                "a varredura incompleta seja a concessão",
+                report["missing"].get("scope") or "",
+            )
+        if report.get("receipts") and isinstance(report["receipts"], dict):
+            self.assertNotIn(
+                "a varredura incompleta seja a concessão",
+                report["receipts"].get("scope") or "",
+            )
+        if report.get("form"):
+            self.assertNotIn(
+                "a varredura incompleta seja a concessão",
+                report["form"].get("scope") or "",
+            )
+        if report.get("fields"):
+            self.assertNotIn(
+                "a varredura incompleta seja a concessão",
+                report["fields"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "a varredura incompleta seja a concessão",
+            game.gate_reading(self.project)["scope"],
+        )
+        self.assertNotIn("a varredura incompleta seja a concessão", game.next_scope())
+        self.assertIs(empty["contradicts_licensing"], False)
+        self.assertIs(report["contradicts_licensing"], False)
+
     def test_origins_embedded_names_the_new_license_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
         self.assertTrue(
