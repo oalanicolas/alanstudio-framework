@@ -14126,6 +14126,67 @@ def substitute_document(path, pairs):
     return substitute(text, pairs)
 
 
+# A receita já recusa que o rascunho
+# plantado seja GDD. Sem isto o init
+# relatava o documents e calava a
+# recusa. Rascunho no disco não é
+# o documento.
+INIT_GDD = re.compile(r"rascunho plantado não é GDD")
+
+
+def recipe_refuses_planted_draft_as_gdd(text):
+    return bool(text and INIT_GDD.search(text))
+
+
+def init_documents_gdd_source():
+    path = FRAMEWORK / "recipes/create.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_planted_draft_as_gdd(text):
+        return "recipes/create.md"
+    return None
+
+
+def init_documents_gdd_scope():
+    if not init_documents_gdd_source():
+        return None
+    return (
+        " O disco recusa que o rascunho plantado seja GDD "
+        "(`gdd`). Rascunho no disco não é o documento."
+    )
+
+
+def init_documents_scope():
+    scope = (
+        "rascunhos escritos no destino. "
+        "O init não planta GDD."
+    )
+    named = init_documents_gdd_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def init_documents_paths(reading):
+    documents = (reading or {}).get("documents") if isinstance(reading, dict) else reading
+    if isinstance(documents, dict):
+        return list(documents.get("documents") or [])
+    return list(documents or [])
+
+
+def init_documents_reading(documents):
+    if not documents:
+        return documents
+    return {
+        "documents": list(documents),
+        "scope": init_documents_scope(),
+    }
+
+
 def init(destination, starter, title=None, documents=True, idea=None):
     module = workspace_module(destination)
     if module and module["state"] == "not_downloaded":
@@ -14244,7 +14305,7 @@ def init(destination, starter, title=None, documents=True, idea=None):
         "kind": identify(destination),
         "title": values["project_title"],
         "files": files,
-        "documents": drafts,
+        "documents": init_documents_reading(drafts),
         "document_status": "draft",
         "idea": idea.strip() if nonempty(idea) else None,
         "brief": planted["brief"],

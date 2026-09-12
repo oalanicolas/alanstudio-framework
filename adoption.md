@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.629 — o documents do init nomeia o GDD que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+rascunho
+plantado
+não
+é
+GDD.
+O
+init
+relatava
+o
+documents
+e
+calava
+a
+recusa.
+Agora
+o
+`documents`
+do
+`init`
+nomeia
+o
+GDD.
+Rascunho
+no
+disco
+não
+é
+o
+documento.
+Sem
+chave
+`gdd`.
+Nomear
+não
+observa.
+
 ## 0.9.628 — o finding do note nomeia o achado que a receita já recusa
 
 A

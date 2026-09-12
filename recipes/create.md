@@ -94,6 +94,7 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    `?spawn=` abre essa chuva e ignora o hold da outra mesa.
    A frase não muda o verbo.
    `init` faz a mesma cópia sem apontar o ciclo.
+   rascunho plantado não é GDD. Se a receita recusa que o rascunho plantado seja GDD, o `documents` do `init` nomeia o GDD que a receita já recusa. Rascunho no disco não é o documento. Sem chave `gdd`.
    O projeto nasce com laço de passo fixo, save versionado, entrada
    abstraída e testes que já rodam.
    Partir dele é REUSE; recomeçar essa infraestrutura é CREATE e pede lacuna

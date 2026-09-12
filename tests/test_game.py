@@ -6266,10 +6266,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(result["title"], "Corrente do Farol")
         self.assertIn("src/game/rules.js", result["files"])
         self.assertIn("tests/lifecycle.test.mjs", result["files"])
-        self.assertIn("docs/gdd.md", result["documents"])
-        for relative in result["files"] + result["documents"]:
+        self.assertIn("docs/gdd.md", game.init_documents_paths(result))
+        for relative in result["files"] + game.init_documents_paths(result):
             self.assertTrue((destination / relative).is_file(), relative)
         self.assertEqual(game.identify(destination), "package.json")
+
+    def test_init_documents_names_the_gdd_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_planted_draft_as_gdd(recipe),
+            "a receita já recusa que o rascunho plantado seja GDD",
+        )
+        self.assertEqual(game.init_documents_gdd_source(), "recipes/create.md")
+        bare = self.root / "ciclo-sem-rascunho"
+        empty = game.init(bare, "canvas-arcade", documents=False)
+        self.assertEqual(empty["documents"], [])
+        self.assertEqual(game.init_documents_paths(empty), [])
+        destination = self.root / "ciclo-gdd"
+        result = game.init(destination, "canvas-arcade")
+        item = result["documents"]
+        self.assertIn("docs/gdd.md", item["documents"], "o init já planta o rascunho neste recibo")
+        self.assertEqual(item["documents"], game.init_documents_paths(result))
+        self.assertIn(
+            "o rascunho plantado seja GDD",
+            item["scope"],
+            "o init relatava o documents e calava a recusa",
+        )
+        self.assertIn("(`gdd`)", item["scope"])
+        self.assertNotIn("gdd", item)
+        self.assertIsInstance(result["files"], list)
+        self.assertNotIsInstance(result["files"], dict)
+        self.assertEqual(result["document_status"], "draft")
+        self.assertFalse(game.recipe_refuses_planted_draft_as_gdd(""))
+        with mock.patch.object(game, "init_documents_gdd_source", return_value=None):
+            silent = game.init(self.root / "ciclo-gdd-cala", "canvas-arcade")
+        self.assertNotIn(
+            "o rascunho plantado seja GDD",
+            silent["documents"]["scope"],
+        )
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o GDD que a receita já recusa", readme)
+        self.assertIn("nomeia o GDD que a receita já recusa", recipe)
+        self.assertIn("nomeia o GDD que a receita já recusa", skill)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o rascunho plantado seja GDD", result["scope"])
+        if result.get("then") and isinstance(result["then"], dict):
+            self.assertNotIn(
+                "o rascunho plantado seja GDD",
+                result["then"].get("scope") or "",
+            )
+        started = game.start_project(self.root / "ciclo-gdd-start", "canvas-arcade")
+        self.assertEqual(started["init"]["documents"], [])
+        self.assertNotIn("o rascunho plantado seja GDD", started["scope"])
+        self.assertNotIn("o rascunho plantado seja GDD", game.next_scope())
 
     def test_init_substitutes_every_placeholder_and_leaves_none_behind(self):
         destination = self.root / "meu-jogo-novo"
@@ -19216,7 +19268,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertEqual(created["document_status"], "draft")
         self.assertEqual(game.scan(destination)["areas"]["vision"]["status"], "draft_only")
-        self.assertNotIn("docs/art-bible.md", created["documents"])
+        self.assertNotIn("docs/art-bible.md", game.init_documents_paths(created))
         self.assertTrue(game.document_is_current(destination / "docs/art-bible.md"))
         self.assertIn("serve", created["next_commands"][0])
 
@@ -19836,7 +19888,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("agent_context.not_located", [item["basis"] for item in [after["proposal"], *after["alternatives"]]])
         destination = self.root / "nascido-com-memoria"
         created = game.init(destination, "canvas-arcade")
-        self.assertIn("AGENTS.md", created["documents"])
+        self.assertIn("AGENTS.md", game.init_documents_paths(created))
         self.assertEqual(game.scan(destination)["agent_context"]["status"], "found")
         self.assertIn("agents", game.STAGES)
         self.assertEqual(game.SUPPORT_STAGES, ("agents",))

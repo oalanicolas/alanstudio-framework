@@ -249,7 +249,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    recibo, o prompt aponta o segundo ciclo. O `prompt` também sai em
    stderr; o JSON fica no stdout. Não executa o jogo. `--idea` entra na
    abertura se houver `data/copy.json`. O `start` não planta os rascunhos;
-   `--docs` os cria. O `init` continua plantando e agora devolve o mesmo
+   `--docs` os cria. rascunho plantado não é GDD. Se a receita recusa que o rascunho plantado seja GDD, o `documents` do `init` nomeia o GDD que a receita já recusa. Rascunho no disco não é o documento. Sem chave `gdd`. O `init` continua plantando e agora devolve o mesmo
    `open`, `url` e `prompt` do ciclo — não executa. A frase na tela não muda o verbo.
    `runtime` lê o `node` do PATH se o play pede npm ou node; sem 20+ o prompt
    avisa. `session` aponta a partida simulada se o manifesto a declara; o
