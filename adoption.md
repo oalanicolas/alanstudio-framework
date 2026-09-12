@@ -30,6 +30,53 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.753 — o item da observação nomeia o polegar que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+Esc
+e
+P
+não
+existem
+no
+polegar.
+O
+item
+da
+observação
+copiava
+a
+nota
+e
+calava
+a
+recusa.
+Agora
+o
+item
+da
+observação
+nomeia
+o
+polegar.
+Tecla
+no
+disco
+não
+é
+o
+polegar.
+Sem
+chave
+`polegar`.
+Nomear
+não
+observa.
+
 ## 0.9.752 — o content nomeia a omitida que a receita já recusa
 
 A

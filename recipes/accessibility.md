@@ -69,6 +69,7 @@ marca; a porta não ensina.
 Estilhaço no trilho pede o dash; toque e controle ganham passo depois
 do movimento. Overlay e HUD confirmam o aparelho que falou por último.
 Na pausa o toque retoma — Esc e P não existem no polegar.
+Se a receita recusa que Esc e P existam no polegar, o item da observação nomeia o polegar que a receita já recusa. Tecla no disco não é o polegar. Sem chave `polegar`.
 No campo o telefone pausa no relógio; o resto da tela
 continua o avanço. O relógio nomeia a pausa — sem o ||
 o canto calava o verbo e o convite some a tabela. Na
@@ -88,7 +89,7 @@ tap a porta e o fim não chamam o avanço de cima.
 O overlay e a casca da página seguem `uiScale` e as legendas vencem a cortina no stub. Estilhaço no
 x do corpo, no alcance do telegraph, vira `perigo à frente` na região viva
 junto da última legenda. Se o live anuncia o perigo à frente, o `access` nomeia o perigo que o live já anuncia.
-Texto no DOM não é sessão. Sem chave `threat`. Se a receita recusa que o texto no DOM seja sessão, o item da observação nomeia a sessão que a receita já recusa. Texto no DOM não é a sessão. Sem chave `sessão`. Se a receita recusa que o harness jogue com o modo ativo, o item da observação nomeia o ativo que a receita já recusa. Recibo no disco não é o modo. Sem chave `ativo`. Se a receita recusa que o número na faixa seja sessão observada, o item da observação nomeia a contagem que a receita já recusa. Contagem no disco não é a sessão. Sem chave `contagem`. Na porta o canvas também marca a mostra no
+Texto no DOM não é sessão. Sem chave `threat`. Se a receita recusa que o texto no DOM seja sessão, o item da observação nomeia a sessão que a receita já recusa. Texto no DOM não é a sessão. Sem chave `sessão`. Se a receita recusa que o harness jogue com o modo ativo, o item da observação nomeia o ativo que a receita já recusa. Recibo no disco não é o modo. Sem chave `ativo`. Se a receita recusa que o número na faixa seja sessão observada, o item da observação nomeia a contagem que a receita já recusa. Contagem no disco não é a sessão. Sem chave `contagem`. Se a receita recusa que Esc e P existam no polegar, o item da observação nomeia o polegar que a receita já recusa. Tecla no disco não é o polegar. Sem chave `polegar`. Na porta o canvas também marca a mostra no
 trilho — o mesmo aviso do campo. Texto no DOM não é sessão. A pausa entra como `pausado` só quando o
 overlay diz Pausado — no fim a cortina do over vence; na porta a
 placa nem nasce. Com a cortina no campo, nomeia o placar e o

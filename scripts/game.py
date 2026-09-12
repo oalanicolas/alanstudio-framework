@@ -3356,6 +3356,9 @@ def observation_item_scope():
     tally = observation_count_scope()
     if tally:
         scope += tally
+    thumb = observation_thumb_scope()
+    if thumb:
+        scope += thumb
     return scope
 
 
@@ -3495,6 +3498,40 @@ def observation_count_scope():
     return (
         " O disco recusa que o número na faixa seja sessão observada "
         "(`contagem`). Contagem no disco não é a sessão."
+    )
+
+
+# A receita já recusa que Esc e P
+# existam no polegar. Sem isto o
+# item copiava a nota e calava a
+# recusa. Tecla no disco não é
+# o polegar.
+A11Y_THUMB = re.compile(r"Esc e P não existem no polegar")
+
+
+def recipe_refuses_esc_and_p_as_existing_on_the_thumb(text):
+    return bool(text and A11Y_THUMB.search(text))
+
+
+def observation_thumb_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_esc_and_p_as_existing_on_the_thumb(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_thumb_scope():
+    if not observation_thumb_source():
+        return None
+    return (
+        " O disco recusa que Esc e P existam no polegar "
+        "(`polegar`). Tecla no disco não é o polegar."
     )
 
 
