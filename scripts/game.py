@@ -15940,6 +15940,9 @@ def cycle_scope():
     named = cycle_tap_scope()
     if named:
         scope += named
+    hold = cycle_lock_scope()
+    if hold:
+        scope += hold
     return scope or None
 
 
@@ -15974,6 +15977,40 @@ def cycle_tap_scope():
     return (
         " O disco recusa que o tap seja o avanço "
         "(`tap`). Polegar no disco não é o dash."
+    )
+
+
+# A receita já recusa que o lock
+# seja o descanso. Sem isto o
+# ciclo anunciava o verbo e
+# calava a recusa. Lock no disco
+# não é o descanso.
+FEEL_LOCK = re.compile(r"o lock não é o descanso")
+
+
+def recipe_refuses_lock_as_rest(text):
+    return bool(text and FEEL_LOCK.search(text))
+
+
+def cycle_lock_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_lock_as_rest(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_lock_scope():
+    if not cycle_lock_source():
+        return None
+    return (
+        " O disco recusa que o lock seja o descanso "
+        "(`lock`). Lock no disco não é o descanso."
     )
 
 

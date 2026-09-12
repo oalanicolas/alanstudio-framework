@@ -20386,6 +20386,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.feel_constants_scope(),
         )
 
+    def test_cycle_names_the_lock_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_lock_as_rest(recipe),
+            "a receita já recusa que o lock seja o descanso",
+        )
+        self.assertEqual(game.cycle_lock_source(), "recipes/feel.md")
+        destination = self.root / "ciclo-nomeia-lock"
+        report = game.start_project(destination, "canvas-arcade")
+        cycle = report["cycle"]
+        self.assertIn(
+            "o lock seja o descanso",
+            cycle["scope"],
+            "o ciclo anunciava o verbo e calava a recusa",
+        )
+        self.assertIn("(`lock`)", cycle["scope"])
+        self.assertNotIn("lock", cycle)
+        self.assertNotIn("lock", game.CYCLE_KEYS)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_lock_as_rest(""))
+        with mock.patch.object(game, "cycle_lock_source", return_value=None):
+            silent = game.start_project(self.root / "ciclo-cala-lock", "canvas-arcade")
+        self.assertNotIn(
+            "o lock seja o descanso",
+            (silent.get("cycle") or {}).get("scope") or "",
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o lock que a receita já recusa", recipe)
+        self.assertIn("nomeia o lock que a receita já recusa", skill)
+        self.assertIn("nomeia o lock que a receita já recusa", readme)
+        self.assertIn("nomeia o lock que a receita já recusa", create)
+        self.assertNotIn("verified", cycle["scope"])
+        self.assertNotIn("aprovado", cycle["scope"])
+        self.assertNotIn("4.5", cycle["scope"])
+        self.assertNotIn("o lock seja o descanso", report["scope"])
+        self.assertNotIn("o lock seja o descanso", game.feel_unobserved_scope())
+        self.assertNotIn("o lock seja o descanso", game.feel_constants_scope())
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        feel = game.feel_reading(starter)
+        self.assertNotIn("o lock seja o descanso", feel["scope"])
+        used = game.save_reading(starter).get("used")
+        if isinstance(used, dict):
+            self.assertNotIn("o lock seja o descanso", used.get("scope") or "")
+        self.assertNotIn("o lock seja o descanso", game.craft_reading(self.project)["scope"])
+        self.assertNotIn("o lock seja o descanso", game.next_scope())
+        self.assertNotIn(
+            "o lock seja o descanso",
+            game.play_scope(destination),
+        )
+        self.assertNotIn(
+            "o lock seja o descanso",
+            game.guide_scope("canvas-arcade"),
+        )
+
     def test_serve_banner_names_the_clock_the_game_already_reads(self):
         destination = self.root / "banner-nomeia-relogio"
         game.init(destination, "canvas-arcade")
