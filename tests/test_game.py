@@ -532,6 +532,63 @@ class HarnessTest(unittest.TestCase):
             ["jogo-0", "jogo-1", "jogo-2", "jogo-3"],
         )
 
+    def test_review_truncated_names_the_urgency_the_readme_already_refuses(self):
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.readme_refuses_truncated_as_urgency(readme),
+            "o README já recusa que o recorte classifique por urgência",
+        )
+        self.assertEqual(game.review_truncated_urgency_source(), "README.md")
+        empty = game.review(self.root)
+        self.assertFalse(empty["truncated"])
+        self.assertFalse(game.review_truncated_flag(empty))
+        for index in range(4):
+            path = self.root / f"recorte-{index}"
+            path.mkdir()
+            (path / "index.html").write_text("<html></html>")
+        report = game.review(self.root, limit=2)
+        item = report["truncated"]
+        self.assertTrue(item["truncated"], "o review já para no limite neste recibo")
+        self.assertEqual(item["truncated"], game.review_truncated_flag(report))
+        self.assertIn(
+            "o recorte classifique por urgência",
+            item["scope"],
+            "o review relatava o truncated e calava a recusa",
+        )
+        self.assertIn("(`urgência`)", item["scope"])
+        self.assertNotIn("urgência", item)
+        self.assertEqual(report["project_count"], 4)
+        self.assertEqual(report["reviewed"], 2)
+        self.assertIsInstance(report["order"], str)
+        self.assertFalse(game.readme_refuses_truncated_as_urgency(""))
+        with mock.patch.object(game, "review_truncated_urgency_source", return_value=None):
+            silent = game.review(self.root, limit=2)
+        self.assertNotIn(
+            "o recorte classifique por urgência",
+            silent["truncated"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a urgência que o README já recusa", readme)
+        self.assertIn("nomeia a urgência que o README já recusa", skill)
+        self.assertIn("nomeia a urgência que o README já recusa", recipe)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o recorte classifique por urgência", report["scope"])
+        self.assertNotIn("o recorte classifique por urgência", report["order"])
+        if report["projects"]:
+            self.assertNotIn(
+                "o recorte classifique por urgência",
+                report["projects"][0].get("scope") or "",
+            )
+            signals = report["projects"][0].get("signals") or {}
+            self.assertNotIn(
+                "o recorte classifique por urgência",
+                signals.get("scope") or "",
+            )
+        self.assertNotIn("o recorte classifique por urgência", game.next_scope())
+
     def test_the_review_survives_a_game_it_cannot_read(self):
         quebrado = self.root / "manifesto-torto"
         quebrado.mkdir()

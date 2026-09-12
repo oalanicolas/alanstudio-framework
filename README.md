@@ -53,7 +53,7 @@ uma listagem de caminho e tipo apagava — três jogos em estados incomparáveis
 iguais. `--plain` volta ao caminho e tipo, sem ler documento nenhum.
 
 A ordem é a do disco e não muda: **o harness não classifica os jogos por
-urgência**, porque nada aqui observa qual importa mais. Ele conta e lê; escolher
+urgência**, porque nada aqui observa qual importa mais. Se o README recusa que o recorte classifique por urgência, o `truncated` do `review` nomeia a urgência que o README já recusa. Recorte no disco não é o inventário. Sem chave `urgência`. Ele conta e lê; escolher
 continua sendo trabalho de quem olha. Um projeto ilegível aparece com o motivo, em
 vez de derrubar a revisão ou desaparecer da lista.
 

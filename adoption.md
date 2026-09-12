@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.632 — o truncated do review nomeia a urgência que o README já recusa
+
+O
+README
+já
+dizia
+que
+o
+harness
+não
+classifica
+os
+jogos
+por
+urgência.
+O
+review
+relatava
+o
+truncated
+e
+calava
+a
+recusa.
+Agora
+o
+`truncated`
+do
+`review`
+nomeia
+a
+urgência.
+Recorte
+no
+disco
+não
+é
+o
+inventário.
+Sem
+chave
+`urgência`.
+Nomear
+não
+observa.
+
 ## 0.9.631 — o reference_present do commands nomeia a carregada que o menu já recusa
 
 O

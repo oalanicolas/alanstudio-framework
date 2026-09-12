@@ -718,7 +718,7 @@ def review(root, limit=REVIEW_LIMIT):
         "reviewed": len(reviewed),
         "projects": reviewed,
         "limit": limit,
-        "truncated": len(projects) > limit,
+        "truncated": review_truncated_reading(len(projects) > limit),
         # Ordenar por urgência exigiria julgar qual jogo importa mais, e nada aqui
         # observa isso. A ordem é a do disco, e a escolha continua sendo de quem lê.
         "order": "caminho, em ordem determinística; o harness não classifica os jogos por urgência",
@@ -840,6 +840,68 @@ def review_signals_scope():
         "O disco recusa que sinal verdadeiro seja partida jogada (`partida`). "
         "Sinal no disco não é alguém de fora."
     )
+
+
+# O README já recusa que o recorte
+# classifique por urgência. Sem
+# isto o review relatava o
+# truncated e calava a recusa.
+# Recorte no disco não é o
+# inventário.
+REVIEW_URGENCY = re.compile(r"não classifica os jogos por\s+urgência")
+
+
+def readme_refuses_truncated_as_urgency(text):
+    return bool(text and REVIEW_URGENCY.search(text))
+
+
+def review_truncated_urgency_source():
+    path = FRAMEWORK / "README.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_refuses_truncated_as_urgency(text):
+        return "README.md"
+    return None
+
+
+def review_truncated_urgency_scope():
+    if not review_truncated_urgency_source():
+        return None
+    return (
+        " O disco recusa que o recorte classifique por urgência "
+        "(`urgência`). Recorte no disco não é o inventário."
+    )
+
+
+def review_truncated_scope():
+    scope = (
+        "leitura parou no limite. "
+        "O review não classifica os jogos por urgência."
+    )
+    named = review_truncated_urgency_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def review_truncated_flag(reading):
+    truncated = (reading or {}).get("truncated") if isinstance(reading, dict) else reading
+    if isinstance(truncated, dict):
+        return bool(truncated.get("truncated"))
+    return bool(truncated)
+
+
+def review_truncated_reading(truncated):
+    if not truncated:
+        return False
+    return {
+        "truncated": True,
+        "scope": review_truncated_scope(),
+    }
 
 
 def package_commands(project):
