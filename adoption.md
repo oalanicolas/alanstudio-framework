@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.584 — o missing do access nomeia a cobertura que a receita já recusa
+
+A
+receita
+já
+dizia
+para
+não
+declarar
+cobertura
+que
+não
+observou.
+O
+access
+listava
+a
+chave
+e
+calava
+a
+recusa.
+Agora
+o
+`missing`
+do
+`access`
+nomeia
+a
+cobertura.
+Lista
+no
+disco
+não
+é
+sessão.
+Sem
+chave
+`cobertura`.
+Nomear
+não
+observa.
+
+O que 0.9.584 não afirma:
+listar
+a
+chave
+ausente
+não
+é
+jogar
+com
+o
+modo
+ativo.
+
 ## 0.9.583 — o sources do gate nomeia a lista que o roteiro já recusa
 
 O

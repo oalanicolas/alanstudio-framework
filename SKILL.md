@@ -343,7 +343,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    o `access` nomeia o foco que a receita já pede. Outline no
    disco não é sessão com o teclado. Se o `tools/contrast.*`
    amostra o stub, o `access` nomeia o contraste. Stub no
-   disco não é sessão com o modo ativo. Sem chave `contrast`. Se a receita recusa que tamanho CSS igual garanta pixels, o `access` nomeia os pixels que a receita já recusa. Tamanho no disco não é o buffer. Sem chave `pixels`.
+   disco não é sessão com o modo ativo. Sem chave `contrast`. Se a receita recusa que tamanho CSS igual garanta pixels, o `access` nomeia os pixels que a receita já recusa. Tamanho no disco não é o buffer. Sem chave `pixels`. Se a receita recusa que se declare cobertura não observada, o `missing` do `access` nomeia a cobertura que a receita já recusa. Lista no disco não é sessão. Sem chave `cobertura`.
    Se o live anuncia o perigo à frente, o `access` nomeia o perigo que o live já anuncia.
    Texto no DOM não é sessão. Sem chave `threat`.
    Se o disco declara `paintCommands`, o `access` nomeia as teclas que a tabela já lista.

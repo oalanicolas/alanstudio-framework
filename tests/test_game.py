@@ -10795,6 +10795,57 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("tamanho CSS igual garanta pixels", game.feel_reading(starter)["scope"])
         self.assertNotIn("tamanho CSS igual garanta pixels", game.next_scope())
 
+    def test_access_missing_names_the_coverage_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_unobserved_coverage(recipe),
+            "a receita já recusa que se declare cobertura não observada",
+        )
+        self.assertEqual(game.access_coverage_source(), "recipes/accessibility.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        filled = game.access_reading(starter)
+        self.assertEqual(filled["missing"], [])
+        self.assertEqual(game.access_missing_keys(filled), [])
+        report = game.access_reading(self.project)
+        keys = [key for key in game.A11Y_OPTIONS]
+        self.assertEqual(report["missing"]["keys"], keys)
+        self.assertEqual(game.access_missing_keys(report), keys)
+        item = report["missing"]
+        self.assertIn(
+            "a cobertura não observada seja declaração",
+            item["scope"],
+            "o access listava a chave e calava a recusa",
+        )
+        self.assertIn("(`cobertura`)", item["scope"])
+        self.assertNotIn("cobertura", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_unobserved_coverage(""))
+        with mock.patch.object(game, "access_coverage_source", return_value=None):
+            silent = game.access_reading(self.project)
+        self.assertNotIn(
+            "a cobertura não observada seja declaração",
+            silent["missing"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a cobertura que a receita já recusa", recipe)
+        self.assertIn("nomeia a cobertura que a receita já recusa", skill)
+        self.assertIn("nomeia a cobertura que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a cobertura não observada seja declaração", report["scope"])
+        if report.get("options"):
+            self.assertNotIn(
+                "a cobertura não observada seja declaração",
+                report["options"][0].get("scope") or "",
+            )
+        self.assertNotIn("a cobertura não observada seja declaração", game.next_scope())
+        self.assertNotIn(
+            "a cobertura não observada seja declaração",
+            game.feel_reading(self.project)["scope"],
+        )
+
     def test_access_names_the_threat_the_live_already_announces(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         live = (starter / "src/core/live.js").read_text(encoding="utf-8")

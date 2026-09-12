@@ -669,7 +669,7 @@ def review(root, limit=REVIEW_LIMIT):
             "playtest_invite": bool(noted and not playtest_report.get("invite")),
             "origins_undeclared": origin_undeclared_paths(origins),
             "origins_contradicts_licensing": origins["contradicts_licensing"],
-            "access_missing": access_report["missing"] if kind else [],
+            "access_missing": access_missing_keys(access_report) if kind else [],
             "save_unversioned": persist_report["unversioned"],
             "performance_unbudgeted": perf_report["unbudgeted"],
             "art_missing": bool(kind) and not art_report["declared"],
@@ -3649,6 +3649,57 @@ def access_live_option_scope():
     return scope
 
 
+# A receita já recusa que se declare
+# cobertura não observada. Sem isto o
+# access listava a chave e calava a
+# recusa. Lista no disco não é sessão.
+A11Y_COVERAGE = re.compile(r"Não declare cobertura")
+
+
+def recipe_refuses_unobserved_coverage(text):
+    return bool(text and A11Y_COVERAGE.search(text))
+
+
+def access_coverage_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_unobserved_coverage(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_coverage_scope():
+    if not access_coverage_source():
+        return None
+    return (
+        " O disco recusa que a cobertura não observada seja declaração "
+        "(`cobertura`). Lista no disco não é sessão."
+    )
+
+
+def access_missing_scope():
+    scope = (
+        "chave que o código ainda não declara. "
+        "Não observa o modo ativo."
+    )
+    named = access_coverage_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def access_missing_keys(access):
+    missing = (access or {}).get("missing") or []
+    if isinstance(missing, dict):
+        return list(missing.get("keys") or [])
+    return list(missing)
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -3723,7 +3774,13 @@ def access_reading(project):
             }
             for key in A11Y_OPTIONS if found[key]
         ],
-        "missing": [key for key in A11Y_OPTIONS if not found[key]],
+        "missing": (
+            {
+                "keys": [key for key in A11Y_OPTIONS if not found[key]],
+                "scope": access_missing_scope(),
+            }
+            if any(not found[key] for key in A11Y_OPTIONS) else []
+        ),
         "declared": bool(options),
         "verified": False,
         "guide": str(FRAMEWORK / "recipes/accessibility.md"),
@@ -13825,7 +13882,7 @@ def next_step(project, focus="create", studies_root=None):
             "playtest_unstructured": playtest["unstructured"],
             "playtest_invite": wants_invite,
             "playtest_candidate": playtest.get("candidate"),
-            "access_missing": access["missing"] if payload["kind"] else [],
+            "access_missing": access_missing_keys(access) if payload["kind"] else [],
             "save_unversioned": persist["unversioned"],
             "performance_unbudgeted": perf["unbudgeted"],
             "art_missing": bool(payload["kind"]) and not art["declared"],
