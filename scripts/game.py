@@ -2625,6 +2625,67 @@ def roles_fill_scope():
     return scope
 
 
+# A receita já recusa que o apply
+# seja mix ouvido. Sem isto o
+# roles --fill relatava o applied
+# e calava a recusa. Cópia no
+# disco não é mix.
+AUDIO_APPLY_HEARD = re.compile(r"--apply` não é mix ouvido")
+
+
+def recipe_refuses_apply_as_heard_mix(text):
+    return bool(text and AUDIO_APPLY_HEARD.search(text))
+
+
+def roles_fill_applied_mix_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_apply_as_heard_mix(text):
+        return "recipes/audio.md"
+    return None
+
+
+def roles_fill_applied_mix_scope():
+    if not roles_fill_applied_mix_source():
+        return None
+    return (
+        " O disco recusa que o apply seja mix ouvido "
+        "(`aplica`). Cópia no disco não é mix."
+    )
+
+
+def roles_fill_applied_scope():
+    scope = (
+        "--apply copiou o stem para o papel. "
+        "Não é mix ouvido."
+    )
+    named = roles_fill_applied_mix_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def roles_fill_applied_flag(reading):
+    applied = (reading or {}).get("applied") if isinstance(reading, dict) else reading
+    if isinstance(applied, dict):
+        return bool(applied.get("applied"))
+    return bool(applied)
+
+
+def roles_fill_applied_reading(applied):
+    if not applied:
+        return False
+    return {
+        "applied": True,
+        "scope": roles_fill_applied_scope(),
+    }
+
+
 def roles_fill(project, root=None, apply=False):
     project = Path(project)
     reading = roles_reading(project, root)
@@ -2676,7 +2737,7 @@ def roles_fill(project, root=None, apply=False):
         "empty": empty_ids,
         "catalog_exists": catalog_exists,
         "suggestions": suggestions,
-        "applied": bool(apply),
+        "applied": roles_fill_applied_reading(bool(apply)),
         "copied": copied,
         "heard": False,
         "approved": False,

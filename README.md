@@ -617,6 +617,7 @@ python3 scripts/game.py roles /caminho/do/laboratorio/meu-jogo --fill --apply --
 um id do acervo ou a ficha do stem do starter; `--apply` copia o id do
 acervo ou o stem do starter para `public/sfx/<papel>` com recibo —
 e recoloca o WAV se o recibo já está e origem e licença casam.
+`--apply` não é mix ouvido. Se a receita recusa que o apply seja mix ouvido, o `applied` do `roles --fill` nomeia o aplica que a receita já recusa. Cópia no disco não é mix. Sem chave `aplica`.
 `sfx copy` continua o caminho explícito. Copiar não é ouvir.
 O starter carrega esse arquivo no mixer. `npm run mix` soma cama e vozes
 de uma partida simulada com a mesma taxa da corrente; isso também não é

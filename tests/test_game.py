@@ -9638,6 +9638,56 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         after = game.roles_reading(destination, self.root)
         self.assertNotIn("dash", game.roles_empty_ids(after))
 
+    def test_roles_fill_applied_names_the_apply_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_apply_as_heard_mix(recipe),
+            "a receita já recusa que o apply seja mix ouvido",
+        )
+        self.assertEqual(game.roles_fill_applied_mix_source(), "recipes/audio.md")
+        destination = self.root / "aplica-nao-e-mix"
+        game.init(destination, "canvas-arcade")
+        for path in (destination / "public/sfx").iterdir():
+            if path.is_file():
+                path.unlink()
+        suggested = game.roles_fill(destination, self.root)
+        self.assertFalse(suggested["applied"])
+        self.assertFalse(game.roles_fill_applied_flag(suggested))
+        applied = game.roles_fill(destination, self.root, apply=True)
+        item = applied["applied"]
+        self.assertTrue(item["applied"], "o roles --fill já copia o stem neste recorte")
+        self.assertEqual(item["applied"], game.roles_fill_applied_flag(applied))
+        self.assertIn(
+            "o apply seja mix ouvido",
+            item["scope"],
+            "o roles --fill relatava o applied e calava a recusa",
+        )
+        self.assertIn("(`aplica`)", item["scope"])
+        self.assertNotIn("aplica", item)
+        self.assertFalse(applied["heard"])
+        self.assertFalse(applied["approved"])
+        self.assertFalse(game.recipe_refuses_apply_as_heard_mix(""))
+        with mock.patch.object(game, "roles_fill_applied_mix_source", return_value=None):
+            silent = game.roles_fill_applied_reading(True)
+        self.assertNotIn(
+            "o apply seja mix ouvido",
+            silent["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o aplica que a receita já recusa", recipe)
+        self.assertIn("nomeia o aplica que a receita já recusa", skill)
+        self.assertIn("nomeia o aplica que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o apply seja mix ouvido", applied["scope"])
+        self.assertNotIn("o apply seja mix ouvido", applied["copied"])
+        self.assertNotIn("o apply seja mix ouvido", game.next_scope())
+        self.assertIsInstance(applied["copied"], list)
+        self.assertNotIsInstance(applied["copied"], dict)
+        self.assertIsInstance(applied["empty"], list)
+
     def test_roles_apply_restores_the_wav_when_the_receipt_already_exists(self):
         destination = self.root / "recibo-sem-bytes"
         game.init(destination, "canvas-arcade")

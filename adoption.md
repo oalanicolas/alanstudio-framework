@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.641 — o applied do roles --fill nomeia o aplica que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+`--apply`
+não
+é
+mix
+ouvido.
+O
+roles
+--fill
+relatava
+o
+applied
+e
+calava
+a
+recusa.
+Agora
+o
+`applied`
+do
+`roles --fill`
+nomeia
+o
+aplica.
+Cópia
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`aplica`.
+Copiar
+não
+ouve.
+
 ## 0.9.640 — o truncated do origins nomeia a varredura que o roteiro já recusa
 
 O

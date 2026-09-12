@@ -19,7 +19,7 @@ em `public/sfx`. Nomeia o `duckMs` que a tabela já declara. Sem duck a
 chave some. Nomear não é mix ouvida. Se a receita recusa que áudio AAA seja quantidade de arquivos, o `roles` nomeia a quantidade que a receita já recusa. Lista no disco não é mix. Sem chave `quantidade`. Se a receita recusa que o número no panner seja mix, o papel do x do campo nomeia o panner que a receita já recusa. Número no disco não é mix. Sem chave `panner`. Se a receita recusa que retomar, fila e paralelo sejam mix, o `roles` nomeia o retomar que a receita já recusa. Pedido no disco não é mix. Sem chave `retomar`. Se o processo recusa o reuso automático, o `roles --fill` nomeia o reuso que o processo já recusa. Arquivo no disco não é licença. Sem chave `reuso`. Se o mapa recusa que o catálogo ouça o starter, o `context` nomeia a escuta que o mapa já recusa. Acervo no disco não é mix ouvida. Sem chave `ouve`. `roles --fill` sugere um id do acervo ou a ficha do
 stem do starter que casa; `--apply` copia o id do acervo ou o stem
 do starter com créditos — e recoloca o WAV se o recibo já está e
-origem e licença casam. `sfx copy` do acervo faz o mesmo e
+origem e licença casam. `--apply` não é mix ouvido. Se a receita recusa que o apply seja mix ouvido, o `applied` do `roles --fill` nomeia o aplica que a receita já recusa. Cópia no disco não é mix. Sem chave `aplica`. `sfx copy` do acervo faz o mesmo e
 declara `heard` falso. `sfx copy` continua o caminho explícito.
 O starter `canvas-arcade`
 já traz design original (CC0) em `public/sfx/<papel>.wav` e carrega no
