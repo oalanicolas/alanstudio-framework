@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.655: a área `architecture` do `scan` nomeia a estimativa que a receita já recusa. Receita no disco não é decisão. Sem chave `estimativa`. Nomear não escolhe.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.655): **716 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
