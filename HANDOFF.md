@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.632: o `truncated` do `review` nomeia a urgência que o README já recusa. Recorte no disco não é o inventário. Sem chave `urgência`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.632): **693 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
