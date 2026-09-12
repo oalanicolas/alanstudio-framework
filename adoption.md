@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.643 — o unversioned do save nomeia o formato que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+armazenamento
+sem
+versão
+não
+é
+o
+formato.
+O
+save
+relatava
+o
+unversioned
+e
+calava
+a
+recusa.
+Agora
+o
+`unversioned`
+do
+`save`
+nomeia
+o
+formato.
+Disco
+sem
+schema
+não
+é
+o
+contrato.
+Sem
+chave
+`formato`.
+Listar
+não
+versiona.
+
 ## 0.9.642 — o readable do artifact do ship nomeia o legível que a receita já recusa
 
 A

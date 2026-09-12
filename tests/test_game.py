@@ -13528,6 +13528,71 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertIn("migrate", proposal["why"])
 
+    def test_save_unversioned_names_the_format_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_unversioned_storage_as_format(recipe),
+            "a receita já recusa que o armazenamento sem versão seja o formato",
+        )
+        self.assertEqual(game.save_unversioned_format_source(), "recipes/persistence.md")
+        empty = game.save_reading(self.project)
+        self.assertFalse(empty["unversioned"])
+        self.assertFalse(game.save_unversioned_flag(empty))
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "store.js").write_text("localStorage.setItem('score', value)\n")
+        report = game.save_reading(self.project)
+        item = report["unversioned"]
+        self.assertTrue(item["unversioned"], "o save já relata o uso sem schema neste recorte")
+        self.assertEqual(item["unversioned"], game.save_unversioned_flag(report))
+        self.assertIn(
+            "o armazenamento sem versão seja o formato",
+            item["scope"],
+            "o save relatava o unversioned e calava a recusa",
+        )
+        self.assertIn("(`formato`)", item["scope"])
+        self.assertNotIn("formato", item)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_unversioned_storage_as_format(""))
+        with mock.patch.object(game, "save_unversioned_format_source", return_value=None):
+            silent = game.save_unversioned_reading(True)
+        self.assertNotIn(
+            "o armazenamento sem versão seja o formato",
+            silent["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o formato que a receita já recusa", recipe)
+        self.assertIn("nomeia o formato que a receita já recusa", skill)
+        self.assertIn("nomeia o formato que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o armazenamento sem versão seja o formato", report["scope"])
+        if isinstance(report.get("used"), dict):
+            self.assertNotIn(
+                "o armazenamento sem versão seja o formato",
+                report["used"].get("scope") or "",
+            )
+        if isinstance(report.get("versioned"), dict):
+            self.assertNotIn(
+                "o armazenamento sem versão seja o formato",
+                report["versioned"].get("scope") or "",
+            )
+        if isinstance(report.get("warned"), dict):
+            self.assertNotIn(
+                "o armazenamento sem versão seja o formato",
+                report["warned"].get("scope") or "",
+            )
+        if isinstance(report.get("sources"), dict):
+            self.assertNotIn(
+                "o armazenamento sem versão seja o formato",
+                report["sources"].get("scope") or "",
+            )
+        self.assertNotIn("o armazenamento sem versão seja o formato", game.next_scope())
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        current = game.save_reading(starter)
+        self.assertIs(current["unversioned"], False)
+
     def test_budget_names_a_package_without_a_measurement_artifact(self):
         self.package()
         self.foundation_document()

@@ -671,7 +671,7 @@ def review(root, limit=REVIEW_LIMIT):
             "origins_undeclared": origin_undeclared_paths(origins),
             "origins_contradicts_licensing": origins["contradicts_licensing"],
             "access_missing": access_missing_keys(access_report) if kind else [],
-            "save_unversioned": persist_report["unversioned"],
+            "save_unversioned": save_unversioned_flag(persist_report),
             "performance_unbudgeted": perf_report["unbudgeted"],
             "art_missing": bool(kind) and not art_report["declared"],
             "content_inline": content_inline_flag(content_report),
@@ -700,7 +700,7 @@ def review(root, limit=REVIEW_LIMIT):
             feel_constants=len(feel_constant_items(feel_report)),
             feel_observations=len(observations),
             access_declared=access_declared_flag(access_report),
-            save_unversioned=persist_report["unversioned"],
+            save_unversioned=save_unversioned_flag(persist_report),
             performance_unbudgeted=perf_report["unbudgeted"],
             art_declared=art_report["declared"],
             content_files=len(content_files(path)),
@@ -4813,6 +4813,68 @@ def save_versioned_flag(reading):
     return bool(versioned)
 
 
+# A receita já recusa que o
+# armazenamento sem versão seja
+# o formato. Sem isto o save
+# relatava o unversioned e calava
+# a recusa. Disco sem schema não
+# é o contrato.
+PERSIST_FORMAT = re.compile(r"Armazenamento sem versão não é o formato")
+
+
+def recipe_refuses_unversioned_storage_as_format(text):
+    return bool(text and PERSIST_FORMAT.search(text))
+
+
+def save_unversioned_format_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_unversioned_storage_as_format(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_unversioned_format_scope():
+    if not save_unversioned_format_source():
+        return None
+    return (
+        " O disco recusa que o armazenamento sem versão seja o formato "
+        "(`formato`). Disco sem schema não é o contrato."
+    )
+
+
+def save_unversioned_scope():
+    scope = (
+        "uso sem schema nem migrate. "
+        "Não é o formato."
+    )
+    named = save_unversioned_format_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def save_unversioned_flag(reading):
+    unversioned = (reading or {}).get("unversioned") if isinstance(reading, dict) else reading
+    if isinstance(unversioned, dict):
+        return bool(unversioned.get("unversioned"))
+    return bool(unversioned)
+
+
+def save_unversioned_reading(unversioned):
+    if not unversioned:
+        return False
+    return {
+        "unversioned": True,
+        "scope": save_unversioned_scope(),
+    }
+
+
 def save_warning_files(project):
     project = Path(project)
     found = []
@@ -4914,7 +4976,7 @@ def save_reading(project):
         "exists": project.is_dir(),
         "used": used_flag,
         "versioned": versioned_flag,
-        "unversioned": unversioned,
+        "unversioned": save_unversioned_reading(unversioned),
         "warned": warned_flag,
         "warnings": warnings,
         "sources": sources,
@@ -16724,7 +16786,7 @@ def next_step(project, focus="create", studies_root=None):
             "access.missing",
         )
     persist = save_reading(project)
-    if persist["unversioned"]:
+    if save_unversioned_flag(persist):
         propose(
             "Versionar o save e escrever a migração junto do formato",
             "O projeto grava progresso ou preferência e não declara schema nem "
@@ -17065,7 +17127,7 @@ def next_step(project, focus="create", studies_root=None):
             "playtest_invite": wants_invite,
             "playtest_candidate": playtest_candidate_path(playtest),
             "access_missing": access_missing_keys(access) if payload["kind"] else [],
-            "save_unversioned": persist["unversioned"],
+            "save_unversioned": save_unversioned_flag(persist),
             "performance_unbudgeted": perf["unbudgeted"],
             "art_missing": bool(payload["kind"]) and not art["declared"],
             "content_inline": content_inline_flag(inventory),

@@ -20,7 +20,7 @@ divergem e uma inconsistência impossível de reproduzir.
 
 Versione o formato desde a primeira gravação e escreva a migração junto da mudança,
 não depois. Uma versão sem migração transforma qualquer atualização em perda de
-progresso. Se a receita recusa que uma versão sem migração preserve o progresso, o `versioned` do `save` nomeia a versão que a receita já recusa. Schema no disco não é a atualização. Sem chave `versão`. Mantenha a migração para trás por quantas versões o jogo já esteve nas
+progresso. Se a receita recusa que uma versão sem migração preserve o progresso, o `versioned` do `save` nomeia a versão que a receita já recusa. Schema no disco não é a atualização. Sem chave `versão`. Armazenamento sem versão não é o formato. Se a receita recusa que o armazenamento sem versão seja o formato, o `unversioned` do `save` nomeia o formato que a receita já recusa. Disco sem schema não é o contrato. Sem chave `formato`. Mantenha a migração para trás por quantas versões o jogo já esteve nas
 mãos de alguém, e teste **a cadeia inteira**, não apenas o último salto. Se a receita recusa que listar o fonte prove a cadeia inteira, o `sources` do `save` nomeia a cadeia que a receita já recusa. Arquivo no disco não é a migração. Sem chave `cadeia`.
 
 Trate dado inválido como caso normal, não como exceção: arquivo truncado, campo
