@@ -30,6 +30,54 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.607 — o held_by_declaration do gate nomeia o passou que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+`held_by_declaration`
+não
+é
+`passed`.
+O
+gate
+relatava
+o
+bool
+e
+calava
+a
+recusa.
+Agora
+o
+`held_by_declaration`
+do
+`gate`
+nomeia
+o
+passou.
+Tabela
+no
+disco
+não
+é
+passagem.
+Sem
+chave
+`passou`.
+Nomear
+não
+concede.
+
+O que 0.9.607 não afirma:
+a
+tabela
+não
+concede
+passagem.
+
 ## 0.9.606 — o catalog_exists do roles nomeia o entra que a receita já recusa
 
 A

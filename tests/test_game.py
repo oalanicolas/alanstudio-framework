@@ -7594,6 +7594,73 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(states["licensing"], "undeclared")
         self.assertIn("licensing", entrega["pending"])
 
+    def test_gate_held_by_declaration_names_the_passed_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_declaration_as_passed(guide),
+            "o roteiro já recusa que a declaração seja passed",
+        )
+        self.assertEqual(game.gate_held_passed_source(), "references/gates.md")
+        empty = game.gate_reading(self.project, "scale")["gates"][0]
+        self.assertFalse(empty["held_by_declaration"])
+        self.assertFalse(game.gate_held_flag(empty))
+        rows = {}
+        for key, _, _, _ in game.GATES["scale"]["criteria"]:
+            rows[("scale", key)] = ("met", f"evidência declarada para {key}")
+        self.declare_gate(rows)
+        report = game.gate_reading(self.project, "scale")
+        item = report["gates"][0]["held_by_declaration"]
+        self.assertTrue(item["held_by_declaration"], "o gate já relata a declaração neste projeto")
+        self.assertEqual(item["held_by_declaration"], game.gate_held_flag(report["gates"][0]))
+        self.assertIn(
+            "a declaração seja passed",
+            item["scope"],
+            "o gate relatava o bool e calava a recusa",
+        )
+        self.assertIn("(`passou`)", item["scope"])
+        self.assertNotIn("passou", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.guide_refuses_declaration_as_passed(""))
+        with mock.patch.object(game, "gate_held_passed_source", return_value=None):
+            silent = game.gate_reading(self.project, "scale")
+        self.assertNotIn(
+            "a declaração seja passed",
+            silent["gates"][0]["held_by_declaration"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o passou que o roteiro já recusa", guide)
+        self.assertIn("nomeia o passou que o roteiro já recusa", recipe)
+        self.assertIn("nomeia o passou que o roteiro já recusa", skill)
+        self.assertIn("nomeia o passou que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a declaração seja passed", report["scope"])
+        self.assertNotIn(
+            "a declaração seja passed",
+            report["gates"][0].get("scope") or "",
+        )
+        self.assertNotIn(
+            "a declaração seja passed",
+            report["gates"][0]["criteria"][0].get("scope") or "",
+        )
+        if report.get("sources"):
+            self.assertNotIn(
+                "a declaração seja passed",
+                report["sources"].get("scope") or "",
+            )
+        self.assertNotIn("a declaração seja passed", game.next_scope())
+        self.assertNotIn(
+            "a declaração seja passed",
+            game.craft_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "a declaração seja passed",
+            game.bar_reading(self.project)["scope"],
+        )
+
     def test_a_gate_holds_only_when_every_criterion_has_a_line(self):
         rows = {}
         for key, _, _, _ in game.GATES["scale"]["criteria"]:

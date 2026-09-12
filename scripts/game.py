@@ -1170,7 +1170,13 @@ def gate_reading(project, gate=None):
                 if item["kind"] == "must_meet" and item["state"] in ("undeclared", "unmet")
             ],
             # Não é "passou". É o que a declaração do projeto sustenta hoje.
-            "held_by_declaration": not pending,
+            "held_by_declaration": (
+                {
+                    "held_by_declaration": True,
+                    "scope": gate_held_scope(),
+                }
+                if not pending else False
+            ),
             "scope": gate_item_scope(key),
         })
     return {
@@ -1468,6 +1474,57 @@ def gate_source_paths(gate):
     if isinstance(sources, dict):
         return list(sources.get("paths") or [])
     return list(sources)
+
+
+# O roteiro já recusa que a declaração
+# seja passed. Sem isto o gate relatava
+# o bool e calava a recusa. Tabela no
+# disco não é passagem.
+GATE_PASSED = re.compile(r"não `passed`")
+
+
+def guide_refuses_declaration_as_passed(text):
+    return bool(text and GATE_PASSED.search(text))
+
+
+def gate_held_passed_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_declaration_as_passed(text):
+        return "references/gates.md"
+    return None
+
+
+def gate_held_passed_scope():
+    if not gate_held_passed_source():
+        return None
+    return (
+        " O disco recusa que a declaração seja passed "
+        "(`passou`). Tabela no disco não é passagem."
+    )
+
+
+def gate_held_scope():
+    scope = (
+        "declaração no disco. "
+        "Não concede passagem."
+    )
+    named = gate_held_passed_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def gate_held_flag(item):
+    held = (item or {}).get("held_by_declaration")
+    if isinstance(held, dict):
+        return bool(held.get("held_by_declaration"))
+    return bool(held)
 
 
 def _gate_scope(project):

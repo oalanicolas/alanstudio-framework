@@ -165,7 +165,7 @@ escrito, e linhas discordantes. Ele não observa o jogo, não executa nada e **n
 concede passagem**.
 
 O campo se chama `held_by_declaration`, não `passed`, de propósito: ele diz que o
-projeto afirma cumprir todos os critérios, não que alguém conferiu. Uma tabela
+projeto afirma cumprir todos os critérios, não que alguém conferiu. Se o roteiro recusa que a declaração seja passed, o `held_by_declaration` do `gate` nomeia o passou que o roteiro já recusa. Tabela no disco não é passagem. Sem chave `passou`. Uma tabela
 bem formada e otimista sai daqui intacta, como sai da barra. Quem confere é
 pessoa ou agente, com autor declarado, e `verify` serve para anexar o recibo do
 que for comando.
