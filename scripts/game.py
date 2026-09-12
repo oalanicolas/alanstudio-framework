@@ -7548,6 +7548,58 @@ def origins_form_path(reading):
     return form
 
 
+# O roteiro já recusa que o JSON sem
+# os três campos declare. Sem isto o
+# origins listava os nomes e calava
+# a recusa. Recibo no disco não é
+# a concessão.
+ORIGIN_THREE = re.compile(r"JSON sem origem,\s+autor e licença não declara")
+
+
+def guide_refuses_json_without_three_as_declaration(text):
+    return bool(text and ORIGIN_THREE.search(text))
+
+
+def origins_fields_three_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_json_without_three_as_declaration(text):
+        return "references/gates.md"
+    return None
+
+
+def origins_fields_three_scope():
+    if not origins_fields_three_source():
+        return None
+    return (
+        " O disco recusa que o JSON sem os três campos declare "
+        "(`três`). Recibo no disco não é a concessão."
+    )
+
+
+def origins_fields_scope():
+    scope = (
+        "os três nomes que o recibo exige. "
+        "Não concede licença."
+    )
+    named = origins_fields_three_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def origins_field_names(reading):
+    fields = (reading or {}).get("fields")
+    if isinstance(fields, dict):
+        return list(fields.get("names") or [])
+    return list(fields or [])
+
+
 def origin_record_complete(record):
     # O JSON listava o arquivo e declarava. Sem origem o
     # harness fingia recibo. Os três campos são o que
@@ -7983,7 +8035,10 @@ def origins_reading(project, max_entries=2000):
             "path": str(ORIGIN_FORM),
             "scope": origins_form_scope(),
         },
-        "fields": list(ORIGIN_FIELDS),
+        "fields": {
+            "names": list(ORIGIN_FIELDS),
+            "scope": origins_fields_scope(),
+        },
         "guide": str(FRAMEWORK / "references/gates.md"),
         "rule": (
             "Arquivo embarcado sem recibo de origem conta como licença desconhecida. "

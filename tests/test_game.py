@@ -7646,7 +7646,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["declared"], [])
         self.assertFalse(report["granted"])
         self.assertFalse(report["validated"])
-        self.assertEqual(report["fields"], ["origin", "author", "license"])
+        self.assertEqual(report["fields"]["names"], ["origin", "author", "license"])
+        self.assertEqual(game.origins_field_names(report), ["origin", "author", "license"])
         self.assertTrue(Path(report["form"]["path"]).is_file())
         self.assertEqual(report["form"]["path"], game.origins_form_path(report))
         self.assertEqual(game.origins_form_path(report), str(game.ORIGIN_FORM))
@@ -7710,6 +7711,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("o crédito seja licença válida", game.next_scope())
         self.assertNotIn(
             "o crédito seja licença válida",
+            game.gate_reading(self.project)["scope"],
+        )
+
+    def test_origins_fields_name_the_three_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_json_without_three_as_declaration(guide),
+            "o roteiro já recusa que o JSON sem os três campos declare",
+        )
+        self.assertEqual(game.origins_fields_three_source(), "references/gates.md")
+        report = game.origins_reading(self.project)
+        item = report["fields"]
+        self.assertEqual(item["names"], ["origin", "author", "license"])
+        self.assertEqual(item["names"], game.origins_field_names(report))
+        self.assertIn(
+            "o JSON sem os três campos declare",
+            item["scope"],
+            "o origins listava os nomes e calava a recusa",
+        )
+        self.assertIn("(`três`)", item["scope"])
+        self.assertNotIn("três", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertFalse(game.guide_refuses_json_without_three_as_declaration(""))
+        with mock.patch.object(game, "origins_fields_three_source", return_value=None):
+            silent = game.origins_reading(self.project)
+        self.assertNotIn(
+            "o JSON sem os três campos declare",
+            silent["fields"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os três que o roteiro já recusa", guide)
+        self.assertIn("nomeia os três que o roteiro já recusa", recipe)
+        self.assertIn("nomeia os três que o roteiro já recusa", skill)
+        self.assertIn("nomeia os três que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o JSON sem os três campos declare", report["scope"])
+        self.assertNotIn(
+            "o JSON sem os três campos declare",
+            report["form"].get("scope") or "",
+        )
+        if report.get("receipts"):
+            self.assertNotIn(
+                "o JSON sem os três campos declare",
+                report["receipts"].get("scope") or "",
+            )
+        if report.get("undeclared"):
+            self.assertNotIn(
+                "o JSON sem os três campos declare",
+                report["undeclared"].get("scope") or "",
+            )
+        self.assertNotIn("o JSON sem os três campos declare", game.next_scope())
+        self.assertNotIn(
+            "o JSON sem os três campos declare",
             game.gate_reading(self.project)["scope"],
         )
 
@@ -8048,7 +8107,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["validated"])
         self.assertNotIn("consumer", report)
         self.assertNotIn("consumidor", report)
-        self.assertEqual(report["fields"], ["origin", "author", "license"])
+        self.assertEqual(report["fields"]["names"], ["origin", "author", "license"])
+        self.assertEqual(game.origins_field_names(report), ["origin", "author", "license"])
         empty = game.origins_reading(self.project)
         self.assertFalse(game.sidecar_names_consumer(""))
         self.assertIsNone(game.sidecar_consumer_source(self.project))

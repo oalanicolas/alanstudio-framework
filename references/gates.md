@@ -176,7 +176,7 @@ coisa nem outra, e nada neste repositório mede isso.
 
 `deliver.licensing` é o critério em que a prosa é mais dura, e o gate **ainda
 não lê o disco**. Quem lê é `origins`: cruza arquivos embarcados com recibos e
-relata ausência. JSON sem origem, autor e licença não declara. Sidecar sem
+relata ausência. JSON sem origem, autor e licença não declara. Se o roteiro recusa que o JSON sem os três campos declare, o `fields` do `origins` nomeia os três que o roteiro já recusa. Recibo no disco não é a concessão. Sem chave `três`. Sidecar sem
 os três rótulos também não. Nomeia a mídia que o recibo lista e o disco
 perdeu. Nomear não devolve o arquivo. `--declare`
 escreve o sidecar; recibo presente não é licença válida — é origem declarada. Se o roteiro recusa que o recibo presente seja licença válida, o receipts do origins nomeia a válida que o roteiro já recusa. Arquivo no disco não é a concessão. Sem chave `válida`.

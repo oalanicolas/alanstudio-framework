@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.592 — o fields do origins nomeia os três que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+JSON
+sem
+origem,
+autor
+e
+licença
+não
+declara.
+O
+origins
+listava
+os
+nomes
+e
+calava
+a
+recusa.
+Agora
+o
+`fields`
+do
+`origins`
+nomeia
+os
+três.
+Recibo
+no
+disco
+não
+é
+a
+concessão.
+Sem
+chave
+`três`.
+Nomear
+não
+concede.
+
+O que 0.9.592 não afirma:
+listar
+os
+três
+nomes
+não
+é
+licença
+válida.
+
 ## 0.9.591 — o pending do craft nomeia a medição que a pesquisa já recusa
 
 A
