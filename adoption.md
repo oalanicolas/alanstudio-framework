@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.737 — o used do save nomeia a escrita que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+harness
+não
+confirma
+escrita.
+O
+save
+relatava
+o
+uso
+e
+calava
+a
+recusa.
+Agora
+o
+used
+do
+save
+nomeia
+a
+escrita.
+Uso
+no
+disco
+não
+é
+a
+escrita.
+Sem
+chave
+`escrita`.
+Nomear
+não
+observa.
+
 ## 0.9.736 — o content nomeia a hospedagem que a receita já recusa
 
 A

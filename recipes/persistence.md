@@ -39,7 +39,7 @@ Jogando a chave some. Nomear não é aba fechada. Se a receita recusa que o avis
 ou `settings.broken`. Nomear não é
 aba fechada nem `trusted`. Se a receita recusa que o nomear seja trusted, o `warned` do `save` nomeia a confiança que a receita já recusa. Arquivo no disco não é a aba. Sem chave `confiança`.
 **Não apague save real para fazer um teste passar**; ao
-migrar, preserve o original até a nova gravação estar confirmada. Se a receita recusa que apagar o save real faça um teste passar, o `used` do `save` nomeia o original que a receita já recusa. Teste no disco não é o save. Sem chave `original`. Se a receita recusa que o índice ou o nome de arquivo preserve o save, o `used` do `save` nomeia o índice que a receita já recusa. Índice no disco não é a entidade. Sem chave `índice`.
+migrar, preserve o original até a nova gravação estar confirmada. Se a receita recusa que apagar o save real faça um teste passar, o `used` do `save` nomeia o original que a receita já recusa. Teste no disco não é o save. Sem chave `original`. Se a receita recusa que o índice ou o nome de arquivo preserve o save, o `used` do `save` nomeia o índice que a receita já recusa. Índice no disco não é a entidade. Sem chave `índice`. Se a receita recusa que o harness confirme a escrita, o `used` do `save` nomeia a escrita que a receita já recusa. Uso no disco não é a escrita. Sem chave `escrita`.
 
 Grave em escrita atômica — arquivo temporário e substituição — para que uma
 interrupção no meio não deixe um save pela metade. Defina os momentos de gravação
@@ -52,7 +52,7 @@ saves antigos silenciosamente. Se a receita recusa que o índice ou o nome de ar
 distintos; não os una em um número por conveniência. Se a receita recusa que um único número una a versão do conteúdo e a do save, o `save` nomeia os contratos que a receita já recusa. Schema no disco não é a história. Sem chave `contratos`.
 
 `save <projeto>` lê se o código usa armazenamento e se declara schema/migrate.
-`trusted` é sempre falso: o harness não abre o save e não confirma escrita. Se a receita recusa que o harness abra o save, o `used` do `save` nomeia o abre que a receita já recusa. Texto no disco não é a aba. Sem chave `abre`. Se a receita recusa que ouvir seja aba fechada, o `used` do `save` nomeia a audição que a receita já recusa. Ouvir no disco não é a aba. Sem chave `audição`. Se a receita recusa que o número no disco seja aba fechada, o `used` do `save` nomeia a aba que a receita já recusa. Número no disco não é a aba. Sem chave `aba`.
+`trusted` é sempre falso: o harness não abre o save e não confirma escrita. Se a receita recusa que o harness confirme a escrita, o `used` do `save` nomeia a escrita que a receita já recusa. Uso no disco não é a escrita. Sem chave `escrita`. Se a receita recusa que o harness abra o save, o `used` do `save` nomeia o abre que a receita já recusa. Texto no disco não é a aba. Sem chave `abre`. Se a receita recusa que ouvir seja aba fechada, o `used` do `save` nomeia a audição que a receita já recusa. Ouvir no disco não é a aba. Sem chave `audição`. Se a receita recusa que o número no disco seja aba fechada, o `used` do `save` nomeia a aba que a receita já recusa. Número no disco não é a aba. Sem chave `aba`.
 
 Implementação concreta, com o limite dito: o starter `canvas-arcade` versiona o
 save em `src/core/save.js` (schema 3), com migração e recuperação de dado inválido.

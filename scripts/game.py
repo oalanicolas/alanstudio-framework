@@ -5718,6 +5718,9 @@ def save_used_scope():
     idx = save_used_index_scope()
     if idx:
         scope += idx
+    wrote = save_used_write_scope()
+    if wrote:
+        scope += wrote
     return scope
 
 
@@ -5861,6 +5864,40 @@ def save_used_index_scope():
     return (
         " O disco recusa que o índice ou o nome de arquivo preserve o save "
         "(`índice`). Índice no disco não é a entidade."
+    )
+
+
+# A receita já recusa que o
+# harness confirme a escrita.
+# Sem isto o save relatava o
+# uso e calava a recusa. Uso
+# no disco não é a escrita.
+PERSIST_WRITE = re.compile(r"não confirma escrita")
+
+
+def recipe_refuses_harness_as_confirming_the_write(text):
+    return bool(text and PERSIST_WRITE.search(text))
+
+
+def save_used_write_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_harness_as_confirming_the_write(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_used_write_scope():
+    if not save_used_write_source():
+        return None
+    return (
+        " O disco recusa que o harness confirme a escrita "
+        "(`escrita`). Uso no disco não é a escrita."
     )
 
 
