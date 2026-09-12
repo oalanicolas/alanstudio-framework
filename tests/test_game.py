@@ -7321,7 +7321,72 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["undeclared"], [])
         self.assertEqual(report["declared"], ["audio/jump.wav"])
         self.assertFalse(report["validated"])
-        self.assertIn("sources.json", report["receipts"])
+        self.assertIn("sources.json", report["receipts"]["paths"])
+
+    def test_origins_receipts_names_the_valid_license_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.gates_refuse_present_receipt_as_valid_license(guide),
+            "o roteiro já recusa que o recibo presente seja licença válida",
+        )
+        self.assertEqual(game.origins_valid_source(), "references/gates.md")
+        empty = game.origins_reading(self.project)
+        self.assertEqual(empty["receipts"], [])
+        self.assertEqual(game.origins_receipt_files(self.project), [])
+        asset = self.project / "audio" / "jump.wav"
+        asset.parent.mkdir()
+        asset.write_bytes(b"RIFF")
+        (self.project / "sources.json").write_text(
+            json.dumps({
+                "files": [{
+                    "src": "jump.wav",
+                    "license": "CC0-1.0",
+                    "author": "Ana",
+                    "origin": "gravação própria",
+                }],
+            }),
+            encoding="utf-8",
+        )
+        self.assertIn("sources.json", game.origins_receipt_files(self.project))
+        report = game.origins_reading(self.project)
+        item = report["receipts"]
+        self.assertIn("sources.json", item["paths"])
+        self.assertEqual(item["paths"], game.origins_receipt_files(self.project))
+        self.assertIn(
+            "recibo presente seja licença válida",
+            item["scope"],
+            "o origins listava o recibo e calava a recusa",
+        )
+        self.assertIn("(`válida`)", item["scope"])
+        self.assertNotIn("válida", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertFalse(game.gates_refuse_present_receipt_as_valid_license(""))
+        with mock.patch.object(game, "origins_valid_source", return_value=None):
+            silent = game.origins_reading(self.project)
+        self.assertNotIn(
+            "recibo presente seja licença válida",
+            silent["receipts"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a válida que o roteiro já recusa", guide)
+        self.assertIn("nomeia a válida que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a válida que o roteiro já recusa", skill)
+        self.assertIn("nomeia a válida que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("(`válida`)", report["scope"])
+        if report["problems"]:
+            self.assertNotIn(
+                "(`válida`)",
+                report["problems"][0].get("scope") or "",
+            )
+        self.assertNotIn("(`válida`)", game.provenance_area_scope())
+        self.assertNotIn("(`válida`)", game.next_scope())
+        self.assertNotIn("(`válida`)", game.gate_reading(self.project)["scope"])
 
     def test_origins_does_not_declare_a_receipt_that_omits_origin(self):
         asset = self.project / "audio" / "jump.wav"

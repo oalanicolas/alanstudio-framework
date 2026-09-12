@@ -6580,6 +6580,85 @@ def origin_problem_scope():
     return scope
 
 
+# O roteiro já recusa que o recibo
+# presente seja licença válida. Sem
+# isto o origins listava o recibo e
+# calava a recusa. Arquivo no disco
+# não é a concessão.
+ORIGIN_VALID = re.compile(r"recibo presente não é licença válida")
+
+
+def gates_refuse_present_receipt_as_valid_license(text):
+    return bool(text and ORIGIN_VALID.search(text))
+
+
+def origins_valid_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gates_refuse_present_receipt_as_valid_license(text):
+        return "references/gates.md"
+    return None
+
+
+def origins_valid_scope():
+    if not origins_valid_source():
+        return None
+    return (
+        " O disco recusa que o recibo presente seja licença válida "
+        "(`válida`). Arquivo no disco não é a concessão."
+    )
+
+
+def origins_receipts_scope():
+    scope = (
+        "recibo de origem no disco. "
+        "Não concede licença."
+    )
+    named = origins_valid_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def origins_receipt_files(project, max_entries=2000):
+    project = Path(project).resolve()
+    found = []
+    pending = [(project, 0)] if project.is_dir() else []
+    seen = 0
+    while pending:
+        directory, depth = pending.pop(0)
+        try:
+            entries = sorted(directory.iterdir(), key=lambda item: item.name.casefold())
+        except OSError:
+            continue
+        for path in entries:
+            if seen >= max_entries:
+                pending.clear()
+                break
+            seen += 1
+            if path.name.startswith("."):
+                continue
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                if path.name.casefold() in ORIGIN_SKIP:
+                    continue
+                if depth < 6:
+                    pending.append((path, depth + 1))
+                continue
+            if not path.is_file():
+                continue
+            stem = path.name.casefold()
+            if stem in ORIGIN_RECEIPTS or stem.endswith(".credits.txt"):
+                found.append(path.relative_to(project).as_posix())
+    return found
+
+
 def sidecar_consumer_source(project):
     project = Path(project)
     for relative, text in walk_project_files(project, {".txt"}):
@@ -6800,6 +6879,11 @@ def origins_reading(project, max_entries=2000):
     problem_scope = origin_problem_scope()
     for item in problems:
         item["scope"] = problem_scope
+    if receipts:
+        receipts = {
+            "paths": receipts,
+            "scope": origins_receipts_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),

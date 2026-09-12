@@ -411,7 +411,7 @@ python3 scripts/game.py origins /caminho/do/laboratorio/meu-jogo --declare textu
 Lista arquivos de mídia embarcados (som, imagem, fonte, vídeo, modelo) e cruza
 com recibos: `sources.json`, `licenses.json`, `CREDITS` e sidecar
 `.credits.txt`. JSON sem origem, autor e licença não declara. Sidecar sem
-os três rótulos também não. Se o sidecar declara `Consumidor:`, o `origins` nomeia o consumidor que o sidecar já declara. Consumidor no disco não é licença válida. Sem chave `consumer`. Se o roteiro recusa que o sidecar sem rótulos declare, o `origins` nomeia os rótulos que o roteiro já recusa. Recibo no disco não é licença. Sem chave `rótulos`.
+os três rótulos também não. Se o sidecar declara `Consumidor:`, o `origins` nomeia o consumidor que o sidecar já declara. Consumidor no disco não é licença válida. Sem chave `consumer`. Se o roteiro recusa que o sidecar sem rótulos declare, o `origins` nomeia os rótulos que o roteiro já recusa. Recibo no disco não é licença. Sem chave `rótulos`. Se o roteiro recusa que o recibo presente seja licença válida, o `receipts` do `origins` nomeia a válida que o roteiro já recusa. Arquivo no disco não é a concessão. Sem chave `válida`.
 Nomeia a mídia que o recibo lista e o disco
 perdeu. Nomear não devolve o arquivo. Entra em
 `textures/`, `fonts/`, `models/` e `videos/` — pastas

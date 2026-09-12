@@ -179,7 +179,7 @@ não lê o disco**. Quem lê é `origins`: cruza arquivos embarcados com recibos
 relata ausência. JSON sem origem, autor e licença não declara. Sidecar sem
 os três rótulos também não. Nomeia a mídia que o recibo lista e o disco
 perdeu. Nomear não devolve o arquivo. `--declare`
-escreve o sidecar; recibo presente não é licença válida — é origem declarada.
+escreve o sidecar; recibo presente não é licença válida — é origem declarada. Se o roteiro recusa que o recibo presente seja licença válida, o receipts do origins nomeia a válida que o roteiro já recusa. Arquivo no disco não é a concessão. Sem chave `válida`.
 Uma tabela que afirma `met` enquanto `origins` lista arquivo sem recibo não
 sobrevive à leitura do próprio projeto.
 
