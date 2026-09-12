@@ -48,7 +48,7 @@ integração comprovada. Não torna o fornecedor obrigatório.
 Quando a geração ou importação for assíncrona, registre no manifesto/recibo já usado:
 pedido e referência autoral, tarefa do fornecedor, estado remoto, arquivo local e
 hash, derivação e consumidor integrado. **Pronto no serviço, baixado, validado e
-consumido são estados diferentes.** Uma tarefa omitida numa consulta não equivale a
+consumido são estados diferentes.** Se a receita recusa que o baixado seja o consumido, o `external` do `content` nomeia o baixado que a receita já recusa. Arquivo no disco não é o recurso integrado. Sem chave `baixado`. Uma tarefa omitida numa consulta não equivale a
 falha; siga o contrato de consulta e limite de tentativas do fornecedor.
 
 Use a identidade e o caminho efetivamente retornados. Não presuma nomes quando o

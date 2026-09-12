@@ -30,6 +30,61 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.605 — o external do content nomeia o baixado que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+baixado,
+validado
+e
+consumido
+são
+estados
+diferentes.
+O
+content
+relatava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`external`
+do
+`content`
+nomeia
+o
+baixado.
+Arquivo
+no
+disco
+não
+é
+o
+recurso
+integrado.
+Sem
+chave
+`baixado`.
+Nomear
+não
+consome.
+
+O que 0.9.605 não afirma:
+encontrar
+o
+arquivo
+não
+consome
+o
+recurso.
+
 ## 0.9.604 — o declared do budget nomeia a medida que a receita já recusa
 
 A

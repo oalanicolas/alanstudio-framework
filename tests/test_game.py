@@ -12979,6 +12979,61 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project))]
         self.assertNotIn("content.inline", bases)
 
+    def test_content_external_names_the_download_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_downloaded_as_consumed(recipe),
+            "a receita já recusa que o baixado seja o consumido",
+        )
+        self.assertEqual(game.content_external_state_source(), "recipes/content.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.content_reading(starter)
+        item = report["external"]
+        self.assertTrue(item["external"], "o content já relata arquivo neste starter")
+        self.assertEqual(item["external"], game.content_external_flag(report))
+        self.assertIn(
+            "o baixado seja o consumido",
+            item["scope"],
+            "o content relatava o arquivo e calava a recusa",
+        )
+        self.assertIn("(`baixado`)", item["scope"])
+        self.assertNotIn("baixado", item)
+        self.assertFalse(report["enough"])
+        self.assertIs(report["inline"], False)
+        self.assertFalse(game.recipe_refuses_downloaded_as_consumed(""))
+        empty = game.content_reading(self.project)
+        self.assertFalse(empty["external"])
+        self.assertFalse(game.content_external_flag(empty))
+        with mock.patch.object(game, "content_external_state_source", return_value=None):
+            silent = game.content_reading(starter)
+        self.assertNotIn(
+            "o baixado seja o consumido",
+            silent["external"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o baixado que a receita já recusa", recipe)
+        self.assertIn("nomeia o baixado que a receita já recusa", skill)
+        self.assertIn("nomeia o baixado que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o baixado seja o consumido", report["scope"])
+        if report.get("files"):
+            self.assertNotIn(
+                "o baixado seja o consumido",
+                report["files"].get("scope") or "",
+            )
+        self.assertNotIn("o baixado seja o consumido", game.next_scope())
+        self.assertNotIn(
+            "o baixado seja o consumido",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn(
+            "o baixado seja o consumido",
+            game.art_reading(starter)["scope"],
+        )
+
     def test_content_does_not_treat_a_palette_table_as_extracted_volume(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "data").mkdir()

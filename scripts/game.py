@@ -5595,6 +5595,58 @@ def content_files_scope():
     return scope
 
 
+# A receita já recusa que o baixado
+# seja o consumido. Sem isto o
+# content relatava o arquivo e
+# calava a recusa. Arquivo no
+# disco não é o recurso integrado.
+CONTENT_STATES = re.compile(r"são estados diferentes")
+
+
+def recipe_refuses_downloaded_as_consumed(text):
+    return bool(text and CONTENT_STATES.search(text))
+
+
+def content_external_state_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_downloaded_as_consumed(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_external_state_scope():
+    if not content_external_state_source():
+        return None
+    return (
+        " O disco recusa que o baixado seja o consumido "
+        "(`baixado`). Arquivo no disco não é o recurso integrado."
+    )
+
+
+def content_external_scope():
+    scope = (
+        "arquivo de dados no disco. "
+        "Não é o recurso integrado."
+    )
+    named = content_external_state_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def content_external_flag(reading):
+    external = (reading or {}).get("external")
+    if isinstance(external, dict):
+        return bool(external.get("external"))
+    return bool(external)
+
+
 def content_reading(project):
     project = Path(project)
     files = content_files(project)
@@ -5634,13 +5686,19 @@ def content_reading(project):
             "paths": listed,
             "scope": content_files_scope(),
         }
+    external = bool(files)
+    if external:
+        external = {
+            "external": True,
+            "scope": content_external_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
         "exists": project.is_dir(),
         "kind": kind,
         "files": listed,
-        "external": bool(files),
+        "external": external,
         "inline": bool(kind) and not files,
         "enough": False,
         "guide": str(FRAMEWORK / "recipes/content.md"),
