@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.728 — o content nomeia a resolução que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+mais
+resolução
+não
+exige
+mudar
+dimensões
+no
+mundo.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+content
+nomeia
+a
+resolução.
+Resolução
+no
+disco
+não
+é
+a
+escala.
+Sem
+chave
+`resolução`.
+Nomear
+não
+observa.
+
 ## 0.9.727 — o save nomeia o derivado que a receita já recusa
 
 A

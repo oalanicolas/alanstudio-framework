@@ -7562,6 +7562,43 @@ def content_alert_scope():
     )
 
 
+# A receita já recusa que mais
+# resolução mude as dimensões no
+# mundo. Sem isto o content
+# listava arquivos e calava a
+# recusa. Resolução no disco
+# não é a escala.
+CONTENT_RESOLUTION = re.compile(
+    r"Mais resolução não\s+exige mudar dimensões no mundo"
+)
+
+
+def recipe_refuses_resolution_as_world_scale(text):
+    return bool(text and CONTENT_RESOLUTION.search(text))
+
+
+def content_resolution_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_resolution_as_world_scale(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_resolution_scope():
+    if not content_resolution_source():
+        return None
+    return (
+        " O disco recusa que mais resolução mude as dimensões no mundo "
+        "(`resolução`). Resolução no disco não é a escala."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -7815,6 +7852,9 @@ def content_reading(project):
     warn = content_alert_scope()
     if warn:
         scope += warn
+    res = content_resolution_scope()
+    if res:
+        scope += res
     encoded = content_encoded_scope()
     if encoded:
         scope += encoded

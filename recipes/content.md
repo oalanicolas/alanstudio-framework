@@ -58,7 +58,7 @@ página HTML ocupe o lugar do recurso válido. Preserve master e versão anterio
 
 Verificadores de sprites/texturas localizam candidatos a defeito; correções que
 apagam pixels, quantizam cores ou redimensionam não são consequência automática de
-um alerta. Se a receita recusa que o alerta autorize apagar pixels, quantizar cores ou redimensionar, o `content` nomeia o alerta que a receita já recusa. Alerta no disco não é a correção. Sem chave `alerta`. Confira recorte, alpha, sequência e aparência no jogo conforme sua política
+um alerta. Se a receita recusa que o alerta autorize apagar pixels, quantizar cores ou redimensionar, o `content` nomeia o alerta que a receita já recusa. Alerta no disco não é a correção. Sem chave `alerta`. Se a receita recusa que mais resolução mude as dimensões no mundo, o `content` nomeia a resolução que a receita já recusa. Resolução no disco não é a escala. Sem chave `resolução`. Confira recorte, alpha, sequência e aparência no jogo conforme sua política
 artística. Prova: falha preserva o recurso anterior; sucesso chega ao consumidor certo,
 com origem/licença e acabamento conferidos. Este procedimento não comprova consistência
 do gerador. Se a receita recusa que o recibo comprove a consistência do gerador, o `fields` do `origins --declare` nomeia a consistência que a receita já recusa. Recibo no disco não é o asset. Sem chave `consistência`. [Origem e limites](../references/sources.md#autoria-ugc-pública).
@@ -86,7 +86,7 @@ comprova que está sendo consumido. Se a receita recusa que o arquivo importado 
 conforme o contrato do consumidor e repetir a prova no projeto de destino.
 
 - Separe resolução do master, pixels por metro e escala física. Mais resolução não
-  exige mudar dimensões no mundo. Meça a superfície e a geometria avaliadas, não
+  exige mudar dimensões no mundo. Se a receita recusa que mais resolução mude as dimensões no mundo, o `content` nomeia a resolução que a receita já recusa. Resolução no disco não é a escala. Sem chave `resolução`. Meça a superfície e a geometria avaliadas, não
   apenas origem ou bounds; projeção, portas, pivôs e conexões precisam continuar iguais.
 - Textura repetível exige bordas e iluminação compatíveis. Ruído não periódico,
   faces laterais e gradientes próprios de cada tile podem produzir emendas mesmo
