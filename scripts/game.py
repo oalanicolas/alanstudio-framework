@@ -14707,7 +14707,13 @@ def doctor(root):
         "root": str(root),
         "ready": ready,
         "blocking": blocking,
-        "empty": empty,
+        "empty": (
+            {
+                "empty": True,
+                "scope": doctor_empty_scope(),
+            }
+            if empty else False
+        ),
         "then": then,
         "checks": checks,
         "skill_targets": installed,
@@ -14720,6 +14726,58 @@ def doctor(root):
         "known_markers": [marker for marker, _ in ENGINE_MARKERS],
         "scope": scope,
     }
+
+
+# A receita já recusa que o mapa
+# crie a pasta. Sem isto o doctor
+# relatava o vazio e calava a
+# recusa. Lista no disco não é
+# projeto criado.
+CREATE_FOLDER = re.compile(r"não cria a pasta")
+
+
+def recipe_refuses_map_as_creating_folder(text):
+    return bool(text and CREATE_FOLDER.search(text))
+
+
+def doctor_empty_folder_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_map_as_creating_folder(text):
+        return "recipes/create.md"
+    return None
+
+
+def doctor_empty_folder_scope():
+    if not doctor_empty_folder_source():
+        return None
+    return (
+        " O disco recusa que o mapa crie a pasta "
+        "(`pasta`). Lista no disco não é projeto criado."
+    )
+
+
+def doctor_empty_scope():
+    scope = (
+        "laboratório sem jogo reconhecido. "
+        "Não cria a pasta."
+    )
+    named = doctor_empty_folder_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def doctor_empty_flag(reading):
+    empty = (reading or {}).get("empty")
+    if isinstance(empty, dict):
+        return bool(empty.get("empty"))
+    return bool(empty)
 
 
 # A ambição já recusa que o harness seja motor. Sem isto o

@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.612 — o empty do doctor nomeia a pasta que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+mapa
+não
+cria
+a
+pasta.
+O
+doctor
+relatava
+o
+vazio
+e
+calava
+a
+recusa.
+Agora
+o
+`empty`
+do
+`doctor`
+nomeia
+a
+pasta.
+Lista
+no
+disco
+não
+é
+projeto
+criado.
+Sem
+chave
+`pasta`.
+Nomear
+não
+cria.
+
+O que 0.9.612 não afirma:
+a
+listagem
+não
+monta
+o
+jogo.
+
 ## 0.9.611 — o created do invite nomeia o endereço que a receita já recusa
 
 A

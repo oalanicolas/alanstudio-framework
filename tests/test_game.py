@@ -6201,6 +6201,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(blocked["empty"])
         self.assertIsNone(blocked["then"])
 
+    def test_doctor_empty_names_the_folder_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_map_as_creating_folder(recipe),
+            "a receita já recusa que o mapa crie a pasta",
+        )
+        self.assertEqual(game.doctor_empty_folder_source(), "recipes/create.md")
+        report = game.doctor(self.root)
+        item = report["empty"]
+        self.assertTrue(item["empty"], "o doctor já relata o laboratório vazio")
+        self.assertEqual(item["empty"], game.doctor_empty_flag(report))
+        self.assertIn(
+            "o mapa crie a pasta",
+            item["scope"],
+            "o doctor relatava o vazio e calava a recusa",
+        )
+        self.assertIn("(`pasta`)", item["scope"])
+        self.assertNotIn("pasta", item)
+        self.assertIs(report["ready"], True)
+        self.assertFalse(game.recipe_refuses_map_as_creating_folder(""))
+        self.package()
+        occupied = game.doctor(self.root)
+        self.assertFalse(occupied["empty"])
+        self.assertFalse(game.doctor_empty_flag(occupied))
+        with mock.patch.object(game, "doctor_empty_folder_source", return_value=None):
+            silent = game.doctor(self.root / "laboratorio-inexistente")
+        self.assertNotIn(
+            "o mapa crie a pasta",
+            silent["empty"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a pasta que a receita já recusa", recipe)
+        self.assertIn("nomeia a pasta que a receita já recusa", skill)
+        self.assertIn("nomeia a pasta que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o mapa crie a pasta", report["scope"])
+        if report.get("then") and isinstance(report["then"], dict):
+            self.assertNotIn(
+                "o mapa crie a pasta",
+                report["then"].get("scope") or "",
+            )
+        self.assertNotIn("o mapa crie a pasta", game.next_scope())
+
     def test_doctor_cli_signals_a_blocking_root_by_exit_code(self):
         ready = subprocess.run([sys.executable, str(SCRIPT), "doctor", "--root", str(self.root)], capture_output=True, text=True)
         self.assertEqual(ready.returncode, 0, ready.stderr)
