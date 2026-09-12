@@ -5912,6 +5912,60 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("pontuação universal de diversão", game.verify_scope())
         self.assertNotIn("pontuação universal de diversão", game.next_scope())
 
+    def test_scan_mda_names_the_required_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_mda_as_required_document(guide),
+            "a guia já recusa que a ferramenta de raciocínio seja documento obrigatório",
+        )
+        self.assertEqual(game.mda_required_source(), "references/preproduction.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "ferramenta de raciocínio seja documento obrigatório",
+            report["areas"]["mda"]["scope"],
+            "a área localizava o MDA e calava a recusa",
+        )
+        self.assertIn("(`obrigatório`)", report["areas"]["mda"]["scope"])
+        self.assertNotIn("obrigatório", report["areas"]["mda"])
+        self.assertFalse(game.guide_refuses_mda_as_required_document(""))
+        with mock.patch.object(game, "mda_required_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "ferramenta de raciocínio seja documento obrigatório",
+            silent["areas"]["mda"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o obrigatório que a guia já recusa", guide)
+        self.assertIn("nomeia o obrigatório que a guia já recusa", recipe)
+        self.assertIn("nomeia o obrigatório que a guia já recusa", skill)
+        self.assertIn("nomeia o obrigatório que a guia já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["mda"]["scope"])
+        self.assertNotIn("aprovado", report["areas"]["mda"]["scope"])
+        self.assertNotIn("4.5", report["areas"]["mda"]["scope"])
+        self.assertNotIn("ferramenta de raciocínio seja documento obrigatório", report["scope"])
+        self.assertNotIn(
+            "ferramenta de raciocínio seja documento obrigatório",
+            report["areas"]["gdd"]["scope"],
+        )
+        self.assertNotIn(
+            "ferramenta de raciocínio seja documento obrigatório",
+            report["areas"]["vision"]["scope"],
+        )
+        self.assertNotIn(
+            "ferramenta de raciocínio seja documento obrigatório",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "ferramenta de raciocínio seja documento obrigatório",
+            game.verify_scope(),
+        )
+        self.assertNotIn(
+            "ferramenta de raciocínio seja documento obrigatório",
+            game.next_scope(),
+        )
+
     def test_scan_names_the_audience_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
         self.assertTrue(

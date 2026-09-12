@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.686 — a área mda nomeia o obrigatório que a guia já recusa
+
+A
+guia
+já
+dizia
+que
+MDA
+não
+é
+documento
+obrigatório.
+A
+área
+localizava
+o
+MDA
+e
+calava
+a
+recusa.
+Agora
+a
+área
+`mda`
+nomeia
+o
+obrigatório.
+Ferramenta
+no
+disco
+não
+é
+a
+obrigação.
+Sem
+chave
+`obrigatório`.
+Nomear
+não
+observa.
+
 ## 0.9.685 — a área gdd nomeia o brief que o craft já recusa
 
 O

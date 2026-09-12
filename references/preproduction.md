@@ -98,7 +98,7 @@ tem origem e autoridade declaradas; ausências são explícitas.
 
 ### `mda` — Mechanics, Dynamics, Aesthetics
 
-Ferramenta de raciocínio, não documento obrigatório separado. **Mecânicas:** regras
+Ferramenta de raciocínio, não documento obrigatório separado. Se a guia recusa que a ferramenta de raciocínio seja documento obrigatório, a área `mda` do `scan` nomeia o obrigatório que a guia já recusa. Ferramenta no disco não é a obrigação. Sem chave `obrigatório`. **Mecânicas:** regras
 e ações. **Dinâmicas:** comportamentos produzidos pela interação ao longo do tempo.
 **Experiência estética:** resposta emocional pretendida, incluindo desafio,
 descoberta, fantasia, expressão ou convivência; vai além do visual.

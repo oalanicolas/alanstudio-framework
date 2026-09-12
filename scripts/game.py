@@ -13535,7 +13535,44 @@ def mda_area_scope():
             " O disco recusa pontuação universal de diversão (`pontuação`). "
             "Área no disco não é experiência."
         )
+    tool = mda_required_scope()
+    if tool:
+        scope += tool
     return scope
+
+
+# A guia já recusa que a ferramenta de
+# raciocínio seja documento obrigatório.
+# Sem isto a área localizava o MDA e
+# calava a recusa.
+# Ferramenta no disco não é a obrigação.
+MDA_REQUIRED = re.compile(r"não documento obrigatório")
+
+
+def guide_refuses_mda_as_required_document(text):
+    return bool(text and MDA_REQUIRED.search(text))
+
+
+def mda_required_source():
+    path = FRAMEWORK / "references" / "preproduction.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_mda_as_required_document(text):
+        return "references/preproduction.md"
+    return None
+
+
+def mda_required_scope():
+    if not mda_required_source():
+        return ""
+    return (
+        " O disco recusa que a ferramenta de raciocínio seja documento "
+        "obrigatório (`obrigatório`). Ferramenta no disco não é a obrigação."
+    )
 
 
 # A guia já recusa inventar público observado. Sem isto a
