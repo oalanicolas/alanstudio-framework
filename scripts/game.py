@@ -3397,6 +3397,9 @@ def observation_item_scope():
     thumb = observation_thumb_scope()
     if thumb:
         scope += thumb
+    rise = observation_rise_scope()
+    if rise:
+        scope += rise
     return scope
 
 
@@ -3570,6 +3573,40 @@ def observation_thumb_scope():
     return (
         " O disco recusa que Esc e P existam no polegar "
         "(`polegar`). Tecla no disco não é o polegar."
+    )
+
+
+# A receita já recusa que a porta
+# e o fim chamem o avanço de cima.
+# Sem isto o item copiava a nota
+# e calava a recusa. Tap no disco
+# não é o avanço.
+A11Y_RISE = re.compile(r"não chamam o avanço de cima")
+
+
+def recipe_refuses_door_as_calling_up_advance(text):
+    return bool(text and A11Y_RISE.search(text))
+
+
+def observation_rise_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_door_as_calling_up_advance(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_rise_scope():
+    if not observation_rise_source():
+        return None
+    return (
+        " O disco recusa que a porta e o fim chamem o avanço de cima "
+        "(`avanço`). Tap no disco não é o avanço."
     )
 
 
