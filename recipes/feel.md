@@ -119,7 +119,7 @@ Separe:
 - **Apresentação** — a mudança é perceptível.
 - **Feel** — a percepção tem peso, timing e recuperação.
 
-Corrigir a regra não substitui o feel. Animar demais não substitui a regra.
+Corrigir a regra não substitui o feel. Se a receita recusa que corrigir a regra substitua o feel, o `feel` nomeia a regra que a receita já recusa. Regra no disco não é o feel. Sem chave `regra`. Animar demais não substitui a regra.
 Se a ação ainda não existe, volte a [criar](create.md) ou a
 [mecânicas](mechanics.md); esta receita assume um ciclo jogável.
 

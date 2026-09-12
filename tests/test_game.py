@@ -13951,6 +13951,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("guardar no hitstop seja engolido", game.craft_reading(self.project)["scope"])
         self.assertNotIn("guardar no hitstop seja engolido", game.next_scope())
 
+    def test_feel_names_the_rule_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"Corrigir a regra não substitui o feel")
+        self.assertTrue(
+            game.recipe_refuses_rule_fix_as_feel(recipe),
+            "a receita já recusa que corrigir a regra substitua o feel",
+        )
+        self.assertEqual(game.feel_rule_source(), "recipes/feel.md")
+        report = game.feel_reading(self.project)
+        self.assertIn(
+            "corrigir a regra substitua o feel",
+            report["scope"],
+            "o feel lia o CONFIG e calava a recusa",
+        )
+        self.assertIn("(`regra`)", report["scope"])
+        self.assertIn("Regra no disco não é o feel.", report["scope"])
+        self.assertNotIn("regra", report)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_rule_fix_as_feel(""))
+        with mock.patch.object(game, "feel_rule_source", return_value=None):
+            silent = game.feel_reading(self.project)
+        self.assertNotIn("corrigir a regra substitua o feel", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a regra que a receita já recusa", recipe)
+        self.assertIn("nomeia a regra que a receita já recusa", create)
+        self.assertIn("nomeia a regra que a receita já recusa", skill)
+        self.assertIn("nomeia a regra que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("corrigir a regra substitua o feel", game.feel_unobserved_scope())
+        self.assertNotIn("corrigir a regra substitua o feel", game.feel_constants_scope())
+        self.assertNotIn("corrigir a regra substitua o feel", game.observation_item_scope())
+        self.assertNotIn("corrigir a regra substitua o feel", game.feel_observations_scope())
+        self.assertNotIn("corrigir a regra substitua o feel", game.cycle_scope() or "")
+        self.assertNotIn("corrigir a regra substitua o feel", game.play_scope(self.project))
+        self.assertNotIn("corrigir a regra substitua o feel", game.record_scope())
+        self.assertNotIn("corrigir a regra substitua o feel", game.craft_reading(self.project)["scope"])
+        self.assertNotIn("corrigir a regra substitua o feel", game.art_reading(self.project)["scope"])
+        self.assertNotIn("corrigir a regra substitua o feel", game.save_reading(self.project)["scope"])
+        self.assertNotIn("corrigir a regra substitua o feel", game.git_summary_scope())
+        self.assertNotIn("corrigir a regra substitua o feel", game.next_scope())
+        self.assertNotIn("regra", game.CYCLE_KEYS)
+
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
         destination = self.root / "com-observacao"
         game.init(destination, "canvas-arcade")
