@@ -55,7 +55,7 @@ assistência, velocidade da partida, tinta estável, região viva e
 pulso no aparelho). Se a casca declara `:focus-visible`, o `access`
 nomeia o foco que esta receita já pede. Outline no disco não é
 sessão com o teclado. Sem chave `focus`. `verified` é sempre falso: chave no fonte não é sessão
-com o modo ativo. O starter `canvas-arcade` expõe `assist`, `gameSpeed` e o remapeamento
+com o modo ativo. Se a receita recusa que a chave no fonte seja sessão, o `declared` do `access` nomeia a fonte que a receita já recusa. Chave no disco não é o modo ativo. Sem chave `fonte`. O starter `canvas-arcade` expõe `assist`, `gameSpeed` e o remapeamento
 das seis ações do teclado na página; a tabela `#commands`
 nomeia as teclas vigentes e mantém toque e controle no
 sufixo. Se o disco declara `paintCommands`, o `access` nomeia as teclas que a tabela já lista.

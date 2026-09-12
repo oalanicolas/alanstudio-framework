@@ -699,7 +699,7 @@ def review(root, limit=REVIEW_LIMIT):
             audio_roles_empty=len(roles_empty_ids(roles)),
             feel_constants=len(feel_constant_items(feel_report)),
             feel_observations=len(observations),
-            access_declared=access_report["declared"],
+            access_declared=access_declared_flag(access_report),
             save_unversioned=persist_report["unversioned"],
             performance_unbudgeted=perf_report["unbudgeted"],
             art_declared=art_report["declared"],
@@ -4108,6 +4108,58 @@ def access_missing_keys(access):
     return list(missing)
 
 
+# A receita já recusa que a chave no
+# fonte seja sessão. Sem isto o
+# access relatava a declaração e
+# calava a recusa. Chave no disco
+# não é o modo ativo.
+A11Y_SOURCE_KEY = re.compile(r"chave no fonte não é sessão")
+
+
+def recipe_refuses_source_key_as_session(text):
+    return bool(text and A11Y_SOURCE_KEY.search(text))
+
+
+def access_declared_source_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_source_key_as_session(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_declared_source_scope():
+    if not access_declared_source_source():
+        return None
+    return (
+        " O disco recusa que a chave no fonte seja sessão "
+        "(`fonte`). Chave no disco não é o modo ativo."
+    )
+
+
+def access_declared_scope():
+    scope = (
+        "opção declarada no código. "
+        "Não é sessão com o modo ativo."
+    )
+    named = access_declared_source_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def access_declared_flag(reading):
+    declared = (reading or {}).get("declared")
+    if isinstance(declared, dict):
+        return bool(declared.get("declared"))
+    return bool(declared)
+
+
 def access_reading(project):
     project = Path(project)
     found = {key: [] for key in A11Y_OPTIONS}
@@ -4189,7 +4241,13 @@ def access_reading(project):
             }
             if any(not found[key] for key in A11Y_OPTIONS) else []
         ),
-        "declared": bool(options),
+        "declared": (
+            {
+                "declared": True,
+                "scope": access_declared_scope(),
+            }
+            if options else False
+        ),
         "verified": False,
         "guide": str(FRAMEWORK / "recipes/accessibility.md"),
         "rule": (

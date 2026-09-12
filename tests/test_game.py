@@ -11844,6 +11844,61 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.feel_reading(self.project)["scope"],
         )
 
+    def test_access_declared_names_the_source_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_source_key_as_session(recipe),
+            "a receita já recusa que a chave no fonte seja sessão",
+        )
+        self.assertEqual(game.access_declared_source_source(), "recipes/accessibility.md")
+        empty = game.access_reading(self.project)
+        self.assertFalse(empty["declared"])
+        self.assertFalse(game.access_declared_flag(empty))
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.access_reading(starter)
+        item = report["declared"]
+        self.assertTrue(item["declared"], "o access já relata opção neste starter")
+        self.assertEqual(item["declared"], game.access_declared_flag(report))
+        self.assertIn(
+            "a chave no fonte seja sessão",
+            item["scope"],
+            "o access relatava a declaração e calava a recusa",
+        )
+        self.assertIn("(`fonte`)", item["scope"])
+        self.assertNotIn("fonte", item)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_source_key_as_session(""))
+        with mock.patch.object(game, "access_declared_source_source", return_value=None):
+            silent = game.access_reading(starter)
+        self.assertNotIn(
+            "a chave no fonte seja sessão",
+            silent["declared"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a fonte que a receita já recusa", recipe)
+        self.assertIn("nomeia a fonte que a receita já recusa", skill)
+        self.assertIn("nomeia a fonte que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a chave no fonte seja sessão", report["scope"])
+        if report.get("missing") and isinstance(report["missing"], dict):
+            self.assertNotIn(
+                "a chave no fonte seja sessão",
+                report["missing"].get("scope") or "",
+            )
+        if report.get("options"):
+            self.assertNotIn(
+                "a chave no fonte seja sessão",
+                report["options"][0].get("scope") or "",
+            )
+        self.assertNotIn("a chave no fonte seja sessão", game.next_scope())
+        self.assertNotIn(
+            "a chave no fonte seja sessão",
+            game.feel_reading(starter)["scope"],
+        )
+
     def test_access_names_the_threat_the_live_already_announces(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         live = (starter / "src/core/live.js").read_text(encoding="utf-8")
