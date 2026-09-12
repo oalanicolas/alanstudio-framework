@@ -16119,6 +16119,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "feel"))]
         self.assertNotIn("playtest.unstructured", bases)
 
+    def test_playtest_structured_names_the_observed_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_four_fields_as_observed_playtest(recipe),
+            "a receita já recusa que os quatro no disco sejam playtest observado",
+        )
+        self.assertEqual(game.playtest_structured_observed_source(), "recipes/feel.md")
+        empty = game.playtest_reading(self.project)
+        self.assertFalse(empty["structured"])
+        self.assertFalse(game.playtest_structured_flag(empty))
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "docs").mkdir()
+        (self.project / "docs/qa.md").write_text(
+            "# Playtest\n\n"
+            "- Problema: o dash não comunica o contato.\n"
+            "- Evidência: três sessões, o jogador pergunta se atravessou.\n"
+            "- Hipótese: o hitstop de 2 ticks some no movimento.\n"
+            "- Medição: repetir o graze com hitstop 5 e 2 no mesmo recorte.\n",
+            encoding="utf-8",
+        )
+        report = game.playtest_reading(self.project)
+        item = report["structured"]
+        self.assertTrue(item["structured"], "o playtest já relata os quatro neste qa.md")
+        self.assertEqual(item["structured"], game.playtest_structured_flag(report))
+        self.assertIn(
+            "os quatro no disco sejam playtest observado",
+            item["scope"],
+            "o playtest relatava o structured e calava a recusa",
+        )
+        self.assertIn("(`observado`)", item["scope"])
+        self.assertNotIn("observado", item)
+        self.assertFalse(report["unstructured"])
+        self.assertFalse(report["observed"])
+        self.assertFalse(game.recipe_refuses_four_fields_as_observed_playtest(""))
+        with mock.patch.object(game, "playtest_structured_observed_source", return_value=None):
+            silent = game.playtest_reading(self.project)
+        self.assertNotIn(
+            "os quatro no disco sejam playtest observado",
+            silent["structured"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o observado que a receita já recusa", recipe)
+        self.assertIn("nomeia o observado que a receita já recusa", skill)
+        self.assertIn("nomeia o observado que a receita já recusa", readme)
+        self.assertIn("nomeia o observado que a receita já recusa", create)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("os quatro no disco sejam playtest observado", report["scope"])
+        if report.get("findings"):
+            self.assertNotIn(
+                "os quatro no disco sejam playtest observado",
+                report["findings"].get("scope") or "",
+            )
+        self.assertNotIn("os quatro no disco sejam playtest observado", game.next_scope())
+
     def test_playtest_invite_writes_a_page_without_claiming_an_outsider(self):
         destination = self.root / "convite"
         game.init(destination, "canvas-arcade")

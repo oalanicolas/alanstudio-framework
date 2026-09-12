@@ -707,7 +707,7 @@ def review(root, limit=REVIEW_LIMIT):
             content_inline=content_inline_flag(content_report),
             ship_unpacked=ship_report["unpacked"],
             playtest_expected=playtest_report["expected"],
-            playtest_structured=playtest_report["structured"],
+            playtest_structured=playtest_structured_flag(playtest_report),
             signals=signals,
             scope=review_item_scope(),
         ))
@@ -8068,6 +8068,67 @@ def note_post_source(project):
     return None
 
 
+# A receita já recusa que os quatro
+# no disco sejam playtest observado.
+# Sem isto o playtest relatava o
+# structured e calava a recusa.
+# Arquivo no disco não é a sessão.
+PLAYTEST_OBSERVED = re.compile(r"quatro no disco não são playtest observado")
+
+
+def recipe_refuses_four_fields_as_observed_playtest(text):
+    return bool(text and PLAYTEST_OBSERVED.search(text))
+
+
+def playtest_structured_observed_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_four_fields_as_observed_playtest(text):
+        return "recipes/feel.md"
+    return None
+
+
+def playtest_structured_observed_scope():
+    if not playtest_structured_observed_source():
+        return None
+    return (
+        " O disco recusa que os quatro no disco sejam playtest observado "
+        "(`observado`). Arquivo no disco não é a sessão."
+    )
+
+
+def playtest_structured_scope():
+    scope = (
+        "achado com os quatro no disco. "
+        "O playtest não observa a sessão."
+    )
+    named = playtest_structured_observed_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def playtest_structured_flag(reading):
+    structured = (reading or {}).get("structured") if isinstance(reading, dict) else reading
+    if isinstance(structured, dict):
+        return bool(structured.get("structured"))
+    return bool(structured)
+
+
+def playtest_structured_reading(structured):
+    if not structured:
+        return False
+    return {
+        "structured": True,
+        "scope": playtest_structured_scope(),
+    }
+
+
 def playtest_reading(project):
     project = Path(project)
     observations = observation_receipts(project)
@@ -8076,6 +8137,7 @@ def playtest_reading(project):
     qa_current = document_is_current(qa)
     expected = bool(observations) or qa_current
     structured = bool(findings)
+    unstructured = expected and not structured
     candidate = last_run_path(project)
     if candidate:
         candidate = {
@@ -8234,8 +8296,8 @@ def playtest_reading(project):
             if qa_current else False
         ),
         "expected": expected,
-        "structured": structured,
-        "unstructured": expected and not structured,
+        "structured": playtest_structured_reading(structured),
+        "unstructured": unstructured,
         "observed": False,
         "outsider": False,
         "form": {

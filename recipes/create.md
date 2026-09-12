@@ -79,7 +79,7 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    o projeto — sem caminho, a frase nomeia e cria a pasta —, põe a
    frase na abertura e no aviso do primeiro ciclo, escreve `AGENTS.md`
    com o comando que abre, o `note` e o `playtest` (não lista rascunhos que não plantou) e devolve o comando que abre o jogo.
-   O `playtest` só lê. Sem os quatro não é achado. Nomear o leitor não observa.
+   O `playtest` só lê. Sem os quatro não é achado. Nomear o leitor não observa. Se a receita recusa que os quatro no disco sejam playtest observado, o `structured` do `playtest` nomeia o observado que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `observado`.
    O prompt nomeia o `playtest` que o `AGENTS.md` já cita. Só lê. Sem os
    quatro não é achado. Sem `then.playtest`. Nomear o leitor não observa.
    Sem memória no disco, `template agents` e o `next` geram o mesmo

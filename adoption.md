@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.635 — o structured do playtest nomeia o observado que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+os
+quatro
+no
+disco
+não
+são
+playtest
+observado.
+O
+playtest
+relatava
+o
+structured
+e
+calava
+a
+recusa.
+Agora
+o
+`structured`
+do
+`playtest`
+nomeia
+o
+observado.
+Arquivo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`observado`.
+Nomear
+não
+observa.
+
 ## 0.9.634 — o ok do sfx verify nomeia o ouvido que a receita já recusa
 
 A

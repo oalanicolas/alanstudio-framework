@@ -864,7 +864,7 @@ abre o painel. Sem o convite o âncora some. `playtest` só lê.
 Nomeia `finding_open` (a url do serve com o convite, ou o mesmo
 endereço sem serve), `form` (o esqueleto dos quatro nomes) e
 `fields`. Sem `then`. Esqueleto no disco
-não é achado. Se a receita recusa que o esqueleto no disco seja achado, o `findings` do `playtest` nomeia o esqueleto que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `esqueleto`. Se o arquivo `docs/qa.md`
+não é achado. Se a receita recusa que o esqueleto no disco seja achado, o `findings` do `playtest` nomeia o esqueleto que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `esqueleto`. Se a receita recusa que os quatro no disco sejam playtest observado, o `structured` do `playtest` nomeia o observado que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `observado`. Se o arquivo `docs/qa.md`
 existir, o recibo o nomeia em `qa`. Escrever não é sessão
 observada. Se
 `docs/playtest/last-run.json` existir, `playtest` o relata
