@@ -10495,7 +10495,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         "audit": {
             "policy": "notify_and_proceed", "executed": False,
             "required": require_audit,
-            "deferred": waiting,
+            "deferred": audit_deferred_reading(waiting),
             "notice": notice,
             "reason": (
                 "O next já pede jogar primeiro. Lacuna de rascunho depois do start não é auditoria neste turno. --event direction-approved e --stage audit continuam pedindo a base."
@@ -11192,6 +11192,67 @@ def audit_scope():
             "Roteiro no disco não é interceptação."
         )
     return scope
+
+
+# O roteiro já recusa que a lacuna de
+# rascunho seja auditoria neste turno.
+# Sem isto o scan relatava o deferred
+# e calava a recusa. Sinal no disco
+# não é o levantamento.
+AUDIT_DRAFT = re.compile(r"não é auditoria neste\s+turno")
+
+
+def project_audit_refuses_draft_gap_as_audit(text):
+    return bool(text and AUDIT_DRAFT.search(text))
+
+
+def audit_deferred_audit_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if project_audit_refuses_draft_gap_as_audit(text):
+        return "references/project-audit.md"
+    return None
+
+
+def audit_deferred_audit_scope():
+    if not audit_deferred_audit_source():
+        return None
+    return (
+        " O disco recusa que a lacuna de rascunho seja auditoria neste turno "
+        "(`auditoria`). Sinal no disco não é o levantamento."
+    )
+
+
+def audit_deferred_scope():
+    scope = (
+        "ciclo fresco que já abre. "
+        "Lacuna de rascunho não é auditoria neste turno."
+    )
+    named = audit_deferred_audit_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def audit_deferred_flag(reading):
+    deferred = (reading or {}).get("deferred")
+    if isinstance(deferred, dict):
+        return bool(deferred.get("deferred"))
+    return bool(deferred)
+
+
+def audit_deferred_reading(waiting):
+    if not waiting:
+        return False
+    return {
+        "deferred": True,
+        "scope": audit_deferred_scope(),
+    }
 
 
 # O roteiro já recusa que reconstruir documentos comprove intenções. Sem isto o

@@ -176,7 +176,7 @@ Lacunas, rascunhos, apenas históricos/referências ou limitações produzem `ne
 não confirmados; `audit.policy: notify_and_proceed` encaminha a execução pelo agente.
 Exceção: se o destino já abre e o ciclo ainda é o atalho do `next` (`playable.unplayed`),
 `audit.required` fica falso, `audit.deferred` verdadeiro e `next_action` é
-`defer_until_playable_cycle`. As lacunas continuam listadas. Jogue primeiro.
+`defer_until_playable_cycle`. As lacunas continuam listadas. Jogue primeiro. Lacuna de rascunho depois do start não é auditoria neste turno. Se o roteiro recusa que a lacuna de rascunho seja auditoria neste turno, o `deferred` do `audit` nomeia a auditoria que o roteiro já recusa. Sinal no disco não é o levantamento. Sem chave `auditoria`.
 `--event direction-approved` e `--stage audit` continuam pedindo a base neste turno.
 Mesmo com todos os candidatos, a estrutura não recebe selo de suficiente, atual
 ou aprovada. Se a leitura necessária à tarefa revelar contradição ou desatualização,

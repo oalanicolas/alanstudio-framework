@@ -30,6 +30,55 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.622 — o deferred do audit nomeia a auditoria que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+lacuna
+de
+rascunho
+depois
+do
+start
+não
+é
+auditoria
+neste
+turno.
+O
+scan
+relatava
+o
+deferred
+e
+calava
+a
+recusa.
+Agora
+o
+`deferred`
+do
+`audit`
+nomeia
+a
+auditoria.
+Sinal
+no
+disco
+não
+é
+o
+levantamento.
+Sem
+chave
+`auditoria`.
+Nomear
+não
+audita.
+
 ## 0.9.621 — o created do start nomeia o executa que a receita já recusa
 
 A
