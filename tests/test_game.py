@@ -12994,6 +12994,70 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             capture_output=True, text=True, check=True,
         ).stdout.strip()
 
+    def test_ship_incomplete_names_the_playable_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_tree_without_four_as_playable(recipe),
+            "a receita já recusa que a árvore sem os quatro seja jogável",
+        )
+        self.assertEqual(game.ship_incomplete_playable_source(), "recipes/release.md")
+        empty = game.ship_reading(self.project)
+        self.assertFalse(empty["incomplete"])
+        self.assertFalse(game.ship_incomplete_flag(empty))
+        self._web_manifest()
+        self.foundation_document()
+        self._release_note()
+        self._artifact_tree(complete=False)
+        report = game.ship_reading(self.project)
+        item = report["incomplete"]
+        self.assertTrue(item["incomplete"], "o ship já relata árvore incompleta")
+        self.assertEqual(item["incomplete"], game.ship_incomplete_flag(report))
+        self.assertIn(
+            "a árvore sem os quatro seja jogável",
+            item["scope"],
+            "o ship relatava o bool e calava a recusa",
+        )
+        self.assertIn("(`jogável`)", item["scope"])
+        self.assertNotIn("jogável", item)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_tree_without_four_as_playable(""))
+        with mock.patch.object(game, "ship_incomplete_playable_source", return_value=None):
+            silent = game.ship_reading(self.project)
+        self.assertNotIn(
+            "a árvore sem os quatro seja jogável",
+            silent["incomplete"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o jogável que a receita já recusa", recipe)
+        self.assertIn("nomeia o jogável que a receita já recusa", skill)
+        self.assertIn("nomeia o jogável que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a árvore sem os quatro seja jogável", report["scope"])
+        if report.get("tree"):
+            self.assertNotIn(
+                "a árvore sem os quatro seja jogável",
+                report["tree"].get("scope") or "",
+            )
+        if report.get("release"):
+            self.assertNotIn(
+                "a árvore sem os quatro seja jogável",
+                report["release"].get("scope") or "",
+            )
+        if report.get("scripts"):
+            self.assertNotIn(
+                "a árvore sem os quatro seja jogável",
+                report["scripts"].get("scope") or "",
+            )
+        self.assertNotIn("a árvore sem os quatro seja jogável", game.next_scope())
+        self.assertNotIn(
+            "a árvore sem os quatro seja jogável",
+            game.save_reading(self.project)["scope"],
+        )
+
     def test_ship_names_version_json_without_calling_it_shipped(self):
         self._web_manifest()
         self.foundation_document()

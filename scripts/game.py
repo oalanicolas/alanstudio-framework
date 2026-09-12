@@ -6199,6 +6199,58 @@ def ship_release_path(pack):
     return release
 
 
+# A receita já recusa que a árvore
+# sem os quatro seja jogável. Sem
+# isto o ship relatava o bool e
+# calava a recusa. Arquivo no
+# disco não é outra máquina.
+RELEASE_PLAYABLE = re.compile(r"Árvore sem esses\s+quatro")
+
+
+def recipe_refuses_tree_without_four_as_playable(text):
+    return bool(text and RELEASE_PLAYABLE.search(text))
+
+
+def ship_incomplete_playable_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_tree_without_four_as_playable(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_incomplete_playable_scope():
+    if not ship_incomplete_playable_source():
+        return None
+    return (
+        " O disco recusa que a árvore sem os quatro seja jogável "
+        "(`jogável`). Arquivo no disco não é outra máquina."
+    )
+
+
+def ship_incomplete_scope():
+    scope = (
+        "árvore incompleta no disco. "
+        "Não é árvore jogável."
+    )
+    named = ship_incomplete_playable_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def ship_incomplete_flag(reading):
+    incomplete = (reading or {}).get("incomplete")
+    if isinstance(incomplete, dict):
+        return bool(incomplete.get("incomplete"))
+    return bool(incomplete)
+
+
 def ship_script_names(project):
     try:
         scripts, _ = project_commands(project)
@@ -6239,6 +6291,11 @@ def ship_reading(project):
             "scope": ship_scripts_scope(),
         }
     incomplete = bool(tree) and not tree["complete"]
+    if incomplete:
+        incomplete = {
+            "incomplete": True,
+            "scope": ship_incomplete_scope(),
+        }
     artifact_open = artifact_open_command(project)
     if artifact_open:
         artifact_open = {

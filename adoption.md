@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.603 — o incomplete do ship nomeia o jogável que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+Árvore
+sem
+esses
+quatro
+é
+`incomplete`.
+O
+ship
+relatava
+o
+bool
+e
+calava
+a
+recusa.
+Agora
+o
+`incomplete`
+do
+`ship`
+nomeia
+o
+jogável.
+Arquivo
+no
+disco
+não
+é
+outra
+máquina.
+Sem
+chave
+`jogável`.
+Nomear
+não
+entrega.
+
+O que 0.9.603 não afirma:
+relatar
+a
+árvore
+incompleta
+não
+abre
+o
+jogo.
+
 ## 0.9.602 — o used do save nomeia o abre que a receita já recusa
 
 A
