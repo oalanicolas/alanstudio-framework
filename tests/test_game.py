@@ -12765,6 +12765,61 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
 
+    def test_playtest_findings_names_the_skeleton_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_skeleton_as_finding(recipe),
+            "a receita já recusa que o esqueleto no disco seja achado",
+        )
+        self.assertEqual(game.playtest_skeleton_source(), "recipes/feel.md")
+        empty = game.playtest_reading(self.project)
+        self.assertEqual(empty["findings"], [])
+        self.assertEqual(game.playtest_findings(self.project), [])
+        (self.project / "docs").mkdir()
+        (self.project / "docs/qa.md").write_text(
+            "# Playtest\n\n"
+            "- Problema: o dash não comunica o contato.\n"
+            "- Evidência: três sessões, o jogador pergunta se atravessou.\n"
+            "- Hipótese: o hitstop de 2 ticks some no movimento.\n"
+            "- Medição: repetir o graze com hitstop 5 e 2 no mesmo recorte.\n",
+            encoding="utf-8",
+        )
+        self.assertEqual(game.playtest_findings(self.project), ["docs/qa.md"])
+        report = game.playtest_reading(self.project)
+        item = report["findings"]
+        self.assertEqual(item["paths"], ["docs/qa.md"])
+        self.assertEqual(item["paths"], game.playtest_findings(self.project))
+        self.assertIn(
+            "esqueleto no disco seja achado",
+            item["scope"],
+            "o playtest listava o arquivo e calava a recusa",
+        )
+        self.assertIn("(`esqueleto`)", item["scope"])
+        self.assertNotIn("esqueleto", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_skeleton_as_finding(""))
+        with mock.patch.object(game, "playtest_skeleton_source", return_value=None):
+            silent = game.playtest_reading(self.project)
+        self.assertNotIn(
+            "esqueleto no disco seja achado",
+            silent["findings"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o esqueleto que a receita já recusa", recipe)
+        self.assertIn("nomeia o esqueleto que a receita já recusa", skill)
+        self.assertIn("nomeia o esqueleto que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("esqueleto no disco seja achado", report["scope"])
+        self.assertNotIn("esqueleto no disco seja achado", game.next_scope())
+        self.assertNotIn(
+            "esqueleto no disco seja achado",
+            game.feel_reading(self.project)["scope"],
+        )
+
     def test_a_structured_finding_is_form_not_an_observed_session(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "docs").mkdir()
@@ -12783,7 +12838,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(report["structured"])
         self.assertFalse(report["unstructured"])
         self.assertFalse(report["observed"])
-        self.assertEqual(report["findings"], ["docs/qa.md"])
+        self.assertEqual(report["findings"]["paths"], ["docs/qa.md"])
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "feel"))]
         self.assertNotIn("playtest.unstructured", bases)
 
@@ -13130,7 +13185,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.playtest_reading(destination)
         self.assertTrue(report["structured"])
         self.assertFalse(report["unstructured"])
-        self.assertEqual(report["findings"], ["docs/playtest/20260910T000000Z-achado.md"])
+        self.assertEqual(report["findings"]["paths"], ["docs/playtest/20260910T000000Z-achado.md"])
         self.assertEqual(report["finding_attachments"], [])
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
@@ -13180,7 +13235,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             encoding="utf-8",
         )
         report = game.playtest_reading(destination)
-        self.assertEqual(report["findings"], ["docs/playtest/20260910T120000Z-achado.md"])
+        self.assertEqual(report["findings"]["paths"], ["docs/playtest/20260910T120000Z-achado.md"])
         self.assertEqual(report["finding_attachments"], [
             "docs/playtest/20260910T120000Z-achado.run.json",
         ])

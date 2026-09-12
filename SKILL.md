@@ -423,7 +423,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    convite o âncora some. `playtest` só lê.
    Nomeia `finding_open` (a url do serve com o convite, ou o
    mesmo endereço sem serve), `form` (esqueleto dos quatro) e
-   `fields`. Sem `then`. Esqueleto no disco não é achado.
+   `fields`. Sem `then`. Esqueleto no disco não é achado. Se a receita recusa que o esqueleto no disco seja achado, o `findings` do `playtest` nomeia o esqueleto que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `esqueleto`.
 
 ### 2. Escala
 

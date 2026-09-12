@@ -30,7 +30,7 @@ some. `playtest` só lê. O prompt nomeia o `playtest`
 que o `AGENTS.md` já cita. Só lê. Sem os quatro não é achado.
 Sem `then.playtest`. Nomear o leitor não observa. Nomeia `finding_open` (a url do
 serve com o convite, ou o mesmo endereço sem serve), `form` e
-`fields`. Sem `then`. Esqueleto no disco não é achado. O `note`
+`fields`. Sem `then`. Esqueleto no disco não é achado. Se a receita recusa que o esqueleto no disco seja achado, o `findings` do `playtest` nomeia o esqueleto que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `esqueleto`. O `note`
 nomeia `finding` e `needed` no próprio recibo. Recibo sem os
 quatro não é achado. Se a receita recusa que o recibo sem os quatro seja achado, o `fields` do `record --kind observation` nomeia a impressão que a receita já recusa. Recibo no disco não é playtest. Sem chave `impressão`. `playtest --invite`
 escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco,

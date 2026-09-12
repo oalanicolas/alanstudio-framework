@@ -5697,6 +5697,51 @@ def playtest_findings(project):
     return found
 
 
+# A receita já recusa que o esqueleto
+# no disco seja achado. Sem isto o
+# playtest listava o arquivo e calava
+# a recusa. Arquivo no disco não é
+# a sessão.
+FEEL_SKELETON = re.compile(r"Esqueleto no disco não é achado")
+
+
+def recipe_refuses_skeleton_as_finding(text):
+    return bool(text and FEEL_SKELETON.search(text))
+
+
+def playtest_skeleton_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_skeleton_as_finding(text):
+        return "recipes/feel.md"
+    return None
+
+
+def playtest_skeleton_scope():
+    if not playtest_skeleton_source():
+        return None
+    return (
+        " O disco recusa que o esqueleto no disco seja achado "
+        "(`esqueleto`). Arquivo no disco não é a sessão."
+    )
+
+
+def playtest_findings_scope():
+    scope = (
+        "achado no disco. "
+        "Não assiste a sessão."
+    )
+    named = playtest_skeleton_scope()
+    if named:
+        scope += named
+    return scope
+
+
 LAST_RUN = "docs/playtest/last-run.json"
 INVITE = "docs/playtest/invite.md"
 INIT_COPY_SKIP = {"dist", "node_modules", ".git", "__pycache__"}
@@ -6282,13 +6327,19 @@ def playtest_reading(project):
             " O disco grava o recado (`note`). "
             "Texto no disco não é alguém de fora."
         )
+    attachments = playtest_finding_attachments(project, findings)
+    if findings:
+        findings = {
+            "paths": findings,
+            "scope": playtest_findings_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
         "exists": project.is_dir(),
         "observations": [item["path"] for item in observations],
         "findings": findings,
-        "finding_attachments": playtest_finding_attachments(project, findings),
+        "finding_attachments": attachments,
         "candidate": candidate,
         "candidate_seed": candidate_seed,
         "candidate_spawn": candidate_spawn,

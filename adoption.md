@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.572 — o findings do playtest nomeia o esqueleto que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+esqueleto
+no
+disco
+não
+é
+achado.
+O
+playtest
+listava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`findings`
+do
+`playtest`
+nomeia
+o
+esqueleto.
+Arquivo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`esqueleto`.
+Nomear
+não
+observa.
+
+O que 0.9.572 não afirma:
+listar
+o
+arquivo
+não
+é
+achado.
+
 ## 0.9.571 — o sources do art nomeia a direção que a receita já recusa
 
 A
