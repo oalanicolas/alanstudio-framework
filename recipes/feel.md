@@ -164,7 +164,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    resolve; o orbe espera. Ordem do array não decide a aposta. Se a receita recusa que a ordem do array decida a aposta, o ciclo nomeia a ordem que a receita já recusa. Ordem no disco não é a escolha. Sem chave `ordem`. A graça
    após dano também vale no mesmo quadro: o segundo estilhaço raspa,
    não empilha impacto. Pose e
-   arquivo no disco não são peso percebido. Se a receita recusa que pose e arquivo no disco sejam peso percebido, o `feel` nomeia a pose que a receita já recusa. Arquivo no disco não é o peso. Sem chave `pose`. Se a receita recusa que o aperto no disco seja peso percebido, o `feel` nomeia o percebido que a receita já recusa. Aperto no disco não é o percebido. Sem chave `percebido`. Se a receita recusa que o pedido decaia no travel, o `feel` nomeia o pedido que a receita já recusa. Pedido no disco não é o land. Sem chave `pedido`.
+   arquivo no disco não são peso percebido. Se a receita recusa que pose e arquivo no disco sejam peso percebido, o `feel` nomeia a pose que a receita já recusa. Arquivo no disco não é o peso. Sem chave `pose`. Se a receita recusa que o aperto no disco seja peso percebido, o `feel` nomeia o percebido que a receita já recusa. Aperto no disco não é o percebido. Sem chave `percebido`. Se a receita recusa que o pedido decaia no travel, o `feel` nomeia o pedido que a receita já recusa. Pedido no disco não é o land. Sem chave `pedido`. Se a receita recusa que o freeze queime o perdão, o `feel` nomeia o freeze que a receita já recusa. Freeze no disco não é o perdão. Sem chave `freeze`.
 4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
 5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.
@@ -297,7 +297,7 @@ Antes de escrever a sua cadeia, leia uma concreta: o starter `canvas-arcade` re�
 perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, buffer de
 guardar, graça após dano — inclusive no mesmo quadro —, alcance de coleta maior que o desenho — cada valor com o
 motivo ao lado. Guardar no hitstop não é engolido. Se a receita recusa que guardar no hitstop seja engolido, o `feel` nomeia o engolido que a receita já recusa. Hitstop no disco não é o perdão. Sem chave `engolido`; o freeze também
-não queima o perdão do avanço nem o da guarda. Um toque sem corrente não decide
+não queima o perdão do avanço nem o da guarda. Se a receita recusa que o freeze queime o perdão, o `feel` nomeia o freeze que a receita já recusa. Freeze no disco não é o perdão. Sem chave `freeze`. Um toque sem corrente não decide
 o próximo orbe. Se a receita recusa que o toque sem corrente decida o orbe, o ciclo nomeia o orbe que a receita já recusa. Toque no disco não é a escolha. Sem chave `orbe`. Cada verbo desloca a câmera numa direção própria e achata o corpo
 numa medida própria: coleta, queda, dash, raspo, aterrissagem, guardar e o erro não compartilham
 squash. O dash aterrissa: o corpo senta, a câmera confirma para baixo,

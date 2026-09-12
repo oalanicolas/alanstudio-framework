@@ -4196,6 +4196,9 @@ def _feel_scope(project):
     ask = feel_request_scope()
     if ask:
         scope += ask
+    ice = feel_freeze_scope()
+    if ice:
+        scope += ice
     return scope
 
 
@@ -4402,6 +4405,41 @@ def feel_request_scope():
     return (
         " O disco recusa que o pedido decaia no travel "
         "(`pedido`). Pedido no disco não é o land."
+    )
+
+
+# A receita já recusa que o
+# freeze queime o perdão.
+# Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Freeze no disco não é o
+# perdão.
+FEEL_FREEZE = re.compile(r"o freeze também\s+não queima o perdão")
+
+
+def recipe_refuses_freeze_as_burning_forgiveness(text):
+    return bool(text and FEEL_FREEZE.search(text))
+
+
+def feel_freeze_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_freeze_as_burning_forgiveness(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_freeze_scope():
+    if not feel_freeze_source():
+        return None
+    return (
+        " O disco recusa que o freeze queime o perdão "
+        "(`freeze`). Freeze no disco não é o perdão."
     )
 
 
