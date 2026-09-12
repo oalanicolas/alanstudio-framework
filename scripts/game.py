@@ -6615,6 +6615,9 @@ def art_reading(project):
     geometry = art_geometry_scope()
     if geometry:
         scope += geometry
+    blow = art_punch_scope()
+    if blow:
+        scope += blow
     if manifests:
         manifests = {
             "paths": manifests,
@@ -13495,6 +13498,40 @@ def art_geometry_scope():
         " O disco recusa que câmera próxima e geometria numericamente "
         "correta provem leitura (`geometria`). Número no disco não é a "
         "silhueta."
+    )
+
+
+# A receita já recusa que o lean
+# seja punch. Sem isto o art
+# listava paletas e calava a
+# recusa. Lean no disco não é
+# o punch.
+VISUAL_PUNCH = re.compile(r"já marca; não é punch")
+
+
+def recipe_refuses_lean_as_punch(text):
+    return bool(text and VISUAL_PUNCH.search(text))
+
+
+def art_punch_source():
+    path = VISUAL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_lean_as_punch(text):
+        return "recipes/visual.md"
+    return None
+
+
+def art_punch_scope():
+    if not art_punch_source():
+        return None
+    return (
+        " O disco recusa que o lean seja punch "
+        "(`punch`). Lean no disco não é o punch."
     )
 
 

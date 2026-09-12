@@ -3432,6 +3432,57 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.scan(starter)["scope"],
         )
 
+    def test_art_names_the_punch_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_lean_as_punch(recipe),
+            "a receita já recusa que o lean seja punch",
+        )
+        self.assertEqual(game.art_punch_source(), "recipes/visual.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.art_reading(starter)
+        self.assertIn(
+            "o lean seja punch",
+            report["scope"],
+            "o art listava paletas e calava a recusa",
+        )
+        self.assertIn("(`punch`)", report["scope"])
+        self.assertNotIn("punch", report)
+        self.assertFalse(report["consistent"])
+        self.assertFalse(game.recipe_refuses_lean_as_punch(""))
+        with mock.patch.object(game, "art_punch_source", return_value=None):
+            silent = game.art_reading(starter)
+        self.assertNotIn("o lean seja punch", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o punch que a receita já recusa", recipe)
+        self.assertIn("nomeia o punch que a receita já recusa", create)
+        self.assertIn("nomeia o punch que a receita já recusa", skill)
+        self.assertIn("nomeia o punch que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertTrue(report["palettes"])
+        self.assertNotIn(
+            "o lean seja punch",
+            report["palettes"][0].get("scope") or "",
+        )
+        self.assertTrue(report["rains"])
+        self.assertNotIn(
+            "o lean seja punch",
+            game.art_rain_items(report)[0].get("scope") or "",
+        )
+        self.assertNotIn("o lean seja punch", game.art_direction_scope())
+        self.assertNotIn("o lean seja punch", game.next_scope())
+        self.assertNotIn("o lean seja punch", game.scan(starter)["scope"])
+        self.assertNotIn("o lean seja punch", game.feel_reading(starter)["scope"])
+        self.assertNotIn("o lean seja punch", game.feel_unobserved_scope())
+        self.assertNotIn("o lean seja punch", game.cycle_scope() or "")
+        self.assertNotIn("o lean seja punch", game.play_scope(starter))
+        self.assertNotIn("o lean seja punch", game.git_summary_scope())
+        self.assertNotIn("punch", game.CYCLE_KEYS)
+
     def test_art_manifests_names_the_currency_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
         self.assertTrue(

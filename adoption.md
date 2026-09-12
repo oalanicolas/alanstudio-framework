@@ -30,6 +30,46 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.700 — o art nomeia o punch que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+lean
+não
+é
+punch.
+O
+art
+listava
+paletas
+e
+calava
+a
+recusa.
+Agora
+o
+`art`
+nomeia
+o
+punch.
+Lean
+no
+disco
+não
+é
+o
+punch.
+Sem
+chave
+`punch`.
+Nomear
+não
+observa.
+
 ## 0.9.699 — o candidate_curve nomeia o fecho que a receita já recusa
 
 A

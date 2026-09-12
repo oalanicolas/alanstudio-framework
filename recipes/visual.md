@@ -65,7 +65,7 @@ moeda de troca por número. Se a receita recusa que a qualidade visual aprovada 
 
 Na câmera, observe antecipação de curvas/ameaças, oclusão do jogador, estabilidade,
 escala e transição. No starter a câmera inclina para o que o trilho
-já marca; não é punch. Lean no disco não é comparação em movimento. No mundo, compare silhueta, materiais, luz, sombras, efeitos e
+já marca; não é punch. Se a receita recusa que o lean seja punch, o `art` nomeia o punch que a receita já recusa. Lean no disco não é o punch. Sem chave `punch`. Lean no disco não é comparação em movimento. No mundo, compare silhueta, materiais, luz, sombras, efeitos e
 coerência em movimento, não apenas a melhor screenshot. Feel da ação e mix da
 consequência têm receitas próprias: [feel](feel.md), [áudio](audio.md). Não trate
 partículas ou um loop de fundo como substituto desses focos.
