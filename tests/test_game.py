@@ -11743,6 +11743,59 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.playtest_reading(starter)["scope"],
         )
 
+    def test_ship_ci_names_the_first_run_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_ci_as_first_run(recipe),
+            "a receita já recusa que a CI seja a primeira execução",
+        )
+        self.assertEqual(game.ship_ci_first_source(), "recipes/release.md")
+        destination = self.root / "com-ci"
+        game.init(destination, "canvas-arcade")
+        path = destination / ".github/workflows/ci.yml"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("name: ci\n", encoding="utf-8")
+        self.assertEqual(game.ship_ci(destination), [".github/workflows/ci.yml"])
+        report = game.ship_reading(destination)
+        item = report["ci"]
+        self.assertEqual(item["paths"], [".github/workflows/ci.yml"])
+        self.assertIn(
+            "CI seja a primeira execução",
+            item["scope"],
+            "o ship listava o fluxo e calava a recusa",
+        )
+        self.assertIn("(`primeira`)", item["scope"])
+        self.assertNotIn("primeira", item)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_ci_as_first_run(""))
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertEqual(game.ship_ci(starter), [])
+        self.assertEqual(game.ship_reading(starter)["ci"], [])
+        with mock.patch.object(game, "ship_ci_first_source", return_value=None):
+            silent = game.ship_reading(destination)
+        self.assertNotIn(
+            "CI seja a primeira execução",
+            silent["ci"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a primeira que a receita já recusa", recipe)
+        self.assertIn("nomeia a primeira que a receita já recusa", skill)
+        self.assertIn("nomeia a primeira que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("CI seja a primeira execução", report["scope"])
+        if report.get("tree"):
+            self.assertNotIn("CI seja a primeira execução", report["tree"]["scope"])
+        if report.get("artifact"):
+            self.assertNotIn("CI seja a primeira execução", report["artifact"]["scope"])
+        self.assertNotIn(
+            "CI seja a primeira execução",
+            game.budget_reading(destination)["scope"],
+        )
+        self.assertNotIn("CI seja a primeira execução", game.next_scope())
+
     def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
         # O export já copia src/. Sem isto o ship dizia
         # completa uma dist/ só com identidade e serve.

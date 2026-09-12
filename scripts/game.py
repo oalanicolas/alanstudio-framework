@@ -5005,6 +5005,51 @@ def ship_ceiling_scope():
     )
 
 
+# A receita já recusa que a CI seja
+# a primeira execução. Sem isto o
+# ship listava o fluxo e calava a
+# recusa. Fluxo no disco não é
+# instalação limpa.
+RELEASE_FIRST = re.compile(r"instalação\s+limpa")
+
+
+def recipe_refuses_ci_as_first_run(text):
+    return bool(text and RELEASE_FIRST.search(text))
+
+
+def ship_ci_first_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_ci_as_first_run(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_ci_first_scope():
+    if not ship_ci_first_source():
+        return None
+    return (
+        " O disco recusa que a CI seja a primeira execução "
+        "(`primeira`). Fluxo no disco não é instalação limpa."
+    )
+
+
+def ship_ci_scope():
+    scope = (
+        "fluxo de CI no disco. "
+        "Não executa o artefato e não instala limpo."
+    )
+    named = ship_ci_first_scope()
+    if named:
+        scope += named
+    return scope
+
+
 def ship_reading(project):
     project = Path(project)
     try:
@@ -5020,6 +5065,11 @@ def ship_reading(project):
     ci = ship_ci(project)
     release = project / SHIP_RELEASE
     release_current = document_is_current(release)
+    if ci:
+        ci = {
+            "paths": ci,
+            "scope": ship_ci_scope(),
+        }
     artifact = ship_artifact(project)
     if artifact is not None:
         artifact = dict(artifact, scope=ship_artifact_scope())

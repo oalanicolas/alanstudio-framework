@@ -43,7 +43,7 @@ O que precisa estar resolvido antes de chamar uma versão entregável:
   com a entrada, a resolução e o sistema pretendidos. Emulação e redimensionar
   uma janela não substituem isso.
 - **Primeira execução:** instalação limpa, sem save, sem cache, sem permissão
-  concedida. É o único caminho que todo jogador percorre e o menos testado.
+  concedida. É o único caminho que todo jogador percorre e o menos testado. Se a receita recusa que a CI seja a primeira execução, o `ci` do `ship` nomeia a primeira que a receita já recusa. Fluxo no disco não é instalação limpa. Sem chave `primeira`.
 - **Proveniência do que embarca:** cada asset, fonte, som, biblioteca e recurso
   gerado com origem, crédito e condição de uso compatíveis com a distribuição
   pretendida. Licença desconhecida bloqueia a entrega, não recebe uma suposição.
