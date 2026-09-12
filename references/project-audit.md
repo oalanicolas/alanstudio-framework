@@ -209,7 +209,7 @@ e ausência de implementação. Pedido geral sem alvo não manda auditar todo o 
 Durante criação/evolução, aprovação de imagem, conceito, escopo ou recorte é um evento
 da conversa. O agente seleciona `context <projeto> --focus <foco> --event direction-approved`;
 o usuário não precisa saber o comando nem pedir PRD/GDD. O evento não é inferido do
-nome de um arquivo e não aprova decisões em nome do usuário.
+nome de um arquivo e não aprova decisões em nome do usuário. Se o roteiro recusa que o evento seja inferido do nome de um arquivo, o `context` nomeia o inferido que o roteiro já recusa. Arquivo no disco não é a conversa. Sem chave `inferido`.
 
 `documentation.action: document_minimum` exige sincronizar a base oficial neste turno,
 mesmo se `foundation` encontrou candidatos nas nove áreas. Leia os candidatos e seus

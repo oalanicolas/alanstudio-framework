@@ -5409,6 +5409,56 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(result["foundation"]["audit"]["executed"])
         self.assertEqual(before, {p.name: p.read_bytes() for p in self.project.iterdir()})
 
+    def test_context_names_the_inferred_event_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.audit_refuses_filename_as_event(guide),
+            "o roteiro já recusa que o evento seja inferido do nome de um arquivo",
+        )
+        self.assertEqual(game.context_event_source(), "references/project-audit.md")
+        report = game.context(self.project, "create")
+        self.assertIn(
+            "o evento seja inferido do nome de um arquivo",
+            report["scope"],
+            "o context copiava o evento e calava a recusa",
+        )
+        self.assertIn("(`inferido`)", report["scope"])
+        self.assertNotIn("inferido", report)
+        self.assertEqual(report["event"], "task")
+        self.assertFalse(game.audit_refuses_filename_as_event(""))
+        with mock.patch.object(game, "context_event_source", return_value=None):
+            silent = game.context(self.project, "create")
+        self.assertNotIn(
+            "o evento seja inferido do nome de um arquivo",
+            silent["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o inferido que o roteiro já recusa", guide)
+        self.assertIn("nomeia o inferido que o roteiro já recusa", recipe)
+        self.assertIn("nomeia o inferido que o roteiro já recusa", skill)
+        self.assertIn("nomeia o inferido que o roteiro já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "o evento seja inferido do nome de um arquivo",
+            report["documentation"]["scope"],
+        )
+        self.assertNotIn(
+            "o evento seja inferido do nome de um arquivo",
+            game.finish_scope(),
+        )
+        self.assertNotIn(
+            "o evento seja inferido do nome de um arquivo",
+            game.scan(self.project)["areas"]["qa"]["scope"],
+        )
+        self.assertNotIn(
+            "o evento seja inferido do nome de um arquivo",
+            game.next_step(self.project)["scope"],
+        )
+
     def test_scan_limits_require_documentation_review_even_when_all_candidates_were_found(self):
         self.foundation_document()
         (self.project / "z-notes.md").write_text("Notes\n" + "x" * 3000)

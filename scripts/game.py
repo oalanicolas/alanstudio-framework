@@ -13309,7 +13309,44 @@ def context_scope():
             " O disco recusa que a etapa certifique o progresso (`progresso`). "
             "Contexto no disco não é degrau."
         )
+    named = context_event_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O roteiro já recusa que o evento
+# seja inferido do nome de um arquivo.
+# Sem isto o context copiava o evento
+# e calava a recusa. Arquivo no disco
+# não é a conversa.
+AUDIT_EVENT = re.compile(r"não é inferido do")
+
+
+def audit_refuses_filename_as_event(text):
+    return bool(text and AUDIT_EVENT.search(text))
+
+
+def context_event_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_refuses_filename_as_event(text):
+        return "references/project-audit.md"
+    return None
+
+
+def context_event_scope():
+    if not context_event_source():
+        return None
+    return (
+        " O disco recusa que o evento seja inferido do nome de um arquivo "
+        "(`inferido`). Arquivo no disco não é a conversa."
+    )
 
 
 # A guia já recusa que a checagem seja validador semântico.
