@@ -684,7 +684,7 @@ def search_catalog(query, root=None, limit=40):
         cards.append(card)
     report = {
         "query": query, "count": len(matches),
-        "empty": empty,
+        "empty": search_empty_reading(empty),
         "matches": cards,
         "local": local,
         "heard": False,
@@ -1003,6 +1003,67 @@ def summarize_empty_reading(empty):
     return {
         "empty": True,
         "scope": summarize_empty_scope(),
+    }
+
+
+# A receita já recusa que o
+# catálogo vazio seja a busca.
+# Sem isto o search relatava o
+# empty e calava a recusa. Lista
+# no disco não é mix.
+AUDIO_EMPTY_SEARCH = re.compile(r"Catálogo vazio não é a busca")
+
+
+def recipe_refuses_empty_catalog_as_search(text):
+    return bool(text and AUDIO_EMPTY_SEARCH.search(text))
+
+
+def search_empty_listen_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_empty_catalog_as_search(text):
+        return "recipes/audio.md"
+    return None
+
+
+def search_empty_listen_scope():
+    if not search_empty_listen_source():
+        return None
+    return (
+        " O disco recusa que o catálogo vazio seja a busca "
+        "(`busca`). Lista no disco não é mix."
+    )
+
+
+def search_empty_scope():
+    scope = (
+        "catálogo sem stems no disco. "
+        "O search não ouve o mix."
+    )
+    named = search_empty_listen_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def search_empty_flag(reading):
+    empty = (reading or {}).get("empty") if isinstance(reading, dict) else reading
+    if isinstance(empty, dict):
+        return bool(empty.get("empty"))
+    return bool(empty)
+
+
+def search_empty_reading(empty):
+    if not empty:
+        return False
+    return {
+        "empty": True,
+        "scope": search_empty_scope(),
     }
 
 

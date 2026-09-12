@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.648 — o empty do sfx search nomeia a busca que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+catálogo
+vazio
+não
+é
+a
+busca.
+O
+search
+relatava
+o
+empty
+e
+calava
+a
+recusa.
+Agora
+o
+`empty`
+do
+`sfx search`
+nomeia
+a
+busca.
+Lista
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`busca`.
+Nomear
+não
+ouve.
+
 ## 0.9.647 — o issues_truncated da coverage nomeia a falta que o roteiro já recusa
 
 O

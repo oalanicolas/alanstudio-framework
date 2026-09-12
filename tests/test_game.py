@@ -9916,6 +9916,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(filled["empty"])
         self.assertFalse(game.sfx_catalog.summarize_empty_flag(filled))
 
+    def test_sfx_search_empty_names_the_search_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_empty_catalog_as_search(recipe),
+            "a receita já recusa que o catálogo vazio seja a busca",
+        )
+        self.assertEqual(game.sfx_catalog.search_empty_listen_source(), "recipes/audio.md")
+        report = game.sfx_catalog.search_catalog("dash", self.root)
+        item = report["empty"]
+        self.assertTrue(item["empty"], "o search já relata o catálogo vazio neste laboratório")
+        self.assertEqual(item["empty"], game.sfx_catalog.search_empty_flag(report))
+        self.assertIn(
+            "o catálogo vazio seja a busca",
+            item["scope"],
+            "o search relatava o empty e calava a recusa",
+        )
+        self.assertIn("(`busca`)", item["scope"])
+        self.assertNotIn("busca", item)
+        self.assertFalse(report["heard"])
+        self.assertEqual(report["matches"], [])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_empty_catalog_as_search(""))
+        with mock.patch.object(game.sfx_catalog, "search_empty_listen_source", return_value=None):
+            silent = game.sfx_catalog.search_empty_reading(True)
+        self.assertNotIn(
+            "o catálogo vazio seja a busca",
+            silent["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a busca que a receita já recusa", recipe)
+        self.assertIn("nomeia a busca que a receita já recusa", skill)
+        self.assertIn("nomeia a busca que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o catálogo vazio seja a busca", report.get("scope") or "")
+        self.assertNotIn("o catálogo vazio seja a busca", report["next"])
+        if report.get("local"):
+            self.assertNotIn(
+                "o catálogo vazio seja a busca",
+                report["local"].get("scope") or "",
+            )
+        if report.get("matches"):
+            self.assertNotIn(
+                "o catálogo vazio seja a busca",
+                report["matches"][0].get("scope") or "",
+            )
+        summary = game.sfx_catalog.summarize(self.root)
+        if isinstance(summary.get("empty"), dict):
+            self.assertNotIn(
+                "o catálogo vazio seja a busca",
+                summary["empty"].get("scope") or "",
+            )
+        self._plant_catalog_sound()
+        filled = game.sfx_catalog.search_catalog("dash", self.root)
+        self.assertFalse(filled["empty"])
+        self.assertFalse(game.sfx_catalog.search_empty_flag(filled))
+
     def test_sfx_summary_names_the_peak_the_tool_already_reports(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         tool = (starter / "tools/peak.mjs").read_text(encoding="utf-8")
