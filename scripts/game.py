@@ -1961,6 +1961,41 @@ def craft_item_metrics_scope():
     )
 
 
+# A pesquisa já recusa que as
+# palestras dêem limiar. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Palestra no disco
+# não é o critério.
+CRAFT_THRESHOLD = re.compile(r"Nenhuma das duas palestras dá limiar")
+
+
+def research_refuses_talks_as_threshold(text):
+    return bool(text and CRAFT_THRESHOLD.search(text))
+
+
+def craft_item_threshold_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_talks_as_threshold(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_threshold_scope():
+    if not craft_item_threshold_source():
+        return None
+    return (
+        " O disco recusa que as palestras dêem limiar "
+        "(`limiar`). Palestra no disco não é o critério."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -1990,6 +2025,9 @@ def craft_item_scope():
     alias = craft_item_metrics_scope()
     if alias:
         scope += alias
+    juice = craft_item_threshold_scope()
+    if juice:
+        scope += juice
     return scope
 
 
