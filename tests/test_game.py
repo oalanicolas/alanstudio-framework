@@ -14836,6 +14836,56 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.next_scope())
         self.assertNotIn("inflama", game.CYCLE_KEYS)
 
+    def test_feel_names_the_kill_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"sentar e pontuar no mesmo impacto não mata")
+        self.assertTrue(
+            game.recipe_refuses_sit_and_score_as_killing(recipe),
+            "a receita já recusa que sentar e pontuar no mesmo impacto matem",
+        )
+        self.assertEqual(game.feel_kill_source(), "recipes/feel.md")
+        report = game.feel_reading(self.project)
+        self.assertIn(
+            "sentar e pontuar no mesmo impacto matem",
+            report["scope"],
+            "o feel lia o CONFIG e calava a recusa",
+        )
+        self.assertIn("(`mata`)", report["scope"])
+        self.assertIn("Impacto no disco não é a morte.", report["scope"])
+        self.assertNotIn("mata", report)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_sit_and_score_as_killing(""))
+        with mock.patch.object(game, "feel_kill_source", return_value=None):
+            silent = game.feel_reading(self.project)
+        self.assertNotIn("sentar e pontuar no mesmo impacto matem", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o mata que a receita já recusa"), 2)
+        self.assertIn("nomeia o mata que a receita já recusa", create)
+        self.assertIn("nomeia o mata que a receita já recusa", skill)
+        self.assertIn("nomeia o mata que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        phrase = "sentar e pontuar no mesmo impacto matem"
+        self.assertNotIn(phrase, game.feel_unobserved_scope())
+        self.assertNotIn(phrase, game.feel_constants_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("mata", game.CYCLE_KEYS)
+
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
         destination = self.root / "com-observacao"
         game.init(destination, "canvas-arcade")
