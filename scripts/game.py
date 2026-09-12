@@ -16983,6 +16983,9 @@ def cycle_scope():
     press = cycle_hold_scope()
     if press:
         scope += press
+    orb = cycle_orb_scope()
+    if orb:
+        scope += orb
     return scope or None
 
 
@@ -17123,6 +17126,43 @@ def cycle_hold_scope():
     return (
         " O disco recusa que o segurar seja o avanço "
         "(`segurar`). Segurar no disco não é o dash."
+    )
+
+
+# A receita já recusa que o
+# toque sem corrente decida o
+# orbe. Sem isto o ciclo
+# anunciava o verbo e calava
+# a recusa. Toque no disco
+# não é a escolha.
+FEEL_ORB = re.compile(
+    r"Um toque sem corrente não decide\s+o próximo orbe"
+)
+
+
+def recipe_refuses_touch_without_chain_as_orb_choice(text):
+    return bool(text and FEEL_ORB.search(text))
+
+
+def cycle_orb_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_touch_without_chain_as_orb_choice(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_orb_scope():
+    if not cycle_orb_source():
+        return None
+    return (
+        " O disco recusa que o toque sem corrente decida o orbe "
+        "(`orbe`). Toque no disco não é a escolha."
     )
 
 

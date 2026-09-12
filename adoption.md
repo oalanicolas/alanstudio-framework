@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.730 — o ciclo nomeia o orbe que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+um
+toque
+sem
+corrente
+não
+decide
+o
+próximo
+orbe.
+O
+ciclo
+anunciava
+o
+verbo
+e
+calava
+a
+recusa.
+Agora
+o
+ciclo
+nomeia
+o
+orbe.
+Toque
+no
+disco
+não
+é
+a
+escolha.
+Sem
+chave
+`orbe`.
+Nomear
+não
+observa.
+
 ## 0.9.729 — o used do save nomeia o índice que a receita já recusa
 
 A

@@ -10,7 +10,7 @@ Captura no disco não é sessão observada. Se a receita recusa que captura no d
 hold — o keyup some e o corpo não segue. Perder o foco da janela
 solta o ofício pendente — Space e R não disparam no quadro
 seguinte. Na pausa o toque retoma — Esc e P não existem no
-polegar; o tap não é o avanço. Se a receita recusa que o tap seja o avanço, o ciclo nomeia o tap que a receita já recusa. Polegar no disco não é o dash. Sem chave `tap`. Se a receita recusa que o segurar seja o avanço, o ciclo nomeia o segurar que a receita já recusa. Segurar no disco não é o dash. Sem chave `segurar`. Se a receita recusa que o lock seja o descanso, o ciclo nomeia o lock que a receita já recusa. Lock no disco não é o descanso. Sem chave `lock`. Se a receita recusa que o arco prometa o dash, o `play` nomeia o arco que a receita já recusa. Arco no disco não é o dash. Sem chave `arco`. No campo o telefone
+polegar; o tap não é o avanço. Se a receita recusa que o tap seja o avanço, o ciclo nomeia o tap que a receita já recusa. Polegar no disco não é o dash. Sem chave `tap`. Se a receita recusa que o segurar seja o avanço, o ciclo nomeia o segurar que a receita já recusa. Segurar no disco não é o dash. Sem chave `segurar`. Se a receita recusa que o toque sem corrente decida o orbe, o ciclo nomeia o orbe que a receita já recusa. Toque no disco não é a escolha. Sem chave `orbe`. Se a receita recusa que o lock seja o descanso, o ciclo nomeia o lock que a receita já recusa. Lock no disco não é o descanso. Sem chave `lock`. Se a receita recusa que o arco prometa o dash, o `play` nomeia o arco que a receita já recusa. Arco no disco não é o dash. Sem chave `arco`. No campo o telefone
 pausa no relógio; o resto da tela continua o avanço.
 O relógio nomeia a pausa — sem o || o canto calava o
 verbo e o convite some a tabela. Na porta o canto
@@ -298,7 +298,7 @@ perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, buffe
 guardar, graça após dano — inclusive no mesmo quadro —, alcance de coleta maior que o desenho — cada valor com o
 motivo ao lado. Guardar no hitstop não é engolido. Se a receita recusa que guardar no hitstop seja engolido, o `feel` nomeia o engolido que a receita já recusa. Hitstop no disco não é o perdão. Sem chave `engolido`; o freeze também
 não queima o perdão do avanço nem o da guarda. Um toque sem corrente não decide
-o próximo orbe. Cada verbo desloca a câmera numa direção própria e achata o corpo
+o próximo orbe. Se a receita recusa que o toque sem corrente decida o orbe, o ciclo nomeia o orbe que a receita já recusa. Toque no disco não é a escolha. Sem chave `orbe`. Cada verbo desloca a câmera numa direção própria e achata o corpo
 numa medida própria: coleta, queda, dash, raspo, aterrissagem, guardar e o erro não compartilham
 squash. O dash aterrissa: o corpo senta, a câmera confirma para baixo,
 o rastro cai e o mixer fala `land` — distintos da partida. O avanço
