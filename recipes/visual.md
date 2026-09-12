@@ -15,7 +15,7 @@ abrir. Sem tela o headless já joga.
 
 O harness lê paleta e art-bible vigentes com `art <projeto>`. Paleta no
 código ou em `data/palettes.json` não é direção consistente — `consistent` é sempre falso. Se a receita recusa que paleta no código ou em palettes.json seja direção consistente, o `sources` do `art` nomeia a direção que a receita já recusa. Arquivo no disco não é comparação. Sem chave `direção`. Rascunho
-do `init` não conta. Sem declaração, `next` propõe `art.missing`.
+do `init` não conta. Se a receita recusa que o rascunho do init conte, o `bible` do `art` nomeia o rascunho que a receita já recusa. Arquivo no disco não é comparação. Sem chave `rascunho`. Sem declaração, `next` propõe `art.missing`.
 `art` também nomeia as mesas de chuva que o disco já tem
 (`intervalTicks`, `fallSpeed` e `hazardChance` em `data/`, `tables/` ou `content/`).
 Mesa no disco não é volume nem comparação em movimento. Se a receita recusa que a mesa seja volume, o `art` nomeia o volume que a receita já recusa. Lista no disco não é comparação. Sem chave `volume`. Paleta sem

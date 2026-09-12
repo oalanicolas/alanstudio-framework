@@ -4654,6 +4654,65 @@ def art_source_files(project):
     return found[:8]
 
 
+# A receita já recusa que o rascunho
+# do init conte. Sem isto o art
+# relatava o art-bible e calava a
+# recusa. Arquivo no disco não é
+# comparação.
+VISUAL_DRAFT = re.compile(r"Rascunho\s+do `init` não conta")
+
+
+def recipe_refuses_init_draft_as_declaration(text):
+    return bool(text and VISUAL_DRAFT.search(text))
+
+
+def art_bible_draft_source():
+    path = FRAMEWORK / "recipes/visual.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_init_draft_as_declaration(text):
+        return "recipes/visual.md"
+    return None
+
+
+def art_bible_draft_scope():
+    if not art_bible_draft_source():
+        return None
+    return (
+        " O disco recusa que o rascunho do init conte "
+        "(`rascunho`). Arquivo no disco não é comparação."
+    )
+
+
+def art_bible_scope():
+    scope = (
+        "art-bible no disco. "
+        "Não compara silhueta."
+    )
+    named = art_bible_draft_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def art_bible_path(project):
+    path = Path(project) / ART_BIBLE
+    if path.is_file() and not path.is_symlink():
+        return ART_BIBLE
+    return None
+
+
+def art_bible(reading):
+    bible = (reading or {}).get("bible")
+    if isinstance(bible, dict):
+        return bible.get("path")
+    return bible
+
+
 def art_reading(project):
     project = Path(project)
     palettes = []
@@ -4740,7 +4799,13 @@ def art_reading(project):
         "rains": rains,
         "manifests": manifests,
         "sources": sources,
-        "bible": ART_BIBLE if bible_present else None,
+        "bible": (
+            {
+                "path": ART_BIBLE,
+                "scope": art_bible_scope(),
+            }
+            if bible_present else None
+        ),
         "bible_current": bible_current,
         "bible_draft": bible_present and not bible_current,
         "declared": declared,

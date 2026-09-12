@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.581 — o bible do art nomeia o rascunho que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+rascunho
+do
+`init`
+não
+conta.
+O
+art
+relatava
+o
+art-bible
+e
+calava
+a
+recusa.
+Agora
+o
+`bible`
+do
+`art`
+nomeia
+o
+rascunho.
+Arquivo
+no
+disco
+não
+é
+comparação.
+Sem
+chave
+`rascunho`.
+Nomear
+não
+observa.
+
+O que 0.9.581 não afirma:
+nomear
+o
+art-bible
+não
+é
+direção
+consistente.
+
 ## 0.9.580 — o invite do playtest nomeia a preferência que a receita já recusa
 
 A

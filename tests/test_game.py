@@ -2676,6 +2676,67 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.next_scope(),
         )
 
+    def test_art_bible_names_the_draft_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_init_draft_as_declaration(recipe),
+            "a receita já recusa que o rascunho do init conte",
+        )
+        self.assertEqual(game.art_bible_draft_source(), "recipes/visual.md")
+        empty = game.art_reading(self.project)
+        self.assertIsNone(empty["bible"])
+        self.assertIsNone(game.art_bible(empty))
+        self.assertIsNone(game.art_bible_path(self.project))
+        (self.project / "docs").mkdir()
+        (self.project / "docs/art-bible.md").write_text(
+            "# Design system\n\nPrimitivas azuis e laranja; escala 1x no canvas.\n",
+            encoding="utf-8",
+        )
+        self.assertEqual(game.art_bible_path(self.project), "docs/art-bible.md")
+        report = game.art_reading(self.project)
+        item = report["bible"]
+        self.assertEqual(item["path"], "docs/art-bible.md")
+        self.assertEqual(item["path"], game.art_bible(report))
+        self.assertIn(
+            "o rascunho do init conte",
+            item["scope"],
+            "o art relatava o art-bible e calava a recusa",
+        )
+        self.assertIn("(`rascunho`)", item["scope"])
+        self.assertNotIn("rascunho", item)
+        self.assertFalse(report["consistent"])
+        self.assertFalse(game.recipe_refuses_init_draft_as_declaration(""))
+        with mock.patch.object(game, "art_bible_draft_source", return_value=None):
+            silent = game.art_reading(self.project)
+        self.assertNotIn(
+            "o rascunho do init conte",
+            silent["bible"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o rascunho que a receita já recusa", recipe)
+        self.assertIn("nomeia o rascunho que a receita já recusa", skill)
+        self.assertIn("nomeia o rascunho que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o rascunho do init conte", report["scope"])
+        if report.get("sources"):
+            self.assertNotIn(
+                "o rascunho do init conte",
+                report["sources"].get("scope") or "",
+            )
+        if report.get("manifests"):
+            self.assertNotIn(
+                "o rascunho do init conte",
+                report["manifests"].get("scope") or "",
+            )
+        self.assertNotIn("o rascunho do init conte", game.next_scope())
+        self.assertNotIn(
+            "o rascunho do init conte",
+            game.budget_reading(self.project)["scope"],
+        )
+
     def test_doctor_names_the_publisher_the_skill_already_refuses(self):
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         self.assertTrue(
@@ -11441,7 +11502,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(art["consistent"])
         self.assertEqual({item["key"] for item in art["palettes"]}, {"normal", "contrast", "dusk", "calm"})
         self.assertEqual({item["key"] for item in art["rains"]}, {"spawn", "dusk", "calm"})
-        self.assertEqual(art["bible"], "docs/art-bible.md")
+        self.assertEqual(art["bible"]["path"], "docs/art-bible.md")
         self.assertTrue(art["bible_current"])
         self.assertFalse(art["bible_draft"])
         self.assertTrue(inventory["external"])
