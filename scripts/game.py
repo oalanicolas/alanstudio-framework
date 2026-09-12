@@ -16670,6 +16670,9 @@ def cycle_scope():
     fx = cycle_effects_scope()
     if fx:
         scope += fx
+    press = cycle_hold_scope()
+    if press:
+        scope += press
     return scope or None
 
 
@@ -16775,6 +16778,41 @@ def cycle_effects_scope():
     return (
         " O disco recusa que três efeitos no impacto compensem input que ignora o botão "
         "(`efeitos`). Efeitos no disco não são o input."
+    )
+
+
+# A receita já recusa que o
+# segurar seja o avanço. Sem
+# isto o ciclo anunciava o
+# verbo e calava a recusa.
+# Segurar no disco não é o
+# dash.
+FEEL_HOLD = re.compile(r"o aperto, não o segurar")
+
+
+def recipe_refuses_hold_as_dash(text):
+    return bool(text and FEEL_HOLD.search(text))
+
+
+def cycle_hold_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hold_as_dash(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_hold_scope():
+    if not cycle_hold_source():
+        return None
+    return (
+        " O disco recusa que o segurar seja o avanço "
+        "(`segurar`). Segurar no disco não é o dash."
     )
 
 
