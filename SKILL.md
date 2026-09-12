@@ -78,7 +78,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
   comando original. Restrição explícita na conversa continua valendo.
 - **“Inicie/inicialize o projeto”** sem alvo operacional é [`teach`](commands/teach.md)
   (`--event initialize`); “inicie o servidor/partida” é essa operação; “inicie a
-  implementação” de etapa definida retoma o recorte. Se o roteiro recusa que o aviso seja uma pergunta, o `context` nomeia a pergunta que o roteiro já recusa. Aviso no disco não é espera. Sem chave `pergunta`. O objeto e a conversa prevalecem.
+  implementação” de etapa definida retoma o recorte. Se o roteiro recusa que o aviso seja uma pergunta, o `context` nomeia a pergunta que o roteiro já recusa. Aviso no disco não é espera. Sem chave `pergunta`. Se o roteiro recusa que o resultado seja inferido pelo scanner, o `context` nomeia o scanner que o roteiro já recusa. Sinal no disco não é o resultado. Sem chave `scanner`. O objeto e a conversa prevalecem.
 - `capabilities.mentioned` aponta arquivo local; não prova pause, reset, seed,
   observe, act, advance, capture nem dispose. `context` lê arquivos sem executá-los.
 

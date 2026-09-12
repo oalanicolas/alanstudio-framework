@@ -1048,6 +1048,73 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         ordinary = game.context(self.project, "mechanics")
         self.assertIsNone(ordinary["documentation"]["initialization"])
 
+    def test_initialization_names_the_scanner_the_audit_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.audit_refuses_result_as_scanner_inference(guide),
+            "o roteiro já recusa que o resultado seja inferido pelo scanner",
+        )
+        self.assertEqual(
+            game.documentation_initialization_scanner_source(),
+            "references/project-audit.md",
+        )
+        self.package()
+        report = game.context(self.project, "mechanics", event="initialize")
+        item = report["documentation"]["initialization"]
+        self.assertIn(
+            "o resultado seja inferido pelo scanner",
+            item["scope"],
+            "a inicialização copiava o aviso e calava a recusa",
+        )
+        self.assertIn("(`scanner`)", item["scope"])
+        self.assertNotIn("scanner", item)
+        self.assertEqual(item["status"], "pending_agent_audit")
+        self.assertFalse(game.audit_refuses_result_as_scanner_inference(""))
+        with mock.patch.object(
+            game, "documentation_initialization_scanner_source", return_value=None
+        ):
+            silent = game.context(self.project, "mechanics", event="initialize")
+        self.assertNotIn(
+            "o resultado seja inferido pelo scanner",
+            silent["documentation"]["initialization"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o scanner que o roteiro já recusa", guide)
+        self.assertIn("nomeia o scanner que o roteiro já recusa", skill)
+        self.assertIn("nomeia o scanner que o roteiro já recusa", readme)
+        self.assertIn("nomeia o scanner que o roteiro já recusa", recipe)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn(
+            "o resultado seja inferido pelo scanner",
+            report["documentation"]["scope"],
+        )
+        self.assertNotIn(
+            "o resultado seja inferido pelo scanner",
+            report["scope"],
+        )
+        self.assertNotIn(
+            "o resultado seja inferido pelo scanner",
+            report["continuity"]["prompt"]["scope"],
+        )
+        self.assertNotIn(
+            "o resultado seja inferido pelo scanner",
+            report["delivery_review"]["scope"],
+        )
+        self.assertNotIn(
+            "o resultado seja inferido pelo scanner",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "o resultado seja inferido pelo scanner",
+            game.access_reading(self.project)["scope"],
+        )
+        ordinary = game.context(self.project, "mechanics")
+        self.assertIsNone(ordinary["documentation"]["initialization"])
+
     def test_initialize_requires_source_audit_with_complete_foundation_in_every_focus(self):
         self.foundation_document()
         self.package(scripts={"servir": "touch unexpected"})

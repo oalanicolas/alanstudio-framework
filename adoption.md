@@ -30,6 +30,55 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.665 — o context nomeia o scanner que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+o
+resultado
+real
+fica
+no
+registro
+canônico
+e
+não
+é
+inferido
+pelo
+scanner.
+A
+inicialização
+copiava
+o
+aviso
+e
+calava
+a
+recusa.
+Agora
+o
+`context`
+nomeia
+o
+scanner.
+Sinal
+no
+disco
+não
+é
+o
+resultado.
+Sem
+chave
+`scanner`.
+Nomear
+não
+observa.
+
 ## 0.9.664 — o access nomeia a automática que a receita já recusa
 
 A

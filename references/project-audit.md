@@ -40,7 +40,7 @@ arquitetura e entrega `documentation.initialization` com o aviso e as evidência
 exigidas. O foco original é preservado se outro foi escolhido. A ação vale **mesmo
 com candidatos nas nove áreas**; localização lexical não substitui confronto com código.
 O comando retorna `pending_agent_audit`; o resultado real fica no registro canônico
-após o trabalho do agente e não é inferido pelo scanner. O comando não interpreta
+após o trabalho do agente e não é inferido pelo scanner. Se o roteiro recusa que o resultado seja inferido pelo scanner, o `context` nomeia o scanner que o roteiro já recusa. Sinal no disco não é o resultado. Sem chave `scanner`. O comando não interpreta
 a conversa, executa a auditoria nem certifica seu resultado.
 
 Avise e siga o roteiro “Levantar e organizar o estado real” abaixo no mesmo turno.

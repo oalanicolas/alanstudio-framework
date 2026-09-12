@@ -13427,7 +13427,44 @@ def documentation_initialization_scope():
             " O disco recusa que o aviso seja uma pergunta (`pergunta`). "
             "Aviso no disco não é espera."
         )
+    named = documentation_initialization_scanner_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O roteiro já recusa que o resultado
+# seja inferido pelo scanner. Sem isto a
+# inicialização copiava o aviso e calava
+# a recusa. Sinal no disco não é o
+# resultado.
+AUDIT_SCANNER = re.compile(r"não é inferido pelo scanner")
+
+
+def audit_refuses_result_as_scanner_inference(text):
+    return bool(text and AUDIT_SCANNER.search(text))
+
+
+def documentation_initialization_scanner_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_refuses_result_as_scanner_inference(text):
+        return "references/project-audit.md"
+    return None
+
+
+def documentation_initialization_scanner_scope():
+    if not documentation_initialization_scanner_source():
+        return None
+    return (
+        " O disco recusa que o resultado seja inferido pelo scanner "
+        "(`scanner`). Sinal no disco não é o resultado."
+    )
 
 
 # O processo já nega que documento pronto seja PoC. Sem isto o
