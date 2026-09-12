@@ -10494,7 +10494,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         ),
         "audit": {
             "policy": "notify_and_proceed", "executed": False,
-            "required": require_audit,
+            "required": audit_required_reading(require_audit),
             "deferred": audit_deferred_reading(waiting),
             "notice": notice,
             "reason": (
@@ -11252,6 +11252,67 @@ def audit_deferred_reading(waiting):
     return {
         "deferred": True,
         "scope": audit_deferred_scope(),
+    }
+
+
+# O roteiro já recusa que o scanner
+# comece a auditoria. Sem isto o
+# scan relatava o required e calava
+# a recusa. JSON no disco não é o
+# levantamento.
+AUDIT_BEGIN = re.compile(r"começar auditoria")
+
+
+def project_audit_refuses_scanner_as_starting_audit(text):
+    return bool(text and AUDIT_BEGIN.search(text))
+
+
+def audit_required_begin_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if project_audit_refuses_scanner_as_starting_audit(text):
+        return "references/project-audit.md"
+    return None
+
+
+def audit_required_begin_scope():
+    if not audit_required_begin_source():
+        return None
+    return (
+        " O disco recusa que o scanner comece a auditoria "
+        "(`começo`). JSON no disco não é o levantamento."
+    )
+
+
+def audit_required_scope():
+    scope = (
+        "base documental pedida neste turno. "
+        "Não começa a auditoria."
+    )
+    named = audit_required_begin_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def audit_required_flag(reading):
+    required = (reading or {}).get("required")
+    if isinstance(required, dict):
+        return bool(required.get("required"))
+    return bool(required)
+
+
+def audit_required_reading(required):
+    if not required:
+        return False
+    return {
+        "required": True,
+        "scope": audit_required_scope(),
     }
 
 
@@ -12591,7 +12652,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
     records = [str(project / relative) for relative in foundation["read_first"]]
     deferred = bool(foundation["audit"].get("deferred"))
     initializing = event == "initialize"
-    document_minimum = foundation["audit"]["required"] or event in ("direction-approved", "initialize") or stage == "audit"
+    document_minimum = audit_required_flag(foundation["audit"]) or event in ("direction-approved", "initialize") or stage == "audit"
     kind = identify(project)
     packs = select_packs(kind, genre, foundation["genre_mentions"])
     references = [str(path) for path in select_references(focus, stage, document_minimum)]

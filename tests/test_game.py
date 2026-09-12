@@ -17329,6 +17329,67 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.documentation_scope(True),
         )
 
+    def test_audit_required_names_the_start_the_script_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.project_audit_refuses_scanner_as_starting_audit(guide),
+            "o roteiro já recusa que o scanner comece a auditoria",
+        )
+        self.assertEqual(game.audit_required_begin_source(), "references/project-audit.md")
+        destination = self.root / "ciclo-pede"
+        game.start_project(destination, "canvas-arcade")
+        empty = game.scan(destination)
+        self.assertFalse(empty["audit"]["required"])
+        self.assertFalse(game.audit_required_flag(empty["audit"]))
+        report = game.scan(self.project)
+        item = report["audit"]["required"]
+        self.assertTrue(item["required"], "o laboratório sem ciclo fresco já pede a base")
+        self.assertEqual(item["required"], game.audit_required_flag(report["audit"]))
+        self.assertIn(
+            "o scanner comece a auditoria",
+            item["scope"],
+            "o scan relatava o required e calava a recusa",
+        )
+        self.assertIn("(`começo`)", item["scope"])
+        self.assertNotIn("começo", item)
+        self.assertFalse(report["audit"]["executed"])
+        self.assertFalse(game.audit_deferred_flag(report["audit"]))
+        self.assertFalse(game.project_audit_refuses_scanner_as_starting_audit(""))
+        with mock.patch.object(game, "audit_required_begin_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "o scanner comece a auditoria",
+            silent["audit"]["required"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o começo que o roteiro já recusa", guide)
+        self.assertIn("nomeia o começo que o roteiro já recusa", recipe)
+        self.assertIn("nomeia o começo que o roteiro já recusa", skill)
+        self.assertIn("nomeia o começo que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn(
+            "o scanner comece a auditoria",
+            report["audit"]["scope"],
+        )
+        self.assertNotIn(
+            "o scanner comece a auditoria",
+            report["scope"],
+        )
+        self.assertNotIn("o scanner comece a auditoria", game.next_scope())
+        self.assertNotIn(
+            "o scanner comece a auditoria",
+            game.documentation_scope(True),
+        )
+        if empty["audit"]["deferred"]:
+            self.assertNotIn(
+                "o scanner comece a auditoria",
+                empty["audit"]["deferred"].get("scope") or "",
+            )
+
     def test_start_without_docs_writes_agent_memory_without_claiming_drafts(self):
         destination = self.root / "memoria-do-ciclo"
         report = game.start_project(destination, "canvas-arcade", idea="atravessar estilhaços")

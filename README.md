@@ -500,7 +500,7 @@ pode cobrir várias. O scanner só lê nomes, títulos e campos; não segue syml
 nem escreve arquivo.
 
 Se faltar base, `foundation.audit.required` pede ao agente **avisar e documentar
-sem esperar um segundo pedido**. Restrição explícita na conversa continua valendo.
+sem esperar um segundo pedido**. Se o roteiro recusa que o scanner comece a auditoria, o `required` do `audit` nomeia o começo que o roteiro já recusa. JSON no disco não é o levantamento. Sem chave `começo`. Restrição explícita na conversa continua valendo.
 Exceção: ciclo fresco que já abre (`audit.deferred`) — o `next` pede jogar
 primeiro; o `context` não manda preencher template. Lacuna de rascunho depois do start não é auditoria neste turno. Se o roteiro recusa que a lacuna de rascunho seja auditoria neste turno, o `deferred` do `audit` nomeia a auditoria que o roteiro já recusa. Sinal no disco não é o levantamento. Sem chave `auditoria`. `--event direction-approved`
 e `--stage audit` continuam pedindo a base. O scanner não executa a auditoria
