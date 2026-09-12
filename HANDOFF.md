@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.647: o `issues_truncated` da coverage nomeia a falta que o roteiro já recusa. Recorte no disco não é o inventário. Sem chave `falta`. Cortar não inventaria.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.647): **708 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
