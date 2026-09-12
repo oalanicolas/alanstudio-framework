@@ -7355,7 +7355,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         hidden.parent.mkdir()
         hidden.write_bytes(b"\x89PNG\r\n\x1a\nnot-a-real-png")
         report = game.origins_reading(self.project)
-        self.assertEqual(report["undeclared"], ["textures/hero.png"])
+        self.assertEqual(report["undeclared"]["paths"], ["textures/hero.png"])
         self.assertEqual(report["declared"], [])
         self.assertFalse(report["granted"])
         self.assertFalse(report["validated"])
@@ -7455,6 +7455,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("(`válida`)", game.next_scope())
         self.assertNotIn("(`válida`)", game.gate_reading(self.project)["scope"])
 
+    def test_origins_undeclared_names_the_unknown_license_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_undeclared_as_known_license(guide),
+            "a guia já recusa que o embarcado sem recibo seja licença conhecida",
+        )
+        self.assertEqual(game.origins_unknown_source(), "references/preproduction.md")
+        empty = game.origins_reading(self.project)
+        self.assertEqual(empty["undeclared"], [])
+        self.assertEqual(game.origin_undeclared_paths(empty), [])
+        asset = self.project / "textures" / "hero.png"
+        asset.parent.mkdir()
+        asset.write_bytes(b"\x89PNG\r\n\x1a\nnot-a-real-png")
+        report = game.origins_reading(self.project)
+        item = report["undeclared"]
+        self.assertEqual(item["paths"], ["textures/hero.png"])
+        self.assertEqual(item["paths"], game.origin_undeclared_paths(report))
+        self.assertIn(
+            "embarcado sem recibo seja licença conhecida",
+            item["scope"],
+            "o origins listava o arquivo e calava a recusa",
+        )
+        self.assertIn("(`desconhecida`)", item["scope"])
+        self.assertNotIn("desconhecida", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertFalse(game.guide_refuses_undeclared_as_known_license(""))
+        with mock.patch.object(game, "origins_unknown_source", return_value=None):
+            silent = game.origins_reading(self.project)
+        self.assertNotIn(
+            "embarcado sem recibo seja licença conhecida",
+            silent["undeclared"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a desconhecida que a guia já recusa", guide)
+        self.assertIn("nomeia a desconhecida que a guia já recusa", recipe)
+        self.assertIn("nomeia a desconhecida que a guia já recusa", skill)
+        self.assertIn("nomeia a desconhecida que a guia já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("embarcado sem recibo seja licença conhecida", report["scope"])
+        if report.get("receipts"):
+            self.assertNotIn(
+                "embarcado sem recibo seja licença conhecida",
+                report["receipts"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "embarcado sem recibo seja licença conhecida",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "embarcado sem recibo seja licença conhecida",
+            game.gate_reading(self.project)["scope"],
+        )
+
     def test_origins_does_not_declare_a_receipt_that_omits_origin(self):
         asset = self.project / "audio" / "jump.wav"
         asset.parent.mkdir()
@@ -7464,7 +7522,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             encoding="utf-8",
         )
         report = game.origins_reading(self.project)
-        self.assertEqual(report["undeclared"], ["audio/jump.wav"])
+        self.assertEqual(report["undeclared"]["paths"], ["audio/jump.wav"])
         self.assertEqual(report["declared"], [])
         self.assertFalse(report["granted"])
         self.assertFalse(report["validated"])
@@ -7484,7 +7542,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             encoding="utf-8",
         )
         report = game.origins_reading(self.project)
-        self.assertEqual(report["undeclared"], ["audio/jump.wav"])
+        self.assertEqual(report["undeclared"]["paths"], ["audio/jump.wav"])
         self.assertEqual(report["declared"], [])
 
     def test_origins_reads_origin_from_the_catalog_envelope(self):
@@ -7533,7 +7591,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             incomplete, encoding="utf-8",
         )
         report = game.origins_reading(self.project)
-        self.assertEqual(report["undeclared"], ["fonts/display.ttf"])
+        self.assertEqual(report["undeclared"]["paths"], ["fonts/display.ttf"])
         self.assertEqual(report["declared"], [])
         self.assertFalse(report["granted"])
         self.assertFalse(report["validated"])
@@ -7545,7 +7603,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         empty.write_bytes(b"RIFF")
         (self.project / "audio" / "jump.credits.txt").write_text("", encoding="utf-8")
         vacant = game.origins_reading(self.project)
-        self.assertIn("audio/jump.wav", vacant["undeclared"])
+        self.assertIn("audio/jump.wav", vacant["undeclared"]["paths"])
         self.assertNotIn("audio/jump.wav", vacant["declared"])
         filled = game.origins_declare(
             self.project, "fonts/display.ttf",
@@ -7554,7 +7612,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(filled["declared"], "fonts/display.ttf")
         self.assertFalse(filled["granted"])
         after = game.origins_reading(self.project)
-        self.assertNotIn("fonts/display.ttf", after["undeclared"])
+        self.assertNotIn("fonts/display.ttf", game.origin_undeclared_paths(after))
         self.assertIn("fonts/display.ttf", after["declared"])
 
     def test_credits_mentioning_the_path_covers_the_file(self):
@@ -7724,7 +7782,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.declare_gate({("deliver", "licensing"): ("met", "todo asset tem crédito no README")})
         report = game.origins_reading(self.project)
         self.assertTrue(report["contradicts_licensing"])
-        self.assertEqual(report["undeclared"], ["hero.png"])
+        self.assertEqual(report["undeclared"]["paths"], ["hero.png"])
 
     def test_a_created_project_has_no_undeclared_media(self):
         destination = self.root / "arcade-limpo"

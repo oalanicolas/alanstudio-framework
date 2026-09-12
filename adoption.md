@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.575 — o undeclared do origins nomeia a desconhecida que a guia já recusa
+
+A
+guia
+já
+dizia
+que
+licença
+desconhecida
+bloqueia
+a
+entrega.
+O
+origins
+listava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`undeclared`
+do
+`origins`
+nomeia
+a
+desconhecida.
+Arquivo
+no
+disco
+não
+é
+a
+concessão.
+Sem
+chave
+`desconhecida`.
+Nomear
+não
+concede.
+
+O que 0.9.575 não afirma:
+listar
+o
+arquivo
+não
+é
+licença
+conhecida.
+
 ## 0.9.574 — o observations do playtest nomeia o recibo que a receita já recusa
 
 A

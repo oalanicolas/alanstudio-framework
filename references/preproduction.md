@@ -231,7 +231,7 @@ nota da versão.
 
 **Pronto para entregar:** outra pessoa constrói a partir do runbook, o artefato roda
 em máquina que não é a de desenvolvimento, save migra da versão anterior e nenhum
-recurso embarcado tem licença desconhecida. Licença desconhecida bloqueia a entrega;
+recurso embarcado tem licença desconhecida. Licença desconhecida bloqueia a entrega. Se a guia recusa que o embarcado sem recibo seja licença conhecida, o `undeclared` do `origins` nomeia a desconhecida que a guia já recusa. Arquivo no disco não é a concessão. Sem chave `desconhecida`.
 localização de um arquivo não atribui autoria. O template registra o degrau observado
 por dimensão; **nenhum comando concede autorização de publicação**, e gerar o
 documento não é autorizar.

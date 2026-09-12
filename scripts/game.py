@@ -667,7 +667,7 @@ def review(root, limit=REVIEW_LIMIT):
             "feel_unobserved": feel_report["unobserved"],
             "playtest_unstructured": playtest_report["unstructured"],
             "playtest_invite": bool(noted and not playtest_report.get("invite")),
-            "origins_undeclared": origins["undeclared"],
+            "origins_undeclared": origin_undeclared_paths(origins),
             "origins_contradicts_licensing": origins["contradicts_licensing"],
             "access_missing": access_report["missing"] if kind else [],
             "save_unversioned": persist_report["unversioned"],
@@ -693,7 +693,7 @@ def review(root, limit=REVIEW_LIMIT):
             bar_problems=len(declaration["problems"]),
             validators=scripts,
             origins_embedded=len(origins["embedded"]),
-            origins_undeclared=len(origins["undeclared"]),
+            origins_undeclared=len(origin_undeclared_paths(origins)),
             audio_roles=len(roles["roles"]),
             audio_roles_empty=len(roles["empty"]),
             feel_constants=len(feel_report["constants"]),
@@ -6890,6 +6890,59 @@ def origins_receipts_scope():
     return scope
 
 
+# A guia já recusa que o embarcado
+# sem recibo seja licença conhecida.
+# Sem isto o origins listava o
+# arquivo e calava a recusa. Arquivo
+# no disco não é a concessão.
+PREPRODUCTION_UNKNOWN = FRAMEWORK / "references/preproduction.md"
+ORIGIN_UNKNOWN = re.compile(r"Licença desconhecida bloqueia a entrega")
+
+
+def guide_refuses_undeclared_as_known_license(text):
+    return bool(text and ORIGIN_UNKNOWN.search(text))
+
+
+def origins_unknown_source():
+    path = PREPRODUCTION_UNKNOWN
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_undeclared_as_known_license(text):
+        return "references/preproduction.md"
+    return None
+
+
+def origins_unknown_scope():
+    if not origins_unknown_source():
+        return None
+    return (
+        " O disco recusa que o embarcado sem recibo seja licença conhecida "
+        "(`desconhecida`). Arquivo no disco não é a concessão."
+    )
+
+
+def origins_undeclared_scope():
+    scope = (
+        "arquivo embarcado sem recibo. "
+        "Não concede licença."
+    )
+    named = origins_unknown_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def origin_undeclared_paths(origins):
+    undeclared = (origins or {}).get("undeclared") or []
+    if isinstance(undeclared, dict):
+        return list(undeclared.get("paths") or [])
+    return list(undeclared)
+
+
 def origins_receipt_files(project, max_entries=2000):
     project = Path(project).resolve()
     found = []
@@ -7149,6 +7202,11 @@ def origins_reading(project, max_entries=2000):
             "paths": receipts,
             "scope": origins_receipts_scope(),
         }
+    if undeclared:
+        undeclared = {
+            "paths": undeclared,
+            "scope": origins_undeclared_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
@@ -7231,7 +7289,7 @@ def origins_declare(project, relative, origin, author, license_name):
         raise ValueError("arquivo não é mídia embarcada")
     posix = path.relative_to(project.resolve()).as_posix()
     reading = origins_reading(project)
-    if posix not in reading["undeclared"]:
+    if posix not in origin_undeclared_paths(reading):
         raise ValueError("arquivo já tem recibo ou não está sem origem")
     sidecar = path.with_name(path.name + ".credits.txt")
     if sidecar.exists() or sidecar.is_symlink():
@@ -13102,9 +13160,10 @@ def next_step(project, focus="create", studies_root=None):
             "scripts",
         )
     origins = origins_reading(project)
-    if origins["undeclared"]:
-        sample = ", ".join(f"`{path}`" for path in origins["undeclared"][:4])
-        extra = " e mais" if len(origins["undeclared"]) > 4 else ""
+    undeclared = origin_undeclared_paths(origins)
+    if undeclared:
+        sample = ", ".join(f"`{path}`" for path in undeclared[:4])
+        extra = " e mais" if len(undeclared) > 4 else ""
         why = (
             "Arquivo embarcado sem recibo conta como licença desconhecida, e o critério "
             "`deliver.licensing` não se dispensa. O harness não valida a licença: só vê "
@@ -13116,7 +13175,7 @@ def next_step(project, focus="create", studies_root=None):
                 "arquivo embarcado sem recibo. A linha da tabela não sobrevive à leitura "
                 "do próprio projeto."
             )
-        first = origins["undeclared"][0]
+        first = undeclared[0]
         propose(
             f"Declarar origem dos arquivos embarcados sem recibo: {sample}{extra}",
             why,
@@ -13281,7 +13340,7 @@ def next_step(project, focus="create", studies_root=None):
             "production_bar_problems": declaration["problems"],
             "gates_declared": sorted(gates["declared"]),
             "gates_problems": gates["problems"],
-            "origins_undeclared": origins["undeclared"],
+            "origins_undeclared": origin_undeclared_paths(origins),
             "origins_contradicts_licensing": origins["contradicts_licensing"],
             "playable_unplayed": fresh,
             "cycle_craft": wants_craft,
