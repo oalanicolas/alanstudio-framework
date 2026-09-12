@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.748 — o save nomeia os eixos que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+flush
+não
+grava
+esses
+eixos.
+O
+save
+lia
+o
+schema
+e
+calava
+a
+recusa.
+Agora
+o
+save
+nomeia
+os
+eixos.
+Flush
+no
+disco
+não
+é
+o
+save.
+Sem
+chave
+`eixos`.
+Nomear
+não
+observa.
+
 ## 0.9.747 — o feel nomeia o inflama que a receita já recusa
 
 A
