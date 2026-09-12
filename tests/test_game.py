@@ -5654,6 +5654,47 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("recibo presente seja licença", game.next_scope())
         self.assertNotIn("recibo presente seja licença", game.gate_reading(self.project)["scope"])
 
+    def test_scan_provenance_names_the_location_the_release_already_refuses(self):
+        guide = (game.FRAMEWORK / "commands/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.release_refuses_location_as_authorship(guide),
+            "o release já recusa que localização atribua autoria",
+        )
+        self.assertEqual(game.provenance_location_source(), "commands/release.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "localização atribua autoria",
+            report["areas"]["provenance"]["scope"],
+            "a área localizava o CREDITS e calava a recusa",
+        )
+        self.assertIn("(`localização`)", report["areas"]["provenance"]["scope"])
+        self.assertNotIn("localização", report["areas"]["provenance"])
+        self.assertFalse(game.release_refuses_location_as_authorship(""))
+        with mock.patch.object(game, "provenance_location_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "localização atribua autoria",
+            silent["areas"]["provenance"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a localização que o release já recusa", guide)
+        self.assertIn("nomeia a localização que o release já recusa", recipe)
+        self.assertIn("nomeia a localização que o release já recusa", skill)
+        self.assertIn("nomeia a localização que o release já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["provenance"]["scope"])
+        self.assertNotIn("aprovado", report["areas"]["provenance"]["scope"])
+        self.assertNotIn("4.5", report["areas"]["provenance"]["scope"])
+        self.assertNotIn("localização atribua autoria", report["scope"])
+        self.assertNotIn("localização atribua autoria", report["areas"]["art_direction"]["scope"])
+        self.assertNotIn("localização atribua autoria", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("localização atribua autoria", report["areas"]["mda"]["scope"])
+        self.assertNotIn("localização atribua autoria", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("localização atribua autoria", game.origins_reading(self.project)["scope"])
+        self.assertNotIn("localização atribua autoria", game.next_scope())
+        self.assertNotIn("localização atribua autoria", game.gate_reading(self.project)["scope"])
+
     def test_scan_names_the_people_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(

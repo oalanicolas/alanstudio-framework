@@ -13682,7 +13682,44 @@ def provenance_area_scope():
             " O disco recusa que o recibo presente seja licença válida (`licença`). "
             "Área no disco não é concessão."
         )
+    located = provenance_location_scope()
+    if located:
+        scope += located
     return scope
+
+
+# O release já recusa que localização
+# atribua autoria. Sem isto a área
+# localizava o CREDITS e calava a
+# recusa. Localização no disco não é
+# o titular.
+RELEASE_LOCATION = re.compile(r"localização não atribui autoria")
+
+
+def release_refuses_location_as_authorship(text):
+    return bool(text and RELEASE_LOCATION.search(text))
+
+
+def provenance_location_source():
+    path = FRAMEWORK / "commands" / "release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if release_refuses_location_as_authorship(text):
+        return "commands/release.md"
+    return None
+
+
+def provenance_location_scope():
+    if not provenance_location_source():
+        return ""
+    return (
+        " O disco recusa que localização atribua autoria (`localização`). "
+        "Localização no disco não é o titular."
+    )
 
 
 # O roteiro já recusa prescrever quantas pessoas. Sem isto a

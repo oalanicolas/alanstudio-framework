@@ -51,7 +51,7 @@ jogar; `record --kind milestone` para a decisão de entregar, por pessoa.
 
 - Publicar, subir artefato ou anunciar sem autorização explícita para aquela entrega.
 - Verificar o editor ou o servidor de desenvolvimento no lugar do artefato.
-- Presumir licença de asset localizado; localização não atribui autoria.
+- Presumir licença de asset localizado; localização não atribui autoria. Se o release recusa que localização atribua autoria, a área `provenance` do `scan` nomeia a localização que o release já recusa. Localização no disco não é o titular. Sem chave `localização`.
 - Dispensar `licensing`, ou marcar `met` sem nada escrito ao lado.
 - Chamar de entregável o que só rodou na máquina de quem construiu.
 

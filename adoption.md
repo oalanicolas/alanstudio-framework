@@ -30,6 +30,47 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.687 — a área provenance nomeia a localização que o release já recusa
+
+O
+release
+já
+dizia
+que
+localização
+não
+atribui
+autoria.
+A
+área
+localizava
+o
+CREDITS
+e
+calava
+a
+recusa.
+Agora
+a
+área
+`provenance`
+nomeia
+a
+localização.
+Localização
+no
+disco
+não
+é
+o
+titular.
+Sem
+chave
+`localização`.
+Nomear
+não
+observa.
+
 ## 0.9.686 — a área mda nomeia o obrigatório que a guia já recusa
 
 A
