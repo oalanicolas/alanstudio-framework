@@ -2048,6 +2048,56 @@ def roles_heap_scope():
     )
 
 
+# A receita já recusa que desconectar,
+# liberar e fechar comprovem coleta
+# imediata. Sem isto o roles listava
+# o fonte e calava a recusa. Sinal no
+# disco não é o sistema.
+AUDIO_IMMEDIATE = re.compile(r"comprova coleta imediata")
+
+
+def recipe_refuses_signals_as_immediate_gc(text):
+    return bool(text and AUDIO_IMMEDIATE.search(text))
+
+
+def roles_immediate_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_signals_as_immediate_gc(text):
+        return "recipes/audio.md"
+    return None
+
+
+def roles_immediate_scope():
+    if not roles_immediate_source():
+        return None
+    return (
+        " O disco recusa que desconectar, liberar e fechar comprovem "
+        "coleta imediata (`imediata`). Sinal no disco não é o sistema."
+    )
+
+
+def roles_sources_scope():
+    scope = (
+        "arquivo de papel no disco. "
+        "Não ouve o mix."
+    )
+    named = roles_immediate_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def roles_source_files(project):
+    _entries, sources = declared_sound_roles(project)
+    return sources
+
+
 def roles_reading(project, root=None):
     project = Path(project)
     entries, sources = declared_sound_roles(project)
@@ -2068,6 +2118,11 @@ def roles_reading(project, root=None):
                 row["scope"] += " " + named
         roles.append(row)
     empty = [item["id"] for item in roles if item["state"] == "empty"]
+    if sources:
+        sources = {
+            "paths": sources,
+            "scope": roles_sources_scope(),
+        }
     catalog = sfx_catalog.catalog_dir(root)
     scope = (
         "Lê `const SOUNDS` e manifestos de papéis, e cruza com arquivos em "

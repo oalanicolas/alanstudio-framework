@@ -204,7 +204,7 @@ Casos e limites em [aprendizados de aplicações](../references/sources.md#apren
 - Dividir o transporte e remontar bytes por hash pode atender a um limite individual
   de arquivo sem cortar a gravação. Isso não reduz, por si, a memória após decodificar. Se a receita recusa que remontar bytes por hash reduza a memória após decodificar, o `sfx export` do acervo nomeia a memória que a receita já recusa. Hash no disco não é o buffer. Sem chave `memória`.
 - Desconectar um nó, liberar referências e fechar o contexto são sinais distintos;
-  nenhum isoladamente comprova coleta imediata. Teste pausa, reinício e desmontagem.
+  nenhum isoladamente comprova coleta imediata. Se a receita recusa que desconectar, liberar e fechar comprovem coleta imediata, o `sources` do `roles` nomeia a imediata que a receita já recusa. Sinal no disco não é o sistema. Sem chave `imediata`. Teste pausa, reinício e desmontagem.
 - Callback de áudio, capacidade de render e silêncio durante um teste técnico não
   demonstram FPS nem aprovação sonora. Medir alocação com canais em zero não é ouvir. Se a receita recusa que medir alocação com canais em zero seja ouvir, o `quality_bar` do `sfx summary` nomeia a alocação que a receita já recusa. Barra no disco não é mix ouvida. Sem chave `alocação`.
 - Streaming é candidato quando o contrato permite; valide continuidade, latência,

@@ -2831,6 +2831,69 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("heap JavaScript sozinho meça PCM", game.next_scope())
         self.assertNotIn("heap JavaScript sozinho meça PCM", game.roles_fill_scope())
 
+    def test_roles_sources_names_the_immediate_gc_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_signals_as_immediate_gc(recipe),
+            "a receita já recusa que desconectar, liberar e fechar comprovem coleta imediata",
+        )
+        self.assertEqual(game.roles_immediate_source(), "recipes/audio.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertIn("src/game/audio.js", game.roles_source_files(starter))
+        report = game.roles_reading(starter)
+        item = report["sources"]
+        self.assertIn("src/game/audio.js", item["paths"])
+        self.assertEqual(item["paths"], game.roles_source_files(starter))
+        self.assertIn(
+            "desconectar, liberar e fechar comprovem coleta imediata",
+            item["scope"],
+            "o roles listava o fonte e calava a recusa",
+        )
+        self.assertIn("(`imediata`)", item["scope"])
+        self.assertNotIn("imediata", item)
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertFalse(game.recipe_refuses_signals_as_immediate_gc(""))
+        empty = game.roles_reading(self.project)
+        self.assertEqual(empty["sources"], [])
+        with mock.patch.object(game, "roles_immediate_source", return_value=None):
+            silent = game.roles_reading(starter)
+        self.assertNotIn(
+            "desconectar, liberar e fechar comprovem coleta imediata",
+            silent["sources"]["scope"],
+        )
+        performance = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a imediata que a receita já recusa", recipe)
+        self.assertIn("nomeia a imediata que a receita já recusa", performance)
+        self.assertIn("nomeia a imediata que a receita já recusa", skill)
+        self.assertIn("nomeia a imediata que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("desconectar, liberar e fechar comprovem coleta imediata", report["scope"])
+        if report["roles"]:
+            self.assertNotIn(
+                "desconectar, liberar e fechar comprovem coleta imediata",
+                report["roles"][0]["scope"],
+            )
+        self.assertNotIn(
+            "desconectar, liberar e fechar comprovem coleta imediata",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn(
+            "desconectar, liberar e fechar comprovem coleta imediata",
+            game.content_reading(starter)["scope"],
+        )
+        self.assertNotIn(
+            "desconectar, liberar e fechar comprovem coleta imediata",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "desconectar, liberar e fechar comprovem coleta imediata",
+            game.roles_fill_scope(),
+        )
+
     def test_scan_names_the_intent_the_audit_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(
@@ -7795,7 +7858,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertEqual(report["empty"], [])
         self.assertTrue(all(item["state"] == "present" for item in report["roles"]))
-        self.assertIn("src/game/audio.js", report["sources"])
+        self.assertIn("src/game/audio.js", report["sources"]["paths"])
         empty = game.roles_reading(self.project)
         self.assertEqual(empty["roles"], [])
         self.assertFalse(empty["heard"])

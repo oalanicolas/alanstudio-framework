@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.564 — o sources do roles nomeia a imediata que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+desconectar,
+liberar
+e
+fechar
+não
+comprovam
+coleta
+imediata.
+O
+roles
+listava
+o
+fonte
+e
+calava
+a
+recusa.
+Agora
+o
+`sources`
+do
+`roles`
+nomeia
+a
+imediata.
+Sinal
+no
+disco
+não
+é
+o
+sistema.
+Sem
+chave
+`imediata`.
+Nomear
+não
+ouve.
+
+O que 0.9.564 não afirma:
+listar
+o
+fonte
+não
+é
+coleta
+pelo
+sistema.
+
 ## 0.9.563 — o manifests do art nomeia a moeda que a receita já recusa
 
 A
