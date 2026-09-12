@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.597 — o missing do origins nomeia o devolve que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+Nomear
+não
+devolve
+o
+arquivo.
+O
+origins
+listava
+o
+sumido
+e
+calava
+a
+recusa.
+Agora
+o
+`missing`
+do
+`origins`
+nomeia
+o
+devolve.
+Recibo
+no
+disco
+não
+é
+a
+concessão.
+Sem
+chave
+`devolve`.
+Nomear
+não
+concede.
+
+O que 0.9.597 não afirma:
+listar
+o
+arquivo
+sumido
+não
+devolve
+os
+bytes.
+
 ## 0.9.596 — o fields do playtest nomeia os campos que o molde já recusa
 
 O

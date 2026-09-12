@@ -8051,7 +8051,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             encoding="utf-8",
         )
         report = game.origins_reading(self.project)
-        self.assertEqual(report["missing"], ["audio/ghost.wav"])
+        self.assertEqual(game.origins_missing_paths(report), ["audio/ghost.wav"])
         self.assertEqual(report["embedded"], [])
         self.assertEqual(report["undeclared"], [])
         self.assertEqual(report["declared"], [])
@@ -8099,6 +8099,83 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertEqual(run.returncode, 0)
         self.assertIn("disco perdeu", " ".join(run.stdout.split()))
+
+    def test_origins_missing_names_the_return_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_naming_as_file_return(guide),
+            "o roteiro já recusa que nomear devolva o arquivo",
+        )
+        self.assertEqual(game.origins_missing_return_source(), "references/gates.md")
+        (self.project / "sources.json").write_text(
+            json.dumps({
+                "files": [{
+                    "src": "audio/ghost.wav",
+                    "license": "CC0-1.0",
+                    "author": "Ana",
+                    "origin": "gravação própria",
+                }],
+            }),
+            encoding="utf-8",
+        )
+        report = game.origins_reading(self.project)
+        item = report["missing"]
+        self.assertEqual(item["paths"], ["audio/ghost.wav"])
+        self.assertEqual(item["paths"], game.origins_missing_paths(report))
+        self.assertIn(
+            "nomear devolva o arquivo",
+            item["scope"],
+            "o origins listava o sumido e calava a recusa",
+        )
+        self.assertIn("(`devolve`)", item["scope"])
+        self.assertNotIn("devolve", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertFalse(game.guide_refuses_naming_as_file_return(""))
+        empty = game.origins_reading(self.root / "sem-sumido")
+        self.assertEqual(empty["missing"], [])
+        with mock.patch.object(game, "origins_missing_return_source", return_value=None):
+            silent = game.origins_reading(self.project)
+        self.assertNotIn(
+            "nomear devolva o arquivo",
+            silent["missing"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o devolve que o roteiro já recusa", guide)
+        self.assertIn("nomeia o devolve que o roteiro já recusa", recipe)
+        self.assertIn("nomeia o devolve que o roteiro já recusa", skill)
+        self.assertIn("nomeia o devolve que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("nomear devolva o arquivo", report["scope"])
+        if report.get("undeclared"):
+            self.assertNotIn(
+                "nomear devolva o arquivo",
+                report["undeclared"].get("scope") or "",
+            )
+        if report.get("receipts"):
+            self.assertNotIn(
+                "nomear devolva o arquivo",
+                report["receipts"].get("scope") or "",
+            )
+        if report.get("form"):
+            self.assertNotIn(
+                "nomear devolva o arquivo",
+                report["form"].get("scope") or "",
+            )
+        if report.get("fields"):
+            self.assertNotIn(
+                "nomear devolva o arquivo",
+                report["fields"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "nomear devolva o arquivo",
+            game.gate_reading(self.project)["scope"],
+        )
+        self.assertNotIn("nomear devolva o arquivo", game.next_scope())
 
     def test_origins_names_the_consumer_the_sidecar_already_declares(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"

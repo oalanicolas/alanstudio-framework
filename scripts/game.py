@@ -7980,6 +7980,58 @@ def origin_undeclared_paths(origins):
     return list(undeclared)
 
 
+# O roteiro já recusa que nomear
+# devolva o arquivo. Sem isto o
+# origins listava o sumido e calava
+# a recusa. Recibo no disco não é
+# a concessão.
+ORIGIN_RETURN = re.compile(r"Nomear não devolve o arquivo")
+
+
+def guide_refuses_naming_as_file_return(text):
+    return bool(text and ORIGIN_RETURN.search(text))
+
+
+def origins_missing_return_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_naming_as_file_return(text):
+        return "references/gates.md"
+    return None
+
+
+def origins_missing_return_scope():
+    if not origins_missing_return_source():
+        return None
+    return (
+        " O disco recusa que nomear devolva o arquivo "
+        "(`devolve`). Recibo no disco não é a concessão."
+    )
+
+
+def origins_missing_scope():
+    scope = (
+        "mídia que o recibo lista e o disco perdeu. "
+        "Não devolve o arquivo."
+    )
+    named = origins_missing_return_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def origins_missing_paths(reading):
+    missing = (reading or {}).get("missing") or []
+    if isinstance(missing, dict):
+        return list(missing.get("paths") or [])
+    return list(missing)
+
+
 def origins_receipt_files(project, max_entries=2000):
     project = Path(project).resolve()
     found = []
@@ -8243,6 +8295,11 @@ def origins_reading(project, max_entries=2000):
         undeclared = {
             "paths": undeclared,
             "scope": origins_undeclared_scope(),
+        }
+    if missing:
+        missing = {
+            "paths": missing,
+            "scope": origins_missing_scope(),
         }
     return {
         "schema_version": 1,
