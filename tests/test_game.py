@@ -12736,6 +12736,75 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.content_reading(starter)["scope"],
         )
 
+    def test_save_versioned_names_the_version_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_version_without_migration(recipe),
+            "a receita já recusa que uma versão sem migração preserve o progresso",
+        )
+        self.assertEqual(game.save_versioned_version_source(), "recipes/persistence.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.save_reading(starter)
+        item = report["versioned"]
+        self.assertTrue(item["versioned"], "o save já relata o vigente neste starter")
+        self.assertEqual(item["versioned"], game.save_versioned_flag(report))
+        self.assertIn(
+            "uma versão sem migração",
+            item["scope"],
+            "o save relatava o vigente e calava a recusa",
+        )
+        self.assertIn("(`versão`)", item["scope"])
+        self.assertNotIn("versão", item)
+        self.assertFalse(report["trusted"])
+        self.assertIs(report["unversioned"], False)
+        self.assertFalse(game.recipe_refuses_version_without_migration(""))
+        empty = game.save_reading(self.project)
+        self.assertFalse(empty["versioned"])
+        self.assertFalse(game.save_versioned_flag(empty))
+        with mock.patch.object(game, "save_versioned_version_source", return_value=None):
+            silent = game.save_reading(starter)
+        self.assertNotIn(
+            "uma versão sem migração",
+            silent["versioned"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a versão que a receita já recusa", recipe)
+        self.assertIn("nomeia a versão que a receita já recusa", skill)
+        self.assertIn("nomeia a versão que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("uma versão sem migração", report["scope"])
+        self.assertNotIn(
+            "uma versão sem migração",
+            report["warnings"].get("scope") or "",
+        )
+        self.assertNotIn(
+            "uma versão sem migração",
+            report["sources"].get("scope") or "",
+        )
+        if isinstance(report.get("used"), dict):
+            self.assertNotIn(
+                "uma versão sem migração",
+                report["used"].get("scope") or "",
+            )
+        if isinstance(report.get("warned"), dict):
+            self.assertNotIn(
+                "uma versão sem migração",
+                report["warned"].get("scope") or "",
+            )
+        self.assertNotIn("uma versão sem migração", game.next_scope())
+        self.assertNotIn(
+            "uma versão sem migração",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn("uma versão sem migração", game.record_scope())
+        self.assertNotIn(
+            "uma versão sem migração",
+            game.content_reading(starter)["scope"],
+        )
+
     def test_save_names_storage_without_a_schema_as_unversioned(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "store.js").write_text("localStorage.setItem('score', value)\n")

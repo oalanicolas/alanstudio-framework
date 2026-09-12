@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.614 — o versioned do save nomeia a versão que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+uma
+versão
+sem
+migração
+transforma
+atualização
+em
+perda.
+O
+save
+relatava
+o
+schema
+e
+calava
+a
+recusa.
+Agora
+o
+`versioned`
+do
+`save`
+nomeia
+a
+versão.
+Schema
+no
+disco
+não
+é
+a
+atualização.
+Sem
+chave
+`versão`.
+Nomear
+não
+migra.
+
+O que 0.9.614 não afirma:
+o
+schema
+não
+preserva
+o
+progresso.
+
 ## 0.9.613 — o bible_current do art nomeia o vigente que a receita já recusa
 
 A

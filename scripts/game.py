@@ -4522,6 +4522,59 @@ def save_warned_flag(reading):
     return bool(warned)
 
 
+# A receita já recusa que uma
+# versão sem migração preserve o
+# progresso. Sem isto o save
+# relatava o vigente e calava a
+# recusa. Schema no disco não é
+# a atualização.
+PERSIST_VERSION_LOSS = re.compile(r"Uma versão sem migração")
+
+
+def recipe_refuses_version_without_migration(text):
+    return bool(text and PERSIST_VERSION_LOSS.search(text))
+
+
+def save_versioned_version_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_version_without_migration(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_versioned_version_scope():
+    if not save_versioned_version_source():
+        return None
+    return (
+        " O disco recusa que uma versão sem migração preserve o progresso "
+        "(`versão`). Schema no disco não é a atualização."
+    )
+
+
+def save_versioned_scope():
+    scope = (
+        "schema ou migrate no disco. "
+        "Não é atualização preservada."
+    )
+    named = save_versioned_version_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def save_versioned_flag(reading):
+    versioned = (reading or {}).get("versioned")
+    if isinstance(versioned, dict):
+        return bool(versioned.get("versioned"))
+    return bool(versioned)
+
+
 def save_warning_files(project):
     project = Path(project)
     found = []
@@ -4610,13 +4663,20 @@ def save_reading(project):
             "warned": True,
             "scope": save_warned_scope(),
         }
+    versioned_flag = bool(versioned)
+    unversioned = bool(used) and not versioned_flag
+    if versioned_flag:
+        versioned_flag = {
+            "versioned": True,
+            "scope": save_versioned_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
         "exists": project.is_dir(),
         "used": used_flag,
-        "versioned": bool(versioned),
-        "unversioned": bool(used) and not versioned,
+        "versioned": versioned_flag,
+        "unversioned": unversioned,
         "warned": warned_flag,
         "warnings": warnings,
         "sources": sources,
