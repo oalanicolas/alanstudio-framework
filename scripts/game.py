@@ -2060,6 +2060,9 @@ def _craft_scope(project):
     skip = craft_skip_scope()
     if skip:
         scope += skip
+    envoy = craft_delegate_scope()
+    if envoy:
+        scope += envoy
     return scope
 
 
@@ -2095,6 +2098,41 @@ def craft_skip_scope():
     return (
         " O disco recusa que shape confirmado seja licença para pular "
         "feel e áudio (`pular`). Confirmação no disco não é o ofício."
+    )
+
+
+# O craft já recusa que uma
+# confirmação autorize delegar.
+# Sem isto o craft lia a
+# declaração e calava a recusa.
+# Confirmação no disco não é
+# delegar.
+CRAFT_DELEGATE = re.compile(r"não autoriza publicar nem delegar")
+
+
+def craft_refuses_confirmation_as_delegate(text):
+    return bool(text and CRAFT_DELEGATE.search(text))
+
+
+def craft_delegate_source():
+    path = FRAMEWORK / "commands" / "craft.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if craft_refuses_confirmation_as_delegate(text):
+        return "commands/craft.md"
+    return None
+
+
+def craft_delegate_scope():
+    if not craft_delegate_source():
+        return None
+    return (
+        " O disco recusa que uma confirmação autorize delegar "
+        "(`delegar`). Confirmação no disco não é delegar."
     )
 
 

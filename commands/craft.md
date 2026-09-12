@@ -37,7 +37,7 @@ pacing — não é negociável em nenhuma escala ([ambição](../references/ambi
 Portões que não se comprimem: (1) brief confirmado; (2) referência visual ou sonora
 aprovada quando a mudança é de direção — `--event direction-approved` e base
 sincronizada no mesmo turno ([roteiro](../references/project-audit.md#aprovação-de-direção-materializar-e-continuar));
-(3) apresentação da fatia com prova. Uma confirmação não autoriza publicar nem delegar.
+(3) apresentação da fatia com prova. Uma confirmação não autoriza publicar nem delegar. Se o craft recusa que uma confirmação autorize delegar, o `craft` nomeia o delegar que o craft já recusa. Confirmação no disco não é delegar. Sem chave `delegar`.
 
 ## Executar
 

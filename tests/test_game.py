@@ -11040,6 +11040,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.alternative_scope(),
         )
 
+    def test_craft_names_the_delegate_the_craft_already_refuses(self):
+        guide = (game.FRAMEWORK / "commands/craft.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.craft_refuses_confirmation_as_delegate(guide),
+            "o craft já recusa que uma confirmação autorize delegar",
+        )
+        self.assertEqual(game.craft_delegate_source(), "commands/craft.md")
+        report = game.craft_reading(self.project)
+        self.assertIn(
+            "uma confirmação autorize delegar",
+            report["scope"],
+            "o craft lia a declaração e calava a recusa",
+        )
+        self.assertIn("(`delegar`)", report["scope"])
+        self.assertNotIn("delegar", report)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.craft_refuses_confirmation_as_delegate(""))
+        with mock.patch.object(game, "craft_delegate_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn("uma confirmação autorize delegar", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o delegar que o craft já recusa", guide)
+        self.assertIn("nomeia o delegar que o craft já recusa", recipe)
+        self.assertIn("nomeia o delegar que o craft já recusa", production)
+        self.assertIn("nomeia o delegar que o craft já recusa", skill)
+        self.assertIn("nomeia o delegar que o craft já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("uma confirmação autorize delegar", game.craft_item_scope())
+        self.assertNotIn("uma confirmação autorize delegar", game.next_scope())
+        self.assertNotIn("uma confirmação autorize delegar", game.alternative_scope())
+        self.assertNotIn("uma confirmação autorize delegar", game.gate_reading(self.project)["scope"])
+        self.assertNotIn("uma confirmação autorize delegar", game.bar_reading(self.project)["scope"])
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertNotIn("uma confirmação autorize delegar", game.art_reading(starter)["scope"])
+        self.assertNotIn("uma confirmação autorize delegar", game.feel_reading(starter)["scope"])
+        self.assertNotIn("uma confirmação autorize delegar", game.play_scope(starter))
+        self.assertNotIn("uma confirmação autorize delegar", game.cycle_scope() or "")
+        self.assertNotIn("uma confirmação autorize delegar", game.git_summary_scope())
+        self.assertNotIn("delegar", game.CYCLE_KEYS)
+
     def test_craft_names_the_ladder_the_research_already_refuses(self):
         research = (
             game.FRAMEWORK / "references/observable-criteria-research.md"
