@@ -16,7 +16,7 @@ A distinção que organiza tudo aqui:
 - **Opinião disfarçada de critério** — parece regra, decide por gosto. *"A arte
   está consistente."*
 - **Número folclórico** — tem casas decimais e nenhuma medição atrás. É o mais
-  perigoso dos três, porque passa por observável. Se a pesquisa recusa que o número folclórico seja critério observável, o item do craft nomeia o folclore que a pesquisa já recusa. Folclore no disco não é o critério. Sem chave `folclore`.
+  perigoso dos três, porque passa por observável. Se a pesquisa recusa que o número folclórico seja critério observável, o item do craft nomeia o folclore que a pesquisa já recusa. Folclore no disco não é o critério. Sem chave `folclore`. Se a pesquisa recusa que três métricas com o mesmo nome sejam um critério, o item do craft nomeia as métricas que a pesquisa já recusa. Nome no disco não é a métrica. Sem chave `métricas`.
 
 ## Como ler as fontes deste arquivo
 
@@ -581,7 +581,7 @@ Documenta que **três métricas diferentes atendem pelo nome "1% low"**: o 99º
 percentil de frame time convertido em FPS (que *exclui* o 1% pior), a média do 1%
 de frames mais lentos (que *foca* no 1% pior), e outras. São coisas distintas e
 dão números distintos. **"1% low" sem definição declarada não é critério.** Isso é
-conferível por construção, sem precisar confiar na fonte.
+conferível por construção, sem precisar confiar na fonte. Se a pesquisa recusa que três métricas com o mesmo nome sejam um critério, o item do craft nomeia as métricas que a pesquisa já recusa. Nome no disco não é a métrica. Sem chave `métricas`.
 
 Um alerta metodológico correlato — calcular percentis sobre os frames brutos
 agrupados, não sobre médias de execuções, e não suavizar antes de calcular — vem

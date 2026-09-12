@@ -1926,6 +1926,41 @@ def craft_item_folk_scope():
     )
 
 
+# A pesquisa já recusa que três
+# métricas com o mesmo nome sejam
+# um critério. Sem isto o item do
+# craft listava o checklist e
+# calava a recusa. Nome no disco
+# não é a métrica.
+CRAFT_METRICS = re.compile(r"três métricas diferentes atendem pelo nome")
+
+
+def research_refuses_same_name_as_one_metric(text):
+    return bool(text and CRAFT_METRICS.search(text))
+
+
+def craft_item_metrics_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_same_name_as_one_metric(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_metrics_scope():
+    if not craft_item_metrics_source():
+        return None
+    return (
+        " O disco recusa que três métricas com o mesmo nome sejam um critério "
+        "(`métricas`). Nome no disco não é a métrica."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -1952,6 +1987,9 @@ def craft_item_scope():
     folk = craft_item_folk_scope()
     if folk:
         scope += folk
+    alias = craft_item_metrics_scope()
+    if alias:
+        scope += alias
     return scope
 
 
