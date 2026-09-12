@@ -3229,6 +3229,40 @@ def feel_release_scope():
     )
 
 
+# A receita já recusa que animar
+# demais substitua a regra. Sem
+# isto o feel listava o recibo
+# e calava a recusa. Animar no
+# disco não é a regra.
+FEEL_ANIMATE = re.compile(r"Animar demais não substitui a regra")
+
+
+def recipe_refuses_over_animating_as_the_rule(text):
+    return bool(text and FEEL_ANIMATE.search(text))
+
+
+def feel_observations_animate_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_over_animating_as_the_rule(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_animate_scope():
+    if not feel_observations_animate_source():
+        return None
+    return (
+        " O disco recusa que animar demais substitua a regra "
+        "(`animar`). Animar no disco não é a regra."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -3237,6 +3271,9 @@ def feel_observations_scope():
     named = feel_release_scope()
     if named:
         scope += named
+    motion = feel_observations_animate_scope()
+    if motion:
+        scope += motion
     return scope
 
 

@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.710 — o observations do feel nomeia o animar que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+animar
+demais
+não
+substitui
+a
+regra.
+O
+feel
+listava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+`observations`
+do
+`feel`
+nomeia
+o
+animar.
+Animar
+no
+disco
+não
+é
+a
+regra.
+Sem
+chave
+`animar`.
+Nomear
+não
+observa.
+
 ## 0.9.709 — o created do pin nomeia a substitutibilidade que o processo já recusa
 
 O

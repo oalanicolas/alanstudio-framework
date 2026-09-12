@@ -14220,6 +14220,92 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.record_scope(),
         )
 
+    def test_feel_observations_name_the_animating_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(
+            recipe,
+            r"Animar demais não substitui a regra",
+        )
+        self.assertTrue(
+            game.recipe_refuses_over_animating_as_the_rule(recipe),
+            "a receita já recusa que animar demais substitua a regra",
+        )
+        self.assertEqual(game.feel_observations_animate_source(), "recipes/feel.md")
+        destination = self.root / "feel-com-animar"
+        game.init(destination, "canvas-arcade")
+        receipt = destination / "qa" / "partida-1"
+        receipt.mkdir(parents=True)
+        (receipt / "record.json").write_text(json.dumps({
+            "kind": "observation",
+            "author": "Ana",
+            "note": "o dash ainda não tem peso",
+            "fields": {"scenario": "primeira partida", "role": "human"},
+        }), encoding="utf-8")
+        report = game.feel_reading(destination)
+        item = report["observations"]
+        self.assertEqual(
+            [entry["path"] for entry in item["items"]],
+            ["qa/partida-1/record.json"],
+        )
+        self.assertIn(
+            "animar demais substitua a regra",
+            item["scope"],
+            "o feel listava o recibo e calava a recusa",
+        )
+        self.assertIn("(`animar`)", item["scope"])
+        self.assertIn("Animar no disco não é a regra.", item["scope"])
+        self.assertNotIn("animar", item)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_over_animating_as_the_rule(""))
+        empty = game.feel_reading(self.project)
+        self.assertEqual(empty["observations"], [])
+        with mock.patch.object(game, "feel_observations_animate_source", return_value=None):
+            silent = game.feel_reading(destination)
+        self.assertNotIn(
+            "animar demais substitua a regra",
+            silent["observations"]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o animar que a receita já recusa", recipe)
+        self.assertIn("nomeia o animar que a receita já recusa", create)
+        self.assertIn("nomeia o animar que a receita já recusa", skill)
+        self.assertIn("nomeia o animar que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("animar demais substitua a regra", report["scope"])
+        if report.get("then"):
+            self.assertNotIn(
+                "animar demais substitua a regra",
+                report["then"].get("scope") or "",
+            )
+        if report["constants"]:
+            self.assertNotIn(
+                "animar demais substitua a regra",
+                game.feel_constant_items(report)[0].get("scope") or "",
+            )
+        if report.get("sources"):
+            self.assertNotIn(
+                "animar demais substitua a regra",
+                report["sources"].get("scope") or "",
+            )
+        items = game.feel_observation_items(report)
+        if items:
+            self.assertNotIn(
+                "animar demais substitua a regra",
+                items[0].get("scope") or "",
+            )
+        self.assertNotIn("animar demais substitua a regra", game.observation_item_scope())
+        self.assertNotIn("animar demais substitua a regra", game.budget_reading(self.project).get("scope") or "")
+        self.assertNotIn("animar demais substitua a regra", game.content_reading(self.project).get("scope") or "")
+        self.assertNotIn("animar demais substitua a regra", game.record_scope())
+        self.assertNotIn("animar demais substitua a regra", game.pin_created_scope())
+        self.assertNotIn("animar demais substitua a regra", game.save_reading(self.project).get("scope") or "")
+        self.assertNotIn("animar demais substitua a regra", game.next_scope())
+        self.assertNotIn("animar", game.CYCLE_KEYS)
+
     def test_feel_names_the_universal_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
         self.assertTrue(
