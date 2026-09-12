@@ -30,6 +30,47 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.660 — o bar nomeia o score que o mapa já recusa
+
+O
+mapa
+já
+dizia
+que
+o
+checklist
+não
+é
+um
+score.
+O
+bar
+lia
+a
+declaração
+e
+calava
+a
+recusa.
+Agora
+o
+`bar`
+nomeia
+o
+score.
+Mapa
+no
+disco
+não
+é
+acabamento.
+Sem
+chave
+`score`.
+Nomear
+não
+observa.
+
 ## 0.9.659 — o audit nomeia o parar que o roteiro já recusa
 
 O

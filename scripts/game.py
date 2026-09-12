@@ -10299,7 +10299,43 @@ def _bar_scope(project):
             " O disco declara o mínimo (`mínimo`). "
             "Degrau no disco não é acabamento observado."
         )
+    named = bar_score_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O mapa já recusa que o checklist
+# seja um score. Sem isto o bar lia
+# a declaração e calava a recusa.
+# Mapa no disco não é acabamento.
+SOURCES_SCORE = re.compile(r"não é um\s+score")
+
+
+def map_refuses_checklist_as_score(text):
+    return bool(text and SOURCES_SCORE.search(text))
+
+
+def bar_score_source():
+    path = FRAMEWORK / "references/sources.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if map_refuses_checklist_as_score(text):
+        return "references/sources.md"
+    return None
+
+
+def bar_score_scope():
+    if not bar_score_source():
+        return None
+    return (
+        " O disco recusa que o checklist seja um score "
+        "(`score`). Mapa no disco não é acabamento."
+    )
 
 
 # A barra já recusa que dimensão não

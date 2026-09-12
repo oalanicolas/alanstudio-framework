@@ -166,7 +166,7 @@ Blogs de estúdio/agência de 2025–26 (orçamento, AA vs AAA, consistência vi
 informaram o vocabulário contemporâneo; não foram promovidos a regra testada.
 O harness adapta o **piso** e recusa o **tier** como objetivo. O instrumento
 preenchível é o [checklist](aaa-checklist.md) (`--stage aaa`); não é um
-score nem uma extração testada desses textos.
+score nem uma extração testada desses textos. Se o mapa recusa que o checklist seja um score, o `bar` nomeia o score que o mapa já recusa. Mapa no disco não é acabamento. Sem chave `score`.
 
 ## Barra de acabamento (0.9)
 
