@@ -30,6 +30,54 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.634 — o ok do sfx verify nomeia o ouvido que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+cruzou
+bytes
+e
+fichas
+do
+acervo
+não
+é
+mix
+ouvido.
+O
+verify
+relatava
+o
+ok
+e
+calava
+a
+recusa.
+Agora
+o
+`ok`
+do
+`sfx verify`
+nomeia
+o
+ouvido.
+Cruzou
+no
+disco
+não
+é
+o
+jogo.
+Sem
+chave
+`ouvido`.
+Nomear
+não
+ouve.
+
 ## 0.9.633 — o contract_valid do check-plan nomeia a obediência que o processo já recusa
 
 O

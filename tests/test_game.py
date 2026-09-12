@@ -10457,6 +10457,54 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", report["scope"])
         self.assertNotIn("then.sha256", report.get("then") or {})
 
+    def test_sfx_verify_ok_names_the_heard_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.recipe_refuses_ok_as_heard_mix(recipe),
+            "a receita já recusa que o ok do catálogo seja ouvido",
+        )
+        self.assertEqual(game.sfx_catalog.verify_ok_heard_source(), "recipes/audio.md")
+        empty = game.sfx_catalog.verify_catalog(self.root)
+        self.assertFalse(empty["ok"])
+        self.assertFalse(game.sfx_catalog.verify_ok_flag(empty))
+        self.assertTrue(empty["empty"])
+        self._plant_catalog_sound()
+        report = game.sfx_catalog.verify_catalog(self.root)
+        item = report["ok"]
+        self.assertTrue(item["ok"], "o verify já cruza o som plantado neste acervo")
+        self.assertEqual(item["ok"], game.sfx_catalog.verify_ok_flag(report))
+        self.assertIn(
+            "o ok do catálogo seja ouvido",
+            item["scope"],
+            "o verify relatava o ok e calava a recusa",
+        )
+        self.assertIn("(`ouvido`)", item["scope"])
+        self.assertNotIn("ouvido", item)
+        self.assertFalse(report["empty"])
+        self.assertFalse(report["heard"])
+        self.assertFalse(game.sfx_catalog.recipe_refuses_ok_as_heard_mix(""))
+        with mock.patch.object(game.sfx_catalog, "verify_ok_heard_source", return_value=None):
+            silent = game.sfx_catalog.verify_catalog(self.root)
+        self.assertNotIn(
+            "o ok do catálogo seja ouvido",
+            silent["ok"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o ouvido que a receita já recusa", recipe)
+        self.assertIn("nomeia o ouvido que a receita já recusa", skill)
+        self.assertIn("nomeia o ouvido que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o ok do catálogo seja ouvido", report.get("scope") or "")
+        self.assertNotIn("o ok do catálogo seja ouvido", report["next"])
+        if report.get("local"):
+            self.assertNotIn(
+                "o ok do catálogo seja ouvido",
+                report["local"].get("scope") or "",
+            )
+
     def test_sfx_verify_empty_names_the_gap_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
         self.assertTrue(

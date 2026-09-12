@@ -1226,6 +1226,67 @@ def verify_empty_scope():
     )
 
 
+# A receita já recusa que o ok do
+# catálogo seja ouvido. Sem isto o
+# verify relatava o ok e calava a
+# recusa. Cruzou no disco não é o
+# jogo.
+AUDIO_HEARD_OK = re.compile(r"bytes e fichas do acervo\s+não é mix ouvido")
+
+
+def recipe_refuses_ok_as_heard_mix(text):
+    return bool(text and AUDIO_HEARD_OK.search(text))
+
+
+def verify_ok_heard_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_ok_as_heard_mix(text):
+        return "recipes/audio.md"
+    return None
+
+
+def verify_ok_heard_scope():
+    if not verify_ok_heard_source():
+        return None
+    return (
+        " O disco recusa que o ok do catálogo seja ouvido "
+        "(`ouvido`). Cruzou no disco não é o jogo."
+    )
+
+
+def verify_ok_scope():
+    scope = (
+        "bytes e fichas do acervo. "
+        "O verify não ouve o mix."
+    )
+    named = verify_ok_heard_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def verify_ok_flag(reading):
+    ok = (reading or {}).get("ok") if isinstance(reading, dict) else reading
+    if isinstance(ok, dict):
+        return bool(ok.get("ok"))
+    return bool(ok)
+
+
+def verify_ok_reading(ok):
+    if not ok:
+        return False
+    return {
+        "ok": True,
+        "scope": verify_ok_scope(),
+    }
+
+
 # A receita já recusa que nomear o 404 seja mix. Sem isto o
 # verify listava o stem ausente e calava a recusa.
 # Lista no disco não é mix.
@@ -1496,7 +1557,7 @@ def verify_catalog(root=None, folder=None):
         return report
     result = audio.check(catalog_dir(root), policy=audio.audio_policy(root))
     report = {
-        "ok": result["ok"],
+        "ok": verify_ok_reading(result["ok"]),
         "empty": False,
         "problems": result["errors"],
         "file_count": result["sounds"],
