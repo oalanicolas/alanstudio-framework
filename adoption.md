@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.611 — o created do invite nomeia o endereço que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+nomear
+o
+endereço
+não
+observa.
+O
+invite
+relatava
+o
+created
+e
+calava
+a
+recusa.
+Agora
+o
+`created`
+do
+`invite`
+nomeia
+o
+endereço.
+Arquivo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`endereço`.
+Nomear
+não
+observa.
+
+O que 0.9.611 não afirma:
+a
+página
+não
+é
+alguém
+de
+fora.
+
 ## 0.9.610 — o release_current do ship nomeia o autoriza que a receita já recusa
 
 A

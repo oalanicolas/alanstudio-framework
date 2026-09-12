@@ -8214,6 +8214,58 @@ def invite_scroll_scope():
     )
 
 
+# A receita já recusa que nomear o
+# endereço observe. Sem isto o
+# invite relatava o created e
+# calava a recusa. Arquivo no
+# disco não é a sessão.
+FEEL_ADDRESS = re.compile(r"Nomear o endereço não observa")
+
+
+def recipe_refuses_naming_address_as_observing(text):
+    return bool(text and FEEL_ADDRESS.search(text))
+
+
+def invite_created_address_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_naming_address_as_observing(text):
+        return "recipes/feel.md"
+    return None
+
+
+def invite_created_address_scope():
+    if not invite_created_address_source():
+        return None
+    return (
+        " O disco recusa que nomear o endereço observe "
+        "(`endereço`). Arquivo no disco não é a sessão."
+    )
+
+
+def invite_created_scope():
+    scope = (
+        "página de convite escrita neste chamado. "
+        "Não observa a sessão."
+    )
+    named = invite_created_address_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def invite_created_flag(reading):
+    created = (reading or {}).get("created")
+    if isinstance(created, dict):
+        return bool(created.get("created"))
+    return bool(created)
+
+
 def invite_playtest(project):
     project = Path(project)
     if not project.is_dir() or project.is_symlink():
@@ -8254,7 +8306,13 @@ def invite_playtest(project):
         "schema_version": 1,
         "project": str(project),
         "path": INVITE,
-        "created": created,
+        "created": (
+            {
+                "created": True,
+                "scope": invite_created_scope(),
+            }
+            if created else False
+        ),
         "href": invite_href(project),
         "observed": False,
         "outsider": False,

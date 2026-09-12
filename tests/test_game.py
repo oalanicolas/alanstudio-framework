@@ -15336,6 +15336,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(payload["created"])
         self.assertFalse(payload["outsider"])
 
+    def test_invite_created_names_the_address_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_naming_address_as_observing(recipe),
+            "a receita já recusa que nomear o endereço observe",
+        )
+        self.assertEqual(game.invite_created_address_source(), "recipes/feel.md")
+        destination = self.root / "convite-endereco"
+        game.init(destination, "canvas-arcade")
+        report = game.invite_playtest(destination)
+        item = report["created"]
+        self.assertTrue(item["created"], "o invite já escreve a página neste chamado")
+        self.assertEqual(item["created"], game.invite_created_flag(report))
+        self.assertIn(
+            "nomear o endereço observe",
+            item["scope"],
+            "o invite relatava o created e calava a recusa",
+        )
+        self.assertIn("(`endereço`)", item["scope"])
+        self.assertNotIn("endereço", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_naming_address_as_observing(""))
+        again = game.invite_playtest(destination)
+        self.assertFalse(again["created"])
+        self.assertFalse(game.invite_created_flag(again))
+        mute = self.root / "convite-mudo"
+        game.init(mute, "canvas-arcade")
+        with mock.patch.object(game, "invite_created_address_source", return_value=None):
+            silent = game.invite_playtest(mute)
+        self.assertNotIn(
+            "nomear o endereço observe",
+            silent["created"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o endereço que a receita já recusa", recipe)
+        self.assertIn("nomeia o endereço que a receita já recusa", skill)
+        self.assertIn("nomeia o endereço que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("nomear o endereço observe", report["scope"])
+        if report.get("reading") and isinstance(report["reading"].get("invite"), dict):
+            self.assertNotIn(
+                "nomear o endereço observe",
+                report["reading"]["invite"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "nomear o endereço observe",
+            game.playtest_reading(destination)["scope"],
+        )
+        self.assertNotIn(
+            "nomear o endereço observe",
+            game.feel_reading(destination)["scope"],
+        )
+        self.assertNotIn("nomear o endereço observe", game.next_scope())
+
     def test_invite_names_the_bind_the_serve_already_pins(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         serve = (starter / "tools/serve.mjs").read_text(encoding="utf-8")

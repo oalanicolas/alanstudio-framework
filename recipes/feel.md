@@ -50,7 +50,7 @@ destino. Gravar já virava Achado no disco; o botão calava.
 Nomear não é alguém de fora. Sem a área de
 transferência, o Copiar baixa o markdown. Gravar anexa o candidato
 se last-run existir. Gravado
-não é alguém de fora. Se a receita recusa que o gravado seja alguém de fora, o `finding_attachments` do `playtest` nomeia o gravado que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `gravado`. Nomear o endereço não observa. Depois do
+não é alguém de fora. Se a receita recusa que o gravado seja alguém de fora, o `finding_attachments` do `playtest` nomeia o gravado que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `gravado`. Nomear o endereço não observa. Se a receita recusa que nomear o endereço observe, o `created` do `invite` nomeia o endereço que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `endereço`. Depois do
 fim, a página aponta o convite desta partida se a seed ficou no
 recibo. Copiar o endereço não grava. `next` aponta o convite
 depois do recibo de quem fez. O serve anuncia a URL da rede

@@ -850,7 +850,7 @@ Gravado vira
 `docs/playtest/<utc>-achado.md` se os quatro tiverem texto.
 Se last-run existir, o serve anexa
 `docs/playtest/<utc>-achado.run.json`. `playtest` relata esses
-anexos em `finding_attachments`. Anexo não é sessão observada. Se a receita recusa que o gravado seja alguém de fora, o `finding_attachments` do `playtest` nomeia o gravado que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `gravado`.
+anexos em `finding_attachments`. Anexo não é sessão observada. Se a receita recusa que o gravado seja alguém de fora, o `finding_attachments` do `playtest` nomeia o gravado que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `gravado`. Se a receita recusa que nomear o endereço observe, o `created` do `invite` nomeia o endereço que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `endereço`.
 Página no disco, texto na área de transferência, markdown
 baixado e markdown preenchido não são alguém de fora e não sobem `pacing`.
 Esqueleto vazio não é achado. `next` propõe `playtest.invite`
