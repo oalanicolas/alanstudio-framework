@@ -30,6 +30,55 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.668 — o continuity nomeia os pocs que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+agora
+implementar
+ou
+uma
+lista
+de
+PoCs
+não
+basta.
+O
+prompt
+da
+continuidade
+copiava
+a
+prontidão
+e
+calava
+a
+recusa.
+Agora
+o
+`prompt`
+do
+continuity
+nomeia
+os
+pocs.
+Lista
+no
+disco
+não
+é
+o
+prompt.
+Sem
+chave
+`pocs`.
+Nomear
+não
+observa.
+
 ## 0.9.667 — o init nomeia as referências que o processo já recusa
 
 O

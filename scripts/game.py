@@ -13580,7 +13580,43 @@ def continuity_prompt_scope():
             " O disco recusa que arquivos encontrados comprovem prontidão "
             "(`prontidão`). Arquivo no disco não é o recorte."
         )
+    named = continuity_prompt_pocs_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O roteiro já recusa que uma lista de
+# PoCs baste. Sem isto o prompt copiava
+# a prontidão e calava a recusa. Lista
+# no disco não é o prompt.
+AUDIT_POCS = re.compile(r"lista de PoCs não basta")
+
+
+def audit_refuses_poc_list_as_next_task(text):
+    return bool(text and AUDIT_POCS.search(text))
+
+
+def continuity_prompt_pocs_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_refuses_poc_list_as_next_task(text):
+        return "references/project-audit.md"
+    return None
+
+
+def continuity_prompt_pocs_scope():
+    if not continuity_prompt_pocs_source():
+        return None
+    return (
+        " O disco recusa que uma lista de PoCs baste "
+        "(`pocs`). Lista no disco não é o prompt."
+    )
 
 
 # O processo já recusa que arquivos encontrados comprovem prontidão.

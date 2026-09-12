@@ -1364,6 +1364,53 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("arquivos encontrados comprovem prontidão", report["delivery_review"]["scope"])
         self.assertNotIn("arquivos encontrados comprovem prontidão", game.next_scope())
 
+    def test_continuity_prompt_names_the_pocs_the_audit_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.audit_refuses_poc_list_as_next_task(guide),
+            "o roteiro já recusa que uma lista de PoCs baste",
+        )
+        self.assertEqual(
+            game.continuity_prompt_pocs_source(),
+            "references/project-audit.md",
+        )
+        self.package()
+        report = game.context(self.project, "mechanics")
+        item = report["continuity"]["prompt"]
+        self.assertIn(
+            "uma lista de PoCs baste",
+            item["scope"],
+            "o prompt copiava a prontidão e calava a recusa",
+        )
+        self.assertIn("(`pocs`)", item["scope"])
+        self.assertNotIn("pocs", item)
+        self.assertFalse(game.audit_refuses_poc_list_as_next_task(""))
+        with mock.patch.object(game, "continuity_prompt_pocs_source", return_value=None):
+            silent = game.context(self.project, "mechanics")
+        self.assertNotIn(
+            "uma lista de PoCs baste",
+            silent["continuity"]["prompt"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os pocs que o roteiro já recusa", guide)
+        self.assertIn("nomeia os pocs que o roteiro já recusa", skill)
+        self.assertIn("nomeia os pocs que o roteiro já recusa", readme)
+        self.assertIn("nomeia os pocs que o roteiro já recusa", recipe)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("uma lista de PoCs baste", report["continuity"]["scope"])
+        self.assertNotIn("uma lista de PoCs baste", report["scope"])
+        self.assertNotIn("uma lista de PoCs baste", game.next_scope())
+        self.assertNotIn("uma lista de PoCs baste", game.check_plan_scope())
+        self.assertNotIn(
+            "uma lista de PoCs baste",
+            game.documentation_initialization_scope(),
+        )
+        self.assertNotIn("uma lista de PoCs baste", game.init_scope(False))
+
     def test_scan_names_the_aaa_the_memory_already_refuses(self):
         mold = (game.FRAMEWORK / "assets/templates/agents.md").read_text(encoding="utf-8")
         self.assertTrue(

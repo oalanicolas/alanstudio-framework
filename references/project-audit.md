@@ -284,7 +284,7 @@ Nunca preencher essas lacunas com certeza fabricada para deixar a varredura verd
 A conclusão deve também situar o projeto e indicar **uma próxima tarefa** com motivo,
 entrada canônica e prova de término. Grave a continuidade no plano/devlog existente
 e gere automaticamente seu prompt preenchido quando o recorte estiver definido.
-Apresente-o na resposta; “agora implementar” ou uma lista de PoCs não basta. O pedido de
+Apresente-o na resposta; “agora implementar” ou uma lista de PoCs não basta. Se o roteiro recusa que uma lista de PoCs baste, o `prompt` do continuity nomeia os pocs que o roteiro já recusa. Lista no disco não é o prompt. Sem chave `pocs`. O pedido de
 retomada usa [o procedimento comum](process.md#continuidade-e-retomada), aproveitando
 o levantamento já feito.
 
