@@ -6717,6 +6717,59 @@ def ship_release_current_flag(reading):
     return bool(current)
 
 
+# A receita já recusa que o
+# ambiente de desenvolvimento
+# seja o artefato. Sem isto o
+# ship relatava o pacote e
+# calava a recusa. Pacote no
+# disco não é outra máquina.
+RELEASE_ENVIRONMENT = re.compile(r"não o ambiente de desenvolvimento")
+
+
+def recipe_refuses_environment_as_artifact(text):
+    return bool(text and RELEASE_ENVIRONMENT.search(text))
+
+
+def ship_expected_environment_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_environment_as_artifact(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_expected_environment_scope():
+    if not ship_expected_environment_source():
+        return None
+    return (
+        " O disco recusa que o ambiente de desenvolvimento seja o artefato "
+        "(`ambiente`). Pacote no disco não é outra máquina."
+    )
+
+
+def ship_expected_scope():
+    scope = (
+        "package ou Cargo no disco. "
+        "Não é o artefato exportado."
+    )
+    named = ship_expected_environment_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def ship_expected_flag(reading):
+    expected = (reading or {}).get("expected")
+    if isinstance(expected, dict):
+        return bool(expected.get("expected"))
+    return bool(expected)
+
+
 # A receita já recusa que a árvore
 # sem os quatro seja jogável. Sem
 # isto o ship relatava o bool e
@@ -6803,6 +6856,12 @@ def ship_reading(project):
     stale = ship_stale(artifact, project)
     expected = (project / "package.json").is_file() or (project / "Cargo.toml").is_file()
     declared = bool(named or ci or release_current)
+    unpacked = expected and not declared
+    if expected:
+        expected = {
+            "expected": True,
+            "scope": ship_expected_scope(),
+        }
     if named:
         named = {
             "names": named,
@@ -6886,7 +6945,7 @@ def ship_reading(project):
         "artifact_open": artifact_open,
         "elsewhere": False,
         "declared": declared,
-        "unpacked": expected and not declared,
+        "unpacked": unpacked,
         "shipped": False,
         "guide": str(FRAMEWORK / "recipes/release.md"),
         "rule": (

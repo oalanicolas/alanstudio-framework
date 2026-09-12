@@ -13892,6 +13892,83 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.playtest_reading(starter)["scope"],
         )
 
+    def test_ship_expected_names_the_environment_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_environment_as_artifact(recipe),
+            "a receita já recusa que o ambiente de desenvolvimento seja o artefato",
+        )
+        self.assertEqual(game.ship_expected_environment_source(), "recipes/release.md")
+        empty = game.ship_reading(self.project)
+        self.assertFalse(empty["expected"])
+        self.assertFalse(game.ship_expected_flag(empty))
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.ship_reading(starter)
+        item = report["expected"]
+        self.assertTrue(item["expected"], "o ship já relata o pacote neste starter")
+        self.assertEqual(item["expected"], game.ship_expected_flag(report))
+        self.assertIn(
+            "o ambiente de desenvolvimento seja o artefato",
+            item["scope"],
+            "o ship relatava o pacote e calava a recusa",
+        )
+        self.assertIn("(`ambiente`)", item["scope"])
+        self.assertNotIn("ambiente", item)
+        self.assertIs(report["unpacked"], False)
+        self.assertIs(report["declared"], True)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_environment_as_artifact(""))
+        with mock.patch.object(game, "ship_expected_environment_source", return_value=None):
+            silent = game.ship_reading(starter)
+        self.assertNotIn(
+            "o ambiente de desenvolvimento seja o artefato",
+            silent["expected"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o ambiente que a receita já recusa", recipe)
+        self.assertIn("nomeia o ambiente que a receita já recusa", skill)
+        self.assertIn("nomeia o ambiente que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o ambiente de desenvolvimento seja o artefato", report["scope"])
+        if report.get("release"):
+            self.assertNotIn(
+                "o ambiente de desenvolvimento seja o artefato",
+                report["release"].get("scope") or "",
+            )
+        if report.get("release_current") and isinstance(report["release_current"], dict):
+            self.assertNotIn(
+                "o ambiente de desenvolvimento seja o artefato",
+                report["release_current"].get("scope") or "",
+            )
+        if report.get("incomplete") and isinstance(report["incomplete"], dict):
+            self.assertNotIn(
+                "o ambiente de desenvolvimento seja o artefato",
+                report["incomplete"].get("scope") or "",
+            )
+        if report.get("artifact_open") and isinstance(report["artifact_open"], dict):
+            self.assertNotIn(
+                "o ambiente de desenvolvimento seja o artefato",
+                report["artifact_open"].get("scope") or "",
+            )
+        if report.get("scripts") and isinstance(report["scripts"], dict):
+            self.assertNotIn(
+                "o ambiente de desenvolvimento seja o artefato",
+                report["scripts"].get("scope") or "",
+            )
+        self.assertNotIn("o ambiente de desenvolvimento seja o artefato", game.next_scope())
+        self.assertNotIn(
+            "o ambiente de desenvolvimento seja o artefato",
+            game.playtest_reading(starter)["scope"],
+        )
+        self.assertNotIn(
+            "o ambiente de desenvolvimento seja o artefato",
+            game.budget_reading(starter)["scope"],
+        )
+
     def test_ship_names_how_to_serve_dist_without_calling_it_elsewhere(self):
         destination = self.root / "artefato-pronto"
         game.start_project(destination, "canvas-arcade")

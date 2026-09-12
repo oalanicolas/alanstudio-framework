@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.616 — o expected do ship nomeia o ambiente que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+ambiente
+de
+desenvolvimento
+não
+é
+o
+artefato.
+O
+ship
+relatava
+o
+pacote
+e
+calava
+a
+recusa.
+Agora
+o
+`expected`
+do
+`ship`
+nomeia
+o
+ambiente.
+Pacote
+no
+disco
+não
+é
+outra
+máquina.
+Sem
+chave
+`ambiente`.
+Nomear
+não
+exporta.
+
+O que 0.9.616 não afirma:
+o
+package
+não
+é
+o
+dist/.
+
 ## 0.9.615 — o expected do budget nomeia o suficiente que a receita já recusa
 
 A
