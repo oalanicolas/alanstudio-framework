@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.708 — o budget nomeia as chamadas que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+menos
+chamadas
+de
+desenho
+não
+garantem
+menos
+trabalho
+total.
+O
+budget
+cronometrava
+a
+porta
+e
+calava
+a
+recusa.
+Agora
+o
+`budget`
+nomeia
+as
+chamadas.
+Chamadas
+no
+disco
+não
+são
+o
+trabalho.
+Sem
+chave
+`chamadas`.
+Nomear
+não
+mede.
+
 ## 0.9.707 — o item da observação nomeia o dom que a receita já recusa
 
 A

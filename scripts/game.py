@@ -5725,6 +5725,41 @@ def budget_stable_scope():
     )
 
 
+# A receita já recusa que menos
+# chamadas de desenho garantam
+# menos trabalho total. Sem isto
+# o budget cronometrava a porta
+# e calava a recusa. Chamadas no
+# disco não são o trabalho.
+PERF_DRAWS = re.compile(r"menos chamadas de desenho não garantem menos trabalho total")
+
+
+def recipe_refuses_fewer_draws_as_less_work(text):
+    return bool(text and PERF_DRAWS.search(text))
+
+
+def budget_draws_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_fewer_draws_as_less_work(text):
+        return "recipes/performance.md"
+    return None
+
+
+def budget_draws_scope():
+    if not budget_draws_source():
+        return None
+    return (
+        " O disco recusa que menos chamadas de desenho garantam menos trabalho total "
+        "(`chamadas`). Chamadas no disco não são o trabalho."
+    )
+
+
 # A receita já recusa que custos de
 # build e serialização sejam FPS.
 # Sem isto o budget listava o tool
@@ -6111,6 +6146,9 @@ def budget_reading(project):
     stable = budget_stable_scope()
     if stable:
         scope += stable
+    draws = budget_draws_scope()
+    if draws:
+        scope += draws
     return {
         "schema_version": 1,
         "project": str(project),

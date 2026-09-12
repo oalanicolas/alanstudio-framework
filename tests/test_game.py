@@ -15168,6 +15168,75 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.next_scope(),
         )
 
+    def test_budget_names_the_draws_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(
+            recipe,
+            r"menos chamadas de desenho não garantem menos trabalho total",
+        )
+        self.assertTrue(
+            game.recipe_refuses_fewer_draws_as_less_work(recipe),
+            "a receita já recusa que menos chamadas de desenho garantam menos trabalho total",
+        )
+        self.assertEqual(game.budget_draws_source(), "recipes/performance.md")
+        noted = game.budget_reading(self.project)
+        self.assertIn(
+            "menos chamadas de desenho garantam menos trabalho total",
+            noted["scope"],
+            "o budget cronometrava a porta e calava a recusa",
+        )
+        self.assertIn("(`chamadas`)", noted["scope"])
+        self.assertIn("Chamadas no disco não são o trabalho.", noted["scope"])
+        self.assertNotIn("chamadas", noted)
+        self.assertFalse(noted["measured"])
+        self.assertFalse(game.recipe_refuses_fewer_draws_as_less_work(""))
+        with mock.patch.object(game, "budget_draws_source", return_value=None):
+            silent = game.budget_reading(self.project)
+        self.assertNotIn(
+            "menos chamadas de desenho garantam menos trabalho total",
+            silent.get("scope") or "",
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia as chamadas que a receita já recusa", recipe)
+        self.assertIn("nomeia as chamadas que a receita já recusa", create)
+        self.assertIn("nomeia as chamadas que a receita já recusa", skill)
+        self.assertIn("nomeia as chamadas que a receita já recusa", readme)
+        self.assertNotIn("verified", noted["scope"])
+        self.assertNotIn("aprovado", noted["scope"])
+        self.assertNotIn("4.5", noted["scope"])
+        self.assertNotIn("16 ms", noted["scope"])
+        self.assertNotIn(
+            "menos chamadas de desenho garantam menos trabalho total",
+            game.record_scope(),
+        )
+        self.assertNotIn(
+            "menos chamadas de desenho garantam menos trabalho total",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "menos chamadas de desenho garantam menos trabalho total",
+            game.content_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "menos chamadas de desenho garantam menos trabalho total",
+            game.observation_item_scope(),
+        )
+        self.assertNotIn(
+            "menos chamadas de desenho garantam menos trabalho total",
+            game.craft_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "menos chamadas de desenho garantam menos trabalho total",
+            game.save_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "menos chamadas de desenho garantam menos trabalho total",
+            game.next_scope(),
+        )
+        self.assertNotIn("chamadas", game.CYCLE_KEYS)
+
     def test_budget_files_names_the_fps_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
         self.assertTrue(
