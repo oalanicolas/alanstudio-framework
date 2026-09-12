@@ -7697,7 +7697,13 @@ def playtest_reading(project):
             if qa_file
             else None
         ),
-        "qa_current": qa_current,
+        "qa_current": (
+            {
+                "qa_current": True,
+                "scope": playtest_qa_current_scope(),
+            }
+            if qa_current else False
+        ),
         "expected": expected,
         "structured": structured,
         "unstructured": expected and not structured,
@@ -7851,6 +7857,58 @@ def playtest_qa_path(reading):
     if isinstance(qa, dict):
         return qa.get("path")
     return qa
+
+
+# A receita já recusa que o harness
+# assista à sessão. Sem isto o
+# playtest relatava o vigente e
+# calava a recusa. Arquivo no disco
+# não é a sessão.
+FEEL_ATTEND = re.compile(r"não assiste à sessão")
+
+
+def recipe_refuses_harness_as_attending_session(text):
+    return bool(text and FEEL_ATTEND.search(text))
+
+
+def playtest_qa_current_attend_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_harness_as_attending_session(text):
+        return "recipes/feel.md"
+    return None
+
+
+def playtest_qa_current_attend_scope():
+    if not playtest_qa_current_attend_source():
+        return None
+    return (
+        " O disco recusa que o harness assista à sessão "
+        "(`assiste`). Arquivo no disco não é a sessão."
+    )
+
+
+def playtest_qa_current_scope():
+    scope = (
+        "docs/qa.md vigente no disco. "
+        "Não assiste à sessão."
+    )
+    named = playtest_qa_current_attend_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def playtest_qa_current_flag(reading):
+    qa_current = (reading or {}).get("qa_current")
+    if isinstance(qa_current, dict):
+        return bool(qa_current.get("qa_current"))
+    return bool(qa_current)
 
 
 # O molde já recusa que a regra de

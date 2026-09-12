@@ -57,7 +57,7 @@ depois do recibo de quem fez. O serve anuncia a URL da rede
 se a máquina tiver outro endereço IPv4. Se o serve prende o bind, o convite nomeia o bind que o serve já prende. Bind no disco não é alguém de fora. Sem chave `HOST`. Se a receita recusa que o endereço seja duas sessões, o convite nomeia as sessões que a receita já recusa. Convite no disco não é alguém de fora. Sem chave `sessões`. Se a receita recusa que o convite seja preferência, o `invite` do `playtest` nomeia a preferência que a receita já recusa. Convite no disco não é a sessão. Sem chave `preferência`.
 Esconder a tabela, anunciar
 a rede, mostrar os números, copiar o achado e gravar os quatro nomes não são alguém de fora. `observed` e `outsider` são sempre
-falsos: o harness não assiste à sessão. A partida no serve grava o
+falsos: o harness não assiste à sessão. Se a receita recusa que o harness assista à sessão, o `qa_current` do `playtest` nomeia o assiste que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `assiste`. A partida no serve grava o
 mesmo candidato em `docs/playtest/last-run.json` com `policy: played`.
 `npm run session` grava a simulação (`nearest-orb`) e não
 sobrescreve `played` sem `--force`. `session --look` e

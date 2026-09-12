@@ -15122,6 +15122,76 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn("a simulação seja alguém de fora", game.next_scope())
 
+    def test_playtest_qa_current_names_the_attend_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_harness_as_attending_session(recipe),
+            "a receita já recusa que o harness assista à sessão",
+        )
+        self.assertEqual(game.playtest_qa_current_attend_source(), "recipes/feel.md")
+        empty = game.playtest_reading(self.project)
+        self.assertFalse(empty["qa_current"])
+        self.assertFalse(game.playtest_qa_current_flag(empty))
+        (self.project / "docs").mkdir()
+        (self.project / "docs/qa.md").write_text("# Playtest\n", encoding="utf-8")
+        report = game.playtest_reading(self.project)
+        item = report["qa_current"]
+        self.assertTrue(item["qa_current"], "o playtest já relata o vigente neste qa.md")
+        self.assertEqual(item["qa_current"], game.playtest_qa_current_flag(report))
+        self.assertIn(
+            "o harness assista à sessão",
+            item["scope"],
+            "o playtest relatava o vigente e calava a recusa",
+        )
+        self.assertIn("(`assiste`)", item["scope"])
+        self.assertNotIn("assiste", item)
+        self.assertIs(report["expected"], True)
+        self.assertIs(report["structured"], False)
+        self.assertIs(report["unstructured"], True)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_harness_as_attending_session(""))
+        with mock.patch.object(game, "playtest_qa_current_attend_source", return_value=None):
+            silent = game.playtest_reading(self.project)
+        self.assertNotIn(
+            "o harness assista à sessão",
+            silent["qa_current"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o assiste que a receita já recusa", recipe)
+        self.assertIn("nomeia o assiste que a receita já recusa", skill)
+        self.assertIn("nomeia o assiste que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o harness assista à sessão", report["scope"])
+        if report.get("qa"):
+            self.assertNotIn(
+                "o harness assista à sessão",
+                report["qa"].get("scope") or "",
+            )
+        if report.get("findings"):
+            self.assertNotIn(
+                "o harness assista à sessão",
+                report["findings"].get("scope") or "",
+            )
+        if report.get("form"):
+            self.assertNotIn(
+                "o harness assista à sessão",
+                report["form"].get("scope") or "",
+            )
+        if report.get("fields"):
+            self.assertNotIn(
+                "o harness assista à sessão",
+                report["fields"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o harness assista à sessão",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn("o harness assista à sessão", game.next_scope())
+
     def test_a_structured_finding_is_form_not_an_observed_session(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "docs").mkdir()
