@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.617: o `embedded` do `origins` nomeia a nova que a receita já recusa. Arquivo no disco não é a concessão. Sem chave `nova`. Nomear não concede.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.617): **678 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
