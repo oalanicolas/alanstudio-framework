@@ -10668,6 +10668,72 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn("serialização sejam FPS", game.next_scope())
 
+    def test_budget_receipts_names_the_optimization_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_visual_gain_as_optimization(recipe),
+            "a receita já recusa que uma melhoria visual seja otimização",
+        )
+        self.assertEqual(game.budget_optimization_source(), "recipes/performance.md")
+        empty = game.budget_reading(self.project)
+        self.assertEqual(empty["receipts"], [])
+        self.assertEqual(game.budget_receipts(self.project), [])
+        receipt = self.project / "qa" / "orcamento"
+        receipt.mkdir(parents=True)
+        (receipt / "record.json").write_text(
+            json.dumps({"kind": "budget", "note": "porta"}),
+            encoding="utf-8",
+        )
+        self.assertEqual(game.budget_receipts(self.project), ["qa/orcamento/record.json"])
+        report = game.budget_reading(self.project)
+        item = report["receipts"]
+        self.assertEqual(item["paths"], ["qa/orcamento/record.json"])
+        self.assertEqual(item["paths"], game.budget_receipts(self.project))
+        self.assertIn(
+            "melhoria visual seja otimização",
+            item["scope"],
+            "o budget listava o recibo e calava a recusa",
+        )
+        self.assertIn("(`otimização`)", item["scope"])
+        self.assertNotIn("otimização", item)
+        self.assertFalse(report["measured"])
+        self.assertFalse(game.recipe_refuses_visual_gain_as_optimization(""))
+        with mock.patch.object(game, "budget_optimization_source", return_value=None):
+            silent = game.budget_reading(self.project)
+        self.assertNotIn(
+            "melhoria visual seja otimização",
+            silent["receipts"]["scope"],
+        )
+        content = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a otimização que a receita já recusa", recipe)
+        self.assertIn("nomeia a otimização que a receita já recusa", content)
+        self.assertIn("nomeia a otimização que a receita já recusa", skill)
+        self.assertIn("nomeia a otimização que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("WCAG", item["scope"])
+        self.assertNotIn("melhoria visual seja otimização", report["scope"])
+        if report["files"]:
+            self.assertNotIn(
+                "melhoria visual seja otimização",
+                report["files"].get("scope") or "",
+            )
+        fields = game.record_budget_fields_scope("budget")
+        if fields:
+            self.assertNotIn("melhoria visual seja otimização", fields)
+        self.assertNotIn(
+            "melhoria visual seja otimização",
+            game.content_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "melhoria visual seja otimização",
+            game.art_reading(self.project)["scope"],
+        )
+        self.assertNotIn("melhoria visual seja otimização", game.next_scope())
+
     def test_persistence_recipe_names_the_pad_loss_the_starter_already_flushes(self):
         persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")

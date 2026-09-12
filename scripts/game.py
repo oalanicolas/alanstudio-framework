@@ -3987,6 +3987,51 @@ def budget_tool_files(project):
     ]
 
 
+# A receita já recusa que uma
+# melhoria visual seja otimização.
+# Sem isto o budget listava o
+# recibo e calava a recusa. Recibo
+# no disco não é os dois lados.
+PERF_OPTIMIZATION = re.compile(r"melhoria visual pode aumentar o custo")
+
+
+def recipe_refuses_visual_gain_as_optimization(text):
+    return bool(text and PERF_OPTIMIZATION.search(text))
+
+
+def budget_optimization_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_visual_gain_as_optimization(text):
+        return "recipes/performance.md"
+    return None
+
+
+def budget_optimization_scope():
+    if not budget_optimization_source():
+        return None
+    return (
+        " O disco recusa que uma melhoria visual seja otimização "
+        "(`otimização`). Recibo no disco não é os dois lados."
+    )
+
+
+def budget_receipts_scope():
+    scope = (
+        "recibo de orçamento no disco. "
+        "Não mede o quadro."
+    )
+    named = budget_optimization_scope()
+    if named:
+        scope += named
+    return scope
+
+
 def budget_reading(project):
     project = Path(project)
     try:
@@ -4006,6 +4051,11 @@ def budget_reading(project):
         files = {
             "paths": files,
             "scope": budget_files_scope(),
+        }
+    if receipts:
+        receipts = {
+            "paths": receipts,
+            "scope": budget_receipts_scope(),
         }
     scope = (
         "Procura script `budget`/`bench`, tools/budget.* e record kind=budget. "

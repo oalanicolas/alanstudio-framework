@@ -755,7 +755,7 @@ declara sem teto, o `budget` nomeia os bytes que o size já relata.
 Bytes no disco não são o quadro medido. Sem chave `size`. Se o
 `tools/budget.*` relata o pior percentil, o `budget` nomeia o percentil que a receita já pede.
 Relato no disco não é dispositivo. Sem chave `percentile`.
-Se a receita recusa que custos de build, compilação aquecida e serialização sejam FPS, o `files` do `budget` nomeia o fps que a receita já recusa. Custo no disco não é o quadro. Sem chave `fps`.
+Se a receita recusa que custos de build, compilação aquecida e serialização sejam FPS, o `files` do `budget` nomeia o fps que a receita já recusa. Custo no disco não é o quadro. Sem chave `fps`. Se a receita recusa que uma melhoria visual seja otimização, o `receipts` do `budget` nomeia a otimização que a receita já recusa. Recibo no disco não é os dois lados. Sem chave `otimização`.
 `measured` é sempre `false`. O starter declara
 os três; um canvas sem opção de alcance recebe `access.missing` antes da
 barra.

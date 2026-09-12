@@ -111,7 +111,7 @@ conforme o contrato do consumidor e repetir a prova no projeto de destino.
   separadamente antes de afirmar aumento ou redução de download.
 - Variação de material não substitui detalhe funcional de forma, e distribuir mais
   módulos não prova composição natural. Se a receita recusa que mais módulos provem a composição, o `content` nomeia a composição que a receita já recusa. Arquivo no disco não é o mundo. Sem chave `composição`. Se a receita recusa que o tamanho codificado meça custo decodificado ou GPU, o `content` nomeia o codificado que a receita já recusa. Arquivo no disco não é o quadro. Sem chave `codificado`. Observe repetição, escala e leitura no jogo;
-  uma mudança artística não deve ser anunciada como otimização técnica.
+  uma mudança artística não deve ser anunciada como otimização técnica. Se a receita recusa que uma melhoria visual seja otimização, o `receipts` do `budget` nomeia a otimização que a receita já recusa. Recibo no disco não é os dois lados. Sem chave `otimização`.
 
 Referências: Era Uma Vez no playground, troca de assets em protótipo Unity, Ink `RE-INK-004/007/009`
 e LDtk `RE-LDTK-005/006/010` ([fontes](../references/sources.md)).

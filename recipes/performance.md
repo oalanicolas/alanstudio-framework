@@ -90,7 +90,7 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
   Uma ferramenta de medição também pode desenhar na cena e falsificar seu resultado.
 - Ganho na média não demonstra redução de engasgos. Se a receita recusa que ganho na média demonstre redução de engasgos, o `fields` do `record --kind budget` nomeia os engasgos que a receita já recusa. Número no disco não é o quadro estável. Sem chave `engasgos`. Custos de build, compilação
   aquecida e serialização não são FPS. Se a receita recusa que custos de build, compilação aquecida e serialização sejam FPS, o `files` do `budget` nomeia o fps que a receita já recusa. Custo no disco não é o quadro. Sem chave `fps`. Uma melhoria visual pode aumentar o custo;
-  registre ambos sem chamar a correção artística de otimização.
+  registre ambos sem chamar a correção artística de otimização. Se a receita recusa que uma melhoria visual seja otimização, o `receipts` do `budget` nomeia a otimização que a receita já recusa. Recibo no disco não é os dois lados. Sem chave `otimização`.
 
 ## Eliminar trabalho preservando o contrato
 
