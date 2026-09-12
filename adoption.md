@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.655 — a área architecture do scan nomeia a estimativa que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+estimativa
+implícita
+não
+é
+nem
+discutível.
+O
+scan
+localizava
+o
+TDD
+e
+calava
+a
+recusa.
+Agora
+a
+área
+`architecture`
+nomeia
+a
+estimativa.
+Receita
+no
+disco
+não
+é
+decisão.
+Sem
+chave
+`estimativa`.
+Nomear
+não
+escolhe.
+
 ## 0.9.654 — o context nomeia o inferido que o roteiro já recusa
 
 O

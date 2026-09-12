@@ -12697,7 +12697,43 @@ def architecture_area_scope():
             " O disco recusa que exemplares locais comprovem comportamento "
             "multiplayer (`multiplayer`). Receita no disco não é sessão real."
         )
+    named = architecture_estimate_scope()
+    if named:
+        scope += named
     return scope
+
+
+# A receita já recusa que a estimativa
+# implícita seja discutível. Sem isto a
+# área localizava o TDD e calava a
+# recusa. Receita no disco não é decisão.
+ARCHITECTURE_ESTIMATE = re.compile(r"estimativa implícita não é nem discutível")
+
+
+def recipe_refuses_implicit_estimate(text):
+    return bool(text and ARCHITECTURE_ESTIMATE.search(text))
+
+
+def architecture_estimate_source():
+    path = ARCHITECTURE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_implicit_estimate(text):
+        return "recipes/architecture.md"
+    return None
+
+
+def architecture_estimate_scope():
+    if not architecture_estimate_source():
+        return None
+    return (
+        " O disco recusa que a estimativa implícita seja discutível "
+        "(`estimativa`). Receita no disco não é decisão."
+    )
 
 
 # A receita já recusa que exemplares locais comprovem multiplayer.

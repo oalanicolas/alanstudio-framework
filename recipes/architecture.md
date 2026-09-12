@@ -91,7 +91,7 @@ cabeça**: escreva no TDD a contagem a partir da qual o sistema passa a valer a
 pena (“acima de N falas, um sistema de diálogo; abaixo, texto no lugar”), com a
 data e quem estimou. Quando a contagem real cruzar a linha, a decisão já está
 tomada e datada, em vez de ser adiada por inércia. Estimativa declarada e errada
-é revisável; estimativa implícita não é nem discutível.
+é revisável; estimativa implícita não é nem discutível. Se a receita recusa que a estimativa implícita seja discutível, a área `architecture` do `scan` nomeia a estimativa que a receita já recusa. Receita no disco não é decisão. Sem chave `estimativa`.
 
 ### Edição estruturada e convivência com código
 

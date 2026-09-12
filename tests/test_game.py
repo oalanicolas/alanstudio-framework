@@ -4718,6 +4718,54 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             item.get("scope") or "",
         )
 
+    def test_scan_architecture_names_the_estimate_the_recipe_already_refuses(self):
+        recipe_text = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_implicit_estimate(recipe_text),
+            "a receita já recusa que a estimativa implícita seja discutível",
+        )
+        self.assertEqual(game.architecture_estimate_source(), "recipes/architecture.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "a estimativa implícita seja discutível",
+            report["areas"]["architecture"]["scope"],
+            "o scan localizava a área e calava a recusa",
+        )
+        self.assertIn("(`estimativa`)", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("estimativa", report["areas"]["architecture"])
+        self.assertFalse(game.recipe_refuses_implicit_estimate(""))
+        with mock.patch.object(game, "architecture_estimate_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "a estimativa implícita seja discutível",
+            silent["areas"]["architecture"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a estimativa que a receita já recusa", recipe)
+        self.assertIn("nomeia a estimativa que a receita já recusa", skill)
+        self.assertIn("nomeia a estimativa que a receita já recusa", readme)
+        self.assertIn("nomeia a estimativa que a receita já recusa", create)
+        self.assertNotIn("verified", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("aprovado", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("4.5", report["areas"]["architecture"]["scope"])
+        self.assertNotIn("verified", recipe)
+        self.assertNotIn("a estimativa implícita seja discutível", report["scope"])
+        self.assertNotIn(
+            "a estimativa implícita seja discutível",
+            report["areas"]["qa"]["scope"],
+        )
+        self.assertNotIn(
+            "a estimativa implícita seja discutível",
+            game.context_scope(),
+        )
+        self.assertNotIn(
+            "a estimativa implícita seja discutível",
+            game.next_scope(),
+        )
+
     def test_architecture_candidate_names_the_understanding_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/architecture.md").read_text(encoding="utf-8")
         self.assertTrue(
