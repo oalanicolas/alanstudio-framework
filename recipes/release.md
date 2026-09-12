@@ -41,7 +41,7 @@ O que precisa estar resolvido antes de chamar uma versão entregável:
   declarado e medido na plataforma alvo, em rede e máquina realistas. Se a receita recusa que o tamanho sem teto seja o orçamento de entrega, o `ship` nomeia o teto que a receita já recusa. Relato no disco não é a plataforma alvo. Sem chave `teto`.
 - **Plataforma real:** execução em dispositivo que não é o de desenvolvimento,
   com a entrada, a resolução e o sistema pretendidos. Emulação e redimensionar
-  uma janela não substituem isso.
+  uma janela não substituem isso. Se a receita recusa que emulação e redimensionar uma janela substituam a plataforma real, o `scripts` do `ship` nomeia a emulação que a receita já recusa. Script no disco não é o dispositivo. Sem chave `emulação`.
 - **Primeira execução:** instalação limpa, sem save, sem cache, sem permissão
   concedida. É o único caminho que todo jogador percorre e o menos testado. Se a receita recusa que a CI seja a primeira execução, o `ci` do `ship` nomeia a primeira que a receita já recusa. Fluxo no disco não é instalação limpa. Sem chave `primeira`.
 - **Proveniência do que embarca:** cada asset, fonte, som, biblioteca e recurso

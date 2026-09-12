@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.567 — o scripts do ship nomeia a emulação que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+emulação
+e
+redimensionar
+uma
+janela
+não
+substituem
+a
+plataforma
+real.
+O
+ship
+listava
+o
+script
+e
+calava
+a
+recusa.
+Agora
+o
+`scripts`
+do
+`ship`
+nomeia
+a
+emulação.
+Script
+no
+disco
+não
+é
+o
+dispositivo.
+Sem
+chave
+`emulação`.
+Nomear
+não
+entrega.
+
+O que 0.9.567 não afirma:
+listar
+o
+script
+não
+é
+rodar
+no
+dispositivo.
+
 ## 0.9.566 — o sources do feel nomeia a captura que a receita já recusa
 
 A

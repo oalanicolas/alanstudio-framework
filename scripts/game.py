@@ -5279,8 +5279,53 @@ def ship_ci_scope():
     return scope
 
 
-def ship_reading(project):
-    project = Path(project)
+# A receita já recusa que emulação e
+# redimensionar uma janela substituam
+# a plataforma real. Sem isto o ship
+# listava o script e calava a recusa.
+# Script no disco não é o dispositivo.
+RELEASE_EMULATION = re.compile(r"Emulação e redimensionar\s+uma janela")
+
+
+def recipe_refuses_emulation_as_real_platform(text):
+    return bool(text and RELEASE_EMULATION.search(text))
+
+
+def ship_emulation_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_emulation_as_real_platform(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_emulation_scope():
+    if not ship_emulation_source():
+        return None
+    return (
+        " O disco recusa que emulação e redimensionar uma janela "
+        "substituam a plataforma real (`emulação`). Script no disco "
+        "não é o dispositivo."
+    )
+
+
+def ship_scripts_scope():
+    scope = (
+        "script de empacote no disco. "
+        "Não executa o artefato."
+    )
+    named = ship_emulation_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def ship_script_names(project):
     try:
         scripts, _ = project_commands(project)
     except (OSError, ValueError):
@@ -5291,6 +5336,12 @@ def ship_reading(project):
             if name == word or name.startswith(f"{word}:") or name.startswith(f"{word}-"):
                 if name not in named:
                     named.append(name)
+    return named
+
+
+def ship_reading(project):
+    project = Path(project)
+    named = ship_script_names(project)
     ci = ship_ci(project)
     release = project / SHIP_RELEASE
     release_current = document_is_current(release)
@@ -5308,6 +5359,11 @@ def ship_reading(project):
     stale = ship_stale(artifact, project)
     expected = (project / "package.json").is_file() or (project / "Cargo.toml").is_file()
     declared = bool(named or ci or release_current)
+    if named:
+        named = {
+            "names": named,
+            "scope": ship_scripts_scope(),
+        }
     incomplete = bool(tree) and not tree["complete"]
     artifact_open = artifact_open_command(project)
     scope = (

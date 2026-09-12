@@ -11102,7 +11102,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("data/palettes.json", inventory["files"])
         self.assertTrue(pack["expected"])
         self.assertFalse(pack["unpacked"])
-        self.assertIn("build", pack["scripts"])
+        self.assertIn("build", pack["scripts"]["names"])
         self.assertEqual(pack["release"], "docs/release.md")
         self.assertTrue(pack["release_current"])
         self.assertFalse(pack["shipped"])
@@ -12092,6 +12092,73 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.budget_reading(destination)["scope"],
         )
         self.assertNotIn("CI seja a primeira execução", game.next_scope())
+
+    def test_ship_scripts_names_the_emulation_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_emulation_as_real_platform(recipe),
+            "a receita já recusa que emulação e redimensionar uma janela substituam a plataforma real",
+        )
+        self.assertEqual(game.ship_emulation_source(), "recipes/release.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertIn("build", game.ship_script_names(starter))
+        report = game.ship_reading(starter)
+        item = report["scripts"]
+        self.assertIn("build", item["names"])
+        self.assertEqual(item["names"], game.ship_script_names(starter))
+        self.assertIn(
+            "emulação e redimensionar uma janela substituam a plataforma real",
+            item["scope"],
+            "o ship listava o script e calava a recusa",
+        )
+        self.assertIn("(`emulação`)", item["scope"])
+        self.assertNotIn("emulação", item)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_emulation_as_real_platform(""))
+        empty = game.ship_reading(self.project)
+        self.assertEqual(empty["scripts"], [])
+        with mock.patch.object(game, "ship_emulation_source", return_value=None):
+            silent = game.ship_reading(starter)
+        self.assertNotIn(
+            "emulação e redimensionar uma janela substituam a plataforma real",
+            silent["scripts"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a emulação que a receita já recusa", recipe)
+        self.assertIn("nomeia a emulação que a receita já recusa", skill)
+        self.assertIn("nomeia a emulação que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn(
+            "emulação e redimensionar uma janela substituam a plataforma real",
+            report["scope"],
+        )
+        if report.get("ci"):
+            self.assertNotIn(
+                "emulação e redimensionar uma janela substituam a plataforma real",
+                report["ci"].get("scope") or "",
+            )
+        if report.get("tree"):
+            self.assertNotIn(
+                "emulação e redimensionar uma janela substituam a plataforma real",
+                report["tree"].get("scope") or "",
+            )
+        if report.get("artifact"):
+            self.assertNotIn(
+                "emulação e redimensionar uma janela substituam a plataforma real",
+                report["artifact"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "emulação e redimensionar uma janela substituam a plataforma real",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn(
+            "emulação e redimensionar uma janela substituam a plataforma real",
+            game.next_scope(),
+        )
 
     def test_ship_names_the_tree_that_lost_the_src_the_project_already_has(self):
         # O export já copia src/. Sem isto o ship dizia
