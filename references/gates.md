@@ -188,7 +188,7 @@ O levantamento em [gates-research.md](gates-research.md) §6.22 procurou e não
 achou avaliação empírica nenhuma, para jogos. A prática é difundida e, em
 plataforma, contratualmente obrigatória; o Google diz textualmente que até o elo
 entre cobertura de teste e defeitos é “an open research question”. Disciplina
-explícita é a alegação que se sustenta aqui. Eficácia comprovada, não.
+explícita é a alegação que se sustenta aqui. Eficácia comprovada, não. Se o mapa recusa que alegar eficácia comprovada seja evidência, a área `decisions` do `scan` nomeia a eficácia que o mapa já recusa. Mapa no disco não é o ensaio. Sem chave `eficácia`.
 
 Duas coisas que a literatura oferece e estes gates ainda **não** têm, nomeadas
 para não passarem por decisão: em Cooper, os entregáveis de um gate são fixados

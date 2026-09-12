@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.678 — a área decisions nomeia a eficácia que o mapa já recusa
+
+O
+mapa
+já
+dizia
+que
+alegar
+eficácia
+comprovada
+não
+é.
+A
+área
+localizava
+o
+devlog
+e
+calava
+a
+recusa.
+Agora
+a
+área
+`decisions`
+nomeia
+a
+eficácia.
+Mapa
+no
+disco
+não
+é
+o
+ensaio.
+Sem
+chave
+`eficácia`.
+Nomear
+não
+observa.
+
 ## 0.9.677 — a menção nomeia o rastreamento que o roteiro já recusa
 
 O

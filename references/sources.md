@@ -289,7 +289,7 @@ continua sendo convenção deste repositório, como a barra já declarava.
 O levantamento também registra o que **não** tem fonte confiável, incluindo a
 ausência de qualquer avaliação empírica de que gates de produção melhorem o jogo
 entregue. Adotar gates como disciplina explícita é defensável; alegar eficácia
-comprovada não é.
+comprovada não é. Se o mapa recusa que alegar eficácia comprovada seja evidência, a área `decisions` do `scan` nomeia a eficácia que o mapa já recusa. Mapa no disco não é o ensaio. Sem chave `eficácia`.
 
 ## Starter `canvas-arcade` (0.9)
 

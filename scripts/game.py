@@ -13315,7 +13315,45 @@ def decisions_area_scope():
             " O disco recusa promover histórico a regra vigente (`histórico`). "
             "Área no disco não é decisão atual."
         )
+    efficacy = decisions_efficacy_scope()
+    if efficacy:
+        scope += efficacy
     return scope
+
+
+# O mapa já recusa que alegar
+# eficácia comprovada seja
+# evidência. Sem isto a área
+# localizava o devlog e calava
+# a recusa. Mapa no disco não
+# é o ensaio.
+SOURCES_EFFICACY = re.compile(r"alegar eficácia\s+comprovada não é")
+
+
+def sources_refuse_claimed_efficacy(text):
+    return bool(text and SOURCES_EFFICACY.search(text))
+
+
+def decisions_efficacy_source():
+    path = FRAMEWORK / "references/sources.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if sources_refuse_claimed_efficacy(text):
+        return "references/sources.md"
+    return None
+
+
+def decisions_efficacy_scope():
+    if not decisions_efficacy_source():
+        return None
+    return (
+        " O disco recusa que alegar eficácia comprovada seja evidência "
+        "(`eficácia`). Mapa no disco não é o ensaio."
+    )
 
 
 # A guia já recusa que divertido isolado baste. Sem isto a

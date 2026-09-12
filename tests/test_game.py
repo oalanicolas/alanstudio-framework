@@ -5556,6 +5556,60 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("promover histórico a regra vigente", report["areas"]["runbook"]["scope"])
         self.assertNotIn("promover histórico a regra vigente", game.next_scope())
 
+    def test_scan_decisions_names_the_efficacy_the_map_already_refuses(self):
+        mapped = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sources_refuse_claimed_efficacy(mapped),
+            "o mapa já recusa que alegar eficácia comprovada seja evidência",
+        )
+        self.assertEqual(game.decisions_efficacy_source(), "references/sources.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "alegar eficácia comprovada seja evidência",
+            report["areas"]["decisions"]["scope"],
+            "a área localizava o devlog e calava a recusa",
+        )
+        self.assertIn("(`eficácia`)", report["areas"]["decisions"]["scope"])
+        self.assertNotIn("eficácia", report["areas"]["decisions"])
+        self.assertFalse(game.sources_refuse_claimed_efficacy(""))
+        with mock.patch.object(game, "decisions_efficacy_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "alegar eficácia comprovada seja evidência",
+            silent["areas"]["decisions"]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a eficácia que o mapa já recusa", mapped)
+        self.assertIn("nomeia a eficácia que o mapa já recusa", create)
+        self.assertIn("nomeia a eficácia que o mapa já recusa", skill)
+        self.assertIn("nomeia a eficácia que o mapa já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["decisions"]["scope"])
+        self.assertNotIn("aprovado", report["areas"]["decisions"]["scope"])
+        self.assertNotIn("4.5", report["areas"]["decisions"]["scope"])
+        self.assertNotIn("alegar eficácia comprovada seja evidência", report["scope"])
+        self.assertNotIn(
+            "alegar eficácia comprovada seja evidência",
+            report["areas"]["architecture"]["scope"],
+        )
+        self.assertNotIn(
+            "alegar eficácia comprovada seja evidência",
+            report["areas"]["runbook"]["scope"],
+        )
+        self.assertNotIn(
+            "alegar eficácia comprovada seja evidência",
+            game.coverage_scope(),
+        )
+        self.assertNotIn(
+            "alegar eficácia comprovada seja evidência",
+            game.budget_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "alegar eficácia comprovada seja evidência",
+            game.next_scope(),
+        )
+
     def test_scan_names_the_fun_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
         self.assertTrue(
