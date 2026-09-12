@@ -7113,6 +7113,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.craft_reading(self.project)["scope"],
         )
 
+    def test_gate_sources_names_the_list_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.gates_refuse_delivery_list(guide),
+            "o roteiro já recusa que a lista de entrega seja um gate",
+        )
+        self.assertEqual(game.gate_list_source(), "references/gates.md")
+        empty = game.gate_reading(self.project)
+        self.assertEqual(empty["sources"], [])
+        self.assertEqual(game.gate_source_files(self.project), [])
+        self.declare_gate({("deliver", "runbook"): ("unmet", "ninguém correu o artefato fora daqui")})
+        paths = game.gate_source_files(self.project)
+        self.assertTrue(paths)
+        report = game.gate_reading(self.project)
+        item = report["sources"]
+        self.assertEqual(item["paths"], paths)
+        self.assertEqual(item["paths"], game.gate_source_paths(report))
+        self.assertEqual(game.gate_declaration(self.project)["sources"], paths)
+        self.assertIn(
+            "a lista de entrega seja um gate",
+            item["scope"],
+            "o gate listava o fonte e calava a recusa",
+        )
+        self.assertIn("(`lista`)", item["scope"])
+        self.assertNotIn("lista", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.gates_refuse_delivery_list(""))
+        with mock.patch.object(game, "gate_list_source", return_value=None):
+            silent = game.gate_reading(self.project)
+        self.assertNotIn(
+            "a lista de entrega seja um gate",
+            silent["sources"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a lista que o roteiro já recusa", guide)
+        self.assertIn("nomeia a lista que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a lista que o roteiro já recusa", skill)
+        self.assertIn("nomeia a lista que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a lista de entrega seja um gate", report["scope"])
+        self.assertNotIn(
+            "a lista de entrega seja um gate",
+            report["gates"][0].get("scope") or "",
+        )
+        self.assertNotIn("a lista de entrega seja um gate", game.next_scope())
+        self.assertNotIn(
+            "a lista de entrega seja um gate",
+            game.craft_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "a lista de entrega seja um gate",
+            game.bar_reading(self.project)["scope"],
+        )
+
     def test_gate_close_names_the_hypothesis_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
         self.assertTrue(

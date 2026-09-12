@@ -1178,7 +1178,13 @@ def gate_reading(project, gate=None):
         "exists": project.is_dir(),
         "gates": gates,
         "problems": problems,
-        "sources": declaration["sources"],
+        "sources": (
+            {
+                "paths": declaration["sources"],
+                "scope": gate_sources_scope(),
+            }
+            if declaration["sources"] else []
+        ),
         "granted": False,
         "guide": str(FRAMEWORK / "references/gates.md"),
         "rule": (
@@ -1406,6 +1412,61 @@ def gate_problem_scope():
             "Linha no disco não é passagem."
         )
     return scope
+
+
+# O roteiro já recusa que a lista de
+# entrega seja um gate. Sem isto o
+# gate listava o fonte e calava a
+# recusa. Linha no disco não é passagem.
+GATE_LIST = re.compile(r"lista de entrega com nome pomposo")
+
+
+def gates_refuse_delivery_list(text):
+    return bool(text and GATE_LIST.search(text))
+
+
+def gate_list_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gates_refuse_delivery_list(text):
+        return "references/gates.md"
+    return None
+
+
+def gate_list_scope():
+    if not gate_list_source():
+        return None
+    return (
+        " O disco recusa que a lista de entrega seja um gate "
+        "(`lista`). Linha no disco não é passagem."
+    )
+
+
+def gate_sources_scope():
+    scope = (
+        "documento onde o gate pode viver. "
+        "Não concede passagem."
+    )
+    named = gate_list_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def gate_source_files(project):
+    return list(gate_declaration(project)["sources"])
+
+
+def gate_source_paths(gate):
+    sources = (gate or {}).get("sources") or []
+    if isinstance(sources, dict):
+        return list(sources.get("paths") or [])
+    return list(sources)
 
 
 def _gate_scope(project):

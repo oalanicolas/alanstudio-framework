@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.583 — o sources do gate nomeia a lista que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+uma
+lista
+de
+entrega
+com
+nome
+pomposo
+não
+é
+um
+gate.
+O
+gate
+listava
+o
+fonte
+e
+calava
+a
+recusa.
+Agora
+o
+`sources`
+do
+`gate`
+nomeia
+a
+lista.
+Linha
+no
+disco
+não
+é
+passagem.
+Sem
+chave
+`lista`.
+Nomear
+não
+concede.
+
+O que 0.9.583 não afirma:
+listar
+o
+fonte
+não
+é
+conceder
+passagem.
+
 ## 0.9.582 — o sources do bar nomeia o selo que a barra já recusa
 
 A

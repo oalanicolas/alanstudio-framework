@@ -36,7 +36,7 @@ e a sequência é o que dá sentido a “o próximo”. O ciclo tem retorno: rep
 ## Dois tipos de critério, e o terceiro que não está aqui
 
 Os dez gates nasceram todos do mesmo tipo de pergunta: *o trabalho está feito?*
-Isso não é um gate — é uma lista de entrega com nome pomposo. A distinção vem de
+Isso não é um gate — é uma lista de entrega com nome pomposo. Se o roteiro recusa que a lista de entrega seja um gate, o `sources` do `gate` nomeia a lista que o roteiro já recusa. Linha no disco não é passagem. Sem chave `lista`. A distinção vem de
 Robert G. Cooper, autor do método stage-gate, e está levantada com fonte primária
 em [gates-research.md](gates-research.md), §2.2. Ele separa **três**:
 
