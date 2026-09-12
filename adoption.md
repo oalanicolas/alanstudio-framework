@@ -30,6 +30,47 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.697 — o git nomeia os desatualizados que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+estados
+salvos
+podem
+estar
+desatualizados.
+O
+git
+relatava
+o
+HEAD
+e
+calava
+a
+recusa.
+Agora
+o
+`git`
+nomeia
+os
+desatualizados.
+Snapshot
+no
+disco
+não
+é
+o
+estado.
+Sem
+chave
+`desatualizados`.
+Nomear
+não
+observa.
+
 ## 0.9.696 — o ciclo nomeia o lock que a receita já recusa
 
 A

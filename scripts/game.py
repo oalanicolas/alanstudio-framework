@@ -524,7 +524,45 @@ def git_summary_scope():
             " O disco recusa que o hash seja leitura (`leitura`). "
             "Identidade no disco não é inspeção."
         )
+    aged = git_stale_scope()
+    if aged:
+        scope += aged
     return scope
+
+
+# O processo já recusa que estados
+# salvos estejam atualizados. Sem
+# isto o git relatava o HEAD e
+# calava a recusa. Snapshot no
+# disco não é o estado.
+PROCESS_STALE = re.compile(r"estados salvos podem estar desatualizados")
+
+
+def process_refuses_saved_states_as_current(text):
+    return bool(text and PROCESS_STALE.search(text))
+
+
+def git_stale_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_saved_states_as_current(text):
+        return "references/process.md"
+    return None
+
+
+def git_stale_scope():
+    if not git_stale_source():
+        return None
+    return (
+        " O disco recusa que nomes de comandos, arquivos ou estados "
+        "salvos estejam atualizados (`desatualizados`). "
+        "Snapshot no disco não é o estado."
+    )
 
 
 def git_summary(project):

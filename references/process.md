@@ -226,7 +226,7 @@ a partir da conversa/estado real, não inventar progresso nem exigir um novo bri
 
 Um comando registrado com falha ou uma proposta rejeitada não conclui a etapa. Se o processo recusa que comando registrado com falha ou uma proposta rejeitada conclua a etapa, a alternativa do `next` nomeia a etapa que o processo já recusa. Proposta no disco não é a etapa. Sem chave `etapa`.
 Examine o resultado e sua evidência antes de aproveitar uma sugestão de continuidade;
-nomes de comandos, arquivos ou estados salvos podem estar desatualizados.
+nomes de comandos, arquivos ou estados salvos podem estar desatualizados. Se o processo recusa que estados salvos estejam atualizados, o `git` nomeia os desatualizados que o processo já recusa. Snapshot no disco não é o estado. Sem chave `desatualizados`.
 
 **Quando continuar e quando encerrar:** se a próxima ação já faz parte do objetivo
 autorizado, execute-a nesta tarefa em vez de parar para anunciar trabalho pendente.

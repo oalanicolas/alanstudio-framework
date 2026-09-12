@@ -5015,6 +5015,52 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("hash seja leitura", game.documentation_scope(True))
         self.assertNotIn("hash seja leitura", game.scan(self.project)["scope"])
 
+    def test_git_names_the_stale_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_saved_states_as_current(guide),
+            "o processo já recusa que estados salvos estejam atualizados",
+        )
+        self.assertEqual(game.git_stale_source(), "references/process.md")
+        report = game.git_summary(game.FRAMEWORK)
+        self.assertIsNotNone(report)
+        self.assertIn(
+            "estados salvos estejam atualizados",
+            report["scope"],
+            "o git relatava o HEAD e calava a recusa",
+        )
+        self.assertIn("(`desatualizados`)", report["scope"])
+        self.assertNotIn("desatualizados", report)
+        self.assertFalse(game.process_refuses_saved_states_as_current(""))
+        with mock.patch.object(game, "git_stale_source", return_value=None):
+            silent = game.git_summary(game.FRAMEWORK)
+        self.assertNotIn("estados salvos estejam atualizados", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os desatualizados que o processo já recusa", guide)
+        self.assertIn("nomeia os desatualizados que o processo já recusa", create)
+        self.assertIn("nomeia os desatualizados que o processo já recusa", skill)
+        self.assertIn("nomeia os desatualizados que o processo já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("estados salvos estejam atualizados", game.verify_scope())
+        self.assertNotIn("estados salvos estejam atualizados", game.next_scope())
+        self.assertNotIn("estados salvos estejam atualizados", game.documentation_scope(True))
+        self.assertNotIn("estados salvos estejam atualizados", game.scan(self.project)["scope"])
+        self.assertNotIn("estados salvos estejam atualizados", game.feel_unobserved_scope())
+        self.assertNotIn("estados salvos estejam atualizados", game.cycle_scope() or "")
+        self.assertNotIn("estados salvos estejam atualizados", game.craft_reading(self.project)["scope"])
+        used = game.save_reading(
+            Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        ).get("used")
+        if isinstance(used, dict):
+            self.assertNotIn(
+                "estados salvos estejam atualizados",
+                used.get("scope") or "",
+            )
+
     def test_doctor_names_the_example_the_readme_already_prints(self):
         readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
         self.assertTrue(
