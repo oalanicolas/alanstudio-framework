@@ -2030,6 +2030,41 @@ def craft_item_standard_scope():
     )
 
 
+# A pesquisa já recusa que o
+# pulo bom seja critério. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Frase no disco não
+# é o critério.
+CRAFT_JUMP = re.compile(r'"O pulo está bom" ninguém confere')
+
+
+def research_refuses_good_jump_as_criterion(text):
+    return bool(text and CRAFT_JUMP.search(text))
+
+
+def craft_item_jump_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_good_jump_as_criterion(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_jump_scope():
+    if not craft_item_jump_source():
+        return None
+    return (
+        " O disco recusa que o pulo bom seja critério "
+        "(`pulo`). Frase no disco não é o critério."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2065,6 +2100,9 @@ def craft_item_scope():
     norm = craft_item_standard_scope()
     if norm:
         scope += norm
+    jump = craft_item_jump_scope()
+    if jump:
+        scope += jump
     return scope
 
 

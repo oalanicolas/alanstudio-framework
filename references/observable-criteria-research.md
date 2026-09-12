@@ -16,7 +16,7 @@ A distinção que organiza tudo aqui:
 - **Opinião disfarçada de critério** — parece regra, decide por gosto. *"A arte
   está consistente."*
 - **Número folclórico** — tem casas decimais e nenhuma medição atrás. É o mais
-  perigoso dos três, porque passa por observável. Se a pesquisa recusa que o número folclórico seja critério observável, o item do craft nomeia o folclore que a pesquisa já recusa. Folclore no disco não é o critério. Sem chave `folclore`. Se a pesquisa recusa que três métricas com o mesmo nome sejam um critério, o item do craft nomeia as métricas que a pesquisa já recusa. Nome no disco não é a métrica. Sem chave `métricas`. Se a pesquisa recusa que as palestras dêem limiar, o item do craft nomeia o limiar que a pesquisa já recusa. Palestra no disco não é o critério. Sem chave `limiar`. Se a pesquisa recusa que esses valores sejam um padrão, o item do craft nomeia o padrão que a pesquisa já recusa. Valor no disco não é o padrão. Sem chave `padrão`.
+  perigoso dos três, porque passa por observável. Se a pesquisa recusa que o número folclórico seja critério observável, o item do craft nomeia o folclore que a pesquisa já recusa. Folclore no disco não é o critério. Sem chave `folclore`. Se a pesquisa recusa que três métricas com o mesmo nome sejam um critério, o item do craft nomeia as métricas que a pesquisa já recusa. Nome no disco não é a métrica. Sem chave `métricas`. Se a pesquisa recusa que as palestras dêem limiar, o item do craft nomeia o limiar que a pesquisa já recusa. Palestra no disco não é o critério. Sem chave `limiar`. Se a pesquisa recusa que esses valores sejam um padrão, o item do craft nomeia o padrão que a pesquisa já recusa. Valor no disco não é o padrão. Sem chave `padrão`. Se a pesquisa recusa que o pulo bom seja critério, o item do craft nomeia o pulo que a pesquisa já recusa. Frase no disco não é o critério. Sem chave `pulo`.
 
 ## Como ler as fontes deste arquivo
 
@@ -286,7 +286,7 @@ taxa é cargo cult. Se a pesquisa recusa que esses valores sejam um padrão, o i
 **Onde está o critério observável.** Não é "coyote time deve ser 0,1 s". É:
 *existe uma constante nomeada para cada janela de perdão, seu valor está num só
 lugar, e está declarado em segundos ou em frames com a taxa dita*. Isso um agente
-confere lendo o código. "O pulo está bom" ninguém confere.
+confere lendo o código. "O pulo está bom" ninguém confere. Se a pesquisa recusa que o pulo bom seja critério, o item do craft nomeia o pulo que a pesquisa já recusa. Frase no disco não é o critério. Sem chave `pulo`.
 
 ### 1.6 As palestras canônicas de juice não têm número — e tudo bem
 
