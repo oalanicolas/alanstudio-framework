@@ -6165,6 +6165,42 @@ def save_course_scope():
     )
 
 
+# A receita já recusa que o dado
+# transformado volte por reversão.
+# Sem isto o save lia o schema e
+# calava a recusa. Código no disco
+# não é o save.
+PERSIST_ROLLBACK = re.compile(
+    r"código volta por reversão, dado\s+transformado não"
+)
+
+
+def recipe_refuses_transformed_data_as_rolling_back(text):
+    return bool(text and PERSIST_ROLLBACK.search(text))
+
+
+def save_rollback_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_transformed_data_as_rolling_back(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_rollback_scope():
+    if not save_rollback_source():
+        return None
+    return (
+        " O disco recusa que o dado transformado volte por reversão "
+        "(`reversão`). Código no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -6796,6 +6832,9 @@ def save_reading(project):
     course = save_course_scope()
     if course:
         scope += course
+    roll = save_rollback_scope()
+    if roll:
+        scope += roll
     used_flag = bool(used)
     if used_flag:
         used_flag = {

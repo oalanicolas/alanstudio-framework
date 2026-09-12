@@ -5,7 +5,7 @@ salvo não corresponde mais ao código.
 
 Um save é um contrato com o tempo do jogador. Ele é a única parte do jogo que uma
 atualização pode destruir de forma irreversível: código volta por reversão, dado
-transformado não. Trate a mudança de formato com o cuidado de uma migração de
+transformado não. Se a receita recusa que o dado transformado volte por reversão, o `save` nomeia a reversão que a receita já recusa. Código no disco não é o save. Sem chave `reversão`. Trate a mudança de formato com o cuidado de uma migração de
 banco, não de um ajuste de estrutura.
 
 Separe as três categorias antes de escrever qualquer coisa no disco:
@@ -77,7 +77,7 @@ uma escrita comum, com a mesma exposição a interrupção que uma escrita diret
 estágio compra detecção de cota e de truncamento, não atomicidade. Se a receita recusa que o estágio seja atomicidade, o `save` nomeia a atomicidade que a receita já recusa. Estágio no disco não é substituição. Sem chave `atomicidade`. Para ter
 atomicidade de verdade nesse alvo é preciso outro armazenamento — IndexedDB tem
 transação. `tests/save.test.mjs` exercita migração, dado corrompido, preferência
-fora de faixa e o aviso da recuperação; interrupção abrupta real, ninguém exercitou. Se a receita recusa que o teste de dado inválido prove a interrupção abrupta, o `save` nomeia a interrupção que a receita já recusa. Teste no disco não é a interrupção. Sem chave `interrupção`. Se a receita recusa que o derivado seja o save, o `save` nomeia o derivado que a receita já recusa. Derivado no disco não é o progresso. Sem chave `derivado`. Se a receita recusa que isto seja aba fechada observada, o `save` nomeia a observada que a receita já recusa. Save no disco não é a aba observada. Sem chave `observada`. Se a receita recusa que o flush grave esses eixos, o `save` nomeia os eixos que a receita já recusa. Flush no disco não é o save. Sem chave `eixos`. Se a receita recusa que a outra aba vista o progresso em curso, o `save` nomeia o curso que a receita já recusa. Preferência no disco não é o curso. Sem chave `curso`.
+fora de faixa e o aviso da recuperação; interrupção abrupta real, ninguém exercitou. Se a receita recusa que o teste de dado inválido prove a interrupção abrupta, o `save` nomeia a interrupção que a receita já recusa. Teste no disco não é a interrupção. Sem chave `interrupção`. Se a receita recusa que o derivado seja o save, o `save` nomeia o derivado que a receita já recusa. Derivado no disco não é o progresso. Sem chave `derivado`. Se a receita recusa que isto seja aba fechada observada, o `save` nomeia a observada que a receita já recusa. Save no disco não é a aba observada. Sem chave `observada`. Se a receita recusa que o flush grave esses eixos, o `save` nomeia os eixos que a receita já recusa. Flush no disco não é o save. Sem chave `eixos`. Se a receita recusa que a outra aba vista o progresso em curso, o `save` nomeia o curso que a receita já recusa. Preferência no disco não é o curso. Sem chave `curso`. Se a receita recusa que o dado transformado volte por reversão, o `save` nomeia a reversão que a receita já recusa. Código no disco não é o save. Sem chave `reversão`.
 
 Prova: cadeia de migração desde a versão mais antiga em uso, carregamento de cada
 forma de dado inválido, interrupção forçada durante a gravação, progresso real
