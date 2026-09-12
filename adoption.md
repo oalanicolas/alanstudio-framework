@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.673 — o ciclo nomeia o tap que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+tap
+não
+é
+o
+avanço.
+O
+ciclo
+anunciava
+o
+verbo
+e
+calava
+a
+recusa.
+Agora
+o
+ciclo
+nomeia
+o
+tap.
+Polegar
+no
+disco
+não
+é
+o
+dash.
+Sem
+chave
+`tap`.
+Nomear
+não
+observa.
+
 ## 0.9.672 — o scale nomeia o opcional que a receita já recusa
 
 A

@@ -19243,6 +19243,60 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("estar em run prove estar livre", game.next_scope())
         self.assertNotIn("estar em run prove estar livre", game.note_step_scope())
 
+    def test_cycle_names_the_tap_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_tap_as_dash(recipe),
+            "a receita já recusa que o tap seja o avanço",
+        )
+        self.assertEqual(game.cycle_tap_source(), "recipes/feel.md")
+        destination = self.root / "ciclo-nomeia-tap"
+        report = game.start_project(destination, "canvas-arcade")
+        cycle = report["cycle"]
+        self.assertIn(
+            "o tap seja o avanço",
+            cycle["scope"],
+            "o ciclo anunciava o verbo e calava a recusa",
+        )
+        self.assertIn("(`tap`)", cycle["scope"])
+        self.assertNotIn("tap", cycle)
+        self.assertNotIn("tap", game.CYCLE_KEYS)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_tap_as_dash(""))
+        with mock.patch.object(game, "cycle_tap_source", return_value=None):
+            silent = game.start_project(self.root / "ciclo-cala-tap", "canvas-arcade")
+        self.assertNotIn(
+            "o tap seja o avanço",
+            (silent.get("cycle") or {}).get("scope") or "",
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o tap que a receita já recusa", recipe)
+        self.assertIn("nomeia o tap que a receita já recusa", skill)
+        self.assertIn("nomeia o tap que a receita já recusa", readme)
+        self.assertIn("nomeia o tap que a receita já recusa", create)
+        self.assertNotIn("verified", cycle["scope"])
+        self.assertNotIn("aprovado", cycle["scope"])
+        self.assertNotIn("4.5", cycle["scope"])
+        self.assertNotIn("o tap seja o avanço", report["scope"])
+        self.assertNotIn(
+            "o tap seja o avanço",
+            game.play_scope(destination),
+        )
+        self.assertNotIn(
+            "o tap seja o avanço",
+            game.guide_scope("canvas-arcade"),
+        )
+        self.assertNotIn(
+            "o tap seja o avanço",
+            game.read_scale([])["scope"],
+        )
+        self.assertNotIn(
+            "o tap seja o avanço",
+            game.feel_constants_scope(),
+        )
+
     def test_serve_banner_names_the_clock_the_game_already_reads(self):
         destination = self.root / "banner-nomeia-relogio"
         game.init(destination, "canvas-arcade")

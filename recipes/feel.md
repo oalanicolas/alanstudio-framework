@@ -10,7 +10,7 @@ Captura no disco não é sessão observada. Se a receita recusa que captura no d
 hold — o keyup some e o corpo não segue. Perder o foco da janela
 solta o ofício pendente — Space e R não disparam no quadro
 seguinte. Na pausa o toque retoma — Esc e P não existem no
-polegar; o tap não é o avanço. No campo o telefone
+polegar; o tap não é o avanço. Se a receita recusa que o tap seja o avanço, o ciclo nomeia o tap que a receita já recusa. Polegar no disco não é o dash. Sem chave `tap`. No campo o telefone
 pausa no relógio; o resto da tela continua o avanço.
 O relógio nomeia a pausa — sem o || o canto calava o
 verbo e o convite some a tabela. Na porta o canto

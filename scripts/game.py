@@ -15221,11 +15221,49 @@ def cycle_freedom_source():
 
 
 def cycle_scope():
-    if not cycle_freedom_source():
+    scope = ""
+    if cycle_freedom_source():
+        scope += (
+            "O disco recusa que estar em run prove estar livre para atacar (`livre`). "
+            "Estado no disco não é a janela."
+        )
+    named = cycle_tap_scope()
+    if named:
+        scope += named
+    return scope or None
+
+
+# A receita já recusa que o
+# tap seja o avanço. Sem isto
+# o ciclo anunciava o verbo e
+# calava a recusa. Polegar no
+# disco não é o dash.
+FEEL_TAP = re.compile(r"o tap não é o avanço")
+
+
+def recipe_refuses_tap_as_dash(text):
+    return bool(text and FEEL_TAP.search(text))
+
+
+def cycle_tap_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_tap_as_dash(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_tap_scope():
+    if not cycle_tap_source():
         return None
     return (
-        "O disco recusa que estar em run prove estar livre para atacar (`livre`). "
-        "Estado no disco não é a janela."
+        " O disco recusa que o tap seja o avanço "
+        "(`tap`). Polegar no disco não é o dash."
     )
 
 
