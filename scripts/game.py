@@ -13677,7 +13677,45 @@ def template_scope(stage):
             " O disco recusa que placeholders certifiquem o acabamento "
             "(`acabamento`). Molde no disco não é a fatia."
         )
+    named = template_parallel_scope(stage)
+    if named:
+        scope += named
     return scope
+
+
+# A guia já recusa que o checklist
+# seja um ciclo paralelo. Sem isto o
+# template emitia o rascunho e calava
+# a recusa. Guia no disco não é o molde.
+CHECKLIST_PARALLEL = re.compile(r"não é um ciclo paralelo")
+
+
+def guide_refuses_checklist_as_parallel_cycle(text):
+    return bool(text and CHECKLIST_PARALLEL.search(text))
+
+
+def template_parallel_source(stage):
+    if stage != "aaa":
+        return None
+    path = FINISH_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if guide_refuses_checklist_as_parallel_cycle(text):
+        return "references/aaa-checklist.md"
+    return None
+
+
+def template_parallel_scope(stage):
+    if not template_parallel_source(stage):
+        return None
+    return (
+        " O disco recusa que o checklist seja um ciclo paralelo "
+        "(`paralelo`). Guia no disco não é o molde."
+    )
 
 
 # A guia já recusa que o MVP prove a hipótese de valor.

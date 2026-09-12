@@ -15,7 +15,7 @@ Template: [aaa](../assets/templates/aaa.md).
 
 ## Como se adapta ao framework
 
-O checklist não é um ciclo paralelo. Ele **observa** o que as outras
+O checklist não é um ciclo paralelo. Se a guia recusa que o checklist seja um ciclo paralelo, o `template` nomeia o paralelo que a guia já recusa. Guia no disco não é o molde. Sem chave `paralelo`. Ele **observa** o que as outras
 peças já decidem ou implementam.
 
 | Peça do harness | O que o checklist faz |

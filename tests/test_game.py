@@ -5557,6 +5557,67 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("recusa a publicação", game.next_step(self.project)["scope"])
         self.assertNotIn("recusa a publicação", game.ship_reading(self.project)["scope"])
 
+    def test_template_names_the_parallel_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/aaa-checklist.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.guide_refuses_checklist_as_parallel_cycle(guide),
+            "a guia já recusa que o checklist seja um ciclo paralelo",
+        )
+        self.assertEqual(game.template_parallel_source("aaa"), "references/aaa-checklist.md")
+        self.assertIsNone(game.template_parallel_source("mvp"))
+        self.assertIsNone(game.template_parallel_source("brief"))
+        scope = game.template_scope("aaa")
+        self.assertIn(
+            "o checklist seja um ciclo paralelo",
+            scope,
+            "o template emitia o rascunho e calava a recusa",
+        )
+        self.assertIn("(`paralelo`)", scope)
+        self.assertNotIn("o checklist seja um ciclo paralelo", game.template_scope("mvp"))
+        self.assertNotIn("o checklist seja um ciclo paralelo", game.template_scope("brief"))
+        self.assertFalse(game.guide_refuses_checklist_as_parallel_cycle(""))
+        with mock.patch.object(game, "template_parallel_source", return_value=None):
+            self.assertNotIn(
+                "o checklist seja um ciclo paralelo",
+                game.template_scope("aaa"),
+            )
+        output = self.root / "planning" / "aaa-ciclo.md"
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT), "template", "aaa", "--project", str(self.project), "--output", str(output)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        receipt = json.loads(result.stdout)
+        self.assertIn("o checklist seja um ciclo paralelo", receipt["scope"])
+        self.assertNotIn("paralelo", receipt)
+        self.assertEqual(receipt["status"], "draft")
+        self.assertNotIn("verified", receipt["scope"])
+        self.assertNotIn("aprovado", receipt["scope"])
+        self.assertNotIn("4.5", receipt["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o paralelo que a guia já recusa", guide)
+        self.assertIn("nomeia o paralelo que a guia já recusa", recipe)
+        self.assertIn("nomeia o paralelo que a guia já recusa", skill)
+        self.assertIn("nomeia o paralelo que a guia já recusa", readme)
+        self.assertNotIn(
+            "o checklist seja um ciclo paralelo",
+            game.context(self.project, "create")["finish"]["scope"],
+        )
+        self.assertNotIn(
+            "o checklist seja um ciclo paralelo",
+            game.context(self.project, "create")["scope"],
+        )
+        self.assertNotIn(
+            "o checklist seja um ciclo paralelo",
+            game.next_step(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "o checklist seja um ciclo paralelo",
+            game.gate_reading(self.project)["scope"],
+        )
+
     def test_template_mvp_names_the_value_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
         self.assertTrue(

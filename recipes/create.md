@@ -51,7 +51,7 @@ MVP e PRD também nomeiam a abertura. Nomear a porta não observa.
 vertical slice e MVP têm objetivos distintos; QA e playtest alimentam o design.
 Carregue o template da etapa com `context <projeto> --stage <etapa>` e adapte o
 documento canônico. Jogo pequeno: `template game-design --project <novo> --output <arquivo-novo.md>`
-grava um documento único com as nove áreas; sem `--output`, só imprime o rascunho. Se a guia recusa que o MVP prove a hipótese de valor, o `template` nomeia o valor que a guia já recusa. Molde no disco não é validação. Sem chave `valor`. Se a guia recusa que placeholders certifiquem o acabamento, o `template` nomeia o acabamento que a guia já recusa. Molde no disco não é a fatia. Sem chave `acabamento`.
+grava um documento único com as nove áreas; sem `--output`, só imprime o rascunho. Se a guia recusa que o MVP prove a hipótese de valor, o `template` nomeia o valor que a guia já recusa. Molde no disco não é validação. Sem chave `valor`. Se a guia recusa que placeholders certifiquem o acabamento, o `template` nomeia o acabamento que a guia já recusa. Molde no disco não é a fatia. Sem chave `acabamento`. Se a guia recusa que o checklist seja um ciclo paralelo, o `template` nomeia o paralelo que a guia já recusa. Guia no disco não é o molde. Sem chave `paralelo`.
 Preencha-o em vez de gerar nove arquivos. Não gere todos os arquivos
 antes de começar a experimentar. Quando a fatia demonstrar a experiência, a
 [receita de produção](production.md) leva do recorte ao acabamento por marcos.

@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.652 — o template nomeia o paralelo que a guia já recusa
+
+A
+guia
+já
+dizia
+que
+o
+checklist
+não
+é
+um
+ciclo
+paralelo.
+O
+template
+emitia
+o
+rascunho
+e
+calava
+a
+recusa.
+Agora
+o
+`template`
+nomeia
+o
+paralelo.
+Guia
+no
+disco
+não
+é
+o
+molde.
+Sem
+chave
+`paralelo`.
+Gerar
+não
+observa.
+
 ## 0.9.651 — o next nomeia a rodada que o fluxo já recusa
 
 O
