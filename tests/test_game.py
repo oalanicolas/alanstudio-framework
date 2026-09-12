@@ -8237,6 +8237,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("número sem definição seja critério", game.gate_reading(self.project)["scope"])
         self.assertNotIn("número sem definição seja critério", game.bar_reading(self.project)["scope"])
 
+    def test_craft_sources_names_the_set_the_research_already_refuses(self):
+        research = (
+            game.FRAMEWORK / "references/observable-criteria-research.md"
+        ).read_text(encoding="utf-8")
+        self.assertTrue(
+            game.research_refuses_gates_set(research),
+            "a pesquisa já recusa ser um conjunto de gates",
+        )
+        self.assertEqual(game.craft_set_source(), "references/observable-criteria-research.md")
+        empty = game.craft_reading(self.project)
+        self.assertEqual(empty["sources"], [])
+        self.assertEqual(game.craft_source_files(self.project), [])
+        self.declare_craft({"palette": ("met", "paleta em art-bible — Ana")})
+        paths = game.craft_source_files(self.project)
+        self.assertTrue(paths)
+        report = game.craft_reading(self.project)
+        item = report["sources"]
+        self.assertEqual(item["paths"], paths)
+        self.assertEqual(item["paths"], game.craft_source_paths(report))
+        self.assertEqual(game.craft_declaration(self.project)["sources"], paths)
+        self.assertIn(
+            "o levantamento seja um conjunto de gates",
+            item["scope"],
+            "o craft listava o fonte e calava a recusa",
+        )
+        self.assertIn("(`conjunto`)", item["scope"])
+        self.assertNotIn("conjunto", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.research_refuses_gates_set(""))
+        with mock.patch.object(game, "craft_set_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn(
+            "o levantamento seja um conjunto de gates",
+            silent["sources"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o conjunto que a pesquisa já recusa", research)
+        self.assertIn("nomeia o conjunto que a pesquisa já recusa", recipe)
+        self.assertIn("nomeia o conjunto que a pesquisa já recusa", skill)
+        self.assertIn("nomeia o conjunto que a pesquisa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o levantamento seja um conjunto de gates", report["scope"])
+        self.assertNotIn(
+            "o levantamento seja um conjunto de gates",
+            report["checks"][0].get("scope") or "",
+        )
+        self.assertNotIn("o levantamento seja um conjunto de gates", game.craft_item_scope())
+        self.assertNotIn("o levantamento seja um conjunto de gates", game.next_scope())
+        self.assertNotIn(
+            "o levantamento seja um conjunto de gates",
+            game.gate_reading(self.project)["scope"],
+        )
+
     def test_craft_never_claims_to_have_observed_the_game(self):
         report = game.craft_reading(self.project)
         self.assertFalse(report["granted"])

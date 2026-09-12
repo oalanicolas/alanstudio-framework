@@ -2,7 +2,7 @@
 
 Pesquisa de fontes externas feita em 9 de setembro de 2026. Este arquivo **não é
 uma escada de acabamento nem um conjunto de gates** — é o levantamento que
-precisa existir antes de qualquer um dos dois ganhar número. A
+precisa existir antes de qualquer um dos dois ganhar número. Se a pesquisa recusa ser um conjunto de gates, o `sources` do `craft` nomeia o conjunto que a pesquisa já recusa. Pesquisa no disco não é ofício observado. Sem chave `conjunto`. A
 [barra](production-bar.md) diz explicitamente que seus limiares em `performance`
 e `audio_mix` são pontos de partida a confirmar. Este documento é a tentativa de
 descobrir quais números *podem* ser confirmados contra uma fonte, e quais não

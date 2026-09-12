@@ -1584,7 +1584,13 @@ def craft_reading(project, gate=None):
         "checks": checks,
         "pending": pending,
         "problems": problems,
-        "sources": declaration["sources"],
+        "sources": (
+            {
+                "paths": declaration["sources"],
+                "scope": craft_sources_scope(),
+            }
+            if declaration["sources"] else []
+        ),
         "granted": False,
         "observed": False,
         "guide": str(FRAMEWORK / "references/observable-criteria-research.md"),
@@ -1632,6 +1638,61 @@ def craft_item_scope():
             "Pesquisa no disco não é ofício observado."
         )
     return scope
+
+
+# A pesquisa já recusa ser um conjunto de
+# gates. Sem isto o craft listava o fonte
+# e calava a recusa. Pesquisa no disco
+# não é ofício observado.
+CRAFT_GATES_SET = re.compile(r"conjunto de gates")
+
+
+def research_refuses_gates_set(text):
+    return bool(text and CRAFT_GATES_SET.search(text))
+
+
+def craft_set_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_gates_set(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_set_scope():
+    if not craft_set_source():
+        return None
+    return (
+        " O disco recusa que o levantamento seja um conjunto de gates "
+        "(`conjunto`). Pesquisa no disco não é ofício observado."
+    )
+
+
+def craft_sources_scope():
+    scope = (
+        "documento onde o ofício pode viver. "
+        "Não observa o jogo."
+    )
+    named = craft_set_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def craft_source_files(project):
+    return list(craft_declaration(project)["sources"])
+
+
+def craft_source_paths(craft):
+    sources = (craft or {}).get("sources") or []
+    if isinstance(sources, dict):
+        return list(sources.get("paths") or [])
+    return list(sources)
 
 
 # A pesquisa já recusa que o número sem definição seja

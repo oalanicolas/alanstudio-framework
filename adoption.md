@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.585 — o sources do craft nomeia o conjunto que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+não
+é
+um
+conjunto
+de
+gates.
+O
+craft
+listava
+o
+fonte
+e
+calava
+a
+recusa.
+Agora
+o
+`sources`
+do
+`craft`
+nomeia
+o
+conjunto.
+Pesquisa
+no
+disco
+não
+é
+ofício
+observado.
+Sem
+chave
+`conjunto`.
+Nomear
+não
+observa.
+
+O que 0.9.585 não afirma:
+listar
+o
+fonte
+não
+é
+observar
+o
+jogo.
+
 ## 0.9.584 — o missing do access nomeia a cobertura que a receita já recusa
 
 A
