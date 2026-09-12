@@ -30,6 +30,68 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.568 — o scripts do budget nomeia o resultado que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+a
+ferramenta
+de
+medição
+pode
+desenhar
+na
+cena
+e
+falsificar
+o
+resultado.
+O
+budget
+listava
+o
+script
+e
+calava
+a
+recusa.
+Agora
+o
+`scripts`
+do
+`budget`
+nomeia
+o
+resultado.
+Script
+no
+disco
+não
+é
+o
+quadro
+limpo.
+Sem
+chave
+`resultado`.
+Nomear
+não
+mede.
+
+O que 0.9.568 não afirma:
+listar
+o
+script
+não
+é
+medir
+o
+quadro
+limpo.
+
 ## 0.9.567 — o scripts do ship nomeia a emulação que a receita já recusa
 
 A

@@ -10261,7 +10261,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(perf["declared"])
         self.assertFalse(perf["unbudgeted"])
         self.assertFalse(perf["measured"])
-        self.assertIn("budget", perf["scripts"])
+        self.assertIn("budget", perf["scripts"]["names"])
 
     def test_access_names_the_canvas_gap_the_panel_already_shows(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
@@ -10733,6 +10733,63 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.art_reading(self.project)["scope"],
         )
         self.assertNotIn("melhoria visual seja otimização", game.next_scope())
+
+    def test_budget_scripts_names_the_result_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_tool_as_intact_result(recipe),
+            "a receita já recusa que a ferramenta de medição deixe o resultado intacto",
+        )
+        self.assertEqual(game.budget_result_source(), "recipes/performance.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertIn("budget", game.budget_script_names(starter))
+        report = game.budget_reading(starter)
+        item = report["scripts"]
+        self.assertIn("budget", item["names"])
+        self.assertEqual(item["names"], game.budget_script_names(starter))
+        self.assertIn(
+            "ferramenta de medição deixe o resultado intacto",
+            item["scope"],
+            "o budget listava o script e calava a recusa",
+        )
+        self.assertIn("(`resultado`)", item["scope"])
+        self.assertNotIn("resultado", item)
+        self.assertFalse(report["measured"])
+        self.assertFalse(game.recipe_refuses_tool_as_intact_result(""))
+        empty = game.budget_reading(self.project)
+        self.assertEqual(empty["scripts"], [])
+        with mock.patch.object(game, "budget_result_source", return_value=None):
+            silent = game.budget_reading(starter)
+        self.assertNotIn(
+            "ferramenta de medição deixe o resultado intacto",
+            silent["scripts"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o resultado que a receita já recusa", recipe)
+        self.assertIn("nomeia o resultado que a receita já recusa", skill)
+        self.assertIn("nomeia o resultado que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("ferramenta de medição deixe o resultado intacto", report["scope"])
+        if report["files"]:
+            self.assertNotIn(
+                "ferramenta de medição deixe o resultado intacto",
+                report["files"].get("scope") or "",
+            )
+        if report["receipts"]:
+            self.assertNotIn(
+                "ferramenta de medição deixe o resultado intacto",
+                report["receipts"].get("scope") or "",
+            )
+        fields = game.record_budget_fields_scope("budget")
+        if fields:
+            self.assertNotIn("ferramenta de medição deixe o resultado intacto", fields)
+        self.assertNotIn(
+            "ferramenta de medição deixe o resultado intacto",
+            game.next_scope(),
+        )
 
     def test_persistence_recipe_names_the_pad_loss_the_starter_already_flushes(self):
         persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")

@@ -4091,17 +4091,71 @@ def budget_receipts_scope():
     return scope
 
 
+# A receita já recusa que a
+# ferramenta de medição deixe o
+# resultado intacto. Sem isto o
+# budget listava o script e calava
+# a recusa. Script no disco não é
+# o quadro limpo.
+PERF_RESULT = re.compile(r"desenhar na cena e falsificar")
+
+
+def recipe_refuses_tool_as_intact_result(text):
+    return bool(text and PERF_RESULT.search(text))
+
+
+def budget_result_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_tool_as_intact_result(text):
+        return "recipes/performance.md"
+    return None
+
+
+def budget_result_scope():
+    if not budget_result_source():
+        return None
+    return (
+        " O disco recusa que a ferramenta de medição deixe o resultado "
+        "intacto (`resultado`). Script no disco não é o quadro limpo."
+    )
+
+
+def budget_scripts_scope():
+    scope = (
+        "script de orçamento no disco. "
+        "Não executa o orçamento."
+    )
+    named = budget_result_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def budget_script_names(project):
+    try:
+        scripts, _ = project_commands(project)
+    except (OSError, ValueError):
+        scripts = {}
+    return [
+        name for name in scripts
+        if name == "budget" or name.startswith("budget:") or name.startswith("budget-")
+        or name == "bench" or name.startswith("bench:")
+    ]
+
+
 def budget_reading(project):
     project = Path(project)
     try:
         scripts, _ = project_commands(project)
     except (OSError, ValueError):
         scripts = {}
-    named = [
-        name for name in scripts
-        if name == "budget" or name.startswith("budget:") or name.startswith("budget-")
-        or name == "bench" or name.startswith("bench:")
-    ]
+    named = budget_script_names(project)
     files = budget_tool_files(project)
     receipts = budget_receipts(project)
     expected = bool(scripts) or (project / "Cargo.toml").is_file()
@@ -4115,6 +4169,11 @@ def budget_reading(project):
         receipts = {
             "paths": receipts,
             "scope": budget_receipts_scope(),
+        }
+    if named:
+        named = {
+            "names": named,
+            "scope": budget_scripts_scope(),
         }
     scope = (
         "Procura script `budget`/`bench`, tools/budget.* e record kind=budget. "
