@@ -80,7 +80,7 @@ pede a lacuna explícita como qualquer outra.
 
 Considere compatibilidade, licença/proveniência, dependências, substituição e custo
 de manutenção. Um asset disponível no disco não é automaticamente reutilizável.
-Não copie runtime de referência só para absorver um contrato. Antes de nova camada,
+Não copie runtime de referência só para absorver um contrato. Se o processo recusa que se copie runtime de referência só para absorver um contrato, o `init` nomeia as referências que o processo já recusa. Runtime no disco não é o contrato. Sem chave `referências`. Antes de nova camada,
 aponte a falha observada e tente a solução menor. Três consumidores com a mesma
 responsabilidade justificam examinar uma extração; três nomes parecidos não bastam. Se o processo recusa que três nomes parecidos bastem, o `check-plan` nomeia os nomes que o processo já recusa. Nome no disco não é a camada. Sem chave `nomes`.
 

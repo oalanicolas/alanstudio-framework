@@ -15403,7 +15403,48 @@ def init_scope(documents, idea=None):
             " O disco declara o módulo (`type`). "
             "Tipo no disco não é runtime instalado."
         )
+    named = init_references_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O processo já recusa que se copie
+# runtime de referência só para
+# absorver um contrato. Sem isto o
+# init copiava o starter e calava a
+# recusa. Runtime no disco não é o
+# contrato.
+PROCESS_REFERENCES = re.compile(
+    r"runtime de referência só para absorver um contrato"
+)
+
+
+def process_refuses_reference_runtime_as_contract(text):
+    return bool(text and PROCESS_REFERENCES.search(text))
+
+
+def init_references_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_reference_runtime_as_contract(text):
+        return "references/process.md"
+    return None
+
+
+def init_references_scope():
+    if not init_references_source():
+        return None
+    return (
+        " O disco recusa que se copie runtime de referência só para "
+        "absorver um contrato (`referências`). Runtime no disco não é "
+        "o contrato."
+    )
 
 
 def substitute_document(path, pairs):

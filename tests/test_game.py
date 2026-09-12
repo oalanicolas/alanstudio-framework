@@ -7514,6 +7514,55 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("verified", report["scope"])
         self.assertNotIn("then.type", report.get("then") or {})
 
+    def test_init_names_the_references_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_reference_runtime_as_contract(guide),
+            "o processo já recusa que se copie runtime de referência só para absorver um contrato",
+        )
+        self.assertEqual(game.init_references_source(), "references/process.md")
+        report = game.init(self.root / "arcade-referencias", "canvas-arcade", documents=False)
+        self.assertIn(
+            "se copie runtime de referência só para absorver um contrato",
+            report["scope"],
+            "o init copiava o starter e calava a recusa",
+        )
+        self.assertIn("(`referências`)", report["scope"])
+        self.assertNotIn("referências", report)
+        self.assertFalse(game.process_refuses_reference_runtime_as_contract(""))
+        with mock.patch.object(game, "init_references_source", return_value=None):
+            silent = game.init_scope(False)
+        self.assertNotIn(
+            "se copie runtime de referência só para absorver um contrato",
+            silent,
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia as referências que o processo já recusa", guide)
+        self.assertIn("nomeia as referências que o processo já recusa", recipe)
+        self.assertIn("nomeia as referências que o processo já recusa", skill)
+        self.assertIn("nomeia as referências que o processo já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "se copie runtime de referência só para absorver um contrato",
+            game.init_documents_scope(),
+        )
+        self.assertNotIn(
+            "se copie runtime de referência só para absorver um contrato",
+            game.start_created_scope(),
+        )
+        self.assertNotIn(
+            "se copie runtime de referência só para absorver um contrato",
+            game.check_plan_scope(),
+        )
+        self.assertNotIn(
+            "se copie runtime de referência só para absorver um contrato",
+            game.documentation_initialization_scope(),
+        )
+
     def test_init_scope_names_drafts_only_when_they_were_planted(self):
         bare = game.init_scope(False, "atravessar estilhaços")
         self.assertIn("sem plantar", bare)

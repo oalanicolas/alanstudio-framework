@@ -30,6 +30,53 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.667 — o init nomeia as referências que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+não
+se
+copia
+runtime
+de
+referência
+só
+para
+absorver
+um
+contrato.
+O
+init
+copiava
+o
+starter
+e
+calava
+a
+recusa.
+Agora
+o
+`init`
+nomeia
+as
+referências.
+Runtime
+no
+disco
+não
+é
+o
+contrato.
+Sem
+chave
+`referências`.
+Nomear
+não
+observa.
+
 ## 0.9.666 — o check-plan nomeia os nomes que o processo já recusa
 
 O
