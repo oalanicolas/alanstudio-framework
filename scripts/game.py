@@ -20611,6 +20611,9 @@ def record_scope():
     grid = record_matrix_scope()
     if grid:
         scope += grid
+    aim = record_target_scope()
+    if aim:
+        scope += aim
     return scope
 
 
@@ -20686,6 +20689,41 @@ def record_matrix_scope():
     return (
         " O disco recusa que cenas dinâmicas virem estáticas porque a matriz local ficou igual "
         "(`matriz`). Matriz no disco não é a cena."
+    )
+
+
+# A receita já recusa que o
+# editor seja build exportado.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Editor no disco não é o
+# build.
+PERF_TARGET = re.compile(r"Editor não é build exportado")
+
+
+def recipe_refuses_editor_as_exported_build(text):
+    return bool(text and PERF_TARGET.search(text))
+
+
+def record_target_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_editor_as_exported_build(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_target_scope():
+    if not record_target_source():
+        return None
+    return (
+        " O disco recusa que o editor seja build exportado "
+        "(`alvo`). Editor no disco não é o build."
     )
 
 

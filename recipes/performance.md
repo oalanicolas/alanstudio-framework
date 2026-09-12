@@ -39,7 +39,7 @@ resultado e as tentativas descartadas — inclusive as que pareciam óbvias e n�
 mudaram nada.
 
 Confirme onde a prova vale. Editor não é build exportado; máquina de desenvolvimento
-quente não é máquina do jogador fria. Se a receita recusa que a máquina de desenvolvimento quente seja a máquina do jogador fria, o `fields` do `record --kind budget` nomeia a quente que a receita já recusa. Plataforma no disco não é a máquina fria. Sem chave `quente`. Aquecimento, cache e ferramentas de perfil
+quente não é máquina do jogador fria. Se a receita recusa que o editor seja build exportado, o `record` nomeia o alvo que a receita já recusa. Editor no disco não é o build. Sem chave `alvo`. Se a receita recusa que a máquina de desenvolvimento quente seja a máquina do jogador fria, o `fields` do `record --kind budget` nomeia a quente que a receita já recusa. Plataforma no disco não é a máquina fria. Sem chave `quente`. Aquecimento, cache e ferramentas de perfil
 alteram o próprio resultado que estão medindo.
 
 `budget <projeto>` lê se existe script `budget`/`bench`, `tools/budget.*` ou
