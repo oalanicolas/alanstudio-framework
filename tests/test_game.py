@@ -10432,6 +10432,59 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("playing.run", report["scope"])
         self.assertNotIn("16 ms", report["scope"])
 
+    def test_budget_files_names_the_fps_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_build_cost_as_fps(recipe),
+            "a receita já recusa que custos de build e serialização sejam FPS",
+        )
+        self.assertEqual(game.budget_fps_source(), "recipes/performance.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertEqual(game.budget_tool_files(starter), ["tools/budget.mjs"])
+        report = game.budget_reading(starter)
+        item = report["files"]
+        self.assertEqual(item["paths"], ["tools/budget.mjs"])
+        self.assertIn(
+            "serialização sejam FPS",
+            item["scope"],
+            "o budget listava o tool e calava a recusa",
+        )
+        self.assertIn("(`fps`)", item["scope"])
+        self.assertNotIn("fps", item)
+        self.assertFalse(report["measured"])
+        self.assertFalse(game.recipe_refuses_build_cost_as_fps(""))
+        self.assertEqual(game.budget_tool_files(self.project), [])
+        empty = game.budget_reading(self.project)
+        self.assertEqual(empty["files"], [])
+        with mock.patch.object(game, "budget_fps_source", return_value=None):
+            silent = game.budget_reading(starter)
+        self.assertNotIn(
+            "serialização sejam FPS",
+            silent["files"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o fps que a receita já recusa", recipe)
+        self.assertIn("nomeia o fps que a receita já recusa", skill)
+        self.assertIn("nomeia o fps que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("WCAG", item["scope"])
+        self.assertNotIn("serialização sejam FPS", report["scope"])
+        fields = game.record_budget_fields_scope("budget")
+        if fields:
+            self.assertNotIn("serialização sejam FPS", fields)
+        self.assertNotIn(
+            "serialização sejam FPS",
+            game.ship_reading(starter)["scope"],
+        )
+        self.assertNotIn(
+            "serialização sejam FPS",
+            game.access_reading(starter)["scope"],
+        )
+        self.assertNotIn("serialização sejam FPS", game.next_scope())
+
     def test_persistence_recipe_names_the_pad_loss_the_starter_already_flushes(self):
         persist = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         cycle = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")

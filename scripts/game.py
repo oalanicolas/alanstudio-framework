@@ -3815,6 +3815,59 @@ def budget_percentile_source(project):
     return None
 
 
+# A receita já recusa que custos de
+# build e serialização sejam FPS.
+# Sem isto o budget listava o tool
+# e calava a recusa. Custo no disco
+# não é o quadro.
+PERF_FPS = re.compile(r"serialização não são FPS")
+
+
+def recipe_refuses_build_cost_as_fps(text):
+    return bool(text and PERF_FPS.search(text))
+
+
+def budget_fps_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_build_cost_as_fps(text):
+        return "recipes/performance.md"
+    return None
+
+
+def budget_fps_scope():
+    if not budget_fps_source():
+        return None
+    return (
+        " O disco recusa que custos de build, compilação aquecida e "
+        "serialização sejam FPS (`fps`). Custo no disco não é o quadro."
+    )
+
+
+def budget_files_scope():
+    scope = (
+        "arquivo de orçamento no disco. "
+        "Não executa o orçamento."
+    )
+    named = budget_fps_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def budget_tool_files(project):
+    project = Path(project)
+    return [
+        name for name in BUDGET_FILES
+        if (project / name).is_file() and not (project / name).is_symlink()
+    ]
+
+
 def budget_reading(project):
     project = Path(project)
     try:
@@ -3826,10 +3879,15 @@ def budget_reading(project):
         if name == "budget" or name.startswith("budget:") or name.startswith("budget-")
         or name == "bench" or name.startswith("bench:")
     ]
-    files = [name for name in BUDGET_FILES if (project / name).is_file() and not (project / name).is_symlink()]
+    files = budget_tool_files(project)
     receipts = budget_receipts(project)
     expected = bool(scripts) or (project / "Cargo.toml").is_file()
     declared = bool(named or files or receipts)
+    if files:
+        files = {
+            "paths": files,
+            "scope": budget_files_scope(),
+        }
     scope = (
         "Procura script `budget`/`bench`, tools/budget.* e record kind=budget. "
         "Não executa o orçamento e não compara com build anterior. "

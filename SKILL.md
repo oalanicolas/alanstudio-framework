@@ -358,6 +358,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    declara sem teto, o `budget` nomeia os bytes que o size já relata.
    Bytes no disco não são o quadro medido. Sem chave `size`. Se o `tools/budget.*` relata o pior percentil, o `budget` nomeia o percentil que a receita já pede.
    Relato no disco não é dispositivo. Sem chave `percentile`.
+   Se a receita recusa que custos de build, compilação aquecida e serialização sejam FPS, o `files` do `budget` nomeia o fps que a receita já recusa. Custo no disco não é o quadro. Sem chave `fps`.
    `verified`/`trusted`/`measured` são sempre falsos.
    Falta no disco entra no `next` antes dos rascunhos.
    **`art` / `content` / `ship`** leem paleta ou art-bible vigente, mesas

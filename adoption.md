@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.559 — o files do budget nomeia o fps que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+custos
+de
+build,
+compilação
+aquecida
+e
+serialização
+não
+são
+FPS.
+O
+budget
+listava
+o
+tool
+e
+calava
+a
+recusa.
+Agora
+o
+`files`
+do
+`budget`
+nomeia
+o
+fps.
+Custo
+no
+disco
+não
+é
+o
+quadro.
+Sem
+chave
+`fps`.
+Nomear
+não
+mede.
+
+O que 0.9.559 não afirma:
+listar
+o
+arquivo
+não
+é
+medir
+o
+quadro.
+
 ## 0.9.558 — o candidate_seed nomeia a atribuição que a receita já recusa
 
 A
