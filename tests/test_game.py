@@ -13672,6 +13672,59 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.context(self.project, "create")["scope"],
         )
 
+    def test_feel_names_the_swallow_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_guard_during_hitstop_as_swallowed(recipe),
+            "a receita já recusa que guardar no hitstop seja engolido",
+        )
+        self.assertEqual(game.feel_swallow_source(), "recipes/feel.md")
+        report = game.feel_reading(self.project)
+        self.assertIn(
+            "guardar no hitstop seja engolido",
+            report["scope"],
+            "o feel lia o CONFIG e calava a recusa",
+        )
+        self.assertIn("(`engolido`)", report["scope"])
+        self.assertNotIn("engolido", report)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_guard_during_hitstop_as_swallowed(""))
+        with mock.patch.object(game, "feel_swallow_source", return_value=None):
+            silent = game.feel_reading(self.project)
+        self.assertNotIn("guardar no hitstop seja engolido", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o engolido que a receita já recusa", recipe)
+        self.assertIn("nomeia o engolido que a receita já recusa", create)
+        self.assertIn("nomeia o engolido que a receita já recusa", skill)
+        self.assertIn("nomeia o engolido que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("guardar no hitstop seja engolido", game.feel_unobserved_scope())
+        self.assertNotIn("guardar no hitstop seja engolido", game.feel_constants_scope())
+        if report.get("then"):
+            self.assertNotIn(
+                "guardar no hitstop seja engolido",
+                report["then"].get("scope") or "",
+            )
+        if report.get("observations") and isinstance(report["observations"], dict):
+            self.assertNotIn(
+                "guardar no hitstop seja engolido",
+                report["observations"].get("scope") or "",
+            )
+        used = game.save_reading(
+            Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        ).get("used")
+        if isinstance(used, dict):
+            self.assertNotIn(
+                "guardar no hitstop seja engolido",
+                used.get("scope") or "",
+            )
+        self.assertNotIn("guardar no hitstop seja engolido", game.craft_reading(self.project)["scope"])
+        self.assertNotIn("guardar no hitstop seja engolido", game.next_scope())
+
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
         destination = self.root / "com-observacao"
         game.init(destination, "canvas-arcade")

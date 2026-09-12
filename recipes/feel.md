@@ -194,7 +194,7 @@ e confirmação do impacto de uma previsão que o jogador deve construir sozinho
 
 Procure o feel já existente no jogo: hitstop, easing, impulse de câmera,
 envelope de som, rumble. Leia o **consumidor** (o golpe, o pulo, o clique),
-não só o utilitário. Um tween genérico sem dono não é feel reutilizável. Se a receita recusa que um tween genérico sem dono seja feel reutilizável, o `feel` nomeia o tween que a receita já recusa. Receita no disco não é peso percebido. Sem chave `tween`.
+não só o utilitário. Um tween genérico sem dono não é feel reutilizável. Se a receita recusa que um tween genérico sem dono seja feel reutilizável, o `feel` nomeia o tween que a receita já recusa. Receita no disco não é peso percebido. Sem chave `tween`. Se a receita recusa que guardar no hitstop seja engolido, o `feel` nomeia o engolido que a receita já recusa. Hitstop no disco não é o perdão. Sem chave `engolido`.
 
 - **REUSE:** o envelope atual atende com outros parâmetros.
 - **ADAPT:** estenda o canônico (mesmo hitstop, outra curva) e preserve quem
@@ -296,7 +296,7 @@ o feel do verbo central é lente de marco em [produção](production.md).
 Antes de escrever a sua cadeia, leia uma concreta: o starter `canvas-arcade` reúne o
 perdão de entrada em `CONFIG`, em `src/game/rules.js` — buffer de dash, buffer de
 guardar, graça após dano — inclusive no mesmo quadro —, alcance de coleta maior que o desenho — cada valor com o
-motivo ao lado. Guardar no hitstop não é engolido; o freeze também
+motivo ao lado. Guardar no hitstop não é engolido. Se a receita recusa que guardar no hitstop seja engolido, o `feel` nomeia o engolido que a receita já recusa. Hitstop no disco não é o perdão. Sem chave `engolido`; o freeze também
 não queima o perdão do avanço nem o da guarda. Um toque sem corrente não decide
 o próximo orbe. Cada verbo desloca a câmera numa direção própria e achata o corpo
 numa medida própria: coleta, queda, dash, raspo, aterrissagem, guardar e o erro não compartilham

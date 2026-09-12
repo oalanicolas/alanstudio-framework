@@ -3764,6 +3764,9 @@ def _feel_scope(project):
     named = feel_tween_scope()
     if named:
         scope += named
+    freeze = feel_swallow_scope()
+    if freeze:
+        scope += freeze
     return scope
 
 
@@ -3798,6 +3801,40 @@ def feel_tween_scope():
     return (
         " O disco recusa que um tween genérico sem dono seja feel reutilizável "
         "(`tween`). Receita no disco não é peso percebido."
+    )
+
+
+# A receita já recusa que guardar no
+# hitstop seja engolido. Sem isto o
+# feel lia o CONFIG e calava a
+# recusa. Hitstop no disco não é o
+# perdão.
+FEEL_SWALLOW = re.compile(r"Guardar no hitstop não é engolido")
+
+
+def recipe_refuses_guard_during_hitstop_as_swallowed(text):
+    return bool(text and FEEL_SWALLOW.search(text))
+
+
+def feel_swallow_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_guard_during_hitstop_as_swallowed(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_swallow_scope():
+    if not feel_swallow_source():
+        return None
+    return (
+        " O disco recusa que guardar no hitstop seja engolido "
+        "(`engolido`). Hitstop no disco não é o perdão."
     )
 
 

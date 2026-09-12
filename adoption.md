@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.695 — o feel nomeia o engolido que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+guardar
+no
+hitstop
+não
+é
+engolido.
+O
+feel
+lia
+o
+CONFIG
+e
+calava
+a
+recusa.
+Agora
+o
+`feel`
+nomeia
+o
+engolido.
+Hitstop
+no
+disco
+não
+é
+o
+perdão.
+Sem
+chave
+`engolido`.
+Nomear
+não
+observa.
+
 ## 0.9.694 — o unobserved do feel nomeia a guarda que a receita já recusa
 
 A
