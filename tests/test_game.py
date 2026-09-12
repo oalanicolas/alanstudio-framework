@@ -14417,6 +14417,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(after["shipped"])
         self.assertIsNone(after["artifact"])
 
+    def test_ship_unpacked_names_the_pack_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_package_without_step_as_pack(recipe),
+            "a receita já recusa que o pacote sem passo seja o empacote",
+        )
+        self.assertEqual(game.ship_unpacked_pack_source(), "recipes/release.md")
+        empty = game.ship_reading(self.project)
+        self.assertFalse(empty["unpacked"])
+        self.assertFalse(game.ship_unpacked_flag(empty))
+        self.package()
+        self.foundation_document()
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        report = game.ship_reading(self.project)
+        item = report["unpacked"]
+        self.assertTrue(item["unpacked"], "o ship já relata o pacote sem passo neste recorte")
+        self.assertEqual(item["unpacked"], game.ship_unpacked_flag(report))
+        self.assertIn(
+            "o pacote sem passo seja o empacote",
+            item["scope"],
+            "o ship relatava o unpacked e calava a recusa",
+        )
+        self.assertIn("(`empacote`)", item["scope"])
+        self.assertNotIn("empacote", item)
+        self.assertFalse(report["shipped"])
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(game.recipe_refuses_package_without_step_as_pack(""))
+        with mock.patch.object(game, "ship_unpacked_pack_source", return_value=None):
+            silent = game.ship_unpacked_reading(True)
+        self.assertNotIn(
+            "o pacote sem passo seja o empacote",
+            silent["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o empacote que a receita já recusa", recipe)
+        self.assertIn("nomeia o empacote que a receita já recusa", skill)
+        self.assertIn("nomeia o empacote que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o pacote sem passo seja o empacote", report["scope"])
+        if isinstance(report.get("expected"), dict):
+            self.assertNotIn(
+                "o pacote sem passo seja o empacote",
+                report["expected"].get("scope") or "",
+            )
+        if report.get("scripts") and isinstance(report["scripts"], dict):
+            self.assertNotIn(
+                "o pacote sem passo seja o empacote",
+                report["scripts"].get("scope") or "",
+            )
+        self.assertNotIn("o pacote sem passo seja o empacote", game.next_scope())
+        self.assertIs(report["declared"], False)
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        current = game.ship_reading(starter)
+        self.assertIs(current["unpacked"], False)
+
     def _release_note(self):
         (self.project / "docs").mkdir(exist_ok=True)
         (self.project / "docs/release.md").write_text(

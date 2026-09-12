@@ -675,7 +675,7 @@ def review(root, limit=REVIEW_LIMIT):
             "performance_unbudgeted": budget_unbudgeted_flag(perf_report),
             "art_missing": bool(kind) and not art_report["declared"],
             "content_inline": content_inline_flag(content_report),
-            "ship_unpacked": ship_report["unpacked"],
+            "ship_unpacked": ship_unpacked_flag(ship_report),
             "audio_roles_empty": roles_empty_ids(roles),
             "playtest_candidate": playtest_report.get("candidate"),
         }
@@ -705,7 +705,7 @@ def review(root, limit=REVIEW_LIMIT):
             art_declared=art_report["declared"],
             content_files=len(content_files(path)),
             content_inline=content_inline_flag(content_report),
-            ship_unpacked=ship_report["unpacked"],
+            ship_unpacked=ship_unpacked_flag(ship_report),
             playtest_expected=playtest_report["expected"],
             playtest_structured=playtest_structured_flag(playtest_report),
             signals=signals,
@@ -7426,6 +7426,68 @@ def ship_stale_reading(stale):
     }
 
 
+# A receita já recusa que o
+# pacote sem passo seja o
+# empacote. Sem isto o ship
+# relatava o unpacked e calava
+# a recusa. Manifesto no disco
+# não é outra máquina.
+SHIP_UNPACKED = re.compile(r"Pacote sem passo não é o empacote")
+
+
+def recipe_refuses_package_without_step_as_pack(text):
+    return bool(text and SHIP_UNPACKED.search(text))
+
+
+def ship_unpacked_pack_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_package_without_step_as_pack(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_unpacked_pack_scope():
+    if not ship_unpacked_pack_source():
+        return None
+    return (
+        " O disco recusa que o pacote sem passo seja o empacote "
+        "(`empacote`). Manifesto no disco não é outra máquina."
+    )
+
+
+def ship_unpacked_scope():
+    scope = (
+        "package ou Cargo sem passo de empacotar. "
+        "Não é outra máquina."
+    )
+    named = ship_unpacked_pack_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def ship_unpacked_flag(reading):
+    unpacked = (reading or {}).get("unpacked") if isinstance(reading, dict) else reading
+    if isinstance(unpacked, dict):
+        return bool(unpacked.get("unpacked"))
+    return bool(unpacked)
+
+
+def ship_unpacked_reading(unpacked):
+    if not unpacked:
+        return False
+    return {
+        "unpacked": True,
+        "scope": ship_unpacked_scope(),
+    }
+
+
 def ship_script_names(project):
     try:
         scripts, _ = project_commands(project)
@@ -7549,7 +7611,7 @@ def ship_reading(project):
         "artifact_open": artifact_open,
         "elsewhere": False,
         "declared": declared,
-        "unpacked": unpacked,
+        "unpacked": ship_unpacked_reading(unpacked),
         "shipped": False,
         "guide": str(FRAMEWORK / "recipes/release.md"),
         "rule": (
@@ -16958,7 +17020,7 @@ def next_step(project, focus="create", studies_root=None):
             "content.inline",
         )
     pack = ship_reading(project)
-    if pack["unpacked"]:
+    if ship_unpacked_flag(pack):
         propose(
             "Declarar o passo que empacota o jogo (script build/export ou docs/release.md)",
             "Há manifesto de execução e nenhum passo de build, export, release "
@@ -17255,7 +17317,7 @@ def next_step(project, focus="create", studies_root=None):
             "performance_unbudgeted": budget_unbudgeted_flag(perf),
             "art_missing": bool(payload["kind"]) and not art["declared"],
             "content_inline": content_inline_flag(inventory),
-            "ship_unpacked": pack["unpacked"],
+            "ship_unpacked": ship_unpacked_flag(pack),
             "craft_pending": [
                 key for key, spec in CRAFT_CHECKS.items()
                 if spec["gate"] in gates["declared"]
