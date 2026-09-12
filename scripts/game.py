@@ -6498,6 +6498,40 @@ def content_encoded_scope():
     )
 
 
+# A receita já recusa que dusk e
+# calm sejam volume. Sem isto o
+# content listava o par e calava
+# a recusa. Chuva no disco não é
+# volume.
+CONTENT_RAIN = re.compile(r"terceira chuva, não volume")
+
+
+def recipe_refuses_dusk_calm_as_volume(text):
+    return bool(text and CONTENT_RAIN.search(text))
+
+
+def content_rain_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_dusk_calm_as_volume(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_rain_scope():
+    if not content_rain_source():
+        return None
+    return (
+        " O disco recusa que dusk e calm sejam volume "
+        "(`chuva`). Chuva no disco não é volume."
+    )
+
+
 # A receita já recusa que o arquivo
 # de dados seja volume. Sem isto o
 # content listava o arquivo e calava
@@ -6680,6 +6714,9 @@ def content_reading(project):
     encoded = content_encoded_scope()
     if encoded:
         scope += encoded
+    named = content_rain_scope()
+    if named:
+        scope += named
     listed = files[:24]
     if listed:
         listed = {

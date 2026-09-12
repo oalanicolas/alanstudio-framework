@@ -30,7 +30,7 @@ não é volume. O `art` nomeia essas mesas. Se o disco declara
 volume. Sem chave `moods`. Depois de um
 `note`, `start` e `next` apontam `pair --from`, `look --from` e `table --from`. `dusk` e `calm` são
 a segunda e a terceira chuva, não volume — `enough` é sempre
-falso. Alguém de fora ainda não produziu no piso.
+falso. Se a receita recusa que dusk e calm sejam volume, o `content` nomeia a chuva que a receita já recusa. Chuva no disco não é volume. Sem chave `chuva`. Alguém de fora ainda não produziu no piso.
 
 Leia o formato atual, sua carga em runtime e os consumidores. Procure definição ou
 slot substituível antes de duplicar lógica. Preserve identidade, escala, pivot,

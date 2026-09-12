@@ -787,7 +787,7 @@ Se a receita recusa que a mesa seja volume, o `art` nomeia o volume que a receit
 procura dado em `data/`, `levels/` (e equivalentes) ou `.ldtk`/`.tmx`/`.ink`.
 `palettes.json` e `tokens.json` não contam — o `art` lê esses manifestos.
 Se o disco declara `listMoods`, o `content` nomeia o par. Nome no
-disco não é volume. Sem chave `moods`.
+disco não é volume. Sem chave `moods`. Se a receita recusa que dusk e calm sejam volume, o `content` nomeia a chuva que a receita já recusa. Chuva no disco não é volume. Sem chave `chuva`.
 Se o `tools/new-table.*` nasce a mesa, o `content` nomeia a mesa que o disco já nasce.
 Ferramenta no disco não é volume. Sem chave `table`.
 Se o disco declara `migrateTable`, o `content` nomeia a migração que as mesas já compartilham.

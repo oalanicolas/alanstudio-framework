@@ -14993,6 +14993,61 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("mais módulos provem a composição", game.feel_reading(self.project)["scope"])
         self.assertNotIn("mais módulos provem a composição", game.gate_item_scope("scale"))
 
+    def test_content_names_the_rain_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_dusk_calm_as_volume(recipe),
+            "a receita já recusa que dusk e calm sejam volume",
+        )
+        self.assertEqual(game.content_rain_source(), "recipes/content.md")
+        report = game.content_reading(self.project)
+        self.assertIn(
+            "dusk e calm sejam volume",
+            report["scope"],
+            "o content listava o par e calava a recusa",
+        )
+        self.assertIn("(`chuva`)", report["scope"])
+        self.assertNotIn("chuva", report)
+        self.assertFalse(report["enough"])
+        self.assertFalse(game.recipe_refuses_dusk_calm_as_volume(""))
+        with mock.patch.object(game, "content_rain_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn("dusk e calm sejam volume", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a chuva que a receita já recusa", recipe)
+        self.assertIn("nomeia a chuva que a receita já recusa", create)
+        self.assertIn("nomeia a chuva que a receita já recusa", skill)
+        self.assertIn("nomeia a chuva que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "dusk e calm sejam volume",
+            game.content_files_scope(),
+        )
+        self.assertNotIn(
+            "dusk e calm sejam volume",
+            game.content_inline_scope(),
+        )
+        self.assertNotIn(
+            "dusk e calm sejam volume",
+            game.art_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "dusk e calm sejam volume",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "dusk e calm sejam volume",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "dusk e calm sejam volume",
+            game.scan(self.project)["scope"],
+        )
+
     def test_content_names_the_encoded_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
         self.assertTrue(
