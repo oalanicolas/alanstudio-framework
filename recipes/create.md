@@ -144,7 +144,7 @@ Não copie paleta, feel ou mix de uma família sem ADAPT e proveniência. Se a r
 destino continua com instância própria no design system.
 
 BMad inspira leitura por etapa e retomada (`RE-GDS-002`, `RE-GDS-022`); seus passos
-textuais não são uma garantia de execução. [Fonte](../references/sources.md).
+textuais não são uma garantia de execução. Se a receita recusa que passos textuais sejam uma garantia de execução, o `guide` nomeia os passos que a receita já recusa. Texto no disco não é a partida. Sem chave `passos`. [Fonte](../references/sources.md).
 
 Concluir o pedido exige conteúdo distintivo, cenário real e QA. Scaffold ou
 cópia que inicia continua sendo ponto de partida — um projeto recém-criado por

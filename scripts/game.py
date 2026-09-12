@@ -16660,7 +16660,44 @@ def guide_scope(starter):
             " O disco nomeia o relógio (`speed`). "
             "Frase no disco não é partida observada."
         )
+    named = guide_steps_scope()
+    if named:
+        scope += named
     return scope
+
+
+# A receita já recusa que passos
+# textuais sejam uma garantia de
+# execução. Sem isto o guide copiava
+# os três passos e calava a recusa.
+# Texto no disco não é a partida.
+CREATE_STEPS = re.compile(r"textuais não são uma garantia de execução")
+
+
+def recipe_refuses_textual_steps_as_execution(text):
+    return bool(text and CREATE_STEPS.search(text))
+
+
+def guide_steps_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_textual_steps_as_execution(text):
+        return "recipes/create.md"
+    return None
+
+
+def guide_steps_scope():
+    if not guide_steps_source():
+        return None
+    return (
+        " O disco recusa que passos textuais sejam uma garantia de "
+        "execução (`passos`). Texto no disco não é a partida."
+    )
 
 
 def tool_report(name, args=("--version",), timeout=15):

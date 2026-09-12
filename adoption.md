@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.669 — o guide nomeia os passos que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+passos
+textuais
+não
+são
+uma
+garantia
+de
+execução.
+O
+guide
+copiava
+os
+três
+passos
+e
+calava
+a
+recusa.
+Agora
+o
+`guide`
+nomeia
+os
+passos.
+Texto
+no
+disco
+não
+é
+a
+partida.
+Sem
+chave
+`passos`.
+Nomear
+não
+observa.
+
 ## 0.9.668 — o continuity nomeia os pocs que o roteiro já recusa
 
 O

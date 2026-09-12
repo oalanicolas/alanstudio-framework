@@ -2099,6 +2099,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("comando abra o jogo", game.next_scope())
         self.assertNotIn("comando abra o jogo", game.init_scope(False))
 
+    def test_guide_names_the_steps_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_textual_steps_as_execution(recipe),
+            "a receita já recusa que passos textuais sejam uma garantia de execução",
+        )
+        self.assertEqual(game.guide_steps_source(), "recipes/create.md")
+        report = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
+        self.assertIn(
+            "passos textuais sejam uma garantia de execução",
+            report["scope"],
+            "o guide copiava os três passos e calava a recusa",
+        )
+        self.assertIn("(`passos`)", report["scope"])
+        self.assertNotIn("passos", report)
+        self.assertEqual(len(report["steps"]), 3)
+        self.assertFalse(game.recipe_refuses_textual_steps_as_execution(""))
+        with mock.patch.object(game, "guide_steps_source", return_value=None):
+            silent = game.guide_cycle(None, "canvas-arcade", idea="atravessar estilhaços")
+        self.assertNotIn(
+            "passos textuais sejam uma garantia de execução",
+            silent["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os passos que a receita já recusa", recipe)
+        self.assertIn("nomeia os passos que a receita já recusa", skill)
+        self.assertIn("nomeia os passos que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "passos textuais sejam uma garantia de execução",
+            report["steps"][0]["scope"],
+        )
+        self.assertNotIn(
+            "passos textuais sejam uma garantia de execução",
+            report["steps"][1]["scope"],
+        )
+        self.assertNotIn(
+            "passos textuais sejam uma garantia de execução",
+            report["steps"][2]["scope"],
+        )
+        self.assertNotIn(
+            "passos textuais sejam uma garantia de execução",
+            game.continuity_prompt_scope(),
+        )
+        self.assertNotIn(
+            "passos textuais sejam uma garantia de execução",
+            game.init_scope(False),
+        )
+        self.assertNotIn(
+            "passos textuais sejam uma garantia de execução",
+            game.check_plan_scope(),
+        )
+
     def test_next_names_the_action_the_process_already_asks(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(
