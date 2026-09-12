@@ -659,7 +659,8 @@ def review(root, limit=REVIEW_LIMIT):
         # lista: um jogo com legendas e sem pulso saía igual ao starter.
         play = play_command(path, commands, manager)
         missing = [key for key, area in areas.items() if area["status"] == "not_located"]
-        noted = bool(feel_report["observations"])
+        observations = feel_observation_items(feel_report)
+        noted = bool(observations)
         kind = entry.get("kind")
         signals = {
             "playable_unplayed": fresh_starter_cycle(path, missing, play) and not noted,
@@ -697,7 +698,7 @@ def review(root, limit=REVIEW_LIMIT):
             audio_roles=len(roles["roles"]),
             audio_roles_empty=len(roles["empty"]),
             feel_constants=len(feel_report["constants"]),
-            feel_observations=len(feel_report["observations"]),
+            feel_observations=len(observations),
             access_declared=access_report["declared"],
             save_unversioned=persist_report["unversioned"],
             performance_unbudgeted=perf_report["unbudgeted"],
@@ -2633,6 +2634,58 @@ def observation_item_scope():
     return scope
 
 
+# A receita já recusa que o soltar
+# no disco seja sessão observada.
+# Sem isto o feel listava o recibo
+# e calava a recusa. Arquivo no
+# disco não é a sessão.
+FEEL_RELEASE = re.compile(r"Soltar no disco não é\s+sessão observada")
+
+
+def recipe_refuses_disk_release_as_session(text):
+    return bool(text and FEEL_RELEASE.search(text))
+
+
+def feel_release_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_disk_release_as_session(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_release_scope():
+    if not feel_release_source():
+        return None
+    return (
+        " O disco recusa que o soltar no disco seja sessão observada "
+        "(`soltar`). Arquivo no disco não é a sessão."
+    )
+
+
+def feel_observations_scope():
+    scope = (
+        "recibo de observação no disco. "
+        "Não joga e não atribui peso percebido."
+    )
+    named = feel_release_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def feel_observation_items(feel):
+    observations = (feel or {}).get("observations") or []
+    if isinstance(observations, dict):
+        return list(observations.get("items") or [])
+    return list(observations)
+
+
 # A receita já recusa que o valor seja constante universal. Sem isto o
 # item copiava o número e calava a recusa.
 # Número no disco não é lei.
@@ -2837,6 +2890,12 @@ def feel_reading(project):
             "paths": sources,
             "scope": feel_sources_scope(),
         }
+    unobserved = bool(constants) and not observations
+    if observations:
+        observations = {
+            "items": observations,
+            "scope": feel_observations_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
@@ -2844,7 +2903,7 @@ def feel_reading(project):
         "constants": constants,
         "sources": sources,
         "observations": observations,
-        "unobserved": bool(constants) and not observations,
+        "unobserved": unobserved,
         "felt": False,
         "then": then,
         "guide": str(FRAMEWORK / "recipes/feel.md"),

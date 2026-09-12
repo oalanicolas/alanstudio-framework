@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.593 — o observations do feel nomeia o soltar que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+Soltar
+no
+disco
+não
+é
+sessão
+observada.
+O
+feel
+listava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+`observations`
+do
+`feel`
+nomeia
+o
+soltar.
+Arquivo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`soltar`.
+Nomear
+não
+observa.
+
+O que 0.9.593 não afirma:
+listar
+o
+recibo
+não
+é
+sessão
+observada.
+
 ## 0.9.592 — o fields do origins nomeia os três que o roteiro já recusa
 
 O

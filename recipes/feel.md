@@ -22,7 +22,7 @@ até o gesto. Depois do tap a porta e o fim não chamam
 o avanço de cima. Depois da partida o telefone pede
 seed nova embaixo; o campo repete a última. A primeira
 visita continua abrindo na faixa. Soltar no disco não é
-sessão observada. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
+sessão observada. Se a receita recusa que o soltar no disco seja sessão observada, o `observations` do `feel` nomeia o soltar que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `soltar`. Depois do fim, um avanço novo volta à porta; R também. Depois da partida, o achado precisa de forma. `playtest <projeto>` lê se o
 disco tem problema, evidência, hipótese e medição. Recibo sem os quatro é
 impressão. Se a receita recusa que o recibo sem os quatro seja achado, o `fields` do `record --kind observation` nomeia a impressão que a receita já recusa. Recibo no disco não é playtest. Sem chave `impressão`. `next` propõe `playtest.unstructured` e aponta a página
 (`/?invite=1#finding`) e `note --field`. Sem o convite o âncora

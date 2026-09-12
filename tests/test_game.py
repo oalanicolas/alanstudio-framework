@@ -2336,10 +2336,16 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             )
         felt = game.feel_reading(self.project)
         self.assertNotIn("recibo sem os quatro seja achado", felt["scope"])
-        if felt["observations"]:
+        items = game.feel_observation_items(felt)
+        if items:
             self.assertNotIn(
                 "recibo sem os quatro seja achado",
-                felt["observations"][0].get("scope") or "",
+                items[0].get("scope") or "",
+            )
+        if isinstance(felt.get("observations"), dict):
+            self.assertNotIn(
+                "recibo sem os quatro seja achado",
+                felt["observations"].get("scope") or "",
             )
 
     def test_art_names_the_palette_the_system_already_refuses(self):
@@ -10679,7 +10685,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.feel_reading(destination)
         self.assertFalse(report["felt"])
         self.assertFalse(report["unobserved"])
-        self.assertEqual(report["observations"][0]["path"], "qa/partida-1/record.json")
+        self.assertEqual(
+            game.feel_observation_items(report)[0]["path"],
+            "qa/partida-1/record.json",
+        )
         bases = [item["basis"] for item in self.proposals(game.next_step(destination))]
         self.assertNotIn("feel.unobserved", bases)
         self.assertIn("playtest.unstructured", bases)
@@ -10702,8 +10711,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "fields": {"scenario": "primeira partida", "role": "human"},
         }), encoding="utf-8")
         report = game.feel_reading(destination)
-        self.assertTrue(report["observations"], "o feel já lista o recibo neste projeto")
-        item = report["observations"][0]
+        items = game.feel_observation_items(report)
+        self.assertTrue(items, "o feel já lista o recibo neste projeto")
+        item = items[0]
         self.assertIn(
             "autor sugerido seja quem jogou",
             item["scope"],
@@ -10715,7 +10725,10 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(game.recipe_refuses_suggested_author(""))
         with mock.patch.object(game, "observation_author_source", return_value=None):
             silent = game.feel_reading(destination)
-        self.assertNotIn("autor sugerido seja quem jogou", silent["observations"][0]["scope"])
+        self.assertNotIn(
+            "autor sugerido seja quem jogou",
+            game.feel_observation_items(silent)[0]["scope"],
+        )
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
         self.assertIn("nomeia o autor que a receita já recusa", recipe)
@@ -10728,6 +10741,96 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(
             "autor sugerido seja quem jogou",
             game.playtest_reading(destination)["scope"],
+        )
+
+    def test_feel_observations_name_the_release_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_disk_release_as_session(recipe),
+            "a receita já recusa que o soltar no disco seja sessão observada",
+        )
+        self.assertEqual(game.feel_release_source(), "recipes/feel.md")
+        destination = self.root / "feel-com-soltar"
+        game.init(destination, "canvas-arcade")
+        receipt = destination / "qa" / "partida-1"
+        receipt.mkdir(parents=True)
+        (receipt / "record.json").write_text(json.dumps({
+            "kind": "observation",
+            "author": "Ana",
+            "note": "o dash ainda não tem peso",
+            "fields": {"scenario": "primeira partida", "role": "human"},
+        }), encoding="utf-8")
+        paths = [item["path"] for item in game.observation_receipts(destination)]
+        self.assertEqual(paths, ["qa/partida-1/record.json"])
+        report = game.feel_reading(destination)
+        item = report["observations"]
+        self.assertEqual(
+            [entry["path"] for entry in item["items"]],
+            ["qa/partida-1/record.json"],
+        )
+        self.assertEqual(
+            [entry["path"] for entry in item["items"]],
+            [entry["path"] for entry in game.feel_observation_items(report)],
+        )
+        self.assertIn(
+            "o soltar no disco seja sessão observada",
+            item["scope"],
+            "o feel listava o recibo e calava a recusa",
+        )
+        self.assertIn("(`soltar`)", item["scope"])
+        self.assertNotIn("soltar", item)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_disk_release_as_session(""))
+        empty = game.feel_reading(self.project)
+        self.assertEqual(empty["observations"], [])
+        with mock.patch.object(game, "feel_release_source", return_value=None):
+            silent = game.feel_reading(destination)
+        self.assertNotIn(
+            "o soltar no disco seja sessão observada",
+            silent["observations"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o soltar que a receita já recusa", recipe)
+        self.assertIn("nomeia o soltar que a receita já recusa", skill)
+        self.assertIn("nomeia o soltar que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o soltar no disco seja sessão observada", report["scope"])
+        if report.get("then"):
+            self.assertNotIn(
+                "o soltar no disco seja sessão observada",
+                report["then"].get("scope") or "",
+            )
+        if report["constants"]:
+            self.assertNotIn(
+                "o soltar no disco seja sessão observada",
+                report["constants"][0].get("scope") or "",
+            )
+        if report.get("sources"):
+            self.assertNotIn(
+                "o soltar no disco seja sessão observada",
+                report["sources"].get("scope") or "",
+            )
+        items = game.feel_observation_items(report)
+        if items:
+            self.assertNotIn(
+                "o soltar no disco seja sessão observada",
+                items[0].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o soltar no disco seja sessão observada",
+            game.playtest_reading(destination)["scope"],
+        )
+        self.assertNotIn("o soltar no disco seja sessão observada", game.next_scope())
+        self.assertNotIn(
+            "o soltar no disco seja sessão observada",
+            game.note_step_scope(),
+        )
+        self.assertNotIn(
+            "o soltar no disco seja sessão observada",
+            game.record_scope(),
         )
 
     def test_feel_names_the_universal_the_recipe_already_refuses(self):
