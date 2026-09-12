@@ -53,7 +53,7 @@ design e direção do comportamento observado, recuperar histórico e prova, org
 
 Cada área tem fonte atual consultada, estado/limite e destino canônico, ou lacuna
 com motivo e próxima ação. `scan` no mesmo turno reconhece a cobertura, mas
-cobertura lexical não é a prova: a prova é o rastro de código com entrypoint,
+cobertura lexical não é a prova. Se o teach recusa que cobertura lexical seja a prova, o `coverage` nomeia o lexical que o teach já recusa. Varredura no disco não é o rastro. Sem chave `lexical`. A prova é o rastro de código com entrypoint,
 estado e consumidores. Servidor aberto, testes verdes e documentos encontrados **não
 encerram** este comando (`documentation.initialization.not_sufficient`).
 

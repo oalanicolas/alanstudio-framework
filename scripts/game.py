@@ -12573,7 +12573,44 @@ def coverage_scope():
             " O disco recusa que o local não percorrido seja inexistente (`inexistente`). "
             "Contagem no disco não é inventário."
         )
+    named = coverage_lexical_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O teach já recusa que cobertura
+# lexical seja a prova. Sem isto
+# o coverage contava documentos e
+# calava a recusa. Varredura no
+# disco não é o rastro.
+TEACH_LEXICAL = re.compile(r"cobertura lexical não é a prova")
+
+
+def teach_refuses_lexical_coverage_as_proof(text):
+    return bool(text and TEACH_LEXICAL.search(text))
+
+
+def coverage_lexical_source():
+    path = FRAMEWORK / "commands/teach.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if teach_refuses_lexical_coverage_as_proof(text):
+        return "commands/teach.md"
+    return None
+
+
+def coverage_lexical_scope():
+    if not coverage_lexical_source():
+        return None
+    return (
+        " O disco recusa que cobertura lexical seja a prova "
+        "(`lexical`). Varredura no disco não é o rastro."
+    )
 
 
 # O roteiro já recusa que o recorte de estudo tome a prioridade.

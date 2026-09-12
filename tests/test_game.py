@@ -5626,6 +5626,57 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("não percorrido seja inexistente", game.context_scope())
         self.assertNotIn("não percorrido seja inexistente", game.next_scope())
 
+    def test_coverage_names_the_lexical_the_command_already_refuses(self):
+        command = (game.FRAMEWORK / "commands/teach.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.teach_refuses_lexical_coverage_as_proof(command),
+            "o teach já recusa que cobertura lexical seja a prova",
+        )
+        self.assertEqual(game.coverage_lexical_source(), "commands/teach.md")
+        report = game.scan(self.project)
+        item = report["coverage"]
+        self.assertIn(
+            "cobertura lexical seja a prova",
+            item["scope"],
+            "o coverage contava documentos e calava a recusa",
+        )
+        self.assertIn("(`lexical`)", item["scope"])
+        self.assertNotIn("lexical", item)
+        self.assertFalse(game.teach_refuses_lexical_coverage_as_proof(""))
+        with mock.patch.object(game, "coverage_lexical_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "cobertura lexical seja a prova",
+            silent["coverage"].get("scope") or "",
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o lexical que o teach já recusa", command)
+        self.assertIn("nomeia o lexical que o teach já recusa", create)
+        self.assertIn("nomeia o lexical que o teach já recusa", skill)
+        self.assertIn("nomeia o lexical que o teach já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("cobertura lexical seja a prova", report["scope"])
+        self.assertNotIn(
+            "cobertura lexical seja a prova",
+            report["coverage"]["limits"]["scope"],
+        )
+        self.assertNotIn("cobertura lexical seja a prova", report["audit"]["scope"])
+        self.assertNotIn(
+            "cobertura lexical seja a prova",
+            game.production_bar("create")["scope"],
+        )
+        pacing = next(
+            dim for dim in game.production_bar("create")["dimensions"]
+            if dim["key"] == "pacing"
+        )
+        self.assertNotIn("cobertura lexical seja a prova", pacing.get("scope") or "")
+        self.assertNotIn("cobertura lexical seja a prova", game.context_scope())
+        self.assertNotIn("cobertura lexical seja a prova", game.next_scope())
+
     def test_coverage_limits_name_the_priority_the_audit_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(
