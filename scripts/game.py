@@ -1942,7 +1942,46 @@ def _craft_scope(project):
             " O disco declara a saída de escopo (`out_of_scope`). "
             "Linha no disco não é ofício observado."
         )
+    named = craft_precision_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O mapa já recusa que o número com
+# casa decimal e sem origem seja mais
+# preciso. Sem isto o craft lia a
+# declaração e calava a recusa.
+# Mapa no disco não é ofício observado.
+SOURCES_PRECISION = re.compile(
+    r"número com casa decimal e sem origem não é mais preciso"
+)
+
+
+def map_refuses_unsourced_decimal(text):
+    return bool(text and SOURCES_PRECISION.search(text))
+
+
+def craft_precision_source():
+    path = FRAMEWORK / "references/sources.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if map_refuses_unsourced_decimal(text):
+        return "references/sources.md"
+    return None
+
+
+def craft_precision_scope():
+    if not craft_precision_source():
+        return None
+    return (
+        " O disco recusa que o número com casa decimal e sem origem "
+        "seja mais preciso (`preciso`). Mapa no disco não é ofício observado."
+    )
 
 
 # Papéis de áudio: o starter declara SOUNDS e, neste recorte, já traz

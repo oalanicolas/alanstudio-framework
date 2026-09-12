@@ -30,6 +30,53 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.657 — o craft nomeia o preciso que o mapa já recusa
+
+O
+mapa
+já
+dizia
+que
+número
+com
+casa
+decimal
+e
+sem
+origem
+não
+é
+mais
+preciso.
+O
+craft
+lia
+a
+declaração
+e
+calava
+a
+recusa.
+Agora
+o
+`craft`
+nomeia
+o
+preciso.
+Mapa
+no
+disco
+não
+é
+ofício
+observado.
+Sem
+chave
+`preciso`.
+Nomear
+não
+observa.
+
 ## 0.9.656 — o production_bar nomeia a equipe que a receita já recusa
 
 A

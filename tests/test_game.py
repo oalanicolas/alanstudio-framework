@@ -9472,6 +9472,61 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aprovado", report["scope"])
         self.assertNotIn("verified", report["scope"])
 
+    def test_craft_names_the_precise_the_map_already_refuses(self):
+        sources = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.map_refuses_unsourced_decimal(sources),
+            "o mapa já recusa que o número com casa decimal e sem origem seja mais preciso",
+        )
+        self.assertEqual(game.craft_precision_source(), "references/sources.md")
+        report = game.craft_reading(self.project)
+        self.assertIn(
+            "número com casa decimal e sem origem seja mais preciso",
+            report["scope"],
+            "o craft lia a declaração e calava a recusa",
+        )
+        self.assertIn("(`preciso`)", report["scope"])
+        self.assertNotIn("preciso", report)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.map_refuses_unsourced_decimal(""))
+        with mock.patch.object(game, "craft_precision_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn(
+            "número com casa decimal e sem origem seja mais preciso",
+            silent["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o preciso que o mapa já recusa", sources)
+        self.assertIn("nomeia o preciso que o mapa já recusa", recipe)
+        self.assertIn("nomeia o preciso que o mapa já recusa", skill)
+        self.assertIn("nomeia o preciso que o mapa já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "número com casa decimal e sem origem seja mais preciso",
+            game.craft_item_scope(),
+        )
+        self.assertNotIn(
+            "número com casa decimal e sem origem seja mais preciso",
+            game.bar_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "número com casa decimal e sem origem seja mais preciso",
+            game.gate_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "número com casa decimal e sem origem seja mais preciso",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "número com casa decimal e sem origem seja mais preciso",
+            game.context(self.project, "create")["production_bar"]["scope"],
+        )
+
     def test_craft_names_the_ladder_the_research_already_refuses(self):
         research = (
             game.FRAMEWORK / "references/observable-criteria-research.md"

@@ -76,7 +76,7 @@ A heurística de triagem que sobrou do levantamento e vale para qualquer fonte
 futura: **fonte séria declara de onde tirou o número.** A EBU diz de qual medição
 de overscan saíram os 3,5%; a Unity chama o próprio 35% de “a general tip”. Um
 número com casa decimal e sem origem não é mais preciso, é menos honesto — e o
-levantamento nomeia os domínios em que isso apareceu.
+levantamento nomeia os domínios em que isso apareceu. Se o mapa recusa que o número com casa decimal e sem origem seja mais preciso, o `craft` nomeia o preciso que o mapa já recusa. Mapa no disco não é ofício observado. Sem chave `preciso`.
 
 ## Pré-produção e checagem
 
