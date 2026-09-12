@@ -6989,6 +6989,43 @@ def content_composition_source():
     return None
 
 
+# A receita já recusa que variação
+# de material substitua detalhe
+# funcional de forma. Sem isto o
+# content listava arquivos e
+# calava a recusa. Material no
+# disco não é a forma.
+CONTENT_MATERIAL = re.compile(
+    r"Variação de material não substitui detalhe funcional de forma"
+)
+
+
+def recipe_refuses_material_as_functional_form(text):
+    return bool(text and CONTENT_MATERIAL.search(text))
+
+
+def content_material_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_material_as_functional_form(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_material_scope():
+    if not content_material_source():
+        return None
+    return (
+        " O disco recusa que a variação de material substitua detalhe funcional de forma "
+        "(`material`). Material no disco não é a forma."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -7236,6 +7273,9 @@ def content_reading(project):
             " O disco recusa que mais módulos provem a composição "
             "(`composição`). Arquivo no disco não é o mundo."
         )
+    skin = content_material_scope()
+    if skin:
+        scope += skin
     encoded = content_encoded_scope()
     if encoded:
         scope += encoded

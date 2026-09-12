@@ -16834,6 +16834,78 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("mais módulos provem a composição", game.feel_reading(self.project)["scope"])
         self.assertNotIn("mais módulos provem a composição", game.gate_item_scope("scale"))
 
+    def test_content_names_the_material_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertRegex(
+            recipe,
+            r"Variação de material não substitui detalhe funcional de forma",
+        )
+        self.assertTrue(
+            game.recipe_refuses_material_as_functional_form(recipe),
+            "a receita já recusa que a variação de material substitua detalhe funcional de forma",
+        )
+        self.assertEqual(game.content_material_source(), "recipes/content.md")
+        report = game.content_reading(self.project)
+        self.assertIn(
+            "a variação de material substitua detalhe funcional de forma",
+            report["scope"],
+            "o content listava arquivos e calava a recusa",
+        )
+        self.assertIn("(`material`)", report["scope"])
+        self.assertIn("Material no disco não é a forma.", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("material", report)
+        self.assertFalse(game.recipe_refuses_material_as_functional_form(""))
+        with mock.patch.object(game, "content_material_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn(
+            "a variação de material substitua detalhe funcional de forma",
+            silent["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o material que a receita já recusa", recipe)
+        self.assertIn("nomeia o material que a receita já recusa", create)
+        self.assertIn("nomeia o material que a receita já recusa", skill)
+        self.assertIn("nomeia o material que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "a variação de material substitua detalhe funcional de forma",
+            game.art_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "a variação de material substitua detalhe funcional de forma",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "a variação de material substitua detalhe funcional de forma",
+            game.record_scope(),
+        )
+        self.assertNotIn(
+            "a variação de material substitua detalhe funcional de forma",
+            game.craft_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "a variação de material substitua detalhe funcional de forma",
+            game.save_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "a variação de material substitua detalhe funcional de forma",
+            game.play_scope(self.project),
+        )
+        self.assertNotIn(
+            "a variação de material substitua detalhe funcional de forma",
+            game.git_summary_scope(),
+        )
+        self.assertNotIn(
+            "a variação de material substitua detalhe funcional de forma",
+            game.next_scope(),
+        )
+        self.assertNotIn("material", game.CYCLE_KEYS)
+
     def test_content_names_the_rain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
         self.assertTrue(
