@@ -8418,6 +8418,79 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn("nomear devolva o arquivo", game.next_scope())
 
+    def test_origins_embedded_names_the_new_license_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_reuse_as_new_license(recipe),
+            "a receita já recusa que o conteúdo baixado receba uma licença nova pelo simples reuso",
+        )
+        self.assertEqual(game.origins_embedded_reuse_source(), "recipes/content.md")
+        empty = game.origins_reading(self.project)
+        self.assertEqual(empty["embedded"], [])
+        self.assertEqual(game.origin_embedded_paths(empty), [])
+        asset = self.project / "audio" / "jump.wav"
+        asset.parent.mkdir()
+        asset.write_bytes(b"RIFF")
+        report = game.origins_reading(self.project)
+        item = report["embedded"]
+        self.assertEqual(item["paths"], ["audio/jump.wav"])
+        self.assertEqual(item["paths"], game.origin_embedded_paths(report))
+        self.assertIn(
+            "receba uma licença nova pelo simples reuso",
+            item["scope"],
+            "o origins listava o embarcado e calava a recusa",
+        )
+        self.assertIn("(`nova`)", item["scope"])
+        self.assertNotIn("nova", item)
+        self.assertFalse(report["granted"])
+        self.assertFalse(report["validated"])
+        self.assertFalse(game.recipe_refuses_reuse_as_new_license(""))
+        with mock.patch.object(game, "origins_embedded_reuse_source", return_value=None):
+            silent = game.origins_reading(self.project)
+        self.assertNotIn(
+            "receba uma licença nova pelo simples reuso",
+            silent["embedded"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a nova que a receita já recusa", recipe)
+        self.assertIn("nomeia a nova que a receita já recusa", skill)
+        self.assertIn("nomeia a nova que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("receba uma licença nova pelo simples reuso", report["scope"])
+        if report.get("undeclared") and isinstance(report["undeclared"], dict):
+            self.assertNotIn(
+                "receba uma licença nova pelo simples reuso",
+                report["undeclared"].get("scope") or "",
+            )
+        if report.get("receipts") and isinstance(report["receipts"], dict):
+            self.assertNotIn(
+                "receba uma licença nova pelo simples reuso",
+                report["receipts"].get("scope") or "",
+            )
+        if report.get("missing") and isinstance(report["missing"], dict):
+            self.assertNotIn(
+                "receba uma licença nova pelo simples reuso",
+                report["missing"].get("scope") or "",
+            )
+        if report.get("form"):
+            self.assertNotIn(
+                "receba uma licença nova pelo simples reuso",
+                report["form"].get("scope") or "",
+            )
+        if report.get("fields"):
+            self.assertNotIn(
+                "receba uma licença nova pelo simples reuso",
+                report["fields"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "receba uma licença nova pelo simples reuso",
+            game.gate_reading(self.project)["scope"],
+        )
+        self.assertNotIn("receba uma licença nova pelo simples reuso", game.next_scope())
+
     def test_origins_names_the_consumer_the_sidecar_already_declares(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         credit = (starter / "public/sfx/dash.credits.txt").read_text(encoding="utf-8")

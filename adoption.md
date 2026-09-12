@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.617 — o embedded do origins nomeia a nova que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+conteúdo
+baixado
+não
+recebe
+uma
+licença
+nova
+pelo
+simples
+reuso.
+O
+origins
+listava
+o
+embarcado
+e
+calava
+a
+recusa.
+Agora
+o
+`embedded`
+do
+`origins`
+nomeia
+a
+nova.
+Arquivo
+no
+disco
+não
+é
+a
+concessão.
+Sem
+chave
+`nova`.
+Nomear
+não
+concede.
+
+O que 0.9.617 não afirma:
+o
+arquivo
+não
+é
+licença
+válida.
+
 ## 0.9.616 — o expected do ship nomeia o ambiente que a receita já recusa
 
 A

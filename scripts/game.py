@@ -693,7 +693,7 @@ def review(root, limit=REVIEW_LIMIT):
             bar_undeclared=len(declaration["undeclared"]),
             bar_problems=len(declaration["problems"]),
             validators=scripts,
-            origins_embedded=len(origins["embedded"]),
+            origins_embedded=len(origin_embedded_paths(origins)),
             origins_undeclared=len(origin_undeclared_paths(origins)),
             audio_roles=len(roles["roles"]),
             audio_roles_empty=len(roles_empty_ids(roles)),
@@ -8957,6 +8957,60 @@ def origins_missing_scope():
     return scope
 
 
+# A receita já recusa que o
+# conteúdo baixado receba uma
+# licença nova pelo simples
+# reuso. Sem isto o origins
+# listava o embarcado e calava
+# a recusa. Arquivo no disco
+# não é a concessão.
+CONTENT_REUSE = re.compile(r"licença nova pelo simples reuso")
+
+
+def recipe_refuses_reuse_as_new_license(text):
+    return bool(text and CONTENT_REUSE.search(text))
+
+
+def origins_embedded_reuse_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_reuse_as_new_license(text):
+        return "recipes/content.md"
+    return None
+
+
+def origins_embedded_reuse_scope():
+    if not origins_embedded_reuse_source():
+        return None
+    return (
+        " O disco recusa que o conteúdo baixado receba uma licença nova "
+        "pelo simples reuso (`nova`). Arquivo no disco não é a concessão."
+    )
+
+
+def origins_embedded_scope():
+    scope = (
+        "arquivo de mídia embarcado no disco. "
+        "Não concede licença."
+    )
+    named = origins_embedded_reuse_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def origin_embedded_paths(origins):
+    embedded = (origins or {}).get("embedded") or []
+    if isinstance(embedded, dict):
+        return list(embedded.get("paths") or [])
+    return list(embedded)
+
+
 def origins_missing_paths(reading):
     missing = (reading or {}).get("missing") or []
     if isinstance(missing, dict):
@@ -9232,6 +9286,11 @@ def origins_reading(project, max_entries=2000):
         missing = {
             "paths": missing,
             "scope": origins_missing_scope(),
+        }
+    if embedded:
+        embedded = {
+            "paths": embedded,
+            "scope": origins_embedded_scope(),
         }
     return {
         "schema_version": 1,
