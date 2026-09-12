@@ -2571,6 +2571,60 @@ def feel_then(project):
     return then
 
 
+# A receita já recusa que captura no
+# disco seja sessão observada. Sem
+# isto o feel listava o fonte e
+# calava a recusa. Arquivo no disco
+# não é a sessão.
+FEEL_CAPTURE = re.compile(r"Captura no disco não é sessão observada")
+
+
+def recipe_refuses_disk_capture_as_session(text):
+    return bool(text and FEEL_CAPTURE.search(text))
+
+
+def feel_capture_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_disk_capture_as_session(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_capture_scope():
+    if not feel_capture_source():
+        return None
+    return (
+        " O disco recusa que captura no disco seja sessão observada "
+        "(`captura`). Arquivo no disco não é a sessão."
+    )
+
+
+def feel_sources_scope():
+    scope = (
+        "arquivo de constante no disco. "
+        "Não observa a sessão."
+    )
+    named = feel_capture_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def feel_source_files(project):
+    _constants, sources = declared_feel_constants(project)
+    _windows, rain_sources = rain_window_constants(project)
+    for relative in rain_sources:
+        if relative not in sources:
+            sources.append(relative)
+    return sources
+
+
 def feel_reading(project):
     project = Path(project)
     constants, sources = declared_feel_constants(project)
@@ -2598,6 +2652,11 @@ def feel_reading(project):
     artistic = feel_then_scope()
     if artistic:
         then = dict(then, scope=artistic)
+    if sources:
+        sources = {
+            "paths": sources,
+            "scope": feel_sources_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),

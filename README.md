@@ -695,7 +695,7 @@ Se o laço emite o término, o `feel` nomeia o land que o dash já emite. Pose n
 Se a receita recusa que o autor sugerido seja quem jogou, o `feel` nomeia o autor que a receita já recusa. Recibo no disco não é sessão. Sem chave `autor`.
 Se a receita recusa que o valor seja constante universal, o `feel` nomeia o universal que a receita já recusa. Número no disco não é lei. Sem chave `universais`.
 Se a receita recusa que velocidade não nula prove a posição, o item da constante nomeia a posição que a receita já recusa. Número no disco não é a pose. Sem chave `posição`.
-Se a receita recusa que esses testes demonstrem qualidade artística, o then do `feel` nomeia a artística que a receita já recusa. Número no disco não é direção. Sem chave `artística`.
+Se a receita recusa que esses testes demonstrem qualidade artística, o then do `feel` nomeia a artística que a receita já recusa. Número no disco não é direção. Sem chave `artística`. Se a receita recusa que captura no disco seja sessão observada, o `sources` do `feel` nomeia a captura que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `captura`.
 Constante nomeada não é peso percebido. `feel` lê as
 constantes — inclusive o pulso e o passo — essas janelas e o rumo, procura um `record.json` de observação no projeto e nomeia
 `then.play` e `then.note` sem executar. Com last-run, nomeia `then.seed`

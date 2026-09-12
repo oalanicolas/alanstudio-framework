@@ -6,7 +6,7 @@ diferença percebida entre intenção e resposta atual.
 Com tela, a primeira superfície é a porta. O campo começa depois do
 avanço. A mostra da porta marca o trilho no mesmo alcance do campo.
 O toque que sai do campo ainda solta — a captura leva o up.
-Captura no disco não é sessão observada. Esconder a aba solta o
+Captura no disco não é sessão observada. Se a receita recusa que captura no disco seja sessão observada, o `sources` do `feel` nomeia a captura que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `captura`. Esconder a aba solta o
 hold — o keyup some e o corpo não segue. Perder o foco da janela
 solta o ofício pendente — Space e R não disparam no quadro
 seguinte. Na pausa o toque retoma — Esc e P não existem no
