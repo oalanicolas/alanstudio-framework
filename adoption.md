@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.604 — o declared do budget nomeia a medida que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+harness
+não
+executa
+a
+medição.
+O
+budget
+relatava
+o
+artefato
+e
+calava
+a
+recusa.
+Agora
+o
+`declared`
+do
+`budget`
+nomeia
+a
+medida.
+Script
+no
+disco
+não
+é
+o
+quadro.
+Sem
+chave
+`medida`.
+Nomear
+não
+mede.
+
+O que 0.9.604 não afirma:
+encontrar
+o
+script
+não
+mede
+o
+quadro.
+
 ## 0.9.603 — o incomplete do ship nomeia o jogável que a receita já recusa
 
 A

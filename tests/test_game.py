@@ -11938,6 +11938,67 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn("melhoria visual seja otimização", game.next_scope())
 
+    def test_budget_declared_names_the_measure_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_harness_as_running_measure(recipe),
+            "a receita já recusa que o harness execute a medição",
+        )
+        self.assertEqual(game.budget_declared_measure_source(), "recipes/performance.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.budget_reading(starter)
+        item = report["declared"]
+        self.assertTrue(item["declared"], "o budget já relata artefato neste starter")
+        self.assertEqual(item["declared"], game.budget_declared_flag(report))
+        self.assertIn(
+            "o harness execute a medição",
+            item["scope"],
+            "o budget relatava o artefato e calava a recusa",
+        )
+        self.assertIn("(`medida`)", item["scope"])
+        self.assertNotIn("medida", item)
+        self.assertFalse(report["measured"])
+        self.assertIs(report["unbudgeted"], False)
+        self.assertFalse(game.recipe_refuses_harness_as_running_measure(""))
+        empty = game.budget_reading(self.project)
+        self.assertFalse(empty["declared"])
+        self.assertFalse(game.budget_declared_flag(empty))
+        with mock.patch.object(game, "budget_declared_measure_source", return_value=None):
+            silent = game.budget_reading(starter)
+        self.assertNotIn(
+            "o harness execute a medição",
+            silent["declared"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a medida que a receita já recusa", recipe)
+        self.assertIn("nomeia a medida que a receita já recusa", skill)
+        self.assertIn("nomeia a medida que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o harness execute a medição", report["scope"])
+        if report.get("scripts"):
+            self.assertNotIn(
+                "o harness execute a medição",
+                report["scripts"].get("scope") or "",
+            )
+        if report.get("files"):
+            self.assertNotIn(
+                "o harness execute a medição",
+                report["files"].get("scope") or "",
+            )
+        if report.get("receipts"):
+            self.assertNotIn(
+                "o harness execute a medição",
+                report["receipts"].get("scope") or "",
+            )
+        self.assertNotIn("o harness execute a medição", game.next_scope())
+        self.assertNotIn(
+            "o harness execute a medição",
+            game.ship_reading(starter)["scope"],
+        )
+
     def test_budget_scripts_names_the_result_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
         self.assertTrue(

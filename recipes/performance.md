@@ -46,7 +46,7 @@ alteram o próprio resultado que estão medindo.
 `record --kind budget`. Se o tool declara `title.attract`, o `budget`
 nomeia a porta que a receita já cronometra. Stub no disco não é
 dispositivo. Sem chave `door`. `measured` é sempre falso: o harness não executa a
-medição.
+medição. Se a receita recusa que o harness execute a medição, o `declared` do `budget` nomeia a medida que a receita já recusa. Script no disco não é o quadro. Sem chave `medida`.
 
 Implementação concreta: `tools/budget.mjs` do starter `canvas-arcade` mede a
 simulação e o `draw` num canvas stub, por percentil, não por média. Se o `tools/budget.*` relata o pior percentil, o `budget` nomeia o percentil que a receita já pede.

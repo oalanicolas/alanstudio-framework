@@ -4678,6 +4678,58 @@ def budget_script_names(project):
     ]
 
 
+# A receita já recusa que o harness
+# execute a medição. Sem isto o
+# budget relatava o artefato e
+# calava a recusa. Script no disco
+# não é o quadro.
+PERF_MEASURE = re.compile(r"não executa a\s+medição")
+
+
+def recipe_refuses_harness_as_running_measure(text):
+    return bool(text and PERF_MEASURE.search(text))
+
+
+def budget_declared_measure_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_harness_as_running_measure(text):
+        return "recipes/performance.md"
+    return None
+
+
+def budget_declared_measure_scope():
+    if not budget_declared_measure_source():
+        return None
+    return (
+        " O disco recusa que o harness execute a medição "
+        "(`medida`). Script no disco não é o quadro."
+    )
+
+
+def budget_declared_scope():
+    scope = (
+        "artefato de orçamento no disco. "
+        "Não executa a medição."
+    )
+    named = budget_declared_measure_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def budget_declared_flag(reading):
+    declared = (reading or {}).get("declared")
+    if isinstance(declared, dict):
+        return bool(declared.get("declared"))
+    return bool(declared)
+
+
 def budget_reading(project):
     project = Path(project)
     try:
@@ -4688,7 +4740,13 @@ def budget_reading(project):
     files = budget_tool_files(project)
     receipts = budget_receipts(project)
     expected = bool(scripts) or (project / "Cargo.toml").is_file()
-    declared = bool(named or files or receipts)
+    declared_flag = bool(named or files or receipts)
+    unbudgeted = expected and not declared_flag
+    if declared_flag:
+        declared_flag = {
+            "declared": True,
+            "scope": budget_declared_scope(),
+        }
     if files:
         files = {
             "paths": files,
@@ -4735,8 +4793,8 @@ def budget_reading(project):
         "scripts": named,
         "files": files,
         "receipts": receipts,
-        "declared": declared,
-        "unbudgeted": expected and not declared,
+        "declared": declared_flag,
+        "unbudgeted": unbudgeted,
         "measured": False,
         "guide": str(FRAMEWORK / "recipes/performance.md"),
         "rule": (
