@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.605: o `external` do `content` nomeia o baixado que a receita já recusa. Arquivo no disco não é o recurso integrado. Sem chave `baixado`. Nomear não consome.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.605): **666 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
