@@ -3234,6 +3234,9 @@ def observation_item_scope():
     markup = observation_dom_scope()
     if markup:
         scope += markup
+    talk = observation_session_scope()
+    if talk:
+        scope += talk
     return scope
 
 
@@ -3269,6 +3272,40 @@ def observation_dom_scope():
     return (
         " O disco recusa que o texto no DOM seja direção observada "
         "(`dom`). Texto no DOM não é a direção."
+    )
+
+
+# A receita já recusa que o
+# texto no DOM seja sessão.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Texto no DOM não é a sessão.
+A11Y_SESSION = re.compile(r"Texto no\s+DOM não é sessão")
+
+
+def recipe_refuses_dom_text_as_session(text):
+    return bool(text and A11Y_SESSION.search(text))
+
+
+def observation_session_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_dom_text_as_session(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_session_scope():
+    if not observation_session_source():
+        return None
+    return (
+        " O disco recusa que o texto no DOM seja sessão "
+        "(`sessão`). Texto no DOM não é a sessão."
     )
 
 
