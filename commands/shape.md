@@ -63,7 +63,7 @@ continue para código na mesma resposta, mesmo que o brief pareça óbvio.
 O brief está pronto quando alguém consegue descrever uma partida curta, o que se
 pretende sentir e o que precisa ser aprendido primeiro; a referência tem origem e
 autoridade declaradas, ou a ausência é explícita (gate `design`,
-[gates](../references/gates.md)). Documento preenchido não é PoC executada.
+[gates](../references/gates.md)). Documento preenchido não é PoC executada. Se o shape recusa que documento preenchido seja PoC executada, a área `vision` do `scan` nomeia a executada que o shape já recusa. Documento no disco não é o experimento. Sem chave `executada`.
 
 ## Nunca
 

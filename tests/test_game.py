@@ -5709,6 +5709,63 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("inventar público observado", game.feel_reading(self.project)["scope"])
         self.assertNotIn("inventar público observado", game.next_scope())
 
+    def test_scan_vision_names_the_executed_the_shape_already_refuses(self):
+        command = (game.FRAMEWORK / "commands/shape.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.shape_refuses_filled_doc_as_executed_poc(command),
+            "o shape já recusa que documento preenchido seja PoC executada",
+        )
+        self.assertEqual(game.vision_executed_source(), "commands/shape.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "documento preenchido seja PoC executada",
+            report["areas"]["vision"]["scope"],
+            "a área localizava o brief e calava a recusa",
+        )
+        self.assertIn("(`executada`)", report["areas"]["vision"]["scope"])
+        self.assertNotIn("executada", report["areas"]["vision"])
+        self.assertFalse(game.shape_refuses_filled_doc_as_executed_poc(""))
+        with mock.patch.object(game, "vision_executed_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "documento preenchido seja PoC executada",
+            silent["areas"]["vision"]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a executada que o shape já recusa", command)
+        self.assertIn("nomeia a executada que o shape já recusa", create)
+        self.assertIn("nomeia a executada que o shape já recusa", skill)
+        self.assertIn("nomeia a executada que o shape já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["vision"]["scope"])
+        self.assertNotIn("aprovado", report["areas"]["vision"]["scope"])
+        self.assertNotIn("4.5", report["areas"]["vision"]["scope"])
+        self.assertNotIn("documento preenchido seja PoC executada", report["scope"])
+        self.assertNotIn(
+            "documento preenchido seja PoC executada",
+            report["areas"]["gdd"]["scope"],
+        )
+        self.assertNotIn(
+            "documento preenchido seja PoC executada",
+            report["areas"]["decisions"]["scope"],
+        )
+        self.assertNotIn(
+            "documento preenchido seja PoC executada",
+            game.coverage_scope(),
+        )
+        self.assertNotIn(
+            "documento preenchido seja PoC executada",
+            game.next_scope(),
+        )
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        warned = game.save_reading(starter)["warned"]
+        if isinstance(warned, dict):
+            self.assertNotIn(
+                "documento preenchido seja PoC executada",
+                warned.get("scope") or "",
+            )
+
     def test_scan_names_the_absence_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
         self.assertTrue(

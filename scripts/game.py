@@ -13497,7 +13497,45 @@ def vision_area_scope():
             " O disco recusa inventar público observado (`público`). "
             "Área no disco não é audiência."
         )
+    filled = vision_executed_scope()
+    if filled:
+        scope += filled
     return scope
+
+
+# O shape já recusa que documento
+# preenchido seja PoC executada.
+# Sem isto a área localizava o
+# brief e calava a recusa.
+# Documento no disco não é o
+# experimento.
+SHAPE_EXECUTED = re.compile(r"Documento preenchido não é PoC executada")
+
+
+def shape_refuses_filled_doc_as_executed_poc(text):
+    return bool(text and SHAPE_EXECUTED.search(text))
+
+
+def vision_executed_source():
+    path = FRAMEWORK / "commands/shape.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if shape_refuses_filled_doc_as_executed_poc(text):
+        return "commands/shape.md"
+    return None
+
+
+def vision_executed_scope():
+    if not vision_executed_source():
+        return None
+    return (
+        " O disco recusa que documento preenchido seja PoC executada "
+        "(`executada`). Documento no disco não é o experimento."
+    )
 
 
 # O roteiro já recusa que o recibo presente seja licença. Sem isto a
