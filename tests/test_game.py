@@ -11934,7 +11934,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         }), encoding="utf-8")
         reading = game.playtest_reading(destination)
         self.assertEqual(reading["candidate"], "docs/playtest/last-run.json")
-        self.assertEqual(reading["candidate_seed"], 7)
+        self.assertEqual(reading["candidate_seed"]["seed"], 7)
         self.assertEqual(reading["finding_href"], "/?invite=1&seed=7#finding")
         self.assertEqual(reading["finding_href"], reading["invite_href"] + "#finding")
         self.assertEqual(reading["finding_open"], "http://localhost:8080/?invite=1&seed=7#finding")
@@ -12240,7 +12240,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(first["created"])
         self.assertEqual(first["href"], "/?invite=1&seed=8")
         self.assertEqual(first["reading"]["invite_href"], "/?invite=1&seed=8")
-        self.assertEqual(first["reading"]["candidate_seed"], 8)
+        self.assertEqual(first["reading"]["candidate_seed"]["seed"], 8)
         self.assertFalse(first["observed"])
         self.assertFalse(first["outsider"])
         page = (destination / "docs/playtest/invite.md").read_text(encoding="utf-8")
@@ -12275,7 +12275,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(rained["href"], "/?invite=1&seed=8&spawn=dusk")
         self.assertEqual(rained["reading"]["invite_href"], "/?invite=1&seed=8&spawn=dusk")
         self.assertEqual(rained["reading"]["candidate_spawn"], "dusk")
-        self.assertEqual(rained["reading"]["candidate_seed"], 8)
+        self.assertEqual(rained["reading"]["candidate_seed"]["seed"], 8)
         self.assertFalse(rained["outsider"])
         self.assertNotIn("aprovado", rained["scope"])
         self.assertNotIn("verified", rained["scope"])
@@ -12466,7 +12466,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["finding_attachments"], [
             "docs/playtest/20260910T120000Z-achado.run.json",
         ])
-        self.assertEqual(report["candidate_seed"], 8)
+        self.assertEqual(report["candidate_seed"]["seed"], 8)
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
         self.assertIn("anexar", report["scope"].casefold())
@@ -12489,7 +12489,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         }), encoding="utf-8")
         played = game.playtest_reading(destination)
         self.assertEqual(played["candidate_policy"]["policy"], "played")
-        self.assertEqual(played["candidate_seed"], 8)
+        self.assertEqual(played["candidate_seed"]["seed"], 8)
         self.assertFalse(played["observed"])
         self.assertFalse(played["outsider"])
         self.assertIn("candidate_policy", played["scope"])
@@ -12631,6 +12631,75 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         invite = game.invite_playtest(destination)
         self.assertNotIn("simular no relógio cheio observe", invite["scope"])
 
+    def test_playtest_seed_names_the_attribution_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_number_as_cause(recipe),
+            "a receita já recusa que o número no disco seja causa",
+        )
+        self.assertEqual(game.playtest_seed_cause_source(), "recipes/feel.md")
+        destination = self.root / "com-atribuicao"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"seed": 8, "score": 3, "ticks": 40},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(destination)
+        item = report["candidate_seed"]
+        self.assertEqual(item["seed"], 8)
+        self.assertIn(
+            "número no disco seja causa",
+            item["scope"],
+            "o playtest relatava a seed e calava a recusa",
+        )
+        self.assertIn("(`atribuição`)", item["scope"])
+        self.assertNotIn("atribuição", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_number_as_cause(""))
+        self.assertEqual(game.last_run_seed(destination), 8)
+        with mock.patch.object(game, "playtest_seed_cause_source", return_value=None):
+            silent = game.playtest_reading(destination)
+        self.assertNotIn(
+            "número no disco seja causa",
+            silent["candidate_seed"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a atribuição que a receita já recusa", recipe)
+        self.assertIn("nomeia a atribuição que a receita já recusa", skill)
+        self.assertIn("nomeia a atribuição que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("número no disco seja causa", report["scope"])
+        if report.get("candidate_policy"):
+            self.assertNotIn(
+                "número no disco seja causa",
+                report["candidate_policy"]["scope"],
+            )
+        if report.get("candidate_speed"):
+            self.assertNotIn(
+                "número no disco seja causa",
+                report["candidate_speed"]["scope"],
+            )
+        if report.get("candidate_tally"):
+            self.assertNotIn(
+                "número no disco seja causa",
+                report["candidate_tally"]["scope"],
+            )
+        self.assertNotIn("número no disco seja causa", game.next_scope())
+        self.assertNotIn(
+            "número no disco seja causa",
+            game.feel_reading(destination)["scope"],
+        )
+        invite = game.invite_playtest(destination)
+        self.assertNotIn("número no disco seja causa", invite["scope"])
+
     def test_playtest_names_the_curve_the_last_run_already_traced(self):
         destination = self.root / "com-curva"
         game.init(destination, "canvas-arcade")
@@ -12648,7 +12717,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         curve = report["candidate_curve"]
         self.assertTrue(curve["never_banked"])
         self.assertEqual(curve["unbanked_at_end"], 3)
-        self.assertEqual(report["candidate_seed"], 8)
+        self.assertEqual(report["candidate_seed"]["seed"], 8)
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])
         self.assertIn("candidate_curve", report["scope"])
@@ -12737,7 +12806,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(tally["banks"], 3)
         self.assertNotIn("dashes", tally)
         self.assertNotIn("ticks", tally)
-        self.assertEqual(report["candidate_seed"], 8)
+        self.assertEqual(report["candidate_seed"]["seed"], 8)
         self.assertEqual(report["candidate_policy"]["policy"], "played")
         self.assertFalse(report["observed"])
         self.assertFalse(report["outsider"])

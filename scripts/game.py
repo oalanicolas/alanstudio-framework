@@ -5162,6 +5162,51 @@ def last_run_seed(project):
     return None
 
 
+# A receita já recusa que o número
+# no disco seja causa. Sem isto o
+# playtest relatava a seed e calava
+# a recusa. Número no disco não é
+# a sessão.
+FEEL_CAUSE = re.compile(r"Número\s+no disco não é causa")
+
+
+def recipe_refuses_number_as_cause(text):
+    return bool(text and FEEL_CAUSE.search(text))
+
+
+def playtest_seed_cause_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_number_as_cause(text):
+        return "recipes/feel.md"
+    return None
+
+
+def playtest_seed_cause_scope():
+    if not playtest_seed_cause_source():
+        return None
+    return (
+        " O disco recusa que o número no disco seja causa "
+        "(`atribuição`). Número no disco não é a sessão."
+    )
+
+
+def playtest_seed_scope():
+    scope = (
+        "seed no last-run. "
+        "Não observa a sessão."
+    )
+    named = playtest_seed_cause_scope()
+    if named:
+        scope += named
+    return scope
+
+
 SPAWN_NAME = re.compile(r"^[a-z][a-z0-9]{0,31}$")
 
 
@@ -5588,6 +5633,11 @@ def playtest_reading(project):
     structured = bool(findings)
     candidate = last_run_path(project)
     candidate_seed = last_run_seed(project) if candidate else None
+    if candidate_seed is not None:
+        candidate_seed = {
+            "seed": candidate_seed,
+            "scope": playtest_seed_scope(),
+        }
     candidate_spawn = last_run_spawn(project) if candidate else None
     candidate_look = last_run_look(project) if candidate else None
     candidate_speed = last_run_speed(project) if candidate else None

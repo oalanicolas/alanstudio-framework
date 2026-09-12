@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.558 — o candidate_seed nomeia a atribuição que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+número
+no
+disco
+não
+é
+causa.
+O
+playtest
+relatava
+a
+seed
+e
+calava
+a
+recusa.
+Agora
+o
+`candidate_seed`
+nomeia
+a
+atribuição.
+Número
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`atribuição`.
+Nomear
+não
+observa.
+
+O que 0.9.558 não afirma:
+relatar
+a
+seed
+não
+é
+assistir
+à
+sessão.
+
 ## 0.9.557 — o candidate_speed nomeia o cheio que a receita já recusa
 
 A
