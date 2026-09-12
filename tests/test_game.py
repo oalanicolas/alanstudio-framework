@@ -11287,6 +11287,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("checklist seja escada", game.gate_reading(self.project)["scope"])
         self.assertNotIn("checklist seja escada", game.bar_reading(self.project)["scope"])
 
+    def test_craft_item_names_the_folklore_the_research_already_refuses(self):
+        research = (
+            game.FRAMEWORK / "references/observable-criteria-research.md"
+        ).read_text(encoding="utf-8")
+        self.assertRegex(research, r"Número folclórico")
+        self.assertTrue(
+            game.research_refuses_folk_number_as_observable_criterion(research),
+            "a pesquisa já recusa que o número folclórico seja critério observável",
+        )
+        self.assertEqual(
+            game.craft_item_folk_source(),
+            "references/observable-criteria-research.md",
+        )
+        report = game.craft_reading(self.project)
+        item = report["checks"][0]
+        self.assertIn(
+            "o número folclórico seja critério observável",
+            item["scope"],
+            "o item do craft listava o checklist e calava a recusa",
+        )
+        self.assertIn("(`folclore`)", item["scope"])
+        self.assertIn("Folclore no disco não é o critério.", item["scope"])
+        self.assertNotIn("folclore", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.research_refuses_folk_number_as_observable_criterion(""))
+        with mock.patch.object(game, "craft_item_folk_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn(
+            "o número folclórico seja critério observável",
+            silent["checks"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o folclore que a pesquisa já recusa", research)
+        self.assertIn("nomeia o folclore que a pesquisa já recusa", recipe)
+        self.assertIn("nomeia o folclore que a pesquisa já recusa", skill)
+        self.assertIn("nomeia o folclore que a pesquisa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("verified", recipe)
+        phrase = "o número folclórico seja critério observável"
+        self.assertNotIn(phrase, report["scope"])
+        self.assertNotIn(phrase, game.craft_sources_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.gate_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.bar_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn("folclore", game.CYCLE_KEYS)
+
     def test_craft_names_the_definition_the_research_already_refuses(self):
         research = (
             game.FRAMEWORK / "references/observable-criteria-research.md"

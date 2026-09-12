@@ -16,7 +16,7 @@ A distinção que organiza tudo aqui:
 - **Opinião disfarçada de critério** — parece regra, decide por gosto. *"A arte
   está consistente."*
 - **Número folclórico** — tem casas decimais e nenhuma medição atrás. É o mais
-  perigoso dos três, porque passa por observável.
+  perigoso dos três, porque passa por observável. Se a pesquisa recusa que o número folclórico seja critério observável, o item do craft nomeia o folclore que a pesquisa já recusa. Folclore no disco não é o critério. Sem chave `folclore`.
 
 ## Como ler as fontes deste arquivo
 

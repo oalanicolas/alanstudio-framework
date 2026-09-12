@@ -1852,6 +1852,40 @@ def research_refuses_ladder(text):
     return bool(text and CRAFT_LADDER.search(text))
 
 
+# A pesquisa já recusa que o número
+# folclórico seja critério observável.
+# Sem isto o item do craft listava o
+# checklist e calava a recusa.
+# Folclore no disco não é o critério.
+CRAFT_FOLK = re.compile(r"Número folclórico")
+
+
+def research_refuses_folk_number_as_observable_criterion(text):
+    return bool(text and CRAFT_FOLK.search(text))
+
+
+def craft_item_folk_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_folk_number_as_observable_criterion(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_folk_scope():
+    if not craft_item_folk_source():
+        return None
+    return (
+        " O disco recusa que o número folclórico seja critério observável "
+        "(`folclore`). Folclore no disco não é o critério."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -1875,6 +1909,9 @@ def craft_item_scope():
             " O disco recusa que o checklist seja escada (`escada`). "
             "Pesquisa no disco não é ofício observado."
         )
+    folk = craft_item_folk_scope()
+    if folk:
+        scope += folk
     return scope
 
 
