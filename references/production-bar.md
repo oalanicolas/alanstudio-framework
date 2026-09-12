@@ -4,7 +4,7 @@ Este documento responde a uma pergunta que o framework não respondia: **o que
 significa “pronto” e o que separa um protótipo de um jogo que as pessoas tratam
 como produto acabado.**
 
-Não é uma nota. Não é um selo. Nenhum comando promove um jogo a um degrau desta
+Não é uma nota. Não é um selo. Se a barra recusa que a declaração seja um selo, o `sources` do `bar` nomeia o selo que a barra já recusa. Linha no disco não é acabamento. Sem chave `selo`. Nenhum comando promove um jogo a um degrau desta
 escada; cada critério só vale quando alguém o observou nas condições declaradas.
 A escada existe para tornar a conversa concreta: em vez de “falta polir”, dizer
 qual dimensão está em qual degrau e qual observação a move para o próximo.

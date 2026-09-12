@@ -30,6 +30,57 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.582 — o sources do bar nomeia o selo que a barra já recusa
+
+A
+barra
+já
+dizia
+que
+não
+é
+um
+selo.
+O
+bar
+listava
+o
+fonte
+e
+calava
+a
+recusa.
+Agora
+o
+`sources`
+do
+`bar`
+nomeia
+o
+selo.
+Linha
+no
+disco
+não
+é
+acabamento.
+Sem
+chave
+`selo`.
+Nomear
+não
+observa.
+
+O que 0.9.582 não afirma:
+listar
+o
+fonte
+não
+é
+observar
+o
+degrau.
+
 ## 0.9.581 — o bible do art nomeia o rascunho que a receita já recusa
 
 A

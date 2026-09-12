@@ -6829,8 +6829,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         report = game.bar_reading(self.project)
         self.assertEqual(report["floor"], "playable")
         self.assertEqual(report["at_floor"], ["feel"])
-        self.assertIn("docs/planning/qa.md", report["sources"])
-        self.assertNotIn("node_modules/pkg/docs/qa.md", report["sources"])
+        self.assertIn("docs/planning/qa.md", report["sources"]["paths"])
+        self.assertNotIn("node_modules/pkg/docs/qa.md", report["sources"]["paths"])
         feel = next(item for item in report["dimensions"] if item["key"] == "feel")
         self.assertTrue(feel["source"].startswith("docs/planning/qa.md:"))
         gates = game.gate_reading(self.project, "deliver")
@@ -6904,6 +6904,58 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.production_bar_scope(),
         )
         self.assertNotIn("dimensão não declarada seja dimensão alta", game.record_scope())
+
+    def test_bar_sources_names_the_seal_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.bar_refuses_declaration_as_seal(guide),
+            "a barra já recusa que a declaração seja um selo",
+        )
+        self.assertEqual(game.bar_seal_source(), "references/production-bar.md")
+        paths = game.bar_source_files(self.project)
+        self.assertTrue(paths)
+        report = game.bar_reading(self.project)
+        item = report["sources"]
+        self.assertEqual(item["paths"], paths)
+        self.assertEqual(item["paths"], game.bar_source_paths(report))
+        self.assertIn(
+            "a declaração seja um selo",
+            item["scope"],
+            "o bar listava o fonte e calava a recusa",
+        )
+        self.assertIn("(`selo`)", item["scope"])
+        self.assertNotIn("selo", item)
+        self.assertFalse(report["assessed"])
+        self.assertFalse(game.bar_refuses_declaration_as_seal(""))
+        with mock.patch.object(game, "bar_seal_source", return_value=None):
+            silent = game.bar_reading(self.project)
+        self.assertNotIn(
+            "a declaração seja um selo",
+            silent["sources"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o selo que a barra já recusa", guide)
+        self.assertIn("nomeia o selo que a barra já recusa", recipe)
+        self.assertIn("nomeia o selo que a barra já recusa", skill)
+        self.assertIn("nomeia o selo que a barra já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a declaração seja um selo", report["scope"])
+        if report.get("undeclared"):
+            self.assertNotIn(
+                "a declaração seja um selo",
+                report["undeclared"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "a declaração seja um selo",
+            report["dimensions"][0].get("scope") or "",
+        )
+        self.assertNotIn("a declaração seja um selo", game.next_scope())
+        self.assertNotIn("a declaração seja um selo", game.production_bar_scope())
+        self.assertNotIn("a declaração seja um selo", game.record_scope())
 
     def test_bar_keeps_the_lower_tier_when_two_documents_disagree(self):
         self.declare_bar({key: ("shippable", "flagship") for key in game.BAR_DIMENSIONS})

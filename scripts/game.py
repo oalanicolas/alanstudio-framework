@@ -7693,6 +7693,61 @@ def bar_undeclared_keys(bar):
     return list(undeclared)
 
 
+# A barra já recusa que a declaração
+# seja um selo. Sem isto o bar
+# listava o fonte e calava a recusa.
+# Linha no disco não é acabamento.
+BAR_SEAL = re.compile(r"Não é um selo")
+
+
+def bar_refuses_declaration_as_seal(text):
+    return bool(text and BAR_SEAL.search(text))
+
+
+def bar_seal_source():
+    path = FRAMEWORK / "references/production-bar.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if bar_refuses_declaration_as_seal(text):
+        return "references/production-bar.md"
+    return None
+
+
+def bar_seal_scope():
+    if not bar_seal_source():
+        return None
+    return (
+        " O disco recusa que a declaração seja um selo "
+        "(`selo`). Linha no disco não é acabamento."
+    )
+
+
+def bar_sources_scope():
+    scope = (
+        "documento onde a barra pode viver. "
+        "Não observa o degrau."
+    )
+    named = bar_seal_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def bar_source_files(project):
+    return list(bar_declaration(project)["sources"])
+
+
+def bar_source_paths(bar):
+    sources = (bar or {}).get("sources") or []
+    if isinstance(sources, dict):
+        return list(sources.get("paths") or [])
+    return list(sources)
+
+
 def bar_reading(project):
     declaration = bar_declaration(project)
     declared = declaration["declared"]
@@ -7732,7 +7787,13 @@ def bar_reading(project):
         "perceived_tier": declaration["perceived_tier"],
         "rule": "O degrau percebido de um jogo é o mínimo entre suas dimensões, não a média.",
         "guide": str(FRAMEWORK / "references/production-bar.md"),
-        "sources": declaration["sources"],
+        "sources": (
+            {
+                "paths": declaration["sources"],
+                "scope": bar_sources_scope(),
+            }
+            if declaration["sources"] else []
+        ),
         "assessed": False,
         "scope": _bar_scope(project),
     }
