@@ -14175,6 +14175,67 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("ship.incomplete", bases)
         self.assertNotIn("ship.artifact_open", bases)
 
+    def test_ship_stale_names_the_old_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_different_head_as_another_machine(recipe),
+            "a receita já recusa que o HEAD diferente seja outra máquina",
+        )
+        self.assertEqual(game.ship_stale_old_source(), "recipes/release.md")
+        empty = game.ship_reading(self.project)
+        self.assertFalse(empty["stale"])
+        self.assertFalse(game.ship_stale_flag(empty))
+        self._web_manifest()
+        self.foundation_document()
+        self._release_note()
+        self._commit_project()
+        self._artifact_tree(git_head="deadbeef", complete=True)
+        report = game.ship_reading(self.project)
+        item = report["stale"]
+        self.assertTrue(item["stale"], "o ship já relata o HEAD diferente neste artefato")
+        self.assertEqual(item["stale"], game.ship_stale_flag(report))
+        self.assertIn(
+            "o HEAD diferente seja outra máquina",
+            item["scope"],
+            "o ship relatava o stale e calava a recusa",
+        )
+        self.assertIn("(`velho`)", item["scope"])
+        self.assertNotIn("velho", item)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_different_head_as_another_machine(""))
+        with mock.patch.object(game, "ship_stale_old_source", return_value=None):
+            silent = game.ship_reading(self.project)
+        self.assertNotIn(
+            "o HEAD diferente seja outra máquina",
+            silent["stale"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o velho que a receita já recusa", recipe)
+        self.assertIn("nomeia o velho que a receita já recusa", skill)
+        self.assertIn("nomeia o velho que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o HEAD diferente seja outra máquina", report["scope"])
+        if report.get("tree"):
+            self.assertNotIn(
+                "o HEAD diferente seja outra máquina",
+                report["tree"].get("scope") or "",
+            )
+        if report.get("artifact"):
+            self.assertNotIn(
+                "o HEAD diferente seja outra máquina",
+                report["artifact"].get("scope") or "",
+            )
+        if report.get("incomplete"):
+            self.assertNotIn(
+                "o HEAD diferente seja outra máquina",
+                report["incomplete"].get("scope") or "",
+            )
+        self.assertNotIn("o HEAD diferente seja outra máquina", game.next_scope())
+
     def test_ship_names_incomplete_before_stale_when_both_are_true(self):
         self._web_manifest()
         self.foundation_document()

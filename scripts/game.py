@@ -7057,6 +7057,67 @@ def ship_incomplete_flag(reading):
     return bool(incomplete)
 
 
+# A receita já recusa que o HEAD
+# diferente seja outra máquina.
+# Sem isto o ship relatava o stale
+# e calava a recusa. Arquivo no
+# disco não é outra máquina.
+SHIP_STALE_OLD = re.compile(r"HEAD diferente não é outra máquina")
+
+
+def recipe_refuses_different_head_as_another_machine(text):
+    return bool(text and SHIP_STALE_OLD.search(text))
+
+
+def ship_stale_old_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_different_head_as_another_machine(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_stale_old_scope():
+    if not ship_stale_old_source():
+        return None
+    return (
+        " O disco recusa que o HEAD diferente seja outra máquina "
+        "(`velho`). Arquivo no disco não é outra máquina."
+    )
+
+
+def ship_stale_scope():
+    scope = (
+        "HEAD do artefato diferente do checkout. "
+        "Não é outra máquina."
+    )
+    named = ship_stale_old_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def ship_stale_flag(reading):
+    stale = (reading or {}).get("stale") if isinstance(reading, dict) else reading
+    if isinstance(stale, dict):
+        return bool(stale.get("stale"))
+    return bool(stale)
+
+
+def ship_stale_reading(stale):
+    if not stale:
+        return False
+    return {
+        "stale": True,
+        "scope": ship_stale_scope(),
+    }
+
+
 def ship_script_names(project):
     try:
         scripts, _ = project_commands(project)
@@ -7176,7 +7237,7 @@ def ship_reading(project):
         "artifact": artifact,
         "tree": tree,
         "incomplete": incomplete,
-        "stale": stale,
+        "stale": ship_stale_reading(stale),
         "artifact_open": artifact_open,
         "elsewhere": False,
         "declared": declared,

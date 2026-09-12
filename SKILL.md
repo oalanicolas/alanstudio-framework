@@ -372,6 +372,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    sempre falsos. Sem declaração, o `next` nomeia `art.missing`,
    `content.inline` e `ship.unpacked` antes dos rascunhos. Árvore
    incompleta é `ship.incomplete`; artefato de outro commit é `ship.stale`.
+   Se a receita recusa que o HEAD diferente seja outra máquina, o `stale` do `ship` nomeia o velho que a receita já recusa. Arquivo no disco não é outra máquina. Sem chave `velho`.
    Se a receita recusa que a árvore sem os quatro seja jogável, o `incomplete` do `ship` nomeia o jogável que a receita já recusa. Arquivo no disco não é outra máquina. Sem chave `jogável`.
    Nomeia a árvore que perdeu o `src/` que o projeto já tem. Se o
    `tools/size.*` declara sem teto, o `ship` nomeia o tamanho. Bytes
