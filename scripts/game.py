@@ -13462,7 +13462,44 @@ def gdd_area_scope():
             " O disco recusa que divertido isolado baste (`divertido`). "
             "Área no disco não é o verbo."
         )
+    brief = gdd_brief_scope()
+    if brief:
+        scope += brief
     return scope
+
+
+# O craft já recusa que contexto do
+# projeto seja brief da tarefa. Sem
+# isto a área localizava o GDD e
+# calava a recusa.
+# Contexto no disco não é o brief.
+CRAFT_BRIEF = re.compile(r"Contexto do projeto não é brief da tarefa")
+
+
+def craft_refuses_context_as_task_brief(text):
+    return bool(text and CRAFT_BRIEF.search(text))
+
+
+def gdd_brief_source():
+    path = FRAMEWORK / "commands" / "craft.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if craft_refuses_context_as_task_brief(text):
+        return "commands/craft.md"
+    return None
+
+
+def gdd_brief_scope():
+    if not gdd_brief_source():
+        return ""
+    return (
+        " O disco recusa que contexto do projeto seja brief da tarefa (`brief`). "
+        "Contexto no disco não é o brief."
+    )
 
 
 # A guia já recusa pontuação universal de diversão. Sem isto a

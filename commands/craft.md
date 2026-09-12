@@ -7,7 +7,7 @@ comando padrão para "crie", "mude", "adicione", "faça funcionar".
 
 Antes de escrever código, três coisas precisam existir: o `context` do projeto
 carregado, a escala identificada e uma direção confirmada para esta tarefa (vinda de
-[`shape`](shape.md) ou dada pelo usuário). Contexto do projeto não é brief da tarefa.
+[`shape`](shape.md) ou dada pelo usuário). Contexto do projeto não é brief da tarefa. Se o craft recusa que contexto do projeto seja brief da tarefa, a área `gdd` do `scan` nomeia o brief que o craft já recusa. Contexto no disco não é o brief. Sem chave `brief`.
 
 ## Escala
 

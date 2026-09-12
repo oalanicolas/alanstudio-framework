@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.685 — a área gdd nomeia o brief que o craft já recusa
+
+O
+craft
+já
+dizia
+que
+contexto
+do
+projeto
+não
+é
+brief
+da
+tarefa.
+A
+área
+localizava
+o
+GDD
+e
+calava
+a
+recusa.
+Agora
+a
+área
+`gdd`
+nomeia
+o
+brief.
+Contexto
+no
+disco
+não
+é
+o
+brief.
+Sem
+chave
+`brief`.
+Nomear
+não
+observa.
+
 ## 0.9.684 — o sources do continuity nomeia o passo que o next já recusa
 
 O

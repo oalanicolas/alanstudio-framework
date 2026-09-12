@@ -5839,6 +5839,46 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("divertido isolado baste", game.feel_reading(self.project)["scope"])
         self.assertNotIn("divertido isolado baste", game.next_scope())
 
+    def test_scan_gdd_names_the_brief_the_craft_already_refuses(self):
+        guide = (game.FRAMEWORK / "commands/craft.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.craft_refuses_context_as_task_brief(guide),
+            "o craft já recusa que contexto do projeto seja brief da tarefa",
+        )
+        self.assertEqual(game.gdd_brief_source(), "commands/craft.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "contexto do projeto seja brief da tarefa",
+            report["areas"]["gdd"]["scope"],
+            "a área localizava o GDD e calava a recusa",
+        )
+        self.assertIn("(`brief`)", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("brief", report["areas"]["gdd"])
+        self.assertFalse(game.craft_refuses_context_as_task_brief(""))
+        with mock.patch.object(game, "gdd_brief_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "contexto do projeto seja brief da tarefa",
+            silent["areas"]["gdd"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o brief que o craft já recusa", guide)
+        self.assertIn("nomeia o brief que o craft já recusa", recipe)
+        self.assertIn("nomeia o brief que o craft já recusa", skill)
+        self.assertIn("nomeia o brief que o craft já recusa", readme)
+        self.assertNotIn("verified", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("aprovado", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("4.5", report["areas"]["gdd"]["scope"])
+        self.assertNotIn("contexto do projeto seja brief da tarefa", report["scope"])
+        self.assertNotIn("contexto do projeto seja brief da tarefa", report["areas"]["decisions"]["scope"])
+        self.assertNotIn("contexto do projeto seja brief da tarefa", report["areas"]["mda"]["scope"])
+        self.assertNotIn("contexto do projeto seja brief da tarefa", report["areas"]["vision"]["scope"])
+        self.assertNotIn("contexto do projeto seja brief da tarefa", game.feel_reading(self.project)["scope"])
+        self.assertNotIn("contexto do projeto seja brief da tarefa", game.next_scope())
+        self.assertNotIn("contexto do projeto seja brief da tarefa", game.craft_reading(self.project)["scope"])
+
     def test_scan_names_the_score_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/preproduction.md").read_text(encoding="utf-8")
         self.assertTrue(
