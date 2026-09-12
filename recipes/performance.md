@@ -102,7 +102,7 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
   pode pertencer ao evento de criação/alteração do mundo. Valide que o resultado e seus
   consumidores continuam iguais, inclusive nas bordas entre regiões.
 - Cache precisa declarar invalidação por movimento, deformação em shader, ancestrais,
-  criação e remoção. Cenas dinâmicas não viram estáticas porque a matriz local ficou igual.
+  criação e remoção. Cenas dinâmicas não viram estáticas porque a matriz local ficou igual. Se a receita recusa que cenas dinâmicas virem estáticas porque a matriz local ficou igual, o `record` nomeia a matriz que a receita já recusa. Matriz no disco não é a cena. Sem chave `matriz`.
 - Agrupamento excessivo pode anular o culling. Compare grupos espaciais, instâncias e
   custo por passagem; menos chamadas de desenho não garantem menos trabalho total. Se a receita recusa que menos chamadas de desenho garantam menos trabalho total, o `budget` nomeia as chamadas que a receita já recusa. Chamadas no disco não são o trabalho. Sem chave `chamadas`.
 - Copiar um mapa grande ou compor estático/dinâmico pode custar mais que redesenhar

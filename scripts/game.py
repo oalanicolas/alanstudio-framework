@@ -20186,6 +20186,9 @@ def record_scope():
     kernel = record_solver_scope()
     if kernel:
         scope += kernel
+    grid = record_matrix_scope()
+    if grid:
+        scope += grid
     return scope
 
 
@@ -20223,6 +20226,44 @@ def record_solver_scope():
     return (
         " O disco recusa que o ganho no caso rejeitado seja ganho equivalente no solver ativo "
         "(`solver`). Ganho rejeitado no disco não é o solver."
+    )
+
+
+# A receita já recusa que cenas
+# dinâmicas virem estáticas
+# porque a matriz local ficou
+# igual. Sem isto o record
+# gravava o recibo e calava a
+# recusa. Matriz no disco não
+# é a cena.
+PERF_MATRIX = re.compile(
+    r"Cenas dinâmicas não viram estáticas porque a matriz local ficou igual"
+)
+
+
+def recipe_refuses_equal_matrix_as_static_scene(text):
+    return bool(text and PERF_MATRIX.search(text))
+
+
+def record_matrix_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_equal_matrix_as_static_scene(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_matrix_scope():
+    if not record_matrix_source():
+        return None
+    return (
+        " O disco recusa que cenas dinâmicas virem estáticas porque a matriz local ficou igual "
+        "(`matriz`). Matriz no disco não é a cena."
     )
 
 

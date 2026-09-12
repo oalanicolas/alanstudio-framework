@@ -2854,6 +2854,85 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn("solver", game.CYCLE_KEYS)
 
+    def test_record_names_the_matrix_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(
+            recipe,
+            r"Cenas dinâmicas não viram estáticas porque a matriz local ficou igual",
+        )
+        self.assertTrue(
+            game.recipe_refuses_equal_matrix_as_static_scene(recipe),
+            "a receita já recusa que cenas dinâmicas virem estáticas porque a matriz local ficou igual",
+        )
+        self.assertEqual(game.record_matrix_source(), "recipes/performance.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-712",
+        )
+        self.assertIn(
+            "cenas dinâmicas virem estáticas porque a matriz local ficou igual",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`matriz`)", report["scope"])
+        self.assertIn("Matriz no disco não é a cena.", report["scope"])
+        self.assertNotIn("matriz", report)
+        self.assertFalse(game.recipe_refuses_equal_matrix_as_static_scene(""))
+        with mock.patch.object(game, "record_matrix_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-712-silent",
+            )
+        self.assertNotIn(
+            "cenas dinâmicas virem estáticas porque a matriz local ficou igual",
+            silent["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a matriz que a receita já recusa", recipe)
+        self.assertIn("nomeia a matriz que a receita já recusa", production)
+        self.assertIn("nomeia a matriz que a receita já recusa", skill)
+        self.assertIn("nomeia a matriz que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        self.assertNotIn(
+            "cenas dinâmicas virem estáticas porque a matriz local ficou igual",
+            game.budget_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "cenas dinâmicas virem estáticas porque a matriz local ficou igual",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "cenas dinâmicas virem estáticas porque a matriz local ficou igual",
+            game.feel_observations_scope(),
+        )
+        self.assertNotIn(
+            "cenas dinâmicas virem estáticas porque a matriz local ficou igual",
+            game.content_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "cenas dinâmicas virem estáticas porque a matriz local ficou igual",
+            game.observation_item_scope(),
+        )
+        self.assertNotIn(
+            "cenas dinâmicas virem estáticas porque a matriz local ficou igual",
+            game.pin_created_scope(),
+        )
+        self.assertNotIn(
+            "cenas dinâmicas virem estáticas porque a matriz local ficou igual",
+            game.cycle_scope() or "",
+        )
+        self.assertNotIn(
+            "cenas dinâmicas virem estáticas porque a matriz local ficou igual",
+            game.next_scope(),
+        )
+        self.assertNotIn("matriz", game.CYCLE_KEYS)
+
     def test_record_names_the_animation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(
