@@ -20964,6 +20964,55 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         art = game.art_reading(destination)
         self.assertNotIn("(`pair`)", art["scope"])
 
+    def test_start_names_the_empties_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_empty_files_as_quality(recipe),
+            "a receita já recusa que nove arquivos vazios aumentem a qualidade",
+        )
+        self.assertEqual(game.start_empty_source(), "recipes/create.md")
+        destination = self.root / "com-vazios"
+        report = game.start_project(destination, "canvas-arcade")
+        self.assertIn(
+            "nove arquivos vazios aumentem a qualidade",
+            report["scope"],
+            "o start copiava o caminho e calava a recusa",
+        )
+        self.assertIn("(`vazios`)", report["scope"])
+        self.assertNotIn("vazios", report)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_empty_files_as_quality(""))
+        with mock.patch.object(game, "start_empty_source", return_value=None):
+            silent = game.start_project(self.root / "sem-vazios", "canvas-arcade")
+        self.assertNotIn(
+            "nove arquivos vazios aumentem a qualidade",
+            silent["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os vazios que a receita já recusa", recipe)
+        self.assertIn("nomeia os vazios que a receita já recusa", skill)
+        self.assertIn("nomeia os vazios que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "nove arquivos vazios aumentem a qualidade",
+            report["then"].get("scope") or "",
+        )
+        self.assertNotIn(
+            "nove arquivos vazios aumentem a qualidade",
+            game.guide_scope("canvas-arcade"),
+        )
+        self.assertNotIn(
+            "nove arquivos vazios aumentem a qualidade",
+            game.init_scope(False),
+        )
+        self.assertNotIn(
+            "nove arquivos vazios aumentem a qualidade",
+            game.continuity_prompt_scope(),
+        )
+
     def test_start_then_names_the_experience_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
         self.assertTrue(

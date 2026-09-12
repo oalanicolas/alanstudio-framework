@@ -16048,7 +16048,45 @@ def start_project(destination=None, starter=None, title=None, idea=None, documen
             " O disco nasce look e chuva no mesmo nome (`pair`). "
             "Ferramenta no disco não é alguém de fora."
         )
+    named = start_empty_scope()
+    if named:
+        report["scope"] += named
     return report
+
+
+# A receita já recusa que nove
+# arquivos vazios aumentem a
+# qualidade. Sem isto o start
+# copiava o caminho e calava a
+# recusa. Arquivo no disco não é
+# a fatia.
+CREATE_EMPTY = re.compile(r"Nove arquivos vazios não\s+aumentam a qualidade")
+
+
+def recipe_refuses_empty_files_as_quality(text):
+    return bool(text and CREATE_EMPTY.search(text))
+
+
+def start_empty_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_empty_files_as_quality(text):
+        return "recipes/create.md"
+    return None
+
+
+def start_empty_scope():
+    if not start_empty_source():
+        return None
+    return (
+        " O disco recusa que nove arquivos vazios aumentem a qualidade "
+        "(`vazios`). Arquivo no disco não é a fatia."
+    )
 
 
 # A receita já recusa que aceitar o parâmetro prove que ele afeta o RNG.

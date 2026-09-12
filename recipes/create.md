@@ -42,7 +42,7 @@ Nomear não é alguém de fora. Sem a área de transferência,
 o Copiar baixa o markdown. Gravar anexa o candidato se last-run
 existir. Na árvore exportada o Gravar some; copie os quatro
 nomes. Gravado não é alguém de fora. Não gere todos os templates antes de experimentar. Nove arquivos vazios não
-aumentam a qualidade; uma fatia sem feel continua sendo protótipo.
+aumentam a qualidade; uma fatia sem feel continua sendo protótipo. Se a receita recusa que nove arquivos vazios aumentem a qualidade, o `start` nomeia os vazios que a receita já recusa. Arquivo no disco não é a fatia. Sem chave `vazios`.
 
 Siga [o ciclo de pré-produção](../references/preproduction.md) para escolher o
 próximo artefato e revisar sua prontidão. Brief e GDD definem a experiência; MDA
