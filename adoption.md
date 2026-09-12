@@ -30,6 +30,57 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.570 — o files do content nomeia os dados que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+arquivo
+de
+dados
+não
+é
+volume.
+O
+content
+listava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`files`
+do
+`content`
+nomeia
+os
+dados.
+Arquivo
+no
+disco
+não
+é
+volume.
+Sem
+chave
+`dados`.
+Nomear
+não
+escala.
+
+O que 0.9.570 não afirma:
+listar
+o
+arquivo
+não
+é
+volume.
+
 ## 0.9.569 — o receipts do origins nomeia a válida que o roteiro já recusa
 
 O

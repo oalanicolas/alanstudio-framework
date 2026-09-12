@@ -11217,11 +11217,11 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(inventory["external"])
         self.assertFalse(inventory["inline"])
         self.assertFalse(inventory["enough"])
-        self.assertIn("data/spawn.json", inventory["files"])
-        self.assertIn("data/copy.json", inventory["files"])
-        self.assertIn("data/dusk.json", inventory["files"])
-        self.assertIn("data/calm.json", inventory["files"])
-        self.assertNotIn("data/palettes.json", inventory["files"])
+        self.assertIn("data/spawn.json", inventory["files"]["paths"])
+        self.assertIn("data/copy.json", inventory["files"]["paths"])
+        self.assertIn("data/dusk.json", inventory["files"]["paths"])
+        self.assertIn("data/calm.json", inventory["files"]["paths"])
+        self.assertNotIn("data/palettes.json", inventory["files"]["paths"])
         self.assertTrue(pack["expected"])
         self.assertFalse(pack["unpacked"])
         self.assertIn("build", pack["scripts"]["names"])
@@ -11595,6 +11595,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("tamanho codificado meça custo decodificado", game.next_scope())
         self.assertNotIn("tamanho codificado meça custo decodificado", game.gate_item_scope("scale"))
 
+    def test_content_files_names_the_data_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_data_file_as_volume(recipe),
+            "a receita já recusa que o arquivo de dados seja volume",
+        )
+        self.assertEqual(game.content_data_source(), "recipes/content.md")
+        empty = game.content_reading(self.project)
+        self.assertEqual(empty["files"], [])
+        self.assertEqual(game.content_files(self.project), [])
+        (self.project / "data").mkdir()
+        (self.project / "data/waves.json").write_text("[]\n")
+        self.assertEqual(game.content_files(self.project), ["data/waves.json"])
+        report = game.content_reading(self.project)
+        item = report["files"]
+        self.assertEqual(item["paths"], ["data/waves.json"])
+        self.assertEqual(item["paths"], game.content_files(self.project))
+        self.assertIn(
+            "arquivo de dados seja volume",
+            item["scope"],
+            "o content listava o arquivo e calava a recusa",
+        )
+        self.assertIn("(`dados`)", item["scope"])
+        self.assertNotIn("dados", item)
+        self.assertFalse(report["enough"])
+        self.assertFalse(game.recipe_refuses_data_file_as_volume(""))
+        with mock.patch.object(game, "content_data_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn(
+            "arquivo de dados seja volume",
+            silent["files"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os dados que a receita já recusa", recipe)
+        self.assertIn("nomeia os dados que a receita já recusa", skill)
+        self.assertIn("nomeia os dados que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("arquivo de dados seja volume", report["scope"])
+        self.assertNotIn(
+            "arquivo de dados seja volume",
+            game.art_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "arquivo de dados seja volume",
+            game.ship_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "arquivo de dados seja volume",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn("arquivo de dados seja volume", game.next_scope())
+        self.assertNotIn(
+            "arquivo de dados seja volume",
+            game.gate_item_scope("scale"),
+        )
+
     def test_content_names_data_files_as_external(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "data").mkdir()
@@ -11603,7 +11662,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(report["external"])
         self.assertFalse(report["inline"])
         self.assertFalse(report["enough"])
-        self.assertEqual(report["files"], ["data/waves.json"])
+        self.assertEqual(report["files"]["paths"], ["data/waves.json"])
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project))]
         self.assertNotIn("content.inline", bases)
 

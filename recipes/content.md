@@ -6,7 +6,7 @@ O harness lê se o conteúdo saiu do código com `content <projeto>` (`data/`,
 `levels/`, `.ldtk`/`.tmx`/`.ink`). Paleta e token (`palettes.json`,
 `tokens.json`) não extraem conteúdo — o `art` lê esses manifestos.
 Arquivo de dados não é volume
-suficiente — `enough` é sempre falso. Sem arquivo, `next` propõe
+suficiente — `enough` é sempre falso. Se a receita recusa que o arquivo de dados seja volume, o `files` do `content` nomeia os dados que a receita já recusa. Arquivo no disco não é volume. Sem chave `dados`. Sem arquivo, `next` propõe
 `content.inline`. O starter `canvas-arcade` carrega `data/spawn.json` e `data/copy.json`
 pelo mesmo `migrateTable`. Formato antigo vira schema 1; schema futuro
 falha com o número; campo obrigatório falha com o nome da mesa.

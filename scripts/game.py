@@ -702,7 +702,7 @@ def review(root, limit=REVIEW_LIMIT):
             save_unversioned=persist_report["unversioned"],
             performance_unbudgeted=perf_report["unbudgeted"],
             art_declared=art_report["declared"],
-            content_files=len(content_report["files"]),
+            content_files=len(content_files(path)),
             content_inline=content_report["inline"],
             ship_unpacked=ship_report["unpacked"],
             playtest_expected=playtest_report["expected"],
@@ -4831,6 +4831,51 @@ def content_encoded_scope():
     )
 
 
+# A receita já recusa que o arquivo
+# de dados seja volume. Sem isto o
+# content listava o arquivo e calava
+# a recusa. Arquivo no disco não é
+# volume.
+CONTENT_DATA = re.compile(r"Arquivo de dados não é volume")
+
+
+def recipe_refuses_data_file_as_volume(text):
+    return bool(text and CONTENT_DATA.search(text))
+
+
+def content_data_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_data_file_as_volume(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_data_scope():
+    if not content_data_source():
+        return None
+    return (
+        " O disco recusa que o arquivo de dados seja volume "
+        "(`dados`). Arquivo no disco não é volume."
+    )
+
+
+def content_files_scope():
+    scope = (
+        "arquivo de dados no disco. "
+        "Não conta o mundo."
+    )
+    named = content_data_scope()
+    if named:
+        scope += named
+    return scope
+
+
 def content_reading(project):
     project = Path(project)
     files = content_files(project)
@@ -4864,12 +4909,18 @@ def content_reading(project):
     encoded = content_encoded_scope()
     if encoded:
         scope += encoded
+    listed = files[:24]
+    if listed:
+        listed = {
+            "paths": listed,
+            "scope": content_files_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
         "exists": project.is_dir(),
         "kind": kind,
-        "files": files[:24],
+        "files": listed,
         "external": bool(files),
         "inline": bool(kind) and not files,
         "enough": False,
