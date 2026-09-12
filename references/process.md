@@ -249,7 +249,7 @@ Se uma regra de processo falhar repetidamente, corrija fonte, contexto ou ferram
 antes de adicionar instruções. Só automatize julgamento após observação e calibração.
 Custos de tempo, ferramentas, assets, revisão e execução podem orientar escolhas
 entre alternativas que preservam qualidade. Apoios específicos a um modelo precisam
-ser reavaliados quando ele muda; neutralidade de interface não prova substitutibilidade.
+ser reavaliados quando ele muda; neutralidade de interface não prova substitutibilidade. Se o processo recusa que a neutralidade de interface prove substitutibilidade, o `created` do `pin` nomeia a substitutibilidade que o processo já recusa. Neutralidade no disco não é a skill. Sem chave `substitutibilidade`.
 
 ## Origem e autoridade
 

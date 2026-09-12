@@ -221,6 +221,101 @@ class CommandCliTest(unittest.TestCase):
         self.assertIsInstance(removed["removed"], list)
         self.assertNotIsInstance(removed["removed"], dict)
 
+    def test_pin_created_names_the_swap_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertRegex(
+            guide,
+            r"neutralidade de interface não prova substitutibilidade",
+        )
+        self.assertTrue(
+            game.process_refuses_neutrality_as_substitutable(guide),
+            "o processo já recusa que a neutralidade de interface prove substitutibilidade",
+        )
+        self.assertEqual(game.pin_created_swap_source(), "references/process.md")
+        skills = self.install_skill(".agents")
+        own = skills / "polish/SKILL.md"
+        own.parent.mkdir()
+        own.write_text("---\nname: polish\n---\nskill própria do usuário\n", encoding="utf-8")
+        empty = game.pin(self.root, "polish")
+        self.assertEqual(empty["created"], [])
+        self.assertEqual(game.pin_created_paths(empty), [])
+        result = game.pin(self.root, "critique")
+        pinned = skills / "critique/SKILL.md"
+        item = result["created"]
+        self.assertEqual(item["created"], [str(pinned)], "o pin já escreve o atalho neste chamado")
+        self.assertEqual(item["created"], game.pin_created_paths(result))
+        self.assertIn(
+            "a neutralidade de interface prove substitutibilidade",
+            item["scope"],
+            "o pin relatava o created e calava a recusa",
+        )
+        self.assertIn("(`substitutibilidade`)", item["scope"])
+        self.assertIn("Neutralidade no disco não é a skill.", item["scope"])
+        self.assertNotIn("substitutibilidade", item)
+        self.assertEqual(result["invoke"], "/critique")
+        self.assertFalse(game.process_refuses_neutrality_as_substitutable(""))
+        with patch.object(game, "pin_created_swap_source", return_value=None):
+            silent = game.pin(self.root, "feel")
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            silent["created"]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a substitutibilidade que o processo já recusa", guide)
+        self.assertIn("nomeia a substitutibilidade que o processo já recusa", create)
+        self.assertIn("nomeia a substitutibilidade que o processo já recusa", skill)
+        self.assertIn("nomeia a substitutibilidade que o processo já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            result["scope"],
+        )
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            empty["skipped"][0]["scope"],
+        )
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            game.unpin(self.root, "critique")["scope"],
+        )
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            game.command_listing()["scope"],
+        )
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            game.feel_reading(self.root).get("scope") or "",
+        )
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            game.budget_reading(self.root).get("scope") or "",
+        )
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            game.content_reading(self.root).get("scope") or "",
+        )
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            game.observation_item_scope(),
+        )
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            game.record_scope(),
+        )
+        self.assertNotIn(
+            "a neutralidade de interface prove substitutibilidade",
+            game.save_reading(self.root).get("scope") or "",
+        )
+        self.assertNotIn("substitutibilidade", game.CYCLE_KEYS)
+
     def test_pin_never_overwrites_a_skill_the_user_wrote(self):
         skills = self.install_skill(".agents")
         own = skills / "polish/SKILL.md"

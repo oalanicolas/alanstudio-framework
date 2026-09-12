@@ -578,7 +578,7 @@ retome o comando original com o mesmo alvo.
 `pin` cria um atalho próprio do host para um comando (`/critique` invoca
 `$game-dev critique`); `unpin` o remove. Só escreve nos diretórios de skills onde a
 `game-dev` está instalada, marca o arquivo e nunca sobrescreve uma skill sua com o
-mesmo nome. `pin` não copia a skill. Se o README recusa que o pin copie a skill, o `created` do `pin` nomeia a cópia que o README já recusa. Atalho no disco não é a skill. Sem chave `cópia`. Se o README recusa sobrescrever skill sua com o mesmo nome, o `pin` nomeia a própria que o README já recusa. Atalho no disco não é a skill. Sem chave `própria`.
+mesmo nome. `pin` não copia a skill. Se o README recusa que o pin copie a skill, o `created` do `pin` nomeia a cópia que o README já recusa. Atalho no disco não é a skill. Sem chave `cópia`. Se o processo recusa que a neutralidade de interface prove substitutibilidade, o `created` do `pin` nomeia a substitutibilidade que o processo já recusa. Neutralidade no disco não é a skill. Sem chave `substitutibilidade`. Se o README recusa sobrescrever skill sua com o mesmo nome, o `pin` nomeia a própria que o README já recusa. Atalho no disco não é a skill. Sem chave `própria`.
 
 ```sh
 python3 scripts/game.py pin critique --root <lab>

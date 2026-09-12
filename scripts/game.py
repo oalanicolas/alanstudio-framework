@@ -12691,6 +12691,41 @@ def pin_created_copy_scope():
     )
 
 
+# O processo já recusa que a
+# neutralidade de interface
+# prove substitutibilidade. Sem
+# isto o pin relatava o created
+# e calava a recusa. Neutralidade
+# no disco não é a skill.
+PIN_SWAP = re.compile(r"neutralidade de interface não prova substitutibilidade")
+
+
+def process_refuses_neutrality_as_substitutable(text):
+    return bool(text and PIN_SWAP.search(text))
+
+
+def pin_created_swap_source():
+    path = FRAMEWORK / "references/process.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_neutrality_as_substitutable(text):
+        return "references/process.md"
+    return None
+
+
+def pin_created_swap_scope():
+    if not pin_created_swap_source():
+        return None
+    return (
+        " O disco recusa que a neutralidade de interface prove substitutibilidade "
+        "(`substitutibilidade`). Neutralidade no disco não é a skill."
+    )
+
+
 def pin_created_scope():
     scope = (
         "atalho escrito no host. "
@@ -12699,6 +12734,9 @@ def pin_created_scope():
     named = pin_created_copy_scope()
     if named:
         scope += named
+    swap = pin_created_swap_scope()
+    if swap:
+        scope += swap
     return scope
 
 
