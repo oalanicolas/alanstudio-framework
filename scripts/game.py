@@ -3451,6 +3451,40 @@ def feel_observations_just_scope():
     )
 
 
+# A receita já recusa que P e
+# aba escondida comam a aposta.
+# Sem isto o feel listava o
+# recibo e calava a recusa.
+# Pausa no disco não é o fim.
+FEEL_STAKE = re.compile(r"P e aba escondida não comem a aposta")
+
+
+def recipe_refuses_pause_and_hidden_tab_as_eating_the_stake(text):
+    return bool(text and FEEL_STAKE.search(text))
+
+
+def feel_observations_stake_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_pause_and_hidden_tab_as_eating_the_stake(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_stake_scope():
+    if not feel_observations_stake_source():
+        return None
+    return (
+        " O disco recusa que P e aba escondida comam a aposta "
+        "(`aposta`). Pausa no disco não é o fim."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -3465,6 +3499,9 @@ def feel_observations_scope():
     fair = feel_observations_just_scope()
     if fair:
         scope += fair
+    bet = feel_observations_stake_scope()
+    if bet:
+        scope += bet
     return scope
 
 

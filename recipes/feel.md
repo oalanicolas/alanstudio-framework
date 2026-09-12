@@ -119,7 +119,7 @@ Separe:
 - **Apresentação** — a mudança é perceptível.
 - **Feel** — a percepção tem peso, timing e recuperação.
 
-Corrigir a regra não substitui o feel. Se a receita recusa que corrigir a regra substitua o feel, o `feel` nomeia a regra que a receita já recusa. Regra no disco não é o feel. Sem chave `regra`. Animar demais não substitui a regra. Se a receita recusa que animar demais substitua a regra, o `observations` do `feel` nomeia o animar que a receita já recusa. Animar no disco não é a regra. Sem chave `animar`. Se a receita recusa que a recovery invisível ou infinita seja o retorno, o `observations` do `feel` nomeia o justo que a receita já recusa. Recovery no disco não é o controle. Sem chave `justo`.
+Corrigir a regra não substitui o feel. Se a receita recusa que corrigir a regra substitua o feel, o `feel` nomeia a regra que a receita já recusa. Regra no disco não é o feel. Sem chave `regra`. Animar demais não substitui a regra. Se a receita recusa que animar demais substitua a regra, o `observations` do `feel` nomeia o animar que a receita já recusa. Animar no disco não é a regra. Sem chave `animar`. Se a receita recusa que a recovery invisível ou infinita seja o retorno, o `observations` do `feel` nomeia o justo que a receita já recusa. Recovery no disco não é o controle. Sem chave `justo`. Se a receita recusa que P e aba escondida comam a aposta, o `observations` do `feel` nomeia a aposta que a receita já recusa. Pausa no disco não é o fim. Sem chave `aposta`.
 Se a ação ainda não existe, volte a [criar](create.md) ou a
 [mecânicas](mechanics.md); esta receita assume um ciclo jogável.
 
@@ -355,7 +355,7 @@ não senta o compromisso. Sem pulsar o controle. Arquivo no disco não é peso p
 na guarda eles voam para o placar; no fim a aposta não guardada
 cai, o corpo senta (`squashOver`), o quadro senta (tremor, flash e
 punch do último verbo não atravessam o overlay); na pausa o quadro
-senta do mesmo jeito — o corpo fica na pose congelada — e o overlay nomeia o que caiu; no fim a cortina do over vence a pausa — P e aba escondida não comem a aposta — a queda vence a cortina, que
+senta do mesmo jeito — o corpo fica na pose congelada — e o overlay nomeia o que caiu; no fim a cortina do over vence a pausa — P e aba escondida não comem a aposta. Se a receita recusa que P e aba escondida comam a aposta, o `observations` do `feel` nomeia a aposta que a receita já recusa. Pausa no disco não é o fim. Sem chave `aposta`. — a queda vence a cortina, que
 reusa a placa do look. As legendas nascem depois da cortina. O
 raspo risca o campo, estreita o corpo, empurra a câmera na
 direção e acende menos que a queda. Sem hitstop. Sem pulso no
