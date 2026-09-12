@@ -17692,6 +17692,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("http://localhost", silent["prompt"] or "")
         self.assertFalse(silent["executed"])
 
+    def test_guide_exists_names_the_project_the_readme_already_refuses(self):
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.readme_refuses_guide_as_creating_project(readme),
+            "o README já recusa que o guide crie o projeto",
+        )
+        self.assertEqual(game.guide_exists_project_source(), "README.md")
+        empty = game.guide_cycle(None, "canvas-arcade")
+        self.assertFalse(empty["exists"])
+        self.assertFalse(game.guide_exists_flag(empty))
+        destination = self.root / "ciclo-existe"
+        game.start_project(destination, "canvas-arcade")
+        report = game.guide_cycle(destination, "canvas-arcade")
+        item = report["exists"]
+        self.assertTrue(item["exists"], "o destino com package.json já existe")
+        self.assertEqual(item["exists"], game.guide_exists_flag(report))
+        self.assertIn(
+            "o guide crie o projeto",
+            item["scope"],
+            "o guide relatava o exists e calava a recusa",
+        )
+        self.assertIn("(`projeto`)", item["scope"])
+        self.assertNotIn("projeto", item)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.readme_refuses_guide_as_creating_project(""))
+        with mock.patch.object(game, "guide_exists_project_source", return_value=None):
+            silent = game.guide_cycle(destination, "canvas-arcade")
+        self.assertNotIn(
+            "o guide crie o projeto",
+            silent["exists"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o projeto que o README já recusa", readme)
+        self.assertIn("nomeia o projeto que o README já recusa", recipe)
+        self.assertIn("nomeia o projeto que o README já recusa", skill)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o guide crie o projeto", report["scope"])
+        if report.get("then"):
+            self.assertNotIn(
+                "o guide crie o projeto",
+                report["then"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o guide crie o projeto",
+            game.start_project(self.root / "ciclo-cala-projeto", "canvas-arcade")["scope"],
+        )
+        self.assertNotIn(
+            "o guide crie o projeto",
+            game.play_cycle(destination, "canvas-arcade")["scope"],
+        )
+        self.assertNotIn("o guide crie o projeto", game.next_scope())
+        scanned = game.scan(self.project)
+        self.assertIs(scanned["exists"], True)
+        self.assertNotIsInstance(scanned["exists"], dict)
+
     def test_cycle_names_the_serve_that_tries_to_open_the_browser(self):
         destination = self.root / "abre-sozinho"
         report = game.start_project(destination, "canvas-arcade")

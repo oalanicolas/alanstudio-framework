@@ -73,7 +73,7 @@ opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
    `python3 scripts/game.py --idea "<fantasia>"` mapeia o start com a
    pasta nomeada pela frase (ao lado do framework se o mapa corre de
    dentro desta árvore) e não cria a pasta. Se a receita recusa que o mapa crie a pasta, o `empty` do `doctor` nomeia a pasta que a receita já recusa. Lista no disco não é projeto criado. Sem chave `pasta`. Sem frase, a recusa nomeia
-   o `start --idea` do README; nomear não cria. `start --idea "<fantasia>"`
+   o `start --idea` do README; nomear não cria. Se o README recusa que o guide crie o projeto, o `exists` do `guide` nomeia o projeto que o README já recusa. Destino no disco não é criação do mapa. Sem chave `projeto`. `start --idea "<fantasia>"`
    (ou `start <destino> --starter <starter> --idea "<fantasia>"`) monta
    o projeto — sem caminho, a frase nomeia e cria a pasta —, põe a
    frase na abertura e no aviso do primeiro ciclo, escreve `AGENTS.md`

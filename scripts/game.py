@@ -14796,6 +14796,67 @@ def require_guide_idea(project, idea, cwd=None):
     raise ValueError(missing_destination_hint())
 
 
+# O README já recusa que o guide
+# crie o projeto. Sem isto o
+# guide relatava o exists e calava
+# a recusa. Destino no disco não é
+# criação do mapa.
+GUIDE_CREATE = re.compile(r"não cria o projeto")
+
+
+def readme_refuses_guide_as_creating_project(text):
+    return bool(text and GUIDE_CREATE.search(text))
+
+
+def guide_exists_project_source():
+    path = FRAMEWORK / "README.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if readme_refuses_guide_as_creating_project(text):
+        return "README.md"
+    return None
+
+
+def guide_exists_project_scope():
+    if not guide_exists_project_source():
+        return None
+    return (
+        " O disco recusa que o guide crie o projeto "
+        "(`projeto`). Destino no disco não é criação do mapa."
+    )
+
+
+def guide_exists_scope():
+    scope = (
+        "destino com package.json no disco. "
+        "O guide não cria o projeto."
+    )
+    named = guide_exists_project_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def guide_exists_flag(reading):
+    exists = (reading or {}).get("exists")
+    if isinstance(exists, dict):
+        return bool(exists.get("exists"))
+    return bool(exists)
+
+
+def guide_exists_reading(exists):
+    if not exists:
+        return False
+    return {
+        "exists": True,
+        "scope": guide_exists_scope(),
+    }
+
+
 def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
     available = starters()
     chosen = starter or (available[0] if available else "canvas-arcade")
@@ -14854,7 +14915,7 @@ def guide_cycle(destination=None, starter=None, idea=None, cwd=None):
         "starter": chosen,
         "path": str(dest) if dest is not None else None,
         "suggest": str(suggested) if suggested is not None else None,
-        "exists": exists,
+        "exists": guide_exists_reading(exists),
         "cycle": named_cycle(cycle),
         "then": then,
         "noted": noted,

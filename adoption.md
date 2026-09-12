@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.624 — o exists do guide nomeia o projeto que o README já recusa
+
+O
+README
+já
+dizia
+que
+o
+guide
+não
+cria
+o
+projeto.
+O
+guide
+relatava
+o
+exists
+e
+calava
+a
+recusa.
+Agora
+o
+`exists`
+do
+`guide`
+nomeia
+o
+projeto.
+Destino
+no
+disco
+não
+é
+criação
+do
+mapa.
+Sem
+chave
+`projeto`.
+Nomear
+não
+cria.
+
 ## 0.9.623 — o required do audit nomeia o começo que o roteiro já recusa
 
 O
