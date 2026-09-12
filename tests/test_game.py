@@ -2771,6 +2771,89 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("medir os critérios", game.feel_reading(self.project)["scope"])
         self.assertNotIn("medir os critérios", game.budget_reading(self.project)["scope"])
 
+    def test_record_names_the_solver_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"não é ganho equivalente no solver ativo")
+        self.assertTrue(
+            game.recipe_refuses_rejected_gain_as_active_solver(recipe),
+            "a receita já recusa que o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+        )
+        self.assertEqual(game.record_solver_source(), "recipes/performance.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-704",
+        )
+        self.assertIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`solver`)", report["scope"])
+        self.assertIn("Ganho rejeitado no disco não é o solver.", report["scope"])
+        self.assertNotIn("solver", report)
+        self.assertFalse(game.recipe_refuses_rejected_gain_as_active_solver(""))
+        with mock.patch.object(game, "record_solver_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-704-silent",
+            )
+        self.assertNotIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            silent["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o solver que a receita já recusa", recipe)
+        self.assertIn("nomeia o solver que a receita já recusa", production)
+        self.assertIn("nomeia o solver que a receita já recusa", skill)
+        self.assertIn("nomeia o solver que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            game.production_bar_scope(),
+        )
+        self.assertNotIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            game.budget_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            game.save_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            game.craft_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            game.art_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            game.play_scope(self.project),
+        )
+        self.assertNotIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            game.cycle_scope() or "",
+        )
+        self.assertNotIn(
+            "o ganho no caso rejeitado seja ganho equivalente no solver ativo",
+            game.git_summary_scope(),
+        )
+        self.assertNotIn("solver", game.CYCLE_KEYS)
+
     def test_record_names_the_animation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(

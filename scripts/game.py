@@ -19915,7 +19915,47 @@ def record_scope():
             " O disco recusa medir os critérios (`mede`). "
             "Recibo no disco não é observação."
         )
+    kernel = record_solver_scope()
+    if kernel:
+        scope += kernel
     return scope
+
+
+# A receita já recusa que um
+# grande ganho no caso
+# rejeitado seja ganho
+# equivalente no solver ativo.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Ganho rejeitado no disco
+# não é o solver.
+PERF_SOLVER = re.compile(r"não é ganho equivalente no solver ativo")
+
+
+def recipe_refuses_rejected_gain_as_active_solver(text):
+    return bool(text and PERF_SOLVER.search(text))
+
+
+def record_solver_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_rejected_gain_as_active_solver(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_solver_scope():
+    if not record_solver_source():
+        return None
+    return (
+        " O disco recusa que o ganho no caso rejeitado seja ganho equivalente no solver ativo "
+        "(`solver`). Ganho rejeitado no disco não é o solver."
+    )
 
 
 # A receita já recusa que ganho na média

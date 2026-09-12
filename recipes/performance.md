@@ -97,7 +97,7 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
 - Rejeite candidatos impossíveis antes de cálculos caros, usando limites conservadores.
   Em física, considere pesos extrapolados, projeções anteriores e mudança de massa.
   Mantenha ordem e precisão aritmética quando a paridade exigir e compare também o estado privado
-  de recuperação. Um grande ganho no caso rejeitado não é ganho equivalente no solver ativo.
+  de recuperação. Um grande ganho no caso rejeitado não é ganho equivalente no solver ativo. Se a receita recusa que o ganho no caso rejeitado seja ganho equivalente no solver ativo, o `record` nomeia o solver que a receita já recusa. Ganho rejeitado no disco não é o solver. Sem chave `solver`.
 - Atualize derivadas caras quando seus dados mudarem. Um checksum calculado por quadro
   pode pertencer ao evento de criação/alteração do mundo. Valide que o resultado e seus
   consumidores continuam iguais, inclusive nas bordas entre regiões.
