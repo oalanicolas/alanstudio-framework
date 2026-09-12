@@ -5787,6 +5787,51 @@ def playtest_attachments_scope():
     return scope
 
 
+# A receita já recusa que nomear o
+# leitor observe. Sem isto o
+# playtest listava o recibo e calava
+# a recusa. Arquivo no disco não é
+# a sessão.
+FEEL_READER = re.compile(r"Nomear o leitor não observa")
+
+
+def recipe_refuses_naming_reader_as_observation(text):
+    return bool(text and FEEL_READER.search(text))
+
+
+def playtest_reader_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_naming_reader_as_observation(text):
+        return "recipes/feel.md"
+    return None
+
+
+def playtest_reader_scope():
+    if not playtest_reader_source():
+        return None
+    return (
+        " O disco recusa que nomear o leitor observe "
+        "(`recibo`). Arquivo no disco não é a sessão."
+    )
+
+
+def playtest_observations_scope():
+    scope = (
+        "recibo de observação no disco. "
+        "Não assiste a sessão."
+    )
+    named = playtest_reader_scope()
+    if named:
+        scope += named
+    return scope
+
+
 LAST_RUN = "docs/playtest/last-run.json"
 INVITE = "docs/playtest/invite.md"
 INIT_COPY_SKIP = {"dist", "node_modules", ".git", "__pycache__"}
@@ -6383,11 +6428,17 @@ def playtest_reading(project):
             "paths": attachments,
             "scope": playtest_attachments_scope(),
         }
+    observed_paths = [item["path"] for item in observations]
+    if observed_paths:
+        observed_paths = {
+            "paths": observed_paths,
+            "scope": playtest_observations_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
         "exists": project.is_dir(),
-        "observations": [item["path"] for item in observations],
+        "observations": observed_paths,
         "findings": findings,
         "finding_attachments": attachments,
         "candidate": candidate,

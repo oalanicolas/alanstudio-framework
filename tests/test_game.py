@@ -12898,6 +12898,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             report["findings"]["scope"],
         )
 
+    def test_playtest_observations_names_the_receipt_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_naming_reader_as_observation(recipe),
+            "a receita já recusa que nomear o leitor observe",
+        )
+        self.assertEqual(game.playtest_reader_source(), "recipes/feel.md")
+        empty = game.playtest_reading(self.project)
+        self.assertEqual(empty["observations"], [])
+        receipt = self.project / "qa" / "partida"
+        receipt.mkdir(parents=True)
+        (receipt / "record.json").write_text(json.dumps({
+            "kind": "observation",
+            "author": "Ana",
+            "note": "o dash ainda não tem peso",
+            "fields": {"scenario": "primeira partida", "role": "human"},
+        }), encoding="utf-8")
+        paths = [item["path"] for item in game.observation_receipts(self.project)]
+        self.assertEqual(paths, ["qa/partida/record.json"])
+        report = game.playtest_reading(self.project)
+        item = report["observations"]
+        self.assertEqual(item["paths"], ["qa/partida/record.json"])
+        self.assertEqual(item["paths"], paths)
+        self.assertIn(
+            "nomear o leitor observe",
+            item["scope"],
+            "o playtest listava o recibo e calava a recusa",
+        )
+        self.assertIn("(`recibo`)", item["scope"])
+        self.assertNotIn("recibo", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_naming_reader_as_observation(""))
+        with mock.patch.object(game, "playtest_reader_source", return_value=None):
+            silent = game.playtest_reading(self.project)
+        self.assertNotIn(
+            "nomear o leitor observe",
+            silent["observations"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o recibo que a receita já recusa", recipe)
+        self.assertIn("nomeia o recibo que a receita já recusa", skill)
+        self.assertIn("nomeia o recibo que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("nomear o leitor observe", report["scope"])
+        self.assertNotIn("nomear o leitor observe", game.next_scope())
+        self.assertNotIn(
+            "nomear o leitor observe",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertEqual(report["findings"], [])
+        self.assertEqual(report["finding_attachments"], [])
+
     def test_a_structured_finding_is_form_not_an_observed_session(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "docs").mkdir()

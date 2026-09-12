@@ -28,7 +28,7 @@ impressão. Se a receita recusa que o recibo sem os quatro seja achado, o `field
 (`/?invite=1#finding`) e `note --field`. Sem o convite o âncora
 some. `playtest` só lê. O prompt nomeia o `playtest`
 que o `AGENTS.md` já cita. Só lê. Sem os quatro não é achado.
-Sem `then.playtest`. Nomear o leitor não observa. Nomeia `finding_open` (a url do
+Sem `then.playtest`. Nomear o leitor não observa. Se a receita recusa que nomear o leitor observe, o `observations` do `playtest` nomeia o recibo que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `recibo`. Nomeia `finding_open` (a url do
 serve com o convite, ou o mesmo endereço sem serve), `form` e
 `fields`. Sem `then`. Esqueleto no disco não é achado. Se a receita recusa que o esqueleto no disco seja achado, o `findings` do `playtest` nomeia o esqueleto que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `esqueleto`. O `note`
 nomeia `finding` e `needed` no próprio recibo. Recibo sem os

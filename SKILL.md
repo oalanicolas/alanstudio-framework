@@ -264,7 +264,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    partida, a página grava o recibo se você escrever; o próximo
    comando do harness continua `note`. O prompt nomeia o `playtest`
    que o `AGENTS.md` já cita. Só lê. Sem os quatro não é achado.
-   Sem `then.playtest`. Nomear o leitor não observa. `note`, `next`, `feel` e
+   Sem `then.playtest`. Nomear o leitor não observa. Se a receita recusa que nomear o leitor observe, o `observations` do `playtest` nomeia o recibo que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `recibo`. `note`, `next`, `feel` e
    `playtest` sem caminho usam o mesmo resolvedor. Se o disco tem
    last-run com seed, `then` aponta a partida (número, chuva e look
    quando o candidato os nomeia) e o convite; nomear o endereço não

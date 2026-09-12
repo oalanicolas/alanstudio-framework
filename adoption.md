@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.574 — o observations do playtest nomeia o recibo que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+nomear
+o
+leitor
+não
+observa.
+O
+playtest
+listava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+`observations`
+do
+`playtest`
+nomeia
+o
+recibo.
+Arquivo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`recibo`.
+Nomear
+não
+observa.
+
+O que 0.9.574 não afirma:
+listar
+o
+recibo
+não
+é
+sessão
+observada.
+
 ## 0.9.573 — o finding_attachments do playtest nomeia o gravado que a receita já recusa
 
 A
