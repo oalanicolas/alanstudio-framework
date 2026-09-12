@@ -3848,6 +3848,62 @@ def save_sources_scope():
     return scope
 
 
+# A receita já recusa que o aviso
+# volátil seja aba fechada. Sem
+# isto o save listava o arquivo e
+# calava a recusa. Arquivo no
+# disco não é a aba.
+PERSIST_VOLATILE = re.compile(r"Nomear\s+não é aba fechada")
+
+
+def recipe_refuses_volatile_warning_as_closed_tab(text):
+    return bool(text and PERSIST_VOLATILE.search(text))
+
+
+def save_volatile_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_volatile_warning_as_closed_tab(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_volatile_scope():
+    if not save_volatile_source():
+        return None
+    return (
+        " O disco recusa que o aviso volátil seja aba fechada "
+        "(`volátil`). Arquivo no disco não é a aba."
+    )
+
+
+def save_warnings_scope():
+    scope = (
+        "arquivo de aviso volátil no disco. "
+        "Não fecha a aba."
+    )
+    named = save_volatile_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def save_warning_files(project):
+    project = Path(project)
+    found = []
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
+        if PERSIST_WARN.search(text):
+            found.append(relative)
+            if len(found) == 8:
+                break
+    return found
+
+
 def save_persist_sources(project):
     project = Path(project)
     found = []
@@ -3865,19 +3921,24 @@ def save_persist_sources(project):
 
 def save_reading(project):
     project = Path(project)
-    used, versioned, warned = [], [], []
+    used, versioned = [], []
     for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
         if PERSIST_USE.search(text):
             used.append(relative)
         if PERSIST_VERSION.search(text):
             versioned.append(relative)
-        if PERSIST_WARN.search(text):
-            warned.append(relative)
+    warned = save_warning_files(project)
     sources = save_persist_sources(project)
     if sources:
         sources = {
             "paths": sources,
             "scope": save_sources_scope(),
+        }
+    warnings = warned
+    if warnings:
+        warnings = {
+            "paths": warnings,
+            "scope": save_warnings_scope(),
         }
     scope = (
         "Procura localStorage/saveProgress, PROGRESS_SCHEMA/migrate e se o "
@@ -3916,7 +3977,7 @@ def save_reading(project):
         "versioned": bool(versioned),
         "unversioned": bool(used) and not versioned,
         "warned": bool(warned),
-        "warnings": warned[:8],
+        "warnings": warnings,
         "sources": sources,
         "trusted": False,
         "guide": str(FRAMEWORK / "recipes/persistence.md"),

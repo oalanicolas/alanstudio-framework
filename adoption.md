@@ -30,6 +30,58 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.576 — o warnings do save nomeia o volátil que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+nomear
+não
+é
+aba
+fechada.
+O
+save
+listava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`warnings`
+do
+`save`
+nomeia
+o
+volátil.
+Arquivo
+no
+disco
+não
+é
+a
+aba.
+Sem
+chave
+`volátil`.
+Nomear
+não
+fecha.
+
+O que 0.9.576 não afirma:
+listar
+o
+arquivo
+não
+é
+aba
+fechada.
+
 ## 0.9.575 — o undeclared do origins nomeia a desconhecida que a guia já recusa
 
 A

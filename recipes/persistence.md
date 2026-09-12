@@ -34,7 +34,7 @@ não. Se o canvas pinta `settingsLine`, o `save` nomeia a recuperação.
 A pausa não. Texto no disco não é aba fechada. Sem chave `recovery`.
 `persistLine` continua só sessão volátil e gravação recusada.
 A região viva, na porta e no fim, nomeia a mesma linha do painel.
-Jogando a chave some. Nomear não é aba fechada. `save` relata `warned` se o disco tem
+Jogando a chave some. Nomear não é aba fechada. Se a receita recusa que o aviso volátil seja aba fechada, o `warnings` do `save` nomeia o volátil que a receita já recusa. Arquivo no disco não é a aba. Sem chave `volátil`. `save` relata `warned` se o disco tem
 `persistLine`, `title_volatile`, `title_unsaved`, `settings_recovered`
 ou `settings.broken`. Nomear não é
 aba fechada nem `trusted`.

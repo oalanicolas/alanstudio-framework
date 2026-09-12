@@ -10441,7 +10441,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(persist["unversioned"])
         self.assertTrue(persist["warned"])
         self.assertTrue(
-            any("save.js" in path or "tables.js" in path or "render.js" in path for path in persist["warnings"]),
+            any("save.js" in path or "tables.js" in path or "render.js" in path for path in persist["warnings"]["paths"]),
         )
         self.assertFalse(persist["trusted"])
         self.assertIn("warned", persist["scope"])
@@ -11297,6 +11297,59 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("listar o fonte prove a cadeia inteira", game.next_scope())
         self.assertNotIn(
             "listar o fonte prove a cadeia inteira",
+            game.content_reading(starter)["scope"],
+        )
+
+    def test_save_warnings_names_the_volatile_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_volatile_warning_as_closed_tab(recipe),
+            "a receita já recusa que o aviso volátil seja aba fechada",
+        )
+        self.assertEqual(game.save_volatile_source(), "recipes/persistence.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertTrue(game.save_warning_files(starter), "o starter já lista aviso volátil")
+        report = game.save_reading(starter)
+        item = report["warnings"]
+        self.assertEqual(item["paths"], game.save_warning_files(starter))
+        self.assertIn(
+            "aviso volátil seja aba fechada",
+            item["scope"],
+            "o save listava o arquivo e calava a recusa",
+        )
+        self.assertIn("(`volátil`)", item["scope"])
+        self.assertNotIn("volátil", item)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_volatile_warning_as_closed_tab(""))
+        empty = game.save_reading(self.project)
+        self.assertEqual(empty["warnings"], [])
+        with mock.patch.object(game, "save_volatile_source", return_value=None):
+            silent = game.save_reading(starter)
+        self.assertNotIn(
+            "aviso volátil seja aba fechada",
+            silent["warnings"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o volátil que a receita já recusa", recipe)
+        self.assertIn("nomeia o volátil que a receita já recusa", skill)
+        self.assertIn("nomeia o volátil que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("aviso volátil seja aba fechada", report["scope"])
+        self.assertNotIn(
+            "aviso volátil seja aba fechada",
+            report["sources"].get("scope") or "",
+        )
+        self.assertNotIn("aviso volátil seja aba fechada", game.next_scope())
+        self.assertNotIn(
+            "aviso volátil seja aba fechada",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn("aviso volátil seja aba fechada", game.record_scope())
+        self.assertNotIn(
+            "aviso volátil seja aba fechada",
             game.content_reading(starter)["scope"],
         )
 
