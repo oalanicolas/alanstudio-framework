@@ -1996,6 +1996,40 @@ def craft_item_threshold_scope():
     )
 
 
+# A pesquisa já recusa que esses
+# valores sejam um padrão. Sem
+# isto o item do craft listava
+# o checklist e calava a recusa.
+# Valor no disco não é o padrão.
+CRAFT_STANDARD = re.compile(r"não são um padrão")
+
+
+def research_refuses_copied_values_as_standard(text):
+    return bool(text and CRAFT_STANDARD.search(text))
+
+
+def craft_item_standard_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_copied_values_as_standard(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_standard_scope():
+    if not craft_item_standard_source():
+        return None
+    return (
+        " O disco recusa que esses valores sejam um padrão "
+        "(`padrão`). Valor no disco não é o padrão."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2028,6 +2062,9 @@ def craft_item_scope():
     juice = craft_item_threshold_scope()
     if juice:
         scope += juice
+    norm = craft_item_standard_scope()
+    if norm:
+        scope += norm
     return scope
 
 

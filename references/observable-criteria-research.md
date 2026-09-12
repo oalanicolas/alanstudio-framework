@@ -16,7 +16,7 @@ A distinção que organiza tudo aqui:
 - **Opinião disfarçada de critério** — parece regra, decide por gosto. *"A arte
   está consistente."*
 - **Número folclórico** — tem casas decimais e nenhuma medição atrás. É o mais
-  perigoso dos três, porque passa por observável. Se a pesquisa recusa que o número folclórico seja critério observável, o item do craft nomeia o folclore que a pesquisa já recusa. Folclore no disco não é o critério. Sem chave `folclore`. Se a pesquisa recusa que três métricas com o mesmo nome sejam um critério, o item do craft nomeia as métricas que a pesquisa já recusa. Nome no disco não é a métrica. Sem chave `métricas`. Se a pesquisa recusa que as palestras dêem limiar, o item do craft nomeia o limiar que a pesquisa já recusa. Palestra no disco não é o critério. Sem chave `limiar`.
+  perigoso dos três, porque passa por observável. Se a pesquisa recusa que o número folclórico seja critério observável, o item do craft nomeia o folclore que a pesquisa já recusa. Folclore no disco não é o critério. Sem chave `folclore`. Se a pesquisa recusa que três métricas com o mesmo nome sejam um critério, o item do craft nomeia as métricas que a pesquisa já recusa. Nome no disco não é a métrica. Sem chave `métricas`. Se a pesquisa recusa que as palestras dêem limiar, o item do craft nomeia o limiar que a pesquisa já recusa. Palestra no disco não é o critério. Sem chave `limiar`. Se a pesquisa recusa que esses valores sejam um padrão, o item do craft nomeia o padrão que a pesquisa já recusa. Valor no disco não é o padrão. Sem chave `padrão`.
 
 ## Como ler as fontes deste arquivo
 
@@ -281,7 +281,7 @@ não consegui confirmar para o botão de pulo na fonte original.
 
 **Limite grande.** Um jogo, 320×180, 60 fps, plataformer de precisão. Esses
 valores **não são um padrão**. Copiá-los para um jogo com outra escala ou outra
-taxa é cargo cult.
+taxa é cargo cult. Se a pesquisa recusa que esses valores sejam um padrão, o item do craft nomeia o padrão que a pesquisa já recusa. Valor no disco não é o padrão. Sem chave `padrão`.
 
 **Onde está o critério observável.** Não é "coyote time deve ser 0,1 s". É:
 *existe uma constante nomeada para cada janela de perdão, seu valor está num só
