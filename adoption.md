@@ -30,6 +30,62 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.595 — o empty do roles nomeia o ausente que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+arquivo
+ausente
+é
+lacuna
+do
+verbo,
+não
+silêncio
+deliberado.
+O
+roles
+listava
+o
+vazio
+e
+calava
+a
+recusa.
+Agora
+o
+`empty`
+do
+`roles`
+nomeia
+o
+ausente.
+Lista
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`ausente`.
+Nomear
+não
+observa.
+
+O que 0.9.595 não afirma:
+listar
+o
+papel
+vazio
+não
+é
+mix
+ouvida.
+
 ## 0.9.594 — o form do playtest nomeia os participantes que o molde já recusa
 
 O

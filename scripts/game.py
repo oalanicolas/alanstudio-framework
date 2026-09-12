@@ -676,7 +676,7 @@ def review(root, limit=REVIEW_LIMIT):
             "art_missing": bool(kind) and not art_report["declared"],
             "content_inline": content_report["inline"],
             "ship_unpacked": ship_report["unpacked"],
-            "audio_roles_empty": roles["empty"],
+            "audio_roles_empty": roles_empty_ids(roles),
             "playtest_candidate": playtest_report.get("candidate"),
         }
         named = review_signals_scope()
@@ -696,7 +696,7 @@ def review(root, limit=REVIEW_LIMIT):
             origins_embedded=len(origins["embedded"]),
             origins_undeclared=len(origin_undeclared_paths(origins)),
             audio_roles=len(roles["roles"]),
-            audio_roles_empty=len(roles["empty"]),
+            audio_roles_empty=len(roles_empty_ids(roles)),
             feel_constants=len(feel_report["constants"]),
             feel_observations=len(observations),
             access_declared=access_report["declared"],
@@ -2279,6 +2279,58 @@ def roles_source_files(project):
     return sources
 
 
+# A receita já recusa que o arquivo
+# ausente seja silêncio deliberado.
+# Sem isto o roles listava o vazio
+# e calava a recusa. Lista no disco
+# não é mix.
+AUDIO_ABSENT = re.compile(r"Arquivo ausente é lacuna do verbo,\s+não silêncio deliberado")
+
+
+def recipe_refuses_absent_as_deliberate_silence(text):
+    return bool(text and AUDIO_ABSENT.search(text))
+
+
+def roles_empty_absent_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_absent_as_deliberate_silence(text):
+        return "recipes/audio.md"
+    return None
+
+
+def roles_empty_absent_scope():
+    if not roles_empty_absent_source():
+        return None
+    return (
+        " O disco recusa que o arquivo ausente seja silêncio deliberado "
+        "(`ausente`). Lista no disco não é mix."
+    )
+
+
+def roles_empty_scope():
+    scope = (
+        "papel declarado sem arquivo. "
+        "Não ouve o mix."
+    )
+    named = roles_empty_absent_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def roles_empty_ids(roles):
+    empty = (roles or {}).get("empty") or []
+    if isinstance(empty, dict):
+        return list(empty.get("ids") or [])
+    return list(empty)
+
+
 def roles_reading(project, root=None):
     project = Path(project)
     entries, sources = declared_sound_roles(project)
@@ -2299,6 +2351,11 @@ def roles_reading(project, root=None):
                 row["scope"] += " " + named
         roles.append(row)
     empty = [item["id"] for item in roles if item["state"] == "empty"]
+    if empty:
+        empty = {
+            "ids": empty,
+            "scope": roles_empty_scope(),
+        }
     if sources:
         sources = {
             "paths": sources,
@@ -2397,7 +2454,8 @@ def roles_fill(project, root=None, apply=False):
     reading = roles_reading(project, root)
     suggestions = []
     copied = []
-    for role in reading["empty"]:
+    empty_ids = roles_empty_ids(reading)
+    for role in empty_ids:
         match = None
         if reading["catalog_exists"]:
             try:
@@ -2438,7 +2496,7 @@ def roles_fill(project, root=None, apply=False):
         "schema_version": 1,
         "project": str(project),
         "exists": project.is_dir(),
-        "empty": reading["empty"],
+        "empty": empty_ids,
         "catalog_exists": reading["catalog_exists"],
         "suggestions": suggestions,
         "applied": bool(apply),
@@ -14022,12 +14080,13 @@ def next_step(project, focus="create", studies_root=None):
             "cycle.craft",
         )
     roles = roles_reading(project)
-    if roles["empty"]:
-        sample = ", ".join(f"`{name}`" for name in roles["empty"][:4])
-        extra = " e mais" if len(roles["empty"]) > 4 else ""
+    empty_roles = roles_empty_ids(roles)
+    if empty_roles:
+        sample = ", ".join(f"`{name}`" for name in empty_roles[:4])
+        extra = " e mais" if len(empty_roles) > 4 else ""
         commands = [harness_command("roles", project, "--fill")]
         can_apply = roles["catalog_exists"] or any(
-            sfx_catalog.find_local_stem(name) for name in roles["empty"]
+            sfx_catalog.find_local_stem(name) for name in empty_roles
         )
         if can_apply:
             commands.append(harness_command("roles", project, "--fill", "--apply"))
@@ -14451,7 +14510,7 @@ def next_step(project, focus="create", studies_root=None):
             "origins_contradicts_licensing": origins["contradicts_licensing"],
             "playable_unplayed": fresh,
             "cycle_craft": wants_craft,
-            "audio_roles_empty": roles["empty"],
+            "audio_roles_empty": roles_empty_ids(roles),
             "feel_unobserved": feel["unobserved"],
             "playtest_unstructured": playtest["unstructured"],
             "playtest_invite": wants_invite,

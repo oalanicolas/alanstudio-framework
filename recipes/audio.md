@@ -39,7 +39,7 @@ marca o lugar. Número no panner não é mix ouvido. Se a receita recusa que o n
 voz própria, mais curta que o dash; sem o papel o aterrissar é mudo.
 `sfx --from` / `--as` desloca a voz no papel que o mixer já toca;
 depois de um `note`, `start` e `next` apontam esse comando.
-Arquivo ausente é lacuna do verbo, não silêncio deliberado.
+Arquivo ausente é lacuna do verbo, não silêncio deliberado. Se a receita recusa que o arquivo ausente seja silêncio deliberado, o `empty` do `roles` nomeia o ausente que a receita já recusa. Lista no disco não é mix. Sem chave `ausente`.
 O loader marca o primário que esgota as extensões; o painel
 nomeia os vazios mesmo quando outro papel já registrou.
 A região viva espelha a lacuna na porta e no fim — o convite

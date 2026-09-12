@@ -8595,9 +8595,74 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         dash = next(item for item in report["roles"] if item["id"] == "dash")
         self.assertEqual(dash["state"], "present")
         self.assertEqual(dash["files"], ["public/sfx/dash.wav"])
-        self.assertNotIn("dash", report["empty"])
-        self.assertIn("hit", report["empty"])
+        self.assertNotIn("dash", game.roles_empty_ids(report))
+        self.assertIn("hit", game.roles_empty_ids(report))
         self.assertFalse(report["heard"])
+
+    def test_roles_empty_names_the_absent_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_absent_as_deliberate_silence(recipe),
+            "a receita já recusa que o arquivo ausente seja silêncio deliberado",
+        )
+        self.assertEqual(game.roles_empty_absent_source(), "recipes/audio.md")
+        destination = self.root / "roles-com-ausente"
+        game.init(destination, "canvas-arcade")
+        (destination / "public/sfx/hit.wav").unlink()
+        ids = game.roles_empty_ids(game.roles_reading(destination, self.root))
+        self.assertEqual(ids, ["hit"])
+        report = game.roles_reading(destination, self.root)
+        item = report["empty"]
+        self.assertEqual(item["ids"], ["hit"])
+        self.assertEqual(item["ids"], game.roles_empty_ids(report))
+        self.assertIn(
+            "o arquivo ausente seja silêncio deliberado",
+            item["scope"],
+            "o roles listava o vazio e calava a recusa",
+        )
+        self.assertIn("(`ausente`)", item["scope"])
+        self.assertNotIn("ausente", item)
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertFalse(game.recipe_refuses_absent_as_deliberate_silence(""))
+        filled = game.roles_reading(Path(game.FRAMEWORK) / "assets/starters/canvas-arcade")
+        self.assertEqual(filled["empty"], [])
+        empty = game.roles_reading(self.project)
+        self.assertEqual(empty["empty"], [])
+        with mock.patch.object(game, "roles_empty_absent_source", return_value=None):
+            silent = game.roles_reading(destination, self.root)
+        self.assertNotIn(
+            "o arquivo ausente seja silêncio deliberado",
+            silent["empty"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o ausente que a receita já recusa", recipe)
+        self.assertIn("nomeia o ausente que a receita já recusa", skill)
+        self.assertIn("nomeia o ausente que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o arquivo ausente seja silêncio deliberado", report["scope"])
+        if report.get("sources"):
+            self.assertNotIn(
+                "o arquivo ausente seja silêncio deliberado",
+                report["sources"].get("scope") or "",
+            )
+        if report["roles"]:
+            self.assertNotIn(
+                "o arquivo ausente seja silêncio deliberado",
+                report["roles"][0].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o arquivo ausente seja silêncio deliberado",
+            game.roles_fill(destination, self.root).get("scope") or "",
+        )
+        self.assertNotIn(
+            "o arquivo ausente seja silêncio deliberado",
+            game.feel_reading(destination)["scope"],
+        )
+        self.assertNotIn("o arquivo ausente seja silêncio deliberado", game.next_scope())
 
     def test_roles_names_the_mix_the_recipe_already_sums(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
@@ -8782,8 +8847,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue((destination / "public/sfx/hit.wav").is_file())
         self.assertFalse(applied["heard"])
         after = game.roles_reading(destination, self.root)
-        self.assertNotIn("dash", after["empty"])
-        self.assertNotIn("hit", after["empty"])
+        self.assertNotIn("dash", game.roles_empty_ids(after))
+        self.assertNotIn("hit", game.roles_empty_ids(after))
 
     def test_roles_fill_without_a_catalog_names_the_starter_stem(self):
         destination = self.root / "sem-acervo"
@@ -8817,7 +8882,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue((destination / "public/sfx/dash.wav").is_file())
         self.assertFalse(applied["heard"])
         after = game.roles_reading(destination, self.root)
-        self.assertNotIn("dash", after["empty"])
+        self.assertNotIn("dash", game.roles_empty_ids(after))
 
     def test_roles_apply_restores_the_wav_when_the_receipt_already_exists(self):
         destination = self.root / "recibo-sem-bytes"
@@ -8836,7 +8901,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         dash = next(row for row in after["files"] if row["key"] == "dash")
         self.assertEqual(dash["note"], note)
         self.assertEqual(dash["license"], "CC0-1.0")
-        self.assertNotIn("dash", game.roles_reading(destination, self.root)["empty"])
+        self.assertNotIn("dash", game.roles_empty_ids(game.roles_reading(destination, self.root)))
         dumped = json.dumps(applied)
         self.assertNotIn("aprovado", dumped)
         self.assertNotIn("verified", dumped)
