@@ -12567,6 +12567,70 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.content_reading(starter)["scope"],
         )
 
+    def test_save_warned_names_the_trust_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_naming_as_trusted(recipe),
+            "a receita já recusa que o nomear seja trusted",
+        )
+        self.assertEqual(game.save_warned_trust_source(), "recipes/persistence.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.save_reading(starter)
+        item = report["warned"]
+        self.assertTrue(item["warned"], "o save já relata o aviso neste starter")
+        self.assertEqual(item["warned"], game.save_warned_flag(report))
+        self.assertIn(
+            "o nomear seja trusted",
+            item["scope"],
+            "o save relatava o aviso e calava a recusa",
+        )
+        self.assertIn("(`confiança`)", item["scope"])
+        self.assertNotIn("confiança", item)
+        self.assertFalse(report["trusted"])
+        self.assertIs(report["unversioned"], False)
+        self.assertFalse(game.recipe_refuses_naming_as_trusted(""))
+        empty = game.save_reading(self.project)
+        self.assertFalse(empty["warned"])
+        self.assertFalse(game.save_warned_flag(empty))
+        with mock.patch.object(game, "save_warned_trust_source", return_value=None):
+            silent = game.save_reading(starter)
+        self.assertNotIn(
+            "o nomear seja trusted",
+            silent["warned"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a confiança que a receita já recusa", recipe)
+        self.assertIn("nomeia a confiança que a receita já recusa", skill)
+        self.assertIn("nomeia a confiança que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o nomear seja trusted", report["scope"])
+        self.assertNotIn(
+            "o nomear seja trusted",
+            report["warnings"].get("scope") or "",
+        )
+        self.assertNotIn(
+            "o nomear seja trusted",
+            report["sources"].get("scope") or "",
+        )
+        if isinstance(report.get("used"), dict):
+            self.assertNotIn(
+                "o nomear seja trusted",
+                report["used"].get("scope") or "",
+            )
+        self.assertNotIn("o nomear seja trusted", game.next_scope())
+        self.assertNotIn(
+            "o nomear seja trusted",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn("o nomear seja trusted", game.record_scope())
+        self.assertNotIn(
+            "o nomear seja trusted",
+            game.content_reading(starter)["scope"],
+        )
+
     def test_save_used_names_the_open_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -30,6 +30,56 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.608 — o warned do save nomeia a confiança que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+nomear
+não
+é
+`trusted`.
+O
+save
+relatava
+o
+aviso
+e
+calava
+a
+recusa.
+Agora
+o
+`warned`
+do
+`save`
+nomeia
+a
+confiança.
+Arquivo
+no
+disco
+não
+é
+a
+aba.
+Sem
+chave
+`confiança`.
+Nomear
+não
+confia.
+
+O que 0.9.608 não afirma:
+o
+aviso
+não
+fecha
+a
+aba.
+
 ## 0.9.607 — o held_by_declaration do gate nomeia o passou que o roteiro já recusa
 
 O

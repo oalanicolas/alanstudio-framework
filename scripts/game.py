@@ -4470,6 +4470,58 @@ def save_used_flag(reading):
     return bool(used)
 
 
+# A receita já recusa que nomear
+# seja trusted. Sem isto o save
+# relatava o aviso e calava a
+# recusa. Arquivo no disco não é
+# a aba.
+PERSIST_TRUST = re.compile(r"nem `trusted`")
+
+
+def recipe_refuses_naming_as_trusted(text):
+    return bool(text and PERSIST_TRUST.search(text))
+
+
+def save_warned_trust_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_naming_as_trusted(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_warned_trust_scope():
+    if not save_warned_trust_source():
+        return None
+    return (
+        " O disco recusa que o nomear seja trusted "
+        "(`confiança`). Arquivo no disco não é a aba."
+    )
+
+
+def save_warned_scope():
+    scope = (
+        "aviso volátil no disco. "
+        "Não é aba fechada."
+    )
+    named = save_warned_trust_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def save_warned_flag(reading):
+    warned = (reading or {}).get("warned")
+    if isinstance(warned, dict):
+        return bool(warned.get("warned"))
+    return bool(warned)
+
+
 def save_warning_files(project):
     project = Path(project)
     found = []
@@ -4552,6 +4604,12 @@ def save_reading(project):
             "used": True,
             "scope": save_used_scope(),
         }
+    warned_flag = bool(warned)
+    if warned_flag:
+        warned_flag = {
+            "warned": True,
+            "scope": save_warned_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
@@ -4559,7 +4617,7 @@ def save_reading(project):
         "used": used_flag,
         "versioned": bool(versioned),
         "unversioned": bool(used) and not versioned,
-        "warned": bool(warned),
+        "warned": warned_flag,
         "warnings": warnings,
         "sources": sources,
         "trusted": False,
