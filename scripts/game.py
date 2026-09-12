@@ -5205,6 +5205,40 @@ def budget_percentile_source(project):
     return None
 
 
+# A receita já recusa que um jogo
+# estável a 30 seja instável. Sem
+# isto o budget cronometrava a
+# porta e calava a recusa. Média
+# no disco não é o quadro.
+PERF_STABLE = re.compile(r"um jogo estável a 30 não é")
+
+
+def recipe_refuses_stable_thirty_as_unstable(text):
+    return bool(text and PERF_STABLE.search(text))
+
+
+def budget_stable_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_stable_thirty_as_unstable(text):
+        return "recipes/performance.md"
+    return None
+
+
+def budget_stable_scope():
+    if not budget_stable_source():
+        return None
+    return (
+        " O disco recusa que um jogo estável a 30 seja instável "
+        "(`estável`). Média no disco não é o quadro."
+    )
+
+
 # A receita já recusa que custos de
 # build e serialização sejam FPS.
 # Sem isto o budget listava o tool
@@ -5588,6 +5622,9 @@ def budget_reading(project):
             " O disco relata o pior percentil, não a média. "
             "Relato no disco não é dispositivo."
         )
+    named = budget_stable_scope()
+    if named:
+        scope += named
     return {
         "schema_version": 1,
         "project": str(project),

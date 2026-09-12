@@ -14,7 +14,7 @@ headless já joga.
 
 Meça o que o jogador sente. FPS médio esconde exatamente o problema que importa:
 use a distribuição do tempo de quadro e o pior percentil. Um jogo a 60 quadros com
-um engasgo de 200 ms por minuto é lido como instável; um jogo estável a 30 não é.
+um engasgo de 200 ms por minuto é lido como instável; um jogo estável a 30 não é. Se a receita recusa que um jogo estável a 30 seja instável, o `budget` nomeia o estável que a receita já recusa. Média no disco não é o quadro. Sem chave `estável`.
 
 Declare o orçamento antes de otimizar: dispositivo, resolução, cena representativa,
 tempo de quadro alvo, teto do pior percentil e tempo até jogar. Sem orçamento não

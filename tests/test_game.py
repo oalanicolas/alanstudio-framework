@@ -13966,6 +13966,58 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("playing.run", report["scope"])
         self.assertNotIn("16 ms", report["scope"])
 
+    def test_budget_names_the_stable_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_stable_thirty_as_unstable(recipe),
+            "a receita já recusa que um jogo estável a 30 seja instável",
+        )
+        self.assertEqual(game.budget_stable_source(), "recipes/performance.md")
+        noted = game.budget_reading(self.project)
+        self.assertIn(
+            "um jogo estável a 30 seja instável",
+            noted["scope"],
+            "o budget cronometrava a porta e calava a recusa",
+        )
+        self.assertIn("(`estável`)", noted["scope"])
+        self.assertNotIn("estável", noted)
+        self.assertFalse(noted["measured"])
+        self.assertFalse(game.recipe_refuses_stable_thirty_as_unstable(""))
+        with mock.patch.object(game, "budget_stable_source", return_value=None):
+            silent = game.budget_reading(self.project)
+        self.assertNotIn(
+            "um jogo estável a 30 seja instável",
+            silent.get("scope") or "",
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o estável que a receita já recusa", recipe)
+        self.assertIn("nomeia o estável que a receita já recusa", create)
+        self.assertIn("nomeia o estável que a receita já recusa", skill)
+        self.assertIn("nomeia o estável que a receita já recusa", readme)
+        self.assertNotIn("verified", noted["scope"])
+        self.assertNotIn("aprovado", noted["scope"])
+        self.assertNotIn("4.5", noted["scope"])
+        self.assertNotIn("16 ms", noted["scope"])
+        coverage = game.scan(self.project)["coverage"]
+        self.assertNotIn(
+            "um jogo estável a 30 seja instável",
+            coverage.get("scope") or "",
+        )
+        self.assertNotIn(
+            "um jogo estável a 30 seja instável",
+            game.production_bar("create")["scope"],
+        )
+        self.assertNotIn(
+            "um jogo estável a 30 seja instável",
+            game.read_scale([])["scope"],
+        )
+        self.assertNotIn(
+            "um jogo estável a 30 seja instável",
+            game.next_scope(),
+        )
+
     def test_budget_files_names_the_fps_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
         self.assertTrue(

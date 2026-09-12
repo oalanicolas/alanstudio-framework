@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.676 — o budget nomeia o estável que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+um
+jogo
+estável
+a
+30
+não
+é
+instável.
+O
+budget
+cronometrava
+a
+porta
+e
+calava
+a
+recusa.
+Agora
+o
+`budget`
+nomeia
+o
+estável.
+Média
+no
+disco
+não
+é
+o
+quadro.
+Sem
+chave
+`estável`.
+Nomear
+não
+mede.
+
 ## 0.9.675 — o coverage nomeia o lexical que o teach já recusa
 
 O
