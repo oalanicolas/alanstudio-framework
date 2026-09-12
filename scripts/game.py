@@ -15628,6 +15628,7 @@ def doctor(root):
 
     blocking = [check["name"] for check in checks if check["required"] and check["status"] != "ok"]
     ready = not blocking
+    blocking = doctor_blocking_reading(blocking)
     empty = not projects
     then = doctor_then(ready, available, empty)
     check_scope = doctor_check_scope()
@@ -15731,6 +15732,68 @@ def doctor_empty_flag(reading):
     if isinstance(empty, dict):
         return bool(empty.get("empty"))
     return bool(empty)
+
+
+# A receita já recusa que a lista
+# bloqueante comprove que um
+# projeto funciona. Sem isto o
+# doctor relatava o blocking e
+# calava a recusa. Checagem no
+# disco não é o jogo.
+DOCTOR_WORKS = re.compile(r"não comprova que um projeto funciona")
+
+
+def recipe_refuses_blocking_as_proving_game(text):
+    return bool(text and DOCTOR_WORKS.search(text))
+
+
+def doctor_blocking_game_source():
+    path = CREATE_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_blocking_as_proving_game(text):
+        return "recipes/create.md"
+    return None
+
+
+def doctor_blocking_game_scope():
+    if not doctor_blocking_game_source():
+        return None
+    return (
+        " O disco recusa que a lista bloqueante comprove que um projeto funciona "
+        "(`funciona`). Checagem no disco não é o jogo."
+    )
+
+
+def doctor_blocking_scope():
+    scope = (
+        "checagens obrigatórias que falharam. "
+        "O doctor não comprova que um projeto funciona."
+    )
+    named = doctor_blocking_game_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def doctor_blocking_names(reading):
+    blocking = (reading or {}).get("blocking") if isinstance(reading, dict) else reading
+    if isinstance(blocking, dict):
+        return list(blocking.get("blocking") or [])
+    return list(blocking or [])
+
+
+def doctor_blocking_reading(blocking):
+    if not blocking:
+        return blocking
+    return {
+        "blocking": list(blocking),
+        "scope": doctor_blocking_scope(),
+    }
 
 
 # A ambição já recusa que o harness seja motor. Sem isto o

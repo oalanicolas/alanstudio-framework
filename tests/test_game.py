@@ -6247,6 +6247,59 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             )
         self.assertNotIn("o mapa crie a pasta", game.next_scope())
 
+    def test_doctor_blocking_names_the_works_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_blocking_as_proving_game(recipe),
+            "a receita já recusa que a lista bloqueante comprove que um projeto funciona",
+        )
+        self.assertEqual(game.doctor_blocking_game_source(), "recipes/create.md")
+        empty = game.doctor(self.root)
+        self.assertEqual(empty["blocking"], [])
+        self.assertEqual(game.doctor_blocking_names(empty), [])
+        self.assertIs(empty["ready"], True)
+        report = game.doctor(self.root / "laboratorio-inexistente")
+        item = report["blocking"]
+        self.assertEqual(item["blocking"], ["root"], "o doctor já bloqueia a raiz ausente")
+        self.assertEqual(item["blocking"], game.doctor_blocking_names(report))
+        self.assertIn(
+            "a lista bloqueante comprove que um projeto funciona",
+            item["scope"],
+            "o doctor relatava o blocking e calava a recusa",
+        )
+        self.assertIn("(`funciona`)", item["scope"])
+        self.assertNotIn("funciona", item)
+        self.assertFalse(report["ready"])
+        self.assertIsInstance(report["ready"], bool)
+        self.assertFalse(game.recipe_refuses_blocking_as_proving_game(""))
+        with mock.patch.object(game, "doctor_blocking_game_source", return_value=None):
+            silent = game.doctor(self.root / "laboratorio-cala")
+        self.assertNotIn(
+            "a lista bloqueante comprove que um projeto funciona",
+            silent["blocking"]["scope"],
+        )
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o funciona que a receita já recusa", readme)
+        self.assertIn("nomeia o funciona que a receita já recusa", recipe)
+        self.assertIn("nomeia o funciona que a receita já recusa", skill)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a lista bloqueante comprove que um projeto funciona", report["scope"])
+        if report.get("then") and isinstance(report["then"], dict):
+            self.assertNotIn(
+                "a lista bloqueante comprove que um projeto funciona",
+                report["then"].get("scope") or "",
+            )
+        empty_item = empty.get("empty")
+        if isinstance(empty_item, dict):
+            self.assertNotIn(
+                "a lista bloqueante comprove que um projeto funciona",
+                empty_item.get("scope") or "",
+            )
+        self.assertNotIn("a lista bloqueante comprove que um projeto funciona", game.next_scope())
+
     def test_doctor_cli_signals_a_blocking_root_by_exit_code(self):
         ready = subprocess.run([sys.executable, str(SCRIPT), "doctor", "--root", str(self.root)], capture_output=True, text=True)
         self.assertEqual(ready.returncode, 0, ready.stderr)
@@ -6254,7 +6307,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         absent = self.root / "laboratorio-inexistente"
         blocked = subprocess.run([sys.executable, str(SCRIPT), "doctor", "--root", str(absent)], capture_output=True, text=True)
         self.assertEqual(blocked.returncode, 1)
-        self.assertEqual(json.loads(blocked.stdout)["blocking"], ["root"])
+        self.assertEqual(game.doctor_blocking_names(json.loads(blocked.stdout)), ["root"])
         self.assertFalse(absent.exists())
 
     def test_init_creates_a_recognizable_project_from_the_starter(self):
@@ -6466,7 +6519,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         check = next(item for item in report["checks"] if item["name"] == "starter_manifest")
         self.assertEqual(check["status"], "missing")
         self.assertIn("não contém", check["fix"])
-        self.assertIn("starter_manifest", report["blocking"])
+        self.assertIn("starter_manifest", game.doctor_blocking_names(report))
         self.assertFalse(report["ready"])
 
     def test_init_validates_json_substitutions_before_creating_the_destination(self):

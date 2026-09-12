@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.630 — o blocking do doctor nomeia o funciona que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+doctor
+não
+comprova
+que
+um
+projeto
+funciona.
+O
+doctor
+relatava
+o
+blocking
+e
+calava
+a
+recusa.
+Agora
+o
+`blocking`
+do
+`doctor`
+nomeia
+o
+funciona.
+Checagem
+no
+disco
+não
+é
+o
+jogo.
+Sem
+chave
+`funciona`.
+Nomear
+não
+observa.
+
 ## 0.9.629 — o documents do init nomeia o GDD que a receita já recusa
 
 A
