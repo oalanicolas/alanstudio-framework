@@ -8416,12 +8416,74 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.gate_reading(self.project)["scope"],
         )
 
+    def test_craft_pending_names_the_measure_the_research_already_refuses(self):
+        research = (
+            game.FRAMEWORK / "references/observable-criteria-research.md"
+        ).read_text(encoding="utf-8")
+        self.assertTrue(
+            game.research_refuses_pending_as_measurement(research),
+            "a pesquisa já recusa que a pendência seja medição em jogo",
+        )
+        self.assertEqual(
+            game.craft_pending_measure_source(),
+            "references/observable-criteria-research.md",
+        )
+        empty = game.craft_reading(self.project)
+        self.assertEqual(empty["pending"]["keys"], list(game.CRAFT_CHECKS))
+        self.assertEqual(game.craft_pending_keys(empty), list(game.CRAFT_CHECKS))
+        report = empty
+        item = report["pending"]
+        self.assertEqual(item["keys"], game.craft_pending_keys(report))
+        self.assertIn(
+            "a pendência seja medição em jogo",
+            item["scope"],
+            "o craft listava o checklist e calava a recusa",
+        )
+        self.assertIn("(`medição`)", item["scope"])
+        self.assertNotIn("medição", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.research_refuses_pending_as_measurement(""))
+        with mock.patch.object(game, "craft_pending_measure_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn(
+            "a pendência seja medição em jogo",
+            silent["pending"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a medição que a pesquisa já recusa", research)
+        self.assertIn("nomeia a medição que a pesquisa já recusa", recipe)
+        self.assertIn("nomeia a medição que a pesquisa já recusa", skill)
+        self.assertIn("nomeia a medição que a pesquisa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a pendência seja medição em jogo", report["scope"])
+        self.assertNotIn(
+            "a pendência seja medição em jogo",
+            report["checks"][0].get("scope") or "",
+        )
+        if report.get("sources"):
+            self.assertNotIn(
+                "a pendência seja medição em jogo",
+                report["sources"].get("scope") or "",
+            )
+        self.assertNotIn("a pendência seja medição em jogo", game.craft_item_scope())
+        self.assertNotIn("a pendência seja medição em jogo", game.next_scope())
+        self.assertNotIn(
+            "a pendência seja medição em jogo",
+            game.gate_reading(self.project)["scope"],
+        )
+
     def test_craft_never_claims_to_have_observed_the_game(self):
         report = game.craft_reading(self.project)
         self.assertFalse(report["granted"])
         self.assertFalse(report["observed"])
         self.assertIn("Não observa o jogo", report["scope"])
-        self.assertEqual(len(report["pending"]), len(game.CRAFT_CHECKS))
+        self.assertEqual(len(report["pending"]["keys"]), len(game.CRAFT_CHECKS))
+        self.assertEqual(len(game.craft_pending_keys(report)), len(game.CRAFT_CHECKS))
 
     def test_craft_accepts_a_receipt_without_calling_it_observation(self):
         self.declare_craft({"palette": ("met", "paleta em art-bible; cores de render.js — Ana")})
@@ -8429,7 +8491,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         palette = next(item for item in report["checks"] if item["key"] == "palette")
         self.assertEqual(palette["state"], "met")
         self.assertFalse(report["observed"])
-        self.assertNotIn("palette", report["pending"])
+        self.assertNotIn("palette", report["pending"]["keys"])
+        self.assertNotIn("palette", game.craft_pending_keys(report))
 
     def test_craft_refuses_met_without_evidence_and_never_observes(self):
         self.declare_craft({"palette": ("met", "")})
@@ -8437,7 +8500,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["observed"])
         self.assertFalse(report["granted"])
         self.assertEqual(report["problems"][0]["reason"], "met_without_evidence")
-        self.assertIn("palette", report["pending"])
+        self.assertIn("palette", report["pending"]["keys"])
+        self.assertIn("palette", game.craft_pending_keys(report))
 
     def test_roles_reads_declared_sounds_and_never_claims_to_have_heard_them(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"

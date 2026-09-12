@@ -1582,7 +1582,13 @@ def craft_reading(project, gate=None):
         "project": str(project),
         "exists": project.is_dir(),
         "checks": checks,
-        "pending": pending,
+        "pending": (
+            {
+                "keys": pending,
+                "scope": craft_pending_scope(),
+            }
+            if pending else []
+        ),
         "problems": problems,
         "sources": (
             {
@@ -1693,6 +1699,58 @@ def craft_source_paths(craft):
     if isinstance(sources, dict):
         return list(sources.get("paths") or [])
     return list(sources)
+
+
+# A pesquisa já recusa que a pendência
+# seja medição em jogo. Sem isto o
+# craft listava o checklist e calava
+# a recusa. Pesquisa no disco não é
+# ofício observado.
+CRAFT_MEASURE = re.compile(r"Não é medição em jogo")
+
+
+def research_refuses_pending_as_measurement(text):
+    return bool(text and CRAFT_MEASURE.search(text))
+
+
+def craft_pending_measure_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_pending_as_measurement(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_pending_measure_scope():
+    if not craft_pending_measure_source():
+        return None
+    return (
+        " O disco recusa que a pendência seja medição em jogo "
+        "(`medição`). Pesquisa no disco não é ofício observado."
+    )
+
+
+def craft_pending_scope():
+    scope = (
+        "checklist ainda undeclared ou unmet. "
+        "Não observa o jogo."
+    )
+    named = craft_pending_measure_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def craft_pending_keys(craft):
+    pending = (craft or {}).get("pending") or []
+    if isinstance(pending, dict):
+        return list(pending.get("keys") or [])
+    return list(pending)
 
 
 # A pesquisa já recusa que o número sem definição seja

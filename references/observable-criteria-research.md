@@ -1076,7 +1076,7 @@ livro.
 Afirmado por gamejuice.co.uk sem citar ninguém: *"Research on human perception places
 the threshold at approximately 100 milliseconds."* A ideia subjacente é o processador
 perceptual do Model Human Processor (Card, Moran e Newell, 1983), um modelo de 1983.
-Não é medição em jogo, não é sobre propriocepção.
+Não é medição em jogo, não é sobre propriocepção. Se a pesquisa recusa que a pendência seja medição em jogo, o `pending` do `craft` nomeia a medição que a pesquisa já recusa. Pesquisa no disco não é ofício observado. Sem chave `medição`.
 
 **"Celeste tem 5 frames de coyote time."**
 O código publicado diz `JumpGraceTime = 0.1f` — 6 frames a 60 fps. Os "5 frames"

@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.591 — o pending do craft nomeia a medição que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+não
+é
+medição
+em
+jogo.
+O
+craft
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+`pending`
+do
+`craft`
+nomeia
+a
+medição.
+Pesquisa
+no
+disco
+não
+é
+ofício
+observado.
+Sem
+chave
+`medição`.
+Nomear
+não
+observa.
+
+O que 0.9.591 não afirma:
+listar
+o
+checklist
+não
+é
+medir
+o
+jogo.
+
 ## 0.9.590 — o qa do playtest nomeia a simulada que a receita já recusa
 
 A
