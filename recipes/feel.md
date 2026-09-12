@@ -95,7 +95,7 @@ não é peso percebido. Sem chave `attract`. Se o laço declara
 `lookAhead`, o `feel` nomeia a inclinação que o lookAhead já marca.
 Lean no disco não é peso percebido. Sem chave `lookAhead`. Se o `tools/probe.*`
 exercita as janelas de perdão, o `feel` nomeia o perdão que o probe já exercita.
-Conta no disco não é peso percebido. Sem chave `probe`. Se o laço senta a guarda, o `feel` nomeia o sit que a guarda já senta. Pose no disco não é peso percebido. Sem chave `bank`. Se o laço emite o término, o `feel` nomeia o land que o dash já emite. Pose no disco não é peso percebido. Sem chave `land`. Se a receita recusa que o autor sugerido seja quem jogou, o `feel` nomeia o autor que a receita já recusa. Recibo no disco não é sessão. Sem chave `autor`. Se a receita recusa que o valor seja constante universal, o `feel` nomeia o universal que a receita já recusa. Número no disco não é lei. Sem chave `universais`. Se a receita recusa que velocidade não nula prove a posição, o item da constante nomeia a posição que a receita já recusa. Número no disco não é a pose. Sem chave `posição`. Número no disco não é peso percebido. Se o README recusa que a constante nomeada seja peso percebido, o `constants` do `feel` nomeia o peso que o README já recusa. Número no disco não é o verbo. Sem chave `peso`. Lê o
+Conta no disco não é peso percebido. Sem chave `probe`. Se o laço senta a guarda, o `feel` nomeia o sit que a guarda já senta. Pose no disco não é peso percebido. Sem chave `bank`. Se o laço emite o término, o `feel` nomeia o land que o dash já emite. Pose no disco não é peso percebido. Sem chave `land`. Se a receita recusa que o autor sugerido seja quem jogou, o `feel` nomeia o autor que a receita já recusa. Recibo no disco não é sessão. Sem chave `autor`. Se a receita recusa que o valor seja constante universal, o `feel` nomeia o universal que a receita já recusa. Número no disco não é lei. Sem chave `universais`. Se a receita recusa que velocidade não nula prove a posição, o item da constante nomeia a posição que a receita já recusa. Número no disco não é a pose. Sem chave `posição`. Número no disco não é peso percebido. Se o README recusa que a constante nomeada seja peso percebido, o `constants` do `feel` nomeia o peso que o README já recusa. Número no disco não é o verbo. Sem chave `peso`. Se a receita recusa que o coil seja janela de hit, o `constants` do `feel` nomeia a janela que a receita já recusa. Coil no disco não é a janela. Sem chave `janela`. Lê o
 recibo de observação no disco; nomeia `then.play` e `then.note`
 sem executar. Com last-run, nomeia `then.seed` e `then.invite`
 — o mesmo endereço que `play` / `guide` — e o `note` do `next`
@@ -136,7 +136,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
 3. **Antecipação** — frames ou pose que prometem o golpe/pulo/disparo antes
    do impacto. Sem ela, a ação chega “de graça” ou atrasada demais.
    No starter o avanço senta (`squashCoil`) dois ticks antes de alongar;
-   esses ticks já atravessam o estilhaço — o coil não é janela de hit.
+   esses ticks já atravessam o estilhaço — o coil não é janela de hit. Se a receita recusa que o coil seja janela de hit, o `constants` do `feel` nomeia a janela que a receita já recusa. Coil no disco não é a janela. Sem chave `janela`.
    O coil marca o rumo no corpo (traço na ponta, na direção do
    último avanço). Sem faixa no HUD. Traço no disco não é peso percebido.
    O término emite `land` (squash, câmera, puff, rumble e voz).

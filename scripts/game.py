@@ -3175,7 +3175,44 @@ def feel_constants_scope():
     named = feel_constants_weight_scope()
     if named:
         scope += named
+    windup = feel_constants_window_scope()
+    if windup:
+        scope += windup
     return scope
+
+
+# A receita já recusa que o coil
+# seja janela de hit. Sem isto o
+# feel listava o CONFIG e calava
+# a recusa. Coil no disco não é
+# a janela.
+FEEL_WINDOW = re.compile(r"o coil não é janela de hit")
+
+
+def recipe_refuses_coil_as_hit_window(text):
+    return bool(text and FEEL_WINDOW.search(text))
+
+
+def feel_constants_window_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_coil_as_hit_window(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_constants_window_scope():
+    if not feel_constants_window_source():
+        return ""
+    return (
+        " O disco recusa que o coil seja janela de hit "
+        "(`janela`). Coil no disco não é a janela."
+    )
 
 
 def feel_constant_items(feel):

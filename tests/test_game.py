@@ -13969,6 +13969,58 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn("a constante nomeada seja peso percebido", game.next_scope())
 
+    def test_feel_constants_name_the_window_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_coil_as_hit_window(recipe),
+            "a receita já recusa que o coil seja janela de hit",
+        )
+        self.assertEqual(game.feel_constants_window_source(), "recipes/feel.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.feel_reading(starter)
+        item = report["constants"]
+        self.assertTrue(item["items"], "o feel já lista constantes neste starter")
+        self.assertIn(
+            "o coil seja janela de hit",
+            item["scope"],
+            "o feel listava o CONFIG e calava a recusa",
+        )
+        self.assertIn("(`janela`)", item["scope"])
+        self.assertNotIn("janela", item)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_coil_as_hit_window(""))
+        with mock.patch.object(game, "feel_constants_window_source", return_value=None):
+            silent = game.feel_reading(starter)
+        self.assertNotIn("o coil seja janela de hit", silent["constants"]["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a janela que a receita já recusa", recipe)
+        self.assertIn("nomeia a janela que a receita já recusa", create)
+        self.assertIn("nomeia a janela que a receita já recusa", skill)
+        self.assertIn("nomeia a janela que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o coil seja janela de hit", report["scope"])
+        if report.get("sources"):
+            self.assertNotIn(
+                "o coil seja janela de hit",
+                report["sources"].get("scope") or "",
+            )
+        if report.get("then"):
+            self.assertNotIn(
+                "o coil seja janela de hit",
+                report["then"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o coil seja janela de hit",
+            game.feel_constant_items(report)[0].get("scope") or "",
+        )
+        self.assertNotIn("o coil seja janela de hit", game.craft_reading(self.project)["scope"])
+        self.assertNotIn("o coil seja janela de hit", game.next_scope())
+        self.assertNotIn("o coil seja janela de hit", game.alternative_scope())
+
     def test_feel_names_the_last_run_seed_without_claiming_it_felt(self):
         destination = self.root / "feel-com-seed"
         game.start_project(destination, "canvas-arcade")

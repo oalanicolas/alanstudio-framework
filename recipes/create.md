@@ -141,7 +141,7 @@ Pontos de partida a **examinar**, não bases aprovadas automaticamente:
 - Unity: protótipo local com verificações próprias; presença em `prototypes/` não
   declara publicação.
 
-Não copie paleta, feel ou mix de uma família sem ADAPT e proveniência. Se o visual recusa que salvar a imagem seja o trabalho, a área `art_direction` do `scan` nomeia a imagem que o visual já recusa. Imagem no disco não é a aprovação. Sem chave `imagem`. Se a receita recusa que um tween genérico sem dono seja feel reutilizável, o `feel` nomeia o tween que a receita já recusa. Receita no disco não é peso percebido. Sem chave `tween`. O
+Não copie paleta, feel ou mix de uma família sem ADAPT e proveniência. Se o visual recusa que salvar a imagem seja o trabalho, a área `art_direction` do `scan` nomeia a imagem que o visual já recusa. Imagem no disco não é a aprovação. Sem chave `imagem`. Se a receita recusa que um tween genérico sem dono seja feel reutilizável, o `feel` nomeia o tween que a receita já recusa. Receita no disco não é peso percebido. Sem chave `tween`. Se a receita recusa que o coil seja janela de hit, o `constants` do `feel` nomeia a janela que a receita já recusa. Coil no disco não é a janela. Sem chave `janela`. O
 destino continua com instância própria no design system.
 
 BMad inspira leitura por etapa e retomada (`RE-GDS-002`, `RE-GDS-022`); seus passos
