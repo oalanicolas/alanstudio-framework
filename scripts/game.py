@@ -8633,7 +8633,44 @@ def playtest_curve_scope():
             " O disco recusa que o aperto seja curva observada (`aperto`). "
             "Número no disco não é sessão."
         )
+    close = playtest_curve_close_scope()
+    if close:
+        scope += close
     return scope
+
+
+# A receita já recusa que o fecho
+# seja faixa no HUD. Sem isto a
+# curva copiava never_banked e
+# calava a recusa. Fecho no disco
+# não é a faixa.
+FEEL_CLOSE = re.compile(r"não é faixa no HUD")
+
+
+def recipe_refuses_close_as_hud_bar(text):
+    return bool(text and FEEL_CLOSE.search(text))
+
+
+def playtest_curve_close_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_close_as_hud_bar(text):
+        return "recipes/feel.md"
+    return None
+
+
+def playtest_curve_close_scope():
+    if not playtest_curve_close_source():
+        return None
+    return (
+        " O disco recusa que o fecho seja faixa no HUD "
+        "(`fecho`). Fecho no disco não é a faixa."
+    )
 
 
 TALLY_FIELDS = ("score", "collected", "missed", "hits", "banks")

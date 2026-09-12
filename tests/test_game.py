@@ -19908,6 +19908,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         invite = game.invite_playtest(destination)
         self.assertNotIn("aperto seja curva observada", invite["scope"])
 
+    def test_playtest_curve_names_the_close_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_close_as_hud_bar(recipe),
+            "a receita já recusa que o fecho seja faixa no HUD",
+        )
+        self.assertEqual(game.playtest_curve_close_source(), "recipes/feel.md")
+        destination = self.root / "com-fecho"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "run": {"seed": 8, "score": 12, "ticks": 400},
+            "curve": {"never_banked": True, "unbanked_at_end": 3},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(destination)
+        item = report["candidate_curve"]
+        self.assertIsNotNone(item, "o playtest já lista a curva")
+        self.assertIn(
+            "o fecho seja faixa no HUD",
+            item["scope"],
+            "a curva copiava never_banked e calava a recusa",
+        )
+        self.assertIn("(`fecho`)", item["scope"])
+        self.assertNotIn("fecho", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_close_as_hud_bar(""))
+        with mock.patch.object(game, "playtest_curve_close_source", return_value=None):
+            silent = game.playtest_reading(destination)
+        self.assertNotIn("o fecho seja faixa no HUD", silent["candidate_curve"]["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o fecho que a receita já recusa", recipe)
+        self.assertIn("nomeia o fecho que a receita já recusa", create)
+        self.assertIn("nomeia o fecho que a receita já recusa", skill)
+        self.assertIn("nomeia o fecho que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o fecho seja faixa no HUD", report["scope"])
+        tally = report.get("candidate_tally")
+        if isinstance(tally, dict):
+            self.assertNotIn("o fecho seja faixa no HUD", tally.get("scope") or "")
+        self.assertNotIn("o fecho seja faixa no HUD", game.next_scope())
+        self.assertNotIn("o fecho seja faixa no HUD", game.play_scope(destination))
+        self.assertNotIn("o fecho seja faixa no HUD", game.feel_unobserved_scope())
+        self.assertNotIn("o fecho seja faixa no HUD", game.cycle_scope() or "")
+        self.assertNotIn("o fecho seja faixa no HUD", game.git_summary_scope())
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertNotIn("o fecho seja faixa no HUD", game.feel_reading(starter)["scope"])
+        invite = game.invite_playtest(destination)
+        self.assertNotIn("o fecho seja faixa no HUD", invite["scope"])
+
     def test_playtest_names_the_tally_the_last_run_already_counts(self):
         destination = self.root / "com-conta"
         game.init(destination, "canvas-arcade")

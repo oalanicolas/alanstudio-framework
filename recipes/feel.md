@@ -67,7 +67,7 @@ Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.
 Traço no disco não é alguém de fora. Sem chave `session`.
 Se o `tools/serve.*` grava o recado, o `playtest` nomeia o recado que o serve já grava. Texto no disco não é alguém de fora. Sem chave `note`.
 `playtest` relata
-`candidate_policy` e `candidate_tally`. Nenhum dos dois é sessão observada. Se a receita recusa que a origem no last-run seja sessão observada, o `candidate_policy` nomeia a origem que a receita já recusa. Texto no disco não é alguém de fora. Sem chave `origem`. Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Se a receita recusa que o número na faixa preencha os quatro, o `candidate_tally` nomeia o quatro que a receita já recusa. Conta no disco não é achado. Sem chave `quatro`. Se a receita recusa que o aperto seja curva observada, o `candidate_curve` nomeia o aperto que a receita já recusa. Número no disco não é sessão. Sem chave `aperto`. Se o
+`candidate_policy` e `candidate_tally`. Nenhum dos dois é sessão observada. Se a receita recusa que a origem no last-run seja sessão observada, o `candidate_policy` nomeia a origem que a receita já recusa. Texto no disco não é alguém de fora. Sem chave `origem`. Se a pesquisa recusa que cinco playtesters sejam critério, o `candidate_tally` nomeia o cinco que a pesquisa já recusa. Conta no disco não é sessão observada. Sem chave `cinco`. Se a receita recusa que o número na faixa preencha os quatro, o `candidate_tally` nomeia o quatro que a receita já recusa. Conta no disco não é achado. Sem chave `quatro`. Se a receita recusa que o aperto seja curva observada, o `candidate_curve` nomeia o aperto que a receita já recusa. Número no disco não é sessão. Sem chave `aperto`. Se a receita recusa que o fecho seja faixa no HUD, o `candidate_curve` nomeia o fecho que a receita já recusa. Fecho no disco não é a faixa. Sem chave `fecho`. Se o
 projeto (ou o starter) declara `session`, `then` a aponta. `note --from-run`
 anexa o resumo e, se houver, a curva — o mapa já põe `--from-run`
 quando o arquivo existe. Se o disco tem last-run e o comando veio sem --from-run, o note nomeia o last-run que o disco já guarda. Sem o arquivo a frase some. Nomear não anexa. Depois do fim, a página grava o mesmo
@@ -339,7 +339,7 @@ No travel o rótulo nomeia o avanço; a faixa já enche.
 Recarregando no sit da guarda permanece — o arco não promete
 o dash. Se a receita recusa que o arco prometa o dash, o `play` nomeia o arco que a receita já recusa. Arco no disco não é o dash. Sem chave `arco`.
 O fecho da partida contorna o campo e pulsa o controle a cada
-segundo; não é faixa no HUD. Com menos movimento vira traço.
+segundo; não é faixa no HUD. Se a receita recusa que o fecho seja faixa no HUD, o `candidate_curve` nomeia o fecho que a receita já recusa. Fecho no disco não é a faixa. Sem chave `fecho`. Com menos movimento vira traço.
 A prática e a guarda falam no mixer quando a janela acaba;
 a prática que acaba nomeia a ameaça — os orbes já caíam; a
 porta reusa a voz e continua "a chuva começa"; a folga que

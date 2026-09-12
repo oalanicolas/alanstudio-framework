@@ -79,7 +79,7 @@ opcional em nenhuma delas. Se a receita recusa que o piso do verbo seja opcional
    o projeto — sem caminho, a frase nomeia e cria a pasta —, põe a
    frase na abertura e no aviso do primeiro ciclo, escreve `AGENTS.md`
    com o comando que abre, o `note` e o `playtest` (não lista rascunhos que não plantou) e devolve o comando que abre o jogo.
-   O `playtest` só lê. Sem os quatro não é achado. Nomear o leitor não observa. Se a receita recusa que os quatro no disco sejam playtest observado, o `structured` do `playtest` nomeia o observado que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `observado`. Se o onboard recusa que tempo de sessão seja interesse, o `dimensions[pacing]` do `production_bar` nomeia o interesse que o onboard já recusa. Relógio no disco não é o interesse. Sem chave `interesse`.
+   O `playtest` só lê. Sem os quatro não é achado. Nomear o leitor não observa. Se a receita recusa que os quatro no disco sejam playtest observado, o `structured` do `playtest` nomeia o observado que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `observado`. Se a receita recusa que o fecho seja faixa no HUD, o `candidate_curve` nomeia o fecho que a receita já recusa. Fecho no disco não é a faixa. Sem chave `fecho`. Se o onboard recusa que tempo de sessão seja interesse, o `dimensions[pacing]` do `production_bar` nomeia o interesse que o onboard já recusa. Relógio no disco não é o interesse. Sem chave `interesse`.
    O prompt nomeia o `playtest` que o `AGENTS.md` já cita. Só lê. Sem os
    quatro não é achado. Sem `then.playtest`. Nomear o leitor não observa.
    Sem memória no disco, `template agents` e o `next` geram o mesmo
