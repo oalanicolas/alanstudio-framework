@@ -18273,7 +18273,47 @@ def alternative_scope():
             " O disco recusa que a alternativa fabrique tarefa (`fabricação`). "
             "Lista no disco não é backlog."
         )
+    stage = alternative_stage_scope()
+    if stage:
+        scope += stage
     return scope
+
+
+# O processo já recusa que comando
+# registrado com falha ou proposta
+# rejeitada conclua a etapa. Sem
+# isto a alternativa copiava a
+# ação e calava a recusa. Proposta
+# no disco não é a etapa.
+PROCESS_STAGE = re.compile(
+    r"Um comando registrado com falha ou uma proposta rejeitada não conclui a etapa"
+)
+
+
+def process_refuses_failed_command_as_stage(text):
+    return bool(text and PROCESS_STAGE.search(text))
+
+
+def alternative_stage_source():
+    path = FRAMEWORK / "references" / "process.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_failed_command_as_stage(text):
+        return "references/process.md"
+    return None
+
+
+def alternative_stage_scope():
+    if not alternative_stage_source():
+        return ""
+    return (
+        " O disco recusa que comando registrado com falha ou uma proposta "
+        "rejeitada conclua a etapa (`etapa`). Proposta no disco não é a etapa."
+    )
 
 
 def next_step(project, focus="create", studies_root=None):
