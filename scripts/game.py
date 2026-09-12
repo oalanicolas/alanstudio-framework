@@ -6533,6 +6533,11 @@ def playtest_reading(project):
     if candidate_tally is not None:
         candidate_tally = dict(candidate_tally, scope=playtest_tally_scope())
     invite = invite_path(project)
+    if invite:
+        invite = {
+            "path": invite,
+            "scope": playtest_invite_scope(),
+        }
     qa_file = qa.is_file() and not qa.is_symlink()
     try:
         scripts, _manager = project_commands(project)
@@ -6672,6 +6677,58 @@ def invite_path(project):
     if path.is_file() and not path.is_symlink():
         return INVITE
     return None
+
+
+# A receita já recusa que o convite
+# seja preferência. Sem isto o
+# playtest relatava a página e
+# calava a recusa. Convite no disco
+# não é a sessão.
+PERSIST_PREFERENCE = re.compile(r"não\s+preferência")
+
+
+def recipe_refuses_invite_as_preference(text):
+    return bool(text and PERSIST_PREFERENCE.search(text))
+
+
+def playtest_invite_preference_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_invite_as_preference(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def playtest_invite_preference_scope():
+    if not playtest_invite_preference_source():
+        return None
+    return (
+        " O disco recusa que o convite seja preferência "
+        "(`preferência`). Convite no disco não é a sessão."
+    )
+
+
+def playtest_invite_scope():
+    scope = (
+        "página do convite no disco. "
+        "Não observa a sessão."
+    )
+    named = playtest_invite_preference_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def playtest_invite_path(reading):
+    invite = (reading or {}).get("invite")
+    if isinstance(invite, dict):
+        return invite.get("path")
+    return invite
 
 
 def last_run_axes(project):

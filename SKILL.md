@@ -400,7 +400,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
    o candidato se last-run existir. Gravado não é alguém de fora.
    `next` aponta o convite depois do recibo de quem fez. O serve anuncia
    localhost e, se a máquina tiver outro endereço IPv4, a URL da rede —
-   compartilhar essa URL não é alguém de fora. Se o serve prende o bind, o convite nomeia o bind que o serve já prende. Bind no disco não é alguém de fora. Sem chave `HOST`. Se a receita recusa que o endereço seja duas sessões, o convite nomeia as sessões que a receita já recusa. Convite no disco não é alguém de fora. Sem chave `sessões`. Se a receita recusa que rolar seja alguém de fora, o convite nomeia o rolar que a receita já recusa. Página no disco não é a sessão. Sem chave `rolar`.
+   compartilhar essa URL não é alguém de fora. Se o serve prende o bind, o convite nomeia o bind que o serve já prende. Bind no disco não é alguém de fora. Sem chave `HOST`. Se a receita recusa que o endereço seja duas sessões, o convite nomeia as sessões que a receita já recusa. Convite no disco não é alguém de fora. Sem chave `sessões`. Se a receita recusa que o convite seja preferência, o `invite` do `playtest` nomeia a preferência que a receita já recusa. Convite no disco não é a sessão. Sem chave `preferência`. Se a receita recusa que rolar seja alguém de fora, o convite nomeia o rolar que a receita já recusa. Página no disco não é a sessão. Sem chave `rolar`.
    A partida no serve grava
    o candidato em `docs/playtest/last-run.json`; a simulação também.
    Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.

@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.580 — o invite do playtest nomeia a preferência que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+convite
+é
+candidato,
+não
+preferência.
+O
+playtest
+relatava
+a
+página
+e
+calava
+a
+recusa.
+Agora
+o
+`invite`
+do
+`playtest`
+nomeia
+a
+preferência.
+Convite
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`preferência`.
+Nomear
+não
+observa.
+
+O que 0.9.580 não afirma:
+nomear
+a
+página
+não
+é
+gravar
+a
+preferência.
+
 ## 0.9.579 — o candidate_spawn nomeia a retoma que a receita já recusa
 
 A

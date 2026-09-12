@@ -66,7 +66,7 @@ continua sendo repetir a última seed.
 Pausa, `pagehide`, `beforeunload`, perda de foco e o controle que some gravam o hold. Se o disco escuta `beforeunload`, o `save` nomeia o fechamento que o disco já grava. Gancho no disco não é aba fechada. Sem chave `beforeunload`. Se o disco verifica a gravação, o `save` nomeia a gravação que o storage já verifica. Escrita no disco não é aba fechada. Sem chave `storage`. Terminar ou resetar limpa.
 `?look=` / `?spawn=` / `?speed=` vestem a sessão. Fechar, esconder
 ou `flush` não grava esses eixos — o convite é candidato, não
-preferência. Escolher no painel grava. Query no disco não é
+preferência. Se a receita recusa que o convite seja preferência, o `invite` do `playtest` nomeia a preferência que a receita já recusa. Convite no disco não é a sessão. Sem chave `preferência`. Escolher no painel grava. Query no disco não é
 aba fechada nem `trusted`.
 A outra aba veste as preferências desta página (`storage`); o progresso
 em curso não. Ouvir não é aba fechada. Isto **não** é aba fechada observada e não sobe `state_trust`. Grava

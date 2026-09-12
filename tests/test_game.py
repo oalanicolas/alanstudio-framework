@@ -13249,6 +13249,69 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["finding_attachments"], [])
         self.assertEqual(report["observations"], [])
 
+    def test_playtest_invite_names_the_preference_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_invite_as_preference(recipe),
+            "a receita já recusa que o convite seja preferência",
+        )
+        self.assertEqual(game.playtest_invite_preference_source(), "recipes/persistence.md")
+        empty = game.playtest_reading(self.project)
+        self.assertIsNone(empty["invite"])
+        self.assertIsNone(game.playtest_invite_path(empty))
+        page = self.project / "docs/playtest"
+        page.mkdir(parents=True)
+        (page / "invite.md").write_text("# Convite\n", encoding="utf-8")
+        self.assertEqual(game.invite_path(self.project), "docs/playtest/invite.md")
+        report = game.playtest_reading(self.project)
+        item = report["invite"]
+        self.assertEqual(item["path"], "docs/playtest/invite.md")
+        self.assertEqual(item["path"], game.playtest_invite_path(report))
+        self.assertIn(
+            "o convite seja preferência",
+            item["scope"],
+            "o playtest relatava a página e calava a recusa",
+        )
+        self.assertIn("(`preferência`)", item["scope"])
+        self.assertNotIn("preferência", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_invite_as_preference(""))
+        with mock.patch.object(game, "playtest_invite_preference_source", return_value=None):
+            silent = game.playtest_reading(self.project)
+        self.assertNotIn(
+            "o convite seja preferência",
+            silent["invite"]["scope"],
+        )
+        feel = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a preferência que a receita já recusa", recipe)
+        self.assertIn("nomeia a preferência que a receita já recusa", feel)
+        self.assertIn("nomeia a preferência que a receita já recusa", skill)
+        self.assertIn("nomeia a preferência que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o convite seja preferência", report["scope"])
+        if report.get("candidate_spawn"):
+            self.assertNotIn(
+                "o convite seja preferência",
+                report["candidate_spawn"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o convite seja preferência",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "o convite seja preferência",
+            game.save_reading(self.project)["scope"],
+        )
+        self.assertNotIn("o convite seja preferência", game.next_scope())
+        self.assertEqual(report["findings"], [])
+        self.assertEqual(report["finding_attachments"], [])
+        self.assertEqual(report["observations"], [])
+
     def test_a_structured_finding_is_form_not_an_observed_session(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "docs").mkdir()
@@ -13302,7 +13365,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         again = game.invite_playtest(destination)
         self.assertFalse(again["created"])
         reading = game.playtest_reading(destination)
-        self.assertEqual(reading["invite"], "docs/playtest/invite.md")
+        self.assertEqual(reading["invite"]["path"], "docs/playtest/invite.md")
         self.assertFalse(reading["observed"])
         self.assertFalse(reading["outsider"])
         game.note_observation(destination, "Ana", "o verbo pesa no guarda")
