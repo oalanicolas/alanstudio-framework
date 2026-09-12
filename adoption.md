@@ -30,6 +30,64 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.599 — o rains do art nomeia o movimento que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+a
+mesa
+no
+disco
+não
+é
+volume
+nem
+comparação
+em
+movimento.
+O
+art
+listava
+as
+mesas
+e
+calava
+a
+recusa.
+Agora
+o
+`rains`
+do
+`art`
+nomeia
+o
+movimento.
+Mesa
+no
+disco
+não
+é
+o
+quadro.
+Sem
+chave
+`movimento`.
+Nomear
+não
+compara.
+
+O que 0.9.599 não afirma:
+listar
+a
+mesa
+não
+compara
+em
+movimento.
+
 ## 0.9.598 — o candidate_look do playtest nomeia a arte que a receita já recusa
 
 A

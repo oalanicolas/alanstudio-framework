@@ -5140,6 +5140,11 @@ def art_reading(project):
     rain_scope = art_rain_scope()
     for item in rains:
         item["scope"] = rain_scope
+    if rains:
+        rains = {
+            "items": rains,
+            "scope": art_rains_scope(),
+        }
     if sources:
         sources = {
             "paths": sources[:8],
@@ -10351,6 +10356,58 @@ def art_rain_scope():
             "Lista no disco não é comparação."
         )
     return scope
+
+
+# A receita já recusa que a mesa no
+# disco seja comparação em movimento.
+# Sem isto o art listava as mesas e
+# calava a recusa. Mesa no disco não
+# é o quadro.
+VISUAL_MOTION = re.compile(r"volume nem comparação em movimento")
+
+
+def recipe_refuses_table_as_motion(text):
+    return bool(text and VISUAL_MOTION.search(text))
+
+
+def art_rains_motion_source():
+    path = VISUAL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_table_as_motion(text):
+        return "recipes/visual.md"
+    return None
+
+
+def art_rains_motion_scope():
+    if not art_rains_motion_source():
+        return None
+    return (
+        " O disco recusa que a mesa no disco seja comparação em movimento "
+        "(`movimento`). Mesa no disco não é o quadro."
+    )
+
+
+def art_rains_scope():
+    scope = (
+        "mesas de chuva no disco. "
+        "Não compara em movimento."
+    )
+    named = art_rains_motion_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def art_rain_items(reading):
+    rains = (reading or {}).get("rains") or []
+    if isinstance(rains, dict):
+        return list(rains.get("items") or [])
+    return list(rains)
 
 
 # A receita já recusa que importação sem

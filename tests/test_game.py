@@ -2393,7 +2393,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.art_reading(starter)
         self.assertTrue(report["rains"], "o art já lista mesas neste starter")
-        item = report["rains"][0]
+        item = game.art_rain_items(report)[0]
         self.assertIn(
             "mesa seja volume",
             item["scope"],
@@ -2405,7 +2405,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(game.recipe_refuses_table_volume(""))
         with mock.patch.object(game, "art_rain_volume_source", return_value=None):
             silent = game.art_reading(starter)
-        self.assertNotIn("mesa seja volume", silent["rains"][0]["scope"])
+        self.assertNotIn("mesa seja volume", game.art_rain_items(silent)[0]["scope"])
         skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
         readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
         self.assertIn("nomeia o volume que a receita já recusa", recipe)
@@ -2416,6 +2416,70 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("mesa seja volume", game.next_scope())
         self.assertNotIn("mesa seja volume", game.content_reading(starter)["scope"])
         self.assertNotIn("mesa seja volume", game.scan(starter)["scope"])
+
+    def test_art_rains_name_the_motion_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_table_as_motion(recipe),
+            "a receita já recusa que a mesa no disco seja comparação em movimento",
+        )
+        self.assertEqual(game.art_rains_motion_source(), "recipes/visual.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.art_reading(starter)
+        item = report["rains"]
+        self.assertTrue(item["items"], "o art já lista mesas neste starter")
+        self.assertEqual(item["items"], game.art_rain_items(report))
+        self.assertIn(
+            "a mesa no disco seja comparação em movimento",
+            item["scope"],
+            "o art listava as mesas e calava a recusa",
+        )
+        self.assertIn("(`movimento`)", item["scope"])
+        self.assertNotIn("movimento", item)
+        self.assertFalse(report["consistent"])
+        self.assertFalse(game.recipe_refuses_table_as_motion(""))
+        empty = game.art_reading(self.root / "sem-chuva")
+        self.assertEqual(empty["rains"], [])
+        with mock.patch.object(game, "art_rains_motion_source", return_value=None):
+            silent = game.art_reading(starter)
+        self.assertNotIn(
+            "a mesa no disco seja comparação em movimento",
+            silent["rains"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o movimento que a receita já recusa", recipe)
+        self.assertIn("nomeia o movimento que a receita já recusa", skill)
+        self.assertIn("nomeia o movimento que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a mesa no disco seja comparação em movimento", report["scope"])
+        if report.get("palettes"):
+            self.assertNotIn(
+                "a mesa no disco seja comparação em movimento",
+                report["palettes"][0].get("scope") or "",
+            )
+        if report.get("manifests"):
+            self.assertNotIn(
+                "a mesa no disco seja comparação em movimento",
+                report["manifests"].get("scope") or "",
+            )
+        if report.get("sources"):
+            self.assertNotIn(
+                "a mesa no disco seja comparação em movimento",
+                report["sources"].get("scope") or "",
+            )
+        if report.get("bible"):
+            self.assertNotIn(
+                "a mesa no disco seja comparação em movimento",
+                report["bible"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "a mesa no disco seja comparação em movimento",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn("a mesa no disco seja comparação em movimento", game.next_scope())
 
     def test_art_names_the_appearance_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
@@ -2452,7 +2516,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(report["rains"])
         self.assertNotIn(
             "importação sem erro comprove aparência equivalente",
-            report["rains"][0].get("scope") or "",
+            game.art_rain_items(report)[0].get("scope") or "",
         )
         self.assertNotIn("importação sem erro comprove aparência equivalente", game.art_direction_scope())
         self.assertNotIn("importação sem erro comprove aparência equivalente", game.next_scope())
@@ -2493,7 +2557,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(report["rains"])
         self.assertNotIn(
             "uma correção local valide o enquadramento",
-            report["rains"][0].get("scope") or "",
+            game.art_rain_items(report)[0].get("scope") or "",
         )
         self.assertNotIn("uma correção local valide o enquadramento", game.art_direction_scope())
         self.assertNotIn("uma correção local valide o enquadramento", game.next_scope())
@@ -2539,7 +2603,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(report["rains"])
         self.assertNotIn(
             "câmera próxima e geometria numericamente correta provem leitura",
-            report["rains"][0].get("scope") or "",
+            game.art_rain_items(report)[0].get("scope") or "",
         )
         self.assertNotIn(
             "câmera próxima e geometria numericamente correta provem leitura",
@@ -2604,7 +2668,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         if report.get("rains"):
             self.assertNotIn(
                 "qualidade visual aprovada seja moeda de troca por número",
-                report["rains"][0].get("scope") or "",
+                game.art_rain_items(report)[0].get("scope") or "",
             )
         self.assertNotIn(
             "qualidade visual aprovada seja moeda de troca por número",
@@ -2671,7 +2735,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         if report.get("rains"):
             self.assertNotIn(
                 "paleta no código ou em palettes.json seja direção consistente",
-                report["rains"][0].get("scope") or "",
+                game.art_rain_items(report)[0].get("scope") or "",
             )
         self.assertNotIn(
             "paleta no código ou em palettes.json seja direção consistente",
@@ -12211,7 +12275,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(art["missing"])
         self.assertFalse(art["consistent"])
         self.assertEqual({item["key"] for item in art["palettes"]}, {"normal", "contrast", "dusk", "calm"})
-        self.assertEqual({item["key"] for item in art["rains"]}, {"spawn", "dusk", "calm"})
+        self.assertEqual({item["key"] for item in game.art_rain_items(art)}, {"spawn", "dusk", "calm"})
         self.assertEqual(art["bible"]["path"], "docs/art-bible.md")
         self.assertTrue(art["bible_current"])
         self.assertFalse(art["bible_draft"])
@@ -12307,9 +12371,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("perigo", recipe)
         self.assertIn("intervalTicks", dusk)
         report = game.art_reading(starter)
-        self.assertEqual({item["key"] for item in report["rains"]}, {"spawn", "dusk", "calm"})
-        self.assertNotIn("palettes", {item["key"] for item in report["rains"]})
-        self.assertNotIn("copy", {item["key"] for item in report["rains"]})
+        self.assertEqual({item["key"] for item in game.art_rain_items(report)}, {"spawn", "dusk", "calm"})
+        self.assertNotIn("palettes", {item["key"] for item in game.art_rain_items(report)})
+        self.assertNotIn("copy", {item["key"] for item in game.art_rain_items(report)})
         self.assertFalse(report["consistent"])
         self.assertIn("chuva", report["scope"])
         self.assertTrue(report["guide"].endswith("recipes/visual.md"))
@@ -12332,9 +12396,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             })
         )
         report = game.art_reading(self.project)
-        self.assertEqual([item["key"] for item in report["rains"]], ["gale"])
-        self.assertEqual(report["rains"][0]["source"], "data/gale.json")
-        self.assertEqual(report["rains"][0]["hazard"], 0.6)
+        self.assertEqual([item["key"] for item in game.art_rain_items(report)], ["gale"])
+        self.assertEqual(game.art_rain_items(report)[0]["source"], "data/gale.json")
+        self.assertEqual(game.art_rain_items(report)[0]["hazard"], 0.6)
         self.assertFalse(report["declared"])
         self.assertFalse(report["consistent"])
 
@@ -12439,7 +12503,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
     def test_art_names_the_rain_risk_the_door_already_reads(self):
         starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
         report = game.art_reading(starter)
-        by_key = {item["key"]: item for item in report["rains"]}
+        by_key = {item["key"]: item for item in game.art_rain_items(report)}
         self.assertGreater(
             by_key["dusk"]["hazard"],
             by_key["calm"]["hazard"],
