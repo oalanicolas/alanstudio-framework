@@ -12047,7 +12047,44 @@ def audit_scope():
             " O disco recusa que a checagem seja daemon (`daemon`). "
             "Roteiro no disco não é interceptação."
         )
+    named = audit_stop_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O roteiro já recusa que executed
+# falso seja uma instrução para
+# parar. Sem isto o audit relatava
+# o comando e calava a recusa.
+# Roteiro no disco não é espera.
+AUDIT_STOP = re.compile(r"não é uma instrução para parar")
+
+
+def project_audit_refuses_false_as_stop(text):
+    return bool(text and AUDIT_STOP.search(text))
+
+
+def audit_stop_source():
+    path = AUDIT_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if project_audit_refuses_false_as_stop(text):
+        return "references/project-audit.md"
+    return None
+
+
+def audit_stop_scope():
+    if not audit_stop_source():
+        return None
+    return (
+        " O disco recusa que executed falso seja uma instrução para parar "
+        "(`parar`). Roteiro no disco não é espera."
+    )
 
 
 # O roteiro já recusa que a lacuna de

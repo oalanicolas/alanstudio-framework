@@ -4469,6 +4469,61 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("seja daemon", game.next_scope())
         self.assertNotIn("seja daemon", game._scan_scope(self.project))
 
+    def test_audit_names_the_stop_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.project_audit_refuses_false_as_stop(guide),
+            "o roteiro já recusa que executed falso seja uma instrução para parar",
+        )
+        self.assertEqual(game.audit_stop_source(), "references/project-audit.md")
+        report = game.scan(self.project)
+        item = report["audit"]
+        self.assertIn(
+            "executed falso seja uma instrução para parar",
+            item["scope"],
+            "o audit relatava o comando e calava a recusa",
+        )
+        self.assertIn("(`parar`)", item["scope"])
+        self.assertNotIn("parar", item)
+        self.assertFalse(item["executed"])
+        self.assertFalse(game.project_audit_refuses_false_as_stop(""))
+        with mock.patch.object(game, "audit_stop_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn(
+            "executed falso seja uma instrução para parar",
+            silent["audit"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o parar que o roteiro já recusa", guide)
+        self.assertIn("nomeia o parar que o roteiro já recusa", recipe)
+        self.assertIn("nomeia o parar que o roteiro já recusa", skill)
+        self.assertIn("nomeia o parar que o roteiro já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn(
+            "executed falso seja uma instrução para parar",
+            game.audit_deferred_scope(),
+        )
+        self.assertNotIn(
+            "executed falso seja uma instrução para parar",
+            game.audit_required_scope(),
+        )
+        self.assertNotIn(
+            "executed falso seja uma instrução para parar",
+            report["scope"],
+        )
+        self.assertNotIn(
+            "executed falso seja uma instrução para parar",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "executed falso seja uma instrução para parar",
+            game.gate_reading(self.project)["scope"],
+        )
+
     def test_context_names_the_progress_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(

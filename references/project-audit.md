@@ -182,7 +182,7 @@ Mesmo com todos os candidatos, a estrutura não recebe selo de suficiente, atual
 ou aprovada. Se a leitura necessária à tarefa revelar contradição ou desatualização,
 avise e faça o levantamento delimitado também. O scanner retorna JSON, sem escrever relatório,
 executar código ou começar auditoria. Se o roteiro recusa que o scanner comece a auditoria, o `required` do `audit` nomeia o começo que o roteiro já recusa. JSON no disco não é o levantamento. Sem chave `começo`. Saída zero significa checagem executada.
-`audit.executed: false` descreve o comando, não é uma instrução para parar.
+`audit.executed: false` descreve o comando, não é uma instrução para parar. Se o roteiro recusa que executed falso seja uma instrução para parar, o `audit` nomeia o parar que o roteiro já recusa. Roteiro no disco não é espera. Sem chave `parar`.
 
 ## Avisar e prosseguir
 

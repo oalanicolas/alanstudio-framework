@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.659 — o audit nomeia o parar que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+executed
+falso
+não
+é
+uma
+instrução
+para
+parar.
+O
+audit
+relatava
+o
+comando
+e
+calava
+a
+recusa.
+Agora
+o
+`audit`
+nomeia
+o
+parar.
+Roteiro
+no
+disco
+não
+é
+espera.
+Sem
+chave
+`parar`.
+Nomear
+não
+observa.
+
 ## 0.9.658 — o gate nomeia o abandono que o roteiro já recusa
 
 O
