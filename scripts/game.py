@@ -5564,6 +5564,9 @@ def save_used_scope():
     keep = save_used_keep_scope()
     if keep:
         scope += keep
+    idx = save_used_index_scope()
+    if idx:
+        scope += idx
     return scope
 
 
@@ -5670,6 +5673,43 @@ def save_used_keep_scope():
     return (
         " O disco recusa que apagar o save real faça um teste passar "
         "(`original`). Teste no disco não é o save."
+    )
+
+
+# A receita já recusa que o
+# índice ou o nome de arquivo
+# preserve o save. Sem isto o
+# save relatava o uso e calava
+# a recusa. Índice no disco
+# não é a entidade.
+PERSIST_INDEX = re.compile(
+    r"referenciados por índice ou por nome de arquivo"
+)
+
+
+def recipe_refuses_index_as_stable_identity(text):
+    return bool(text and PERSIST_INDEX.search(text))
+
+
+def save_used_index_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_index_as_stable_identity(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_used_index_scope():
+    if not save_used_index_source():
+        return None
+    return (
+        " O disco recusa que o índice ou o nome de arquivo preserve o save "
+        "(`índice`). Índice no disco não é a entidade."
     )
 
 

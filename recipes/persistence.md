@@ -39,7 +39,7 @@ Jogando a chave some. Nomear não é aba fechada. Se a receita recusa que o avis
 ou `settings.broken`. Nomear não é
 aba fechada nem `trusted`. Se a receita recusa que o nomear seja trusted, o `warned` do `save` nomeia a confiança que a receita já recusa. Arquivo no disco não é a aba. Sem chave `confiança`.
 **Não apague save real para fazer um teste passar**; ao
-migrar, preserve o original até a nova gravação estar confirmada. Se a receita recusa que apagar o save real faça um teste passar, o `used` do `save` nomeia o original que a receita já recusa. Teste no disco não é o save. Sem chave `original`.
+migrar, preserve o original até a nova gravação estar confirmada. Se a receita recusa que apagar o save real faça um teste passar, o `used` do `save` nomeia o original que a receita já recusa. Teste no disco não é o save. Sem chave `original`. Se a receita recusa que o índice ou o nome de arquivo preserve o save, o `used` do `save` nomeia o índice que a receita já recusa. Índice no disco não é a entidade. Sem chave `índice`.
 
 Grave em escrita atômica — arquivo temporário e substituição — para que uma
 interrupção no meio não deixe um save pela metade. Defina os momentos de gravação
@@ -48,7 +48,7 @@ encerrado, bateria, perda de foco, suspensão do dispositivo.
 
 Identidade estável é o que permite migrar. Se entidades, níveis ou itens são
 referenciados por índice ou por nome de arquivo, qualquer reordenação corrompe
-saves antigos silenciosamente. Versão do conteúdo e versão do save são contratos
+saves antigos silenciosamente. Se a receita recusa que o índice ou o nome de arquivo preserve o save, o `used` do `save` nomeia o índice que a receita já recusa. Índice no disco não é a entidade. Sem chave `índice`. Versão do conteúdo e versão do save são contratos
 distintos; não os una em um número por conveniência. Se a receita recusa que um único número una a versão do conteúdo e a do save, o `save` nomeia os contratos que a receita já recusa. Schema no disco não é a história. Sem chave `contratos`.
 
 `save <projeto>` lê se o código usa armazenamento e se declara schema/migrate.

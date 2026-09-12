@@ -17082,6 +17082,77 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         empty = game.save_reading(self.project)
         self.assertFalse(empty["used"])
 
+    def test_save_used_names_the_index_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertRegex(
+            recipe,
+            r"referenciados por índice ou por nome de arquivo",
+        )
+        self.assertTrue(
+            game.recipe_refuses_index_as_stable_identity(recipe),
+            "a receita já recusa que o índice ou o nome de arquivo preserve o save",
+        )
+        self.assertEqual(game.save_used_index_source(), "recipes/persistence.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.save_reading(starter)
+        item = report["used"]
+        self.assertTrue(item["used"], "o save já relata uso neste starter")
+        self.assertIn(
+            "o índice ou o nome de arquivo preserve o save",
+            item["scope"],
+            "o save relatava o uso e calava a recusa",
+        )
+        self.assertIn("(`índice`)", item["scope"])
+        self.assertIn("Índice no disco não é a entidade.", item["scope"])
+        self.assertNotIn("índice", item)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_index_as_stable_identity(""))
+        with mock.patch.object(game, "save_used_index_source", return_value=None):
+            silent = game.save_reading(starter)
+        self.assertNotIn(
+            "o índice ou o nome de arquivo preserve o save",
+            silent["used"]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o índice que a receita já recusa"), 2)
+        self.assertIn("nomeia o índice que a receita já recusa", create)
+        self.assertIn("nomeia o índice que a receita já recusa", skill)
+        self.assertIn("nomeia o índice que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        phrase = "o índice ou o nome de arquivo preserve o save"
+        self.assertNotIn(phrase, report["scope"])
+        warned = report.get("warned")
+        if isinstance(warned, dict):
+            self.assertNotIn(phrase, warned.get("scope") or "")
+        warnings = report.get("warnings")
+        if isinstance(warnings, dict):
+            self.assertNotIn(phrase, warnings.get("scope") or "")
+        sources = report.get("sources")
+        if isinstance(sources, dict):
+            self.assertNotIn(phrase, sources.get("scope") or "")
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.craft_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.art_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.play_scope(starter))
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.git_summary_scope())
+        self.assertNotIn("índice", game.CYCLE_KEYS)
+        empty = game.save_reading(self.project)
+        self.assertFalse(empty["used"])
+        self.assertNotIn(phrase, empty.get("scope") or "")
+
     def test_save_versioned_names_the_version_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         self.assertTrue(
