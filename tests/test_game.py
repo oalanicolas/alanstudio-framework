@@ -13581,6 +13581,78 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.playtest_reading(self.project)["scope"],
         )
 
+    def test_ship_release_current_names_the_authorize_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_text_as_authorizing_publish(recipe),
+            "a receita já recusa que a receita autorize publicar",
+        )
+        self.assertEqual(game.ship_release_current_authorize_source(), "recipes/release.md")
+        empty = game.ship_reading(self.project)
+        self.assertFalse(empty["release_current"])
+        self.assertFalse(game.ship_release_current_flag(empty))
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.ship_reading(starter)
+        item = report["release_current"]
+        self.assertTrue(item["release_current"], "o ship já relata o vigente neste starter")
+        self.assertEqual(item["release_current"], game.ship_release_current_flag(report))
+        self.assertIn(
+            "a receita autorize publicar",
+            item["scope"],
+            "o ship relatava o vigente e calava a recusa",
+        )
+        self.assertIn("(`autoriza`)", item["scope"])
+        self.assertNotIn("autoriza", item)
+        self.assertIs(report["declared"], True)
+        self.assertIs(report["elsewhere"], False)
+        self.assertIs(report["shipped"], False)
+        self.assertFalse(game.recipe_refuses_text_as_authorizing_publish(""))
+        with mock.patch.object(game, "ship_release_current_authorize_source", return_value=None):
+            silent = game.ship_reading(starter)
+        self.assertNotIn(
+            "a receita autorize publicar",
+            silent["release_current"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o autoriza que a receita já recusa", recipe)
+        self.assertIn("nomeia o autoriza que a receita já recusa", skill)
+        self.assertIn("nomeia o autoriza que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("a receita autorize publicar", report["scope"])
+        if report.get("release"):
+            self.assertNotIn(
+                "a receita autorize publicar",
+                report["release"].get("scope") or "",
+            )
+        if report.get("incomplete"):
+            self.assertNotIn(
+                "a receita autorize publicar",
+                report["incomplete"].get("scope") or "",
+            )
+        if report.get("artifact_open"):
+            self.assertNotIn(
+                "a receita autorize publicar",
+                report["artifact_open"].get("scope") or "",
+            )
+        if report.get("scripts"):
+            self.assertNotIn(
+                "a receita autorize publicar",
+                report["scripts"].get("scope") or "",
+            )
+        if report.get("ci"):
+            self.assertNotIn(
+                "a receita autorize publicar",
+                report["ci"].get("scope") or "",
+            )
+        self.assertNotIn("a receita autorize publicar", game.next_scope())
+        self.assertNotIn(
+            "a receita autorize publicar",
+            game.playtest_reading(starter)["scope"],
+        )
+
     def test_ship_names_how_to_serve_dist_without_calling_it_elsewhere(self):
         destination = self.root / "artefato-pronto"
         game.start_project(destination, "canvas-arcade")

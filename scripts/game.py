@@ -6488,6 +6488,58 @@ def ship_release_path(pack):
     return release
 
 
+# A receita já recusa autorizar
+# publicar. Sem isto o ship
+# relatava o vigente e calava a
+# recusa. Arquivo no disco não é
+# outra máquina.
+RELEASE_AUTHORIZE = re.compile(r"Nada nesta receita autoriza publicar")
+
+
+def recipe_refuses_text_as_authorizing_publish(text):
+    return bool(text and RELEASE_AUTHORIZE.search(text))
+
+
+def ship_release_current_authorize_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_text_as_authorizing_publish(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_release_current_authorize_scope():
+    if not ship_release_current_authorize_source():
+        return None
+    return (
+        " O disco recusa que a receita autorize publicar "
+        "(`autoriza`). Arquivo no disco não é outra máquina."
+    )
+
+
+def ship_release_current_scope():
+    scope = (
+        "docs/release.md vigente no disco. "
+        "Não autoriza publicar."
+    )
+    named = ship_release_current_authorize_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def ship_release_current_flag(reading):
+    current = (reading or {}).get("release_current")
+    if isinstance(current, dict):
+        return bool(current.get("release_current"))
+    return bool(current)
+
+
 # A receita já recusa que a árvore
 # sem os quatro seja jogável. Sem
 # isto o ship relatava o bool e
@@ -6643,7 +6695,13 @@ def ship_reading(project):
             if release.is_file() and not release.is_symlink()
             else None
         ),
-        "release_current": release_current,
+        "release_current": (
+            {
+                "release_current": True,
+                "scope": ship_release_current_scope(),
+            }
+            if release_current else False
+        ),
         "artifact": artifact,
         "tree": tree,
         "incomplete": incomplete,

@@ -30,6 +30,54 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.610 — o release_current do ship nomeia o autoriza que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+nada
+nela
+autoriza
+publicar.
+O
+ship
+relatava
+o
+vigente
+e
+calava
+a
+recusa.
+Agora
+o
+`release_current`
+do
+`ship`
+nomeia
+o
+autoriza.
+Arquivo
+no
+disco
+não
+é
+outra
+máquina.
+Sem
+chave
+`autoriza`.
+Nomear
+não
+autoriza.
+
+O que 0.9.610 não afirma:
+o
+roteiro
+não
+publica.
+
 ## 0.9.609 — o qa_current do playtest nomeia o assiste que a receita já recusa
 
 A

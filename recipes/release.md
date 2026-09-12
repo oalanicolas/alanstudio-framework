@@ -5,7 +5,7 @@ Entrada: a versão que se pretende entregar, a plataforma alvo e quem vai jogar.
 **Autorização primeiro.** Nada nesta receita autoriza publicar, criar conta em
 loja, subir artefato, contatar pessoas ou anunciar. Publicação exige autorização
 explícita do usuário para aquela entrega. Preparar um artefato verificável é
-trabalho técnico; distribuí-lo é decisão dele.
+trabalho técnico; distribuí-lo é decisão dele. Se a receita recusa que a receita autorize publicar, o `release_current` do `ship` nomeia o autoriza que a receita já recusa. Arquivo no disco não é outra máquina. Sem chave `autoriza`.
 
 O ciclo criativo do framework terminava em QA, e essa lacuna produz um padrão
 conhecido: um jogo que funciona na máquina de quem construiu e falha em qualquer
