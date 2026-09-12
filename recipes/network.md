@@ -19,6 +19,22 @@ reais para validar conexão, entrada, saída, reinício e reconexão. Examine me
 duplicadas, atrasadas, fora de ordem e após término quando o protocolo permitir esses
 eventos. Teste unitário de serialização não prova conectividade real.
 
+Ao sair ou trocar de sala, invalide a conexão anterior antes de fechá-la. Listeners
+de `state` e `close` precisam pertencer à conexão corrente: um snapshot em voo não
+pode reabrir a sala abandonada, nem o fechamento antigo apagar a promessa de uma
+conexão nova. Entrada explícita também cancela retomada automática pendente. Prove
+sair → entrar, retomada interrompida e entrega tardia do socket antigo.
+
+Separe presença atual de resultado concluído. Depois de encerrar uma rodada,
+congele participantes, classificação, tempos e conteúdo que compõem o placar por
+identificador da rodada. Sair ou reconectar muda presença e liderança, sem reescrever
+quem disputou ou venceu. Uma revanche abre uma nova rodada com a lista vigente.
+Prove resultado → saída de participante → recarga do anfitrião → revanche.
+
+Caso observado e testes: `games/desnhe-um-cavalo/docs/qa.md` no laboratório,
+11/09/2026. A inspeção com duas abas encontrou remoção do rival após recarga; os
+testes de sessão cobrem também eventos atrasados. Não presume teste humano.
+
 Para agentes que jogam, defina observação, ações permitidas, retorno de erro e término
 de acordo com o jogo. Reutilize o ambiente existente antes de criar um servidor.
 Separe contrato testado de capacidade presumida; nem toda interface sequencial

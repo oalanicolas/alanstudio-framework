@@ -128,3 +128,10 @@ novo piso. Não marque aprovação do usuário a partir da opinião da IA.
 Fontes históricas no laboratório: estudos de FPS, corrida e demos visuais.
 Excalibur `RE-EXCAL-020/021` descreve infraestrutura de teste visual, não um critério
 universal de qualidade artística ([fonte](https://github.com/excaliburjs/Excalibur)).
+
+Ao acrescentar uma câmera de visão geral a um jogo com tinta que se atenua pela distância,
+confira a escala espacial pressuposta no shader. Afastar a câmera para caber o mapa inteiro
+pode apagar pigmento e contornos sem qualquer mudança de geometria. Uma escala explícita de
+distância artística por câmera permite manter a leitura da prévia e restaurar exatamente o
+valor original nas câmeras jogáveis. Preserve resolução, materiais e sombra; compare entrada,
+troca de mapa e retorno à partida. Caso: Corrida Rabisco, QA “Home com mapas — 2026-09-11”.

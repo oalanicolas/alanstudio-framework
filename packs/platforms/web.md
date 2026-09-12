@@ -30,6 +30,13 @@ AGENTS, `package.json` nem a documentação oficial dos navegadores e biblioteca
   ser recriáveis. Descarte: remover listeners, cancelar rAF, `dispose()` de geometrias,
   materiais e texturas (three.js/Babylon), fechar `AudioContext`.
 - Entrada: Pointer Events unificam mouse/toque/caneta; Gamepad API por polling.
+- Desenho UGC: mantenha a proporção do espaço lógico entre editor, miniatura,
+  personagem e exportação. CSS responsivo não pode esticar um bitmap com escalas X/Y
+  diferentes; adapte o enquadramento ou preserve o aspect-ratio. Meça a proporção
+  real do canvas da corrida ao redimensionar. No cenário de lotação máxima, reserve
+  espaço para rótulos sem reduzir o personagem a um ícone ilegível. Compare o mesmo
+  traço em desktop, celular e corrida cheia. Caso: `games/desnhe-um-cavalo/docs/qa.md`
+  no laboratório, 11/09/2026.
 
 ### Jogo embutido e troca de versão
 
@@ -81,6 +88,13 @@ não exige adotar o runtime do fornecedor. [Origem](../../references/sources.md#
   `game.test.mjs`, `src/engine/core/loop.js` e `headless/env_server.ts`.
 - Não abre navegador, não mede quadro nem heap; registre medições com
   `record --kind budget` e observações com `record --kind observation`.
+- Captura de WebGL sem navegador aberto (aprendizado Corrida Rabisco, 2026-09-11): em Mac
+  com GPU, `chrome --headless=new --use-angle=metal --remote-debugging-port=0` renderiza o
+  pipeline completo (SwiftShader em VM não conclui). `--screenshot` sai antes da cena
+  carregar e `--virtual-time-budget` nunca termina com `requestAnimationFrame`; conecte pelo
+  DevTools Protocol (`WebSocket` nativo do Node ≥ 22), espere um status da própria página
+  informar quadros e só então `Page.captureScreenshot`. Referência:
+  `games/corrida-rabisco/scripts/capture-bench.mjs`.
 
 Núcleo: [ciclo de vida](../../recipes/lifecycle.md), [visual](../../recipes/visual.md),
 [feel](../../recipes/feel.md), [produção](../../recipes/production.md).
