@@ -159,7 +159,7 @@ técnica e observação em movimento. O instrumento único é o
 [checklist de piso](aaa-checklist.md). O `context` escolhe o perfil em
 `finish`; `--stage aaa` só materializa o rascunho inteiro.
 Sem essa comparação, declare a lacuna. Não rebatize uma versão degradada
-como novo piso. Completar o checklist não é nota AAA.
+como novo piso. Completar o checklist não é nota AAA. Se a ambição recusa que o checklist completo seja nota AAA, o `finish` nomeia o grau que a ambição já recusa. Guia no disco não é observação. Sem chave `grau`.
 
 ## O que este repositório continua recusando
 

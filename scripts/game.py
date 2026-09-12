@@ -13199,7 +13199,44 @@ def finish_scope():
             " O disco recusa preencher o checklist (`checklist`). "
             "Guia no disco não é observação."
         )
+    named = finish_grade_scope()
+    if named:
+        scope += named
     return scope
+
+
+# A ambição já recusa que o
+# checklist completo seja nota AAA.
+# Sem isto o finish apontava a guia
+# e calava a recusa. Guia no disco
+# não é observação.
+AMBITION_GRADE = re.compile(r"Completar o checklist não é nota AAA")
+
+
+def ambition_refuses_checklist_as_aaa_grade(text):
+    return bool(text and AMBITION_GRADE.search(text))
+
+
+def finish_grade_source():
+    path = AMBITION_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if ambition_refuses_checklist_as_aaa_grade(text):
+        return "references/ambition.md"
+    return None
+
+
+def finish_grade_scope():
+    if not finish_grade_source():
+        return None
+    return (
+        " O disco recusa que o checklist completo seja nota AAA "
+        "(`grau`). Guia no disco não é observação."
+    )
 
 
 # O processo já recusa que a etapa certifique o progresso. Sem isto o

@@ -1312,6 +1312,49 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("preencher o checklist", game.next_step(self.project)["scope"])
         self.assertNotIn("preencher o checklist", game.scan(self.project)["agent_context"]["scope"])
 
+    def test_finish_names_the_grade_the_ambition_already_refuses(self):
+        ambition = (game.FRAMEWORK / "references/ambition.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.ambition_refuses_checklist_as_aaa_grade(ambition),
+            "a ambição já recusa que o checklist completo seja nota AAA",
+        )
+        self.assertEqual(game.finish_grade_source(), "references/ambition.md")
+        report = game.context(self.project, "create")
+        item = report["finish"]
+        self.assertIn(
+            "o checklist completo seja nota AAA",
+            item["scope"],
+            "o finish apontava a guia e calava a recusa",
+        )
+        self.assertIn("(`grau`)", item["scope"])
+        self.assertNotIn("grau", item)
+        self.assertFalse(item["executed"])
+        self.assertFalse(game.ambition_refuses_checklist_as_aaa_grade(""))
+        with mock.patch.object(game, "finish_grade_source", return_value=None):
+            silent = game.context(self.project, "create")
+        self.assertNotIn(
+            "o checklist completo seja nota AAA",
+            silent["finish"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o grau que a ambição já recusa", ambition)
+        self.assertIn("nomeia o grau que a ambição já recusa", recipe)
+        self.assertIn("nomeia o grau que a ambição já recusa", skill)
+        self.assertIn("nomeia o grau que a ambição já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o checklist completo seja nota AAA", report["scope"])
+        self.assertNotIn("o checklist completo seja nota AAA", report["documentation"]["scope"])
+        self.assertNotIn("o checklist completo seja nota AAA", game.template_scope("aaa"))
+        self.assertNotIn("o checklist completo seja nota AAA", game.next_step(self.project)["scope"])
+        self.assertNotIn(
+            "o checklist completo seja nota AAA",
+            report["production_bar"]["scope"],
+        )
+
     def test_context_names_the_promotion_the_bar_already_refuses(self):
         guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
         self.assertTrue(

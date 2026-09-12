@@ -116,7 +116,7 @@ não demonstram uma experiência nova. Se a receita recusa que título e cores n
    foi pedido. Registre herdado versus produzido e **uma** próxima ação.
    Não gere o template `aaa` nesta sessão. O `finish.action` permanece
    `defer_until_playable_cycle` até existir o ciclo.
-   Se a guia recusa preencher o checklist, o `context` nomeia o checklist que a guia já recusa preencher. Guia no disco não é observação. Sem chave `checklist`.
+   Se a guia recusa preencher o checklist, o `context` nomeia o checklist que a guia já recusa preencher. Guia no disco não é observação. Sem chave `checklist`. Se a ambição recusa que o checklist completo seja nota AAA, o `finish` nomeia o grau que a ambição já recusa. Guia no disco não é observação. Sem chave `grau`.
 
 ## Da fatia à produção
 
