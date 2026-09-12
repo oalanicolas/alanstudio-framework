@@ -3470,6 +3470,60 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("opção sem consumidor seja opção", game.next_scope())
         self.assertNotIn("opção sem consumidor seja opção", game.verify_scope())
 
+    def test_access_names_the_automatic_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/accessibility.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_automatic_check_as_session(recipe),
+            "a receita já recusa que a verificação automática substitua uma sessão",
+        )
+        self.assertEqual(game.access_automatic_source(), "recipes/accessibility.md")
+        report = game.access_reading(self.project)
+        self.assertIn(
+            "a verificação automática substitua uma sessão",
+            report["scope"],
+            "o access lia as opções e calava a recusa",
+        )
+        self.assertIn("(`automática`)", report["scope"])
+        self.assertNotIn("automática", report)
+        self.assertFalse(report["verified"])
+        self.assertFalse(game.recipe_refuses_automatic_check_as_session(""))
+        with mock.patch.object(game, "access_automatic_source", return_value=None):
+            silent = game.access_reading(self.project)
+        self.assertNotIn("a verificação automática substitua uma sessão", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a automática que a receita já recusa", recipe)
+        self.assertIn("nomeia a automática que a receita já recusa", create)
+        self.assertIn("nomeia a automática que a receita já recusa", skill)
+        self.assertIn("nomeia a automática que a receita já recusa", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "a verificação automática substitua uma sessão",
+            game.access_declared_scope(),
+        )
+        self.assertNotIn(
+            "a verificação automática substitua uma sessão",
+            game.access_option_scope(),
+        )
+        self.assertNotIn(
+            "a verificação automática substitua uma sessão",
+            game.access_missing_scope(),
+        )
+        self.assertNotIn(
+            "a verificação automática substitua uma sessão",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "a verificação automática substitua uma sessão",
+            game.content_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "a verificação automática substitua uma sessão",
+            game.feel_reading(self.project)["scope"],
+        )
+
     def test_access_captions_names_the_number_the_recipe_already_refuses(self):
         audio_recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
         self.assertTrue(

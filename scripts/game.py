@@ -4501,6 +4501,9 @@ def access_reading(project):
             " A porta lê a legenda que o mixer ainda guarda. "
             "Texto no disco não é sessão."
         )
+    named = access_automatic_scope()
+    if named:
+        scope += named
     option_scope = access_option_scope()
     return {
         "schema_version": 1,
@@ -4549,6 +4552,40 @@ def access_reading(project):
         ),
         "scope": scope,
     }
+
+
+# A receita já recusa que a verificação
+# automática substitua uma sessão. Sem
+# isto o access lia as opções e calava
+# a recusa. Checagem no disco não é o
+# modo ativo.
+A11Y_AUTOMATIC = re.compile(r"não substitui uma sessão")
+
+
+def recipe_refuses_automatic_check_as_session(text):
+    return bool(text and A11Y_AUTOMATIC.search(text))
+
+
+def access_automatic_source():
+    path = A11Y_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_automatic_check_as_session(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def access_automatic_scope():
+    if not access_automatic_source():
+        return None
+    return (
+        " O disco recusa que a verificação automática substitua uma sessão "
+        "(`automática`). Checagem no disco não é o modo ativo."
+    )
 
 
 # A receita e o canvas já pintam a recuperação. Sem isto o

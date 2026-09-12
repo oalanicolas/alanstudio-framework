@@ -107,7 +107,7 @@ Nomear não é aba fechada. O overlay do canvas não chega ao leitor. Texto no
 DOM não é sessão. O harness não joga com o modo ativo.
 
 Não declare cobertura que não observou. Se a receita recusa que se declare cobertura não observada, o `missing` do `access` nomeia a cobertura que a receita já recusa. Lista no disco não é sessão. Sem chave `cobertura`. Verificação automática de contraste é útil
-e não substitui uma sessão com o modo ativo. Uma lacuna registrada com motivo vale
+e não substitui uma sessão com o modo ativo. Se a receita recusa que a verificação automática substitua uma sessão, o `access` nomeia a automática que a receita já recusa. Checagem no disco não é o modo ativo. Sem chave `automática`. Uma lacuna registrada com motivo vale
 mais que uma lista de recursos não testados.
 
 Implementação concreta: o starter `canvas-arcade` guarda remapeamento, redução de
