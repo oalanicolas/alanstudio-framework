@@ -4080,6 +4080,9 @@ def _feel_scope(project):
     sense = feel_perceived_scope()
     if sense:
         scope += sense
+    ask = feel_request_scope()
+    if ask:
+        scope += ask
     return scope
 
 
@@ -4251,6 +4254,41 @@ def feel_perceived_scope():
     return (
         " O disco recusa que o aperto no disco seja peso percebido "
         "(`percebido`). Aperto no disco não é o percebido."
+    )
+
+
+# A receita já recusa que o
+# pedido decaia no travel.
+# Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Pedido no disco não é o
+# land.
+FEEL_REQUEST = re.compile(r"o pedido não decai no travel")
+
+
+def recipe_refuses_request_decay_in_travel(text):
+    return bool(text and FEEL_REQUEST.search(text))
+
+
+def feel_request_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_request_decay_in_travel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_request_scope():
+    if not feel_request_source():
+        return None
+    return (
+        " O disco recusa que o pedido decaia no travel "
+        "(`pedido`). Pedido no disco não é o land."
     )
 
 

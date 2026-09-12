@@ -164,7 +164,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    resolve; o orbe espera. Ordem do array não decide a aposta. A graça
    após dano também vale no mesmo quadro: o segundo estilhaço raspa,
    não empilha impacto. Pose e
-   arquivo no disco não são peso percebido. Se a receita recusa que pose e arquivo no disco sejam peso percebido, o `feel` nomeia a pose que a receita já recusa. Arquivo no disco não é o peso. Sem chave `pose`. Se a receita recusa que o aperto no disco seja peso percebido, o `feel` nomeia o percebido que a receita já recusa. Aperto no disco não é o percebido. Sem chave `percebido`.
+   arquivo no disco não são peso percebido. Se a receita recusa que pose e arquivo no disco sejam peso percebido, o `feel` nomeia a pose que a receita já recusa. Arquivo no disco não é o peso. Sem chave `pose`. Se a receita recusa que o aperto no disco seja peso percebido, o `feel` nomeia o percebido que a receita já recusa. Aperto no disco não é o percebido. Sem chave `percebido`. Se a receita recusa que o pedido decaia no travel, o `feel` nomeia o pedido que a receita já recusa. Pedido no disco não é o land. Sem chave `pedido`.
 4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
 5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.
@@ -315,7 +315,7 @@ inventa ensino feito. Se a receita recusa que o hold sem o número invente ensin
 A guarda
 que já tem corrente senta os mesmos dois ticks e também atravessa
 o estilhaço. Corrente já existente espera o land do avanço —
-o sit não come a pose do dash; o pedido não decai no travel.
+o sit não come a pose do dash; o pedido não decai no travel. Se a receita recusa que o pedido decaia no travel, o `feel` nomeia o pedido que a receita já recusa. Pedido no disco não é o land. Sem chave `pedido`.
 Arquivo no
 disco não é peso percebido. A ameaça que
 ainda não chegou marca o trilho (`approaching`) — na porta a mostra
