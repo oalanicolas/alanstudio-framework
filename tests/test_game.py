@@ -13482,7 +13482,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(report["finding_href"], "/?invite=1#finding")
         self.assertEqual(report["finding_open"], report["finding_href"])
         self.assertIsNone(report["qa"])
-        self.assertEqual(report["fields"], ["problema", "evidencia", "hipotese", "medicao"])
+        self.assertEqual(game.playtest_field_names(report), ["problema", "evidencia", "hipotese", "medicao"])
         self.assertTrue(Path(game.playtest_form_path(report)).is_file())
         self.assertTrue(game.playtest_form_path(report).endswith("assets/templates/qa.md"))
         self.assertNotIn("then", report)
@@ -13506,7 +13506,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
 
     def test_playtest_names_the_form_without_writing_the_finding(self):
         report = game.playtest_reading(self.project)
-        self.assertEqual(report["fields"], list(game.PLAYTEST_FIELDS))
+        self.assertEqual(game.playtest_field_names(report), list(game.PLAYTEST_FIELDS))
         self.assertEqual(game.playtest_form_path(report), str(game.PLAYTEST_FORM))
         self.assertTrue(Path(game.playtest_form_path(report)).is_file())
         skeleton = Path(game.playtest_form_path(report)).read_text(encoding="utf-8")
@@ -13588,6 +13588,69 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(
             "a regra de parada seja número de participantes",
             noted.get("scope") or "",
+        )
+
+    def test_playtest_fields_name_the_fields_the_mold_already_refuses(self):
+        mold = game.PLAYTEST_FORM.read_text(encoding="utf-8")
+        self.assertTrue(
+            game.form_refuses_four_as_observation(mold),
+            "o molde já recusa que os quatro no disco observem",
+        )
+        self.assertEqual(game.playtest_fields_four_source(), "assets/templates/qa.md")
+        report = game.playtest_reading(self.project)
+        item = report["fields"]
+        self.assertEqual(item["names"], ["problema", "evidencia", "hipotese", "medicao"])
+        self.assertEqual(item["names"], game.playtest_field_names(report))
+        self.assertEqual(item["names"], list(game.PLAYTEST_FIELDS))
+        self.assertIn(
+            "os quatro no disco observem",
+            item["scope"],
+            "o playtest listava os nomes e calava a recusa",
+        )
+        self.assertIn("(`campos`)", item["scope"])
+        self.assertNotIn("campos", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.form_refuses_four_as_observation(""))
+        with mock.patch.object(game, "playtest_fields_four_source", return_value=None):
+            silent = game.playtest_reading(self.project)
+        self.assertNotIn(
+            "os quatro no disco observem",
+            silent["fields"]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os campos que o molde já recusa", recipe)
+        self.assertIn("nomeia os campos que o molde já recusa", skill)
+        self.assertIn("nomeia os campos que o molde já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("os quatro no disco observem", report["scope"])
+        if report.get("form"):
+            self.assertNotIn(
+                "os quatro no disco observem",
+                report["form"].get("scope") or "",
+            )
+        if report.get("qa"):
+            self.assertNotIn(
+                "os quatro no disco observem",
+                report["qa"].get("scope") or "",
+            )
+        if report.get("invite"):
+            self.assertNotIn(
+                "os quatro no disco observem",
+                report["invite"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "os quatro no disco observem",
+            game.feel_reading(self.project)["scope"],
+        )
+        self.assertNotIn("os quatro no disco observem", game.next_scope())
+        self.assertNotIn(
+            "os quatro no disco observem",
+            game.note_observation(self.project, "Ana", "o dash ainda não tem peso").get("scope") or "",
         )
 
     def test_finding_href_opens_the_invite_so_the_panel_shows(self):

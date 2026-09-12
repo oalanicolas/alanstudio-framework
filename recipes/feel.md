@@ -39,7 +39,7 @@ fim a página oferece os quatro nomes para copiar ou gravar e
 mostra seed, pontos, eixos, a curva que o last-run já traçou e se o
 candidato foi simulado. `nearest-orb` vira `simulada` na faixa; `played`
 some. A faixa não leva a conta nem o relógio. Simulada não é alguém de
-fora. Se a receita recusa que a simulação seja alguém de fora, o `qa` do `playtest` nomeia a simulada que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `simulada`. Se o molde recusa que a regra de parada seja número de participantes, o `form` do `playtest` nomeia os participantes que o molde já recusa. Arquivo no disco não é a sessão. Sem chave `participantes`.
+fora. Se a receita recusa que a simulação seja alguém de fora, o `qa` do `playtest` nomeia a simulada que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `simulada`. Se o molde recusa que a regra de parada seja número de participantes, o `form` do `playtest` nomeia os participantes que o molde já recusa. Arquivo no disco não é a sessão. Sem chave `participantes`. Se o molde recusa que os quatro no disco observem, o `fields` do `playtest` nomeia os campos que o molde já recusa. Arquivo no disco não é a sessão. Sem chave `campos`.
 Depois do fim a página
 rola até o painel e foca o campo. Escrever não dispara o
 verbo — Espaço e R ficam no recado. Rolar não é alguém de fora. Se a receita recusa que rolar seja alguém de fora, o convite nomeia o rolar que a receita já recusa. Página no disco não é a sessão. Sem chave `rolar`. Número na faixa não

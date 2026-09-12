@@ -30,6 +30,63 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.596 — o fields do playtest nomeia os campos que o molde já recusa
+
+O
+molde
+já
+dizia
+que
+os
+quatro
+no
+disco
+não
+observam.
+O
+playtest
+listava
+os
+nomes
+e
+calava
+a
+recusa.
+Agora
+o
+`fields`
+do
+`playtest`
+nomeia
+os
+campos.
+Arquivo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`campos`.
+Nomear
+não
+observa.
+
+O que 0.9.596 não afirma:
+listar
+os
+quatro
+nomes
+não
+é
+sessão
+com
+alguém
+de
+fora.
+
 ## 0.9.595 — o empty do roles nomeia o ausente que a receita já recusa
 
 A

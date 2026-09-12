@@ -7185,7 +7185,10 @@ def playtest_reading(project):
             "path": str(PLAYTEST_FORM),
             "scope": playtest_form_scope(),
         },
-        "fields": list(PLAYTEST_FIELDS),
+        "fields": {
+            "names": list(PLAYTEST_FIELDS),
+            "scope": playtest_fields_scope(),
+        },
         "guide": str(FRAMEWORK / "recipes/feel.md"),
         "rule": (
             "Recibo de observação sem problema, evidência, hipótese e medição "
@@ -7378,6 +7381,58 @@ def playtest_form_path(reading):
     if isinstance(form, dict):
         return form.get("path")
     return form
+
+
+# O molde já recusa que os quatro
+# no disco observem. Sem isto o
+# playtest listava os nomes e
+# calava a recusa. Arquivo no
+# disco não é a sessão.
+PLAYTEST_FOUR = re.compile(r"os quatro no disco não observam")
+
+
+def form_refuses_four_as_observation(text):
+    return bool(text and PLAYTEST_FOUR.search(text))
+
+
+def playtest_fields_four_source():
+    path = PLAYTEST_FORM
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if form_refuses_four_as_observation(text):
+        return "assets/templates/qa.md"
+    return None
+
+
+def playtest_fields_four_scope():
+    if not playtest_fields_four_source():
+        return None
+    return (
+        " O disco recusa que os quatro no disco observem "
+        "(`campos`). Arquivo no disco não é a sessão."
+    )
+
+
+def playtest_fields_scope():
+    scope = (
+        "os quatro nomes que o achado exige. "
+        "Não observa a sessão."
+    )
+    named = playtest_fields_four_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def playtest_field_names(reading):
+    fields = (reading or {}).get("fields")
+    if isinstance(fields, dict):
+        return list(fields.get("names") or [])
+    return list(fields or [])
 
 
 def last_run_axes(project):
