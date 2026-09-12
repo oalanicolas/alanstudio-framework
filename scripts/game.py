@@ -21730,6 +21730,9 @@ def record_scope():
     proof = record_reproof_scope()
     if proof:
         scope += proof
+    step = record_substep_scope()
+    if step:
+        scope += step
     return scope
 
 
@@ -21945,6 +21948,41 @@ def record_reproof_scope():
     return (
         " O disco recusa que a adaptação herde o resultado "
         "(`contraprova`). Adaptação no disco não é a contraprova."
+    )
+
+
+# A receita já recusa que o
+# subpasso repita eventos de
+# borda. Sem isto o record
+# gravava o recibo e calava a
+# recusa. Subpasso no disco
+# não é o quadro.
+PERF_SUBSTEP = re.compile(r"relógios de rede por subpasso")
+
+
+def recipe_refuses_substep_as_repeating_edge_events(text):
+    return bool(text and PERF_SUBSTEP.search(text))
+
+
+def record_substep_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_substep_as_repeating_edge_events(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_substep_scope():
+    if not record_substep_source():
+        return None
+    return (
+        " O disco recusa que o subpasso repita eventos de borda "
+        "(`subpasso`). Subpasso no disco não é o quadro."
     )
 
 
