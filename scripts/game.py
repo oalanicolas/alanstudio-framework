@@ -11078,7 +11078,45 @@ def capability_mention_scope():
             " O disco recusa que o nome seja API (`api`). "
             "Vocabulário no disco não é runtime."
         )
+    tracking = capability_tracking_scope()
+    if tracking:
+        scope += tracking
     return scope
+
+
+# O roteiro já recusa que menções
+# locais sejam rastreamento de
+# comportamento. Sem isto a menção
+# apontava o arquivo e calava a
+# recusa. Menção no disco não é
+# o gesto.
+AUDIT_TRACKING = re.compile(r"não é rastreamento de comportamento")
+
+
+def audit_refuses_mentions_as_tracking(text):
+    return bool(text and AUDIT_TRACKING.search(text))
+
+
+def capability_tracking_source():
+    path = FRAMEWORK / "references/project-audit.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if audit_refuses_mentions_as_tracking(text):
+        return "references/project-audit.md"
+    return None
+
+
+def capability_tracking_scope():
+    if not capability_tracking_source():
+        return None
+    return (
+        " O disco recusa que menções locais sejam rastreamento de comportamento "
+        "(`rastreamento`). Menção no disco não é o gesto."
+    )
 
 
 # A barra já recusa que o determinismo seja capacidade.

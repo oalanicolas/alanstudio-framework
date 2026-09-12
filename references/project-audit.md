@@ -137,7 +137,7 @@ pastas ocultas, dependências, templates, diretórios convencionais de evidênci
 baseline ou de recursos binários, nem arquivos-fonte do runtime. Os nomes excluídos
 estão em `coverage.excluded_directory_names`. Local não percorrido não equivale
 a conteúdo inexistente. O `context` mantém, separadamente, suas menções de capacidades em arquivos
-locais já previstos pelo harness; isso não é rastreamento de comportamento.
+locais já previstos pelo harness; isso não é rastreamento de comportamento. Se o roteiro recusa que menções locais sejam rastreamento de comportamento, a menção nomeia o rastreamento que o roteiro já recusa. Menção no disco não é o gesto. Sem chave `rastreamento`.
 
 - Índices: reconhece links Markdown diretos, relativos, com destino simples ou entre
   `<...>`, inclusive espaços codificados. Só considera destinos já inventariados,

@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.677 — a menção nomeia o rastreamento que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+menções
+locais
+não
+são
+rastreamento
+de
+comportamento.
+A
+menção
+apontava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+a
+menção
+nomeia
+o
+rastreamento.
+Menção
+no
+disco
+não
+é
+o
+gesto.
+Sem
+chave
+`rastreamento`.
+Nomear
+não
+observa.
+
 ## 0.9.676 — o budget nomeia o estável que a receita já recusa
 
 A

@@ -2049,6 +2049,68 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("nome seja API", game.next_scope())
         self.assertNotIn("nome seja API", game.play_scope(self.project))
 
+    def test_capability_mentions_name_the_tracking_the_audit_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.audit_refuses_mentions_as_tracking(guide),
+            "o roteiro já recusa que menções locais sejam rastreamento de comportamento",
+        )
+        self.assertEqual(game.capability_tracking_source(), "references/project-audit.md")
+        (self.project / "game.test.mjs").write_text(
+            "test('pause and restart keep the story', () => {})\n"
+        )
+        report = game.context(self.project, "lifecycle")
+        mentioned = report["capabilities"]["pause"]
+        self.assertEqual(mentioned["status"], "mentioned")
+        self.assertIn(
+            "menções locais sejam rastreamento de comportamento",
+            mentioned["scope"],
+            "a menção apontava o arquivo e calava a recusa",
+        )
+        self.assertIn("(`rastreamento`)", mentioned["scope"])
+        self.assertNotIn("rastreamento", mentioned)
+        self.assertNotIn(
+            "menções locais sejam rastreamento de comportamento",
+            report["capabilities"]["seed"]["scope"],
+        )
+        self.assertFalse(game.audit_refuses_mentions_as_tracking(""))
+        with mock.patch.object(game, "capability_tracking_source", return_value=None):
+            silent = game.context(self.project, "lifecycle")
+        self.assertNotIn(
+            "menções locais sejam rastreamento de comportamento",
+            silent["capabilities"]["pause"].get("scope") or "",
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o rastreamento que o roteiro já recusa", guide)
+        self.assertIn("nomeia o rastreamento que o roteiro já recusa", create)
+        self.assertIn("nomeia o rastreamento que o roteiro já recusa", skill)
+        self.assertIn("nomeia o rastreamento que o roteiro já recusa", readme)
+        self.assertNotIn("verified", mentioned["scope"])
+        self.assertNotIn("aprovado", mentioned["scope"])
+        self.assertNotIn("4.5", mentioned["scope"])
+        self.assertNotIn(
+            "menções locais sejam rastreamento de comportamento",
+            report.get("scope") or "",
+        )
+        self.assertNotIn(
+            "menções locais sejam rastreamento de comportamento",
+            game.capabilities_scope(),
+        )
+        self.assertNotIn(
+            "menções locais sejam rastreamento de comportamento",
+            game.coverage_scope(),
+        )
+        self.assertNotIn(
+            "menções locais sejam rastreamento de comportamento",
+            game.budget_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "menções locais sejam rastreamento de comportamento",
+            game.next_scope(),
+        )
+
     def test_unknown_capabilities_name_the_determinism_the_bar_already_refuses(self):
         guide = (game.FRAMEWORK / "references/production-bar.md").read_text(encoding="utf-8")
         self.assertTrue(
