@@ -8239,6 +8239,43 @@ def content_banks_scope():
     )
 
 
+# A receita já recusa que uma
+# tarefa omitida equivalha a
+# falha. Sem isto o content
+# listava arquivos e calava a
+# recusa. Omissão no disco
+# não é a falha.
+CONTENT_OMITTED = re.compile(
+    r"tarefa omitida numa consulta não equivale a\s+falha"
+)
+
+
+def recipe_refuses_omitted_task_as_failure(text):
+    return bool(text and CONTENT_OMITTED.search(text))
+
+
+def content_omitted_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_omitted_task_as_failure(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_omitted_scope():
+    if not content_omitted_source():
+        return None
+    return (
+        " O disco recusa que uma tarefa omitida equivalha a falha "
+        "(`omitida`). Omissão no disco não é a falha."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -8501,6 +8538,9 @@ def content_reading(project):
     banks = content_banks_scope()
     if banks:
         scope += banks
+    skip = content_omitted_scope()
+    if skip:
+        scope += skip
     encoded = content_encoded_scope()
     if encoded:
         scope += encoded

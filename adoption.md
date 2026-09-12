@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.752 — o content nomeia a omitida que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+uma
+tarefa
+omitida
+numa
+consulta
+não
+equivale
+a
+falha.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+content
+nomeia
+a
+omitida.
+Omissão
+no
+disco
+não
+é
+a
+falha.
+Sem
+chave
+`omitida`.
+Nomear
+não
+observa.
+
 ## 0.9.751 — o item do craft nomeia o padrão que a pesquisa já recusa
 
 A

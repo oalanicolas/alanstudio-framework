@@ -49,7 +49,7 @@ Quando a geração ou importação for assíncrona, registre no manifesto/recibo
 pedido e referência autoral, tarefa do fornecedor, estado remoto, arquivo local e
 hash, derivação e consumidor integrado. **Pronto no serviço, baixado, validado e
 consumido são estados diferentes.** Se a receita recusa que o baixado seja o consumido, o `external` do `content` nomeia o baixado que a receita já recusa. Arquivo no disco não é o recurso integrado. Sem chave `baixado`. Uma tarefa omitida numa consulta não equivale a
-falha; siga o contrato de consulta e limite de tentativas do fornecedor.
+falha. Se a receita recusa que uma tarefa omitida equivalha a falha, o `content` nomeia a omitida que a receita já recusa. Omissão no disco não é a falha. Sem chave `omitida`. Siga o contrato de consulta e limite de tentativas do fornecedor.
 
 Use a identidade e o caminho efetivamente retornados. Não presuma nomes quando o
 serviço versiona ou renomeia assets. No download, validar resposta e integridade
@@ -58,7 +58,7 @@ página HTML ocupe o lugar do recurso válido. Preserve master e versão anterio
 
 Verificadores de sprites/texturas localizam candidatos a defeito; correções que
 apagam pixels, quantizam cores ou redimensionam não são consequência automática de
-um alerta. Se a receita recusa que o alerta autorize apagar pixels, quantizar cores ou redimensionar, o `content` nomeia o alerta que a receita já recusa. Alerta no disco não é a correção. Sem chave `alerta`. Se a receita recusa que mais resolução mude as dimensões no mundo, o `content` nomeia a resolução que a receita já recusa. Resolução no disco não é a escala. Sem chave `resolução`. Se a receita recusa que o limite de hospedagem exija reduzir quadros, o `content` nomeia a hospedagem que a receita já recusa. Limite no disco não é o corte. Sem chave `hospedagem`. Se a receita recusa que o refinamento estático exija regenerar bancos, o `content` nomeia os bancos que a receita já recusa. Refino no disco não é o banco. Sem chave `bancos`. Confira recorte, alpha, sequência e aparência no jogo conforme sua política
+um alerta. Se a receita recusa que o alerta autorize apagar pixels, quantizar cores ou redimensionar, o `content` nomeia o alerta que a receita já recusa. Alerta no disco não é a correção. Sem chave `alerta`. Se a receita recusa que mais resolução mude as dimensões no mundo, o `content` nomeia a resolução que a receita já recusa. Resolução no disco não é a escala. Sem chave `resolução`. Se a receita recusa que o limite de hospedagem exija reduzir quadros, o `content` nomeia a hospedagem que a receita já recusa. Limite no disco não é o corte. Sem chave `hospedagem`. Se a receita recusa que o refinamento estático exija regenerar bancos, o `content` nomeia os bancos que a receita já recusa. Refino no disco não é o banco. Sem chave `bancos`. Se a receita recusa que uma tarefa omitida equivalha a falha, o `content` nomeia a omitida que a receita já recusa. Omissão no disco não é a falha. Sem chave `omitida`. Confira recorte, alpha, sequência e aparência no jogo conforme sua política
 artística. Prova: falha preserva o recurso anterior; sucesso chega ao consumidor certo,
 com origem/licença e acabamento conferidos. Este procedimento não comprova consistência
 do gerador. Se a receita recusa que o recibo comprove a consistência do gerador, o `fields` do `origins --declare` nomeia a consistência que a receita já recusa. Recibo no disco não é o asset. Sem chave `consistência`. [Origem e limites](../references/sources.md#autoria-ugc-pública).
