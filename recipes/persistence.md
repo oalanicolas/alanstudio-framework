@@ -16,7 +16,7 @@ Separe as três categorias antes de escrever qualquer coisa no disco:
   separado do progresso, porque sobrevive a apagar a partida.
 
 Derivado não se salva: salvar o que pode ser recalculado cria dois caminhos que
-divergem e uma inconsistência impossível de reproduzir.
+divergem e uma inconsistência impossível de reproduzir. Se a receita recusa que o derivado seja o save, o `save` nomeia o derivado que a receita já recusa. Derivado no disco não é o progresso. Sem chave `derivado`.
 
 Versione o formato desde a primeira gravação e escreva a migração junto da mudança,
 não depois. Uma versão sem migração transforma qualquer atualização em perda de
@@ -77,7 +77,7 @@ uma escrita comum, com a mesma exposição a interrupção que uma escrita diret
 estágio compra detecção de cota e de truncamento, não atomicidade. Se a receita recusa que o estágio seja atomicidade, o `save` nomeia a atomicidade que a receita já recusa. Estágio no disco não é substituição. Sem chave `atomicidade`. Para ter
 atomicidade de verdade nesse alvo é preciso outro armazenamento — IndexedDB tem
 transação. `tests/save.test.mjs` exercita migração, dado corrompido, preferência
-fora de faixa e o aviso da recuperação; interrupção abrupta real, ninguém exercitou. Se a receita recusa que o teste de dado inválido prove a interrupção abrupta, o `save` nomeia a interrupção que a receita já recusa. Teste no disco não é a interrupção. Sem chave `interrupção`.
+fora de faixa e o aviso da recuperação; interrupção abrupta real, ninguém exercitou. Se a receita recusa que o teste de dado inválido prove a interrupção abrupta, o `save` nomeia a interrupção que a receita já recusa. Teste no disco não é a interrupção. Sem chave `interrupção`. Se a receita recusa que o derivado seja o save, o `save` nomeia o derivado que a receita já recusa. Derivado no disco não é o progresso. Sem chave `derivado`.
 
 Prova: cadeia de migração desde a versão mais antiga em uso, carregamento de cada
 forma de dado inválido, interrupção forçada durante a gravação, progresso real

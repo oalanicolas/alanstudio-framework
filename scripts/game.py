@@ -5390,6 +5390,40 @@ def save_interrupt_scope():
     )
 
 
+# A receita já recusa que o
+# derivado seja o save. Sem isto
+# o save lia o schema e calava a
+# recusa. Derivado no disco não
+# é o progresso.
+PERSIST_DERIVED = re.compile(r"Derivado não se salva")
+
+
+def recipe_refuses_derived_as_save(text):
+    return bool(text and PERSIST_DERIVED.search(text))
+
+
+def save_derived_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_derived_as_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_derived_scope():
+    if not save_derived_source():
+        return None
+    return (
+        " O disco recusa que o derivado seja o save "
+        "(`derivado`). Derivado no disco não é o progresso."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -5932,6 +5966,9 @@ def save_reading(project):
     halt = save_interrupt_scope()
     if halt:
         scope += halt
+    derived = save_derived_scope()
+    if derived:
+        scope += derived
     used_flag = bool(used)
     if used_flag:
         used_flag = {
