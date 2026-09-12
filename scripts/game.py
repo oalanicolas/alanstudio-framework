@@ -3743,6 +3743,40 @@ def feel_observations_stack_scope():
     )
 
 
+# A receita já recusa que dois
+# orbes inflam a corrente. Sem
+# isto o feel listava o recibo
+# e calava a recusa. Orbe no
+# disco não é a corrente.
+FEEL_CHAIN = re.compile(r"não inflam a corrente")
+
+
+def recipe_refuses_two_orbs_as_inflaming_the_chain(text):
+    return bool(text and FEEL_CHAIN.search(text))
+
+
+def feel_observations_chain_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_two_orbs_as_inflaming_the_chain(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_chain_scope():
+    if not feel_observations_chain_source():
+        return None
+    return (
+        " O disco recusa que dois orbes inflam a corrente "
+        "(`corrente`). Orbe no disco não é a corrente."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -3766,6 +3800,9 @@ def feel_observations_scope():
     pile = feel_observations_stack_scope()
     if pile:
         scope += pile
+    cord = feel_observations_chain_scope()
+    if cord:
+        scope += cord
     return scope
 
 
