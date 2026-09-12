@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.557 — o candidate_speed nomeia o cheio que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+simular
+no
+relógio
+cheio
+não
+observa.
+O
+playtest
+relatava
+o
+knob
+e
+calava
+a
+recusa.
+Agora
+o
+`candidate_speed`
+nomeia
+o
+cheio.
+Número
+no
+disco
+não
+é
+alguém
+de
+fora.
+Sem
+chave
+`cheio`.
+Nomear
+não
+observa.
+
+O que 0.9.557 não afirma:
+relatar
+o
+relógio
+não
+é
+assistir
+à
+sessão.
+
 ## 0.9.556 — o access nomeia os pixels que a receita já recusa
 
 A

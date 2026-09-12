@@ -12352,7 +12352,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         }), encoding="utf-8")
         clocked = game.playtest_reading(destination)
         self.assertEqual(clocked["invite_href"], "/?invite=1&seed=8&spawn=dusk&look=dusk&speed=0.75")
-        self.assertEqual(clocked["candidate_speed"], 0.75)
+        self.assertEqual(clocked["candidate_speed"]["speed"], 0.75)
         self.assertEqual(game.seed_href(destination), "/?seed=8&spawn=dusk&look=dusk&speed=0.75")
         self.assertFalse(clocked["outsider"])
 
@@ -12386,7 +12386,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         }), encoding="utf-8")
         reading = game.playtest_reading(destination)
         self.assertEqual(reading["candidate_look"], "dusk")
-        self.assertEqual(reading["candidate_speed"], 0.75)
+        self.assertEqual(reading["candidate_speed"]["speed"], 0.75)
         self.assertEqual(reading["candidate_policy"]["policy"], "nearest-orb")
         self.assertEqual(
             reading["invite_href"],
@@ -12565,6 +12565,71 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         invite = game.invite_playtest(destination)
         self.assertNotIn("origem no last-run seja sessão observada", invite["scope"])
+
+    def test_playtest_speed_names_the_full_clock_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_full_clock_as_observation(recipe),
+            "a receita já recusa que simular no relógio cheio observe",
+        )
+        self.assertEqual(game.playtest_speed_full_source(), "recipes/feel.md")
+        destination = self.root / "com-relogio"
+        game.init(destination, "canvas-arcade")
+        run_path = destination / "docs/playtest/last-run.json"
+        run_path.parent.mkdir(parents=True, exist_ok=True)
+        run_path.write_text(json.dumps({
+            "schema": 2,
+            "seed": 8,
+            "speed": 0.75,
+            "run": {"seed": 8, "score": 3, "ticks": 40, "speed": 0.75},
+            "observed": False,
+            "felt": False,
+        }), encoding="utf-8")
+        report = game.playtest_reading(destination)
+        item = report["candidate_speed"]
+        self.assertEqual(item["speed"], 0.75)
+        self.assertIn(
+            "simular no relógio cheio observe",
+            item["scope"],
+            "o playtest relatava o knob e calava a recusa",
+        )
+        self.assertIn("(`cheio`)", item["scope"])
+        self.assertNotIn("cheio", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["outsider"])
+        self.assertFalse(game.recipe_refuses_full_clock_as_observation(""))
+        self.assertEqual(game.last_run_speed(destination), 0.75)
+        with mock.patch.object(game, "playtest_speed_full_source", return_value=None):
+            silent = game.playtest_reading(destination)
+        self.assertNotIn(
+            "simular no relógio cheio observe",
+            silent["candidate_speed"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o cheio que a receita já recusa", recipe)
+        self.assertIn("nomeia o cheio que a receita já recusa", skill)
+        self.assertIn("nomeia o cheio que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("simular no relógio cheio observe", report["scope"])
+        if report.get("candidate_policy"):
+            self.assertNotIn(
+                "simular no relógio cheio observe",
+                report["candidate_policy"]["scope"],
+            )
+        if report.get("candidate_tally"):
+            self.assertNotIn(
+                "simular no relógio cheio observe",
+                report["candidate_tally"]["scope"],
+            )
+        self.assertNotIn("simular no relógio cheio observe", game.next_scope())
+        self.assertNotIn(
+            "simular no relógio cheio observe",
+            game.feel_reading(destination)["scope"],
+        )
+        invite = game.invite_playtest(destination)
+        self.assertNotIn("simular no relógio cheio observe", invite["scope"])
 
     def test_playtest_names_the_curve_the_last_run_already_traced(self):
         destination = self.root / "com-curva"

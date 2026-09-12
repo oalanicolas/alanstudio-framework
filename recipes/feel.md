@@ -62,7 +62,7 @@ mesmo candidato em `docs/playtest/last-run.json` com `policy: played`.
 `npm run session` grava a simulação (`nearest-orb`) e não
 sobrescreve `played` sem `--force`. `session --look` e
 `session --speed` nomeiam o que o convite já lê. Simular
-no relógio cheio não observa.
+no relógio cheio não observa. Se a receita recusa que simular no relógio cheio observe, o `candidate_speed` nomeia o cheio que a receita já recusa. Número no disco não é alguém de fora. Sem chave `cheio`.
 Se o `tools/session.*` grava a simulação, o `playtest` nomeia a simulação.
 Traço no disco não é alguém de fora. Sem chave `session`.
 Se o `tools/serve.*` grava o recado, o `playtest` nomeia o recado que o serve já grava. Texto no disco não é alguém de fora. Sem chave `note`.

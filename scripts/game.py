@@ -5416,6 +5416,50 @@ def last_run_speed(project):
     return None
 
 
+# A receita já recusa que simular no
+# relógio cheio observe. Sem isto o
+# playtest relatava o knob e calava a recusa.
+# Número no disco não é alguém de fora.
+FEEL_FULL_CLOCK = re.compile(r"Simular\s+no relógio cheio não observa")
+
+
+def recipe_refuses_full_clock_as_observation(text):
+    return bool(text and FEEL_FULL_CLOCK.search(text))
+
+
+def playtest_speed_full_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_full_clock_as_observation(text):
+        return "recipes/feel.md"
+    return None
+
+
+def playtest_speed_full_scope():
+    if not playtest_speed_full_source():
+        return None
+    return (
+        " O disco recusa que simular no relógio cheio observe "
+        "(`cheio`). Número no disco não é alguém de fora."
+    )
+
+
+def playtest_speed_scope():
+    scope = (
+        "relógio no last-run diferente de 1. "
+        "Não observa a sessão e não atribui causa."
+    )
+    named = playtest_speed_full_scope()
+    if named:
+        scope += named
+    return scope
+
+
 def last_run_policy(project):
     # Serve grava played; session grava nearest-orb.
     # Sem a chave o leitor fingia a mesma origem.
@@ -5547,6 +5591,11 @@ def playtest_reading(project):
     candidate_spawn = last_run_spawn(project) if candidate else None
     candidate_look = last_run_look(project) if candidate else None
     candidate_speed = last_run_speed(project) if candidate else None
+    if candidate_speed is not None:
+        candidate_speed = {
+            "speed": candidate_speed,
+            "scope": playtest_speed_scope(),
+        }
     candidate_curve = last_run_curve(project) if candidate else None
     if candidate_curve is not None:
         candidate_curve = dict(candidate_curve, scope=playtest_curve_scope())
