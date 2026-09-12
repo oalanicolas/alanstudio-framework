@@ -21,7 +21,7 @@ divergem e uma inconsistência impossível de reproduzir.
 Versione o formato desde a primeira gravação e escreva a migração junto da mudança,
 não depois. Uma versão sem migração transforma qualquer atualização em perda de
 progresso. Mantenha a migração para trás por quantas versões o jogo já esteve nas
-mãos de alguém, e teste **a cadeia inteira**, não apenas o último salto.
+mãos de alguém, e teste **a cadeia inteira**, não apenas o último salto. Se a receita recusa que listar o fonte prove a cadeia inteira, o `sources` do `save` nomeia a cadeia que a receita já recusa. Arquivo no disco não é a migração. Sem chave `cadeia`.
 
 Trate dado inválido como caso normal, não como exceção: arquivo truncado, campo
 ausente, valor fora de faixa, save de uma versão futura, armazenamento cheio ou

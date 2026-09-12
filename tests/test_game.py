@@ -10819,6 +10819,54 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("um único número una a versão do conteúdo", game.record_scope())
         self.assertNotIn("um único número una a versão do conteúdo", game.next_scope())
 
+    def test_save_sources_names_the_chain_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_listed_files_as_full_chain(recipe),
+            "a receita já recusa que listar o fonte prove a cadeia inteira",
+        )
+        self.assertEqual(game.save_chain_source(), "recipes/persistence.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertTrue(game.save_persist_sources(starter), "o starter já lista fonte de persistência")
+        report = game.save_reading(starter)
+        item = report["sources"]
+        self.assertEqual(item["paths"], game.save_persist_sources(starter))
+        self.assertIn(
+            "listar o fonte prove a cadeia inteira",
+            item["scope"],
+            "o save listava o arquivo e calava a recusa",
+        )
+        self.assertIn("(`cadeia`)", item["scope"])
+        self.assertNotIn("cadeia", item)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_listed_files_as_full_chain(""))
+        empty = game.save_reading(self.project)
+        self.assertEqual(empty["sources"], [])
+        with mock.patch.object(game, "save_chain_source", return_value=None):
+            silent = game.save_reading(starter)
+        self.assertNotIn(
+            "listar o fonte prove a cadeia inteira",
+            silent["sources"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a cadeia que a receita já recusa", recipe)
+        self.assertIn("nomeia a cadeia que a receita já recusa", skill)
+        self.assertIn("nomeia a cadeia que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("listar o fonte prove a cadeia inteira", report["scope"])
+        self.assertNotIn(
+            "listar o fonte prove a cadeia inteira",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn("listar o fonte prove a cadeia inteira", game.record_scope())
+        self.assertNotIn("listar o fonte prove a cadeia inteira", game.next_scope())
+        self.assertNotIn(
+            "listar o fonte prove a cadeia inteira",
+            game.content_reading(starter)["scope"],
+        )
+
     def test_save_names_storage_without_a_schema_as_unversioned(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "store.js").write_text("localStorage.setItem('score', value)\n")

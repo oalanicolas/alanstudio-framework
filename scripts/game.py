@@ -3689,9 +3689,69 @@ def save_contracts_scope():
     )
 
 
+# A receita já recusa que listar o
+# fonte prove a cadeia inteira. Sem
+# isto o save listava o arquivo e
+# calava a recusa. Arquivo no disco
+# não é a migração.
+PERSIST_CHAIN = re.compile(r"cadeia\s+inteira")
+
+
+def recipe_refuses_listed_files_as_full_chain(text):
+    return bool(text and PERSIST_CHAIN.search(text))
+
+
+def save_chain_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_listed_files_as_full_chain(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_chain_scope():
+    if not save_chain_source():
+        return None
+    return (
+        " O disco recusa que listar o fonte prove a cadeia inteira "
+        "(`cadeia`). Arquivo no disco não é a migração."
+    )
+
+
+def save_sources_scope():
+    scope = (
+        "arquivo de persistência no disco. "
+        "Não executa a migração."
+    )
+    named = save_chain_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def save_persist_sources(project):
+    project = Path(project)
+    found = []
+    for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
+        if (
+            PERSIST_USE.search(text)
+            or PERSIST_VERSION.search(text)
+            or PERSIST_WARN.search(text)
+        ):
+            found.append(relative)
+            if len(found) == 8:
+                break
+    return found
+
+
 def save_reading(project):
     project = Path(project)
-    used, versioned, warned, sources = [], [], [], []
+    used, versioned, warned = [], [], []
     for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
         if PERSIST_USE.search(text):
             used.append(relative)
@@ -3699,8 +3759,12 @@ def save_reading(project):
             versioned.append(relative)
         if PERSIST_WARN.search(text):
             warned.append(relative)
-        if PERSIST_USE.search(text) or PERSIST_VERSION.search(text) or PERSIST_WARN.search(text):
-            sources.append(relative)
+    sources = save_persist_sources(project)
+    if sources:
+        sources = {
+            "paths": sources,
+            "scope": save_sources_scope(),
+        }
     scope = (
         "Procura localStorage/saveProgress, PROGRESS_SCHEMA/migrate e se o "
         "disco nomeia sessão volátil (`persistLine`, `title_volatile`, "
@@ -3739,7 +3803,7 @@ def save_reading(project):
         "unversioned": bool(used) and not versioned,
         "warned": bool(warned),
         "warnings": warned[:8],
-        "sources": sources[:8],
+        "sources": sources,
         "trusted": False,
         "guide": str(FRAMEWORK / "recipes/persistence.md"),
         "rule": (
