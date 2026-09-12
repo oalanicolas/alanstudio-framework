@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.631 — o reference_present do commands nomeia a carregada que o menu já recusa
+
+O
+menu
+já
+dizia
+que
+arquivo
+presente
+não
+é
+a
+referência
+carregada.
+O
+commands
+relatava
+o
+reference_present
+e
+calava
+a
+recusa.
+Agora
+o
+`reference_present`
+do
+`commands`
+nomeia
+a
+carregada.
+Arquivo
+no
+disco
+não
+é
+a
+skill.
+Sem
+chave
+`carregada`.
+Nomear
+não
+observa.
+
 ## 0.9.630 — o blocking do doctor nomeia o funciona que a receita já recusa
 
 A

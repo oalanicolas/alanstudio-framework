@@ -10735,7 +10735,7 @@ def command_listing():
             "description": entry["description"],
             "argument_hint": entry.get("argument_hint", ""),
             "reference": str(reference),
-            "reference_present": reference.is_file(),
+            "reference_present": command_reference_present_reading(reference.is_file()),
             "foci": list(entry.get("foci", ())),
             "scope": row_scope,
         })
@@ -10784,6 +10784,70 @@ def command_row_scope():
             "Linha no catálogo não é a skill carregada."
         )
     return scope
+
+
+# O menu já recusa que o arquivo
+# presente seja a referência
+# carregada. Sem isto o commands
+# relatava o reference_present e
+# calava a recusa. Arquivo no
+# disco não é a skill.
+COMMAND_LOADED = re.compile(r"arquivo presente não é a referência carregada")
+
+
+def menu_refuses_present_file_as_loaded_reference(text):
+    return bool(text and COMMAND_LOADED.search(text))
+
+
+def command_reference_present_loaded_source():
+    path = COMMANDS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if menu_refuses_present_file_as_loaded_reference(text):
+        return "commands/README.md"
+    return None
+
+
+def command_reference_present_loaded_scope():
+    if not command_reference_present_loaded_source():
+        return None
+    return (
+        " O disco recusa que o arquivo presente seja a referência carregada "
+        "(`carregada`). Arquivo no disco não é a skill."
+    )
+
+
+def command_reference_present_scope():
+    scope = (
+        "arquivo da referência no disco. "
+        "O commands não carrega a skill."
+    )
+    named = command_reference_present_loaded_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def command_reference_present_flag(reading):
+    present = reading
+    if isinstance(reading, dict) and "reference_present" in reading:
+        present = reading.get("reference_present")
+    if isinstance(present, dict):
+        return bool(present.get("reference_present"))
+    return bool(present)
+
+
+def command_reference_present_reading(present):
+    if not present:
+        return False
+    return {
+        "reference_present": True,
+        "scope": command_reference_present_scope(),
+    }
 
 
 def command_problems():

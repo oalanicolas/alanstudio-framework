@@ -4,7 +4,7 @@ A skill `game-dev` roteia por **intenção**: `$game-dev craft`, `$game-dev crit
 `$game-dev feel`. Cada comando tem uma referência aqui, carregada depois da
 [preparação](../SKILL.md) (contexto e escala) e antes de qualquer ação. O modelo é a
 skill `impeccable`: menu por categoria, uma referência por comando, atalhos fixáveis,
-e a regra de que invocar sem carregar a referência produz trabalho genérico. Se o menu recusa invocar sem carregar a referência, o `commands` nomeia o genérico que o menu já recusa. Linha no disco não é a skill. Sem chave `genérico`.
+e a regra de que invocar sem carregar a referência produz trabalho genérico. Se o menu recusa invocar sem carregar a referência, o `commands` nomeia o genérico que o menu já recusa. Linha no disco não é a skill. Sem chave `genérico`. arquivo presente não é a referência carregada. Se o menu recusa que o arquivo presente seja a referência carregada, o `reference_present` do `commands` nomeia a carregada que o menu já recusa. Arquivo no disco não é a skill. Sem chave `carregada`.
 
 [`commands.json`](commands.json) é o catálogo: categoria, descrição, dica de
 argumentos, focos do `context` e leituras canônicas. Ele alimenta `game.py commands`

@@ -106,6 +106,53 @@ class CommandCliTest(unittest.TestCase):
         self.assertTrue(all(row["reference_present"] for row in payload["commands"]))
         self.assertEqual(payload["pinned_marker"], game.PIN_MARKER)
 
+    def test_commands_reference_present_names_the_loaded_the_menu_already_refuses(self):
+        guide = (game.FRAMEWORK / "commands/README.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.menu_refuses_present_file_as_loaded_reference(guide),
+            "o menu já recusa que o arquivo presente seja a referência carregada",
+        )
+        self.assertEqual(game.command_reference_present_loaded_source(), "commands/README.md")
+        self.assertFalse(game.command_reference_present_reading(False))
+        self.assertFalse(game.command_reference_present_flag({"reference_present": False}))
+        listing = game.command_listing()
+        item = listing["commands"][0]["reference_present"]
+        self.assertTrue(item["reference_present"], "o commands já acha o arquivo da referência")
+        self.assertEqual(item["reference_present"], game.command_reference_present_flag(listing["commands"][0]))
+        self.assertTrue(all(
+            game.command_reference_present_flag(row)
+            for row in listing["commands"]
+        ))
+        self.assertIn(
+            "o arquivo presente seja a referência carregada",
+            item["scope"],
+            "o commands relatava o reference_present e calava a recusa",
+        )
+        self.assertIn("(`carregada`)", item["scope"])
+        self.assertNotIn("carregada", item)
+        self.assertFalse(game.menu_refuses_present_file_as_loaded_reference(""))
+        with patch.object(game, "command_reference_present_loaded_source", return_value=None):
+            silent = game.command_listing()
+        self.assertNotIn(
+            "o arquivo presente seja a referência carregada",
+            silent["commands"][0]["reference_present"]["scope"],
+        )
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a carregada que o menu já recusa", readme)
+        self.assertIn("nomeia a carregada que o menu já recusa", guide)
+        self.assertIn("nomeia a carregada que o menu já recusa", skill)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o arquivo presente seja a referência carregada", listing["scope"])
+        self.assertNotIn(
+            "o arquivo presente seja a referência carregada",
+            listing["commands"][0]["scope"],
+        )
+        self.assertNotIn("o arquivo presente seja a referência carregada", game.next_scope())
+        self.assertNotIn("o arquivo presente seja a referência carregada", game.command_row_scope())
+
     def test_pin_writes_a_redirect_only_where_game_dev_is_installed(self):
         skills = self.install_skill(".claude")
         (self.root / ".agents").mkdir()  # host presente, skill ausente: não recebe atalho
