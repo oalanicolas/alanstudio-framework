@@ -35,7 +35,7 @@ na corrente, fecho no perigo). A recuperação do dash veste
 o apoio, não o orbe — a regra já diz vulnerável. Token no disco não é
 comparação em movimento. No starter, halo e
 vinheta dão volume ao recorte geométrico; com menos movimento
-somem. Isso não é direção consistente.
+somem. Isso não é direção consistente. Se a receita recusa que isso seja direção consistente, o `bible_current` do `art` nomeia o vigente que a receita já recusa. Arquivo no disco não é comparação. Sem chave `vigente`.
 depois de um `note`, `start` e `next` apontam esses comandos.
 Ferramenta no disco não é alguém de fora nem comparação em movimento.
 

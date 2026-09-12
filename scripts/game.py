@@ -5398,6 +5398,58 @@ def art_bible_scope():
     return scope
 
 
+# A receita já recusa que isso seja
+# direção consistente. Sem isto o
+# art relatava o vigente e calava a
+# recusa. Arquivo no disco não é
+# comparação.
+VISUAL_CURRENT = re.compile(r"Isso não é direção consistente")
+
+
+def recipe_refuses_that_as_consistent_direction(text):
+    return bool(text and VISUAL_CURRENT.search(text))
+
+
+def art_bible_current_consistent_source():
+    path = FRAMEWORK / "recipes/visual.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_that_as_consistent_direction(text):
+        return "recipes/visual.md"
+    return None
+
+
+def art_bible_current_consistent_scope():
+    if not art_bible_current_consistent_source():
+        return None
+    return (
+        " O disco recusa que isso seja direção consistente "
+        "(`vigente`). Arquivo no disco não é comparação."
+    )
+
+
+def art_bible_current_scope():
+    scope = (
+        "docs/art-bible.md vigente no disco. "
+        "Não é direção consistente."
+    )
+    named = art_bible_current_consistent_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def art_bible_current_flag(reading):
+    current = (reading or {}).get("bible_current")
+    if isinstance(current, dict):
+        return bool(current.get("bible_current"))
+    return bool(current)
+
+
 def art_bible_path(project):
     path = Path(project) / ART_BIBLE
     if path.is_file() and not path.is_symlink():
@@ -5438,6 +5490,7 @@ def art_reading(project):
     bible_present = bible.is_file() and not bible.is_symlink()
     bible_current = document_is_current(bible)
     declared = bool(found_const or manifests or bible_current)
+    bible_draft = bible_present and not bible_current
     scope = (
         "Procura `const PALETTES`, tokens.json, data/palettes.json, "
         "docs/art-bible.md sem marcador de rascunho e mesas de chuva "
@@ -5510,8 +5563,14 @@ def art_reading(project):
             }
             if bible_present else None
         ),
-        "bible_current": bible_current,
-        "bible_draft": bible_present and not bible_current,
+        "bible_current": (
+            {
+                "bible_current": True,
+                "scope": art_bible_current_scope(),
+            }
+            if bible_current else False
+        ),
+        "bible_draft": bible_draft,
         "declared": declared,
         "missing": not declared,
         "consistent": False,

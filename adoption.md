@@ -30,6 +30,55 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.613 — o bible_current do art nomeia o vigente que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+isso
+não
+é
+direção
+consistente.
+O
+art
+relatava
+o
+vigente
+e
+calava
+a
+recusa.
+Agora
+o
+`bible_current`
+do
+`art`
+nomeia
+o
+vigente.
+Arquivo
+no
+disco
+não
+é
+comparação.
+Sem
+chave
+`vigente`.
+Nomear
+não
+compara.
+
+O que 0.9.613 não afirma:
+o
+arquivo
+não
+prova
+estilo.
+
 ## 0.9.612 — o empty do doctor nomeia a pasta que a receita já recusa
 
 A

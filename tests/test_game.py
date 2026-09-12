@@ -12846,6 +12846,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         bases = [item["basis"] for item in self.proposals(game.next_step(self.project, "visual"))]
         self.assertNotIn("art.missing", bases)
 
+    def test_art_bible_current_names_the_current_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/visual.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_that_as_consistent_direction(recipe),
+            "a receita já recusa que isso seja direção consistente",
+        )
+        self.assertEqual(game.art_bible_current_consistent_source(), "recipes/visual.md")
+        empty = game.art_reading(self.project)
+        self.assertFalse(empty["bible_current"])
+        self.assertFalse(game.art_bible_current_flag(empty))
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.art_reading(starter)
+        item = report["bible_current"]
+        self.assertTrue(item["bible_current"], "o art já relata o vigente neste starter")
+        self.assertEqual(item["bible_current"], game.art_bible_current_flag(report))
+        self.assertIn(
+            "isso seja direção consistente",
+            item["scope"],
+            "o art relatava o vigente e calava a recusa",
+        )
+        self.assertIn("(`vigente`)", item["scope"])
+        self.assertNotIn("vigente", item)
+        self.assertIs(report["bible_draft"], False)
+        self.assertIs(report["declared"], True)
+        self.assertFalse(report["consistent"])
+        self.assertFalse(game.recipe_refuses_that_as_consistent_direction(""))
+        with mock.patch.object(game, "art_bible_current_consistent_source", return_value=None):
+            silent = game.art_reading(starter)
+        self.assertNotIn(
+            "isso seja direção consistente",
+            silent["bible_current"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o vigente que a receita já recusa", recipe)
+        self.assertIn("nomeia o vigente que a receita já recusa", skill)
+        self.assertIn("nomeia o vigente que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("isso seja direção consistente", report["scope"])
+        if report.get("bible"):
+            self.assertNotIn(
+                "isso seja direção consistente",
+                report["bible"].get("scope") or "",
+            )
+        if report.get("rains") and isinstance(report["rains"], dict):
+            self.assertNotIn(
+                "isso seja direção consistente",
+                report["rains"].get("scope") or "",
+            )
+        if report.get("sources") and isinstance(report["sources"], dict):
+            self.assertNotIn(
+                "isso seja direção consistente",
+                report["sources"].get("scope") or "",
+            )
+        self.assertNotIn("isso seja direção consistente", game.next_scope())
+
     def test_art_reads_a_palette_table_in_data(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "data").mkdir()
