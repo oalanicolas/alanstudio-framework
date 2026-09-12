@@ -15004,6 +15004,56 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.next_scope())
         self.assertNotIn("mata", game.CYCLE_KEYS)
 
+    def test_feel_names_the_eat_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"não come a guarda que já sentou")
+        self.assertTrue(
+            game.recipe_refuses_clock_as_eating_the_sat_guard(recipe),
+            "a receita já recusa que o relógio coma a guarda que já sentou",
+        )
+        self.assertEqual(game.feel_eat_source(), "recipes/feel.md")
+        report = game.feel_reading(self.project)
+        self.assertIn(
+            "o relógio coma a guarda que já sentou",
+            report["scope"],
+            "o feel lia o CONFIG e calava a recusa",
+        )
+        self.assertIn("(`come`)", report["scope"])
+        self.assertIn("Relógio no disco não é a guarda.", report["scope"])
+        self.assertNotIn("come", report)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_clock_as_eating_the_sat_guard(""))
+        with mock.patch.object(game, "feel_eat_source", return_value=None):
+            silent = game.feel_reading(self.project)
+        self.assertNotIn("o relógio coma a guarda que já sentou", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o come que a receita já recusa"), 2)
+        self.assertIn("nomeia o come que a receita já recusa", create)
+        self.assertIn("nomeia o come que a receita já recusa", skill)
+        self.assertIn("nomeia o come que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        phrase = "o relógio coma a guarda que já sentou"
+        self.assertNotIn(phrase, game.feel_unobserved_scope())
+        self.assertNotIn(phrase, game.feel_constants_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("come", game.CYCLE_KEYS)
+
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
         destination = self.root / "com-observacao"
         game.init(destination, "canvas-arcade")

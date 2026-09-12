@@ -4543,6 +4543,9 @@ def _feel_scope(project):
     blow = feel_kill_scope()
     if blow:
         scope += blow
+    eat = feel_eat_scope()
+    if eat:
+        scope += eat
     return scope
 
 
@@ -4852,6 +4855,41 @@ def feel_kill_scope():
     return (
         " O disco recusa que sentar e pontuar no mesmo impacto matem "
         "(`mata`). Impacto no disco não é a morte."
+    )
+
+
+# A receita já recusa que o
+# relógio coma a guarda que
+# já sentou. Sem isto o feel
+# lia o CONFIG e calava a
+# recusa. Relógio no disco
+# não é a guarda.
+FEEL_EAT = re.compile(r"não come a guarda que já sentou")
+
+
+def recipe_refuses_clock_as_eating_the_sat_guard(text):
+    return bool(text and FEEL_EAT.search(text))
+
+
+def feel_eat_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_clock_as_eating_the_sat_guard(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_eat_scope():
+    if not feel_eat_source():
+        return None
+    return (
+        " O disco recusa que o relógio coma a guarda que já sentou "
+        "(`come`). Relógio no disco não é a guarda."
     )
 
 
