@@ -76,7 +76,7 @@ costuma faltar nos processos:
    recorte diminui até que seja.
 3. **Abandonar** — o critério não vale o que custa, e o trabalho para aqui.
 
-Abandonar **não é falha do gate**: é uma das respostas dele. O ciclo já dizia
+Abandonar **não é falha do gate**: é uma das respostas dele. Se o roteiro recusa que abandonar seja falha do gate, o `gate` nomeia o abandono que o roteiro já recusa. Roteiro no disco não é passagem. Sem chave `abandono`. O ciclo já dizia
 isso em um lugar — a etapa `poc` fecha com “decisão de continuar, ajustar ou
 abandonar a hipótese”. O que este arquivo faz é generalizar: se abandonar é
 resposta legítima ao fim de um experimento, também é ao fim de uma fatia que não

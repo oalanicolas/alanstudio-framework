@@ -1603,7 +1603,44 @@ def _gate_scope(project):
             " O disco declara o gate (`gate`). "
             "Linha no disco não é passagem concedida."
         )
+    named = gate_abandon_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O roteiro já recusa que abandonar
+# seja falha do gate. Sem isto o
+# gate lia a declaração e calava a
+# recusa. Roteiro no disco não é
+# passagem.
+GATE_ABANDON = re.compile(r"não é falha do gate")
+
+
+def gates_refuse_abandon_as_failure(text):
+    return bool(text and GATE_ABANDON.search(text))
+
+
+def gate_abandon_source():
+    path = GATES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if gates_refuse_abandon_as_failure(text):
+        return "references/gates.md"
+    return None
+
+
+def gate_abandon_scope():
+    if not gate_abandon_source():
+        return None
+    return (
+        " O disco recusa que abandonar seja falha do gate "
+        "(`abandono`). Roteiro no disco não é passagem."
+    )
 
 
 CRAFT_ROW = re.compile(r"^\|\s*`([\w-]+)`\s*\|\s*`(\w+)`\s*\|\s*(.*?)\s*\|\s*$")

@@ -7976,6 +7976,60 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("then.gate", report.get("then") or {})
         self.assertNotIn("declara o gate", game.next_step(self.project)["scope"])
 
+    def test_gate_names_the_abandon_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.gates_refuse_abandon_as_failure(guide),
+            "o roteiro já recusa que abandonar seja falha do gate",
+        )
+        self.assertEqual(game.gate_abandon_source(), "references/gates.md")
+        report = game.gate_reading(self.project)
+        self.assertIn(
+            "abandonar seja falha do gate",
+            report["scope"],
+            "o gate lia a declaração e calava a recusa",
+        )
+        self.assertIn("(`abandono`)", report["scope"])
+        self.assertNotIn("abandono", report)
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.gates_refuse_abandon_as_failure(""))
+        with mock.patch.object(game, "gate_abandon_source", return_value=None):
+            silent = game.gate_reading(self.project)
+        self.assertNotIn(
+            "abandonar seja falha do gate",
+            silent["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o abandono que o roteiro já recusa", guide)
+        self.assertIn("nomeia o abandono que o roteiro já recusa", recipe)
+        self.assertIn("nomeia o abandono que o roteiro já recusa", skill)
+        self.assertIn("nomeia o abandono que o roteiro já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "abandonar seja falha do gate",
+            game.gate_item_scope(),
+        )
+        self.assertNotIn(
+            "abandonar seja falha do gate",
+            game.craft_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "abandonar seja falha do gate",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "abandonar seja falha do gate",
+            game.check_plan_scope(),
+        )
+        self.assertNotIn(
+            "abandonar seja falha do gate",
+            game.context(self.project, "create")["production_bar"]["scope"],
+        )
+
     def test_gate_names_the_silence_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/gates.md").read_text(encoding="utf-8")
         self.assertTrue(

@@ -30,6 +30,47 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.658 — o gate nomeia o abandono que o roteiro já recusa
+
+O
+roteiro
+já
+dizia
+que
+abandonar
+não
+é
+falha
+do
+gate.
+O
+gate
+lia
+a
+declaração
+e
+calava
+a
+recusa.
+Agora
+o
+`gate`
+nomeia
+o
+abandono.
+Roteiro
+no
+disco
+não
+é
+passagem.
+Sem
+chave
+`abandono`.
+Nomear
+não
+observa.
+
 ## 0.9.657 — o craft nomeia o preciso que o mapa já recusa
 
 O
