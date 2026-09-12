@@ -21999,6 +21999,9 @@ def record_scope():
     step = record_substep_scope()
     if step:
         scope += step
+    first = record_first_scope()
+    if first:
+        scope += first
     return scope
 
 
@@ -22249,6 +22252,40 @@ def record_substep_scope():
     return (
         " O disco recusa que o subpasso repita eventos de borda "
         "(`subpasso`). Subpasso no disco não é o quadro."
+    )
+
+
+# A receita já recusa que orçar só
+# o campo cubra o primeiro quadro.
+# Sem isto o record gravava o
+# recibo e calava a recusa. Campo
+# no disco não é a porta.
+PERF_FIRST = re.compile(r"Orçar só o campo esconde o primeiro quadro")
+
+
+def recipe_refuses_field_budget_as_covering_the_first_frame(text):
+    return bool(text and PERF_FIRST.search(text))
+
+
+def record_first_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_field_budget_as_covering_the_first_frame(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_first_scope():
+    if not record_first_source():
+        return None
+    return (
+        " O disco recusa que orçar só o campo cubra o primeiro quadro "
+        "(`primeiro`). Campo no disco não é a porta."
     )
 
 
