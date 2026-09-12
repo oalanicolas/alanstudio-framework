@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.613: o `bible_current` do `art` nomeia o vigente que a receita já recusa. Arquivo no disco não é comparação. Sem chave `vigente`. Nomear não compara.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.613): **674 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
