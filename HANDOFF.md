@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.662: o `feel` nomeia o tween que a receita já recusa. Receita no disco não é peso percebido. Sem chave `tween`. Nomear não sente.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.662): **723 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
