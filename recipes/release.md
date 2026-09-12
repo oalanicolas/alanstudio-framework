@@ -25,7 +25,7 @@ máquina. Sem chave `size`. Se a receita recusa que o tamanho sem teto seja o or
 
 Com tela, a primeira superfície do artefato também é a porta. O serve
 de desenvolvimento apontar `/?invite=1&seed=&spawn=` não é o `dist/`
-em outra máquina. Compartilhar o convite não é `elsewhere`.
+em outra máquina. Compartilhar o convite não é `elsewhere`. Se a receita recusa que compartilhar o convite seja elsewhere, o `release` do `ship` nomeia o compartilhar que a receita já recusa. Arquivo no disco não é outra máquina. Sem chave `compartilhar`.
 
 Verifique o artefato, não o ambiente de desenvolvimento. Editor, servidor de
 desenvolvimento e build de depuração têm caminhos, permissões, recursos e tempos

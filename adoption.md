@@ -30,6 +30,60 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.587 — o release do ship nomeia o compartilhar que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+compartilhar
+o
+convite
+não
+é
+elsewhere.
+O
+ship
+relatava
+o
+release
+e
+calava
+a
+recusa.
+Agora
+o
+`release`
+do
+`ship`
+nomeia
+o
+compartilhar.
+Arquivo
+no
+disco
+não
+é
+outra
+máquina.
+Sem
+chave
+`compartilhar`.
+Nomear
+não
+entrega.
+
+O que 0.9.587 não afirma:
+relatar
+o
+release
+não
+é
+entregar
+o
+artefato.
+
 ## 0.9.586 — o candidate do playtest nomeia o Continuar que a receita já recusa
 
 A

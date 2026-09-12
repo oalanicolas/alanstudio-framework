@@ -11735,7 +11735,8 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertTrue(pack["expected"])
         self.assertFalse(pack["unpacked"])
         self.assertIn("build", pack["scripts"]["names"])
-        self.assertEqual(pack["release"], "docs/release.md")
+        self.assertEqual(pack["release"]["path"], "docs/release.md")
+        self.assertEqual(game.ship_release_path(pack), "docs/release.md")
         self.assertTrue(pack["release_current"])
         self.assertFalse(pack["shipped"])
         self.assertFalse(pack["elsewhere"])
@@ -12394,6 +12395,67 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             )
         self.assertNotIn("nomear o comando execute", game.next_scope())
         self.assertNotIn("nomear o comando execute", game.record_scope())
+
+    def test_ship_release_names_the_share_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/release.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_invite_share_as_elsewhere(recipe),
+            "a receita já recusa que compartilhar o convite seja elsewhere",
+        )
+        self.assertEqual(game.ship_release_share_source(), "recipes/release.md")
+        empty = game.ship_reading(self.project)
+        self.assertIsNone(empty["release"])
+        self.assertIsNone(game.ship_release_path(empty))
+        self._release_note()
+        report = game.ship_reading(self.project)
+        item = report["release"]
+        self.assertEqual(item["path"], "docs/release.md")
+        self.assertEqual(item["path"], game.ship_release_path(report))
+        self.assertIn(
+            "compartilhar o convite seja elsewhere",
+            item["scope"],
+            "o ship relatava o release e calava a recusa",
+        )
+        self.assertIn("(`compartilhar`)", item["scope"])
+        self.assertNotIn("compartilhar", item)
+        self.assertFalse(report["elsewhere"])
+        self.assertFalse(report["shipped"])
+        self.assertFalse(game.recipe_refuses_invite_share_as_elsewhere(""))
+        with mock.patch.object(game, "ship_release_share_source", return_value=None):
+            silent = game.ship_reading(self.project)
+        self.assertNotIn(
+            "compartilhar o convite seja elsewhere",
+            silent["release"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o compartilhar que a receita já recusa", recipe)
+        self.assertIn("nomeia o compartilhar que a receita já recusa", skill)
+        self.assertIn("nomeia o compartilhar que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("compartilhar o convite seja elsewhere", report["scope"])
+        if report.get("artifact_open"):
+            self.assertNotIn(
+                "compartilhar o convite seja elsewhere",
+                report["artifact_open"].get("scope") or "",
+            )
+        if report.get("scripts"):
+            self.assertNotIn(
+                "compartilhar o convite seja elsewhere",
+                report["scripts"].get("scope") or "",
+            )
+        if report.get("ci"):
+            self.assertNotIn(
+                "compartilhar o convite seja elsewhere",
+                report["ci"].get("scope") or "",
+            )
+        self.assertNotIn("compartilhar o convite seja elsewhere", game.next_scope())
+        self.assertNotIn(
+            "compartilhar o convite seja elsewhere",
+            game.playtest_reading(self.project)["scope"],
+        )
 
     def test_ship_names_how_to_serve_dist_without_calling_it_elsewhere(self):
         destination = self.root / "artefato-pronto"

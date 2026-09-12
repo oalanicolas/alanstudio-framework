@@ -5853,6 +5853,58 @@ def ship_open_command(pack):
     return opened
 
 
+# A receita já recusa que compartilhar
+# o convite seja elsewhere. Sem isto
+# o ship relatava o release e calava
+# a recusa. Arquivo no disco não é
+# outra máquina.
+RELEASE_SHARE = re.compile(r"Compartilhar o convite não é")
+
+
+def recipe_refuses_invite_share_as_elsewhere(text):
+    return bool(text and RELEASE_SHARE.search(text))
+
+
+def ship_release_share_source():
+    path = FRAMEWORK / "recipes/release.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_invite_share_as_elsewhere(text):
+        return "recipes/release.md"
+    return None
+
+
+def ship_release_share_scope():
+    if not ship_release_share_source():
+        return None
+    return (
+        " O disco recusa que compartilhar o convite seja elsewhere "
+        "(`compartilhar`). Arquivo no disco não é outra máquina."
+    )
+
+
+def ship_release_scope():
+    scope = (
+        "docs/release.md no disco. "
+        "Não entrega o artefato."
+    )
+    named = ship_release_share_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def ship_release_path(pack):
+    release = (pack or {}).get("release")
+    if isinstance(release, dict):
+        return release.get("path")
+    return release
+
+
 def ship_script_names(project):
     try:
         scripts, _ = project_commands(project)
@@ -5943,7 +5995,14 @@ def ship_reading(project):
         "expected": expected,
         "scripts": named,
         "ci": ci,
-        "release": SHIP_RELEASE if release.is_file() and not release.is_symlink() else None,
+        "release": (
+            {
+                "path": SHIP_RELEASE,
+                "scope": ship_release_scope(),
+            }
+            if release.is_file() and not release.is_symlink()
+            else None
+        ),
         "release_current": release_current,
         "artifact": artifact,
         "tree": tree,
