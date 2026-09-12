@@ -431,7 +431,7 @@ Focos: `create`, `mechanics`, `lifecycle`, `content`, `visual`, `audio`, `feel`,
 ### 2. Escala
 
 Todo trabalho de jogo acontece numa das três escalas de [ambição](references/ambition.md).
-Ela governa quantidade de artefatos e de conteúdo; **nunca** o piso do verbo.
+Ela governa quantidade de artefatos e de conteúdo; **nunca** o piso do verbo. Se a receita recusa que o piso do verbo seja opcional, o `scale` nomeia o opcional que a receita já recusa. Escala no disco não é o piso. Sem chave `opcional`.
 
 | Escala | Quando | Pronto quando |
 | --- | --- | --- |

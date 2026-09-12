@@ -242,7 +242,7 @@ contrato: [ambição](references/ambition.md). `--root` é aceito antes ou depoi
 subcomando.
 
 A **escala** de ambição (`jam`, `product`, `aa`) é o "register" da skill: governa
-quantidade de artefatos e de conteúdo, nunca o piso do verbo. `context` a devolve
+quantidade de artefatos e de conteúdo, nunca o piso do verbo. Se a receita recusa que o piso do verbo seja opcional, o `scale` nomeia o opcional que a receita já recusa. Escala no disco não é o piso. Sem chave `opcional`. `context` a devolve
 em `scale`: `--scale` declarado na conversa vence; sem ele, um campo `Escala:` num
 documento do projeto só **sugere**, com arquivo e linha; sem nenhum dos dois, o
 campo vem nulo e a skill infere uma vez e pede para gravar no brief. "AAA" escrito

@@ -64,7 +64,7 @@ ao projeto, e prossiga com o recorte solicitado. O usuário não precisa pedir e
 Declare a **escala** no brief: jam/conto, produto ou AA / Triple-I (piso de
 acabamento). A escala governa quantidade de artefatos e de conteúdo. O piso
 do verbo — decisão, feel sincronizado, áudio da consequência, pacing — não é
-opcional em nenhuma delas. Não use “AAA” como adjetivo do build.
+opcional em nenhuma delas. Se a receita recusa que o piso do verbo seja opcional, o `scale` nomeia o opcional que a receita já recusa. Escala no disco não é o piso. Sem chave `opcional`. Não use “AAA” como adjetivo do build.
 
 ## Primeira sessão
 

@@ -11614,7 +11614,7 @@ def read_scale(mentions, declared=None):
         if suggested:
             break
     chosen = declared or suggested
-    return {
+    report = {
         "name": chosen,
         "available": list(SCALES),
         "basis": (
@@ -11626,6 +11626,44 @@ def read_scale(mentions, declared=None):
         "guide": str(FRAMEWORK / "references/ambition.md"),
         "scope": "Governa quantidade de artefatos e de conteúdo, nunca o piso do verbo. 'aaa' em documento é lido como a escala aa (piso de acabamento), não como tier de publisher. O comando lê o campo; não classifica o jogo.",
     }
+    named = read_scale_optional_scope()
+    if named:
+        report["scope"] += named
+    return report
+
+
+# A receita já recusa que o
+# piso do verbo seja opcional.
+# Sem isto o scale copiava a
+# quantidade e calava a recusa.
+# Escala no disco não é o piso.
+CREATE_OPTIONAL = re.compile(r"não é\s+opcional em nenhuma")
+
+
+def recipe_refuses_verb_floor_as_optional(text):
+    return bool(text and CREATE_OPTIONAL.search(text))
+
+
+def read_scale_optional_source():
+    path = FRAMEWORK / "recipes/create.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_verb_floor_as_optional(text):
+        return "recipes/create.md"
+    return None
+
+
+def read_scale_optional_scope():
+    if not read_scale_optional_source():
+        return None
+    return (
+        " O disco recusa que o piso do verbo seja opcional "
+        "(`opcional`). Escala no disco não é o piso."
+    )
 
 
 def command_catalog():

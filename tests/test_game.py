@@ -1899,6 +1899,59 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("AAA como adjetivo de marketing", game.next_scope())
         self.assertNotIn("AAA como adjetivo de marketing", game.context_scope())
 
+    def test_scale_names_the_optional_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_verb_floor_as_optional(recipe),
+            "a receita já recusa que o piso do verbo seja opcional",
+        )
+        self.assertEqual(game.read_scale_optional_source(), "recipes/create.md")
+        scale = game.read_scale([])
+        self.assertIn(
+            "o piso do verbo seja opcional",
+            scale["scope"],
+            "o scale copiava a quantidade e calava a recusa",
+        )
+        self.assertIn("(`opcional`)", scale["scope"])
+        self.assertNotIn("opcional", scale)
+        self.assertFalse(game.recipe_refuses_verb_floor_as_optional(""))
+        with mock.patch.object(game, "read_scale_optional_source", return_value=None):
+            silent = game.read_scale([])
+        self.assertNotIn("o piso do verbo seja opcional", silent["scope"])
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o opcional que a receita já recusa", recipe)
+        self.assertIn("nomeia o opcional que a receita já recusa", skill)
+        self.assertIn("nomeia o opcional que a receita já recusa", readme)
+        self.assertNotIn("verified", scale["scope"])
+        self.assertNotIn("aprovado", scale["scope"])
+        self.assertNotIn("4.5", scale["scope"])
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertNotIn(
+            "o piso do verbo seja opcional",
+            game.play_scope(starter),
+        )
+        self.assertNotIn(
+            "o piso do verbo seja opcional",
+            game.guide_scope("canvas-arcade"),
+        )
+        self.assertNotIn(
+            "o piso do verbo seja opcional",
+            game.scale_mention_scope(),
+        )
+        self.assertNotIn(
+            "o piso do verbo seja opcional",
+            game.context_scope(),
+        )
+        self.assertNotIn(
+            "o piso do verbo seja opcional",
+            game.continuity_prompt_scope() or "",
+        )
+        self.assertNotIn(
+            "o piso do verbo seja opcional",
+            game.next_scope(),
+        )
+
     def test_context_names_the_api_the_lifecycle_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
         self.assertTrue(
