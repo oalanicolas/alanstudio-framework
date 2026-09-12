@@ -14238,6 +14238,55 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("pose e arquivo no disco sejam peso percebido", game.next_scope())
         self.assertNotIn("pose", game.CYCLE_KEYS)
 
+    def test_feel_names_the_perceived_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(
+            recipe,
+            r"Aperto no disco não é peso\s+percebido",
+        )
+        self.assertTrue(
+            game.recipe_refuses_squeeze_as_felt_weight(recipe),
+            "a receita já recusa que o aperto no disco seja peso percebido",
+        )
+        self.assertEqual(game.feel_perceived_source(), "recipes/feel.md")
+        report = game.feel_reading(self.project)
+        self.assertIn(
+            "o aperto no disco seja peso percebido",
+            report["scope"],
+            "o feel lia o CONFIG e calava a recusa",
+        )
+        self.assertIn("(`percebido`)", report["scope"])
+        self.assertIn("Aperto no disco não é o percebido.", report["scope"])
+        self.assertNotIn("percebido", report)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_squeeze_as_felt_weight(""))
+        with mock.patch.object(game, "feel_perceived_source", return_value=None):
+            silent = game.feel_reading(self.project)
+        self.assertNotIn("o aperto no disco seja peso percebido", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o percebido que a receita já recusa", recipe)
+        self.assertIn("nomeia o percebido que a receita já recusa", create)
+        self.assertIn("nomeia o percebido que a receita já recusa", skill)
+        self.assertIn("nomeia o percebido que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        phrase = "o aperto no disco seja peso percebido"
+        self.assertNotIn(phrase, game.feel_unobserved_scope())
+        self.assertNotIn(phrase, game.feel_constants_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("percebido", game.CYCLE_KEYS)
+
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
         destination = self.root / "com-observacao"
         game.init(destination, "canvas-arcade")

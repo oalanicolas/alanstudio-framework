@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.722 — o feel nomeia o percebido que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+aperto
+no
+disco
+não
+é
+peso
+percebido.
+O
+feel
+lia
+o
+CONFIG
+e
+calava
+a
+recusa.
+Agora
+o
+feel
+nomeia
+o
+percebido.
+Aperto
+no
+disco
+não
+é
+o
+percebido.
+Sem
+chave
+`percebido`.
+Nomear
+não
+observa.
+
 ## 0.9.721 — o skipped do pin nomeia o marcador que o README já recusa
 
 O

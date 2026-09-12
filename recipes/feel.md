@@ -164,7 +164,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    resolve; o orbe espera. Ordem do array não decide a aposta. A graça
    após dano também vale no mesmo quadro: o segundo estilhaço raspa,
    não empilha impacto. Pose e
-   arquivo no disco não são peso percebido. Se a receita recusa que pose e arquivo no disco sejam peso percebido, o `feel` nomeia a pose que a receita já recusa. Arquivo no disco não é o peso. Sem chave `pose`.
+   arquivo no disco não são peso percebido. Se a receita recusa que pose e arquivo no disco sejam peso percebido, o `feel` nomeia a pose que a receita já recusa. Arquivo no disco não é o peso. Sem chave `pose`. Se a receita recusa que o aperto no disco seja peso percebido, o `feel` nomeia o percebido que a receita já recusa. Aperto no disco não é o percebido. Sem chave `percebido`.
 4. **Resposta de corpo** — squash, stretch, deslocamento, IK, arma, veículo
    ou cursor. A silhueta muda o bastante para ser lida em movimento.
 5. **Impacto** — hitstop, freeze frames, flash, partículas, rumble, stinger.
@@ -307,7 +307,7 @@ na porta não dispara o ofício; no campo o cooldown não metralha. Se a receita
 guarda continua nível. Na porta o tap abre inclusive na faixa da
 guarda — o polegar no primeiro gesto não cala a abertura. No campo
 a faixa inferior continua guardando. Aperto no disco não é peso
-percebido. A porta
+percebido. Se a receita recusa que o aperto no disco seja peso percebido, o `feel` nomeia o percebido que a receita já recusa. Aperto no disco não é o percebido. Sem chave `percebido`. A porta
 fecha o mesmo arco no tick que abre, sem contar o ofício. O hold
 leva o relógio da mostra: retomar no campo não devolve a frase
 nem o mover que a porta já deu. Hold antigo sem o número não

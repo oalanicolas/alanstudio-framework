@@ -4038,6 +4038,9 @@ def _feel_scope(project):
     stance = feel_pose_scope()
     if stance:
         scope += stance
+    sense = feel_perceived_scope()
+    if sense:
+        scope += sense
     return scope
 
 
@@ -4174,6 +4177,41 @@ def feel_pose_scope():
     return (
         " O disco recusa que pose e arquivo no disco sejam peso percebido "
         "(`pose`). Arquivo no disco não é o peso."
+    )
+
+
+# A receita já recusa que o
+# aperto no disco seja peso
+# percebido. Sem isto o feel
+# lia o CONFIG e calava a
+# recusa. Aperto no disco não
+# é o percebido.
+FEEL_PERCEIVED = re.compile(r"Aperto no disco não é peso\s+percebido")
+
+
+def recipe_refuses_squeeze_as_felt_weight(text):
+    return bool(text and FEEL_PERCEIVED.search(text))
+
+
+def feel_perceived_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_squeeze_as_felt_weight(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_perceived_scope():
+    if not feel_perceived_source():
+        return None
+    return (
+        " O disco recusa que o aperto no disco seja peso percebido "
+        "(`percebido`). Aperto no disco não é o percebido."
     )
 
 
