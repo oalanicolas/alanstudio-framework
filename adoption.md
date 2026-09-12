@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.762 — o ciclo nomeia o ofício que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+segurar
+na
+porta
+não
+dispara
+o
+ofício.
+O
+ciclo
+anunciava
+o
+verbo
+e
+calava
+a
+recusa.
+Agora
+o
+ciclo
+nomeia
+o
+ofício.
+Porta
+no
+disco
+não
+é
+o
+ofício.
+Sem
+chave
+`ofício`.
+Nomear
+não
+observa.
+
 ## 0.9.761 — o item da observação nomeia o avanço que a receita já recusa
 
 A

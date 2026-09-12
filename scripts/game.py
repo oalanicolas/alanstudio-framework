@@ -17903,6 +17903,9 @@ def cycle_scope():
     burst = cycle_burst_scope()
     if burst:
         scope += burst
+    duty = cycle_duty_scope()
+    if duty:
+        scope += duty
     return scope or None
 
 
@@ -18184,6 +18187,41 @@ def cycle_burst_scope():
     return (
         " O disco recusa que o cooldown metralhe "
         "(`metralha`). Cooldown no disco não é a rajada."
+    )
+
+
+# A receita já recusa que o
+# segurar na porta dispare o
+# ofício. Sem isto o ciclo
+# anunciava o verbo e calava
+# a recusa. Porta no disco
+# não é o ofício.
+FEEL_DUTY = re.compile(r"na porta não dispara o ofício")
+
+
+def recipe_refuses_hold_on_door_as_firing_the_verb(text):
+    return bool(text and FEEL_DUTY.search(text))
+
+
+def cycle_duty_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hold_on_door_as_firing_the_verb(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_duty_scope():
+    if not cycle_duty_source():
+        return None
+    return (
+        " O disco recusa que o segurar na porta dispare o ofício "
+        "(`ofício`). Porta no disco não é o ofício."
     )
 
 
