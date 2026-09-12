@@ -2331,6 +2331,57 @@ def roles_empty_ids(roles):
     return list(empty)
 
 
+# A receita já recusa que o catálogo
+# completo entre. Sem isto o roles
+# relatava o acervo e calava a
+# recusa. Acervo no disco não é mix.
+AUDIO_CATALOG = re.compile(r"Catálogo completo não entra")
+
+
+def recipe_refuses_complete_catalog_as_entering(text):
+    return bool(text and AUDIO_CATALOG.search(text))
+
+
+def roles_catalog_enter_source():
+    path = AUDIO_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_complete_catalog_as_entering(text):
+        return "recipes/audio.md"
+    return None
+
+
+def roles_catalog_enter_scope():
+    if not roles_catalog_enter_source():
+        return None
+    return (
+        " O disco recusa que o catálogo completo entre "
+        "(`entra`). Acervo no disco não é mix."
+    )
+
+
+def roles_catalog_exists_scope():
+    scope = (
+        "acervo no disco. "
+        "Não é mix ouvida."
+    )
+    named = roles_catalog_enter_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def roles_catalog_exists_flag(reading):
+    catalog_exists = (reading or {}).get("catalog_exists")
+    if isinstance(catalog_exists, dict):
+        return bool(catalog_exists.get("catalog_exists"))
+    return bool(catalog_exists)
+
+
 def roles_reading(project, root=None):
     project = Path(project)
     entries, sources = declared_sound_roles(project)
@@ -2387,6 +2438,12 @@ def roles_reading(project, root=None):
     heap = roles_heap_scope()
     if heap:
         scope += " " + heap
+    catalog_exists = (catalog / "catalog.json").is_file()
+    if catalog_exists:
+        catalog_exists = {
+            "catalog_exists": True,
+            "scope": roles_catalog_exists_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
@@ -2394,7 +2451,7 @@ def roles_reading(project, root=None):
         "roles": roles,
         "empty": empty,
         "sources": sources,
-        "catalog_exists": (catalog / "catalog.json").is_file(),
+        "catalog_exists": catalog_exists,
         "heard": False,
         "approved": False,
         "guide": str(FRAMEWORK / "recipes/audio.md"),
@@ -2455,9 +2512,10 @@ def roles_fill(project, root=None, apply=False):
     suggestions = []
     copied = []
     empty_ids = roles_empty_ids(reading)
+    catalog_exists = roles_catalog_exists_flag(reading)
     for role in empty_ids:
         match = None
-        if reading["catalog_exists"]:
+        if catalog_exists:
             try:
                 found = sfx_catalog.search_catalog(role, root, limit=1)
             except ValueError:
@@ -2497,7 +2555,7 @@ def roles_fill(project, root=None, apply=False):
         "project": str(project),
         "exists": project.is_dir(),
         "empty": empty_ids,
-        "catalog_exists": reading["catalog_exists"],
+        "catalog_exists": catalog_exists,
         "suggestions": suggestions,
         "applied": bool(apply),
         "copied": copied,
@@ -14656,7 +14714,7 @@ def next_step(project, focus="create", studies_root=None):
         sample = ", ".join(f"`{name}`" for name in empty_roles[:4])
         extra = " e mais" if len(empty_roles) > 4 else ""
         commands = [harness_command("roles", project, "--fill")]
-        can_apply = roles["catalog_exists"] or any(
+        can_apply = roles_catalog_exists_flag(roles) or any(
             sfx_catalog.find_local_stem(name) for name in empty_roles
         )
         if can_apply:

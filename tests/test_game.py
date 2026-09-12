@@ -8804,6 +8804,78 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("hit", game.roles_empty_ids(report))
         self.assertFalse(report["heard"])
 
+    def test_roles_catalog_exists_names_the_enter_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_complete_catalog_as_entering(recipe),
+            "a receita já recusa que o catálogo completo entre",
+        )
+        self.assertEqual(game.roles_catalog_enter_source(), "recipes/audio.md")
+        workspace = self.root / "lab-com-acervo"
+        library = workspace / "shared/sfx"
+        library.mkdir(parents=True)
+        (library / "catalog.json").write_text("{}\n", encoding="utf-8")
+        destination = workspace / "jogo"
+        game.init(destination, "canvas-arcade")
+        report = game.roles_reading(destination, workspace)
+        item = report["catalog_exists"]
+        self.assertTrue(item["catalog_exists"], "o roles já relata o acervo neste laboratório")
+        self.assertEqual(item["catalog_exists"], game.roles_catalog_exists_flag(report))
+        self.assertIn(
+            "o catálogo completo entre",
+            item["scope"],
+            "o roles relatava o acervo e calava a recusa",
+        )
+        self.assertIn("(`entra`)", item["scope"])
+        self.assertNotIn("entra", item)
+        self.assertFalse(report["heard"])
+        self.assertFalse(report["approved"])
+        self.assertFalse(game.recipe_refuses_complete_catalog_as_entering(""))
+        filled = game.roles_fill(destination, workspace)
+        self.assertIs(filled["catalog_exists"], True)
+        empty = game.roles_reading(self.project)
+        self.assertFalse(empty["catalog_exists"])
+        self.assertFalse(game.roles_catalog_exists_flag(empty))
+        with mock.patch.object(game, "roles_catalog_enter_source", return_value=None):
+            silent = game.roles_reading(destination, workspace)
+        self.assertNotIn(
+            "o catálogo completo entre",
+            silent["catalog_exists"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o entra que a receita já recusa", recipe)
+        self.assertIn("nomeia o entra que a receita já recusa", skill)
+        self.assertIn("nomeia o entra que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o catálogo completo entre", report["scope"])
+        if report.get("empty"):
+            self.assertNotIn(
+                "o catálogo completo entre",
+                report["empty"].get("scope") or "",
+            )
+        if report.get("sources"):
+            self.assertNotIn(
+                "o catálogo completo entre",
+                report["sources"].get("scope") or "",
+            )
+        if report["roles"]:
+            self.assertNotIn(
+                "o catálogo completo entre",
+                report["roles"][0].get("scope") or "",
+            )
+        self.assertNotIn(
+            "o catálogo completo entre",
+            game.roles_fill(destination, workspace).get("scope") or "",
+        )
+        self.assertNotIn(
+            "o catálogo completo entre",
+            game.feel_reading(destination)["scope"],
+        )
+        self.assertNotIn("o catálogo completo entre", game.next_scope())
+
     def test_roles_empty_names_the_absent_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
         self.assertTrue(

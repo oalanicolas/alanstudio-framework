@@ -30,6 +30,56 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.606 — o catalog_exists do roles nomeia o entra que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+catálogo
+completo
+não
+entra.
+O
+roles
+relatava
+o
+acervo
+e
+calava
+a
+recusa.
+Agora
+o
+`catalog_exists`
+do
+`roles`
+nomeia
+o
+entra.
+Acervo
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`entra`.
+Nomear
+não
+ouve.
+
+O que 0.9.606 não afirma:
+encontrar
+o
+acervo
+não
+ouve
+o
+mix.
+
 ## 0.9.605 — o external do content nomeia o baixado que a receita já recusa
 
 A

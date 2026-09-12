@@ -43,7 +43,7 @@ Arquivo ausente é lacuna do verbo, não silêncio deliberado. Se a receita recu
 O loader marca o primário que esgota as extensões; o painel
 nomeia os vazios mesmo quando outro papel já registrou.
 A região viva espelha a lacuna na porta e no fim — o convite
-some a tabela. Catálogo completo não entra. Relê quando o
+some a tabela. Catálogo completo não entra. Se a receita recusa que o catálogo completo entre, o `catalog_exists` do `roles` nomeia o entra que a receita já recusa. Acervo no disco não é mix. Sem chave `entra`. Relê quando o
 fetch termina — pintar só no boot some o que chegou.
 Variante ausente não é lacuna. Decode nulo tenta a próxima
 extensão; wav ilegível não esconde o ogg nem o pedido.
