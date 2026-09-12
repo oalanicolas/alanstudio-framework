@@ -130,7 +130,7 @@ Receitas: [audio](../recipes/audio.md) e o acervo `sfx` do laboratório.
 - `flagship`: progressão abre decisões e domínio, não apenas números.
 
 Prova: playtest com pessoa real, comportamentos observados, e a distinção explícita
-entre tempo de sessão e interesse. Piso: [qualidade](quality.md).
+entre tempo de sessão e interesse. Se o onboard recusa que tempo de sessão seja interesse, o `dimensions[pacing]` do `production_bar` nomeia o interesse que o onboard já recusa. Relógio no disco não é o interesse. Sem chave `interesse`. Piso: [qualidade](quality.md).
 
 ### `state_trust` — confiança no estado
 

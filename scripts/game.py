@@ -10933,19 +10933,58 @@ def production_bar_dimension_opinion_source():
     return None
 
 
-def production_bar_dimension_scope():
-    if not production_bar_dimension_opinion_source():
+def production_bar_dimension_scope(key=None):
+    parts = []
+    if production_bar_dimension_opinion_source():
+        parts.append(
+            "O disco recusa que o degrau sem condição seja observação "
+            "(`opinião`). Linha no disco não é acabamento."
+        )
+    if key == "pacing":
+        named = production_bar_interest_scope()
+        if named:
+            parts.append(named.lstrip())
+    return " ".join(parts) or None
+
+
+# O onboard já recusa que tempo
+# de sessão seja interesse. Sem
+# isto o item pacing copiava o
+# degrau e calava a recusa.
+# Relógio no disco não é o
+# interesse.
+ONBOARD_INTEREST = re.compile(r"Tempo de sessão não é interesse")
+
+
+def onboard_refuses_session_time_as_interest(text):
+    return bool(text and ONBOARD_INTEREST.search(text))
+
+
+def production_bar_interest_source():
+    path = FRAMEWORK / "commands/onboard.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if onboard_refuses_session_time_as_interest(text):
+        return "commands/onboard.md"
+    return None
+
+
+def production_bar_interest_scope():
+    if not production_bar_interest_source():
         return None
     return (
-        "O disco recusa que o degrau sem condição seja observação "
-        "(`opinião`). Linha no disco não é acabamento."
+        " O disco recusa que tempo de sessão seja interesse "
+        "(`interesse`). Relógio no disco não é o interesse."
     )
 
 
 def production_bar(focus, stage=None, project=None):
     dimensions = FOCUS_DIMENSIONS.get(focus, ())
     declaration = bar_declaration(project) if project is not None else None
-    named = production_bar_dimension_scope()
     items = []
     for key in dimensions:
         item = {
@@ -10953,6 +10992,7 @@ def production_bar(focus, stage=None, project=None):
             "label": BAR_DIMENSIONS[key],
             "declared": (declaration["declared"].get(key) if declaration else None),
         }
+        named = production_bar_dimension_scope(key)
         if named:
             item["scope"] = named
         items.append(item)

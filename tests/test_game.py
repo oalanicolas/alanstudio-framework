@@ -1655,6 +1655,63 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("degrau sem condição seja observação", report.get("scope") or "")
         self.assertNotIn("degrau sem condição seja observação", game.next_step(self.project)["scope"])
 
+    def test_production_bar_names_the_interest_the_command_already_refuses(self):
+        command = (game.FRAMEWORK / "commands/onboard.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.onboard_refuses_session_time_as_interest(command),
+            "o onboard já recusa que tempo de sessão seja interesse",
+        )
+        self.assertEqual(game.production_bar_interest_source(), "commands/onboard.md")
+        noted = game.production_bar("create")
+        pacing = next(item for item in noted["dimensions"] if item["key"] == "pacing")
+        self.assertIn(
+            "tempo de sessão seja interesse",
+            pacing["scope"],
+            "o item pacing copiava o degrau e calava a recusa",
+        )
+        self.assertIn("(`interesse`)", pacing["scope"])
+        self.assertNotIn("interesse", pacing)
+        self.assertNotIn("interesse", noted)
+        self.assertFalse(noted["assessed"])
+        self.assertIsNone(noted["observed"])
+        self.assertFalse(game.onboard_refuses_session_time_as_interest(""))
+        feel = next(item for item in noted["dimensions"] if item["key"] == "feel")
+        self.assertNotIn("tempo de sessão seja interesse", feel.get("scope") or "")
+        with mock.patch.object(game, "production_bar_interest_source", return_value=None):
+            silent = game.production_bar("create")
+        silent_pacing = next(item for item in silent["dimensions"] if item["key"] == "pacing")
+        self.assertNotIn(
+            "tempo de sessão seja interesse",
+            silent_pacing.get("scope") or "",
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o interesse que o onboard já recusa", command)
+        self.assertIn("nomeia o interesse que o onboard já recusa", create)
+        self.assertIn("nomeia o interesse que o onboard já recusa", skill)
+        self.assertIn("nomeia o interesse que o onboard já recusa", readme)
+        self.assertNotIn("verified", pacing["scope"])
+        self.assertNotIn("aprovado", pacing["scope"])
+        self.assertNotIn("4.5", pacing["scope"])
+        self.assertNotIn("tempo de sessão seja interesse", noted.get("scope") or "")
+        self.assertNotIn(
+            "tempo de sessão seja interesse",
+            game.bar_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "tempo de sessão seja interesse",
+            game.play_scope(self.project),
+        )
+        self.assertNotIn(
+            "tempo de sessão seja interesse",
+            game.read_scale([])["scope"],
+        )
+        self.assertNotIn(
+            "tempo de sessão seja interesse",
+            game.next_step(self.project)["scope"],
+        )
+
     def test_context_names_the_browser_the_pack_already_refuses_to_prove(self):
         pack = (game.FRAMEWORK / "packs/platforms/web.md").read_text(encoding="utf-8")
         self.assertTrue(

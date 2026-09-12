@@ -39,6 +39,7 @@ começar. Tutorial que bloqueia o jogo não é onboarding; pulável sempre. Não
 Uma pessoa que nunca viu o jogo joga sem narração e entende o que aconteceu
 (`playable`); comportamentos observados — hesitação, erro repetido, abandono — em
 [`playtest`](playtest.md), com regra de parada. Tempo de sessão não é interesse.
+Se o onboard recusa que tempo de sessão seja interesse, o `dimensions[pacing]` do `production_bar` nomeia o interesse que o onboard já recusa. Relógio no disco não é o interesse. Sem chave `interesse`.
 Degraus: dimensão `pacing` na [barra](../references/production-bar.md).
 
 ## Nunca

@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.674 — o pacing nomeia o interesse que o onboard já recusa
+
+O
+onboard
+já
+dizia
+que
+tempo
+de
+sessão
+não
+é
+interesse.
+O
+item
+pacing
+copiava
+o
+degrau
+e
+calava
+a
+recusa.
+Agora
+o
+`dimensions[pacing]`
+do
+`production_bar`
+nomeia
+o
+interesse.
+Relógio
+no
+disco
+não
+é
+o
+interesse.
+Sem
+chave
+`interesse`.
+Nomear
+não
+observa.
+
 ## 0.9.673 — o ciclo nomeia o tap que a receita já recusa
 
 A

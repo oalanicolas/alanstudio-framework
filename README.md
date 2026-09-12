@@ -960,7 +960,7 @@ harness não reivindica tê-los produzido.
 
 A barra de acabamento descreve o que observar; ela não observa. Nenhum comando
 promove um jogo a um degrau, e cumprir todos os critérios não garante que o jogo
-interesse a alguém — acabamento é condição necessária, não suficiente. Se a barra recusa promover o degrau, o `context` nomeia a promoção que a barra já recusa. Guia no disco não é acabamento. Sem chave `promove`. Se a receita recusa que AAA seja orçamento ou tamanho de equipe, o `production_bar` nomeia a equipe que a receita já recusa. Receita no disco não é acabamento. Sem chave `equipe`. Se a barra recusa que o degrau sem condição seja observação, o `dimensions[n]` do `production_bar` nomeia a opinião que a barra já recusa. Linha no disco não é acabamento. Sem chave `opinião`.
+interesse a alguém — acabamento é condição necessária, não suficiente. Se a barra recusa promover o degrau, o `context` nomeia a promoção que a barra já recusa. Guia no disco não é acabamento. Sem chave `promove`. Se a receita recusa que AAA seja orçamento ou tamanho de equipe, o `production_bar` nomeia a equipe que a receita já recusa. Receita no disco não é acabamento. Sem chave `equipe`. Se a barra recusa que o degrau sem condição seja observação, o `dimensions[n]` do `production_bar` nomeia a opinião que a barra já recusa. Linha no disco não é acabamento. Sem chave `opinião`. Se o onboard recusa que tempo de sessão seja interesse, o `dimensions[pacing]` do `production_bar` nomeia o interesse que o onboard já recusa. Relógio no disco não é o interesse. Sem chave `interesse`.
 
 Os oito frameworks externos foram estudados em recortes; seus testes não foram
 executados. Os conceitos são adaptações desses estudos, não garantias universais.
