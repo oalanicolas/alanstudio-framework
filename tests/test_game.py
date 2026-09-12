@@ -861,6 +861,66 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("aponta o serve", game.next_step(starter)["scope"])
         self.assertNotIn("aponta o serve", game.play_scope(starter))
 
+    def test_scan_names_the_discarded_the_guide_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/project-audit.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.project_audit_refuses_references_as_discarded(guide),
+            "o roteiro já recusa que a pasta references seja descartada",
+        )
+        self.assertEqual(game.scan_discarded_source(), "references/project-audit.md")
+        report = game.scan(self.project)
+        self.assertIn(
+            "a pasta references seja descartada",
+            report["scope"],
+            "o scan lia as áreas e calava a recusa",
+        )
+        self.assertIn("(`descartada`)", report["scope"])
+        self.assertNotIn("descartada", report)
+        self.assertFalse(game.project_audit_refuses_references_as_discarded(""))
+        with mock.patch.object(game, "scan_discarded_source", return_value=None):
+            silent = game.scan(self.project)
+        self.assertNotIn("a pasta references seja descartada", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme_doc = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia a descartada que o roteiro já recusa", guide)
+        self.assertIn("nomeia a descartada que o roteiro já recusa", recipe)
+        self.assertIn("nomeia a descartada que o roteiro já recusa", skill)
+        self.assertIn("nomeia a descartada que o roteiro já recusa", readme_doc)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "a pasta references seja descartada",
+            game.coverage_scope(),
+        )
+        self.assertNotIn(
+            "a pasta references seja descartada",
+            game.audit_scope(),
+        )
+        self.assertNotIn(
+            "a pasta references seja descartada",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "a pasta references seja descartada",
+            game.bar_reading(self.project)["scope"],
+        )
+        self.assertNotIn(
+            "a pasta references seja descartada",
+            game.context(self.project, "create")["finish"]["scope"],
+        )
+        self.assertNotIn(
+            "a pasta references seja descartada",
+            game.context(self.project, "create")["scope"],
+        )
+        self.assertTrue(
+            all(
+                "a pasta references seja descartada" not in (area.get("scope") or "")
+                for area in report["areas"].values()
+            )
+        )
+
     def test_scan_recognizes_canonical_provenance_heading_and_manifest(self):
         cases = (
             ("README.md", "# Projeto\n## Origem de código e assets\nFontes e limites registrados no recorte.\n", "heading"),

@@ -11316,7 +11316,43 @@ def _scan_scope(project):
             " O disco aponta o serve (`serve`). "
             "Página no disco não é partida jogada."
         )
+    named = scan_discarded_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O roteiro já recusa que a pasta
+# references seja descartada. Sem isto
+# o scan lia as áreas e calava a recusa.
+# Roteiro no disco não é inventário.
+AUDIT_DISCARDED = re.compile(r"não é descartada")
+
+
+def project_audit_refuses_references_as_discarded(text):
+    return bool(text and AUDIT_DISCARDED.search(text))
+
+
+def scan_discarded_source():
+    path = FRAMEWORK / "references/project-audit.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if project_audit_refuses_references_as_discarded(text):
+        return "references/project-audit.md"
+    return None
+
+
+def scan_discarded_scope():
+    if not scan_discarded_source():
+        return None
+    return (
+        " O disco recusa que a pasta references seja descartada "
+        "(`descartada`). Roteiro no disco não é inventário."
+    )
 
 
 # A memória já recusa o adjetivo. Sem isto o scan

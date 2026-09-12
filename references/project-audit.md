@@ -151,7 +151,7 @@ locais já previstos pelo harness; isso não é rastreamento de comportamento.
   rascunhos/placeholders também no corpo. Uma indicação de histórico/referência no
   link do índice pode classificar seu destino; menções conflitantes não resolvem
   autoridade automaticamente. A pasta `references` não é descartada: pode conter
-  a proveniência real do projeto.
+  a proveniência real do projeto. Se o roteiro recusa que a pasta references seja descartada, o `scan` nomeia a descartada que o roteiro já recusa. Roteiro no disco não é inventário. Sem chave `descartada`.
 - `candidate_found`: localizador por nome/título/campo, sem comprovação semântica.
   A ordenação prioriza candidatos sem marca de rascunho/histórico/referência,
   rótulos do índice que mencionam a área, demais links e nomes convencionais.
