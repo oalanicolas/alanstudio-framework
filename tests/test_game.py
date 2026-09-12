@@ -12367,6 +12367,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.content_reading(starter)["scope"],
         )
 
+    def test_save_used_names_the_open_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_harness_as_open_save(recipe),
+            "a receita já recusa que o harness abra o save",
+        )
+        self.assertEqual(game.save_used_open_source(), "recipes/persistence.md")
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.save_reading(starter)
+        item = report["used"]
+        self.assertTrue(item["used"], "o save já relata uso neste starter")
+        self.assertEqual(item["used"], game.save_used_flag(report))
+        self.assertIn(
+            "o harness abra o save",
+            item["scope"],
+            "o save relatava o uso e calava a recusa",
+        )
+        self.assertIn("(`abre`)", item["scope"])
+        self.assertNotIn("abre", item)
+        self.assertFalse(report["trusted"])
+        self.assertIs(report["unversioned"], False)
+        self.assertFalse(game.recipe_refuses_harness_as_open_save(""))
+        empty = game.save_reading(self.project)
+        self.assertFalse(empty["used"])
+        self.assertFalse(game.save_used_flag(empty))
+        with mock.patch.object(game, "save_used_open_source", return_value=None):
+            silent = game.save_reading(starter)
+        self.assertNotIn(
+            "o harness abra o save",
+            silent["used"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o abre que a receita já recusa", recipe)
+        self.assertIn("nomeia o abre que a receita já recusa", skill)
+        self.assertIn("nomeia o abre que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o harness abra o save", report["scope"])
+        self.assertNotIn(
+            "o harness abra o save",
+            report["warnings"].get("scope") or "",
+        )
+        self.assertNotIn(
+            "o harness abra o save",
+            report["sources"].get("scope") or "",
+        )
+        self.assertNotIn("o harness abra o save", game.next_scope())
+        self.assertNotIn(
+            "o harness abra o save",
+            game.budget_reading(starter)["scope"],
+        )
+        self.assertNotIn("o harness abra o save", game.record_scope())
+        self.assertNotIn(
+            "o harness abra o save",
+            game.content_reading(starter)["scope"],
+        )
+
     def test_save_names_storage_without_a_schema_as_unversioned(self):
         (self.project / "index.html").write_text("<canvas></canvas>")
         (self.project / "store.js").write_text("localStorage.setItem('score', value)\n")

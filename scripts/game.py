@@ -4304,6 +4304,57 @@ def save_warnings_scope():
     return scope
 
 
+# A receita já recusa que o harness
+# abra o save. Sem isto o save
+# relatava o uso e calava a recusa.
+# Texto no disco não é a aba.
+PERSIST_OPEN = re.compile(r"não abre o save")
+
+
+def recipe_refuses_harness_as_open_save(text):
+    return bool(text and PERSIST_OPEN.search(text))
+
+
+def save_used_open_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_harness_as_open_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_used_open_scope():
+    if not save_used_open_source():
+        return None
+    return (
+        " O disco recusa que o harness abra o save "
+        "(`abre`). Texto no disco não é a aba."
+    )
+
+
+def save_used_scope():
+    scope = (
+        "uso de armazenamento no disco. "
+        "Não abre o save."
+    )
+    named = save_used_open_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def save_used_flag(reading):
+    used = (reading or {}).get("used")
+    if isinstance(used, dict):
+        return bool(used.get("used"))
+    return bool(used)
+
+
 def save_warning_files(project):
     project = Path(project)
     found = []
@@ -4380,11 +4431,17 @@ def save_reading(project):
     contracts = save_contracts_scope()
     if contracts:
         scope += contracts
+    used_flag = bool(used)
+    if used_flag:
+        used_flag = {
+            "used": True,
+            "scope": save_used_scope(),
+        }
     return {
         "schema_version": 1,
         "project": str(project),
         "exists": project.is_dir(),
-        "used": bool(used),
+        "used": used_flag,
         "versioned": bool(versioned),
         "unversioned": bool(used) and not versioned,
         "warned": bool(warned),

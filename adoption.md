@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.602 — o used do save nomeia o abre que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+harness
+não
+abre
+o
+save.
+O
+save
+relatava
+o
+uso
+e
+calava
+a
+recusa.
+Agora
+o
+`used`
+do
+`save`
+nomeia
+o
+abre.
+Texto
+no
+disco
+não
+é
+a
+aba.
+Sem
+chave
+`abre`.
+Nomear
+não
+abre.
+
+O que 0.9.602 não afirma:
+relatar
+o
+uso
+não
+abre
+o
+save.
+
 ## 0.9.601 — o constants do feel nomeia o peso que o README já recusa
 
 O

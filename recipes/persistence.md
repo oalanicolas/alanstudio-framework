@@ -52,7 +52,7 @@ saves antigos silenciosamente. Versão do conteúdo e versão do save são contr
 distintos; não os una em um número por conveniência. Se a receita recusa que um único número una a versão do conteúdo e a do save, o `save` nomeia os contratos que a receita já recusa. Schema no disco não é a história. Sem chave `contratos`.
 
 `save <projeto>` lê se o código usa armazenamento e se declara schema/migrate.
-`trusted` é sempre falso: o harness não abre o save e não confirma escrita.
+`trusted` é sempre falso: o harness não abre o save e não confirma escrita. Se a receita recusa que o harness abra o save, o `used` do `save` nomeia o abre que a receita já recusa. Texto no disco não é a aba. Sem chave `abre`.
 
 Implementação concreta, com o limite dito: o starter `canvas-arcade` versiona o
 save em `src/core/save.js` (schema 3), com migração e recuperação de dado inválido.
