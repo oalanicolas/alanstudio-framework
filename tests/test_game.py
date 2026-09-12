@@ -11618,6 +11618,79 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(after["unstructured"])
         self.assertFalse(after["observed"])
 
+    def test_note_finding_names_the_found_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_complete_receipt_as_finding(recipe),
+            "a receita já recusa que o recibo com os quatro seja achado",
+        )
+        self.assertEqual(game.note_finding_found_source(), "recipes/feel.md")
+        destination = self.root / "ciclo-achado"
+        game.init(destination, "canvas-arcade")
+        empty = game.note_observation(destination, "Ana", "o dash atravessou e a corrente ficou")
+        self.assertFalse(empty["finding"])
+        self.assertFalse(game.note_finding_flag(empty))
+        report = game.note_observation(
+            destination, "Ana", "o dash atravessou e a corrente ficou",
+            fields={
+                "problema": "o contato some no movimento",
+                "evidencia": "três sessões, o jogador pergunta se atravessou",
+                "hipotese": "o hitstop de 2 ticks some",
+                "medicao": "repetir o graze com hitstop 5 e 2",
+            },
+            output=destination / "docs/playtest/achado-completo",
+        )
+        item = report["finding"]
+        self.assertTrue(item["finding"], "o note já fecha os quatro neste recibo")
+        self.assertEqual(item["finding"], game.note_finding_flag(report))
+        self.assertIn(
+            "o recibo com os quatro seja achado",
+            item["scope"],
+            "o note relatava o finding e calava a recusa",
+        )
+        self.assertIn("(`achado`)", item["scope"])
+        self.assertNotIn("achado", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_complete_receipt_as_finding(""))
+        with mock.patch.object(game, "note_finding_found_source", return_value=None):
+            silent = game.note_observation(
+                destination, "Ana", "o verbo pesa no guarda",
+                fields={
+                    "problema": "o contato some no movimento",
+                    "evidencia": "três sessões, o jogador pergunta se atravessou",
+                    "hipotese": "o hitstop de 2 ticks some",
+                    "medicao": "repetir o graze com hitstop 5 e 2",
+                },
+                output=destination / "docs/playtest/achado-cala",
+            )
+        self.assertNotIn(
+            "o recibo com os quatro seja achado",
+            silent["finding"]["scope"],
+        )
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o achado que a receita já recusa", readme)
+        self.assertIn("nomeia o achado que a receita já recusa", recipe)
+        self.assertIn("nomeia o achado que a receita já recusa", skill)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("o recibo com os quatro seja achado", report["scope"])
+        playtest = game.playtest_reading(destination)
+        self.assertNotIn("o recibo com os quatro seja achado", playtest["scope"])
+        found = playtest.get("findings")
+        if isinstance(found, dict):
+            self.assertNotIn(
+                "o recibo com os quatro seja achado",
+                found.get("scope") or "",
+            )
+        self.assertNotIn("o recibo com os quatro seja achado", game.next_scope())
+        self.assertNotIn(
+            "o recibo com os quatro seja achado",
+            game.feel_reading(destination)["scope"],
+        )
+
     def test_a_note_from_the_page_is_a_receipt_without_feeling(self):
         destination = self.root / "nota-da-pagina"
         game.start_project(destination, "canvas-arcade")

@@ -17155,6 +17155,67 @@ def record(project, kind, author, note, fields, attachments, output):
     return report
 
 
+# A receita já recusa que o recibo
+# com os quatro seja achado. Sem
+# isto o note relatava o finding e
+# calava a recusa. Arquivo no disco
+# não é a sessão.
+NOTE_FINDING = re.compile(r"recibo com os quatro não é achado")
+
+
+def recipe_refuses_complete_receipt_as_finding(text):
+    return bool(text and NOTE_FINDING.search(text))
+
+
+def note_finding_found_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_complete_receipt_as_finding(text):
+        return "recipes/feel.md"
+    return None
+
+
+def note_finding_found_scope():
+    if not note_finding_found_source():
+        return None
+    return (
+        " O disco recusa que o recibo com os quatro seja achado "
+        "(`achado`). Arquivo no disco não é a sessão."
+    )
+
+
+def note_finding_scope():
+    scope = (
+        "os quatro campos no recibo. "
+        "O recibo com os quatro não é achado."
+    )
+    named = note_finding_found_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def note_finding_flag(reading):
+    finding = (reading or {}).get("finding")
+    if isinstance(finding, dict):
+        return bool(finding.get("finding"))
+    return bool(finding)
+
+
+def note_finding_reading(finding):
+    if not finding:
+        return False
+    return {
+        "finding": True,
+        "scope": note_finding_scope(),
+    }
+
+
 def note_observation(project, author, note, fields=None, output=None, role="human", scenario="primeira partida", from_run=False):
     project = Path(project)
     payload = dict(fields or {})
@@ -17175,7 +17236,7 @@ def note_observation(project, author, note, fields=None, output=None, role="huma
     # some se os quatro fecharam o achado. Recibo sem forma não é
     # achado. Sem `then`: este comando escreve, não aponta o leitor.
     complete = fields_have_finding(payload)
-    report["finding"] = complete
+    report["finding"] = note_finding_reading(complete)
     report["form"] = str(PLAYTEST_FORM)
     report["needed"] = [] if complete else list(PLAYTEST_FIELDS)
     if attached is not None:

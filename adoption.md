@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.628 — o finding do note nomeia o achado que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+o
+recibo
+com
+os
+quatro
+não
+é
+achado.
+O
+note
+relatava
+o
+finding
+e
+calava
+a
+recusa.
+Agora
+o
+`finding`
+do
+`note`
+nomeia
+o
+achado.
+Arquivo
+no
+disco
+não
+é
+a
+sessão.
+Sem
+chave
+`achado`.
+Nomear
+não
+observa.
+
 ## 0.9.627 — o noted do play nomeia o escrito que a receita já recusa
 
 A

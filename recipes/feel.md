@@ -32,7 +32,7 @@ Sem `then.playtest`. Nomear o leitor não observa. Se a receita recusa que nomea
 serve com o convite, ou o mesmo endereço sem serve), `form` e
 `fields`. Sem `then`. Esqueleto no disco não é achado. Se a receita recusa que o esqueleto no disco seja achado, o `findings` do `playtest` nomeia o esqueleto que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `esqueleto`. O `note`
 nomeia `finding` e `needed` no próprio recibo. Recibo sem os
-quatro não é achado. Se a receita recusa que o recibo sem os quatro seja achado, o `fields` do `record --kind observation` nomeia a impressão que a receita já recusa. Recibo no disco não é playtest. Sem chave `impressão`. `playtest --invite`
+quatro não é achado. recibo com os quatro não é achado. Se a receita recusa que o recibo com os quatro seja achado, o `finding` do `note` nomeia o achado que a receita já recusa. Arquivo no disco não é a sessão. Sem chave `achado`. Se a receita recusa que o recibo sem os quatro seja achado, o `fields` do `record --kind observation` nomeia a impressão que a receita já recusa. Recibo no disco não é playtest. Sem chave `impressão`. `playtest --invite`
 escreve a página e aponta `href` (`/?invite=1` ou, com seed no disco,
 `/?invite=1&seed=<n>`, com chuva nomeada `&spawn=<mesa>`, com look nomeado `&look=<paleta>`, e com relógio nomeado e ≠ 1 `&speed=<relógio>`), onde a tabela some; depois do
 fim a página oferece os quatro nomes para copiar ou gravar e
