@@ -3040,6 +3040,61 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.next_scope())
         self.assertNotIn("alvo", game.CYCLE_KEYS)
 
+    def test_record_names_the_variable_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"sem isso não é possível atribuir causa")
+        self.assertTrue(
+            game.recipe_refuses_many_variables_as_cause(recipe),
+            "a receita já recusa que várias variáveis atribuam a causa",
+        )
+        self.assertEqual(game.record_variable_source(), "recipes/performance.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-732",
+        )
+        self.assertIn(
+            "várias variáveis atribuam a causa",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`variável`)", report["scope"])
+        self.assertIn("Variável no disco não é a causa.", report["scope"])
+        self.assertNotIn("variável", report)
+        self.assertFalse(game.recipe_refuses_many_variables_as_cause(""))
+        with mock.patch.object(game, "record_variable_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-732-silent",
+            )
+        self.assertNotIn("várias variáveis atribuam a causa", silent["scope"])
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a variável que a receita já recusa"), 2)
+        self.assertIn("nomeia a variável que a receita já recusa", production)
+        self.assertIn("nomeia a variável que a receita já recusa", skill)
+        self.assertIn("nomeia a variável que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        self.assertNotIn("verified", production)
+        phrase = "várias variáveis atribuam a causa"
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("variável", game.CYCLE_KEYS)
+
     def test_record_names_the_animation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(

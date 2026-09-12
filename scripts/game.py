@@ -20889,6 +20889,9 @@ def record_scope():
     aim = record_target_scope()
     if aim:
         scope += aim
+    one = record_variable_scope()
+    if one:
+        scope += one
     return scope
 
 
@@ -20999,6 +21002,41 @@ def record_target_scope():
     return (
         " O disco recusa que o editor seja build exportado "
         "(`alvo`). Editor no disco não é o build."
+    )
+
+
+# A receita já recusa que várias
+# variáveis atribuam a causa.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Variável no disco não é a
+# causa.
+PERF_VARIABLE = re.compile(r"sem isso não é possível atribuir causa")
+
+
+def recipe_refuses_many_variables_as_cause(text):
+    return bool(text and PERF_VARIABLE.search(text))
+
+
+def record_variable_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_many_variables_as_cause(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_variable_scope():
+    if not record_variable_source():
+        return None
+    return (
+        " O disco recusa que várias variáveis atribuam a causa "
+        "(`variável`). Variável no disco não é a causa."
     )
 
 

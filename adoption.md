@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.732 — o record nomeia a variável que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+sem
+uma
+variável
+por
+vez
+não
+é
+possível
+atribuir
+causa.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+a
+variável.
+Variável
+no
+disco
+não
+é
+a
+causa.
+Sem
+chave
+`variável`.
+Nomear
+não
+mede.
+
 ## 0.9.731 — o feel nomeia o pedido que a receita já recusa
 
 A

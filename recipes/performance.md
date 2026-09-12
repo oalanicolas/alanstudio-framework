@@ -34,12 +34,12 @@ quadro de evento pontual, porque as causas e as correções são diferentes:
   tem receita própria em [lifecycle](lifecycle.md).
 
 Compare alternativas em condições equivalentes e altere **uma** variável por vez;
-sem isso não é possível atribuir causa. Registre o custo observado, a hipótese, o
+sem isso não é possível atribuir causa. Se a receita recusa que várias variáveis atribuam a causa, o `record` nomeia a variável que a receita já recusa. Variável no disco não é a causa. Sem chave `variável`. Registre o custo observado, a hipótese, o
 resultado e as tentativas descartadas — inclusive as que pareciam óbvias e não
 mudaram nada.
 
 Confirme onde a prova vale. Editor não é build exportado; máquina de desenvolvimento
-quente não é máquina do jogador fria. Se a receita recusa que o editor seja build exportado, o `record` nomeia o alvo que a receita já recusa. Editor no disco não é o build. Sem chave `alvo`. Se a receita recusa que a máquina de desenvolvimento quente seja a máquina do jogador fria, o `fields` do `record --kind budget` nomeia a quente que a receita já recusa. Plataforma no disco não é a máquina fria. Sem chave `quente`. Aquecimento, cache e ferramentas de perfil
+quente não é máquina do jogador fria. Se a receita recusa que o editor seja build exportado, o `record` nomeia o alvo que a receita já recusa. Editor no disco não é o build. Sem chave `alvo`. Se a receita recusa que várias variáveis atribuam a causa, o `record` nomeia a variável que a receita já recusa. Variável no disco não é a causa. Sem chave `variável`. Se a receita recusa que a máquina de desenvolvimento quente seja a máquina do jogador fria, o `fields` do `record --kind budget` nomeia a quente que a receita já recusa. Plataforma no disco não é a máquina fria. Sem chave `quente`. Aquecimento, cache e ferramentas de perfil
 alteram o próprio resultado que estão medindo. Se a receita recusa que o aquecimento, o cache e o perfil deixem o resultado intacto, o `budget` nomeia o perfil que a receita já recusa. Perfil no disco não é a medição. Sem chave `perfil`.
 
 `budget <projeto>` lê se existe script `budget`/`bench`, `tools/budget.*` ou
