@@ -560,7 +560,7 @@ concede autorização de publicação. Se o molde recusa publicar, o `template` 
 
 **REUSE → ADAPT → CREATE.** CREATE só entra com lacuna explícita.
 O [contrato JSON](assets/work.example.json) formaliza uma decisão nova;
-`check-plan` valida a forma, não o mérito. Se o processo recusa garantir o mérito, o `check-plan` nomeia o mérito que o processo já recusa. Forma no disco não é adequação. Sem chave `mérito`. Se o processo recusa que o contrato válido garanta obediência, o `contract_valid` do `check-plan` nomeia a obediência que o processo já recusa. Forma no disco não é o processo. Sem chave `obediência`. Se a guia recusa que a checagem seja validador semântico, o `metadata_issues[n]` nomeia o semântico que a guia já recusa. Parse no disco não é o jogo. Sem chave `semântico`. O arquivo de exemplo é um formulário em
+`check-plan` valida a forma, não o mérito. Se o processo recusa garantir o mérito, o `check-plan` nomeia o mérito que o processo já recusa. Forma no disco não é adequação. Sem chave `mérito`. Se o processo recusa que três nomes parecidos bastem, o `check-plan` nomeia os nomes que o processo já recusa. Nome no disco não é a camada. Sem chave `nomes`. Se o processo recusa que o contrato válido garanta obediência, o `contract_valid` do `check-plan` nomeia a obediência que o processo já recusa. Forma no disco não é o processo. Sem chave `obediência`. Se a guia recusa que a checagem seja validador semântico, o `metadata_issues[n]` nomeia o semântico que a guia já recusa. Parse no disco não é o jogo. Sem chave `semântico`. O arquivo de exemplo é um formulário em
 branco, de propósito: rodá-lo no validador devolve os oito campos que faltam, que
 é a lista do que preencher.
 

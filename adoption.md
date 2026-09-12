@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.666 — o check-plan nomeia os nomes que o processo já recusa
+
+O
+processo
+já
+dizia
+que
+três
+nomes
+parecidos
+não
+bastam
+para
+examinar
+uma
+extração.
+O
+check-plan
+validava
+a
+forma
+e
+calava
+a
+recusa.
+Agora
+o
+`check-plan`
+nomeia
+os
+nomes.
+Nome
+no
+disco
+não
+é
+a
+camada.
+Sem
+chave
+`nomes`.
+Nomear
+não
+observa.
+
 ## 0.9.665 — o context nomeia o scanner que o roteiro já recusa
 
 O

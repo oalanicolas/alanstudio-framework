@@ -82,7 +82,7 @@ Considere compatibilidade, licença/proveniência, dependências, substituição
 de manutenção. Um asset disponível no disco não é automaticamente reutilizável.
 Não copie runtime de referência só para absorver um contrato. Antes de nova camada,
 aponte a falha observada e tente a solução menor. Três consumidores com a mesma
-responsabilidade justificam examinar uma extração; três nomes parecidos não bastam.
+responsabilidade justificam examinar uma extração; três nomes parecidos não bastam. Se o processo recusa que três nomes parecidos bastem, o `check-plan` nomeia os nomes que o processo já recusa. Nome no disco não é a camada. Sem chave `nomes`.
 
 Registro mínimo: **necessidade → candidatos/consumidores → decisão e motivo → limite
 da mudança → prova**. Pode viver em decisions.md ou story existente. O contrato

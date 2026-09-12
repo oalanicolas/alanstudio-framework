@@ -18034,7 +18034,44 @@ def check_plan_scope():
             " O disco recusa garantir o mérito (`mérito`). "
             "Forma no disco não é adequação."
         )
+    named = check_plan_names_scope()
+    if named:
+        scope += named
     return scope
+
+
+# O processo já recusa que três nomes
+# parecidos bastem. Sem isto o
+# check-plan validava a forma e calava
+# a recusa. Nome no disco não é a
+# camada.
+PROCESS_NAMES = re.compile(r"três nomes parecidos não bastam")
+
+
+def process_refuses_similar_names_as_extraction(text):
+    return bool(text and PROCESS_NAMES.search(text))
+
+
+def check_plan_names_source():
+    path = PROCESS_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if process_refuses_similar_names_as_extraction(text):
+        return "references/process.md"
+    return None
+
+
+def check_plan_names_scope():
+    if not check_plan_names_source():
+        return None
+    return (
+        " O disco recusa que três nomes parecidos bastem "
+        "(`nomes`). Nome no disco não é a camada."
+    )
 
 
 # O processo já recusa que o contrato

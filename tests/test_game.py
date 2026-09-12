@@ -4141,6 +4141,56 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("garantir o mérito", game.record_scope())
         self.assertNotIn("garantir o mérito", game.documentation_scope(True))
 
+    def test_check_plan_names_the_names_the_process_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.process_refuses_similar_names_as_extraction(guide),
+            "o processo já recusa que três nomes parecidos bastem",
+        )
+        self.assertEqual(game.check_plan_names_source(), "references/process.md")
+        report = game.check_plan_report(self.plan, self.root)
+        self.assertIn(
+            "três nomes parecidos bastem",
+            report["scope"],
+            "o check-plan validava a forma e calava a recusa",
+        )
+        self.assertIn("(`nomes`)", report["scope"])
+        self.assertNotIn("nomes", report)
+        self.assertFalse(game.process_refuses_similar_names_as_extraction(""))
+        with mock.patch.object(game, "check_plan_names_source", return_value=None):
+            silent = game.check_plan_report(self.plan, self.root)
+        self.assertNotIn("três nomes parecidos bastem", silent["scope"])
+        recipe = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os nomes que o processo já recusa", guide)
+        self.assertIn("nomeia os nomes que o processo já recusa", recipe)
+        self.assertIn("nomeia os nomes que o processo já recusa", skill)
+        self.assertIn("nomeia os nomes que o processo já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn(
+            "três nomes parecidos bastem",
+            game.check_plan_valid_scope(),
+        )
+        self.assertNotIn(
+            "três nomes parecidos bastem",
+            game.next_scope(),
+        )
+        self.assertNotIn(
+            "três nomes parecidos bastem",
+            game.continuity_scope(),
+        )
+        self.assertNotIn(
+            "três nomes parecidos bastem",
+            game.documentation_initialization_scope(),
+        )
+        self.assertNotIn(
+            "três nomes parecidos bastem",
+            game.access_reading(self.project)["scope"],
+        )
+
     def test_check_plan_valid_names_the_obedience_the_process_already_refuses(self):
         guide = (game.FRAMEWORK / "references/process.md").read_text(encoding="utf-8")
         self.assertTrue(
