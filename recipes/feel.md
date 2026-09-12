@@ -10,7 +10,7 @@ Captura no disco não é sessão observada. Se a receita recusa que captura no d
 hold — o keyup some e o corpo não segue. Perder o foco da janela
 solta o ofício pendente — Space e R não disparam no quadro
 seguinte. Na pausa o toque retoma — Esc e P não existem no
-polegar; o tap não é o avanço. Se a receita recusa que o tap seja o avanço, o ciclo nomeia o tap que a receita já recusa. Polegar no disco não é o dash. Sem chave `tap`. Se a receita recusa que o segurar seja o avanço, o ciclo nomeia o segurar que a receita já recusa. Segurar no disco não é o dash. Sem chave `segurar`. Se a receita recusa que o toque sem corrente decida o orbe, o ciclo nomeia o orbe que a receita já recusa. Toque no disco não é a escolha. Sem chave `orbe`. Se a receita recusa que o lock seja o descanso, o ciclo nomeia o lock que a receita já recusa. Lock no disco não é o descanso. Sem chave `lock`. Se a receita recusa que o arco prometa o dash, o `play` nomeia o arco que a receita já recusa. Arco no disco não é o dash. Sem chave `arco`. No campo o telefone
+polegar; o tap não é o avanço. Se a receita recusa que o tap seja o avanço, o ciclo nomeia o tap que a receita já recusa. Polegar no disco não é o dash. Sem chave `tap`. Se a receita recusa que o segurar seja o avanço, o ciclo nomeia o segurar que a receita já recusa. Segurar no disco não é o dash. Sem chave `segurar`. Se a receita recusa que o toque sem corrente decida o orbe, o ciclo nomeia o orbe que a receita já recusa. Toque no disco não é a escolha. Sem chave `orbe`. Se a receita recusa que a ordem do array decida a aposta, o ciclo nomeia a ordem que a receita já recusa. Ordem no disco não é a escolha. Sem chave `ordem`. Se a receita recusa que o lock seja o descanso, o ciclo nomeia o lock que a receita já recusa. Lock no disco não é o descanso. Sem chave `lock`. Se a receita recusa que o arco prometa o dash, o `play` nomeia o arco que a receita já recusa. Arco no disco não é o dash. Sem chave `arco`. No campo o telefone
 pausa no relógio; o resto da tela continua o avanço.
 O relógio nomeia a pausa — sem o || o canto calava o
 verbo e o convite some a tabela. Na porta o canto
@@ -161,7 +161,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    Parado, a queda ainda senta. Dois
    orbes no mesmo quadro não inflam a corrente: o segundo espera o
    próximo tick. Orbe e estilhaço no mesmo quadro: o estilhaço letal
-   resolve; o orbe espera. Ordem do array não decide a aposta. A graça
+   resolve; o orbe espera. Ordem do array não decide a aposta. Se a receita recusa que a ordem do array decida a aposta, o ciclo nomeia a ordem que a receita já recusa. Ordem no disco não é a escolha. Sem chave `ordem`. A graça
    após dano também vale no mesmo quadro: o segundo estilhaço raspa,
    não empilha impacto. Pose e
    arquivo no disco não são peso percebido. Se a receita recusa que pose e arquivo no disco sejam peso percebido, o `feel` nomeia a pose que a receita já recusa. Arquivo no disco não é o peso. Sem chave `pose`. Se a receita recusa que o aperto no disco seja peso percebido, o `feel` nomeia o percebido que a receita já recusa. Aperto no disco não é o percebido. Sem chave `percebido`. Se a receita recusa que o pedido decaia no travel, o `feel` nomeia o pedido que a receita já recusa. Pedido no disco não é o land. Sem chave `pedido`.

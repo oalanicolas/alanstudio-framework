@@ -17214,6 +17214,9 @@ def cycle_scope():
     orb = cycle_orb_scope()
     if orb:
         scope += orb
+    order = cycle_order_scope()
+    if order:
+        scope += order
     return scope or None
 
 
@@ -17391,6 +17394,41 @@ def cycle_orb_scope():
     return (
         " O disco recusa que o toque sem corrente decida o orbe "
         "(`orbe`). Toque no disco não é a escolha."
+    )
+
+
+# A receita já recusa que a
+# ordem do array decida a
+# aposta. Sem isto o ciclo
+# anunciava o verbo e calava
+# a recusa. Ordem no disco
+# não é a escolha.
+FEEL_ORDER = re.compile(r"Ordem do array não decide a aposta")
+
+
+def recipe_refuses_array_order_as_stake_choice(text):
+    return bool(text and FEEL_ORDER.search(text))
+
+
+def cycle_order_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_array_order_as_stake_choice(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_order_scope():
+    if not cycle_order_source():
+        return None
+    return (
+        " O disco recusa que a ordem do array decida a aposta "
+        "(`ordem`). Ordem no disco não é a escolha."
     )
 
 
