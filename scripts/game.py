@@ -6105,6 +6105,44 @@ def budget_draws_scope():
     )
 
 
+# A receita já recusa que
+# aquecimento, cache e perfil
+# deixem o resultado intacto.
+# Sem isto o budget
+# cronometrava a porta e
+# calava a recusa. Perfil no
+# disco não é a medição.
+PERF_PROFILE = re.compile(
+    r"Aquecimento, cache e ferramentas de perfil\s+alteram o próprio resultado"
+)
+
+
+def recipe_refuses_profile_as_intact_result(text):
+    return bool(text and PERF_PROFILE.search(text))
+
+
+def budget_profile_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_profile_as_intact_result(text):
+        return "recipes/performance.md"
+    return None
+
+
+def budget_profile_scope():
+    if not budget_profile_source():
+        return None
+    return (
+        " O disco recusa que o aquecimento, o cache e o perfil deixem o resultado intacto "
+        "(`perfil`). Perfil no disco não é a medição."
+    )
+
+
 # A receita já recusa que custos de
 # build e serialização sejam FPS.
 # Sem isto o budget listava o tool
@@ -6494,6 +6532,9 @@ def budget_reading(project):
     draws = budget_draws_scope()
     if draws:
         scope += draws
+    probe = budget_profile_scope()
+    if probe:
+        scope += probe
     return {
         "schema_version": 1,
         "project": str(project),

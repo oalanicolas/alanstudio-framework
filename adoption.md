@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.726 — o budget nomeia o perfil que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+aquecimento,
+cache
+e
+ferramentas
+de
+perfil
+alteram
+o
+próprio
+resultado.
+O
+budget
+cronometrava
+a
+porta
+e
+calava
+a
+recusa.
+Agora
+o
+budget
+nomeia
+o
+perfil.
+Perfil
+no
+disco
+não
+é
+a
+medição.
+Sem
+chave
+`perfil`.
+Nomear
+não
+mede.
+
 ## 0.9.725 — o observations do feel nomeia o justo que a receita já recusa
 
 A

@@ -15801,6 +15801,57 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn("chamadas", game.CYCLE_KEYS)
 
+    def test_budget_names_the_profile_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(
+            recipe,
+            r"Aquecimento, cache e ferramentas de perfil\s+alteram o próprio resultado",
+        )
+        self.assertTrue(
+            game.recipe_refuses_profile_as_intact_result(recipe),
+            "a receita já recusa que o aquecimento, o cache e o perfil deixem o resultado intacto",
+        )
+        self.assertEqual(game.budget_profile_source(), "recipes/performance.md")
+        noted = game.budget_reading(self.project)
+        self.assertIn(
+            "o aquecimento, o cache e o perfil deixem o resultado intacto",
+            noted["scope"],
+            "o budget cronometrava a porta e calava a recusa",
+        )
+        self.assertIn("(`perfil`)", noted["scope"])
+        self.assertIn("Perfil no disco não é a medição.", noted["scope"])
+        self.assertNotIn("perfil", noted)
+        self.assertFalse(noted["measured"])
+        self.assertFalse(game.recipe_refuses_profile_as_intact_result(""))
+        with mock.patch.object(game, "budget_profile_source", return_value=None):
+            silent = game.budget_reading(self.project)
+        self.assertNotIn(
+            "o aquecimento, o cache e o perfil deixem o resultado intacto",
+            silent.get("scope") or "",
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o perfil que a receita já recusa", recipe)
+        self.assertIn("nomeia o perfil que a receita já recusa", create)
+        self.assertIn("nomeia o perfil que a receita já recusa", skill)
+        self.assertIn("nomeia o perfil que a receita já recusa", readme)
+        self.assertNotIn("verified", noted["scope"])
+        self.assertNotIn("aprovado", noted["scope"])
+        self.assertNotIn("4.5", noted["scope"])
+        self.assertNotIn("16 ms", noted["scope"])
+        phrase = "o aquecimento, o cache e o perfil deixem o resultado intacto"
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.craft_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("perfil", game.CYCLE_KEYS)
+
     def test_budget_files_names_the_fps_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
         self.assertTrue(

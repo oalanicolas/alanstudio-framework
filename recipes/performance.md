@@ -40,7 +40,7 @@ mudaram nada.
 
 Confirme onde a prova vale. Editor não é build exportado; máquina de desenvolvimento
 quente não é máquina do jogador fria. Se a receita recusa que o editor seja build exportado, o `record` nomeia o alvo que a receita já recusa. Editor no disco não é o build. Sem chave `alvo`. Se a receita recusa que a máquina de desenvolvimento quente seja a máquina do jogador fria, o `fields` do `record --kind budget` nomeia a quente que a receita já recusa. Plataforma no disco não é a máquina fria. Sem chave `quente`. Aquecimento, cache e ferramentas de perfil
-alteram o próprio resultado que estão medindo.
+alteram o próprio resultado que estão medindo. Se a receita recusa que o aquecimento, o cache e o perfil deixem o resultado intacto, o `budget` nomeia o perfil que a receita já recusa. Perfil no disco não é a medição. Sem chave `perfil`.
 
 `budget <projeto>` lê se existe script `budget`/`bench`, `tools/budget.*` ou
 `record --kind budget`. Se o tool declara `title.attract`, o `budget`
@@ -104,7 +104,7 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
 - Cache precisa declarar invalidação por movimento, deformação em shader, ancestrais,
   criação e remoção. Cenas dinâmicas não viram estáticas porque a matriz local ficou igual. Se a receita recusa que cenas dinâmicas virem estáticas porque a matriz local ficou igual, o `record` nomeia a matriz que a receita já recusa. Matriz no disco não é a cena. Sem chave `matriz`.
 - Agrupamento excessivo pode anular o culling. Compare grupos espaciais, instâncias e
-  custo por passagem; menos chamadas de desenho não garantem menos trabalho total. Se a receita recusa que menos chamadas de desenho garantam menos trabalho total, o `budget` nomeia as chamadas que a receita já recusa. Chamadas no disco não são o trabalho. Sem chave `chamadas`.
+  custo por passagem; menos chamadas de desenho não garantem menos trabalho total. Se a receita recusa que menos chamadas de desenho garantam menos trabalho total, o `budget` nomeia as chamadas que a receita já recusa. Chamadas no disco não são o trabalho. Sem chave `chamadas`. Se a receita recusa que o aquecimento, o cache e o perfil deixem o resultado intacto, o `budget` nomeia o perfil que a receita já recusa. Perfil no disco não é a medição. Sem chave `perfil`.
 - Copiar um mapa grande ou compor estático/dinâmico pode custar mais que redesenhar
   o conteúdo visível. Conte transferências, sincronização e submissões efetivas.
 - Subdividir apenas a integração de movimento pode reduzir dependência da taxa de
