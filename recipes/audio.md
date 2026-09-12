@@ -129,7 +129,7 @@ Trocar um wav sem atualizar pivot rítmico, ducking ou interrupção é
 regressão. Conteúdo baixado não ganha licença nova pelo reuso.
 
 Registre a direção sonora no design system. Gravação, síntese, chip/lo-fi e outros
-estilos são escolhas do projeto; consulte a política local antes de importar. Se o mapa recusa que um workspace herde silenciosamente as preferências de outro, o `policy` do `studio_assets` nomeia a herança que o mapa já recusa. Política no disco não é o outro laboratório. Sem chave `herança`.
+estilos são escolhas do projeto; consulte a política local antes de importar. Se o mapa recusa que um workspace herde silenciosamente as preferências de outro, o `policy` do `studio_assets` nomeia a herança que o mapa já recusa. Política no disco não é o outro laboratório. Sem chave `herança`. Se o mapa recusa que o catálogo no disco seja o presente, o `exists` do `studio_assets` nomeia o presente que o mapa já recusa. Arquivo no disco não é mix. Sem chave `presente`.
 
 ## 4. Música como design
 

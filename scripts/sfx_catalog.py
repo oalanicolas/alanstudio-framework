@@ -632,6 +632,67 @@ def studio_assets_policy_scope():
     )
 
 
+# O mapa já recusa que o
+# catálogo no disco seja o presente.
+# Sem isto o exists relatava o
+# arquivo e calava a recusa. Arquivo
+# no disco não é mix.
+SOURCES_PRESENT = re.compile(r"Catálogo no disco não é o presente")
+
+
+def sources_refuse_catalog_as_present(text):
+    return bool(text and SOURCES_PRESENT.search(text))
+
+
+def studio_assets_exists_present_source():
+    path = SOURCES_GUIDE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if sources_refuse_catalog_as_present(text):
+        return "references/sources.md"
+    return None
+
+
+def studio_assets_exists_present_scope():
+    if not studio_assets_exists_present_source():
+        return None
+    return (
+        " O disco recusa que o catálogo no disco seja o presente "
+        "(`presente`). Arquivo no disco não é mix."
+    )
+
+
+def studio_assets_exists_scope():
+    scope = (
+        "catálogo no disco. "
+        "O context não ouve o mix."
+    )
+    named = studio_assets_exists_present_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def studio_assets_exists_flag(reading):
+    exists = (reading or {}).get("exists") if isinstance(reading, dict) else reading
+    if isinstance(exists, dict):
+        return bool(exists.get("exists"))
+    return bool(exists)
+
+
+def studio_assets_exists_reading(exists):
+    if not exists:
+        return False
+    return {
+        "exists": True,
+        "scope": studio_assets_exists_scope(),
+    }
+
+
 def studio_assets(root=None):
     base = catalog_dir(root)
     catalog = load_catalog(root)
@@ -641,7 +702,8 @@ def studio_assets(root=None):
         policy = dict(policy, scope=named)
     return {"sfx": {
         "catalog": str(base / "catalog.json"), "guide": str(base / "README.md"),
-        "exists": (base / "catalog.json").is_file(), "policy": policy,
+        "exists": studio_assets_exists_reading((base / "catalog.json").is_file()),
+        "policy": policy,
         "file_count": len(catalog["sounds"]), "updated": catalog.get("updated"),
         "rule": "shared/sfx é ADAPT. Sem acervo o catálogo vem vazio; o starter já fala em public/sfx.",
         "scope": studio_assets_scope(),

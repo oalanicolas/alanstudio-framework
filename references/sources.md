@@ -307,7 +307,7 @@ meio. Nada disso alcança um jogo derivado depois que ele for adaptado.
 
 ## Áudio
 
-O acervo `shared/sfx` é do laboratório, não deste repositório. O harness
+O acervo `shared/sfx` é do laboratório, não deste repositório. Catálogo no disco não é o presente. Se o mapa recusa que o catálogo no disco seja o presente, o `exists` do `studio_assets` nomeia o presente que o mapa já recusa. Arquivo no disco não é mix. Sem chave `presente`. O harness
 expõe `sfx search` mesmo sem essa pasta: o catálogo vem vazio e a busca
 nomeia o stem do starter que casa com o termo. `sfx copy` e
 `sfx export` levam bytes e créditos desse stem, ou de um id do

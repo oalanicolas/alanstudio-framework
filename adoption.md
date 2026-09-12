@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.649 — o exists do studio_assets nomeia o presente que o mapa já recusa
+
+O
+mapa
+já
+dizia
+que
+catálogo
+no
+disco
+não
+é
+o
+presente.
+O
+exists
+relatava
+o
+arquivo
+e
+calava
+a
+recusa.
+Agora
+o
+`exists`
+do
+`studio_assets`
+nomeia
+o
+presente.
+Arquivo
+no
+disco
+não
+é
+mix.
+Sem
+chave
+`presente`.
+Nomear
+não
+ouve.
+
 ## 0.9.648 — o empty do sfx search nomeia a busca que a receita já recusa
 
 A

@@ -4440,6 +4440,80 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("herde silenciosamente as preferências de outro", game.next_scope())
         self.assertNotIn("herde silenciosamente as preferências de outro", game.roles_reading(self.project)["scope"])
 
+    def test_studio_assets_exists_names_the_present_the_map_already_refuses(self):
+        guide = (game.FRAMEWORK / "references/sources.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.sfx_catalog.sources_refuse_catalog_as_present(guide),
+            "o mapa já recusa que o catálogo no disco seja o presente",
+        )
+        self.assertEqual(
+            game.sfx_catalog.studio_assets_exists_present_source(),
+            "references/sources.md",
+        )
+        empty = game.sfx_catalog.studio_assets(self.root)
+        self.assertFalse(empty["sfx"]["exists"], "sem catálogo o exists continua cru e falso")
+        self.assertFalse(game.sfx_catalog.studio_assets_exists_flag(empty["sfx"]))
+        self._plant_catalog_sound()
+        report = game.sfx_catalog.studio_assets(self.root)
+        item = report["sfx"]["exists"]
+        self.assertTrue(item["exists"], "o studio_assets já relata o catálogo neste laboratório")
+        self.assertEqual(item["exists"], game.sfx_catalog.studio_assets_exists_flag(report["sfx"]))
+        self.assertIn(
+            "o catálogo no disco seja o presente",
+            item["scope"],
+            "o exists relatava o arquivo e calava a recusa",
+        )
+        self.assertIn("(`presente`)", item["scope"])
+        self.assertNotIn("presente", item)
+        self.assertNotIn("presente", report["sfx"])
+        self.assertFalse(game.sfx_catalog.sources_refuse_catalog_as_present(""))
+        with mock.patch.object(game.sfx_catalog, "studio_assets_exists_present_source", return_value=None):
+            silent = game.sfx_catalog.studio_assets_exists_reading(True)
+        self.assertNotIn(
+            "o catálogo no disco seja o presente",
+            silent["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/audio.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o presente que o mapa já recusa", guide)
+        self.assertIn("nomeia o presente que o mapa já recusa", recipe)
+        self.assertIn("nomeia o presente que o mapa já recusa", skill)
+        self.assertIn("nomeia o presente que o mapa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn(
+            "o catálogo no disco seja o presente",
+            report["sfx"].get("scope") or "",
+        )
+        self.assertNotIn(
+            "o catálogo no disco seja o presente",
+            report["sfx"]["policy"].get("scope") or "",
+        )
+        self.assertNotIn("o catálogo no disco seja o presente", game.next_scope())
+        summary = game.sfx_catalog.summarize(self.root)
+        if isinstance(summary.get("empty"), dict):
+            self.assertNotIn(
+                "o catálogo no disco seja o presente",
+                summary["empty"].get("scope") or "",
+            )
+        search = game.sfx_catalog.search_catalog("dash", self.root)
+        if isinstance(search.get("empty"), dict):
+            self.assertNotIn(
+                "o catálogo no disco seja o presente",
+                search["empty"].get("scope") or "",
+            )
+        context = game.context(self.project, "create", root=self.root)
+        self.assertEqual(
+            context["studio_assets"]["sfx"]["exists"]["exists"],
+            True,
+        )
+        self.assertIn(
+            "o catálogo no disco seja o presente",
+            context["studio_assets"]["sfx"]["exists"]["scope"],
+        )
+
     def test_scan_names_the_tokens_the_system_already_refuses(self):
         guide = (game.FRAMEWORK / "references/game-design-system.md").read_text(encoding="utf-8")
         self.assertTrue(
