@@ -3436,7 +3436,44 @@ def feel_unobserved_scope():
     named = feel_unobserved_sense_scope()
     if named:
         scope += named
+    bank = feel_unobserved_guard_scope()
+    if bank:
+        scope += bank
     return scope
+
+
+# A receita já recusa que a guarda
+# seja janela de hit. Sem isto o
+# feel relatava o unobserved e
+# calava a recusa. Guarda no disco
+# não é a janela.
+FEEL_GUARD = re.compile(r"guarda não é janela de hit")
+
+
+def recipe_refuses_guard_as_hit_window(text):
+    return bool(text and FEEL_GUARD.search(text))
+
+
+def feel_unobserved_guard_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_guard_as_hit_window(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_unobserved_guard_scope():
+    if not feel_unobserved_guard_source():
+        return None
+    return (
+        " O disco recusa que a guarda seja janela de hit "
+        "(`guarda`). Guarda no disco não é a janela."
+    )
 
 
 def feel_unobserved_flag(reading):

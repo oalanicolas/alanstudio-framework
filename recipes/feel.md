@@ -105,7 +105,7 @@ a chave some. Sem last-run, seed e invite somem. Não tem
 `prompt`. `felt` é sempre falso. `note`
 grava o recibo curto depois da partida. Sem caminho, o único
 jogo do laboratório basta; dois pedem o caminho. Achar o jogo
-não é ter sentido. Se a receita recusa que achar o jogo seja ter sentido, o `unobserved` do `feel` nomeia o sentido que a receita já recusa. Arquivo no disco não é o verbo. Sem chave `sentido`. O usuário não precisa pedir “ative o juice”.
+não é ter sentido. Se a receita recusa que achar o jogo seja ter sentido, o `unobserved` do `feel` nomeia o sentido que a receita já recusa. Arquivo no disco não é o verbo. Sem chave `sentido`. Se a receita recusa que a guarda seja janela de hit, o `unobserved` do `feel` nomeia a guarda que a receita já recusa. Guarda no disco não é a janela. Sem chave `guarda`. O usuário não precisa pedir “ative o juice”.
 
 ## 1. Isolar o verbo
 
@@ -145,7 +145,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    Guardar uma corrente que já existe senta os mesmos dois ticks antes
    de converter (`squashBankCoil` senta; o coil do avanço estreita);
    esses ticks já atravessam o estilhaço — o arco da
-   guarda não é janela de hit. Pedido de guarda com corrente já
+   guarda não é janela de hit. Se a receita recusa que a guarda seja janela de hit, o `unobserved` do `feel` nomeia a guarda que a receita já recusa. Guarda no disco não é a janela. Sem chave `guarda`. Pedido de guarda com corrente já
    existente espera o coil e o land do avanço: os dois arcos no mesmo tick
    comiam o disparo; o sit no travel comia a pose e convertia no ar.
    O pedido não decai durante o coil nem o travel. O quadro que converte também atravessa:
