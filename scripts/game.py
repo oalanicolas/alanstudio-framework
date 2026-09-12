@@ -17675,6 +17675,9 @@ def cycle_scope():
     cap = cycle_stretch_scope()
     if cap:
         scope += cap
+    burst = cycle_burst_scope()
+    if burst:
+        scope += burst
     return scope or None
 
 
@@ -17922,6 +17925,40 @@ def cycle_stretch_scope():
     return (
         " O disco recusa que o hitstop no fim alongue o relógio "
         "(`alonga`). Hitstop no disco não é o limite."
+    )
+
+
+# A receita já recusa que o
+# cooldown metralhe. Sem isto
+# o ciclo anunciava o verbo e
+# calava a recusa. Cooldown no
+# disco não é a rajada.
+FEEL_BURST = re.compile(r"o cooldown não metralha")
+
+
+def recipe_refuses_cooldown_as_machine_gunning(text):
+    return bool(text and FEEL_BURST.search(text))
+
+
+def cycle_burst_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_cooldown_as_machine_gunning(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_burst_scope():
+    if not cycle_burst_source():
+        return None
+    return (
+        " O disco recusa que o cooldown metralhe "
+        "(`metralha`). Cooldown no disco não é a rajada."
     )
 
 
