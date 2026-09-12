@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.620 — o unobserved do feel nomeia o sentido que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+achar
+o
+jogo
+não
+é
+ter
+sentido.
+O
+feel
+relatava
+o
+unobserved
+e
+calava
+a
+recusa.
+Agora
+o
+`unobserved`
+do
+`feel`
+nomeia
+o
+sentido.
+Arquivo
+no
+disco
+não
+é
+o
+verbo.
+Sem
+chave
+`sentido`.
+Nomear
+não
+sente.
+
 ## 0.9.619 — o inline do content nomeia o código que a receita já recusa
 
 A

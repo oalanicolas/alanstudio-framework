@@ -18538,6 +18538,71 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertNotIn("captura no disco seja sessão observada", game.next_scope())
 
+    def test_feel_unobserved_names_the_sense_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            game.recipe_refuses_finding_game_as_feeling(recipe),
+            "a receita já recusa que achar o jogo seja ter sentido",
+        )
+        self.assertEqual(game.feel_unobserved_sense_source(), "recipes/feel.md")
+        empty = game.feel_reading(self.project)
+        self.assertFalse(empty["unobserved"])
+        self.assertFalse(game.feel_unobserved_flag(empty))
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        report = game.feel_reading(starter)
+        item = report["unobserved"]
+        self.assertTrue(item["unobserved"], "o feel já relata constante sem recibo neste starter")
+        self.assertEqual(item["unobserved"], game.feel_unobserved_flag(report))
+        self.assertIn(
+            "achar o jogo seja ter sentido",
+            item["scope"],
+            "o feel relatava o unobserved e calava a recusa",
+        )
+        self.assertIn("(`sentido`)", item["scope"])
+        self.assertNotIn("sentido", item)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_finding_game_as_feeling(""))
+        with mock.patch.object(game, "feel_unobserved_sense_source", return_value=None):
+            silent = game.feel_reading(starter)
+        self.assertNotIn(
+            "achar o jogo seja ter sentido",
+            silent["unobserved"]["scope"],
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia o sentido que a receita já recusa", recipe)
+        self.assertIn("nomeia o sentido que a receita já recusa", skill)
+        self.assertIn("nomeia o sentido que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("achar o jogo seja ter sentido", report["scope"])
+        if report.get("then"):
+            self.assertNotIn(
+                "achar o jogo seja ter sentido",
+                report["then"].get("scope") or "",
+            )
+        if report.get("sources") and isinstance(report["sources"], dict):
+            self.assertNotIn(
+                "achar o jogo seja ter sentido",
+                report["sources"].get("scope") or "",
+            )
+        if report.get("constants") and isinstance(report["constants"], dict):
+            self.assertNotIn(
+                "achar o jogo seja ter sentido",
+                report["constants"].get("scope") or "",
+            )
+        if report.get("observations") and isinstance(report["observations"], dict):
+            self.assertNotIn(
+                "achar o jogo seja ter sentido",
+                report["observations"].get("scope") or "",
+            )
+        self.assertNotIn(
+            "achar o jogo seja ter sentido",
+            game.playtest_reading(starter)["scope"],
+        )
+        self.assertNotIn("achar o jogo seja ter sentido", game.next_scope())
+
     def test_play_then_names_the_observation_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/lifecycle.md").read_text(encoding="utf-8")
         self.assertTrue(

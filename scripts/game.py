@@ -665,7 +665,7 @@ def review(root, limit=REVIEW_LIMIT):
         signals = {
             "playable_unplayed": fresh_starter_cycle(path, missing, play) and not noted,
             "cycle_craft": bool(noted and craft_commands(path) and not cycle_crafted(path)),
-            "feel_unobserved": feel_report["unobserved"],
+            "feel_unobserved": feel_unobserved_flag(feel_report),
             "playtest_unstructured": playtest_report["unstructured"],
             "playtest_invite": bool(noted and not playtest_report.get("invite")),
             "origins_undeclared": origin_undeclared_paths(origins),
@@ -3083,6 +3083,58 @@ def feel_source_files(project):
     return sources
 
 
+# A receita já recusa que achar o jogo
+# seja ter sentido. Sem isto o feel
+# relatava o unobserved e calava a
+# recusa. Arquivo no disco não é o
+# verbo.
+FEEL_SENSE = re.compile(r"Achar o jogo\s+não é ter sentido")
+
+
+def recipe_refuses_finding_game_as_feeling(text):
+    return bool(text and FEEL_SENSE.search(text))
+
+
+def feel_unobserved_sense_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_finding_game_as_feeling(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_unobserved_sense_scope():
+    if not feel_unobserved_sense_source():
+        return None
+    return (
+        " O disco recusa que achar o jogo seja ter sentido "
+        "(`sentido`). Arquivo no disco não é o verbo."
+    )
+
+
+def feel_unobserved_scope():
+    scope = (
+        "constante no disco sem recibo de observação. "
+        "Não é peso percebido."
+    )
+    named = feel_unobserved_sense_scope()
+    if named:
+        scope += named
+    return scope
+
+
+def feel_unobserved_flag(reading):
+    unobserved = (reading or {}).get("unobserved")
+    if isinstance(unobserved, dict):
+        return bool(unobserved.get("unobserved"))
+    return bool(unobserved)
+
+
 def feel_reading(project):
     project = Path(project)
     constants, sources = declared_feel_constants(project)
@@ -3116,6 +3168,11 @@ def feel_reading(project):
             "scope": feel_sources_scope(),
         }
     unobserved = bool(constants) and not observations
+    if unobserved:
+        unobserved = {
+            "unobserved": True,
+            "scope": feel_unobserved_scope(),
+        }
     if observations:
         observations = {
             "items": observations,
@@ -15899,7 +15956,7 @@ def next_step(project, focus="create", studies_root=None):
             "playable_unplayed": fresh,
             "cycle_craft": wants_craft,
             "audio_roles_empty": roles_empty_ids(roles),
-            "feel_unobserved": feel["unobserved"],
+            "feel_unobserved": feel_unobserved_flag(feel),
             "playtest_unstructured": playtest["unstructured"],
             "playtest_invite": wants_invite,
             "playtest_candidate": playtest_candidate_path(playtest),

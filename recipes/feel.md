@@ -105,7 +105,7 @@ a chave some. Sem last-run, seed e invite somem. Não tem
 `prompt`. `felt` é sempre falso. `note`
 grava o recibo curto depois da partida. Sem caminho, o único
 jogo do laboratório basta; dois pedem o caminho. Achar o jogo
-não é ter sentido. O usuário não precisa pedir “ative o juice”.
+não é ter sentido. Se a receita recusa que achar o jogo seja ter sentido, o `unobserved` do `feel` nomeia o sentido que a receita já recusa. Arquivo no disco não é o verbo. Sem chave `sentido`. O usuário não precisa pedir “ative o juice”.
 
 ## 1. Isolar o verbo
 
