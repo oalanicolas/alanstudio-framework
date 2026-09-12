@@ -16396,6 +16396,9 @@ def cycle_scope():
     hold = cycle_lock_scope()
     if hold:
         scope += hold
+    fx = cycle_effects_scope()
+    if fx:
+        scope += fx
     return scope or None
 
 
@@ -16464,6 +16467,43 @@ def cycle_lock_scope():
     return (
         " O disco recusa que o lock seja o descanso "
         "(`lock`). Lock no disco não é o descanso."
+    )
+
+
+# A receita já recusa que três
+# efeitos no impacto compensem
+# input que ignora o botão. Sem
+# isto o ciclo anunciava o verbo
+# e calava a recusa. Efeitos no
+# disco não são o input.
+FEEL_EFFECTS = re.compile(
+    r"Três efeitos no\s+impacto não compensam input que ignora o botão"
+)
+
+
+def recipe_refuses_effects_as_ignored_input(text):
+    return bool(text and FEEL_EFFECTS.search(text))
+
+
+def cycle_effects_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_effects_as_ignored_input(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_effects_scope():
+    if not cycle_effects_source():
+        return None
+    return (
+        " O disco recusa que três efeitos no impacto compensem input que ignora o botão "
+        "(`efeitos`). Efeitos no disco não são o input."
     )
 
 

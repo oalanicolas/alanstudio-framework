@@ -21165,6 +21165,84 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             game.guide_scope("canvas-arcade"),
         )
 
+    def test_cycle_names_the_effects_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(
+            recipe,
+            r"Três efeitos no\s+impacto não compensam input que ignora o botão",
+        )
+        self.assertTrue(
+            game.recipe_refuses_effects_as_ignored_input(recipe),
+            "a receita já recusa que três efeitos no impacto compensem input que ignora o botão",
+        )
+        self.assertEqual(game.cycle_effects_source(), "recipes/feel.md")
+        destination = self.root / "ciclo-nomeia-efeitos"
+        report = game.start_project(destination, "canvas-arcade")
+        cycle = report["cycle"]
+        self.assertIn(
+            "três efeitos no impacto compensem input que ignora o botão",
+            cycle["scope"],
+            "o ciclo anunciava o verbo e calava a recusa",
+        )
+        self.assertIn("(`efeitos`)", cycle["scope"])
+        self.assertIn("Efeitos no disco não são o input.", cycle["scope"])
+        self.assertNotIn("efeitos", cycle)
+        self.assertNotIn("efeitos", game.CYCLE_KEYS)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_effects_as_ignored_input(""))
+        with mock.patch.object(game, "cycle_effects_source", return_value=None):
+            silent = game.start_project(self.root / "ciclo-cala-efeitos", "canvas-arcade")
+        self.assertNotIn(
+            "três efeitos no impacto compensem input que ignora o botão",
+            (silent.get("cycle") or {}).get("scope") or "",
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertIn("nomeia os efeitos que a receita já recusa", recipe)
+        self.assertIn("nomeia os efeitos que a receita já recusa", skill)
+        self.assertIn("nomeia os efeitos que a receita já recusa", readme)
+        self.assertIn("nomeia os efeitos que a receita já recusa", create)
+        self.assertNotIn("verified", cycle["scope"])
+        self.assertNotIn("aprovado", cycle["scope"])
+        self.assertNotIn("4.5", cycle["scope"])
+        self.assertNotIn(
+            "três efeitos no impacto compensem input que ignora o botão",
+            report["scope"],
+        )
+        self.assertNotIn(
+            "três efeitos no impacto compensem input que ignora o botão",
+            game.feel_reading(destination)["scope"],
+        )
+        self.assertNotIn(
+            "três efeitos no impacto compensem input que ignora o botão",
+            game.feel_observations_scope(),
+        )
+        self.assertNotIn(
+            "três efeitos no impacto compensem input que ignora o botão",
+            game.record_scope(),
+        )
+        self.assertNotIn(
+            "três efeitos no impacto compensem input que ignora o botão",
+            game.budget_reading(self.project).get("scope") or "",
+        )
+        self.assertNotIn(
+            "três efeitos no impacto compensem input que ignora o botão",
+            game.content_reading(self.project).get("scope") or "",
+        )
+        self.assertNotIn(
+            "três efeitos no impacto compensem input que ignora o botão",
+            game.pin_created_scope(),
+        )
+        self.assertNotIn(
+            "três efeitos no impacto compensem input que ignora o botão",
+            game.play_scope(destination),
+        )
+        self.assertNotIn(
+            "três efeitos no impacto compensem input que ignora o botão",
+            game.next_scope(),
+        )
+
     def test_serve_banner_names_the_clock_the_game_already_reads(self):
         destination = self.root / "banner-nomeia-relogio"
         game.init(destination, "canvas-arcade")

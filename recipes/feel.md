@@ -183,7 +183,7 @@ Siga a ação da intenção ao descanso. Examine só os elos que o recorte tem
    invisível ou infinito quebra confiança.
 
 Registre o elo fraco antes de adicionar mais partículas. Três efeitos no
-impacto não compensam input que ignora o botão.
+impacto não compensam input que ignora o botão. Se a receita recusa que três efeitos no impacto compensem input que ignora o botão, o ciclo nomeia os efeitos que a receita já recusa. Efeitos no disco não são o input. Sem chave `efeitos`.
 
 Legibilidade respeita o contrato de informação do jogo. Se memória e incerteza
 são parte da disputa, revelar alcance futuro, autoria ou consequências ocultas
