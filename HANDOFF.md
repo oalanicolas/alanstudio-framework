@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.677: a menção nomeia o rastreamento que o roteiro já recusa. Menção no disco não é o gesto. Sem chave `rastreamento`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.677): **738 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
