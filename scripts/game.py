@@ -11849,6 +11849,43 @@ def save_recalc_scope():
     )
 
 
+
+
+# A receita já recusa que o
+# divergem prove o save.
+# Sem isto o save lia o
+# schema e calava a recusa.
+# Divergem no disco não é
+# o save.
+PERSIST_DIVERGE = re.compile(r"divergem")
+
+
+def recipe_refuses_diverge_as_proving_save(text):
+    return bool(text and PERSIST_DIVERGE.search(text))
+
+
+def save_diverge_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_diverge_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_diverge_scope():
+    if not save_diverge_source():
+        return None
+    return (
+        " O disco recusa que o divergem prove o save "
+        "(`divergem`). Divergem no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -12570,6 +12607,9 @@ def save_reading(project):
     calc = save_recalc_scope()
     if calc:
         scope += calc
+    rift = save_diverge_scope()
+    if rift:
+        scope += rift
     used_flag = bool(used)
     if used_flag:
         used_flag = {
