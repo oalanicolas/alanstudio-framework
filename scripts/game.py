@@ -6539,6 +6539,9 @@ def _feel_scope(project):
     line = feel_provenance_scope()
     if line:
         scope += line
+    hue = feel_style_scope()
+    if hue:
+        scope += hue
     return scope
 
 
@@ -7443,6 +7446,41 @@ def feel_provenance_scope():
     return (
         " O disco recusa que a proveniência prove a instância "
         "(`proveniência`). Proveniência no disco não é a instância."
+    )
+
+
+
+# A receita já recusa que o
+# estilo prove a referência.
+# Sem isto o feel lia o CONFIG
+# e calava a recusa. Estilo no
+# disco não é a referência.
+FEEL_STYLE = re.compile(r"estilo, a intensidade")
+
+
+def recipe_refuses_style_as_proving_reference(text):
+    return bool(text and FEEL_STYLE.search(text))
+
+
+def feel_style_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_style_as_proving_reference(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_style_scope():
+    if not feel_style_source():
+        return None
+    return (
+        " O disco recusa que o estilo prove a referência "
+        "(`estilo`). Estilo no disco não é a referência."
     )
 
 
