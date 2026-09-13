@@ -30,6 +30,53 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.876 — o save nomeia a suspensão que a receita já recusa
+
+A
+receita
+já
+pedia
+para
+verificar
+o
+que
+acontece
+na
+interrupção
+abrupta
+incluindo
+suspensão
+do
+dispositivo.
+O
+save
+lia
+o
+schema
+e
+calava
+a
+recusa.
+Agora
+o
+save
+nomeia
+a
+suspensão.
+Suspensão
+no
+disco
+não
+é
+a
+interrupção.
+Sem
+chave
+`suspensão`.
+Nomear
+não
+observa.
+
 ## 0.9.875 — o feel nomeia a repintura que a receita já recusa
 
 A

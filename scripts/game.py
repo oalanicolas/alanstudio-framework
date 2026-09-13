@@ -8772,6 +8772,42 @@ def save_paths_scope():
         "(`caminhos`). Derivado no disco não é os caminhos."
     )
 
+
+
+# A receita já recusa que a
+# suspensão prove a interrupção.
+# Sem isto o save lia o schema
+# e calava a recusa. Suspensão
+# no disco não é a interrupção.
+PERSIST_SUSPEND = re.compile(r"suspensão do dispositivo")
+
+
+def recipe_refuses_device_suspend_as_proving_interruption(text):
+    return bool(text and PERSIST_SUSPEND.search(text))
+
+
+def save_suspend_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_device_suspend_as_proving_interruption(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_suspend_scope():
+    if not save_suspend_source():
+        return None
+    return (
+        " O disco recusa que a suspensão do dispositivo prove a interrupção "
+        "(`suspensão`). Suspensão no disco não é a interrupção."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -9445,6 +9481,9 @@ def save_reading(project):
     fork = save_paths_scope()
     if fork:
         scope += fork
+    dock = save_suspend_scope()
+    if dock:
+        scope += dock
     used_flag = bool(used)
     if used_flag:
         used_flag = {
