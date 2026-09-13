@@ -10706,6 +10706,40 @@ def content_compat_scope():
     )
 
 
+# A receita já recusa que o
+# bloqueio escolha a mesma pose.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Pose no disco não é o bloqueio.
+CONTENT_BLOCK = re.compile(r"pausa, bloqueio, save")
+
+
+def recipe_refuses_block_as_choosing_the_same_pose(text):
+    return bool(text and CONTENT_BLOCK.search(text))
+
+
+def content_block_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_block_as_choosing_the_same_pose(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_block_scope():
+    if not content_block_source():
+        return None
+    return (
+        " O disco recusa que o bloqueio escolha a mesma pose "
+        "(`bloqueio`). Pose no disco não é o bloqueio."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -11007,6 +11041,9 @@ def content_reading(project):
     compat = content_compat_scope()
     if compat:
         scope += compat
+    plug = content_block_scope()
+    if plug:
+        scope += plug
     listed = files[:24]
     if listed:
         listed = {
