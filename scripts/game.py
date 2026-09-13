@@ -9591,6 +9591,41 @@ def content_opacity_scope():
     )
 
 
+# A receita já recusa que escalar
+# o módulo preserve as ferragens.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Módulo no disco não é a
+# ferragem.
+CONTENT_FITTINGS = re.compile(r"deformar ferragens e sombras")
+
+
+def recipe_refuses_scaling_as_preserving_fittings(text):
+    return bool(text and CONTENT_FITTINGS.search(text))
+
+
+def content_fittings_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_scaling_as_preserving_fittings(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_fittings_scope():
+    if not content_fittings_source():
+        return None
+    return (
+        " O disco recusa que escalar o módulo preserve as ferragens "
+        "(`ferragens`). Módulo no disco não é a ferragem."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -9877,6 +9912,9 @@ def content_reading(project):
     fade = content_opacity_scope()
     if fade:
         scope += fade
+    iron = content_fittings_scope()
+    if iron:
+        scope += iron
     listed = files[:24]
     if listed:
         listed = {
