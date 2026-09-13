@@ -12046,6 +12046,43 @@ def save_diverge_scope():
     )
 
 
+
+
+# A receita já recusa que o
+# impossível prove o save.
+# Sem isto o save lia o
+# schema e calava a recusa.
+# Impossível no disco não é
+# o save.
+PERSIST_IMPOSS = re.compile(r"impossível")
+
+
+def recipe_refuses_impossivel_as_proving_save(text):
+    return bool(text and PERSIST_IMPOSS.search(text))
+
+
+def save_impossivel_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_impossivel_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_impossivel_scope():
+    if not save_impossivel_source():
+        return None
+    return (
+        " O disco recusa que o impossível prove o save "
+        "(`impossível`). Impossível no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -12770,6 +12807,9 @@ def save_reading(project):
     rift = save_diverge_scope()
     if rift:
         scope += rift
+    miss = save_impossivel_scope()
+    if miss:
+        scope += miss
     used_flag = bool(used)
     if used_flag:
         used_flag = {
