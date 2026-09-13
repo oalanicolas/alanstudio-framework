@@ -3852,6 +3852,9 @@ def observation_item_scope():
     tune = observation_sensitivity_scope()
     if tune:
         scope += tune
+    mash = observation_repeat_scope()
+    if mash:
+        scope += mash
     return scope
 
 
@@ -4402,6 +4405,40 @@ def observation_sensitivity_scope():
     return (
         " O disco recusa que o recibo ajuste a sensibilidade "
         "(`sensibilidade`). Recibo no disco não é a sensibilidade."
+    )
+
+
+# A receita já recusa que o recibo
+# ajuste a repetição. Sem isto
+# o item copiava a nota e calava a
+# recusa. Recibo no disco não é a
+# repetição.
+A11Y_REPEAT = re.compile(r"apertar repetidamente")
+
+
+def recipe_refuses_receipt_as_adjusting_the_repeat(text):
+    return bool(text and A11Y_REPEAT.search(text))
+
+
+def observation_repeat_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_receipt_as_adjusting_the_repeat(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_repeat_scope():
+    if not observation_repeat_source():
+        return None
+    return (
+        " O disco recusa que o recibo ajuste a repetição "
+        "(`repetição`). Recibo no disco não é a repetição."
     )
 
 
