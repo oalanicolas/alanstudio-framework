@@ -6299,6 +6299,9 @@ def _feel_scope(project):
     coat = feel_repaint_scope()
     if coat:
         scope += coat
+    phase = feel_phase_scope()
+    if phase:
+        scope += phase
     return scope
 
 
@@ -7133,6 +7136,42 @@ def feel_repaint_scope():
         " O disco recusa que a repintura prove a apresentação "
         "(`repintura`). Repintura no disco não é a apresentação."
     )
+
+
+
+# A receita já recusa que a
+# fase calculada prove o dono.
+# Sem isto o feel lia o CONFIG
+# e calava a recusa. Fase no
+# disco não é o dono.
+FEEL_PHASE = re.compile(r"fase calculada")
+
+
+def recipe_refuses_calculated_phase_as_proving_owner(text):
+    return bool(text and FEEL_PHASE.search(text))
+
+
+def feel_phase_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_calculated_phase_as_proving_owner(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_phase_scope():
+    if not feel_phase_source():
+        return None
+    return (
+        " O disco recusa que a fase calculada prove o dono "
+        "(`fase`). Fase no disco não é o dono."
+    )
+
 
 # O painel e o live já nomeiam o vazio. Sem isto o
 # access lia região viva e calava o canvas da porta.
