@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.933: o `record` nomeia o aquecimento que a receita já recusa. Aquecimento no disco não é o engasgo. Sem chave `aquecimento`. Nomear não mede.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.933): **994 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
