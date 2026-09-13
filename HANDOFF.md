@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.929: o item da observação nomeia a cor que a receita já recusa. Cor no disco não é o estado. Sem chave `cor`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.929): **990 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
