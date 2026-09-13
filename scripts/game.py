@@ -10882,6 +10882,42 @@ def save_migrate_scope():
     )
 
 
+
+# A receita já recusa que as
+# entidades, níveis ou itens
+# provem o save. Sem isto o
+# save lia o schema e calava
+# a recusa. Entidades no
+# disco não é o save.
+PERSIST_ENTITY = re.compile(r"entidades, níveis ou itens")
+
+
+def recipe_refuses_entities_as_proving_save(text):
+    return bool(text and PERSIST_ENTITY.search(text))
+
+
+def save_entities_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_entities_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_entities_scope():
+    if not save_entities_source():
+        return None
+    return (
+        " O disco recusa que as entidades, níveis ou itens provem o save "
+        "(`entidades`). Entidades no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -11588,6 +11624,9 @@ def save_reading(project):
     raft = save_migrate_scope()
     if raft:
         scope += raft
+    cast = save_entities_scope()
+    if cast:
+        scope += cast
     used_flag = bool(used)
     if used_flag:
         used_flag = {
