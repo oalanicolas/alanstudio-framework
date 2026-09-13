@@ -25750,6 +25750,9 @@ def record_scope():
     track = record_trail_scope()
     if track:
         scope += track
+    flow = record_reflow_scope()
+    if flow:
+        scope += flow
     return scope
 
 
@@ -26487,6 +26490,43 @@ def record_trail_scope():
         " O disco recusa que medir o erro prove as trajetórias "
         "(`trajetórias`). Erro no disco não é as trajetórias."
     )
+
+
+
+# A receita já recusa que o
+# reflow prove o engasgo.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Reflow no disco não é o
+# engasgo.
+PERF_REFLOW = re.compile(r"layout ou reflow")
+
+
+def recipe_refuses_reflow_as_proving_hitch(text):
+    return bool(text and PERF_REFLOW.search(text))
+
+
+def record_reflow_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_reflow_as_proving_hitch(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_reflow_scope():
+    if not record_reflow_source():
+        return None
+    return (
+        " O disco recusa que o reflow prove o engasgo "
+        "(`reflow`). Reflow no disco não é o engasgo."
+    )
+
 
 # A receita já recusa que ganho na média
 # demonstre redução de engasgos. Sem isto o
