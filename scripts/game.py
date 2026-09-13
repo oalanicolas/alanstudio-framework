@@ -13446,6 +13446,42 @@ def content_meter_scope():
     )
 
 
+
+# A receita já recusa que a
+# escala física prove as
+# dimensões. Sem isto o content
+# listava arquivos e calava a
+# recusa. Física no disco não é
+# as dimensões.
+CONTENT_PHYS = re.compile(r"escala física")
+
+
+def recipe_refuses_physical_as_proving_dimensions(text):
+    return bool(text and CONTENT_PHYS.search(text))
+
+
+def content_physical_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_physical_as_proving_dimensions(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_physical_scope():
+    if not content_physical_source():
+        return None
+    return (
+        " O disco recusa que a escala física prove as dimensões "
+        "(`física`). Física no disco não é as dimensões."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -13783,6 +13819,9 @@ def content_reading(project):
     dots = content_meter_scope()
     if dots:
         scope += dots
+    mass = content_physical_scope()
+    if mass:
+        scope += mass
     listed = files[:24]
     if listed:
         listed = {
