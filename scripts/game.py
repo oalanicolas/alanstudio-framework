@@ -14371,6 +14371,42 @@ def content_bounds_scope():
     )
 
 
+
+# A receita já recusa que a
+# projeção prove as dimensões.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Projeção no disco não é as
+# dimensões.
+CONTENT_PROJ = re.compile(r"projeção")
+
+
+def recipe_refuses_projection_as_proving_dimensions(text):
+    return bool(text and CONTENT_PROJ.search(text))
+
+
+def content_projection_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_projection_as_proving_dimensions(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_projection_scope():
+    if not content_projection_source():
+        return None
+    return (
+        " O disco recusa que a projeção prove as dimensões "
+        "(`projeção`). Projeção no disco não é as dimensões."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -14720,6 +14756,9 @@ def content_reading(project):
     box = content_bounds_scope()
     if box:
         scope += box
+    proj = content_projection_scope()
+    if proj:
+        scope += proj
     listed = files[:24]
     if listed:
         listed = {

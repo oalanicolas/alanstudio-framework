@@ -30,6 +30,61 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.968 — o content nomeia a projeção que a receita já recusa
+
+A
+receita
+já
+pedia
+para
+medir
+a
+superfície
+e
+a
+geometria
+avaliadas,
+não
+apenas
+origem
+ou
+bounds;
+projeção,
+portas,
+pivôs
+e
+conexões
+precisam
+continuar
+iguais.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+content
+nomeia
+a
+projeção.
+Projeção
+no
+disco
+não
+é
+as
+dimensões.
+Sem
+chave
+`projeção`.
+Nomear
+não
+observa.
+
 ## 0.9.967 — o item do craft nomeia a luta que a pesquisa já recusa
 
 A
