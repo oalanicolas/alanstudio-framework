@@ -4627,6 +4627,41 @@ def feel_observations_rhythm_scope():
     )
 
 
+# A receita já recusa que
+# adicionar partículas
+# prescinda do elo. Sem isto
+# o feel listava o recibo e
+# calava a recusa. Partícula
+# no disco não é o elo.
+FEEL_LINK = re.compile(r"Registre o elo fraco")
+
+
+def recipe_refuses_more_particles_as_the_weak_link(text):
+    return bool(text and FEEL_LINK.search(text))
+
+
+def feel_observations_link_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_more_particles_as_the_weak_link(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_link_scope():
+    if not feel_observations_link_source():
+        return None
+    return (
+        " O disco recusa que adicionar partículas prescinda do elo "
+        "(`elo`). Partícula no disco não é o elo."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -4674,6 +4709,9 @@ def feel_observations_scope():
     pace = feel_observations_rhythm_scope()
     if pace:
         scope += pace
+    weak = feel_observations_link_scope()
+    if weak:
+        scope += weak
     return scope
 
 
