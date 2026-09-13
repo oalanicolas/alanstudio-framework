@@ -29899,6 +29899,9 @@ def record_scope():
     tear = record_desmontar_scope()
     if tear:
         scope += tear
+    life = record_vida_scope()
+    if life:
+        scope += life
     return scope
 
 
@@ -31177,6 +31180,43 @@ def record_desmontar_scope():
     return (
         " O disco recusa que o desmontar prove o vazamento "
         "(`desmontar`). Desmontar no disco não é o vazamento."
+    )
+
+
+
+
+# A receita já recusa que o
+# ciclo de vida prove o
+# vazamento. Sem isto o
+# record gravava o recibo e
+# calava a recusa. Vida no
+# disco não é o vazamento.
+PERF_LIFE = re.compile(r"ciclo de vida")
+
+
+def recipe_refuses_vida_as_proving_leak(text):
+    return bool(text and PERF_LIFE.search(text))
+
+
+def record_vida_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_vida_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_vida_scope():
+    if not record_vida_source():
+        return None
+    return (
+        " O disco recusa que o ciclo de vida prove o vazamento "
+        "(`vida`). Vida no disco não é o vazamento."
     )
 
 
