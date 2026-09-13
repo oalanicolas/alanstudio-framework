@@ -3687,6 +3687,9 @@ def observation_item_scope():
     req = observation_requirement_scope()
     if req:
         scope += req
+    mold = observation_form_scope()
+    if mold:
+        scope += mold
     return scope
 
 
@@ -4100,6 +4103,40 @@ def observation_requirement_scope():
     return (
         " O disco recusa que o PRD cumpra o requisito "
         "(`requisito`). PRD no disco não é o requisito."
+    )
+
+
+# A receita já recusa que o PRD
+# prescinda da forma. Sem isto
+# o item copiava a nota e
+# calava a recusa. PRD no disco
+# não é a forma.
+A11Y_FORM = re.compile(r"com forma de verificar")
+
+
+def recipe_refuses_prd_as_skipping_the_form(text):
+    return bool(text and A11Y_FORM.search(text))
+
+
+def observation_form_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_prd_as_skipping_the_form(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_form_scope():
+    if not observation_form_source():
+        return None
+    return (
+        " O disco recusa que o PRD prescinda da forma "
+        "(`forma`). PRD no disco não é a forma."
     )
 
 
