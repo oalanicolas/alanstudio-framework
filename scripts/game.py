@@ -7378,6 +7378,9 @@ def _feel_scope(project):
     unit = feel_instance_scope()
     if unit:
         scope += unit
+    wrap = feel_envelope_scope()
+    if wrap:
+        scope += wrap
     return scope
 
 
@@ -8532,6 +8535,42 @@ def feel_instance_scope():
     return (
         " O disco recusa que o diluir a instância prove o feel "
         "(`instância`). Instância no disco não é o feel."
+    )
+
+
+
+# A receita já recusa que o
+# envelope atual prove o
+# feel. Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Envelope no disco não é o
+# feel.
+FEEL_ENVELOPE = re.compile(r"envelope atual")
+
+
+def recipe_refuses_envelope_as_proving_feel(text):
+    return bool(text and FEEL_ENVELOPE.search(text))
+
+
+def feel_envelope_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_envelope_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_envelope_scope():
+    if not feel_envelope_source():
+        return None
+    return (
+        " O disco recusa que o envelope atual prove o feel "
+        "(`envelope`). Envelope no disco não é o feel."
     )
 
 
