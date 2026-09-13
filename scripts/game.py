@@ -23732,6 +23732,9 @@ def cycle_scope():
     gear = cycle_accessories_scope()
     if gear:
         scope += gear
+    ratio = cycle_proportions_scope()
+    if ratio:
+        scope += ratio
     return scope or None
 
 
@@ -24895,6 +24898,43 @@ def cycle_accessories_scope():
     return (
         " O disco recusa que o excluir acessórios prove o teste "
         "(`acessórios`). Acessórios no disco não é o teste."
+    )
+
+
+
+# A receita já recusa que as
+# proporções de cada avatar
+# provem o teste. Sem isto
+# o ciclo anunciava o verbo
+# e calava a recusa.
+# Proporções no disco não
+# é o teste.
+FEEL_RATIO = re.compile(r"proporções de cada avatar")
+
+
+def recipe_refuses_proportions_as_proving_test(text):
+    return bool(text and FEEL_RATIO.search(text))
+
+
+def cycle_proportions_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_proportions_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_proportions_scope():
+    if not cycle_proportions_source():
+        return None
+    return (
+        " O disco recusa que as proporções de cada avatar provem o teste "
+        "(`proporções`). Proporções no disco não é o teste."
     )
 
 
