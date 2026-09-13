@@ -4893,6 +4893,9 @@ def _feel_scope(project):
     lag = feel_delay_scope()
     if lag:
         scope += lag
+    sweet = feel_tasty_scope()
+    if sweet:
+        scope += sweet
     return scope
 
 
@@ -5307,6 +5310,41 @@ def feel_delay_scope():
     return (
         " O disco recusa que o atraso registre um peso "
         "(`atraso`). Atraso no disco não é o peso."
+    )
+
+
+# A receita já recusa que o
+# feedback gostoso compensar
+# a regra injusta. Sem isto
+# o feel lia o CONFIG e
+# calava a recusa. Feedback
+# no disco não é a regra.
+FEEL_TASTY = re.compile(r"Compensar regra injusta com feedback")
+
+
+def recipe_refuses_tasty_feedback_as_fixing_an_unfair_rule(text):
+    return bool(text and FEEL_TASTY.search(text))
+
+
+def feel_tasty_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_tasty_feedback_as_fixing_an_unfair_rule(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_tasty_scope():
+    if not feel_tasty_source():
+        return None
+    return (
+        " O disco recusa que o feedback gostoso compense a regra injusta "
+        "(`gostoso`). Feedback no disco não é a regra."
     )
 
 
