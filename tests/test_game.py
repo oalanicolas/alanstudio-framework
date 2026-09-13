@@ -4023,6 +4023,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.next_scope())
         self.assertNotIn("consultas", game.CYCLE_KEYS)
 
+
+    def test_record_names_the_trajectories_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"Grave trajetórias")
+        self.assertTrue(
+            game.recipe_refuses_measuring_error_as_proving_trajectories(recipe),
+            "a receita já recusa que medir o erro prove as trajetórias",
+        )
+        self.assertEqual(game.record_trail_source(), "recipes/performance.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-869",
+        )
+        self.assertIn(
+            "medir o erro prove as trajetórias",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`trajetórias`)", report["scope"])
+        self.assertIn("Erro no disco não é as trajetórias.", report["scope"])
+        self.assertNotIn("trajetórias", report)
+        self.assertFalse(game.recipe_refuses_measuring_error_as_proving_trajectories(""))
+        with mock.patch.object(game, "record_trail_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-869-silent",
+            )
+        self.assertNotIn(
+            "medir o erro prove as trajetórias",
+            silent["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia as trajetórias que a receita já recusa"), 2)
+        self.assertIn("nomeia as trajetórias que a receita já recusa", production)
+        self.assertIn("nomeia as trajetórias que a receita já recusa", skill)
+        self.assertIn("nomeia as trajetórias que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        self.assertNotIn("verified", production)
+        phrase = "medir o erro prove as trajetórias"
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("trajetórias", game.CYCLE_KEYS)
+
     def test_record_names_the_animation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(

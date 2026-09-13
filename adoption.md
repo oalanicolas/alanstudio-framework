@@ -30,6 +30,55 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.869 — o record nomeia as trajetórias que a receita já recusa
+
+A
+receita
+já
+pedia
+para
+gravar
+trajetórias
+na
+precisão
+necessária
+e
+medir
+o
+erro
+antes
+de
+reduzir
+frequência.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+as
+trajetórias.
+Erro
+no
+disco
+não
+é
+as
+trajetórias.
+Sem
+chave
+`trajetórias`.
+Nomear
+não
+mede.
+
 ## 0.9.868 — o save nomeia os caminhos que a receita já recusa
 
 A

@@ -25476,6 +25476,9 @@ def record_scope():
     hits = record_query_scope()
     if hits:
         scope += hits
+    track = record_trail_scope()
+    if track:
+        scope += track
     return scope
 
 
@@ -26178,6 +26181,41 @@ def record_query_scope():
         "(`consultas`). Taxa no disco não é as consultas."
     )
 
+
+
+
+# A receita já recusa que medir
+# o erro prove as trajetórias.
+# Sem isto o record gravava o
+# recibo e calava a recusa. Erro
+# no disco não é as trajetórias.
+PERF_TRAILS = re.compile(r"Grave trajetórias")
+
+
+def recipe_refuses_measuring_error_as_proving_trajectories(text):
+    return bool(text and PERF_TRAILS.search(text))
+
+
+def record_trail_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_measuring_error_as_proving_trajectories(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_trail_scope():
+    if not record_trail_source():
+        return None
+    return (
+        " O disco recusa que medir o erro prove as trajetórias "
+        "(`trajetórias`). Erro no disco não é as trajetórias."
+    )
 
 # A receita já recusa que ganho na média
 # demonstre redução de engasgos. Sem isto o
