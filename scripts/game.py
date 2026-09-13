@@ -21601,6 +21601,9 @@ def cycle_scope():
     rest = cycle_residual_scope()
     if rest:
         scope += rest
+    fin = cycle_smash_scope()
+    if fin:
+        scope += fin
     return scope or None
 
 
@@ -22440,6 +22443,42 @@ def cycle_residual_scope():
     return (
         " O disco recusa que a trava residual prove o buffer "
         "(`trava`). Trava no disco não é o buffer."
+    )
+
+
+
+# A receita já recusa que o
+# smash prove a prioridade.
+# Sem isto o ciclo anunciava o
+# verbo e calava a recusa.
+# Smash no disco não é a
+# prioridade.
+FEEL_SMASH = re.compile(r"dash-attack e smash")
+
+
+def recipe_refuses_smash_as_proving_priority(text):
+    return bool(text and FEEL_SMASH.search(text))
+
+
+def cycle_smash_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_smash_as_proving_priority(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_smash_scope():
+    if not cycle_smash_source():
+        return None
+    return (
+        " O disco recusa que o smash prove a prioridade "
+        "(`smash`). Smash no disco não é a prioridade."
     )
 
 
