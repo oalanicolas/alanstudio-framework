@@ -26176,6 +26176,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.next_scope())
         self.assertNotIn("autoral", game.CYCLE_KEYS)
 
+    def test_content_names_the_texture_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"Textura repetível")
+        self.assertTrue(
+            game.recipe_refuses_repeatable_texture_as_proving_edges(recipe),
+            "a receita já recusa que a textura repetível prove as bordas",
+        )
+        self.assertEqual(game.content_texture_source(), "recipes/content.md")
+        report = game.content_reading(self.project)
+        self.assertIn(
+            "a textura repetível prove as bordas",
+            report["scope"],
+            "o content listava arquivos e calava a recusa",
+        )
+        self.assertIn("(`textura`)", report["scope"])
+        self.assertIn("Textura no disco não é as bordas.", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("textura", report)
+        self.assertFalse(game.recipe_refuses_repeatable_texture_as_proving_edges(""))
+        with mock.patch.object(game, "content_texture_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn(
+            "a textura repetível prove as bordas",
+            silent["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a textura que a receita já recusa"), 2)
+        self.assertIn("nomeia a textura que a receita já recusa", create)
+        self.assertIn("nomeia a textura que a receita já recusa", skill)
+        self.assertIn("nomeia a textura que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        files = report.get("files")
+        if isinstance(files, dict):
+            self.assertNotIn(
+                "a textura repetível prove as bordas",
+                files.get("scope") or "",
+            )
+        phrase = "a textura repetível prove as bordas"
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("textura", game.CYCLE_KEYS)
+
     def test_content_names_the_rain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
         self.assertTrue(
