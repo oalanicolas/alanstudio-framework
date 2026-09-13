@@ -2562,6 +2562,43 @@ def craft_item_blog_scope():
         "(`blog`). Blog no disco não é o método."
     )
 
+
+
+# A pesquisa já recusa que o
+# repositório citável prove os
+# dados. Sem isto o item do
+# craft listava o checklist e
+# calava a recusa. Citável no
+# disco não é os dados.
+CRAFT_CITABLE = re.compile(r"repositório citável")
+
+
+def research_refuses_citable_repo_as_proving_data(text):
+    return bool(text and CRAFT_CITABLE.search(text))
+
+
+def craft_item_citable_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_citable_repo_as_proving_data(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_citable_scope():
+    if not craft_item_citable_source():
+        return None
+    return (
+        " O disco recusa que o repositório citável prove os dados "
+        "(`citável`). Citável no disco não é os dados."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2642,6 +2679,9 @@ def craft_item_scope():
     post = craft_item_blog_scope()
     if post:
         scope += post
+    repo = craft_item_citable_scope()
+    if repo:
+        scope += repo
     return scope
 
 

@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.879 — o item do craft nomeia o citável que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+os
+dados
+brutos
+não
+estão
+num
+repositório
+citável.
+O
+item
+do
+craft
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+o
+citável.
+Citável
+no
+disco
+não
+é
+os
+dados.
+Sem
+chave
+`citável`.
+Nomear
+não
+observa.
+
 ## 0.9.878 — o observations do feel nomeia o clipe que a receita já recusa
 
 A
