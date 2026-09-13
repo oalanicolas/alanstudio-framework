@@ -4653,6 +4653,9 @@ def observation_item_scope():
     sway = observation_parallax_scope()
     if sway:
         scope += sway
+    shake = observation_tremor_scope()
+    if shake:
+        scope += shake
     return scope
 
 
@@ -5881,6 +5884,43 @@ def observation_parallax_scope():
     return (
         " O disco recusa que a paralaxe prove o estado "
         "(`paralaxe`). Paralaxe no disco não é o estado."
+    )
+
+
+
+
+# A receita já recusa que o
+# tremor prove o estado.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Tremor no disco não é
+# o estado.
+A11Y_TREMOR = re.compile(r"tremor")
+
+
+def recipe_refuses_tremor_as_proving_state(text):
+    return bool(text and A11Y_TREMOR.search(text))
+
+
+def observation_tremor_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_tremor_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_tremor_scope():
+    if not observation_tremor_source():
+        return None
+    return (
+        " O disco recusa que o tremor prove o estado "
+        "(`tremor`). Tremor no disco não é o estado."
     )
 
 
