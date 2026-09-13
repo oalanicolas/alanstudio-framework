@@ -9732,6 +9732,42 @@ def save_closed_scope():
     )
 
 
+
+# A receita já recusa que o
+# arquivo temporário prove a
+# substituição. Sem isto o
+# save lia o schema e calava
+# a recusa. Temporário no
+# disco não é a substituição.
+PERSIST_TEMP = re.compile(r"arquivo temporário")
+
+
+def recipe_refuses_temp_file_as_proving_swap(text):
+    return bool(text and PERSIST_TEMP.search(text))
+
+
+def save_temp_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_temp_file_as_proving_swap(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_temp_scope():
+    if not save_temp_source():
+        return None
+    return (
+        " O disco recusa que o arquivo temporário prove a substituição "
+        "(`temporário`). Temporário no disco não é a substituição."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -10420,6 +10456,9 @@ def save_reading(project):
     shut = save_closed_scope()
     if shut:
         scope += shut
+    tmp = save_temp_scope()
+    if tmp:
+        scope += tmp
     used_flag = bool(used)
     if used_flag:
         used_flag = {
