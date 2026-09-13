@@ -3936,6 +3936,9 @@ def observation_item_scope():
     push = observation_press_scope()
     if push:
         scope += push
+    hint = observation_instruction_scope()
+    if hint:
+        scope += hint
     return scope
 
 
@@ -4556,6 +4559,41 @@ def observation_press_scope():
         "(`pressionar`). Recibo no disco não é o pressionar."
     )
 
+
+
+
+# A receita já recusa que o recibo
+# ajuste a instrução. Sem isto
+# o item copiava a nota e calava a
+# recusa. Recibo no disco não é a
+# instrução.
+A11Y_HINT = re.compile(r"primeira instrução")
+
+
+def recipe_refuses_receipt_as_adjusting_the_instruction(text):
+    return bool(text and A11Y_HINT.search(text))
+
+
+def observation_instruction_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_receipt_as_adjusting_the_instruction(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_instruction_scope():
+    if not observation_instruction_source():
+        return None
+    return (
+        " O disco recusa que o recibo ajuste a instrução "
+        "(`instrução`). Recibo no disco não é a instrução."
+    )
 
 # A receita já recusa que o soltar
 # no disco seja sessão observada.
