@@ -4105,6 +4105,9 @@ def observation_item_scope():
     cue = observation_indicator_scope()
     if cue:
         scope += cue
+    info = observation_info_scope()
+    if info:
+        scope += info
     return scope
 
 
@@ -4866,6 +4869,42 @@ def observation_indicator_scope():
     return (
         " O disco recusa que o indicador visual prove a audição "
         "(`indicador`). Indicador no disco não é a audição."
+    )
+
+
+
+# A receita já recusa que a
+# informação que hoje só existe
+# no som prove a audição. Sem
+# isto o item copiava a nota e
+# calava a recusa. Informação
+# no disco não é a audição.
+A11Y_INFO = re.compile(r"informação que hoje só existe")
+
+
+def recipe_refuses_sound_only_info_as_proving_hearing(text):
+    return bool(text and A11Y_INFO.search(text))
+
+
+def observation_info_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_sound_only_info_as_proving_hearing(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_info_scope():
+    if not observation_info_source():
+        return None
+    return (
+        " O disco recusa que a informação que hoje só existe no som "
+        "prove a audição (`informação`). Informação no disco não é a audição."
     )
 
 
