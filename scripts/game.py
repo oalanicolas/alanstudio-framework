@@ -20892,6 +20892,9 @@ def cycle_scope():
     box = cycle_hitbox_scope()
     if box:
         scope += box
+    hull = cycle_hurtbox_scope()
+    if hull:
+        scope += hull
     return scope or None
 
 
@@ -21625,6 +21628,41 @@ def cycle_hitbox_scope():
         "(`hitbox`). Verbo no disco não é o hitbox."
     )
 
+
+
+
+# A receita já recusa que anunciar
+# o verbo prove o hurtbox. Sem
+# isto o ciclo anunciava o verbo
+# e calava a recusa. Verbo no
+# disco não é o hurtbox.
+FEEL_HURTBOX = re.compile(r"hurtbox e efeito")
+
+
+def recipe_refuses_announcing_verb_as_proving_hurtbox(text):
+    return bool(text and FEEL_HURTBOX.search(text))
+
+
+def cycle_hurtbox_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_announcing_verb_as_proving_hurtbox(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_hurtbox_scope():
+    if not cycle_hurtbox_source():
+        return None
+    return (
+        " O disco recusa que anunciar o verbo prove o hurtbox "
+        "(`hurtbox`). Verbo no disco não é o hurtbox."
+    )
 
 def named_cycle(cycle):
     if cycle is None:
