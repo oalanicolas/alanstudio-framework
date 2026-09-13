@@ -30,6 +30,56 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.935 — o item do craft nomeia o console que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+os
+números
+chegam
+na
+cadeia
+inteira
+—
+controle
++
+console
++
+jogo
++
+captura.
+O
+item
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+o
+console.
+Console
+no
+disco
+não
+é
+a
+cadeia.
+Sem
+chave
+`console`.
+Nomear
+não
+observa.
+
 ## 0.9.934 — o observations do feel nomeia o salto que a receita já recusa
 
 A

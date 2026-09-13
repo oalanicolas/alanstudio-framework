@@ -2816,6 +2816,42 @@ def craft_item_builds_scope():
     )
 
 
+
+# A pesquisa já recusa que o
+# console prove a cadeia. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Console no disco não
+# é a cadeia.
+CRAFT_CONSOLE = re.compile(r"controle \+ console")
+
+
+def research_refuses_console_as_proving_chain(text):
+    return bool(text and CRAFT_CONSOLE.search(text))
+
+
+def craft_item_console_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_console_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_console_scope():
+    if not craft_item_console_source():
+        return None
+    return (
+        " O disco recusa que o console prove a cadeia "
+        "(`console`). Console no disco não é a cadeia."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2917,6 +2953,9 @@ def craft_item_scope():
     rom = craft_item_builds_scope()
     if rom:
         scope += rom
+    deck = craft_item_console_scope()
+    if deck:
+        scope += deck
     return scope
 
 
