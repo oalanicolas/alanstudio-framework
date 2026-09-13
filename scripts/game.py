@@ -27958,6 +27958,9 @@ def record_scope():
     heat = record_warm_scope()
     if heat:
         scope += heat
+    sweep = record_collect_scope()
+    if sweep:
+        scope += sweep
     return scope
 
 
@@ -28983,6 +28986,42 @@ def record_warm_scope():
     return (
         " O disco recusa que o caminho que ainda não aqueceu prove o engasgo "
         "(`aquecimento`). Aquecimento no disco não é o engasgo."
+    )
+
+
+
+# A receita já recusa que a
+# alocação e coleta prove o
+# engasgo. Sem isto o record
+# gravava o recibo e calava
+# a recusa. Coleta no disco
+# não é o engasgo.
+PERF_COLLECT = re.compile(r"alocação e coleta")
+
+
+def recipe_refuses_collection_as_proving_hitch(text):
+    return bool(text and PERF_COLLECT.search(text))
+
+
+def record_collect_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_collection_as_proving_hitch(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_collect_scope():
+    if not record_collect_source():
+        return None
+    return (
+        " O disco recusa que a alocação e coleta prove o engasgo "
+        "(`coleta`). Coleta no disco não é o engasgo."
     )
 
 
