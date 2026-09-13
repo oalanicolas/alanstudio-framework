@@ -30,6 +30,53 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.960 — o content nomeia os bounds que a receita já recusa
+
+A
+receita
+já
+pedia
+para
+medir
+a
+superfície
+e
+a
+geometria
+avaliadas,
+não
+apenas
+origem
+ou
+bounds.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+content
+nomeia
+os
+bounds.
+Bounds
+no
+disco
+não
+é
+as
+dimensões.
+Sem
+chave
+`bounds`.
+Nomear
+não
+observa.
+
 ## 0.9.959 — o item do craft nomeia a taxa que a pesquisa já recusa
 
 A
