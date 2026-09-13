@@ -29343,6 +29343,9 @@ def record_scope():
     laps = record_loops_scope()
     if laps:
         scope += laps
+    mesh = record_connections_scope()
+    if mesh:
+        scope += mesh
     return scope
 
 
@@ -30548,6 +30551,43 @@ def record_loops_scope():
     return (
         " O disco recusa que os loops provem o vazamento "
         "(`loops`). Loops no disco não é o vazamento."
+    )
+
+
+
+# A receita já recusa que as
+# conexões provem o
+# vazamento. Sem isto o
+# record gravava o recibo e
+# calava a recusa. Conexões
+# no disco não é o
+# vazamento.
+PERF_CONN = re.compile(r"conexões")
+
+
+def recipe_refuses_connections_as_proving_leak(text):
+    return bool(text and PERF_CONN.search(text))
+
+
+def record_connections_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_connections_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_connections_scope():
+    if not record_connections_source():
+        return None
+    return (
+        " O disco recusa que as conexões provem o vazamento "
+        "(`conexões`). Conexões no disco não é o vazamento."
     )
 
 
