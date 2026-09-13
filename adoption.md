@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.843 — o feel nomeia o descarte que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+um
+rumble
+que
+não
+morre
+no
+descarte
+é
+regressão.
+O
+feel
+lia
+o
+CONFIG
+e
+calava
+a
+recusa.
+Agora
+o
+feel
+nomeia
+o
+descarte.
+Rumble
+no
+disco
+não
+é
+o
+descarte.
+Sem
+chave
+`descarte`.
+Nomear
+não
+observa.
+
 ## 0.9.842 — o ciclo nomeia a recuperação que a receita já recusa
 
 A

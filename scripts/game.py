@@ -5708,6 +5708,9 @@ def _feel_scope(project):
     halt = feel_pause_scope()
     if halt:
         scope += halt
+    dump = feel_discard_scope()
+    if dump:
+        scope += dump
     return scope
 
 
@@ -6366,6 +6369,41 @@ def feel_pause_scope():
     return (
         " O disco recusa que o hitstop sobreviva à pausa "
         "(`pausa`). Hitstop no disco não é a pausa."
+    )
+
+
+# A receita já recusa que o
+# rumble não morra no descarte.
+# Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Rumble no disco não é o
+# descarte.
+FEEL_DISCARD = re.compile(r"não morre no descarte")
+
+
+def recipe_refuses_undying_rumble_as_keeping_discard(text):
+    return bool(text and FEEL_DISCARD.search(text))
+
+
+def feel_discard_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_undying_rumble_as_keeping_discard(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_discard_scope():
+    if not feel_discard_source():
+        return None
+    return (
+        " O disco recusa que o rumble não morra no descarte "
+        "(`descarte`). Rumble no disco não é o descarte."
     )
 
 
