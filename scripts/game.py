@@ -25206,6 +25206,9 @@ def record_scope():
     rim = record_edge_scope()
     if rim:
         scope += rim
+    hits = record_query_scope()
+    if hits:
+        scope += hits
     return scope
 
 
@@ -25872,6 +25875,40 @@ def record_edge_scope():
     return (
         " O disco recusa que repetir a borda prove o quadro "
         "(`borda`). Borda no disco não é o quadro."
+    )
+
+
+# A receita já recusa que medir a
+# taxa prove as consultas. Sem
+# isto o record gravava o recibo
+# e calava a recusa. Taxa no
+# disco não é as consultas.
+PERF_QUERIES = re.compile(r"consultas físicas")
+
+
+def recipe_refuses_measuring_rate_as_proving_queries(text):
+    return bool(text and PERF_QUERIES.search(text))
+
+
+def record_query_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_measuring_rate_as_proving_queries(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_query_scope():
+    if not record_query_source():
+        return None
+    return (
+        " O disco recusa que medir a taxa prove as consultas "
+        "(`consultas`). Taxa no disco não é as consultas."
     )
 
 
