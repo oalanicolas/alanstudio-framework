@@ -3104,6 +3104,43 @@ def craft_item_replicavel_scope():
     )
 
 
+
+
+# A pesquisa já recusa que
+# contar frames prove a
+# cadeia. Sem isto o item do
+# craft listava o checklist e
+# calava a recusa. Frames no
+# disco não é a cadeia.
+CRAFT_FRAMES = re.compile(r"contar frames")
+
+
+def research_refuses_frames_as_proving_chain(text):
+    return bool(text and CRAFT_FRAMES.search(text))
+
+
+def craft_item_frames_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_frames_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_frames_scope():
+    if not craft_item_frames_source():
+        return None
+    return (
+        " O disco recusa que contar frames prove a cadeia "
+        "(`frames`). Frames no disco não é a cadeia."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -3229,6 +3266,9 @@ def craft_item_scope():
     twin = craft_item_replicavel_scope()
     if twin:
         scope += twin
+    tally = craft_item_frames_scope()
+    if tally:
+        scope += tally
     return scope
 
 
