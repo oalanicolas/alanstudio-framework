@@ -27683,6 +27683,9 @@ def record_scope():
     tex = record_tex_scope()
     if tex:
         scope += tex
+    heat = record_warm_scope()
+    if heat:
+        scope += heat
     return scope
 
 
@@ -28671,6 +28674,43 @@ def record_tex_scope():
     return (
         " O disco recusa que a criação de textura prove o engasgo "
         "(`textura`). Textura no disco não é o engasgo."
+    )
+
+
+
+# A receita já recusa que o
+# caminho que ainda não
+# aqueceu prove o engasgo.
+# Sem isto o record gravava
+# o recibo e calava a recusa.
+# Aquecimento no disco não é
+# o engasgo.
+PERF_WARM = re.compile(r"ainda não aqueceu")
+
+
+def recipe_refuses_cold_path_as_proving_hitch(text):
+    return bool(text and PERF_WARM.search(text))
+
+
+def record_warm_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_cold_path_as_proving_hitch(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_warm_scope():
+    if not record_warm_source():
+        return None
+    return (
+        " O disco recusa que o caminho que ainda não aqueceu prove o engasgo "
+        "(`aquecimento`). Aquecimento no disco não é o engasgo."
     )
 
 

@@ -4493,6 +4493,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("textura", game.CYCLE_KEYS)
         self.assertNotIn("carregamento", game.CYCLE_KEYS)
 
+    def test_record_names_the_warm_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"ainda não aqueceu")
+        self.assertTrue(
+            game.recipe_refuses_cold_path_as_proving_hitch(recipe),
+            "a receita já recusa que o caminho que ainda não aqueceu prove o engasgo",
+        )
+        self.assertEqual(game.record_warm_source(), "recipes/performance.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-933",
+        )
+        self.assertIn(
+            "o caminho que ainda não aqueceu prove o engasgo",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`aquecimento`)", report["scope"])
+        self.assertIn("Aquecimento no disco não é o engasgo.", report["scope"])
+        self.assertNotIn("aquecimento", report)
+        self.assertFalse(game.recipe_refuses_cold_path_as_proving_hitch(""))
+        with mock.patch.object(game, "record_warm_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-933-silent",
+            )
+        self.assertNotIn(
+            "o caminho que ainda não aqueceu prove o engasgo",
+            silent["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o aquecimento que a receita já recusa"), 2)
+        self.assertIn("nomeia o aquecimento que a receita já recusa", production)
+        self.assertIn("nomeia o aquecimento que a receita já recusa", skill)
+        self.assertIn("nomeia o aquecimento que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        self.assertNotIn("verified", production)
+        phrase = "o caminho que ainda não aqueceu prove o engasgo"
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("aquecimento", game.CYCLE_KEYS)
+        self.assertNotIn("textura", game.CYCLE_KEYS)
+
     def test_record_names_the_animation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(

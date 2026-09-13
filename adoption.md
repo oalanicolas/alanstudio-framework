@@ -30,6 +30,54 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.933 — o record nomeia o aquecimento que a receita já recusa
+
+A
+receita
+já
+listava
+o
+primeiro
+uso
+de
+qualquer
+caminho
+que
+ainda
+não
+aqueceu
+como
+engasgo
+pontual.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+o
+aquecimento.
+Aquecimento
+no
+disco
+não
+é
+o
+engasgo.
+Sem
+chave
+`aquecimento`.
+Nomear
+não
+mede.
+
 ## 0.9.932 — o save nomeia os momentos que a receita já recusa
 
 A
