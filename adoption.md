@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.852 — o save nomeia o volume que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+volume,
+controles,
+acessibilidade
+e
+idioma
+sobrevivem
+a
+apagar
+a
+partida.
+O
+save
+lia
+o
+schema
+e
+calava
+a
+recusa.
+Agora
+o
+save
+nomeia
+o
+volume.
+Partida
+no
+disco
+não
+é
+o
+volume.
+Sem
+chave
+`volume`.
+Nomear
+não
+observa.
+
 ## 0.9.851 — o feel nomeia o apagão que a receita já recusa
 
 A

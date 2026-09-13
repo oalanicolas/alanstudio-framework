@@ -8210,6 +8210,40 @@ def save_accessibility_scope():
     )
 
 
+# A receita já recusa que apagar
+# a partida apague o volume.
+# Sem isto o save lia o schema e
+# calava a recusa. Partida no
+# disco não é o volume.
+PERSIST_VOLUME = re.compile(r"volume, controles, acessibilidade, idioma")
+
+
+def recipe_refuses_deleting_run_as_wiping_volume(text):
+    return bool(text and PERSIST_VOLUME.search(text))
+
+
+def save_volume_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_deleting_run_as_wiping_volume(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_volume_scope():
+    if not save_volume_source():
+        return None
+    return (
+        " O disco recusa que apagar a partida apague o volume "
+        "(`volume`). Partida no disco não é o volume."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -8874,6 +8908,9 @@ def save_reading(project):
     ease = save_accessibility_scope()
     if ease:
         scope += ease
+    loud = save_volume_scope()
+    if loud:
+        scope += loud
     used_flag = bool(used)
     if used_flag:
         used_flag = {
