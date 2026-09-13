@@ -4073,6 +4073,41 @@ def feel_observations_light_scope():
     )
 
 
+# A receita já recusa que a
+# recuperação seja a tinta da
+# prática. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Silhueta no disco
+# não é a prática.
+FEEL_INK = re.compile(r"ainda vulnerável, não a tinta da prática")
+
+
+def recipe_refuses_recovery_as_practice_paint(text):
+    return bool(text and FEEL_INK.search(text))
+
+
+def feel_observations_ink_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_recovery_as_practice_paint(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_ink_scope():
+    if not feel_observations_ink_source():
+        return None
+    return (
+        " O disco recusa que a recuperação seja a tinta da prática "
+        "(`tinta`). Silhueta no disco não é a prática."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -4105,6 +4140,9 @@ def feel_observations_scope():
     glow = feel_observations_light_scope()
     if glow:
         scope += glow
+    ink = feel_observations_ink_scope()
+    if ink:
+        scope += ink
     return scope
 
 
