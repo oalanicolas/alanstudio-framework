@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.804: o `save` nomeia o efêmero que a receita já recusa. Partida no disco não é o efêmero. Sem chave `efêmero`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.804): **865 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
