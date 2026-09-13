@@ -4434,6 +4434,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("carregamento", game.CYCLE_KEYS)
         self.assertNotIn("cena", game.CYCLE_KEYS)
 
+    def test_record_names_the_tex_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"criação de textura")
+        self.assertTrue(
+            game.recipe_refuses_texture_create_as_proving_hitch(recipe),
+            "a receita já recusa que a criação de textura prove o engasgo",
+        )
+        self.assertEqual(game.record_tex_source(), "recipes/performance.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-925",
+        )
+        self.assertIn(
+            "a criação de textura prove o engasgo",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`textura`)", report["scope"])
+        self.assertIn("Textura no disco não é o engasgo.", report["scope"])
+        self.assertNotIn("textura", report)
+        self.assertFalse(game.recipe_refuses_texture_create_as_proving_hitch(""))
+        with mock.patch.object(game, "record_tex_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-925-silent",
+            )
+        self.assertNotIn(
+            "a criação de textura prove o engasgo",
+            silent["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a textura que a receita já recusa"), 2)
+        self.assertIn("nomeia a textura que a receita já recusa", production)
+        self.assertIn("nomeia a textura que a receita já recusa", skill)
+        self.assertIn("nomeia a textura que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        self.assertNotIn("verified", production)
+        phrase = "a criação de textura prove o engasgo"
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("textura", game.CYCLE_KEYS)
+        self.assertNotIn("carregamento", game.CYCLE_KEYS)
+
     def test_record_names_the_animation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(

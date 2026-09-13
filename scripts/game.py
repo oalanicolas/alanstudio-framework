@@ -27409,6 +27409,9 @@ def record_scope():
     load = record_load_scope()
     if load:
         scope += load
+    tex = record_tex_scope()
+    if tex:
+        scope += tex
     return scope
 
 
@@ -28361,6 +28364,42 @@ def record_load_scope():
     return (
         " O disco recusa que o carregamento prove o engasgo "
         "(`carregamento`). Carregamento no disco não é o engasgo."
+    )
+
+
+
+# A receita já recusa que a
+# criação de textura prove o
+# engasgo. Sem isto o record
+# gravava o recibo e calava a
+# recusa. Textura no disco
+# não é o engasgo.
+PERF_TEX = re.compile(r"criação de textura")
+
+
+def recipe_refuses_texture_create_as_proving_hitch(text):
+    return bool(text and PERF_TEX.search(text))
+
+
+def record_tex_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_texture_create_as_proving_hitch(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_tex_scope():
+    if not record_tex_source():
+        return None
+    return (
+        " O disco recusa que a criação de textura prove o engasgo "
+        "(`textura`). Textura no disco não é o engasgo."
     )
 
 
