@@ -26580,6 +26580,9 @@ def record_scope():
     shd = record_shader_scope()
     if shd:
         scope += shd
+    dec = record_decode_scope()
+    if dec:
+        scope += dec
     return scope
 
 
@@ -27424,6 +27427,42 @@ def record_shader_scope():
     return (
         " O disco recusa que a primeira compilação de shader prove o engasgo "
         "(`shader`). Shader no disco não é o engasgo."
+    )
+
+
+
+# A receita já recusa que a
+# decodificação de recurso
+# prove o engasgo. Sem isto o
+# record gravava o recibo e
+# calava a recusa. Decodificação
+# no disco não é o engasgo.
+PERF_DECODE = re.compile(r"decodificação de recurso")
+
+
+def recipe_refuses_resource_decode_as_proving_hitch(text):
+    return bool(text and PERF_DECODE.search(text))
+
+
+def record_decode_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_resource_decode_as_proving_hitch(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_decode_scope():
+    if not record_decode_source():
+        return None
+    return (
+        " O disco recusa que a decodificação de recurso prove o engasgo "
+        "(`decodificação`). Decodificação no disco não é o engasgo."
     )
 
 
