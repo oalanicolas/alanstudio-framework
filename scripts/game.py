@@ -9140,6 +9140,41 @@ def content_leak_scope():
     )
 
 
+# A receita já recusa que a
+# solução seja só do filtro.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Filtro no disco não é a
+# emenda.
+CONTENT_FILTER = re.compile(r"A solução depende da composição, não só do filtro")
+
+
+def recipe_refuses_solution_as_filter_only(text):
+    return bool(text and CONTENT_FILTER.search(text))
+
+
+def content_filter_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_solution_as_filter_only(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_filter_scope():
+    if not content_filter_source():
+        return None
+    return (
+        " O disco recusa que a solução seja só do filtro "
+        "(`filtro`). Filtro no disco não é a emenda."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -9420,6 +9455,9 @@ def content_reading(project):
     leak = content_leak_scope()
     if leak:
         scope += leak
+    sieve = content_filter_scope()
+    if sieve:
+        scope += sieve
     listed = files[:24]
     if listed:
         listed = {
