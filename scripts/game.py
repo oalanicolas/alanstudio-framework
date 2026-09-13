@@ -15063,6 +15063,43 @@ def content_orientation_scope():
     )
 
 
+
+
+# A receita já recusa que a
+# pré-multiplicada prove o
+# destino. Sem isto o content
+# listava arquivos e calava
+# a recusa. Pré-multiplicada
+# no disco não é o destino.
+CONTENT_PREMUL = re.compile(r"pré-multiplicada")
+
+
+def recipe_refuses_premul_as_proving_destination(text):
+    return bool(text and CONTENT_PREMUL.search(text))
+
+
+def content_premul_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_premul_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_premul_scope():
+    if not content_premul_source():
+        return None
+    return (
+        " O disco recusa que a pré-multiplicada prove o destino "
+        "(`pré-multiplicada`). Pré-multiplicada no disco não é o destino."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -15421,6 +15458,9 @@ def content_reading(project):
     yaw = content_orientation_scope()
     if yaw:
         scope += yaw
+    prem = content_premul_scope()
+    if prem:
+        scope += prem
     listed = files[:24]
     if listed:
         listed = {
