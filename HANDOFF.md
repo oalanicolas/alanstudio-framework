@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/runbook-telemetria-1083` (base `main`)
 **PR:** [#6](https://github.com/oalanicolas/alanstudio-framework/pull/6) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.808: o `content` nomeia a oclusão que a receita já recusa. Faixa no disco não é a oclusão. Sem chave `oclusão`. Nomear não observa.
+**HEAD:** ver `git log -1` — vigente 0.9.809: o item da observação nomeia o requisito que a receita já recusa. PRD no disco não é o requisito. Sem chave `requisito`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** confirmadas no HEAD (0.9.808): **869 / 516**.
+**Suítes:** Confirmação pendente.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -31,7 +31,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.808)
+## O que o HEAD já entrega (0.9.91–0.9.809)
 
 | Ver | Salto |
 | --- | --- |
@@ -751,6 +751,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.806 | O `observations` do `feel` nomeia as partículas que a receita já recusa. A receita já dizia que partículas que tapam a silhueta da consequência não valem; o feel listava o recibo e calava a recusa. Sem chave `partículas` no recibo. Só nas observations. Nomear não observa. |
 | 0.9.807 | O item do craft nomeia os milissegundos que a pesquisa já recusa. A pesquisa já dizia que o modelo precisão×prazo não devolve milissegundos; o item listava o checklist e calava a recusa. Sem chave `milissegundos` no recibo. Só no item do craft. Nomear não observa. |
 | 0.9.808 | O `content` nomeia a oclusão que a receita já recusa. A receita já dizia que faixas disjuntas só valem quando preservam oclusão e densidade; o content listava arquivos e calava a recusa. Sem chave `oclusão` no recibo. Só no content. Nomear não observa. |
+| 0.9.809 | O item da observação nomeia o requisito que a receita já recusa. A receita já dizia para registrar as opções como requisitos de qualidade no PRD; o item copiava a nota e calava a recusa. Sem chave `requisito` no recibo. Só no item da observação. Nomear não observa. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —

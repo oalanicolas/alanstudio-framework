@@ -3646,6 +3646,9 @@ def observation_item_scope():
     pick = observation_choice_scope()
     if pick:
         scope += pick
+    req = observation_requirement_scope()
+    if req:
+        scope += req
     return scope
 
 
@@ -4025,6 +4028,40 @@ def observation_choice_scope():
     return (
         " O disco recusa que tratar no GDD evite a escolha "
         "(`escolha`). GDD no disco não é a escolha."
+    )
+
+
+# A receita já recusa que o PRD
+# cumpra o requisito. Sem isto o
+# item copiava a nota e calava a
+# recusa. PRD no disco não é o
+# requisito.
+A11Y_REQUIREMENT = re.compile(r"requisitos de qualidade no PRD")
+
+
+def recipe_refuses_prd_as_fulfilling_the_requirement(text):
+    return bool(text and A11Y_REQUIREMENT.search(text))
+
+
+def observation_requirement_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_prd_as_fulfilling_the_requirement(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_requirement_scope():
+    if not observation_requirement_source():
+        return None
+    return (
+        " O disco recusa que o PRD cumpra o requisito "
+        "(`requisito`). PRD no disco não é o requisito."
     )
 
 
