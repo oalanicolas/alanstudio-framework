@@ -9815,6 +9815,40 @@ def content_fittings_scope():
     )
 
 
+# A receita já recusa que as faixas
+# disjuntas preservem a oclusão.
+# Sem isto o content listava
+# arquivos e calava a recusa. Faixa
+# no disco não é a oclusão.
+CONTENT_OCCLUSION = re.compile(r"preservam oclusão e\s+densidade")
+
+
+def recipe_refuses_disjoint_strips_as_preserving_occlusion(text):
+    return bool(text and CONTENT_OCCLUSION.search(text))
+
+
+def content_occlusion_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_disjoint_strips_as_preserving_occlusion(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_occlusion_scope():
+    if not content_occlusion_source():
+        return None
+    return (
+        " O disco recusa que as faixas disjuntas preservem a oclusão "
+        "(`oclusão`). Faixa no disco não é a oclusão."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -10104,6 +10138,9 @@ def content_reading(project):
     iron = content_fittings_scope()
     if iron:
         scope += iron
+    occl = content_occlusion_scope()
+    if occl:
+        scope += occl
     listed = files[:24]
     if listed:
         listed = {

@@ -22258,6 +22258,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.next_scope())
         self.assertNotIn("ferragens", game.CYCLE_KEYS)
 
+    def test_content_names_the_occlusion_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"preservam oclusão e\s+densidade")
+        self.assertTrue(
+            game.recipe_refuses_disjoint_strips_as_preserving_occlusion(recipe),
+            "a receita já recusa que as faixas disjuntas preservem a oclusão",
+        )
+        self.assertEqual(game.content_occlusion_source(), "recipes/content.md")
+        report = game.content_reading(self.project)
+        self.assertIn(
+            "as faixas disjuntas preservem a oclusão",
+            report["scope"],
+            "o content listava arquivos e calava a recusa",
+        )
+        self.assertIn("(`oclusão`)", report["scope"])
+        self.assertIn("Faixa no disco não é a oclusão.", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("oclusão", report)
+        self.assertFalse(game.recipe_refuses_disjoint_strips_as_preserving_occlusion(""))
+        with mock.patch.object(game, "content_occlusion_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn(
+            "as faixas disjuntas preservem a oclusão",
+            silent["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a oclusão que a receita já recusa"), 2)
+        self.assertIn("nomeia a oclusão que a receita já recusa", create)
+        self.assertIn("nomeia a oclusão que a receita já recusa", skill)
+        self.assertIn("nomeia a oclusão que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        files = report.get("files")
+        if isinstance(files, dict):
+            self.assertNotIn(
+                "as faixas disjuntas preservem a oclusão",
+                files.get("scope") or "",
+            )
+        phrase = "as faixas disjuntas preservem a oclusão"
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("oclusão", game.CYCLE_KEYS)
+
     def test_content_names_the_rain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
         self.assertTrue(
