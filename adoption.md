@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.793 — o item da observação nomeia o retrabalho que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+tratar
+acesso
+depois
+do
+conteúdo
+pronto
+custa
+retrabalho.
+O
+item
+copiava
+a
+nota
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+o
+retrabalho.
+Conteúdo
+no
+disco
+não
+é
+o
+acesso.
+Sem
+chave
+`retrabalho`.
+Nomear
+não
+observa.
+
 ## 0.9.792 — o content nomeia a opacidade que a receita já recusa
 
 A

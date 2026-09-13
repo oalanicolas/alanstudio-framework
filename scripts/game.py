@@ -3563,6 +3563,9 @@ def observation_item_scope():
     late = observation_final_scope()
     if late:
         scope += late
+    cost = observation_rework_scope()
+    if cost:
+        scope += cost
     return scope
 
 
@@ -3874,6 +3877,40 @@ def observation_final_scope():
     return (
         " O disco recusa que o acesso seja camada final "
         "(`final`). Acesso no disco não é o recorte."
+    )
+
+
+# A receita já recusa que tratar
+# depois evite o retrabalho. Sem
+# isto o item copiava a nota e
+# calava a recusa. Conteúdo no
+# disco não é o acesso.
+A11Y_REWORK = re.compile(r"depois do conteúdo pronto, custa retrabalho")
+
+
+def recipe_refuses_late_access_as_avoiding_rework(text):
+    return bool(text and A11Y_REWORK.search(text))
+
+
+def observation_rework_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_late_access_as_avoiding_rework(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_rework_scope():
+    if not observation_rework_source():
+        return None
+    return (
+        " O disco recusa que tratar depois evite o retrabalho "
+        "(`retrabalho`). Conteúdo no disco não é o acesso."
     )
 
 
