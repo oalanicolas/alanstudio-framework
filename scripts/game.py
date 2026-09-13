@@ -23076,6 +23076,9 @@ def record_scope():
     jig = record_fixture_scope()
     if jig:
         scope += jig
+    qty = record_quantity_scope()
+    if qty:
+        scope += qty
     return scope
 
 
@@ -23467,6 +23470,41 @@ def record_fixture_scope():
     return (
         " O disco recusa que a fixture cubra a abertura "
         "(`fixture`). Fixture no disco não é o efeito."
+    )
+
+
+# A receita já recusa que as
+# medidas diferentes sejam a
+# grandeza. Sem isto o record
+# gravava o recibo e calava a
+# recusa. Leitura no disco
+# não é a grandeza.
+PERF_QUANTITY = re.compile(r"são medidas diferentes")
+
+
+def recipe_refuses_different_measures_as_the_quantity(text):
+    return bool(text and PERF_QUANTITY.search(text))
+
+
+def record_quantity_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_different_measures_as_the_quantity(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_quantity_scope():
+    if not record_quantity_source():
+        return None
+    return (
+        " O disco recusa que as medidas diferentes sejam a grandeza "
+        "(`grandeza`). Leitura no disco não é a grandeza."
     )
 
 

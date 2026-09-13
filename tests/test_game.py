@@ -3501,6 +3501,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.next_scope())
         self.assertNotIn("fixture", game.CYCLE_KEYS)
 
+    def test_record_names_the_quantity_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"são medidas diferentes")
+        self.assertTrue(
+            game.recipe_refuses_different_measures_as_the_quantity(recipe),
+            "a receita já recusa que as medidas diferentes sejam a grandeza",
+        )
+        self.assertEqual(game.record_quantity_source(), "recipes/performance.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-797",
+        )
+        self.assertIn(
+            "as medidas diferentes sejam a grandeza",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`grandeza`)", report["scope"])
+        self.assertIn("Leitura no disco não é a grandeza.", report["scope"])
+        self.assertNotIn("grandeza", report)
+        self.assertFalse(game.recipe_refuses_different_measures_as_the_quantity(""))
+        with mock.patch.object(game, "record_quantity_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-797-silent",
+            )
+        self.assertNotIn(
+            "as medidas diferentes sejam a grandeza",
+            silent["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a grandeza que a receita já recusa"), 2)
+        self.assertIn("nomeia a grandeza que a receita já recusa", production)
+        self.assertIn("nomeia a grandeza que a receita já recusa", skill)
+        self.assertIn("nomeia a grandeza que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        self.assertNotIn("verified", production)
+        phrase = "as medidas diferentes sejam a grandeza"
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("grandeza", game.CYCLE_KEYS)
+
     def test_record_names_the_animation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(
