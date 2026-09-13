@@ -2313,6 +2313,42 @@ def craft_item_range_scope():
     )
 
 
+# A pesquisa já recusa que o
+# estudo generalize para
+# outros gêneros. Sem isto o
+# item do craft listava o
+# checklist e calava a
+# recusa. Estudo no disco
+# não é o gênero.
+CRAFT_GENRES = re.compile(r"Não generaliza para outros gêneros")
+
+
+def research_refuses_one_study_as_generalizing_genres(text):
+    return bool(text and CRAFT_GENRES.search(text))
+
+
+def craft_item_genres_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_one_study_as_generalizing_genres(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_genres_scope():
+    if not craft_item_genres_source():
+        return None
+    return (
+        " O disco recusa que o estudo generalize para outros gêneros "
+        "(`gêneros`). Estudo no disco não é o gênero."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2372,6 +2408,9 @@ def craft_item_scope():
     span = craft_item_range_scope()
     if span:
         scope += span
+    gen = craft_item_genres_scope()
+    if gen:
+        scope += gen
     return scope
 
 
