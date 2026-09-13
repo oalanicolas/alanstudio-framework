@@ -7498,6 +7498,9 @@ def _feel_scope(project):
     wrap = feel_envelope_scope()
     if wrap:
         scope += wrap
+    yoke = feel_coupling_scope()
+    if yoke:
+        scope += yoke
     return scope
 
 
@@ -8688,6 +8691,42 @@ def feel_envelope_scope():
     return (
         " O disco recusa que o envelope atual prove o feel "
         "(`envelope`). Envelope no disco não é o feel."
+    )
+
+
+
+# A receita já recusa que o
+# acoplamento estranho prove
+# o feel. Sem isto o feel
+# lia o CONFIG e calava a
+# recusa. Acoplamento no
+# disco não é o feel.
+FEEL_COUPLE = re.compile(r"acoplamento\s+estranho")
+
+
+def recipe_refuses_coupling_as_proving_feel(text):
+    return bool(text and FEEL_COUPLE.search(text))
+
+
+def feel_coupling_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_coupling_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_coupling_scope():
+    if not feel_coupling_source():
+        return None
+    return (
+        " O disco recusa que o acoplamento estranho prove o feel "
+        "(`acoplamento`). Acoplamento no disco não é o feel."
     )
 
 
