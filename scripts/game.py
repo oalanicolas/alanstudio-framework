@@ -4610,6 +4610,9 @@ def observation_item_scope():
     brand = observation_design_scope()
     if brand:
         scope += brand
+    sway = observation_parallax_scope()
+    if sway:
+        scope += sway
     return scope
 
 
@@ -5801,6 +5804,43 @@ def observation_design_scope():
     return (
         " O disco recusa que o design system prove o estado "
         "(`design`). Design no disco não é o estado."
+    )
+
+
+
+
+# A receita já recusa que a
+# paralaxe prove o estado.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Paralaxe no disco não é
+# o estado.
+A11Y_PARALLAX = re.compile(r"paralaxe")
+
+
+def recipe_refuses_parallax_as_proving_state(text):
+    return bool(text and A11Y_PARALLAX.search(text))
+
+
+def observation_parallax_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_parallax_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_parallax_scope():
+    if not observation_parallax_source():
+        return None
+    return (
+        " O disco recusa que a paralaxe prove o estado "
+        "(`paralaxe`). Paralaxe no disco não é o estado."
     )
 
 
