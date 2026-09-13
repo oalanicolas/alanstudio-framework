@@ -10690,6 +10690,42 @@ def save_oldsaves_scope():
     )
 
 
+
+# A receita já recusa que o
+# permite migrar prove o
+# save. Sem isto o save lia o
+# schema e calava a recusa.
+# Migrar no disco não é o
+# save.
+PERSIST_MIGRATE = re.compile(r"permite migrar")
+
+
+def recipe_refuses_migrate_as_proving_save(text):
+    return bool(text and PERSIST_MIGRATE.search(text))
+
+
+def save_migrate_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_migrate_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_migrate_scope():
+    if not save_migrate_source():
+        return None
+    return (
+        " O disco recusa que o permite migrar prove o save "
+        "(`migrar`). Migrar no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -11393,6 +11429,9 @@ def save_reading(project):
     aged = save_oldsaves_scope()
     if aged:
         scope += aged
+    raft = save_migrate_scope()
+    if raft:
+        scope += raft
     used_flag = bool(used)
     if used_flag:
         used_flag = {
