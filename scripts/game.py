@@ -4147,6 +4147,9 @@ def observation_item_scope():
     info = observation_info_scope()
     if info:
         scope += info
+    warn = observation_warn_scope()
+    if warn:
+        scope += warn
     return scope
 
 
@@ -4944,6 +4947,42 @@ def observation_info_scope():
     return (
         " O disco recusa que a informação que hoje só existe no som "
         "prove a audição (`informação`). Informação no disco não é a audição."
+    )
+
+
+
+# A receita já recusa que o
+# aviso de ameaça fora da tela
+# prove a audição. Sem isto o
+# item copiava a nota e calava
+# a recusa. Aviso no disco
+# não é a audição.
+A11Y_WARN = re.compile(r"aviso de ameaça fora da tela")
+
+
+def recipe_refuses_offscreen_threat_as_proving_hearing(text):
+    return bool(text and A11Y_WARN.search(text))
+
+
+def observation_warn_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_offscreen_threat_as_proving_hearing(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_warn_scope():
+    if not observation_warn_source():
+        return None
+    return (
+        " O disco recusa que o aviso de ameaça fora da tela prove a audição "
+        "(`aviso`). Aviso no disco não é a audição."
     )
 
 
