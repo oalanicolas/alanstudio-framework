@@ -23345,6 +23345,9 @@ def record_scope():
     qty = record_quantity_scope()
     if qty:
         scope += qty
+    chip = record_gpu_scope()
+    if chip:
+        scope += chip
     return scope
 
 
@@ -23771,6 +23774,41 @@ def record_quantity_scope():
     return (
         " O disco recusa que as medidas diferentes sejam a grandeza "
         "(`grandeza`). Leitura no disco não é a grandeza."
+    )
+
+
+# A receita já recusa que a
+# leitura GPU deixe a execução
+# intacta. Sem isto o record
+# gravava o recibo e calava a
+# recusa. PNG no disco não é
+# a GPU.
+PERF_GPU = re.compile(r"alteram a própria execução")
+
+
+def recipe_refuses_gpu_reading_as_leaving_execution_intact(text):
+    return bool(text and PERF_GPU.search(text))
+
+
+def record_gpu_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_gpu_reading_as_leaving_execution_intact(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_gpu_scope():
+    if not record_gpu_source():
+        return None
+    return (
+        " O disco recusa que a leitura GPU deixe a execução intacta "
+        "(`gpu`). PNG no disco não é a GPU."
     )
 
 

@@ -30,6 +30,54 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.805 — o `record` nomeia a gpu que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+leituras
+GPU,
+escrita
+de
+PNG
+e
+tempo
+simulado
+alteram
+a
+própria
+execução.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+a
+gpu.
+PNG
+no
+disco
+não
+é
+a
+GPU.
+Sem
+chave
+`gpu`.
+Nomear
+não
+mede.
+
 ## 0.9.804 — o `save` nomeia o efêmero que a receita já recusa
 
 A
