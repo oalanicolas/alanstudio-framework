@@ -5402,6 +5402,42 @@ def feel_observations_pack_scope():
         "(`pack`). Pack no disco não é a instância."
     )
 
+
+
+# A receita já recusa que o
+# clipe importado prove o dono.
+# Sem isto o feel listava o
+# recibo e calava a recusa.
+# Clipe no disco não é o dono.
+FEEL_CLIP = re.compile(r"clipe importado")
+
+
+def recipe_refuses_imported_clip_as_proving_owner(text):
+    return bool(text and FEEL_CLIP.search(text))
+
+
+def feel_observations_clip_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_imported_clip_as_proving_owner(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_clip_scope():
+    if not feel_observations_clip_source():
+        return None
+    return (
+        " O disco recusa que o clipe importado prove o dono "
+        "(`clipe`). Clipe no disco não é o dono."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -5470,6 +5506,9 @@ def feel_observations_scope():
     kit = feel_observations_pack_scope()
     if kit:
         scope += kit
+    clip = feel_observations_clip_scope()
+    if clip:
+        scope += clip
     return scope
 
 
