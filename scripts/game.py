@@ -3894,6 +3894,9 @@ def observation_item_scope():
     mash = observation_repeat_scope()
     if mash:
         scope += mash
+    push = observation_press_scope()
+    if push:
+        scope += push
     return scope
 
 
@@ -4478,6 +4481,40 @@ def observation_repeat_scope():
     return (
         " O disco recusa que o recibo ajuste a repetição "
         "(`repetição`). Recibo no disco não é a repetição."
+    )
+
+
+# A receita já recusa que o recibo
+# ajuste o pressionar. Sem isto
+# o item copiava a nota e calava a
+# recusa. Recibo no disco não é o
+# pressionar.
+A11Y_PRESS = re.compile(r"pressionar e segurar")
+
+
+def recipe_refuses_receipt_as_adjusting_the_press(text):
+    return bool(text and A11Y_PRESS.search(text))
+
+
+def observation_press_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_receipt_as_adjusting_the_press(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_press_scope():
+    if not observation_press_source():
+        return None
+    return (
+        " O disco recusa que o recibo ajuste o pressionar "
+        "(`pressionar`). Recibo no disco não é o pressionar."
     )
 
 
