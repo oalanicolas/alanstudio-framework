@@ -5632,6 +5632,42 @@ def feel_observations_bounce_scope():
     )
 
 
+
+# A receita já recusa que as
+# articulações provem a
+# transição. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Articulações no disco
+# não é a transição.
+FEEL_JOINTS = re.compile(r"articulações")
+
+
+def recipe_refuses_joints_as_proving_transition(text):
+    return bool(text and FEEL_JOINTS.search(text))
+
+
+def feel_observations_joints_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_joints_as_proving_transition(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_joints_scope():
+    if not feel_observations_joints_source():
+        return None
+    return (
+        " O disco recusa que as articulações provem a transição "
+        "(`articulações`). Articulações no disco não é a transição."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -5706,6 +5742,9 @@ def feel_observations_scope():
     bounce = feel_observations_bounce_scope()
     if bounce:
         scope += bounce
+    joint = feel_observations_joints_scope()
+    if joint:
+        scope += joint
     return scope
 
 
