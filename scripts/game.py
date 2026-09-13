@@ -3480,6 +3480,9 @@ def observation_item_scope():
     space = observation_space_scope()
     if space:
         scope += space
+    shell = observation_shell_scope()
+    if shell:
+        scope += shell
     return scope
 
 
@@ -3722,6 +3725,40 @@ def observation_space_scope():
     return (
         " O disco recusa que o Espaço avance enquanto a pessoa escolhe "
         "(`espaço`). Tecla no disco não é a escolha."
+    )
+
+
+# A receita já recusa que o
+# botão focado avance. Sem
+# isto o item copiava a nota
+# e calava a recusa. Casca
+# no disco não é o verbo.
+A11Y_SHELL = re.compile(r"botão focado também é casca")
+
+
+def recipe_refuses_focused_button_as_advancing(text):
+    return bool(text and A11Y_SHELL.search(text))
+
+
+def observation_shell_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_focused_button_as_advancing(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_shell_scope():
+    if not observation_shell_source():
+        return None
+    return (
+        " O disco recusa que o botão focado avance "
+        "(`casca`). Casca no disco não é o verbo."
     )
 
 
