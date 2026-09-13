@@ -2349,6 +2349,41 @@ def craft_item_genres_scope():
     )
 
 
+# A pesquisa já recusa que o
+# limiar de percepção cale a
+# latência. Sem isto o item
+# do craft listava o checklist
+# e calava a recusa. Estudo
+# no disco não é a percepção.
+CRAFT_PERCEPTION = re.compile(r"limiar de percepção")
+
+
+def research_refuses_perception_threshold_as_silencing_latency(text):
+    return bool(text and CRAFT_PERCEPTION.search(text))
+
+
+def craft_item_perception_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_perception_threshold_as_silencing_latency(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_perception_scope():
+    if not craft_item_perception_source():
+        return None
+    return (
+        " O disco recusa que o limiar de percepção cale a latência "
+        "(`percepção`). Estudo no disco não é a percepção."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2411,6 +2446,9 @@ def craft_item_scope():
     gen = craft_item_genres_scope()
     if gen:
         scope += gen
+    perc = craft_item_perception_scope()
+    if perc:
+        scope += perc
     return scope
 
 
