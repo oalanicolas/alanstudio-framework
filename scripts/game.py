@@ -24676,6 +24676,9 @@ def record_scope():
     cart = record_transfer_scope()
     if cart:
         scope += cart
+    sync = record_sync_scope()
+    if sync:
+        scope += sync
     return scope
 
 
@@ -25274,6 +25277,40 @@ def record_transfer_scope():
     return (
         " O disco recusa que copiar o mapa conte as transferências "
         "(`transferências`). Cópia no disco não é a transferência."
+    )
+
+
+# A receita já recusa que copiar o
+# mapa conte a sincronização. Sem
+# isto o record gravava o recibo
+# e calava a recusa. Cópia no
+# disco não é a sincronização.
+PERF_SYNC = re.compile(r"sincronização e submissões")
+
+
+def recipe_refuses_copying_map_as_counting_sync(text):
+    return bool(text and PERF_SYNC.search(text))
+
+
+def record_sync_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_copying_map_as_counting_sync(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_sync_scope():
+    if not record_sync_source():
+        return None
+    return (
+        " O disco recusa que copiar o mapa conte a sincronização "
+        "(`sincronização`). Cópia no disco não é a sincronização."
     )
 
 

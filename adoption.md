@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.845 — o record nomeia a sincronização que a receita já recusa
+
+A
+receita
+já
+pedia
+para
+contar
+transferências,
+sincronização
+e
+submissões
+efetivas.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+a
+sincronização.
+Cópia
+no
+disco
+não
+é
+a
+sincronização.
+Sem
+chave
+`sincronização`.
+Nomear
+não
+mede.
+
 ## 0.9.844 — o save nomeia a acessibilidade que a receita já recusa
 
 A
