@@ -28234,6 +28234,9 @@ def record_scope():
     sweep = record_collect_scope()
     if sweep:
         scope += sweep
+    grid = record_layout_scope()
+    if grid:
+        scope += grid
     return scope
 
 
@@ -29295,6 +29298,42 @@ def record_collect_scope():
     return (
         " O disco recusa que a alocação e coleta prove o engasgo "
         "(`coleta`). Coleta no disco não é o engasgo."
+    )
+
+
+
+# A receita já recusa que o
+# layout prove o engasgo.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Layout no disco não é o
+# engasgo.
+PERF_LAYOUT = re.compile(r"layout ou reflow")
+
+
+def recipe_refuses_layout_as_proving_hitch(text):
+    return bool(text and PERF_LAYOUT.search(text))
+
+
+def record_layout_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_layout_as_proving_hitch(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_layout_scope():
+    if not record_layout_source():
+        return None
+    return (
+        " O disco recusa que o layout prove o engasgo "
+        "(`layout`). Layout no disco não é o engasgo."
     )
 
 
