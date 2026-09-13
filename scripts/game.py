@@ -8103,6 +8103,9 @@ def _feel_scope(project):
     knob = feel_params_scope()
     if knob:
         scope += knob
+    canon = feel_canon_scope()
+    if canon:
+        scope += canon
     return scope
 
 
@@ -9474,6 +9477,43 @@ def feel_params_scope():
     return (
         " O disco recusa que os parâmetros provem o feel "
         "(`parâmetros`). Parâmetros no disco não é o feel."
+    )
+
+
+
+
+# A receita já recusa que o
+# canônico prove o feel.
+# Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Canônico no disco não é
+# o feel.
+FEEL_CANON = re.compile(r"canônico")
+
+
+def recipe_refuses_canon_as_proving_feel(text):
+    return bool(text and FEEL_CANON.search(text))
+
+
+def feel_canon_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_canon_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_canon_scope():
+    if not feel_canon_source():
+        return None
+    return (
+        " O disco recusa que o canônico prove o feel "
+        "(`canônico`). Canônico no disco não é o feel."
     )
 
 
