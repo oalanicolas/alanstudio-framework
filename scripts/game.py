@@ -2243,6 +2243,41 @@ def craft_item_contradiction_scope():
     )
 
 
+# A pesquisa já recusa que o
+# modelo devolva milissegundos.
+# Sem isto o item do craft
+# listava o checklist e
+# calava a recusa. Modelo no
+# disco não é o milissegundo.
+CRAFT_MILLISECONDS = re.compile(r"Não devolve milissegundos")
+
+
+def research_refuses_model_as_returning_milliseconds(text):
+    return bool(text and CRAFT_MILLISECONDS.search(text))
+
+
+def craft_item_milliseconds_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_model_as_returning_milliseconds(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_milliseconds_scope():
+    if not craft_item_milliseconds_source():
+        return None
+    return (
+        " O disco recusa que o modelo devolva milissegundos "
+        "(`milissegundos`). Modelo no disco não é o milissegundo."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2296,6 +2331,9 @@ def craft_item_scope():
     rift = craft_item_contradiction_scope()
     if rift:
         scope += rift
+    msec = craft_item_milliseconds_scope()
+    if msec:
+        scope += msec
     return scope
 
 

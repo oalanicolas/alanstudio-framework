@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.807 — o item do craft nomeia os milissegundos que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+o
+modelo
+precisão×prazo
+não
+devolve
+milissegundos.
+O
+item
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+os
+milissegundos.
+Modelo
+no
+disco
+não
+é
+o
+milissegundo.
+Sem
+chave
+`milissegundos`.
+Nomear
+não
+observa.
+
 ## 0.9.806 — o `observations` do `feel` nomeia as partículas que a receita já recusa
 
 A
