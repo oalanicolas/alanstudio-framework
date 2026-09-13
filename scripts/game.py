@@ -24207,6 +24207,9 @@ def cycle_scope():
     walk = cycle_platforms_scope()
     if walk:
         scope += walk
+    hang = cycle_hanging_scope()
+    if hang:
+        scope += hang
     return scope or None
 
 
@@ -25444,6 +25447,43 @@ def cycle_platforms_scope():
     return (
         " O disco recusa que o corpo cruzando plataformas prove o teste "
         "(`plataformas`). Plataformas no disco não é o teste."
+    )
+
+
+
+# A receita já recusa que o
+# corpo pendurado na borda
+# prove o teste. Sem isto o
+# ciclo anunciava o verbo e
+# calava a recusa.
+# Pendurado no disco não
+# é o teste.
+FEEL_HANG = re.compile(r"pendurado")
+
+
+def recipe_refuses_hanging_as_proving_test(text):
+    return bool(text and FEEL_HANG.search(text))
+
+
+def cycle_hanging_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hanging_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_hanging_scope():
+    if not cycle_hanging_source():
+        return None
+    return (
+        " O disco recusa que o corpo pendurado na borda prove o teste "
+        "(`pendurado`). Pendurado no disco não é o teste."
     )
 
 
