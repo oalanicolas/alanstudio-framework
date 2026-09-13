@@ -2780,6 +2780,42 @@ def craft_item_configs_scope():
     )
 
 
+
+# A pesquisa já recusa que os
+# builds provem a cadeia. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Builds no disco não
+# é a cadeia.
+CRAFT_BUILDS = re.compile(r"em builds")
+
+
+def research_refuses_builds_as_proving_chain(text):
+    return bool(text and CRAFT_BUILDS.search(text))
+
+
+def craft_item_builds_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_builds_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_builds_scope():
+    if not craft_item_builds_source():
+        return None
+    return (
+        " O disco recusa que os builds provem a cadeia "
+        "(`builds`). Builds no disco não é a cadeia."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2878,6 +2914,9 @@ def craft_item_scope():
     cfg = craft_item_configs_scope()
     if cfg:
         scope += cfg
+    rom = craft_item_builds_scope()
+    if rom:
+        scope += rom
     return scope
 
 
