@@ -31914,6 +31914,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("portas", game.CYCLE_KEYS)
         self.assertNotIn("projeção", game.CYCLE_KEYS)
 
+    def test_content_names_the_orientation_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"orientação")
+        self.assertTrue(
+            game.recipe_refuses_orientation_as_proving_destination(recipe),
+            "a receita já recusa que a orientação prove o destino",
+        )
+        self.assertEqual(game.content_orientation_source(), "recipes/content.md")
+        report = game.content_reading(self.project)
+        self.assertIn(
+            "a orientação prove o destino",
+            report["scope"],
+            "o content listava arquivos e calava a recusa",
+        )
+        self.assertIn("(`orientação`)", report["scope"])
+        self.assertIn("Orientação no disco não é o destino.", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("orientação", report)
+        self.assertNotIn("origem", report)
+        self.assertNotIn("destino", report)
+        self.assertFalse(game.recipe_refuses_orientation_as_proving_destination(""))
+        with mock.patch.object(game, "content_orientation_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn(
+            "a orientação prove o destino",
+            silent["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a orientação que a receita já recusa"), 2)
+        self.assertIn("nomeia a orientação que a receita já recusa", create)
+        self.assertIn("nomeia a orientação que a receita já recusa", skill)
+        self.assertIn("nomeia a orientação que a receita já recusa", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        files = report.get("files")
+        if isinstance(files, dict):
+            self.assertNotIn(
+                "a orientação prove o destino",
+                files.get("scope") or "",
+            )
+        phrase = "a orientação prove o destino"
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("orientação", game.CYCLE_KEYS)
+        self.assertNotIn("portas", game.CYCLE_KEYS)
+
     def test_content_names_the_rain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
         self.assertTrue(
