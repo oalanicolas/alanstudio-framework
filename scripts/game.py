@@ -11075,6 +11075,42 @@ def save_entities_scope():
     )
 
 
+
+# A receita já recusa que a
+# conveniência prove o save.
+# Sem isto o save lia o
+# schema e calava a recusa.
+# Conveniência no disco não
+# é o save.
+PERSIST_CONV = re.compile(r"conveniência")
+
+
+def recipe_refuses_convenience_as_proving_save(text):
+    return bool(text and PERSIST_CONV.search(text))
+
+
+def save_convenience_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_convenience_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_convenience_scope():
+    if not save_convenience_source():
+        return None
+    return (
+        " O disco recusa que a conveniência prove o save "
+        "(`conveniência`). Conveniência no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -11784,6 +11820,9 @@ def save_reading(project):
     cast = save_entities_scope()
     if cast:
         scope += cast
+    lure = save_convenience_scope()
+    if lure:
+        scope += lure
     used_flag = bool(used)
     if used_flag:
         used_flag = {
