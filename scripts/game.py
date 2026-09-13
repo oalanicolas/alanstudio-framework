@@ -11652,6 +11652,43 @@ def save_items_scope():
     )
 
 
+
+
+# A receita já recusa que o
+# recalculado prove o save.
+# Sem isto o save lia o
+# schema e calava a recusa.
+# Recalculado no disco não
+# é o save.
+PERSIST_RECALC = re.compile(r"recalculado")
+
+
+def recipe_refuses_recalc_as_proving_save(text):
+    return bool(text and PERSIST_RECALC.search(text))
+
+
+def save_recalc_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_recalc_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_recalc_scope():
+    if not save_recalc_source():
+        return None
+    return (
+        " O disco recusa que o recalculado prove o save "
+        "(`recalculado`). Recalculado no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -12370,6 +12407,9 @@ def save_reading(project):
     loot = save_items_scope()
     if loot:
         scope += loot
+    calc = save_recalc_scope()
+    if calc:
+        scope += calc
     used_flag = bool(used)
     if used_flag:
         used_flag = {
