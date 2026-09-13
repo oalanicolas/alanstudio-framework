@@ -7101,6 +7101,40 @@ def save_tweak_scope():
     )
 
 
+# A receita já recusa que o
+# efêmero seja o save. Sem
+# isto o save lia o schema e
+# calava a recusa. Partida no
+# disco não é o efêmero.
+PERSIST_EPHEMERAL = re.compile(r"existe só durante a partida")
+
+
+def recipe_refuses_ephemeral_as_the_save(text):
+    return bool(text and PERSIST_EPHEMERAL.search(text))
+
+
+def save_ephemeral_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_ephemeral_as_the_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_ephemeral_scope():
+    if not save_ephemeral_source():
+        return None
+    return (
+        " O disco recusa que o efêmero seja o save "
+        "(`efêmero`). Partida no disco não é o efêmero."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -7747,6 +7781,9 @@ def save_reading(project):
     tweak = save_tweak_scope()
     if tweak:
         scope += tweak
+    ephem = save_ephemeral_scope()
+    if ephem:
+        scope += ephem
     used_flag = bool(used)
     if used_flag:
         used_flag = {
