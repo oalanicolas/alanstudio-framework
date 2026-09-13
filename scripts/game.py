@@ -2743,6 +2743,43 @@ def craft_item_posts_scope():
     )
 
 
+
+# A pesquisa já recusa que as
+# configurações específicas
+# provem a cadeia. Sem isto o
+# item do craft listava o
+# checklist e calava a recusa.
+# Configurações no disco não
+# é a cadeia.
+CRAFT_CONFIGS = re.compile(r"configurações específicas")
+
+
+def research_refuses_specific_configs_as_proving_chain(text):
+    return bool(text and CRAFT_CONFIGS.search(text))
+
+
+def craft_item_configs_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_specific_configs_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_configs_scope():
+    if not craft_item_configs_source():
+        return None
+    return (
+        " O disco recusa que as configurações específicas provem a cadeia "
+        "(`configurações`). Configurações no disco não é a cadeia."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2838,6 +2875,9 @@ def craft_item_scope():
     cite = craft_item_posts_scope()
     if cite:
         scope += cite
+    cfg = craft_item_configs_scope()
+    if cfg:
+        scope += cfg
     return scope
 
 
