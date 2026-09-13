@@ -22311,6 +22311,9 @@ def cycle_scope():
     atk = cycle_dash_attack_scope()
     if atk:
         scope += atk
+    jog = cycle_run_scope()
+    if jog:
+        scope += jog
     return scope or None
 
 
@@ -23258,6 +23261,42 @@ def cycle_dash_attack_scope():
     return (
         " O disco recusa que o dash-attack prove a prioridade "
         "(`dash-attack`). Dash-attack no disco não é a prioridade."
+    )
+
+
+
+# A receita já recusa que a
+# corrida por padrão prove a
+# prioridade. Sem isto o ciclo
+# anunciava o verbo e calava a
+# recusa. Corrida no disco
+# não é a prioridade.
+FEEL_RUN = re.compile(r"corrida por padrão")
+
+
+def recipe_refuses_default_run_as_proving_priority(text):
+    return bool(text and FEEL_RUN.search(text))
+
+
+def cycle_run_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_default_run_as_proving_priority(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_run_scope():
+    if not cycle_run_source():
+        return None
+    return (
+        " O disco recusa que a corrida por padrão prove a prioridade "
+        "(`corrida`). Corrida no disco não é a prioridade."
     )
 
 

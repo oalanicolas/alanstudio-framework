@@ -33550,6 +33550,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.play_scope(destination))
         self.assertNotIn(phrase, game.next_scope())
 
+    def test_cycle_names_the_run_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"corrida por padrão")
+        self.assertTrue(
+            game.recipe_refuses_default_run_as_proving_priority(recipe),
+            "a receita já recusa que a corrida por padrão prove a prioridade",
+        )
+        self.assertEqual(game.cycle_run_source(), "recipes/feel.md")
+        destination = self.root / "ciclo-nomeia-corrida"
+        report = game.start_project(destination, "canvas-arcade")
+        cycle = report["cycle"]
+        self.assertIn(
+            "a corrida por padrão prove a prioridade",
+            cycle["scope"],
+            "o ciclo anunciava o verbo e calava a recusa",
+        )
+        self.assertIn("(`corrida`)", cycle["scope"])
+        self.assertIn("Corrida no disco não é a prioridade.", cycle["scope"])
+        self.assertNotIn("corrida", cycle)
+        self.assertNotIn("corrida", game.CYCLE_KEYS)
+        self.assertNotIn("dash-attack", game.CYCLE_KEYS)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_default_run_as_proving_priority(""))
+        with mock.patch.object(game, "cycle_run_source", return_value=None):
+            silent = game.start_project(self.root / "ciclo-cala-corrida", "canvas-arcade")
+        self.assertNotIn(
+            "a corrida por padrão prove a prioridade",
+            (silent.get("cycle") or {}).get("scope") or "",
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a corrida que a receita já recusa"), 2)
+        self.assertIn("nomeia a corrida que a receita já recusa", skill)
+        self.assertIn("nomeia a corrida que a receita já recusa", readme)
+        self.assertIn("nomeia a corrida que a receita já recusa", create)
+        self.assertNotIn("verified", cycle["scope"])
+        self.assertNotIn("aprovado", cycle["scope"])
+        self.assertNotIn("4.5", cycle["scope"])
+        self.assertNotIn("16 ms", cycle["scope"])
+        phrase = "a corrida por padrão prove a prioridade"
+        self.assertNotIn(phrase, report["scope"])
+        self.assertNotIn(phrase, game.feel_reading(destination)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.content_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        used = game.save_reading(destination).get("used")
+        if isinstance(used, dict):
+            self.assertNotIn(phrase, used.get("scope") or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.play_scope(destination))
+        self.assertNotIn(phrase, game.next_scope())
+
     def test_serve_banner_names_the_clock_the_game_already_reads(self):
         destination = self.root / "banner-nomeia-relogio"
         game.init(destination, "canvas-arcade")
