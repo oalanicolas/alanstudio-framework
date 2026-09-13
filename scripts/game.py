@@ -4184,6 +4184,41 @@ def feel_observations_ink_scope():
     )
 
 
+# A receita já recusa que
+# esconder o gesto encerre o
+# gesto. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Esconder no disco
+# não é o gesto.
+FEEL_GESTURE = re.compile(r"encerrar o gesto, não só escondê-lo")
+
+
+def recipe_refuses_hiding_as_ending_the_gesture(text):
+    return bool(text and FEEL_GESTURE.search(text))
+
+
+def feel_observations_gesture_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hiding_as_ending_the_gesture(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_gesture_scope():
+    if not feel_observations_gesture_source():
+        return None
+    return (
+        " O disco recusa que esconder o gesto encerre o gesto "
+        "(`gesto`). Esconder no disco não é o gesto."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -4219,6 +4254,9 @@ def feel_observations_scope():
     ink = feel_observations_ink_scope()
     if ink:
         scope += ink
+    act = feel_observations_gesture_scope()
+    if act:
+        scope += act
     return scope
 
 
