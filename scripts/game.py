@@ -30464,6 +30464,9 @@ def record_scope():
     drain = record_consumo_scope()
     if drain:
         scope += drain
+    maps = record_texturas_scope()
+    if maps:
+        scope += maps
     return scope
 
 
@@ -31816,6 +31819,43 @@ def record_consumo_scope():
     return (
         " O disco recusa que o consumo prove o vazamento "
         "(`consumo`). Consumo no disco não é o vazamento."
+    )
+
+
+
+
+# A receita já recusa que as
+# texturas provem o vazamento.
+# Sem isto o record gravava
+# o recibo e calava a recusa.
+# Texturas no disco não é o
+# vazamento.
+PERF_MAPS = re.compile(r"texturas")
+
+
+def recipe_refuses_texturas_as_proving_leak(text):
+    return bool(text and PERF_MAPS.search(text))
+
+
+def record_texturas_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_texturas_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_texturas_scope():
+    if not record_texturas_source():
+        return None
+    return (
+        " O disco recusa que as texturas provem o vazamento "
+        "(`texturas`). Texturas no disco não é o vazamento."
     )
 
 
