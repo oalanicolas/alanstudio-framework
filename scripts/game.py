@@ -6779,6 +6779,9 @@ def _feel_scope(project):
     amp = feel_intensity_scope()
     if amp:
         scope += amp
+    span = feel_continuity_scope()
+    if span:
+        scope += span
     return scope
 
 
@@ -7754,6 +7757,42 @@ def feel_intensity_scope():
     return (
         " O disco recusa que a intensidade prove a referência "
         "(`intensidade`). Intensidade no disco não é a referência."
+    )
+
+
+
+# A receita já recusa que a
+# continuidade dos efeitos
+# prove a referência. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Continuidade
+# no disco não é a referência.
+FEEL_CONTINUITY = re.compile(r"continuidade dos\s+efeitos")
+
+
+def recipe_refuses_continuity_as_proving_reference(text):
+    return bool(text and FEEL_CONTINUITY.search(text))
+
+
+def feel_continuity_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_continuity_as_proving_reference(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_continuity_scope():
+    if not feel_continuity_source():
+        return None
+    return (
+        " O disco recusa que a continuidade prove a referência "
+        "(`continuidade`). Continuidade no disco não é a referência."
     )
 
 
