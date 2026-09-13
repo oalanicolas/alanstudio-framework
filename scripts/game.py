@@ -24412,6 +24412,9 @@ def record_scope():
     xfer = record_submit_scope()
     if xfer:
         scope += xfer
+    cart = record_transfer_scope()
+    if cart:
+        scope += cart
     return scope
 
 
@@ -24976,6 +24979,40 @@ def record_submit_scope():
     return (
         " O disco recusa que copiar o mapa conte as submissões "
         "(`submissões`). Cópia no disco não é a submissão."
+    )
+
+
+# A receita já recusa que copiar o
+# mapa conte as transferências. Sem
+# isto o record gravava o recibo
+# e calava a recusa. Cópia no
+# disco não é a transferência.
+PERF_XFERS = re.compile(r"transferências, sincronização")
+
+
+def recipe_refuses_copying_map_as_counting_transfers(text):
+    return bool(text and PERF_XFERS.search(text))
+
+
+def record_transfer_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_copying_map_as_counting_transfers(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_transfer_scope():
+    if not record_transfer_source():
+        return None
+    return (
+        " O disco recusa que copiar o mapa conte as transferências "
+        "(`transferências`). Cópia no disco não é a transferência."
     )
 
 
