@@ -30181,6 +30181,9 @@ def record_scope():
     life = record_vida_scope()
     if life:
         scope += life
+    drain = record_consumo_scope()
+    if drain:
+        scope += drain
     return scope
 
 
@@ -31496,6 +31499,43 @@ def record_vida_scope():
     return (
         " O disco recusa que o ciclo de vida prove o vazamento "
         "(`vida`). Vida no disco não é o vazamento."
+    )
+
+
+
+
+# A receita já recusa que o
+# consumo prove o vazamento.
+# Sem isto o record gravava
+# o recibo e calava a recusa.
+# Consumo no disco não é o
+# vazamento.
+PERF_USE = re.compile(r"compare o consumo")
+
+
+def recipe_refuses_consumo_as_proving_leak(text):
+    return bool(text and PERF_USE.search(text))
+
+
+def record_consumo_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_consumo_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_consumo_scope():
+    if not record_consumo_source():
+        return None
+    return (
+        " O disco recusa que o consumo prove o vazamento "
+        "(`consumo`). Consumo no disco não é o vazamento."
     )
 
 
