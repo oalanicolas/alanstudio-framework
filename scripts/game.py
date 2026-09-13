@@ -9925,6 +9925,42 @@ def save_temp_scope():
     )
 
 
+
+# A receita já recusa que a
+# escrita atômica prove a
+# substituição. Sem isto o
+# save lia o schema e calava
+# a recusa. Atômica no disco
+# não é a substituição.
+PERSIST_ATOMWRITE = re.compile(r"escrita atômica")
+
+
+def recipe_refuses_atomic_write_as_proving_swap(text):
+    return bool(text and PERSIST_ATOMWRITE.search(text))
+
+
+def save_atomwrite_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_atomic_write_as_proving_swap(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_atomwrite_scope():
+    if not save_atomwrite_source():
+        return None
+    return (
+        " O disco recusa que a escrita atômica prove a substituição "
+        "(`atômica`). Atômica no disco não é a substituição."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -10616,6 +10652,9 @@ def save_reading(project):
     tmp = save_temp_scope()
     if tmp:
         scope += tmp
+    seal = save_atomwrite_scope()
+    if seal:
+        scope += seal
     used_flag = bool(used)
     if used_flag:
         used_flag = {
