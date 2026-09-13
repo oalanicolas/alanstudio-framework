@@ -4442,6 +4442,9 @@ def observation_item_scope():
     plain = observation_language_scope()
     if plain:
         scope += plain
+    core = observation_critical_scope()
+    if core:
+        scope += core
     return scope
 
 
@@ -5489,6 +5492,42 @@ def observation_language_scope():
     return (
         " O disco recusa que a linguagem clara prove o estado "
         "(`linguagem`). Linguagem no disco não é o estado."
+    )
+
+
+
+# A receita já recusa que a
+# informação crítica prove o
+# estado. Sem isto o item
+# copiava a nota e calava a
+# recusa. Crítica no disco
+# não é o estado.
+A11Y_CRIT = re.compile(r"informação crítica")
+
+
+def recipe_refuses_critical_as_proving_state(text):
+    return bool(text and A11Y_CRIT.search(text))
+
+
+def observation_critical_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_critical_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_critical_scope():
+    if not observation_critical_source():
+        return None
+    return (
+        " O disco recusa que a informação crítica prove o estado "
+        "(`crítica`). Crítica no disco não é o estado."
     )
 
 
