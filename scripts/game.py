@@ -20432,6 +20432,9 @@ def cycle_scope():
     cool = cycle_recovery_scope()
     if cool:
         scope += cool
+    swing = cycle_active_scope()
+    if swing:
+        scope += swing
     return scope or None
 
 
@@ -21095,6 +21098,40 @@ def cycle_recovery_scope():
     return (
         " O disco recusa que anunciar o verbo prove a recuperação "
         "(`recuperação`). Verbo no disco não é a recuperação."
+    )
+
+
+# A receita já recusa que anunciar
+# o verbo prove o ativo. Sem
+# isto o ciclo anunciava o verbo
+# e calava a recusa. Verbo no
+# disco não é o ativo.
+FEEL_ACTIVE = re.compile(r"startup, ativo")
+
+
+def recipe_refuses_announcing_verb_as_proving_active(text):
+    return bool(text and FEEL_ACTIVE.search(text))
+
+
+def cycle_active_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_announcing_verb_as_proving_active(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_active_scope():
+    if not cycle_active_source():
+        return None
+    return (
+        " O disco recusa que anunciar o verbo prove o ativo "
+        "(`ativo`). Verbo no disco não é o ativo."
     )
 
 
