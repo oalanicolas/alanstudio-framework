@@ -19750,6 +19750,9 @@ def cycle_scope():
     drop = cycle_fast_scope()
     if drop:
         scope += drop
+    limb = cycle_limb_scope()
+    if limb:
+        scope += limb
     return scope or None
 
 
@@ -20310,6 +20313,41 @@ def cycle_fast_scope():
     return (
         " O disco recusa que limpar o input preserve a queda rápida "
         "(`rápida`). Input no disco não é a queda."
+    )
+
+
+# A receita já recusa que o
+# frame pausado pare o membro.
+# Sem isto o ciclo anunciava
+# o verbo e calava a recusa.
+# Frame no disco não é o
+# membro.
+FEEL_LIMB = re.compile(r"continuar movendo o membro")
+
+
+def recipe_refuses_paused_frame_as_stopping_the_limb(text):
+    return bool(text and FEEL_LIMB.search(text))
+
+
+def cycle_limb_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_paused_frame_as_stopping_the_limb(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_limb_scope():
+    if not cycle_limb_source():
+        return None
+    return (
+        " O disco recusa que o frame pausado pare o membro "
+        "(`membro`). Frame no disco não é o membro."
     )
 
 
