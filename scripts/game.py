@@ -22549,6 +22549,9 @@ def cycle_scope():
     jog = cycle_run_scope()
     if jog:
         scope += jog
+    axis = cycle_analog_scope()
+    if axis:
+        scope += axis
     return scope or None
 
 
@@ -23532,6 +23535,42 @@ def cycle_run_scope():
     return (
         " O disco recusa que a corrida por padrão prove a prioridade "
         "(`corrida`). Corrida no disco não é a prioridade."
+    )
+
+
+
+# A receita já recusa que o
+# teclado/analógico prove a
+# seleção. Sem isto o ciclo
+# anunciava o verbo e calava
+# a recusa. Analógico no
+# disco não é a seleção.
+FEEL_ANALOG = re.compile(r"teclado/analógico")
+
+
+def recipe_refuses_analog_as_proving_selection(text):
+    return bool(text and FEEL_ANALOG.search(text))
+
+
+def cycle_analog_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_analog_as_proving_selection(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_analog_scope():
+    if not cycle_analog_source():
+        return None
+    return (
+        " O disco recusa que o teclado/analógico prove a seleção "
+        "(`analógico`). Analógico no disco não é a seleção."
     )
 
 
