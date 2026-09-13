@@ -18381,6 +18381,57 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("continuidade", game.CYCLE_KEYS)
         self.assertNotIn("intensidade", game.CYCLE_KEYS)
 
+    def test_feel_names_the_anims_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"integrar animações")
+        self.assertTrue(
+            game.recipe_refuses_integrating_animations_as_proving_owner(recipe),
+            "a receita já recusa que integrar animações prove o dono",
+        )
+        self.assertEqual(game.feel_anims_source(), "recipes/feel.md")
+        report = game.feel_reading(self.project)
+        self.assertIn(
+            "integrar animações prove o dono",
+            report["scope"],
+            "o feel lia o CONFIG e calava a recusa",
+        )
+        self.assertIn("(`animações`)", report["scope"])
+        self.assertIn("Animações no disco não é o dono.", report["scope"])
+        self.assertNotIn("animações", report)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_integrating_animations_as_proving_owner(""))
+        with mock.patch.object(game, "feel_anims_source", return_value=None):
+            silent = game.feel_reading(self.project)
+        self.assertNotIn("integrar animações prove o dono", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia as animações que a receita já recusa"), 2)
+        self.assertIn("nomeia as animações que a receita já recusa", create)
+        self.assertIn("nomeia as animações que a receita já recusa", skill)
+        self.assertIn("nomeia as animações que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        phrase = "integrar animações prove o dono"
+        self.assertNotIn(phrase, game.feel_unobserved_scope())
+        self.assertNotIn(phrase, game.feel_constants_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("animações", game.CYCLE_KEYS)
+        self.assertNotIn("continuidade", game.CYCLE_KEYS)
+
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
         destination = self.root / "com-observacao"
         game.init(destination, "canvas-arcade")

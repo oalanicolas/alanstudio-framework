@@ -6900,6 +6900,9 @@ def _feel_scope(project):
     span = feel_continuity_scope()
     if span:
         scope += span
+    reel = feel_anims_scope()
+    if reel:
+        scope += reel
     return scope
 
 
@@ -7911,6 +7914,42 @@ def feel_continuity_scope():
     return (
         " O disco recusa que a continuidade prove a referência "
         "(`continuidade`). Continuidade no disco não é a referência."
+    )
+
+
+
+# A receita já recusa que
+# integrar animações prove o
+# dono. Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Animações no disco não é
+# o dono.
+FEEL_ANIMS = re.compile(r"integrar animações")
+
+
+def recipe_refuses_integrating_animations_as_proving_owner(text):
+    return bool(text and FEEL_ANIMS.search(text))
+
+
+def feel_anims_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_integrating_animations_as_proving_owner(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_anims_scope():
+    if not feel_anims_source():
+        return None
+    return (
+        " O disco recusa que integrar animações prove o dono "
+        "(`animações`). Animações no disco não é o dono."
     )
 
 
