@@ -5244,6 +5244,9 @@ def _feel_scope(project):
     lens = feel_camera_scope()
     if lens:
         scope += lens
+    veil = feel_threat_scope()
+    if veil:
+        scope += veil
     return scope
 
 
@@ -5762,6 +5765,41 @@ def feel_camera_scope():
     return (
         " O disco recusa que a câmera combata o jogador "
         "(`câmera`). Look no disco não é a câmera."
+    )
+
+
+# A receita já recusa que a
+# câmera esconda a ameaça.
+# Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Look no disco não é a
+# ameaça.
+FEEL_THREAT = re.compile(r"esconde a ameaça")
+
+
+def recipe_refuses_camera_as_hiding_the_threat(text):
+    return bool(text and FEEL_THREAT.search(text))
+
+
+def feel_threat_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_camera_as_hiding_the_threat(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_threat_scope():
+    if not feel_threat_source():
+        return None
+    return (
+        " O disco recusa que a câmera esconda a ameaça "
+        "(`ameaça`). Look no disco não é a ameaça."
     )
 
 

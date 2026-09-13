@@ -2,10 +2,10 @@
 
 **Branch:** `cursor/runbook-telemetria-1083` (base `main`)
 **PR:** [#6](https://github.com/oalanicolas/alanstudio-framework/pull/6) (draft)
-**HEAD:** ver `git log -1` — vigente 0.9.810: o ciclo nomeia o golpe que a receita já recusa. Input no disco não é o golpe. Sem chave `golpe`. Nomear não observa.
+**HEAD:** ver `git log -1` — vigente 0.9.811: o `feel` nomeia a ameaça que a receita já recusa. Look no disco não é a ameaça. Sem chave `ameaça`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** confirmadas no HEAD (0.9.810): **871 / 516**.
+**Suítes:** Confirmação pendente.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
@@ -31,7 +31,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 
 ---
 
-## O que o HEAD já entrega (0.9.91–0.9.810)
+## O que o HEAD já entrega (0.9.91–0.9.811)
 
 | Ver | Salto |
 | --- | --- |
@@ -753,6 +753,7 @@ continua **protótipo** porque só `release` está em `prototype`.
 | 0.9.808 | O `content` nomeia a oclusão que a receita já recusa. A receita já dizia que faixas disjuntas só valem quando preservam oclusão e densidade; o content listava arquivos e calava a recusa. Sem chave `oclusão` no recibo. Só no content. Nomear não observa. |
 | 0.9.809 | O item da observação nomeia o requisito que a receita já recusa. A receita já dizia para registrar as opções como requisitos de qualidade no PRD; o item copiava a nota e calava a recusa. Sem chave `requisito` no recibo. Só no item da observação. Nomear não observa. |
 | 0.9.810 | O ciclo nomeia o golpe que a receita já recusa. A receita já dizia que limpar o input inteiro pode corrigir o golpe e perder a queda rápida; o ciclo anunciava o verbo e calava a recusa. Sem chave `golpe` no recibo. Só no ciclo. Nomear não observa. |
+| 0.9.811 | O `feel` nomeia a ameaça que a receita já recusa. A receita já dizia que câmera que esconde a ameaça não vale; o feel lia o CONFIG e calava a recusa. Sem chave `ameaça` no recibo. Só no feel. Nomear não observa. |
 
 `python3 scripts/game.py` sem subcomando é o `guide`. Na raiz do
 framework, sem `--idea` e sem caminho, recusa com `sem destino` —
