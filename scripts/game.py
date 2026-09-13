@@ -5940,6 +5940,9 @@ def _feel_scope(project):
     blank = feel_blackout_scope()
     if blank:
         scope += blank
+    meant = feel_intent_scope()
+    if meant:
+        scope += meant
     return scope
 
 
@@ -6667,6 +6670,41 @@ def feel_blackout_scope():
     return (
         " O disco recusa que contar quadros vazios separe o apagão "
         "(`apagão`). Quadros no disco não é o apagão."
+    )
+
+
+# A receita já recusa que contar
+# quadros vazios separe o
+# intencional. Sem isto o feel
+# lia o CONFIG e calava a recusa.
+# Quadros no disco não é o
+# intencional.
+FEEL_INTENT = re.compile(r"apagão de efeito intencional")
+
+
+def recipe_refuses_empty_frames_as_separating_intent(text):
+    return bool(text and FEEL_INTENT.search(text))
+
+
+def feel_intent_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_empty_frames_as_separating_intent(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_intent_scope():
+    if not feel_intent_source():
+        return None
+    return (
+        " O disco recusa que contar quadros vazios separe o intencional "
+        "(`intencional`). Quadros no disco não é o intencional."
     )
 
 
