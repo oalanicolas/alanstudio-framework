@@ -4358,6 +4358,9 @@ def observation_item_scope():
     copy = observation_text_scope()
     if copy:
         scope += copy
+    wash = observation_contrast_scope()
+    if wash:
+        scope += wash
     return scope
 
 
@@ -5333,6 +5336,42 @@ def observation_text_scope():
     return (
         " O disco recusa que o texto prove o estado "
         "(`texto`). Texto no disco não é o estado."
+    )
+
+
+
+# A receita já recusa que o
+# contraste prove o estado.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Contraste no disco não é o
+# estado.
+A11Y_WORST = re.compile(r"Contraste verificado no pior caso da cena")
+
+
+def recipe_refuses_contrast_as_proving_state(text):
+    return bool(text and A11Y_WORST.search(text))
+
+
+def observation_contrast_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_contrast_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_contrast_scope():
+    if not observation_contrast_source():
+        return None
+    return (
+        " O disco recusa que o contraste prove o estado "
+        "(`contraste`). Contraste no disco não é o estado."
     )
 
 
