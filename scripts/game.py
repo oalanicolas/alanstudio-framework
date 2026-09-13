@@ -8915,6 +8915,41 @@ def content_html_scope():
     )
 
 
+# A receita já recusa que o
+# histórico de HMR isole o
+# vazamento. Sem isto o
+# content listava arquivos e
+# calava a recusa. Histórico
+# no disco não é o vazamento.
+CONTENT_LEAK = re.compile(r"histórico de HMR não isola vazamento")
+
+
+def recipe_refuses_hmr_history_as_isolating_a_leak(text):
+    return bool(text and CONTENT_LEAK.search(text))
+
+
+def content_leak_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hmr_history_as_isolating_a_leak(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_leak_scope():
+    if not content_leak_source():
+        return None
+    return (
+        " O disco recusa que o histórico de HMR isole o vazamento "
+        "(`vazamento`). Histórico no disco não é o vazamento."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -9192,6 +9227,9 @@ def content_reading(project):
     named = content_rain_scope()
     if named:
         scope += named
+    leak = content_leak_scope()
+    if leak:
+        scope += leak
     listed = files[:24]
     if listed:
         listed = {
