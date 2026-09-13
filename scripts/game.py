@@ -10498,6 +10498,42 @@ def save_reorder_scope():
     )
 
 
+
+# A receita já recusa que os
+# saves antigos provem o
+# save. Sem isto o save lia o
+# schema e calava a recusa.
+# Antigos no disco não é o
+# save.
+PERSIST_OLD = re.compile(r"saves antigos")
+
+
+def recipe_refuses_oldsaves_as_proving_save(text):
+    return bool(text and PERSIST_OLD.search(text))
+
+
+def save_oldsaves_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_oldsaves_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_oldsaves_scope():
+    if not save_oldsaves_source():
+        return None
+    return (
+        " O disco recusa que os saves antigos provem o save "
+        "(`antigos`). Antigos no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -11198,6 +11234,9 @@ def save_reading(project):
     rank = save_reorder_scope()
     if rank:
         scope += rank
+    aged = save_oldsaves_scope()
+    if aged:
+        scope += aged
     used_flag = bool(used)
     if used_flag:
         used_flag = {
