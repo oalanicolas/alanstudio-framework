@@ -6886,6 +6886,42 @@ def feel_observations_adequate_scope():
     )
 
 
+
+# A receita já recusa que
+# todos os saltos provem o
+# feel. Sem isto o feel
+# listava o recibo e calava
+# a recusa. Saltos no disco
+# não é o feel.
+FEEL_HOPS = re.compile(r"todos os saltos")
+
+
+def recipe_refuses_saltos_as_proving_feel(text):
+    return bool(text and FEEL_HOPS.search(text))
+
+
+def feel_observations_saltos_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_saltos_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_saltos_scope():
+    if not feel_observations_saltos_source():
+        return None
+    return (
+        " O disco recusa que todos os saltos provem o feel "
+        "(`saltos`). Saltos no disco não é o feel."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -6993,6 +7029,9 @@ def feel_observations_scope():
     apt = feel_observations_adequate_scope()
     if apt:
         scope += apt
+    hops = feel_observations_saltos_scope()
+    if hops:
+        scope += hops
     return scope
 
 
