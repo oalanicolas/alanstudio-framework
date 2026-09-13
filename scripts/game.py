@@ -5746,6 +5746,42 @@ def feel_observations_joints_scope():
     )
 
 
+
+# A receita já recusa que a
+# preparação da ação prove a
+# transição. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Preparação no disco
+# não é a transição.
+FEEL_PREP = re.compile(r"preparação\s+da ação")
+
+
+def recipe_refuses_action_prep_as_proving_transition(text):
+    return bool(text and FEEL_PREP.search(text))
+
+
+def feel_observations_prep_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_action_prep_as_proving_transition(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_prep_scope():
+    if not feel_observations_prep_source():
+        return None
+    return (
+        " O disco recusa que a preparação da ação prove a transição "
+        "(`preparação`). Preparação no disco não é a transição."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -5823,6 +5859,9 @@ def feel_observations_scope():
     joint = feel_observations_joints_scope()
     if joint:
         scope += joint
+    wind = feel_observations_prep_scope()
+    if wind:
+        scope += wind
     return scope
 
 
