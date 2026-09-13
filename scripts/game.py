@@ -6772,6 +6772,42 @@ def feel_observations_confirm_scope():
     )
 
 
+
+# A receita já recusa que o
+# giro completo adequado
+# prove os saltos. Sem isto
+# o feel listava o recibo e
+# calava a recusa. Adequado
+# no disco não é os saltos.
+FEEL_ADEQ = re.compile(r"adequado")
+
+
+def recipe_refuses_adequate_as_proving_jumps(text):
+    return bool(text and FEEL_ADEQ.search(text))
+
+
+def feel_observations_adequate_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_adequate_as_proving_jumps(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_adequate_scope():
+    if not feel_observations_adequate_source():
+        return None
+    return (
+        " O disco recusa que o giro completo adequado prove os saltos "
+        "(`adequado`). Adequado no disco não é os saltos."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -6876,6 +6912,9 @@ def feel_observations_scope():
     thud = feel_observations_confirm_scope()
     if thud:
         scope += thud
+    apt = feel_observations_adequate_scope()
+    if apt:
+        scope += apt
     return scope
 
 

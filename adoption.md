@@ -30,6 +30,54 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.974 — o observations do feel nomeia o adequado que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+os
+testes
+não
+tornam
+um
+giro
+completo
+adequado
+a
+todos
+os
+saltos.
+O
+feel
+listava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+as
+observações
+nomeiam
+o
+adequado.
+Adequado
+no
+disco
+não
+é
+os
+saltos.
+Sem
+chave
+`adequado`.
+Nomear
+não
+observa.
+
 ## 0.9.973 — o record nomeia os loops que a receita já recusa
 
 A
