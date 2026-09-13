@@ -20661,6 +20661,9 @@ def cycle_scope():
     swing = cycle_active_scope()
     if swing:
         scope += swing
+    box = cycle_hitbox_scope()
+    if box:
+        scope += box
     return scope or None
 
 
@@ -21358,6 +21361,40 @@ def cycle_active_scope():
     return (
         " O disco recusa que anunciar o verbo prove o ativo "
         "(`ativo`). Verbo no disco não é o ativo."
+    )
+
+
+# A receita já recusa que anunciar
+# o verbo prove o hitbox. Sem
+# isto o ciclo anunciava o verbo
+# e calava a recusa. Verbo no
+# disco não é o hitbox.
+FEEL_HITBOX = re.compile(r"hitbox, hurtbox")
+
+
+def recipe_refuses_announcing_verb_as_proving_hitbox(text):
+    return bool(text and FEEL_HITBOX.search(text))
+
+
+def cycle_hitbox_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_announcing_verb_as_proving_hitbox(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_hitbox_scope():
+    if not cycle_hitbox_source():
+        return None
+    return (
+        " O disco recusa que anunciar o verbo prove o hitbox "
+        "(`hitbox`). Verbo no disco não é o hitbox."
     )
 
 
