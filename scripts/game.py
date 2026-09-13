@@ -2852,6 +2852,42 @@ def craft_item_console_scope():
     )
 
 
+
+# A pesquisa já recusa que o
+# jogo prove a cadeia. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Jogo no disco não é
+# a cadeia.
+CRAFT_GAME = re.compile(r"jogo \+ captura")
+
+
+def research_refuses_game_as_proving_chain(text):
+    return bool(text and CRAFT_GAME.search(text))
+
+
+def craft_item_game_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_game_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_game_scope():
+    if not craft_item_game_source():
+        return None
+    return (
+        " O disco recusa que o jogo prove a cadeia "
+        "(`jogo`). Jogo no disco não é a cadeia."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2956,6 +2992,9 @@ def craft_item_scope():
     deck = craft_item_console_scope()
     if deck:
         scope += deck
+    cart = craft_item_game_scope()
+    if cart:
+        scope += cart
     return scope
 
 
