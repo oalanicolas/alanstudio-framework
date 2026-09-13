@@ -5289,6 +5289,42 @@ def feel_observations_visual_scope():
         "(`visual`). Visual no disco não é o feel."
     )
 
+
+
+# A receita já recusa que
+# importar o juice pack prove
+# a instância. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Pack no disco não é
+# a instância.
+FEEL_PACK = re.compile(r"juice pack")
+
+
+def recipe_refuses_importing_juice_pack_as_proving_instance(text):
+    return bool(text and FEEL_PACK.search(text))
+
+
+def feel_observations_pack_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_importing_juice_pack_as_proving_instance(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_pack_scope():
+    if not feel_observations_pack_source():
+        return None
+    return (
+        " O disco recusa que importar o juice pack prove a instância "
+        "(`pack`). Pack no disco não é a instância."
+    )
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -5354,6 +5390,9 @@ def feel_observations_scope():
     solo = feel_observations_visual_scope()
     if solo:
         scope += solo
+    kit = feel_observations_pack_scope()
+    if kit:
+        scope += kit
     return scope
 
 
