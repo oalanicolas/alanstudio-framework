@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.958 — as observações do feel nomeiam a antecipação que a receita já recusa
+
+A
+receita
+já
+pedia
+para
+distinguir
+antecipação
+da
+ação
+e
+confirmação
+do
+impacto
+de
+uma
+previsão
+que
+o
+jogador
+deve
+construir
+sozinho.
+O
+feel
+listava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+as
+observações
+nomeiam
+a
+antecipação.
+Antecipação
+no
+disco
+não
+é
+a
+previsão.
+Sem
+chave
+`antecipação`.
+Nomear
+não
+observa.
+
 ## 0.9.957 — o record nomeia os listeners que a receita já recusa
 
 A

@@ -6543,6 +6543,42 @@ def feel_observations_integrate_scope():
     )
 
 
+
+# A receita já recusa que a
+# antecipação da ação prove a
+# previsão. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Antecipação no
+# disco não é a previsão.
+FEEL_ANTICIPATE = re.compile(r"antecipação da ação")
+
+
+def recipe_refuses_anticipation_as_proving_prediction(text):
+    return bool(text and FEEL_ANTICIPATE.search(text))
+
+
+def feel_observations_anticipate_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_anticipation_as_proving_prediction(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_anticipate_scope():
+    if not feel_observations_anticipate_source():
+        return None
+    return (
+        " O disco recusa que a antecipação da ação prove a previsão "
+        "(`antecipação`). Antecipação no disco não é a previsão."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -6641,6 +6677,9 @@ def feel_observations_scope():
     knit = feel_observations_integrate_scope()
     if knit:
         scope += knit
+    lead = feel_observations_anticipate_scope()
+    if lead:
+        scope += lead
     return scope
 
 
