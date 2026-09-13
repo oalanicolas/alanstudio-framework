@@ -17334,6 +17334,77 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         if items:
             self.assertNotIn(phrase, items[0].get("scope") or "")
 
+    def test_feel_observations_name_the_silhouette_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"silhueta muda o bastante para ser lida")
+        self.assertTrue(
+            game.recipe_refuses_still_silhouette_as_readable(recipe),
+            "a receita já recusa que a silhueta parada seja lida",
+        )
+        self.assertEqual(game.feel_observations_silhouette_source(), "recipes/feel.md")
+        destination = self.root / "feel-com-silhueta"
+        game.init(destination, "canvas-arcade")
+        receipt = destination / "qa" / "partida-1"
+        receipt.mkdir(parents=True)
+        (receipt / "record.json").write_text(json.dumps({
+            "kind": "observation",
+            "author": "Ana",
+            "note": "o dash ainda não tem peso",
+            "fields": {"scenario": "primeira partida", "role": "human"},
+        }), encoding="utf-8")
+        report = game.feel_reading(destination)
+        item = report["observations"]
+        self.assertEqual(
+            [entry["path"] for entry in item["items"]],
+            ["qa/partida-1/record.json"],
+        )
+        self.assertIn(
+            "a silhueta parada seja lida",
+            item["scope"],
+            "o feel listava o recibo e calava a recusa",
+        )
+        self.assertIn("(`silhueta`)", item["scope"])
+        self.assertIn("Pose no disco não é a silhueta.", item["scope"])
+        self.assertNotIn("silhueta", item)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_still_silhouette_as_readable(""))
+        empty = game.feel_reading(self.project)
+        self.assertEqual(empty["observations"], [])
+        with mock.patch.object(game, "feel_observations_silhouette_source", return_value=None):
+            silent = game.feel_reading(destination)
+        self.assertNotIn(
+            "a silhueta parada seja lida",
+            silent["observations"]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a silhueta que a receita já recusa"), 2)
+        self.assertIn("nomeia a silhueta que a receita já recusa", create)
+        self.assertIn("nomeia a silhueta que a receita já recusa", skill)
+        self.assertIn("nomeia a silhueta que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("16 ms", item["scope"])
+        phrase = "a silhueta parada seja lida"
+        self.assertNotIn(phrase, report["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.feel_unobserved_scope())
+        self.assertNotIn(phrase, game.feel_constants_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.content_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.save_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("silhueta", game.CYCLE_KEYS)
+        items = game.feel_observation_items(report)
+        if items:
+            self.assertNotIn(phrase, items[0].get("scope") or "")
+
     def test_feel_names_the_universal_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
         self.assertTrue(

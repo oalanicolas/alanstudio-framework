@@ -4295,6 +4295,41 @@ def feel_observations_gesture_scope():
     )
 
 
+# A receita já recusa que a
+# silhueta parada seja lida.
+# Sem isto o feel listava o
+# recibo e calava a recusa.
+# Pose no disco não é a
+# silhueta.
+FEEL_SILHOUETTE = re.compile(r"silhueta muda o bastante para ser lida")
+
+
+def recipe_refuses_still_silhouette_as_readable(text):
+    return bool(text and FEEL_SILHOUETTE.search(text))
+
+
+def feel_observations_silhouette_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_still_silhouette_as_readable(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_silhouette_scope():
+    if not feel_observations_silhouette_source():
+        return None
+    return (
+        " O disco recusa que a silhueta parada seja lida "
+        "(`silhueta`). Pose no disco não é a silhueta."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -4333,6 +4368,9 @@ def feel_observations_scope():
     act = feel_observations_gesture_scope()
     if act:
         scope += act
+    edge = feel_observations_silhouette_scope()
+    if edge:
+        scope += edge
     return scope
 
 
