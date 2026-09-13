@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.846 — o observations do feel nomeia a autoria que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+revelar
+autoria
+pode
+retirar
+decisões.
+O
+feel
+listava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+observations
+do
+feel
+nomeia
+a
+autoria.
+Autoria
+no
+disco
+não
+é
+as
+decisões.
+Sem
+chave
+`autoria`.
+Nomear
+não
+observa.
+
 ## 0.9.845 — o record nomeia a sincronização que a receita já recusa
 
 A
