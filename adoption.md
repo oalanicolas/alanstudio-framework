@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.792 — o content nomeia a opacidade que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+misturar
+imagens
+com
+alpha
+reduzido
+pode
+mudar
+opacidade.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+content
+nomeia
+a
+opacidade.
+Alpha
+no
+disco
+não
+é
+a
+opacidade.
+Sem
+chave
+`opacidade`.
+Nomear
+não
+observa.
+
 ## 0.9.791 — o item do craft nomeia a fórmula que a pesquisa já recusa
 
 A

@@ -9365,6 +9365,43 @@ def content_filter_scope():
     )
 
 
+# A receita já recusa que o
+# alpha reduzido preserve a
+# opacidade. Sem isto o
+# content listava arquivos e
+# calava a recusa. Alpha no
+# disco não é a opacidade.
+CONTENT_OPACITY = re.compile(
+    r"Misturar imagens com alpha reduzido pode mudar opacidade"
+)
+
+
+def recipe_refuses_reduced_alpha_as_preserving_opacity(text):
+    return bool(text and CONTENT_OPACITY.search(text))
+
+
+def content_opacity_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_reduced_alpha_as_preserving_opacity(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_opacity_scope():
+    if not content_opacity_source():
+        return None
+    return (
+        " O disco recusa que o alpha reduzido preserve a opacidade "
+        "(`opacidade`). Alpha no disco não é a opacidade."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -9648,6 +9685,9 @@ def content_reading(project):
     sieve = content_filter_scope()
     if sieve:
         scope += sieve
+    fade = content_opacity_scope()
+    if fade:
+        scope += fade
     listed = files[:24]
     if listed:
         listed = {
