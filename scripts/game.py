@@ -18831,6 +18831,9 @@ def cycle_scope():
     pen = cycle_write_scope()
     if pen:
         scope += pen
+    aim = cycle_intention_scope()
+    if aim:
+        scope += aim
     return scope or None
 
 
@@ -19251,6 +19254,41 @@ def cycle_write_scope():
     return (
         " O disco recusa que escrever dispare o verbo "
         "(`escrever`). Recado no disco não é o verbo."
+    )
+
+
+# A receita já recusa que o
+# buffer preserve a intenção.
+# Sem isto o ciclo anunciava
+# o verbo e calava a recusa.
+# Buffer no disco não é a
+# intenção.
+FEEL_INTENTION = re.compile(r"O buffer deve preservar a intenção")
+
+
+def recipe_refuses_buffer_as_preserving_intention(text):
+    return bool(text and FEEL_INTENTION.search(text))
+
+
+def cycle_intention_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_buffer_as_preserving_intention(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_intention_scope():
+    if not cycle_intention_source():
+        return None
+    return (
+        " O disco recusa que o buffer preserve a intenção "
+        "(`intenção`). Buffer no disco não é a intenção."
     )
 
 

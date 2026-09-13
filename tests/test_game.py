@@ -26151,6 +26151,63 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.play_scope(destination))
         self.assertNotIn(phrase, game.next_scope())
 
+    def test_cycle_names_the_intention_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"O buffer deve preservar a intenção")
+        self.assertTrue(
+            game.recipe_refuses_buffer_as_preserving_intention(recipe),
+            "a receita já recusa que o buffer preserve a intenção",
+        )
+        self.assertEqual(game.cycle_intention_source(), "recipes/feel.md")
+        destination = self.root / "ciclo-nomeia-intencao"
+        report = game.start_project(destination, "canvas-arcade")
+        cycle = report["cycle"]
+        self.assertIn(
+            "o buffer preserve a intenção",
+            cycle["scope"],
+            "o ciclo anunciava o verbo e calava a recusa",
+        )
+        self.assertIn("(`intenção`)", cycle["scope"])
+        self.assertIn("Buffer no disco não é a intenção.", cycle["scope"])
+        self.assertNotIn("intenção", cycle)
+        self.assertNotIn("intenção", game.CYCLE_KEYS)
+        self.assertFalse(report["executed"])
+        self.assertFalse(game.recipe_refuses_buffer_as_preserving_intention(""))
+        with mock.patch.object(game, "cycle_intention_source", return_value=None):
+            silent = game.start_project(self.root / "ciclo-cala-intencao", "canvas-arcade")
+        self.assertNotIn(
+            "o buffer preserve a intenção",
+            (silent.get("cycle") or {}).get("scope") or "",
+        )
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a intenção que a receita já recusa"), 2)
+        self.assertIn("nomeia a intenção que a receita já recusa", skill)
+        self.assertIn("nomeia a intenção que a receita já recusa", readme)
+        self.assertIn("nomeia a intenção que a receita já recusa", create)
+        self.assertNotIn("verified", cycle["scope"])
+        self.assertNotIn("aprovado", cycle["scope"])
+        self.assertNotIn("4.5", cycle["scope"])
+        self.assertNotIn("16 ms", cycle["scope"])
+        phrase = "o buffer preserve a intenção"
+        self.assertNotIn(phrase, report["scope"])
+        self.assertNotIn(phrase, game.feel_reading(destination)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.content_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        used = game.save_reading(destination).get("used")
+        if isinstance(used, dict):
+            self.assertNotIn(phrase, used.get("scope") or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.play_scope(destination))
+        self.assertNotIn(phrase, game.next_scope())
+
     def test_serve_banner_names_the_clock_the_game_already_reads(self):
         destination = self.root / "banner-nomeia-relogio"
         game.init(destination, "canvas-arcade")
