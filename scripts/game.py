@@ -4848,6 +4848,40 @@ def feel_observations_forecast_scope():
     )
 
 
+# A receita já recusa que revelar
+# o alcance retire as decisões.
+# Sem isto o feel listava o recibo
+# e calava a recusa. Alcance no
+# disco não é as decisões.
+FEEL_DECISIONS = re.compile(r"retirar decisões")
+
+
+def recipe_refuses_revealing_range_as_keeping_decisions(text):
+    return bool(text and FEEL_DECISIONS.search(text))
+
+
+def feel_observations_decision_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_revealing_range_as_keeping_decisions(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_decision_scope():
+    if not feel_observations_decision_source():
+        return None
+    return (
+        " O disco recusa que revelar o alcance retire as decisões "
+        "(`decisões`). Alcance no disco não é as decisões."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -4901,6 +4935,9 @@ def feel_observations_scope():
     fore = feel_observations_forecast_scope()
     if fore:
         scope += fore
+    picks = feel_observations_decision_scope()
+    if picks:
+        scope += picks
     return scope
 
 

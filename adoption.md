@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.838 — o `observations` do `feel` nomeia as decisões que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+revelar
+alcance
+futuro
+pode
+retirar
+decisões.
+O
+feel
+listava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+as
+observations
+nomeiam
+as
+decisões.
+Alcance
+no
+disco
+não
+é
+as
+decisões.
+Sem
+chave
+`decisões`.
+Nomear
+não
+observa.
+
 ## 0.9.837 — o `record` nomeia as transferências que a receita já recusa
 
 A
