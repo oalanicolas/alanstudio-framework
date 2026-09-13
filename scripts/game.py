@@ -15300,6 +15300,43 @@ def content_premul_scope():
     )
 
 
+
+
+# A receita já recusa que o
+# estado térmico prove o
+# destino. Sem isto o content
+# listava arquivos e calava
+# a recusa. Térmico no disco
+# não é o destino.
+CONTENT_THERM = re.compile(r"estado térmico")
+
+
+def recipe_refuses_thermal_as_proving_destination(text):
+    return bool(text and CONTENT_THERM.search(text))
+
+
+def content_thermal_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_thermal_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_thermal_scope():
+    if not content_thermal_source():
+        return None
+    return (
+        " O disco recusa que o estado térmico prove o destino "
+        "(`térmico`). Térmico no disco não é o destino."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -15661,6 +15698,9 @@ def content_reading(project):
     prem = content_premul_scope()
     if prem:
         scope += prem
+    therm = content_thermal_scope()
+    if therm:
+        scope += therm
     listed = files[:24]
     if listed:
         listed = {
