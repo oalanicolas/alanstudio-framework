@@ -28511,6 +28511,9 @@ def record_scope():
     grid = record_layout_scope()
     if grid:
         scope += grid
+    wire = record_listeners_scope()
+    if wire:
+        scope += wire
     return scope
 
 
@@ -29608,6 +29611,42 @@ def record_layout_scope():
     return (
         " O disco recusa que o layout prove o engasgo "
         "(`layout`). Layout no disco não é o engasgo."
+    )
+
+
+
+# A receita já recusa que os
+# listeners provem o
+# vazamento. Sem isto o
+# record gravava o recibo e
+# calava a recusa. Listeners
+# no disco não é o vazamento.
+PERF_LISTEN = re.compile(r"listeners")
+
+
+def recipe_refuses_listeners_as_proving_leak(text):
+    return bool(text and PERF_LISTEN.search(text))
+
+
+def record_listeners_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_listeners_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_listeners_scope():
+    if not record_listeners_source():
+        return None
+    return (
+        " O disco recusa que os listeners provem o vazamento "
+        "(`listeners`). Listeners no disco não é o vazamento."
     )
 
 
