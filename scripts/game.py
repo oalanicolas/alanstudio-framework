@@ -6058,6 +6058,9 @@ def _feel_scope(project):
     meant = feel_intent_scope()
     if meant:
         scope += meant
+    wipe = feel_bitmap_scope()
+    if wipe:
+        scope += wipe
     return scope
 
 
@@ -6822,6 +6825,41 @@ def feel_intent_scope():
         "(`intencional`). Quadros no disco não é o intencional."
     )
 
+
+
+
+# A receita já recusa que atribuir
+# o tamanho prove o bitmap. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Tamanho no
+# disco não é o bitmap.
+FEEL_BITMAP = re.compile(r"apaga o bitmap")
+
+
+def recipe_refuses_assigning_size_as_proving_bitmap(text):
+    return bool(text and FEEL_BITMAP.search(text))
+
+
+def feel_bitmap_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_assigning_size_as_proving_bitmap(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_bitmap_scope():
+    if not feel_bitmap_source():
+        return None
+    return (
+        " O disco recusa que atribuir o tamanho prove o bitmap "
+        "(`bitmap`). Tamanho no disco não é o bitmap."
+    )
 
 # O painel e o live já nomeiam o vazio. Sem isto o
 # access lia região viva e calava o canvas da porta.
