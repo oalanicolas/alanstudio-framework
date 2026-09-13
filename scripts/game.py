@@ -11267,6 +11267,42 @@ def save_convenience_scope():
     )
 
 
+
+# A receita já recusa que os
+# níveis ou itens provem o
+# save. Sem isto o save lia
+# o schema e calava a recusa.
+# Níveis no disco não é o
+# save.
+PERSIST_LEVEL = re.compile(r"níveis ou itens")
+
+
+def recipe_refuses_levels_as_proving_save(text):
+    return bool(text and PERSIST_LEVEL.search(text))
+
+
+def save_levels_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_levels_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_levels_scope():
+    if not save_levels_source():
+        return None
+    return (
+        " O disco recusa que os níveis ou itens provem o save "
+        "(`níveis`). Níveis no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -11979,6 +12015,9 @@ def save_reading(project):
     lure = save_convenience_scope()
     if lure:
         scope += lure
+    rung = save_levels_scope()
+    if rung:
+        scope += rung
     used_flag = bool(used)
     if used_flag:
         used_flag = {
