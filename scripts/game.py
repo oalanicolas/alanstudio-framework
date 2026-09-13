@@ -7258,6 +7258,9 @@ def _feel_scope(project):
     dupe = feel_copied_scope()
     if dupe:
         scope += dupe
+    unit = feel_instance_scope()
+    if unit:
+        scope += unit
     return scope
 
 
@@ -8376,6 +8379,42 @@ def feel_copied_scope():
     return (
         " O disco recusa que o feel copiado prove a instância "
         "(`copiado`). Copiado no disco não é a instância."
+    )
+
+
+
+# A receita já recusa que o
+# diluir a instância prove o
+# feel. Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Instância no disco não é o
+# feel.
+FEEL_DILUTE = re.compile(r"dilui a instância")
+
+
+def recipe_refuses_instance_as_proving_feel(text):
+    return bool(text and FEEL_DILUTE.search(text))
+
+
+def feel_instance_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_instance_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_instance_scope():
+    if not feel_instance_source():
+        return None
+    return (
+        " O disco recusa que o diluir a instância prove o feel "
+        "(`instância`). Instância no disco não é o feel."
     )
 
 
