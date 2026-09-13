@@ -21484,6 +21484,75 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.git_summary_scope())
         self.assertNotIn("idioma", game.CYCLE_KEYS)
 
+    def test_save_names_the_controls_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"volume, controles, acessibilidade")
+        self.assertTrue(
+            game.recipe_refuses_deleting_run_as_wiping_controls(recipe),
+            "a receita já recusa que apagar a partida apague os controles",
+        )
+        self.assertEqual(game.save_controls_source(), "recipes/persistence.md")
+        report = game.save_reading(self.project)
+        self.assertIn(
+            "apagar a partida apague os controles",
+            report["scope"],
+            "o save lia o schema e calava a recusa",
+        )
+        self.assertIn("(`controles`)", report["scope"])
+        self.assertIn("Partida no disco não é os controles.", report["scope"])
+        self.assertNotIn("controles", report)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_deleting_run_as_wiping_controls(""))
+        with mock.patch.object(game, "save_controls_source", return_value=None):
+            silent = game.save_reading(self.project)
+        self.assertNotIn("apagar a partida apague os controles", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia os controles que a receita já recusa"), 2)
+        self.assertIn("nomeia os controles que a receita já recusa", create)
+        self.assertIn("nomeia os controles que a receita já recusa", skill)
+        self.assertIn("nomeia os controles que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        used = report.get("used")
+        if isinstance(used, dict):
+            self.assertNotIn(
+                "apagar a partida apague os controles",
+                used.get("scope") or "",
+            )
+        warned = report.get("warned")
+        if isinstance(warned, dict):
+            self.assertNotIn(
+                "apagar a partida apague os controles",
+                warned.get("scope") or "",
+            )
+        sources = report.get("sources")
+        if isinstance(sources, dict):
+            self.assertNotIn(
+                "apagar a partida apague os controles",
+                sources.get("scope") or "",
+            )
+        phrase = "apagar a partida apague os controles"
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.craft_reading(self.project)["scope"])
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertNotIn(phrase, game.art_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.play_scope(starter))
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.git_summary_scope())
+        self.assertNotIn("controles", game.CYCLE_KEYS)
+
     def test_save_sources_names_the_chain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         self.assertTrue(

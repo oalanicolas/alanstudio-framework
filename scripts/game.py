@@ -7843,6 +7843,40 @@ def save_language_scope():
     )
 
 
+# A receita já recusa que apagar
+# a partida apague os controles.
+# Sem isto o save lia o schema e
+# calava a recusa. Partida no
+# disco não é os controles.
+PERSIST_CONTROLS = re.compile(r"volume, controles, acessibilidade")
+
+
+def recipe_refuses_deleting_run_as_wiping_controls(text):
+    return bool(text and PERSIST_CONTROLS.search(text))
+
+
+def save_controls_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_deleting_run_as_wiping_controls(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_controls_scope():
+    if not save_controls_source():
+        return None
+    return (
+        " O disco recusa que apagar a partida apague os controles "
+        "(`controles`). Partida no disco não é os controles."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -8501,6 +8535,9 @@ def save_reading(project):
     lang = save_language_scope()
     if lang:
         scope += lang
+    pads = save_controls_scope()
+    if pads:
+        scope += pads
     used_flag = bool(used)
     if used_flag:
         used_flag = {
