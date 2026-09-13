@@ -8966,6 +8966,41 @@ def save_suspend_scope():
     )
 
 
+
+# A receita já recusa que a
+# bateria prove a interrupção.
+# Sem isto o save lia o schema
+# e calava a recusa. Bateria
+# no disco não é a interrupção.
+PERSIST_BATTERY = re.compile(r"bateria")
+
+
+def recipe_refuses_battery_as_proving_interruption(text):
+    return bool(text and PERSIST_BATTERY.search(text))
+
+
+def save_battery_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_battery_as_proving_interruption(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_battery_scope():
+    if not save_battery_source():
+        return None
+    return (
+        " O disco recusa que a bateria prove a interrupção "
+        "(`bateria`). Bateria no disco não é a interrupção."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -9642,6 +9677,9 @@ def save_reading(project):
     dock = save_suspend_scope()
     if dock:
         scope += dock
+    cell = save_battery_scope()
+    if cell:
+        scope += cell
     used_flag = bool(used)
     if used_flag:
         used_flag = {
