@@ -30,6 +30,52 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.824 — o `content` nomeia o animador que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+um
+animador
+autônomo
+de
+imagem
+pode
+quebrar
+o
+contrato
+da
+simulação.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+`content`
+nomeia
+o
+animador.
+Imagem
+no
+disco
+não
+é
+o
+animador.
+Sem
+chave
+`animador`.
+Nomear
+não
+observa.
+
 ## 0.9.823 — o item do craft nomeia os gêneros que a pesquisa já recusa
 
 A
