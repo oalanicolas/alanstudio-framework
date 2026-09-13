@@ -18599,6 +18599,9 @@ def cycle_scope():
     later = cycle_next_scope()
     if later:
         scope += later
+    pen = cycle_write_scope()
+    if pen:
+        scope += pen
     return scope or None
 
 
@@ -18984,6 +18987,41 @@ def cycle_next_scope():
     return (
         " O disco recusa que Space e R disparem no quadro seguinte "
         "(`seguinte`). Foco no disco não é o verbo."
+    )
+
+
+# A receita já recusa que
+# escrever dispare o verbo.
+# Sem isto o ciclo anunciava
+# o verbo e calava a recusa.
+# Recado no disco não é o
+# verbo.
+FEEL_WRITE = re.compile(r"Escrever não dispara o\s+verbo")
+
+
+def recipe_refuses_writing_as_firing_the_verb(text):
+    return bool(text and FEEL_WRITE.search(text))
+
+
+def cycle_write_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_writing_as_firing_the_verb(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_write_scope():
+    if not cycle_write_source():
+        return None
+    return (
+        " O disco recusa que escrever dispare o verbo "
+        "(`escrever`). Recado no disco não é o verbo."
     )
 
 
