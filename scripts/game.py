@@ -7739,6 +7739,9 @@ def _feel_scope(project):
     bend = feel_curve_scope()
     if bend:
         scope += bend
+    fizz = feel_juice_scope()
+    if fizz:
+        scope += fizz
     return scope
 
 
@@ -9001,6 +9004,42 @@ def feel_curve_scope():
     return (
         " O disco recusa que a outra curva prove o feel "
         "(`curva`). Curva no disco não é o feel."
+    )
+
+
+
+# A receita já recusa que o
+# juice pack prove o feel.
+# Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Juice no disco não é o
+# feel.
+FEEL_JUICE = re.compile(r"juice pack")
+
+
+def recipe_refuses_juice_as_proving_feel(text):
+    return bool(text and FEEL_JUICE.search(text))
+
+
+def feel_juice_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_juice_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_juice_scope():
+    if not feel_juice_source():
+        return None
+    return (
+        " O disco recusa que o juice pack prove o feel "
+        "(`juice`). Juice no disco não é o feel."
     )
 
 
