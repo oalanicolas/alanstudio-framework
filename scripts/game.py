@@ -5127,6 +5127,9 @@ def _feel_scope(project):
     crack = feel_broken_scope()
     if crack:
         scope += crack
+    lens = feel_camera_scope()
+    if lens:
+        scope += lens
     return scope
 
 
@@ -5610,6 +5613,41 @@ def feel_broken_scope():
     return (
         " O disco recusa que o tempo pareça quebrado "
         "(`quebrado`). Hitstop no disco não é o tempo."
+    )
+
+
+# A receita já recusa que a
+# câmera combata o jogador.
+# Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Look no disco não é a
+# câmera.
+FEEL_CAMERA = re.compile(r"Câmera que combate o jogador")
+
+
+def recipe_refuses_camera_as_fighting_the_player(text):
+    return bool(text and FEEL_CAMERA.search(text))
+
+
+def feel_camera_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_camera_as_fighting_the_player(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_camera_scope():
+    if not feel_camera_source():
+        return None
+    return (
+        " O disco recusa que a câmera combata o jogador "
+        "(`câmera`). Look no disco não é a câmera."
     )
 
 
