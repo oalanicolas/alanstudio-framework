@@ -6914,6 +6914,41 @@ def save_transaction_scope():
     )
 
 
+# A receita já recusa que o
+# ajuste de estrutura seja a
+# migração. Sem isto o save
+# lia o schema e calava a
+# recusa. Formato no disco
+# não é o ajuste.
+PERSIST_TWEAK = re.compile(r"não de um ajuste de estrutura")
+
+
+def recipe_refuses_structure_tweak_as_migration(text):
+    return bool(text and PERSIST_TWEAK.search(text))
+
+
+def save_tweak_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_structure_tweak_as_migration(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_tweak_scope():
+    if not save_tweak_source():
+        return None
+    return (
+        " O disco recusa que o ajuste de estrutura seja a migração "
+        "(`ajuste`). Formato no disco não é o ajuste."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -7557,6 +7592,9 @@ def save_reading(project):
     txn = save_transaction_scope()
     if txn:
         scope += txn
+    tweak = save_tweak_scope()
+    if tweak:
+        scope += tweak
     used_flag = bool(used)
     if used_flag:
         used_flag = {
