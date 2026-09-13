@@ -20205,6 +20205,9 @@ def cycle_scope():
     wind = cycle_startup_scope()
     if wind:
         scope += wind
+    cool = cycle_recovery_scope()
+    if cool:
+        scope += cool
     return scope or None
 
 
@@ -20834,6 +20837,40 @@ def cycle_startup_scope():
     return (
         " O disco recusa que anunciar o verbo prove o startup "
         "(`startup`). Verbo no disco não é o startup."
+    )
+
+
+# A receita já recusa que anunciar
+# o verbo prove a recuperação. Sem
+# isto o ciclo anunciava o verbo
+# e calava a recusa. Verbo no
+# disco não é a recuperação.
+FEEL_RECOVERY = re.compile(r"ativo e recuperação")
+
+
+def recipe_refuses_announcing_verb_as_proving_recovery(text):
+    return bool(text and FEEL_RECOVERY.search(text))
+
+
+def cycle_recovery_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_announcing_verb_as_proving_recovery(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_recovery_scope():
+    if not cycle_recovery_source():
+        return None
+    return (
+        " O disco recusa que anunciar o verbo prove a recuperação "
+        "(`recuperação`). Verbo no disco não é a recuperação."
     )
 
 
