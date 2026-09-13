@@ -10927,6 +10927,40 @@ def content_block_scope():
     )
 
 
+# A receita já recusa que a
+# retomada escolha a mesma pose.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Pose no disco não é a retomada.
+CONTENT_RESUME = re.compile(r"save e retomada")
+
+
+def recipe_refuses_resume_as_choosing_the_same_pose(text):
+    return bool(text and CONTENT_RESUME.search(text))
+
+
+def content_resume_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_resume_as_choosing_the_same_pose(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_resume_scope():
+    if not content_resume_source():
+        return None
+    return (
+        " O disco recusa que a retomada escolha a mesma pose "
+        "(`retomada`). Pose no disco não é a retomada."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -11231,6 +11265,9 @@ def content_reading(project):
     plug = content_block_scope()
     if plug:
         scope += plug
+    rest = content_resume_scope()
+    if rest:
+        scope += rest
     listed = files[:24]
     if listed:
         listed = {

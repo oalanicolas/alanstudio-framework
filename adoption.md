@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.848 — o content nomeia a retomada que a receita já recusa
+
+A
+receita
+já
+pedia
+que
+pausa,
+bloqueio,
+save
+e
+retomada
+escolham
+a
+mesma
+pose.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+content
+nomeia
+a
+retomada.
+Pose
+no
+disco
+não
+é
+a
+retomada.
+Sem
+chave
+`retomada`.
+Nomear
+não
+observa.
+
 ## 0.9.847 — o item do craft nomeia a rede que a pesquisa já recusa
 
 A

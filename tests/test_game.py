@@ -24428,6 +24428,62 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.next_scope())
         self.assertNotIn("bloqueio", game.CYCLE_KEYS)
 
+    def test_content_names_the_resume_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"save e retomada")
+        self.assertTrue(
+            game.recipe_refuses_resume_as_choosing_the_same_pose(recipe),
+            "a receita já recusa que a retomada escolha a mesma pose",
+        )
+        self.assertEqual(game.content_resume_source(), "recipes/content.md")
+        report = game.content_reading(self.project)
+        self.assertIn(
+            "a retomada escolha a mesma pose",
+            report["scope"],
+            "o content listava arquivos e calava a recusa",
+        )
+        self.assertIn("(`retomada`)", report["scope"])
+        self.assertIn("Pose no disco não é a retomada.", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("retomada", report)
+        self.assertFalse(game.recipe_refuses_resume_as_choosing_the_same_pose(""))
+        with mock.patch.object(game, "content_resume_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn(
+            "a retomada escolha a mesma pose",
+            silent["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a retomada que a receita já recusa"), 2)
+        self.assertIn("nomeia a retomada que a receita já recusa", create)
+        self.assertIn("nomeia a retomada que a receita já recusa", skill)
+        self.assertIn("nomeia a retomada que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        files = report.get("files")
+        if isinstance(files, dict):
+            self.assertNotIn(
+                "a retomada escolha a mesma pose",
+                files.get("scope") or "",
+            )
+        phrase = "a retomada escolha a mesma pose"
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("retomada", game.CYCLE_KEYS)
+
     def test_content_names_the_rain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
         self.assertTrue(
