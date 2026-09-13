@@ -4568,6 +4568,9 @@ def observation_item_scope():
     tray = observation_menu_scope()
     if tray:
         scope += tray
+    brand = observation_design_scope()
+    if brand:
+        scope += brand
     return scope
 
 
@@ -5723,6 +5726,42 @@ def observation_menu_scope():
     return (
         " O disco recusa que as opções já presentes no menu provem o estado "
         "(`menu`). Menu no disco não é o estado."
+    )
+
+
+
+# A receita já recusa que o
+# design system prove o
+# estado. Sem isto o item
+# copiava a nota e calava a
+# recusa. Design no disco
+# não é o estado.
+A11Y_DESIGN = re.compile(r"design system")
+
+
+def recipe_refuses_design_as_proving_state(text):
+    return bool(text and A11Y_DESIGN.search(text))
+
+
+def observation_design_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_design_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_design_scope():
+    if not observation_design_source():
+        return None
+    return (
+        " O disco recusa que o design system prove o estado "
+        "(`design`). Design no disco não é o estado."
     )
 
 
