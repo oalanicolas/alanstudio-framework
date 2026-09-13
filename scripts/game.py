@@ -28788,6 +28788,9 @@ def record_scope():
     wire = record_listeners_scope()
     if wire:
         scope += wire
+    tock = record_timers_scope()
+    if tock:
+        scope += tock
     return scope
 
 
@@ -29921,6 +29924,42 @@ def record_listeners_scope():
     return (
         " O disco recusa que os listeners provem o vazamento "
         "(`listeners`). Listeners no disco não é o vazamento."
+    )
+
+
+
+# A receita já recusa que os
+# timers provem o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Timers no disco não é o
+# vazamento.
+PERF_TIMER = re.compile(r"timers")
+
+
+def recipe_refuses_timers_as_proving_leak(text):
+    return bool(text and PERF_TIMER.search(text))
+
+
+def record_timers_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_timers_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_timers_scope():
+    if not record_timers_source():
+        return None
+    return (
+        " O disco recusa que os timers provem o vazamento "
+        "(`timers`). Timers no disco não é o vazamento."
     )
 
 

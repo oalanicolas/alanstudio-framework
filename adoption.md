@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.965 — o record nomeia os timers que a receita já recusa
+
+A
+receita
+já
+listava
+timers
+como
+vazamento
+que
+sobrevive
+ao
+descarte.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+os
+timers.
+Timers
+no
+disco
+não
+é
+o
+vazamento.
+Sem
+chave
+`timers`.
+Nomear
+não
+mede.
+
 ## 0.9.964 — o save nomeia as entidades que a receita já recusa
 
 A
