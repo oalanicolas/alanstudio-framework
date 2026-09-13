@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.954: o ciclo nomeia os acessórios que a receita já recusa. Acessórios no disco não é o teste. Sem chave `acessórios`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.954): **1015 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
