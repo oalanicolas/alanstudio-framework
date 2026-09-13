@@ -22806,6 +22806,9 @@ def record_scope():
     prior = record_prior_scope()
     if prior:
         scope += prior
+    jig = record_fixture_scope()
+    if jig:
+        scope += jig
     return scope
 
 
@@ -23162,6 +23165,41 @@ def record_prior_scope():
     return (
         " O disco recusa que a falha de gravação apague o registro anterior "
         "(`registro`). Falha no disco não é o registro."
+    )
+
+
+# A receita já recusa que a
+# fixture cubra a abertura.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Fixture no disco não é o
+# efeito.
+PERF_FIXTURE = re.compile(r"fixture geométrica não cobre")
+
+
+def recipe_refuses_geometric_fixture_as_covering_the_opening(text):
+    return bool(text and PERF_FIXTURE.search(text))
+
+
+def record_fixture_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_geometric_fixture_as_covering_the_opening(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_fixture_scope():
+    if not record_fixture_source():
+        return None
+    return (
+        " O disco recusa que a fixture cubra a abertura "
+        "(`fixture`). Fixture no disco não é o efeito."
     )
 
 
