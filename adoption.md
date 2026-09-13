@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.926 — o observations do feel nomeia o hitstop que a receita já recusa
+
+A
+receita
+já
+pedia
+para
+conferir
+se
+o
+relógio
+descarta
+o
+tempo
+de
+pausa/hitstop.
+O
+feel
+listava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+as
+observações
+nomeiam
+o
+hitstop.
+Hitstop
+no
+disco
+não
+é
+a
+retomada.
+Sem
+chave
+`hitstop`.
+Nomear
+não
+observa.
+
 ## 0.9.925 — o record nomeia a textura que a receita já recusa
 
 A

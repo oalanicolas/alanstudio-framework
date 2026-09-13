@@ -6089,6 +6089,42 @@ def feel_observations_entry_scope():
     )
 
 
+
+# A receita já recusa que o
+# pausa/hitstop prove a
+# retomada. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Hitstop no disco
+# não é a retomada.
+FEEL_HITSTOP = re.compile(r"pausa/hitstop")
+
+
+def recipe_refuses_hitstop_as_proving_resume(text):
+    return bool(text and FEEL_HITSTOP.search(text))
+
+
+def feel_observations_hitstop_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hitstop_as_proving_resume(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_hitstop_scope():
+    if not feel_observations_hitstop_source():
+        return None
+    return (
+        " O disco recusa que o pausa/hitstop prove a retomada "
+        "(`hitstop`). Hitstop no disco não é a retomada."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -6175,6 +6211,9 @@ def feel_observations_scope():
     fit = feel_observations_entry_scope()
     if fit:
         scope += fit
+    stun = feel_observations_hitstop_scope()
+    if stun:
+        scope += stun
     return scope
 
 
