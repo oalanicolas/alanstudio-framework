@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.860 — o save nomeia a inconsistência que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+salvar
+o
+derivado
+cria
+uma
+inconsistência
+irreproduzível.
+O
+save
+lia
+o
+schema
+e
+calava
+a
+recusa.
+Agora
+o
+save
+nomeia
+a
+inconsistência.
+Derivado
+no
+disco
+não
+é
+a
+inconsistência.
+Sem
+chave
+`inconsistência`.
+Nomear
+não
+observa.
+
 ## 0.9.859 — o feel nomeia o intencional que a receita já recusa
 
 A

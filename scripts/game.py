@@ -8396,6 +8396,40 @@ def save_volume_scope():
     )
 
 
+# A receita já recusa que o
+# derivado prove a inconsistência.
+# Sem isto o save lia o schema e
+# calava a recusa. Derivado no
+# disco não é a inconsistência.
+PERSIST_INCONSISTENCY = re.compile(r"inconsistência impossível")
+
+
+def recipe_refuses_derived_as_proving_inconsistency(text):
+    return bool(text and PERSIST_INCONSISTENCY.search(text))
+
+
+def save_inconsistency_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_derived_as_proving_inconsistency(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_inconsistency_scope():
+    if not save_inconsistency_source():
+        return None
+    return (
+        " O disco recusa que o derivado prove a inconsistência "
+        "(`inconsistência`). Derivado no disco não é a inconsistência."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -9063,6 +9097,9 @@ def save_reading(project):
     loud = save_volume_scope()
     if loud:
         scope += loud
+    skew = save_inconsistency_scope()
+    if skew:
+        scope += skew
     used_flag = bool(used)
     if used_flag:
         used_flag = {
