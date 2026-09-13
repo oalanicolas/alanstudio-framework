@@ -13907,6 +13907,43 @@ def content_pivot_scope():
     )
 
 
+
+# A receita já recusa que a
+# superfície prove as
+# dimensões. Sem isto o
+# content listava arquivos e
+# calava a recusa. Superfície
+# no disco não é as
+# dimensões.
+CONTENT_SURFACE = re.compile(r"superfície e a geometria")
+
+
+def recipe_refuses_surface_as_proving_dimensions(text):
+    return bool(text and CONTENT_SURFACE.search(text))
+
+
+def content_surface_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_surface_as_proving_dimensions(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_surface_scope():
+    if not content_surface_source():
+        return None
+    return (
+        " O disco recusa que a superfície prove as dimensões "
+        "(`superfície`). Superfície no disco não é as dimensões."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -14250,6 +14287,9 @@ def content_reading(project):
     hinge = content_pivot_scope()
     if hinge:
         scope += hinge
+    face = content_surface_scope()
+    if face:
+        scope += face
     listed = files[:24]
     if listed:
         listed = {
