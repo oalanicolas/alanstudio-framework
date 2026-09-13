@@ -22785,6 +22785,9 @@ def cycle_scope():
     axis = cycle_analog_scope()
     if axis:
         scope += axis
+    will = cycle_deliberate_scope()
+    if will:
+        scope += will
     return scope or None
 
 
@@ -23804,6 +23807,42 @@ def cycle_analog_scope():
     return (
         " O disco recusa que o teclado/analógico prove a seleção "
         "(`analógico`). Analógico no disco não é a seleção."
+    )
+
+
+
+# A receita já recusa que o
+# gesto deliberado prove a
+# seleção. Sem isto o ciclo
+# anunciava o verbo e calava
+# a recusa. Deliberado no
+# disco não é a seleção.
+FEEL_DELIB = re.compile(r"gesto deliberado")
+
+
+def recipe_refuses_deliberate_as_proving_selection(text):
+    return bool(text and FEEL_DELIB.search(text))
+
+
+def cycle_deliberate_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_deliberate_as_proving_selection(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_deliberate_scope():
+    if not cycle_deliberate_source():
+        return None
+    return (
+        " O disco recusa que o gesto deliberado prove a seleção "
+        "(`deliberado`). Deliberado no disco não é a seleção."
     )
 
 
