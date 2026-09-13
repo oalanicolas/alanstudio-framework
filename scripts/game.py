@@ -10115,6 +10115,42 @@ def save_atomwrite_scope():
     )
 
 
+
+# A receita já recusa que os
+# momentos de gravação provem
+# a interrupção. Sem isto o
+# save lia o schema e calava
+# a recusa. Momentos no disco
+# não é a interrupção.
+PERSIST_MOMENTS = re.compile(r"momentos de gravação")
+
+
+def recipe_refuses_save_moments_as_proving_interrupt(text):
+    return bool(text and PERSIST_MOMENTS.search(text))
+
+
+def save_moments_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_save_moments_as_proving_interrupt(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_moments_scope():
+    if not save_moments_source():
+        return None
+    return (
+        " O disco recusa que os momentos de gravação provem a interrupção "
+        "(`momentos`). Momentos no disco não é a interrupção."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -10809,6 +10845,9 @@ def save_reading(project):
     seal = save_atomwrite_scope()
     if seal:
         scope += seal
+    beat = save_moments_scope()
+    if beat:
+        scope += beat
     used_flag = bool(used)
     if used_flag:
         used_flag = {

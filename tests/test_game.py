@@ -26061,6 +26061,79 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("atômica", game.CYCLE_KEYS)
         self.assertNotIn("temporário", game.CYCLE_KEYS)
 
+    def test_save_names_the_moments_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"momentos de gravação")
+        self.assertTrue(
+            game.recipe_refuses_save_moments_as_proving_interrupt(recipe),
+            "a receita já recusa que os momentos de gravação provem a interrupção",
+        )
+        self.assertEqual(game.save_moments_source(), "recipes/persistence.md")
+        report = game.save_reading(self.project)
+        self.assertIn(
+            "os momentos de gravação provem a interrupção",
+            report["scope"],
+            "o save lia o schema e calava a recusa",
+        )
+        self.assertIn("(`momentos`)", report["scope"])
+        self.assertIn("Momentos no disco não é a interrupção.", report["scope"])
+        self.assertNotIn("momentos", report)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_save_moments_as_proving_interrupt(""))
+        with mock.patch.object(game, "save_moments_source", return_value=None):
+            silent = game.save_reading(self.project)
+        self.assertNotIn(
+            "os momentos de gravação provem a interrupção",
+            silent["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia os momentos que a receita já recusa"), 2)
+        self.assertIn("nomeia os momentos que a receita já recusa", create)
+        self.assertIn("nomeia os momentos que a receita já recusa", skill)
+        self.assertIn("nomeia os momentos que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        used = report.get("used")
+        if isinstance(used, dict):
+            self.assertNotIn(
+                "os momentos de gravação provem a interrupção",
+                used.get("scope") or "",
+            )
+        warned = report.get("warned")
+        if isinstance(warned, dict):
+            self.assertNotIn(
+                "os momentos de gravação provem a interrupção",
+                warned.get("scope") or "",
+            )
+        sources = report.get("sources")
+        if isinstance(sources, dict):
+            self.assertNotIn(
+                "os momentos de gravação provem a interrupção",
+                sources.get("scope") or "",
+            )
+        phrase = "os momentos de gravação provem a interrupção"
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.craft_reading(self.project)["scope"])
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertNotIn(phrase, game.art_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.play_scope(starter))
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.git_summary_scope())
+        self.assertNotIn("momentos", game.CYCLE_KEYS)
+        self.assertNotIn("atômica", game.CYCLE_KEYS)
+
     def test_save_sources_names_the_chain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         self.assertTrue(
