@@ -2384,6 +2384,41 @@ def craft_item_perception_scope():
     )
 
 
+# A pesquisa já recusa que a
+# diferença não percebida cale
+# o desempenho. Sem isto o item
+# do craft listava o checklist
+# e calava a recusa. Diferença
+# no disco não é o desempenho.
+CRAFT_GAIN = re.compile(r"não percebiam\s+diferença")
+
+
+def research_refuses_unnoticed_difference_as_silencing_gain(text):
+    return bool(text and CRAFT_GAIN.search(text))
+
+
+def craft_item_gain_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_unnoticed_difference_as_silencing_gain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_gain_scope():
+    if not craft_item_gain_source():
+        return None
+    return (
+        " O disco recusa que a diferença não percebida cale o desempenho "
+        "(`desempenho`). Diferença no disco não é o desempenho."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2449,6 +2484,9 @@ def craft_item_scope():
     perc = craft_item_perception_scope()
     if perc:
         scope += perc
+    gain = craft_item_gain_scope()
+    if gain:
+        scope += gain
     return scope
 
 
