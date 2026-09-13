@@ -4484,6 +4484,9 @@ def observation_item_scope():
     core = observation_critical_scope()
     if core:
         scope += core
+    roster = observation_commands_scope()
+    if roster:
+        scope += roster
     return scope
 
 
@@ -5567,6 +5570,42 @@ def observation_critical_scope():
     return (
         " O disco recusa que a informação crítica prove o estado "
         "(`crítica`). Crítica no disco não é o estado."
+    )
+
+
+
+# A receita já recusa que a
+# tabela de comandos prove o
+# estado. Sem isto o item
+# copiava a nota e calava a
+# recusa. Comandos no disco
+# não é o estado.
+A11Y_CMDS = re.compile(r"tabela de comandos")
+
+
+def recipe_refuses_commands_as_proving_state(text):
+    return bool(text and A11Y_CMDS.search(text))
+
+
+def observation_commands_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_commands_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_commands_scope():
+    if not observation_commands_source():
+        return None
+    return (
+        " O disco recusa que a tabela de comandos prove o estado "
+        "(`comandos`). Comandos no disco não é o estado."
     )
 
 
