@@ -6177,6 +6177,9 @@ def _feel_scope(project):
     wipe = feel_bitmap_scope()
     if wipe:
         scope += wipe
+    coat = feel_repaint_scope()
+    if coat:
+        scope += coat
     return scope
 
 
@@ -6975,6 +6978,41 @@ def feel_bitmap_scope():
     return (
         " O disco recusa que atribuir o tamanho prove o bitmap "
         "(`bitmap`). Tamanho no disco não é o bitmap."
+    )
+
+
+
+# A receita já recusa que a
+# repintura prove a apresentação.
+# Sem isto o feel lia o CONFIG e
+# calava a recusa. Repintura no
+# disco não é a apresentação.
+FEEL_REPAINT = re.compile(r"repintura")
+
+
+def recipe_refuses_repaint_as_proving_presentation(text):
+    return bool(text and FEEL_REPAINT.search(text))
+
+
+def feel_repaint_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_repaint_as_proving_presentation(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_repaint_scope():
+    if not feel_repaint_source():
+        return None
+    return (
+        " O disco recusa que a repintura prove a apresentação "
+        "(`repintura`). Repintura no disco não é a apresentação."
     )
 
 # O painel e o live já nomeiam o vazio. Sem isto o
