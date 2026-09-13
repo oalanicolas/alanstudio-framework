@@ -8688,6 +8688,41 @@ def content_vendor_scope():
     )
 
 
+# A receita já recusa que a
+# página HTML ocupe o lugar
+# do recurso. Sem isto o
+# content listava arquivos
+# e calava a recusa. Página
+# no disco não é o recurso.
+CONTENT_HTML = re.compile(r"página HTML ocupe o lugar")
+
+
+def recipe_refuses_html_page_as_valid_asset(text):
+    return bool(text and CONTENT_HTML.search(text))
+
+
+def content_html_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_html_page_as_valid_asset(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_html_scope():
+    if not content_html_source():
+        return None
+    return (
+        " O disco recusa que a página HTML ocupe o lugar do recurso "
+        "(`html`). Página no disco não é o recurso."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -8956,6 +8991,9 @@ def content_reading(project):
     vendor = content_vendor_scope()
     if vendor:
         scope += vendor
+    page = content_html_scope()
+    if page:
+        scope += page
     encoded = content_encoded_scope()
     if encoded:
         scope += encoded
