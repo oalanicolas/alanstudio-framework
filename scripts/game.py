@@ -4021,6 +4021,9 @@ def observation_item_scope():
     tiny = observation_small_scope()
     if tiny:
         scope += tiny
+    chat = observation_dialogue_scope()
+    if chat:
+        scope += chat
     return scope
 
 
@@ -4711,6 +4714,43 @@ def observation_small_scope():
         " O disco recusa que o texto pequeno prove a leitura "
         "(`pequeno`). Pequeno no disco não é a leitura."
     )
+
+
+
+# A receita já recusa que os
+# nomes de quem fala em diálogo
+# provem a audição. Sem isto o
+# item copiava a nota e calava
+# a recusa. Diálogo no disco
+# não é a audição.
+A11Y_DIALOGUE = re.compile(r"quem fala em diálogo")
+
+
+def recipe_refuses_speaker_names_as_proving_hearing(text):
+    return bool(text and A11Y_DIALOGUE.search(text))
+
+
+def observation_dialogue_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_speaker_names_as_proving_hearing(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_dialogue_scope():
+    if not observation_dialogue_source():
+        return None
+    return (
+        " O disco recusa que os nomes de quem fala em diálogo provem a audição "
+        "(`diálogo`). Diálogo no disco não é a audição."
+    )
+
 
 # A receita já recusa que o soltar
 # no disco seja sessão observada.
