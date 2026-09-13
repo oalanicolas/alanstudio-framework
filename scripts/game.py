@@ -2278,6 +2278,41 @@ def craft_item_milliseconds_scope():
     )
 
 
+# A pesquisa já recusa que o
+# número único cubra a faixa.
+# Sem isto o item do craft
+# listava o checklist e
+# calava a recusa. Número no
+# disco não é a faixa.
+CRAFT_RANGE = re.compile(r"escondendo o resto")
+
+
+def research_refuses_unique_number_as_covering_the_range(text):
+    return bool(text and CRAFT_RANGE.search(text))
+
+
+def craft_item_range_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_unique_number_as_covering_the_range(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_range_scope():
+    if not craft_item_range_source():
+        return None
+    return (
+        " O disco recusa que o número único cubra a faixa "
+        "(`faixa`). Número no disco não é a faixa."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2334,6 +2369,9 @@ def craft_item_scope():
     msec = craft_item_milliseconds_scope()
     if msec:
         scope += msec
+    span = craft_item_range_scope()
+    if span:
+        scope += span
     return scope
 
 

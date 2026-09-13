@@ -12688,6 +12688,66 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.pin_created_scope())
         self.assertNotIn("milissegundos", game.CYCLE_KEYS)
 
+    def test_craft_item_names_the_range_the_research_already_refuses(self):
+        research = (
+            game.FRAMEWORK / "references/observable-criteria-research.md"
+        ).read_text(encoding="utf-8")
+        self.assertRegex(research, r"escondendo o resto")
+        self.assertTrue(
+            game.research_refuses_unique_number_as_covering_the_range(research),
+            "a pesquisa já recusa que o número único cubra a faixa",
+        )
+        self.assertEqual(
+            game.craft_item_range_source(),
+            "references/observable-criteria-research.md",
+        )
+        report = game.craft_reading(self.project)
+        item = report["checks"][0]
+        self.assertIn(
+            "o número único cubra a faixa",
+            item["scope"],
+            "o item do craft listava o checklist e calava a recusa",
+        )
+        self.assertIn("(`faixa`)", item["scope"])
+        self.assertIn("Número no disco não é a faixa.", item["scope"])
+        self.assertNotIn("faixa", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.research_refuses_unique_number_as_covering_the_range(""))
+        with mock.patch.object(game, "craft_item_range_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn(
+            "o número único cubra a faixa",
+            silent["checks"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(research.count("nomeia a faixa que a pesquisa já recusa"), 2)
+        self.assertIn("nomeia a faixa que a pesquisa já recusa", recipe)
+        self.assertIn("nomeia a faixa que a pesquisa já recusa", skill)
+        self.assertIn("nomeia a faixa que a pesquisa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("16 ms", item["scope"])
+        self.assertNotIn("verified", recipe)
+        phrase = "o número único cubra a faixa"
+        self.assertNotIn(phrase, report["scope"])
+        self.assertNotIn(phrase, game.craft_sources_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.gate_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.bar_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn("faixa", game.CYCLE_KEYS)
+
     def test_craft_names_the_definition_the_research_already_refuses(self):
         research = (
             game.FRAMEWORK / "references/observable-criteria-research.md"

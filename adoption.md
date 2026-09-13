@@ -30,6 +30,55 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.815 — o item do craft nomeia a faixa que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+qualquer
+número
+único
+de
+latência
+perceptível
+esconde
+o
+resto
+da
+faixa.
+O
+item
+do
+craft
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+a
+faixa.
+Número
+no
+disco
+não
+é
+a
+faixa.
+Sem
+chave
+`faixa`.
+Nomear
+não
+observa.
+
 ## 0.9.814 — o `observations` do `feel` nomeia o ritmo que a receita já recusa
 
 A
