@@ -4316,6 +4316,9 @@ def observation_item_scope():
     tint = observation_color_scope()
     if tint:
         scope += tint
+    copy = observation_text_scope()
+    if copy:
+        scope += copy
     return scope
 
 
@@ -5256,6 +5259,41 @@ def observation_color_scope():
     return (
         " O disco recusa que a cor prove o estado "
         "(`cor`). Cor no disco não é o estado."
+    )
+
+
+
+# A receita já recusa que o
+# texto prove o estado. Sem
+# isto o item copiava a nota
+# e calava a recusa. Texto no
+# disco não é o estado.
+A11Y_COPY = re.compile(r"posição ou texto acompanham")
+
+
+def recipe_refuses_text_as_proving_state(text):
+    return bool(text and A11Y_COPY.search(text))
+
+
+def observation_text_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_text_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_text_scope():
+    if not observation_text_source():
+        return None
+    return (
+        " O disco recusa que o texto prove o estado "
+        "(`texto`). Texto no disco não é o estado."
     )
 
 
