@@ -6315,6 +6315,42 @@ def feel_observations_jump_scope():
     )
 
 
+
+# A receita já recusa que o
+# giro completo prove os
+# saltos. Sem isto o feel
+# listava o recibo e calava
+# a recusa. Giro no disco
+# não é os saltos.
+FEEL_TURN = re.compile(r"giro completo")
+
+
+def recipe_refuses_full_turn_as_proving_jumps(text):
+    return bool(text and FEEL_TURN.search(text))
+
+
+def feel_observations_turn_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_full_turn_as_proving_jumps(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_turn_scope():
+    if not feel_observations_turn_source():
+        return None
+    return (
+        " O disco recusa que o giro completo prove os saltos "
+        "(`giro`). Giro no disco não é os saltos."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -6407,6 +6443,9 @@ def feel_observations_scope():
     leap = feel_observations_jump_scope()
     if leap:
         scope += leap
+    spin = feel_observations_turn_scope()
+    if spin:
+        scope += spin
     return scope
 
 
