@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.989 — o record nomeia o desmontar que a receita já recusa
+
+A
+receita
+já
+pedia
+para
+executar
+montar,
+desmontar
+e
+montar
+e
+comparar
+o
+consumo.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+o
+desmontar.
+Desmontar
+no
+disco
+não
+é
+o
+vazamento.
+Sem
+chave
+`desmontar`.
+Nomear
+não
+mede.
+
 ## 0.9.988 — o save nomeia os itens que a receita já recusa
 
 A
