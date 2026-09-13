@@ -5360,6 +5360,9 @@ def _feel_scope(project):
     veil = feel_threat_scope()
     if veil:
         scope += veil
+    hitch = feel_stutter_scope()
+    if hitch:
+        scope += hitch
     return scope
 
 
@@ -5913,6 +5916,41 @@ def feel_threat_scope():
     return (
         " O disco recusa que a câmera esconda a ameaça "
         "(`ameaça`). Look no disco não é a ameaça."
+    )
+
+
+# A receita já recusa que o
+# preset baixo quebre mais
+# que o stutter. Sem isto o
+# feel lia o CONFIG e calava
+# a recusa. Preset no disco
+# não é o stutter.
+FEEL_STUTTER = re.compile(r"stutter quebra o feel")
+
+
+def recipe_refuses_preset_as_breaking_more_than_stutter(text):
+    return bool(text and FEEL_STUTTER.search(text))
+
+
+def feel_stutter_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_preset_as_breaking_more_than_stutter(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_stutter_scope():
+    if not feel_stutter_source():
+        return None
+    return (
+        " O disco recusa que o preset baixo quebre mais que o stutter "
+        "(`stutter`). Preset no disco não é o stutter."
     )
 
 
