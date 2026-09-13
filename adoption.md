@@ -30,6 +30,54 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.821 — o `record` nomeia o mapa que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+copiar
+um
+mapa
+grande
+pode
+custar
+mais
+que
+redesenhar
+o
+conteúdo
+visível.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+`record`
+nomeia
+o
+mapa.
+Cópia
+no
+disco
+não
+é
+o
+visível.
+Sem
+chave
+`mapa`.
+Nomear
+não
+mede.
+
 ## 0.9.820 — o `save` nomeia a conquista que a receita já recusa
 
 A

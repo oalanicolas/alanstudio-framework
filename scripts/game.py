@@ -23878,6 +23878,9 @@ def record_scope():
     cull = record_culling_scope()
     if cull:
         scope += cull
+    blit = record_map_scope()
+    if blit:
+        scope += blit
     return scope
 
 
@@ -24374,6 +24377,40 @@ def record_culling_scope():
     return (
         " O disco recusa que o agrupamento preserve o culling "
         "(`culling`). Grupo no disco não é o culling."
+    )
+
+
+# A receita já recusa que copiar o
+# mapa custe menos que redesenhar.
+# Sem isto o record gravava o
+# recibo e calava a recusa. Cópia
+# no disco não é o visível.
+PERF_MAP = re.compile(r"Copiar um mapa grande")
+
+
+def recipe_refuses_copying_map_as_cheaper_than_redraw(text):
+    return bool(text and PERF_MAP.search(text))
+
+
+def record_map_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_copying_map_as_cheaper_than_redraw(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_map_scope():
+    if not record_map_source():
+        return None
+    return (
+        " O disco recusa que copiar o mapa custe menos que redesenhar "
+        "(`mapa`). Cópia no disco não é o visível."
     )
 
 
