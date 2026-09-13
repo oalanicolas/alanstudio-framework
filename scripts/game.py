@@ -24444,6 +24444,9 @@ def cycle_scope():
     hang = cycle_hanging_scope()
     if hang:
         scope += hang
+    slip = cycle_deslocamento_scope()
+    if slip:
+        scope += slip
     return scope or None
 
 
@@ -25718,6 +25721,42 @@ def cycle_hanging_scope():
     return (
         " O disco recusa que o corpo pendurado na borda prove o teste "
         "(`pendurado`). Pendurado no disco não é o teste."
+    )
+
+
+
+# A receita já recusa que o
+# deslocamento prove o teste.
+# Sem isto o ciclo anunciava
+# o verbo e calava a recusa.
+# Deslocamento no disco não
+# é o teste.
+FEEL_SHIFT = re.compile(r"deslocamento")
+
+
+def recipe_refuses_displacement_as_proving_test(text):
+    return bool(text and FEEL_SHIFT.search(text))
+
+
+def cycle_deslocamento_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_displacement_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_deslocamento_scope():
+    if not cycle_deslocamento_source():
+        return None
+    return (
+        " O disco recusa que o deslocamento prove o teste "
+        "(`deslocamento`). Deslocamento no disco não é o teste."
     )
 
 
