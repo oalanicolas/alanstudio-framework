@@ -4189,6 +4189,9 @@ def observation_item_scope():
     warn = observation_warn_scope()
     if warn:
         scope += warn
+    zoom = observation_scale_scope()
+    if zoom:
+        scope += zoom
     return scope
 
 
@@ -5022,6 +5025,42 @@ def observation_warn_scope():
     return (
         " O disco recusa que o aviso de ameaça fora da tela prove a audição "
         "(`aviso`). Aviso no disco não é a audição."
+    )
+
+
+
+# A receita já recusa que a
+# escala de interface e de
+# texto prove a leitura. Sem
+# isto o item copiava a nota
+# e calava a recusa. Escala
+# no disco não é a leitura.
+A11Y_INTERFACE = re.compile(r"Escala de interface e de texto")
+
+
+def recipe_refuses_interface_scale_as_proving_reading(text):
+    return bool(text and A11Y_INTERFACE.search(text))
+
+
+def observation_scale_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_interface_scale_as_proving_reading(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_scale_scope():
+    if not observation_scale_source():
+        return None
+    return (
+        " O disco recusa que a escala de interface prove a leitura "
+        "(`escala`). Escala no disco não é a leitura."
     )
 
 
