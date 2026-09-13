@@ -2888,6 +2888,42 @@ def craft_item_game_scope():
     )
 
 
+
+# A pesquisa já recusa que a
+# calibração honesta prove a
+# cadeia. Sem isto o item do
+# craft listava o checklist e
+# calava a recusa. Calibração
+# no disco não é a cadeia.
+CRAFT_CALIBRATE = re.compile(r"calibração honesta")
+
+
+def research_refuses_calibration_as_proving_chain(text):
+    return bool(text and CRAFT_CALIBRATE.search(text))
+
+
+def craft_item_calibrate_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_calibration_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_calibrate_scope():
+    if not craft_item_calibrate_source():
+        return None
+    return (
+        " O disco recusa que a calibração honesta prove a cadeia "
+        "(`calibração`). Calibração no disco não é a cadeia."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2995,6 +3031,9 @@ def craft_item_scope():
     cart = craft_item_game_scope()
     if cart:
         scope += cart
+    dial = craft_item_calibrate_scope()
+    if dial:
+        scope += dial
     return scope
 
 
