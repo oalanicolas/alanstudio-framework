@@ -12523,6 +12523,42 @@ def content_faces_scope():
     )
 
 
+
+# A receita já recusa que os
+# gradientes próprios provem
+# as emendas. Sem isto o
+# content listava arquivos e
+# calava a recusa. Gradientes
+# no disco não é as emendas.
+CONTENT_RAMPS = re.compile(r"gradientes próprios")
+
+
+def recipe_refuses_own_gradients_as_proving_seams(text):
+    return bool(text and CONTENT_RAMPS.search(text))
+
+
+def content_ramps_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_own_gradients_as_proving_seams(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_ramps_scope():
+    if not content_ramps_source():
+        return None
+    return (
+        " O disco recusa que os gradientes próprios provem as emendas "
+        "(`gradientes`). Gradientes no disco não é as emendas."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -12848,6 +12884,9 @@ def content_reading(project):
     side = content_faces_scope()
     if side:
         scope += side
+    ramp = content_ramps_scope()
+    if ramp:
+        scope += ramp
     listed = files[:24]
     if listed:
         listed = {
