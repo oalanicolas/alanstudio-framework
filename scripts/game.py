@@ -8583,6 +8583,41 @@ def save_inconsistency_scope():
     )
 
 
+
+
+# A receita já recusa que o
+# derivado prove os caminhos.
+# Sem isto o save lia o schema
+# e calava a recusa. Derivado
+# no disco não é os caminhos.
+PERSIST_PATHS = re.compile(r"dois caminhos")
+
+
+def recipe_refuses_derived_as_proving_paths(text):
+    return bool(text and PERSIST_PATHS.search(text))
+
+
+def save_paths_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_derived_as_proving_paths(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_paths_scope():
+    if not save_paths_source():
+        return None
+    return (
+        " O disco recusa que o derivado prove os caminhos "
+        "(`caminhos`). Derivado no disco não é os caminhos."
+    )
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -9253,6 +9288,9 @@ def save_reading(project):
     skew = save_inconsistency_scope()
     if skew:
         scope += skew
+    fork = save_paths_scope()
+    if fork:
+        scope += fork
     used_flag = bool(used)
     if used_flag:
         used_flag = {
