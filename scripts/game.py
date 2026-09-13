@@ -2599,6 +2599,42 @@ def craft_item_citable_scope():
     )
 
 
+
+# A pesquisa já recusa que o
+# revisado por pares prove os
+# dados. Sem isto o item do
+# craft listava o checklist e
+# calava a recusa. Pares no
+# disco não é os dados.
+CRAFT_PEERS = re.compile(r"revisado por pares")
+
+
+def research_refuses_peer_review_as_proving_data(text):
+    return bool(text and CRAFT_PEERS.search(text))
+
+
+def craft_item_peers_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_peer_review_as_proving_data(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_peers_scope():
+    if not craft_item_peers_source():
+        return None
+    return (
+        " O disco recusa que o revisado por pares prove os dados "
+        "(`pares`). Pares no disco não é os dados."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2682,6 +2718,9 @@ def craft_item_scope():
     repo = craft_item_citable_scope()
     if repo:
         scope += repo
+    peers = craft_item_peers_scope()
+    if peers:
+        scope += peers
     return scope
 
 
