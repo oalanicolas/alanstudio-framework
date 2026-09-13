@@ -2707,6 +2707,42 @@ def craft_item_news_scope():
     )
 
 
+
+# A pesquisa já recusa que os
+# posts provem a cadeia. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Posts no disco não
+# é a cadeia.
+CRAFT_POSTS = re.compile(r"citando posts")
+
+
+def research_refuses_posts_as_proving_chain(text):
+    return bool(text and CRAFT_POSTS.search(text))
+
+
+def craft_item_posts_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_posts_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_posts_scope():
+    if not craft_item_posts_source():
+        return None
+    return (
+        " O disco recusa que os posts provem a cadeia "
+        "(`posts`). Posts no disco não é a cadeia."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2799,6 +2835,9 @@ def craft_item_scope():
     news = craft_item_news_scope()
     if news:
         scope += news
+    cite = craft_item_posts_scope()
+    if cite:
+        scope += cite
     return scope
 
 
