@@ -12062,6 +12062,42 @@ def content_texture_scope():
     )
 
 
+
+# A receita já recusa que o
+# ruído não periódico prove
+# as bordas. Sem isto o
+# content listava arquivos e
+# calava a recusa. Ruído no
+# disco não é as bordas.
+CONTENT_NOISE = re.compile(r"Ruído não periódico")
+
+
+def recipe_refuses_aperiodic_noise_as_proving_edges(text):
+    return bool(text and CONTENT_NOISE.search(text))
+
+
+def content_noise_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_aperiodic_noise_as_proving_edges(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_noise_scope():
+    if not content_noise_source():
+        return None
+    return (
+        " O disco recusa que o ruído não periódico prove as bordas "
+        "(`ruído`). Ruído no disco não é as bordas."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -12381,6 +12417,9 @@ def content_reading(project):
     tile = content_texture_scope()
     if tile:
         scope += tile
+    grain = content_noise_scope()
+    if grain:
+        scope += grain
     listed = files[:24]
     if listed:
         listed = {

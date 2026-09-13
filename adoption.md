@@ -30,6 +30,59 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.888 — o content nomeia o ruído que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+ruído
+não
+periódico,
+faces
+laterais
+e
+gradientes
+próprios
+de
+cada
+tile
+podem
+produzir
+emendas
+mesmo
+em
+alta
+resolução.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+content
+nomeia
+o
+ruído.
+Ruído
+no
+disco
+não
+é
+as
+bordas.
+Sem
+chave
+`ruído`.
+Nomear
+não
+observa.
+
 ## 0.9.887 — o item do craft nomeia os pares que a pesquisa já recusa
 
 A
