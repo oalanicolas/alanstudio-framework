@@ -30,6 +30,65 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.882 — o ciclo nomeia a trava que a receita já recusa
+
+A
+receita
+já
+pedia
+para
+reproduzir
+input
+durante
+a
+trava
+residual
+e
+registrava
+que
+a
+captura
+do
+buffer
+precisa
+considerar
+todas
+as
+condições
+que
+realmente
+impedem
+a
+ação.
+O
+ciclo
+anunciava
+o
+verbo
+e
+calava
+a
+recusa.
+Agora
+o
+ciclo
+nomeia
+a
+trava.
+Trava
+no
+disco
+não
+é
+o
+buffer.
+Sem
+chave
+`trava`.
+Nomear
+não
+observa.
+
 ## 0.9.881 — o item da observação nomeia o diálogo que a receita já recusa
 
 A
