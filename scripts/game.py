@@ -2526,6 +2526,42 @@ def craft_item_notice_scope():
         "(`notar`). Notar no disco não é a acurácia."
     )
 
+
+
+# A pesquisa já recusa que o
+# blog sem fontes prove o
+# método. Sem isto o item do
+# craft listava o checklist e
+# calava a recusa. Blog no
+# disco não é o método.
+CRAFT_BLOG = re.compile(r"blog sem fontes")
+
+
+def research_refuses_sourceless_blog_as_proving_method(text):
+    return bool(text and CRAFT_BLOG.search(text))
+
+
+def craft_item_blog_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_sourceless_blog_as_proving_method(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_blog_scope():
+    if not craft_item_blog_source():
+        return None
+    return (
+        " O disco recusa que o blog sem fontes prove o método "
+        "(`blog`). Blog no disco não é o método."
+    )
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2603,6 +2639,9 @@ def craft_item_scope():
     heed = craft_item_notice_scope()
     if heed:
         scope += heed
+    post = craft_item_blog_scope()
+    if post:
+        scope += post
     return scope
 
 

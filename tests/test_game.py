@@ -13516,6 +13516,67 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.pin_created_scope())
         self.assertNotIn("notar", game.CYCLE_KEYS)
 
+
+    def test_craft_item_names_the_blog_the_research_already_refuses(self):
+        research = (
+            game.FRAMEWORK / "references/observable-criteria-research.md"
+        ).read_text(encoding="utf-8")
+        self.assertRegex(research, r"blog sem fontes")
+        self.assertTrue(
+            game.research_refuses_sourceless_blog_as_proving_method(research),
+            "a pesquisa já recusa que o blog sem fontes prove o método",
+        )
+        self.assertEqual(
+            game.craft_item_blog_source(),
+            "references/observable-criteria-research.md",
+        )
+        report = game.craft_reading(self.project)
+        item = report["checks"][0]
+        self.assertIn(
+            "o blog sem fontes prove o método",
+            item["scope"],
+            "o item do craft listava o checklist e calava a recusa",
+        )
+        self.assertIn("(`blog`)", item["scope"])
+        self.assertIn("Blog no disco não é o método.", item["scope"])
+        self.assertNotIn("blog", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.research_refuses_sourceless_blog_as_proving_method(""))
+        with mock.patch.object(game, "craft_item_blog_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn(
+            "o blog sem fontes prove o método",
+            silent["checks"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(research.count("nomeia o blog que a pesquisa já recusa"), 2)
+        self.assertIn("nomeia o blog que a pesquisa já recusa", recipe)
+        self.assertIn("nomeia o blog que a pesquisa já recusa", skill)
+        self.assertIn("nomeia o blog que a pesquisa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("16 ms", item["scope"])
+        self.assertNotIn("verified", recipe)
+        phrase = "o blog sem fontes prove o método"
+        self.assertNotIn(phrase, report["scope"])
+        self.assertNotIn(phrase, game.craft_sources_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.gate_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.bar_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn("blog", game.CYCLE_KEYS)
+
     def test_craft_names_the_definition_the_research_already_refuses(self):
         research = (
             game.FRAMEWORK / "references/observable-criteria-research.md"
