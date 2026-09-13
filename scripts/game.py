@@ -27132,6 +27132,9 @@ def record_scope():
     swap = record_scene_scope()
     if swap:
         scope += swap
+    load = record_load_scope()
+    if load:
+        scope += load
     return scope
 
 
@@ -28048,6 +28051,42 @@ def record_scene_scope():
     return (
         " O disco recusa que a mudança de cena prove o engasgo "
         "(`cena`). Cena no disco não é o engasgo."
+    )
+
+
+
+# A receita já recusa que o
+# carregamento prove o
+# engasgo. Sem isto o record
+# gravava o recibo e calava a
+# recusa. Carregamento no
+# disco não é o engasgo.
+PERF_LOAD = re.compile(r"carregamento e decodificação")
+
+
+def recipe_refuses_load_as_proving_hitch(text):
+    return bool(text and PERF_LOAD.search(text))
+
+
+def record_load_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_load_as_proving_hitch(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_load_scope():
+    if not record_load_source():
+        return None
+    return (
+        " O disco recusa que o carregamento prove o engasgo "
+        "(`carregamento`). Carregamento no disco não é o engasgo."
     )
 
 
