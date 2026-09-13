@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.991 — o item do craft nomeia o replicável que a pesquisa já recusa
+
+A
+pesquisa
+já
+pedia
+um
+método
+replicável:
+gravar
+com
+câmera
+de
+alta
+taxa.
+O
+item
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+o
+replicável.
+Replicável
+no
+disco
+não
+é
+a
+cadeia.
+Sem
+chave
+`replicável`.
+Nomear
+não
+observa.
+
 ## 0.9.990 — o observations do feel nomeia os testes que a receita já recusa
 
 A
