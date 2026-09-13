@@ -4232,6 +4232,9 @@ def observation_item_scope():
     zoom = observation_scale_scope()
     if zoom:
         scope += zoom
+    nav = observation_visible_scope()
+    if nav:
+        scope += nav
     return scope
 
 
@@ -5101,6 +5104,42 @@ def observation_scale_scope():
     return (
         " O disco recusa que a escala de interface prove a leitura "
         "(`escala`). Escala no disco não é a leitura."
+    )
+
+
+
+# A receita já recusa que o
+# foco visível prove a
+# navegação. Sem isto o item
+# copiava a nota e calava a
+# recusa. Visível no disco
+# não é a navegação.
+A11Y_NAV = re.compile(r"foco visível na navegação")
+
+
+def recipe_refuses_visible_focus_as_proving_navigation(text):
+    return bool(text and A11Y_NAV.search(text))
+
+
+def observation_visible_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_visible_focus_as_proving_navigation(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_visible_scope():
+    if not observation_visible_source():
+        return None
+    return (
+        " O disco recusa que o foco visível prove a navegação "
+        "(`visível`). Visível no disco não é a navegação."
     )
 
 
