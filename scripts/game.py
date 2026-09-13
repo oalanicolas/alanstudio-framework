@@ -26029,6 +26029,9 @@ def record_scope():
     flow = record_reflow_scope()
     if flow:
         scope += flow
+    gc = record_trash_scope()
+    if gc:
+        scope += gc
     return scope
 
 
@@ -26801,6 +26804,42 @@ def record_reflow_scope():
     return (
         " O disco recusa que o reflow prove o engasgo "
         "(`reflow`). Reflow no disco não é o engasgo."
+    )
+
+
+
+# A receita já recusa que a
+# coleta de lixo prove o
+# engasgo. Sem isto o record
+# gravava o recibo e calava a
+# recusa. Lixo no disco não é
+# o engasgo.
+PERF_TRASH = re.compile(r"coleta de lixo")
+
+
+def recipe_refuses_garbage_collection_as_proving_hitch(text):
+    return bool(text and PERF_TRASH.search(text))
+
+
+def record_trash_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_garbage_collection_as_proving_hitch(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_trash_scope():
+    if not record_trash_source():
+        return None
+    return (
+        " O disco recusa que a coleta de lixo prove o engasgo "
+        "(`lixo`). Lixo no disco não é o engasgo."
     )
 
 
