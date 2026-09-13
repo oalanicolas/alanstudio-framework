@@ -6659,6 +6659,9 @@ def _feel_scope(project):
     hue = feel_style_scope()
     if hue:
         scope += hue
+    amp = feel_intensity_scope()
+    if amp:
+        scope += amp
     return scope
 
 
@@ -7598,6 +7601,42 @@ def feel_style_scope():
     return (
         " O disco recusa que o estilo prove a referência "
         "(`estilo`). Estilo no disco não é a referência."
+    )
+
+
+
+# A receita já recusa que a
+# intensidade prove a
+# referência. Sem isto o feel
+# lia o CONFIG e calava a
+# recusa. Intensidade no disco
+# não é a referência.
+FEEL_INTENSITY = re.compile(r"a intensidade e a continuidade")
+
+
+def recipe_refuses_intensity_as_proving_reference(text):
+    return bool(text and FEEL_INTENSITY.search(text))
+
+
+def feel_intensity_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_intensity_as_proving_reference(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_intensity_scope():
+    if not feel_intensity_source():
+        return None
+    return (
+        " O disco recusa que a intensidade prove a referência "
+        "(`intensidade`). Intensidade no disco não é a referência."
     )
 
 
