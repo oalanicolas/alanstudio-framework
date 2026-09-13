@@ -4526,6 +4526,9 @@ def observation_item_scope():
     roster = observation_commands_scope()
     if roster:
         scope += roster
+    tray = observation_menu_scope()
+    if tray:
+        scope += tray
     return scope
 
 
@@ -5645,6 +5648,42 @@ def observation_commands_scope():
     return (
         " O disco recusa que a tabela de comandos prove o estado "
         "(`comandos`). Comandos no disco não é o estado."
+    )
+
+
+
+# A receita já recusa que as
+# opções já presentes no menu
+# provem o estado. Sem isto o
+# item copiava a nota e
+# calava a recusa. Menu no
+# disco não é o estado.
+A11Y_MENU = re.compile(r"presentes no menu")
+
+
+def recipe_refuses_menu_as_proving_state(text):
+    return bool(text and A11Y_MENU.search(text))
+
+
+def observation_menu_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_menu_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_menu_scope():
+    if not observation_menu_source():
+        return None
+    return (
+        " O disco recusa que as opções já presentes no menu provem o estado "
+        "(`menu`). Menu no disco não é o estado."
     )
 
 
