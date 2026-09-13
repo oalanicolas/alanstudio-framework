@@ -30,6 +30,53 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.900 — o save nomeia o foco que a receita já recusa
+
+A
+receita
+já
+pedia
+para
+verificar
+o
+que
+acontece
+na
+interrupção
+abrupta
+incluindo
+perda
+de
+foco.
+O
+save
+lia
+o
+schema
+e
+calava
+a
+recusa.
+Agora
+o
+save
+nomeia
+o
+foco.
+Foco
+no
+disco
+não
+é
+a
+interrupção.
+Sem
+chave
+`foco`.
+Nomear
+não
+observa.
+
 ## 0.9.899 — o feel nomeia o estilo que a receita já recusa
 
 A

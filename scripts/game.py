@@ -9348,6 +9348,42 @@ def save_process_scope():
     )
 
 
+
+# A receita já recusa que a
+# perda de foco prove a
+# interrupção. Sem isto o save
+# lia o schema e calava a recusa.
+# Foco no disco não é a
+# interrupção.
+PERSIST_FOCUS = re.compile(r"perda de foco")
+
+
+def recipe_refuses_focus_loss_as_proving_interruption(text):
+    return bool(text and PERSIST_FOCUS.search(text))
+
+
+def save_focus_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_focus_loss_as_proving_interruption(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_focus_scope():
+    if not save_focus_source():
+        return None
+    return (
+        " O disco recusa que a perda de foco prove a interrupção "
+        "(`foco`). Foco no disco não é a interrupção."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -10030,6 +10066,9 @@ def save_reading(project):
     kill = save_process_scope()
     if kill:
         scope += kill
+    blur = save_focus_scope()
+    if blur:
+        scope += blur
     used_flag = bool(used)
     if used_flag:
         used_flag = {
