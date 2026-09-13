@@ -30,6 +30,53 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.814 — o `observations` do `feel` nomeia o ritmo que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+juice
+que
+atrasa
+o
+próximo
+input
+além
+do
+ritmo
+não
+vale.
+O
+feel
+listava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+as
+observations
+nomeiam
+o
+ritmo.
+Juice
+no
+disco
+não
+é
+o
+ritmo.
+Sem
+chave
+`ritmo`.
+Nomear
+não
+observa.
+
 ## 0.9.813 — o `record` nomeia o culling que a receita já recusa
 
 A

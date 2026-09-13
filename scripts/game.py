@@ -4517,6 +4517,41 @@ def feel_observations_particles_scope():
     )
 
 
+# A receita já recusa que o
+# juice atrase o próximo
+# input. Sem isto o feel
+# listava o recibo e calava
+# a recusa. Juice no disco
+# não é o ritmo.
+FEEL_RHYTHM = re.compile(r"Juice que atrasa")
+
+
+def recipe_refuses_juice_as_the_rhythm(text):
+    return bool(text and FEEL_RHYTHM.search(text))
+
+
+def feel_observations_rhythm_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_juice_as_the_rhythm(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_rhythm_scope():
+    if not feel_observations_rhythm_source():
+        return None
+    return (
+        " O disco recusa que o juice atrase o próximo input "
+        "(`ritmo`). Juice no disco não é o ritmo."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -4561,6 +4596,9 @@ def feel_observations_scope():
     dust = feel_observations_particles_scope()
     if dust:
         scope += dust
+    pace = feel_observations_rhythm_scope()
+    if pace:
+        scope += pace
     return scope
 
 
