@@ -8027,6 +8027,40 @@ def save_controls_scope():
     )
 
 
+# A receita já recusa que apagar
+# a partida apague a acessibilidade.
+# Sem isto o save lia o schema e
+# calava a recusa. Partida no
+# disco não é a acessibilidade.
+PERSIST_ACCESSIBILITY = re.compile(r"acessibilidade, idioma")
+
+
+def recipe_refuses_deleting_run_as_wiping_accessibility(text):
+    return bool(text and PERSIST_ACCESSIBILITY.search(text))
+
+
+def save_accessibility_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_deleting_run_as_wiping_accessibility(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_accessibility_scope():
+    if not save_accessibility_source():
+        return None
+    return (
+        " O disco recusa que apagar a partida apague a acessibilidade "
+        "(`acessibilidade`). Partida no disco não é a acessibilidade."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -8688,6 +8722,9 @@ def save_reading(project):
     pads = save_controls_scope()
     if pads:
         scope += pads
+    ease = save_accessibility_scope()
+    if ease:
+        scope += ease
     used_flag = bool(used)
     if used_flag:
         used_flag = {
