@@ -7472,6 +7472,40 @@ def save_rebuilt_scope():
     )
 
 
+# A receita já recusa que a
+# conquista seja o save. Sem
+# isto o save lia o schema e
+# calava a recusa. Rótulo no
+# disco não é a conquista.
+PERSIST_CONQUEST = re.compile(r"não aceitaria perder")
+
+
+def recipe_refuses_conquest_as_the_save(text):
+    return bool(text and PERSIST_CONQUEST.search(text))
+
+
+def save_conquest_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_conquest_as_the_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_conquest_scope():
+    if not save_conquest_source():
+        return None
+    return (
+        " O disco recusa que a conquista seja o save "
+        "(`conquista`). Rótulo no disco não é a conquista."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -8124,6 +8158,9 @@ def save_reading(project):
     again = save_rebuilt_scope()
     if again:
         scope += again
+    kept = save_conquest_scope()
+    if kept:
+        scope += kept
     used_flag = bool(used)
     if used_flag:
         used_flag = {
