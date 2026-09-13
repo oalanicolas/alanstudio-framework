@@ -19978,6 +19978,9 @@ def cycle_scope():
     limb = cycle_limb_scope()
     if limb:
         scope += limb
+    wind = cycle_startup_scope()
+    if wind:
+        scope += wind
     return scope or None
 
 
@@ -20573,6 +20576,40 @@ def cycle_limb_scope():
     return (
         " O disco recusa que o frame pausado pare o membro "
         "(`membro`). Frame no disco não é o membro."
+    )
+
+
+# A receita já recusa que anunciar
+# o verbo prove o startup. Sem
+# isto o ciclo anunciava o verbo
+# e calava a recusa. Verbo no
+# disco não é o startup.
+FEEL_STARTUP = re.compile(r"Verifique startup")
+
+
+def recipe_refuses_announcing_verb_as_proving_startup(text):
+    return bool(text and FEEL_STARTUP.search(text))
+
+
+def cycle_startup_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_announcing_verb_as_proving_startup(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_startup_scope():
+    if not cycle_startup_source():
+        return None
+    return (
+        " O disco recusa que anunciar o verbo prove o startup "
+        "(`startup`). Verbo no disco não é o startup."
     )
 
 
