@@ -24682,6 +24682,9 @@ def cycle_scope():
     slip = cycle_deslocamento_scope()
     if slip:
         scope += slip
+    fade = cycle_transicoes_scope()
+    if fade:
+        scope += fade
     return scope or None
 
 
@@ -25992,6 +25995,43 @@ def cycle_deslocamento_scope():
     return (
         " O disco recusa que o deslocamento prove o teste "
         "(`deslocamento`). Deslocamento no disco não é o teste."
+    )
+
+
+
+
+# A receita já recusa que as
+# transições provem o teste.
+# Sem isto o ciclo anunciava
+# o verbo e calava a recusa.
+# Transições no disco não é
+# o teste.
+FEEL_XFER = re.compile(r"transições")
+
+
+def recipe_refuses_transitions_as_proving_test(text):
+    return bool(text and FEEL_XFER.search(text))
+
+
+def cycle_transicoes_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_transitions_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_transicoes_scope():
+    if not cycle_transicoes_source():
+        return None
+    return (
+        " O disco recusa que as transições provem o teste "
+        "(`transições`). Transições no disco não é o teste."
     )
 
 
