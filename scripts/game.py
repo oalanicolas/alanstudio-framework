@@ -6729,6 +6729,40 @@ def save_exception_scope():
     )
 
 
+# A receita já recusa que o
+# estágio seja transação. Sem
+# isto o save lia o schema e
+# calava a recusa. Alvo no
+# disco não é a transação.
+PERSIST_TXN = re.compile(r"IndexedDB tem\s+transação")
+
+
+def recipe_refuses_stage_as_transaction(text):
+    return bool(text and PERSIST_TXN.search(text))
+
+
+def save_transaction_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_stage_as_transaction(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_transaction_scope():
+    if not save_transaction_source():
+        return None
+    return (
+        " O disco recusa que o estágio seja transação "
+        "(`transação`). Alvo no disco não é a transação."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -7369,6 +7403,9 @@ def save_reading(project):
     fault = save_exception_scope()
     if fault:
         scope += fault
+    txn = save_transaction_scope()
+    if txn:
+        scope += txn
     used_flag = bool(used)
     if used_flag:
         used_flag = {

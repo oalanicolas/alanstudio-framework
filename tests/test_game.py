@@ -19222,6 +19222,75 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.git_summary_scope())
         self.assertNotIn("exceção", game.CYCLE_KEYS)
 
+    def test_save_names_the_transaction_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"IndexedDB tem\s+transação")
+        self.assertTrue(
+            game.recipe_refuses_stage_as_transaction(recipe),
+            "a receita já recusa que o estágio seja transação",
+        )
+        self.assertEqual(game.save_transaction_source(), "recipes/persistence.md")
+        report = game.save_reading(self.project)
+        self.assertIn(
+            "o estágio seja transação",
+            report["scope"],
+            "o save lia o schema e calava a recusa",
+        )
+        self.assertIn("(`transação`)", report["scope"])
+        self.assertIn("Alvo no disco não é a transação.", report["scope"])
+        self.assertNotIn("transação", report)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_stage_as_transaction(""))
+        with mock.patch.object(game, "save_transaction_source", return_value=None):
+            silent = game.save_reading(self.project)
+        self.assertNotIn("o estágio seja transação", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a transação que a receita já recusa"), 2)
+        self.assertIn("nomeia a transação que a receita já recusa", create)
+        self.assertIn("nomeia a transação que a receita já recusa", skill)
+        self.assertIn("nomeia a transação que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        used = report.get("used")
+        if isinstance(used, dict):
+            self.assertNotIn(
+                "o estágio seja transação",
+                used.get("scope") or "",
+            )
+        warned = report.get("warned")
+        if isinstance(warned, dict):
+            self.assertNotIn(
+                "o estágio seja transação",
+                warned.get("scope") or "",
+            )
+        sources = report.get("sources")
+        if isinstance(sources, dict):
+            self.assertNotIn(
+                "o estágio seja transação",
+                sources.get("scope") or "",
+            )
+        phrase = "o estágio seja transação"
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.craft_reading(self.project)["scope"])
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertNotIn(phrase, game.art_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.play_scope(starter))
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.git_summary_scope())
+        self.assertNotIn("transação", game.CYCLE_KEYS)
+
     def test_save_sources_names_the_chain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         self.assertTrue(
