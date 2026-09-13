@@ -23970,6 +23970,9 @@ def cycle_scope():
     ratio = cycle_proportions_scope()
     if ratio:
         scope += ratio
+    walk = cycle_platforms_scope()
+    if walk:
+        scope += walk
     return scope or None
 
 
@@ -25170,6 +25173,43 @@ def cycle_proportions_scope():
     return (
         " O disco recusa que as proporções de cada avatar provem o teste "
         "(`proporções`). Proporções no disco não é o teste."
+    )
+
+
+
+# A receita já recusa que o
+# corpo cruzando plataformas
+# prove o teste. Sem isto o
+# ciclo anunciava o verbo e
+# calava a recusa.
+# Plataformas no disco não
+# é o teste.
+FEEL_PLAT = re.compile(r"cruzando plataformas")
+
+
+def recipe_refuses_platforms_as_proving_test(text):
+    return bool(text and FEEL_PLAT.search(text))
+
+
+def cycle_platforms_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_platforms_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_platforms_scope():
+    if not cycle_platforms_source():
+        return None
+    return (
+        " O disco recusa que o corpo cruzando plataformas prove o teste "
+        "(`plataformas`). Plataformas no disco não é o teste."
     )
 
 
