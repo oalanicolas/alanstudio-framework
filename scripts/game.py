@@ -11373,6 +11373,41 @@ def content_machine_scope():
     )
 
 
+
+
+# A receita já recusa que limitar
+# os vivos prove a exportação. Sem
+# isto o content listava arquivos
+# e calava a recusa. Vivos no
+# disco não é a exportação.
+CONTENT_LIVE = re.compile(r"objetos vivos")
+
+
+def recipe_refuses_limiting_live_as_proving_export(text):
+    return bool(text and CONTENT_LIVE.search(text))
+
+
+def content_live_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_limiting_live_as_proving_export(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_live_scope():
+    if not content_live_source():
+        return None
+    return (
+        " O disco recusa que limitar os vivos prove a exportação "
+        "(`vivos`). Vivos no disco não é a exportação."
+    )
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -11683,6 +11718,9 @@ def content_reading(project):
     gear = content_machine_scope()
     if gear:
         scope += gear
+    herd = content_live_scope()
+    if herd:
+        scope += herd
     listed = files[:24]
     if listed:
         listed = {
