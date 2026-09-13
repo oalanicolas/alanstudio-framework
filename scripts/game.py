@@ -11600,6 +11600,42 @@ def content_live_scope():
         "(`vivos`). Vivos no disco não é a exportação."
     )
 
+
+
+# A receita já recusa que
+# preservar o arquivo autoral
+# prove a preparação. Sem isto
+# o content listava arquivos e
+# calava a recusa. Autoral no
+# disco não é a preparação.
+CONTENT_AUTHORIAL = re.compile(r"arquivo autoral")
+
+
+def recipe_refuses_keeping_authorial_as_proving_prep(text):
+    return bool(text and CONTENT_AUTHORIAL.search(text))
+
+
+def content_authorial_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_keeping_authorial_as_proving_prep(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_authorial_scope():
+    if not content_authorial_source():
+        return None
+    return (
+        " O disco recusa que preservar o arquivo autoral prove a preparação "
+        "(`autoral`). Autoral no disco não é a preparação."
+    )
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -11913,6 +11949,9 @@ def content_reading(project):
     herd = content_live_scope()
     if herd:
         scope += herd
+    orig = content_authorial_scope()
+    if orig:
+        scope += orig
     listed = files[:24]
     if listed:
         listed = {
