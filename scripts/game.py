@@ -5478,6 +5478,9 @@ def _feel_scope(project):
     hitch = feel_stutter_scope()
     if hitch:
         scope += hitch
+    trim = feel_cut_scope()
+    if trim:
+        scope += trim
     return scope
 
 
@@ -6066,6 +6069,41 @@ def feel_stutter_scope():
     return (
         " O disco recusa que o preset baixo quebre mais que o stutter "
         "(`stutter`). Preset no disco não é o stutter."
+    )
+
+
+# A receita já recusa que
+# cortar o feel ganhe FPS.
+# Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# FPS no disco não é o
+# corte.
+FEEL_CUT = re.compile(r"Não corte feel para ganhar FPS")
+
+
+def recipe_refuses_cutting_feel_as_gaining_fps(text):
+    return bool(text and FEEL_CUT.search(text))
+
+
+def feel_cut_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_cutting_feel_as_gaining_fps(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_cut_scope():
+    if not feel_cut_source():
+        return None
+    return (
+        " O disco recusa que cortar o feel ganhe FPS "
+        "(`corte`). FPS no disco não é o corte."
     )
 
 

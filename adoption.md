@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.827 — o `feel` nomeia o corte que a receita já recusa
+
+A
+receita
+já
+dizia
+para
+não
+cortar
+feel
+para
+ganhar
+FPS.
+O
+feel
+lia
+o
+CONFIG
+e
+calava
+a
+recusa.
+Agora
+o
+`feel`
+nomeia
+o
+corte.
+FPS
+no
+disco
+não
+é
+o
+corte.
+Sem
+chave
+`corte`.
+Nomear
+não
+observa.
+
 ## 0.9.826 — o ciclo nomeia o membro que a receita já recusa
 
 A
