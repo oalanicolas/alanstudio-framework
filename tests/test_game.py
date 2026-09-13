@@ -12452,6 +12452,66 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.pin_created_scope())
         self.assertNotIn("fórmula", game.CYCLE_KEYS)
 
+    def test_craft_item_names_the_contradiction_the_research_already_refuses(self):
+        research = (
+            game.FRAMEWORK / "references/observable-criteria-research.md"
+        ).read_text(encoding="utf-8")
+        self.assertRegex(research, r"já contém a\s+contradição")
+        self.assertTrue(
+            game.research_refuses_constant_as_erasing_the_contradiction(research),
+            "a pesquisa já recusa que a constante apague a contradição",
+        )
+        self.assertEqual(
+            game.craft_item_contradiction_source(),
+            "references/observable-criteria-research.md",
+        )
+        report = game.craft_reading(self.project)
+        item = report["checks"][0]
+        self.assertIn(
+            "a constante apague a contradição",
+            item["scope"],
+            "o item do craft listava o checklist e calava a recusa",
+        )
+        self.assertIn("(`contradição`)", item["scope"])
+        self.assertIn("Fonte no disco não é a contradição.", item["scope"])
+        self.assertNotIn("contradição", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.research_refuses_constant_as_erasing_the_contradiction(""))
+        with mock.patch.object(game, "craft_item_contradiction_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn(
+            "a constante apague a contradição",
+            silent["checks"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(research.count("nomeia a contradição que a pesquisa já recusa"), 2)
+        self.assertIn("nomeia a contradição que a pesquisa já recusa", recipe)
+        self.assertIn("nomeia a contradição que a pesquisa já recusa", skill)
+        self.assertIn("nomeia a contradição que a pesquisa já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("16 ms", item["scope"])
+        self.assertNotIn("verified", recipe)
+        phrase = "a constante apague a contradição"
+        self.assertNotIn(phrase, report["scope"])
+        self.assertNotIn(phrase, game.craft_sources_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.gate_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.bar_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn("contradição", game.CYCLE_KEYS)
+
     def test_craft_names_the_definition_the_research_already_refuses(self):
         research = (
             game.FRAMEWORK / "references/observable-criteria-research.md"

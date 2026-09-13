@@ -2207,6 +2207,42 @@ def craft_item_formula_scope():
     )
 
 
+# A pesquisa já recusa que a
+# constante apague a
+# contradição. Sem isto o
+# item do craft listava o
+# checklist e calava a
+# recusa. Fonte no disco
+# não é a contradição.
+CRAFT_CONTRADICTION = re.compile(r"já contém a\s+contradição")
+
+
+def research_refuses_constant_as_erasing_the_contradiction(text):
+    return bool(text and CRAFT_CONTRADICTION.search(text))
+
+
+def craft_item_contradiction_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_constant_as_erasing_the_contradiction(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_contradiction_scope():
+    if not craft_item_contradiction_source():
+        return None
+    return (
+        " O disco recusa que a constante apague a contradição "
+        "(`contradição`). Fonte no disco não é a contradição."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2257,6 +2293,9 @@ def craft_item_scope():
     eqn = craft_item_formula_scope()
     if eqn:
         scope += eqn
+    rift = craft_item_contradiction_scope()
+    if rift:
+        scope += rift
     return scope
 
 

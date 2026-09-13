@@ -30,6 +30,55 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.799 — o item do craft nomeia a contradição que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+a
+fonte
+dos
+100
+ms
+contém
+a
+contradição
+do
+100
+ms
+como
+constante.
+O
+item
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+a
+contradição.
+Fonte
+no
+disco
+não
+é
+a
+contradição.
+Sem
+chave
+`contradição`.
+Nomear
+não
+observa.
+
 ## 0.9.798 — o `observations` do `feel` nomeia a silhueta que a receita já recusa
 
 A
