@@ -2454,6 +2454,42 @@ def craft_item_network_scope():
     )
 
 
+# A pesquisa já recusa que o
+# estudo local prove os
+# competitivos. Sem isto o
+# item do craft listava o
+# checklist e calava a recusa.
+# Estudo no disco não é os
+# competitivos.
+CRAFT_COMP = re.compile(r"jogadores competitivos")
+
+
+def research_refuses_local_study_as_proving_competitive(text):
+    return bool(text and CRAFT_COMP.search(text))
+
+
+def craft_item_competitive_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_local_study_as_proving_competitive(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_competitive_scope():
+    if not craft_item_competitive_source():
+        return None
+    return (
+        " O disco recusa que o estudo local prove os competitivos "
+        "(`competitivos`). Estudo no disco não é os competitivos."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2525,6 +2561,9 @@ def craft_item_scope():
     net = craft_item_network_scope()
     if net:
         scope += net
+    rank = craft_item_competitive_scope()
+    if rank:
+        scope += rank
     return scope
 
 
