@@ -2671,6 +2671,42 @@ def craft_item_raw_scope():
     )
 
 
+
+# A pesquisa já recusa que o
+# site de notícias prove a
+# cadeia. Sem isto o item do
+# craft listava o checklist e
+# calava a recusa. Notícias no
+# disco não é a cadeia.
+CRAFT_NEWS = re.compile(r"site de notícias")
+
+
+def research_refuses_news_site_as_proving_chain(text):
+    return bool(text and CRAFT_NEWS.search(text))
+
+
+def craft_item_news_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_news_site_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_news_scope():
+    if not craft_item_news_source():
+        return None
+    return (
+        " O disco recusa que o site de notícias prove a cadeia "
+        "(`notícias`). Notícias no disco não é a cadeia."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2760,6 +2796,9 @@ def craft_item_scope():
     raw = craft_item_raw_scope()
     if raw:
         scope += raw
+    news = craft_item_news_scope()
+    if news:
+        scope += news
     return scope
 
 
