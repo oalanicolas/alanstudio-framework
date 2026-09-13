@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.783 — o item do craft nomeia o avatar que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+nada
+nela
+mediu
+controle
+de
+avatar.
+O
+item
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+o
+avatar.
+Artigo
+no
+disco
+não
+é
+o
+avatar.
+Sem
+chave
+`avatar`.
+Nomear
+não
+observa.
+
 ## 0.9.782 — o observations do feel nomeia a tinta que a receita já recusa
 
 A

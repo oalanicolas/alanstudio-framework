@@ -2136,6 +2136,41 @@ def craft_item_cite_scope():
     )
 
 
+# A pesquisa já recusa que o
+# artigo meça controle de
+# avatar. Sem isto o item do
+# craft listava o checklist e
+# calava a recusa. Artigo no
+# disco não é o avatar.
+CRAFT_AVATAR = re.compile(r"Nada nela mediu controle de avatar")
+
+
+def research_refuses_miller_as_measuring_avatar_control(text):
+    return bool(text and CRAFT_AVATAR.search(text))
+
+
+def craft_item_avatar_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_miller_as_measuring_avatar_control(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_avatar_scope():
+    if not craft_item_avatar_source():
+        return None
+    return (
+        " O disco recusa que o artigo meça controle de avatar "
+        "(`avatar`). Artigo no disco não é o avatar."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2180,6 +2215,9 @@ def craft_item_scope():
     cite = craft_item_cite_scope()
     if cite:
         scope += cite
+    figure = craft_item_avatar_scope()
+    if figure:
+        scope += figure
     return scope
 
 
