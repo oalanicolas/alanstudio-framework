@@ -6202,6 +6202,42 @@ def feel_observations_hitstop_scope():
     )
 
 
+
+# A receita já recusa que o
+# salto na retomada prove o
+# relógio. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Salto no disco não
+# é o relógio.
+FEEL_JUMP = re.compile(r"salto na retomada")
+
+
+def recipe_refuses_resume_jump_as_proving_clock(text):
+    return bool(text and FEEL_JUMP.search(text))
+
+
+def feel_observations_jump_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_resume_jump_as_proving_clock(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_jump_scope():
+    if not feel_observations_jump_source():
+        return None
+    return (
+        " O disco recusa que o salto na retomada prove o relógio "
+        "(`salto`). Salto no disco não é o relógio."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -6291,6 +6327,9 @@ def feel_observations_scope():
     stun = feel_observations_hitstop_scope()
     if stun:
         scope += stun
+    leap = feel_observations_jump_scope()
+    if leap:
+        scope += leap
     return scope
 
 
