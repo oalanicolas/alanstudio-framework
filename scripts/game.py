@@ -3963,6 +3963,40 @@ def feel_observations_squash_scope():
     )
 
 
+# A receita já recusa que a
+# coleta acenda o campo. Sem
+# isto o feel listava o recibo
+# e calava a recusa. Coleta no
+# disco não é o erro.
+FEEL_LIGHT = re.compile(r"o erro acende o campo, a coleta não")
+
+
+def recipe_refuses_collect_as_lighting_the_field(text):
+    return bool(text and FEEL_LIGHT.search(text))
+
+
+def feel_observations_light_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_collect_as_lighting_the_field(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_light_scope():
+    if not feel_observations_light_source():
+        return None
+    return (
+        " O disco recusa que a coleta acenda o campo "
+        "(`acende`). Coleta no disco não é o erro."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -3992,6 +4026,9 @@ def feel_observations_scope():
     crush = feel_observations_squash_scope()
     if crush:
         scope += crush
+    glow = feel_observations_light_scope()
+    if glow:
+        scope += glow
     return scope
 
 
