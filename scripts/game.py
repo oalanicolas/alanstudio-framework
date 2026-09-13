@@ -4406,6 +4406,42 @@ def feel_observations_silhouette_scope():
     )
 
 
+# A receita já recusa que as
+# partículas tapem a
+# consequência. Sem isto o
+# feel listava o recibo e
+# calava a recusa. Partícula
+# no disco não é a
+# consequência.
+FEEL_PARTICLES = re.compile(r"Partículas que tapam")
+
+
+def recipe_refuses_particles_as_covering_the_consequence(text):
+    return bool(text and FEEL_PARTICLES.search(text))
+
+
+def feel_observations_particles_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_particles_as_covering_the_consequence(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_particles_scope():
+    if not feel_observations_particles_source():
+        return None
+    return (
+        " O disco recusa que as partículas tapem a consequência "
+        "(`partículas`). Partícula no disco não é a consequência."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -4447,6 +4483,9 @@ def feel_observations_scope():
     edge = feel_observations_silhouette_scope()
     if edge:
         scope += edge
+    dust = feel_observations_particles_scope()
+    if dust:
+        scope += dust
     return scope
 
 
