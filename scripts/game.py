@@ -22074,6 +22074,9 @@ def cycle_scope():
     lean = cycle_tilt_scope()
     if lean:
         scope += lean
+    atk = cycle_dash_attack_scope()
+    if atk:
+        scope += atk
     return scope or None
 
 
@@ -22985,6 +22988,42 @@ def cycle_tilt_scope():
     return (
         " O disco recusa que o tilt prove a prioridade "
         "(`tilt`). Tilt no disco não é a prioridade."
+    )
+
+
+
+# A receita já recusa que o
+# dash-attack prove a
+# prioridade. Sem isto o ciclo
+# anunciava o verbo e calava a
+# recusa. Dash-attack no disco
+# não é a prioridade.
+FEEL_DASH_ATTACK = re.compile(r"dash-attack")
+
+
+def recipe_refuses_dash_attack_as_proving_priority(text):
+    return bool(text and FEEL_DASH_ATTACK.search(text))
+
+
+def cycle_dash_attack_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_dash_attack_as_proving_priority(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_dash_attack_scope():
+    if not cycle_dash_attack_source():
+        return None
+    return (
+        " O disco recusa que o dash-attack prove a prioridade "
+        "(`dash-attack`). Dash-attack no disco não é a prioridade."
     )
 
 
