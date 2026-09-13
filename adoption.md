@@ -30,6 +30,46 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.832 — o `content` nomeia a compatibilidade que a receita já recusa
+
+A
+receita
+já
+dizia
+para
+testar
+o
+caminho
+de
+compatibilidade.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+`content`
+nomeia
+a
+compatibilidade.
+Arquivo
+no
+disco
+não
+é
+a
+compatibilidade.
+Sem
+chave
+`compatibilidade`.
+Nomear
+não
+observa.
+
 ## 0.9.831 — o item do craft nomeia a percepção que a pesquisa já recusa
 
 A

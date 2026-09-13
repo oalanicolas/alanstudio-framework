@@ -10484,6 +10484,41 @@ def content_animator_scope():
     )
 
 
+# A receita já recusa que listar o
+# arquivo prove a compatibilidade.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Arquivo no disco não é a
+# compatibilidade.
+CONTENT_COMPAT = re.compile(r"caminho de compatibilidade")
+
+
+def recipe_refuses_listing_file_as_proving_compatibility(text):
+    return bool(text and CONTENT_COMPAT.search(text))
+
+
+def content_compat_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_listing_file_as_proving_compatibility(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_compat_scope():
+    if not content_compat_source():
+        return None
+    return (
+        " O disco recusa que listar o arquivo prove a compatibilidade "
+        "(`compatibilidade`). Arquivo no disco não é a compatibilidade."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -10782,6 +10817,9 @@ def content_reading(project):
     anim = content_animator_scope()
     if anim:
         scope += anim
+    compat = content_compat_scope()
+    if compat:
+        scope += compat
     listed = files[:24]
     if listed:
         listed = {
