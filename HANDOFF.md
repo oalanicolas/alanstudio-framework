@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.868: o `save` nomeia os caminhos que a receita já recusa. Derivado no disco não é os caminhos. Sem chave `caminhos`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.868): **929 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
