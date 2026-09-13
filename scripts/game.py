@@ -24939,6 +24939,9 @@ def record_scope():
     sync = record_sync_scope()
     if sync:
         scope += sync
+    rim = record_edge_scope()
+    if rim:
+        scope += rim
     return scope
 
 
@@ -25571,6 +25574,40 @@ def record_sync_scope():
     return (
         " O disco recusa que copiar o mapa conte a sincronização "
         "(`sincronização`). Cópia no disco não é a sincronização."
+    )
+
+
+# A receita já recusa que repetir a
+# borda prove o quadro. Sem isto o
+# record gravava o recibo e calava a
+# recusa. Borda no disco não é o
+# quadro.
+PERF_EDGE = re.compile(r"eventos de borda, decisões")
+
+
+def recipe_refuses_repeating_edge_as_proving_frame(text):
+    return bool(text and PERF_EDGE.search(text))
+
+
+def record_edge_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_repeating_edge_as_proving_frame(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_edge_scope():
+    if not record_edge_source():
+        return None
+    return (
+        " O disco recusa que repetir a borda prove o quadro "
+        "(`borda`). Borda no disco não é o quadro."
     )
 
 
