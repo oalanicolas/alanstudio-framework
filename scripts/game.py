@@ -26856,6 +26856,9 @@ def record_scope():
     dec = record_decode_scope()
     if dec:
         scope += dec
+    swap = record_scene_scope()
+    if swap:
+        scope += swap
     return scope
 
 
@@ -27736,6 +27739,42 @@ def record_decode_scope():
     return (
         " O disco recusa que a decodificação de recurso prove o engasgo "
         "(`decodificação`). Decodificação no disco não é o engasgo."
+    )
+
+
+
+# A receita já recusa que a
+# mudança de cena prove o
+# engasgo. Sem isto o record
+# gravava o recibo e calava a
+# recusa. Cena no disco não é
+# o engasgo.
+PERF_SCENE = re.compile(r"mudança de cena")
+
+
+def recipe_refuses_scene_change_as_proving_hitch(text):
+    return bool(text and PERF_SCENE.search(text))
+
+
+def record_scene_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_scene_change_as_proving_hitch(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_scene_scope():
+    if not record_scene_source():
+        return None
+    return (
+        " O disco recusa que a mudança de cena prove o engasgo "
+        "(`cena`). Cena no disco não é o engasgo."
     )
 
 
