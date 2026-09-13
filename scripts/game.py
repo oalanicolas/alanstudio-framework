@@ -5177,6 +5177,41 @@ def feel_observations_consequence_scope():
     )
 
 
+
+
+# A receita já recusa que ficar
+# visual-only prove o feel. Sem
+# isto o feel listava o recibo
+# e calava a recusa. Visual no
+# disco não é o feel.
+FEEL_VISUAL = re.compile(r"visual-only")
+
+
+def recipe_refuses_visual_only_as_proving_feel(text):
+    return bool(text and FEEL_VISUAL.search(text))
+
+
+def feel_observations_visual_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_visual_only_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_visual_scope():
+    if not feel_observations_visual_source():
+        return None
+    return (
+        " O disco recusa que ficar visual-only prove o feel "
+        "(`visual`). Visual no disco não é o feel."
+    )
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -5239,6 +5274,9 @@ def feel_observations_scope():
     toll = feel_observations_consequence_scope()
     if toll:
         scope += toll
+    solo = feel_observations_visual_scope()
+    if solo:
+        scope += solo
     return scope
 
 
