@@ -22538,6 +22538,9 @@ def record_scope():
     mean = record_mean_scope()
     if mean:
         scope += mean
+    prior = record_prior_scope()
+    if prior:
+        scope += prior
     return scope
 
 
@@ -22857,6 +22860,43 @@ def record_mean_scope():
     return (
         " O disco recusa que o FPS médio esconda o problema que importa "
         "(`médio`). Média no disco não é o problema."
+    )
+
+
+# A receita já recusa que a falha
+# de gravação apague o registro
+# anterior. Sem isto o record
+# gravava o recibo e calava a
+# recusa. Falha no disco não é
+# o registro.
+PERF_PRIOR = re.compile(
+    r"falha de gravação deve preservar o registro anterior"
+)
+
+
+def recipe_refuses_write_failure_as_erasing_the_previous_record(text):
+    return bool(text and PERF_PRIOR.search(text))
+
+
+def record_prior_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_write_failure_as_erasing_the_previous_record(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_prior_scope():
+    if not record_prior_source():
+        return None
+    return (
+        " O disco recusa que a falha de gravação apague o registro anterior "
+        "(`registro`). Falha no disco não é o registro."
     )
 
 

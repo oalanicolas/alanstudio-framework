@@ -3385,6 +3385,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.next_scope())
         self.assertNotIn("médio", game.CYCLE_KEYS)
 
+    def test_record_names_the_prior_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"falha de gravação deve preservar o registro anterior")
+        self.assertTrue(
+            game.recipe_refuses_write_failure_as_erasing_the_previous_record(recipe),
+            "a receita já recusa que a falha de gravação apague o registro anterior",
+        )
+        self.assertEqual(game.record_prior_source(), "recipes/performance.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-781",
+        )
+        self.assertIn(
+            "a falha de gravação apague o registro anterior",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`registro`)", report["scope"])
+        self.assertIn("Falha no disco não é o registro.", report["scope"])
+        self.assertNotIn("registro", report)
+        self.assertFalse(game.recipe_refuses_write_failure_as_erasing_the_previous_record(""))
+        with mock.patch.object(game, "record_prior_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-781-silent",
+            )
+        self.assertNotIn(
+            "a falha de gravação apague o registro anterior",
+            silent["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o registro que a receita já recusa"), 2)
+        self.assertIn("nomeia o registro que a receita já recusa", production)
+        self.assertIn("nomeia o registro que a receita já recusa", skill)
+        self.assertIn("nomeia o registro que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        self.assertNotIn("verified", production)
+        phrase = "a falha de gravação apague o registro anterior"
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("registro", game.CYCLE_KEYS)
+
     def test_record_names_the_animation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(

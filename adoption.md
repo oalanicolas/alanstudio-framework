@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.781 — o record nomeia o registro que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+falha
+de
+gravação
+deve
+preservar
+o
+registro
+anterior.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+o
+registro.
+Falha
+no
+disco
+não
+é
+o
+registro.
+Sem
+chave
+`registro`.
+Nomear
+não
+mede.
+
 ## 0.9.780 — o save nomeia a exceção que a receita já recusa
 
 A
