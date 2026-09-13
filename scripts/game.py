@@ -4063,6 +4063,9 @@ def observation_item_scope():
     chat = observation_dialogue_scope()
     if chat:
         scope += chat
+    cue = observation_indicator_scope()
+    if cue:
+        scope += cue
     return scope
 
 
@@ -4788,6 +4791,42 @@ def observation_dialogue_scope():
     return (
         " O disco recusa que os nomes de quem fala em diálogo provem a audição "
         "(`diálogo`). Diálogo no disco não é a audição."
+    )
+
+
+
+# A receita já recusa que o
+# indicador visual prove a
+# audição. Sem isto o item
+# copiava a nota e calava a
+# recusa. Indicador no disco
+# não é a audição.
+A11Y_INDICATOR = re.compile(r"indicador visual")
+
+
+def recipe_refuses_visual_indicator_as_proving_hearing(text):
+    return bool(text and A11Y_INDICATOR.search(text))
+
+
+def observation_indicator_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_visual_indicator_as_proving_hearing(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_indicator_scope():
+    if not observation_indicator_source():
+        return None
+    return (
+        " O disco recusa que o indicador visual prove a audição "
+        "(`indicador`). Indicador no disco não é a audição."
     )
 
 
