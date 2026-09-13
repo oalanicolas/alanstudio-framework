@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.912 — o content nomeia as bordas que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+textura
+repetível
+exige
+bordas
+e
+iluminação
+compatíveis.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+content
+nomeia
+as
+bordas.
+Bordas
+no
+disco
+não
+é
+as
+emendas.
+Sem
+chave
+`bordas`.
+Nomear
+não
+observa.
+
 ## 0.9.911 — o item do craft nomeia os posts que a pesquisa já recusa
 
 A

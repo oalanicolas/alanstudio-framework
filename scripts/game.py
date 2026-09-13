@@ -12754,6 +12754,42 @@ def content_ramps_scope():
     )
 
 
+
+# A receita já recusa que as
+# bordas e a iluminação
+# provem as emendas. Sem isto
+# o content listava arquivos e
+# calava a recusa. Bordas no
+# disco não é as emendas.
+CONTENT_EDGES = re.compile(r"bordas e iluminação")
+
+
+def recipe_refuses_edges_as_proving_seams(text):
+    return bool(text and CONTENT_EDGES.search(text))
+
+
+def content_edges_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_edges_as_proving_seams(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_edges_scope():
+    if not content_edges_source():
+        return None
+    return (
+        " O disco recusa que as bordas e a iluminação provem as emendas "
+        "(`bordas`). Bordas no disco não é as emendas."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -13082,6 +13118,9 @@ def content_reading(project):
     ramp = content_ramps_scope()
     if ramp:
         scope += ramp
+    edge = content_edges_scope()
+    if edge:
+        scope += edge
     listed = files[:24]
     if listed:
         listed = {
