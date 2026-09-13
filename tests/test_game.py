@@ -3327,6 +3327,64 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.next_scope())
         self.assertNotIn("primeiro", game.CYCLE_KEYS)
 
+    def test_record_names_the_mean_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"FPS médio esconde exatamente o problema que importa")
+        self.assertTrue(
+            game.recipe_refuses_mean_fps_as_hiding_the_problem(recipe),
+            "a receita já recusa que o FPS médio esconda o problema que importa",
+        )
+        self.assertEqual(game.record_mean_source(), "recipes/performance.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-773",
+        )
+        self.assertIn(
+            "o FPS médio esconda o problema que importa",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`médio`)", report["scope"])
+        self.assertIn("Média no disco não é o problema.", report["scope"])
+        self.assertNotIn("médio", report)
+        self.assertFalse(game.recipe_refuses_mean_fps_as_hiding_the_problem(""))
+        with mock.patch.object(game, "record_mean_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-773-silent",
+            )
+        self.assertNotIn(
+            "o FPS médio esconda o problema que importa",
+            silent["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o médio que a receita já recusa"), 2)
+        self.assertIn("nomeia o médio que a receita já recusa", production)
+        self.assertIn("nomeia o médio que a receita já recusa", skill)
+        self.assertIn("nomeia o médio que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        self.assertNotIn("verified", production)
+        phrase = "o FPS médio esconda o problema que importa"
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("médio", game.CYCLE_KEYS)
+
     def test_record_names_the_animation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(

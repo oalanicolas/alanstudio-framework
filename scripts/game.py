@@ -22269,6 +22269,9 @@ def record_scope():
     first = record_first_scope()
     if first:
         scope += first
+    mean = record_mean_scope()
+    if mean:
+        scope += mean
     return scope
 
 
@@ -22553,6 +22556,41 @@ def record_first_scope():
     return (
         " O disco recusa que orçar só o campo cubra o primeiro quadro "
         "(`primeiro`). Campo no disco não é a porta."
+    )
+
+
+# A receita já recusa que o FPS
+# médio esconda o problema que
+# importa. Sem isto o record
+# gravava o recibo e calava a
+# recusa. Média no disco não é
+# o problema.
+PERF_MEAN = re.compile(r"FPS médio esconde exatamente o problema que importa")
+
+
+def recipe_refuses_mean_fps_as_hiding_the_problem(text):
+    return bool(text and PERF_MEAN.search(text))
+
+
+def record_mean_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_mean_fps_as_hiding_the_problem(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_mean_scope():
+    if not record_mean_source():
+        return None
+    return (
+        " O disco recusa que o FPS médio esconda o problema que importa "
+        "(`médio`). Média no disco não é o problema."
     )
 
 
