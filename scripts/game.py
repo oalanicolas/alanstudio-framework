@@ -3521,6 +3521,9 @@ def observation_item_scope():
     shell = observation_shell_scope()
     if shell:
         scope += shell
+    late = observation_final_scope()
+    if late:
+        scope += late
     return scope
 
 
@@ -3797,6 +3800,41 @@ def observation_shell_scope():
     return (
         " O disco recusa que o botão focado avance "
         "(`casca`). Casca no disco não é o verbo."
+    )
+
+
+# A receita já recusa que o
+# acesso seja camada final.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Acesso no disco não é o
+# recorte.
+A11Y_FINAL = re.compile(r"não camada final")
+
+
+def recipe_refuses_access_as_final_layer(text):
+    return bool(text and A11Y_FINAL.search(text))
+
+
+def observation_final_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_access_as_final_layer(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_final_scope():
+    if not observation_final_source():
+        return None
+    return (
+        " O disco recusa que o acesso seja camada final "
+        "(`final`). Acesso no disco não é o recorte."
     )
 
 
