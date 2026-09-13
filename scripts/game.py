@@ -3729,6 +3729,9 @@ def observation_item_scope():
     mold = observation_form_scope()
     if mold:
         scope += mold
+    wall = observation_barriers_scope()
+    if wall:
+        scope += wall
     return scope
 
 
@@ -4176,6 +4179,41 @@ def observation_form_scope():
     return (
         " O disco recusa que o PRD prescinda da forma "
         "(`forma`). PRD no disco não é a forma."
+    )
+
+
+# A receita já recusa que a
+# lista genérica seja as
+# barreiras. Sem isto o item
+# copiava a nota e calava a
+# recusa. Lista no disco não
+# é a barreira.
+A11Y_BARRIERS = re.compile(r"barreiras que o jogo realmente cria")
+
+
+def recipe_refuses_generic_list_as_the_real_barriers(text):
+    return bool(text and A11Y_BARRIERS.search(text))
+
+
+def observation_barriers_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_generic_list_as_the_real_barriers(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_barriers_scope():
+    if not observation_barriers_source():
+        return None
+    return (
+        " O disco recusa que a lista genérica seja as barreiras "
+        "(`barreiras`). Lista no disco não é a barreira."
     )
 
 

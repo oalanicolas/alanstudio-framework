@@ -18,9 +18,9 @@ Sem tela o headless já joga.
 
 Acesso é decisão de design, não camada final. Se a receita recusa que o acesso seja camada final, o item da observação nomeia o final que a receita já recusa. Acesso no disco não é o recorte. Sem chave `final`. Tratado no GDD, custa uma escolha; Se a receita recusa que tratar no GDD evite a escolha, o item da observação nomeia a escolha que a receita já recusa. GDD no disco não é a escolha. Sem chave `escolha`. Se a receita recusa que o PRD cumpra o requisito, o item da observação nomeia o requisito que a receita já recusa. PRD no disco não é o requisito. Sem chave `requisito`.
 tratado depois do conteúdo pronto, custa retrabalho de arte, UI e regra. Se a receita recusa que tratar depois evite o retrabalho, o item da observação nomeia o retrabalho que a receita já recusa. Conteúdo no disco não é o acesso. Sem chave `retrabalho`. Registre
-essas opções como requisitos de qualidade no PRD, com forma de verificar. Se a receita recusa que o PRD prescinda da forma, o item da observação nomeia a forma que a receita já recusa. PRD no disco não é a forma. Sem chave `forma`.
+essas opções como requisitos de qualidade no PRD, com forma de verificar. Se a receita recusa que o PRD prescinda da forma, o item da observação nomeia a forma que a receita já recusa. PRD no disco não é a forma. Sem chave `forma`. Se a receita recusa que a lista genérica seja as barreiras, o item da observação nomeia as barreiras que a receita já recusa. Lista no disco não é a barreira. Sem chave `barreiras`.
 
-Examine as barreiras que o jogo realmente cria:
+Examine as barreiras que o jogo realmente cria: Se a receita recusa que a lista genérica seja as barreiras, o item da observação nomeia as barreiras que a receita já recusa. Lista no disco não é a barreira. Sem chave `barreiras`.
 
 - **Entrada:** remapeamento de todos os comandos, inclusive os de menu; alternativa
   a pressionar e segurar e a apertar repetidamente; sensibilidade e zona morta
