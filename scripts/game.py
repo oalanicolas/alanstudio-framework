@@ -21126,6 +21126,9 @@ def cycle_scope():
     hull = cycle_hurtbox_scope()
     if hull:
         scope += hull
+    pod = cycle_capsule_scope()
+    if pod:
+        scope += pod
     return scope or None
 
 
@@ -21893,6 +21896,42 @@ def cycle_hurtbox_scope():
     return (
         " O disco recusa que anunciar o verbo prove o hurtbox "
         "(`hurtbox`). Verbo no disco não é o hurtbox."
+    )
+
+
+
+# A receita já recusa que a
+# cápsula central prove o
+# snapshot. Sem isto o ciclo
+# anunciava o verbo e calava a
+# recusa. Cápsula no disco não
+# é o snapshot.
+FEEL_CAPSULE = re.compile(r"cápsula central")
+
+
+def recipe_refuses_central_capsule_as_proving_snapshot(text):
+    return bool(text and FEEL_CAPSULE.search(text))
+
+
+def cycle_capsule_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_central_capsule_as_proving_snapshot(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_capsule_scope():
+    if not cycle_capsule_source():
+        return None
+    return (
+        " O disco recusa que a cápsula central prove o snapshot "
+        "(`cápsula`). Cápsula no disco não é o snapshot."
     )
 
 def named_cycle(cycle):
