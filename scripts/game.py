@@ -4660,6 +4660,9 @@ def _feel_scope(project):
     eat = feel_eat_scope()
     if eat:
         scope += eat
+    fatal = feel_mortal_scope()
+    if fatal:
+        scope += fatal
     return scope
 
 
@@ -5004,6 +5007,41 @@ def feel_eat_scope():
     return (
         " O disco recusa que o relógio coma a guarda que já sentou "
         "(`come`). Relógio no disco não é a guarda."
+    )
+
+
+# A receita já recusa que o
+# impacto de coleta pareça
+# golpe mortal. Sem isto o
+# feel lia o CONFIG e calava
+# a recusa. Coleta no disco
+# não é o golpe.
+FEEL_MORTAL = re.compile(r"impacto de coleta não pode parecer\s+golpe mortal")
+
+
+def recipe_refuses_collect_impact_as_killing_blow(text):
+    return bool(text and FEEL_MORTAL.search(text))
+
+
+def feel_mortal_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_collect_impact_as_killing_blow(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_mortal_scope():
+    if not feel_mortal_source():
+        return None
+    return (
+        " O disco recusa que o impacto de coleta pareça golpe mortal "
+        "(`mortal`). Coleta no disco não é o golpe."
     )
 
 
