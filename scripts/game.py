@@ -9157,6 +9157,42 @@ def save_battery_scope():
     )
 
 
+
+# A receita já recusa que o
+# processo encerrado prove a
+# interrupção. Sem isto o save
+# lia o schema e calava a recusa.
+# Processo no disco não é a
+# interrupção.
+PERSIST_PROCESS = re.compile(r"processo\s+encerrado")
+
+
+def recipe_refuses_killed_process_as_proving_interruption(text):
+    return bool(text and PERSIST_PROCESS.search(text))
+
+
+def save_process_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_killed_process_as_proving_interruption(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_process_scope():
+    if not save_process_source():
+        return None
+    return (
+        " O disco recusa que o processo encerrado prove a interrupção "
+        "(`processo`). Processo no disco não é a interrupção."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -9836,6 +9872,9 @@ def save_reading(project):
     cell = save_battery_scope()
     if cell:
         scope += cell
+    kill = save_process_scope()
+    if kill:
+        scope += kill
     used_flag = bool(used)
     if used_flag:
         used_flag = {
