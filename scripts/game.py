@@ -5593,6 +5593,9 @@ def _feel_scope(project):
     trim = feel_cut_scope()
     if trim:
         scope += trim
+    halt = feel_pause_scope()
+    if halt:
+        scope += halt
     return scope
 
 
@@ -6216,6 +6219,41 @@ def feel_cut_scope():
     return (
         " O disco recusa que cortar o feel ganhe FPS "
         "(`corte`). FPS no disco não é o corte."
+    )
+
+
+# A receita já recusa que o
+# hitstop sobreviva à pausa.
+# Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Hitstop no disco não é a
+# pausa.
+FEEL_PAUSE = re.compile(r"sobrevive à pausa")
+
+
+def recipe_refuses_surviving_pause_as_keeping_hitstop(text):
+    return bool(text and FEEL_PAUSE.search(text))
+
+
+def feel_pause_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_surviving_pause_as_keeping_hitstop(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_pause_scope():
+    if not feel_pause_source():
+        return None
+    return (
+        " O disco recusa que o hitstop sobreviva à pausa "
+        "(`pausa`). Hitstop no disco não é a pausa."
     )
 
 

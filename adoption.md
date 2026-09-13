@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.835 — o `feel` nomeia a pausa que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+um
+hitstop
+que
+sobrevive
+à
+pausa
+é
+regressão.
+O
+feel
+lia
+o
+CONFIG
+e
+calava
+a
+recusa.
+Agora
+o
+feel
+nomeia
+a
+pausa.
+Hitstop
+no
+disco
+não
+é
+a
+pausa.
+Sem
+chave
+`pausa`.
+Nomear
+não
+observa.
+
 ## 0.9.834 — o ciclo nomeia o startup que a receita já recusa
 
 A
