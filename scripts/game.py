@@ -4739,6 +4739,40 @@ def feel_observations_link_scope():
     )
 
 
+# A receita já recusa que o recibo
+# seja a previsão. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Recibo no disco não é
+# a previsão.
+FEEL_FORECAST = re.compile(r"previsão que o jogador deve construir")
+
+
+def recipe_refuses_receipt_as_the_prediction(text):
+    return bool(text and FEEL_FORECAST.search(text))
+
+
+def feel_observations_forecast_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_receipt_as_the_prediction(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_forecast_scope():
+    if not feel_observations_forecast_source():
+        return None
+    return (
+        " O disco recusa que o recibo seja a previsão "
+        "(`previsão`). Recibo no disco não é a previsão."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -4789,6 +4823,9 @@ def feel_observations_scope():
     weak = feel_observations_link_scope()
     if weak:
         scope += weak
+    fore = feel_observations_forecast_scope()
+    if fore:
+        scope += fore
     return scope
 
 
