@@ -10037,6 +10037,41 @@ def content_occlusion_scope():
     )
 
 
+# A receita já recusa que a
+# grade escolha o corte. Sem
+# isto o content listava
+# arquivos e calava a recusa.
+# Grade no disco não é o
+# corte.
+CONTENT_GRID = re.compile(r"fora da grade")
+
+
+def recipe_refuses_grid_as_choosing_the_cut(text):
+    return bool(text and CONTENT_GRID.search(text))
+
+
+def content_grid_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_grid_as_choosing_the_cut(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_grid_scope():
+    if not content_grid_source():
+        return None
+    return (
+        " O disco recusa que a grade escolha o corte "
+        "(`grade`). Grade no disco não é o corte."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -10329,6 +10364,9 @@ def content_reading(project):
     occl = content_occlusion_scope()
     if occl:
         scope += occl
+    cell = content_grid_scope()
+    if cell:
+        scope += cell
     listed = files[:24]
     if listed:
         listed = {
