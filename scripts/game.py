@@ -19061,6 +19061,9 @@ def cycle_scope():
     aim = cycle_intention_scope()
     if aim:
         scope += aim
+    beat = cycle_tick_scope()
+    if beat:
+        scope += beat
     return scope or None
 
 
@@ -19516,6 +19519,42 @@ def cycle_intention_scope():
     return (
         " O disco recusa que o buffer preserve a intenção "
         "(`intenção`). Buffer no disco não é a intenção."
+    )
+
+
+# A receita já recusa que a
+# nova direção no primeiro
+# tick legal vire o verbo.
+# Sem isto o ciclo anunciava
+# o verbo e calava a recusa.
+# Tick no disco não é o
+# verbo.
+FEEL_TICK = re.compile(r"primeiro tick legal")
+
+
+def recipe_refuses_first_legal_tick_as_the_verb(text):
+    return bool(text and FEEL_TICK.search(text))
+
+
+def cycle_tick_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_first_legal_tick_as_the_verb(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_tick_scope():
+    if not cycle_tick_source():
+        return None
+    return (
+        " O disco recusa que a nova direção no primeiro tick legal vire o verbo "
+        "(`tick`). Tick no disco não é o verbo."
     )
 
 
