@@ -23020,6 +23020,9 @@ def cycle_scope():
     will = cycle_deliberate_scope()
     if will:
         scope += will
+    bulk = cycle_solid_scope()
+    if bulk:
+        scope += bulk
     return scope or None
 
 
@@ -24075,6 +24078,42 @@ def cycle_deliberate_scope():
     return (
         " O disco recusa que o gesto deliberado prove a seleção "
         "(`deliberado`). Deliberado no disco não é a seleção."
+    )
+
+
+
+# A receita já recusa que o
+# sólido visível prove o
+# teste. Sem isto o ciclo
+# anunciava o verbo e calava
+# a recusa. Sólido no disco
+# não é o teste.
+FEEL_SOLID = re.compile(r"sólido visível")
+
+
+def recipe_refuses_solid_as_proving_test(text):
+    return bool(text and FEEL_SOLID.search(text))
+
+
+def cycle_solid_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_solid_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_solid_scope():
+    if not cycle_solid_source():
+        return None
+    return (
+        " O disco recusa que o sólido visível prove o teste "
+        "(`sólido`). Sólido no disco não é o teste."
     )
 
 
