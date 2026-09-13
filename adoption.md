@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.791 — o item do craft nomeia a fórmula que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+precisão×prazo
+é
+modelo
+classificatório,
+não
+fórmula.
+O
+item
+do
+craft
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+a
+fórmula.
+Classificação
+no
+disco
+não
+é
+a
+fórmula.
+Sem
+chave
+`fórmula`.
+Nomear
+não
+observa.
+
 ## 0.9.790 — o observations do feel nomeia o gesto que a receita já recusa
 
 A

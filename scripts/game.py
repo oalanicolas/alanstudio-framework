@@ -2171,6 +2171,42 @@ def craft_item_avatar_scope():
     )
 
 
+# A pesquisa já recusa que o
+# modelo seja fórmula. Sem
+# isto o item do craft
+# listava o checklist e
+# calava a recusa.
+# Classificação no disco
+# não é a fórmula.
+CRAFT_FORMULA = re.compile(r"modelo classificatório, não fórmula")
+
+
+def research_refuses_precision_deadline_as_formula(text):
+    return bool(text and CRAFT_FORMULA.search(text))
+
+
+def craft_item_formula_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_precision_deadline_as_formula(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_formula_scope():
+    if not craft_item_formula_source():
+        return None
+    return (
+        " O disco recusa que o modelo seja fórmula "
+        "(`fórmula`). Classificação no disco não é a fórmula."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2218,6 +2254,9 @@ def craft_item_scope():
     figure = craft_item_avatar_scope()
     if figure:
         scope += figure
+    eqn = craft_item_formula_scope()
+    if eqn:
+        scope += eqn
     return scope
 
 
