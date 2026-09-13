@@ -5066,6 +5066,41 @@ def feel_observations_authorship_scope():
     )
 
 
+# A receita já recusa que revelar
+# as consequências retire as
+# decisões. Sem isto o feel
+# listava o recibo e calava a
+# recusa. Consequências no disco
+# não é as decisões.
+FEEL_CONSEQUENCE = re.compile(r"consequências ocultas")
+
+
+def recipe_refuses_revealing_consequences_as_keeping_decisions(text):
+    return bool(text and FEEL_CONSEQUENCE.search(text))
+
+
+def feel_observations_consequence_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_revealing_consequences_as_keeping_decisions(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_consequence_scope():
+    if not feel_observations_consequence_source():
+        return None
+    return (
+        " O disco recusa que revelar as consequências retire as decisões "
+        "(`consequências`). Consequências no disco não é as decisões."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -5125,6 +5160,9 @@ def feel_observations_scope():
     byline = feel_observations_authorship_scope()
     if byline:
         scope += byline
+    toll = feel_observations_consequence_scope()
+    if toll:
+        scope += toll
     return scope
 
 
