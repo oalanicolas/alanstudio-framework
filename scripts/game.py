@@ -6353,6 +6353,43 @@ def save_rollback_scope():
     )
 
 
+# A receita já recusa que a
+# interrupção no meio deixe um
+# save pela metade. Sem isto o
+# save lia o schema e calava a
+# recusa. Meio no disco não é
+# o save.
+PERSIST_HALF = re.compile(
+    r"interrupção no meio não deixe um save pela metade"
+)
+
+
+def recipe_refuses_mid_interrupt_as_leaving_half_save(text):
+    return bool(text and PERSIST_HALF.search(text))
+
+
+def save_half_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_mid_interrupt_as_leaving_half_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_half_scope():
+    if not save_half_source():
+        return None
+    return (
+        " O disco recusa que a interrupção no meio deixe um save pela metade "
+        "(`metade`). Meio no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -6987,6 +7024,9 @@ def save_reading(project):
     roll = save_rollback_scope()
     if roll:
         scope += roll
+    half = save_half_scope()
+    if half:
+        scope += half
     used_flag = bool(used)
     if used_flag:
         used_flag = {

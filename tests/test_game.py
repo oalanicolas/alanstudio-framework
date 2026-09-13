@@ -18472,6 +18472,75 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn(phrase, game.git_summary_scope())
         self.assertNotIn("reversão", game.CYCLE_KEYS)
 
+    def test_save_names_the_half_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"interrupção no meio não deixe um save pela metade")
+        self.assertTrue(
+            game.recipe_refuses_mid_interrupt_as_leaving_half_save(recipe),
+            "a receita já recusa que a interrupção no meio deixe um save pela metade",
+        )
+        self.assertEqual(game.save_half_source(), "recipes/persistence.md")
+        report = game.save_reading(self.project)
+        self.assertIn(
+            "a interrupção no meio deixe um save pela metade",
+            report["scope"],
+            "o save lia o schema e calava a recusa",
+        )
+        self.assertIn("(`metade`)", report["scope"])
+        self.assertIn("Meio no disco não é o save.", report["scope"])
+        self.assertNotIn("metade", report)
+        self.assertFalse(report["trusted"])
+        self.assertFalse(game.recipe_refuses_mid_interrupt_as_leaving_half_save(""))
+        with mock.patch.object(game, "save_half_source", return_value=None):
+            silent = game.save_reading(self.project)
+        self.assertNotIn("a interrupção no meio deixe um save pela metade", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a metade que a receita já recusa"), 2)
+        self.assertIn("nomeia a metade que a receita já recusa", create)
+        self.assertIn("nomeia a metade que a receita já recusa", skill)
+        self.assertIn("nomeia a metade que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        used = report.get("used")
+        if isinstance(used, dict):
+            self.assertNotIn(
+                "a interrupção no meio deixe um save pela metade",
+                used.get("scope") or "",
+            )
+        warned = report.get("warned")
+        if isinstance(warned, dict):
+            self.assertNotIn(
+                "a interrupção no meio deixe um save pela metade",
+                warned.get("scope") or "",
+            )
+        sources = report.get("sources")
+        if isinstance(sources, dict):
+            self.assertNotIn(
+                "a interrupção no meio deixe um save pela metade",
+                sources.get("scope") or "",
+            )
+        phrase = "a interrupção no meio deixe um save pela metade"
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.craft_reading(self.project)["scope"])
+        starter = Path(game.FRAMEWORK) / "assets/starters/canvas-arcade"
+        self.assertNotIn(phrase, game.art_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(starter)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.play_scope(starter))
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.git_summary_scope())
+        self.assertNotIn("metade", game.CYCLE_KEYS)
+
     def test_save_sources_names_the_chain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/persistence.md").read_text(encoding="utf-8")
         self.assertTrue(
