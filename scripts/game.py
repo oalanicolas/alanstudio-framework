@@ -26305,6 +26305,9 @@ def record_scope():
     gc = record_trash_scope()
     if gc:
         scope += gc
+    shd = record_shader_scope()
+    if shd:
+        scope += shd
     return scope
 
 
@@ -27113,6 +27116,42 @@ def record_trash_scope():
     return (
         " O disco recusa que a coleta de lixo prove o engasgo "
         "(`lixo`). Lixo no disco não é o engasgo."
+    )
+
+
+
+# A receita já recusa que a
+# primeira compilação de shader
+# prove o engasgo. Sem isto o
+# record gravava o recibo e
+# calava a recusa. Shader no
+# disco não é o engasgo.
+PERF_SHADER = re.compile(r"primeira compilação de shader")
+
+
+def recipe_refuses_shader_compile_as_proving_hitch(text):
+    return bool(text and PERF_SHADER.search(text))
+
+
+def record_shader_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_shader_compile_as_proving_hitch(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_shader_scope():
+    if not record_shader_source():
+        return None
+    return (
+        " O disco recusa que a primeira compilação de shader prove o engasgo "
+        "(`shader`). Shader no disco não é o engasgo."
     )
 
 
