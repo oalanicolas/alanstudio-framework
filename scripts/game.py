@@ -15537,6 +15537,43 @@ def content_thermal_scope():
     )
 
 
+
+
+# A receita já recusa que a
+# densidade prove o destino.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Densidade no disco não é
+# o destino.
+CONTENT_DENS = re.compile(r"densidade")
+
+
+def recipe_refuses_density_as_proving_destination(text):
+    return bool(text and CONTENT_DENS.search(text))
+
+
+def content_density_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_density_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_density_scope():
+    if not content_density_source():
+        return None
+    return (
+        " O disco recusa que a densidade prove o destino "
+        "(`densidade`). Densidade no disco não é o destino."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -15901,6 +15938,9 @@ def content_reading(project):
     therm = content_thermal_scope()
     if therm:
         scope += therm
+    dens = content_density_scope()
+    if dens:
+        scope += dens
     listed = files[:24]
     if listed:
         listed = {
