@@ -28372,6 +28372,63 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("bordas", game.CYCLE_KEYS)
         self.assertNotIn("gradientes", game.CYCLE_KEYS)
 
+    def test_content_names_the_light_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"iluminação compatíveis")
+        self.assertTrue(
+            game.recipe_refuses_lighting_as_proving_seams(recipe),
+            "a receita já recusa que a iluminação prove as emendas",
+        )
+        self.assertEqual(game.content_light_source(), "recipes/content.md")
+        report = game.content_reading(self.project)
+        self.assertIn(
+            "a iluminação prove as emendas",
+            report["scope"],
+            "o content listava arquivos e calava a recusa",
+        )
+        self.assertIn("(`iluminação`)", report["scope"])
+        self.assertIn("Iluminação no disco não é as emendas.", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("iluminação", report)
+        self.assertFalse(game.recipe_refuses_lighting_as_proving_seams(""))
+        with mock.patch.object(game, "content_light_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn(
+            "a iluminação prove as emendas",
+            silent["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia a iluminação que a receita já recusa"), 2)
+        self.assertIn("nomeia a iluminação que a receita já recusa", create)
+        self.assertIn("nomeia a iluminação que a receita já recusa", skill)
+        self.assertIn("nomeia a iluminação que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        files = report.get("files")
+        if isinstance(files, dict):
+            self.assertNotIn(
+                "a iluminação prove as emendas",
+                files.get("scope") or "",
+            )
+        phrase = "a iluminação prove as emendas"
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("iluminação", game.CYCLE_KEYS)
+        self.assertNotIn("bordas", game.CYCLE_KEYS)
+
     def test_content_names_the_rain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
         self.assertTrue(

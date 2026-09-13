@@ -12986,6 +12986,42 @@ def content_edges_scope():
     )
 
 
+
+# A receita já recusa que a
+# iluminação prove as emendas.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Iluminação no disco não é
+# as emendas.
+CONTENT_LIGHT = re.compile(r"iluminação compatíveis")
+
+
+def recipe_refuses_lighting_as_proving_seams(text):
+    return bool(text and CONTENT_LIGHT.search(text))
+
+
+def content_light_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_lighting_as_proving_seams(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_light_scope():
+    if not content_light_source():
+        return None
+    return (
+        " O disco recusa que a iluminação prove as emendas "
+        "(`iluminação`). Iluminação no disco não é as emendas."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -13317,6 +13353,9 @@ def content_reading(project):
     edge = content_edges_scope()
     if edge:
         scope += edge
+    glow = content_light_scope()
+    if glow:
+        scope += glow
     listed = files[:24]
     if listed:
         listed = {
