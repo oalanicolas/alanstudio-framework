@@ -5010,6 +5010,9 @@ def _feel_scope(project):
     sweet = feel_tasty_scope()
     if sweet:
         scope += sweet
+    crack = feel_broken_scope()
+    if crack:
+        scope += crack
     return scope
 
 
@@ -5459,6 +5462,40 @@ def feel_tasty_scope():
     return (
         " O disco recusa que o feedback gostoso compense a regra injusta "
         "(`gostoso`). Feedback no disco não é a regra."
+    )
+
+
+# A receita já recusa que o
+# tempo pareça quebrado. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Hitstop no
+# disco não é o tempo.
+FEEL_BROKEN = re.compile(r"tempo parecer quebrado")
+
+
+def recipe_refuses_hitstop_as_breaking_time(text):
+    return bool(text and FEEL_BROKEN.search(text))
+
+
+def feel_broken_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hitstop_as_breaking_time(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_broken_scope():
+    if not feel_broken_source():
+        return None
+    return (
+        " O disco recusa que o tempo pareça quebrado "
+        "(`quebrado`). Hitstop no disco não é o tempo."
     )
 
 
