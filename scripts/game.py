@@ -19519,6 +19519,9 @@ def cycle_scope():
     slash = cycle_hit_scope()
     if slash:
         scope += slash
+    drop = cycle_fast_scope()
+    if drop:
+        scope += drop
     return scope or None
 
 
@@ -20044,6 +20047,41 @@ def cycle_hit_scope():
     return (
         " O disco recusa que limpar o input corrija o golpe "
         "(`golpe`). Input no disco não é o golpe."
+    )
+
+
+# A receita já recusa que limpar
+# o input preserve a queda
+# rápida. Sem isto o ciclo
+# anunciava o verbo e calava a
+# recusa. Input no disco não é
+# a queda.
+FEEL_FAST = re.compile(r"perder a queda rápida")
+
+
+def recipe_refuses_clearing_input_as_preserving_the_fast_fall(text):
+    return bool(text and FEEL_FAST.search(text))
+
+
+def cycle_fast_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_clearing_input_as_preserving_the_fast_fall(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_fast_scope():
+    if not cycle_fast_source():
+        return None
+    return (
+        " O disco recusa que limpar o input preserve a queda rápida "
+        "(`rápida`). Input no disco não é a queda."
     )
 
 
