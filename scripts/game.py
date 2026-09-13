@@ -7349,6 +7349,43 @@ def feel_observations_demonstram_scope():
     )
 
 
+
+
+# A receita já recusa que o
+# verificam prove o feel.
+# Sem isto o feel listava o
+# recibo e calava a recusa.
+# Verificam no disco não é
+# o feel.
+FEEL_CHECK = re.compile(r"verificam")
+
+
+def recipe_refuses_verificam_as_proving_feel(text):
+    return bool(text and FEEL_CHECK.search(text))
+
+
+def feel_observations_verificam_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_verificam_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_verificam_scope():
+    if not feel_observations_verificam_source():
+        return None
+    return (
+        " O disco recusa que o verificam prove o feel "
+        "(`verificam`). Verificam no disco não é o feel."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -7468,6 +7505,9 @@ def feel_observations_scope():
     show = feel_observations_demonstram_scope()
     if show:
         scope += show
+    check = feel_observations_verificam_scope()
+    if check:
+        scope += check
     return scope
 
 
