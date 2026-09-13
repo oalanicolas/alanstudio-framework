@@ -2490,6 +2490,42 @@ def craft_item_competitive_scope():
     )
 
 
+
+
+# A pesquisa já recusa que não
+# notar cale a acurácia. Sem
+# isto o item do craft listava
+# o checklist e calava a recusa.
+# Notar no disco não é a
+# acurácia.
+CRAFT_NOTICE = re.compile(r"não conseguiam notar")
+
+
+def research_refuses_not_noticing_as_silencing_accuracy(text):
+    return bool(text and CRAFT_NOTICE.search(text))
+
+
+def craft_item_notice_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_not_noticing_as_silencing_accuracy(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_notice_scope():
+    if not craft_item_notice_source():
+        return None
+    return (
+        " O disco recusa que não notar cale a acurácia "
+        "(`notar`). Notar no disco não é a acurácia."
+    )
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -2564,6 +2600,9 @@ def craft_item_scope():
     rank = craft_item_competitive_scope()
     if rank:
         scope += rank
+    heed = craft_item_notice_scope()
+    if heed:
+        scope += heed
     return scope
 
 
