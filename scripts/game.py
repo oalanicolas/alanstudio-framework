@@ -23611,6 +23611,9 @@ def record_scope():
     chip = record_gpu_scope()
     if chip:
         scope += chip
+    cull = record_culling_scope()
+    if cull:
+        scope += cull
     return scope
 
 
@@ -24072,6 +24075,41 @@ def record_gpu_scope():
     return (
         " O disco recusa que a leitura GPU deixe a execução intacta "
         "(`gpu`). PNG no disco não é a GPU."
+    )
+
+
+# A receita já recusa que o
+# agrupamento preserve o
+# culling. Sem isto o record
+# gravava o recibo e calava a
+# recusa. Grupo no disco não
+# é o culling.
+PERF_CULLING = re.compile(r"Agrupamento excessivo pode anular o culling")
+
+
+def recipe_refuses_grouping_as_preserving_culling(text):
+    return bool(text and PERF_CULLING.search(text))
+
+
+def record_culling_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_grouping_as_preserving_culling(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_culling_scope():
+    if not record_culling_source():
+        return None
+    return (
+        " O disco recusa que o agrupamento preserve o culling "
+        "(`culling`). Grupo no disco não é o culling."
     )
 
 
