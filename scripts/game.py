@@ -5518,6 +5518,42 @@ def feel_observations_clip_scope():
     )
 
 
+
+# A receita já recusa que o
+# rebote prove o impulso.
+# Sem isto o feel listava o
+# recibo e calava a recusa.
+# Rebote no disco não é o
+# impulso.
+FEEL_BOUNCE = re.compile(r"rebote ou reação")
+
+
+def recipe_refuses_rebound_as_proving_impulse(text):
+    return bool(text and FEEL_BOUNCE.search(text))
+
+
+def feel_observations_bounce_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_rebound_as_proving_impulse(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_bounce_scope():
+    if not feel_observations_bounce_source():
+        return None
+    return (
+        " O disco recusa que o rebote prove o impulso "
+        "(`rebote`). Rebote no disco não é o impulso."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -5589,6 +5625,9 @@ def feel_observations_scope():
     clip = feel_observations_clip_scope()
     if clip:
         scope += clip
+    bounce = feel_observations_bounce_scope()
+    if bounce:
+        scope += bounce
     return scope
 
 
