@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.937: o item da observação nomeia o texto que a receita já recusa. Texto no disco não é o estado. Sem chave `texto`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.937): **998 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
