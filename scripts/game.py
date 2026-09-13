@@ -3605,6 +3605,9 @@ def observation_item_scope():
     cost = observation_rework_scope()
     if cost:
         scope += cost
+    pick = observation_choice_scope()
+    if pick:
+        scope += pick
     return scope
 
 
@@ -3950,6 +3953,40 @@ def observation_rework_scope():
     return (
         " O disco recusa que tratar depois evite o retrabalho "
         "(`retrabalho`). Conteúdo no disco não é o acesso."
+    )
+
+
+# A receita já recusa que tratar
+# no GDD evite a escolha. Sem
+# isto o item copiava a nota e
+# calava a recusa. GDD no disco
+# não é a escolha.
+A11Y_CHOICE = re.compile(r"custa uma escolha")
+
+
+def recipe_refuses_gdd_as_avoiding_the_choice(text):
+    return bool(text and A11Y_CHOICE.search(text))
+
+
+def observation_choice_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_gdd_as_avoiding_the_choice(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_choice_scope():
+    if not observation_choice_source():
+        return None
+    return (
+        " O disco recusa que tratar no GDD evite a escolha "
+        "(`escolha`). GDD no disco não é a escolha."
     )
 
 
