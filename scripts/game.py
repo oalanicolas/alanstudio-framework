@@ -25168,6 +25168,9 @@ def cycle_scope():
     rig = cycle_ik_scope()
     if rig:
         scope += rig
+    arm = cycle_arma_scope()
+    if arm:
+        scope += arm
     return scope or None
 
 
@@ -26551,6 +26554,43 @@ def cycle_ik_scope():
     return (
         " O disco recusa que o IK prove o teste "
         "(`IK`). IK no disco não é o teste."
+    )
+
+
+
+
+# A receita já recusa que a
+# arma prove o teste. Sem
+# isto o ciclo anunciava o
+# verbo e calava a recusa.
+# Arma no disco não é o
+# teste.
+FEEL_ARM = re.compile(r"arma")
+
+
+def recipe_refuses_arma_as_proving_test(text):
+    return bool(text and FEEL_ARM.search(text))
+
+
+def cycle_arma_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_arma_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_arma_scope():
+    if not cycle_arma_source():
+        return None
+    return (
+        " O disco recusa que a arma prove o teste "
+        "(`arma`). Arma no disco não é o teste."
     )
 
 
