@@ -3978,6 +3978,9 @@ def observation_item_scope():
     hint = observation_instruction_scope()
     if hint:
         scope += hint
+    tiny = observation_small_scope()
+    if tiny:
+        scope += tiny
     return scope
 
 
@@ -4632,6 +4635,41 @@ def observation_instruction_scope():
     return (
         " O disco recusa que o recibo ajuste a instrução "
         "(`instrução`). Recibo no disco não é a instrução."
+    )
+
+
+
+# A receita já recusa que o
+# texto pequeno prove a leitura.
+# Sem isto o item copiava a nota
+# e calava a recusa. Pequeno no
+# disco não é a leitura.
+A11Y_SMALL = re.compile(r"texto pequeno")
+
+
+def recipe_refuses_small_text_as_proving_reading(text):
+    return bool(text and A11Y_SMALL.search(text))
+
+
+def observation_small_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_small_text_as_proving_reading(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_small_scope():
+    if not observation_small_source():
+        return None
+    return (
+        " O disco recusa que o texto pequeno prove a leitura "
+        "(`pequeno`). Pequeno no disco não é a leitura."
     )
 
 # A receita já recusa que o soltar
