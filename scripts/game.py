@@ -6541,6 +6541,42 @@ def save_half_scope():
     )
 
 
+# A receita já recusa que dado
+# inválido seja exceção. Sem
+# isto o save lia o schema e
+# calava a recusa. Dado no
+# disco não é a exceção.
+PERSIST_EXCEPT = re.compile(
+    r"dado inválido como caso normal, não como exceção"
+)
+
+
+def recipe_refuses_invalid_data_as_exception(text):
+    return bool(text and PERSIST_EXCEPT.search(text))
+
+
+def save_exception_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_invalid_data_as_exception(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_exception_scope():
+    if not save_exception_source():
+        return None
+    return (
+        " O disco recusa que dado inválido seja exceção "
+        "(`exceção`). Dado no disco não é a exceção."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -7178,6 +7214,9 @@ def save_reading(project):
     half = save_half_scope()
     if half:
         scope += half
+    fault = save_exception_scope()
+    if fault:
+        scope += fault
     used_flag = bool(used)
     if used_flag:
         used_flag = {
