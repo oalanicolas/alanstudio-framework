@@ -2996,6 +2996,42 @@ def craft_item_fight_scope():
     )
 
 
+
+# A pesquisa já recusa que o
+# ideal de blog prove a
+# cadeia. Sem isto o item do
+# craft listava o checklist e
+# calava a recusa. Ideal no
+# disco não é a cadeia.
+CRAFT_IDEAL = re.compile(r"ideal de blog")
+
+
+def research_refuses_ideal_as_proving_chain(text):
+    return bool(text and CRAFT_IDEAL.search(text))
+
+
+def craft_item_ideal_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_ideal_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_ideal_scope():
+    if not craft_item_ideal_source():
+        return None
+    return (
+        " O disco recusa que o ideal de blog prove a cadeia "
+        "(`ideal`). Ideal no disco não é a cadeia."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -3112,6 +3148,9 @@ def craft_item_scope():
     bout = craft_item_fight_scope()
     if bout:
         scope += bout
+    wish = craft_item_ideal_scope()
+    if wish:
+        scope += wish
     return scope
 
 

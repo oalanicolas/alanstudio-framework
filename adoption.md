@@ -30,6 +30,54 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.975 — o item do craft nomeia o ideal que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+se
+mede
+contra
+o
+que
+existe,
+não
+contra
+um
+ideal
+de
+blog.
+O
+item
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+o
+ideal.
+Ideal
+no
+disco
+não
+é
+a
+cadeia.
+Sem
+chave
+`ideal`.
+Nomear
+não
+observa.
+
 ## 0.9.974 — o observations do feel nomeia o adequado que a receita já recusa
 
 A
