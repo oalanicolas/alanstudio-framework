@@ -3438,6 +3438,9 @@ def observation_item_scope():
     rise = observation_rise_scope()
     if rise:
         scope += rise
+    space = observation_space_scope()
+    if space:
+        scope += space
     return scope
 
 
@@ -3645,6 +3648,41 @@ def observation_rise_scope():
     return (
         " O disco recusa que a porta e o fim chamem o avanço de cima "
         "(`avanço`). Tap no disco não é o avanço."
+    )
+
+
+# A receita já recusa que o
+# Espaço avance enquanto a
+# pessoa escolhe. Sem isto o
+# item copiava a nota e
+# calava a recusa. Tecla no
+# disco não é a escolha.
+A11Y_SPACE = re.compile(r"Espaço não avança enquanto a pessoa")
+
+
+def recipe_refuses_space_as_advancing_while_choosing(text):
+    return bool(text and A11Y_SPACE.search(text))
+
+
+def observation_space_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_space_as_advancing_while_choosing(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_space_scope():
+    if not observation_space_source():
+        return None
+    return (
+        " O disco recusa que o Espaço avance enquanto a pessoa escolhe "
+        "(`espaço`). Tecla no disco não é a escolha."
     )
 
 
