@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.829 — o `record` nomeia as submissões que a receita já recusa
+
+A
+receita
+já
+dizia
+para
+contar
+transferências,
+sincronização
+e
+submissões
+efetivas.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+`record`
+nomeia
+as
+submissões.
+Cópia
+no
+disco
+não
+é
+a
+submissão.
+Sem
+chave
+`submissões`.
+Nomear
+não
+mede.
+
 ## 0.9.828 — o `save` nomeia o idioma que a receita já recusa
 
 A
