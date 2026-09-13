@@ -18135,6 +18135,9 @@ def cycle_scope():
     duty = cycle_duty_scope()
     if duty:
         scope += duty
+    trail = cycle_follow_scope()
+    if trail:
+        scope += trail
     return scope or None
 
 
@@ -18451,6 +18454,40 @@ def cycle_duty_scope():
     return (
         " O disco recusa que o segurar na porta dispare o ofício "
         "(`ofício`). Porta no disco não é o ofício."
+    )
+
+
+# A receita já recusa que o
+# corpo siga o hold escondido.
+# Sem isto o ciclo anunciava
+# o verbo e calava a recusa.
+# Aba no disco não é o corpo.
+FEEL_FOLLOW = re.compile(r"o corpo não segue")
+
+
+def recipe_refuses_hidden_hold_as_keeping_the_body(text):
+    return bool(text and FEEL_FOLLOW.search(text))
+
+
+def cycle_follow_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_hidden_hold_as_keeping_the_body(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_follow_scope():
+    if not cycle_follow_source():
+        return None
+    return (
+        " O disco recusa que o corpo siga o hold escondido "
+        "(`segue`). Aba no disco não é o corpo."
     )
 
 
