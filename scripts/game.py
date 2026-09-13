@@ -5823,6 +5823,9 @@ def _feel_scope(project):
     dump = feel_discard_scope()
     if dump:
         scope += dump
+    blank = feel_blackout_scope()
+    if blank:
+        scope += blank
     return scope
 
 
@@ -6516,6 +6519,40 @@ def feel_discard_scope():
     return (
         " O disco recusa que o rumble não morra no descarte "
         "(`descarte`). Rumble no disco não é o descarte."
+    )
+
+
+# A receita já recusa que contar
+# quadros vazios separe o apagão.
+# Sem isto o feel lia o CONFIG e
+# calava a recusa. Quadros no
+# disco não é o apagão.
+FEEL_BLACKOUT = re.compile(r"separa apagão")
+
+
+def recipe_refuses_empty_frames_as_separating_blackout(text):
+    return bool(text and FEEL_BLACKOUT.search(text))
+
+
+def feel_blackout_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_empty_frames_as_separating_blackout(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_blackout_scope():
+    if not feel_blackout_source():
+        return None
+    return (
+        " O disco recusa que contar quadros vazios separe o apagão "
+        "(`apagão`). Quadros no disco não é o apagão."
     )
 
 
