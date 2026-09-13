@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.828 — o `save` nomeia o idioma que a receita já recusa
+
+A
+receita
+já
+dizia
+que
+preferência
+sobrevive
+a
+apagar
+a
+partida.
+O
+save
+lia
+o
+schema
+e
+calava
+a
+recusa.
+Agora
+o
+`save`
+nomeia
+o
+idioma.
+Partida
+no
+disco
+não
+é
+o
+idioma.
+Sem
+chave
+`idioma`.
+Nomear
+não
+observa.
+
 ## 0.9.827 — o `feel` nomeia o corte que a receita já recusa
 
 A
