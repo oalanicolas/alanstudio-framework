@@ -19290,6 +19290,9 @@ def cycle_scope():
     beat = cycle_tick_scope()
     if beat:
         scope += beat
+    slash = cycle_hit_scope()
+    if slash:
+        scope += slash
     return scope or None
 
 
@@ -19781,6 +19784,40 @@ def cycle_tick_scope():
     return (
         " O disco recusa que a nova direção no primeiro tick legal vire o verbo "
         "(`tick`). Tick no disco não é o verbo."
+    )
+
+
+# A receita já recusa que limpar
+# o input corrija o golpe. Sem
+# isto o ciclo anunciava o verbo
+# e calava a recusa. Input no
+# disco não é o golpe.
+FEEL_HIT = re.compile(r"corrigir o golpe")
+
+
+def recipe_refuses_clearing_input_as_fixing_the_hit(text):
+    return bool(text and FEEL_HIT.search(text))
+
+
+def cycle_hit_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_clearing_input_as_fixing_the_hit(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_hit_scope():
+    if not cycle_hit_source():
+        return None
+    return (
+        " O disco recusa que limpar o input corrija o golpe "
+        "(`golpe`). Input no disco não é o golpe."
     )
 
 
