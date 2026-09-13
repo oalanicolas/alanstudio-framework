@@ -3770,6 +3770,9 @@ def observation_item_scope():
     wall = observation_barriers_scope()
     if wall:
         scope += wall
+    dead = observation_zone_scope()
+    if dead:
+        scope += dead
     return scope
 
 
@@ -4252,6 +4255,40 @@ def observation_barriers_scope():
     return (
         " O disco recusa que a lista genérica seja as barreiras "
         "(`barreiras`). Lista no disco não é a barreira."
+    )
+
+
+# A receita já recusa que o recibo
+# ajuste a zona. Sem isto o item
+# copiava a nota e calava a
+# recusa. Recibo no disco não é
+# a zona.
+A11Y_ZONE = re.compile(r"zona morta")
+
+
+def recipe_refuses_receipt_as_adjusting_the_dead_zone(text):
+    return bool(text and A11Y_ZONE.search(text))
+
+
+def observation_zone_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_receipt_as_adjusting_the_dead_zone(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_zone_scope():
+    if not observation_zone_source():
+        return None
+    return (
+        " O disco recusa que o recibo ajuste a zona "
+        "(`zona`). Recibo no disco não é a zona."
     )
 
 
