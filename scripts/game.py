@@ -7138,6 +7138,9 @@ def _feel_scope(project):
     boss = feel_owner_scope()
     if boss:
         scope += boss
+    dupe = feel_copied_scope()
+    if dupe:
+        scope += dupe
     return scope
 
 
@@ -8220,6 +8223,42 @@ def feel_owner_scope():
     return (
         " O disco recusa que o dono ativo prove a pose "
         "(`dono`). Dono no disco não é a pose."
+    )
+
+
+
+# A receita já recusa que o
+# feel copiado prove a
+# instância. Sem isto o feel
+# lia o CONFIG e calava a
+# recusa. Copiado no disco
+# não é a instância.
+FEEL_COPIED = re.compile(r"Feel copiado")
+
+
+def recipe_refuses_copied_as_proving_instance(text):
+    return bool(text and FEEL_COPIED.search(text))
+
+
+def feel_copied_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_copied_as_proving_instance(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_copied_scope():
+    if not feel_copied_source():
+        return None
+    return (
+        " O disco recusa que o feel copiado prove a instância "
+        "(`copiado`). Copiado no disco não é a instância."
     )
 
 
