@@ -13676,6 +13676,42 @@ def content_physical_scope():
     )
 
 
+
+# A receita já recusa que os
+# pivôs provem as dimensões.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Pivôs no disco não é as
+# dimensões.
+CONTENT_PIVOT = re.compile(r"pivôs")
+
+
+def recipe_refuses_pivots_as_proving_dimensions(text):
+    return bool(text and CONTENT_PIVOT.search(text))
+
+
+def content_pivot_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_pivots_as_proving_dimensions(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_pivot_scope():
+    if not content_pivot_source():
+        return None
+    return (
+        " O disco recusa que os pivôs provem as dimensões "
+        "(`pivôs`). Pivôs no disco não é as dimensões."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -14016,6 +14052,9 @@ def content_reading(project):
     mass = content_physical_scope()
     if mass:
         scope += mass
+    hinge = content_pivot_scope()
+    if hinge:
+        scope += hinge
     listed = files[:24]
     if listed:
         listed = {
