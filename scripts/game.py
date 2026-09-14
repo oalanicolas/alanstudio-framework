@@ -8349,6 +8349,9 @@ def _feel_scope(project):
     feed = feel_consome_scope()
     if feed:
         scope += feed
+    gap = feel_lacuna_scope()
+    if gap:
+        scope += gap
     return scope
 
 
@@ -9794,6 +9797,40 @@ def feel_consome_scope():
     return (
         " O disco recusa que o consome prove o feel "
         "(`consome`). Consome no disco não é o feel."
+    )
+
+
+# A receita já recusa que a
+# lacuna prove o feel. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Lacuna no
+# disco não é o feel.
+FEEL_GAP = re.compile(r"lacuna")
+
+
+def recipe_refuses_lacuna_as_proving_feel(text):
+    return bool(text and FEEL_GAP.search(text))
+
+
+def feel_lacuna_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_lacuna_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_lacuna_scope():
+    if not feel_lacuna_source():
+        return None
+    return (
+        " O disco recusa que a lacuna prove o feel "
+        "(`lacuna`). Lacuna no disco não é o feel."
     )
 
 
