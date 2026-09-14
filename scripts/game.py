@@ -31542,6 +31542,9 @@ def record_scope():
     pool = record_vivo_scope()
     if pool:
         scope += pool
+    sign = record_sintoma_scope()
+    if sign:
+        scope += sign
     return scope
 
 
@@ -33037,6 +33040,42 @@ def record_vivo_scope():
         " O disco recusa que o vivo prove o vazamento "
         "(`vivo`). Vivo no disco não é o vazamento."
     )
+
+
+# A receita já recusa que o
+# sintoma prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Sintoma no disco não é o
+# vazamento.
+PERF_SIGN = re.compile(r"sintoma")
+
+
+def recipe_refuses_sintoma_as_proving_leak(text):
+    return bool(text and PERF_SIGN.search(text))
+
+
+def record_sintoma_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_sintoma_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_sintoma_scope():
+    if not record_sintoma_source():
+        return None
+    return (
+        " O disco recusa que o sintoma prove o vazamento "
+        "(`sintoma`). Sintoma no disco não é o vazamento."
+    )
+
 
 
 # A receita já recusa que ganho na média
