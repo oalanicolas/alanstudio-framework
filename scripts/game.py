@@ -5363,6 +5363,9 @@ def observation_item_scope():
     sample = observation_amostra_scope()
     if sample:
         scope += sample
+    fini = observation_terminado_scope()
+    if fini:
+        scope += fini
     return scope
 
 
@@ -7199,6 +7202,42 @@ def observation_amostra_scope():
     return (
         " O disco recusa que a amostra prove o estado "
         "(`amostra`). Amostra no disco não é o estado."
+    )
+
+
+
+# A receita já recusa que o
+# terminado prove o estado.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Terminado no disco não é
+# o estado.
+A11Y_FINI = re.compile(r"terminado")
+
+
+def recipe_refuses_terminado_as_proving_state(text):
+    return bool(text and A11Y_FINI.search(text))
+
+
+def observation_terminado_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_terminado_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_terminado_scope():
+    if not observation_terminado_source():
+        return None
+    return (
+        " O disco recusa que o terminado prove o estado "
+        "(`terminado`). Terminado no disco não é o estado."
     )
 
 
