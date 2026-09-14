@@ -29389,6 +29389,9 @@ def cycle_scope():
     gaze = cycle_membros_scope()
     if gaze:
         scope += gaze
+    peek = cycle_inspecione_scope()
+    if peek:
+        scope += peek
     return scope or None
 
 
@@ -31422,6 +31425,43 @@ def cycle_membros_scope():
         " O disco recusa que os membros provem o teste "
         "(`membros`). Membros no disco não é o teste."
     )
+
+
+# A receita já recusa que o
+# Inspecione prove o teste.
+# Sem isto o ciclo anunciava
+# o verbo e calava a recusa.
+# Inspecione no disco não é
+# o teste.
+FEEL_PEEK = re.compile(r"Inspecione")
+
+
+def recipe_refuses_inspecione_as_proving_test(text):
+    return bool(text and FEEL_PEEK.search(text))
+
+
+def cycle_inspecione_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_inspecione_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_inspecione_scope():
+    if not cycle_inspecione_source():
+        return None
+    return (
+        " O disco recusa que o Inspecione prove o teste "
+        "(`Inspecione`). Inspecione no disco não é o teste."
+    )
+
+
 
 
 def named_cycle(cycle):
