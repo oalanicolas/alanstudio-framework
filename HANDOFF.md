@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.1041: o item da observação nomeia o acumulador que a receita já recusa. Acumulador no disco não é o estado. Sem chave `acumulador`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.1041): **1102 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
