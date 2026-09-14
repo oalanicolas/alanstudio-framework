@@ -30,6 +30,56 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.1071 — o item do craft nomeia os únicos que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+os
+únicos
+números
+realmente
+auditáveis
+do
+tópico
+são
+as
+janelas
+de
+perdão.
+O
+item
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+do
+craft
+nomeia
+os
+únicos.
+Únicos
+no
+disco
+não
+é
+a
+cadeia.
+Sem
+chave
+`únicos`.
+Nomear
+não
+observa.
+
 ## 0.9.1070 — o observations do feel nomeia o considerar que a receita já recusa
 
 A
