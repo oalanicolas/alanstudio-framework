@@ -9649,6 +9649,9 @@ def _feel_scope(project):
     elong = feel_estenda_scope()
     if elong:
         scope += elong
+    haul = feel_importe_scope()
+    if haul:
+        scope += haul
     return scope
 
 
@@ -11476,6 +11479,42 @@ def feel_estenda_scope():
     return (
         " O disco recusa que o estenda prove o feel "
         "(`estenda`). Estenda no disco não é o feel."
+    )
+
+
+
+
+# A receita já recusa que o
+# importe prove o feel. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Importe no
+# disco não é o feel.
+FEEL_HAUL = re.compile(r"importe")
+
+
+def recipe_refuses_importe_as_proving_feel(text):
+    return bool(text and FEEL_HAUL.search(text))
+
+
+def feel_importe_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_importe_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_importe_scope():
+    if not feel_importe_source():
+        return None
+    return (
+        " O disco recusa que o importe prove o feel "
+        "(`importe`). Importe no disco não é o feel."
     )
 
 
