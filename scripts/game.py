@@ -8814,6 +8814,42 @@ def feel_observations_realmente_scope():
 
 
 
+
+# A receita já recusa que o
+# durante prove o feel. Sem
+# isto o feel listava o
+# recibo e calava a recusa.
+# Durante no disco não é o
+# feel.
+FEEL_AMID = re.compile(r"durante")
+
+
+def recipe_refuses_durante_as_proving_feel(text):
+    return bool(text and FEEL_AMID.search(text))
+
+
+def feel_observations_durante_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_durante_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_durante_scope():
+    if not feel_observations_durante_source():
+        return None
+    return (
+        " O disco recusa que o durante prove o feel "
+        "(`durante`). Durante no disco não é o feel."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -8972,6 +9008,9 @@ def feel_observations_scope():
     truly = feel_observations_realmente_scope()
     if truly:
         scope += truly
+    amid = feel_observations_durante_scope()
+    if amid:
+        scope += amid
     return scope
 
 
