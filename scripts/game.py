@@ -9769,6 +9769,9 @@ def _feel_scope(project):
     haul = feel_importe_scope()
     if haul:
         scope += haul
+    loft = feel_pulo_scope()
+    if loft:
+        scope += loft
     return scope
 
 
@@ -11634,6 +11637,41 @@ def feel_importe_scope():
         "(`importe`). Importe no disco não é o feel."
     )
 
+
+
+
+# A receita já recusa que o
+# pulo prove o feel. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Pulo no
+# disco não é o feel.
+FEEL_LOFT = re.compile(r"pulo")
+
+
+def recipe_refuses_pulo_as_proving_feel(text):
+    return bool(text and FEEL_LOFT.search(text))
+
+
+def feel_pulo_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_pulo_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_pulo_scope():
+    if not feel_pulo_source():
+        return None
+    return (
+        " O disco recusa que o pulo prove o feel "
+        "(`pulo`). Pulo no disco não é o feel."
+    )
 
 
 # O painel e o live já nomeiam o vazio. Sem isto o
