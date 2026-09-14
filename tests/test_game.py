@@ -7544,6 +7544,30 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertIn("migrate", proposal["why"])
 
+    def test_save_reads_schema_version_as_versioned(self):
+        # Recorte real de distrito-rabisco (src/engine/core/interaction-settings.js):
+        # versiona o formato e recusa versão desconhecida, preservando o documento.
+        # Antes desta leitura o relatório dizia unversioned e `next` propunha
+        # versionar um save que já era versionado.
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "settings.js").write_text(
+            "const snapshot = () => Object.freeze({ schemaVersion: 1, touch: {} });\n"
+            "function decode(raw) {\n"
+            "  const doc = JSON.parse(localStorage.getItem('interaction-settings'));\n"
+            "  if (!doc || doc.schemaVersion !== 1) return { value: snapshot(), preserve: true };\n"
+            "  return { value: doc };\n"
+            "}\n"
+        )
+        report = game.save_reading(self.project)
+        self.assertTrue(report["used"])
+        self.assertTrue(report["versioned"])
+        self.assertFalse(report["unversioned"])
+        bases = [
+            item["basis"]
+            for item in self.proposals(game.next_step(self.project, "persistence"))
+        ]
+        self.assertNotIn("save.unversioned", bases)
+
     def test_budget_names_a_package_without_a_measurement_artifact(self):
         self.package()
         self.foundation_document()

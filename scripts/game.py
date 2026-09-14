@@ -2243,7 +2243,14 @@ A11Y_OPTIONS = {
 PERSIST_USE = re.compile(
     r"localStorage|sessionStorage|indexedDB|saveProgress|loadProgress|PROGRESS_KEY|SETTINGS_KEY"
 )
-PERSIST_VERSION = re.compile(r"PROGRESS_SCHEMA|SETTINGS_SCHEMA|SAVE_VERSION|function migrate\b|\bmigrate\s*\(")
+# `schemaVersion`/`schema_version` é a convenção corrente — e a que o próprio
+# harness emite em todo relatório. Sem ela, um save versionado era lido como
+# unversioned só por não usar os nomes internos.
+PERSIST_VERSION = re.compile(
+    r"PROGRESS_SCHEMA|SETTINGS_SCHEMA|SAVE_VERSION|SCHEMA_VERSION"
+    r"|schemaVersion|schema_version"
+    r"|function migrate\b|\bmigrate\s*\("
+)
 PERSIST_WARN = re.compile(r"persistLine|title_volatile|title_unsaved|settings_recovered|settings\.broken")
 BUDGET_FILES = ("tools/budget.mjs", "tools/budget.js", "tools/budget.py")
 
