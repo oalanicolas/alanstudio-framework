@@ -17,6 +17,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      # A suíte cria um projeto do starter e roda `npm run test` nele.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Gate anti-slop
         run: python3 scripts/slop_gate.py
 
@@ -26,5 +31,6 @@ jobs:
           git fetch --no-tags origin "${{ github.base_ref }}"
           python3 scripts/slop_gate.py --diff-base "origin/${{ github.base_ref }}"
 
+      # A suíte é unittest puro: nenhuma dependência externa para instalar.
       - name: Suíte
-        run: python3 -m pytest tests -q
+        run: python3 -m unittest discover -s tests -t tests
