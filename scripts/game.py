@@ -3643,6 +3643,9 @@ def craft_item_scope():
     spun = craft_item_rodou_scope()
     if spun:
         scope += spun
+    plum = craft_item_berry_scope()
+    if plum:
+        scope += plum
     return scope
 
 
@@ -3974,6 +3977,43 @@ def craft_item_rodou_scope():
     return (
         " O disco recusa que o rodou prove a cadeia "
         "(`rodou`). Rodou no disco não é a cadeia."
+    )
+
+
+
+
+# A pesquisa já recusa que o
+# Berry prove a cadeia. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Berry no disco não
+# é a cadeia.
+CRAFT_PLUM = re.compile(r"Berry")
+
+
+def research_refuses_berry_as_proving_chain(text):
+    return bool(text and CRAFT_PLUM.search(text))
+
+
+def craft_item_berry_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_berry_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_berry_scope():
+    if not craft_item_berry_source():
+        return None
+    return (
+        " O disco recusa que o Berry prove a cadeia "
+        "(`Berry`). Berry no disco não é a cadeia."
     )
 
 
