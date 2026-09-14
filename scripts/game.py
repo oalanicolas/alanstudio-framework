@@ -28444,6 +28444,9 @@ def cycle_scope():
     wane = cycle_diferenca_scope()
     if wane:
         scope += wane
+    veer = cycle_mudar_scope()
+    if veer:
+        scope += veer
     return scope or None
 
 
@@ -30331,6 +30334,42 @@ def cycle_diferenca_scope():
     return (
         " O disco recusa que a diferença prove o teste "
         "(`diferença`). Diferença no disco não é o teste."
+    )
+
+
+
+# A receita já recusa que o
+# mudar prove o teste.
+# Sem isto o ciclo anunciava
+# o verbo e calava a recusa.
+# Mudar no disco não é
+# o teste.
+FEEL_VEER = re.compile(r"mudar")
+
+
+def recipe_refuses_mudar_as_proving_test(text):
+    return bool(text and FEEL_VEER.search(text))
+
+
+def cycle_mudar_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_mudar_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_mudar_scope():
+    if not cycle_mudar_source():
+        return None
+    return (
+        " O disco recusa que o mudar prove o teste "
+        "(`mudar`). Mudar no disco não é o teste."
     )
 
 
