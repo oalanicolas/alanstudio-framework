@@ -33734,6 +33734,9 @@ def record_scope():
     wink = record_telegraph_scope()
     if wink:
         scope += wink
+    hide = record_escondia_scope()
+    if hide:
+        scope += hide
     return scope
 
 
@@ -35512,6 +35515,42 @@ def record_telegraph_scope():
     return (
         " O disco recusa que o telegraph prove o vazamento "
         "(`telegraph`). Telegraph no disco não é o vazamento."
+    )
+
+
+
+# A receita já recusa que o
+# escondia prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Escondia no disco não é o
+# vazamento.
+PERF_HIDE = re.compile(r"escondia")
+
+
+def recipe_refuses_escondia_as_proving_leak(text):
+    return bool(text and PERF_HIDE.search(text))
+
+
+def record_escondia_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_escondia_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_escondia_scope():
+    if not record_escondia_source():
+        return None
+    return (
+        " O disco recusa que o escondia prove o vazamento "
+        "(`escondia`). Escondia no disco não é o vazamento."
     )
 
 
