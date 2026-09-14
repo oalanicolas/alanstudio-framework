@@ -33457,6 +33457,9 @@ def record_scope():
     anew = record_reusa_scope()
     if anew:
         scope += anew
+    wink = record_telegraph_scope()
+    if wink:
+        scope += wink
     return scope
 
 
@@ -35199,6 +35202,42 @@ def record_reusa_scope():
     return (
         " O disco recusa que o reusa prove o vazamento "
         "(`reusa`). Reusa no disco não é o vazamento."
+    )
+
+
+
+# A receita já recusa que o
+# telegraph prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Telegraph no disco não é o
+# vazamento.
+PERF_WINK = re.compile(r"telegraph")
+
+
+def recipe_refuses_telegraph_as_proving_leak(text):
+    return bool(text and PERF_WINK.search(text))
+
+
+def record_telegraph_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_telegraph_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_telegraph_scope():
+    if not record_telegraph_source():
+        return None
+    return (
+        " O disco recusa que o telegraph prove o vazamento "
+        "(`telegraph`). Telegraph no disco não é o vazamento."
     )
 
 
