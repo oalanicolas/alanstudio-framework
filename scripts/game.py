@@ -3628,6 +3628,9 @@ def craft_item_scope():
     foil = craft_item_conferivel_scope()
     if foil:
         scope += foil
+    nigel = craft_item_noodalls_scope()
+    if nigel:
+        scope += nigel
     return scope
 
 
@@ -3772,6 +3775,42 @@ def craft_item_conferivel_scope():
     return (
         " O disco recusa que o conferível prove a cadeia "
         "(`conferível`). Conferível no disco não é a cadeia."
+    )
+
+
+
+# A pesquisa já recusa que o
+# noodalls prove a cadeia. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Noodalls no disco
+# não é a cadeia.
+CRAFT_NIGEL = re.compile(r"noodalls")
+
+
+def research_refuses_noodalls_as_proving_chain(text):
+    return bool(text and CRAFT_NIGEL.search(text))
+
+
+def craft_item_noodalls_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_noodalls_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_noodalls_scope():
+    if not craft_item_noodalls_source():
+        return None
+    return (
+        " O disco recusa que o noodalls prove a cadeia "
+        "(`noodalls`). Noodalls no disco não é a cadeia."
     )
 
 
