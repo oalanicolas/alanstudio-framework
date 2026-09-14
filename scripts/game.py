@@ -33180,6 +33180,9 @@ def record_scope():
     well = record_poco_scope()
     if well:
         scope += well
+    anew = record_reusa_scope()
+    if anew:
+        scope += anew
     return scope
 
 
@@ -34886,6 +34889,42 @@ def record_poco_scope():
     return (
         " O disco recusa que o poço prove o vazamento "
         "(`poço`). Poço no disco não é o vazamento."
+    )
+
+
+
+# A receita já recusa que o
+# reusa prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Reusa no disco não é o
+# vazamento.
+PERF_ANEW = re.compile(r"reusa")
+
+
+def recipe_refuses_reusa_as_proving_leak(text):
+    return bool(text and PERF_ANEW.search(text))
+
+
+def record_reusa_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_reusa_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_reusa_scope():
+    if not record_reusa_source():
+        return None
+    return (
+        " O disco recusa que o reusa prove o vazamento "
+        "(`reusa`). Reusa no disco não é o vazamento."
     )
 
 
