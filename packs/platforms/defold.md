@@ -15,8 +15,11 @@ Não substitui AGENTS nem a documentação oficial.
 
 - Scripts: `init` → `update(dt)`/`fixed_update` → `on_message` → `on_input` → `final`.
   Coleções são carregadas por collection proxy (`load`/`enable`/`unload`) ou factory.
-- Pausa: `set_time_step` via `@system:` ou `msg.post("@system:", "set_update_frequency")`;
-  `window.set_listener` para foco/iconificação. Áudio via `sound.pause`.
+- Pausa: `set_time_step` vai para a URL da collection proxy
+  (`msg.post("#proxy", "set_time_step", { factor = 0, mode = 0 })`) e afeta apenas a
+  coleção daquela proxy — não existe em `@system:`. Já
+  `msg.post("@system:", "set_update_frequency", { frequency = 60 })` muda a
+  frequência global. `window.set_listener` para foco/iconificação. Áudio via `sound.pause`.
 - Reinício: recarregar a proxy da coleção; estado em módulos Lua persiste — fonte
   comum de estado sobrevivente.
 - Descarte: `go.delete`, `unload` da proxy, `timer.cancel`, mensagens pendentes.
