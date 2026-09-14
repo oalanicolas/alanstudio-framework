@@ -9052,6 +9052,9 @@ def _feel_scope(project):
     lid = feel_cobre_scope()
     if lid:
         scope += lid
+    yarn = feel_outros_scope()
+    if yarn:
+        scope += yarn
     return scope
 
 
@@ -10701,6 +10704,40 @@ def feel_cobre_scope():
     return (
         " O disco recusa que o cobre prove o feel "
         "(`cobre`). Cobre no disco não é o feel."
+    )
+
+
+# A receita já recusa que os
+# outros provem o feel. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Outros no
+# disco não é o feel.
+FEEL_YARN = re.compile(r"outros")
+
+
+def recipe_refuses_outros_as_proving_feel(text):
+    return bool(text and FEEL_YARN.search(text))
+
+
+def feel_outros_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_outros_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_outros_scope():
+    if not feel_outros_source():
+        return None
+    return (
+        " O disco recusa que os outros provem o feel "
+        "(`outros`). Outros no disco não é o feel."
     )
 
 
