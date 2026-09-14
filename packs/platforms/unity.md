@@ -4,12 +4,31 @@ Aplicabilidade: `kind: unity` (`ProjectSettings/ProjectVersion.txt`). Convençõ
 plataforma para orientar leitura e verificação; confirme cada uma no projeto e na
 versão do editor declarada. Não substitui AGENTS nem a documentação oficial.
 
+> **Curadoria** — revisado em 2026-09-14.
+> **Contempla:** Unity 6 (`6000.x`) com Test Framework 1.4, a linha que o
+> laboratório roda hoje (`bebe-geleia-unity`: `6000.6.0f1`). Para 2022 LTS ou
+> anterior, confirme cada comando na doc daquela versão.
+> **Verificar:** a linha de testes abaixo em EditMode deve gravar o XML e sair
+> com código 0; se o XML não existir, o editor saiu antes dos testes.
+> **Limites:** o harness não abre o editor, não interpreta `.meta`, cenas ou
+> prefabs, e não mede GPU. Nada aqui certifica requisito de loja ou console.
+> **Fontes:** [Test Framework 1.4 — linha de comando](https://docs.unity3d.com/Packages/com.unity.test-framework@1.4/manual/reference-command-line.html)
+> e [argumentos do editor (Unity 6)](https://docs.unity3d.com/6000.0/Documentation/Manual/EditorCommandLineArguments.html),
+> ambas consultadas em 2026-09-14.
+
 ## Executar e verificar
 
 - Versão do editor: `ProjectSettings/ProjectVersion.txt`; pacotes: `Packages/manifest.json`.
-- Testes: Unity Test Framework (EditMode/PlayMode). Linha de comando, por convenção:
-  `<Unity> -batchmode -nographics -quit -projectPath <proj> -runTests -testPlatform EditMode -testResults <xml>`.
-  PlayMode em batch pode exigir `-testPlatform PlayMode` e não cobre GPU real.
+- Testes: Unity Test Framework (EditMode/PlayMode). Linha de comando:
+  `<Unity> -batchmode -nographics -projectPath <proj> -runTests -testPlatform EditMode -testResults <xml>`.
+- **Não use `-quit` junto de `-runTests`.** A doc do editor é explícita: "If the
+  Editor is running tests with the `-runTests` argument, then `-quit` causes the
+  Editor to quit immediately, before in-progress tests have chance to complete."
+  O editor encerra sozinho ao fim da execução; com `-quit` o XML sai vazio ou
+  não sai, e a suíte parece ter passado.
+- `-runSynchronously` só vale para EditMode. Em PlayMode sobre um player, o
+  acompanhamento é por heartbeat, com timeout padrão de 10 minutos ajustável em
+  `-playerHeartbeatTimeout`. PlayMode em batch não cobre GPU real.
 - Métodos estáticos por `-executeMethod Namespace.Classe.Metodo`; logs por `-logFile`.
 - Não há CLI padronizada no harness: use `verify --command <caminho-do-Unity> ...`.
 

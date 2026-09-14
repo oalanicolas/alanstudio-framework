@@ -3450,7 +3450,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         for path in genres:
             with self.subTest(genre=path.name):
                 text = path.read_text(encoding="utf-8")
-                self.assertIn("a primeira superfície é a porta", text.casefold())
+                # A abertura é decisão do jogo e do starter, não característica de
+                # gênero. Exigir a frase literal aqui era o que a copiava para os
+                # 23 pacotes; a orientação fica nas receitas, onde é verdadeira.
                 self.assertNotIn("verified", text)
 
     def test_delivery_recipes_name_the_door_without_shipping(self):
