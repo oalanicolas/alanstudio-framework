@@ -28677,6 +28677,9 @@ def cycle_scope():
     veer = cycle_mudar_scope()
     if veer:
         scope += veer
+    cmp = cycle_compare_scope()
+    if cmp:
+        scope += cmp
     return scope or None
 
 
@@ -30600,6 +30603,42 @@ def cycle_mudar_scope():
     return (
         " O disco recusa que o mudar prove o teste "
         "(`mudar`). Mudar no disco não é o teste."
+    )
+
+
+
+# A receita já recusa que o
+# Compare prove o teste.
+# Sem isto o ciclo anunciava
+# o verbo e calava a recusa.
+# Compare no disco não é
+# o teste.
+FEEL_CMP = re.compile(r"Compare")
+
+
+def recipe_refuses_compare_as_proving_test(text):
+    return bool(text and FEEL_CMP.search(text))
+
+
+def cycle_compare_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_compare_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_compare_scope():
+    if not cycle_compare_source():
+        return None
+    return (
+        " O disco recusa que o Compare prove o teste "
+        "(`Compare`). Compare no disco não é o teste."
     )
 
 
