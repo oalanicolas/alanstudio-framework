@@ -27423,6 +27423,81 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         if items:
             self.assertNotIn(phrase, items[0].get("scope") or "")
 
+    def test_feel_observations_name_the_reproduza_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"reproduza")
+        self.assertTrue(
+            game.recipe_refuses_reproduza_as_proving_feel(recipe),
+            "a receita já recusa que o reproduza prove o feel",
+        )
+        self.assertEqual(game.feel_observations_reproduza_source(), "recipes/feel.md")
+        destination = self.root / "feel-com-reproduza"
+        game.init(destination, "canvas-arcade")
+        receipt = destination / "qa" / "partida-1"
+        receipt.mkdir(parents=True)
+        (receipt / "record.json").write_text(json.dumps({
+            "kind": "observation",
+            "author": "Ana",
+            "note": "o dash ainda não tem peso",
+            "fields": {"scenario": "primeira partida", "role": "human"},
+        }), encoding="utf-8")
+        report = game.feel_reading(destination)
+        item = report["observations"]
+        self.assertEqual(
+            [entry["path"] for entry in item["items"]],
+            ["qa/partida-1/record.json"],
+        )
+        self.assertIn(
+            "o reproduza prove o feel",
+            item["scope"],
+            "o feel listava o recibo e calava a recusa",
+        )
+        self.assertIn("(`reproduza`)", item["scope"])
+        self.assertIn("Reproduza no disco não é o feel.", item["scope"])
+        self.assertNotIn("reproduza", item)
+        self.assertNotIn("Esses", item)
+        self.assertNotIn("liberados", item)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_reproduza_as_proving_feel(""))
+        empty = game.feel_reading(self.project)
+        self.assertEqual(empty["observations"], [])
+        with mock.patch.object(game, "feel_observations_reproduza_source", return_value=None):
+            silent = game.feel_reading(destination)
+        self.assertNotIn(
+            "o reproduza prove o feel",
+            silent["observations"]["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o reproduza que a receita já recusa"), 2)
+        self.assertIn("nomeia o reproduza que a receita já recusa", create)
+        self.assertIn("nomeia o reproduza que a receita já recusa", skill)
+        self.assertIn("nomeia o reproduza que a receita já recusa", readme)
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("16 ms", item["scope"])
+        phrase = "o reproduza prove o feel"
+        self.assertNotIn(phrase, report["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.feel_unobserved_scope())
+        self.assertNotIn(phrase, game.feel_constants_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.content_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.save_reading(self.project).get("scope") or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("reproduza", game.CYCLE_KEYS)
+        self.assertNotIn("Esses", game.CYCLE_KEYS)
+        self.assertNotIn("liberados", game.CYCLE_KEYS)
+        items = game.feel_observation_items(report)
+        if items:
+            self.assertNotIn(phrase, items[0].get("scope") or "")
+
     def test_feel_names_the_universal_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
         self.assertTrue(

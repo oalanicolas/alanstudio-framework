@@ -7910,6 +7910,41 @@ def feel_observations_esses_scope():
     )
 
 
+# A receita já recusa que o
+# reproduza prove o feel.
+# Sem isto o feel listava o
+# recibo e calava a recusa.
+# Reproduza no disco não é o
+# feel.
+FEEL_TAPE = re.compile(r"reproduza")
+
+
+def recipe_refuses_reproduza_as_proving_feel(text):
+    return bool(text and FEEL_TAPE.search(text))
+
+
+def feel_observations_reproduza_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_reproduza_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_reproduza_scope():
+    if not feel_observations_reproduza_source():
+        return None
+    return (
+        " O disco recusa que o reproduza prove o feel "
+        "(`reproduza`). Reproduza no disco não é o feel."
+    )
+
+
 
 def feel_observations_scope():
     scope = (
@@ -8045,6 +8080,9 @@ def feel_observations_scope():
     those = feel_observations_esses_scope()
     if those:
         scope += those
+    tape = feel_observations_reproduza_scope()
+    if tape:
+        scope += tape
     return scope
 
 
