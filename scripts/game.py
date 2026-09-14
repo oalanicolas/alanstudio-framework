@@ -4862,6 +4862,9 @@ def observation_item_scope():
     affix = observation_sufixo_scope()
     if affix:
         scope += affix
+    tank = observation_acumulador_scope()
+    if tank:
+        scope += tank
     return scope
 
 
@@ -6269,6 +6272,41 @@ def observation_sufixo_scope():
     return (
         " O disco recusa que o sufixo prove o estado "
         "(`sufixo`). Sufixo no disco não é o estado."
+    )
+
+
+# A receita já recusa que o
+# acumulador prove o estado.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Acumulador no disco não é
+# o estado.
+A11Y_TANK = re.compile(r"acumulador")
+
+
+def recipe_refuses_acumulador_as_proving_state(text):
+    return bool(text and A11Y_TANK.search(text))
+
+
+def observation_acumulador_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_acumulador_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_acumulador_scope():
+    if not observation_acumulador_source():
+        return None
+    return (
+        " O disco recusa que o acumulador prove o estado "
+        "(`acumulador`). Acumulador no disco não é o estado."
     )
 
 
