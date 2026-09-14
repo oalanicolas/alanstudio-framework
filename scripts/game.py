@@ -13358,6 +13358,41 @@ def save_qualquer_scope():
     )
 
 
+# A receita já recusa que os
+# distintos provem o save.
+# Sem isto o save lia o schema
+# e calava a recusa.
+# Distintos no disco
+# não é o save.
+PERSIST_DUAL = re.compile(r"distintos")
+
+
+def recipe_refuses_distintos_as_proving_save(text):
+    return bool(text and PERSIST_DUAL.search(text))
+
+
+def save_distintos_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_distintos_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_distintos_scope():
+    if not save_distintos_source():
+        return None
+    return (
+        " O disco recusa que os distintos provem o save "
+        "(`distintos`). Distintos no disco não é o save."
+    )
+
+
 
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
@@ -14104,6 +14139,9 @@ def save_reading(project):
     odds = save_qualquer_scope()
     if odds:
         scope += odds
+    dual = save_distintos_scope()
+    if dual:
+        scope += dual
     used_flag = bool(used)
     if used_flag:
         used_flag = {
