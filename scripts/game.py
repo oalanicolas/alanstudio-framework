@@ -12796,6 +12796,41 @@ def save_referenciados_scope():
     )
 
 
+# A receita já recusa que o
+# corrompe prove o save.
+# Sem isto o save lia o
+# schema e calava a recusa.
+# Corrompe no disco não é o
+# save.
+PERSIST_ROT = re.compile(r"corrompe")
+
+
+def recipe_refuses_corrompe_as_proving_save(text):
+    return bool(text and PERSIST_ROT.search(text))
+
+
+def save_corrompe_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_corrompe_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_corrompe_scope():
+    if not save_corrompe_source():
+        return None
+    return (
+        " O disco recusa que o corrompe prove o save "
+        "(`corrompe`). Corrompe no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -13532,6 +13567,9 @@ def save_reading(project):
     refs = save_referenciados_scope()
     if refs:
         scope += refs
+    rot = save_corrompe_scope()
+    if rot:
+        scope += rot
     used_flag = bool(used)
     if used_flag:
         used_flag = {
