@@ -14891,6 +14891,41 @@ def save_destruir_scope():
     )
 
 
+
+# A receita já recusa que o
+# Separe prove o save. Sem
+# isto o save lia o schema e
+# calava a recusa. Separe no
+# disco não é o save.
+PERSIST_APART = re.compile(r"Separe")
+
+
+def recipe_refuses_separe_as_proving_save(text):
+    return bool(text and PERSIST_APART.search(text))
+
+
+def save_separe_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_separe_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_separe_scope():
+    if not save_separe_source():
+        return None
+    return (
+        " O disco recusa que o Separe prove o save "
+        "(`Separe`). Separe no disco não é o save."
+    )
+
+
 def recipe_refuses_listed_files_as_full_chain(text):
     return bool(text and PERSIST_CHAIN.search(text))
 
@@ -15652,6 +15687,9 @@ def save_reading(project):
     raze = save_destruir_scope()
     if raze:
         scope += raze
+    apart = save_separe_scope()
+    if apart:
+        scope += apart
     used_flag = bool(used)
     if used_flag:
         used_flag = {
