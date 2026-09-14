@@ -30740,6 +30740,9 @@ def record_scope():
     maps = record_texturas_scope()
     if maps:
         scope += maps
+    stay = record_sobrevivem_scope()
+    if stay:
+        scope += stay
     return scope
 
 
@@ -32129,6 +32132,41 @@ def record_texturas_scope():
     return (
         " O disco recusa que as texturas provem o vazamento "
         "(`texturas`). Texturas no disco não é o vazamento."
+    )
+
+
+# A receita já recusa que o
+# sobrevivem prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Sobrevivem no disco não é
+# o vazamento.
+PERF_STAY = re.compile(r"sobrevivem")
+
+
+def recipe_refuses_sobrevivem_as_proving_leak(text):
+    return bool(text and PERF_STAY.search(text))
+
+
+def record_sobrevivem_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_sobrevivem_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_sobrevivem_scope():
+    if not record_sobrevivem_source():
+        return None
+    return (
+        " O disco recusa que o sobrevivem prove o vazamento "
+        "(`sobrevivem`). Sobrevivem no disco não é o vazamento."
     )
 
 
