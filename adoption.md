@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.1103 — o item do craft nomeia o conferível que a pesquisa já recusa
+
+A
+pesquisa
+já
+dizia
+que
+o
+método
+é
+conferível
+por
+construção.
+O
+item
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+do
+craft
+nomeia
+o
+conferível.
+Conferível
+no
+disco
+não
+é
+a
+cadeia.
+Sem
+chave
+`conferível`.
+Nomear
+não
+observa.
+
 ## 0.9.1102 — o observations nomeia o ataque que a receita já recusa
 
 A
