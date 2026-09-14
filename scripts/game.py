@@ -13172,6 +13172,41 @@ def save_silenciosamente_scope():
     )
 
 
+# A receita já recusa que o
+# qualquer prove o save.
+# Sem isto o save lia o schema
+# e calava a recusa.
+# Qualquer no disco
+# não é o save.
+PERSIST_ODDS = re.compile(r"qualquer")
+
+
+def recipe_refuses_qualquer_as_proving_save(text):
+    return bool(text and PERSIST_ODDS.search(text))
+
+
+def save_qualquer_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_qualquer_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_qualquer_scope():
+    if not save_qualquer_source():
+        return None
+    return (
+        " O disco recusa que o qualquer prove o save "
+        "(`qualquer`). Qualquer no disco não é o save."
+    )
+
+
 
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
@@ -13915,6 +13950,9 @@ def save_reading(project):
     hush = save_silenciosamente_scope()
     if hush:
         scope += hush
+    odds = save_qualquer_scope()
+    if odds:
+        scope += odds
     used_flag = bool(used)
     if used_flag:
         used_flag = {
