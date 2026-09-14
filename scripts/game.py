@@ -3622,6 +3622,9 @@ def craft_item_scope():
     ilk = craft_item_natureza_scope()
     if ilk:
         scope += ilk
+    weld = craft_item_construcao_scope()
+    if weld:
+        scope += weld
     return scope
 
 
@@ -3694,6 +3697,42 @@ def craft_item_natureza_scope():
     return (
         " O disco recusa que a natureza prove a cadeia "
         "(`natureza`). Natureza no disco não é a cadeia."
+    )
+
+
+
+# A pesquisa já recusa que a
+# construção prove a cadeia. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Construção no disco
+# não é a cadeia.
+CRAFT_WELD = re.compile(r"construção")
+
+
+def research_refuses_construcao_as_proving_chain(text):
+    return bool(text and CRAFT_WELD.search(text))
+
+
+def craft_item_construcao_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_construcao_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_construcao_scope():
+    if not craft_item_construcao_source():
+        return None
+    return (
+        " O disco recusa que a construção prove a cadeia "
+        "(`construção`). Construção no disco não é a cadeia."
     )
 
 
