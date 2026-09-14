@@ -19194,6 +19194,42 @@ def content_objetos_scope():
     )
 
 
+
+# A receita já recusa que o
+# evita prove o destino. Sem
+# isto o content listava
+# arquivos e calava a recusa.
+# Evita no disco não é o
+# destino.
+CONTENT_SHUN = re.compile(r"evita")
+
+
+def recipe_refuses_evita_as_proving_destination(text):
+    return bool(text and CONTENT_SHUN.search(text))
+
+
+def content_evita_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_evita_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_evita_scope():
+    if not content_evita_source():
+        return None
+    return (
+        " O disco recusa que o evita prove o destino "
+        "(`evita`). Evita no disco não é o destino."
+    )
+
+
 def recipe_refuses_encoded_as_gpu(text):
     return bool(text and CONTENT_ENCODED.search(text))
 
@@ -19598,6 +19634,9 @@ def content_reading(project):
     ward = content_objetos_scope()
     if ward:
         scope += ward
+    shun = content_evita_scope()
+    if shun:
+        scope += shun
     listed = files[:24]
     if listed:
         listed = {
