@@ -4821,6 +4821,9 @@ def observation_item_scope():
     dial = observation_knobs_scope()
     if dial:
         scope += dial
+    affix = observation_sufixo_scope()
+    if affix:
+        scope += affix
     return scope
 
 
@@ -6194,6 +6197,40 @@ def observation_knobs_scope():
     return (
         " O disco recusa que os knobs provem o estado "
         "(`knobs`). Knobs no disco não é o estado."
+    )
+
+
+# A receita já recusa que o
+# sufixo prove o estado. Sem
+# isto o item copiava a nota
+# e calava a recusa. Sufixo
+# no disco não é o estado.
+A11Y_AFFIX = re.compile(r"sufixo")
+
+
+def recipe_refuses_sufixo_as_proving_state(text):
+    return bool(text and A11Y_AFFIX.search(text))
+
+
+def observation_sufixo_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_sufixo_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_sufixo_scope():
+    if not observation_sufixo_source():
+        return None
+    return (
+        " O disco recusa que o sufixo prove o estado "
+        "(`sufixo`). Sufixo no disco não é o estado."
     )
 
 
