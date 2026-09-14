@@ -4904,6 +4904,9 @@ def observation_item_scope():
     tank = observation_acumulador_scope()
     if tank:
         scope += tank
+    warp = observation_dilata_scope()
+    if warp:
+        scope += warp
     return scope
 
 
@@ -6347,6 +6350,42 @@ def observation_acumulador_scope():
         " O disco recusa que o acumulador prove o estado "
         "(`acumulador`). Acumulador no disco não é o estado."
     )
+
+
+# A receita já recusa que o
+# dilata prove o estado.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Dilata no disco não é o
+# estado.
+A11Y_WARP = re.compile(r"dilata")
+
+
+def recipe_refuses_dilata_as_proving_state(text):
+    return bool(text and A11Y_WARP.search(text))
+
+
+def observation_dilata_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_dilata_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_dilata_scope():
+    if not observation_dilata_source():
+        return None
+    return (
+        " O disco recusa que o dilata prove o estado "
+        "(`dilata`). Dilata no disco não é o estado."
+    )
+
 
 
 # A receita já recusa que o soltar
