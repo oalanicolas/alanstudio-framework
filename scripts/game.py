@@ -82,7 +82,7 @@ GENRES = (
 GENRE_KEYWORDS = {
     "narrative": ("narrativ", "conto", "visual novel", "interactive fiction", "aventura textual", "historia interativa"),
     "adventure": ("point and click", "point n click", "aventura grafica", "adventure", "escape room"),
-    "platformer": ("plataforma", "platformer", "metroidvania"),
+    "platformer": ("jogo de plataforma", "platformer", "metroidvania"),
     "action-adventure": ("acao aventura", "action adventure", "mundo aberto", "open world", "zelda", "soulslike", "hack and slash", "beat em up"),
     "shooter": ("fps", "tps", "shooter", "tiro", "shoot em up", "shmup"),
     "fighting": ("luta", "fighting", "versus"),
@@ -90,7 +90,7 @@ GENRE_KEYWORDS = {
     "horror": ("horror", "terror", "survival horror"),
     "racing": ("corrida", "racing", "kart", "drift"),
     "sports": ("esporte", "sports", "futebol", "football", "basquete", "skate", "golf", "tenis"),
-    "rhythm": ("ritmo", "rhythm", "musica", "music game", "dance"),
+    "rhythm": ("jogo de ritmo", "rhythm", "music game", "dance game"),
     "turn-based": ("turno", "turn based", "tabuleiro", "board game", "tatico", "tactics", "xcom"),
     "deckbuilder": ("deckbuild", "card battler", "cartas", "card game", "baralho", "tcg", "ccg"),
     "strategy": ("estrategia", "strategy", "rts", "4x", "grand strategy"),
@@ -100,11 +100,30 @@ GENRE_KEYWORDS = {
     "survival-crafting": ("survival", "sobreviv", "crafting", "sandbox", "minecraft", "colonia"),
     "rpg": ("rpg", "jrpg", "arpg", "crpg"),
     "roguelike": ("roguelike", "roguelite", "run based", "permadeath"),
-    "multiplayer-competitive": ("moba", "battle royale", "hero shooter", "arena", "competitiv", "esports", "pvp"),
+    "multiplayer-competitive": ("moba", "battle royale", "hero shooter", "competitiv", "esports", "pvp"),
     "idle": ("idle", "clicker", "incremental"),
     "casual": ("casual", "hypercasual", "hyper casual", "party game", "minigame"),
 }
 GENRE_FIELD = re.compile(r"^\s*(?:[-*]\s+)?(?:g[eê]nero(?: do jogo)?|genre)\s*:\s*(.+?)\s*$", re.IGNORECASE)
+# Nem todo jogo declara um campo Gênero: o brief costuma dizer em prosa ("FPS de
+# ondas dentro de um caderno"). A prosa vale como sugestão auditável — sai com
+# arquivo, linha e trecho —, nunca como classificação.
+GENRE_KEYWORD_GENRE = {kw: genre for genre, kws in GENRE_KEYWORDS.items() for kw in kws}
+GENRE_PROSE = re.compile(
+    r"\b(" + "|".join(sorted((re.escape(k) for k in GENRE_KEYWORD_GENRE), key=len, reverse=True)) + r")\b"
+)
+# "60 fps" é taxa de quadros, não gênero.
+GENRE_PROSE_NUMBER = re.compile(r"\d\s*$")
+# Algumas palavras são gênero num contexto e medida em outro. `fps` na mesma
+# linha que quadro, taxa ou desempenho é orçamento de performance; `corrida`
+# ao lado de armamentista não é jogo de corrida.
+GENRE_PROSE_GUARD = {
+    "fps": re.compile(
+        r"quadro|frame|taxa|est[aá]vel|queda|desempenho|performance|"
+        r"or[cç]amento|budget|\bhz\b|medi[cç][aã]o|profil"
+    ),
+    "corrida": re.compile(r"armamentista|contra o tempo do projeto"),
+}
 # Escala de ambição (references/ambition.md): governa quantidade de artefatos e de
 # conteúdo, nunca o piso do verbo. É o "register" da skill: o brief declara uma,
 # a conversa pode sobrescrever por tarefa, e o harness só lê o campo.
@@ -5110,6 +5129,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
     text_docs = {"license", "licence", "copying", "credits", "authors"}
     indexes, documents, links, statuses = [], {}, {}, {}
     deferred, non_current, continuity_sources, genre_mentions, scale_mentions = [], [], [], [], []
+    genre_prose = []
     link_count, max_links, links_limited = 0, 128, False
     inline_link = re.compile(r'(?<!!)\[[^\]\n]+\]\((?:<([^>\n]+)>|([^\s)]+))(?:\s+"[^"]*")?\)')
     navigation = re.compile(r"^\s*(?:(?:[-*]|\d+[.)])\s+)?\[[^\]]+\](?:\(|\[)")
@@ -5255,6 +5275,15 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
                 continue
             if inline_link.search(line) or navigation.match(line):
                 continue
+            for hit in genre_prose_hits(line):
+                seen = next((i for i in genre_prose if i["genre"] == hit), None)
+                if seen is None:
+                    genre_prose.append({
+                        "path": relative, "line": number, "genre": hit,
+                        "value": line.strip()[:120], "count": 1,
+                    })
+                else:
+                    seen["count"] += 1
             heading = re.match(r"^\s{0,3}#{1,6}\s+(.+)", line)
             field = re.match(r"^\s*(?:[-*]\s+)?([^:]{3,80}):", line)
             if heading:
@@ -5356,6 +5385,7 @@ def scan(project, max_entries=2000, max_documents=64, max_bytes=64000):
         "areas": areas, "gaps": gaps, "read_first": read_first,
         "continuity_sources": continuity_sources, "continuity_source_count": continuity_source_count,
         "genre_mentions": [dict(item, scope=mention_scope) for item in genre_mentions],
+        "genre_prose": genre_prose,
         "scale_mentions": scale_mentions,
         "agent_context": {
             "status": "found" if local_instructions else "not_located",
@@ -5511,6 +5541,26 @@ def suggest_genres(mentions):
             if genre not in suggested and any(keyword in value for keyword in keywords):
                 suggested.append(genre)
     return suggested
+
+
+def genre_prose_hits(line):
+    """Gêneros mencionados na prosa de uma linha; lista vazia quando não há.
+
+    O brief costuma dizer o gênero sem campo declarado. Uma palavra precedida
+    de número não conta: `60 fps` é taxa de quadros.
+    """
+    text = normalize_text(line)
+    hits = []
+    for match in GENRE_PROSE.finditer(text):
+        if GENRE_PROSE_NUMBER.search(text[max(0, match.start() - 8):match.start()]):
+            continue
+        guard = GENRE_PROSE_GUARD.get(match.group(1))
+        if guard and guard.search(text):
+            continue
+        genre = GENRE_KEYWORD_GENRE[match.group(1)]
+        if genre not in hits:
+            hits.append(genre)
+    return hits
 
 
 # O pacote já recusa que teste unitário prove o navegador. Sem isto o
@@ -5720,11 +5770,40 @@ def unpin(root, name):
     }
 
 
-def select_packs(kind, genre, mentions):
+def select_packs(kind, genre, mentions, prose=()):
     pack_name = PLATFORM_PACKS.get(kind)
     platform_path = FRAMEWORK / f"packs/platforms/{pack_name}.md" if pack_name else None
-    genre_path = FRAMEWORK / f"packs/genres/{genre}.md" if genre else None
     suggested = suggest_genres(mentions)
+    # O documento sugere; a conversa decide. Um campo ou uma prosa nunca carregam
+    # o pacote sozinhos — trocar a orientação de gênero é decisão de quem conduz,
+    # não de um marcador no disco. O que muda aqui é a qualidade da sugestão: ela
+    # passa a sair ranqueada e com a evidência (arquivo, linha e quantas vezes).
+    ranked = sorted(prose, key=lambda item: -item.get("count", 1))
+    prose_genres = list(dict.fromkeys(item["genre"] for item in ranked))
+    dominant = []
+    if ranked and (len(ranked) == 1 or ranked[0].get("count", 1) >= 2 * ranked[1].get("count", 1)):
+        dominant = prose_genres[:1]
+
+    source = None
+    if genre:
+        basis = "--genre declarado na conversa"
+    elif suggested:
+        basis = "campo Gênero localizado em documento; confirme e passe --genre"
+        source = next((dict(m) for m in mentions if suggest_genres([m])), None)
+    elif dominant:
+        source = next((dict(i) for i in ranked if i["genre"] == dominant[0]), None)
+        basis = (
+            f"prosa do documento sugere {dominant[0]}; confirme e passe --genre"
+        )
+    elif prose_genres:
+        basis = (
+            "mais de um gênero possível na prosa "
+            f"({', '.join(prose_genres[:4])}); confirme e passe --genre"
+        )
+    else:
+        basis = "não declarado; passe --genre quando o jogo tiver gênero definido"
+
+    genre_path = FRAMEWORK / f"packs/genres/{genre}.md" if genre else None
     return {
         "platform": {
             "kind": kind, "pack": str(platform_path) if platform_path and platform_path.is_file() else None,
@@ -5733,8 +5812,9 @@ def select_packs(kind, genre, mentions):
         },
         "genre": {
             "name": genre, "pack": str(genre_path) if genre_path and genre_path.is_file() else None,
-            "basis": "--genre declarado na conversa" if genre else ("campo Gênero localizado em documento; confirme e passe --genre" if suggested else "não declarado; passe --genre quando o jogo tiver gênero definido"),
-            "suggested": suggested,
+            "basis": basis,
+            "source": source,
+            "suggested": suggested or prose_genres,
             "mentions": [
                 {"path": item["path"], "line": item["line"], "value": item["value"]}
                 for item in mentions
@@ -6363,7 +6443,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
     initializing = event == "initialize"
     document_minimum = foundation["audit"]["required"] or event in ("direction-approved", "initialize") or stage == "audit"
     kind = identify(project)
-    packs = select_packs(kind, genre, foundation["genre_mentions"])
+    packs = select_packs(kind, genre, foundation["genre_mentions"], foundation["genre_prose"])
     references = [str(path) for path in select_references(focus, stage, document_minimum)]
     recipe = str(FRAMEWORK / f"recipes/{focus}.md")
     for pack in (packs["genre"]["pack"], packs["platform"]["pack"]):  # inserção reversa: receita → plataforma → gênero

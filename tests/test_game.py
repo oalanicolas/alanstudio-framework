@@ -11254,6 +11254,32 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         for genre in game.GENRES:  # o nome do gênero é sempre uma pista para ele mesmo
             self.assertIn(genre, game.suggest_genres([{"value": genre.replace("-", " ")}]))
 
+    def test_prose_suggests_a_genre_with_evidence_and_still_loads_no_pack(self):
+        # Nem todo brief declara um campo Gênero. distrito-rabisco diz em prosa
+        # ("FPS de ondas dentro de um caderno") e a sugestão vinha vazia.
+        self.package()
+        (self.project / "README.md").write_text(
+            "# Jogo\n\nUm FPS de ondas dentro de um caderno. O FPS alterna cenários\n"
+            "e o tiro tem recarga.\n\nOrçamento: 60 fps estáveis no alvo.\n"
+        )
+        result = game.context(self.project, "create", studies_root=self.root / "absent")
+        genre = result["packs"]["genre"]
+        self.assertEqual(genre["suggested"][:1], ["shooter"])
+        source = genre["source"]
+        self.assertEqual(source["path"], "README.md")
+        self.assertGreaterEqual(source["count"], 2)
+        # O documento sugere; a conversa decide. Carregar o pacote continua exigindo --genre.
+        self.assertIsNone(genre["pack"])
+        self.assertIsNone(genre["name"])
+        self.assertIn("--genre", genre["basis"])
+        self.assertFalse(any("genres" in Path(p).parts for p in result["read_next"]))
+
+    def test_frame_rate_is_not_a_genre(self):
+        self.assertEqual(game.genre_prose_hits("Um FPS de ondas no caderno"), ["shooter"])
+        self.assertEqual(game.genre_prose_hits("Orçamento: 60 fps estáveis"), [])
+        self.assertEqual(game.genre_prose_hits("queda de fps medida no alvo"), [])
+        self.assertEqual(game.genre_prose_hits("taxa de quadros: fps do profiler"), [])
+
     def test_cargo_project_exposes_conventional_targets_and_verify_runs_them(self):
         (self.project / "Cargo.toml").write_text("[package]\nname = \"jogo\"\n")
         result = game.context(self.project, "mechanics", studies_root=self.root / "absent")
