@@ -5069,6 +5069,9 @@ def observation_item_scope():
     gift = observation_graca_scope()
     if gift:
         scope += gift
+    grey = observation_cinza_scope()
+    if grey:
+        scope += grey
     return scope
 
 
@@ -6653,6 +6656,41 @@ def observation_graca_scope():
         "(`graça`). Graça no disco não é o estado."
     )
 
+
+
+
+# A receita já recusa que o
+# cinza prove o estado. Sem
+# isto o item copiava a nota
+# e calava a recusa. Cinza
+# no disco não é o estado.
+A11Y_GREY = re.compile(r"cinza")
+
+
+def recipe_refuses_cinza_as_proving_state(text):
+    return bool(text and A11Y_GREY.search(text))
+
+
+def observation_cinza_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_cinza_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_cinza_scope():
+    if not observation_cinza_source():
+        return None
+    return (
+        " O disco recusa que o cinza prove o estado "
+        "(`cinza`). Cinza no disco não é o estado."
+    )
 
 
 # A receita já recusa que o soltar
