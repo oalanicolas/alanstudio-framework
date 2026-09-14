@@ -9169,6 +9169,9 @@ def _feel_scope(project):
     yarn = feel_outros_scope()
     if yarn:
         scope += yarn
+    glide = feel_easing_scope()
+    if glide:
+        scope += glide
     return scope
 
 
@@ -10852,6 +10855,42 @@ def feel_outros_scope():
     return (
         " O disco recusa que os outros provem o feel "
         "(`outros`). Outros no disco não é o feel."
+    )
+
+
+
+
+# A receita já recusa que o
+# easing prove o feel. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Easing no
+# disco não é o feel.
+FEEL_GLIDE = re.compile(r"easing")
+
+
+def recipe_refuses_easing_as_proving_feel(text):
+    return bool(text and FEEL_GLIDE.search(text))
+
+
+def feel_easing_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_easing_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_easing_scope():
+    if not feel_easing_source():
+        return None
+    return (
+        " O disco recusa que o easing prove o feel "
+        "(`easing`). Easing no disco não é o feel."
     )
 
 
