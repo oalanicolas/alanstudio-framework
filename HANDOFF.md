@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.1029: o record nomeia o descarte que a receita já recusa. Descarte no disco não é o vazamento. Sem chave `descarte`. Nomear não mede.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.1029): **1090 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
