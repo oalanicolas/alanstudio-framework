@@ -18504,6 +18504,42 @@ def content_alheio_scope():
     )
 
 
+
+# A receita já recusa que o
+# necessário prove o destino.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Necessário no disco não é o
+# destino.
+CONTENT_PITH = re.compile(r"necessário")
+
+
+def recipe_refuses_necessario_as_proving_destination(text):
+    return bool(text and CONTENT_PITH.search(text))
+
+
+def content_necessario_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_necessario_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_necessario_scope():
+    if not content_necessario_source():
+        return None
+    return (
+        " O disco recusa que o necessário prove o destino "
+        "(`necessário`). Necessário no disco não é o destino."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -18907,6 +18943,9 @@ def content_reading(project):
     away = content_alheio_scope()
     if away:
         scope += away
+    pith = content_necessario_scope()
+    if pith:
+        scope += pith
     listed = files[:24]
     if listed:
         listed = {
