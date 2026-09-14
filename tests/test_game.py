@@ -22849,6 +22849,60 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("importe", game.CYCLE_KEYS)
         self.assertNotIn("estenda", game.CYCLE_KEYS)
 
+    def test_feel_names_the_preserve_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/feel.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"preserve")
+        self.assertTrue(
+            game.recipe_refuses_preserve_as_proving_feel(recipe),
+            "a receita já recusa que o preserve prove o feel",
+        )
+        self.assertEqual(game.feel_preserve_source(), "recipes/feel.md")
+        report = game.feel_reading(self.project)
+        self.assertIn(
+            "o preserve prove o feel",
+            report["scope"],
+            "o feel lia o CONFIG e calava a recusa",
+        )
+        self.assertIn("(`preserve`)", report["scope"])
+        self.assertIn("Preserve no disco não é o feel.", report["scope"])
+        self.assertNotIn("preserve", report)
+        self.assertNotIn("pulo", report)
+        self.assertNotIn("importe", report)
+        self.assertFalse(report["felt"])
+        self.assertFalse(game.recipe_refuses_preserve_as_proving_feel(""))
+        with mock.patch.object(game, "feel_preserve_source", return_value=None):
+            silent = game.feel_reading(self.project)
+        self.assertNotIn("o preserve prove o feel", silent["scope"])
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o preserve que a receita já recusa"), 2)
+        self.assertIn("nomeia o preserve que a receita já recusa", create)
+        self.assertIn("nomeia o preserve que a receita já recusa", skill)
+        self.assertIn("nomeia o preserve que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        phrase = "o preserve prove o feel"
+        self.assertNotIn(phrase, game.feel_unobserved_scope())
+        self.assertNotIn(phrase, game.feel_constants_scope())
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("preserve", game.CYCLE_KEYS)
+        self.assertNotIn("pulo", game.CYCLE_KEYS)
+        self.assertNotIn("importe", game.CYCLE_KEYS)
+
     def test_feel_treats_an_observation_receipt_as_declared_not_as_weight(self):
         destination = self.root / "com-observacao"
         game.init(destination, "canvas-arcade")

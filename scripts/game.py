@@ -9888,6 +9888,9 @@ def _feel_scope(project):
     loft = feel_pulo_scope()
     if loft:
         scope += loft
+    spar = feel_preserve_scope()
+    if spar:
+        scope += spar
     return scope
 
 
@@ -11794,6 +11797,41 @@ def feel_pulo_scope():
 # access lia região viva e calava o canvas da porta.
 # Texto no disco não é mix ouvido.
 CANVAS_AUDIO_GAP = re.compile(r"extra\.audio[\s\S]{0,400}?fillText\(\s*audio\b")
+
+
+
+# A receita já recusa que o
+# preserve prove o feel. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Preserve no
+# disco não é o feel.
+FEEL_SPAR = re.compile(r"preserve")
+
+
+def recipe_refuses_preserve_as_proving_feel(text):
+    return bool(text and FEEL_SPAR.search(text))
+
+
+def feel_preserve_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_preserve_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_preserve_scope():
+    if not feel_preserve_source():
+        return None
+    return (
+        " O disco recusa que o preserve prove o feel "
+        "(`preserve`). Preserve no disco não é o feel."
+    )
 
 
 def canvas_names_audio_gap(text):
