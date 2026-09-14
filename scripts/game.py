@@ -26333,6 +26333,9 @@ def cycle_scope():
     dose = cycle_bastante_scope()
     if dose:
         scope += dose
+    reply = cycle_resposta_scope()
+    if reply:
+        scope += reply
     return scope or None
 
 
@@ -27894,6 +27897,42 @@ def cycle_bastante_scope():
         " O disco recusa que o bastante prove o teste "
         "(`bastante`). Bastante no disco não é o teste."
     )
+
+
+# A receita já recusa que a
+# Resposta prove o teste. Sem
+# isto o ciclo anunciava o
+# verbo e calava a recusa.
+# Resposta no disco não é o
+# teste.
+FEEL_REPLY = re.compile(r"Resposta")
+
+
+def recipe_refuses_resposta_as_proving_test(text):
+    return bool(text and FEEL_REPLY.search(text))
+
+
+def cycle_resposta_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_resposta_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_resposta_scope():
+    if not cycle_resposta_source():
+        return None
+    return (
+        " O disco recusa que a Resposta prove o teste "
+        "(`Resposta`). Resposta no disco não é o teste."
+    )
+
 
 
 def named_cycle(cycle):
