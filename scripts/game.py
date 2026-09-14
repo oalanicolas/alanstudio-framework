@@ -31817,6 +31817,9 @@ def record_scope():
     sign = record_sintoma_scope()
     if sign:
         scope += sign
+    cram = record_compacta_scope()
+    if cram:
+        scope += cram
     return scope
 
 
@@ -33348,6 +33351,40 @@ def record_sintoma_scope():
         "(`sintoma`). Sintoma no disco não é o vazamento."
     )
 
+
+# A receita já recusa que o
+# compacta prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Compacta no disco não é o
+# vazamento.
+PERF_CRAM = re.compile(r"compacta")
+
+
+def recipe_refuses_compacta_as_proving_leak(text):
+    return bool(text and PERF_CRAM.search(text))
+
+
+def record_compacta_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_compacta_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_compacta_scope():
+    if not record_compacta_source():
+        return None
+    return (
+        " O disco recusa que o compacta prove o vazamento "
+        "(`compacta`). Compacta no disco não é o vazamento."
+    )
 
 
 # A receita já recusa que ganho na média

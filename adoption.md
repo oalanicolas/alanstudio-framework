@@ -30,6 +30,47 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.1053 — o record nomeia o compacta que a receita já recusa
+
+A
+receita
+já
+pedia
+a
+chuva
+compacta
+o
+array
+vivo.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+o
+compacta.
+Compacta
+no
+disco
+não
+é
+o
+vazamento.
+Sem
+chave
+`compacta`.
+Nomear
+não
+mede.
+
 ## 0.9.1052 — o save nomeia o silenciosamente que a receita já recusa
 
 A
