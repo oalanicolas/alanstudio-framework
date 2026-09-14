@@ -3355,6 +3355,41 @@ def craft_item_pobre_scope():
     )
 
 
+# A pesquisa já recusa que as
+# Janelas provem a cadeia.
+# Sem isto o item do craft
+# listava o checklist e
+# calava a recusa. Janelas
+# no disco não é a cadeia.
+CRAFT_PANES = re.compile(r"Janelas")
+
+
+def research_refuses_janelas_as_proving_chain(text):
+    return bool(text and CRAFT_PANES.search(text))
+
+
+def craft_item_janelas_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_janelas_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_janelas_scope():
+    if not craft_item_janelas_source():
+        return None
+    return (
+        " O disco recusa que as Janelas provem a cadeia "
+        "(`Janelas`). Janelas no disco não é a cadeia."
+    )
+
+
 
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
@@ -3502,6 +3537,9 @@ def craft_item_scope():
     poor = craft_item_pobre_scope()
     if poor:
         scope += poor
+    sill = craft_item_janelas_scope()
+    if sill:
+        scope += sill
     return scope
 
 

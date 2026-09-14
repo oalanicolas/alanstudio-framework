@@ -30,6 +30,48 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.1055 — o item do craft nomeia as Janelas que a pesquisa já recusa
+
+A
+pesquisa
+já
+pedia
+Janelas
+de
+perdão.
+O
+item
+do
+craft
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+do
+craft
+nomeia
+as
+Janelas.
+Janelas
+no
+disco
+não
+é
+a
+cadeia.
+Sem
+chave
+`Janelas`.
+Nomear
+não
+observa.
+
 ## 0.9.1054 — o observations do feel nomeia o reproduza que a receita já recusa
 
 A
