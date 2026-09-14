@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.1031 — o item do craft nomeia o 240 que a pesquisa já recusa
+
+A
+pesquisa
+já
+pedia
+gravar
+com
+câmera
+de
+alta
+taxa
+(240
+fps
+ou
+mais).
+O
+item
+listava
+o
+checklist
+e
+calava
+a
+recusa.
+Agora
+o
+item
+nomeia
+o
+240.
+240
+no
+disco
+não
+é
+a
+cadeia.
+Sem
+chave
+`240`.
+Nomear
+não
+observa.
+
 ## 0.9.1030 — o observations do feel nomeia o tornam que a receita já recusa
 
 A

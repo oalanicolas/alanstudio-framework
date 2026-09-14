@@ -15917,6 +15917,76 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("duração", game.CYCLE_KEYS)
         self.assertNotIn("multiplicar", game.CYCLE_KEYS)
 
+    def test_craft_item_names_the_240_the_research_already_refuses(self):
+        research = (
+            game.FRAMEWORK / "references/observable-criteria-research.md"
+        ).read_text(encoding="utf-8")
+        self.assertRegex(research, r"240")
+        self.assertTrue(
+            game.research_refuses_cam240_as_proving_chain(research),
+            "a pesquisa já recusa que o 240 prove a cadeia",
+        )
+        self.assertEqual(
+            game.craft_item_cam240_source(),
+            "references/observable-criteria-research.md",
+        )
+        report = game.craft_reading(self.project)
+        item = report["checks"][0]
+        self.assertIn(
+            "o 240 prove a cadeia",
+            item["scope"],
+            "o item do craft listava o checklist e calava a recusa",
+        )
+        self.assertIn("(`240`)", item["scope"])
+        self.assertIn("240 no disco não é a cadeia.", item["scope"])
+        self.assertNotIn("240", item)
+        self.assertNotIn("duração", item)
+        self.assertNotIn("multiplicar", item)
+        self.assertNotIn("fps", item)
+        self.assertNotIn("botão", item)
+        self.assertNotIn("visível", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.research_refuses_cam240_as_proving_chain(""))
+        with mock.patch.object(game, "craft_item_cam240_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn(
+            "o 240 prove a cadeia",
+            silent["checks"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(research.count("nomeia o 240 que a pesquisa já recusa"), 2)
+        self.assertIn("nomeia o 240 que a pesquisa já recusa", recipe)
+        self.assertIn("nomeia o 240 que a pesquisa já recusa", skill)
+        self.assertIn("nomeia o 240 que a pesquisa já recusa", readme)
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("16 ms", item["scope"])
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("verified", recipe)
+        self.assertNotIn("fps", item["scope"])
+        self.assertNotIn("botão", item["scope"])
+        self.assertNotIn("visível", item["scope"])
+        phrase = "o 240 prove a cadeia"
+        self.assertNotIn(phrase, report["scope"])
+        self.assertNotIn(phrase, game.craft_sources_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.gate_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.bar_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn("240", game.CYCLE_KEYS)
+        self.assertNotIn("duração", game.CYCLE_KEYS)
+        self.assertNotIn("multiplicar", game.CYCLE_KEYS)
+
     def test_craft_names_the_definition_the_research_already_refuses(self):
         research = (
             game.FRAMEWORK / "references/observable-criteria-research.md"

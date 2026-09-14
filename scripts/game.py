@@ -3250,6 +3250,41 @@ def craft_item_duracao_scope():
     )
 
 
+# A pesquisa já recusa que o
+# 240 prove a cadeia. Sem
+# isto o item do craft
+# listava o checklist e
+# calava a recusa. 240 no
+# disco não é a cadeia.
+CRAFT_CAM = re.compile(r"240")
+
+
+def research_refuses_cam240_as_proving_chain(text):
+    return bool(text and CRAFT_CAM.search(text))
+
+
+def craft_item_cam240_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_cam240_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_cam240_scope():
+    if not craft_item_cam240_source():
+        return None
+    return (
+        " O disco recusa que o 240 prove a cadeia "
+        "(`240`). 240 no disco não é a cadeia."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -3387,6 +3422,9 @@ def craft_item_scope():
     beat = craft_item_duracao_scope()
     if beat:
         scope += beat
+    cam = craft_item_cam240_scope()
+    if cam:
+        scope += cam
     return scope
 
 
