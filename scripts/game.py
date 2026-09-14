@@ -32626,6 +32626,9 @@ def record_scope():
     mill = record_gerador_scope()
     if mill:
         scope += mill
+    tide = record_volta_scope()
+    if tide:
+        scope += tide
     return scope
 
 
@@ -34260,6 +34263,42 @@ def record_gerador_scope():
     return (
         " O disco recusa que o gerador prove o vazamento "
         "(`gerador`). Gerador no disco não é o vazamento."
+    )
+
+
+
+# A receita já recusa que o
+# volta prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Volta no disco não é o
+# vazamento.
+PERF_TIDE = re.compile(r"volta")
+
+
+def recipe_refuses_volta_as_proving_leak(text):
+    return bool(text and PERF_TIDE.search(text))
+
+
+def record_volta_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_volta_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_volta_scope():
+    if not record_volta_source():
+        return None
+    return (
+        " O disco recusa que o volta prove o vazamento "
+        "(`volta`). Volta no disco não é o vazamento."
     )
 
 
