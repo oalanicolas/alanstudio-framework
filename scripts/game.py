@@ -17349,6 +17349,41 @@ def content_disjuntas_scope():
     )
 
 
+# A receita já recusa que o
+# inclusive prove o destino.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Inclusive no disco não é o
+# destino.
+CONTENT_EVEN = re.compile(r"inclusive")
+
+
+def recipe_refuses_inclusive_as_proving_destination(text):
+    return bool(text and CONTENT_EVEN.search(text))
+
+
+def content_inclusive_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_inclusive_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_inclusive_scope():
+    if not content_inclusive_source():
+        return None
+    return (
+        " O disco recusa que o inclusive prove o destino "
+        "(`inclusive`). Inclusive no disco não é o destino."
+    )
+
+
 
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
@@ -17738,6 +17773,9 @@ def content_reading(project):
     band = content_disjuntas_scope()
     if band:
         scope += band
+    even = content_inclusive_scope()
+    if even:
+        scope += even
     listed = files[:24]
     if listed:
         listed = {
