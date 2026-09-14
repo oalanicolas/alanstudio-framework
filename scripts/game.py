@@ -34281,6 +34281,9 @@ def record_scope():
     husk = record_objeto_scope()
     if husk:
         scope += husk
+    lots = record_cenas_scope()
+    if lots:
+        scope += lots
     return scope
 
 
@@ -36141,6 +36144,42 @@ def record_objeto_scope():
 # estável.
 PERF_RECIPE = FRAMEWORK / "recipes/performance.md"
 PERF_STUTTER = re.compile(r"não demonstra redução de engasgos")
+
+
+
+# A receita já recusa que as
+# cenas provem o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Cenas no disco não é o
+# vazamento.
+PERF_LOTS = re.compile(r"cenas")
+
+
+def recipe_refuses_cenas_as_proving_leak(text):
+    return bool(text and PERF_LOTS.search(text))
+
+
+def record_cenas_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_cenas_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_cenas_scope():
+    if not record_cenas_source():
+        return None
+    return (
+        " O disco recusa que as cenas provem o vazamento "
+        "(`cenas`). Cenas no disco não é o vazamento."
+    )
 
 
 def recipe_refuses_average_as_stutter_reduction(text):
