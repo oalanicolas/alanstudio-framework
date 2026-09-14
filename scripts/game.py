@@ -4945,6 +4945,9 @@ def observation_item_scope():
     warp = observation_dilata_scope()
     if warp:
         scope += warp
+    park = observation_ficam_scope()
+    if park:
+        scope += park
     return scope
 
 
@@ -6422,6 +6425,41 @@ def observation_dilata_scope():
     return (
         " O disco recusa que o dilata prove o estado "
         "(`dilata`). Dilata no disco não é o estado."
+    )
+
+
+# A receita já recusa que o
+# ficam prove o estado.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Ficam no disco não é o
+# estado.
+A11Y_PARK = re.compile(r"ficam")
+
+
+def recipe_refuses_ficam_as_proving_state(text):
+    return bool(text and A11Y_PARK.search(text))
+
+
+def observation_ficam_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_ficam_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_ficam_scope():
+    if not observation_ficam_source():
+        return None
+    return (
+        " O disco recusa que o ficam prove o estado "
+        "(`ficam`). Ficam no disco não é o estado."
     )
 
 
