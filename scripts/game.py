@@ -9289,6 +9289,9 @@ def _feel_scope(project):
     glide = feel_easing_scope()
     if glide:
         scope += glide
+    nudge = feel_impulse_scope()
+    if nudge:
+        scope += nudge
     return scope
 
 
@@ -11008,6 +11011,42 @@ def feel_easing_scope():
     return (
         " O disco recusa que o easing prove o feel "
         "(`easing`). Easing no disco não é o feel."
+    )
+
+
+
+
+# A receita já recusa que o
+# impulse prove o feel. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Impulse no
+# disco não é o feel.
+FEEL_NUDGE = re.compile(r"impulse")
+
+
+def recipe_refuses_impulse_as_proving_feel(text):
+    return bool(text and FEEL_NUDGE.search(text))
+
+
+def feel_impulse_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_impulse_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_impulse_scope():
+    if not feel_impulse_source():
+        return None
+    return (
+        " O disco recusa que o impulse prove o feel "
+        "(`impulse`). Impulse no disco não é o feel."
     )
 
 
