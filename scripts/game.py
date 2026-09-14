@@ -7576,6 +7576,41 @@ def feel_observations_demonstrem_scope():
     )
 
 
+# A receita já recusa que o
+# tornam prove o feel. Sem
+# isto o feel listava o
+# recibo e calava a recusa.
+# Tornam no disco não é o
+# feel.
+FEEL_REND = re.compile(r"tornam")
+
+
+def recipe_refuses_tornam_as_proving_feel(text):
+    return bool(text and FEEL_REND.search(text))
+
+
+def feel_observations_tornam_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_tornam_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_tornam_scope():
+    if not feel_observations_tornam_source():
+        return None
+    return (
+        " O disco recusa que o tornam prove o feel "
+        "(`tornam`). Tornam no disco não é o feel."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -7701,6 +7736,9 @@ def feel_observations_scope():
     deem = feel_observations_demonstrem_scope()
     if deem:
         scope += deem
+    rend = feel_observations_tornam_scope()
+    if rend:
+        scope += rend
     return scope
 
 
