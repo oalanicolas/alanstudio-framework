@@ -14123,6 +14123,42 @@ def save_conteudo_scope():
 
 
 
+
+# A receita já recusa que o
+# irreversível prove o save. Sem
+# isto o save lia o schema e
+# calava a recusa. Irreversível no
+# disco não é o save.
+PERSIST_RUIN = re.compile(r"irreversível")
+
+
+def recipe_refuses_irreversivel_as_proving_save(text):
+    return bool(text and PERSIST_RUIN.search(text))
+
+
+def save_irreversivel_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_irreversivel_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_irreversivel_scope():
+    if not save_irreversivel_source():
+        return None
+    return (
+        " O disco recusa que o irreversível prove o save "
+        "(`irreversível`). Irreversível no disco não é o save."
+    )
+
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -14880,6 +14916,9 @@ def save_reading(project):
     hunk = save_conteudo_scope()
     if hunk:
         scope += hunk
+    ruin = save_irreversivel_scope()
+    if ruin:
+        scope += ruin
     used_flag = bool(used)
     if used_flag:
         used_flag = {
