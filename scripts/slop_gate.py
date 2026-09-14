@@ -12,7 +12,7 @@ função, um teste e uma entrada de versão por palavra recusada — trava.
 Uso:
     python3 scripts/slop_gate.py                   # verifica contra o baseline
     python3 scripts/slop_gate.py --update          # regrava o baseline
-    python3 scripts/slop_gate.py --diff-base main  # exige prova jogável
+    python3 scripts/slop_gate.py --diff-base main  # exige registro de execução
 """
 
 from __future__ import annotations
@@ -39,12 +39,19 @@ FORMULA = (
     re.compile(r"recusa que .{0,80}?\b(seja|prove|provem|baste)\b"),
 )
 
-# Asserções que apenas confirmam a presença de uma string.
-TEXT_ASSERTS = {"assertIn", "assertNotIn"}
+# Asserções que confirmam a presença de uma frase.
+PHRASE_ASSERTS = {"assertIn", "assertNotIn", "assertRegex", "assertNotRegex"}
 
-# Sinais de que o teste executa o harness de verdade, em vez de ler documento.
-EXEC_ATTRS = {"run", "check_output", "check_call", "Popen", "call"}
-EXEC_NAMES = {"subprocess", "tempfile", "TemporaryDirectory"}
+
+# Uma frase — o que uma asserção de texto confirma. Uma chave de dicionário ou
+# um identificador (sem espaço) normalmente indica verificação estrutural.
+def _is_phrase(node: ast.AST) -> bool:
+    return (
+        isinstance(node, ast.Constant)
+        and isinstance(node.value, str)
+        and " " in node.value.strip()
+        and len(node.value.strip()) >= 8
+    )
 
 
 def _read(path: Path) -> str:
@@ -54,86 +61,36 @@ def _read(path: Path) -> str:
         return ""
 
 
-def _is_doc_source(node: ast.AST) -> bool:
-    """A expressão deriva da leitura de um arquivo?"""
-    for sub in ast.walk(node):
-        if isinstance(sub, ast.Attribute) and sub.attr == "read_text":
-            return True
-    return False
+def phrase_assertions() -> list[str]:
+    """Asserções que confirmam que uma FRASE aparece em algum texto.
 
+    Conta o sintoma diretamente, em vez de classificar o teste inteiro. Um
+    teste do #6 mistura `assertEqual`, `assertRegex` e meia dúzia de
+    `assertIn` de frase; qualquer classificação binária o descartava inteiro,
+    e era justamente o caso que este gate precisa pegar.
 
-class _TestScan(ast.NodeVisitor):
-    """Classifica um `def test_*` como doc-only ou executável."""
-
-    def __init__(self) -> None:
-        self.doc_vars: set[str] = set()
-        self.text_asserts = 0
-        self.other_asserts = 0
-        self.executes = False
-
-    def visit_Assign(self, node: ast.Assign) -> None:
-        if _is_doc_source(node.value):
-            for target in node.targets:
-                for sub in ast.walk(target):
-                    if isinstance(sub, ast.Name):
-                        self.doc_vars.add(sub.id)
-        self.generic_visit(node)
-
-    def _container_is_doc(self, node: ast.AST) -> bool:
-        if _is_doc_source(node):
-            return True
-        for sub in ast.walk(node):
-            if isinstance(sub, ast.Name) and sub.id in self.doc_vars:
-                return True
-        return False
-
-    def visit_Call(self, node: ast.Call) -> None:
-        func = node.func
-        if isinstance(func, ast.Attribute):
-            # self.assertX(...)
-            if isinstance(func.value, ast.Name) and func.value.id == "self":
-                if func.attr in TEXT_ASSERTS and len(node.args) >= 2:
-                    if self._container_is_doc(node.args[1]):
-                        self.text_asserts += 1
-                    else:
-                        self.other_asserts += 1
-                elif func.attr.startswith("assert"):
-                    self.other_asserts += 1
-            # game.<func>(...) — o harness rodando de verdade
-            elif isinstance(func.value, ast.Name) and func.value.id == "game":
-                if not func.attr.isupper():
-                    self.executes = True
-            elif func.attr in EXEC_ATTRS:
-                self.executes = True
-        elif isinstance(func, ast.Name) and func.id in EXEC_NAMES:
-            self.executes = True
-
-        for sub in ast.walk(node):
-            if isinstance(sub, ast.Name) and sub.id in EXEC_NAMES:
-                self.executes = True
-        self.generic_visit(node)
-
-
-def doc_only_tests() -> list[str]:
-    """Testes cuja única asserção é presença de string em arquivo lido."""
+    Uma frase tem espaço e ao menos 8 caracteres — um identificador ou chave
+    de dicionário normalmente indica verificação estrutural, que é legítima.
+    """
     found: list[str] = []
     for path in sorted(TESTS_DIR.glob("test_*.py")):
         try:
             tree = ast.parse(_read(path))
         except SyntaxError:
             continue
+        rel = path.relative_to(ROOT)
         for node in ast.walk(tree):
-            if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            if not isinstance(node, ast.Call):
                 continue
-            if not node.name.startswith("test_"):
+            func = node.func
+            if not isinstance(func, ast.Attribute):
                 continue
-            scan = _TestScan()
-            for stmt in node.body:
-                scan.visit(stmt)
-            if scan.executes or scan.other_asserts:
+            if func.attr not in PHRASE_ASSERTS:
                 continue
-            if scan.text_asserts:
-                found.append(f"{path.relative_to(ROOT)}::{node.name}")
+            if not (isinstance(func.value, ast.Name) and func.value.id == "self"):
+                continue
+            if node.args and _is_phrase(node.args[0]):
+                found.append(f"{rel}:{node.lineno}")
     return found
 
 
@@ -147,7 +104,7 @@ def measure() -> dict[str, int]:
         for pattern in FORMULA:
             formula += len(pattern.findall(text))
     return {
-        "doc_only_tests": len(doc_only_tests()),
+        "phrase_assertions": len(phrase_assertions()),
         "adoption_sections": len(re.findall(r"^## ", adoption, re.MULTILINE)),
         "adoption_one_word_lines": sum(
             1 for line in adoption.splitlines() if len(line.split()) == 1
@@ -163,8 +120,53 @@ def load_baseline() -> dict:
     return json.loads(_read(BASELINE))
 
 
-def playable_proof(base: str) -> tuple[bool, str]:
-    """adoption.md só cresce acompanhado de um recorte jogável."""
+# Um registro de sessão: docs/stories/<AAAA-MM-DD>-<assunto>.md
+STORY_NAME = re.compile(r"^docs/stories/\d{4}-\d{2}-\d{2}-[^/]+\.md$")
+
+
+def _record_is_valid(name: str) -> tuple[bool, str]:
+    """O arquivo apontado como registro tem conteúdo verificável?
+
+    Isto NÃO prova que alguém jogou — nada num diff prova isso. Prova que a
+    sessão deixou um registro datado ou um recibo com carimbo, em vez de
+    tocar um arquivo qualquer na pasta certa.
+    """
+    path = ROOT / name
+    if not path.is_file():
+        return False, "não existe na árvore"
+    text = _read(path)
+    if not text.strip():
+        return False, "vazio"
+
+    if name.endswith(".json"):
+        try:
+            doc = json.loads(text)
+        except json.JSONDecodeError:
+            return False, "JSON inválido"
+        if not isinstance(doc, dict):
+            return False, "recibo não é objeto"
+        missing = [k for k in ("schema_version", "recorded_at") if k not in doc]
+        if missing:
+            return False, f"recibo sem {', '.join(missing)}"
+        return True, "recibo com carimbo"
+
+    if STORY_NAME.match(name):
+        # Um registro de sessão precisa de corpo, não só de título.
+        body = [l for l in text.splitlines() if l.strip() and not l.startswith("#")]
+        if len(body) < 3:
+            return False, "registro sem corpo"
+        return True, "registro de sessão datado"
+
+    return False, "não é recibo .json nem docs/stories/<data>-<assunto>.md"
+
+
+def execution_record(base: str) -> tuple[bool, str]:
+    """adoption.md só cresce acompanhado de um registro de execução.
+
+    O nome é deliberadamente modesto: a checagem confirma que existe um
+    registro verificável, não que o jogo foi jogado. Deletar um exemplo não
+    conta — só arquivos adicionados ou modificados são candidatos.
+    """
     try:
         merge_base = subprocess.run(
             ["git", "merge-base", base, "HEAD"],
@@ -174,48 +176,66 @@ def playable_proof(base: str) -> tuple[bool, str]:
             ["git", "diff", "--numstat", merge_base, "HEAD"],
             cwd=ROOT, capture_output=True, text=True, check=True,
         ).stdout
+        # A/M apenas: uma exclusão nunca é registro de execução.
+        written = subprocess.run(
+            ["git", "diff", "--name-only", "--diff-filter=AM", merge_base, "HEAD"],
+            cwd=ROOT, capture_output=True, text=True, check=True,
+        ).stdout.split("\n")
     except (subprocess.CalledProcessError, FileNotFoundError) as exc:
         return False, f"não foi possível comparar com {base}: {exc}"
 
     grew = False
-    touched: list[str] = []
     for line in stat.splitlines():
         parts = line.split("\t")
         if len(parts) != 3:
             continue
         added, removed, name = parts
-        touched.append(name)
         # Crescimento é o saldo, não as linhas tocadas: reescrever um parágrafo
         # ou reflowar o arquivo adiciona linhas sem acrescentar changelog.
         if name == "adoption.md" and added.isdigit() and removed.isdigit():
-            net = int(added) - int(removed)
-            if net > 0:
+            if int(added) - int(removed) > 0:
                 grew = True
 
     if not grew:
         return True, "adoption.md não cresceu em saldo"
 
-    proof_dirs = ("examples/", "assets/starters/", "docs/stories/")
-    proofs = [n for n in touched if n.startswith(proof_dirs)]
-    if proofs:
-        return True, f"prova jogável: {', '.join(proofs[:3])}"
+    # O que vale como registro é o tipo do artefato, não a pasta onde ele
+    # está: exigir "um arquivo em examples/" aprovava até uma exclusão.
+    rejected: list[str] = []
+    for name in (n for n in written if n.strip()):
+        if not (name.endswith(".json") or STORY_NAME.match(name)):
+            continue
+        ok, why = _record_is_valid(name)
+        if ok:
+            return True, f"registro de execução: {name} ({why})"
+        rejected.append(f"{name}: {why}")
+
+    detail = "; ".join(rejected[:3]) if rejected else "nenhum candidato"
     return False, (
-        "adoption.md cresceu sem recorte jogável. Toque examples/, "
-        "assets/starters/ ou docs/stories/ com a prova de execução."
+        "adoption.md cresceu sem registro de execução. Adicione um recibo "
+        "`.json` com `schema_version` e `recorded_at`, ou um "
+        "`docs/stories/<AAAA-MM-DD>-<assunto>.md` com corpo. "
+        f"Recusados — {detail}."
     )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Gate anti-slop")
     parser.add_argument("--update", action="store_true", help="regrava o baseline")
-    parser.add_argument("--diff-base", metavar="REF", help="exige prova jogável vs REF")
-    parser.add_argument("--list", action="store_true", help="lista os testes doc-only")
+    parser.add_argument(
+        "--diff-base", metavar="REF",
+        help="exige registro de execução quando adoption.md cresce, vs REF",
+    )
+    parser.add_argument(
+        "--list", action="store_true",
+        help="lista arquivo:linha de cada asserção de frase",
+    )
     args = parser.parse_args()
 
     current = measure()
 
     if args.list:
-        for name in doc_only_tests():
+        for name in phrase_assertions():
             print(name)
         return 0
 
@@ -270,8 +290,8 @@ def main() -> int:
             )
 
     if args.diff_base:
-        ok, detail = playable_proof(args.diff_base)
-        print(f"\nprova jogável: {'ok' if ok else 'FALHA'} — {detail}")
+        ok, detail = execution_record(args.diff_base)
+        print(f"\nregistro de execução: {'ok' if ok else 'FALHA'} — {detail}")
         if not ok:
             failures.append(detail)
 
