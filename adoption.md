@@ -30,6 +30,49 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.1036 — o save nomeia os referenciados que a receita já recusa
+
+A
+receita
+já
+pedia
+referenciados
+por
+índice
+ou
+por
+nome
+de
+arquivo.
+O
+save
+lia
+o
+schema
+e
+calava
+a
+recusa.
+Agora
+o
+save
+nomeia
+os
+referenciados.
+Referenciados
+no
+disco
+não
+é
+o
+save.
+Sem
+chave
+`referenciados`.
+Nomear
+não
+observa.
+
 ## 0.9.1035 — o feel nomeia o Explicite que a receita já recusa
 
 A
