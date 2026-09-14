@@ -3637,6 +3637,9 @@ def craft_item_scope():
     sect = craft_item_secao_scope()
     if sect:
         scope += sect
+    whose = craft_item_cuja_scope()
+    if whose:
+        scope += whose
     return scope
 
 
@@ -3896,6 +3899,42 @@ def craft_item_secao_scope():
     return (
         " O disco recusa que a seção prove a cadeia "
         "(`seção`). Seção no disco não é a cadeia."
+    )
+
+
+
+# A pesquisa já recusa que o
+# cuja prove a cadeia. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Cuja no disco não
+# é a cadeia.
+CRAFT_WHOSE = re.compile(r"cuja")
+
+
+def research_refuses_cuja_as_proving_chain(text):
+    return bool(text and CRAFT_WHOSE.search(text))
+
+
+def craft_item_cuja_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_cuja_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_cuja_scope():
+    if not craft_item_cuja_source():
+        return None
+    return (
+        " O disco recusa que o cuja prove a cadeia "
+        "(`cuja`). Cuja no disco não é a cadeia."
     )
 
 
