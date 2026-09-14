@@ -5875,6 +5875,68 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("telegraph", game.CYCLE_KEYS)
         self.assertNotIn("reusa", game.CYCLE_KEYS)
 
+    def test_record_names_the_objeto_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"objeto")
+        self.assertTrue(
+            game.recipe_refuses_objeto_as_proving_leak(recipe),
+            "a receita já recusa que o objeto prove o vazamento",
+        )
+        self.assertEqual(game.record_objeto_source(), "recipes/performance.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-1117",
+        )
+        self.assertIn(
+            "o objeto prove o vazamento",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`objeto`)", report["scope"])
+        self.assertIn("Objeto no disco não é o vazamento.", report["scope"])
+        self.assertNotIn("objeto", report)
+        self.assertNotIn("escondia", report)
+        self.assertNotIn("telegraph", report)
+        self.assertFalse(game.recipe_refuses_objeto_as_proving_leak(""))
+        with mock.patch.object(game, "record_objeto_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-1117-silent",
+            )
+        self.assertNotIn(
+            "o objeto prove o vazamento",
+            silent["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o objeto que a receita já recusa"), 2)
+        self.assertIn("nomeia o objeto que a receita já recusa", production)
+        self.assertIn("nomeia o objeto que a receita já recusa", skill)
+        self.assertIn("nomeia o objeto que a receita já recusa", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("verified", production)
+        phrase = "o objeto prove o vazamento"
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("objeto", game.CYCLE_KEYS)
+        self.assertNotIn("escondia", game.CYCLE_KEYS)
+        self.assertNotIn("telegraph", game.CYCLE_KEYS)
+
     def test_record_names_the_animation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(

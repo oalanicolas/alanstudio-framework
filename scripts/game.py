@@ -34008,6 +34008,9 @@ def record_scope():
     hide = record_escondia_scope()
     if hide:
         scope += hide
+    husk = record_objeto_scope()
+    if husk:
+        scope += husk
     return scope
 
 
@@ -35822,6 +35825,42 @@ def record_escondia_scope():
     return (
         " O disco recusa que o escondia prove o vazamento "
         "(`escondia`). Escondia no disco não é o vazamento."
+    )
+
+
+
+# A receita já recusa que o
+# objeto prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Objeto no disco não é o
+# vazamento.
+PERF_HUSK = re.compile(r"objeto")
+
+
+def recipe_refuses_objeto_as_proving_leak(text):
+    return bool(text and PERF_HUSK.search(text))
+
+
+def record_objeto_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_objeto_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_objeto_scope():
+    if not record_objeto_source():
+        return None
+    return (
+        " O disco recusa que o objeto prove o vazamento "
+        "(`objeto`). Objeto no disco não é o vazamento."
     )
 
 
