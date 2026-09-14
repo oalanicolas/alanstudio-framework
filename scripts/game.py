@@ -4986,6 +4986,9 @@ def observation_item_scope():
     park = observation_ficam_scope()
     if park:
         scope += park
+    lend = observation_cede_scope()
+    if lend:
+        scope += lend
     return scope
 
 
@@ -6498,6 +6501,41 @@ def observation_ficam_scope():
     return (
         " O disco recusa que o ficam prove o estado "
         "(`ficam`). Ficam no disco não é o estado."
+    )
+
+
+# A receita já recusa que o
+# cede prove o estado.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Cede no disco não é o
+# estado.
+A11Y_LEND = re.compile(r"cede")
+
+
+def recipe_refuses_cede_as_proving_state(text):
+    return bool(text and A11Y_LEND.search(text))
+
+
+def observation_cede_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_cede_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_cede_scope():
+    if not observation_cede_source():
+        return None
+    return (
+        " O disco recusa que o cede prove o estado "
+        "(`cede`). Cede no disco não é o estado."
     )
 
 
