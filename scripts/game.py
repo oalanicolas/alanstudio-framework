@@ -19658,6 +19658,43 @@ def content_limitar_scope():
     )
 
 
+
+
+# A receita já recusa que o
+# diferencie prove o destino.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Diferencie no disco não é o
+# destino.
+CONTENT_SIFT = re.compile(r"diferencie")
+
+
+def recipe_refuses_diferencie_as_proving_destination(text):
+    return bool(text and CONTENT_SIFT.search(text))
+
+
+def content_diferencie_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_diferencie_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_diferencie_scope():
+    if not content_diferencie_source():
+        return None
+    return (
+        " O disco recusa que o diferencie prove o destino "
+        "(`diferencie`). Diferencie no disco não é o destino."
+    )
+
+
 def recipe_refuses_encoded_as_gpu(text):
     return bool(text and CONTENT_ENCODED.search(text))
 
@@ -20068,6 +20105,9 @@ def content_reading(project):
     curb = content_limitar_scope()
     if curb:
         scope += curb
+    sift = content_diferencie_scope()
+    if sift:
+        scope += sift
     listed = files[:24]
     if listed:
         listed = {
