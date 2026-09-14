@@ -17369,6 +17369,70 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("conferível", game.CYCLE_KEYS)
         self.assertNotIn("construção", game.CYCLE_KEYS)
 
+    def test_craft_item_names_the_teorica_the_research_already_refuses(self):
+        research = (
+            game.FRAMEWORK / "references/observable-criteria-research.md"
+        ).read_text(encoding="utf-8")
+        self.assertRegex(research, r"teórica")
+        self.assertTrue(
+            game.research_refuses_teorica_as_proving_chain(research),
+            "a pesquisa já recusa que a teórica prove a cadeia",
+        )
+        self.assertEqual(
+            game.craft_item_teorica_source(),
+            "references/observable-criteria-research.md",
+        )
+        report = game.craft_reading(self.project)
+        item = report["checks"][0]
+        self.assertIn(
+            "a teórica prove a cadeia",
+            item["scope"],
+            "o item do craft listava o checklist e calava a recusa",
+        )
+        self.assertIn("(`teórica`)", item["scope"])
+        self.assertIn("Teórica no disco não é a cadeia.", item["scope"])
+        self.assertNotIn("teórica", item)
+        self.assertNotIn("noodalls", item)
+        self.assertNotIn("conferível", item)
+        self.assertFalse(report["observed"])
+        self.assertFalse(report["granted"])
+        self.assertFalse(game.research_refuses_teorica_as_proving_chain(""))
+        with mock.patch.object(game, "craft_item_teorica_source", return_value=None):
+            silent = game.craft_reading(self.project)
+        self.assertNotIn(
+            "a teórica prove a cadeia",
+            silent["checks"][0]["scope"],
+        )
+        recipe = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(research.count("nomeia a teórica que a pesquisa já recusa"), 2)
+        self.assertIn("nomeia a teórica que a pesquisa já recusa", recipe)
+        self.assertIn("nomeia a teórica que a pesquisa já recusa", skill)
+        self.assertIn("nomeia a teórica que a pesquisa já recusa", readme)
+        self.assertNotIn("aprovado", item["scope"])
+        self.assertNotIn("4.5", item["scope"])
+        self.assertNotIn("16 ms", item["scope"])
+        self.assertNotIn("verified", item["scope"])
+        self.assertNotIn("verified", recipe)
+        phrase = "a teórica prove a cadeia"
+        self.assertNotIn(phrase, report["scope"])
+        self.assertNotIn(phrase, game.craft_sources_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn(phrase, game.gate_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.bar_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn("teórica", game.CYCLE_KEYS)
+        self.assertNotIn("noodalls", game.CYCLE_KEYS)
+        self.assertNotIn("conferível", game.CYCLE_KEYS)
+
     def test_craft_names_the_definition_the_research_already_refuses(self):
         research = (
             game.FRAMEWORK / "references/observable-criteria-research.md"

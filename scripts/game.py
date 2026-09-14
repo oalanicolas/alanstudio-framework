@@ -3631,6 +3631,9 @@ def craft_item_scope():
     nigel = craft_item_noodalls_scope()
     if nigel:
         scope += nigel
+    myth = craft_item_teorica_scope()
+    if myth:
+        scope += myth
     return scope
 
 
@@ -3811,6 +3814,42 @@ def craft_item_noodalls_scope():
     return (
         " O disco recusa que o noodalls prove a cadeia "
         "(`noodalls`). Noodalls no disco não é a cadeia."
+    )
+
+
+
+# A pesquisa já recusa que a
+# teórica prove a cadeia. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Teórica no disco
+# não é a cadeia.
+CRAFT_MYTH = re.compile(r"teórica")
+
+
+def research_refuses_teorica_as_proving_chain(text):
+    return bool(text and CRAFT_MYTH.search(text))
+
+
+def craft_item_teorica_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_teorica_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_teorica_scope():
+    if not craft_item_teorica_source():
+        return None
+    return (
+        " O disco recusa que a teórica prove a cadeia "
+        "(`teórica`). Teórica no disco não é a cadeia."
     )
 
 
