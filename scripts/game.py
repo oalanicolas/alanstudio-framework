@@ -10125,6 +10125,9 @@ def _feel_scope(project):
     grip = feel_gestos_scope()
     if grip:
         scope += grip
+    fine = feel_especificos_scope()
+    if fine:
+        scope += fine
     return scope
 
 
@@ -12100,6 +12103,42 @@ def feel_gestos_scope():
     return (
         " O disco recusa que os gestos provem o feel "
         "(`gestos`). Gestos no disco não é o feel."
+    )
+
+
+
+# A receita já recusa que os
+# específicos provem o feel.
+# Sem isto o feel lia o
+# CONFIG e calava a recusa.
+# Específicos no disco não
+# é o feel.
+FEEL_FINE = re.compile(r"específicos")
+
+
+def recipe_refuses_especificos_as_proving_feel(text):
+    return bool(text and FEEL_FINE.search(text))
+
+
+def feel_especificos_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_especificos_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_especificos_scope():
+    if not feel_especificos_source():
+        return None
+    return (
+        " O disco recusa que os específicos provem o feel "
+        "(`específicos`). Específicos no disco não é o feel."
     )
 
 
