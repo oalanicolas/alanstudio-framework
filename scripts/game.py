@@ -13739,6 +13739,42 @@ def save_una_scope():
 
 
 
+
+# A receita já recusa que os
+# saves provem o save. Sem
+# isto o save lia o schema e
+# calava a recusa. Saves no
+# disco não é o save.
+PERSIST_STASH = re.compile(r"saves")
+
+
+def recipe_refuses_saves_as_proving_save(text):
+    return bool(text and PERSIST_STASH.search(text))
+
+
+def save_saves_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_saves_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_saves_scope():
+    if not save_saves_source():
+        return None
+    return (
+        " O disco recusa que os saves provem o save "
+        "(`saves`). Saves no disco não é o save."
+    )
+
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -14490,6 +14526,9 @@ def save_reading(project):
     meld = save_una_scope()
     if meld:
         scope += meld
+    stash = save_saves_scope()
+    if stash:
+        scope += stash
     used_flag = bool(used)
     if used_flag:
         used_flag = {
