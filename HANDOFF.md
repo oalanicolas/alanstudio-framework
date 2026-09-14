@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.1145: o item da observação nomeia o persistido que a receita já recusa. Persistido no disco não é o estado. Sem chave `persistido`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.1145): **1206 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
