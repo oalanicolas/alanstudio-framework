@@ -14703,6 +14703,41 @@ def save_unica_scope():
 PERSIST_CHAIN = re.compile(r"cadeia\s+inteira")
 
 
+
+# A receita já recusa que o
+# destruir prove o save. Sem
+# isto o save lia o schema e
+# calava a recusa. Destruir no
+# disco não é o save.
+PERSIST_RAZE = re.compile(r"destruir")
+
+
+def recipe_refuses_destruir_as_proving_save(text):
+    return bool(text and PERSIST_RAZE.search(text))
+
+
+def save_destruir_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_destruir_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_destruir_scope():
+    if not save_destruir_source():
+        return None
+    return (
+        " O disco recusa que o destruir prove o save "
+        "(`destruir`). Destruir no disco não é o save."
+    )
+
+
 def recipe_refuses_listed_files_as_full_chain(text):
     return bool(text and PERSIST_CHAIN.search(text))
 
@@ -15461,6 +15496,9 @@ def save_reading(project):
     chop = save_unica_scope()
     if chop:
         scope += chop
+    raze = save_destruir_scope()
+    if raze:
+        scope += raze
     used_flag = bool(used)
     if used_flag:
         used_flag = {
