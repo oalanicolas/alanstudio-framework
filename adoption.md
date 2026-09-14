@@ -30,6 +30,50 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.1069 — o record nomeia o gerador que a receita já recusa
+
+A
+receita
+já
+pedia
+que
+o
+gerador
+da
+chuva
+reusasse
+o
+mesmo
+objeto.
+O
+record
+gravava
+o
+recibo
+e
+calava
+a
+recusa.
+Agora
+o
+record
+nomeia
+o
+gerador.
+Gerador
+no
+disco
+não
+é
+o
+vazamento.
+Sem
+chave
+`gerador`.
+Nomear
+não
+mede.
+
 ## 0.9.1068 — o save nomeia os distintos que a receita já recusa
 
 A
