@@ -35105,6 +35105,9 @@ def record_scope():
     runs = record_execucoes_scope()
     if runs:
         scope += runs
+    hoop = record_orcar_scope()
+    if hoop:
+        scope += hoop
     return scope
 
 
@@ -37072,6 +37075,43 @@ def record_execucoes_scope():
     return (
         " O disco recusa que as execuções provem o vazamento "
         "(`execuções`). Execuções no disco não é o vazamento."
+    )
+
+
+
+
+# A receita já recusa que o
+# Orçar prove o vazamento.
+# Sem isto o record gravava
+# o recibo e calava a recusa.
+# Orçar no disco não é o
+# vazamento.
+PERF_HOOP = re.compile(r"Orçar")
+
+
+def recipe_refuses_orcar_as_proving_leak(text):
+    return bool(text and PERF_HOOP.search(text))
+
+
+def record_orcar_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_orcar_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_orcar_scope():
+    if not record_orcar_source():
+        return None
+    return (
+        " O disco recusa que o Orçar prove o vazamento "
+        "(`Orçar`). Orçar no disco não é o vazamento."
     )
 
 
