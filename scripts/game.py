@@ -8472,6 +8472,43 @@ def feel_observations_todas_scope():
 
 
 
+
+# A receita já recusa que o
+# diferentes prove o feel. Sem
+# isto o feel listava o
+# recibo e calava a recusa.
+# Diferentes no disco não é o
+# feel.
+FEEL_VARY = re.compile(r"diferentes")
+
+
+def recipe_refuses_diferentes_as_proving_feel(text):
+    return bool(text and FEEL_VARY.search(text))
+
+
+def feel_observations_diferentes_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_diferentes_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_diferentes_scope():
+    if not feel_observations_diferentes_source():
+        return None
+    return (
+        " O disco recusa que o diferentes prove o feel "
+        "(`diferentes`). Diferentes no disco não é o feel."
+    )
+
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -8621,6 +8658,9 @@ def feel_observations_scope():
     each = feel_observations_todas_scope()
     if each:
         scope += each
+    vary = feel_observations_diferentes_scope()
+    if vary:
+        scope += vary
     return scope
 
 
