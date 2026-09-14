@@ -34553,6 +34553,9 @@ def record_scope():
     lots = record_cenas_scope()
     if lots:
         scope += lots
+    knot = record_comparavel_scope()
+    if knot:
+        scope += knot
     return scope
 
 
@@ -36448,6 +36451,42 @@ def record_cenas_scope():
     return (
         " O disco recusa que as cenas provem o vazamento "
         "(`cenas`). Cenas no disco não é o vazamento."
+    )
+
+
+
+# A receita já recusa que o
+# comparável prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Comparável no disco não é o
+# vazamento.
+PERF_KNOT = re.compile(r"comparável")
+
+
+def recipe_refuses_comparavel_as_proving_leak(text):
+    return bool(text and PERF_KNOT.search(text))
+
+
+def record_comparavel_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_comparavel_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_comparavel_scope():
+    if not record_comparavel_source():
+        return None
+    return (
+        " O disco recusa que o comparável prove o vazamento "
+        "(`comparável`). Comparável no disco não é o vazamento."
     )
 
 
