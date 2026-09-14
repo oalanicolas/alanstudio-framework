@@ -12425,6 +12425,41 @@ def save_reproduzir_scope():
     )
 
 
+# A receita já recusa que o
+# aproveitável prove o save.
+# Sem isto o save lia o
+# schema e calava a recusa.
+# Aproveitável no disco não
+# é o save.
+PERSIST_WARE = re.compile(r"aproveitável")
+
+
+def recipe_refuses_aproveitavel_as_proving_save(text):
+    return bool(text and PERSIST_WARE.search(text))
+
+
+def save_aproveitavel_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_aproveitavel_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_aproveitavel_scope():
+    if not save_aproveitavel_source():
+        return None
+    return (
+        " O disco recusa que o aproveitável prove o save "
+        "(`aproveitável`). Aproveitável no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -13155,6 +13190,9 @@ def save_reading(project):
     echo = save_reproduzir_scope()
     if echo:
         scope += echo
+    ware = save_aproveitavel_scope()
+    if ware:
+        scope += ware
     used_flag = bool(used)
     if used_flag:
         used_flag = {
