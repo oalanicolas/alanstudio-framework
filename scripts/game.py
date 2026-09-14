@@ -3215,6 +3215,41 @@ def craft_item_multiplicar_scope():
     )
 
 
+# A pesquisa já recusa que a
+# duração prove a cadeia.
+# Sem isto o item do craft
+# listava o checklist e
+# calava a recusa. Duração
+# no disco não é a cadeia.
+CRAFT_BEAT = re.compile(r"duração")
+
+
+def research_refuses_duracao_as_proving_chain(text):
+    return bool(text and CRAFT_BEAT.search(text))
+
+
+def craft_item_duracao_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_duracao_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_duracao_scope():
+    if not craft_item_duracao_source():
+        return None
+    return (
+        " O disco recusa que a duração prove a cadeia "
+        "(`duração`). Duração no disco não é a cadeia."
+    )
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -3349,6 +3384,9 @@ def craft_item_scope():
     fold = craft_item_multiplicar_scope()
     if fold:
         scope += fold
+    beat = craft_item_duracao_scope()
+    if beat:
+        scope += beat
     return scope
 
 
