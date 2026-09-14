@@ -5405,6 +5405,9 @@ def observation_item_scope():
     fini = observation_terminado_scope()
     if fini:
         scope += fini
+    sown = observation_persistido_scope()
+    if sown:
+        scope += sown
     return scope
 
 
@@ -7277,6 +7280,43 @@ def observation_terminado_scope():
     return (
         " O disco recusa que o terminado prove o estado "
         "(`terminado`). Terminado no disco não é o estado."
+    )
+
+
+
+
+# A receita já recusa que o
+# persistido prove o estado.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Persistido no disco não é
+# o estado.
+A11Y_SOWN = re.compile(r"persistido")
+
+
+def recipe_refuses_persistido_as_proving_state(text):
+    return bool(text and A11Y_SOWN.search(text))
+
+
+def observation_persistido_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_persistido_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_persistido_scope():
+    if not observation_persistido_source():
+        return None
+    return (
+        " O disco recusa que o persistido prove o estado "
+        "(`persistido`). Persistido no disco não é o estado."
     )
 
 
