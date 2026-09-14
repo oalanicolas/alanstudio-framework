@@ -29148,6 +29148,9 @@ def cycle_scope():
     gage = cycle_meca_scope()
     if gage:
         scope += gage
+    gaze = cycle_membros_scope()
+    if gaze:
+        scope += gaze
     return scope or None
 
 
@@ -31143,6 +31146,43 @@ def cycle_meca_scope():
     return (
         " O disco recusa que o Meça prove o teste "
         "(`Meça`). Meça no disco não é o teste."
+    )
+
+
+
+
+# A receita já recusa que os
+# membros provem o teste. Sem
+# isto o ciclo anunciava o
+# verbo e calava a recusa.
+# Membros no disco não é o
+# teste.
+FEEL_GAZE = re.compile(r"membros")
+
+
+def recipe_refuses_membros_as_proving_test(text):
+    return bool(text and FEEL_GAZE.search(text))
+
+
+def cycle_membros_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_membros_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_membros_scope():
+    if not cycle_membros_source():
+        return None
+    return (
+        " O disco recusa que os membros provem o teste "
+        "(`membros`). Membros no disco não é o teste."
     )
 
 
