@@ -19423,6 +19423,43 @@ def content_evita_scope():
     )
 
 
+
+
+# A receita já recusa que o
+# limitar prove o destino. Sem
+# isto o content listava
+# arquivos e calava a recusa.
+# Limitar no disco não é o
+# destino.
+CONTENT_CURB = re.compile(r"limitar")
+
+
+def recipe_refuses_limitar_as_proving_destination(text):
+    return bool(text and CONTENT_CURB.search(text))
+
+
+def content_limitar_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_limitar_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_limitar_scope():
+    if not content_limitar_source():
+        return None
+    return (
+        " O disco recusa que o limitar prove o destino "
+        "(`limitar`). Limitar no disco não é o destino."
+    )
+
+
 def recipe_refuses_encoded_as_gpu(text):
     return bool(text and CONTENT_ENCODED.search(text))
 
@@ -19830,6 +19867,9 @@ def content_reading(project):
     shun = content_evita_scope()
     if shun:
         scope += shun
+    curb = content_limitar_scope()
+    if curb:
+        scope += curb
     listed = files[:24]
     if listed:
         listed = {

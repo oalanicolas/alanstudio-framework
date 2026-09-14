@@ -30,6 +30,45 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.1144 — o content nomeia o limitar que a receita já recusa
+
+A
+receita
+já
+pedia
+limitar
+objetos
+vivos
+ao
+necessário.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+content
+nomeia
+o
+limitar.
+Limitar
+no
+disco
+não
+é
+o
+destino.
+Sem
+chave
+`limitar`.
+Nomear
+não
+observa.
+
 ## 0.9.1143 — o item do craft nomeia o rodou que a pesquisa já recusa
 
 A
