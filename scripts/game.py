@@ -8698,6 +8698,9 @@ def _feel_scope(project):
     spell = feel_explicite_scope()
     if spell:
         scope += spell
+    suit = feel_atende_scope()
+    if suit:
+        scope += suit
     return scope
 
 
@@ -10245,6 +10248,40 @@ def feel_explicite_scope():
     return (
         " O disco recusa que o Explicite prove o feel "
         "(`Explicite`). Explicite no disco não é o feel."
+    )
+
+
+# A receita já recusa que o
+# atende prove o feel. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Atende no
+# disco não é o feel.
+FEEL_SUIT = re.compile(r"atende")
+
+
+def recipe_refuses_atende_as_proving_feel(text):
+    return bool(text and FEEL_SUIT.search(text))
+
+
+def feel_atende_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_atende_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_atende_scope():
+    if not feel_atende_source():
+        return None
+    return (
+        " O disco recusa que o atende prove o feel "
+        "(`atende`). Atende no disco não é o feel."
     )
 
 
