@@ -8021,6 +8021,41 @@ def feel_observations_reproduza_scope():
     )
 
 
+# A receita já recusa que o
+# impedem prove o feel.
+# Sem isto o feel listava o
+# recibo e calava a recusa.
+# Impedem no disco não é o
+# feel.
+FEEL_BIND = re.compile(r"impedem")
+
+
+def recipe_refuses_impedem_as_proving_feel(text):
+    return bool(text and FEEL_BIND.search(text))
+
+
+def feel_observations_impedem_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_impedem_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_impedem_scope():
+    if not feel_observations_impedem_source():
+        return None
+    return (
+        " O disco recusa que o impedem prove o feel "
+        "(`impedem`). Impedem no disco não é o feel."
+    )
+
+
 
 def feel_observations_scope():
     scope = (
@@ -8159,6 +8194,9 @@ def feel_observations_scope():
     tape = feel_observations_reproduza_scope()
     if tape:
         scope += tape
+    bind = feel_observations_impedem_scope()
+    if bind:
+        scope += bind
     return scope
 
 
