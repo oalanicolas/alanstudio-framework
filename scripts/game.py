@@ -5448,6 +5448,9 @@ def observation_item_scope():
     sown = observation_persistido_scope()
     if sown:
         scope += sown
+    stir = observation_ativado_scope()
+    if stir:
+        scope += stir
     return scope
 
 
@@ -7358,6 +7361,43 @@ def observation_persistido_scope():
         " O disco recusa que o persistido prove o estado "
         "(`persistido`). Persistido no disco não é o estado."
     )
+
+
+# A receita já recusa que o
+# ativado prove o modo.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Ativado no disco não é
+# o modo.
+A11Y_STIR = re.compile(r"ativado")
+
+
+def recipe_refuses_ativado_as_proving_mode(text):
+    return bool(text and A11Y_STIR.search(text))
+
+
+def observation_ativado_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_ativado_as_proving_mode(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_ativado_scope():
+    if not observation_ativado_source():
+        return None
+    return (
+        " O disco recusa que o ativado prove o modo "
+        "(`ativado`). Ativado no disco não é o modo."
+    )
+
+
 
 
 def recipe_refuses_disk_release_as_session(text):
