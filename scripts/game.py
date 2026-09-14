@@ -5153,6 +5153,9 @@ def observation_item_scope():
     bead = observation_hex_scope()
     if bead:
         scope += bead
+    blot = observation_draw_scope()
+    if blot:
+        scope += blot
     return scope
 
 
@@ -6806,6 +6809,41 @@ def observation_hex_scope():
     return (
         " O disco recusa que o hex prove o estado "
         "(`hex`). Hex no disco não é o estado."
+    )
+
+
+
+# A receita já recusa que o
+# draw prove o estado. Sem
+# isto o item copiava a nota
+# e calava a recusa. Draw
+# no disco não é o estado.
+A11Y_BLOT = re.compile(r"draw")
+
+
+def recipe_refuses_draw_as_proving_state(text):
+    return bool(text and A11Y_BLOT.search(text))
+
+
+def observation_draw_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_draw_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_draw_scope():
+    if not observation_draw_source():
+        return None
+    return (
+        " O disco recusa que o draw prove o estado "
+        "(`draw`). Draw no disco não é o estado."
     )
 
 
