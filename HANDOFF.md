@@ -3,12 +3,47 @@
 **Branch:** `cursor/runbook-telemetria-1083` (base `main`)
 **PR:** [#6](https://github.com/oalanicolas/alanstudio-framework/pull/6) (draft)
 **HEAD:** ver `git log -1` — vigente 0.9.1154: o ciclo nomeia o Inspecione que a receita já recusa. Inspecione no disco não é o teste. Sem chave `Inspecione`. Nomear não observa.
-**Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
+**Goal:** fechado a pedido. AAA fácil ainda não está provado. O piso do starter continua prototype.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.1154): **1215 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
+
+---
+
+## Fechamento desta sessão
+
+Pedido: último envio, handoff e encerrar o goal.
+
+O harness ficou com um caminho honesto de ideia a jogo jogável:
+`start` / `guide` / `play` / `note` apontam o ofício sem fingir que
+alguém jogou, ouviu, mediu ou aprovou AAA. As dimensões da barra
+nomeiam no disco o que a receita já recusa. Isso reduz atrito e
+aumenta honestidade. **Não** verifica qualidade AAA.
+
+- **HEAD:** 0.9.1154 — o ciclo nomeia o Inspecione que a receita já recusa.
+- **Suítes:** **1215 / 516**.
+- **PR:** [#6](https://github.com/oalanicolas/alanstudio-framework/pull/6) (draft),
+  branch `cursor/runbook-telemetria-1083` → `main`.
+- **Piso:** só `release` está em `prototype`. `felt` / `heard` / `trusted` /
+  `verified` / `measured` / `outsider` / `elsewhere` / `enough` /
+  `consistent` seguem falsos.
+
+### Se retomar depois deste fechamento
+
+1. Continuar em `cursor/runbook-telemetria-1083`. Não promover o starter.
+2. Próximo salto: **0.9.1155** no `feel.scope` após `aceito`.
+   Reauditar `rastreie` / `terminar` / `distinguindo` / `encerrar`.
+   Nunca `estranho`.
+3. Hop vigente: `649/1148/1149/1150/1151/1152/1153/1154`.
+4. Tail vigente: nem outro Orçar no observations nem outra selecionável
+   no craft nem outro Berry no content nem outro diferencie no item
+   nem outro ativado no ciclo.
+5. Um salto por vez. Contratos, flakes e rotação permanecem abaixo.
+
+Não consertar os flakes conhecidos (`technical_status`, `4.5` no ISO,
+`assertNotIn("um", stderr)`).
 
 ---
 
