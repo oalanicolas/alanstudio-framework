@@ -5237,6 +5237,9 @@ def observation_item_scope():
     sliver = observation_estilhaco_scope()
     if sliver:
         scope += sliver
+    tell = observation_relata_scope()
+    if tell:
+        scope += tell
     return scope
 
 
@@ -6960,6 +6963,41 @@ def observation_estilhaco_scope():
     return (
         " O disco recusa que o estilhaço prove o estado "
         "(`estilhaço`). Estilhaço no disco não é o estado."
+    )
+
+
+
+# A receita já recusa que o
+# relata prove o estado. Sem
+# isto o item copiava a nota
+# e calava a recusa. Relata
+# no disco não é o estado.
+A11Y_TELL = re.compile(r"relata")
+
+
+def recipe_refuses_relata_as_proving_state(text):
+    return bool(text and A11Y_TELL.search(text))
+
+
+def observation_relata_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_relata_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_relata_scope():
+    if not observation_relata_source():
+        return None
+    return (
+        " O disco recusa que o relata prove o estado "
+        "(`relata`). Relata no disco não é o estado."
     )
 
 
