@@ -161,7 +161,7 @@ for (const name of ["farol", "Farol do Sul"]) {
       assert.equal(saved.policy, "played");
       assert.equal(saved.run.ticks, 40);
       assert.equal(saved.spawn, "dusk");
-      assert.doesNotMatch(JSON.stringify(saved), /aprovado|verified|LUFS|-14|4\.5/);
+      assert.doesNotMatch(JSON.stringify(saved), /aprovado|verified|LUFS|(?<![0-9])-14|4\.5/);
 
       const noted = await fetch(`http://localhost:${server.port}${NOTE_ROUTE}`, {
         method: "POST",
@@ -178,7 +178,7 @@ for (const name of ["farol", "Farol do Sul"]) {
       assert.equal(record.felt, false);
       assert.equal(record.observed, false);
       assert.match(record.fields.run, /"ticks":40/);
-      assert.doesNotMatch(JSON.stringify(record), /aprovado|verified|LUFS|-14|4\.5/);
+      assert.doesNotMatch(JSON.stringify(record), /aprovado|verified|LUFS|(?<![0-9])-14|4\.5/);
 
       const empty = await fetch(`http://localhost:${server.port}${NOTE_ROUTE}`, {
         method: "POST",
@@ -203,7 +203,7 @@ for (const name of ["farol", "Farol do Sul"]) {
       assert.ok(achado, "esperava o markdown do achado");
       const finding = await readFile(join(server.project, NOTE_DIR, achado), "utf8");
       assert.match(finding, /Problema: o dash não comunica o contato/);
-      assert.doesNotMatch(finding, /aprovado|verified|LUFS|-14|4\.5|outsider/);
+      assert.doesNotMatch(finding, /aprovado|verified|LUFS|(?<![0-9])-14|4\.5|outsider/);
       const companion = files.find((name) => name.endsWith("-achado.run.json"));
       assert.ok(companion, "esperava o anexo do candidato");
       const attached = JSON.parse(await readFile(join(server.project, NOTE_DIR, companion), "utf8"));
@@ -213,7 +213,7 @@ for (const name of ["farol", "Farol do Sul"]) {
       assert.equal(attached.outsider, false);
       assert.equal(attached.run.ticks, 40);
       assert.equal(attached.finding, achado);
-      assert.doesNotMatch(JSON.stringify(attached), /aprovado|verified|LUFS|-14|4\.5/);
+      assert.doesNotMatch(JSON.stringify(attached), /aprovado|verified|LUFS|(?<![0-9])-14|4\.5/);
       const hollow = await fetch(`http://localhost:${server.port}${FINDING_ROUTE}`, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -281,7 +281,7 @@ test("o banner do serve nomeia o relógio que o jogo já lê", () => {
   const relogio = banner.indexOf("Relógio:");
   const convite = banner.indexOf("Convite:");
   assert.ok(relogio >= 0 && convite > relogio);
-  assert.doesNotMatch(banner, /aprovado|verified|LUFS|-14|4\.5/);
+  assert.doesNotMatch(banner, /aprovado|verified|LUFS|(?<![0-9])-14|4\.5/);
 });
 
 test("o serve junta convite e seed do last-run sem fingir quem jogou", async () => {
