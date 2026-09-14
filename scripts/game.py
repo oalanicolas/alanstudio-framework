@@ -5027,6 +5027,9 @@ def observation_item_scope():
     lend = observation_cede_scope()
     if lend:
         scope += lend
+    gift = observation_graca_scope()
+    if gift:
+        scope += gift
     return scope
 
 
@@ -6574,6 +6577,41 @@ def observation_cede_scope():
     return (
         " O disco recusa que o cede prove o estado "
         "(`cede`). Cede no disco não é o estado."
+    )
+
+
+# A receita já recusa que a
+# graça prove o estado.
+# Sem isto o item copiava a
+# nota e calava a recusa.
+# Graça no disco não é o
+# estado.
+A11Y_GIFT = re.compile(r"graça")
+
+
+def recipe_refuses_graca_as_proving_state(text):
+    return bool(text and A11Y_GIFT.search(text))
+
+
+def observation_graca_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_graca_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_graca_scope():
+    if not observation_graca_source():
+        return None
+    return (
+        " O disco recusa que a graça prove o estado "
+        "(`graça`). Graça no disco não é o estado."
     )
 
 
