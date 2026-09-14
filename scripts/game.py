@@ -15774,6 +15774,43 @@ def content_density_scope():
     )
 
 
+
+
+# A receita já recusa que as
+# sombras provem o destino.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Sombras no disco não é
+# o destino.
+CONTENT_SHADE = re.compile(r"sombras")
+
+
+def recipe_refuses_shadows_as_proving_destination(text):
+    return bool(text and CONTENT_SHADE.search(text))
+
+
+def content_shadows_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_shadows_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_shadows_scope():
+    if not content_shadows_source():
+        return None
+    return (
+        " O disco recusa que as sombras provem o destino "
+        "(`sombras`). Sombras no disco não é o destino."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -16141,6 +16178,9 @@ def content_reading(project):
     dens = content_density_scope()
     if dens:
         scope += dens
+    shade = content_shadows_scope()
+    if shade:
+        scope += shade
     listed = files[:24]
     if listed:
         listed = {
