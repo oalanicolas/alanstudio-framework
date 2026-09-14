@@ -15272,6 +15272,42 @@ def save_coisa_scope():
     )
 
 
+
+
+# A receita já recusa que o
+# Trate prove o save. Sem
+# isto o save lia o schema e
+# calava a recusa. Trate no
+# disco não é o save.
+PERSIST_TEND = re.compile(r"Trate")
+
+
+def recipe_refuses_trate_as_proving_save(text):
+    return bool(text and PERSIST_TEND.search(text))
+
+
+def save_trate_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_trate_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_trate_scope():
+    if not save_trate_source():
+        return None
+    return (
+        " O disco recusa que o Trate prove o save "
+        "(`Trate`). Trate no disco não é o save."
+    )
+
+
 def recipe_refuses_listed_files_as_full_chain(text):
     return bool(text and PERSIST_CHAIN.search(text))
 
@@ -16039,6 +16075,9 @@ def save_reading(project):
     wisp = save_coisa_scope()
     if wisp:
         scope += wisp
+    tend = save_trate_scope()
+    if tend:
+        scope += tend
     used_flag = bool(used)
     if used_flag:
         used_flag = {
