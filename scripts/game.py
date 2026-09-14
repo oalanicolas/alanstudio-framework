@@ -9266,6 +9266,43 @@ def feel_observations_anunciada_scope():
     )
 
 
+
+
+# A receita já recusa que a
+# selecionável prove o feel.
+# Sem isto o feel listava o
+# recibo e calava a recusa.
+# Selecionável no disco não
+# é o feel.
+FEEL_SLOT = re.compile(r"selecionável")
+
+
+def recipe_refuses_selecionavel_as_proving_feel(text):
+    return bool(text and FEEL_SLOT.search(text))
+
+
+def feel_observations_selecionavel_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_selecionavel_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_selecionavel_scope():
+    if not feel_observations_selecionavel_source():
+        return None
+    return (
+        " O disco recusa que a selecionável prove o feel "
+        "(`selecionável`). Selecionável no disco não é o feel."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -9436,6 +9473,9 @@ def feel_observations_scope():
     herald = feel_observations_anunciada_scope()
     if herald:
         scope += herald
+    slot = feel_observations_selecionavel_scope()
+    if slot:
+        scope += slot
     return scope
 
 
