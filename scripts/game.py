@@ -3320,6 +3320,42 @@ def craft_item_descrito_scope():
     )
 
 
+# A pesquisa já recusa que o
+# pobre prove a cadeia.
+# Sem isto o item do craft
+# listava o checklist e
+# calava a recusa. Pobre
+# no disco não é a cadeia.
+CRAFT_POOR = re.compile(r"pobre")
+
+
+def research_refuses_pobre_as_proving_chain(text):
+    return bool(text and CRAFT_POOR.search(text))
+
+
+def craft_item_pobre_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_pobre_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_pobre_scope():
+    if not craft_item_pobre_source():
+        return None
+    return (
+        " O disco recusa que o pobre prove a cadeia "
+        "(`pobre`). Pobre no disco não é a cadeia."
+    )
+
+
+
 def craft_item_ladder_source():
     path = FRAMEWORK / "references/observable-criteria-research.md"
     if not path.is_file() or path.is_symlink():
@@ -3463,6 +3499,9 @@ def craft_item_scope():
     blurb = craft_item_descrito_scope()
     if blurb:
         scope += blurb
+    poor = craft_item_pobre_scope()
+    if poor:
+        scope += poor
     return scope
 
 
