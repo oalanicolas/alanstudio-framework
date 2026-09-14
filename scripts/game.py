@@ -13547,6 +13547,42 @@ def save_distintos_scope():
 
 
 
+
+# A receita já recusa que o
+# una prove o save. Sem isto
+# o save lia o schema e
+# calava a recusa. Una no
+# disco não é o save.
+PERSIST_MELD = re.compile(r"una")
+
+
+def recipe_refuses_una_as_proving_save(text):
+    return bool(text and PERSIST_MELD.search(text))
+
+
+def save_una_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_una_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_una_scope():
+    if not save_una_source():
+        return None
+    return (
+        " O disco recusa que o una prove o save "
+        "(`una`). Una no disco não é o save."
+    )
+
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -14295,6 +14331,9 @@ def save_reading(project):
     dual = save_distintos_scope()
     if dual:
         scope += dual
+    meld = save_una_scope()
+    if meld:
+        scope += meld
     used_flag = bool(used)
     if used_flag:
         used_flag = {
