@@ -5441,6 +5441,68 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("sintoma", game.CYCLE_KEYS)
         self.assertNotIn("vivo", game.CYCLE_KEYS)
 
+    def test_record_names_the_array_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/performance.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"array")
+        self.assertTrue(
+            game.recipe_refuses_array_as_proving_leak(recipe),
+            "a receita já recusa que o array prove o vazamento",
+        )
+        self.assertEqual(game.record_array_source(), "recipes/performance.md")
+        fields = game.parse_fields(["scenario=primeira travessia", "role=human"])
+        report = game.record(
+            self.project, "observation", "Alan", "virou a curva sem ajuda.",
+            fields, [], self.root / "obs-1061",
+        )
+        self.assertIn(
+            "o array prove o vazamento",
+            report["scope"],
+            "o record gravava o recibo e calava a recusa",
+        )
+        self.assertIn("(`array`)", report["scope"])
+        self.assertIn("Array no disco não é o vazamento.", report["scope"])
+        self.assertNotIn("array", report)
+        self.assertNotIn("compacta", report)
+        self.assertNotIn("sintoma", report)
+        self.assertFalse(game.recipe_refuses_array_as_proving_leak(""))
+        with mock.patch.object(game, "record_array_source", return_value=None):
+            silent = game.record(
+                self.project, "observation", "Alan", "virou a curva sem ajuda.",
+                fields, [], self.root / "obs-1061-silent",
+            )
+        self.assertNotIn(
+            "o array prove o vazamento",
+            silent["scope"],
+        )
+        production = (game.FRAMEWORK / "recipes/production.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia o array que a receita já recusa"), 2)
+        self.assertIn("nomeia o array que a receita já recusa", production)
+        self.assertIn("nomeia o array que a receita já recusa", skill)
+        self.assertIn("nomeia o array que a receita já recusa", readme)
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("verified", production)
+        phrase = "o array prove o vazamento"
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.content_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.discover_item_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("array", game.CYCLE_KEYS)
+        self.assertNotIn("compacta", game.CYCLE_KEYS)
+        self.assertNotIn("sintoma", game.CYCLE_KEYS)
+
     def test_record_names_the_animation_the_guide_already_refuses(self):
         guide = (game.FRAMEWORK / "references/quality.md").read_text(encoding="utf-8")
         self.assertTrue(

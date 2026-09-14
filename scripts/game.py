@@ -32085,6 +32085,9 @@ def record_scope():
     cram = record_compacta_scope()
     if cram:
         scope += cram
+    rack = record_array_scope()
+    if rack:
+        scope += rack
     return scope
 
 
@@ -33649,6 +33652,41 @@ def record_compacta_scope():
     return (
         " O disco recusa que o compacta prove o vazamento "
         "(`compacta`). Compacta no disco não é o vazamento."
+    )
+
+
+# A receita já recusa que o
+# array prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Array no disco não é o
+# vazamento.
+PERF_RACK = re.compile(r"array")
+
+
+def recipe_refuses_array_as_proving_leak(text):
+    return bool(text and PERF_RACK.search(text))
+
+
+def record_array_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_array_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_array_scope():
+    if not record_array_source():
+        return None
+    return (
+        " O disco recusa que o array prove o vazamento "
+        "(`array`). Array no disco não é o vazamento."
     )
 
 
