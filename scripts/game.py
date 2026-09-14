@@ -17580,6 +17580,42 @@ def content_inclusive_scope():
 
 
 
+
+# A receita já recusa que o
+# deformar prove o destino.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Deformar no disco não é o
+# destino.
+CONTENT_KINK = re.compile(r"deformar")
+
+
+def recipe_refuses_deformar_as_proving_destination(text):
+    return bool(text and CONTENT_KINK.search(text))
+
+
+def content_deformar_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_deformar_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_deformar_scope():
+    if not content_deformar_source():
+        return None
+    return (
+        " O disco recusa que o deformar prove o destino "
+        "(`deformar`). Deformar no disco não é o destino."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -17971,6 +18007,9 @@ def content_reading(project):
     even = content_inclusive_scope()
     if even:
         scope += even
+    kink = content_deformar_scope()
+    if kink:
+        scope += kink
     listed = files[:24]
     if listed:
         listed = {
