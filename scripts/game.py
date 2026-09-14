@@ -14506,6 +14506,41 @@ def save_categorias_scope():
 
 
 
+
+# A receita já recusa que a
+# única prove o save. Sem
+# isto o save lia o schema e
+# calava a recusa. Única no
+# disco não é o save.
+PERSIST_CHOP = re.compile(r"única")
+
+
+def recipe_refuses_unica_as_proving_save(text):
+    return bool(text and PERSIST_CHOP.search(text))
+
+
+def save_unica_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_unica_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_unica_scope():
+    if not save_unica_source():
+        return None
+    return (
+        " O disco recusa que a única prove o save "
+        "(`única`). Única no disco não é o save."
+    )
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -15269,6 +15304,9 @@ def save_reading(project):
     bins = save_categorias_scope()
     if bins:
         scope += bins
+    chop = save_unica_scope()
+    if chop:
+        scope += chop
     used_flag = bool(used)
     if used_flag:
         used_flag = {
