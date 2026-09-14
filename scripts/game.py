@@ -7797,6 +7797,42 @@ def feel_observations_liberados_scope():
     )
 
 
+# A receita já recusa que os
+# Esses provem o feel.
+# Sem isto o feel listava o
+# recibo e calava a recusa.
+# Esses no disco não é o
+# feel.
+FEEL_THESE = re.compile(r"Esses")
+
+
+def recipe_refuses_esses_as_proving_feel(text):
+    return bool(text and FEEL_THESE.search(text))
+
+
+def feel_observations_esses_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_esses_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_esses_scope():
+    if not feel_observations_esses_source():
+        return None
+    return (
+        " O disco recusa que os Esses provem o feel "
+        "(`Esses`). Esses no disco não é o feel."
+    )
+
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -7928,6 +7964,9 @@ def feel_observations_scope():
     loose = feel_observations_liberados_scope()
     if loose:
         scope += loose
+    those = feel_observations_esses_scope()
+    if those:
+        scope += those
     return scope
 
 
