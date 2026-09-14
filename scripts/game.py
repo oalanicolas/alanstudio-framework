@@ -501,30 +501,42 @@ def process_refuses_hash_as_reading(text):
     return bool(text and PROCESS_READING.search(text))
 
 
-def git_identity_source():
-    path = PROCESS_GUIDE
+def marker_source(path, carries, label):
+    """Devolve `label` se o documento em `path` carrega o marcador.
+
+    Esqueleto que dezenas de leitores repetiam linha a linha: symlink e
+    OSError devolvem None, e o rótulo só sai se o predicado aceitar o texto.
+    """
+    path = Path(path)
     if not path.is_file() or path.is_symlink():
         return None
     try:
         text = path.read_text(encoding="utf-8")
     except OSError:
         return None
-    if process_refuses_hash_as_reading(text):
-        return "references/process.md"
-    return None
+    return label if carries(text) else None
+
+
+def git_identity_source():
+    return marker_source(PROCESS_GUIDE, process_refuses_hash_as_reading, "references/process.md")
+
+
+def scope_with(base, carries, extra):
+    """A frase base, mais o complemento quando o marcador está no disco.
+
+    Esqueleto que dezenas de montadores de escopo repetiam linha a linha.
+    """
+    return base + extra if carries() else base
 
 
 def git_summary_scope():
-    scope = (
+    return scope_with(
         "Estado do repositório na hora do comando; commits não provam que a mudança "
-        "funciona nem que foi revisada."
+        "funciona nem que foi revisada.",
+        git_identity_source,
+        " O disco recusa que o hash seja leitura (`leitura`). "
+        "Identidade no disco não é inspeção.",
     )
-    if git_identity_source():
-        scope += (
-            " O disco recusa que o hash seja leitura (`leitura`). "
-            "Identidade no disco não é inspeção."
-        )
-    return scope
 
 
 def git_summary(project):
@@ -741,29 +753,17 @@ def preproduction_refuses_document_quality(text):
 
 
 def review_item_quality_source():
-    path = FRAMEWORK / "references/preproduction.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if preproduction_refuses_document_quality(text):
-        return "references/preproduction.md"
-    return None
+    return marker_source(FRAMEWORK / "references/preproduction.md", preproduction_refuses_document_quality, "references/preproduction.md")
 
 
 def review_item_scope():
-    scope = (
+    return scope_with(
         "Conta deste jogo. Não mede acabamento e não "
-        "aprova o documento."
+        "aprova o documento.",
+        review_item_quality_source,
+        " O disco recusa que o documento comprove qualidade (`qualidade`). "
+        "Conta no disco não é acabamento.",
     )
-    if review_item_quality_source():
-        scope += (
-            " O disco recusa que o documento comprove qualidade (`qualidade`). "
-            "Conta no disco não é acabamento."
-        )
-    return scope
 
 
 def package_commands(project):
@@ -1148,29 +1148,17 @@ def gates_refuse_silence(text):
 
 
 def gate_item_silence_source():
-    path = FRAMEWORK / "references/gates.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if gates_refuse_silence(text):
-        return "references/gates.md"
-    return None
+    return marker_source(FRAMEWORK / "references/gates.md", gates_refuse_silence, "references/gates.md")
 
 
 def gate_item_scope():
-    scope = (
+    return scope_with(
         "Critérios do gate segundo a declaração do projeto. "
-        "Não observa e não concede passagem."
+        "Não observa e não concede passagem.",
+        gate_item_silence_source,
+        " O disco recusa que o silêncio seja aprovação (`silêncio`). "
+        "Linha vazia no disco não é passagem.",
     )
-    if gate_item_silence_source():
-        scope += (
-            " O disco recusa que o silêncio seja aprovação (`silêncio`). "
-            "Linha vazia no disco não é passagem."
-        )
-    return scope
 
 
 # O roteiro já recusa que must_meet seja dispensável. Sem isto o
@@ -1185,29 +1173,17 @@ def prose_refuses_must_meet_waiver(text):
 
 
 def gate_criterion_waiver_source():
-    path = GATES_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if prose_refuses_must_meet_waiver(text):
-        return "references/gates.md"
-    return None
+    return marker_source(GATES_GUIDE, prose_refuses_must_meet_waiver, "references/gates.md")
 
 
 def gate_criterion_scope():
-    scope = (
+    return scope_with(
         "Chave, tipo e estado do critério declarado. Não observa "
-        "e não concede passagem."
+        "e não concede passagem.",
+        gate_criterion_waiver_source,
+        " O disco recusa que must_meet seja dispensável (`dispensa`). "
+        "Linha no disco não é passagem.",
     )
-    if gate_criterion_waiver_source():
-        scope += (
-            " O disco recusa que must_meet seja dispensável (`dispensa`). "
-            "Linha no disco não é passagem."
-        )
-    return scope
 
 
 # O roteiro já recusa que fora de escopo seja dispensa. Sem
@@ -1221,29 +1197,17 @@ def gates_refuse_scope_waiver(text):
 
 
 def gate_problem_scope_source():
-    path = GATES_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if gates_refuse_scope_waiver(text):
-        return "references/gates.md"
-    return None
+    return marker_source(GATES_GUIDE, gates_refuse_scope_waiver, "references/gates.md")
 
 
 def gate_problem_scope():
-    scope = (
+    return scope_with(
         "Motivo e fonte do problema de forma. Não observa e não "
-        "concede passagem."
+        "concede passagem.",
+        gate_problem_scope_source,
+        " O disco recusa que fora de escopo seja dispensa (`escopo`). "
+        "Linha no disco não é passagem.",
     )
-    if gate_problem_scope_source():
-        scope += (
-            " O disco recusa que fora de escopo seja dispensa (`escopo`). "
-            "Linha no disco não é passagem."
-        )
-    return scope
 
 
 def _gate_scope(project):
@@ -1386,29 +1350,17 @@ def research_refuses_ladder(text):
 
 
 def craft_item_ladder_source():
-    path = FRAMEWORK / "references/observable-criteria-research.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if research_refuses_ladder(text):
-        return "references/observable-criteria-research.md"
-    return None
+    return marker_source(FRAMEWORK / "references/observable-criteria-research.md", research_refuses_ladder, "references/observable-criteria-research.md")
 
 
 def craft_item_scope():
-    scope = (
+    return scope_with(
         "Checklist de ofício segundo a declaração do projeto. "
-        "Não observa e não concede passagem."
+        "Não observa e não concede passagem.",
+        craft_item_ladder_source,
+        " O disco recusa que o checklist seja escada (`escada`). "
+        "Pesquisa no disco não é ofício observado.",
     )
-    if craft_item_ladder_source():
-        scope += (
-            " O disco recusa que o checklist seja escada (`escada`). "
-            "Pesquisa no disco não é ofício observado."
-        )
-    return scope
 
 
 # A pesquisa já recusa que o número sem definição seja
@@ -1423,29 +1375,17 @@ def research_refuses_undefined_number(text):
 
 
 def craft_problem_definition_source():
-    path = CRAFT_RESEARCH
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if research_refuses_undefined_number(text):
-        return "references/observable-criteria-research.md"
-    return None
+    return marker_source(CRAFT_RESEARCH, research_refuses_undefined_number, "references/observable-criteria-research.md")
 
 
 def craft_problem_scope():
-    scope = (
+    return scope_with(
         "Motivo e fonte do problema de forma. Não observa e não "
-        "concede passagem."
+        "concede passagem.",
+        craft_problem_definition_source,
+        " O disco recusa que o número sem definição seja critério (`definição`). "
+        "Pesquisa no disco não é ofício observado.",
     )
-    if craft_problem_definition_source():
-        scope += (
-            " O disco recusa que o número sem definição seja critério (`definição`). "
-            "Pesquisa no disco não é ofício observado."
-        )
-    return scope
 
 
 def craft_declares_out(text):
@@ -1761,29 +1701,17 @@ def audio_refuses_file_quantity(text):
 
 
 def role_item_quantity_source():
-    path = AUDIO_RECIPE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if audio_refuses_file_quantity(text):
-        return "recipes/audio.md"
-    return None
+    return marker_source(AUDIO_RECIPE, audio_refuses_file_quantity, "recipes/audio.md")
 
 
 def role_item_scope():
-    scope = (
+    return scope_with(
         "Id, arquivos e estado do papel. Não toca o som e não "
-        "aprova a mixagem."
+        "aprova a mixagem.",
+        role_item_quantity_source,
+        " O disco recusa que áudio AAA seja quantidade de arquivos (`quantidade`). "
+        "Lista no disco não é mix.",
     )
-    if role_item_quantity_source():
-        scope += (
-            " O disco recusa que áudio AAA seja quantidade de arquivos (`quantidade`). "
-            "Lista no disco não é mix."
-        )
-    return scope
 
 
 def roles_reading(project, root=None):
@@ -1853,20 +1781,11 @@ def process_refuses_automatic_reuse(text):
 
 
 def roles_reuse_source():
-    path = PROCESS_REUSE_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if process_refuses_automatic_reuse(text):
-        return "references/process.md"
-    return None
+    return marker_source(PROCESS_REUSE_GUIDE, process_refuses_automatic_reuse, "references/process.md")
 
 
 def roles_fill_scope():
-    scope = (
+    return scope_with(
         "Para cada papel vazio, busca o id no acervo shared/sfx e, com "
         "`--apply`, copia para public/sfx com o nome do papel. Sem "
         "acervo, ou sem id que case, nomeia o stem do starter que casa "
@@ -1874,14 +1793,11 @@ def roles_fill_scope():
         "Se o recibo já está e o WAV sumiu, recoloca os bytes quando "
         "origem e licença casam; recibo diferente recusa. "
         "`sfx copy` / `sfx export` continuam o caminho explícito. "
-        "`heard` é sempre falso."
+        "`heard` é sempre falso.",
+        roles_reuse_source,
+        " O disco recusa o reuso automático (`reuso`). "
+        "Arquivo no disco não é licença.",
     )
-    if roles_reuse_source():
-        scope += (
-            " O disco recusa o reuso automático (`reuso`). "
-            "Arquivo no disco não é licença."
-        )
-    return scope
 
 
 def roles_fill(project, root=None, apply=False):
@@ -2101,29 +2017,17 @@ def recipe_refuses_suggested_author(text):
 
 
 def observation_author_source():
-    path = FEEL_RECIPE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if recipe_refuses_suggested_author(text):
-        return "recipes/feel.md"
-    return None
+    return marker_source(FEEL_RECIPE, recipe_refuses_suggested_author, "recipes/feel.md")
 
 
 def observation_item_scope():
-    scope = (
+    return scope_with(
         "Caminho, autor e nota do recibo. Não joga e não "
-        "atribui peso percebido."
+        "atribui peso percebido.",
+        observation_author_source,
+        " O disco recusa que o autor sugerido seja quem jogou (`autor`). "
+        "Recibo no disco não é sessão.",
     )
-    if observation_author_source():
-        scope += (
-            " O disco recusa que o autor sugerido seja quem jogou (`autor`). "
-            "Recibo no disco não é sessão."
-        )
-    return scope
 
 
 # A receita já recusa que o valor seja constante universal. Sem isto o
@@ -2137,29 +2041,17 @@ def recipe_refuses_universal_constants(text):
 
 
 def feel_constant_universal_source():
-    path = FEEL_RECIPE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if recipe_refuses_universal_constants(text):
-        return "recipes/feel.md"
-    return None
+    return marker_source(FEEL_RECIPE, recipe_refuses_universal_constants, "recipes/feel.md")
 
 
 def feel_constant_scope():
-    scope = (
+    return scope_with(
         "Chave e valor da constante nomeada. Não joga e não "
-        "atribui peso percebido."
+        "atribui peso percebido.",
+        feel_constant_universal_source,
+        " O disco recusa que o valor seja constante universal (`universais`). "
+        "Número no disco não é lei.",
     )
-    if feel_constant_universal_source():
-        scope += (
-            " O disco recusa que o valor seja constante universal (`universais`). "
-            "Número no disco não é lei."
-        )
-    return scope
 
 
 def feel_then(project):
@@ -2581,29 +2473,17 @@ def research_refuses_a11y_certification(text):
 
 
 def access_option_cert_source():
-    path = A11Y_RESEARCH
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if research_refuses_a11y_certification(text):
-        return "references/gates-research.md"
-    return None
+    return marker_source(A11Y_RESEARCH, research_refuses_a11y_certification, "references/gates-research.md")
 
 
 def access_option_scope():
-    scope = (
+    return scope_with(
         "Chave e fontes da opção declarada. Não joga com o modo "
-        "ativo e não aprova alcance."
+        "ativo e não aprova alcance.",
+        access_option_cert_source,
+        " O disco recusa que acessibilidade seja gate de certificação (`certificação`). "
+        "Opção no disco não é certificação.",
     )
-    if access_option_cert_source():
-        scope += (
-            " O disco recusa que acessibilidade seja gate de certificação (`certificação`). "
-            "Opção no disco não é certificação."
-        )
-    return scope
 
 
 def access_reading(project):
@@ -3726,29 +3606,17 @@ def recipe_refuses_identity_as_elsewhere(text):
 
 
 def ship_tree_identity_source():
-    path = FRAMEWORK / "recipes/release.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if recipe_refuses_identity_as_elsewhere(text):
-        return "recipes/release.md"
-    return None
+    return marker_source(FRAMEWORK / "recipes/release.md", recipe_refuses_identity_as_elsewhere, "recipes/release.md")
 
 
 def ship_tree_scope():
-    scope = (
+    return scope_with(
         "Partes e completeza da pasta dist/. Não executa o serve "
-        "e não entrega o artefato."
+        "e não entrega o artefato.",
+        ship_tree_identity_source,
+        " O disco recusa que a identidade seja outra máquina (`identidade`). "
+        "Árvore no disco não é entrega.",
     )
-    if ship_tree_identity_source():
-        scope += (
-            " O disco recusa que a identidade seja outra máquina (`identidade`). "
-            "Árvore no disco não é entrega."
-        )
-    return scope
 
 
 # A receita já recusa que o teste no editor demonstre o exportado.
@@ -3762,29 +3630,17 @@ def recipe_refuses_editor_as_export(text):
 
 
 def ship_artifact_editor_source():
-    path = FRAMEWORK / "recipes/release.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if recipe_refuses_editor_as_export(text):
-        return "recipes/release.md"
-    return None
+    return marker_source(FRAMEWORK / "recipes/release.md", recipe_refuses_editor_as_export, "recipes/release.md")
 
 
 def ship_artifact_scope():
-    scope = (
+    return scope_with(
         "Nome, versão e HEAD do dist/VERSION.json. Não executa o serve "
-        "e não demonstra o jogo exportado."
+        "e não demonstra o jogo exportado.",
+        ship_artifact_editor_source,
+        " O disco recusa que o teste no editor demonstre o jogo exportado (`editor`). "
+        "Manifesto no disco não é o jogo exportado.",
     )
-    if ship_artifact_editor_source():
-        scope += (
-            " O disco recusa que o teste no editor demonstre o jogo exportado (`editor`). "
-            "Manifesto no disco não é o jogo exportado."
-        )
-    return scope
 
 
 def ship_reading(project):
@@ -4054,29 +3910,17 @@ def recipe_refuses_squeeze_as_curve(text):
 
 
 def playtest_curve_squeeze_source():
-    path = FRAMEWORK / "recipes/content.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if recipe_refuses_squeeze_as_curve(text):
-        return "recipes/content.md"
-    return None
+    return marker_source(FRAMEWORK / "recipes/content.md", recipe_refuses_squeeze_as_curve, "recipes/content.md")
 
 
 def playtest_curve_scope():
-    scope = (
+    return scope_with(
         "never_banked e a aposta que ficou no last-run. "
-        "Não observa a sessão e não mede o fecho."
+        "Não observa a sessão e não mede o fecho.",
+        playtest_curve_squeeze_source,
+        " O disco recusa que o aperto seja curva observada (`aperto`). "
+        "Número no disco não é sessão.",
     )
-    if playtest_curve_squeeze_source():
-        scope += (
-            " O disco recusa que o aperto seja curva observada (`aperto`). "
-            "Número no disco não é sessão."
-        )
-    return scope
 
 
 TALLY_FIELDS = ("score", "collected", "missed", "hits", "banks")
@@ -4120,29 +3964,17 @@ def research_refuses_five_as_criterion(text):
 
 
 def playtest_tally_five_source():
-    path = FRAMEWORK / "references/observable-criteria-research.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if research_refuses_five_as_criterion(text):
-        return "references/observable-criteria-research.md"
-    return None
+    return marker_source(FRAMEWORK / "references/observable-criteria-research.md", research_refuses_five_as_criterion, "references/observable-criteria-research.md")
 
 
 def playtest_tally_scope():
-    scope = (
+    return scope_with(
         "Pontos, coletas, quedas, erros e guardas do last-run. "
-        "Não conta jogadores e não observa a sessão."
+        "Não conta jogadores e não observa a sessão.",
+        playtest_tally_five_source,
+        " O disco recusa que cinco playtesters sejam critério (`cinco`). "
+        "Conta no disco não é sessão observada.",
     )
-    if playtest_tally_five_source():
-        scope += (
-            " O disco recusa que cinco playtesters sejam critério (`cinco`). "
-            "Conta no disco não é sessão observada."
-        )
-    return scope
 
 
 def last_run_speed(project):
@@ -4680,29 +4512,17 @@ def gates_refuse_unlabeled_sidecar(text):
 
 
 def origin_problem_label_source():
-    path = GATES_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if gates_refuse_unlabeled_sidecar(text):
-        return "references/gates.md"
-    return None
+    return marker_source(GATES_GUIDE, gates_refuse_unlabeled_sidecar, "references/gates.md")
 
 
 def origin_problem_scope():
-    scope = (
+    return scope_with(
         "Motivo e fonte do problema de forma. Não consulta titular "
-        "e não concede licença."
+        "e não concede licença.",
+        origin_problem_label_source,
+        " O disco recusa que o sidecar sem rótulos declare (`rótulos`). "
+        "Recibo no disco não é licença.",
     )
-    if origin_problem_label_source():
-        scope += (
-            " O disco recusa que o sidecar sem rótulos declare (`rótulos`). "
-            "Recibo no disco não é licença."
-        )
-    return scope
 
 
 def sidecar_consumer_source(project):
@@ -5079,29 +4899,17 @@ def bar_refuses_precedence(text):
 
 
 def bar_conflict_precedence_source():
-    path = FRAMEWORK / "references/production-bar.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if bar_refuses_precedence(text):
-        return "references/production-bar.md"
-    return None
+    return marker_source(FRAMEWORK / "references/production-bar.md", bar_refuses_precedence, "references/production-bar.md")
 
 
 def bar_conflict_scope():
-    scope = (
+    return scope_with(
         "Duas declarações da mesma dimensão. "
-        "Não observa e não resolve a discordância."
+        "Não observa e não resolve a discordância.",
+        bar_conflict_precedence_source,
+        " O disco recusa que duas linhas discordantes se resolvam por precedência (`precedência`). "
+        "Linha no disco não é acabamento.",
     )
-    if bar_conflict_precedence_source():
-        scope += (
-            " O disco recusa que duas linhas discordantes se resolvam por precedência (`precedência`). "
-            "Linha no disco não é acabamento."
-        )
-    return scope
 
 
 # A barra já recusa que o degrau seja prazo. Sem isto o
@@ -5115,29 +4923,17 @@ def bar_refuses_deadline(text):
 
 
 def bar_item_deadline_source():
-    path = FRAMEWORK / "references/production-bar.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if bar_refuses_deadline(text):
-        return "references/production-bar.md"
-    return None
+    return marker_source(FRAMEWORK / "references/production-bar.md", bar_refuses_deadline, "references/production-bar.md")
 
 
 def bar_item_scope():
-    scope = (
+    return scope_with(
         "Degrau da dimensão segundo a declaração do projeto. "
-        "Não observa e não atribui calendário."
+        "Não observa e não atribui calendário.",
+        bar_item_deadline_source,
+        " O disco recusa que o degrau seja prazo (`prazos`). "
+        "Linha no disco não é calendário.",
     )
-    if bar_item_deadline_source():
-        scope += (
-            " O disco recusa que o degrau seja prazo (`prazos`). "
-            "Linha no disco não é calendário."
-        )
-    return scope
 
 
 # A barra já recusa que o nome seja uma das dez. Sem isto o
@@ -5151,29 +4947,17 @@ def bar_refuses_unknown_dimension(text):
 
 
 def bar_problem_dimension_source():
-    path = FRAMEWORK / "references/production-bar.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if bar_refuses_unknown_dimension(text):
-        return "references/production-bar.md"
-    return None
+    return marker_source(FRAMEWORK / "references/production-bar.md", bar_refuses_unknown_dimension, "references/production-bar.md")
 
 
 def bar_problem_scope():
-    scope = (
+    return scope_with(
         "Motivo e fonte do problema de forma. Não observa e não "
-        "corrige a declaração."
+        "corrige a declaração.",
+        bar_problem_dimension_source,
+        " O disco recusa que o nome seja uma das dez (`dimensão`). "
+        "Linha no disco não é acabamento.",
     )
-    if bar_problem_dimension_source():
-        scope += (
-            " O disco recusa que o nome seja uma das dez (`dimensão`). "
-            "Linha no disco não é acabamento."
-        )
-    return scope
 
 
 # A barra já recusa promover o degrau. Sem isto o
@@ -5188,31 +4972,19 @@ def bar_guide_refuses_promote(text):
 
 
 def production_bar_promote_source():
-    path = BAR_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if bar_guide_refuses_promote(text):
-        return "references/production-bar.md"
-    return None
+    return marker_source(BAR_GUIDE, bar_guide_refuses_promote, "references/production-bar.md")
 
 
 def production_bar_scope():
-    scope = (
+    return scope_with(
         "Seleção das dimensões pertinentes ao foco e à etapa, mais o degrau que o próprio projeto declara "
         "nos documentos listados em `declaration.sources`. O harness lê a declaração e confere só a forma "
         "dela: não atribui degrau, não mede acabamento e não aprova entrega. Declarar um degrau exige "
-        "observação com condição, evidência e autor — a tabela é a afirmação, não a prova."
+        "observação com condição, evidência e autor — a tabela é a afirmação, não a prova.",
+        production_bar_promote_source,
+        " O disco recusa promover o degrau (`promove`). "
+        "Guia no disco não é acabamento.",
     )
-    if production_bar_promote_source():
-        scope += (
-            " O disco recusa promover o degrau (`promove`). "
-            "Guia no disco não é acabamento."
-        )
-    return scope
 
 
 def production_bar(focus, stage=None, project=None):
@@ -5249,28 +5021,16 @@ def lifecycle_refuses_api(text):
 
 
 def capability_api_source():
-    path = FRAMEWORK / "recipes/lifecycle.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if lifecycle_refuses_api(text):
-        return "recipes/lifecycle.md"
-    return None
+    return marker_source(FRAMEWORK / "recipes/lifecycle.md", lifecycle_refuses_api, "recipes/lifecycle.md")
 
 
 def capability_mention_scope():
-    scope = (
-        "Menção em arquivo local de inspeção; não executado, não comprovado."
+    return scope_with(
+        "Menção em arquivo local de inspeção; não executado, não comprovado.",
+        capability_api_source,
+        " O disco recusa que o nome seja API (`api`). "
+        "Vocabulário no disco não é runtime.",
     )
-    if capability_api_source():
-        scope += (
-            " O disco recusa que o nome seja API (`api`). "
-            "Vocabulário no disco não é runtime."
-        )
-    return scope
 
 
 # A barra já recusa que o determinismo seja capacidade.
@@ -5284,29 +5044,17 @@ def bar_refuses_determinism_capability(text):
 
 
 def capability_unknown_determinism_source():
-    path = FRAMEWORK / "references/production-bar.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if bar_refuses_determinism_capability(text):
-        return "references/production-bar.md"
-    return None
+    return marker_source(FRAMEWORK / "references/production-bar.md", bar_refuses_determinism_capability, "references/production-bar.md")
 
 
 def capability_unknown_scope():
-    scope = (
+    return scope_with(
         "Capacidade ainda não mencionada neste recorte. Não executa "
-        "e não anexa determinismo."
+        "e não anexa determinismo.",
+        capability_unknown_determinism_source,
+        " O disco recusa que o determinismo seja capacidade (`determinismo`). "
+        "Lista no disco não é ciclo demonstrado.",
     )
-    if capability_unknown_determinism_source():
-        scope += (
-            " O disco recusa que o determinismo seja capacidade (`determinismo`). "
-            "Lista no disco não é ciclo demonstrado."
-        )
-    return scope
 
 
 def mention_capabilities(project):
@@ -6086,29 +5834,17 @@ def sources_refuse_obligatory_mechanic(text):
 
 
 def genre_mention_mechanic_source():
-    path = FRAMEWORK / "references/sources.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if sources_refuse_obligatory_mechanic(text):
-        return "references/sources.md"
-    return None
+    return marker_source(FRAMEWORK / "references/sources.md", sources_refuse_obligatory_mechanic, "references/sources.md")
 
 
 def genre_mention_scope():
-    scope = (
+    return scope_with(
         "Campo Gênero localizado no documento. Não classifica e não "
-        "carrega o pacote."
+        "carrega o pacote.",
+        genre_mention_mechanic_source,
+        " O disco recusa que a menção seja mecânica obrigatória (`mecânica`). "
+        "Campo no disco não é regra do jogo.",
     )
-    if genre_mention_mechanic_source():
-        scope += (
-            " O disco recusa que a menção seja mecânica obrigatória (`mecânica`). "
-            "Campo no disco não é regra do jogo."
-        )
-    return scope
 
 
 # O roteiro já pede documentar sem consentimento. Sem isto o
@@ -6151,29 +5887,17 @@ def project_audit_refuses_daemon(text):
 
 
 def audit_daemon_source():
-    path = AUDIT_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if project_audit_refuses_daemon(text):
-        return "references/project-audit.md"
-    return None
+    return marker_source(AUDIT_GUIDE, project_audit_refuses_daemon, "references/project-audit.md")
 
 
 def audit_scope():
-    scope = (
+    return scope_with(
         "Aviso e levantamento documental. Não executa o jogo e não "
-        "intercepta o host."
+        "intercepta o host.",
+        audit_daemon_source,
+        " O disco recusa que a checagem seja daemon (`daemon`). "
+        "Roteiro no disco não é interceptação.",
     )
-    if audit_daemon_source():
-        scope += (
-            " O disco recusa que a checagem seja daemon (`daemon`). "
-            "Roteiro no disco não é interceptação."
-        )
-    return scope
 
 
 # O roteiro já recusa que reconstruir documentos comprove intenções. Sem isto o
@@ -6187,29 +5911,17 @@ def audit_refuses_rebuilt_intent(text):
 
 
 def scan_candidate_intent_source():
-    path = AUDIT_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if audit_refuses_rebuilt_intent(text):
-        return "references/project-audit.md"
-    return None
+    return marker_source(AUDIT_GUIDE, audit_refuses_rebuilt_intent, "references/project-audit.md")
 
 
 def scan_candidate_scope():
-    scope = (
+    return scope_with(
         "Path, linha e estado do documento candidato. Não observa o "
-        "jogo e não atribui autoria."
+        "jogo e não atribui autoria.",
+        scan_candidate_intent_source,
+        " O disco recusa que reconstruir documentos comprove intenções (`intenções`). "
+        "Candidato no disco não é autoria.",
     )
-    if scan_candidate_intent_source():
-        scope += (
-            " O disco recusa que reconstruir documentos comprove intenções (`intenções`). "
-            "Candidato no disco não é autoria."
-        )
-    return scope
 
 
 # O roteiro já recusa que o local não percorrido seja inexistente. Sem isto o
@@ -6223,29 +5935,17 @@ def audit_refuses_unwalked_absence(text):
 
 
 def coverage_absence_source():
-    path = AUDIT_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if audit_refuses_unwalked_absence(text):
-        return "references/project-audit.md"
-    return None
+    return marker_source(AUDIT_GUIDE, audit_refuses_unwalked_absence, "references/project-audit.md")
 
 
 def coverage_scope():
-    scope = (
+    return scope_with(
         "Conta documentos localizados, lidos e adiados no recorte. "
-        "Não afirma suficiência nem qualidade."
+        "Não afirma suficiência nem qualidade.",
+        coverage_absence_source,
+        " O disco recusa que o local não percorrido seja inexistente (`inexistente`). "
+        "Contagem no disco não é inventário.",
     )
-    if coverage_absence_source():
-        scope += (
-            " O disco recusa que o local não percorrido seja inexistente (`inexistente`). "
-            "Contagem no disco não é inventário."
-        )
-    return scope
 
 
 # O mapa já recusa que a cobertura desigual seja acidente.
@@ -6259,29 +5959,17 @@ def sources_refuse_uneven_accident(text):
 
 
 def coverage_issue_accident_source():
-    path = FRAMEWORK / "references/sources.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if sources_refuse_uneven_accident(text):
-        return "references/sources.md"
-    return None
+    return marker_source(FRAMEWORK / "references/sources.md", sources_refuse_uneven_accident, "references/sources.md")
 
 
 def coverage_issue_scope():
-    scope = (
+    return scope_with(
         "Limite, leitura ou ligação que o recorte não cobriu. Não "
-        "completa o inventário e não observa o jogo."
+        "completa o inventário e não observa o jogo.",
+        coverage_issue_accident_source,
+        " O disco recusa que a cobertura desigual seja acidente (`acidente`). "
+        "Recorte no disco não é falha.",
     )
-    if coverage_issue_accident_source():
-        scope += (
-            " O disco recusa que a cobertura desigual seja acidente (`acidente`). "
-            "Recorte no disco não é falha."
-        )
-    return scope
 
 
 # A guia já recusa que preencher linhas certifique o jogo.
@@ -6295,29 +5983,17 @@ def guide_refuses_lines_as_game(text):
 
 
 def coverage_draft_lines_source():
-    path = FRAMEWORK / "references/preproduction.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if guide_refuses_lines_as_game(text):
-        return "references/preproduction.md"
-    return None
+    return marker_source(FRAMEWORK / "references/preproduction.md", guide_refuses_lines_as_game, "references/preproduction.md")
 
 
 def coverage_draft_scope():
-    scope = (
+    return scope_with(
         "Caminho e estado do documento que deixou de ser vigente. "
-        "Não certifica o jogo e não observa a sessão."
+        "Não certifica o jogo e não observa a sessão.",
+        coverage_draft_lines_source,
+        " O disco recusa que preencher linhas certifique o jogo (`linhas`). "
+        "Documento no disco não é o jogo.",
     )
-    if coverage_draft_lines_source():
-        scope += (
-            " O disco recusa que preencher linhas certifique o jogo (`linhas`). "
-            "Documento no disco não é o jogo."
-        )
-    return scope
 
 
 # O contrato já recusa que o scanner certifique tokens. Sem isto a
@@ -6332,29 +6008,17 @@ def system_refuses_token_certification(text):
 
 
 def art_direction_tokens_source():
-    path = SYSTEM_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if system_refuses_token_certification(text):
-        return "references/game-design-system.md"
-    return None
+    return marker_source(SYSTEM_GUIDE, system_refuses_token_certification, "references/game-design-system.md")
 
 
 def art_direction_scope():
-    scope = (
+    return scope_with(
         "Localiza o documento da direção. Não compara silhueta e não "
-        "aprova estilo."
+        "aprova estilo.",
+        art_direction_tokens_source,
+        " O disco recusa que o scanner certifique tokens (`tokens`). "
+        "Documento no disco não é aprovação artística.",
     )
-    if art_direction_tokens_source():
-        scope += (
-            " O disco recusa que o scanner certifique tokens (`tokens`). "
-            "Documento no disco não é aprovação artística."
-        )
-    return scope
 
 
 # O contrato já recusa que a paleta compartilhada seja o sistema. Sem isto o
@@ -6368,29 +6032,17 @@ def system_refuses_shared_palette(text):
 
 
 def art_palette_system_source():
-    path = SYSTEM_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if system_refuses_shared_palette(text):
-        return "references/game-design-system.md"
-    return None
+    return marker_source(SYSTEM_GUIDE, system_refuses_shared_palette, "references/game-design-system.md")
 
 
 def art_palette_scope():
-    scope = (
+    return scope_with(
         "Nome e origem da paleta listada. Não compara silhueta e não "
-        "aprova o sistema."
+        "aprova o sistema.",
+        art_palette_system_source,
+        " O disco recusa que a paleta compartilhada seja o sistema (`paleta`). "
+        "Lista no disco não é contrato.",
     )
-    if art_palette_system_source():
-        scope += (
-            " O disco recusa que a paleta compartilhada seja o sistema (`paleta`). "
-            "Lista no disco não é contrato."
-        )
-    return scope
 
 
 # A receita já recusa que a mesa seja volume. Sem isto o
@@ -6405,29 +6057,17 @@ def recipe_refuses_table_volume(text):
 
 
 def art_rain_volume_source():
-    path = VISUAL_RECIPE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if recipe_refuses_table_volume(text):
-        return "recipes/visual.md"
-    return None
+    return marker_source(VISUAL_RECIPE, recipe_refuses_table_volume, "recipes/visual.md")
 
 
 def art_rain_scope():
-    scope = (
+    return scope_with(
         "Chave e fonte da mesa de chuva. Não compara em "
-        "movimento e não conta volume."
+        "movimento e não conta volume.",
+        art_rain_volume_source,
+        " O disco recusa que a mesa seja volume (`volume`). "
+        "Lista no disco não é comparação.",
     )
-    if art_rain_volume_source():
-        scope += (
-            " O disco recusa que a mesa seja volume (`volume`). "
-            "Lista no disco não é comparação."
-        )
-    return scope
 
 
 # A receita já recusa que o harness infira dependências. Sem isto a
@@ -6442,29 +6082,17 @@ def architecture_refuses_inference(text):
 
 
 def architecture_deps_source():
-    path = ARCHITECTURE_RECIPE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if architecture_refuses_inference(text):
-        return "recipes/architecture.md"
-    return None
+    return marker_source(ARCHITECTURE_RECIPE, architecture_refuses_inference, "recipes/architecture.md")
 
 
 def architecture_area_scope():
-    scope = (
+    return scope_with(
         "Localiza o documento técnico. Não escolhe stack e não "
-        "aprova a decisão."
+        "aprova a decisão.",
+        architecture_deps_source,
+        " O disco recusa que o harness infira dependências (`dependências`). "
+        "Receita no disco não é decisão.",
     )
-    if architecture_deps_source():
-        scope += (
-            " O disco recusa que o harness infira dependências (`dependências`). "
-            "Receita no disco não é decisão."
-        )
-    return scope
 
 
 # O roteiro já recusa que o recibo presente seja licença. Sem isto a
@@ -6478,29 +6106,17 @@ def gates_refuse_present_receipt(text):
 
 
 def provenance_license_source():
-    path = FRAMEWORK / "references/gates.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if gates_refuse_present_receipt(text):
-        return "references/gates.md"
-    return None
+    return marker_source(FRAMEWORK / "references/gates.md", gates_refuse_present_receipt, "references/gates.md")
 
 
 def provenance_area_scope():
-    scope = (
+    return scope_with(
         "Localiza o documento de origem. Não consulta titular e não "
-        "valida licença."
+        "valida licença.",
+        provenance_license_source,
+        " O disco recusa que o recibo presente seja licença válida (`licença`). "
+        "Área no disco não é concessão.",
     )
-    if provenance_license_source():
-        scope += (
-            " O disco recusa que o recibo presente seja licença válida (`licença`). "
-            "Área no disco não é concessão."
-        )
-    return scope
 
 
 # O roteiro já recusa prescrever quantas pessoas. Sem isto a
@@ -6514,29 +6130,17 @@ def quality_refuses_people_count(text):
 
 
 def qa_people_source():
-    path = FRAMEWORK / "references/quality.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if quality_refuses_people_count(text):
-        return "references/quality.md"
-    return None
+    return marker_source(FRAMEWORK / "references/quality.md", quality_refuses_people_count, "references/quality.md")
 
 
 def qa_area_scope():
-    scope = (
+    return scope_with(
         "Localiza o documento de QA. Não assiste a sessão e não "
-        "conta jogadores."
+        "conta jogadores.",
+        qa_people_source,
+        " O disco recusa prescrever quantas pessoas (`pessoas`). "
+        "Área no disco não é censo.",
     )
-    if qa_people_source():
-        scope += (
-            " O disco recusa prescrever quantas pessoas (`pessoas`). "
-            "Área no disco não é censo."
-        )
-    return scope
 
 
 def documentation_scope(document_minimum):
@@ -6564,30 +6168,18 @@ def process_denies_ready_docs_are_poc(text):
 
 
 def continuity_poc_source():
-    path = PROCESS_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if process_denies_ready_docs_are_poc(text):
-        return "references/process.md"
-    return None
+    return marker_source(PROCESS_GUIDE, process_denies_ready_docs_are_poc, "references/process.md")
 
 
 def continuity_scope():
-    scope = (
+    return scope_with(
         "Fontes são candidatos, não fila validada. "
         "O agente resolve next_step antes de responder; o comando não escolhe "
-        "tarefa, infere etapa concluída nem concede autorização a partir de documentos."
+        "tarefa, infere etapa concluída nem concede autorização a partir de documentos.",
+        continuity_poc_source,
+        " O disco nega que documento pronto seja PoC (`process`). "
+        "Fonte no disco não é jogo implementado.",
     )
-    if continuity_poc_source():
-        scope += (
-            " O disco nega que documento pronto seja PoC (`process`). "
-            "Fonte no disco não é jogo implementado."
-        )
-    return scope
 
 
 # O processo já recusa que sources_found comprove a fila.
@@ -6601,29 +6193,17 @@ def process_refuses_found_as_queue(text):
 
 
 def continuity_source_queue_source():
-    path = PROCESS_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if process_refuses_found_as_queue(text):
-        return "references/process.md"
-    return None
+    return marker_source(PROCESS_GUIDE, process_refuses_found_as_queue, "references/process.md")
 
 
 def continuity_source_scope():
-    scope = (
+    return scope_with(
         "Caminho, linha, estado e base da fonte candidata. Não resolve "
-        "a fila e não executa o passo."
+        "a fila e não executa o passo.",
+        continuity_source_queue_source,
+        " O disco recusa que sources_found comprove fila (`fila`). "
+        "Fonte no disco não é backlog.",
     )
-    if continuity_source_queue_source():
-        scope += (
-            " O disco recusa que sources_found comprove fila (`fila`). "
-            "Fonte no disco não é backlog."
-        )
-    return scope
 
 
 # A guia já recusa preencher o checklist. Sem isto o
@@ -6638,31 +6218,19 @@ def finish_guide_refuses_fill(text):
 
 
 def finish_checklist_source():
-    path = FINISH_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if finish_guide_refuses_fill(text):
-        return "references/aaa-checklist.md"
-    return None
+    return marker_source(FINISH_GUIDE, finish_guide_refuses_fill, "references/aaa-checklist.md")
 
 
 def finish_scope():
-    scope = (
+    return scope_with(
         "Núcleo em qualquer escala após um ciclo jogável. "
         "Produto/AA soma product_groups. Promessa só se o brief prometeu. "
         "Mercado (CHK-16) nunca reprova jam. Completar o template não certifica. "
-        "O comando não observa o jogo."
+        "O comando não observa o jogo.",
+        finish_checklist_source,
+        " O disco recusa preencher o checklist (`checklist`). "
+        "Guia no disco não é observação.",
     )
-    if finish_checklist_source():
-        scope += (
-            " O disco recusa preencher o checklist (`checklist`). "
-            "Guia no disco não é observação."
-        )
-    return scope
 
 
 # O processo já recusa que a etapa certifique o progresso. Sem isto o
@@ -6676,29 +6244,17 @@ def process_refuses_stage_progress(text):
 
 
 def context_progress_source():
-    path = PROCESS_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if process_refuses_stage_progress(text):
-        return "references/process.md"
-    return None
+    return marker_source(PROCESS_GUIDE, process_refuses_stage_progress, "references/process.md")
 
 
 def context_scope():
-    scope = (
+    return scope_with(
         "Seleciona leituras do framework para o foco e a etapa. "
-        "Não executa o jogo e não escreve documentos."
+        "Não executa o jogo e não escreve documentos.",
+        context_progress_source,
+        " O disco recusa que a etapa certifique o progresso (`progresso`). "
+        "Contexto no disco não é degrau.",
     )
-    if context_progress_source():
-        scope += (
-            " O disco recusa que a etapa certifique o progresso (`progresso`). "
-            "Contexto no disco não é degrau."
-        )
-    return scope
 
 
 # A guia já recusa que a checagem seja validador semântico.
@@ -6712,29 +6268,17 @@ def guide_refuses_semantic_validator(text):
 
 
 def metadata_issue_semantic_source():
-    path = FRAMEWORK / "references/preproduction.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if guide_refuses_semantic_validator(text):
-        return "references/preproduction.md"
-    return None
+    return marker_source(FRAMEWORK / "references/preproduction.md", guide_refuses_semantic_validator, "references/preproduction.md")
 
 
 def metadata_issue_scope():
-    scope = (
+    return scope_with(
         "Caminho e motivo do manifesto ilegível. Não valida o "
-        "desenho e não executa o jogo."
+        "desenho e não executa o jogo.",
+        metadata_issue_semantic_source,
+        " O disco recusa que a checagem seja validador semântico (`semântico`). "
+        "Parse no disco não é o jogo.",
     )
-    if metadata_issue_semantic_source():
-        scope += (
-            " O disco recusa que a checagem seja validador semântico (`semântico`). "
-            "Parse no disco não é o jogo."
-        )
-    return scope
 
 
 def workspace_module(project, root=None):
@@ -7368,28 +6912,16 @@ def quality_refuses_mural_onboarding(text):
 
 
 def play_step_onboarding_source():
-    path = QUALITY_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if quality_refuses_mural_onboarding(text):
-        return "references/quality.md"
-    return None
+    return marker_source(QUALITY_GUIDE, quality_refuses_mural_onboarding, "references/quality.md")
 
 
 def play_step_scope():
-    scope = (
-        "Jogar no próprio dispositivo. Não executa o serve e não observa."
+    return scope_with(
+        "Jogar no próprio dispositivo. Não executa o serve e não observa.",
+        play_step_onboarding_source,
+        " O disco recusa que o mural seja onboarding (`onboarding`). "
+        "Texto no disco não é a primeira ação.",
     )
-    if play_step_onboarding_source():
-        scope += (
-            " O disco recusa que o mural seja onboarding (`onboarding`). "
-            "Texto no disco não é a primeira ação."
-        )
-    return scope
 
 
 # A receita já recusa que o screenshot comprove feel. Sem isto o
@@ -7403,28 +6935,16 @@ def feel_refuses_screenshot(text):
 
 
 def note_step_screenshot_source():
-    path = FRAMEWORK / "recipes/feel.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if feel_refuses_screenshot(text):
-        return "recipes/feel.md"
-    return None
+    return marker_source(FRAMEWORK / "recipes/feel.md", feel_refuses_screenshot, "recipes/feel.md")
 
 
 def note_step_scope():
-    scope = (
-        "Gravar o que o verbo sentiu. Não executa o note e não observa."
+    return scope_with(
+        "Gravar o que o verbo sentiu. Não executa o note e não observa.",
+        note_step_screenshot_source,
+        " O disco recusa que o screenshot comprove feel (`screenshot`). "
+        "Recibo no disco não é peso percebido.",
     )
-    if note_step_screenshot_source():
-        scope += (
-            " O disco recusa que o screenshot comprove feel (`screenshot`). "
-            "Recibo no disco não é peso percebido."
-        )
-    return scope
 
 
 # O processo já recusa que o comando abra o jogo. Sem isto o
@@ -7438,28 +6958,16 @@ def process_refuses_open(text):
 
 
 def open_step_source():
-    path = FRAMEWORK / "references/process.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if process_refuses_open(text):
-        return "references/process.md"
-    return None
+    return marker_source(FRAMEWORK / "references/process.md", process_refuses_open, "references/process.md")
 
 
 def open_step_scope():
-    scope = (
-        "Abrir o ciclo. Não executa o start e não observa."
+    return scope_with(
+        "Abrir o ciclo. Não executa o start e não observa.",
+        open_step_source,
+        " O disco recusa que o comando abra o jogo (`abertura`). "
+        "Nome no disco não é partida.",
     )
-    if open_step_source():
-        scope += (
-            " O disco recusa que o comando abra o jogo (`abertura`). "
-            "Nome no disco não é partida."
-        )
-    return scope
 
 
 def cycle_steps(start_command, play_cmd, then, cycle, nxt=None, exists=False, url=None):
@@ -8830,29 +8338,17 @@ def skill_refuses_publisher_tier(text):
 
 
 def skill_target_publisher_source():
-    path = SKILL_FILE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if skill_refuses_publisher_tier(text):
-        return "SKILL.md"
-    return None
+    return marker_source(SKILL_FILE, skill_refuses_publisher_tier, "SKILL.md")
 
 
 def skill_target_scope():
-    scope = (
+    return scope_with(
         "Caminho, vigência e symlink do atalho da skill. Não copia a "
-        "skill e não cria o projeto."
+        "skill e não cria o projeto.",
+        skill_target_publisher_source,
+        " O disco recusa que AAA seja tier de publisher (`publisher`). "
+        "Atalho no disco não é orçamento.",
     )
-    if skill_target_publisher_source():
-        scope += (
-            " O disco recusa que AAA seja tier de publisher (`publisher`). "
-            "Atalho no disco não é orçamento."
-        )
-    return scope
 
 
 # O mapa já recusa que a ausência seja evidência negativa.
@@ -8867,29 +8363,17 @@ def map_refuses_absence_as_evidence(text):
 
 
 def doctor_check_absence_source():
-    path = SOURCES_MAP
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if map_refuses_absence_as_evidence(text):
-        return "references/sources.md"
-    return None
+    return marker_source(SOURCES_MAP, map_refuses_absence_as_evidence, "references/sources.md")
 
 
 def doctor_check_scope():
-    scope = (
+    return scope_with(
         "Nome, exigência e estado da ferramenta. Não instala e não "
-        "cria o projeto."
+        "cria o projeto.",
+        doctor_check_absence_source,
+        " O disco recusa que a ausência seja evidência negativa (`ausência`). "
+        "Lista no disco não é laboratório.",
     )
-    if doctor_check_absence_source():
-        scope += (
-            " O disco recusa que a ausência seja evidência negativa (`ausência`). "
-            "Lista no disco não é laboratório."
-        )
-    return scope
 
 
 # O README já imprime o exemplo. Sem isto o
@@ -8903,16 +8387,7 @@ def readme_prints_idea_example(text):
 
 
 def doctor_idea_source():
-    path = README_FILE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if readme_prints_idea_example(text):
-        return "README.md"
-    return None
+    return marker_source(README_FILE, readme_prints_idea_example, "README.md")
 
 
 def doctor_guide_idea():
@@ -9136,28 +8611,16 @@ def ambition_refuses_engine(text):
 
 
 def doctor_then_engine_source():
-    path = FRAMEWORK / "references/ambition.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if ambition_refuses_engine(text):
-        return "references/ambition.md"
-    return None
+    return marker_source(FRAMEWORK / "references/ambition.md", ambition_refuses_engine, "references/ambition.md")
 
 
 def doctor_then_scope():
-    scope = (
-        "Convite ao mapa ideia→ciclo. Não cria o projeto e não executa o jogo."
+    return scope_with(
+        "Convite ao mapa ideia→ciclo. Não cria o projeto e não executa o jogo.",
+        doctor_then_engine_source,
+        " O disco recusa que o harness seja motor (`motor`). "
+        "Convite no then não é runtime.",
     )
-    if doctor_then_engine_source():
-        scope += (
-            " O disco recusa que o harness seja motor (`motor`). "
-            "Convite no then não é runtime."
-        )
-    return scope
 
 
 def doctor_then(ready, starters, empty):
@@ -9186,31 +8649,19 @@ def process_asks_one_action(text):
 
 
 def next_action_source():
-    path = NEXT_PROCESS
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if process_asks_one_action(text):
-        return "references/process.md"
-    return None
+    return marker_source(NEXT_PROCESS, process_asks_one_action, "references/process.md")
 
 
 def next_scope():
-    scope = (
+    return scope_with(
         "Proposta ordenada por dependência, derivada só do que é observável no disco. "
         "Não é fila validada, não conhece a conversa, a direção do usuário nem o backlog, "
         "e não concede autorização. "
-        "O agente confronta a proposta com o pedido real e decide; `alternatives` existe para ser escolhida."
+        "O agente confronta a proposta com o pedido real e decide; `alternatives` existe para ser escolhida.",
+        next_action_source,
+        " O disco pede uma ação recomendada (`ação`). "
+        "Proposta no disco não é autorização.",
     )
-    if next_action_source():
-        scope += (
-            " O disco pede uma ação recomendada (`ação`). "
-            "Proposta no disco não é autorização."
-        )
-    return scope
 
 
 # O roteiro já recusa que o comando crie o jogo. Sem isto a
@@ -9224,28 +8675,16 @@ def preproduction_refuses_create(text):
 
 
 def proposal_create_source():
-    path = FRAMEWORK / "references/preproduction.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if preproduction_refuses_create(text):
-        return "references/preproduction.md"
-    return None
+    return marker_source(FRAMEWORK / "references/preproduction.md", preproduction_refuses_create, "references/preproduction.md")
 
 
 def proposal_scope():
-    scope = (
-        "Uma ação derivada do disco. Não executa o comando e não cria o projeto."
+    return scope_with(
+        "Uma ação derivada do disco. Não executa o comando e não cria o projeto.",
+        proposal_create_source,
+        " O disco recusa que o comando crie o jogo (`criação`). "
+        "Proposta no disco não é pasta criada.",
     )
-    if proposal_create_source():
-        scope += (
-            " O disco recusa que o comando crie o jogo (`criação`). "
-            "Proposta no disco não é pasta criada."
-        )
-    return scope
 
 
 # O processo já recusa fabricar tarefa para cumprir o formato.
@@ -9259,29 +8698,17 @@ def process_refuses_task(text):
 
 
 def alternative_task_source():
-    path = FRAMEWORK / "references/process.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if process_refuses_task(text):
-        return "references/process.md"
-    return None
+    return marker_source(FRAMEWORK / "references/process.md", process_refuses_task, "references/process.md")
 
 
 def alternative_scope():
-    scope = (
+    return scope_with(
         "Outra ação derivada do disco. Não executa o comando e não "
-        "fabrica backlog."
+        "fabrica backlog.",
+        alternative_task_source,
+        " O disco recusa que a alternativa fabrique tarefa (`fabricação`). "
+        "Lista no disco não é backlog.",
     )
-    if alternative_task_source():
-        scope += (
-            " O disco recusa que a alternativa fabrique tarefa (`fabricação`). "
-            "Lista no disco não é backlog."
-        )
-    return scope
 
 
 def next_step(project, focus="create", studies_root=None):
@@ -9841,28 +9268,16 @@ def process_refuses_merit(text):
 
 
 def check_plan_merit_source():
-    path = PROCESS_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if process_refuses_merit(text):
-        return "references/process.md"
-    return None
+    return marker_source(PROCESS_GUIDE, process_refuses_merit, "references/process.md")
 
 
 def check_plan_scope():
-    scope = (
-        "Estrutura e existência dos candidatos; busca, adequação e qualidade exigem revisão."
+    return scope_with(
+        "Estrutura e existência dos candidatos; busca, adequação e qualidade exigem revisão.",
+        check_plan_merit_source,
+        " O disco recusa garantir o mérito (`mérito`). "
+        "Forma no disco não é adequação.",
     )
-    if check_plan_merit_source():
-        scope += (
-            " O disco recusa garantir o mérito (`mérito`). "
-            "Forma no disco não é adequação."
-        )
-    return scope
 
 
 def check_plan_report(plan, root):
@@ -9926,16 +9341,7 @@ def quality_refuses_judgment(text):
 
 
 def git_judgment_source():
-    path = JUDGMENT_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if quality_refuses_judgment(text):
-        return "references/quality.md"
-    return None
+    return marker_source(JUDGMENT_GUIDE, quality_refuses_judgment, "references/quality.md")
 
 
 def git_version_scope():
@@ -9987,29 +9393,17 @@ def preproduction_refuses_creativity(text):
 
 
 def verify_creativity_source():
-    path = PREPRODUCTION_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if preproduction_refuses_creativity(text):
-        return "references/preproduction.md"
-    return None
+    return marker_source(PREPRODUCTION_GUIDE, preproduction_refuses_creativity, "references/preproduction.md")
 
 
 def verify_scope():
-    scope = (
+    return scope_with(
         "Execução dos comandos solicitados. Não aprova arte, diversão, direitos, "
-        "release nem capacidades do runtime."
+        "release nem capacidades do runtime.",
+        verify_creativity_source,
+        " O disco recusa aprovar a criatividade (`criatividade`). "
+        "Recibo verde não é aprovação.",
     )
-    if verify_creativity_source():
-        scope += (
-            " O disco recusa aprovar a criatividade (`criatividade`). "
-            "Recibo verde não é aprovação."
-        )
-    return scope
 
 
 # A ambição já recusa que o recibo comprove diversão. Sem isto o
@@ -10023,29 +9417,17 @@ def ambition_refuses_fun(text):
 
 
 def verify_command_fun_source():
-    path = FRAMEWORK / "references/ambition.md"
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if ambition_refuses_fun(text):
-        return "references/ambition.md"
-    return None
+    return marker_source(FRAMEWORK / "references/ambition.md", ambition_refuses_fun, "references/ambition.md")
 
 
 def verify_command_scope():
-    scope = (
+    return scope_with(
         "Saída de um comando técnico. Não observa o jogo e não avalia "
-        "experiência."
+        "experiência.",
+        verify_command_fun_source,
+        " O disco recusa que o recibo comprove diversão (`diversão`). "
+        "Log no disco não é experiência.",
     )
-    if verify_command_fun_source():
-        scope += (
-            " O disco recusa que o recibo comprove diversão (`diversão`). "
-            "Log no disco não é experiência."
-        )
-    return scope
 
 
 # O processo já recusa que claimed seja verified. Sem isto o
@@ -10059,30 +9441,18 @@ def process_refuses_claimed_as_verified(text):
 
 
 def verify_claimed_source():
-    path = PROCESS_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if process_refuses_claimed_as_verified(text):
-        return "references/process.md"
-    return None
+    return marker_source(PROCESS_GUIDE, process_refuses_claimed_as_verified, "references/process.md")
 
 
 def capabilities_scope():
-    scope = (
+    return scope_with(
         "Capacidade só aparece aqui porque quem executou a declarou em --proves. O harness confere que o nome "
         "pertence ao conjunto conhecido e que os comandos passaram; não confere que eles a exercitam. "
-        "`claimed` é alegação registrada, não verificação: continua valendo que mentioned não é verified."
+        "`claimed` é alegação registrada, não verificação: continua valendo que mentioned não é verified.",
+        verify_claimed_source,
+        " O disco recusa que claimed seja verified (`verified`). "
+        "Alegação no disco não é cobertura.",
     )
-    if verify_claimed_source():
-        scope += (
-            " O disco recusa que claimed seja verified (`verified`). "
-            "Alegação no disco não é cobertura."
-        )
-    return scope
 
 
 def verify(project, scripts, command, output, timeout, proves=()):
@@ -10170,29 +9540,17 @@ def quality_refuses_measure(text):
 
 
 def quality_measure_source():
-    path = QUALITY_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if quality_refuses_measure(text):
-        return "references/quality.md"
-    return None
+    return marker_source(QUALITY_GUIDE, quality_refuses_measure, "references/quality.md")
 
 
 def record_scope():
-    scope = (
+    return scope_with(
         "Registro declarado por quem assina; o harness não valida o conteúdo, não mede e não aprova. "
-        "role=agent é avaliação do agente, não aprovação do usuário."
+        "role=agent é avaliação do agente, não aprovação do usuário.",
+        quality_measure_source,
+        " O disco recusa medir os critérios (`mede`). "
+        "Recibo no disco não é observação.",
     )
-    if quality_measure_source():
-        scope += (
-            " O disco recusa medir os critérios (`mede`). "
-            "Recibo no disco não é observação."
-        )
-    return scope
 
 
 # O roteiro já recusa que o screenshot isolado comprove animação. Sem isto o
@@ -10206,29 +9564,17 @@ def quality_refuses_isolated_still(text):
 
 
 def record_attachment_still_source():
-    path = QUALITY_GUIDE
-    if not path.is_file() or path.is_symlink():
-        return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    if quality_refuses_isolated_still(text):
-        return "references/quality.md"
-    return None
+    return marker_source(QUALITY_GUIDE, quality_refuses_isolated_still, "references/quality.md")
 
 
 def record_attachment_scope():
-    scope = (
+    return scope_with(
         "Bytes e hash do arquivo anexado. Não observa o jogo e não "
-        "aprova o movimento."
+        "aprova o movimento.",
+        record_attachment_still_source,
+        " O disco recusa que o screenshot isolado comprove animação (`animação`). "
+        "Anexo no disco não é controle.",
     )
-    if record_attachment_still_source():
-        scope += (
-            " O disco recusa que o screenshot isolado comprove animação (`animação`). "
-            "Anexo no disco não é controle."
-        )
-    return scope
 
 
 def record(project, kind, author, note, fields, attachments, output):
