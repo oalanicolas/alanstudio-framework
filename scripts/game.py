@@ -10006,6 +10006,9 @@ def _feel_scope(project):
     spar = feel_preserve_scope()
     if spar:
         scope += spar
+    grip = feel_gestos_scope()
+    if grip:
+        scope += grip
     return scope
 
 
@@ -11946,6 +11949,41 @@ def feel_preserve_scope():
     return (
         " O disco recusa que o preserve prove o feel "
         "(`preserve`). Preserve no disco não é o feel."
+    )
+
+
+
+# A receita já recusa que os
+# gestos provem o feel. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Gestos no
+# disco não é o feel.
+FEEL_GRIP = re.compile(r"gestos")
+
+
+def recipe_refuses_gestos_as_proving_feel(text):
+    return bool(text and FEEL_GRIP.search(text))
+
+
+def feel_gestos_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_gestos_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_gestos_scope():
+    if not feel_gestos_source():
+        return None
+    return (
+        " O disco recusa que os gestos provem o feel "
+        "(`gestos`). Gestos no disco não é o feel."
     )
 
 
