@@ -36514,6 +36514,66 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertNotIn("Repetições", game.CYCLE_KEYS)
         self.assertNotIn("projetada", game.CYCLE_KEYS)
 
+    def test_content_names_the_disjuntas_the_recipe_already_refuses(self):
+        recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
+        self.assertRegex(recipe, r"disjuntas")
+        self.assertTrue(
+            game.recipe_refuses_disjuntas_as_proving_destination(recipe),
+            "a receita já recusa que as disjuntas provem o destino",
+        )
+        self.assertEqual(game.content_disjuntas_source(), "recipes/content.md")
+        report = game.content_reading(self.project)
+        self.assertIn(
+            "as disjuntas provem o destino",
+            report["scope"],
+            "o content listava arquivos e calava a recusa",
+        )
+        self.assertIn("(`disjuntas`)", report["scope"])
+        self.assertIn("Disjuntas no disco não é o destino.", report["scope"])
+        self.assertFalse(report["enough"])
+        self.assertNotIn("disjuntas", report)
+        self.assertNotIn("preservam", report)
+        self.assertNotIn("Repetições", report)
+        self.assertFalse(game.recipe_refuses_disjuntas_as_proving_destination(""))
+        with mock.patch.object(game, "content_disjuntas_source", return_value=None):
+            silent = game.content_reading(self.project)
+        self.assertNotIn(
+            "as disjuntas provem o destino",
+            silent["scope"],
+        )
+        create = (game.FRAMEWORK / "recipes/create.md").read_text(encoding="utf-8")
+        skill = (game.FRAMEWORK / "SKILL.md").read_text(encoding="utf-8")
+        readme = (game.FRAMEWORK / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(recipe.count("nomeia as disjuntas que a receita já recusa"), 2)
+        self.assertIn("nomeia as disjuntas que a receita já recusa", create)
+        self.assertIn("nomeia as disjuntas que a receita já recusa", skill)
+        self.assertIn("nomeia as disjuntas que a receita já recusa", readme)
+        self.assertNotIn("verified", report["scope"])
+        self.assertNotIn("aprovado", report["scope"])
+        self.assertNotIn("4.5", report["scope"])
+        self.assertNotIn("16 ms", report["scope"])
+        files = report.get("files")
+        if isinstance(files, dict):
+            self.assertNotIn(
+                "as disjuntas provem o destino",
+                files.get("scope") or "",
+            )
+        phrase = "as disjuntas provem o destino"
+        self.assertNotIn(phrase, game.save_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.feel_observations_scope())
+        self.assertNotIn(phrase, game.cycle_scope() or "")
+        self.assertNotIn(phrase, game.record_scope())
+        self.assertNotIn(phrase, game.budget_reading(self.project)["scope"])
+        self.assertNotIn(phrase, game.observation_item_scope())
+        self.assertNotIn(phrase, game.craft_item_scope())
+        self.assertNotIn(phrase, game.pin_created_scope())
+        self.assertNotIn(phrase, game.pin_skipped_scope())
+        self.assertNotIn(phrase, game.next_scope())
+        self.assertNotIn("disjuntas", game.CYCLE_KEYS)
+        self.assertNotIn("preservam", game.CYCLE_KEYS)
+        self.assertNotIn("Repetições", game.CYCLE_KEYS)
+
     def test_content_names_the_rain_the_recipe_already_refuses(self):
         recipe = (game.FRAMEWORK / "recipes/content.md").read_text(encoding="utf-8")
         self.assertTrue(

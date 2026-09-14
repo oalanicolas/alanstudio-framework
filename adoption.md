@@ -30,6 +30,47 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.1064 — o content nomeia as disjuntas que a receita já recusa
+
+A
+receita
+já
+pedia
+faixas
+disjuntas
+são
+alternativas
+quando
+preservam
+oclusão.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+content
+nomeia
+as
+disjuntas.
+Disjuntas
+no
+disco
+não
+é
+o
+destino.
+Sem
+chave
+`disjuntas`.
+Nomear
+não
+observa.
+
 ## 0.9.1063 — o item do craft nomeia os auditáveis que a pesquisa já recusa
 
 A

@@ -17125,6 +17125,41 @@ def content_preservam_scope():
     )
 
 
+# A receita já recusa que as
+# disjuntas provem o destino.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Disjuntas no disco não é o
+# destino.
+CONTENT_BAND = re.compile(r"disjuntas")
+
+
+def recipe_refuses_disjuntas_as_proving_destination(text):
+    return bool(text and CONTENT_BAND.search(text))
+
+
+def content_disjuntas_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_disjuntas_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_disjuntas_scope():
+    if not content_disjuntas_source():
+        return None
+    return (
+        " O disco recusa que as disjuntas provem o destino "
+        "(`disjuntas`). Disjuntas no disco não é o destino."
+    )
+
+
 
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
@@ -17511,6 +17546,9 @@ def content_reading(project):
     vows = content_preservam_scope()
     if vows:
         scope += vows
+    band = content_disjuntas_scope()
+    if band:
+        scope += band
     listed = files[:24]
     if listed:
         listed = {
