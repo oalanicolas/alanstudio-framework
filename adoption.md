@@ -30,6 +30,45 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.1048 — o content nomeia as Repetições que a receita já recusa
+
+A
+receita
+já
+pedia
+Repetições
+montadas
+antes
+do
+render.
+O
+content
+listava
+arquivos
+e
+calava
+a
+recusa.
+Agora
+o
+content
+nomeia
+as
+Repetições.
+Repetições
+no
+disco
+não
+é
+o
+destino.
+Sem
+chave
+`Repetições`.
+Nomear
+não
+observa.
+
 ## 0.9.1047 — o item do craft nomeia o pobre que a pesquisa já recusa
 
 A
