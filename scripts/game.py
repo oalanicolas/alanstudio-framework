@@ -26099,6 +26099,9 @@ def cycle_scope():
     pull = cycle_pull_scope()
     if pull:
         scope += pull
+    dose = cycle_bastante_scope()
+    if dose:
+        scope += dose
     return scope or None
 
 
@@ -27624,6 +27627,41 @@ def cycle_pull_scope():
     return (
         " O disco recusa que o stretch prove o teste "
         "(`stretch`). Stretch no disco não é o teste."
+    )
+
+
+# A receita já recusa que o
+# bastante prove o teste. Sem
+# isto o ciclo anunciava o
+# verbo e calava a recusa.
+# Bastante no disco não é o
+# teste.
+FEEL_DOSE = re.compile(r"bastante")
+
+
+def recipe_refuses_bastante_as_proving_test(text):
+    return bool(text and FEEL_DOSE.search(text))
+
+
+def cycle_bastante_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_bastante_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_bastante_scope():
+    if not cycle_bastante_source():
+        return None
+    return (
+        " O disco recusa que o bastante prove o teste "
+        "(`bastante`). Bastante no disco não é o teste."
     )
 
 
