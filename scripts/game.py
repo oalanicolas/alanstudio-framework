@@ -27499,6 +27499,9 @@ def cycle_scope():
     furl = cycle_estendidos_scope()
     if furl:
         scope += furl
+    poise = cycle_balanceamento_scope()
+    if poise:
+        scope += poise
     return scope or None
 
 
@@ -29238,6 +29241,43 @@ def cycle_estendidos_scope():
     return (
         " O disco recusa que os estendidos provem o teste "
         "(`estendidos`). Estendidos no disco não é o teste."
+    )
+
+
+
+
+# A receita já recusa que o
+# balanceamento prove o teste.
+# Sem isto o ciclo anunciava
+# o verbo e calava a recusa.
+# Balanceamento no disco não é
+# o teste.
+FEEL_POISE = re.compile(r"balanceamento")
+
+
+def recipe_refuses_balanceamento_as_proving_test(text):
+    return bool(text and FEEL_POISE.search(text))
+
+
+def cycle_balanceamento_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_balanceamento_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_balanceamento_scope():
+    if not cycle_balanceamento_source():
+        return None
+    return (
+        " O disco recusa que o balanceamento prove o teste "
+        "(`balanceamento`). Balanceamento no disco não é o teste."
     )
 
 

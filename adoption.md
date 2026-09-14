@@ -30,6 +30,51 @@ O que 0.10 **não** traz da impeccable: detector determinístico de anti-padrõe
 CSS/DOM, modo `live` de variantes, mocks por imagem ou pontuação Nielsen 0–40.
 Esses mecanismos não equivalem a executar e observar um jogo.
 
+## 0.9.1090 — o ciclo nomeia o balanceamento que a receita já recusa
+
+A
+receita
+já
+pedia
+para
+registrar
+a
+diferença
+antes
+de
+mudar
+arte
+ou
+balanceamento.
+O
+ciclo
+anunciava
+o
+verbo
+e
+calava
+a
+recusa.
+Agora
+o
+ciclo
+nomeia
+o
+balanceamento.
+Balanceamento
+no
+disco
+não
+é
+o
+teste.
+Sem
+chave
+`balanceamento`.
+Nomear
+não
+observa.
+
 ## 0.9.1089 — o item da observação nomeia o hex que a receita já recusa
 
 A
