@@ -18732,6 +18732,42 @@ def content_necessario_scope():
     )
 
 
+
+# A receita já recusa que a
+# geração prove o destino.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Geração no disco não é o
+# destino.
+CONTENT_MINT = re.compile(r"geração")
+
+
+def recipe_refuses_geracao_as_proving_destination(text):
+    return bool(text and CONTENT_MINT.search(text))
+
+
+def content_geracao_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_geracao_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_geracao_scope():
+    if not content_geracao_source():
+        return None
+    return (
+        " O disco recusa que a geração prove o destino "
+        "(`geração`). Geração no disco não é o destino."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -19138,6 +19174,9 @@ def content_reading(project):
     pith = content_necessario_scope()
     if pith:
         scope += pith
+    mint = content_geracao_scope()
+    if mint:
+        scope += mint
     listed = files[:24]
     if listed:
         listed = {
