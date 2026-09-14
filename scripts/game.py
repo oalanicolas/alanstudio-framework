@@ -18967,6 +18967,42 @@ def content_geracao_scope():
 CONTENT_ENCODED = re.compile(r"Tamanho codificado não mede custo decodificado")
 
 
+
+# A receita já recusa que os
+# objetos provem o destino.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Objetos no disco não é o
+# destino.
+CONTENT_WARD = re.compile(r"objetos")
+
+
+def recipe_refuses_objetos_as_proving_destination(text):
+    return bool(text and CONTENT_WARD.search(text))
+
+
+def content_objetos_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_objetos_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_objetos_scope():
+    if not content_objetos_source():
+        return None
+    return (
+        " O disco recusa que os objetos provem o destino "
+        "(`objetos`). Objetos no disco não é o destino."
+    )
+
+
 def recipe_refuses_encoded_as_gpu(text):
     return bool(text and CONTENT_ENCODED.search(text))
 
@@ -19368,6 +19404,9 @@ def content_reading(project):
     mint = content_geracao_scope()
     if mint:
         scope += mint
+    ward = content_objetos_scope()
+    if ward:
+        scope += ward
     listed = files[:24]
     if listed:
         listed = {
