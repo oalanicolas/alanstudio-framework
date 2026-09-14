@@ -8586,6 +8586,43 @@ def feel_observations_diferentes_scope():
 
 
 
+
+# A receita já recusa que o
+# ataque prove o feel. Sem
+# isto o feel listava o
+# recibo e calava a recusa.
+# Ataque no disco não é o
+# feel.
+FEEL_JAB = re.compile(r"ataque")
+
+
+def recipe_refuses_ataque_as_proving_feel(text):
+    return bool(text and FEEL_JAB.search(text))
+
+
+def feel_observations_ataque_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_ataque_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_ataque_scope():
+    if not feel_observations_ataque_source():
+        return None
+    return (
+        " O disco recusa que o ataque prove o feel "
+        "(`ataque`). Ataque no disco não é o feel."
+    )
+
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -8738,6 +8775,9 @@ def feel_observations_scope():
     vary = feel_observations_diferentes_scope()
     if vary:
         scope += vary
+    jab = feel_observations_ataque_scope()
+    if jab:
+        scope += jab
     return scope
 
 
