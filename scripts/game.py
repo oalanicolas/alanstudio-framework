@@ -7466,6 +7466,41 @@ def feel_observations_verificam_scope():
     )
 
 
+# A receita já recusa que o
+# demonstrem prove o feel.
+# Sem isto o feel listava o
+# recibo e calava a recusa.
+# Demonstrem no disco não é
+# o feel.
+FEEL_DEEM = re.compile(r"demonstrem")
+
+
+def recipe_refuses_demonstrem_as_proving_feel(text):
+    return bool(text and FEEL_DEEM.search(text))
+
+
+def feel_observations_demonstrem_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_demonstrem_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_observations_demonstrem_scope():
+    if not feel_observations_demonstrem_source():
+        return None
+    return (
+        " O disco recusa que o demonstrem prove o feel "
+        "(`demonstrem`). Demonstrem no disco não é o feel."
+    )
+
+
 def feel_observations_scope():
     scope = (
         "recibo de observação no disco. "
@@ -7588,6 +7623,9 @@ def feel_observations_scope():
     check = feel_observations_verificam_scope()
     if check:
         scope += check
+    deem = feel_observations_demonstrem_scope()
+    if deem:
+        scope += deem
     return scope
 
 
