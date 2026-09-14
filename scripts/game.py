@@ -15081,6 +15081,41 @@ def save_separe_scope():
     )
 
 
+
+# A receita já recusa que a
+# coisa prove o save. Sem
+# isto o save lia o schema e
+# calava a recusa. Coisa no
+# disco não é o save.
+PERSIST_THING = re.compile(r"coisa")
+
+
+def recipe_refuses_coisa_as_proving_save(text):
+    return bool(text and PERSIST_THING.search(text))
+
+
+def save_coisa_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_coisa_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_coisa_scope():
+    if not save_coisa_source():
+        return None
+    return (
+        " O disco recusa que a coisa prove o save "
+        "(`coisa`). Coisa no disco não é o save."
+    )
+
+
 def recipe_refuses_listed_files_as_full_chain(text):
     return bool(text and PERSIST_CHAIN.search(text))
 
@@ -15845,6 +15880,9 @@ def save_reading(project):
     apart = save_separe_scope()
     if apart:
         scope += apart
+    wisp = save_coisa_scope()
+    if wisp:
+        scope += wisp
     used_flag = bool(used)
     if used_flag:
         used_flag = {
