@@ -8935,6 +8935,9 @@ def _feel_scope(project):
     void = feel_nenhuma_scope()
     if void:
         scope += void
+    lid = feel_cobre_scope()
+    if lid:
+        scope += lid
     return scope
 
 
@@ -10550,6 +10553,40 @@ def feel_nenhuma_scope():
     return (
         " O disco recusa que a nenhuma prove o feel "
         "(`nenhuma`). Nenhuma no disco não é o feel."
+    )
+
+
+# A receita já recusa que o
+# cobre prove o feel. Sem
+# isto o feel lia o CONFIG e
+# calava a recusa. Cobre no
+# disco não é o feel.
+FEEL_COVER = re.compile(r"cobre")
+
+
+def recipe_refuses_cobre_as_proving_feel(text):
+    return bool(text and FEEL_COVER.search(text))
+
+
+def feel_cobre_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_cobre_as_proving_feel(text):
+        return "recipes/feel.md"
+    return None
+
+
+def feel_cobre_scope():
+    if not feel_cobre_source():
+        return None
+    return (
+        " O disco recusa que o cobre prove o feel "
+        "(`cobre`). Cobre no disco não é o feel."
     )
 
 
