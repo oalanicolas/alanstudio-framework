@@ -5,7 +5,7 @@
 **HEAD:** ver `git log -1` — vigente 0.9.1140: o save nomeia a coisa que a receita já recusa. Coisa no disco não é o save. Sem chave `coisa`. Nomear não observa.
 **Goal:** ativo. Não marcar complete. AAA fácil ainda não está provado.
 
-**Suítes:** Confirmação pendente.
+**Suítes:** confirmadas no HEAD (0.9.1140): **1201 / 516**.
 
 O histórico de versões fica em [`adoption.md`](adoption.md). Este arquivo
 é o contrato para a próxima sessão, não o arquivo de 0.9.4 / PRs #2 e #3.
