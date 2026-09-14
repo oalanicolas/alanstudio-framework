@@ -32903,6 +32903,9 @@ def record_scope():
     tide = record_volta_scope()
     if tide:
         scope += tide
+    well = record_poco_scope()
+    if well:
+        scope += well
     return scope
 
 
@@ -34573,6 +34576,42 @@ def record_volta_scope():
     return (
         " O disco recusa que o volta prove o vazamento "
         "(`volta`). Volta no disco não é o vazamento."
+    )
+
+
+
+# A receita já recusa que o
+# poço prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Poço no disco não é o
+# vazamento.
+PERF_WELL = re.compile(r"poço")
+
+
+def recipe_refuses_poco_as_proving_leak(text):
+    return bool(text and PERF_WELL.search(text))
+
+
+def record_poco_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_poco_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_poco_scope():
+    if not record_poco_source():
+        return None
+    return (
+        " O disco recusa que o poço prove o vazamento "
+        "(`poço`). Poço no disco não é o vazamento."
     )
 
 
