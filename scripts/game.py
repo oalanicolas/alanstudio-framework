@@ -4780,6 +4780,9 @@ def observation_item_scope():
     harsh = observation_agressiva_scope()
     if harsh:
         scope += harsh
+    dial = observation_knobs_scope()
+    if dial:
+        scope += dial
     return scope
 
 
@@ -6119,6 +6122,40 @@ def observation_agressiva_scope():
     return (
         " O disco recusa que a agressiva prove o estado "
         "(`agressiva`). Agressiva no disco não é o estado."
+    )
+
+
+# A receita já recusa que os
+# knobs provem o estado. Sem
+# isto o item copiava a nota
+# e calava a recusa. Knobs
+# no disco não é o estado.
+A11Y_DIAL = re.compile(r"knobs")
+
+
+def recipe_refuses_knobs_as_proving_state(text):
+    return bool(text and A11Y_DIAL.search(text))
+
+
+def observation_knobs_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_knobs_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_knobs_scope():
+    if not observation_knobs_source():
+        return None
+    return (
+        " O disco recusa que os knobs provem o estado "
+        "(`knobs`). Knobs no disco não é o estado."
     )
 
 
