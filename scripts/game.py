@@ -26565,6 +26565,9 @@ def cycle_scope():
     reply = cycle_resposta_scope()
     if reply:
         scope += reply
+    still = cycle_parada_scope()
+    if still:
+        scope += still
     return scope or None
 
 
@@ -28160,6 +28163,41 @@ def cycle_resposta_scope():
     return (
         " O disco recusa que a Resposta prove o teste "
         "(`Resposta`). Resposta no disco não é o teste."
+    )
+
+
+# A receita já recusa que a
+# parada prove o teste. Sem
+# isto o ciclo anunciava o
+# verbo e calava a recusa.
+# Parada no disco não é o
+# teste.
+FEEL_STILL = re.compile(r"parada")
+
+
+def recipe_refuses_parada_as_proving_test(text):
+    return bool(text and FEEL_STILL.search(text))
+
+
+def cycle_parada_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_parada_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_parada_scope():
+    if not cycle_parada_source():
+        return None
+    return (
+        " O disco recusa que a parada prove o teste "
+        "(`parada`). Parada no disco não é o teste."
     )
 
 
