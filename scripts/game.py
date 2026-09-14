@@ -18042,6 +18042,42 @@ def content_escalar_scope():
     )
 
 
+
+# A receita já recusa que o
+# render prove o destino.
+# Sem isto o content listava
+# arquivos e calava a recusa.
+# Render no disco não é o
+# destino.
+CONTENT_BAKE = re.compile(r"render")
+
+
+def recipe_refuses_render_as_proving_destination(text):
+    return bool(text and CONTENT_BAKE.search(text))
+
+
+def content_render_source():
+    path = CONTENT_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_render_as_proving_destination(text):
+        return "recipes/content.md"
+    return None
+
+
+def content_render_scope():
+    if not content_render_source():
+        return None
+    return (
+        " O disco recusa que o render prove o destino "
+        "(`render`). Render no disco não é o destino."
+    )
+
+
 # A receita já recusa que o tamanho
 # codificado meça custo decodificado
 # ou GPU. Sem isto o content listava
@@ -18439,6 +18475,9 @@ def content_reading(project):
     hike = content_escalar_scope()
     if hike:
         scope += hike
+    bake = content_render_scope()
+    if bake:
+        scope += bake
     listed = files[:24]
     if listed:
         listed = {
