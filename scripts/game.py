@@ -14315,6 +14315,42 @@ def save_irreversivel_scope():
 
 
 
+
+# A receita já recusa que as
+# categorias provem o save. Sem
+# isto o save lia o schema e
+# calava a recusa. Categorias no
+# disco não é o save.
+PERSIST_BINS = re.compile(r"categorias")
+
+
+def recipe_refuses_categorias_as_proving_save(text):
+    return bool(text and PERSIST_BINS.search(text))
+
+
+def save_categorias_source():
+    path = PERSIST_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_categorias_as_proving_save(text):
+        return "recipes/persistence.md"
+    return None
+
+
+def save_categorias_scope():
+    if not save_categorias_source():
+        return None
+    return (
+        " O disco recusa que as categorias provem o save "
+        "(`categorias`). Categorias no disco não é o save."
+    )
+
+
+
 # A receita já recusa que listar o
 # fonte prove a cadeia inteira. Sem
 # isto o save listava o arquivo e
@@ -15075,6 +15111,9 @@ def save_reading(project):
     ruin = save_irreversivel_scope()
     if ruin:
         scope += ruin
+    bins = save_categorias_scope()
+    if bins:
+        scope += bins
     used_flag = bool(used)
     if used_flag:
         used_flag = {
