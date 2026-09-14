@@ -25411,6 +25411,9 @@ def cycle_scope():
     arm = cycle_arma_scope()
     if arm:
         scope += arm
+    cart = cycle_veiculo_scope()
+    if cart:
+        scope += cart
     return scope or None
 
 
@@ -26831,6 +26834,41 @@ def cycle_arma_scope():
     return (
         " O disco recusa que a arma prove o teste "
         "(`arma`). Arma no disco não é o teste."
+    )
+
+
+# A receita já recusa que o
+# veículo prove o teste. Sem
+# isto o ciclo anunciava o
+# verbo e calava a recusa.
+# Veículo no disco não é o
+# teste.
+FEEL_CART = re.compile(r"veículo")
+
+
+def recipe_refuses_veiculo_as_proving_test(text):
+    return bool(text and FEEL_CART.search(text))
+
+
+def cycle_veiculo_source():
+    path = FEEL_RECIPE
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_veiculo_as_proving_test(text):
+        return "recipes/feel.md"
+    return None
+
+
+def cycle_veiculo_scope():
+    if not cycle_veiculo_source():
+        return None
+    return (
+        " O disco recusa que o veículo prove o teste "
+        "(`veículo`). Veículo no disco não é o teste."
     )
 
 
