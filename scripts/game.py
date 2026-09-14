@@ -3640,6 +3640,9 @@ def craft_item_scope():
     whose = craft_item_cuja_scope()
     if whose:
         scope += whose
+    spun = craft_item_rodou_scope()
+    if spun:
+        scope += spun
     return scope
 
 
@@ -3935,6 +3938,42 @@ def craft_item_cuja_scope():
     return (
         " O disco recusa que o cuja prove a cadeia "
         "(`cuja`). Cuja no disco não é a cadeia."
+    )
+
+
+
+# A pesquisa já recusa que o
+# rodou prove a cadeia. Sem
+# isto o item do craft listava
+# o checklist e calava a
+# recusa. Rodou no disco não
+# é a cadeia.
+CRAFT_SPUN = re.compile(r"rodou")
+
+
+def research_refuses_rodou_as_proving_chain(text):
+    return bool(text and CRAFT_SPUN.search(text))
+
+
+def craft_item_rodou_source():
+    path = FRAMEWORK / "references/observable-criteria-research.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if research_refuses_rodou_as_proving_chain(text):
+        return "references/observable-criteria-research.md"
+    return None
+
+
+def craft_item_rodou_scope():
+    if not craft_item_rodou_source():
+        return None
+    return (
+        " O disco recusa que o rodou prove a cadeia "
+        "(`rodou`). Rodou no disco não é a cadeia."
     )
 
 
