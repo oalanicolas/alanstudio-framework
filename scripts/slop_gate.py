@@ -183,13 +183,17 @@ def playable_proof(base: str) -> tuple[bool, str]:
         parts = line.split("\t")
         if len(parts) != 3:
             continue
-        added, _removed, name = parts
+        added, removed, name = parts
         touched.append(name)
-        if name == "adoption.md" and added.isdigit() and int(added) > 0:
-            grew = True
+        # Crescimento é o saldo, não as linhas tocadas: reescrever um parágrafo
+        # ou reflowar o arquivo adiciona linhas sem acrescentar changelog.
+        if name == "adoption.md" and added.isdigit() and removed.isdigit():
+            net = int(added) - int(removed)
+            if net > 0:
+                grew = True
 
     if not grew:
-        return True, "adoption.md não cresceu"
+        return True, "adoption.md não cresceu em saldo"
 
     proof_dirs = ("examples/", "assets/starters/", "docs/stories/")
     proofs = [n for n in touched if n.startswith(proof_dirs)]
