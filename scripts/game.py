@@ -5279,6 +5279,9 @@ def observation_item_scope():
     tell = observation_relata_scope()
     if tell:
         scope += tell
+    daub = observation_pinta_scope()
+    if daub:
+        scope += daub
     return scope
 
 
@@ -7037,6 +7040,41 @@ def observation_relata_scope():
     return (
         " O disco recusa que o relata prove o estado "
         "(`relata`). Relata no disco não é o estado."
+    )
+
+
+
+# A receita já recusa que o
+# pinta prove o estado. Sem
+# isto o item copiava a nota
+# e calava a recusa. Pinta
+# no disco não é o estado.
+A11Y_DAUB = re.compile(r"pinta")
+
+
+def recipe_refuses_pinta_as_proving_state(text):
+    return bool(text and A11Y_DAUB.search(text))
+
+
+def observation_pinta_source():
+    path = FRAMEWORK / "recipes/accessibility.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_pinta_as_proving_state(text):
+        return "recipes/accessibility.md"
+    return None
+
+
+def observation_pinta_scope():
+    if not observation_pinta_source():
+        return None
+    return (
+        " O disco recusa que o pinta prove o estado "
+        "(`pinta`). Pinta no disco não é o estado."
     )
 
 
