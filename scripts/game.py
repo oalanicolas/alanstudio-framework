@@ -31007,6 +31007,9 @@ def record_scope():
     stay = record_sobrevivem_scope()
     if stay:
         scope += stay
+    toss = record_descarte_scope()
+    if toss:
+        scope += toss
     return scope
 
 
@@ -32431,6 +32434,41 @@ def record_sobrevivem_scope():
     return (
         " O disco recusa que o sobrevivem prove o vazamento "
         "(`sobrevivem`). Sobrevivem no disco não é o vazamento."
+    )
+
+
+# A receita já recusa que o
+# descarte prove o vazamento.
+# Sem isto o record gravava o
+# recibo e calava a recusa.
+# Descarte no disco não é o
+# vazamento.
+PERF_TOSS = re.compile(r"descarte")
+
+
+def recipe_refuses_descarte_as_proving_leak(text):
+    return bool(text and PERF_TOSS.search(text))
+
+
+def record_descarte_source():
+    path = FRAMEWORK / "recipes/performance.md"
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    if recipe_refuses_descarte_as_proving_leak(text):
+        return "recipes/performance.md"
+    return None
+
+
+def record_descarte_scope():
+    if not record_descarte_source():
+        return None
+    return (
+        " O disco recusa que o descarte prove o vazamento "
+        "(`descarte`). Descarte no disco não é o vazamento."
     )
 
 
