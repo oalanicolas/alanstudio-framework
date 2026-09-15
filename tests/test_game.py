@@ -11313,6 +11313,16 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(game.genre_prose_hits("queda de fps medida no alvo"), [])
         self.assertEqual(game.genre_prose_hits("taxa de quadros: fps do profiler"), [])
 
+    @staticmethod
+    def genre_argument(command):
+        """O valor de --genre no comando proposto, ou None quando ausente.
+
+        Lê o argumento, não uma substring: `--genre shooter` como frase solta
+        passaria mesmo se o comando fosse de outro projeto.
+        """
+        parts = shlex.split(command)
+        return parts[parts.index("--genre") + 1] if "--genre" in parts else None
+
     def test_next_carries_the_genre_into_the_context_command(self):
         # Sem isto o pacote de gênero nunca chegava: `next` propunha um
         # `context` sem --genre, mesmo com o brief dizendo qual é o jogo.
@@ -11321,12 +11331,12 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "# Jogo\n\nUm FPS de ondas. O FPS alterna cenários e o tiro recarrega.\n"
         )
         proposed = game.next_step(self.project, "create", studies_root=self.root / "absent")
-        self.assertIn("--genre shooter", proposed["context_command"])
+        self.assertEqual(self.genre_argument(proposed["context_command"]), "shooter")
         # O declarado na conversa vence a prosa.
         declared = game.next_step(
             self.project, "create", studies_root=self.root / "absent", genre="puzzle"
         )
-        self.assertIn("--genre puzzle", declared["context_command"])
+        self.assertEqual(self.genre_argument(declared["context_command"]), "puzzle")
 
     def test_next_omits_the_genre_when_the_prose_is_ambiguous(self):
         self.package()
@@ -11334,7 +11344,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
             "# Jogo\n\nUm puzzle com corrida e luta: quebra cabeca, kart e versus.\n"
         )
         proposed = game.next_step(self.project, "create", studies_root=self.root / "absent")
-        self.assertNotIn("--genre", proposed["context_command"])
+        self.assertIsNone(self.genre_argument(proposed["context_command"]))
 
     def test_cargo_project_exposes_conventional_targets_and_verify_runs_them(self):
         (self.project / "Cargo.toml").write_text("[package]\nname = \"jogo\"\n")
