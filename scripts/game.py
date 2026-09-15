@@ -8805,8 +8805,8 @@ def alternative_scope():
     )
 
 
-def next_step(project, focus="create", studies_root=None):
-    payload = context(project, focus, studies_root=studies_root)
+def next_step(project, focus="create", studies_root=None, genre=None):
+    payload = context(project, focus, studies_root=studies_root, genre=genre)
     foundation = payload["foundation"]
     areas = foundation["areas"]
     drafts = [key for key, area in areas.items() if area["status"] == "draft_only"]
@@ -9291,6 +9291,19 @@ def next_step(project, focus="create", studies_root=None):
             [harness_command("context", project, "--focus", focus)],
             "production_bar.floor",
         )
+
+    # O `context_command` é o comando que a próxima volta vai rodar. Sem o
+    # gênero ele nunca carrega o pacote do gênero, mesmo quando o brief diz
+    # qual é. Um gênero declarado entra direto; uma sugestão dominante da prosa
+    # entra como proposta — quem conduz confirma ao rodar o comando.
+    pack_genre = payload["packs"]["genre"]
+    proposed_genre = pack_genre["name"] or (
+        pack_genre["suggested"][0] if pack_genre.get("source") and pack_genre["suggested"] else None
+    )
+    context_arguments = ["--focus", focus]
+    if proposed_genre:
+        context_arguments += ["--genre", proposed_genre]
+
     report = {
         "schema_version": 1,
         "project": str(project),
@@ -9335,7 +9348,7 @@ def next_step(project, focus="create", studies_root=None):
                 and craft["declared"].get(key, {}).get("state", "undeclared") in ("undeclared", "unmet")
             ],
         },
-        "context_command": harness_command("context", project, "--focus", focus),
+        "context_command": harness_command("context", project, *context_arguments),
         "authority": "agent_resolves",
         "executed": False,
         "scope": next_scope(),
@@ -9816,6 +9829,7 @@ def main():
     upcoming = commands.add_parser("next", parents=[common], help="proposta ordenada de próxima ação, a partir do estado no disco")
     upcoming.add_argument("project", nargs="?", default=None)
     upcoming.add_argument("--focus", choices=FOCI, default="create")
+    upcoming.add_argument("--genre", choices=GENRES, help="gênero declarado na conversa; entra no context_command proposto")
     initial_scan = commands.add_parser("scan", parents=[common])
     initial_scan.add_argument("project")
     reading = commands.add_parser("bar", parents=[common], help="degrau de acabamento que o projeto declara, e qual dimensão é o piso")
@@ -10015,7 +10029,7 @@ def main():
             dest = resolve_play_destination(args.project, root)
             emit(play_cycle(dest))
         elif args.action == "next":
-            emit(next_step(require_project_destination(args.project, root), args.focus, studies_root=default_studies_root(root)))
+            emit(next_step(require_project_destination(args.project, root), args.focus, studies_root=default_studies_root(root), genre=args.genre))
         elif args.action == "scan":
             emit(scan(resolve(args.project, root)))
         elif args.action == "bar":

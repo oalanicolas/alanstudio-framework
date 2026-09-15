@@ -11313,6 +11313,29 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(game.genre_prose_hits("queda de fps medida no alvo"), [])
         self.assertEqual(game.genre_prose_hits("taxa de quadros: fps do profiler"), [])
 
+    def test_next_carries_the_genre_into_the_context_command(self):
+        # Sem isto o pacote de gênero nunca chegava: `next` propunha um
+        # `context` sem --genre, mesmo com o brief dizendo qual é o jogo.
+        self.package()
+        (self.project / "README.md").write_text(
+            "# Jogo\n\nUm FPS de ondas. O FPS alterna cenários e o tiro recarrega.\n"
+        )
+        proposed = game.next_step(self.project, "create", studies_root=self.root / "absent")
+        self.assertIn("--genre shooter", proposed["context_command"])
+        # O declarado na conversa vence a prosa.
+        declared = game.next_step(
+            self.project, "create", studies_root=self.root / "absent", genre="puzzle"
+        )
+        self.assertIn("--genre puzzle", declared["context_command"])
+
+    def test_next_omits_the_genre_when_the_prose_is_ambiguous(self):
+        self.package()
+        (self.project / "README.md").write_text(
+            "# Jogo\n\nUm puzzle com corrida e luta: quebra cabeca, kart e versus.\n"
+        )
+        proposed = game.next_step(self.project, "create", studies_root=self.root / "absent")
+        self.assertNotIn("--genre", proposed["context_command"])
+
     def test_cargo_project_exposes_conventional_targets_and_verify_runs_them(self):
         (self.project / "Cargo.toml").write_text("[package]\nname = \"jogo\"\n")
         result = game.context(self.project, "mechanics", studies_root=self.root / "absent")
