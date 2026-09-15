@@ -7570,6 +7570,39 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         ]
         self.assertNotIn("save.unversioned", bases)
 
+    def test_save_version_is_a_shape_not_a_name(self):
+        # brasa-pista chama de CAREER_VERSION, distrito-rabisco de schemaVersion.
+        # Listar nomes internos falhava nos dois; o que conta é a forma.
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "campaign.js").write_text(
+            "export const CAREER_VERSION = 1;\n"
+            "const CAREER_KEY = 'brasa:career';\n"
+            "export function saveCareer(storage, career) {\n"
+            "  return storage.setItem(CAREER_KEY, JSON.stringify(career));\n"
+            "}\n"
+            "export function loadCareer(storage) {\n"
+            "  const raw = JSON.parse(storage.getItem(CAREER_KEY));\n"
+            "  return { ...raw, version: CAREER_VERSION };\n"
+            "}\n"
+        )
+        (self.project / "store.js").write_text("localStorage.setItem('x', v)\n")
+        self.assertTrue(game.save_reading(self.project)["versioned"])
+
+    def test_protocol_version_and_css_are_not_a_versioned_save(self):
+        # Versão de protocolo de rede versiona o protocolo, não o save; e
+        # `version:last` num CSS não versiona nada.
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "store.js").write_text("localStorage.setItem('x', v)\n")
+        (self.project / "online.js").write_text(
+            "const PROTOCOL_VERSION = 3;\n"
+            "function handshake(peer) { return { version: PROTOCOL_VERSION, peer }; }\n"
+        )
+        (self.project / "style.css").write_text("a { font-variation-settings: version:last; }\n")
+        report = game.save_reading(self.project)
+        self.assertTrue(report["used"])
+        self.assertFalse(report["versioned"])
+        self.assertTrue(report["unversioned"])
+
     def test_budget_names_a_package_without_a_measurement_artifact(self):
         self.package()
         self.foundation_document()

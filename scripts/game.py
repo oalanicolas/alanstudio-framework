@@ -2154,13 +2154,24 @@ A11Y_OPTIONS = {
 PERSIST_USE = re.compile(
     r"localStorage|sessionStorage|indexedDB|saveProgress|loadProgress|PROGRESS_KEY|SETTINGS_KEY"
 )
-# `schemaVersion`/`schema_version` é a convenção corrente — e a que o próprio
-# harness emite em todo relatório. Sem ela, um save versionado era lido como
-# unversioned só por não usar os nomes internos.
+# Versionar um save é uma FORMA, não um nome. Listar nomes internos falhava em
+# todo projeto que escolhe o seu: `schemaVersion` no distrito-rabisco,
+# `CAREER_VERSION` no brasa-pista. O que se procura é uma constante de versão,
+# um campo de versão no documento gravado, ou uma migração.
 PERSIST_VERSION = re.compile(
-    r"PROGRESS_SCHEMA|SETTINGS_SCHEMA|SAVE_VERSION|SCHEMA_VERSION"
-    r"|schemaVersion|schema_version"
+    r"\b[A-Z][A-Z_0-9]*_(?:VERSION|SCHEMA)\b"      # CAREER_VERSION, PROGRESS_SCHEMA
+    r"|\bSCHEMA_VERSION\b|\bSAVE_VERSION\b"
+    r"|\bschema_?[Vv]ersion\b"                     # schemaVersion, schema_version
+    r"|\bversion\s*:\s*[A-Z][A-Z_0-9]{2,}\b"      # version: CAREER_VERSION
     r"|function migrate\b|\bmigrate\s*\("
+)
+# Versionar só conta como save versionado perto da persistência. `PROTOCOL_VERSION`
+# num arquivo de rede versiona o protocolo, não o save; `version:last` num CSS não
+# versiona nada. A versão costuma morar no módulo que grava, e o `localStorage` no
+# módulo que o chama — por isso a vizinhança é mais larga que PERSIST_USE.
+PERSIST_NEARBY = re.compile(
+    r"[Ss]torage|\b[A-Z][A-Z_0-9]*_KEY\b|saveProgress|loadProgress"
+    r"|\bsave[A-Z]\w*|\bload[A-Z]\w*|persist"
 )
 PERSIST_WARN = re.compile(r"persistLine|title_volatile|title_unsaved|settings_recovered|settings\.broken")
 BUDGET_FILES = ("tools/budget.mjs", "tools/budget.js", "tools/budget.py")
@@ -2638,14 +2649,17 @@ def save_reading(project):
     for relative, text in walk_project_files(project, SURFACE_SUFFIXES | {".py"}):
         if PERSIST_USE.search(text):
             used.append(relative)
-        if PERSIST_VERSION.search(text):
+        if PERSIST_VERSION.search(text) and (
+            PERSIST_USE.search(text) or PERSIST_NEARBY.search(text)
+        ):
             versioned.append(relative)
         if PERSIST_WARN.search(text):
             warned.append(relative)
         if PERSIST_USE.search(text) or PERSIST_VERSION.search(text) or PERSIST_WARN.search(text):
             sources.append(relative)
     scope = (
-        "Procura localStorage/saveProgress, PROGRESS_SCHEMA/migrate e se o "
+        "Procura localStorage/saveProgress, uma constante ou campo de versão "
+        "perto da persistência (qualquer nome) ou migração, e se o "
         "disco nomeia sessão volátil (`persistLine`, `title_volatile`, "
         "`title_unsaved`) e preferências ilegíveis (`settings_recovered`, "
         "`settings.broken`). Relata `warned`. Nomear não é aba fechada. Não "
