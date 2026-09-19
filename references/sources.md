@@ -412,8 +412,8 @@ vantagem econômica. Preservam contratos e escolhas artísticas do projeto. Heur
 de cena, limites universais e degradação automática não foram incorporados.
 
 Hashes, amostras, observações e plano de contraprova ficam no laboratório em
-`docs/estudo-profundo-rezona-crayon-framework.md` e
-`docs/pesquisas/rezona-crayon-2026-09-09.json`. Os métodos acima são utilizáveis sem esses
+`docs/pesquisas/Rezona e Crayon — autoria e execução com IA.md` e
+`docs/_anexos/ugc/rezona-crayon-2026-09-09.json`. Os métodos acima são utilizáveis sem esses
 arquivos e devem ser revistos quando o consumidor ou o contrato invalidar a hipótese.
 
 ## Skill impeccable (0.10.1; referência atualizada em 2026-09-11)

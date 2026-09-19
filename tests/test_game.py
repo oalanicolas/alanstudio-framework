@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import re
+from urllib.parse import unquote
 import shlex
 import subprocess
 import sys
@@ -37,6 +38,7 @@ def broken_links(base):
             continue
         for target in LINK.findall(document.read_text(encoding="utf-8")):
             path, _, fragment = target.partition("#")
+            path, fragment = unquote(path), unquote(fragment)  # %20 e acentos codificados são links válidos
             destination = document.parent / path if path else document
             if path and not destination.exists():
                 broken.append(f"{document}: {target}")
