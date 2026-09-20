@@ -1,0 +1,12 @@
+{
+  "_comment": "Cliquet anti-slop. Estes números só podem DESCER. Subir exige editar este arquivo no PR e justificar no corpo. Regenere com: python3 scripts/slop_gate.py --update",
+  "ratchet": {
+    "phrase_assertions": 1208,
+    "adoption_sections": 476,
+    "adoption_one_word_lines": 128,
+    "formula_phrases": 287
+  },
+  "ceiling": {
+    "skill_entry_lines": 160
+  }
+}

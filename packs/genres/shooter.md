@@ -3,6 +3,22 @@
 Aplicabilidade: `--genre shooter`. Orientação de gênero para direcionar perguntas,
 riscos e provas; o GDD do jogo decide. Não é regra universal.
 
+> **Curadoria** — revisado em 2026-09-14.
+> **Contempla:** FPS, TPS, twin-stick e shmup, em qualquer plataforma. É
+> vocabulário de design, não API: nada aqui depende de versão de engine.
+> **Decisões antes de escrever código (REUSE → ADAPT → CREATE):** o papel de cada
+> arma e a composição dos encontros são do GDD. Reaproveite o que o projeto já
+> tem antes de propor sistema novo — a abertura do jogo, por exemplo, é decisão
+> do jogo e do starter, não do gênero.
+> **Verificar:** escolha uma arma e prove o papel dela num recorte jogável —
+> alcance, cadência e custo distinguíveis de outra arma na mesma arena. O
+> esperado é uma diferença que o jogador percebe sem ler número na tela.
+> **Limites:** o harness não mede latência de input → tiro, não ouve o mix e não
+> observa a curva de dificuldade. Essas provas são de sessão, por
+> `record --kind observation`.
+> **Exemplo rastreável:** `games/distrito-rabisco` é um FPS de ondas
+> (`production/game-design.md:349`), com combate de armas e katana.
+
 ## Verbo central e decisões
 
 - Verbo: mirar, atirar, posicionar-se. Decisão: alvo, arma, cobertura, recarga,
@@ -11,8 +27,6 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
   cobertura, flanco e rota de fuga.
 
 ## Feel que importa
-
-Com tela, a primeira superfície é a porta; o campo começa depois do avanço.
 
 - Hitmarker/hit feedback em som, VFX e animação do alvo; recuo e recuperação da arma;
   muzzle flash e tracers proporcionais; câmera com kick e recuperação; hitstop curto

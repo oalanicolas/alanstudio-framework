@@ -3452,7 +3452,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         for path in genres:
             with self.subTest(genre=path.name):
                 text = path.read_text(encoding="utf-8")
-                self.assertIn("a primeira superfície é a porta", text.casefold())
+                # A abertura é decisão do jogo e do starter, não característica de
+                # gênero. Exigir a frase literal aqui era o que a copiava para os
+                # 23 pacotes; a orientação fica nas receitas, onde é verdadeira.
                 self.assertNotIn("verified", text)
 
     def test_delivery_recipes_name_the_door_without_shipping(self):
@@ -7546,6 +7548,63 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         )
         self.assertIn("migrate", proposal["why"])
 
+    def test_save_reads_schema_version_as_versioned(self):
+        # Recorte real de distrito-rabisco (src/engine/core/interaction-settings.js):
+        # versiona o formato e recusa versão desconhecida, preservando o documento.
+        # Antes desta leitura o relatório dizia unversioned e `next` propunha
+        # versionar um save que já era versionado.
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "settings.js").write_text(
+            "const snapshot = () => Object.freeze({ schemaVersion: 1, touch: {} });\n"
+            "function decode(raw) {\n"
+            "  const doc = JSON.parse(localStorage.getItem('interaction-settings'));\n"
+            "  if (!doc || doc.schemaVersion !== 1) return { value: snapshot(), preserve: true };\n"
+            "  return { value: doc };\n"
+            "}\n"
+        )
+        report = game.save_reading(self.project)
+        self.assertTrue(report["used"])
+        self.assertTrue(report["versioned"])
+        self.assertFalse(report["unversioned"])
+        bases = [
+            item["basis"]
+            for item in self.proposals(game.next_step(self.project, "persistence"))
+        ]
+        self.assertNotIn("save.unversioned", bases)
+
+    def test_save_version_is_a_shape_not_a_name(self):
+        # brasa-pista chama de CAREER_VERSION, distrito-rabisco de schemaVersion.
+        # Listar nomes internos falhava nos dois; o que conta é a forma.
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "campaign.js").write_text(
+            "export const CAREER_VERSION = 1;\n"
+            "const CAREER_KEY = 'brasa:career';\n"
+            "export function saveCareer(storage, career) {\n"
+            "  return storage.setItem(CAREER_KEY, JSON.stringify(career));\n"
+            "}\n"
+            "export function loadCareer(storage) {\n"
+            "  const raw = JSON.parse(storage.getItem(CAREER_KEY));\n"
+            "  return { ...raw, version: CAREER_VERSION };\n"
+            "}\n"
+        )
+        (self.project / "store.js").write_text("localStorage.setItem('x', v)\n")
+        self.assertTrue(game.save_reading(self.project)["versioned"])
+
+    def test_protocol_version_and_css_are_not_a_versioned_save(self):
+        # Versão de protocolo de rede versiona o protocolo, não o save; e
+        # `version:last` num CSS não versiona nada.
+        (self.project / "index.html").write_text("<canvas></canvas>")
+        (self.project / "store.js").write_text("localStorage.setItem('x', v)\n")
+        (self.project / "online.js").write_text(
+            "const PROTOCOL_VERSION = 3;\n"
+            "function handshake(peer) { return { version: PROTOCOL_VERSION, peer }; }\n"
+        )
+        (self.project / "style.css").write_text("a { font-variation-settings: version:last; }\n")
+        report = game.save_reading(self.project)
+        self.assertTrue(report["used"])
+        self.assertFalse(report["versioned"])
+        self.assertTrue(report["unversioned"])
+
     def test_budget_names_a_package_without_a_measurement_artifact(self):
         self.package()
         self.foundation_document()
@@ -11229,6 +11288,65 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertEqual(game.suggest_genres([{"value": "sem correspondência"}]), [])
         for genre in game.GENRES:  # o nome do gênero é sempre uma pista para ele mesmo
             self.assertIn(genre, game.suggest_genres([{"value": genre.replace("-", " ")}]))
+
+    def test_prose_suggests_a_genre_with_evidence_and_still_loads_no_pack(self):
+        # Nem todo brief declara um campo Gênero. distrito-rabisco diz em prosa
+        # ("FPS de ondas dentro de um caderno") e a sugestão vinha vazia.
+        self.package()
+        (self.project / "README.md").write_text(
+            "# Jogo\n\nUm FPS de ondas dentro de um caderno. O FPS alterna cenários\n"
+            "e o tiro tem recarga.\n\nOrçamento: 60 fps estáveis no alvo.\n"
+        )
+        result = game.context(self.project, "create", studies_root=self.root / "absent")
+        genre = result["packs"]["genre"]
+        self.assertEqual(genre["suggested"][:1], ["shooter"])
+        source = genre["source"]
+        self.assertEqual(source["path"], "README.md")
+        self.assertGreaterEqual(source["count"], 2)
+        # O documento sugere; a conversa decide. Carregar o pacote continua exigindo --genre.
+        self.assertIsNone(genre["pack"])
+        self.assertIsNone(genre["name"])
+        self.assertIn("--genre", genre["basis"])
+        self.assertFalse(any("genres" in Path(p).parts for p in result["read_next"]))
+
+    def test_frame_rate_is_not_a_genre(self):
+        self.assertEqual(game.genre_prose_hits("Um FPS de ondas no caderno"), ["shooter"])
+        self.assertEqual(game.genre_prose_hits("Orçamento: 60 fps estáveis"), [])
+        self.assertEqual(game.genre_prose_hits("queda de fps medida no alvo"), [])
+        self.assertEqual(game.genre_prose_hits("taxa de quadros: fps do profiler"), [])
+
+    @staticmethod
+    def genre_argument(command):
+        """O valor de --genre no comando proposto, ou None quando ausente.
+
+        Lê o argumento, não uma substring: `--genre shooter` como frase solta
+        passaria mesmo se o comando fosse de outro projeto.
+        """
+        parts = shlex.split(command)
+        return parts[parts.index("--genre") + 1] if "--genre" in parts else None
+
+    def test_next_carries_the_genre_into_the_context_command(self):
+        # Sem isto o pacote de gênero nunca chegava: `next` propunha um
+        # `context` sem --genre, mesmo com o brief dizendo qual é o jogo.
+        self.package()
+        (self.project / "README.md").write_text(
+            "# Jogo\n\nUm FPS de ondas. O FPS alterna cenários e o tiro recarrega.\n"
+        )
+        proposed = game.next_step(self.project, "create", studies_root=self.root / "absent")
+        self.assertEqual(self.genre_argument(proposed["context_command"]), "shooter")
+        # O declarado na conversa vence a prosa.
+        declared = game.next_step(
+            self.project, "create", studies_root=self.root / "absent", genre="puzzle"
+        )
+        self.assertEqual(self.genre_argument(declared["context_command"]), "puzzle")
+
+    def test_next_omits_the_genre_when_the_prose_is_ambiguous(self):
+        self.package()
+        (self.project / "README.md").write_text(
+            "# Jogo\n\nUm puzzle com corrida e luta: quebra cabeca, kart e versus.\n"
+        )
+        proposed = game.next_step(self.project, "create", studies_root=self.root / "absent")
+        self.assertIsNone(self.genre_argument(proposed["context_command"]))
 
     def test_cargo_project_exposes_conventional_targets_and_verify_runs_them(self):
         (self.project / "Cargo.toml").write_text("[package]\nname = \"jogo\"\n")

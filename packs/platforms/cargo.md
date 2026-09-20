@@ -34,7 +34,8 @@ features habilitadas. Não substitui AGENTS nem a documentação oficial.
   Orçamentos: quadro por schedule, alocações (evitar em `Update`), draw calls
   (batching automático depende de material/mesh), memória de assets.
 - Preservando arte: instancing, `Visibility` e culling por frustum, LOD manual,
-  `Res<Msaa>` conforme alvo, texturas comprimidas (KTX2/Basis).
+  MSAA conforme alvo — componente `Msaa` na entidade da câmera desde a Bevy 0.15,
+  `Res<Msaa>` só até a 0.14 —, texturas comprimidas (KTX2/Basis).
 
 ## Build, plataformas e distribuição
 

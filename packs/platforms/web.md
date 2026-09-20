@@ -4,6 +4,22 @@ Aplicabilidade: `kind: package.json` ou `static-web`. Convenções da plataforma
 orientar leitura e verificação; confirme cada uma no código do projeto. Não substitui
 AGENTS, `package.json` nem a documentação oficial dos navegadores e bibliotecas.
 
+> **Curadoria** — revisado em 2026-09-14.
+> **Contempla:** a stack que o laboratório roda hoje — Node ≥ 22 (`node --test`,
+> `WebSocket` global), Vite 6.x, three.js 0.17x. Versões anteriores mudam APIs de
+> cor e de renderer no three; confirme no `package.json` do projeto antes de
+> aplicar qualquer item de renderização.
+> **Verificar:** `npm test` do projeto deve passar, e a captura headless do
+> `capture-bench.mjs` deve produzir um quadro com a cena carregada — não um
+> screenshot em branco. Um teste unitário verde não prova comportamento no
+> navegador.
+> **Limites:** o harness não abre navegador, não mede quadro nem heap. Medições
+> entram por `record --kind budget`, observações por `record --kind observation`.
+> Requisitos de loja (itch.io, Poki) e wrappers ficam na fonte oficial.
+> **Exemplo rastreável:** os aprendizados de renderização abaixo vêm de casos do
+> laboratório com arquivo e data — `games/corrida-rabisco/scripts/capture-bench.mjs`
+> (2026-09-11) e `games/desnhe-um-cavalo/docs/qa.md` (2026-09-11).
+
 ## Executar e verificar
 
 - Comandos reais estão em `scripts` do `package.json`; `context.scripts` os lista e

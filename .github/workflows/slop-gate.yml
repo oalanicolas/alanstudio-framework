@@ -1,0 +1,36 @@
+name: slop-gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # A suíte cria um projeto do starter e roda `npm run test` nele.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Gate anti-slop
+        run: python3 scripts/slop_gate.py
+
+      - name: Prova jogável (apenas em PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags origin "${{ github.base_ref }}"
+          python3 scripts/slop_gate.py --diff-base "origin/${{ github.base_ref }}"
+
+      # A suíte é unittest puro: nenhuma dependência externa para instalar.
+      - name: Suíte
+        run: python3 -m unittest discover -s tests -t tests
