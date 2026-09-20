@@ -135,6 +135,20 @@ Para cada critério afetado registre no local de QA existente:
 - **Conclusão:** critério atendido, regressão ou pendência. Não declare aprovação
   do usuário quando só houve avaliação do agente.
 
+Com participante simulado, mantenha `role=agent` e identifique a simulação.
+Separe as ações efetivas da interface do relato produzido no papel. Registre
+limites da ferramenta que afetem o cenário: toques discretos, por exemplo, não
+demonstram controle com uma tecla sustentada. Uma falha do instrumento pede rever
+o teste antes de mudar a regra do jogo; execução automatizada não avalia conforto,
+gosto ou compreensão de pessoas.
+
+Relato positivo, preferência e aprendizagem em andamento não são, por si sós,
+defeitos. Preserve o que funcionou e ligue a próxima melhoria à intenção e ao
+relato, identificando o ganho esperado como hipótese. Se há problema com causa
+sustentada e correção pequena, corrija e repita a situação na versão identificada.
+Se a causa está ambígua, investigue antes de escolher a solução. Uma sequência
+de versões ajustadas não constitui comparação controlada de efeito.
+
 E, por rodada de playtest, duas coisas que não são sobre um critério e sim sobre a
 observação inteira:
 

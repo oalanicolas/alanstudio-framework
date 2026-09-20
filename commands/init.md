@@ -9,10 +9,11 @@ de origem e recusa destino ocupado.
 
 ## Escala
 
-Igual em todas: o starter é o candidato de reuso quando o destino não existe e a
-engine é web. `jam` pode trocar os sete rascunhos por um `game-design.md` único
-(`--no-docs` e depois `template game-design`). `product`/`aa` mantêm os rascunhos e
-os substituem por decisão, não os entregam como se fossem uma.
+Igual em todas: avalie o starter quando o destino não existe e a plataforma é
+compatível. `init` conserva a opção de gerar rascunhos; `--no-docs` a dispensa.
+No fluxo de criação, prefira o `start` existente quando não houver necessidade
+dos rascunhos. O agente mantém `game-design.md` ou os canônicos pertinentes à
+escala com decisões reais; o criador não preenche templates para começar.
 
 ## Avaliar
 
@@ -24,8 +25,9 @@ os substituem por decisão, não os entregam como se fossem uma.
    dimensão. Um starter que não serve ao verbo é ADAPT caro, não REUSE.
 3. Sem starter adequado, em qualquer engine: `template game-design` e siga
    [`craft`](craft.md); escrever laço e save do zero é CREATE e pede a lacuna escrita.
-4. Confirme com o usuário o destino, o título e a engine; destino ocupado é recusa,
-   não pergunta.
+4. Reuse destino, título e plataforma já definidos. Resolva caminhos pela convenção
+   do workspace e peça só a escolha material que faltar. Destino ocupado é recusa,
+   não autorização para apagar ou sobrescrever.
 
 ## Executar
 
@@ -33,8 +35,17 @@ os substituem por decisão, não os entregam como se fossem uma.
 python3 scripts/game.py init <lab>/<jogo> --starter canvas-arcade [--title "Nome"] [--no-docs]
 ```
 
-Em seguida `context <jogo> --focus create`: o `scan` reconhece os rascunhos no
-mesmo turno; `verify --script test` roda os validadores herdados. O que o starter
+Para começar uma criação sem rascunhos, `start` reutiliza a mesma infraestrutura:
+
+```sh
+python3 scripts/game.py start <lab>/<jogo> --starter canvas-arcade --idea "Ideia do jogo"
+```
+
+`--idea` altera a abertura, não as regras. A adaptação à ideia pertence a
+[`craft`](craft.md); copiar o starter não entrega o jogo descrito.
+
+Em seguida `context <jogo> --focus create`: o `scan` localiza o conteúdo criado,
+incluindo rascunhos quando solicitados; `verify --script test` roda os validadores herdados. O que o starter
 declara sobre si (README, `starter.json`) vale para o starter; o jogo derivado
 começa em `prototype` até demonstrar o contrário ([criar](../recipes/create.md)).
 
@@ -42,7 +53,7 @@ começa em `prototype` até demonstrar o contrário ([criar](../recipes/create.m
 
 `init` devolve o que copiou e substituiu; `verify` verde prova o starter, não o
 jogo. A prova do comando é o projeto abrir e servir (`npm run serve`) na máquina de
-quem criou, com os rascunhos e o `AGENTS.md` no lugar.
+quem criou, com o `AGENTS.md` e os rascunhos solicitados no lugar.
 
 ## Nunca
 
@@ -53,6 +64,7 @@ quem criou, com os rascunhos e o `AGENTS.md` no lugar.
 
 ## Entregar
 
-Caminho do projeto, o que foi herdado, o comando de rodar e o próximo passo: o
-brief da rodada em [`shape`](shape.md) ou direto [`craft`](craft.md) se o pedido já
-o trouxe. `next <jogo> --focus create` propõe a primeira ação a partir do disco.
+Caminho do projeto e o que foi herdado. Se o pedido era apenas copiar a base,
+declare esse resultado e o trabalho que ainda falta. Se incluía criar o jogo,
+continue em [`craft`](craft.md) com o brief vigente, adapte a ação à ideia e
+verifique o acesso. `next <jogo> --focus create` é insumo para a próxima ação.

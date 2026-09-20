@@ -1,8 +1,8 @@
 # Next
 
-Uma próxima ação derivada do estado no disco, ordenada por dependência, com as
-alternativas descartadas — e o agente resolvendo o passo, confirmando com a
-conversa e entregando o prompt de continuidade pronto. O harness propõe; nunca
+Recomendar e executar o próximo trabalho autorizado pelo pedido, pela conversa e
+pelas evidências. O CLI ordena sinais do disco por dependência; sua proposta é
+insumo para o agente resolver o passo e preparar a continuidade. O harness não
 executa (`executed: false`).
 
 ## Escala
@@ -22,17 +22,21 @@ dimensões de um conto é ruído, e `next` não cobra o que o projeto não decla
    fonte em rascunho não é passo; um comando registrado com falha não conclui etapa.
    Em "continue"/"vamos avançar", use `context --event resume` e leia
    `continuity.sources` ([processo](../references/process.md#continuidade-e-retomada)).
-3. Se a proposta é uma **pergunta de valor** (`must_meet`), ela vem antes de mais
-   trabalho: pergunte ao usuário se isto ainda vale o que custa. Se é subir a
+   Preserve relatos livres e considere seu conteúdo: um registro sintético não é
+   observação; uma nota sobre controle não vira prioridade de aparência só porque
+   o CLI sugeriu `cycle.craft`. Identifique a causa ou investigue antes de corrigir.
+3. Se a proposta é uma **pergunta de valor** (`must_meet`) ainda não resolvida na
+   conversa, pergunte ao usuário se isto ainda vale o que custa. Se é subir a
    dimensão mais baixa, a proposta cita o critério escrito e a linha de onde veio.
 4. Quando falta uma decisão que só o usuário pode tomar, peça-a em linguagem comum;
    não gere implementação presumida.
 
 ## Executar
 
-Escolha **uma** ação recomendada, priorizando dependências e a incerteza que pode
-invalidar o recorte; o backlog continua no plano. Se a ação já está autorizada,
-registre e execute no mesmo turno; preparar o prompt não cria pausa de aprovação.
+Escolha **uma** ação recomendada, priorizando dependências reais, o relato recebido
+e a incerteza que pode invalidar o recorte; o backlog continua no plano. Se a ação
+já está autorizada, registre e execute no mesmo turno; preparar o prompt não cria
+pausa de aprovação.
 Gere o prompt de continuidade conforme o [roteiro](../references/gauntlet.md):
 projeto, ação, fonte canônica, limites, prova; sem variáveis, sem jargão, sem pedir
 horas. `gauntlet <projeto> --objective "..."` prepara o pacote; prepará-lo não
@@ -56,5 +60,7 @@ resolver e comunicar o passo**, nunca encerrar com esse valor cru.
 ## Entregar
 
 Onde estamos, a próxima ação com motivo e prova, e o prompt pronto para copiar.
+Explique o efeito no jogo em linguagem comum; comandos e diagnósticos detalhados
+ficam no registro quando não ajudam a pessoa a decidir.
 Se o objetivo inteiro terminou, diga isso. O comando que executa a ação é o que
 ela nomeia (`craft`, `feel`, `harden`…).

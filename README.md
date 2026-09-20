@@ -18,6 +18,25 @@ dependências. Testes do harness usam também Node/npm quando exercitam
 
 Playground: [games.alanicolas.com/framework](https://games.alanicolas.com/framework)
 
+## Usar pela conversa
+
+Com a skill `game-dev` disponível, descreva o que quer criar ou melhorar:
+
+- “Quero um jogo tranquilo de cuidar de uma horta.”
+- “O pulo está difícil de controlar; ajuste isso.”
+- “Continue a melhoria que combinamos.”
+
+O agente consulta o projeto, resolve o que falta na direção, implementa o recorte
+autorizado e verifica o acesso. A entrega traz o jogo, controles pertinentes e algo
+curto para experimentar. Conte o que aconteceu; o agente registra e recomenda a
+próxima melhoria. Planejamento pedido isoladamente termina em plano.
+
+Os comandos abaixo são ferramentas do agente e também podem ser usados diretamente.
+`$game-dev` sozinho apresenta navegação; um pedido concreto segue o fluxo da intenção.
+A [condução do criador](references/creative-workflow.md#conduzir-quem-está-criando)
+adapta a forma de aplicação da Impeccable ao trabalho com jogos. Testes do CLI não
+comprovam por si só que essa condução funcionou numa conversa ou partida.
+
 ## Chegar num laboratório que já tem jogos
 
 O framework pode ser usado por vários workspaces com uma única implementação.

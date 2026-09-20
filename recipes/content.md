@@ -56,6 +56,11 @@ serviço versiona ou renomeia assets. No download, validar resposta e integridad
 antes de promover o arquivo temporário evita que uma transferência parcial ou uma
 página HTML ocupe o lugar do recurso válido. Preserve master e versão anterior.
 
+Se o comando de transferência devolver uma sessão ainda ativa, aguarde sua saída
+com sucesso antes de importar ou calcular o hash canônico. Um MP3 parcial pode
+decodificar normalmente; compare também duração e tamanho com a fonte disponível.
+Faça o download para um nome temporário e só promova os bytes após esses checks.
+
 Verificadores de sprites/texturas localizam candidatos a defeito; correções que
 apagam pixels, quantizam cores ou redimensionam não são consequência automática de
 um alerta. Confira recorte, alpha, sequência e aparência no jogo conforme sua política

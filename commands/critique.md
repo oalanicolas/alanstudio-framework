@@ -35,11 +35,14 @@ antes de multiplicar conteúdo.
      quadro se houver ferramenta. B é evidência de defeito; nunca prova de acerto.
    Termine A antes de ler B; B ancora o julgamento.
 3. Cada achado é **achado, não impressão**: problema, evidência, hipótese, medição.
-   O que não nomeia os quatro entra como impressão.
+   O que não nomeia os quatro entra como impressão ou relato, preservado com autoria.
+   O agente investiga e estrutura o que puder sustentar; não exige esses campos de
+   quem diz “está confuso” e não inventa medição para completar o registro.
 
 ## Executar
 
-Sintetize as duas avaliações num relatório único, tecido, não concatenado:
+Sintetize as duas avaliações no registro existente. Use a extensão pertinente ao
+recorte; não preencha linhas ou invente achados só para completar um relatório:
 
 - **Leitura da barra:** tabela com uma linha por dimensão pertinente — degrau
   observado, condição (dispositivo, versão, cena, quem), o que sustenta, e a
@@ -48,7 +51,7 @@ Sintetize as duas avaliações num relatório único, tecido, não concatenado:
   (placeholder que ficou, juice genérico fora do quadro, tutorial em mural,
   título novo sobre verbo velho). Direto, sem suavizar.
 - **O que funciona** (dois ou três pontos concretos).
-- **Achados prioritários** (três a cinco), cada um com severidade: P0 impede jogar
+- **Achados prioritários** (até cinco quando houver), cada um com severidade: P0 impede jogar
   ou trai o jogador (save corrompe, ação sem resposta); P1 quebra o verbo ou a
   leitura; P2 incômodo com contorno; P3 acabamento. Para cada: o quê, por que
   importa ao jogador, correção concreta, **comando sugerido**
@@ -79,8 +82,10 @@ anterior do mesmo recorte quando existir: é a tendência. Avaliação do agente
 
 ## Entregar
 
-O relatório inteiro na conversa (não um resumo com link), a linha de tendência
-quando houver recibo anterior, o caminho do recibo. Depois, pergunte com base nos
-achados — não genericamente: qual área atacar primeiro (duas ou três opções), se
-um tom percebido foi intencional, quanto escopo (P0–P1 só, ou tudo). Com as
-respostas, uma lista ordenada de comandos, terminando em [`polish`](polish.md).
+Apresente o diagnóstico principal, o que funciona, a evidência e uma próxima ação
+recomendada, explicando o efeito no jogo. Ligue o registro detalhado e a tendência
+quando houver comparação válida; mostre o relatório completo se ele for pedido.
+Pergunte apenas pela intenção ou escolha material que continuar ambígua, sem
+transferir a priorização do backlog ao criador. Revisão isolada não autoriza
+correção; se o pedido já inclui melhorar o recorte, execute o autorizado e verifique.
+[`polish`](polish.md) entra quando houver uma fatia pronta para acabamento.

@@ -3,9 +3,11 @@
 A skill `game-dev` roteia por **intenção**: `$game-dev craft`, `$game-dev critique`,
 `$game-dev feel`. Cada comando tem uma referência aqui, carregada depois da
 [preparação](../SKILL.md) (contexto, rota e escala). Imediatamente antes de editar o
-jogo, carregue o [piso de execução](../references/craft-floor.md). O modelo é a
-skill `impeccable`: menu por categoria, uma referência por comando, atalhos fixáveis,
-e a regra de que invocar sem carregar a referência produz trabalho genérico.
+jogo, carregue o [piso de execução](../references/craft-floor.md). A referência
+principal de aplicação é a skill `impeccable`: pedido natural usa o fluxo completo,
+contexto e referência entram no momento certo, o brief orienta a entrega e o
+acabamento precisa de verificação. Menu por categoria e atalhos ajudam quem os pede;
+a pessoa não precisa conhecer os comandos para criar ou melhorar um jogo.
 
 [`commands.json`](commands.json) é o catálogo: categoria, descrição, dica de
 argumentos, focos do `context` e leituras canônicas. Ele alimenta `game.py commands`
@@ -31,6 +33,12 @@ receita; aponta o canônico. Seções obrigatórias, nesta ordem (o teste confer
 Uma referência que precisa de mais seções pode acrescentá-las entre `Avaliar` e
 `Executar` (`## Planejar` é a mais comum). Nenhuma referência concede degrau, marco,
 gate, aprovação artística ou publicação: quem faz isso é pessoa com prova ligada.
+
+Escreva instruções para o agente conduzir, não tarefas de método para o criador.
+Reutilize decisões e autorização, peça apenas a escolha material pendente e conclua
+o escopo solicitado. Planejamento isolado termina em plano; criação autorizada
+prossegue até a entrega. A [condução do criador](../references/creative-workflow.md#conduzir-quem-está-criando)
+é o contrato comum, sem copiar a mesma entrevista ou checklist em cada comando.
 
 ## Adicionar um comando
 

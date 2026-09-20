@@ -139,7 +139,9 @@ do dicionário. Caso de origem: quarto idioma (chinês) do Distrito Rabisco, 202
   carregamento por locale só a partir de seis ou mais idiomas medidos.
 
 Custo de um idioma novo: o arquivo, uma linha no registro e o import. Escrita nova:
-mais uma linha no mapa de fontes e a face subsetada com licença registrada. Nomes
+mais uma linha no mapa de fontes, a face subsetada com licença registrada e seu
+`@font-face` com `unicode-range`; as pilhas de família do CSS leem uma única variável
+com as faces por escrita, para a escrita nova tocar um lugar e não cada pilha. Nomes
 próprios do jogo não se traduzem; a decisão fica no documento do jogo.
 O que invalida: TMS ou JSON externo (o registro deixa de ser o arquivo JS), RTL
 (layout, não só texto) e hub multi-jogo, que precisam de contrato próprio.

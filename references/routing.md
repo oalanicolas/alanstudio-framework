@@ -1,10 +1,21 @@
 # Navegação contextual
 
-Use esta rota quando `$game-dev` chegar sem um subcomando explícito. Navegar é
-recomendar; não é autorização para criar projeto, reescrever direção, instalar
-dependências, publicar ou promover marco.
+Distinga o pedido antes de navegar:
+
+- **Só `$game-dev`, sem pedido:** recomendações por contexto e menu abaixo; não executar.
+- **Dúvida sobre como trabalhar:** explicar o fluxo pertinente, consultando suas
+  referências. Executar apenas se a pessoa também pedir a ação.
+- **Pedido concreto em linguagem comum:** carregar a referência pela intenção e
+  executar o autorizado. Ausência de nome de comando não pede menu ou entrevista geral.
+- **`shape` ou planejamento explícito:** entregar o plano, respeitando esse escopo.
+
+Navegar é recomendar; não autoriza criar projeto, reescrever direção, instalar
+dependências, publicar ou promover marco. Reuse a autorização de execução já existente.
 
 ## Leitura única de sinais
+
+Esta leitura abastece a navegação. Num pedido concreto, consulte o alvo e as fontes
+pertinentes ao comando escolhido; não descubra todos os jogos para corrigir um só.
 
 1. Se a raiz ou o binding ainda não foi confirmado nesta sessão, rode
    `python3 scripts/game.py doctor --root <laboratório>` uma vez.
@@ -18,20 +29,22 @@ dependências, publicar ou promover marco.
 
 ## Como apresentar a navegação
 
-Comece com duas ou três recomendações específicas, em ordem de dependência. Para
+Na invocação vazia ou quando o catálogo for pedido, comece com até três recomendações
+específicas, em ordem de dependência. Para
 cada uma, diga em uma frase qual sinal a motivou e o que ela produz. Depois mostre o
 menu completo agrupado: Construir, Avaliar, Refinar, Ampliar, Corrigir e Produzir.
 
-Não despeje o catálogo antes de raciocinar sobre o estado. Não esconda o restante do
-menu depois das recomendações. Se falta projeto ou uma decisão que mudaria o jogo,
-nomeie a lacuna em vez de inventar prioridade.
+O menu é apoio para explorar capacidades. Em uma entrega ou pedido concreto,
+apresente uma próxima ação com motivo, em linguagem comum. Se falta projeto ou
+uma decisão que mudaria o jogo, resolva essa lacuna sem inventar prioridade.
 
 ## Mapa de intenção
 
 | Situação observada ou pedida | Rota principal | Continuação comum |
 | --- | --- | --- |
-| Criar, mudar, adicionar, “faça funcionar” | `craft` | começa por `shape` |
-| Jogo novo sem destino no disco | `init` | `craft` |
+| Criar, mudar, adicionar, “faça funcionar” | `craft` | resolve apenas o que falta no brief |
+| Jogo novo sem destino no disco | `craft`, usando `start` se houver starter adequado | adaptar e apresentar o ciclo jogável |
+| Copiar explicitamente um starter | `init` | explicar o que ainda falta para o jogo pedido |
 | Inicializar base ou reconstruir documentação | `teach` | comando original |
 | Extrair o design system existente | `document` | `visual` ou `content` |
 | Referência visual aprovada | `visual` com evento `direction-approved` | `document` |

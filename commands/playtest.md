@@ -8,6 +8,12 @@ agente observa sozinho é [`critique`](critique.md).
 Protocolo: [qualidade](../references/quality.md). Arquétipos: [personas](../references/personas.md).
 Registro: [template de QA](../assets/templates/qa.md).
 
+Este protocolo serve a uma rodada deliberada de observação. Comentários espontâneos
+do criador são aceitos pela [condução do criador](../references/creative-workflow.md#conduzir-quem-está-criando)
+sem exigir sessão formal ou formulário. Conserve o relato e sua autoria; não declare
+partida observada a partir da existência de uma nota. Método e registro são trabalho
+do agente, não exigência de conhecimento de game design do participante.
+
 ## Escala
 
 `jam`: uma pessoa que nunca viu o jogo, uma sessão curta, três perguntas. `product`:

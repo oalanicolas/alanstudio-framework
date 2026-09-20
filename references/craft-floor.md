@@ -21,6 +21,8 @@ jogo, do brief e da referência do comando.
 - Feedback crítico chega no mesmo quadro da consequência e não encobre a ação.
 - Arte, áudio, UI e conteúdo pertencem a este jogo. Default de engine e reflexo de
   gênero são ponto de partida, não identidade.
+- Com referência visual indicada, veja as imagens e confronte a cena jogável com
+  elas. Paleta, título e descrição de intenção não demonstram fidelidade visual.
 - Cada jogo tem seu design system. O estúdio compartilha contrato e qualidade, não
   paleta, componentes ou feel.
 - Nunca reduza nitidez, detalhe, modelagem, textura, iluminação, sombra, reflexo,
@@ -43,8 +45,8 @@ jogo, do brief e da referência do comando.
 
 ## Passagem de qualidade limitada
 
-1. Faça uma inspeção agrupada do recorte: fluxo funcional, movimento, áudio,
-   acessibilidade pertinente, pior caso e regressão visual.
+1. Faça uma inspeção agrupada do recorte: ação repetida e suas transições completas,
+   movimento, áudio, acessibilidade pertinente, pior caso e comparação visual às fontes.
 2. Corrija os problemas materiais encontrados dentro do escopo.
 3. Faça uma confirmação final dos pontos alterados e encerre.
 

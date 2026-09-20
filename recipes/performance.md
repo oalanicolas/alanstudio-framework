@@ -110,6 +110,12 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
 - Subdividir apenas a integração de movimento pode reduzir dependência da taxa de
   quadros. Não repetir eventos de borda, decisões de IA nem relógios de rede por subpasso.
   Meça o aumento de consultas físicas em taxas baixas.
+- Ao limitar atualizações visuais por distância ou visibilidade, mantenha relógios
+  de gameplay fora desse corte: equipar, recarregar, cooldowns e efeitos que alteram
+  a simulação devem avançar mesmo sem pose desenhada. Compare o mesmo agente perto,
+  longe e fora da câmera; confirme inventário, munição e ações concluídas, além de
+  observar uma partida inteira. Um combate que só progride ao aproximar a câmera
+  invalida a otimização. A prova funcional não autoriza reduzir detalhe de animação.
 - Grave trajetórias na precisão necessária e meça erro de posição/orientação antes
   de reduzir frequência. Escolha armazenamento e retenção conforme o contrato; uma
   falha de gravação deve preservar o registro anterior. Bytes menores não provam fidelidade.

@@ -1,8 +1,8 @@
 # Craft
 
-Construir uma mudança de jogo de ponta a ponta com o acabamento pretendido: shape
-com brief confirmado, fatia jogável que atravessa regra, apresentação e conteúdo,
-feel e áudio do verbo, prova em movimento, registro e prompt de continuidade. É o
+Construir uma mudança de jogo de ponta a ponta com o acabamento pretendido: direção
+resolvida, fatia jogável que atravessa regra, apresentação e conteúdo, feel e áudio
+do verbo, acesso verificado, prova em movimento e continuidade. É o
 comando padrão para "crie", "mude", "adicione", "faça funcionar".
 
 Antes de escrever código, três coisas precisam existir: o `context` do projeto
@@ -24,18 +24,22 @@ pacing — não é negociável em nenhuma escala ([ambição](../references/ambi
 
 1. `context <projeto> --focus create` (ou o foco que a mudança pede: `mechanics`,
    `feel`, `audio`, `content`…). Leia AGENTS aplicáveis, `foundation.read_first`, a
-   receita e os pacotes em `read_next`. Se `foundation.audit.required`, rode
-   [`teach`](teach.md) primeiro e retome aqui.
-2. Projeto sem destino no disco e engine web: [`init`](init.md) com um starter é
-   REUSE; escrever loop, save e entrada do zero é CREATE e exige lacuna escrita.
-3. Direção confirmada. Se o pedido e o brief já fixam fantasia, verbo, plataforma e
-   prova sem ambiguidade real, o shape pode ser **compacto** (3–5 linhas: o que se
-   constrói, o verbo, a prova, "confirme ou corrija"). Se há ambiguidade material,
-   rode [`shape`](shape.md) inteiro. **Pare e espere a confirmação.** Shape confirmado
-   é sinal verde para construir; não é licença para pular feel e áudio.
+   receita e os pacotes em `read_next`. Em jogo existente com `foundation.audit.required`,
+   rode [`teach`](teach.md) primeiro e retome aqui. Destino ainda inexistente segue
+   para o preparo abaixo; não audite como jogo construído uma pasta por criar.
+2. Projeto sem destino no disco: avalie o starter por adequação, como em
+   [`init`](init.md). Use `start <destino> --starter <nome> --idea "..."` quando
+   adequado para começar sem a pasta de rascunhos. O comando fornece infraestrutura;
+   o agente adapta regras e apresentação à experiência pedida. Criar loop, save e
+   entrada exige lacuna de reuso explícita. Preserve a plataforma escolhida.
+3. Resolva a direção. Se pedido e decisões aceitas já definem o recorte, registre um
+   brief compacto e execute; não repita a confirmação. Se faltar uma escolha que
+   muda materialmente a experiência, use a descoberta de [`shape`](shape.md) e peça
+   apenas essa decisão. Uma frase vaga não autoriza inventar uma direção completa.
 
-Portões que não se comprimem: (1) brief confirmado; (2) referência visual ou sonora
-aprovada quando a mudança é de direção — `--event direction-approved` e base
+Portões que não se comprimem: (1) direção resolvida com autorização para o recorte;
+(2) referência visual ou sonora aprovada quando a mudança é de direção —
+`--event direction-approved` e base
 sincronizada no mesmo turno ([roteiro](../references/project-audit.md#aprovação-de-direção-materializar-e-continuar));
 (3) apresentação da fatia com prova. Uma confirmação não autoriza publicar nem delegar.
 
@@ -48,11 +52,14 @@ sincronizada no mesmo turno ([roteiro](../references/project-audit.md#aprovaçã
    render ou integrações: [receita](../recipes/architecture.md) (`--focus architecture`).
 3. **Fatia jogável**: perceber → decidir → agir → consequência → reinício, no caminho
    real do jogador. [Criar](../recipes/create.md) e [mecânicas](../recipes/mechanics.md).
-   Título e cores novos não demonstram experiência nova.
+   Para jogo-modelo, universo ou estilo indicado, execute a
+   [adaptação de referências](../references/reference-adaptation.md): cena principal
+   comparada às fontes antes de expandir conteúdo. Título e cores não bastam.
 4. **Feel e áudio desse verbo**, no mesmo recorte: [feel](../recipes/feel.md) e
    [áudio](../recipes/audio.md). Flash, hitstop, shake, partícula e som no **mesmo
-   quadro** do contato. Arte provisória é aceitável com direção declarada; verbo mudo
-   ou sem peso não é.
+   quadro** do contato. Arte provisória serve à investigação de regras; uma entrega
+   com estilo visual pedido precisa demonstrar esse estilo na cena jogável. Verbo
+   mudo ou sem peso não cumpre o recorte.
 5. Em passes deliberados, como uma definição de pronto: estrutura da regra; estados
    (pausa, perda, reinício, saída); apresentação; feel/áudio; entrada em cada
    dispositivo alvo; conteúdo real, sem placeholder que fica.
@@ -63,6 +70,10 @@ sincronizada no mesmo turno ([roteiro](../references/project-audit.md#aprovaçã
   (ou `--command`). Quando os testes exercitarem pause, reset, seed, observe, act,
   advance, capture ou dispose, anexe `--proves`; sai como `claimed`, nunca verificado.
 - **Jogue o recorte** com as ferramentas do harness (navegador, captura, execução).
+  Execute o preparo autorizado, verifique a página ou aplicação acessível e exercite
+  a ação repetida, suas transições até a consequência e o reinício. Um primeiro
+  ponto ou captura não verifica movimento contínuo, fim de poder ou variedade
+  prometida. Receber um comando de `play`/`open` ainda não cumpre essa entrega.
   Compare antes/depois em condições equivalentes e **em movimento**. Leia a captura
   de volta; uma captura que você não leu não conta.
 - Critique o resultado contra o brief e contra as recusas do
@@ -75,7 +86,7 @@ sincronizada no mesmo turno ([roteiro](../references/project-audit.md#aprovaçã
 
 ## Nunca
 
-- Pular o shape porque o pedido "parecia claro" e descobrir a ambiguidade no código.
+- Pular a leitura da intenção e das decisões porque o pedido "parecia claro".
 - Entregar scaffold, título ou HUD novo como fatia. Slice demonstra experiência
   **e** repeatability; PoC responde uma pergunta; scaffold demonstra estrutura.
 - Acrescentar runtime comum, hierarquia de agentes, ECS ou IA por quadro para
@@ -85,6 +96,9 @@ sincronizada no mesmo turno ([roteiro](../references/project-audit.md#aprovaçã
 
 ## Entregar
 
+Apresente acesso ao jogo, o controle necessário no dispositivo usado e uma tarefa
+curta para experimentar, sem antecipar a resposta esperada. Não repasse JSON,
+queries de diagnóstico ou formulário de QA como instrução ao criador.
 Mostre a fatia no estado principal e nos estados-chave (perda, reinício, pausa);
 diga o que foi observado em movimento, o que foi corrigido após inspeção, o que foi
 herdado/adaptado/criado, e o que ficou de fora. Faça a
@@ -92,6 +106,7 @@ herdado/adaptado/criado, e o que ficou de fora. Faça a
 canônico (Devlog/plano) e cumpra `continuity.before_close` e
 `documentation.before_close`. Extraia [aprendizado transferível](../references/learning.md)
 para o framework quando houver. Termine com **uma** próxima ação e o prompt de
-continuidade pronto ([roteiro](../references/gauntlet.md)); depois, pergunte o que
-funciona e o que não funciona. Sequência natural: [`critique`](critique.md) ou
-[`polish`](polish.md).
+continuidade pronto ([roteiro](../references/gauntlet.md)). Convide um relato livre
+do trecho experimentado, conforme a [condução do criador](../references/creative-workflow.md#conduzir-quem-está-criando).
+A reação orienta a próxima melhoria; [`critique`](critique.md) e [`polish`](polish.md)
+entram quando pertinentes.

@@ -3,6 +3,73 @@
 Histórico das versões 0.1–0.9. Recibos brutos de execução e o acervo sonoro
 ficam no laboratório; aqui permanece o que a versão afirma e o que ela não afirma.
 
+## 0.10.4 — Operações de produção e checagem HTTP
+
+O primeiro replay com Luna como desenvolvedor reprovou a 0.10.3: o agente leu a
+orientação, não abriu as imagens, montou formas genéricas, excluiu áudio e usou
+teste de presença de strings. A leitura da skill não demonstrou sua aplicação.
+
+A rota de adaptação agora indica operações de produção: abrir imagens, escolher
+reuso/adaptação ou ferramenta de imagem, montar a cena com arte e comparar antes
+de expandir. Áudio obrigatório não pode ser retirado unilateralmente do recorte.
+O auxílio [check_web_delivery.py](scripts/check_web_delivery.py), sem dependências,
+confronta HTML local e servido e verifica URLs literais do entrypoint. Nove testes
+com HTTP real passaram; aplicação nos dois jogos detectou três recursos 404 do
+Red, seis sons 404 do Pac e o endereço servindo outro jogo. A aplicação no replay
+visualmente reprovado passou: esse resultado delimita a ferramenta, que não julga
+arte, regras, decodificação ou escuta. Sem novo comando no catálogo ou runtime.
+
+O segundo replay com outro Luna abriu imagens e executou o checker, mas também
+reprovou: captura direta substituiu a batalha, áudio não foi integrado e a cena
+continuou distante da referência. O agente declarou bloqueio de navegador e testes
+herdados incompatíveis. Resultado e limites permanecem na
+[story](docs/stories/2026-09-12-mda-player-experience-plan.md). Robustez para modelos
+menos capazes continua não demonstrada. A próxima prova prioritária parte de uma
+base pequena de gênero testada e arte real, em vez de outro recomeço livre.
+
+## 0.10.3 — Adaptação com referência visível e ciclo completo
+
+Os casos Rabisco Red e Pac-Rabisco mostraram falhas de comportamento, assets não
+carregados e distância da referência visual mesmo após leitura da skill e testes
+verdes. A nova [rota de adaptação](references/reference-adaptation.md) traduz
+jogo-modelo, universo e imagens em uma cena e três provas; compara a cena às fontes
+antes de expandir conteúdo e exercita transições completas pelo runtime real.
+`craft` deixa explícito que arte provisória não cumpre uma entrega ilustrada.
+O agente confere recursos e capacidades pelo entrypoint efetivamente consumido.
+
+Sem novo comando, runtime ou formulário. Entrada com 118 linhas. Dezesseis testes
+de comandos e os 514 testes descobertos pelo launcher do laboratório passaram;
+82 links das instruções e do relato inicial foram conferidos. Isso comprova
+compatibilidade, não qualidade dos jogos. O [registro central](docs/stories/2026-09-12-mda-player-experience-plan.md)
+liga diagnóstico e evidências. Um novo replay coloca Luna como desenvolvedor;
+o piloto anterior de Meteoros tinha Luna apenas como criador simulado.
+
+## 0.10.2 — Condução da ideia à primeira melhoria
+
+Impeccable permanece a referência principal de aplicação: pedidos naturais usam
+o fluxo adequado, o agente carrega contexto e referências, respeita direção e
+escopo e entrega com prova. Menu completo permanece na invocação vazia; `shape`
+isolado entrega planejamento. Construção já autorizada reaproveita decisões e
+prossegue sem nova confirmação rotineira.
+
+`craft` usa `start` quando adequado, exige adaptar a ação à ideia e verificar o
+acesso, a ação e o reinício. O criador recebe uma orientação curta para experimentar
+e pode relatar livremente. `critique` recomenda uma melhoria; `next` confronta sinais
+do disco com o pedido e o relato. Registros e documentação continuam com o agente.
+
+Esta versão altera instruções e descrições do catálogo, sem novo comando, runtime,
+schema ou formulário. Compatibilidade técnica e revisão documental não demonstram
+eficácia com iniciantes. Diagnóstico, aceites e validação estão na
+[story](docs/stories/2026-09-12-mda-player-experience-plan.md).
+
+Complemento de 12/09, após piloto com Luna como criador simulado: um agente
+construiu o jogo, Luna operou a interface e a reação orientou uma melhoria
+verificada em nova tentativa. Outro agente recuperou a continuidade pelos
+canônicos. `quality.md` e o workflow passam a explicitar preferência versus defeito
+e os limites do instrumento automatizado. Seis regressões dos consumidores
+afetados passaram. O piloto tem zero participantes humanos; não valida gosto,
+conforto ou compreensão de iniciantes. Provas e limites permanecem ligados pela story.
+
 ## 0.10 — Skill roteada por comando, no modelo da impeccable
 
 Estudo da skill `impeccable` (frontend) e transposição da sua **forma de operar**

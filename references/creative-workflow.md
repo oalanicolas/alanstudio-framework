@@ -15,6 +15,43 @@ Protótipo e código pertencem à mesma atividade de experimentar e construir. A
 a hipótese exige. QA acontece no passo 3 de toda rodada, com critérios definidos
 desde o passo 1.
 
+## Conduzir quem está criando
+
+Use este ciclo também com quem nunca desenvolveu um jogo. A pessoa pode falar
+livremente; o agente traduz intenção em decisões de design e trabalho técnico.
+
+- **Proponha uma situação jogável:** o que se faz, qual consequência aparece e o
+  que queremos aprender. Escolha o preparo técnico pelo contexto. Pergunte somente
+  pela escolha material ainda aberta; reutilize direção e autorização existentes.
+- **Entregue algo para experimentar:** verifique acesso, ação e reinício conforme
+  a [revisão de entrega](delivery.md). Apresente o controle pertinente e uma tarefa
+  curta, sem ensinar a estratégia cuja descoberta está sendo avaliada.
+- **Escute a reação:** preserve as palavras da pessoa e o que foi realmente
+  observado. “Parece uma tarefa” permite investigar; ainda não identifica uma causa.
+  O agente estrutura o registro. Não peça ao criador campos de QA ou nota de diversão.
+  Uma reação positiva também pode orientar a próxima melhoria; não invente um
+  defeito para continuar. A [observação](quality.md#protocolo-de-observação) distingue
+  preferência, hipótese e limites do teste.
+- **Recomende uma melhoria:** relacione intenção, evidência e próximo ajuste ou
+  investigação. Conserve também o que funcionou. A sugestão de `next` é um insumo;
+  uma falha de controle relatada não se resolve automaticamente trocando a paleta.
+- **Mantenha a memória:** no canônico existente, atualize intenção, mudança, reação
+  e próximo passo, distinguindo fato de hipótese e ligando a versão quando necessário.
+  Detalhes e áreas documentais aplicáveis são trabalho do agente, não uma etapa de
+  preenchimento exigida da pessoa.
+
+Exemplo de proposta: “Vamos começar com um canteiro e uma entrega a um vizinho para
+experimentar o cuidado com esse lugar.” É um recorte possível de uma horta tranquila,
+não um starter universal nem uma implementação existente. A experiência precisa
+orientar as regras e a apresentação; o título sozinho não realiza a ideia.
+
+MDA ajuda a relacionar intenção, comportamento e escolhas de design. Inspeção de
+compreensão e controle antecipa obstáculos; observação e relato guiam a próxima
+rodada. Questionários, modelos numéricos e comparação controlada entram quando
+respondem a uma decisão concreta. Uma conversa de feedback não vira pesquisa formal
+por receber um recibo. O [estudo e seus limites](../docs/stories/2026-09-12-mda-player-experience-plan.md)
+registram a base dessas escolhas; o ciclo continua sendo o mesmo.
+
 ## O que muda no roadmap
 
 - **Protótipo e código se fundem no loop.** As disciplinas entram conforme a hipótese da rodada. Uma rodada pode testar uma ideia, corrigir

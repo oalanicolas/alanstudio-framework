@@ -2,7 +2,7 @@
 name: game-dev
 description: Criar, evoluir, avaliar, produzir e verificar jogos com IA, partindo do acervo existente, até o acabamento pretendido. Roteia por intenção (craft, shape, critique, polish, feel, audio, next…) sobre um harness thin que recorta contexto, lê declarações e registra evidência.
 metadata:
-  version: 0.10.1
+  version: 0.10.4
 ---
 
 # Game Dev
@@ -20,10 +20,13 @@ O arquivo de entrada orienta; detalhes operacionais vivem nas referências.
    `python3 framework/scripts/game.py context ...`. Não repita na mesma sessão, salvo
    após mudança de base (`teach`, `document`, `direction-approved`) ou retomada.
 2. **Carregue a rota certa.** Com subcomando explícito, leia
-   `commands/<comando>.md`. Sem subcomando, siga
-   [navegação contextual](references/routing.md). Para jogo ou direção realmente
-   novos, leia [trabalho novo](references/new-work.md). A verdade já aprovada vence
-   qualquer default.
+   `commands/<comando>.md`. Com pedido em linguagem comum, escolha a referência
+   pela intenção; a pessoa não precisa saber o comando. Para navegação ou dúvida
+   de workflow, siga [navegação contextual](references/routing.md). Para jogo ou
+   direção realmente novos, leia [trabalho novo](references/new-work.md). A verdade já aprovada vence
+   qualquer default. Quando houver jogo-modelo, universo, IDV ou imagens indicadas,
+   leia [adaptação de referências](references/reference-adaptation.md) antes de
+   implementar: observe as fontes, construa a cena principal e prove o ciclo inteiro.
 3. **Carregue o piso no momento certo.** Imediatamente antes de editar design,
    código, conteúdo, arte ou áudio, leia [piso de execução](references/craft-floor.md).
    Não o carregue para simples triagem, planejamento ou leitura.
@@ -43,6 +46,12 @@ verbo, escala, plataforma, restrição ou prova de conclusão.
 As escalas canônicas do harness são `jam`, `product` e `aa`; elas controlam volume
 de entrega, nunca o piso de qualidade do verbo.
 
+Conduza em linguagem comum: proposta concreta → jogo acessível → algo para
+experimentar → reação → próxima melhoria. O agente assume preparação técnica,
+documentação e priorização; o criador decide a experiência. Use a
+[condução do criador](references/creative-workflow.md#conduzir-quem-está-criando).
+Decisões já aceitas não exigem nova confirmação para executar o autorizado.
+
 Escolha a lente pela superfície pedida, não pelo projeto inteiro:
 
 - **Jogar:** o jogador percebe, decide, age, recebe consequência e consegue recomeçar.
@@ -54,7 +63,7 @@ Escolha a lente pela superfície pedida, não pelo projeto inteiro:
 
 | Comando | Categoria | Uso | Referência |
 | --- | --- | --- | --- |
-| `craft [projeto] [mudança]` | Construir | Shape confirmado e fatia jogável de ponta a ponta | [craft](commands/craft.md) |
+| `craft [projeto] [mudança]` | Construir | Resolver a direção e entregar uma fatia jogável acessível | [craft](commands/craft.md) |
 | `shape [projeto] [mudança]` | Construir | Brief da rodada antes de código | [shape](commands/shape.md) |
 | `teach [projeto]` | Construir | Base documental por análise profunda | [teach](commands/teach.md) |
 | `document [projeto]` | Construir | Design system extraído do jogo existente | [document](commands/document.md) |
@@ -83,11 +92,13 @@ para criar ou alterar comandos estão em [commands/README.md](commands/README.md
 
 ## Roteamento
 
-- **Sem argumento:** siga `references/routing.md`; inspecione sinais uma vez, lidere
-  com duas ou três recomendações justificadas e só então mostre o menu completo.
+- **Só a skill, sem pedido:** siga `references/routing.md`; recomende pelo contexto
+  e apresente o menu. Navegação não inicia uma criação.
+- **Dúvida de workflow:** explique o caminho pertinente; só execute se também pedido.
 - **Primeira palavra é comando:** leia a referência correspondente e trate o resto
   como alvo e recorte. A preparação não se reinvoca dentro do comando.
-- **Primeira palavra não é comando:** escolha a intenção mais próxima. Para criação
+- **Pedido concreto sem comando:** escolha a intenção mais próxima e execute o
+  autorizado, sem exigir que a pessoa escolha um comando. Para criação
   ou substituição de direção, use `references/new-work.md`; para trabalho incumbente,
   preserve a verdade existente e roteie ao comando mais específico.
 - **Contexto stale ou binding divergente:** informe o problema e o comando de reparo;

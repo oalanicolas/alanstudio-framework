@@ -165,6 +165,13 @@ Escolha **uma ação recomendada**, priorizando dependências e a incerteza que 
 invalidar o recorte. Um backlog continua no plano; não transfira sua priorização ao
 usuário na resposta final.
 
+Priorize pelo pedido vigente, reação do criador e evidência do recorte. As propostas
+do CLI decorrem de sinais estruturais; compare-as com a conversa antes de agir.
+Se alguém relata que não consegue controlar a ação, investigue esse trecho antes
+de adotar uma sugestão genérica de aparência. Conserve a fala e marque a causa
+como hipótese até haver suporte; não transforme falta de quatro campos em motivo
+para ignorar feedback. Use a [condução do criador](creative-workflow.md#conduzir-quem-está-criando).
+
 Reaproveite o plano de produção, devlog, story ou README combinado. Mantenha nele
 uma seção de continuidade, sem criar arquivo paralelo quando já há fonte canônica:
 

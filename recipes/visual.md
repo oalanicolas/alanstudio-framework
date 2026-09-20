@@ -135,3 +135,50 @@ pode apagar pigmento e contornos sem qualquer mudança de geometria. Uma escala 
 distância artística por câmera permite manter a leitura da prévia e restaurar exatamente o
 valor original nas câmeras jogáveis. Preserve resolução, materiais e sombra; compare entrada,
 troca de mapa e retorno à partida. Caso: Corrida Rabisco, QA “Home com mapas — 2026-09-11”.
+
+Em renderizadores que codificam identificadores, sombra e normais num buffer intermediário,
+alpha RGBA convencional não representa transparência válida. Componha o material transparente
+na passagem de cor final, consultando a profundidade opaca e preservando antialiasing e
+oclusão. Confira objetos na frente e atrás, vistas internas, descarte e reconstrução da cena.
+O formato do buffer deve orientar a integração; não tornar o vidro opaco nem remover sua malha
+para mascarar o problema. Caso e prova: Distrito Rabisco,
+`production/evidence/arena-identity-20260912/`, 12/9/2026.
+
+Em telas de seleção com rolagem interna, confira a altura dos cartões e de seus
+filhos, além do overflow da página. Uma linha `minmax(0, 1fr)` dentro de uma tela
+limitada ao viewport pode comprimir os cartões enquanto retratos e controles
+continuam pintando por fora. Deixe o conteúdo definir a altura nas composições
+estreitas e confira topo, rodapé e início da partida pelo caminho real. Caso:
+Rabisco Boom, `art/validation/2026-09-13-polish/confirmation/` no laboratório.
+
+Em partidas que continuam durante notificações, avisos de início, perigo e
+mudança de fase precisam ocupar espaço reservado fora da arena e dos controles.
+`pointer-events: none` não resolve a oclusão visual. Compare os retângulos de
+canvas, aviso, HUD e direcional antes/depois da mensagem; a arena não deve mudar
+de enquadramento nem receber texto sobre uma rota de fuga. Inclua mensagens
+longas, celulares em retrato/paisagem e estados de derrota. Caso: Rabisco Boom,
+`art/validation/2026-09-12-gameplay-design/checks/`, após relato de morte por banner.
+
+Ao integrar um canvas 3D a uma página contínua, elimine somente o fundo duplicado,
+preservando material e profundidade dos objetos. O alpha deve sobreviver ao
+passe de cor, antialiasing e composição final; num canvas premultiplicado, RGB
+não nulo em pixels de alpha zero pode produzir uma placa branca. Verifique os
+pixels vazios e as bordas suavizadas, além da imagem composta. Este ajuste não
+pode tornar transparentes personagens cujo corpo aprovado é opaco. Caso: Rabisco
+Boom, `src/view/three/renderer.js` e capturas `2026-09-12-gameplay-design/shipped/`.
+
+Ao compor um lobby com backplate e avatar 3D numa camada própria de câmera,
+trate a máscara de visibilidade e a exposição como estado de apresentação.
+Restaure-as em todas as saídas, inclusive editores de equipamento abertos pelos
+ajustes, não apenas em Jogar. Exercite troca de visual, gesto, editor, retorno
+e início de partida; um botão que funciona com a cena invisível não passa.
+Backplate deve preservar proporção e deixar o personagem/contato 3D reais.
+Caso e prova: MineNite, `docs/qa/fortnite-presentation.json`, 20/09/2026.
+
+Quando o polimento troca a representação de um personagem (instâncias por
+volumes modelados, por exemplo), confira os consumidores do tipo da malha:
+sombra, culling, primeira pessoa, espelhos e pontos de arma/mão. Renderizar bem
+em pose neutra não basta. Retratos de seleção podem vir do mesmo rig/material,
+desde que a câmera caiba também nos acessórios mais altos e a geração restaure
+o estado do renderer sem consumir o RNG da simulação. Caso: MineNite,
+`tests/hero-presentation.mjs` e `docs/qa/hero-polish.json`, 20/09/2026.

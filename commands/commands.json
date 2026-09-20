@@ -12,14 +12,14 @@
   "commands": {
     "craft": {
       "category": "build",
-      "description": "Fluxo completo: shape com brief confirmado, depois a fatia jogável de ponta a ponta — regra, apresentação, feel e áudio do verbo — com prova em movimento e prompt de continuidade. Use ao criar ou mudar um jogo.",
+      "description": "Criar ou mudar um jogo: resolver a direção, reaproveitar decisões aceitas e entregar uma fatia jogável com regra, apresentação, feel, áudio, acesso verificado e continuidade. Pedidos em linguagem comum usam o mesmo fluxo.",
       "argument_hint": "[projeto] [mudança]",
       "foci": ["create", "mechanics", "feel", "audio"],
       "reads": ["references/process.md", "recipes/create.md", "recipes/feel.md", "recipes/audio.md"]
     },
     "shape": {
       "category": "build",
-      "description": "Definir antes de codar: fantasia, verbo central, escala, plataforma, maior incerteza e prova de conclusão. Produz o brief da rodada e para para confirmação. Não escreve código.",
+      "description": "Planejar a mudança: experiência, ação central, escala, plataforma, maior incerteza e prova de conclusão. Entrega o brief e resolve escolhas ainda abertas. Quando pedido isoladamente, termina sem código.",
       "argument_hint": "[projeto] [mudança]",
       "foci": ["create"],
       "reads": ["references/creative-workflow.md", "references/ambition.md", "references/preproduction.md"]
@@ -152,7 +152,7 @@
     },
     "next": {
       "category": "produce",
-      "description": "Uma próxima ação derivada do estado no disco, ordenada por dependência, com alternativas descartadas. O agente confirma, resolve o passo e entrega o prompt de continuidade pronto. Nunca executa sozinho.",
+      "description": "O agente escolhe o próximo trabalho pelo pedido, pelos relatos e pelas evidências, usando a proposta do CLI como insumo. Executa o autorizado e prepara a continuidade. O harness apenas lê e propõe.",
       "argument_hint": "[projeto] [--focus foco]",
       "foci": ["create"],
       "reads": ["references/process.md", "references/gauntlet.md"]

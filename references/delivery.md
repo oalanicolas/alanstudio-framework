@@ -33,6 +33,22 @@ Não invente autorização, aprovação artística ou verificação ausente para
 Na resposta, priorize o resultado pedido, a evidência que o sustenta, a limitação
 material e a continuidade. Não é preciso expor todo o registro de revisão.
 
+Quando a entrega inclui jogar, execute o preparo autorizado e verifique o endereço
+ou a aplicação no dispositivo pertinente. Um comando que saiu sem erro ou um
+`play`/`open` que só imprimiu instruções não demonstra acesso. Confira que o endereço
+serve este projeto e a versão inspecionada, especialmente com vários servidores.
+Exercite a ação repetida, as transições completas e o reinício; confira recursos
+realmente carregados e compare a cena às referências visuais. Para adaptações,
+use os cenários de [referências](reference-adaptation.md). Trate falhas antes da entrega.
+Se houver bloqueio real, identifique a causa e a ação mínima para resolvê-lo, sem
+declarar abertura ou partida que não verificou.
+
+Entregue acesso, controles pertinentes e algo curto para experimentar. Evite expor
+JSON, catálogo inteiro ou instruções de diagnóstico como jornada do criador.
+Convide relato livre e siga a [condução do criador](creative-workflow.md#conduzir-quem-está-criando).
+Menor escopo não reduz o acabamento aprovado nem transforma revisão do agente em
+aprovação artística humana.
+
 ## Quando melhorar o próprio framework
 
 Uma falha recorrente de uso pede um caso comportamental, além dos testes do CLI.

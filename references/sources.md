@@ -416,7 +416,7 @@ Hashes, amostras, observações e plano de contraprova ficam no laboratório em
 `docs/_anexos/ugc/rezona-crayon-2026-09-09.json`. Os métodos acima são utilizáveis sem esses
 arquivos e devem ser revistos quando o consumidor ou o contrato invalidar a hipótese.
 
-## Skill impeccable (0.10.1; referência atualizada em 2026-09-11)
+## Skill impeccable (0.10.2; referência atualizada em 2026-09-12)
 
 Estudo de 10/09/2026 da skill `impeccable` (design e iteração de interfaces de
 frontend, instalada em `~/.claude/skills/impeccable`): `SKILL.md`, 36 referências,
@@ -451,3 +451,18 @@ entrada fina (83 linhas), navegação guiada por sinais, trabalho novo e
 [SKILL](../SKILL.md), [rota](routing.md), [trabalho novo](new-work.md),
 [piso de execução](craft-floor.md) e [manual operacional](operations.md), sem
 copiar modos, bans ou agentes específicos de frontend.
+
+Em 12/09, Alan reafirmou Impeccable como referência máxima de aplicação e uso.
+Foi consultada a skill local `4.3.1` em `~/.agents/skills/impeccable`: entrada,
+`routing`, `shape`, `craft` e trechos de `new-work` sobre autoridade, contrato,
+persistência e acabamento. O launcher `context` foi executado no núcleo; nenhum
+fluxo de construção de UI foi executado nesta manutenção.
+
+A aplicação em `0.10.2` distingue menu na invocação vazia de pedidos naturais,
+preserva planejamento isolado, exige entrega acessível e concentra método e
+documentação no agente. A reutilização de autorizações segue a conversa: não
+copiamos a confirmação obrigatória de Impeccable para repetir uma decisão já dada.
+Mecânicas, feel e apreciação humana continuam exigindo suas próprias provas.
+Também não acrescentamos torneio de conceitos, schemas de superfície ou agentes
+de frontend ao fluxo de jogos. O [registro da implementação](../docs/stories/2026-09-12-mda-player-experience-plan.md)
+liga diagnóstico, mudanças, verificação e o teste humano ainda pendente.

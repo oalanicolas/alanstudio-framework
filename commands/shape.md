@@ -2,9 +2,9 @@
 
 Definir a mudança antes de qualquer código: fantasia, verbo central, escala,
 plataforma e entrada, cenário, maior incerteza e prova de conclusão. Produz o
-**brief da rodada** e para para confirmação. Não escreve código e não gera pasta de
-templates; a maior parte dos jogos gerados por IA falha por pensamento pulado, não
-por código ruim.
+**brief da rodada**. Quando solicitado como planejamento, encerra com o brief e as
+decisões ainda abertas; não escreve código nem gera pasta de templates. O preparo
+interno de uma construção autorizada segue [`craft`](craft.md).
 
 ## Escala
 
@@ -17,11 +17,12 @@ o contrato com o jogador acompanha o que o recorte promete. Em qualquer escala a
 
 ## Avaliar
 
-Entrevista curta, não formulário. Uma rodada de duas ou três perguntas, com a
-ferramenta de pergunta estruturada do host quando houver; segunda rodada só se a
-primeira deixou lacuna material. Assuma o que é rotineiro com registro; pergunte só
-o que impede de jogar. **Afirme e confirme, não ofereça menu:** quando o brief e o
-pedido tornam uma opção óbvia, nomeie-a e peça confirmação.
+Consulte pedido, decisões aceitas e verdade do projeto antes de perguntar. Para
+uma lacuna material, use uma pergunta situada ou até três relacionadas, com a
+ferramenta estruturada do host quando houver. Outra rodada só se restar uma escolha
+que mude o trabalho. Assuma o que é rotineiro com registro; explique o efeito na
+partida, sem pedir termos de design. Uma decisão já dada não exige reconfirmação.
+Use os itens abaixo para raciocinar, não para entrevistar sobre tudo:
 
 - **Experiência:** o jogador faz X, decide entre Y e Z, percebe W, para sentir S.
   Quem é o jogador, em que contexto, com que entrada.
@@ -55,8 +56,11 @@ por dispositivo, feedback esperado por ação. 7. Conteúdo: famílias e faixas.
 10. Perguntas abertas — só as sem padrão razoável; onde escreveria "recomendo X",
 decida X.
 
-Apresente e **encerre a resposta**. A confirmação do usuário é o portão; não
-continue para código na mesma resposta, mesmo que o brief pareça óbvio.
+Apresente o brief, distinguindo decisão aceita, proposta e dúvida. Se ainda faltar
+uma escolha material, peça essa escolha. Quando o pedido é apenas `shape` ou
+planejamento, **encerre sem código**, inclusive com o brief já confirmado. Quando
+a conversa também autoriza construir e as decisões estão resolvidas, retome
+`craft` no mesmo turno; o brief não cria uma nova pausa de aprovação.
 
 ## Verificar
 
@@ -75,6 +79,7 @@ autoridade declaradas, ou a ausência é explícita (gate `design`,
 
 ## Entregar
 
-O brief confirmado, gravado no canônico com a escala visível, e uma linha dizendo
-qual comando o executa: [`craft`](craft.md) para construir agora, ou `--stage poc`
-quando a maior incerteza pede um experimento antes.
+O brief no canônico, seu estado de decisão e a próxima ação com o que ela permitirá
+experimentar. Recomende uma construção ou uma prova da maior incerteza em linguagem
+comum. [`craft`](craft.md) executa o recorte; a pessoa não precisa invocá-lo para
+continuar uma construção já autorizada.
