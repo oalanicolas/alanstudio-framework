@@ -1,0 +1,8 @@
+{
+  "_sobre": "Configuração deste vault. O código é único (assets/cerebro/_sistema/cerebro.py); o que muda de vault para vault mora aqui.",
+  "sidecar": {},
+  "limites": {
+    "dias_semente": 90,
+    "dias_candidato": 90
+  }
+}

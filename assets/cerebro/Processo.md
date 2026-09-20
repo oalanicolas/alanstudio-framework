@@ -170,6 +170,12 @@ Uma vez por semana:
 4. Se houve aresta nova: `python3 genealogia-jogos/_kit/exportar_grafo.py`
 5. [[Padrões#Candidatos]]: algum ganhou segunda fonte?
 
+O `check` também diz o que **parou de andar**, no nível `info`: `CANDIDATO_PARADO` (padrão com
+uma fonte só passou do prazo), `STATUS_PARADO` (um mesmo status em quase todo nó — o ritual não
+acontece), `ESTUDO_SEM_FICHA` (síntese sem nenhuma ficha em `evidencias/`) e `LINK_PARTIDO`
+(wikilink aberto numa linha e fechado noutra). Os prazos ficam em `_sistema/cerebro_config.json`.
+
+
 ## Bases: listas vivas
 
 **Lista que dá para derivar de propriedades é uma Base, não uma lista escrita à mão.**

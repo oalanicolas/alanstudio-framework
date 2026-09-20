@@ -4,7 +4,7 @@ ano: 1989
 studio:
 genero: []
 hub: false
-status: semente
+status: vigente
 tags:
   - tipo/estudio
 entradas: 0

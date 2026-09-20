@@ -67,7 +67,7 @@ class CerebroKitTest(unittest.TestCase):
     def test_copia_passa_check_buscar_e_grafo(self) -> None:
         r = _run(self.vault, "check")
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        self.assertIn(str(self.vault.resolve()), r.stdout)
+        self.assertRegex(r.stdout, r"vault: \S*" + re.escape(self.vault.name))
         self.assertNotIn("\nERROS", r.stdout)
 
         b = _run(self.vault, "buscar", "--jogo", "oficina")
@@ -257,6 +257,18 @@ class DiagnosticoEstruturadoTest(unittest.TestCase):
         self.assertIn("Nota que não existe", ctx)
         self.assertNotIn("Outra ausente", ctx)
 
+    def test_hook_aceita_caminho_relativo_a_raiz_do_projeto(self) -> None:
+        """Vault dentro do projeto (docs/): o caminho chega relativo à raiz, não ao vault."""
+        alvo = self.vault / "padroes" / "Clonar o que se vê.md"
+        alvo.write_text(alvo.read_text(encoding="utf-8") + "\n[[Some daqui]]\n", encoding="utf-8")
+        r = subprocess.run(
+            [sys.executable, str(self.vault / "_sistema" / "hook_pos_edicao.py")],
+            input=json.dumps({"tool_input": {"file_path": f"{self.vault.name}/padroes/Clonar o que se vê.md"}}),
+            cwd=self.vault.parent, capture_output=True, text=True,
+        )
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("Some daqui", json.loads(r.stdout)["hookSpecificOutput"]["additionalContext"])
+
     def test_hook_cala_em_nota_limpa_e_em_lixo(self) -> None:
         hook = str(self.vault / "_sistema" / "hook_pos_edicao.py")
         for entrada in (json.dumps({"tool_input": {"file_path": "Processo.md"}}),
@@ -266,6 +278,92 @@ class DiagnosticoEstruturadoTest(unittest.TestCase):
                                capture_output=True, text=True)
             self.assertEqual(r.returncode, 0, entrada)
             self.assertEqual(r.stdout.strip(), "", entrada)
+
+
+class EstagnacaoTest(unittest.TestCase):
+    """O que parou de andar: candidato velho, status que nunca muda, síntese sem ficha."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory(prefix="cerebro-estag-")
+        self.addCleanup(self.tmp.cleanup)
+        self.vault = Path(self.tmp.name) / "vault"
+        shutil.copytree(KIT, self.vault, ignore=IGNORE)
+
+    def _codigos(self) -> list[str]:
+        d = json.loads(_run(self.vault, "check", "--json", "--sem-grafo").stdout)
+        return [i["codigo"] for i in d["itens"]]
+
+    def test_kit_comeca_sem_estagnacao(self) -> None:
+        self.assertEqual(self._codigos(), [])
+
+    def test_candidato_velho_aparece(self) -> None:
+        alvo = self.vault / "padroes" / "O timer não substitui o espaço.md"
+        alvo.write_text(alvo.read_text(encoding="utf-8").replace("data: 2026-09-19", "data: 2020-01-01"),
+                        encoding="utf-8")
+        self.assertIn("CANDIDATO_PARADO", self._codigos())
+
+    def test_status_igual_em_todo_no_vira_ruido(self) -> None:
+        for no in (self.vault / "genealogia-jogos" / "nos").rglob("*.md"):
+            no.write_text(no.read_text(encoding="utf-8").replace("status: vigente", "status: semente"),
+                          encoding="utf-8")
+        self.assertIn("STATUS_PARADO", self._codigos())
+
+    def test_wikilink_partido_em_duas_linhas_aparece(self) -> None:
+        alvo = self.vault / "Processo.md"
+        alvo.write_text(alvo.read_text(encoding="utf-8") + "\n\nVer ([[Clonar o que se\nvê]]) adiante.\n",
+                        encoding="utf-8")
+        d = json.loads(_run(self.vault, "check", "--json", "--sem-grafo").stdout)
+        item = next((i for i in d["itens"] if i["codigo"] == "LINK_PARTIDO"), None)
+        self.assertIsNotNone(item, d["itens"])
+        self.assertEqual(item["arquivo"], "Processo.md")
+        self.assertTrue(item["linha"])
+
+    def test_estudo_sem_ficha_aparece(self) -> None:
+        alvo = self.vault / "estudos" / "Estudo Cai-Cai.md"
+        t = alvo.read_text(encoding="utf-8").replace("[[Cai-Cai — recensão]]", "a recensão citada no dossiê")
+        alvo.write_text(t, encoding="utf-8")
+        ficha = self.vault / "evidencias" / "Cai-Cai — recensão.md"
+        ficha.write_text(ficha.read_text(encoding="utf-8").replace("[[Estudo Cai-Cai]]", "o estudo da referência"),
+                         encoding="utf-8")
+        self.assertIn("ESTUDO_SEM_FICHA", self._codigos())
+
+
+class ImplementacaoUnicaTest(unittest.TestCase):
+    """Uma implementação, vários vaults: o script pode ser symlink e valida quem o hospeda."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory(prefix="cerebro-link-")
+        self.addCleanup(self.tmp.cleanup)
+        self.vault = Path(self.tmp.name) / "vault"
+        shutil.copytree(KIT, self.vault, ignore=IGNORE)
+        for rel in ("_sistema/cerebro.py", "_sistema/hook_pos_edicao.py",
+                    "genealogia-jogos/_kit/exportar_grafo.py"):
+            alvo = self.vault / rel
+            alvo.unlink()
+            alvo.symlink_to(KIT / rel)
+
+    def test_script_linkado_valida_o_vault_do_link(self) -> None:
+        (self.vault / "estudos" / "Nota só deste vault.md").write_text(
+            "---\ntipo: estudo\nresumo: \"Nota exclusiva da cópia, para provar de quem o link fala.\"\n"
+            "temas:\n  - processo\nstatus: rascunho\ndata: 2026-09-20\n---\n"
+            "# Nota só deste vault\n\n[[Processo]]\n", encoding="utf-8")
+        d = json.loads(_run(self.vault, "check", "--json", "--sem-grafo").stdout)
+        self.assertEqual(d["resumo"]["notas"], 43)  # 42 do kit + a nova
+        self.assertIn(self.vault.name, d["vault"])
+        self.assertNotIn("assets/cerebro", d["vault"])
+        limpo = json.loads(_run(KIT, "check", "--json", "--sem-grafo").stdout)
+        self.assertEqual(limpo["resumo"]["notas"], 42)  # a origem não enxerga a nota da cópia
+
+    def test_config_do_vault_alimenta_o_sidecar(self) -> None:
+        (self.vault / "_sistema" / "cerebro_config.json").write_text(json.dumps({
+            "sidecar": {"Canônico de fora.md": {
+                "tipo": "processo", "status": "vigente", "temas": ["processo"],
+                "resumo": "Nota sem frontmatter próprio; os metadados vêm da configuração do vault."}},
+        }, ensure_ascii=False), encoding="utf-8")
+        (self.vault / "Canônico de fora.md").write_text("# Canônico de fora\n\n[[Processo]]\n", encoding="utf-8")
+        d = json.loads(_run(self.vault, "check", "--json", "--sem-grafo").stdout)
+        self.assertFalse([i for i in d["itens"] if i["arquivo"] == "Canônico de fora.md"
+                          and i["codigo"] in ("FRONTMATTER", "TIPO")], d["itens"])
 
 
 class InvarianteEFronteiraTest(unittest.TestCase):

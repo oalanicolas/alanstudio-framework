@@ -5,7 +5,7 @@ studio:
 genero:
   - puzzle
 hub: false
-status: semente
+status: vigente
 tags:
   - tipo/ludema
 entradas: 1

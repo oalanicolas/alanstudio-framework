@@ -5,7 +5,7 @@ studio:
 genero:
   - puzzle
 hub: false
-status: semente
+status: vigente
 projeto: games/oficina
 estagio: semente
 categoria: puzzle

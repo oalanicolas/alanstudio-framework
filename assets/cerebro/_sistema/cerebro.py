@@ -17,6 +17,7 @@ O contrato (tipos, temas, status) está em `Processo.md`. As pastas excluídas v
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import os
 import re
@@ -28,7 +29,9 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from urllib.parse import quote, unquote
 
-VAULT = Path(__file__).resolve().parent.parent
+# abspath, não resolve: assim o script pode ser um symlink para a implementação única
+# (como framework/core) e continuar validando o vault em que o link está.
+VAULT = Path(os.path.abspath(__file__)).parent.parent
 # Cópia avulsa: o vault é a raiz. Vault em docs/ de um laboratório: o pai tem workspace.json.
 _PAI = VAULT.parent
 WORKSPACE = _PAI if (_PAI / "workspace.json").exists() else VAULT
@@ -78,7 +81,23 @@ FORCAS = {"confirmado", "candidato"}
 
 # Notas cujo frontmatter pertence a outro repositório (symlink para o framework). O contrato delas
 # vive aqui para o índice e a busca não perderem essas portas.
-SIDECAR = {}
+def carregar_config() -> dict:
+    """Configuração deste vault: `_sistema/cerebro_config.json`, ao lado do script ou do link.
+
+    Mantém a implementação única e o que é do vault (sidecar, limites) fora do código.
+    """
+    try:
+        return json.loads((VAULT / "_sistema" / "cerebro_config.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+CONFIG = carregar_config()
+# Metadados de nota que não pode carregar frontmatter (symlink para documento canônico fora do vault).
+SIDECAR: dict[str, dict] = CONFIG.get("sidecar", {})
+LIMITES: dict[str, int] = {"dias_semente": 90, "dias_candidato": 90, **CONFIG.get("limites", {})}
+# Prefixo dos comandos citados nos documentos gerados. Vault dentro de um projeto usa "docs/".
+PREFIXO = str(CONFIG.get("prefixo_comando", "") or "")
 
 WIKILINK = re.compile(r"(!?)\[\[([^\]\n]+?)\]\]")
 MDLINK = re.compile(r"(!?)\[([^\]\n]*)\]\((<[^>\n]+>|[^)\s]+)(\s+\"[^\"]*\")?\)")
@@ -371,6 +390,51 @@ def checar_skills(res: Resolvedor, ach: Achados) -> None:
                     ach.add("aviso", "SKILL_LINK", rel, f"[[{alvo}]] é ambíguo; use o caminho (ex.: [[{chave}]])")
 
 
+def checar_estagnacao(notas: list[Nota], res: Resolvedor, ach: Achados) -> None:
+    """O que parou de andar. Não quebra nada hoje; é o cérebro dizendo onde o conhecimento estagnou."""
+    hoje = dt.date.today()
+
+    def idade(n: Nota) -> int | None:
+        try:
+            return (hoje - dt.date.fromisoformat(str(n.meta.get("data")))).days
+        except (TypeError, ValueError):
+            return None
+
+    for n in notas:
+        if n.tipo == "padrao" and str(n.meta.get("forca")) == "candidato":
+            dias = idade(n)
+            if dias is not None and dias > LIMITES["dias_candidato"]:
+                ach.add("info", "CANDIDATO_PARADO", n.rel,
+                        f"candidato há {dias} dias com uma fonte só: procure a segunda ou derrube o padrão")
+
+    # Campo que nunca muda não informa: um status igual em quase todo nó é ritual que não acontece.
+    nos = [n for n in notas if n.no_grafo]
+    if len(nos) >= 10:
+        st = Counter(str(n.meta.get("status") or "—") for n in nos)
+        valor, quantos = st.most_common(1)[0]
+        if quantos / len(nos) >= 0.8:
+            ach.add("info", "STATUS_PARADO", NOS,
+                    f"{quantos} de {len(nos)} nós estão em `status: {valor}`: o campo não distingue nada hoje — "
+                    "faça a promoção acontecer ou tire o campo")
+
+    # Síntese sem ficha de fonte: o estudo cruza o que nenhuma nota guardou.
+    fichas = {n.chave for n in notas if n.tipo == "evidencia"}
+    cita_ficha: set[str] = set()
+    for n in notas:
+        for alvo in wikilinks(n.texto):
+            chave, sit = res.resolver(alvo.split("|", 1)[0].rstrip("\\").partition("#")[0])
+            if sit != "ok" or chave is None:
+                continue
+            if chave in fichas and n.tipo == "estudo":
+                cita_ficha.add(n.chave)
+            elif n.tipo == "evidencia" and chave.startswith("estudos/"):
+                cita_ficha.add(chave)
+    for n in notas:
+        if n.tipo == "estudo" and not n.meta.get("parte_de") and n.chave not in cita_ficha:
+            ach.add("info", "ESTUDO_SEM_FICHA", n.rel,
+                    "estudo sem nenhuma ficha em evidencias/: a síntese cruza o que nenhuma nota guardou")
+
+
 def cmd_check(args) -> int:
     notas, outros = carregar()
     res = Resolvedor(notas, outros)
@@ -401,6 +465,13 @@ def cmd_check(args) -> int:
                 ach.add("aviso", "LINK_AMBIGUO", n.rel, f"[[{alvo}]] é ambíguo; use o caminho (ex.: [[{chave}]])")
             if chave and chave != n.chave:
                 entrada[chave] += 1
+        # `[[` aberto e fechado em outra linha: o Obsidian não resolve e o regex nem vê.
+        # Quase sempre é quebra de linha no meio do link.
+        for i, linha in enumerate(sem_codigo(n.texto).splitlines(), 1):
+            if "[[" in linha and "]]" not in linha.rsplit("[[", 1)[1]:
+                trecho = linha.rsplit("[[", 1)[1].strip()[:40]
+                ach.add("aviso", "LINK_PARTIDO", n.rel,
+                        f"[[{trecho}… abre um wikilink que não fecha nesta linha", i)
         if n.caminho.is_symlink():
             continue  # nota canônica em outro repositório; os links dela valem lá
         for href in mdlinks(n.texto):
@@ -484,6 +555,7 @@ def cmd_check(args) -> int:
             ach.add("aviso", "SUBSTITUIDO", n.rel, "status superado sem substituido_por")
 
     checar_skills(res, ach)
+    checar_estagnacao(notas, res, ach)
 
     for rel in sem_meta:
         ach.add("aviso", "FRONTMATTER", rel, "sem o frontmatter do contrato (tipo, resumo, status)")
@@ -595,7 +667,7 @@ def gerar_indice(notas: list[Nota], res: Resolvedor) -> str:
         "---",
         "# Índice",
         "",
-        "> Gerado por `python3 _sistema/cerebro.py indice`. Para mudar uma linha, edite o",
+        f"> Gerado por `python3 {PREFIXO}_sistema/cerebro.py indice`. Para mudar uma linha, edite o",
         "> frontmatter da nota (`tipo`, `resumo`, `jogos`, `temas`, `status`) e rode de novo.",
         "> Contrato em [[Processo]]. Navegação curada em [[00 Comece Aqui]].",
         "",
@@ -1186,7 +1258,7 @@ def gerar_legenda(notas: list["Nota"]) -> str:
         "---",
         "# Legenda do grafo",
         "",
-        "> Gerada por `python3 _sistema/cerebro.py cores`, que também grava as cores no Graph.",
+        f"> Gerada por `python3 {PREFIXO}_sistema/cerebro.py cores`, que também grava as cores no Graph.",
         "> Para mudar uma cor, edite `CORES` no `cerebro.py` e rode de novo. Contrato: [[Processo]].",
         "",
     ]

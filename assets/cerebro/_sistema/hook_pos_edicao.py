@@ -12,12 +12,13 @@ Teste manual:
 """
 from __future__ import annotations
 
+import os
 import json
 import subprocess
 import sys
 from pathlib import Path
 
-VAULT = Path(__file__).resolve().parent.parent
+VAULT = Path(os.path.abspath(__file__)).parent.parent
 CHECK = VAULT / "_sistema" / "cerebro.py"
 EXPORTADOR = VAULT / "genealogia-jogos" / "_kit" / "exportar_grafo.py"
 NOS = "genealogia-jogos/nos/"
@@ -50,11 +51,19 @@ def main() -> None:
                or (dados.get("tool_response") or {}).get("filePath") or "")
     if not caminho.endswith(".md"):
         return
-    p = Path(caminho)
-    alvo = p if p.is_absolute() else (VAULT / p)
-    try:
-        rel = alvo.resolve().relative_to(VAULT).as_posix()
-    except ValueError:
+    # O caminho pode vir absoluto, relativo à raiz do projeto (vault dentro de docs/) ou ao vault.
+    candidatos = [caminho] if os.path.isabs(caminho) else [
+        os.path.join(os.getcwd(), caminho), str(VAULT / caminho)]
+    # A comparação usa realpath nos dois lados (em macOS /var é link para /private/var);
+    # o caminho relativo resultante continua valendo para o VAULT não resolvido.
+    raiz = os.path.realpath(VAULT)
+    rel = ""
+    for c in candidatos:
+        r = os.path.relpath(os.path.realpath(c), raiz)
+        if not r.startswith("..") and (VAULT / r).exists():
+            rel = Path(r).as_posix()
+            break
+    if not rel:
         return  # arquivo fora deste vault
     if rel.startswith(IGNORAR):
         return

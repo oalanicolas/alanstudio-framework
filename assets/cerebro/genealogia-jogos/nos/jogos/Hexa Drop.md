@@ -5,7 +5,7 @@ studio: "[[Byteforge]]"
 genero:
   - puzzle
 hub: false
-status: semente
+status: vigente
 tags:
   - tipo/jogo
 entradas: 2

@@ -20,12 +20,14 @@ Saídas:
 from __future__ import annotations
 
 import csv
+import os
 import re
 import sys
 from collections import Counter
 from pathlib import Path
 
-VAULT = Path(__file__).resolve().parent.parent
+# abspath, não resolve: o script pode ser symlink para a implementação única.
+VAULT = Path(os.path.abspath(__file__)).parent.parent
 NOS = VAULT / "nos"
 DADOS = VAULT / "_kit" / "dados"
 
