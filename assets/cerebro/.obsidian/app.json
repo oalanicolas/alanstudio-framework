@@ -1,0 +1,16 @@
+{
+  "alwaysUpdateLinks": true,
+  "newFileLocation": "folder",
+  "newFileFolderPath": "_entrada",
+  "attachmentFolderPath": "_anexos",
+  "useMarkdownLinks": false,
+  "newLinkFormat": "shortest",
+  "showUnsupportedFiles": false,
+  "strictLineBreaks": false,
+  "propertiesInDocument": "visible",
+  "userIgnoreFilters": [
+    "_anexos/",
+    "genealogia-jogos/_kit/",
+    "_sistema/modelos/"
+  ]
+}

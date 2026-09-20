@@ -1,0 +1,127 @@
+filters:
+  or:
+    - file.inFolder("genealogia-jogos/nos/jogos")
+    - file.inFolder("genealogia-jogos/nos/obras")
+    - file.inFolder("genealogia-jogos/nos/mitos")
+    - file.inFolder("genealogia-jogos/nos/ludemas")
+    - file.inFolder("genealogia-jogos/nos/pessoas")
+    - file.inFolder("genealogia-jogos/nos/estudios")
+properties:
+  file.name:
+    displayName: Nó
+  tipo:
+    displayName: Tipo
+  ano:
+    displayName: Ano
+  studio:
+    displayName: Estúdio / autor
+  status:
+    displayName: Status
+  entradas:
+    displayName: Entradas
+  saidas:
+    displayName: Saídas
+  melhor_confianca:
+    displayName: Melhor evidência
+  pendentes:
+    displayName: Pendentes
+views:
+  - type: table
+    name: Todos os nós
+    order:
+      - file.name
+      - tipo
+      - ano
+      - studio
+      - entradas
+      - saidas
+      - melhor_confianca
+      - pendentes
+    sort:
+      - property: ano
+        direction: ASC
+  - type: table
+    name: Só jogos
+    filters:
+      and:
+        - tipo == "jogo"
+    order:
+      - file.name
+      - ano
+      - studio
+      - entradas
+      - saidas
+      - melhor_confianca
+    sort:
+      - property: ano
+        direction: ASC
+  - type: table
+    name: Ludemas
+    filters:
+      and:
+        - tipo == "ludema"
+    order:
+      - file.name
+      - saidas
+      - melhor_confianca
+  - type: table
+    name: Fontes fora dos jogos
+    filters:
+      and:
+        - tipo != "jogo"
+        - tipo != "ludema"
+        - tipo != "pessoa"
+        - tipo != "estudio"
+    order:
+      - file.name
+      - tipo
+      - ano
+      - studio
+      - saidas
+  - type: table
+    name: Com evidência A
+    filters:
+      and:
+        - melhor_confianca == "A"
+    order:
+      - file.name
+      - tipo
+      - entradas
+  - type: table
+    name: Pendências, fonte a conferir
+    filters:
+      and:
+        - pendentes > 0
+    order:
+      - file.name
+      - tipo
+      - pendentes
+      - melhor_confianca
+  - type: cards
+    name: Cartões
+    order:
+      - file.name
+      - tipo
+      - ano
+  - type: table
+    name: Nossos jogos
+    filters:
+      and:
+        - file.hasTag("nosso")
+    order:
+      - file.name
+      - estagio
+      - categoria
+      - entradas
+      - melhor_confianca
+      - projeto
+  - type: table
+    name: Jogos sem linhagem
+    filters:
+      and:
+        - tipo == "jogo"
+        - entradas == 0
+    order:
+      - file.name
+      - ano
+      - studio

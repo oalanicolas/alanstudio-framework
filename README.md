@@ -969,10 +969,31 @@ Mapa: [sources.md](references/sources.md).
 
 Recibos brutos de execução e o acervo sonoro ficam no laboratório.
 
+## Segundo cérebro de jogos
+
+O harness *faz* o jogo. O vault em [assets/cerebro](assets/cerebro) *guarda* o que
+se aprendeu: estudos, padrões, genealogia com evidência A–D. A pasta **é** o
+vault Obsidian. Copie-a; não precisa deste repositório para o `check` passar.
+
+O exemplo Hexa Drop / Oficina é inventado. How-to: [Como replicar](assets/cerebro/Como%20replicar.md).
+
+```sh
+cp -R assets/cerebro ~/MeuCerebroDeJogos
+python3 ~/MeuCerebroDeJogos/_sistema/cerebro.py check
+python3 ~/MeuCerebroDeJogos/_sistema/cerebro.py check --nivel erro   # só o que quebra agora
+python3 ~/MeuCerebroDeJogos/_sistema/cerebro.py check --json         # código, arquivo, linha
+```
+
+O diagnóstico é endereçável (nível, código, arquivo, linha), e a cópia já traz
+`.claude/settings.json` com o hook `_sistema/hook_pos_edicao.py`: num harness com hooks,
+cada edição de nota devolve ao agente os problemas **daquele** arquivo. O método também
+vai no kit, sem a prova do laboratório: [Métodos herdados](assets/cerebro/M%C3%A9todos%20herdados.md).
+
 ## Testes
 
 ```sh
 python3 -m unittest discover -s tests -v
+python3 -m unittest discover -s tests -p test_cerebro.py -v
 cd assets/starters/canvas-arcade && npm test && npm run budget && npm run size
 ```
 

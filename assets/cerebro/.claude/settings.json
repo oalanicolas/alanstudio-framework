@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 _sistema/cerebro.py *)",
+      "Bash(python3 genealogia-jogos/_kit/exportar_grafo.py *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ],
+    "ask": [
+      "Edit(_anexos/**)",
+      "Write(_anexos/**)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/_sistema/hook_pos_edicao.py\"",
+            "timeout": 60,
+            "statusMessage": "Validando o cérebro…"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -37,6 +37,7 @@ documentos, mas não decide sozinho se uma afirmação é transferível ou verda
 | Gestão de módulos e extração de repositórios | [Ferramentas de workspace](workspace-binding.md#módulos) |
 | Preferência artística, fornecedor excluído, endereço de publicação | AGENTS/configuração do workspace ou documento do jogo |
 | Medição bruta, captura, decisão aplicada e histórico | Jogo ou laboratório que produziu a prova |
+| Segundo cérebro (estudos, padrões, grafo com evidência) | [Kit replicável](../assets/cerebro/Como%20replicar.md); o caso do estúdio permanece no vault do laboratório |
 
 Código específico permanece com seus consumidores. Para compartilhar uma implementação,
 confirme o contrato comum e separe parâmetros de identidade, caminhos e políticas.

@@ -1,0 +1,149 @@
+{
+  "colorGroups": [
+    {
+      "query": "tag:#nosso",
+      "color": {
+        "a": 1,
+        "rgb": 16726832
+      }
+    },
+    {
+      "query": "path:\"genealogia-jogos/nos/jogos/\"",
+      "color": {
+        "a": 1,
+        "rgb": 16749824
+      }
+    },
+    {
+      "query": "path:\"genealogia-jogos/nos/ludemas/\"",
+      "color": {
+        "a": 1,
+        "rgb": 16766474
+      }
+    },
+    {
+      "query": "path:\"genealogia-jogos/nos/estudios/\"",
+      "color": {
+        "a": 1,
+        "rgb": 10650718
+      }
+    },
+    {
+      "query": "path:\"genealogia-jogos/nos/pessoas/\"",
+      "color": {
+        "a": 1,
+        "rgb": 16748459
+      }
+    },
+    {
+      "query": "path:\"genealogia-jogos/nos/mitos/\"",
+      "color": {
+        "a": 1,
+        "rgb": 12540658
+      }
+    },
+    {
+      "query": "path:\"genealogia-jogos/nos/obras/\"",
+      "color": {
+        "a": 1,
+        "rgb": 14136319
+      }
+    },
+    {
+      "query": "path:\"estudos/\"",
+      "color": {
+        "a": 1,
+        "rgb": 689407
+      }
+    },
+    {
+      "query": "path:\"pesquisas/\"",
+      "color": {
+        "a": 1,
+        "rgb": 6607615
+      }
+    },
+    {
+      "query": "path:\"aprendizados/\"",
+      "color": {
+        "a": 1,
+        "rgb": 3199320
+      }
+    },
+    {
+      "query": "path:\"planos/\"",
+      "color": {
+        "a": 1,
+        "rgb": 11920524
+      }
+    },
+    {
+      "query": "path:\"genealogia-jogos/visoes/\"",
+      "color": {
+        "a": 1,
+        "rgb": 3065014
+      }
+    },
+    {
+      "query": "path:\"identidade/\"",
+      "color": {
+        "a": 1,
+        "rgb": 14696699
+      }
+    },
+    {
+      "query": "path:\"aulas/\"",
+      "color": {
+        "a": 1,
+        "rgb": 16757922
+      }
+    },
+    {
+      "query": "path:\"operacao/\"",
+      "color": {
+        "a": 1,
+        "rgb": 10727818
+      }
+    },
+    {
+      "query": "path:\"registros/\"",
+      "color": {
+        "a": 1,
+        "rgb": 13092812
+      }
+    },
+    {
+      "query": "path:\"evidencias/\"",
+      "color": {
+        "a": 1,
+        "rgb": 6513510
+      }
+    },
+    {
+      "query": "path:\"padroes/\"",
+      "color": {
+        "a": 1,
+        "rgb": 16777215
+      }
+    },
+    {
+      "query": "[tipo:hub] OR [tipo:processo]",
+      "color": {
+        "a": 1,
+        "rgb": 6184166
+      }
+    }
+  ],
+  "collapse-color-groups": false,
+  "search": "-file:\"Índice\" -file:\"AGENTS\" -path:\"_entrada/\"",
+  "showArrow": true,
+  "showTags": false,
+  "showAttachments": false,
+  "hideUnresolved": true,
+  "showOrphans": true,
+  "nodeSizeMultiplier": 1.3,
+  "lineSizeMultiplier": 0.7,
+  "linkDistance": 180,
+  "repelStrength": 14,
+  "centerStrength": 0.45
+}

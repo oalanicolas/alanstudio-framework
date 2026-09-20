@@ -1,0 +1,172 @@
+{
+	"nodes": [
+		{
+			"id": "legenda",
+			"type": "text",
+			"x": -40,
+			"y": -320,
+			"width": 1320,
+			"height": 260,
+			"text": "# Cluster de queda · pôster de exemplo\n\n**Regiões** = agrupamento: laranja origem · verde nosso jogo · cinza linhagem sem citação · roxo fonte cultural.\n\n**Cor da seta** = relação: 🟢 inspirou (o time citou) · 🟠 origem / carrega (ludema) · 🟡 fonte (mito, texto) · ⚪ linhagem, sem citação · 🔴 parece, sem fonte.\n\n**Letra** = confiança A–D. O dado canônico está nas tabelas *Recebeu de*. Este canvas é o argumento; o Graph é a exploração. Tudo inventado neste kit."
+		},
+		{
+			"id": "g-origem",
+			"type": "group",
+			"x": -40,
+			"y": 0,
+			"width": 420,
+			"height": 360,
+			"label": "Origem (citou)",
+			"color": "2"
+		},
+		{
+			"id": "g-nosso",
+			"type": "group",
+			"x": 480,
+			"y": 0,
+			"width": 420,
+			"height": 360,
+			"label": "Nosso jogo",
+			"color": "1"
+		},
+		{
+			"id": "g-linhagem",
+			"type": "group",
+			"x": 1000,
+			"y": 0,
+			"width": 420,
+			"height": 360,
+			"label": "Linhagem sem citação",
+			"color": "4"
+		},
+		{
+			"id": "g-fonte",
+			"type": "group",
+			"x": -40,
+			"y": 420,
+			"width": 860,
+			"height": 280,
+			"label": "Fonte cultural",
+			"color": "6"
+		},
+		{
+			"id": "hexa",
+			"type": "file",
+			"file": "genealogia-jogos/nos/jogos/Hexa Drop.md",
+			"x": 0,
+			"y": 80,
+			"width": 340,
+			"height": 80
+		},
+		{
+			"id": "peca",
+			"type": "file",
+			"file": "genealogia-jogos/nos/ludemas/Peça que encaixa.md",
+			"x": 0,
+			"y": 200,
+			"width": 340,
+			"height": 80
+		},
+		{
+			"id": "oficina",
+			"type": "file",
+			"file": "genealogia-jogos/nos/jogos/Oficina.md",
+			"x": 520,
+			"y": 80,
+			"width": 340,
+			"height": 80
+		},
+		{
+			"id": "folha",
+			"type": "file",
+			"file": "genealogia-jogos/nos/jogos/Folha em Branco.md",
+			"x": 520,
+			"y": 200,
+			"width": 340,
+			"height": 80
+		},
+		{
+			"id": "caicai",
+			"type": "file",
+			"file": "genealogia-jogos/nos/jogos/Cai-Cai.md",
+			"x": 1040,
+			"y": 80,
+			"width": 340,
+			"height": 80
+		},
+		{
+			"id": "ensaio",
+			"type": "file",
+			"file": "genealogia-jogos/nos/obras/Anel e Centro.md",
+			"x": 0,
+			"y": 500,
+			"width": 340,
+			"height": 80
+		},
+		{
+			"id": "mito",
+			"type": "file",
+			"file": "genealogia-jogos/nos/mitos/O Anel.md",
+			"x": 420,
+			"y": 500,
+			"width": 340,
+			"height": 80
+		}
+	],
+	"edges": [
+		{
+			"id": "e-inspirou",
+			"fromNode": "hexa",
+			"fromSide": "right",
+			"toNode": "oficina",
+			"toSide": "left",
+			"label": "inspirou A",
+			"color": "4"
+		},
+		{
+			"id": "e-linhagem",
+			"fromNode": "hexa",
+			"fromSide": "right",
+			"toNode": "caicai",
+			"toSide": "left",
+			"label": "linhagem C",
+			"color": "3"
+		},
+		{
+			"id": "e-parece",
+			"fromNode": "caicai",
+			"fromSide": "left",
+			"toNode": "oficina",
+			"toSide": "right",
+			"label": "parece D",
+			"color": "1"
+		},
+		{
+			"id": "e-fonte1",
+			"fromNode": "ensaio",
+			"fromSide": "right",
+			"toNode": "mito",
+			"toSide": "left",
+			"label": "fonte A",
+			"color": "6"
+		},
+		{
+			"id": "e-fonte2",
+			"fromNode": "mito",
+			"fromSide": "top",
+			"toNode": "hexa",
+			"toSide": "bottom",
+			"label": "fonte A",
+			"color": "6"
+		},
+		{
+			"id": "e-carrega",
+			"fromNode": "peca",
+			"fromSide": "right",
+			"toNode": "oficina",
+			"toSide": "bottom",
+			"label": "carrega",
+			"color": "2"
+		}
+	]
+}

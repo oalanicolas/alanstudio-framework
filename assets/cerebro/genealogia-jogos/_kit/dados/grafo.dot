@@ -1,0 +1,37 @@
+digraph influencias {
+  rankdir=LR; node [fontname="Helvetica", style=filled, fillcolor="#f4f1ea"]; edge [fontname="Helvetica", fontsize=9];
+  subgraph cluster_jogos { label="jogos"; color="#cccccc";
+    "Cai-Cai" [label="Cai-Cai\n1994", shape=box];
+    "Folha em Branco" [label="Folha em Branco\n2026", shape=box];
+    "Hexa Drop" [label="Hexa Drop\n1991", shape=box];
+    "Oficina" [label="Oficina\n2026", shape=box];
+  }
+  subgraph cluster_obras { label="obras"; color="#cccccc";
+    "Anel e Centro" [label="Anel e Centro\n1987", shape=note];
+  }
+  subgraph cluster_mitos { label="mitos"; color="#cccccc";
+    "O Anel" [label="O Anel\n1987", shape=diamond];
+  }
+  subgraph cluster_ludemas { label="ludemas"; color="#cccccc";
+    "Peça que encaixa" [label="Peça que encaixa\n1991", shape=hexagon];
+  }
+  subgraph cluster_pessoas { label="pessoas"; color="#cccccc";
+    "Lia Costa" [label="Lia Costa\n1991", shape=ellipse];
+  }
+  subgraph cluster_estudios { label="estudios"; color="#cccccc";
+    "Byteforge" [label="Byteforge\n1989", shape=folder];
+    "Kite Works" [label="Kite Works\n1993", shape=folder];
+  }
+  "Hexa Drop" -> "Cai-Cai" [label="linhagem", color="#c98a1b", style=dashed];
+  "Peça que encaixa" -> "Cai-Cai" [label="carrega", color="#c98a1b", style=solid];
+  "Kite Works" -> "Cai-Cai" [label="desenvolveu", color="#bbbbbb", style=dotted];
+  "Peça que encaixa" -> "Hexa Drop" [label="carrega", color="#1f8b4c", style=solid];
+  "O Anel" -> "Hexa Drop" [label="fonte", color="#1f8b4c", style=solid];
+  "Byteforge" -> "Hexa Drop" [label="desenvolveu", color="#bbbbbb", style=dotted];
+  "Hexa Drop" -> "Oficina" [label="inspirou", color="#1f8b4c", style=solid];
+  "Peça que encaixa" -> "Oficina" [label="carrega", color="#1f8b4c", style=solid];
+  "Cai-Cai" -> "Oficina" [label="parece", color="#9a9a9a", style=dashed];
+  "Anel e Centro" -> "O Anel" [label="fonte", color="#1f8b4c", style=solid];
+  "Hexa Drop" -> "Peça que encaixa" [label="origem", color="#1f8b4c", style=solid];
+  "Lia Costa" -> "Byteforge" [label="integra", color="#bbbbbb", style=dotted];
+}

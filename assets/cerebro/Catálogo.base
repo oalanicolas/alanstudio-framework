@@ -1,0 +1,129 @@
+filters:
+  and:
+    - file.ext == "md"
+    - not:
+        - file.inFolder("genealogia-jogos/nos")
+        - file.inFolder("_sistema")
+        - file.inFolder("_anexos")
+properties:
+  file.name:
+    displayName: Nota
+  file.folder:
+    displayName: Pasta
+  tipo:
+    displayName: Tipo
+  resumo:
+    displayName: Resumo
+  jogos:
+    displayName: Jogos
+  temas:
+    displayName: Temas
+  status:
+    displayName: Status
+  parte_de:
+    displayName: Parte de
+  referencias:
+    displayName: Objeto no grafo
+  data:
+    displayName: Data
+views:
+  - type: table
+    name: Por tipo
+    filters:
+      and:
+        - parte_de.isEmpty()
+        - tipo != "captura"
+    groupBy:
+      property: note.tipo
+      direction: ASC
+    order:
+      - file.name
+      - file.folder
+      - resumo
+      - status
+      - jogos
+      - temas
+      - data
+  - type: table
+    name: Linha do tempo
+    filters:
+      and:
+        - "!data.isEmpty()"
+    order:
+      - data
+      - file.name
+      - tipo
+      - resumo
+    sort:
+      - property: data
+        direction: DESC
+  - type: table
+    name: Estudos
+    filters:
+      and:
+        - tipo == "estudo"
+        - parte_de.isEmpty()
+    order:
+      - file.name
+      - resumo
+      - referencias
+      - jogos
+      - data
+      - status
+  - type: table
+    name: Ligadas a um jogo nosso
+    filters:
+      and:
+        - "!jogos.isEmpty()"
+    order:
+      - file.name
+      - file.folder
+      - jogos
+      - tipo
+      - resumo
+  - type: table
+    name: Em andamento e rascunhos
+    filters:
+      or:
+        - status == "em-andamento"
+        - status == "rascunho"
+    order:
+      - file.name
+      - file.folder
+      - status
+      - resumo
+      - file.mtime
+    sort:
+      - property: file.mtime
+        direction: DESC
+  - type: table
+    name: Recentes
+    order:
+      - file.name
+      - file.folder
+      - tipo
+      - file.mtime
+    sort:
+      - property: file.mtime
+        direction: DESC
+    limit: 40
+  - type: table
+    name: Entrada (a classificar)
+    filters:
+      or:
+        - file.inFolder("_entrada")
+        - tipo == "captura"
+    order:
+      - file.name
+      - file.ctime
+  - type: table
+    name: Sem metadados
+    filters:
+      and:
+        - tipo.isEmpty()
+        - not:
+            - file.inFolder("_anexos")
+            - file.inFolder("genealogia-jogos/_kit")
+    order:
+      - file.name
+      - file.folder

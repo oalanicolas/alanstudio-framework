@@ -1,0 +1,11 @@
+Label,Type,pasta,ano,studio,genero,hub,status,entradas,saidas,melhor_confianca,pendentes,tags,arquivo
+Cai-Cai,jogo,jogos,1994,Kite Works,puzzle,false,semente,2,1,C,0,tipo/jogo,nos/jogos/Cai-Cai.md
+Folha em Branco,jogo,jogos,2026,,narrative,false,semente,0,0,-,0,tipo/jogo; nosso,nos/jogos/Folha em Branco.md
+Hexa Drop,jogo,jogos,1991,Byteforge,puzzle,false,semente,2,3,A,0,tipo/jogo,nos/jogos/Hexa Drop.md
+Oficina,jogo,jogos,2026,,puzzle,false,semente,3,0,A,1,tipo/jogo; nosso,nos/jogos/Oficina.md
+Anel e Centro,texto,obras,1987,,,false,semente,0,1,-,0,tipo/obra,nos/obras/Anel e Centro.md
+O Anel,mito,mitos,1987,,,false,semente,1,1,A,0,tipo/mito,nos/mitos/O Anel.md
+Peça que encaixa,ludema,ludemas,1991,,puzzle,false,semente,1,3,A,0,tipo/ludema,nos/ludemas/Peça que encaixa.md
+Lia Costa,pessoa,pessoas,1991,Byteforge,,false,semente,0,0,-,0,tipo/pessoa,nos/pessoas/Lia Costa.md
+Byteforge,estudio,estudios,1989,,,false,semente,0,0,-,0,tipo/estudio,nos/estudios/Byteforge.md
+Kite Works,estudio,estudios,1993,,,false,semente,0,0,-,0,tipo/estudio,nos/estudios/Kite Works.md
