@@ -388,6 +388,17 @@ Os relatos incluem contraprovas e correções de interpretações anteriores.
 - [Gestão de módulos](workspace-binding.md#módulos): extração por commit, links,
   seleção por manifesto, preservação de trabalho e política de publicação.
 
+Áudio no navegador, Distrito Rabisco, 23/09/2026:
+- **Aplicado:** preparo das gravações antes da partida com contagem de sons mudos, FLAC com
+  WAV de reserva, 16 downloads simultâneos e cache versionado com manifesto revalidado. Serviu
+  às regras de [áudio](../recipes/audio.md#aprendizados-de-carregamento-formato-e-entrega), do
+  [pack Web](../packs/platforms/web.md) e de [performance](../recipes/performance.md).
+- **Provas no laboratório:** `games/distrito-rabisco/production/evidence/` (`audio-preparation-`,
+  `flac-lossless-` e `audio-cache-20260923`) e a pesquisa
+  `docs/pesquisas/Áudio em jogos Web — carregamento, formatos, memória e reprodução.md`.
+- **Limites:** medições em Mac com Chrome, Safari 17.6 e Firefox, em rede emulada e numa
+  conexão real. iPhone, Android, escuta e prioridade de vozes seguem pendentes.
+
 As generalizações são pontos de aplicação condicionados ao contrato e à versão do
 projeto. Não comprovam ganhos em outros jogos, não tornam fornecedores obrigatórios
 e não substituem observar o consumidor final. Os números, arquivos brutos e

@@ -42,3 +42,14 @@ Referências: testes de Era Uma Vez e simulação de Brasa-Pista no laboratório
 boardgame.io `RE-BGIO-003`, `RE-BGIO-006`, `RE-BGIO-011`
 ([fonte](https://github.com/boardgameio/boardgame.io)).
 As regras externas descrevem aquele fluxo; não obrigam outros gêneros a usar turnos.
+
+Em RTS com corpos contínuos e busca por células, teste a aproximação a alvos menores
+que a malha: pode não existir centro de célula livre dentro do alcance de trabalho.
+A chegada precisa considerar a geometria do alvo. Inclua também separação de grupos:
+um desvio local pode invalidar o segmento seguinte, e exigir que todos atravessem o
+mesmo waypoint exato pode causar oscilação permanente. Verifique recálculo, tolerância
+segura dos pontos intermediários e saída de unidades sobrepostas a novas fundações.
+O teste de economia/IA deve alcançar produção e contato com o adversário; apenas
+avançar de era pode deixar passar bloqueios de habitação e navegação.
+Caso e regressões: RTS do laboratório, V7 de 2026-09-22,
+`prototypes/rts/tests/opening.test.cjs` e `prototypes/rts/OPENING.md`.

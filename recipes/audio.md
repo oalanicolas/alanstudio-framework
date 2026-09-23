@@ -210,3 +210,44 @@ Casos e limites em [aprendizados de aplicações](../references/sources.md#apren
 - Streaming é candidato quando o contrato permite; valide continuidade, latência,
   interrupção e qualidade antes de trocar o carregamento integral. Sem esse teste,
   registre a hipótese e o custo atual, sem anunciar ganho ainda não observado.
+
+## Aprendizados de carregamento, formato e entrega
+
+Caso de origem: Distrito Rabisco, 23/09/2026 ([origem e limites](../references/sources.md#aprendizados-de-aplicações)).
+Detalhes de navegador ficam no [pack Web](../packs/platforms/web.md#conteúdo-e-pipeline).
+
+- **O som do verbo não pode chegar depois do verbo.**
+  - *Quando aplicar:* sempre que as gravações carregam em segundo plano enquanto o jogo já
+    deixa agir. A primeira ação pode sair muda, e nenhum teste de decodificação percebe.
+  - *O que fazer:* a cena só começa quando estiver decodificado tudo o que ela pode tocar,
+    atrás do mesmo estado de carregamento dos outros assets. Download que falha é repetido.
+    Falha persistente vira erro com repetir, não uma cena muda.
+  - *O que verificar:* conte, durante o jogo, os pedidos de som sem gravação pronta. Exija
+    zero com cache frio e rede lenta, e compare com a versão anterior nas mesmas condições.
+  - *O que invalida:* um evento que toca antes da espera (tela sem gate, lobby) ou um som
+    fora do conjunto preparado.
+  - *Limite:* a garantia aumenta a espera em rede lenta. Meça e reporte esse custo.
+  - *Caso:* antes, 114 pedidos mudos em 20 s a 4 Mbit/s; depois, 0.
+- **Dividir o acervo por modo, fase ou onda exige medir o que cada contexto toca.** No caso de
+  origem, armas, jogador, inimigos e interface se repetiam em todos os modos, e a divisão só
+  economizou as caudas de sala das outras arenas (~5%). Toda exclusão precisa de um teste de
+  cobertura que chame todo evento sonoro do motor e confira o conjunto preparado. Prove o teste
+  retirando de propósito um som necessário.
+- **Entrega sem perda antes de entrega com perda.**
+  - *Master PCM:* pode viajar num formato sem perdas, com o master como reserva do mesmo take.
+  - *Conferência automática:* a do arquivo tem de ser automática; o FLAC traz o MD5 das
+    amostras no cabeçalho.
+  - *Conferência no destino:* uma vez por plataforma, compare as amostras decodificadas com o
+    master.
+  - *Formato com perda (Opus, AAC, MP3):* é decisão de produto com escuta humana. AAC e MP3
+    ainda criam emenda em loop por atraso do codificador.
+  - *Caso:* 11,77 → 6,69 MB, com amostras idênticas em Safari, Chrome e Firefox.
+- **A escolha de formato por capacidade declarada precisa de uma saída quando a decodificação
+  falha.** Recusa de decodificação troca o formato daquele take e, na sessão, dos seguintes.
+  Arquivo ausente só troca aquele take.
+- **Hipóteses com prova pendente:**
+  - *Prioridade de vozes:* um teto global que recusa voz nova pode calar o som do próprio
+    jogador. A alternativa de middleware é roubar a voz mais distante ou mais baixa. Meça as
+    recusas numa cena cheia antes de mudar.
+  - *Chave de silêncio:* em plataformas com chave de silêncio, efeitos e música podem obedecer
+    a ela de formas diferentes. Teste no aparelho antes de escolher a categoria de sessão.

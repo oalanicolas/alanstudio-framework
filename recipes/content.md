@@ -72,6 +72,23 @@ Para níveis, examine identidade estável, referências a entidades, arquivos ex
 spawn e rotas legíveis. Teste carregamento ausente/incompatível e retorno a um nível
 já visitado. Não troque o formato inteiro para absorver uma validação de outro editor.
 
+Em arenas com área segura que encolhe, conectividade na planta inteira não basta:
+recorte cada estágio da área segura, considere o raio do corpo e mantenha caixas e
+cobertura intactas ao procurar regiões isoladas. Uma parede em cotovelo pode criar
+um bolso sem saída somente no fechamento. Quando rotas alternativas são requisito,
+verifique também gargalos de uma única célula e percorra a rota com a física real.
+Prévia, colisão, renderização e plano multiplayer devem consumir a mesma identidade
+e versão de nível; uma troca/revanche não pode herdar destruição da planta anterior.
+Prova de aplicação: Só Sobra Um, `docs/qa.md`, QA-EXP-M01 (22/09/2026).
+
+Para diversificar arenas, defina o que muda na decisão do jogador, inclusive no
+fechamento: ocultar-se, contornar, destruir, manter distância ou usar uma superfície
+de ricochete. Trocar contagens de terreno ou cores não demonstra esse contraste.
+Confira a interação com a física e observe partidas completas sem fabricar tempo,
+dano ou resultado; registre quando a entrada humana foi substituída pela IA.
+Uma rodada por arena não estima equilíbrio nem certifica diversão humana.
+Prova de aplicação: Só Sobra Um, `docs/qa.md`, QA-EXP-M03 (22/09/2026).
+
 Para narrativa, confirme como escolhas disponíveis dependem do histórico, quando
 efeitos são aplicados e qual estado uma escolha restaura. Teste caminhos alternativos,
 fim sem opções e retorno após save. Versão da história compilada e versão do save

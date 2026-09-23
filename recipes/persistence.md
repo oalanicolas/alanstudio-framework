@@ -51,6 +51,20 @@ referenciados por índice ou por nome de arquivo, qualquer reordenação corromp
 saves antigos silenciosamente. Versão do conteúdo e versão do save são contratos
 distintos; não os una em um número por conveniência.
 
+Em saves com conta e sincronização, preserve os bytes legados antes de montar
+controles que gravam automaticamente (seleção inicial também pode gravar).
+Separe cache e fila por identidade; vincule cada requisição ao dono original e
+descarte a resposta se a conta mudou. Eventos com IDs estáveis e recibos no
+servidor devem sobreviver à perda da resposta depois do commit. Uma rejeição
+definitiva deve manter evidência recuperável sem bloquear os eventos seguintes.
+
+Preservação e confiança são contratos diferentes. Importar um save pessoal ou
+guardar uma partida offline não certifica suas métricas. Registre a origem e
+separe esses dados de qualquer placar ou concessão que exija prova. Relógio do
+servidor, checkpoints e limites de plausibilidade verificam algumas propriedades;
+não comprovam que um cliente não foi adulterado. Teste explicitamente a tentativa
+de promover dados sem prova à categoria competitiva.
+
 `save <projeto>` lê se o código usa armazenamento e se declara schema/migrate.
 `trusted` é sempre falso: o harness não abre o save e não confirma escrita.
 

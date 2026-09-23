@@ -182,3 +182,26 @@ em pose neutra não basta. Retratos de seleção podem vir do mesmo rig/material
 desde que a câmera caiba também nos acessórios mais altos e a geração restaure
 o estado do renderer sem consumir o RNG da simulação. Caso: MineNite,
 `tests/hero-presentation.mjs` e `docs/qa/hero-polish.json`, 20/09/2026.
+
+Antes de trocar a linguagem de um efeito, confira o que carrega a identidade dele. Num jogo
+em que o tiro é luz (clarão que ilumina o chão, bloom, brilho na cor do kit), uma forma
+recortada por cima some no círculo da própria luz: a luz leva o chão acima de 1 em HDR e o
+tone mapping transforma a forma em branco. Isole a causa desenhando o sprite fora do
+círculo, erguido e sem teste de profundidade. Não resolva contendo a luz e ocluindo o fundo
+com formas opacas: o efeito muda de linguagem (vira desenho animado) e deixa de combinar
+com o resto do jogo. Melhore dentro da luz e compare em movimento com o dono da direção
+antes de trocar o padrão. Quando o dono disser que "antes era melhor", compare a versão
+antiga rodando lado a lado (um worktree do commit anterior) em vez de adivinhar pelo código.
+Caso: Só Sobra Um, 22/09/2026 — clarão, rastro e estrela recortados, e silhuetas com
+contorno de tinta sobre projéteis que antes eram luz, ambos recusados; os tiros voltaram
+aos feixes de luz do começo (devlog "Tiros de luz do começo do jogo").
+
+Em câmera alta (top-down, isométrica íngreme), julgue o personagem primeiro pela silhueta
+preta na câmera real da partida. Vista de cima, a cabeça ou o chapéu cobre a maior parte
+do corpo. A identidade vem do que sai desse círculo (luvas, ferramenta, carga, arma) e de
+dois ou três blocos grandes de cor. Botões, cintos e bolsos somem nesse tamanho. Um
+acessório atrás da cabeça ou do mesmo lado de outra massa também some: confira na
+silhueta. Peças de cabeça precisam respeitar a troca de visuais (chapéus alternativos),
+e peças novas nas costas precisam conviver com capas. Prove em partida, andando, e nos
+visuais alternativos. Caso: Só Sobra Um, 22/09/2026 (Galo de Briga como referência; Slick,
+Rebita e Fuse).

@@ -82,6 +82,45 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
 - Nomeie a grandeza medida: simulação isolada, duração de callback, intervalo de RAF,
   CPU, GPU, carregamento e tempo de captura/exportação são medidas diferentes.
   Leituras GPU, escrita de PNG e tempo simulado alteram a própria execução.
+- Confirme que o medidor não criou um segundo loop de desenho sobre o RAF do jogo.
+  Fixe resolução interna e qualidade entre condições; um governador adaptativo ou
+  teto de vsync pode esconder a diferença. Alterne a ordem das variantes, registre
+  aquecimento e deriva térmica e inclua um controle sem alteração. Ganhos que mudam
+  de sinal entre ordens ou ficam dentro do ruído não justificam promover a variante.
+- Para engasgos de shader, conte programas e primeira compilação durante carregamento,
+  primeiro uso de cada efeito e reinício. Aqueça as variantes reais de material e
+  iluminação antes da ação; retenha recursos compartilhados enquanto tiverem dono.
+  Não descarte e recrie todos os programas a cada partida, nem retenha recursos sem
+  limite para evitar recompilação. Confira três partidas e o descarte final, além
+  da equivalência visual em movimento. Caso: sessões S09/S14 do piloto Beacon/Jev
+  do laboratório em 22/09/2026; os números locais não são metas universais.
+- **Tempo até jogar:** separe pedidos, bytes e decodificação antes de escolher a técnica.
+  - *Como medir:* com cache frio, repita o carregamento variando uma coisa por vez
+    (concorrência, formato, rede emulada). Meça também na produção real: a emulação de rede
+    cobra latência por pedido e não reproduz HTTP/2.
+  - *Junto do tempo:* conte a regressão que ele pode esconder. Um início mais rápido que toca
+    a ação sem som é pior, não melhor.
+  - *Cache:* depois de um deploy, confira que quem já tem cache recebe a versão nova.
+  - *Caso Distrito Rabisco (23/09/2026):* com FLAC, a espera ficou limitada por idas e voltas
+    (4 → 16 downloads: 1,79 → 0,57 s em produção). Regras em
+    [áudio](audio.md#aprendizados-de-carregamento-formato-e-entrega) e no
+    [pack Web](../packs/platforms/web.md#build-plataformas-e-distribuição).
+- No navegador, quando execuções separadas variam mais que a diferença procurada, abra
+  referência, variante e uma segunda cópia da referência (A/B/A′) no mesmo processo e
+  alterne rajadas curtas na mesma cena, com o loop do jogo parado durante a rajada. Use
+  o timer de GPU do WebGL quando existir e conclua só por razões entre variantes: com
+  várias abas, o valor absoluto não é o tempo de quadro. Antes de afirmar "sem diferença",
+  prove a sensibilidade com uma alteração de custo conhecido; se ela não aparecer, o
+  método não decide. Caso: Só Sobra Um, 22/09/2026, onde builds idênticos variaram até 25%
+  entre execuções separadas.
+- Ao cronometrar desenhos no navegador em sequência, sincronize a GPU antes e depois de
+  cada um, por exemplo com a leitura de 1 pixel. Sem isso, o timer pode somar trabalho que
+  ainda estava na fila do desenho anterior e inventar custo. Com GPU disputada, meça as
+  variantes intercaladas no mesmo instante da simulação e conclua pela mediana da razão por
+  instante, com intervalo. Custo que não muda quando a área desenhada cai a uma fração é
+  sinal de artefato do método, não de preenchimento. Caso: Só Sobra Um, 22/09/2026 — efeito
+  medido em +30% a +47% sem sincronizar e em 0% a +2,4% sincronizado, com a contraprova do
+  AO (−20% a −28%) visível nos dois métodos.
 - Separe bytes transferidos, buffers decodificados, heap, recursos GPU e memória total.
   Contador de objetos ou heap JavaScript sozinho não mede PCM nem VRAM. Remover
   referências e desconectar áudio não demonstram coleta imediata pelo sistema.
@@ -105,6 +144,15 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
   criação e remoção. Cenas dinâmicas não viram estáticas porque a matriz local ficou igual.
 - Agrupamento excessivo pode anular o culling. Compare grupos espaciais, instâncias e
   custo por passagem; menos chamadas de desenho não garantem menos trabalho total.
+- Não asse dentro de um mapa grande um termo que muda em jogo, como a oclusão alterada
+  por destruição: aplique-o no shader a partir da própria textura pequena, reproduzindo a
+  mistura e o espaço de cor originais, e compare a imagem. A atualização passa a reenviar
+  só o mapa pequeno.
+- Texturas procedurais geradas por laços de pixel no JavaScript podem ir para a GPU. Crie
+  um único contexto de bake por sessão (criar um por uso custa e o navegador limita o
+  total), compare pixel a pixel com a versão de CPU e mantenha a CPU como alternativa
+  quando a extensão necessária faltar. Números do caso Só Sobra Um: 608 → 57 ms num mapa
+  de 2816², sem prometer o mesmo ganho em outro hardware.
 - Copiar um mapa grande ou compor estático/dinâmico pode custar mais que redesenhar
   o conteúdo visível. Conte transferências, sincronização e submissões efetivas.
 - Subdividir apenas a integração de movimento pode reduzir dependência da taxa de

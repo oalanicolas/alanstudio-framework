@@ -26,6 +26,26 @@ Não promover uma hipótese a técnica comprovada e não deixar uma descoberta u
 presa ao laboratório. A execução desta revisão cabe ao agente: o scanner localiza
 documentos, mas não decide sozinho se uma afirmação é transferível ou verdadeira.
 
+## Extrair de históricos de agentes
+
+Um avaliador pode ordenar sessões para revisão, mas sua nota não escreve nem valida
+uma lição. Registre origem, versão e eventos que sustentam condição, diagnóstico,
+correção e verificação; separe relato do agente de resultado observado. Sucesso da
+tarefa não compensa ausência de evidência, e falha da tarefa inteira não apaga uma
+correção local demonstrada. Prefira filas de revisão a descarte por nota quando a
+cobertura do avaliador ainda não foi medida.
+
+Recortes de histórico omitem fatos. Preserve referências para recuperar a correção
+e os eventos adjacentes; não trate a ausência na amostra como ausência na sessão.
+Confira o projeto de origem antes de atribuir memória ao destino. Uma orientação
+aprovada deve atualizar o consumidor existente, com condição de invalidação; se
+for exportada, a atualização ou retirada precisa alcançar os arquivos consumidores.
+
+Caso e limites: piloto de 24 históricos do laboratório em
+`docs/registros/Beacon e Jev — piloto de triagem de sessões.md`, 22/09/2026.
+A comparação mede triagem contra um revisor agente, não aprendizado autônomo,
+economia de execução nem ganho posterior entre ferramentas.
+
 ## Destino do conteúdo
 
 | Conteúdo | Fonte canônica |

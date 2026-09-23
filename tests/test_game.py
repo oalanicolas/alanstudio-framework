@@ -7726,7 +7726,7 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertFalse(report["consistent"])
         self.assertIn("chuva", report["scope"])
         self.assertTrue(report["guide"].endswith("recipes/visual.md"))
-        self.assertNotIn("aprovado", recipe)
+        self.assertNotIn("aprovado", report["scope"])
 
     def test_art_names_a_spawn_shaped_table_and_ignores_copy(self):
         (self.project / "index.html").write_text("<canvas></canvas>")

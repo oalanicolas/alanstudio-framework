@@ -79,6 +79,25 @@ não exige adotar o runtime do fornecedor. [Origem](../../references/sources.md#
   para 3D (nomes de nós podem mudar na exportação — confira após carregar), áudio
   decodificado por `decodeAudioData`, fontes por `FontFace`.
 - Tamanho importa: compressão (Draco/Meshopt/KTX2), lazy loading por cena, cache.
+- Áudio no navegador — o contrato geral (gate antes do verbo, zero sons mudos, entrega sem
+  perda) está na [receita de áudio](../../recipes/audio.md#aprendizados-de-carregamento-formato-e-entrega).
+  Específico da Web:
+  - **Memória:** `decodeAudioData` decodifica fora da thread principal e guarda float32 na taxa
+    do contexto. A memória não depende do formato baixado; música longa vai por elemento de mídia.
+  - **FLAC com reserva:** entregue WAV como FLAC com o WAV como reserva por arquivo. `canPlayType`
+    descreve o `<audio>`, não o `decodeAudioData`: o Safari 15 anunciou WebM Opus que a Web Audio
+    recusava e silenciou jogos Construct. howler.js e Phaser não trocam de formato quando a
+    decodificação falha; o carregador do jogo precisa fazer isso.
+  - **Concorrência:** sobre HTTP/2, dezenas de arquivos pequenos esperam mais por idas e voltas
+    do que por bytes. Meça a concorrência do carregador em produção antes de juntar arquivos
+    em sprite.
+  - **Caso Distrito Rabisco (23/09/2026):**
+    - FLAC: −43% de bytes, com amostras idênticas em Safari 17.6, Chrome e Firefox.
+    - Concorrência em produção: 4 → 16 downloads levou a espera de 1,79 s a 0,57 s; 64 piorou.
+      O valor ótimo é local.
+  - **Hipótese com prova pendente:** no iOS, a sessão `ambient` padrão silencia Web Audio com a
+    chave de silêncio, e elemento de mídia pode seguir outra regra. `navigator.audioSession`
+    (Safari 16.4+) escolhe a categoria. Teste no aparelho.
 
 ## Performance e orçamentos
 
@@ -94,6 +113,28 @@ não exige adotar o runtime do fornecedor. [Origem](../../references/sources.md#
 
 - Build de produção pelo bundler; PWA para instalação; toque e viewport em mobile;
   política de autoplay de áudio; cross-origin para assets externos.
+- Quando o jogo conserva HTML/CSS legado ou carrega recursos por URLs montadas em
+  runtime, teste o diretório emitido em um servidor estático separado do dev server.
+  Confirme a ordem efetiva de estilos, dimensões do palco/controles e uma ação real;
+  sucesso no Vite não prova o artefato de distribuição. Inclua no empacotamento os
+  sons, manifestos e bibliotecas chamados dinamicamente; confira disponibilidade,
+  decodificação e integridade dos arquivos, sem trocar qualidade por tamanho.
+  “HTML único” só é autônomo se suas dependências também forem incorporadas.
+  Caso: Só Um, QA-EXP-C05 (22/09/2026), CSS hoisted sobreposto pelo legado e áudio/
+  PeerJS ausentes no dist. O caso não invalida bundlers nem certifica arte ou áudio.
+- Cache de assets:
+  - **Imutável só com versão:** `immutable` com `max-age` longo só é seguro em URL que muda
+    quando o conteúdo muda (hash no nome ou `?v=` com o hash). Manifestos e índices sem versão
+    são servidos com `no-cache` e ETag.
+  - **Clientes antigos:** um manifesto que um deploy anterior serviu como imutável fica preso no
+    navegador; mudar o cabeçalho não o alcança. Peça com `fetch(url, { cache: 'no-cache' })` para
+    forçar a consulta condicional.
+  - **404:** uma regra de cabeçalho por caminho também vale para 404; uma URL errada fica em
+    cache pelo mesmo prazo.
+  - **Prova:** uma visita com a cópia antiga guardada recebe a versão nova. Caso Distrito Rabisco
+    (23/09/2026): pedido comum devolveu a cópia velha sem consultar o servidor, e `no-cache`
+    trouxe a nova em Chrome 154, Safari 17.6 e Firefox 156.
+  - **Limite:** o cabeçalho do host só se confirma num deploy de prévia.
 - Lojas web (itch.io, Poki, Newgrounds) e wrappers (Electron, Tauri, Capacitor) têm
   requisitos próprios — consulte a fonte oficial.
 
@@ -146,6 +187,21 @@ backend instalado. [Origem](../../references/sources.md#aprendizados-de-aplicaç
   gráfico. Isole cache do bundler e use build estável para comparar; registre o backend.
 - Métricas RAF e de callback não comprovam quadros apresentados pela GPU. Compare
   também dimensões internas e escala da página; ferramentas e HMR podem alterar ambas.
+- Em filetes, frisos e réguas com poucos centímetros de espessura, o chanfro de uma caixa
+  arredondada não aparece na câmera de jogo e custa dezenas de vezes os triângulos de uma
+  caixa reta (300 × 12 com `RoundedBoxGeometry` de 2 segmentos). Troque só as peças finas.
+  Prove comparando a diferença de pixels com o ruído de duas capturas iguais e olhando um
+  recorte ampliado lado a lado. A regra não vale para peças grandes ou vistas de perto,
+  onde o chanfro pega luz.
+- Geometria gerada por grade (marching cubes/tetrahedra, SDF) também precisa seguir o erro
+  na tela da escala em que vai aparecer. Uma grade fixa de 3,5 mm fez as mãos somarem 85%
+  dos triângulos de cada personagem numa câmera de cima, onde elas ocupam poucos pixels.
+  Gere por escala, mantendo a malha fina onde ela é vista de perto (menu, retrato). Prove
+  com pose e câmera fixas, comparando com o ruído de capturas iguais.
+- Um servidor de desenvolvimento compartilhado com outra sessão recarrega a página e disputa
+  a GPU. Meça cópias isoladas (o commit base e o base com os arquivos alterados), cada uma
+  na sua porta, em rodadas alternadas, e compare só pares da mesma rodada. O ruído entre
+  rodadas pode ser maior que o efeito medido.
 
 Persistência, pausa e descarte dos buffers de animação/áudio seguem as receitas de
 [conteúdo](../../recipes/content.md), [áudio](../../recipes/audio.md) e
