@@ -202,6 +202,31 @@ backend instalado. [Origem](../../references/sources.md#aprendizados-de-aplicaç
   a GPU. Meça cópias isoladas (o commit base e o base com os arquivos alterados), cada uma
   na sua porta, em rodadas alternadas, e compare só pares da mesma rodada. O ruído entre
   rodadas pode ser maior que o efeito medido.
+- Renderer de traço por pós-processo (contorno e hachura lidos de um buffer de dados,
+  como o de tinta dos Rabiscos): todo material próprio escreve o mesmo contrato do
+  buffer (tom, caneta, normal). Sombreamento amplo vai como tom que o pós converte em
+  hachura; modos de tinta chapada leem como mancha. Linha procedural fina usa um modo
+  contínuo (aguada) para não serrilhar. Verifique ampliando a captura em movimento.
+- Nesse renderer em câmera ortográfica, a densidade da hachura depende da altura
+  visível: atualize o parâmetro a cada mudança de zoom, não só no redimensionamento.
+- Miniatura ou retrato gerado pelo mesmo renderer: renderize no tamanho de exibição
+  (× DPR). Traço medido em pixels afina quando a imagem é reduzida depois.
+- Efeitos num buffer sem transparência somem por escala ou por estágios de tom; a
+  opacidade não participa. Caso e prova: Guerra dos Rabiscos, QA de 23/09/2026.
+- Ao passar de câmera lateral para perspectiva 2.5D com terreno extrudado, o plano dos
+  personagens precisa ir para cima do bloco (atrás da borda da frente). Mantido à frente da
+  fachada, como na vista lateral, o personagem parece flutuar diante do prédio. Uma sombra
+  de contato no chão ancora o pé. Confira de perto, parado e no salto.
+- Numa elipse deitada vista de ~10° acima, a altura na tela é só ~0,2 da profundidade
+  real. Aumente a profundidade para a sombra aparecer.
+- Nomes reservados do GLSL (`patch`, `sample`, `input`, `output`, `filter`) quebram a
+  compilação sem erro de JavaScript. Leia o log do programa no console do navegador.
+- Planejador de IA que simula num clone do mundo real: desligue os cálculos que só servem
+  à verificação (hash de 2 MiB do terreno por explosão, por exemplo). Nesse caso a IA
+  passou de 5 s para 0,4 s de CPU por plano. Caso: Guerra dos Rabiscos, 24/09/2026.
+- Configuração de elenco ou slots copiada com `[...lista]` compartilha os objetos
+  internos. Uma partida que reescreve um campo contamina a partida seguinte. Copie cada
+  slot (`map((slot) => ({ ...slot }))`) e teste duas criações seguidas.
 
 Persistência, pausa e descarte dos buffers de animação/áudio seguem as receitas de
 [conteúdo](../../recipes/content.md), [áudio](../../recipes/audio.md) e
