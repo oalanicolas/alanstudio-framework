@@ -49,6 +49,14 @@ Examine separadamente:
   move todos os sistemas relevantes, inclusive callbacks.
 - Seed: repita estado inicial e sequência de ações, compare observações. Aceitar
   um parâmetro não prova que ele afeta RNG ou que toda a simulação é determinística.
+- Voltar no tempo (Frame Step, depuração, rollback local): com a simulação determinística, refazer a partida da
+  semente com as entradas gravadas até o tick pedido devolve o mesmo estado sem clonar objetos. Verifique que voltar e
+  avançar um tick dá o mesmo hash de antes; CPUs e outros agentes pensam de novo durante o replay (vale a entrada
+  gravada) para manter o próprio estado; edição manual do estado (ferramenta de teste que teletransporta) não é
+  reproduzível e quebra a volta. O custo cresce com a duração da partida; com partidas longas, guarde pontos a cada N
+  ticks e resimule a partir do mais perto (é o que o cliente do Brawlhalla faz). Invalida: RNG, relógio ou entrada
+  fora da semente e do registro. Caso: Frame Step do Modo Treino do Último Rabisco, 25/09/2026
+  (`games/ultimo-rabisco/docs/aprendizados.md` §2).
 
 Adapte o teste que já existe; crie um controle novo somente se o caso exigir e a
 capacidade não estiver disponível. Observação de estado deve conter o necessário
