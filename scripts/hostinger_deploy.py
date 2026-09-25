@@ -164,11 +164,13 @@ def tus_upload(url: str, auth: str, rest: str, file: Path) -> str:
 
 
 def fetch(domain: str, path: str, origin: str | None):
-    """GET through curl so --resolve can pin the origin before DNS points to it."""
+    """GET through curl; --origin pins the server over HTTP, since the certificate only exists after DNS."""
     cmd = ["curl", "-s", "-m", "120", "-D", "-", "-A", "hostinger-deploy/2"]
+    scheme = "https"
     if origin:
-        cmd += ["-k", "--resolve", f"{domain}:443:{origin}"]
-    r = subprocess.run(cmd + [f"https://{domain}/{quote(path.lstrip('/'))}"], capture_output=True)
+        cmd += ["--resolve", f"{domain}:80:{origin}"]
+        scheme = "http"
+    r = subprocess.run(cmd + [f"{scheme}://{domain}/{quote(path.lstrip('/'))}"], capture_output=True)
     head, _, body = r.stdout.partition(b"\r\n\r\n")
     while head.startswith(b"HTTP/") and b" 100 " in head.split(b"\r\n", 1)[0]:
         head, _, body = body.partition(b"\r\n\r\n")
