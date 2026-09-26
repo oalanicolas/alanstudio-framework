@@ -3,6 +3,7 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 import zipfile
 
 SPEC = importlib.util.spec_from_file_location("hostinger_deploy", Path(__file__).resolve().parents[1] / "scripts/hostinger_deploy.py")
@@ -87,6 +88,36 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(picked[0], "index.html")
         self.assertEqual(len(picked), 5)
         self.assertEqual(len(set(picked)), 5)
+
+
+class ResolveUsernameTests(unittest.TestCase):
+    """A lista de sites da Hostinger é paginada; o site pode estar depois da primeira página."""
+
+    def fake_cli(self, pages, per_page=2):
+        calls = []
+
+        def cli(*args):
+            calls.append(args)
+            page = int(args[args.index("--page") + 1])
+            total = sum(len(p) for p in pages)
+            return {"data": pages[page - 1] if page <= len(pages) else [],
+                    "meta": {"current_page": page, "per_page": per_page, "total": total}}
+        return cli, calls
+
+    def test_finds_site_on_a_later_page_filtering_by_domain(self):
+        cli, calls = self.fake_cli([[{"domain": "central.rabisco.net", "username": "a"},
+                                     {"domain": "arena.rabisco.net", "username": "a"}],
+                                    [{"domain": "war.rabisco.net", "username": "u1"}]])
+        with mock.patch.object(deploy, "cli", cli):
+            self.assertEqual(deploy.resolve_username("war.rabisco.net"), "u1")
+        self.assertEqual(len(calls), 2)
+        self.assertIn("--domain", calls[0])
+
+    def test_substring_match_is_not_accepted(self):
+        cli, calls = self.fake_cli([[{"domain": "central.rabisco.net", "username": "a"}]])
+        with mock.patch.object(deploy, "cli", cli), self.assertRaises(SystemExit):
+            deploy.resolve_username("rabisco.net")
+        self.assertEqual(len(calls), 1)
 
 
 if __name__ == "__main__":

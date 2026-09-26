@@ -131,11 +131,20 @@ def cli(*args):
 
 
 def resolve_username(domain: str) -> str:
-    data = cli("hosting", "websites", "list")
-    for site in data.get("data", data) if isinstance(data, dict) else data:
-        if site.get("domain") == domain:
-            return site["username"]
-    sys.exit(f"site {domain} não existe na conta Hostinger (hostinger hosting websites list)")
+    # A lista é paginada (25 por página): com 39 sites em 26/09, war.rabisco.net estava na página 2 e o
+    # deploy dizia que o site não existia. Filtra pelo domínio (substring) e percorre as páginas.
+    page = 1
+    while True:
+        data = cli("hosting", "websites", "list", "--domain", domain, "--page", str(page))
+        sites = data.get("data", []) if isinstance(data, dict) else data
+        for site in sites:
+            if site.get("domain") == domain:
+                return site["username"]
+        meta = data.get("meta", {}) if isinstance(data, dict) else {}
+        if not sites or page * int(meta.get("per_page") or len(sites)) >= int(meta.get("total") or 0):
+            break
+        page += 1
+    sys.exit(f"site {domain} não existe na conta Hostinger (hostinger hosting websites list --domain {domain})")
 
 
 def tus_upload(url: str, auth: str, rest: str, file: Path) -> str:
