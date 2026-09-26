@@ -250,6 +250,24 @@ esse valor cru. `--stage mvp` só seleciona contexto, não certifica progresso. 
 comprovam descoberta, limites e ausência de execução; continuidade da conversa exige
 aplicação e revisão deste procedimento.
 
+## Sessões paralelas no mesmo projeto
+
+Do caso Universo Rabisco (23/9/2026): até oito sessões no workspace e três no mesmo app.
+
+- **Declare o escopo por arquivo** antes de editar, e responda aos avisos das outras sessões.
+  Prefira edições pontuais e blocos próprios (por exemplo, CSS novo no fim do arquivo) a
+  reescrever arquivos inteiros.
+- **Releia antes de escrever.** Uma escrita sobre versão antiga apaga o trabalho alheio; se o
+  arquivo mudou, leia de novo e aplique só a diferença.
+- **Nada provisório em pasta rastreada.** Outra sessão pode commitar e publicar a qualquer momento.
+  Teste com cópia fora do repositório, flag de URL ou diretório ignorado. No caso, camadas de
+  teste ficaram no diretório versionado por minutos e foram publicadas.
+- **Um recurso é código e interface juntos.** Acrescentar ao JavaScript uma dependência de
+  elemento que o HTML ainda não tem quebra a página inteira; entregue as duas partes no mesmo passo
+  ou torne a dependência opcional.
+- **Publicação é decisão do criador.** Sessões que publicam precisam conferir o estado dos arquivos
+  alheios no commit; a que não publica avisa quando algo do seu escopo não deve sair.
+
 ## Aprender com falhas do processo
 
 Se uma regra de processo falhar repetidamente, corrija fonte, contexto ou ferramenta

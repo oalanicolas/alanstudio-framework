@@ -26,6 +26,13 @@ Para ajuste de dificuldade ou economia, registre situação inicial, comportamen
 observado e variável alterada. Compare alternativas sob o mesmo cenário. Não deduza
 equilíbrio da ausência de exceções ou de uma partida vencida pela própria IA.
 
+Para progressão, economia ou ondas, um teste de campanha joga o laço inteiro pela
+API pública, com o orçamento real e sem recurso injetado, e precisa vencer; um
+controle negativo — estratégia ruim ou recurso mínimo — precisa perder. Sem o
+controle negativo, uma regra quebrada que facilita tudo também passa. O teste só é
+possível se a regra vive fora do render; peça essa separação no documento de design
+([origem](../references/sources.md#acervo-externo-swipe)).
+
 Ao adaptar IA de grade para movimento contínuo, compare o primeiro trecho da rota
 com a posição real do corpo. Recomeçar cada busca como se o agente estivesse no
 centro da célula pode acrescentar tempo fictício e fazê-lo abandonar uma fuga em

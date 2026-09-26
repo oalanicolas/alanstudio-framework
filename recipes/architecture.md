@@ -113,6 +113,32 @@ não exige uma engine comum nem elimina uma saída para código. Ganho de produt
 é hipótese até comparar pedidos inéditos, incluindo preparação, falhas e regressões.
 Origem e limites: [autoria UGC pública](../references/sources.md#autoria-ugc-pública).
 
+### Prévias: renderização não é execução de eventos
+
+Aplicar quando editor, biblioteca, replay ou comparador compartilham um renderizador
+com áudio, efeitos ou callbacks. Uma operação de enquadrar, medir bounds, exportar ou
+redesenhar pode visitar vários quadros sem que o usuário tenha executado a ação.
+Declare a causa **por chamada**, com redesenho como padrão sem efeitos de execução.
+Avanço real de reprodução deve ser explícito; não herde a causa do último quadro.
+Se o usuário puder ouvir um seek, trate-o como modo autoral explícito, não efeito colateral.
+
+Na seleção assíncrona, invalide trabalhos anteriores em **toda nova seleção**, inclusive
+retorno à seleção em cache e caminhos sem nova requisição. Usar uma resposta em cache
+não dispensa atualizar a geração. Sair do painel também invalida resultados pendentes.
+Leia identidade, variante e revisão da mesma seleção concluída; o nome pedido e a
+montagem antiga não formam um contexto válido.
+
+Prove A → B com B atrasado → A em cache → liberação de B: a tela continua mostrando A.
+Prove reproduzir → pausar → enquadrar/redesenhar/exportar: nenhum som de execução é
+criado. Confira o estado e a consequência, não só ausência de exceção. O segundo
+cenário não comprova fidelidade da simulação, apenas isolamento da apresentação.
+
+Caso local: Brawlhalla Lab v9, revisão de 25/09/2026; regressões em
+`prototypes/brawlhalla-lab/character-lab/test_state_regression.mjs` e provas antes/depois
+em `character-lab/evidence/review-20260925-142144/`. Esses caminhos pertencem ao workspace
+que produziu o caso, não são dependências do núcleo. Revisar esta orientação quando
+um consumidor tiver semântica explícita de eventos durante scrubbing ou medição.
+
 ## 4. Decidir com alternativas e contraprova
 
 No [TDD existente](../assets/templates/tdd.md), reúna: problema e requisito de origem,

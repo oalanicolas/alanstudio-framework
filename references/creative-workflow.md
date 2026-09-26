@@ -291,6 +291,32 @@ qualidade. Escolhas de estilo visual, fornecedores, áudio e publicação perten
 ao projeto ou workspace. O processo e as técnicas reutilizáveis pertencem ao
 framework. Consulte [a separação de responsabilidades](workspace-binding.md).
 
+## Aprendizados de direção de arte
+
+Do caso Universo Rabisco (23/9/2026). Valem para superfícies interativas de apresentação:
+landings, hubs, menus e telas de entrada.
+
+- **Encenar a premissa.** Uma página de série ganha identidade quando a interação conta a tese
+  do mundo, e não quando lista produtos. Ler o documento de mundo e o design system antes de desenhar.
+- **Escolher a lente de revisão.** Crítica de direção de arte (material, composição, ritmo, cor,
+  tipografia, acabamento) e revisão de UX (tarefa, acesso, navegação) são entregas diferentes.
+  Pergunte ou deduza qual foi pedida; entregar a errada custa uma rodada.
+- **Plano antes da execução ampla.** Para uma revisão que toca a página inteira, escreva norte,
+  sistema de materiais, papéis de cor e de tipografia, linguagem de movimento e plano por seção.
+  As correções do criador passam a ser ajustes, não mudanças de direção.
+- **Uma luz, materiais no mesmo nível.** Quando uma superfície ganha material de verdade, as
+  vizinhas precisam subir junto, ou a melhor denuncia a pior.
+- **Fixar o que guia o olhar.** Varie ornamento, inclinação e escala; mantenha no mesmo lugar o que
+  o visitante procura (capas, botões, ações).
+- **Forma que promete ação entrega a ação.** Ponta dobrada, alça ou puxador que não fazem nada
+  frustram. Convites à interação ficam junto dos controles e são ditos por escrito.
+- **Símbolos e fontes do sistema quebram a ilusão.** Setas, estrelas e marcas desenhadas no traço
+  do projeto substituem os glifos do sistema.
+- **Amostras honestas.** Miniaturas jogáveis dizem que são amostras; estados (completo, demo,
+  rascunho) e artes conceituais ficam identificados.
+
+Limite: são critérios de leitura e composição; o aceite continua sendo do criador, em movimento.
+
 ## Integração com a documentação existente
 
 Este é o mapa conceitual do workflow. A execução detalhada continua no

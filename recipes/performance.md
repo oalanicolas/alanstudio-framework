@@ -124,6 +124,14 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
 - Separe bytes transferidos, buffers decodificados, heap, recursos GPU e memória total.
   Contador de objetos ou heap JavaScript sozinho não mede PCM nem VRAM. Remover
   referências e desconectar áudio não demonstram coleta imediata pelo sistema.
+- Tempo antes e depois exige repetição: três ou mais rodadas intercaladas de cada
+  versão na mesma cena e um controle da mesma versão contra si mesma, que mede o
+  ruído. Ganho menor que a variação entre rodadas iguais não é ganho. Confirme pelo
+  estado da página que cada rodada chegou à cena pretendida antes de usar o número,
+  e tire antes e depois de execuções rotuladas, nunca de capturas avulsas. Para o
+  que acontece durante um evento — perda de contexto, aba oculta, pausa —, leia o
+  estado do jogo antes, durante e depois (relógio, placar, tela visível), em vez de
+  deduzir por uma captura final ([origem](../references/sources.md#acervo-externo-swipe)).
 - Faça contraprovas que deveriam falhar: trocar a variante, zerar o dado suspeito,
   desativar o diagnóstico ou comparar reconstrução completa com atualização parcial.
   Uma ferramenta de medição também pode desenhar na cena e falsificar seu resultado.
@@ -167,6 +175,66 @@ Aprendizados de aplicações reais, com [origem e limites](../references/sources
 - Grave trajetórias na precisão necessária e meça erro de posição/orientação antes
   de reduzir frequência. Escolha armazenamento e retenção conforme o contrato; uma
   falha de gravação deve preservar o registro anterior. Bytes menores não provam fidelidade.
+- Pague a primeira compilação antes do jogo. Compile os materiais e variantes que só
+  aparecem depois — efeito raro, inimigo novo, transparência, construção — atrás da
+  tela de carga, com os objetos visíveis e o culling desligado durante o aquecimento.
+  Trocar um material de opaco para transparente em runtime cria outro programa;
+  prefira estados já aquecidos. Prova estrutural: a contagem de programas não cresce
+  numa sessão que percorre esses primeiros usos.
+- Sombra e render sob demanda para o que está parado: mapa de sombra sem atualização
+  automática, marcado como sujo quando luz, câmera além de um limiar ou caster
+  animado mudam; render suspenso em menu, pausa e modo foto quando nada muda.
+  Atualizar a meia taxa é corte, não otimização. Uma marcação incondicional em outro
+  ponto do laço anula o ganho. Prova: captura idêntica à versão por quadro, em movimento.
+- Carregamento cooperativo: montagem de cena, decodificação e upload em etapas que
+  cedem o thread principal a cada quadro ou orçamento declarado, nomeadas na tela de
+  carga. Um `Promise.all` seguido de construção síncrona longa congela a página.
+  Prova: nenhuma tarefa longa acima de 50 ms depois do primeiro quadro.
+- Destruição proporcional à região: terreno ou cenário destrutível envia à GPU só o
+  retângulo ou chunk alterado. Reenviar o recurso inteiro põe o custo no quadro do
+  impacto, o mais visível do turno. Prova: bytes enviados por explosão no mapa máximo.
+- O que não muda é desenhado uma vez. Em Canvas 2D, fundo e palco estáticos vivem em
+  camada própria; HUD em DOM escreve só quando o valor muda — `innerHTML` do HUD
+  inteiro por quadro gera layout e lixo. Prova: captura idêntica e contagem de
+  operações de desenho ou mutações por quadro com o jogo parado.
+
+## Adaptadores automáticos de qualidade
+
+Grande parte da web 3D adapta a qualidade sozinha: no acervo externo estudado em
+setembro de 2026, 20 de 58 clientes e snapshots web cortavam resolução, AO, sombra,
+LOD, partículas ou efeitos por tempo de quadro, e outros escolhiam o perfil pelo
+dispositivo ao iniciar. Para este framework isso é degradação. Separe três casos:
+
+- **Por tempo de quadro, em runtime:** nunca como ação. O mecanismo — janela,
+  histerese, cooldown, percentil — serve de diagnóstico: registra cena e gargalo e,
+  no máximo, recomenda uma opção ao jogador. Se reduzir um efeito não melhora o
+  percentil, o gargalo está em outro lugar; isso é informação, não permissão.
+- **Por dispositivo, ao iniciar:** aceitável só quando o perfil escolhido é a
+  qualidade aprovada para aquela classe de dispositivo, fica visível ao jogador e
+  pode ser trocado. Toque, núcleos ou memória que levam a um perfil abaixo da
+  qualidade aprovada são degradação automática.
+- **Fallback técnico:** sem o backend exigido (WebGPU, WebGL2), o jogo roda no
+  disponível e diz isso. Exigir um backend sem fallback exclui jogadores e é decisão
+  de escopo registrada, não ajuste de qualidade.
+
+Verificar: o padrão das preferências é a qualidade aprovada, não `auto`; nenhum
+callback de tempo de quadro altera DPR, escala de render, sombras, efeitos, LOD ou
+contagem de instâncias; a cena pesada roda e o estado de qualidade termina igual sem
+entrada do jogador. Qualidade escolhida pelo jogador, com efeito documentado, não é
+degradação.
+
+## Orçamento que falha
+
+Orçamento em README, comentário ou HUD não protege nada, e um contador que nenhum
+caminho incrementa também não. Cada linha de orçamento vira uma verificação que
+falha no build ou no teste. Em máquina compartilhada, tempo de quadro é evidência do
+relatório — percentis antes e depois —, não gate. Os gates são invariantes
+estruturais da mesma cena: o mapa baixa uma vez; programas estáveis após o
+aquecimento; texturas e geometrias não crescem depois de reiniciar a partida N
+vezes; chamadas de desenho não passam da referência; bytes até o primeiro quadro
+jogável dentro do declarado. Limiar em milissegundos só vira gate em hardware
+dedicado e declarado. Estourar um orçamento abre investigação, nunca corte da
+qualidade aprovada. [Origem e limites](../references/sources.md#acervo-externo-swipe).
 
 Os detalhes de carregador, sombras e migração ficam nos packages de
 [web](../packs/platforms/web.md) e [Unity](../packs/platforms/unity.md).

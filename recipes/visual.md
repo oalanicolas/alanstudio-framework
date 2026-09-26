@@ -64,7 +64,10 @@ custo por ciclo de vida tem receita própria: [performance](performance.md), por
 moeda de troca por número.
 
 Na câmera, observe antecipação de curvas/ameaças, oclusão do jogador, estabilidade,
-escala e transição. No starter a câmera inclina para o que o trilho
+escala e transição. Ao medir, conte como invisível o que o HUD opaco cobre e separe tranco
+(salto de um quadro) de panorâmica; método em [corrida](../packs/genres/racing.md#câmera-de-perseguição-métrica-que-enxerga-o-que-o-jogador-vê).
+Em estilo desenhado, efeitos de velocidade na tela seguem a mão do mundo (feixes curtos, poses
+seguradas, só em evento) e o tremor move a folha inteira, nunca o desenho sobre a pauta parada. No starter a câmera inclina para o que o trilho
 já marca; não é punch. Lean no disco não é comparação em movimento. No mundo, compare silhueta, materiais, luz, sombras, efeitos e
 coerência em movimento, não apenas a melhor screenshot. Feel da ação e mix da
 consequência têm receitas próprias: [feel](feel.md), [áudio](audio.md). Não trate

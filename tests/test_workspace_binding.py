@@ -24,7 +24,7 @@ class WorkspaceBindingTest(unittest.TestCase):
         self.scripts.mkdir(parents=True)
         self.launcher = self.scripts / "game.py"
         shutil.copy2(CORE / "assets/workspace/game.py", self.launcher)
-        for name in ("workspace.py", "split_workspace.py", "audio.py", "sfx_catalog.py"):
+        for name in ("workspace.py", "gameops.py", "split_workspace.py", "audio.py", "sfx_catalog.py"):
             (self.scripts / name).symlink_to("game.py")
         (self.framework / "core").symlink_to(CORE, target_is_directory=True)
         self.project = self.workspace / "games/demo"
@@ -54,6 +54,19 @@ class WorkspaceBindingTest(unittest.TestCase):
         self.assertIn(str(self.workspace / "AGENTS.md"), data["instructions"])
         self.assertEqual(data["studio_assets"]["sfx"]["catalog"], str(self.workspace / "shared/sfx/catalog.json"))
         self.assertEqual(data["workspace"]["context_files"], [str(self.workflow)])
+
+    def test_gameops_alias_audits_the_bound_workspace_even_without_a_manifest(self):
+        gameops = self.scripts / "gameops.py"
+        refused = self.run_cli("audit", script=gameops)
+        self.assertEqual(refused.returncode, 1)
+        self.assertIn("não é um repositório Git", refused.stderr)
+        subprocess.run(["git", "init", "--initial-branch=main", str(self.workspace)], check=True,
+                       capture_output=True)
+        result = self.run_cli("audit", "--json", script=gameops)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        data = json.loads(result.stdout)
+        self.assertEqual(data["root"], str(self.workspace))
+        self.assertEqual([item["path"] for item in data["repositories"]], ["."])
 
     def test_suggested_command_keeps_workspace_when_run_without_the_launcher(self):
         result = self.run_cli("next", "games/demo", "--focus", "feel")

@@ -50,6 +50,34 @@ plugins habilitados. Não substitui AGENTS nem a documentação oficial.
   Consoles exigem SDKs e acesso de parceiro; requisitos de loja/console (TRC/XR,
   classificação, privacidade) na fonte oficial.
 
+## UEFN (ilhas do Fortnite)
+
+Fatos verificados em 24/09/2026. Uma ilha não é um projeto Unreal completo.
+
+- Lógica por dispositivos e Verse
+  ([Verse no UEFN](https://dev.epicgames.com/documentation/fortnite/programming-with-verse-in-unreal-editor-for-fortnite));
+  o editor de materiais não tem o nó Custom (HLSL) e não há Blueprints (fórum da Epic,
+  fev/2025). C++ e Blueprints de um projeto UE5 não migram; a ilha é versão nativa.
+- Assets: migração a partir de projetos UE 5.1+, com dependências; nem todo tipo é aceito
+  e Static Mesh vai até 20 mil vértices
+  ([migração](https://dev.epicgames.com/documentation/en-us/fortnite/migrating-assets-from-unreal-engine-to-unreal-editor-for-fortnite)).
+  Material de pós num Post Process Volume é suportado, mas nem todo aparelho roda todo
+  efeito ([pós](https://dev.epicgames.com/documentation/fortnite/intro-to-postprocessing-in-unreal-editor-for-fortnite));
+  material pesado cai para versão simples em aparelho fraco. Teto de 100.000 unidades de
+  memória por ilha, que precisa rodar em todas as plataformas do Fortnite
+  ([memória](https://dev.epicgames.com/documentation/en-us/fortnite/memory-management-in-unreal-editor-for-fortnite)).
+- Personagem: NPCs aceitam malha e animação importadas, com retarget ao esqueleto do
+  Fortnite ([NPC Spawner](https://dev.epicgames.com/documentation/en-us/fortnite/using-the-npc-spawner-with-animations-in-unreal-editor-for-fortnite));
+  o jogador usa o personagem do Fortnite, sem documentação para trocá-lo (pedidos de fórum
+  em 2026). O elenco de um jogo trazido de fora entra como NPC, inimigo e cenário.
+- Câmera fixa para visão de cima e lateral; spawners de veículo em Verse.
+- UE6: a Epic anunciou em junho de 2026 unir UE5 e UEFN, com Verse e o mesmo projeto
+  dentro e fora do Fortnite; Early Access previsto para o fim de 2027 (via imprensa; a
+  página oficial recusou leitura automatizada). Nenhuma fonte cita alvo web. Até lá,
+  projeto UE5 e ilha são entregas distintas.
+- Caso de origem: série Rabisco do laboratório (24/09/2026). Invalida: UEFN aceitar
+  personagem próprio do jogador ou a UE6 entregar o projeto único.
+
 ## O que o harness faz aqui
 
 - `discover` reconhece `*.uproject` e ignora `Binaries`, `Intermediate`, `Saved`,

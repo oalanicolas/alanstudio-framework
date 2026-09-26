@@ -42,6 +42,35 @@ são reconhecidos. Não substitui AGENTS nem a documentação oficial.
 - Publicação via Studio ou Open Cloud API; Game Settings (idade, dispositivos, servidores
   privados); monetização e moderação seguem as políticas da plataforma na fonte oficial.
 
+## Porte de jogo de outra engine
+
+Fatos de documentação verificados em 24/09/2026; o traço sem shader continua hipótese.
+
+- Nenhuma engine exporta para o Roblox: experiências rodam só Luau no Studio
+  ([Luau](https://create.roblox.com/docs/luau)). Levar um jogo existente é fazer versão
+  nativa em projeto separado; atravessam design, balanceamento, arte-fonte e áudio com
+  licença que permita o upload.
+- Importação: `.fbx`, `.obj` e `.gltf` com PBR, rig, skin e animação
+  ([3D Importer](https://create.roblox.com/docs/art/modeling/3d-importer)); malha até
+  20.000 triângulos e 4 ossos por vértice
+  ([especificações](https://create.roblox.com/docs/art/modeling/specifications));
+  textura até 4096×4096.
+- Render: sem shader próprio; o pós se limita a Bloom, Blur, ColorCorrection,
+  DepthOfField, SunRays e ColorGrading
+  ([pós](https://create.roblox.com/docs/environment/post-processing-effects)). Estilo que
+  dependa de shader (traço, hachura, contorno) vai assado na textura (`SurfaceAppearance`),
+  com contorno por `Highlight` (até 255 simultâneos no cliente). `EditableImage` pinta em
+  tempo real até 1024×1024, exibe uma atualização por quadro e, publicado, exige criador
+  verificado 13+ e por identidade. Compare em movimento com a versão aprovada; a versão
+  Roblox recebe aprovação visual própria e não redefine o piso do jogo original.
+- Agentes: o Studio tem MCP embutido que lê e edita scripts, roda Luau, faz playtest, lê
+  a saída, captura a tela e insere assets ([Studio MCP](https://create.roblox.com/docs/studio/mcp));
+  o `Roblox/studio-rust-mcp-server` foi descontinuado em abril de 2026. Rojo 7.7 mantém
+  o código em arquivos e no Git.
+- Caso de origem: série Rabisco do laboratório (24/09/2026), com a variante Roblox do
+  Rabisco Fight como primeiro projeto. Invalida: Roblox passar a aceitar shader próprio
+  ou código de outra origem.
+
 ## O que o harness faz aqui
 
 - `discover` reconhece `default.project.json`; `verify` só por `--command`; `record`

@@ -110,6 +110,38 @@ substitui a autorização do usuário. Degraus:
 [barra de acabamento](../references/production-bar.md#release--confiança-operacional).
 Template da etapa: [release](../assets/templates/release.md). Se o molde recusa publicar, o `template` nomeia a publicação que o molde já recusa. Molde no disco não é autorização. Sem chave `publicar`.
 
+## A prova de validação também precisa de contrato
+
+Aplicar quando a entrega depende de um runner que coordena scripts, navegadores ou
+serviços locais. Teste o próprio instrumento: executável ausente, código de saída não
+zero, timeout, revisão alterada durante a rodada e serviço de outra cópia. Falta de
+ferramenta é bloqueio explícito; não interrompa sem recibo nem a trate como teste que passou.
+Timeout encerra somente processos que a rodada criou e cuja propriedade conhece.
+
+Identifique **cada** serviço participante por aplicação, contrato, origem e impressão
+do código carregado. Uma resposta de catálogo na porta usual não demonstra que é a
+instância correta. Para testes auxiliares, prefira processo próprio em porta alocada
+pelo sistema; reutilização explícita exige identidade correspondente. Nunca mate um
+serviço apenas para liberar a porta. Isso é isolamento operacional, não autenticação
+criptográfica contra um adversário que controla a máquina.
+
+O manifesto da revisão inclui os consumidores relevantes: código, HTML, CSS,
+configuração e fixtures, sem caches e saídas da própria execução. Capture antes e
+depois; mudança invalida a alegação de que o conjunto foi testado numa revisão única.
+Snapshots de fontes externas são uma dimensão separada: hash do código não verifica
+assets nem entradas lidas de outra raiz.
+
+Cada rodada ganha diretório e logs próprios. O relatório pode registrar progresso
+até fechar; depois é histórico imutável. Um arquivo "último resultado" é só ponteiro
+ou cópia atualizada. Gravação atômica evita JSON parcial, e um lock impede duas rodadas
+sobrescrevendo saídas compartilhadas. `pass` com teste deliberadamente ignorado deve
+manter o recorte incompleto explícito; não confundir ausência de falha com cobertura total.
+
+Caso: `prototypes/brawlhalla-lab/character-lab/test_validation.py`, revisão de 25/09/2026.
+Testes do instrumento usam fixtures próprias; regressão visual e consumo real do Lab
+são verificações separadas. O uso local de processos POSIX não é implementação portátil
+para todo host: adapte criação, encerramento e locks à plataforma do consumidor.
+
 ## Idiomas: um registro, um arquivo por língua, fonte por escrita
 
 Entrada: o jogo vai ganhar um idioma, ou já tem dois e o texto começou a nascer fora

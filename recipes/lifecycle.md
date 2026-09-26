@@ -47,8 +47,18 @@ Examine separadamente:
   → montar; comportamento duplicado indica recurso sobrevivente.
 - Tempo real versus relógio controlado. Verifique se avançar o relógio realmente
   move todos os sistemas relevantes, inclusive callbacks.
+- Invariância de taxa: rode a mesma sequência de entradas com quadros de 1/30, 1/60
+  e 1/144 s e com um engasgo injetado de 250 ms. O resultado da regra deve coincidir
+  e a simulação não pode acelerar para recuperar o atraso. Um só intervalo de quadro
+  não prova passo fixo; timers de jogo em `setTimeout`, tempo de parede ou escala
+  global de tempo costumam ser o que diverge.
 - Seed: repita estado inicial e sequência de ações, compare observações. Aceitar
   um parâmetro não prova que ele afeta RNG ou que toda a simulação é determinística.
+  Declarar “determinístico” exige RNG de jogo semeado e separado do cosmético, nenhum
+  `Math.random` (ou equivalente) no módulo de simulação e um replay por entradas que
+  compare o hash do estado. No acervo externo, só os projetos com contrato escrito de
+  determinismo o testavam; nenhum dos sete de luta e não-web que dependiam dele tinha
+  esse teste ([origem](../references/sources.md#acervo-externo-swipe)).
 - Voltar no tempo (Frame Step, depuração, rollback local): com a simulação determinística, refazer a partida da
   semente com as entradas gravadas até o tick pedido devolve o mesmo estado sem clonar objetos. Verifique que voltar e
   avançar um tick dá o mesmo hash de antes; CPUs e outros agentes pensam de novo durante o replay (vale a entrada

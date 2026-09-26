@@ -49,6 +49,28 @@ Reaproveite o que existe antes de criar sistema paralelo: tokens do design syste
 tabela de comandos, camada de legenda do diálogo, opções já presentes no menu.
 Uma opção sem consumidor no código não é uma opção.
 
+Em jogos com canvas de resolução fixa, não deixe a escala do campo determinar
+automaticamente o tamanho dos textos e alvos de toque dos menus. Compense a
+transformação nessa camada e reorganize o conteúdo pela área útil; em telas
+baixas, priorize a decisão e permita rolagem dos detalhes. Depois de uma compra,
+preserve foco e posição da lista para que o resultado continue visível. Verifique
+os limites renderizados em pixels CSS, a leitura da composição e a interação:
+tamanho do arquivo de captura e zoom da ferramenta não provam tamanho de toque.
+
+Eventos automáticos do jogo não devem cancelar uma intenção do jogador: compra
+aberta, mira, destino ou reposicionamento pendente. Ao trocar de onda ou atualizar
+recursos, preserve o painel existente, seu foco e rolagem; reconstruir HTML igual
+também pode perder foco. Teste a fronteira do evento com uma ação armada e conclua
+essa ação depois, mantendo as regras de cancelamento explícito do jogador.
+
+No HUD sobre o campo, confira também a oclusão: um alvo pode ter tamanho adequado
+e receber o clique no painel que está por cima. Meça quem recebe o toque no
+centro dos terrenos e controles, depois execute a ação real. Repita com onda
+ativa, intervalo, torre selecionada e menus abertos. Painéis secundários devem
+ser dispensáveis e não se acumular sobre o combate; ampliar um alvo transparente
+deve preservar seu centro e não interceptar um vizinho. Confira as regras CSS
+de estado: a composição fora do combate não prova a composição durante a onda.
+
 `access <projeto>` lê as opções que o código declara (highContrast,
 reducedMotion, captions, remapeamento, uiScale, preset de uma mão,
 assistência, velocidade da partida, tinta estável, região viva e

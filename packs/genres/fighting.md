@@ -39,6 +39,10 @@ riscos e provas; o GDD do jogo decide. Não é regra universal.
 
 - Replay determinístico: gravar inputs e rejogar batendo estado bit a bit; testes de
   hitbox por frame; input buffer em todos os comandos; pausa/foco durante combo.
+- Troca simultânea: detectar todos os acertos do passo e só então resolver, em ordem
+  estável; inverter a ordem dos lutadores não muda o resultado. Hitstop e stun são
+  contadores por entidade no relógio da simulação — `setTimeout`, tempo de parede ou
+  escala global de tempo alongam a pausa conforme a taxa de quadros.
 - Playtest: novato faz um golpe especial em 5 minutos? Experiente sente que perdeu
   por leitura, não por sistema? Espectador entende quem está ganhando?
 

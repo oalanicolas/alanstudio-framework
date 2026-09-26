@@ -387,6 +387,10 @@ Os relatos incluem contraprovas e correções de interpretações anteriores.
   transporte íntegro, relógio da simulação e memória decodificada.
 - [Gestão de módulos](workspace-binding.md#módulos): extração por commit, links,
   seleção por manifesto, preservação de trabalho e política de publicação.
+- Landing do Universo Rabisco (23/9/2026): [web](../packs/platforms/web.md#aprendizados-de-páginas-interativas),
+  [imagens em camadas](../recipes/content.md#imagens-geradas-em-camadas),
+  [direção de arte](creative-workflow.md#aprendizados-de-direção-de-arte) e
+  [sessões paralelas](process.md#sessões-paralelas-no-mesmo-projeto).
 
 Áudio no navegador, Distrito Rabisco, 23/09/2026:
 - **Aplicado:** preparo das gravações antes da partida com contagem de sons mudos, FLAC com
@@ -399,12 +403,56 @@ Os relatos incluem contraprovas e correções de interpretações anteriores.
 - **Limites:** medições em Mac com Chrome, Safari 17.6 e Firefox, em rede emulada e numa
   conexão real. iPhone, Android, escuta e prioridade de vozes seguem pendentes.
 
+Engine e distribuição da série Rabisco, 24/09/2026:
+- **Aplicado:** fatos de plataforma em [Roblox](../packs/platforms/roblox.md#porte-de-jogo-de-outra-engine),
+  [UEFN](../packs/platforms/unreal.md#uefn-ilhas-do-fortnite) e no empacotamento do
+  [pack Web](../packs/platforms/web.md).
+- **Provas no laboratório:** `docs/pesquisas/Engine dos jogos Rabisco — celular, desktop, Steam, Roblox e Fortnite.md`
+  (39 fontes, duas rodadas) e o host desktop de `games/distrito-rabisco/platforms/desktop/`.
+- **Limites:** pesquisa documental; desempenho dos pacotes em aparelho e no Deck e o traço
+  sem shader no Roblox não foram medidos.
+
 As generalizações são pontos de aplicação condicionados ao contrato e à versão do
 projeto. Não comprovam ganhos em outros jogos, não tornam fornecedores obrigatórios
 e não substituem observar o consumidor final. Os números, arquivos brutos e
 aprovações específicas ficam nos registros do jogo; o framework não depende de
 acesso ao laboratório para usar as orientações. Revisão futura incorpora a
 contraprova à fonte canônica conforme [o procedimento](learning.md).
+
+## Acervo externo (swipe)
+
+Revisão crítica, em 23/09/2026, das 78 pastas de referência do laboratório
+(`swipe/`): 69 com runtime — 58 web (clientes publicados e snapshots de código) e 11
+não-web (NES, Rust, Godot, Python, C#, Unity) —, 1 ficha sem runtime e 8 coleções
+visuais. Método:
+leitura dirigida do entrypoint, do laço e do carregamento com localizador por
+achado; inventário de assets por cabeçalho de arquivo; e uma bancada em Chrome
+headless (ANGLE/Metal, 1440×900, DPR 2, cache frio) que mede intervalo de quadro,
+tempo de callback, chamadas de desenho, uploads, compilações e bytes na cena inicial
+e depois de uma entrada. Estudo e dados: `docs/estudos/Estudo swipe de performance e
+estrutura.md` no laboratório.
+
+Viraram regra apenas relações vistas em duas ou mais fontes independentes:
+aquecimento, sombra e render sob demanda, carga cooperativa, destruição por região,
+política de adaptadores automáticos e orçamento que falha
+([performance](../recipes/performance.md)); gate de assets e densidade de pixels
+([web](../packs/platforms/web.md)); invariância de taxa e determinismo declarado
+([ciclo de vida](../recipes/lifecycle.md)); teste de campanha com controle negativo
+([mecânicas](../recipes/mechanics.md)); troca simultânea
+([luta](../packs/genres/fighting.md)); alegação técnica sem localizador
+([entrega](delivery.md)).
+
+Limites: projetos de terceiros, muitos minificados; achados lidos por subagentes com
+localizador e conferidos por amostra; a cena medida é a inicial e uma
+interação, não a partida de pior caso; uma máquina; impacto de custo por explosão e
+de alocação por quadro ficou como hipótese onde não foi medido. Autoria por IA ou
+humana não explicou a qualidade: o que separou bons e ruins foi restrição dura ou
+contrato verificável. Os números ilustram o acervo; não prometem ganho em outro jogo.
+Na revisão das melhorias aplicadas aos jogos do laboratório, uma amostra única de tempo
+de callback mostrou ganho de 1,4 para 0,9 ms; três rodadas intercaladas de cada versão
+deram 1,1 para 0,8 ms, e duas das rodadas originais nem tinham chegado à cena medida.
+Um par antes/depois montado com capturas de execuções diferentes também produziu um
+número errado. Daí a regra de repetição em [performance](../recipes/performance.md).
 
 ## Autoria UGC pública
 

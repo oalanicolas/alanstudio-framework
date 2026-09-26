@@ -45,6 +45,10 @@ recebe uma licença nova pelo simples reuso. Se o sidecar declara `Consumidor:`,
 Geração externa (Magnific e similares) distingue capacidades documentadas de
 integração comprovada. Não torna o fornecedor obrigatório.
 
+Para personagens montados com sprites, use [animação 2D](animation-2d.md): escolha
+de partes, calibração de juntas, ordem de desenho e revisão em movimento. Uma arte
+estática aprovada não demonstra que suas peças funcionam como rig.
+
 Quando a geração ou importação for assíncrona, registre no manifesto/recibo já usado:
 pedido e referência autoral, tarefa do fornecedor, estado remoto, arquivo local e
 hash, derivação e consumidor integrado. **Pronto no serviço, baixado, validado e
@@ -134,6 +138,26 @@ conforme o contrato do consumidor e repetir a prova no projeto de destino.
 - Variação de material não substitui detalhe funcional de forma, e distribuir mais
   módulos não prova composição natural. Observe repetição, escala e leitura no jogo;
   uma mudança artística não deve ser anunciada como otimização técnica.
+
+
+### Imagens geradas em camadas
+
+Do caso Universo Rabisco (23/9/2026). Aplicar quando imagens geradas por IA substituem desenho
+em código ou se combinam como colagem animada.
+
+- Uma peça por imagem, fundo transparente, **luz comum** a todas e **sem sombra projetada no
+  fundo**: a sombra é aplicada no destino, para cada peça poder se mover sozinha.
+- Descreva as camadas num manifesto (arquivo, posição, profundidade, tremor) e mantenha uma
+  reserva desenhada até todas chegarem. Troque a flag de "pronto" só depois de conferir na cena.
+- Confira cada peça contra a ficha de identidade do personagem antes de entrar (olhos, acessórios,
+  cores, o que é proibido). Registre procedência e hash; o original fica fora do repositório.
+- Espere ajustes de encaixe: capa sem título recebe a logo oficial por cima; peça grande demais
+  para a cena pode pedir mudança de mecânica, e não de escala. O carimbo que não cabia sobre a
+  fileira passou a imprimir uma cópia por vez.
+- Cada peça é aprovada pelo criador e reversível. Uma peça rejeitada (a régua de madeira) sai da
+  página sem afetar as outras.
+- Lettering e marcas gerados não substituem o master da logo; registre a decisão do criador
+  quando uma arte gerada levar a marca, como numa imagem de compartilhamento.
 
 Referências: Era Uma Vez no playground, troca de assets em protótipo Unity, Ink `RE-INK-004/007/009`
 e LDtk `RE-LDTK-005/006/010` ([fontes](../references/sources.md)).

@@ -261,6 +261,9 @@ do que um preset mais baixo.
 
 ## 5. Provar em movimento
 
+Personagens por recortes/sprites: a [receita de animação 2D](animation-2d.md)
+detalha montagem, contato e revisão autônoma em duas passagens complementares.
+
 Screenshot não comprova feel. Compare o antes/depois no percurso real.
 Observe também pause, perda de foco, o controle que some, reinício e troca de entrada: um
 hitstop que sobrevive à pausa ou um rumble que não morre no descarte é

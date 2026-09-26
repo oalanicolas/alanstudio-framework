@@ -19,6 +19,10 @@ motivo relacionado ao escopo, nunca apenas de evidência ausente.
 - **Prova:** o cenário exercita o resultado pedido? Localize fonte, trecho, teste,
   recibo ou observação. Teste do harness comprova seu mecanismo; execução do agente
   exige pedido, ações e resultado reais. Arte e experiência continuam separadas.
+  Alegação técnica em README, GDD ou comentário — determinístico, em pool, streaming,
+  nítido em alta densidade, comprimido, dentro do orçamento — é `claimed` até apontar
+  o trecho, teste ou medição que a sustenta; no acervo externo, esse descompasso foi
+  o defeito de processo mais repetido ([origem](sources.md#acervo-externo-swipe)).
 - **Continuidade:** o registro descreve o estado que acabou de ser comprovado?
   Se existe próximo recorte definido, o [prompt pronto](gauntlet.md) está no registro
   e na resposta, com projeto, ação, fonte, limites e prova? “Próximo: melhorar o jogo”

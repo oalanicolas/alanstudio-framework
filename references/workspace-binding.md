@@ -58,6 +58,33 @@ starter. [workspace.py](../scripts/workspace.py) obtém os módulos selecionados
 incluindo seus pais, e preserva checkouts presentes. [split_workspace.py](../scripts/split_workspace.py)
 prepara extrações em pasta nova, com recibo, sem publicar nem alterar o original.
 
+[gameops.py](../scripts/gameops.py) opera o Git do hub e dos módulos presentes:
+
+- `audit`: branch, alterações, upstream, worktrees extras, branches locais e remotas,
+  stashes, origem e identidade. No hub, lista também as pastas não rastreadas fora do
+  manifesto: com `.git` (sobras que podem compartilhar o Git de um módulo) ou com cara
+  de projeto e sem Git. Não reescreve o índice
+  (`GIT_OPTIONAL_LOCKS=0`). Compara também o gitlink com o HEAD do módulo e confere
+  se esse commit já está no remoto: o hub não deve apontar para trabalho que só existe
+  na máquina. Cada item sai `removível`, quando há prova de que nada se perde
+  (mesclado, registro órfão, worktree limpo e contido), ou `pendente`, quando pede
+  decisão. `--remote` consulta `ls-remote`: diz se cada branch local tem cópia no remoto
+  e acha referências locais de branches já apagadas, que um fetch com refspec restrito
+  nunca remove.
+- `cleanup`: plano com os comandos dos itens removíveis, com local e remoto separados.
+  Não executa nada.
+- `preflight`: confere o stage ou, com `--push`, os commits a publicar. Bloqueia
+  credenciais, caminhos absolutos de máquina, conflitos, e-mail que não é noreply
+  num remoto do GitHub e gitlink de commit não publicado. Sempre relata o que ficou fora
+  do commit, e avisa quando a pasta difere do que vai ser publicado: gates e deploy leem
+  a pasta.
+- `gates`: lista ou roda as verificações declaradas. Nos módulos, são os scripts do
+  `package.json`. No hub, vêm de `gameops.gates` em `framework/config.json`, e cada uma
+  pode ter `when` com as pastas que a disparam.
+
+`audit`, `cleanup` e `preflight` não alteram nada. Todos aceitam `--json`, e
+`preflight` e `gates` aceitam o caminho de um worktree, resolvido para o repositório dono.
+
 URLs pertencem ao manifesto: `url` por módulo, ou `repository` com nome simples.
 Nesse segundo caso, o prefixo vem de `repository_base_url` ou do diretório da URL
 `repository` do hub. Nenhum usuário ou organização é fixado no código.
@@ -67,7 +94,7 @@ extração; o padrão contém apenas `workspace.json`. Os demais arquivos vêm d
 de origem. Links preservam modo e destino, sem incorporar seus arquivos externos.
 As regras de publicação e módulos escolhidos continuam em `workspace.json`.
 
-Os caminhos locais `scripts/workspace.py`, `scripts/split_workspace.py`,
+Os caminhos locais `scripts/workspace.py`, `scripts/gameops.py`, `scripts/split_workspace.py`,
 `scripts/audio.py` e `scripts/sfx_catalog.py` podem apontar para o mesmo encaminhador
 `scripts/game.py`. Ele usa o nome da entrada para escolher o script central.
 Os testes reutilizáveis também apontam para o núcleo.

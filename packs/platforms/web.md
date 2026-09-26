@@ -98,6 +98,25 @@ não exige adotar o runtime do fornecedor. [Origem](../../references/sources.md#
   - **Hipótese com prova pendente:** no iOS, a sessão `ambient` padrão silencia Web Audio com a
     chave de silêncio, e elemento de mídia pode seguir outra regra. `navigator.audioSession`
     (Safari 16.4+) escolhe a categoria. Teste no aparelho.
+- Confira os arquivos publicados antes de cada release; foi a fraqueza mais comum no
+  acervo externo, inclusive em projetos com loop e renderização bem resolvidos
+  ([origem](../../references/sources.md#acervo-externo-swipe)):
+  - GLB acima de ~1 MB com meshopt ou Draco e quantização; o script de bake declarar
+    a extensão não prova que o arquivo publicado a tem. Em bibliotecas de animação,
+    meça também o chunk JSON, que pode dominar o arquivo e escapa do meshopt.
+  - Textura com resolução de arquivo igual à usada: baixar 4096² para reduzir no
+    decode, fazer chroma key ou downscale em runtime, ou repetir a mesma imagem em
+    vários GLB (compare hashes) é trabalho que cabia no pipeline.
+  - KTX2/Basis com codec por classe — sem perda ou UASTC para normais, ETC1S para
+    cor somente depois de comparação visual. Compressão que muda a imagem é corte.
+  - Música comprimida e tocada por streaming (`<audio>` ligado ao grafo) ou decodificada
+    sob demanda; decodificar toda a trilha no boot custa dezenas de MB de PCM. Um
+    formato por navegador; a mesma música sob duas chaves baixa e decodifica duas vezes.
+  - Nada publicado sem consumidor no caminho padrão (variantes legadas, GLB vazios,
+    mocks de referência), nenhum WASM em base64 dentro do bundle, nenhuma URL absoluta
+    de produção nos loaders, e a mídia do loader depois dos bytes críticos.
+  - Meça bytes transferidos e decodificados até o primeiro quadro jogável; o resto da
+    sessão entra por manifesto com prioridade e concorrência limitada.
 
 ## Performance e orçamentos
 
@@ -108,6 +127,12 @@ não exige adotar o runtime do fornecedor. [Origem](../../references/sources.md#
   N minutos (vazamento), tempo até interativo em rede móvel, tamanho transferido.
 - Otimizações que preservam arte: batching/instancing, atlas, culling, LOD, pooling de
   objetos para evitar GC, `OffscreenCanvas`/workers para trabalho pesado.
+- Densidade de pixels é qualidade: o teto de DPR ou o orçamento de pixels
+  (`min(devicePixelRatio, teto, sqrt(orçamento / (largura × altura)))`, recalculado no
+  resize) entra na aprovação visual e não muda em runtime sem escolha do jogador.
+  Em Canvas 2D, o backing store é o tamanho CSS × DPR; resolução lógica fixa
+  ampliada por CSS perde nitidez, salvo pixel art declarada com escala inteira.
+  Compare o drawing buffer real em três tamanhos de janela.
 
 ## Build, plataformas e distribuição
 
@@ -137,6 +162,47 @@ não exige adotar o runtime do fornecedor. [Origem](../../references/sources.md#
   - **Limite:** o cabeçalho do host só se confirma num deploy de prévia.
 - Lojas web (itch.io, Poki, Newgrounds) e wrappers (Electron, Tauri, Capacitor) têm
   requisitos próprios — consulte a fonte oficial.
+- Empacotar o mesmo jogo para desktop, Steam e lojas móveis (fatos de 24/09/2026; o
+  desempenho no aparelho é hipótese até a prova):
+  - **Steam por Electron:** Steamworks só por binding comunitário (`steamworks.js`, MIT,
+    última release no npm 0.4.0, de 2024) — risco de manutenção; mantenha o módulo nativo
+    no processo principal via IPC, com `sandbox` e `contextIsolation` no renderer. No Steam
+    Deck, sem depot Linux o jogo roda a versão Windows por Proton; o Electron nativo depende
+    do Steam Linux Runtime (ValveSoftware/steam-runtime #579, 2023).
+  - **Lojas móveis por Capacitor:** o WKWebView tem WebGPU ligado por padrão a partir do
+    iOS 26 (flags do Safari não valem para WebView); no Android WebView o WebGPU não tem
+    marco registrado, então WebGL 2 é o caminho. App Store 2.5.2: conteúdo dentro do
+    pacote, sem baixar código que mude funcionalidade; 4.2: mais que site reempacotado.
+  - **Verificar:** imagem e p95 de quadro do pacote no aparelho e no Deck, em movimento e
+    pareados com o navegador. Se não sustentar o acabamento aprovado, a saída é outra
+    engine, não cortar arte. Contraprova: o Vampire Survivors relatou em 2022 falhas de
+    renderização do Electron em parte do hardware e migrou de engine por desempenho e
+    consoles; stack web não chega a console.
+  - Plataformas UGC fechadas não recebem exportação web: ver [Roblox](roblox.md#porte-de-jogo-de-outra-engine)
+    e [UEFN](unreal.md#uefn-ilhas-do-fortnite).
+
+## Telemetria de produto
+
+Regras que valem para qualquer jogo web medido (caso de origem: auditoria GA4 do laboratório,
+24/09/2026, 15 cópias da tag e três camadas de eventos). Hipótese de valor, não promessa de ganho.
+
+- **Uma tag, cópias idênticas.** Se cada jogo leva a própria cópia, um teste compara todas
+  ignorando só a identidade (`game_id`, `game_name`). Deriva entre cópias foi o defeito mais comum.
+- **Limpar a URL sem perder campanha.** Tirar query e fragmento (código de sala, token, retorno de
+  login) mas manter `utm_*` e ids de clique; senão toda campanha vira acesso direto.
+- **Volta de login não é origem.** Referência de provedor OAuth (`accounts.google.com`, Supabase,
+  Apple) sai vazia com `ignore_referrer`; senão o login aparece como canal.
+- **Só domínio próprio mede.** Lista de hosts permitidos na tag; cópia publicada por terceiros com o
+  mesmo ID suja a propriedade. `?analytics_debug=1` libera QA em qualquer host.
+- **Telas virtuais desligam a visita automática.** Jogo que emite uma `page_view` por tela marca a
+  tag (`data-screens="virtual"`); sem isso cada entrada conta duas vezes.
+- **Lista fechada nasce do registro do jogo.** Valores permitidos (personagem, mapa, modo) vêm do
+  mesmo módulo que o jogo usa; lista copiada envelhece e descarta o conteúdo novo em silêncio.
+- **Medir o convite.** Jogo com sala por link mede copiar o link e chegar por ele; esse boca a boca
+  aparece como acesso direto e fica invisível sem evento.
+- **Verificar na propriedade.** Dimensão personalizada registrada com o parâmetro exato (conferir o
+  nome salvo), retenção de eventos acima do padrão de 2 meses e rolagem automática desligada em
+  página de jogo (dispara sozinha e vira ruído de engajamento).
 
 ## O que o harness faz aqui
 
@@ -231,3 +297,42 @@ backend instalado. [Origem](../../references/sources.md#aprendizados-de-aplicaç
 Persistência, pausa e descarte dos buffers de animação/áudio seguem as receitas de
 [conteúdo](../../recipes/content.md), [áudio](../../recipes/audio.md) e
 [performance](../../recipes/performance.md).
+
+## Aprendizados de páginas interativas
+
+Extraídos da landing do Universo Rabisco, de 23/9/2026 (caso registrado no laboratório, em
+`apps/universo-rabisco/docs/aprendizados.md`). Valem para landings, hubs e páginas com canvas, camadas e 2.5D; confirmar no navegador de destino.
+
+- **Layout decidido cedo.** Um modo que muda a altura da página (palco fixo, caderno 3D, galeria
+  horizontal) precisa ser aplicado no carregamento, e não quando o código da seção chega. Senão,
+  âncoras e links do menu caem no lugar errado. Verifique clicando em cada link antes de qualquer rolagem.
+- **`loading="lazy"` não basta em pilhas.** Elementos empilhados num palco fixo ficam todos
+  "perto" da tela e baixam juntos. Oculte os distantes (`display: none`) até a seção se aproximar.
+  `background-image` em pseudo-elemento carrega assim que o CSS se aplica: libere por classe.
+  Meça o que baixa na abertura, e não só o total.
+- **Troca de conteúdo exige nome novo.** Com cache longo (ex.: `max-age=86400`), republicar um
+  asset com o mesmo nome deixa quem já visitou com a versão antiga. Versione o nome ou o parâmetro.
+- **Isolar cada componente.** Um construtor que lança erro não pode derrubar os vizinhos:
+  inicialize cada miniatura isoladamente e registre a falha.
+- **Máscara corta sombra.** `mask` ou `clip-path` no mesmo elemento da `box-shadow` a recorta.
+  Ponha a sombra num pseudo-elemento fora da máscara.
+- **Pilhas de fonte manuscrita não terminam em `cursive`.** No macOS o genérico vira Apple
+  Chancery enquanto a fonte carrega. Termine em `system-ui, sans-serif` e use `font-display: block`
+  nas fontes pré-carregadas da tela de entrada.
+- **Desenho de caneta determinístico.** Tremor de traço com semente fixa por objeto não "ferve"
+  entre quadros. Formas geométricas (asas, caixas, triângulos) não passam pelo suavizador de
+  traço, que arredonda quinas e muda a silhueta.
+- **2.5D sem deformar texto.** Mover `perspective-origin` com o ponteiro, e não girar a página,
+  preserva a nitidez do texto e o alinhamento de um canvas de desenho. `pathLength` com
+  `vector-effect: non-scaling-stroke` não anima o tracejado; revele por `clip-path`.
+- **Stop-motion.** Poucos quadros por segundo (8 a 12) e deslocamento em degraus. Tremor
+  aleatório contínuo por quadro lê como inseto ou nervosismo.
+- **Desenho do público que ganha vida precisa de limite de forma.** Converter o traço no contorno
+  convexo arredondado, com alongamento limitado, impede reproduzir formas obscenas sem bloquear o
+  gesto. Teste com casos positivos e negativos. Filtro de forma não é moderação completa: texto,
+  imagens enviadas e contexto social exigem outras camadas.
+- **Heurísticas de gesto** (reconhecer ∞, laço, risco) só entram depois de testar formas que devem
+  e que não devem disparar.
+
+Limites: observado em Chromium de desktop e em emulação de celular; sem aparelho físico
+nem rede móvel real. Os números de peso são do caso e não se transferem.
