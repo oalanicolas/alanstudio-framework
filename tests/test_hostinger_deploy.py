@@ -30,7 +30,9 @@ class HtaccessTests(unittest.TestCase):
         self.assertIn('Header set Cache-Control "public, max-age=31536000, immutable" env=VRC0', text)
         self.assertEqual(text.count("X-Content-Type-Options"), 1, "nosniff is set once, globally")
         self.assertIn("RewriteRule ^elenco$ /elenco.html [L]", text)
-        self.assertIn("RewriteRule ^(.+)/$ /$1 [R=301,L]", text)
+        self.assertIn("RewriteRule ^(.+)/$ /$1 [R=308,L]", text)
+        self.assertIn("RewriteCond %{THE_REQUEST} \\s/+(.+)\\.html[\\s?] [NC]", text)
+        self.assertLess(text.index("THE_REQUEST"), text.index("RewriteRule ^elenco$"), "redirects run before rewrites")
         self.assertIn("RewriteRule ^(.+)$ /$1.html [L]", text)
         self.assertIn('<FilesMatch "\\.html?$">', text)
 

@@ -71,9 +71,13 @@ def htaccess_from_vercel(cfg: dict, source: str = "vercel.json", spa: bool = Fal
     if rewrites or clean or spa:
         out.append("<IfModule mod_rewrite.c>")
         out.append("  RewriteEngine On")
+        if clean:
+            # Vercel answers /x.html (and /index.html) with 308 to /x; THE_REQUEST skips internal rewrites.
+            out.append("  RewriteCond %{THE_REQUEST} \\s/+(.+)\\.html[\\s?] [NC]")
+            out.append("  RewriteRule ^ /%1 [R=308,L]")
         if cfg.get("trailingSlash") is False:
             out.append("  RewriteCond %{REQUEST_FILENAME} !-d")
-            out.append("  RewriteRule ^(.+)/$ /$1 [R=301,L]")
+            out.append("  RewriteRule ^(.+)/$ /$1 [R=308,L]")
         for rule in rewrites:
             out.append(f'  RewriteRule ^{re.escape(rule["source"].lstrip("/"))}$ {rule["destination"]} [L]')
         if clean:
