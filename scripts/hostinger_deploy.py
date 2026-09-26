@@ -65,6 +65,12 @@ def htaccess_from_vercel(cfg: dict, source: str = "vercel.json", spa: bool = Fal
     out.append('  <FilesMatch "\\.html?$">')
     out.append('    Header set Cache-Control "no-cache"')
     out.append("  </FilesMatch>")
+    # Data files keep their name across releases (sound maps, manifests, credits): never immutable, whatever
+    # vercel.json says for their folder (packs/platforms/web.md, "Imutável só com versão"). Rabisco War, 26/09:
+    # /(audio|…)/(.*) served audio/sfx-map.json and voice/manifest.json as immutable for a year.
+    out.append('  <FilesMatch "\\.(json|md|txt|webmanifest)$">')
+    out.append('    Header set Cache-Control "no-cache"')
+    out.append("  </FilesMatch>")
     out.append("</IfModule>")
     rewrites = cfg.get("rewrites", [])
     clean = cfg.get("cleanUrls", False)

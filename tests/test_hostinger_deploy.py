@@ -37,6 +37,15 @@ class HtaccessTests(unittest.TestCase):
         self.assertIn("RewriteRule ^(.+)$ /$1.html [L]", text)
         self.assertIn('<FilesMatch "\\.html?$">', text)
 
+    def test_data_files_are_never_immutable(self):
+        cfg = {"headers": [{"source": "/(audio|sfx|music)/(.*)", "headers": [
+            {"key": "Cache-Control", "value": "public, max-age=31536000, immutable"}]}]}
+        text = deploy.htaccess_from_vercel(cfg)
+        block = '<FilesMatch "\\.(json|md|txt|webmanifest)$">\n    Header set Cache-Control "no-cache"'
+        self.assertIn(block, text)
+        # <FilesMatch> merges after the .htaccess-level Header lines, so it overrides the folder rule
+        self.assertGreater(text.index(block), text.index("env=VRC0"))
+
     def test_spa_fallback_only_when_asked(self):
         self.assertNotIn("RewriteEngine", deploy.htaccess_from_vercel({}))
         self.assertIn("RewriteRule ^ /index.html [L]", deploy.htaccess_from_vercel({}, spa=True))

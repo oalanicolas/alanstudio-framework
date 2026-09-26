@@ -159,6 +159,11 @@ não exige adotar o runtime do fornecedor. [Origem](../../references/sources.md#
   - **Prova:** uma visita com a cópia antiga guardada recebe a versão nova. Caso Distrito Rabisco
     (23/09/2026): pedido comum devolveu a cópia velha sem consultar o servidor, e `no-cache`
     trouxe a nova em Chrome 154, Safari 17.6 e Firefox 156.
+  - **Pasta inteira imutável:** uma regra por pasta (`/(audio|sfx|music)/(.*)`) pega também os
+    manifestos e as mídias de nome fixo que ela guarda. Sem versão na URL, a pasta leva `max-age`
+    curto sem `immutable` (1 dia nos jogos do estúdio, 26/09/2026); o `hostinger_deploy.py` serve
+    `.json`, `.md`, `.txt` e `.webmanifest` com `no-cache` em qualquer pasta. Caso Rabisco War
+    (26/09/2026): `voice/manifest.json` e `sfx-map.json` saíam imutáveis por um ano.
   - **Limite:** o cabeçalho do host só se confirma num deploy de prévia.
 - Lojas web (itch.io, Poki, Newgrounds) e wrappers (Electron, Tauri, Capacitor) têm
   requisitos próprios — consulte a fonte oficial.
