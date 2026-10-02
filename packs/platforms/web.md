@@ -410,3 +410,35 @@ Valem para landings, hubs e páginas com canvas, camadas e 2.5D; confirmar no na
 
 Limites: observado em Chromium de desktop e em emulação de celular; sem aparelho físico
 nem rede móvel real. Os números de peso são exemplos e não se transferem.
+
+## Aprendizados de interface de jogo no celular
+
+Valem para jogo web em paisagem no celular e no tablet, inclusive empacotado. O sintoma comum é a
+interface parecer uma página: fonte do sistema, texto selecionável, dica de mouse, rolagem, aviso legal.
+
+- **Tipografia própria, embutida.** Arquivos `woff2` locais com `preload` e `font-display: block`, para
+  não piscar e funcionar sem rede. Família de título nos botões, números e placas; família de leitura nas
+  descrições. O `font` do canvas não aceita `var(--x)`: escreva o nome real da família ali, ou o texto cai
+  na fonte padrão sem erro. Texto claro sobre peça escura leva contorno; texto escuro sobre dourado, relevo.
+- **Comportamento de aplicativo.** `user-select: none` e `-webkit-touch-callout: none` no jogo;
+  `contextmenu` e `dragstart` cancelados; nada de `title` (vira dica de mouse), use `aria-label`; contorno
+  de foco só depois de uma tecla (classe ligada no `keydown` e desligada no `pointerdown`).
+- **Telas cabem por desenho.** Sem rolagem nativa, o que não cabe vira grade com ficha de detalhe, abas ou
+  cartas lado a lado. Um paginador genérico que fatia pela altura corta cartas ao meio; quando paginar,
+  quebre na borda de itens inteiros, oculte o item parcial e aceite o gesto de deslizar.
+- **Nada fixo que não seja jogo.** Um convite de instalação permanente custou 13% da altura em paisagem;
+  ofereça-o na abertura e nas configurações. O prompt nativo só depois de um toque.
+- **Sem cópia de página.** Sobrancelhas acima de títulos, slogans, avisos como "salvo localmente" e setas
+  de link saem; entram progresso real, placas e o triângulo de jogar. Créditos num painel próprio.
+- **Resposta de jogo.** Uma transição curta ao trocar de tela, janela que surge com pequeno salto, botão que
+  afunda ao toque, som de clique quando o som está ligado; `prefers-reduced-motion` remove os movimentos.
+  Carregamento com progresso real e dicas de jogo no lugar de slogan.
+
+**Verificar** em cada tamanho-alvo: varredura de estouro (`scrollWidth > clientWidth` em botões e títulos;
+família de título larga quebra rótulos que cabiam); matriz sem rolagem em nenhum contêiner, alvo ≥ 44 px e
+alcance pelo ponto central (`elementFromPoint`). Testes que dependem de uma classe de layout quebram quando a
+tela é refeita: mantenha um gancho estável ou teste pelo controle público. Um harness de lógica sem
+`cancelAnimationFrame` ou `setInterval` quebra com chamadas novas; guarde-as ou use `setTimeout` em cadeia.
+
+Limites: observado em Chromium com toque emulado e GPU real, em celular e tablet emulados; sem Safari nem
+aparelho físico. Percentuais são do caso e não se transferem como meta.
