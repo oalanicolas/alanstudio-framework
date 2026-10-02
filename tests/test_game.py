@@ -10117,7 +10117,9 @@ Assets desenhados neste projeto; autoria ainda não confirmada por auditoria.
         self.assertIn("sem destino", empty.stderr)
         self.assertIn("start --idea", empty.stderr)
         self.assertIn(f"--root {self.root / 'vazio'}", empty.stderr)
-        self.assertNotIn("um", empty.stderr)
+        # Sem vizinhos, nada entre "sem destino:" e a instrução. Procurar "um" no texto
+        # todo falhava quando o nome sorteado da pasta temporária continha "um".
+        self.assertIn("sem destino: passe o caminho", empty.stderr)
 
     def test_playable_neighbors_looks_beside_the_framework_not_inside_it(self):
         studio = self.root / "estudio"
