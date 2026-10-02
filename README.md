@@ -104,6 +104,18 @@ python3 scripts/game.py open /caminho/do/laboratorio/meu-jogo
 
 `play` e `open` são o mesmo verbo. Se o play pede npm, o `package.json` tem dependências e `node_modules` falta, `then.install` nomeia `npm install`. Sem dependências a chave some. Nomear não instala. Se o serve recusa produção, o `play` nomeia a produção que o serve já recusa. Serve no disco não é publicação. Sem chave `produção`. `url` nomeia a superfície pedida (`http://localhost:8080/` quando o script é `serve` e não há `PORT`). Nomear não serve. Se o serve tenta abrir o navegador, o prompt nomeia a tentativa. Sem o marcador, pede Abrir. Nomear não abre. Com tela, o avanço abre a porta. Depois de uma partida, a página grava o recibo se você escrever; o próximo comando do harness continua `note`. O prompt nomeia o `playtest` que o `AGENTS.md` já cita. Só lê. Sem os quatro não é achado. Sem `then.playtest`. Nomear o leitor não observa. `note`, `next`, `feel` e `playtest` sem caminho usam o mesmo resolvedor. Se o disco tem last-run com seed, `then.seed` aponta `/?seed=<n>` e, se o candidato nomeou a chuva ou o look, junta a mesa e a paleta. `then.invite` aponta o convite com os mesmos eixos. Nomear o endereço não observa. Vestir a query não grava. A chuva da query não retoma o hold. Na porta e no fim a região viva nomeia a mesa e o look que a chuva já veste — spawn e normal somem. Na porta o telefone vê Jogar: toque sem ter apertado. Depois do tap a porta não chama o avanço de cima. `executed` fica `false`. `runtime` lê o `node` do PATH se o play pede npm ou node; sem 20+ o prompt avisa. `session` aponta a partida simulada se o manifesto a declara; o prompt a nomeia. Não executa e não observa. Nomear não serve. Não cria pasta e não serve. Achar o único jogo do laboratório também não executa e não sente. A frase de agora sai em stderr; encanar o stdout continua o recibo.
 
+`serve` executa o que o `play` só aponta: sobe o servidor que o projeto já declara (`serve`, `start`, `dev` ou `preview`), em segundo plano, numa porta livre pedida ao sistema (`PORT`; scripts `vite` sem `--port` recebem a porta na linha de comando). Grava PID, porta, pasta, commit, comando e hora em `output/serve/` da raiz do laboratório, espera a URL responder 200 e só então a imprime, sozinha na primeira linha. Com `--json`, o mesmo resultado em JSON.
+
+```sh
+python3 scripts/game.py serve /caminho/do/laboratorio/meu-jogo
+python3 scripts/game.py serve /caminho/do/laboratorio/meu-jogo --stop
+python3 scripts/game.py serve --list
+```
+
+Com servidor registrado, vivo, na mesma pasta, no mesmo commit e com as mesmas alterações locais, reaproveita e imprime a URL. Se algo disso mudou, ou o processo morreu, encerra só o PID que ele mesmo registrou e sobe de novo. `--stop` encerra apenas esse PID; `--list` mostra os registrados como vivo ou morto. Nunca mata processo alheio: porta fixa no script do projeto que já esteja ocupada por outra sessão falha com o final do log, em vez de liberar a porta. 200 na URL não prova que o jogo está certo.
+
+`context` também traz `worktrees`: worktrees abertos do repositório do módulo (nome, branch, caminho, último commit, sujo sim ou não) e os branches locais, com o worktree em que cada um está aberto. Lê só o disco, sem rede.
+
 `guide` não cria o projeto. `next` sai do caminho feliz: só entra em `then.lost`, quando o ciclo já correu e você não sabe o que falta. Com destino existente, preenche o comando que abre o jogo e o `kind` do passo de jogar. `executed` fica `false`. Sem `start`, o caminho em dois passos continua valendo:
 
 ```sh

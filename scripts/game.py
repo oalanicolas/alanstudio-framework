@@ -12,11 +12,14 @@ import re
 import shlex
 import shutil
 import signal
+import socket
 import subprocess
 import sys
 import time
 import unicodedata
 from datetime import datetime, timezone
+import urllib.error
+import urllib.request
 from urllib.parse import unquote
 
 FRAMEWORK = Path(__file__).resolve().parents[1]
@@ -576,6 +579,64 @@ def git_summary(project):
         "recent": run("log", "-5", "--format=%h %s", "--", ".").splitlines(),
         "scope": git_summary_scope(),
     }
+
+
+def git_worktrees_scope():
+    return ("Worktrees e branches locais do repositório do módulo, lidos do disco na hora do comando, "
+            "sem rede. Branch sem worktree não está aberto em lugar nenhum; sujo é `git status` "
+            "não vazio naquele worktree. Mostrar não escolhe onde trabalhar.")
+
+
+def git_worktrees(project, limit=20):
+    """Worktrees e branches locais do repositório que contém o projeto; None fora de um repositório."""
+    def run(cwd, *args):
+        try:
+            result = subprocess.run(["git", "-C", str(cwd), *args], capture_output=True, text=True,
+                                    check=False, timeout=5)
+        except (OSError, subprocess.TimeoutExpired):
+            return None
+        return result.stdout.strip() if result.returncode == 0 else None
+
+    top = run(project, "rev-parse", "--show-toplevel")
+    if not top:
+        return None
+    here = Path(top).resolve()
+    blocks, current = [], {}
+    for line in (run(project, "worktree", "list", "--porcelain") or "").splitlines():
+        if not line.strip():
+            if current:
+                blocks.append(current)
+            current = {}
+            continue
+        key, _, value = line.partition(" ")
+        current[key] = value or True
+    if current:
+        blocks.append(current)
+    worktrees, checked = [], {}
+    for block in blocks[:limit]:
+        path = Path(block.get("worktree", ""))
+        branch = block.get("branch")
+        branch = branch[len("refs/heads/"):] if isinstance(branch, str) and branch.startswith("refs/heads/") else None
+        present = path.is_dir()
+        status = run(path, "status", "--porcelain", "--ignore-submodules=all") if present else None
+        last = run(path, "log", "-1", "--format=%h %s") if present else None
+        entry = {
+            "name": path.name, "path": str(path), "branch": branch,
+            "detached": "detached" in block, "current": present and path.resolve() == here,
+            "last_commit": last, "dirty": None if status is None else bool(status),
+        }
+        if "prunable" in block:
+            entry["prunable"] = True
+        worktrees.append(entry)
+        if branch:
+            checked[branch] = str(path)
+    branches = []
+    listing = run(project, "for-each-ref", "refs/heads", "--format=%(refname:short)%09%(objectname:short)%09%(subject)")
+    for line in (listing or "").splitlines()[:limit * 2]:
+        name, _, rest = line.partition("\t")
+        head, _, subject = rest.partition("\t")
+        branches.append({"name": name, "head": head, "subject": subject, "worktree": checked.get(name)})
+    return {"worktrees": worktrees, "branches": branches, "scope": git_worktrees_scope()}
 
 
 def identify(project):
@@ -6490,6 +6551,15 @@ def brief_context(full, root, output):
                                         for item in (continuity.get("sources") or [])[:5]]}
     result["git"] = {"branch": git.get("branch"), "head": (git.get("head") or "")[:12] or None,
                      "dirty_paths": git.get("dirty_paths"), "recent": (git.get("recent") or [])[:3]}
+    opened = full.get("worktrees") or {}
+    if opened:
+        result["worktrees"] = [
+            f"{item.get('name')} [{item.get('branch') or 'detached'}] {short(item.get('path'))}"
+            f" · {(item.get('last_commit') or '?')[:60]} · {'sujo' if item.get('dirty') else 'limpo' if item.get('dirty') is False else '?'}"
+            for item in opened.get("worktrees") or []]
+        loose = [item["name"] for item in opened.get("branches") or [] if not item.get("worktree")]
+        if loose:
+            result["branches_sem_worktree"] = loose
     result["scripts"] = " ".join(sorted(full.get("scripts") or {}))
     result["package_manager"] = full.get("package_manager")
     result["read_next"] = [short(path) for path in full.get("read_next") or []]
@@ -6836,6 +6906,7 @@ def context(project, focus, stage=None, studies_root=None, event="task", root=No
         "scale": read_scale(foundation["scale_mentions"], scale),
         "read_next": references, "packs": packs, "studies": studies, "references": studio_references,
         "git": git_summary(project) if project.is_dir() else None,
+        "worktrees": git_worktrees(project) if project.is_dir() else None,
         "source_index": str(FRAMEWORK / "references/sources.md"),
         "package_manager": manager,
         "metadata_issues": metadata_issues,
@@ -10134,6 +10205,316 @@ def note_observation(project, author, note, fields=None, output=None, role="huma
     return report
 
 
+# Servidor local mantido de pé: porta livre pedida ao sistema, estado gravado em
+# output/serve/ e URL só depois que a página responde 200. Encerra apenas o PID
+# que ele mesmo registrou; processo de outra sessão nunca é tocado.
+SERVE_HEALTH_TIMEOUT = 30.0
+SERVE_STOP_WAIT = 5.0
+SERVE_POLL = 0.25
+
+
+def serve_scope():
+    return ("Sobe o servidor que o projeto declara (serve, start, dev ou preview), em segundo plano, numa "
+            "porta livre pedida ao sistema, e grava PID, porta, pasta, commit e comando em `output/serve/`. "
+            "A URL só sai depois que ela responde 200. Reaproveita o servidor registrado quando pasta, "
+            "commit e alterações locais são os mesmos; senão encerra só o PID que registrou e sobe de novo. "
+            "Nunca mata processo alheio. Servidor 200 não prova que o jogo está certo.")
+
+
+def serve_pause(seconds):
+    time.sleep(seconds)
+
+
+def serve_state_dir(root):
+    return Path(root) / "output" / "serve"
+
+
+def serve_slug(project, root):
+    project = Path(project).resolve()
+    try:
+        label = project.relative_to(Path(root).resolve()).as_posix()
+    except ValueError:
+        label = f"{project.name}-{hashlib.sha1(str(project).encode('utf-8')).hexdigest()[:8]}"
+    return re.sub(r"[^A-Za-z0-9._-]+", "__", label).strip("_") or "projeto"
+
+
+def serve_state_path(project, root):
+    return serve_state_dir(root) / f"{serve_slug(project, root)}.json"
+
+
+def serve_read_entry(path):
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def serve_write_entry(path, entry):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(".json.tmp")
+    temporary.write_text(json.dumps(entry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
+
+
+def serve_process_info(pid):
+    """Estado e hora de início do processo, via `ps`; None se não existe. Zumbi conta como morto."""
+    try:
+        pid = int(pid)
+    except (TypeError, ValueError):
+        return None
+    if pid <= 0:
+        return None
+    try:
+        result = subprocess.run(["ps", "-o", "stat=,lstart=", "-p", str(pid)], capture_output=True,
+                                text=True, check=False, timeout=5)
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    line = result.stdout.strip()
+    if result.returncode != 0 or not line:
+        return None
+    stat, _, started = line.partition(" ")
+    return {"alive": not stat.startswith("Z"), "started": " ".join(started.split())}
+
+
+def serve_alive(entry):
+    """Vivo e é o mesmo processo que foi registrado (a hora de início evita PID reaproveitado)."""
+    info = serve_process_info(entry.get("pid"))
+    if not info or not info["alive"]:
+        return False
+    return not entry.get("started") or entry["started"] == info["started"]
+
+
+def serve_free_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+        probe.bind(("127.0.0.1", 0))
+        return probe.getsockname()[1]
+
+
+def serve_listening_ports(pid):
+    """Portas TCP em escuta no grupo de processos do servidor registrado; vazio se `lsof` falhar."""
+    try:
+        result = subprocess.run(["lsof", "-nP", "-a", "-g", str(int(pid)), "-iTCP", "-sTCP:LISTEN", "-Fn"],
+                                capture_output=True, text=True, check=False, timeout=5)
+    except (OSError, subprocess.TimeoutExpired, ValueError, TypeError):
+        return []
+    ports = []
+    for line in result.stdout.splitlines():
+        found = re.search(r":(\d+)$", line) if line.startswith("n") else None
+        if found and int(found.group(1)) not in ports:
+            ports.append(int(found.group(1)))
+    return ports
+
+
+def serve_http_ok(url, timeout=2.0):
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    try:
+        with opener.open(url, timeout=timeout) as response:
+            return response.status == 200
+    except (urllib.error.URLError, OSError, ValueError):
+        return False
+
+
+def serve_fingerprint(project):
+    """Pasta, commit e resumo das alterações locais: o que decide se o servidor vivo ainda serve este código."""
+    def run(*args):
+        try:
+            result = subprocess.run(["git", "-C", str(project), *args], capture_output=True, check=False, timeout=10)
+        except (OSError, subprocess.TimeoutExpired):
+            return None
+        return result.stdout if result.returncode == 0 else None
+
+    commit = run("rev-parse", "HEAD")
+    commit = commit.decode("utf-8", "replace").strip() if commit else None
+    dirty = None
+    if commit:
+        status = run("status", "--porcelain", "--ignore-submodules=all", "--", ".")
+        diff = run("diff", "HEAD", "--ignore-submodules=all", "--", ".")
+        if status is not None and diff is not None:
+            dirty = hashlib.sha1(status + b"\0" + diff).hexdigest()[:12] if status.strip() else ""
+    return {"cwd": str(Path(project).resolve()), "commit": commit, "dirty": dirty}
+
+
+def serve_launch(project):
+    """Comando de servidor que o projeto já declara (a mesma escolha do `play`), sem porta nem ambiente."""
+    scripts, manager = project_commands(project)
+    names = play_script_names(scripts)
+    if not names or not manager:
+        raise ValueError("O projeto não declara script de servidor (serve, start, dev ou preview) em "
+                         "package.json com executor claro. Rode o comando do projeto à mão.")
+    name = names[0]
+    info = scripts[name]
+    argv = info.get("argv") if isinstance(info, dict) else None
+    if not argv:
+        raise ValueError(f"O script `{name}` não tem executor claro; rode-o à mão.")
+    body = info.get("body", "") if isinstance(info, dict) else ""
+    # vite lê a porta da linha de comando, não de PORT; sem --port no script, ela entra aqui.
+    port_flags = []
+    if re.search(r"\bvite\b", body) and "--port" not in body:
+        port_flags = (["--"] if argv[0] == "npm" else []) + ["--port", "{port}", "--strictPort"]
+    return {"script": name, "argv": list(argv) + port_flags}
+
+
+def serve_log_tail(path, lines=12):
+    try:
+        text = Path(path).read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+    return "\n".join(text.strip().splitlines()[-lines:])
+
+
+def serve_terminate(entry, wait=None):
+    """Encerra o PID registrado (e o grupo que ele criou). False se já não estava vivo."""
+    wait = SERVE_STOP_WAIT if wait is None else wait
+    if not serve_alive(entry):
+        return False
+    pid = int(entry["pid"])
+    try:
+        group = os.getpgid(pid) == pid
+    except OSError:
+        return False
+
+    def send(sig):
+        try:
+            os.killpg(pid, sig) if group else os.kill(pid, sig)
+        except OSError:
+            pass
+
+    send(signal.SIGTERM)
+    deadline = time.monotonic() + wait
+    while time.monotonic() < deadline:
+        if not serve_alive(entry):
+            return True
+        serve_pause(SERVE_POLL)
+    send(signal.SIGKILL)
+    return True
+
+
+def serve_public(entry, state_path, root, **extra):
+    result = {key: entry.get(key) for key in ("project", "url", "port", "pid", "cwd", "commit", "dirty", "command",
+                                              "script", "started_at", "log")}
+    result["state"] = _short_path(state_path, root)
+    result.update(extra)
+    return result
+
+
+def serve_start(project, root, timeout=None, launch=None):
+    """Garante um servidor vivo para o projeto e devolve a URL já checada."""
+    project = Path(project).resolve()
+    if not project.is_dir():
+        raise ValueError("projeto precisa ser um diretório")
+    timeout = SERVE_HEALTH_TIMEOUT if timeout is None else float(timeout)
+    launch = launch or serve_launch(project)
+    state_path = serve_state_path(project, root)
+    fingerprint = serve_fingerprint(project)
+    entry = serve_read_entry(state_path)
+    restarted = None
+    if entry:
+        if not serve_alive(entry):
+            restarted = "o processo registrado morreu"
+        elif any(entry.get(key) != fingerprint[key] for key in ("cwd", "commit")):
+            restarted = "pasta ou commit mudou"
+        elif entry.get("dirty") != fingerprint["dirty"]:
+            restarted = "as alterações locais mudaram"
+        elif not entry.get("url") or not serve_http_ok(entry["url"]):
+            restarted = "o servidor registrado não respondeu 200"
+        else:
+            return serve_public(entry, state_path, root, status="reaproveitado", restarted=None)
+        serve_terminate(entry)
+        state_path.unlink(missing_ok=True)
+
+    port = serve_free_port()
+    argv = [str(part).replace("{port}", str(port)) for part in launch["argv"]]
+    environment = dict(os.environ, PORT=str(port), HOST="127.0.0.1", BROWSER="none")
+    log_path = serve_state_dir(root) / f"{serve_slug(project, root)}.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(log_path, "wb") as log:
+        process = subprocess.Popen(argv, cwd=str(project), env=environment, stdin=subprocess.DEVNULL,
+                                   stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+    info = serve_process_info(process.pid) or {}
+    entry = {
+        "project": _short_path(project, root), "pid": process.pid, "port": port, "url": None,
+        "cwd": fingerprint["cwd"], "commit": fingerprint["commit"], "dirty": fingerprint["dirty"],
+        "command": shlex.join(argv), "script": launch.get("script"), "started": info.get("started"),
+        "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "log": _short_path(log_path, root), "status": "iniciando",
+    }
+    serve_write_entry(state_path, entry)
+
+    def fail(reason):
+        serve_terminate(entry, wait=2.0)
+        state_path.unlink(missing_ok=True)
+        tail = serve_log_tail(log_path)
+        raise ValueError(f"{reason}. Log em {entry['log']}" + (f":\n{tail}" if tail else "."))
+
+    deadline = time.monotonic() + timeout
+    while True:
+        if process.poll() is not None:
+            fail(f"O servidor encerrou antes de responder (código {process.returncode})")
+        for candidate in dict.fromkeys([port, *serve_listening_ports(process.pid)]):
+            url = f"http://localhost:{candidate}/"
+            if serve_http_ok(url):
+                entry.update(port=candidate, url=url, status="vivo")
+                serve_write_entry(state_path, entry)
+                return serve_public(entry, state_path, root, status="iniciado", restarted=restarted)
+        if time.monotonic() >= deadline:
+            fail(f"O servidor não respondeu 200 em {timeout:g}s")
+        serve_pause(SERVE_POLL)
+
+
+def serve_stop(project, root):
+    state_path = serve_state_path(Path(project).resolve(), root)
+    entry = serve_read_entry(state_path)
+    if not entry:
+        return {"project": _short_path(Path(project).resolve(), root), "status": "sem servidor registrado", "stopped": False}
+    stopped = serve_terminate(entry)
+    state_path.unlink(missing_ok=True)
+    return serve_public(entry, state_path, root, stopped=stopped,
+                        status="encerrado" if stopped else "já estava morto")
+
+
+def serve_list(root):
+    servers = []
+    directory = serve_state_dir(root)
+    for path in sorted(directory.glob("*.json")) if directory.is_dir() else []:
+        entry = serve_read_entry(path)
+        if entry:
+            alive = serve_alive(entry)
+            servers.append(serve_public(entry, path, root, alive=alive, status="vivo" if alive else "morto"))
+    return {"servers": servers, "scope": serve_scope()}
+
+
+def serve_cli(args, root):
+    if args.list:
+        result = serve_list(root)
+        if args.json:
+            print(json.dumps(result, ensure_ascii=False, indent=2), flush=True)
+        elif not result["servers"]:
+            print("Nenhum servidor registrado.")
+        else:
+            for item in result["servers"]:
+                print(f"{item['status']}\t{item.get('url') or '-'}\tpid {item.get('pid')}\t{item.get('project')}")
+        return 0
+    destination = resolve_project_destination(None, root) if args.project is None else resolve_project(args.project, root)[0]
+    if args.stop:
+        result = serve_stop(destination, root)
+    else:
+        result = serve_start(destination, root, timeout=args.timeout)
+    if args.json:
+        result["scope"] = serve_scope()
+        print(json.dumps(result, ensure_ascii=False, indent=2), flush=True)
+    elif args.stop:
+        print(f"{result['status']}: {result.get('project')}" + (f" (pid {result['pid']})" if result.get("pid") else ""))
+    else:
+        print(result["url"])
+        note = f"{result['status']} · pid {result['pid']} · porta {result['port']} · log {result['log']}"
+        if result.get("restarted"):
+            note += f" · reiniciado: {result['restarted']}"
+        print(note)
+    return 0
+
+
 def main():
     # `--root` é aceito antes e depois do subcomando. A documentação sempre o
     # escreveu depois, e argparse só o aceitava antes: cada exemplo com `--root`
@@ -10190,6 +10571,16 @@ def main():
         help="aponta o comando que abre o jogo, sem executar; sem caminho, o único jogo do laboratório basta",
     )
     played.add_argument("project", nargs="?", default=None)
+    served = commands.add_parser(
+        "serve",
+        parents=[common],
+        help="sobe o servidor que o projeto declara, em porta livre, e imprime a URL checada na primeira linha",
+    )
+    served.add_argument("project", nargs="?", default=None)
+    served.add_argument("--stop", action="store_true", help="encerra apenas o PID que o serve registrou para o projeto")
+    served.add_argument("--list", action="store_true", help="lista os servidores registrados, vivos ou mortos")
+    served.add_argument("--json", action="store_true", help="resultado em JSON em vez da URL na primeira linha")
+    served.add_argument("--timeout", type=float, default=SERVE_HEALTH_TIMEOUT, help="segundos até a URL responder 200")
     start = commands.add_parser("init", parents=[common], help="cria um projeto novo a partir de um starter, para ADAPT")
     start.add_argument("project")
     start.add_argument("--starter", default=starters()[0] if starters() else None, choices=starters() or None)
@@ -10400,6 +10791,8 @@ def main():
         elif args.action in ("play", "open"):
             dest = resolve_play_destination(args.project, root)
             emit(play_cycle(dest))
+        elif args.action == "serve":
+            return serve_cli(args, root)
         elif args.action == "next":
             emit(next_step(require_project_destination(args.project, root), args.focus, studies_root=default_studies_root(root), genre=args.genre))
         elif args.action == "scan":
