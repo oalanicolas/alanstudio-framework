@@ -90,6 +90,9 @@ canonico: references/performance.md
 `jogos` responde "serve a qual jogo nosso?"; `referencias` responde "estuda qual
 jogo de fora?". As duas alimentam a tabela *No cérebro* no nó do jogo. Vocabulários
 fechados: `_sistema/cerebro.py`. Tipos das propriedades: `.obsidian/types.json`.
+Quando uma pasta de código recria ou extrai um jogo de fora, o nó desse jogo declara
+`replicas: [prototypes/<pasta>]`: `buscar --jogo <pasta>` passa a devolver os estudos da
+referência, e o jogo de fora continua sem a tag `nosso`.
 
 | `tipo` | Quando |
 |---|---|

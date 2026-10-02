@@ -47,7 +47,8 @@ e A–D: [[Rotular cada afirmação pela origem]]. Features visíveis não são 
 
 - Onde e com qual modelo: tabela *Onde nasce cada coisa* em [[Processo]].
 - Frontmatter: `tipo`, `resumo`, `status`; `data`, `jogos`, `referencias`, `temas`
-  quando couber; `parte_de` nas partes.
+  quando couber; `parte_de` nas partes. Nó de jogo de fora recriado por uma pasta de código:
+  `replicas: [<pasta>]` (ver [[Processo]]).
 - Nome do arquivo = o que a nota é, único, igual ao `# título`.
 - Influência: aresta no nó (skills em `genealogia-jogos/.agents/skills/`).
 - Material privado: só conclusões.

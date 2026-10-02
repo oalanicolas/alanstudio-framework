@@ -71,7 +71,9 @@ não conhece nenhuma delas por padrão.
 - `studies`: raiz de um vault do [kit do cérebro](../assets/cerebro/Como%20replicar.md).
   O `context` roda `_sistema/cerebro.py buscar --jogo <pasta do jogo> --json` desse
   vault e devolve, em `references.studies`, o nó do jogo (`node`) e as notas que o
-  declaram em `jogos:` (`notes`, com tipo, status e resumo). Sem o kit no vault,
+  declaram em `jogos:` (`notes`, com tipo, status e resumo). Pasta que recria um jogo
+  de fora aparece pelo nó desse jogo, quando ele declara `replicas: [<pasta>]`; as notas
+  vêm então de `referencias:`. Sem o kit no vault,
   `tool_missing`; jogo sem nó, `game_not_in_vault`; pasta ausente, `root_missing`.
 - `libraries`: pasta com uma biblioteca por subpasta, cada uma com `library.json`
   (manifesto da biblioteca). Entram em `related` as bibliotecas que os
@@ -92,7 +94,9 @@ Como usar isso ao implementar: [referências declaradas](reference-adaptation.md
 
 ## Módulos
 
-O manifesto opcional `workspace.json` declara módulos com `id` e `path`.
+O manifesto opcional `workspace.json` declara módulos com `id` e `path`; `aliases`
+(lista de nomes livres, opcional) deixa o `context` achar o módulo pelo nome que a
+pessoa usa na conversa.
 Uma pasta ainda não baixada é relatada como `not_downloaded`; não é preenchida pelo
 starter. [workspace.py](../scripts/workspace.py) obtém os módulos selecionados,
 incluindo seus pais, e preserva checkouts presentes. [split_workspace.py](../scripts/split_workspace.py)

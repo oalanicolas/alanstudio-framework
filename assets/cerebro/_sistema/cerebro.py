@@ -347,6 +347,21 @@ def nossos_jogos(notas: list[Nota]) -> dict[str, Nota]:
     return {n.chave: n for n in notas if n.no_grafo and "nosso" in lista(n.meta.get("tags"))}
 
 
+def referencia_da_replica(notas: list[Nota], pasta: str) -> str | None:
+    """Nó de jogo externo cuja pasta de código o recria (`replicas: [games/<pasta>]`).
+
+    A réplica não vira `nosso`: a busca devolve as notas que estudam a referência (`referencias`).
+    """
+    for n in notas:
+        if not n.no_grafo or n.tipo != "jogo":
+            continue
+        for r in lista(n.meta.get("replicas")):
+            r = str(r).lower().strip("/")
+            if pasta in {r, r.rsplit("/", 1)[-1]}:
+                return n.chave
+    return None
+
+
 NIVEIS = {"erro": 0, "aviso": 1, "info": 2}
 
 
@@ -508,6 +523,8 @@ def cmd_check(args) -> int:
         if n.rel.startswith(NOS + "ludemas/") and "## Invariante" not in n.texto:
             ach.add("aviso", "SEM_INVARIANTE", n.rel,
                     "ludema sem seção Invariante: sem ela, regularidade observada (n=) passa por contrato")
+        if lista(n.meta.get("replicas")) and (not n.no_grafo or n.tipo != "jogo" or "nosso" in lista(n.meta.get("tags"))):
+            ach.add("erro", "REPLICAS", n.rel, "replicas só vale em nó de jogo externo; jogo nosso usa `projeto`")
         if n.no_grafo or n.rel.startswith("_sistema/") or n.rel.startswith("_entrada/"):
             continue
         pasta = n.rel.rsplit("/", 1)[0] if "/" in n.rel else ""
@@ -760,8 +777,11 @@ def cmd_buscar(args) -> int:
             if q in {n.nome.lower(), projeto, projeto.rsplit("/", 1)[-1]}:
                 alvo_jogo = chave
         if not alvo_jogo:
+            alvo_jogo = referencia_da_replica(notas, q)
+        if not alvo_jogo:
             print(f"jogo {args.jogo!r} não encontrado. Nossos jogos: "
-                  + ", ".join(f"{n.nome} ({n.meta.get('projeto') or 'sem pasta de código'})" for n in jogos.values()))
+                  + ", ".join(f"{n.nome} ({n.meta.get('projeto') or 'sem pasta de código'})" for n in jogos.values())
+                  + ". Réplica de jogo externo: declare a pasta em `replicas` no nó do jogo.")
             return 1
     achadas = []
     for n in notas:
@@ -773,7 +793,7 @@ def cmd_buscar(args) -> int:
         if args.tema and args.tema not in lista(m.get("temas")):
             continue
         if alvo_jogo and n.chave != alvo_jogo:
-            declarados = {res.resolver(j.strip("[]"))[0] for j in lista(m.get("jogos"))}
+            declarados = {res.resolver(j.strip("[]"))[0] for j in lista(m.get("jogos")) + lista(m.get("referencias"))}
             menciona = alvo_jogo.rsplit("/", 1)[-1] in {res.resolver(w)[0].rsplit("/", 1)[-1]
                                                         for w in wikilinks(n.texto) if res.resolver(w)[0]}
             if alvo_jogo not in declarados and not (args.mencoes and menciona):
@@ -794,7 +814,7 @@ def cmd_buscar(args) -> int:
     for n in sorted(achadas, key=lambda n: (n.tipo, n.rel)):
         print(f"{n.rel}\n    {n.tipo or '—'} · {n.meta.get('status', '—')} · {n.resumo or n.titulo}")
     print(f"\n{len(achadas)} nota(s).")
-    if alvo_jogo:
+    if alvo_jogo in jogos:
         secoes = padroes_do_jogo(jogos[alvo_jogo].nome)
         if secoes:
             print(f"\nPadrões que agem em {jogos[alvo_jogo].nome} (padroes/):")

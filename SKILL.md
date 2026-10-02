@@ -19,6 +19,9 @@ O arquivo de entrada orienta; detalhes operacionais vivem nas referências.
    desta skill e consuma o JSON inteiro. Num workspace ligado, use
    `python3 framework/scripts/game.py context ...`. Não repita na mesma sessão, salvo
    após mudança de base (`teach`, `document`, `direction-approved`) ou retomada.
+   `<projeto>` aceita caminho, id do módulo, pasta final ou `aliases` do `workspace.json`;
+   nome desconhecido devolve `resolution.candidates`. Se o terminal truncar a saída, use
+   `--brief`: resumo de tela, JSON completo em `output/context/<pasta>.json`, lido por chave.
 2. **Carregue a rota certa.** Com subcomando explícito, leia
    `commands/<comando>.md`. Com pedido em linguagem comum, escolha a referência
    pela intenção; a pessoa não precisa saber o comando. Para navegação ou dúvida

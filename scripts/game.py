@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Games harness: contexto sob demanda, contrato de reuso e execução com recibo."""
 import argparse
+import difflib
 import hashlib
 from html import escape
 import json
@@ -6400,6 +6401,104 @@ def workspace_module(project, root=None):
     return None
 
 
+def resolve_project(value, root=ROOT):
+    """Pasta do projeto por caminho; se não existir, por id, pasta final ou `aliases` do workspace.json.
+
+    Devolve (caminho, resolução). A resolução é None quando o caminho existe; com nome
+    ambíguo ou desconhecido, o caminho continua o literal e a resolução lista candidatos.
+    """
+    direct = resolve(value, root)
+    root = Path(root).resolve()
+    if direct.exists() or not (root / "workspace.json").is_file():
+        return direct, None
+    try:
+        modules = workspace.load_manifest(root, resolve_urls=False)["modules"]
+    except (OSError, ValueError):
+        return direct, None
+    text = str(value).strip().strip("/")
+    wanted = {normalize_text(text), normalize_text(PurePosixPath(text).name)} - {""}
+
+    def names(module):
+        aliases = module.get("aliases") if isinstance(module.get("aliases"), list) else []
+        return {module["id"], module["path"], PurePosixPath(module["path"]).name,
+                *(alias for alias in aliases if isinstance(alias, str))}
+
+    exact = [m for m in modules if wanted & {normalize_text(m["id"]), normalize_text(m["path"])}]
+    hits = exact or [m for m in modules if wanted & {normalize_text(name) for name in names(m)}]
+    if len(hits) == 1:
+        module = hits[0]
+        return (root / module["path"]).resolve(), {"input": value, "module": module["id"], "path": module["path"]}
+    tokens = set(normalize_text(text).replace("/", " ").split())
+    scored = sorted(((len(tokens & set(" ".join(normalize_text(n) for n in names(m)).replace("/", " ").split())), m["path"])
+                     for m in hits or modules), key=lambda pair: (-pair[0], pair[1]))
+    candidates = [path for score, path in scored if score or hits][:8]
+    if not candidates:
+        by_name = {normalize_text(name): m["path"] for m in modules for name in names(m)}
+        close = difflib.get_close_matches(normalize_text(PurePosixPath(text).name), list(by_name), n=5, cutoff=0.75)
+        candidates = list(dict.fromkeys(by_name[name] for name in close))
+    return direct, {"input": value, "module": None, "candidates": candidates,
+                    "message": "nome ambíguo" if hits else "nenhum módulo com esse id, pasta ou apelido"}
+
+
+def _short_path(value, root):
+    try:
+        return Path(value).resolve().relative_to(Path(root).resolve()).as_posix()
+    except (TypeError, ValueError, OSError):
+        return value
+
+
+def brief_context(full, root, output):
+    """Resumo de tela do `context`; o JSON completo fica em `output` para leitura por chave."""
+    output = Path(output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(full, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    short = lambda value: _short_path(value, root)
+    references = full.get("references") or {}
+    studies = references.get("studies") or {}
+    git = full.get("git") or {}
+    continuity = full.get("continuity") or {}
+    module = full.get("workspace_module")
+    result = {
+        "project": short(full.get("project")), "exists": full.get("exists"), "kind": full.get("kind"),
+        "focus": full.get("focus"), "stage": full.get("stage"), "event": full.get("event"),
+    }
+    if full.get("resolution"):
+        result["resolution"] = full["resolution"]
+    if module:
+        result["workspace_module"] = {key: module[key] for key in ("id", "path", "state", "get_command")
+                                      if key in module and (key != "get_command" or module.get("state") != "present")}
+    result["instructions"] = [short(path) for path in full.get("instructions") or []]
+    records = [short(path) for path in full.get("records") or []]
+    result["records"] = records[:10] + ([f"… mais {len(records) - 10} em records"] if len(records) > 10 else [])
+    order = {"estudo": 0, "padrao": 1, "aprendizado": 2, "plano": 3}
+    notes = sorted(studies.get("notes") or [], key=lambda note: order.get(note.get("type"), len(order)))
+    result["studies"] = {
+        "status": studies.get("status"), "node": short(studies.get("node")) if studies.get("node") else None,
+        "count": studies.get("count", 0),
+        "by_type": " · ".join(f"{kind} {count}" for kind, count in (studies.get("by_type") or {}).items()),
+        "first": [f"{note.get('type')}: {short(note.get('path'))}" for note in notes[:6]],
+    }
+    if studies.get("status") not in {None, "listed"}:
+        result["studies"]["message"] = studies.get("message", "")[:200]
+    for kind in ("libraries", "anatomy"):
+        block = references.get(kind) or {}
+        if block:
+            related = [short(item.get("path")) for item in block.get("related") or []]
+            result[kind] = related if related or block.get("status") == "listed" else block.get("status")
+    result["continuity"] = {"status": continuity.get("status"),
+                            "sources": [f"{short(item.get('path'))}:{item.get('line')}"
+                                        for item in (continuity.get("sources") or [])[:5]]}
+    result["git"] = {"branch": git.get("branch"), "head": (git.get("head") or "")[:12] or None,
+                     "dirty_paths": git.get("dirty_paths"), "recent": (git.get("recent") or [])[:3]}
+    result["scripts"] = " ".join(sorted(full.get("scripts") or {}))
+    result["package_manager"] = full.get("package_manager")
+    result["read_next"] = [short(path) for path in full.get("read_next") or []]
+    result["full"] = short(str(output))
+    result["scope"] = ("Resumo de tela. O JSON completo (foundation, limits, delivery_review, documentation, "
+                       "finish) está em `full`; leia uma chave por vez, por exemplo com jq.")
+    return result
+
+
 REFERENCE_KINDS = ("studies", "libraries", "anatomy")
 
 
@@ -10197,6 +10296,8 @@ def main():
     ctx.add_argument("--event", choices=EVENTS, default="task", help="evento observado na conversa pelo agente; não concede aprovação")
     ctx.add_argument("--genre", choices=GENRES, help="gênero declarado na conversa; carrega o pacote de gênero após o de plataforma")
     ctx.add_argument("--scale", choices=SCALES, help="escala de ambição declarada na conversa (jam, product, aa); sem ela, o campo Escala: do brief só sugere")
+    ctx.add_argument("--brief", action="store_true", help="resumo curto na tela; o JSON completo vai para --out")
+    ctx.add_argument("--out", type=Path, help="com --brief, onde gravar o JSON completo (padrão: <raiz>/output/context/<pasta>.json)")
     commands.add_parser("commands", parents=[common], help="catálogo dos sub-comandos da skill, com categoria, descrição e referência")
     pin_cmd = commands.add_parser("pin", parents=[common], help="fixa um sub-comando como skill própria do host (/<comando>) nos diretórios onde a game-dev está instalada")
     pin_cmd.add_argument("command")
@@ -10343,7 +10444,13 @@ def main():
         elif args.action == "gate":
             emit(gate_reading(resolve(args.project, root), args.gate))
         elif args.action == "context":
-            emit(context(resolve(args.project, root), args.focus, args.stage, studies_root=default_studies_root(root), event=args.event, root=root, genre=args.genre, scale=args.scale))
+            project, resolution = resolve_project(args.project, root)
+            result = context(project, args.focus, args.stage, studies_root=default_studies_root(root), event=args.event, root=root, genre=args.genre, scale=args.scale)
+            if resolution:
+                result["resolution"] = resolution
+            if args.brief:
+                result = brief_context(result, root, args.out or Path(root) / "output" / "context" / f"{project.name}.json")
+            emit(result)
         elif args.action == "commands":
             emit(command_listing())
         elif args.action == "pin":

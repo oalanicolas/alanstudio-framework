@@ -48,8 +48,15 @@ Pular a preparação produz trabalho genérico que ignora o projeto.
 ### 1. Contexto
 
 ```sh
-python3 scripts/game.py context <projeto> --focus <foco> [--stage <etapa>] [--genre <g>] [--scale <s>] [--event <evento>]
+python3 scripts/game.py context <projeto> --focus <foco> [--stage <etapa>] [--genre <g>] [--scale <s>] [--event <evento>] [--brief [--out <arquivo>]]
 ```
+
+`<projeto>` é um caminho; se ele não existir, o `context` procura no `workspace.json` pelo
+id do módulo, pela pasta final e pelos `aliases` do módulo, e registra a escolha em
+`resolution` (nome ambíguo ou desconhecido: `resolution.candidates`, sem adivinhar).
+`--brief` imprime um resumo de tela (instruções, registros, estudos, continuidade, Git,
+scripts, `read_next`) e grava o JSON completo em `output/context/<pasta>.json` da raiz,
+ou em `--out`; leia as demais chaves desse arquivo, uma por vez.
 
 Consuma o JSON inteiro. Leia os AGENTS aplicáveis (`instructions`),
 `foundation.read_first`/`records`, os catálogos em `studies`, as referências do

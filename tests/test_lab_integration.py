@@ -1,6 +1,8 @@
 import importlib.util
 import json
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -51,6 +53,49 @@ class LabIntegrationTest(unittest.TestCase):
         self.assertEqual(payload["delivery_review"]["status"], "pending_agent_review")
         self.assertEqual(payload["continuity"]["prompt"]["policy"], "generate_when_defined")
         self.assertEqual(marker.read_text(), "unfinished user work")
+
+    def write_modules(self, *modules):
+        (self.root / "workspace.json").write_text(json.dumps({"version": 1, "modules": list(modules)}))
+        for module in modules:
+            (self.root / module["path"]).mkdir(parents=True, exist_ok=True)
+
+    def test_project_resolves_by_id_folder_alias_and_suggests_on_typo(self):
+        self.write_modules(
+            {"id": "existing", "path": "games/existing", "repository": "games-existing"},
+            {"id": "egg-raid", "path": "prototypes/egg-raid", "repository": "egg-raid",
+             "aliases": ["steal the egg", "raid"]},
+            {"id": "library-egg-raid", "path": "libraries/egg-raid", "repository": "library-egg-raid"},
+        )
+        path, resolution = game.resolve_project("games/existing", self.root)
+        self.assertEqual(path, self.project)
+        self.assertIsNone(resolution)
+        for value in ("egg-raid", "Steal The Egg", "/protos/raid"):
+            with self.subTest(value=value):
+                path, resolution = game.resolve_project(value, self.root)
+                self.assertEqual(path, self.root / "prototypes/egg-raid")
+                self.assertEqual(resolution["module"], "egg-raid")
+        path, resolution = game.resolve_project("eg-raid", self.root)
+        self.assertFalse(path.exists())
+        self.assertIsNone(resolution["module"])
+        self.assertIn("prototypes/egg-raid", resolution["candidates"])
+
+    def test_brief_context_prints_a_screen_and_writes_the_full_json(self):
+        self.write_modules({"id": "existing", "path": "games/existing", "repository": "games-existing",
+                            "aliases": ["the existing game"]})
+        (self.project / "package.json").write_text('{"name":"existing","scripts":{"test":"node --test"}}')
+        out = self.root / "full.json"
+        run = subprocess.run([sys.executable, str(SCRIPT), "--root", str(self.root), "context",
+                              "the existing game", "--brief", "--out", str(out)], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        brief = json.loads(run.stdout)
+        full = json.loads(out.read_text())
+        self.assertEqual(brief["project"], "games/existing")
+        self.assertEqual(brief["resolution"]["module"], "existing")
+        self.assertEqual(brief["full"], "full.json")
+        self.assertEqual(brief["scripts"], "test")
+        self.assertIn("foundation", full)
+        self.assertNotIn("foundation", brief)
+        self.assertLess(len(run.stdout), len(out.read_text()) / 3)
 
     def test_unregistered_new_game_still_uses_the_starter(self):
         new_game = self.root / "games/new-game"

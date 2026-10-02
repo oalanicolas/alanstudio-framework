@@ -89,6 +89,24 @@ class CerebroKitTest(unittest.TestCase):
         self.assertIn("parece", g.stdout)
         self.assertIn("fonte", g.stdout)
 
+    def test_replica_de_jogo_externo_acha_os_estudos_da_referencia(self) -> None:
+        no = self.vault / "genealogia-jogos" / "nos" / "jogos" / "Hexa Drop.md"
+        texto = no.read_text(encoding="utf-8")
+        no.write_text(texto.replace("tags:\n", "replicas: [prototypes/hexa-drop]\ntags:\n", 1), encoding="utf-8")
+
+        b = _run(self.vault, "buscar", "--jogo", "prototypes/hexa-drop", "--json")
+        self.assertEqual(b.returncode, 0, b.stdout + b.stderr)
+        self.assertIn("estudos/Estudo Hexa Drop.md", {n["caminho"] for n in json.loads(b.stdout)})
+        self.assertEqual(_run(self.vault, "buscar", "--jogo", "hexa-drop").returncode, 0)
+        self.assertEqual(_run(self.vault, "check").returncode, 0)
+
+        nosso = self.vault / "genealogia-jogos" / "nos" / "jogos" / "Oficina.md"
+        texto = nosso.read_text(encoding="utf-8")
+        nosso.write_text(texto.replace("tags:", "replicas: [prototypes/oficina]\ntags:", 1), encoding="utf-8")
+        r = _run(self.vault, "check", "--nivel", "erro", "--json")
+        codigos = {i["codigo"] for i in json.loads(r.stdout)["itens"] if i["nivel"] == "erro"}
+        self.assertIn("REPLICAS", codigos)
+
     def test_segunda_copia_ainda_passa(self) -> None:
         outra = Path(self.tmp.name) / "vault2"
         shutil.copytree(self.vault, outra, ignore=IGNORE)
