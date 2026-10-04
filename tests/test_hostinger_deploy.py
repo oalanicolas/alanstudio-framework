@@ -5,6 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest import mock
+from urllib.robotparser import RobotFileParser
 import zipfile
 
 SPEC = importlib.util.spec_from_file_location("hostinger_deploy", Path(__file__).resolve().parents[1] / "scripts/hostinger_deploy.py")
@@ -103,6 +104,94 @@ class BuildTests(unittest.TestCase):
         with zipfile.ZipFile(out) as z:
             self.assertEqual(z.read(".htaccess"), b"# do build")
 
+    def test_ai_policy_preserves_auth_routes_and_robots_without_mutating_build(self):
+        dist = self.project / "dist"
+        self.write("dist/index.html")
+        auth = 'RewriteEngine On\nRewriteRule ^private/ guard.php [L]\n'
+        original = 'User-agent: *\nAllow: /\nDisallow: /admin/\n'
+        self.write("dist/.htaccess", auth)
+        self.write("dist/robots.txt", original)
+        self.write("dist/assets/game.js", "game")
+        out = self.project / "a.zip"
+        self.assertEqual(deploy.make_zip(dist, "# generated", out, block_ai_bots=True), 4)
+        with zipfile.ZipFile(out) as z:
+            self.assertEqual(len(z.namelist()), len(set(z.namelist())))
+            rules = z.read(".htaccess").decode()
+            self.assertIn(auth, rules)
+            self.assertLess(rules.index("HTTP_USER_AGENT"), rules.index("guard.php"))
+            self.assertGreater(rules.index('Header always set Cache-Control "no-store"'), rules.index("guard.php"))
+            self.assertNotIn("# generated", rules)
+            robots = z.read("robots.txt").decode()
+            self.assertTrue(robots.startswith(original))
+            for bot in deploy.AI_BOTS:
+                self.assertIn(f"User-agent: {bot}\nDisallow: /", robots)
+            self.assertEqual(z.read("assets/game.js"), b"game")
+        self.assertEqual((dist / ".htaccess").read_text(), auth)
+        self.assertEqual((dist / "robots.txt").read_text(), original)
+
+    def test_ai_policy_adds_missing_rules_and_robots(self):
+        dist = self.project / "dist"
+        self.write("dist/index.html")
+        out = self.project / "a.zip"
+        self.assertEqual(deploy.make_zip(dist, "# generated", out, block_ai_bots=True), 3)
+        with zipfile.ZipFile(out) as z:
+            self.assertIn("# generated", z.read(".htaccess").decode())
+            self.assertIn(b"User-agent: GPTBot\nDisallow: /", z.read("robots.txt"))
+        self.assertFalse((dist / "robots.txt").exists())
+
+    def test_ai_policy_does_not_publish_ignored_local_configuration(self):
+        self.write("index.html")
+        self.write(".htaccess", "PRIVATE_LOCAL_SERVER_CONFIG")
+        self.write("robots.txt", "Sitemap: https://private-local.test/secrets\n")
+        self.write(".vercelignore", ".htaccess\nrobots.txt\n")
+        out = self.project / "package.zip"
+        deploy.make_zip(self.project, "# public generated rules", out, self.project, block_ai_bots=True)
+        with zipfile.ZipFile(out) as archive:
+            rules = archive.read(".htaccess").decode()
+            self.assertIn("# public generated rules", rules)
+            self.assertNotIn("PRIVATE_LOCAL", rules)
+            self.assertNotIn("private-local", archive.read("robots.txt").decode())
+
+    def test_nested_application_rules_keep_the_filter_before_their_rewrites(self):
+        dist = self.project / "dist"
+        self.write("dist/index.html")
+        own = 'RewriteEngine On\nRewriteRule ^ - [L]\n'
+        self.write("dist/assets/.htaccess", own)
+        out = self.project / "package.zip"
+        deploy.make_zip(dist, "# root generated", out, block_ai_bots=True)
+        with zipfile.ZipFile(out) as archive:
+            rules = archive.read("assets/.htaccess").decode()
+            self.assertIn(own, rules)
+            self.assertLess(rules.index("HTTP_USER_AGENT"), rules.index(own))
+            self.assertIn('RewriteCond %{REQUEST_URI} ^/robots\\.txt$', rules)
+            self.assertGreater(rules.index('Header always set Cache-Control "no-store"'), rules.index(own))
+        deploy.make_zip(dist, "# root generated", out)
+        with zipfile.ZipFile(out) as archive:
+            self.assertEqual(archive.read("assets/.htaccess").decode(), own)
+
+    def test_conflicting_engine_and_conditional_sections_are_refused_before_packaging(self):
+        for rel, rules in [
+            (".htaccess", "RewriteEngine Off\n"),
+            ("assets/.htaccess", 'RewriteEngine "Off"\n'),
+            ("assets/.htaccess", "RewriteEngine 'Off'\n"),
+            ("assets/.htaccess", "RewriteEngine \\\nOff\n"),
+            ("assets/.htaccess", "RewriteEngine ${LOCAL_MODE}\n"),
+            (".htaccess", '<If "%{REQUEST_URI} =~ m#^/assets/#">\nHeader always set Cache-Control "public"\n</If>\n'),
+        ]:
+            with self.subTest(rel=rel, rules=rules), tempfile.TemporaryDirectory() as folder:
+                dist = Path(folder)
+                (dist / "index.html").write_text("fixture")
+                path = dist / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(rules)
+                out = dist / "site.zip"
+                with self.assertRaisesRegex(ValueError, "incompatível"):
+                    deploy.make_zip(dist, "# generated", out, block_ai_bots=True)
+                self.assertFalse(out.exists())
+                deploy.make_zip(dist, "# generated", out)
+                with zipfile.ZipFile(out) as archive:
+                    self.assertEqual(archive.read(rel).decode(), rules)
+
     def test_sample_starts_with_index_and_spreads(self):
         dist = self.project / "dist"
         self.write("dist/index.html")
@@ -112,6 +201,39 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(picked[0], "index.html")
         self.assertEqual(len(picked), 5)
         self.assertEqual(len(set(picked)), 5)
+
+
+class RobotsPolicyTests(unittest.TestCase):
+    def test_comment_only_preamble_is_preserved_and_remote_verification_is_idempotent(self):
+        for original in ["# Allow crawling\n", "# Allow crawling\nSitemap: https://alpha.test/sitemap.xml\n"]:
+            with self.subTest(original=original):
+                text = deploy.block_ai_robots(original)
+                self.assertTrue(text.startswith(original))
+                self.assertEqual(deploy.block_ai_robots(text), text)
+
+    def test_selected_groups_are_replaced_while_shared_search_rules_and_sitemap_survive(self):
+        for agents in [("GPTBot", "Googlebot"), ("Googlebot", "GPTBot")]:
+            with self.subTest(agents=agents):
+                original = ("User-agent: *\nDisallow: /admin/\n\n"
+                            "User-agent: gPtBoT # old policy\nAllow: /assets/\n\n"
+                            + "\n".join(f"User-agent: {agent}" for agent in agents)
+                            + "\nAllow: /assets/\nDisallow: /private/\nSitemap: https://alpha.test/sitemap.xml\n")
+                text = deploy.block_ai_robots(original)
+                robots = RobotFileParser()
+                robots.parse(text.splitlines())
+                for bot in deploy.AI_BOTS:
+                    self.assertFalse(robots.can_fetch(bot, "https://alpha.test/assets/game.js"))
+                self.assertTrue(robots.can_fetch("Googlebot", "https://alpha.test/assets/game.js"))
+                self.assertFalse(robots.can_fetch("Googlebot", "https://alpha.test/private/data"))
+                self.assertFalse(robots.can_fetch("UnknownBot", "https://alpha.test/admin/"))
+                self.assertEqual(robots.site_maps(), ["https://alpha.test/sitemap.xml"])
+
+    def test_final_empty_group_does_not_inherit_the_added_ai_deny_rule(self):
+        text = deploy.block_ai_robots("User-agent: Googlebot\nSitemap: https://alpha.test/sitemap.xml\n")
+        robots = RobotFileParser()
+        robots.parse(text.splitlines())
+        self.assertTrue(robots.can_fetch("Googlebot", "https://alpha.test/assets/game.js"))
+        self.assertFalse(robots.can_fetch("GPTBot", "https://alpha.test/assets/game.js"))
 
 
 class ResolveUsernameTests(unittest.TestCase):
@@ -189,6 +311,77 @@ class ExpectTests(unittest.TestCase):
     def test_undeclared_domain_or_missing_workspace_checks_nothing(self):
         self.assertEqual(deploy.declared_expectations("outro.test", self.project, str(self.root)), ({}, []))
         self.assertEqual(self.run_main(root=self.root / "sem-workspace"), (0, True))
+
+    def test_dry_run_accepts_a_project_root_build_with_ignored_htaccess(self):
+        (self.project / "index.html").write_text("root-build")
+        (self.project / ".htaccess").write_text("ignored")
+        (self.project / ".vercelignore").write_text(".htaccess\n")
+        self.assertEqual(self.run_main("--dist", ".", root=self.root / "sem-workspace"), (0, True))
+
+    def test_direct_shortcut_inherits_ai_policy_even_with_explicit_public_values(self):
+        manifest = self.root / "workspace.json"
+        data = json.loads(manifest.read_text())
+        data["modules"][0]["deploy"]["block_ai_bots"] = True
+        manifest.write_text(json.dumps(data))
+        with mock.patch.object(deploy, "make_zip", wraps=deploy.make_zip) as zipped:
+            self.assertEqual(self.run_main("--expect", "VITE_API=https://api.test"), (0, True))
+        self.assertTrue(zipped.call_args.kwargs["block_ai_bots"])
+
+    def test_invalid_ai_policy_is_refused_before_packaging(self):
+        manifest = self.root / "workspace.json"
+        data = json.loads(manifest.read_text())
+        data["modules"][0]["deploy"]["block_ai_bots"] = "false"
+        manifest.write_text(json.dumps(data))
+        with mock.patch.object(deploy, "make_zip") as zipped, mock.patch("sys.stderr"), self.assertRaises(SystemExit):
+            self.run_main("--expect", "VITE_API=https://api.test")
+        zipped.assert_not_called()
+
+    def test_verify_only_checks_policy_without_comparing_original_robots_bytes(self):
+        (self.project / "dist/robots.txt").write_text("User-agent: *\nDisallow: /admin/\n")
+        with mock.patch.object(deploy, "verify", return_value=[]) as verify, \
+                mock.patch.object(deploy, "verify_ai_bots", return_value=["assets are public"]) as bots, \
+                mock.patch("builtins.print"):
+            result = deploy.main(["--domain", "alpha.test", "--project", str(self.project),
+                                  "--verify-only", "--block-ai-bots"])
+        self.assertEqual(result, 2)
+        self.assertNotIn("robots.txt", verify.call_args.args[2])
+        bots.assert_called_once()
+
+
+class BotVerificationTests(unittest.TestCase):
+    def test_direct_asset_access_cannot_hide_behind_a_blocked_root(self):
+        def fetch(domain, path, origin, user_agent="hostinger-deploy/2"):
+            if path == "robots.txt":
+                return 200, {}, deploy.block_ai_robots("").encode()
+            return (403 if path == "/" else 200), {"cache-control": "no-store", "vary": "User-Agent"}, b""
+        with mock.patch.object(deploy, "fetch", side_effect=fetch), mock.patch("builtins.print"):
+            problems = deploy.verify_ai_bots("alpha.test", ["index.html", "assets/game.js"], None)
+        self.assertEqual(len(problems), len(deploy.AI_BOTS))
+        self.assertTrue(all("assets/game.js" in problem for problem in problems))
+
+    def test_missing_robot_directives_are_reported(self):
+        with mock.patch.object(deploy, "fetch", return_value=(403, {"cache-control": "no-store", "vary": "User-Agent"}, b"")), mock.patch("builtins.print"):
+            problems = deploy.verify_ai_bots("alpha.test", ["index.html"], None)
+        self.assertEqual(len(problems), 1)
+        self.assertIn("robots.txt", problems[0])
+
+    def test_cacheable_denials_are_not_accepted_as_verified_protection(self):
+        body = deploy.block_ai_robots("").encode()
+        def fetch(domain, path, origin, user_agent="hostinger-deploy/2"):
+            return (200, {}, body) if path == "robots.txt" else (403, {"cache-control": "public"}, b"")
+        with mock.patch.object(deploy, "fetch", side_effect=fetch), mock.patch("builtins.print"):
+            problems = deploy.verify_ai_bots("alpha.test", ["index.html", "assets/game.js"], None)
+        self.assertEqual(len(problems), len(deploy.AI_BOTS) * 2)
+        self.assertTrue(all("no-store" in problem for problem in problems))
+
+    def test_remote_robot_allow_groups_cannot_hide_behind_appended_denials(self):
+        body = ("User-agent: GPTBot\nAllow: /assets/\n\n" + deploy.block_ai_robots("")).encode()
+        def fetch(domain, path, origin, user_agent="hostinger-deploy/2"):
+            return (200, {}, body) if path == "robots.txt" else (403, {"cache-control": "no-store", "vary": "User-Agent"}, b"")
+        with mock.patch.object(deploy, "fetch", side_effect=fetch), mock.patch("builtins.print"):
+            problems = deploy.verify_ai_bots("alpha.test", ["index.html"], None)
+        self.assertEqual(len(problems), 1)
+        self.assertIn("conflitantes", problems[0])
 
 
 if __name__ == "__main__":

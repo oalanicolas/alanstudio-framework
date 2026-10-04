@@ -6,6 +6,40 @@ de desenvolvimento, primeira execução fria, orçamento de tamanho e tempo até
 proveniência de tudo que embarca, registro de falha e reversão. Prepara e verifica;
 prepara o artefato. Receita: [release](../recipes/release.md).
 
+## Crawlers em sites estáticos
+
+Em `workspace.json`, `deploy.block_ai_bots: true` ativa regras para GPTBot,
+ChatGPT-User, OAI-SearchBot, ClaudeBot, Claude-User, Claude-SearchBot, PerplexityBot
+e Perplexity-User. O atalho direto também lê essa declaração; o empacotador aceita
+`--block-ai-bots` para uma publicação avulsa.
+
+O pacote preserva as `.htaccess` incluídas no build, também em subpastas, e
+antepõe o bloqueio a suas rotas e arquivos. Substitui os grupos desses agentes
+no `robots.txt`, preservando regras
+dos demais crawlers e sitemaps; o arquivo fica público. Nenhum arquivo do
+build local é alterado. A conferência remota exige bloqueio em `/` e em um arquivo
+amostrado para cada agente, além das diretivas públicas. Respostas 403 exigem
+`Cache-Control: no-store` e `Vary: User-Agent`. HTTP 429 do provedor é
+registrado como bloqueio observado; não prova que a regra na origem executou.
+Após publicar, invalide caches do provedor e confira também arquivos que já tinham
+sido servidos a navegadores.
+
+Com essa opção, configurações incluídas com `RewriteEngine` diferente de `On` ou blocos
+condicionais `<If>` são recusadas antes de montar o ZIP ou enviar. Elas podem
+desligar o filtro ou sobrescrever seus cabeçalhos depois de `FilesMatch`;
+o empacotador não reativa regras do aplicativo que foram desligadas. Configurações
+excluídas pelo filtro do build não são lidas nem publicadas por esta camada.
+
+Essa camada filtra identificações declaradas, não impede um cliente de usar o
+User-Agent de um navegador. Login só protege o jogo quando o servidor valida a
+sessão também nos arquivos e APIs. Uma pessoa autorizada ainda recebe os arquivos
+necessários para jogar. Rate limiting, desafios validados no servidor e regras de
+WAF exigem configuração do provedor; não são instalados por esta opção.
+
+Fontes: [OpenAI](https://developers.openai.com/api/docs/bots),
+[Anthropic](https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler),
+[Perplexity](https://docs.perplexity.ai/docs/resources/perplexity-crawlers).
+
 ## Escala
 
 `jam`: build/export executável por outra pessoa a partir do runbook (`playable`).

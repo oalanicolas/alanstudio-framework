@@ -750,7 +750,7 @@ def print_gates(report):
 # Deploy: o commit já publicado no GitHub, montado num worktree limpo, vai para o site da Hostinger.
 # O que está no ar é sempre um commit que existe no remoto; trabalho fora do commit não sobe.
 
-DEPLOY_KEYS = {"domain", "dist", "spa", "build", "public", "env"}
+DEPLOY_KEYS = {"domain", "dist", "spa", "build", "public", "env", "block_ai_bots"}
 
 
 def deploy_config(module):
@@ -761,6 +761,8 @@ def deploy_config(module):
             or set(config) - DEPLOY_KEYS):
         raise ValueError(f"deploy inválido em {module['id']}: precisa de domain e aceita só "
                          + ", ".join(sorted(DEPLOY_KEYS)))
+    if "block_ai_bots" in config and not isinstance(config["block_ai_bots"], bool):
+        raise ValueError(f"{module['id']}: deploy.block_ai_bots precisa ser booleano")
     try:
         build_env.declared(config)
     except ValueError as exc:
@@ -847,6 +849,7 @@ def deploy(root, modules, target, dry_run=False, allow_unpushed=False, timeout=1
         argv = ["--domain", config["domain"], "--project", str(tree)]
         argv += ["--dist", config["dist"]] if config.get("dist") else []
         argv += ["--spa"] if config.get("spa") else []
+        argv += ["--block-ai-bots"] if config.get("block_ai_bots") else []
         # O envio confere no build o que vai para o cliente; faltando, recusa antes do zip.
         for key, value in build_env.expected(values).items():
             argv += ["--expect", f"{key}={value}"]

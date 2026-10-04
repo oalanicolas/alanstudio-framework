@@ -463,6 +463,17 @@ class DeployTest(GameOpsTest):
             gameops.deploy(self.hub, [dict(self.modules[0], deploy={"dominio": "x"})], "alpha")
         with self.assertRaisesRegex(ValueError, "deploy.env inválido"):
             gameops.deploy(self.hub, [dict(self.modules[0], deploy={"domain": "x", "env": {"A": 1}})], "alpha")
+        with self.assertRaisesRegex(ValueError, "block_ai_bots precisa ser booleano"):
+            gameops.deploy(self.hub, [dict(self.modules[0], deploy={"domain": "x", "block_ai_bots": "false"})], "alpha")
+
+    def test_ai_policy_reaches_the_archive_publisher_only_when_enabled(self):
+        self.modules[0]["deploy"]["block_ai_bots"] = True
+        report = gameops.deploy(self.hub, self.modules, "alpha", dry_run=True, publish=self.publish)
+        self.assertEqual(report["result"], "montado sem enviar")
+        self.assertIn("--block-ai-bots", self.calls[-1]["argv"])
+        self.modules[0]["deploy"]["block_ai_bots"] = False
+        gameops.deploy(self.hub, self.modules, "alpha", dry_run=True, publish=self.publish)
+        self.assertNotIn("--block-ai-bots", self.calls[-1]["argv"])
 
     def push(self, message, files):
         for name, text in files.items():
