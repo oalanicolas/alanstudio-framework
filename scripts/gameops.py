@@ -554,7 +554,7 @@ def resolve_target(root, modules, name):
                 return candidate, str(candidate), item, owner
         raise ValueError(f"{candidate} não é worktree do hub nem de um módulo do workspace.")
     raise ValueError(f"Repositório desconhecido: {name}. Use '.' para o hub, um id de workspace.py list "
-                     "ou o caminho de um worktree.")
+                     "ou o caminho de um worktree ou de uma cópia limpa.")
 
 
 def publish_range(repo):
@@ -603,7 +603,7 @@ def preflight(root, modules, target, push=False, max_mb=5, max_instruction_token
         if overlap:
             shown = ", ".join(overlap[:5]) + ("…" if len(overlap) > 5 else "")
             warn(f"{plural(len(overlap), 'arquivo do push tem', 'arquivos do push têm')} alterações fora do "
-                 f"commit ({shown}); gates e deploy leem a pasta, não o commit: valide num worktree do commit")
+                 f"commit ({shown}); gates e deploy leem a pasta, não o commit: valide numa cópia limpa do commit (git clone --shared)")
         if behind:
             block(f"{plural(behind, 'commit', 'commits')} em {upstream} que não estão aqui: "
                   "integre antes, o push seria recusado")
@@ -704,8 +704,8 @@ def print_preflight(report):
 
 # Gates: verificações declaradas pelo próprio repositório ou pela configuração local.
 
-# Build antes de test: há suítes que leem o build (por exemplo, um worker de site). Num worktree
-# novo, test primeiro dava vermelho falso — e um vermelho que se aprende a ignorar esconde o real.
+# Build antes de test: há suítes que leem o build (por exemplo, um worker de site). Numa cópia
+# limpa nova, test primeiro dava vermelho falso — e um vermelho que se aprende a ignorar esconde o real.
 GATE_ORDER = ("lint", "typecheck", "build", "test", "doctor", "verify", "check")
 
 
@@ -792,7 +792,7 @@ def print_gates(report):
         print(f"\n{plural(report['failed'], 'verificação falhou', 'verificações falharam')}.")
 
 
-# Deploy: o commit já publicado no GitHub, montado num worktree limpo, vai para o site da Hostinger.
+# Deploy: o commit já publicado no GitHub, montado numa cópia limpa (clone --shared), vai para o site da Hostinger.
 # O que está no ar é sempre um commit que existe no remoto; trabalho fora do commit não sobe.
 
 DEPLOY_KEYS = {"domain", "dist", "spa", "build", "public", "env", "block_ai_bots"}
