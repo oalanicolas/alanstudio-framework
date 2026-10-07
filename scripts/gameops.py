@@ -29,9 +29,9 @@ from workspace import ROOT, load_config, load_manifest, parent_of
 # Inventário somente leitura: nenhum comando abaixo altera refs, índice ou arquivos.
 # GIT_OPTIONAL_LOCKS=0 impede que o status reescreva o cache de datas do índice.
 
-def git_process(repo, *args):
+def git_process(repo, *args, input=None):
     return subprocess.run(["git", "-C", str(repo), *args], capture_output=True, text=True,
-                          errors="replace", env={**os.environ, "GIT_OPTIONAL_LOCKS": "0"})
+                          errors="replace", input=input, env={**os.environ, "GIT_OPTIONAL_LOCKS": "0"})
 
 
 def run_git(repo, *args):
@@ -628,13 +628,35 @@ def preflight(root, modules, target, push=False, max_mb=5, max_instruction_token
             block(f"user.email {email or '(vazio)'} não é noreply; o GitHub recusa o push com GH007")
     if not run_git(repo, "symbolic-ref", "--quiet", "HEAD"):
         warn("HEAD destacado: crie uma branch antes de commitar")
-    names = run_git(repo, "diff", *diff_args, "--name-only", "--diff-filter=AMR") or ""
-    for path in names.splitlines():
+    names = [p for p in (run_git(repo, "diff", *diff_args, "--name-only", "--diff-filter=AMR", "-z") or "").split("\0") if p]
+    raw = (run_git(repo, "diff", *diff_args, "--raw", "--no-abbrev", "-z") or "").split("\0")
+    records, position = [], 0
+    while position < len(raw) and raw[position]:
+        fields, path = raw[position].split(), raw[position+1]
+        position += 2
+        if fields[4].startswith(("R", "C")):
+            path = raw[position]
+            position += 1
+        records.append((fields, path))
+    gitlinks = {path for fields, path in records if fields[1] == "160000"}
+    size_paths = [path for path in names if path not in gitlinks]
+    sizes = {}
+    if size_paths:
+        query = "\0".join(blob(path) for path in size_paths)+"\0"
+        result = git_process(repo, "cat-file", "--batch-check=%(objectsize)", "--buffer", "-Z", input=query)
+        values = result.stdout.split("\0")
+        if values and values[-1] == "":
+            values.pop()
+        if result.returncode or len(values) != len(size_paths) or any(not value.isdigit() for value in values):
+            block("não foi possível conferir todos os tamanhos dos objetos Git")
+        else:
+            sizes = dict(zip(size_paths, map(int, values)))
+    for path in names:
         if secret_file(path):
             block(f"{path}: arquivo de credencial")
-        size = run_git(repo, "cat-file", "-s", blob(path))
-        if size and size.isdigit() and int(size) > max_mb * 1_000_000:
-            warn(f"{path}: {int(size) / 1_000_000:.1f} MB; mídia de produção vai para o acervo externo")
+        size = sizes.get(path)
+        if size is not None and size > max_mb * 1_000_000:
+            warn(f"{path}: {size / 1_000_000:.1f} MB; mídia de produção vai para o acervo externo")
         elif Path(path).suffix.lower() in PRODUCTION_MEDIA:
             warn(f"{path}: extensão de mídia de produção; confirme que é asset de runtime")
         if Path(path).name in INSTRUCTION_FILES:
@@ -663,11 +685,8 @@ def preflight(root, modules, target, push=False, max_mb=5, max_instruction_token
     for path, count in sorted(foreign.items()):
         warn(f"{path}: {plural(count, 'linha', 'linhas')} com caminho absoluto de outra máquina, aceito por ser "
              "captura fiel (publication.captured_paths)")
-    raw = run_git(repo, "diff", *diff_args, "--raw", "--no-abbrev") or ""
     owned = {item["path"]: item for item in modules if (parent_of(item, modules) or {}).get("path") == (module or {}).get("path")}
-    for line in raw.splitlines():
-        meta, _, path = line.partition("\t")
-        fields = meta.split()
+    for fields, path in records:
         if len(fields) < 5 or fields[1] != "160000":
             continue
         commit = fields[3]

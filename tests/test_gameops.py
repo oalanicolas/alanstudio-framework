@@ -18,7 +18,9 @@ class GameOpsTest(unittest.TestCase):
     """Hub com um módulo presente (alpha) e um não baixado (beta)."""
 
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix="gameops-test-")
+        fixtures = SCRIPTS.parent / "output/test-fixtures"
+        fixtures.mkdir(parents=True, exist_ok=True)
+        self.temp = tempfile.TemporaryDirectory(prefix="gameops-test-", dir=fixtures)
         self.addCleanup(self.temp.cleanup)
         self.base = Path(self.temp.name).resolve()
         env = patch.dict(os.environ, {"GIT_CONFIG_COUNT": "1", "GIT_CONFIG_KEY_0": "protocol.file.allow",
@@ -99,11 +101,22 @@ class AuditTest(GameOpsTest):
         self.git(self.alpha, "stash", "push", "-m", "wip")
         merged_tree, gone, dirty = (self.base / name for name in ("merged-tree", "gone", "dirty"))
         for path in (merged_tree, gone, dirty):
-            self.git(self.alpha, "worktree", "add", "--detach", str(path), "main")
+            self.git(self.alpha, "clone", "--shared", str(self.alpha), str(path))
         shutil.rmtree(gone)
         (dirty / "scratch.txt").write_text("x\n")
         before = self.snapshot()
-        alpha = self.alpha_report()
+        head = self.git(self.alpha, "rev-parse", "main")
+        inventory = self.git(self.alpha, "worktree", "list", "--porcelain")+"\n\n"
+        inventory += "\n\n".join(f"worktree {path}\nHEAD {head}\ndetached" for path in (merged_tree,gone,dirty))
+        inventory = inventory.replace(f"worktree {gone}\nHEAD {head}\ndetached",
+                                      f"worktree {gone}\nHEAD {head}\ndetached\nprunable gitdir points to non-existent location")
+        original = gameops.run_git
+        def legacy_listing(repo,*args):
+            if repo == self.alpha and args == ("worktree","list","--porcelain"):
+                return inventory
+            return original(repo,*args)
+        with patch.object(gameops,"run_git",side_effect=legacy_listing):
+            alpha = self.alpha_report()
         self.assertEqual(before, self.snapshot())
         removable, pending = "\n".join(alpha["removable"]), "\n".join(alpha["pending"])
         self.assertIn("branch merged: mesclada em main, origin/main", removable)
@@ -188,16 +201,27 @@ class CleanupTest(GameOpsTest):
         self.commit(self.alpha, "feature.txt", "feature")
         self.git(self.alpha, "switch", "main")
         done, busy = self.base / "done", self.base / "busy"
-        self.git(self.alpha, "worktree", "add", "-b", "done-branch", str(done), "main")
-        self.git(self.alpha, "worktree", "add", str(busy), "busy")
+        self.git(self.alpha, "branch", "done-branch")
+        self.git(self.alpha, "clone", "--shared", str(self.alpha), str(done))
+        self.git(self.alpha, "clone", "--shared", str(self.alpha), str(busy))
         (busy / "scratch.txt").write_text("trabalho\n")
         self.git(self.alpha, "push", "origin", "main:refs/heads/shipped", "feature:refs/heads/draft")
         self.git(self.alpha, "fetch", "origin", "+refs/heads/*:refs/remotes/origin/*")
         before = self.snapshot()
-        cached = gameops.cleanup_plan(self.audit())
-        self.assertEqual(cached["remote"], [])
-        self.assertTrue(cached["needs_remote_check"])
-        plan = gameops.cleanup_plan(self.audit(remote=True))
+        head = self.git(self.alpha,"rev-parse","main")
+        inventory = self.git(self.alpha,"worktree","list","--porcelain")+"\n\n"
+        inventory += f"worktree {done}\nHEAD {head}\nbranch refs/heads/done-branch\n\n"
+        inventory += f"worktree {busy}\nHEAD {head}\nbranch refs/heads/busy"
+        original = gameops.run_git
+        def legacy_listing(repo,*args):
+            if repo == self.alpha and args == ("worktree","list","--porcelain"):
+                return inventory
+            return original(repo,*args)
+        with patch.object(gameops,"run_git",side_effect=legacy_listing):
+            cached = gameops.cleanup_plan(self.audit())
+            self.assertEqual(cached["remote"], [])
+            self.assertTrue(cached["needs_remote_check"])
+            plan = gameops.cleanup_plan(self.audit(remote=True))
         self.assertEqual(before, self.snapshot())
         local = next(group["commands"] for group in plan["local"] if group["repository"] == "games/alpha")
         self.assertEqual(local, [f"git -C games/alpha worktree remove {shlex.quote(str(done))}",
@@ -210,6 +234,124 @@ class CleanupTest(GameOpsTest):
         self.assertEqual(printed.returncode, 0, printed.stderr)
         self.assertIn("Nada foi executado", printed.stdout)
         self.assertTrue((busy / "scratch.txt").exists())
+
+
+class BatchedPreflightTest(unittest.TestCase):
+    def setUp(self):
+        fixtures = SCRIPTS.parent / 'output/test-fixtures'
+        fixtures.mkdir(parents=True, exist_ok=True)
+        self.temp = tempfile.TemporaryDirectory(prefix='preflight-batch-', dir=fixtures)
+        self.addCleanup(self.temp.cleanup)
+        self.hub = Path(self.temp.name)
+        self.alpha = self.hub / 'games/alpha'
+        self.alpha.mkdir(parents=True)
+        self.modules = [{'id':'alpha','path':'games/alpha','external':True}]
+        (self.hub/'workspace.json').write_text(json.dumps({'version':1,'modules':self.modules}))
+        for repo in (self.hub,self.alpha):
+            self.git(repo,'init','--initial-branch=main')
+            self.git(repo,'config','user.email','1+fixture@users.noreply.github.com')
+            self.git(repo,'config','user.name','Fixture')
+            (repo/'initial.txt').write_text('initial\n')
+            self.git(repo,'add','initial.txt')
+            self.git(repo,'commit','-m','initial')
+
+    def git(self, repo, *args):
+        return subprocess.run(['git','-C',str(repo),*args],check=True,capture_output=True,text=True).stdout.rstrip()
+
+    def stage(self, name, content):
+        (self.alpha/name).write_text(content)
+        self.git(self.alpha,'add','--',name)
+
+    def test_one_batch_matches_blob_sizes_with_special_names_and_keeps_index(self):
+        for name in ['plain.txt','with space.txt','ação.txt','with\ttab.txt','with\nnewline.txt']:
+            self.stage(name,'abcdef\n')
+        before = self.git(self.alpha,'ls-files','--stage')
+        original = gameops.git_process
+        batches = []
+        def observe(repo,*args,**kwargs):
+            if args[0]=='cat-file' and '--buffer' in args:
+                batches.append(kwargs['input'])
+                for ref in kwargs['input'].split('\0')[:-1]:
+                    self.assertEqual(original(repo,'cat-file','-s',ref).stdout.strip(),'7')
+            return original(repo,*args,**kwargs)
+        with patch.object(gameops,'git_process',side_effect=observe):
+            result = gameops.preflight(self.hub,self.modules,'alpha',max_mb=0)
+        self.assertEqual(result['blocking'],[])
+        self.assertEqual(len(batches),1)
+        self.assertEqual(len(batches[0].split('\0'))-1,5)
+        self.assertEqual(len([w for w in result['warnings'] if 'MB;' in w]),5)
+        self.assertEqual(before,self.git(self.alpha,'ls-files','--stage'))
+        self.assertEqual(self.git(self.alpha,'branch','--show-current'),'main')
+
+    def test_missing_or_incomplete_size_response_blocks(self):
+        self.stage('one.txt','one\n')
+        original = gameops.git_process
+        for output in ['','0\0unexpected\0',':one.txt missing\0']:
+            def corrupt(repo,*args,**kwargs):
+                if args[0]=='cat-file' and '--buffer' in args:
+                    return subprocess.CompletedProcess(args,0,output,'')
+                return original(repo,*args,**kwargs)
+            with self.subTest(output=output),patch.object(gameops,'git_process',side_effect=corrupt):
+                result=gameops.preflight(self.hub,self.modules,'alpha')
+                self.assertIn('não foi possível conferir todos os tamanhos dos objetos Git',result['blocking'])
+
+    def test_existing_security_checks_remain_active(self):
+        self.stage('.env.local','EXAMPLE=placeholder\n')
+        self.stage('notes.md',str(Path('/','home','person','code','file'))+'\n<<<<<<< HEAD\n')
+        self.stage('token.js',"const token = 'ghp_"+'x'*36+"';\n")
+        blocking='\n'.join(gameops.preflight(self.hub,self.modules,'alpha')['blocking'])
+        self.assertIn('.env.local: arquivo de credencial',blocking)
+        self.assertIn('caminho absoluto da máquina',blocking)
+        self.assertIn('marcador de conflito',blocking)
+        self.assertIn('possível token do GitHub',blocking)
+
+    def test_rename_uses_destination_for_batch_and_raw_records(self):
+        self.git(self.alpha,'mv','initial.txt','renamed with space.txt')
+        original=gameops.git_process
+        inputs=[]
+        def observe(repo,*args,**kwargs):
+            if args[0]=='cat-file' and '--buffer' in args:
+                inputs.append(kwargs['input'])
+            return original(repo,*args,**kwargs)
+        with patch.object(gameops,'git_process',side_effect=observe):
+            result=gameops.preflight(self.hub,self.modules,'alpha')
+        self.assertEqual(result['blocking'],[])
+        self.assertEqual(inputs,[':renamed with space.txt\0'])
+
+    def test_push_sizes_come_from_head_even_when_index_and_folder_differ(self):
+        base=self.git(self.alpha,'rev-parse','HEAD')
+        self.git(self.alpha,'remote','add','origin','https://example.invalid/fixture.git')
+        self.git(self.alpha,'update-ref','refs/remotes/origin/main',base)
+        self.stage('new.txt','committed\n')
+        self.git(self.alpha,'commit','-m','new')
+        self.stage('new.txt','different staged value\n')
+        (self.alpha/'new.txt').write_text('different working value\n')
+        original=gameops.git_process
+        inputs=[]
+        def observe(repo,*args,**kwargs):
+            if args[0]=='cat-file' and '--buffer' in args:
+                inputs.append(kwargs['input'])
+                self.assertEqual(original(repo,'cat-file','-s','HEAD:new.txt').stdout.strip(),'10')
+            return original(repo,*args,**kwargs)
+        with patch.object(gameops,'git_process',side_effect=observe):
+            result=gameops.preflight(self.hub,self.modules,'alpha',push=True,max_mb=0)
+        self.assertEqual(result['blocking'],[])
+        self.assertEqual(inputs,['HEAD:new.txt\0'])
+        self.assertTrue(any('MB;' in warning for warning in result['warnings']))
+
+    def test_gitlink_is_checked_in_child_repository_without_owner_blob(self):
+        child=self.alpha/'child'
+        child.mkdir()
+        self.git(child,'init','--initial-branch=main')
+        self.git(child,'config','user.email','1+fixture@users.noreply.github.com')
+        self.git(child,'config','user.name','Fixture')
+        (child/'data.txt').write_text('child\n')
+        self.git(child,'add','data.txt')
+        self.git(child,'commit','-m','child')
+        commit=self.git(child,'rev-parse','HEAD')
+        self.git(self.alpha,'update-index','--add','--cacheinfo','160000,'+commit+',child')
+        result=gameops.preflight(self.hub,self.modules,'alpha')
+        self.assertEqual(result['blocking'],[])
 
 
 class PreflightTest(GameOpsTest):
@@ -269,8 +411,13 @@ class PreflightTest(GameOpsTest):
         self.git(self.alpha, "commit", "-m", "com e-mail pessoal")
         self.identity(self.alpha, "1+example@users.noreply.github.com")
         self.assertIn("commits com e-mail que não é noreply: audit@example.invalid", self.blocking(push=True))
-        self.git(self.alpha, "commit", "--amend", "--reset-author", "--no-edit")
-        report = gameops.preflight(self.hub, self.modules, "alpha", push=True)
+        clean = self.hub / "games/clean"
+        self.git(self.hub, "clone", "--shared", str(self.remote), str(clean))
+        self.identity(clean, "1+example@users.noreply.github.com")
+        self.github_origin(clean)
+        self.commit(clean, "clean.txt", "com noreply")
+        self.modules.append({"id":"clean", "path":"games/clean"})
+        report = gameops.preflight(self.hub, self.modules, "clean", push=True)
         self.assertEqual(report["blocking"], [])
         self.assertIn("1 commit a publicar", report["info"])
 
@@ -365,12 +512,12 @@ class GatesTest(GameOpsTest):
         (self.hub / "workspace.json").write_text(json.dumps({"version": 1, "modules": self.modules}, indent=1))
         self.assertEqual(gameops.gates(self.hub, self.modules, ".")["gates"][0]["status"], "listed")
 
-    def test_worktree_paths_resolve_to_their_owner_and_unrelated_repositories_are_refused(self):
+    def test_shared_clone_paths_resolve_to_their_owner_and_unrelated_repositories_are_refused(self):
         python = shlex.quote(sys.executable)
         self.config({".": [f"{python} -c \"import sys; sys.exit(0)\""]})
         hub_tree, alpha_tree, stranger = self.base / "hub-tree", self.base / "alpha-tree", self.base / "stranger"
-        self.git(self.hub, "worktree", "add", "--detach", str(hub_tree), "HEAD")
-        self.git(self.alpha, "worktree", "add", "-b", "trabalho", str(alpha_tree), "main")
+        self.git(self.hub, "clone", "--shared", str(self.hub), str(hub_tree))
+        self.git(self.alpha, "clone", "--shared", str(self.alpha), str(alpha_tree))
         self.assertEqual(gameops.resolve_target(self.hub, self.modules, str(hub_tree))[3], ".")
         checkout, label, module, owner = gameops.resolve_target(self.hub, self.modules, str(alpha_tree))
         self.assertEqual((checkout, module["id"], owner), (alpha_tree, "alpha", "games/alpha"))

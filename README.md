@@ -1025,6 +1025,11 @@ vai no kit, sem as provas de aplicação: [Métodos herdados](assets/cerebro/M%C
 
 ## Testes
 
+O `gameops preflight` consulta tamanhos de objetos em lote, usando o stage ou
+`HEAD` conforme o modo. Resposta ausente ou incompleta bloqueia a conferência;
+gitlinks são verificados no módulo correspondente. Os controles de credenciais,
+caminhos, conflitos e mídia continuam ativos. A consulta não muda refs nem index.
+
 ```sh
 python3 -m unittest discover -s tests -v
 python3 -m unittest discover -s tests -p test_cerebro.py -v
