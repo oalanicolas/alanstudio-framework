@@ -130,6 +130,14 @@ não exige adotar o runtime do fornecedor. [Origem](../../references/sources.md#
   - A régua é a imagem renderizada, não a textura: poses e recortes no zoom máximo, diferença
     por pixel contra a fonte e contra a versão aprovada, mais um vídeo lado a lado em
     movimento. Item que fica pior que a versão aprovada reprova a troca.
+  - Código que sobe pixels num contexto WebGL compartilhado com o renderer (encoder de textura
+    no navegador, gerador de mips) fixa todo o estado de unpack (`UNPACK_FLIP_Y_WEBGL`,
+    `PREMULTIPLY_ALPHA`, `COLORSPACE_CONVERSION`, `ALIGNMENT`, `ROW_LENGTH`, `SKIP_*`) na
+    mesma chamada síncrona do upload e o restaura. O renderer muda esse estado a cada textura
+    dele. Entre dois `await` vale o estado da última, e o defeito aparece só em parte das
+    cargas: mips de cabeça para baixo, nível 0 certo. Prova: suje o estado antes e durante a
+    codificação e compare o hash de cada nível com uma codificação limpa. Defeito intermitente
+    se prova com N cargas repetidas, não com uma captura.
   - Música comprimida e tocada por streaming (`<audio>` ligado ao grafo) ou decodificada
     sob demanda; decodificar toda a trilha no boot custa dezenas de MB de PCM. Um
     formato por navegador; a mesma música sob duas chaves baixa e decodifica duas vezes.
