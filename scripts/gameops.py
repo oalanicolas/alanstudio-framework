@@ -421,7 +421,7 @@ def print_plan(plan):
 
 # Preflight: o que vai entrar no commit (stage) ou no push (commits ainda não publicados).
 
-ABSOLUTE_PATH = re.compile(r"(?<![\w.~-])(/Users/(?![<${.…])[^/\s'\"`]+/|/home/(?![<${.…])[^/\s'\"`]+/"
+ABSOLUTE_PATH = re.compile(r"(?<![\w.~-])(/Users/(?![<${.…])[^/\s'\"`|()\[\]\\]+/|/home/(?![<${.…])[^/\s'\"`|()\[\]\\]+/"
                            r"|[A-Za-z]:\\Users\\(?![<${.…]))")
 USER_IN_PATH = re.compile(r"(?:/Users/|/home/|[A-Za-z]:\\Users\\)([^/\\\s'\"`]+)")
 

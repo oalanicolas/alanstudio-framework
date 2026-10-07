@@ -222,7 +222,7 @@ class PreflightTest(GameOpsTest):
 
     def test_stage_blocks_machine_paths_credentials_and_conflicts_but_not_placeholders(self):
         self.stage("notes.md", "ok\nveja /Users/fulana/Code/jogo/x.js\nuse /Users/<user>/Code e /path/to/file\n"
-                               "<<<<<<< HEAD\n")
+                               "<<<<<<< HEAD\nABS = re.compile(r'(/Users/|/home/[a-z_]+/)')\n")
         self.stage("config.js", "const token = 'ghp_" + "a" * 36 + "';\n")
         self.stage(".env.local", "SECRET=1\n")
         self.stage(".env.example", "SECRET=\n")
@@ -230,6 +230,7 @@ class PreflightTest(GameOpsTest):
         self.assertIn("notes.md:2: caminho absoluto da máquina (/Users/fulana/)", found)
         self.assertNotIn("notes.md:3", found)
         self.assertIn("notes.md:4: marcador de conflito", found)
+        self.assertNotIn("notes.md:5", found)  # regex de checagem de portabilidade não é caminho
         self.assertIn("config.js:1: possível token do GitHub", found)
         self.assertIn(".env.local: arquivo de credencial", found)
         self.assertNotIn(".env.example", found)
