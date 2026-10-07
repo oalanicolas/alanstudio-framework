@@ -105,6 +105,31 @@ não exige adotar o runtime do fornecedor. [Origem](../../references/sources.md#
     vários GLB (compare hashes) é trabalho que cabia no pipeline.
   - KTX2/Basis com codec por classe — sem perda ou UASTC para normais, ETC1S para
     cor somente depois de comparação visual. Compressão que muda a imagem é corte.
+  - Download e memória de vídeo são orçamentos separados. PNG, WebP e AVIF chegam à GPU
+    como RGBA8 (4 bytes por texel, 4/3 com mipmaps), qualquer que seja o tamanho do
+    arquivo. Só um formato de bloco (BC7/BC5, ASTC 4×4, ETC2/EAC) reduz a memória: com
+    KTX2 transcodificado, ou com o arquivo leve recomprimido na GPU depois de decodificado.
+    Conte a memória pelo formato da GPU, não pelo arquivo. Prova: o cálculo bate com uma
+    sonda de `texStorage2D`/`compressedTexImage2D` no navegador.
+  - Mapas de dados (normal, rugosidade, máscaras) não vão para codec com croma 4:2:0, como
+    WebP com perda e JPEG. Nesses mapas, cada canal é um dado. Use 4:4:4 com matriz identidade
+    (AVIF `--cicp 2/2/0` ou equivalente) ou um formato sem perda.
+  - Escolha a qualidade textura por textura, por regiões. Compare em blocos (por exemplo,
+    128 px) contra a fonte sem perda, além da média: uma qualidade fixa pode piorar uma peça
+    vista de perto enquanto PSNR e SSIM da textura inteira continuam iguais. Critério: nenhum
+    bloco pior que a versão aprovada, além de uma tolerância declarada; ignore os blocos em que
+    as duas versões já ficam acima do limiar de identidade.
+  - Normal em dois canais (BC5, EAC RG, `RG` com reconstrução de Z) pressupõe que o
+    terceiro canal seja `sqrt(1 − x² − y²)`. Antes de adotar, meça na fonte a fração de
+    texels em que o B guardado diverge do Z reconstruído. Mapas de engine antiga ou
+    pintados à mão podem divergir: em BC5 o relevo muda nessas regiões, mesmo sem perda nos
+    canais R e G. Nesses mapas, use formato de três canais (BC7 RGB linear, ASTC).
+  - Recompressão em cascata acumula perda: um codec de bloco aplicado sobre um arquivo já com
+    perda erra mais que sobre a fonte. A qualidade escolhida para o arquivo final não vale
+    para a cadeia: meça a imagem renderizada da cadeia inteira contra a fonte.
+  - A régua é a imagem renderizada, não a textura: poses e recortes no zoom máximo, diferença
+    por pixel contra a fonte e contra a versão aprovada, mais um vídeo lado a lado em
+    movimento. Item que fica pior que a versão aprovada reprova a troca.
   - Música comprimida e tocada por streaming (`<audio>` ligado ao grafo) ou decodificada
     sob demanda; decodificar toda a trilha no boot custa dezenas de MB de PCM. Um
     formato por navegador; a mesma música sob duas chaves baixa e decodifica duas vezes.

@@ -190,6 +190,12 @@ Aprendizados de aplicações reais:
 - Destruição proporcional à região: terreno ou cenário destrutível envia à GPU só o
   retângulo ou chunk alterado. Reenviar o recurso inteiro põe o custo no quadro do
   impacto, o mais visível do turno. Prova: bytes enviados por explosão no mapa máximo.
+- Peso de textura tem dois orçamentos: download (codec do arquivo) e memória de vídeo
+  (formato na GPU). Trocar o codec reduz só o primeiro. Para reduzir o segundo, use um
+  formato de bloco e limite quantos conjuntos ficam residentes (um cache de N itens
+  pesados custa N vezes o maior). A régua é a imagem renderizada contra a fonte, por
+  regiões. Método e armadilhas (croma, critério por bloco, normal de dois canais,
+  recompressão em cascata) em [web](../packs/platforms/web.md).
 - O que não muda é desenhado uma vez. Em Canvas 2D, fundo e palco estáticos vivem em
   camada própria; HUD em DOM escreve só quando o valor muda — `innerHTML` do HUD
   inteiro por quadro gera layout e lixo. Prova: captura idêntica e contagem de
