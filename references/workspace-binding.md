@@ -119,7 +119,10 @@ prepara extrações em pasta nova, com recibo, sem publicar nem alterar o origin
   Não executa nada.
 - `preflight`: confere o stage ou, com `--push`, os commits a publicar. Bloqueia
   credenciais, caminhos absolutos de máquina, conflitos, e-mail que não é noreply
-  num remoto do GitHub e gitlink de commit não publicado. Sempre relata o que ficou fora
+  num remoto do GitHub e gitlink de commit não publicado. Em conteúdo copiado de terceiros
+  (padrões fnmatch, relativos ao hub, em `publication.captured_paths` do `workspace.json`),
+  o caminho absoluto de outra máquina vira aviso: reescrevê-lo quebraria a fidelidade da
+  captura. O caminho do usuário desta máquina continua bloqueando. Sempre relata o que ficou fora
   do commit, e avisa quando a pasta difere do que vai ser publicado: gates e deploy leem
   a pasta.
 - `gates`: lista ou roda as verificações declaradas. Nos módulos, são os scripts do
@@ -127,7 +130,9 @@ prepara extrações em pasta nova, com recibo, sem publicar nem alterar o origin
   pode ter `when` com as pastas que a disparam.
 
 `audit`, `cleanup` e `preflight` não alteram nada. Todos aceitam `--json`, e
-`preflight` e `gates` aceitam o caminho de um worktree, resolvido para o repositório dono.
+`preflight` e `gates` aceitam o caminho de um worktree ou de uma cópia limpa (clone
+`--shared`), resolvido para o repositório dono. Nenhum comando cria worktree: o `deploy`
+monta o commit publicado num clone compartilhado temporário, apagado no fim.
 
 URLs pertencem ao manifesto: `url` por módulo, ou `repository` com nome simples.
 Nesse segundo caso, o prefixo vem de `repository_base_url` ou do diretório da URL

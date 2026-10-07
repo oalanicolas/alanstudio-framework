@@ -1,7 +1,7 @@
 """Ambiente de build de um site publicado: o que o workspace.json declara em "deploy.env".
 
 Origem: sites publicados por deploy foram ao ar sem VITE_SUPABASE_URL e
-VITE_SUPABASE_PUBLISHABLE_KEY. O build do deploy roda num worktree limpo, sem os arquivos
+VITE_SUPABASE_PUBLISHABLE_KEY. O build do deploy roda numa cópia limpa, sem os arquivos
 .env*, e o Vite compila sem erro com a variável ausente: placar e comunidade saíram do ar
 sem nenhum aviso. Desde então uma variável que o build usa é declarada, resolvida antes do
 build e conferida no build antes do envio.

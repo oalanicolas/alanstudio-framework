@@ -5,10 +5,11 @@ audit      inventário somente leitura: worktrees, branches, stashes e gitlinks
 cleanup    plano de limpeza com os comandos dos itens comprovados; não executa
 preflight  confere o stage, ou o que falta publicar, antes do commit e do push
 gates      lista ou roda as verificações que o repositório declara
-deploy     publica na Hostinger o commit já publicado (worktree limpo, gates, build, conferência);
+deploy     publica na Hostinger o commit já publicado (cópia limpa, gates, build, conferência);
            com --check, mostra quem responde por cada destino declarado no workspace.json
 """
 import argparse
+import fnmatch
 import json
 import os
 from pathlib import Path
@@ -422,6 +423,32 @@ def print_plan(plan):
 
 ABSOLUTE_PATH = re.compile(r"(?<![\w.~-])(/Users/(?![<${.…])[^/\s'\"`]+/|/home/(?![<${.…])[^/\s'\"`]+/"
                            r"|[A-Za-z]:\\Users\\(?![<${.…]))")
+USER_IN_PATH = re.compile(r"(?:/Users/|/home/|[A-Za-z]:\\Users\\)([^/\\\s'\"`]+)")
+
+
+def captured_paths(root):
+    """Padrões (fnmatch, relativos ao hub) de captura fiel declarados em workspace.json → publication.captured_paths.
+
+    Conteúdo copiado de terceiros (um site capturado, a extração de um jogo) traz caminhos das máquinas de quem o
+    fez; reescrevê-los quebra a fidelidade. Nesses caminhos o caminho de outra pessoa vira aviso; o desta máquina
+    continua bloqueando."""
+    try:
+        data = json.loads((Path(root) / "workspace.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    found = (data.get("publication") or {}).get("captured_paths") if isinstance(data, dict) else None
+    return [item for item in found or [] if isinstance(item, str)]
+
+
+def foreign_absolute_path(text, owner, path, captures):
+    """True quando todo caminho absoluto da linha é de outra máquina e o arquivo está numa captura fiel."""
+    full = path if owner == "." else f"{owner}/{path}"
+    if not any(fnmatch.fnmatch(full, pattern) for pattern in captures):
+        return False
+    users = USER_IN_PATH.findall(text)
+    return bool(users) and Path.home().name not in users
+
+
 SECRET_TEXT = (
     ("chave privada", re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")),
     ("token do GitHub", re.compile(r"\b(?:gh[pousr]_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{40,})")),
@@ -493,10 +520,20 @@ def common_dir(repo):
     return Path(found).resolve() if found else None
 
 
+def borrowed_objects(repo):
+    """Pastas de objetos que um clone compartilhado (clone --shared, clean_copy) usa do original."""
+    shared = common_dir(repo)
+    alternates = shared / "objects" / "info" / "alternates" if shared else None
+    if not (alternates and alternates.is_file()):
+        return set()
+    return {Path(line).resolve() for line in alternates.read_text().splitlines() if line and not line.startswith("#")}
+
+
 def resolve_target(root, modules, name):
     """Devolve (checkout, rótulo, módulo, dono): dono é '.' ou o caminho do módulo no manifesto.
 
-    Aceita o hub ('.'), o id ou caminho de um módulo, ou o caminho de um worktree deles."""
+    Aceita o hub ('.'), o id ou caminho de um módulo, ou o caminho de um worktree ou de uma cópia limpa
+    (clone compartilhado) deles."""
     root = Path(root).resolve()
     if name in (".", "hub", ""):
         return root, ".", None, "."
@@ -509,10 +546,11 @@ def resolve_target(root, modules, name):
     candidate = Path(name).expanduser()
     candidate = (candidate if candidate.is_absolute() else Path.cwd() / candidate).resolve()
     if candidate.is_dir() and (candidate / ".git").exists():
-        shared = common_dir(candidate)
+        shared, borrowed = common_dir(candidate), borrowed_objects(candidate)
         owners = [(".", None, root)] + [(item["path"], item, root / item["path"]) for item in modules]
         for owner, item, checkout in owners:
-            if (checkout / ".git").exists() and common_dir(checkout) == shared:
+            source = common_dir(checkout) if (checkout / ".git").exists() else None
+            if source and (source == shared or source / "objects" in borrowed):
                 return candidate, str(candidate), item, owner
         raise ValueError(f"{candidate} não é worktree do hub nem de um módulo do workspace.")
     raise ValueError(f"Repositório desconhecido: {name}. Use '.' para o hub, um id de workspace.py list "
@@ -609,15 +647,22 @@ def preflight(root, modules, target, push=False, max_mb=5, max_instruction_token
                 warn(f"{path}: {plural(len(dead), 'caminho citado não existe', 'caminhos citados não existem')}: "
                      + ", ".join(dead[:5]) + ("…" if len(dead) > 5 else ""))
     diff = run_git(repo, "diff", *diff_args, "-U0", "--no-color", "--no-ext-diff") or ""
+    captures, foreign = captured_paths(root), {}
     for path, number, text in added_lines(diff):
         where = f"{path}:{number}"
         if ABSOLUTE_PATH.search(text):
-            block(f"{where}: caminho absoluto da máquina ({ABSOLUTE_PATH.search(text).group(0)})")
+            if foreign_absolute_path(text, owner, path, captures):
+                foreign[path] = foreign.get(path, 0) + 1
+            else:
+                block(f"{where}: caminho absoluto da máquina ({ABSOLUTE_PATH.search(text).group(0)})")
         for label_, pattern in SECRET_TEXT:
             if pattern.search(text):
                 block(f"{where}: possível {label_}")
         if CONFLICT_MARKER.match(text):
             block(f"{where}: marcador de conflito")
+    for path, count in sorted(foreign.items()):
+        warn(f"{path}: {plural(count, 'linha', 'linhas')} com caminho absoluto de outra máquina, aceito por ser "
+             "captura fiel (publication.captured_paths)")
     raw = run_git(repo, "diff", *diff_args, "--raw", "--no-abbrev") or ""
     owned = {item["path"]: item for item in modules if (parent_of(item, modules) or {}).get("path") == (module or {}).get("path")}
     for line in raw.splitlines():
@@ -804,7 +849,7 @@ def deploy(root, modules, target, dry_run=False, allow_unpushed=False, timeout=1
     modified, untracked = working_tree(repo)
     if modified or untracked:
         report["info"].append(f"fora do deploy: {len(modified)} modificados, {untracked} não rastreados")
-    # O worktree limpo não tem .env*: sem isto o build sai sem a configuração e ninguém vê (build_env.py).
+    # A cópia limpa não tem .env*: sem isto o build sai sem a configuração e ninguém vê (build_env.py).
     values, sources, missing = build_env.resolve(config, repo)
     report["env"] = sources
     if missing:
@@ -818,8 +863,7 @@ def deploy(root, modules, target, dry_run=False, allow_unpushed=False, timeout=1
     temp = Path(tempfile.mkdtemp(prefix=f"gameops-deploy-{module['id']}-"))
     tree = temp / "tree"
     try:
-        subprocess.run(["git", "-C", str(repo), "worktree", "add", "--quiet", "--detach", str(tree), head],
-                       check=True, capture_output=True, text=True)
+        clean_copy(repo, head, tree)
         undeclared = sorted(build_env.referenced(tree) - set(values))
         if undeclared:
             report["blocking"].append(
@@ -859,7 +903,7 @@ def deploy(root, modules, target, dry_run=False, allow_unpushed=False, timeout=1
         except SystemExit as exc:
             code = exc.code if isinstance(exc.code, int) else 1
             report["info"].append(str(exc.code))
-        except Exception as exc:  # CLI, rede ou upload: o relatório diz onde parou; o worktree sai no finally.
+        except Exception as exc:  # CLI, rede ou upload: o relatório diz onde parou; a cópia sai no finally.
             code = 1
             report["info"].append(f"{type(exc).__name__}: {exc}")
         report["result"] = ("montado sem enviar" if dry_run else "publicado e conferido") if code == 0 else {
@@ -868,9 +912,17 @@ def deploy(root, modules, target, dry_run=False, allow_unpushed=False, timeout=1
         report["exit"] = code
         return report
     finally:
-        subprocess.run(["git", "-C", str(repo), "worktree", "remove", "--force", str(tree)], capture_output=True)
-        subprocess.run(["git", "-C", str(repo), "worktree", "prune"], capture_output=True)
         shutil.rmtree(temp, ignore_errors=True)
+
+
+def clean_copy(repo, commit, dest):
+    """Checkout de `commit` em `dest` por um clone compartilhado, sem registrar worktree no repositório.
+
+    O clone usa os objetos do original (alternates) e roda os filtros do checkout (LFS) como um checkout comum."""
+    subprocess.run(["git", "clone", "--quiet", "--shared", "--no-checkout", str(repo), str(dest)],
+                   check=True, capture_output=True, text=True)
+    subprocess.run(["git", "-C", str(dest), "checkout", "--quiet", "--detach", commit],
+                   check=True, capture_output=True, text=True)
 
 
 def print_deploy(report):

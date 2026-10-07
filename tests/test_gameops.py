@@ -237,6 +237,22 @@ class PreflightTest(GameOpsTest):
         self.assertEqual(cli.returncode, 1)
         self.assertIn("BLOQUEADO", cli.stdout)
 
+    def test_captured_content_may_keep_other_machines_paths_but_never_this_one(self):
+        # Uma captura fiel (site salvo, extração de jogo) traz caminhos de quem a fez; reescrever quebra a fidelidade.
+        workspace = {"version": 1, "modules": self.modules,
+                     "publication": {"captured_paths": ["games/alpha/extractions/*"]}}
+        (self.hub / "workspace.json").write_text(json.dumps(workspace))
+        (self.alpha / "extractions").mkdir()
+        self.stage("extractions/log.txt", "C:/Users/fulano/proj/a.uasset\n/home/outra/x\n")
+        self.stage("extractions/meu.txt", f"{Path.home()}/Code/x\n")
+        self.stage("fora.md", "C:/Users/fulano/proj/a.uasset\n")
+        report = gameops.preflight(self.hub, self.modules, "alpha")
+        found = "\n".join(report["blocking"])
+        self.assertNotIn("extractions/log.txt", found)
+        self.assertIn("extractions/log.txt: 2 linhas com caminho absoluto de outra máquina", "\n".join(report["warnings"]))
+        self.assertIn("extractions/meu.txt:1: caminho absoluto da máquina", found)
+        self.assertIn("fora.md:1: caminho absoluto da máquina", found)
+
     def test_clean_stage_passes_and_reports_work_left_outside(self):
         self.stage("ok.txt", "tudo certo\n")
         (self.alpha / "outro.txt").write_text("fica fora\n")
@@ -386,13 +402,14 @@ class DeployTest(GameOpsTest):
 
     def publish(self, argv):
         tree = Path(argv[argv.index("--project") + 1])
-        self.calls.append({"argv": argv, "files": sorted(path.name for path in tree.iterdir())})
+        self.calls.append({"argv": argv, "files": sorted(path.name for path in tree.iterdir()),
+                           "worktrees": self.worktrees()})
         return 0
 
     def worktrees(self):
         return self.git(self.alpha, "worktree", "list", "--porcelain").count("worktree ")
 
-    def test_only_the_published_commit_goes_out_from_a_clean_worktree(self):
+    def test_only_the_published_commit_goes_out_from_a_clean_copy_without_a_worktree(self):
         (self.alpha / "rascunho.txt").write_text("fora do commit\n")
         report = gameops.deploy(self.hub, self.modules, "alpha", publish=self.publish)
         self.assertEqual(report["blocking"], [])
@@ -403,7 +420,7 @@ class DeployTest(GameOpsTest):
         self.assertIn("main.txt", self.calls[0]["files"])
         self.assertNotIn("rascunho.txt", self.calls[0]["files"])
         self.assertIn("fora do deploy: 0 modificados, 1 não rastreados", report["info"])
-        self.assertEqual(self.worktrees(), 1)
+        self.assertEqual((self.calls[0]["worktrees"], self.worktrees()), (1, 1))
         self.assertFalse(Path(argv[argv.index("--project") + 1]).exists())
 
     def test_unpushed_commit_is_blocked_unless_allowed(self):
@@ -441,7 +458,7 @@ class DeployTest(GameOpsTest):
         self.assertEqual([step["name"] for step in report["steps"]], ["npm run build", "build", "test"])
         self.assertEqual(report["result"], "publicado e conferido")
 
-    def test_upload_failure_is_reported_and_the_worktree_is_removed(self):
+    def test_upload_failure_is_reported_and_the_copy_is_removed(self):
         def broken(argv):
             raise RuntimeError("hostinger hosting files: 500")
         report = gameops.deploy(self.hub, self.modules, "alpha", publish=broken)
@@ -484,8 +501,8 @@ class DeployTest(GameOpsTest):
         self.git(self.alpha, "push", "origin", "main")
 
     @unittest.skipUnless(shutil.which("node"), "node ausente")
-    def test_declared_env_reaches_the_build_from_outside_the_clean_worktree(self):
-        # O worktree limpo não tinha o .env.local e sites foram ao ar sem o Supabase.
+    def test_declared_env_reaches_the_build_from_outside_the_clean_copy(self):
+        # A cópia limpa não tinha o .env.local e sites foram ao ar sem o Supabase.
         self.push("build lê o ambiente", {"build.js": "require('fs').writeFileSync('index.html', "
                   "`<script>${process.env.VITE_API}|${process.env.FIXO}</script>`)\n"})
         (self.alpha / ".env.local").write_text('VITE_API="https://api.test"\nSEGREDO=nunca-lido\n')
