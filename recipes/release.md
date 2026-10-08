@@ -109,6 +109,33 @@ Template da etapa: [release](../assets/templates/release.md). Se o molde recusa 
 
 ## A prova de validação também precisa de contrato
 
+### Respostas executáveis na hospedagem
+
+`scripts/hostinger_deploy.py` compara arquivos públicos por hash. Uma aplicação com
+endpoints executáveis declara `deploy-verification.json` na raiz, versão 1, com
+`responses` por caminho relativo. Cada resposta exige status HTTP exato e `headers`
+em minúsculas: listas de prefixos para cabeçalhos comuns, diretivas exatas para
+`cache-control`. `json_values` exige valores e tipos exatos; `json_types` admite
+`boolean`, `string`, `object`, `array`, `number` e `null`, com caminhos separados por ponto.
+O verificador não registra corpos nem campos de identidade. Fonte PHP exposto falha.
+
+Exemplo: `{"version":1,"responses":{"api/status.php":{"status":200,"headers":
+{"content-type":["application/json"],"cache-control":["private","no-store"]},
+"json_values":{"authenticated":false},"json_types":{"message":"string"}}}}`.
+
+`protected_inventory` opcional nomeia `file`, `files_key`, `public_key` e `response`:
+um JSON do build contém um objeto de caminhos e uma lista do subconjunto público.
+`patterns` opcional cobre arquivos auxiliares publicados nas mesmas áreas protegidas,
+mesmo quando não estão no inventário de runtime. A lista pública continua prevalecendo.
+Arquivos existentes fora dessa lista recebem a resposta privada declarada, salvo
+override explícito de rota. O subconjunto público permanece sujeito ao hash.
+Ausência, contrato inválido ou inventário incompleto falham antes do upload.
+
+Endpoints explícitos são obrigatórios além da amostra; `index.html` e `build.json`
+nunca aceitam override. Negação anônima comprova acesso protegido, não integridade
+autenticada. Esta precisa de teste separado com sessão autorizada. Não retire PHP da
+amostra nem exponha o código-fonte para satisfazer uma comparação de arquivo.
+
 Aplicar quando a entrega depende de um runner que coordena scripts, navegadores ou
 serviços locais. Teste o próprio instrumento: executável ausente, código de saída não
 zero, timeout, revisão alterada durante a rodada e serviço de outra cópia. Falta de

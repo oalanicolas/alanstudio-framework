@@ -384,5 +384,104 @@ class BotVerificationTests(unittest.TestCase):
         self.assertIn("conflitantes", problems[0])
 
 
+class ResponseContractTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.project = Path(self.temp.name)
+        self.dist = self.project / "dist"
+        self.dist.mkdir()
+        for name in ("index.html", "build.json", "api.php", "private.js", "demo.js"):
+            (self.dist / name).write_text("<?php echo 'secret';" if name.endswith(".php") else name)
+        self.rule = {"status": 200, "headers": {"content-type": ["application/json"],
+                     "cache-control": ["private", "no-store"]},
+                     "json_values": {"authenticated": False}, "json_types": {"csrf": "string"}}
+        self.headers = {"content-type": "application/json; charset=utf-8", "cache-control": "private, no-store"}
+        self.body = b'{"authenticated":false,"csrf":"not-logged"}'
+
+    def contract(self, **extra):
+        cfg = {"version": 1, "responses": {"api.php": self.rule}, **extra}
+        (self.project / "deploy-verification.json").write_text(json.dumps(cfg))
+        return deploy.load_verification(self.project, self.dist)
+
+    def verify(self, rel, status=200, headers=None, body=None, responses=None):
+        with mock.patch.object(deploy, "fetch", return_value=(status, self.headers if headers is None else headers,
+                                                             self.body if body is None else body)), mock.patch("builtins.print"):
+            return deploy.verify("example.test", self.dist, [rel], None, responses)
+
+    def test_executed_json_passes_without_exposing_source(self):
+        self.assertEqual(self.verify("api.php", responses=self.contract()), [])
+
+    def test_php_source_cannot_pass_with_correct_status_and_headers(self):
+        failures = self.verify("api.php", body=(self.dist / "api.php").read_bytes(), responses=self.contract())
+        self.assertTrue(any("PHP exposto" in f for f in failures))
+
+    def test_php_without_contract_cannot_pass_even_with_identical_bytes(self):
+        self.assertTrue(self.verify("api.php", body=(self.dist / "api.php").read_bytes()))
+
+    def test_wrong_json_values_types_and_missing_fields_fail(self):
+        rules = self.contract()
+        for body in (b'{}', b'{"authenticated":0,"csrf":"x"}', b'{"authenticated":true,"csrf":"x"}',
+                     b'{"authenticated":false,"csrf":42}', b'not-json'):
+            with self.subTest(body=body):
+                self.assertTrue(self.verify("api.php", body=body, responses=rules))
+
+    def test_status_cache_and_type_mismatch_fail(self):
+        rules = self.contract()
+        self.assertTrue(self.verify("api.php", status=500, responses=rules))
+        for headers in ({}, {**self.headers, "content-type": "text/plain"},
+                        {**self.headers, "cache-control": "private, no-store, public"},
+                        {**self.headers, "cache-control": "private, no-store, immutable"}):
+            with self.subTest(headers=headers):
+                self.assertTrue(self.verify("api.php", headers=headers, responses=rules))
+
+    def test_private_inventory_does_not_override_public_demo_hashes(self):
+        (self.dist / "inventory.json").write_text(json.dumps({"files": {"/private.js": {}, "/demo.js": {}},
+                                                            "public": ["/demo.js"]}))
+        (self.dist / "excluded-readme.txt").write_text("not in runtime inventory")
+        rules = self.contract(protected_inventory={"file": "inventory.json", "files_key": "files", "public_key": "public", "patterns": ["*.js", "excluded-*.txt"],
+                              "response": {"status": 404, "headers": {"cache-control": ["private", "no-store"]}}})
+        self.assertIn("private.js", rules)
+        self.assertNotIn("demo.js", rules)
+        self.assertIn("excluded-readme.txt", rules)
+        self.assertEqual(self.verify("private.js", status=404, body=b"", responses=rules), [])
+        self.assertTrue(self.verify("private.js", status=200, body=b"", responses=rules))
+        self.assertTrue(self.verify("demo.js", body=b"stale", responses=rules))
+        self.assertEqual(self.verify("demo.js", body=b"demo.js", responses=rules), [])
+
+    def test_public_build_identity_cannot_be_overridden(self):
+        for path in ("index.html", "build.json"):
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                self.contract(responses={path: self.rule})
+        self.assertTrue(self.verify("build.json", body=b"stale"))
+        self.assertTrue(self.verify("index.html", headers={"platform": "hostinger"}, body=b"stale"))
+
+    def test_malformed_contract_is_rejected_before_upload(self):
+        for cfg in ({"version": 2}, {"version": 1, "typo": True},
+                    {"version": 1, "responses": {"../private.php": self.rule}},
+                    {"version": 1, "responses": {"api.php": {"status": 200}}},
+                    {"version": 1, "protected_inventory": {"file": "missing"}}):
+            with self.subTest(cfg=cfg):
+                (self.project / "deploy-verification.json").write_text(json.dumps(cfg))
+                with mock.patch.object(deploy, "tus_upload") as upload, mock.patch("builtins.print"), \
+                        mock.patch("sys.stderr"), self.assertRaises(SystemExit):
+                    deploy.main(["--domain", "example.test", "--project", str(self.project), "--dry-run"])
+                upload.assert_not_called()
+
+    def test_missing_inventory_files_are_rejected(self):
+        (self.dist / "inventory.json").write_text(json.dumps({"files": {"/missing.js": {}}, "public": []}))
+        with self.assertRaises(ValueError):
+            self.contract(protected_inventory={"file": "inventory.json", "files_key": "files", "public_key": "public",
+                          "response": {"status": 404, "headers": {"cache-control": ["no-store"]}}})
+
+    def test_explicit_routes_and_build_are_mandatory_beyond_sample(self):
+        self.contract()
+        with mock.patch.object(deploy, "sample", return_value=["index.html"]), \
+                mock.patch.object(deploy, "verify", return_value=[]) as verify, mock.patch("builtins.print"):
+            result = deploy.main(["--domain", "example.test", "--project", str(self.project), "--verify-only"])
+        self.assertEqual(result, 0)
+        self.assertEqual(verify.call_args.args[2], ["index.html", "build.json", "api.php"])
+
+
 if __name__ == "__main__":
     unittest.main()

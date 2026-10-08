@@ -315,16 +315,125 @@ def fetch(domain: str, path: str, origin: str | None, user_agent: str = "hosting
     return status, headers, body
 
 
-def verify(domain: str, dist: Path, paths: list[str], origin: str | None) -> list[str]:
+def load_verification(project: Path, dist: Path) -> dict:
+    """Executable responses have an explicit contract; public files retain byte checks."""
+    path = project / "deploy-verification.json"
+    if not path.is_file():
+        return {}
+    cfg = json.loads(path.read_text())
+    if not isinstance(cfg, dict) or set(cfg) - {"version", "responses", "protected_inventory"} or cfg.get("version") != 1:
+        raise ValueError("deploy-verification.json: contrato inválido")
+    if not isinstance(cfg.get("responses", {}), dict):
+        raise ValueError("responses: objeto esperado")
+    responses = dict(cfg.get("responses", {}))
+    inventory = cfg.get("protected_inventory")
+    if inventory:
+        if set(inventory) - {"file", "files_key", "public_key", "response", "patterns"} or not {"file", "files_key", "public_key", "response"} <= set(inventory):
+            raise ValueError("protected_inventory: campos inválidos")
+        inventory_path = checked_path(inventory["file"])
+        data = json.loads((dist / inventory_path).read_text())
+        files, public = data[inventory["files_key"]], data[inventory["public_key"]]
+        if not isinstance(files, dict) or not files or not isinstance(public, list) or not set(public) <= set(files):
+            raise ValueError("protected_inventory: inventário ou lista pública inválida")
+        patterns = inventory.get("patterns", [])
+        if not isinstance(patterns, list):
+            raise ValueError("protected_inventory: patterns inválido")
+        for pattern in patterns:
+            checked_path(pattern)
+        public_paths = {name.lstrip("/") for name in public}
+        for file in build_files(dist):
+            rel = file.relative_to(dist).as_posix()
+            if rel not in public_paths and any(fnmatch.fnmatch(rel, pattern) for pattern in patterns):
+                responses.setdefault(rel, inventory["response"])
+        for name in files:
+            rel = checked_path(name.lstrip("/"))
+            if not (dist / rel).is_file():
+                raise ValueError(f"protected_inventory: arquivo ausente {rel}")
+            if name not in public:
+                responses.setdefault(rel, inventory["response"])
+    for rel, rule in responses.items():
+        checked_path(rel)
+        if rel in ("index.html", "build.json"):
+            raise ValueError(f"{rel}: identificação do build exige hash, sem override")
+        allowed = {"status", "headers", "json_values", "json_types"}
+        if not isinstance(rule, dict) or set(rule) - allowed or type(rule.get("status")) is not int or not 200 <= rule["status"] <= 599:
+            raise ValueError(f"{rel}: resposta inválida")
+        headers = rule.get("headers")
+        if not isinstance(headers, dict) or not headers:
+            raise ValueError(f"{rel}: declare os cabeçalhos esperados")
+        for key, value in headers.items():
+            if not isinstance(key, str) or key != key.lower() or not isinstance(value, list) or not value or not all(isinstance(v, str) and v for v in value):
+                raise ValueError(f"{rel}: cabeçalho inválido")
+        for field in ("json_values", "json_types"):
+            if not isinstance(rule.get(field, {}), dict) or any(not isinstance(key, str) or not key or any(not part for part in key.split(".")) for key in rule.get(field, {})):
+                raise ValueError(f"{rel}: {field} inválido")
+        if any(t not in ("boolean", "string", "object", "array", "number", "null") for t in rule.get("json_types", {}).values()):
+            raise ValueError(f"{rel}: tipo JSON inválido")
+    return responses
+
+
+def checked_path(rel: str) -> str:
+    if not isinstance(rel, str) or not rel or rel.startswith("/") or any(p in (".", "..", "") for p in rel.split("/")) or any(c in rel for c in "\\?#\r\n"):
+        raise ValueError("deploy-verification.json: caminho inválido")
+    return rel
+
+
+def response_problems(status: int, headers: dict, body: bytes, rule: dict) -> list[str]:
     problems = []
+    if status != rule["status"]:
+        problems.append(f"status {status}, esperado {rule['status']}")
+    if b"<?php" in body.lower() or b"<?=" in body:
+        problems.append("código PHP exposto")
+    for key, values in rule["headers"].items():
+        value = headers.get(key, "").lower()
+        if key == "cache-control":
+            present = {part.strip() for part in value.split(",")}
+            valid = all(expected.lower() in present for expected in values)
+            if {"private", "no-store"} & set(values) and ("public" in present or "immutable" in present):
+                valid = False
+        else:
+            valid = all(value.startswith(expected.lower()) for expected in values)
+        if not valid:
+            problems.append(f"cabeçalho {key} fora do contrato")
+    if "json_values" in rule or "json_types" in rule:
+        try:
+            data = json.loads(body)
+            types = {"boolean": bool, "string": str, "object": dict, "array": list,
+                     "number": (int, float), "null": type(None)}
+            for field, expected in rule.get("json_values", {}).items():
+                actual = data
+                for part in field.split("."):
+                    actual = actual[part]
+                if type(actual) is not type(expected) or actual != expected:
+                    problems.append(f"campo JSON {field} fora do contrato")
+            for field, expected in rule.get("json_types", {}).items():
+                actual = data
+                for part in field.split("."):
+                    actual = actual[part]
+                if not isinstance(actual, types[expected]) or (expected == "number" and isinstance(actual, bool)):
+                    problems.append(f"tipo JSON {field} fora do contrato")
+        except (ValueError, KeyError, TypeError):
+            problems.append("JSON inválido ou campo obrigatório ausente")
+    return problems
+
+
+def verify(domain: str, dist: Path, paths: list[str], origin: str | None,
+           responses: dict | None = None) -> list[str]:
+    problems = []
+    responses = responses or {}
     for rel in paths:
         status, headers, body = fetch(domain, "/" if rel == "index.html" else rel, origin)
         if rel == "index.html" and headers.get("platform") != "hostinger":
             problems.append(f"/ não veio da Hostinger (server={headers.get('server')}); o DNS ainda aponta para outro lugar?")
-        same = hashlib.sha256(body).digest() == hashlib.sha256((dist / rel).read_bytes()).digest()
-        print(f"  {rel}: {status} · {'idêntico' if same else 'DIFERENTE'} · cache-control={headers.get('cache-control')}", flush=True)
-        if status != 200 or not same:
-            problems.append(f"{rel}: {status}, {'idêntico' if same else 'diferente do build'}")
+        if rel in responses:
+            failures = response_problems(status, headers, body, responses[rel])
+        elif rel.endswith(".php"):
+            failures = ["endpoint PHP sem contrato de resposta"]
+        else:
+            same = hashlib.sha256(body).digest() == hashlib.sha256((dist / rel).read_bytes()).digest()
+            failures = [] if status == 200 and same else [f"{status}, {'idêntico' if same else 'diferente do build'}"]
+        print(f"  {rel}: {status} · {'FALHA' if failures else 'conferido'} · cache-control={headers.get('cache-control')}", flush=True)
+        problems.extend(f"{rel}: {failure}" for failure in failures)
     return problems
 
 
@@ -410,10 +519,18 @@ def main(argv=None):
             return 3
     files = build_files(dist, project)
     paths = sample(files, dist, a.sample)
+    try:
+        responses = load_verification(project, dist)
+    except (ValueError, KeyError, TypeError, OSError) as exc:
+        ap.error(f"Contrato de verificação recusado antes do upload: {exc}")
+    # Explicit endpoints are always checked; inventory responses classify the static sample.
+    contract_path = project / "deploy-verification.json"
+    mandatory = json.loads(contract_path.read_text()).get("responses", {}) if contract_path.is_file() else {}
+    paths = list(dict.fromkeys([*paths, *(["build.json"] if (dist / "build.json").is_file() else []), *mandatory]))
     if block_ai_bots:
         paths = [path for path in paths if path != "robots.txt"]
     if a.verify_only:
-        problems = verify(a.domain, dist, paths, a.origin)
+        problems = verify(a.domain, dist, paths, a.origin, responses)
         if block_ai_bots:
             problems += verify_ai_bots(a.domain, paths, a.origin)
         print("CONFERIDO: o site serve este build" if not problems else "DIFERENTE:\n  " + "\n  ".join(problems))
@@ -447,11 +564,11 @@ def main(argv=None):
         out.unlink(missing_ok=True)
     for attempt in range(4):
         time.sleep(5 if attempt == 0 else 30)
-        problems = verify(a.domain, dist, paths, a.origin)
+        problems = verify(a.domain, dist, paths, a.origin, responses)
         if not problems and block_ai_bots:
             problems += verify_ai_bots(a.domain, paths, a.origin)
         if not problems:
-            print(f"PUBLICADO E CONFERIDO: https://{a.domain}/ serve o build ({len(paths)} arquivos idênticos)")
+            print(f"PUBLICADO E CONFERIDO: https://{a.domain}/ serve o build ({len(paths)} respostas conferidas, estáticos por hash)")
             return 0
     print("PUBLICADO COM PENDÊNCIA:\n  " + "\n  ".join(problems))
     return 2
