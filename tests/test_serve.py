@@ -84,6 +84,18 @@ class ServeTests(unittest.TestCase):
         self.assertTrue(state["started_at"])
         self.assertEqual(game.serve_state_dir(self.root), self.root / "output" / "serve")
 
+    def test_project_outside_registry_root_has_serializable_paths(self):
+        registry = self.root / "separate-registry"
+        short = game._short_path(self.project, registry)
+        self.assertEqual(json.loads(json.dumps({"project": short}))["project"], str(self.project))
+        self.assertIsNone(game._short_path(None, registry))
+        self.addCleanup(game.serve_stop, self.project, registry)
+        result = game.serve_start(self.project, registry, timeout=15, launch=self.launch)
+        self.assertEqual(result["project"], str(self.project))
+        self.assertTrue(game.serve_http_ok(result["url"]))
+        state = json.loads(game.serve_state_path(self.project, registry).read_text())
+        self.assertEqual(state["pid"], result["pid"])
+
     def test_reuses_live_server_for_same_cwd_and_commit(self):
         first = self.start()
         second = self.start()

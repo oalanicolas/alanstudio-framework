@@ -6505,7 +6505,7 @@ def _short_path(value, root):
     try:
         return Path(value).resolve().relative_to(Path(root).resolve()).as_posix()
     except (TypeError, ValueError, OSError):
-        return value
+        return str(value) if isinstance(value, Path) else value
 
 
 def brief_context(full, root, output):
