@@ -328,7 +328,7 @@ def load_verification(project: Path, dist: Path) -> dict:
     responses = dict(cfg.get("responses", {}))
     inventory = cfg.get("protected_inventory")
     if inventory:
-        if set(inventory) - {"file", "files_key", "public_key", "response", "patterns"} or not {"file", "files_key", "public_key", "response"} <= set(inventory):
+        if set(inventory) - {"file", "files_key", "public_key", "response", "patterns", "unlisted_response"} or not {"file", "files_key", "public_key", "response"} <= set(inventory):
             raise ValueError("protected_inventory: campos inválidos")
         inventory_path = checked_path(inventory["file"])
         data = json.loads((dist / inventory_path).read_text())
@@ -341,16 +341,18 @@ def load_verification(project: Path, dist: Path) -> dict:
         for pattern in patterns:
             checked_path(pattern)
         public_paths = {name.lstrip("/") for name in public}
+        derived = {}
         for file in build_files(dist):
             rel = file.relative_to(dist).as_posix()
             if rel not in public_paths and any(fnmatch.fnmatch(rel, pattern) for pattern in patterns):
-                responses.setdefault(rel, inventory["response"])
+                derived[rel] = inventory.get("unlisted_response", inventory["response"])
         for name in files:
             rel = checked_path(name.lstrip("/"))
             if not (dist / rel).is_file():
                 raise ValueError(f"protected_inventory: arquivo ausente {rel}")
             if name not in public:
-                responses.setdefault(rel, inventory["response"])
+                derived[rel] = inventory["response"]
+        responses = {**derived, **responses}
     for rel, rule in responses.items():
         checked_path(rel)
         if rel in ("index.html", "build.json"):

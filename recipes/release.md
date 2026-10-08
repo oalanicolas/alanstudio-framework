@@ -127,6 +127,9 @@ Exemplo: `{"version":1,"responses":{"api/status.php":{"status":200,"headers":
 um JSON do build contém um objeto de caminhos e uma lista do subconjunto público.
 `patterns` opcional cobre arquivos auxiliares publicados nas mesmas áreas protegidas,
 mesmo quando não estão no inventário de runtime. A lista pública continua prevalecendo.
+`unlisted_response` distingue esses auxiliares dos recursos conhecidos, quando a
+aplicação responde de maneira diferente. Não transforme essa distinção em uma lista
+de status aceitáveis: cada classe exige sua resposta exata, incluindo o erro JSON.
 Arquivos existentes fora dessa lista recebem a resposta privada declarada, salvo
 override explícito de rota. O subconjunto público permanece sujeito ao hash.
 Ausência, contrato inválido ou inventário incompleto falham antes do upload.

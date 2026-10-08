@@ -456,6 +456,20 @@ class ResponseContractTests(unittest.TestCase):
         self.assertTrue(self.verify("build.json", body=b"stale"))
         self.assertTrue(self.verify("index.html", headers={"platform": "hostinger"}, body=b"stale"))
 
+    def test_known_unavailable_resources_differ_from_unlisted_denials(self):
+        (self.dist / "inventory.json").write_text(json.dumps({"files": {"/private.js": {}, "/demo.js": {}}, "public": ["/demo.js"]}))
+        (self.dist / "unknown.txt").write_text("not a runtime resource")
+        rules = self.contract(protected_inventory={"file": "inventory.json", "files_key": "files", "public_key": "public",
+                              "patterns": ["*.js", "*.txt"],
+                              "response": {"status": 503, "headers": self.rule["headers"], "json_values": {"error.code": "unavailable"}},
+                              "unlisted_response": {"status": 404, "headers": {"cache-control": ["private", "no-store"]}}})
+        self.assertEqual(self.verify("private.js", status=503, body=b'{"error":{"code":"unavailable"}}', responses=rules), [])
+        self.assertTrue(self.verify("private.js", status=503, body=b'{"error":{"code":"unexpected"}}', responses=rules))
+        self.assertTrue(self.verify("private.js", status=500, body=b'{"error":{"code":"unavailable"}}', responses=rules))
+        self.assertEqual(self.verify("unknown.txt", status=404, body=b"", responses=rules), [])
+        self.assertTrue(self.verify("unknown.txt", status=503, body=b"", responses=rules))
+        self.assertNotIn("demo.js", rules)
+
     def test_malformed_contract_is_rejected_before_upload(self):
         for cfg in ({"version": 2}, {"version": 1, "typo": True},
                     {"version": 1, "responses": {"../private.php": self.rule}},
