@@ -10882,7 +10882,7 @@ def main():
             if args.sfx_action in (None, "summary"):
                 emit(sfx_catalog.summarize(root))
             elif args.sfx_action == "search":
-                emit(sfx_catalog.search_catalog(args.query, root, limit=args.limit))
+                emit(sfx_catalog.search_catalog(args.query, root, limit=args.limit, universal=True))
             elif args.sfx_action == "copy":
                 emit(sfx_catalog.copy_entry(args.id, args.to, root, sources=args.sources))
             elif args.sfx_action == "import":

@@ -5,6 +5,7 @@ import argparse
 import array
 from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache, partial
+import gzip
 import hashlib
 import html
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -464,7 +465,7 @@ class CatalogHandler(BaseHTTPRequestHandler):
         url = urlsplit(self.path)
         path = unquote(url.path)
         content_type = "application/octet-stream"
-        filename = None
+        filename = encoding = None
         try:
             if path in {"/", "/index.html", "/catalog.js", "/catalog.css"}:
                 name = "index.html" if path == "/" else path[1:]
@@ -490,6 +491,37 @@ class CatalogHandler(BaseHTTPRequestHandler):
                 data = inside(self.root, path[1:]).read_bytes()
                 content_type = {".wav": "audio/wav", ".mp3": "audio/mpeg", ".ogg": "audio/ogg",
                                 ".flac": "audio/flac", ".m4a": "audio/mp4"}[Path(path).suffix]
+            elif path in {"/universal", "/universal/", "/universal/universal.js"}:
+                # universal/: sons de referência sem licença de redistribuição; só ouvir e buscar, nunca exportar
+                name = "universal.js" if path.endswith(".js") else "index.html"
+                ui = self.root / "universal" / "ui" / name
+                if not ui.is_file() or ui.is_symlink():
+                    self.send_error(404)
+                    return
+                data = ui.read_bytes()
+                content_type = ("text/javascript" if name.endswith(".js") else "text/html") + "; charset=utf-8"
+            elif path == "/universal/indice.json":
+                index = self.root / "universal" / "indice.json"
+                packed = index.with_suffix(".json.gz")
+                if packed.is_file() and (not index.is_file() or packed.stat().st_mtime >= index.stat().st_mtime):
+                    data = packed.read_bytes()
+                    if "gzip" in self.headers.get("Accept-Encoding", ""):
+                        encoding = "gzip"
+                    else:
+                        data = gzip.decompress(data)
+                else:
+                    data = index.read_bytes()
+                content_type = "application/json; charset=utf-8"
+            elif re.fullmatch(r"/universal/(previas/[0-9a-f]{16}\.opus|arquivos/[0-9a-f]{64}(\.[a-z0-9]{1,5}){1,2})", path):
+                target = self.root / path[1:]
+                if not target.is_file() or target.is_symlink():
+                    self.send_error(404)
+                    return
+                data = target.read_bytes()
+                content_type = {".opus": "audio/ogg", ".wav": "audio/wav", ".mp3": "audio/mpeg", ".ogg": "audio/ogg",
+                                ".flac": "audio/flac", ".m4a": "audio/mp4"}.get(target.suffix, "application/octet-stream")
+                if "/arquivos/" in path:
+                    filename = target.name
             elif path == "/export":
                 ids = parse_qs(url.query).get("ids", [""])[0].split(",")
                 selected = select(load_catalog(self.root)["sounds"], ids)
@@ -507,7 +539,7 @@ class CatalogHandler(BaseHTTPRequestHandler):
             return
         total, start, end, status = len(data), 0, len(data) - 1, 200
         byte_range = self.headers.get("Range")
-        if byte_range and path.startswith("/files/"):
+        if byte_range and path.startswith(("/files/", "/universal/previas/", "/universal/arquivos/")):
             match = re.fullmatch(r"bytes=(\d*)-(\d*)", byte_range)
             if not match or not any(match.groups()):
                 self.send_error(416)
@@ -533,6 +565,8 @@ class CatalogHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Range", f"bytes {start}-{end}/{total}")
         if filename:
             self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+        if encoding:
+            self.send_header("Content-Encoding", encoding)
         self.end_headers()
         if not head:
             self.wfile.write(data)

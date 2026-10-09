@@ -1,5 +1,6 @@
 """Entrada do harness para o acervo em shared/sfx, se existir no workspace."""
 from pathlib import Path
+import gzip
 import json
 import math
 import re
@@ -571,7 +572,30 @@ def studio_assets(root=None):
     }}
 
 
-def search_catalog(query, root=None, limit=40):
+def search_universal(query, root=None, limit=40):
+    """universal/indice.json(.gz): sons de referência sem licença de redistribuição. Só ouvir e buscar; não exporta."""
+    base = catalog_dir(root) / "universal"
+    plain, packed = base / "indice.json", base / "indice.json.gz"
+    if plain.is_file():
+        index = json.loads(plain.read_text())
+    elif packed.is_file():
+        index = json.loads(gzip.decompress(packed.read_bytes()))
+    else:
+        return {"exists": False, "count": 0, "matches": []}
+    col = {name: i for i, name in enumerate(index["campos"])}
+    terms = audio.fold(query).split()
+    hits = [s for s in index["sons"] if all(t in s[col["busca"]] for t in terms)]
+    if "forte" in col:  # título e rótulo principal primeiro
+        hits.sort(key=lambda s: -sum(t in s[col["forte"]] for t in terms))
+    return {"exists": True, "count": len(hits), "total": len(index["sons"]),
+            "rule": "Referência extraída de jogos: ouvir e estudar; não entra no exportar do acervo licenciado.",
+            "matches": [{"id": s[col["id"]], "title": s[col["titulo"]], "category": s[col["cat"]],
+                         "type": s[col["tipo"]], "duration": s[col["dur"]], "games": s[col["jogos"]],
+                         "preview": f"universal/previas/{s[col['id']]}.opus",
+                         "original": s[col["arquivo"]] and f"universal/{s[col['arquivo']]}"} for s in hits[:limit]]}
+
+
+def search_catalog(query, root=None, limit=40, universal=False):
     if not query.strip() or limit < 1:
         raise ValueError("Busca vazia ou limite inválido")
     sounds = load_catalog(root)["sounds"]
@@ -598,6 +622,8 @@ def search_catalog(query, root=None, limit=40):
         "rule": QUALITY_BAR["note"],
         "next": nxt,
     }
+    if universal:
+        report["universal"] = search_universal(query, root, limit)
     if sfx_shift_source():
         report["scope"] = (
             "O disco desloca a voz (`sfx`). "
