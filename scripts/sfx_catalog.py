@@ -591,6 +591,7 @@ def search_universal(query, root=None, limit=40):
             "rule": "Referência extraída de jogos: ouvir e estudar; não entra no exportar do acervo licenciado.",
             "matches": [{"id": s[col["id"]], "title": s[col["titulo"]], "category": s[col["cat"]],
                          "type": s[col["tipo"]], "duration": s[col["dur"]], "games": s[col["jogos"]],
+                         "quality": s[col["qualidade"]] if "qualidade" in col else None,
                          "preview": f"universal/previas/{s[col['id']]}.opus",
                          "original": s[col["arquivo"]] and f"universal/{s[col['arquivo']]}"} for s in hits[:limit]]}
 
