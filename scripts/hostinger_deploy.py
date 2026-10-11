@@ -49,8 +49,8 @@ AI_BOT_RULES = """# Block declared AI agents before application routing, includi
 """
 AI_BOT_HEADERS = """# FilesMatch merges after application-level header rules.
 <IfModule mod_headers.c>
+  Header always append Vary "User-Agent"
   <FilesMatch ".*">
-    Header always merge Vary "User-Agent"
     Header always set Cache-Control "no-store" env=BLOCK_AI
   </FilesMatch>
 </IfModule>
