@@ -114,6 +114,147 @@ class WorkspaceTest(unittest.TestCase):
         self.assertEqual([item["id"] for item in workspace.selection(
             ["games/alpha/qa", "alpha"], self.modules)], ["alpha", "alpha-qa"])
 
+    def profile_checkout(self, *names):
+        self.prepare()
+        root = self.output / "checkout"
+        env = {"GIT_CONFIG_COUNT": "1", "GIT_CONFIG_KEY_0": "protocol.file.allow",
+               "GIT_CONFIG_VALUE_0": "always", "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@example.invalid",
+               "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@example.invalid"}
+        patcher = patch.dict(os.environ, env)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        workspace.get_modules(root, list(names), self.modules)
+        data = {"modules": self.modules, "profiles": {"a": {"modules": ["alpha"]}, "b": {"modules": ["beta"]}}}
+        return root, data
+
+    def actions(self, root, data, *names):
+        return {row["id"]: (row["action"], row["reasons"]) for row in workspace.profile_plan(root, data, names)}
+
+    def test_profile_prunes_only_copies_the_remote_has_and_get_brings_them_back(self):
+        root, data = self.profile_checkout("alpha", "beta")
+        (root / "games/beta/node_modules").mkdir()
+        (root / "games/beta/node_modules/x.js").write_text("cache\n")
+        exclude = Path(self.git(root / "games/beta", "rev-parse", "--path-format=absolute", "--git-path", "info/exclude"))
+        exclude.write_text("node_modules/\n.env\n")
+        self.assertEqual(self.actions(root, data, "a"), {
+            "alpha": ("manter", []), "alpha-qa": ("fora", []), "beta": ("remover", [])})
+        gitdir = Path(self.git(root / "games/beta", "rev-parse", "--path-format=absolute", "--git-common-dir"))
+        rows = workspace.apply_profile(root, data, ["a"], prune=True)
+        self.assertEqual({row["id"]: row["action"] for row in rows},
+                         {"alpha": "manter", "alpha-qa": "fora", "beta": "removido"})
+        self.assertFalse(gitdir.exists())
+        self.assertEqual(list((root / "games/beta").iterdir()), [])
+        self.assertEqual(self.git(root, "config", "submodule.beta.active"), "false")
+        self.assertEqual(self.git(root, "config", "submodule.beta.fetchRecurseSubmodules"), "false")
+        self.assertEqual(self.git(root, "config", "--get-all", "submodule.active"), "games/alpha")
+        self.assertEqual(self.git(root, "config", "workspace.profile"), "a")
+        self.git(root, "submodule", "update", "--init")
+        self.assertEqual(list((root / "games/beta").iterdir()), [])
+        workspace.get_modules(root, ["beta"], self.modules)
+        self.assertEqual((root / "games/beta/main.txt").read_text(), "beta\n")
+        self.assertEqual(self.git(root, "config", "submodule.beta.active"), "true")
+        self.assertEqual(subprocess.run(["git", "-C", str(root), "config", "submodule.beta.fetchRecurseSubmodules"],
+                                        capture_output=True).returncode, 1)
+
+    def test_profile_preserves_every_kind_of_local_only_work(self):
+        root, data = self.profile_checkout("alpha", "alpha-qa", "beta")
+        beta = root / "games/beta"
+        Path(self.git(beta, "rev-parse", "--path-format=absolute", "--git-path", "info/exclude")).write_text(".env\n")
+        (beta / ".env").write_text("TOKEN=1\n")
+        self.assertEqual(self.actions(root, data, "a")["beta"], ("preservar", ["ignorados só aqui: .env"]))
+        (beta / ".env").unlink()
+        (beta / "vazia/sub").mkdir(parents=True)
+        Path(self.git(beta, "rev-parse", "--path-format=absolute", "--git-path", "info/exclude")).write_text(".env\nvazia/\n")
+        self.assertEqual(self.actions(root, data, "a")["beta"], ("remover", []))
+        (beta / "main.txt").write_text("edit\n")
+        self.assertEqual(self.actions(root, data, "a")["beta"], ("preservar", ["1 alterações locais"]))
+        self.git(beta, "stash")
+        self.assertEqual(self.actions(root, data, "a")["beta"], ("preservar", ["1 stash"]))
+        self.git(beta, "stash", "drop")
+        self.git(beta, "commit", "--allow-empty", "-m", "local")
+        self.assertEqual(self.actions(root, data, "a")["beta"], ("preservar", ["1 commits fora do remoto"]))
+        (root / "games/alpha/qa/new.txt").write_text("qa\n")
+        plan = self.actions(root, data, "b")
+        self.assertEqual(plan["alpha-qa"], ("preservar", ["1 alterações locais"]))
+        self.assertEqual(plan["alpha"], ("preservar", ["contém alpha-qa"]))
+        (root / "games/alpha/qa/new.txt").unlink()
+        rows = {row["id"]: row["action"] for row in workspace.apply_profile(root, data, ["b"], prune=True)}
+        self.assertEqual(rows, {"alpha": "removido", "alpha-qa": "removido", "beta": "manter"})
+        self.assertEqual(list((root / "games/alpha").iterdir()), [])
+        self.assertEqual(self.git(beta, "log", "-1", "--format=%s"), "local")
+
+    def test_parent_is_kept_when_nested_work_appears_after_the_plan(self):
+        root, data = self.profile_checkout("alpha", "alpha-qa", "beta")
+        plan = workspace.profile_plan
+        def stale_plan(*args):
+            rows = plan(*args)
+            (root / "games/alpha/qa/new.txt").write_text("qa\n")
+            return rows
+        with patch("workspace.profile_plan", stale_plan):
+            rows = {row["id"]: row for row in workspace.apply_profile(root, data, ["b"], prune=True)}
+        self.assertEqual(rows["alpha-qa"]["action"], "preservar")
+        self.assertEqual((rows["alpha"]["action"], rows["alpha"]["reasons"]), ("preservar", ["contém alpha-qa"]))
+        self.assertEqual((root / "games/alpha/qa/new.txt").read_text(), "qa\n")
+
+    def test_unknown_profile_or_module_is_rejected_before_any_change(self):
+        root, data = self.profile_checkout("alpha")
+        with self.assertRaisesRegex(ValueError, "Perfil desconhecido: c"):
+            workspace.apply_profile(root, data, ["c"])
+        data["profiles"]["c"] = {"modules": ["missing"]}
+        with self.assertRaisesRegex(ValueError, "Módulo desconhecido"):
+            workspace.apply_profile(root, data, ["c"])
+        self.assertEqual(subprocess.run(["git", "-C", str(root), "config", "workspace.profile"],
+                                        capture_output=True).returncode, 1)
+
+    def test_disposable_matches_names_at_any_depth_and_configured_paths(self):
+        patterns = workspace.DISPOSABLE + ("evidence/validation/",)
+        for entry in ("adapter/__pycache__/", "node_modules/", "a/b/.venv/", "server.log",
+                      "evidence/validation/20261002T025623Z/"):
+            self.assertTrue(workspace.disposable(entry, patterns), entry)
+        for entry in (".env", "assets/animations/", "originals/abc", "evidence/regua.json"):
+            self.assertFalse(workspace.disposable(entry, patterns), entry)
+
+    def test_selection_follows_requires_transitively_and_rejects_unknown(self):
+        modules = [{"id": "alpha", "path": "games/alpha", "requires": ["beta"]},
+                   {"id": "alpha-qa", "path": "games/alpha/qa"},
+                   {"id": "beta", "path": "games/beta", "requires": ["alpha", "alpha-qa"]},
+                   {"id": "gamma", "path": "games/gamma", "requires": ["missing"]}]
+        self.assertEqual([item["id"] for item in workspace.selection(["alpha"], modules)],
+                         ["alpha", "beta", "alpha-qa"])
+        with self.assertRaisesRegex(ValueError, "missing"):
+            workspace.selection(["gamma"], modules)
+
+    def test_profile_keeps_what_a_kept_module_requires(self):
+        root, data = self.profile_checkout("alpha", "beta")
+        self.modules[0]["requires"] = ["beta"]
+        self.assertEqual(self.actions(root, data, "a")["beta"], ("manter", []))
+
+    def test_profile_downloads_only_the_sparse_folders_of_a_module(self):
+        self.write("games/beta/lab/tool.txt", "tool\n")
+        self.write("games/beta/assets/big.bin", "heavy\n")
+        self.git(self.source, "add", ".")
+        self.git(self.source, "commit", "-m", "lab")
+        root, data = self.profile_checkout("alpha")
+        data["profiles"]["s"] = {"modules": ["alpha"], "sparse": {"beta": ["lab"]}}
+        rows = {row["id"]: row["action"] for row in workspace.apply_profile(root, data, ["s"], prune=True)}
+        self.assertEqual(rows["beta"], "baixar")
+        self.assertEqual((root / "games/beta/lab/tool.txt").read_text(), "tool\n")
+        self.assertFalse((root / "games/beta/assets").exists())
+        self.assertTrue((root / "games/beta/main.txt").exists())  # o modo cone sempre traz a raiz
+        self.assertEqual(self.git(root / "games/beta", "rev-parse", "HEAD"),
+                         self.git(root, "rev-parse", "HEAD:games/beta"))
+        self.assertEqual(self.git(root, "submodule", "status", "--", "games/beta")[0], self.git(root, "rev-parse", "HEAD:games/beta")[0])
+        self.assertEqual(self.git(root, "config", "submodule.beta.active"), "true")
+        self.assertEqual(self.actions(root, data, "s")["beta"], ("manter", []))
+        data["profiles"]["inteiro"] = {"modules": ["beta"]}
+        self.assertEqual(workspace.profile_sparse(data, ["s", "inteiro"]), {})
+
+    def test_profile_patterns_expand_to_every_matching_module(self):
+        data = {"modules": self.modules, "profiles": {"g": {"modules": ["games/*"]}, "x": {"modules": ["demos/*"]}}}
+        self.assertEqual(sorted(workspace.profile_names(data, ["g"])), ["alpha", "alpha-qa", "beta"])
+        with self.assertRaisesRegex(ValueError, "demos/"):
+            workspace.profile_names(data, ["x"])
+
     def test_legacy_checkout_is_not_mistaken_for_a_submodule_hub(self):
         with self.assertRaisesRegex(ValueError, "não modularizado"):
             workspace.get_modules(self.source, ["alpha"], self.modules)

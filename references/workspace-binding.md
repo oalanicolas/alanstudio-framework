@@ -102,6 +102,23 @@ starter. [workspace.py](../scripts/workspace.py) obtém os módulos selecionados
 incluindo seus pais, e preserva checkouts presentes. [split_workspace.py](../scripts/split_workspace.py)
 prepara extrações em pasta nova, com recibo, sem publicar nem alterar o original.
 
+Uma máquina que só trabalha em parte do workspace aplica perfis: `profiles` no manifesto
+dá a cada nome uma lista de módulos, e `workspace.py profile <nome>...` mostra o plano sem
+alterar nada. Com `--apply`, só os módulos dos perfis ficam ativos (`submodule.active` e
+`submodule.<id>.active`), os de fora deixam de ser buscados pelo `pull`
+(`fetchRecurseSubmodules=false`) e os que faltam são baixados. Com `--prune`, a cópia e o
+histórico local de cada módulo de fora são apagados só quando o remoto tem tudo: sem
+alteração, stash, worktree extra, commit fora do remoto nem arquivo ignorado que não se
+refaz (dependências, caches e builds se refazem; `disposable` no manifesto acrescenta
+padrões). O resto fica no disco, desligado, com o motivo. Um módulo que precisa de outro para
+compilar ou testar declara `requires` no manifesto; `profile` e `get` trazem a dependência junto.
+Quando a máquina precisa só de uma parte de um módulo (uma ferramenta dentro de uma biblioteca grande), o
+perfil declara `sparse: {<id>: [pastas]}`: o módulo vem raso, sem blobs fora dessas pastas, no commit do
+gitlink e com o layout normal de submódulo (o modo cone também traz os arquivos da raiz). Um perfil que pede o
+módulo inteiro vence. Uma entrada com `*`, `?` ou `[` vale para todo módulo cujo caminho ou id combine
+(`prototypes/*`), inclusive os que entrarem no manifesto depois. `get` religa o módulo, e o
+perfil aplicado fica em `workspace.profile` no Git local.
+
 [gameops.py](../scripts/gameops.py) opera o Git do hub e dos módulos presentes:
 
 - `audit`: branch, alterações, upstream, worktrees extras, branches locais e remotas,
