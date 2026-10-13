@@ -9,6 +9,7 @@ deploy     publica na Hostinger o commit já publicado (worktree limpo, gates, b
            com --check, mostra quem responde por cada destino declarado no workspace.json
 """
 import argparse
+import codecs
 import json
 import os
 from pathlib import Path
@@ -18,6 +19,7 @@ import shutil
 import subprocess
 import tempfile
 import sys
+import threading
 import time
 import urllib.parse
 
@@ -470,17 +472,79 @@ def dead_paths(text, bases):
     return dead
 
 
-def added_lines(diff):
-    current, line_number = None, 0
-    for line in diff.splitlines():
+class AddedLinesScanner:
+    """Incremental equivalent of added_lines' historical splitlines state machine."""
+
+    def __init__(self):
+        self.current, self.line_number = None, 0
+
+    def feed(self, line):
         if line.startswith("+++ "):
-            current = line[6:] if line.startswith("+++ b/") else None
+            self.current = line[6:] if line.startswith("+++ b/") else None
         elif line.startswith("@@"):
             match = re.search(r"\+(\d+)", line)
-            line_number = int(match.group(1)) if match else 0
-        elif line.startswith("+") and current:
-            yield current, line_number, line[1:]
-            line_number += 1
+            self.line_number = int(match.group(1)) if match else 0
+        elif line.startswith("+") and self.current:
+            result = (self.current, self.line_number, line[1:])
+            self.line_number += 1
+            yield result
+
+
+def added_lines(diff):
+    """Compatibility API: yield added lines from an already-materialized diff."""
+    scanner = AddedLinesScanner()
+    for line in diff.splitlines():
+        yield from scanner.feed(line)
+
+
+class GitDiffError(RuntimeError):
+    def __init__(self, returncode, stderr):
+        self.returncode = returncode
+        self.stderr = stderr
+        detail = stderr.strip() or "sem detalhe em stderr"
+        super().__init__(f"git diff falhou (código {returncode}): {detail}")
+
+
+def stream_added_lines(repo, *args):
+    """Stream a Git diff through the same parser while retaining only stderr's bounded tail."""
+    try:
+        process = subprocess.Popen(
+            ["git", "-C", str(repo), *args], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            text=True, errors="replace", env={**os.environ, "GIT_OPTIONAL_LOCKS": "0"})
+    except OSError as exc:
+        raise GitDiffError(-1, str(exc)) from exc
+
+    stderr_tail = {"text": ""}
+    tail_limit = 16_384
+
+    def drain_stderr():
+        decoder = codecs.getincrementaldecoder(process.stderr.encoding)(errors="replace")
+        while True:
+            raw = process.stderr.buffer.read1(8_192)
+            chunk = decoder.decode(raw, final=not raw)
+            if chunk:
+                stderr_tail["text"] = (stderr_tail["text"] + chunk)[-tail_limit:]
+            if not raw:
+                return
+
+    stderr_reader = threading.Thread(target=drain_stderr, name="gameops-git-stderr", daemon=True)
+    stderr_reader.start()
+    scanner = AddedLinesScanner()
+    try:
+        # Text mode matches subprocess.run(..., text=True, errors="replace").
+        # splitlines handles Unicode separators inside each physical Git line,
+        # preserving the old full-string parser's semantics without retaining
+        # the complete diff.
+        for physical_line in process.stdout:
+            for line in physical_line.splitlines():
+                yield from scanner.feed(line)
+    finally:
+        process.stdout.close()
+        returncode = process.wait()
+        stderr_reader.join()
+        process.stderr.close()
+    if returncode:
+        raise GitDiffError(returncode, stderr_tail["text"])
 
 
 def github_origin(repo):
@@ -608,16 +672,19 @@ def preflight(root, modules, target, push=False, max_mb=5, max_instruction_token
             if dead:
                 warn(f"{path}: {plural(len(dead), 'caminho citado não existe', 'caminhos citados não existem')}: "
                      + ", ".join(dead[:5]) + ("…" if len(dead) > 5 else ""))
-    diff = run_git(repo, "diff", *diff_args, "-U0", "--no-color", "--no-ext-diff") or ""
-    for path, number, text in added_lines(diff):
-        where = f"{path}:{number}"
-        if ABSOLUTE_PATH.search(text):
-            block(f"{where}: caminho absoluto da máquina ({ABSOLUTE_PATH.search(text).group(0)})")
-        for label_, pattern in SECRET_TEXT:
-            if pattern.search(text):
-                block(f"{where}: possível {label_}")
-        if CONFLICT_MARKER.match(text):
-            block(f"{where}: marcador de conflito")
+    try:
+        for path, number, text in stream_added_lines(
+                repo, "diff", *diff_args, "-U0", "--no-color", "--no-ext-diff"):
+            where = f"{path}:{number}"
+            if ABSOLUTE_PATH.search(text):
+                block(f"{where}: caminho absoluto da máquina ({ABSOLUTE_PATH.search(text).group(0)})")
+            for label_, pattern in SECRET_TEXT:
+                if pattern.search(text):
+                    block(f"{where}: possível {label_}")
+            if CONFLICT_MARKER.match(text):
+                block(f"{where}: marcador de conflito")
+    except GitDiffError as exc:
+        block(f"não foi possível verificar as linhas adicionadas: {exc}")
     raw = run_git(repo, "diff", *diff_args, "--raw", "--no-abbrev") or ""
     owned = {item["path"]: item for item in modules if (parent_of(item, modules) or {}).get("path") == (module or {}).get("path")}
     for line in raw.splitlines():
