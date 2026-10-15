@@ -52,6 +52,8 @@ AI_BOT_HEADERS = """# FilesMatch merges after application-level header rules.
   # LiteSpeed may discard rewrite-set variables when producing a forbidden response.
   SetEnvIfNoCase User-Agent "(""" + "|".join(AI_BOTS) + """)" BLOCK_AI
   Header always append Vary "User-Agent"
+  # A forbidden response may be emitted before the FilesMatch section is evaluated.
+  Header always set Cache-Control "no-store" env=BLOCK_AI
   <FilesMatch ".*">
     Header always set Cache-Control "no-store" env=BLOCK_AI
   </FilesMatch>
