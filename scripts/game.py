@@ -2,6 +2,7 @@
 """Games harness: contexto sob demanda, contrato de reuso e execução com recibo."""
 import argparse
 import difflib
+import errno
 import hashlib
 from html import escape
 import json
@@ -10286,10 +10287,43 @@ def serve_alive(entry):
     return not entry.get("started") or entry["started"] == info["started"]
 
 
-def serve_free_port():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
-        probe.bind(("127.0.0.1", 0))
-        return probe.getsockname()[1]
+def serve_free_port(preferred=None):
+    port = preferred if type(preferred) is int and 0 < preferred < 65536 else 0
+    for _ in range(128):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            if os.name == "posix":
+                probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            try:
+                probe.bind(("127.0.0.1", port))
+            except OSError:
+                if not port:
+                    raise
+                port = 0
+                continue
+            selected = probe.getsockname()[1]
+        # macOS SO_REUSEADDR can hide wildcard listeners from a specific-address bind.
+        addresses = [(socket.AF_INET, "0.0.0.0"), (socket.AF_INET, "127.0.0.1")]
+        if socket.has_ipv6:
+            addresses += [(socket.AF_INET6, "::"), (socket.AF_INET6, "::1")]
+        occupied = False
+        for family, address in addresses:
+            try:
+                with socket.socket(family, socket.SOCK_STREAM) as listener:
+                    if os.name == "posix":
+                        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                    if family == socket.AF_INET6:
+                        listener.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
+                    listener.bind((address, selected))
+            except OSError as error:
+                if error.errno in (errno.EADDRINUSE, errno.EACCES):
+                    occupied = True
+                    break
+                if family != socket.AF_INET6 or error.errno not in (errno.EAFNOSUPPORT, errno.EPROTONOSUPPORT, errno.EADDRNOTAVAIL):
+                    raise
+        if not occupied:
+            return selected
+        port = 0
+    raise OSError(errno.EADDRINUSE, "No free loopback port found")
 
 
 def serve_listening_ports(pid):
@@ -10424,7 +10458,7 @@ def serve_start(project, root, timeout=None, launch=None):
         serve_terminate(entry)
         state_path.unlink(missing_ok=True)
 
-    port = serve_free_port()
+    port = serve_free_port(entry.get("port") if entry else None)
     argv = [str(part).replace("{port}", str(port)) for part in launch["argv"]]
     environment = dict(os.environ, PORT=str(port), HOST="127.0.0.1", BROWSER="none")
     log_path = serve_state_dir(root) / f"{serve_slug(project, root)}.log"

@@ -112,7 +112,7 @@ python3 scripts/game.py serve /caminho/do/laboratorio/meu-jogo --stop
 python3 scripts/game.py serve --list
 ```
 
-Com servidor registrado, vivo, na mesma pasta, no mesmo commit e com as mesmas alterações locais, reaproveita e imprime a URL. Se algo disso mudou, ou o processo morreu, encerra só o PID que ele mesmo registrou e sobe de novo. `--stop` encerra apenas esse PID; `--list` mostra os registrados como vivo ou morto. Nunca mata processo alheio: porta fixa no script do projeto que já esteja ocupada por outra sessão falha com o final do log, em vez de liberar a porta. 200 na URL não prova que o jogo está certo.
+Com servidor registrado, vivo, na mesma pasta, no mesmo commit e com as mesmas alterações locais, reaproveita e imprime a URL. Se algo disso mudou, ou o processo morreu, encerra só o PID que ele mesmo registrou e sobe de novo. Nesse reinício automático tenta reutilizar a porta registrada, preservando a URL e a origem do armazenamento do navegador; se estiver ocupada, escolhe outra sem encerrar o ocupante. `--stop` encerra apenas esse PID e apaga o registro; `--list` mostra os registrados como vivo ou morto. Nunca mata processo alheio: porta fixa no script do projeto que já esteja ocupada por outra sessão falha com o final do log, em vez de liberar a porta. 200 na URL não prova que o jogo está certo.
 
 `context` também traz `worktrees`: worktrees abertos do repositório do módulo (nome, branch, caminho, último commit, sujo sim ou não) e os branches locais, com o worktree em que cada um está aberto. Lê só o disco, sem rede.
 

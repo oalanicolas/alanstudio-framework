@@ -1,5 +1,6 @@
 import argparse
 import contextlib
+import errno
 import importlib.util
 import io
 import json
@@ -113,6 +114,7 @@ class ServeTests(unittest.TestCase):
         self.assertEqual(second["status"], "iniciado")
         self.assertIn("commit", second["restarted"])
         self.assertNotEqual(second["pid"], first["pid"])
+        self.assertEqual(second["url"], first["url"])
         self.assertFalse(game.serve_alive({"pid": first["pid"]}))
         self.assertTrue(game.serve_http_ok(second["url"]))
         self.assertIsNone(bystander.poll())
@@ -124,6 +126,75 @@ class ServeTests(unittest.TestCase):
         self.assertEqual(second["status"], "iniciado")
         self.assertNotEqual(second["pid"], first["pid"])
         self.assertIn("alterações locais", second["restarted"])
+        self.assertEqual(second["url"], first["url"])
+
+    def test_busy_previous_port_is_not_taken_or_closed(self):
+        with socket.socket() as busy:
+            busy.bind(("127.0.0.1", 0))
+            busy.listen()
+            taken = busy.getsockname()[1]
+            game.serve_write_entry(game.serve_state_path(self.project, self.root),
+                                   {"project": "jogos/alfa", "pid": -1, "port": taken})
+            result = self.start()
+            self.assertNotEqual(result["port"], taken)
+            self.assertEqual(busy.getsockname()[1], taken)
+            self.assertTrue(game.serve_http_ok(result["url"]))
+
+    @unittest.skipUnless(socket.has_ipv6, "IPv6 unavailable")
+    def test_ipv6_occupant_is_not_mistaken_for_a_free_previous_port(self):
+        with contextlib.ExitStack() as sockets:
+            try:
+                busy = sockets.enter_context(socket.socket(socket.AF_INET6, socket.SOCK_STREAM))
+                busy.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
+                busy.bind(("::1", 0))
+            except OSError as error:
+                if error.errno in (errno.EAFNOSUPPORT, errno.EPROTONOSUPPORT, errno.EADDRNOTAVAIL):
+                    self.skipTest("IPv6 loopback unavailable")
+                raise
+            busy.listen()
+            taken = busy.getsockname()[1]
+            selected = game.serve_free_port(taken)
+            self.assertNotEqual(selected, taken)
+            self.assertEqual(busy.getsockname()[1], taken)
+
+    def test_unavailable_ipv6_loopback_still_allows_ipv4_service(self):
+        real_socket = socket.socket
+
+        def open_socket(family, *args, **kwargs):
+            if family == socket.AF_INET6:
+                raise OSError(errno.EAFNOSUPPORT, "IPv6 disabled")
+            return real_socket(family, *args, **kwargs)
+
+        with mock.patch.object(game.socket, "has_ipv6", True), mock.patch.object(game.socket, "socket", side_effect=open_socket):
+            selected = game.serve_free_port()
+        with real_socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            probe.bind(("127.0.0.1", selected))
+
+    def test_ipv4_wildcard_listener_is_not_mistaken_for_a_free_port(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as busy:
+            busy.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            busy.bind(("0.0.0.0", 0))
+            busy.listen()
+            taken = busy.getsockname()[1]
+            self.assertNotEqual(game.serve_free_port(taken), taken)
+            self.assertEqual(busy.getsockname()[1], taken)
+
+    @unittest.skipUnless(socket.has_ipv6, "IPv6 unavailable")
+    def test_ipv6_wildcard_listener_is_not_mistaken_for_a_free_port(self):
+        with contextlib.ExitStack() as sockets:
+            try:
+                busy = sockets.enter_context(socket.socket(socket.AF_INET6, socket.SOCK_STREAM))
+                busy.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                busy.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
+                busy.bind(("::", 0))
+            except OSError as error:
+                if error.errno in (errno.EAFNOSUPPORT, errno.EPROTONOSUPPORT, errno.EADDRNOTAVAIL):
+                    self.skipTest("IPv6 unavailable")
+                raise
+            busy.listen()
+            taken = busy.getsockname()[1]
+            self.assertNotEqual(game.serve_free_port(taken), taken)
+            self.assertEqual(busy.getsockname()[1], taken)
 
     def test_dead_process_is_replaced(self):
         first = self.start()
