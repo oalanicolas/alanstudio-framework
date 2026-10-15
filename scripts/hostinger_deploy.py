@@ -49,6 +49,8 @@ AI_BOT_RULES = """# Block declared AI agents before application routing, includi
 """
 AI_BOT_HEADERS = """# FilesMatch merges after application-level header rules.
 <IfModule mod_headers.c>
+  # LiteSpeed may discard rewrite-set variables when producing a forbidden response.
+  SetEnvIfNoCase User-Agent "(""" + "|".join(AI_BOTS) + """)" BLOCK_AI
   Header always append Vary "User-Agent"
   <FilesMatch ".*">
     Header always set Cache-Control "no-store" env=BLOCK_AI
