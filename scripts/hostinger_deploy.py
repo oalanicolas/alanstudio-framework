@@ -8,8 +8,8 @@ files are compared byte for byte with the build. API calls go through the authen
 stay in memory during the upload.
 
 usage: hostinger_deploy.py --domain example.com [--project .] [--dist dist/client]
-                           [--spa] [--origin <IP do servidor>] [--expect NOME=VALOR]
-                           [--dry-run | --verify-only]
+                           [--spa] [--block-ai-bots] [--origin <IP do servidor>]
+                           [--expect NOME=VALOR] [--dry-run | --verify-only]
 
 Before zipping, the build must contain every public variable the domain declares in
 `deploy.env` of workspace.json (build_env.py); otherwise nothing is sent (exit 3).
@@ -36,6 +36,10 @@ import build_env
 CHUNK = 16 * 1024 * 1024
 SKIP = {".DS_Store", ".gitignore", ".gitattributes", ".gitmodules", ".vercelignore", ".npmrc", ".nvmrc"}
 PRIVATE_DIRS = {".git", "node_modules", ".vercel"}
+# --block-ai-bots (deploy.block_ai_bots no workspace.json): agentes de IA que se identificam pelo User-Agent recebem
+# 403 em tudo menos o robots.txt, que lhes nega o site. É bloqueio pelo nome declarado, não pela origem do pedido.
+AI_BOTS = ("GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-User", "Claude-SearchBot",
+           "PerplexityBot", "Perplexity-User")
 
 BASE = """# Gerado de {src} para Hostinger (LiteSpeed). Não editar à mão.
 Options -Indexes
@@ -108,6 +112,35 @@ def htaccess_from_vercel(cfg: dict, source: str = "vercel.json", spa: bool = Fal
     return "\n".join(out) + "\n"
 
 
+def ai_bots_htaccess() -> str:
+    """Vai no topo do .htaccess, antes das regras do projeto: o 403 vem antes de qualquer rewrite."""
+    agents = "|".join(AI_BOTS)  # só letras e hífen: nada a escapar na expressão
+    return "\n".join([
+        "# Robôs de IA (deploy.block_ai_bots): 403 em tudo menos o robots.txt. Gerado no deploy.",
+        "<IfModule mod_setenvif.c>",
+        f'  SetEnvIfNoCase User-Agent "({agents})" BLOCK_AI=1',
+        "</IfModule>",
+        "<IfModule mod_rewrite.c>",
+        "  RewriteEngine On",
+        f'  RewriteCond %{{HTTP_USER_AGENT}} "({agents})" [NC]',
+        "  RewriteRule !^robots\\.txt$ - [F,L]",
+        "</IfModule>",
+        "<IfModule mod_headers.c>",
+        '  Header always merge Vary "User-Agent"',
+        '  Header always set Cache-Control "no-store" env=BLOCK_AI',
+        "</IfModule>",
+    ]) + "\n"
+
+
+def ai_bots_robots(shipped: str = "") -> str:
+    """robots.txt do build com um grupo `Disallow: /` por agente que ele ainda não nomeia."""
+    named = {line.split(":", 1)[1].strip().lower() for line in shipped.splitlines()
+             if line.lower().startswith("user-agent:")}
+    groups = [f"User-agent: {agent}\nDisallow: /" for agent in AI_BOTS if agent.lower() not in named]
+    head = shipped.rstrip("\n")
+    return "\n\n".join(([head] if head else []) + groups) + "\n"
+
+
 def resolve_dist(project: Path, cfg: dict, dist: str | None) -> Path:
     return (project / (dist or cfg.get("outputDirectory") or "dist")).resolve()
 
@@ -143,16 +176,31 @@ def build_files(dist: Path, project: Path | None = None) -> list[Path]:
     return sorted(files)
 
 
-def make_zip(dist: Path, htaccess: str | None, out: Path, project: Path | None = None) -> int:
-    """A .htaccess shipped in the build wins over the generated one."""
+def served_htaccess(dist: Path, htaccess: str | None, block_ai_bots: bool = False) -> str | None:
+    """A .htaccess shipped in the build wins over the generated one; the AI bot block goes on top of either."""
+    shipped = dist / ".htaccess"
+    text = shipped.read_text(encoding="utf-8") if shipped.is_file() else htaccess
+    return ai_bots_htaccess() + (text or "") if block_ai_bots else text
+
+
+def make_zip(dist: Path, htaccess: str | None, out: Path, project: Path | None = None,
+             block_ai_bots: bool = False) -> int:
     files = build_files(dist, project)
+    generated = {}
+    final = served_htaccess(dist, htaccess, block_ai_bots)
+    if final and (block_ai_bots or not (dist / ".htaccess").is_file()):
+        generated[".htaccess"] = final
+    if block_ai_bots:
+        robots = dist / "robots.txt"
+        generated["robots.txt"] = ai_bots_robots(robots.read_text(encoding="utf-8") if robots.is_file() else "")
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
         for p in files:
-            z.write(p, p.relative_to(dist).as_posix())
-        if htaccess and not (dist / ".htaccess").is_file():
-            z.writestr(".htaccess", htaccess)
-            return len(files) + 1
-    return len(files)
+            rel = p.relative_to(dist).as_posix()
+            if rel not in generated:
+                z.write(p, rel)
+        for rel, text in generated.items():
+            z.writestr(rel, text)
+    return len({p.relative_to(dist).as_posix() for p in files} | set(generated))
 
 
 def sample(files: list[Path], dist: Path, count: int) -> list[str]:
@@ -218,9 +266,9 @@ def tus_upload(url: str, auth: str, rest: str, file: Path) -> str:
     return file.name
 
 
-def fetch(domain: str, path: str, origin: str | None):
+def fetch(domain: str, path: str, origin: str | None, agent: str = "hostinger-deploy/2"):
     """GET through curl; --origin pins the server over HTTP, since the certificate only exists after DNS."""
-    cmd = ["curl", "-s", "-m", "120", "-D", "-", "-A", "hostinger-deploy/2"]
+    cmd = ["curl", "-s", "-m", "120", "-D", "-", "-A", agent]
     scheme = "https"
     if origin:
         cmd += ["--resolve", f"{domain}:80:{origin}"]
@@ -245,6 +293,25 @@ def verify(domain: str, dist: Path, paths: list[str], origin: str | None) -> lis
         print(f"  {rel}: {status} · {'idêntico' if same else 'DIFERENTE'} · cache-control={headers.get('cache-control')}", flush=True)
         if status != 200 or not same:
             problems.append(f"{rel}: {status}, {'idêntico' if same else 'diferente do build'}")
+    return problems
+
+
+def verify_ai_bots(domain: str, origin: str | None) -> list[str]:
+    """Cada agente recebe 403 na página inicial; o robots.txt responde a eles e lhes nega o site."""
+    problems, blocked = [], 0
+    for agent in AI_BOTS:
+        status, headers, _ = fetch(domain, "/", origin, agent=f"Mozilla/5.0 (compatible; {agent}/1.0)")
+        if status != 403:
+            problems.append(f"{agent}: / respondeu {status}, esperado 403")
+        elif "no-store" not in headers.get("cache-control", ""):
+            problems.append(f"{agent}: 403 sem Cache-Control no-store")
+        else:
+            blocked += 1
+    status, _, body = fetch(domain, "robots.txt", origin, agent=f"{AI_BOTS[0]}/1.0")
+    missing = [agent for agent in AI_BOTS if f"User-agent: {agent}\nDisallow: /" not in body.decode("utf-8", "replace")]
+    if status != 200 or missing:
+        problems.append(f"robots.txt: {status}" + (f", sem Disallow para {', '.join(missing)}" if missing else ""))
+    print(f"  robôs de IA: {blocked} de {len(AI_BOTS)} com 403 · robots.txt {status}", flush=True)
     return problems
 
 
@@ -276,6 +343,8 @@ def main(argv=None):
     ap.add_argument("--sample", type=int, default=8, help="arquivos conferidos por hash além do index.html")
     ap.add_argument("--dry-run", action="store_true", help="só monta o zip e o .htaccess")
     ap.add_argument("--verify-only", action="store_true", help="só confere se o site no ar serve este build")
+    ap.add_argument("--block-ai-bots", action="store_true",
+                    help="403 e robots.txt para os agentes de IA declarados (deploy.block_ai_bots)")
     ap.add_argument("--expect", action="append", default=[], metavar="NOME=VALOR",
                     help="configuração pública que o build tem de conter (repetível); sem ela, vale o "
                          "deploy.env do domínio no workspace.json")
@@ -299,17 +368,20 @@ def main(argv=None):
                   "workspace.json). Refaça o build com essas variáveis; nada foi enviado.", flush=True)
             return 3
     files = build_files(dist, project)
-    paths = sample(files, dist, a.sample)
+    # com o bloqueio, o robots.txt servido é o do build mais os grupos dos agentes: confere-se em verify_ai_bots
+    paths = [p for p in sample(files, dist, a.sample) if not (a.block_ai_bots and p == "robots.txt")]
+    check = lambda: verify(a.domain, dist, paths, a.origin) + (
+        verify_ai_bots(a.domain, a.origin) if a.block_ai_bots else [])
     if a.verify_only:
-        problems = verify(a.domain, dist, paths, a.origin)
+        problems = check()
         print("CONFERIDO: o site serve este build" if not problems else "DIFERENTE:\n  " + "\n  ".join(problems))
         return 0 if not problems else 2
     htaccess = htaccess_from_vercel(cfg, "vercel.json", a.spa)
     out = Path(tempfile.gettempdir()) / f"{a.domain.replace('.', '_')}_{time.strftime('%Y%m%d_%H%M%S')}.zip"
-    n = make_zip(dist, htaccess, out, project)
+    n = make_zip(dist, htaccess, out, project, a.block_ai_bots)
     print(f"zip: {n} arquivos, {out.stat().st_size / 1e6:.1f} MB · build {dist.relative_to(project) if dist.is_relative_to(project) else dist}")
     if a.dry_run:
-        print(htaccess)
+        print(served_htaccess(dist, htaccess, a.block_ai_bots))
         out.unlink(missing_ok=True)
         return 0
     try:
@@ -329,7 +401,7 @@ def main(argv=None):
         out.unlink(missing_ok=True)
     for attempt in range(4):
         time.sleep(5 if attempt == 0 else 30)
-        problems = verify(a.domain, dist, paths, a.origin)
+        problems = check()
         if not problems:
             print(f"PUBLICADO E CONFERIDO: https://{a.domain}/ serve o build ({len(paths)} arquivos idênticos)")
             return 0

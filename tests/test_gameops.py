@@ -386,7 +386,9 @@ class DeployTest(GameOpsTest):
 
     def publish(self, argv):
         tree = Path(argv[argv.index("--project") + 1])
-        self.calls.append({"argv": argv, "files": sorted(path.name for path in tree.iterdir())})
+        # a cópia limpa é um clone compartilhado (.git é pasta) e o módulo não ganha worktree nem durante o envio
+        self.calls.append({"argv": argv, "files": sorted(path.name for path in tree.iterdir()),
+                           "clone": (tree / ".git").is_dir(), "worktrees": self.worktrees()})
         return 0
 
     def worktrees(self):
@@ -403,8 +405,28 @@ class DeployTest(GameOpsTest):
         self.assertIn("main.txt", self.calls[0]["files"])
         self.assertNotIn("rascunho.txt", self.calls[0]["files"])
         self.assertIn("fora do deploy: 0 modificados, 1 não rastreados", report["info"])
+        self.assertEqual((self.calls[0]["clone"], self.calls[0]["worktrees"]), (True, 1))
         self.assertEqual(self.worktrees(), 1)
         self.assertFalse(Path(argv[argv.index("--project") + 1]).exists())
+        self.assertNotIn("--block-ai-bots", argv)
+
+    def test_block_ai_bots_reaches_the_publisher_and_only_takes_a_boolean(self):
+        self.modules[0]["deploy"]["block_ai_bots"] = True
+        report = gameops.deploy(self.hub, self.modules, "alpha", publish=self.publish)
+        self.assertEqual(report["result"], "publicado e conferido")
+        self.assertIn("--block-ai-bots", self.calls[0]["argv"])
+        with self.assertRaisesRegex(ValueError, "block_ai_bots: true ou false"):
+            gameops.deploy(self.hub, [dict(self.modules[0], deploy={"domain": "x", "block_ai_bots": "sim"})], "alpha")
+
+    def test_gates_recognize_a_shared_clone_as_the_module(self):
+        clone = self.base / "copia-limpa"
+        subprocess.run(["git", "clone", "--quiet", "--shared", str(self.alpha), str(clone)], check=True)
+        repo, _, module, owner = gameops.resolve_target(self.hub, self.modules, str(clone))
+        self.assertEqual((repo, module["id"], owner), (clone.resolve(), "alpha", "games/alpha"))
+        other = self.base / "outro"
+        subprocess.run(["git", "init", "--quiet", str(other)], check=True)
+        with self.assertRaisesRegex(ValueError, "não é worktree nem clone compartilhado"):
+            gameops.resolve_target(self.hub, self.modules, str(other))
 
     def test_unpushed_commit_is_blocked_unless_allowed(self):
         self.commit(self.alpha, "novo.txt", "local")

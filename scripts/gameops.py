@@ -557,10 +557,21 @@ def common_dir(repo):
     return Path(found).resolve() if found else None
 
 
+def borrowed_objects(repo):
+    """Pastas de objetos que um clone --shared usa do repositório de origem (objects/info/alternates)."""
+    shared = common_dir(repo)
+    listing = shared / "objects" / "info" / "alternates" if shared else None
+    if not listing or not listing.is_file():
+        return set()
+    lines = [line.strip() for line in listing.read_text().splitlines()]
+    return {(shared / "objects" / line).resolve() for line in lines if line and not line.startswith("#")}
+
+
 def resolve_target(root, modules, name):
     """Devolve (checkout, rótulo, módulo, dono): dono é '.' ou o caminho do módulo no manifesto.
 
-    Aceita o hub ('.'), o id ou caminho de um módulo, ou o caminho de um worktree deles."""
+    Aceita o hub ('.'), o id ou caminho de um módulo, ou o caminho de um worktree ou de uma cópia limpa deles
+    (clone compartilhado, reconhecido pelos objetos que usa do dono)."""
     root = Path(root).resolve()
     if name in (".", "hub", ""):
         return root, ".", None, "."
@@ -573,12 +584,13 @@ def resolve_target(root, modules, name):
     candidate = Path(name).expanduser()
     candidate = (candidate if candidate.is_absolute() else Path.cwd() / candidate).resolve()
     if candidate.is_dir() and (candidate / ".git").exists():
-        shared = common_dir(candidate)
+        shared, borrowed = common_dir(candidate), borrowed_objects(candidate)
         owners = [(".", None, root)] + [(item["path"], item, root / item["path"]) for item in modules]
         for owner, item, checkout in owners:
-            if (checkout / ".git").exists() and common_dir(checkout) == shared:
+            own = common_dir(checkout) if (checkout / ".git").exists() else None
+            if own and (own == shared or own / "objects" in borrowed):
                 return candidate, str(candidate), item, owner
-        raise ValueError(f"{candidate} não é worktree do hub nem de um módulo do workspace.")
+        raise ValueError(f"{candidate} não é worktree nem clone compartilhado do hub ou de um módulo do workspace.")
     raise ValueError(f"Repositório desconhecido: {name}. Use '.' para o hub, um id de workspace.py list "
                      "ou o caminho de um worktree.")
 
@@ -814,10 +826,10 @@ def print_gates(report):
         print(f"\n{plural(report['failed'], 'verificação falhou', 'verificações falharam')}.")
 
 
-# Deploy: o commit já publicado no GitHub, montado num worktree limpo, vai para o site da Hostinger.
-# O que está no ar é sempre um commit que existe no remoto; trabalho fora do commit não sobe.
+# Deploy: o commit já publicado no GitHub, montado numa cópia limpa (clone compartilhado, nunca worktree), vai para
+# o site da Hostinger. O que está no ar é sempre um commit que existe no remoto; trabalho fora do commit não sobe.
 
-DEPLOY_KEYS = {"domain", "dist", "spa", "build", "public", "env"}
+DEPLOY_KEYS = {"domain", "dist", "spa", "build", "public", "env", "block_ai_bots"}
 
 
 def deploy_config(module):
@@ -825,9 +837,9 @@ def deploy_config(module):
     if config is None:
         return None
     if (not isinstance(config, dict) or not isinstance(config.get("domain"), str) or not config["domain"]
-            or set(config) - DEPLOY_KEYS):
+            or set(config) - DEPLOY_KEYS or not isinstance(config.get("block_ai_bots", False), bool)):
         raise ValueError(f"deploy inválido em {module['id']}: precisa de domain e aceita só "
-                         + ", ".join(sorted(DEPLOY_KEYS)))
+                         + ", ".join(sorted(DEPLOY_KEYS)) + " (block_ai_bots: true ou false)")
     try:
         build_env.declared(config)
     except ValueError as exc:
@@ -869,7 +881,7 @@ def deploy(root, modules, target, dry_run=False, allow_unpushed=False, timeout=1
     modified, untracked = working_tree(repo)
     if modified or untracked:
         report["info"].append(f"fora do deploy: {len(modified)} modificados, {untracked} não rastreados")
-    # O worktree limpo não tem .env*: sem isto o build sai sem a configuração e ninguém vê (build_env.py).
+    # A cópia limpa não tem .env*: sem isto o build sai sem a configuração e ninguém vê (build_env.py).
     values, sources, missing = build_env.resolve(config, repo)
     report["env"] = sources
     if missing:
@@ -883,7 +895,10 @@ def deploy(root, modules, target, dry_run=False, allow_unpushed=False, timeout=1
     temp = Path(tempfile.mkdtemp(prefix=f"gameops-deploy-{module['id']}-"))
     tree = temp / "tree"
     try:
-        subprocess.run(["git", "-C", str(repo), "worktree", "add", "--quiet", "--detach", str(tree), head],
+        # clone compartilhado: usa os objetos do módulo e não registra nada nele (worktree, nunca)
+        subprocess.run(["git", "clone", "--quiet", "--shared", "--no-checkout", str(repo), str(tree)],
+                       check=True, capture_output=True, text=True)
+        subprocess.run(["git", "-C", str(tree), "checkout", "--quiet", "--detach", head],
                        check=True, capture_output=True, text=True)
         undeclared = sorted(build_env.referenced(tree) - set(values))
         if undeclared:
@@ -914,6 +929,7 @@ def deploy(root, modules, target, dry_run=False, allow_unpushed=False, timeout=1
         argv = ["--domain", config["domain"], "--project", str(tree)]
         argv += ["--dist", config["dist"]] if config.get("dist") else []
         argv += ["--spa"] if config.get("spa") else []
+        argv += ["--block-ai-bots"] if config.get("block_ai_bots") else []
         # O envio confere no build o que vai para o cliente; faltando, recusa antes do zip.
         for key, value in build_env.expected(values).items():
             argv += ["--expect", f"{key}={value}"]
@@ -923,7 +939,7 @@ def deploy(root, modules, target, dry_run=False, allow_unpushed=False, timeout=1
         except SystemExit as exc:
             code = exc.code if isinstance(exc.code, int) else 1
             report["info"].append(str(exc.code))
-        except Exception as exc:  # CLI, rede ou upload: o relatório diz onde parou; o worktree sai no finally.
+        except Exception as exc:  # CLI, rede ou upload: o relatório diz onde parou; a cópia sai no finally.
             code = 1
             report["info"].append(f"{type(exc).__name__}: {exc}")
         report["result"] = ("montado sem enviar" if dry_run else "publicado e conferido") if code == 0 else {
@@ -932,8 +948,6 @@ def deploy(root, modules, target, dry_run=False, allow_unpushed=False, timeout=1
         report["exit"] = code
         return report
     finally:
-        subprocess.run(["git", "-C", str(repo), "worktree", "remove", "--force", str(tree)], capture_output=True)
-        subprocess.run(["git", "-C", str(repo), "worktree", "prune"], capture_output=True)
         shutil.rmtree(temp, ignore_errors=True)
 
 

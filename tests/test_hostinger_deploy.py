@@ -103,6 +103,53 @@ class BuildTests(unittest.TestCase):
         with zipfile.ZipFile(out) as z:
             self.assertEqual(z.read(".htaccess"), b"# do build")
 
+    def test_ai_bot_block_goes_on_top_of_the_shipped_htaccess_and_extends_robots(self):
+        dist = self.project / "dist"
+        self.write("dist/index.html")
+        self.write("dist/.htaccess", "# do build\n")
+        self.write("dist/robots.txt", "User-agent: *\nAllow: /\n\nUser-agent: GPTBot\nDisallow: /\n")
+        out = self.project / "a.zip"
+        self.assertEqual(deploy.make_zip(dist, "# gerado", out, block_ai_bots=True), 3)
+        with zipfile.ZipFile(out) as z:
+            names = z.namelist()
+            htaccess, robots = z.read(".htaccess").decode(), z.read("robots.txt").decode()
+        self.assertEqual(sorted(names), [".htaccess", "index.html", "robots.txt"])
+        self.assertTrue(htaccess.startswith("# Robôs de IA"))
+        self.assertTrue(htaccess.endswith("# do build\n"))
+        self.assertLess(htaccess.index("RewriteRule !^robots\\.txt$ - [F,L]"), htaccess.index("# do build"))
+        for agent in deploy.AI_BOTS:
+            self.assertIn(agent, htaccess)
+            self.assertEqual(robots.count(f"User-agent: {agent}\nDisallow: /"), 1, agent)
+        self.assertTrue(robots.startswith("User-agent: *\nAllow: /\n"))
+
+    def test_ai_bot_block_without_shipped_files_uses_the_generated_htaccess(self):
+        dist = self.project / "dist"
+        self.write("dist/index.html")
+        out = self.project / "a.zip"
+        self.assertEqual(deploy.make_zip(dist, "# gerado", out, block_ai_bots=True), 3)
+        with zipfile.ZipFile(out) as z:
+            self.assertTrue(z.read(".htaccess").decode().endswith("# gerado"))
+            self.assertEqual(z.read("robots.txt").decode(),
+                             "\n\n".join(f"User-agent: {a}\nDisallow: /" for a in deploy.AI_BOTS) + "\n")
+        deploy.make_zip(dist, "# gerado", out)
+        with zipfile.ZipFile(out) as z:
+            self.assertNotIn("robots.txt", z.namelist())
+            self.assertEqual(z.read(".htaccess"), b"# gerado")
+
+    def test_ai_bot_check_wants_403_no_store_and_robots_for_every_agent(self):
+        def served(blocked):
+            def fetch(domain, path, origin, agent="x"):
+                if path == "robots.txt":
+                    return 200, {}, deploy.ai_bots_robots().encode()
+                name = next((a for a in deploy.AI_BOTS if a in agent), None)
+                return (403, {"cache-control": "no-store"}, b"") if name in blocked else (200, {}, b"ok")
+            return fetch
+        with mock.patch("builtins.print"):
+            with mock.patch.object(deploy, "fetch", served(set(deploy.AI_BOTS))):
+                self.assertEqual(deploy.verify_ai_bots("a.test", None), [])
+            with mock.patch.object(deploy, "fetch", served(set(deploy.AI_BOTS) - {"ClaudeBot"})):
+                self.assertEqual(deploy.verify_ai_bots("a.test", None), ["ClaudeBot: / respondeu 200, esperado 403"])
+
     def test_sample_starts_with_index_and_spreads(self):
         dist = self.project / "dist"
         self.write("dist/index.html")
