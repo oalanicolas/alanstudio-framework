@@ -567,6 +567,14 @@ def borrowed_objects(repo):
     return {(shared / "objects" / line).resolve() for line in lines if line and not line.startswith("#")}
 
 
+def clone_source(repo):
+    """Checkout local de onde a cópia foi clonada (origin em caminho). De um módulo raso o --shared vira cópia
+    comum, sem alternates: aí só a origem diz de quem é a cópia."""
+    url = run_git(repo, "config", "--get", "remote.origin.url") or ""
+    path = Path(url[len("file://"):] if url.startswith("file://") else url)
+    return path.resolve() if url and path.is_absolute() and path.is_dir() else None
+
+
 def resolve_target(root, modules, name):
     """Devolve (checkout, rótulo, módulo, dono): dono é '.' ou o caminho do módulo no manifesto.
 
@@ -584,11 +592,11 @@ def resolve_target(root, modules, name):
     candidate = Path(name).expanduser()
     candidate = (candidate if candidate.is_absolute() else Path.cwd() / candidate).resolve()
     if candidate.is_dir() and (candidate / ".git").exists():
-        shared, borrowed = common_dir(candidate), borrowed_objects(candidate)
+        shared, borrowed, source = common_dir(candidate), borrowed_objects(candidate), clone_source(candidate)
         owners = [(".", None, root)] + [(item["path"], item, root / item["path"]) for item in modules]
         for owner, item, checkout in owners:
             own = common_dir(checkout) if (checkout / ".git").exists() else None
-            if own and (own == shared or own / "objects" in borrowed):
+            if own and (own == shared or own / "objects" in borrowed or source == checkout.resolve()):
                 return candidate, str(candidate), item, owner
         raise ValueError(f"{candidate} não é worktree nem clone compartilhado do hub ou de um módulo do workspace.")
     raise ValueError(f"Repositório desconhecido: {name}. Use '.' para o hub, um id de workspace.py list "

@@ -423,6 +423,11 @@ class DeployTest(GameOpsTest):
         subprocess.run(["git", "clone", "--quiet", "--shared", str(self.alpha), str(clone)], check=True)
         repo, _, module, owner = gameops.resolve_target(self.hub, self.modules, str(clone))
         self.assertEqual((repo, module["id"], owner), (clone.resolve(), "alpha", "games/alpha"))
+        # módulo raso: o --shared vira cópia comum, sem alternates; a origem em caminho identifica o dono
+        copy = self.base / "copia-de-raso"
+        subprocess.run(["git", "clone", "--quiet", "--no-local", str(self.alpha), str(copy)], check=True)
+        self.assertFalse((copy / ".git/objects/info/alternates").exists())
+        self.assertEqual(gameops.resolve_target(self.hub, self.modules, str(copy))[3], "games/alpha")
         other = self.base / "outro"
         subprocess.run(["git", "init", "--quiet", str(other)], check=True)
         with self.assertRaisesRegex(ValueError, "não é worktree nem clone compartilhado"):
