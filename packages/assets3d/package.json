@@ -1,0 +1,20 @@
+{
+  "name": "@alanstudio/assets3d",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Otimização de ativos 3D sem perda visível: texturas em AVIF com qualidade escolhida textura por textura contra uma régua medida, malhas em GLB com meshopt e quantização, verificação N de N e relatório antes × agora. Sem dependências npm.",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "bin": {
+    "assets3d": "tools/assets3d.mjs"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

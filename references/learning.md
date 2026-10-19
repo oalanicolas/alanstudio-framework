@@ -71,6 +71,7 @@ economia de execução nem ganho posterior entre ferramentas.
 | Exportação, animação, buffers e proveniência | [Conteúdo](../recipes/content.md), [áudio](../recipes/audio.md) |
 | Gestão de módulos e extração de repositórios | [Ferramentas de workspace](workspace-binding.md#módulos) |
 | Gamificação e economia (temporada, passe, missões, loja, livro-razão, proteção de menor) | [Gamificação](../recipes/gamification.md) e [package](../packages/gamification/README.md) |
+| Texturas e malhas menores sem perda visível (régua por textura, verificação N de N, relatório) | [Performance](../recipes/performance.md#ativos-menores-sem-perda-visível) e [package](../packages/assets3d/README.md) |
 | Preferência artística, fornecedor excluído, endereço de publicação | AGENTS/configuração do workspace ou documento do jogo |
 | Medição bruta, captura, decisão aplicada e histórico | Jogo ou workspace que produziu a prova |
 | Segundo cérebro (estudos, padrões, grafo com evidência) | [Kit replicável](../assets/cerebro/Como%20replicar.md); o caso de cada estúdio permanece no vault do próprio workspace |

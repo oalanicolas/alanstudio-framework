@@ -195,6 +195,26 @@ Aprendizados de aplicações reais:
   inteiro por quadro gera layout e lixo. Prova: captura idêntica e contagem de
   operações de desenho ou mutações por quadro com o jogo parado.
 
+## Ativos menores sem perda visível
+
+- Download e memória de vídeo são problemas diferentes. O codec do arquivo (PNG, WebP, AVIF)
+  muda só o download: a imagem sobe à GPU descomprimida. A memória de vídeo só cai com formato
+  de bloco na GPU (BC7, ASTC, ETC2), vindo de KTX2/Basis ou de recompressão em tempo de execução.
+- Escolha a qualidade **textura por textura** contra uma régua medida, nunca um parâmetro fixo
+  para o acervo inteiro: o fixo tira o detalhe fino das texturas ricas e desperdiça bytes nas lisas.
+- A régua depende do papel da textura. Cor: métrica perceptual (na escala publicada do
+  SSIMULACRA 2, 90 é visualmente sem perda num teste de alternância e 80 é imperceptível lado a
+  lado). Normal map: erro angular depois de renormalizar, porque o que se vê é a luz. Material e
+  máscara: o canal que o shader lê. Olhe o pior bloco além da média: a média esconde perda local.
+- Malhas: compressão sem simplificar, com a precisão de posição, UV e normal escolhida pelo erro
+  máximo medido. Não descarte atributo (cor de vértice, segundo UV, morph target) para ganhar bytes.
+- Verifique N de N decodificando o resultado. Mantenha os originais e um interruptor para jogar
+  com eles. A prova final é a captura no render, antes × agora, na mesma pose, com todo o tempo
+  congelado (relógio, tempo de shader, partículas) e com a captura conferida antes de confiar na métrica.
+- Invalida a conclusão: régua medida só na textura (o render decide); mapa de dados julgado por
+  métrica de cor; perda da compressão em bloco na GPU, que a régua da textura não mede.
+- Ferramenta: [package assets3d](../packages/assets3d/README.md) (conversão, verificação e relatório).
+
 ## Adaptadores automáticos de qualidade
 
 Grande parte da web 3D adapta a qualidade sozinha: muitos clientes web cortam resolução, AO, sombra,
