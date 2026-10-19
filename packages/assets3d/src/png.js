@@ -71,16 +71,46 @@ export function decodePng(buffer) {
     else if (type === "IEND") break;
     off += 12 + len;
   }
-  if (interlace) throw new Error("PNG entrelaçado (Adam7) não suportado: regrave sem entrelaçamento");
   const raw = inflateSync(Buffer.concat(idat));
-  const { width, height, bitDepth, colorType } = h;
+  const { width, height } = h;
+  if (!interlace) {
+    const { p, ...img } = decodificarSubimagem(raw, 0, width, height, h, palette, trns);
+    return { width, height, ...img };
+  }
+  // Adam7: sete passes, cada um uma subimagem com linhas e filtros próprios, espalhada na grade final
+  const PASSES = [[0, 0, 8, 8], [4, 0, 8, 8], [0, 4, 4, 8], [2, 0, 4, 4], [0, 2, 2, 4], [1, 0, 2, 2], [0, 1, 1, 2]];
+  let p = 0;
+  let final = null;
+  for (const [xs, ys, dx, dy] of PASSES) {
+    const pw = Math.ceil((width - xs) / dx);
+    const ph = Math.ceil((height - ys) / dy);
+    if (pw <= 0 || ph <= 0) continue;
+    const r = decodificarSubimagem(raw, p, pw, ph, h, palette, trns);
+    p = r.p;
+    const c = r.channels;
+    final ??= { channels: c, bitDepth: r.bitDepth, data: new r.data.constructor(width * height * c) };
+    for (let j = 0; j < ph; j++) {
+      for (let i = 0; i < pw; i++) {
+        const de = (j * pw + i) * c;
+        const para = ((ys + j * dy) * width + xs + i * dx) * c;
+        for (let k = 0; k < c; k++) final.data[para + k] = r.data[de + k];
+      }
+    }
+  }
+  return { width, height, ...final };
+}
+
+// Desfiltra e expande uma subimagem (a imagem inteira, ou um passe do Adam7) a partir de raw[inicio].
+function decodificarSubimagem(raw, inicio, width, height, h, palette, trns) {
+  const { bitDepth, colorType } = h;
   const ch = h.channels;
   const bitsPorPixel = ch * bitDepth;
   const stride = Math.ceil((width * bitsPorPixel) / 8);
   const bpp = Math.max(1, bitsPorPixel >> 3);
   const linhas = Buffer.alloc(stride * height);
   let anterior = Buffer.alloc(stride);
-  for (let y = 0, p = 0; y < height; y++) {
+  let p = inicio;
+  for (let y = 0; y < height; y++) {
     const filtro = raw[p++];
     const linha = linhas.subarray(y * stride, (y + 1) * stride);
     raw.copy(linha, 0, p, p + stride);
@@ -113,14 +143,14 @@ export function decodePng(buffer) {
         if (trns) out[o + 3] = idx < trns.length ? trns[idx] : 255;
       }
     }
-    return { width, height, channels: outCh, bitDepth: 8, data: out };
+    return { p, channels: outCh, bitDepth: 8, data: out };
   }
   if (bitDepth === 16) {
     const out = new Uint16Array(n * ch);
     for (let y = 0; y < height; y++) {
       for (let i = 0; i < width * ch; i++) out[y * width * ch + i] = linhas.readUInt16BE(y * stride + i * 2);
     }
-    return { width, height, channels: ch, bitDepth: 16, data: out };
+    return { p, channels: ch, bitDepth: 16, data: out };
   }
   const out = new Uint8Array(n * ch);
   if (bitDepth === 8) {
@@ -136,7 +166,7 @@ export function decodePng(buffer) {
       }
     }
   }
-  return { width, height, channels: ch, bitDepth: 8, data: out };
+  return { p, channels: ch, bitDepth: 8, data: out };
 }
 
 function chunk(type, data) {
