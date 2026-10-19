@@ -38,7 +38,10 @@ node tools/assets3d.mjs report texturas.json malhas.json verificacao.json --said
 `--papeis papeis.json` dá o papel de cada arquivo a partir do manifesto do projeto
 (`{"pasta/Wall_BC.png": "color"}`; papéis: `color`, `emissive`, `normal`, `material`, `mask`) e vence o
 sufixo; use quando o runtime decide o formato por papel. `--lista arquivos.txt` (um caminho relativo por
-linha) limita textures, meshes e verify aos arquivos que o jogo usa.
+linha) limita textures, meshes e verify aos arquivos que o jogo usa. O caminho é normalizado (`a/../b`); se o
+arquivo no disco só difere na caixa (`x_NM.png` para a linha `x_nm.png`), ele entra e a saída leva a grafia da
+lista, que é a que o jogo pede ao servidor. Linha sem arquivo aparece no resumo e em `semArquivo` no relatório, e
+faz o verify falhar.
 
 Sem `--saida`, o resultado fica ao lado do original. Os originais nunca são alterados: o projeto
 escolhe no carregamento entre o `.avif`/`.glb` e o original, e deve manter um interruptor para jogar

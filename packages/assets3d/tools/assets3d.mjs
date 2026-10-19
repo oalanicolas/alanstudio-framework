@@ -4,13 +4,14 @@
 //   assets3d meshes   <origem> [--saida DIR] [--lista arquivos.txt] [--posicao 1e-5] [--uv-texels 0.1] [--textura 4096] [--normal-graus 0.1] [--relatorio malhas.json] [--forcar]
 //   assets3d verify   <origem> [--saida DIR] [--perfil ...] [--papeis ...] [--regras ...] [--regua ...] [--lista ...] [--relatorio verificacao.json]
 // --papeis: JSON {"caminho/relativo.png": "color|emissive|normal|material|mask"} vindo do manifesto do projeto; vence o sufixo.
-// --lista: arquivo de texto com um caminho relativo por linha; só esses são processados.
+// --lista: arquivo de texto com um caminho relativo por linha; só esses são processados. O caminho é normalizado (a/../b), a grafia
+//   da lista vale quando o arquivo só difere na caixa, e linha sem arquivo é relatada (semArquivo), nunca descartada em silêncio.
 //   assets3d report   <json...> --saida pagina.html [--titulo "..."] [--medicoes medicoes.json]
 // Sem --saida, o resultado fica ao lado do original (mesmo nome, extensão .avif ou .glb). Os originais nunca são alterados.
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { cpus } from "node:os";
-import { dirname, join, relative, resolve, sep } from "node:path";
+import { dirname, join, posix, relative, resolve, sep } from "node:path";
 import { toolVersions } from "../src/avif.js";
 import { readGltf } from "../src/gltf.js";
 import { compressMesh, MESH_DEFAULTS, verifyMesh } from "../src/mesh.js";
@@ -40,7 +41,7 @@ function argumentos(argv) {
 }
 
 const lerJson = (p) => (p ? JSON.parse(readFileSync(p, "utf8")) : undefined);
-const lerLista = (p) => (p ? new Set(readFileSync(p, "utf8").split(/\r?\n/).map((l) => l.trim().replace(/^\.?\//, "")).filter(Boolean)) : null);
+const lerLista = (p) => (p ? new Set(readFileSync(p, "utf8").split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((l) => posix.normalize(l.replace(/\\/g, "/")).replace(/^\.?\//, ""))) : null);
 const PAPEIS_VALIDOS = new Set(["color", "emissive", "normal", "material", "mask"]);
 function lerPapeis(p) {
   const m = lerJson(p);
@@ -66,9 +67,28 @@ function andar(dir, filtro, out = []) {
   return out.sort();
 }
 
-function destino(origem, saida, arquivo, ext) {
-  const rel = relative(origem, arquivo).replace(/\.[^.]+$/, ext);
-  return join(saida ?? origem, rel);
+function destino(origem, saida, rel, ext) {
+  return join(saida ?? origem, rel.replace(/\.[^.]+$/, ext));
+}
+
+// A lista nomeia o que o consumidor pede. Num sistema de arquivos sem distinção de caixa, "x_nm.png" abre "x_NM.png": o arquivo
+// entra com a grafia da lista, que é a que o consumidor vai pedir no servidor. Sem lista, tudo o que foi achado, com o nome do disco.
+// `tipo` separa as linhas de cada comando: a mesma lista pode trazer texturas e malhas.
+function escolher(origem, arquivos, lista, tipo) {
+  const achados = arquivos.map((arquivo) => ({ arquivo, rel: relative(origem, arquivo).split(sep).join("/") }));
+  if (!lista) return { itens: achados, semArquivo: [] };
+  const exato = new Map(achados.map((a) => [a.rel, a]));
+  const porCaixa = new Map(achados.map((a) => [a.rel.toLowerCase(), a]));
+  const itens = [];
+  const semArquivo = [];
+  for (const nome of lista) {
+    if (!tipo.test(nome)) continue;
+    const a = exato.get(nome) ?? porCaixa.get(nome.toLowerCase());
+    if (a) itens.push({ arquivo: a.arquivo, rel: nome });
+    else semArquivo.push(nome);
+  }
+  if (semArquivo.length) console.log(`  ${semArquivo.length} da lista sem arquivo: ${semArquivo.slice(0, 10).join(", ")}${semArquivo.length > 10 ? " …" : ""}`);
+  return { itens, semArquivo };
 }
 
 async function emLote(itens, jobs, fn, rotulo) {
@@ -105,8 +125,7 @@ async function texturas({ pos, op }) {
   const regua = resolveRuler(lerJson(op.regua) ?? {}, { hasSsimulacra2: Boolean(ferramentas.ssimulacra2) && !op["sem-ssimulacra2"], profile: op.perfil ?? undefined });
   const regras = lerJson(op.regras) ?? [];
   const papeis = lerPapeis(op.papeis);
-  const lista = lerLista(op.lista);
-  const pngs = andar(origem, (n) => /\.png$/i.test(n)).filter((p) => !lista || lista.has(relative(origem, p)));
+  const { itens: pngs, semArquivo } = escolher(origem, andar(origem, (n) => /\.png$/i.test(n)), lerLista(op.lista), /\.png$/i);
   const cacheArq = join(saida ?? origem, ".assets3d-texturas.json");
   const cache = op.forcar ? {} : lerCache(cacheArq);
   const chaveRegua = hash([regua, ferramentas.avifenc, VERSAO]);
@@ -114,10 +133,9 @@ async function texturas({ pos, op }) {
   const resultados = await emLote(
     pngs,
     jobs,
-    async (png) => {
-      const rel = relative(origem, png);
+    async ({ arquivo: png, rel }) => {
       const papel = papelDe(rel, papeis, regras);
-      const avif = destino(origem, saida, png, ".avif");
+      const avif = destino(origem, saida, rel, ".avif");
       const sha = createHash("sha256").update(readFileSync(png)).digest("hex");
       const c = cache[rel];
       if (c && c.sha === sha && c.chave === chaveRegua && c.registro.role === papel.role && (c.registro.decision === "original" || existsSync(avif))) {
@@ -138,12 +156,12 @@ async function texturas({ pos, op }) {
   );
   mkdirSync(dirname(cacheArq), { recursive: true });
   writeFileSync(cacheArq, JSON.stringify(cache));
-  const rel = { tipo: "texturas", versao: VERSAO, data: new Date().toISOString(), ferramentas, regua, total: resultados.length, resultados };
+  const rel = { tipo: "texturas", versao: VERSAO, data: new Date().toISOString(), ferramentas, regua, total: resultados.length, semArquivo, resultados };
   if (op.relatorio) writeFileSync(op.relatorio, JSON.stringify(rel, null, 1));
   const conv = resultados.filter((r) => r.decision === "avif");
   const antes = resultados.reduce((s, r) => s + (r.pngBytes ?? 0), 0);
   const depois = resultados.reduce((s, r) => s + (r.decision === "avif" ? r.avifBytes : r.pngBytes ?? 0), 0);
-  console.log(`texturas: ${resultados.length} de ${pngs.length} processadas · ${conv.length} em AVIF · ${resultados.length - conv.length} mantidas no original · ${mb(antes)} → ${mb(depois)} MB`);
+  console.log(`texturas: ${resultados.length} de ${pngs.length + semArquivo.length} processadas${semArquivo.length ? ` (${semArquivo.length} da lista sem arquivo)` : ""} · ${conv.length} em AVIF · ${resultados.length - conv.length} mantidas no original · ${mb(antes)} → ${mb(depois)} MB`);
   return rel;
 }
 
@@ -156,15 +174,13 @@ async function malhas({ pos, op }) {
     textureSize: Number(op.textura ?? MESH_DEFAULTS.textureSize),
     normalDegrees: Number(op["normal-graus"] ?? MESH_DEFAULTS.normalDegrees),
   };
-  const lista = lerLista(op.lista);
-  const arquivos = andar(origem, (n) => /\.gltf$/i.test(n) || (/\.glb$/i.test(n) && saida && saida !== origem)).filter((p) => !lista || lista.has(relative(origem, p)));
+  const { itens: arquivos, semArquivo } = escolher(origem, andar(origem, (n) => /\.gltf$/i.test(n) || (/\.glb$/i.test(n) && saida && saida !== origem)), lerLista(op.lista), /\.(gltf|glb)$/i);
   const cacheArq = join(saida ?? origem, ".assets3d-malhas.json");
   const cache = op.forcar ? {} : lerCache(cacheArq);
   const chave = hash([opcoes, VERSAO]);
   const resultados = [];
-  for (const arq of arquivos) {
-    const rel = relative(origem, arq);
-    const glb = destino(origem, saida, arq, ".glb");
+  for (const { arquivo: arq, rel } of arquivos) {
+    const glb = destino(origem, saida, rel, ".glb");
     if (resolve(glb) === resolve(arq)) continue;
     let g;
     try {
@@ -212,10 +228,10 @@ async function malhas({ pos, op }) {
   }
   mkdirSync(dirname(cacheArq), { recursive: true });
   writeFileSync(cacheArq, JSON.stringify(cache));
-  const rel = { tipo: "malhas", versao: VERSAO, data: new Date().toISOString(), opcoes, total: resultados.length, resultados };
+  const rel = { tipo: "malhas", versao: VERSAO, data: new Date().toISOString(), opcoes, total: resultados.length, semArquivo, resultados };
   if (op.relatorio) writeFileSync(op.relatorio, JSON.stringify(rel, null, 1));
   const conv = resultados.filter((r) => r.decision === "glb");
-  console.log(`malhas: ${resultados.length} de ${arquivos.length} processadas · ${conv.length} em GLB · ${resultados.length - conv.length} mantidas · ${mb(conv.reduce((s, r) => s + r.bytesAntes, 0))} → ${mb(conv.reduce((s, r) => s + r.bytesDepois, 0))} MB nas convertidas`);
+  console.log(`malhas: ${resultados.length} de ${arquivos.length + semArquivo.length} processadas${semArquivo.length ? ` (${semArquivo.length} da lista sem arquivo)` : ""} · ${conv.length} em GLB · ${resultados.length - conv.length} mantidas · ${mb(conv.reduce((s, r) => s + r.bytesAntes, 0))} → ${mb(conv.reduce((s, r) => s + r.bytesDepois, 0))} MB nas convertidas`);
   return rel;
 }
 
@@ -227,20 +243,20 @@ async function verificar({ pos, op }) {
   const regras = lerJson(op.regras) ?? [];
   const papeis = lerPapeis(op.papeis);
   const lista = lerLista(op.lista);
-  const naLista = (p) => !lista || lista.has(relative(origem, p));
-  const pares = andar(origem, (n) => /\.png$/i.test(n)).filter(naLista).map((png) => ({ png, avif: destino(origem, saida, png, ".avif") })).filter((p) => existsSync(p.avif));
+  const { itens: pngs, semArquivo: texSem } = escolher(origem, andar(origem, (n) => /\.png$/i.test(n)), lista, /\.png$/i);
+  const pares = pngs.map(({ arquivo: png, rel }) => ({ png, rel, avif: destino(origem, saida, rel, ".avif") })).filter((p) => existsSync(p.avif));
   const jobs = Number(op.jobs) || Math.max(1, Math.floor(cpus().length / 2));
   const tex = ferramentas
-    ? await emLote(pares, jobs, async ({ png, avif }) => {
-        const rel = relative(origem, png);
+    ? await emLote(pares, jobs, async ({ png, rel, avif }) => {
         const papel = papelDe(rel, papeis, regras).role;
         const r = await verifyTexture(png, avif, papel, { ruler: regua, ssimulacra2: !op["sem-ssimulacra2"] });
         return { arquivo: rel, role: papel, ...r };
       }, "verificação de texturas")
     : [];
   const mal = [];
-  for (const arq of andar(origem, (n) => /\.gltf$/i.test(n)).filter(naLista)) {
-    const glb = destino(origem, saida, arq, ".glb");
+  const { itens: gltfs, semArquivo: malSem } = escolher(origem, andar(origem, (n) => /\.gltf$/i.test(n)), lista, /\.gltf$/i);
+  for (const { arquivo: arq, rel } of gltfs) {
+    const glb = destino(origem, saida, rel, ".glb");
     if (!existsSync(glb)) continue;
     const v = verifyMesh(readGltf(arq), readGltf(glb), {
       positionError: Number(op.posicao ?? MESH_DEFAULTS.positionError),
@@ -248,15 +264,16 @@ async function verificar({ pos, op }) {
       textureSize: Number(op.textura ?? MESH_DEFAULTS.textureSize),
       normalDegrees: Number(op["normal-graus"] ?? MESH_DEFAULTS.normalDegrees),
     });
-    mal.push({ arquivo: relative(origem, arq), pass: v.ok, failed: v.falhas, original: v.original, novo: v.novo });
+    mal.push({ arquivo: rel, pass: v.ok, failed: v.falhas, original: v.original, novo: v.novo });
   }
   const falhas = [...tex, ...mal].filter((r) => !r.pass);
-  const rel = { tipo: "verificacao", versao: VERSAO, data: new Date().toISOString(), regua, texturas: tex, malhas: mal, falhas: falhas.length };
+  const semArquivo = [...texSem, ...malSem];
+  const rel = { tipo: "verificacao", versao: VERSAO, data: new Date().toISOString(), regua, texturas: tex, malhas: mal, semArquivo, falhas: falhas.length + semArquivo.length };
   if (op.relatorio) writeFileSync(op.relatorio, JSON.stringify(rel, null, 1));
   console.log(`verificação: texturas ${tex.filter((r) => r.pass).length} de ${tex.length} na régua · malhas ${mal.filter((r) => r.pass).length} de ${mal.length} iguais na geometria e dentro do erro`);
   for (const f of falhas.slice(0, 20)) console.log(`  falhou: ${f.arquivo} — ${f.failed.join("; ")}`);
   if (!ferramentas && pares.length) console.log("  texturas não verificadas: faltam avifenc e avifdec");
-  if (falhas.length) process.exitCode = 1;
+  if (falhas.length || semArquivo.length) process.exitCode = 1;
   return rel;
 }
 
