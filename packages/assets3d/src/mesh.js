@@ -85,8 +85,9 @@ function erroMaximo(tipo, original, dec, count) {
   const comps = tipo === "NORMAL" ? 3 : 4;
   for (let i = 0; i < count; i++) {
     const o = [0, 1, 2].map((c) => original[i * comps + c]);
+    const no = Math.hypot(...o);
+    if (no < 1e-6) continue;
     const d = [0, 1, 2].map((c) => Math.max(dec.readInt16LE(i * 8 + c * 2) / 32767, -1));
-    const no = Math.hypot(...o) || 1;
     const nd = Math.hypot(...d) || 1;
     const dot = Math.min(1, Math.max(-1, (o[0] * d[0] + o[1] * d[1] + o[2] * d[2]) / (no * nd)));
     max = Math.max(max, (Math.acos(dot) * 180) / Math.PI);
@@ -303,8 +304,11 @@ export function verifyMesh(original, novo, opts = {}) {
       let max = 0;
       for (let k = 0; k < a.count; k++) {
         const p = [0, 1, 2].map((c) => va[k * n + c]);
+        const np = Math.hypot(...p);
+        if (np < 1e-6) continue;
         const q = [0, 1, 2].map((c) => vb[k * n + c]);
-        const dot = (p[0] * q[0] + p[1] * q[1] + p[2] * q[2]) / ((Math.hypot(...p) || 1) * (Math.hypot(...q) || 1));
+        const nq = Math.hypot(...q) || 1;
+        const dot = (p[0] * q[0] + p[1] * q[1] + p[2] * q[2]) / (np * nq);
         max = Math.max(max, (Math.acos(Math.min(1, Math.max(-1, dot))) * 180) / Math.PI);
         if (n === 4 && Math.sign(va[k * 4 + 3]) !== Math.sign(vb[k * 4 + 3])) return falhas.push(`accessor ${i}: sinal da tangente mudou`);
       }

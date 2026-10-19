@@ -66,3 +66,23 @@ test("recusa o que não dá para reempacotar com segurança", (t) => {
   h.json.extensionsUsed = ["EXT_meshopt_compression"];
   assert.match(compressMesh(h).skipped, /já está comprimido/);
 });
+
+test("ignora normal degenerada de comprimento zero na origem sem reprovar a malha", (t) => {
+  const { dir, arq } = preparar(t);
+  const original = readGltf(arq);
+  // Zera a normal do primeiro vértice no buffer original (accessor 1 = NORMAL)
+  const accNor = original.json.accessors[1];
+  const bvNor = original.json.bufferViews[accNor.bufferView];
+  const buf = original.buffers[bvNor.buffer ?? 0];
+  const f32 = new Float32Array(buf.buffer, buf.byteOffset + (bvNor.byteOffset ?? 0), accNor.count * 3);
+  f32[0] = 0;
+  f32[1] = 0;
+  f32[2] = 0;
+  const r = compressMesh(original);
+  assert.ok(!r.skipped, r.skipped);
+  const glb = join(dir, "grade-zero-normal.glb");
+  writeFileSync(glb, r.glb);
+  const v = verifyMesh(original, readGltf(glb));
+  assert.equal(v.ok, true, v.falhas.join("; "));
+});
+
